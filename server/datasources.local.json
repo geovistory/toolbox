@@ -1,0 +1,7 @@
+{
+  "postgres1": {
+    "url": "postgres://ksxmstoxtflzuj:b6a8a880ae5c92dd3fcdf7ad1b33f7dd4c96e6c4fd068d288ff507052fe91dff@ec2-54-75-231-85.eu-west-1.compute.amazonaws.com:5432/d35ois3u3surq1?ssl=true",
+    "name": "postgres1",
+    "connector": "postgresql"
+  }
+}
