@@ -1,1 +1,7 @@
-{}
+{
+  "postgres1": {
+    "url": "${DATABASE_URL}",
+    "name": "postgres1",
+    "connector": "postgresql"
+  }
+}
