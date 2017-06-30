@@ -1,7 +1,6 @@
 {
-  "postgres1": {
-    "url": "${DATABASE_URL}",
-    "name": "postgres1",
-    "connector": "postgresql"
+  "db": {
+    "name": "db",
+    "connector": "memory"
   }
 }
