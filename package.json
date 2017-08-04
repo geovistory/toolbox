@@ -35,6 +35,10 @@
     "type": "",
     "url": ""
   },
+  "cacheDirectories": [
+    "client/node_modules",
+    "node_modules"
+  ],
   "license": "UNLICENSED",
   "description": "geovistory"
 }
