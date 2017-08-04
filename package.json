@@ -7,13 +7,13 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "postinstall": "cd ./client && npm install && ng build --prod",
+    "postinstall": "cd ./client && npm install && ng build --prod && pwd",
     "start": "./node_modules/.bin/lb-sdk server/server client/src/app/shared/sdk -d ng2web -i enabled && node .",
     "posttest": "npm run lint && nsp check",
     "build:sdk": "./node_modules/.bin/lb-sdk server/server client/src/app/shared/sdk -d ng2web -i enabled"
   },
   "dependencies": {
-    "@angular/cli": "1.2.0",
+    "@angular/cli": "1.2.6",
     "@mean-expert/loopback-component-realtime": "^1.0.0-rc.9.2",
     "@mean-expert/loopback-sdk-builder": "^2.1.0-rc.12.1",
     "compression": "^1.0.3",
