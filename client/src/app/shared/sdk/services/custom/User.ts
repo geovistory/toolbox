@@ -34,7 +34,7 @@ export class UserApi extends BaseLoopBackApi {
   /**
    * Find a related item by id for accessTokens.
    *
-   * @param {any} id User id
+   * @param {any} id user id
    *
    * @param {any} fk Foreign key for accessTokens
    *
@@ -50,7 +50,7 @@ export class UserApi extends BaseLoopBackApi {
   public findByIdAccessTokens(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/:id/accessTokens/:fk";
+    "/users/:id/accessTokens/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -64,7 +64,7 @@ export class UserApi extends BaseLoopBackApi {
   /**
    * Delete a related item by id for accessTokens.
    *
-   * @param {any} id User id
+   * @param {any} id user id
    *
    * @param {any} fk Foreign key for accessTokens
    *
@@ -77,7 +77,7 @@ export class UserApi extends BaseLoopBackApi {
   public destroyByIdAccessTokens(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/:id/accessTokens/:fk";
+    "/users/:id/accessTokens/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -91,7 +91,7 @@ export class UserApi extends BaseLoopBackApi {
   /**
    * Update a related item by id for accessTokens.
    *
-   * @param {any} id User id
+   * @param {any} id user id
    *
    * @param {any} fk Foreign key for accessTokens
    *
@@ -111,7 +111,7 @@ export class UserApi extends BaseLoopBackApi {
   public updateByIdAccessTokens(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/:id/accessTokens/:fk";
+    "/users/:id/accessTokens/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -125,9 +125,9 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries accessTokens of User.
+   * Queries accessTokens of user.
    *
-   * @param {any} id User id
+   * @param {any} id user id
    *
    * @param {object} filter 
    *
@@ -143,7 +143,7 @@ export class UserApi extends BaseLoopBackApi {
   public getAccessTokens(id: any, filter: LoopBackFilter = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/:id/accessTokens";
+    "/users/:id/accessTokens";
     let _routeParams: any = {
       id: id
     };
@@ -157,7 +157,7 @@ export class UserApi extends BaseLoopBackApi {
   /**
    * Creates a new instance in accessTokens of this model.
    *
-   * @param {any} id User id
+   * @param {any} id user id
    *
    * @param {object} data Request data.
    *
@@ -175,7 +175,7 @@ export class UserApi extends BaseLoopBackApi {
   public createAccessTokens(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/:id/accessTokens";
+    "/users/:id/accessTokens";
     let _routeParams: any = {
       id: id
     };
@@ -190,7 +190,7 @@ export class UserApi extends BaseLoopBackApi {
   /**
    * Deletes all accessTokens of this model.
    *
-   * @param {any} id User id
+   * @param {any} id user id
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -201,7 +201,7 @@ export class UserApi extends BaseLoopBackApi {
   public deleteAccessTokens(id: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/:id/accessTokens";
+    "/users/:id/accessTokens";
     let _routeParams: any = {
       id: id
     };
@@ -212,9 +212,9 @@ export class UserApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts accessTokens of User.
+   * Counts accessTokens of user.
    *
-   * @param {any} id User id
+   * @param {any} id user id
    *
    * @param {object} where Criteria to match model instances
    *
@@ -229,7 +229,7 @@ export class UserApi extends BaseLoopBackApi {
   public countAccessTokens(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/:id/accessTokens/count";
+    "/users/:id/accessTokens/count";
     let _routeParams: any = {
       id: id
     };
@@ -259,7 +259,7 @@ export class UserApi extends BaseLoopBackApi {
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users";
+    "/users";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -272,7 +272,7 @@ export class UserApi extends BaseLoopBackApi {
   /**
    * Patch attributes for a model instance and persist it into the data source.
    *
-   * @param {any} id User id
+   * @param {any} id user id
    *
    * @param {object} data Request data.
    *
@@ -290,7 +290,7 @@ export class UserApi extends BaseLoopBackApi {
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/:id";
+    "/users/:id";
     let _routeParams: any = {
       id: id
     };
@@ -330,7 +330,7 @@ export class UserApi extends BaseLoopBackApi {
   public login(credentials: any, include: any = 'user', rememberMe: boolean = true, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/login";
+    "/users/login";
     let _routeParams: any = {};
     let _postBody: any = {
       credentials: credentials
@@ -366,7 +366,7 @@ export class UserApi extends BaseLoopBackApi {
   public logout(customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/logout";
+    "/users/logout";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -379,7 +379,7 @@ export class UserApi extends BaseLoopBackApi {
   /**
    * Trigger user's identity verification with configured verifyOptions
    *
-   * @param {any} id User id
+   * @param {any} id user id
    *
    * @param {object} data Request data.
    *
@@ -394,7 +394,7 @@ export class UserApi extends BaseLoopBackApi {
   public verify(id: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/:id/verify";
+    "/users/:id/verify";
     let _routeParams: any = {
       id: id
     };
@@ -422,7 +422,7 @@ export class UserApi extends BaseLoopBackApi {
   public confirm(uid: any, token: any, redirect: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/confirm";
+    "/users/confirm";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -449,7 +449,7 @@ export class UserApi extends BaseLoopBackApi {
   public resetPassword(options: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/reset";
+    "/users/reset";
     let _routeParams: any = {};
     let _postBody: any = {
       options: options
@@ -477,7 +477,7 @@ export class UserApi extends BaseLoopBackApi {
   public changePassword(oldPassword: any, newPassword: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/change-password";
+    "/users/change-password";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -503,7 +503,7 @@ export class UserApi extends BaseLoopBackApi {
   public setPassword(newPassword: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/reset-password";
+    "/users/reset-password";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -515,7 +515,7 @@ export class UserApi extends BaseLoopBackApi {
   /**
    * Creates a new instance in accessTokens of this model.
    *
-   * @param {any} id User id
+   * @param {any} id user id
    *
    * @param {object} data Request data.
    *
@@ -533,7 +533,7 @@ export class UserApi extends BaseLoopBackApi {
   public createManyAccessTokens(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/:id/accessTokens";
+    "/users/:id/accessTokens";
     let _routeParams: any = {
       id: id
     };
@@ -560,7 +560,7 @@ export class UserApi extends BaseLoopBackApi {
    */
   public getCurrent(filter: LoopBackFilter = {}): Observable<any> {
     let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() + "/Users" + "/:id";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() + "/users" + "/:id";
     let id: any = this.auth.getCurrentUserId();
     if (id == null)
     id = '__anonymous__';
