@@ -34,34 +34,8 @@ export class RegistrationComponent {
       this.userApi.create(this.user)
       .subscribe(
         data => {
-
           this.loading = false;
           this.confirm = true;
-
-          // //log in this user
-          // this.userApi.login(this.model)
-          // .subscribe(
-          //     data => {
-          //       // if (data.user) {
-          //       //   // store user details in local storage to keep user logged in between page
-          //       //   localStorage.setItem('currentUser', JSON.stringify(data.user));
-          //       // }
-          //
-          //       //navigate to the profile site
-          //       this.router.navigate(['/registration-confirmation']);
-          //     },
-          //     error => {
-          //
-          //       if (error.statusCode === 401){
-          //         this.router.navigate(['/registration-confirmation']);
-          //       }
-          //
-          //       // this.alertService.error(error);
-          //       this.router.navigate(['/login']);
-          //
-          //       this.loading = false;
-          //     });
-
         },
         error => {
           // TODO: Alert

@@ -1,5 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
 
 
-
 @import "node_modules/bootstrap/scss/bootstrap";
+
+
+
+
+// Navbar (main)
+#nav{
+  #userDropdown{
+    i {
+      font-size:1.3rem;
+    }
+  }
+  #userDropdown::after {
+    display:none
+  }
+  #userIconBig{
+    font-size:3rem;
+    color: $gray-300;
+    margin-top: 1rem;
+  }
+}
