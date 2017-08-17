@@ -14,6 +14,7 @@ import {environment} from './../../environments/environment';
 })
 export class NavbarComponent implements OnInit {
 
+  isNavbarCollapsed:boolean=true;
   user: User;
 
   constructor(
