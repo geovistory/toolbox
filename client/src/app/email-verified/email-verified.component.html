@@ -1,0 +1,13 @@
+<gv-navbar></gv-navbar>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-6" *ngIf="!confirm">
+      <div class="alert alert-success" role="alert">
+        Your email address has successfully been verified
+      </div>
+      <p>
+        You can now <a routerLink='/login'>login</a>.
+      </p>
+    </div>
+  </div>
+</div>
