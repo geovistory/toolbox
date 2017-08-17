@@ -38,7 +38,7 @@ export class ResetPasswordComponent implements OnInit {
   ngOnInit() {
     this.access_token = this.route.snapshot.queryParams['access_token'] || '';
   }
-
+  
   setPassword(newPassword: string): Observable<any> {
 
     let headers: Headers = new Headers();
@@ -54,8 +54,8 @@ export class ResetPasswordComponent implements OnInit {
     if (typeof newPassword !== 'undefined' && newPassword !== null) {
       urlSearchParams.append('newPassword', newPassword);
     }
-    let body:string = urlSearchParams.toString()
 
+    let body:string = urlSearchParams.toString()
 
     let request: Request = new Request(
       new RequestOptions({
@@ -65,7 +65,6 @@ export class ResetPasswordComponent implements OnInit {
         body    : body
       })
     );
-
 
     return this.http.request(request)
     .map((res: any) => (res.text() != "" ? res.json() : {}))
