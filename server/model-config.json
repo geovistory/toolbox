@@ -14,7 +14,15 @@
     ]
   },
   "User": {
-    "dataSource": "postgres1"
+    "dataSource": "postgres1",
+    "public": false
+  },
+  "user": {
+    "dataSource": "postgres1",
+    "public": true,
+    "options": {
+      "emailVerificationRequired": true
+    }
   },
   "AccessToken": {
     "dataSource": "postgres1",
@@ -38,5 +46,8 @@
   "item": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "Email": {
+    "dataSource": "emailDs"
   }
 }

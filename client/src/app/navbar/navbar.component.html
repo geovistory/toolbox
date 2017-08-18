@@ -1,0 +1,50 @@
+<nav id="nav" class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Geovistory</a>
+  <button class="navbar-toggler" type="button" (click)="isNavbarCollapsed = !isNavbarCollapsed" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div [ngbCollapse]="isNavbarCollapsed" class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mx-auto">
+      <li class="nav-item active">
+        <a class="nav-link" routerLink="/home" routerLinkActive="active">Home</a>
+      </li>
+
+    </ul>
+    <ul class="navbar-nav">
+      <li *ngIf="!user" class="nav-item">
+        <a class="nav-link" routerLink="/login" routerLinkActive="active">Login</a>
+      </li>
+      <li *ngIf="!user" class="nav-item">
+        <a class="nav-link" routerLink="/registration" routerLinkActive="active">Register</a>
+      </li>
+      <li *ngIf="user" class="nav-item">
+
+        <div ngbDropdown class="d-inline-block">
+          <button class="btn btn-link" id="userDropdown" ngbDropdownToggle>
+            <i class="fa fa-user-circle" aria-hidden="true"></i>
+          </button>
+          <div ngbDropdownMenu aria-labelledby="userDropdown" class="dropdown-menu-right">
+
+            <button class="dropdown-item text-center">
+              <i id="userIconBig" class="fa fa-user-circle" aria-hidden="true"></i>
+              <div>{{user.username}}</div>
+              <h6 class="dropdown-header">{{user.email}}</h6>
+            </button>
+
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item">
+              <i class="fa fa-sliders" aria-hidden="true"></i> Personal Settings
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item" (click)="logout()">
+              <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
+            </button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
