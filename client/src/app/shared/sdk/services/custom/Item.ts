@@ -10,15 +10,15 @@ import { JSONSearchParams } from '../core/search.params';
 import { ErrorHandler } from '../core/error.service';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Rx';
-import { Project } from '../../models/Project';
+import { Item } from '../../models/Item';
 import { SocketConnection } from '../../sockets/socket.connections';
 
 
 /**
- * Api services for the `Project` model.
+ * Api services for the `Item` model.
  */
 @Injectable()
-export class ProjectApi extends BaseLoopBackApi {
+export class ItemApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(Http) protected http: Http,
@@ -44,13 +44,13 @@ export class ProjectApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Project` object.)
+   * This usually means the response is a `Item` object.)
    * </em>
    */
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Projects";
+    "/items";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -63,7 +63,7 @@ export class ProjectApi extends BaseLoopBackApi {
   /**
    * Patch attributes for a model instance and persist it into the data source.
    *
-   * @param {any} id Project id
+   * @param {any} id item id
    *
    * @param {object} data Request data.
    *
@@ -75,13 +75,13 @@ export class ProjectApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Project` object.)
+   * This usually means the response is a `Item` object.)
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Projects/:id";
+    "/items/:id";
     let _routeParams: any = {
       id: id
     };
@@ -95,9 +95,9 @@ export class ProjectApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Project`.
+   * i.e. `Item`.
    */
   public getModelName() {
-    return "Project";
+    return "Item";
   }
 }

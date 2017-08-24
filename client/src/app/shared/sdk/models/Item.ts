@@ -1,34 +1,34 @@
 /* tslint:disable */
 
 declare var Object: any;
-export interface ProjectInterface {
-  "name": string;
-  "description"?: string;
+export interface ItemInterface {
+  "name"?: string;
+  "number": number;
   "id"?: number;
 }
 
-export class Project implements ProjectInterface {
+export class Item implements ItemInterface {
   "name": string;
-  "description": string;
+  "number": number;
   "id": number;
-  constructor(data?: ProjectInterface) {
+  constructor(data?: ItemInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Project`.
+   * i.e. `Item`.
    */
   public static getModelName() {
-    return "Project";
+    return "Item";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of Project for dynamic purposes.
+  * This method creates an instance of Item for dynamic purposes.
   **/
-  public static factory(data: ProjectInterface): Project{
-    return new Project(data);
+  public static factory(data: ItemInterface): Item{
+    return new Item(data);
   }
   /**
   * @method getModelDefinition
@@ -39,17 +39,17 @@ export class Project implements ProjectInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'Project',
-      plural: 'Projects',
-      path: 'Projects',
+      name: 'Item',
+      plural: 'Items',
       properties: {
         "name": {
           name: 'name',
           type: 'string'
         },
-        "description": {
-          name: 'description',
-          type: 'string'
+        "number": {
+          name: 'number',
+          type: 'number',
+          default: 99
         },
         "id": {
           name: 'id',

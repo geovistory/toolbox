@@ -107,7 +107,7 @@ export class LoopBackAuth {
   }
   /**
    * @method save
-   * @return {boolean} Whether or not the information was saved
+   * @return {boolean} Wether or not the information was saved
    * @description
    * This method will save in either local storage or cookies the current credentials.
    * But only if rememberMe is enabled.
@@ -146,10 +146,10 @@ export class LoopBackAuth {
     this.token = new SDKToken();
   }
   /**
-   * @method persist
+   * @method clear
    * @return {void}
    * @description
-   * This method saves values to storage
+   * This method will clear cookies or the local storage.
    **/
   protected persist(prop: string, value: any): void {
     try {

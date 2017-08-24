@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 // Third party imports
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -20,8 +20,6 @@ import { LogoutConfirmationComponent } from './logout-confirmation/logout-confir
 import { RequestPasswordResetComponent } from './request-password-reset/request-password-reset.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { EqualValidatorDirective } from './shared/validator-equal.directive';
-import { ProjectListComponent } from './project-list/project-list.component';
-import { ProjectCreateComponent } from './project-create/project-create.component';
 
 @NgModule({
   declarations: [
@@ -35,9 +33,7 @@ import { ProjectCreateComponent } from './project-create/project-create.componen
     LogoutConfirmationComponent,
     RequestPasswordResetComponent,
     ResetPasswordComponent,
-    EqualValidatorDirective,
-    ProjectListComponent,
-    ProjectCreateComponent
+    EqualValidatorDirective
 
   ],
   imports: [
@@ -45,7 +41,6 @@ import { ProjectCreateComponent } from './project-create/project-create.componen
     AppRoutingModule,
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
     SDKBrowserModule.forRoot(),
     NgbModule.forRoot()
   ],
