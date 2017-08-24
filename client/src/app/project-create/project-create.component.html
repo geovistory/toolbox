@@ -10,7 +10,7 @@
 
   <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !description.valid }">
     <label for="description">Description</label>
-    <input type="text" class="form-control" name="description" [(ngModel)]="model.description" #description="ngModel" />
+    <textarea class="form-control" name="description" [(ngModel)]="model.description" #description="ngModel"></textarea>
     <div *ngFor="let message of errorMessages?.description" class="help-block form-text text-danger">{{message}}</div>
   </div>
 
