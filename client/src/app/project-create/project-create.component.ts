@@ -13,7 +13,7 @@ import {FireLoopRef} from './../shared/sdk/models/FireLoopRef';
 export class ProjectCreateComponent {
   private ProjectReference: FireLoopRef<Project>;
   loading: boolean = false;
-  errorMessages: Object = {};
+  errorMessages: any;
   model = new Project();
 
   constructor(
