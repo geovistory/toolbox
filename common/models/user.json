@@ -7,17 +7,18 @@
   "relations": {},
   "acls": [
     {
+      "accessType": "READ",
       "principalType": "ROLE",
       "principalId": "$everyone",
-      "accessType": "READ",
       "permission": "ALLOW"
     },
     {
+      "accessType": "EXECUTE",
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
-      "property": "test",
-      "accessType": "EXECUTE"
+      "property": "test"
     }
-  ]
+  ],
+  "methods": {}
 }

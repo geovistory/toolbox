@@ -10,7 +10,8 @@
       "loopback/common/mixins",
       "loopback/server/mixins",
       "../common/mixins",
-      "./mixins"
+      "./mixins",
+      "../node_modules/@mean-expert/loopback-component-realtime/dist/mixins"
     ]
   },
   "User": {
@@ -43,11 +44,11 @@
     "dataSource": "postgres1",
     "public": false
   },
-  "item": {
-    "dataSource": "postgres1",
-    "public": true
-  },
   "Email": {
     "dataSource": "emailDs"
+  },
+  "Project": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }

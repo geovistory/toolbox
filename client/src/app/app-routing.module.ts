@@ -9,6 +9,8 @@ import {UserDashboardComponent} from './user-dashboard/user-dashboard.component'
 import {LogoutConfirmationComponent} from './logout-confirmation/logout-confirmation.component';
 import {RequestPasswordResetComponent} from './request-password-reset/request-password-reset.component';
 import {ResetPasswordComponent} from './reset-password/reset-password.component';
+import {ProjectCreateComponent} from './project-create/project-create.component';
+import {ProjectListComponent} from './project-list/project-list.component';
 
 const indexRoute:Route = {
   path: '',
@@ -48,8 +50,23 @@ const routes: Routes = [
         component: LogoutConfirmationComponent
       },
       {
-        path: 'user-dashboard',
-        component: UserDashboardComponent
+        path: 'user',
+        component: UserDashboardComponent,
+        children: [
+          {
+            path: '',
+            redirectTo: 'projects',
+            pathMatch: 'full'
+          },
+          {
+            path: 'projects',
+            component: ProjectListComponent
+          },
+          {
+            path: 'create-project',
+            component: ProjectCreateComponent
+          }
+        ]
       },
       {
         path: 'request-password-reset',
