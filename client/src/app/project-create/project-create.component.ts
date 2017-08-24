@@ -11,11 +11,10 @@ import {FireLoopRef} from './../shared/sdk/models/FireLoopRef';
   styleUrls: ['./project-create.component.scss']
 })
 export class ProjectCreateComponent {
-  private project: Project;
   private ProjectReference: FireLoopRef<Project>;
-  private loading: boolean = false;
-  model: any = {};
-
+  loading: boolean = false;
+  errorMessages: Object = {};
+  model = new Project();
 
   constructor(
     private router: Router,
@@ -30,11 +29,18 @@ export class ProjectCreateComponent {
   }
 
   request() {
+    this.loading = true;
+    this.errorMessages = {};
     this.ProjectReference.create(this.model).subscribe(
       data => {
+        this.loading = false;
         this.router.navigate(['../projects'], {relativeTo: this.activatedRoute})
       },
-      err => console.log(err)
+      error => {
+        // TODO: Alert
+        this.errorMessages = error.error.details.messages;
+        this.loading = false;
+      }
     );
   }
 

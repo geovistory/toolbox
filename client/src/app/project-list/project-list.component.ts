@@ -14,9 +14,9 @@ import {environment} from './../../environments/environment';
 })
 export class ProjectListComponent implements OnInit {
 
-  private projects: Project[];
   private ProjectReference: FireLoopRef<Project>;
-  private loading: boolean = false;
+  projects: Project[];
+  loading: boolean = false;
 
   constructor(private realTime: RealTime) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
