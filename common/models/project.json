@@ -1,5 +1,5 @@
 {
-  "name": "item",
+  "name": "Project",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -7,13 +7,15 @@
   },
   "properties": {
     "name": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
-    "number": {
-      "type": "number",
-      "required": true,
-      "default": 99
+    "description": {
+      "type": "string"
     }
+  },
+  "mixins": {
+    "FireLoop": true
   },
   "validations": [],
   "relations": {},

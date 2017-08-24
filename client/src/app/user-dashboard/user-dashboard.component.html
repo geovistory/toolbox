@@ -1,12 +1,18 @@
 <gv-navbar></gv-navbar>
 
-<div class="container mt-5">
+<div id="userDashboard" class="container mt-5">
   <div class="row justify-content-center">
-    <div class="col-6">
+    <div class="col-md-3">
+      <i id="userImage" class="d-none d-sm-none d-md-block fa fa-user-circle pull-right" aria-hidden="true"></i>
+    </div>
+    <div class="col-md-9">
       <h1>Welcome {{user.username}}</h1>
-      <p>
-        user-dashboard works!
-      </p>
+      <p class="text-muted">{{user.email}}</p>
+    </div>
+  </div>
+  <div class="row mt-5 justify-content-center">
+    <div class="col-md-6">
+      <router-outlet></router-outlet>
     </div>
   </div>
 </div>
