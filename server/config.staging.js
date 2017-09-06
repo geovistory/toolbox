@@ -1,6 +1,6 @@
 module.exports = {
   "restApiRoot": "/api",
-  "host": process.env.HEROKU_APP_NAME,
+  "host": process.env.HEROKU_APP_NAME + ".herokuapp.com",
   "port": 443,
   "remoting": {
     "context": false,
