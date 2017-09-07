@@ -22,13 +22,25 @@ module.exports = function(User) {
     }
 
     /**
+    * var getProtocol - get the protocol of api server ('http' or 'https').
+    *
+    * @return {String} host of api server
+    */
+    var getProtocol = function(){
+      if(process.env.HEROKU_APP_NAME){
+        return 'https';
+      }
+      return undefined;
+    }
+
+    /**
     * var getHost - get the host of api server.
     *
     * @return {String} host of api server
     */
     var getHost = function(){
       if(process.env.HEROKU_APP_NAME){
-        return process.env.HEROKU_APP_NAME + '/herokuapp.com';
+        return process.env.HEROKU_APP_NAME + '.herokuapp.com';
       }
       return undefined;
     }
@@ -51,8 +63,9 @@ module.exports = function(User) {
       from: 'noreply@geovistory.org',
       subject: '[Geovistory] Please verify your email address',
       template: path.resolve(__dirname, '../../server/views/verify.ejs'),
-      host: getHost(),  //if undefined app.get('host') will be used by default.
-      port: getPort(), //if undefined app.get('port') will be used by default.
+      protocol: getProtocol(), //if undefined 'http' will be used.
+      host: getHost(),  //if undefined app.get('host') will be used.
+      port: getPort(), //if undefined app.get('port') will be used.
       redirect: getRedirectUrl(),
       user: user
     };
