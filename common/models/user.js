@@ -24,7 +24,7 @@ module.exports = function(User) {
     /**
     * var getProtocol - get the protocol of api server ('http' or 'https').
     *
-    * @return {String} host of api server
+    * @return {String} protocol of api server
     */
     var getProtocol = function(){
       if(process.env.HEROKU_APP_NAME){
