@@ -7,8 +7,8 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "postinstall": "cd ./client && npm install && ng build --prod && pwd",
-    "start": "./node_modules/.bin/lb-sdk server/server client/src/app/shared/sdk -d ng2web -i enabled && node .",
+    "postinstall": "./node_modules/.bin/lb-sdk server/server client/src/app/shared/sdk -d ng2web -i enabled && cd ./client && npm install && ng build --prod",
+    "start": "node .",
     "posttest": "npm run lint && nsp check",
     "build:sdk": "./node_modules/.bin/lb-sdk server/server client/src/app/shared/sdk -d ng2web -i enabled"
   },
