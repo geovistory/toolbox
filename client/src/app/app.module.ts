@@ -22,6 +22,11 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { EqualValidatorDirective } from './shared/validator-equal.directive';
 import { ProjectListComponent } from './project-list/project-list.component';
 import { ProjectCreateComponent } from './project-create/project-create.component';
+import { ProjectSettingsProfileComponent } from './project-settings-profile/project-settings-profile.component';
+import { ProjectSettingsComponent } from './project-settings/project-settings.component';
+import { ProjectSettingsCollaboratorsComponent } from './project-settings-collaborators/project-settings-collaborators.component';
+import { ActiveAccountService } from './shared/services/active-account.service';
+import { AuthGuard } from './shared/services/auth-guard.service';
 
 @NgModule({
   declarations: [
@@ -37,7 +42,10 @@ import { ProjectCreateComponent } from './project-create/project-create.componen
     ResetPasswordComponent,
     EqualValidatorDirective,
     ProjectListComponent,
-    ProjectCreateComponent
+    ProjectCreateComponent,
+    ProjectSettingsProfileComponent,
+    ProjectSettingsComponent,
+    ProjectSettingsCollaboratorsComponent
 
   ],
   imports: [
@@ -49,7 +57,10 @@ import { ProjectCreateComponent } from './project-create/project-create.componen
     SDKBrowserModule.forRoot(),
     NgbModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    ActiveAccountService,
+    AuthGuard
+  ],
   entryComponents : [ AppComponent ],
   bootstrap: [AppComponent]
 })

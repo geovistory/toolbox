@@ -5,6 +5,9 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "FireLoop": true
+  },
   "properties": {
     "name": {
       "type": "string",
@@ -14,11 +17,15 @@
       "type": "string"
     }
   },
-  "mixins": {
-    "FireLoop": true
-  },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "users": {
+      "type": "hasMany",
+      "model": "user",
+      "foreignKey": "user_id",
+      "through": "ProjectUserAssociation"
+    }
+  },
   "acls": [],
   "methods": {}
 }

@@ -4,10 +4,23 @@
   "idInjection": true,
   "properties": {},
   "validations": [],
-  "relations": {},
+  "relations": {
+    "projects": {
+      "type": "hasMany",
+      "model": "Project",
+      "foreignKey": "project_id",
+      "through": "ProjectUserAssociation"
+    }
+  },
   "acls": [
     {
       "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "WRITE",
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW"

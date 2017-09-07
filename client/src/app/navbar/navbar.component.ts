@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import {LoopBackAuth} from './../shared/sdk/services/core/auth.service';
@@ -6,6 +6,7 @@ import {LoopBackConfig} from './../shared/sdk/lb.config';
 import {UserApi} from './../shared/sdk/services/custom/User';
 import {User} from './../shared/sdk/models/User';
 import {environment} from './../../environments/environment';
+import { ActiveAccountService } from '../shared/services/active-account.service';
 
 @Component({
   selector: 'gv-navbar',
@@ -18,6 +19,7 @@ export class NavbarComponent implements OnInit {
   user: User;
 
   constructor(
+    private activeAccountService: ActiveAccountService,
     private authService: LoopBackAuth,
     private router: Router,
     private userApi: UserApi,
@@ -26,14 +28,18 @@ export class NavbarComponent implements OnInit {
     LoopBackConfig.setApiVersion(environment.apiVersion);
   }
 
-  ngOnInit() {
-    this.user = this.authService.getCurrentUserData();
+  ngOnInit(){
+    this.activeAccountService.getUser().subscribe(user => {
+      this.user = user;
+    })
+    this.activeAccountService.updateUser();
   }
 
   logout(){
     this.userApi.logout()
     .subscribe(
       data => {
+        this.activeAccountService.updateUser();
         this.router.navigate(['/logout-confirmation']);
       },
       error => {

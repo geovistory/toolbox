@@ -50,5 +50,9 @@
   "Project": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "ProjectUserAssociation": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }
