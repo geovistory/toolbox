@@ -8,9 +8,54 @@ module.exports = function(User) {
   User.afterRemote('create', function(context, user, next) {
     console.log('> user.afterRemote create triggered');
 
-    //takes the domain from where the request comes from.
-    // so that redirect works on all servers (ng dev., staging, prod.).
-    var redirectTo = context.req.headers.origin + '/email-verified';
+    /**
+     * var getRedirectUrl - gets the Url to be redericted after successful
+     * email verification.
+     *
+     * The URL will point to the client app server, which can be hosted
+     * on a different domain as the api server (e.g. in local dev environment).
+     *
+     * @return {type}  redirect url after successful email verification
+     */
+    var getRedirectUrl = function(){
+      return context.req.headers.origin + '/email-verified';
+    }
+
+    /**
+    * var getProtocol - get the protocol of api server ('http' or 'https').
+    *
+    * @return {String} protocol of api server
+    */
+    var getProtocol = function(){
+      if(process.env.HEROKU_APP_NAME){
+        return 'https';
+      }
+      return undefined;
+    }
+
+    /**
+    * var getHost - get the host of api server.
+    *
+    * @return {String} host of api server
+    */
+    var getHost = function(){
+      if(process.env.HEROKU_APP_NAME){
+        return process.env.HEROKU_APP_NAME + '.herokuapp.com';
+      }
+      return undefined;
+    }
+
+    /**
+    * var getPort - get the port of api server.
+    *
+    * @return {String}  port of api server
+    */
+    var getPort = function(){
+      if(process.env.HEROKU_APP_NAME){
+        return '443';
+      }
+      return undefined;
+    }
 
     var options = {
       type: 'email',
@@ -18,7 +63,10 @@ module.exports = function(User) {
       from: 'noreply@geovistory.org',
       subject: '[Geovistory] Please verify your email address',
       template: path.resolve(__dirname, '../../server/views/verify.ejs'),
-      redirect: redirectTo,
+      protocol: getProtocol(), //if undefined 'http' will be used.
+      host: getHost(),  //if undefined app.get('host') will be used.
+      port: getPort(), //if undefined app.get('port') will be used.
+      redirect: getRedirectUrl(),
       user: user
     };
 
@@ -32,21 +80,17 @@ module.exports = function(User) {
 
       next();
 
-      // context.res.render('response', {
-      //   title: 'Signed up successfully',
-      //   content: 'Please check your email and click on the verification link ' +
-      //       'before logging in.',
-      //   redirectTo: '/',
-      //   redirectToLinkText: 'Log in'
-      // });
     });
   });
 
 
-  // Prepare options for resetPassword method
+
+  /**
+   * User - Prepare options for resetPassword method
+   */
   User.beforeRemote('resetPassword', function(ctx, unused, next) {
 
-    // We need headersOrigin to to create the reset-password-link in the email
+    // We need headersOrigin for the reset-password-link in the email
     ctx.args.options.headersOrigin = ctx.req.headers.origin;
 
     next();
@@ -61,7 +105,7 @@ module.exports = function(User) {
     var url = info.options.headersOrigin + '/reset-password';
 
     var html = 'Click <a href="' + url + '?access_token=' +
-        info.accessToken.id + '">here</a> to reset your password';
+    info.accessToken.id + '">here</a> to reset your password';
 
     User.app.models.Email.send({
       to: info.email,
