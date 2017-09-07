@@ -11,6 +11,10 @@ import {RequestPasswordResetComponent} from './request-password-reset/request-pa
 import {ResetPasswordComponent} from './reset-password/reset-password.component';
 import {ProjectCreateComponent} from './project-create/project-create.component';
 import {ProjectListComponent} from './project-list/project-list.component';
+import { ProjectSettingsProfileComponent } from './project-settings-profile/project-settings-profile.component';
+import { ProjectSettingsComponent } from './project-settings/project-settings.component';
+import { ProjectSettingsCollaboratorsComponent } from './project-settings-collaborators/project-settings-collaborators.component';
+import { AuthGuard } from './shared/services/auth-guard.service';
 
 const indexRoute:Route = {
   path: '',
@@ -52,6 +56,7 @@ const routes: Routes = [
       {
         path: 'user',
         component: UserDashboardComponent,
+        canActivate: [AuthGuard],
         children: [
           {
             path: '',
@@ -65,6 +70,25 @@ const routes: Routes = [
           {
             path: 'create-project',
             component: ProjectCreateComponent
+          }
+        ]
+      },
+      {
+        path: 'project/:id/settings',
+        component: ProjectSettingsComponent,
+        children : [
+          {
+            path: '',
+            redirectTo: 'profile',
+            pathMatch: 'full'
+          },
+          {
+            path: 'profile',
+            component: ProjectSettingsProfileComponent
+          },
+          {
+            path: 'collaborators',
+            component: ProjectSettingsCollaboratorsComponent
           }
         ]
       },

@@ -15,7 +15,7 @@ import {environment} from './../../environments/environment';
 export class ProjectListComponent implements OnInit {
 
   private ProjectReference: FireLoopRef<Project>;
-  projects: Project[];
+  projects: Project[] = [];
   loading: boolean = false;
 
   constructor(private realTime: RealTime) {
@@ -37,7 +37,7 @@ export class ProjectListComponent implements OnInit {
   getProjects() {
     this.loading = true;
     this.ProjectReference.on('change').subscribe(
-     (projects: Array<Project>) => {
+      (projects: Array<Project>) => {
         this.projects = projects;
         this.loading = false
       });

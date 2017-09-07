@@ -9,7 +9,6 @@
       <li class="nav-item active">
         <a class="nav-link" routerLink="/home" routerLinkActive="active">Home</a>
       </li>
-
     </ul>
     <ul class="navbar-nav">
       <li *ngIf="!user" class="nav-item">
@@ -20,7 +19,7 @@
       </li>
       <li *ngIf="user" class="nav-item">
 
-        <div ngbDropdown class="d-inline-block">
+        <div ngbDropdown class="d-inline-block" placement="bottom-right">
           <button class="btn btn-link" id="userDropdown" ngbDropdownToggle>
             <i class="fa fa-user-circle" aria-hidden="true"></i>
           </button>

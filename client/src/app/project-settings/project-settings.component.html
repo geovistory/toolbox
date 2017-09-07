@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="row mt-2 mb-3">
+    <div class="col">
+      <a routerLink="../">Open the Project</a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-3">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Project Settings</h4>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" routerLink="profile" routerLinkActive="active">
+            Project Profile
+          </li>
+          <li class="list-group-item" routerLink="collaborators" routerLinkActive="active">
+            Collaborators
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-9">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+

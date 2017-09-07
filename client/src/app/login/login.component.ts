@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import {LoopBackAuth} from './../shared/sdk/services/core/auth.service';
-import {LoopBackConfig} from './../shared/sdk/lb.config';
+import { LoopBackConfig } from './../shared/sdk/lb.config';
 import { environment } from './../../environments/environment';
-import {UserApi} from './../shared/sdk/services/custom/User';
+import { UserApi } from './../shared/sdk/services/custom/User';
+import { ActiveAccountService } from '../shared/services/active-account.service';
 
 @Component({
   selector: 'gv-login',
@@ -19,15 +19,14 @@ export class LoginComponent implements OnInit {
   errorMessage: string;
 
   constructor(
+    private activeAccountService:ActiveAccountService,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: LoopBackAuth,
     private userApi: UserApi
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
   }
-
 
   ngOnInit() {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/user-dashboard';
@@ -39,13 +38,10 @@ export class LoginComponent implements OnInit {
     this.userApi.login(this.model)
     .subscribe(
       data => {
-        // if (data.user) {
-        //   // store user details
-        //   this.sharedDataService.currentUser = data.user;
-        // }
         this.loading = false;
-
-        this.router.navigate([this.returnUrl]);
+        this.activeAccountService.updateUser();
+        let redirect = this.activeAccountService.redirectUrl ? this.activeAccountService.redirectUrl : this.returnUrl;
+        this.router.navigate([redirect]);
       },
       error => {
         // TODO: error handling for statusCode: 500; ENOTFOUND;
