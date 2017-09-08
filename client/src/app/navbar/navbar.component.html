@@ -11,13 +11,13 @@
       </li>
     </ul>
     <ul class="navbar-nav">
-      <li *ngIf="!user" class="nav-item">
+      <li *ngIf="!account" class="nav-item">
         <a class="nav-link" routerLink="/login" routerLinkActive="active">Login</a>
       </li>
-      <li *ngIf="!user" class="nav-item">
+      <li *ngIf="!account" class="nav-item">
         <a class="nav-link" routerLink="/registration" routerLinkActive="active">Register</a>
       </li>
-      <li *ngIf="user" class="nav-item">
+      <li *ngIf="account" class="nav-item">
 
         <div ngbDropdown class="d-inline-block" placement="bottom-right">
           <button class="btn btn-link" id="userDropdown" ngbDropdownToggle>
@@ -27,8 +27,8 @@
 
             <a class="dropdown-item text-center" routerLink="/user">
               <i id="userIconBig" class="fa fa-user-circle" aria-hidden="true"></i>
-              <div>{{user.username}}</div>
-              <h6 class="dropdown-header">{{user.email}}</h6>
+              <div>{{account.username}}</div>
+              <h6 class="dropdown-header">{{account.email}}</h6>
             </a>
 
             <div class="dropdown-divider"></div>

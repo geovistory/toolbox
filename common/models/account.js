@@ -2,11 +2,11 @@
 
 var path = require('path');
 
-module.exports = function(User) {
+module.exports = function(Account) {
 
   //send verification email after registration
-  User.afterRemote('create', function(context, user, next) {
-    console.log('> user.afterRemote create triggered');
+  Account.afterRemote('create', function(context, account, next) {
+    console.log('> account.afterRemote create triggered');
 
     /**
      * var getRedirectUrl - gets the Url to be redericted after successful
@@ -59,7 +59,7 @@ module.exports = function(User) {
 
     var options = {
       type: 'email',
-      to: user.email,
+      to: account.email,
       from: 'noreply@geovistory.org',
       subject: '[Geovistory] Please verify your email address',
       template: path.resolve(__dirname, '../../server/views/verify.ejs'),
@@ -67,12 +67,12 @@ module.exports = function(User) {
       host: getHost(),  //if undefined app.get('host') will be used.
       port: getPort(), //if undefined app.get('port') will be used.
       redirect: getRedirectUrl(),
-      user: user
+      account: account
     };
 
-    user.verify(options, function(err, response) {
+    account.verify(options, function(err, response) {
       if (err) {
-        User.deleteById(user.id);
+        Account.deleteById(account.id);
         return next(err);
       }
 
@@ -86,9 +86,9 @@ module.exports = function(User) {
 
 
   /**
-   * User - Prepare options for resetPassword method
+   * Account - Prepare options for resetPassword method
    */
-  User.beforeRemote('resetPassword', function(ctx, unused, next) {
+  Account.beforeRemote('resetPassword', function(ctx, unused, next) {
 
     // We need headersOrigin for the reset-password-link in the email
     ctx.args.options.headersOrigin = ctx.req.headers.origin;
@@ -98,7 +98,7 @@ module.exports = function(User) {
   })
 
   // Send an email with reset-password-link
-  User.on('resetPasswordRequest', function (info) {
+  Account.on('resetPasswordRequest', function (info) {
 
     // takes headersOrigin as base path, so that the reset-password-link
     // works on all servers (ng dev., staging, prod.).
@@ -107,7 +107,7 @@ module.exports = function(User) {
     var html = 'Click <a href="' + url + '?access_token=' +
     info.accessToken.id + '">here</a> to reset your password';
 
-    User.app.models.Email.send({
+    Account.app.models.Email.send({
       to: info.email,
       from: 'noreply@geovistory.org',
       subject: 'Password reset',

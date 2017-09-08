@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import {LoopBackConfig} from './../shared/sdk/lb.config';
 import { environment } from './../../environments/environment';
-import {UserApi} from './../shared/sdk/services/custom/User';
+import {AccountApi} from './../shared/sdk/services/custom/Account';
 
 @Component({
   selector: 'gv-request-password-reset',
@@ -17,7 +17,7 @@ export class RequestPasswordResetComponent {
   confirm:boolean = false; //if true, form is hidden and confirmation shown.
 
   constructor(
-    private userApi: UserApi
+    private accountApi: AccountApi
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -26,7 +26,7 @@ export class RequestPasswordResetComponent {
   request(){
     this.loading = true;
     this.errorMessage = "";
-    this.userApi.resetPassword(this.model)
+    this.accountApi.resetPassword(this.model)
     .subscribe(
       data => {
 

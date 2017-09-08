@@ -18,7 +18,7 @@
     "dataSource": "postgres1",
     "public": false
   },
-  "user": {
+  "Account": {
     "dataSource": "postgres1",
     "public": true,
     "options": {
@@ -51,7 +51,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "ProjectUserAssociation": {
+  "ProjectAccountAssociation": {
     "dataSource": "postgres1",
     "public": true
   }
