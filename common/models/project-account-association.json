@@ -1,12 +1,12 @@
 {
-  "name": "ProjectUserAssociation",
+  "name": "ProjectAccountAssociation",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "user_id": {
+    "account_id": {
       "type": "number",
       "required": true
     },
@@ -22,10 +22,10 @@
   },
   "validations": [],
   "relations": {
-    "user": {
+    "account": {
       "type": "belongsTo",
-      "model": "user",
-      "foreignKey": "user_id"
+      "model": "account",
+      "foreignKey": "account_id"
     },
     "project": {
       "type": "belongsTo",

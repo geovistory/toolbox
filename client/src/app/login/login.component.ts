@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { LoopBackConfig } from './../shared/sdk/lb.config';
 import { environment } from './../../environments/environment';
-import { UserApi } from './../shared/sdk/services/custom/User';
+import { AccountApi } from './../shared/sdk/services/custom/Account';
 import { ActiveAccountService } from '../shared/services/active-account.service';
 
 @Component({
@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
     private activeAccountService:ActiveAccountService,
     private route: ActivatedRoute,
     private router: Router,
-    private userApi: UserApi
+    private accountApi: AccountApi
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -35,11 +35,11 @@ export class LoginComponent implements OnInit {
   login() {
     this.loading = true;
     this.errorMessage = '';
-    this.userApi.login(this.model)
+    this.accountApi.login(this.model)
     .subscribe(
       data => {
         this.loading = false;
-        this.activeAccountService.updateUser();
+        this.activeAccountService.updateAccount();
         let redirect = this.activeAccountService.redirectUrl ? this.activeAccountService.redirectUrl : this.returnUrl;
         this.router.navigate([redirect]);
       },

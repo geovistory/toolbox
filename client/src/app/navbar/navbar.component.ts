@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 
 import {LoopBackAuth} from './../shared/sdk/services/core/auth.service';
 import {LoopBackConfig} from './../shared/sdk/lb.config';
-import {UserApi} from './../shared/sdk/services/custom/User';
-import {User} from './../shared/sdk/models/User';
+import {AccountApi} from './../shared/sdk/services/custom/Account';
+import {Account} from './../shared/sdk/models/Account';
 import {environment} from './../../environments/environment';
 import { ActiveAccountService } from '../shared/services/active-account.service';
 
@@ -16,30 +16,30 @@ import { ActiveAccountService } from '../shared/services/active-account.service'
 export class NavbarComponent implements OnInit {
 
   isNavbarCollapsed:boolean=true;
-  user: User;
+  account: Account;
 
   constructor(
     private activeAccountService: ActiveAccountService,
     private authService: LoopBackAuth,
     private router: Router,
-    private userApi: UserApi,
+    private accountApi: AccountApi,
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
   }
 
   ngOnInit(){
-    this.activeAccountService.getUser().subscribe(user => {
-      this.user = user;
+    this.activeAccountService.getAccount().subscribe(account => {
+      this.account = account;
     })
-    this.activeAccountService.updateUser();
+    this.activeAccountService.updateAccount();
   }
 
   logout(){
-    this.userApi.logout()
+    this.accountApi.logout()
     .subscribe(
       data => {
-        this.activeAccountService.updateUser();
+        this.activeAccountService.updateAccount();
         this.router.navigate(['/logout-confirmation']);
       },
       error => {

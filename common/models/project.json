@@ -19,11 +19,11 @@
   },
   "validations": [],
   "relations": {
-    "users": {
+    "accounts": {
       "type": "hasMany",
-      "model": "user",
-      "foreignKey": "user_id",
-      "through": "ProjectUserAssociation"
+      "model": "account",
+      "foreignKey": "account_id",
+      "through": "Project_account_association"
     }
   },
   "acls": [],

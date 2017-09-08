@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import {LoopBackAuth} from './../shared/sdk/services/core/auth.service';
-import {User} from './../shared/sdk/models/User';
+import {Account} from './../shared/sdk/models/Account';
 
 
 @Component({
@@ -11,7 +11,7 @@ import {User} from './../shared/sdk/models/User';
 })
 export class UserDashboardComponent implements OnInit {
 
-  user: User;
+  user: Account;
 
   constructor(
     private authService: LoopBackAuth

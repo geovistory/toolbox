@@ -1,5 +1,5 @@
 {
-  "name": "user",
+  "name": "Account",
   "base": "User",
   "idInjection": true,
   "properties": {},
@@ -9,7 +9,7 @@
       "type": "hasMany",
       "model": "Project",
       "foreignKey": "project_id",
-      "through": "ProjectUserAssociation"
+      "through": "ProjectAccountAssociation"
     }
   },
   "acls": [

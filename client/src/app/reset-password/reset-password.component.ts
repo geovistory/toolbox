@@ -7,7 +7,7 @@ import {ErrorHandler} from './../shared/sdk/services/core/error.service';
 import { BaseLoopBackApi } from './../shared/sdk/services/core/base.service';
 import {LoopBackConfig} from './../shared/sdk/lb.config';
 import { environment } from './../../environments/environment';
-import {UserApi} from './../shared/sdk/services/custom/User';
+import {AccountApi} from './../shared/sdk/services/custom/Account';
 
 @Component({
   selector: 'gv-reset-password',
@@ -28,7 +28,7 @@ export class ResetPasswordComponent implements OnInit {
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler,
     private route: ActivatedRoute,
     private router: Router,
-    private userApi: UserApi
+    private accountApi: AccountApi
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -38,7 +38,7 @@ export class ResetPasswordComponent implements OnInit {
   ngOnInit() {
     this.access_token = this.route.snapshot.queryParams['access_token'] || '';
   }
-  
+
   setPassword(newPassword: string): Observable<any> {
 
     let headers: Headers = new Headers();
@@ -48,7 +48,7 @@ export class ResetPasswordComponent implements OnInit {
     let method: string = "POST";
 
     let url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Users/reset-password";
+    "/Accounts/reset-password";
 
     let urlSearchParams = new URLSearchParams();
     if (typeof newPassword !== 'undefined' && newPassword !== null) {

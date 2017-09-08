@@ -1,38 +1,38 @@
 import { Injectable } from '@angular/core';
 
 import { Subject }    from 'rxjs/Subject';
-import { User } from '../sdk/models/User';
+import { Account } from '../sdk/models/Account';
 import { LoopBackAuth } from '../sdk/services/core/auth.service';
-import { UserApi } from '../sdk/services/custom/User';
+import { AccountApi } from '../sdk/services/custom/Account';
 import { environment } from '../../../environments/environment';
 import { LoopBackConfig } from '../sdk/lb.config';
 
 @Injectable()
 export class ActiveAccountService {
-  private userObs$ = new Subject<User>();
+  private userObs$ = new Subject<Account>();
 
-  user: User;
+  user: Account;
   redirectUrl:string;
 
   constructor(
     private authService: LoopBackAuth,
-    private userApi: UserApi,
+    private userApi: AccountApi,
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
   }
 
-  getUser() {
+  getAccount() {
     return this.userObs$;
   }
 
-  updateUser() {
+  updateAccount() {
     this.user = this.authService.getCurrentUserData();
     this.userObs$.next(this.user);
   }
 
   isLoggedIn(){
-    return this.authService.getCurrentUserId() ? true : false;
+    return this.authService.getCurrentUserData() ? true : false;
   }
 
 }
