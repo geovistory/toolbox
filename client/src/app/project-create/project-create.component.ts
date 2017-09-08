@@ -1,9 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import {RealTime} from './../shared/sdk/services/core/real.time';
-import {Project} from './../shared/sdk/models/Project';
-import {FireLoopRef} from './../shared/sdk/models/FireLoopRef';
+import { RealTime } from './../shared/sdk/services/core/real.time';
+import { Project } from './../shared/sdk/models/Project';
+import { Language } from '../shared/sdk/models/Language';
+import { FireLoopRef } from './../shared/sdk/models/FireLoopRef';
 
 @Component({
   selector: 'gv-project-create',
@@ -12,6 +13,7 @@ import {FireLoopRef} from './../shared/sdk/models/FireLoopRef';
 })
 export class ProjectCreateComponent {
   private ProjectReference: FireLoopRef<Project>;
+  private LanguageReference: FireLoopRef<Language>;
   loading: boolean = false;
   errorMessages: any;
   model = new Project();
@@ -25,6 +27,7 @@ export class ProjectCreateComponent {
     .onReady()
     .subscribe(() => {
       this.ProjectReference = this.realTime.FireLoop.ref<Project>(Project);
+      this.LanguageReference = this.realTime.FireLoop.ref<Language>(Language);
     });
   }
 
