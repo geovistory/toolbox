@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import {LoopBackConfig} from './../shared/sdk/lb.config';
-import {RealTime} from './../shared/sdk/services/core/real.time';
 import {Project} from './../shared/sdk/models/Project';
-import {FireLoopRef} from './../shared/sdk/models/FireLoopRef';
 import {environment} from './../../environments/environment';
+import { AccountApi } from '../shared/sdk/services/custom/Account';
+import { LoopBackAuth } from '../shared/sdk/services/core/auth.service';
 
 @Component({
   selector: 'gv-project-list',
@@ -14,29 +14,24 @@ import {environment} from './../../environments/environment';
 })
 export class ProjectListComponent implements OnInit {
 
-  private ProjectReference: FireLoopRef<Project>;
   projects: Project[] = [];
   loading: boolean = false;
 
-  constructor(private realTime: RealTime) {
+  constructor(
+    private accountApi: AccountApi,
+    private authService: LoopBackAuth
+  ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
-
-    this.realTime
-    .onReady()
-    .subscribe(() => {
-      this.ProjectReference = this.realTime.FireLoop.ref<Project>(Project);
-      this.getProjects();
-    });
   }
 
   ngOnInit() {
-
+    this.getProjects();
   }
 
   getProjects() {
     this.loading = true;
-    this.ProjectReference.on('change').subscribe(
+    this.accountApi.listProjects(this.authService.getCurrentUserId()).subscribe(
       (projects: Array<Project>) => {
         this.projects = projects;
         this.loading = false

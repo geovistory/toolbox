@@ -6,14 +6,6 @@
     "validateUpsert": true
   },
   "properties": {
-    "account_id": {
-      "type": "number",
-      "required": true
-    },
-    "project_id": {
-      "type": "number",
-      "required": true
-    },
     "role": {
       "type": "string",
       "required": true,
@@ -24,7 +16,7 @@
   "relations": {
     "account": {
       "type": "belongsTo",
-      "model": "account",
+      "model": "Account",
       "foreignKey": "account_id"
     },
     "project": {
@@ -33,6 +25,13 @@
       "foreignKey": "project_id"
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    }
+  ],
   "methods": {}
 }

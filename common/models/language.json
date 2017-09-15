@@ -1,34 +1,48 @@
 {
   "name": "Language",
   "base": "PersistedModel",
-  "idInjection": true,
+  "idInjection": false,
   "options": {
-    "validateUpsert": true
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "external_data",
+      "table": "language"
+    }
   },
   "properties": {
-    "name": {
+    "pk_language": {
+      "type": "string",
+      "id": true,
+      "required": true
+    },
+    "part2b": {
       "type": "string",
       "required": true
     },
-    "type": {
+    "part2t": {
       "type": "string",
       "required": true
+    },
+    "part1": {
+      "type": "string"
     },
     "scope": {
-      "type": "string",
-      "required": true
-    },
-    "iso6393": {
       "type": "string"
     },
-    "iso6392b": {
+    "type": {
       "type": "string"
     },
-    "iso6392t": {
+    "ref_name": {
       "type": "string"
     },
-    "iso6391": {
+    "comment": {
       "type": "string"
+    },
+    "french_name": {
+      "type": "string"
+    },
+    "display": {
+      "type": "boolean"
     }
   },
   "validations": [],
@@ -47,5 +61,24 @@
       "permission": "ALLOW"
     }
   ],
-  "methods": {}
+  "methods": {
+    "status": {
+      "http": {
+        "path": "/status",
+        "verb": "get"
+      },
+      "accepts": {
+        "arg": "searchstring",
+        "type": "string",
+        "http": {
+          "source": "query"
+        }
+      },
+      "returns": {
+        "arg": "languages",
+        "type": ["language"],
+        "root": true
+      }
+    }
+  }
 }
