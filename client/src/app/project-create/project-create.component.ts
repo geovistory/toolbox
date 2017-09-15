@@ -50,8 +50,7 @@ export class ProjectCreateComponent implements OnInit {
   }
 
   ngOnInit(){
-    const userLang = navigator.language;
-    alert(userLang)
+    const userLang = navigator.language.split("-")[0].split("_")[0];
     this.languageApi.find({"where":{"part1":userLang}})
     .subscribe(
       (data:any) => {
