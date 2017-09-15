@@ -1,6 +1,6 @@
 module.exports = function(app) {
   var Account = app.models.Account;
-  var Project = app.models.project;
+  var Project = app.models.Project;
 
   Account.create([
     {username: 'John', email: 'john@doe.com',   emailVerified: 'true', password: 'opensesame'},

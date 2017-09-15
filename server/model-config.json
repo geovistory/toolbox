@@ -54,5 +54,9 @@
   "ProjectAccountAssociation": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "Language": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }

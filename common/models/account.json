@@ -33,5 +33,24 @@
       "property": "test"
     }
   ],
-  "methods": {}
+  "methods": {
+    "listProjects": {
+      "http": {
+        "path": "/listProjects",
+        "verb": "get"
+      },
+      "accepts": {
+        "arg": "accountId",
+        "type": "number",
+        "http": {
+          "source": "query"
+        }
+      },
+      "returns": {
+        "arg": "projects",
+        "type": ["projects"],
+        "root": true
+      }
+    }
+  }
 }

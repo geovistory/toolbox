@@ -2,6 +2,6 @@
 
 module.exports = function(Project) {
 
-  Project.validatesUniquenessOf('name', {message: 'Project name already exists'});
+  // Project.validatesUniquenessOf('name', {message: 'Project name already exists'});
 
 };

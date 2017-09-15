@@ -21,11 +21,23 @@
   "relations": {
     "accounts": {
       "type": "hasMany",
-      "model": "account",
+      "model": "Account",
       "foreignKey": "account_id",
-      "through": "Project_account_association"
+      "through": "ProjectAccountAssociation"
+    },
+    "default_language": {
+      "type": "belongsTo",
+      "model": "Language",
+      "foreignKey": "default_language_id"
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    }
+  ],
   "methods": {}
 }

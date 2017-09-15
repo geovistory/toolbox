@@ -4,6 +4,30 @@ var path = require('path');
 
 module.exports = function(Account) {
 
+  Account.listProjects = function(accountId, cb) {
+
+    var sql_stmt = `
+    select p.id, p.name, p.description
+    from public.project as p
+    inner join public.projectaccountassociation as pa on p.id = pa.project_id
+    where pa.account_id = $1`;
+
+    var params = [accountId];
+
+    const connector = Account.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      var projects = [];
+      if (resultObjects){
+        projects = resultObjects.map(projectRaw => {
+          const projectData = connector.fromRow('Project', projectRaw)
+          return new Account.app.models.Project(projectData)
+        })
+      }
+      cb(null, projects);
+    });
+
+};
+
   //send verification email after registration
   Account.afterRemote('create', function(context, account, next) {
     console.log('> account.afterRemote create triggered');

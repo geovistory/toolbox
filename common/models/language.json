@@ -1,0 +1,84 @@
+{
+  "name": "Language",
+  "base": "PersistedModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "external_data",
+      "table": "language"
+    }
+  },
+  "properties": {
+    "pk_language": {
+      "type": "string",
+      "id": true,
+      "required": true
+    },
+    "part2b": {
+      "type": "string",
+      "required": true
+    },
+    "part2t": {
+      "type": "string",
+      "required": true
+    },
+    "part1": {
+      "type": "string"
+    },
+    "scope": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "ref_name": {
+      "type": "string"
+    },
+    "comment": {
+      "type": "string"
+    },
+    "french_name": {
+      "type": "string"
+    },
+    "display": {
+      "type": "boolean"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {
+    "status": {
+      "http": {
+        "path": "/status",
+        "verb": "get"
+      },
+      "accepts": {
+        "arg": "searchstring",
+        "type": "string",
+        "http": {
+          "source": "query"
+        }
+      },
+      "returns": {
+        "arg": "languages",
+        "type": ["language"],
+        "root": true
+      }
+    }
+  }
+}

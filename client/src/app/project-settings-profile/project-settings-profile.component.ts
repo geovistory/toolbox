@@ -15,24 +15,21 @@ export class ProjectSettingsProfileComponent implements OnInit {
   loading: boolean = false;
   errorMessages: any;
   project:Project;
+  id:any;
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     @Inject(RealTime) private realTime: RealTime
   ) {
-    this.realTime
-    .onReady()
-    .subscribe(() => {
-      this.ProjectReference = this.realTime.FireLoop.ref<Project>(Project);
-      this.getProject();
-    });
+    this.id = activatedRoute.snapshot.parent.params['id'];
+
   }
 
   getProject() {
     this.loading = true;
     this.ProjectReference.on('change', {
-      where: { "id": 1 }
+      where: { "id": this.id }
     }).subscribe(
       (projects: Project[]) => {
         this.project = projects[0];
@@ -41,6 +38,12 @@ export class ProjectSettingsProfileComponent implements OnInit {
     }
 
     ngOnInit() {
+      this.realTime
+      .onReady()
+      .subscribe(() => {
+        this.ProjectReference = this.realTime.FireLoop.ref<Project>(Project);
+        this.getProject();
+      });
     }
 
     delete() {
