@@ -11,7 +11,7 @@
       <h4 class="card-title">{{project.name}}</h4>
       <p class="card-text">{{project.description}}</p>
 
-      <button class="btn btn-primary" (click)="open(project)">Open</button>
+      <button class="btn btn-primary" routerLink="/project/{{project.id}}">Open</button>
       <a class="btn btn-outline-secondary" routerLink="/project/{{project.id}}/settings">Project settings</a>
     </div>
   </div>

@@ -6,7 +6,11 @@
     "validateUpsert": true
   },
   "mixins": {
-    "FireLoop": true
+    "FireLoop": true,
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
   },
   "properties": {
     "name": {
@@ -33,11 +37,69 @@
   },
   "acls": [
     {
-      "accessType": "READ",
       "principalType": "ROLE",
       "principalId": "$everyone",
-      "permission": "ALLOW"
+      "permission": "ALLOW",
+      "property": ["create", "find", "addEntity", "listPersistentItems"]
     }
   ],
-  "methods": {}
+  "methods": {
+    "addEntity": {
+      "description": "Adds an exisiting entity (PeIt, Appe, …) to the project.",
+      "accepts": [
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Project Id",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "entitySemkey",
+          "type": "string",
+          "required": true,
+          "description": "Semkey of entity",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "success",
+        "type": [ "boolean" ],
+        "root": true
+      },
+      "http": {
+        "path": "/add-entity",
+        "verb": "post"
+      }
+    },
+    "listPersistentItems": {
+      "description": "Find persistent items of a project.",
+      "accepts": [
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Project id",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "success",
+        "type": [
+          "PersistentItem"
+        ],
+        "root": true
+      },
+      "http": {
+        "path": "/persistent-items",
+        "verb": "get"
+      }
+    }
+  }
 }

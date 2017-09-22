@@ -28,6 +28,7 @@ import { ProjectSettingsComponent } from './project-settings/project-settings.co
 import { ProjectSettingsCollaboratorsComponent } from './project-settings-collaborators/project-settings-collaborators.component';
 import { ActiveAccountService } from './shared/services/active-account.service';
 import { AuthGuard } from './shared/services/auth-guard.service';
+import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { AuthGuard } from './shared/services/auth-guard.service';
     ProjectCreateComponent,
     ProjectSettingsProfileComponent,
     ProjectSettingsComponent,
-    ProjectSettingsCollaboratorsComponent
+    ProjectSettingsCollaboratorsComponent,
+    ProjectDashboardComponent
 
   ],
   imports: [

@@ -15,6 +15,7 @@ import { ProjectSettingsProfileComponent } from './project-settings-profile/proj
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { ProjectSettingsCollaboratorsComponent } from './project-settings-collaborators/project-settings-collaborators.component';
 import { AuthGuard } from './shared/services/auth-guard.service';
+import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
 
 const indexRoute:Route = {
   path: '',
@@ -74,21 +75,31 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'project/:id/settings',
-        component: ProjectSettingsComponent,
+        path: 'project/:id',
+        canActivate: [AuthGuard],
         children : [
           {
             path: '',
-            redirectTo: 'profile',
-            pathMatch: 'full'
+            component: ProjectDashboardComponent,
           },
           {
-            path: 'profile',
-            component: ProjectSettingsProfileComponent
-          },
-          {
-            path: 'collaborators',
-            component: ProjectSettingsCollaboratorsComponent
+            path: 'settings',
+            component: ProjectSettingsComponent,
+            children : [
+              {
+                path: '',
+                redirectTo: 'profile',
+                pathMatch: 'full'
+              },
+              {
+                path: 'profile',
+                component: ProjectSettingsProfileComponent
+              },
+              {
+                path: 'collaborators',
+                component: ProjectSettingsCollaboratorsComponent
+              }
+            ]
           }
         ]
       },

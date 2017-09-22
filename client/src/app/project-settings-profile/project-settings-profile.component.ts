@@ -1,9 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
-import { FireLoopRef } from '../shared/sdk/models/FireLoopRef';
 import { Project } from '../shared/sdk/models/Project';
-import { RealTime } from '../shared/sdk/services/core/real.time';
+import { ProjectApi } from '../shared/sdk/services/custom/Project';
 
 @Component({
   selector: 'gv-project-settings-profile',
@@ -11,24 +10,26 @@ import { RealTime } from '../shared/sdk/services/core/real.time';
   styleUrls: ['./project-settings-profile.component.scss']
 })
 export class ProjectSettingsProfileComponent implements OnInit {
-  private ProjectReference: FireLoopRef<Project>;
   loading: boolean = false;
   errorMessages: any;
   project:Project;
   id:any;
 
   constructor(
-    private router: Router,
     private activatedRoute: ActivatedRoute,
-    @Inject(RealTime) private realTime: RealTime
+    private projectApi: ProjectApi
   ) {
     this.id = activatedRoute.snapshot.parent.params['id'];
 
   }
 
+  ngOnInit() {
+    this.getProject();
+  }
+
   getProject() {
     this.loading = true;
-    this.ProjectReference.on('change', {
+    this.projectApi.find({
       where: { "id": this.id }
     }).subscribe(
       (projects: Project[]) => {
@@ -37,27 +38,5 @@ export class ProjectSettingsProfileComponent implements OnInit {
       });
     }
 
-    ngOnInit() {
-      this.realTime
-      .onReady()
-      .subscribe(() => {
-        this.ProjectReference = this.realTime.FireLoop.ref<Project>(Project);
-        this.getProject();
-      });
-    }
 
-    delete() {
-      this.loading = true;
-      this.errorMessages = {};
-      this.ProjectReference.remove(this.project).subscribe(
-        data => {
-          this.loading = false;
-        },
-        error => {
-          // TODO: Alert
-          this.errorMessages = error.error.details.messages;
-          this.loading = false;
-        }
-      );
-    }
   }

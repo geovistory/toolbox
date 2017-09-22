@@ -91,7 +91,7 @@ export class ProjectCreateComponent implements OnInit {
   .distinctUntilChanged()
   .do(() => this.searching = true)
   .switchMap(term =>
-    this.languageApi.status(term)
+    this.languageApi.queryByString(term)
     .do(() => this.searchFailed = false)
     .catch(() => {
       this.searchFailed = true;

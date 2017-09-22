@@ -5,6 +5,12 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
   "properties": {
     "role": {
       "type": "string",
