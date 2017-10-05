@@ -29,6 +29,9 @@ import { ProjectSettingsCollaboratorsComponent } from './project-settings-collab
 import { ActiveAccountService } from './shared/services/active-account.service';
 import { AuthGuard } from './shared/services/auth-guard.service';
 import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
+import { AppellationComponent } from './appellation/appellation.component';
+import { FocusDirective } from './_directives/focus.directive';
+import { AppellationTokenComponent } from './appellation-token/appellation-token.component';
 
 @NgModule({
   declarations: [
@@ -48,8 +51,10 @@ import { ProjectDashboardComponent } from './project-dashboard/project-dashboard
     ProjectSettingsProfileComponent,
     ProjectSettingsComponent,
     ProjectSettingsCollaboratorsComponent,
-    ProjectDashboardComponent
-
+    ProjectDashboardComponent,
+    AppellationComponent,
+    FocusDirective,
+    AppellationTokenComponent
   ],
   imports: [
     BrowserModule,
