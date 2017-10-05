@@ -9,6 +9,12 @@
       "table": "language"
     }
   },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": ["find", "queryByString"]
+    }
+  },
   "properties": {
     "pk_language": {
       "type": "string",
@@ -62,13 +68,9 @@
     }
   ],
   "methods": {
-    "status": {
-      "http": {
-        "path": "/status",
-        "verb": "get"
-      },
+    "queryByString": {
       "accepts": {
-        "arg": "searchstring",
+        "arg": "queryString",
         "type": "string",
         "http": {
           "source": "query"
@@ -76,8 +78,15 @@
       },
       "returns": {
         "arg": "languages",
-        "type": ["language"],
+        "type": [
+          "Language"
+        ],
         "root": true
+      },
+      "description": "Perform a ranked search on languages by search string.",
+      "http": {
+        "path": "/query-by-string",
+        "verb": "get"
       }
     }
   }

@@ -2,6 +2,12 @@
   "name": "Account",
   "base": "User",
   "idInjection": true,
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
   "properties": {},
   "validations": [],
   "relations": {
@@ -14,31 +20,21 @@
   },
   "acls": [
     {
-      "accessType": "READ",
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "WRITE",
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "EXECUTE",
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
-      "property": "test"
+      "property": "listProjects"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "__create__projects"
     }
   ],
   "methods": {
     "listProjects": {
-      "http": {
-        "path": "/listProjects",
-        "verb": "get"
-      },
+      "description": "Get a list of all projects associated with this account.",
       "accepts": {
         "arg": "accountId",
         "type": "number",
@@ -48,8 +44,14 @@
       },
       "returns": {
         "arg": "projects",
-        "type": ["projects"],
+        "type": [
+          "Project"
+        ],
         "root": true
+      },
+      "http": {
+        "path": "/list-projects",
+        "verb": "get"
       }
     }
   }

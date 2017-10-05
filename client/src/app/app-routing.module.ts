@@ -15,6 +15,8 @@ import { ProjectSettingsProfileComponent } from './project-settings-profile/proj
 import { ProjectSettingsComponent } from './project-settings/project-settings.component';
 import { ProjectSettingsCollaboratorsComponent } from './project-settings-collaborators/project-settings-collaborators.component';
 import { AuthGuard } from './shared/services/auth-guard.service';
+import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
+import { AppellationComponent } from './appellation/appellation.component';
 
 const indexRoute:Route = {
   path: '',
@@ -74,21 +76,31 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'project/:id/settings',
-        component: ProjectSettingsComponent,
+        path: 'project/:id',
+        canActivate: [AuthGuard],
         children : [
           {
             path: '',
-            redirectTo: 'profile',
-            pathMatch: 'full'
+            component: ProjectDashboardComponent,
           },
           {
-            path: 'profile',
-            component: ProjectSettingsProfileComponent
-          },
-          {
-            path: 'collaborators',
-            component: ProjectSettingsCollaboratorsComponent
+            path: 'settings',
+            component: ProjectSettingsComponent,
+            children : [
+              {
+                path: '',
+                redirectTo: 'profile',
+                pathMatch: 'full'
+              },
+              {
+                path: 'profile',
+                component: ProjectSettingsProfileComponent
+              },
+              {
+                path: 'collaborators',
+                component: ProjectSettingsCollaboratorsComponent
+              }
+            ]
           }
         ]
       },
@@ -99,6 +111,10 @@ const routes: Routes = [
       {
         path: 'reset-password',
         component: ResetPasswordComponent
+      },
+      {
+        path: 'appellation-test',
+        component: AppellationComponent
       },
       indexRoute,
       fallbackRoute

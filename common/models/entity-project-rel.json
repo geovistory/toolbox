@@ -1,0 +1,30 @@
+{
+  "name": "entityProjectRel",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": ["find", "queryByString"]
+    }
+  },
+  "properties": {
+    "tmsp_entity": {
+      "type": "date"
+    },
+    "in_project": {
+      "type": "boolean",
+      "required": true
+    },
+    "sys_period": {
+      "type": "object"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

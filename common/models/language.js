@@ -2,7 +2,7 @@
 
 module.exports = function(Language) {
 
-  Language.status = function(searchstring, cb) {
+  Language.queryByString = function(searchstring, cb) {
     var sql_stmt = `
     select pk_language, part2b, part2t, part1,"scope","type", ref_name, "comment", french_name, display
     from (
