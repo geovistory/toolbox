@@ -16,6 +16,7 @@ import { ProjectSettingsComponent } from './project-settings/project-settings.co
 import { ProjectSettingsCollaboratorsComponent } from './project-settings-collaborators/project-settings-collaborators.component';
 import { AuthGuard } from './shared/services/auth-guard.service';
 import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
+import { AppellationComponent } from './appellation/appellation.component';
 
 const indexRoute:Route = {
   path: '',
@@ -110,6 +111,10 @@ const routes: Routes = [
       {
         path: 'reset-password',
         component: ResetPasswordComponent
+      },
+      {
+        path: 'appellation-test',
+        component: AppellationComponent
       },
       indexRoute,
       fallbackRoute
