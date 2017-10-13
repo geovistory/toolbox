@@ -5,7 +5,6 @@ import {HomeComponent} from './home/home.component';
 import {EmailVerifiedComponent} from './email-verified/email-verified.component';
 import {LoginComponent} from './login/login.component';
 import {RegistrationComponent} from './registration/registration.component';
-import {UserDashboardComponent} from './user-dashboard/user-dashboard.component';
 import {LogoutConfirmationComponent} from './logout-confirmation/logout-confirmation.component';
 import {RequestPasswordResetComponent} from './request-password-reset/request-password-reset.component';
 import {ResetPasswordComponent} from './reset-password/reset-password.component';
@@ -16,7 +15,16 @@ import { ProjectSettingsComponent } from './project-settings/project-settings.co
 import { ProjectSettingsCollaboratorsComponent } from './project-settings-collaborators/project-settings-collaborators.component';
 import { AuthGuard } from './shared/services/auth-guard.service';
 import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
-import { AppellationComponent } from './appellation/appellation.component';
+import { ProjectEntitiesComponent } from './project-entities/project-entities.component';
+import { ProjectEditComponent } from './project-edit/project-edit.component';
+import { EntityComponent } from './entity/entity.component';
+import { ProjectSourcesComponent } from './project-sources/project-sources.component';
+import { SourceComponent } from './source/source.component';
+import { AccountProfileComponent } from './account-profile/account-profile.component';
+import { AccountPasswordComponent } from './account-password/account-password.component';
+import { AccountEmailComponent } from './account-email/account-email.component';
+import { AccountComponent } from './account/account.component';
+import { ProjectSettingsDataComponent } from './project-settings-data/project-settings-data.component';
 
 const indexRoute:Route = {
   path: '',
@@ -56,32 +64,81 @@ const routes: Routes = [
         component: LogoutConfirmationComponent
       },
       {
-        path: 'user',
-        component: UserDashboardComponent,
+        path: 'request-password-reset',
+        component: RequestPasswordResetComponent
+      },
+      {
+        path: 'reset-password',
+        component: ResetPasswordComponent
+      },
+
+      {
+        path: 'account',
+        component: AccountComponent,
         canActivate: [AuthGuard],
         children: [
           {
             path: '',
-            redirectTo: 'projects',
+            redirectTo: 'profile',
             pathMatch: 'full'
           },
           {
-            path: 'projects',
-            component: ProjectListComponent
+            path: 'password',
+            component: AccountPasswordComponent
           },
           {
-            path: 'create-project',
-            component: ProjectCreateComponent
+            path: 'email',
+            component: AccountEmailComponent
+          },
+          {
+            path: 'profile',
+            component: AccountProfileComponent
           }
         ]
       },
       {
-        path: 'project/:id',
+        path: 'projects',
+        component: ProjectListComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'projects/create',
+        canActivate: [AuthGuard],
+        component: ProjectCreateComponent
+      },
+      {
+        path: 'projects/:id',
         canActivate: [AuthGuard],
         children : [
           {
             path: '',
             component: ProjectDashboardComponent,
+          },
+          {
+            path: 'edit',
+            component: ProjectEditComponent,
+            children:[
+              {
+                outlet: 'information',
+                path: 'search',
+                component: ProjectEntitiesComponent
+              },
+              {
+                outlet: 'information',
+                path: 'entity/:id',
+                component: EntityComponent
+              },
+              {
+                outlet: 'sources',
+                path: 'search',
+                component: ProjectSourcesComponent
+              },
+              {
+                outlet: 'sources',
+                path: 'source/:id',
+                component: SourceComponent
+              }
+            ]
           },
           {
             path: 'settings',
@@ -99,22 +156,14 @@ const routes: Routes = [
               {
                 path: 'collaborators',
                 component: ProjectSettingsCollaboratorsComponent
+              },
+              {
+                path: 'data',
+                component: ProjectSettingsDataComponent
               }
             ]
           }
         ]
-      },
-      {
-        path: 'request-password-reset',
-        component: RequestPasswordResetComponent
-      },
-      {
-        path: 'reset-password',
-        component: ResetPasswordComponent
-      },
-      {
-        path: 'appellation-test',
-        component: AppellationComponent
       },
       indexRoute,
       fallbackRoute

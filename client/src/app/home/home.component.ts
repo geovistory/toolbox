@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { LoopBackAuth } from '../shared/sdk/services/core/auth.service';
 import { Account } from '../shared/sdk/models/Account';
+import { ActiveAccountService } from '../shared/services/active-account.service';
 
 @Component({
   selector: 'gv-home',
@@ -12,11 +12,13 @@ export class HomeComponent implements OnInit {
   account: Account;
 
   constructor(
-    private authService: LoopBackAuth
+    private activeAccountService: ActiveAccountService,
   ) { }
 
   ngOnInit() {
-    this.account = this.authService.getCurrentUserData();
+    this.activeAccountService.getAccount().subscribe(account => {
+      this.account = account;
+    })
   }
 
 }

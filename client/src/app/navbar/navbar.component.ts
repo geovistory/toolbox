@@ -40,7 +40,7 @@ export class NavbarComponent implements OnInit {
     .subscribe(
       data => {
         this.activeAccountService.updateAccount();
-        this.router.navigate(['/logout-confirmation']);
+        this.router.navigate(['/']);
       },
       error => {
         // TODO: Error handling Alert

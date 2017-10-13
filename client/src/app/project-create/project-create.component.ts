@@ -74,7 +74,7 @@ export class ProjectCreateComponent implements OnInit {
     .subscribe(
       data => {
         this.loading = false;
-        this.router.navigate(['../projects'], {relativeTo: this.activatedRoute})
+        this.router.navigate(['../'], {relativeTo: this.activatedRoute})
       },
       error => {
         // TODO: Alert

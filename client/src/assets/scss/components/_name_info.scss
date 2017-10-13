@@ -1,0 +1,116 @@
+
+// Card representing one Name or one Additional Info
+gv-name,
+gv-addinfo {
+  display: block;
+  margin-bottom: $card-spacer-y ;
+  .card-header.gv-name-header {
+    .gv-label {
+      .gv-edit-btn,
+      .gv-stop-edit-btn {
+        padding: 0 .5rem;
+      }
+      .gv-namepart-token {
+        border-bottom: 1px dashed theme-color("secondary");
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        display: inline-block;
+        min-width: 0.9rem;
+        margin-right: 0.2rem;
+      }
+      .gv-separator-token {
+        text-align: center;
+        border: 1px dashed theme-color("secondary");
+        display: inline-block;
+        min-width: 0.9rem;
+        margin-right: 0.2rem;
+      }
+    }
+    background-color: $white;
+    border-bottom: none;
+    .gv-name-dropdown {
+      .dropdown-toggle{
+        margin: (-$card-spacer-y) (-$card-spacer-x);
+        border-top-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+        border: none;
+      }
+      .dropdown-toggle::after{
+        content: none;
+      }
+    }
+  }
+  .gv-name-header{
+    .gv-edit-btn {
+      visibility: hidden;
+    }
+  }
+  .gv-name-header:hover{
+    .gv-edit-btn {
+      visibility: visible;
+    }
+  }
+  .card-body.gv-name-section-header {
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    font-size: $font-size-sm;
+    background-color: theme-color("light");
+    color: theme-color("secondary");
+    .gv-label {
+      padding: $input-btn-padding-y-sm 0;
+    }
+    .btn {
+      color: theme-color("secondary");
+    }
+  }
+  .gv-card-body-wrapper {
+    overflow: hidden;
+  }
+  .card-body.gv-name-part {
+    border-bottom: $border-width solid $border-color;
+  }
+  .card-footer.gv-name-footer{
+    border-top: none;
+    background-color: $white;
+    padding: 0;
+    .btn {
+      color: theme-color("secondary");
+      padding-top: .19rem;
+      padding-bottom: .19rem;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      font-size: $font-size-sm;
+    }
+  }
+  .gv-in-project,
+  .gv-pref-alternative{
+    color: theme-color("secondary");
+    margin-right: .4rem;
+  }
+  .gv-in-project.gv-false,
+  .gv-pref-alternative.gv-false{
+    color: $gray-400;
+  }
+  .gv-in-project.gv-new{
+    color: $gray-400;
+    position: relative;
+    .gv-new-label{
+      color: theme-color("success");
+      font-size: .5rem;
+      font-weight: 700;
+      position: absolute;
+      top: 0.4rem;
+      background: $white;
+      left: -0.15rem;
+      height: 0.35rem;
+      line-height: 0.3rem;
+    }
+  }
+}
+gv-name:last-of-type,
+gv-addinfo:last-of-type{
+  margin-bottom: 0;
+}

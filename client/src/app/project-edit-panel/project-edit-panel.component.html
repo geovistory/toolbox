@@ -1,0 +1,10 @@
+
+<div class="gv-edit-panel" [@panelDisplay]="state">
+  <div class="gv-edit-panel-close" *ngIf="state=='s50'" (click)="goToState0()">
+    <ng-content select="[closeBtn]"></ng-content>
+  </div>
+  <ng-content select="[body]"></ng-content>
+</div>
+<div class="gv-edit-panel-expand-btn" [@expandButton]="state" (click)="expand()">
+  <ng-content select="[expandBtn]"></ng-content>
+</div>

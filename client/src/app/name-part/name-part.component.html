@@ -1,0 +1,42 @@
+<div class="card-body gv-name-part" *ngIf="!token.isSeparator && token.string">
+  <div class="d-flex">
+    <div class="gv-label">
+      <div class="gv-name-part-token">
+        <div class="gv-token-top">
+          {{token.string}}
+        </div>
+        <div class="gv-token-bottom">
+          <!-- <div>{{token?.type?.label ? token.type.label : 'Select Type'}}</div> -->
+          <select class="custom-select d-block" aria-describedby="NamePartType" [(ngModel)]="token.type" name="type">
+            <option value="undefined">-- no type --</option>
+            <option *ngFor="let type of namePartTypes" [ngValue]="type">{{type.label}}</option>
+          </select>
+        </div>
+        <!-- <div *ngIf="editing" class="gv-token-bottom">
+          <form (ngSubmit)="save()">
+            <div class="form-group my-3">
+              <select class="custom-select d-block" aria-describedby="NamePartType" [(ngModel)]="token.type" name="type">
+                <option value="undefined">-- no type --</option>
+                <option *ngFor="let type of namePartTypes" [ngValue]="type">{{type.label}}</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-link" (click)="cancel()">cancel</button>
+          </form>
+        </div> -->
+      </div>
+    </div>
+    <div ngbDropdown placement="bottom-right" class="ml-auto d-inline-block gv-name-dropdown">
+      <button class="btn btn-outline-secondary" id="dropdown" ngbDropdownToggle><i class="fa fa-ellipsis-v"></i></button>
+      <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+        <button class="dropdown-item" (click)="focusOnNamePartInput()">Edit Name Part</button>
+        <button class="dropdown-item" (click)="edit()">Edit Type of Name Part</button>
+        <button class="dropdown-item" (click)="appellation.deleteToken(token)">Remove Name Part</button>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex gv-revisions">
+    <div class="ml-auto text-success">
+    </div>
+  </div>
+</div>

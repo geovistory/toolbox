@@ -1,0 +1,63 @@
+<div class="card gv-name">
+  <div class="card-header gv-name-header d-flex flex-row">
+    <div class="gv-in-project">
+      <i class="fa fa-check-square-o"></i>
+    </div>
+    <div class="gv-pref-alternative">
+      <i class="fa fa-eye"></i>
+    </div>
+
+    <!-- Not editing state -->
+    <div class="gv-label gv-flex-grow-1 gv-pointer" *ngIf="!editingAppellation" (click)="toggleCardBody()">
+      {{appellationString}}
+    </div>
+    <div class="gv-label" *ngIf="!editingAppellation">
+      <button type="button" class="gv-edit-btn btn btn-link" name="button" (click)="editAppellation()">
+        <i class="fa fa-edit"></i>
+      </button>
+    </div>
+    <!-- Editing state -->
+    <div class="gv-label gv-flex-grow-1" *ngIf="editingAppellation">
+      <span *ngFor="let token of appellation.tokens; let i = index;">
+        <gv-name-part-input [appellation]="appellation" [token]="token" (enterKey)="stopEditAppellation()"></gv-name-part-input>
+      </span>
+
+    </div>
+    <div class="gv-label" *ngIf="editingAppellation">
+      <button type="button" class="gv-stop-edit-btn btn btn-link" (click)="stopEditAppellation()">
+        <i class="fa fa-check"></i>
+      </button>
+    </div>
+
+    <div ngbDropdown placement="bottom-right" class="ml-auto d-inline-block gv-name-dropdown">
+      <button class="btn btn-outline-primary" id="dropdown" ngbDropdownToggle><i class="fa fa-ellipsis-v"></i></button>
+      <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+        <button *ngIf="cardBodyState==='collapsed'" class="dropdown-item" (click)="showDetails()">Show Details</button>
+        <button *ngIf="cardBodyState==='expanded'" class="dropdown-item" (click)="hideDetails()">Hide Details</button>
+        <button class="dropdown-item">Add a section</button>
+        <button class="dropdown-item">Show annotations</button>
+        <button class="dropdown-item">Add annotations</button>
+        <button class="dropdown-item">Remove from project</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="gv-card-body-wrapper" [@slideInOut]="cardBodyState">
+
+
+    <div class="gv-name-section" *ngIf="!(appellation.tokens.length === 1 && appellation.tokens[0].string === '')">
+      <div class="card-body gv-name-section-header d-flex flex-row">
+        <div class="gv-label">Name Parts</div>
+      </div>
+      <span *ngFor="let token of appellation.tokens; let i=index">
+        <gv-name-part [nameComponent]="this" [appellation]="appellation" [token]="token"></gv-name-part>
+      </span>
+    </div>
+    <div class="card-footer gv-name-footer">
+      <div class="btn btn-block btn-light">
+        Add a property section…
+      </div>
+    </div>
+
+  </div>
+</div>

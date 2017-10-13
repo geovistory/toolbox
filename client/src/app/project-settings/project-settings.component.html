@@ -1,7 +1,15 @@
+<gv-navbar>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
+    <li class="breadcrumb-item"><a routerLink="../../">Your Projects</a></li>
+    <li class="breadcrumb-item"><a routerLink="../">Project Senatoren</a></li>
+    <li class="breadcrumb-item">Settings</li>
+  </ol>
+</gv-navbar>
 <div class="container">
   <div class="row mt-2 mb-3">
     <div class="col">
-      <a routerLink="../">Open the Project</a>
+      <a routerLink="../">Project Dashboard</a>
     </div>
   </div>
   <div class="row">
@@ -14,9 +22,14 @@
           <li class="list-group-item" routerLink="profile" routerLinkActive="active">
             Project Profile
           </li>
-          <li class="list-group-item" routerLink="collaborators" routerLinkActive="active">
-            Collaborators
+
+          <li class="list-group-item" routerLink="data" routerLinkActive="active">
+            Data Settings
           </li>
+              <li class="list-group-item" routerLink="collaborators" routerLinkActive="active">
+                Collaborators
+              </li>
+
         </ul>
       </div>
     </div>
