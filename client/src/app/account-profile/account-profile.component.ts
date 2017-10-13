@@ -9,6 +9,7 @@ import { LoopBackAuth } from '../shared/sdk/services/core/auth.service';
 })
 export class AccountProfileComponent implements OnInit {
   model: Account;
+  edit: boolean = false;
 
   constructor(
     private authService: LoopBackAuth

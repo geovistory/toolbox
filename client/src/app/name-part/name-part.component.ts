@@ -13,10 +13,15 @@ export class NamePartComponent implements OnInit {
   @Input() appellation: Appellation;
   @Input() nameComponent: NameComponent;
 
+  get isNamePartToken():boolean{
+    if(!this.token.isSeparator && this.token.string) return true;
+    else return false;
+  }
+
   namePartTypes = namePartTypes;
 
   // flag to toggle editing mode of name part type
-  editing = false;
+  editing:boolean = false;
 
   constructor() { }
 
@@ -34,8 +39,6 @@ export class NamePartComponent implements OnInit {
   public save(){
 
       //TODO Save
-      console.log(this.appellation.jsonString)
-      console.log(JSON.parse(this.appellation.jsonString))
 
       setTimeout( () => this.editing = false, 0);
   }
