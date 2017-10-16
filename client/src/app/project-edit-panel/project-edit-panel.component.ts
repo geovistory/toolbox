@@ -15,12 +15,15 @@ const animationTime = '300ms ease-in-out';
 // Style of state 0 => collapsed
 const s0 = {
   position:'absolute',
-  'z-index': 1001
+  'z-index': 1001,
+  height: 'calc(100vh - 56px)',
+  width: '2rem',
+  overflow: 'hidden'
 };
 
 // Style of keyframe 0 almost collapsed
 const k0 = {
-  height: '20px',
+  // height: '20px',
   '-webkit-box-orient': 'vertical',
   '-webkit-box-direction': 'normal',
   '-ms-flex-direction': 'column',
@@ -120,7 +123,7 @@ const s100 = {
           offset: 0
         }),
         style({
-          height: '20px',
+          // height: '20px',
           '-webkit-box-orient': 'vertical',
           '-webkit-box-direction': 'normal',
           '-ms-flex-direction': 'column',
@@ -136,7 +139,7 @@ const s100 = {
       ]))),
       transition('s0 => s50', animate(animationTime, keyframes([
         style({
-          height: '20px',
+          // height: '20px',
           '-webkit-box-orient': 'vertical',
           '-webkit-box-direction': 'normal',
           '-ms-flex-direction': 'column',

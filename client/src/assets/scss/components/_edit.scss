@@ -50,6 +50,20 @@
       }
     }
   }
+  .gv-edit-panel-expand-btn {
+    height: calc(100vh - 56px);
+    padding: .3rem;
+    i {
+      font-size: 1.5rem;
+    }
+    .gv-rotate-text-90 {
+      transform: rotate(90deg);
+      position: absolute;
+      transform-origin: left;
+      /* left: 1.1rem; */
+      margin: -0.8rem 0.8rem;
+    }
+  }
 
   #sources{
     .gv-edit-panel-close {
@@ -57,11 +71,17 @@
       right: 0;
       top: 0;
     }
-    right:0;
+    left:0;
   }
-  #sources[ng-reflect-state-input="s50"]{
-    .gv-edit-panel {
-      border-right: 1px solid theme-color("primary");
+  #sources{
+    .gv-edit-panel[gv-state="s50"]{
+      border-right: 1px solid theme-color("secondary");
+    }
+    .gv-edit-panel[gv-state="s100"]{
+      padding-right: 2rem;
+    }
+    .gv-edit-panel-expand-btn {
+      border-right: 1px solid theme-color("secondary");
     }
   }
 
@@ -72,5 +92,11 @@
       top: 0;
     }
     right:0;
+    .gv-edit-panel[gv-state="s100"]{
+      padding-left: 2rem;
+    }
+    .gv-edit-panel-expand-btn {
+      border-left: 1px solid theme-color("secondary");
+    }
   }
 }

@@ -1,5 +1,5 @@
 
-<div class="gv-edit-panel" [@panelDisplay]="state">
+<div class="gv-edit-panel" [@panelDisplay]="state" [attr.gv-state]="state">
   <div class="gv-edit-panel-close" *ngIf="state=='s50'" (click)="goToState0()">
     <ng-content select="[closeBtn]"></ng-content>
   </div>
