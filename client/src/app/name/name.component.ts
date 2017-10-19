@@ -58,6 +58,12 @@ export class NameComponent implements OnInit{
     return this.appellation.getString();
   }
 
+  get notEmptyAppellation():boolean{
+    if (this.appellation.tokens.length === 1 && this.appellation.tokens[0].string === '') return false;
+    else return true;
+  }
+
+
   appellation: Appellation;
 
   constructor() {
@@ -110,5 +116,17 @@ export class NameComponent implements OnInit{
   }
   showDetails(){
     this.cardBodyState = 'expanded';
+  }
+
+  showNamePartSection():boolean{
+    if (!(this.appellation.tokens.length === 1 && this.appellation.tokens[0].string === '') && !this.editingAppellation)
+      return true
+    else
+      return false;
+  }
+
+  isNamePartToken(token):boolean{
+    if(!token.isSeparator && token.string) return true;
+    else return false;
   }
 }

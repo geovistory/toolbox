@@ -29,10 +29,10 @@
     }
     .gv-name-part-token {
       display: inline-block;
-      float: left;
       margin-right: 0.3rem;
       .gv-token-top {
         margin-bottom: 0.3rem;
+        word-break: break-all;
       }
       .gv-token-bottom {
         font-size: $font-size-sm;
