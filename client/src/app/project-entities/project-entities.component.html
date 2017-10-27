@@ -15,50 +15,59 @@
 
   <div class="row mt-5">
     <div class="col">
-
-
-      <ng-template #rt let-r="result" let-t="term">
-        <small class="text-muted">{{r.pk_persistent_item}}</small> {{ r.notes}}
-      </ng-template>
-
-      <form class="form-inline" name="form" (ngSubmit)="f.form.valid && addPeItToProject()" #f="ngForm" novalidate>
-        <div class="form-group  mr-sm-3">
-          <input id="typeahead-http" type="text" class="form-control"  name="default_language"
-          [class.is-invalid]="searchFailed" [(ngModel)]="peItToAdd" #language="ngModel"
-          [ngbTypeahead]="searchPeIt" [resultTemplate]="rt" placeholder="Search for a persistent item"
-          [inputFormatter]="formatter"  />
-          <span *ngIf="searching">searching...</span>
-          <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+      <div class="gv-search">
+        <div class="input-group">
+          <input type="text" class="form-control" aria-describedby="search" placeholder="Search …">
+          <span class="input-group-btn">
+            <button class="btn btn-primary" type="button"><i class="fa fa-search"></i></button>
+          </span>
         </div>
-        <div class="form-group" *ngIf="peItToAdd?.pk_persistent_item">
-          <button [disabled]="loading" class="btn btn-primary" type="submit">Add existing persistent item</button>
-          <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-        </div>
-      </form>
-
-
+        <ul class="nav gv-search-filter">
+          <li class="nav-item">
+            <button class="btn btn-sm btn-link nav-link">All</button>
+          </li>
+          <li class="nav-item">
+            <button class="btn btn-sm btn-link nav-link active">Entities</button>
+          </li>
+          <li class="nav-item">
+            <button class="btn btn-sm btn-link nav-link">Phenomena</button>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
+
 <div class="gv-edit-panel-body">
   <div class="row mt-2">
     <div class="col">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Notes</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr  *ngFor="let item of persistentItems">
-            <th scope="row">{{item.pk_persistent_item}}</th>
-            <td>{{item.notes}}</td>
-            <td><a routerLink="../entity/{{item.pk_persistent_item}}" queryParamsHandling="merge">Edit</a></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="gv-search-results">
+        <div class="gv-search-item">
+          <div class="gv-search-item-header">
+            <a routerLink="../entity/1" queryParamsHandling="merge">Markus Hüssler</a>
+          </div>
+          <div class="gv-search-item-body">
+            <span class="gv-search-item-property text-muted">Person</span>
+            <span class="gv-search-item-property">Birth 1573, Basel</span>
+            <span class="gv-search-item-property">Death 1624, Bern</span>
+          </div>
+        </div>
+        <div class="gv-search-item">
+          <div class="gv-search-item-header">
+            <a routerLink="../entity/2" queryParamsHandling="merge">Markus Hüssler</a>
+          </div>
+          <div class="gv-search-item-body">
+            <span class="gv-search-item-property text-muted">Person</span>
+            <span class="gv-search-item-property">Birth 1573, Basel</span>
+            <span class="gv-search-item-property">Death 1624, Bern</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col">
+      <ngb-pagination [collectionSize]="70" [(page)]="page" aria-label="Default pagination"></ngb-pagination>
     </div>
   </div>
 </div>

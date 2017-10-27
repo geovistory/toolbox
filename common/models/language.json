@@ -5,14 +5,17 @@
   "options": {
     "validateUpsert": true,
     "postgresql": {
-      "schema": "external_data",
+      "schema": "commons",
       "table": "language"
     }
   },
   "mixins": {
     "SetupRemoteMethods": {
       "ignoreACL": false,
-      "disableAllExcept": ["find", "queryByString"]
+      "disableAllExcept": [
+        "find",
+        "queryByString"
+      ]
     }
   },
   "properties": {
@@ -21,34 +24,23 @@
       "id": true,
       "required": true
     },
-    "part2b": {
-      "type": "string",
-      "required": true
-    },
-    "part2t": {
-      "type": "string",
-      "required": true
-    },
-    "part1": {
+    "lang_type": {
       "type": "string"
     },
     "scope": {
       "type": "string"
     },
-    "type": {
+    "iso6392b": {
       "type": "string"
     },
-    "ref_name": {
+    "iso6392t": {
       "type": "string"
     },
-    "comment": {
+    "iso6391": {
       "type": "string"
     },
-    "french_name": {
+    "notes": {
       "type": "string"
-    },
-    "display": {
-      "type": "boolean"
     }
   },
   "validations": [],

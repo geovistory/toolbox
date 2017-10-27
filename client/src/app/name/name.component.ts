@@ -28,7 +28,7 @@ export const namePartTypes = [
   }
 ];
 
-let jsonString:string = '{"latestTokenId":4,"tokens":[{"id":0,"string":"Friedrich","typeId":1,"isSeparator":false},{"id":1,"string":" ","isSeparator":true},{"id":2,"string":"V.","typeId":3,"isSeparator":false},{"id":3,"string":",","isSeparator":true},{"id":4,"string":"Grossherzog","typeId":4,"isSeparator":false}]}';
+let jsonString:string = '{"latestTokenId":4,"tokens":[{"id":0,"string":"Markus","typeId":1,"isSeparator":false},{"id":1,"string":" ","isSeparator":true},{"id":2,"string":"Hüssler","typeId":3,"isSeparator":false}]}';
 
 @Component({
   selector: 'gv-name',

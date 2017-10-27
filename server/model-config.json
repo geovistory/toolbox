@@ -64,8 +64,16 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "entityProjectRel": {
-    "dataSource": null,
+  "EntityProjectRel": {
+    "dataSource": "postgres1",
     "public": false
+  },
+  "CommonsLabel": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "CommonsTextProperty": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }

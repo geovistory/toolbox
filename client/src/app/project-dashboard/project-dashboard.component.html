@@ -2,14 +2,14 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
     <li class="breadcrumb-item"><a routerLink="../">Your Projects</a></li>
-    <li class="breadcrumb-item">Project {{project?.name}}</li>
+    <li class="breadcrumb-item">Project {{project?.labels[0].label}}</li>
   </ol>
 </gv-navbar>
 
 <div id="project-dashboard" class="container">
   <div class="row">
     <div class="col">
-      <h2>Project {{project?.name}} <a class="btn btn-link pull-right" routerLink="settings">Project settings</a></h2>
+      <h2>Project {{project?.labels[0].label}} <a class="btn btn-link pull-right" routerLink="settings">Project settings</a></h2>
     </div>
   </div>
   <div class="row justify-content-center">

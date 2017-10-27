@@ -27,6 +27,9 @@
  * Styles for one angular component or multiple angular components with
  * the same visual design (e.g. naming and additional info).
  */
+ // Project List
+ @import "src/assets/scss/components/_project_list";
+
 // Project Dashboard
 @import "src/assets/scss/components/_project_dashboard";
 
@@ -42,16 +45,25 @@
 // Editor
 @import "src/assets/scss/components/_edit";
 
-body {
-  background-color: $gray-100;
-}
+// Project Entities
+@import "src/assets/scss/components/_project_entities";
+
 
 /**
  * Generic stuff
  */
+
+ body {
+   background-color: $gray-100;
+ }
+
  .container {
    min-width: 63rem;
    margin-top: 2rem;
+ }
+
+ button {
+   cursor: pointer;
  }
 
  .gv-dropdown-secondary{

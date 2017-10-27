@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute} from '@angular/router';
 import { Project } from '../shared/sdk/models/Project';
 import { ProjectApi } from '../shared/sdk/services/custom/Project';
+import { ActiveProjectService } from '../shared/services/active-project.service';
 
 @Component({
   selector: 'gv-project-dashboard',
@@ -14,7 +15,7 @@ export class ProjectDashboardComponent implements OnInit {
   loading: boolean = false;
   errorMessages: any;
   project:Project;
-  id:any;
+  id:number;
 
   activeSlideId:string;
   steps = {
@@ -27,9 +28,13 @@ export class ProjectDashboardComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private projectApi: ProjectApi
+    private projectApi: ProjectApi,
+    private activeProjectService: ActiveProjectService
   ) {
     this.id = activatedRoute.snapshot.parent.params['id'];
+    activeProjectService.onProjectChange().subscribe((project:Project) => {
+      this.project = project;
+    })
 
   }
 
@@ -55,18 +60,7 @@ export class ProjectDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getProject();
+    this.activeProjectService.setActiveProject(this.id);
   }
-
-  getProject() {
-    this.loading = true;
-    this.projectApi.find({
-      where: { "id": this.id }
-    }).subscribe(
-      (projects: Project[]) => {
-        this.project = projects[0];
-        this.loading = false
-      });
-    }
 
   }

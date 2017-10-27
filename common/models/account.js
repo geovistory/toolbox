@@ -6,41 +6,60 @@ module.exports = function(Account) {
 
   Account.listProjects = function(accountId, cb) {
 
-    var sql_stmt = `
-    select p.id, p.name, p.description
-    from public.project as p
-    inner join public.projectaccountassociation as pa on p.id = pa.project_id
-    where pa.account_id = $1`;
+    // var sql_stmt = `
+    // select p.pk_project, p.notes
+    // from commons.project as p
+    // inner join public.account_project_rel as pa on p.pk_project = pa.fk_project
+    // where pa.account_id = $1`;
+    //
+    // var params = [accountId];
+    //
+    // const connector = Account.dataSource.connector;
+    // connector.execute(sql_stmt, params, (err, resultObjects) => {
+    //   var projects = [];
+    //   if (resultObjects){
+    //     projects = resultObjects.map(projectRaw => {
+    //       const projectData = connector.fromRow('Project', projectRaw)
+    //       return new Account.app.models.Project(projectData)
+    //     })
+    //   }
+    //   cb(null, projects);
+    // });
 
-    var params = [accountId];
-
-    const connector = Account.dataSource.connector;
-    connector.execute(sql_stmt, params, (err, resultObjects) => {
-      var projects = [];
-      if (resultObjects){
-        projects = resultObjects.map(projectRaw => {
-          const projectData = connector.fromRow('Project', projectRaw)
-          return new Account.app.models.Project(projectData)
-        })
+    const account = Account.find({
+      "where": {
+        "id": accountId
+      },
+      "include": {
+        "relation": "projects",
+        "scope": {
+          "include": [
+            "labels",
+            "text_properties",
+            "default_language"
+          ],
+          "order": "tmsp_last_modification DESC"
+        },
       }
-      cb(null, projects);
+    }, (err, resultObjects) => {
+      cb(err, resultObjects);
     });
+  };
 
-};
 
   //send verification email after registration
   Account.afterRemote('create', function(context, account, next) {
     console.log('> account.afterRemote create triggered');
 
     /**
-     * var getRedirectUrl - gets the Url to be redericted after successful
-     * email verification.
-     *
-     * The URL will point to the client app server, which can be hosted
-     * on a different domain as the api server (e.g. in local dev environment).
-     *
-     * @return {type}  redirect url after successful email verification
-     */
+    * var getRedirectUrl - gets the Url to be redericted after successful
+    * email verification.
+    *
+    * The URL will point to the client app server, which can be hosted
+    * on a different domain as the api server (e.g. in local dev environment).
+    *
+    * @return {type}  redirect url after successful email verification
+    */
     var getRedirectUrl = function(){
       return context.req.headers.origin + '/email-verified';
     }
@@ -110,8 +129,8 @@ module.exports = function(Account) {
 
 
   /**
-   * Account - Prepare options for resetPassword method
-   */
+  * Account - Prepare options for resetPassword method
+  */
   Account.beforeRemote('resetPassword', function(ctx, unused, next) {
 
     // We need headersOrigin for the reset-password-link in the email

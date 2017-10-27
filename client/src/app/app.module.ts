@@ -46,6 +46,7 @@ import { AccountEmailComponent } from './account-email/account-email.component';
 import { AccountComponent } from './account/account.component';
 import { ProjectSettingsDataComponent } from './project-settings-data/project-settings-data.component';
 import { EntityCreateModalComponent } from './entity-create-modal/entity-create-modal.component';
+import { ActiveProjectService } from './shared/services/active-project.service';
 
 @NgModule({
   declarations: [
@@ -95,6 +96,7 @@ import { EntityCreateModalComponent } from './entity-create-modal/entity-create-
   ],
   providers: [
     ActiveAccountService,
+    ActiveProjectService,
     AuthGuard
   ],
   entryComponents : [

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { ActiveProjectService } from '../shared/services/active-project.service';
+import { Project } from '../shared/sdk/models/Project';
 
 @Component({
   selector: 'gv-project-edit',
@@ -10,26 +12,36 @@ export class ProjectEditComponent implements OnInit {
   informationState:string;
   sourcesState:string;
   queryParams;
+  projectId: number;
+  project: Project;
 
   constructor(
     private activatedRoute: ActivatedRoute,
+    private activeProjectService: ActiveProjectService,
     private router: Router
-  ) { }
+  ) {
+    this.activeProjectService.onProjectChange().subscribe((project:Project) => {
+      this.project = project;
+    })
+    activatedRoute.queryParams.subscribe(queryParams => {
+
+        this.informationState = queryParams['i']; // gets url part ?i='s100'
+        this.sourcesState = queryParams['s']; // gets url part ?i='s100'
+
+        //if information state is s100, set sources state to s0
+        if (this.informationState==='s100') this.informationGoToState100();
+
+        //if sources state is s100, set information state  to s0
+        if (this.sourcesState==='s100') this.sourcesGoToState100();
+
+
+     });
+     this.projectId = activatedRoute.snapshot.parent.params['id'];
+
+  }
 
   ngOnInit() {
-  this.activatedRoute.queryParams.subscribe(queryParams => {
-
-      this.informationState = queryParams['i']; // gets url part ?i='s100'
-      this.sourcesState = queryParams['s']; // gets url part ?i='s100'
-
-      //if information state is s100, set sources state to s0
-      if (this.informationState==='s100') this.informationGoToState100();
-
-      //if sources state is s100, set information state  to s0
-      if (this.sourcesState==='s100') this.sourcesGoToState100();
-
-
-   });
+   this.activeProjectService.setActiveProject(this.projectId)
   }
 
 
