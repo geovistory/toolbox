@@ -32,6 +32,9 @@ export class ProjectEntitiesComponent implements OnInit {
   errorMessages: any;
   onAddNewPeIt: EventEmitter<any> = new EventEmitter();
 
+  //Pagination
+  page:any;
+
   entityModalOptions: NgbModalOptions = {
       size: 'lg'
   }
