@@ -1,0 +1,74 @@
+<div class="gv-edit-panel-header">
+
+  <section class="row">
+    <div class="col-md-8">
+      <h2><i class="gv-icon-information-simple text-primary"></i> Information Units</h2>
+    </div>
+    <div class="col-md-4">
+      <div class="btn-group float-right mt-2" role="group">
+        <button class="btn btn-link btn-md" (click)="openEntityModal()">
+          <i class="fa fa-plus" aria-hidden="true"></i> Add an entity
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="row mt-5">
+    <div class="col">
+      <div class="gv-search">
+        <div class="input-group">
+          <input type="text" class="form-control" aria-describedby="search" placeholder="Search …">
+          <span class="input-group-btn">
+            <button class="btn btn-primary" type="button"><i class="fa fa-search"></i></button>
+          </span>
+        </div>
+        <ul class="nav gv-search-filter">
+          <li class="nav-item">
+            <button class="btn btn-sm btn-link nav-link">All</button>
+          </li>
+          <li class="nav-item">
+            <button class="btn btn-sm btn-link nav-link active">Entities</button>
+          </li>
+          <li class="nav-item">
+            <button class="btn btn-sm btn-link nav-link">Phenomena</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="gv-edit-panel-body">
+  <div class="row mt-2">
+    <div class="col">
+      <div class="gv-search-results">
+        <div class="gv-search-item">
+          <div class="gv-search-item-header">
+            <a routerLink="../entity/1" queryParamsHandling="merge">Markus Hüssler</a>
+          </div>
+          <div class="gv-search-item-body">
+            <span class="gv-search-item-property text-muted">Person</span>
+            <span class="gv-search-item-property">Birth 1573, Basel</span>
+            <span class="gv-search-item-property">Death 1624, Bern</span>
+          </div>
+        </div>
+        <div class="gv-search-item">
+          <div class="gv-search-item-header">
+            <a routerLink="../entity/2" queryParamsHandling="merge">Markus Hüssler</a>
+          </div>
+          <div class="gv-search-item-body">
+            <span class="gv-search-item-property text-muted">Person</span>
+            <span class="gv-search-item-property">Birth 1573, Basel</span>
+            <span class="gv-search-item-property">Death 1624, Bern</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col">
+      <ngb-pagination [collectionSize]="70" [(page)]="page" aria-label="Default pagination"></ngb-pagination>
+    </div>
+  </div>
+</div>
+

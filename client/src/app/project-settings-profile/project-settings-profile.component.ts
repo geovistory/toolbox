@@ -37,6 +37,4 @@ export class ProjectSettingsProfileComponent implements OnInit {
         this.loading = false
       });
     }
-
-
   }

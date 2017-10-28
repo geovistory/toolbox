@@ -1,23 +1,38 @@
-<div *ngIf="projects.length > 0">
-  <h2 class="clearfix">Your Projects
-    <span class="pull-right">
-      <a routerLink="../create-project" class="btn btn-link">Create a new project</a>
-    </span>
-  </h2>
-  <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+<gv-navbar>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
+    <li class="breadcrumb-item">Your Projects</li>
+  </ol>
+</gv-navbar>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-6">
 
-  <div  *ngFor="let project of projects" class="card mt-2">
-    <div class="card-body">
-      <h4 class="card-title">{{project.name}}</h4>
-      <p class="card-text">{{project.description}}</p>
+      <div *ngIf="projects.length > 0">
+        <h2 class="clearfix">Your Projects
+          <span class="pull-right">
+            <a routerLink="create" class="btn btn-link">Create a new project</a>
+          </span>
+        </h2>
+        <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
 
-      <button class="btn btn-primary" routerLink="/project/{{project.id}}">Open</button>
-      <a class="btn btn-outline-secondary" routerLink="/project/{{project.id}}/settings">Project settings</a>
+        <div  *ngFor="let project of projects" class="card mt-2">
+          <div class="card-body">
+            <h4 class="card-title">{{project?.labels[0]?.label}}
+              <span class="gv-project-language text-muted pull-right">
+                {{project?.default_language?.notes}}
+              </span>
+            </h4>
+            <p class="card-text">{{project?.text_properties[0]?.text_property}}</p>
+
+            <button class="btn btn-primary" routerLink="{{project.pk_project}}">Open</button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="projects.length === 0">
+        <a routerLink="create" class="btn btn-primary">Create your first project</a>
+      </div>
     </div>
   </div>
-</div>
-
-
-<div *ngIf="projects.length === 0">
-  <a routerLink="../create-project" class="btn btn-primary">Create your first project</a>
 </div>

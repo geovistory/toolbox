@@ -16,9 +16,15 @@ import { Project } from './../shared/sdk/models/Project';
 import { Language } from '../shared/sdk/models/Language';
 import { LanguageApi } from '../shared/sdk/services/custom/Language';
 import { AccountApi } from '../shared/sdk/services/custom/Account';
+import { ProjectApi } from '../shared/sdk/services/custom/Project';
 import { LoopBackAuth } from '../shared/sdk/services/core/auth.service';
 
 
+export class ProjectLabelDescription {
+  "label": String;
+  "language": Language;
+  "text_property": String;
+};
 
 @Component({
   selector: 'gv-project-create',
@@ -28,10 +34,10 @@ import { LoopBackAuth } from '../shared/sdk/services/core/auth.service';
 export class ProjectCreateComponent implements OnInit {
   loading: boolean = false;
   errorMessages: any;
-  model = new Project();
+  model: ProjectLabelDescription = new ProjectLabelDescription();
 
   //Language search
-  public language: any;
+  public languageSearch: any;
   searching = false;
   searchFailed = false;
   hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
@@ -41,6 +47,7 @@ export class ProjectCreateComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private accountApi: AccountApi,
+    private projectApi: ProjectApi,
     private languageApi: LanguageApi,
     private authService: LoopBackAuth,
   ) {
@@ -51,11 +58,11 @@ export class ProjectCreateComponent implements OnInit {
 
   ngOnInit(){
     const userLang = navigator.language.split("-")[0].split("_")[0];
-    this.languageApi.find({"where":{"part1":userLang}})
+    this.languageApi.find({"where":{"iso6391":userLang}})
     .subscribe(
       (data:any) => {
         try {
-          this.model.default_language = new Language(data[0]);
+          this.model.language = data[0];
         }
         catch (e) {
           //TODO error handling
@@ -70,11 +77,18 @@ export class ProjectCreateComponent implements OnInit {
   request() {
     this.loading = true;
     this.errorMessages = {};
-    this.accountApi.createProjects(this.authService.getCurrentUserId(), this.model)
+
+    this.projectApi.createWithLabelAndDescription(
+      this.authService.getCurrentUserId(),
+      this.model.language.pk_language,
+      this.model.label,
+      this.model.text_property
+    )
+    // this.accountApi.createProjects(this.authService.getCurrentUserId(), this.model)
     .subscribe(
       data => {
         this.loading = false;
-        this.router.navigate(['../projects'], {relativeTo: this.activatedRoute})
+        this.router.navigate(['../'], {relativeTo: this.activatedRoute})
       },
       error => {
         // TODO: Alert
@@ -100,6 +114,6 @@ export class ProjectCreateComponent implements OnInit {
     .do(() => this.searching = false)
     .merge(this.hideSearchingWhenUnsubscribed);
 
-    formatter = (x) => x.ref_name;
+    formatter = (x) => x.notes;
 
   }

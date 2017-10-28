@@ -3,7 +3,11 @@
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
-    "validateUpsert": true
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "public",
+      "table": "account_project_rel"
+    }
   },
   "mixins": {
     "SetupRemoteMethods": {
@@ -28,7 +32,7 @@
     "project": {
       "type": "belongsTo",
       "model": "Project",
-      "foreignKey": "project_id"
+      "foreignKey": "fk_project"
     }
   },
   "acls": [

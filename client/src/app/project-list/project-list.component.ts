@@ -6,6 +6,7 @@ import {Project} from './../shared/sdk/models/Project';
 import {environment} from './../../environments/environment';
 import { AccountApi } from '../shared/sdk/services/custom/Account';
 import { LoopBackAuth } from '../shared/sdk/services/core/auth.service';
+import { Account } from '../shared/sdk/models/Account';
 
 @Component({
   selector: 'gv-project-list',
@@ -32,9 +33,10 @@ export class ProjectListComponent implements OnInit {
   getProjects() {
     this.loading = true;
     this.accountApi.listProjects(this.authService.getCurrentUserId()).subscribe(
-      (projects: Array<Project>) => {
-        this.projects = projects;
-        this.loading = false
+      (accounts: Array<Account>) => {
+
+        this.projects = accounts[0].projects;
+        this.loading = false;
       });
     }
 

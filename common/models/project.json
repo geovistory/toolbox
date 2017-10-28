@@ -1,9 +1,13 @@
 {
   "name": "Project",
   "base": "PersistedModel",
-  "idInjection": true,
+  "idInjection": false,
   "options": {
-    "validateUpsert": true
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "commons",
+      "table": "project"
+    }
   },
   "mixins": {
     "FireLoop": true,
@@ -13,12 +17,18 @@
     }
   },
   "properties": {
-    "name": {
+    "notes": {
       "type": "string",
       "required": true
     },
-    "description": {
-      "type": "string"
+    "pk_project": {
+      "type": "number",
+      "id": true,
+      "generated": true
+    },
+    "pk_entity": {
+      "type": "number",
+      "generated": true
     }
   },
   "validations": [],
@@ -26,13 +36,26 @@
     "accounts": {
       "type": "hasMany",
       "model": "Account",
-      "foreignKey": "account_id",
+      "foreignKey": "fk_project",
+      "keyThrough": "account_id",
       "through": "ProjectAccountAssociation"
     },
     "default_language": {
       "type": "belongsTo",
       "model": "Language",
-      "foreignKey": "default_language_id"
+      "foreignKey": "fk_language"
+    },
+    "labels": {
+      "type": "hasMany",
+      "model": "CommonsLabel",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "text_properties": {
+      "type": "hasMany",
+      "model": "CommonsTextProperty",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
     }
   },
   "acls": [
@@ -40,12 +63,68 @@
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
-      "property": ["create", "find", "addEntity", "listPersistentItems"]
+      "property": [
+        "createWithLabelAndDescription",
+        "find",
+        "addEntity",
+        "listPersistentItems"
+      ]
     }
   ],
   "methods": {
+    "createWithLabelAndDescription": {
+      "accepts": [
+        {
+          "arg": "accountId",
+          "type": "number",
+          "required": true,
+          "description": "Id of account to associate the persistent item with.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkLanguage",
+          "type": "string",
+          "required": true,
+          "description": "Default language of the project, language of the label and the text property.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "label",
+          "type": "string",
+          "required": true,
+          "description": "Label of the project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "textProperty",
+          "type": "string",
+          "required": false,
+          "description": "Description of the project.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "success",
+        "type": [
+          "boolean"
+        ],
+        "root": true
+      },
+      "description": "Create a new project with a label and a description.",
+      "http": {
+        "path": "/create-with-label-and-description",
+        "verb": "post"
+      }
+    },
     "addEntity": {
-      "description": "Adds an exisiting entity (PeIt, Appe, …) to the project.",
       "accepts": [
         {
           "arg": "projectId",
@@ -68,16 +147,18 @@
       ],
       "returns": {
         "arg": "success",
-        "type": [ "boolean" ],
+        "type": [
+          "boolean"
+        ],
         "root": true
       },
+      "description": "Adds an exisiting entity (PeIt, Appe, …) to the project.",
       "http": {
         "path": "/add-entity",
         "verb": "post"
       }
     },
     "listPersistentItems": {
-      "description": "Find persistent items of a project.",
       "accepts": [
         {
           "arg": "projectId",
@@ -96,6 +177,7 @@
         ],
         "root": true
       },
+      "description": "Find persistent items of a project.",
       "http": {
         "path": "/persistent-items",
         "verb": "get"

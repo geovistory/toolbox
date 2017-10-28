@@ -4,13 +4,13 @@ module.exports = function(Language) {
 
   Language.queryByString = function(searchstring, cb) {
     var sql_stmt = `
-    select pk_language, part2b, part2t, part1,"scope","type", ref_name, "comment", french_name, display
+    select pk_language, lang_type, "scope",iso6392b, iso6392t, iso6391, notes
     from (
       SELECT
-      pk_language, part2b, part2t, part1,"scope","type", ref_name, "comment", french_name, display,
-      ts_rank(to_tsvector('english', ref_name),
+      pk_language, lang_type, "scope",iso6392b, iso6392t, iso6391, notes,
+      ts_rank(to_tsvector('english', notes),
       to_tsquery($1), 1) AS score
-      FROM external_data."language"
+      FROM commons."language"
     ) s
     WHERE score > 0
     ORDER BY score DESC`

@@ -8,13 +8,18 @@
       "disableAllExcept": []
     }
   },
-  "properties": {},
+  "properties": {
+    "id" : {
+      "type": "number"
+    }
+  },
   "validations": [],
   "relations": {
     "projects": {
       "type": "hasMany",
       "model": "Project",
-      "foreignKey": "project_id",
+      "foreignKey": "account_id",
+      "keyThrough": "fk_project",
       "through": "ProjectAccountAssociation"
     }
   },
@@ -34,21 +39,22 @@
   ],
   "methods": {
     "listProjects": {
-      "description": "Get a list of all projects associated with this account.",
       "accepts": {
         "arg": "accountId",
         "type": "number",
+        "required": true,
         "http": {
           "source": "query"
         }
       },
       "returns": {
-        "arg": "projects",
+        "arg": "account",
         "type": [
-          "Project"
+          "Account"
         ],
         "root": true
       },
+      "description": "Get a list of all projects associated with this account.",
       "http": {
         "path": "/list-projects",
         "verb": "get"

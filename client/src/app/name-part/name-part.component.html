@@ -1,0 +1,17 @@
+<div class="card-body gv-name-part" *ngIf="isNamePartToken">
+  <div class="d-flex">
+    <div class="gv-label">
+      <div class="gv-name-part-token">
+        <div class="gv-token-top text-muted" (click)="focusOnNamePartInput()">
+          {{token.string}}
+        </div>
+        <div class="gv-token-bottom">
+          <select class="custom-select d-block" aria-describedby="NamePartType" [(ngModel)]="token.type" name="type">
+            <option value="undefined">-- no type --</option>
+            <option *ngFor="let type of namePartTypes" [ngValue]="type">{{type.label}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

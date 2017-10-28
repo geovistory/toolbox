@@ -1,5 +1,5 @@
 {
-  "name": "entityProjectRel",
+  "name": "EntityProjectRel",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -8,7 +8,10 @@
   "mixins": {
     "SetupRemoteMethods": {
       "ignoreACL": false,
-      "disableAllExcept": ["find", "queryByString"]
+      "disableAllExcept": [
+        "find",
+        "queryByString"
+      ]
     }
   },
   "properties": {
