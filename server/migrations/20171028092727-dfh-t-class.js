@@ -5,9 +5,9 @@ var type;
 var seed;
 
 /**
-* We receive the dbmigrate dependency from dbmigrate initially.
-* This enables us to not have to rely on NODE_PATH.
-*/
+  * We receive the dbmigrate dependency from dbmigrate initially.
+  * This enables us to not have to rely on NODE_PATH.
+  */
 exports.setup = function(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -15,27 +15,24 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db, callback) {
-
   const sql = `
-  CREATE SCHEMA commons;
-
-  CREATE SCHEMA information;
+  CREATE TABLE data_for_history.class (
+    pk_class serial PRIMARY KEY,
+    data_for_history_id text UNIQUE,
+    notes text
+  )
   `
-
   db.runSql(sql, callback)
 
 };
 
 exports.down = function(db, callback) {
-
   const sql = `
-  DROP SCHEMA commons ;
-
-  DROP SCHEMA information;
+  DROP TABLE data_for_history.class;
   `
-
   db.runSql(sql, callback)
 };
+
 
 exports._meta = {
   "version": 1

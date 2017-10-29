@@ -16,12 +16,14 @@
   <div class="row mt-5">
     <div class="col">
       <div class="gv-search">
-        <div class="input-group">
-          <input type="text" class="form-control" aria-describedby="search" placeholder="Search …">
-          <span class="input-group-btn">
-            <button class="btn btn-primary" type="button"><i class="fa fa-search"></i></button>
-          </span>
-        </div>
+        <form (ngSubmit)="searchProjectPeIts()">
+          <div class="input-group">
+            <input type="text" name="searchString" class="form-control" aria-describedby="search"  autocomplete="off" placeholder="Search …" [(ngModel)]="searchString">
+            <span class="input-group-btn">
+              <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+            </span>
+          </div>
+        </form>
         <ul class="nav gv-search-filter">
           <li class="nav-item">
             <button class="btn btn-sm btn-link nav-link">All</button>
@@ -34,40 +36,43 @@
           </li>
         </ul>
       </div>
+
+    </div>
+  </div>
+  <div class="row" *ngIf="!loading">
+    <div class="col">
+      <div class="gv-search-hits-count mt-2">
+        <span  *ngIf="collectionSize > limit">
+          {{hitsFrom()}}-{{hitsTo()}} of
+        </span>
+        {{collectionSize}} {{(collectionSize == 1 ? 'result' : 'results')}}
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="gv-edit-panel-body mt-5" *ngIf="loading">
+  <div class="row">
+    <div class="col">
+      <div class="gv-search-loading mt-2 text-center">
+        <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+        <span class="sr-only">Loading...</span>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="gv-edit-panel-body">
+<div class="gv-edit-panel-body" *ngIf="!loading">
   <div class="row mt-2">
     <div class="col">
-      <div class="gv-search-results">
-        <div class="gv-search-item">
-          <div class="gv-search-item-header">
-            <a routerLink="../entity/1" queryParamsHandling="merge">Markus Hüssler</a>
-          </div>
-          <div class="gv-search-item-body">
-            <span class="gv-search-item-property text-muted">Person</span>
-            <span class="gv-search-item-property">Birth 1573, Basel</span>
-            <span class="gv-search-item-property">Death 1624, Bern</span>
-          </div>
-        </div>
-        <div class="gv-search-item">
-          <div class="gv-search-item-header">
-            <a routerLink="../entity/2" queryParamsHandling="merge">Markus Hüssler</a>
-          </div>
-          <div class="gv-search-item-body">
-            <span class="gv-search-item-property text-muted">Person</span>
-            <span class="gv-search-item-property">Birth 1573, Basel</span>
-            <span class="gv-search-item-property">Death 1624, Bern</span>
-          </div>
-        </div>
+      <div class="gv-search-hits">
+        <gv-entity-search-hit *ngFor="let hit of persistentItems" [persistentItem]="hit"></gv-entity-search-hit>
       </div>
     </div>
   </div>
   <div class="row mt-5">
     <div class="col">
-      <ngb-pagination [collectionSize]="70" [(page)]="page" aria-label="Default pagination"></ngb-pagination>
+      <ngb-pagination *ngIf="collectionSize > limit" [collectionSize]="collectionSize" [(page)]="page" (pageChange)="searchProjectPeIts()" aria-label="Default pagination"></ngb-pagination>
     </div>
   </div>
 </div>

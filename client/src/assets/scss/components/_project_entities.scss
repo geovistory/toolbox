@@ -1,5 +1,5 @@
 gv-project-entities {
-  max-width: 40rem;
+  // max-width: 40rem;
   $spacing-left: .6rem;
   .gv-search {
     input{
@@ -22,19 +22,28 @@ gv-project-entities {
       }
     }
   }
-  .gv-search-results{
+  .gv-search-hits-count{
     padding-left: $spacing-left;
-    .gv-search-item{
+    font-size: $font-size-sm;
+    color: $text-muted;
+  }
+  .gv-search-loading{
+    color: $text-muted;
+    padding-left: $spacing-left;
+  }
+  .gv-search-hits{
+    padding-left: $spacing-left;
+    .gv-search-hit{
       margin-bottom: 1.5rem;
-      .gv-search-item-header{
+      .gv-search-hit-header{
 
       }
-      .gv-search-item-body{
+      .gv-search-hit-body{
         font-size: $font-size-sm;
-        .gv-search-item-property:not(:first-child){
+        .gv-search-hit-property:not(:first-child){
 
         }
-        .gv-search-item-property:not(:first-child)::before{
+        .gv-search-hit-property:not(:first-child)::before{
           content: "•";
           margin-left: .4rem;
           margin-right: .4rem;

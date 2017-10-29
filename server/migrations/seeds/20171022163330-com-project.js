@@ -20,9 +20,9 @@ exports.up = function(db, callback) {
   -- Project Galilée, owned by pinco
 
   WITH insert_project AS (
-    INSERT INTO commons.project (fk_language)
+    INSERT INTO commons.project (fk_language, notes)
     VALUES
-    ('fra')
+    ('fra', 'Francesco Seed Project')
     ON CONFLICT DO NOTHING
     RETURNING pk_entity, pk_project
   ),
@@ -45,9 +45,9 @@ exports.up = function(db, callback) {
   -- Project Senatoren, owned by Jonas
 
   WITH insert_project AS (
-    INSERT INTO commons.project (fk_language)
+    INSERT INTO commons.project (fk_language, notes)
     VALUES
-    ('deu')
+    ('deu', 'Jonas Seed Project')
     ON CONFLICT DO NOTHING
     RETURNING pk_entity, pk_project
   ),

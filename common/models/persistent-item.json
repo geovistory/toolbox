@@ -5,7 +5,7 @@
   "options": {
     "validateUpsert": true,
     "postgresql": {
-      "schema": "geovistory",
+      "schema": "information",
       "table": "persistent_item"
     }
   },
@@ -17,37 +17,31 @@
   "hidden": [],
   "properties": {
     "pk_persistent_item": {
-      "type": "number",
-      "id": true,
-      "required": true
-    },
-    "id_importation_integer": {
       "type": "number"
     },
-    "id_importation_varchar": {
-      "type": "string"
+    "pk_entity": {
+      "id": true,
+      "type": "number",
+      "generated": true
     },
     "notes": {
       "type": "string"
     },
-    "tmsp_creation": {
-      "type": "date"
-    },
-    "tmsp_last_modification": {
-      "type": "date"
-    },
-    "fk_system_type": {
+    "fk_class": {
       "type": "number"
-    },
-    "semkey_peit": {
-      "type": "string"
-    },
-    "sys_period": {
-      "type": "object"
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "projects": {
+      "type": "hasMany",
+      "model": "Project",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity",
+      "keyThrough": "fk_project",
+      "through": "EntityProjectRel"
+    }
+  },
   "acls": [
     {
       "principalType": "ROLE",

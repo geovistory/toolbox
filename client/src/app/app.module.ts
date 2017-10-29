@@ -47,6 +47,7 @@ import { AccountComponent } from './account/account.component';
 import { ProjectSettingsDataComponent } from './project-settings-data/project-settings-data.component';
 import { EntityCreateModalComponent } from './entity-create-modal/entity-create-modal.component';
 import { ActiveProjectService } from './shared/services/active-project.service';
+import { EntitySearchHitComponent } from './entity-search-hit/entity-search-hit.component';
 
 @NgModule({
   declarations: [
@@ -81,7 +82,8 @@ import { ActiveProjectService } from './shared/services/active-project.service';
     AccountEmailComponent,
     AccountComponent,
     ProjectSettingsDataComponent,
-    EntityCreateModalComponent
+    EntityCreateModalComponent,
+    EntitySearchHitComponent
   ],
   imports: [
     BrowserModule,
