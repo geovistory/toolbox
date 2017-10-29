@@ -1,65 +1,25 @@
 // Variables
 //
-// Copy settings from this file into the provided `_custom.scss` to override
-// the Bootstrap defaults without modifying key, versioned files.
-//
 // Variables should follow the `$component-state-property-size` formula for
 // consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
 
-// Table of Contents
-//
-// Color system
-// Options
-// Spacing
-// Body
-// Links
-// Paragraphs
-// Grid breakpoints
-// Grid containers
-// Grid columns
-// Fonts
-// Components
-// Tables
-// Buttons
-// Forms
-// Dropdowns
-// Z-index master list
-// Navs
-// Navbar
-// Pagination
-// Jumbotron
-// Form states and alerts
-// Cards
-// Tooltips
-// Popovers
-// Badges
-// Modals
-// Alerts
-// Progress bars
-// List group
-// Image thumbnails
-// Figures
-// Breadcrumbs
-// Carousel
-// Close
-// Code
-
 
 //
 // Color system
 //
 
-$white:  #fff !default;
-$gray-100: #f7f8fb;//#f8f9fa !default;
-$gray-200: #e5e9f0;//#e9ecef !default;
-$gray-300: #d4dade;//#dee2e6 !default;
-$gray-400: #b7c2c8;//#ced4da !default;
-$gray-500: #9aaab1;//#adb5bd !default;
-$gray-600: #7d929e;//#868e96 !default;
-$gray-700: #4e5d65;//#495057 !default;
-$gray-800: #374348;//#343a40 !default;
-$gray-900: #21282b;//#212529 !default;
-$black:  #0b0d0e;//#000 !default;
+// stylelint-disable
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #868e96 !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black:    #000 !default;
 
 $grays: () !default;
 $grays: map-merge((
@@ -76,7 +36,7 @@ $grays: map-merge((
 
 $blue:    #007bff !default;
 $indigo:  #6610f2 !default;
-$purple:  #663399; //#6f42c1 !default;
+$purple:  #6f42c1 !default;
 $pink:    #e83e8c !default;
 $red:     #dc3545 !default;
 $orange:  #fd7e14 !default;
@@ -102,13 +62,13 @@ $colors: map-merge((
   "gray-dark":  $gray-800
 ), $colors);
 
-$primary:      $purple; // $blue !default;
+$primary:       $blue !default;
 $secondary:     $gray-600 !default;
-$success:       $teal; //$green !default;
+$success:       $green !default;
 $info:          $cyan !default;
 $warning:       $yellow !default;
 $danger:        $red !default;
-$light:         $gray-200; //$gray-100 !default;
+$light:         $gray-100 !default;
 $dark:          $gray-800 !default;
 
 $theme-colors: () !default;
@@ -122,9 +82,10 @@ $theme-colors: map-merge((
   "light":      $light,
   "dark":       $dark
 ), $theme-colors);
+// stylelint-enable
 
 // Set a specific jump point for requesting color jumps
-$theme-color-interval: 8% !default;
+$theme-color-interval:      8% !default;
 
 
 // Options
@@ -169,17 +130,17 @@ $sizes: (
 //
 // Settings for the `<body>` element.
 
-$body-bg:       $white !default;
-$body-color:    $gray-900 !default;
+$body-bg:                   $white !default;
+$body-color:                $gray-900 !default;
 
 // Links
 //
 // Style anchor elements.
 
-$link-color:            theme-color("primary") !default;
-$link-decoration:       none !default;
-$link-hover-color:      darken($link-color, 15%) !default;
-$link-hover-decoration: underline !default;
+$link-color:                theme-color("primary") !default;
+$link-decoration:           none !default;
+$link-hover-color:          darken($link-color, 15%) !default;
+$link-hover-decoration:     underline !default;
 
 // Paragraphs
 //
@@ -200,6 +161,7 @@ $grid-breakpoints: (
   lg: 992px,
   xl: 1200px
 ) !default;
+
 @include _assert-ascending($grid-breakpoints, "$grid-breakpoints");
 @include _assert-starts-at-zero($grid-breakpoints);
 
@@ -214,6 +176,7 @@ $container-max-widths: (
   lg: 960px,
   xl: 1140px
 ) !default;
+
 @include _assert-ascending($container-max-widths, "$container-max-widths");
 
 
@@ -221,51 +184,53 @@ $container-max-widths: (
 //
 // Set the number of columns and specify the width of the gutters.
 
-$grid-columns: 12 !default;
-$grid-gutter-width: 30px !default;
+$grid-columns:                12 !default;
+$grid-gutter-width:           30px !default;
 
 // Components
 //
 // Define common padding and border radius sizes and more.
 
-$line-height-lg:         1.5 !default;
-$line-height-sm:         1.5 !default;
+$line-height-lg:              1.5 !default;
+$line-height-sm:              1.5 !default;
 
-$border-width: 1px !default;
-$border-color: $gray-200 !default;
+$border-width:                1px !default;
+$border-color:                $gray-200 !default;
 
-$border-radius:          .25rem !default;
-$border-radius-lg:       .3rem !default;
-$border-radius-sm:       .2rem !default;
+$border-radius:               .25rem !default;
+$border-radius-lg:            .3rem !default;
+$border-radius-sm:            .2rem !default;
 
-$component-active-color: $white !default;
-$component-active-bg:    theme-color("primary") !default;
+$component-active-color:      $white !default;
+$component-active-bg:         theme-color("primary") !default;
 
-$caret-width:            .3em !default;
+$caret-width:                 .3em !default;
 
-$transition-base:        all .2s ease-in-out !default;
-$transition-fade:        opacity .15s linear !default;
-$transition-collapse:    height .35s ease !default;
+$transition-base:             all .2s ease-in-out !default;
+$transition-fade:             opacity .15s linear !default;
+$transition-collapse:         height .35s ease !default;
 
 
 // Fonts
 //
 // Font, line-height, and color for body text, headings, and more.
 
-$font-family-sans-serif: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
-$font-family-monospace:  "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
-$font-family-base:       $font-family-sans-serif !default;
+// stylelint-disable value-keyword-case
+$font-family-sans-serif:      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
+$font-family-monospace:       "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
+$font-family-base:            $font-family-sans-serif !default;
+// stylelint-enable value-keyword-case
 
-$font-size-base: 1rem !default; //  .81rem; // Assumes the browser default, typically `16px`
-$font-size-lg:   1.25rem !default;
-$font-size-sm:   .875rem !default; //.68rem;
+$font-size-base:              1rem !default; // Assumes the browser default, typically `16px`
+$font-size-lg:                ($font-size-base * 1.25) !default;
+$font-size-sm:                ($font-size-base * .875) !default;
 
-$font-weight-light: 300 !default;
-$font-weight-normal: normal !default;
-$font-weight-bold: bold !default;
+$font-weight-light:           300 !default;
+$font-weight-normal:          400 !default;
+$font-weight-bold:            700 !default;
 
-$font-weight-base: $font-weight-normal !default;
-$line-height-base: 1.5 !default;
+$font-weight-base:            $font-weight-normal !default;
+$line-height-base:            1.5 !default;
 
 $h1-font-size:                $font-size-base * 2.5 !default;
 $h2-font-size:                $font-size-base * 2 !default;
@@ -274,44 +239,44 @@ $h4-font-size:                $font-size-base * 1.5 !default;
 $h5-font-size:                $font-size-base * 1.25 !default;
 $h6-font-size:                $font-size-base !default;
 
-$headings-margin-bottom: ($spacer / 2) !default;
-$headings-font-family:   inherit !default;
-$headings-font-weight:   500 !default;
-$headings-line-height:   1.1 !default;
-$headings-color:         inherit !default;
+$headings-margin-bottom:      ($spacer / 2) !default;
+$headings-font-family:        inherit !default;
+$headings-font-weight:        500 !default;
+$headings-line-height:        1.2 !default;
+$headings-color:              inherit !default;
 
-$display1-size: 6rem !default;
-$display2-size: 5.5rem !default;
-$display3-size: 4.5rem !default;
-$display4-size: 3.5rem !default;
+$display1-size:               6rem !default;
+$display2-size:               5.5rem !default;
+$display3-size:               4.5rem !default;
+$display4-size:               3.5rem !default;
 
-$display1-weight:     300 !default;
-$display2-weight:     300 !default;
-$display3-weight:     300 !default;
-$display4-weight:     300 !default;
-$display-line-height: $headings-line-height !default;
+$display1-weight:             300 !default;
+$display2-weight:             300 !default;
+$display3-weight:             300 !default;
+$display4-weight:             300 !default;
+$display-line-height:         $headings-line-height !default;
 
-$lead-font-size:   1.25rem !default;
-$lead-font-weight: 300 !default;
+$lead-font-size:              ($font-size-base * 1.25) !default;
+$lead-font-weight:            300 !default;
 
-$small-font-size: 80% !default;
+$small-font-size:             80% !default;
 
-$text-muted: $gray-600 !default;
+$text-muted:                  $gray-600 !default;
 
-$blockquote-small-color:  $gray-600 !default;
-$blockquote-font-size:    ($font-size-base * 1.25) !default;
+$blockquote-small-color:      $gray-600 !default;
+$blockquote-font-size:        ($font-size-base * 1.25) !default;
 
-$hr-border-color: rgba($black,.1) !default;
-$hr-border-width: $border-width !default;
+$hr-border-color:             rgba($black,.1) !default;
+$hr-border-width:             $border-width !default;
 
-$mark-padding: .2em !default;
+$mark-padding:                .2em !default;
 
-$dt-font-weight: $font-weight-bold !default;
+$dt-font-weight:              $font-weight-bold !default;
 
-$kbd-box-shadow:         inset 0 -.1rem 0 rgba($black,.25) !default;
-$nested-kbd-font-weight: $font-weight-bold !default;
+$kbd-box-shadow:              inset 0 -.1rem 0 rgba($black,.25) !default;
+$nested-kbd-font-weight:      $font-weight-bold !default;
 
-$list-inline-padding: 5px !default;
+$list-inline-padding:         5px !default;
 
 $mark-bg: #fcf8e3 !default;
 
@@ -320,19 +285,19 @@ $mark-bg: #fcf8e3 !default;
 //
 // Customizes the `.table` component with basic values, each used across all table variations.
 
-$table-cell-padding:            .75rem !default;
-$table-cell-padding-sm:         .3rem !default;
+$table-cell-padding:          .75rem !default;
+$table-cell-padding-sm:       .3rem !default;
 
-$table-bg:                      transparent !default;
-$table-accent-bg:               rgba($black,.05) !default;
-$table-hover-bg:                rgba($black,.075) !default;
-$table-active-bg:               $table-hover-bg !default;
+$table-bg:                    transparent !default;
+$table-accent-bg:             rgba($black,.05) !default;
+$table-hover-bg:              rgba($black,.075) !default;
+$table-active-bg:             $table-hover-bg !default;
 
-$table-border-width:            $border-width !default;
-$table-border-color:            $gray-200 !default;
+$table-border-width:          $border-width !default;
+$table-border-color:          $gray-200 !default;
 
-$table-head-bg:                 $gray-200 !default;
-$table-head-color:              $gray-700 !default;
+$table-head-bg:               $gray-200 !default;
+$table-head-color:            $gray-700 !default;
 
 $table-dark-bg:               $gray-900 !default;
 $table-dark-accent-bg:        rgba($white, .05) !default;
@@ -345,7 +310,7 @@ $table-dark-color:            $body-bg !default;
 //
 // For each of Bootstrap's buttons, define text, background and border color.
 
-$input-btn-padding-y:         .375rem !default; //.5rem before
+$input-btn-padding-y:         .375rem !default;
 $input-btn-padding-x:         .75rem !default;
 $input-btn-line-height:       $line-height-base !default;
 
@@ -632,10 +597,11 @@ $pagination-disabled-border-color:  #ddd !default;
 $jumbotron-padding:                 2rem !default;
 $jumbotron-bg:                      $gray-200 !default;
 
+
 // Cards
 
-$card-spacer-y:            .375rem; //.75rem !default;
-$card-spacer-x:            .5rem; //1.25rem !default;
+$card-spacer-y:                     .75rem !default;
+$card-spacer-x:                     1.25rem !default;
 $card-border-width:                 $border-width !default;
 $card-border-radius:                $border-radius !default;
 $card-border-color:                 rgba($black,.125) !default;
