@@ -18,6 +18,7 @@ import { environment } from '../../environments/environment';
 import { LoopBackConfig } from '../shared/sdk/lb.config';
 import { ProjectApi } from '../shared/sdk/services/custom/Project';
 import { EntityCreateModalComponent } from '../entity-create-modal/entity-create-modal.component';
+import { Project } from '../shared/sdk/models/Project';
 
 @Component({
   selector: 'gv-project-entities',
@@ -28,23 +29,22 @@ export class ProjectEntitiesComponent implements OnInit {
 
   persistentItems: PersistentItem[] = [];
   projectId: number;
-  loading: boolean = false;
-  errorMessages: any;
-  onAddNewPeIt: EventEmitter<any> = new EventEmitter();
 
   //Pagination
-  page:any;
+  collectionSize:number; // number of search results
+  limit:number = 10; // max number of results on a page
+  page:number = 1; // current page
 
+  //Search
+  searchString:string;
+  loading: boolean = false;
+  errorMessages: any;
+
+  //Add Entity Modal
+  onAddNewPeIt: EventEmitter<any> = new EventEmitter();
   entityModalOptions: NgbModalOptions = {
-      size: 'lg'
+    size: 'lg'
   }
-
-  //Language search
-  public language: any
-  searching = false;
-  searchFailed = false;
-  hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
-  peItToAdd: PersistentItem;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -58,37 +58,21 @@ export class ProjectEntitiesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.listProjectPeIts();
+    this.searchProjectPeIts();
     this.onAddNewPeIt.subscribe(success => {
-      this.listProjectPeIts();
+      this.searchProjectPeIts();
     })
   }
 
-
-
-  listProjectPeIts() {
+  searchProjectPeIts() {
     this.loading = true;
+    this.persistentItems = [];
     this.errorMessages = {};
-    this.projectApi.listPersistentItems(this.projectId)
+    this.projectApi.searchPersistentItems(this.projectId, this.searchString, this.page)
     .subscribe(
-      (persistentItems: Array<PersistentItem>) => {
-        this.persistentItems = persistentItems;
-        this.loading = false
-
-      },
-      error => {
-        // TODO: Alert
-        this.errorMessages = error.error.details.messages;
-        this.loading = false;
-      }
-    );
-  }
-
-  addPeItToProject(){
-    this.projectApi.addEntity(this.projectId, this.peItToAdd.semkey_peit)
-    .subscribe(
-      data => {
-        this.listProjectPeIts();
+      (response) => {
+        this.persistentItems = response.data;
+        this.collectionSize = response.totalCount;
         this.loading = false
       },
       error => {
@@ -103,30 +87,15 @@ export class ProjectEntitiesComponent implements OnInit {
     const modalRef = this.modalService.open(EntityCreateModalComponent, this.entityModalOptions);
     modalRef.componentInstance.projectId = this.projectId;
     modalRef.componentInstance.onAddNewPeIt = this.onAddNewPeIt;
-
   }
 
-
-  searchPeIt = (text$: Observable<string>) =>
-  text$
-  .debounceTime(300)
-  .distinctUntilChanged()
-  .do(() => this.searching = true)
-  .switchMap(term =>
-    this.persistentItemApi.find({"where":{"notes": {"like":term}}})
-    .do(() => this.searchFailed = false)
-    .catch(() => {
-      this.searchFailed = true;
-      return Observable.of([]);
-    }))
-    .do(() => {
-      this.searching = false;
-    })
-    .merge(this.hideSearchingWhenUnsubscribed);
-
-    formatter = (x) => x.notes;
-
-
+  hitsFrom(){
+    return (this.limit * (this.page-1))+1;
+  }
+  hitsTo(){
+    const upper = (this.limit * (this.page-1)) + this.limit;
+    return upper > this.collectionSize ? this.collectionSize : upper;
+  }
 
 
 }

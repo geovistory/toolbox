@@ -14,11 +14,12 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
+
 exports.up = function(db, callback) {
   const sql = `
-  INSERT INTO commons.label (label, fk_entity, fk_system_type, fk_language, notes)
+  INSERT INTO data_for_history.class (data_for_history_id, notes)
   VALUES
-  ('Senatoren', 1, 1, 'fra', 'Sample note')
+  ('E21', 'Person')
   `;
   console.log(sql);
 
@@ -28,11 +29,12 @@ exports.up = function(db, callback) {
 
 exports.down = function(db, callback) {
   const sql = `
-    TRUNCATE commons.label CASCADE;
+  TRUNCATE data_for_history.class CASCADE;
   `;
 
   db.runSql(sql, callback);
 };
+
 
 exports._meta = {
   "version": 1

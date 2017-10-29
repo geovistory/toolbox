@@ -1,33 +1,52 @@
 {
   "name": "EntityProjectRel",
   "base": "PersistedModel",
-  "idInjection": true,
+  "idInjection": false,
   "options": {
-    "validateUpsert": true
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "entity_project_rel"
+    }
   },
   "mixins": {
     "SetupRemoteMethods": {
       "ignoreACL": false,
-      "disableAllExcept": [
-        "find",
-        "queryByString"
-      ]
+      "disableAllExcept": []
     }
   },
   "properties": {
-    "tmsp_entity": {
-      "type": "date"
+    "pk_entity_project_rel":{
+      "type": "number",
+      "id": true,
+      "generated": true
     },
-    "in_project": {
+    "is_in_project": {
       "type": "boolean",
       "required": true
-    },
-    "sys_period": {
-      "type": "object"
     }
   },
   "validations": [],
-  "relations": {},
-  "acls": [],
+  "relations": {
+    "persistent_item" : {
+      "type": "belongsTo",
+      "model": "PersistentItem",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "project": {
+      "type": "belongsTo",
+      "model": "Project",
+      "foreignKey": "fk_project"
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "find"
+    }
+  ],
   "methods": {}
 }

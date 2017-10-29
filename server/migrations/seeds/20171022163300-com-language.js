@@ -16,6 +16,10 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
+
+/**
+ * Insert all languages from https://www.npmjs.com/package/iso-639-3
+ */
 exports.up = function(db, callback) {
 
   var sql = `INSERT into commons.language (pk_language, lang_type, scope, iso6392b, iso6392t, iso6391, notes) VALUES `;

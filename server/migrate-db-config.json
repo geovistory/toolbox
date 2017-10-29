@@ -2,9 +2,15 @@
   "defaultEnv": "development",
   "development": {
     "driver": "pg",
-    "url":  "postgres://postgres:Guru@Marly@165.227.150.159:5432/db-migrate-test?ssl=true"
+    "url":  "postgres://postgres:Guru@Marly@localhost:5432/db-migrate-test?ssl=true"
   },
   "staging": {
+    "driver": "pg",
+    "url": {
+      "ENV": "DATABASE_URL"
+    }
+  },
+  "production": {
     "driver": "pg",
     "url": {
       "ENV": "DATABASE_URL"

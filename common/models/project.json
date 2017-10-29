@@ -56,6 +56,13 @@
       "model": "CommonsTextProperty",
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
+    },
+    "persistent_items": {
+      "type": "hasMany",
+      "model": "PersistentItem",
+      "foreignKey": "fk_project",
+      "keyThrough": "fk_entity",
+      "through": "EntityProjectRel"
     }
   },
   "acls": [
@@ -67,7 +74,7 @@
         "createWithLabelAndDescription",
         "find",
         "addEntity",
-        "listPersistentItems"
+        "searchPersistentItems"
       ]
     }
   ],
@@ -158,7 +165,7 @@
         "verb": "post"
       }
     },
-    "listPersistentItems": {
+    "searchPersistentItems": {
       "accepts": [
         {
           "arg": "projectId",
@@ -168,18 +175,34 @@
           "http": {
             "source": "query"
           }
+        },
+        {
+          "arg": "searchString",
+          "type": "string",
+          "required": false,
+          "description": "Search String",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "page",
+          "type": "number",
+          "required": true,
+          "description": "Page of pagination",
+          "http": {
+            "source": "query"
+          }
         }
       ],
       "returns": {
-        "arg": "success",
-        "type": [
-          "PersistentItem"
-        ],
+        "arg": "data",
+        "type": "object",
         "root": true
       },
       "description": "Find persistent items of a project.",
       "http": {
-        "path": "/persistent-items",
+        "path": "/search-persistent-items",
         "verb": "get"
       }
     }
