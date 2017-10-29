@@ -66,6 +66,27 @@ exports.up = function(db, callback) {
   SELECT insert_project.pk_project, (SELECT id from public.account where username = 'Jonas'), 'owner' FROM insert_project;
 
 
+  -- Project Habsburg, owned by David
+
+  WITH insert_project AS (
+    INSERT INTO commons.project (fk_language, notes)
+    VALUES
+    ('deu', 'David Seed Project')
+    ON CONFLICT DO NOTHING
+    RETURNING pk_entity, pk_project
+  ),
+  insert_label AS (
+    INSERT INTO commons.label (label, fk_entity, fk_system_type, fk_language, notes)
+    SELECT 'Habsburg', pk_entity, 1, 'deu', 'Sample note' FROM insert_project
+    ON CONFLICT DO NOTHING
+  ),
+  insert_text_property AS (
+    INSERT INTO commons.text_property (text_property, text_property_xml, fk_entity, fk_system_type, fk_language, notes)
+    SELECT  'In diesem Project geht es um die Geschichte von Habsburg.', null, pk_entity, 1, 'deu', 'Sample note' FROM insert_project
+  )
+  INSERT INTO public.account_project_rel (fk_project, account_id, role)
+  SELECT insert_project.pk_project, (SELECT id from public.account where username = 'Dave'), 'owner' FROM insert_project;
+
 
   `;
   console.log(sql);
