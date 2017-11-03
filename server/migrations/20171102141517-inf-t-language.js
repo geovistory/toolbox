@@ -14,19 +14,19 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-
 exports.up = function(db, callback) {
   const sql = `
-  -- Table: information.appellation
+  -- Table: information.language
 
-  CREATE TABLE information.appellation
+  CREATE TABLE information.language
   (
-    pk_entity integer,
-    schema_name character varying,
-    table_name character varying,
-    pk_appellation serial PRIMARY KEY,
-    appellation_label jsonb,
-    fk_class VARCHAR(3),
+    pk_language character(3) PRIMARY KEY, -- iso_lang
+    fk_class VARCHAR(3) REFERENCES data_for_history.class (pk_class),
+    lang_type character varying,
+    scope character varying,
+    iso6392b character(3),
+    iso6392t character(3),
+    iso6391 character(3),
     notes text,
     fk_creator integer,
     fk_last_modifier integer,
@@ -40,59 +40,50 @@ exports.up = function(db, callback) {
   )
   TABLESPACE pg_default;
 
-  ALTER TABLE information.appellation
+  ALTER TABLE information.language
   OWNER to postgres;
 
   -- Trigger: creation_tmsp
 
   CREATE TRIGGER creation_tmsp
   BEFORE INSERT
-  ON information.appellation
+  ON information.language
   FOR EACH ROW
   EXECUTE PROCEDURE commons.tmsp_creation();
-
-  -- Trigger: insert_schema_table_name
-
-  CREATE TRIGGER insert_schema_table_name
-  BEFORE INSERT
-  ON information.appellation
-  FOR EACH ROW
-  EXECUTE PROCEDURE commons.insert_schema_table_name();
 
   -- Trigger: last_modification_tmsp
 
   CREATE TRIGGER last_modification_tmsp
   BEFORE INSERT
-  ON information.appellation
+  ON information.language
   FOR EACH ROW
   EXECUTE PROCEDURE commons.tmsp_last_modification();
 
-  -- Table: information.appellation_vt
+  -- Table: information.language_vt
 
-  CREATE TABLE information.appellation_vt (LIKE information.appellation);
+  CREATE TABLE information.language_vt (LIKE information.language);
 
   -- Trigger: versioning_trigger
 
   CREATE TRIGGER versioning_trigger
-  BEFORE INSERT OR UPDATE OR DELETE ON information.appellation
+  BEFORE INSERT OR UPDATE OR DELETE ON information.language
   FOR EACH ROW EXECUTE PROCEDURE versioning(
-    'sys_period', 'information.appellation_vt', true
+    'sys_period', 'information.language_vt', true
   );
-    `
-    db.runSql(sql, callback)
+  `;
 
-  };
+  db.runSql(sql, callback);
+};
 
-  exports.down = function(db, callback) {
-    const sql = `
-    DROP TABLE information.appellation;
-    DROP TABLE information.appellation_vt;
+exports.down = function(db, callback) {
+  const sql = `
+  DROP TABLE information.language;
+  DROP TABLE information.language_vt;
+  `;
 
-    `
-    db.runSql(sql, callback)
-  };
+  db.runSql(sql, callback);
+};
 
-
-  exports._meta = {
-    "version": 1
-  };
+exports._meta = {
+  "version": 1
+};

@@ -1,0 +1,23 @@
+{
+  "name": "Class",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "pk_class": {
+      "type": "string",
+      "id": true,
+      "required": true
+    },
+    "notes": {
+      "type": "string",
+      "default": "notes"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

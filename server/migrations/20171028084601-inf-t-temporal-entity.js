@@ -24,7 +24,7 @@ exports.up = function(db, callback) {
     schema_name character varying,
     table_name character varying,
     pk_temporal_entity serial PRIMARY KEY,
-    fk_class integer,
+    fk_class VARCHAR(3),
     notes text COLLATE pg_catalog."default",
     fk_creator integer,
     fk_last_modifier integer,

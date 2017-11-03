@@ -16,8 +16,8 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db, callback) {
   const sql = `
-  CREATE TABLE data_for_history.class (
-    pk_class VARCHAR(3) PRIMARY KEY,
+  CREATE TABLE data_for_history.property (
+    pk_property VARCHAR(3) PRIMARY KEY,
     notes text
   )
   `
@@ -27,7 +27,7 @@ exports.up = function(db, callback) {
 
 exports.down = function(db, callback) {
   const sql = `
-  DROP TABLE data_for_history.class;
+  DROP TABLE data_for_history.property;
   `
   db.runSql(sql, callback)
 };

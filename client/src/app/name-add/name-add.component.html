@@ -1,0 +1,36 @@
+<div class="card gv-add-name">
+  <div class="card-header d-flex">
+    <div class="gv-flex-grow-1">
+      Add a name
+    </div>
+    <button class="btn btn-sm btn-link" (click)="cancel()">
+      <i class="fa fa-close"></i>
+    </button>
+  </div>
+  <div class="card-body">
+    <form class="" action="index.html" method="post">
+      <div class="form-group">
+        <label>What is the language of this name?</label>
+        {{selectedLang.value |json}}
+        <select #selectedLang (change)="searchSuggestions(selectedLang)" class="form-control">
+          <option value="undefined" class="text-muted">Select language</option>
+          <option [value]="deu">German</option>
+          <option [value]="fra">French</option>
+        </select>
+      </div>
+    </form>
+  </div>
+  <div class="card-body" *ngIf="appellationUsages?.length">
+    <div>Add a name from this list or create a new name:</div>
+    <gv-name *ngFor="let appellationUsage of appellationUsages" [appellationUsage]="appellationUsage"></gv-name>
+  </div>
+  <div class="card-footer">
+    <form>
+      <div class="form-group" *ngIf="selected">
+        <button type="submit" class="btn btn-outline-primary">Add selected</button>
+        <button type="submit" class="btn btn-outline-primary">Create new</button>
+      </div>
+    </form>
+  </div>
+
+</div>

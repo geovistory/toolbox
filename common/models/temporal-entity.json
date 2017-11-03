@@ -1,0 +1,48 @@
+{
+  "name": "TemporalEntity",
+  "base": "PersistedModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "temporal_entity"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "disableAllExcept": [
+        "find"
+      ]
+    }
+  },
+  "properties": {
+    "pk_temporal_entity": {
+      "type": "number",
+      "id": true,
+      "generated": true
+    },
+    "pk_entity": {
+      "type": "number",
+      "generated": true
+    },
+    "fk_class": {
+      "type": "string",
+      "required": true
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "roles": {
+      "type": "hasMany",
+      "model": "InformationRole",
+      "foreignKey": "fk_temporal_entity",
+      "primaryKey": "pk_temporal_entity"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

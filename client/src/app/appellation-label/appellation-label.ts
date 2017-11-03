@@ -1,20 +1,25 @@
 import { Token } from '../appellation-token/appellation-token';
 
-export interface AppellationInterface {
+export interface AppellationLabelInterface {
   "latestTokenId": number,
   "tokens": Token[]
 }
 
-export class Appellation implements AppellationInterface {
+export class AppellationLabel implements AppellationLabelInterface {
   "latestTokenId": number;
-  "tokens": Token[];
+  "tokens": Token[] = [];
 
-  get jsonString (){
-    return JSON.stringify(this);
-  }
+  // get jsonString (){
+  //   return JSON.stringify(this);
+  // }
 
-  constructor(data?: AppellationInterface) {
-    Object.assign(this, data);
+  constructor(data?: AppellationLabelInterface) {
+    if(data.tokens.length > 1){
+      for(let token of data.tokens){
+        this.tokens.push(new Token(token));
+      }
+    }
+    this.latestTokenId = data.latestTokenId;
   }
 
   insertToken(oldToken:Token, newTokenIndex, newTokenString, isSeparator){

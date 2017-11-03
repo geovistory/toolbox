@@ -16,7 +16,7 @@
     }
   },
   "properties": {
-    "pk_entity_project_rel":{
+    "pk_entity_project_rel": {
       "type": "number",
       "id": true,
       "generated": true
@@ -28,7 +28,7 @@
   },
   "validations": [],
   "relations": {
-    "persistent_item" : {
+    "persistent_item": {
       "type": "belongsTo",
       "model": "PersistentItem",
       "foreignKey": "fk_entity",

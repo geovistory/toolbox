@@ -5,9 +5,9 @@ var type;
 var seed;
 
 /**
-* We receive the dbmigrate dependency from dbmigrate initially.
-* This enables us to not have to rely on NODE_PATH.
-*/
+  * We receive the dbmigrate dependency from dbmigrate initially.
+  * This enables us to not have to rely on NODE_PATH.
+  */
 exports.setup = function(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -17,12 +17,11 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db, callback) {
   const sql = `
-  INSERT INTO data_for_history.class (pk_class, notes)
+  INSERT INTO data_for_history.property (pk_property, notes)
   VALUES
-  ('E21', 'Person'),
-  ('E82', 'Actor Appellation'),
-  ('F52', 'Name Use Activity'),
-  ('E56', 'Language')
+  ('R63', 'Named'),
+  ('R64', 'Used Name'),
+  ('R61', 'Occured in kind of context')
   `;
   console.log(sql);
 
@@ -32,7 +31,7 @@ exports.up = function(db, callback) {
 
 exports.down = function(db, callback) {
   const sql = `
-  TRUNCATE data_for_history.class CASCADE;
+  TRUNCATE data_for_history.property CASCADE;
   `;
 
   db.runSql(sql, callback);

@@ -1,0 +1,42 @@
+{
+  "name": "Appellation",
+  "base": "PersistedModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "appellation"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+
+    }
+  },
+  "properties": {
+    "pk_appellation": {
+      "type": "number",
+      "id": true,
+      "generated": true
+    },
+    "pk_entity": {
+      "type": "number",
+      "generated": true
+    },
+    "appellation_label": {
+      "type": "any",
+      "required": true
+    },
+    "fk_class": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

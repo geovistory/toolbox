@@ -106,6 +106,40 @@ module.exports = function(Project) {
     });
   };
 
+
+  const sql_middle_part = `
+  FROM information.persistent_item AS pi
+  INNER JOIN information.entity_project_rel AS epr ON epr.fk_entity=pi.pk_entity
+  INNER JOIN information.role AS r1 ON r1.fk_entity = pi.pk_entity
+  INNER JOIN information.temporal_entity AS te ON r1.fk_temporal_entity = te.pk_temporal_entity
+  INNER JOIN information.role AS r2 ON r2.fk_temporal_entity = te.pk_temporal_entity
+  INNER JOIN
+  (
+    SELECT
+    token.pk_entity,
+    token.appellation_label
+    FROM
+    (
+      SELECT
+      tokens.pk_entity,
+      tokens.token->>'isSeparator' AS is_separator,
+      tokens.token->>'string' AS string,
+      tokens.appellation_label
+      FROM
+      (
+        SELECT jsonb_array_elements(appellation_label->'tokens') as token, pk_entity, appellation_label
+        FROM information.appellation
+      ) AS tokens
+    ) AS token
+    WHERE token.is_separator = 'false'
+    AND token.string iLike $2
+  )
+  AS ap ON ap.pk_entity = r2.fk_entity
+  WHERE
+  te.fk_class = 'F52' -- Appellation Usage
+  AND epr.fk_project IN ($1)
+  `
+
   Project.searchPersistentItems = function(projectId, searchString, page, cb) {
 
     // let filter = {
@@ -151,14 +185,22 @@ module.exports = function(Project) {
     pi.notes,
     pi.pk_persistent_item,
     pi.pk_entity,
-    pi.fk_class
-    FROM information.persistent_item AS pi
-    INNER JOIN information.entity_project_rel AS epr ON epr.fk_entity=pi.pk_entity
-    WHERE epr.fk_project IN ($1) AND pi.notes iLike $2
+    pi.fk_class as pi_class,
+    jsonb_agg(ap.appellation_label) as appellations
+    `
+    +
+    sql_middle_part
+    +
+    `
+    GROUP BY pi.pk_entity, pi.pk_persistent_item, pi.fk_class
     ORDER BY pi.tmsp_last_modification DESC
     LIMIT $3
-    OFFSET $4
+    OFFSET $4;
     `;
+
+    // TODO
+    // aggragate appellations in query
+    // change where clause from pi.notes to search in ap.appellation_label
 
 
     const connector = Project.dataSource.connector;
@@ -167,6 +209,32 @@ module.exports = function(Project) {
 
       if (resultObjects){
         persistentItems = resultObjects.map(persistentItemRaw => {
+
+          // TODO
+          // Get PersistentItems with the includes from the filter object.
+          // Return those very rich nested objects.
+
+          const filter = {
+            "include": {
+              "relation": "roles",
+              "scope": {
+                "include": {
+                  "relation": "temporal_entity",
+                  "scope": {
+                    "include": {
+                      "relation": "roles",
+                      "scope": {
+                        "include": {
+                          "relation": "appellation"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
           const persistentItemData = connector.fromRow('PersistentItem', persistentItemRaw)
           return new Project.app.models.PersistentItem(persistentItemData);
         })
@@ -184,11 +252,16 @@ module.exports = function(Project) {
     ];
 
     const count_stmt = `
-    SELECT
-    count(pi.pk_persistent_item)
-    FROM information.persistent_item AS pi
-    INNER JOIN information.entity_project_rel AS epr ON epr.fk_entity=pi.pk_entity
-    WHERE epr.fk_project IN ($1) AND pi.notes iLike $2
+    SELECT count(pks.pk_persistent_item)
+    FROM (
+      SELECT DISTINCT
+      pi.pk_persistent_item
+      `
+      +
+      sql_middle_part
+      +
+      `
+    ) AS pks;
     `;
 
 

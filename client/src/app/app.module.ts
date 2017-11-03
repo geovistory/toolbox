@@ -83,7 +83,10 @@ import { EntitySearchHitComponent } from './entity-search-hit/entity-search-hit.
     AccountComponent,
     ProjectSettingsDataComponent,
     EntityCreateModalComponent,
-    EntitySearchHitComponent
+    EntitySearchHitComponent,
+    LoadingSpinnerComponent,
+    LanguageComponent,
+    NameAddComponent
   ],
   imports: [
     BrowserModule,
@@ -99,7 +102,8 @@ import { EntitySearchHitComponent } from './entity-search-hit/entity-search-hit.
   providers: [
     ActiveAccountService,
     ActiveProjectService,
-    AuthGuard
+    AuthGuard,
+    PropertyPipe
   ],
   entryComponents : [
     AppComponent,

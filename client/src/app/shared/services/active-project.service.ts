@@ -27,7 +27,7 @@ export class ActiveProjectService {
       where: {
         "pk_project": id
       },
-      include: ["labels"]     
+      include: ["labels"]
     }).subscribe((projects: Project[]) => {
       this.project = projects[0];
       this.changeProjectEventEmitter.emit(this.project);

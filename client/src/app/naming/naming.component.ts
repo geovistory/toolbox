@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import {
   trigger,
   state,
@@ -6,6 +6,8 @@ import {
   animate,
   transition
 } from '@angular/animations';
+import { Appellation } from '../shared/sdk/models/Appellation';
+import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
 
 @Component({
   selector: 'gv-naming',
@@ -25,9 +27,18 @@ import {
   ]
 })
 export class NamingComponent implements OnInit {
+
+  @Input() appellationUsages:Array<TemporalEntity>;
+
   showCommunityData: boolean = false;
 
   cardState = 'expanded';
+
+  addingName: boolean = false;
+
+  get footerVisible():boolean{
+    return !this.addingName;
+  }
 
   constructor() { }
 
@@ -37,4 +48,24 @@ export class NamingComponent implements OnInit {
   toggleCardBody(){
     this.cardState = this.cardState ==='expanded' ? 'collapsed':'expanded';
   }
+
+  addName(){
+    this.addingName = true;
+  }
+
+  cancelAddName(){
+    this.addingName = false;
+  }
+
+
+
+  // addAppellation(){
+  //   this.newAppellation = new Appellation();
+  //   this.appellations.push(this.newAppellation);
+  // }
+  //
+  // cancelAddAppellation(){
+  //
+  // }
+
 }

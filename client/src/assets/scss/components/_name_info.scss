@@ -5,8 +5,7 @@ gv-addinfo {
   display: block;
   margin-bottom: $card-spacer-y ;
   .card-header.gv-name-header {
-    .gv-label {
-      word-break: break-all;
+    .gv-edit-name {
       .gv-namepart-token {
         border-bottom: 1px dashed theme-color("secondary");
         border-top: none;
@@ -23,6 +22,9 @@ gv-addinfo {
         min-width: 0.9rem;
         margin-right: 0.2rem;
       }
+    }
+    .gv-label {
+      word-break: break-all;
     }
     background-color: $white;
     border-bottom: none;
@@ -53,10 +55,22 @@ gv-addinfo {
       color: theme-color("secondary");
     }
   }
-
   .gv-name-section {
     .gv-edit-btn {
       visibility: hidden;
+    }
+
+    .gv-name-dropdown {
+      .dropdown-toggle{
+        margin: -1rem -.5rem -0.7rem -.5rem;
+        border-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+        border: none;
+      }
+      .dropdown-toggle::after{
+        content: none;
+      }
     }
   }
   .gv-name-section:hover{
@@ -64,12 +78,8 @@ gv-addinfo {
       visibility: visible;
     }
   }
-
   .gv-card-body-wrapper {
     overflow: hidden;
-  }
-  .card-body.gv-name-part {
-    border-bottom: $border-width solid $border-color;
   }
   .card-footer.gv-name-footer{
     border-top: none;

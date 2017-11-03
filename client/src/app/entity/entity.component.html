@@ -1,12 +1,12 @@
 <a class="gv-back-btn btn btn-link" routerLink="../../search"  queryParamsHandling="merge">
   <i class="fa fa-arrow-left"></i>  Search
 </a>
-<div class="gv-edit-panel-header">
-
+<gv-loading-spinner [loading]="loading"></gv-loading-spinner>
+<div class="gv-edit-panel-header" *ngIf="!loading">
   <section class="row">
     <div class="col-md-8">
       <h2>
-        Markus Hüssler <small class="text-muted">Person</small>
+         <small class="text-muted">Person</small>
       </h2>
     </div>
     <div class="col-md-4">
@@ -17,8 +17,7 @@
       </div>
     </div>
   </section>
-
 </div>
-<div class="gv-edit-panel-body">
-      <gv-naming></gv-naming>
+<div class="gv-edit-panel-body" *ngIf="!loading">
+  <gv-naming [appellationUsages]="appellationUsages"></gv-naming>
 </div>

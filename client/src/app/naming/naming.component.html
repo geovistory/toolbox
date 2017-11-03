@@ -17,20 +17,24 @@
         <button class="dropdown-item text-white">Minimize</button>
       </div>
     </div>
-
   </div>
+
   <div [@slideInOut]="cardState">
+
     <div class="card-body gv-naming">
-
-      <gv-name></gv-name>
-
-
+      <gv-name *ngFor="let appellationUsage of appellationUsages" [appellationUsage]="appellationUsage"></gv-name>
     </div>
-    <div class="card-footer gv-naming">
-      <div class="btn btn-block btn-secondary">
+
+    <div class="card-body gv-naming" *ngIf="addingName">
+      <gv-name-add (onCancel)="cancelAddName()"></gv-name-add>
+    </div>
+
+    <div class="card-footer gv-naming" *ngIf="footerVisible">
+      <div class="btn btn-block btn-secondary" (click)="addName()">
         Add a name…
       </div>
     </div>
+
   </div>
 </div>
 

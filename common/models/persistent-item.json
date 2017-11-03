@@ -17,10 +17,10 @@
   "hidden": [],
   "properties": {
     "pk_persistent_item": {
+      "id": true,
       "type": "number"
     },
     "pk_entity": {
-      "id": true,
       "type": "number",
       "generated": true
     },
@@ -28,7 +28,7 @@
       "type": "string"
     },
     "fk_class": {
-      "type": "number"
+      "type": "string"
     }
   },
   "validations": [],
@@ -40,6 +40,12 @@
       "primaryKey": "pk_entity",
       "keyThrough": "fk_project",
       "through": "EntityProjectRel"
+    },
+    "roles": {
+      "type": "hasMany",
+      "model": "InformationRole",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
     }
   },
   "acls": [
@@ -49,7 +55,8 @@
       "permission": "ALLOW",
       "property": [
         "createItem",
-        "find"
+        "find",
+        "findById"
       ]
     }
   ],

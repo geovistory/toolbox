@@ -1,0 +1,70 @@
+{
+  "name": "InformationRole",
+  "base": "PersistedModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "role"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "disableAllExcept": [
+        "find"
+      ]
+    }
+  },
+  "properties": {
+    "pk_role": {
+      "type": "number",
+      "id": true,
+      "required": true
+    },
+    "fk_property": {
+      "type": "string",
+      "required": true
+    },
+    "fk_entity": {
+      "type": "number",
+      "required": true
+    },
+    "fk_temporal_entity": {
+        "type": "number",
+        "required": true
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "persistent_item": {
+      "type": "belongsTo",
+      "model": "PersistentItem",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "appellation": {
+      "type": "belongsTo",
+      "model": "Appellation",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "language": {
+      "type": "belongsTo",
+      "model": "InformationLanguage",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "temporal_entity": {
+      "type": "belongsTo",
+      "model": "TemporalEntity",
+      "foreignKey": "fk_temporal_entity",
+      "primaryKey": "pk_temporal_entity"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
   ViewChild, ChangeDetectorRef, Renderer, Inject} from '@angular/core';
 
   import { Token } from '../appellation-token/appellation-token';
-  import { Appellation } from '../appellation/appellation';
+  import { AppellationLabel } from '../appellation-label/appellation-label';
 
   @Component({
     selector: 'gv-name-part-input',
@@ -13,7 +13,7 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
     @ViewChild('element') element;
 
     @Input() token: Token;
-    @Input() appellation: Appellation;
+    @Input() appellationLabel: AppellationLabel;
 
     @Output() enterKey = new EventEmitter();
 
@@ -38,23 +38,23 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
     }
 
     get index(){
-      return this.appellation.tokens.indexOf(this.token);
+      return this.appellationLabel.tokens.indexOf(this.token);
     }
 
     get hasNextToken() {
-      return this.appellation.tokens[(this.index + 1)] !== undefined;
+      return this.appellationLabel.tokens[(this.index + 1)] !== undefined;
     }
 
     get hasPreviousToken() {
-      return this.appellation.tokens[(this.index + -1)] !== undefined;
+      return this.appellationLabel.tokens[(this.index + -1)] !== undefined;
     }
 
     get nextToken() {
-      return this.appellation.tokens[(this.index + 1)];
+      return this.appellationLabel.tokens[(this.index + 1)];
     }
 
     get previousToken() {
-      return this.appellation.tokens[(this.index + -1)];
+      return this.appellationLabel.tokens[(this.index + -1)];
     }
 
     get caretAtLastPosition():boolean {
@@ -112,12 +112,12 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
     onBackspaceDown(){
       if(this.token.string.length === 0 || this.token.isSeparator){
         this.focusOnPreviousToken();
-        this.appellation.deleteToken(this.token);
+        this.appellationLabel.deleteToken(this.token);
       }
     }
 
     onEnterDown(){
-        this.enterKey.emit();
+      this.enterKey.emit();
     }
 
     focus(caretPosition?:number){
@@ -213,10 +213,10 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
     }
 
     insertTokenBefore(newTokenString, isSeparator){
-      this.appellation.insertToken(this.token, this.index, newTokenString, isSeparator);
+      this.appellationLabel.insertToken(this.token, this.index, newTokenString, isSeparator);
     }
     insertTokenAfter(newTokenString, isSeparator){
-      this.appellation.insertToken(this.token, (this.index + 1), newTokenString, isSeparator);
+      this.appellationLabel.insertToken(this.token, (this.index + 1), newTokenString, isSeparator);
     }
 
     setTokenString(newString:string):void{

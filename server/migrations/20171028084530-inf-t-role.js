@@ -26,7 +26,7 @@ exports.up = function(db, callback) {
     pk_role serial PRIMARY KEY,
     fk_entity integer,
     fk_temporal_entity integer,
-    fk_property integer,
+    fk_property VARCHAR(3),
     notes text COLLATE pg_catalog."default",
     fk_creator integer,
     fk_last_modifier integer,
