@@ -14,8 +14,8 @@
         {{selectedLang.value |json}}
         <select #selectedLang (change)="searchSuggestions(selectedLang)" class="form-control">
           <option value="undefined" class="text-muted">Select language</option>
-          <option [value]="deu">German</option>
-          <option [value]="fra">French</option>
+          <option [value]="'deu'">German</option>
+          <option [value]="'fra'">French</option>
         </select>
       </div>
     </form>

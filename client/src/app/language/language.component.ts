@@ -14,4 +14,7 @@ export class LanguageComponent implements OnInit {
   ngOnInit() {
   }
 
+  edit(){
+    
+  }
 }

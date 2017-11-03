@@ -72,6 +72,7 @@ export class NameComponent implements OnInit{
   /*** App logic ***/
 
   editingAppellation:boolean = false;
+  editingLanguage:boolean = false;
   cardBodyState:string='collapsed';
 
   constructor(
@@ -112,8 +113,11 @@ export class NameComponent implements OnInit{
     this.editingAppellation = false;
   }
 
-  saveAppellationLabel(){
+  editLanguage(){
+  }
 
+
+  saveAppellationLabel(){
     this.appellationApi.patchAttributes(this.appellation.pk_appellation, {
       appellation_label: this.appellationLabel
     }).subscribe(success => {

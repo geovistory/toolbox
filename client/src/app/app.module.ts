@@ -48,6 +48,10 @@ import { ProjectSettingsDataComponent } from './project-settings-data/project-se
 import { EntityCreateModalComponent } from './entity-create-modal/entity-create-modal.component';
 import { ActiveProjectService } from './shared/services/active-project.service';
 import { EntitySearchHitComponent } from './entity-search-hit/entity-search-hit.component';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+import { PropertyPipe } from './shared/pipes/property';
+import { LanguageComponent } from './language/language.component';
+import { NameAddComponent } from './name-add/name-add.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +90,8 @@ import { EntitySearchHitComponent } from './entity-search-hit/entity-search-hit.
     EntitySearchHitComponent,
     LoadingSpinnerComponent,
     LanguageComponent,
-    NameAddComponent
+    NameAddComponent,
+    PropertyPipe
   ],
   imports: [
     BrowserModule,

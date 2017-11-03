@@ -10,7 +10,7 @@ export class NameAddComponent implements OnInit {
   @Output() onCancel = new EventEmitter();
 
   appellationUsages = [];
-
+  selected:boolean=false;
   constructor() { }
 
   ngOnInit() {
