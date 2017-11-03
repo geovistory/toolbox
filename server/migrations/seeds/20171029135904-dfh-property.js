@@ -17,7 +17,7 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db, callback) {
   const sql = `
-  INSERT INTO data_for_history.property (pk_property, notes)
+  INSERT INTO data_for_history.property (data_for_history_id, notes)
   VALUES
   ('R63', 'Named'),
   ('R64', 'Used Name'),

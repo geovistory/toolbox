@@ -216,9 +216,9 @@ exports.up = function(db, callback) {
     -- add an Appellation Usage
     insert_appe_usage AS (
       INSERT INTO information.temporal_entity (fk_class, notes)
-      SELECT pk_class, notes
+      SELECT data_for_history_id, notes
       FROM data_for_history.class AS c
-      WHERE c.pk_class = 'F52' -- Name Use Activity
+      WHERE c.data_for_history_id = 'F52' -- Name Use Activity
       ON CONFLICT DO NOTHING
       RETURNING  pk_temporal_entity
     ),
@@ -232,7 +232,7 @@ exports.up = function(db, callback) {
         (
           SELECT notes
           FROM data_for_history.property
-          WHERE pk_property = 'R63' -- Named
+          WHERE data_for_history_id = 'R63' -- Named
         ),
         (
           SELECT pk_entity
@@ -269,7 +269,7 @@ exports.up = function(db, callback) {
         (
           SELECT notes
           FROM data_for_history.property
-          WHERE pk_property = 'R64' -- Used Named
+          WHERE data_for_history_id = 'R64' -- Used Named
         ),
         (
           SELECT pk_entity
@@ -292,7 +292,7 @@ exports.up = function(db, callback) {
         (
           SELECT notes
           FROM data_for_history.property
-          WHERE pk_property = 'R61'
+          WHERE data_for_history_id = 'R61'
         ),
         (
           SELECT pk_entity
@@ -310,9 +310,9 @@ exports.up = function(db, callback) {
     -- add an Appellation Usage 2
     insert_appe_usage_2 AS (
       INSERT INTO information.temporal_entity (fk_class, notes)
-      SELECT pk_class, notes
+      SELECT data_for_history_id, notes
       FROM data_for_history.class AS c
-      WHERE c.pk_class = 'F52' -- Name Use Activity
+      WHERE c.data_for_history_id = 'F52' -- Name Use Activity
       ON CONFLICT DO NOTHING
       RETURNING  pk_temporal_entity
     ),
@@ -326,7 +326,7 @@ exports.up = function(db, callback) {
         (
           SELECT notes
           FROM data_for_history.property
-          WHERE pk_property = 'R63' -- Named
+          WHERE data_for_history_id = 'R63' -- Named
         ),
         (
           SELECT pk_entity
@@ -363,7 +363,7 @@ exports.up = function(db, callback) {
         (
           SELECT notes
           FROM data_for_history.property
-          WHERE pk_property = 'R64' -- Used Named
+          WHERE data_for_history_id = 'R64' -- Used Named
         ),
         (
           SELECT pk_entity

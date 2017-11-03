@@ -21,7 +21,7 @@ exports.up = function(db, callback) {
   CREATE TABLE information.language
   (
     pk_language character(3) PRIMARY KEY, -- iso_lang
-    fk_class VARCHAR(3) REFERENCES data_for_history.class (pk_class),
+    fk_class VARCHAR(7) REFERENCES data_for_history.class (data_for_history_id),
     lang_type character varying,
     scope character varying,
     iso6392b character(3),

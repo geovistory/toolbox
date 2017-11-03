@@ -17,7 +17,7 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db, callback) {
   const sql = `
-  INSERT INTO data_for_history.class (pk_class, notes)
+  INSERT INTO data_for_history.class (data_for_history_id, notes)
   VALUES
   ('E21', 'Person'),
   ('E82', 'Actor Appellation'),

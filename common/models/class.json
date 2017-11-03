@@ -11,6 +11,10 @@
       "id": true,
       "required": true
     },
+    "data_for_history_id": {
+      "type": "string",
+      "required": true
+    },
     "notes": {
       "type": "string",
       "default": "notes"

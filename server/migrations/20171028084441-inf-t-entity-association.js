@@ -26,7 +26,7 @@ exports.up = function(db, callback) {
     pk_entity_association serial PRIMARY KEY,
     fk_domain_entity integer,
     fk_range_entity integer,
-    fk_property VARCHAR(3),
+    fk_property VARCHAR(7) REFERENCES data_for_history.property (data_for_history_id),
     notes text COLLATE pg_catalog."default",
     fk_creator integer,
     fk_last_modifier integer,

@@ -26,7 +26,7 @@ exports.up = function(db, callback) {
     table_name character varying,
     pk_appellation serial PRIMARY KEY,
     appellation_label jsonb,
-    fk_class VARCHAR(3),
+    fk_class VARCHAR(7) REFERENCES data_for_history.class (data_for_history_id),
     notes text,
     fk_creator integer,
     fk_last_modifier integer,
