@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EntityComponent } from './entity.component';
+import { EntityAddModalComponent } from './entity-add-modal.component';
 
-describe('EntityComponent', () => {
-  let component: EntityComponent;
-  let fixture: ComponentFixture<EntityComponent>;
+describe('EntityAddModalComponent', () => {
+  let component: EntityAddModalComponent;
+  let fixture: ComponentFixture<EntityAddModalComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EntityComponent ]
+      declarations: [ EntityAddModalComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EntityComponent);
+    fixture = TestBed.createComponent(EntityAddModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

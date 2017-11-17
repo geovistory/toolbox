@@ -1,8 +1,8 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter,
   ViewChild, ChangeDetectorRef, Renderer, Inject} from '@angular/core';
+import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
+import { Token } from '../shared/classes/appellation-token/appellation-token';
 
-  import { Token } from '../appellation-token/appellation-token';
-  import { AppellationLabel } from '../appellation-label/appellation-label';
 
   @Component({
     selector: 'gv-name-part-input',

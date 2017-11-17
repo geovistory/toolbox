@@ -1,3 +1,4 @@
+
 import { Token } from '../appellation-token/appellation-token';
 
 export interface AppellationLabelInterface {

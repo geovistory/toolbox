@@ -33,7 +33,8 @@ exports.up = function(db, callback) {
     tmsp_creation timestamp with time zone DEFAULT now(),
     tmsp_last_modification timestamp with time zone,
     sys_period tstzrange DEFAULT tstzrange(now(), NULL::timestamp with time zone),
-    is_in_project boolean
+    is_in_project boolean,
+    is_standard_in_project boolean
   )
   INHERITS (information.entity)
   WITH (

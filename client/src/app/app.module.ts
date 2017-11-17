@@ -37,7 +37,6 @@ import { NameComponent } from './name/name.component';
 import { NamePartComponent } from './name-part/name-part.component';
 import { NamePartInputComponent } from './name-part-input/name-part-input.component';
 import { ProjectEditPanelComponent } from './project-edit-panel/project-edit-panel.component';
-import { EntityComponent } from './entity/entity.component';
 import { ProjectSourcesComponent } from './project-sources/project-sources.component';
 import { SourceComponent } from './source/source.component';
 import { AccountProfileComponent } from './account-profile/account-profile.component';
@@ -45,13 +44,20 @@ import { AccountPasswordComponent } from './account-password/account-password.co
 import { AccountEmailComponent } from './account-email/account-email.component';
 import { AccountComponent } from './account/account.component';
 import { ProjectSettingsDataComponent } from './project-settings-data/project-settings-data.component';
-import { EntityCreateModalComponent } from './entity-create-modal/entity-create-modal.component';
+import { EntityAddModalComponent } from './entity-add-modal/entity-add-modal.component';
 import { ActiveProjectService } from './shared/services/active-project.service';
 import { EntitySearchHitComponent } from './entity-search-hit/entity-search-hit.component';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 import { PropertyPipe } from './shared/pipes/property';
 import { LanguageComponent } from './language/language.component';
 import { NameAddComponent } from './name-add/name-add.component';
+import { EntityAddChooseClassComponent } from './entity-add-choose-class/entity-add-choose-class.component';
+import { EntityAddSearchExistingComponent } from './entity-add-search-existing/entity-add-search-existing.component';
+import { EntityAddCreateNewComponent } from './entity-add-create-new/entity-add-create-new.component';
+import { EntityAddModalService } from './shared/services/entity-add-modal.service';
+import { EntityAddAddExistingComponent } from './entity-add-add-existing/entity-add-add-existing.component';
+import { GvNameVisiblePipe } from './shared/pipes/gv-name-visible.pipe';
+import { EntityEditorComponent } from './entity-editor/entity.editor.component';
 
 @NgModule({
   declarations: [
@@ -78,7 +84,7 @@ import { NameAddComponent } from './name-add/name-add.component';
     NamePartComponent,
     NamePartInputComponent,
     ProjectEditPanelComponent,
-    EntityComponent,
+    EntityEditorComponent,
     ProjectSourcesComponent,
     SourceComponent,
     AccountProfileComponent,
@@ -86,12 +92,17 @@ import { NameAddComponent } from './name-add/name-add.component';
     AccountEmailComponent,
     AccountComponent,
     ProjectSettingsDataComponent,
-    EntityCreateModalComponent,
+    EntityAddModalComponent,
     EntitySearchHitComponent,
     LoadingSpinnerComponent,
     LanguageComponent,
     NameAddComponent,
-    PropertyPipe
+    PropertyPipe,
+    EntityAddChooseClassComponent,
+    EntityAddSearchExistingComponent,
+    EntityAddCreateNewComponent,
+    EntityAddAddExistingComponent,
+    GvNameVisiblePipe
   ],
   imports: [
     BrowserModule,
@@ -107,12 +118,13 @@ import { NameAddComponent } from './name-add/name-add.component';
   providers: [
     ActiveAccountService,
     ActiveProjectService,
+    EntityAddModalService,
     AuthGuard,
     PropertyPipe
   ],
   entryComponents : [
     AppComponent,
-    EntityCreateModalComponent
+    EntityAddModalComponent
   ],
   bootstrap: [AppComponent]
 })

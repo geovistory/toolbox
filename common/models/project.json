@@ -73,8 +73,7 @@
       "property": [
         "createWithLabelAndDescription",
         "find",
-        "addEntity",
-        "searchPersistentItems"
+        "addEntity"
       ]
     }
   ],
@@ -163,47 +162,6 @@
       "http": {
         "path": "/add-entity",
         "verb": "post"
-      }
-    },
-    "searchPersistentItems": {
-      "accepts": [
-        {
-          "arg": "projectId",
-          "type": "number",
-          "required": true,
-          "description": "Project id",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "searchString",
-          "type": "string",
-          "required": false,
-          "description": "Search String",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "page",
-          "type": "number",
-          "required": true,
-          "description": "Page of pagination",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": "object",
-        "root": true
-      },
-      "description": "Find persistent items of a project.",
-      "http": {
-        "path": "/search-persistent-items",
-        "verb": "get"
       }
     }
   }

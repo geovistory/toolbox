@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import {
   trigger,
   state,
@@ -8,6 +8,12 @@ import {
 } from '@angular/animations';
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
+import { InformationRole } from '../shared/sdk/models/InformationRole';
+import { NameComponent } from '../name/name.component';
+import { EntityProjectRel } from '../shared/sdk/models/EntityProjectRel';
+import { EntityProjectRelApi } from '../shared/sdk/services/custom/EntityProjectRel';
+import { ActiveProjectService } from '../shared/services/active-project.service';
+import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
 
 @Component({
   selector: 'gv-naming',
@@ -26,9 +32,25 @@ import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
     ])
   ]
 })
-export class NamingComponent implements OnInit {
+export class NamingComponent implements OnInit, OnChanges {
 
-  @Input() appellationUsages:Array<TemporalEntity>;
+  @Input() names:Array<InformationRole>;
+
+  entityEditorState = new EntityEditorState();
+
+  @Input() set state(value:string){
+    this.entityEditorState.state = value;
+  };
+
+  get state():string{
+    return this.entityEditorState.state;
+  }
+
+  @Output() standardNameStringChange: EventEmitter<string> = new EventEmitter();
+
+  @Output() entityProjectRelChange: EventEmitter<EntityProjectRel[]> = new EventEmitter();
+
+  standardNameComponent: NameComponent;
 
   showCommunityData: boolean = false;
 
@@ -36,13 +58,75 @@ export class NamingComponent implements OnInit {
 
   addingName: boolean = false;
 
-  get footerVisible():boolean{
-    return !this.addingName;
+  entProRels: Array<EntityProjectRel> = []; //
+
+  standardNamePkOnAdd:number;
+
+  isStandardOnAdd(pk:number):boolean{
+    return this.standardNamePkOnAdd === pk;
   }
 
-  constructor() { }
+  get footerVisible():boolean{
+
+    if(this.state === 'add') return false;
+
+    if (this.addingName) return false;
+
+    return true;
+  }
+
+  constructor(
+    private entityProjectRelApi:EntityProjectRelApi,
+    public activeProject: ActiveProjectService
+  ) { }
 
   ngOnInit() {
+
+  }
+  ngOnChanges(){
+    this.defineStandardNamePkOnAdd();
+  }
+
+  defineStandardNamePkOnAdd(){
+    if(this.state === 'add'){
+      /**
+      * Order the names by is-standard-count descending.
+      */
+      let map=[];
+      this.names.forEach(name => {
+        const isStandardCount = name.entity_project_rels.filter(epr => epr.is_standard_in_project).length;
+        map.push(
+          {
+            namePkEntity: name.pk_entity,
+            isStandardCount: isStandardCount
+          }
+        )
+      })
+      map.sort(this.compareNames);
+
+      /**
+      * Store the name pk with the highest isStandardCount.
+      */
+      map.some(o => {
+        return this.names.some(name => {
+          if(name.pk_entity === o.namePkEntity){
+            this.standardNamePkOnAdd = name.pk_entity;
+            return true;
+          }
+          return false;
+        })
+      })
+    }
+  }
+
+  compareNames(a,b){
+    let comparison = 0;
+    if (a.isStandardCount < b.isStandardCount) {
+      comparison = 1;
+    } else if (b.isStandardCount > a.isStandardCount) {
+      comparison = -1;
+    }
+    return comparison;
   }
 
   toggleCardBody(){
@@ -57,15 +141,83 @@ export class NamingComponent implements OnInit {
     this.addingName = false;
   }
 
+  standardNameChange(newNameComponent:NameComponent){
+
+    // on init
+    if(!this.standardNameComponent) {
+    this.standardNameComponent = newNameComponent;
+    this.standardNameStringChange.emit(this.standardNameComponent.appellationLabel.getString());
+  }
+
+  /** if another name becomes standard in project */
+  else if(this.standardNameComponent.entityProjectRel.pk_entity_project_rel !== newNameComponent.entityProjectRel.pk_entity_project_rel){
+
+    /** stop current name to be standard in project  */
+      this.entityProjectRelApi.patchAttributes(this.standardNameComponent.entityProjectRel.pk_entity_project_rel, {
+        is_standard_in_project: false
+      }).subscribe(entProRel => {
+
+        // stop the loading flag on the new name
+        newNameComponent.changeStandardLoading = false;
+
+        // update the is_standard_in_project on the old standard name
+        this.standardNameComponent.entityProjectRel.is_standard_in_project = false
+
+        // replace the old standard name with the new standard name
+        this.standardNameComponent = newNameComponent;
+
+        /** fire event with the string of the new standard name  */
+        this.standardNameStringChange.emit(this.standardNameComponent.appellationLabel.getString());
+      })
 
 
-  // addAppellation(){
-  //   this.newAppellation = new Appellation();
-  //   this.appellations.push(this.newAppellation);
-  // }
-  //
-  // cancelAddAppellation(){
-  //
-  // }
+  }
+  /** if this is not yet added to the project */
+  else if(this.standardNameComponent.entityProjectRel.pk_entity_project_rel === undefined){
+
+    // update the is_standard_in_project on the old standard name
+    this.standardNameComponent.entityProjectRel.is_standard_in_project = false
+
+    // replace the old standard name with the new standard name
+    this.standardNameComponent = newNameComponent;
+
+    /** fire event with the string of the new standard name  */
+    this.standardNameStringChange.emit(this.standardNameComponent.appellationLabel.getString());
+  }
+
+  /** on appellation label change */
+  else {
+    this.standardNameComponent = newNameComponent;
+    this.standardNameStringChange.emit(this.standardNameComponent.appellationLabel.getString());
+  }
+
+}
+
+inProjectChange(entProRels){
+  let _that = this;
+  entProRels.forEach(function(newRel) {
+    var existing = _that.entProRels.filter(function(v, i) {
+      return (v.fk_entity === newRel.fk_entity && v.fk_project === newRel.fk_project);
+    });
+    if (existing.length) {
+      var existingIndex = _that.entProRels.indexOf(existing[0]);
+      _that.entProRels[existingIndex] = newRel;
+    } else {
+      _that.entProRels.push(newRel);
+    }
+  });
+
+  this.entityProjectRelChange.emit(this.entProRels);
+
+}
+
+// addAppellation(){
+//   this.newAppellation = new Appellation();
+//   this.appellations.push(this.newAppellation);
+// }
+//
+// cancelAddAppellation(){
+//
+// }
 
 }

@@ -30,20 +30,7 @@
 
     }
   }
-  .gv-community-statistics {
-    color: theme-color("secondary");
-    font-size: $font-size-sm;
-    .gv-statistics-item {
-      margin-right: .4rem;
-    }
-    .gv-statistics-item::before {
-      content: "•";
-      margin-right: .4rem;
-    }
-    .gv-statistics-item:first-of-type::before {
-      content: none;
-    }
-  }
+
   .gv-revisions{
     font-size: $font-size-sm;
   }

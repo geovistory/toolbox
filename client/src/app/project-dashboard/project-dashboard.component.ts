@@ -3,6 +3,7 @@ import { ActivatedRoute} from '@angular/router';
 import { Project } from '../shared/sdk/models/Project';
 import { ProjectApi } from '../shared/sdk/services/custom/Project';
 import { ActiveProjectService } from '../shared/services/active-project.service';
+import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
 
 @Component({
   selector: 'gv-project-dashboard',
@@ -17,6 +18,11 @@ export class ProjectDashboardComponent implements OnInit {
   project:Project;
   id:number;
 
+  // Statistics
+  dataUnitsCount: number;
+
+
+  // Tour logic
   activeSlideId:string;
   steps = {
     "step1": false,
@@ -29,7 +35,8 @@ export class ProjectDashboardComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private projectApi: ProjectApi,
-    private activeProjectService: ActiveProjectService
+    private activeProjectService: ActiveProjectService,
+    private persistentItemApi: PersistentItemApi
   ) {
     this.id = activatedRoute.snapshot.parent.params['id'];
     activeProjectService.onProjectChange().subscribe((project:Project) => {
@@ -61,6 +68,20 @@ export class ProjectDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.activeProjectService.setActiveProject(this.id);
+
+    this.persistentItemApi.searchInProject(this.id,'',1, 1)
+    .subscribe(
+      (response) => {
+        this.dataUnitsCount = parseInt(response.totalCount);
+        this.loading = false
+      },
+      error => {
+        // TODO: Alert
+        this.errorMessages = error.error.details.messages;
+        this.loading = false;
+      }
+    );
+
   }
 
   }

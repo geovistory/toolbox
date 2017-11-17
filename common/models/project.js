@@ -84,15 +84,15 @@ module.exports = function(Project) {
     });
   };
 
-  Project.addEntity = function(projectId, entitySemkey, cb) {
+  Project.addEntity = function(pk_project, fk_entity, cb) {
 
     var params = [
-      projectId, // $1
-      entitySemkey // $2
+      pk_project, // $1
+      fk_entity // $2
     ];
 
     var sql_stmt = `
-    INSERT INTO public.entity_project_rel (fk_project, fk_semkey, in_project)
+    INSERT INTO information.entity_project_rel (fk_project, fk_entity, in_project)
     VALUES ($1, $2, true);
     `;
 
@@ -107,177 +107,4 @@ module.exports = function(Project) {
   };
 
 
-  const sql_middle_part = `
-  FROM information.persistent_item AS pi
-  INNER JOIN information.entity_project_rel AS epr ON epr.fk_entity=pi.pk_entity
-  INNER JOIN information.role AS r1 ON r1.fk_entity = pi.pk_entity
-  INNER JOIN information.temporal_entity AS te ON r1.fk_temporal_entity = te.pk_temporal_entity
-  INNER JOIN information.role AS r2 ON r2.fk_temporal_entity = te.pk_temporal_entity
-  INNER JOIN
-  (
-    SELECT
-    token.pk_entity,
-    token.appellation_label
-    FROM
-    (
-      SELECT
-      tokens.pk_entity,
-      tokens.token->>'isSeparator' AS is_separator,
-      tokens.token->>'string' AS string,
-      tokens.appellation_label
-      FROM
-      (
-        SELECT jsonb_array_elements(appellation_label->'tokens') as token, pk_entity, appellation_label
-        FROM information.appellation
-      ) AS tokens
-    ) AS token
-    WHERE token.is_separator = 'false'
-    AND token.string iLike $2
-  )
-  AS ap ON ap.pk_entity = r2.fk_entity
-  WHERE
-  te.fk_class = 'F52' -- Appellation Usage
-  AND epr.fk_project IN ($1)
-  `
-
-  Project.searchPersistentItems = function(projectId, searchString, page, cb) {
-
-    // let filter = {
-    //   where: {
-    //     pk_project: projectId
-    //   },
-    //   include: {
-    //     relation: "persistent_items",
-    //     scope: {
-    //       skip: 0,
-    //       limit: 5
-    //       // order: "tmsp_last_modification DESC"
-    //       // order: "notes DESC"
-    //     },
-    //   }
-    // }
-    //
-    // if(searchString) {
-    //   filter.include.scope.where = {
-    //     notes: {
-    //       "regexp": "/"+searchString+"/i"
-    //     }
-    //   }
-    // }
-    //
-    //
-    // Project.find(filter, (err, resultObjects) => {
-    //   cb(err, resultObjects[0]);
-    // });
-
-    var limit = 10;
-    var offset = limit * (page-1);
-
-    var params = [
-      projectId, // $1
-      searchString ? '%' + searchString + '%' : '%%',
-      limit,
-      offset
-    ];
-
-    var sql_stmt = `
-    SELECT
-    pi.notes,
-    pi.pk_persistent_item,
-    pi.pk_entity,
-    pi.fk_class as pi_class,
-    jsonb_agg(ap.appellation_label) as appellations
-    `
-    +
-    sql_middle_part
-    +
-    `
-    GROUP BY pi.pk_entity, pi.pk_persistent_item, pi.fk_class
-    ORDER BY pi.tmsp_last_modification DESC
-    LIMIT $3
-    OFFSET $4;
-    `;
-
-    // TODO
-    // aggragate appellations in query
-    // change where clause from pi.notes to search in ap.appellation_label
-
-
-    const connector = Project.dataSource.connector;
-    connector.execute(sql_stmt, params, (err, resultObjects) => {
-      var persistentItems = [];
-
-      if (resultObjects){
-        persistentItems = resultObjects.map(persistentItemRaw => {
-
-          // TODO
-          // Get PersistentItems with the includes from the filter object.
-          // Return those very rich nested objects.
-
-          const filter = {
-            "include": {
-              "relation": "roles",
-              "scope": {
-                "include": {
-                  "relation": "temporal_entity",
-                  "scope": {
-                    "include": {
-                      "relation": "roles",
-                      "scope": {
-                        "include": {
-                          "relation": "appellation"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-
-          const persistentItemData = connector.fromRow('PersistentItem', persistentItemRaw)
-          return new Project.app.models.PersistentItem(persistentItemData);
-        })
-      }
-      cb(err, persistentItems);
-    });
-  };
-
-
-  Project.afterRemote('searchPersistentItems', function (ctx, resultObjects, next) {
-
-    var params = [
-      ctx.args.projectId, // $1
-      ctx.args.searchString ? '%' + ctx.args.searchString + '%' : '%%'
-    ];
-
-    const count_stmt = `
-    SELECT count(pks.pk_persistent_item)
-    FROM (
-      SELECT DISTINCT
-      pi.pk_persistent_item
-      `
-      +
-      sql_middle_part
-      +
-      `
-    ) AS pks;
-    `;
-
-
-    if (!ctx.res._headerSent) {
-      Project.dataSource.connector.execute(count_stmt, params, (err, countResult) => {
-        ctx.res.set('X-Total-Count', countResult[0].count);
-
-        ctx.result = {
-          'totalCount': countResult[0].count,
-          'data': resultObjects
-        }
-        next();
-      });
-    } else {
-      next();
-    }
-
-  })
 }

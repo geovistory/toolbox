@@ -1,4 +1,4 @@
-import { NamePartInputComponent } from '../name-part-input/name-part-input.component';
+import { NamePartInputComponent } from '../../../name-part-input/name-part-input.component';
 
 export interface TokenInterface {
   "id": number,

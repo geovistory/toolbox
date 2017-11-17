@@ -11,8 +11,7 @@
   },
   "mixins": {
     "SetupRemoteMethods": {
-      "ignoreACL": false,
-      "disableAllExcept": []
+
     }
   },
   "properties": {
@@ -22,6 +21,10 @@
       "generated": true
     },
     "is_in_project": {
+      "type": "boolean",
+      "required": true
+    },
+    "is_standard_in_project": {
       "type": "boolean",
       "required": true
     }

@@ -1,0 +1,30 @@
+.gv-choose-class {
+  .card {
+    border-color: theme-color("primary");
+    display: inline-block;
+    margin-right: 1rem;
+    .card-body {
+      width: 10rem;
+      height: 6.5rem;
+      overflow: auto;
+      font-size: $font-size-sm;
+    }
+    .card-footer {
+      font-size: $font-size-sm
+    }
+  }
+}
+
+.gv-search-existing {
+  .gv-back-btn {
+    margin: -0.8rem 0 0.8rem -0.8rem;
+  }
+  ngb-pagination{
+    display: inline-block;
+    margin-right: 1rem;
+  }
+}
+
+.gv-create-new {
+
+}

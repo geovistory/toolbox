@@ -4,10 +4,13 @@
 <gv-loading-spinner [loading]="loading"></gv-loading-spinner>
 <div class="gv-edit-panel-header" *ngIf="!loading">
   <section class="row">
-    <div class="col-md-8">
+    <div class="col-md-6">
       <h2>
-         <small class="text-muted">Person</small>
+         <small class="text-muted">Person</small> {{standardName}}
       </h2>
+    </div>
+    <div class="col-md-2">
+      <input type="checkbox" [checked]="communityDataView" (change)="communityDataView = !communityDataView"> Show data from all projects
     </div>
     <div class="col-md-4">
       <div class="btn-group float-right mt-2" role="group">
@@ -19,5 +22,7 @@
   </section>
 </div>
 <div class="gv-edit-panel-body" *ngIf="!loading">
-  <gv-naming [appellationUsages]="appellationUsages"></gv-naming>
+  <gv-naming [names]="names"
+  (standardNameStringChange)="setStandardName($event)"
+  [state]="entityEditorState.state"></gv-naming>
 </div>

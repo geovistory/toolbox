@@ -1,4 +1,5 @@
 'use strict';
+var faker = require('faker');
 
 var dbm;
 var type;
@@ -15,166 +16,6 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db, callback) {
-
-  const francescoSeedProject = [
-    'Terrance Vanderveer',
-    'Aimee Younan',
-    'Serafina Janes',
-    'Melody Goss',
-    'Jarred Breunig',
-    'Doreatha Zollinger',
-    'Eartha Steuck',
-    'Vella Farber',
-    'Ria Wagar',
-    'Karry Streich',
-    'Ronni Guilbault',
-    'Dulcie More',
-    'Ozella Hershberger',
-    'Patrick Minnix',
-    'Yuonne Witte',
-    'Sona Findley',
-    'Christene Vermillion',
-    'Ellis Corl',
-    'Josefine Degraffenreid',
-    'Alpha Lembo',
-    'Marion Walther',
-    'Jetta Vercher',
-    'Karon Keck',
-    'Anja Sciacca',
-    'Derrick Cardin',
-    'Sunday Boice',
-    'Merna Parcell',
-    'Donella Vandyke',
-    'Kerrie Harshaw',
-    'Arielle Jurgensen',
-    'Allene Deppen',
-    'Gus Mejorado',
-    'Ivelisse Leaton',
-    'Laverna Spigner',
-    'Nadia Manns',
-    'Willian Dantin',
-    'Joelle Surber',
-    'Mui Policastro',
-    'Terisa Grajeda',
-    'Chrystal Tylor',
-    'Joan Mable',
-    'Kayla Battiste',
-    'Arden Grado',
-    'Agnes Gambill',
-    'Jess Gilstrap',
-    'Dominica Metro',
-    'Martina Cybulski',
-    'Oliver Kempker',
-    'Trent Echavarria',
-    'Lacie Simon'
-  ]
-
-  const jonasSeedProject = [
-    'Kattie Ronquillo',
-    'Evita Quinonez',
-    'Stacee Manos',
-    'Lennie Doyle',
-    'Marty Sleeth',
-    'Lavonna Ocegueda',
-    'Lezlie Heffernan',
-    'James Noonkester',
-    'Wilton Orlandi',
-    'Jerrold Harvison',
-    'Ladonna Norgard',
-    'Era Hsieh',
-    'Dannie Barringer',
-    'Cheryl Arn',
-    'Almeta Dipaola',
-    'Orval Spain',
-    'Alfred Skaggs',
-    'Stephen Lance',
-    'Darby Mcclay',
-    'Pinkie Lape',
-    'Darci Poarch',
-    'Dee Teems',
-    'Isabell Fraire',
-    'Narcisa Riggs',
-    'Sheri Mattews',
-    'Kris Youngren',
-    'Selina Mazurek',
-    'Shirly Leiter',
-    'Tamara Pugsley',
-    'Yuko Runge',
-    'Lucrecia Greenway',
-    'Lenny Iser',
-    'Mercy Marengo',
-    'Dina Vargas',
-    'Kathi Parish',
-    'Jenise Morning',
-    'Jocelyn Quach',
-    'Kathie Bashaw',
-    'Darrell Dirks',
-    'Wilmer Collett',
-    'Mai Mayes',
-    'Filiberto Ress',
-    'Kristopher Caicedo',
-    'Sandy Painter',
-    'Mose Holyfield',
-    'Robert Curd',
-    'Eleonor Eger',
-    'Arlene Grossi',
-    'Delisa Townsel',
-    'Cheyenne Mends'
-  ]
-
-  const davidSeedProject = [
-    'Terrance Vanderveer',
-    'Aimee Younan',
-    'Serafina Janes',
-    'Melody Goss',
-    'Jarred Breunig',
-    'Doreatha Zollinger',
-    'Eartha Steuck',
-    'Vella Farber',
-    'Ria Wagar',
-    'Karry Streich',
-    'Ronni Guilbault',
-    'Dulcie More',
-    'Ozella Hershberger',
-    'Patrick Minnix',
-    'Yuonne Witte',
-    'Sona Findley',
-    'Christene Vermillion',
-    'Ellis Corl',
-    'Josefine Degraffenreid',
-    'Alpha Lembo',
-    'Marion Walther',
-    'Jetta Vercher',
-    'Karon Keck',
-    'Anja Sciacca',
-    'Derrick Cardin',
-    'Sunday Boice',
-    'Merna Parcell',
-    'Donella Vandyke',
-    'Kerrie Harshaw',
-    'Arielle Jurgensen',
-    'Allene Deppen',
-    'Gus Mejorado',
-    'Ivelisse Leaton',
-    'Laverna Spigner',
-    'Nadia Manns',
-    'Willian Dantin',
-    'Joelle Surber',
-    'Mui Policastro',
-    'Terisa Grajeda',
-    'Chrystal Tylor',
-    'Joan Mable',
-    'Kayla Battiste',
-    'Arden Grado',
-    'Agnes Gambill',
-    'Jess Gilstrap',
-    'Dominica Metro',
-    'Martina Cybulski',
-    'Oliver Kempker',
-    'Trent Echavarria',
-    'Lacie Simon'
-  ]
-
 
   let sqlArray = [];
 
@@ -244,8 +85,27 @@ exports.up = function(db, callback) {
         )
       )
       ON CONFLICT DO NOTHING
+      RETURNING  pk_entity
     ),
-
+    -- add the role to seed project as standard appellation of this person
+    add_to_project_as_standard_1 AS (
+      INSERT INTO information.entity_project_rel (fk_project, fk_entity, is_in_project, is_standard_in_project)
+      VALUES
+      (
+        (
+          SELECT pk_project
+          FROM commons.project AS p
+          WHERE p.notes = '` + seedProject + `'
+        ),
+        (
+          SELECT pk_entity
+          FROM insert_role_1
+        ),
+        true,
+        true
+      )
+      ON CONFLICT DO NOTHING
+    ),
     -- add an Appellation
     insert_appe AS (
       INSERT INTO information.appellation (fk_class, appellation_label)
@@ -338,8 +198,27 @@ exports.up = function(db, callback) {
         )
       )
       ON CONFLICT DO NOTHING
+      RETURNING  pk_entity
     ),
-
+    -- add the role to seed project as standard appellation of this person
+    add_to_project_as_standard_2 AS (
+      INSERT INTO information.entity_project_rel (fk_project, fk_entity, is_in_project, is_standard_in_project)
+      VALUES
+      (
+        (
+          SELECT pk_project
+          FROM commons.project AS p
+          WHERE p.notes = '` + seedProject + `'
+        ),
+        (
+          SELECT pk_entity
+          FROM insert_role_4
+        ),
+        true,
+        false
+      )
+      ON CONFLICT DO NOTHING
+    ),
     -- add an Appellation
     insert_appe_2 AS (
       INSERT INTO information.appellation (fk_class, appellation_label)
@@ -380,33 +259,43 @@ exports.up = function(db, callback) {
     `
   }
 
-  for (var i = 0; i < francescoSeedProject.length; i++) {
-    const names = francescoSeedProject[i].split(' ');
-    const firstname = names[0];
-    const lastname = names[1];
-    sqlArray.push(getInsertStatement(firstname, lastname, 'Francesco Seed Project'));
+  for (var i = 0; i < 91; i++) {
+    faker.locale = "fr";
+
+    sqlArray.push(getInsertStatement(
+      faker.name.firstName(),
+      faker.name.lastName(),
+      'Francesco Seed Project'
+    ));
   }
 
-  for (var i = 0; i < jonasSeedProject.length; i++) {
-    const names = jonasSeedProject[i].split(' ');
-    const firstname = names[0];
-    const lastname = names[1];
-    sqlArray.push(getInsertStatement(firstname, lastname, 'Jonas Seed Project'));
+  for (var i = 0; i < 67; i++) {
+    faker.locale = "de_CH";
+
+    sqlArray.push(getInsertStatement(
+      faker.name.firstName(),
+      faker.name.lastName(),
+      'Jonas Seed Project'
+    ));
   }
 
 
-  for (var i = 0; i < davidSeedProject.length; i++) {
-    const names = davidSeedProject[i].split(' ');
-    const firstname = names[0];
-    const lastname = names[1];
-    sqlArray.push(getInsertStatement(firstname, lastname, 'David Seed Project'));
+  for (var i = 0; i < 87; i++) {
+    faker.locale = "de_CH";
+
+    sqlArray.push(getInsertStatement(
+      faker.name.firstName(),
+      faker.name.lastName(),
+      'David Seed Project'
+    ));
   }
+
 
   const sql = sqlArray.join('')
   console.log(`Sample insert statement
     ` + getInsertStatement(
-      davidSeedProject[0].split(' ')[0],
-      davidSeedProject[0].split(' ')[1],
+      faker.name.firstName(),
+      faker.name.lastName(),
       'David Seed Project')
     )
     console.log('Try to insert persistent items: ' + sqlArray.length);

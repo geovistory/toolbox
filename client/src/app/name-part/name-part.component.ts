@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Token } from '../appellation-token/appellation-token';
 import { namePartTypes , NameComponent } from '../name/name.component';
-import { AppellationLabel } from '../appellation-label/appellation-label';
+import { Token } from '../shared/classes/appellation-token/appellation-token';
+import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
 
 
 @Component({

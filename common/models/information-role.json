@@ -22,6 +22,10 @@
       "id": true,
       "required": true
     },
+    "pk_entity": {
+      "type": "number",
+      "required": true
+    },
     "fk_property": {
       "type": "string",
       "required": true
@@ -63,6 +67,12 @@
       "model": "TemporalEntity",
       "foreignKey": "fk_temporal_entity",
       "primaryKey": "pk_temporal_entity"
+    },
+    "entity_project_rels": {
+      "type": "hasMany",
+      "model": "EntityProjectRel",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
     }
   },
   "acls": [],

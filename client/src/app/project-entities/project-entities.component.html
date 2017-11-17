@@ -2,7 +2,7 @@
 
   <section class="row">
     <div class="col-md-8">
-      <h2><i class="gv-icon-information-simple text-primary"></i> Information Units</h2>
+      <h2><i class="gv-icon-information-simple text-primary"></i> Data Units</h2>
     </div>
     <div class="col-md-4">
       <div class="btn-group float-right mt-2" role="group">
@@ -12,11 +12,13 @@
       </div>
     </div>
   </section>
+</div>
 
-  <div class="row mt-5">
+<div class="gv-edit-panel-body">
+  <div class="row mt-1">
     <div class="col">
       <div class="gv-search">
-        <form (ngSubmit)="searchProjectPeIts()">
+        <form (ngSubmit)="searchStringChange()">
           <div class="input-group">
             <input type="text" name="searchString" class="form-control" aria-describedby="search"  autocomplete="off" placeholder="Search …" [(ngModel)]="searchString">
             <span class="input-group-btn">
@@ -26,17 +28,16 @@
         </form>
         <ul class="nav gv-search-filter">
           <li class="nav-item">
-            <button class="btn btn-sm btn-link nav-link">All</button>
+            <button class="btn btn-sm btn-link nav-link">[All]</button>
           </li>
           <li class="nav-item">
             <button class="btn btn-sm btn-link nav-link active">Entities</button>
           </li>
           <li class="nav-item">
-            <button class="btn btn-sm btn-link nav-link">Phenomena</button>
+            <button class="btn btn-sm btn-link nav-link">[Phenomena]</button>
           </li>
         </ul>
       </div>
-
     </div>
   </div>
   <div class="row" *ngIf="!loading">
@@ -45,27 +46,27 @@
         <span  *ngIf="collectionSize > limit">
           {{hitsFrom()}}-{{hitsTo()}} of
         </span>
-        {{collectionSize}} {{(collectionSize == 1 ? 'result' : 'results')}}
+        {{collectionSize | number}} {{(collectionSize == 1 ? 'result' : 'results')}}
       </div>
     </div>
   </div>
 
-</div>
+  <gv-loading-spinner [loading]="loading"></gv-loading-spinner>
 
-<gv-loading-spinner [loading]="loading"></gv-loading-spinner>
-
-<div class="gv-edit-panel-body" *ngIf="!loading">
-  <div class="row mt-2">
+  <div class="row mt-2"  *ngIf="!loading">
     <div class="col">
       <div class="gv-search-hits">
-        <gv-entity-search-hit *ngFor="let hit of persistentItems" [persistentItem]="hit"></gv-entity-search-hit>
+        <gv-entity-search-hit *ngFor="let hit of persistentItems" [persistentItem]="hit" (onOpen)=openEntity($event)></gv-entity-search-hit>
       </div>
     </div>
   </div>
   <div class="row mt-5">
     <div class="col">
-      <ngb-pagination *ngIf="collectionSize > limit" [collectionSize]="collectionSize" [(page)]="page" (pageChange)="searchProjectPeIts()" aria-label="Default pagination"></ngb-pagination>
+      <ngb-pagination *ngIf="collectionSize > limit" [maxSize]="5"
+        [collectionSize]="collectionSize" [(page)]="page"
+        [pageSize]="limit" (pageChange)="pageChange()"
+        aria-label="Default pagination"></ngb-pagination>
+      </div>
     </div>
   </div>
-</div>
 

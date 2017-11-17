@@ -1,0 +1,30 @@
+<h5 class="mt-2 mb-1">
+  Select the information you want to add.
+</h5>
+<p class="text-muted mb-4">
+  No worry, you still change your selection afterwards.
+</p>
+
+<div class="row">
+  <div class="col">
+    <div class="mb-3">
+      Select the names you want to add
+    </div>
+    <gv-naming [names]="names" [state]="'add'"
+    (standardNameStringChange)="setStandardName($event)"
+    (entityProjectRelChange)="setEprNaming($event)"
+    ></gv-naming>
+  </div>
+  <div class="col">
+    <div class="mb-3">
+      Select the information you want to add
+    </div>
+    [TODO]
+    <!-- <gv-naming [names]="names" (standardNameStringChange)="setStandardName($event)" [state]="'edit'"></gv-naming> -->
+
+  </div>
+</div>
+
+
+
+
