@@ -11,23 +11,32 @@
     <form class="" action="index.html" method="post">
       <div class="form-group">
         <label>What is the language of this name?</label>
-        {{selectedLang.value |json}}
-        <select #selectedLang (change)="searchSuggestions(selectedLang)" class="form-control">
+
+        <gv-language-search-typeahead (languageChange)="updateLanguage($event)" [language]="language" name="test"></gv-language-search-typeahead>
+
+        <!-- <select #selectedLang (change)="searchSuggestions(selectedLang)" class="form-control">
           <option value="undefined" class="text-muted">Select language</option>
           <option [value]="'deu'">German</option>
           <option [value]="'fra'">French</option>
-        </select>
+        </select> -->
       </div>
     </form>
   </div>
-  <div class="card-body" *ngIf="appellationUsages?.length">
+  <div class="card-body" *ngIf="suggestedNames?.length">
     <div>Add a name from this list or create a new name:</div>
-    <!-- <gv-name *ngFor="let appellationUsage of appellationUsages" [appellationUsage]="appellationUsage"></gv-name> -->
+    <gv-name *ngFor="let name of suggestedNames"
+     [name]="name"
+      [state]="'nameAdd'"
+      (inProjectChange)="inProjectChange($event)"
+      ></gv-name>
   </div>
   <div class="card-footer">
     <form>
-      <div class="form-group" *ngIf="selected">
-        <button type="submit" class="btn btn-outline-primary">Add selected</button>
+      <div class="form-group" *ngIf="language">
+        <button type="submit" class="btn btn-outline-primary"
+        [attr.disabled]="addSelectedDisabled ? 'disabled' : null"
+        *ngIf="suggestedNames?.length"
+        (click)="addSelectedNames()">Add selected</button>
         <button type="submit" class="btn btn-outline-primary">Create new</button>
       </div>
     </form>

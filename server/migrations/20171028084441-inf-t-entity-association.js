@@ -20,19 +20,10 @@ exports.up = function(db, callback) {
 
   CREATE TABLE information.entity_association
   (
-    pk_entity integer,
-    schema_name character varying,
-    table_name character varying,
     pk_entity_association serial PRIMARY KEY,
     fk_domain_entity integer,
     fk_range_entity integer,
-    fk_property VARCHAR(7) REFERENCES data_for_history.property (data_for_history_id),
-    notes text COLLATE pg_catalog."default",
-    fk_creator integer,
-    fk_last_modifier integer,
-    tmsp_creation timestamp with time zone DEFAULT now(),
-    tmsp_last_modification timestamp with time zone,
-    sys_period tstzrange DEFAULT tstzrange(now(), NULL::timestamp with time zone)
+    fk_property VARCHAR(7) REFERENCES data_for_history.property (data_for_history_id)
   )
   INHERITS (information.entity)
   WITH (

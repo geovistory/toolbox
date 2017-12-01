@@ -120,6 +120,22 @@
   }
 }
 
+// Loading Bar
+
+.slim-loading-bar-progress {
+    margin: 0;
+    padding: 0;
+    z-index: 99998;
+    background-color: theme-color("info") !important;
+    color: theme-color("info") !important;
+    box-shadow: 0 0 10px 0;
+    height: 2px;
+    opacity: 0;
+    -webkit-transition: all .5s ease-in-out;
+    transition: all .5s ease-in-out;
+    position: absolute;
+}
+
 #userDashboard{
   #userImage{
     font-size:6rem;

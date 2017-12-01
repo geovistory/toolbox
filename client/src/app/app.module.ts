@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // Third party imports
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {ElasticInputModule} from 'angular2-elastic-input';
+import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
 
 // Own imports
 import { AppRoutingModule } from './app-routing.module';
@@ -58,6 +59,7 @@ import { EntityAddModalService } from './shared/services/entity-add-modal.servic
 import { EntityAddAddExistingComponent } from './entity-add-add-existing/entity-add-add-existing.component';
 import { GvNameVisiblePipe } from './shared/pipes/gv-name-visible.pipe';
 import { EntityEditorComponent } from './entity-editor/entity.editor.component';
+import { LanguageSearchTypeaheadComponent } from './language-search-typeahead/language-search-typeahead.component';
 
 @NgModule({
   declarations: [
@@ -102,7 +104,8 @@ import { EntityEditorComponent } from './entity-editor/entity.editor.component';
     EntityAddSearchExistingComponent,
     EntityAddCreateNewComponent,
     EntityAddAddExistingComponent,
-    GvNameVisiblePipe
+    GvNameVisiblePipe,
+    LanguageSearchTypeaheadComponent
   ],
   imports: [
     BrowserModule,
@@ -113,7 +116,8 @@ import { EntityEditorComponent } from './entity-editor/entity.editor.component';
     ReactiveFormsModule,
     SDKBrowserModule.forRoot(),
     NgbModule.forRoot(),
-    ElasticInputModule.forRoot()
+    ElasticInputModule.forRoot(),
+    SlimLoadingBarModule.forRoot()
   ],
   providers: [
     ActiveAccountService,

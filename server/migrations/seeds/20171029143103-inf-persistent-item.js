@@ -31,13 +31,13 @@ exports.up = function(db, callback) {
         '` + firstname + ' ' + lastname + `'
       )
       ON CONFLICT DO NOTHING
-      RETURNING pk_entity
+      RETURNING pk_entity, entity_version
     ),
 
     -- add person to Seed Project
     add_to_project_1 AS (
 
-      INSERT INTO information.entity_project_rel (fk_project, fk_entity, is_in_project)
+      INSERT INTO information.entity_version_project_rel (fk_project, fk_entity_version_concat, is_in_project)
       VALUES
       (
         (
@@ -46,7 +46,7 @@ exports.up = function(db, callback) {
           WHERE p.notes = '` + seedProject + `'
         ),
         (
-          SELECT pk_entity
+          SELECT concat(pk_entity || '_' || entity_version)
           FROM insert_persistent_item
         ),
         true
@@ -85,11 +85,11 @@ exports.up = function(db, callback) {
         )
       )
       ON CONFLICT DO NOTHING
-      RETURNING  pk_entity
+      RETURNING  pk_entity, entity_version
     ),
     -- add the role to seed project as standard appellation of this person
     add_to_project_as_standard_1 AS (
-      INSERT INTO information.entity_project_rel (fk_project, fk_entity, is_in_project, is_standard_in_project)
+      INSERT INTO information.entity_version_project_rel (fk_project, fk_entity_version_concat, is_in_project, is_standard_in_project)
       VALUES
       (
         (
@@ -98,7 +98,7 @@ exports.up = function(db, callback) {
           WHERE p.notes = '` + seedProject + `'
         ),
         (
-          SELECT pk_entity
+          SELECT concat(pk_entity || '_' || entity_version)
           FROM insert_role_1
         ),
         true,
@@ -198,11 +198,11 @@ exports.up = function(db, callback) {
         )
       )
       ON CONFLICT DO NOTHING
-      RETURNING  pk_entity
+      RETURNING  pk_entity, entity_version
     ),
     -- add the role to seed project as standard appellation of this person
     add_to_project_as_standard_2 AS (
-      INSERT INTO information.entity_project_rel (fk_project, fk_entity, is_in_project, is_standard_in_project)
+      INSERT INTO information.entity_version_project_rel (fk_project, fk_entity_version_concat, is_in_project, is_standard_in_project)
       VALUES
       (
         (
@@ -211,7 +211,7 @@ exports.up = function(db, callback) {
           WHERE p.notes = '` + seedProject + `'
         ),
         (
-          SELECT pk_entity
+          SELECT concat(pk_entity || '_' || entity_version)
           FROM insert_role_4
         ),
         true,
@@ -259,7 +259,7 @@ exports.up = function(db, callback) {
     `
   }
 
-  for (var i = 0; i < 91; i++) {
+  for (var i = 0; i < 3; i++) {
     faker.locale = "fr";
 
     sqlArray.push(getInsertStatement(
@@ -269,7 +269,7 @@ exports.up = function(db, callback) {
     ));
   }
 
-  for (var i = 0; i < 67; i++) {
+  for (var i = 0; i < 2; i++) {
     faker.locale = "de_CH";
 
     sqlArray.push(getInsertStatement(
@@ -280,7 +280,7 @@ exports.up = function(db, callback) {
   }
 
 
-  for (var i = 0; i < 87; i++) {
+  for (var i = 0; i < 2; i++) {
     faker.locale = "de_CH";
 
     sqlArray.push(getInsertStatement(
@@ -310,7 +310,14 @@ exports.up = function(db, callback) {
     TRUNCATE information.role CASCADE;
     TRUNCATE information.appellation CASCADE;
     TRUNCATE information.temporal_entity CASCADE;
-    TRUNCATE information.entity_project_rel CASCADE;
+    TRUNCATE information.entity_version_project_rel CASCADE;
+
+
+    TRUNCATE information.persistent_item_vt CASCADE;
+    TRUNCATE information.role_vt CASCADE;
+    TRUNCATE information.appellation_vt CASCADE;
+    TRUNCATE information.temporal_entity_vt CASCADE;
+    TRUNCATE information.entity_version_project_rel CASCADE;
     `;
 
     db.runSql(sql, callback);

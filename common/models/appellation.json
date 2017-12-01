@@ -10,9 +10,7 @@
     }
   },
   "mixins": {
-    "SetupRemoteMethods": {
-
-    }
+    "SetupRemoteMethods": {}
   },
   "properties": {
     "pk_appellation": {

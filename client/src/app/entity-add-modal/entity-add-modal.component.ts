@@ -1,8 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
+
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+
 import { EntityAddModalService } from '../shared/services/entity-add-modal.service';
-
-
 
 @Component({
   selector: 'gv-entity-add-modal',
@@ -17,7 +18,8 @@ export class EntityAddModalComponent implements OnInit {
 
   constructor(
     public activeModal: NgbActiveModal,
-    public modalService:EntityAddModalService
+    public modalService:EntityAddModalService,
+    private slimLoadingBarService: SlimLoadingBarService
   ) {
     this.modalService.onStateChange.subscribe(state => {
       this.state = state;
@@ -34,51 +36,35 @@ export class EntityAddModalComponent implements OnInit {
   }
 
   add(){
+    this.startLoading();
     this.modalService.addPeItToProject().subscribe(success => {
       this.modalService.onOpen.emit(this.modalService.pkPersistentItem);
+      this.completeLoading();
       this.activeModal.close('Entity Added');
     });
   }
 
 
+  /**
+  * Loading Bar Logic
+  */
 
+  startLoading() {
+    this.slimLoadingBarService.progress = 20;
+    this.slimLoadingBarService.start(() => {
+    });
+  }
 
-  /*
-  addPeItToProject(){
-  this.projectApi.addEntity(this.projectId, this.peItToAdd.semkey_peit)
-  .subscribe(
-  data => {
-  this.listProjectPeIts();
-  this.loading = false
-},
-error => {
-// TODO: Alert
-this.errorMessages = error.error.details.messages;
-this.loading = false;
-}
-);
-}
+  stopLoading() {
+    this.slimLoadingBarService.stop();
+  }
 
+  completeLoading() {
+    this.slimLoadingBarService.complete();
+  }
 
-searchPeIt = (text$: Observable<string>) =>
-text$
-.debounceTime(300)
-.distinctUntilChanged()
-.do(() => this.searching = true)
-.switchMap(term =>
-this.persistentItemApi.find({"where":{"notes": {"like":term}}})
-.do(() => this.searchFailed = false)
-.catch(() => {
-this.searchFailed = true;
-return Observable.of([]);
-}))
-.do(() => {
-this.searching = false;
-})
-.merge(this.hideSearchingWhenUnsubscribed);
-
-formatter = (x) => x.notes;
-
-*/
+  resetLoading() {
+    this.slimLoadingBarService.reset();
+  }
 
 }

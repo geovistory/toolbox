@@ -10,9 +10,7 @@
     }
   },
   "mixins": {
-    "SetupRemoteMethods": {
-
-    }
+    "SetupRemoteMethods": {}
   },
   "properties": {
     "pk_entity_project_rel": {
@@ -27,6 +25,10 @@
     "is_standard_in_project": {
       "type": "boolean",
       "required": true
+    },
+    "is_in_project_true_tmsp": {
+      "type": "date",
+      "required": false
     }
   },
   "validations": [],

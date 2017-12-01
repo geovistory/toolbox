@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute} from '@angular/router';
+
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+
 import { Project } from '../shared/sdk/models/Project';
 import { ProjectApi } from '../shared/sdk/services/custom/Project';
 import { ActiveProjectService } from '../shared/services/active-project.service';
@@ -11,9 +14,6 @@ import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem'
   styleUrls: ['./project-dashboard.component.scss']
 })
 export class ProjectDashboardComponent implements OnInit {
-
-
-  loading: boolean = false;
   errorMessages: any;
   project:Project;
   id:number;
@@ -36,7 +36,8 @@ export class ProjectDashboardComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private projectApi: ProjectApi,
     private activeProjectService: ActiveProjectService,
-    private persistentItemApi: PersistentItemApi
+    private persistentItemApi: PersistentItemApi,
+    private slimLoadingBarService: SlimLoadingBarService
   ) {
     this.id = activatedRoute.snapshot.parent.params['id'];
     activeProjectService.onProjectChange().subscribe((project:Project) => {
@@ -68,20 +69,43 @@ export class ProjectDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.activeProjectService.setActiveProject(this.id);
+    this.startLoading();
 
     this.persistentItemApi.searchInProject(this.id,'',1, 1)
     .subscribe(
       (response) => {
         this.dataUnitsCount = parseInt(response.totalCount);
-        this.loading = false
+        this.completeLoading();
       },
       error => {
+        this.resetLoading()
+
         // TODO: Alert
         this.errorMessages = error.error.details.messages;
-        this.loading = false;
       }
     );
 
   }
 
+  /**
+   * Loading Bar Logic
+   */
+
+  startLoading() {
+    this.slimLoadingBarService.progress = 20;
+    this.slimLoadingBarService.start(() => {
+    });
+  }
+
+  stopLoading() {
+    this.slimLoadingBarService.stop();
+  }
+
+  completeLoading() {
+    this.slimLoadingBarService.complete();
+  }
+
+  resetLoading() {
+    this.slimLoadingBarService.reset();
+  }
   }

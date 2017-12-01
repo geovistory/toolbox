@@ -7,7 +7,6 @@
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-6">
-
       <div *ngIf="projects.length > 0">
         <h2 class="clearfix">Your Projects
           <span class="pull-right">
@@ -30,7 +29,7 @@
         </div>
       </div>
 
-      <div *ngIf="projects.length === 0">
+      <div *ngIf="projects.length === 0 && loadingComplete">
         <a routerLink="create" class="btn btn-primary">Create your first project</a>
       </div>
     </div>

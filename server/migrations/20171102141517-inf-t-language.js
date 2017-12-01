@@ -26,14 +26,8 @@ exports.up = function(db, callback) {
     scope character varying,
     iso6392b character(3),
     iso6392t character(3),
-    iso6391 character(3),
-    notes text,
-    fk_creator integer,
-    fk_last_modifier integer,
-    tmsp_creation timestamp with time zone DEFAULT now(),
-    tmsp_last_modification timestamp with time zone,
-    sys_period tstzrange DEFAULT tstzrange(now(), NULL::timestamp with time zone)
-  )
+    iso6391 character(3)
+    )
   INHERITS (information.entity)
   WITH (
     OIDS = FALSE

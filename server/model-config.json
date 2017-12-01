@@ -64,6 +64,10 @@
     "dataSource": "postgres1",
     "public": true
   },
+  "ProjectPersistentItem": {
+    "dataSource": "postgres1",
+    "public": true
+  },
   "EntityProjectRel": {
     "dataSource": "postgres1",
     "public": true
@@ -93,6 +97,14 @@
     "public": true
   },
   "InformationLanguage": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "PersistentItemVersion": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "EntityVersionProjectRel": {
     "dataSource": "postgres1",
     "public": true
   }

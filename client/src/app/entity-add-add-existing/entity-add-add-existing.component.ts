@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+
 import { EntityAddModalService } from '../shared/services/entity-add-modal.service';
 import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -22,7 +25,8 @@ export class EntityAddAddExistingComponent implements OnInit {
   constructor(
     private persistentItemApi: PersistentItemApi,
     private modalService:EntityAddModalService,
-    private activeModal: NgbActiveModal
+    private activeModal: NgbActiveModal,
+    private slimLoadingBarService: SlimLoadingBarService
   ) { }
 
   ngOnInit() {
@@ -58,6 +62,7 @@ export class EntityAddAddExistingComponent implements OnInit {
       }
     }
 
+    this.startLoading();
     this.persistentItemApi.findById(
       this.modalService.pkPersistentItem,
       filter
@@ -70,6 +75,7 @@ export class EntityAddAddExistingComponent implements OnInit {
 
         this.loading = false;
 
+        this.completeLoading();
       });
     }
 
@@ -86,11 +92,30 @@ export class EntityAddAddExistingComponent implements OnInit {
     }
 
     setEprNaming(eprNaming){
-      eprNaming.forEach(epr=>console.log(epr))
-
       this.modalService.eprNaming = eprNaming;
     }
 
+    /**
+    * Loading Bar Logic
+    */
+
+    startLoading() {
+      this.slimLoadingBarService.progress = 20;
+      this.slimLoadingBarService.start(() => {
+      });
+    }
+
+    stopLoading() {
+      this.slimLoadingBarService.stop();
+    }
+
+    completeLoading() {
+      this.slimLoadingBarService.complete();
+    }
+
+    resetLoading() {
+      this.slimLoadingBarService.reset();
+    }
   }
 
 

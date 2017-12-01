@@ -4,7 +4,8 @@ export enum EntityState {
   'edit', // edit an entity and its phenomena within a project
   'add', // adding an entity and its phenomena to a project
   'view', // view a entity and its phenomena within a project
-  'communityDataView' // view an entity with all phenomena existing in the repo
+  'communityDataView', // view an entity with all phenomena existing in the repo
+  'nameAdd' // adding a name to an entity that is already in the project (acutally this is more a name state than a entiy state --> may be move to a seperate state enum)
 }
 
 export class EntityEditorState {

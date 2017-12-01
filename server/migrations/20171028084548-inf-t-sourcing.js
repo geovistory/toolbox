@@ -20,20 +20,11 @@ exports.up = function(db, callback) {
 
 CREATE TABLE information.sourcing
 (
-    pk_entity integer,
-    schema_name character varying,
-    table_name character varying,
     pk_sourcing serial PRIMARY KEY,
     fk_source integer,
     fk_entity integer,
     fk_system_type integer,
-    position_in_source text COLLATE pg_catalog."default",
-    notes text COLLATE pg_catalog."default",
-    fk_creator integer,
-    fk_last_modifier integer,
-    tmsp_creation timestamp with time zone DEFAULT now(),
-    tmsp_last_modification timestamp with time zone,
-    sys_period tstzrange DEFAULT tstzrange(now(), NULL::timestamp with time zone)
+    position_in_source text COLLATE pg_catalog."default"
 )
     INHERITS (information.entity)
 WITH (

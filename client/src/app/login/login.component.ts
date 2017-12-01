@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+
 import { LoopBackConfig } from './../shared/sdk/lb.config';
 import { environment } from './../../environments/environment';
 import { AccountApi } from './../shared/sdk/services/custom/Account';
@@ -22,7 +24,8 @@ export class LoginComponent implements OnInit {
     private activeAccountService:ActiveAccountService,
     private route: ActivatedRoute,
     private router: Router,
-    private accountApi: AccountApi
+    private accountApi: AccountApi,
+    private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -33,12 +36,12 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    this.loading = true;
+    this.startLoading();
     this.errorMessage = '';
     this.accountApi.login(this.model)
     .subscribe(
       data => {
-        this.loading = false;
+        this.completeLoading();
         this.activeAccountService.updateAccount();
         let redirect = this.activeAccountService.redirectUrl ? this.activeAccountService.redirectUrl : this.returnUrl;
         this.router.navigate([redirect]);
@@ -48,8 +51,33 @@ export class LoginComponent implements OnInit {
         // When (db) server not available; e.g. «Network error»
 
         this.errorMessage = error.message;
-        this.loading = false;
+        this.resetLoading();
       });
     }
 
+
+    /**
+    * Loading Bar Logic
+    */
+
+    startLoading() {
+      this.slimLoadingBarService.progress = 20;
+      this.slimLoadingBarService.start(() => {
+      });
+      this.loading = true;
+    }
+
+    stopLoading() {
+      this.slimLoadingBarService.stop();
+    }
+
+    completeLoading() {
+      this.loading = false;
+      this.slimLoadingBarService.complete();
+    }
+
+    resetLoading() {
+      this.loading = false;
+      this.slimLoadingBarService.reset();
+    }
   }

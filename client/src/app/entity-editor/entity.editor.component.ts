@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+
 import { PersistentItem } from '../shared/sdk/models/PersistentItem';
 import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
 import { PropertyPipe } from '../shared/pipes/property';
@@ -47,17 +50,20 @@ export class EntityEditorComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private persistentItemApi: PersistentItemApi,
-    private propertyPipe: PropertyPipe
+    private propertyPipe: PropertyPipe,
+    private slimLoadingBarService: SlimLoadingBarService
   ) {
   }
 
   ngOnInit() {
+
     this.id = this.activatedRoute.snapshot.params['id'];
+
     this.projectId = this.activatedRoute.snapshot.parent.params['id'];
 
     this.communityDataView = false;
 
-    this.loading = true;
+    this.startLoading();
 
     const filter = {
       "include": {
@@ -94,7 +100,7 @@ export class EntityEditorComponent implements OnInit {
 
         this.setNames(this.persistentItem);
 
-        this.loading = false;
+        this.completeLoading();
 
       });
     }
@@ -105,6 +111,35 @@ export class EntityEditorComponent implements OnInit {
 
     setStandardName(string){
       this.standardName = string;
+    }
+
+    toggleCommunityDataView(){
+      this.completeLoading();
+      this.communityDataView = !this.communityDataView;
+    }
+
+    /**
+     * Loading Bar Logic
+     */
+
+    startLoading() {
+      this.loading = true;
+      this.slimLoadingBarService.progress = 20;
+      this.slimLoadingBarService.start(() => {
+      });
+    }
+
+    stopLoading() {
+      this.slimLoadingBarService.stop();
+    }
+
+    completeLoading() {
+      this.loading = false;
+      this.slimLoadingBarService.complete();
+    }
+
+    resetLoading() {
+      this.slimLoadingBarService.reset();
     }
 
   }

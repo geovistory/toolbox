@@ -1,5 +1,8 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import {FormControl} from '@angular/forms';
+
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+
 import { PersistentItem } from '../shared/sdk/models/PersistentItem';
 import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
 import { EntityAddModalService } from '../shared/services/entity-add-modal.service';
@@ -18,6 +21,7 @@ export class EntityAddSearchExistingComponent implements OnInit {
 
   //Search
   searchString:string = '';
+  minSearchStringLength = 2;
   searchFormControl = new FormControl();
 
   //Hits
@@ -31,7 +35,8 @@ export class EntityAddSearchExistingComponent implements OnInit {
   constructor(
     private persistentItemApi: PersistentItemApi,
     public modalService:EntityAddModalService,
-    private activeModal: NgbActiveModal
+    private activeModal: NgbActiveModal,
+    private slimLoadingBarService: SlimLoadingBarService
   ) { }
 
   ngOnInit() {
@@ -43,7 +48,7 @@ export class EntityAddSearchExistingComponent implements OnInit {
       .debounceTime(400)
       .subscribe(newValue => {
         this.searchString = newValue;
-        if(newValue.length > 1){
+        if(newValue.length >= this.minSearchStringLength){
           this.page = 1;
           this.searchPeIts();
         }
@@ -55,20 +60,20 @@ export class EntityAddSearchExistingComponent implements OnInit {
   }
 
   searchPeIts() {
-    this.loading = true;
+    this.startLoading();
     this.persistentItems = [];
     this.errorMessages = {};
     this.persistentItemApi.searchInRepo(this.searchString, this.limit, this.page)
     .subscribe(
       (response) => {
+        this.completeLoading();
         this.persistentItems = response.data;
         this.collectionSize = parseInt(response.totalCount);
-        this.loading = false
       },
       error => {
+        this.resetLoading();
         // TODO: Alert
         this.errorMessages = error.error.details.messages;
-        this.loading = false;
       }
     );
   }
@@ -99,4 +104,28 @@ export class EntityAddSearchExistingComponent implements OnInit {
 
   }
 
+  /**
+  * Loading Bar Logic
+  */
+
+  startLoading() {
+    this.loading = true;
+    this.slimLoadingBarService.progress = 20;
+    this.slimLoadingBarService.start(() => {
+    });
+  }
+
+  stopLoading() {
+    this.slimLoadingBarService.stop();
+  }
+
+  completeLoading() {
+    this.loading = false;
+    this.slimLoadingBarService.complete();
+  }
+
+  resetLoading() {
+    this.loading = false;
+    this.slimLoadingBarService.reset();
+  }
 }

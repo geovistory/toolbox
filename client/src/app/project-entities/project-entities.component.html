@@ -51,7 +51,7 @@
     </div>
   </div>
 
-  <gv-loading-spinner [loading]="loading"></gv-loading-spinner>
+  <!-- <gv-loading-spinner [loading]="loading"></gv-loading-spinner> -->
 
   <div class="row mt-2"  *ngIf="!loading">
     <div class="col">
@@ -60,7 +60,7 @@
       </div>
     </div>
   </div>
-  <div class="row mt-5">
+  <div class="row mt-5" *ngIf="!loading">
     <div class="col">
       <ngb-pagination *ngIf="collectionSize > limit" [maxSize]="5"
         [collectionSize]="collectionSize" [(page)]="page"

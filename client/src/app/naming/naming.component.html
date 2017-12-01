@@ -30,7 +30,7 @@
     </div>
 
     <div class="card-body gv-naming" *ngIf="addingName">
-      <gv-name-add (onCancel)="cancelAddName()"></gv-name-add>
+      <gv-name-add [names]="names" (onCancel)="cancelAddName()"></gv-name-add>
     </div>
 
     <div class="card-footer gv-naming" *ngIf="footerVisible">

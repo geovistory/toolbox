@@ -20,20 +20,11 @@ exports.up = function(db, callback) {
 
   CREATE TABLE information.dating
   (
-    pk_entity integer,
-    schema_name character varying,
-    table_name character varying,
     pk_dating serial PRIMARY KEY,
     date_iso_value jsonb,
     comment text,
-    fk_system_type integer,
-    notes text,
-    fk_creator integer,
-    fk_last_modifier integer,
-    tmsp_creation timestamp with time zone DEFAULT now(),
-    tmsp_last_modification timestamp with time zone,
-    sys_period tstzrange DEFAULT tstzrange(now(), NULL::timestamp with time zone)
-  )
+    fk_system_type integer
+    )
   INHERITS (information.entity)
   WITH (
     OIDS = FALSE

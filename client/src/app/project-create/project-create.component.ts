@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/catch';
@@ -9,6 +10,8 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/merge';
+
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 import { LoopBackConfig } from './../shared/sdk/lb.config';
 import { environment } from './../../environments/environment';
@@ -24,6 +27,7 @@ export class ProjectLabelDescription {
   "label": String;
   "language": Language;
   "text_property": String;
+  test:any; //TODO REMOVE
 };
 
 @Component({
@@ -32,7 +36,7 @@ export class ProjectLabelDescription {
   styleUrls: ['./project-create.component.scss']
 })
 export class ProjectCreateComponent implements OnInit {
-  loading: boolean = false;
+  createBtnDisabled: boolean = false;
   errorMessages: any;
   model: ProjectLabelDescription = new ProjectLabelDescription();
 
@@ -42,7 +46,6 @@ export class ProjectCreateComponent implements OnInit {
   searchFailed = false;
   hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
 
-
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -50,6 +53,7 @@ export class ProjectCreateComponent implements OnInit {
     private projectApi: ProjectApi,
     private languageApi: LanguageApi,
     private authService: LoopBackAuth,
+    private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -57,10 +61,13 @@ export class ProjectCreateComponent implements OnInit {
   }
 
   ngOnInit(){
+    this.startLoading();
     const userLang = navigator.language.split("-")[0].split("_")[0];
     this.languageApi.find({"where":{"iso6391":userLang}})
     .subscribe(
       (data:any) => {
+        this.completeLoading();
+
         try {
           this.model.language = data[0];
         }
@@ -75,7 +82,9 @@ export class ProjectCreateComponent implements OnInit {
 
 
   request() {
-    this.loading = true;
+    this.startLoading();
+    this.createBtnDisabled = true;
+
     this.errorMessages = {};
 
     this.projectApi.createWithLabelAndDescription(
@@ -86,34 +95,59 @@ export class ProjectCreateComponent implements OnInit {
     )
     // this.accountApi.createProjects(this.authService.getCurrentUserId(), this.model)
     .subscribe(
-      data => {
-        this.loading = false;
-        this.router.navigate(['../'], {relativeTo: this.activatedRoute})
-      },
-      error => {
-        // TODO: Alert
-        this.errorMessages = error.error.details.messages;
-        this.loading = false;
-      }
-    );
+    data => {
+      this.completeLoading();
+      this.createBtnDisabled = false;
+      this.router.navigate(['../'], {relativeTo: this.activatedRoute})
+    },
+    error => {
+      this.resetLoading();
+
+      // TODO: Alert
+      this.errorMessages = error.error.details.messages;
+      this.createBtnDisabled = false;
+    }
+  );
+}
+
+
+search = (text$: Observable<string>) =>
+text$
+.debounceTime(300)
+.distinctUntilChanged()
+.do(() => this.searching = true)
+.switchMap(term =>
+  this.languageApi.queryByString(term)
+  .do(() => this.searchFailed = false)
+  .catch(() => {
+    this.searchFailed = true;
+    return Observable.of([]);
+  }))
+  .do(() => this.searching = false)
+  .merge(this.hideSearchingWhenUnsubscribed);
+
+  formatter = (x) => x.notes;
+
+
+  /**
+  * Loading Bar Logic
+  */
+
+  startLoading() {
+    this.slimLoadingBarService.progress = 20;
+    this.slimLoadingBarService.start(() => {
+    });
   }
 
-
-  search = (text$: Observable<string>) =>
-  text$
-  .debounceTime(300)
-  .distinctUntilChanged()
-  .do(() => this.searching = true)
-  .switchMap(term =>
-    this.languageApi.queryByString(term)
-    .do(() => this.searchFailed = false)
-    .catch(() => {
-      this.searchFailed = true;
-      return Observable.of([]);
-    }))
-    .do(() => this.searching = false)
-    .merge(this.hideSearchingWhenUnsubscribed);
-
-    formatter = (x) => x.notes;
-
+  stopLoading() {
+    this.slimLoadingBarService.stop();
   }
+
+  completeLoading() {
+    this.slimLoadingBarService.complete();
+  }
+
+  resetLoading() {
+    this.slimLoadingBarService.reset();
+  }
+}

@@ -2,7 +2,9 @@ import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { Http, Request, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 import { Router, ActivatedRoute } from '@angular/router';
 
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { Observable } from 'rxjs/Rx';
+
 import {ErrorHandler} from './../shared/sdk/services/core/error.service';
 import { BaseLoopBackApi } from './../shared/sdk/services/core/base.service';
 import {LoopBackConfig} from './../shared/sdk/lb.config';
@@ -28,7 +30,8 @@ export class ResetPasswordComponent implements OnInit {
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler,
     private route: ActivatedRoute,
     private router: Router,
-    private accountApi: AccountApi
+    private accountApi: AccountApi,
+    private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -73,12 +76,12 @@ export class ResetPasswordComponent implements OnInit {
 
 
   resetPassword(){
-    this.loading = true;
+    this.startLoading();
     this.errorMessage = '';
     this.setPassword(this.model.password)
     .subscribe(
       data => {
-        this.loading = false;
+        this.completeLoading();
         this.confirm = true;
       },
       error => {
@@ -86,8 +89,32 @@ export class ResetPasswordComponent implements OnInit {
         // When (db) server not available; e.g. «Network error»
 
         this.errorMessage = error.message;
-        this.loading = false;
+        this.resetLoading();
       });
     }
 
+    /**
+    * Loading Bar Logic
+    */
+
+    startLoading() {
+      this.slimLoadingBarService.progress = 20;
+      this.slimLoadingBarService.start(() => {
+      });
+      this.loading = true;
+    }
+
+    stopLoading() {
+      this.slimLoadingBarService.stop();
+    }
+
+    completeLoading() {
+      this.slimLoadingBarService.complete();
+      this.loading = false;
+    }
+
+    resetLoading() {
+      this.slimLoadingBarService.reset();
+      this.loading = false;
+    }
   }

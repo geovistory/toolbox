@@ -6,6 +6,9 @@ import {
   animate,
   transition
 } from '@angular/animations';
+
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { AppellationApi } from '../shared/sdk/services/custom/Appellation';
 import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
@@ -75,7 +78,7 @@ export class NameComponent implements OnInit{
   @Input() name: InformationRole;
 
   // On state 'add' set true to check is_standard_in_project
-  @Input() isStandardOnAdd: boolean;
+  @Input() isStandardOnAdd: boolean = false;
 
   // Entity Project Relation
   entityProjectRel: EntityProjectRel;
@@ -115,18 +118,19 @@ export class NameComponent implements OnInit{
     // Change the value
     this.entityProjectRel.is_in_project = value;
 
-    if(this.state ==='add'){    
+    if(this.state ==='add' || this.state === 'nameAdd'){
       // Emit the change
       this.emitEprChange();
     }
     else{
-
       // Save the changes
+      this.startLoading();
       this.changeIsInProjectLoading = true;
       this.entityProjectRelApi.patchAttributes(
         this.entityProjectRel.pk_entity_project_rel,
         this.entityProjectRel
       ).subscribe(success => {
+        this.completeLoading();
         this.changeIsInProjectLoading = false;
       })
     }
@@ -139,6 +143,7 @@ export class NameComponent implements OnInit{
 
   get inProjectVisible() {
     if (this.state === 'add') return true;
+    if (this.state === 'nameAdd') return true;
     if (this.state === 'communityDataView') return true;
 
     return false;
@@ -181,7 +186,8 @@ export class NameComponent implements OnInit{
   constructor(
     private appellationApi: AppellationApi,
     private entityProjectRelApi:EntityProjectRelApi,
-    private activeProjectService: ActiveProjectService
+    private activeProjectService: ActiveProjectService,
+    private slimLoadingBarService: SlimLoadingBarService
   ) {
 
   }
@@ -193,7 +199,7 @@ export class NameComponent implements OnInit{
       fk_entity: this.name.pk_entity,
       fk_project: this.activeProjectService.project.pk_project,
       is_in_project: true,
-      is_standard_in_project: this.isStandardOnAdd //TODO
+      is_standard_in_project: this.isStandardOnAdd
     })
   }
   else {
@@ -266,9 +272,12 @@ emitEprChange(){
 }
 
 saveAppellationLabel(){
+  this.startLoading();
+
   this.appellationApi.patchAttributes(this.appellation.pk_appellation, {
     appellation_label: this.appellationLabel
   }).subscribe(success => {
+    this.completeLoading();
     this.emitIfStandardName();
     console.log(success);
   })
@@ -307,6 +316,7 @@ getTokenTypeLabel(typeId:number){
 
 makeStandardInProject(){
   if(this.state !== 'add'){
+    this.startLoading();
     this.changeStandardLoading = true;
     this.entityProjectRelApi.patchAttributes(this.entityProjectRel.pk_entity_project_rel, {
       is_standard_in_project: true
@@ -316,6 +326,7 @@ makeStandardInProject(){
     })
   }
   else if(this.state === 'add'){
+    this.inProject = true;
     this.entityProjectRel.is_standard_in_project = true;
     this.standardNameChange.emit(this);
   }
@@ -323,7 +334,27 @@ makeStandardInProject(){
 }
 
 
+/**
+* Loading Bar Logic
+*/
 
+startLoading() {
+  this.slimLoadingBarService.progress = 20;
+  this.slimLoadingBarService.start(() => {
+  });
+}
+
+stopLoading() {
+  this.slimLoadingBarService.stop();
+}
+
+completeLoading() {
+  this.slimLoadingBarService.complete();
+}
+
+resetLoading() {
+  this.slimLoadingBarService.reset();
+}
 
 
 }

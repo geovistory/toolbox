@@ -12,6 +12,7 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/merge';
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 import { PersistentItem } from '../shared/sdk/models/PersistentItem';
 import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
@@ -53,7 +54,8 @@ export class ProjectEntitiesComponent implements OnInit {
     private persistentItemApi: PersistentItemApi,
     private modalService: NgbModal,
     private entityAddModalService: EntityAddModalService,
-    private router: Router
+    private router: Router,
+    private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -71,20 +73,22 @@ export class ProjectEntitiesComponent implements OnInit {
   }
 
   searchProjectPeIts() {
-    this.loading = true;
+    this.startLoading();
     this.persistentItems = [];
     this.errorMessages = {};
     this.persistentItemApi.searchInProject(this.projectId, this.searchString, this.limit, this.page)
     .subscribe(
       (response) => {
+        this.completeLoading();
+
         this.persistentItems = response.data;
         this.collectionSize = response.totalCount;
-        this.loading = false
       },
       error => {
+        this.resetLoading();
+
         // TODO: Alert
         this.errorMessages = error.error.details.messages;
-        this.loading = false;
       }
     );
   }
@@ -117,4 +121,28 @@ export class ProjectEntitiesComponent implements OnInit {
     this.searchProjectPeIts();
   }
 
+  /**
+  * Loading Bar Logic
+  */
+
+  startLoading() {
+    this.loading = true;
+    this.slimLoadingBarService.progress = 20;
+    this.slimLoadingBarService.start(() => {
+    });
+  }
+
+  stopLoading() {
+    this.slimLoadingBarService.stop();
+  }
+
+  completeLoading() {
+    this.loading = false
+    this.slimLoadingBarService.complete();
+  }
+
+  resetLoading() {
+    this.loading = false
+    this.slimLoadingBarService.reset();
+  }
 }

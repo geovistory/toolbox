@@ -35,8 +35,8 @@
       "required": true
     },
     "fk_temporal_entity": {
-        "type": "number",
-        "required": true
+      "type": "number",
+      "required": true
     },
     "notes": {
       "type": "string"

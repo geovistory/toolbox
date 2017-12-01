@@ -1,0 +1,29 @@
+{
+  "name": "ProjectEntity",
+  "base": "PersistedModel",
+  "mixins": {
+    "SetupRemoteMethods": {
+      "disableAllExcept": []
+    }
+  },
+  "hidden": [],
+  "properties": {
+    "fk_project": {
+      "type": "number",
+      "required": true
+    },
+    "is_in_project": {
+      "type": "boolean"
+    },
+    "is_standard_in_project": {
+      "type": "boolean"
+    },
+    "is_in_project_true_tmsp": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

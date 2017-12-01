@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+
 import { LoopBackConfig }        from '../shared/sdk';
 import { Account } from './../shared/sdk/models/Account';
 import { AccountApi } from './../shared/sdk/services/custom/Account';
@@ -21,28 +23,53 @@ export class RegistrationComponent {
 
   constructor(
     private accountApi: AccountApi,
-    private router: Router
+    private router: Router,
+    private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
   }
 
   register(){
+    this.startLoading();
+
+    this.errorMessages = {};
+    this.account = new Account(this.model);
+    this.accountApi.create(this.account)
+    .subscribe(
+      data => {
+        this.completeLoading();
+        this.confirm = true;
+      },
+      error => {
+        // TODO: Alert
+        this.errorMessages = error.details.messages;
+        this.resetLoading();
+      });
+    }
+
+    /**
+    * Loading Bar Logic
+    */
+
+    startLoading() {
       this.loading = true;
-      this.errorMessages = {};
-      this.account = new Account(this.model);
-      this.accountApi.create(this.account)
-      .subscribe(
-        data => {
-          this.loading = false;
-          this.confirm = true;
-        },
-        error => {
-          // TODO: Alert
-          this.errorMessages = error.details.messages;
-          this.loading = false;
-        });
-      }
+      this.slimLoadingBarService.progress = 20;
+      this.slimLoadingBarService.start(() => {
+      });
+    }
 
+    stopLoading() {
+      this.slimLoadingBarService.stop();
+    }
 
-}
+    completeLoading() {
+      this.loading = false;
+      this.slimLoadingBarService.complete();
+    }
+
+    resetLoading() {
+      this.loading = false;
+      this.slimLoadingBarService.reset();
+    }
+  }

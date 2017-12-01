@@ -48,6 +48,32 @@ exports.up = function(db, callback) {
   RETURN NEW;
   END;
   $BODY$;
+
+
+  CREATE OR REPLACE FUNCTION commons.create_entity_version_key()
+  RETURNS trigger
+  LANGUAGE 'plpgsql'
+  COST 100
+  VOLATILE NOT LEAKPROOF
+  AS $BODY$
+  BEGIN
+  NEW.entity_version = 1;
+  RETURN NEW;
+  END;
+  $BODY$;
+
+
+  CREATE OR REPLACE FUNCTION commons.update_entity_version_key()
+  RETURNS trigger
+  LANGUAGE 'plpgsql'
+  COST 100
+  VOLATILE NOT LEAKPROOF
+  AS $BODY$
+  BEGIN
+  NEW.entity_version :=  NEW.entity_version + 1;
+  RETURN NEW;
+  END;
+  $BODY$;
   `;
 
   db.runSql(sql, callback);
@@ -59,6 +85,9 @@ exports.down = function(db, callback) {
   DROP FUNCTION commons.tmsp_creation();
   DROP FUNCTION commons.tmsp_last_modification();
   DROP FUNCTION commons.insert_schema_table_name();
+  DROP FUNCTION commons.create_entity_version_key();
+  DROP FUNCTION commons.update_entity_version_key();
+
   `;
 
   db.runSql(sql, callback);

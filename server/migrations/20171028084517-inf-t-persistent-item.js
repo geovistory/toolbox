@@ -20,18 +20,10 @@ exports.up = function(db, callback) {
 
   CREATE TABLE information.persistent_item
   (
-    pk_entity integer,
-    schema_name character varying,
-    table_name character varying,
+    entity_version integer,
     pk_persistent_item serial PRIMARY KEY,
-    fk_class VARCHAR(7) REFERENCES data_for_history.class (data_for_history_id),
-    notes text COLLATE pg_catalog."default",
-    fk_creator integer,
-    fk_last_modifier integer,
-    tmsp_creation timestamp with time zone DEFAULT now(),
-    tmsp_last_modification timestamp with time zone,
-    sys_period tstzrange DEFAULT tstzrange(now(), NULL::timestamp with time zone)
-  )
+    fk_class VARCHAR(7) REFERENCES data_for_history.class (data_for_history_id)
+    )
   INHERITS (information.entity)
   WITH (
     OIDS = FALSE
@@ -76,6 +68,23 @@ exports.up = function(db, callback) {
   FOR EACH ROW EXECUTE PROCEDURE versioning(
     'sys_period', 'information.persistent_item_vt', true
   );
+
+  -- Trigger: create_entity_version_key
+
+  CREATE TRIGGER create_entity_version_key
+  BEFORE INSERT
+  ON information.persistent_item
+  FOR EACH ROW
+  EXECUTE PROCEDURE commons.create_entity_version_key();
+
+  -- Trigger: update_entity_version_key
+
+  CREATE TRIGGER update_entity_version_key
+  BEFORE UPDATE
+  ON information.persistent_item
+  FOR EACH ROW
+  EXECUTE PROCEDURE commons.update_entity_version_key();
+
   `
   db.runSql(sql, callback)
 

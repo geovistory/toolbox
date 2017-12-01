@@ -1,12 +1,12 @@
 {
-  "name": "PersistentItem",
-  "base": "PersistedModel",
+  "name": "ProjectPersistentItem",
+  "base": "ProjectEntity",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "information",
-      "table": "persistent_item"
+      "table": "v_project_persistent_item"
     }
   },
   "mixins": {
@@ -33,14 +33,6 @@
   },
   "validations": [],
   "relations": {
-    "projects": {
-      "type": "hasMany",
-      "model": "Project",
-      "foreignKey": "fk_entity",
-      "primaryKey": "pk_entity",
-      "keyThrough": "fk_project",
-      "through": "EntityProjectRel"
-    },
     "roles": {
       "type": "hasMany",
       "model": "InformationRole",
@@ -54,48 +46,25 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "createItem",
         "find",
+        "create",
         "findById",
-        "searchInProject",
-        "searchInRepo"
+        "searchInProject"
       ]
     }
   ],
   "methods": {
-    "createItem": {
+    "searchInProject": {
       "accepts": [
         {
           "arg": "projectId",
           "type": "number",
           "required": true,
-          "description": "Id of project to associate the persistent item with.",
+          "description": "Project id",
           "http": {
             "source": "query"
           }
         },
-        {
-          "arg": "data",
-          "type": "PersistentItem",
-          "required": true,
-          "description": "Data used to create the new persistent item",
-          "http": {
-            "source": "body"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "success",
-        "type": "boolean",
-        "root": true
-      },
-      "http": {
-        "path": "/create",
-        "verb": "post"
-      }
-    },
-    "searchInRepo": {
-      "accepts": [
         {
           "arg": "searchString",
           "type": "string",
@@ -131,7 +100,7 @@
       },
       "description": "Find persistent items of a project.",
       "http": {
-        "path": "/search-in-repo",
+        "path": "/search",
         "verb": "get"
       }
     }

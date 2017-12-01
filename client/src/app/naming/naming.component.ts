@@ -6,6 +6,9 @@ import {
   animate,
   transition
 } from '@angular/animations';
+
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
 import { InformationRole } from '../shared/sdk/models/InformationRole';
@@ -77,7 +80,8 @@ export class NamingComponent implements OnInit, OnChanges {
 
   constructor(
     private entityProjectRelApi:EntityProjectRelApi,
-    public activeProject: ActiveProjectService
+    public activeProject: ActiveProjectService,
+    private slimLoadingBarService: SlimLoadingBarService
   ) { }
 
   ngOnInit() {
@@ -157,6 +161,9 @@ export class NamingComponent implements OnInit, OnChanges {
         is_standard_in_project: false
       }).subscribe(entProRel => {
 
+        // complete the loading bar
+        this.completeLoading();
+
         // stop the loading flag on the new name
         newNameComponent.changeStandardLoading = false;
 
@@ -219,5 +226,27 @@ inProjectChange(entProRels){
 // cancelAddAppellation(){
 //
 // }
+
+/**
+* Loading Bar Logic
+*/
+
+startLoading() {
+  this.slimLoadingBarService.progress = 20;
+  this.slimLoadingBarService.start(() => {
+  });
+}
+
+stopLoading() {
+  this.slimLoadingBarService.stop();
+}
+
+completeLoading() {
+  this.slimLoadingBarService.complete();
+}
+
+resetLoading() {
+  this.slimLoadingBarService.reset();
+}
 
 }

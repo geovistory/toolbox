@@ -1,0 +1,44 @@
+{
+  "name": "EntityVersionProjectRel",
+  "base": "PersistedModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "entity_version_project_rel"
+    }
+  },
+  "properties": {
+    "pk_entity_version_project_rel": {
+      "type": "number",
+      "required": true,
+      "id": true
+    },
+    "fk_entity_version": {
+      "type": "string",
+      "required": true
+    },
+    "fk_project": {
+      "type": "number",
+      "required": true
+    },
+    "is_in_project": {
+      "type": "boolean"
+    },
+    "is_standard_in_project": {
+      "type": "boolean"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "persistent_item_version": {
+      "type": "belongsTo",
+      "model": "PersistentItemVersion",
+      "foreignKey": "fk_entity_version",
+      "primaryKey": "pk_entity_version"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

@@ -20,7 +20,14 @@ exports.up = function(db, callback) {
   (
     pk_entity serial PRIMARY KEY,
     schema_name character varying,
-    table_name character varying
+    table_name character varying,
+    entity_version integer,
+    notes text COLLATE pg_catalog."default",
+    fk_creator integer,
+    fk_last_modifier integer,
+    tmsp_creation timestamp with time zone DEFAULT now(),
+    tmsp_last_modification timestamp with time zone,
+    sys_period tstzrange DEFAULT tstzrange(now(), NULL::timestamp with time zone)
   );
   `
   db.runSql(sql, callback)

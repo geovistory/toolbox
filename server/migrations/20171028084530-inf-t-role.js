@@ -20,20 +20,11 @@ exports.up = function(db, callback) {
 
   CREATE TABLE information.role
   (
-    pk_entity integer,
-    schema_name character varying,
-    table_name character varying,
     pk_role serial PRIMARY KEY,
     fk_entity integer,
     fk_temporal_entity integer,
-    fk_property VARCHAR(7) REFERENCES data_for_history.property (data_for_history_id),
-    notes text COLLATE pg_catalog."default",
-    fk_creator integer,
-    fk_last_modifier integer,
-    tmsp_creation timestamp with time zone DEFAULT now(),
-    tmsp_last_modification timestamp with time zone,
-    sys_period tstzrange DEFAULT tstzrange(now(), NULL::timestamp with time zone)
-  )
+    fk_property VARCHAR(7) REFERENCES data_for_history.property (data_for_history_id)
+    )
   INHERITS (information.entity)
   WITH (
     OIDS = FALSE
@@ -78,6 +69,24 @@ exports.up = function(db, callback) {
   FOR EACH ROW EXECUTE PROCEDURE versioning(
     'sys_period', 'information.role_vt', true
   );
+
+  -- Trigger: create_entity_version_key
+
+  CREATE TRIGGER create_entity_version_key
+  BEFORE INSERT
+  ON information.role
+  FOR EACH ROW
+  EXECUTE PROCEDURE commons.create_entity_version_key();
+
+  -- Trigger: update_entity_version_key
+
+  CREATE TRIGGER update_entity_version_key
+  BEFORE UPDATE
+  ON information.role
+  FOR EACH ROW
+  EXECUTE PROCEDURE commons.update_entity_version_key();
+
+
   `
   db.runSql(sql, callback)
 
