@@ -10,6 +10,7 @@ import {
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin';
 
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { AppellationApi } from '../shared/sdk/services/custom/Appellation';

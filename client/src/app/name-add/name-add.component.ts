@@ -6,6 +6,7 @@ import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProje
 import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/EntityVersionProjectRel';
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin';
 
 @Component({
   selector: 'gv-name-add',
