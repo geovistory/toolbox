@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { PersistentItem } from '../shared/sdk/models/PersistentItem';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
+import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
 
 @Component({
   selector: 'gv-entity-search-hit',
@@ -88,11 +88,11 @@ export class EntitySearchHitComponent implements OnInit {
   }
 
   add(){
-    this.onAdd.emit(this.persistentItem.pk_persistent_item)
+    this.onAdd.emit(this.persistentItem.pk_entity)
   }
 
   open(){
-    this.onOpen.emit(this.persistentItem.pk_persistent_item)
+    this.onOpen.emit(this.persistentItem.pk_entity)
   }
 
   linkClicked(){

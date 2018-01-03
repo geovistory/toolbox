@@ -34,26 +34,6 @@ exports.up = function(db, callback) {
       RETURNING pk_entity, entity_version
     ),
 
-    -- add person to Seed Project
-    add_to_project_1 AS (
-
-      INSERT INTO information.entity_version_project_rel (fk_project, fk_entity_version_concat, is_in_project)
-      VALUES
-      (
-        (
-          SELECT pk_project
-          FROM commons.project AS p
-          WHERE p.notes = '` + seedProject + `'
-        ),
-        (
-          SELECT concat(pk_entity || '_' || entity_version)
-          FROM insert_persistent_item
-        ),
-        true
-      )
-      ON CONFLICT DO NOTHING
-    ),
-
     -- add an Appellation Usage
     insert_appe_usage AS (
       INSERT INTO information.temporal_entity (fk_class, notes)
@@ -61,7 +41,7 @@ exports.up = function(db, callback) {
       FROM data_for_history.class AS c
       WHERE c.data_for_history_id = 'F52' -- Name Use Activity
       ON CONFLICT DO NOTHING
-      RETURNING  pk_temporal_entity
+      RETURNING  pk_temporal_entity, pk_entity, entity_version
     ),
 
     -- relate Person with Appellation Usage
@@ -80,32 +60,14 @@ exports.up = function(db, callback) {
           FROM insert_persistent_item
         ),
         (
-          SELECT pk_temporal_entity
+          SELECT pk_entity
           FROM insert_appe_usage
         )
       )
       ON CONFLICT DO NOTHING
       RETURNING  pk_entity, entity_version
     ),
-    -- add the role to seed project as standard appellation of this person
-    add_to_project_as_standard_1 AS (
-      INSERT INTO information.entity_version_project_rel (fk_project, fk_entity_version_concat, is_in_project, is_standard_in_project)
-      VALUES
-      (
-        (
-          SELECT pk_project
-          FROM commons.project AS p
-          WHERE p.notes = '` + seedProject + `'
-        ),
-        (
-          SELECT concat(pk_entity || '_' || entity_version)
-          FROM insert_role_1
-        ),
-        true,
-        true
-      )
-      ON CONFLICT DO NOTHING
-    ),
+
     -- add an Appellation
     insert_appe AS (
       INSERT INTO information.appellation (fk_class, appellation_label)
@@ -117,7 +79,7 @@ exports.up = function(db, callback) {
         )
       )
       ON CONFLICT DO NOTHING
-      RETURNING  pk_entity
+      RETURNING  pk_entity, entity_version
     ),
 
     -- relate Appellation with Appellation Usage
@@ -136,11 +98,12 @@ exports.up = function(db, callback) {
           FROM insert_appe
         ),
         (
-          SELECT pk_temporal_entity
+          SELECT pk_entity
           FROM insert_appe_usage
         )
       )
       ON CONFLICT DO NOTHING
+      RETURNING pk_entity, entity_version
     ),
 
     -- relate Appellation Usage with Language
@@ -160,11 +123,12 @@ exports.up = function(db, callback) {
           WHERE pk_language = 'deu' -- German
         ),
         (
-          SELECT pk_temporal_entity
+          SELECT pk_entity
           FROM insert_appe_usage
         )
       )
       ON CONFLICT DO NOTHING
+      RETURNING pk_entity, entity_version
     ),
 
     -- add an Appellation Usage 2
@@ -174,7 +138,7 @@ exports.up = function(db, callback) {
       FROM data_for_history.class AS c
       WHERE c.data_for_history_id = 'F52' -- Name Use Activity
       ON CONFLICT DO NOTHING
-      RETURNING  pk_temporal_entity
+      RETURNING  pk_temporal_entity, pk_entity, entity_version
     ),
 
     -- relate Person with Appellation Usage
@@ -193,32 +157,14 @@ exports.up = function(db, callback) {
           FROM insert_persistent_item
         ),
         (
-          SELECT pk_temporal_entity
+          SELECT pk_entity
           FROM insert_appe_usage_2
         )
       )
       ON CONFLICT DO NOTHING
       RETURNING  pk_entity, entity_version
     ),
-    -- add the role to seed project as standard appellation of this person
-    add_to_project_as_standard_2 AS (
-      INSERT INTO information.entity_version_project_rel (fk_project, fk_entity_version_concat, is_in_project, is_standard_in_project)
-      VALUES
-      (
-        (
-          SELECT pk_project
-          FROM commons.project AS p
-          WHERE p.notes = '` + seedProject + `'
-        ),
-        (
-          SELECT concat(pk_entity || '_' || entity_version)
-          FROM insert_role_4
-        ),
-        true,
-        false
-      )
-      ON CONFLICT DO NOTHING
-    ),
+
     -- add an Appellation
     insert_appe_2 AS (
       INSERT INTO information.appellation (fk_class, appellation_label)
@@ -230,7 +176,7 @@ exports.up = function(db, callback) {
         )
       )
       ON CONFLICT DO NOTHING
-      RETURNING  pk_entity
+      RETURNING  pk_entity, entity_version
     ),
 
     -- relate Appellation with Appellation Usage
@@ -249,17 +195,86 @@ exports.up = function(db, callback) {
           FROM insert_appe_2
         ),
         (
-          SELECT pk_temporal_entity
+          SELECT pk_entity
           FROM insert_appe_usage_2
         )
       )
       ON CONFLICT DO NOTHING
+      RETURNING pk_entity, entity_version
+    ),
+
+    -- add all the entities to the seed project
+    add_entities_to_seed_project AS (
+      INSERT INTO information.entity_version_project_rel (fk_project, fk_entity_version_concat, is_in_project, is_standard_in_project)
+      VALUES
+      (
+        (SELECT pk_project FROM commons.project AS p  WHERE p.notes = '` + seedProject + `'),
+        (SELECT concat(pk_entity || '_' || entity_version) FROM insert_persistent_item),
+        true,
+        null
+      ),
+      (
+        (SELECT pk_project FROM commons.project AS p  WHERE p.notes = '` + seedProject + `'),
+        (SELECT concat(pk_entity || '_' || entity_version) FROM insert_appe_usage),
+        true,
+        null
+      ),
+      (
+        (SELECT pk_project FROM commons.project AS p  WHERE p.notes = '` + seedProject + `'),
+        (SELECT concat(pk_entity || '_' || entity_version) FROM insert_role_1),
+        true,
+        true
+      ),
+      (
+        (SELECT pk_project FROM commons.project AS p  WHERE p.notes = '` + seedProject + `'),
+        (SELECT concat(pk_entity || '_' || entity_version) FROM insert_appe),
+        true,
+        null
+      ),
+      (
+        (SELECT pk_project FROM commons.project AS p  WHERE p.notes = '` + seedProject + `'),
+        (SELECT concat(pk_entity || '_' || entity_version) FROM insert_role_2),
+        true,
+        null
+      ),
+      (
+        (SELECT pk_project FROM commons.project AS p  WHERE p.notes = '` + seedProject + `'),
+        (SELECT concat(pk_entity || '_' || entity_version) FROM insert_role_3),
+        true,
+        null
+      ),
+      (
+        (SELECT pk_project FROM commons.project AS p  WHERE p.notes = '` + seedProject + `'),
+        (SELECT concat(pk_entity || '_' || entity_version) FROM insert_appe_usage_2),
+        true,
+        null
+      ),
+      (
+        (SELECT pk_project FROM commons.project AS p  WHERE p.notes = '` + seedProject + `'),
+        (SELECT concat(pk_entity || '_' || entity_version) FROM insert_role_4),
+        true,
+        false
+      ),
+      (
+        (SELECT pk_project FROM commons.project AS p  WHERE p.notes = '` + seedProject + `'),
+        (SELECT concat(pk_entity || '_' || entity_version) FROM insert_appe_2),
+        true,
+        null
+      ),
+      (
+        (SELECT pk_project FROM commons.project AS p  WHERE p.notes = '` + seedProject + `'),
+        (SELECT concat(pk_entity || '_' || entity_version) FROM insert_role_5),
+        true,
+        null
+      )
+      ON CONFLICT DO NOTHING
     )
+
     Select true as success;
     `
   }
 
-  for (var i = 0; i < 3; i++) {
+  for (var i = 0; i < 4; i++) {
     faker.locale = "fr";
 
     sqlArray.push(getInsertStatement(

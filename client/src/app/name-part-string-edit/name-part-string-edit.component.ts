@@ -5,11 +5,11 @@ import { Token } from '../shared/classes/appellation-token/appellation-token';
 
 
   @Component({
-    selector: 'gv-name-part-input',
-    templateUrl: './name-part-input.component.html',
-    styleUrls: ['./name-part-input.component.scss']
+    selector: 'gv-name-part-string-edit',
+    templateUrl: './name-part-string-edit.component.html',
+    styleUrls: ['./name-part-string-edit.component.scss']
   })
-  export class NamePartInputComponent implements OnInit, AfterViewInit {
+  export class NamePartStringEditComponent implements OnInit, AfterViewInit {
     @ViewChild('element') element;
 
     @Input() token: Token;
@@ -71,7 +71,7 @@ import { Token } from '../shared/classes/appellation-token/appellation-token';
 
 
     ngOnInit(){
-      this.token.namePartInputComponent = this;
+      this.token.namePartStringEditComponent = this;
       /**
       * Propagate the splitting for strings with multiple split characters that
       * are inserted at once in the input field, e.g. by copy-pasting.
@@ -126,12 +126,12 @@ import { Token } from '../shared/classes/appellation-token/appellation-token';
 
     focusOnNextToken(){
       if(this.hasNextToken) {
-        this.nextToken.namePartInputComponent.focus();
+        this.nextToken.namePartStringEditComponent.focus();
       }
     }
     focusOnPreviousToken(){
       if(this.hasPreviousToken) {
-        this.previousToken.namePartInputComponent.focus(this.previousToken.string.length);
+        this.previousToken.namePartStringEditComponent.focus(this.previousToken.string.length);
       }
     }
 

@@ -64,14 +64,6 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "ProjectPersistentItem": {
-    "dataSource": "postgres1",
-    "public": true
-  },
-  "EntityProjectRel": {
-    "dataSource": "postgres1",
-    "public": true
-  },
   "CommonsLabel": {
     "dataSource": "postgres1",
     "public": true
@@ -107,5 +99,9 @@
   "EntityVersionProjectRel": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "EntityVersion": {
+    "dataSource": null,
+    "public": false
   }
 }

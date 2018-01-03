@@ -4,7 +4,7 @@ import {FormControl} from '@angular/forms';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 import { PersistentItem } from '../shared/sdk/models/PersistentItem';
-import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
+import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
 import { EntityAddModalService } from '../shared/services/entity-add-modal.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -33,7 +33,7 @@ export class EntityAddSearchExistingComponent implements OnInit {
   page:number = 1; // current page
 
   constructor(
-    private persistentItemApi: PersistentItemApi,
+    private persistentItemApi: PersistentItemVersionApi,
     public modalService:EntityAddModalService,
     private activeModal: NgbActiveModal,
     private slimLoadingBarService: SlimLoadingBarService
@@ -94,14 +94,13 @@ export class EntityAddSearchExistingComponent implements OnInit {
     this.modalService.state = newState;
   }
 
-  add(pkPersistentItem:number){
-    this.modalService.pkPersistentItem = pkPersistentItem;
+  add(pkEntity:number){
+    this.modalService.pkEntity = pkEntity;
     this.modalService.state = 'add-existing'
   }
-  open(pkPersistentItem:number){
-    this.modalService.onOpen.emit(pkPersistentItem);
-    this.activeModal.dismiss('Open persistent item ' + pkPersistentItem)
-
+  open(pkEntity:number){
+    this.modalService.onOpen.emit(pkEntity);
+    this.activeModal.dismiss('Open persistent item ' + pkEntity)
   }
 
   /**

@@ -4,10 +4,10 @@ module.exports = function(InformationLanguage) {
 
   InformationLanguage.queryByString = function(searchstring, cb) {
     var sql_stmt = `
-    select pk_language, fk_class, lang_type, "scope",iso6392b, iso6392t, iso6391, notes
+    select pk_entity, pk_language, fk_class, lang_type, "scope",iso6392b, iso6392t, iso6391, notes
     from (
       SELECT
-      pk_language, fk_class, lang_type, "scope",iso6392b, iso6392t, iso6391, notes,
+      pk_entity, pk_language, fk_class, lang_type, "scope",iso6392b, iso6392t, iso6391, notes,
       ts_rank(to_tsvector('english', notes),
       to_tsquery($1), 1) AS score
       FROM information."language"

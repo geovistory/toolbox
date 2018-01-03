@@ -57,7 +57,7 @@ exports.up = function(db, callback) {
   -- DROP TRIGGER last_modification_tmsp ON information.entity_association;
 
   CREATE TRIGGER last_modification_tmsp
-  BEFORE INSERT
+  BEFORE INSERT OR UPDATE
   ON information.entity_association
   FOR EACH ROW
   EXECUTE PROCEDURE commons.tmsp_last_modification();
@@ -74,6 +74,23 @@ exports.up = function(db, callback) {
   FOR EACH ROW EXECUTE PROCEDURE versioning(
     'sys_period', 'information.entity_association_vt', true
   );
+
+  -- Trigger: create_entity_version_key
+
+  CREATE TRIGGER create_entity_version_key
+  BEFORE INSERT
+  ON information.entity_association
+  FOR EACH ROW
+  EXECUTE PROCEDURE commons.create_entity_version_key();
+
+  -- Trigger: update_entity_version_key
+
+  CREATE TRIGGER update_entity_version_key
+  BEFORE UPDATE
+  ON information.entity_association
+  FOR EACH ROW
+  EXECUTE PROCEDURE commons.update_entity_version_key();
+
   `
   db.runSql(sql, callback)
 

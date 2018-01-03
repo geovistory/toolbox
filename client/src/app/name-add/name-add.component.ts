@@ -2,8 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
 import { InformationRole } from '../shared/sdk/models/InformationRole';
-import { EntityProjectRel } from '../shared/sdk/models/EntityProjectRel';
-import { EntityProjectRelApi } from '../shared/sdk/services/custom/EntityProjectRel';
+import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
+import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/EntityVersionProjectRel';
 
 import { Observable } from 'rxjs/Observable';
 
@@ -17,8 +17,10 @@ export class NameAddComponent implements OnInit {
   @Input() names:InformationRole[];
   namesNotInProject:InformationRole[];
   suggestedNames:InformationRole[];
-  entProRels:EntityProjectRel[]=[];
+  entProRels:EntityVersionProjectRel[]=[];
   @Output() onCancel = new EventEmitter();
+  @Output() onAdd:EventEmitter<InformationRole[]> = new EventEmitter();
+
   language:InformationLanguage;
   selected:boolean=false;
 
@@ -33,7 +35,7 @@ export class NameAddComponent implements OnInit {
   }
 
   constructor(
-    private entityProjectRelApi:EntityProjectRelApi,
+    private entityProjectRelApi:EntityVersionProjectRelApi,
     private activeProject: ActiveProjectService
   ) {
     this.language = new InformationLanguage(this.activeProject.project.default_language);
@@ -53,7 +55,7 @@ export class NameAddComponent implements OnInit {
 
       // Make an array of names that are not in the project
       this.namesNotInProject = this.names.filter(name => {
-        const epr = name.entity_project_rels.filter(epr=>{
+        const epr = name.entity_version_project_rels.filter(epr=>{
           return epr.fk_project === this.activeProject.project.pk_project
         })[0];
         return !epr.is_in_project;
@@ -63,10 +65,10 @@ export class NameAddComponent implements OnInit {
       this.suggestedNames = this.namesNotInProject.filter(name=>{
 
         /** check if the language matches */
-        const languageMaches = name.temporal_entity.roles.filter(role=>{
+        const languageMaches = name.temporal_entity.te_roles.filter(role=>{
           return (
             role.fk_property === "R61"
-            && role.language.pk_language === this.language.pk_language
+            && role.language.pk_entity === this.language.pk_entity
           )
         })
 
@@ -79,11 +81,13 @@ export class NameAddComponent implements OnInit {
     }
   }
 
-  inProjectChange(entProRels){
+  onNameAdd(data){
+    const entProRels = data.entityProjectRels;
     let _that = this;
     entProRels.forEach(function(newRel) {
       var existing = _that.entProRels.filter(function(v, i) {
-        return (v.fk_entity === newRel.fk_entity && v.fk_project === newRel.fk_project);
+        //TODO Check if this works with fk_entity_version_concat
+        return (v.fk_entity_version_concat === newRel.fk_entity_version_concat && v.fk_project === newRel.fk_project);
       });
       if (existing.length) {
         var existingIndex = _that.entProRels.indexOf(existing[0]);
@@ -105,8 +109,8 @@ export class NameAddComponent implements OnInit {
 
     Observable.forkJoin(apiCalls)
     .subscribe(
-      (response) => {
-        this.cancel()
+      (response:EntityVersionProjectRel[]) => {
+        this.onAdd.emit();
       },
       error => {
         this.cancel()

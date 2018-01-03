@@ -1,9 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 
 // Third party imports
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -35,8 +34,6 @@ import { ProjectEntitiesComponent } from './project-entities/project-entities.co
 import { ProjectEditComponent } from './project-edit/project-edit.component';
 import { NamingComponent } from './naming/naming.component';
 import { NameComponent } from './name/name.component';
-import { NamePartComponent } from './name-part/name-part.component';
-import { NamePartInputComponent } from './name-part-input/name-part-input.component';
 import { ProjectEditPanelComponent } from './project-edit-panel/project-edit-panel.component';
 import { ProjectSourcesComponent } from './project-sources/project-sources.component';
 import { SourceComponent } from './source/source.component';
@@ -60,6 +57,12 @@ import { EntityAddAddExistingComponent } from './entity-add-add-existing/entity-
 import { GvNameVisiblePipe } from './shared/pipes/gv-name-visible.pipe';
 import { EntityEditorComponent } from './entity-editor/entity.editor.component';
 import { LanguageSearchTypeaheadComponent } from './language-search-typeahead/language-search-typeahead.component';
+import { AppellationService } from './shared/services/appellation.service';
+import { NamePartsViewComponent } from './name-parts-view/name-parts-view.component';
+import { NamePartTypeEditComponent } from './name-part-type-edit/name-part-type-edit.component';
+import { NamePartStringEditComponent } from './name-part-string-edit/name-part-string-edit.component';
+import { PassiveLinkDirective } from './passive-link.directive';
+import { VersionModalComponent } from './version-modal/version-modal.component';
 
 @NgModule({
   declarations: [
@@ -83,8 +86,8 @@ import { LanguageSearchTypeaheadComponent } from './language-search-typeahead/la
     ProjectEditComponent,
     NamingComponent,
     NameComponent,
-    NamePartComponent,
-    NamePartInputComponent,
+    NamePartTypeEditComponent,
+    NamePartStringEditComponent,
     ProjectEditPanelComponent,
     EntityEditorComponent,
     ProjectSourcesComponent,
@@ -105,7 +108,10 @@ import { LanguageSearchTypeaheadComponent } from './language-search-typeahead/la
     EntityAddCreateNewComponent,
     EntityAddAddExistingComponent,
     GvNameVisiblePipe,
-    LanguageSearchTypeaheadComponent
+    LanguageSearchTypeaheadComponent,
+    NamePartsViewComponent,
+    PassiveLinkDirective,
+    VersionModalComponent
   ],
   imports: [
     BrowserModule,
@@ -123,12 +129,15 @@ import { LanguageSearchTypeaheadComponent } from './language-search-typeahead/la
     ActiveAccountService,
     ActiveProjectService,
     EntityAddModalService,
+    AppellationService,
     AuthGuard,
-    PropertyPipe
+    PropertyPipe,
+    { provide: LOCALE_ID, useValue: 'ch-DE' }
   ],
   entryComponents : [
     AppComponent,
-    EntityAddModalComponent
+    EntityAddModalComponent,
+    VersionModalComponent
   ],
   bootstrap: [AppComponent]
 })

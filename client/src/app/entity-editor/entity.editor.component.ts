@@ -3,8 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
-import { PersistentItem } from '../shared/sdk/models/PersistentItem';
-import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
+import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
+import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
 import { PropertyPipe } from '../shared/pipes/property';
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { InformationRole } from '../shared/sdk/models/InformationRole';
@@ -23,7 +23,7 @@ export class EntityEditorComponent implements OnInit {
   projectId;
   loading;
 
-  persistentItem:PersistentItem;
+  persistentItemVersion:PersistentItemVersion;
 
   names:Array<InformationRole>=[]
 
@@ -49,7 +49,7 @@ export class EntityEditorComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private persistentItemApi: PersistentItemApi,
+    private persistentItemVersionApi: PersistentItemVersionApi,
     private propertyPipe: PropertyPipe,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
@@ -65,48 +65,78 @@ export class EntityEditorComponent implements OnInit {
 
     this.startLoading();
 
-    const filter = {
-      "include": {
-        "relation": "roles",
-        "scope": {
-          "include": [
-            {
-              "relation": "temporal_entity",
-              "scope": {
-                "include": {
-                  "relation": "roles",
-                  "scope": {
-                    "include": ["language", "appellation"]
-                  }
-                }
-              }
+    const innerJoinThisProject = {
+      "entity_version_project_rels": {
+        "$relation": {
+          "name": "entity_version_project_rels",
+          "joinType": "inner join",
+          "where": ["fk_project", "=", this.projectId]
+        }
+      }
+    };
+
+    const filter =
+    {
+      "where": ["pk_entity","=",this.id],
+      "include":{
+        ...innerJoinThisProject,
+        "pi_roles":{
+          "$relation": {
+            "name": "pi_roles",
+            "joinType": "left join"
+          },
+          ...innerJoinThisProject,
+          "temporal_entity": {
+            "$relation": {
+              "name": "temporal_entity",
+              "joinType": "inner join",
+              "orderBy":[{"pk_entity":"asc"}]
             },
-            {
-              "relation": "entity_project_rels"
-              // ,
-              // "where": {
-              //   "fk_project": this.projectId
-              // }
+            ...innerJoinThisProject,
+            "te_roles": {
+              "$relation": {
+                "name": "te_roles",
+                "joinType": "inner join",
+                "orderBy":[{"pk_entity":"asc"}]
+              },
+              ...innerJoinThisProject,
+              "appellation": {
+                "$relation": {
+                  "name": "appellation",
+                  "joinType": "left join",
+                  "orderBy":[{"pk_entity":"asc"}]
+                },
+                ...innerJoinThisProject
+              },
+              "language": {
+                "$relation": {
+                  "name": "language",
+                  "joinType": "left join",
+                  "orderBy":[{"pk_entity":"asc"}]
+                }
+                // ,
+                // ...innerJoinThisProject
+              }
             }
-          ]
+          }
         }
       }
     }
 
-    this.persistentItemApi.findById(this.id, filter).subscribe(
-      (persistentItem: PersistentItem) => {
 
-        this.persistentItem = persistentItem;
+    this.persistentItemVersionApi.findComplex(filter).subscribe(
+      (persistentItemVersions: PersistentItemVersion[]) => {
+        this.persistentItemVersion = persistentItemVersions[0];
 
-        this.setNames(this.persistentItem);
+        this.setNames(this.persistentItemVersion);
 
         this.completeLoading();
 
       });
     }
 
-    setNames(persistentItem:PersistentItem){
-      this.names = this.persistentItem.roles.filter(role => role.fk_property === 'R63');
+    setNames(persistentItemVersion:PersistentItemVersion){
+      this.names = this.persistentItemVersion.pi_roles.filter(role => role.fk_property === 'R63');
     }
 
     setStandardName(string){
@@ -119,8 +149,8 @@ export class EntityEditorComponent implements OnInit {
     }
 
     /**
-     * Loading Bar Logic
-     */
+    * Loading Bar Logic
+    */
 
     startLoading() {
       this.loading = true;

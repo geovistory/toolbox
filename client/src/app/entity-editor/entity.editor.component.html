@@ -1,21 +1,20 @@
 <a class="gv-back-btn btn btn-link" routerLink="../../search"  queryParamsHandling="merge">
   <i class="fa fa-arrow-left"></i>  Search
 </a>
-<!-- <gv-loading-spinner [loading]="loading"></gv-loading-spinner> -->
 <div class="gv-edit-panel-header" *ngIf="!loading">
   <section class="row">
-    <div class="col-md-6">
+    <div class="col-md-8">
       <h2>
          <small class="text-muted">Person</small> {{standardName}}
       </h2>
     </div>
-    <div class="col-md-2">
-      <input type="checkbox" [checked]="communityDataView" (change)="toggleCommunityDataView()"> Show data from all projects
-    </div>
     <div class="col-md-4">
       <div class="btn-group float-right mt-2" role="group">
-        <button class="btn btn-sm btn-secondary">
-          <i class="fa fa-quote-left" aria-hidden="true"></i> Show Annotations
+        <button class="btn btn-sm btn-secondary" (click)="toggleCommunityDataView()" *ngIf="!communityDataView">
+          Show community-data and versions 
+        </button>
+        <button class="btn btn-sm btn-secondary" (click)="toggleCommunityDataView()" *ngIf="communityDataView">
+          <i class="fa fa-edit" aria-hidden="true"></i> Edit mode
         </button>
       </div>
     </div>

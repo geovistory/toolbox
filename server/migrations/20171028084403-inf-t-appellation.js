@@ -23,7 +23,7 @@ exports.up = function(db, callback) {
   (
     pk_appellation serial PRIMARY KEY,
     appellation_label jsonb,
-    fk_class VARCHAR(7) REFERENCES data_for_history.class (data_for_history_id)
+    fk_class VARCHAR(7) NOT NULL REFERENCES data_for_history.class (data_for_history_id)
   )
   INHERITS (information.entity)
   WITH (
@@ -53,7 +53,7 @@ exports.up = function(db, callback) {
   -- Trigger: last_modification_tmsp
 
   CREATE TRIGGER last_modification_tmsp
-  BEFORE INSERT
+  BEFORE INSERT OR UPDATE
   ON information.appellation
   FOR EACH ROW
   EXECUTE PROCEDURE commons.tmsp_last_modification();
@@ -69,21 +69,38 @@ exports.up = function(db, callback) {
   FOR EACH ROW EXECUTE PROCEDURE versioning(
     'sys_period', 'information.appellation_vt', true
   );
-    `
-    db.runSql(sql, callback)
 
-  };
+  -- Trigger: create_entity_version_key
 
-  exports.down = function(db, callback) {
-    const sql = `
-    DROP TABLE information.appellation;
-    DROP TABLE information.appellation_vt;
+  CREATE TRIGGER create_entity_version_key
+  BEFORE INSERT
+  ON information.appellation
+  FOR EACH ROW
+  EXECUTE PROCEDURE commons.create_entity_version_key();
 
-    `
-    db.runSql(sql, callback)
-  };
+  -- Trigger: update_entity_version_key
+
+  CREATE TRIGGER update_entity_version_key
+  BEFORE UPDATE
+  ON information.appellation
+  FOR EACH ROW
+  EXECUTE PROCEDURE commons.update_entity_version_key();
+
+  `
+  db.runSql(sql, callback)
+
+};
+
+exports.down = function(db, callback) {
+  const sql = `
+  DROP TABLE information.appellation;
+  DROP TABLE information.appellation_vt;
+
+  `
+  db.runSql(sql, callback)
+};
 
 
-  exports._meta = {
-    "version": 1
-  };
+exports._meta = {
+  "version": 1
+};

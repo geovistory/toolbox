@@ -38,7 +38,7 @@ export class EntityAddModalComponent implements OnInit {
   add(){
     this.startLoading();
     this.modalService.addPeItToProject().subscribe(success => {
-      this.modalService.onOpen.emit(this.modalService.pkPersistentItem);
+      this.modalService.onOpen.emit(this.modalService.pkEntity);
       this.completeLoading();
       this.activeModal.close('Entity Added');
     });

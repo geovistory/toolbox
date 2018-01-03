@@ -63,6 +63,19 @@
       "foreignKey": "fk_project",
       "keyThrough": "fk_entity",
       "through": "EntityProjectRel"
+    },
+    "persistent_item_versions": {
+      "type": "hasMany",
+      "model": "PersistentItemVersion",
+      "foreignKey": "fk_project",
+      "keyThrough": "fk_entity_version_concat",
+      "through": "EntityVersionProjectRel"
+    },
+    "entity_version_project_rels": {
+      "type": "hasMany",
+      "model": "EntityVersionProjectRel",
+      "foreignKey": "fk_project",
+      "primaryKey": "pk_project"
     }
   },
   "acls": [
@@ -73,7 +86,8 @@
       "property": [
         "createWithLabelAndDescription",
         "find",
-        "addEntity"
+        "addEntity",
+        "findComplex"
       ]
     }
   ],

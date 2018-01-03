@@ -24,21 +24,29 @@ exports.up = function(db, callback) {
   WITH versions AS
   (
     SELECT persistent_item.pk_entity,
-    lower(persistent_item.sys_period) AS tmsp,
     true AS is_latest_version,
     persistent_item.entity_version,
     persistent_item.pk_persistent_item,
     persistent_item.fk_class,
-    persistent_item.notes
+    persistent_item.notes,
+    persistent_item.fk_creator,
+    persistent_item.fk_last_modifier,
+    persistent_item.tmsp_creation,
+    persistent_item.tmsp_last_modification,
+    persistent_item.sys_period
     FROM information.persistent_item
     UNION
     SELECT persistent_item_vt.pk_entity,
-    lower(persistent_item_vt.sys_period) AS tmsp,
     false AS is_latest_version,
     persistent_item_vt.entity_version,
     persistent_item_vt.pk_persistent_item,
     persistent_item_vt.fk_class,
-    persistent_item_vt.notes
+    persistent_item_vt.notes,
+    persistent_item_vt.fk_creator,
+    persistent_item_vt.fk_last_modifier,
+    persistent_item_vt.tmsp_creation,
+    persistent_item_vt.tmsp_last_modification,
+    persistent_item_vt.sys_period
     FROM information.persistent_item_vt
   ),
   -- count for each version is_in_project as is_in_project_count
@@ -59,7 +67,7 @@ exports.up = function(db, callback) {
       is_in_project,
       is_standard_in_project
       FROM information.entity_version_project_rel) epr ON epr.fk_entity_version_concat = concat(versions.pk_entity || '_' || versions.entity_version)
-      GROUP BY versions.pk_entity, versions.pk_persistent_item, versions.tmsp, versions.is_latest_version, versions.fk_class, epr.fk_entity_version_concat
+      GROUP BY versions.pk_entity, versions.pk_persistent_item, versions.is_latest_version, versions.fk_class, epr.fk_entity_version_concat
       ORDER BY versions.pk_entity, epr.fk_entity_version_concat
     ),
     -- Get the favorite version of each entity. The favorite version is
@@ -77,9 +85,13 @@ exports.up = function(db, callback) {
     SELECT
     versions.pk_entity,
     versions.entity_version,
-    concat(versions.pk_entity || '_' || versions.entity_version) pk_entity_version,
-    versions.tmsp as timestamp,
+    concat(versions.pk_entity || '_' || versions.entity_version) pk_entity_version_concat,
     versions.notes,
+    versions.fk_creator,
+    versions.fk_last_modifier,
+    versions.tmsp_creation,
+    versions.tmsp_last_modification,
+    versions.sys_period,
     favorites.projects,
     versions.fk_class,
     versions.is_latest_version,
@@ -87,7 +99,7 @@ exports.up = function(db, callback) {
     FROM versions
     LEFT OUTER JOIN favorites
     ON favorites.fk_entity_version_concat = concat(versions.pk_entity || '_' || versions.entity_version)
-    ORDER BY versions.pk_entity, versions.tmsp DESC;
+    ORDER BY versions.pk_entity, versions.tmsp_creation DESC;
 
 
     -- create trigger function for insert
@@ -96,35 +108,34 @@ exports.up = function(db, callback) {
     RETURNS trigger
     LANGUAGE 'plpgsql'
     AS $BODY$
+    DECLARE
+    result text;
     BEGIN
-    INSERT INTO information.persistent_item (fk_class,notes)
-    VALUES(NEW.fk_class, NEW.notes);
-    RETURN NEW;
-    END;
-    $BODY$;
+    -- if there is a pk_entity, update the existing entity
+    IF (NEW.pk_entity IS NOT NULL) THEN
 
-
-    -- create trigger function for update
-
-    CREATE FUNCTION information.v_persistent_item_version_update()
-    RETURNS trigger
-    LANGUAGE 'plpgsql'
-    AS $BODY$
-    BEGIN
-    IF NEW.fk_class <> OLD.fk_class OR NEW.notes <> OLD.notes THEN
-    UPDATE information.persistent_item
-    SET fk_class = NEW.fk_class,
+    UPDATE information.persistent_item SET
+    fk_class = NEW.fk_class,
     notes = NEW.notes
-    WHERE pk_entity = (
-      SELECT pk_entity
-      FROM v_persistent_item_version
-      WHERE pk_entity_version = NEW.pk_entity_version
-    ) OR pk_entity = NEW.pk_entity;
+    WHERE pk_entity = NEW.pk_entity
+    RETURNING concat(pk_entity || '_' || entity_version)::text as pk_entity_version_concat INTO result;
+
+    -- else if there is no pk_entity, insert a new entity
+    ELSE
+
+    INSERT INTO information.persistent_item (notes, fk_class)
+    VALUES(NEW.notes, NEW.fk_class)
+    RETURNING concat(pk_entity || '_' || entity_version)::text as pk_entity_version_concat INTO result;
+
     END IF;
+
+    -- in both cases return the pk_entity_version_concat, so that one can query the new version in the view
+    NEW.pk_entity_version_concat = result;
+
     RETURN NEW;
     END;
-    $BODY$;
 
+    $BODY$;
 
     -- create trigger on insert
 
@@ -133,15 +144,6 @@ exports.up = function(db, callback) {
     ON information.v_persistent_item_version
     FOR EACH ROW
     EXECUTE PROCEDURE information.v_persistent_item_version_insert();
-
-
-    -- create trigger on update
-
-    CREATE TRIGGER on_update
-    INSTEAD OF UPDATE
-    ON information.v_persistent_item_version
-    FOR EACH ROW
-    EXECUTE PROCEDURE information.v_persistent_item_version_update();
     `
     db.runSql(sql, callback)
 
@@ -149,9 +151,7 @@ exports.up = function(db, callback) {
 
   exports.down = function(db, callback) {
     const sql = `
-    DROP TRIGGER IF EXISTS on_update ON information.v_persistent_item_version;
     DROP TRIGGER IF EXISTS on_insert ON information.v_persistent_item_version;
-    DROP FUNCTION IF EXISTS information.v_persistent_item_version_update();
     DROP FUNCTION IF EXISTS information.v_persistent_item_version_insert();
     DROP VIEW IF EXISTS information.v_persistent_item_version;
     `

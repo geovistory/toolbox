@@ -22,12 +22,13 @@ exports.up = function(db, callback) {
   (
     pk_entity_version_project_rel serial PRIMARY KEY,
     fk_project integer REFERENCES commons.project (pk_project),
-    fk_entity integer REFERENCES information.entity (pk_entity),
+    fk_entity integer,
     fk_entity_version integer,
     fk_entity_version_concat TEXT,
     is_in_project boolean,
     is_standard_in_project boolean,
-    UNIQUE (fk_entity_version, fk_project)
+    UNIQUE (fk_entity_version_concat, fk_project),
+    UNIQUE (fk_entity, fk_project)
   )
   INHERITS (information.entity)
   WITH (
@@ -61,7 +62,7 @@ exports.up = function(db, callback) {
   -- DROP TRIGGER last_modification_tmsp ON information.entity_version_project_rel;
 
   CREATE TRIGGER last_modification_tmsp
-  BEFORE INSERT
+  BEFORE INSERT OR UPDATE
   ON information.entity_version_project_rel
   FOR EACH ROW
   EXECUTE PROCEDURE commons.tmsp_last_modification();
@@ -77,6 +78,31 @@ exports.up = function(db, callback) {
   FOR EACH ROW EXECUTE PROCEDURE versioning(
     'sys_period', 'information.entity_version_project_rel_vt', true
   );
+
+
+  -- Trigger: create_entity_version_key
+
+  CREATE TRIGGER create_entity_version_key
+  BEFORE INSERT
+  ON information.entity_version_project_rel
+  FOR EACH ROW
+  EXECUTE PROCEDURE commons.create_entity_version_key();
+
+  -- Trigger: update_entity_version_key
+
+  CREATE TRIGGER update_entity_version_key
+  BEFORE UPDATE
+  ON information.entity_version_project_rel
+  FOR EACH ROW
+  EXECUTE PROCEDURE commons.update_entity_version_key();
+
+  -- Trigger: on_upsert
+
+  CREATE TRIGGER on_upsert
+  BEFORE INSERT OR UPDATE
+  ON information.entity_version_project_rel
+  FOR EACH ROW
+  EXECUTE PROCEDURE commons.evpr_fk_entity_fk_entity_version();
 
   `
   db.runSql(sql, callback)

@@ -54,7 +54,7 @@ CREATE TRIGGER insert_schema_table_name
 -- Trigger: last_modification_tmsp
 
 CREATE TRIGGER last_modification_tmsp
-    BEFORE INSERT
+BEFORE INSERT OR UPDATE
     ON information.sourcing
     FOR EACH ROW
     EXECUTE PROCEDURE commons.tmsp_last_modification();
@@ -70,6 +70,23 @@ CREATE TRIGGER last_modification_tmsp
     FOR EACH ROW EXECUTE PROCEDURE versioning(
       'sys_period', 'information.sourcing_vt', true
     );
+
+    -- Trigger: create_entity_version_key
+
+    CREATE TRIGGER create_entity_version_key
+    BEFORE INSERT
+    ON information.sourcing
+    FOR EACH ROW
+    EXECUTE PROCEDURE commons.create_entity_version_key();
+
+    -- Trigger: update_entity_version_key
+
+    CREATE TRIGGER update_entity_version_key
+    BEFORE UPDATE
+    ON information.sourcing
+    FOR EACH ROW
+    EXECUTE PROCEDURE commons.update_entity_version_key();
+
   `
   db.runSql(sql, callback)
 

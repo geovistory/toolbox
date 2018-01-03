@@ -19,7 +19,7 @@
     </div>
   </div>
 
-  <div [@slideInOut]="cardState">
+  <div class="gv-card-body-wrapper" [@slideInOut]="cardState">
 
     <div class="card-body gv-naming">
       <gv-name *ngFor="let name of names | gvNameVisible:state:activeProject.project.pk_project"
@@ -30,7 +30,7 @@
     </div>
 
     <div class="card-body gv-naming" *ngIf="addingName">
-      <gv-name-add [names]="names" (onCancel)="cancelAddName()"></gv-name-add>
+      <gv-name-add [names]="names" (onCancel)="cancelAddName()" (onAdd)="addNames(names)"></gv-name-add>
     </div>
 
     <div class="card-footer gv-naming" *ngIf="footerVisible">

@@ -15,24 +15,33 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db, callback) {
+
   const sql = `
-  CREATE TABLE data_for_history.property (
-    pk_property serial PRIMARY KEY,
-    data_for_history_id VARCHAR(7) NOT NULL UNIQUE,
-    notes text
+  CREATE FOREIGN TABLE che.class
+  (
+    pk_class                 integer,
+    identifier_in_namespace  text,
+    fk_system_type           integer,
+    standard_label           varchar(500)
   )
+
+  SERVER dfh_publi OPTIONS (schema_name 'che',  table_name 'class') ;
+
   `
+
   db.runSql(sql, callback)
 
 };
 
 exports.down = function(db, callback) {
-  const sql = `
-  DROP TABLE data_for_history.property;
-  `
-  db.runSql(sql, callback)
-};
 
+  const sql = `
+  DROP FOREIGN TABLE che.class;
+  `
+
+  db.runSql(sql, callback)
+
+};
 
 exports._meta = {
   "version": 1

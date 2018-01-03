@@ -12,6 +12,7 @@ import 'rxjs/add/operator/merge';
 
 import { LanguageApi } from '../shared/sdk/services/custom/Language';
 import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
+import { InformationLanguageApi } from '../shared/sdk/services/custom/InformationLanguage';
 
 @Component({
   selector: 'gv-language-search-typeahead',
@@ -41,7 +42,7 @@ export class LanguageSearchTypeaheadComponent implements OnInit {
     else if(typeof language === 'string'){
       this.languageChange.emit();
     }
-    else if(language.pk_language){
+    else if(language.pk_entity){
       this._language = language;
       this.languageChange.emit(this._language);
     }
@@ -49,7 +50,7 @@ export class LanguageSearchTypeaheadComponent implements OnInit {
 
 
   constructor(
-    private languageApi: LanguageApi
+    private languageApi: InformationLanguageApi
   ) { }
 
   ngOnInit() {

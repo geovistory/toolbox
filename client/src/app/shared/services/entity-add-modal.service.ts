@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { EntityProjectRelApi } from '../sdk/services/custom/EntityProjectRel';
-import { PersistentItem } from '../sdk/models/PersistentItem';
-import { EntityProjectRel } from '../sdk/models/EntityProjectRel';
+import { EntityVersionProjectRel } from '../sdk/models/EntityVersionProjectRel';
+import { EntityVersionProjectRelApi } from '../sdk/services/custom/EntityVersionProjectRel';
+import { PersistentItemVersion } from '../sdk/models/PersistentItemVersion';
 
 export enum EntityAddModalState {
   'choose-class',
@@ -23,7 +23,7 @@ export class EntityAddModalService {
   onOpen: EventEmitter<number> = new EventEmitter();
 
   // Entity Project Rels needed to add the selected names to the project
-  eprNaming: EntityProjectRel[];
+  eprNaming: EntityVersionProjectRel[];
 
   // state of the modal
   private _state: EntityAddModalState;
@@ -59,29 +59,29 @@ modalTitle:string;
 pkProject:number;
 
 // Primary Key of the persistent Item to Add
-pkPersistentItem:number;
+pkEntity:number;
 
 // The persistent Item to Add
-persistentItem:PersistentItem;
+persistentItemVersion:PersistentItemVersion;
 
 constructor(
-  private entityProjectRelApi:EntityProjectRelApi
+  private entityProjectRelApi:EntityVersionProjectRelApi
 ) { }
 
 addPeItToProject(){
   const apiCall = new EventEmitter();
-  
-  this.entityProjectRelApi.create(
-    [
-      {
-        "is_in_project": true,
-        "is_standard_in_project": true,
-        "fk_entity": this.persistentItem.pk_entity,
-        "fk_project": this.pkProject
-      },
-      ...this.eprNaming
-    ]
-  ).subscribe(
+
+  const eprToCreate = [
+    {
+      "is_in_project": true,
+      "is_standard_in_project": true,
+      "fk_entity_version_concat": this.persistentItemVersion.pk_entity_version_concat,
+      "fk_project": this.pkProject
+    },
+    ...this.eprNaming
+  ];
+
+  this.entityProjectRelApi.create(eprToCreate).subscribe(
     (response) => {
       apiCall.emit();
     },

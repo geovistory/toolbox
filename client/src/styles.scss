@@ -5,28 +5,29 @@
 
 
 /**
- * Bootstrap
- * Bootstrap variables are customized in src/assets/scss/bootstrap-variables.scss
- */
+* Bootstrap
+* Bootstrap variables are customized in src/assets/scss/bootstrap-variables.scss
+*/
 @import "src/assets/scss/bootstrap";
 
+$font-size-xs:  .68rem;
 
 
 /**
- * Custom Fonts / Glyphs
- * Font-awesome is imported in angular-cli.json
- */
+* Custom Fonts / Glyphs
+* Font-awesome is imported in angular-cli.json
+*/
 @import "src/assets/scss/glyphter-font/css/geovistory-font";
 
 
 
 /**
- * Components
- * Styles for one angular component or multiple angular components with
- * the same visual design (e.g. naming and additional info).
- */
- // Project List
- @import "src/assets/scss/components/_project_list";
+* Components
+* Styles for one angular component or multiple angular components with
+* the same visual design (e.g. naming and additional info).
+*/
+// Project List
+@import "src/assets/scss/components/_project_list";
 
 // Project Dashboard
 @import "src/assets/scss/components/_project_dashboard";
@@ -40,6 +41,12 @@
 // Name Part / Property Alternative
 @import "src/assets/scss/components/_namepart_infoproperty";
 
+// Name Parts View
+@import "src/assets/scss/components/_name_parts_view";
+
+// Name Version
+@import "src/assets/scss/components/_name_version";
+
 // Editor
 @import "src/assets/scss/components/_edit";
 
@@ -52,52 +59,76 @@
 // Entity Add Modal
 @import "src/assets/scss/components/_entity_add_modal";
 
+// Entity Add Modal
+@import "src/assets/scss/components/_version_modal";
+
 
 /**
- * Generic stuff
- */
+* Generic stuff
+*/
 
- body {
-   background-color: $gray-100;
- }
+body {
+  background-color: $gray-100;
+}
 
- .container {
-   min-width: 63rem;
-   margin-top: 2rem;
- }
+.container {
+  min-width: 63rem;
+  margin-top: 2rem;
+}
 
- button {
-   cursor: pointer;
- }
+button {
+  cursor: pointer;
+}
 
- .gv-dropdown-secondary{
-   .dropdown-menu{
-     margin: 0;
-     border-top-right-radius: 0;
-     background-color: theme-color("secondary");
-     .dropdown-item {
-       color: $white;
-     }
-     .dropdown-item:focus, .dropdown-item:hover {
-       color: $white;
-       text-decoration: none;
-       background-color: darken(theme-color("secondary"), 10%);
-     }
-   }
- }
+.gv-dropdown-secondary{
+  .dropdown-menu{
+    margin: 0;
+    border-top-right-radius: 0;
+    background-color: theme-color("secondary");
+    .dropdown-item {
+      color: $white;
+    }
+    .dropdown-item:focus, .dropdown-item:hover {
+      color: $white;
+      text-decoration: none;
+      background-color: darken(theme-color("secondary"), 10%);
+    }
+  }
+}
 
- .gv-pointer{
-   cursor: pointer;
- }
- .gv-flex-grow-1{
-   flex-grow: 1;
- }
+.gv-pointer{
+  cursor: pointer;
+}
+.gv-flex-grow-1{
+  flex-grow: 1;
+}
 
- .gv-search-hits-count{
-   font-size: $font-size-sm;
-   color: $text-muted;
-   display: inline-block;
- }
+.gv-search-hits-count{
+  font-size: $font-size-sm;
+  color: $text-muted;
+  display: inline-block;
+}
+
+.gv-ul-sm {
+  color: theme-color("secondary");
+  font-size: $font-size-sm;
+  margin: 0;
+  padding: 0;
+}
+.gv-li-inline {
+  display: inline-block;
+  margin-right: .4rem;
+}
+.gv-li-inline::before {
+  content: "•";
+  margin-right: .4rem;
+}
+.gv-li-inline:first-of-type::before {
+  content: none;
+}
+.gv-li-inline:last-of-type {
+  margin-right: 0;
+}
 
 // Navbar (main)
 #nav{
@@ -123,17 +154,17 @@
 // Loading Bar
 
 .slim-loading-bar-progress {
-    margin: 0;
-    padding: 0;
-    z-index: 99998;
-    background-color: theme-color("info") !important;
-    color: theme-color("info") !important;
-    box-shadow: 0 0 10px 0;
-    height: 2px;
-    opacity: 0;
-    -webkit-transition: all .5s ease-in-out;
-    transition: all .5s ease-in-out;
-    position: absolute;
+  margin: 0;
+  padding: 0;
+  z-index: 99998;
+  background-color: theme-color("info") !important;
+  color: theme-color("info") !important;
+  box-shadow: 0 0 10px 0;
+  height: 2px;
+  opacity: 0;
+  -webkit-transition: all .5s ease-in-out;
+  transition: all .5s ease-in-out;
+  position: absolute;
 }
 
 #userDashboard{

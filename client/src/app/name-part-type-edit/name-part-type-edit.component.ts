@@ -1,37 +1,39 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { namePartTypes , NameComponent } from '../name/name.component';
+import { NameComponent } from '../name/name.component';
 import { Token } from '../shared/classes/appellation-token/appellation-token';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
+import { AppellationService } from '../shared/services/appellation.service';
 
 
 @Component({
-  selector: 'gv-name-part',
-  templateUrl: './name-part.component.html',
-  styleUrls: ['./name-part.component.scss']
+  selector: 'gv-name-part-type-edit',
+  templateUrl: './name-part-type-edit.component.html',
+  styleUrls: ['./name-part-type-edit.component.scss']
 })
-export class NamePartComponent implements OnInit {
+export class NamePartTypeEditComponent implements OnInit {
   @Input() token: Token;
   @Input() appellationLabel: AppellationLabel;
   @Input() nameComponent: NameComponent;
 
   selectedNamePartType;
-  namePartTypes = namePartTypes;
 
   get isNamePartToken():boolean{
     if(!this.token.isSeparator && this.token.string) return true;
     else return false;
   }
 
+  namePartTypes;
 
   // flag to toggle editing mode of name part type
   editing:boolean = false;
 
-  constructor() { }
+  constructor(
+    public appellationService: AppellationService
+  ) { }
 
   ngOnInit() {
-    this.selectedNamePartType = this.namePartTypes.filter(type =>
-      type.id === this.token.typeId
-    )[0]
+    this.namePartTypes = this.appellationService.getNamePartTypes();
+    this.selectedNamePartType = this.appellationService.getNamePartTypeById(this.token.typeId);
   }
 
   public cancel(){
@@ -43,11 +45,10 @@ export class NamePartComponent implements OnInit {
   }
 
   setNewNamePartType(typeId){
-    let filteredTypes = this.namePartTypes.filter(type =>
-      type.id === parseInt(typeId)
-    )
-    if(filteredTypes.length === 1){
-      this.selectedNamePartType = filteredTypes[0];
+    let filteredType = this.appellationService.getNamePartTypeById(parseInt(typeId))
+
+    if(filteredType){
+      this.selectedNamePartType = filteredType;
       this.token.typeId = this.selectedNamePartType.id;
     }
     else {
@@ -58,6 +59,6 @@ export class NamePartComponent implements OnInit {
 
   focusOnNamePartInput(){
     this.nameComponent.editAppellation();
-    this.token.namePartInputComponent.focus();
+    this.token.namePartStringEditComponent.focus();
   }
 }

@@ -4,19 +4,19 @@ import {
   state,
   style,
   animate,
-  transition
+  transition,
+  keyframes
 } from '@angular/animations';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
-import { Appellation } from '../shared/sdk/models/Appellation';
 import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
 import { InformationRole } from '../shared/sdk/models/InformationRole';
 import { NameComponent } from '../name/name.component';
-import { EntityProjectRel } from '../shared/sdk/models/EntityProjectRel';
-import { EntityProjectRelApi } from '../shared/sdk/services/custom/EntityProjectRel';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
+import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
+import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/EntityVersionProjectRel';
 
 @Component({
   selector: 'gv-naming',
@@ -25,13 +25,36 @@ import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
   animations: [
     trigger('slideInOut', [
       state('expanded', style({
-        height: '*'
+        height: '*',
       })),
       state('collapsed', style({
-        height: '0px'
+        height: '0px',
+        overflow: 'hidden'
       })),
-      transition('expanded => collapsed', animate('400ms ease-in-out')),
-      transition('collapsed => expanded', animate('400ms ease-in-out'))
+      transition('expanded => collapsed', animate('400ms ease-in-out', keyframes([
+        style({
+          height: '*',
+          overflow: 'hidden',
+          offset: 0
+        }),
+        style({
+          height: '0px',
+          display: 'hidden',
+          offset: 1
+        })
+      ]))),
+      transition('collapsed => expanded', animate('400ms ease-in-out', keyframes([
+        style({
+          height: '0px',
+          overflow: 'hidden',
+          offset: 0
+        }),
+        style({
+          height: '*',
+          display: 'hidden',
+          offset: 1
+        })
+      ])))
     ])
   ]
 })
@@ -51,7 +74,7 @@ export class NamingComponent implements OnInit, OnChanges {
 
   @Output() standardNameStringChange: EventEmitter<string> = new EventEmitter();
 
-  @Output() entityProjectRelChange: EventEmitter<EntityProjectRel[]> = new EventEmitter();
+  @Output() entityProjectRelChange: EventEmitter<EntityVersionProjectRel[]> = new EventEmitter();
 
   standardNameComponent: NameComponent;
 
@@ -61,7 +84,7 @@ export class NamingComponent implements OnInit, OnChanges {
 
   addingName: boolean = false;
 
-  entProRels: Array<EntityProjectRel> = []; //
+  entProRels: Array<EntityVersionProjectRel> = []; //
 
   standardNamePkOnAdd:number;
 
@@ -79,7 +102,7 @@ export class NamingComponent implements OnInit, OnChanges {
   }
 
   constructor(
-    private entityProjectRelApi:EntityProjectRelApi,
+    private entityProjectRelApi:EntityVersionProjectRelApi,
     public activeProject: ActiveProjectService,
     private slimLoadingBarService: SlimLoadingBarService
   ) { }
@@ -98,7 +121,7 @@ export class NamingComponent implements OnInit, OnChanges {
       */
       let map=[];
       this.names.forEach(name => {
-        const isStandardCount = name.entity_project_rels.filter(epr => epr.is_standard_in_project).length;
+        const isStandardCount = name.entity_version_project_rels.filter(epr => epr.is_standard_in_project).length;
         map.push(
           {
             namePkEntity: name.pk_entity,
@@ -147,17 +170,17 @@ export class NamingComponent implements OnInit, OnChanges {
 
   standardNameChange(newNameComponent:NameComponent){
 
-    // on init
     if(!this.standardNameComponent) {
-    this.standardNameComponent = newNameComponent;
-    this.standardNameStringChange.emit(this.standardNameComponent.appellationLabel.getString());
-  }
+      // on init
+      this.standardNameComponent = newNameComponent;
+      this.standardNameStringChange.emit(this.standardNameComponent.appellationLabel.getString());
+    }
 
-  /** if another name becomes standard in project */
-  else if(this.standardNameComponent.entityProjectRel.pk_entity_project_rel !== newNameComponent.entityProjectRel.pk_entity_project_rel){
+    /** if another name becomes standard in project */
+    else if(this.standardNameComponent.entityProjectRel.pk_entity_version_project_rel !== newNameComponent.entityProjectRel.pk_entity_version_project_rel){
 
-    /** stop current name to be standard in project  */
-      this.entityProjectRelApi.patchAttributes(this.standardNameComponent.entityProjectRel.pk_entity_project_rel, {
+      /** stop current name to be standard in project  */
+      this.entityProjectRelApi.patchAttributes(this.standardNameComponent.entityProjectRel.pk_entity_version_project_rel, {
         is_standard_in_project: false
       }).subscribe(entProRel => {
 
@@ -178,75 +201,76 @@ export class NamingComponent implements OnInit, OnChanges {
       })
 
 
-  }
-  /** if this is not yet added to the project */
-  else if(this.standardNameComponent.entityProjectRel.pk_entity_project_rel === undefined){
-
-    // update the is_standard_in_project on the old standard name
-    this.standardNameComponent.entityProjectRel.is_standard_in_project = false
-
-    // replace the old standard name with the new standard name
-    this.standardNameComponent = newNameComponent;
-
-    /** fire event with the string of the new standard name  */
-    this.standardNameStringChange.emit(this.standardNameComponent.appellationLabel.getString());
-  }
-
-  /** on appellation label change */
-  else {
-    this.standardNameComponent = newNameComponent;
-    this.standardNameStringChange.emit(this.standardNameComponent.appellationLabel.getString());
-  }
-
-}
-
-inProjectChange(entProRels){
-  let _that = this;
-  entProRels.forEach(function(newRel) {
-    var existing = _that.entProRels.filter(function(v, i) {
-      return (v.fk_entity === newRel.fk_entity && v.fk_project === newRel.fk_project);
-    });
-    if (existing.length) {
-      var existingIndex = _that.entProRels.indexOf(existing[0]);
-      _that.entProRels[existingIndex] = newRel;
-    } else {
-      _that.entProRels.push(newRel);
     }
-  });
+    /** if this is not yet added to the project */
+    else if(this.standardNameComponent.entityProjectRel.pk_entity_version_project_rel === undefined){
 
-  this.entityProjectRelChange.emit(this.entProRels);
+      // update the is_standard_in_project on the old standard name
+      this.standardNameComponent.entityProjectRel.is_standard_in_project = false
 
-}
+      // replace the old standard name with the new standard name
+      this.standardNameComponent = newNameComponent;
 
-// addAppellation(){
-//   this.newAppellation = new Appellation();
-//   this.appellations.push(this.newAppellation);
-// }
-//
-// cancelAddAppellation(){
-//
-// }
+      /** fire event with the string of the new standard name  */
+      this.standardNameStringChange.emit(this.standardNameComponent.appellationLabel.getString());
+    }
 
-/**
-* Loading Bar Logic
-*/
+    /** on appellation label change */
+    else {
+      this.standardNameComponent = newNameComponent;
+      this.standardNameStringChange.emit(this.standardNameComponent.appellationLabel.getString());
+    }
 
-startLoading() {
-  this.slimLoadingBarService.progress = 20;
-  this.slimLoadingBarService.start(() => {
-  });
-}
+  }
 
-stopLoading() {
-  this.slimLoadingBarService.stop();
-}
+  inProjectChange(entProRels){
+    let _that = this;
+    entProRels.forEach(function(newRel) {
+      var existing = _that.entProRels.filter(function(v, i) {
+        // TODO check if this works with fk_entity_version_concat
+        return (v.fk_entity_version_concat === newRel.fk_entity_version_concat && v.fk_project === newRel.fk_project);
+      });
+      if (existing.length) {
+        var existingIndex = _that.entProRels.indexOf(existing[0]);
+        _that.entProRels[existingIndex] = newRel;
+      } else {
+        _that.entProRels.push(newRel);
+      }
+    });
 
-completeLoading() {
-  this.slimLoadingBarService.complete();
-}
+    this.entityProjectRelChange.emit(this.entProRels);
 
-resetLoading() {
-  this.slimLoadingBarService.reset();
-}
+  }
+
+  // addAppellation(){
+  //   this.newAppellation = new Appellation();
+  //   this.appellations.push(this.newAppellation);
+  // }
+  //
+  // cancelAddAppellation(){
+  //
+  // }
+
+  /**
+  * Loading Bar Logic
+  */
+
+  startLoading() {
+    this.slimLoadingBarService.progress = 20;
+    this.slimLoadingBarService.start(() => {
+    });
+  }
+
+  stopLoading() {
+    this.slimLoadingBarService.stop();
+  }
+
+  completeLoading() {
+    this.slimLoadingBarService.complete();
+  }
+
+  resetLoading() {
+    this.slimLoadingBarService.reset();
+  }
 
 }

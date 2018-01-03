@@ -38,17 +38,20 @@ justify-content-between align-items-baseline"
 
   <form (submit)="saveAppellationLabel()" class="gv-appellation-label-form">
     <div class="form-group">
-      <span *ngFor="let token of appellationLabel.tokens; let i = index;">
-        <gv-name-part-input [appellationLabel]="appellationLabel" [token]="token" (enterKey)="saveAppellationLabel()"></gv-name-part-input>
+      <span *ngFor="let token of appellationLabelInEdit.tokens; let i = index;">
+        <gv-name-part-string-edit [appellationLabel]="appellationLabelInEdit" [token]="token" (enterKey)="saveAppellationLabel()"></gv-name-part-string-edit>
       </span>
     </div>
     <fieldset *ngIf="notEmptyAppellation">
-      <div class="form-group gv-select-name-part-type" *ngFor="let token of appellationLabel.tokens; let i=index">
-        <gv-name-part [nameComponent]="this" [appellationLabel]="appellationLabel" [token]="token"></gv-name-part>
+      <div class="form-group gv-select-name-part-type" *ngFor="let token of appellationLabelInEdit.tokens; let i=index">
+        <gv-name-part-type-edit [nameComponent]="this" [appellationLabel]="appellationLabelInEdit" [token]="token"></gv-name-part-type-edit>
       </div>
       <div class="form-group">
         <button type="submit" class="gv-stop-edit-btn btn btn-primary">
           Save
+        </button>
+        <button type="button" class="gv-stop-edit-btn btn btn-link" (click)="stopEditAppellation()">
+          Cancel
         </button>
       </div>
     </fieldset>
@@ -71,7 +74,7 @@ justify-content-between align-items-baseline"
 
 </div>
 
-<div class="card-body gv-community-statistics d-flex justify-content-center" *ngIf="communityStatisticsVisible">
+<div class="card-body gv-community-statistics d-flex justify-content-end" *ngIf="communityStatisticsVisible">
   <span class="gv-statistics-item" title="Added in {{isInProjectCount}} project{{isInProjectCount === 1 ? '' : 's'}}">
     <i class="fa fa-check"></i> {{isInProjectCount}}
   </span>
@@ -90,34 +93,34 @@ new data available
 
 <div class="gv-card-body-wrapper" [@slideInOut]="cardBodyState">
 
-  <div class="gv-name-section" *ngIf="showNamePartSection()">
+  <div class="gv-name-section" *ngIf="namePartsVisible">
     <div class="card-body gv-name-section-header d-flex flex-row">
-      <div class="gv-label gv-flex-grow-1">Name Parts</div>
+      <div class="gv-label gv-flex-grow-1">Details</div>
       <button type="button" class="gv-edit-btn btn btn-link btn-sm" name="button" (click)="editAppellation()" *ngIf="editBtnVisible">
         <i class="fa fa-edit"></i> Edit
       </button>
     </div>
-    <span *ngFor="let token of appellationLabel.tokens; let i=index">
-      <div class="card-body gv-name-part" *ngIf="isNamePartToken(token)">
-        <div class="d-flex">
-          <div class="gv-label">
-            <div class="gv-name-part-token d-flex">
-              <div class="gv-token-label gv-flex-grow-1">
-                {{token.string}}
-              </div>
-              <div class="gv-token-type">
-                <i>{{getTokenTypeLabel(token.typeId)}}</i>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="d-flex gv-revisions">
-          <div class="ml-auto text-success">
-          </div>
-        </div>
-      </div>
-    </span>
+    <div class="card-body">
+      <gv-name-parts-view [appellation]="appellation"></gv-name-parts-view>
+    </div>
+    <div class="card-body gv-community-statistics d-flex justify-content-end small" *ngIf="communityStatisticsVisible">
+      <ul class="gv-ul-sm">
+        <li class="gv-li-inline">
+          <a href (click)="openVersionHistoryModal()">
+            <span>version {{appellation?.entity_version}} of {{versionCount}}</span>
+          </a>
+        </li>
+        <li class="gv-li-inline" *ngIf="newUpdateAppellationVisible">
+          <a href (click)="openVersionHistoryModal()">
+            <span class="text-success">new version</span>
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
+
+
+
 
   <div class="gv-name-section">
     <div class="card-body gv-name-section-header d-flex flex-row">

@@ -2,15 +2,17 @@
   min-width: 64rem;
   gv-project-edit-panel{
     position: 'relative';
-    gv-entity,
+    gv-entity-editor,
     gv-project-entities,
     gv-source,
     gv-project-sources,
     div[body] {
       display: flex;
       flex-direction: column;
+      flex-grow: 1;
     }
   }
+
   .gv-edit-panel{
     height: calc(100vh - 56px);
     display: -webkit-box;

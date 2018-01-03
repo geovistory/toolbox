@@ -74,6 +74,22 @@ exports.up = function(db, callback) {
   RETURN NEW;
   END;
   $BODY$;
+
+
+
+  -- Function: split fk_entity_version_concat in fk_entity_version and fk_entity
+
+  CREATE FUNCTION commons.evpr_fk_entity_fk_entity_version()
+  RETURNS trigger
+  LANGUAGE 'plpgsql'
+  AS $BODY$
+  BEGIN
+  NEW.fk_entity = split_part(NEW.fk_entity_version_concat, '_', 1)::integer;
+  NEW.fk_entity_version = split_part(NEW.fk_entity_version_concat, '_', 2)::integer;
+
+  RETURN NEW;
+  END;
+  $BODY$;
   `;
 
   db.runSql(sql, callback);
@@ -87,6 +103,7 @@ exports.down = function(db, callback) {
   DROP FUNCTION commons.insert_schema_table_name();
   DROP FUNCTION commons.create_entity_version_key();
   DROP FUNCTION commons.update_entity_version_key();
+  DROP FUNCTION commons.evpr_fk_entity_fk_entity_version();
 
   `;
 

@@ -1,31 +1,22 @@
 {
   "name": "TemporalEntity",
-  "base": "PersistedModel",
+  "base": "EntityVersion",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "information",
-      "table": "temporal_entity"
+      "table": "v_temporal_entity_version"
     }
   },
   "mixins": {
     "SetupRemoteMethods": {
       "disableAllExcept": [
-        "find"
+        "find", "findOrCreateTemporalEntity"
       ]
     }
   },
   "properties": {
-    "pk_temporal_entity": {
-      "type": "number",
-      "id": true,
-      "generated": true
-    },
-    "pk_entity": {
-      "type": "number",
-      "generated": true
-    },
     "fk_class": {
       "type": "string",
       "required": true
@@ -36,13 +27,37 @@
   },
   "validations": [],
   "relations": {
-    "roles": {
+    "te_roles": {
       "type": "hasMany",
       "model": "InformationRole",
       "foreignKey": "fk_temporal_entity",
-      "primaryKey": "pk_temporal_entity"
+      "primaryKey": "pk_entity"
     }
   },
   "acls": [],
-  "methods": {}
+  "methods": {
+    "findOrCreateTemporalEntity": {
+      "accepts": [
+        {
+          "arg": "data",
+          "type": "TemporalEntity",
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "TemporalEntity",
+        "root": true
+      },
+      "description": "Find or create a temporal entity version.",
+      "http": {
+        "path": "/findOrCreate",
+        "verb": "post"
+      }
+    }
+  }
 }

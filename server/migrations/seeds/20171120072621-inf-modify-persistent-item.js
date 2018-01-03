@@ -27,7 +27,7 @@ exports.up = function(db, callback) {
         WHERE p.notes = 'Jonas Seed Project'
       ),
       (
-        SELECT pk_entity_version
+        SELECT pk_entity_version_concat
         FROM information.v_persistent_item_version pv
         INNER JOIN information.entity_version_project_rel AS epr ON
         epr.fk_entity_version_concat = concat(pv.pk_entity || '_' || pv.entity_version)

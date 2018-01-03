@@ -21,6 +21,7 @@ import { LoopBackConfig } from '../shared/sdk/lb.config';
 import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
 import { Project } from '../shared/sdk/models/Project';
 import { EntityAddModalService } from '../shared/services/entity-add-modal.service';
+import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
 
 @Component({
   selector: 'gv-project-entities',
@@ -41,9 +42,7 @@ export class ProjectEntitiesComponent implements OnInit {
   searchString:string;
   loading: boolean = false;
   errorMessages: any;
-
-
-
+  
 
   entityModalOptions: NgbModalOptions = {
     size: 'lg'
@@ -51,7 +50,7 @@ export class ProjectEntitiesComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private persistentItemApi: PersistentItemApi,
+    private persistentItemApi: PersistentItemVersionApi,
     private modalService: NgbModal,
     private entityAddModalService: EntityAddModalService,
     private router: Router,

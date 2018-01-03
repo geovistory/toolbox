@@ -18,7 +18,7 @@ export class GvNameVisiblePipe implements PipeTransform {
       // filter names array, names which match and return true will be kept, false will be filtered out
       if (state === "edit") {
           return names.filter(names => {
-            const epr = names.entity_project_rels.filter(epr => epr.fk_project===projectId)
+            const epr = names.entity_version_project_rels.filter(epr => epr.fk_project===projectId)
             if(epr.length === 1 && epr[0].is_in_project === true){
               return true;
             }

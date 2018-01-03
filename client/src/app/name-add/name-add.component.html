@@ -27,7 +27,7 @@
     <gv-name *ngFor="let name of suggestedNames"
      [name]="name"
       [state]="'nameAdd'"
-      (inProjectChange)="inProjectChange($event)"
+      (onNameAdd)="onNameAdd($event)"
       ></gv-name>
   </div>
   <div class="card-footer">

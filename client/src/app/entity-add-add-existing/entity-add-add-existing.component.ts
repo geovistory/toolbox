@@ -3,10 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 import { EntityAddModalService } from '../shared/services/entity-add-modal.service';
-import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
+import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { PersistentItem } from '../shared/sdk/models/PersistentItem';
 import { InformationRole } from '../shared/sdk/models/InformationRole';
+import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
 
 @Component({
   selector: 'gv-entity-add-add-existing',
@@ -16,14 +16,14 @@ import { InformationRole } from '../shared/sdk/models/InformationRole';
 export class EntityAddAddExistingComponent implements OnInit {
   loading;
 
-  persistentItem:PersistentItem;
+  persistentItemVersion:PersistentItemVersion;
 
   names:Array<InformationRole>=[]
 
   standardName:string;
 
   constructor(
-    private persistentItemApi: PersistentItemApi,
+    private persistentItemApi: PersistentItemVersionApi,
     private modalService:EntityAddModalService,
     private activeModal: NgbActiveModal,
     private slimLoadingBarService: SlimLoadingBarService
@@ -34,44 +34,78 @@ export class EntityAddAddExistingComponent implements OnInit {
   }
 
   queryPersistentItem(){
-    const filter = {
+    const filter =
+    {
+      /** Select persistent item by pk_entity … */
+      "where": ["pk_entity", "=", this.modalService.pkEntity, "and", "is_community_favorite", "=", "true"],
+      "orderBy":[{"pk_entity":"asc"}],
       "include": {
-        "relation": "roles",
-        "scope": {
-          "include": [
-            {
-              "relation": "temporal_entity",
-              "scope": {
-                "include": {
-                  "relation": "roles",
-                  "scope": {
-                    "include": ["language", "appellation"]
-                  }
+
+        /** include all roles … */
+        "pi_roles": {
+          "$relation": {
+            "name": "pi_roles",
+            "joinType": "left join",
+          //  "where": ["is_community_favorite", "=", "true"],
+            "orderBy":[{"pk_entity":"asc"}]
+          },
+          "entity_version_project_rels": {
+            "$relation": {
+              "name": "entity_version_project_rels",
+              "joinType": "left join"
+            //  "where": ["is_community_favorite", "=", "true"],
+            }
+          },
+
+          /** include the temporal_entity of the role */
+          "temporal_entity":{
+            "$relation": {
+              "name": "temporal_entity",
+              "joinType": "inner join",
+            //  "where": ["is_community_favorite", "=", "true"],
+              "orderBy":[{"pk_entity":"asc"}]
+            },
+            "te_roles": {
+              "$relation": {
+                "name": "te_roles",
+                "joinType": "left join",
+                "orderBy":[{"pk_entity":"asc"}]
+              },
+              "language": {
+                "$relation": {
+                  "name": "language",
+                  "joinType": "left join",
+                  //"where": ["is_community_favorite", "=", "true"],
+                  "orderBy":[{"pk_entity":"asc"}]
+                }
+                //,...innerJoinThisProject, // … get project's version
+
+              },
+              "appellation": {
+                "$relation": {
+                  "name": "appellation",
+                  "joinType": "left join",
+                //  "where": ["is_community_favorite", "=", "true"],
+                  "orderBy":[{"pk_entity":"asc"}]
                 }
               }
-            },
-            {
-              "relation": "entity_project_rels"
-              // ,
-              // "where": {
-              //   "fk_project": this.projectId
-              // }
+              //,...innerJoinThisProject, // … get project's version
+
             }
-          ]
+          }
         }
       }
     }
 
     this.startLoading();
-    this.persistentItemApi.findById(
-      this.modalService.pkPersistentItem,
+    this.persistentItemApi.findComplex(
       filter
     ).subscribe(
-      (persistentItem: PersistentItem) => {
+      (persistentItems: PersistentItemVersion[]) => {
 
-        this.modalService.persistentItem = this.persistentItem = persistentItem;
+        this.modalService.persistentItemVersion = this.persistentItemVersion = persistentItems[0];
 
-        this.setNames(this.persistentItem);
+        this.setNames(this.persistentItemVersion);
 
         this.loading = false;
 
@@ -79,8 +113,8 @@ export class EntityAddAddExistingComponent implements OnInit {
       });
     }
 
-    setNames(persistentItem:PersistentItem){
-      this.names = this.persistentItem.roles
+    setNames(persistentItem:PersistentItemVersion){
+      this.names = this.persistentItemVersion.pi_roles
       .filter(role => role.fk_property === 'R63');
     }
 

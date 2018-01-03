@@ -1,31 +1,22 @@
 {
   "name": "InformationRole",
-  "base": "PersistedModel",
+  "base": "EntityVersion",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "information",
-      "table": "role"
+      "table": "v_role_version"
     }
   },
   "mixins": {
     "SetupRemoteMethods": {
       "disableAllExcept": [
-        "find"
+        "find", "findComplex", "findOrCreateInformationRole"
       ]
     }
   },
   "properties": {
-    "pk_role": {
-      "type": "number",
-      "id": true,
-      "required": true
-    },
-    "pk_entity": {
-      "type": "number",
-      "required": true
-    },
     "fk_property": {
       "type": "string",
       "required": true
@@ -66,15 +57,33 @@
       "type": "belongsTo",
       "model": "TemporalEntity",
       "foreignKey": "fk_temporal_entity",
-      "primaryKey": "pk_temporal_entity"
-    },
-    "entity_project_rels": {
-      "type": "hasMany",
-      "model": "EntityProjectRel",
-      "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     }
   },
   "acls": [],
-  "methods": {}
+  "methods": {
+    "findOrCreateInformationRole": {
+      "accepts": [
+        {
+          "arg": "data",
+          "type": "InformationRole",
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InformationRole",
+        "root": true
+      },
+      "description": "Find or create an information role version.",
+      "http": {
+        "path": "/findOrCreate",
+        "verb": "post"
+      }
+    }
+  }
 }

@@ -19,10 +19,10 @@ exports.up = function(db, callback) {
   CREATE TABLE information.entity
   (
     pk_entity serial PRIMARY KEY,
-    schema_name character varying,
-    table_name character varying,
-    entity_version integer,
-    notes text COLLATE pg_catalog."default",
+    schema_name character varying NOT NULL,
+    table_name character varying NOT NULL,
+    entity_version integer NOT NULL,
+    notes text,
     fk_creator integer,
     fk_last_modifier integer,
     tmsp_creation timestamp with time zone DEFAULT now(),

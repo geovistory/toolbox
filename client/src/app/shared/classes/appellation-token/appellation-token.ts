@@ -1,4 +1,4 @@
-import { NamePartInputComponent } from '../../../name-part-input/name-part-input.component';
+import { NamePartStringEditComponent } from '../../../name-part-string-edit/name-part-string-edit.component';
 
 export interface TokenInterface {
   "id": number,
@@ -6,7 +6,7 @@ export interface TokenInterface {
   "autofocus": boolean,
   "isSeparator": boolean,
   "type"?: any,
-  "namePartInputComponent"?: NamePartInputComponent
+  "namePartStringEditComponent"?: NamePartStringEditComponent
 }
 
 export class Token implements TokenInterface {
@@ -15,7 +15,7 @@ export class Token implements TokenInterface {
   autofocus: boolean;
   isSeparator: boolean;
   typeId: number;
-  namePartInputComponent?: NamePartInputComponent;
+  namePartStringEditComponent?: NamePartStringEditComponent;
   type?:Object;
 
   constructor(

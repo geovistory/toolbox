@@ -1,6 +1,6 @@
 {
   "name": "PersistentItemVersion",
-  "base": "PersistedModel",
+  "base": "EntityVersion",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
@@ -9,46 +9,155 @@
       "table": "v_persistent_item_version"
     }
   },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "disableAllExcept": []
+    }
+  },
   "properties": {
-    "pk_entity_version": {
-      "type": "string",
-      "id": true,
-      "required": true
-    },
-    "pk_entity": {
-      "type": "string",
-      "generated": true
-    },
-    "entity_version": {
-      "type": "string",
-      "generated": true
-    },
-    "timestamp": {
-      "type": "date",
-      "required": true
-    },
     "fk_class": {
       "type": "string",
-      "required": true
-    },
-    "is_latest_version": {
-      "type": "boolean",
-      "required": true
-    },
-    "is_community_favorite": {
-      "type": "boolean",
       "required": true
     }
   },
   "validations": [],
   "relations": {
-    "entity_version_project_rels": {
+    "pi_roles": {
       "type": "hasMany",
-      "model": "EntityVersionProjectRel",
-      "foreignKey": "fk_entity_version",
-      "primaryKey": "pk_entity_version"
+      "model": "InformationRole",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
     }
   },
-  "acls": [],
-  "methods": {}
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find",
+        "findComplex",
+        "findById",
+        "searchInProject",
+        "searchInRepo",
+        "findOrCreatePersistentItemVersion"
+      ]
+    }
+  ],
+  "methods": {
+    "findOrCreatePersistentItemVersion": {
+      "accepts": [
+        {
+          "arg": "data",
+          "type": "PersistentItemVersion",
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "PersistentItemVersion",
+        "root": true
+      },
+      "description": "Find or create an PersistentItemVersion.",
+      "http": {
+        "path": "/findOrCreate",
+        "verb": "post"
+      }
+    },
+    "searchInProject": {
+      "accepts": [
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Project id",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "searchString",
+          "type": "string",
+          "required": false,
+          "description": "Search String",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "limit",
+          "type": "number",
+          "required": false,
+          "description": "Max. number of results per page [default=10; max=200]",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "page",
+          "type": "number",
+          "required": true,
+          "description": "Page of pagination",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "object",
+        "root": true
+      },
+      "description": "Find persistent items of a project.",
+      "http": {
+        "path": "/search-in-project",
+        "verb": "get"
+      }
+    },
+    "searchInRepo": {
+      "accepts": [
+        {
+          "arg": "searchString",
+          "type": "string",
+          "required": true,
+          "description": "Search String",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "limit",
+          "type": "number",
+          "required": false,
+          "description": "Max. number of results per page [default=10; max=200]",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "page",
+          "type": "number",
+          "required": true,
+          "description": "Page of pagination",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "object",
+        "root": true
+      },
+      "description": "Find persistent items of a project.",
+      "http": {
+        "path": "/search-in-repo",
+        "verb": "get"
+      }
+    }
+  }
 }
