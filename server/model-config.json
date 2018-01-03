@@ -64,10 +64,6 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "EntityProjectRel": {
-    "dataSource": "postgres1",
-    "public": true
-  },
   "CommonsLabel": {
     "dataSource": "postgres1",
     "public": true
@@ -75,5 +71,37 @@
   "CommonsTextProperty": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "Appellation": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "TemporalEntity": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "InformationRole": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "Class": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "InformationLanguage": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "PersistentItemVersion": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "EntityVersionProjectRel": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "EntityVersion": {
+    "dataSource": null,
+    "public": false
   }
 }

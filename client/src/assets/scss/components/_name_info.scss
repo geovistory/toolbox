@@ -1,12 +1,44 @@
 
 // Card representing one Name or one Additional Info
 gv-name,
-gv-addinfo {
+gv-addinfo,
+.gv-name,
+.gv-addinfo {
   display: block;
   margin-bottom: $card-spacer-y ;
   .card-header.gv-name-header {
-    .gv-label {
-      word-break: break-all;
+    .gv-in-project,
+    .gv-standard-in-project {
+      .gv-true {
+        color: theme-color("secondary");
+      }
+      .gv-false {
+        color: $gray-400;
+      }
+      button {
+        margin: -0.2rem -.5rem -0.1rem;
+      }
+      margin-right: .4rem;
+    }
+    .gv-in-project {
+      .gv-new {
+        color: $gray-400;
+        position: relative;
+        .gv-new-label{
+          color: theme-color("success");
+          font-size: .5rem;
+          font-weight: 700;
+          position: absolute;
+          top: 0.4rem;
+          background: $white;
+          left: -0.15rem;
+          height: 0.35rem;
+          line-height: 0.3rem;
+        }
+      }
+    }
+
+    .gv-edit-name {
       .gv-namepart-token {
         border-bottom: 1px dashed theme-color("secondary");
         border-top: none;
@@ -24,11 +56,14 @@ gv-addinfo {
         margin-right: 0.2rem;
       }
     }
+    .gv-label {
+      word-break: break-all;
+    }
     background-color: $white;
     border-bottom: none;
     .gv-name-dropdown {
       .dropdown-toggle{
-        margin: (-$card-spacer-y) (-$card-spacer-x);
+        margin: (-$card-spacer-y) (-$card-spacer-x) (-$card-spacer-y) 0;
         border-top-left-radius: 0;
         border-bottom-right-radius: 0;
         border-bottom-left-radius: 0;
@@ -41,7 +76,6 @@ gv-addinfo {
   }
   .card-body.gv-name-section-header {
     padding-top: 0;
-    padding-right: 0;
     padding-bottom: 0;
     font-size: $font-size-sm;
     background-color: theme-color("light");
@@ -53,10 +87,22 @@ gv-addinfo {
       color: theme-color("secondary");
     }
   }
-
   .gv-name-section {
     .gv-edit-btn {
       visibility: hidden;
+    }
+
+    .gv-name-dropdown {
+      .dropdown-toggle{
+        margin: -1rem -.5rem -0.7rem -.5rem;
+        border-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+        border: none;
+      }
+      .dropdown-toggle::after{
+        content: none;
+      }
     }
   }
   .gv-name-section:hover{
@@ -64,12 +110,8 @@ gv-addinfo {
       visibility: visible;
     }
   }
-
   .gv-card-body-wrapper {
     overflow: hidden;
-  }
-  .card-body.gv-name-part {
-    border-bottom: $border-width solid $border-color;
   }
   .card-footer.gv-name-footer{
     border-top: none;
@@ -84,28 +126,18 @@ gv-addinfo {
       font-size: $font-size-sm;
     }
   }
-  .gv-in-project,
-  .gv-pref-alternative{
+  .gv-community-statistics {
     color: theme-color("secondary");
-    margin-right: .4rem;
-  }
-  .gv-in-project.gv-false,
-  .gv-pref-alternative.gv-false{
-    color: $gray-400;
-  }
-  .gv-in-project.gv-new{
-    color: $gray-400;
-    position: relative;
-    .gv-new-label{
-      color: theme-color("success");
-      font-size: .5rem;
-      font-weight: 700;
-      position: absolute;
-      top: 0.4rem;
-      background: $white;
-      left: -0.15rem;
-      height: 0.35rem;
-      line-height: 0.3rem;
+    font-size: $font-size-sm;
+    .gv-statistics-item {
+      margin-right: .4rem;
+    }
+    .gv-statistics-item::before {
+      content: "•";
+      margin-right: .4rem;
+    }
+    .gv-statistics-item:first-of-type::before {
+      content: none;
     }
   }
 }

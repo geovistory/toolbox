@@ -19,8 +19,15 @@ exports.up = function(db, callback) {
   CREATE TABLE information.entity
   (
     pk_entity serial PRIMARY KEY,
-    schema_name character varying,
-    table_name character varying
+    schema_name character varying NOT NULL,
+    table_name character varying NOT NULL,
+    entity_version integer NOT NULL,
+    notes text,
+    fk_creator integer,
+    fk_last_modifier integer,
+    tmsp_creation timestamp with time zone DEFAULT now(),
+    tmsp_last_modification timestamp with time zone,
+    sys_period tstzrange DEFAULT tstzrange(now(), NULL::timestamp with time zone)
   );
   `
   db.runSql(sql, callback)

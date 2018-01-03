@@ -1,0 +1,80 @@
+{
+  "name": "InformationLanguage",
+  "base": "EntityVersion",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "v_language_version"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": [
+        "find",
+        "queryByString"
+      ]
+    }
+  },
+  "properties": {
+    "lang_type": {
+      "type": "string"
+    },
+    "scope": {
+      "type": "string"
+    },
+    "iso6392b": {
+      "type": "string"
+    },
+    "iso6392t": {
+      "type": "string"
+    },
+    "iso6391": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {
+     "queryByString": {
+      "accepts": {
+        "arg": "queryString",
+        "type": "string",
+        "http": {
+          "source": "query"
+        }
+      },
+      "returns": {
+        "arg": "languages",
+        "type": [
+          "Language"
+        ],
+        "root": true
+      },
+      "description": "Perform a ranked search on languages by search string.",
+      "http": {
+        "path": "/query-by-string",
+        "verb": "get"
+      }
+    }
+  }
+}

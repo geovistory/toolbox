@@ -63,7 +63,7 @@ exports.up = function(db, callback) {
   -- Trigger: last_modification_tmsp
 
   CREATE TRIGGER last_modification_tmsp
-  BEFORE INSERT
+  BEFORE INSERT OR UPDATE
   ON commons.label
   FOR EACH ROW
   EXECUTE PROCEDURE commons.tmsp_last_modification();

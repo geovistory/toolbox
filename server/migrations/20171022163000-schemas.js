@@ -23,6 +23,7 @@ exports.up = function(db, callback) {
 
   CREATE SCHEMA data_for_history;
 
+  CREATE SCHEMA che;
   `
 
   db.runSql(sql, callback)
@@ -37,6 +38,8 @@ exports.down = function(db, callback) {
   DROP SCHEMA information;
 
   DROP SCHEMA data_for_history;
+
+  DROP SCHEMA che;
   `
 
   db.runSql(sql, callback)

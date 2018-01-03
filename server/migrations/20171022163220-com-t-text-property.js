@@ -70,7 +70,7 @@ exports.up = function(db, callback) {
   -- DROP TRIGGER last_modification_tmsp ON commons.text_property;
 
   CREATE TRIGGER last_modification_tmsp
-  BEFORE INSERT
+  BEFORE INSERT OR UPDATE
   ON commons.text_property
   FOR EACH ROW
   EXECUTE PROCEDURE commons.tmsp_last_modification();

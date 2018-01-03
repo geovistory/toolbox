@@ -5,9 +5,9 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
+* We receive the dbmigrate dependency from dbmigrate initially.
+* This enables us to not have to rely on NODE_PATH.
+*/
 exports.setup = function(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -19,7 +19,10 @@ exports.up = function(db, callback) {
   const sql = `
   INSERT INTO data_for_history.class (data_for_history_id, notes)
   VALUES
-  ('E21', 'Person')
+  ('E21', 'Person'),
+  ('E82', 'Actor Appellation'),
+  ('F52', 'Name Use Activity'),
+  ('E56', 'Language')
   `;
   console.log(sql);
 

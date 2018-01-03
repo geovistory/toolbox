@@ -1,112 +1,145 @@
 <div class="card gv-name">
   <div class="card-header gv-name-header d-flex flex-row">
-    <div class="gv-in-project">
-      <i class="fa fa-check-square-o"></i>
-    </div>
-    <div class="gv-pref-alternative">
-      <i class="fa fa-eye"></i>
-    </div>
+    <div class="gv-in-project" *ngIf="inProjectVisible">
+      <button type="button" name="button" class="btn btn-link btn-sm"
+      *ngIf="inProject"
+      [attr.disabled]="entityProjectRel.is_standard_in_project || changeIsInProjectLoading ? 'disabled' : null"
+      (click)="inProject=false">
+      <i class="fa fa-check-square-o" ></i>
+    </button>
+    <button type="button" name="button" class="btn btn-link btn-sm"
+    [attr.disabled]="changeIsInProjectLoading ? 'disabled' : null"
+    *ngIf="!inProject"  (click)="inProject=true">
+    <i class="fa fa-square-o"></i>
+  </button>
+  <!-- <i class="fa fa-spinner fa-pulse fa-fw text-muted" *ngIf="changeIsInProjectLoading"></i> -->
+</div>
+<div class="gv-standard-in-project" *ngIf="standardInProjectVisible">
+  <i class="fa fa-eye gv-true" title="Is standard"
+  *ngIf="isStandardInProject"></i>
+  <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="!isStandardInProject"
+  [attr.disabled]="changeStandardLoading ? 'disabled' : null"
+  (click)="makeStandardInProject()" title="Set as standard">
+  <i class="fa fa-eye-slash gv-false"></i>
+</button>
+<!-- <i class="fa fa-spinner fa-pulse fa-fw text-muted" *ngIf="changeStandardLoading"></i> -->
+</div>
 
-    <!-- Not editing state -->
-    <div class="gv-label gv-display-label gv-flex-grow-1 gv-pointer" *ngIf="!editingAppellation" (click)="toggleCardBody()">
-      {{appellationString}}
-    </div>
+<!-- Not editing state -->
+<div class="gv-label gv-display-label gv-flex-grow-1 gv-pointer d-flex
+justify-content-between align-items-baseline"
+*ngIf="!editingAppellation" (click)="toggleCardBody()">
+<span>{{appellationLabelString}}</span>
+<small class="text-muted" *ngIf="language">{{language?.pk_language}}</small>
+</div>
 
-    <!-- Editing state -->
-    <div class="gv-label gv-editing-name gv-flex-grow-1" *ngIf="editingAppellation">
+<!-- Editing state -->
+<div class="gv-label gv-edit-name gv-flex-grow-1" *ngIf="editingAppellation">
 
-
-      <form (submit)="stopEditAppellation()">
-        <div class="form-group">
-          <span *ngFor="let token of appellation.tokens; let i = index;">
-            <gv-name-part-input [appellation]="appellation" [token]="token" (enterKey)="stopEditAppellation()"></gv-name-part-input>
-          </span>
-        </div>
-        <fieldset *ngIf="notEmptyAppellation">
-          <hr>
-          <div class="form-group" *ngFor="let token of appellation.tokens; let i=index">
-            <gv-name-part [nameComponent]="this" [appellation]="appellation" [token]="token"></gv-name-part>
-          </div>
-          <div class="form-group">
-            <button type="submit" class="gv-stop-edit-btn btn btn-primary">
-              Save
-            </button>
-          </div>
-        </fieldset>
-      </form>
-
-      <!--
-      <span *ngFor="let token of appellation.tokens; let i = index;">
-        <gv-name-part-input [appellation]="appellation" [token]="token" (enterKey)="stopEditAppellation()"></gv-name-part-input>
+  <form (submit)="saveAppellationLabel()" class="gv-appellation-label-form">
+    <div class="form-group">
+      <span *ngFor="let token of appellationLabelInEdit.tokens; let i = index;">
+        <gv-name-part-string-edit [appellationLabel]="appellationLabelInEdit" [token]="token" (enterKey)="saveAppellationLabel()"></gv-name-part-string-edit>
       </span>
-      <div class="gv-name-section" >
-        <span *ngFor="let token of appellation.tokens; let i=index">
-          <gv-name-part [nameComponent]="this" [appellation]="appellation" [token]="token"></gv-name-part>
-        </span>
-      </div>
-      <button type="button" class="gv-stop-edit-btn btn btn-primary" (click)="stopEditAppellation()">
-        Save
-      </button> -->
-
-
-
     </div>
-
-    <div ngbDropdown placement="bottom-right" class="ml-auto d-inline-block gv-name-dropdown">
-      <button class="btn btn-outline-primary" id="dropdown" ngbDropdownToggle><i class="fa fa-ellipsis-v"></i></button>
-      <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
-        <button *ngIf="cardBodyState==='collapsed'" class="dropdown-item" (click)="showDetails()">Show Details</button>
-        <button *ngIf="cardBodyState==='expanded'" class="dropdown-item" (click)="hideDetails()">Hide Details</button>
-        <button class="dropdown-item" *ngIf="!editingAppellation" (click)="editAppellation()">Edit name</button>
-        <button class="dropdown-item">Add a section</button>
-        <button class="dropdown-item">Show annotations</button>
-        <button class="dropdown-item">Add annotations</button>
-        <button class="dropdown-item">Remove from project</button>
+    <fieldset *ngIf="notEmptyAppellation">
+      <div class="form-group gv-select-name-part-type" *ngFor="let token of appellationLabelInEdit.tokens; let i=index">
+        <gv-name-part-type-edit [nameComponent]="this" [appellationLabel]="appellationLabelInEdit" [token]="token"></gv-name-part-type-edit>
       </div>
-    </div>
-  </div>
-
-  <div class="gv-card-body-wrapper" [@slideInOut]="cardBodyState">
-
-    <!-- <div class="gv-label" *ngIf="!editingAppellation">
-      <button type="button" class="gv-edit-btn btn btn-link" name="button" (click)="editAppellation()">
-        <i class="fa fa-edit"></i> Edit name
-      </button>
-    </div> -->
-
-    <div class="gv-name-section" *ngIf="showNamePartSection()">
-      <div class="card-body gv-name-section-header d-flex flex-row">
-        <div class="gv-label gv-flex-grow-1">Name Parts</div>
-        <button type="button" class="gv-edit-btn btn btn-link btn-sm" name="button" (click)="editAppellation()">
-          <i class="fa fa-edit"></i> Edit
+      <div class="form-group">
+        <button type="submit" class="gv-stop-edit-btn btn btn-primary">
+          Save
+        </button>
+        <button type="button" class="gv-stop-edit-btn btn btn-link" (click)="stopEditAppellation()">
+          Cancel
         </button>
       </div>
-      <span *ngFor="let token of appellation.tokens; let i=index">
-        <div class="card-body gv-name-part" *ngIf="isNamePartToken(token)">
-          <div class="d-flex">
-            <div class="gv-label">
-              <div class="gv-name-part-token d-flex">
-                <div class="gv-token-label gv-flex-grow-1">
-                  {{token.string}}
-                </div>
-                <div class="gv-token-type">
-                  <i>{{token.type?.label}}</i>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="d-flex gv-revisions">
-            <div class="ml-auto text-success">
-            </div>
-          </div>
-        </div>
-      </span>
-    </div>
-    <div class="card-footer gv-name-footer">
-      <div class="btn btn-block btn-light">
-        Add a property section…
-      </div>
-    </div>
+    </fieldset>
+  </form>
 
+</div>
+
+<div ngbDropdown placement="bottom-right" class="ml-auto d-inline-block gv-name-dropdown" *ngIf="editBtnVisible">
+  <button class="btn btn-outline-primary" id="dropdown" ngbDropdownToggle><i class="fa fa-ellipsis-v"></i></button>
+  <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+    <button *ngIf="cardBodyState==='collapsed'" class="dropdown-item" (click)="showDetails()">Show Details</button>
+    <button *ngIf="cardBodyState==='expanded'" class="dropdown-item" (click)="hideDetails()">Hide Details</button>
+    <button class="dropdown-item" *ngIf="!editingAppellation" (click)="editAppellation()">Edit name</button>
+    <button class="dropdown-item">Add a section</button>
+    <button class="dropdown-item">Show annotations</button>
+    <button class="dropdown-item">Add annotations</button>
+    <button class="dropdown-item">Remove from project</button>
   </div>
+</div>
+
+</div>
+
+<div class="card-body gv-community-statistics d-flex justify-content-end" *ngIf="communityStatisticsVisible">
+  <span class="gv-statistics-item" title="Added in {{isInProjectCount}} project{{isInProjectCount === 1 ? '' : 's'}}">
+    <i class="fa fa-check"></i> {{isInProjectCount}}
+  </span>
+  <span class="gv-statistics-item" title="Standard name in {{isStandardInProjectCount}} project{{isStandardInProjectCount === 1 ? '' : 's'}}">
+    <i class="fa fa-eye"></i> {{isStandardInProjectCount}}
+  </span>
+  <!--
+  <span class="gv-statistics-item">
+  <i class="fa fa-quote-left"></i> 2
+</span>
+<span class="text-success ml-auto">
+new data available
+</span>
+-->
+</div>
+
+<div class="gv-card-body-wrapper" [@slideInOut]="cardBodyState">
+
+  <div class="gv-name-section" *ngIf="namePartsVisible">
+    <div class="card-body gv-name-section-header d-flex flex-row">
+      <div class="gv-label gv-flex-grow-1">Details</div>
+      <button type="button" class="gv-edit-btn btn btn-link btn-sm" name="button" (click)="editAppellation()" *ngIf="editBtnVisible">
+        <i class="fa fa-edit"></i> Edit
+      </button>
+    </div>
+    <div class="card-body">
+      <gv-name-parts-view [appellation]="appellation"></gv-name-parts-view>
+    </div>
+    <div class="card-body gv-community-statistics d-flex justify-content-end small" *ngIf="communityStatisticsVisible">
+      <ul class="gv-ul-sm">
+        <li class="gv-li-inline">
+          <a href (click)="openVersionHistoryModal()">
+            <span>version {{appellation?.entity_version}} of {{versionCount}}</span>
+          </a>
+        </li>
+        <li class="gv-li-inline" *ngIf="newUpdateAppellationVisible">
+          <a href (click)="openVersionHistoryModal()">
+            <span class="text-success">new version</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+
+
+
+  <div class="gv-name-section">
+    <div class="card-body gv-name-section-header d-flex flex-row">
+      <div class="gv-label gv-flex-grow-1">Language</div>
+      <button type="button" class="gv-edit-btn btn btn-link btn-sm" name="button" (click)="editLanguage()" *ngIf="editBtnVisible">
+        <i class="fa fa-edit"></i> Edit
+      </button>
+    </div>
+    <div class="card-body">
+      <gv-language [language]="language"></gv-language>
+    </div>
+  </div>
+
+
+  <div class="card-footer gv-name-footer" *ngIf="editBtnVisible">
+    <div class="btn btn-block btn-light">
+      Add a property section…
+    </div>
+  </div>
+
+</div>
 </div>

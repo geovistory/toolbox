@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { Observable } from 'rxjs';
+
 import {LoopBackConfig} from './../shared/sdk/lb.config';
 import {Project} from './../shared/sdk/models/Project';
 import {environment} from './../../environments/environment';
@@ -16,11 +18,12 @@ import { Account } from '../shared/sdk/models/Account';
 export class ProjectListComponent implements OnInit {
 
   projects: Project[] = [];
-  loading: boolean = false;
+  loadingComplete = false;
 
   constructor(
     private accountApi: AccountApi,
-    private authService: LoopBackAuth
+    private authService: LoopBackAuth,
+    private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -31,17 +34,37 @@ export class ProjectListComponent implements OnInit {
   }
 
   getProjects() {
-    this.loading = true;
+    this.startLoading();
     this.accountApi.listProjects(this.authService.getCurrentUserId()).subscribe(
       (accounts: Array<Account>) => {
 
         this.projects = accounts[0].projects;
-        this.loading = false;
+      this.completeLoading();
       });
     }
 
     open(){
       alert('TODO: open project')
+    }
+
+
+    /**
+     * Loading Bar Logic
+     */
+
+    startLoading() {
+      this.slimLoadingBarService.progress = 20;
+      this.slimLoadingBarService.start(() => {
+        this.loadingComplete = true;
+      });
+    }
+
+    stopLoading() {
+      this.slimLoadingBarService.stop();
+    }
+
+    completeLoading() {
+      this.slimLoadingBarService.complete();
     }
 
   }

@@ -20,19 +20,10 @@ exports.up = function(db, callback) {
 
   CREATE TABLE information.entity_association
   (
-    pk_entity integer,
-    schema_name character varying,
-    table_name character varying,
     pk_entity_association serial PRIMARY KEY,
     fk_domain_entity integer,
     fk_range_entity integer,
-    fk_property integer,
-    notes text COLLATE pg_catalog."default",
-    fk_creator integer,
-    fk_last_modifier integer,
-    tmsp_creation timestamp with time zone DEFAULT now(),
-    tmsp_last_modification timestamp with time zone,
-    sys_period tstzrange DEFAULT tstzrange(now(), NULL::timestamp with time zone)
+    fk_property VARCHAR(7) REFERENCES data_for_history.property (data_for_history_id)
   )
   INHERITS (information.entity)
   WITH (
@@ -66,7 +57,7 @@ exports.up = function(db, callback) {
   -- DROP TRIGGER last_modification_tmsp ON information.entity_association;
 
   CREATE TRIGGER last_modification_tmsp
-  BEFORE INSERT
+  BEFORE INSERT OR UPDATE
   ON information.entity_association
   FOR EACH ROW
   EXECUTE PROCEDURE commons.tmsp_last_modification();
@@ -83,6 +74,23 @@ exports.up = function(db, callback) {
   FOR EACH ROW EXECUTE PROCEDURE versioning(
     'sys_period', 'information.entity_association_vt', true
   );
+
+  -- Trigger: create_entity_version_key
+
+  CREATE TRIGGER create_entity_version_key
+  BEFORE INSERT
+  ON information.entity_association
+  FOR EACH ROW
+  EXECUTE PROCEDURE commons.create_entity_version_key();
+
+  -- Trigger: update_entity_version_key
+
+  CREATE TRIGGER update_entity_version_key
+  BEFORE UPDATE
+  ON information.entity_association
+  FOR EACH ROW
+  EXECUTE PROCEDURE commons.update_entity_version_key();
+
   `
   db.runSql(sql, callback)
 

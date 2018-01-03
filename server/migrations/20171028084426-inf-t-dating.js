@@ -20,20 +20,11 @@ exports.up = function(db, callback) {
 
   CREATE TABLE information.dating
   (
-    pk_entity integer,
-    schema_name character varying,
-    table_name character varying,
     pk_dating serial PRIMARY KEY,
     date_iso_value jsonb,
     comment text,
-    fk_system_type integer,
-    notes text,
-    fk_creator integer,
-    fk_last_modifier integer,
-    tmsp_creation timestamp with time zone DEFAULT now(),
-    tmsp_last_modification timestamp with time zone,
-    sys_period tstzrange DEFAULT tstzrange(now(), NULL::timestamp with time zone)
-  )
+    fk_system_type integer
+    )
   INHERITS (information.entity)
   WITH (
     OIDS = FALSE
@@ -66,7 +57,7 @@ exports.up = function(db, callback) {
   -- DROP TRIGGER last_modification_tmsp ON information.dating;
 
   CREATE TRIGGER last_modification_tmsp
-  BEFORE INSERT
+  BEFORE INSERT OR UPDATE
   ON information.dating
   FOR EACH ROW
   EXECUTE PROCEDURE commons.tmsp_last_modification();
@@ -82,6 +73,23 @@ exports.up = function(db, callback) {
   FOR EACH ROW EXECUTE PROCEDURE versioning(
     'sys_period', 'information.dating_vt', true
   );
+
+  -- Trigger: create_entity_version_key
+
+  CREATE TRIGGER create_entity_version_key
+  BEFORE INSERT
+  ON information.dating
+  FOR EACH ROW
+  EXECUTE PROCEDURE commons.create_entity_version_key();
+
+  -- Trigger: update_entity_version_key
+
+  CREATE TRIGGER update_entity_version_key
+  BEFORE UPDATE
+  ON information.dating
+  FOR EACH ROW
+  EXECUTE PROCEDURE commons.update_entity_version_key();
+
   `
   db.runSql(sql, callback)
 

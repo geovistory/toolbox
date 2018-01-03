@@ -24,8 +24,6 @@ gv-project-entities {
   }
   .gv-search-hits-count{
     padding-left: $spacing-left;
-    font-size: $font-size-sm;
-    color: $text-muted;
   }
   .gv-search-loading{
     color: $text-muted;
@@ -33,22 +31,5 @@ gv-project-entities {
   }
   .gv-search-hits{
     padding-left: $spacing-left;
-    .gv-search-hit{
-      margin-bottom: 1.5rem;
-      .gv-search-hit-header{
-
-      }
-      .gv-search-hit-body{
-        font-size: $font-size-sm;
-        .gv-search-hit-property:not(:first-child){
-
-        }
-        .gv-search-hit-property:not(:first-child)::before{
-          content: "•";
-          margin-left: .4rem;
-          margin-right: .4rem;
-        }
-      }
-    }
   }
 }

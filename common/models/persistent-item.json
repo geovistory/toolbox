@@ -17,10 +17,10 @@
   "hidden": [],
   "properties": {
     "pk_persistent_item": {
-      "type": "number"
+      "type": "number",
+      "id": true
     },
     "pk_entity": {
-      "id": true,
       "type": "number",
       "generated": true
     },
@@ -28,18 +28,16 @@
       "type": "string"
     },
     "fk_class": {
-      "type": "number"
+      "type": "string"
     }
   },
   "validations": [],
   "relations": {
-    "projects": {
+    "roles": {
       "type": "hasMany",
-      "model": "Project",
+      "model": "InformationRole",
       "foreignKey": "fk_entity",
-      "primaryKey": "pk_entity",
-      "keyThrough": "fk_project",
-      "through": "EntityProjectRel"
+      "primaryKey": "pk_entity"
     }
   },
   "acls": [
@@ -49,7 +47,10 @@
       "permission": "ALLOW",
       "property": [
         "createItem",
-        "find"
+        "find",
+        "findById",
+        "searchInProject",
+        "searchInRepo"
       ]
     }
   ],
@@ -83,6 +84,87 @@
       "http": {
         "path": "/create",
         "verb": "post"
+      }
+    },
+    "searchInProject": {
+      "accepts": [
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Project id",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "searchString",
+          "type": "string",
+          "required": false,
+          "description": "Search String",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "limit",
+          "type": "number",
+          "required": false,
+          "description": "Max. number of results per page [default=10; max=200]",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "page",
+          "type": "number",
+          "required": true,
+          "description": "Page of pagination",
+          "http": {
+            "source": "query"
+          }
+        }
+      ]
+    },
+    "searchInRepo": {
+      "accepts": [
+        {
+          "arg": "searchString",
+          "type": "string",
+          "required": false,
+          "description": "Search String",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "limit",
+          "type": "number",
+          "required": false,
+          "description": "Max. number of results per page [default=10; max=200]",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "page",
+          "type": "number",
+          "required": true,
+          "description": "Page of pagination",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "object",
+        "root": true
+      },
+      "description": "Find persistent items of a project.",
+      "http": {
+        "path": "/search-in-repo",
+        "verb": "get"
       }
     }
   }

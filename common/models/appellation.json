@@ -1,0 +1,72 @@
+{
+  "name": "Appellation",
+  "base": "EntityVersion",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "v_appellation_version"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {}
+  },
+  "properties": {
+    "appellation_label": {
+      "type": "any",
+      "required": true
+    },
+    "fk_class": {
+      "type": "string",
+      "required": true
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "roles": {
+      "type": "hasMany",
+      "model": "InformationRole",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    }
+  },
+  "acls": [],
+  "methods": {
+    "findOrCreateAppellation": {
+      "accepts": [
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": "Appellation",
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "Appellation",
+        "root": true
+      },
+      "description": "Find or create an appellation version and update the project relation if needed.",
+      "http": {
+        "path": "/findOrCreate",
+        "verb": "post"
+      }
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { DecimalPipe } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 import {Observable} from 'rxjs/Observable';
@@ -11,14 +12,16 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/merge';
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 import { PersistentItem } from '../shared/sdk/models/PersistentItem';
 import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
 import { environment } from '../../environments/environment';
 import { LoopBackConfig } from '../shared/sdk/lb.config';
-import { ProjectApi } from '../shared/sdk/services/custom/Project';
-import { EntityCreateModalComponent } from '../entity-create-modal/entity-create-modal.component';
+import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
 import { Project } from '../shared/sdk/models/Project';
+import { EntityAddModalService } from '../shared/services/entity-add-modal.service';
+import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
 
 @Component({
   selector: 'gv-project-entities',
@@ -39,18 +42,19 @@ export class ProjectEntitiesComponent implements OnInit {
   searchString:string;
   loading: boolean = false;
   errorMessages: any;
+  
 
-  //Add Entity Modal
-  onAddNewPeIt: EventEmitter<any> = new EventEmitter();
   entityModalOptions: NgbModalOptions = {
     size: 'lg'
   }
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private persistentItemApi: PersistentItemApi,
-    private projectApi: ProjectApi,
-    private modalService: NgbModal
+    private persistentItemApi: PersistentItemVersionApi,
+    private modalService: NgbModal,
+    private entityAddModalService: EntityAddModalService,
+    private router: Router,
+    private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -59,34 +63,45 @@ export class ProjectEntitiesComponent implements OnInit {
 
   ngOnInit() {
     this.searchProjectPeIts();
-    this.onAddNewPeIt.subscribe(success => {
+    this.entityAddModalService.onAdd.subscribe(success => {
       this.searchProjectPeIts();
+    })
+    this.entityAddModalService.onOpen.subscribe(pkPersistentItem => {
+      this.openEntity(pkPersistentItem);
     })
   }
 
   searchProjectPeIts() {
-    this.loading = true;
+    this.startLoading();
     this.persistentItems = [];
     this.errorMessages = {};
-    this.projectApi.searchPersistentItems(this.projectId, this.searchString, this.page)
+    this.persistentItemApi.searchInProject(this.projectId, this.searchString, this.limit, this.page)
     .subscribe(
       (response) => {
+        this.completeLoading();
+
         this.persistentItems = response.data;
         this.collectionSize = response.totalCount;
-        this.loading = false
       },
       error => {
+        this.resetLoading();
+
         // TODO: Alert
         this.errorMessages = error.error.details.messages;
-        this.loading = false;
       }
     );
   }
 
   openEntityModal(){
-    const modalRef = this.modalService.open(EntityCreateModalComponent, this.entityModalOptions);
+    const modalRef = this.modalService.open(EntityAddModalComponent, this.entityModalOptions);
     modalRef.componentInstance.projectId = this.projectId;
-    modalRef.componentInstance.onAddNewPeIt = this.onAddNewPeIt;
+  }
+
+  openEntity(pkPersistentItem){
+    this.router.navigate(['../entity', pkPersistentItem], {
+      relativeTo: this.activatedRoute, queryParamsHandling: 'merge'
+    })
+    // routerLink="../entity/{{persistentItem.pk_persistent_item}}" queryParamsHandling="merge"
   }
 
   hitsFrom(){
@@ -97,5 +112,36 @@ export class ProjectEntitiesComponent implements OnInit {
     return upper > this.collectionSize ? this.collectionSize : upper;
   }
 
+  pageChange(){
+    this.searchProjectPeIts();
+  }
+  searchStringChange(){
+    this.page = 1;
+    this.searchProjectPeIts();
+  }
 
+  /**
+  * Loading Bar Logic
+  */
+
+  startLoading() {
+    this.loading = true;
+    this.slimLoadingBarService.progress = 20;
+    this.slimLoadingBarService.start(() => {
+    });
+  }
+
+  stopLoading() {
+    this.slimLoadingBarService.stop();
+  }
+
+  completeLoading() {
+    this.loading = false
+    this.slimLoadingBarService.complete();
+  }
+
+  resetLoading() {
+    this.loading = false
+    this.slimLoadingBarService.reset();
+  }
 }

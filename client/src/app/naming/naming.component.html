@@ -17,20 +17,28 @@
         <button class="dropdown-item text-white">Minimize</button>
       </div>
     </div>
-
   </div>
-  <div [@slideInOut]="cardState">
+
+  <div class="gv-card-body-wrapper" [@slideInOut]="cardState">
+
     <div class="card-body gv-naming">
-
-      <gv-name></gv-name>
-
-
+      <gv-name *ngFor="let name of names | gvNameVisible:state:activeProject.project.pk_project"
+      [name]="name" [isStandardOnAdd]="isStandardOnAdd(name.pk_entity)"
+      (standardNameChange)=standardNameChange($event) [state]="state"
+      (inProjectChange)="inProjectChange($event)"
+      ></gv-name>
     </div>
-    <div class="card-footer gv-naming">
-      <div class="btn btn-block btn-secondary">
+
+    <div class="card-body gv-naming" *ngIf="addingName">
+      <gv-name-add [names]="names" (onCancel)="cancelAddName()" (onAdd)="addNames(names)"></gv-name-add>
+    </div>
+
+    <div class="card-footer gv-naming" *ngIf="footerVisible">
+      <div class="btn btn-block btn-secondary" (click)="addName()">
         Add a name…
       </div>
     </div>
+
   </div>
 </div>
 

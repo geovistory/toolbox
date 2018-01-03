@@ -1,13 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-
 // Third party imports
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {ElasticInputModule} from 'angular2-elastic-input';
+import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
 
 // Own imports
 import { AppRoutingModule } from './app-routing.module';
@@ -34,10 +34,7 @@ import { ProjectEntitiesComponent } from './project-entities/project-entities.co
 import { ProjectEditComponent } from './project-edit/project-edit.component';
 import { NamingComponent } from './naming/naming.component';
 import { NameComponent } from './name/name.component';
-import { NamePartComponent } from './name-part/name-part.component';
-import { NamePartInputComponent } from './name-part-input/name-part-input.component';
 import { ProjectEditPanelComponent } from './project-edit-panel/project-edit-panel.component';
-import { EntityComponent } from './entity/entity.component';
 import { ProjectSourcesComponent } from './project-sources/project-sources.component';
 import { SourceComponent } from './source/source.component';
 import { AccountProfileComponent } from './account-profile/account-profile.component';
@@ -45,9 +42,27 @@ import { AccountPasswordComponent } from './account-password/account-password.co
 import { AccountEmailComponent } from './account-email/account-email.component';
 import { AccountComponent } from './account/account.component';
 import { ProjectSettingsDataComponent } from './project-settings-data/project-settings-data.component';
-import { EntityCreateModalComponent } from './entity-create-modal/entity-create-modal.component';
+import { EntityAddModalComponent } from './entity-add-modal/entity-add-modal.component';
 import { ActiveProjectService } from './shared/services/active-project.service';
 import { EntitySearchHitComponent } from './entity-search-hit/entity-search-hit.component';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+import { PropertyPipe } from './shared/pipes/property';
+import { LanguageComponent } from './language/language.component';
+import { NameAddComponent } from './name-add/name-add.component';
+import { EntityAddChooseClassComponent } from './entity-add-choose-class/entity-add-choose-class.component';
+import { EntityAddSearchExistingComponent } from './entity-add-search-existing/entity-add-search-existing.component';
+import { EntityAddCreateNewComponent } from './entity-add-create-new/entity-add-create-new.component';
+import { EntityAddModalService } from './shared/services/entity-add-modal.service';
+import { EntityAddAddExistingComponent } from './entity-add-add-existing/entity-add-add-existing.component';
+import { GvNameVisiblePipe } from './shared/pipes/gv-name-visible.pipe';
+import { EntityEditorComponent } from './entity-editor/entity.editor.component';
+import { LanguageSearchTypeaheadComponent } from './language-search-typeahead/language-search-typeahead.component';
+import { AppellationService } from './shared/services/appellation.service';
+import { NamePartsViewComponent } from './name-parts-view/name-parts-view.component';
+import { NamePartTypeEditComponent } from './name-part-type-edit/name-part-type-edit.component';
+import { NamePartStringEditComponent } from './name-part-string-edit/name-part-string-edit.component';
+import { PassiveLinkDirective } from './passive-link.directive';
+import { VersionModalComponent } from './version-modal/version-modal.component';
 
 @NgModule({
   declarations: [
@@ -71,10 +86,10 @@ import { EntitySearchHitComponent } from './entity-search-hit/entity-search-hit.
     ProjectEditComponent,
     NamingComponent,
     NameComponent,
-    NamePartComponent,
-    NamePartInputComponent,
+    NamePartTypeEditComponent,
+    NamePartStringEditComponent,
     ProjectEditPanelComponent,
-    EntityComponent,
+    EntityEditorComponent,
     ProjectSourcesComponent,
     SourceComponent,
     AccountProfileComponent,
@@ -82,8 +97,21 @@ import { EntitySearchHitComponent } from './entity-search-hit/entity-search-hit.
     AccountEmailComponent,
     AccountComponent,
     ProjectSettingsDataComponent,
-    EntityCreateModalComponent,
-    EntitySearchHitComponent
+    EntityAddModalComponent,
+    EntitySearchHitComponent,
+    LoadingSpinnerComponent,
+    LanguageComponent,
+    NameAddComponent,
+    PropertyPipe,
+    EntityAddChooseClassComponent,
+    EntityAddSearchExistingComponent,
+    EntityAddCreateNewComponent,
+    EntityAddAddExistingComponent,
+    GvNameVisiblePipe,
+    LanguageSearchTypeaheadComponent,
+    NamePartsViewComponent,
+    PassiveLinkDirective,
+    VersionModalComponent
   ],
   imports: [
     BrowserModule,
@@ -94,16 +122,22 @@ import { EntitySearchHitComponent } from './entity-search-hit/entity-search-hit.
     ReactiveFormsModule,
     SDKBrowserModule.forRoot(),
     NgbModule.forRoot(),
-    ElasticInputModule.forRoot()
+    ElasticInputModule.forRoot(),
+    SlimLoadingBarModule.forRoot()
   ],
   providers: [
     ActiveAccountService,
     ActiveProjectService,
-    AuthGuard
+    EntityAddModalService,
+    AppellationService,
+    AuthGuard,
+    PropertyPipe,
+    { provide: LOCALE_ID, useValue: 'ch-DE' }
   ],
   entryComponents : [
     AppComponent,
-    EntityCreateModalComponent
+    EntityAddModalComponent,
+    VersionModalComponent
   ],
   bootstrap: [AppComponent]
 })

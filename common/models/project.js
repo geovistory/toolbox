@@ -84,15 +84,15 @@ module.exports = function(Project) {
     });
   };
 
-  Project.addEntity = function(projectId, entitySemkey, cb) {
+  Project.addEntity = function(pk_project, fk_entity, cb) {
 
     var params = [
-      projectId, // $1
-      entitySemkey // $2
+      pk_project, // $1
+      fk_entity // $2
     ];
 
     var sql_stmt = `
-    INSERT INTO public.entity_project_rel (fk_project, fk_semkey, in_project)
+    INSERT INTO information.entity_project_rel (fk_project, fk_entity, in_project)
     VALUES ($1, $2, true);
     `;
 
@@ -106,105 +106,5 @@ module.exports = function(Project) {
     });
   };
 
-  Project.searchPersistentItems = function(projectId, searchString, page, cb) {
 
-    // let filter = {
-    //   where: {
-    //     pk_project: projectId
-    //   },
-    //   include: {
-    //     relation: "persistent_items",
-    //     scope: {
-    //       skip: 0,
-    //       limit: 5
-    //       // order: "tmsp_last_modification DESC"
-    //       // order: "notes DESC"
-    //     },
-    //   }
-    // }
-    //
-    // if(searchString) {
-    //   filter.include.scope.where = {
-    //     notes: {
-    //       "regexp": "/"+searchString+"/i"
-    //     }
-    //   }
-    // }
-    //
-    //
-    // Project.find(filter, (err, resultObjects) => {
-    //   cb(err, resultObjects[0]);
-    // });
-
-    var limit = 10;
-    var offset = limit * (page-1);
-
-    var params = [
-      projectId, // $1
-      searchString ? '%' + searchString + '%' : '%%',
-      limit,
-      offset
-    ];
-
-    var sql_stmt = `
-    SELECT
-    pi.notes,
-    pi.pk_persistent_item,
-    pi.pk_entity,
-    pi.fk_class
-    FROM information.persistent_item AS pi
-    INNER JOIN information.entity_project_rel AS epr ON epr.fk_entity=pi.pk_entity
-    WHERE epr.fk_project IN ($1) AND pi.notes iLike $2
-    ORDER BY pi.tmsp_last_modification DESC
-    LIMIT $3
-    OFFSET $4
-    `;
-
-
-    const connector = Project.dataSource.connector;
-    connector.execute(sql_stmt, params, (err, resultObjects) => {
-      var persistentItems = [];
-
-      if (resultObjects){
-        persistentItems = resultObjects.map(persistentItemRaw => {
-          const persistentItemData = connector.fromRow('PersistentItem', persistentItemRaw)
-          return new Project.app.models.PersistentItem(persistentItemData);
-        })
-      }
-      cb(err, persistentItems);
-    });
-  };
-
-
-  Project.afterRemote('searchPersistentItems', function (ctx, resultObjects, next) {
-
-    var params = [
-      ctx.args.projectId, // $1
-      ctx.args.searchString ? '%' + ctx.args.searchString + '%' : '%%'
-    ];
-
-    const count_stmt = `
-    SELECT
-    count(pi.pk_persistent_item)
-    FROM information.persistent_item AS pi
-    INNER JOIN information.entity_project_rel AS epr ON epr.fk_entity=pi.pk_entity
-    WHERE epr.fk_project IN ($1) AND pi.notes iLike $2
-    `;
-
-
-    if (!ctx.res._headerSent) {
-      Project.dataSource.connector.execute(count_stmt, params, (err, countResult) => {
-        ctx.res.set('X-Total-Count', countResult[0].count);
-
-        ctx.result = {
-          'totalCount': countResult[0].count,
-          'data': resultObjects
-        }
-        next();
-      });
-    } else {
-      next();
-    }
-
-  })
 }

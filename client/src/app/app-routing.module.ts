@@ -17,7 +17,6 @@ import { AuthGuard } from './shared/services/auth-guard.service';
 import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
 import { ProjectEntitiesComponent } from './project-entities/project-entities.component';
 import { ProjectEditComponent } from './project-edit/project-edit.component';
-import { EntityComponent } from './entity/entity.component';
 import { ProjectSourcesComponent } from './project-sources/project-sources.component';
 import { SourceComponent } from './source/source.component';
 import { AccountProfileComponent } from './account-profile/account-profile.component';
@@ -25,6 +24,7 @@ import { AccountPasswordComponent } from './account-password/account-password.co
 import { AccountEmailComponent } from './account-email/account-email.component';
 import { AccountComponent } from './account/account.component';
 import { ProjectSettingsDataComponent } from './project-settings-data/project-settings-data.component';
+import { EntityEditorComponent } from './entity-editor/entity.editor.component';
 
 const indexRoute:Route = {
   path: '',
@@ -126,7 +126,7 @@ const routes: Routes = [
               {
                 outlet: 'information',
                 path: 'entity/:id',
-                component: EntityComponent
+                component: EntityEditorComponent
               },
               {
                 outlet: 'sources',

@@ -10,13 +10,10 @@
     }
   },
   "mixins": {
-    "SetupRemoteMethods": {
-      "ignoreACL": false,
-      "disableAllExcept": []
-    }
+    "SetupRemoteMethods": {}
   },
   "properties": {
-    "pk_entity_project_rel":{
+    "pk_entity_project_rel": {
       "type": "number",
       "id": true,
       "generated": true
@@ -24,11 +21,19 @@
     "is_in_project": {
       "type": "boolean",
       "required": true
+    },
+    "is_standard_in_project": {
+      "type": "boolean",
+      "required": true
+    },
+    "is_in_project_true_tmsp": {
+      "type": "date",
+      "required": false
     }
   },
   "validations": [],
   "relations": {
-    "persistent_item" : {
+    "persistent_item": {
       "type": "belongsTo",
       "model": "PersistentItem",
       "foreignKey": "fk_entity",

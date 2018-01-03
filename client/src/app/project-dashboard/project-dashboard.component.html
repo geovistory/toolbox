@@ -25,7 +25,7 @@
       <div id="sources" class="gv-icon-box" [ngClass]="{'gv-active': steps.step1}">
         <button class="gv-upper-part gv-upper-part-info" [routerLink]="['edit', { outlets: { sources: ['search'], information: ['search'] } }]" [queryParams]="{s:'s100'}">
           <div class="gv-icon gv-icon-source"></div>
-          <h4>12 Sources</h4>
+          <h4>[TODO] Sources</h4>
         </button>
         <div class="gv-lower-part" (click)="activateStep('step1')" *ngIf="activeSlideId">
           <div class="d-flex justify-content-center">
@@ -52,7 +52,7 @@
       <div id="knowledge-units" class="gv-icon-box" [ngClass]="{'gv-active': steps.step3}">
         <div class="gv-upper-part gv-upper-part-primary" [routerLink]="['edit', { outlets: { information: ['search'], sources: ['search']} }]" [queryParams]="{i:'s100'}">
           <div class="gv-icon gv-icon-information"></div>
-          <h4>1.2k Information Units</h4>
+          <h4>{{dataUnitsCount}} {{dataUnitsCount === 1 ? 'Data Unit' : 'Data Units'}}</h4>
         </div>
         <div class="gv-lower-part" (click)="activateStep('step3')"  *ngIf="activeSlideId">
           <div class="d-flex justify-content-center">
@@ -79,7 +79,7 @@
       <div id="presentation" class="gv-icon-box" [ngClass]="{'gv-active': steps.step5}">
         <div class="gv-upper-part gv-upper-part-success">
           <div class="gv-icon gv-icon-presentation"></div>
-          <h4>21 Visualizations and 6 Stories</h4>
+          <h4>[TODO] Visualizations and [TODO] Stories</h4>
         </div>
         <div class="gv-lower-part" (click)="activateStep('step5')"  *ngIf="activeSlideId" >
           <div class="d-flex justify-content-center">

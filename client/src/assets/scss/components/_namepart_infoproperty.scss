@@ -1,17 +1,5 @@
 // List item representing one Name Part or one Property Alternative
 .gv-name-part {
-  .gv-name-dropdown {
-    .dropdown-toggle{
-      margin: (-$card-spacer-y) (-$card-spacer-x) 0 $card-spacer-x;
-      border-radius: 0;
-      border-bottom-right-radius: 0;
-      border-bottom-left-radius: 0;
-      border: none;
-    }
-    .dropdown-toggle::after{
-      content: none;
-    }
-  }
   .gv-label {
     flex-grow: 1;
     .gv-edit-btn {
@@ -42,20 +30,7 @@
 
     }
   }
-  .gv-community-statistics {
-    color: theme-color("secondary");
-    font-size: $font-size-sm;
-    .gv-statistics-item {
-      margin-right: .4rem;
-    }
-    .gv-statistics-item::before {
-      content: "•";
-      margin-right: .4rem;
-    }
-    .gv-statistics-item:first-of-type::before {
-      content: none;
-    }
-  }
+
   .gv-revisions{
     font-size: $font-size-sm;
   }
