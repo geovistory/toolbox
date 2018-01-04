@@ -2,7 +2,9 @@
   "defaultEnv": "development",
   "development": {
     "driver": "pg",
-    "url":  "postgres://postgres:Guru@Marly@localhost:5432/db-migrate-test?ssl=true"
+    "url": {
+      "ENV": "GEOV_DEV_DATABASE_URL"
+    }
   },
   "staging": {
     "driver": "pg",
