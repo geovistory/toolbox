@@ -3,16 +3,8 @@
   "scripts": {
   },
   "env": {
-    "DATABASE_URL": {
-      "required": true
-    },
-    "NODE_ENV": {
-      "required": true
-    },
-    "HEROKU_APP_NAME": {
-      "required": true
-    },
-    "HEROKU_PARENT_APP_NAME": {
+    "DB_ENV": "review",
+    "GEOV_REV_DATABASE_URL": {
       "required": true
     }
   },
