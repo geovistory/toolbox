@@ -1,10 +1,12 @@
 {
   "name": "geovistory",
   "scripts": {
-    "postdeploy": "echo 'postinstall DB_ENV: ' && echo $DB_ENV && node_modules/db-migrate/bin/db-migrate --config server/migrate-db-config.json --migrations-dir server/migrations up"
   },
   "env": {
-    "DB_ENV": "review"
+    "DB_ENV": "review",
+    "GEOV_REV_DATABASE_URL": {
+      "required": true
+    }
   },
   "formation": {
   },
