@@ -1,5 +1,5 @@
 {
-  "defaultEnv": "development",
+  "defaultEnv": {"ENV": "NODE_ENV"},
   "development": {
     "driver": "pg",
     "url": {
