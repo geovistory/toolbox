@@ -1,21 +1,9 @@
 {
   "name": "geovistory",
   "scripts": {
-    "postdeploy": "echo 'postdeploy NODE_ENV: ' && echo $NODE_ENV && echo 'postdeploy HEROKU_APP_NAME: ' && echo $HEROKU_APP_NAME && echo 'postdeploy HEROKU_PARENT_APP_NAME: ' && echo $HEROKU_PARENT_APP_NAME"
   },
   "env": {
-    "DATABASE_URL": {
-      "required": true
-    },
-    "NODE_ENV": {
-      "required": true
-    },
-    "HEROKU_APP_NAME": {
-      "required": true
-    },
-    "HEROKU_PARENT_APP_NAME": {
-      "required": true
-    }
+    "DB_ENV": "review",
   },
   "formation": {
   },
