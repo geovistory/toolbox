@@ -55,7 +55,6 @@ export class ProjectListComponent implements OnInit {
     startLoading() {
       this.slimLoadingBarService.progress = 20;
       this.slimLoadingBarService.start(() => {
-        this.loadingComplete = true;
       });
     }
 
@@ -65,6 +64,7 @@ export class ProjectListComponent implements OnInit {
 
     completeLoading() {
       this.slimLoadingBarService.complete();
+      this.loadingComplete = true;
     }
 
   }
