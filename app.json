@@ -6,6 +6,9 @@
     "DB_ENV": "review",
     "GEOV_REV_DATABASE_URL": {
       "required": true
+    },
+    "HEROKU_APP_NAME": {
+      "required": true
     }
   },
   "formation": {
