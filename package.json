@@ -7,7 +7,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "postinstall": "node_modules/db-migrate/bin/db-migrate --config server/migrate-db-config.json --migrations-dir server/migrations up && ./node_modules/.bin/lb-sdk server/server client/src/app/shared/sdk -d ng2web -i enabled && cd ./client && npm install && ng build --prod",
+    "postinstall": "echo 'postinstall NODE_ENV: ' && echo $NODE_ENV && echo 'postinstall HEROKU_APP_NAME: ' && echo $HEROKU_APP_NAME && echo 'postinstall HEROKU_PARENT_APP_NAME: ' && echo $HEROKU_PARENT_APP_NAME && node_modules/db-migrate/bin/db-migrate --config server/migrate-db-config.json --migrations-dir server/migrations up && ./node_modules/.bin/lb-sdk server/server client/src/app/shared/sdk -d ng2web -i enabled && cd ./client && npm install && ng build --prod",
     "start": "node .",
     "posttest": "npm run lint && nsp check",
     "build:sdk": "./node_modules/.bin/lb-sdk server/server client/src/app/shared/sdk -d ng2web -i enabled",

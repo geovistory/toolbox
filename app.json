@@ -1,7 +1,7 @@
 {
   "name": "geovistory",
   "scripts": {
-    "postdeploy": "echo 'postinstall NODE_ENV: ' && echo $NODE_ENV"
+    "postdeploy": "echo 'postdeploy NODE_ENV: ' && echo $NODE_ENV && echo 'postdeploy HEROKU_APP_NAME: ' && echo $HEROKU_APP_NAME && echo 'postdeploy HEROKU_PARENT_APP_NAME: ' && echo $HEROKU_PARENT_APP_NAME"
   },
   "env": {
     "DATABASE_URL": {
