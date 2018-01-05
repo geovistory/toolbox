@@ -6,16 +6,22 @@
       "ENV": "GEOV_DEV_DATABASE_URL"
     }
   },
+  "review": {
+    "driver": "pg",
+    "url": {
+      "ENV": "GEOV_REV_DATABASE_URL"
+    }
+  },
   "staging": {
     "driver": "pg",
     "url": {
-      "ENV": "DATABASE_URL"
+      "ENV": "GEOV_STAG_DATABASE_URL"
     }
   },
   "production": {
     "driver": "pg",
     "url": {
-      "ENV": "DATABASE_URL"
+      "ENV": "GEOV_PROD_DATABASE_URL"
     }
   }
 

@@ -1,7 +1,7 @@
 
 module.exports = {
   "postgres1": {
-    "url": process.env.DATABASE_URL,
+    "url": process.env.GEOV_PROD_DATABASE_URL,
     "name": "postgres1",
     "connector": "postgresql"
   },

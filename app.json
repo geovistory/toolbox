@@ -1,6 +1,7 @@
 {
   "name": "geovistory",
   "scripts": {
+    "postdeploy": "echo 'postinstall NODE_ENV: ' && echo $NODE_ENV"
   },
   "env": {
     "DATABASE_URL": {
