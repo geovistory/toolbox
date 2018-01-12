@@ -65,6 +65,15 @@
     "findOrCreateInformationRole": {
       "accepts": [
         {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
           "arg": "data",
           "type": "InformationRole",
           "required": true,

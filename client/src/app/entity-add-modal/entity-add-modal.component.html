@@ -12,10 +12,10 @@
 
   <gv-entity-add-choose-class *ngIf="state==='choose-class'"></gv-entity-add-choose-class>
   <gv-entity-add-search-existing [hidden]="state!=='search-existing'"></gv-entity-add-search-existing>
-  <!-- <gv-entity-add-create-new
+  <gv-entity-add-create-new
   [projectId]="projectId"
   (newState)="changeState($event)"
-  *ngIf="state==='create-new'"></gv-entity-add-create-new> -->
+  *ngIf="state==='create-new'"></gv-entity-add-create-new>
 
   <gv-entity-add-add-existing *ngIf="state==='add-existing'"></gv-entity-add-add-existing>
 

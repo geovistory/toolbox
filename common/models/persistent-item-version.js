@@ -3,7 +3,7 @@
 module.exports = function(PersistentItemVersion) {
 
 
-  PersistentItemVersion.findOrCreatePersistentItemVersion = function (data, cb) {
+  PersistentItemVersion.findOrCreatePeIt = function (projectId, data, cb) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
@@ -11,7 +11,9 @@ module.exports = function(PersistentItemVersion) {
       fk_class: data.fk_class
     };
 
-    PersistentItemVersion.findOrCreateVersion(PersistentItemVersion, dataObject, cb);
+    console.log(dataObject)
+
+    PersistentItemVersion.findOrCreateVersion(PersistentItemVersion, projectId, dataObject, cb);
 
   }
 

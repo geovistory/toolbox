@@ -63,6 +63,7 @@ import { NamePartTypeEditComponent } from './name-part-type-edit/name-part-type-
 import { NamePartStringEditComponent } from './name-part-string-edit/name-part-string-edit.component';
 import { PassiveLinkDirective } from './passive-link.directive';
 import { VersionModalComponent } from './version-modal/version-modal.component';
+import { PeItService } from './shared/services/pe-it.service';
 
 @NgModule({
   declarations: [
@@ -132,6 +133,7 @@ import { VersionModalComponent } from './version-modal/version-modal.component';
     AppellationService,
     AuthGuard,
     PropertyPipe,
+    PeItService,
     { provide: LOCALE_ID, useValue: 'ch-DE' }
   ],
   entryComponents : [

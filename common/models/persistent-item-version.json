@@ -40,13 +40,23 @@
         "findById",
         "searchInProject",
         "searchInRepo",
-        "findOrCreatePersistentItemVersion"
+        "findOrCreatePeIt",
+        "withPhenomenaInProject"
       ]
     }
   ],
   "methods": {
-    "findOrCreatePersistentItemVersion": {
+    "findOrCreatePeIt": {
       "accepts": [
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
         {
           "arg": "data",
           "type": "PersistentItemVersion",

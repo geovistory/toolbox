@@ -22,6 +22,7 @@ import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.co
 import { Project } from '../shared/sdk/models/Project';
 import { EntityAddModalService } from '../shared/services/entity-add-modal.service';
 import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
+import { PeItService } from '../shared/services/pe-it.service';
 
 @Component({
   selector: 'gv-project-entities',
@@ -42,7 +43,7 @@ export class ProjectEntitiesComponent implements OnInit {
   searchString:string;
   loading: boolean = false;
   errorMessages: any;
-  
+
 
   entityModalOptions: NgbModalOptions = {
     size: 'lg'
@@ -54,7 +55,8 @@ export class ProjectEntitiesComponent implements OnInit {
     private modalService: NgbModal,
     private entityAddModalService: EntityAddModalService,
     private router: Router,
-    private slimLoadingBarService: SlimLoadingBarService
+    private slimLoadingBarService: SlimLoadingBarService,
+    public peItService:PeItService //TODO remove incl. import
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -144,4 +146,8 @@ export class ProjectEntitiesComponent implements OnInit {
     this.loading = false
     this.slimLoadingBarService.reset();
   }
+
+
+
+
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(TemporalEntity) {
-  TemporalEntity.findOrCreateTemporalEntity = function (data, cb) {
+  TemporalEntity.findOrCreateTemporalEntity = function (projectId, data, cb) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
@@ -9,7 +9,7 @@ module.exports = function(TemporalEntity) {
       fk_class: data.fk_class
     };
 
-    TemporalEntity.findOrCreateVersion(TemporalEntity, dataObject, cb);
+    TemporalEntity.findOrCreateVersion(TemporalEntity, projectId, dataObject, cb);
 
   }
 

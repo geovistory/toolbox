@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(InformationRole) {
-  InformationRole.findOrCreateInformationRole = function (data, cb) {
+  InformationRole.findOrCreateInformationRole = function (projectId, data, cb) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
@@ -11,7 +11,7 @@ module.exports = function(InformationRole) {
       notes: data.notes,
     };
 
-    InformationRole.findOrCreateVersion(InformationRole, dataObject, cb);
+    InformationRole.findOrCreateVersion(InformationRole, projectId, dataObject, cb);
 
   }
 };
