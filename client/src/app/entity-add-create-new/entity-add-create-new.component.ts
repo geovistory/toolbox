@@ -22,10 +22,11 @@ export class EntityAddCreateNewComponent implements OnInit {
   constructor(
     private persistentItemApi: PersistentItemApi,
     public activeModal: NgbActiveModal,
-    private modalService:EntityAddModalService
+    public modalService:EntityAddModalService
   ) {}
 
   ngOnInit() {
+    this.modalService.modalTitle = "Create a new"
   }
 
   setEntityModalState(newState:string){

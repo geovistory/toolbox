@@ -76,14 +76,16 @@ export class EntitySearchHitComponent implements OnInit {
         if(label.r63_is_standard_in_project != true){
           this.moreAppellationLabels.push(new AppellationLabel(label.appellation_label))
         }
+        else if(label.r63_is_standard_in_project == true){
+          this.standardAppellationLabel = new AppellationLabel(label.appellation_label)
+        }
       });
 
-      this.standardAppellationLabel = new AppellationLabel(
-        this.persistentItem.standard_appellation_label
-      )
+      // If there is no standard appellation label defined, take the first one
+      if(!this.standardAppellationLabel){
+        this.standardAppellationLabel = this.moreAppellationLabels[0];
+      }
     }
-
-
 
   }
 

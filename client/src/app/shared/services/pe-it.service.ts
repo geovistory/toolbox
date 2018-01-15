@@ -34,7 +34,7 @@ export class PeItService {
     appe?:Appellation,
     lang?:InformationLanguage) {
 
-      projectId=23;
+      projectId=26;
 
       // create PeIt
       peIt = new PersistentItemVersion();

@@ -64,6 +64,10 @@ pkEntity:number;
 // The persistent Item to Add
 persistentItemVersion:PersistentItemVersion;
 
+// The search string used to search existing peIts
+// and create the appellation of the new peIt
+searchString:string;
+
 constructor(
   private entityProjectRelApi:EntityVersionProjectRelApi
 ) { }

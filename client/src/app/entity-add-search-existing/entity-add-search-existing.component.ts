@@ -48,6 +48,7 @@ export class EntityAddSearchExistingComponent implements OnInit {
       .debounceTime(400)
       .subscribe(newValue => {
         this.searchString = newValue;
+        this.modalService.searchString = newValue;
         if(newValue.length >= this.minSearchStringLength){
           this.page = 1;
           this.searchPeIts();
