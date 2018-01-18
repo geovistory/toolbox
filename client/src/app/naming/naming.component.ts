@@ -60,7 +60,11 @@ import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/Entity
 })
 export class NamingComponent implements OnInit, OnChanges {
 
-  @Input() names:Array<InformationRole>;
+  @Input() roles:Array<InformationRole>;
+
+  get rolesR63(){
+    return this.roles.filter(role => role.fk_property === 'R63');
+  }
 
   entityEditorState = new EntityEditorState();
 
@@ -117,10 +121,10 @@ export class NamingComponent implements OnInit, OnChanges {
   defineStandardNamePkOnAdd(){
     if(this.state === 'add'){
       /**
-      * Order the names by is-standard-count descending.
+      * Order the rolesR63 by is-standard-count descending.
       */
       let map=[];
-      this.names.forEach(name => {
+      this.rolesR63.forEach(name => {
         const isStandardCount = name.entity_version_project_rels.filter(epr => epr.is_standard_in_project).length;
         map.push(
           {
@@ -135,7 +139,7 @@ export class NamingComponent implements OnInit, OnChanges {
       * Store the name pk with the highest isStandardCount.
       */
       map.some(o => {
-        return this.names.some(name => {
+        return this.rolesR63.some(name => {
           if(name.pk_entity === o.namePkEntity){
             this.standardNamePkOnAdd = name.pk_entity;
             return true;

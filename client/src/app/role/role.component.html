@@ -1,0 +1,51 @@
+
+<!-- or if the role points to a persistent item -->
+
+<div *ngIf="pointTo=='PeIt'">
+  <!-- include component PeIt (passing the PeIt) -->
+  <gv-pe-it
+  [appellation]="role?.appellation"
+  [language]="role?.language"
+  [pkEntity]="role.fk_entity"
+  ></gv-pe-it>
+
+</div>
+
+<!-- if the role points to a temporal entity -->
+
+<div *ngIf="pointTo=='TeEnt'">
+
+
+  <!-- TeEnt Component (passing the temporal entity) -->
+  <gv-te-ent
+  [teEnt]="role.temporal_entity"
+  [parentComponent]="thisComponent">
+
+
+  <div eprUi>
+
+    <!-- UI for standard in project -->
+
+    <div class="gv-standard-in-project" *ngIf="standardInProjectVisible">
+
+      <!-- If is standard -->
+
+      <i class="fa fa-eye gv-true" title="Is standard" *ngIf="isStandardInProject"></i>
+
+      <!-- If not standard -->
+
+      <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="!isStandardInProject"
+      [attr.disabled]="loadingStdChange ? 'disabled' : null"
+      (click)="requestStandard()" title="Set as standard">
+      <i class="fa fa-eye-slash gv-false"></i></button>
+
+    </div>
+
+  </div>
+
+
+
+</gv-te-ent>
+
+
+</div>

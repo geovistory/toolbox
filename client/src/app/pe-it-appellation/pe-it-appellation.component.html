@@ -1,0 +1,17 @@
+<!-- <gv-name [name]="appellation" [state]="state"></gv-name> -->
+<div class="d-flex flex-row">
+
+  <div class="gv-flex-grow-1" *ngIf="appeState.state==='edit'">
+
+    {{appellation.fk_class}}
+
+    {{appellationLabelString}}
+
+  </div>
+
+  <button class="btn btn-link btn-sm" (click)="edit()">
+    {{appeState | json}}
+    <i class="fa fa-edit"></i>
+  </button>
+
+</div>

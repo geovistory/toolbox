@@ -1,0 +1,20 @@
+<!-- {{teEnt.fk_class}} -->
+<div class="card gv-name">
+
+  <div class="card-header gv-name-header d-flex flex-row">
+    <ng-content select="[eprUi]"></ng-content> [Display Label of TeEnt]
+  </div>
+
+  <div class="gv-card-body-wrapper">
+
+      <gv-roles-of-a-kind
+      *ngFor="let kind of kindsOfRoles"
+      [roles]="kind.roles"
+      [fkProperty]="kind.fkProperty"
+      [pointTo]="'PeIt'"
+      [parentComponent]="thisComponent"
+      ></gv-roles-of-a-kind>
+      
+  </div>
+
+</div>

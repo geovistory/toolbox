@@ -25,6 +25,7 @@ import { AccountEmailComponent } from './account-email/account-email.component';
 import { AccountComponent } from './account/account.component';
 import { ProjectSettingsDataComponent } from './project-settings-data/project-settings-data.component';
 import { EntityEditorComponent } from './entity-editor/entity.editor.component';
+import { PeItEntityComponent } from './pe-it-entity/pe-it-entity.component';
 
 const indexRoute:Route = {
   path: '',

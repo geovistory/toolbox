@@ -1,43 +1,25 @@
-<!-- <div class="">
-  <label>
-    <input type="checkbox" name="showCommunityData" [(ngModel)]="showCommunityData" value="Show community data">
-    Show Community Data
-  </label>
-</div> -->
-
 <div class="card gv-naming">
   <div class="card-header gv-naming d-flex flex-row">
     <div class="gv-label gv-pointer" (click)="toggleCardBody()">
       <i class="fa fa-tags"></i> Naming
     </div>
-    <div ngbDropdown placement="bottom-right" class="ml-auto d-inline-block gv-naming-dropdown gv-dropdown-secondary">
+    <!-- <div ngbDropdown placement="bottom-right" class="ml-auto d-inline-block gv-naming-dropdown gv-dropdown-secondary">
       <button class="btn btn-secondary" id="dropdown" ngbDropdownToggle><i class="fa fa-ellipsis-v"></i></button>
       <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
-        <button class="dropdown-item text-white">Add a name</button>
         <button class="dropdown-item text-white">Minimize</button>
       </div>
-    </div>
+    </div> -->
   </div>
 
   <div class="gv-card-body-wrapper" [@slideInOut]="cardState">
 
-    <div class="card-body gv-naming">
-      <gv-name *ngFor="let name of names | gvNameVisible:state:activeProject.project.pk_project"
-      [name]="name" [isStandardOnAdd]="isStandardOnAdd(name.pk_entity)"
-      (standardNameChange)=standardNameChange($event) [state]="state"
-      (inProjectChange)="inProjectChange($event)"
-      ></gv-name>
-    </div>
 
-    <div class="card-body gv-naming" *ngIf="addingName">
-      <gv-name-add [names]="names" (onCancel)="cancelAddName()" (onAdd)="addNames(names)"></gv-name-add>
-    </div>
+    <gv-roles-of-a-kind
+    [roles]="rolesR63"
+    [fkProperty]="'R63'"
+    [pointTo]="'TeEnt'"
+    ></gv-roles-of-a-kind>
 
-    <div class="card-footer gv-naming" *ngIf="footerVisible">
-      <div class="btn btn-block btn-secondary" (click)="addName()">
-        Add a name…
-      </div>
-    </div>
 
   </div>
 </div>

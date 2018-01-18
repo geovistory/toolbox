@@ -1,0 +1,21 @@
+
+<!-- if (fk_class == 'R64') => PeItAppellation (pass appellation) -->
+<gv-pe-it-appellation
+class="gv-flex-grow-1"
+*ngIf="isAppellation"
+[appellation]="appellation"
+></gv-pe-it-appellation>
+
+<gv-pe-it-language
+class="gv-flex-grow-1"
+*ngIf="isLanguage"
+[language]="language"
+></gv-pe-it-language>
+
+
+<span *ngIf="peItPreviewNeeded">[Preview of entity]</span>
+
+<!-- if (fk_class == 'R61') => PeItLanguage (pass language) -->
+
+<!-- else => PeItEntity -->
+

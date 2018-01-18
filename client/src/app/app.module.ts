@@ -64,6 +64,17 @@ import { NamePartStringEditComponent } from './name-part-string-edit/name-part-s
 import { PassiveLinkDirective } from './passive-link.directive';
 import { VersionModalComponent } from './version-modal/version-modal.component';
 import { PeItService } from './shared/services/pe-it.service';
+import { PeItComponent } from './pe-it/pe-it.component';
+import { PeItEntityComponent } from './pe-it-entity/pe-it-entity.component';
+import { AddInfoComponent } from './add-info/add-info.component';
+import { RolesOfAKindComponent } from './roles-of-a-kind/roles-of-a-kind.component';
+import { RoleComponent } from './role/role.component';
+import { TeEntComponent } from './te-ent/te-ent.component';
+import { PeItAppellationComponent } from './pe-it-appellation/pe-it-appellation.component';
+import { PeItLanguageComponent } from './pe-it-language/pe-it-language.component';
+import { ActivePeItService } from './shared/services/active-pe-it.service';
+import { RoleService } from './shared/services/role.service';
+import { EprService } from './shared/services/epr.service';
 
 @NgModule({
   declarations: [
@@ -112,7 +123,15 @@ import { PeItService } from './shared/services/pe-it.service';
     LanguageSearchTypeaheadComponent,
     NamePartsViewComponent,
     PassiveLinkDirective,
-    VersionModalComponent
+    VersionModalComponent,
+    PeItComponent,
+    PeItEntityComponent,
+    AddInfoComponent,
+    RolesOfAKindComponent,
+    RoleComponent,
+    TeEntComponent,
+    PeItAppellationComponent,
+    PeItLanguageComponent
   ],
   imports: [
     BrowserModule,
@@ -129,11 +148,14 @@ import { PeItService } from './shared/services/pe-it.service';
   providers: [
     ActiveAccountService,
     ActiveProjectService,
+    ActivePeItService,
     EntityAddModalService,
     AppellationService,
     AuthGuard,
     PropertyPipe,
     PeItService,
+    RoleService,
+    EprService,
     { provide: LOCALE_ID, useValue: 'ch-DE' }
   ],
   entryComponents : [

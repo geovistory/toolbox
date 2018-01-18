@@ -1,0 +1,49 @@
+<!-- Preview State -->
+
+<div *ngIf="state=='preview'">
+
+</div>
+
+<!-- Edit and ViewCommunity States  -->
+
+<div *ngIf="['edit', 'viewCommunity'].indexOf(state) > -1">
+
+  <!-- Title / Standard Appellations of PeIt -->
+
+  <div class="gv-edit-panel-header" *ngIf="!loading">
+    <section class="row">
+      <div class="col-md-8">
+        <h2>
+          <small class="text-muted">Person</small> {{standardName}}
+        </h2>
+      </div>
+      <div class="col-md-4">
+        <div class="btn-group float-right mt-2" role="group">
+          <button class="btn btn-sm btn-secondary" (click)="setState('viewCommunity')" *ngIf="state === 'edit'">
+            Show community-data and versions
+          </button>
+          <button class="btn btn-sm btn-secondary" (click)="setState('edit')" *ngIf="state === 'viewCommunity'">
+            <i class="fa fa-edit" aria-hidden="true"></i> Edit mode
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Tools to edit PeIt  -->
+
+  <div class="gv-edit-panel-body" *ngIf="!loading">
+    <!-- Names / Appellations of PeIt -->
+
+    <gv-naming [roles]="peIt.pi_roles"
+    (standardNameStringChange)="setStandardName($event)"
+    [state]="state"></gv-naming>
+
+    <!-- Other Roles / Additional Info of PeIt -->
+
+    <!-- TODO -->
+
+  </div>
+
+
+</div>
