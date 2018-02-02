@@ -17,6 +17,8 @@ import { ActiveProjectService } from '../shared/services/active-project.service'
 import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
 import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
 import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/EntityVersionProjectRel';
+import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
+import { KeyboardService } from '../shared/services/keyboard.service';
 
 @Component({
   selector: 'gv-naming',
@@ -59,6 +61,9 @@ import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/Entity
   ]
 })
 export class NamingComponent implements OnInit, OnChanges {
+
+  // The parent PeItEntityComponent
+  @Input() parentPeItC:PeItEntityComponent;
 
   @Input() roles:Array<InformationRole>;
 
@@ -108,7 +113,8 @@ export class NamingComponent implements OnInit, OnChanges {
   constructor(
     private entityProjectRelApi:EntityVersionProjectRelApi,
     public activeProject: ActiveProjectService,
-    private slimLoadingBarService: SlimLoadingBarService
+    private slimLoadingBarService: SlimLoadingBarService,
+    public keyboard:KeyboardService
   ) { }
 
   ngOnInit() {

@@ -1,51 +1,76 @@
 
-<!-- or if the role points to a persistent item -->
+<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
 
-<div *ngIf="pointTo=='PeIt'">
-  <!-- include component PeIt (passing the PeIt) -->
-  <gv-pe-it
-  [appellation]="role?.appellation"
-  [language]="role?.language"
-  [pkEntity]="role.fk_entity"
-  ></gv-pe-it>
+  <!-- Component in Create State -->
 
-</div>
+  <div *ngIf="roleState === 'create'">
 
-<!-- if the role points to a temporal entity -->
+    Create role pointing to {{pointTo}} {{pkTargetClass}}
 
-<div *ngIf="pointTo=='TeEnt'">
+    <gv-te-ent *ngIf="pointTo=='TeEnt'"
+    [teEntState]="'create'" [parentComponent]="thisComponent"></gv-te-ent>
 
 
-  <!-- TeEnt Component (passing the temporal entity) -->
-  <gv-te-ent
-  [teEnt]="role.temporal_entity"
-  [parentComponent]="thisComponent">
-
-
-  <div eprUi>
-
-    <!-- UI for standard in project -->
-
-    <div class="gv-standard-in-project" *ngIf="standardInProjectVisible">
-
-      <!-- If is standard -->
-
-      <i class="fa fa-eye gv-true" title="Is standard" *ngIf="isStandardInProject"></i>
-
-      <!-- If not standard -->
-
-      <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="!isStandardInProject"
-      [attr.disabled]="loadingStdChange ? 'disabled' : null"
-      (click)="requestStandard()" title="Set as standard">
-      <i class="fa fa-eye-slash gv-false"></i></button>
-
-    </div>
+    <gv-pe-it *ngIf="pointTo=='PeIt'"
+    [peItState]="'create'" [parentComponent]="thisComponent"
+    [fkClass]="pkTargetClass"
+    ></gv-pe-it>
 
   </div>
 
 
 
-</gv-te-ent>
 
 
+  <!-- Component in View State -->
+
+  <div *ngIf="roleState === 'view'">
+
+    <!-- or if the role points to a persistent item -->
+
+    <div *ngIf="pointTo=='PeIt'">
+      <!-- include component PeIt (passing the PeIt) -->
+      <gv-pe-it
+      [appellation]="role?.appellation"
+      [language]="role?.language"
+      [pkEntity]="role.fk_entity"
+      ></gv-pe-it>
+
+    </div>
+
+    <!-- if the role points to a temporal entity -->
+
+    <div *ngIf="pointTo=='TeEnt'">
+
+
+      <!-- TeEnt Component (passing the temporal entity) -->
+      <gv-te-ent [teEnt]="role.temporal_entity" [parentComponent]="thisComponent">
+
+        <div eprUi>
+
+          <!-- UI for standard in project -->
+
+          <div class="gv-standard-in-project" *ngIf="standardInProjectVisible">
+
+            <!-- If is standard -->
+
+            <i class="fa fa-eye gv-true" title="Is standard" *ngIf="isStandardInProject"></i>
+
+            <!-- If not standard -->
+
+            <button type="button" name="button" class="btn btn-link btn-sm"
+            *ngIf="!isStandardInProject"
+            [attr.disabled]="loadingStdChange ? 'disabled' : null"
+            (click)="requestStandard()" title="Set as standard"
+            ><i class="fa fa-eye-slash gv-false"></i></button>
+
+          </div>
+
+        </div>
+
+      </gv-te-ent>
+
+
+    </div>
+  </div>
 </div>

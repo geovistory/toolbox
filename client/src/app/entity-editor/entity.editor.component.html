@@ -1,4 +1,8 @@
-<a class="gv-back-btn btn btn-link" routerLink="../../search"  queryParamsHandling="merge">
-  <i class="fa fa-arrow-left"></i>  Search
-</a>
-<gv-pe-it-entity></gv-pe-it-entity>
+<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
+  <a class="gv-back-btn btn btn-link" routerLink="../../search"  queryParamsHandling="merge">
+    <i class="fa fa-arrow-left"></i>  Search
+  </a>
+  <div *ngIf="activeProjectReady">
+    <gv-pe-it [pkEntity]="pkEntity" [peItState]="peItState"></gv-pe-it>
+  </div>
+</div>

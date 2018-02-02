@@ -1,3 +1,88 @@
-<p>
-  add-info works!
-</p>
+<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
+
+  <div class="card gv-naming">
+    <div class="card-header gv-naming d-flex flex-row">
+      <div class="gv-label gv-pointer" (click)="toggleCardBody()">
+        <i class="fa fa-lightbulb-o"></i> Additionl Information
+        <!-- TODO remove the following line -->
+        [{{addInfoState}}]
+      </div>
+    </div>
+
+    <div class="gv-card-body-wrapper" [@slideInOut]="cardState">
+
+      <!-- <div *ngFor="let property of rolesPerProperty">
+        <gv-property
+       [roles]="property.roles"
+       [fkProperty]="'property.fkProperty'"
+       [parentPeItC]="parentPeItC"
+       ></gv-property>
+      </div>
+       -->
+      <gv-property
+      [roles]="roles"
+      [fkProperty]="'R63'"
+      [parentPeItC]="parentPeItC"
+      ></gv-property>
+
+
+      <!-- <gv-property *ngFor="let property of rolesPerProperty"
+      [roles]="property.roles"
+      [fkProperty]="property.fkProperty"
+      [parentPeItC]="parentPeItC"
+      ></gv-property> -->
+
+      <!-- Property Select UI -->
+
+      <!-- <div class="card-body">
+        <div class="card gv-name" *ngIf="addInfoState === 'selectProp' || addInfoState === 'add'">
+          <div class="card-header" *ngIf="propState !== 'create'">
+            <div class="d-flex flex-row">
+              <div class="gv-flex-grow-1">
+                Add additional information
+              </div>
+              <div>
+                <button type="button" name="button" class="btn btn-link"
+                (click)="stopSelectProperty()"
+                ><i class="fa fa-close"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body" *ngIf="propState !== 'create'">
+            <div class="">
+              What is your info about?
+            </div>
+            <select [(ngModel)]="propertyToAdd" (change)="propertySelected($event)" class="custom-select">
+              <option *ngFor="let item of ingoingDirectionAwareProperties" [ngValue]="item">
+                {{item.property.label_inversed.sg}}
+              </option>
+              <option *ngFor="let item of outgoingDirectionAwareProperties" [ngValue]="item">
+                {{item.property.label.sg}}
+              </option>
+            </select>
+          </div>
+
+          <gv-property
+          *ngIf="addInfoState === 'add'"
+          [fkProperty]="propertyToAdd.property.pk_property"
+          [isOutgoing]="propertyToAdd.isOutgoing"
+          [parentPeItC]="parentPeItC"
+          [propState]="propState"
+          (propStateChange)="onPropStateChange($event)"
+          ></gv-property>
+
+        </div>
+      </div>
+
+      <div class="card-footer gv-naming" *ngIf="addButtonVisible">
+        <div class="btn btn-block btn-secondary" (click)="startSelectProperty()">
+          Add additional information …
+        </div>
+      </div> -->
+
+    </div>
+
+
+  </div>
+</div>
+

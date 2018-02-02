@@ -3,7 +3,8 @@ import { InformationRole } from '../shared/sdk/models/InformationRole';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { EprService } from '../shared/services/epr.service';
 import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
-import { RolesOfAKindComponent } from '../roles-of-a-kind/roles-of-a-kind.component';
+import { PropertyComponent } from '../property/property.component';
+import { KeyboardService } from '../shared/services/keyboard.service';
 
 export enum RolePointToEnum {
   PeIt = "PeIt",
@@ -17,10 +18,17 @@ export enum RolePointToEnum {
 })
 export class RoleComponent implements OnInit {
 
-  @Input() pointTo:RolePointToEnum;
-  @Input() role:InformationRole;
-  @Input() parentComponent:RolesOfAKindComponent;
+  /**
+  * Inputs
+  */
 
+  @Input() role:InformationRole;
+
+  @Input() parentComponent:PropertyComponent;
+
+  @Input() roleState:string;
+
+  @Input() pkTargetClass:string;
 
   /**
   * Properties
@@ -32,11 +40,10 @@ export class RoleComponent implements OnInit {
   // Flag to disable the standard toggle button while loading 
   loadingStdChange:boolean=false;
 
-test;
-
   constructor(
     private eprService:EprService,
-    private ref:ChangeDetectorRef
+    private ref:ChangeDetectorRef,
+    public keyboard:KeyboardService
   ) { }
 
   ngOnInit() {
@@ -50,6 +57,7 @@ test;
     return this.eprService.getEprOfEntity(this.role);
   }
 
+
   /**
   * set the entity project relation between this role and active project
   */
@@ -57,6 +65,7 @@ test;
     this.eprService.updateEprOfEntity(this.role, epr);
     // this.ref.detectChanges();
   }
+
 
   /**
   * returns true if the UI to see and edit standard in project status should
@@ -80,8 +89,16 @@ test;
 
 
   /**
-   * requestStandard - tells the parent RolesOfAKind that it wants to become standard
-   */
+  * returns a string indicating, what kind of component will be included by the roles
+  */
+  get pointTo():string{
+    return this.parentComponent.pointTo;
+  }
+
+
+  /**
+  * requestStandard - tells the parent Property that it wants to become standard
+  */
   requestStandard():void {
     this.parentComponent.changeStandardRole(this)
   }

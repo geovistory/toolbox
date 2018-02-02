@@ -67,7 +67,7 @@ import { PeItService } from './shared/services/pe-it.service';
 import { PeItComponent } from './pe-it/pe-it.component';
 import { PeItEntityComponent } from './pe-it-entity/pe-it-entity.component';
 import { AddInfoComponent } from './add-info/add-info.component';
-import { RolesOfAKindComponent } from './roles-of-a-kind/roles-of-a-kind.component';
+import { PropertyComponent } from './property/property.component';
 import { RoleComponent } from './role/role.component';
 import { TeEntComponent } from './te-ent/te-ent.component';
 import { PeItAppellationComponent } from './pe-it-appellation/pe-it-appellation.component';
@@ -75,6 +75,10 @@ import { PeItLanguageComponent } from './pe-it-language/pe-it-language.component
 import { ActivePeItService } from './shared/services/active-pe-it.service';
 import { RoleService } from './shared/services/role.service';
 import { EprService } from './shared/services/epr.service';
+import { UtilitiesService } from './shared/services/utilities.service';
+import { PropertyService } from './shared/services/property.service';
+import { ClassService } from './shared/services/class.service';
+import { KeyboardService } from './shared/services/keyboard.service';
 
 @NgModule({
   declarations: [
@@ -127,7 +131,7 @@ import { EprService } from './shared/services/epr.service';
     PeItComponent,
     PeItEntityComponent,
     AddInfoComponent,
-    RolesOfAKindComponent,
+    PropertyComponent,
     RoleComponent,
     TeEntComponent,
     PeItAppellationComponent,
@@ -156,6 +160,10 @@ import { EprService } from './shared/services/epr.service';
     PeItService,
     RoleService,
     EprService,
+    PropertyService,
+    ClassService,
+    UtilitiesService,
+    KeyboardService,
     { provide: LOCALE_ID, useValue: 'ch-DE' }
   ],
   entryComponents : [

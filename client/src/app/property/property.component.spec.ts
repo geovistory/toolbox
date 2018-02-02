@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RolesOfAKindComponent } from './roles-of-a-kind.component';
+import { PropertyComponent } from './property.component';
 
-describe('RolesOfAKindComponent', () => {
-  let component: RolesOfAKindComponent;
-  let fixture: ComponentFixture<RolesOfAKindComponent>;
+describe('PropertyComponent', () => {
+  let component: PropertyComponent;
+  let fixture: ComponentFixture<PropertyComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RolesOfAKindComponent ]
+      declarations: [ PropertyComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RolesOfAKindComponent);
+    fixture = TestBed.createComponent(PropertyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

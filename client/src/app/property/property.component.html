@@ -1,0 +1,100 @@
+
+
+<div *ngIf="!isCircular" [ngClass]="{'alt-pressed': keyboard.altPressed}">
+
+
+    {{test}}
+
+    <button type="button" name="button" (click)="test=='test' ? test = 'a': test = 'test'">test</button>
+
+
+
+  <span *ngIf="isOutgoing === true && keyboard.altPressed">
+    d:[{{property.fk_domain_class}}] – p: [{{property.pk_property}}] – r: [{{property.fk_range_class}}]
+  </span>
+
+  <span *ngIf="isOutgoing === false && keyboard.altPressed">
+    r:[{{property.fk_range_class}}] – p: [{{property.pk_property}}] – d: [{{property.fk_domain_class}}]
+  </span>
+
+  <span *ngIf="!propState">
+
+    <div class="card-body gv-name-section-header d-flex flex-row">
+      <div class="gv-label gv-flex-grow-1"> {{roleLabel}} </div>
+      <small class="align-self-center">{{fkProperty}}</small>
+      <button type="button" class="gv-edit-btn btn btn-link btn-sm" name="button" *ngIf="addButtonVisible">
+        <i class="fa fa-plus"></i>
+      </button>
+    </div>
+
+
+    <div class="card-body">
+      <div *ngFor="let role of roles">
+        <gv-role [role]="role" [parentComponent]="thisComponent"
+        [roleState]="'view'"></gv-role>
+      </div>
+    </div>
+
+  </span>
+
+
+
+  <span *ngIf="propState === 'add'">
+    <div class="card-body">
+      [TODO] Search for existing data
+      <label for="">
+        <input type="checkbox" name="" value=""> Option 1
+      </label>
+    </div>
+
+    <div class="card-footer" *ngIf="propState === 'add'">
+      <button type="button" class="btn btn-outline-primary">Add selected info</button>
+      <button type="button" class="btn btn-outline-primary"
+      (click)="startCreateNewRole()">Create new</button>
+    </div>
+  </span>
+
+
+  <span *ngIf="propState === 'create' && pointTo === 'TeEnt'">
+
+    <div>
+      Create {{roleLabel}}
+    </div>
+
+    <gv-role [role]="roleToCreate" [parentComponent]="thisComponent"
+    [roleState]="'create'"></gv-role>
+
+    <div>
+      <button type="button" class="btn btn-primary"
+      (click)="persistEntitiesToCreate()"
+      >Ok</button>
+      <button type="button" class="btn btn-link"
+      (click)="cancelCreateNewRole()">Cancel</button>
+    </div>
+
+  </span>
+
+  <span *ngIf="propState === 'create' && pointTo === 'PeIt'">
+
+    <div class="card-body gv-name-section-header d-flex flex-row">
+      <div class="gv-label gv-flex-grow-1"> {{roleLabel}} </div>
+      <small class="align-self-center">{{fkProperty}}</small>
+    </div>
+
+    <div class="card-body">
+      <gv-role [role]="roleToCreate" [parentComponent]="thisComponent"
+      [pkTargetClass]="pkTargetClass" [roleState]="'create'"></gv-role>
+    </div>
+
+    <!-- <div class="card-footer">
+      <button type="button" class="btn btn-primary"
+      (click)="persistEntitiesToCreate()"
+      >Ok</button>
+      <button type="button" class="btn btn-link"
+      (click)="cancelCreateNewRole()">Cancel</button>
+    </div> -->
+
+  </span>
+
+</div>
+

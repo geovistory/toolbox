@@ -1,17 +1,36 @@
-<!-- <gv-name [name]="appellation" [state]="state"></gv-name> -->
-<div class="d-flex flex-row">
+<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
+{{peItAppeState}}
 
-  <div class="gv-flex-grow-1" *ngIf="appeState.state==='edit'">
+  <div class="d-flex flex-row" *ngIf="peItAppeState === 'view'">
 
-    {{appellation.fk_class}}
+    <div class="gv-flex-grow-1" >
+      <gv-name-parts-view [appellation]="appellation"></gv-name-parts-view>
+    </div>
 
-    {{appellationLabelString}}
+    <button class="btn btn-link btn-sm" (click)="startEdit()">
+      <i class="fa fa-edit"></i>
+    </button>
 
   </div>
 
-  <button class="btn btn-link btn-sm" (click)="edit()">
-    {{appeState | json}}
-    <i class="fa fa-edit"></i>
-  </button>
+
+  <div class="d-flex flex-row" *ngIf="peItAppeState === 'edit'">
+
+    <div class="gv-flex-grow-1" >
+      edit
+    </div>
+
+    <button class="btn btn-link btn-sm" (click)="cancelEdit()">
+     cancel
+    </button>
+
+  </div>
+
+
+  <div class="d-flex flex-row" *ngIf="peItAppeState==='create'">
+
+    [Create AppellationLabel]
+
+  </div>
 
 </div>

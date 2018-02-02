@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
+import { KeyboardService } from '../shared/services/keyboard.service';
 
 
 @Component({
@@ -17,33 +18,42 @@ export class PeItAppellationComponent implements OnInit {
   */
   @Input() appellation:Appellation;
 
+  // @Input()
+  peItAppeState:string;
 
   /**
   * Properties
   */
 
-  // TODO temporary
-  appellationLabelString:string;
-
-  public appeState = {
-    state: 'view'
+  /*
+  * transform appellation label to a string and return it
+  */
+  get appellationLabelString():string{
+    if(this.appellation.appellation_label)
+    return  new AppellationLabel(this.appellation.appellation_label).getString();
+    else
+    return '';
   };
 
 
-  constructor() {
+  constructor(
+    public keyboard:KeyboardService
+  ) {
   }
 
   ngOnInit() {
-    this.appeState.state = 'edit';
-    this.appellationLabelString = new AppellationLabel(this.appellation.appellation_label).getString();
+    this.peItAppeState = this.peItAppeState ? this.peItAppeState : 'view';
   }
 
 
-
-  edit(){
-    this.appeState.state = 'asda';
-    console.log(this.appeState)
+  startEdit(){
+    this.peItAppeState = 'edit'
+    console.log(this.peItAppeState)
   }
 
+
+  cancelEdit(){
+    this.peItAppeState = 'view'
+  }
 
 }

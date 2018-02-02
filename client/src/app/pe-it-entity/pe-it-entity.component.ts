@@ -1,32 +1,37 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 import { PeItComponent , PeItStates } from '../pe-it/pe-it.component';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
-import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
 import { PropertyPipe } from '../shared/pipes/property';
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { InformationRole } from '../shared/sdk/models/InformationRole';
 import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
 import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
 import { ActivePeItService } from '../shared/services/active-pe-it.service';
-
+import { PeItService } from '../shared/services/pe-it.service'
+import { Property } from '../shared/services/property.service';
+import { ClassService } from '../shared/services/class.service';
+import { KeyboardService } from '../shared/services/keyboard.service';
 
 @Component({
   selector: 'gv-pe-it-entity',
   templateUrl: './pe-it-entity.component.html',
   styleUrls: ['./pe-it-entity.component.scss']
 })
-export class PeItEntityComponent extends PeItComponent implements OnInit {
+export class PeItEntityComponent implements OnInit {
 
   /**
   * Inputs
   */
 
-  // Note that there may be inherited inputs
+  // Primary key of the peIt
+  @Input() pkEntity:number;
+
+  // State of this component
+  @Input() peItEntityState:string;
 
   /**
   * Outputs
@@ -36,11 +41,8 @@ export class PeItEntityComponent extends PeItComponent implements OnInit {
   * Properties
   */
 
-  // id representing the pk_entity of the peIt
-  id:number;
-
   // id of the active project
-  projectId:number;
+  pkProject:number;
 
   // Flag if some async process is running
   loading:boolean;
@@ -51,42 +53,57 @@ export class PeItEntityComponent extends PeItComponent implements OnInit {
   // Displayed standard name of this peIt
   standardName:string;
 
-  //note that other properties may be inherited from super class
+  // array of properies of which the class of this peIt is range.
+  outgoingProperties:Property[];
 
+  // array of properies of which the class of this peIt is domain.
+  ingoingProperties:Property[];
+
+  //
+  loadingProperties:boolean
+
+  //this components
+  thisComponent = this;
 
   constructor(
+    private peItService: PeItService,
     private activeProjectService:ActiveProjectService,
-    private activatedRoute: ActivatedRoute,
-    private peItApi: PersistentItemVersionApi,
     private propertyPipe: PropertyPipe,
+    private activePeItService:ActivePeItService,
     private slimLoadingBarService: SlimLoadingBarService,
-    private activePeItService:ActivePeItService
+    private classService: ClassService,
+    public keyboard:KeyboardService
   ) {
-    super();
   }
 
 
   /**
-   * Methods
-   */
+  * Methods
+  */
 
   ngOnInit() {
-    this.id = this.activatedRoute.snapshot.params['id'];
 
-    this.projectId = this.activatedRoute.snapshot.parent.params['id'];
+    this.pkProject = this.activeProjectService.project.pk_project;
 
     // if no state provided on input, default to edit
 
-    this.state = this.state ? this.state : PeItStates.edit;
+    this.peItEntityState = this.peItEntityState ? this.peItEntityState : PeItStates.edit;
 
-    // if no peIt is aprovided on the comonent's input
+    // if it is not create state
 
-    if(!this.peIt){
+    if(["preview", "edit", "viewCommunity"].indexOf(this.peItEntityState) !== -1 ){
 
       // Query the peIt and set the peIt by a call to the Api
+      this.queryRichObject()
 
-      this.setPeItFromApi();
     }
+    else if(this.peItEntityState == "create"){
+
+      //TODO
+
+    }
+
+
 
   }
 
@@ -103,90 +120,36 @@ export class PeItEntityComponent extends PeItComponent implements OnInit {
     // use ActivePeItService.getStandardAppellationLabelOfProject
   }
 
+  setStandardName(string){
+    this.standardName = string;
+  }
 
-  /**
-  * setPeItFromApi - get a rich object of the PeIt with all its
-  * roles > temporal entities > roles > PeIts from Api
-  * and store it in the ActivePeItService.peIt
-  *
-  * @return {void}
-  */
-  setPeItFromApi(){
+
+  queryRichObject(){
     this.startLoading();
 
-    const innerJoinThisProject = {
-      "entity_version_project_rels": {
-        "$relation": {
-          "name": "entity_version_project_rels",
-          "joinType": "inner join",
-          "where": ["fk_project", "=", this.projectId]
-        }
-      }
-    };
-
-    const filter =
-    {
-      "where": ["pk_entity","=",this.id],
-      "include":{
-        ...innerJoinThisProject,
-        "pi_roles":{
-          "$relation": {
-            "name": "pi_roles",
-            "joinType": "left join"
-          },
-          ...innerJoinThisProject,
-          "temporal_entity": {
-            "$relation": {
-              "name": "temporal_entity",
-              "joinType": "inner join",
-              "orderBy":[{"pk_entity":"asc"}]
-            },
-            ...innerJoinThisProject,
-            "te_roles": {
-              "$relation": {
-                "name": "te_roles",
-                "joinType": "inner join",
-                "orderBy":[{"pk_entity":"asc"}]
-              },
-              ...innerJoinThisProject,
-              "appellation": {
-                "$relation": {
-                  "name": "appellation",
-                  "joinType": "left join",
-                  "orderBy":[{"pk_entity":"asc"}]
-                },
-                ...innerJoinThisProject
-              },
-              "language": {
-                "$relation": {
-                  "name": "language",
-                  "joinType": "left join",
-                  "orderBy":[{"pk_entity":"asc"}]
-                }
-                // ,
-                // ...innerJoinThisProject
-              }
-            }
-          }
-        }
-      }
-    }
-
-    this.peItApi.findComplex(filter).subscribe(
+    this.peItService.getRichObject(this.pkProject, this.pkEntity).subscribe(
       (peIts: PersistentItemVersion[]) => {
+
         this.peIt = peIts[0];
 
         this.activePeItService.peIt = this.peIt;
 
+        // initialize the ingoing Properties
+
+        this.ingoingProperties = this.classService
+        .getIngoingProperties(this.peIt.fk_class);
+
+        // initialize the outgoing Properties
+        this.outgoingProperties = this.classService
+        .getOutgoingProperties(this.peIt.fk_class);
+
+
         this.completeLoading();
 
       });
-    }
 
-    setStandardName(string){
-      this.standardName = string;
     }
-  
 
     /**
     * Loading Bar Logic
@@ -211,4 +174,7 @@ export class PeItEntityComponent extends PeItComponent implements OnInit {
     resetLoading() {
       this.slimLoadingBarService.reset();
     }
+
+
+
   }

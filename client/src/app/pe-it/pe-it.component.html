@@ -1,21 +1,30 @@
-
-<!-- if (fk_class == 'R64') => PeItAppellation (pass appellation) -->
-<gv-pe-it-appellation
-class="gv-flex-grow-1"
-*ngIf="isAppellation"
-[appellation]="appellation"
-></gv-pe-it-appellation>
-
-<gv-pe-it-language
-class="gv-flex-grow-1"
-*ngIf="isLanguage"
-[language]="language"
-></gv-pe-it-language>
+<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
 
 
-<span *ngIf="peItPreviewNeeded">[Preview of entity]</span>
+  {{fkClass}}
+  <!-- if (fk_class == 'R64') => PeItAppellation (pass appellation) -->
+  <gv-pe-it-appellation
+  *ngIf="showAppellationUI"
+  class="gv-flex-grow-1"
+  [appellation]="appellation"
+  ></gv-pe-it-appellation>
 
-<!-- if (fk_class == 'R61') => PeItLanguage (pass language) -->
+  <gv-pe-it-language
+  *ngIf="showLanguageUI"
+  class="gv-flex-grow-1"
+  [language]="language"
+  ></gv-pe-it-language>
 
-<!-- else => PeItEntity -->
+  <gv-pe-it-entity
+  *ngIf="showEntityUI"
+  [pkEntity]="pkEntity"
+  [peItEntityState]="peItState"
+  ></gv-pe-it-entity>
 
+  <span *ngIf="peItPreviewNeeded">[Preview of entity]</span>
+
+  <!-- if (fk_class == 'R61') => PeItLanguage (pass language) -->
+
+  <!-- else => PeItEntity -->
+
+</div>

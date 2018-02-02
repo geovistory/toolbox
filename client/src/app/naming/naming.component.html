@@ -1,3 +1,5 @@
+<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
+
 <div class="card gv-naming">
   <div class="card-header gv-naming d-flex flex-row">
     <div class="gv-label gv-pointer" (click)="toggleCardBody()">
@@ -14,13 +16,14 @@
   <div class="gv-card-body-wrapper" [@slideInOut]="cardState">
 
 
-    <gv-roles-of-a-kind
+    <gv-property
     [roles]="rolesR63"
     [fkProperty]="'R63'"
-    [pointTo]="'TeEnt'"
-    ></gv-roles-of-a-kind>
+    [parentPeItC]="parentPeItC"
+    ></gv-property>
 
 
   </div>
 </div>
 
+</div>

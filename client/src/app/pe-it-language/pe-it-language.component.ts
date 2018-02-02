@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { PeItComponent } from '../pe-it/pe-it.component';
 import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
 
 @Component({
@@ -7,7 +6,7 @@ import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
   templateUrl: './pe-it-language.component.html',
   styleUrls: ['./pe-it-language.component.scss']
 })
-export class PeItLanguageComponent  extends PeItComponent implements OnInit {
+export class PeItLanguageComponent implements OnInit {
 
 
   /**
@@ -19,7 +18,6 @@ export class PeItLanguageComponent  extends PeItComponent implements OnInit {
   @Input() state;
 
   constructor() {
-    super();
   }
 
   ngOnInit() {
