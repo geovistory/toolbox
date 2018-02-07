@@ -1,9 +1,11 @@
 'use strict';
 
+const Promise = require('bluebird');
+
 module.exports = function(PersistentItemVersion) {
 
 
-  PersistentItemVersion.findOrCreatePeIt = function (projectId, data, cb) {
+  PersistentItemVersion.findOrCreatePeIt = function(projectId, data, ctx) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
@@ -11,16 +13,64 @@ module.exports = function(PersistentItemVersion) {
       fk_class: data.fk_class
     };
 
-    console.log(dataObject)
+    let requestedPeIt;
 
-    PersistentItemVersion.findOrCreateVersion(PersistentItemVersion, projectId, dataObject, cb);
+    if (ctx) {
+      requestedPeIt = ctx.req.body;
+    } else {
+      requestedPeIt = data;
+    }
+
+    return PersistentItemVersion.findOrCreateVersion(PersistentItemVersion, projectId, dataObject)
+      .then((resultingPeIt) => {
+
+        // if there are roles…
+        if (requestedPeIt.pi_roles) {
+
+          // prepare parameters
+          const InformationRole = PersistentItemVersion.app.models.InformationRole;
+
+          //… filter roles that are truthy (not null), iterate over them,
+          // return the promise that the PeIt will be
+          // returned together with all nested items
+          return Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
+              // use the pk_entity from the created peIt to set the fk_entity of the role
+              role.fk_entity = resultingPeIt.pk_entity;
+              // find or create the teEnt and the role pointing to the teEnt
+              return InformationRole.findOrCreateInformationRole(projectId, role);
+            })
+            .then((roles) => {
+
+              //attach the roles to peit.pi_roles
+              const res = resultingPeIt.toJSON();
+              res.pi_roles = [];
+              for (var i = 0; i < roles.length; i++) {
+                const role = roles[i];
+                if (role && role[0]) {
+                  res.pi_roles.push(role[0]);
+                }
+              }
+              
+              return res;
+
+            })
+            .catch((err) => {
+              return err;
+            })
+
+        }
+      })
+      .catch((err) => {
+
+      });
 
   }
+
 
   PersistentItemVersion.searchInProject = function(projectId, searchString, limit, page, cb) {
 
     // Check that limit does not exceed maximum
-    if(limit > 200){
+    if (limit > 200) {
       const err = {
         'name': 'Max limit exceeded',
         'status': 403,
@@ -32,13 +82,13 @@ module.exports = function(PersistentItemVersion) {
     // set default if undefined
     var limit = limit ? limit : 10;
 
-    var offset = limit * (page-1);
+    var offset = limit * (page - 1);
 
-    if(searchString){
+    if (searchString) {
       var queryString = searchString.trim(' ').split(' ').map(word => {
-        return word+':*'
+        return word + ':*'
       }).join(' & ');
-    }else{
+    } else {
       var queryString = '';
     }
 
@@ -152,9 +202,9 @@ module.exports = function(PersistentItemVersion) {
       GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, pi.pk_entity_version_concat, pi.entity_version, appellations.projects
       ORDER BY pi.tmsp_last_modification DESC
     ) AS pi, to_tsquery($1) q
-    `
-    + (queryString === '' ? '' : 'WHERE  document @@ q') +
-    `
+    ` +
+      (queryString === '' ? '' : 'WHERE  document @@ q') +
+      `
     ORDER BY ts_rank(document, q) DESC
     LIMIT $2
     OFFSET $3
@@ -167,17 +217,17 @@ module.exports = function(PersistentItemVersion) {
   };
 
 
-  PersistentItemVersion.afterRemote('searchInProject', function (ctx, resultObjects, next) {
+  PersistentItemVersion.afterRemote('searchInProject', function(ctx, resultObjects, next) {
     console.log(resultObjects)
 
     var totalCount = 0;
-    if(resultObjects.length > 0){
+    if (resultObjects.length > 0) {
       totalCount = resultObjects[0].total_count;
     }
 
     // remove column total_count from all resultObjects
     var data = [];
-    if (resultObjects){
+    if (resultObjects) {
       data = resultObjects.map(searchHit => {
         delete searchHit.total_count;
         return searchHit;
@@ -204,7 +254,7 @@ module.exports = function(PersistentItemVersion) {
   PersistentItemVersion.searchInRepo = function(searchString, limit, page, cb) {
 
     // Check that limit does not exceed maximum
-    if(limit > 200){
+    if (limit > 200) {
       const err = {
         'name': 'Max limit exceeded',
         'status': 403,
@@ -216,10 +266,10 @@ module.exports = function(PersistentItemVersion) {
     // set default if undefined
     var limit = limit ? limit : 10;
 
-    var offset = limit * (page-1);
+    var offset = limit * (page - 1);
 
     var queryString = searchString.trim(' ').split(' ').map(word => {
-      return word+':*'
+      return word + ':*'
     }).join(' & ');
 
 
@@ -325,16 +375,16 @@ module.exports = function(PersistentItemVersion) {
   };
 
 
-  PersistentItemVersion.afterRemote('searchInRepo', function (ctx, resultObjects, next) {
+  PersistentItemVersion.afterRemote('searchInRepo', function(ctx, resultObjects, next) {
 
     var totalCount = 0;
-    if(resultObjects.length > 0){
+    if (resultObjects.length > 0) {
       totalCount = resultObjects[0].total_count;
     }
 
     // remove column total_count from all resultObjects
     var data = [];
-    if (resultObjects){
+    if (resultObjects) {
       data = resultObjects.map(searchHit => {
         delete searchHit.total_count;
         return searchHit;

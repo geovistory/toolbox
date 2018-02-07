@@ -1,20 +1,31 @@
 <div [ngClass]="{'alt-pressed': keyboard.altPressed}">
 
-  TeEntComponent [{{teEnt.fk_class}}]
+
+
+
+
+  <div *ngIf="keyboard.altPressed">
+    TeEntComponent [{{teEnt.fk_class}}] [ready: {{isReadyToCreate}}]
+  </div>
 
   <div class="card gv-name" *ngIf="teEntState !== 'create'">
 
     <div class="card-header gv-name-header d-flex flex-row">
-      <ng-content select="[eprUi]"></ng-content> [Display Label of TeEnt]
+      <ng-content select="[eprUi]"></ng-content>
+      <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
+        [Display Label of TeEnt]
+      </div>
     </div>
 
-    <div class="gv-card-body-wrapper">
+    <div class="gv-card-body-wrapper" [@slideInOut]="cardBodyState">
 
       <gv-property
-      *ngFor="let kind of kindsOfRoles"
-      [roles]="kind.roles"
-      [fkProperty]="kind.fkProperty"
-      [parentTeEntC]="thisComponent"
+      *ngFor="let property of directedRolesPerProperty"
+      [isOutgoing]="property.isOutgoing"
+      [roles]="property.roles"
+      [parentRole]="parentRole"
+      [fkProperty]="property.fkProperty"
+      [pointTo]="'PeIt'"
       ></gv-property>
 
     </div>
@@ -34,21 +45,26 @@
       <gv-property
       *ngFor="let property of outgoingProperties"
       [roles]="property.roles"
+      [parentRole]="parentRole"
       [fkProperty]="property.pk_property"
-      [parentTeEntC]="thisComponent"
+      [pointTo]="'PeIt'"
       [propState]="'create'"
       [isOutgoing]="true"
+      (readyToCreate)="propertyReadyToCreate($event)"
+      (notReadyToCreate)="propertyNotReadyToCreate()"
       ></gv-property>
 
       <gv-property
       *ngFor="let property of ingoingProperties"
       [roles]="property.roles"
+      [parentRole]="parentRole"
       [fkProperty]="property.pk_property"
-      [parentTeEntC]="thisComponent"
+      [pointTo]="'PeIt'"
       [propState]="'create'"
       [isOutgoing]="false"
+      (readyToCreate)="propertyReadyToCreate($event)"
+      (notReadyToCreate)="propertyNotReadyToCreate()"
       ></gv-property>
-
 
     </div>
 

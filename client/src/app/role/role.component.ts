@@ -1,10 +1,15 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { InformationRole } from '../shared/sdk/models/InformationRole';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { EprService } from '../shared/services/epr.service';
 import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
 import { PropertyComponent } from '../property/property.component';
 import { KeyboardService } from '../shared/services/keyboard.service';
+import { Property } from '../shared/services/property.service';
+import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
+import { Appellation } from '../shared/sdk/models/Appellation';
+import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
+import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
 
 export enum RolePointToEnum {
   PeIt = "PeIt",
@@ -24,11 +29,30 @@ export class RoleComponent implements OnInit {
 
   @Input() role:InformationRole;
 
-  @Input() parentComponent:PropertyComponent;
+  @Input() isOutgoing:boolean;
+
+  @Input() pointTo:string;
 
   @Input() roleState:string;
 
   @Input() pkTargetClass:string;
+
+  @Input() fkProperty:string;
+
+  @Input() parentProperty:Property;
+
+  /**
+  * Outputs
+  */
+
+  @Output() onRequestStandard:EventEmitter<RoleComponent> = new EventEmitter();
+
+  @Output() readyToCreate: EventEmitter<InformationRole> = new EventEmitter;
+
+  @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
+
+
+
 
   /**
   * Properties
@@ -40,6 +64,10 @@ export class RoleComponent implements OnInit {
   // Flag to disable the standard toggle button while loading 
   loadingStdChange:boolean=false;
 
+  // true if the role is ready to create (only for create state)
+  isReadyToCreate:boolean;
+
+
   constructor(
     private eprService:EprService,
     private ref:ChangeDetectorRef,
@@ -47,6 +75,10 @@ export class RoleComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    if(this.roleState === 'create'){
+      this.role = new InformationRole();
+      this.role.fk_property = this.fkProperty;
+    }
   }
 
 
@@ -89,18 +121,60 @@ export class RoleComponent implements OnInit {
 
 
   /**
-  * returns a string indicating, what kind of component will be included by the roles
+  * requestStandard - tells the parent Property that it wants to become standard
   */
-  get pointTo():string{
-    return this.parentComponent.pointTo;
+  requestStandard():void {
+    this.onRequestStandard.emit(this);
   }
 
 
   /**
-  * requestStandard - tells the parent Property that it wants to become standard
+  * Methods specific to create state
   */
-  requestStandard():void {
-    this.parentComponent.changeStandardRole(this)
+
+  peItReadyToCreate(entity){
+
+    if(entity instanceof Appellation){
+      this.role.appellation = entity
+    }
+
+    if(entity instanceof InformationLanguage){
+      this.role.language = entity
+    }
+
+    this.isReadyToCreate = true;
+
+    this.readyToCreate.emit(this.role); 
+
+  }
+
+
+  peItNotReadyToCreate(){
+
+    this.isReadyToCreate = false;
+
+    this.notReadyToCreate.emit()
+
+  }
+
+
+  teEntReadyToCreate(teEnt:TemporalEntity){
+
+    this.role.temporal_entity = teEnt;
+
+    this.isReadyToCreate = true;
+
+    this.readyToCreate.emit(this.role); 
+
+  }
+
+
+  teEntNotReadyToCreate(){
+
+    this.isReadyToCreate = false;
+
+    this.notReadyToCreate.emit()
+
   }
 
 }

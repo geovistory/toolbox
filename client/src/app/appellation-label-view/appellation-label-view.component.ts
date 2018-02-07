@@ -3,11 +3,11 @@ import { Appellation } from '../shared/sdk/models/Appellation';
 import { AppellationService } from '../shared/services/appellation.service';
 
 @Component({
-  selector: 'gv-name-parts-view',
-  templateUrl: './name-parts-view.component.html',
-  styleUrls: ['./name-parts-view.component.scss']
+  selector: 'gv-appellation-label-view',
+  templateUrl: './appellation-label-view.component.html',
+  styleUrls: ['./appellation-label-view.component.scss']
 })
-export class NamePartsViewComponent implements OnInit {
+export class AppellationLabelViewComponent implements OnInit {
 
   @Input() appellation: Appellation;
 

@@ -44,7 +44,7 @@ justify-content-between align-items-baseline"
     </div>
     <fieldset *ngIf="notEmptyAppellation">
       <div class="form-group gv-select-name-part-type" *ngFor="let token of appellationLabelInEdit.tokens; let i=index">
-        <gv-name-part-type-edit [nameComponent]="this" [appellationLabel]="appellationLabelInEdit" [token]="token"></gv-name-part-type-edit>
+        <!-- <gv-name-part-type-edit  [appellationLabel]="appellationLabelInEdit" [token]="token"></gv-name-part-type-edit> -->
       </div>
       <div class="form-group">
         <button type="submit" class="gv-stop-edit-btn btn btn-primary">
@@ -101,7 +101,7 @@ new data available
       </button>
     </div>
     <div class="card-body">
-      <gv-name-parts-view [appellation]="appellation"></gv-name-parts-view>
+      <gv-appellation-label-view [appellation]="appellation"></gv-appellation-label-view>
     </div>
     <div class="card-body gv-community-statistics d-flex justify-content-end small" *ngIf="communityStatisticsVisible">
       <ul class="gv-ul-sm">

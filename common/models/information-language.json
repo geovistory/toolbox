@@ -19,6 +19,10 @@
     }
   },
   "properties": {
+    "fk_class": {
+      "type": "string",
+      "generated": true
+    },
     "lang_type": {
       "type": "string"
     },

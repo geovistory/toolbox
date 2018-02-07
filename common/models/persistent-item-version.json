@@ -29,26 +29,24 @@
       "primaryKey": "pk_entity"
     }
   },
-  "acls": [
-    {
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": [
-        "find",
-        "findComplex",
-        "findById",
-        "searchInProject",
-        "searchInRepo",
-        "findOrCreatePeIt",
-        "withPhenomenaInProject"
-      ]
-    }
-  ],
+  "acls": [{
+    "principalType": "ROLE",
+    "principalId": "$everyone",
+    "permission": "ALLOW",
+    "property": [
+      "find",
+      "findComplex",
+      "findById",
+      "searchInProject",
+      "searchInRepo",
+      "findOrCreatePeIt",
+      "withPhenomenaInProject",
+      "testPromises"
+    ]
+  }],
   "methods": {
     "findOrCreatePeIt": {
-      "accepts": [
-        {
+      "accepts": [{
           "arg": "projectId",
           "type": "number",
           "required": true,
@@ -65,6 +63,13 @@
           "http": {
             "source": "body"
           }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
         }
       ],
       "returns": {
@@ -72,15 +77,14 @@
         "type": "PersistentItemVersion",
         "root": true
       },
-      "description": "Find or create an PersistentItemVersion.",
+      "description": "Find or create a PersistentItemVersion.",
       "http": {
         "path": "/findOrCreate",
         "verb": "post"
       }
     },
     "searchInProject": {
-      "accepts": [
-        {
+      "accepts": [{
           "arg": "projectId",
           "type": "number",
           "required": true,
@@ -129,8 +133,7 @@
       }
     },
     "searchInRepo": {
-      "accepts": [
-        {
+      "accepts": [{
           "arg": "searchString",
           "type": "string",
           "required": true,

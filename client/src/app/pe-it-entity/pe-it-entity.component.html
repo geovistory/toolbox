@@ -37,22 +37,25 @@
     <div class="gv-edit-panel-body" *ngIf="!loading">
 
       <div class="row">
-        <div class="col-6">
+        <!-- <div class="col-6">
 
-          <!-- Names / Appellations of PeIt -->
+          Names / Appellations of PeIt
 
-          <!-- <gv-naming [roles]="peIt.pi_roles"
+          <gv-naming [roles]="peIt.pi_roles"
           [parentPeItC]="thisComponent"
           (standardNameStringChange)="setStandardName($event)"
-          [state]="state"></gv-naming> -->
+          [state]="state"></gv-naming>
 
-        </div>
+        </div> -->
         <div class="col-6">
 
           <!-- Other Roles / Additional Info of PeIt -->
 
           <gv-add-info [roles]="peIt.pi_roles"
-          [parentPeItC]="thisComponent"
+          [pkEntity]="pkEntity"
+          [parentPeIt]="peIt"
+          [outgoingProperties]="outgoingProperties"
+          [ingoingProperties]="ingoingProperties"
           ></gv-add-info>
 
         </div>

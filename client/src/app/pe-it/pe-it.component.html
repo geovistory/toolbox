@@ -1,18 +1,22 @@
 <div [ngClass]="{'alt-pressed': keyboard.altPressed}">
 
-
-  {{fkClass}}
   <!-- if (fk_class == 'R64') => PeItAppellation (pass appellation) -->
   <gv-pe-it-appellation
   *ngIf="showAppellationUI"
   class="gv-flex-grow-1"
   [appellation]="appellation"
+  [peItAppeState]="peItState"
+  (readyToCreate)=emitReadyToCreate($event)
+  (notReadyToCreate)=emitNotReadyToCreate()
   ></gv-pe-it-appellation>
 
   <gv-pe-it-language
   *ngIf="showLanguageUI"
   class="gv-flex-grow-1"
   [language]="language"
+  [peItLangState]="peItState"
+  (readyToCreate)=emitReadyToCreate($event)
+  (notReadyToCreate)=emitNotReadyToCreate()
   ></gv-pe-it-language>
 
   <gv-pe-it-entity
@@ -21,7 +25,7 @@
   [peItEntityState]="peItState"
   ></gv-pe-it-entity>
 
-  <span *ngIf="peItPreviewNeeded">[Preview of entity]</span>
+  <!-- <span *ngIf="peItPreviewNeeded">[Preview of entity]</span> -->
 
   <!-- if (fk_class == 'R61') => PeItLanguage (pass language) -->
 

@@ -1,0 +1,8 @@
+<div class="form-group d-flex flex-row">
+  <span *ngFor="let token of appellationLabel.tokens; let i = index;">
+    <gv-name-part-string-edit
+    [appellationLabel]="appellationLabel" [token]="token"
+    (labelChange)="labelChange($event)"
+    ></gv-name-part-string-edit>
+  </span>
+</div>

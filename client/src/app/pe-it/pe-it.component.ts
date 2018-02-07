@@ -1,9 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
 import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { UtilitiesService } from '../shared/services/utilities.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
+import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
 
 export enum PeItStates {
   view = "view",
@@ -29,8 +30,16 @@ export class PeItComponent implements OnInit {
   @Input() fkClass:string;
   @Input() appellation:Appellation;
   @Input() language:InformationLanguage;
-  @Input() parentComponent;
   @Input() peItState:string;
+
+  /**
+  * Outputs
+  */
+
+  @Output() readyToCreate: EventEmitter<EntitiesToCreate> = new EventEmitter;
+
+  @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
+
 
   /**
   * Properties
@@ -54,7 +63,7 @@ export class PeItComponent implements OnInit {
 
         this.language = new InformationLanguage()
 
-        // this.language.fk_class = this.fkClass;
+        this.language.fk_class = this.fkClass;
 
       }
 
@@ -89,7 +98,7 @@ export class PeItComponent implements OnInit {
    * @return {boolean}  true = this peIt is a language
    */
   get showLanguageUI() {
-    return (this.util.get(this, 'language.pk_entity'));
+    return (this.util.get(this, 'language.fk_class'));
   }
 
   /**
@@ -102,9 +111,26 @@ export class PeItComponent implements OnInit {
   }
 
 
-  setState(state:string){
-    this.peItState = state;
-  }
+
+  /**
+   * Methods specific to create state
+   */
+
+   emitReadyToCreate(entity){
+     this.readyToCreate.emit(entity)
+   }
+
+
+   emitNotReadyToCreate(entities:EntitiesToCreate){
+
+     this.notReadyToCreate.emit()
+
+   }
+
+
+  // setState(state:string){
+  //   this.peItState = state;
+  // }
 
 
 }

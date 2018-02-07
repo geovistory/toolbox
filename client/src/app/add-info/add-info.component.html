@@ -11,31 +11,19 @@
 
     <div class="gv-card-body-wrapper" [@slideInOut]="cardState">
 
-      <!-- <div *ngFor="let property of rolesPerProperty">
-        <gv-property
-       [roles]="property.roles"
-       [fkProperty]="'property.fkProperty'"
-       [parentPeItC]="parentPeItC"
-       ></gv-property>
-      </div>
-       -->
-      <gv-property
-      [roles]="roles"
-      [fkProperty]="'R63'"
-      [parentPeItC]="parentPeItC"
-      ></gv-property>
-
-
-      <!-- <gv-property *ngFor="let property of rolesPerProperty"
+      <gv-property *ngFor="let property of directedRolesPerProperty"
+      [isOutgoing]="property.isOutgoing"
       [roles]="property.roles"
       [fkProperty]="property.fkProperty"
-      [parentPeItC]="parentPeItC"
-      ></gv-property> -->
+      [pointTo]="'TeEnt'"
+      [parentEntityPk]="pkEntity"
+      [parentPeIt]="parentPeIt"
+      ></gv-property>
 
       <!-- Property Select UI -->
 
-      <!-- <div class="card-body">
-        <div class="card gv-name" *ngIf="addInfoState === 'selectProp' || addInfoState === 'add'">
+      <div class="card-body">
+        <div class="gv-name" [ngClass]="{card:(propState !== 'create')}" *ngIf="addInfoState === 'selectProp' || addInfoState === 'add'">
           <div class="card-header" *ngIf="propState !== 'create'">
             <div class="d-flex flex-row">
               <div class="gv-flex-grow-1">
@@ -66,9 +54,12 @@
           *ngIf="addInfoState === 'add'"
           [fkProperty]="propertyToAdd.property.pk_property"
           [isOutgoing]="propertyToAdd.isOutgoing"
-          [parentPeItC]="parentPeItC"
           [propState]="propState"
+          [pointTo]="'TeEnt'"
+          [parentPeIt]="parentPeIt"
+          [parentEntityPk]="pkEntity"
           (propStateChange)="onPropStateChange($event)"
+          (rolesAdded)="onRolesAdded($event)"
           ></gv-property>
 
         </div>
@@ -78,7 +69,7 @@
         <div class="btn btn-block btn-secondary" (click)="startSelectProperty()">
           Add additional information …
         </div>
-      </div> -->
+      </div>
 
     </div>
 

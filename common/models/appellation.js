@@ -2,7 +2,7 @@
 
 module.exports = function(Appellation) {
 
-  Appellation.findOrCreateAppellation = function (projectId, data, cb) {
+  Appellation.findOrCreateAppellation = function(projectId, data) {
 
     const dataObject = {
       appellation_label: JSON.stringify(data.appellation_label),
@@ -11,7 +11,8 @@ module.exports = function(Appellation) {
       fk_class: data.fk_class
     };
 
-    Appellation.findOrCreateVersion(Appellation, projectId, dataObject, cb);
+    return Appellation.findOrCreateVersion(Appellation, projectId, dataObject);
 
   }
+
 };

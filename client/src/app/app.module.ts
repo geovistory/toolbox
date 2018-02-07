@@ -58,8 +58,6 @@ import { GvNameVisiblePipe } from './shared/pipes/gv-name-visible.pipe';
 import { EntityEditorComponent } from './entity-editor/entity.editor.component';
 import { LanguageSearchTypeaheadComponent } from './language-search-typeahead/language-search-typeahead.component';
 import { AppellationService } from './shared/services/appellation.service';
-import { NamePartsViewComponent } from './name-parts-view/name-parts-view.component';
-import { NamePartTypeEditComponent } from './name-part-type-edit/name-part-type-edit.component';
 import { NamePartStringEditComponent } from './name-part-string-edit/name-part-string-edit.component';
 import { PassiveLinkDirective } from './passive-link.directive';
 import { VersionModalComponent } from './version-modal/version-modal.component';
@@ -79,6 +77,10 @@ import { UtilitiesService } from './shared/services/utilities.service';
 import { PropertyService } from './shared/services/property.service';
 import { ClassService } from './shared/services/class.service';
 import { KeyboardService } from './shared/services/keyboard.service';
+import { AppellationLabelEditComponent } from './appellation-label-edit/appellation-label-edit.component';
+import { AppellationLabelViewComponent } from './appellation-label-view/appellation-label-view.component';
+import { AppellationLabelCreateComponent } from './appellation-label-create/appellation-label-create.component';
+import { AppellationLabelEditorComponent } from './appellation-label-editor/appellation-label-editor.component';
 
 @NgModule({
   declarations: [
@@ -102,7 +104,6 @@ import { KeyboardService } from './shared/services/keyboard.service';
     ProjectEditComponent,
     NamingComponent,
     NameComponent,
-    NamePartTypeEditComponent,
     NamePartStringEditComponent,
     ProjectEditPanelComponent,
     EntityEditorComponent,
@@ -125,7 +126,7 @@ import { KeyboardService } from './shared/services/keyboard.service';
     EntityAddAddExistingComponent,
     GvNameVisiblePipe,
     LanguageSearchTypeaheadComponent,
-    NamePartsViewComponent,
+    AppellationLabelViewComponent,
     PassiveLinkDirective,
     VersionModalComponent,
     PeItComponent,
@@ -135,7 +136,10 @@ import { KeyboardService } from './shared/services/keyboard.service';
     RoleComponent,
     TeEntComponent,
     PeItAppellationComponent,
-    PeItLanguageComponent
+    PeItLanguageComponent,
+    AppellationLabelEditComponent,
+    AppellationLabelCreateComponent,
+    AppellationLabelEditorComponent
   ],
   imports: [
     BrowserModule,

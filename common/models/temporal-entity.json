@@ -55,6 +55,13 @@
           "http": {
             "source": "body"
           }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
         }
       ],
       "returns": {

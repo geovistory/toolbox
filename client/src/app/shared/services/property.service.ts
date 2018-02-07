@@ -56,7 +56,7 @@ const properties:Property[]= [
     },
     domainCardinalityMax: 1,
     domainCardinalityMin: 1,
-    rangeCardinalityMax: -1,
+    rangeCardinalityMax: Number.POSITIVE_INFINITY,
     rangeCardinalityMin: 1
   },
   {
@@ -71,7 +71,7 @@ const properties:Property[]= [
       'sg': 'Birth this mother gave',
       'pl': 'Births this mother gave'
     },
-    domainCardinalityMax: -1,
+    domainCardinalityMax: Number.POSITIVE_INFINITY,
     domainCardinalityMin: 1,
     rangeCardinalityMax: 1,
     rangeCardinalityMin: 1
@@ -107,7 +107,7 @@ const properties:Property[]= [
     },
     domainCardinalityMax: 1,
     domainCardinalityMin: 1,
-    rangeCardinalityMax: 1,
+    rangeCardinalityMax: Number.POSITIVE_INFINITY,
     rangeCardinalityMin: 1
   },
   {

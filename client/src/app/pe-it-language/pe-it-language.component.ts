@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
 
 @Component({
@@ -15,12 +15,32 @@ export class PeItLanguageComponent implements OnInit {
 
   // the language
   @Input() language:InformationLanguage;
-  @Input() state;
+  @Input() peItLangState:string;
+
+  /**
+  * Outputs
+  */
+  @Output() readyToCreate: EventEmitter<InformationLanguage> = new EventEmitter;
+
+  @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
+
 
   constructor() {
   }
 
   ngOnInit() {
+  }
+
+
+  languageChange(language:InformationLanguage){
+    const lang = new InformationLanguage(language);
+
+    if(lang && lang.pk_entity){
+      this.readyToCreate.emit(lang);
+    }
+    else {
+      this.notReadyToCreate.emit();
+    }
   }
 
 }

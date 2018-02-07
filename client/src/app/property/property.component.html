@@ -2,12 +2,9 @@
 
 <div *ngIf="!isCircular" [ngClass]="{'alt-pressed': keyboard.altPressed}">
 
-
-    {{test}}
-
-    <button type="button" name="button" (click)="test=='test' ? test = 'a': test = 'test'">test</button>
-
-
+  <span *ngIf="keyboard.altPressed">
+    [ready: {{isReadyToCreate}}]
+  </span>
 
   <span *ngIf="isOutgoing === true && keyboard.altPressed">
     d:[{{property.fk_domain_class}}] – p: [{{property.pk_property}}] – r: [{{property.fk_range_class}}]
@@ -30,8 +27,13 @@
 
     <div class="card-body">
       <div *ngFor="let role of roles">
-        <gv-role [role]="role" [parentComponent]="thisComponent"
-        [roleState]="'view'"></gv-role>
+        <gv-role
+        [role]="role"
+        [parentProperty]="property"
+        [isOutgoing]="isOutgoing"
+        [pointTo]="pointTo"
+        [roleState]="'view'"
+        (onRequestStandard)="changeStandardRole($event)"></gv-role>
       </div>
     </div>
 
@@ -61,11 +63,20 @@
       Create {{roleLabel}}
     </div>
 
-    <gv-role [role]="roleToCreate" [parentComponent]="thisComponent"
-    [roleState]="'create'"></gv-role>
+    <gv-role
+    [role]="roleToCreate"
+    [pointTo]="'TeEnt'"
+    [pkTargetClass]="pkTargetClass"
+    [fkProperty]="fkProperty"
+    [roleState]="'create'"
+    (readyToCreate)="roleReadyToCreate($event)"
+    (notReadyToCreate)="roleNotReadyToCreate()"
+    ></gv-role>
 
     <div>
-      <button type="button" class="btn btn-primary"
+      <button
+      *ngIf="isReadyToCreate"
+      type="button" class="btn btn-primary"
       (click)="persistEntitiesToCreate()"
       >Ok</button>
       <button type="button" class="btn btn-link"
@@ -82,17 +93,16 @@
     </div>
 
     <div class="card-body">
-      <gv-role [role]="roleToCreate" [parentComponent]="thisComponent"
-      [pkTargetClass]="pkTargetClass" [roleState]="'create'"></gv-role>
+      <gv-role
+      [role]="roleToCreate"
+      [pointTo]="'PeIt'"
+      [pkTargetClass]="pkTargetClass"
+      [fkProperty]="fkProperty"
+      [roleState]="'create'"
+      (readyToCreate)="roleReadyToCreate($event)"
+      (notReadyToCreate)="roleNotReadyToCreate()"></gv-role>
     </div>
 
-    <!-- <div class="card-footer">
-      <button type="button" class="btn btn-primary"
-      (click)="persistEntitiesToCreate()"
-      >Ok</button>
-      <button type="button" class="btn btn-link"
-      (click)="cancelCreateNewRole()">Cancel</button>
-    </div> -->
 
   </span>
 
