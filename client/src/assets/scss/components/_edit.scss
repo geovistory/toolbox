@@ -3,6 +3,13 @@
   gv-project-edit-panel{
     position: 'relative';
     gv-entity-editor,
+    gv-entity-editor > div,
+    gv-entity-editor > div > div,
+    gv-entity-editor gv-pe-it,
+    gv-entity-editor gv-pe-it > div,
+    gv-entity-editor gv-pe-it-entity,
+    gv-entity-editor gv-pe-it-entity > div,
+    gv-entity-editor gv-pe-it-entity > div > div,
     gv-project-entities,
     gv-source,
     gv-project-sources,

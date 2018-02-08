@@ -25,8 +25,8 @@
         <span class="gv-search-hit-property">[TODO Death 1624, Bern]</span>
       </div>
       <div class="gv-search-hit-body text-muted">
-        <i class="gv-search-hit-property" *ngFor="let label of moreAppellationLabels">
-          {{label.getString()}}
+        <i class="gv-search-hit-property" *ngFor="let item of headlineItems">
+          <span [innerHtml]="item"></span>
         </i>
       </div>
     </div>

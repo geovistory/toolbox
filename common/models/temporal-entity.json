@@ -39,12 +39,28 @@
     "findOrCreateTemporalEntity": {
       "accepts": [
         {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
           "arg": "data",
           "type": "TemporalEntity",
           "required": true,
           "description": "data",
           "http": {
             "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
           }
         }
       ],

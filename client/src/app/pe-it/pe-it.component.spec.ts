@@ -1,25 +1,25 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NamePartComponent } from './name-part.component';
+import { PeItComponent } from './pe-it.component';
 
-describe('NamePartComponent', () => {
-  let component: NamePartComponent;
-  let fixture: ComponentFixture<NamePartComponent>;
+describe('PeItComponent', () => {
+  let component: PeItComponent;
+  let fixture: ComponentFixture<PeItComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NamePartComponent ]
+      declarations: [ PeItComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NamePartComponent);
+    fixture = TestBed.createComponent(PeItComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should be created', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

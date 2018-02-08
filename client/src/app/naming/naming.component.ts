@@ -17,6 +17,8 @@ import { ActiveProjectService } from '../shared/services/active-project.service'
 import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
 import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
 import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/EntityVersionProjectRel';
+import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
+import { KeyboardService } from '../shared/services/keyboard.service';
 
 @Component({
   selector: 'gv-naming',
@@ -60,7 +62,14 @@ import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/Entity
 })
 export class NamingComponent implements OnInit, OnChanges {
 
-  @Input() names:Array<InformationRole>;
+  // The parent PeItEntityComponent
+  @Input() parentPeItC:PeItEntityComponent;
+
+  @Input() roles:Array<InformationRole>;
+
+  get rolesR63(){
+    return this.roles.filter(role => role.fk_property === 'R63');
+  }
 
   entityEditorState = new EntityEditorState();
 
@@ -104,7 +113,8 @@ export class NamingComponent implements OnInit, OnChanges {
   constructor(
     private entityProjectRelApi:EntityVersionProjectRelApi,
     public activeProject: ActiveProjectService,
-    private slimLoadingBarService: SlimLoadingBarService
+    private slimLoadingBarService: SlimLoadingBarService,
+    public keyboard:KeyboardService
   ) { }
 
   ngOnInit() {
@@ -117,10 +127,10 @@ export class NamingComponent implements OnInit, OnChanges {
   defineStandardNamePkOnAdd(){
     if(this.state === 'add'){
       /**
-      * Order the names by is-standard-count descending.
+      * Order the rolesR63 by is-standard-count descending.
       */
       let map=[];
-      this.names.forEach(name => {
+      this.rolesR63.forEach(name => {
         const isStandardCount = name.entity_version_project_rels.filter(epr => epr.is_standard_in_project).length;
         map.push(
           {
@@ -135,7 +145,7 @@ export class NamingComponent implements OnInit, OnChanges {
       * Store the name pk with the highest isStandardCount.
       */
       map.some(o => {
-        return this.names.some(name => {
+        return this.rolesR63.some(name => {
           if(name.pk_entity === o.namePkEntity){
             this.standardNamePkOnAdd = name.pk_entity;
             return true;

@@ -29,24 +29,32 @@
       "primaryKey": "pk_entity"
     }
   },
-  "acls": [
-    {
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": [
-        "find",
-        "findComplex",
-        "findById",
-        "searchInProject",
-        "searchInRepo",
-        "findOrCreatePersistentItemVersion"
-      ]
-    }
-  ],
+  "acls": [{
+    "principalType": "ROLE",
+    "principalId": "$everyone",
+    "permission": "ALLOW",
+    "property": [
+      "find",
+      "findComplex",
+      "findById",
+      "searchInProject",
+      "searchInRepo",
+      "findOrCreatePeIt",
+      "withPhenomenaInProject",
+      "testPromises"
+    ]
+  }],
   "methods": {
-    "findOrCreatePersistentItemVersion": {
-      "accepts": [
+    "findOrCreatePeIt": {
+      "accepts": [{
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
         {
           "arg": "data",
           "type": "PersistentItemVersion",
@@ -55,6 +63,13 @@
           "http": {
             "source": "body"
           }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
         }
       ],
       "returns": {
@@ -62,15 +77,14 @@
         "type": "PersistentItemVersion",
         "root": true
       },
-      "description": "Find or create an PersistentItemVersion.",
+      "description": "Find or create a PersistentItemVersion.",
       "http": {
         "path": "/findOrCreate",
         "verb": "post"
       }
     },
     "searchInProject": {
-      "accepts": [
-        {
+      "accepts": [{
           "arg": "projectId",
           "type": "number",
           "required": true,
@@ -119,8 +133,7 @@
       }
     },
     "searchInRepo": {
-      "accepts": [
-        {
+      "accepts": [{
           "arg": "searchString",
           "type": "string",
           "required": true,

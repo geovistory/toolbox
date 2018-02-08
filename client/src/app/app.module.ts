@@ -58,11 +58,29 @@ import { GvNameVisiblePipe } from './shared/pipes/gv-name-visible.pipe';
 import { EntityEditorComponent } from './entity-editor/entity.editor.component';
 import { LanguageSearchTypeaheadComponent } from './language-search-typeahead/language-search-typeahead.component';
 import { AppellationService } from './shared/services/appellation.service';
-import { NamePartsViewComponent } from './name-parts-view/name-parts-view.component';
-import { NamePartTypeEditComponent } from './name-part-type-edit/name-part-type-edit.component';
 import { NamePartStringEditComponent } from './name-part-string-edit/name-part-string-edit.component';
 import { PassiveLinkDirective } from './passive-link.directive';
 import { VersionModalComponent } from './version-modal/version-modal.component';
+import { PeItService } from './shared/services/pe-it.service';
+import { PeItComponent } from './pe-it/pe-it.component';
+import { PeItEntityComponent } from './pe-it-entity/pe-it-entity.component';
+import { AddInfoComponent } from './add-info/add-info.component';
+import { PropertyComponent } from './property/property.component';
+import { RoleComponent } from './role/role.component';
+import { TeEntComponent } from './te-ent/te-ent.component';
+import { PeItAppellationComponent } from './pe-it-appellation/pe-it-appellation.component';
+import { PeItLanguageComponent } from './pe-it-language/pe-it-language.component';
+import { ActivePeItService } from './shared/services/active-pe-it.service';
+import { RoleService } from './shared/services/role.service';
+import { EprService } from './shared/services/epr.service';
+import { UtilitiesService } from './shared/services/utilities.service';
+import { PropertyService } from './shared/services/property.service';
+import { ClassService } from './shared/services/class.service';
+import { KeyboardService } from './shared/services/keyboard.service';
+import { AppellationLabelEditComponent } from './appellation-label-edit/appellation-label-edit.component';
+import { AppellationLabelViewComponent } from './appellation-label-view/appellation-label-view.component';
+import { AppellationLabelCreateComponent } from './appellation-label-create/appellation-label-create.component';
+import { AppellationLabelEditorComponent } from './appellation-label-editor/appellation-label-editor.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +104,6 @@ import { VersionModalComponent } from './version-modal/version-modal.component';
     ProjectEditComponent,
     NamingComponent,
     NameComponent,
-    NamePartTypeEditComponent,
     NamePartStringEditComponent,
     ProjectEditPanelComponent,
     EntityEditorComponent,
@@ -109,9 +126,20 @@ import { VersionModalComponent } from './version-modal/version-modal.component';
     EntityAddAddExistingComponent,
     GvNameVisiblePipe,
     LanguageSearchTypeaheadComponent,
-    NamePartsViewComponent,
+    AppellationLabelViewComponent,
     PassiveLinkDirective,
-    VersionModalComponent
+    VersionModalComponent,
+    PeItComponent,
+    PeItEntityComponent,
+    AddInfoComponent,
+    PropertyComponent,
+    RoleComponent,
+    TeEntComponent,
+    PeItAppellationComponent,
+    PeItLanguageComponent,
+    AppellationLabelEditComponent,
+    AppellationLabelCreateComponent,
+    AppellationLabelEditorComponent
   ],
   imports: [
     BrowserModule,
@@ -128,10 +156,18 @@ import { VersionModalComponent } from './version-modal/version-modal.component';
   providers: [
     ActiveAccountService,
     ActiveProjectService,
+    ActivePeItService,
     EntityAddModalService,
     AppellationService,
     AuthGuard,
     PropertyPipe,
+    PeItService,
+    RoleService,
+    EprService,
+    PropertyService,
+    ClassService,
+    UtilitiesService,
+    KeyboardService,
     { provide: LOCALE_ID, useValue: 'ch-DE' }
   ],
   entryComponents : [

@@ -1,0 +1,91 @@
+<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
+
+  <!-- Preview State -->
+
+  <div *ngIf="peItEntityState=='preview'">
+
+  </div>
+
+
+<!-- Create State -->
+
+  <div *ngIf="peItEntityState === 'create'">
+
+    <span *ngIf="keyboard.altPressed">
+      [ready: {{isReadyToCreate}}]
+    </span>
+
+    <gv-add-info
+    [addInfoState]="'create'"
+    [parentPeIt]="peItToCreate"
+    [outgoingProperties]="outgoingProperties"
+    [ingoingProperties]="ingoingProperties"
+    (readyToCreate)="emitReadyToCreate($event)"
+    (notReadyToCreate)="emitNotReadyToCreate()"
+    ></gv-add-info>
+
+
+  </div>
+
+  <!-- Edit and ViewCommunity States  -->
+
+  <div *ngIf="['edit', 'viewCommunity'].indexOf(peItEntityState) > -1">
+
+    <!-- Title / Standard Appellations of PeIt -->
+
+    <div class="gv-edit-panel-header" *ngIf="!loading">
+      <section class="row">
+        <div class="col-md-8">
+          <h2>
+            <small class="text-muted">Person</small> {{stdAppeString}}
+          </h2>
+        </div>
+        <div class="col-md-4">
+          <div class="btn-group float-right mt-2" role="group">
+            <button class="btn btn-sm btn-secondary" (click)="setState('viewCommunity')" *ngIf="state === 'edit'">
+              Show community-data and versions
+            </button>
+            <button class="btn btn-sm btn-secondary" (click)="setState('edit')" *ngIf="state === 'viewCommunity'">
+              <i class="fa fa-edit" aria-hidden="true"></i> Edit mode
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Tools to edit PeIt  -->
+
+    <div class="gv-edit-panel-body" *ngIf="!loading">
+
+      <div class="row">
+        <!-- <div class="col-6">
+
+          Names / Appellations of PeIt
+
+          <gv-naming [roles]="peIt.pi_roles"
+          [parentPeItC]="thisComponent"
+          (standardNameStringChange)="setStandardName($event)"
+          [state]="state"></gv-naming>
+
+        </div> -->
+        <div class="col-6">
+
+          <!-- Other Roles / Additional Info of PeIt -->
+
+          <gv-add-info [roles]="peIt.pi_roles"
+          [pkEntity]="pkEntity"
+          [parentPeIt]="peIt"
+          [outgoingProperties]="outgoingProperties"
+          [ingoingProperties]="ingoingProperties"
+          (appeChange)="whenAppeChange($event)"
+          ></gv-add-info>
+
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+
+</div>

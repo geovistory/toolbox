@@ -1,0 +1,34 @@
+<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
+
+  <div class="d-flex flex-row" *ngIf="peItAppeState === 'view'">
+
+    <div class="gv-flex-grow-1" >
+      <gv-appellation-label-view [appellation]="appellation"></gv-appellation-label-view>
+    </div>
+
+    <button class="btn btn-link btn-sm" (click)="startEdit()">
+      <i class="fa fa-edit"></i>
+    </button>
+
+  </div>
+
+  <div *ngIf="peItAppeState === 'edit'">
+
+    <gv-appellation-label-edit
+    [appellationLabel]="appellationLabelInEdit"
+    (onCancel)="cancelEdit()"
+    (onChange)="save($event)"></gv-appellation-label-edit>
+
+  </div>
+
+
+  <div class="d-flex flex-row" *ngIf="peItAppeState === 'create'">
+
+    <gv-appellation-label-create
+    (readyToCreate)="emitReadyToCreate($event)"
+    (notReadyToCreate)=emitNotReadyToCreate()
+    ></gv-appellation-label-create>
+
+  </div>
+
+</div>

@@ -1,0 +1,18 @@
+<div class="gv-label gv-edit-name gv-flex-grow-1">
+  <form (submit)="save()" class="gv-appellation-label-form">
+    <gv-appellation-label-editor [appellationLabel]="appellationLabel"
+    (readyToCreate)="labelReadToSave($event)"
+    (notReadyToCreate)="labelNotReadyToSave()"
+    ></gv-appellation-label-editor>
+    <fieldset>
+      <div class="form-group">
+        <button type="submit" class="gv-stop-edit-btn btn btn-primary" *ngIf="readyToSave">
+          Save
+        </button>
+        <button type="button" class="gv-stop-edit-btn btn btn-link" (click)="cancel()">
+          Cancel
+        </button>
+      </div>
+    </fieldset>
+  </form>
+</div>

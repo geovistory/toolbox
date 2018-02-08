@@ -1,27 +1,8 @@
-<a class="gv-back-btn btn btn-link" routerLink="../../search"  queryParamsHandling="merge">
-  <i class="fa fa-arrow-left"></i>  Search
-</a>
-<div class="gv-edit-panel-header" *ngIf="!loading">
-  <section class="row">
-    <div class="col-md-8">
-      <h2>
-         <small class="text-muted">Person</small> {{standardName}}
-      </h2>
-    </div>
-    <div class="col-md-4">
-      <div class="btn-group float-right mt-2" role="group">
-        <button class="btn btn-sm btn-secondary" (click)="toggleCommunityDataView()" *ngIf="!communityDataView">
-          Show community-data and versions 
-        </button>
-        <button class="btn btn-sm btn-secondary" (click)="toggleCommunityDataView()" *ngIf="communityDataView">
-          <i class="fa fa-edit" aria-hidden="true"></i> Edit mode
-        </button>
-      </div>
-    </div>
-  </section>
-</div>
-<div class="gv-edit-panel-body" *ngIf="!loading">
-  <gv-naming [names]="names"
-  (standardNameStringChange)="setStandardName($event)"
-  [state]="entityEditorState.state"></gv-naming>
+<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
+  <a class="gv-back-btn btn btn-link" routerLink="../../search"  queryParamsHandling="merge">
+    <i class="fa fa-arrow-left"></i>  Search
+  </a>
+  <div *ngIf="activeProjectReady">
+    <gv-pe-it [pkEntity]="pkEntity" [peItState]="peItState"></gv-pe-it>
+  </div>
 </div>

@@ -27,6 +27,8 @@ export class EntitySearchHitComponent implements OnInit {
   standardAppellationLabel: AppellationLabel;
   moreAppellationLabels: Array<AppellationLabel> = [];
 
+  headlineItems: Array<string> = [];
+
   get projectsCount():number {
     return this.persistentItem.projects.length
   }
@@ -44,6 +46,10 @@ export class EntitySearchHitComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    if(this.persistentItem.ts_headline){
+      this.headlineItems = this.persistentItem.ts_headline.split(' • ');
+    }
 
     this.repositorySearch = this.repositorySearch === undefined ? false : this.repositorySearch;
 
@@ -76,14 +82,16 @@ export class EntitySearchHitComponent implements OnInit {
         if(label.r63_is_standard_in_project != true){
           this.moreAppellationLabels.push(new AppellationLabel(label.appellation_label))
         }
+        else if(label.r63_is_standard_in_project == true){
+          this.standardAppellationLabel = new AppellationLabel(label.appellation_label)
+        }
       });
 
-      this.standardAppellationLabel = new AppellationLabel(
-        this.persistentItem.standard_appellation_label
-      )
+      // If there is no standard appellation label defined, take the first one
+      if(!this.standardAppellationLabel){
+        this.standardAppellationLabel = this.moreAppellationLabels[0];
+      }
     }
-
-
 
   }
 

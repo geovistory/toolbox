@@ -15,12 +15,28 @@ export class AppellationLabel implements AppellationLabelInterface {
   // }
 
   constructor(data?: AppellationLabelInterface) {
-    if(data.tokens.length > 1){
-      for(let token of data.tokens){
-        this.tokens.push(new Token(token));
+    if(data){
+      if(
+        data.tokens
+        && data.tokens.length > 0
+      ){
+        for(let token of data.tokens){
+          this.tokens.push(new Token(token));
+        }
       }
+      if(data.latestTokenId){
+        this.latestTokenId = data.latestTokenId;
+      }
+    }else{
+      this.latestTokenId = 0;
+      this.tokens.push(new Token({
+        id: this.latestTokenId,
+        string: '',
+        type: undefined,
+        autofocus: true,
+        isSeparator: false
+      }))
     }
-    this.latestTokenId = data.latestTokenId;
   }
 
   insertToken(oldToken:Token, newTokenIndex, newTokenString, isSeparator){
@@ -28,7 +44,7 @@ export class AppellationLabel implements AppellationLabelInterface {
     const newToken = new Token({
       id: this.latestTokenId,
       string: newTokenString,
-      type: undefined,
+      type: null,
       autofocus: true,
       isSeparator: isSeparator
     });

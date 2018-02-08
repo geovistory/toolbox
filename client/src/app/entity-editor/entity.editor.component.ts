@@ -1,16 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
-import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
-
-import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
-import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
-import { PropertyPipe } from '../shared/pipes/property';
-import { Appellation } from '../shared/sdk/models/Appellation';
-import { InformationRole } from '../shared/sdk/models/InformationRole';
-import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
-import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
-
+import { ActiveProjectService } from '../shared/services/active-project.service';
+import { UtilitiesService } from '../shared/services/utilities.service';
+import { KeyboardService } from '../shared/services/keyboard.service';
 
 @Component({
   selector: 'gv-entity-editor',
@@ -19,159 +11,45 @@ import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
 })
 export class EntityEditorComponent implements OnInit {
 
-  id; // id from url parameter id, representing the pk_persistent_item
-  projectId;
-  loading;
+  /**
+  * Properties
+  */
 
-  persistentItemVersion:PersistentItemVersion;
+  // Primary key of the Persistent Item to be viewed or edited
+  pkEntity:number;
 
-  names:Array<InformationRole>=[]
+  // State that will be passed to the included PeItComponent on init
+  peItState:string;
 
-  standardName:string;
-
-  entityEditorState = new EntityEditorState();
-
-  private _communityDataView:boolean;
-
-  set communityDataView(bool:boolean){
-    this._communityDataView = bool;
-    if(this._communityDataView === true){
-      this.entityEditorState.state = 'communityDataView';
-    }
-    else if (this.communityDataView === false){
-      this.entityEditorState.state = 'edit';
-    }
-  }
-
-  get communityDataView():boolean{
-    return this._communityDataView;
-  }
+  // Flag to indicate that the activeProject is set
+  activeProjectReady:boolean;
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private persistentItemVersionApi: PersistentItemVersionApi,
-    private propertyPipe: PropertyPipe,
-    private slimLoadingBarService: SlimLoadingBarService
+    private activeProjectService:ActiveProjectService,
+    private util:UtilitiesService,
+    public keyboard:KeyboardService
   ) {
+      // wait for the project to be set
+      this.activeProjectService.onProjectChange().subscribe(project => {
+        this.activeProjectReady = true;
+      })
+
+      // trigger the activation of the project
+      this.activeProjectService.setActiveProject(this.activatedRoute.snapshot.parent.params['id']);
+
+      //get pkEntity from url
+      this.pkEntity = this.activatedRoute.snapshot.params['id'];
+
   }
 
   ngOnInit() {
 
-    this.id = this.activatedRoute.snapshot.params['id'];
-
-    this.projectId = this.activatedRoute.snapshot.parent.params['id'];
-
-    this.communityDataView = false;
-
-    this.startLoading();
-
-    const innerJoinThisProject = {
-      "entity_version_project_rels": {
-        "$relation": {
-          "name": "entity_version_project_rels",
-          "joinType": "inner join",
-          "where": ["fk_project", "=", this.projectId]
-        }
-      }
-    };
-
-    const filter =
-    {
-      "where": ["pk_entity","=",this.id],
-      "include":{
-        ...innerJoinThisProject,
-        "pi_roles":{
-          "$relation": {
-            "name": "pi_roles",
-            "joinType": "left join"
-          },
-          ...innerJoinThisProject,
-          "temporal_entity": {
-            "$relation": {
-              "name": "temporal_entity",
-              "joinType": "inner join",
-              "orderBy":[{"pk_entity":"asc"}]
-            },
-            ...innerJoinThisProject,
-            "te_roles": {
-              "$relation": {
-                "name": "te_roles",
-                "joinType": "inner join",
-                "orderBy":[{"pk_entity":"asc"}]
-              },
-              ...innerJoinThisProject,
-              "appellation": {
-                "$relation": {
-                  "name": "appellation",
-                  "joinType": "left join",
-                  "orderBy":[{"pk_entity":"asc"}]
-                },
-                ...innerJoinThisProject
-              },
-              "language": {
-                "$relation": {
-                  "name": "language",
-                  "joinType": "left join",
-                  "orderBy":[{"pk_entity":"asc"}]
-                }
-                // ,
-                // ...innerJoinThisProject
-              }
-            }
-          }
-        }
-      }
-    }
-
-
-    this.persistentItemVersionApi.findComplex(filter).subscribe(
-      (persistentItemVersions: PersistentItemVersion[]) => {
-        this.persistentItemVersion = persistentItemVersions[0];
-
-        this.setNames(this.persistentItemVersion);
-
-        this.completeLoading();
-
-      });
-    }
-
-    setNames(persistentItemVersion:PersistentItemVersion){
-      this.names = this.persistentItemVersion.pi_roles.filter(role => role.fk_property === 'R63');
-    }
-
-    setStandardName(string){
-      this.standardName = string;
-    }
-
-    toggleCommunityDataView(){
-      this.completeLoading();
-      this.communityDataView = !this.communityDataView;
-    }
-
-    /**
-    * Loading Bar Logic
-    */
-
-    startLoading() {
-      this.loading = true;
-      this.slimLoadingBarService.progress = 20;
-      this.slimLoadingBarService.start(() => {
-      });
-    }
-
-    stopLoading() {
-      this.slimLoadingBarService.stop();
-    }
-
-    completeLoading() {
-      this.loading = false;
-      this.slimLoadingBarService.complete();
-    }
-
-    resetLoading() {
-      this.slimLoadingBarService.reset();
-    }
+    //set the peItState
+    this.peItState = 'edit';
 
   }
+
+}
 
 

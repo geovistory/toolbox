@@ -1,0 +1,20 @@
+<div class="d-flex flex-row">
+  <div *ngFor="let token of appellation.appellation_label.tokens">
+    <div *ngIf="token.isSeparator" class="gv-separator-token">
+      <div class="gv-token-top">
+        {{token.string === ' ' ? '&nbsp;' : token.string}}
+      </div>
+      <div class="gv-token-bottom">
+        &nbsp;
+      </div>
+    </div>
+    <div *ngIf="!token.isSeparator" class="gv-name-part-token">
+      <div class="gv-token-top">
+        {{token.string}}
+      </div>
+      <div class="gv-token-bottom">
+        {{token.typeId ? appellationService.getNamePartTypeLabelById(token.typeId) : '&nbsp;'}}
+      </div>
+    </div>
+  </div>
+</div>

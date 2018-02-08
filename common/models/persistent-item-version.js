@@ -1,9 +1,11 @@
 'use strict';
 
+const Promise = require('bluebird');
+
 module.exports = function(PersistentItemVersion) {
 
 
-  PersistentItemVersion.findOrCreatePersistentItemVersion = function (data, cb) {
+  PersistentItemVersion.findOrCreatePeIt = function(projectId, data, ctx) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
@@ -11,14 +13,66 @@ module.exports = function(PersistentItemVersion) {
       fk_class: data.fk_class
     };
 
-    PersistentItemVersion.findOrCreateVersion(PersistentItemVersion, dataObject, cb);
+    let requestedPeIt;
+
+    if (ctx) {
+      requestedPeIt = ctx.req.body;
+    } else {
+      requestedPeIt = data;
+    }
+
+    return PersistentItemVersion.findOrCreateVersion(PersistentItemVersion, projectId, dataObject)
+      .then((resultingPeIts) => {
+        //TODO pick first item of array
+        const resultingPeIt = resultingPeIts[0];
+
+        // if there are roles…
+        if (requestedPeIt.pi_roles) {
+
+          // prepare parameters
+          const InformationRole = PersistentItemVersion.app.models.InformationRole;
+
+          //… filter roles that are truthy (not null), iterate over them,
+          // return the promise that the PeIt will be
+          // returned together with all nested items
+          return Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
+              // use the pk_entity from the created peIt to set the fk_entity of the role
+              role.fk_entity = resultingPeIt.pk_entity;
+              // find or create the teEnt and the role pointing to the teEnt
+              return InformationRole.findOrCreateInformationRole(projectId, role);
+            })
+            .then((roles) => {
+
+              //attach the roles to peit.pi_roles
+              const res = resultingPeIt.toJSON();
+              res.pi_roles = [];
+              for (var i = 0; i < roles.length; i++) {
+                const role = roles[i];
+                if (role && role[0]) {
+                  res.pi_roles.push(role[0]);
+                }
+              }
+
+              return res;
+
+            })
+            .catch((err) => {
+              return err;
+            })
+
+        }
+      })
+      .catch((err) => {
+
+      });
 
   }
+
 
   PersistentItemVersion.searchInProject = function(projectId, searchString, limit, page, cb) {
 
     // Check that limit does not exceed maximum
-    if(limit > 200){
+    if (limit > 200) {
       const err = {
         'name': 'Max limit exceeded',
         'status': 403,
@@ -30,30 +84,81 @@ module.exports = function(PersistentItemVersion) {
     // set default if undefined
     var limit = limit ? limit : 10;
 
-    var offset = limit * (page-1);
+    var offset = limit * (page - 1);
+
+    if (searchString) {
+      var queryString = searchString.trim(' ').split(' ').map(word => {
+        return word + ':*'
+      }).join(' & ');
+    } else {
+      var queryString = '';
+    }
+
 
     var params = [
-      searchString ? '%' + searchString + '%' : '%%',
+      queryString,
       limit,
       offset,
       projectId
     ];
 
     var sql_stmt = `
+    WITH
+    epr_of_project AS (
+      SELECT fk_project, fk_entity, entity_version, fk_entity_version_concat, is_in_project, is_standard_in_project
+      FROM information.entity_version_project_rel
+      WHERE is_in_project = true AND fk_project IN ($4)
+    ),
+    appe_in_project AS (
+      SELECT DISTINCT
+      token.pk_entity,
+      token.appellation_label,
+      string_agg(token.string, '' ORDER BY row_number) as appellation_string
+      FROM
+      (
+        SELECT
+        ROW_NUMBER() OVER() AS row_number,
+        tokens.pk_entity,
+        tokens.token->>'isSeparator' AS is_separator,
+        tokens.token->>'string' AS string,
+        tokens.appellation_label
+        FROM
+        (
+          SELECT jsonb_array_elements(appellation_label->'tokens') as token, appe.pk_entity, appellation_label
+          FROM information.v_appellation_version as appe
+          INNER JOIN epr_of_project as epr on epr.fk_entity_version_concat = appe.pk_entity_version_concat
+        ) AS tokens
+        -- WHERE tokens.token->>'isSeparator' = 'false'
+      ) AS token
+      -- add where clause here to search in forenames, last names etc.
+      GROUP BY   token.pk_entity, token.appellation_label
+    ),
+    roles_in_project AS (
+      SELECT ro.fk_entity, ro.fk_property, ro.fk_temporal_entity, ro.is_community_favorite, ro.pk_entity_version_concat, epr.is_standard_in_project
+      FROM information.v_role_version as ro
+      INNER JOIN epr_of_project as epr on epr.fk_entity_version_concat = ro.pk_entity_version_concat
+    ),
+    te_ent_in_project AS (
+      SELECT te_ent.pk_entity, te_ent.fk_class, te_ent.is_community_favorite
+      FROM information.v_temporal_entity_version as te_ent
+      INNER JOIN epr_of_project as epr on epr.fk_entity_version_concat = te_ent.pk_entity_version_concat
+    ),
+    pe_it_in_projet AS (
+      SELECT pi.pk_entity, pi.fk_class,  pi.entity_version,  pi.pk_entity_version_concat,  pi.tmsp_last_modification
+      FROM information.v_persistent_item_version as pi
+      INNER JOIN epr_of_project as epr on epr.fk_entity_version_concat = pi.pk_entity_version_concat
+    )
     Select
-    total_count,
+    count(pi.pk_entity) OVER() AS total_count,
     pi.pk_entity,
-    pi.entity_version,
-    pi.pk_entity_version_concat,
     pi.fk_class,
     appellation_labels,
-    pi.projects,
-    standardAppellation.appellation_label as standard_appellation_label
+    ts_headline(appellation_string, q),
+    appellation_string,
+    projects
     FROM
     (
       SELECT
-      count(pi.pk_entity) OVER() AS total_count,
-      --      pi.notes,
       pi.pk_entity,
       pi.entity_version,
       pi.pk_entity_version_concat,
@@ -62,80 +167,49 @@ module.exports = function(PersistentItemVersion) {
         json_build_object(
           'pk_entity', pk_appellation,
           'appellation_label', appellation_label,
-          'r63_is_in_project', r63_is_in_project,
-          'r63_is_standard_in_project', r63_is_standard_in_project
+          'r63_is_standard_in_project', is_standard_in_project,
+          'r63_is_in_project_count', r63_is_in_project_count,
+          'r63_is_standard_in_project_count', r63_is_standard_in_project_count
         )
       ) as appellation_labels,
-      jsonb_agg(DISTINCT epr.fk_project) as projects
-
-      FROM information.v_persistent_item_version AS pi
-      INNER JOIN information.entity_version_project_rel AS epr ON epr.fk_entity_version_concat=pi.pk_entity_version_concat
+      string_agg(appellations.appellation_string, ' • ') AS appellation_string,
+      appellations.projects,
+      setweight(to_tsvector(string_agg(appellations.appellation_string, ' • ')), 'A') as document
+      FROM pe_it_in_projet AS pi
       INNER JOIN
       (
-        SELECT
-        appe_usage.pk_entity as pk_appellation_usage,
-        appellation.pk_entity as pk_appellation,
-        appellation.appellation_label as appellation_label,
-        r63_in_project.fk_project,
-        r63_in_project.is_in_project as r63_is_in_project,
-        r63_in_project.is_standard_in_project as r63_is_standard_in_project,
+        SELECT DISTINCT
+        appe_in_project.pk_entity as pk_appellation,
+        appe_in_project.appellation_string,
+        appe_in_project.appellation_label as appellation_label,
+        r63.is_standard_in_project,
+        jsonb_agg(DISTINCT r63_in_project.fk_project) as projects,
+        count(CASE WHEN r63_in_project.is_in_project THEN 1 END) as r63_is_in_project_count,
+        count(CASE WHEN r63_in_project.is_standard_in_project THEN 1 END) as r63_is_standard_in_project_count,
         r63.fk_entity as pk_named_entity
         FROM
-        information.role as r64
-        INNER JOIN
-        (
-          SELECT DISTINCT
-          token.pk_entity,
-          token.appellation_label
-          FROM
-          (
-            SELECT
-            tokens.pk_entity,
-            tokens.token->>'isSeparator' AS is_separator,
-            tokens.token->>'string' AS string,
-            tokens.appellation_label
-            FROM
-            (
-              SELECT jsonb_array_elements(appellation_label->'tokens') as token, appe.pk_entity, pk_entity_version_concat, appellation_label
-              FROM information.v_appellation_version as appe
-              INNER JOIN information.entity_version_project_rel as epr on epr.fk_entity_version_concat = appe.pk_entity_version_concat
-              WHERE epr.fk_project IN ($4)
-            ) AS tokens
-          ) AS token
-          WHERE token.is_separator = 'false'
-          AND token.string iLike $1
-        )
-        AS appellation
-        ON appellation.pk_entity = r64.fk_entity
-        INNER JOIN information.v_temporal_entity_version AS appe_usage ON appe_usage.pk_entity = r64.fk_temporal_entity
-        INNER JOIN information.v_role_version AS r63 ON r63.fk_temporal_entity = r64.fk_temporal_entity
-        INNER JOIN information.entity_version_project_rel AS r63_in_project ON r63_in_project.fk_entity_version_concat = r63.pk_entity_version_concat
-
+        roles_in_project as r64
+        INNER JOIN appe_in_project ON appe_in_project.pk_entity = r64.fk_entity
+        INNER JOIN te_ent_in_project AS appe_usage ON appe_usage.pk_entity = r64.fk_temporal_entity
+        INNER JOIN roles_in_project AS r63 ON r63.fk_temporal_entity = r64.fk_temporal_entity
+        INNER JOIN epr_of_project AS r63_in_project ON r63_in_project.fk_entity_version_concat = r63.pk_entity_version_concat
         WHERE r64.fk_property = 'R64'
-        AND r63_in_project.fk_project IN ($4)
+        -- AND r64.is_community_favorite = true
         AND r63.fk_property = 'R63'
         AND appe_usage.fk_class = 'F52'
+        AND appe_usage.is_community_favorite = true
+        GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity, r63.is_standard_in_project
       ) AS appellations
       ON appellations.pk_named_entity = pi.pk_entity
-
-      AND epr.fk_project IN ($4)
-      GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, pi.pk_entity_version_concat, pi.entity_version
+      GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, pi.pk_entity_version_concat, pi.entity_version, appellations.projects
       ORDER BY pi.tmsp_last_modification DESC
-      LIMIT $2
-      OFFSET $3
-    ) AS pi
-
-    -- join the standard appellation
-    INNER JOIN information.v_role_version AS r63 ON pi.pk_entity = r63.fk_entity
-    INNER JOIN information.entity_version_project_rel AS epr ON epr.fk_entity_version_concat = r63.pk_entity_version_concat
-    INNER JOIN information.temporal_entity AS appeUsage ON appeUsage.pk_entity = r63.fk_temporal_entity
-    INNER JOIN information."role" AS r64 ON r64.fk_temporal_entity = appeUsage.pk_entity
-    INNER JOIN information.appellation AS standardAppellation ON standardAppellation.pk_entity = r64.fk_entity
-    WHERE r63.fk_property = 'R63'
-    AND epr.fk_project IN ($4)
-    AND epr.is_standard_in_project = true
-    AND appeUsage.fk_class = 'F52'
-    AND r64.fk_property = 'R64';
+    ) AS pi, to_tsquery($1) q
+    ` +
+      (queryString === '' ? '' : 'WHERE  document @@ q') +
+      `
+    ORDER BY ts_rank(document, q) DESC
+    LIMIT $2
+    OFFSET $3
     `;
 
     const connector = PersistentItemVersion.dataSource.connector;
@@ -145,17 +219,17 @@ module.exports = function(PersistentItemVersion) {
   };
 
 
-  PersistentItemVersion.afterRemote('searchInProject', function (ctx, resultObjects, next) {
+  PersistentItemVersion.afterRemote('searchInProject', function(ctx, resultObjects, next) {
     console.log(resultObjects)
 
     var totalCount = 0;
-    if(resultObjects.length > 0){
+    if (resultObjects.length > 0) {
       totalCount = resultObjects[0].total_count;
     }
 
     // remove column total_count from all resultObjects
     var data = [];
-    if (resultObjects){
+    if (resultObjects) {
       data = resultObjects.map(searchHit => {
         delete searchHit.total_count;
         return searchHit;
@@ -182,7 +256,7 @@ module.exports = function(PersistentItemVersion) {
   PersistentItemVersion.searchInRepo = function(searchString, limit, page, cb) {
 
     // Check that limit does not exceed maximum
-    if(limit > 200){
+    if (limit > 200) {
       const err = {
         'name': 'Max limit exceeded',
         'status': 403,
@@ -194,10 +268,10 @@ module.exports = function(PersistentItemVersion) {
     // set default if undefined
     var limit = limit ? limit : 10;
 
-    var offset = limit * (page-1);
+    var offset = limit * (page - 1);
 
     var queryString = searchString.trim(' ').split(' ').map(word => {
-      return word+':*'
+      return word + ':*'
     }).join(' & ');
 
 
@@ -303,16 +377,16 @@ module.exports = function(PersistentItemVersion) {
   };
 
 
-  PersistentItemVersion.afterRemote('searchInRepo', function (ctx, resultObjects, next) {
+  PersistentItemVersion.afterRemote('searchInRepo', function(ctx, resultObjects, next) {
 
     var totalCount = 0;
-    if(resultObjects.length > 0){
+    if (resultObjects.length > 0) {
       totalCount = resultObjects[0].total_count;
     }
 
     // remove column total_count from all resultObjects
     var data = [];
-    if (resultObjects){
+    if (resultObjects) {
       data = resultObjects.map(searchHit => {
         delete searchHit.total_count;
         return searchHit;
