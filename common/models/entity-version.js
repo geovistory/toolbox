@@ -34,6 +34,10 @@ module.exports = function(EntityVersion) {
           }
         }
       })
+      .then((res) => {
+        return [res];
+      })
+      .catch(err => err);
 
     };
 
@@ -127,7 +131,8 @@ module.exports = function(EntityVersion) {
 
           // If there is an existing version with this values, return it
           if (existingVersion) {
-            return existingVersion;
+
+            return [existingVersion];
           }
 
           // Else call the function to create and return a new entity version
@@ -158,7 +163,7 @@ module.exports = function(EntityVersion) {
 
   };
 
-
+//TODO IS this still needed?
   EntityVersion.createRole = function(projectId, role, resultingEntity) {
 
         // … prepare the Role Model Constructor

@@ -5,6 +5,7 @@ import { Appellation } from '../shared/sdk/models/Appellation';
 import { UtilitiesService } from '../shared/services/utilities.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
+import { AppellationStdBool } from '../role/role.component';
 
 export enum PeItStates {
   view = "view",
@@ -26,11 +27,11 @@ export class PeItComponent implements OnInit {
   * Inputs
   */
 
-  @Input() pkEntity:number;
-  @Input() fkClass:string;
-  @Input() appellation:Appellation;
-  @Input() language:InformationLanguage;
-  @Input() peItState:string;
+  @Input() pkEntity: number;
+  @Input() fkClass: string;
+  @Input() appellation: Appellation;
+  @Input() language: InformationLanguage;
+  @Input() peItState: string;
 
   /**
   * Outputs
@@ -40,6 +41,14 @@ export class PeItComponent implements OnInit {
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
+  @Output() peItReadyToCreate: EventEmitter<PersistentItemVersion> = new EventEmitter;
+
+  @Output() peItNotReadyToCreate: EventEmitter<void> = new EventEmitter;
+
+  @Output() created: EventEmitter<any> = new EventEmitter;
+
+  @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
+
 
   /**
   * Properties
@@ -47,7 +56,7 @@ export class PeItComponent implements OnInit {
 
   constructor(
     private util: UtilitiesService,
-    public keyboard:KeyboardService
+    public keyboard: KeyboardService
   ) { }
 
 
@@ -57,9 +66,9 @@ export class PeItComponent implements OnInit {
 
   ngOnInit() {
 
-    if (this.peItState === 'create'){
+    if (this.peItState === 'create') {
 
-      if (this.fkClass === 'E56'){
+      if (this.fkClass === 'E56') {
 
         this.language = new InformationLanguage()
 
@@ -67,7 +76,7 @@ export class PeItComponent implements OnInit {
 
       }
 
-      if (['E82', 'E41'].indexOf(this.fkClass) > -1){
+      if (['E82', 'E41'].indexOf(this.fkClass) > -1) {
 
         this.appellation = new Appellation()
 
@@ -88,7 +97,7 @@ export class PeItComponent implements OnInit {
    *
    * @return {boolean}  true = this peIt is an appellation
    */
-  get showAppellationUI():boolean {
+  get showAppellationUI(): boolean {
     return (this.util.get(this, 'appellation.fk_class'));
   }
 
@@ -116,21 +125,38 @@ export class PeItComponent implements OnInit {
    * Methods specific to create state
    */
 
-   emitReadyToCreate(entity){
-     this.readyToCreate.emit(entity)
-   }
+  emitReadyToCreate(entity) {
+    this.readyToCreate.emit(entity)
+  }
 
 
-   emitNotReadyToCreate(entities:EntitiesToCreate){
-
-     this.notReadyToCreate.emit()
-
-   }
+  emitNotReadyToCreate(entities: EntitiesToCreate) {
+    this.notReadyToCreate.emit()
+  }
 
 
-  // setState(state:string){
-  //   this.peItState = state;
-  // }
+  emitPeItReadyToCreate(peIt: PersistentItemVersion) {
+    this.peItReadyToCreate.emit(peIt)
+  }
 
+
+  emitPeItNotReadyToCreate(entities: EntitiesToCreate) {
+
+    this.peItNotReadyToCreate.emit()
+
+  }
+
+
+  emitCreated(entity) {
+    this.created.emit(entity)
+  }
+
+  /**
+   * Methods for event bubbeling
+   */
+
+  emitAppeChange(appeStd:AppellationStdBool) {
+    this.appeChange.emit(appeStd)
+  }
 
 }

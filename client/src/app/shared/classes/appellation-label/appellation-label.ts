@@ -18,7 +18,7 @@ export class AppellationLabel implements AppellationLabelInterface {
     if(data){
       if(
         data.tokens
-        && data.tokens.length > 1
+        && data.tokens.length > 0
       ){
         for(let token of data.tokens){
           this.tokens.push(new Token(token));
@@ -44,7 +44,7 @@ export class AppellationLabel implements AppellationLabelInterface {
     const newToken = new Token({
       id: this.latestTokenId,
       string: newTokenString,
-      type: undefined,
+      type: null,
       autofocus: true,
       isSeparator: isSeparator
     });

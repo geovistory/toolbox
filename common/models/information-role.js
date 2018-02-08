@@ -90,7 +90,8 @@ module.exports = function(InformationRole) {
 
       // find or create the appellation and the role pointing to it
       return Appellation.findOrCreateAppellation(projectId, requestedRole.appellation)
-        .then((resultingEntity) => {
+        .then((resultingEntities) => {
+          const resultingEntity = resultingEntities[0];
 
           // … prepare the Role to create
           dataObject.fk_entity = resultingEntity.pk_entity;
@@ -123,7 +124,8 @@ module.exports = function(InformationRole) {
 
       // find or create the language and the role pointing to it
       return InformationLanguage.findOrCreateLang(projectId, requestedRole.language)
-        .then((resultingEntity) => {
+        .then((resultingEntities) => {
+          const resultingEntity = resultingEntities[0];
 
           // … prepare the Role to create
           dataObject.fk_entity = resultingEntity.pk_entity;
@@ -147,9 +149,7 @@ module.exports = function(InformationRole) {
     } else {
 
       return InformationRole.findOrCreateVersion(InformationRole, projectId, dataObject)
-        .then((res) => {
-          return [res];
-        });
+
     }
 
   }

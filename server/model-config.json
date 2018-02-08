@@ -60,10 +60,6 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "PersistentItem": {
-    "dataSource": "postgres1",
-    "public": true
-  },
   "CommonsLabel": {
     "dataSource": "postgres1",
     "public": true

@@ -14,8 +14,6 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/merge';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
-import { PersistentItem } from '../shared/sdk/models/PersistentItem';
-import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
 import { environment } from '../../environments/environment';
 import { LoopBackConfig } from '../shared/sdk/lb.config';
 import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
@@ -23,6 +21,7 @@ import { Project } from '../shared/sdk/models/Project';
 import { EntityAddModalService } from '../shared/services/entity-add-modal.service';
 import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
 import { PeItService } from '../shared/services/pe-it.service';
+import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
 
 @Component({
   selector: 'gv-project-entities',
@@ -31,7 +30,7 @@ import { PeItService } from '../shared/services/pe-it.service';
 })
 export class ProjectEntitiesComponent implements OnInit {
 
-  persistentItems: PersistentItem[] = [];
+  persistentItems: PersistentItemVersion[] = [];
   projectId: number;
 
   //Pagination

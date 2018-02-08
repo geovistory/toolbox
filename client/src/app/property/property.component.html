@@ -33,6 +33,7 @@
         [isOutgoing]="isOutgoing"
         [pointTo]="pointTo"
         [roleState]="'view'"
+        (appeChange)="emitAppeChange($event)"
         (onRequestStandard)="changeStandardRole($event)"></gv-role>
       </div>
     </div>

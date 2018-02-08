@@ -205,13 +205,12 @@ export class NamePartStringEditComponent implements OnInit, AfterViewInit, OnDes
       // assign 'Hans Jacob Müller ' to this token.string
 
       // The timeout is needed for correct updating of the view
-      // setTimeout(() => {
-      //
-      // }, 0);
-      this.token.string = split[2];
+      setTimeout(() => {
+        this.token.string = split[2];
+        // call this function again, so that the new string is split
+        this.splitToken();
+      }, 0);
 
-      // call this function again, so that the new string is split
-      this.splitToken();
 
       // insert token before, containing the separator character, e.g. ' '
       this.insertTokenBefore(newTokenString, isSeparator);
@@ -227,8 +226,8 @@ export class NamePartStringEditComponent implements OnInit, AfterViewInit, OnDes
 
       // assign 'Hans' to this token.string
       // The timeout is needed for correct updating of the view
-      // setTimeout(() => this.setTokenString(thisTokenString), 0);
-      this.setTokenString(thisTokenString)
+      setTimeout(() => this.setTokenString(thisTokenString), 0);
+      // this.setTokenString(thisTokenString)
 
       // insert token after, containing test of string, e.g. ' Jacob Müller '
       this.insertTokenAfter(newTokenString, isSeparator);
@@ -241,8 +240,8 @@ export class NamePartStringEditComponent implements OnInit, AfterViewInit, OnDes
       this.insertTokenAfter(newTokenString, isSeparator);
 
       // make this a separtor token
-      // setTimeout(() => this.token.isSeparator = true, 0);
-      this.setTokenSeparator(true);
+      setTimeout(() => this.token.isSeparator = true, 0);
+      // this.setTokenSeparator(true);
 
     }
     else {
@@ -285,7 +284,7 @@ export class NamePartStringEditComponent implements OnInit, AfterViewInit, OnDes
     }
     else {
       this.selectedNamePartType = [];
-      this.token.typeId = undefined;
+      this.token.typeId = null;
     }
 
     this.stopEditingType();

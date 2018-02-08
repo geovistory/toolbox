@@ -18,6 +18,8 @@ export class EprService {
   * @return {type}        description
   */
   getEprOfEntity (entity){
+    if(!entity.entity_version_project_rels) return undefined;
+    
     const eprs = entity.entity_version_project_rels.filter(
       epr => epr.fk_project === this.activeProjectService.project.pk_project
     )

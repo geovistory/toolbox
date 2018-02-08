@@ -16,7 +16,6 @@ import { Appellation } from '../shared/sdk/models/Appellation';
 import { AppellationApi } from '../shared/sdk/services/custom/Appellation';
 import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
 import { InformationRole } from '../shared/sdk/models/InformationRole';
-import { PersistentItem } from '../shared/sdk/models/PersistentItem';
 import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
 import { ActiveProjectService } from '../shared/services/active-project.service';

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import {
   trigger,
   state,
@@ -14,6 +14,7 @@ import { Property, PropertyService, DirectionAwareProperty } from '../shared/ser
 import { RoleService, RolesPerProperty, DirectedRolesPerProperty } from '../shared/services/role.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
 import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
+import { AppellationStdBool } from '../role/role.component';
 
 @Component({
   selector: 'gv-add-info',
@@ -76,12 +77,24 @@ export class AddInfoComponent implements OnInit {
   // array of properies of which the class of this peIt is domain.
   @Input() ingoingProperties: Property[];
 
+  // state of this component
+  @Input() addInfoState: string;
+
+  /**
+  * Outputs
+  */
+
+  @Output() readyToCreate: EventEmitter<InformationRole[]> = new EventEmitter;
+
+  @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
+
+  // emit appellation and a flag to say if this is the standard appellation
+  @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
+
+
   /**
   * Properties
   */
-
-  // state of this component
-  addInfoState: string;
 
   // state of child component
   propState: string;
@@ -132,6 +145,7 @@ export class AddInfoComponent implements OnInit {
 
     if (this.addInfoState === 'selectProp') return false;
     if (this.addInfoState === 'add') return false;
+    if (this.addInfoState === 'create') return false;
 
     return true;
 
@@ -149,6 +163,16 @@ export class AddInfoComponent implements OnInit {
       .toDirectionAwareProperties(false, this.ingoingProperties)
 
     if (this.roles) this.setDirectedRolesPerProperty();
+
+    if (this.addInfoState === 'create') {
+      this.propState = 'create';
+
+      //TODO find smarter choice of the default property to add on create
+      this.propertyToAdd = this.outgoingDirectionAwareProperties.filter(odap => {
+        return odap.property.pk_property === 'R63'
+      })[0]
+
+    }
   }
 
   setDirectedRolesPerProperty() {
@@ -206,6 +230,33 @@ export class AddInfoComponent implements OnInit {
     this.stopSelectProperty();
 
   }
+
+  /**
+   * called when role is ready to create
+   */
+  emitReadyToCreate(roles:InformationRole[]) {
+
+    this.readyToCreate.emit(roles);
+
+  }
+
+  /**
+   * called when role isnt ready to create
+   */
+  emitNotReadyToCreate(roles:InformationRole[]) {
+
+    this.notReadyToCreate.emit();
+
+  }
+
+  /**
+   * Methods for event bubbeling
+   */
+
+  emitAppeChange(appeStd:AppellationStdBool) {
+    this.appeChange.emit(appeStd)
+  }
+
 
   /**
   * toggleCardBody - toggles the state of the card in order to collapse or

@@ -18,12 +18,13 @@
       [pointTo]="'TeEnt'"
       [parentEntityPk]="pkEntity"
       [parentPeIt]="parentPeIt"
+      (appeChange)="emitAppeChange($event)"
       ></gv-property>
 
       <!-- Property Select UI -->
 
       <div class="card-body">
-        <div class="gv-name" [ngClass]="{card:(propState !== 'create')}" *ngIf="addInfoState === 'selectProp' || addInfoState === 'add'">
+        <div class="gv-name" [ngClass]="{card:(propState !== 'create')}" *ngIf="addInfoState === 'selectProp' || addInfoState === 'add' || addInfoState === 'create'">
           <div class="card-header" *ngIf="propState !== 'create'">
             <div class="d-flex flex-row">
               <div class="gv-flex-grow-1">
@@ -61,6 +62,19 @@
           (propStateChange)="onPropStateChange($event)"
           (rolesAdded)="onRolesAdded($event)"
           ></gv-property>
+
+          <gv-property
+          *ngIf="addInfoState === 'create'"
+          [fkProperty]="propertyToAdd.property.pk_property"
+          [isOutgoing]="propertyToAdd.isOutgoing"
+          [propState]="propState"
+          [pointTo]="'TeEnt'"
+          [parentPeIt]="parentPeIt"
+          [parentEntityPk]="pkEntity"
+          (readyToCreate)="emitReadyToCreate($event)"
+          (notReadyToCreate)="emitNotReadyToCreate()"
+          ></gv-property>
+
 
         </div>
       </div>

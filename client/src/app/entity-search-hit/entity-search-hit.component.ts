@@ -27,6 +27,8 @@ export class EntitySearchHitComponent implements OnInit {
   standardAppellationLabel: AppellationLabel;
   moreAppellationLabels: Array<AppellationLabel> = [];
 
+  headlineItems: Array<string> = [];
+
   get projectsCount():number {
     return this.persistentItem.projects.length
   }
@@ -44,6 +46,10 @@ export class EntitySearchHitComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    if(this.persistentItem.ts_headline){
+      this.headlineItems = this.persistentItem.ts_headline.split(' • ');
+    }
 
     this.repositorySearch = this.repositorySearch === undefined ? false : this.repositorySearch;
 

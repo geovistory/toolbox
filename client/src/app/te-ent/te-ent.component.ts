@@ -9,12 +9,14 @@ import {
 
 import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
 import { RoleService, RolesPerProperty, DirectedRolesPerProperty } from '../shared/services/role.service';
-import { RoleComponent } from '../role/role.component';
+import { RoleComponent , AppellationStdBool } from '../role/role.component';
 import { ClassService } from '../shared/services/class.service';
 import { Property } from '../shared/services/property.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
 import { InformationRole } from '../shared/sdk/models/InformationRole';
 import { PropertyComponent } from '../property/property.component';
+import { Appellation } from '../shared/sdk/models/Appellation';
+import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
 
 @Component({
   selector: 'gv-te-ent',
@@ -62,6 +64,8 @@ export class TeEntComponent implements OnInit {
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
+  // emit appellation and a flag to say if this is the standard appellation
+  @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
 
   /**
   * Properties
@@ -80,6 +84,8 @@ export class TeEntComponent implements OnInit {
   // if 'collapsed': only header section is visible
   // if 'expanded': all visible
   cardBodyState: string = 'collapsed';
+
+  displayLabel:string;
 
 
   // Array of children RoleComponents
@@ -160,6 +166,16 @@ export class TeEntComponent implements OnInit {
       this.cardBodyState = 'expanded'
     else
       this.cardBodyState = 'collapsed'
+  }
+
+  /**
+   * Methods for event bubbeling
+   */
+
+  emitAppeChange(appeStd:AppellationStdBool) {
+    const label = new AppellationLabel(appeStd.appellation.appellation_label);
+    this.displayLabel = label.getString();
+    this.appeChange.emit(appeStd)
   }
 
 }

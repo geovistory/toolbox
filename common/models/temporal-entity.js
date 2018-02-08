@@ -22,7 +22,10 @@ module.exports = function(TemporalEntity) {
     }
 
     return TemporalEntity.findOrCreateVersion(TemporalEntity, projectId, dataObject)
-      .then((resultingTeEnt) => {
+      .then((resultingTeEnts) => {
+
+        //TODO pick first item of array
+        const resultingTeEnt = resultingTeEnts[0];
 
         // if there are roles going from the teEnt to a peIt …
         if (requestedTeEnt.te_roles) {

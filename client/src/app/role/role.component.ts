@@ -16,6 +16,11 @@ export enum RolePointToEnum {
   TeEnt = "TeEnt"
 };
 
+export interface AppellationStdBool{
+  appellation: Appellation;
+  isStandardInProject: boolean;
+}
+
 @Component({
   selector: 'gv-role',
   templateUrl: './role.component.html',
@@ -51,8 +56,8 @@ export class RoleComponent implements OnInit {
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
-
-
+  // emit appellation and a flag to say if this is the standard appellation
+  @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
 
   /**
   * Properties
@@ -67,6 +72,10 @@ export class RoleComponent implements OnInit {
   // true if the role is ready to create (only for create state)
   isReadyToCreate:boolean;
 
+  // If the role points to a teEnt with a child appellation
+  appellation:Appellation;
+
+  private _isStandardInProject:boolean;
 
   constructor(
     private eprService:EprService,
@@ -79,6 +88,9 @@ export class RoleComponent implements OnInit {
       this.role = new InformationRole();
       this.role.fk_property = this.fkProperty;
     }
+
+    if (this.epr)
+      this.isStandardInProject = this.epr.is_standard_in_project;
   }
 
 
@@ -95,6 +107,7 @@ export class RoleComponent implements OnInit {
   */
   set epr(epr:EntityVersionProjectRel){
     this.eprService.updateEprOfEntity(this.role, epr);
+    this.isStandardInProject = this.epr.is_standard_in_project;
     // this.ref.detectChanges();
   }
 
@@ -116,7 +129,20 @@ export class RoleComponent implements OnInit {
   * @return {boolen}  description
   */
   get isStandardInProject():boolean{
-    return this.epr.is_standard_in_project;
+    return this._isStandardInProject;
+  }
+
+  set isStandardInProject(bool:boolean){
+    this._isStandardInProject = bool;
+
+    if(this.appellation){
+      this.appeChange.emit({
+        appellation: this.appellation,
+        isStandardInProject: bool
+      })
+    }
+
+    // Add other emits here if other things need to be emitted on std change
   }
 
 
@@ -175,6 +201,16 @@ export class RoleComponent implements OnInit {
 
     this.notReadyToCreate.emit()
 
+  }
+
+  /**
+   * Methods for event bubbeling
+   */
+
+  emitAppeChange(appeStd:AppellationStdBool) {
+    appeStd.isStandardInProject = this.isStandardInProject;
+    this.appellation = appeStd.appellation;
+    this.appeChange.emit(appeStd)
   }
 
 }

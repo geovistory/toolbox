@@ -22,7 +22,9 @@ module.exports = function(PersistentItemVersion) {
     }
 
     return PersistentItemVersion.findOrCreateVersion(PersistentItemVersion, projectId, dataObject)
-      .then((resultingPeIt) => {
+      .then((resultingPeIts) => {
+        //TODO pick first item of array
+        const resultingPeIt = resultingPeIts[0];
 
         // if there are roles…
         if (requestedPeIt.pi_roles) {
@@ -50,7 +52,7 @@ module.exports = function(PersistentItemVersion) {
                   res.pi_roles.push(role[0]);
                 }
               }
-              
+
               return res;
 
             })

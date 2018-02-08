@@ -8,6 +8,7 @@
   [peItAppeState]="peItState"
   (readyToCreate)=emitReadyToCreate($event)
   (notReadyToCreate)=emitNotReadyToCreate()
+  (appeChange)="emitAppeChange($event)"
   ></gv-pe-it-appellation>
 
   <gv-pe-it-language
@@ -22,7 +23,11 @@
   <gv-pe-it-entity
   *ngIf="showEntityUI"
   [pkEntity]="pkEntity"
+  [fkClass]="fkClass"
   [peItEntityState]="peItState"
+  (readyToCreate)="emitPeItReadyToCreate($event)"
+  (notReadyToCreate)="emitPeItNotReadyToCreate()"
+  (created)="created(peit)"
   ></gv-pe-it-entity>
 
   <!-- <span *ngIf="peItPreviewNeeded">[Preview of entity]</span> -->

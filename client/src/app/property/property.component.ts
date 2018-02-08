@@ -6,7 +6,7 @@ import {
 import { Observable } from 'rxjs/Observable';
 
 import { InformationRole } from '../shared/sdk/models/InformationRole';
-import { RolePointToEnum, RoleComponent } from '../role/role.component';
+import { RolePointToEnum, RoleComponent , AppellationStdBool } from '../role/role.component';
 import { RoleService } from '../shared/services/role.service';
 import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/EntityVersionProjectRel';
 import { PropertyService, Property } from '../shared/services/property.service';
@@ -18,6 +18,7 @@ import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersio
 import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { InformationRoleApi } from '../shared/sdk/services/custom/InformationRole';
+import { Appellation } from '../shared/sdk/models/Appellation';
 
 
 
@@ -76,6 +77,8 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
 
   @Output() rolesAdded: EventEmitter<InformationRole[]> = new EventEmitter;
 
+  // emit appellation and a flag to say if this is the standard appellation
+  @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
 
   /**
   * Properties
@@ -429,6 +432,15 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
 
   queryRichObject() {
 
+  }
+
+
+  /**
+   * Methods for event bubbeling
+   */
+
+  emitAppeChange(appeStd:AppellationStdBool) {
+    this.appeChange.emit(appeStd)
   }
 
 }

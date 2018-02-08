@@ -8,6 +8,7 @@ import { KeyboardService } from '../shared/services/keyboard.service';
 import { AppellationApi } from '../shared/sdk/services/custom/Appellation';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
+import { AppellationStdBool } from '../role/role.component';
 
 
 @Component({
@@ -21,9 +22,9 @@ export class PeItAppellationComponent implements OnInit {
   /**
   * Inputs
   */
-  @Input() appellation:Appellation;
+  @Input() appellation: Appellation;
 
-  @Input() peItAppeState:string;
+  @Input() peItAppeState: string;
 
 
   /**
@@ -34,27 +35,33 @@ export class PeItAppellationComponent implements OnInit {
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
+  @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
+
 
   /**
   * Properties
   */
 
-  appellationLabel:AppellationLabel = new AppellationLabel();
+  appellationLabel: AppellationLabel = new AppellationLabel();
 
-  appellationLabelInEdit:AppellationLabel;
+  appellationLabelInEdit: AppellationLabel;
 
 
   constructor(
     private appellationApi: AppellationApi,
     private activeProjectService: ActiveProjectService,
-    public keyboard:KeyboardService,
+    public keyboard: KeyboardService,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
   }
 
   ngOnInit() {
-    if(this.appellation.appellation_label){
+    if (this.appellation.appellation_label) {
       this.appellationLabel = new AppellationLabel(this.appellation.appellation_label);
+      this.appeChange.emit({
+        appellation: this.appellation,
+        isStandardInProject: false
+      })
     }
 
     this.peItAppeState = this.peItAppeState ? this.peItAppeState : 'view';
@@ -62,7 +69,7 @@ export class PeItAppellationComponent implements OnInit {
   }
 
 
-  startEdit(){
+  startEdit() {
     this.peItAppeState = 'edit'
 
     this.appellationLabelInEdit = new AppellationLabel(this.appellationLabel);
@@ -71,11 +78,11 @@ export class PeItAppellationComponent implements OnInit {
   }
 
 
-  cancelEdit(){
+  cancelEdit() {
     this.peItAppeState = 'view'
   }
 
-  save(appeLabel:AppellationLabel){
+  save(appeLabel: AppellationLabel) {
     this.startLoading();
 
     this.appellationApi.findOrCreateAppellation(
@@ -90,12 +97,17 @@ export class PeItAppellationComponent implements OnInit {
 
       this.appellation = new Appellation(appellations[0])
 
+      this.appeChange.emit({
+        appellation: this.appellation,
+        isStandardInProject: false
+      })
+
     })
     this.cancelEdit()
 
   }
 
-  create(appeLabel:AppellationLabel){
+  create(appeLabel: AppellationLabel) {
     console.log(appeLabel);
   }
 
@@ -105,15 +117,15 @@ export class PeItAppellationComponent implements OnInit {
   * Methods specific to create state
   */
 
-  emitReadyToCreate(appellationLabel:AppellationLabel){
+  emitReadyToCreate(appellationLabel: AppellationLabel) {
 
-    this.appellation.appellation_label = appellationLabel;
+    this.appellation.appellation_label = appellationLabel;
 
     this.readyToCreate.emit(this.appellation)
 
   }
 
-  emitNotReadyToCreate(){
+  emitNotReadyToCreate() {
 
     this.notReadyToCreate.emit()
 

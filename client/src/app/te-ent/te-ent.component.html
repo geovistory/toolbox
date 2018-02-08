@@ -13,7 +13,7 @@
     <div class="card-header gv-name-header d-flex flex-row">
       <ng-content select="[eprUi]"></ng-content>
       <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
-        [Display Label of TeEnt]
+        {{displayLabel}}
       </div>
     </div>
 
@@ -26,6 +26,7 @@
       [parentRole]="parentRole"
       [fkProperty]="property.fkProperty"
       [pointTo]="'PeIt'"
+      (appeChange)="emitAppeChange($event)"
       ></gv-property>
 
     </div>
