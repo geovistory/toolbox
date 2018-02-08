@@ -36,7 +36,7 @@ export class AppellationLabelCreateComponent implements OnInit {
     this.readyToCreate.emit(this.appellationLabel);
   }
 
-  onNotReadyToCreate(appellationLabel: AppellationLabel) {
+  onNotReadyToCreate() {
     this.isValid = false;
     this.notReadyToCreate.emit();
 

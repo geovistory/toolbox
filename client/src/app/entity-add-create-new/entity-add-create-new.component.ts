@@ -24,7 +24,7 @@ export class EntityAddCreateNewComponent implements OnInit {
   isReadyToCreate: boolean;
 
   constructor(
-    private keyboard: KeyboardService,
+    public keyboard: KeyboardService,
     private activeProjectService: ActiveProjectService,
     private persistentItemApi: PersistentItemVersionApi,
     public activeModal: NgbActiveModal,
