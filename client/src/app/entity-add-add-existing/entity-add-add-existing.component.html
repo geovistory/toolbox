@@ -10,17 +10,15 @@
     <div class="mb-3">
       Select the names you want to add
     </div>
-    <gv-naming [roles]="names" [state]="'add'"
-    (standardNameStringChange)="setStandardName($event)"
-    (entityProjectRelChange)="setEprNaming($event)"
-    ></gv-naming>
+    [TODO]
+
   </div>
   <div class="col">
     <div class="mb-3">
       Select the information you want to add
     </div>
-    [TODO]
-    <!-- <gv-naming [names]="names" (standardNameStringChange)="setStandardName($event)" [state]="'edit'"></gv-naming> -->
+
+    <gv-pe-it [pkEntity]="pkEntity" [peItState]="'add-pe-it'"></gv-pe-it>
 
   </div>
 </div>

@@ -1,5 +1,13 @@
 <div [ngClass]="{'alt-pressed': keyboard.altPressed}">
 
+  <div class="d-flex flex-row" *ngIf="peItAppeState === 'add-pe-it'">
+
+    <div class="gv-flex-grow-1" >
+      <gv-appellation-label-view [appellation]="appellation"></gv-appellation-label-view>
+    </div>
+
+  </div>
+
   <div class="d-flex flex-row" *ngIf="peItAppeState === 'view'">
 
     <div class="gv-flex-grow-1" >

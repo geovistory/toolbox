@@ -21,6 +21,7 @@
 
       <gv-property
       *ngFor="let property of directedRolesPerProperty"
+      [propState]="teEntState"
       [isOutgoing]="property.isOutgoing"
       [roles]="property.roles"
       [parentRole]="parentRole"
@@ -37,9 +38,9 @@
 
   <div class="card gv-name" *ngIf="teEntState === 'create'">
 
-    <div class="card-header gv-name-header d-flex flex-row">
+    <!-- <div class="card-header gv-name-header d-flex flex-row">
       <ng-content select="[eprUi]"></ng-content> [Create TeEnt of Class {{teEnt.fk_class}}]
-    </div>
+    </div> -->
 
     <div class="gv-card-body-wrapper">
 

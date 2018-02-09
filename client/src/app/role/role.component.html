@@ -27,18 +27,73 @@
   </div>
 
 
+  <div *ngIf="roleState === 'add-pe-it'">
+    <!-- if the role points to a temporal entity -->
+
+    <div *ngIf="pointTo=='TeEnt'">
+
+
+      <!-- TeEnt Component (passing the temporal entity) -->
+      <gv-te-ent
+      [teEntState]="roleState"
+      [teEnt]="role.temporal_entity"
+      [parentProperty]="parentProperty"
+      [parentRole]="role"
+      [isOutgoing]="isOutgoing"
+      (appeChange)="emitAppeChange($event)"> <div eprUi>
+
+        <!-- UI for is in project -->
+
+        <div class="gv-in-project">
+
+          <!-- Is in project -->
+          <button type="button" name="button" class="btn btn-link btn-sm"
+          *ngIf="inProject"
+          [attr.disabled]="entityProjectRel.is_standard_in_project || changeIsInProjectLoading ? 'disabled' : null"
+          (click)="inProject=false">
+          <i class="fa fa-check-square-o" ></i> </button>
+
+          <!-- Is not in project -->
+          <button type="button" name="button" class="btn btn-link btn-sm"
+          [attr.disabled]="changeIsInProjectLoading ? 'disabled' : null"
+          *ngIf="!inProject"  (click)="inProject=true">
+          <i class="fa fa-square-o"></i></button>
+
+        </div>
+
+      </div> </gv-te-ent>
+
+    </div>
+
+    <!-- if the role points to a persistent item -->
+
+    <div *ngIf="pointTo=='PeIt'">
+
+      <!-- include component PeIt (passing the PeIt) -->
+      <gv-pe-it
+      [peItState]="roleState"
+      [appellation]="role?.appellation"
+      [language]="role?.language"
+      [pkEntity]="role.fk_entity"
+      (appeChange)="emitAppeChange($event)"
+      ></gv-pe-it>
+
+    </div>
+
+  </div>
 
 
 
-  <!-- Component in View State -->
+  <!-- Component in Edit State -->
 
-  <div *ngIf="roleState === 'view'">
+  <div *ngIf="roleState === 'edit'">
 
-    <!-- or if the role points to a persistent item -->
+    <!-- if the role points to a persistent item -->
 
     <div *ngIf="pointTo=='PeIt'">
       <!-- include component PeIt (passing the PeIt) -->
       <gv-pe-it
+      [peItState]="roleState"
       [appellation]="role?.appellation"
       [language]="role?.language"
       [pkEntity]="role.fk_entity"
@@ -54,6 +109,7 @@
 
       <!-- TeEnt Component (passing the temporal entity) -->
       <gv-te-ent
+      [teEntState]="roleState"
       [teEnt]="role.temporal_entity"
       [parentProperty]="parentProperty"
       [parentRole]="role"

@@ -5,7 +5,7 @@
   *ngIf="showAppellationUI"
   class="gv-flex-grow-1"
   [appellation]="appellation"
-  [peItAppeState]="peItState"
+  [peItAppeState]="valueEntitiesState"
   (readyToCreate)=emitReadyToCreate($event)
   (notReadyToCreate)=emitNotReadyToCreate()
   (appeChange)="emitAppeChange($event)"
@@ -15,7 +15,7 @@
   *ngIf="showLanguageUI"
   class="gv-flex-grow-1"
   [language]="language"
-  [peItLangState]="peItState"
+  [peItLangState]="valueEntitiesState"
   (readyToCreate)=emitReadyToCreate($event)
   (notReadyToCreate)=emitNotReadyToCreate()
   ></gv-pe-it-language>

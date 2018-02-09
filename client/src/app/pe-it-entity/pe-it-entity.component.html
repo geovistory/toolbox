@@ -27,6 +27,25 @@
 
   </div>
 
+  <!-- Add State -->
+
+  <div *ngIf="peItEntityState === 'add-pe-it' && !loading">
+
+
+    <gv-add-info
+    [roles]="peIt.pi_roles"
+    [addInfoState]="peItEntityState"
+    [parentPeIt]="peIt"
+    [outgoingProperties]="outgoingProperties"
+    [ingoingProperties]="ingoingProperties"
+    (readyToCreate)="emitReadyToCreate($event)"
+    (notReadyToCreate)="emitNotReadyToCreate()"
+    ></gv-add-info>
+
+
+  </div>
+
+
   <!-- Edit and ViewCommunity States  -->
 
   <div *ngIf="['edit', 'viewCommunity'].indexOf(peItEntityState) > -1">
@@ -73,6 +92,7 @@
           <!-- Other Roles / Additional Info of PeIt -->
 
           <gv-add-info [roles]="peIt.pi_roles"
+          [addInfoState]="peItEntityState"
           [pkEntity]="pkEntity"
           [parentPeIt]="peIt"
           [outgoingProperties]="outgoingProperties"

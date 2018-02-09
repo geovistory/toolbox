@@ -1,12 +1,12 @@
 import {
   Component, OnChanges, AfterViewInit, Input, Output, ViewChildren,
-  QueryList, EventEmitter
+  QueryList, EventEmitter, ChangeDetectorRef
 } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
 
 import { InformationRole } from '../shared/sdk/models/InformationRole';
-import { RolePointToEnum, RoleComponent , AppellationStdBool } from '../role/role.component';
+import { RolePointToEnum, RoleComponent, AppellationStdBool } from '../role/role.component';
 import { RoleService } from '../shared/services/role.service';
 import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/EntityVersionProjectRel';
 import { PropertyService, Property } from '../shared/services/property.service';
@@ -58,11 +58,10 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
   /**
   * set propState - The state of this component
   *
-  * @param  {state} state:string string 'view', 'add' or 'create'
+  * @param  {state} state string 'view', 'add' or 'create'
   */
   @Input() set propState(state: string) {
     this._propState = state;
-    this.propStateChange.emit(state);
   };
 
   /**
@@ -120,7 +119,8 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
     private roleService: RoleService,
     private propertyService: PropertyService,
     private util: UtilitiesService,
-    public keyboard: KeyboardService
+    public keyboard: KeyboardService,
+    private changeDetector: ChangeDetectorRef
   ) { }
 
 
@@ -188,6 +188,16 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
     } else {
       // TODO Error
       console.log('isOutgoing is not defined')
+    }
+  }
+
+  get roleLabelObj() {
+    if (this.isOutgoing) {
+      return this.property.label;
+    } else if (this.isOutgoing === false) {
+      return this.property.label_inversed;
+    } else {
+      return undefined;
     }
   }
 
@@ -327,7 +337,7 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
   * and pointing to the parent persistent item
   */
   startCreateNewRole() {
-    this.propState = 'create';
+    this.propStateChange.emit('createRole');
 
     this.roleToCreate = new InformationRole();
     this.roleToCreate.fk_property = this.fkProperty;
@@ -341,7 +351,7 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
   */
   cancelCreateNewRole() {
 
-    this.propState = 'add';
+    this.propStateChange.emit('selectRoles');
 
     this.roleToCreate = undefined;
 
@@ -392,6 +402,7 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
     ) {
 
       this.isReadyToCreate = true;
+      this.changeDetector.detectChanges()
 
       this.readyToCreate.emit(this.rolesToCreate);
 
@@ -406,6 +417,7 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
   roleNotReadyToCreate() {
 
     this.isReadyToCreate = false;
+    this.changeDetector.detectChanges()
 
     this.notReadyToCreate.emit();
 
@@ -424,13 +436,8 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
 
       this.rolesAdded.emit(newRoles);
 
-      this.cancelCreateNewRole()
+      this.roleToCreate = undefined;
     })
-
-    console.log(JSON.stringify(this.rolesToCreate))
-  }
-
-  queryRichObject() {
 
   }
 
@@ -439,7 +446,7 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
    * Methods for event bubbeling
    */
 
-  emitAppeChange(appeStd:AppellationStdBool) {
+  emitAppeChange(appeStd: AppellationStdBool) {
     this.appeChange.emit(appeStd)
   }
 

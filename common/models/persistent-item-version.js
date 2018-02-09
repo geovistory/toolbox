@@ -408,4 +408,151 @@ module.exports = function(PersistentItemVersion) {
     }
 
   })
+
+  /**
+  * nestedObjectOfProject - get a rich object of the PeIt with all its
+  * roles > temporal entities > roles > PeIts
+  *
+  * @param  {number} pkProject primary key of project
+  * @param  {number} pkEntity  pk_entity of the persistent item
+  */
+  PersistentItemVersion.nestedObjectOfProject = function(projectId, pkEntity, cb) {
+
+    const innerJoinThisProject = {
+      "$relation": {
+        "name": "entity_version_project_rels",
+        "joinType": "inner join",
+        "where": ["fk_project", "=", projectId]
+      }
+    };
+
+    const filter = {
+      "where": ["pk_entity", "=", pkEntity],
+      "include": {
+        "entity_version_project_rels": innerJoinThisProject,
+        "pi_roles": {
+          "$relation": {
+            "name": "pi_roles",
+            "joinType": "left join"
+          },
+          "entity_version_project_rels": innerJoinThisProject,
+          "temporal_entity": {
+            "$relation": {
+              "name": "temporal_entity",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+            "entity_version_project_rels": innerJoinThisProject,
+            "te_roles": {
+              "$relation": {
+                "name": "te_roles",
+                "joinType": "inner join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              },
+              "entity_version_project_rels": innerJoinThisProject,
+              "appellation": {
+                "$relation": {
+                  "name": "appellation",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                },
+                "entity_version_project_rels": innerJoinThisProject
+              },
+              "language": {
+                "$relation": {
+                  "name": "language",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
+                // ,
+                // "entity_version_project_rels": innerJoinThisProject
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return PersistentItemVersion.findComplex(filter, cb);
+  }
+
+
+  PersistentItemVersion.nestedObjectOfRepo = function(pkEntity, cb) {
+
+    const filter =
+    {
+      /** Select persistent item by pk_entity … */
+      "where": ["pk_entity", "=", pkEntity, "and", "is_community_favorite", "=", "true"],
+      "orderBy":[{"pk_entity":"asc"}],
+      "include": {
+
+        /** include all roles … */
+        "pi_roles": {
+          "$relation": {
+            "name": "pi_roles",
+            "joinType": "left join",
+          //  "where": ["is_community_favorite", "=", "true"],
+            "orderBy":[{"pk_entity":"asc"}]
+          },
+          "entity_version_project_rels": {
+            "$relation": {
+              "name": "entity_version_project_rels",
+              "joinType": "left join"
+            //  "where": ["is_community_favorite", "=", "true"],
+            }
+          },
+
+          /** include the temporal_entity of the role */
+          "temporal_entity":{
+            "$relation": {
+              "name": "temporal_entity",
+              "joinType": "inner join",
+            //  "where": ["is_community_favorite", "=", "true"],
+              "orderBy":[{"pk_entity":"asc"}]
+            },
+            "te_roles": {
+              "$relation": {
+                "name": "te_roles",
+                "joinType": "left join",
+                "orderBy":[{"pk_entity":"asc"}]
+              },
+              "language": {
+                "$relation": {
+                  "name": "language",
+                  "joinType": "left join",
+                  //"where": ["is_community_favorite", "=", "true"],
+                  "orderBy":[{"pk_entity":"asc"}]
+                }
+                //,...innerJoinThisProject, // … get project's version
+
+              },
+              "appellation": {
+                "$relation": {
+                  "name": "appellation",
+                  "joinType": "left join",
+                //  "where": ["is_community_favorite", "=", "true"],
+                  "orderBy":[{"pk_entity":"asc"}]
+                }
+              }
+              //,...innerJoinThisProject, // … get project's version
+
+            }
+          }
+        }
+      }
+    }
+
+    return PersistentItemVersion.findComplex(filter, cb);
+  }
+
+
+
 };

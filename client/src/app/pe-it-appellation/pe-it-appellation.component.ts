@@ -74,7 +74,6 @@ export class PeItAppellationComponent implements OnInit {
 
     this.appellationLabelInEdit = new AppellationLabel(this.appellationLabel);
 
-    console.log(this.peItAppeState)
   }
 
 
@@ -96,6 +95,7 @@ export class PeItAppellationComponent implements OnInit {
       this.completeLoading();
 
       this.appellation = new Appellation(appellations[0])
+      this.appellationLabel = new AppellationLabel(this.appellation.appellation_label);
 
       this.appeChange.emit({
         appellation: this.appellation,

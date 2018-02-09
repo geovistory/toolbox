@@ -14,9 +14,10 @@
     r:[{{property.fk_range_class}}] – p: [{{property.pk_property}}] – d: [{{property.fk_domain_class}}]
   </span>
 
-  <span *ngIf="!propState">
 
-    <div class="card-body gv-name-section-header d-flex flex-row">
+  <span *ngIf="propState === 'add-pe-it'">
+
+    <div class="card-body gv-property-section-header d-flex flex-row" [ngClass]="{'gv-to-te-ent': (pointTo==='TeEnt'), 'gv-to-pe-it': (pointTo==='PeIt')}">
       <div class="gv-label gv-flex-grow-1"> {{roleLabel}} </div>
       <small class="align-self-center">{{fkProperty}}</small>
       <button type="button" class="gv-edit-btn btn btn-link btn-sm" name="button" *ngIf="addButtonVisible">
@@ -32,7 +33,33 @@
         [parentProperty]="property"
         [isOutgoing]="isOutgoing"
         [pointTo]="pointTo"
-        [roleState]="'view'"
+        [roleState]="propState"
+        (appeChange)="emitAppeChange($event)"
+        (onRequestStandard)="changeStandardRole($event)"></gv-role>
+      </div>
+    </div>
+
+  </span>
+
+  <span *ngIf="propState === 'edit'">
+
+    <div class="card-body gv-property-section-header d-flex flex-row" [ngClass]="{'gv-to-te-ent': (pointTo==='TeEnt'), 'gv-to-pe-it': (pointTo==='PeIt')}">
+      <div class="gv-label gv-flex-grow-1"> {{roleLabel}} </div>
+      <small class="align-self-center">{{fkProperty}}</small>
+      <button type="button" class="gv-edit-btn btn btn-link btn-sm" name="button" *ngIf="addButtonVisible">
+        <i class="fa fa-plus"></i>
+      </button>
+    </div>
+
+
+    <div class="card-body">
+      <div *ngFor="let role of roles">
+        <gv-role
+        [role]="role"
+        [parentProperty]="property"
+        [isOutgoing]="isOutgoing"
+        [pointTo]="pointTo"
+        [roleState]="'edit'"
         (appeChange)="emitAppeChange($event)"
         (onRequestStandard)="changeStandardRole($event)"></gv-role>
       </div>
@@ -43,16 +70,16 @@
 
 
   <span *ngIf="propState === 'add'">
-    <div class="card-body">
+    <div>
       [TODO] Search for existing data
       <label for="">
         <input type="checkbox" name="" value=""> Option 1
       </label>
     </div>
 
-    <div class="card-footer" *ngIf="propState === 'add'">
-      <button type="button" class="btn btn-outline-primary">Add selected info</button>
-      <button type="button" class="btn btn-outline-primary"
+    <div *ngIf="propState === 'add'">
+      <button type="button" class="btn btn-primary">Add selected info</button>
+      <button type="button" class="btn btn-primary"
       (click)="startCreateNewRole()">Create new</button>
     </div>
   </span>
@@ -60,8 +87,11 @@
 
   <span *ngIf="propState === 'create' && pointTo === 'TeEnt'">
 
-    <div>
-      Create {{roleLabel}}
+
+
+    <div class="card-body gv-property-section-header gv-to-te-ent d-flex flex-row">
+      <div class="gv-label gv-flex-grow-1"> Create a new {{roleLabelObj.sg}} </div>
+      <small class="align-self-center">{{fkProperty}}</small>
     </div>
 
     <gv-role
@@ -76,7 +106,7 @@
 
     <div>
       <button
-      *ngIf="isReadyToCreate"
+      [ngClass]="{disabled:(!isReadyToCreate)}"
       type="button" class="btn btn-primary"
       (click)="persistEntitiesToCreate()"
       >Ok</button>
@@ -88,7 +118,7 @@
 
   <span *ngIf="propState === 'create' && pointTo === 'PeIt'">
 
-    <div class="card-body gv-name-section-header d-flex flex-row">
+    <div class="card-body gv-property-section-header gv-to-pe-it d-flex flex-row">
       <div class="gv-label gv-flex-grow-1"> {{roleLabel}} </div>
       <small class="align-self-center">{{fkProperty}}</small>
     </div>

@@ -54,6 +54,9 @@ export class PeItComponent implements OnInit {
   * Properties
   */
 
+  // state of child components to view and edit values like e.g. appellations
+  valueEntitiesState:string;
+
   constructor(
     private util: UtilitiesService,
     public keyboard: KeyboardService
@@ -65,6 +68,12 @@ export class PeItComponent implements OnInit {
   */
 
   ngOnInit() {
+
+    this.valueEntitiesState = this.peItState;
+
+    if (this.peItState === 'edit') {
+      this.valueEntitiesState = 'view'
+    }
 
     if (this.peItState === 'create') {
 
@@ -155,7 +164,7 @@ export class PeItComponent implements OnInit {
    * Methods for event bubbeling
    */
 
-  emitAppeChange(appeStd:AppellationStdBool) {
+  emitAppeChange(appeStd: AppellationStdBool) {
     this.appeChange.emit(appeStd)
   }
 

@@ -58,7 +58,7 @@ import { GvNameVisiblePipe } from './shared/pipes/gv-name-visible.pipe';
 import { EntityEditorComponent } from './entity-editor/entity.editor.component';
 import { LanguageSearchTypeaheadComponent } from './language-search-typeahead/language-search-typeahead.component';
 import { AppellationService } from './shared/services/appellation.service';
-import { NamePartStringEditComponent } from './name-part-string-edit/name-part-string-edit.component';
+import { AppellationLabelTokenComponent } from './appellation-label-token/appellation-label-token.component';
 import { PassiveLinkDirective } from './passive-link.directive';
 import { VersionModalComponent } from './version-modal/version-modal.component';
 import { PeItService } from './shared/services/pe-it.service';
@@ -104,7 +104,7 @@ import { AppellationLabelEditorComponent } from './appellation-label-editor/appe
     ProjectEditComponent,
     NamingComponent,
     NameComponent,
-    NamePartStringEditComponent,
+    AppellationLabelTokenComponent,
     ProjectEditPanelComponent,
     EntityEditorComponent,
     ProjectSourcesComponent,

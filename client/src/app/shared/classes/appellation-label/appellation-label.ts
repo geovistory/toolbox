@@ -6,6 +6,22 @@ export interface AppellationLabelInterface {
   "tokens": Token[]
 }
 
+export interface UpdateTokenStringRequest {
+  newString: string;
+  index: number;
+}
+
+export interface UpdateTokenIsSeparatorRequest {
+  newIsSeparator: boolean;
+  index: number;
+}
+
+export interface InsertTokenRequest {
+  oldToken: Token;
+  newToken: Token;
+  index: number; // where the new token should be inserted
+}
+
 export class AppellationLabel implements AppellationLabelInterface {
   "latestTokenId": number;
   "tokens": Token[] = [];
@@ -15,19 +31,19 @@ export class AppellationLabel implements AppellationLabelInterface {
   // }
 
   constructor(data?: AppellationLabelInterface) {
-    if(data){
-      if(
+    if (data) {
+      if (
         data.tokens
         && data.tokens.length > 0
-      ){
-        for(let token of data.tokens){
+      ) {
+        for (let token of data.tokens) {
           this.tokens.push(new Token(token));
         }
       }
-      if(data.latestTokenId){
+      if (data.latestTokenId) {
         this.latestTokenId = data.latestTokenId;
       }
-    }else{
+    } else {
       this.latestTokenId = 0;
       this.tokens.push(new Token({
         id: this.latestTokenId,
@@ -39,27 +55,48 @@ export class AppellationLabel implements AppellationLabelInterface {
     }
   }
 
-  insertToken(oldToken:Token, newTokenIndex, newTokenString, isSeparator){
+  insertToken(token: Token, index: number) {
     this.latestTokenId++;
-    const newToken = new Token({
-      id: this.latestTokenId,
-      string: newTokenString,
-      type: null,
-      autofocus: true,
-      isSeparator: isSeparator
-    });
-    this.tokens.splice((newTokenIndex), 0, newToken)
-    return newToken;
+    this.tokens.splice((index), 0, token)
   }
 
-  deleteToken(token:Token){
-    const index = this.tokens.indexOf(token);
-    if (index > -1) {
-      this.tokens.splice(index, 1);
+  updateTokenString(req: UpdateTokenStringRequest) {
+    this.tokens[req.index].string = req.newString;
+  }
+
+  updateTokenIsSeparator(req: UpdateTokenIsSeparatorRequest) {
+    this.tokens[req.index].isSeparator = req.newIsSeparator;
+  }
+
+  deleteToken(token:Token) {
+    if (this.tokens.length > 1) {
+        this.tokens.splice(this.getIndex(token), 1);
     }
   }
 
-  getString(){
+
+  getIndex(token:Token) {
+    return this.tokens.indexOf(token);
+  }
+
+  getHasNextToken(token:Token) {
+    return this.tokens[(this.getIndex(token) + 1)] !== undefined;
+  }
+
+  getHasPreviousToken(token:Token) {
+    return this.tokens[(this.getIndex(token) + -1)] !== undefined;
+  }
+
+  getNextToken(token:Token) {
+    return this.tokens[(this.getIndex(token) + 1)];
+  }
+
+  getPreviousToken(token:Token) {
+    return this.tokens[(this.getIndex(token) + -1)];
+  }
+
+
+  getString() {
     let string: string = "";
     for (let key in this.tokens) {
       string += this.tokens[key].string;

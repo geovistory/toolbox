@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
@@ -91,7 +91,8 @@ export class PeItEntityComponent implements OnInit {
     private activePeItService: ActivePeItService,
     private slimLoadingBarService: SlimLoadingBarService,
     private classService: ClassService,
-    public keyboard: KeyboardService
+    public keyboard: KeyboardService,
+    private changeDetector: ChangeDetectorRef
   ) {
   }
 
@@ -113,9 +114,18 @@ export class PeItEntityComponent implements OnInit {
     if (["preview", "edit", "viewCommunity"].indexOf(this.peItEntityState) !== -1) {
 
       // Query the peIt and set the peIt by a call to the Api
-      this.queryRichObject()
+      this.queryRichObjectOfProject()
 
     }
+
+    if (this.peItEntityState == "add-pe-it") {
+
+      // Query the peIt and set the peIt by a call to the Api
+      this.queryRichObjectOfRepo()
+
+    }
+
+
     else if (this.peItEntityState == "create") {
 
       // initialize the ingoing Properties
@@ -135,16 +145,36 @@ export class PeItEntityComponent implements OnInit {
 
   }
 
+queryRichObjectOfRepo(){
+  this.startLoading();
 
-  queryRichObject() {
+  this.peItApi.nestedObjectOfRepo(this.pkEntity).subscribe(
+    (peIts: PersistentItemVersion[]) => {
+
+      this.peIt = peIts[0];
+
+      // initialize the ingoing Properties
+      this.ingoingProperties = this.classService
+        .getIngoingProperties(this.peIt.fk_class);
+
+      // initialize the outgoing Properties
+      this.outgoingProperties = this.classService
+        .getOutgoingProperties(this.peIt.fk_class);
+
+
+      this.completeLoading();
+
+    });
+
+}
+
+  queryRichObjectOfProject() {
     this.startLoading();
 
-    this.peItService.getRichObject(this.pkProject, this.pkEntity).subscribe(
+    this.peItApi.nestedObjectOfProject(this.pkProject, this.pkEntity).subscribe(
       (peIts: PersistentItemVersion[]) => {
 
         this.peIt = peIts[0];
-
-        this.activePeItService.peIt = this.peIt;
 
         // initialize the ingoing Properties
         this.ingoingProperties = this.classService
@@ -184,9 +214,10 @@ export class PeItEntityComponent implements OnInit {
     */
 
    whenAppeChange(appeStd:AppellationStdBool) {
-     if(appeStd.isStandardInProject){       
+     if(appeStd.isStandardInProject){
        const label = new AppellationLabel(appeStd.appellation.appellation_label);
        this.stdAppeString = label.getString();
+       this.changeDetector.detectChanges()
      }
    }
 

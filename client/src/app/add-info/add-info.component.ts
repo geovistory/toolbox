@@ -96,9 +96,11 @@ export class AddInfoComponent implements OnInit {
   * Properties
   */
 
-  // state of child component
-  propState: string;
+  // state of child components for adding or creating properties
+  selectPropState: string;
 
+  // state of child component for editing properties
+  propState: string;
 
   // Poperty that is currently chosen in order to add a role of this kind
   propertyToAdd: DirectionAwareProperty;
@@ -146,6 +148,8 @@ export class AddInfoComponent implements OnInit {
     if (this.addInfoState === 'selectProp') return false;
     if (this.addInfoState === 'add') return false;
     if (this.addInfoState === 'create') return false;
+    if (this.addInfoState === 'add-pe-it') return false;
+
 
     return true;
 
@@ -156,6 +160,11 @@ export class AddInfoComponent implements OnInit {
   */
 
   ngOnInit() {
+
+    this.propState = this.addInfoState;
+
+    this.selectPropState = 'init';
+
     this.outgoingDirectionAwareProperties = this.propertyService
       .toDirectionAwareProperties(true, this.outgoingProperties)
 
@@ -165,7 +174,7 @@ export class AddInfoComponent implements OnInit {
     if (this.roles) this.setDirectedRolesPerProperty();
 
     if (this.addInfoState === 'create') {
-      this.propState = 'create';
+      this.selectPropState = 'create';
 
       //TODO find smarter choice of the default property to add on create
       this.propertyToAdd = this.outgoingDirectionAwareProperties.filter(odap => {
@@ -187,7 +196,9 @@ export class AddInfoComponent implements OnInit {
   * startSelectProperty - called, when user clicks on add info
   */
   startSelectProperty() {
-    this.addInfoState = 'selectProp';
+    this.selectPropState = 'selectProp';
+    this.propertyToAdd = null;
+
   }
 
 
@@ -196,7 +207,7 @@ export class AddInfoComponent implements OnInit {
   * selector or the info has been added successfully
   */
   stopSelectProperty() {
-    this.addInfoState = 'view';
+    this.selectPropState = 'init';
     this.propertyToAdd = undefined;
   }
 
@@ -204,17 +215,26 @@ export class AddInfoComponent implements OnInit {
   /**
   * called, when user selected a the kind of property to add
   */
-  propertySelected(event) {
-    this.addInfoState = 'add';
-    this.propState = 'add';
+  startSelectRoles() {
+    if (this.propertyToAdd)
+      this.selectPropState = 'selectRoles';
+  }
+
+  /**
+  * stopSelectProperty - called, when user clicks on close button of property
+  * selector or the info has been added successfully
+  */
+  stopSelectRoles() {
+    this.selectPropState = 'init';
+    this.propertyToAdd = undefined;
   }
 
 
   /**
-  * called, when the child propertComponent's propState changes
+  * called, when the child propertComponent's selectPropState changes
   */
   onPropStateChange(state) {
-    this.propState = state;
+    this.selectPropState = state;
   }
 
 
@@ -223,18 +243,18 @@ export class AddInfoComponent implements OnInit {
    */
   onRolesAdded(roles) {
 
+    this.selectPropState = 'init';
+
     this.roles = this.roles.concat(roles);
 
     this.setDirectedRolesPerProperty();
-
-    this.stopSelectProperty();
 
   }
 
   /**
    * called when role is ready to create
    */
-  emitReadyToCreate(roles:InformationRole[]) {
+  emitReadyToCreate(roles: InformationRole[]) {
 
     this.readyToCreate.emit(roles);
 
@@ -243,7 +263,7 @@ export class AddInfoComponent implements OnInit {
   /**
    * called when role isnt ready to create
    */
-  emitNotReadyToCreate(roles:InformationRole[]) {
+  emitNotReadyToCreate(roles: InformationRole[]) {
 
     this.notReadyToCreate.emit();
 
@@ -253,7 +273,7 @@ export class AddInfoComponent implements OnInit {
    * Methods for event bubbeling
    */
 
-  emitAppeChange(appeStd:AppellationStdBool) {
+  emitAppeChange(appeStd: AppellationStdBool) {
     this.appeChange.emit(appeStd)
   }
 

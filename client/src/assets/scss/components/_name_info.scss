@@ -74,19 +74,7 @@ gv-addinfo,
       }
     }
   }
-  .card-body.gv-name-section-header {
-    padding-top: 0;
-    padding-bottom: 0;
-    font-size: $font-size-sm;
-    background-color: theme-color("light");
-    color: theme-color("secondary");
-    .gv-label {
-      padding: $input-btn-padding-y-sm 0;
-    }
-    .btn {
-      color: theme-color("secondary");
-    }
-  }
+
   .gv-name-section {
     .gv-edit-btn {
       visibility: hidden;
@@ -144,4 +132,32 @@ gv-addinfo,
 gv-name:last-of-type,
 gv-addinfo:last-of-type{
   margin-bottom: 0;
+}
+
+.gv-property-section-header.gv-to-te-ent,
+.gv-h4 {
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: $font-size-sm;
+  // background-color: theme-color("light");
+
+  text-transform:uppercase;
+  color: $white;
+  .gv-label {
+    padding: $input-btn-padding-y-sm 0;
+  }
+}
+
+.gv-property-section-header.gv-to-pe-it, .gv-h5 {
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: $font-size-sm;
+  background-color: theme-color("light");
+  color: theme-color("secondary");
+  .gv-label {
+    padding: $input-btn-padding-y-sm 0;
+  }
+  .btn {
+    color: theme-color("secondary");
+  }
 }
