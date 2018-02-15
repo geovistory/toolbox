@@ -42,10 +42,49 @@
       "findOrCreatePeIt",
       "withPhenomenaInProject",
       "nestedObjectOfProject",
-      "nestedObjectOfRepo"
+      "nestedObjectOfRepo",
+      "addPeItToProject"
     ]
   }],
   "methods": {
+    "addPeItToProject":{
+      "accepts": [{
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": "PersistentItemVersion",
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "PersistentItemVersion",
+        "root": true
+      },
+      "description": "Add a nested object of a PersistentItemVersion to the project.",
+      "http": {
+        "path": "/add-to-project",
+        "verb": "post"
+      }
+    },
     "findOrCreatePeIt": {
       "accepts": [{
           "arg": "projectId",

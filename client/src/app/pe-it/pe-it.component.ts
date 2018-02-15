@@ -41,13 +41,25 @@ export class PeItComponent implements OnInit {
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
+  @Output() created: EventEmitter<any> = new EventEmitter;
+
+  // Persistent Item related
+
   @Output() peItReadyToCreate: EventEmitter<PersistentItemVersion> = new EventEmitter;
 
   @Output() peItNotReadyToCreate: EventEmitter<void> = new EventEmitter;
 
-  @Output() created: EventEmitter<any> = new EventEmitter;
+  @Output() peItReadyToAdd: EventEmitter<PersistentItemVersion> = new EventEmitter;
+
+  // Appellation related
 
   @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
+
+  @Output() appeReadyToAdd: EventEmitter<Appellation> = new EventEmitter();
+
+  // Language related
+
+  @Output() langReadyToAdd: EventEmitter<InformationLanguage> = new EventEmitter();
 
 
   /**
@@ -102,28 +114,28 @@ export class PeItComponent implements OnInit {
 
 
   /**
-   * get showAppellationUI - return true if this peIt is an appellation
-   *
-   * @return {boolean}  true = this peIt is an appellation
-   */
+  * get showAppellationUI - return true if this peIt is an appellation
+  *
+  * @return {boolean}  true = this peIt is an appellation
+  */
   get showAppellationUI(): boolean {
     return (this.util.get(this, 'appellation.fk_class'));
   }
 
   /**
-   * get showLanguageUI - return true if this peIt is a language
-   *
-   * @return {boolean}  true = this peIt is a language
-   */
+  * get showLanguageUI - return true if this peIt is a language
+  *
+  * @return {boolean}  true = this peIt is a language
+  */
   get showLanguageUI() {
     return (this.util.get(this, 'language.fk_class'));
   }
 
   /**
-   * get showEntityUI - return true if this is not a "value"-entity
-   *
-   * @return {boolean}  true = this peIt is none of the above
-   */
+  * get showEntityUI - return true if this is not a "value"-entity
+  *
+  * @return {boolean}  true = this peIt is none of the above
+  */
   get showEntityUI() {
     return !(this.showAppellationUI || this.showLanguageUI);
   }
@@ -131,8 +143,8 @@ export class PeItComponent implements OnInit {
 
 
   /**
-   * Methods specific to create state
-   */
+  * Methods specific to create state
+  */
 
   emitReadyToCreate(entity) {
     this.readyToCreate.emit(entity)
@@ -143,6 +155,9 @@ export class PeItComponent implements OnInit {
     this.notReadyToCreate.emit()
   }
 
+
+
+  // Persistent Item related
 
   emitPeItReadyToCreate(peIt: PersistentItemVersion) {
     this.peItReadyToCreate.emit(peIt)
@@ -160,9 +175,32 @@ export class PeItComponent implements OnInit {
     this.created.emit(entity)
   }
 
+
+  onPeItReadyToAdd(peIt: PersistentItemVersion) {
+    this.peItReadyToAdd.emit(peIt)
+  }
+
+
+
+/**
+ * Methods specific to add state
+ */
+
+ // Appellation related
+
+ onAppeReadyToAdd(appellation:Appellation) {
+   this.appeReadyToAdd.emit(appellation);
+ }
+
+ // Language related
+
+ onLangReadyToAdd(language:InformationLanguage) {
+   this.langReadyToAdd.emit(language);
+ }
+
   /**
-   * Methods for event bubbeling
-   */
+  * Methods for event bubbeling
+  */
 
   emitAppeChange(appeStd: AppellationStdBool) {
     this.appeChange.emit(appeStd)

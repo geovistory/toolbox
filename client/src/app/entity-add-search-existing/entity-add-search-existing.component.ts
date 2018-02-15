@@ -1,10 +1,10 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, Output, EventEmitter, Input } from '@angular/core';
 import {FormControl} from '@angular/forms';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
-import { EntityAddModalService } from '../shared/services/entity-add-modal.service';
+import { EntityAddModalService , EntityAddModalState } from '../shared/services/entity-add-modal.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
 
@@ -13,8 +13,17 @@ import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersio
   templateUrl: './entity-add-search-existing.component.html',
   styleUrls: ['./entity-add-search-existing.component.scss']
 })
-export class EntityAddSearchExistingComponent implements OnInit {
+export class EntityAddSearchExistingComponent implements OnInit, OnChanges {
 
+
+  /**
+  * Inputs
+  */
+  @Input() hidden:boolean;
+
+  /**
+  * Properties
+  */
   //Feedback
   loading: boolean = false;
   errorMessages: any;
@@ -40,24 +49,32 @@ export class EntityAddSearchExistingComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+
     if(this.modalService.selectedClass){
       this.modalService.modalTitle = 'Add a ' + this.modalService.selectedClass.label;
     }
 
     this.searchFormControl.valueChanges
-      .debounceTime(400)
-      .subscribe(newValue => {
-        this.searchString = newValue;
-        this.modalService.searchString = newValue;
-        if(newValue.length >= this.minSearchStringLength){
-          this.page = 1;
-          this.searchPeIts();
-        }
-        else{
+    .debounceTime(400)
+    .subscribe(newValue => {
+      this.searchString = newValue;
+      this.modalService.searchString = newValue;
+      if(newValue.length >= this.minSearchStringLength){
+        this.page = 1;
+        this.searchPeIts();
+      }
+      else{
         this.persistentItems = [];
         this.collectionSize = 0;
-        }
-      });
+      }
+    });
+  }
+
+  ngOnChanges(){
+    if(this.hidden ===false){
+      this.modalService.previousState = EntityAddModalState[0];
+    }
   }
 
   searchPeIts() {

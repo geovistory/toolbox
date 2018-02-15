@@ -5,23 +5,15 @@
   No worry, you still change your selection afterwards.
 </p>
 
-<div class="row">
-  <div class="col">
-    <div class="mb-3">
-      Select the names you want to add
-    </div>
-    [TODO]
 
+  <div class="mb-3">
+    Select the information you want to add
   </div>
-  <div class="col">
-    <div class="mb-3">
-      Select the information you want to add
-    </div>
 
-    <gv-pe-it [pkEntity]="pkEntity" [peItState]="'add-pe-it'"></gv-pe-it>
+  <gv-pe-it [pkEntity]="pkEntity" [peItState]="'add-pe-it'"
+  (peItReadyToAdd)="onPeItReadyToAdd($event)"
+  ></gv-pe-it>
 
-  </div>
-</div>
 
 
 

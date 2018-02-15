@@ -7,7 +7,7 @@
   </div>
 
 
-<!-- Create State -->
+  <!-- Create State -->
 
   <div *ngIf="peItEntityState === 'create'">
 
@@ -15,14 +15,14 @@
       [ready: {{isReadyToCreate}}]
     </span>
 
-    <gv-add-info
-    [addInfoState]="'create'"
+    <gv-prop-section-list
+    [propSectionListState]="'create'"
     [parentPeIt]="peItToCreate"
     [outgoingProperties]="outgoingProperties"
     [ingoingProperties]="ingoingProperties"
     (readyToCreate)="emitReadyToCreate($event)"
     (notReadyToCreate)="emitNotReadyToCreate()"
-    ></gv-add-info>
+    ></gv-prop-section-list>
 
 
   </div>
@@ -31,16 +31,19 @@
 
   <div *ngIf="peItEntityState === 'add-pe-it' && !loading">
 
+    <small class="text-muted">Person</small> {{stdAppeString}}
 
-    <gv-add-info
+
+    <gv-prop-section-list
     [roles]="peIt.pi_roles"
-    [addInfoState]="peItEntityState"
+    [propSectionListState]="peItEntityState"
     [parentPeIt]="peIt"
     [outgoingProperties]="outgoingProperties"
     [ingoingProperties]="ingoingProperties"
     (readyToCreate)="emitReadyToCreate($event)"
     (notReadyToCreate)="emitNotReadyToCreate()"
-    ></gv-add-info>
+    (readyToAdd)="onRolesReadyToAdd($event)"
+    ></gv-prop-section-list>
 
 
   </div>
@@ -48,24 +51,21 @@
 
   <!-- Edit and ViewCommunity States  -->
 
-  <div *ngIf="['edit', 'viewCommunity'].indexOf(peItEntityState) > -1">
+  <div *ngIf="['edit', 'viewCommunity'].indexOf(peItEntityState) > -1 && !loading">
 
     <!-- Title / Standard Appellations of PeIt -->
 
-    <div class="gv-edit-panel-header" *ngIf="!loading">
+    <div class="gv-edit-panel-header">
       <section class="row">
         <div class="col-md-8">
           <h2>
             <small class="text-muted">Person</small> {{stdAppeString}}
           </h2>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4" *ngIf="!addingInformation">
           <div class="btn-group float-right mt-2" role="group">
-            <button class="btn btn-sm btn-secondary" (click)="setState('viewCommunity')" *ngIf="state === 'edit'">
-              Show community-data and versions
-            </button>
-            <button class="btn btn-sm btn-secondary" (click)="setState('edit')" *ngIf="state === 'viewCommunity'">
-              <i class="fa fa-edit" aria-hidden="true"></i> Edit mode
+            <button class="btn btn-link mb-3" (click)="startAddingInformation()">
+              <i class="fa fa-plus"></i>  Add information
             </button>
           </div>
         </div>
@@ -74,33 +74,48 @@
 
     <!-- Tools to edit PeIt  -->
 
-    <div class="gv-edit-panel-body" *ngIf="!loading">
+    <div class="d-flex flex-row">
 
-      <div class="row">
-        <!-- <div class="col-6">
+      <div class="gv-edit-panel-body gv-flex-grow-1">
 
-          Names / Appellations of PeIt
 
-          <gv-naming [roles]="peIt.pi_roles"
-          [parentPeItC]="thisComponent"
-          (standardNameStringChange)="setStandardName($event)"
-          [state]="state"></gv-naming>
 
-        </div> -->
-        <div class="col-6">
+        <!-- Info of PeIt -->
 
-          <!-- Other Roles / Additional Info of PeIt -->
+        <gv-prop-section-list [roles]="peIt.pi_roles"
+        [propSectionListState]="peItEntityState"
+        [addingInformation]="addingInformation"
+        [pkEntity]="pkEntity"
+        [parentPeIt]="peIt"
+        [outgoingProperties]="outgoingProperties"
+        [ingoingProperties]="ingoingProperties"
+        (appeChange)="whenAppeChange($event)"
+        (stopAddingInformation)="stopAddingInformation()"
+        ></gv-prop-section-list>
 
-          <gv-add-info [roles]="peIt.pi_roles"
-          [addInfoState]="peItEntityState"
-          [pkEntity]="pkEntity"
-          [parentPeIt]="peIt"
-          [outgoingProperties]="outgoingProperties"
-          [ingoingProperties]="ingoingProperties"
-          (appeChange)="whenAppeChange($event)"
-          ></gv-add-info>
 
+      </div>
+
+      <div class="gv-edit-panel-body gv-flex-grow-5">
+
+        <div class="card gv-naming text-white">
+          <div class="card-header">
+            Map
+          </div>
+          <div class="card-body">
+            MAPMAPMAP
+          </div>
         </div>
+        <br/>
+        <div class="card">
+          <div class="card-header">
+            Timeline
+          </div>
+          <div class="card-body">
+            MAPMAPMAP
+          </div>
+        </div>
+
       </div>
 
     </div>

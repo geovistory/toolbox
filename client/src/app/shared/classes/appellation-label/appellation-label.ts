@@ -30,8 +30,18 @@ export class AppellationLabel implements AppellationLabelInterface {
   //   return JSON.stringify(this);
   // }
 
-  constructor(data?: AppellationLabelInterface) {
-    if (data) {
+  constructor(data?: AppellationLabelInterface, string?:string) {
+    if(string){
+      this.latestTokenId = 0;
+      this.tokens.push(new Token({
+        id: this.latestTokenId,
+        string: string,
+        type: undefined,
+        autofocus: true,
+        isSeparator: false
+      }))
+    }
+    else if (data) {
       if (
         data.tokens
         && data.tokens.length > 0

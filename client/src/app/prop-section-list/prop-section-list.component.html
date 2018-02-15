@@ -1,0 +1,110 @@
+<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
+
+  <!-- Adding a new Property section -->
+
+  <div class="card gv-naming mb-3" *ngIf="selectPropState === 'selectProp'">
+
+    <div class="card-body">
+      <div class="gv-h4">
+        <div class="gv-label">
+          Add information
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card-body text-white">
+      Please select the kind of information you want to add.
+    </div>
+
+    <div class="card-body">
+      <select [(ngModel)]="propertyToAdd" class="custom-select">
+        <option [ngValue]="null">Please Select…</option>
+
+        <option *ngFor="let propertyToAdd of ingoingDirectionAwareProperties" [ngValue]="propertyToAdd">
+          {{propertyToAdd.property.label_inversed.sg}}
+        </option>
+        <option *ngFor="let propertyToAdd of outgoingDirectionAwareProperties" [ngValue]="propertyToAdd">
+          {{propertyToAdd.property.label.sg}}
+        </option>
+      </select>
+    </div>
+
+    <div class="card-body">
+      <button type="button" name="button" class="btn btn-primary"
+      *ngIf="propertyToAdd"
+      (click)="startSelectRoles()"
+      >Ok</button>
+      <button type="button" name="button" class="btn btn-link"
+      (click)="stopSelectProperty()"
+      >Cancel</button>
+    </div>
+
+  </div>
+
+  <!-- Select existing Roles -->
+
+  <gv-property
+  *ngIf="selectPropState === 'selectRoles'"
+  [fkProperty]="propertyToAdd.property.pk_property"
+  [isOutgoing]="propertyToAdd.isOutgoing"
+  [propState]="'add'"
+  [pointTo]="'TeEnt'"
+  [parentPeIt]="parentPeIt"
+  [parentEntityPk]="pkEntity"
+  (propStateChange)="onPropStateChange($event)"
+  (rolesAdded)="onRolesAdded($event)"
+  ></gv-property>
+
+  <!-- Create a new Role -->
+
+  <gv-property
+  *ngIf="selectPropState === 'createRole'"
+  [fkProperty]="propertyToAdd.property.pk_property"
+  [isOutgoing]="propertyToAdd.isOutgoing"
+  [propState]="'create'"
+  [pointTo]="'TeEnt'"
+  [parentPeIt]="parentPeIt"
+  [parentEntityPk]="pkEntity"
+  (readyToCreate)="emitReadyToCreate($event)"
+  (notReadyToCreate)="emitNotReadyToCreate()"
+  (propStateChange)="onPropStateChange($event)"
+  (rolesAdded)="onRolesAdded($event)"
+  ></gv-property>
+
+  <!-- Create a new PeIt -->
+
+  <gv-property
+  *ngIf="selectPropState === 'createPeIt'"
+  [fkProperty]="propertyToAdd.property.pk_property"
+  [isOutgoing]="propertyToAdd.isOutgoing"
+  [propState]="'create-pe-it'"
+  [pointTo]="'TeEnt'"
+  [parentPeIt]="parentPeIt"
+  [parentEntityPk]="pkEntity"
+  (readyToCreate)="emitReadyToCreate($event)"
+  (notReadyToCreate)="emitNotReadyToCreate()"
+  (propStateChange)="onPropStateChange($event)"
+  (rolesAdded)="onRolesAdded($event)"
+  ></gv-property>
+
+
+  <!-- All Property Sections of existing Roles -->
+
+  <gv-property *ngFor="let property of directedRolesPerProperty"
+  [isOutgoing]="property.isOutgoing"
+  [roles]="property.roles"
+  [fkProperty]="property.fkProperty"
+  [pointTo]="'TeEnt'"
+  [parentEntityPk]="pkEntity"
+  [parentPeIt]="parentPeIt"
+  [propState]="propState"
+  (appeChange)="emitAppeChange($event)"
+  (readyToAdd)="onRolesReadyToAdd($event)"
+  ></gv-property>
+
+</div>
+
+
+
+

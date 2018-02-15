@@ -1,12 +1,16 @@
 
 // Card representing one Name or one Additional Info
 gv-name,
-gv-addinfo,
+gv-prop-section-list,
 .gv-name,
-.gv-addinfo {
+.gv-prop-section-list {
   display: block;
   margin-bottom: $card-spacer-y ;
   .card-header.gv-name-header {
+    .fa-chevron-right{
+      color: theme-color("secondary");
+      font-size: $font-size-sm;
+    }
     .gv-in-project,
     .gv-standard-in-project {
       .gv-true {
@@ -130,7 +134,7 @@ gv-addinfo,
   }
 }
 gv-name:last-of-type,
-gv-addinfo:last-of-type{
+gv-prop-section-list:last-of-type{
   margin-bottom: 0;
 }
 

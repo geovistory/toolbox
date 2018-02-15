@@ -1,7 +1,15 @@
 import {
-  Component, OnChanges, AfterViewInit, Input, Output, ViewChildren,
+  Component, OnChanges, Input, Output, ViewChildren,
   QueryList, EventEmitter, ChangeDetectorRef
 } from '@angular/core';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition,
+  keyframes
+} from '@angular/animations';
 
 import { Observable } from 'rxjs/Observable';
 
@@ -26,9 +34,52 @@ import { Appellation } from '../shared/sdk/models/Appellation';
 @Component({
   selector: 'gv-property',
   templateUrl: './property.component.html',
-  styleUrls: ['./property.component.scss']
+  styleUrls: ['./property.component.scss'],
+  animations: [
+    trigger('slideInOut', [
+      state('expanded', style({
+        height: '*',
+      })),
+      state('collapsed', style({
+        height: '0px',
+        'padding-top': '0',
+        'padding-bottom': '0',
+        overflow: 'hidden'
+      })),
+      transition('expanded => collapsed', animate('400ms ease-in-out', keyframes([
+        style({
+          height: '*',
+          overflow: 'hidden',
+          offset: 0
+        }),
+        style({
+          height: '0px',
+          display: 'hidden',
+          'padding-top': '0',
+          'padding-bottom': '0',
+          offset: 1
+        })
+      ]))),
+      transition('collapsed => expanded', animate('400ms ease-in-out', keyframes([
+        style({
+          height: '0px',
+          overflow: 'hidden',
+          'padding-top': '0',
+          'padding-bottom': '0',
+          offset: 0
+        }),
+        style({
+          height: '*',
+          display: 'hidden',
+          'padding-top': '0.5rem',
+          'padding-bottom': '0.5rem',
+          offset: 1
+        })
+      ])))
+    ])
+  ]
 })
-export class PropertyComponent implements OnChanges, AfterViewInit {
+export class PropertyComponent implements OnChanges {
 
   /**
   * Inputs
@@ -79,6 +130,10 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
   // emit appellation and a flag to say if this is the standard appellation
   @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
 
+  @Output() readyToAdd: EventEmitter<InformationRole[]> = new EventEmitter();
+
+  @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter();
+
   /**
   * Properties
   */
@@ -89,8 +144,8 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
   // Array of children RoleComponents
   @ViewChildren(RoleComponent) roleComponents: QueryList<RoleComponent>
 
-  // the roleComponent that is currently the standard alternative
-  standardRoleC: RoleComponent;
+  // state of the card below the header
+  cardState = 'expanded';
 
   // max. mumber of possible alternatives -1=infinite
   maxAlternatives: number;
@@ -109,8 +164,10 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
 
   rolesToCreate: InformationRole[];
 
-  isReadyToCreate: boolean;
+  // roles to add, when in add-pe-it state
+  rolesToAdd: InformationRole[] = [];
 
+  isReadyToCreate: boolean;
 
   constructor(
     private eprApi: EntityVersionProjectRelApi,
@@ -132,18 +189,6 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
     this.property = this.propertyService.getPropertyByPkProperty(this.fkProperty);
   }
 
-  ngAfterViewInit() {
-    this.roleComponents.forEach(roleComponent => {
-      if (
-        roleComponent
-        && roleComponent.role
-        && roleComponent.role.entity_version_project_rels
-        && roleComponent.role.entity_version_project_rels.length
-        && roleComponent.role.entity_version_project_rels[0].is_standard_in_project) {
-        this.standardRoleC = roleComponent;
-      }
-    });
-  }
 
 
   get propState(): string {
@@ -289,38 +334,51 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
       }
     ))
 
-    // If there is a old standard Role to disable
+    // Get all standard Roles to disable (should be only one)
 
-    if (this.standardRoleC) {
+    const rolesToChange = [];
 
-      // set loadingStdChange flag of the standardRoleComponent
+    this.roleComponents.forEach(roleComponent => {
+      if (roleComponent && roleComponent.isStandardInProject) {
 
-      this.standardRoleC.loadingStdChange = true;
+        // set loadingStdChange flag of the RoleComponent
+        roleComponent.loadingStdChange = true;
 
-      // Create observable of api call to disable the old standard
+        // push the role Component to an array that will be used later
+        rolesToChange.push(roleComponent);
 
-      observables.push(this.eprApi.patchAttributes(
-        this.standardRoleC.epr.pk_entity_version_project_rel,
-        {
-          is_standard_in_project: false
-        }
-      ))
-    }
+        // Create observable of api call to disable the old standard
+        observables.push(this.eprApi.patchAttributes(
+          roleComponent.epr.pk_entity_version_project_rel,
+          {
+            is_standard_in_project: false
+          }
+        ))
+
+      }
+    });
 
     Observable.combineLatest(observables)
       .subscribe(
       (value) => {
 
-        // update the data in client memory
+        // update the epr of the new Std in client memory
         roleC.epr = value[0];
-        if (value[1]) this.standardRoleC.epr = value[1];
+        roleC.isStandardInProject = value[0].is_standard_in_project;
 
-        // unset loadingStdChange flag of both components
+        // unset loadingStdChange flag
         roleC.loadingStdChange = false;
-        this.standardRoleC.loadingStdChange = false;
 
-        // update this.standardRoleC
-        this.standardRoleC = roleC;
+        // update the epr of old Std Roles (should be only one) in client memory
+        for (let i = 0; i < rolesToChange.length; i++) {
+          rolesToChange[i].epr = value[i + 1];
+          rolesToChange[i].isStandardInProject = value[i + 1].is_standard_in_project;
+
+          // unset loadingStdChange flag
+          rolesToChange[i].loadingStdChange = false;
+
+        }
+
       })
 
   }
@@ -330,6 +388,14 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
   /**
   * Methods specific to create state
   */
+
+  /**
+  * Called when user clicks on cancel select roles
+  */
+  cancelSelectRoles() {
+    this.propStateChange.emit('selectProp');
+  }
+
 
   /**
   * Called when user clicks on create new
@@ -410,7 +476,6 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
 
   }
 
-
   /**
   * called when a role pointing to a peIt is not ready to create
   */
@@ -442,9 +507,56 @@ export class PropertyComponent implements OnChanges, AfterViewInit {
   }
 
 
+  onRoleReadyToAdd(role: InformationRole) {
+
+    let exists = false;
+
+    // replace if existing (this happens when user changes epr settings)
+    for (let i = 0; i < this.rolesToAdd.length; i++) {
+      if (this.rolesToAdd[i].pk_entity === role.pk_entity) {
+        this.rolesToAdd[i] = role;
+        exists = true;
+      }
+    }
+
+    // else push it
+    if (!exists) {
+      this.rolesToAdd.push(role);
+    }
+
+    // count number of roles that are selected to be in project
+    const inProjectCount = this.rolesToAdd.filter(role =>
+      role.entity_version_project_rels[0].is_in_project
+    ).length
+
+    // check if this number is according to cardinality definition
+    if (
+      inProjectCount >= this.minCardinality &&
+      inProjectCount <= this.maxCardinality
+    ) {
+      this.readyToAdd.emit(this.rolesToAdd);
+    }
+    else {
+      this.notReadyToAdd.emit();
+    }
+
+
+  }
+
+
+
   /**
-   * Methods for event bubbeling
-   */
+  * toggleCardBody - toggles the state of the card in order to collapse or
+  * expand the card in the UI
+  */
+  toggleCardBody() {
+    this.cardState = this.cardState === 'expanded' ? 'collapsed' : 'expanded';
+  }
+
+
+  /**
+  * Methods for event bubbeling
+  */
 
   emitAppeChange(appeStd: AppellationStdBool) {
     this.appeChange.emit(appeStd)

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddInfoComponent } from './add-info.component';
+import { PropSectionListComponent } from './prop-section-list.component';
 
-describe('AddInfoComponent', () => {
-  let component: AddInfoComponent;
-  let fixture: ComponentFixture<AddInfoComponent>;
+describe('PropSectionListComponent', () => {
+  let component: PropSectionListComponent;
+  let fixture: ComponentFixture<PropSectionListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddInfoComponent ]
+      declarations: [ PropSectionListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddInfoComponent);
+    fixture = TestBed.createComponent(PropSectionListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

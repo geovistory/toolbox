@@ -1,6 +1,88 @@
 'use strict';
 
 module.exports = function(InformationRole) {
+
+  InformationRole.addRoleToProject = function(projectId, role, ctx) {
+
+    let requestedRole;
+
+    if (ctx) {
+      requestedRole = ctx.req.body;
+    } else {
+      requestedRole = role;
+    }
+
+    return InformationRole.addToProject(projectId, requestedRole)
+      .then(resultingEpr => {
+
+        requestedRole.entity_version_project_rels = [resultingEpr];
+
+        if (requestedRole.temporal_entity) {
+          //add the temporal_entity to the project
+          const TemporalEntity = InformationRole.app.models.TemporalEntity;
+          return TemporalEntity.addTeEntToProject(projectId, requestedRole.temporal_entity)
+            .then((results) => {
+              requestedRole.temporal_entity = results[0];
+              return [requestedRole];
+            })
+            .catch((err) => {
+              return err;
+            })
+        }
+
+
+        else if (requestedRole.persistent_item) {
+          //add the persistent_item to the project
+          const PersistentItemVersion = InformationRole.app.models.PersistentItemVersion;
+          return PersistentItemVersion.addPeItToProject(projectId, requestedRole.persistent_item)
+            .then((results) => {
+              requestedRole.persistent_item = results[0];
+              return [requestedRole];
+            })
+            .catch((err) => {
+              return err;
+            })
+        }
+
+        else if (requestedRole.appellation) {
+          //add the appellation to the project
+          const Appellation = InformationRole.app.models.Appellation;
+          return Appellation.addToProject(projectId, requestedRole.appellation)
+            .then((results) => {
+              requestedRole.appellation = results[0];
+              return [requestedRole];
+            })
+            .catch((err) => {
+              return err;
+            })
+        }
+
+        else if (requestedRole.language) {
+          //add the language to the project
+          const InformationLanguage = InformationRole.app.models.InformationLanguage;
+          return InformationLanguage.addToProject(projectId, requestedRole.language)
+            .then((results) => {
+              requestedRole.language = results[0];
+              return [requestedRole];
+            })
+            .catch((err) => {
+              return err;
+            })
+        }
+
+        else {
+          return [requestedRole];
+        }
+
+      })
+      .catch((err) => {
+
+      });
+
+
+  }
+
+
   InformationRole.findOrCreateInformationRole = function(projectId, role, ctx) {
 
     const dataObject = {
@@ -24,7 +106,9 @@ module.exports = function(InformationRole) {
       //create the temporal_entity first
       const TemporalEntity = InformationRole.app.models.TemporalEntity;
       return TemporalEntity.findOrCreateTemporalEntity(projectId, requestedRole.temporal_entity)
-        .then((resultingTeEnt) => {
+        .then((resultingTeEnts) => {
+
+          const resultingTeEnt = resultingTeEnts[0];
 
           // … prepare the Role to create
           dataObject.fk_temporal_entity = resultingTeEnt.pk_entity;
@@ -58,7 +142,9 @@ module.exports = function(InformationRole) {
 
       // find or create the peIt and the role pointing to it
       return PersistentItemVersion.findOrCreatePeIt(projectId, requestedRole.persistent_item)
-        .then((resultingPeIt) => {
+        .then((resultingPeIts) => {
+
+          const resultingPeIt = resultingPeIts[0];
 
           // … prepare the Role to create
           dataObject.fk_entity = resultingPeIt.pk_entity;

@@ -64,7 +64,7 @@ import { VersionModalComponent } from './version-modal/version-modal.component';
 import { PeItService } from './shared/services/pe-it.service';
 import { PeItComponent } from './pe-it/pe-it.component';
 import { PeItEntityComponent } from './pe-it-entity/pe-it-entity.component';
-import { AddInfoComponent } from './add-info/add-info.component';
+import { PropSectionListComponent } from './prop-section-list/prop-section-list.component';
 import { PropertyComponent } from './property/property.component';
 import { RoleComponent } from './role/role.component';
 import { TeEntComponent } from './te-ent/te-ent.component';
@@ -131,7 +131,7 @@ import { AppellationLabelEditorComponent } from './appellation-label-editor/appe
     VersionModalComponent,
     PeItComponent,
     PeItEntityComponent,
-    AddInfoComponent,
+    PropSectionListComponent,
     PropertyComponent,
     RoleComponent,
     TeEntComponent,

@@ -40,23 +40,25 @@
       [parentProperty]="parentProperty"
       [parentRole]="role"
       [isOutgoing]="isOutgoing"
+      (readyToAdd)="onTeEntReadyToAdd($event)"
       (appeChange)="emitAppeChange($event)"> <div eprUi>
 
         <!-- UI for is in project -->
 
         <div class="gv-in-project">
+          <!-- [attr.disabled]="roleToAdd.entity_version_project_rels[0].is_standard_in_project || changeIsInProjectLoading ? 'disabled' : null" -->
 
           <!-- Is in project -->
           <button type="button" name="button" class="btn btn-link btn-sm"
-          *ngIf="inProject"
-          [attr.disabled]="entityProjectRel.is_standard_in_project || changeIsInProjectLoading ? 'disabled' : null"
-          (click)="inProject=false">
+          *ngIf="roleToAdd.entity_version_project_rels[0].is_in_project"
+          (click)="deselect()">
           <i class="fa fa-check-square-o" ></i> </button>
 
           <!-- Is not in project -->
           <button type="button" name="button" class="btn btn-link btn-sm"
           [attr.disabled]="changeIsInProjectLoading ? 'disabled' : null"
-          *ngIf="!inProject"  (click)="inProject=true">
+          *ngIf="!roleToAdd.entity_version_project_rels[0].is_in_project"
+          (click)="select()">
           <i class="fa fa-square-o"></i></button>
 
         </div>
@@ -67,16 +69,37 @@
 
     <!-- if the role points to a persistent item -->
 
-    <div *ngIf="pointTo=='PeIt'">
+    <div class="d-flex flex-row" *ngIf="pointTo=='PeIt'">
 
       <!-- include component PeIt (passing the PeIt) -->
       <gv-pe-it
+      class="gv-flex-grow-1"
       [peItState]="roleState"
       [appellation]="role?.appellation"
       [language]="role?.language"
       [pkEntity]="role.fk_entity"
       (appeChange)="emitAppeChange($event)"
+      (appeReadyToAdd)="onAppeReadyToAdd($event)"
+      (langReadyToAdd)="onLangReadyToAdd($event)"
       ></gv-pe-it>
+
+      <!-- <div class="gv-in-project"> -->
+        <!-- [attr.disabled]="roleToAdd.entity_version_project_rels[0].is_standard_in_project || changeIsInProjectLoading ? 'disabled' : null" -->
+
+        <!-- Is in project -->
+        <!-- <button type="button" name="button" class="btn btn-link btn-sm"
+        *ngIf="roleToAdd.entity_version_project_rels[0].is_in_project"
+        (click)="deselect()">
+        <i class="fa fa-check-square-o" ></i> </button> -->
+
+        <!-- Is not in project -->
+        <!-- <button type="button" name="button" class="btn btn-link btn-sm"
+        [attr.disabled]="changeIsInProjectLoading ? 'disabled' : null"
+        *ngIf="!roleToAdd.entity_version_project_rels[0].is_in_project"
+        (click)="select()">
+        <i class="fa fa-square-o"></i></button> -->
+
+      <!-- </div> -->
 
     </div>
 
@@ -122,14 +145,14 @@
 
           <!-- If is standard -->
 
-          <i class="fa fa-eye gv-true" title="Is standard" *ngIf="isStandardInProject"></i>
+          <i class="fa fa-eye gv-true text-primary" title="Is standard" *ngIf="isStandardInProject"></i>
 
           <!-- If not standard -->
 
           <button type="button" name="button" class="btn btn-link btn-sm"
           *ngIf="!isStandardInProject"
           [attr.disabled]="loadingStdChange ? 'disabled' : null"
-          (click)="requestStandard()" title="Set as standard"
+          (click)="requestStandard()" title="Make standard"
           ><i class="fa fa-eye-slash gv-false"></i></button>
 
         </div>

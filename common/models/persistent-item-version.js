@@ -4,6 +4,64 @@ const Promise = require('bluebird');
 
 module.exports = function(PersistentItemVersion) {
 
+  PersistentItemVersion.addPeItToProject = function(projectId, data, ctx) {
+    let requestedPeIt;
+
+    if (ctx) {
+      requestedPeIt = ctx.req.body;
+    } else {
+      requestedPeIt = data;
+    }
+
+    return PersistentItemVersion.addToProject(projectId, requestedPeIt)
+      .then(resultingEpr => {
+
+        // attatch the new epr to the peIt
+
+        requestedPeIt.entity_version_project_rels = [resultingEpr];
+
+
+        if (requestedPeIt.pi_roles) {
+
+          // prepare parameters
+          const InformationRole = PersistentItemVersion.app.models.InformationRole;
+
+          //… filter roles that are truthy (not null), iterate over them,
+          // return the promise that the PeIt will be
+          // returned together with all nested items
+          return Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
+
+              // add role to project
+              return InformationRole.addRoleToProject(projectId, role);
+
+            })
+            .then((roles) => {
+
+              requestedPeIt.pi_roles = [];
+              for (var i = 0; i < roles.length; i++) {
+                const role = roles[i];
+                if (role && role[0]) {
+                  requestedPeIt.pi_roles.push(role[0]);
+                }
+              }
+
+              return [requestedPeIt];
+
+            })
+            .catch((err) => {
+              return err;
+            })
+
+        } else {
+          return [requestedPeIt];
+        }
+      })
+      .catch((err) => {
+        return err;
+      });
+
+  }
+
 
   PersistentItemVersion.findOrCreatePeIt = function(projectId, data, ctx) {
 
@@ -23,7 +81,7 @@ module.exports = function(PersistentItemVersion) {
 
     return PersistentItemVersion.findOrCreateVersion(PersistentItemVersion, projectId, dataObject)
       .then((resultingPeIts) => {
-        //TODO pick first item of array
+        // pick first item of array
         const resultingPeIt = resultingPeIts[0];
 
         // if there are roles…
@@ -53,13 +111,15 @@ module.exports = function(PersistentItemVersion) {
                 }
               }
 
-              return res;
+              return [res];
 
             })
             .catch((err) => {
               return err;
             })
 
+        } else {
+          return resultingPeIts;
         }
       })
       .catch((err) => {
@@ -220,7 +280,6 @@ module.exports = function(PersistentItemVersion) {
 
 
   PersistentItemVersion.afterRemote('searchInProject', function(ctx, resultObjects, next) {
-    console.log(resultObjects)
 
     var totalCount = 0;
     if (resultObjects.length > 0) {
@@ -410,12 +469,12 @@ module.exports = function(PersistentItemVersion) {
   })
 
   /**
-  * nestedObjectOfProject - get a rich object of the PeIt with all its
-  * roles > temporal entities > roles > PeIts
-  *
-  * @param  {number} pkProject primary key of project
-  * @param  {number} pkEntity  pk_entity of the persistent item
-  */
+   * nestedObjectOfProject - get a rich object of the PeIt with all its
+   * roles > temporal entities > roles > PeIts
+   *
+   * @param  {number} pkProject primary key of project
+   * @param  {number} pkEntity  pk_entity of the persistent item
+   */
   PersistentItemVersion.nestedObjectOfProject = function(projectId, pkEntity, cb) {
 
     const innerJoinThisProject = {
@@ -487,11 +546,12 @@ module.exports = function(PersistentItemVersion) {
 
   PersistentItemVersion.nestedObjectOfRepo = function(pkEntity, cb) {
 
-    const filter =
-    {
+    const filter = {
       /** Select persistent item by pk_entity … */
       "where": ["pk_entity", "=", pkEntity, "and", "is_community_favorite", "=", "true"],
-      "orderBy":[{"pk_entity":"asc"}],
+      "orderBy": [{
+        "pk_entity": "asc"
+      }],
       "include": {
 
         /** include all roles … */
@@ -499,37 +559,45 @@ module.exports = function(PersistentItemVersion) {
           "$relation": {
             "name": "pi_roles",
             "joinType": "left join",
-          //  "where": ["is_community_favorite", "=", "true"],
-            "orderBy":[{"pk_entity":"asc"}]
+            //  "where": ["is_community_favorite", "=", "true"],
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
           },
           "entity_version_project_rels": {
             "$relation": {
               "name": "entity_version_project_rels",
               "joinType": "left join"
-            //  "where": ["is_community_favorite", "=", "true"],
+              //  "where": ["is_community_favorite", "=", "true"],
             }
           },
 
           /** include the temporal_entity of the role */
-          "temporal_entity":{
+          "temporal_entity": {
             "$relation": {
               "name": "temporal_entity",
               "joinType": "inner join",
-            //  "where": ["is_community_favorite", "=", "true"],
-              "orderBy":[{"pk_entity":"asc"}]
+              //  "where": ["is_community_favorite", "=", "true"],
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
             },
             "te_roles": {
               "$relation": {
                 "name": "te_roles",
                 "joinType": "left join",
-                "orderBy":[{"pk_entity":"asc"}]
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
               },
               "language": {
                 "$relation": {
                   "name": "language",
                   "joinType": "left join",
                   //"where": ["is_community_favorite", "=", "true"],
-                  "orderBy":[{"pk_entity":"asc"}]
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
                 }
                 //,...innerJoinThisProject, // … get project's version
 
@@ -538,8 +606,10 @@ module.exports = function(PersistentItemVersion) {
                 "$relation": {
                   "name": "appellation",
                   "joinType": "left join",
-                //  "where": ["is_community_favorite", "=", "true"],
-                  "orderBy":[{"pk_entity":"asc"}]
+                  //  "where": ["is_community_favorite", "=", "true"],
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
                 }
               }
               //,...innerJoinThisProject, // … get project's version

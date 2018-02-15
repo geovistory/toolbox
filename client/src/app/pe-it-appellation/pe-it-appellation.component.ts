@@ -9,6 +9,7 @@ import { AppellationApi } from '../shared/sdk/services/custom/Appellation';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
 import { AppellationStdBool } from '../role/role.component';
+import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
 
 
 @Component({
@@ -31,11 +32,13 @@ export class PeItAppellationComponent implements OnInit {
   * Outputs
   */
 
-  @Output() readyToCreate: EventEmitter<EntitiesToCreate> = new EventEmitter;
+  @Output() readyToCreate: EventEmitter<Appellation> = new EventEmitter;
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
   @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
+
+  @Output() readyToAdd: EventEmitter<Appellation> = new EventEmitter();
 
 
   /**
@@ -131,7 +134,28 @@ export class PeItAppellationComponent implements OnInit {
 
   }
 
+  /**
+  * Methods specific to add state
+  */
 
+  onReadyToAdd(appellation: Appellation) {
+
+    // make a copy
+    let appe = new Appellation(appellation);
+
+    // add an epr
+    appe.entity_version_project_rels = [
+      new EntityVersionProjectRel({
+        fk_project:this.activeProjectService.project.pk_project,
+        is_in_project:true,
+        fk_entity_version_concat: appellation.pk_entity_version_concat
+      })
+    ]
+
+    // emit it
+    this.readyToAdd.emit(appe);
+
+  }
 
 
   /**

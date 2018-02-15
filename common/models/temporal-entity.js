@@ -4,6 +4,63 @@ const Promise = require('bluebird');
 
 module.exports = function(TemporalEntity) {
 
+  TemporalEntity.addTeEntToProject = function(projectId, data, ctx) {
+    let requestedTeEnt;
+
+    if (ctx) {
+      requestedTeEnt = ctx.req.body;
+    } else {
+      requestedTeEnt = data;
+    }
+
+    return TemporalEntity.addToProject(projectId, requestedTeEnt)
+      .then(resultingEpr => {
+
+        // attatch the new epr to the teEnt
+        requestedTeEnt.entity_version_project_rels = [resultingEpr];
+
+
+        if (requestedTeEnt.te_roles) {
+
+          // prepare parameters
+          const InformationRole = TemporalEntity.app.models.InformationRole;
+
+          //… filter roles that are truthy (not null), iterate over them,
+          // return the promise that the PeIt will be
+          // returned together with all nested items
+          return Promise.map(requestedTeEnt.te_roles.filter(role => (role)), (role) => {
+
+              // add role to project
+              return InformationRole.addRoleToProject(projectId, role);
+
+            })
+            .then((roles) => {
+
+              requestedTeEnt.te_roles = [];
+              for (var i = 0; i < roles.length; i++) {
+                const role = roles[i];
+                if (role && role[0]) {
+                  requestedTeEnt.te_roles.push(role[0]);
+                }
+              }
+
+              return [requestedTeEnt];
+
+            })
+            .catch((err) => {
+              return err;
+            })
+
+        } else {
+          return [requestedTeEnt];
+        }
+      })
+      .catch((err) => {
+        return err;
+      });
+
+  }
+
 
   TemporalEntity.findOrCreateTemporalEntity = function(projectId, data, ctx) {
 
@@ -57,7 +114,7 @@ module.exports = function(TemporalEntity) {
 
               console.log(res)
 
-              return res;
+              return [res];
 
             })
             .catch((err) => {
