@@ -18,23 +18,22 @@ exports.up = function(db, callback) {
   const sql = `
   CREATE TABLE data_for_history.text_property
 (
-   pk_text_property       serial      NOT NULL,
-   text_property          text,
-   fk_text_property_type  integer,
-   language_iso_code      varchar,
-   dfh_creation_time          timestamp   DEFAULT now() NOT NULL,
+   dfh_pk_text_property       integer,
+   dfh_text_property          text,
+   dfh_fk_text_property_type  integer,
+   dfh_language_iso_code      varchar,
+   dfh_creation_time          timestamp,
    dfh_modification_time      timestamp,
-   fk_property            integer,
-   fk_namespace           integer,
-   fk_class               integer,
-   fk_project             integer,
-   fk_class_type          integer,
-   fk_property_type       integer,
-   fk_system_type         integer,
-   fk_entity_association  integer,
-   fk_profile             integer,
-   fk_is_subclass_of      integer,
-   tmsp_last_dfh_update     timestamptz
+   dfh_fk_property            integer,
+   dfh_fk_namespace           integer,
+   dfh_fk_class               integer,
+   dfh_fk_project             integer,
+   dfh_fk_class_type          integer,
+   dfh_fk_property_type       integer,
+   dfh_fk_system_type         integer,
+   dfh_fk_entity_association  integer,
+   dfh_fk_profile             integer,
+   dfh_fk_is_subclass_of      integer
 )
 INHERITS (data_for_history.entity);
 
@@ -74,7 +73,7 @@ FOR EACH ROW EXECUTE PROCEDURE versioning(
 
 exports.down = function(db, callback) {
   const sql = `
-  DROP TABLE data_for_history.text_property;
+  DROP TABLE data_for_history.text_property CASCADE;
   DROP TABLE data_for_history.text_property_vt;
   `
   db.runSql(sql, callback)

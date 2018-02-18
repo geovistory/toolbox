@@ -18,21 +18,21 @@ exports.up = function(db, callback) {
   const sql = `
   CREATE TABLE data_for_history.label
 (
-   pk_label                        integer,
-   label                           text,
-   language_iso_code               varchar,
-   is_standard_label_for_language  boolean,
-   fk_property                     integer,
-   fk_namespace                    integer,
-   fk_class                        integer,
-   fk_project                      integer,
-   fk_class_type                   integer,
-   fk_property_type                integer,
-   fk_system_type                  integer,
+   dfh_pk_label                        integer,
+   dfh_label                           text,
+   dfh_language_iso_code               varchar,
+   dfh_is_standard_label_for_language  boolean,
+   dfh_fk_property                     integer,
+   dfh_fk_namespace                    integer,
+   dfh_fk_class                        integer,
+   dfh_fk_project                      integer,
+   dfh_fk_class_type                   integer,
+   dfh_fk_property_type                integer,
+   dfh_fk_system_type                  integer,
+   dfh_fk_profile                      integer,
    dfh_creation_time                   timestamp,
-   dfh_modification_time               timestamp,
-   fk_profile                      integer,
-   tmsp_last_dfh_update     timestamptz
+   dfh_modification_time               timestamp
+
 )
 INHERITS (data_for_history.entity);
 
@@ -72,7 +72,7 @@ FOR EACH ROW EXECUTE PROCEDURE versioning(
 
 exports.down = function(db, callback) {
   const sql = `
-  DROP TABLE data_for_history.label;
+  DROP TABLE data_for_history.label CASCADE;
   DROP TABLE data_for_history.label_vt;
   `
   db.runSql(sql, callback)
