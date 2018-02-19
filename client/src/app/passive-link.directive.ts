@@ -1,7 +1,7 @@
 import { Directive, Input } from '@angular/core';
 
 @Directive({
-  selector : '[href]',
+  selector : '[href].gv-passive-link',
   host : {
     '(click)' : 'preventDefault($event)'
   }
