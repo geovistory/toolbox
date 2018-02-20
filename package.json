@@ -7,7 +7,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "postinstall": "sh postinstall.sh",
+    "postinstall": "bash postinstall.sh",
     "start": "node .",
     "posttest": "npm run lint && nsp check",
     "build:sdk": "./node_modules/.bin/lb-sdk server/server client/src/app/shared/sdk -d ng2web -i enabled",
