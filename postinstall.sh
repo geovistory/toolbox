@@ -15,9 +15,9 @@ then
   echo '================ Recreate database for review app ================'
   echo ''
   echo 'Name of the review app: '$HEROKU_APP_NAME
-  echo ''
 
   # Get the database connection urls
+  echo ''
   echo '             ================ Step 1 ================'
   echo 'Create the database connection urls'
   echo ''
@@ -60,7 +60,7 @@ then
   echo 'staging_db_url='$staging_db_url
   echo 'review_db_url='$review_db_url
 
-
+  echo ''
   echo '             ================ Step 2 ================'
   echo 'delete the database called '$HEROKU_APP_NAME' (if exists)'
   echo ''
@@ -89,8 +89,8 @@ else
     exit 1
 fi
 
-
-echo '             ================ Step 2 ================'
+echo ''
+echo '             ================ Step 3 ================'
 echo 'creating an empty database called: '$HEROKU_APP_NAME
 echo ''
 
@@ -105,7 +105,8 @@ else
   exit 1
 fi
 
-echo '             ================ Step 3 ================'
+echo ''
+echo '             ================ Step 4 ================'
 echo 'dumping staging and use it to restore review over the pipe using this cmd:'
 echo 'pg_dump -h host1 dbname | psql -h host2 dbname'
 

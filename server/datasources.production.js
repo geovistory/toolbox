@@ -45,6 +45,7 @@ switch (process.env.DB_ENV) {
   config.postgres1.host = process.env.GEOV_REV_DB_HOST;
   config.postgres1.port = process.env.GEOV_REV_DB_PORT;
   config.postgres1.database = process.env.HEROKU_APP_NAME;
+  config.postgres1.ssl = process.env.GEOV_REV_DB_SSL;
   break;
 
   case "production":
