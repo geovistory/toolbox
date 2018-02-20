@@ -17,7 +17,10 @@ then
   echo 'Name of the review app: '$HEROKU_APP_NAME
   echo ''
 
-  # Get the database connection url
+  # Get the database connection urls
+  echo '             ================ Step 1 ================'
+  echo 'Create the database connection urls'
+  echo ''
 
   function rawurlencode {
     local string="${1}"
@@ -49,29 +52,36 @@ then
   database=$(getparam database)
   ssl=$(getparam ssl)
 
+  maintenance_db_url='postgres://'$user':'$password'@'$host':'$port'/postgres?ssl='$ssl
+  staging_db_url='postgres://'$user':'$password'@'$host':'$port'/geovistory_staging?ssl='$ssl
+  review_db_url='postgres://'$user':'$password'@'$host':'$port'/'$database'?ssl='$ssl
 
-echo '             ================ Step 1 ================'
-echo 'delete the database called '$HEROKU_APP_NAME' (if exists)'
-echo ''
+  echo 'maintenance_db_url='$maintenance_db_url
+  echo 'staging_db_url='$staging_db_url
+  echo 'review_db_url='$review_db_url
 
-# delete (if exists) the database called like $HEROKU_APP_NAME
-# (e.g. 'geovistory_staging_pr_25')
 
-maintenance_DB_url='postgres://'$user':'$password'@'$host':'$port'/postgres?ssl='$ssl
+  echo '             ================ Step 2 ================'
+  echo 'delete the database called '$HEROKU_APP_NAME' (if exists)'
+  echo ''
 
-psql $maintenance_DB_url -v ON_ERROR_STOP=ON << EOF
--- kill sessions to the database
+  # delete (if exists) the database called like $HEROKU_APP_NAME
+  # (e.g. 'geovistory_staging_pr_25')
 
-SELECT pg_terminate_backend(pg_stat_activity.pid)
-FROM pg_stat_activity
-WHERE pg_stat_activity.datname = '$database'
-AND pid <> pg_backend_pid();
+  psql $maintenance_db_url -v ON_ERROR_STOP=ON << EOF
+  -- kill sessions to the database
 
--- drop the database
+  SELECT pg_terminate_backend(pg_stat_activity.pid)
+  FROM pg_stat_activity
+  WHERE pg_stat_activity.datname = '$database'
+  AND pid <> pg_backend_pid();
 
-DROP DATABASE
-IF EXISTS "$database";
+  -- drop the database
+
+  DROP DATABASE
+  IF EXISTS "$database";
 EOF
+
 if [ $? -eq 0 ]; then
     echo Success
 else
@@ -79,33 +89,34 @@ else
     exit 1
 fi
 
+
 echo '             ================ Step 2 ================'
-echo 'make a copy of the database geovistory_staging called '$HEROKU_APP_NAME
+echo 'creating an empty database called: '$HEROKU_APP_NAME
 echo ''
 
-# make a copy of the database 'geovistory_staging' named like $HEROKU_APP_NAME
-
-psql $maintenance_DB_url -v ON_ERROR_STOP=1 -x << EOF
--- create a clone of the staging database
-
-CREATE DATABASE "$database"
-WITH TEMPLATE 'geovistory_staging';
+psql $maintenance_db_url -v ON_ERROR_STOP=1 -x << EOF
+-- create an empty database called like the app
+CREATE DATABASE "$database";
 EOF
 if [ $? -eq 0 ]; then
-    echo Success
+  echo Success
 else
-    echo SQL command failed
-    exit 1
+  echo SQL command failed
+  exit 1
 fi
 
 echo '             ================ Step 3 ================'
-echo 'Set the right database connection url for the app '$HEROKU_APP_NAME
-echo 'Exporting GEOV_REV_DATABASE_URL...'
+echo 'dumping staging and use it to restore review over the pipe using this cmd:'
+echo 'pg_dump -h host1 dbname | psql -h host2 dbname'
 
-# Set the right database connection url for the app pointing to $HEROKU_APP_NAME
+pg_dump $staging_db_url | psql $review_db_url -v ON_ERROR_STOP=on
 
-export GEOV_REV_DATABASE_URL='postgres://'$user':'$password'@'$host':'$port'/'$database'?ssl='$ssl
-echo 'GEOV_REV_DATABASE_URL='$GEOV_REV_DATABASE_URL
+if [ $? -eq 0 ]; then
+  echo Success! The review database is restored from staging
+else
+  echo SQL command failed
+  exit 1
+fi
 
 fi
 
