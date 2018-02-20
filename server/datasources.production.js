@@ -40,7 +40,11 @@ switch (process.env.DB_ENV) {
   break;
 
   case "staging":
-  config.postgres1.url = process.env.GEOV_STAG_DATABASE_URL;
+  config.postgres1.user = process.env.GEOV_REV_DB_USER;
+  config.postgres1.password = process.env.GEOV_REV_DB_PASSWORD;
+  config.postgres1.host = process.env.GEOV_REV_DB_HOST;
+  config.postgres1.port = process.env.GEOV_REV_DB_PORT;
+  config.postgres1.database = process.env.HEROKU_APP_NAME;
   break;
 
   case "production":
