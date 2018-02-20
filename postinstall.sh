@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 echo '======================== Database migrations ======================'
 echo 'Current environment: DB_ENV="'$DB_ENV'"'
