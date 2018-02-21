@@ -60,7 +60,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "CommonsLabel": {
+  "ComLabel": {
     "dataSource": "postgres1",
     "public": true
   },

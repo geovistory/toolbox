@@ -47,7 +47,7 @@
     },
     "labels": {
       "type": "hasMany",
-      "model": "CommonsLabel",
+      "model": "ComLabel",
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     },
