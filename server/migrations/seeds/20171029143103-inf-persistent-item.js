@@ -27,7 +27,7 @@ exports.up = function(db, callback) {
       INSERT INTO information.persistent_item (fk_class, notes)
       VALUES
       (
-        'E21', -- Person
+        1, -- Person
         '` + firstname + ' ' + lastname + `'
       )
       ON CONFLICT DO NOTHING
@@ -37,9 +37,9 @@ exports.up = function(db, callback) {
     -- add an Appellation Usage
     insert_appe_usage AS (
       INSERT INTO information.temporal_entity (fk_class, notes)
-      SELECT data_for_history_id, notes
+      SELECT dfh_pk_class, notes
       FROM data_for_history.class AS c
-      WHERE c.data_for_history_id = 'F52' -- Name Use Activity
+      WHERE c.dfh_pk_class = 3 -- Name Use Activity
       ON CONFLICT DO NOTHING
       RETURNING  pk_temporal_entity, pk_entity, entity_version
     ),
@@ -49,11 +49,11 @@ exports.up = function(db, callback) {
       INSERT INTO information."role" (fk_property, notes, fk_entity, fk_temporal_entity)
       VALUES
       (
-        'R63', -- Named
+        1, -- Named
         (
           SELECT notes
           FROM data_for_history.property
-          WHERE data_for_history_id = 'R63' -- Named
+          WHERE dfh_pk_property = 1 -- Named
         ),
         (
           SELECT pk_entity
@@ -73,7 +73,7 @@ exports.up = function(db, callback) {
       INSERT INTO information.appellation (fk_class, appellation_label)
       VALUES
       (
-        'E82', -- Actor Appellation
+        2, -- Actor Appellation
         (
           SELECT '{"latestTokenId":4,"tokens":[{"id":0,"string":"` + firstname + `","typeId":1,"isSeparator":false},{"id":1,"string":" ","isSeparator":true},{"id":2,"string":"` + lastname + `","typeId":3,"isSeparator":false}]}'::jsonb
         )
@@ -87,11 +87,11 @@ exports.up = function(db, callback) {
       INSERT INTO information."role" (fk_property, notes, fk_entity, fk_temporal_entity)
       VALUES
       (
-        'R64', -- Used Named
+        2, -- Used Named
         (
           SELECT notes
           FROM data_for_history.property
-          WHERE data_for_history_id = 'R64' -- Used Named
+          WHERE dfh_pk_property = 2 -- Used Named
         ),
         (
           SELECT pk_entity
@@ -111,11 +111,11 @@ exports.up = function(db, callback) {
       INSERT INTO information."role" (fk_property, notes, fk_entity, fk_temporal_entity)
       VALUES
       (
-        'R61', -- Occured in Kind of context
+        3, -- Occured in Kind of context
         (
           SELECT notes
           FROM data_for_history.property
-          WHERE data_for_history_id = 'R61'
+          WHERE dfh_pk_property = 3
         ),
         (
           SELECT pk_entity
@@ -134,9 +134,9 @@ exports.up = function(db, callback) {
     -- add an Appellation Usage 2
     insert_appe_usage_2 AS (
       INSERT INTO information.temporal_entity (fk_class, notes)
-      SELECT data_for_history_id, notes
+      SELECT dfh_pk_class, notes
       FROM data_for_history.class AS c
-      WHERE c.data_for_history_id = 'F52' -- Name Use Activity
+      WHERE c.dfh_pk_class = 3 -- Name Use Activity
       ON CONFLICT DO NOTHING
       RETURNING  pk_temporal_entity, pk_entity, entity_version
     ),
@@ -146,11 +146,11 @@ exports.up = function(db, callback) {
       INSERT INTO information."role" (fk_property, notes, fk_entity, fk_temporal_entity)
       VALUES
       (
-        'R63', -- Named
+        1, -- Named
         (
           SELECT notes
           FROM data_for_history.property
-          WHERE data_for_history_id = 'R63' -- Named
+          WHERE dfh_pk_property = 1 -- Named
         ),
         (
           SELECT pk_entity
@@ -170,7 +170,7 @@ exports.up = function(db, callback) {
       INSERT INTO information.appellation (fk_class, appellation_label)
       VALUES
       (
-        'E82', -- Actor Appellation
+        2, -- Actor Appellation
         (
           SELECT '{"latestTokenId":4,"tokens":[{"id":0,"string":"` + firstname + `s","typeId":1,"isSeparator":false},{"id":1,"string":" ","isSeparator":true},{"id":2,"string":"` + lastname + `s","typeId":3,"isSeparator":false}]}'::jsonb
         )
@@ -184,11 +184,11 @@ exports.up = function(db, callback) {
       INSERT INTO information."role" (fk_property, notes, fk_entity, fk_temporal_entity)
       VALUES
       (
-        'R64', -- Used Named
+        2, -- Used Named
         (
           SELECT notes
           FROM data_for_history.property
-          WHERE data_for_history_id = 'R64' -- Used Named
+          WHERE dfh_pk_property = 2 -- Used Named
         ),
         (
           SELECT pk_entity
