@@ -1,5 +1,5 @@
 {
-  "name": "Appellation",
+  "name": "InfAppellation",
   "base": "EntityVersion",
   "idInjection": false,
   "options": {
@@ -49,7 +49,7 @@
         },
         {
           "arg": "data",
-          "type": "Appellation",
+          "type": "InfAppellation",
           "required": true,
           "description": "data",
           "http": {
@@ -59,7 +59,7 @@
       ],
       "returns": {
         "arg": "data",
-        "type": "Appellation",
+        "type": "InfAppellation",
         "root": true
       },
       "description": "Find or create an appellation version and update the project relation if needed.",

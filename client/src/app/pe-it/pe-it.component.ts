@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { InfLanguage } from '../shared/sdk/models/InfLanguage';
-import { Appellation } from '../shared/sdk/models/Appellation';
+import { InfAppellation } from '../shared/sdk/models/InfAppellation';
 import { UtilitiesService } from '../shared/services/utilities.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
@@ -29,7 +29,7 @@ export class PeItComponent implements OnInit {
 
   @Input() pkEntity: number;
   @Input() fkClass: string;
-  @Input() appellation: Appellation;
+  @Input() appellation: InfAppellation;
   @Input() language: InfLanguage;
   @Input() peItState: string;
 
@@ -55,7 +55,7 @@ export class PeItComponent implements OnInit {
 
   @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
 
-  @Output() appeReadyToAdd: EventEmitter<Appellation> = new EventEmitter();
+  @Output() appeReadyToAdd: EventEmitter<InfAppellation> = new EventEmitter();
 
   // Language related
 
@@ -99,7 +99,7 @@ export class PeItComponent implements OnInit {
 
       if (['E82', 'E41'].indexOf(this.fkClass) > -1) {
 
-        this.appellation = new Appellation()
+        this.appellation = new InfAppellation()
 
         this.appellation.fk_class = this.fkClass;
 
@@ -188,7 +188,7 @@ export class PeItComponent implements OnInit {
 
  // Appellation related
 
- onAppeReadyToAdd(appellation:Appellation) {
+ onAppeReadyToAdd(appellation:InfAppellation) {
    this.appeReadyToAdd.emit(appellation);
  }
 

@@ -26,8 +26,6 @@ import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { InfPersistentItemApi } from '../shared/sdk/services/custom/InfPersistentItem';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { InfRoleApi } from '../shared/sdk/services/custom/InfRole';
-import { Appellation } from '../shared/sdk/models/Appellation';
-
 
 
 

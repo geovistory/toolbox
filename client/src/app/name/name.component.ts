@@ -12,8 +12,8 @@ import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
 
-import { Appellation } from '../shared/sdk/models/Appellation';
-import { AppellationApi } from '../shared/sdk/services/custom/Appellation';
+import { InfAppellation } from '../shared/sdk/models/InfAppellation';
+import { InfAppellationApi } from '../shared/sdk/services/custom/InfAppellation';
 import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
 import { InfRole } from '../shared/sdk/models/InfRole';
 import { InfLanguage } from '../shared/sdk/models/InfLanguage';
@@ -105,13 +105,13 @@ export class NameComponent implements OnInit, OnChanges{
   }
 
   // Appellation
-  _appellation: Appellation; // E41_Appellation
+  _appellation: InfAppellation; // E41_Appellation
 
-  set appellation(value:Appellation){
+  set appellation(value:InfAppellation){
     this._appellation = value;
   }
 
-  get appellation():Appellation{
+  get appellation():InfAppellation{
     return this._appellation;
   }
 
@@ -155,7 +155,7 @@ export class NameComponent implements OnInit, OnChanges{
   }
 
   // Appellation Versions
-  appellationVersions: Appellation[]; // E41_Appellations
+  appellationVersions: InfAppellation[]; // E41_Appellations
 
   /*** App logic ***/
   editingAppellation:boolean = false;
@@ -198,7 +198,7 @@ export class NameComponent implements OnInit, OnChanges{
 
   }
 
-  private get latestVersion():Appellation{
+  private get latestVersion():InfAppellation{
     if(!this.appellationVersions) return undefined;
     let nr = 0;
     let latestVersion;
@@ -317,7 +317,7 @@ export class NameComponent implements OnInit, OnChanges{
 
   constructor(
     public appellationService: AppellationService,
-    private appellationApi: AppellationApi,
+    private appellationApi: InfAppellationApi,
     private entityProjectRelApi:InfEntityProjectRelApi,
     private activeProjectService: ActiveProjectService,
     private slimLoadingBarService: SlimLoadingBarService,

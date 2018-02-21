@@ -6,7 +6,6 @@ import { PeItComponent, PeItStates } from '../pe-it/pe-it.component';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { PropertyPipe } from '../shared/pipes/property';
-import { Appellation } from '../shared/sdk/models/Appellation';
 import { InfRole } from '../shared/sdk/models/InfRole';
 import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
 import { EntityEditorState } from '../shared/classes/entity-editor-state.class';

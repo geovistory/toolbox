@@ -45,7 +45,7 @@
     },
     "appellation": {
       "type": "belongsTo",
-      "model": "Appellation",
+      "model": "InfAppellation",
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     },

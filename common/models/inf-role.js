@@ -46,8 +46,8 @@ module.exports = function(InfRole) {
 
         else if (requestedRole.appellation) {
           //add the appellation to the project
-          const Appellation = InfRole.app.models.Appellation;
-          return Appellation.addToProject(projectId, requestedRole.appellation)
+          const InfAppellation = InfRole.app.models.InfAppellation;
+          return InfAppellation.addToProject(projectId, requestedRole.appellation)
             .then((results) => {
               requestedRole.appellation = results[0];
               return [requestedRole];
@@ -172,10 +172,10 @@ module.exports = function(InfRole) {
     else if (requestedRole.appellation) {
 
       // prepare parameters
-      const Appellation = InfRole.app.models.Appellation;
+      const InfAppellation = InfRole.app.models.InfAppellation;
 
       // find or create the appellation and the role pointing to it
-      return Appellation.findOrCreateAppellation(projectId, requestedRole.appellation)
+      return InfAppellation.findOrCreateAppellation(projectId, requestedRole.appellation)
         .then((resultingEntities) => {
           const resultingEntity = resultingEntities[0];
 

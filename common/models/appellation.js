@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports = function(Appellation) {
+module.exports = function(InfAppellation) {
 
-  Appellation.findOrCreateAppellation = function(projectId, data) {
+  InfAppellation.findOrCreateAppellation = function(projectId, data) {
 
     const dataObject = {
       appellation_label: JSON.stringify(data.appellation_label),
@@ -11,7 +11,7 @@ module.exports = function(Appellation) {
       fk_class: data.fk_class
     };
 
-    return Appellation.findOrCreateVersion(Appellation, projectId, dataObject);
+    return InfAppellation.findOrCreateVersion(InfAppellation, projectId, dataObject);
 
   }
 

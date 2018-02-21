@@ -68,7 +68,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "Appellation": {
+  "InfAppellation": {
     "dataSource": "postgres1",
     "public": true
   },

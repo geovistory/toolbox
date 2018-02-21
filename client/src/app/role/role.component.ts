@@ -7,7 +7,7 @@ import { PropertyComponent } from '../property/property.component';
 import { KeyboardService } from '../shared/services/keyboard.service';
 import { Property } from '../shared/services/property.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
-import { Appellation } from '../shared/sdk/models/Appellation';
+import { InfAppellation } from '../shared/sdk/models/InfAppellation';
 import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
 import { InfLanguage } from '../shared/sdk/models/InfLanguage';
 
@@ -17,7 +17,7 @@ export enum RolePointToEnum {
 };
 
 export interface AppellationStdBool {
-  appellation: Appellation;
+  appellation: InfAppellation;
   isStandardInProject: boolean;
 }
 
@@ -76,7 +76,7 @@ export class RoleComponent implements OnInit {
   isReadyToCreate: boolean;
 
   // If the role points to a teEnt with a child appellation
-  appellation: Appellation;
+  appellation: InfAppellation;
 
   private _isStandardInProject: boolean;
 
@@ -180,7 +180,7 @@ export class RoleComponent implements OnInit {
 
   peItReadyToCreate(entity) {
 
-    if (entity instanceof Appellation) {
+    if (entity instanceof InfAppellation) {
       this.role.appellation = entity
     }
 
@@ -255,7 +255,7 @@ export class RoleComponent implements OnInit {
 
   }
 
-  onAppeReadyToAdd(appellation: Appellation) {
+  onAppeReadyToAdd(appellation: InfAppellation) {
 
     // add appe to role
     this.roleToAdd.appellation = appellation;

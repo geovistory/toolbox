@@ -15,7 +15,7 @@ import { Property } from '../shared/services/property.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
 import { InfRole } from '../shared/sdk/models/InfRole';
 import { PropertyComponent } from '../property/property.component';
-import { Appellation } from '../shared/sdk/models/Appellation';
+import { InfAppellation } from '../shared/sdk/models/InfAppellation';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
 import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 import { ActiveProjectService } from '../shared/services/active-project.service';

@@ -14,12 +14,12 @@ export class EprService {
   * getEpr - returns the InfEntityProjectRel between the given entity
   * and the active project
   *
-  * @param  {any} entity   InfPersistentItem, Role, InfTemporalEntity, Appellation, Language
+  * @param  {any} entity   InfPersistentItem, InfRole, InfTemporalEntity, InfAppellation, InfLanguage
   * @return {type}        description
   */
   getEprOfEntity (entity){
     if(!entity.entity_version_project_rels) return undefined;
-    
+
     const eprs = entity.entity_version_project_rels.filter(
       epr => epr.fk_project === this.activeProjectService.project.pk_project
     )
@@ -33,7 +33,7 @@ export class EprService {
   * updateEprOfEntity - Updates InfEntityProjectRel between the given entity
   * and the active project
   *
-  * @param  {any} entity   InfPersistentItem, Role, InfTemporalEntity, Appellation, Language
+  * @param  {any} entity   InfPersistentItem, InfRole, InfTemporalEntity, InfAppellation, InfLanguage
   * @param  {InfEntityProjectRel} epr
   */
   updateEprOfEntity (entity, epr:InfEntityProjectRel){
