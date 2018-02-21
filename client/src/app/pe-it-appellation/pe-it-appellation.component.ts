@@ -9,7 +9,7 @@ import { AppellationApi } from '../shared/sdk/services/custom/Appellation';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
 import { AppellationStdBool } from '../role/role.component';
-import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
+import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 
 
 @Component({
@@ -145,7 +145,7 @@ export class PeItAppellationComponent implements OnInit {
 
     // add an epr
     appe.entity_version_project_rels = [
-      new EntityVersionProjectRel({
+      new InfEntityProjectRel({
         fk_project:this.activeProjectService.project.pk_project,
         is_in_project:true,
         fk_entity_version_concat: appellation.pk_entity_version_concat

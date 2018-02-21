@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { EntityVersionProjectRel } from '../sdk/models/EntityVersionProjectRel';
-import { EntityVersionProjectRelApi } from '../sdk/services/custom/EntityVersionProjectRel';
+import { InfEntityProjectRel } from '../sdk/models/InfEntityProjectRel';
+import { InfEntityProjectRelApi } from '../sdk/services/custom/InfEntityProjectRel';
 import { PersistentItem } from '../sdk/models/PersistentItem';
 import { PersistentItemApi } from '../sdk/services/custom/PersistentItem';
 import { ActiveProjectService } from './active-project.service';
@@ -25,7 +25,7 @@ export class EntityAddModalService {
   onOpen: EventEmitter<number> = new EventEmitter();
 
   // Entity Project Rels needed to add the selected names to the project
-  eprNaming: EntityVersionProjectRel[];
+  eprNaming: InfEntityProjectRel[];
 
   // state of the modal
   private _state: EntityAddModalState;
@@ -73,7 +73,7 @@ export class EntityAddModalService {
   createButtonVisible: boolean;
 
   constructor(
-    private entityProjectRelApi: EntityVersionProjectRelApi,
+    private entityProjectRelApi: InfEntityProjectRelApi,
     private activeProjectService: ActiveProjectService,
     private persistentItemApi: PersistentItemApi
   ) { }

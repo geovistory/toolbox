@@ -54,9 +54,9 @@ module.exports = function(EntityVersion) {
         // it is possible that there is already an epr between the given
         // project and the given pk_entity.
 
-        const EntityVersionProjectRel = EntityVersion.app.models.EntityVersionProjectRel;
+        const InfEntityProjectRel = EntityVersion.app.models.InfEntityProjectRel;
         // Search for an epr with that pk_entity and that projectId
-        EntityVersionProjectRel.findOrCreate({
+        InfEntityProjectRel.findOrCreate({
               "where": {
                 "fk_entity": data.pk_entity,
                 "fk_project": projectId
@@ -107,7 +107,7 @@ module.exports = function(EntityVersion) {
       }
     }
 
-    const EntityVersionProjectRel = Model.app.models.EntityVersionProjectRel;
+    const InfEntityProjectRel = Model.app.models.InfEntityProjectRel;
 
     const find = function(pkEntityVersionConcat) {
 
@@ -145,8 +145,8 @@ module.exports = function(EntityVersion) {
           // if this is a new entity
           if (!dataObject.pk_entity) {
 
-            // Create a new EntityVersionProjectRel
-            return EntityVersionProjectRel.create({
+            // Create a new InfEntityProjectRel
+            return InfEntityProjectRel.create({
                 "fk_project": projectId,
                 "fk_entity_version_concat": result.pk_entity_version_concat,
                 "is_in_project": true
@@ -160,13 +160,13 @@ module.exports = function(EntityVersion) {
           }
           // if this is a new version of the entity
           else {
-            // Update the existing EntityVersionProjectRel
+            // Update the existing InfEntityProjectRel
 
             // prepare a new epr object
             let newEpr = {}
 
             // get properties of the epr model definition
-            const properties = EntityVersionProjectRel.definition.properties;
+            const properties = InfEntityProjectRel.definition.properties;
 
             // get the keys (property names) of the properties
             const keys = Object.keys(properties);
@@ -187,7 +187,7 @@ module.exports = function(EntityVersion) {
             newEpr.pk_entity_version_project_rel = epr.pk_entity_version_project_rel;
 
             // execute the query
-            return EntityVersionProjectRel.upsert(newEpr)
+            return InfEntityProjectRel.upsert(newEpr)
               .catch((err) => {
                 return err
               })
@@ -228,7 +228,7 @@ module.exports = function(EntityVersion) {
           // Else call the function to create and return a new entity version
           else {
 
-            return EntityVersionProjectRel.findOne({
+            return InfEntityProjectRel.findOne({
                 "where": {
                   "fk_entity": dataObject.pk_entity,
                   "fk_project": projectId

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter } fro
 import { InformationRole } from '../shared/sdk/models/InformationRole';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { EprService } from '../shared/services/epr.service';
-import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
+import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 import { PropertyComponent } from '../property/property.component';
 import { KeyboardService } from '../shared/services/keyboard.service';
 import { Property } from '../shared/services/property.service';
@@ -99,7 +99,7 @@ export class RoleComponent implements OnInit {
 
       // add an epr
       this.roleToAdd.entity_version_project_rels = [
-        new EntityVersionProjectRel({
+        new InfEntityProjectRel({
           fk_project: this.activeProjectService.project.pk_project,
           is_in_project: true,
           is_standard_in_project: this.role.is_community_favorite,
@@ -117,7 +117,7 @@ export class RoleComponent implements OnInit {
   /**
   * get the entity project relation between this role and active project
   */
-  get epr(): EntityVersionProjectRel {
+  get epr(): InfEntityProjectRel {
     return this.eprService.getEprOfEntity(this.role);
   }
 
@@ -125,7 +125,7 @@ export class RoleComponent implements OnInit {
   /**
   * set the entity project relation between this role and active project
   */
-  set epr(epr: EntityVersionProjectRel) {
+  set epr(epr: InfEntityProjectRel) {
     this.eprService.updateEprOfEntity(this.role, epr);
     this.isStandardInProject = this.epr.is_standard_in_project;
     // this.ref.detectChanges();

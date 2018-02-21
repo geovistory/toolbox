@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
-import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
+import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 
 @Component({
@@ -49,7 +49,7 @@ export class PeItLanguageComponent implements OnInit {
 
       // add an epr
       this.langToAdd.entity_version_project_rels = [
-        new EntityVersionProjectRel({
+        new InfEntityProjectRel({
           fk_project: this.activeProjectService.project.pk_project,
           is_in_project: true,
           fk_entity_version_concat: this.language.pk_entity_version_concat

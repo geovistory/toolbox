@@ -16,7 +16,7 @@ import { Observable } from 'rxjs/Observable';
 import { InformationRole } from '../shared/sdk/models/InformationRole';
 import { RolePointToEnum, RoleComponent, AppellationStdBool } from '../role/role.component';
 import { RoleService } from '../shared/services/role.service';
-import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/EntityVersionProjectRel';
+import { InfEntityProjectRelApi } from '../shared/sdk/services/custom/InfEntityProjectRel';
 import { PropertyService, Property } from '../shared/services/property.service';
 import { PeItComponent } from '../pe-it/pe-it.component';
 import { TeEntComponent } from '../te-ent/te-ent.component';
@@ -170,7 +170,7 @@ export class PropertyComponent implements OnChanges {
   isReadyToCreate: boolean;
 
   constructor(
-    private eprApi: EntityVersionProjectRelApi,
+    private eprApi: InfEntityProjectRelApi,
     private roleApi: InformationRoleApi,
     private activeProject: ActiveProjectService,
     private roleService: RoleService,

@@ -18,7 +18,7 @@ import { KeyboardService } from '../shared/services/keyboard.service';
 import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
 import { AppellationStdBool } from '../role/role.component';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
-import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
+import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 
 @Component({
   selector: 'gv-pe-it-entity',
@@ -137,7 +137,7 @@ export class PeItEntityComponent implements OnInit {
 
         // add an epr
         this.peItToAdd.entity_version_project_rels = [
-          new EntityVersionProjectRel({
+          new InfEntityProjectRel({
             fk_project: this.activeProjectService.project.pk_project,
             is_in_project: true,
             fk_entity_version_concat: this.peIt.pk_entity_version_concat

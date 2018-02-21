@@ -48,7 +48,7 @@
   "relations": {
     "entity_version_project_rels": {
       "type": "hasMany",
-      "model": "EntityVersionProjectRel",
+      "model": "InfEntityProjectRel",
       "foreignKey": "fk_entity_version_concat",
       "primaryKey": "pk_entity_version_concat"
     }

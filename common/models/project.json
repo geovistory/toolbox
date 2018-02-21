@@ -69,11 +69,11 @@
       "model": "PersistentItem",
       "foreignKey": "fk_project",
       "keyThrough": "fk_entity_version_concat",
-      "through": "EntityVersionProjectRel"
+      "through": "InfEntityProjectRel"
     },
     "entity_version_project_rels": {
       "type": "hasMany",
-      "model": "EntityVersionProjectRel",
+      "model": "InfEntityProjectRel",
       "foreignKey": "fk_project",
       "primaryKey": "pk_project"
     }

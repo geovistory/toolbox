@@ -20,8 +20,8 @@ import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
-import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
-import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/EntityVersionProjectRel';
+import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
+import { InfEntityProjectRelApi } from '../shared/sdk/services/custom/InfEntityProjectRel';
 import { AppellationService } from '../shared/services/appellation.service';
 import { InformationRoleApi } from '../shared/sdk/services/custom/InformationRole';
 import { VersionModalComponent } from '../version-modal/version-modal.component';
@@ -72,13 +72,13 @@ export class NameComponent implements OnInit, OnChanges{
   @Input() isStandardOnAdd: boolean = false;
 
   // Entity Version Project Relation
-  _entityProjectRel: EntityVersionProjectRel;
+  _entityProjectRel: InfEntityProjectRel;
 
-  set entityProjectRel(value: EntityVersionProjectRel){
+  set entityProjectRel(value: InfEntityProjectRel){
     this._entityProjectRel = value;
   }
 
-  get entityProjectRel():EntityVersionProjectRel{
+  get entityProjectRel():InfEntityProjectRel{
     return this._entityProjectRel;
   }
 
@@ -125,7 +125,7 @@ export class NameComponent implements OnInit, OnChanges{
     return this._appellationLabel;
   }
 
-  get appellationEpr():EntityVersionProjectRel{
+  get appellationEpr():InfEntityProjectRel{
     const epr = this.appellation.entity_version_project_rels.filter(
       epr => epr.fk_project === this.activeProjectService.project.pk_project
     )[0];
@@ -318,7 +318,7 @@ export class NameComponent implements OnInit, OnChanges{
   constructor(
     public appellationService: AppellationService,
     private appellationApi: AppellationApi,
-    private entityProjectRelApi:EntityVersionProjectRelApi,
+    private entityProjectRelApi:InfEntityProjectRelApi,
     private activeProjectService: ActiveProjectService,
     private slimLoadingBarService: SlimLoadingBarService,
     private informationRoleApi: InformationRoleApi,
@@ -329,7 +329,7 @@ export class NameComponent implements OnInit, OnChanges{
   ngOnChanges(){
     /** Entity Project Relation */
     if( this.state === 'add'){
-      this.entityProjectRel = new EntityVersionProjectRel({
+      this.entityProjectRel = new InfEntityProjectRel({
         fk_entity_version_concat: this.name.pk_entity_version_concat,
         fk_project: this.activeProjectService.project.pk_project,
         is_in_project: true,
@@ -424,12 +424,12 @@ export class NameComponent implements OnInit, OnChanges{
 
   emitEprChange(boolean:boolean){
 
-    let epr:EntityVersionProjectRel[] = [];
+    let epr:InfEntityProjectRel[] = [];
 
     if(this.state === "add"){
 
       /** create epr for appellation usage (temporal entity) */
-      epr.push(new EntityVersionProjectRel({
+      epr.push(new InfEntityProjectRel({
         fk_project: this.activeProjectService.project.pk_project,
         fk_entity_version_concat: this.appellationUsage.pk_entity_version_concat,
         is_in_project: true
@@ -437,7 +437,7 @@ export class NameComponent implements OnInit, OnChanges{
 
       if(this.roleR61){
         /** create epr for R61_occured_in_kind_of_context (role to attach language)*/
-        epr.push(new EntityVersionProjectRel({
+        epr.push(new InfEntityProjectRel({
           fk_project: this.activeProjectService.project.pk_project,
           fk_entity_version_concat: this.roleR61.pk_entity_version_concat,
           is_in_project: true
@@ -445,7 +445,7 @@ export class NameComponent implements OnInit, OnChanges{
       }
       if(this.language){
         /** create epr for language*/
-        epr.push(new EntityVersionProjectRel({
+        epr.push(new InfEntityProjectRel({
           fk_project: this.activeProjectService.project.pk_project,
           fk_entity_version_concat: this.language.pk_entity_version_concat,
           is_in_project: true
@@ -453,14 +453,14 @@ export class NameComponent implements OnInit, OnChanges{
       }
 
       /** create epr for R64_used_name (role to attach appellation) */
-      epr.push(new EntityVersionProjectRel({
+      epr.push(new InfEntityProjectRel({
         fk_project: this.activeProjectService.project.pk_project,
         fk_entity_version_concat: this.roleR64.pk_entity_version_concat,
         is_in_project: true
       }))
 
       /** create epr for appellation */
-      epr.push(new EntityVersionProjectRel({
+      epr.push(new InfEntityProjectRel({
         fk_project: this.activeProjectService.project.pk_project,
         fk_entity_version_concat: this.appellation.pk_entity_version_concat,
         is_in_project: true
@@ -499,15 +499,15 @@ export class NameComponent implements OnInit, OnChanges{
         ]
       }
     })
-    .subscribe((result:EntityVersionProjectRel[]) => {
-      const eprs:EntityVersionProjectRel[] = [];
+    .subscribe((result:InfEntityProjectRel[]) => {
+      const eprs:InfEntityProjectRel[] = [];
       fks.forEach(fk => {
         const epr = result.filter(epr => epr.fk_entity_version_concat === fk)
         if(epr.length > 0){
           eprs.push(epr[0]);
         }
         else{
-          eprs.push(new EntityVersionProjectRel({
+          eprs.push(new InfEntityProjectRel({
             fk_project: this.activeProjectService.project.pk_project,
             fk_entity_version_concat: fk,
             is_in_project: boolean

@@ -15,8 +15,8 @@ import { InformationRole } from '../shared/sdk/models/InformationRole';
 import { NameComponent } from '../name/name.component';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
-import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
-import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/EntityVersionProjectRel';
+import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
+import { InfEntityProjectRelApi } from '../shared/sdk/services/custom/InfEntityProjectRel';
 import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
 import { KeyboardService } from '../shared/services/keyboard.service';
 
@@ -83,7 +83,7 @@ export class NamingComponent implements OnInit, OnChanges {
 
   @Output() standardNameStringChange: EventEmitter<string> = new EventEmitter();
 
-  @Output() entityProjectRelChange: EventEmitter<EntityVersionProjectRel[]> = new EventEmitter();
+  @Output() entityProjectRelChange: EventEmitter<InfEntityProjectRel[]> = new EventEmitter();
 
   standardNameComponent: NameComponent;
 
@@ -93,7 +93,7 @@ export class NamingComponent implements OnInit, OnChanges {
 
   addingName: boolean = false;
 
-  entProRels: Array<EntityVersionProjectRel> = []; //
+  entProRels: Array<InfEntityProjectRel> = []; //
 
   standardNamePkOnAdd:number;
 
@@ -111,7 +111,7 @@ export class NamingComponent implements OnInit, OnChanges {
   }
 
   constructor(
-    private entityProjectRelApi:EntityVersionProjectRelApi,
+    private entityProjectRelApi:InfEntityProjectRelApi,
     public activeProject: ActiveProjectService,
     private slimLoadingBarService: SlimLoadingBarService,
     public keyboard:KeyboardService

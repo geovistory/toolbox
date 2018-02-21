@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActiveProjectService } from './active-project.service';
-import { EntityVersionProjectRel } from '../sdk/models/EntityVersionProjectRel';
+import { InfEntityProjectRel } from '../sdk/models/InfEntityProjectRel';
 
 @Injectable()
 export class EprService {
@@ -11,7 +11,7 @@ export class EprService {
 
 
   /**
-  * getEpr - returns the EntityVersionProjectRel between the given entity
+  * getEpr - returns the InfEntityProjectRel between the given entity
   * and the active project
   *
   * @param  {any} entity   PersistentItem, Role, TemporalEntity, Appellation, Language
@@ -30,13 +30,13 @@ export class EprService {
   }
 
   /**
-  * updateEprOfEntity - Updates EntityVersionProjectRel between the given entity
+  * updateEprOfEntity - Updates InfEntityProjectRel between the given entity
   * and the active project
   *
   * @param  {any} entity   PersistentItem, Role, TemporalEntity, Appellation, Language
-  * @param  {EntityVersionProjectRel} epr
+  * @param  {InfEntityProjectRel} epr
   */
-  updateEprOfEntity (entity, epr:EntityVersionProjectRel){
+  updateEprOfEntity (entity, epr:InfEntityProjectRel){
     let eprs = entity.entity_version_project_rels;
     for (let i = 0; i < eprs.length; i++) {
       if(eprs[i].pk_entity_version_project_rel == epr.pk_entity_version_project_rel){

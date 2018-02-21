@@ -17,7 +17,7 @@ import { InformationRole } from '../shared/sdk/models/InformationRole';
 import { PropertyComponent } from '../property/property.component';
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
-import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
+import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 
 @Component({
@@ -123,7 +123,7 @@ export class TeEntComponent implements OnInit {
 
       // add an epr
       this.teEntToAdd.entity_version_project_rels = [
-        new EntityVersionProjectRel({
+        new InfEntityProjectRel({
           fk_project: this.activeProjectService.project.pk_project,
           is_in_project: true,
           fk_entity_version_concat: this.teEnt.pk_entity_version_concat

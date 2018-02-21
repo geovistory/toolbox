@@ -2,8 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
 import { InformationRole } from '../shared/sdk/models/InformationRole';
-import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
-import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/EntityVersionProjectRel';
+import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
+import { InfEntityProjectRelApi } from '../shared/sdk/services/custom/InfEntityProjectRel';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/forkJoin';
@@ -18,7 +18,7 @@ export class NameAddComponent implements OnInit {
   @Input() names:InformationRole[];
   namesNotInProject:InformationRole[];
   suggestedNames:InformationRole[];
-  entProRels:EntityVersionProjectRel[]=[];
+  entProRels:InfEntityProjectRel[]=[];
   @Output() onCancel = new EventEmitter();
   @Output() onAdd:EventEmitter<InformationRole[]> = new EventEmitter();
 
@@ -36,7 +36,7 @@ export class NameAddComponent implements OnInit {
   }
 
   constructor(
-    private entityProjectRelApi:EntityVersionProjectRelApi,
+    private entityProjectRelApi:InfEntityProjectRelApi,
     private activeProject: ActiveProjectService
   ) {
     this.language = new InformationLanguage(this.activeProject.project.default_language);
@@ -110,7 +110,7 @@ export class NameAddComponent implements OnInit {
 
     Observable.forkJoin(apiCalls)
     .subscribe(
-      (response:EntityVersionProjectRel[]) => {
+      (response:InfEntityProjectRel[]) => {
         this.onAdd.emit();
       },
       error => {

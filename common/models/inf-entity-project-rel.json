@@ -1,5 +1,5 @@
 {
-  "name": "EntityVersionProjectRel",
+  "name": "InfEntityProjectRel",
   "base": "PersistedModel",
   "idInjection": false,
   "options": {
