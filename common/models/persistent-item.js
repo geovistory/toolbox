@@ -2,9 +2,9 @@
 
 const Promise = require('bluebird');
 
-module.exports = function(PersistentItemVersion) {
+module.exports = function(PersistentItem) {
 
-  PersistentItemVersion.addPeItToProject = function(projectId, data, ctx) {
+  PersistentItem.addPeItToProject = function(projectId, data, ctx) {
     let requestedPeIt;
 
     if (ctx) {
@@ -13,7 +13,7 @@ module.exports = function(PersistentItemVersion) {
       requestedPeIt = data;
     }
 
-    return PersistentItemVersion.addToProject(projectId, requestedPeIt)
+    return PersistentItem.addToProject(projectId, requestedPeIt)
       .then(resultingEpr => {
 
         // attatch the new epr to the peIt
@@ -24,7 +24,7 @@ module.exports = function(PersistentItemVersion) {
         if (requestedPeIt.pi_roles) {
 
           // prepare parameters
-          const InformationRole = PersistentItemVersion.app.models.InformationRole;
+          const InformationRole = PersistentItem.app.models.InformationRole;
 
           //… filter roles that are truthy (not null), iterate over them,
           // return the promise that the PeIt will be
@@ -63,7 +63,7 @@ module.exports = function(PersistentItemVersion) {
   }
 
 
-  PersistentItemVersion.findOrCreatePeIt = function(projectId, data, ctx) {
+  PersistentItem.findOrCreatePeIt = function(projectId, data, ctx) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
@@ -79,7 +79,7 @@ module.exports = function(PersistentItemVersion) {
       requestedPeIt = data;
     }
 
-    return PersistentItemVersion.findOrCreateVersion(PersistentItemVersion, projectId, dataObject)
+    return PersistentItem.findOrCreateVersion(PersistentItem, projectId, dataObject)
       .then((resultingPeIts) => {
         // pick first item of array
         const resultingPeIt = resultingPeIts[0];
@@ -88,7 +88,7 @@ module.exports = function(PersistentItemVersion) {
         if (requestedPeIt.pi_roles) {
 
           // prepare parameters
-          const InformationRole = PersistentItemVersion.app.models.InformationRole;
+          const InformationRole = PersistentItem.app.models.InformationRole;
 
           //… filter roles that are truthy (not null), iterate over them,
           // return the promise that the PeIt will be
@@ -129,7 +129,7 @@ module.exports = function(PersistentItemVersion) {
   }
 
 
-  PersistentItemVersion.searchInProject = function(projectId, searchString, limit, page, cb) {
+  PersistentItem.searchInProject = function(projectId, searchString, limit, page, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -272,14 +272,14 @@ module.exports = function(PersistentItemVersion) {
     OFFSET $3
     `;
 
-    const connector = PersistentItemVersion.dataSource.connector;
+    const connector = PersistentItem.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       cb(err, resultObjects);
     });
   };
 
 
-  PersistentItemVersion.afterRemote('searchInProject', function(ctx, resultObjects, next) {
+  PersistentItem.afterRemote('searchInProject', function(ctx, resultObjects, next) {
 
     var totalCount = 0;
     if (resultObjects.length > 0) {
@@ -312,7 +312,7 @@ module.exports = function(PersistentItemVersion) {
   })
 
 
-  PersistentItemVersion.searchInRepo = function(searchString, limit, page, cb) {
+  PersistentItem.searchInRepo = function(searchString, limit, page, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -429,14 +429,14 @@ module.exports = function(PersistentItemVersion) {
     `;
 
 
-    const connector = PersistentItemVersion.dataSource.connector;
+    const connector = PersistentItem.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       cb(err, resultObjects);
     });
   };
 
 
-  PersistentItemVersion.afterRemote('searchInRepo', function(ctx, resultObjects, next) {
+  PersistentItem.afterRemote('searchInRepo', function(ctx, resultObjects, next) {
 
     var totalCount = 0;
     if (resultObjects.length > 0) {
@@ -475,7 +475,7 @@ module.exports = function(PersistentItemVersion) {
    * @param  {number} pkProject primary key of project
    * @param  {number} pkEntity  pk_entity of the persistent item
    */
-  PersistentItemVersion.nestedObjectOfProject = function(projectId, pkEntity, cb) {
+  PersistentItem.nestedObjectOfProject = function(projectId, pkEntity, cb) {
 
     const innerJoinThisProject = {
       "$relation": {
@@ -540,11 +540,11 @@ module.exports = function(PersistentItemVersion) {
       }
     }
 
-    return PersistentItemVersion.findComplex(filter, cb);
+    return PersistentItem.findComplex(filter, cb);
   }
 
 
-  PersistentItemVersion.nestedObjectOfRepo = function(pkEntity, cb) {
+  PersistentItem.nestedObjectOfRepo = function(pkEntity, cb) {
 
     const filter = {
       /** Select persistent item by pk_entity … */
@@ -620,7 +620,7 @@ module.exports = function(PersistentItemVersion) {
       }
     }
 
-    return PersistentItemVersion.findComplex(filter, cb);
+    return PersistentItem.findComplex(filter, cb);
   }
 
 

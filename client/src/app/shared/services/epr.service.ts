@@ -14,7 +14,7 @@ export class EprService {
   * getEpr - returns the EntityVersionProjectRel between the given entity
   * and the active project
   *
-  * @param  {any} entity   PersistentItemVersion, Role, TemporalEntity, Appellation, Language
+  * @param  {any} entity   PersistentItem, Role, TemporalEntity, Appellation, Language
   * @return {type}        description
   */
   getEprOfEntity (entity){
@@ -33,7 +33,7 @@ export class EprService {
   * updateEprOfEntity - Updates EntityVersionProjectRel between the given entity
   * and the active project
   *
-  * @param  {any} entity   PersistentItemVersion, Role, TemporalEntity, Appellation, Language
+  * @param  {any} entity   PersistentItem, Role, TemporalEntity, Appellation, Language
   * @param  {EntityVersionProjectRel} epr
   */
   updateEprOfEntity (entity, epr:EntityVersionProjectRel){

@@ -46,7 +46,7 @@
   "relations": {
     "persistent_item_version": {
       "type": "belongsTo",
-      "model": "PersistentItemVersion",
+      "model": "PersistentItem",
       "foreignKey": "fk_entity_version_concat",
       "primaryKey": "pk_entity_version_concat"
     },

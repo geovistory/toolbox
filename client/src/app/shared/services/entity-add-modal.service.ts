@@ -1,8 +1,8 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { EntityVersionProjectRel } from '../sdk/models/EntityVersionProjectRel';
 import { EntityVersionProjectRelApi } from '../sdk/services/custom/EntityVersionProjectRel';
-import { PersistentItemVersion } from '../sdk/models/PersistentItemVersion';
-import { PersistentItemVersionApi } from '../sdk/services/custom/PersistentItemVersion';
+import { PersistentItem } from '../sdk/models/PersistentItem';
+import { PersistentItemApi } from '../sdk/services/custom/PersistentItem';
 import { ActiveProjectService } from './active-project.service';
 
 export enum EntityAddModalState {
@@ -60,10 +60,10 @@ export class EntityAddModalService {
   pkEntity: number;
 
   // The persistent Item to Add
-  peItToAdd: PersistentItemVersion;
+  peItToAdd: PersistentItem;
 
   // The persistent item to create
-  peItToCreate: PersistentItemVersion;
+  peItToCreate: PersistentItem;
 
   // The search string used to search existing peIts
   // and create the appellation of the new peIt
@@ -75,7 +75,7 @@ export class EntityAddModalService {
   constructor(
     private entityProjectRelApi: EntityVersionProjectRelApi,
     private activeProjectService: ActiveProjectService,
-    private persistentItemApi: PersistentItemVersionApi
+    private persistentItemApi: PersistentItemApi
   ) { }
 
   addPeItToProject() {

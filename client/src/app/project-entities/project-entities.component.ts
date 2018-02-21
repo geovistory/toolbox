@@ -19,9 +19,9 @@ import { LoopBackConfig } from '../shared/sdk/lb.config';
 import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
 import { Project } from '../shared/sdk/models/Project';
 import { EntityAddModalService } from '../shared/services/entity-add-modal.service';
-import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
+import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
 import { PeItService } from '../shared/services/pe-it.service';
-import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
+import { PersistentItem } from '../shared/sdk/models/PersistentItem';
 
 @Component({
   selector: 'gv-project-entities',
@@ -30,7 +30,7 @@ import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersio
 })
 export class ProjectEntitiesComponent implements OnInit {
 
-  persistentItems: PersistentItemVersion[] = [];
+  persistentItems: PersistentItem[] = [];
   projectId: number;
 
   //Pagination
@@ -50,7 +50,7 @@ export class ProjectEntitiesComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private persistentItemApi: PersistentItemVersionApi,
+    private persistentItemApi: PersistentItemApi,
     private modalService: NgbModal,
     private entityAddModalService: EntityAddModalService,
     private router: Router,

@@ -84,7 +84,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "PersistentItemVersion": {
+  "PersistentItem": {
     "dataSource": "postgres1",
     "public": true
   },

@@ -3,10 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 import { EntityAddModalService, EntityAddModalState } from '../shared/services/entity-add-modal.service';
-import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
+import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { InformationRole } from '../shared/sdk/models/InformationRole';
-import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
+import { PersistentItem } from '../shared/sdk/models/PersistentItem';
 
 @Component({
   selector: 'gv-entity-add-add-existing',
@@ -19,7 +19,7 @@ export class EntityAddAddExistingComponent implements OnInit {
   pkEntity: number;
 
   constructor(
-    private persistentItemApi: PersistentItemVersionApi,
+    private persistentItemApi: PersistentItemApi,
     private modalService: EntityAddModalService,
     private activeModal: NgbActiveModal,
     private slimLoadingBarService: SlimLoadingBarService
@@ -31,7 +31,7 @@ export class EntityAddAddExistingComponent implements OnInit {
   }
 
 
-  onPeItReadyToAdd(peIt: PersistentItemVersion) {
+  onPeItReadyToAdd(peIt: PersistentItem) {
     this.modalService.peItToAdd = peIt;
     this.modalService.addButtonVisible = true;
   }

@@ -22,8 +22,8 @@ import { PeItComponent } from '../pe-it/pe-it.component';
 import { TeEntComponent } from '../te-ent/te-ent.component';
 import { UtilitiesService } from '../shared/services/utilities.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
-import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
-import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
+import { PersistentItem } from '../shared/sdk/models/PersistentItem';
+import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { InformationRoleApi } from '../shared/sdk/services/custom/InformationRole';
 import { Appellation } from '../shared/sdk/models/Appellation';
@@ -104,7 +104,7 @@ export class PropertyComponent implements OnChanges {
   @Input() parentEntityPk: number;
 
   // The parent PeIt Entity
-  @Input() parentPeIt: PersistentItemVersion;
+  @Input() parentPeIt: PersistentItem;
 
   /**
   * set propState - The state of this component

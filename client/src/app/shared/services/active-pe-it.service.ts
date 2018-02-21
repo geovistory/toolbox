@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PersistentItemVersion } from '../sdk/models/PersistentItemVersion';
+import { PersistentItem } from '../sdk/models/PersistentItem';
 import { AppellationLabel } from '../classes/appellation-label/appellation-label';
 import { ActiveProjectService } from './active-project.service';
 
@@ -8,7 +8,7 @@ export class ActivePeItService {
 
   pkEntity:number; // pk_entity of the active persistent item
 
-  peIt:PersistentItemVersion; // active persistent item
+  peIt:PersistentItem; // active persistent item
 
   constructor(
     private activeProjectService:ActiveProjectService

@@ -4,7 +4,7 @@ import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 import { PeItComponent, PeItStates } from '../pe-it/pe-it.component';
 import { ActiveProjectService } from '../shared/services/active-project.service';
-import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
+import { PersistentItem } from '../shared/sdk/models/PersistentItem';
 import { PropertyPipe } from '../shared/pipes/property';
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { InformationRole } from '../shared/sdk/models/InformationRole';
@@ -15,7 +15,7 @@ import { PeItService } from '../shared/services/pe-it.service'
 import { Property } from '../shared/services/property.service';
 import { ClassService } from '../shared/services/class.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
-import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
+import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
 import { AppellationStdBool } from '../role/role.component';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
 import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
@@ -44,13 +44,13 @@ export class PeItEntityComponent implements OnInit {
   * Outputs
   */
 
-  @Output() readyToCreate: EventEmitter<PersistentItemVersion> = new EventEmitter;
+  @Output() readyToCreate: EventEmitter<PersistentItem> = new EventEmitter;
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
-  @Output() created: EventEmitter<PersistentItemVersion> = new EventEmitter;
+  @Output() created: EventEmitter<PersistentItem> = new EventEmitter;
 
-  @Output() readyToAdd: EventEmitter<PersistentItemVersion> = new EventEmitter;
+  @Output() readyToAdd: EventEmitter<PersistentItem> = new EventEmitter;
 
   /**
   * Properties
@@ -63,13 +63,13 @@ export class PeItEntityComponent implements OnInit {
   loading: boolean;
 
   // Persistent Item used by this component
-  peIt: PersistentItemVersion;
+  peIt: PersistentItem;
 
   // Persistent Item to be created
-  peItToCreate: PersistentItemVersion;
+  peItToCreate: PersistentItem;
 
   // Persistent Item to be added
-  peItToAdd: PersistentItemVersion;
+  peItToAdd: PersistentItem;
 
   // Displayed standard name of this peIt
   stdAppeString: string;
@@ -93,7 +93,7 @@ export class PeItEntityComponent implements OnInit {
   addingInformation: boolean;
 
   constructor(
-    private peItApi: PersistentItemVersionApi,
+    private peItApi: PersistentItemApi,
     private peItService: PeItService,
     private activeProjectService: ActiveProjectService,
     private propertyPipe: PropertyPipe,
@@ -133,7 +133,7 @@ export class PeItEntityComponent implements OnInit {
       this.queryRichObjectOfRepo().subscribe(() => {
 
         // make a copy
-        this.peItToAdd = new PersistentItemVersion(this.peIt);
+        this.peItToAdd = new PersistentItem(this.peIt);
 
         // add an epr
         this.peItToAdd.entity_version_project_rels = [
@@ -159,7 +159,7 @@ export class PeItEntityComponent implements OnInit {
       this.outgoingProperties = this.classService
         .getOutgoingProperties(this.fkClass);
 
-      this.peItToCreate = new PersistentItemVersion();
+      this.peItToCreate = new PersistentItem();
       this.peItToCreate.fk_class = this.fkClass;
 
     }
@@ -175,7 +175,7 @@ export class PeItEntityComponent implements OnInit {
     this.startLoading();
 
     this.peItApi.nestedObjectOfRepo(this.pkEntity).subscribe(
-      (peIts: PersistentItemVersion[]) => {
+      (peIts: PersistentItem[]) => {
 
         this.peIt = peIts[0];
 
@@ -202,7 +202,7 @@ export class PeItEntityComponent implements OnInit {
     this.startLoading();
 
     this.peItApi.nestedObjectOfProject(this.pkProject, this.pkEntity).subscribe(
-      (peIts: PersistentItemVersion[]) => {
+      (peIts: PersistentItem[]) => {
 
         this.peIt = peIts[0];
 

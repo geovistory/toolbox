@@ -33,8 +33,8 @@ module.exports = function(InformationRole) {
 
         else if (requestedRole.persistent_item) {
           //add the persistent_item to the project
-          const PersistentItemVersion = InformationRole.app.models.PersistentItemVersion;
-          return PersistentItemVersion.addPeItToProject(projectId, requestedRole.persistent_item)
+          const PersistentItem = InformationRole.app.models.PersistentItem;
+          return PersistentItem.addPeItToProject(projectId, requestedRole.persistent_item)
             .then((results) => {
               requestedRole.persistent_item = results[0];
               return [requestedRole];
@@ -138,10 +138,10 @@ module.exports = function(InformationRole) {
     if (requestedRole.persistent_item) {
 
       // prepare parameters
-      const PersistentItemVersion = InformationRole.app.models.PersistentItemVersion;
+      const PersistentItem = InformationRole.app.models.PersistentItem;
 
       // find or create the peIt and the role pointing to it
-      return PersistentItemVersion.findOrCreatePeIt(projectId, requestedRole.persistent_item)
+      return PersistentItem.findOrCreatePeIt(projectId, requestedRole.persistent_item)
         .then((resultingPeIts) => {
 
           const resultingPeIt = resultingPeIts[0];
