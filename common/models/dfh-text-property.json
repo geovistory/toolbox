@@ -1,29 +1,36 @@
 {
-  "name": "DfhLabel",
+  "name": "DfhTextProperty",
+  "plural": "DfhTextProperties",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "data_for_history",
-      "table": "label"
+      "table": "text_property"
     }
   },
   "properties": {
-    "dfh_pk_label": {
+    "dfh_pk_text_property": {
       "type": "number",
-      "id": true,
-      "generated": true
+      "required": true,
+      "id": true
     },
-    "dfh_label": {
+    "dfh_text_property": {
       "type": "string",
       "required": true
+    },
+    "dfh_fk_text_property_type": {
+      "type": "number"
     },
     "dfh_language_iso_code": {
       "type": "string"
     },
-    "dfh_is_standard_label_for_language": {
-      "type": "boolean"
+    "dfh_creation_time": {
+      "type": "date"
+    },
+    "dfh_modification_time": {
+      "type": "date"
     },
     "dfh_fk_property": {
       "type": "number"
@@ -46,19 +53,28 @@
     "dfh_fk_system_type": {
       "type": "number"
     },
+    "dfh_fk_entity_association": {
+      "type": "number"
+    },
     "dfh_fk_profile": {
-      "type": "number",
-      "required": true
+      "type": "number"
     },
-    "dfh_creation_time": {
-      "type": "date"
-    },
-    "dfh_modification_time": {
-      "type": "date"
+    "dfh_fk_is_subclass_of": {
+      "type": "number"
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "class": {
+      "type": "belongsTo",
+      "model": "InfClass",
+      "foreignKey": "dfh_fk_class",
+      "primaryKey": "dfh_pk_class",
+      "options": {
+        "nestRemoting": false
+      }
+    }
+  },
   "acls": [],
   "methods": {}
 }

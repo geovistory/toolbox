@@ -20,7 +20,7 @@
   },
   "properties": {
     "fk_property": {
-      "type": "string",
+      "type": "number",
       "required": true
     },
     "fk_entity": {

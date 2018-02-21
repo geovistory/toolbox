@@ -253,10 +253,10 @@ module.exports = function(InfPersistentItem) {
         INNER JOIN te_ent_in_project AS appe_usage ON appe_usage.pk_entity = r64.fk_temporal_entity
         INNER JOIN roles_in_project AS r63 ON r63.fk_temporal_entity = r64.fk_temporal_entity
         INNER JOIN epr_of_project AS r63_in_project ON r63_in_project.fk_entity_version_concat = r63.pk_entity_version_concat
-        WHERE r64.fk_property = 'R64'
+        WHERE r64.fk_property = 2 --'R64'
         -- AND r64.is_community_favorite = true
-        AND r63.fk_property = 'R63'
-        AND appe_usage.fk_class = 'F52'
+        AND r63.fk_property = 1 --'R63'
+        AND appe_usage.fk_class = 3 --'F52'
         AND appe_usage.is_community_favorite = true
         GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity, r63.is_standard_in_project
       ) AS appellations
@@ -411,10 +411,10 @@ module.exports = function(InfPersistentItem) {
         INNER JOIN information.v_temporal_entity_version AS appe_usage ON appe_usage.pk_entity = r64.fk_temporal_entity
         INNER JOIN information.v_role_version AS r63 ON r63.fk_temporal_entity = r64.fk_temporal_entity
         INNER JOIN information.entity_version_project_rel AS r63_in_project ON r63_in_project.fk_entity_version_concat = r63.pk_entity_version_concat
-        WHERE r64.fk_property = 'R64'
+        WHERE r64.fk_property = 2 --'R64'
         AND r64.is_community_favorite = true
-        AND r63.fk_property = 'R63'
-        AND appe_usage.fk_class = 'F52'
+        AND r63.fk_property = 1 --'R63'
+        AND appe_usage.fk_class = 3 --'F52'
         AND appe_usage.is_community_favorite = true
         GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity
       ) AS appellations

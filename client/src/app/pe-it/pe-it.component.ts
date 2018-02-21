@@ -28,7 +28,7 @@ export class PeItComponent implements OnInit {
   */
 
   @Input() pkEntity: number;
-  @Input() fkClass: string;
+  @Input() fkClass: number;
   @Input() appellation: InfAppellation;
   @Input() language: InfLanguage;
   @Input() peItState: string;
@@ -89,7 +89,7 @@ export class PeItComponent implements OnInit {
 
     if (this.peItState === 'create') {
 
-      if (this.fkClass === 'E56') {
+      if (this.fkClass === 4) {
 
         this.language = new InfLanguage()
 
@@ -97,7 +97,7 @@ export class PeItComponent implements OnInit {
 
       }
 
-      if (['E82', 'E41'].indexOf(this.fkClass) > -1) {
+      if ([2].indexOf(this.fkClass) > -1) {
 
         this.appellation = new InfAppellation()
 

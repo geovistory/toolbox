@@ -18,7 +18,7 @@
       "required": true
     },
     "fk_class": {
-      "type": "string",
+      "type": "number",
       "required": true
     },
     "notes": {

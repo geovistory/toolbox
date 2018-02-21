@@ -1,6 +1,6 @@
 
 
-<div *ngIf="!isCircular" [ngClass]="{'alt-pressed': keyboard.altPressed}">
+<div *ngIf="!isCircular && (property!==undefined)" [ngClass]="{'alt-pressed': keyboard.altPressed}">
 
   <span *ngIf="keyboard.altPressed">
     [ready: {{isReadyToCreate}}]

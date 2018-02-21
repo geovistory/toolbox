@@ -107,5 +107,9 @@
   "DfhLabel": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "DfhTextProperty": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }

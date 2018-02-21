@@ -20,7 +20,7 @@
   },
   "properties": {
     "fk_class": {
-      "type": "string",
+      "type": "number",
       "generated": true
     },
     "lang_type": {

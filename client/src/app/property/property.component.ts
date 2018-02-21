@@ -17,7 +17,7 @@ import { InfRole } from '../shared/sdk/models/InfRole';
 import { RolePointToEnum, RoleComponent, AppellationStdBool } from '../role/role.component';
 import { RoleService } from '../shared/services/role.service';
 import { InfEntityProjectRelApi } from '../shared/sdk/services/custom/InfEntityProjectRel';
-import { PropertyService, Property } from '../shared/services/property.service';
+import { PropertyService } from '../shared/services/property.service';
 import { PeItComponent } from '../pe-it/pe-it.component';
 import { TeEntComponent } from '../te-ent/te-ent.component';
 import { UtilitiesService } from '../shared/services/utilities.service';
@@ -26,6 +26,7 @@ import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { InfPersistentItemApi } from '../shared/sdk/services/custom/InfPersistentItem';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { InfRoleApi } from '../shared/sdk/services/custom/InfRole';
+import { DfhProperty } from '../shared/sdk/models/DfhProperty';
 
 
 
@@ -84,7 +85,7 @@ export class PropertyComponent implements OnChanges {
   */
 
   // fk_property that all roles of this kind should have
-  @Input() fkProperty: string;
+  @Input() fkProperty: number;
 
   // roles of one kind (with the same fk_property)
   @Input() roles: InfRole[];
@@ -137,7 +138,7 @@ export class PropertyComponent implements OnChanges {
   */
 
   // the property
-  property: Property;
+  property: DfhProperty;
 
   // Array of children RoleComponents
   @ViewChildren(RoleComponent) roleComponents: QueryList<RoleComponent>
@@ -184,7 +185,9 @@ export class PropertyComponent implements OnChanges {
   */
 
   ngOnChanges() {
-    this.property = this.propertyService.getPropertyByPkProperty(this.fkProperty);
+    this.propertyService.getPropertyByPkProperty(this.fkProperty).subscribe((prop: DfhProperty) => {
+      this.property = prop;
+    });
   }
 
 
@@ -199,13 +202,13 @@ export class PropertyComponent implements OnChanges {
   * if this.isOutgoing === true, return the range class
   * if this.isOutgoing === false, return the domain class 
   *
-  * @return {string}  pk of the target class
+  * @return {number}  pk of the target class
   */
-  get pkTargetClass(): string {
+  get pkTargetClass(): number {
 
-    if (this.isOutgoing === true) return this.property.fk_range_class;
+    if (this.isOutgoing === true) return this.property.dfh_has_range;
 
-    if (this.isOutgoing === false) return this.property.fk_domain_class;
+    if (this.isOutgoing === false) return this.property.dfh_has_domain;
 
   }
 
@@ -219,15 +222,27 @@ export class PropertyComponent implements OnChanges {
   */
   get roleLabel() {
     if (this.isOutgoing) {
-      if (this.property.rangeCardinalityMax === 1) {
-        return this.property.label.sg;
+      if (this.property.dfh_range_instances_cardinality_max === 1) {
+
+        // TODO return label singular (this.property.label.sg)
+        return 'label.sg;'
+
       }
-      return this.property.label.pl;
+
+      // TODO return label plural (this.property.label.pl)
+      return 'label.pl';
+
     } else if (this.isOutgoing === false) {
-      if (this.property.domainCardinalityMax === 1) {
-        return this.property.label_inversed.sg;
+      if (this.property.dfh_domain_instances_cardinality_max === 1) {
+
+        // TODO return inversed label singular (this.property.label_inversed.sg)
+        return 'label_inversed.sg';
+
       }
-      return this.property.label_inversed.pl;
+
+      // TODO return inversed label plural (this.property.label_inversed.pl)
+      return 'label_inversed.pl';
+
     } else {
       // TODO Error
       console.log('isOutgoing is not defined')
@@ -236,9 +251,22 @@ export class PropertyComponent implements OnChanges {
 
   get roleLabelObj() {
     if (this.isOutgoing) {
-      return this.property.label;
+
+      // TODO return an object containing label.pl and label.sg
+      return {
+        'sg': 'label sg',
+        'pl': 'label pl'
+      }
+
     } else if (this.isOutgoing === false) {
-      return this.property.label_inversed;
+
+      // TODO return an object containing inversed_label.pl and inversed_label.sg
+
+      return {
+        'sg': 'inversed_label sg',
+        'pl': 'inversed_label pl'
+      };
+
     } else {
       return undefined;
     }
@@ -423,14 +451,14 @@ export class PropertyComponent implements OnChanges {
 
 
   get maxCardinality() {
-    if (this.isOutgoing) return this.property.rangeCardinalityMax;
-    else if (this.isOutgoing === false) return this.property.domainCardinalityMax;
+    if (this.isOutgoing) return this.property.dfh_range_instances_cardinality_max;
+    else if (this.isOutgoing === false) return this.property.dfh_domain_instances_cardinality_max;
     else console.log('isOutgoing is not defined')
   }
 
   get minCardinality() {
-    if (this.isOutgoing) return this.property.rangeCardinalityMin;
-    else if (this.isOutgoing === false) return this.property.domainCardinalityMin;
+    if (this.isOutgoing) return this.property.dfh_range_instances_cardinality_min;
+    else if (this.isOutgoing === false) return this.property.dfh_domain_instances_cardinality_min;
     else console.log('isOutgoing is not defined')
   }
 

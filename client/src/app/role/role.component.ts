@@ -5,11 +5,11 @@ import { EprService } from '../shared/services/epr.service';
 import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 import { PropertyComponent } from '../property/property.component';
 import { KeyboardService } from '../shared/services/keyboard.service';
-import { Property } from '../shared/services/property.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
 import { InfAppellation } from '../shared/sdk/models/InfAppellation';
 import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
 import { InfLanguage } from '../shared/sdk/models/InfLanguage';
+import { DfhProperty } from '../shared/sdk/models/DfhProperty';
 
 export enum RolePointToEnum {
   PeIt = "PeIt",
@@ -42,9 +42,9 @@ export class RoleComponent implements OnInit {
 
   @Input() pkTargetClass: string;
 
-  @Input() fkProperty: string;
+  @Input() fkProperty: number;
 
-  @Input() parentProperty: Property;
+  @Input() parentProperty: DfhProperty;
 
   /**
   * Outputs

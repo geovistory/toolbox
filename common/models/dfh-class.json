@@ -14,7 +14,7 @@
     "dfh_pk_class": {
       "type": "number",
       "id": true,
-      "required": true
+      "generated": true
     },
     "dfh_identifier_in_namespace": {
       "type": "string"
@@ -27,7 +27,21 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "labels": {
+      "type": "hasMany",
+      "model": "DfhLabel",
+      "foreignKey": "dfh_fk_class",
+      "options": {
+        "nestRemoting": false
+      }
+    },
+    "text_properties": {
+      "type": "hasMany",
+      "model": "DfhTextProperty",
+      "foreignKey": "dfh_fk_class"
+    }
+  },
   "acls": [],
   "methods": {}
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { InfRole } from '../sdk/models/InfRole';
-import { Property } from './property.service';
+import { DfhProperty } from '../sdk/models/DfhProperty';
 
 interface Label {
   sg: string;
@@ -83,16 +83,16 @@ export class RoleService {
    *
    * @return {DirectedRolesPerProperty[]} Array of DirectedRolesPerProperty
    */
-  toDirectedRolesPerProperty(roles: InfRole[], ingoing: Property[], outgoing: Property[]): DirectedRolesPerProperty[] {
+  toDirectedRolesPerProperty(roles: InfRole[], ingoing: DfhProperty[], outgoing: DfhProperty[]): DirectedRolesPerProperty[] {
 
     // declare array that will be returned
     const directedRolesPerProperty: DirectedRolesPerProperty[] = [];
 
     // create array of ingoing fk_property
-    const fkPropIn: string[] = ingoing.map(p => p.pk_property)
+    const fkPropIn: number[] = ingoing.map(p => p.dfh_pk_property)
 
     // create array of outgoing fk_property
-    const fkPropOut: string[] = outgoing.map(p => p.pk_property)
+    const fkPropOut: number[] = outgoing.map(p => p.dfh_pk_property)
 
     // filter for ingoing Roles
     const ingoingRoles = roles.filter(role => fkPropIn.includes(role.fk_property))

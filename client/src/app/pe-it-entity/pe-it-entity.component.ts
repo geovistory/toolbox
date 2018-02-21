@@ -11,13 +11,13 @@ import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
 import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
 import { ActivePeItService } from '../shared/services/active-pe-it.service';
 import { PeItService } from '../shared/services/pe-it.service'
-import { Property } from '../shared/services/property.service';
 import { ClassService } from '../shared/services/class.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
 import { InfPersistentItemApi } from '../shared/sdk/services/custom/InfPersistentItem';
 import { AppellationStdBool } from '../role/role.component';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
 import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
+import { DfhProperty } from '../shared/sdk/models/DfhProperty';
 
 @Component({
   selector: 'gv-pe-it-entity',
@@ -37,7 +37,7 @@ export class PeItEntityComponent implements OnInit {
   @Input() peItEntityState: string;
 
   // FkClass of peIt
-  @Input() fkClass: string;
+  @Input() fkClass: number;
 
   /**
   * Outputs
@@ -74,10 +74,10 @@ export class PeItEntityComponent implements OnInit {
   stdAppeString: string;
 
   // array of properies of which the class of this peIt is range.
-  outgoingProperties: Property[];
+  outgoingProperties: DfhProperty[];
 
   // array of properies of which the class of this peIt is domain.
-  ingoingProperties: Property[];
+  ingoingProperties: DfhProperty[];
 
   //
   loadingProperties: boolean
@@ -151,12 +151,16 @@ export class PeItEntityComponent implements OnInit {
     else if (this.peItEntityState == "create") {
 
       // initialize the ingoing Properties
-      this.ingoingProperties = this.classService
-        .getIngoingProperties(this.fkClass);
+      this.classService.getIngoingProperties(this.fkClass)
+        .subscribe((props: DfhProperty[]) => {
+          this.ingoingProperties = props;
+        });
 
       // initialize the outgoing Properties
-      this.outgoingProperties = this.classService
-        .getOutgoingProperties(this.fkClass);
+      this.classService.getOutgoingProperties(this.fkClass)
+        .subscribe((props: DfhProperty[]) => {
+          this.outgoingProperties = props;
+        });
 
       this.peItToCreate = new InfPersistentItem();
       this.peItToCreate.fk_class = this.fkClass;
@@ -178,13 +182,18 @@ export class PeItEntityComponent implements OnInit {
 
         this.peIt = peIts[0];
 
+
         // initialize the ingoing Properties
-        this.ingoingProperties = this.classService
-          .getIngoingProperties(this.peIt.fk_class);
+        this.classService.getIngoingProperties(this.peIt.fk_class)
+          .subscribe((props: DfhProperty[]) => {
+            this.ingoingProperties = props;
+          });
 
         // initialize the outgoing Properties
-        this.outgoingProperties = this.classService
-          .getOutgoingProperties(this.peIt.fk_class);
+        this.classService.getOutgoingProperties(this.peIt.fk_class)
+          .subscribe((props: DfhProperty[]) => {
+            this.outgoingProperties = props;
+          });
 
 
         this.completeLoading();
@@ -206,13 +215,16 @@ export class PeItEntityComponent implements OnInit {
         this.peIt = peIts[0];
 
         // initialize the ingoing Properties
-        this.ingoingProperties = this.classService
-          .getIngoingProperties(this.peIt.fk_class);
+        this.classService.getIngoingProperties(this.peIt.fk_class)
+          .subscribe((props: DfhProperty[]) => {
+            this.ingoingProperties = props;
+          });
 
         // initialize the outgoing Properties
-        this.outgoingProperties = this.classService
-          .getOutgoingProperties(this.peIt.fk_class);
-
+        this.classService.getOutgoingProperties(this.peIt.fk_class)
+          .subscribe((props: DfhProperty[]) => {
+            this.outgoingProperties = props;
+          });
 
         this.completeLoading();
 
