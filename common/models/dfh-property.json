@@ -1,0 +1,60 @@
+{
+  "name": "DfhProperty",
+  "plural": "DfhProperties",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "data_for_history",
+      "table": "property"
+    }
+  },
+  "properties": {
+    "dfh_pk_property": {
+      "type": "number",
+      "id": true,
+      "required": true
+    },
+    "dfh_identifier_in_namespace": {
+      "type": "string"
+    },
+    "dfh_has_domain": {
+      "type": "number",
+      "required": true
+    },
+    "dfh_has_range": {
+      "type": "number",
+      "required": true
+    },
+    "dfh_creation_time": {
+      "type": "date"
+    },
+    "dfh_modification_time": {
+      "type": "date"
+    },
+    "dfh_standard_label": {
+      "type": "string"
+    },
+    "dfh_domain_instances_cardinality_min": {
+      "type": "number",
+      "required": true
+    },
+    "dfh_domain_instances_cardinality_max": {
+      "type": "number",
+      "required": true
+    },
+    "dfh_range_instances_cardinality_min": {
+      "type": "number",
+      "required": true
+    },
+    "dfh_range_instances_cardinality_max": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

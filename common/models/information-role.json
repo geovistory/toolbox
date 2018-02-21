@@ -12,7 +12,9 @@
   "mixins": {
     "SetupRemoteMethods": {
       "disableAllExcept": [
-        "find", "findComplex", "findOrCreateInformationRole"
+        "find",
+        "findComplex",
+        "findOrCreateInformationRole"
       ]
     }
   },

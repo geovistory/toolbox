@@ -12,7 +12,8 @@
   "mixins": {
     "SetupRemoteMethods": {
       "disableAllExcept": [
-        "find", "findOrCreateTemporalEntity"
+        "find",
+        "findOrCreateTemporalEntity"
       ]
     }
   },

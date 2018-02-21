@@ -1,0 +1,64 @@
+{
+  "name": "DfhLabel",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "data_for_history",
+      "table": "label"
+    }
+  },
+  "properties": {
+    "dfh_pk_label": {
+      "type": "number",
+      "id": true,
+      "required": true
+    },
+    "dfh_label": {
+      "type": "string",
+      "required": true
+    },
+    "dfh_language_iso_code": {
+      "type": "string"
+    },
+    "dfh_is_standard_label_for_language": {
+      "type": "boolean"
+    },
+    "dfh_fk_property": {
+      "type": "number"
+    },
+    "dfh_fk_namespace": {
+      "type": "number"
+    },
+    "dfh_fk_class": {
+      "type": "number"
+    },
+    "dfh_fk_project": {
+      "type": "number"
+    },
+    "dfh_fk_class_type": {
+      "type": "number"
+    },
+    "dfh_fk_property_type": {
+      "type": "number"
+    },
+    "dfh_fk_system_type": {
+      "type": "number"
+    },
+    "dfh_fk_profile": {
+      "type": "number",
+      "required": true
+    },
+    "dfh_creation_time": {
+      "type": "date"
+    },
+    "dfh_modification_time": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

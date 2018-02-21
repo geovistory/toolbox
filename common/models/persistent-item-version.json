@@ -29,26 +29,29 @@
       "primaryKey": "pk_entity"
     }
   },
-  "acls": [{
-    "principalType": "ROLE",
-    "principalId": "$everyone",
-    "permission": "ALLOW",
-    "property": [
-      "find",
-      "findComplex",
-      "findById",
-      "searchInProject",
-      "searchInRepo",
-      "findOrCreatePeIt",
-      "withPhenomenaInProject",
-      "nestedObjectOfProject",
-      "nestedObjectOfRepo",
-      "addPeItToProject"
-    ]
-  }],
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find",
+        "findComplex",
+        "findById",
+        "searchInProject",
+        "searchInRepo",
+        "findOrCreatePeIt",
+        "withPhenomenaInProject",
+        "nestedObjectOfProject",
+        "nestedObjectOfRepo",
+        "addPeItToProject"
+      ]
+    }
+  ],
   "methods": {
-    "addPeItToProject":{
-      "accepts": [{
+    "addPeItToProject": {
+      "accepts": [
+        {
           "arg": "projectId",
           "type": "number",
           "required": true,
@@ -86,7 +89,8 @@
       }
     },
     "findOrCreatePeIt": {
-      "accepts": [{
+      "accepts": [
+        {
           "arg": "projectId",
           "type": "number",
           "required": true,
@@ -124,7 +128,8 @@
       }
     },
     "nestedObjectOfProject": {
-      "accepts": [{
+      "accepts": [
+        {
           "arg": "projectId",
           "type": "number",
           "required": true,
@@ -178,7 +183,8 @@
       }
     },
     "searchInProject": {
-      "accepts": [{
+      "accepts": [
+        {
           "arg": "projectId",
           "type": "number",
           "required": true,
@@ -227,7 +233,8 @@
       }
     },
     "searchInRepo": {
-      "accepts": [{
+      "accepts": [
+        {
           "arg": "searchString",
           "type": "string",
           "required": true,

@@ -1,0 +1,33 @@
+{
+  "name": "DfhClass",
+  "plural": "DfhClasses",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "data_for_history",
+      "table": "class"
+    }
+  },
+  "properties": {
+    "dfh_pk_class": {
+      "type": "number",
+      "id": true,
+      "required": true
+    },
+    "dfh_identifier_in_namespace": {
+      "type": "string"
+    },
+    "dfh_standard_label": {
+      "type": "string"
+    },
+    "dfh_fk_system_type": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

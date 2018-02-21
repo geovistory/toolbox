@@ -19,7 +19,7 @@
       "type": "number",
       "generated": true
     },
-    "notes":{
+    "notes": {
       "type": "string",
       "required": false
     },
@@ -31,7 +31,7 @@
       "type": "string",
       "generated": true
     },
-    "sys_period":{
+    "sys_period": {
       "type": "string",
       "generated": true
     },

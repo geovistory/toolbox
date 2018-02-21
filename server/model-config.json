@@ -80,10 +80,6 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "Class": {
-    "dataSource": "postgres1",
-    "public": true
-  },
   "InformationLanguage": {
     "dataSource": "postgres1",
     "public": true
@@ -99,5 +95,17 @@
   "EntityVersion": {
     "dataSource": null,
     "public": false
+  },
+  "DfhClass": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "DfhProperty": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "DfhLabel": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }
