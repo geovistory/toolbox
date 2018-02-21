@@ -49,6 +49,12 @@
       "model": "PersistentItemVersion",
       "foreignKey": "fk_entity_version_concat",
       "primaryKey": "pk_entity_version_concat"
+    },
+    "information_language": {
+      "type": "belongsTo",
+      "model": "InformationLanguage",
+      "foreignKey": "fk_entity_version_concat",
+      "primaryKey": "pk_entity_version_concat"
     }
   },
   "acls": [],

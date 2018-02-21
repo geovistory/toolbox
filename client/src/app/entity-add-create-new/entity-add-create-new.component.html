@@ -1,18 +1,10 @@
 <div class="gv-create-new">
-  create-new
-  <button type="button" name="button" (click)="setEntityModalState('search-existing')">back</button>
 
-  {{modalService.searchString}}
+  <p>Start by adding some minimal information</p>
 
-  {{modalService.selectedClass | json}}
   <gv-pe-it [fkClass]="modalService.selectedClass.pk_class" [peItState]="'create'"
   (peItReadyToCreate)="onPeItReadyToCreate($event)"
   (peItNotReadyToCreate)="onPeItNotReadyToCreate()"
-
   ></gv-pe-it>
-  <span *ngIf="keyboard.altPressed">
-    [ready: {{isReadyToCreate}}]
-  </span>
-  <button type="button" name="button" *ngIf="isReadyToCreate" (click)="createPeIt()">create</button>
 
 </div>

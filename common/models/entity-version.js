@@ -1,8 +1,98 @@
 'use strict';
 
+const Promise = require('bluebird');
+
 const HttpErrors = require('http-errors');
 
 module.exports = function(EntityVersion) {
+
+
+  EntityVersion.addToProject = function(projectId, data) {
+    var res;
+    var rej;
+    return new Promise(function(resolve, reject) {
+      res = resolve;
+      rej = reject;
+
+      let hasErr = false;
+
+      if (!data.entity_version_project_rels) {
+        rej();
+        rej('There is no entity_version_project_rels.');
+        console.log(data.pk_entity_version_concat + ' There is no entity_version_project_rels.')
+
+        hasErr = true;
+      }
+
+      // throw error if not exactly one epr
+      if (data.entity_version_project_rels.length !== 1) {
+        rej('There must be excactly one entity_version_project_rels.');
+        console.log(data.pk_entity_version_concat + ' There must be excactly one entity_version_project_rels.')
+        hasErr = true;
+      }
+
+      // get the requestetEpr
+      const requestedEpr = data.entity_version_project_rels[0];
+
+      // throw error if projectId is not same as requestetEpr.projectId
+      if (projectId !== requestedEpr.fk_project) {
+        rej('The project given as query parameter must the same as in the entity_version_project_rel.');
+        console.log(data.pk_entity_version_concat + ' The project given as query parameter must the same as in the entity_version_project_rel.')
+        hasErr = true;
+      }
+
+      // throw error if version_concat keys don't match
+      if (data.pk_entity_version_concat !== requestedEpr.fk_entity_version_concat) {
+        rej('The pk_entity_version_concat of the entity must the same as in the entity_version_project_rel.');
+        console.log(data.pk_entity_version_concat + ' The pk_entity_version_concat of the entity must the same as in the entity_version_project_rel.')
+        hasErr = true;
+      }
+
+      if (!hasErr) {
+
+        // Since persistent items can be connected to different roles
+        // it is possible that there is already an epr between the given
+        // project and the given pk_entity.
+
+        const EntityVersionProjectRel = EntityVersion.app.models.EntityVersionProjectRel;
+        // Search for an epr with that pk_entity and that projectId
+        EntityVersionProjectRel.findOrCreate({
+              "where": {
+                "fk_entity": data.pk_entity,
+                "fk_project": projectId
+              }
+            },
+            requestedEpr
+          )
+          .then(result => {
+            const resultingEpr = result[0];
+            const wasCreated = result[1];
+
+            if (wasCreated) {
+
+              res(resultingEpr);
+
+            } else {
+
+              const cb = function(err, instances) {
+                if (err)
+                  rej(err);
+                res(instances);
+              };
+
+              resultingEpr.replaceAttributes(requestedEpr, cb);
+            }
+
+          })
+          .catch(err => {
+            rej(err)
+          })
+      }
+    });
+
+  }
+
+
   EntityVersion.findOrCreateVersion = function(Model, projectId, dataObject) {
 
     const filter = {
@@ -22,22 +112,22 @@ module.exports = function(EntityVersion) {
     const find = function(pkEntityVersionConcat) {
 
       return Model.findOne({
-        where: {
-          pk_entity_version_concat: pkEntityVersionConcat
-        },
-        include: {
-          relation: "entity_version_project_rels",
-          scope: {
-            where: {
-              fk_project: projectId
+          where: {
+            pk_entity_version_concat: pkEntityVersionConcat
+          },
+          include: {
+            relation: "entity_version_project_rels",
+            scope: {
+              where: {
+                fk_project: projectId
+              }
             }
           }
-        }
-      })
-      .then((res) => {
-        return [res];
-      })
-      .catch(err => err);
+        })
+        .then((res) => {
+          return [res];
+        })
+        .catch(err => err);
 
     };
 
@@ -148,7 +238,7 @@ module.exports = function(EntityVersion) {
                 return err;
               })
               .then((epr) => {
-                if(!epr){
+                if (!epr) {
 
                   // If doesn't find one epr, the entity that was not part of
                   // the project with the given projectId.
@@ -163,20 +253,20 @@ module.exports = function(EntityVersion) {
 
   };
 
-//TODO IS this still needed?
+  //TODO IS this still needed?
   EntityVersion.createRole = function(projectId, role, resultingEntity) {
 
-        // … prepare the Role Model Constructor
+    // … prepare the Role Model Constructor
 
-        const InformationRole = EntityVersion.app.models.InformationRole;
+    const InformationRole = EntityVersion.app.models.InformationRole;
 
-        // … prepare the Role to create
+    // … prepare the Role to create
 
-        role.fk_entity = resultingEntity.pk_entity;
+    role.fk_entity = resultingEntity.pk_entity;
 
-        // call the api to find or create the role that points to the peIt
+    // call the api to find or create the role that points to the peIt
 
-        return InformationRole.findOrCreateInformationRole(projectId, role)
+    return InformationRole.findOrCreateInformationRole(projectId, role)
 
   };
 

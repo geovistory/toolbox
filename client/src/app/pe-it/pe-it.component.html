@@ -5,9 +5,10 @@
   *ngIf="showAppellationUI"
   class="gv-flex-grow-1"
   [appellation]="appellation"
-  [peItAppeState]="peItState"
+  [peItAppeState]="valueEntitiesState"
   (readyToCreate)=emitReadyToCreate($event)
   (notReadyToCreate)=emitNotReadyToCreate()
+  (readyToAdd)="onAppeReadyToAdd($event)"
   (appeChange)="emitAppeChange($event)"
   ></gv-pe-it-appellation>
 
@@ -15,9 +16,10 @@
   *ngIf="showLanguageUI"
   class="gv-flex-grow-1"
   [language]="language"
-  [peItLangState]="peItState"
+  [peItLangState]="valueEntitiesState"
   (readyToCreate)=emitReadyToCreate($event)
   (notReadyToCreate)=emitNotReadyToCreate()
+  (readyToAdd)="onLangReadyToAdd($event)"
   ></gv-pe-it-language>
 
   <gv-pe-it-entity
@@ -28,6 +30,7 @@
   (readyToCreate)="emitPeItReadyToCreate($event)"
   (notReadyToCreate)="emitPeItNotReadyToCreate()"
   (created)="created(peit)"
+  (readyToAdd)="onPeItReadyToAdd($event)"
   ></gv-pe-it-entity>
 
   <!-- <span *ngIf="peItPreviewNeeded">[Preview of entity]</span> -->

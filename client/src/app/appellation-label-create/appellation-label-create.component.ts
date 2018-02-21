@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
+import { EntityAddModalService } from '../shared/services/entity-add-modal.service';
 
 @Component({
   selector: 'gv-appellation-label-create',
@@ -24,10 +25,25 @@ export class AppellationLabelCreateComponent implements OnInit {
 
   isValid: boolean;
 
-  constructor() { }
+  constructor(
+    private entityAddModalService: EntityAddModalService
+  ) { }
 
   ngOnInit() {
-    this.appellationLabel = new AppellationLabel();
+    // If we are adding a peIt and there is a search string defined
+    if (this.entityAddModalService.searchString) {
+
+      //Prefill the new appellation label with that string
+      this.appellationLabel = new AppellationLabel(
+        null,
+        this.entityAddModalService.searchString
+      );
+
+    }
+    //else the normal case
+    else {
+      this.appellationLabel = new AppellationLabel();
+    }
   }
 
 

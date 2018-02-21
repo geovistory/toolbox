@@ -31,6 +31,10 @@
   (click)="add()">
     Add selected information to project
   </button>
+  <button type="button" class="btn btn-primary btn-sm" *ngIf="modalService.createButtonVisible"
+  (click)="create()">
+    Create
+  </button>
 
 </div>
 

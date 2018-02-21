@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter,
+ChangeDetectorRef } from '@angular/core';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
 
 @Component({
@@ -28,7 +29,9 @@ export class AppellationLabelEditComponent implements OnInit {
    */
   readyToSave: boolean;
 
-  constructor() { }
+  constructor(
+    private changeDetector: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     if (!this.appellationLabel) {
@@ -58,10 +61,12 @@ export class AppellationLabelEditComponent implements OnInit {
   labelReadToSave(appeLabel: AppellationLabel) {
     this.appellationLabel = appeLabel;
     this.readyToSave = true;
+    this.changeDetector.detectChanges()
   }
 
   labelNotReadyToSave(){
     this.readyToSave = false;
+    this.changeDetector.detectChanges()
   }
 
 }

@@ -2,11 +2,13 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { EntityVersionProjectRel } from '../sdk/models/EntityVersionProjectRel';
 import { EntityVersionProjectRelApi } from '../sdk/services/custom/EntityVersionProjectRel';
 import { PersistentItemVersion } from '../sdk/models/PersistentItemVersion';
+import { PersistentItemVersionApi } from '../sdk/services/custom/PersistentItemVersion';
+import { ActiveProjectService } from './active-project.service';
 
 export enum EntityAddModalState {
   'choose-class',
   'search-existing',
-  // 'create-new',
+  'create-new',
   'add-existing'
 }
 
@@ -14,7 +16,7 @@ export enum EntityAddModalState {
 export class EntityAddModalService {
 
   // State of view in modal
-  onStateChange:EventEmitter<string>= new EventEmitter();
+  onStateChange: EventEmitter<string> = new EventEmitter();
 
   // Add Entity Event
   onAdd: EventEmitter<number> = new EventEmitter();
@@ -28,76 +30,68 @@ export class EntityAddModalService {
   // state of the modal
   private _state: EntityAddModalState;
 
+  // previousState of the modal
+  previousState: string;
+
   // set current state by string
-  set state(newState:string){
-  this._state = EntityAddModalState[newState];
-  this.onStateChange.emit(newState);
-}
+  set state(newState: string) {
+    this._state = EntityAddModalState[newState];
+    this.onStateChange.emit(newState);
+  }
 
-// get current state as string
-get state():string {
-return EntityAddModalState[this._state];
-}
+  // get current state as string
+  get state(): string {
+    return EntityAddModalState[this._state];
+  }
 
-// get previous state as string
-get previousState():string {
-return EntityAddModalState[this._state - 1];
-}
+  // true if add button should be visible
+  addButtonVisible: boolean;
 
-// get flag for displaying button to add existing information
-get addButtonVisible():boolean {
-return EntityAddModalState[this._state]  === 'add-existing' ? true : false;
-}
+  // Class of the entity to add
+  selectedClass: any; //TODO: type the variable with class type
 
-// Class of the entity to add
-selectedClass:any; //TODO: type the variable with class type
+  // Current modal title
+  modalTitle: string;
 
-// Current modal title
-modalTitle:string;
+  // Primary Key of the current project
+  pkProject: number;
 
-// Primary Key of the current project
-pkProject:number;
+  // Primary Key of the persistent Item to Add
+  pkEntity: number;
 
-// Primary Key of the persistent Item to Add
-pkEntity:number;
+  // The persistent Item to Add
+  peItToAdd: PersistentItemVersion;
 
-// The persistent Item to Add
-persistentItemVersion:PersistentItemVersion;
+  // The persistent item to create
+  peItToCreate: PersistentItemVersion;
 
-// The search string used to search existing peIts
-// and create the appellation of the new peIt
-searchString:string;
+  // The search string used to search existing peIts
+  // and create the appellation of the new peIt
+  searchString: string;
 
-constructor(
-  private entityProjectRelApi:EntityVersionProjectRelApi
-) { }
+  // true if create button should be visible
+  createButtonVisible: boolean;
 
-addPeItToProject(){
-  const apiCall = new EventEmitter();
+  constructor(
+    private entityProjectRelApi: EntityVersionProjectRelApi,
+    private activeProjectService: ActiveProjectService,
+    private persistentItemApi: PersistentItemVersionApi
+  ) { }
 
-  const eprToCreate = [
-    {
-      "is_in_project": true,
-      "is_standard_in_project": true,
-      "fk_entity_version_concat": this.persistentItemVersion.pk_entity_version_concat,
-      "fk_project": this.pkProject
-    },
-    ...this.eprNaming
-  ];
+  addPeItToProject() {
 
-  this.entityProjectRelApi.create(eprToCreate).subscribe(
-    (response) => {
-      apiCall.emit();
-    },
-    error => {
-      apiCall.error(error);
+    return this.persistentItemApi.addPeItToProject(
+      this.activeProjectService.project.pk_project,
+      this.peItToAdd
+    )
 
-      // TODO: Alert
-      error.error.details.messages;
-    }
-  )
+  }
 
-  return apiCall;
-}
+  createPeIt() {
+    return this.persistentItemApi.findOrCreatePeIt(
+      this.activeProjectService.project.pk_project,
+      this.peItToCreate
+    )
+  }
 
 }

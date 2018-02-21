@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
@@ -18,6 +18,7 @@ import { KeyboardService } from '../shared/services/keyboard.service';
 import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
 import { AppellationStdBool } from '../role/role.component';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
+import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
 
 @Component({
   selector: 'gv-pe-it-entity',
@@ -49,6 +50,8 @@ export class PeItEntityComponent implements OnInit {
 
   @Output() created: EventEmitter<PersistentItemVersion> = new EventEmitter;
 
+  @Output() readyToAdd: EventEmitter<PersistentItemVersion> = new EventEmitter;
+
   /**
   * Properties
   */
@@ -65,6 +68,9 @@ export class PeItEntityComponent implements OnInit {
   // Persistent Item to be created
   peItToCreate: PersistentItemVersion;
 
+  // Persistent Item to be added
+  peItToAdd: PersistentItemVersion;
+
   // Displayed standard name of this peIt
   stdAppeString: string;
 
@@ -78,10 +84,13 @@ export class PeItEntityComponent implements OnInit {
   loadingProperties: boolean
 
   // true, when the peIt is ready to be created
-  isReadyToCreate:boolean;
+  isReadyToCreate: boolean;
 
   //this components
   thisComponent = this;
+
+  // true when the user clicks on add Information
+  addingInformation: boolean;
 
   constructor(
     private peItApi: PersistentItemVersionApi,
@@ -91,7 +100,8 @@ export class PeItEntityComponent implements OnInit {
     private activePeItService: ActivePeItService,
     private slimLoadingBarService: SlimLoadingBarService,
     private classService: ClassService,
-    public keyboard: KeyboardService
+    public keyboard: KeyboardService,
+    private changeDetector: ChangeDetectorRef
   ) {
   }
 
@@ -113,9 +123,32 @@ export class PeItEntityComponent implements OnInit {
     if (["preview", "edit", "viewCommunity"].indexOf(this.peItEntityState) !== -1) {
 
       // Query the peIt and set the peIt by a call to the Api
-      this.queryRichObject()
+      this.queryRichObjectOfProject()
 
     }
+
+    if (this.peItEntityState == "add-pe-it") {
+
+      // Query the peIt and set the peIt by a call to the Api
+      this.queryRichObjectOfRepo().subscribe(() => {
+
+        // make a copy
+        this.peItToAdd = new PersistentItemVersion(this.peIt);
+
+        // add an epr
+        this.peItToAdd.entity_version_project_rels = [
+          new EntityVersionProjectRel({
+            fk_project: this.activeProjectService.project.pk_project,
+            is_in_project: true,
+            fk_entity_version_concat: this.peIt.pk_entity_version_concat
+          })
+        ]
+
+      })
+
+    }
+
+
     else if (this.peItEntityState == "create") {
 
       // initialize the ingoing Properties
@@ -135,16 +168,43 @@ export class PeItEntityComponent implements OnInit {
 
   }
 
+  queryRichObjectOfRepo() {
 
-  queryRichObject() {
+    const onDone = new EventEmitter()
+
     this.startLoading();
 
-    this.peItService.getRichObject(this.pkProject, this.pkEntity).subscribe(
+    this.peItApi.nestedObjectOfRepo(this.pkEntity).subscribe(
       (peIts: PersistentItemVersion[]) => {
 
         this.peIt = peIts[0];
 
-        this.activePeItService.peIt = this.peIt;
+        // initialize the ingoing Properties
+        this.ingoingProperties = this.classService
+          .getIngoingProperties(this.peIt.fk_class);
+
+        // initialize the outgoing Properties
+        this.outgoingProperties = this.classService
+          .getOutgoingProperties(this.peIt.fk_class);
+
+
+        this.completeLoading();
+
+        onDone.emit();
+
+      });
+
+    return onDone;
+
+  }
+
+  queryRichObjectOfProject() {
+    this.startLoading();
+
+    this.peItApi.nestedObjectOfProject(this.pkProject, this.pkEntity).subscribe(
+      (peIts: PersistentItemVersion[]) => {
+
+        this.peIt = peIts[0];
 
         // initialize the ingoing Properties
         this.ingoingProperties = this.classService
@@ -167,30 +227,77 @@ export class PeItEntityComponent implements OnInit {
    * Methods for creating a peIt
    */
 
-   emitReadyToCreate(roles:InformationRole[]){
-     this.peItToCreate.pi_roles = roles;
-     this.isReadyToCreate = true
-     this.readyToCreate.emit(this.peItToCreate )
-   }
+  emitReadyToCreate(roles: InformationRole[]) {
+    this.peItToCreate.pi_roles = roles; //TODO this is not good because it overwrites roles coming form another property!
+    this.isReadyToCreate = true
+    this.readyToCreate.emit(this.peItToCreate)
+  }
 
 
-   emitNotReadyToCreate(){
-     this.isReadyToCreate = false
-     this.notReadyToCreate.emit()
-   }
-
-   /**
-    * Methods for event bubbeling
-    */
-
-   whenAppeChange(appeStd:AppellationStdBool) {
-     if(appeStd.isStandardInProject){       
-       const label = new AppellationLabel(appeStd.appellation.appellation_label);
-       this.stdAppeString = label.getString();
-     }
-   }
+  emitNotReadyToCreate() {
+    this.isReadyToCreate = false
+    this.notReadyToCreate.emit()
+  }
 
 
+
+  /**
+  * Methods for adding a peIt
+  */
+
+  onRolesReadyToAdd(rolesToAdd: InformationRole[]) {
+
+
+    let newRoles = [];
+
+    // For each role coming in from property component
+    rolesToAdd.forEach(roleToAdd => {
+
+      let exists = false;
+
+      for (let i = 0; i < this.peItToAdd.pi_roles.length; i++) {
+
+        // Check if the role is allready in the teEntToAdd
+        if (this.peItToAdd.pi_roles[i].pk_entity === roleToAdd.pk_entity) {
+
+          // if yes replace it with the new one
+          this.peItToAdd.pi_roles[i] = roleToAdd;
+          exists = true;
+        }
+      }
+
+      // else add it to a temporary array
+      if (!exists) {
+        newRoles.push(roleToAdd);
+      }
+
+    })
+    // add all the new roles to teEntToAdd
+    this.peItToAdd.pi_roles.concat(newRoles);
+
+    this.readyToAdd.emit(this.peItToAdd);
+  }
+
+
+  /**
+   * Methods for event bubbeling
+   */
+
+  whenAppeChange(appeStd: AppellationStdBool) {
+    if (appeStd.isStandardInProject) {
+      const label = new AppellationLabel(appeStd.appellation.appellation_label);
+      this.stdAppeString = label.getString();
+      this.changeDetector.detectChanges()
+    }
+  }
+
+  startAddingInformation() {
+    this.addingInformation = true;
+  }
+
+  stopAddingInformation() {
+    this.addingInformation = false;
+  }
 
   /**
   * Loading Bar Logic

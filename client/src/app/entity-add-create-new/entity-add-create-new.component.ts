@@ -1,10 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { EntityAddModalService } from '../shared/services/entity-add-modal.service';
+import { EntityAddModalService , EntityAddModalState } from '../shared/services/entity-add-modal.service';
 import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
-import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
-import { ActiveProjectService } from '../shared/services/active-project.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
 
 @Component({
@@ -25,13 +23,14 @@ export class EntityAddCreateNewComponent implements OnInit {
 
   constructor(
     public keyboard: KeyboardService,
-    private activeProjectService: ActiveProjectService,
-    private persistentItemApi: PersistentItemVersionApi,
     public activeModal: NgbActiveModal,
     public modalService: EntityAddModalService
   ) { }
 
   ngOnInit() {
+
+    this.modalService.previousState = EntityAddModalState[1];
+
     this.modalService.modalTitle = "Create a new " + this.modalService.selectedClass.label
   }
 
@@ -40,23 +39,13 @@ export class EntityAddCreateNewComponent implements OnInit {
   }
 
   onPeItReadyToCreate(peIt: PersistentItemVersion) {
-    this.peItToCreate = peIt;
-    this.isReadyToCreate = true;
+    this.modalService.peItToCreate = peIt;
+    this.modalService.createButtonVisible = true;
   }
 
   onPeItNotReadyToCreate() {
-    this.isReadyToCreate = false;
-  }
-
-  createPeIt() {
-    //TODO loading bar
-    this.persistentItemApi.findOrCreatePeIt(
-      this.activeProjectService.project.pk_project,
-      this.peItToCreate
-    ).subscribe(peIts => {
-      //TODO loading bar
-      //TODO Close and so on
-    })
+    this.modalService.peItToCreate = undefined;
+    this.modalService.createButtonVisible = false;
   }
 
 

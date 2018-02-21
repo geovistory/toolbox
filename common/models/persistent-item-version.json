@@ -41,10 +41,50 @@
       "searchInRepo",
       "findOrCreatePeIt",
       "withPhenomenaInProject",
-      "testPromises"
+      "nestedObjectOfProject",
+      "nestedObjectOfRepo",
+      "addPeItToProject"
     ]
   }],
   "methods": {
+    "addPeItToProject":{
+      "accepts": [{
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": "PersistentItemVersion",
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "PersistentItemVersion",
+        "root": true
+      },
+      "description": "Add a nested object of a PersistentItemVersion to the project.",
+      "http": {
+        "path": "/add-to-project",
+        "verb": "post"
+      }
+    },
     "findOrCreatePeIt": {
       "accepts": [{
           "arg": "projectId",
@@ -81,6 +121,60 @@
       "http": {
         "path": "/findOrCreate",
         "verb": "post"
+      }
+    },
+    "nestedObjectOfProject": {
+      "accepts": [{
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Project id",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the persistent item (pk_entity)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "PersistentItemVersion",
+        "root": true
+      },
+      "description": "Get e nested object of all information about the persistent item of the project.",
+      "http": {
+        "path": "/nested-object-of-project",
+        "verb": "get"
+      }
+    },
+    "nestedObjectOfRepo": {
+      "accepts": [
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the persistent item (pk_entity)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "PersistentItemVersion",
+        "root": true
+      },
+      "description": "Get e nested object of all information about the persistent item with the community favorites.",
+      "http": {
+        "path": "/nested-object-of-repo",
+        "verb": "get"
       }
     },
     "searchInProject": {

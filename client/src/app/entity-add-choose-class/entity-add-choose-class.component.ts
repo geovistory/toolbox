@@ -22,6 +22,7 @@ export class EntityAddChooseClassComponent implements OnInit {
 
   ngOnInit() {
     this.modalService.modalTitle = 'What do you want to add?'
+    this.modalService.previousState = undefined;
   }
 
   selectClass(classKey:string){

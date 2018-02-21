@@ -58,13 +58,13 @@ import { GvNameVisiblePipe } from './shared/pipes/gv-name-visible.pipe';
 import { EntityEditorComponent } from './entity-editor/entity.editor.component';
 import { LanguageSearchTypeaheadComponent } from './language-search-typeahead/language-search-typeahead.component';
 import { AppellationService } from './shared/services/appellation.service';
-import { NamePartStringEditComponent } from './name-part-string-edit/name-part-string-edit.component';
+import { AppellationLabelTokenComponent } from './appellation-label-token/appellation-label-token.component';
 import { PassiveLinkDirective } from './passive-link.directive';
 import { VersionModalComponent } from './version-modal/version-modal.component';
 import { PeItService } from './shared/services/pe-it.service';
 import { PeItComponent } from './pe-it/pe-it.component';
 import { PeItEntityComponent } from './pe-it-entity/pe-it-entity.component';
-import { AddInfoComponent } from './add-info/add-info.component';
+import { PropSectionListComponent } from './prop-section-list/prop-section-list.component';
 import { PropertyComponent } from './property/property.component';
 import { RoleComponent } from './role/role.component';
 import { TeEntComponent } from './te-ent/te-ent.component';
@@ -104,7 +104,7 @@ import { AppellationLabelEditorComponent } from './appellation-label-editor/appe
     ProjectEditComponent,
     NamingComponent,
     NameComponent,
-    NamePartStringEditComponent,
+    AppellationLabelTokenComponent,
     ProjectEditPanelComponent,
     EntityEditorComponent,
     ProjectSourcesComponent,
@@ -131,7 +131,7 @@ import { AppellationLabelEditorComponent } from './appellation-label-editor/appe
     VersionModalComponent,
     PeItComponent,
     PeItEntityComponent,
-    AddInfoComponent,
+    PropSectionListComponent,
     PropertyComponent,
     RoleComponent,
     TeEntComponent,

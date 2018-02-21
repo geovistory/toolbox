@@ -1,16 +1,16 @@
 // Card containing a list of Names or Additional Infos
 .card.gv-naming,
-.card.gv-addinfo {
+.card.gv-prop-section-list {
   background-color: theme-color("secondary");
-  width: 316px;
+  // width: 316px;
 
   .card-header.gv-naming,
-  .card-header.gv-addinfo, {
+  .card-header.gv-prop-section-list, {
     color: $white;
     background-color: inherit;
     border-bottom: none;
     .gv-naming-dropdown,
-    .gv-addinfo-dropdown {
+    .gv-prop-section-list-dropdown {
       margin: (-$card-spacer-y) (-$card-spacer-x);
       .dropdown-toggle{
         height: 1.9rem;
@@ -23,16 +23,16 @@
       }
     }
   }
-  .card-body.gv-addinfo,
+  .card-body.gv-prop-section-list,
   .card-body.gv-naming {
   }
-  .card-footer.gv-addinfo,
+  .card-footer.gv-prop-section-list,
   .card-footer.gv-naming,{
     color: $white;
     background-color: inherit;
     border-top: none;
   }
-  .card-footer.gv-addinfo,
+  .card-footer.gv-prop-section-list,
   .card-footer.gv-naming {
     padding: 0;
     .btn {

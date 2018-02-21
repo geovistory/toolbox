@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import {
   trigger,
   state,
@@ -17,9 +17,9 @@ import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersio
 import { AppellationStdBool } from '../role/role.component';
 
 @Component({
-  selector: 'gv-add-info',
-  templateUrl: './add-info.component.html',
-  styleUrls: ['./add-info.component.scss'],
+  selector: 'gv-prop-section-list',
+  templateUrl: './prop-section-list.component.html',
+  styleUrls: ['./prop-section-list.component.scss'],
   animations: [
     trigger('slideInOut', [
       state('expanded', style({
@@ -56,7 +56,7 @@ import { AppellationStdBool } from '../role/role.component';
     ])
   ]
 })
-export class AddInfoComponent implements OnInit {
+export class PropSectionListComponent implements OnInit, OnChanges {
 
   /**
   * Inputs
@@ -78,7 +78,11 @@ export class AddInfoComponent implements OnInit {
   @Input() ingoingProperties: Property[];
 
   // state of this component
-  @Input() addInfoState: string;
+  @Input() propSectionListState: string;
+
+  // state of adding new information section
+  @Input() addingInformation: boolean;
+
 
   /**
   * Outputs
@@ -88,17 +92,25 @@ export class AddInfoComponent implements OnInit {
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
+  @Output() readyToAdd: EventEmitter<InformationRole[]> = new EventEmitter;
+
+
   // emit appellation and a flag to say if this is the standard appellation
   @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
+
+  // emit to say that adding informaion is finished
+  @Output() stopAddingInformation: EventEmitter<void> = new EventEmitter();
 
 
   /**
   * Properties
   */
 
-  // state of child component
-  propState: string;
+  // state of child components for adding or creating properties
+  selectPropState: string;
 
+  // state of child component for editing properties
+  propState: string;
 
   // Poperty that is currently chosen in order to add a role of this kind
   propertyToAdd: DirectionAwareProperty;
@@ -143,9 +155,11 @@ export class AddInfoComponent implements OnInit {
   */
   get addButtonVisible() {
 
-    if (this.addInfoState === 'selectProp') return false;
-    if (this.addInfoState === 'add') return false;
-    if (this.addInfoState === 'create') return false;
+    if (this.propSectionListState === 'selectProp') return false;
+    if (this.propSectionListState === 'add') return false;
+    if (this.propSectionListState === 'create') return false;
+    if (this.propSectionListState === 'add-pe-it') return false;
+
 
     return true;
 
@@ -156,6 +170,11 @@ export class AddInfoComponent implements OnInit {
   */
 
   ngOnInit() {
+
+    this.propState = this.propSectionListState;
+
+    this.propertyToAdd = null;
+
     this.outgoingDirectionAwareProperties = this.propertyService
       .toDirectionAwareProperties(true, this.outgoingProperties)
 
@@ -164,8 +183,8 @@ export class AddInfoComponent implements OnInit {
 
     if (this.roles) this.setDirectedRolesPerProperty();
 
-    if (this.addInfoState === 'create') {
-      this.propState = 'create';
+    if (this.propSectionListState === 'create') {
+      this.selectPropState = 'createPeIt';
 
       //TODO find smarter choice of the default property to add on create
       this.propertyToAdd = this.outgoingDirectionAwareProperties.filter(odap => {
@@ -173,6 +192,17 @@ export class AddInfoComponent implements OnInit {
       })[0]
 
     }
+  }
+
+  ngOnChanges() {
+
+    if (this.addingInformation) {
+      this.selectPropState = 'selectProp'
+    }
+    else {
+      this.selectPropState = 'init';
+    }
+
   }
 
   setDirectedRolesPerProperty() {
@@ -187,7 +217,9 @@ export class AddInfoComponent implements OnInit {
   * startSelectProperty - called, when user clicks on add info
   */
   startSelectProperty() {
-    this.addInfoState = 'selectProp';
+    this.selectPropState = 'selectProp';
+    this.propertyToAdd = null;
+
   }
 
 
@@ -196,25 +228,33 @@ export class AddInfoComponent implements OnInit {
   * selector or the info has been added successfully
   */
   stopSelectProperty() {
-    this.addInfoState = 'view';
-    this.propertyToAdd = undefined;
+
+    this.selectPropState = 'init';
+
+    this.stopAddingInformation.emit()
+
+    this.propertyToAdd = null;
   }
 
 
   /**
   * called, when user selected a the kind of property to add
   */
-  propertySelected(event) {
-    this.addInfoState = 'add';
-    this.propState = 'add';
+  startSelectRoles() {
+    if (this.propertyToAdd)
+      this.selectPropState = 'selectRoles';
   }
 
 
   /**
-  * called, when the child propertComponent's propState changes
+  * called, when the child propertComponent's selectPropState changes
   */
   onPropStateChange(state) {
-    this.propState = state;
+    this.selectPropState = state;
+
+    if (state == 'selectProp') {
+      this.propertyToAdd = null;
+    }
   }
 
 
@@ -223,18 +263,21 @@ export class AddInfoComponent implements OnInit {
    */
   onRolesAdded(roles) {
 
+    this.selectPropState = 'init';
+
+    this.stopAddingInformation.emit()
+
+
     this.roles = this.roles.concat(roles);
 
     this.setDirectedRolesPerProperty();
 
-    this.stopSelectProperty();
-
   }
 
   /**
-   * called when role is ready to create
+   * called when roles ready to create
    */
-  emitReadyToCreate(roles:InformationRole[]) {
+  emitReadyToCreate(roles: InformationRole[]) {
 
     this.readyToCreate.emit(roles);
 
@@ -243,7 +286,7 @@ export class AddInfoComponent implements OnInit {
   /**
    * called when role isnt ready to create
    */
-  emitNotReadyToCreate(roles:InformationRole[]) {
+  emitNotReadyToCreate(roles: InformationRole[]) {
 
     this.notReadyToCreate.emit();
 
@@ -253,10 +296,16 @@ export class AddInfoComponent implements OnInit {
    * Methods for event bubbeling
    */
 
-  emitAppeChange(appeStd:AppellationStdBool) {
+  emitAppeChange(appeStd: AppellationStdBool) {
     this.appeChange.emit(appeStd)
   }
 
+  /**
+   * called when roles of property (section) are ready to be added
+   */
+  onRolesReadyToAdd(roles: InformationRole[]) {
+    this.readyToAdd.emit(roles);
+  }
 
   /**
   * toggleCardBody - toggles the state of the card in order to collapse or

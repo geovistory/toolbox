@@ -1,3 +1,7 @@
-<gv-language-search-typeahead
+<gv-language-search-typeahead *ngIf="peItLangState !== 'add-pe-it'"
 [language]="language"
 (languageChange)="languageChange($event)"></gv-language-search-typeahead>
+
+<div *ngIf="peItLangState === 'add-pe-it'">
+  {{language.notes}}
+</div>

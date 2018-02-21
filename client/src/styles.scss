@@ -105,7 +105,12 @@ button {
 .gv-flex-grow-1{
   flex-grow: 1;
 }
-
+.gv-flex-grow-2{
+  flex-grow: 2;
+}
+.gv-flex-grow-5{
+  flex-grow: 5;
+}
 .gv-search-hits-count{
   font-size: $font-size-sm;
   color: $text-muted;
@@ -131,6 +136,10 @@ button {
 }
 .gv-li-inline:last-of-type {
   margin-right: 0;
+}
+
+.fa-chevron-right {
+    margin-right: .2rem;
 }
 
 // Navbar (main)

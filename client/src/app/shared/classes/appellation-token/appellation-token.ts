@@ -1,21 +1,21 @@
-import { NamePartStringEditComponent } from '../../../name-part-string-edit/name-part-string-edit.component';
+import { AppellationLabelTokenComponent } from '../../../appellation-label-token/appellation-label-token.component';
 
 export interface TokenInterface {
-  "id": number,
+  "id"?: number,
   "string": string,
   "autofocus": boolean,
   "isSeparator": boolean,
   "type"?: any,
-  "namePartStringEditComponent"?: NamePartStringEditComponent
+  "appellationLabelTokenComponent"?: AppellationLabelTokenComponent
 }
 
 export class Token implements TokenInterface {
-  id: number;
+  id?: number;
   string: string;
   autofocus: boolean;
   isSeparator: boolean;
   typeId: number;
-  namePartStringEditComponent?: NamePartStringEditComponent;
+  appellationLabelTokenComponent?: AppellationLabelTokenComponent;
   type?:Object;
 
   constructor(

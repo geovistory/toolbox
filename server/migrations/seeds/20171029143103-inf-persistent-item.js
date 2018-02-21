@@ -266,7 +266,21 @@ exports.up = function(db, callback) {
         (SELECT concat(pk_entity || '_' || entity_version) FROM insert_role_5),
         true,
         null
+      ),
+      -- Also add the language to the project
+      (
+        (SELECT pk_project FROM commons.project AS p  WHERE p.notes = '` + seedProject + `'),
+        (
+          SELECT pk_entity_version_concat
+          FROM information.v_language_version
+          WHERE pk_language = 'deu' -- German
+        ),
+        true,
+        null
       )
+
+
+
       ON CONFLICT DO NOTHING
     )
 

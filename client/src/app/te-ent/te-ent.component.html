@@ -11,22 +11,30 @@
   <div class="card gv-name" *ngIf="teEntState !== 'create'">
 
     <div class="card-header gv-name-header d-flex flex-row">
-      <ng-content select="[eprUi]"></ng-content>
+
       <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
+        <i class="fa fa-chevron-right" [ngClass]="{'fa-rotate-90': (cardBodyState==='expanded')}"></i>
         {{displayLabel}}
       </div>
+
+      <ng-content select="[eprUi]"></ng-content>
+
+
     </div>
 
     <div class="gv-card-body-wrapper" [@slideInOut]="cardBodyState">
 
       <gv-property
       *ngFor="let property of directedRolesPerProperty"
+      [propState]="teEntState"
       [isOutgoing]="property.isOutgoing"
       [roles]="property.roles"
       [parentRole]="parentRole"
       [fkProperty]="property.fkProperty"
       [pointTo]="'PeIt'"
       (appeChange)="emitAppeChange($event)"
+      (readyToAdd)="onPropertyReadyToAdd($event)"
+      (notReadyToAdd)="onPropertyNotReadyToAdd()"
       ></gv-property>
 
     </div>
@@ -37,9 +45,9 @@
 
   <div class="card gv-name" *ngIf="teEntState === 'create'">
 
-    <div class="card-header gv-name-header d-flex flex-row">
+    <!-- <div class="card-header gv-name-header d-flex flex-row">
       <ng-content select="[eprUi]"></ng-content> [Create TeEnt of Class {{teEnt.fk_class}}]
-    </div>
+    </div> -->
 
     <div class="gv-card-body-wrapper">
 

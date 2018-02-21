@@ -8,7 +8,7 @@
 <div *ngIf="!account" class="container mt-5">
   <div class="row">
     <div class="col text-center">
-      <h1>Geovistory</h1>
+      <h1>Geovistory Toolbox</h1>
     </div>
   </div>
   <div class="row mt-5">
@@ -20,7 +20,7 @@
   </div>
   <div class="row mt-5">
     <div class="col text-center">
-      <a class="btn btn-link" routerLink="/login">Login</a>
+      <a class="btn btn-primary" routerLink="/login">Login</a>
       <a class="btn btn-link" routerLink="/registration">Register</a>
     </div>
   </div>
@@ -33,7 +33,7 @@
         <i id="userImage" class="d-none d-sm-none d-md-block fa fa-user-circle pull-right" aria-hidden="true"></i>
       </div>
       <div class="col-md-9">
-        <h2>Welcome to Geovistory {{account.username}}</h2>
+        <h2>Welcome to Geovistory Toolbox {{account.username}}</h2>
         <p class="text-muted">{{account.email}}</p>
       </div>
     </div>
