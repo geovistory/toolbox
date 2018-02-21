@@ -15,7 +15,7 @@ import 'rxjs/add/observable/forkJoin';
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { AppellationApi } from '../shared/sdk/services/custom/Appellation';
 import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
-import { InformationRole } from '../shared/sdk/models/InformationRole';
+import { InfRole } from '../shared/sdk/models/InfRole';
 import { InfLanguage } from '../shared/sdk/models/InfLanguage';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
 import { ActiveProjectService } from '../shared/services/active-project.service';
@@ -23,7 +23,7 @@ import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
 import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 import { InfEntityProjectRelApi } from '../shared/sdk/services/custom/InfEntityProjectRel';
 import { AppellationService } from '../shared/services/appellation.service';
-import { InformationRoleApi } from '../shared/sdk/services/custom/InformationRole';
+import { InfRoleApi } from '../shared/sdk/services/custom/InfRole';
 import { VersionModalComponent } from '../version-modal/version-modal.component';
 
 @Component({
@@ -65,8 +65,8 @@ export class NameComponent implements OnInit, OnChanges{
 
 
   /*** Data ***/
-  @Input() name: InformationRole; // R63_Named
-  r63Versions:InformationRole[];
+  @Input() name: InfRole; // R63_Named
+  r63Versions:InfRole[];
 
   // On state 'add' set true to check is_standard_in_project
   @Input() isStandardOnAdd: boolean = false;
@@ -94,13 +94,13 @@ export class NameComponent implements OnInit, OnChanges{
   }
 
   // TemporalEntity --> Role --> Appellation
-  _roleR64: InformationRole; // R64_used_name
+  _roleR64: InfRole; // R64_used_name
 
-  set roleR64(value:InformationRole){
+  set roleR64(value:InfRole){
     this._roleR64 = value;
   }
 
-  get roleR64():InformationRole{
+  get roleR64():InfRole{
     return this._roleR64;
   }
 
@@ -133,13 +133,13 @@ export class NameComponent implements OnInit, OnChanges{
   }
 
   // TemporalEntity --> Role --> PersistentItem
-  _roleR61: InformationRole; // R61_occured_in_kind_of_context
+  _roleR61: InfRole; // R61_occured_in_kind_of_context
 
-  set roleR61(value:InformationRole){
+  set roleR61(value:InfRole){
     this._roleR61 = value;
   }
 
-  get roleR61():InformationRole{
+  get roleR61():InfRole{
     return this._roleR61;
   }
 
@@ -321,7 +321,7 @@ export class NameComponent implements OnInit, OnChanges{
     private entityProjectRelApi:InfEntityProjectRelApi,
     private activeProjectService: ActiveProjectService,
     private slimLoadingBarService: SlimLoadingBarService,
-    private informationRoleApi: InformationRoleApi,
+    private informationRoleApi: InfRoleApi,
     private modalService: NgbModal
   ) {
   }

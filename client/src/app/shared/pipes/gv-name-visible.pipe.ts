@@ -1,12 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { InformationRole } from '../sdk/models/InformationRole';
+import { InfRole } from '../sdk/models/InfRole';
 
 @Pipe({
   name: 'gvNameVisible'
 })
 export class GvNameVisiblePipe implements PipeTransform {
 
-  transform(names: InformationRole[], state: string, projectId:number): any {
+  transform(names: InfRole[], state: string, projectId:number): any {
       if (!names || !state) {
           return names;
       }

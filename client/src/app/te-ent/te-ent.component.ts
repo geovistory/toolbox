@@ -13,7 +13,7 @@ import { RoleComponent, AppellationStdBool } from '../role/role.component';
 import { ClassService } from '../shared/services/class.service';
 import { Property } from '../shared/services/property.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
-import { InformationRole } from '../shared/sdk/models/InformationRole';
+import { InfRole } from '../shared/sdk/models/InfRole';
 import { PropertyComponent } from '../property/property.component';
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
@@ -48,7 +48,7 @@ export class TeEntComponent implements OnInit {
 
   @Input() parentProperty: Property;
 
-  @Input() parentRole: InformationRole;
+  @Input() parentRole: InfRole;
 
   @Input() isOutgoing: boolean;
 
@@ -151,10 +151,10 @@ export class TeEntComponent implements OnInit {
     );
   }
 
-  propertyReadyToCreate(roles: InformationRole[]) {
+  propertyReadyToCreate(roles: InfRole[]) {
 
 
-    let rolesToCreate: InformationRole[] = [];
+    let rolesToCreate: InfRole[] = [];
 
     let allValid = true;
 
@@ -186,7 +186,7 @@ export class TeEntComponent implements OnInit {
 
   }
 
-  onPropertyReadyToAdd(rolesToAdd: InformationRole[]) {
+  onPropertyReadyToAdd(rolesToAdd: InfRole[]) {
 
     let newRoles = [];
 

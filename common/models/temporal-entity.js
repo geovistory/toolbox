@@ -23,7 +23,7 @@ module.exports = function(TemporalEntity) {
         if (requestedTeEnt.te_roles) {
 
           // prepare parameters
-          const InformationRole = TemporalEntity.app.models.InformationRole;
+          const InfRole = TemporalEntity.app.models.InfRole;
 
           //… filter roles that are truthy (not null), iterate over them,
           // return the promise that the PeIt will be
@@ -31,7 +31,7 @@ module.exports = function(TemporalEntity) {
           return Promise.map(requestedTeEnt.te_roles.filter(role => (role)), (role) => {
 
               // add role to project
-              return InformationRole.addRoleToProject(projectId, role);
+              return InfRole.addRoleToProject(projectId, role);
 
             })
             .then((roles) => {
@@ -88,7 +88,7 @@ module.exports = function(TemporalEntity) {
         if (requestedTeEnt.te_roles) {
 
           // prepare parameters
-          const InformationRole = TemporalEntity.app.models.InformationRole;
+          const InfRole = TemporalEntity.app.models.InfRole;
 
           //… filter roles that are truthy (not null), iterate over them,
           // return the promise that the teEnt will be
@@ -98,7 +98,7 @@ module.exports = function(TemporalEntity) {
               role.fk_temporal_entity = resultingTeEnt.pk_entity;
 
               // find or create the Entity and the role pointing to the Entity
-              return InformationRole.findOrCreateInformationRole(projectId, role);
+              return InfRole.findOrCreateInfRole(projectId, role);
             })
             .then((roles) => {
 

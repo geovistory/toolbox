@@ -76,7 +76,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "InformationRole": {
+  "InfRole": {
     "dataSource": "postgres1",
     "public": true
   },

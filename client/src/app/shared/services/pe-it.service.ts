@@ -10,8 +10,8 @@ import { Appellation } from '../sdk/models/Appellation';
 import { InfLanguage } from '../sdk/models/InfLanguage';
 import { TemporalEntityApi } from '../sdk/services/custom/TemporalEntity';
 import { AppellationApi } from '../sdk/services/custom/Appellation';
-import { InformationRoleApi } from '../sdk/services/custom/InformationRole';
-import { InformationRole } from '../sdk/models/InformationRole';
+import { InfRoleApi } from '../sdk/services/custom/InfRole';
+import { InfRole } from '../sdk/models/InfRole';
 import { InfLanguageApi } from '../sdk/services/custom/InfLanguage';
 import { ActivePeItService } from './active-pe-it.service';
 
@@ -23,7 +23,7 @@ export class PeItService {
     private persistentItemApi: PersistentItemApi,
     private temporalEntityApi: TemporalEntityApi,
     private appellationApi: AppellationApi,
-    private roleApi: InformationRoleApi,
+    private roleApi: InfRoleApi,
     private languageApi: InfLanguageApi,
     private activePeItService: ActivePeItService
   ) {
@@ -42,8 +42,8 @@ export class PeItService {
     return this.appellationApi.findOrCreateAppellation(projectId, appe);
   }
 
-  createRole(projectId: number, role: InformationRole) {
-    return this.roleApi.findOrCreateInformationRole(projectId, role);
+  createRole(projectId: number, role: InfRole) {
+    return this.roleApi.findOrCreateInfRole(projectId, role);
   }
 
   findLangByIso6392t(iso6392t) {

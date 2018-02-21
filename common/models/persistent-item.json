@@ -24,7 +24,7 @@
   "relations": {
     "pi_roles": {
       "type": "hasMany",
-      "model": "InformationRole",
+      "model": "InfRole",
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     }

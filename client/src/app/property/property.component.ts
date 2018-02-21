@@ -13,7 +13,7 @@ import {
 
 import { Observable } from 'rxjs/Observable';
 
-import { InformationRole } from '../shared/sdk/models/InformationRole';
+import { InfRole } from '../shared/sdk/models/InfRole';
 import { RolePointToEnum, RoleComponent, AppellationStdBool } from '../role/role.component';
 import { RoleService } from '../shared/services/role.service';
 import { InfEntityProjectRelApi } from '../shared/sdk/services/custom/InfEntityProjectRel';
@@ -25,7 +25,7 @@ import { KeyboardService } from '../shared/services/keyboard.service';
 import { PersistentItem } from '../shared/sdk/models/PersistentItem';
 import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
 import { ActiveProjectService } from '../shared/services/active-project.service';
-import { InformationRoleApi } from '../shared/sdk/services/custom/InformationRole';
+import { InfRoleApi } from '../shared/sdk/services/custom/InfRole';
 import { Appellation } from '../shared/sdk/models/Appellation';
 
 
@@ -89,10 +89,10 @@ export class PropertyComponent implements OnChanges {
   @Input() fkProperty: string;
 
   // roles of one kind (with the same fk_property)
-  @Input() roles: InformationRole[];
+  @Input() roles: InfRole[];
 
   //the role that is parent of the parent temporal entity
-  @Input() parentRole: InformationRole;
+  @Input() parentRole: InfRole;
 
   // The parent entity of this property is domain if true and range if false
   @Input() isOutgoing: boolean;
@@ -121,16 +121,16 @@ export class PropertyComponent implements OnChanges {
 
   @Output() propStateChange: EventEmitter<string> = new EventEmitter();
 
-  @Output() readyToCreate: EventEmitter<InformationRole[]> = new EventEmitter;
+  @Output() readyToCreate: EventEmitter<InfRole[]> = new EventEmitter;
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
-  @Output() rolesAdded: EventEmitter<InformationRole[]> = new EventEmitter;
+  @Output() rolesAdded: EventEmitter<InfRole[]> = new EventEmitter;
 
   // emit appellation and a flag to say if this is the standard appellation
   @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
 
-  @Output() readyToAdd: EventEmitter<InformationRole[]> = new EventEmitter();
+  @Output() readyToAdd: EventEmitter<InfRole[]> = new EventEmitter();
 
   @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter();
 
@@ -160,18 +160,18 @@ export class PropertyComponent implements OnChanges {
   private _propState: string;
 
   // role to create, when creating a new role
-  roleToCreate: InformationRole;
+  roleToCreate: InfRole;
 
-  rolesToCreate: InformationRole[];
+  rolesToCreate: InfRole[];
 
   // roles to add, when in add-pe-it state
-  rolesToAdd: InformationRole[] = [];
+  rolesToAdd: InfRole[] = [];
 
   isReadyToCreate: boolean;
 
   constructor(
     private eprApi: InfEntityProjectRelApi,
-    private roleApi: InformationRoleApi,
+    private roleApi: InfRoleApi,
     private activeProject: ActiveProjectService,
     private roleService: RoleService,
     private propertyService: PropertyService,
@@ -399,13 +399,13 @@ export class PropertyComponent implements OnChanges {
 
   /**
   * Called when user clicks on create new
-  * Creates a new InformationRole of the kind of property of this component
+  * Creates a new InfRole of the kind of property of this component
   * and pointing to the parent persistent item
   */
   startCreateNewRole() {
     this.propStateChange.emit('createRole');
 
-    this.roleToCreate = new InformationRole();
+    this.roleToCreate = new InfRole();
     this.roleToCreate.fk_property = this.fkProperty;
     this.roleToCreate.fk_entity = this.parentEntityPk;
 
@@ -445,7 +445,7 @@ export class PropertyComponent implements OnChanges {
   * - roleComponents.length >= minCardinality
   * - roleComponents.length =< maxCardinality
   *
-  * @param {InformationRole} role
+  * @param {InfRole} role
   */
   roleReadyToCreate(role) {
 
@@ -494,7 +494,7 @@ export class PropertyComponent implements OnChanges {
       role.fk_entity = this.parentPeIt.pk_entity;
     })
 
-    this.roleApi.findOrCreateInformationRole(
+    this.roleApi.findOrCreateInfRole(
       this.activeProject.project.pk_project,
       this.rolesToCreate[0]
     ).subscribe(newRoles => {
@@ -507,7 +507,7 @@ export class PropertyComponent implements OnChanges {
   }
 
 
-  onRoleReadyToAdd(role: InformationRole) {
+  onRoleReadyToAdd(role: InfRole) {
 
     let exists = false;
 

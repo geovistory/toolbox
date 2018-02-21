@@ -7,7 +7,7 @@ import { ActiveProjectService } from '../shared/services/active-project.service'
 import { PersistentItem } from '../shared/sdk/models/PersistentItem';
 import { PropertyPipe } from '../shared/pipes/property';
 import { Appellation } from '../shared/sdk/models/Appellation';
-import { InformationRole } from '../shared/sdk/models/InformationRole';
+import { InfRole } from '../shared/sdk/models/InfRole';
 import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
 import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
 import { ActivePeItService } from '../shared/services/active-pe-it.service';
@@ -227,7 +227,7 @@ export class PeItEntityComponent implements OnInit {
    * Methods for creating a peIt
    */
 
-  emitReadyToCreate(roles: InformationRole[]) {
+  emitReadyToCreate(roles: InfRole[]) {
     this.peItToCreate.pi_roles = roles; //TODO this is not good because it overwrites roles coming form another property!
     this.isReadyToCreate = true
     this.readyToCreate.emit(this.peItToCreate)
@@ -245,7 +245,7 @@ export class PeItEntityComponent implements OnInit {
   * Methods for adding a peIt
   */
 
-  onRolesReadyToAdd(rolesToAdd: InformationRole[]) {
+  onRolesReadyToAdd(rolesToAdd: InfRole[]) {
 
 
     let newRoles = [];

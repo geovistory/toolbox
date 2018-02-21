@@ -1,5 +1,5 @@
 {
-  "name": "InformationRole",
+  "name": "InfRole",
   "base": "EntityVersion",
   "idInjection": false,
   "options": {
@@ -14,7 +14,7 @@
       "disableAllExcept": [
         "find",
         "findComplex",
-        "findOrCreateInformationRole"
+        "findOrCreateInfRole"
       ]
     }
   },
@@ -64,7 +64,7 @@
   },
   "acls": [],
   "methods": {
-    "findOrCreateInformationRole": {
+    "findOrCreateInfRole": {
       "accepts": [
         {
           "arg": "projectId",
@@ -77,7 +77,7 @@
         },
         {
           "arg": "data",
-          "type": "InformationRole",
+          "type": "InfRole",
           "required": true,
           "description": "data",
           "http": {
@@ -94,7 +94,7 @@
       ],
       "returns": {
         "arg": "data",
-        "type": "InformationRole",
+        "type": "InfRole",
         "root": true
       },
       "description": "Find or create an information role version.",

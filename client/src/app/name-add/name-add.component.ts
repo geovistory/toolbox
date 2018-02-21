@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { InfLanguage } from '../shared/sdk/models/InfLanguage';
-import { InformationRole } from '../shared/sdk/models/InformationRole';
+import { InfRole } from '../shared/sdk/models/InfRole';
 import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 import { InfEntityProjectRelApi } from '../shared/sdk/services/custom/InfEntityProjectRel';
 
@@ -15,12 +15,12 @@ import 'rxjs/add/observable/forkJoin';
 })
 export class NameAddComponent implements OnInit {
 
-  @Input() names:InformationRole[];
-  namesNotInProject:InformationRole[];
-  suggestedNames:InformationRole[];
+  @Input() names:InfRole[];
+  namesNotInProject:InfRole[];
+  suggestedNames:InfRole[];
   entProRels:InfEntityProjectRel[]=[];
   @Output() onCancel = new EventEmitter();
-  @Output() onAdd:EventEmitter<InformationRole[]> = new EventEmitter();
+  @Output() onAdd:EventEmitter<InfRole[]> = new EventEmitter();
 
   language:InfLanguage;
   selected:boolean=false;

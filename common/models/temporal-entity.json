@@ -30,7 +30,7 @@
   "relations": {
     "te_roles": {
       "type": "hasMany",
-      "model": "InformationRole",
+      "model": "InfRole",
       "foreignKey": "fk_temporal_entity",
       "primaryKey": "pk_entity"
     }

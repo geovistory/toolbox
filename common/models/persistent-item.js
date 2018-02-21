@@ -24,7 +24,7 @@ module.exports = function(PersistentItem) {
         if (requestedPeIt.pi_roles) {
 
           // prepare parameters
-          const InformationRole = PersistentItem.app.models.InformationRole;
+          const InfRole = PersistentItem.app.models.InfRole;
 
           //… filter roles that are truthy (not null), iterate over them,
           // return the promise that the PeIt will be
@@ -32,7 +32,7 @@ module.exports = function(PersistentItem) {
           return Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
 
               // add role to project
-              return InformationRole.addRoleToProject(projectId, role);
+              return InfRole.addRoleToProject(projectId, role);
 
             })
             .then((roles) => {
@@ -88,7 +88,7 @@ module.exports = function(PersistentItem) {
         if (requestedPeIt.pi_roles) {
 
           // prepare parameters
-          const InformationRole = PersistentItem.app.models.InformationRole;
+          const InfRole = PersistentItem.app.models.InfRole;
 
           //… filter roles that are truthy (not null), iterate over them,
           // return the promise that the PeIt will be
@@ -97,7 +97,7 @@ module.exports = function(PersistentItem) {
               // use the pk_entity from the created peIt to set the fk_entity of the role
               role.fk_entity = resultingPeIt.pk_entity;
               // find or create the teEnt and the role pointing to the teEnt
-              return InformationRole.findOrCreateInformationRole(projectId, role);
+              return InfRole.findOrCreateInfRole(projectId, role);
             })
             .then((roles) => {
 

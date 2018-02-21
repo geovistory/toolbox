@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports = function(InformationRole) {
+module.exports = function(InfRole) {
 
-  InformationRole.addRoleToProject = function(projectId, role, ctx) {
+  InfRole.addRoleToProject = function(projectId, role, ctx) {
 
     let requestedRole;
 
@@ -12,14 +12,14 @@ module.exports = function(InformationRole) {
       requestedRole = role;
     }
 
-    return InformationRole.addToProject(projectId, requestedRole)
+    return InfRole.addToProject(projectId, requestedRole)
       .then(resultingEpr => {
 
         requestedRole.entity_version_project_rels = [resultingEpr];
 
         if (requestedRole.temporal_entity) {
           //add the temporal_entity to the project
-          const TemporalEntity = InformationRole.app.models.TemporalEntity;
+          const TemporalEntity = InfRole.app.models.TemporalEntity;
           return TemporalEntity.addTeEntToProject(projectId, requestedRole.temporal_entity)
             .then((results) => {
               requestedRole.temporal_entity = results[0];
@@ -33,7 +33,7 @@ module.exports = function(InformationRole) {
 
         else if (requestedRole.persistent_item) {
           //add the persistent_item to the project
-          const PersistentItem = InformationRole.app.models.PersistentItem;
+          const PersistentItem = InfRole.app.models.PersistentItem;
           return PersistentItem.addPeItToProject(projectId, requestedRole.persistent_item)
             .then((results) => {
               requestedRole.persistent_item = results[0];
@@ -46,7 +46,7 @@ module.exports = function(InformationRole) {
 
         else if (requestedRole.appellation) {
           //add the appellation to the project
-          const Appellation = InformationRole.app.models.Appellation;
+          const Appellation = InfRole.app.models.Appellation;
           return Appellation.addToProject(projectId, requestedRole.appellation)
             .then((results) => {
               requestedRole.appellation = results[0];
@@ -59,7 +59,7 @@ module.exports = function(InformationRole) {
 
         else if (requestedRole.language) {
           //add the language to the project
-          const InfLanguage = InformationRole.app.models.InfLanguage;
+          const InfLanguage = InfRole.app.models.InfLanguage;
           return InfLanguage.addToProject(projectId, requestedRole.language)
             .then((results) => {
               requestedRole.language = results[0];
@@ -83,7 +83,7 @@ module.exports = function(InformationRole) {
   }
 
 
-  InformationRole.findOrCreateInformationRole = function(projectId, role, ctx) {
+  InfRole.findOrCreateInfRole = function(projectId, role, ctx) {
 
     const dataObject = {
       pk_entity: role.pk_entity,
@@ -104,7 +104,7 @@ module.exports = function(InformationRole) {
     if (requestedRole.temporal_entity) {
 
       //create the temporal_entity first
-      const TemporalEntity = InformationRole.app.models.TemporalEntity;
+      const TemporalEntity = InfRole.app.models.TemporalEntity;
       return TemporalEntity.findOrCreateTemporalEntity(projectId, requestedRole.temporal_entity)
         .then((resultingTeEnts) => {
 
@@ -114,7 +114,7 @@ module.exports = function(InformationRole) {
           dataObject.fk_temporal_entity = resultingTeEnt.pk_entity;
 
           // call the api to find or create the role that points to the teEnt
-          return InformationRole.findOrCreateInformationRole(projectId, dataObject)
+          return InfRole.findOrCreateInfRole(projectId, dataObject)
             .then((roles) => {
 
               let res = roles[0].toJSON()
@@ -138,7 +138,7 @@ module.exports = function(InformationRole) {
     if (requestedRole.persistent_item) {
 
       // prepare parameters
-      const PersistentItem = InformationRole.app.models.PersistentItem;
+      const PersistentItem = InfRole.app.models.PersistentItem;
 
       // find or create the peIt and the role pointing to it
       return PersistentItem.findOrCreatePeIt(projectId, requestedRole.persistent_item)
@@ -149,7 +149,7 @@ module.exports = function(InformationRole) {
           // … prepare the Role to create
           dataObject.fk_entity = resultingPeIt.pk_entity;
 
-          return InformationRole.findOrCreateInformationRole(projectId, dataObject)
+          return InfRole.findOrCreateInfRole(projectId, dataObject)
             .then((resultingRoles) => {
 
               let res = resultingRole[0].toJSON();
@@ -172,7 +172,7 @@ module.exports = function(InformationRole) {
     else if (requestedRole.appellation) {
 
       // prepare parameters
-      const Appellation = InformationRole.app.models.Appellation;
+      const Appellation = InfRole.app.models.Appellation;
 
       // find or create the appellation and the role pointing to it
       return Appellation.findOrCreateAppellation(projectId, requestedRole.appellation)
@@ -182,7 +182,7 @@ module.exports = function(InformationRole) {
           // … prepare the Role to create
           dataObject.fk_entity = resultingEntity.pk_entity;
 
-          return InformationRole.findOrCreateInformationRole(projectId, dataObject)
+          return InfRole.findOrCreateInfRole(projectId, dataObject)
             .then((resultingRoles) => {
 
               let res = resultingRoles[0].toJSON();
@@ -206,7 +206,7 @@ module.exports = function(InformationRole) {
     else if (requestedRole.language) {
 
       // prepare parameters
-      const InfLanguage = InformationRole.app.models.InfLanguage;
+      const InfLanguage = InfRole.app.models.InfLanguage;
 
       // find or create the language and the role pointing to it
       return InfLanguage.findOrCreateLang(projectId, requestedRole.language)
@@ -216,7 +216,7 @@ module.exports = function(InformationRole) {
           // … prepare the Role to create
           dataObject.fk_entity = resultingEntity.pk_entity;
 
-          return InformationRole.findOrCreateInformationRole(projectId, dataObject)
+          return InfRole.findOrCreateInfRole(projectId, dataObject)
             .then((resultingRoles) => {
 
               let res = resultingRoles[0].toJSON();
@@ -234,7 +234,7 @@ module.exports = function(InformationRole) {
         })
     } else {
 
-      return InformationRole.findOrCreateVersion(InformationRole, projectId, dataObject)
+      return InfRole.findOrCreateVersion(InfRole, projectId, dataObject)
 
     }
 

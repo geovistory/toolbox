@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
-import { InformationRole } from '../shared/sdk/models/InformationRole';
+import { InfRole } from '../shared/sdk/models/InfRole';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { EprService } from '../shared/services/epr.service';
 import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
@@ -32,7 +32,7 @@ export class RoleComponent implements OnInit {
   * Inputs
   */
 
-  @Input() role: InformationRole;
+  @Input() role: InfRole;
 
   @Input() isOutgoing: boolean;
 
@@ -52,14 +52,14 @@ export class RoleComponent implements OnInit {
 
   @Output() onRequestStandard: EventEmitter<RoleComponent> = new EventEmitter();
 
-  @Output() readyToCreate: EventEmitter<InformationRole> = new EventEmitter;
+  @Output() readyToCreate: EventEmitter<InfRole> = new EventEmitter;
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
   // emit appellation and a flag to say if this is the standard appellation
   @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
 
-  @Output() readyToAdd: EventEmitter<InformationRole> = new EventEmitter();
+  @Output() readyToAdd: EventEmitter<InfRole> = new EventEmitter();
 
 
   /**
@@ -67,7 +67,7 @@ export class RoleComponent implements OnInit {
   */
 
   // Used in add-pe-it state
-  roleToAdd: InformationRole;
+  roleToAdd: InfRole;
 
   // Flag to disable the standard toggle button while loading 
   loadingStdChange: boolean = false;
@@ -89,13 +89,13 @@ export class RoleComponent implements OnInit {
 
   ngOnInit() {
     if (this.roleState === 'create') {
-      this.role = new InformationRole();
+      this.role = new InfRole();
       this.role.fk_property = this.fkProperty;
     }
 
     if (this.roleState === 'add-pe-it') {
       // make a copy
-      this.roleToAdd = new InformationRole(this.role);
+      this.roleToAdd = new InfRole(this.role);
 
       // add an epr
       this.roleToAdd.entity_version_project_rels = [

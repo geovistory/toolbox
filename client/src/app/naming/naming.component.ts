@@ -11,7 +11,7 @@ import {
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
-import { InformationRole } from '../shared/sdk/models/InformationRole';
+import { InfRole } from '../shared/sdk/models/InfRole';
 import { NameComponent } from '../name/name.component';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
@@ -65,7 +65,7 @@ export class NamingComponent implements OnInit, OnChanges {
   // The parent PeItEntityComponent
   @Input() parentPeItC:PeItEntityComponent;
 
-  @Input() roles:Array<InformationRole>;
+  @Input() roles:Array<InfRole>;
 
   get rolesR63(){
     return this.roles.filter(role => role.fk_property === 'R63');

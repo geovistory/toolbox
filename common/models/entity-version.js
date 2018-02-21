@@ -258,7 +258,7 @@ module.exports = function(EntityVersion) {
 
     // … prepare the Role Model Constructor
 
-    const InformationRole = EntityVersion.app.models.InformationRole;
+    const InfRole = EntityVersion.app.models.InfRole;
 
     // … prepare the Role to create
 
@@ -266,7 +266,7 @@ module.exports = function(EntityVersion) {
 
     // call the api to find or create the role that points to the peIt
 
-    return InformationRole.findOrCreateInformationRole(projectId, role)
+    return InfRole.findOrCreateInfRole(projectId, role)
 
   };
 

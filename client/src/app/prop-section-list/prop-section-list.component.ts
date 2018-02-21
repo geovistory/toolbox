@@ -8,7 +8,7 @@ import {
   keyframes
 } from '@angular/animations';
 
-import { InformationRole } from '../shared/sdk/models/InformationRole';
+import { InfRole } from '../shared/sdk/models/InfRole';
 import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
 import { Property, PropertyService, DirectionAwareProperty } from '../shared/services/property.service';
 import { RoleService, RolesPerProperty, DirectedRolesPerProperty } from '../shared/services/role.service';
@@ -63,7 +63,7 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   */
 
   // The roles this component does use
-  @Input() roles: InformationRole[];
+  @Input() roles: InfRole[];
 
   // The primary key of the parent PeIt Entity
   @Input() pkEntity: number;
@@ -88,11 +88,11 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   * Outputs
   */
 
-  @Output() readyToCreate: EventEmitter<InformationRole[]> = new EventEmitter;
+  @Output() readyToCreate: EventEmitter<InfRole[]> = new EventEmitter;
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
-  @Output() readyToAdd: EventEmitter<InformationRole[]> = new EventEmitter;
+  @Output() readyToAdd: EventEmitter<InfRole[]> = new EventEmitter;
 
 
   // emit appellation and a flag to say if this is the standard appellation
@@ -139,7 +139,7 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   /**
   * get rolesNotR63 - filter roles that are not R63
   *
-  * @return {InformationRole[]} array of roles that are not R63
+  * @return {InfRole[]} array of roles that are not R63
   */
   get rolesNotR63() {
     if (this.roles) {
@@ -277,7 +277,7 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   /**
    * called when roles ready to create
    */
-  emitReadyToCreate(roles: InformationRole[]) {
+  emitReadyToCreate(roles: InfRole[]) {
 
     this.readyToCreate.emit(roles);
 
@@ -286,7 +286,7 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   /**
    * called when role isnt ready to create
    */
-  emitNotReadyToCreate(roles: InformationRole[]) {
+  emitNotReadyToCreate(roles: InfRole[]) {
 
     this.notReadyToCreate.emit();
 
@@ -303,7 +303,7 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   /**
    * called when roles of property (section) are ready to be added
    */
-  onRolesReadyToAdd(roles: InformationRole[]) {
+  onRolesReadyToAdd(roles: InfRole[]) {
     this.readyToAdd.emit(roles);
   }
 
