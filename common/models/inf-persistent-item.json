@@ -1,5 +1,5 @@
 {
-  "name": "PersistentItem",
+  "name": "InfPersistentItem",
   "base": "EntityVersion",
   "idInjection": false,
   "options": {
@@ -62,7 +62,7 @@
         },
         {
           "arg": "data",
-          "type": "PersistentItem",
+          "type": "InfPersistentItem",
           "required": true,
           "description": "data",
           "http": {
@@ -79,10 +79,10 @@
       ],
       "returns": {
         "arg": "data",
-        "type": "PersistentItem",
+        "type": "InfPersistentItem",
         "root": true
       },
-      "description": "Add a nested object of a PersistentItem to the project.",
+      "description": "Add a nested object of a InfPersistentItem to the project.",
       "http": {
         "path": "/add-to-project",
         "verb": "post"
@@ -101,7 +101,7 @@
         },
         {
           "arg": "data",
-          "type": "PersistentItem",
+          "type": "InfPersistentItem",
           "required": true,
           "description": "data",
           "http": {
@@ -118,10 +118,10 @@
       ],
       "returns": {
         "arg": "data",
-        "type": "PersistentItem",
+        "type": "InfPersistentItem",
         "root": true
       },
-      "description": "Find or create a PersistentItem.",
+      "description": "Find or create a InfPersistentItem.",
       "http": {
         "path": "/findOrCreate",
         "verb": "post"
@@ -150,7 +150,7 @@
       ],
       "returns": {
         "arg": "data",
-        "type": "PersistentItem",
+        "type": "InfPersistentItem",
         "root": true
       },
       "description": "Get e nested object of all information about the persistent item of the project.",
@@ -173,7 +173,7 @@
       ],
       "returns": {
         "arg": "data",
-        "type": "PersistentItem",
+        "type": "InfPersistentItem",
         "root": true
       },
       "description": "Get e nested object of all information about the persistent item with the community favorites.",

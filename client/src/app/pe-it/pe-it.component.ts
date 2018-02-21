@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { PersistentItem } from '../shared/sdk/models/PersistentItem';
+import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { InfLanguage } from '../shared/sdk/models/InfLanguage';
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { UtilitiesService } from '../shared/services/utilities.service';
@@ -45,11 +45,11 @@ export class PeItComponent implements OnInit {
 
   // Persistent Item related
 
-  @Output() peItReadyToCreate: EventEmitter<PersistentItem> = new EventEmitter;
+  @Output() peItReadyToCreate: EventEmitter<InfPersistentItem> = new EventEmitter;
 
   @Output() peItNotReadyToCreate: EventEmitter<void> = new EventEmitter;
 
-  @Output() peItReadyToAdd: EventEmitter<PersistentItem> = new EventEmitter;
+  @Output() peItReadyToAdd: EventEmitter<InfPersistentItem> = new EventEmitter;
 
   // Appellation related
 
@@ -159,7 +159,7 @@ export class PeItComponent implements OnInit {
 
   // Persistent Item related
 
-  emitPeItReadyToCreate(peIt: PersistentItem) {
+  emitPeItReadyToCreate(peIt: InfPersistentItem) {
     this.peItReadyToCreate.emit(peIt)
   }
 
@@ -176,7 +176,7 @@ export class PeItComponent implements OnInit {
   }
 
 
-  onPeItReadyToAdd(peIt: PersistentItem) {
+  onPeItReadyToAdd(peIt: InfPersistentItem) {
     this.peItReadyToAdd.emit(peIt)
   }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
-import { PersistentItem } from '../shared/sdk/models/PersistentItem';
+import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 
 @Component({
   selector: 'gv-entity-search-hit',

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { EntityAddModalService , EntityAddModalState } from '../shared/services/entity-add-modal.service';
-import { PersistentItem } from '../shared/sdk/models/PersistentItem';
+import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { KeyboardService } from '../shared/services/keyboard.service';
 
 @Component({
@@ -15,7 +15,7 @@ export class EntityAddCreateNewComponent implements OnInit {
   @Input() onAddNewPeIt;
   @Input() projectId;
 
-  peItToCreate: PersistentItem;
+  peItToCreate: InfPersistentItem;
   loading: boolean = false;
   errorMessages: any;
 
@@ -38,7 +38,7 @@ export class EntityAddCreateNewComponent implements OnInit {
     this.modalService.state = newState;
   }
 
-  onPeItReadyToCreate(peIt: PersistentItem) {
+  onPeItReadyToCreate(peIt: InfPersistentItem) {
     this.modalService.peItToCreate = peIt;
     this.modalService.createButtonVisible = true;
   }

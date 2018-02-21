@@ -3,10 +3,10 @@ import {FormControl} from '@angular/forms';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
-import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
+import { InfPersistentItemApi } from '../shared/sdk/services/custom/InfPersistentItem';
 import { EntityAddModalService , EntityAddModalState } from '../shared/services/entity-add-modal.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { PersistentItem } from '../shared/sdk/models/PersistentItem';
+import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 
 @Component({
   selector: 'gv-entity-add-search-existing',
@@ -34,7 +34,7 @@ export class EntityAddSearchExistingComponent implements OnInit, OnChanges {
   searchFormControl = new FormControl();
 
   //Hits
-  persistentItems: PersistentItem[] = [];
+  persistentItems: InfPersistentItem[] = [];
 
   //Pagination
   collectionSize:number; // number of search results
@@ -42,7 +42,7 @@ export class EntityAddSearchExistingComponent implements OnInit, OnChanges {
   page:number = 1; // current page
 
   constructor(
-    private persistentItemApi: PersistentItemApi,
+    private persistentItemApi: InfPersistentItemApi,
     public modalService:EntityAddModalService,
     private activeModal: NgbActiveModal,
     private slimLoadingBarService: SlimLoadingBarService

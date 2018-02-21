@@ -2,9 +2,9 @@
 
 const Promise = require('bluebird');
 
-module.exports = function(PersistentItem) {
+module.exports = function(InfPersistentItem) {
 
-  PersistentItem.addPeItToProject = function(projectId, data, ctx) {
+  InfPersistentItem.addPeItToProject = function(projectId, data, ctx) {
     let requestedPeIt;
 
     if (ctx) {
@@ -13,7 +13,7 @@ module.exports = function(PersistentItem) {
       requestedPeIt = data;
     }
 
-    return PersistentItem.addToProject(projectId, requestedPeIt)
+    return InfPersistentItem.addToProject(projectId, requestedPeIt)
       .then(resultingEpr => {
 
         // attatch the new epr to the peIt
@@ -24,7 +24,7 @@ module.exports = function(PersistentItem) {
         if (requestedPeIt.pi_roles) {
 
           // prepare parameters
-          const InfRole = PersistentItem.app.models.InfRole;
+          const InfRole = InfPersistentItem.app.models.InfRole;
 
           //… filter roles that are truthy (not null), iterate over them,
           // return the promise that the PeIt will be
@@ -63,7 +63,7 @@ module.exports = function(PersistentItem) {
   }
 
 
-  PersistentItem.findOrCreatePeIt = function(projectId, data, ctx) {
+  InfPersistentItem.findOrCreatePeIt = function(projectId, data, ctx) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
@@ -79,7 +79,7 @@ module.exports = function(PersistentItem) {
       requestedPeIt = data;
     }
 
-    return PersistentItem.findOrCreateVersion(PersistentItem, projectId, dataObject)
+    return InfPersistentItem.findOrCreateVersion(InfPersistentItem, projectId, dataObject)
       .then((resultingPeIts) => {
         // pick first item of array
         const resultingPeIt = resultingPeIts[0];
@@ -88,7 +88,7 @@ module.exports = function(PersistentItem) {
         if (requestedPeIt.pi_roles) {
 
           // prepare parameters
-          const InfRole = PersistentItem.app.models.InfRole;
+          const InfRole = InfPersistentItem.app.models.InfRole;
 
           //… filter roles that are truthy (not null), iterate over them,
           // return the promise that the PeIt will be
@@ -129,7 +129,7 @@ module.exports = function(PersistentItem) {
   }
 
 
-  PersistentItem.searchInProject = function(projectId, searchString, limit, page, cb) {
+  InfPersistentItem.searchInProject = function(projectId, searchString, limit, page, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -272,14 +272,14 @@ module.exports = function(PersistentItem) {
     OFFSET $3
     `;
 
-    const connector = PersistentItem.dataSource.connector;
+    const connector = InfPersistentItem.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       cb(err, resultObjects);
     });
   };
 
 
-  PersistentItem.afterRemote('searchInProject', function(ctx, resultObjects, next) {
+  InfPersistentItem.afterRemote('searchInProject', function(ctx, resultObjects, next) {
 
     var totalCount = 0;
     if (resultObjects.length > 0) {
@@ -312,7 +312,7 @@ module.exports = function(PersistentItem) {
   })
 
 
-  PersistentItem.searchInRepo = function(searchString, limit, page, cb) {
+  InfPersistentItem.searchInRepo = function(searchString, limit, page, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -429,14 +429,14 @@ module.exports = function(PersistentItem) {
     `;
 
 
-    const connector = PersistentItem.dataSource.connector;
+    const connector = InfPersistentItem.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       cb(err, resultObjects);
     });
   };
 
 
-  PersistentItem.afterRemote('searchInRepo', function(ctx, resultObjects, next) {
+  InfPersistentItem.afterRemote('searchInRepo', function(ctx, resultObjects, next) {
 
     var totalCount = 0;
     if (resultObjects.length > 0) {
@@ -475,7 +475,7 @@ module.exports = function(PersistentItem) {
    * @param  {number} pkProject primary key of project
    * @param  {number} pkEntity  pk_entity of the persistent item
    */
-  PersistentItem.nestedObjectOfProject = function(projectId, pkEntity, cb) {
+  InfPersistentItem.nestedObjectOfProject = function(projectId, pkEntity, cb) {
 
     const innerJoinThisProject = {
       "$relation": {
@@ -540,11 +540,11 @@ module.exports = function(PersistentItem) {
       }
     }
 
-    return PersistentItem.findComplex(filter, cb);
+    return InfPersistentItem.findComplex(filter, cb);
   }
 
 
-  PersistentItem.nestedObjectOfRepo = function(pkEntity, cb) {
+  InfPersistentItem.nestedObjectOfRepo = function(pkEntity, cb) {
 
     const filter = {
       /** Select persistent item by pk_entity … */
@@ -620,7 +620,7 @@ module.exports = function(PersistentItem) {
       }
     }
 
-    return PersistentItem.findComplex(filter, cb);
+    return InfPersistentItem.findComplex(filter, cb);
   }
 
 

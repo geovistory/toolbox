@@ -39,7 +39,7 @@
   "relations": {
     "persistent_item": {
       "type": "belongsTo",
-      "model": "PersistentItem",
+      "model": "InfPersistentItem",
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     },

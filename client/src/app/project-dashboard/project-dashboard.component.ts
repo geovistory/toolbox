@@ -6,7 +6,7 @@ import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { Project } from '../shared/sdk/models/Project';
 import { ProjectApi } from '../shared/sdk/services/custom/Project';
 import { ActiveProjectService } from '../shared/services/active-project.service';
-import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
+import { InfPersistentItemApi } from '../shared/sdk/services/custom/InfPersistentItem';
 
 @Component({
   selector: 'gv-project-dashboard',
@@ -36,7 +36,7 @@ export class ProjectDashboardComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private projectApi: ProjectApi,
     private activeProjectService: ActiveProjectService,
-    private persistentItemVersionApi: PersistentItemApi,
+    private persistentItemVersionApi: InfPersistentItemApi,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
     this.id = activatedRoute.snapshot.parent.params['id'];

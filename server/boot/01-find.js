@@ -1,6 +1,6 @@
 var findComplex = require('../../custom/findComplex.js');
 var exclude = [];
-var include = ["PersistentItem", "InfRole", "Appellation","TemporalEntity", "InfLanguage", "Project"];
+var include = ["InfPersistentItem", "InfRole", "Appellation","TemporalEntity", "InfLanguage", "Project"];
 
 module.exports = function(app){
   models = app.models();

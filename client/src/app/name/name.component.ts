@@ -132,7 +132,7 @@ export class NameComponent implements OnInit, OnChanges{
     return epr;
   }
 
-  // TemporalEntity --> Role --> PersistentItem
+  // TemporalEntity --> Role --> InfPersistentItem
   _roleR61: InfRole; // R61_occured_in_kind_of_context
 
   set roleR61(value:InfRole){

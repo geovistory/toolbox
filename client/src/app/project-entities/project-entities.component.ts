@@ -19,9 +19,9 @@ import { LoopBackConfig } from '../shared/sdk/lb.config';
 import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
 import { Project } from '../shared/sdk/models/Project';
 import { EntityAddModalService } from '../shared/services/entity-add-modal.service';
-import { PersistentItemApi } from '../shared/sdk/services/custom/PersistentItem';
+import { InfPersistentItemApi } from '../shared/sdk/services/custom/InfPersistentItem';
 import { PeItService } from '../shared/services/pe-it.service';
-import { PersistentItem } from '../shared/sdk/models/PersistentItem';
+import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 
 @Component({
   selector: 'gv-project-entities',
@@ -30,7 +30,7 @@ import { PersistentItem } from '../shared/sdk/models/PersistentItem';
 })
 export class ProjectEntitiesComponent implements OnInit {
 
-  persistentItems: PersistentItem[] = [];
+  persistentItems: InfPersistentItem[] = [];
   projectId: number;
 
   //Pagination
@@ -50,7 +50,7 @@ export class ProjectEntitiesComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private persistentItemApi: PersistentItemApi,
+    private persistentItemApi: InfPersistentItemApi,
     private modalService: NgbModal,
     private entityAddModalService: EntityAddModalService,
     private router: Router,
@@ -67,8 +67,8 @@ export class ProjectEntitiesComponent implements OnInit {
     this.entityAddModalService.onAdd.subscribe(success => {
       this.searchProjectPeIts();
     })
-    this.entityAddModalService.onOpen.subscribe(pkPersistentItem => {
-      this.openEntity(pkPersistentItem);
+    this.entityAddModalService.onOpen.subscribe(pkInfPersistentItem => {
+      this.openEntity(pkInfPersistentItem);
     })
   }
 
@@ -98,8 +98,8 @@ export class ProjectEntitiesComponent implements OnInit {
     modalRef.componentInstance.projectId = this.projectId;
   }
 
-  openEntity(pkPersistentItem){
-    this.router.navigate(['../entity', pkPersistentItem], {
+  openEntity(pkInfPersistentItem){
+    this.router.navigate(['../entity', pkInfPersistentItem], {
       relativeTo: this.activatedRoute, queryParamsHandling: 'merge'
     })
     // routerLink="../entity/{{persistentItem.pk_persistent_item}}" queryParamsHandling="merge"

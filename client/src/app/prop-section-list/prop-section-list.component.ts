@@ -13,7 +13,7 @@ import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
 import { Property, PropertyService, DirectionAwareProperty } from '../shared/services/property.service';
 import { RoleService, RolesPerProperty, DirectedRolesPerProperty } from '../shared/services/role.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
-import { PersistentItem } from '../shared/sdk/models/PersistentItem';
+import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { AppellationStdBool } from '../role/role.component';
 
 @Component({
@@ -69,7 +69,7 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   @Input() pkEntity: number;
 
   // The parent PeIt Entity
-  @Input() parentPeIt: PersistentItem;
+  @Input() parentPeIt: InfPersistentItem;
 
   // array of properies of which the class of this peIt is range.
   @Input() outgoingProperties: Property[];

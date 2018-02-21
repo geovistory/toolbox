@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
-import { PersistentItemApi } from '../sdk/services/custom/PersistentItem';
-import { PersistentItem } from '../sdk/models/PersistentItem';
+import { InfPersistentItemApi } from '../sdk/services/custom/InfPersistentItem';
+import { InfPersistentItem } from '../sdk/models/InfPersistentItem';
 import { TemporalEntity } from '../sdk/models/TemporalEntity';
 import { Appellation } from '../sdk/models/Appellation';
 import { InfLanguage } from '../sdk/models/InfLanguage';
@@ -20,7 +20,7 @@ import { ActivePeItService } from './active-pe-it.service';
 export class PeItService {
 
   constructor(
-    private persistentItemApi: PersistentItemApi,
+    private persistentItemApi: InfPersistentItemApi,
     private temporalEntityApi: TemporalEntityApi,
     private appellationApi: AppellationApi,
     private roleApi: InfRoleApi,
@@ -30,7 +30,7 @@ export class PeItService {
 
   }
 
-  createPeIt(projectId: number, peIt: PersistentItem) {
+  createPeIt(projectId: number, peIt: InfPersistentItem) {
     return this.persistentItemApi.findOrCreatePeIt(projectId, peIt)
   }
 

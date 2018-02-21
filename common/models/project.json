@@ -59,14 +59,14 @@
     },
     "persistent_items": {
       "type": "hasMany",
-      "model": "PersistentItem",
+      "model": "InfPersistentItem",
       "foreignKey": "fk_project",
       "keyThrough": "fk_entity",
       "through": "EntityProjectRel"
     },
     "persistent_item_versions": {
       "type": "hasMany",
-      "model": "PersistentItem",
+      "model": "InfPersistentItem",
       "foreignKey": "fk_project",
       "keyThrough": "fk_entity_version_concat",
       "through": "InfEntityProjectRel"

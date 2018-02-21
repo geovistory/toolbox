@@ -84,7 +84,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "PersistentItem": {
+  "InfPersistentItem": {
     "dataSource": "postgres1",
     "public": true
   },
