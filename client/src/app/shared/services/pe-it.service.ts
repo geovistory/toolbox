@@ -7,12 +7,12 @@ import { PersistentItemApi } from '../sdk/services/custom/PersistentItem';
 import { PersistentItem } from '../sdk/models/PersistentItem';
 import { TemporalEntity } from '../sdk/models/TemporalEntity';
 import { Appellation } from '../sdk/models/Appellation';
-import { InformationLanguage } from '../sdk/models/InformationLanguage';
+import { InfLanguage } from '../sdk/models/InfLanguage';
 import { TemporalEntityApi } from '../sdk/services/custom/TemporalEntity';
 import { AppellationApi } from '../sdk/services/custom/Appellation';
 import { InformationRoleApi } from '../sdk/services/custom/InformationRole';
 import { InformationRole } from '../sdk/models/InformationRole';
-import { InformationLanguageApi } from '../sdk/services/custom/InformationLanguage';
+import { InfLanguageApi } from '../sdk/services/custom/InfLanguage';
 import { ActivePeItService } from './active-pe-it.service';
 
 
@@ -24,7 +24,7 @@ export class PeItService {
     private temporalEntityApi: TemporalEntityApi,
     private appellationApi: AppellationApi,
     private roleApi: InformationRoleApi,
-    private languageApi: InformationLanguageApi,
+    private languageApi: InfLanguageApi,
     private activePeItService: ActivePeItService
   ) {
 

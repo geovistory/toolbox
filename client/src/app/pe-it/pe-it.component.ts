@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { PersistentItem } from '../shared/sdk/models/PersistentItem';
-import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
+import { InfLanguage } from '../shared/sdk/models/InfLanguage';
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { UtilitiesService } from '../shared/services/utilities.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
@@ -30,7 +30,7 @@ export class PeItComponent implements OnInit {
   @Input() pkEntity: number;
   @Input() fkClass: string;
   @Input() appellation: Appellation;
-  @Input() language: InformationLanguage;
+  @Input() language: InfLanguage;
   @Input() peItState: string;
 
   /**
@@ -59,7 +59,7 @@ export class PeItComponent implements OnInit {
 
   // Language related
 
-  @Output() langReadyToAdd: EventEmitter<InformationLanguage> = new EventEmitter();
+  @Output() langReadyToAdd: EventEmitter<InfLanguage> = new EventEmitter();
 
 
   /**
@@ -91,7 +91,7 @@ export class PeItComponent implements OnInit {
 
       if (this.fkClass === 'E56') {
 
-        this.language = new InformationLanguage()
+        this.language = new InfLanguage()
 
         this.language.fk_class = this.fkClass;
 
@@ -194,7 +194,7 @@ export class PeItComponent implements OnInit {
 
  // Language related
 
- onLangReadyToAdd(language:InformationLanguage) {
+ onLangReadyToAdd(language:InfLanguage) {
    this.langReadyToAdd.emit(language);
  }
 

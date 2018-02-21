@@ -1,5 +1,5 @@
 {
-  "name": "InformationLanguage",
+  "name": "InfLanguage",
   "base": "EntityVersion",
   "idInjection": false,
   "options": {

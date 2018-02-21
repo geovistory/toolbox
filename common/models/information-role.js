@@ -59,8 +59,8 @@ module.exports = function(InformationRole) {
 
         else if (requestedRole.language) {
           //add the language to the project
-          const InformationLanguage = InformationRole.app.models.InformationLanguage;
-          return InformationLanguage.addToProject(projectId, requestedRole.language)
+          const InfLanguage = InformationRole.app.models.InfLanguage;
+          return InfLanguage.addToProject(projectId, requestedRole.language)
             .then((results) => {
               requestedRole.language = results[0];
               return [requestedRole];
@@ -206,10 +206,10 @@ module.exports = function(InformationRole) {
     else if (requestedRole.language) {
 
       // prepare parameters
-      const InformationLanguage = InformationRole.app.models.InformationLanguage;
+      const InfLanguage = InformationRole.app.models.InfLanguage;
 
       // find or create the language and the role pointing to it
-      return InformationLanguage.findOrCreateLang(projectId, requestedRole.language)
+      return InfLanguage.findOrCreateLang(projectId, requestedRole.language)
         .then((resultingEntities) => {
           const resultingEntity = resultingEntities[0];
 

@@ -52,7 +52,7 @@
     },
     "information_language": {
       "type": "belongsTo",
-      "model": "InformationLanguage",
+      "model": "InfLanguage",
       "foreignKey": "fk_entity_version_concat",
       "primaryKey": "pk_entity_version_concat"
     }

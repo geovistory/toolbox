@@ -80,7 +80,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "InformationLanguage": {
+  "InfLanguage": {
     "dataSource": "postgres1",
     "public": true
   },

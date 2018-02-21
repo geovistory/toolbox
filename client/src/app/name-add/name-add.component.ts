@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ActiveProjectService } from '../shared/services/active-project.service';
-import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
+import { InfLanguage } from '../shared/sdk/models/InfLanguage';
 import { InformationRole } from '../shared/sdk/models/InformationRole';
 import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 import { InfEntityProjectRelApi } from '../shared/sdk/services/custom/InfEntityProjectRel';
@@ -22,7 +22,7 @@ export class NameAddComponent implements OnInit {
   @Output() onCancel = new EventEmitter();
   @Output() onAdd:EventEmitter<InformationRole[]> = new EventEmitter();
 
-  language:InformationLanguage;
+  language:InfLanguage;
   selected:boolean=false;
 
 
@@ -39,7 +39,7 @@ export class NameAddComponent implements OnInit {
     private entityProjectRelApi:InfEntityProjectRelApi,
     private activeProject: ActiveProjectService
   ) {
-    this.language = new InformationLanguage(this.activeProject.project.default_language);
+    this.language = new InfLanguage(this.activeProject.project.default_language);
   }
 
   ngOnInit() {

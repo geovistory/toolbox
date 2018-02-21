@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports = function(InformationLanguage) {
+module.exports = function(InfLanguage) {
 
-  InformationLanguage.findOrCreateLang = function(projectId, data) {
+  InfLanguage.findOrCreateLang = function(projectId, data) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
@@ -16,12 +16,12 @@ module.exports = function(InformationLanguage) {
       notes: data.notes,
     };
 
-    return InformationLanguage.findOrCreateVersion(InformationLanguage, projectId, dataObject);
+    return InfLanguage.findOrCreateVersion(InfLanguage, projectId, dataObject);
 
   }
 
 
-  InformationLanguage.queryByString = function(searchstring, cb) {
+  InfLanguage.queryByString = function(searchstring, cb) {
     var sql_stmt = `
     select pk_entity, pk_language, fk_class, lang_type, "scope",iso6392b, iso6392t, iso6391, notes
     from (
@@ -37,7 +37,7 @@ module.exports = function(InformationLanguage) {
     var params = [];
     params.push(searchstring + ':*');
 
-    const connector = InformationLanguage.dataSource.connector;
+    const connector = InfLanguage.dataSource.connector;
 
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       console.log(resultObjects)
@@ -45,8 +45,8 @@ module.exports = function(InformationLanguage) {
 
       if (resultObjects) {
         languages = resultObjects.map(languageRaw => {
-          const languageData = connector.fromRow('InformationLanguage', languageRaw)
-          return new InformationLanguage(languageData)
+          const languageData = connector.fromRow('InfLanguage', languageRaw)
+          return new InfLanguage(languageData)
         })
       }
 

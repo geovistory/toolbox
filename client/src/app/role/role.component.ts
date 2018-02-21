@@ -9,7 +9,7 @@ import { Property } from '../shared/services/property.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
-import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
+import { InfLanguage } from '../shared/sdk/models/InfLanguage';
 
 export enum RolePointToEnum {
   PeIt = "PeIt",
@@ -184,7 +184,7 @@ export class RoleComponent implements OnInit {
       this.role.appellation = entity
     }
 
-    if (entity instanceof InformationLanguage) {
+    if (entity instanceof InfLanguage) {
       this.role.language = entity
     }
 
@@ -266,7 +266,7 @@ export class RoleComponent implements OnInit {
   }
 
 
-  onLangReadyToAdd(language: InformationLanguage) {
+  onLangReadyToAdd(language: InfLanguage) {
 
     // add appe to role
     this.roleToAdd.language = language;

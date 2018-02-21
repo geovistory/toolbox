@@ -51,7 +51,7 @@
     },
     "language": {
       "type": "belongsTo",
-      "model": "InformationLanguage",
+      "model": "InfLanguage",
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     },

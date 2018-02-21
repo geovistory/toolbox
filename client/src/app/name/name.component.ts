@@ -16,7 +16,7 @@ import { Appellation } from '../shared/sdk/models/Appellation';
 import { AppellationApi } from '../shared/sdk/services/custom/Appellation';
 import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
 import { InformationRole } from '../shared/sdk/models/InformationRole';
-import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
+import { InfLanguage } from '../shared/sdk/models/InfLanguage';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
@@ -144,13 +144,13 @@ export class NameComponent implements OnInit, OnChanges{
   }
 
   // Language
-  _language: InformationLanguage; // E56_Language
+  _language: InfLanguage; // E56_Language
 
-  set language(value:InformationLanguage){
+  set language(value:InfLanguage){
     this._language = value;
   }
 
-  get language():InformationLanguage{
+  get language():InfLanguage{
     return this._language;
   }
 
