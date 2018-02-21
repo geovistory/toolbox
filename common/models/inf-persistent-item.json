@@ -1,6 +1,6 @@
 {
   "name": "InfPersistentItem",
-  "base": "EntityVersion",
+  "base": "InfEntityVersion",
   "idInjection": false,
   "options": {
     "validateUpsert": true,

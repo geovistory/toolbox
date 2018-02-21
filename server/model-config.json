@@ -92,7 +92,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "EntityVersion": {
+  "InfEntityVersion": {
     "dataSource": null,
     "public": false
   },

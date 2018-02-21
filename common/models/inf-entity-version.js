@@ -4,10 +4,10 @@ const Promise = require('bluebird');
 
 const HttpErrors = require('http-errors');
 
-module.exports = function(EntityVersion) {
+module.exports = function(InfEntityVersion) {
 
 
-  EntityVersion.addToProject = function(projectId, data) {
+  InfEntityVersion.addToProject = function(projectId, data) {
     var res;
     var rej;
     return new Promise(function(resolve, reject) {
@@ -54,7 +54,7 @@ module.exports = function(EntityVersion) {
         // it is possible that there is already an epr between the given
         // project and the given pk_entity.
 
-        const InfEntityProjectRel = EntityVersion.app.models.InfEntityProjectRel;
+        const InfEntityProjectRel = InfEntityVersion.app.models.InfEntityProjectRel;
         // Search for an epr with that pk_entity and that projectId
         InfEntityProjectRel.findOrCreate({
               "where": {
@@ -93,7 +93,7 @@ module.exports = function(EntityVersion) {
   }
 
 
-  EntityVersion.findOrCreateVersion = function(Model, projectId, dataObject) {
+  InfEntityVersion.findOrCreateVersion = function(Model, projectId, dataObject) {
 
     const filter = {
       where: dataObject,
@@ -109,11 +109,11 @@ module.exports = function(EntityVersion) {
 
     const InfEntityProjectRel = Model.app.models.InfEntityProjectRel;
 
-    const find = function(pkEntityVersionConcat) {
+    const find = function(pkInfEntityVersionConcat) {
 
       return Model.findOne({
           where: {
-            pk_entity_version_concat: pkEntityVersionConcat
+            pk_entity_version_concat: pkInfEntityVersionConcat
           },
           include: {
             relation: "entity_version_project_rels",
@@ -254,11 +254,11 @@ module.exports = function(EntityVersion) {
   };
 
   //TODO IS this still needed?
-  EntityVersion.createRole = function(projectId, role, resultingEntity) {
+  InfEntityVersion.createRole = function(projectId, role, resultingEntity) {
 
     // … prepare the Role Model Constructor
 
-    const InfRole = EntityVersion.app.models.InfRole;
+    const InfRole = InfEntityVersion.app.models.InfRole;
 
     // … prepare the Role to create
 

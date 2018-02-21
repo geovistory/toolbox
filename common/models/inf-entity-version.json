@@ -1,5 +1,5 @@
 {
-  "name": "EntityVersion",
+  "name": "InfEntityVersion",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
