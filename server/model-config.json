@@ -64,7 +64,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "CommonsTextProperty": {
+  "ComTextProperty": {
     "dataSource": "postgres1",
     "public": true
   },

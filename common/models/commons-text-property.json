@@ -1,5 +1,5 @@
 {
-  "name": "CommonsTextProperty",
+  "name": "ComTextProperty",
   "base": "PersistedModel",
   "idInjection": false,
   "options": {

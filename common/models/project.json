@@ -53,7 +53,7 @@
     },
     "text_properties": {
       "type": "hasMany",
-      "model": "CommonsTextProperty",
+      "model": "ComTextProperty",
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     },
