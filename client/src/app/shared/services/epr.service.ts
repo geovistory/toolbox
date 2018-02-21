@@ -14,7 +14,7 @@ export class EprService {
   * getEpr - returns the InfEntityProjectRel between the given entity
   * and the active project
   *
-  * @param  {any} entity   InfPersistentItem, Role, TemporalEntity, Appellation, Language
+  * @param  {any} entity   InfPersistentItem, Role, InfTemporalEntity, Appellation, Language
   * @return {type}        description
   */
   getEprOfEntity (entity){
@@ -33,7 +33,7 @@ export class EprService {
   * updateEprOfEntity - Updates InfEntityProjectRel between the given entity
   * and the active project
   *
-  * @param  {any} entity   InfPersistentItem, Role, TemporalEntity, Appellation, Language
+  * @param  {any} entity   InfPersistentItem, Role, InfTemporalEntity, Appellation, Language
   * @param  {InfEntityProjectRel} epr
   */
   updateEprOfEntity (entity, epr:InfEntityProjectRel){

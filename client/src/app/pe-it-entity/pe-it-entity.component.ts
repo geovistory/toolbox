@@ -8,7 +8,7 @@ import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { PropertyPipe } from '../shared/pipes/property';
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { InfRole } from '../shared/sdk/models/InfRole';
-import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
+import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
 import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
 import { ActivePeItService } from '../shared/services/active-pe-it.service';
 import { PeItService } from '../shared/services/pe-it.service'

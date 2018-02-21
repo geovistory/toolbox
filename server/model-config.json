@@ -72,7 +72,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "TemporalEntity": {
+  "InfTemporalEntity": {
     "dataSource": "postgres1",
     "public": true
   },

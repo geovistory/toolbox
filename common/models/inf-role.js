@@ -19,8 +19,8 @@ module.exports = function(InfRole) {
 
         if (requestedRole.temporal_entity) {
           //add the temporal_entity to the project
-          const TemporalEntity = InfRole.app.models.TemporalEntity;
-          return TemporalEntity.addTeEntToProject(projectId, requestedRole.temporal_entity)
+          const InfTemporalEntity = InfRole.app.models.InfTemporalEntity;
+          return InfTemporalEntity.addTeEntToProject(projectId, requestedRole.temporal_entity)
             .then((results) => {
               requestedRole.temporal_entity = results[0];
               return [requestedRole];
@@ -104,8 +104,8 @@ module.exports = function(InfRole) {
     if (requestedRole.temporal_entity) {
 
       //create the temporal_entity first
-      const TemporalEntity = InfRole.app.models.TemporalEntity;
-      return TemporalEntity.findOrCreateTemporalEntity(projectId, requestedRole.temporal_entity)
+      const InfTemporalEntity = InfRole.app.models.InfTemporalEntity;
+      return InfTemporalEntity.findOrCreateInfTemporalEntity(projectId, requestedRole.temporal_entity)
         .then((resultingTeEnts) => {
 
           const resultingTeEnt = resultingTeEnts[0];

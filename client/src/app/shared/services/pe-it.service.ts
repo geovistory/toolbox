@@ -5,10 +5,10 @@ import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 import { InfPersistentItemApi } from '../sdk/services/custom/InfPersistentItem';
 import { InfPersistentItem } from '../sdk/models/InfPersistentItem';
-import { TemporalEntity } from '../sdk/models/TemporalEntity';
+import { InfTemporalEntity } from '../sdk/models/InfTemporalEntity';
 import { Appellation } from '../sdk/models/Appellation';
 import { InfLanguage } from '../sdk/models/InfLanguage';
-import { TemporalEntityApi } from '../sdk/services/custom/TemporalEntity';
+import { InfTemporalEntityApi } from '../sdk/services/custom/InfTemporalEntity';
 import { AppellationApi } from '../sdk/services/custom/Appellation';
 import { InfRoleApi } from '../sdk/services/custom/InfRole';
 import { InfRole } from '../sdk/models/InfRole';
@@ -21,7 +21,7 @@ export class PeItService {
 
   constructor(
     private persistentItemApi: InfPersistentItemApi,
-    private temporalEntityApi: TemporalEntityApi,
+    private temporalEntityApi: InfTemporalEntityApi,
     private appellationApi: AppellationApi,
     private roleApi: InfRoleApi,
     private languageApi: InfLanguageApi,
@@ -34,8 +34,8 @@ export class PeItService {
     return this.persistentItemApi.findOrCreatePeIt(projectId, peIt)
   }
 
-  createTeEnt(projectId: number, teEnt: TemporalEntity) {
-    return this.temporalEntityApi.findOrCreateTemporalEntity(projectId, teEnt);
+  createTeEnt(projectId: number, teEnt: InfTemporalEntity) {
+    return this.temporalEntityApi.findOrCreateInfTemporalEntity(projectId, teEnt);
   }
 
   createAppe(projectId: number, appe: Appellation) {

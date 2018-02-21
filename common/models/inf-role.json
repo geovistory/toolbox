@@ -57,7 +57,7 @@
     },
     "temporal_entity": {
       "type": "belongsTo",
-      "model": "TemporalEntity",
+      "model": "InfTemporalEntity",
       "foreignKey": "fk_temporal_entity",
       "primaryKey": "pk_entity"
     }

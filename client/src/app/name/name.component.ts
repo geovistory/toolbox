@@ -14,7 +14,7 @@ import 'rxjs/add/observable/forkJoin';
 
 import { Appellation } from '../shared/sdk/models/Appellation';
 import { AppellationApi } from '../shared/sdk/services/custom/Appellation';
-import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
+import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
 import { InfRole } from '../shared/sdk/models/InfRole';
 import { InfLanguage } from '../shared/sdk/models/InfLanguage';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
@@ -83,17 +83,17 @@ export class NameComponent implements OnInit, OnChanges{
   }
 
   // Appellation Usage
-  _appellationUsage: TemporalEntity; // F52_Name_Use_Activity
+  _appellationUsage: InfTemporalEntity; // F52_Name_Use_Activity
 
-  set appellationUsage(value:TemporalEntity){
+  set appellationUsage(value:InfTemporalEntity){
     this._appellationUsage = value;
   }
 
-  get appellationUsage():TemporalEntity{
+  get appellationUsage():InfTemporalEntity{
     return this._appellationUsage;
   }
 
-  // TemporalEntity --> Role --> Appellation
+  // InfTemporalEntity --> Role --> Appellation
   _roleR64: InfRole; // R64_used_name
 
   set roleR64(value:InfRole){
@@ -132,7 +132,7 @@ export class NameComponent implements OnInit, OnChanges{
     return epr;
   }
 
-  // TemporalEntity --> Role --> InfPersistentItem
+  // InfTemporalEntity --> Role --> InfPersistentItem
   _roleR61: InfRole; // R61_occured_in_kind_of_context
 
   set roleR61(value:InfRole){

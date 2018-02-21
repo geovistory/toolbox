@@ -8,7 +8,7 @@ import { KeyboardService } from '../shared/services/keyboard.service';
 import { Property } from '../shared/services/property.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
 import { Appellation } from '../shared/sdk/models/Appellation';
-import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
+import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
 import { InfLanguage } from '../shared/sdk/models/InfLanguage';
 
 export enum RolePointToEnum {
@@ -204,7 +204,7 @@ export class RoleComponent implements OnInit {
   }
 
 
-  teEntReadyToCreate(teEnt: TemporalEntity) {
+  teEntReadyToCreate(teEnt: InfTemporalEntity) {
 
     this.role.temporal_entity = teEnt;
 
@@ -276,7 +276,7 @@ export class RoleComponent implements OnInit {
 
   }
 
-  onTeEntReadyToAdd(teEntToAdd: TemporalEntity) {
+  onTeEntReadyToAdd(teEntToAdd: InfTemporalEntity) {
     // add appe to role
     this.roleToAdd.temporal_entity = teEntToAdd;
 

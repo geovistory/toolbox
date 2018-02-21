@@ -10,7 +10,7 @@ import {
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
-import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
+import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
 import { InfRole } from '../shared/sdk/models/InfRole';
 import { NameComponent } from '../name/name.component';
 import { ActiveProjectService } from '../shared/services/active-project.service';

@@ -2,9 +2,9 @@
 
 const Promise = require('bluebird');
 
-module.exports = function(TemporalEntity) {
+module.exports = function(InfTemporalEntity) {
 
-  TemporalEntity.addTeEntToProject = function(projectId, data, ctx) {
+  InfTemporalEntity.addTeEntToProject = function(projectId, data, ctx) {
     let requestedTeEnt;
 
     if (ctx) {
@@ -13,7 +13,7 @@ module.exports = function(TemporalEntity) {
       requestedTeEnt = data;
     }
 
-    return TemporalEntity.addToProject(projectId, requestedTeEnt)
+    return InfTemporalEntity.addToProject(projectId, requestedTeEnt)
       .then(resultingEpr => {
 
         // attatch the new epr to the teEnt
@@ -23,7 +23,7 @@ module.exports = function(TemporalEntity) {
         if (requestedTeEnt.te_roles) {
 
           // prepare parameters
-          const InfRole = TemporalEntity.app.models.InfRole;
+          const InfRole = InfTemporalEntity.app.models.InfRole;
 
           //… filter roles that are truthy (not null), iterate over them,
           // return the promise that the PeIt will be
@@ -62,7 +62,7 @@ module.exports = function(TemporalEntity) {
   }
 
 
-  TemporalEntity.findOrCreateTemporalEntity = function(projectId, data, ctx) {
+  InfTemporalEntity.findOrCreateInfTemporalEntity = function(projectId, data, ctx) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
@@ -78,7 +78,7 @@ module.exports = function(TemporalEntity) {
       requestedTeEnt = data;
     }
 
-    return TemporalEntity.findOrCreateVersion(TemporalEntity, projectId, dataObject)
+    return InfTemporalEntity.findOrCreateVersion(InfTemporalEntity, projectId, dataObject)
       .then((resultingTeEnts) => {
 
         //TODO pick first item of array
@@ -88,7 +88,7 @@ module.exports = function(TemporalEntity) {
         if (requestedTeEnt.te_roles) {
 
           // prepare parameters
-          const InfRole = TemporalEntity.app.models.InfRole;
+          const InfRole = InfTemporalEntity.app.models.InfRole;
 
           //… filter roles that are truthy (not null), iterate over them,
           // return the promise that the teEnt will be

@@ -1,5 +1,5 @@
 {
-  "name": "TemporalEntity",
+  "name": "InfTemporalEntity",
   "base": "EntityVersion",
   "idInjection": false,
   "options": {
@@ -13,7 +13,7 @@
     "SetupRemoteMethods": {
       "disableAllExcept": [
         "find",
-        "findOrCreateTemporalEntity"
+        "findOrCreateInfTemporalEntity"
       ]
     }
   },
@@ -37,7 +37,7 @@
   },
   "acls": [],
   "methods": {
-    "findOrCreateTemporalEntity": {
+    "findOrCreateInfTemporalEntity": {
       "accepts": [
         {
           "arg": "projectId",
@@ -50,7 +50,7 @@
         },
         {
           "arg": "data",
-          "type": "TemporalEntity",
+          "type": "InfTemporalEntity",
           "required": true,
           "description": "data",
           "http": {
@@ -67,7 +67,7 @@
       ],
       "returns": {
         "arg": "data",
-        "type": "TemporalEntity",
+        "type": "InfTemporalEntity",
         "root": true
       },
       "description": "Find or create a temporal entity version.",

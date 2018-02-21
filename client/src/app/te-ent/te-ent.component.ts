@@ -7,7 +7,7 @@ import {
   transition
 } from '@angular/animations';
 
-import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
+import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
 import { RoleService, RolesPerProperty, DirectedRolesPerProperty } from '../shared/services/role.service';
 import { RoleComponent, AppellationStdBool } from '../role/role.component';
 import { ClassService } from '../shared/services/class.service';
@@ -44,7 +44,7 @@ export class TeEntComponent implements OnInit {
   */
 
   // The Temporal Entity
-  @Input() teEnt: TemporalEntity;
+  @Input() teEnt: InfTemporalEntity;
 
   @Input() parentProperty: Property;
 
@@ -62,11 +62,11 @@ export class TeEntComponent implements OnInit {
   * Outputs
   */
 
-  @Output() readyToCreate: EventEmitter<TemporalEntity> = new EventEmitter;
+  @Output() readyToCreate: EventEmitter<InfTemporalEntity> = new EventEmitter;
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
-  @Output() readyToAdd: EventEmitter<TemporalEntity> = new EventEmitter;
+  @Output() readyToAdd: EventEmitter<InfTemporalEntity> = new EventEmitter;
 
   @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter;
 
@@ -94,7 +94,7 @@ export class TeEntComponent implements OnInit {
   displayLabel: string;
 
   // For add-pe-it-state: Temporal Entity to be Added
-  teEntToAdd: TemporalEntity;
+  teEntToAdd: InfTemporalEntity;
 
   // Array of children RoleComponents
   @ViewChildren(PropertyComponent) propertyComponents: QueryList<PropertyComponent>
@@ -110,7 +110,7 @@ export class TeEntComponent implements OnInit {
 
     if (this.teEntState === 'create') {
 
-      this.teEnt = new TemporalEntity();
+      this.teEnt = new InfTemporalEntity();
 
       this.teEnt.fk_class = this.fkClass;
 
@@ -119,7 +119,7 @@ export class TeEntComponent implements OnInit {
     if (this.teEntState === 'add-pe-it') {
 
       // make a copy
-      this.teEntToAdd = new TemporalEntity(this.teEnt);
+      this.teEntToAdd = new InfTemporalEntity(this.teEnt);
 
       // add an epr
       this.teEntToAdd.entity_version_project_rels = [
