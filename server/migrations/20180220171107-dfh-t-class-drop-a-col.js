@@ -33,7 +33,7 @@ exports.down = function(db, callback) {
 
   const sql = `
   ALTER TABLE data_for_history.class
-  ADD COLUMN data_for_history_id VARCHAR(7) NOT NULL;
+  ADD COLUMN data_for_history_id VARCHAR(7);
 
   ALTER TABLE data_for_history.class
   ADD CONSTRAINT class_data_for_history_id_key
