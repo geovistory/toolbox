@@ -223,7 +223,7 @@ export class PropertyComponent implements OnChanges {
   */
   get roleLabel() {
     if (this.isOutgoing) {
-      if (this.property.dfh_range_instances_cardinality_max === 1) {
+      if (this.property.dfh_range_instances_max_quantifier === 1) {
 
         // TODO return label singular (this.property.label.sg)
         return 'label.sg;'
@@ -234,7 +234,7 @@ export class PropertyComponent implements OnChanges {
       return 'label.pl';
 
     } else if (this.isOutgoing === false) {
-      if (this.property.dfh_domain_instances_cardinality_max === 1) {
+      if (this.property.dfh_domain_instances_max_quantifier === 1) {
 
         // TODO return inversed label singular (this.property.label_inversed.sg)
         return 'label_inversed.sg';
@@ -452,14 +452,14 @@ export class PropertyComponent implements OnChanges {
 
 
   get maxCardinality() {
-    if (this.isOutgoing) return this.property.dfh_range_instances_cardinality_max;
-    else if (this.isOutgoing === false) return this.property.dfh_domain_instances_cardinality_max;
+    if (this.isOutgoing) return this.property.dfh_range_instances_max_quantifier;
+    else if (this.isOutgoing === false) return this.property.dfh_domain_instances_max_quantifier;
     else console.log('isOutgoing is not defined')
   }
 
   get minCardinality() {
-    if (this.isOutgoing) return this.property.dfh_range_instances_cardinality_min;
-    else if (this.isOutgoing === false) return this.property.dfh_domain_instances_cardinality_min;
+    if (this.isOutgoing) return this.property.dfh_range_instances_min_quantifier;
+    else if (this.isOutgoing === false) return this.property.dfh_domain_instances_min_quantifier;
     else console.log('isOutgoing is not defined')
   }
 

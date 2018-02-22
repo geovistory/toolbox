@@ -36,19 +36,19 @@
     "dfh_standard_label": {
       "type": "string"
     },
-    "dfh_domain_instances_cardinality_min": {
+    "dfh_domain_instances_min_quantifier": {
       "type": "number",
       "required": true
     },
-    "dfh_domain_instances_cardinality_max": {
+    "dfh_domain_instances_max_quantifier": {
       "type": "number",
       "required": true
     },
-    "dfh_range_instances_cardinality_min": {
+    "dfh_range_instances_min_quantifier": {
       "type": "number",
       "required": true
     },
-    "dfh_range_instances_cardinality_max": {
+    "dfh_range_instances_max_quantifier": {
       "type": "number",
       "required": true
     }

@@ -23,10 +23,10 @@ exports.up = function(db, callback) {
     dfh_has_domain,
     dfh_has_range,
     dfh_standard_label,
-    dfh_domain_instances_cardinality_min,
-    dfh_domain_instances_cardinality_max,
-    dfh_range_instances_cardinality_min,
-    dfh_range_instances_cardinality_max
+    dfh_domain_instances_min_quantifier,
+    dfh_domain_instances_max_quantifier,
+    dfh_range_instances_min_quantifier,
+    dfh_range_instances_max_quantifier
   )
   VALUES
   (1, 'R63', 3, 1, 'Named', 0, NULL, 0, NULL),
