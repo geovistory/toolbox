@@ -12,6 +12,7 @@ import {
 } from '@angular/animations';
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/combineLatest';
 
 import { InfRole } from '../shared/sdk/models/InfRole';
 import { RolePointToEnum, RoleComponent, AppellationStdBool } from '../role/role.component';

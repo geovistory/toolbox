@@ -8,6 +8,7 @@ import {
 } from '@angular/animations';
 
 import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/observable/combineLatest';
 
 import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
 import { RoleService, RolesPerProperty, DirectedRolesPerProperty } from '../shared/services/role.service';
