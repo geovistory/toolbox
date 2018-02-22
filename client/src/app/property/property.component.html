@@ -7,11 +7,11 @@
   </span>
 
   <span *ngIf="isOutgoing === true && keyboard.altPressed">
-    d:[{{property.fk_domain_class}}] – p: [{{property.pk_property}}] – r: [{{property.fk_range_class}}]
+    d:[{{property.dfh_has_domain}}] – p: [{{property.dfh_pk_property}}] – r: [{{property.dfh_has_range}}]
   </span>
 
   <span *ngIf="isOutgoing === false && keyboard.altPressed">
-    r:[{{property.fk_range_class}}] – p: [{{property.pk_property}}] – d: [{{property.fk_domain_class}}]
+    r:[{{property.dfh_has_range}}] – p: [{{property.dfh_pk_property}}] – d: [{{property.dfh_has_domain}}]
   </span>
 
 

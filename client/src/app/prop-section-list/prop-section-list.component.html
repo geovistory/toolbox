@@ -22,10 +22,16 @@
         <option [ngValue]="null">Please Select…</option>
 
         <option *ngFor="let propertyToAdd of ingoingDirectionAwareProperties" [ngValue]="propertyToAdd">
-          {{propertyToAdd.property.label_inversed.sg}}
+          <!-- {{propertyToAdd.property.label_inversed.sg}} -->
+          label_inversed.sg of {{propertyToAdd.property?.dfh_identifier_in_namespace}}
+          <!-- TODO Add label-->
+
         </option>
         <option *ngFor="let propertyToAdd of outgoingDirectionAwareProperties" [ngValue]="propertyToAdd">
-          {{propertyToAdd.property.label.sg}}
+          <!-- {{propertyToAdd.property.label.sg}} -->
+          label.sg of {{propertyToAdd.property?.dfh_identifier_in_namespace}}
+          <!-- TODO Add label-->
+
         </option>
       </select>
     </div>
@@ -46,7 +52,7 @@
 
   <gv-property
   *ngIf="selectPropState === 'selectRoles'"
-  [fkProperty]="propertyToAdd.property.pk_property"
+  [fkProperty]="propertyToAdd.property.dfh_pk_property"
   [isOutgoing]="propertyToAdd.isOutgoing"
   [propState]="'add'"
   [pointTo]="'TeEnt'"
@@ -60,7 +66,7 @@
 
   <gv-property
   *ngIf="selectPropState === 'createRole'"
-  [fkProperty]="propertyToAdd.property.pk_property"
+  [fkProperty]="propertyToAdd.property.dfh_pk_property"
   [isOutgoing]="propertyToAdd.isOutgoing"
   [propState]="'create'"
   [pointTo]="'TeEnt'"
@@ -76,7 +82,7 @@
 
   <gv-property
   *ngIf="selectPropState === 'createPeIt'"
-  [fkProperty]="propertyToAdd.property.pk_property"
+  [fkProperty]="propertyToAdd.property.dfh_pk_property"
   [isOutgoing]="propertyToAdd.isOutgoing"
   [propState]="'create-pe-it'"
   [pointTo]="'TeEnt'"
@@ -91,10 +97,10 @@
 
   <!-- All Property Sections of existing Roles -->
 
-  <gv-property *ngFor="let property of directedRolesPerProperty"
-  [isOutgoing]="property.isOutgoing"
-  [roles]="property.roles"
-  [fkProperty]="property.fkProperty"
+  <gv-property *ngFor="let propertySection of directedRolesPerProperty"
+  [isOutgoing]="propertySection.isOutgoing"
+  [roles]="propertySection.roles"
+  [fkProperty]="propertySection.fkProperty"
   [pointTo]="'TeEnt'"
   [parentEntityPk]="pkEntity"
   [parentPeIt]="parentPeIt"
