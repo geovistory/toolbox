@@ -1,8 +1,8 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { EntityVersionProjectRel } from '../sdk/models/EntityVersionProjectRel';
-import { EntityVersionProjectRelApi } from '../sdk/services/custom/EntityVersionProjectRel';
-import { PersistentItemVersion } from '../sdk/models/PersistentItemVersion';
-import { PersistentItemVersionApi } from '../sdk/services/custom/PersistentItemVersion';
+import { InfEntityProjectRel } from '../sdk/models/InfEntityProjectRel';
+import { InfEntityProjectRelApi } from '../sdk/services/custom/InfEntityProjectRel';
+import { InfPersistentItem } from '../sdk/models/InfPersistentItem';
+import { InfPersistentItemApi } from '../sdk/services/custom/InfPersistentItem';
 import { ActiveProjectService } from './active-project.service';
 
 export enum EntityAddModalState {
@@ -25,7 +25,7 @@ export class EntityAddModalService {
   onOpen: EventEmitter<number> = new EventEmitter();
 
   // Entity Project Rels needed to add the selected names to the project
-  eprNaming: EntityVersionProjectRel[];
+  eprNaming: InfEntityProjectRel[];
 
   // state of the modal
   private _state: EntityAddModalState;
@@ -60,10 +60,10 @@ export class EntityAddModalService {
   pkEntity: number;
 
   // The persistent Item to Add
-  peItToAdd: PersistentItemVersion;
+  peItToAdd: InfPersistentItem;
 
   // The persistent item to create
-  peItToCreate: PersistentItemVersion;
+  peItToCreate: InfPersistentItem;
 
   // The search string used to search existing peIts
   // and create the appellation of the new peIt
@@ -73,9 +73,9 @@ export class EntityAddModalService {
   createButtonVisible: boolean;
 
   constructor(
-    private entityProjectRelApi: EntityVersionProjectRelApi,
+    private entityProjectRelApi: InfEntityProjectRelApi,
     private activeProjectService: ActiveProjectService,
-    private persistentItemApi: PersistentItemVersionApi
+    private persistentItemApi: InfPersistentItemApi
   ) { }
 
   addPeItToProject() {

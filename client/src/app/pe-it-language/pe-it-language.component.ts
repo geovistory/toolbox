@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
-import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
+import { InfLanguage } from '../shared/sdk/models/InfLanguage';
+import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 
 @Component({
@@ -16,17 +16,17 @@ export class PeItLanguageComponent implements OnInit {
   */
 
   // the language
-  @Input() language:InformationLanguage;
+  @Input() language:InfLanguage;
   @Input() peItLangState:string;
 
   /**
   * Outputs
   */
-  @Output() readyToCreate: EventEmitter<InformationLanguage> = new EventEmitter;
+  @Output() readyToCreate: EventEmitter<InfLanguage> = new EventEmitter;
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
-  @Output() readyToAdd: EventEmitter<InformationLanguage> = new EventEmitter();
+  @Output() readyToAdd: EventEmitter<InfLanguage> = new EventEmitter();
 
 
   /**
@@ -34,7 +34,7 @@ export class PeItLanguageComponent implements OnInit {
    */
 
    // for add-pe-it state the language to add to project
-   langToAdd:InformationLanguage;
+   langToAdd:InfLanguage;
 
   constructor(
     private activeProjectService: ActiveProjectService,
@@ -45,11 +45,11 @@ export class PeItLanguageComponent implements OnInit {
     if (this.peItLangState === 'add-pe-it') {
 
       // make a copy
-      this.langToAdd = new InformationLanguage(this.language);
+      this.langToAdd = new InfLanguage(this.language);
 
       // add an epr
       this.langToAdd.entity_version_project_rels = [
-        new EntityVersionProjectRel({
+        new InfEntityProjectRel({
           fk_project: this.activeProjectService.project.pk_project,
           is_in_project: true,
           fk_entity_version_concat: this.language.pk_entity_version_concat
@@ -63,8 +63,8 @@ export class PeItLanguageComponent implements OnInit {
   }
 
 
-  languageChange(language:InformationLanguage){
-    const lang = new InformationLanguage(language);
+  languageChange(language:InfLanguage){
+    const lang = new InfLanguage(language);
 
     if(lang && lang.pk_entity){
       this.readyToCreate.emit(lang);

@@ -1,15 +1,15 @@
 import { Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
-import { InformationRole } from '../shared/sdk/models/InformationRole';
+import { InfRole } from '../shared/sdk/models/InfRole';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { EprService } from '../shared/services/epr.service';
-import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
+import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 import { PropertyComponent } from '../property/property.component';
 import { KeyboardService } from '../shared/services/keyboard.service';
-import { Property } from '../shared/services/property.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
-import { Appellation } from '../shared/sdk/models/Appellation';
-import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
-import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
+import { InfAppellation } from '../shared/sdk/models/InfAppellation';
+import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
+import { InfLanguage } from '../shared/sdk/models/InfLanguage';
+import { DfhProperty } from '../shared/sdk/models/DfhProperty';
 
 export enum RolePointToEnum {
   PeIt = "PeIt",
@@ -17,7 +17,7 @@ export enum RolePointToEnum {
 };
 
 export interface AppellationStdBool {
-  appellation: Appellation;
+  appellation: InfAppellation;
   isStandardInProject: boolean;
 }
 
@@ -32,7 +32,7 @@ export class RoleComponent implements OnInit {
   * Inputs
   */
 
-  @Input() role: InformationRole;
+  @Input() role: InfRole;
 
   @Input() isOutgoing: boolean;
 
@@ -42,9 +42,9 @@ export class RoleComponent implements OnInit {
 
   @Input() pkTargetClass: string;
 
-  @Input() fkProperty: string;
+  @Input() fkProperty: number;
 
-  @Input() parentProperty: Property;
+  @Input() parentProperty: DfhProperty;
 
   /**
   * Outputs
@@ -52,14 +52,14 @@ export class RoleComponent implements OnInit {
 
   @Output() onRequestStandard: EventEmitter<RoleComponent> = new EventEmitter();
 
-  @Output() readyToCreate: EventEmitter<InformationRole> = new EventEmitter;
+  @Output() readyToCreate: EventEmitter<InfRole> = new EventEmitter;
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
   // emit appellation and a flag to say if this is the standard appellation
   @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
 
-  @Output() readyToAdd: EventEmitter<InformationRole> = new EventEmitter();
+  @Output() readyToAdd: EventEmitter<InfRole> = new EventEmitter();
 
 
   /**
@@ -67,7 +67,7 @@ export class RoleComponent implements OnInit {
   */
 
   // Used in add-pe-it state
-  roleToAdd: InformationRole;
+  roleToAdd: InfRole;
 
   // Flag to disable the standard toggle button while loading 
   loadingStdChange: boolean = false;
@@ -76,7 +76,7 @@ export class RoleComponent implements OnInit {
   isReadyToCreate: boolean;
 
   // If the role points to a teEnt with a child appellation
-  appellation: Appellation;
+  appellation: InfAppellation;
 
   private _isStandardInProject: boolean;
 
@@ -89,17 +89,17 @@ export class RoleComponent implements OnInit {
 
   ngOnInit() {
     if (this.roleState === 'create') {
-      this.role = new InformationRole();
+      this.role = new InfRole();
       this.role.fk_property = this.fkProperty;
     }
 
     if (this.roleState === 'add-pe-it') {
       // make a copy
-      this.roleToAdd = new InformationRole(this.role);
+      this.roleToAdd = new InfRole(this.role);
 
       // add an epr
       this.roleToAdd.entity_version_project_rels = [
-        new EntityVersionProjectRel({
+        new InfEntityProjectRel({
           fk_project: this.activeProjectService.project.pk_project,
           is_in_project: true,
           is_standard_in_project: this.role.is_community_favorite,
@@ -117,7 +117,7 @@ export class RoleComponent implements OnInit {
   /**
   * get the entity project relation between this role and active project
   */
-  get epr(): EntityVersionProjectRel {
+  get epr(): InfEntityProjectRel {
     return this.eprService.getEprOfEntity(this.role);
   }
 
@@ -125,7 +125,7 @@ export class RoleComponent implements OnInit {
   /**
   * set the entity project relation between this role and active project
   */
-  set epr(epr: EntityVersionProjectRel) {
+  set epr(epr: InfEntityProjectRel) {
     this.eprService.updateEprOfEntity(this.role, epr);
     this.isStandardInProject = this.epr.is_standard_in_project;
     // this.ref.detectChanges();
@@ -180,11 +180,11 @@ export class RoleComponent implements OnInit {
 
   peItReadyToCreate(entity) {
 
-    if (entity instanceof Appellation) {
+    if (entity instanceof InfAppellation) {
       this.role.appellation = entity
     }
 
-    if (entity instanceof InformationLanguage) {
+    if (entity instanceof InfLanguage) {
       this.role.language = entity
     }
 
@@ -204,7 +204,7 @@ export class RoleComponent implements OnInit {
   }
 
 
-  teEntReadyToCreate(teEnt: TemporalEntity) {
+  teEntReadyToCreate(teEnt: InfTemporalEntity) {
 
     this.role.temporal_entity = teEnt;
 
@@ -255,7 +255,7 @@ export class RoleComponent implements OnInit {
 
   }
 
-  onAppeReadyToAdd(appellation: Appellation) {
+  onAppeReadyToAdd(appellation: InfAppellation) {
 
     // add appe to role
     this.roleToAdd.appellation = appellation;
@@ -266,7 +266,7 @@ export class RoleComponent implements OnInit {
   }
 
 
-  onLangReadyToAdd(language: InformationLanguage) {
+  onLangReadyToAdd(language: InfLanguage) {
 
     // add appe to role
     this.roleToAdd.language = language;
@@ -276,7 +276,7 @@ export class RoleComponent implements OnInit {
 
   }
 
-  onTeEntReadyToAdd(teEntToAdd: TemporalEntity) {
+  onTeEntReadyToAdd(teEntToAdd: InfTemporalEntity) {
     // add appe to role
     this.roleToAdd.temporal_entity = teEntToAdd;
 

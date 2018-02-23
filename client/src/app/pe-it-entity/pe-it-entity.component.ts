@@ -4,21 +4,20 @@ import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 import { PeItComponent, PeItStates } from '../pe-it/pe-it.component';
 import { ActiveProjectService } from '../shared/services/active-project.service';
-import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
+import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { PropertyPipe } from '../shared/pipes/property';
-import { Appellation } from '../shared/sdk/models/Appellation';
-import { InformationRole } from '../shared/sdk/models/InformationRole';
-import { TemporalEntity } from '../shared/sdk/models/TemporalEntity';
+import { InfRole } from '../shared/sdk/models/InfRole';
+import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
 import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
 import { ActivePeItService } from '../shared/services/active-pe-it.service';
 import { PeItService } from '../shared/services/pe-it.service'
-import { Property } from '../shared/services/property.service';
 import { ClassService } from '../shared/services/class.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
-import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
+import { InfPersistentItemApi } from '../shared/sdk/services/custom/InfPersistentItem';
 import { AppellationStdBool } from '../role/role.component';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
-import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
+import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
+import { DfhProperty } from '../shared/sdk/models/DfhProperty';
 
 @Component({
   selector: 'gv-pe-it-entity',
@@ -38,19 +37,19 @@ export class PeItEntityComponent implements OnInit {
   @Input() peItEntityState: string;
 
   // FkClass of peIt
-  @Input() fkClass: string;
+  @Input() fkClass: number;
 
   /**
   * Outputs
   */
 
-  @Output() readyToCreate: EventEmitter<PersistentItemVersion> = new EventEmitter;
+  @Output() readyToCreate: EventEmitter<InfPersistentItem> = new EventEmitter;
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
-  @Output() created: EventEmitter<PersistentItemVersion> = new EventEmitter;
+  @Output() created: EventEmitter<InfPersistentItem> = new EventEmitter;
 
-  @Output() readyToAdd: EventEmitter<PersistentItemVersion> = new EventEmitter;
+  @Output() readyToAdd: EventEmitter<InfPersistentItem> = new EventEmitter;
 
   /**
   * Properties
@@ -63,22 +62,22 @@ export class PeItEntityComponent implements OnInit {
   loading: boolean;
 
   // Persistent Item used by this component
-  peIt: PersistentItemVersion;
+  peIt: InfPersistentItem;
 
   // Persistent Item to be created
-  peItToCreate: PersistentItemVersion;
+  peItToCreate: InfPersistentItem;
 
   // Persistent Item to be added
-  peItToAdd: PersistentItemVersion;
+  peItToAdd: InfPersistentItem;
 
   // Displayed standard name of this peIt
   stdAppeString: string;
 
   // array of properies of which the class of this peIt is range.
-  outgoingProperties: Property[];
+  outgoingProperties: DfhProperty[];
 
   // array of properies of which the class of this peIt is domain.
-  ingoingProperties: Property[];
+  ingoingProperties: DfhProperty[];
 
   //
   loadingProperties: boolean
@@ -93,7 +92,7 @@ export class PeItEntityComponent implements OnInit {
   addingInformation: boolean;
 
   constructor(
-    private peItApi: PersistentItemVersionApi,
+    private peItApi: InfPersistentItemApi,
     private peItService: PeItService,
     private activeProjectService: ActiveProjectService,
     private propertyPipe: PropertyPipe,
@@ -133,11 +132,11 @@ export class PeItEntityComponent implements OnInit {
       this.queryRichObjectOfRepo().subscribe(() => {
 
         // make a copy
-        this.peItToAdd = new PersistentItemVersion(this.peIt);
+        this.peItToAdd = new InfPersistentItem(this.peIt);
 
         // add an epr
         this.peItToAdd.entity_version_project_rels = [
-          new EntityVersionProjectRel({
+          new InfEntityProjectRel({
             fk_project: this.activeProjectService.project.pk_project,
             is_in_project: true,
             fk_entity_version_concat: this.peIt.pk_entity_version_concat
@@ -152,14 +151,18 @@ export class PeItEntityComponent implements OnInit {
     else if (this.peItEntityState == "create") {
 
       // initialize the ingoing Properties
-      this.ingoingProperties = this.classService
-        .getIngoingProperties(this.fkClass);
+      this.classService.getIngoingProperties(this.fkClass)
+        .subscribe((props: DfhProperty[]) => {
+          this.ingoingProperties = props;
+        });
 
       // initialize the outgoing Properties
-      this.outgoingProperties = this.classService
-        .getOutgoingProperties(this.fkClass);
+      this.classService.getOutgoingProperties(this.fkClass)
+        .subscribe((props: DfhProperty[]) => {
+          this.outgoingProperties = props;
+        });
 
-      this.peItToCreate = new PersistentItemVersion();
+      this.peItToCreate = new InfPersistentItem();
       this.peItToCreate.fk_class = this.fkClass;
 
     }
@@ -175,17 +178,22 @@ export class PeItEntityComponent implements OnInit {
     this.startLoading();
 
     this.peItApi.nestedObjectOfRepo(this.pkEntity).subscribe(
-      (peIts: PersistentItemVersion[]) => {
+      (peIts: InfPersistentItem[]) => {
 
         this.peIt = peIts[0];
 
+
         // initialize the ingoing Properties
-        this.ingoingProperties = this.classService
-          .getIngoingProperties(this.peIt.fk_class);
+        this.classService.getIngoingProperties(this.peIt.fk_class)
+          .subscribe((props: DfhProperty[]) => {
+            this.ingoingProperties = props;
+          });
 
         // initialize the outgoing Properties
-        this.outgoingProperties = this.classService
-          .getOutgoingProperties(this.peIt.fk_class);
+        this.classService.getOutgoingProperties(this.peIt.fk_class)
+          .subscribe((props: DfhProperty[]) => {
+            this.outgoingProperties = props;
+          });
 
 
         this.completeLoading();
@@ -202,18 +210,21 @@ export class PeItEntityComponent implements OnInit {
     this.startLoading();
 
     this.peItApi.nestedObjectOfProject(this.pkProject, this.pkEntity).subscribe(
-      (peIts: PersistentItemVersion[]) => {
+      (peIts: InfPersistentItem[]) => {
 
         this.peIt = peIts[0];
 
         // initialize the ingoing Properties
-        this.ingoingProperties = this.classService
-          .getIngoingProperties(this.peIt.fk_class);
+        this.classService.getIngoingProperties(this.peIt.fk_class)
+          .subscribe((props: DfhProperty[]) => {
+            this.ingoingProperties = props;
+          });
 
         // initialize the outgoing Properties
-        this.outgoingProperties = this.classService
-          .getOutgoingProperties(this.peIt.fk_class);
-
+        this.classService.getOutgoingProperties(this.peIt.fk_class)
+          .subscribe((props: DfhProperty[]) => {
+            this.outgoingProperties = props;
+          });
 
         this.completeLoading();
 
@@ -227,7 +238,7 @@ export class PeItEntityComponent implements OnInit {
    * Methods for creating a peIt
    */
 
-  emitReadyToCreate(roles: InformationRole[]) {
+  emitReadyToCreate(roles: InfRole[]) {
     this.peItToCreate.pi_roles = roles; //TODO this is not good because it overwrites roles coming form another property!
     this.isReadyToCreate = true
     this.readyToCreate.emit(this.peItToCreate)
@@ -245,7 +256,7 @@ export class PeItEntityComponent implements OnInit {
   * Methods for adding a peIt
   */
 
-  onRolesReadyToAdd(rolesToAdd: InformationRole[]) {
+  onRolesReadyToAdd(rolesToAdd: InfRole[]) {
 
 
     let newRoles = [];

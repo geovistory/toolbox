@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { InformationRole } from '../sdk/models/InformationRole';
-import { Property } from './property.service';
+import { InfRole } from '../sdk/models/InfRole';
+import { DfhProperty } from '../sdk/models/DfhProperty';
 
 interface Label {
   sg: string;
@@ -13,16 +13,16 @@ interface RoleInfo {
 
 export interface RolesPerProperty {
   fkProperty: string;
-  roles: InformationRole[];
+  roles: InfRole[];
 }
 export interface DirectedRole {
   isOutgoing: boolean;
-  role: InformationRole;
+  role: InfRole;
 }
 export interface DirectedRolesPerProperty {
   fkProperty: string;
   isOutgoing: boolean;
-  roles: InformationRole[];
+  roles: InfRole[];
 }
 
 @Injectable()
@@ -46,10 +46,10 @@ export class RoleService {
   * roles.fk_property as keys and an array of all roles of that key in an
   * array.
   *
-  * @param  {InformationRole[]} roles array of InformationRole
-  * @return {array}       array of {fkProperty: key, roles: InformationRole[]}
+  * @param  {InfRole[]} roles array of InfRole
+  * @return {array}       array of {fkProperty: key, roles: InfRole[]}
   */
-  getRolesPerProperty(roles: InformationRole[]): RolesPerProperty[] {
+  getRolesPerProperty(roles: InfRole[]): RolesPerProperty[] {
 
     let rolesByKind = {};
     roles.forEach(role => {
@@ -77,22 +77,22 @@ export class RoleService {
    * property there needs to be a property section and each property section
    * needs to know if it is outgoing or ingoing (for the display label)
    *
-   * @param {InformationRole[]} roles array of roles
+   * @param {InfRole[]} roles array of roles
    * @param {Property[]} ingoing array of ingoing properties (depending on context)
    * @param {Property[]} outgoing array of outgoing properties (depending on context)
    *
    * @return {DirectedRolesPerProperty[]} Array of DirectedRolesPerProperty
    */
-  toDirectedRolesPerProperty(roles: InformationRole[], ingoing: Property[], outgoing: Property[]): DirectedRolesPerProperty[] {
+  toDirectedRolesPerProperty(roles: InfRole[], ingoing: DfhProperty[], outgoing: DfhProperty[]): DirectedRolesPerProperty[] {
 
     // declare array that will be returned
     const directedRolesPerProperty: DirectedRolesPerProperty[] = [];
 
     // create array of ingoing fk_property
-    const fkPropIn: string[] = ingoing.map(p => p.pk_property)
+    const fkPropIn: number[] = ingoing.map(p => p.dfh_pk_property)
 
     // create array of outgoing fk_property
-    const fkPropOut: string[] = outgoing.map(p => p.pk_property)
+    const fkPropOut: number[] = outgoing.map(p => p.dfh_pk_property)
 
     // filter for ingoing Roles
     const ingoingRoles = roles.filter(role => fkPropIn.includes(role.fk_property))
@@ -134,7 +134,7 @@ export class RoleService {
     * Group roles by fk_property. Return an obj, where
     * fk_property is used as key and an array of roles as value
     *
-    * @param  {InformationRole[]} roles description
+    * @param  {InfRole[]} roles description
     * @return {RolesPerProperty[]}
     */
   groupRolesByProperty(roles): RolesPerProperty[] {

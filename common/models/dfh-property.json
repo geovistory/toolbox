@@ -1,0 +1,94 @@
+{
+  "name": "DfhProperty",
+  "plural": "DfhProperties",
+  "base": "DfhEntity",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "data_for_history",
+      "table": "property"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "dfh_pk_property": {
+      "type": "number",
+      "id": true,
+      "required": true
+    },
+    "dfh_identifier_in_namespace": {
+      "type": "string"
+    },
+    "dfh_has_domain": {
+      "type": "number",
+      "required": true
+    },
+    "dfh_has_range": {
+      "type": "number",
+      "required": true
+    },
+    "dfh_creation_time": {
+      "type": "date"
+    },
+    "dfh_modification_time": {
+      "type": "date"
+    },
+    "dfh_standard_label": {
+      "type": "string"
+    },
+    "dfh_domain_instances_min_quantifier": {
+      "type": "number",
+      "required": true
+    },
+    "dfh_domain_instances_max_quantifier": {
+      "type": "number",
+      "required": true
+    },
+    "dfh_range_instances_min_quantifier": {
+      "type": "number",
+      "required": true
+    },
+    "dfh_range_instances_max_quantifier": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "labels": {
+      "type": "hasMany",
+      "model": "DfhLabel",
+      "foreignKey": "dfh_fk_property"
+    },
+    "text_properties": {
+      "type": "hasMany",
+      "model": "DfhTextProperty",
+      "foreignKey": "dfh_fk_property"
+    }
+  },
+  "acls": [{
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find",
+        "findById",
+        "__get__labels",
+        "__get__text_properties"
+      ]
+    }
+  ],
+  "methods": {}
+}

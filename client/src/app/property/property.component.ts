@@ -12,22 +12,22 @@ import {
 } from '@angular/animations';
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/combineLatest';
 
-import { InformationRole } from '../shared/sdk/models/InformationRole';
+import { InfRole } from '../shared/sdk/models/InfRole';
 import { RolePointToEnum, RoleComponent, AppellationStdBool } from '../role/role.component';
 import { RoleService } from '../shared/services/role.service';
-import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/EntityVersionProjectRel';
-import { PropertyService, Property } from '../shared/services/property.service';
+import { InfEntityProjectRelApi } from '../shared/sdk/services/custom/InfEntityProjectRel';
+import { PropertyService } from '../shared/services/property.service';
 import { PeItComponent } from '../pe-it/pe-it.component';
 import { TeEntComponent } from '../te-ent/te-ent.component';
 import { UtilitiesService } from '../shared/services/utilities.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
-import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
-import { PersistentItemVersionApi } from '../shared/sdk/services/custom/PersistentItemVersion';
+import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
+import { InfPersistentItemApi } from '../shared/sdk/services/custom/InfPersistentItem';
 import { ActiveProjectService } from '../shared/services/active-project.service';
-import { InformationRoleApi } from '../shared/sdk/services/custom/InformationRole';
-import { Appellation } from '../shared/sdk/models/Appellation';
-
+import { InfRoleApi } from '../shared/sdk/services/custom/InfRole';
+import { DfhProperty } from '../shared/sdk/models/DfhProperty';
 
 
 
@@ -86,13 +86,13 @@ export class PropertyComponent implements OnChanges {
   */
 
   // fk_property that all roles of this kind should have
-  @Input() fkProperty: string;
+  @Input() fkProperty: number;
 
   // roles of one kind (with the same fk_property)
-  @Input() roles: InformationRole[];
+  @Input() roles: InfRole[];
 
   //the role that is parent of the parent temporal entity
-  @Input() parentRole: InformationRole;
+  @Input() parentRole: InfRole;
 
   // The parent entity of this property is domain if true and range if false
   @Input() isOutgoing: boolean;
@@ -104,7 +104,7 @@ export class PropertyComponent implements OnChanges {
   @Input() parentEntityPk: number;
 
   // The parent PeIt Entity
-  @Input() parentPeIt: PersistentItemVersion;
+  @Input() parentPeIt: InfPersistentItem;
 
   /**
   * set propState - The state of this component
@@ -121,16 +121,16 @@ export class PropertyComponent implements OnChanges {
 
   @Output() propStateChange: EventEmitter<string> = new EventEmitter();
 
-  @Output() readyToCreate: EventEmitter<InformationRole[]> = new EventEmitter;
+  @Output() readyToCreate: EventEmitter<InfRole[]> = new EventEmitter;
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
-  @Output() rolesAdded: EventEmitter<InformationRole[]> = new EventEmitter;
+  @Output() rolesAdded: EventEmitter<InfRole[]> = new EventEmitter;
 
   // emit appellation and a flag to say if this is the standard appellation
   @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
 
-  @Output() readyToAdd: EventEmitter<InformationRole[]> = new EventEmitter();
+  @Output() readyToAdd: EventEmitter<InfRole[]> = new EventEmitter();
 
   @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter();
 
@@ -139,7 +139,7 @@ export class PropertyComponent implements OnChanges {
   */
 
   // the property
-  property: Property;
+  property: DfhProperty;
 
   // Array of children RoleComponents
   @ViewChildren(RoleComponent) roleComponents: QueryList<RoleComponent>
@@ -160,18 +160,18 @@ export class PropertyComponent implements OnChanges {
   private _propState: string;
 
   // role to create, when creating a new role
-  roleToCreate: InformationRole;
+  roleToCreate: InfRole;
 
-  rolesToCreate: InformationRole[];
+  rolesToCreate: InfRole[];
 
   // roles to add, when in add-pe-it state
-  rolesToAdd: InformationRole[] = [];
+  rolesToAdd: InfRole[] = [];
 
   isReadyToCreate: boolean;
 
   constructor(
-    private eprApi: EntityVersionProjectRelApi,
-    private roleApi: InformationRoleApi,
+    private eprApi: InfEntityProjectRelApi,
+    private roleApi: InfRoleApi,
     private activeProject: ActiveProjectService,
     private roleService: RoleService,
     private propertyService: PropertyService,
@@ -186,7 +186,9 @@ export class PropertyComponent implements OnChanges {
   */
 
   ngOnChanges() {
-    this.property = this.propertyService.getPropertyByPkProperty(this.fkProperty);
+    this.propertyService.getPropertyByPkProperty(this.fkProperty).subscribe((prop: DfhProperty) => {
+      this.property = prop;
+    });
   }
 
 
@@ -201,13 +203,13 @@ export class PropertyComponent implements OnChanges {
   * if this.isOutgoing === true, return the range class
   * if this.isOutgoing === false, return the domain class 
   *
-  * @return {string}  pk of the target class
+  * @return {number}  pk of the target class
   */
-  get pkTargetClass(): string {
+  get pkTargetClass(): number {
 
-    if (this.isOutgoing === true) return this.property.fk_range_class;
+    if (this.isOutgoing === true) return this.property.dfh_has_range;
 
-    if (this.isOutgoing === false) return this.property.fk_domain_class;
+    if (this.isOutgoing === false) return this.property.dfh_has_domain;
 
   }
 
@@ -219,17 +221,31 @@ export class PropertyComponent implements OnChanges {
   *
   * @return {string}  label of the property
   */
-  get roleLabel() {
+  get roleLabel():string {
     if (this.isOutgoing) {
-      if (this.property.rangeCardinalityMax === 1) {
-        return this.property.label.sg;
+      if (this.property.dfh_range_instances_max_quantifier === 1) {
+
+        // TODO return label singular (this.property.label.sg)
+
+        return this.property.labels.find(l => l.notes === 'label.sg').dfh_label;
+
       }
-      return this.property.label.pl;
+
+      // TODO return label plural (this.property.label.pl)
+
+      return this.property.labels.find(l => l.notes === 'label.pl').dfh_label;
+
     } else if (this.isOutgoing === false) {
-      if (this.property.domainCardinalityMax === 1) {
-        return this.property.label_inversed.sg;
+      if (this.property.dfh_domain_instances_max_quantifier === 1) {
+
+        // TODO return inversed label singular (this.property.label_inversed.sg)
+        return this.property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
+
       }
-      return this.property.label_inversed.pl;
+
+      // TODO return inversed label plural (this.property.label_inversed.pl)
+      return this.property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label;
+
     } else {
       // TODO Error
       console.log('isOutgoing is not defined')
@@ -238,9 +254,22 @@ export class PropertyComponent implements OnChanges {
 
   get roleLabelObj() {
     if (this.isOutgoing) {
-      return this.property.label;
+
+      // TODO return an object containing label.pl and label.sg
+      return {
+        'sg': this.property.labels.find(l => l.notes === 'label.sg').dfh_label,
+        'pl': this.property.labels.find(l => l.notes === 'label.pl').dfh_label
+      }
+
     } else if (this.isOutgoing === false) {
-      return this.property.label_inversed;
+
+      // TODO return an object containing inversed_label.pl and inversed_label.sg
+
+      return {
+        'sg': this.property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label,
+        'pl': this.property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label
+      };
+
     } else {
       return undefined;
     }
@@ -399,13 +428,13 @@ export class PropertyComponent implements OnChanges {
 
   /**
   * Called when user clicks on create new
-  * Creates a new InformationRole of the kind of property of this component
+  * Creates a new InfRole of the kind of property of this component
   * and pointing to the parent persistent item
   */
   startCreateNewRole() {
     this.propStateChange.emit('createRole');
 
-    this.roleToCreate = new InformationRole();
+    this.roleToCreate = new InfRole();
     this.roleToCreate.fk_property = this.fkProperty;
     this.roleToCreate.fk_entity = this.parentEntityPk;
 
@@ -425,14 +454,14 @@ export class PropertyComponent implements OnChanges {
 
 
   get maxCardinality() {
-    if (this.isOutgoing) return this.property.rangeCardinalityMax;
-    else if (this.isOutgoing === false) return this.property.domainCardinalityMax;
+    if (this.isOutgoing) return this.property.dfh_range_instances_max_quantifier;
+    else if (this.isOutgoing === false) return this.property.dfh_domain_instances_max_quantifier;
     else console.log('isOutgoing is not defined')
   }
 
   get minCardinality() {
-    if (this.isOutgoing) return this.property.rangeCardinalityMin;
-    else if (this.isOutgoing === false) return this.property.domainCardinalityMin;
+    if (this.isOutgoing) return this.property.dfh_range_instances_min_quantifier;
+    else if (this.isOutgoing === false) return this.property.dfh_domain_instances_min_quantifier;
     else console.log('isOutgoing is not defined')
   }
 
@@ -445,7 +474,7 @@ export class PropertyComponent implements OnChanges {
   * - roleComponents.length >= minCardinality
   * - roleComponents.length =< maxCardinality
   *
-  * @param {InformationRole} role
+  * @param {InfRole} role
   */
   roleReadyToCreate(role) {
 
@@ -494,7 +523,7 @@ export class PropertyComponent implements OnChanges {
       role.fk_entity = this.parentPeIt.pk_entity;
     })
 
-    this.roleApi.findOrCreateInformationRole(
+    this.roleApi.findOrCreateInfRole(
       this.activeProject.project.pk_project,
       this.rolesToCreate[0]
     ).subscribe(newRoles => {
@@ -507,7 +536,7 @@ export class PropertyComponent implements OnChanges {
   }
 
 
-  onRoleReadyToAdd(role: InformationRole) {
+  onRoleReadyToAdd(role: InfRole) {
 
     let exists = false;
 

@@ -2,14 +2,14 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
-import { Appellation } from '../shared/sdk/models/Appellation';
+import { InfAppellation } from '../shared/sdk/models/InfAppellation';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
 import { KeyboardService } from '../shared/services/keyboard.service';
-import { AppellationApi } from '../shared/sdk/services/custom/Appellation';
+import { InfAppellationApi } from '../shared/sdk/services/custom/InfAppellation';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
 import { AppellationStdBool } from '../role/role.component';
-import { EntityVersionProjectRel } from '../shared/sdk/models/EntityVersionProjectRel';
+import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 
 
 @Component({
@@ -23,7 +23,7 @@ export class PeItAppellationComponent implements OnInit {
   /**
   * Inputs
   */
-  @Input() appellation: Appellation;
+  @Input() appellation: InfAppellation;
 
   @Input() peItAppeState: string;
 
@@ -32,13 +32,13 @@ export class PeItAppellationComponent implements OnInit {
   * Outputs
   */
 
-  @Output() readyToCreate: EventEmitter<Appellation> = new EventEmitter;
+  @Output() readyToCreate: EventEmitter<InfAppellation> = new EventEmitter;
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
   @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
 
-  @Output() readyToAdd: EventEmitter<Appellation> = new EventEmitter();
+  @Output() readyToAdd: EventEmitter<InfAppellation> = new EventEmitter();
 
 
   /**
@@ -51,7 +51,7 @@ export class PeItAppellationComponent implements OnInit {
 
 
   constructor(
-    private appellationApi: AppellationApi,
+    private appellationApi: InfAppellationApi,
     private activeProjectService: ActiveProjectService,
     public keyboard: KeyboardService,
     private slimLoadingBarService: SlimLoadingBarService
@@ -97,7 +97,7 @@ export class PeItAppellationComponent implements OnInit {
     ).subscribe(appellations => {
       this.completeLoading();
 
-      this.appellation = new Appellation(appellations[0])
+      this.appellation = new InfAppellation(appellations[0])
       this.appellationLabel = new AppellationLabel(this.appellation.appellation_label);
 
       this.appeChange.emit({
@@ -138,14 +138,14 @@ export class PeItAppellationComponent implements OnInit {
   * Methods specific to add state
   */
 
-  onReadyToAdd(appellation: Appellation) {
+  onReadyToAdd(appellation: InfAppellation) {
 
     // make a copy
-    let appe = new Appellation(appellation);
+    let appe = new InfAppellation(appellation);
 
     // add an epr
     appe.entity_version_project_rels = [
-      new EntityVersionProjectRel({
+      new InfEntityProjectRel({
         fk_project:this.activeProjectService.project.pk_project,
         is_in_project:true,
         fk_entity_version_concat: appellation.pk_entity_version_concat

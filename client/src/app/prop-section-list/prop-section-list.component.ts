@@ -8,13 +8,14 @@ import {
   keyframes
 } from '@angular/animations';
 
-import { InformationRole } from '../shared/sdk/models/InformationRole';
+import { InfRole } from '../shared/sdk/models/InfRole';
 import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
-import { Property, PropertyService, DirectionAwareProperty } from '../shared/services/property.service';
+import { PropertyService, DirectionAwareProperty } from '../shared/services/property.service';
 import { RoleService, RolesPerProperty, DirectedRolesPerProperty } from '../shared/services/role.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
-import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
+import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { AppellationStdBool } from '../role/role.component';
+import { DfhProperty } from '../shared/sdk/models/DfhProperty';
 
 @Component({
   selector: 'gv-prop-section-list',
@@ -63,19 +64,19 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   */
 
   // The roles this component does use
-  @Input() roles: InformationRole[];
+  @Input() roles: InfRole[];
 
   // The primary key of the parent PeIt Entity
   @Input() pkEntity: number;
 
   // The parent PeIt Entity
-  @Input() parentPeIt: PersistentItemVersion;
+  @Input() parentPeIt: InfPersistentItem;
 
   // array of properies of which the class of this peIt is range.
-  @Input() outgoingProperties: Property[];
+  @Input() outgoingProperties: DfhProperty[];
 
   // array of properies of which the class of this peIt is domain.
-  @Input() ingoingProperties: Property[];
+  @Input() ingoingProperties: DfhProperty[];
 
   // state of this component
   @Input() propSectionListState: string;
@@ -88,11 +89,11 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   * Outputs
   */
 
-  @Output() readyToCreate: EventEmitter<InformationRole[]> = new EventEmitter;
+  @Output() readyToCreate: EventEmitter<InfRole[]> = new EventEmitter;
 
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
-  @Output() readyToAdd: EventEmitter<InformationRole[]> = new EventEmitter;
+  @Output() readyToAdd: EventEmitter<InfRole[]> = new EventEmitter;
 
 
   // emit appellation and a flag to say if this is the standard appellation
@@ -136,17 +137,6 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   ) { }
 
 
-  /**
-  * get rolesNotR63 - filter roles that are not R63
-  *
-  * @return {InformationRole[]} array of roles that are not R63
-  */
-  get rolesNotR63() {
-    if (this.roles) {
-      return this.roles.filter(role => role.fk_property !== 'R63');
-    }
-    return [];
-  }
 
   /**
   * get addButtonVisible
@@ -175,23 +165,6 @@ export class PropSectionListComponent implements OnInit, OnChanges {
 
     this.propertyToAdd = null;
 
-    this.outgoingDirectionAwareProperties = this.propertyService
-      .toDirectionAwareProperties(true, this.outgoingProperties)
-
-    this.ingoingDirectionAwareProperties = this.propertyService
-      .toDirectionAwareProperties(false, this.ingoingProperties)
-
-    if (this.roles) this.setDirectedRolesPerProperty();
-
-    if (this.propSectionListState === 'create') {
-      this.selectPropState = 'createPeIt';
-
-      //TODO find smarter choice of the default property to add on create
-      this.propertyToAdd = this.outgoingDirectionAwareProperties.filter(odap => {
-        return odap.property.pk_property === 'R63'
-      })[0]
-
-    }
   }
 
   ngOnChanges() {
@@ -201,6 +174,28 @@ export class PropSectionListComponent implements OnInit, OnChanges {
     }
     else {
       this.selectPropState = 'init';
+    }
+
+    if (this.outgoingProperties && this.ingoingProperties) {
+
+      this.outgoingDirectionAwareProperties = this.propertyService
+        .toDirectionAwareProperties(true, this.outgoingProperties)
+
+      this.ingoingDirectionAwareProperties = this.propertyService
+        .toDirectionAwareProperties(false, this.ingoingProperties)
+
+      if (this.roles) this.setDirectedRolesPerProperty();
+
+    }
+
+    if (this.propSectionListState === 'create') {
+      this.selectPropState = 'createPeIt';
+
+      //TODO find smarter choice of the default property to add on create
+      this.propertyToAdd = this.outgoingDirectionAwareProperties.filter(odap => {
+        return odap.property.dfh_pk_property === 1 //'R63'
+      })[0]
+
     }
 
   }
@@ -277,7 +272,7 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   /**
    * called when roles ready to create
    */
-  emitReadyToCreate(roles: InformationRole[]) {
+  emitReadyToCreate(roles: InfRole[]) {
 
     this.readyToCreate.emit(roles);
 
@@ -286,7 +281,7 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   /**
    * called when role isnt ready to create
    */
-  emitNotReadyToCreate(roles: InformationRole[]) {
+  emitNotReadyToCreate(roles: InfRole[]) {
 
     this.notReadyToCreate.emit();
 
@@ -303,7 +298,7 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   /**
    * called when roles of property (section) are ready to be added
    */
-  onRolesReadyToAdd(roles: InformationRole[]) {
+  onRolesReadyToAdd(roles: InfRole[]) {
     this.readyToAdd.emit(roles);
   }
 

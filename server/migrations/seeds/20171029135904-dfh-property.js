@@ -5,9 +5,9 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
+* We receive the dbmigrate dependency from dbmigrate initially.
+* This enables us to not have to rely on NODE_PATH.
+*/
 exports.setup = function(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -17,11 +17,21 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db, callback) {
   const sql = `
-  INSERT INTO data_for_history.property (data_for_history_id, notes)
+  INSERT INTO data_for_history.property (
+    dfh_pk_property,
+    dfh_identifier_in_namespace,
+    dfh_has_domain,
+    dfh_has_range,
+    dfh_standard_label,
+    dfh_domain_instances_min_quantifier,
+    dfh_domain_instances_max_quantifier,
+    dfh_range_instances_min_quantifier,
+    dfh_range_instances_max_quantifier
+  )
   VALUES
-  ('R63', 'Named'),
-  ('R64', 'Used Name'),
-  ('R61', 'Occured in kind of context')
+  (1, 'R63', 3, 1, 'Named', 0, NULL, 0, NULL),
+  (2, 'R64', 3, 2, 'Used Name', 0, NULL, 1, 1),
+  (3, 'R61', 3, 4, 'Occured in kind of context', 0, NULL, 1, 1)
   `;
   console.log(sql);
 

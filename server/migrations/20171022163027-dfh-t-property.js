@@ -56,8 +56,8 @@ exports.up = function(db, callback) {
 
 exports.down = function(db, callback) {
   const sql = `
-  DROP TABLE data_for_history.property;
-  DROP TABLE data_for_history.property_vt;
+  DROP TABLE IF EXISTS data_for_history.property;
+  DROP TABLE IF EXISTS data_for_history.property_vt;
   `
   db.runSql(sql, callback)
 };

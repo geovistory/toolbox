@@ -60,44 +60,56 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "CommonsLabel": {
+  "ComLabel": {
     "dataSource": "postgres1",
     "public": true
   },
-  "CommonsTextProperty": {
+  "ComTextProperty": {
     "dataSource": "postgres1",
     "public": true
   },
-  "Appellation": {
+  "InfAppellation": {
     "dataSource": "postgres1",
     "public": true
   },
-  "TemporalEntity": {
+  "InfTemporalEntity": {
     "dataSource": "postgres1",
     "public": true
   },
-  "InformationRole": {
+  "InfRole": {
     "dataSource": "postgres1",
     "public": true
   },
-  "Class": {
+  "InfLanguage": {
     "dataSource": "postgres1",
     "public": true
   },
-  "InformationLanguage": {
+  "InfPersistentItem": {
     "dataSource": "postgres1",
     "public": true
   },
-  "PersistentItemVersion": {
+  "InfEntityProjectRel": {
     "dataSource": "postgres1",
     "public": true
   },
-  "EntityVersionProjectRel": {
-    "dataSource": "postgres1",
-    "public": true
-  },
-  "EntityVersion": {
+  "InfEntityVersion": {
     "dataSource": null,
     "public": false
+  },
+  "DfhClass": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "DfhProperty": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "DfhLabel": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "DfhTextProperty": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }

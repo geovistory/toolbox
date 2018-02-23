@@ -17,12 +17,12 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db, callback) {
   const sql = `
-  INSERT INTO data_for_history.class (data_for_history_id, notes)
+  INSERT INTO data_for_history.class (dfh_pk_class, dfh_identifier_in_namespace, dfh_standard_label)
   VALUES
-  ('E21', 'Person'),
-  ('E82', 'Actor Appellation'),
-  ('F52', 'Name Use Activity'),
-  ('E56', 'Language')
+  (1, 'E21', 'Person'),
+  (2, 'E82', 'Actor Appellation'),
+  (3, 'F52', 'Name Use Activity'),
+  (4, 'E56', 'Language')
   `;
   console.log(sql);
 

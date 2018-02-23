@@ -1,0 +1,58 @@
+{
+  "name": "InfEntityVersion",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "pk_entity_version_concat": {
+      "type": "string",
+      "id": true,
+      "required": false
+    },
+    "pk_entity": {
+      "type": "number",
+      "generated": true
+    },
+    "entity_version": {
+      "type": "number",
+      "generated": true
+    },
+    "notes": {
+      "type": "string",
+      "required": false
+    },
+    "tmsp_creation": {
+      "type": "string",
+      "generated": true
+    },
+    "tmsp_last_modification": {
+      "type": "string",
+      "generated": true
+    },
+    "sys_period": {
+      "type": "string",
+      "generated": true
+    },
+    "is_latest_version": {
+      "type": "boolean",
+      "generated": true
+    },
+    "is_community_favorite": {
+      "type": "boolean",
+      "generated": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "entity_version_project_rels": {
+      "type": "hasMany",
+      "model": "InfEntityProjectRel",
+      "foreignKey": "fk_entity_version_concat",
+      "primaryKey": "pk_entity_version_concat"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

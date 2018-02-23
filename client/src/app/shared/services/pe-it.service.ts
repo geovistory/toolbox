@@ -3,16 +3,16 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
-import { PersistentItemVersionApi } from '../sdk/services/custom/PersistentItemVersion';
-import { PersistentItemVersion } from '../sdk/models/PersistentItemVersion';
-import { TemporalEntity } from '../sdk/models/TemporalEntity';
-import { Appellation } from '../sdk/models/Appellation';
-import { InformationLanguage } from '../sdk/models/InformationLanguage';
-import { TemporalEntityApi } from '../sdk/services/custom/TemporalEntity';
-import { AppellationApi } from '../sdk/services/custom/Appellation';
-import { InformationRoleApi } from '../sdk/services/custom/InformationRole';
-import { InformationRole } from '../sdk/models/InformationRole';
-import { InformationLanguageApi } from '../sdk/services/custom/InformationLanguage';
+import { InfPersistentItemApi } from '../sdk/services/custom/InfPersistentItem';
+import { InfPersistentItem } from '../sdk/models/InfPersistentItem';
+import { InfTemporalEntity } from '../sdk/models/InfTemporalEntity';
+import { InfAppellation } from '../sdk/models/InfAppellation';
+import { InfLanguage } from '../sdk/models/InfLanguage';
+import { InfTemporalEntityApi } from '../sdk/services/custom/InfTemporalEntity';
+import { InfAppellationApi } from '../sdk/services/custom/InfAppellation';
+import { InfRoleApi } from '../sdk/services/custom/InfRole';
+import { InfRole } from '../sdk/models/InfRole';
+import { InfLanguageApi } from '../sdk/services/custom/InfLanguage';
 import { ActivePeItService } from './active-pe-it.service';
 
 
@@ -20,30 +20,30 @@ import { ActivePeItService } from './active-pe-it.service';
 export class PeItService {
 
   constructor(
-    private persistentItemApi: PersistentItemVersionApi,
-    private temporalEntityApi: TemporalEntityApi,
-    private appellationApi: AppellationApi,
-    private roleApi: InformationRoleApi,
-    private languageApi: InformationLanguageApi,
+    private persistentItemApi: InfPersistentItemApi,
+    private temporalEntityApi: InfTemporalEntityApi,
+    private appellationApi: InfAppellationApi,
+    private roleApi: InfRoleApi,
+    private languageApi: InfLanguageApi,
     private activePeItService: ActivePeItService
   ) {
 
   }
 
-  createPeIt(projectId: number, peIt: PersistentItemVersion) {
+  createPeIt(projectId: number, peIt: InfPersistentItem) {
     return this.persistentItemApi.findOrCreatePeIt(projectId, peIt)
   }
 
-  createTeEnt(projectId: number, teEnt: TemporalEntity) {
-    return this.temporalEntityApi.findOrCreateTemporalEntity(projectId, teEnt);
+  createTeEnt(projectId: number, teEnt: InfTemporalEntity) {
+    return this.temporalEntityApi.findOrCreateInfTemporalEntity(projectId, teEnt);
   }
 
-  createAppe(projectId: number, appe: Appellation) {
+  createAppe(projectId: number, appe: InfAppellation) {
     return this.appellationApi.findOrCreateAppellation(projectId, appe);
   }
 
-  createRole(projectId: number, role: InformationRole) {
-    return this.roleApi.findOrCreateInformationRole(projectId, role);
+  createRole(projectId: number, role: InfRole) {
+    return this.roleApi.findOrCreateInfRole(projectId, role);
   }
 
   findLangByIso6392t(iso6392t) {

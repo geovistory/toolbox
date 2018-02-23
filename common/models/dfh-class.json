@@ -1,0 +1,71 @@
+{
+  "name": "DfhClass",
+  "plural": "DfhClasses",
+  "base": "DfhEntity",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "data_for_history",
+      "table": "class"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "dfh_pk_class": {
+      "type": "number",
+      "id": true,
+      "generated": true
+    },
+    "dfh_identifier_in_namespace": {
+      "type": "string"
+    },
+    "dfh_standard_label": {
+      "type": "string"
+    },
+    "dfh_fk_system_type": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "labels": {
+      "type": "hasMany",
+      "model": "DfhLabel",
+      "foreignKey": "dfh_fk_class",
+      "options": {
+        "nestRemoting": false
+      }
+    },
+    "text_properties": {
+      "type": "hasMany",
+      "model": "DfhTextProperty",
+      "foreignKey": "dfh_fk_class"
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find",
+        "findById",
+        "__get__labels",
+        "__get__text_properties"
+      ]
+    }
+  ],
+  "methods": {}
+}

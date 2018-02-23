@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { PersistentItemVersion } from '../shared/sdk/models/PersistentItemVersion';
-import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
-import { Appellation } from '../shared/sdk/models/Appellation';
+import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
+import { InfLanguage } from '../shared/sdk/models/InfLanguage';
+import { InfAppellation } from '../shared/sdk/models/InfAppellation';
 import { UtilitiesService } from '../shared/services/utilities.service';
 import { KeyboardService } from '../shared/services/keyboard.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
@@ -28,9 +28,9 @@ export class PeItComponent implements OnInit {
   */
 
   @Input() pkEntity: number;
-  @Input() fkClass: string;
-  @Input() appellation: Appellation;
-  @Input() language: InformationLanguage;
+  @Input() fkClass: number;
+  @Input() appellation: InfAppellation;
+  @Input() language: InfLanguage;
   @Input() peItState: string;
 
   /**
@@ -45,21 +45,21 @@ export class PeItComponent implements OnInit {
 
   // Persistent Item related
 
-  @Output() peItReadyToCreate: EventEmitter<PersistentItemVersion> = new EventEmitter;
+  @Output() peItReadyToCreate: EventEmitter<InfPersistentItem> = new EventEmitter;
 
   @Output() peItNotReadyToCreate: EventEmitter<void> = new EventEmitter;
 
-  @Output() peItReadyToAdd: EventEmitter<PersistentItemVersion> = new EventEmitter;
+  @Output() peItReadyToAdd: EventEmitter<InfPersistentItem> = new EventEmitter;
 
   // Appellation related
 
   @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
 
-  @Output() appeReadyToAdd: EventEmitter<Appellation> = new EventEmitter();
+  @Output() appeReadyToAdd: EventEmitter<InfAppellation> = new EventEmitter();
 
   // Language related
 
-  @Output() langReadyToAdd: EventEmitter<InformationLanguage> = new EventEmitter();
+  @Output() langReadyToAdd: EventEmitter<InfLanguage> = new EventEmitter();
 
 
   /**
@@ -89,17 +89,17 @@ export class PeItComponent implements OnInit {
 
     if (this.peItState === 'create') {
 
-      if (this.fkClass === 'E56') {
+      if (this.fkClass === 4) {
 
-        this.language = new InformationLanguage()
+        this.language = new InfLanguage()
 
         this.language.fk_class = this.fkClass;
 
       }
 
-      if (['E82', 'E41'].indexOf(this.fkClass) > -1) {
+      if ([2].indexOf(this.fkClass) > -1) {
 
-        this.appellation = new Appellation()
+        this.appellation = new InfAppellation()
 
         this.appellation.fk_class = this.fkClass;
 
@@ -159,7 +159,7 @@ export class PeItComponent implements OnInit {
 
   // Persistent Item related
 
-  emitPeItReadyToCreate(peIt: PersistentItemVersion) {
+  emitPeItReadyToCreate(peIt: InfPersistentItem) {
     this.peItReadyToCreate.emit(peIt)
   }
 
@@ -176,7 +176,7 @@ export class PeItComponent implements OnInit {
   }
 
 
-  onPeItReadyToAdd(peIt: PersistentItemVersion) {
+  onPeItReadyToAdd(peIt: InfPersistentItem) {
     this.peItReadyToAdd.emit(peIt)
   }
 
@@ -188,13 +188,13 @@ export class PeItComponent implements OnInit {
 
  // Appellation related
 
- onAppeReadyToAdd(appellation:Appellation) {
+ onAppeReadyToAdd(appellation:InfAppellation) {
    this.appeReadyToAdd.emit(appellation);
  }
 
  // Language related
 
- onLangReadyToAdd(language:InformationLanguage) {
+ onLangReadyToAdd(language:InfLanguage) {
    this.langReadyToAdd.emit(language);
  }
 

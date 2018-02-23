@@ -32,7 +32,6 @@ import { AuthGuard } from './shared/services/auth-guard.service';
 import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
 import { ProjectEntitiesComponent } from './project-entities/project-entities.component';
 import { ProjectEditComponent } from './project-edit/project-edit.component';
-import { NamingComponent } from './naming/naming.component';
 import { NameComponent } from './name/name.component';
 import { ProjectEditPanelComponent } from './project-edit-panel/project-edit-panel.component';
 import { ProjectSourcesComponent } from './project-sources/project-sources.component';
@@ -48,7 +47,6 @@ import { EntitySearchHitComponent } from './entity-search-hit/entity-search-hit.
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 import { PropertyPipe } from './shared/pipes/property';
 import { LanguageComponent } from './language/language.component';
-import { NameAddComponent } from './name-add/name-add.component';
 import { EntityAddChooseClassComponent } from './entity-add-choose-class/entity-add-choose-class.component';
 import { EntityAddSearchExistingComponent } from './entity-add-search-existing/entity-add-search-existing.component';
 import { EntityAddCreateNewComponent } from './entity-add-create-new/entity-add-create-new.component';
@@ -102,7 +100,6 @@ import { AppellationLabelEditorComponent } from './appellation-label-editor/appe
     ProjectDashboardComponent,
     ProjectEntitiesComponent,
     ProjectEditComponent,
-    NamingComponent,
     NameComponent,
     AppellationLabelTokenComponent,
     ProjectEditPanelComponent,
@@ -118,7 +115,6 @@ import { AppellationLabelEditorComponent } from './appellation-label-editor/appe
     EntitySearchHitComponent,
     LoadingSpinnerComponent,
     LanguageComponent,
-    NameAddComponent,
     PropertyPipe,
     EntityAddChooseClassComponent,
     EntityAddSearchExistingComponent,

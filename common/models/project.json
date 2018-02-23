@@ -47,33 +47,33 @@
     },
     "labels": {
       "type": "hasMany",
-      "model": "CommonsLabel",
+      "model": "ComLabel",
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     },
     "text_properties": {
       "type": "hasMany",
-      "model": "CommonsTextProperty",
+      "model": "ComTextProperty",
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     },
     "persistent_items": {
       "type": "hasMany",
-      "model": "PersistentItem",
+      "model": "InfPersistentItem",
       "foreignKey": "fk_project",
       "keyThrough": "fk_entity",
       "through": "EntityProjectRel"
     },
     "persistent_item_versions": {
       "type": "hasMany",
-      "model": "PersistentItemVersion",
+      "model": "InfPersistentItem",
       "foreignKey": "fk_project",
       "keyThrough": "fk_entity_version_concat",
-      "through": "EntityVersionProjectRel"
+      "through": "InfEntityProjectRel"
     },
     "entity_version_project_rels": {
       "type": "hasMany",
-      "model": "EntityVersionProjectRel",
+      "model": "InfEntityProjectRel",
       "foreignKey": "fk_project",
       "primaryKey": "pk_project"
     }

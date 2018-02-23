@@ -11,8 +11,8 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/merge';
 
 import { LanguageApi } from '../shared/sdk/services/custom/Language';
-import { InformationLanguage } from '../shared/sdk/models/InformationLanguage';
-import { InformationLanguageApi } from '../shared/sdk/services/custom/InformationLanguage';
+import { InfLanguage } from '../shared/sdk/models/InfLanguage';
+import { InfLanguageApi } from '../shared/sdk/services/custom/InfLanguage';
 
 @Component({
   selector: 'gv-language-search-typeahead',
@@ -27,7 +27,7 @@ export class LanguageSearchTypeaheadComponent implements OnInit {
   searchFailed = false;
   hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
 
-  _language:InformationLanguage;
+  _language:InfLanguage;
 
   @Input() get language(){
     return this._language;
@@ -50,7 +50,7 @@ export class LanguageSearchTypeaheadComponent implements OnInit {
 
 
   constructor(
-    private languageApi: InformationLanguageApi
+    private languageApi: InfLanguageApi
   ) { }
 
   ngOnInit() {

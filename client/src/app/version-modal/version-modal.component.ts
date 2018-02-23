@@ -2,7 +2,7 @@ import { Component, Input, OnInit, EventEmitter } from '@angular/core';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { EntityVersionProjectRelApi } from '../shared/sdk/services/custom/EntityVersionProjectRel';
+import { InfEntityProjectRelApi } from '../shared/sdk/services/custom/InfEntityProjectRel';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 
 @Component({
@@ -46,7 +46,7 @@ export class VersionModalComponent implements OnInit {
   constructor(
     public activeModal: NgbActiveModal,
     private slimLoadingBarService: SlimLoadingBarService,
-    private entityVersionProjectRelApi:EntityVersionProjectRelApi,
+    private entityVersionProjectRelApi:InfEntityProjectRelApi,
     private activeProjectService: ActiveProjectService
   ) { }
 
@@ -62,7 +62,7 @@ export class VersionModalComponent implements OnInit {
   updateVersion(version){
     this.startLoading();
 
-    const eprPk = this.getCurrentEntityVersionProjectRelPk();
+    const eprPk = this.getCurrentInfEntityProjectRelPk();
 
     this.entityVersionProjectRelApi.patchAttributes(
       eprPk,
@@ -80,13 +80,13 @@ export class VersionModalComponent implements OnInit {
 
 
   /**
-  * private getCurrentEntityVersionProjectRelPk - get the
-  * pk_entity_version_project_rel of the EntityVersionProjectRel that
+  * private getCurrentInfEntityProjectRelPk - get the
+  * pk_entity_version_project_rel of the InfEntityProjectRel that
   * relates the current version with the active project
   *
   * @return {number}  pk_entity_version_project_rel
   */
-  private getCurrentEntityVersionProjectRelPk():number{
+  private getCurrentInfEntityProjectRelPk():number{
 
     //get current version
     const currVerWithEpr = this.versions.filter(v =>
