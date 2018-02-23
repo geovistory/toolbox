@@ -35,7 +35,8 @@ export class RegistrationComponent {
 
     this.errorMessages = {};
     this.account = new Account(this.model);
-    this.accountApi.create(this.account)
+    const redirectUrl = window.location.origin + '/email-verified';
+    this.accountApi.register(this.account, redirectUrl)
     .subscribe(
       data => {
         this.completeLoading();

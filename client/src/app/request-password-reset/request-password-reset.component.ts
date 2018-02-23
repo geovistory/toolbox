@@ -13,7 +13,7 @@ import {AccountApi} from './../shared/sdk/services/custom/Account';
 })
 export class RequestPasswordResetComponent {
 
-  model: any = {};
+  model:{email:string, redirectUrl: string}={email:'', redirectUrl:''};
   loading:boolean = false;
   errorMessage: string;
   confirm:boolean = false; //if true, form is hidden and confirmation shown.
@@ -24,6 +24,7 @@ export class RequestPasswordResetComponent {
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
+    this.model.redirectUrl = window.location.origin + '/reset-password';
   }
 
   request(){

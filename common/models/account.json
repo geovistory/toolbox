@@ -28,14 +28,12 @@
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
-      "property": "listProjects"
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": "__create__projects"
-    }
+      "property": [
+        "listProjects",
+        "__create__projects",
+        "register"
+      ]
+    }  
   ],
   "methods": {
     "listProjects": {
@@ -58,6 +56,45 @@
       "http": {
         "path": "/list-projects",
         "verb": "get"
+      }
+    },
+    "register": {
+      "accepts": [
+        {
+          "arg": "data",
+          "type": "Account",
+          "required": true,
+          "description": "Model instance data",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "redirectUrl",
+          "type": "string",
+          "required": true,
+          "description": "Redirect url for link in email verification email.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "Account",
+        "root": true
+      },
+      "description": "Register for a new Account.",
+      "http": {
+        "path": "/register",
+        "verb": "post"
       }
     }
   }
