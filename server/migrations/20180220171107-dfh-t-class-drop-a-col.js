@@ -23,6 +23,11 @@ exports.up = function(db, callback) {
 
   ALTER TABLE data_for_history.class
   DROP COLUMN data_for_history_id;
+
+  -- versioning
+
+  ALTER TABLE data_for_history.class_vt
+  DROP COLUMN data_for_history_id;
   `
 
   db.runSql(sql, callback)
@@ -38,6 +43,12 @@ exports.down = function(db, callback) {
   ALTER TABLE data_for_history.class
   ADD CONSTRAINT class_data_for_history_id_key
   UNIQUE (data_for_history_id);
+
+  -- versioning
+
+  ALTER TABLE data_for_history.class_vt
+  ADD COLUMN data_for_history_id varchar(7);
+
   `
 
   db.runSql(sql, callback)
