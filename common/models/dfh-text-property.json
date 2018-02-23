@@ -1,13 +1,19 @@
 {
   "name": "DfhTextProperty",
   "plural": "DfhTextProperties",
-  "base": "PersistedModel",
+  "base": "DfhEntity",
   "idInjection": true,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "data_for_history",
       "table": "text_property"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
     }
   },
   "properties": {
@@ -67,7 +73,7 @@
   "relations": {
     "class": {
       "type": "belongsTo",
-      "model": "InfClass",
+      "model": "DhfClass",
       "foreignKey": "dfh_fk_class",
       "primaryKey": "dfh_pk_class",
       "options": {
@@ -75,6 +81,22 @@
       }
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find",
+        "findById"
+      ]
+    }
+  ],
   "methods": {}
 }

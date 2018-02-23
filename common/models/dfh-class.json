@@ -1,13 +1,19 @@
 {
   "name": "DfhClass",
   "plural": "DfhClasses",
-  "base": "PersistedModel",
+  "base": "DfhEntity",
   "idInjection": true,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "data_for_history",
       "table": "class"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
     }
   },
   "properties": {
@@ -42,6 +48,24 @@
       "foreignKey": "dfh_fk_class"
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find",
+        "findById",
+        "__get__labels",
+        "__get__text_properties"
+      ]
+    }
+  ],
   "methods": {}
 }
