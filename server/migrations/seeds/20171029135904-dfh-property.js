@@ -30,8 +30,8 @@ exports.up = function(db, callback) {
   )
   VALUES
   (1, 'R63', 3, 1, 'Named', 0, NULL, 0, NULL),
-  (2, 'R64', 3, 2, 'Used Name', 0, NULL, 0, NULL),
-  (3, 'R61', 3, 4, 'Occured in kind of context', 0, NULL, 0, NULL)
+  (2, 'R64', 3, 2, 'Used Name', 0, NULL, 1, 1),
+  (3, 'R61', 3, 4, 'Occured in kind of context', 0, NULL, 1, 1)
   `;
   console.log(sql);
 
