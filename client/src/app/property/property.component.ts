@@ -221,28 +221,30 @@ export class PropertyComponent implements OnChanges {
   *
   * @return {string}  label of the property
   */
-  get roleLabel() {
+  get roleLabel():string {
     if (this.isOutgoing) {
       if (this.property.dfh_range_instances_max_quantifier === 1) {
 
         // TODO return label singular (this.property.label.sg)
-        return 'label.sg;'
+
+        return this.property.labels.find(l => l.notes === 'label.sg').dfh_label;
 
       }
 
       // TODO return label plural (this.property.label.pl)
-      return 'label.pl';
+
+      return this.property.labels.find(l => l.notes === 'label.pl').dfh_label;
 
     } else if (this.isOutgoing === false) {
       if (this.property.dfh_domain_instances_max_quantifier === 1) {
 
         // TODO return inversed label singular (this.property.label_inversed.sg)
-        return 'label_inversed.sg';
+        return this.property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
 
       }
 
       // TODO return inversed label plural (this.property.label_inversed.pl)
-      return 'label_inversed.pl';
+      return this.property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label;
 
     } else {
       // TODO Error
@@ -255,8 +257,8 @@ export class PropertyComponent implements OnChanges {
 
       // TODO return an object containing label.pl and label.sg
       return {
-        'sg': 'label sg',
-        'pl': 'label pl'
+        'sg': this.property.labels.find(l => l.notes === 'label.sg').dfh_label,
+        'pl': this.property.labels.find(l => l.notes === 'label.pl').dfh_label
       }
 
     } else if (this.isOutgoing === false) {
@@ -264,8 +266,8 @@ export class PropertyComponent implements OnChanges {
       // TODO return an object containing inversed_label.pl and inversed_label.sg
 
       return {
-        'sg': 'inversed_label sg',
-        'pl': 'inversed_label pl'
+        'sg': this.property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label,
+        'pl': this.property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label
       };
 
     } else {

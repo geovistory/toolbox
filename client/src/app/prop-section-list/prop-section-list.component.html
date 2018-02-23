@@ -22,15 +22,13 @@
         <option [ngValue]="null">Please Select…</option>
 
         <option *ngFor="let propertyToAdd of ingoingDirectionAwareProperties" [ngValue]="propertyToAdd">
-          <!-- {{propertyToAdd.property.label_inversed.sg}} -->
-          label_inversed.sg of {{propertyToAdd.property?.dfh_identifier_in_namespace}}
-          <!-- TODO Add label-->
+
+          {{propertyToAdd?.labelSg}}
 
         </option>
         <option *ngFor="let propertyToAdd of outgoingDirectionAwareProperties" [ngValue]="propertyToAdd">
-          <!-- {{propertyToAdd.property.label.sg}} -->
-          label.sg of {{propertyToAdd.property?.dfh_identifier_in_namespace}}
-          <!-- TODO Add label-->
+
+          {{propertyToAdd?.labelSg}}
 
         </option>
       </select>
