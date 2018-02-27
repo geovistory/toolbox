@@ -4,133 +4,133 @@ class="d-flex flex-column gv-flex-grow-1"
 
 
 
-  <!-- Create a new PeIt -->
+<!-- Create a new PeIt -->
+
+<gv-property
+*ngIf="selectPropState === 'createPeIt'"
+[fkProperty]="propertyToAdd.property.dfh_pk_property"
+[isOutgoing]="propertyToAdd.isOutgoing"
+[propState]="'create-pe-it'"
+[pointTo]="'TeEnt'"
+[parentPeIt]="parentPeIt"
+[parentEntityPk]="pkEntity"
+(readyToCreate)="emitReadyToCreate($event)"
+(notReadyToCreate)="emitNotReadyToCreate()"
+(propStateChange)="onPropStateChange($event)"
+(rolesAdded)="onRolesAdded($event)"
+></gv-property>
+
+<!-- All Property Sections of existing Roles -->
+
+<div class="card bg-gray-700 text-white mb-3">
+  <div class="card-body">
+    <i class="fa fa-lightbulb-o"></i>  Properties
+  </div>
+</div>
+<div class="gv-body gv-flex-grow-1" style="overflow-y:auto">
 
   <gv-property
-  *ngIf="selectPropState === 'createPeIt'"
-  [fkProperty]="propertyToAdd.property.dfh_pk_property"
-  [isOutgoing]="propertyToAdd.isOutgoing"
-  [propState]="'create-pe-it'"
+  *ngFor="let propertySection of directedRolesPerProperty"
+  [isOutgoing]="propertySection.isOutgoing"
+  [roles]="propertySection.roles"
+  [fkProperty]="propertySection.fkProperty"
   [pointTo]="'TeEnt'"
-  [parentPeIt]="parentPeIt"
   [parentEntityPk]="pkEntity"
-  (readyToCreate)="emitReadyToCreate($event)"
-  (notReadyToCreate)="emitNotReadyToCreate()"
-  (propStateChange)="onPropStateChange($event)"
-  (rolesAdded)="onRolesAdded($event)"
+  [parentPeIt]="parentPeIt"
+  [propState]="propState"
+  (appeChange)="emitAppeChange($event)"
+  (readyToAdd)="onRolesReadyToAdd($event)"
+  (notReadyToAdd)="onRolesNotReadyToAdd()"
   ></gv-property>
 
-  <!-- All Property Sections of existing Roles -->
+</div>
 
-  <div class="gv-header d-flex flex-row">
-    <div class="gv-flex-grow-1 h4 align-self-center">
-      Properties
-    </div>
-  </div>
-  <div class="gv-body gv-flex-grow-1" style="overflow-y:auto">
+<div class="gv-footer mt-3">
 
-    <gv-property
-    *ngFor="let propertySection of directedRolesPerProperty"
-    [isOutgoing]="propertySection.isOutgoing"
-    [roles]="propertySection.roles"
-    [fkProperty]="propertySection.fkProperty"
-    [pointTo]="'TeEnt'"
-    [parentEntityPk]="pkEntity"
-    [parentPeIt]="parentPeIt"
-    [propState]="propState"
-    (appeChange)="emitAppeChange($event)"
-    (readyToAdd)="onRolesReadyToAdd($event)"
-    (notReadyToAdd)="onRolesNotReadyToAdd()"
-    ></gv-property>
+  <!-- Step 1 for adding a new property -->
 
-  </div>
-
-  <div class="gv-footer mt-3">
-
-    <!-- Step 1 for adding a new property -->
-
-    <button class="btn btn-secondary btn-block" (click)="selectPropState = 'selectProp'"  *ngIf="selectPropState === 'init'">
-      <i class="fa fa-plus"></i> Add a property ...
-    </button>
+  <button class="btn btn-secondary btn-block bg-gray-700" (click)="selectPropState = 'selectProp'"  *ngIf="selectPropState === 'init'">
+    <i class="fa fa-plus"></i> Add a property ...
+  </button>
 
 
-    <!-- Step 2 for adding new Property section -->
+  <!-- Step 2 for adding new Property section -->
 
-    <div class="card gv-naming" *ngIf="selectPropState === 'selectProp'">
+  <div class="card gv-naming bg-gray-700" *ngIf="selectPropState === 'selectProp'">
 
-      <div class="card-header bt-1">
-        <div class="d-flex">
-          <div class="gv-h4 text-white gv-flex-grow-1 align-self-center">
-            What do you want to add?
-          </div>
-          <button type="button" name="button" class="btn btn-link text-white align-self-center btn-sm"
-          (click)="selectPropState = 'init'"
-          > <i class="fa fa-close"></i> </button>
+    <div class="card-header bt-1">
+      <div class="d-flex">
+        <div class="gv-h4 text-white gv-flex-grow-1 align-self-center">
+          What do you want to add?
         </div>
+        <button type="button" name="button" class="btn btn-link text-white align-self-center btn-sm"
+        (click)="selectPropState = 'init'"
+        > <i class="fa fa-close"></i> </button>
       </div>
-
-      <div class="card-body">
-        <div class="input-group">
-          <select [(ngModel)]="propertyToAdd" class="custom-select">
-            <option [ngValue]="null">Select…</option>
-
-            <option *ngFor="let propertyToAdd of ingoingDirectionAwareProperties" [ngValue]="propertyToAdd">
-
-              {{propertyToAdd?.labelSg}}
-
-            </option>
-            <option *ngFor="let propertyToAdd of outgoingDirectionAwareProperties" [ngValue]="propertyToAdd">
-
-              {{propertyToAdd?.labelSg}}
-
-            </option>
-          </select>
-          <button type="button" name="button" class="btn btn-primary input-group-append"
-          *ngIf="propertyToAdd"
-          (click)="startSelectRoles()"
-          >Ok</button>
-        </div>
-      </div>
-
     </div>
 
+    <div class="card-body">
+      <div class="input-group">
+        <select [(ngModel)]="propertyToAdd" class="custom-select">
+          <option [ngValue]="null">Select…</option>
+
+          <option *ngFor="let propertyToAdd of ingoingDirectionAwareProperties" [ngValue]="propertyToAdd">
+
+            {{propertyToAdd?.labelSg}}
+
+          </option>
+          <option *ngFor="let propertyToAdd of outgoingDirectionAwareProperties" [ngValue]="propertyToAdd">
+
+            {{propertyToAdd?.labelSg}}
+
+          </option>
+        </select>
+        <button type="button" name="button" class="btn btn-primary input-group-append"
+        *ngIf="propertyToAdd"
+        (click)="startSelectRoles()"
+        >Ok</button>
+      </div>
+    </div>
 
   </div>
 
 
+</div>
 
 
-  <!-- Select existing Roles -->
 
-  <gv-property
-  class="mt-3"
-  *ngIf="selectPropState === 'selectRoles'"
-  [fkProperty]="propertyToAdd.property.dfh_pk_property"
-  [isOutgoing]="propertyToAdd.isOutgoing"
-  [propState]="'add'"
-  [pointTo]="'TeEnt'"
-  [parentPeIt]="parentPeIt"
-  [parentEntityPk]="pkEntity"
-  (propStateChange)="onPropStateChange($event)"
-  (rolesAdded)="onRolesAdded($event)"
-  ></gv-property>
 
-  <!-- Create a new Role -->
+<!-- Select existing Roles -->
 
-  <gv-property
-  class="mt-3"
-  *ngIf="selectPropState === 'createRole'"
-  [fkProperty]="propertyToAdd.property.dfh_pk_property"
-  [isOutgoing]="propertyToAdd.isOutgoing"
-  [propState]="'create'"
-  [pointTo]="'TeEnt'"
-  [parentPeIt]="parentPeIt"
-  [parentEntityPk]="pkEntity"
-  (readyToCreate)="emitReadyToCreate($event)"
-  (notReadyToCreate)="emitNotReadyToCreate()"
-  (propStateChange)="onPropStateChange($event)"
-  (rolesAdded)="onRolesAdded($event)"
-  ></gv-property>
+<gv-property
+class="mt-3"
+*ngIf="selectPropState === 'selectRoles'"
+[fkProperty]="propertyToAdd.property.dfh_pk_property"
+[isOutgoing]="propertyToAdd.isOutgoing"
+[propState]="'add'"
+[pointTo]="'TeEnt'"
+[parentPeIt]="parentPeIt"
+[parentEntityPk]="pkEntity"
+(propStateChange)="onPropStateChange($event)"
+(rolesAdded)="onRolesAdded($event)"
+></gv-property>
+
+<!-- Create a new Role -->
+
+<gv-property
+class="mt-3"
+*ngIf="selectPropState === 'createRole'"
+[fkProperty]="propertyToAdd.property.dfh_pk_property"
+[isOutgoing]="propertyToAdd.isOutgoing"
+[propState]="'create'"
+[pointTo]="'TeEnt'"
+[parentPeIt]="parentPeIt"
+[parentEntityPk]="pkEntity"
+(readyToCreate)="emitReadyToCreate($event)"
+(notReadyToCreate)="emitNotReadyToCreate()"
+(propStateChange)="onPropStateChange($event)"
+(rolesAdded)="onRolesAdded($event)"
+></gv-property>
 
 </div>
 

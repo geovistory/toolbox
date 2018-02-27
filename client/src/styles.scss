@@ -83,6 +83,12 @@ button {
   cursor: pointer;
 }
 
+
+@each $color, $value in $grays {
+  @include bg-variant(".bg-gray-#{$color}", $value);
+}
+
+
 .gv-dropdown-secondary{
   .dropdown-menu{
     margin: 0;

@@ -73,11 +73,11 @@
 
     <!-- Tools to edit PeIt  -->
 
-    <div class="d-flex flex-row">
+    <div class="d-flex flex-row gv-flex-grow-1 m-3">
 
       <div class="d-flex gv-flex-grow-1" style="max-width:450px">
         <gv-prop-section-list
-        class="gv-flex-grow-1 d-flex flex-row ml-3"
+        class="gv-flex-grow-1 d-flex flex-row"
         [roles]="peIt.pi_roles"
         [propSectionListState]="peItEntityState"
         [pkEntity]="pkEntity"
@@ -88,31 +88,32 @@
         ></gv-prop-section-list>
       </div>
 
-      <div class="gv-edit-panel-body gv-flex-grow-1">
-
-        <div class="card gv-naming text-white">
-          <div class="card-header">
-            Map
+      <div class="d-flex gv-flex-grow-1 ml-3">
+        <div class="d-flex flex-column gv-flex-grow-1">
+          <div class="card bg-gray-700 text-white mb-3">
+            <div class="card-header">
+              <i class="fa fa-compass"></i>  Map
+            </div>
           </div>
-          <div class="card-body">
-            MAPMAPMAP
+
+          <div class="card gv-flex-grow-1 mb-3">
+            <div class="card-body">
+              Map
+            </div>
+          </div>
+
+          <div class="card bg-gray-700 text-white mb-3">
+            <div class="card-header">
+              <i class="fa fa-calendar"></i>  Timeline
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              Timeline
+            </div>
           </div>
         </div>
-        <br/>
-        <div class="card">
-          <div class="card-header">
-            Timeline
-          </div>
-          <div class="card-body">
-            MAPMAPMAP
-          </div>
-        </div>
-
       </div>
-
     </div>
-
-
   </div>
-
 </div>
