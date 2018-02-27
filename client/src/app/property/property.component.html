@@ -271,9 +271,9 @@
       </div>
 
 
-      <div class="card-body" [@slideInOut]="cardState">
-        <div *ngFor="let role of roles">
-          <gv-role
+      <div [@slideInOut]="cardState">
+        <div class="card-body" >
+          <gv-role *ngFor="let role of roles"
           [role]="role"
           [parentProperty]="property"
           [isOutgoing]="isOutgoing"

@@ -42,8 +42,6 @@ import { DfhProperty } from '../shared/sdk/models/DfhProperty';
       })),
       state('collapsed', style({
         height: '0px',
-        'padding-top': '0',
-        'padding-bottom': '0',
         overflow: 'hidden'
       })),
       transition('expanded => collapsed', animate('400ms ease-in-out', keyframes([
@@ -55,8 +53,6 @@ import { DfhProperty } from '../shared/sdk/models/DfhProperty';
         style({
           height: '0px',
           display: 'hidden',
-          'padding-top': '0',
-          'padding-bottom': '0',
           offset: 1
         })
       ]))),
@@ -64,14 +60,11 @@ import { DfhProperty } from '../shared/sdk/models/DfhProperty';
         style({
           height: '0px',
           overflow: 'hidden',
-          'padding-top': '0',
-          'padding-bottom': '0',
           offset: 0
         }),
         style({
           height: '*',
           display: 'hidden',
-          'padding-bottom': '0.5rem',
           offset: 1
         })
       ])))
