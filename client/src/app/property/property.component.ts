@@ -71,7 +71,6 @@ import { DfhProperty } from '../shared/sdk/models/DfhProperty';
         style({
           height: '*',
           display: 'hidden',
-          'padding-top': '0.5rem',
           'padding-bottom': '0.5rem',
           offset: 1
         })
