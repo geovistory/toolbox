@@ -78,10 +78,11 @@ export class EntityAddModalService {
     private persistentItemApi: InfPersistentItemApi
   ) { }
 
-  addPeItToProject() {
+  changePeItProjectRelation() {
 
-    return this.persistentItemApi.addPeItToProject(
+    return this.persistentItemApi.changePeItProjectRelation(
       this.activeProjectService.project.pk_project,
+      true,
       this.peItToAdd
     )
 

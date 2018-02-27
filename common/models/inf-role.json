@@ -11,11 +11,8 @@
   },
   "mixins": {
     "SetupRemoteMethods": {
-      "disableAllExcept": [
-        "find",
-        "findComplex",
-        "findOrCreateInfRole"
-      ]
+      "ignoreACL": false,
+      "disableAllExcept": []
     }
   },
   "properties": {
@@ -62,11 +59,28 @@
       "primaryKey": "pk_entity"
     }
   },
-  "acls": [],
+  "acls": [{
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find",
+        "findComplex",
+        "findOrCreateInfRole",
+        "alternativesNotInProject",
+        "changeRoleProjectRelation"
+      ]
+    }
+  ],
   "methods": {
     "findOrCreateInfRole": {
-      "accepts": [
-        {
+      "accepts": [{
           "arg": "projectId",
           "type": "number",
           "required": true,
@@ -100,6 +114,95 @@
       "description": "Find or create an information role version.",
       "http": {
         "path": "/findOrCreate",
+        "verb": "post"
+      }
+    },
+    "alternativesNotInProject": {
+      "accepts": [{
+          "arg": "entityPk",
+          "type": "number",
+          "required": true,
+          "description": "Key of the persistent item (fk_entity)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "propertyPk",
+          "type": "number",
+          "required": true,
+          "description": "Key of the property (fk_property)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Id of the the current project",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "InfRole"
+        ],
+        "root": true
+      },
+      "description": "Get roles (with children) of given fkProperty and fkEntity from Repo that are not in project of given projectId.",
+      "http": {
+        "path": "/alternatives-not-in-project",
+        "verb": "get"
+      }
+    },
+    "changeRoleProjectRelation": {
+      "accepts": [{
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "isInProject",
+          "type": "boolean",
+          "required": true,
+          "description": "Include or exclude from project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": "InfRole",
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfRole",
+        "root": true
+      },
+      "description": "Relate a nested object of a InfRole to the project.",
+      "http": {
+        "path": "/change-project-relation",
         "verb": "post"
       }
     }

@@ -6,8 +6,10 @@ gv-prop-section-list,
 .gv-prop-section-list {
   display: block;
   margin-bottom: $card-spacer-y ;
+  color: $gray-900;
+
   .card-header.gv-name-header {
-    .fa-chevron-right{
+    .fa-caret-right{
       color: theme-color("secondary");
       font-size: $font-size-sm;
     }
@@ -142,10 +144,9 @@ gv-prop-section-list:last-of-type{
 .gv-h4 {
   padding-top: 0;
   padding-bottom: 0;
-  font-size: $font-size-sm;
-  // background-color: theme-color("light");
-
-  text-transform:uppercase;
+  font-size: 1.1rem;
+  /* text-transform: uppercase; */
+  // font-weight: 300;
   color: $white;
   .gv-label {
     padding: $input-btn-padding-y-sm 0;

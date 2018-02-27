@@ -1,10 +1,10 @@
-<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
+<div [ngClass]="{'dev-view': entityEditor.devView}">
 
 
 
 
 
-  <div *ngIf="keyboard.altPressed">
+  <div *ngIf="entityEditor.devView">
     TeEntComponent [{{teEnt.fk_class}}] [ready: {{isReadyToCreate}}]
   </div>
 
@@ -13,7 +13,7 @@
     <div class="card-header gv-name-header d-flex flex-row">
 
       <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
-        <i class="fa fa-chevron-right" [ngClass]="{'fa-rotate-90': (cardBodyState==='expanded')}"></i>
+        <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardBodyState==='expanded')}"></i>
         {{displayLabel}}
       </div>
 

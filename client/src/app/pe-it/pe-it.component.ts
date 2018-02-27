@@ -3,7 +3,7 @@ import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { InfLanguage } from '../shared/sdk/models/InfLanguage';
 import { InfAppellation } from '../shared/sdk/models/InfAppellation';
 import { UtilitiesService } from '../shared/services/utilities.service';
-import { KeyboardService } from '../shared/services/keyboard.service';
+import { EntityEditorService } from '../shared/services/entity-editor.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
 import { AppellationStdBool } from '../role/role.component';
 
@@ -51,6 +51,9 @@ export class PeItComponent implements OnInit {
 
   @Output() peItReadyToAdd: EventEmitter<InfPersistentItem> = new EventEmitter;
 
+  @Output() peItNotReadyToAdd: EventEmitter<void> = new EventEmitter;
+
+
   // Appellation related
 
   @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
@@ -71,7 +74,7 @@ export class PeItComponent implements OnInit {
 
   constructor(
     private util: UtilitiesService,
-    public keyboard: KeyboardService
+    public entityEditor: EntityEditorService
   ) { }
 
 
@@ -178,6 +181,10 @@ export class PeItComponent implements OnInit {
 
   onPeItReadyToAdd(peIt: InfPersistentItem) {
     this.peItReadyToAdd.emit(peIt)
+  }
+
+  onPeItNotReadyToAdd() {
+    this.peItNotReadyToAdd.emit()
   }
 
 

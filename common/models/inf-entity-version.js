@@ -7,7 +7,7 @@ const HttpErrors = require('http-errors');
 module.exports = function(InfEntityVersion) {
 
 
-  InfEntityVersion.addToProject = function(projectId, data) {
+  InfEntityVersion.changeProjectRelation = function(projectId, isInProject, data) {
     var res;
     var rej;
     return new Promise(function(resolve, reject) {
@@ -16,36 +16,33 @@ module.exports = function(InfEntityVersion) {
 
       let hasErr = false;
 
+      // If no epr delivered, return nothing
       if (!data.entity_version_project_rels) {
-        rej();
-        rej('There is no entity_version_project_rels.');
-        console.log(data.pk_entity_version_concat + ' There is no entity_version_project_rels.')
+        res([]);
+      } else if  (data.entity_version_project_rels.length > 1) {
+        var newEpr = {
+          "fk_entity": data.pk_entity,
+          "fk_project": projectId,
+          "is_in_project": isInProject,
+          "is_standard_in_project": null,
+          "fk_entity_version_concat": data.pk_entity_version_concat
+        };
+      } else {
 
-        hasErr = true;
-      }
+        // get the requestetEpr
+        var requestedEpr = data.entity_version_project_rels[0];
 
-      // throw error if not exactly one epr
-      if (data.entity_version_project_rels.length !== 1) {
-        rej('There must be excactly one entity_version_project_rels.');
-        console.log(data.pk_entity_version_concat + ' There must be excactly one entity_version_project_rels.')
-        hasErr = true;
-      }
 
-      // get the requestetEpr
-      const requestedEpr = data.entity_version_project_rels[0];
-
-      // throw error if projectId is not same as requestetEpr.projectId
-      if (projectId !== requestedEpr.fk_project) {
-        rej('The project given as query parameter must the same as in the entity_version_project_rel.');
-        console.log(data.pk_entity_version_concat + ' The project given as query parameter must the same as in the entity_version_project_rel.')
-        hasErr = true;
-      }
-
-      // throw error if version_concat keys don't match
-      if (data.pk_entity_version_concat !== requestedEpr.fk_entity_version_concat) {
-        rej('The pk_entity_version_concat of the entity must the same as in the entity_version_project_rel.');
-        console.log(data.pk_entity_version_concat + ' The pk_entity_version_concat of the entity must the same as in the entity_version_project_rel.')
-        hasErr = true;
+        // create the Epr while is_in_project from the provided object overrides
+        // the query parameter isInProject. This allows to specify it,
+        // when necessary and let it undefined, in order to use the query param.
+        var newEpr = {
+          "fk_entity": data.pk_entity,
+          "fk_project": projectId,
+          "is_in_project": requestedEpr.is_in_project || isInProject,
+          "is_standard_in_project": requestedEpr.is_standard_in_project ||  null,
+          "fk_entity_version_concat": data.pk_entity_version_concat
+        };
       }
 
       if (!hasErr) {
@@ -62,7 +59,7 @@ module.exports = function(InfEntityVersion) {
                 "fk_project": projectId
               }
             },
-            requestedEpr
+            newEpr
           )
           .then(result => {
             const resultingEpr = result[0];
@@ -80,7 +77,7 @@ module.exports = function(InfEntityVersion) {
                 res(instances);
               };
 
-              resultingEpr.replaceAttributes(requestedEpr, cb);
+              resultingEpr.replaceAttributes(newEpr, cb);
             }
 
           })

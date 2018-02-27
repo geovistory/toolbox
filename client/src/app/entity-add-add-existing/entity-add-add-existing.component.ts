@@ -36,6 +36,11 @@ export class EntityAddAddExistingComponent implements OnInit {
     this.modalService.addButtonVisible = true;
   }
 
+  onPeItNotReadyToAdd(){
+    this.modalService.peItToAdd = undefined;
+    this.modalService.addButtonVisible = false;
+  }
+
   /**
   * Loading Bar Logic
   */

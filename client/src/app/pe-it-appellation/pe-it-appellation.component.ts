@@ -4,7 +4,7 @@ import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 import { InfAppellation } from '../shared/sdk/models/InfAppellation';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
-import { KeyboardService } from '../shared/services/keyboard.service';
+import { EntityEditorService } from '../shared/services/entity-editor.service';
 import { InfAppellationApi } from '../shared/sdk/services/custom/InfAppellation';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
@@ -53,7 +53,7 @@ export class PeItAppellationComponent implements OnInit {
   constructor(
     private appellationApi: InfAppellationApi,
     private activeProjectService: ActiveProjectService,
-    public keyboard: KeyboardService,
+    public entityEditor: EntityEditorService,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
   }
@@ -68,6 +68,42 @@ export class PeItAppellationComponent implements OnInit {
     }
 
     this.peItAppeState = this.peItAppeState ? this.peItAppeState : 'view';
+
+
+    // if (this.peItAppeState === 'add-pe-it') {
+    //
+    //   // make a copy
+    //   let appe = new InfAppellation(this.appellation);
+    //
+    //   // add an epr
+    //   appe.entity_version_project_rels = [
+    //     new InfEntityProjectRel({
+    //       fk_project: this.activeProjectService.project.pk_project,
+    //       is_in_project: true,
+    //       fk_entity_version_concat: this.appellation.pk_entity_version_concat
+    //     })
+    //   ]
+    //
+    //   // emit it
+    //   this.readyToAdd.emit(appe);
+    // }
+
+    // if (this.peItAppeState === 'add') {
+
+      // make a copy
+      let appe = new InfAppellation(this.appellation);
+
+      // add an epr
+      appe.entity_version_project_rels = [
+        new InfEntityProjectRel({
+          fk_project: this.activeProjectService.project.pk_project,
+          fk_entity_version_concat: this.appellation.pk_entity_version_concat
+        })
+      ]
+
+      // emit it
+      this.readyToAdd.emit(appe);
+    // }
 
   }
 
@@ -138,24 +174,7 @@ export class PeItAppellationComponent implements OnInit {
   * Methods specific to add state
   */
 
-  onReadyToAdd(appellation: InfAppellation) {
 
-    // make a copy
-    let appe = new InfAppellation(appellation);
-
-    // add an epr
-    appe.entity_version_project_rels = [
-      new InfEntityProjectRel({
-        fk_project:this.activeProjectService.project.pk_project,
-        is_in_project:true,
-        fk_entity_version_concat: appellation.pk_entity_version_concat
-      })
-    ]
-
-    // emit it
-    this.readyToAdd.emit(appe);
-
-  }
 
 
   /**

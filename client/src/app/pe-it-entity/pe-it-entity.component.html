@@ -1,4 +1,4 @@
-<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
+<div [ngClass]="{'dev-view': entityEditor.devView}">
 
   <!-- Preview State -->
 
@@ -11,7 +11,7 @@
 
   <div *ngIf="peItEntityState === 'create'">
 
-    <span *ngIf="keyboard.altPressed">
+    <span *ngIf="entityEditor.devView">
       [ready: {{isReadyToCreate}}]
     </span>
 
@@ -33,7 +33,6 @@
 
     <small class="text-muted">Person</small> {{stdAppeString}}
 
-
     <gv-prop-section-list
     [roles]="peIt.pi_roles"
     [propSectionListState]="peItEntityState"
@@ -43,6 +42,7 @@
     (readyToCreate)="emitReadyToCreate($event)"
     (notReadyToCreate)="emitNotReadyToCreate()"
     (readyToAdd)="onRolesReadyToAdd($event)"
+    (notReadyToAdd)="onRolesNotReadyToAdd()"
     ></gv-prop-section-list>
 
 
@@ -62,13 +62,12 @@
             <small class="text-muted">Person</small> {{stdAppeString}}
           </h2>
         </div>
-        <div class="col-md-4" *ngIf="!addingInformation">
-          <div class="btn-group float-right mt-2" role="group">
-            <button class="btn btn-link mb-3" (click)="startAddingInformation()">
-              <i class="fa fa-plus"></i>  Add information
-            </button>
-          </div>
-        </div>
+        <span *ngIf="entityEditor.devView" class="">
+          [pk: {{peIt?.pk_entity}}]
+        </span>
+        <gv-entity-editor-settings class="col-md-4 text-right"></gv-entity-editor-settings>
+
+
       </section>
     </div>
 
@@ -76,27 +75,20 @@
 
     <div class="d-flex flex-row">
 
-      <div class="gv-edit-panel-body gv-flex-grow-1">
-
-
-
-        <!-- Info of PeIt -->
-
-        <gv-prop-section-list [roles]="peIt.pi_roles"
+      <div class="d-flex gv-flex-grow-1" style="max-width:450px">
+        <gv-prop-section-list
+        class="gv-flex-grow-1 d-flex flex-row ml-3"
+        [roles]="peIt.pi_roles"
         [propSectionListState]="peItEntityState"
-        [addingInformation]="addingInformation"
         [pkEntity]="pkEntity"
         [parentPeIt]="peIt"
         [outgoingProperties]="outgoingProperties"
         [ingoingProperties]="ingoingProperties"
         (appeChange)="whenAppeChange($event)"
-        (stopAddingInformation)="stopAddingInformation()"
         ></gv-prop-section-list>
-
-
       </div>
 
-      <div class="gv-edit-panel-body gv-flex-grow-5">
+      <div class="gv-edit-panel-body gv-flex-grow-1">
 
         <div class="card gv-naming text-white">
           <div class="card-header">

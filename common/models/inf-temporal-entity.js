@@ -4,7 +4,7 @@ const Promise = require('bluebird');
 
 module.exports = function(InfTemporalEntity) {
 
-  InfTemporalEntity.addTeEntToProject = function(projectId, data, ctx) {
+  InfTemporalEntity.changeTeEntProjectRelation = function(projectId, isInProject, data, ctx) {
     let requestedTeEnt;
 
     if (ctx) {
@@ -13,11 +13,13 @@ module.exports = function(InfTemporalEntity) {
       requestedTeEnt = data;
     }
 
-    return InfTemporalEntity.addToProject(projectId, requestedTeEnt)
+    return InfTemporalEntity.changeProjectRelation(projectId, isInProject, requestedTeEnt)
       .then(resultingEpr => {
 
         // attatch the new epr to the teEnt
-        requestedTeEnt.entity_version_project_rels = [resultingEpr];
+        if(requestedTeEnt.entity_version_project_rels && resultingEpr){
+          requestedTeEnt.entity_version_project_rels = [resultingEpr];
+        }
 
 
         if (requestedTeEnt.te_roles) {
@@ -31,7 +33,7 @@ module.exports = function(InfTemporalEntity) {
           return Promise.map(requestedTeEnt.te_roles.filter(role => (role)), (role) => {
 
               // add role to project
-              return InfRole.addRoleToProject(projectId, role);
+              return InfRole.changeRoleProjectRelation(projectId, isInProject, role);
 
             })
             .then((roles) => {

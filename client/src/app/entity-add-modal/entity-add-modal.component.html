@@ -43,7 +43,7 @@
 <small class="text-muted">{{r.pk_persistent_item}}</small> {{ r.notes}}
 </ng-template>
 
-<form class="form-inline" name="form" (ngSubmit)="f.form.valid && addPeItToProject()" #f="ngForm" novalidate>
+<form class="form-inline" name="form" (ngSubmit)="f.form.valid && changePeItProjectRelation()" #f="ngForm" novalidate>
 <div class="form-group  mr-sm-3">
 <input id="typeahead-http" type="text" class="form-control"  name="default_language"
 [class.is-invalid]="searchFailed" [(ngModel)]="peItToAdd" #language="ngModel"

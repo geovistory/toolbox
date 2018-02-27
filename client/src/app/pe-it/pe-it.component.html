@@ -1,4 +1,4 @@
-<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
+<div [ngClass]="{'dev-view': entityEditor.devView}">
 
   <!-- if (fk_class == 'R64') => PeItAppellation (pass appellation) -->
   <gv-pe-it-appellation
@@ -31,6 +31,7 @@
   (notReadyToCreate)="emitPeItNotReadyToCreate()"
   (created)="created(peit)"
   (readyToAdd)="onPeItReadyToAdd($event)"
+  (notReadyToAdd)="onPeItNotReadyToAdd()"
   ></gv-pe-it-entity>
 
   <!-- <span *ngIf="peItPreviewNeeded">[Preview of entity]</span> -->

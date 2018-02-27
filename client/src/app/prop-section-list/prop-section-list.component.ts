@@ -12,7 +12,7 @@ import { InfRole } from '../shared/sdk/models/InfRole';
 import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
 import { PropertyService, DirectionAwareProperty } from '../shared/services/property.service';
 import { RoleService, RolesPerProperty, DirectedRolesPerProperty } from '../shared/services/role.service';
-import { KeyboardService } from '../shared/services/keyboard.service';
+import { EntityEditorService } from '../shared/services/entity-editor.service';
 import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { AppellationStdBool } from '../role/role.component';
 import { DfhProperty } from '../shared/sdk/models/DfhProperty';
@@ -82,7 +82,10 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   @Input() propSectionListState: string;
 
   // state of adding new information section
-  @Input() addingInformation: boolean;
+  @Input() set addingInformation(val: boolean) {
+    this._addingInformation = val;
+    if (!val) this.stopAddingInformation.emit()
+  };
 
 
   /**
@@ -94,6 +97,8 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
 
   @Output() readyToAdd: EventEmitter<InfRole[]> = new EventEmitter;
+
+  @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter;
 
 
   // emit appellation and a flag to say if this is the standard appellation
@@ -107,8 +112,15 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   * Properties
   */
 
+  // adding information
+  _addingInformation: boolean;
+
+  get addingInformation(): boolean {
+    return this._addingInformation;
+  };
+
   // state of child components for adding or creating properties
-  selectPropState: string;
+  private selectPropState: string;
 
   // state of child component for editing properties
   propState: string;
@@ -129,11 +141,10 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   // Array of possible outgoing Properties of the class of the parent peIt
   outgoingDirectionAwareProperties: DirectionAwareProperty[];
 
-
   constructor(
     private roleService: RoleService,
     private propertyService: PropertyService,
-    public keyboard: KeyboardService
+    public entityEditor: EntityEditorService
   ) { }
 
 
@@ -254,8 +265,8 @@ export class PropSectionListComponent implements OnInit, OnChanges {
 
 
   /**
-   * called when a child propertComponent has added new roles
-   */
+  * called when a child propertComponent has added new roles
+  */
   onRolesAdded(roles) {
 
     this.selectPropState = 'init';
@@ -270,8 +281,8 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   }
 
   /**
-   * called when roles ready to create
-   */
+  * called when roles ready to create
+  */
   emitReadyToCreate(roles: InfRole[]) {
 
     this.readyToCreate.emit(roles);
@@ -279,8 +290,8 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   }
 
   /**
-   * called when role isnt ready to create
-   */
+  * called when role isnt ready to create
+  */
   emitNotReadyToCreate(roles: InfRole[]) {
 
     this.notReadyToCreate.emit();
@@ -288,19 +299,27 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Methods for event bubbeling
-   */
+  * Methods for event bubbeling
+  */
 
   emitAppeChange(appeStd: AppellationStdBool) {
     this.appeChange.emit(appeStd)
   }
 
   /**
-   * called when roles of property (section) are ready to be added
-   */
+  * called when roles of property (section) are ready to be added
+  */
   onRolesReadyToAdd(roles: InfRole[]) {
     this.readyToAdd.emit(roles);
   }
+
+  /**
+  * called when roles of property (section) are not ready to be added
+  */
+  onRolesNotReadyToAdd(roles: InfRole[]) {
+    this.notReadyToAdd.emit();
+  }
+
 
   /**
   * toggleCardBody - toggles the state of the card in order to collapse or

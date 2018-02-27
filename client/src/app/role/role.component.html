@@ -1,23 +1,45 @@
 
-<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
+<div [ngClass]="{'dev-view': entityEditor.devView}">
 
   <!-- Component in Create State -->
-  <span *ngIf="keyboard.altPressed">
-    [ready: {{isReadyToCreate}}]
+  <span *ngIf="entityEditor.devView">
+    [pk: {{role.pk_entity_version_concat}}] [ready: {{isReadyToCreate}}]
   </span>
 
-  <div *ngIf="roleState === 'create'">
-    <gv-te-ent *ngIf="pointTo=='TeEnt'"
-    [fkClass]="pkTargetClass"
-    [teEntState]="'create'"
-    [parentProperty]="parentProperty"
-    [parentRole]="role"
-    [isOutgoing]="isOutgoing"
-    (readyToCreate)="teEntReadyToCreate($event)"
-    (notReadyToCreate)="teEntNotReadyToCreate()"
-    ></gv-te-ent>
+  <div *ngIf="roleState === 'create' && pointTo=='TeEnt'">
 
-    <gv-pe-it *ngIf="pointTo=='PeIt'"
+    <div class="card-body text-white">
+      Please fill all fields below and click "Ok".
+    </div>
+
+    <div class="card-body">
+
+      <gv-te-ent
+      [fkClass]="pkTargetClass"
+      [teEntState]="'create'"
+      [parentProperty]="parentProperty"
+      [parentRole]="role"
+      [isOutgoing]="isOutgoing"
+      (readyToCreate)="teEntReadyToCreate($event)"
+      (notReadyToCreate)="teEntNotReadyToCreate()"
+      ></gv-te-ent>
+    </div>
+
+    <div class="card-body">
+      <button
+      [ngClass]="{disabled:(!isReadyToCreate)}"
+      type="button" class="btn btn-primary"
+      (click)="createRole()"
+      >Ok</button>
+      <button type="button" class="btn btn-link"
+      (click)="cancelCreateRole()">Cancel</button>
+    </div>
+
+  </div>
+
+  <div *ngIf="roleState === 'create' && pointTo=='PeIt'">
+
+    <gv-pe-it
     [peItState]="'create'"
     [fkClass]="pkTargetClass"
     (readyToCreate)="peItReadyToCreate($event)"
@@ -26,6 +48,62 @@
 
   </div>
 
+
+  <div *ngIf="roleState === 'add'">
+    <!-- if the role points to a temporal entity -->
+
+    <div *ngIf="pointTo=='TeEnt'">
+
+      <!-- TeEnt Component (passing the temporal entity) -->
+      <gv-te-ent
+      [teEntState]="roleState"
+      [teEnt]="role.temporal_entity"
+      [parentProperty]="parentProperty"
+      [parentRole]="role"
+      [isOutgoing]="isOutgoing"
+      (readyToAdd)="onTeEntReadyToAdd($event)"
+
+      (appeChange)="emitAppeChange($event)"> <div eprUi>
+
+        <!-- UI for is in project -->
+
+        <div class="gv-in-project">
+          <!-- [attr.disabled]="roleToAdd.entity_version_project_rels[0].is_standard_in_project || changeIsInProjectLoading ? 'disabled' : null" -->
+
+          <!-- Is in project -->
+          <button type="button" name="button" class="btn btn-link btn-sm"
+          *ngIf="roleToAdd.entity_version_project_rels[0].is_in_project"
+          (click)="deselect()">
+          <i class="fa fa-check-square-o" ></i> </button>
+
+          <!-- Is not in project -->
+          <button type="button" name="button" class="btn btn-link btn-sm"
+          [attr.disabled]="changeIsInProjectLoading ? 'disabled' : null"
+          *ngIf="!roleToAdd.entity_version_project_rels[0].is_in_project"
+          (click)="select()">
+          <i class="fa fa-square-o"></i></button>
+
+        </div>
+
+      </div> </gv-te-ent>
+
+    </div>
+    <div *ngIf="pointTo=='PeIt'">
+
+      <!-- include component PeIt (passing the PeIt) -->
+      <gv-pe-it
+      class="gv-flex-grow-1"
+      [peItState]="roleState"
+      [appellation]="role?.appellation"
+      [language]="role?.language"
+      [pkEntity]="role.fk_entity"
+      (appeChange)="emitAppeChange($event)"
+      (appeReadyToAdd)="onAppeReadyToAdd($event)"
+      (langReadyToAdd)="onLangReadyToAdd($event)"
+      ></gv-pe-it>
+
+    </div>
+  </div>
 
   <div *ngIf="roleState === 'add-pe-it'">
     <!-- if the role points to a temporal entity -->
@@ -84,20 +162,20 @@
       ></gv-pe-it>
 
       <!-- <div class="gv-in-project"> -->
-        <!-- [attr.disabled]="roleToAdd.entity_version_project_rels[0].is_standard_in_project || changeIsInProjectLoading ? 'disabled' : null" -->
+      <!-- [attr.disabled]="roleToAdd.entity_version_project_rels[0].is_standard_in_project || changeIsInProjectLoading ? 'disabled' : null" -->
 
-        <!-- Is in project -->
-        <!-- <button type="button" name="button" class="btn btn-link btn-sm"
-        *ngIf="roleToAdd.entity_version_project_rels[0].is_in_project"
-        (click)="deselect()">
-        <i class="fa fa-check-square-o" ></i> </button> -->
+      <!-- Is in project -->
+      <!-- <button type="button" name="button" class="btn btn-link btn-sm"
+      *ngIf="roleToAdd.entity_version_project_rels[0].is_in_project"
+      (click)="deselect()">
+      <i class="fa fa-check-square-o" ></i> </button> -->
 
-        <!-- Is not in project -->
-        <!-- <button type="button" name="button" class="btn btn-link btn-sm"
-        [attr.disabled]="changeIsInProjectLoading ? 'disabled' : null"
-        *ngIf="!roleToAdd.entity_version_project_rels[0].is_in_project"
-        (click)="select()">
-        <i class="fa fa-square-o"></i></button> -->
+      <!-- Is not in project -->
+      <!-- <button type="button" name="button" class="btn btn-link btn-sm"
+      [attr.disabled]="changeIsInProjectLoading ? 'disabled' : null"
+      *ngIf="!roleToAdd.entity_version_project_rels[0].is_in_project"
+      (click)="select()">
+      <i class="fa fa-square-o"></i></button> -->
 
       <!-- </div> -->
 
@@ -121,6 +199,8 @@
       [language]="role?.language"
       [pkEntity]="role.fk_entity"
       (appeChange)="emitAppeChange($event)"
+      (appeReadyToAdd)="onAppeReadyToAdd($event)"
+      (langReadyToAdd)="onLangReadyToAdd($event)"
       ></gv-pe-it>
 
     </div>
@@ -137,7 +217,10 @@
       [parentProperty]="parentProperty"
       [parentRole]="role"
       [isOutgoing]="isOutgoing"
-      (appeChange)="emitAppeChange($event)"> <div eprUi>
+      (appeChange)="emitAppeChange($event)"
+      (readyToAdd)="onTeEntReadyToAdd($event)"
+      >
+      <div eprUi class="d-flex">
 
         <!-- UI for standard in project -->
 
@@ -155,6 +238,13 @@
           (click)="requestStandard()" title="Make standard"
           ><i class="fa fa-eye-slash gv-false"></i></button>
 
+        </div>
+
+        <div ngbDropdown placement="bottom-right" class="gv-name-dropdown">
+          <button class="btn btn-link" ngbDropdownToggle><i class="fa fa-ellipsis-v"></i></button>
+          <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+            <button class="dropdown-item" (click)="removeFromProject()">Remove from project</button>
+          </div>
         </div>
 
       </div> </gv-te-ent>

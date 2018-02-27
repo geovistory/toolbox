@@ -30,11 +30,11 @@ export class PeItLanguageComponent implements OnInit {
 
 
   /**
-   * Properties
-   */
+  * Properties
+  */
 
-   // for add-pe-it state the language to add to project
-   langToAdd:InfLanguage;
+  // for add-pe-it state the language to add to project
+  langToAdd:InfLanguage;
 
   constructor(
     private activeProjectService: ActiveProjectService,
@@ -44,22 +44,13 @@ export class PeItLanguageComponent implements OnInit {
   ngOnInit() {
     if (this.peItLangState === 'add-pe-it') {
 
-      // make a copy
-      this.langToAdd = new InfLanguage(this.language);
-
-      // add an epr
-      this.langToAdd.entity_version_project_rels = [
-        new InfEntityProjectRel({
-          fk_project: this.activeProjectService.project.pk_project,
-          is_in_project: true,
-          fk_entity_version_concat: this.language.pk_entity_version_concat
-        })
-      ]
-
       //emit it
       this.readyToAdd.emit(this.language);
+
     }
-  
+
+    this.readyToAdd.emit(this.language);
+
   }
 
 

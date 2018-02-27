@@ -44,18 +44,27 @@
         "withPhenomenaInProject",
         "nestedObjectOfProject",
         "nestedObjectOfRepo",
-        "addPeItToProject"
+        "changePeItProjectRelation"
       ]
     }
   ],
   "methods": {
-    "addPeItToProject": {
+    "changePeItProjectRelation": {
       "accepts": [
         {
           "arg": "projectId",
           "type": "number",
           "required": true,
           "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "isInProject",
+          "type": "boolean",
+          "required": true,
+          "description": "Include or exclude from project.",
           "http": {
             "source": "query"
           }
@@ -84,7 +93,7 @@
       },
       "description": "Add a nested object of a InfPersistentItem to the project.",
       "http": {
-        "path": "/add-to-project",
+        "path": "/change-project-relation",
         "verb": "post"
       }
     },

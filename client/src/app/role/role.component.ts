@@ -4,12 +4,13 @@ import { ActiveProjectService } from '../shared/services/active-project.service'
 import { EprService } from '../shared/services/epr.service';
 import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 import { PropertyComponent } from '../property/property.component';
-import { KeyboardService } from '../shared/services/keyboard.service';
+import { EntityEditorService } from '../shared/services/entity-editor.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
 import { InfAppellation } from '../shared/sdk/models/InfAppellation';
 import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
 import { InfLanguage } from '../shared/sdk/models/InfLanguage';
 import { DfhProperty } from '../shared/sdk/models/DfhProperty';
+import { InfRoleApi } from '../shared/sdk/services/custom/InfRole';
 
 export enum RolePointToEnum {
   PeIt = "PeIt",
@@ -61,6 +62,12 @@ export class RoleComponent implements OnInit {
 
   @Output() readyToAdd: EventEmitter<InfRole> = new EventEmitter();
 
+  @Output() roleCreated: EventEmitter<InfRole> = new EventEmitter();
+
+  @Output() roleCreationCanceled: EventEmitter<void> = new EventEmitter();
+
+  @Output() roleRemoved: EventEmitter<InfRole> = new EventEmitter();
+
 
   /**
   * Properties
@@ -84,30 +91,27 @@ export class RoleComponent implements OnInit {
     private activeProjectService: ActiveProjectService,
     private eprService: EprService,
     private ref: ChangeDetectorRef,
-    public keyboard: KeyboardService
+    public entityEditor: EntityEditorService,
+    private roleApi: InfRoleApi
   ) { }
 
   ngOnInit() {
-    if (this.roleState === 'create') {
+    if (this.roleState === 'create' && this.role === undefined) {
       this.role = new InfRole();
       this.role.fk_property = this.fkProperty;
     }
 
-    if (this.roleState === 'add-pe-it') {
-      // make a copy
-      this.roleToAdd = new InfRole(this.role);
 
-      // add an epr
-      this.roleToAdd.entity_version_project_rels = [
-        new InfEntityProjectRel({
-          fk_project: this.activeProjectService.project.pk_project,
-          is_in_project: true,
-          is_standard_in_project: this.role.is_community_favorite,
-          fk_entity_version_concat: this.role.pk_entity_version_concat
-        })
-      ]
+    // make a copy
+    this.roleToAdd = new InfRole(this.role);
 
-    }
+    // add an epr
+    this.roleToAdd.entity_version_project_rels = [
+      new InfEntityProjectRel({
+        fk_project: this.activeProjectService.project.pk_project,
+        fk_entity_version_concat: this.role.pk_entity_version_concat
+      })
+    ]
 
     if (this.epr)
       this.isStandardInProject = this.epr.is_standard_in_project;
@@ -174,6 +178,38 @@ export class RoleComponent implements OnInit {
   }
 
 
+
+  /**
+   * createRole - called when user confirms to create a role (with all children)
+   *
+   */
+  createRole() {
+
+
+    this.roleApi.findOrCreateInfRole(
+      this.activeProjectService.project.pk_project,
+      this.role
+    ).subscribe(newRole => {
+
+      this.roleCreated.emit(newRole[0]);
+
+    })
+
+  }
+
+
+  /**
+   * cancelCreateRole - called when user cancels to create a role
+   *
+   */
+  cancelCreateRole() {
+
+    this.roleCreationCanceled.emit();
+
+  }
+
+
+
   /**
   * Methods specific to create state
   */
@@ -221,6 +257,20 @@ export class RoleComponent implements OnInit {
 
     this.notReadyToCreate.emit()
 
+  }
+
+
+
+  /**
+   * removeFromProject - called when user removes a role (nested) from project
+   */
+  removeFromProject() {
+    this.roleApi.changeRoleProjectRelation(
+      this.activeProjectService.project.pk_project, false, this.roleToAdd
+    ).subscribe(result => {
+      const removedRole:InfRole = result[0]
+      this.roleRemoved.emit(removedRole);
+    })
   }
 
 

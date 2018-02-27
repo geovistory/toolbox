@@ -47,7 +47,7 @@ exports.up = function(db, callback) {
   -- Update the Persistent Item
   update_pi_1 AS (
     UPDATE information.persistent_item
-    SET fk_class = 4 WHERE concat(pk_entity || '_' || entity_version) = (
+    SET notes = 'updated' WHERE concat(pk_entity || '_' || entity_version) = (
       SELECT fk_entity_version_concat
       FROM insert_epr_1
     )

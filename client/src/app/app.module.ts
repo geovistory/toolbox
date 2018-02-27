@@ -74,11 +74,13 @@ import { EprService } from './shared/services/epr.service';
 import { UtilitiesService } from './shared/services/utilities.service';
 import { PropertyService } from './shared/services/property.service';
 import { ClassService } from './shared/services/class.service';
-import { KeyboardService } from './shared/services/keyboard.service';
+import { EntityEditorService } from './shared/services/entity-editor.service';
 import { AppellationLabelEditComponent } from './appellation-label-edit/appellation-label-edit.component';
 import { AppellationLabelViewComponent } from './appellation-label-view/appellation-label-view.component';
 import { AppellationLabelCreateComponent } from './appellation-label-create/appellation-label-create.component';
 import { AppellationLabelEditorComponent } from './appellation-label-editor/appellation-label-editor.component';
+import { EntityEditorSettingsComponent } from './entity-editor-settings/entity-editor-settings.component';
+import { DfhIdComponent } from './dfh-id/dfh-id.component';
 
 @NgModule({
   declarations: [
@@ -135,7 +137,9 @@ import { AppellationLabelEditorComponent } from './appellation-label-editor/appe
     PeItLanguageComponent,
     AppellationLabelEditComponent,
     AppellationLabelCreateComponent,
-    AppellationLabelEditorComponent
+    AppellationLabelEditorComponent,
+    EntityEditorSettingsComponent,
+    DfhIdComponent
   ],
   imports: [
     BrowserModule,
@@ -163,7 +167,7 @@ import { AppellationLabelEditorComponent } from './appellation-label-editor/appe
     PropertyService,
     ClassService,
     UtilitiesService,
-    KeyboardService,
+    EntityEditorService,
     { provide: LOCALE_ID, useValue: 'ch-DE' }
   ],
   entryComponents : [

@@ -189,4 +189,39 @@ export class PropertyService {
     });
   }
 
+
+  /**
+   * quantityIsValid - Verify if the quantity of roles is valid according to the
+   * min and max quantifiers given by the property. If isOutgoing is true
+   * the quantityOfRoles is validated against the range quantifiers, else against
+   * the domain quantifiers.
+   *
+   *
+   * @param  {number} quantityOfRoles:number  quantity of roles of given property
+   * @param  {DfhProperty} property:DfhProperty  property with quantifiers
+   * @param  {boolean} isOutgoing:boolean  if true, range is relevant, else domain
+   * @return {boolean}                     true if valid
+   */
+  validateQuantity(quantityOfRoles:number, property:DfhProperty, isOutgoing:boolean):boolean{
+    let max, min;
+
+    if (isOutgoing){
+      max = property.dfh_range_instances_max_quantifier;
+      min = property.dfh_range_instances_min_quantifier;
+    }
+    else{
+      max = property.dfh_domain_instances_max_quantifier;
+      min = property.dfh_domain_instances_min_quantifier;
+    }
+
+    max = (max === -1 ? Number.POSITIVE_INFINITY : max);
+    min = (min === -1 ? Number.POSITIVE_INFINITY : min);
+
+    return (
+      quantityOfRoles >= min &&
+      quantityOfRoles <= max
+    )
+
+  }
+
 }

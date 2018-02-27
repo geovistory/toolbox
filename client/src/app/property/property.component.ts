@@ -22,7 +22,7 @@ import { PropertyService } from '../shared/services/property.service';
 import { PeItComponent } from '../pe-it/pe-it.component';
 import { TeEntComponent } from '../te-ent/te-ent.component';
 import { UtilitiesService } from '../shared/services/utilities.service';
-import { KeyboardService } from '../shared/services/keyboard.service';
+import { EntityEditorService } from '../shared/services/entity-editor.service';
 import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { InfPersistentItemApi } from '../shared/sdk/services/custom/InfPersistentItem';
 import { ActiveProjectService } from '../shared/services/active-project.service';
@@ -164,10 +164,23 @@ export class PropertyComponent implements OnChanges {
 
   rolesToCreate: InfRole[];
 
+  isReadyToCreate: boolean;
+
   // roles to add, when in add-pe-it state
   rolesToAdd: InfRole[] = [];
 
-  isReadyToCreate: boolean;
+  // roles existing in repo but not in this project
+  rolesNotInProject: InfRole[];
+
+  // isReadyToAddRoles
+  get isReadyToAddRoles(): boolean {
+    return (this.rolesToAdd.filter(r => {
+      return r.entity_version_project_rels[0].is_in_project
+    }).length > 0)
+  }
+
+  // add role state
+  addRoleState: string = 'init'; //init, selectExisting, createNew
 
   constructor(
     private eprApi: InfEntityProjectRelApi,
@@ -176,7 +189,7 @@ export class PropertyComponent implements OnChanges {
     private roleService: RoleService,
     private propertyService: PropertyService,
     private util: UtilitiesService,
-    public keyboard: KeyboardService,
+    public entityEditor: EntityEditorService,
     private changeDetector: ChangeDetectorRef
   ) { }
 
@@ -221,7 +234,7 @@ export class PropertyComponent implements OnChanges {
   *
   * @return {string}  label of the property
   */
-  get roleLabel():string {
+  get roleLabel(): string {
     if (this.isOutgoing) {
       if (this.property.dfh_range_instances_max_quantifier === 1) {
 
@@ -311,6 +324,14 @@ export class PropertyComponent implements OnChanges {
           let count = 0;
           this.roles.forEach(role => {
             if (role.pk_entity == this.parentRole.pk_entity) {
+
+              // If this is a circular role, remove its epr so that it is not
+              // two times in the entity tree. This prevents that changing the
+              // entity project relation is interfered by this second (unused)
+              // role
+
+              delete role.entity_version_project_rels;
+
               count++;
             }
           })
@@ -322,7 +343,7 @@ export class PropertyComponent implements OnChanges {
 
         if (
           this.propState === 'create' &&
-          this.fkProperty === this.parentRole.fk_property
+          this.fkProperty == this.parentRole.fk_property
         ) {
 
           // If we are in create state
@@ -418,10 +439,14 @@ export class PropertyComponent implements OnChanges {
   * Methods specific to create state
   */
 
+
   /**
   * Called when user clicks on cancel select roles
   */
   cancelSelectRoles() {
+
+    this.addRoleState = 'init';
+
     this.propStateChange.emit('selectProp');
   }
 
@@ -432,12 +457,13 @@ export class PropertyComponent implements OnChanges {
   * and pointing to the parent persistent item
   */
   startCreateNewRole() {
-    this.propStateChange.emit('createRole');
+    // this.propStateChange.emit('createRole');
 
     this.roleToCreate = new InfRole();
     this.roleToCreate.fk_property = this.fkProperty;
     this.roleToCreate.fk_entity = this.parentEntityPk;
 
+    this.addRoleState = 'createNew';
   }
 
 
@@ -447,6 +473,8 @@ export class PropertyComponent implements OnChanges {
   cancelCreateNewRole() {
 
     this.propStateChange.emit('selectRoles');
+
+    this.addRoleState = 'init';
 
     this.roleToCreate = undefined;
 
@@ -480,23 +508,26 @@ export class PropertyComponent implements OnChanges {
 
     this.rolesToCreate = [];
 
-    let allValid = true;
+    let rolesValid = true;
 
     this.roleComponents.forEach(roleComponent => {
 
-      if (!roleComponent.isReadyToCreate) allValid = false;
+      if (!roleComponent.isReadyToCreate) rolesValid = false;
 
       this.rolesToCreate.push(roleComponent.role);
 
     })
 
-    if (
-      allValid &&
-      this.rolesToCreate.length >= this.minCardinality &&
-      this.rolesToCreate.length <= this.maxCardinality
-    ) {
+    const quantityValid = this.propertyService.validateQuantity(
+      this.rolesToCreate.length,
+      this.property,
+      this.isOutgoing
+    )
+
+    if (rolesValid && quantityValid) {
 
       this.isReadyToCreate = true;
+
       this.changeDetector.detectChanges()
 
       this.readyToCreate.emit(this.rolesToCreate);
@@ -536,6 +567,59 @@ export class PropertyComponent implements OnChanges {
   }
 
 
+  /**
+  * Called when user click on Add a [*]
+  */
+  startAddingRole() {
+
+    this.addRoleState = 'selectExisting'
+
+    const fkEntity = this.parentPeIt.pk_entity;
+    const fkProperty = this.property.dfh_pk_property;
+    const fkProject = this.activeProject.project.pk_project;
+
+    this.roleApi.alternativesNotInProject(fkEntity, fkProperty, fkProject)
+      .subscribe((roles: InfRole[]) => {
+
+        this.rolesNotInProject = roles;
+
+        if (this.rolesNotInProject.length === 0) {
+          this.startCreateNewRole();
+        }
+
+      })
+
+
+  }
+
+  /**
+  *  called when user cancels creating a new role
+  */
+  onRoleCreationCanceled() {
+    this.addRoleState = 'init';
+  }
+
+  /**
+  * called when user created a new role
+  */
+  onRoleCreated(role: InfRole) {
+    this.roles.push(role);
+    this.addRoleState = 'init';
+  }
+
+
+  /**
+  * called when user removed a role from project
+  */
+  onRoleRemoved(removedRole: InfRole) {
+    for (let i = 0; i < this.roles.length; i++) {
+      if (this.roles[i].pk_entity === removedRole.pk_entity) {
+        this.roles.splice(i, 1);
+        break;
+      }
+    }
+  }
+
   onRoleReadyToAdd(role: InfRole) {
 
     let exists = false;
@@ -553,26 +637,60 @@ export class PropertyComponent implements OnChanges {
       this.rolesToAdd.push(role);
     }
 
-    // count number of roles that are selected to be in project
-    const inProjectCount = this.rolesToAdd.filter(role =>
-      role.entity_version_project_rels[0].is_in_project
-    ).length
+    // // count number of roles that are selected to be in project
+    // const inProjectCount = this.rolesToAdd.filter(role =>
+    //   role.entity_version_project_rels[0].is_in_project
+    // ).length
+    //
+    // const quantityValid = this.propertyService.validateQuantity(
+    //   inProjectCount,
+    //   this.property,
+    //   this.isOutgoing
+    // )
+    //
+    // // check if this number is according to quantity definition
+    // if (quantityValid) {
+    // this.readyToAdd.emit(this.rolesToAdd);
+    // }
+    // else {
+    //   this.notReadyToAdd.emit();
+    // }
 
-    // check if this number is according to cardinality definition
-    if (
-      inProjectCount >= this.minCardinality &&
-      inProjectCount <= this.maxCardinality
-    ) {
-      this.readyToAdd.emit(this.rolesToAdd);
-    }
-    else {
-      this.notReadyToAdd.emit();
-    }
+    this.readyToAdd.emit(this.rolesToAdd);
 
 
   }
 
 
+
+  /**
+   * addSelectedRolesToProject - called when user wants to add roles and
+   * all children to project
+   *
+   * @return {type}  description
+   */
+  addSelectedRolesToProject() {
+    console.log(JSON.stringify(this.rolesToAdd, null, 2))
+
+    let observables = [];
+    this.rolesToAdd.forEach(role => {
+      if (role.entity_version_project_rels[0].is_in_project) {
+        observables.push(this.roleApi.changeRoleProjectRelation(
+          this.activeProject.project.pk_project, true, role)
+        );
+      }
+
+    })
+
+    Observable.combineLatest(observables)
+      .subscribe(results => {
+        results.forEach((result: InfRole[]) => {
+          this.roles.push(result[0]);
+
+          this.addRoleState = 'init';
+        })
+      })
+  }
 
   /**
   * toggleCardBody - toggles the state of the card in order to collapse or

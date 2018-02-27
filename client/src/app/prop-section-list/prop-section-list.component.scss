@@ -1,4 +1,16 @@
-.alt-pressed {
+.dev-view {
   border: 1px dashed black;
   margin: 2px;
+}
+
+.gv-header {
+  flex-shrink: 0;
+}
+
+.gv-body {
+  flex-grow: 1
+}
+
+.gv-footer {
+  flex-shrink: 0;
 }
