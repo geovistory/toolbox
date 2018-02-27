@@ -61,49 +61,51 @@
 
           <div class="card-footer gv-naming">
             <div class="btn btn-block btn-secondary"          (click)="startAddingRole()"    *ngIf="addRoleState=== 'init'">
-              Add a {{roleLabelObj.sg}}
+              Add a {{roleLabelObj.sg}}…
             </div>
 
             <!-- Select existing Roles -->
 
-            <div *ngIf="addRoleState=== 'selectExisting'">
+            <div *ngIf="addRoleState=== 'selectExisting'" >
 
 
-
-              <div class="card-body gv-property-section-header gv-to-te-ent d-flex flex-row">
-                <div class="gv-label gv-flex-grow-1"> Add a {{roleLabelObj.sg}} </div>
+              <div class="card-body" *ngIf="rolesNotInProjectLoading">
+                <i class="fa fa-spinner fa-pulse"></i>  Searching for existing {{roleLabelObj.sg}}…
               </div>
 
-              <div class="card-body text-white">
-                Those {{roleLabelObj.pl}} already exist outside of your project:
-              </div>
+              <span *ngIf="!rolesNotInProjectLoading">
+                <div class="card-body gv-property-section-header">
+                  {{rolesNotInProject.length}} {{rolesNotInProject.length === 1 ? roleLabelObj.sg : roleLabelObj.pl}} found
+                </div>
+                <div class="card-body">
+                  <div class="gv-label gv-flex-grow-1"> Add an existing {{roleLabelObj.sg}} from below or <a href="" class="gv-passive-link" (click)="startCreateNewRole()">create a new name</a>.</div>
+                </div>
 
-              <div class="card-body">
 
-                <gv-role *ngFor="let role of rolesNotInProject"
-                [role]="role"
-                [parentProperty]="property"
-                [isOutgoing]="isOutgoing"
-                [pointTo]="'TeEnt'"
-                [roleState]="'add'"
-                (readyToAdd)="onRoleReadyToAdd($event)"
-                ></gv-role>
-              </div>
+                <div class="card-body">
 
-              <div class="card-body text-white">
-                Select an existing {{roleLabelObj.sg}} or create a new {{roleLabelObj.sg}}.
-              </div>
+                  <gv-role *ngFor="let role of rolesNotInProject"
+                  [role]="role"
+                  [parentProperty]="property"
+                  [isOutgoing]="isOutgoing"
+                  [pointTo]="'TeEnt'"
+                  [roleState]="'add'"
+                  (readyToAdd)="onRoleReadyToAdd($event)"
+                  ></gv-role>
+                </div>
 
-              <div class="card-body">
-                <button type="button" class="btn btn-primary"
-                [ngClass]="{disabled:(!isReadyToAddRoles)}"
-                (click)="addSelectedRolesToProject()"
-                >Add selected</button>
-                <button type="button" class="btn btn-primary"
-                (click)="startCreateNewRole()">Create new</button>
-                <button type="button" class="btn btn-link"
-                (click)="cancelSelectRoles()">Cancel</button>
-              </div>
+
+
+                <div class="card-body">
+                  <button type="button" class="btn btn-primary"
+                  [ngClass]="{disabled:(!isReadyToAddRoles)}"
+                  (click)="addSelectedRolesToProject()"
+                  >Add selected</button>
+
+                  <button type="button" class="btn btn-link"
+                  (click)="cancelSelectRoles()">Cancel</button>
+                </div>
+              </span>
 
             </div>
 
@@ -112,8 +114,8 @@
             <!-- Create a new Role -->
             <div *ngIf="addRoleState=== 'createNew'">
 
-              <div class="card-body gv-property-section-header gv-to-te-ent d-flex flex-row">
-                <div class="gv-label gv-flex-grow-1"> Create a {{roleLabelObj.sg}} </div>
+              <div class="card-body gv-property-section-header" *ngIf="rolesNotInProject.length === 0">
+                <div class="gv-label gv-flex-grow-1"> No {{roleLabelObj.pl}} found</div>
               </div>
 
               <gv-role

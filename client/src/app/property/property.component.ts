@@ -13,6 +13,7 @@ import {
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
+import { timer } from 'rxjs/observable/timer';
 
 import { InfRole } from '../shared/sdk/models/InfRole';
 import { RolePointToEnum, RoleComponent, AppellationStdBool } from '../role/role.component';
@@ -163,6 +164,9 @@ export class PropertyComponent implements OnChanges {
 
   // roles existing in repo but not in this project
   rolesNotInProject: InfRole[];
+
+  // true while loading rolesNotInProject via api call
+  rolesNotInProjectLoading: boolean;
 
   // isReadyToAddRoles
   get isReadyToAddRoles(): boolean {
@@ -564,16 +568,24 @@ export class PropertyComponent implements OnChanges {
   */
   startAddingRole() {
 
+
     this.addRoleState = 'selectExisting'
+
+    this.rolesNotInProjectLoading = true;
 
     const fkEntity = this.parentPeIt.pk_entity;
     const fkProperty = this.property.dfh_pk_property;
     const fkProject = this.activeProject.project.pk_project;
 
-    this.roleApi.alternativesNotInProject(fkEntity, fkProperty, fkProject)
-      .subscribe((roles: InfRole[]) => {
+    const waitAtLeast = timer(800);
+    const apiCall = this.roleApi.alternativesNotInProject(fkEntity, fkProperty, fkProject)
 
-        this.rolesNotInProject = roles;
+    Observable.combineLatest([waitAtLeast, apiCall])
+      .subscribe((results) => {
+
+        this.rolesNotInProjectLoading = false;
+
+        this.rolesNotInProject = results[1];
 
         if (this.rolesNotInProject.length === 0) {
           this.startCreateNewRole();
