@@ -60,6 +60,11 @@ export class TeEntComponent implements OnInit {
 
   @Input() fkClass: number;
 
+  // If true, the UI for communiy statistics is visible
+  @Input() communityStatsVisible:boolean;
+
+  // If true, CRM info is visible in UI
+  @Input() ontoInfoVisible:boolean;
 
   /**
   * Outputs

@@ -83,9 +83,44 @@ button {
   cursor: pointer;
 }
 
-
+// generate .bg-gray-* classes
 @each $color, $value in $grays {
   @include bg-variant(".bg-gray-#{$color}", $value);
+}
+
+// generate btn-gray-* classes
+@each $color, $value in $grays {
+  .btn-gray-#{$color} {
+    @include button-variant($value, $value);
+  }
+}
+
+// generate btn-outline-gray-* classes
+@each $color, $value in $grays {
+  .btn-outline-gray-#{$color} {
+    @include button-outline-variant($value);
+  }
+}
+
+// generate border-gray-* classes
+@each $color, $value in $grays {
+  .border-gray-#{$color} {
+    border-color: $value !important;
+  }
+}
+
+.dropdown-toggle::after {
+    display:none;
+}
+
+.rounded-bottom-0 {
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.rounded-top-0 {
+  border-top-right-radius: 0 !important;
+  border-top-left-radius: 0 !important;
 }
 
 
@@ -151,6 +186,15 @@ button {
 gv-property{
   display: block;
 }
+
+.gv-card-spacer-y {
+    padding-top: $card-spacer-y;
+    padding-bottom: $card-spacer-y;
+};
+.gv-card-spacer-x {
+  padding-left: $card-spacer-x;
+  padding-right: $card-spacer-x;
+};
 
 // Navbar (main)
 #nav{

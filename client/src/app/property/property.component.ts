@@ -17,7 +17,7 @@ import { timer } from 'rxjs/observable/timer';
 
 import { InfRole } from '../shared/sdk/models/InfRole';
 import { RolePointToEnum, RoleComponent, AppellationStdBool } from '../role/role.component';
-import { RoleService } from '../shared/services/role.service';
+import { RoleService, DirectedRolesPerProperty } from '../shared/services/role.service';
 import { InfEntityProjectRelApi } from '../shared/sdk/services/custom/InfEntityProjectRel';
 import { PropertyService } from '../shared/services/property.service';
 import { PeItComponent } from '../pe-it/pe-it.component';
@@ -78,6 +78,8 @@ export class PropertyComponent implements OnChanges {
   * Inputs
   */
 
+  @Input() propertySection: DirectedRolesPerProperty;
+
   // fk_property that all roles of this kind should have
   @Input() fkProperty: number;
 
@@ -98,6 +100,12 @@ export class PropertyComponent implements OnChanges {
 
   // The parent PeIt Entity
   @Input() parentPeIt: InfPersistentItem;
+
+  // If true, the UI for communiy statistics is visible
+  @Input() communityStatsVisible: boolean;
+
+  // If true, CRM info is visible in UI
+  @Input() ontoInfoVisible: boolean;
 
   /**
   * set propState - The state of this component
@@ -126,6 +134,8 @@ export class PropertyComponent implements OnChanges {
   @Output() readyToAdd: EventEmitter<InfRole[]> = new EventEmitter();
 
   @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter();
+
+  @Output() removePropertySectionReq: EventEmitter<DirectedRolesPerProperty> = new EventEmitter();
 
   /**
   * Properties
@@ -162,10 +172,16 @@ export class PropertyComponent implements OnChanges {
   // roles to add, when in add-pe-it state
   rolesToAdd: InfRole[] = [];
 
-  // roles existing in repo but not in this project
-  rolesNotInProject: InfRole[];
+  // roles used by other projects in repo but not in this project
+  rolesInOtherProjects: InfRole[];
 
-  // true while loading rolesNotInProject via api call
+  // roles not used by no project
+  rolesInNoProject: InfRole[];
+
+  // if true, roles used by no project are visible
+  rolesInNoProjectVisible: boolean;
+
+  // true while loading rolesInOtherProjects via api call
   rolesNotInProjectLoading: boolean;
 
   // isReadyToAddRoles
@@ -411,12 +427,21 @@ export class PropertyComponent implements OnChanges {
         // update the epr of the new Std in client memory
         roleC.epr = value[0];
         roleC.isStandardInProject = value[0].is_standard_in_project;
+        roleC.role.is_standard_in_project_count++;
 
         // unset loadingStdChange flag
         roleC.loadingStdChange = false;
 
         // update the epr of old Std Roles (should be only one) in client memory
         for (let i = 0; i < rolesToChange.length; i++) {
+
+          if (
+            rolesToChange[i].isStandardInProject === true
+            && value[i + 1].is_standard_in_project === false
+          ) {
+            rolesToChange[i].role.is_standard_in_project_count--;
+          }
+
           rolesToChange[i].epr = value[i + 1];
           rolesToChange[i].isStandardInProject = value[i + 1].is_standard_in_project;
 
@@ -562,12 +587,20 @@ export class PropertyComponent implements OnChanges {
 
   }
 
+  /**
+  * Called when user click on close (only if no roles available)
+  */
+
+  removePropertySection() {
+    this.removePropertySectionReq.emit(this.propertySection);
+  }
 
   /**
   * Called when user click on Add a [*]
   */
   startAddingRole() {
 
+    this.rolesInNoProjectVisible = false;
 
     this.addRoleState = 'selectExisting'
 
@@ -585,9 +618,13 @@ export class PropertyComponent implements OnChanges {
 
         this.rolesNotInProjectLoading = false;
 
-        this.rolesNotInProject = results[1];
+        this.rolesInOtherProjects = results[1]
+          .filter(role => role.is_in_project_count > 0);
 
-        if (this.rolesNotInProject.length === 0) {
+        this.rolesInNoProject = results[1]
+          .filter(role => role.is_in_project_count == 0);
+
+        if (results[1].length === 0) {
           this.startCreateNewRole();
         }
 
@@ -689,7 +726,12 @@ export class PropertyComponent implements OnChanges {
     Observable.combineLatest(observables)
       .subscribe(results => {
         results.forEach((result: InfRole[]) => {
-          this.roles.push(result[0]);
+
+          let addedRole = result[0];
+
+          addedRole.is_in_project_count++;
+
+          this.roles.push(addedRole);
 
           this.addRoleState = 'init';
         })

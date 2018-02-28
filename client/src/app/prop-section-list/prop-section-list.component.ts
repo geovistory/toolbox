@@ -133,13 +133,19 @@ export class PropSectionListComponent implements OnInit, OnChanges {
 
   // directed roles per property,
   // e.g.: [{fkProperty: 'P52', isOutgoing: true, roles: []},…]
-  directedRolesPerProperty: DirectedRolesPerProperty[];
+  directedRolesPerProperty: DirectedRolesPerProperty[] = [];
 
   // Array of possible ingoing Properties of the class of the parent peIt
   ingoingDirectionAwareProperties: DirectionAwareProperty[];
 
   // Array of possible outgoing Properties of the class of the parent peIt
   outgoingDirectionAwareProperties: DirectionAwareProperty[];
+
+  // If true, the UI for communiy statistics is visible
+  communityStatsVisible: boolean;
+
+  // If true, the CRM Info (with links) is visible
+  ontoInfoVisible: boolean;
 
   constructor(
     private roleService: RoleService,
@@ -219,6 +225,42 @@ export class PropSectionListComponent implements OnInit, OnChanges {
     );
   }
 
+
+  /**
+  * Show ui with community statistics like
+  * - is in project count
+  * - is standard in project count
+  */
+  showCommunityStats() {
+    this.communityStatsVisible = true;
+  }
+
+  /**
+  * Hide ui with community statistics like
+  * - is in project count
+  * - is standard in project count
+  */
+  hideCommunityStats() {
+    this.communityStatsVisible = false;
+  }
+
+
+
+  /**
+  * Show CRM Info in UI
+  */
+  showOntoInfo() {
+    this.ontoInfoVisible = true;
+  }
+
+  /**
+  * Hide CRM Info in UI
+  */
+  hideOntoInfo() {
+    this.ontoInfoVisible = false;
+  }
+
+
   /**
   * startSelectProperty - called, when user clicks on add info
   */
@@ -248,9 +290,35 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   */
   startSelectRoles() {
     if (this.propertyToAdd)
-      this.selectPropState = 'selectRoles';
+      this.selectPropState = 'init';
+
+    // add a property sections
+
+    const newPropertySection: DirectedRolesPerProperty = {
+      isOutgoing: false,
+      fkProperty: this.propertyToAdd.property.dfh_pk_property,
+      roles: []
+    }
+
+    this.directedRolesPerProperty.push(newPropertySection);
+
+    this.propertyToAdd = null;
+
   }
 
+
+
+  /**
+  * Method to find out if a property section is already added
+  */
+  propSectionAdded(directionAwareProp: DirectionAwareProperty): boolean {
+    return (this.directedRolesPerProperty.find(drpp => {
+      return (
+        drpp.isOutgoing == directionAwareProp.isOutgoing &&
+        drpp.fkProperty == directionAwareProp.property.dfh_pk_property
+      )
+    })) ? true : false;
+  }
 
   /**
   * called, when the child propertComponent's selectPropState changes
@@ -263,6 +331,16 @@ export class PropSectionListComponent implements OnInit, OnChanges {
     }
   }
 
+
+  /**
+  * Called when the user closes an empty property section
+  */
+  onRemovePropertySectionReq(propSection: DirectedRolesPerProperty) {
+    var index = this.directedRolesPerProperty.indexOf(propSection, 0);
+    if (index > -1) {
+      this.directedRolesPerProperty.splice(index, 1);
+    }
+  }
 
   /**
   * called when a child propertComponent has added new roles

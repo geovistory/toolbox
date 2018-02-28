@@ -12,7 +12,7 @@ interface RoleInfo {
 }
 
 export interface RolesPerProperty {
-  fkProperty: string;
+  fkProperty: number;
   roles: InfRole[];
 }
 export interface DirectedRole {
@@ -20,7 +20,7 @@ export interface DirectedRole {
   role: InfRole;
 }
 export interface DirectedRolesPerProperty {
-  fkProperty: string;
+  fkProperty: number;
   isOutgoing: boolean;
   roles: InfRole[];
 }

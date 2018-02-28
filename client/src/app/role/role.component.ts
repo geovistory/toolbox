@@ -47,6 +47,12 @@ export class RoleComponent implements OnInit {
 
   @Input() parentProperty: DfhProperty;
 
+  // If true, the UI for communiy statistics is visible
+  @Input() communityStatsVisible:boolean;
+
+  // If true, CRM info is visible in UI
+  @Input() ontoInfoVisible:boolean;
+
   /**
   * Outputs
   */

@@ -28,8 +28,11 @@
       "type": "number",
       "required": true
     },
-    "notes": {
-      "type": "string"
+    "is_in_project_count": {
+      "type": "number"
+    },
+    "is_standard_in_project_count": {
+      "type": "number"
     }
   },
   "validations": [],

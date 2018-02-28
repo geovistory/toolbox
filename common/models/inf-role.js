@@ -287,7 +287,10 @@ module.exports = function(InfRole) {
         "where": [
           "fk_entity", "=", entityPk,
           "and", "fk_property", "=", propertyPk,
-          "and", "is_community_favorite", "=", "true"
+          "and", [
+            "is_community_favorite", "=", "true",
+            "or", "is_in_project_count", "=", "0"
+          ]
         ],
         "orderBy": [{
           "pk_entity": "asc"

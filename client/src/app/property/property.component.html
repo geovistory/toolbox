@@ -15,6 +15,9 @@
     r:[{{property.dfh_has_range}}] – p: [{{property.dfh_pk_property}}] – d: [{{property.dfh_has_domain}}]
   </span>
 
+  <span *ngIf="entityEditor.devView">
+    communityStatsVisible {{communityStatsVisible}}
+  </span>
 
   <!--
   *********************** Point to TeEnt  ***********************
@@ -31,16 +34,25 @@
 
     <span *ngIf="propState === 'edit'">
 
-      <div class="card gv-naming">
-        <div class="card-body gv-property-section-header d-flex flex-row" [ngClass]="{'gv-to-te-ent': (pointTo==='TeEnt'), 'gv-to-pe-it': (pointTo==='PeIt')}">
-          <div class="gv-label gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
+      <div class="card bg-secondary text-white">
+
+        <div class="btn-group d-flex flex-row" [ngClass]="{'gv-to-te-ent': (pointTo==='TeEnt'), 'gv-to-pe-it': (pointTo==='PeIt')}">
+          <button class="btn btn-secondary btn-block text-left rounded-bottom-0" (click)="toggleCardBody()">
             <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardState==='expanded')}"></i>
             {{roleLabel}}
             ({{roles.length}})
-            <small class="align-self-center">
-              <gv-dfh-id [property]="property"></gv-dfh-id>
-            </small>
+
+          </button>
+          <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="ontoInfoVisible">
+            <div class="align-self-center">
+              <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{property.dfh_pk_property}}" target="_blank" >
+                {{property.dfh_identifier_in_namespace}}
+              </a>
+            </div>
           </div>
+          <button class="btn btn-secondary rounded-bottom-0" (click)="removePropertySection()" *ngIf="roles.length === 0">
+            <i class="fa fa-close"></i>
+          </button>
         </div>
 
 
@@ -52,6 +64,8 @@
             [isOutgoing]="isOutgoing"
             [pointTo]="pointTo"
             [roleState]="'edit'"
+            [communityStatsVisible]="communityStatsVisible"
+            [ontoInfoVisible]="ontoInfoVisible"
             (appeChange)="emitAppeChange($event)"
             (onRequestStandard)="changeStandardRole($event)"
             (readyToAdd)="onRoleReadyToAdd($event)"
@@ -59,8 +73,8 @@
             ></gv-role>
           </div>
 
-          <div class="card-footer gv-naming">
-            <div class="btn btn-block btn-secondary"          (click)="startAddingRole()"    *ngIf="addRoleState=== 'init'">
+          <div class="border-top border-gray-500">
+            <div class="btn btn-block btn-secondary rounded-top-0" (click)="startAddingRole()"    *ngIf="addRoleState=== 'init'">
               Add a {{roleLabelObj.sg}}…
             </div>
 
@@ -75,16 +89,25 @@
 
               <span *ngIf="!rolesNotInProjectLoading">
                 <div class="card-body gv-property-section-header">
-                  {{rolesNotInProject.length}} {{rolesNotInProject.length === 1 ? roleLabelObj.sg : roleLabelObj.pl}} found
+                  {{rolesInOtherProjects.length}} {{rolesInOtherProjects.length === 1 ? roleLabelObj.sg : roleLabelObj.pl}} found in other projects
                 </div>
-                <div class="card-body">
+
+                <div class="card-body" *ngIf="rolesInOtherProjects.length">
                   <div class="gv-label gv-flex-grow-1"> Add an existing {{roleLabelObj.sg}} from below or <a href="" class="gv-passive-link" (click)="startCreateNewRole()">create a new name</a>.</div>
                 </div>
 
+                <div class="card-body" *ngIf="!rolesInOtherProjects.length && !rolesInNoProjectVisible">
+                  <div class="gv-label gv-flex-grow-1">
+                    <a href="" class="btn btn-primary gv-passive-link" (click)="startCreateNewRole()">Create a new {{roleLabelObj.sg}}</a>
+                    <a href="" class="btn btn-link gv-passive-link" (click)="rolesInNoProjectVisible=true">
+                      Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? roleLabelObj.sg : roleLabelObj.pl}} used by no Projects
+                    </a>
+                  </div>
+                </div>
 
-                <div class="card-body">
+                <div class="card-body" *ngIf="rolesInOtherProjects.length">
 
-                  <gv-role *ngFor="let role of rolesNotInProject"
+                  <gv-role *ngFor="let role of rolesInOtherProjects"
                   [role]="role"
                   [parentProperty]="property"
                   [isOutgoing]="isOutgoing"
@@ -94,9 +117,30 @@
                   ></gv-role>
                 </div>
 
+                <div class="card-body pt-0" *ngIf="rolesInNoProject && rolesInOtherProjects.length">
+                  <small>
+                    <a href="" class="gv-passive-link text-light" (click)="rolesInNoProjectVisible=true" *ngIf="!rolesInNoProjectVisible">
+                      Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? roleLabelObj.sg : roleLabelObj.pl}} used by no Projects.
+                    </a>
+                    <a href="" class="gv-passive-link text-light" (click)="rolesInNoProjectVisible=false" *ngIf="rolesInNoProjectVisible">
+                      Hide
+                    </a>
+                  </small>
+                </div>
 
+                <div class="card-body" *ngIf="rolesInNoProject && rolesInNoProjectVisible">
 
-                <div class="card-body">
+                  <gv-role *ngFor="let role of rolesInNoProject"
+                  [role]="role"
+                  [parentProperty]="property"
+                  [isOutgoing]="isOutgoing"
+                  [pointTo]="'TeEnt'"
+                  [roleState]="'add'"
+                  (readyToAdd)="onRoleReadyToAdd($event)"
+                  ></gv-role>
+                </div>
+
+                <div class="card-body" *ngIf="rolesInNoProjectVisible || rolesInOtherProjects.length">
                   <button type="button" class="btn btn-primary"
                   [ngClass]="{disabled:(!isReadyToAddRoles)}"
                   (click)="addSelectedRolesToProject()"
@@ -113,10 +157,6 @@
 
             <!-- Create a new Role -->
             <div *ngIf="addRoleState=== 'createNew'">
-
-              <div class="card-body gv-property-section-header" *ngIf="rolesNotInProject.length === 0">
-                <div class="gv-label gv-flex-grow-1"> No {{roleLabelObj.pl}} found</div>
-              </div>
 
               <gv-role
               [role]="roleToCreate"
@@ -258,7 +298,7 @@
 
     <span *ngIf="propState === 'edit'">
 
-      <div class="card-body gv-property-section-header d-flex flex-row" [ngClass]="{'gv-to-te-ent': (pointTo==='TeEnt'), 'gv-to-pe-it': (pointTo==='PeIt')}">
+      <!-- <div class="card-body gv-property-section-header d-flex flex-row" [ngClass]="{'gv-to-te-ent': (pointTo==='TeEnt'), 'gv-to-pe-it': (pointTo==='PeIt')}">
         <div class="gv-label gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
           <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardState==='expanded')}"></i>
           {{roleLabel}}
@@ -266,6 +306,25 @@
           <small class="align-self-center">
             <gv-dfh-id [property]="property"></gv-dfh-id>
           </small>
+        </div>
+        <button type="button" class="gv-edit-btn btn btn-link btn-sm" name="button" *ngIf="addButtonVisible">
+          <i class="fa fa-plus"></i>
+        </button>
+      </div> -->
+
+
+      <div class="btn-group d-flex flex-row gv-h5">
+        <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
+          <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardState==='expanded')}"></i>
+          {{roleLabel}}
+          ({{roles.length}})
+        </button>
+        <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="ontoInfoVisible">
+          <div class="align-self-center">
+            <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{property.dfh_pk_property}}" target="_blank" >
+              {{property.dfh_identifier_in_namespace}}
+            </a>
+          </div>
         </div>
         <button type="button" class="gv-edit-btn btn btn-link btn-sm" name="button" *ngIf="addButtonVisible">
           <i class="fa fa-plus"></i>
