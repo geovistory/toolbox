@@ -49,9 +49,6 @@
     "dfh_fk_property_type": {
       "type": "number"
     },
-    "dfh_fk_system_type": {
-      "type": "number"
-    },
     "dfh_fk_profile": {
       "type": "number",
       "required": true

@@ -26,9 +26,6 @@
       "type": "string",
       "required": true
     },
-    "dfh_fk_text_property_type": {
-      "type": "number"
-    },
     "dfh_language_iso_code": {
       "type": "string"
     },
