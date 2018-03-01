@@ -31,7 +31,10 @@ exports.up = function(db, callback) {
   VALUES
   (1, 'R63', 3, 1, 'Named', 0, -1, 0, -1),
   (2, 'R64', 3, 2, 'Used Name', 0, -1, 1, 1),
-  (3, 'R61', 3, 4, 'Occured in kind of context', 0, -1, 1, 1)
+  (3, 'R61', 3, 4, 'Occured in kind of context', 0, -1, 1, 1),
+  (4, 'P96', 5, 1, 'By Mother', 1, -1, 1, 1),
+  (5, 'P97', 5, 1, 'From Father', 1, -1, 1, 1),
+  (6, 'P98', 5, 1, 'Brought into life', 1, 1, 1, 9)
   `;
   console.log(sql);
 
