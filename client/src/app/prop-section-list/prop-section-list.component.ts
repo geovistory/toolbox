@@ -120,7 +120,7 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   };
 
   // state of child components for adding or creating properties
-  private selectPropState: string;
+  selectPropState: string;
 
   // state of child component for editing properties
   propState: string;
