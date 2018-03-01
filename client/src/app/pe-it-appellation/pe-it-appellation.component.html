@@ -1,5 +1,10 @@
 <div [ngClass]="{'dev-view': entityEditor.devView}">
 
+  <span *ngIf="entityEditor.devView">
+    [state: {{peItAppeState}}]
+  </span>
+
+
   <div class="d-flex flex-row" *ngIf="peItAppeState === 'add-pe-it' || peItAppeState === 'add' ">
 
     <div class="gv-flex-grow-1" >

@@ -20,6 +20,8 @@ export enum RolePointToEnum {
 export interface AppellationStdBool {
   appellation: InfAppellation;
   isStandardInProject: boolean;
+  isMostPopular?: boolean;
+  role?: InfRole;
 }
 
 @Component({
@@ -48,10 +50,13 @@ export class RoleComponent implements OnInit {
   @Input() parentProperty: DfhProperty;
 
   // If true, the UI for communiy statistics is visible
-  @Input() communityStatsVisible:boolean;
+  @Input() communityStatsVisible: boolean;
 
   // If true, CRM info is visible in UI
-  @Input() ontoInfoVisible:boolean;
+  @Input() ontoInfoVisible: boolean;
+
+  // true for latest modified role with highest is_standard_in_project_count
+  @Input() isStandardRoleToAdd: boolean;
 
   /**
   * Outputs
@@ -93,6 +98,7 @@ export class RoleComponent implements OnInit {
 
   private _isStandardInProject: boolean;
 
+
   constructor(
     private activeProjectService: ActiveProjectService,
     private eprService: EprService,
@@ -111,13 +117,20 @@ export class RoleComponent implements OnInit {
     // make a copy
     this.roleToAdd = new InfRole(this.role);
 
+    let eprToAdd = new InfEntityProjectRel({
+      fk_project: this.activeProjectService.project.pk_project,
+      fk_entity_version_concat: this.role.pk_entity_version_concat
+    })
+
+    if (
+      (this.roleState === 'add-pe-it' || this.roleState === 'create-pe-it')
+      && this.isStandardRoleToAdd
+    ) {
+      eprToAdd.is_standard_in_project = true;
+    }
+
     // add an epr
-    this.roleToAdd.entity_version_project_rels = [
-      new InfEntityProjectRel({
-        fk_project: this.activeProjectService.project.pk_project,
-        fk_entity_version_concat: this.role.pk_entity_version_concat
-      })
-    ]
+    this.roleToAdd.entity_version_project_rels = [eprToAdd]
 
     if (this.epr)
       this.isStandardInProject = this.epr.is_standard_in_project;
@@ -186,9 +199,9 @@ export class RoleComponent implements OnInit {
 
 
   /**
-   * createRole - called when user confirms to create a role (with all children)
-   *
-   */
+  * createRole - called when user confirms to create a role (with all children)
+  *
+  */
   createRole() {
 
 
@@ -205,9 +218,9 @@ export class RoleComponent implements OnInit {
 
 
   /**
-   * cancelCreateRole - called when user cancels to create a role
-   *
-   */
+  * cancelCreateRole - called when user cancels to create a role
+  *
+  */
   cancelCreateRole() {
 
     this.roleCreationCanceled.emit();
@@ -268,15 +281,20 @@ export class RoleComponent implements OnInit {
 
 
   /**
-   * removeFromProject - called when user removes a role (nested) from project
-   */
+  * removeFromProject - called when user removes a role (nested) from project
+  */
   removeFromProject() {
-    this.roleApi.changeRoleProjectRelation(
-      this.activeProjectService.project.pk_project, false, this.roleToAdd
-    ).subscribe(result => {
-      const removedRole:InfRole = result[0]
-      this.roleRemoved.emit(removedRole);
-    })
+    if (this.isStandardInProject) {
+      alert("You can't remove the standard item. Make another item standard and try again.")
+    } else {
+
+      this.roleApi.changeRoleProjectRelation(
+        this.activeProjectService.project.pk_project, false, this.roleToAdd
+      ).subscribe(result => {
+        const removedRole: InfRole = result[0]
+        this.roleRemoved.emit(removedRole);
+      })
+    }
   }
 
 
@@ -347,6 +365,7 @@ export class RoleComponent implements OnInit {
 
   emitAppeChange(appeStd: AppellationStdBool) {
     appeStd.isStandardInProject = this.isStandardInProject;
+    appeStd.role = this.role;
     this.appellation = appeStd.appellation;
     this.appeChange.emit(appeStd)
   }

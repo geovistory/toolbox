@@ -81,6 +81,8 @@ import { AppellationLabelCreateComponent } from './appellation-label-create/appe
 import { AppellationLabelEditorComponent } from './appellation-label-editor/appellation-label-editor.component';
 import { EntityEditorSettingsComponent } from './entity-editor-settings/entity-editor-settings.component';
 import { DfhIdComponent } from './dfh-id/dfh-id.component';
+import { PeItEntityPreviewComponent } from './pe-it-entity-preview/pe-it-entity-preview.component';
+import { PropSectionOfTeEntComponent } from './prop-section-of-te-ent/prop-section-of-te-ent.component';
 
 @NgModule({
   declarations: [
@@ -139,7 +141,9 @@ import { DfhIdComponent } from './dfh-id/dfh-id.component';
     AppellationLabelCreateComponent,
     AppellationLabelEditorComponent,
     EntityEditorSettingsComponent,
-    DfhIdComponent
+    DfhIdComponent,
+    PeItEntityPreviewComponent,
+    PropSectionOfTeEntComponent
   ],
   imports: [
     BrowserModule,

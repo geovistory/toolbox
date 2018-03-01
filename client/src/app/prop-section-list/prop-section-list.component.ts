@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import {
   trigger,
   state,
@@ -150,7 +150,9 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   constructor(
     private roleService: RoleService,
     private propertyService: PropertyService,
-    public entityEditor: EntityEditorService
+    public entityEditor: EntityEditorService,
+    private ref: ChangeDetectorRef
+
   ) { }
 
 
@@ -180,7 +182,7 @@ export class PropSectionListComponent implements OnInit, OnChanges {
 
     this.propState = this.propSectionListState;
 
-    this.propertyToAdd = null;
+    // this.propertyToAdd = null;
 
   }
 
@@ -203,17 +205,18 @@ export class PropSectionListComponent implements OnInit, OnChanges {
 
       if (this.roles) this.setDirectedRolesPerProperty();
 
+      if (this.propSectionListState === 'create') {
+
+        //TODO find smarter choice of the default property to add on create
+        this.propertyToAdd = this.ingoingDirectionAwareProperties.filter(odap => {
+          return odap.property.dfh_pk_property === 1 //'R63'
+        })[0]
+
+        this.ref.detectChanges();
+
+      }
     }
 
-    if (this.propSectionListState === 'create') {
-      this.selectPropState = 'createPeIt';
-
-      //TODO find smarter choice of the default property to add on create
-      this.propertyToAdd = this.outgoingDirectionAwareProperties.filter(odap => {
-        return odap.property.dfh_pk_property === 1 //'R63'
-      })[0]
-
-    }
 
   }
 

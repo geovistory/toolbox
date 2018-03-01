@@ -72,8 +72,11 @@ export class PeItEntityComponent implements OnInit {
   // Persistent Item to be added
   peItToAdd: InfPersistentItem;
 
-  // Displayed standard name of this peIt
+  // Standard appellation string of project of this peIt
   stdAppeString: string;
+
+  // Most popular appellation string of this peIt
+  mostPopularAppeString: string;
 
   // array of properies of which the class of this peIt is range.
   outgoingProperties: DfhProperty[];
@@ -323,6 +326,11 @@ export class PeItEntityComponent implements OnInit {
     if (appeStd.isStandardInProject) {
       const label = new AppellationLabel(appeStd.appellation.appellation_label);
       this.stdAppeString = label.getString();
+      this.changeDetector.detectChanges()
+    }
+    if (appeStd.isMostPopular) {
+      const label = new AppellationLabel(appeStd.appellation.appellation_label);
+      this.mostPopularAppeString = label.getString();
       this.changeDetector.detectChanges()
     }
   }

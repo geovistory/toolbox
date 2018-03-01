@@ -1,12 +1,8 @@
 <div [ngClass]="{'dev-view': entityEditor.devView}">
 
-
-
-
-
-  <div *ngIf="entityEditor.devView">
-    TeEntComponent [{{teEnt.fk_class}}] [ready: {{isReadyToCreate}}]
-  </div>
+  <span *ngIf="entityEditor.devView">
+    [state: {{teEntState}}] [fkClass {{teEnt.fk_class}}] [readyToCreate: {{isReadyToCreate}}]
+  </span>
 
   <div class="card gv-name" *ngIf="teEntState !== 'create'">
 
@@ -22,7 +18,7 @@
 
       <ng-content select="[headerRight]"></ng-content>
 
-
+      
     </div>
 
     <ng-content select="[belowHeader]">
@@ -55,36 +51,36 @@
   <div class="card gv-name" *ngIf="teEntState === 'create'">
 
     <!-- <div class="card-header gv-name-header d-flex flex-row">
-      <ng-content select="[headerRight]"></ng-content> [Create TeEnt of Class {{teEnt.fk_class}}]
-    </div> -->
+    <ng-content select="[headerRight]"></ng-content> [Create TeEnt of Class {{teEnt.fk_class}}]
+  </div> -->
 
-    <div class="gv-card-body-wrapper">
+  <div class="gv-card-body-wrapper">
 
-      <gv-property
-      *ngFor="let property of outgoingProperties"
-      [roles]="property.roles"
-      [parentRole]="parentRole"
-      [fkProperty]="property.dfh_pk_property"
-      [pointTo]="'PeIt'"
-      [propState]="'create'"
-      [isOutgoing]="true"
-      (readyToCreate)="propertyReadyToCreate($event)"
-      (notReadyToCreate)="propertyNotReadyToCreate()"
-      ></gv-property>
+    <gv-property
+    *ngFor="let property of outgoingProperties"
+    [roles]="property.roles"
+    [parentRole]="parentRole"
+    [fkProperty]="property.dfh_pk_property"
+    [pointTo]="'PeIt'"
+    [propState]="'create'"
+    [isOutgoing]="true"
+    (readyToCreate)="propertyReadyToCreate($event)"
+    (notReadyToCreate)="propertyNotReadyToCreate()"
+    ></gv-property>
 
-      <gv-property
-      *ngFor="let property of ingoingProperties"
-      [roles]="property.roles"
-      [parentRole]="parentRole"
-      [fkProperty]="property.dfh_pk_property"
-      [pointTo]="'PeIt'"
-      [propState]="'create'"
-      [isOutgoing]="false"
-      (readyToCreate)="propertyReadyToCreate($event)"
-      (notReadyToCreate)="propertyNotReadyToCreate()"
-      ></gv-property>
-
-    </div>
+    <gv-property
+    *ngFor="let property of ingoingProperties"
+    [roles]="property.roles"
+    [parentRole]="parentRole"
+    [fkProperty]="property.dfh_pk_property"
+    [pointTo]="'PeIt'"
+    [propState]="'create'"
+    [isOutgoing]="false"
+    (readyToCreate)="propertyReadyToCreate($event)"
+    (notReadyToCreate)="propertyNotReadyToCreate()"
+    ></gv-property>
 
   </div>
+
+</div>
 </div>

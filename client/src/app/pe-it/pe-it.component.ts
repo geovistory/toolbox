@@ -32,6 +32,7 @@ export class PeItComponent implements OnInit {
   @Input() appellation: InfAppellation;
   @Input() language: InfLanguage;
   @Input() peItState: string;
+  @Input() childOfTeEnt: boolean;
 
   /**
   * Outputs

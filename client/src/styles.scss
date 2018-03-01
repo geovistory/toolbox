@@ -152,6 +152,9 @@ button {
 .gv-flex-grow-5{
   flex-grow: 5;
 }
+.gv-flex-shrink-0{
+  flex-shrink: 0;
+}
 .gv-search-hits-count{
   font-size: $font-size-sm;
   color: $text-muted;

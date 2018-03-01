@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { InfLanguage } from '../shared/sdk/models/InfLanguage';
 import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 import { ActiveProjectService } from '../shared/services/active-project.service';
+import { EntityEditorService } from '../shared/services/entity-editor.service';
 
 @Component({
   selector: 'gv-pe-it-language',
@@ -37,6 +38,7 @@ export class PeItLanguageComponent implements OnInit {
   langToAdd:InfLanguage;
 
   constructor(
+    public entityEditor: EntityEditorService,
     private activeProjectService: ActiveProjectService,
   ) {
   }

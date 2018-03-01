@@ -1,8 +1,13 @@
 <div [ngClass]="{'dev-view': entityEditor.devView}">
+  <span *ngIf="entityEditor.devView">
+    [state: {{peItEntityState}}]
+  </span>
 
   <!-- Preview State -->
 
   <div *ngIf="peItEntityState=='preview'">
+
+    PREVIEW OF PE-IT
 
   </div>
 
@@ -31,7 +36,9 @@
 
   <div *ngIf="peItEntityState === 'add-pe-it' && !loading">
 
-    <small class="text-muted">Person</small> {{stdAppeString}}
+    <h5 class="mt-2 mb-4">
+       {{mostPopularAppeString}}
+    </h5>
 
     <gv-prop-section-list
     [roles]="peIt.pi_roles"
@@ -43,6 +50,7 @@
     (notReadyToCreate)="emitNotReadyToCreate()"
     (readyToAdd)="onRolesReadyToAdd($event)"
     (notReadyToAdd)="onRolesNotReadyToAdd()"
+    (appeChange)="whenAppeChange($event)"
     ></gv-prop-section-list>
 
 

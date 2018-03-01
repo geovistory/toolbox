@@ -1,4 +1,8 @@
 <div [ngClass]="{'dev-view': entityEditor.devView}">
+  <span *ngIf="entityEditor.devView">
+    [state: {{peItState}}]
+  </span>
+
 
   <!-- if (fk_class == 'R64') => PeItAppellation (pass appellation) -->
   <gv-pe-it-appellation
@@ -23,7 +27,7 @@
   ></gv-pe-it-language>
 
   <gv-pe-it-entity
-  *ngIf="showEntityUI"
+  *ngIf="showEntityUI && !childOfTeEnt"
   [pkEntity]="pkEntity"
   [fkClass]="fkClass"
   [peItEntityState]="peItState"
@@ -34,10 +38,9 @@
   (notReadyToAdd)="onPeItNotReadyToAdd()"
   ></gv-pe-it-entity>
 
-  <!-- <span *ngIf="peItPreviewNeeded">[Preview of entity]</span> -->
+  <gv-pe-it-entity-preview
+  *ngIf="showEntityUI && childOfTeEnt"
+  ></gv-pe-it-entity-preview>
 
-  <!-- if (fk_class == 'R61') => PeItLanguage (pass language) -->
-
-  <!-- else => PeItEntity -->
 
 </div>

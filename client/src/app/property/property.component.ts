@@ -1,5 +1,5 @@
 import {
-  Component, OnChanges, Input, Output, ViewChildren,
+  Component, OnChanges, OnInit, Input, Output, ViewChildren,
   QueryList, EventEmitter, ChangeDetectorRef
 } from '@angular/core';
 import {
@@ -72,7 +72,7 @@ import { DfhProperty } from '../shared/sdk/models/DfhProperty';
     ])
   ]
 })
-export class PropertyComponent implements OnChanges {
+export class PropertyComponent implements OnChanges, OnInit {
 
   /**
   * Inputs
@@ -194,6 +194,9 @@ export class PropertyComponent implements OnChanges {
   // add role state
   addRoleState: string = 'init'; //init, selectExisting, createNew
 
+  // Latest modified role alternative with highest is_standard_in_project_count
+  mostPopularRole: InfRole;
+
   constructor(
     private eprApi: InfEntityProjectRelApi,
     private roleApi: InfRoleApi,
@@ -216,7 +219,10 @@ export class PropertyComponent implements OnChanges {
     });
   }
 
-
+  ngOnInit() {
+    if (this.propState == 'add-pe-it')
+      this.sortRolesByPopularity();
+  }
 
   get propState(): string {
     return this._propState;
@@ -530,28 +536,31 @@ export class PropertyComponent implements OnChanges {
     this.rolesToCreate = [];
 
     let rolesValid = true;
+    if (this.roleComponents) {
 
-    this.roleComponents.forEach(roleComponent => {
+      this.roleComponents.forEach(roleComponent => {
 
-      if (!roleComponent.isReadyToCreate) rolesValid = false;
+        if (!roleComponent.isReadyToCreate) rolesValid = false;
 
-      this.rolesToCreate.push(roleComponent.role);
+        this.rolesToCreate.push(roleComponent.role);
 
-    })
+      })
 
-    const quantityValid = this.propertyService.validateQuantity(
-      this.rolesToCreate.length,
-      this.property,
-      this.isOutgoing
-    )
+      const quantityValid = this.propertyService.validateQuantity(
+        this.rolesToCreate.length,
+        this.property,
+        this.isOutgoing
+      )
 
-    if (rolesValid && quantityValid) {
+      if (rolesValid && quantityValid) {
 
-      this.isReadyToCreate = true;
+        this.isReadyToCreate = true;
 
-      this.changeDetector.detectChanges()
+        this.changeDetector.detectChanges()
 
-      this.readyToCreate.emit(this.rolesToCreate);
+        this.readyToCreate.emit(this.rolesToCreate);
+
+      }
 
     }
 
@@ -705,13 +714,12 @@ export class PropertyComponent implements OnChanges {
 
 
   /**
-   * addSelectedRolesToProject - called when user wants to add roles and
-   * all children to project
-   *
-   * @return {type}  description
-   */
+  * addSelectedRolesToProject - called when user wants to add roles and
+  * all children to project
+  *
+  * @return {type}  description
+  */
   addSelectedRolesToProject() {
-    console.log(JSON.stringify(this.rolesToAdd, null, 2))
 
     let observables = [];
     this.rolesToAdd.forEach(role => {
@@ -748,10 +756,40 @@ export class PropertyComponent implements OnChanges {
 
 
   /**
+  * set the role that has highest is_standard_in_project_count and, if more
+  * than one role have the same highest is_standard_in_project_count, the
+  * latest modified role
+  *
+  * @return {type}  description
+  */
+  sortRolesByPopularity() {
+
+    // sort by is_standard_in_project_count and
+    this.roles.sort((roleA, roleB) => {
+      var a = roleA.is_standard_in_project_count
+      var b = roleB.is_standard_in_project_count
+
+      if (a < b) {
+        return 1;
+      }
+      if (a > b) {
+        return -1;
+      }
+      // a muss gleich b sein
+      return 0;
+    })
+
+    this.mostPopularRole = this.roles[0];
+  }
+
+  /**
   * Methods for event bubbeling
   */
 
   emitAppeChange(appeStd: AppellationStdBool) {
+
+    appeStd.isMostPopular = (this.mostPopularRole == appeStd.role);
+
     this.appeChange.emit(appeStd)
   }
 
