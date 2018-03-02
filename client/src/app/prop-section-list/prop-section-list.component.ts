@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import {
   trigger,
   state,
@@ -17,47 +17,7 @@ import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { AppellationStdBool } from '../role/role.component';
 import { DfhProperty } from '../shared/sdk/models/DfhProperty';
 
-@Component({
-  selector: 'gv-prop-section-list',
-  templateUrl: './prop-section-list.component.html',
-  styleUrls: ['./prop-section-list.component.scss'],
-  animations: [
-    trigger('slideInOut', [
-      state('expanded', style({
-        height: '*',
-      })),
-      state('collapsed', style({
-        height: '0px',
-        overflow: 'hidden'
-      })),
-      transition('expanded => collapsed', animate('400ms ease-in-out', keyframes([
-        style({
-          height: '*',
-          overflow: 'hidden',
-          offset: 0
-        }),
-        style({
-          height: '0px',
-          display: 'hidden',
-          offset: 1
-        })
-      ]))),
-      transition('collapsed => expanded', animate('400ms ease-in-out', keyframes([
-        style({
-          height: '0px',
-          overflow: 'hidden',
-          offset: 0
-        }),
-        style({
-          height: '*',
-          display: 'hidden',
-          offset: 1
-        })
-      ])))
-    ])
-  ]
-})
-export class PropSectionListComponent implements OnInit, OnChanges {
+export class PropSectionListComponent implements OnInit {
 
   /**
   * Inputs
@@ -91,14 +51,6 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   /**
   * Outputs
   */
-
-  @Output() readyToCreate: EventEmitter<InfRole[]> = new EventEmitter;
-
-  @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
-
-  @Output() readyToAdd: EventEmitter<InfRole[]> = new EventEmitter;
-
-  @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter;
 
 
   // emit appellation and a flag to say if this is the standard appellation
@@ -148,13 +100,12 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   ontoInfoVisible: boolean;
 
   constructor(
-    private roleService: RoleService,
+    protected roleService: RoleService,
     private propertyService: PropertyService,
     public entityEditor: EntityEditorService,
     private ref: ChangeDetectorRef
 
   ) { }
-
 
 
   /**
@@ -186,46 +137,35 @@ export class PropSectionListComponent implements OnInit, OnChanges {
 
   }
 
-  ngOnChanges() {
+  setDirectionAwareProperties() {
 
-    if (this.addingInformation) {
-      this.selectPropState = 'selectProp'
+    this.outgoingDirectionAwareProperties = this.propertyService
+      .toDirectionAwareProperties(true, this.outgoingProperties)
+
+    this.ingoingDirectionAwareProperties = this.propertyService
+      .toDirectionAwareProperties(false, this.ingoingProperties)
+
+    if (this.propSectionListState === 'create') {
+
+      //TODO find smarter choice of the default property to add on create
+      this.propertyToAdd = this.ingoingDirectionAwareProperties.filter(odap => {
+        return odap.property.dfh_pk_property === 1 //'R63'
+      })[0]
+
+      this.ref.detectChanges();
+
     }
-    else {
-      this.selectPropState = 'init';
-    }
-
-    if (this.outgoingProperties && this.ingoingProperties) {
-
-      this.outgoingDirectionAwareProperties = this.propertyService
-        .toDirectionAwareProperties(true, this.outgoingProperties)
-
-      this.ingoingDirectionAwareProperties = this.propertyService
-        .toDirectionAwareProperties(false, this.ingoingProperties)
-
-      if (this.roles) this.setDirectedRolesPerProperty();
-
-      if (this.propSectionListState === 'create') {
-
-        //TODO find smarter choice of the default property to add on create
-        this.propertyToAdd = this.ingoingDirectionAwareProperties.filter(odap => {
-          return odap.property.dfh_pk_property === 1 //'R63'
-        })[0]
-
-        this.ref.detectChanges();
-
-      }
-    }
-
-
   }
 
-  setDirectedRolesPerProperty() {
-    this.directedRolesPerProperty = this.roleService.toDirectedRolesPerProperty(
-      this.roles,
-      this.ingoingProperties,
-      this.outgoingProperties
-    );
+  setDirectedRolesPerProperty(roles) {
+    if (roles) {
+
+      this.directedRolesPerProperty = this.roleService.toDirectedRolesPerProperty(
+        roles,
+        this.ingoingProperties,
+        this.outgoingProperties
+      );
+    }
   }
 
 
@@ -298,7 +238,7 @@ export class PropSectionListComponent implements OnInit, OnChanges {
     // add a property sections
 
     const newPropertySection: DirectedRolesPerProperty = {
-      isOutgoing: false,
+      isOutgoing: this.propertyToAdd.isOutgoing,
       fkProperty: this.propertyToAdd.property.dfh_pk_property,
       roles: []
     }
@@ -357,49 +297,10 @@ export class PropSectionListComponent implements OnInit, OnChanges {
 
     this.roles = this.roles.concat(roles);
 
-    this.setDirectedRolesPerProperty();
+    this.setDirectedRolesPerProperty(this.roles);
 
   }
 
-  /**
-  * called when roles ready to create
-  */
-  emitReadyToCreate(roles: InfRole[]) {
-
-    this.readyToCreate.emit(roles);
-
-  }
-
-  /**
-  * called when role isnt ready to create
-  */
-  emitNotReadyToCreate(roles: InfRole[]) {
-
-    this.notReadyToCreate.emit();
-
-  }
-
-  /**
-  * Methods for event bubbeling
-  */
-
-  emitAppeChange(appeStd: AppellationStdBool) {
-    this.appeChange.emit(appeStd)
-  }
-
-  /**
-  * called when roles of property (section) are ready to be added
-  */
-  onRolesReadyToAdd(roles: InfRole[]) {
-    this.readyToAdd.emit(roles);
-  }
-
-  /**
-  * called when roles of property (section) are not ready to be added
-  */
-  onRolesNotReadyToAdd(roles: InfRole[]) {
-    this.notReadyToAdd.emit();
-  }
 
 
   /**

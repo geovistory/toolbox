@@ -62,9 +62,6 @@ import { VersionModalComponent } from './version-modal/version-modal.component';
 import { PeItService } from './shared/services/pe-it.service';
 import { PeItComponent } from './pe-it/pe-it.component';
 import { PeItEntityComponent } from './pe-it-entity/pe-it-entity.component';
-import { PropSectionListComponent } from './prop-section-list/prop-section-list.component';
-import { PropertyComponent } from './property/property.component';
-import { RoleComponent } from './role/role.component';
 import { TeEntComponent } from './te-ent/te-ent.component';
 import { PeItAppellationComponent } from './pe-it-appellation/pe-it-appellation.component';
 import { PeItLanguageComponent } from './pe-it-language/pe-it-language.component';
@@ -83,6 +80,10 @@ import { EntityEditorSettingsComponent } from './entity-editor-settings/entity-e
 import { DfhIdComponent } from './dfh-id/dfh-id.component';
 import { PeItEntityPreviewComponent } from './pe-it-entity-preview/pe-it-entity-preview.component';
 import { PropSectionOfTeEntComponent } from './prop-section-of-te-ent/prop-section-of-te-ent.component';
+import { PropSectionOfPeItComponent } from './prop-section-of-pe-it/prop-section-of-pe-it.component';
+import { RoleOfTeEntComponent } from './role-of-te-ent/role-of-te-ent.component';
+import { RoleOfPeItComponent } from './role-of-pe-it/role-of-pe-it.component';
+import { PropSectionListOfPeItComponent } from './prop-section-list-of-pe-it/prop-section-list-of-pe-it.component';
 
 @NgModule({
   declarations: [
@@ -131,9 +132,6 @@ import { PropSectionOfTeEntComponent } from './prop-section-of-te-ent/prop-secti
     VersionModalComponent,
     PeItComponent,
     PeItEntityComponent,
-    PropSectionListComponent,
-    PropertyComponent,
-    RoleComponent,
     TeEntComponent,
     PeItAppellationComponent,
     PeItLanguageComponent,
@@ -143,7 +141,11 @@ import { PropSectionOfTeEntComponent } from './prop-section-of-te-ent/prop-secti
     EntityEditorSettingsComponent,
     DfhIdComponent,
     PeItEntityPreviewComponent,
-    PropSectionOfTeEntComponent
+    PropSectionOfTeEntComponent,
+    PropSectionOfPeItComponent,
+    RoleOfTeEntComponent,
+    RoleOfPeItComponent,
+    PropSectionListOfPeItComponent
   ],
   imports: [
     BrowserModule,

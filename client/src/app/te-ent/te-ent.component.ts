@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChildren, QueryList, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, ViewChildren, QueryList, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import {
   trigger,
   state,
@@ -22,6 +22,9 @@ import { AppellationLabel } from '../shared/classes/appellation-label/appellatio
 import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { DfhProperty } from '../shared/sdk/models/DfhProperty';
+import { PropSectionOfTeEntComponent } from '../prop-section-of-te-ent/prop-section-of-te-ent.component';
+import { PropSectionListComponent } from '../prop-section-list/prop-section-list.component';
+import { PropertyService } from '../shared/services/property.service';
 
 @Component({
   selector: 'gv-te-ent',
@@ -40,7 +43,7 @@ import { DfhProperty } from '../shared/sdk/models/DfhProperty';
     ])
   ]
 })
-export class TeEntComponent implements OnInit {
+export class TeEntComponent extends PropSectionListComponent implements OnInit {
 
   /**
   * Inputs
@@ -104,15 +107,19 @@ export class TeEntComponent implements OnInit {
   // For add-pe-it-state: Temporal Entity to be Added
   teEntToAdd: InfTemporalEntity;
 
-  // Array of children RoleComponents
-  @ViewChildren(PropertyComponent) propertyComponents: QueryList<PropertyComponent>
+  // Array of children PropSectionOfTeEntComponent
+  @ViewChildren(PropSectionOfTeEntComponent) propertyComponents: QueryList<PropSectionOfTeEntComponent>
 
   constructor(
+    roleService: RoleService,
+    propertyService: PropertyService,
+    ref: ChangeDetectorRef,
     private activeProjectService: ActiveProjectService,
-    private roleService: RoleService,
     private classService: ClassService,
     public entityEditor: EntityEditorService
-  ) { }
+  ) {
+    super(roleService, propertyService, entityEditor, ref)
+  }
 
   ngOnInit() {
 
@@ -151,6 +158,14 @@ export class TeEntComponent implements OnInit {
       })
     ]
 
+
+    if (this.addingInformation) {
+      this.selectPropState = 'selectProp'
+    }
+    else {
+      this.selectPropState = 'init';
+    }
+
     let apiCalls = [];
 
     apiCalls[0] = this.classService.getIngoingProperties(this.teEnt.fk_class)
@@ -163,22 +178,15 @@ export class TeEntComponent implements OnInit {
       this.outgoingProperties = result[1];
 
       if (this.teEntState !== 'create') {
-        this.setDirectedRolesPerProperty()
+        this.setDirectionAwareProperties();
+        this.setDirectedRolesPerProperty(this.teEnt.te_roles);
       }
 
     })
 
-
-
   }
 
-  setDirectedRolesPerProperty() {
-    this.directedRolesPerProperty = this.roleService.toDirectedRolesPerProperty(
-      this.teEnt.te_roles,
-      this.ingoingProperties,
-      this.outgoingProperties
-    );
-  }
+
 
   propertyReadyToCreate(roles: InfRole[]) {
 

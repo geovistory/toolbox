@@ -26,7 +26,7 @@
 
     <!-- Create a new PeIt -->
 
-    <gv-property
+    <gv-prop-section-of-pe-it
     *ngFor="let propertySection of directedRolesPerProperty"
     [propertySection]="propertySection"
     [isOutgoing]="propertySection.isOutgoing"
@@ -42,13 +42,13 @@
     (readyToAdd)="onRolesReadyToAdd($event)"
     (notReadyToAdd)="onRolesNotReadyToAdd()"
     (removePropertySectionReq)="onRemovePropertySectionReq($event)"
-    ></gv-property>
+    ></gv-prop-section-of-pe-it>
 
   </div>
 
   <div *ngIf="propSectionListState === 'create' && propertyToAdd">
     <!-- Create a new PeIt -->
-    <gv-property
+    <gv-prop-section-of-pe-it
     [fkProperty]="propertyToAdd.property.dfh_pk_property"
     [isOutgoing]="propertyToAdd.isOutgoing"
     [propState]="'create-pe-it'"
@@ -59,7 +59,7 @@
     (notReadyToCreate)="emitNotReadyToCreate()"
     (propStateChange)="onPropStateChange($event)"
     (rolesAdded)="onRolesAdded($event)"
-    ></gv-property>
+    ></gv-prop-section-of-pe-it>
 
   </div>
 
@@ -87,7 +87,7 @@
 
     <div class="gv-body gv-flex-grow-1" style="overflow-y:auto">
 
-      <gv-property
+      <gv-prop-section-of-pe-it
       *ngFor="let propertySection of directedRolesPerProperty"
       [propertySection]="propertySection"
       [isOutgoing]="propertySection.isOutgoing"
@@ -103,7 +103,7 @@
       (readyToAdd)="onRolesReadyToAdd($event)"
       (notReadyToAdd)="onRolesNotReadyToAdd()"
       (removePropertySectionReq)="onRemovePropertySectionReq($event)"
-      ></gv-property>
+      ></gv-prop-section-of-pe-it>
 
     </div>
 

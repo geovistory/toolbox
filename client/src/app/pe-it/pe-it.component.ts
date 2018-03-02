@@ -73,6 +73,12 @@ export class PeItComponent implements OnInit {
   // state of child components to view and edit values like e.g. appellations
   valueEntitiesState:string;
 
+  // Pks of Language Classes
+  languageClassPks = [4];
+
+  // Pks of Appellation Classes
+  appellaitonClassPks = [2];
+
   constructor(
     private util: UtilitiesService,
     public entityEditor: EntityEditorService
@@ -93,7 +99,7 @@ export class PeItComponent implements OnInit {
 
     if (this.peItState === 'create') {
 
-      if (this.fkClass === 4) {
+      if (this.languageClassPks.indexOf(this.fkClass) > -1) {
 
         this.language = new InfLanguage()
 
@@ -101,7 +107,7 @@ export class PeItComponent implements OnInit {
 
       }
 
-      if ([2].indexOf(this.fkClass) > -1) {
+      if (this.appellaitonClassPks.indexOf(this.fkClass) > -1) {
 
         this.appellation = new InfAppellation()
 
@@ -123,6 +129,7 @@ export class PeItComponent implements OnInit {
   * @return {boolean}  true = this peIt is an appellation
   */
   get showAppellationUI(): boolean {
+
     return (this.util.get(this, 'appellation.fk_class'));
   }
 
@@ -132,6 +139,7 @@ export class PeItComponent implements OnInit {
   * @return {boolean}  true = this peIt is a language
   */
   get showLanguageUI() {
+
     return (this.util.get(this, 'language.fk_class'));
   }
 

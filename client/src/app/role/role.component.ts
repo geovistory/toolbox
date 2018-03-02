@@ -24,11 +24,6 @@ export interface AppellationStdBool {
   role?: InfRole;
 }
 
-@Component({
-  selector: 'gv-role',
-  templateUrl: './role.component.html',
-  styleUrls: ['./role.component.scss']
-})
 export class RoleComponent implements OnInit {
 
   /**
@@ -108,7 +103,7 @@ export class RoleComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if (this.roleState === 'create' && this.role === undefined) {
+    if ((this.roleState === 'create' || this.roleState === 'create-te-ent' ) && this.role === undefined) {
       this.role = new InfRole();
       this.role.fk_property = this.fkProperty;
     }

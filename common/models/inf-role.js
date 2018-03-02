@@ -249,7 +249,7 @@ module.exports = function(InfRole) {
   }
 
 
-  InfRole.alternativesNotInProject = function(entityPk, propertyPk, projectId, cb) {
+  InfRole.alternativesNotInProjectByEntityPk = function(entityPk, propertyPk, projectId, cb) {
 
     const rolesInProjectFilter = {
       /** Select roles with fk_entity and fk_property … */
@@ -340,6 +340,94 @@ module.exports = function(InfRole) {
 
             }
           }
+
+        }
+      };
+
+      if (entitiesInProj.length > 0) {
+        filter.where = filter.where.concat(["and", "pk_entity", "NOT IN", entitiesInProj])
+      }
+
+      return InfRole.findComplex(filter, cb);
+    };
+
+    InfRole.findComplex(rolesInProjectFilter, findThem);
+
+  };
+
+
+
+  InfRole.alternativesNotInProjectByTeEntPk = function(teEntPk, propertyPk, projectId, cb) {
+
+    const rolesInProjectFilter = {
+      /** Select roles with fk_temporal_entity and fk_property … */
+      "where": [
+        "fk_temporal_entity", "=", teEntPk,
+        "and", "fk_property", "=", propertyPk
+      ],
+      "orderBy": [{
+        "pk_entity": "asc"
+      }],
+      "include": {
+        "entity_version_project_rels": {
+          "$relation": {
+            "name": "entity_version_project_rels",
+            "joinType": "inner join",
+            "where": [
+              "fk_project", "=", projectId,
+              "and", "is_in_project", "=", "true"
+            ]
+          }
+        }
+      }
+    }
+
+    const findThem = function(err, roles) {
+
+      const entitiesInProj = []
+
+      for (var i = 0; i < roles.length; i++) {
+        entitiesInProj.push(roles[i].pk_entity)
+      }
+
+      const filter = {
+        /** Select roles with fk_temporal_entity and fk_property … */
+        "where": [
+          "fk_temporal_entity", "=", teEntPk,
+          "and", "fk_property", "=", propertyPk,
+          "and", [
+            "is_community_favorite", "=", "true",
+            "or", "is_in_project_count", "=", "0"
+          ]
+        ],
+        "orderBy": [{
+          "pk_entity": "asc"
+        }],
+        "include": {
+
+          "language": {
+            "$relation": {
+              "name": "language",
+              "joinType": "left join",
+              //"where": ["is_community_favorite", "=", "true"],
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
+            //,...innerJoinThisProject, // … get project's version
+
+          },
+          "appellation": {
+            "$relation": {
+              "name": "appellation",
+              "joinType": "left join",
+              //  "where": ["is_community_favorite", "=", "true"],
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
+          }
+          //,...innerJoinThisProject, // … get project's version
 
         }
       };

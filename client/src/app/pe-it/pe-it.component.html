@@ -1,30 +1,10 @@
 <div [ngClass]="{'dev-view': entityEditor.devView}">
+
   <span *ngIf="entityEditor.devView">
     [state: {{peItState}}]
   </span>
 
-
-  <!-- if (fk_class == 'R64') => PeItAppellation (pass appellation) -->
-  <gv-pe-it-appellation
-  *ngIf="showAppellationUI"
-  class="gv-flex-grow-1"
-  [appellation]="appellation"
-  [peItAppeState]="valueEntitiesState"
-  (readyToCreate)=emitReadyToCreate($event)
-  (notReadyToCreate)=emitNotReadyToCreate()
-  (readyToAdd)="onAppeReadyToAdd($event)"
-  (appeChange)="emitAppeChange($event)"
-  ></gv-pe-it-appellation>
-
-  <gv-pe-it-language
-  *ngIf="showLanguageUI"
-  class="gv-flex-grow-1"
-  [language]="language"
-  [peItLangState]="valueEntitiesState"
-  (readyToCreate)=emitReadyToCreate($event)
-  (notReadyToCreate)=emitNotReadyToCreate()
-  (readyToAdd)="onLangReadyToAdd($event)"
-  ></gv-pe-it-language>
+  <!-- The big editor view -->
 
   <gv-pe-it-entity
   *ngIf="showEntityUI && !childOfTeEnt"
@@ -38,9 +18,52 @@
   (notReadyToAdd)="onPeItNotReadyToAdd()"
   ></gv-pe-it-entity>
 
-  <gv-pe-it-entity-preview
-  *ngIf="showEntityUI && childOfTeEnt"
-  ></gv-pe-it-entity-preview>
+  <!-- The small view nested inside a temporal entity component -->
 
+  <div *ngIf="childOfTeEnt">
+
+    <div class="btn-group gv-flex-shrink-0 d-flex">
+
+      <ng-content select="[headerLeft]"></ng-content>
+
+      <div class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
+        <div class="align-self-center gv-flex-grow-1 d-flex">
+
+          <!-- if (fk_class == 'R64') => PeItAppellation (pass appellation) -->
+          <gv-pe-it-appellation
+          *ngIf="showAppellationUI"
+          class="gv-flex-grow-1"
+          [appellation]="appellation"
+          [peItAppeState]="valueEntitiesState"
+          (readyToCreate)=emitReadyToCreate($event)
+          (notReadyToCreate)=emitNotReadyToCreate()
+          (readyToAdd)="onAppeReadyToAdd($event)"
+          (appeChange)="emitAppeChange($event)"
+          ></gv-pe-it-appellation>
+
+          <gv-pe-it-language
+          *ngIf="showLanguageUI"
+          class="gv-flex-grow-1"
+          [language]="language"
+          [peItLangState]="valueEntitiesState"
+          (readyToCreate)=emitReadyToCreate($event)
+          (notReadyToCreate)=emitNotReadyToCreate()
+          (readyToAdd)="onLangReadyToAdd($event)"
+          ></gv-pe-it-language>
+
+          <gv-pe-it-entity-preview
+          *ngIf="showEntityUI && childOfTeEnt"
+          ></gv-pe-it-entity-preview>
+
+        </div>
+      </div>
+
+      <ng-content select="[headerRight]"></ng-content>
+
+    </div>
+
+    <ng-content select="[belowHeader]"></ng-content>
+
+  </div>
 
 </div>

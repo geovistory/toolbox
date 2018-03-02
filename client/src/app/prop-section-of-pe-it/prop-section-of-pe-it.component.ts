@@ -30,15 +30,14 @@ import { ActiveProjectService } from '../shared/services/active-project.service'
 import { InfRoleApi } from '../shared/sdk/services/custom/InfRole';
 import { DfhProperty } from '../shared/sdk/models/DfhProperty';
 import { PropertyComponent } from '../property/property.component';
-import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
-import { RoleOfTeEntComponent } from '../role-of-te-ent/role-of-te-ent.component';
+import { RoleOfPeItComponent } from '../role-of-pe-it/role-of-pe-it.component';
 
 
 
 @Component({
-  selector: 'gv-prop-section-of-te-ent',
-  templateUrl: './prop-section-of-te-ent.component.html',
-  styleUrls: ['./prop-section-of-te-ent.component.scss'],
+  selector: 'gv-prop-section-of-pe-it',
+  templateUrl: './prop-section-of-pe-it.component.html',
+  styleUrls: ['./prop-section-of-pe-it.component.scss'],
   animations: [
     trigger('slideInOut', [
       state('expanded', style({
@@ -75,20 +74,17 @@ import { RoleOfTeEntComponent } from '../role-of-te-ent/role-of-te-ent.component
     ])
   ]
 })
-export class PropSectionOfTeEntComponent extends PropertyComponent implements OnChanges, OnInit {
+export class PropSectionOfPeItComponent extends PropertyComponent implements OnChanges, OnInit {
 
   /**
   * Inputs
   */
 
-  // The parent TemporalEntity
-  @Input() parentTeEnt: InfTemporalEntity;
-
-  //the role that is parent of the parent temporal entity
-  @Input() parentRole: InfRole;
+  // The parent PeIt Entity
+  @Input() parentPeIt: InfPersistentItem;
 
   // Array of children RoleComponents
-  @ViewChildren(RoleOfTeEntComponent) roleComponents: QueryList<RoleOfTeEntComponent>
+  @ViewChildren(RoleOfPeItComponent) roleComponents: QueryList<RoleOfPeItComponent>
 
 
   constructor(
@@ -104,68 +100,6 @@ export class PropSectionOfTeEntComponent extends PropertyComponent implements On
     super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector)
   }
 
-
-  /**
-  * get isCircular - returns true if this roles point back to the same peIt
-  * as at the root of the nested components 
-  *
-  * It's useful to prevent circular nesting of the components:
-  * PeItEntity > … > Role > TeEnt > … > Role [> PeItEntity <- Stop circle here]
-  *
-  * @return {boolean}  true=circular, false=not circular
-  */
-  get isCircular() {
-
-    // Return true, if all of this.roles are identical with the parent role
-    // of the parent teEnt.
-
-    if (this.pointTo === 'PeIt') {
-      if (this.parentRole) {
-
-        if (this.roles) {
-          if (this.roles.length) {
-            // If there are roles, we are obviously not in create state.
-            // If all of this.roles are identical with the parent role
-            // of the parent teEnt return true to say that this is circular
-
-            let count = 0;
-            this.roles.forEach(role => {
-              if (role.pk_entity == this.parentRole.pk_entity) {
-
-                // If this is a circular role, remove its epr so that it is not
-                // two times in the entity tree. This prevents that changing the
-                // entity project relation is interfered by this second (unused)
-                // role
-
-                delete role.entity_version_project_rels;
-
-                count++;
-              }
-            })
-            if (this.roles.length === count) {
-              return true;
-            }
-          }
-        }
-
-        if (
-          this.propState === 'create' &&
-          this.fkProperty == this.parentRole.fk_property
-        ) {
-
-          // If we are in create state
-          // and this.fkProperty is identical with the parent role fk_property
-          // return true to say that this is circular
-
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-
   /**
   * Called when user click on Add a [*]
   */
@@ -178,39 +112,30 @@ export class PropSectionOfTeEntComponent extends PropertyComponent implements On
     this.rolesNotInProjectLoading = true;
 
     const fkProperty = this.property.dfh_pk_property;
-    const fkTemporalEntity = this.parentTeEnt.pk_entity;
+    const fkEntity = this.parentPeIt.pk_entity;
     const fkProject = this.activeProject.project.pk_project;
 
     const waitAtLeast = timer(800);
-    const apiCall = this.roleApi.alternativesNotInProjectByTeEntPk(fkTemporalEntity, fkProperty, fkProject)
+    const apiCall = this.roleApi.alternativesNotInProjectByEntityPk(fkEntity, fkProperty, fkProject)
 
     Observable.combineLatest([waitAtLeast, apiCall])
-    .subscribe((results) => {
+      .subscribe((results) => {
 
-      this.rolesNotInProjectLoading = false;
+        this.rolesNotInProjectLoading = false;
 
-      this.rolesInOtherProjects = results[1]
-      .filter(role => role.is_in_project_count > 0);
+        this.rolesInOtherProjects = results[1]
+          .filter(role => role.is_in_project_count > 0);
 
-      this.rolesInNoProject = results[1]
-      .filter(role => role.is_in_project_count == 0);
+        this.rolesInNoProject = results[1]
+          .filter(role => role.is_in_project_count == 0);
 
-      if (results[1].length === 0) {
-        this.startCreateNewRole();
-      }
+        if (results[1].length === 0) {
+          this.startCreateNewRole();
+        }
 
-    })
+      })
 
 
-  }
-
-  get addButtonVisible(): boolean {
-
-    if (this.addRoleState === 'init') return true;
-
-    // TODO add logic according to quantities
-
-    return false;
   }
 
 }

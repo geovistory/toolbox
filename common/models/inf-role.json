@@ -76,7 +76,8 @@
         "find",
         "findComplex",
         "findOrCreateInfRole",
-        "alternativesNotInProject",
+        "alternativesNotInProjectByEntityPk",
+        "alternativesNotInProjectByTeEntPk",
         "changeRoleProjectRelation"
       ]
     }
@@ -120,7 +121,7 @@
         "verb": "post"
       }
     },
-    "alternativesNotInProject": {
+    "alternativesNotInProjectByEntityPk": {
       "accepts": [{
           "arg": "entityPk",
           "type": "number",
@@ -158,7 +159,49 @@
       },
       "description": "Get roles (with children) of given fkProperty and fkEntity from Repo that are not in project of given projectId.",
       "http": {
-        "path": "/alternatives-not-in-project",
+        "path": "/alternatives-not-in-project-by-entity-pk",
+        "verb": "get"
+      }
+    },
+    "alternativesNotInProjectByTeEntPk": {
+      "accepts": [{
+          "arg": "teEntPk",
+          "type": "number",
+          "required": true,
+          "description": "Key of the temporal entity (fk_temporal_entity)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "propertyPk",
+          "type": "number",
+          "required": true,
+          "description": "Key of the property (fk_property)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Id of the the current project",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "InfRole"
+        ],
+        "root": true
+      },
+      "description": "Get roles (with children) of given propertyPk and teEntPk from Repo that are not in project of given projectId.",
+      "http": {
+        "path": "/alternatives-not-in-project-by-te-ent-pk",
         "verb": "get"
       }
     },

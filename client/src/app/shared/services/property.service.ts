@@ -178,7 +178,7 @@ export class PropertyService {
       if (isOutgoing)
         labelSg = property.labels.find(l => l.notes === 'label.sg').dfh_label;
 
-      else (!isOutgoing)
+      else if (!isOutgoing)
           labelSg = property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
 
       return {
