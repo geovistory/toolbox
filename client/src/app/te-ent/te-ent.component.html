@@ -1,43 +1,101 @@
-<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
+<div [ngClass]="{'dev-view': entityEditor.devView}">
 
-
-
-
-
-  <div *ngIf="keyboard.altPressed">
-    TeEntComponent [{{teEnt.fk_class}}] [ready: {{isReadyToCreate}}]
-  </div>
+  <span *ngIf="entityEditor.devView">
+    [state: {{teEntState}}] [fkClass {{teEnt.fk_class}}] [readyToCreate: {{isReadyToCreate}}]
+  </span>
 
   <div class="card gv-name" *ngIf="teEntState !== 'create'">
 
     <div class="card-header gv-name-header d-flex flex-row">
 
+      <ng-content select="[headerLeft]"></ng-content>
+
+
       <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
-        <i class="fa fa-chevron-right" [ngClass]="{'fa-rotate-90': (cardBodyState==='expanded')}"></i>
+        <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardBodyState==='expanded')}"></i>
         {{displayLabel}}
       </div>
 
-      <ng-content select="[eprUi]"></ng-content>
+      <ng-content select="[headerRight]"></ng-content>
 
 
     </div>
+
+    <ng-content select="[belowHeader]"></ng-content>
 
     <div class="gv-card-body-wrapper" [@slideInOut]="cardBodyState">
 
-      <gv-property
+      <gv-prop-section-of-te-ent
       *ngFor="let property of directedRolesPerProperty"
-      [propState]="teEntState"
+      [propertySection]="property"
       [isOutgoing]="property.isOutgoing"
       [roles]="property.roles"
-      [parentRole]="parentRole"
       [fkProperty]="property.fkProperty"
       [pointTo]="'PeIt'"
+      [parentEntityPk]="parentRole.fk_entity"
+      [parentTeEnt]="teEnt"
+      [propState]="teEntState"
+      [parentRole]="parentRole"
+      [communityStatsVisible]="communityStatsVisible"
+      [ontoInfoVisible]="ontoInfoVisible"
       (appeChange)="emitAppeChange($event)"
       (readyToAdd)="onPropertyReadyToAdd($event)"
       (notReadyToAdd)="onPropertyNotReadyToAdd()"
-      ></gv-property>
+      (removePropertySectionReq)="onRemovePropertySectionReq($event)"
+      ></gv-prop-section-of-te-ent>
+
+      <div class="gv-footer mt-2">
+
+        <!-- Step 1 for adding a new property -->
+
+        <button class="btn btn-light btn-sm btn-block text-secondary rounded-top-0" (click)="selectPropState = 'selectProp'"  *ngIf="selectPropState === 'init'">
+          <i class="fa fa-plus"></i> Add a property ...
+        </button>
+
+
+        <!-- Step 2 for adding new Property section -->
+
+        <div class="d-flex flex-column gv-flex-grow-1 bg-light border-top border-gray" *ngIf="selectPropState === 'selectProp'">
+
+          <div class="card-header bt-1">
+            <div class="d-flex">
+              <div class="gv-flex-grow-1 align-self-center">
+                What do you want to add?
+              </div>
+              <button type="button" name="button" class="btn btn-link align-self-center btn-sm"
+              (click)="selectPropState = 'init'"
+              > <i class="fa fa-close"></i> </button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="input-group">
+              <select [(ngModel)]="propertyToAdd" class="custom-select">
+                <option [ngValue]="null">Select…</option>
+
+                <option [disabled]="propSectionAdded(propertyToAdd)" *ngFor="let propertyToAdd of ingoingDirectionAwareProperties" [ngValue]="propertyToAdd">
+
+                  {{propertyToAdd?.labelSg}} {{propSectionAdded(propertyToAdd) ? '(already added)':''}}
+
+                </option>
+                <option [disabled]="propSectionAdded(propertyToAdd)" *ngFor="let propertyToAdd of outgoingDirectionAwareProperties" [ngValue]="propertyToAdd">
+
+                  {{propertyToAdd?.labelSg}} {{propSectionAdded(propertyToAdd) ? '(already added)':''}}
+
+                </option>
+              </select>
+              <button type="button" name="button" class="btn btn-primary input-group-append"
+              *ngIf="propertyToAdd"
+              (click)="startSelectRoles()"
+              >Ok</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
 
     </div>
+
 
   </div>
 
@@ -45,13 +103,9 @@
 
   <div class="card gv-name" *ngIf="teEntState === 'create'">
 
-    <!-- <div class="card-header gv-name-header d-flex flex-row">
-      <ng-content select="[eprUi]"></ng-content> [Create TeEnt of Class {{teEnt.fk_class}}]
-    </div> -->
-
     <div class="gv-card-body-wrapper">
 
-      <gv-property
+      <gv-prop-section-of-te-ent
       *ngFor="let property of outgoingProperties"
       [roles]="property.roles"
       [parentRole]="parentRole"
@@ -61,9 +115,9 @@
       [isOutgoing]="true"
       (readyToCreate)="propertyReadyToCreate($event)"
       (notReadyToCreate)="propertyNotReadyToCreate()"
-      ></gv-property>
+      ></gv-prop-section-of-te-ent>
 
-      <gv-property
+      <gv-prop-section-of-te-ent
       *ngFor="let property of ingoingProperties"
       [roles]="property.roles"
       [parentRole]="parentRole"
@@ -73,7 +127,7 @@
       [isOutgoing]="false"
       (readyToCreate)="propertyReadyToCreate($event)"
       (notReadyToCreate)="propertyNotReadyToCreate()"
-      ></gv-property>
+      ></gv-prop-section-of-te-ent>
 
     </div>
 

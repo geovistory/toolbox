@@ -33,6 +33,7 @@ export class AppellationLabelEditorComponent implements OnInit {
     ) {
       const lastItemIndex = (this.appellationLabel.tokens.length - 1);
       this.appellationLabel.tokens[lastItemIndex].autofocus = true;
+      this.labelChange(this.appellationLabel);
     }
   }
 

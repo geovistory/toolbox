@@ -50,11 +50,6 @@ export class EntityAddSearchExistingComponent implements OnInit, OnChanges {
 
   ngOnInit() {
 
-
-    if(this.modalService.selectedClass){
-      this.modalService.modalTitle = 'Add a ' + this.modalService.selectedClass.label;
-    }
-
     this.searchFormControl.valueChanges
     .debounceTime(400)
     .subscribe(newValue => {
@@ -72,6 +67,10 @@ export class EntityAddSearchExistingComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(){
+    if(this.modalService.selectedClass){
+      this.modalService.modalTitle = 'Add a ' + this.modalService.selectedClass.dfh_standard_label;
+    }
+
     if(this.hidden ===false){
       this.modalService.previousState = EntityAddModalState[0];
     }

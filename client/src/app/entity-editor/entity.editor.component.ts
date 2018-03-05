@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ActiveProjectService } from '../shared/services/active-project.service';
-import { UtilitiesService } from '../shared/services/utilities.service';
-import { KeyboardService } from '../shared/services/keyboard.service';
+import { EntityEditorService } from '../shared/services/entity-editor.service';
 
 @Component({
   selector: 'gv-entity-editor',
@@ -27,8 +26,7 @@ export class EntityEditorComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private activeProjectService:ActiveProjectService,
-    private util:UtilitiesService,
-    public keyboard:KeyboardService
+    public entityEditor:EntityEditorService
   ) {
       // wait for the project to be set
       this.activeProjectService.onProjectChange().subscribe(project => {

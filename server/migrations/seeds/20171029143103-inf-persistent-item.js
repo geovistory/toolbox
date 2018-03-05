@@ -298,7 +298,7 @@ exports.up = function(db, callback) {
     ));
   }
 
-  for (var i = 0; i < 2; i++) {
+  for (var i = 0; i < 25; i++) {
     faker.locale = "de_CH";
 
     sqlArray.push(getInsertStatement(

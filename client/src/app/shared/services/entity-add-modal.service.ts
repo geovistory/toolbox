@@ -4,6 +4,7 @@ import { InfEntityProjectRelApi } from '../sdk/services/custom/InfEntityProjectR
 import { InfPersistentItem } from '../sdk/models/InfPersistentItem';
 import { InfPersistentItemApi } from '../sdk/services/custom/InfPersistentItem';
 import { ActiveProjectService } from './active-project.service';
+import { DfhClass } from '../sdk/models/DfhClass';
 
 export enum EntityAddModalState {
   'choose-class',
@@ -48,7 +49,7 @@ export class EntityAddModalService {
   addButtonVisible: boolean;
 
   // Class of the entity to add
-  selectedClass: any; //TODO: type the variable with class type
+  selectedClass: DfhClass; 
 
   // Current modal title
   modalTitle: string;
@@ -78,10 +79,11 @@ export class EntityAddModalService {
     private persistentItemApi: InfPersistentItemApi
   ) { }
 
-  addPeItToProject() {
+  changePeItProjectRelation() {
 
-    return this.persistentItemApi.addPeItToProject(
+    return this.persistentItemApi.changePeItProjectRelation(
       this.activeProjectService.project.pk_project,
+      true,
       this.peItToAdd
     )
 

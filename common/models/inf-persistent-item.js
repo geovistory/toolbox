@@ -4,7 +4,7 @@ const Promise = require('bluebird');
 
 module.exports = function(InfPersistentItem) {
 
-  InfPersistentItem.addPeItToProject = function(projectId, data, ctx) {
+  InfPersistentItem.changePeItProjectRelation = function(projectId, isInProject, data, ctx) {
     let requestedPeIt;
 
     if (ctx) {
@@ -13,12 +13,13 @@ module.exports = function(InfPersistentItem) {
       requestedPeIt = data;
     }
 
-    return InfPersistentItem.addToProject(projectId, requestedPeIt)
+    return InfPersistentItem.changeProjectRelation(projectId, isInProject, requestedPeIt)
       .then(resultingEpr => {
 
         // attatch the new epr to the peIt
-
-        requestedPeIt.entity_version_project_rels = [resultingEpr];
+        if(requestedPeIt.entity_version_project_rels && resultingEpr){
+          requestedPeIt.entity_version_project_rels = [resultingEpr];
+        }
 
 
         if (requestedPeIt.pi_roles) {
@@ -32,7 +33,7 @@ module.exports = function(InfPersistentItem) {
           return Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
 
               // add role to project
-              return InfRole.addRoleToProject(projectId, role);
+              return InfRole.changeRoleProjectRelation(projectId, isInProject, role);
 
             })
             .then((roles) => {
@@ -481,7 +482,10 @@ module.exports = function(InfPersistentItem) {
       "$relation": {
         "name": "entity_version_project_rels",
         "joinType": "inner join",
-        "where": ["fk_project", "=", projectId]
+        "where": [
+          "fk_project", "=", projectId,
+          "and", "is_in_project", "=", "true"
+        ]
       }
     };
 

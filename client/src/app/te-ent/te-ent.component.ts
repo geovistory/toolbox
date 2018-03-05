@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChildren, QueryList, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, ViewChildren, QueryList, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import {
   trigger,
   state,
@@ -7,14 +7,14 @@ import {
   transition
 } from '@angular/animations';
 
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 
 import { InfTemporalEntity } from '../shared/sdk/models/InfTemporalEntity';
 import { RoleService, RolesPerProperty, DirectedRolesPerProperty } from '../shared/services/role.service';
 import { RoleComponent, AppellationStdBool } from '../role/role.component';
 import { ClassService } from '../shared/services/class.service';
-import { KeyboardService } from '../shared/services/keyboard.service';
+import { EntityEditorService } from '../shared/services/entity-editor.service';
 import { InfRole } from '../shared/sdk/models/InfRole';
 import { PropertyComponent } from '../property/property.component';
 import { InfAppellation } from '../shared/sdk/models/InfAppellation';
@@ -22,6 +22,9 @@ import { AppellationLabel } from '../shared/classes/appellation-label/appellatio
 import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { DfhProperty } from '../shared/sdk/models/DfhProperty';
+import { PropSectionOfTeEntComponent } from '../prop-section-of-te-ent/prop-section-of-te-ent.component';
+import { PropSectionListComponent } from '../prop-section-list/prop-section-list.component';
+import { PropertyService } from '../shared/services/property.service';
 
 @Component({
   selector: 'gv-te-ent',
@@ -40,7 +43,7 @@ import { DfhProperty } from '../shared/sdk/models/DfhProperty';
     ])
   ]
 })
-export class TeEntComponent implements OnInit {
+export class TeEntComponent extends PropSectionListComponent implements OnInit {
 
   /**
   * Inputs
@@ -60,6 +63,11 @@ export class TeEntComponent implements OnInit {
 
   @Input() fkClass: number;
 
+  // If true, the UI for communiy statistics is visible
+  @Input() communityStatsVisible:boolean;
+
+  // If true, CRM info is visible in UI
+  @Input() ontoInfoVisible:boolean;
 
   /**
   * Outputs
@@ -99,15 +107,19 @@ export class TeEntComponent implements OnInit {
   // For add-pe-it-state: Temporal Entity to be Added
   teEntToAdd: InfTemporalEntity;
 
-  // Array of children RoleComponents
-  @ViewChildren(PropertyComponent) propertyComponents: QueryList<PropertyComponent>
+  // Array of children PropSectionOfTeEntComponent
+  @ViewChildren(PropSectionOfTeEntComponent) propertyComponents: QueryList<PropSectionOfTeEntComponent>
 
   constructor(
+    roleService: RoleService,
+    propertyService: PropertyService,
+    ref: ChangeDetectorRef,
     private activeProjectService: ActiveProjectService,
-    private roleService: RoleService,
     private classService: ClassService,
-    public keyboard: KeyboardService
-  ) { }
+    public entityEditor: EntityEditorService
+  ) {
+    super(roleService, propertyService, entityEditor, ref)
+  }
 
   ngOnInit() {
 
@@ -126,131 +138,143 @@ export class TeEntComponent implements OnInit {
 
       // add an epr
       this.teEntToAdd.entity_version_project_rels = [
+        new InfEntityProjectRel({
+          fk_project: this.activeProjectService.project.pk_project,
+          is_in_project: true,
+          fk_entity_version_concat: this.teEnt.pk_entity_version_concat
+        })
+      ]
+
+    }
+
+    // make a copy
+    this.teEntToAdd = new InfTemporalEntity(this.teEnt);
+
+    // add an epr
+    this.teEntToAdd.entity_version_project_rels = [
       new InfEntityProjectRel({
         fk_project: this.activeProjectService.project.pk_project,
-        is_in_project: true,
         fk_entity_version_concat: this.teEnt.pk_entity_version_concat
       })
     ]
 
-  }
 
-  let apiCalls = [];
-
-  apiCalls[0] = this.classService.getIngoingProperties(this.teEnt.fk_class)
-
-  apiCalls[1] = this.classService.getOutgoingProperties(this.teEnt.fk_class)
-
-  Observable.combineLatest(apiCalls).subscribe(result => {
-
-    this.ingoingProperties = result[0];
-    this.outgoingProperties = result[1];
-
-    if (this.teEntState !== 'create') {
-      this.setDirectedRolesPerProperty()
+    if (this.addingInformation) {
+      this.selectPropState = 'selectProp'
+    }
+    else {
+      this.selectPropState = 'init';
     }
 
-  })
+    let apiCalls = [];
 
+    apiCalls[0] = this.classService.getIngoingProperties(this.teEnt.fk_class)
 
+    apiCalls[1] = this.classService.getOutgoingProperties(this.teEnt.fk_class)
 
-}
+    Observable.combineLatest(apiCalls).subscribe(result => {
 
-setDirectedRolesPerProperty() {
-  this.directedRolesPerProperty = this.roleService.toDirectedRolesPerProperty(
-    this.teEnt.te_roles,
-    this.ingoingProperties,
-    this.outgoingProperties
-  );
-}
+      this.ingoingProperties = result[0];
+      this.outgoingProperties = result[1];
 
-propertyReadyToCreate(roles: InfRole[]) {
+      if (this.teEntState !== 'create') {
+        this.setDirectionAwareProperties();
+        this.setDirectedRolesPerProperty(this.teEnt.te_roles);
+      }
 
-
-  let rolesToCreate: InfRole[] = [];
-
-  let allValid = true;
-
-  this.propertyComponents.forEach(propertyComponent => {
-
-    if (!propertyComponent.isReadyToCreate && !propertyComponent.isCircular) allValid = false;
-
-    rolesToCreate = rolesToCreate.concat(propertyComponent.rolesToCreate);
-
-  })
-
-  if (allValid) {
-
-    this.teEnt.te_roles = rolesToCreate;
-
-    this.isReadyToCreate = true;
-
-    this.readyToCreate.emit(this.teEnt);
+    })
 
   }
 
-}
 
-propertyNotReadyToCreate() {
 
-  this.isReadyToCreate = false;
+  propertyReadyToCreate(roles: InfRole[]) {
 
-  this.notReadyToCreate.emit()
 
-}
+    let rolesToCreate: InfRole[] = [];
 
-onPropertyReadyToAdd(rolesToAdd: InfRole[]) {
+    let allValid = true;
 
-  let newRoles = [];
+    this.propertyComponents.forEach(propertyComponent => {
 
-  // For each role coming in from property component
-  rolesToAdd.forEach(roleToAdd => {
+      if (!propertyComponent.isReadyToCreate && !propertyComponent.isCircular) allValid = false;
 
-  let exists = false;
+      rolesToCreate = rolesToCreate.concat(propertyComponent.rolesToCreate);
 
-  for (let i = 0; i < this.teEntToAdd.te_roles.length; i++) {
+    })
 
-    // Check if the role is allready in the teEntToAdd
-    if (this.teEntToAdd.te_roles[i].pk_entity === roleToAdd.pk_entity) {
+    if (allValid) {
 
-    // if yes replace it with the new one
-    this.teEntToAdd.te_roles[i] = roleToAdd;
-    exists = true;
+      this.teEnt.te_roles = rolesToCreate;
+
+      this.isReadyToCreate = true;
+
+      this.readyToCreate.emit(this.teEnt);
+
+    }
+
   }
-}
 
-// else add it to a temporary array
-if (!exists) {
-newRoles.push(roleToAdd);
-}
+  propertyNotReadyToCreate() {
 
-})
-// add all the new roles to teEntToAdd
-this.teEntToAdd.te_roles.concat(newRoles);
+    this.isReadyToCreate = false;
 
-this.readyToAdd.emit(this.teEntToAdd);
+    this.notReadyToCreate.emit()
 
-}
+  }
 
-onPropertyNotReadyToAdd() {
-  this.notReadyToAdd.emit();
-}
+  onPropertyReadyToAdd(rolesToAdd: InfRole[]) {
 
-toggleCardBody() {
-  if (this.cardBodyState === 'collapsed')
-  this.cardBodyState = 'expanded'
-  else
-  this.cardBodyState = 'collapsed'
-}
+    let newRoles = [];
 
-/**
-* Methods for event bubbeling
-*/
+    // For each role coming in from property component
+    rolesToAdd.forEach(roleToAdd => {
 
-emitAppeChange(appeStd: AppellationStdBool) {
-  const label = new AppellationLabel(appeStd.appellation.appellation_label);
-  this.displayLabel = label.getString();
-  this.appeChange.emit(appeStd)
-}
+      let exists = false;
+
+      for (let i = 0; i < this.teEntToAdd.te_roles.length; i++) {
+
+        // Check if the role is allready in the teEntToAdd
+        if (this.teEntToAdd.te_roles[i].pk_entity === roleToAdd.pk_entity) {
+
+          // if yes replace it with the new one
+          this.teEntToAdd.te_roles[i] = roleToAdd;
+          exists = true;
+        }
+      }
+
+      // else add it to a temporary array
+      if (!exists) {
+        newRoles.push(roleToAdd);
+      }
+
+    })
+    // add all the new roles to teEntToAdd
+    this.teEntToAdd.te_roles.concat(newRoles);
+
+    this.readyToAdd.emit(this.teEntToAdd);
+
+  }
+
+  onPropertyNotReadyToAdd() {
+    this.notReadyToAdd.emit();
+  }
+
+  toggleCardBody() {
+    if (this.cardBodyState === 'collapsed')
+      this.cardBodyState = 'expanded'
+    else
+      this.cardBodyState = 'collapsed'
+  }
+
+  /**
+  * Methods for event bubbeling
+  */
+
+  emitAppeChange(appeStd: AppellationStdBool) {
+    const label = new AppellationLabel(appeStd.appellation.appellation_label);
+    this.displayLabel = label.getString();
+    this.appeChange.emit(appeStd)
+  }
 
 }

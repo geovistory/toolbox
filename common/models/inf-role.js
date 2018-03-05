@@ -2,7 +2,7 @@
 
 module.exports = function(InfRole) {
 
-  InfRole.addRoleToProject = function(projectId, role, ctx) {
+  InfRole.changeRoleProjectRelation = function(projectId, isInProject, role, ctx) {
 
     let requestedRole;
 
@@ -12,15 +12,18 @@ module.exports = function(InfRole) {
       requestedRole = role;
     }
 
-    return InfRole.addToProject(projectId, requestedRole)
+    return InfRole.changeProjectRelation(projectId, isInProject, requestedRole)
       .then(resultingEpr => {
 
-        requestedRole.entity_version_project_rels = [resultingEpr];
+        // attatch the new epr to the Role
+        if (requestedRole.entity_version_project_rels && resultingEpr) {
+          requestedRole.entity_version_project_rels = [resultingEpr];
+        }
 
         if (requestedRole.temporal_entity) {
           //add the temporal_entity to the project
           const InfTemporalEntity = InfRole.app.models.InfTemporalEntity;
-          return InfTemporalEntity.addTeEntToProject(projectId, requestedRole.temporal_entity)
+          return InfTemporalEntity.changeTeEntProjectRelation(projectId, isInProject, requestedRole.temporal_entity)
             .then((results) => {
               requestedRole.temporal_entity = results[0];
               return [requestedRole];
@@ -28,49 +31,54 @@ module.exports = function(InfRole) {
             .catch((err) => {
               return err;
             })
-        }
+        } else if (requestedRole.persistent_item) {
+          if (requestedRole.persistent_item.entity_version_project_rels) {
+            //add the persistent_item to the project
+            const InfPersistentItem = InfRole.app.models.InfPersistentItem;
+            return InfPersistentItem.changePeItProjectRelation(projectId, isInProject, requestedRole.persistent_item)
+              .then((results) => {
+                requestedRole.persistent_item = results[0];
+                return [requestedRole];
+              })
+              .catch((err) => {
+                return err;
+              })
+          } else {
+            return [requestedRole];
+          }
+        } else if (requestedRole.appellation) {
+          if (requestedRole.appellation.entity_version_project_rels) {
 
+            //add the appellation to the project
+            const InfAppellation = InfRole.app.models.InfAppellation;
+            return InfAppellation.changeProjectRelation(projectId, isInProject, requestedRole.appellation)
+              .then((results) => {
+                requestedRole.appellation.entity_version_project_rels = [results];
+                return [requestedRole];
+              })
+              .catch((err) => {
+                return err;
+              })
+          } else {
+            return [requestedRole];
+          }
+        } else if (requestedRole.language) {
+          if (requestedRole.language.entity_version_project_rels) {
 
-        else if (requestedRole.persistent_item) {
-          //add the persistent_item to the project
-          const InfPersistentItem = InfRole.app.models.InfPersistentItem;
-          return InfPersistentItem.addPeItToProject(projectId, requestedRole.persistent_item)
-            .then((results) => {
-              requestedRole.persistent_item = results[0];
-              return [requestedRole];
-            })
-            .catch((err) => {
-              return err;
-            })
-        }
-
-        else if (requestedRole.appellation) {
-          //add the appellation to the project
-          const InfAppellation = InfRole.app.models.InfAppellation;
-          return InfAppellation.addToProject(projectId, requestedRole.appellation)
-            .then((results) => {
-              requestedRole.appellation = results[0];
-              return [requestedRole];
-            })
-            .catch((err) => {
-              return err;
-            })
-        }
-
-        else if (requestedRole.language) {
-          //add the language to the project
-          const InfLanguage = InfRole.app.models.InfLanguage;
-          return InfLanguage.addToProject(projectId, requestedRole.language)
-            .then((results) => {
-              requestedRole.language = results[0];
-              return [requestedRole];
-            })
-            .catch((err) => {
-              return err;
-            })
-        }
-
-        else {
+            //add the language to the project
+            const InfLanguage = InfRole.app.models.InfLanguage;
+            return InfLanguage.changeProjectRelation(projectId, isInProject, requestedRole.language)
+              .then((results) => {
+                requestedRole.entity_version_project_rels = [results];
+                return [requestedRole];
+              })
+              .catch((err) => {
+                return err;
+              })
+          } else {
+            return [requestedRole];
+          }
+        } else {
           return [requestedRole];
         }
 
@@ -239,4 +247,199 @@ module.exports = function(InfRole) {
     }
 
   }
+
+
+  InfRole.alternativesNotInProjectByEntityPk = function(entityPk, propertyPk, projectId, cb) {
+
+    const rolesInProjectFilter = {
+      /** Select roles with fk_entity and fk_property … */
+      "where": [
+        "fk_entity", "=", entityPk,
+        "and", "fk_property", "=", propertyPk
+      ],
+      "orderBy": [{
+        "pk_entity": "asc"
+      }],
+      "include": {
+        "entity_version_project_rels": {
+          "$relation": {
+            "name": "entity_version_project_rels",
+            "joinType": "inner join",
+            "where": [
+              "fk_project", "=", projectId,
+              "and", "is_in_project", "=", "true"
+            ]
+          }
+        }
+      }
+    }
+
+    const findThem = function(err, roles) {
+
+      const entitiesInProj = []
+
+      for (var i = 0; i < roles.length; i++) {
+        entitiesInProj.push(roles[i].pk_entity)
+      }
+
+      const filter = {
+        /** Select roles with fk_entity and fk_property … */
+        "where": [
+          "fk_entity", "=", entityPk,
+          "and", "fk_property", "=", propertyPk,
+          "and", [
+            "is_community_favorite", "=", "true",
+            "or", "is_in_project_count", "=", "0"
+          ]
+        ],
+        "orderBy": [{
+          "pk_entity": "asc"
+        }],
+        "include": {
+          /** include the temporal_entity of the role */
+          "temporal_entity": {
+            "$relation": {
+              "name": "temporal_entity",
+              "joinType": "inner join",
+              //  "where": ["is_community_favorite", "=", "true"],
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+            "te_roles": {
+              "$relation": {
+                "name": "te_roles",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              },
+              "language": {
+                "$relation": {
+                  "name": "language",
+                  "joinType": "left join",
+                  //"where": ["is_community_favorite", "=", "true"],
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
+                //,...innerJoinThisProject, // … get project's version
+
+              },
+              "appellation": {
+                "$relation": {
+                  "name": "appellation",
+                  "joinType": "left join",
+                  //  "where": ["is_community_favorite", "=", "true"],
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
+              }
+              //,...innerJoinThisProject, // … get project's version
+
+            }
+          }
+
+        }
+      };
+
+      if (entitiesInProj.length > 0) {
+        filter.where = filter.where.concat(["and", "pk_entity", "NOT IN", entitiesInProj])
+      }
+
+      return InfRole.findComplex(filter, cb);
+    };
+
+    InfRole.findComplex(rolesInProjectFilter, findThem);
+
+  };
+
+
+
+  InfRole.alternativesNotInProjectByTeEntPk = function(teEntPk, propertyPk, projectId, cb) {
+
+    const rolesInProjectFilter = {
+      /** Select roles with fk_temporal_entity and fk_property … */
+      "where": [
+        "fk_temporal_entity", "=", teEntPk,
+        "and", "fk_property", "=", propertyPk
+      ],
+      "orderBy": [{
+        "pk_entity": "asc"
+      }],
+      "include": {
+        "entity_version_project_rels": {
+          "$relation": {
+            "name": "entity_version_project_rels",
+            "joinType": "inner join",
+            "where": [
+              "fk_project", "=", projectId,
+              "and", "is_in_project", "=", "true"
+            ]
+          }
+        }
+      }
+    }
+
+    const findThem = function(err, roles) {
+
+      const entitiesInProj = []
+
+      for (var i = 0; i < roles.length; i++) {
+        entitiesInProj.push(roles[i].pk_entity)
+      }
+
+      const filter = {
+        /** Select roles with fk_temporal_entity and fk_property … */
+        "where": [
+          "fk_temporal_entity", "=", teEntPk,
+          "and", "fk_property", "=", propertyPk,
+          "and", [
+            "is_community_favorite", "=", "true",
+            "or", "is_in_project_count", "=", "0"
+          ]
+        ],
+        "orderBy": [{
+          "pk_entity": "asc"
+        }],
+        "include": {
+
+          "language": {
+            "$relation": {
+              "name": "language",
+              "joinType": "left join",
+              //"where": ["is_community_favorite", "=", "true"],
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
+            //,...innerJoinThisProject, // … get project's version
+
+          },
+          "appellation": {
+            "$relation": {
+              "name": "appellation",
+              "joinType": "left join",
+              //  "where": ["is_community_favorite", "=", "true"],
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
+          }
+          //,...innerJoinThisProject, // … get project's version
+
+        }
+      };
+
+      if (entitiesInProj.length > 0) {
+        filter.where = filter.where.concat(["and", "pk_entity", "NOT IN", entitiesInProj])
+      }
+
+      return InfRole.findComplex(filter, cb);
+    };
+
+    InfRole.findComplex(rolesInProjectFilter, findThem);
+
+  };
 };

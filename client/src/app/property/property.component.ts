@@ -1,28 +1,22 @@
 import {
-  Component, OnChanges, Input, Output, ViewChildren,
+  OnChanges, OnInit, Input, Output, ViewChildren,
   QueryList, EventEmitter, ChangeDetectorRef
 } from '@angular/core';
-import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition,
-  keyframes
-} from '@angular/animations';
+
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
+import { timer } from 'rxjs/observable/timer';
 
 import { InfRole } from '../shared/sdk/models/InfRole';
 import { RolePointToEnum, RoleComponent, AppellationStdBool } from '../role/role.component';
-import { RoleService } from '../shared/services/role.service';
+import { RoleService, DirectedRolesPerProperty } from '../shared/services/role.service';
 import { InfEntityProjectRelApi } from '../shared/sdk/services/custom/InfEntityProjectRel';
 import { PropertyService } from '../shared/services/property.service';
 import { PeItComponent } from '../pe-it/pe-it.component';
 import { TeEntComponent } from '../te-ent/te-ent.component';
 import { UtilitiesService } from '../shared/services/utilities.service';
-import { KeyboardService } from '../shared/services/keyboard.service';
+import { EntityEditorService } from '../shared/services/entity-editor.service';
 import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { InfPersistentItemApi } from '../shared/sdk/services/custom/InfPersistentItem';
 import { ActiveProjectService } from '../shared/services/active-project.service';
@@ -30,69 +24,16 @@ import { InfRoleApi } from '../shared/sdk/services/custom/InfRole';
 import { DfhProperty } from '../shared/sdk/models/DfhProperty';
 
 
+export class PropertyComponent implements OnChanges, OnInit {
 
-@Component({
-  selector: 'gv-property',
-  templateUrl: './property.component.html',
-  styleUrls: ['./property.component.scss'],
-  animations: [
-    trigger('slideInOut', [
-      state('expanded', style({
-        height: '*',
-      })),
-      state('collapsed', style({
-        height: '0px',
-        'padding-top': '0',
-        'padding-bottom': '0',
-        overflow: 'hidden'
-      })),
-      transition('expanded => collapsed', animate('400ms ease-in-out', keyframes([
-        style({
-          height: '*',
-          overflow: 'hidden',
-          offset: 0
-        }),
-        style({
-          height: '0px',
-          display: 'hidden',
-          'padding-top': '0',
-          'padding-bottom': '0',
-          offset: 1
-        })
-      ]))),
-      transition('collapsed => expanded', animate('400ms ease-in-out', keyframes([
-        style({
-          height: '0px',
-          overflow: 'hidden',
-          'padding-top': '0',
-          'padding-bottom': '0',
-          offset: 0
-        }),
-        style({
-          height: '*',
-          display: 'hidden',
-          'padding-top': '0.5rem',
-          'padding-bottom': '0.5rem',
-          offset: 1
-        })
-      ])))
-    ])
-  ]
-})
-export class PropertyComponent implements OnChanges {
 
-  /**
-  * Inputs
-  */
+  @Input() propertySection: DirectedRolesPerProperty;
 
   // fk_property that all roles of this kind should have
   @Input() fkProperty: number;
 
   // roles of one kind (with the same fk_property)
   @Input() roles: InfRole[];
-
-  //the role that is parent of the parent temporal entity
-  @Input() parentRole: InfRole;
 
   // The parent entity of this property is domain if true and range if false
   @Input() isOutgoing: boolean;
@@ -103,8 +44,11 @@ export class PropertyComponent implements OnChanges {
   // primary key of the parent entity
   @Input() parentEntityPk: number;
 
-  // The parent PeIt Entity
-  @Input() parentPeIt: InfPersistentItem;
+  // If true, the UI for communiy statistics is visible
+  @Input() communityStatsVisible: boolean;
+
+  // If true, CRM info is visible in UI
+  @Input() ontoInfoVisible: boolean;
 
   /**
   * set propState - The state of this component
@@ -134,15 +78,14 @@ export class PropertyComponent implements OnChanges {
 
   @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter();
 
+  @Output() removePropertySectionReq: EventEmitter<DirectedRolesPerProperty> = new EventEmitter();
+
   /**
   * Properties
   */
 
   // the property
   property: DfhProperty;
-
-  // Array of children RoleComponents
-  @ViewChildren(RoleComponent) roleComponents: QueryList<RoleComponent>
 
   // state of the card below the header
   cardState = 'expanded';
@@ -157,26 +100,53 @@ export class PropertyComponent implements OnChanges {
   thisComponent = this;
 
   // state of this components (has getter and setter)
-  private _propState: string;
+  protected _propState: string;
 
   // role to create, when creating a new role
   roleToCreate: InfRole;
 
   rolesToCreate: InfRole[];
 
+  isReadyToCreate: boolean;
+
   // roles to add, when in add-pe-it state
   rolesToAdd: InfRole[] = [];
 
-  isReadyToCreate: boolean;
+  // roles used by other projects in repo but not in this project
+  rolesInOtherProjects: InfRole[];
+
+  // roles not used by no project
+  rolesInNoProject: InfRole[];
+
+  // if true, roles used by no project are visible
+  rolesInNoProjectVisible: boolean;
+
+  // true while loading rolesInOtherProjects via api call
+  rolesNotInProjectLoading: boolean;
+
+  // isReadyToAddRoles
+  get isReadyToAddRoles(): boolean {
+    return (this.rolesToAdd.filter(r => {
+      return r.entity_version_project_rels[0].is_in_project
+    }).length > 0)
+  }
+
+  // add role state
+  addRoleState: string = 'init'; //init, selectExisting, createNew
+
+  // Latest modified role alternative with highest is_standard_in_project_count
+  mostPopularRole: InfRole;
+
+  roleComponents;
 
   constructor(
     private eprApi: InfEntityProjectRelApi,
-    private roleApi: InfRoleApi,
-    private activeProject: ActiveProjectService,
+    protected roleApi: InfRoleApi,
+    protected activeProject: ActiveProjectService,
     private roleService: RoleService,
     private propertyService: PropertyService,
     private util: UtilitiesService,
-    public keyboard: KeyboardService,
+    public entityEditor: EntityEditorService,
     private changeDetector: ChangeDetectorRef
   ) { }
 
@@ -191,7 +161,10 @@ export class PropertyComponent implements OnChanges {
     });
   }
 
-
+  ngOnInit() {
+    if (this.propState == 'add-pe-it')
+      this.sortRolesByPopularity();
+  }
 
   get propState(): string {
     return this._propState;
@@ -221,7 +194,7 @@ export class PropertyComponent implements OnChanges {
   *
   * @return {string}  label of the property
   */
-  get roleLabel():string {
+  get roleLabel(): string {
     if (this.isOutgoing) {
       if (this.property.dfh_range_instances_max_quantifier === 1) {
 
@@ -274,70 +247,6 @@ export class PropertyComponent implements OnChanges {
       return undefined;
     }
   }
-
-  get addButtonVisible(): boolean {
-    if (this.pointTo === 'TeEnt') return true;
-    // if(this.state === 'add') return false;
-    //
-    // if (this.addingName) return false;
-
-    return false;
-  }
-
-
-  /**
-  * get isCircular - returns true if this roles point back to the same peIt
-  * as at the root of the nested components 
-  *
-  * It's useful to prevent circular nesting of the components:
-  * PeItEntity > … > Role > TeEnt > … > Role [> PeItEntity <- Stop circle here]
-  *
-  * @return {boolean}  true=circular, false=not circular
-  */
-  get isCircular() {
-
-    // Return true, if all of this.roles are identical with the parent role
-    // of the parent teEnt.
-
-    if (this.pointTo === 'PeIt') {
-      if (this.parentRole) {
-
-        if (this.roles) {
-
-          // If there are roles, we are obviously not in create state.
-          // If all of this.roles are identical with the parent role
-          // of the parent teEnt return true to say that this is circular
-
-          let count = 0;
-          this.roles.forEach(role => {
-            if (role.pk_entity == this.parentRole.pk_entity) {
-              count++;
-            }
-          })
-          if (this.roles.length === count) {
-            return true;
-          }
-
-        }
-
-        if (
-          this.propState === 'create' &&
-          this.fkProperty === this.parentRole.fk_property
-        ) {
-
-          // If we are in create state
-          // and this.fkProperty is identical with the parent role fk_property
-          // return true to say that this is circular
-
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-
 
 
   /**
@@ -394,12 +303,21 @@ export class PropertyComponent implements OnChanges {
         // update the epr of the new Std in client memory
         roleC.epr = value[0];
         roleC.isStandardInProject = value[0].is_standard_in_project;
+        roleC.role.is_standard_in_project_count++;
 
         // unset loadingStdChange flag
         roleC.loadingStdChange = false;
 
         // update the epr of old Std Roles (should be only one) in client memory
         for (let i = 0; i < rolesToChange.length; i++) {
+
+          if (
+            rolesToChange[i].isStandardInProject === true
+            && value[i + 1].is_standard_in_project === false
+          ) {
+            rolesToChange[i].role.is_standard_in_project_count--;
+          }
+
           rolesToChange[i].epr = value[i + 1];
           rolesToChange[i].isStandardInProject = value[i + 1].is_standard_in_project;
 
@@ -418,10 +336,14 @@ export class PropertyComponent implements OnChanges {
   * Methods specific to create state
   */
 
+
   /**
   * Called when user clicks on cancel select roles
   */
   cancelSelectRoles() {
+
+    this.addRoleState = 'init';
+
     this.propStateChange.emit('selectProp');
   }
 
@@ -432,12 +354,13 @@ export class PropertyComponent implements OnChanges {
   * and pointing to the parent persistent item
   */
   startCreateNewRole() {
-    this.propStateChange.emit('createRole');
+    // this.propStateChange.emit('createRole');
 
     this.roleToCreate = new InfRole();
     this.roleToCreate.fk_property = this.fkProperty;
     this.roleToCreate.fk_entity = this.parentEntityPk;
 
+    this.addRoleState = 'createNew';
   }
 
 
@@ -447,6 +370,8 @@ export class PropertyComponent implements OnChanges {
   cancelCreateNewRole() {
 
     this.propStateChange.emit('selectRoles');
+
+    this.addRoleState = 'init';
 
     this.roleToCreate = undefined;
 
@@ -480,26 +405,32 @@ export class PropertyComponent implements OnChanges {
 
     this.rolesToCreate = [];
 
-    let allValid = true;
+    let rolesValid = true;
+    if (this.roleComponents) {
 
-    this.roleComponents.forEach(roleComponent => {
+      this.roleComponents.forEach(roleComponent => {
 
-      if (!roleComponent.isReadyToCreate) allValid = false;
+        if (!roleComponent.isReadyToCreate) rolesValid = false;
 
-      this.rolesToCreate.push(roleComponent.role);
+        this.rolesToCreate.push(roleComponent.role);
 
-    })
+      })
 
-    if (
-      allValid &&
-      this.rolesToCreate.length >= this.minCardinality &&
-      this.rolesToCreate.length <= this.maxCardinality
-    ) {
+      const quantityValid = this.propertyService.validateQuantity(
+        this.rolesToCreate.length,
+        this.property,
+        this.isOutgoing
+      )
 
-      this.isReadyToCreate = true;
-      this.changeDetector.detectChanges()
+      if (rolesValid && quantityValid) {
 
-      this.readyToCreate.emit(this.rolesToCreate);
+        this.isReadyToCreate = true;
+
+        this.changeDetector.detectChanges()
+
+        this.readyToCreate.emit(this.rolesToCreate);
+
+      }
 
     }
 
@@ -517,10 +448,10 @@ export class PropertyComponent implements OnChanges {
 
   }
 
-  persistEntitiesToCreate() {
+  persistEntitiesToCreate(fkEntity) {
 
     this.rolesToCreate.forEach((role) => {
-      role.fk_entity = this.parentPeIt.pk_entity;
+      role.fk_entity = fkEntity;
     })
 
     this.roleApi.findOrCreateInfRole(
@@ -535,6 +466,41 @@ export class PropertyComponent implements OnChanges {
 
   }
 
+  /**
+  * Called when user click on close (only if no roles available)
+  */
+
+  removePropertySection() {
+    this.removePropertySectionReq.emit(this.propertySection);
+  }
+
+  /**
+  *  called when user cancels creating a new role
+  */
+  onRoleCreationCanceled() {
+    this.addRoleState = 'init';
+  }
+
+  /**
+  * called when user created a new role
+  */
+  onRoleCreated(role: InfRole) {
+    this.roles.push(role);
+    this.addRoleState = 'init';
+  }
+
+
+  /**
+  * called when user removed a role from project
+  */
+  onRoleRemoved(removedRole: InfRole) {
+    for (let i = 0; i < this.roles.length; i++) {
+      if (this.roles[i].pk_entity === removedRole.pk_entity) {
+        this.roles.splice(i, 1);
+        break;
+      }
+    }
+  }
 
   onRoleReadyToAdd(role: InfRole) {
 
@@ -553,26 +519,64 @@ export class PropertyComponent implements OnChanges {
       this.rolesToAdd.push(role);
     }
 
-    // count number of roles that are selected to be in project
-    const inProjectCount = this.rolesToAdd.filter(role =>
-      role.entity_version_project_rels[0].is_in_project
-    ).length
+    // // count number of roles that are selected to be in project
+    // const inProjectCount = this.rolesToAdd.filter(role =>
+    //   role.entity_version_project_rels[0].is_in_project
+    // ).length
+    //
+    // const quantityValid = this.propertyService.validateQuantity(
+    //   inProjectCount,
+    //   this.property,
+    //   this.isOutgoing
+    // )
+    //
+    // // check if this number is according to quantity definition
+    // if (quantityValid) {
+    // this.readyToAdd.emit(this.rolesToAdd);
+    // }
+    // else {
+    //   this.notReadyToAdd.emit();
+    // }
 
-    // check if this number is according to cardinality definition
-    if (
-      inProjectCount >= this.minCardinality &&
-      inProjectCount <= this.maxCardinality
-    ) {
-      this.readyToAdd.emit(this.rolesToAdd);
-    }
-    else {
-      this.notReadyToAdd.emit();
-    }
+    this.readyToAdd.emit(this.rolesToAdd);
 
 
   }
 
 
+
+  /**
+  * addSelectedRolesToProject - called when user wants to add roles and
+  * all children to project
+  *
+  * @return {type}  description
+  */
+  addSelectedRolesToProject() {
+
+    let observables = [];
+    this.rolesToAdd.forEach(role => {
+      if (role.entity_version_project_rels[0].is_in_project) {
+        observables.push(this.roleApi.changeRoleProjectRelation(
+          this.activeProject.project.pk_project, true, role)
+        );
+      }
+
+    })
+
+    Observable.combineLatest(observables)
+      .subscribe(results => {
+        results.forEach((result: InfRole[]) => {
+
+          let addedRole = result[0];
+
+          addedRole.is_in_project_count++;
+
+          this.roles.push(addedRole);
+
+          this.addRoleState = 'init';
+        })
+      })
+  }
 
   /**
   * toggleCardBody - toggles the state of the card in order to collapse or
@@ -584,10 +588,40 @@ export class PropertyComponent implements OnChanges {
 
 
   /**
+  * set the role that has highest is_standard_in_project_count and, if more
+  * than one role have the same highest is_standard_in_project_count, the
+  * latest modified role
+  *
+  * @return {type}  description
+  */
+  sortRolesByPopularity() {
+
+    // sort by is_standard_in_project_count and
+    this.roles.sort((roleA, roleB) => {
+      var a = roleA.is_standard_in_project_count
+      var b = roleB.is_standard_in_project_count
+
+      if (a < b) {
+        return 1;
+      }
+      if (a > b) {
+        return -1;
+      }
+      // a muss gleich b sein
+      return 0;
+    })
+
+    this.mostPopularRole = this.roles[0];
+  }
+
+  /**
   * Methods for event bubbeling
   */
 
   emitAppeChange(appeStd: AppellationStdBool) {
+
+    appeStd.isMostPopular = (this.mostPopularRole == appeStd.role);
+
     this.appeChange.emit(appeStd)
   }
 

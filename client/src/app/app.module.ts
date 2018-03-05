@@ -62,9 +62,6 @@ import { VersionModalComponent } from './version-modal/version-modal.component';
 import { PeItService } from './shared/services/pe-it.service';
 import { PeItComponent } from './pe-it/pe-it.component';
 import { PeItEntityComponent } from './pe-it-entity/pe-it-entity.component';
-import { PropSectionListComponent } from './prop-section-list/prop-section-list.component';
-import { PropertyComponent } from './property/property.component';
-import { RoleComponent } from './role/role.component';
 import { TeEntComponent } from './te-ent/te-ent.component';
 import { PeItAppellationComponent } from './pe-it-appellation/pe-it-appellation.component';
 import { PeItLanguageComponent } from './pe-it-language/pe-it-language.component';
@@ -74,11 +71,19 @@ import { EprService } from './shared/services/epr.service';
 import { UtilitiesService } from './shared/services/utilities.service';
 import { PropertyService } from './shared/services/property.service';
 import { ClassService } from './shared/services/class.service';
-import { KeyboardService } from './shared/services/keyboard.service';
+import { EntityEditorService } from './shared/services/entity-editor.service';
 import { AppellationLabelEditComponent } from './appellation-label-edit/appellation-label-edit.component';
 import { AppellationLabelViewComponent } from './appellation-label-view/appellation-label-view.component';
 import { AppellationLabelCreateComponent } from './appellation-label-create/appellation-label-create.component';
 import { AppellationLabelEditorComponent } from './appellation-label-editor/appellation-label-editor.component';
+import { EntityEditorSettingsComponent } from './entity-editor-settings/entity-editor-settings.component';
+import { DfhIdComponent } from './dfh-id/dfh-id.component';
+import { PeItEntityPreviewComponent } from './pe-it-entity-preview/pe-it-entity-preview.component';
+import { PropSectionOfTeEntComponent } from './prop-section-of-te-ent/prop-section-of-te-ent.component';
+import { PropSectionOfPeItComponent } from './prop-section-of-pe-it/prop-section-of-pe-it.component';
+import { RoleOfTeEntComponent } from './role-of-te-ent/role-of-te-ent.component';
+import { RoleOfPeItComponent } from './role-of-pe-it/role-of-pe-it.component';
+import { PropSectionListOfPeItComponent } from './prop-section-list-of-pe-it/prop-section-list-of-pe-it.component';
 
 @NgModule({
   declarations: [
@@ -127,15 +132,20 @@ import { AppellationLabelEditorComponent } from './appellation-label-editor/appe
     VersionModalComponent,
     PeItComponent,
     PeItEntityComponent,
-    PropSectionListComponent,
-    PropertyComponent,
-    RoleComponent,
     TeEntComponent,
     PeItAppellationComponent,
     PeItLanguageComponent,
     AppellationLabelEditComponent,
     AppellationLabelCreateComponent,
-    AppellationLabelEditorComponent
+    AppellationLabelEditorComponent,
+    EntityEditorSettingsComponent,
+    DfhIdComponent,
+    PeItEntityPreviewComponent,
+    PropSectionOfTeEntComponent,
+    PropSectionOfPeItComponent,
+    RoleOfTeEntComponent,
+    RoleOfPeItComponent,
+    PropSectionListOfPeItComponent
   ],
   imports: [
     BrowserModule,
@@ -163,7 +173,7 @@ import { AppellationLabelEditorComponent } from './appellation-label-editor/appe
     PropertyService,
     ClassService,
     UtilitiesService,
-    KeyboardService,
+    EntityEditorService,
     { provide: LOCALE_ID, useValue: 'ch-DE' }
   ],
   entryComponents : [

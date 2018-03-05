@@ -1,8 +1,13 @@
-<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
+<div [ngClass]="{'dev-view': entityEditor.devView}">
+  <span *ngIf="entityEditor.devView">
+    [state: {{peItEntityState}}]
+  </span>
 
   <!-- Preview State -->
 
   <div *ngIf="peItEntityState=='preview'">
+
+    PREVIEW OF PE-IT
 
   </div>
 
@@ -11,18 +16,18 @@
 
   <div *ngIf="peItEntityState === 'create'">
 
-    <span *ngIf="keyboard.altPressed">
+    <span *ngIf="entityEditor.devView">
       [ready: {{isReadyToCreate}}]
     </span>
 
-    <gv-prop-section-list
+    <gv-prop-section-list-of-pe-it
     [propSectionListState]="'create'"
     [parentPeIt]="peItToCreate"
     [outgoingProperties]="outgoingProperties"
     [ingoingProperties]="ingoingProperties"
     (readyToCreate)="emitReadyToCreate($event)"
     (notReadyToCreate)="emitNotReadyToCreate()"
-    ></gv-prop-section-list>
+    ></gv-prop-section-list-of-pe-it>
 
 
   </div>
@@ -31,10 +36,11 @@
 
   <div *ngIf="peItEntityState === 'add-pe-it' && !loading">
 
-    <small class="text-muted">Person</small> {{stdAppeString}}
+    <h5 class="mt-2 mb-4">
+       {{mostPopularAppeString}}
+    </h5>
 
-
-    <gv-prop-section-list
+    <gv-prop-section-list-of-pe-it
     [roles]="peIt.pi_roles"
     [propSectionListState]="peItEntityState"
     [parentPeIt]="peIt"
@@ -43,7 +49,9 @@
     (readyToCreate)="emitReadyToCreate($event)"
     (notReadyToCreate)="emitNotReadyToCreate()"
     (readyToAdd)="onRolesReadyToAdd($event)"
-    ></gv-prop-section-list>
+    (notReadyToAdd)="onRolesNotReadyToAdd()"
+    (appeChange)="whenAppeChange($event)"
+    ></gv-prop-section-list-of-pe-it>
 
 
   </div>
@@ -62,65 +70,73 @@
             <small class="text-muted">Person</small> {{stdAppeString}}
           </h2>
         </div>
-        <div class="col-md-4" *ngIf="!addingInformation">
-          <div class="btn-group float-right mt-2" role="group">
-            <button class="btn btn-link mb-3" (click)="startAddingInformation()">
-              <i class="fa fa-plus"></i>  Add information
-            </button>
-          </div>
-        </div>
+        <span *ngIf="entityEditor.devView" class="">
+          [pk: {{peIt?.pk_entity}}]
+        </span>
+        <gv-entity-editor-settings class="col-md-4 text-right"></gv-entity-editor-settings>
+
+
       </section>
     </div>
 
     <!-- Tools to edit PeIt  -->
 
-    <div class="d-flex flex-row">
+    <div class="d-flex flex-row gv-flex-grow-1 m-3">
 
-      <div class="gv-edit-panel-body gv-flex-grow-1">
-
-
-
-        <!-- Info of PeIt -->
-
-        <gv-prop-section-list [roles]="peIt.pi_roles"
+      <div class="d-flex gv-flex-grow-1" style="max-width:450px">
+        <gv-prop-section-list-of-pe-it
+        class="gv-flex-grow-1 d-flex flex-row"
+        [roles]="peIt.pi_roles"
         [propSectionListState]="peItEntityState"
-        [addingInformation]="addingInformation"
         [pkEntity]="pkEntity"
         [parentPeIt]="peIt"
         [outgoingProperties]="outgoingProperties"
         [ingoingProperties]="ingoingProperties"
         (appeChange)="whenAppeChange($event)"
-        (stopAddingInformation)="stopAddingInformation()"
-        ></gv-prop-section-list>
-
-
+        ></gv-prop-section-list-of-pe-it>
       </div>
 
-      <div class="gv-edit-panel-body gv-flex-grow-5">
+      <div class="d-flex gv-flex-grow-1 ml-3">
+        <div class="d-flex flex-column gv-flex-grow-1">
 
-        <div class="card gv-naming text-white">
-          <div class="card-header">
-            Map
+          <div class="btn-group d-flex mb-3" role="group" aria-label="Basic example">
+            <div class="gv-flex-grow-1 bg-gray-700 text-white rounded-left gv-card-spacer-x align-self-stretch d-flex">
+              <div class="align-self-center">
+                <i class="fa fa-compass"></i>  Map
+              </div>
+            </div>
+            <button class="btn btn-gray-700"><i class="fa fa-ellipsis-v"></i></button>
           </div>
-          <div class="card-body">
-            MAPMAPMAP
-          </div>
-        </div>
-        <br/>
-        <div class="card">
-          <div class="card-header">
-            Timeline
-          </div>
-          <div class="card-body">
-            MAPMAPMAP
-          </div>
-        </div>
 
+          <div class="card gv-flex-grow-1 mb-3">
+            <div class="card-body">
+              Map
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              Timeline
+            </div>
+          </div>
+
+          <div class="btn-group d-flex mt-3" role="group" aria-label="Basic example">
+            <div class="gv-flex-grow-1 bg-gray-700 text-white rounded-left gv-card-spacer-x align-self-stretch d-flex">
+              <div class="align-self-center">
+                <i class="fa fa-calendar"></i>  Timeline
+              </div>
+            </div>
+            <button class="btn btn-gray-700"><i class="fa fa-search-minus"></i></button>
+            <button class="btn btn-gray-700"><i class="fa fa-search-plus"></i></button>
+            <button class="btn btn-gray-700"><i class="fa fa-arrows-alt"></i></button>
+
+            <button class="btn btn-gray-700"><i class="fa fa-step-backward"></i></button>
+            <button class="btn btn-gray-700"><i class="fa fa-play"></i></button>
+            <button class="btn btn-gray-700"><i class="fa fa-step-forward"></i></button>
+          </div>
+
+        </div>
       </div>
-
     </div>
-
-
   </div>
-
 </div>

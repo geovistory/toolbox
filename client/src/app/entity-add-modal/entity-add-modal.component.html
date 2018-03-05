@@ -12,26 +12,23 @@
 
   <gv-entity-add-choose-class *ngIf="state==='choose-class'"></gv-entity-add-choose-class>
   <gv-entity-add-search-existing [hidden]="state!=='search-existing'"></gv-entity-add-search-existing>
-  <gv-entity-add-create-new
-  [projectId]="projectId"
-  (newState)="changeState($event)"
-  *ngIf="state==='create-new'"></gv-entity-add-create-new>
+  <gv-entity-add-create-new *ngIf="state==='create-new'"></gv-entity-add-create-new>
 
   <gv-entity-add-add-existing *ngIf="state==='add-existing'"></gv-entity-add-add-existing>
 
 </div>
 <div class="modal-footer">
-  <button class="btn btn-outline-dark btn-sm mr-auto" (click)="changeState(modalService.previousState)" [hidden]="!modalService.previousState">
+  <button class="btn btn-outline-dark btn mr-auto" (click)="changeState(modalService.previousState)" [hidden]="!modalService.previousState">
     <i class="fa fa-arrow-left"></i>  Back
   </button>
-  <button class="btn btn-outline-dark btn-sm" (click)="activeModal.dismiss('Cross click')">
+  <button class="btn btn-outline-dark btn" (click)="activeModal.dismiss('Cross click')">
     Cancel
   </button>
-  <button type="button" class="btn btn-primary btn-sm" *ngIf="modalService.addButtonVisible"
+  <button type="button" class="btn btn-primary btn" *ngIf="modalService.addButtonVisible"
   (click)="add()">
-    Add selected information to project
+    Add
   </button>
-  <button type="button" class="btn btn-primary btn-sm" *ngIf="modalService.createButtonVisible"
+  <button type="button" class="btn btn-primary btn" *ngIf="modalService.createButtonVisible"
   (click)="create()">
     Create
   </button>
@@ -43,7 +40,7 @@
 <small class="text-muted">{{r.pk_persistent_item}}</small> {{ r.notes}}
 </ng-template>
 
-<form class="form-inline" name="form" (ngSubmit)="f.form.valid && addPeItToProject()" #f="ngForm" novalidate>
+<form class="form-inline" name="form" (ngSubmit)="f.form.valid && changePeItProjectRelation()" #f="ngForm" novalidate>
 <div class="form-group  mr-sm-3">
 <input id="typeahead-http" type="text" class="form-control"  name="default_language"
 [class.is-invalid]="searchFailed" [(ngModel)]="peItToAdd" #language="ngModel"

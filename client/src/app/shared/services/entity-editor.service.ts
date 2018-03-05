@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class KeyboardService {
+export class EntityEditorService {
 
 
   /**
@@ -9,7 +9,9 @@ export class KeyboardService {
   */
 
   // flag that can be set true when the "Alt" Key is pressed
-  altPressed:boolean = false;
+  devView:boolean = false;
+
+  showDfhId:boolean = false;
 
   constructor() { }
 

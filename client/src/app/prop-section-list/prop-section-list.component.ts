@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import {
   trigger,
   state,
@@ -12,52 +12,12 @@ import { InfRole } from '../shared/sdk/models/InfRole';
 import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
 import { PropertyService, DirectionAwareProperty } from '../shared/services/property.service';
 import { RoleService, RolesPerProperty, DirectedRolesPerProperty } from '../shared/services/role.service';
-import { KeyboardService } from '../shared/services/keyboard.service';
+import { EntityEditorService } from '../shared/services/entity-editor.service';
 import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { AppellationStdBool } from '../role/role.component';
 import { DfhProperty } from '../shared/sdk/models/DfhProperty';
 
-@Component({
-  selector: 'gv-prop-section-list',
-  templateUrl: './prop-section-list.component.html',
-  styleUrls: ['./prop-section-list.component.scss'],
-  animations: [
-    trigger('slideInOut', [
-      state('expanded', style({
-        height: '*',
-      })),
-      state('collapsed', style({
-        height: '0px',
-        overflow: 'hidden'
-      })),
-      transition('expanded => collapsed', animate('400ms ease-in-out', keyframes([
-        style({
-          height: '*',
-          overflow: 'hidden',
-          offset: 0
-        }),
-        style({
-          height: '0px',
-          display: 'hidden',
-          offset: 1
-        })
-      ]))),
-      transition('collapsed => expanded', animate('400ms ease-in-out', keyframes([
-        style({
-          height: '0px',
-          overflow: 'hidden',
-          offset: 0
-        }),
-        style({
-          height: '*',
-          display: 'hidden',
-          offset: 1
-        })
-      ])))
-    ])
-  ]
-})
-export class PropSectionListComponent implements OnInit, OnChanges {
+export class PropSectionListComponent implements OnInit {
 
   /**
   * Inputs
@@ -82,18 +42,15 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   @Input() propSectionListState: string;
 
   // state of adding new information section
-  @Input() addingInformation: boolean;
+  @Input() set addingInformation(val: boolean) {
+    this._addingInformation = val;
+    if (!val) this.stopAddingInformation.emit()
+  };
 
 
   /**
   * Outputs
   */
-
-  @Output() readyToCreate: EventEmitter<InfRole[]> = new EventEmitter;
-
-  @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
-
-  @Output() readyToAdd: EventEmitter<InfRole[]> = new EventEmitter;
 
 
   // emit appellation and a flag to say if this is the standard appellation
@@ -106,6 +63,13 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   /**
   * Properties
   */
+
+  // adding information
+  _addingInformation: boolean;
+
+  get addingInformation(): boolean {
+    return this._addingInformation;
+  };
 
   // state of child components for adding or creating properties
   selectPropState: string;
@@ -121,7 +85,7 @@ export class PropSectionListComponent implements OnInit, OnChanges {
 
   // directed roles per property,
   // e.g.: [{fkProperty: 'P52', isOutgoing: true, roles: []},…]
-  directedRolesPerProperty: DirectedRolesPerProperty[];
+  directedRolesPerProperty: DirectedRolesPerProperty[] = [];
 
   // Array of possible ingoing Properties of the class of the parent peIt
   ingoingDirectionAwareProperties: DirectionAwareProperty[];
@@ -129,13 +93,19 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   // Array of possible outgoing Properties of the class of the parent peIt
   outgoingDirectionAwareProperties: DirectionAwareProperty[];
 
+  // If true, the UI for communiy statistics is visible
+  communityStatsVisible: boolean;
+
+  // If true, the CRM Info (with links) is visible
+  ontoInfoVisible: boolean;
 
   constructor(
-    private roleService: RoleService,
+    protected roleService: RoleService,
     private propertyService: PropertyService,
-    public keyboard: KeyboardService
-  ) { }
+    public entityEditor: EntityEditorService,
+    private ref: ChangeDetectorRef
 
+  ) { }
 
 
   /**
@@ -163,50 +133,76 @@ export class PropSectionListComponent implements OnInit, OnChanges {
 
     this.propState = this.propSectionListState;
 
-    this.propertyToAdd = null;
+    // this.propertyToAdd = null;
 
   }
 
-  ngOnChanges() {
+  setDirectionAwareProperties() {
 
-    if (this.addingInformation) {
-      this.selectPropState = 'selectProp'
-    }
-    else {
-      this.selectPropState = 'init';
-    }
+    this.outgoingDirectionAwareProperties = this.propertyService
+      .toDirectionAwareProperties(true, this.outgoingProperties)
 
-    if (this.outgoingProperties && this.ingoingProperties) {
-
-      this.outgoingDirectionAwareProperties = this.propertyService
-        .toDirectionAwareProperties(true, this.outgoingProperties)
-
-      this.ingoingDirectionAwareProperties = this.propertyService
-        .toDirectionAwareProperties(false, this.ingoingProperties)
-
-      if (this.roles) this.setDirectedRolesPerProperty();
-
-    }
+    this.ingoingDirectionAwareProperties = this.propertyService
+      .toDirectionAwareProperties(false, this.ingoingProperties)
 
     if (this.propSectionListState === 'create') {
-      this.selectPropState = 'createPeIt';
 
       //TODO find smarter choice of the default property to add on create
-      this.propertyToAdd = this.outgoingDirectionAwareProperties.filter(odap => {
+      this.propertyToAdd = this.ingoingDirectionAwareProperties.filter(odap => {
         return odap.property.dfh_pk_property === 1 //'R63'
       })[0]
 
+      this.ref.detectChanges();
+
     }
-
   }
 
-  setDirectedRolesPerProperty() {
-    this.directedRolesPerProperty = this.roleService.toDirectedRolesPerProperty(
-      this.roles,
-      this.ingoingProperties,
-      this.outgoingProperties
-    );
+  setDirectedRolesPerProperty(roles) {
+    if (roles) {
+
+      this.directedRolesPerProperty = this.roleService.toDirectedRolesPerProperty(
+        roles,
+        this.ingoingProperties,
+        this.outgoingProperties
+      );
+    }
   }
+
+
+  /**
+  * Show ui with community statistics like
+  * - is in project count
+  * - is standard in project count
+  */
+  showCommunityStats() {
+    this.communityStatsVisible = true;
+  }
+
+  /**
+  * Hide ui with community statistics like
+  * - is in project count
+  * - is standard in project count
+  */
+  hideCommunityStats() {
+    this.communityStatsVisible = false;
+  }
+
+
+
+  /**
+  * Show CRM Info in UI
+  */
+  showOntoInfo() {
+    this.ontoInfoVisible = true;
+  }
+
+  /**
+  * Hide CRM Info in UI
+  */
+  hideOntoInfo() {
+    this.ontoInfoVisible = false;
+  }
+
 
   /**
   * startSelectProperty - called, when user clicks on add info
@@ -237,9 +233,35 @@ export class PropSectionListComponent implements OnInit, OnChanges {
   */
   startSelectRoles() {
     if (this.propertyToAdd)
-      this.selectPropState = 'selectRoles';
+      this.selectPropState = 'init';
+
+    // add a property sections
+
+    const newPropertySection: DirectedRolesPerProperty = {
+      isOutgoing: this.propertyToAdd.isOutgoing,
+      fkProperty: this.propertyToAdd.property.dfh_pk_property,
+      roles: []
+    }
+
+    this.directedRolesPerProperty.push(newPropertySection);
+
+    this.propertyToAdd = null;
+
   }
 
+
+
+  /**
+  * Method to find out if a property section is already added
+  */
+  propSectionAdded(directionAwareProp: DirectionAwareProperty): boolean {
+    return (this.directedRolesPerProperty.find(drpp => {
+      return (
+        drpp.isOutgoing == directionAwareProp.isOutgoing &&
+        drpp.fkProperty == directionAwareProp.property.dfh_pk_property
+      )
+    })) ? true : false;
+  }
 
   /**
   * called, when the child propertComponent's selectPropState changes
@@ -254,8 +276,18 @@ export class PropSectionListComponent implements OnInit, OnChanges {
 
 
   /**
-   * called when a child propertComponent has added new roles
-   */
+  * Called when the user closes an empty property section
+  */
+  onRemovePropertySectionReq(propSection: DirectedRolesPerProperty) {
+    var index = this.directedRolesPerProperty.indexOf(propSection, 0);
+    if (index > -1) {
+      this.directedRolesPerProperty.splice(index, 1);
+    }
+  }
+
+  /**
+  * called when a child propertComponent has added new roles
+  */
   onRolesAdded(roles) {
 
     this.selectPropState = 'init';
@@ -265,42 +297,11 @@ export class PropSectionListComponent implements OnInit, OnChanges {
 
     this.roles = this.roles.concat(roles);
 
-    this.setDirectedRolesPerProperty();
+    this.setDirectedRolesPerProperty(this.roles);
 
   }
 
-  /**
-   * called when roles ready to create
-   */
-  emitReadyToCreate(roles: InfRole[]) {
 
-    this.readyToCreate.emit(roles);
-
-  }
-
-  /**
-   * called when role isnt ready to create
-   */
-  emitNotReadyToCreate(roles: InfRole[]) {
-
-    this.notReadyToCreate.emit();
-
-  }
-
-  /**
-   * Methods for event bubbeling
-   */
-
-  emitAppeChange(appeStd: AppellationStdBool) {
-    this.appeChange.emit(appeStd)
-  }
-
-  /**
-   * called when roles of property (section) are ready to be added
-   */
-  onRolesReadyToAdd(roles: InfRole[]) {
-    this.readyToAdd.emit(roles);
-  }
 
   /**
   * toggleCardBody - toggles the state of the card in order to collapse or

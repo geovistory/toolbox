@@ -29,8 +29,8 @@ export class EntityAddChooseClassComponent implements OnInit {
     this.modalService.previousState = undefined;
   }
 
-  selectClass(classKey: string) {
-    this.modalService.selectedClass = classKey;
+  selectClass(cla: DfhClass) {
+    this.modalService.selectedClass = cla;
     this.setEntityModalState('search-existing');
   }
 

@@ -3,7 +3,7 @@ import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.co
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { EntityAddModalService , EntityAddModalState } from '../shared/services/entity-add-modal.service';
 import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
-import { KeyboardService } from '../shared/services/keyboard.service';
+import { EntityEditorService } from '../shared/services/entity-editor.service';
 
 @Component({
   selector: 'gv-entity-add-create-new',
@@ -22,7 +22,7 @@ export class EntityAddCreateNewComponent implements OnInit {
   isReadyToCreate: boolean;
 
   constructor(
-    public keyboard: KeyboardService,
+    public entityEditor: EntityEditorService,
     public activeModal: NgbActiveModal,
     public modalService: EntityAddModalService
   ) { }
@@ -31,7 +31,7 @@ export class EntityAddCreateNewComponent implements OnInit {
 
     this.modalService.previousState = EntityAddModalState[1];
 
-    this.modalService.modalTitle = "Create a new " + this.modalService.selectedClass.label
+    this.modalService.modalTitle = "Create a new " + this.modalService.selectedClass.dfh_standard_label
   }
 
   setEntityModalState(newState: string) {
@@ -39,7 +39,8 @@ export class EntityAddCreateNewComponent implements OnInit {
   }
 
   onPeItReadyToCreate(peIt: InfPersistentItem) {
-    this.modalService.peItToCreate = peIt;
+    this.modalService.peItToCreate = new InfPersistentItem(peIt);
+    this.modalService.peItToCreate.fk_class = this.modalService.selectedClass.dfh_pk_class;
     this.modalService.createButtonVisible = true;
   }
 

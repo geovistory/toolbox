@@ -1,11 +1,14 @@
-<div [ngClass]="{'alt-pressed': keyboard.altPressed}">
+<div [ngClass]="{'dev-view': entityEditor.devView}">
 
-  <div class="d-flex flex-row" *ngIf="peItAppeState === 'add-pe-it'">
+  <span *ngIf="entityEditor.devView">
+    [state: {{peItAppeState}}]
+  </span>
+
+
+  <div class="d-flex flex-row" *ngIf="peItAppeState === 'add-pe-it' || peItAppeState === 'add' ">
 
     <div class="gv-flex-grow-1" >
-      <gv-appellation-label-view [appellation]="appellation"
-      (readyToAdd)="onReadyToAdd($event)"
-      ></gv-appellation-label-view>
+      <gv-appellation-label-view [appellation]="appellation"></gv-appellation-label-view>
     </div>
 
   </div>

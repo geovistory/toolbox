@@ -1,18 +1,7 @@
-<h5 class="mt-2 mb-1">
-  Select the information you want to add.
-</h5>
-<p class="text-muted mb-4">
-  No worry, you still change your selection afterwards.
-</p>
-
-
-  <div class="mb-3">
-    Select the information you want to add
-  </div>
-
-  <gv-pe-it [pkEntity]="pkEntity" [peItState]="'add-pe-it'"
-  (peItReadyToAdd)="onPeItReadyToAdd($event)"
-  ></gv-pe-it>
+<gv-pe-it [pkEntity]="pkEntity" [peItState]="'add-pe-it'"
+(peItReadyToAdd)="onPeItReadyToAdd($event)"
+(peItNotReadyToAdd)="onPeItNotReadyToAdd()"
+></gv-pe-it>
 
 
 

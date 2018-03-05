@@ -12,7 +12,7 @@ import { EntityEditorState } from '../shared/classes/entity-editor-state.class';
 import { ActivePeItService } from '../shared/services/active-pe-it.service';
 import { PeItService } from '../shared/services/pe-it.service'
 import { ClassService } from '../shared/services/class.service';
-import { KeyboardService } from '../shared/services/keyboard.service';
+import { EntityEditorService } from '../shared/services/entity-editor.service';
 import { InfPersistentItemApi } from '../shared/sdk/services/custom/InfPersistentItem';
 import { AppellationStdBool } from '../role/role.component';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
@@ -51,6 +51,8 @@ export class PeItEntityComponent implements OnInit {
 
   @Output() readyToAdd: EventEmitter<InfPersistentItem> = new EventEmitter;
 
+  @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter;
+
   /**
   * Properties
   */
@@ -70,8 +72,11 @@ export class PeItEntityComponent implements OnInit {
   // Persistent Item to be added
   peItToAdd: InfPersistentItem;
 
-  // Displayed standard name of this peIt
+  // Standard appellation string of project of this peIt
   stdAppeString: string;
+
+  // Most popular appellation string of this peIt
+  mostPopularAppeString: string;
 
   // array of properies of which the class of this peIt is range.
   outgoingProperties: DfhProperty[];
@@ -88,9 +93,6 @@ export class PeItEntityComponent implements OnInit {
   //this components
   thisComponent = this;
 
-  // true when the user clicks on add Information
-  addingInformation: boolean;
-
   constructor(
     private peItApi: InfPersistentItemApi,
     private peItService: PeItService,
@@ -99,7 +101,7 @@ export class PeItEntityComponent implements OnInit {
     private activePeItService: ActivePeItService,
     private slimLoadingBarService: SlimLoadingBarService,
     private classService: ClassService,
-    public keyboard: KeyboardService,
+    public entityEditor: EntityEditorService,
     private changeDetector: ChangeDetectorRef
   ) {
   }
@@ -147,6 +149,26 @@ export class PeItEntityComponent implements OnInit {
 
     }
 
+    if (this.peItEntityState == "add") {
+
+      // Query the peIt and set the peIt by a call to the Api
+      this.queryRichObjectOfRepo().subscribe(() => {
+
+        // make a copy
+        this.peItToAdd = new InfPersistentItem(this.peIt);
+
+        // add an epr
+        this.peItToAdd.entity_version_project_rels = [
+          new InfEntityProjectRel({
+            fk_project: this.activeProjectService.project.pk_project,
+            is_in_project: false,
+            fk_entity_version_concat: this.peIt.pk_entity_version_concat
+          })
+        ]
+
+      })
+
+    }
 
     else if (this.peItEntityState == "create") {
 
@@ -268,7 +290,7 @@ export class PeItEntityComponent implements OnInit {
 
       for (let i = 0; i < this.peItToAdd.pi_roles.length; i++) {
 
-        // Check if the role is allready in the teEntToAdd
+        // Check if the role is already in the peItToAdd
         if (this.peItToAdd.pi_roles[i].pk_entity === roleToAdd.pk_entity) {
 
           // if yes replace it with the new one
@@ -283,12 +305,18 @@ export class PeItEntityComponent implements OnInit {
       }
 
     })
-    // add all the new roles to teEntToAdd
+    // add all the new roles to peItToAdd
     this.peItToAdd.pi_roles.concat(newRoles);
 
     this.readyToAdd.emit(this.peItToAdd);
   }
 
+  /**
+   * called when roles of property (section) are not ready to be added
+   */
+  onRolesNotReadyToAdd(roles: InfRole[]) {
+    this.notReadyToAdd.emit();
+  }
 
   /**
    * Methods for event bubbeling
@@ -300,15 +328,13 @@ export class PeItEntityComponent implements OnInit {
       this.stdAppeString = label.getString();
       this.changeDetector.detectChanges()
     }
+    if (appeStd.isMostPopular) {
+      const label = new AppellationLabel(appeStd.appellation.appellation_label);
+      this.mostPopularAppeString = label.getString();
+      this.changeDetector.detectChanges()
+    }
   }
 
-  startAddingInformation() {
-    this.addingInformation = true;
-  }
-
-  stopAddingInformation() {
-    this.addingInformation = false;
-  }
 
   /**
   * Loading Bar Logic

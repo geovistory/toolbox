@@ -27,9 +27,6 @@
     },
     "dfh_standard_label": {
       "type": "string"
-    },
-    "dfh_fk_system_type": {
-      "type": "number"
     }
   },
   "validations": [],

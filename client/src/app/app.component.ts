@@ -1,5 +1,5 @@
 import { Component, HostListener} from '@angular/core';
-import { KeyboardService } from './shared/services/keyboard.service';
+import { EntityEditorService } from './shared/services/entity-editor.service';
 
 @Component({
   selector: 'gv-root',
@@ -12,18 +12,18 @@ import { KeyboardService } from './shared/services/keyboard.service';
 })
 export class AppComponent {
 
-  constructor(private keybord: KeyboardService){
+  constructor(private entityEditor: EntityEditorService){
 
   }
 
   keydown($event) {
-    if($event.key === 'Alt'){      
-      this.keybord.altPressed = true;
+    if($event.key === 'Alt'){
+      // this.entityEditor.showDfhId = true;
     }
   };
   keyup($event) {
     if($event.key === 'Alt'){
-      this.keybord.altPressed = false;
+      // this.entityEditor.showDfhId = false;
     }
   };
 

@@ -25,7 +25,7 @@
     "@angular/router": "^4.0.0",
     "@ng-bootstrap/ng-bootstrap": "1.0.0-beta.6",
     "angular2-elastic-input": "1.2.0",
-    "bootstrap": "4.0.0-beta.2",
+    "bootstrap": "^4.0.0",
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",
     "ng2-slim-loading-bar": "^4.0.0",
