@@ -65,6 +65,30 @@ exports.up = function(db, callback) {
   INSERT INTO public.account_project_rel (fk_project, account_id, role)
   SELECT insert_project.pk_project, (SELECT id from public.account where username = 'Jonas'), 'owner' FROM insert_project;
 
+  -- Project Senatoren, owned by Jonas
+
+  WITH insert_project AS (
+    INSERT INTO commons.project (fk_language, notes)
+    VALUES
+    ('deu', 'Jonas Seed Project2')
+    ON CONFLICT DO NOTHING
+    RETURNING pk_entity, pk_project
+  ),
+  insert_label AS (
+    INSERT INTO commons.label (label, fk_entity, fk_system_type, fk_language, notes)
+    SELECT 'Test2', pk_entity, 1, 'deu', 'Sample note' FROM insert_project
+    ON CONFLICT DO NOTHING
+  ),
+  insert_text_property AS (
+    INSERT INTO commons.text_property (text_property, text_property_xml, fk_entity, fk_system_type, fk_language, notes)
+    SELECT  'Lorem ipsum dolor sit amet, pariatur.
+    Excepteur sint occaecat cupidatat non proident,
+    sunt in culpa qui officia deserunt mollit anim id est laborum.', null, pk_entity, 1, 'fra', 'Sample note' FROM insert_project
+  )
+  INSERT INTO public.account_project_rel (fk_project, account_id, role)
+  SELECT insert_project.pk_project, (SELECT id from public.account where username = 'Jonas'), 'owner' FROM insert_project;
+
+
 
   -- Project Habsburg, owned by David
 

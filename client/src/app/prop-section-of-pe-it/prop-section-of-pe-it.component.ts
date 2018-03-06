@@ -138,4 +138,25 @@ export class PropSectionOfPeItComponent extends PropertyComponent implements OnC
 
   }
 
+  /**
+  * Called when user clicks on create new
+  * Creates a new InfRole of the kind of property of this component
+  * and pointing to the parent persistent item
+  */
+  startCreateNewRole() {
+    // this.propStateChange.emit('createRole');
+
+    this.roleToCreate = new InfRole();
+    this.roleToCreate.fk_property = this.fkProperty;
+    this.roleToCreate.fk_entity = this.parentEntityPk;
+
+    this.addRoleState = 'createNew';
+  }
+
+  get removeSectionBtnVisible(){
+    if(this.roles && (this.roles.length ===0)) return true;
+
+    return false;
+  }
+
 }

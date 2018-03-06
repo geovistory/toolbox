@@ -348,20 +348,7 @@ export class PropertyComponent implements OnChanges, OnInit {
   }
 
 
-  /**
-  * Called when user clicks on create new
-  * Creates a new InfRole of the kind of property of this component
-  * and pointing to the parent persistent item
-  */
-  startCreateNewRole() {
-    // this.propStateChange.emit('createRole');
 
-    this.roleToCreate = new InfRole();
-    this.roleToCreate.fk_property = this.fkProperty;
-    this.roleToCreate.fk_entity = this.parentEntityPk;
-
-    this.addRoleState = 'createNew';
-  }
 
 
   /**

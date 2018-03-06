@@ -4,6 +4,8 @@
     [state: {{propSectionListState}}]
   </span>
 
+  <!-- Add-Pe-It State -->
+
   <div class="d-flex flex-column gv-flex-grow-1" *ngIf="propSectionListState === 'add-pe-it'">
 
     <div class="btn-group gv-flex-shrink-0 d-flex mb-3" role="group" aria-label="Basic example">
@@ -46,6 +48,9 @@
 
   </div>
 
+
+  <!-- Create State -->
+
   <div *ngIf="propSectionListState === 'create' && propertyToAdd">
     <!-- Create a new PeIt -->
     <gv-prop-section-of-pe-it
@@ -64,6 +69,7 @@
   </div>
 
 
+  <!-- Edit State -->
 
   <div class="d-flex flex-column gv-flex-grow-1" *ngIf="propSectionListState === 'edit'">
 
@@ -157,6 +163,48 @@
     </div>
   </div>
 
+  <!-- View State -->
+
+  <div class="d-flex flex-column gv-flex-grow-1" *ngIf="propSectionListState === 'view'">
+
+    <div class="btn-group gv-flex-shrink-0 d-flex mb-3" role="group" aria-label="Basic example">
+      <div class="gv-flex-grow-1 bg-gray-700 text-white rounded-left gv-card-spacer-x align-self-stretch d-flex">
+        <div class="align-self-center">
+          <i class="fa fa-lightbulb-o"></i>  Properties
+        </div>
+      </div>
+      <div class="btn-group" ngbDropdown placement="bottom-right">
+        <button class="btn btn-gray-700" ngbDropdownToggle><i class="fa fa-ellipsis-v"></i></button>
+        <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+          <button class="dropdown-item" (click)="showCommunityStats()" *ngIf="!communityStatsVisible">Show Community Statistics</button>
+          <button class="dropdown-item" (click)="hideCommunityStats()" *ngIf="communityStatsVisible">Hide Community Statistics</button>
+          <button class="dropdown-item" (click)="showOntoInfo()" *ngIf="!ontoInfoVisible">Show Ontology Info</button>
+          <button class="dropdown-item" (click)="hideOntoInfo()" *ngIf="ontoInfoVisible">Hide Ontology Info</button>
+
+        </div>
+      </div>
+    </div>
+
+
+    <gv-prop-section-of-pe-it
+    *ngFor="let propertySection of directedRolesPerProperty"
+    [propertySection]="propertySection"
+    [isOutgoing]="propertySection.isOutgoing"
+    [roles]="propertySection.roles"
+    [fkProperty]="propertySection.fkProperty"
+    [pointTo]="'TeEnt'"
+    [parentEntityPk]="pkEntity"
+    [parentPeIt]="parentPeIt"
+    [propState]="propState"
+    [communityStatsVisible]="communityStatsVisible"
+    [ontoInfoVisible]="ontoInfoVisible"
+    (appeChange)="emitAppeChange($event)"
+    (readyToAdd)="onRolesReadyToAdd($event)"
+    (notReadyToAdd)="onRolesNotReadyToAdd()"
+    (removePropertySectionReq)="onRemovePropertySectionReq($event)"
+    ></gv-prop-section-of-pe-it>
+
+  </div>
 
 </div>
 

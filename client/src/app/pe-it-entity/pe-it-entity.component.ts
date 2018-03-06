@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnChanges, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
@@ -18,13 +18,14 @@ import { AppellationStdBool } from '../role/role.component';
 import { AppellationLabel } from '../shared/classes/appellation-label/appellation-label';
 import { InfEntityProjectRel } from '../shared/sdk/models/InfEntityProjectRel';
 import { DfhProperty } from '../shared/sdk/models/DfhProperty';
+import { DfhClass } from '../shared/sdk/models/DfhClass';
 
 @Component({
   selector: 'gv-pe-it-entity',
   templateUrl: './pe-it-entity.component.html',
   styleUrls: ['./pe-it-entity.component.scss']
 })
-export class PeItEntityComponent implements OnInit {
+export class PeItEntityComponent implements OnChanges {
 
   /**
   * Inputs
@@ -93,14 +94,17 @@ export class PeItEntityComponent implements OnInit {
   //this components
   thisComponent = this;
 
+  //Class of this peIt
+  dfhClass: DfhClass;
+
   constructor(
     private peItApi: InfPersistentItemApi,
     private peItService: PeItService,
-    private activeProjectService: ActiveProjectService,
+    protected activeProjectService: ActiveProjectService,
     private propertyPipe: PropertyPipe,
     private activePeItService: ActivePeItService,
     private slimLoadingBarService: SlimLoadingBarService,
-    private classService: ClassService,
+    protected classService: ClassService,
     public entityEditor: EntityEditorService,
     private changeDetector: ChangeDetectorRef
   ) {
@@ -111,7 +115,7 @@ export class PeItEntityComponent implements OnInit {
   * Methods
   */
 
-  ngOnInit() {
+  ngOnChanges() {
 
     this.pkProject = this.activeProjectService.project.pk_project;
 
@@ -121,10 +125,14 @@ export class PeItEntityComponent implements OnInit {
 
     // if it is not create state
 
-    if (["preview", "edit", "viewCommunity"].indexOf(this.peItEntityState) !== -1) {
+    if (["preview", "edit", "view"].indexOf(this.peItEntityState) !== -1) {
 
       // Query the peIt and set the peIt by a call to the Api
-      this.queryRichObjectOfProject()
+      this.queryRichObjectOfProject().subscribe(() => {
+
+        this.initDfhClass(this.peIt.fk_class);
+
+      })
 
     }
 
@@ -132,6 +140,8 @@ export class PeItEntityComponent implements OnInit {
 
       // Query the peIt and set the peIt by a call to the Api
       this.queryRichObjectOfRepo().subscribe(() => {
+
+        this.initDfhClass(this.peIt.fk_class);
 
         // make a copy
         this.peItToAdd = new InfPersistentItem(this.peIt);
@@ -153,6 +163,8 @@ export class PeItEntityComponent implements OnInit {
 
       // Query the peIt and set the peIt by a call to the Api
       this.queryRichObjectOfRepo().subscribe(() => {
+
+        this.initDfhClass(this.peIt.fk_class);
 
         // make a copy
         this.peItToAdd = new InfPersistentItem(this.peIt);
@@ -187,9 +199,10 @@ export class PeItEntityComponent implements OnInit {
       this.peItToCreate = new InfPersistentItem();
       this.peItToCreate.fk_class = this.fkClass;
 
+      this.initDfhClass(this.fkClass);
+
+
     }
-
-
 
   }
 
@@ -228,10 +241,20 @@ export class PeItEntityComponent implements OnInit {
 
   }
 
+  initDfhClass(fkClass) {
+    this.classService.getByPk(fkClass).subscribe((dfhClass) => {
+      this.dfhClass = dfhClass;
+    })
+  }
+
   queryRichObjectOfProject() {
+    const onDone = new EventEmitter()
+
     this.startLoading();
 
-    this.peItApi.nestedObjectOfProject(this.pkProject, this.pkEntity).subscribe(
+    const pkProject = this.activeProjectService.project.pk_project;
+
+    this.peItApi.nestedObjectOfProject(pkProject, this.pkEntity).subscribe(
       (peIts: InfPersistentItem[]) => {
 
         this.peIt = peIts[0];
@@ -250,15 +273,19 @@ export class PeItEntityComponent implements OnInit {
 
         this.completeLoading();
 
+        onDone.emit();
+
       });
+
+    return onDone;
 
   }
 
 
 
   /**
-   * Methods for creating a peIt
-   */
+  * Methods for creating a peIt
+  */
 
   emitReadyToCreate(roles: InfRole[]) {
     this.peItToCreate.pi_roles = roles; //TODO this is not good because it overwrites roles coming form another property!
@@ -312,15 +339,15 @@ export class PeItEntityComponent implements OnInit {
   }
 
   /**
-   * called when roles of property (section) are not ready to be added
-   */
+  * called when roles of property (section) are not ready to be added
+  */
   onRolesNotReadyToAdd(roles: InfRole[]) {
     this.notReadyToAdd.emit();
   }
 
   /**
-   * Methods for event bubbeling
-   */
+  * Methods for event bubbeling
+  */
 
   whenAppeChange(appeStd: AppellationStdBool) {
     if (appeStd.isStandardInProject) {

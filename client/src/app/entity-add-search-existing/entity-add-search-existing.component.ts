@@ -71,7 +71,7 @@ export class EntityAddSearchExistingComponent implements OnInit, OnChanges {
       this.modalService.modalTitle = 'Add a ' + this.modalService.selectedClass.dfh_standard_label;
     }
 
-    if(this.hidden ===false){
+    if(this.hidden ===false && !this.modalService.selectRoleRange){
       this.modalService.previousState = EntityAddModalState[0];
     }
   }
@@ -115,10 +115,17 @@ export class EntityAddSearchExistingComponent implements OnInit, OnChanges {
     this.modalService.pkEntity = pkEntity;
     this.modalService.state = 'add-existing'
   }
+  
   open(pkEntity:number){
     this.modalService.onOpen.emit(pkEntity);
     this.activeModal.dismiss('Open persistent item ' + pkEntity)
   }
+
+  select(pkEntity:number){
+    this.modalService.onSelect.emit(pkEntity);
+    this.activeModal.close(pkEntity)
+  }
+
 
   /**
   * Loading Bar Logic

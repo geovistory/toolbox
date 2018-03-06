@@ -20,6 +20,13 @@ import { RoleComponent } from '../role/role.component';
 })
 export class RoleOfTeEntComponent extends RoleComponent implements OnInit {
 
+
+/**
+ * Inputs
+ */
+
+@Input() fkTeEnt:number;
+
   constructor(
     activeProjectService: ActiveProjectService,
     eprService: EprService,
@@ -29,5 +36,40 @@ export class RoleOfTeEntComponent extends RoleComponent implements OnInit {
   ) {
     super(activeProjectService, eprService, ref, entityEditor, roleApi)
   }
+
+
+  /**
+  * Methods specific to create state
+  */
+
+  peItReadyToCreate(entity) {
+
+    if (entity instanceof InfAppellation) {
+      this.role.appellation = entity
+    }
+
+    if (entity instanceof InfLanguage) {
+      this.role.language = entity
+    }
+
+    if (typeof entity === 'number') {
+      this.role.fk_entity = entity
+    }
+
+    this.isReadyToCreate = true;
+
+    this.readyToCreate.emit(this.role);
+
+  }
+
+
+  peItNotReadyToCreate() {
+
+    this.isReadyToCreate = false;
+
+    this.notReadyToCreate.emit()
+
+  }
+
 
 }

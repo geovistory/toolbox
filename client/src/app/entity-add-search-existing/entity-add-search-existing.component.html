@@ -25,8 +25,8 @@
           <div class="col">
             <div class="gv-search-hits">
               <gv-entity-search-hit *ngFor="let hit of persistentItems"
-              [repositorySearch]="true" [persistentItem]="hit"
-              (onAdd)="add($event)" (onOpen)="open($event)"></gv-entity-search-hit>
+              [repositorySearch]="true" [selectRoleRange]="modalService.selectRoleRange" [persistentItem]="hit"
+              (onAdd)="add($event)" (onOpen)="open($event)" (onSelect)="select($event)"></gv-entity-search-hit>
             </div>
           </div>
         </div>

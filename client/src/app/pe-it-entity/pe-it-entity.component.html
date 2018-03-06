@@ -3,11 +3,22 @@
     [state: {{peItEntityState}}]
   </span>
 
-  <!-- Preview State -->
+  <!-- View State -->
 
-  <div *ngIf="peItEntityState=='preview'">
+  <div *ngIf="peItEntityState === 'view' && !loading">
 
-    PREVIEW OF PE-IT
+    <h5 class="mt-2 mb-4">
+       {{mostPopularAppeString}} {{stdAppeString}} <small class="text-muted">{{dfhClass?.dfh_standard_label}}</small>
+    </h5>
+
+    <gv-prop-section-list-of-pe-it
+    [propSectionListState]="'view'"
+    [parentPeIt]="peIt"
+    [roles]="peIt?.pi_roles"
+    [outgoingProperties]="outgoingProperties"
+    [ingoingProperties]="ingoingProperties"
+    (appeChange)="whenAppeChange($event)"
+    ></gv-prop-section-list-of-pe-it>
 
   </div>
 
@@ -67,10 +78,10 @@
       <section class="row">
         <div class="col-md-8">
           <h2>
-            <small class="text-muted">Person</small> {{stdAppeString}}
+            {{stdAppeString}} <small class="text-muted">{{dfhClass?.dfh_standard_label}}</small> 
           </h2>
         </div>
-        <span *ngIf="entityEditor.devView" class="">
+        <span *ngIf="entityEditor.devView">
           [pk: {{peIt?.pk_entity}}]
         </span>
         <gv-entity-editor-settings class="col-md-4 text-right"></gv-entity-editor-settings>

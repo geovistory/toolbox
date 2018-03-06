@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { InfPersistentItem } from '../shared/sdk/models/InfPersistentItem';
 import { InfLanguage } from '../shared/sdk/models/InfLanguage';
 import { InfAppellation } from '../shared/sdk/models/InfAppellation';
@@ -6,6 +6,7 @@ import { UtilitiesService } from '../shared/services/utilities.service';
 import { EntityEditorService } from '../shared/services/entity-editor.service';
 import { EntitiesToCreate } from '../shared/interfaces/entities-to-create';
 import { AppellationStdBool } from '../role/role.component';
+import { PeItEntityPreviewComponent } from '../pe-it-entity-preview/pe-it-entity-preview.component';
 
 export enum PeItStates {
   view = "view",
@@ -79,6 +80,9 @@ export class PeItComponent implements OnInit {
   // Pks of Appellation Classes
   appellaitonClassPks = [2];
 
+  //
+  @ViewChild(PeItEntityPreviewComponent) peItEntityPreviewComponent;
+
   constructor(
     private util: UtilitiesService,
     public entityEditor: EntityEditorService
@@ -122,6 +126,17 @@ export class PeItComponent implements OnInit {
 
   }
 
+  open(){
+    this.peItEntityPreviewComponent.open();
+  }
+
+  edit(){
+    this.valueEntitiesState = 'edit'
+  }
+
+  onCancelEdit(){
+    this.valueEntitiesState = 'view'
+  }
 
   /**
   * get showAppellationUI - return true if this peIt is an appellation
@@ -152,6 +167,12 @@ export class PeItComponent implements OnInit {
     return !(this.showAppellationUI || this.showLanguageUI);
   }
 
+
+  peItSelected(pkEntity){
+    this.pkEntity = pkEntity;
+    this.valueEntitiesState = 'view'
+    this.readyToCreate.emit(pkEntity);
+  }
 
 
   /**

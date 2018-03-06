@@ -96,6 +96,8 @@ export class ProjectEntitiesComponent implements OnInit {
   openEntityModal(){
     const modalRef = this.modalService.open(EntityAddModalComponent, this.entityModalOptions);
     modalRef.componentInstance.projectId = this.projectId;
+    this.entityAddModalService.state = 'choose-class';
+
   }
 
   openEntity(pkInfPersistentItem){

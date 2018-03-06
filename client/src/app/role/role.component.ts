@@ -103,7 +103,7 @@ export class RoleComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if ((this.roleState === 'create' || this.roleState === 'create-te-ent' ) && this.role === undefined) {
+    if ((this.roleState === 'create' || this.roleState === 'create-te-ent' || this.roleState === 'create-pe-it' ) && this.role === undefined) {
       this.role = new InfRole();
       this.role.fk_property = this.fkProperty;
     }
@@ -219,37 +219,6 @@ export class RoleComponent implements OnInit {
   cancelCreateRole() {
 
     this.roleCreationCanceled.emit();
-
-  }
-
-
-
-  /**
-  * Methods specific to create state
-  */
-
-  peItReadyToCreate(entity) {
-
-    if (entity instanceof InfAppellation) {
-      this.role.appellation = entity
-    }
-
-    if (entity instanceof InfLanguage) {
-      this.role.language = entity
-    }
-
-    this.isReadyToCreate = true;
-
-    this.readyToCreate.emit(this.role);
-
-  }
-
-
-  peItNotReadyToCreate() {
-
-    this.isReadyToCreate = false;
-
-    this.notReadyToCreate.emit()
 
   }
 
