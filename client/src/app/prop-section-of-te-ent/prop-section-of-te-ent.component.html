@@ -55,6 +55,7 @@
       [roleState]="'edit'"
       (readyToAdd)="onRoleReadyToAdd($event)"
       (appeChange)="emitAppeChange($event)"
+      (roleRemoved)="onRoleRemoved($event)"
       (onRequestStandard)="changeStandardRole($event)"></gv-role-of-te-ent>
 
       <div class="card-body" *ngIf="roles.length === 0 && addButtonVisible">
@@ -149,6 +150,7 @@
         [pointTo]="'PeIt'"
         [pkTargetClass]="pkTargetClass"
         [fkProperty]="fkProperty"
+        [fkTeEnt]="parentTeEnt.pk_entity"
         [roleState]="'create'"
         (roleCreated)="onRoleCreated($event)"
         (roleCreationCanceled)="onRoleCreationCanceled()"
@@ -266,6 +268,34 @@
       ></gv-role-of-te-ent>
 
     </div>
+  </span>
+
+
+  <!--
+  ************************* View State ************************* -->
+
+  <span *ngIf="propState === 'view'">
+
+    <div class="card-body gv-property-section-header d-flex flex-row gv-to-pe-it">
+      <div class="gv-label gv-flex-grow-1"> {{roleLabel}} </div>
+    </div>
+
+
+    <div class="card-body">
+      <div *ngFor="let role of roles">
+        <gv-role-of-te-ent
+        [role]="role"
+        [parentProperty]="property"
+        [isOutgoing]="isOutgoing"
+        [pointTo]="pointTo"
+        [roleState]="propState"
+        [communityStatsVisible]="communityStatsVisible"
+        [ontoInfoVisible]="ontoInfoVisible"
+        (appeChange)="emitAppeChange($event)"
+        ></gv-role-of-te-ent>
+      </div>
+    </div>
+
   </span>
 
 </div>

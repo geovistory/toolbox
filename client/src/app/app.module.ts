@@ -84,6 +84,8 @@ import { PropSectionOfPeItComponent } from './prop-section-of-pe-it/prop-section
 import { RoleOfTeEntComponent } from './role-of-te-ent/role-of-te-ent.component';
 import { RoleOfPeItComponent } from './role-of-pe-it/role-of-pe-it.component';
 import { PropSectionListOfPeItComponent } from './prop-section-list-of-pe-it/prop-section-list-of-pe-it.component';
+import { PeItEntityPreviewModalComponent } from './pe-it-entity-preview-modal/pe-it-entity-preview-modal.component';
+import { PeItEntityAddComponent } from './pe-it-entity-add/pe-it-entity-add.component';
 
 @NgModule({
   declarations: [
@@ -145,7 +147,9 @@ import { PropSectionListOfPeItComponent } from './prop-section-list-of-pe-it/pro
     PropSectionOfPeItComponent,
     RoleOfTeEntComponent,
     RoleOfPeItComponent,
-    PropSectionListOfPeItComponent
+    PropSectionListOfPeItComponent,
+    PeItEntityPreviewModalComponent,
+    PeItEntityAddComponent
   ],
   imports: [
     BrowserModule,
@@ -179,7 +183,8 @@ import { PropSectionListOfPeItComponent } from './prop-section-list-of-pe-it/pro
   entryComponents : [
     AppComponent,
     EntityAddModalComponent,
-    VersionModalComponent
+    VersionModalComponent,
+    PeItEntityPreviewModalComponent
   ],
   bootstrap: [AppComponent]
 })

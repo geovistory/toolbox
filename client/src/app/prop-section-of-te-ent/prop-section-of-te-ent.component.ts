@@ -213,4 +213,20 @@ export class PropSectionOfTeEntComponent extends PropertyComponent implements On
     return false;
   }
 
+
+  /**
+  * Called when user clicks on create new
+  * Creates a new InfRole of the kind of property of this component
+  * and pointing to the parent persistent item
+  */
+  startCreateNewRole() {
+    // this.propStateChange.emit('createRole');
+
+    this.roleToCreate = new InfRole();
+    this.roleToCreate.fk_property = this.fkProperty;
+    this.roleToCreate.fk_temporal_entity = this.parentTeEnt.pk_entity;
+
+    this.addRoleState = 'createNew';
+  }
+
 }

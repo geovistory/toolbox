@@ -40,6 +40,8 @@ export class PeItAppellationComponent implements OnInit {
 
   @Output() readyToAdd: EventEmitter<InfAppellation> = new EventEmitter();
 
+  @Output() cancelEdit: EventEmitter<void> = new EventEmitter();
+
 
   /**
   * Properties
@@ -90,19 +92,19 @@ export class PeItAppellationComponent implements OnInit {
 
     // if (this.peItAppeState === 'add') {
 
-      // make a copy
-      let appe = new InfAppellation(this.appellation);
+    // make a copy
+    let appe = new InfAppellation(this.appellation);
 
-      // add an epr
-      appe.entity_version_project_rels = [
-        new InfEntityProjectRel({
-          fk_project: this.activeProjectService.project.pk_project,
-          fk_entity_version_concat: this.appellation.pk_entity_version_concat
-        })
-      ]
+    // add an epr
+    appe.entity_version_project_rels = [
+      new InfEntityProjectRel({
+        fk_project: this.activeProjectService.project.pk_project,
+        fk_entity_version_concat: this.appellation.pk_entity_version_concat
+      })
+    ]
 
-      // emit it
-      this.readyToAdd.emit(appe);
+    // emit it
+    this.readyToAdd.emit(appe);
     // }
 
   }
@@ -116,8 +118,8 @@ export class PeItAppellationComponent implements OnInit {
   }
 
 
-  cancelEdit() {
-    this.peItAppeState = 'view'
+  onCancel() {
+    this.cancelEdit.emit()
   }
 
   save(appeLabel: AppellationLabel) {
@@ -142,7 +144,7 @@ export class PeItAppellationComponent implements OnInit {
       })
 
     })
-    this.cancelEdit()
+    this.cancelEdit.emit()
 
   }
 

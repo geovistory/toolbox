@@ -308,6 +308,15 @@ exports.up = function(db, callback) {
     ));
   }
 
+  for (var i = 0; i < 25; i++) {
+    faker.locale = "de_CH";
+
+    sqlArray.push(getInsertStatement(
+      faker.name.firstName(),
+      faker.name.lastName(),
+      'Jonas Seed Project2'
+    ));
+  }
 
   for (var i = 0; i < 2; i++) {
     faker.locale = "de_CH";

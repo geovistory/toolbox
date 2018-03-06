@@ -1,29 +1,15 @@
 <div [ngClass]="{'dev-view': entityEditor.devView}">
 
-  <span *ngIf="entityEditor.devView">
-    [state: {{teEntState}}] [fkClass {{teEnt.fk_class}}] [readyToCreate: {{isReadyToCreate}}]
-  </span>
-
-  <div class="card gv-name" *ngIf="teEntState !== 'create'">
-
-    <div class="card-header gv-name-header d-flex flex-row">
-
-      <ng-content select="[headerLeft]"></ng-content>
+  <span *ngIf="entityEditor.devView"><ng-container *ngTemplateOutlet="dev"></ng-container></span>
 
 
-      <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
-        <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardBodyState==='expanded')}"></i>
-        {{displayLabel}}
-      </div>
+  <!-- Not View or Create State -->
+  <div class="card gv-name" *ngIf="teEntState !== 'create' && teEntState !== 'view'">
 
-      <ng-content select="[headerRight]"></ng-content>
+    <ng-container *ngTemplateOutlet="header"></ng-container>
 
 
-    </div>
-
-    <ng-content select="[belowHeader]"></ng-content>
-
-    <div class="gv-card-body-wrapper" [@slideInOut]="cardBodyState">
+    <div [@slideInOut]="cardBodyState">
 
       <gv-prop-section-of-te-ent
       *ngFor="let property of directedRolesPerProperty"
@@ -100,6 +86,7 @@
   </div>
 
 
+  <!-- Create State -->
 
   <div class="card gv-name" *ngIf="teEntState === 'create'">
 
@@ -132,4 +119,57 @@
     </div>
 
   </div>
+
+  <!-- View State -->
+
+  <div class="card gv-name" *ngIf="teEntState === 'view'">
+
+    <ng-container *ngTemplateOutlet="header"></ng-container>
+
+    <div [@slideInOut]="cardBodyState">
+
+      <gv-prop-section-of-te-ent
+      *ngFor="let property of directedRolesPerProperty"
+      [propertySection]="property"
+      [isOutgoing]="property.isOutgoing"
+      [roles]="property.roles"
+      [fkProperty]="property.fkProperty"
+      [pointTo]="'PeIt'"
+      [parentEntityPk]="parentRole.fk_entity"
+      [parentTeEnt]="teEnt"
+      [propState]="teEntState"
+      [parentRole]="parentRole"
+      [communityStatsVisible]="communityStatsVisible"
+      [ontoInfoVisible]="ontoInfoVisible"
+      (appeChange)="emitAppeChange($event)"
+      ></gv-prop-section-of-te-ent>
+
+    </div>
+
+  </div>
+
 </div>
+
+
+<!-- ************************** NG TEMPLATES ****************************** -->
+
+<ng-template #header>
+  <div class="card-header gv-name-header d-flex flex-row">
+    <ng-content select="[headerLeft]"></ng-content>
+    <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
+      <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardBodyState==='expanded')}"></i>
+        <span *ngIf="displayLabel">{{displayLabel}}</span>
+        <span *ngIf="!displayLabel">{{dfhClass?.dfh_standard_label}}</span>
+    </div>
+    <ng-content select="[headerRight]"></ng-content>
+  </div>
+  <ng-content select="[belowHeader]"></ng-content>
+</ng-template>
+
+
+<ng-template #dev>
+  <span>
+    [state: {{teEntState}}] [fkClass {{teEnt.fk_class}}] [readyToCreate: {{isReadyToCreate}}]
+  </span>
+</ng-template>
+

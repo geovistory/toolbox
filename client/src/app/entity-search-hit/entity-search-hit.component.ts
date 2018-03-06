@@ -12,6 +12,12 @@ export class EntitySearchHitComponent implements OnInit {
 
   @Input() persistentItem:any;
 
+
+  /**
+   * True if this is about selecting a pe-it as range of a role
+   */
+  @Input() selectRoleRange:boolean;
+
   /**
   * flag to indicate if this search hit is in the context of a project-wide
   * search or in a repository-wide search.
@@ -23,6 +29,7 @@ export class EntitySearchHitComponent implements OnInit {
 
   @Output() onAdd: EventEmitter<number> = new EventEmitter();
   @Output() onOpen: EventEmitter<number> = new EventEmitter();
+  @Output() onSelect: EventEmitter<number> = new EventEmitter();
 
   standardAppellationLabel: AppellationLabel;
   moreAppellationLabels: Array<AppellationLabel> = [];
@@ -102,6 +109,11 @@ export class EntitySearchHitComponent implements OnInit {
   open(){
     this.onOpen.emit(this.persistentItem.pk_entity)
   }
+
+  select(){
+    this.onSelect.emit(this.persistentItem.pk_entity)
+  }
+
 
   linkClicked(){
     if(this.isInProject){

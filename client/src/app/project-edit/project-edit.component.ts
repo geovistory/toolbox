@@ -1,19 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy} from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { ActiveProjectService } from '../shared/services/active-project.service';
 import { Project } from '../shared/sdk/models/Project';
+
+import { Subscription } from 'rxjs/Subscription';
+
 
 @Component({
   selector: 'gv-project-edit',
   templateUrl: './project-edit.component.html',
   styleUrls: ['./project-edit.component.scss']
 })
-export class ProjectEditComponent implements OnInit {
+export class ProjectEditComponent implements OnInit, OnDestroy {
   informationState:string;
   sourcesState:string;
   queryParams;
   projectId: number;
   project: Project;
+
+  queryParamsSubsciption:Subscription;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -23,7 +28,7 @@ export class ProjectEditComponent implements OnInit {
     this.activeProjectService.onProjectChange().subscribe((project:Project) => {
       this.project = project;
     })
-    activatedRoute.queryParams.subscribe(queryParams => {
+    this.queryParamsSubsciption = activatedRoute.queryParams.subscribe(queryParams => {
 
         this.informationState = queryParams['i']; // gets url part ?i='s100'
         this.sourcesState = queryParams['s']; // gets url part ?i='s100'
@@ -45,6 +50,10 @@ export class ProjectEditComponent implements OnInit {
 
   ngOnInit() {
    this.activeProjectService.setActiveProject(this.projectId)
+  }
+
+  ngOnDestroy(){
+   // this.queryParamsSubsciption.unsubscribe();
   }
 
 

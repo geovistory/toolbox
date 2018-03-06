@@ -37,7 +37,9 @@ export class EntityEditorComponent implements OnInit {
       this.activeProjectService.setActiveProject(this.activatedRoute.snapshot.parent.params['id']);
 
       //get pkEntity from url
-      this.pkEntity = this.activatedRoute.snapshot.params['id'];
+      this.activatedRoute.params.subscribe(params=>{
+        this.pkEntity = params['id'];
+      })
 
   }
 

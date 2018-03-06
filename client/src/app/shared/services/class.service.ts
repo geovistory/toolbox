@@ -48,4 +48,15 @@ export class ClassService {
     return this.classApi.find({"include": "text_properties"});
   }
 
+
+  /**
+   * Get class including text_properties by primary key
+   *
+   * @param  {number} pkClass:number dhf_primary_key
+   * @return {Observable<DfhClass>}
+   */
+  getByPk(pkClass:number):Observable<DfhClass> {
+    return this.classApi.findById(pkClass, {"include": "text_properties"});
+  }
+
 }

@@ -19,17 +19,13 @@
       <gv-appellation-label-view [appellation]="appellation"></gv-appellation-label-view>
     </div>
 
-    <button class="btn btn-link btn-sm" (click)="startEdit()">
-      <i class="fa fa-edit"></i>
-    </button>
-
   </div>
 
   <div *ngIf="peItAppeState === 'edit'">
 
     <gv-appellation-label-edit
     [appellationLabel]="appellationLabelInEdit"
-    (onCancel)="cancelEdit()"
+    (onCancel)="onCancel()"
     (onChange)="save($event)"></gv-appellation-label-edit>
 
   </div>

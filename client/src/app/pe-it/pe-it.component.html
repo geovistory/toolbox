@@ -39,6 +39,7 @@
           (notReadyToCreate)=emitNotReadyToCreate()
           (readyToAdd)="onAppeReadyToAdd($event)"
           (appeChange)="emitAppeChange($event)"
+          (cancelEdit)="onCancelEdit()"
           ></gv-pe-it-appellation>
 
           <gv-pe-it-language
@@ -52,18 +53,50 @@
           ></gv-pe-it-language>
 
           <gv-pe-it-entity-preview
-          *ngIf="showEntityUI && childOfTeEnt"
+          *ngIf="showEntityUI && childOfTeEnt && (valueEntitiesState==='view' || valueEntitiesState==='add')"
+          [pkEntity]="pkEntity"
           ></gv-pe-it-entity-preview>
+
+          <gv-pe-it-entity-add
+          class="gv-flex-grow-1 mt-2"
+          *ngIf="showEntityUI && childOfTeEnt && valueEntitiesState==='create'"
+          (selected)=peItSelected($event)
+          [fkClass]="fkClass"
+          ></gv-pe-it-entity-add>
 
         </div>
       </div>
 
-      <ng-content select="[headerRight]"></ng-content>
+      <div class="d-flex align-items-center" *ngIf="valueEntitiesState==='view' && peItState !== 'view'">
+
+        <div class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
+          <button class="btn btn-link" ngbDropdownToggle><i class="fa fa-ellipsis-v"></i></button>
+          <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+
+            <!-- dropdown of appe & lang -->
+            <button *ngIf="!showEntityUI" class="dropdown-item" (click)="edit()">Edit</button>
+
+            <!-- dropdown of enitiy preview -->
+            <button *ngIf="showEntityUI && childOfTeEnt" class="dropdown-item" (click)="open()">Open...</button>
+
+            <ng-content select="[dropdownItems]"></ng-content>
+
+          </div>
+        </div>
+
+
+
+
+      </div>
+
 
     </div>
 
     <ng-content select="[belowHeader]"></ng-content>
 
   </div>
+
+
+
 
 </div>

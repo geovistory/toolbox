@@ -4,7 +4,8 @@ import {
   state,
   style,
   animate,
-  transition
+  transition,
+  keyframes
 } from '@angular/animations';
 
 import { Observable } from 'rxjs/Observable';
@@ -25,6 +26,7 @@ import { DfhProperty } from '../shared/sdk/models/DfhProperty';
 import { PropSectionOfTeEntComponent } from '../prop-section-of-te-ent/prop-section-of-te-ent.component';
 import { PropSectionListComponent } from '../prop-section-list/prop-section-list.component';
 import { PropertyService } from '../shared/services/property.service';
+import { DfhClass } from '../shared/sdk/models/DfhClass';
 
 @Component({
   selector: 'gv-te-ent',
@@ -33,13 +35,37 @@ import { PropertyService } from '../shared/services/property.service';
   animations: [
     trigger('slideInOut', [
       state('expanded', style({
-        height: '*'
+        height: '*',
+        overflow:'visible'
       })),
       state('collapsed', style({
-        height: '0px'
+        height: '0px',
+        overflow:'hidden'
       })),
-      transition('expanded => collapsed', animate('400ms ease-in-out')),
-      transition('collapsed => expanded', animate('400ms ease-in-out'))
+      transition('expanded => collapsed', animate('400ms ease-in-out', keyframes([
+        style({
+          height: '*',
+          overflow: 'hidden',
+          offset: 0
+        }),
+        style({
+          height: '0px',
+          display: 'hidden',
+          offset: 1
+        })
+      ]))),
+      transition('collapsed => expanded', animate('400ms ease-in-out', keyframes([
+        style({
+          height: '0px',
+          overflow: 'hidden',
+          offset: 0
+        }),
+        style({
+          height: '*',
+          display: 'hidden',
+          offset: 1
+        })
+      ])))
     ])
   ]
 })
@@ -107,6 +133,10 @@ export class TeEntComponent extends PropSectionListComponent implements OnInit {
   // For add-pe-it-state: Temporal Entity to be Added
   teEntToAdd: InfTemporalEntity;
 
+
+  //Class of this peIt
+  dfhClass: DfhClass;
+
   // Array of children PropSectionOfTeEntComponent
   @ViewChildren(PropSectionOfTeEntComponent) propertyComponents: QueryList<PropSectionOfTeEntComponent>
 
@@ -158,6 +188,7 @@ export class TeEntComponent extends PropSectionListComponent implements OnInit {
       })
     ]
 
+    this.initDfhClass(this.teEnt.fk_class)
 
     if (this.addingInformation) {
       this.selectPropState = 'selectProp'
@@ -186,6 +217,11 @@ export class TeEntComponent extends PropSectionListComponent implements OnInit {
 
   }
 
+  initDfhClass(fkClass) {
+    this.classService.getByPk(fkClass).subscribe((dfhClass) => {
+      this.dfhClass = dfhClass;
+    })
+  }
 
 
   propertyReadyToCreate(roles: InfRole[]) {

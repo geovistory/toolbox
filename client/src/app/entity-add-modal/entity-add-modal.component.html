@@ -28,9 +28,11 @@
   (click)="add()">
     Add
   </button>
-  <button type="button" class="btn btn-primary btn" *ngIf="modalService.createButtonVisible"
-  (click)="create()">
-    Create
+  <button type="button" class="btn btn-primary btn" *ngIf="modalService.createButtonVisible && !modalService.selectRoleRange"
+  (click)="create()">Create
+  </button>
+  <button type="button" class="btn btn-primary btn" *ngIf="modalService.createButtonVisible && modalService.selectRoleRange"
+  (click)="createAndSelect()">Create and Select
   </button>
 
 </div>

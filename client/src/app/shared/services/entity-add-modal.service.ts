@@ -25,6 +25,9 @@ export class EntityAddModalService {
   // Open Entity Event
   onOpen: EventEmitter<number> = new EventEmitter();
 
+  // Select Entity Event
+  onSelect: EventEmitter<number> = new EventEmitter();
+
   // Entity Project Rels needed to add the selected names to the project
   eprNaming: InfEntityProjectRel[];
 
@@ -45,11 +48,14 @@ export class EntityAddModalService {
     return EntityAddModalState[this._state];
   }
 
+  // true if it is about selecting a peIt as the range of a role
+  selectRoleRange: boolean;
+
   // true if add button should be visible
   addButtonVisible: boolean;
 
   // Class of the entity to add
-  selectedClass: DfhClass; 
+  selectedClass: DfhClass;
 
   // Current modal title
   modalTitle: string;
