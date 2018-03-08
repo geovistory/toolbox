@@ -110,12 +110,12 @@ export class PeItAppellationComponent implements OnInit {
   }
 
 
-  startEdit() {
-    this.peItAppeState = 'edit'
-
-    this.appellationLabelInEdit = new AppellationLabel(this.appellationLabel);
-
-  }
+  // startEdit() {
+  //   this.peItAppeState = 'edit'
+  //
+  //   this.appellationLabelInEdit = new AppellationLabel(this.appellationLabel);
+  //
+  // }
 
 
   onCancel() {

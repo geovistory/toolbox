@@ -36,6 +36,8 @@ export class AppellationLabelEditComponent implements OnInit {
   ngOnInit() {
     if (!this.appellationLabel) {
       this.appellationLabel = new AppellationLabel();
+    }else{
+      this.appellationLabel = new AppellationLabel(this.appellationLabel);
     }
 
   }
