@@ -21,7 +21,7 @@
           </div>
           <div *ngFor="let message of errorMessages?.username" class="help-block form-text text-danger">{{message}}</div>
         </div>
-        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !username.valid }">
+        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !email.valid }">
           <label for="firstName">Email</label>
           <input type="email" class="form-control" name="email" [(ngModel)]="model.email" #email="ngModel" required email/>
           <div *ngIf="f.submitted && email?.errors?.required" class="help-block form-text text-danger">Email is required</div>

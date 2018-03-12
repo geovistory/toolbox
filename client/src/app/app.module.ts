@@ -86,6 +86,9 @@ import { RoleOfPeItComponent } from './role-of-pe-it/role-of-pe-it.component';
 import { PropSectionListOfPeItComponent } from './prop-section-list-of-pe-it/prop-section-list-of-pe-it.component';
 import { PeItEntityPreviewModalComponent } from './pe-it-entity-preview-modal/pe-it-entity-preview-modal.component';
 import { PeItEntityAddComponent } from './pe-it-entity-add/pe-it-entity-add.component';
+import { PropertySectionForDatesComponent } from './property-section-for-dates/property-section-for-dates.component';
+import { RoleToDateComponent } from './role-to-date/role-to-date.component';
+import { PeItDateComponent } from './pe-it-date/pe-it-date.component';
 
 @NgModule({
   declarations: [
@@ -149,7 +152,10 @@ import { PeItEntityAddComponent } from './pe-it-entity-add/pe-it-entity-add.comp
     RoleOfPeItComponent,
     PropSectionListOfPeItComponent,
     PeItEntityPreviewModalComponent,
-    PeItEntityAddComponent
+    PeItEntityAddComponent,
+    PropertySectionForDatesComponent,
+    RoleToDateComponent,
+    PeItDateComponent
   ],
   imports: [
     BrowserModule,

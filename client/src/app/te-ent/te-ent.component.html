@@ -30,6 +30,8 @@
       (removePropertySectionReq)="onRemovePropertySectionReq($event)"
       ></gv-prop-section-of-te-ent>
 
+      <ng-container *ngTemplateOutlet="dating"></ng-container>
+
       <div class="gv-footer mt-2">
 
         <!-- Step 1 for adding a new property -->
@@ -79,7 +81,6 @@
         </div>
       </div>
 
-
     </div>
 
 
@@ -116,6 +117,8 @@
       (notReadyToCreate)="propertyNotReadyToCreate()"
       ></gv-prop-section-of-te-ent>
 
+      <ng-container *ngTemplateOutlet="dating"></ng-container>
+
     </div>
 
   </div>
@@ -144,6 +147,8 @@
       (appeChange)="emitAppeChange($event)"
       ></gv-prop-section-of-te-ent>
 
+      <ng-container *ngTemplateOutlet="dating"></ng-container>
+
     </div>
 
   </div>
@@ -166,6 +171,11 @@
   <ng-content select="[belowHeader]"></ng-content>
 </ng-template>
 
+<ng-template #dating>
+  <gv-property-section-for-dates
+  [propState]="teEntState"
+  ></gv-property-section-for-dates>
+</ng-template>
 
 <ng-template #dev>
   <span>

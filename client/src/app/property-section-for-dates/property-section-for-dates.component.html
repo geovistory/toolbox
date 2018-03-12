@@ -1,0 +1,65 @@
+<div [ngClass]="{'dev-view': entityEditor.devView}">
+  <span *ngIf="entityEditor.devView">
+
+  </span>
+
+  <!--
+  ************************* Edit State ************************* -->
+
+  <span *ngIf="propState === 'edit'">
+
+    <div class="btn-group d-flex flex-row gv-h5">
+      <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
+        <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardState==='expanded')}"></i>
+        When
+      </button>
+    </div>
+
+
+    <div class="card-body" [@slideInOut]="cardState">
+
+
+      <form name="form" (ngSubmit)="f.form.valid && save()" #f="ngForm" novalidate>
+        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !bb.valid }">
+          <label for="bb">Begin of begin</label>
+          <input type="date" class="form-control" name="bb" [(ngModel)]="model.bb" #bb="ngModel" required/>
+          <gv-pe-it-date></gv-pe-it-date>
+          <div *ngIf="f.submitted && bb?.errors?.required" class="help-block form-text text-danger">
+            Begin of begin is required
+          </div>
+          <div *ngFor="let message of errorMessages?.bb" class="help-block form-text text-danger">{{message}}</div>
+          {{model | json}}
+        </div>
+        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !eb.valid }">
+          <label for="bb">End of begin</label>
+          <input type="text" class="form-control" name="eb" [(ngModel)]="model.eb" #bb="ngModel" required/>
+          <div *ngIf="f.submitted && eb?.errors?.required" class="help-block form-text text-danger">
+            End of begin is required
+          </div>
+          <div *ngFor="let message of errorMessages?.eb" class="help-block form-text text-danger">{{message}}</div>
+        </div>
+        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !be.valid }">
+          <label for="bb">Begin of end</label>
+          <input type="text" class="form-control" name="be" [(ngModel)]="model.be" #bb="ngModel" required/>
+          <div *ngIf="f.submitted && be?.errors?.required" class="help-block form-text text-danger">
+            Begin of end is required
+          </div>
+          <div *ngFor="let message of errorMessages?.be" class="help-block form-text text-danger">{{message}}</div>
+        </div>
+        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !ee.valid }">
+          <label for="bb">End of end</label>
+          <input type="text" class="form-control" name="ee" [(ngModel)]="model.ee" #bb="ngModel" required/>
+          <div *ngIf="f.submitted && ee?.errors?.required" class="help-block form-text text-danger">
+            End of end is required
+          </div>
+          <div *ngFor="let message of errorMessages?.ee" class="help-block form-text text-danger">{{message}}</div>
+        </div>
+        <div class="form-group">
+          <button [disabled]="loading" type="submit" class="btn btn-primary">Save</button>
+          <button class="btn btn-link">Cancel</button>
+        </div>
+      </form>
+
+    </div>
+  </span>
+</div>

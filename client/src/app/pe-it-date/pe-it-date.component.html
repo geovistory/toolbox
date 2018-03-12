@@ -1,0 +1,75 @@
+<!-- <button type="button" class="btn btn-link btn-mall" (click)="showCenturyInputs()" *ngIf="!centuryInputsVisible">Set century or decade</button>
+<button type="button" class="btn btn-link btn-mall" (click)="hideCenturyInputs()" *ngIf="centuryInputsVisible">Set Date</button> -->
+<h2>Gregorian</h2>
+<div *ngIf="!centuryInputsVisible">
+  <form #df="ngForm" (ngSubmit)="f.form.valid && ok()" novalidate style="width:350px">
+    <div class="input-group mb-2">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fa fa-calendar"></i>&nbsp;Gregorian</span>
+      </div>
+      <input type="number" class="form-control" name="year" [(ngModel)]="trYear.year" placeholder="Year*" min="-4000" max="4000"/>
+      <input type="number" class="form-control" name="month" [(ngModel)]="trYear.month" placeholder="Month" min="1" max="12"/>
+      <input type="number" class="form-control" name="day" [(ngModel)]="trYear.day" placeholder="Day" min="1" max="31"/>
+    </div>
+    <div class="input-group" *ngIf="timeInputsVisible">
+      <div class="input-group-prepend">
+        <span class="input-group-text"> <i class="fa fa-clock-o"></i> </span>
+      </div>
+      <input type="number" class="form-control" name="hours" [(ngModel)]="trYear.hours" placeholder="Hours" min="0" max="23"/>
+      <input type="number" class="form-control" name="minutes" [(ngModel)]="trYear.minutes" placeholder="Min" min="0" max="59"/>
+      <input type="number" class="form-control" name="seconds" [(ngModel)]="trYear.seconds" placeholder="Sec" min="0" max="59"/>
+    </div>
+  </form>
+
+  <button type="button" class="btn btn-link btn-mall" (click)="showTimeInputs()" *ngIf="!timeInputsVisible">Add time</button>
+  <button type="button" class="btn btn-link btn-mall" (click)="hideTimeInputs()" *ngIf="timeInputsVisible">Remove time</button>
+
+</div>
+
+<div *ngIf="centuryInputsVisible">
+  <form #cf style="width:350px">
+    <div class="input-group mb-2">
+      <div class="input-group-prepend">
+        <span class="input-group-text"> <i class="fa fa-calendar-o"></i> </span>
+      </div>
+      <input type="number" class="form-control" name="year" [(ngModel)]="trCentury.century" placeholder="Century"/>
+      <input type="number" class="form-control" name="month" [(ngModel)]="trCentury.decade" placeholder="Decade"/>
+    </div>
+  </form>
+</div>
+
+<h2>
+  Day Diff {{diff}}
+</h2>
+
+<h2>
+  Julian
+</h2>
+
+<form #jf="ngForm" (ngSubmit)="jf.form.valid && ok()" novalidate style="width:350px">
+  <div class="input-group mb-2">
+    <div class="input-group-prepend">
+      <span class="input-group-text"><i class="fa fa-calendar"></i>&nbsp;Julian</span>
+    </div>
+    <input type="number" class="form-control" name="year" [(ngModel)]="trJulian.year" placeholder="Year*" min="-4000" max="4000"/>
+    <input type="number" class="form-control" name="month" [(ngModel)]="trJulian.month" placeholder="Month"  min="1" max="12"/>
+    <input type="number" class="form-control" name="day" [(ngModel)]="trJulian.day" placeholder="Day" min="1" max="31"/>
+  </div>
+  <div class="input-group" *ngIf="timeInputsVisible">
+    <div class="input-group-prepend">
+      <span class="input-group-text"> <i class="fa fa-clock-o"></i> </span>
+    </div>
+    <input type="number" class="form-control" name="hours" [(ngModel)]="trJulian.hours" placeholder="Hours" min="0" max="23"/>
+    <input type="number" class="form-control" name="minutes" [(ngModel)]="trJulian.minutes" placeholder="Min" min="0" max="59"/>
+    <input type="number" class="form-control" name="seconds" [(ngModel)]="trJulian.seconds" placeholder="Sec" min="0" max="59"/>
+  </div>
+</form>
+
+<h2>Time Primitive stored in DB</h2>
+<pre>
+  Timestamp {{tr.timestamp}}
+</pre>
+
+<pre>
+  Duration {{tr.duration}}
+</pre>
