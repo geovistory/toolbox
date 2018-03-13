@@ -44,7 +44,7 @@
     <div class="col">
       <div class="gv-search-hits-count mt-2">
         <span  *ngIf="collectionSize > limit">
-          {{hitsFrom()}}-{{hitsTo()}} of
+          {{hitsFrom}}-{{hitsTo}} of
         </span>
         {{collectionSize | number}} {{(collectionSize == 1 ? 'result' : 'results')}}
       </div>

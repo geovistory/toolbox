@@ -54,8 +54,7 @@ export class ProjectEntitiesComponent implements OnInit {
     private modalService: NgbModal,
     private entityAddModalService: EntityAddModalService,
     private router: Router,
-    private slimLoadingBarService: SlimLoadingBarService,
-    public peItService:PeItService //TODO remove incl. import
+    private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -107,10 +106,10 @@ export class ProjectEntitiesComponent implements OnInit {
     // routerLink="../entity/{{persistentItem.pk_persistent_item}}" queryParamsHandling="merge"
   }
 
-  hitsFrom(){
+  get hitsFrom(){
     return (this.limit * (this.page-1))+1;
   }
-  hitsTo(){
+  get hitsTo(){
     const upper = (this.limit * (this.page-1)) + this.limit;
     return upper > this.collectionSize ? this.collectionSize : upper;
   }

@@ -4,6 +4,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { registerLocaleData } from '@angular/common';
+import localeDeCh from '@angular/common/locales/de-CH';
+
+registerLocaleData(localeDeCh);
+
 // Third party imports
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {ElasticInputModule} from 'angular2-elastic-input';
@@ -184,7 +189,7 @@ import { PeItDateComponent } from './pe-it-date/pe-it-date.component';
     ClassService,
     UtilitiesService,
     EntityEditorService,
-    { provide: LOCALE_ID, useValue: 'ch-DE' }
+    { provide: LOCALE_ID, useValue: 'de-CH' }
   ],
   entryComponents : [
     AppComponent,
