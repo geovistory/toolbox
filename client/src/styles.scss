@@ -242,3 +242,10 @@ gv-property{
     color: $gray-200;
   }
 }
+
+
+// Forms
+ 
+.ng-touched.ng-invalid {
+  @extend .is-invalid;
+}
