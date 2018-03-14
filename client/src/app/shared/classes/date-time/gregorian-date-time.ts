@@ -39,29 +39,86 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
     }
   }
 
-  addHour(){
+  addHour() {
     this.hours++;
-    if(this.hours > 23){
+    if (this.hours > 23) {
       this.hours = 0;
       this.addDay()
     }
   }
 
-  addMinute(){
+  addMinute() {
     this.minutes++;
-    if(this.minutes > 59){
+    if (this.minutes > 59) {
       this.minutes = 0;
       this.addHour()
     }
   }
 
-  addSecond(){
+  addSecond() {
     this.seconds++;
-    if(this.seconds > 59){
+    if (this.seconds > 59) {
       this.seconds = 0;
       this.addMinute()
     }
   }
+
+  removeYear() {
+    this.year--;
+    if(this.year ===0) {
+      this.year = -1;
+    }
+    if (this.day > this.lengthOfMonth()) {
+      this.day = this.lengthOfMonth()
+    }
+  }
+
+  removeMonth() {
+    this.month--;
+
+    if (this.month < 1) {
+      this.month = 12;
+      this.removeYear();
+    }
+    else if (this.day > this.lengthOfMonth()) {
+      this.day = this.lengthOfMonth()
+    }
+  }
+
+  removeDay() {
+    this.day--;
+    if (this.day < 1) {
+      this.removeMonth()
+      this.day = this.lengthOfMonth();
+    }
+  }
+
+
+  removeHour() {
+    this.hours--;
+    if (this.hours < 0) {
+      this.hours = 23;
+      this.removeDay()
+    }
+  }
+
+  removeMinute() {
+    this.minutes--;
+    if (this.minutes < 0) {
+      this.minutes = 59;
+      this.removeHour()
+    }
+  }
+
+  removeSecond() {
+    this.seconds--;
+    if (this.seconds < 0) {
+      this.seconds = 59;
+      this.removeMinute()
+    }
+  }
+
+
 
 
   add(duration: Granularity) {
@@ -85,13 +142,18 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
     }
   }
 
-  getEndDateTime(): GregorianDateTime {
-    var dt = new GregorianDateTime(this);
-    dt.add(this.getGranularity());
-    return dt;
+  toLastSecondOf(duration: Granularity) {
+    this.add(duration);
+    this.removeSecond();
   }
 
+  getEndOf(duration: Granularity): GregorianDateTime {
 
+    var dt = new GregorianDateTime(this);
+    dt.toLastSecondOf(duration);
+
+    return dt;
+  }
 
   lengthOfMonth() {
     var y = this.year, m = this.month;

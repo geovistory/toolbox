@@ -6,6 +6,12 @@ registerLocaleData(localeDeCh);
 
 import { DatePipe } from '@angular/common';
 
+let year30 = new Date()
+year30.setFullYear(30);
+year30.setMonth(7); // -> August
+year30.setDate(25);
+
+
 export default sandboxOf(DatePipe, {
   declareComponent: false
 })
@@ -47,7 +53,7 @@ export default sandboxOf(DatePipe, {
   })
   .add('Year 30', {
     context: {
-      input: '0030-01-01 00:00:00',
+      input: year30,
       format: 'MMM d, y GG, h:mm:ss',
       locale: 'de-CH'
     },
@@ -56,7 +62,7 @@ export default sandboxOf(DatePipe, {
       <div>
 
         <p>
-          Input: {{input}}
+          Input: {{input.toString()}}
         </p>
         <p>
           Format: {{format}}

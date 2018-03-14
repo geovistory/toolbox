@@ -29,10 +29,10 @@ export class TimePrimitiveComponent implements OnInit {
 
   info: {
     duration?: string;
-    gregStartIso?: string;
-    gregEndIso?: string;
-    julStartIso?: string;
-    julEndIso?: string;
+    gregStartDate?: Date;
+    gregEndDate?: Date;
+    julStartDate?: Date;
+    julEndDate?: Date;
   };
 
   julianDayFromJulianCal: number;
@@ -201,34 +201,34 @@ export class TimePrimitiveComponent implements OnInit {
 
   updateGregorianInfo() {
     if (this.currentCal === 'gregorian') {
-      this.info.gregStartIso = this.gregorianDateTime.getTimeStamp();
-      this.info.gregEndIso = this.gregorianDateTime.getEndDateTime().getTimeStamp();
+      this.info.gregStartDate = this.gregorianDateTime.getDate();
+      this.info.gregEndDate = this.gregorianDateTime.getEndOf(this.gregorianDateTime.getGranularity()).getDate();
     }
     else if (this.currentCal === 'julian') {
       const jd = this.julianDateTime.getJulianDay();
       if (jd >= 2299161) {
         const gdt = new GregorianDateTime(this.julianDateTime);
         gdt.fromJulianDay(jd);
-        this.info.gregStartIso = gdt.getTimeStamp();
-        this.info.gregEndIso = gdt.getEndDateTime().getTimeStamp();
+        this.info.gregStartDate = gdt.getDate();
+        this.info.gregEndDate = gdt.getEndOf(this.julianDateTime.getGranularity()).getDate();
       }else{
-        this.info.gregStartIso = undefined;
-        this.info.gregEndIso = undefined;
+        this.info.gregStartDate = undefined;
+        this.info.gregEndDate = undefined;
       }
     }
   }
 
   updateJulianInfo() {
     if (this.currentCal === 'julian') {
-      this.info.julStartIso = this.julianDateTime.getTimeStamp();
-      this.info.julEndIso = this.julianDateTime.getEndDateTime().getTimeStamp();
+      this.info.julStartDate = this.julianDateTime.getDate();
+      this.info.julEndDate = this.julianDateTime.getEndOf(this.julianDateTime.getGranularity()).getDate();
     }
     else if (this.currentCal === 'gregorian') {
       const jd = this.gregorianDateTime.getJulianDay();
       const jdt = new JulianDateTime(this.gregorianDateTime);
       jdt.fromJulianDay(jd);
-      this.info.julStartIso = jdt.getTimeStamp();
-      this.info.julEndIso = jdt.getEndDateTime().getTimeStamp();
+      this.info.julStartDate = jdt.getDate();
+      this.info.julEndDate = jdt.getEndOf(this.gregorianDateTime.getGranularity()).getDate();
     }
   }
 

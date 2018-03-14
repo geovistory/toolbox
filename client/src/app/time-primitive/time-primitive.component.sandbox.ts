@@ -1,5 +1,9 @@
 import { sandboxOf } from 'angular-playground';
 
+import { registerLocaleData } from '@angular/common';
+import localeDeCh from '@angular/common/locales/de-CH';
+registerLocaleData(localeDeCh);
+
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { TimePrimitiveComponent } from './time-primitive.component';

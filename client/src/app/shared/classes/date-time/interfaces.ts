@@ -1,4 +1,5 @@
 import { EventEmitter } from '@angular/core';
+import { Granularity } from './date-time-commons';
 
 
 export interface HoursMinutesSeconds {
@@ -49,7 +50,7 @@ export interface DateTime {
    * Returns length of current month. If no month or year provided, returns
    * undefined.
    */
-  lengthOfMonth():number;
+  lengthOfMonth(): number;
 
   /**
    * Returns true if this.year is a leap year
@@ -57,13 +58,23 @@ export interface DateTime {
   isLeapYear(): boolean;
 
 
-  addYear():void
+  addYear(): void
 
-  addMonth():void;
+  addMonth(): void;
 
-  // addDay():void;
+  addDay(): void;
 
+  addHour(): void;
 
+  addMinute(): void;
+
+  addSecond(): void;
+
+  add(duration: Granularity);
+
+  toLastSecondOf(duration: Granularity);
+
+  getEndOf(duration: Granularity):DateTime;
 
 
   emitDateChange()
