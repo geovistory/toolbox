@@ -206,6 +206,7 @@ export class PropSectionOfTeEntComponent extends PropertyComponent implements On
 
   get addButtonVisible(): boolean {
 
+    if (this.cardState === 'collapsed') return false;
     if (this.addRoleState === 'init') return true;
 
     // TODO add logic according to quantities

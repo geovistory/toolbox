@@ -1,7 +1,7 @@
 import { EventEmitter } from '@angular/core';
 
 import { DateTime, YearMonthDay } from './interfaces';
-import { DateTimeCommons } from './date-time-commons';
+import { DateTimeCommons, Granularity } from './date-time-commons';
 
 
 /**
@@ -16,17 +16,55 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
   */
 
 
-  /**
-  * Validate that the combination of year, month and day exists
-  *
-  * @return {type}  description
-  */
-  dateValid() {
+  addYear() {
+    this.year++;
 
+    if (this.day > this.lengthOfMonth()) {
+      this.day = this.lengthOfMonth()
+    }
   }
 
-  private lengthOfMonthJulian(year: number, month: number) {
-    var y = year, m = month;
+  addMonth() {
+    this.month++;
+
+    if (this.month > 12) {
+      this.month = 1
+      this.addYear();
+    }
+    else if (this.day > this.lengthOfMonth()) {
+      this.day = this.lengthOfMonth()
+    }
+  }
+
+  addDay() {
+    this.day++;
+    if (this.day > this.lengthOfMonth()) {
+      this.day = 1;
+      this.addMonth()
+    }
+  }
+
+  add(duration: Granularity) {
+    if (duration === '1 year') {
+      this.addYear()
+    }
+    else if (duration === '1 month') {
+      this.addMonth()
+    }
+    else if (duration === '1 day') {
+      this.addDay()
+    }
+  }
+
+  getEndDateTime(): JulianDateTime {
+    var dt = new JulianDateTime(this);
+    dt.add(this.getGranularity());
+    return dt;
+  }
+
+
+  lengthOfMonth() {
+    var y = this.year, m = this.month;
 
     // Assume not leap year by default (note zero index for Jan)
     var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];

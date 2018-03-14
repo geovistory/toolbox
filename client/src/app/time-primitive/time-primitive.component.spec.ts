@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PeItDateComponent } from './pe-it-date.component';
+import { TimePrimitiveComponent } from './time-primitive.component';
 
-describe('PeItDateComponent', () => {
-  let component: PeItDateComponent;
-  let fixture: ComponentFixture<PeItDateComponent>;
+describe('TimePrimitiveComponent', () => {
+  let component: TimePrimitiveComponent;
+  let fixture: ComponentFixture<TimePrimitiveComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PeItDateComponent ]
+      declarations: [ TimePrimitiveComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PeItDateComponent);
+    fixture = TestBed.createComponent(TimePrimitiveComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

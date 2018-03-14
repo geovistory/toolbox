@@ -1,7 +1,7 @@
 import { EventEmitter } from '@angular/core';
 
 import { DateTime, YearMonthDay } from './interfaces';
-import { DateTimeCommons } from './date-time-commons';
+import { DateTimeCommons, Granularity } from './date-time-commons';
 
 /**
  * Class to represent a Julian Date and Time
@@ -10,17 +10,95 @@ import { DateTimeCommons } from './date-time-commons';
 export class GregorianDateTime extends DateTimeCommons implements DateTime {
 
 
-  /**
-   * Validate that the combination of year, month and day exists
-   *
-   * @return {type}  description
-   */
-  dateValid() {
 
+  addYear() {
+    this.year++;
+    if (this.day > this.lengthOfMonth()) {
+      this.day = this.lengthOfMonth()
+    }
   }
 
-  private lengthOfMonthGregorian(year: number, month: number) {
-    var y = year, m = month;
+  addMonth() {
+    this.month++;
+
+
+    if (this.month > 12) {
+      this.month = 1
+      this.addYear();
+    }
+    else if (this.day > this.lengthOfMonth()) {
+      this.day = this.lengthOfMonth()
+    }
+  }
+
+  addDay() {
+    this.day++;
+    if (this.day > this.lengthOfMonth()) {
+      this.day = 1;
+      this.addMonth()
+    }
+  }
+
+  addHour(){
+    this.hours++;
+    if(this.hours > 23){
+      this.hours = 0;
+      this.addDay()
+    }
+  }
+
+  addMinute(){
+    this.minutes++;
+    if(this.minutes > 59){
+      this.minutes = 0;
+      this.addHour()
+    }
+  }
+
+  addSecond(){
+    this.seconds++;
+    if(this.seconds > 59){
+      this.seconds = 0;
+      this.addMinute()
+    }
+  }
+
+
+  add(duration: Granularity) {
+    if (duration === '1 year') {
+      this.addYear()
+    }
+    else if (duration === '1 month') {
+      this.addMonth()
+    }
+    else if (duration === '1 day') {
+      this.addDay()
+    }
+    else if (duration === '1 hour') {
+      this.addHour()
+    }
+    else if (duration === '1 minute') {
+      this.addMinute()
+    }
+    else if (duration === '1 second') {
+      this.addSecond()
+    }
+  }
+
+  getEndDateTime(): GregorianDateTime {
+    var dt = new GregorianDateTime(this);
+    dt.add(this.getGranularity());
+    return dt;
+  }
+
+
+
+  lengthOfMonth() {
+    var y = this.year, m = this.month;
+
+    if (!(m > 0) && !(m <= 12)) {
+      return undefined;
+    }
 
     // Assume not leap year by default (note zero index for Jan)
     var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -30,7 +108,7 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
     if (this.isLeapYear()) {
       daysInMonth[1] = 29;
     }
-    return daysInMonth[--m]
+    return daysInMonth[--m];
   }
 
 

@@ -2,76 +2,91 @@ import { EventEmitter } from '@angular/core';
 import { DateTime, YearMonthDay } from './interfaces';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 
+export type Granularity =
+'1 century' |
+'1 decade' |
+'1 year' |
+'1 month' |
+'1 day' |
+'1 hour' |
+'1 minute' |
+'1 second';
+
 export class DateTimeCommons {
 
 
-    /**
-     * Properties
-     */
-    onDateChange: EventEmitter<YearMonthDay> = new EventEmitter();
+  /**
+  * Properties
+  */
+  onDateChange: EventEmitter<YearMonthDay> = new EventEmitter();
 
-    private _year?: number;
+  private _year?: number;
 
-    set year(val: number) {
-      this._year = val;
-      this.emitDateChange();
-    }
+  set year(val: number) {
+    this._year = val;
+    this.emitDateChange();
+  }
 
-    get year(): number {
-      return this._year;
-    }
+  get year(): number {
+    return this._year;
+  }
 
-    private _month?: number;
+  private _month?: number;
 
-    set month(val: number) {
-      this._month = val;
-      this.emitDateChange();
-    }
+  set month(val: number) {
+    this._month = val;
+    this.emitDateChange();
+  }
 
-    get month(): number {
-      return this._month;
-    }
+  get month(): number {
+    return this._month;
+  }
 
-    private _day?: number;
+  private _day?: number;
 
-    set day(val: number) {
-      this._day = val;
-      this.emitDateChange();
-    }
+  set day(val: number) {
+    this._day = val;
+    this.emitDateChange();
+  }
 
-    get day(): number {
-      return this._day;
-    }
+  get day(): number {
+    return this._day;
+  }
 
-    private _hours?: number;
+  private _hours?: number;
 
-    set hours(val: number) {
-      this._hours = val;
-    }
+  set hours(val: number) {
+    this._hours = val;
+  }
 
-    get hours(): number {
-      return this._hours;
-    }
+  get hours(): number {
+    return this._hours;
+  }
 
-    private _minutes?: number;
+  private _minutes?: number;
 
-    set minutes(val: number) {
-      this._minutes = val;
-    }
+  set minutes(val: number) {
+    this._minutes = val;
+  }
 
-    get minutes(): number {
-      return this._minutes;
-    }
+  get minutes(): number {
+    return this._minutes;
+  }
 
-    private _seconds?: number;
+  private _seconds?: number;
 
-    set seconds(val: number) {
-      this._seconds = val;
-    }
+  set seconds(val: number) {
+    this._seconds = val;
+  }
 
-    get seconds(): number {
-      return this._seconds;
-    }
+  get seconds(): number {
+    return this._seconds;
+  }
+
+
+  constructor(data?){
+    Object.assign(this, data);
+  }
 
   /**
   * Returns the running day for given month and day with consideration of the
@@ -83,6 +98,10 @@ export class DateTimeCommons {
   * @param {boolean} isLeap if true, this is a leap year
   */
   calcRunningDay(month: number, day: number, isLeap: boolean): number {
+
+    // if no month or day provided, let's start at 1
+    day = (day === undefined || day === null) ? 1 : day;
+    month = (month === undefined || month === null) ? 1 : month;
 
     // month corrections (note that january has index 0)
     var monthCorrenctions = [-1, 0, -2, -1, -1, 0, 0, 1, +2, +2, +3, +3];
@@ -129,38 +148,78 @@ export class DateTimeCommons {
     }
 
     // resulting day
-    var day = runningDay - 30*(month-1) - (lc + mc);
+    var day = runningDay - 30 * (month - 1) - (lc + mc);
 
     // check if month and day still valid
-    if(month>12 || day <1){
+    if (month > 12 || day < 1) {
 
-      month--;
+    month--;
 
-      if(month < 1){
-        isLeap = !isLeap;
-      }
-
-      // leap year correction
-      if (isLeap && month > 2) {
-        lc = 1;
-      }
-
-      // month correction
-      var mc = monthCorrenctions[month - 1];
-
-      // resulting day
-      var day = runningDay - 30*(month-1) - (lc + mc);
-
+    if (month < 1) {
+      isLeap = !isLeap;
     }
 
-    return { day: day, month: month };
+    // leap year correction
+    lc = 0;
+
+    if (isLeap && month > 2) {
+      lc = 1;
+    }
+
+    // month correction
+    var mc = monthCorrenctions[month - 1];
+
+    // resulting day
+    var day = runningDay - 30 * (month - 1) - (lc + mc);
+
   }
 
-  emitDateChange() {
-    this.onDateChange.emit({
-      year: this.year,
-      month: this.month,
-      day: this.day
-    });
-  }
+  return { day: day, month: month };
+}
+
+emitDateChange() {
+  this.onDateChange.emit({
+    year: this.year,
+    month: this.month,
+    day: this.day
+  });
+}
+
+getGranularity(): Granularity {
+  let duration: Granularity = undefined;
+  if (this.year) { duration = "1 year" }
+  if (this.month) { duration = "1 month" }
+  if (this.day) { duration = "1 day" }
+  if (this.hours) { duration = "1 hour" }
+  if (this.minutes) { duration = "1 minute" }
+  if (this.seconds) { duration = "1 second" }
+  return duration;
+}
+
+getTimeStamp(): string {
+
+  let timestamp = '';
+  timestamp = this.year ? this.pad(Math.abs(this.year), 4) : '01';
+  timestamp += '-';
+  timestamp += this.month ? this.pad(this.month, 2) : '01';
+  timestamp += '-';
+  timestamp += this.day ? this.pad(this.day, 2) : '01';
+  timestamp += ' ';
+  timestamp += this.hours ? this.pad(this.hours, 2) : '00';
+  timestamp += ':';
+  timestamp += this.minutes ? this.pad(this.minutes, 2) : '00';
+  timestamp += ':';
+  timestamp += this.seconds ? this.pad(this.seconds, 2) : '00';
+
+  timestamp += this.year < 0 ? ' BC' : '';
+
+  return timestamp;
+}
+
+pad(number: number, width: number, z: string = '0'): string {
+  var n = number.toString();
+  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
+
+
 }

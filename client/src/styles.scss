@@ -245,7 +245,11 @@ gv-property{
 
 
 // Forms
- 
+
 .ng-touched.ng-invalid {
   @extend .is-invalid;
+}
+
+.ng-touched.ng-valid {
+  @extend .is-valid;
 }

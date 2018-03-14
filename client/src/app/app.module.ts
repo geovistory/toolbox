@@ -93,7 +93,9 @@ import { PeItEntityPreviewModalComponent } from './pe-it-entity-preview-modal/pe
 import { PeItEntityAddComponent } from './pe-it-entity-add/pe-it-entity-add.component';
 import { PropertySectionForDatesComponent } from './property-section-for-dates/property-section-for-dates.component';
 import { RoleToDateComponent } from './role-to-date/role-to-date.component';
-import { PeItDateComponent } from './pe-it-date/pe-it-date.component';
+import { TimePrimitiveComponent } from './time-primitive/time-primitive.component';
+import { ControlMessagesComponent } from './control-messages/control-messages.component';
+import { ValidationService } from './shared/services/validation.service';
 
 @NgModule({
   declarations: [
@@ -160,7 +162,8 @@ import { PeItDateComponent } from './pe-it-date/pe-it-date.component';
     PeItEntityAddComponent,
     PropertySectionForDatesComponent,
     RoleToDateComponent,
-    PeItDateComponent
+    TimePrimitiveComponent,
+    ControlMessagesComponent
   ],
   imports: [
     BrowserModule,
@@ -189,6 +192,7 @@ import { PeItDateComponent } from './pe-it-date/pe-it-date.component';
     ClassService,
     UtilitiesService,
     EntityEditorService,
+    ValidationService,
     { provide: LOCALE_ID, useValue: 'de-CH' }
   ],
   entryComponents : [

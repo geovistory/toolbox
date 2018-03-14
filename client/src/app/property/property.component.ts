@@ -88,7 +88,7 @@ export class PropertyComponent implements OnChanges, OnInit {
   property: DfhProperty;
 
   // state of the card below the header
-  cardState = 'expanded';
+  cardState = 'collapsed';
 
   // max. mumber of possible alternatives -1=infinite
   maxAlternatives: number;
@@ -156,9 +156,10 @@ export class PropertyComponent implements OnChanges, OnInit {
   */
 
   ngOnChanges() {
-    this.propertyService.getPropertyByPkProperty(this.fkProperty).subscribe((prop: DfhProperty) => {
-      this.property = prop;
-    });
+    if (this.fkProperty)
+      this.propertyService.getPropertyByPkProperty(this.fkProperty).subscribe((prop: DfhProperty) => {
+        this.property = prop;
+      });
   }
 
   ngOnInit() {

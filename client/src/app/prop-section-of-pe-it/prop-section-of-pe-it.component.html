@@ -266,8 +266,8 @@
   <div class="btn-group d-flex flex-row">
     <button class="btn btn-secondary btn-block text-left rounded-bottom-0" (click)="toggleCardBody()">
       <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardState==='expanded')}"></i>
+      <span *ngIf="roles && roles.length">{{roles.length}}</span>
       {{roleLabel}}
-      <span *ngIf="roles && roles.length">({{roles.length}})</span>
     </button>
     <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="ontoInfoVisible">
       <div class="align-self-center">

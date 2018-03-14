@@ -31,13 +31,6 @@ export interface DateTime {
   onDateChange: EventEmitter<YearMonthDay>;
 
   /**
-   * Validate that the combination of year, month and day exists
-   *
-   * @return {type}  description
-   */
-  dateValid();
-
-  /**
    * Convert date values (year, month, day) to julian day and return it
    *
    * @return {number}  julian day
@@ -52,11 +45,25 @@ export interface DateTime {
   fromJulianDay(julianDay: number): { year: number, month: number, day: number };
 
 
+  /**
+   * Returns length of current month. If no month or year provided, returns
+   * undefined.
+   */
+  lengthOfMonth():number;
 
   /**
    * Returns true if this.year is a leap year
    */
   isLeapYear(): boolean;
+
+
+  addYear():void
+
+  addMonth():void;
+
+  // addDay():void;
+
+
 
 
   emitDateChange()
