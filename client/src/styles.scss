@@ -109,6 +109,10 @@ button {
   }
 }
 
+.font-sm {
+  font-size: $font-size-sm;
+}
+
 .dropdown-toggle::after {
     display:none;
 }
@@ -242,7 +246,6 @@ gv-property{
     color: $gray-200;
   }
 }
-
 
 // Forms
 

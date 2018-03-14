@@ -41,7 +41,7 @@ export class ValidationService {
         // validate required fields
         requiredFields.forEach(fieldname => {
           var formControl = formGroup.controls[fieldname];
-          if (!formControl.value || !formControl.valid) {
+          if ((!formControl.value && formControl.value!==0) || !formControl.valid) {
             this.addError(formControl, errorName, true)
           }
         })
@@ -102,6 +102,7 @@ export class ValidationService {
       var error = {}
       error[errorName] = errorVal;
       formControl.setErrors(error);
+      formControl.markAsTouched();
     }
   }
 

@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" style="width:430px">
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
 
   <div class="form-row">
     <div class="form-group col-sm-4">
@@ -33,185 +33,102 @@
     </div>
   </div>
 
-  <!-- <div class="form-group row">
-  <label class="col-sm-3  col-form-label">Year*</label>
-  <div class="col-sm-9">
-  <input type="number" class="form-control" formControlName="year" placeholder="Year"/>
-  <gv-control-messages [control]="form?.controls.year"></gv-control-messages>
-</div>
-</div>
-
-<div class="form-group row">
-<label class="col-sm-3  col-form-label">Month</label>
-<div class="col-sm-9">
-<select class="form-control" class="custom-select" formControlName="month">
-<option value="" selected ></option>
-<option value="1">January</option>
-<option value="2">February</option>
-<option value="3">March</option>
-<option value="4">April</option>
-<option value="5">May</option>
-<option value="6">June</option>
-<option value="7">July</option>
-<option value="8">August</option>
-<option value="9">September</option>
-<option value="10">October</option>
-<option value="11">November</option>
-<option value="12">December</option>
-</select>
-<gv-control-messages [control]="form?.controls.month"></gv-control-messages>
-</div>
-</div>
-
-<div class="form-group row">
-<label class="col-sm-3  col-form-label">Day</label>
-<div class="col-sm-9">
-<input type="number" class="form-control" formControlName="day" placeholder="Day"/>
-<gv-control-messages [control]="form?.controls.day"></gv-control-messages>
-</div>
-</div> -->
-
-<div class="form-row">
-  <div class="form-group col-sm-12">
-    <label class="sr-only">Calendar</label>
-    <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text"><i class="fa fa-calendar"></i>&nbsp;Calendar
-        </span>
-      </div>
-      <select class="form-control" class="custom-select" formControlName="calendar">
-        <option value="gregorian" selected>Gregorian</option>
-        <option value="julian">Julian</option>
-      </select>
-    </div>
-    <gv-control-messages [control]="form?.controls.calendar"></gv-control-messages>
-  </div>
-</div>
-
-
-<span [hidden]="!timeInputsVisible">
   <div class="form-row">
-
-    <div class="form-group col-sm-4">
-      <label>Hours</label>
-      <input type="number" class="form-control" formControlName="hours" placeholder="Hours"/>
-      <gv-control-messages [control]="form?.controls.hours"></gv-control-messages>
+    <div class="form-group col-sm-12">
+      <label class="sr-only">Calendar</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fa fa-calendar"></i>&nbsp;Calendar
+          </span>
+        </div>
+        <select class="form-control" class="custom-select" formControlName="calendar">
+          <option value="gregorian" selected>Gregorian</option>
+          <option value="julian">Julian</option>
+        </select>
+      </div>
+      <gv-control-messages [control]="form?.controls.calendar"></gv-control-messages>
     </div>
-
-    <div class="form-group col-sm-4">
-      <label>Minutes</label>
-      <input type="number" class="form-control" formControlName="minutes" placeholder="Min"/>
-      <gv-control-messages [control]="form?.controls.minutes"></gv-control-messages>
-    </div>
-
-    <div class="form-group col-sm-4">
-      <label>Seconds</label>
-      <input type="number" class="form-control" formControlName="seconds" placeholder="Sec"/>
-      <gv-control-messages [control]="form?.controls.seconds"></gv-control-messages>
-    </div>
-
   </div>
-</span>
 
-<div class="form-row">
-  <div class="col">
-    <button type="button" class="btn btn-link pull-right" (click)="hideTimeInputs()" [hidden]="!timeInputsVisible">
-      Remove time
-    </button>
-    <button type="button" class="btn btn-link pull-right" (click)="showTimeInputs()" [hidden]="timeInputsVisible">
-      <i class="fa fa-plus"></i>  Add time
-    </button>
+
+  <span [hidden]="!timeInputsVisible">
+    <div class="form-row">
+
+      <div class="form-group col-sm-4">
+        <label>Hours</label>
+        <input type="number" class="form-control" formControlName="hours" placeholder="Hours"/>
+        <gv-control-messages [control]="form?.controls.hours"></gv-control-messages>
+      </div>
+
+      <div class="form-group col-sm-4">
+        <label>Minutes</label>
+        <input type="number" class="form-control" formControlName="minutes" placeholder="Min"/>
+        <gv-control-messages [control]="form?.controls.minutes"></gv-control-messages>
+      </div>
+
+      <div class="form-group col-sm-4">
+        <label>Seconds</label>
+        <input type="number" class="form-control" formControlName="seconds" placeholder="Sec"/>
+        <gv-control-messages [control]="form?.controls.seconds"></gv-control-messages>
+      </div>
+
+    </div>
+  </span>
+
+  <div class="form-row">
+    <div class="col">
+      <button type="button" class="btn btn-link pull-right" (click)="hideTimeInputs()" [hidden]="!timeInputsVisible">
+        Remove time
+      </button>
+      <button type="button" class="btn btn-link pull-right" (click)="showTimeInputs()" [hidden]="timeInputsVisible">
+        <i class="fa fa-plus"></i>  Add time
+      </button>
+    </div>
   </div>
-</div>
 
-<!-- <div class="input-group mb-2">
-<div class="input-group-prepend">
-<span class="input-group-text"><i class="fa fa-calendar"></i>
-</span>
-</div>
-<select class="form-control" class="custom-select" formControlName="calendar">
-<option value="gregorian" selected>Gregorian</option>
-<option value="julian">Julian</option>
-</select>
-<input type="number" class="form-control" formControlName="year" placeholder="Year*"/>
-<input type="number" class="form-control" formControlName="month" placeholder="Month"/>
-<input type="number" class="form-control" formControlName="day" placeholder="Day"/>
-</div> -->
+  <div class="form-row">
+    <div class="col">
 
-<!-- <div>
-<gv-control-messages [control]="form?.controls.calendar"></gv-control-messages>
-<gv-control-messages [control]="form?.controls.year">
-<span prefix>Year:</span>
-</gv-control-messages>
-<gv-control-messages [control]="form?.controls.month">
-<span prefix>Month:</span>
-</gv-control-messages>
-<gv-control-messages [control]="form?.controls.day">
-<span prefix>Day:</span>
-</gv-control-messages>
-</div>
+      <button type="button" class="btn btn-link pull-right" (click)="showInfo()" *ngIf="form?.status == 'VALID' && !infoVisible">
+        Show info
+      </button>
 
-<div class="d-flex justify-content-start">
-<button type="button" class="btn btn-link btn-sm" (click)="hideTimeInputs()" [hidden]="!timeInputsVisible">Remove time</button>
-<button type="button" class="btn btn-link btn-sm" (click)="showTimeInputs()" [hidden]="timeInputsVisible">Add time</button>
-</div>
+      <div class="card font-sm" *ngIf="form?.status == 'VALID' && infoVisible">
 
-<div class="input-group mb-2" [hidden]="!timeInputsVisible">
-<div class="input-group-prepend">
-<span class="input-group-text"> <i class="fa fa-clock-o"></i> </span>
-</div>
-<input type="number" class="form-control" formControlName="hours" placeholder="Hours"/>
-<input type="number" class="form-control" formControlName="minutes" placeholder="Min"/>
-<input type="number" class="form-control" formControlName="seconds" placeholder="Sec"/>
-</div>
+        <div class="btn-group d-flex flex-row">
+          <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex">
+            <div class="align-self-center">
+              Your input corresponds to:
+            </div>
+          </div>
+          <button type="button" class="btn btn-link btn-sm rounded-bottom-0" (click)="hideInfo()">
+            <i class="fa fa-close"></i>
+          </button>
+        </div>
 
-<div>
-<gv-control-messages [control]="form?.controls.hours">
-<span prefix>Hours:</span>
-</gv-control-messages>
-<gv-control-messages [control]="form?.controls.minutes">
-<span prefix>Minutes:</span>
-</gv-control-messages>
-<gv-control-messages [control]="form?.controls.seconds">
-<span prefix>Seconds:</span>
-</gv-control-messages>
-</div> -->
+        <div class="card-body">
+          <div class="text-muted"> Duration: </div>
+          <div>{{info.duration}}</div>
+        </div>
+        <div class="card-body" *ngIf="this.info.gregStartIso">
+          <div class="text-muted">Gregorian Calendar</div>
+          <div>{{this.info.gregStartIso | date:'MMM d, y GG, h:mm:ss' }} – {{this.info.gregEndIso | date:'medium' }}</div>
+        </div>
+        <div class="card-body">
+          <div class="text-muted">Julian Calendar</div>
+          <div>{{this.info.julStartIso | date:'medium' }} – {{this.info.julEndIso | date:'medium' }}</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
 
-<button  type="submit" class="btn btn-primary mt-4">Ok</button>
+  <button  type="submit" class="btn btn-primary mt-4">Ok</button>
 
 </form>
 
 
 
-<button type="button" class="btn btn-link pull-right" (click)="showInfo()" *ngIf="form?.status == 'VALID' && !infoVisible">
-  info
-</button>
 
 
-<div class="card" *ngIf="form?.status == 'VALID' && infoVisible">
-
-  <div class="btn-group d-flex flex-row">
-    <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex">
-      <div class="align-self-center">
-        Your input corresponds to:
-      </div>
-    </div>
-    <button type="button" class="btn btn-link btn-sm rounded-bottom-0" (click)="hideInfo()">
-      <i class="fa fa-close"></i>
-    </button>
-  </div>
-
-  <div class="card-body">
-    <div class="text-muted"> Duration: </div>
-    <div>{{info.duration}}</div>
-  </div>
-  <div class="card-body" *ngIf="this.info.gregStartIso">
-    <div class="text-muted">Gregorian Calendar</div>
-    <div>{{this.info.gregStartIso | date:'GG MMM d, y, h:mm:ss a' }} – {{this.info.gregEndIso | date:'medium' }}</div>
-  </div>
-  <div class="card-body">
-    <div class="text-muted">Julian Calendar</div>
-    <div>{{this.info.julStartIso | date:'medium' }} – {{this.info.julEndIso | date:'medium' }}</div>
-  </div>
-</div>
