@@ -74,8 +74,9 @@ export interface DateTime {
 
   toLastSecondOf(duration: Granularity);
 
-  getEndOf(duration: Granularity):DateTime;
+  getEndOf(duration: Granularity): DateTime;
 
+  getDate(): Date;
 
   emitDateChange()
 }

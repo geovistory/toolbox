@@ -96,7 +96,7 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
 
   removeHour() {
     this.hours--;
-    if (this.hours < 0) {
+    if (this.hours < 0  || !this.hours) {
       this.hours = 23;
       this.removeDay()
     }
@@ -104,7 +104,7 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
 
   removeMinute() {
     this.minutes--;
-    if (this.minutes < 0) {
+    if (this.minutes < 0  || !this.minutes) {
       this.minutes = 59;
       this.removeHour()
     }
@@ -112,7 +112,7 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
 
   removeSecond() {
     this.seconds--;
-    if (this.seconds < 0) {
+    if (this.seconds < 0 || !this.seconds) {
       this.seconds = 59;
       this.removeMinute()
     }

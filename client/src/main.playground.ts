@@ -1,5 +1,6 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { initializePlayground, PlaygroundModule } from 'angular-playground';
+import { initializePlayground } from 'angular-playground';
+import { CustomPlaygroundModule } from './custom-playground.module';
 
 initializePlayground('gv-root');
-platformBrowserDynamic().bootstrapModule(PlaygroundModule);
+platformBrowserDynamic().bootstrapModule(CustomPlaygroundModule);

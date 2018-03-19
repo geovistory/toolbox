@@ -1,4 +1,5 @@
-import { Component, OnInit,ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   trigger,
   state,
@@ -18,6 +19,14 @@ import { UtilitiesService } from '../shared/services/utilities.service';
 import { EntityEditorService } from '../shared/services/entity-editor.service';
 
 import { PropertyComponent } from '../property/property.component';
+import { TimePrimitive } from '../shared/classes/date-time/time-primitive';
+
+interface ExistenceTime {
+  notBefore?: TimePrimitive;
+  surelyFrom?: TimePrimitive;
+  surelyTo?: TimePrimitive;
+  notAfter?: TimePrimitive;
+}
 
 @Component({
   selector: 'gv-property-section-for-dates',
@@ -61,12 +70,31 @@ import { PropertyComponent } from '../property/property.component';
 })
 export class PropertySectionForDatesComponent extends PropertyComponent implements OnInit {
 
-    model: any = {};
-    loading = false;
-    errorMessages: Object;
-    account: Account;
-    confirm:boolean = false; //if true, form is hidden and confirmation shown.
+  /**
+  *  Properties
+  */
 
+  model: any = {};
+
+  loading = false;
+  errorMessages: Object;
+  account: Account;
+  confirm: boolean = false; //if true, form is hidden and confirmation shown.
+
+  existenceTime: ExistenceTime = {};
+
+  childrenState = {
+    notBefore: 'editable',
+    surelyFrom: 'editable',
+    surelyTo: 'editable',
+    notAfter: 'editable',
+  }
+
+  // Form of this component
+  form: FormGroup;
+
+  // Object defining the form
+  formDefinition;
 
   constructor(
     eprApi: InfEntityProjectRelApi,
@@ -77,20 +105,79 @@ export class PropertySectionForDatesComponent extends PropertyComponent implemen
     util: UtilitiesService,
     public entityEditor: EntityEditorService,
     changeDetector: ChangeDetectorRef,
-    private slimLoadingBarService: SlimLoadingBarService
+    private slimLoadingBarService: SlimLoadingBarService,
+    private fb: FormBuilder
   ) {
     super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector)
+
+
+    this.existenceTime.notBefore = new TimePrimitive({
+      julianDay: 2444240,
+      duration: '1 year',
+      calendar: 'gregorian'
+    })
+    this.existenceTime.surelyFrom = new TimePrimitive({
+      julianDay: 2444240,
+      duration: '1 year',
+      calendar: 'gregorian'
+    })
+    this.existenceTime.surelyTo = new TimePrimitive({
+      julianDay: 2447240,
+      duration: '1 day',
+      calendar: 'gregorian'
+    })
+    this.existenceTime.notAfter = new TimePrimitive({
+      julianDay: 2449240,
+      duration: '1 day',
+      calendar: 'gregorian'
+    })
+
+
+    this.formDefinition = {
+      notBefore: [this.existenceTime.notBefore, Validators.required],
+      surelyFrom: [this.existenceTime.surelyFrom, Validators.required],
+      surelyTo: [this.existenceTime.surelyTo, Validators.required],
+      notAfter: [this.existenceTime.notAfter, Validators.required]
+    };
+
   }
 
 
   ngOnInit() {
+
+    this.createForm();
   }
 
-  save(){
+  createForm() {
+
+    this.form = this.fb.group(this.formDefinition);
+
+  }
+
+
+
+
+  save() {
     console.log('save')
   }
-  cancel(){
+  cancel() {
     console.log('cancel')
+  }
+
+
+  startEditing(name) {
+
+    for (let key in this.childrenState) {
+      this.childrenState[key] = 'editable';
+    }
+    this.childrenState[name] = 'edit';
+  }
+
+  stopEditing() {
+    for (let key in this.childrenState) {
+      this.childrenState[key] = 'editable';
+    }
+    // this.form.setValue(this.formDefinition);
   }
 
   /**
