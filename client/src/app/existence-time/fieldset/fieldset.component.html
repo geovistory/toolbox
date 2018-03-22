@@ -1,0 +1,10 @@
+<!-- This is a generic template used by child components! -->
+<fieldset>
+
+  <legend class="font-sm text-secondary">{{fieldset.label}}</legend>
+
+  <div [@slideInOut]="isExpanded">
+    <ng-content></ng-content>
+  </div>
+
+</fieldset>

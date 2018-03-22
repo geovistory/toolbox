@@ -1,4 +1,4 @@
-import { Component, Output, OnInit, AfterViewInit, EventEmitter, Input, forwardRef, HostBinding } from '@angular/core';
+import { Component, Output, OnInit, EventEmitter, Input, forwardRef, HostBinding } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AbstractControl, ValidatorFn, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -25,7 +25,7 @@ import { DateTime } from '../shared/classes/date-time/interfaces';
     }
   ]
 })
-export class TimePrimitiveComponent implements OnInit, AfterViewInit, ControlValueAccessor {
+export class TimePrimitiveComponent implements OnInit, ControlValueAccessor {
 
 
   /**
@@ -34,7 +34,7 @@ export class TimePrimitiveComponent implements OnInit, AfterViewInit, ControlVal
 
   @Input() timePrimitive: TimePrimitive;
 
-  @Input() state: 'edit' | 'view';
+  @Input() state: 'edit' | 'editable' | 'view';
 
   @Input() show:
   'duration' // shows duration of DateTime
@@ -47,6 +47,11 @@ export class TimePrimitiveComponent implements OnInit, AfterViewInit, ControlVal
   // Allow the input to be disabled, and when it is make it somewhat transparent.
   @Input() disabled = false;
 
+  // Flag indicates if submit button is visible in edit state
+  @Input() submitBtnVisible:boolean;
+
+  // Flag indicates if cancel button is visible in edit state
+  @Input() cancelBtnVisible:boolean;
 
   /**
    * Outputs
@@ -86,7 +91,8 @@ export class TimePrimitiveComponent implements OnInit, AfterViewInit, ControlVal
 
   form: FormGroup;
 
-  onChange = (timePtimitive: TimePrimitive | null) => { };
+  onChange = (timePtimitive: TimePrimitive | null) => {
+   };
 
   editingCalendar = false;
 
@@ -121,7 +127,7 @@ export class TimePrimitiveComponent implements OnInit, AfterViewInit, ControlVal
 
   }
 
-  ngAfterViewInit() {
+  subscribeToFormChanges() {
 
     // register form changes to update view
     this.form.valueChanges.subscribe(val => {
@@ -155,8 +161,10 @@ export class TimePrimitiveComponent implements OnInit, AfterViewInit, ControlVal
 
       // If all required values of timePrimitive ok, pass the timePtimitive to
       // the onChange function, that may be registered by parent's form control
-      if (tp.calendar && tp.julianDay && tp.duration)
+      if (tp.calendar && tp.julianDay && tp.duration){
+        this.timePrimitive = tp;
         this.onChange(tp);
+      }
       // else send null to the parent's form control
       else
         this.onChange(null);
@@ -168,19 +176,20 @@ export class TimePrimitiveComponent implements OnInit, AfterViewInit, ControlVal
   get displayLabel(): string {
     if (!this.currentCal || !this.timePrimitive) return null;
 
-    let dt = new TimePrimitive(this.timePrimitive).getDateTime(this.currentCal);
+    let tp = new TimePrimitive(this.timePrimitive)
+    let dt = tp.getDateTime(this.currentCal);
 
     switch (this.show) {
 
       case "duration":
-        return this.datePipe.transform(dt.getDate(), this.dateFormatString(this.timePrimitive.duration));
+        return this.datePipe.transform(dt.getDate(), tp.getShortesDateFormatString());
 
       case "firstSecond":
-        return this.datePipe.transform(dt.getDate(), this.dateFormatString('1 second'));
+        return this.datePipe.transform(dt.getDate(), tp.getDateFormatString('1 second'));
 
       case "lastSecond":
         dt.toLastSecondOf(this.timePrimitive.duration);
-        return this.datePipe.transform(dt.getDate(), this.dateFormatString('1 second'));
+        return this.datePipe.transform(dt.getDate(), tp.getDateFormatString('1 second'));
 
       default:
         return '';
@@ -188,25 +197,6 @@ export class TimePrimitiveComponent implements OnInit, AfterViewInit, ControlVal
     }
   }
 
-  dateFormatString(granularity: Granularity): string {
-    let string = 'MMM d, y GG, HH:mm:ss';
-    switch (granularity) {
-      case '1 year':
-        return 'y GG';
-      case '1 month':
-        return 'MMM, y GG';
-      case '1 day':
-        return 'MMM d, y GG';
-      case '1 hour':
-        return 'MMM d, y GG, HH';
-      case '1 minute':
-        return 'MMM d, y GG, HH:mm';
-      case '1 second':
-        return 'MMM d, y GG, HH:mm:ss';
-      default:
-        return '';
-    }
-  }
 
 
   createForm(year = null, month = null, day = null, hours = null, minutes = null, seconds = null) {
@@ -240,7 +230,7 @@ export class TimePrimitiveComponent implements OnInit, AfterViewInit, ControlVal
         validator: this.validateForm(this)
       }
     );
-
+this.subscribeToFormChanges()
   }
 
 
@@ -434,11 +424,20 @@ export class TimePrimitiveComponent implements OnInit, AfterViewInit, ControlVal
   * Update the model and changes needed for the view here.
   */
   writeValue(timePrimitive: TimePrimitive): void {
-    this.timePrimitive = timePrimitive;
-    this.currentCal = timePrimitive.calendar;
-    const dt = timePrimitive.getDateTime(timePrimitive.calendar);
 
-    switch (timePrimitive.duration) {
+    if(timePrimitive === null){
+      this.timePrimitive = new TimePrimitive({
+           calendar: 'julian'
+      })
+    }
+    else{
+      this.timePrimitive = timePrimitive;
+    }
+
+    this.currentCal = this.timePrimitive.calendar;
+    const dt = this.timePrimitive.getDateTime(this.timePrimitive.calendar);
+
+    switch (this.timePrimitive.duration) {
       case '1 year': this.createForm(dt.year)
         break;
       case '1 month': this.createForm(dt.year, dt.month)
@@ -506,7 +505,7 @@ export class TimePrimitiveComponent implements OnInit, AfterViewInit, ControlVal
     this.infoVisible = false;
   }
 
-  sumbit() {
+  submit() {
 
     if (!this.form.valid) {
       // show all error messages

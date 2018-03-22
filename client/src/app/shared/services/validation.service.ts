@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
+import { TimePrimitive } from '../classes/date-time/time-primitive';
 
 @Injectable()
 export class ValidationService {
@@ -15,19 +16,25 @@ export class ValidationService {
       'requiredBy-hours': `Required if hours are set`,
       'requiredBy-minutes': `Required if minutes are set`,
       'requiredBy-seconds': `Required if seconds are set`,
-      'beforeGregorian': `Gregorian calendar can't be used with dates before October 15th 1582`
+      'beforeGregorian': `Gregorian calendar can't be used with dates before October 15th 1582`,
+      'mustEndBefore': `Must end before ${validatorValue.fieldLabel}`,
+      'mustStartAfter': `Must start after ${validatorValue.fieldLabel}`,
+      'mustBeginBeforeEnd': `Must begin before ${validatorValue.fieldLabel} ends`,
+      'mustEndAfterBegin': `Must end after ${validatorValue.fieldLabel} begins`
     };
 
-    return config[validatorName];
+    if(config[validatorName]) return config[validatorName];
+
+    return config[validatorName.split('-')[0]];
   }
 
 
   /**
-   * This fields are required by field.
-   *
-   * @param {Array<String>} requiredFields Array with names of required fields
-   * @param {string} byField  Name of field that requires other fields
-   */
+  * This fields are required by field.
+  *
+  * @param {Array<String>} requiredFields Array with names of required fields
+  * @param {string} byField  Name of field that requires other fields
+  */
   requiredBy(requiredFields: string[], byField: string): Function {
     return (formGroup: FormGroup): void => {
 
@@ -41,7 +48,7 @@ export class ValidationService {
         // validate required fields
         requiredFields.forEach(fieldname => {
           var formControl = formGroup.controls[fieldname];
-          if ((!formControl.value && formControl.value!==0) || !formControl.valid) {
+          if ((!formControl.value && formControl.value !== 0) || !formControl.valid) {
             this.addError(formControl, errorName, true)
           }
         })
@@ -58,43 +65,115 @@ export class ValidationService {
 
 
 
-  // static creditCardValidator(control) {
-  //     // Visa, MasterCard, American Express, Diners Club, Discover, JCB
-  //     if (control.value.match(/^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$/)) {
-  //         return null;
-  //     } else {
-  //         return { 'invalidCreditCard': true };
-  //     }
-  // }
-  //
-  // static emailValidator(control) {
-  //     // RFC 2822 compliant regex
-  //     if (control.value.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/)) {
-  //         return null;
-  //     } else {
-  //         return { 'invalidEmailAddress': true };
-  //     }
-  // }
-  //
-  // static passwordValidator(control) {
-  //     // {6,100}           - Assert password is between 6 and 100 characters
-  //     // (?=.*[0-9])       - Assert a string has at least one number
-  //     if (control.value.match(/^(?=.*[0-9])[a-zA-Z0-9!@#$%^&*]{6,100}$/)) {
-  //         return null;
-  //     } else {
-  //         return { 'invalidPassword': true };
-  //     }
-  // }
+
+  /**
+  * First given TimePrimitive must end before second TimePrimitive.
+  *
+  * @param {string} first Name of field with TimePrimitive value
+  * @param {string} firstLabel Label for the first field
+  * @param {string} second  Name of field with TimePrimitive value
+  * @param {string} secondLabel Laebel for the second field value
+  */
+  mustNotIntersect(first: string, firstLabel:string, second: string, secondLabel:string): Function {
+    return (formGroup: FormGroup): void => {
+
+      let firstField = formGroup.controls[first];
+      let secondField = formGroup.controls[second];
+
+      // if both fields have a value
+      if (firstField.value && secondField.value) {
+
+        // get the julian day of the end of the first time primitive
+        const firstTp: TimePrimitive = firstField.value;
+        const firstJulianDay = firstTp.getDateTime().getEndOf(firstTp.duration).getJulianDay();
+
+        // get the julian day of the begin of the second time primitive
+        const secondTp: TimePrimitive = secondField.value;
+        const secondJulianDay = secondTp.getDateTime().getJulianDay();
+
+        // validate fields
+
+        if (firstJulianDay > secondJulianDay) {
+          this.addError(firstField, ('mustEndBefore-' + second), {
+            fieldLabel: secondLabel
+          })
+          this.addError(secondField, ('mustStartAfter-' + first), {
+            fieldLabel: firstLabel
+          })
+        }else{
+          this.removeError(firstField, ('mustEndBefore-' + second))
+          this.removeError(secondField, ('mustStartAfter-' + first))
+        }
+
+      } else {
+        this.removeError(firstField, ('mustEndBefore-' + second))
+        this.removeError(secondField, ('mustStartAfter-' + first))
+
+      }
+
+    }
+  }
+
+
+
+    /**
+    * First given TimePrimitive must begin before second TimePrimitive ends.
+    *
+    * @param {string} first Name of field with TimePrimitive value
+    * @param {string} firstLabel Label for the first field
+    * @param {string} second  Name of field with TimePrimitive value
+    * @param {string} secondLabel Laebel for the second field value
+    */
+    mustBeginBeforeEnd(first: string, firstLabel:string, second: string, secondLabel:string): Function {
+      return (formGroup: FormGroup): void => {
+
+        let firstField = formGroup.controls[first];
+        let secondField = formGroup.controls[second];
+
+        // if both fields have a value
+        if (firstField.value && secondField.value) {
+
+          // get the julian day of the begin of the first time primitive
+          const firstTp: TimePrimitive = firstField.value;
+          const firstJulianDay = firstTp.getDateTime().getJulianDay();
+
+          // get the julian day of the end of the second time primitive
+          const secondTp: TimePrimitive = secondField.value;
+          const secondJulianDay = secondTp.getDateTime().getEndOf(secondTp.duration).getJulianDay();
+
+          // validate fields
+
+          if (firstJulianDay > secondJulianDay) {
+            this.addError(firstField, ('mustBeginBeforeEnd-' + second), {
+              fieldLabel: secondLabel
+            })
+            this.addError(secondField, ('mustEndAfterBegin-' + first), {
+              fieldLabel: firstLabel
+            })
+          }else{
+            this.removeError(firstField, ('mustBeginBeforeEnd-' + second))
+            this.removeError(secondField, ('mustEndAfterBegin-' + first))
+          }
+
+        } else {
+          this.removeError(firstField, ('mustBeginBeforeEnd-' + second))
+          this.removeError(secondField, ('mustEndAfterBegin-' + first))
+
+        }
+
+      }
+    }
+
 
 
 
   /**
-   * Add an error to a form control
-   *
-   * @param  {AbstractControl} formControl
-   * @param  {string} errorName
-   * @param  {any} errorVal
-   */
+  * Add an error to a form control
+  *
+  * @param  {AbstractControl} formControl
+  * @param  {string} errorName
+  * @param  {any} errorVal
+  */
   addError(formControl: AbstractControl, errorName: string, errorVal: any): void {
     if (formControl.errors)
       formControl.errors[errorName] = errorVal;
@@ -107,12 +186,12 @@ export class ValidationService {
   }
 
   /**
-   * Remove an error from a form control
-   *
-   * @param  {AbstractControl} formControl
-   * @param  {string} errorName
-   * @param  {any} errorVal
-   */
+  * Remove an error from a form control
+  *
+  * @param  {AbstractControl} formControl
+  * @param  {string} errorName
+  * @param  {any} errorVal
+  */
   removeError(formControl: AbstractControl, errorName: string): void {
     if (formControl.errors && formControl.errors[errorName])
       delete formControl.errors[errorName];

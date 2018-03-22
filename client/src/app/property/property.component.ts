@@ -59,6 +59,10 @@ export class PropertyComponent implements OnChanges, OnInit {
     this._propState = state;
   };
 
+  // state of the card below the header
+  @Input() cardState:'collapsed'|'expanded';
+
+
   /**
   * Outputs
   */
@@ -87,8 +91,6 @@ export class PropertyComponent implements OnChanges, OnInit {
   // the property
   property: DfhProperty;
 
-  // state of the card below the header
-  cardState = 'collapsed';
 
   // max. mumber of possible alternatives -1=infinite
   maxAlternatives: number;
@@ -165,6 +167,8 @@ export class PropertyComponent implements OnChanges, OnInit {
   ngOnInit() {
     if (this.propState == 'add-pe-it')
       this.sortRolesByPopularity();
+
+    this.cardState = 'collapsed';
   }
 
   get propState(): string {

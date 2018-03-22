@@ -91,11 +91,14 @@ import { RoleOfPeItComponent } from './role-of-pe-it/role-of-pe-it.component';
 import { PropSectionListOfPeItComponent } from './prop-section-list-of-pe-it/prop-section-list-of-pe-it.component';
 import { PeItEntityPreviewModalComponent } from './pe-it-entity-preview-modal/pe-it-entity-preview-modal.component';
 import { PeItEntityAddComponent } from './pe-it-entity-add/pe-it-entity-add.component';
-import { PropertySectionForDatesComponent } from './property-section-for-dates/property-section-for-dates.component';
+import { ExistenceTimeComponent } from './existence-time/existence-time.component';
 import { RoleToDateComponent } from './role-to-date/role-to-date.component';
 import { TimePrimitiveComponent } from './time-primitive/time-primitive.component';
 import { ControlMessagesComponent } from './control-messages/control-messages.component';
 import { ValidationService } from './shared/services/validation.service';
+import { FieldsetComponent } from './existence-time/fieldset/fieldset.component';
+import { FieldComponent } from './existence-time/field/field.component';
+import { FieldsetBeginComponent } from './existence-time/fieldset-begin/fieldset-begin.component';
 
 @NgModule({
   declarations: [
@@ -160,10 +163,13 @@ import { ValidationService } from './shared/services/validation.service';
     PropSectionListOfPeItComponent,
     PeItEntityPreviewModalComponent,
     PeItEntityAddComponent,
-    PropertySectionForDatesComponent,
+    ExistenceTimeComponent,
     RoleToDateComponent,
     TimePrimitiveComponent,
-    ControlMessagesComponent
+    ControlMessagesComponent,
+    FieldComponent,
+    FieldsetComponent,
+    FieldsetBeginComponent
   ],
   imports: [
     BrowserModule,
