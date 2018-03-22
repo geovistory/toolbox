@@ -13,6 +13,13 @@ export class FieldsetOuterComponent extends FieldsetComponent implements OnInit 
   }
 
   ngOnInit() {
+    const parentField = this.fieldset.fields.outer
+    const form = this.formGroup;
+
+    // if the parent field has a value
+    if(form.get(parentField.ctrlName).value){
+      this.isExpanded = 'expanded';
+    }
   }
 
 }

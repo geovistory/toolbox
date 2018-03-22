@@ -99,6 +99,9 @@ import { ValidationService } from './shared/services/validation.service';
 import { FieldsetComponent } from './existence-time/fieldset/fieldset.component';
 import { FieldComponent } from './existence-time/field/field.component';
 import { FieldsetBeginComponent } from './existence-time/fieldset-begin/fieldset-begin.component';
+import { FieldsetOuterComponent } from './existence-time/fieldset-outer/fieldset-outer.component';
+import { FieldsetInnerComponent } from './existence-time/fieldset-inner/fieldset-inner.component';
+import { FieldsetEndComponent } from './existence-time/fieldset-end/fieldset-end.component';
 
 @NgModule({
   declarations: [
@@ -169,7 +172,10 @@ import { FieldsetBeginComponent } from './existence-time/fieldset-begin/fieldset
     ControlMessagesComponent,
     FieldComponent,
     FieldsetComponent,
-    FieldsetBeginComponent
+    FieldsetBeginComponent,
+    FieldsetEndComponent,
+    FieldsetInnerComponent,
+    FieldsetOuterComponent
   ],
   imports: [
     BrowserModule,

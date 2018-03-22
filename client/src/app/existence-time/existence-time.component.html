@@ -11,34 +11,87 @@
           Add
         </button>
 
-        <div class="" *ngIf="formHasValue()">
+        <div class="d-flex align-items-center" *ngIf="formHasValue()">
 
-          <div class="d-flex" *ngIf="existenceTime.p82">
-            At some time within&nbsp;
-            <gv-time-primitive
-            [state]="'view'"
-            [show]="'duration'"
-            [timePrimitive]="existenceTime.p82"
-            ></gv-time-primitive>&nbsp; [Edit Btn]
+          <div class="gv-flex-grow-1">
+            <div class="d-flex" *ngIf="existenceTime.p82">
+              At some time within&nbsp;
+              <gv-time-primitive
+              [state]="'view'"
+              [show]="'duration'"
+              [timePrimitive]="existenceTime.p82"
+              ></gv-time-primitive>
+            </div>
+
+            <div class="d-flex" *ngIf="existenceTime.p81">
+              Throughout&nbsp;
+              <gv-time-primitive
+              [state]="'view'"
+              [show]="'duration'"
+              [timePrimitive]="existenceTime.p81"
+              ></gv-time-primitive>
+            </div>
+
+            <div class="d-flex" *ngIf="existenceTime.p81a && !existenceTime.p82a">
+              Begin&nbsp;
+              <gv-time-primitive
+              [state]="'view'"
+              [show]="'duration'"
+              [timePrimitive]="existenceTime.p81a"
+              ></gv-time-primitive>
+            </div>
+
+            <div class="d-flex" *ngIf="existenceTime.p81b && !existenceTime.p82b">
+              End&nbsp;
+              <gv-time-primitive
+              [state]="'view'"
+              [show]="'duration'"
+              [timePrimitive]="existenceTime.p81b"
+              ></gv-time-primitive>
+            </div>
+
+
+            <div class="d-flex" *ngIf="existenceTime.p81a && existenceTime.p82a">
+              Surely existing from&nbsp;
+              <gv-time-primitive
+              [state]="'view'"
+              [show]="'lastSecond'"
+              [timePrimitive]="existenceTime.p81a"
+              ></gv-time-primitive>
+            </div>
+
+            <div class="d-flex" *ngIf="existenceTime.p81b && existenceTime.p82b">
+              Surely existing to&nbsp;
+              <gv-time-primitive
+              [state]="'view'"
+              [show]="'firstSecond'"
+              [timePrimitive]="existenceTime.p81b"
+              ></gv-time-primitive>
+            </div>
+
+            <div class="d-flex" *ngIf="existenceTime.p82a">
+              Not existing before&nbsp;
+              <gv-time-primitive
+              [state]="'view'"
+              [show]="'firstSecond'"
+              [timePrimitive]="existenceTime.p82a"
+              ></gv-time-primitive>
+            </div>
+            <div class="d-flex" *ngIf="existenceTime.p82b">
+              Not existing after&nbsp;
+              <gv-time-primitive
+              [state]="'view'"
+              [show]="'lastSecond'"
+              [timePrimitive]="existenceTime.p82b"
+              ></gv-time-primitive>
+            </div>
           </div>
 
-          <div class="d-flex" *ngIf="existenceTime.p81">
-            Throughout&nbsp;
-            <gv-time-primitive
-            [state]="'view'"
-            [show]="'duration'"
-            [timePrimitive]="existenceTime.p81"
-            ></gv-time-primitive>&nbsp; [Edit Btn]
-          </div>
-
-
-          <div class="d-flex" *ngIf="existenceTime.p81a">
-            Surely From&nbsp;
-            <gv-time-primitive
-            [state]="'view'"
-            [show]="'lastSecond'"
-            [timePrimitive]="existenceTime.p81a"
-            ></gv-time-primitive>&nbsp; [Edit Btn]
+          <div class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
+            <button class="btn btn-link" type="button" ngbDropdownToggle><i class="fa fa-ellipsis-v"></i></button>
+            <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+              <button type="button" name="button" class="dropdown-item" (click)="startEditingMainForm()">edit</button>
+            </div>
           </div>
 
         </div>
@@ -109,20 +162,20 @@
 
 
 
-        <div class="form-group mt-3">
+        <div class="form-group mt-1">
           <button type="submit" class="btn btn-primary" *ngIf="okBtnVisible">Continue …</button>
-          <button class="btn btn-link" (click)="stopEditingInitialForm()">Cancel</button>
+          <button type="button" class="btn btn-link" (click)="stopEditingInitialForm()">Cancel</button>
         </div>
       </form>
 
 
 
-      <form [formGroup]="mainForm" (ngSubmit)="onSubmit()" *ngIf="mainFormVisible">
+      <form [formGroup]="mainForm" (ngSubmit)="onSubmitMainForm()" *ngIf="mainFormVisible">
 
         <!-- Begin Fieldset-->
 
         <span *ngFor="let fieldset of [fieldsets.begin]">
-          <gv-fieldset-begin *ngIf="fieldset.visible" [fieldset]="fieldsets">
+          <gv-fieldset-begin *ngIf="fieldset.visible" [fieldset]="fieldset" [formGroup]="mainForm" [existenceTime]="existenceTime">
 
 
             <!-- Begin > Begins -->
@@ -167,7 +220,7 @@
 
         <!-- End -->
         <span *ngFor="let fieldset of [fieldsets.end]">
-          <gv-fieldset-end *ngIf="fieldset.visible" [fieldset]="fieldset">
+          <gv-fieldset-end *ngIf="fieldset.visible" [fieldset]="fieldset"  [formGroup]="mainForm" [existenceTime]="existenceTime">
 
             <!-- End > Ends -->
             <div class="form-row mb-3"  *ngFor="let field of [fieldset.fields.end]">
@@ -207,7 +260,7 @@
 
         <!-- Inner bounds -->
         <span *ngFor="let fieldset of [fieldsets.inner]">
-          <gv-fieldset-inner *ngIf="fieldset.visible" [fieldset]="fieldset">
+          <gv-fieldset-inner *ngIf="fieldset.visible" [fieldset]="fieldset"  [formGroup]="mainForm" [existenceTime]="existenceTime">
 
             <!-- Inner Bound -->
             <div class="form-row mb-3"  *ngFor="let field of [fieldset.fields.inner]">
@@ -248,7 +301,7 @@
 
         <!-- Outer bounds -->
         <span *ngFor="let fieldset of [fieldsets.outer]">
-          <gv-fieldset-outer *ngIf="fieldset.visible" [fieldset]="fieldset">
+          <gv-fieldset-outer *ngIf="fieldset.visible" [fieldset]="fieldset"  [formGroup]="mainForm" [existenceTime]="existenceTime">
 
             <!-- Outer Bound -->
             <div class="form-row mb-3"  *ngFor="let field of [fieldset.fields.outer]">
@@ -296,64 +349,64 @@
     </div>
 
 
-    <hr>
+    <!-- <hr>
     <p>Form Status</p>
     <pre>
-      {{mainForm.status | json}}
-    </pre>
-    <p>Surely To errors</p>
-    <pre>
-      {{mainForm?.controls?.p81b?.errors | json}}
-    </pre>
-    <p>Form Value</p>
-    <pre>
-      {{mainForm.value | json}}
-    </pre>
+    {{mainForm.status | json}}
+  </pre>
+  <p>Existence Time</p>
+  <pre>
+  {{existenceTime | json}}
+</pre>
+<p>Form Value</p>
+<pre>
+{{mainForm.value | json}}
+</pre> -->
 
-  </div>
-  <!-- ************************** NG TEMPLATES ****************************** -->
-  <ng-template #header>
-    <div class="btn-group d-flex flex-row gv-h5"> <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
-      <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardState==='expanded')}"></i>
-      When
-    </button> </div>
-  </ng-template>
-  <ng-template #dev> <span>
-    [state: {{propState}}] [readyToCreate: {{isReadyToCreate}}]
-  </span> </ng-template>
+</div>
+<!-- ************************** NG TEMPLATES ****************************** -->
+<ng-template #header>
+  <div class="btn-group d-flex flex-row gv-h5"> <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
+    <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardState==='expanded')}"></i>
+    When
+  </button> </div>
+</ng-template>
+<ng-template #dev> <span>
+  [state: {{propState}}] [readyToCreate: {{isReadyToCreate}}]
+</span> </ng-template>
 
 
 
-  <ng-template #tpField let-field="field" let-fieldset="fieldset">
+<ng-template #tpField let-field="field" let-fieldset="fieldset">
 
-    <div class="gv-flex-grow-1 d-flex flex-row align-items-center" *ngIf="field.state ==='editable'">
+  <div class="gv-flex-grow-1 d-flex flex-row align-items-center" *ngIf="field.state ==='editable'">
 
-      <!-- Symbol -->
-      <div class="mr-3 text-info gv-time-symbol">
-        <i class="fa fa-arrow-right"></i>
-      </div>
-
-      <!-- Date preview -->
-      <div class="gv-flex-grow-1 font-sm text-info">
-        <label class="text-info mb-0">{{field.label}}</label> <br>
-        <span *ngIf="mainForm.controls[field.ctrlName].value">
-          {{field.datePrefix}} {{labelOfTimePrimitive(mainForm.controls[field.ctrlName].value)}}
-        </span>
-      </div>
-
-      <!-- Dropdown -->
-      <div class="">
-        <div class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
-          <button class="btn btn-link" type="button" ngbDropdownToggle><i class="fa fa-ellipsis-v"></i></button>
-          <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
-            <button type="button" class="dropdown-item" (click)="startEditingField(fieldset, field)">Edit</button>
-          </div>
-        </div>
-      </div>
-
+    <!-- Symbol -->
+    <div class="mr-3 text-info gv-time-symbol">
+      <i class="fa fa-arrow-right"></i>
     </div>
 
+    <!-- Date preview -->
+    <div class="gv-flex-grow-1 font-sm text-info">
+      <label class="text-info mb-0">{{field.label}}</label> <br>
+      <span *ngIf="mainForm.controls[field.ctrlName].value">
+        {{field.datePrefix}} {{labelOfTimePrimitive(mainForm.controls[field.ctrlName].value)}}
+      </span>
+    </div>
 
-  </ng-template>
+    <!-- Dropdown -->
+    <div class="">
+      <div class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
+        <button class="btn btn-link" type="button" ngbDropdownToggle><i class="fa fa-ellipsis-v"></i></button>
+        <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+          <button type="button" class="dropdown-item" (click)="startEditingField(fieldset, field)">Edit</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+</ng-template>
 
 

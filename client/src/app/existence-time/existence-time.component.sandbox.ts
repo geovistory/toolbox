@@ -1,5 +1,6 @@
 import { sandboxOf } from 'angular-playground';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { registerLocaleData, DatePipe } from '@angular/common';
 import localeDeCh from '@angular/common/locales/de-CH';
@@ -41,7 +42,6 @@ export default sandboxOf(ExistenceTimeComponent, {
     FieldsetEndComponent,
     FieldsetOuterComponent,
     FieldsetInnerComponent,
-
   ],
   imports: [
     ReactiveFormsModule,
@@ -62,7 +62,7 @@ export default sandboxOf(ExistenceTimeComponent, {
   ]
 })
 
-  .add('State: Editable', {
+  .add('State: Editable – no value', {
     template: `
     <div class="d-flex justify-content-center mt-5">
       <div style="width:430px">
@@ -72,6 +72,31 @@ export default sandboxOf(ExistenceTimeComponent, {
       </div>
     </div>
     `
+  })
+  .add('State: Editable – Left & Right Inner (81a & 81b)', {
+    context: {
+      existenceTime: {
+        p81a: new TimePrimitive({
+          calendar: 'gregorian',
+          julianDay: 2431180,
+          duration: '1 day'
+        }),
+        p81b: new TimePrimitive({
+          calendar: 'gregorian',
+          julianDay: 2451180,
+          duration: '1 year'
+        })
+      }
+    },
+    template: `
+      <div class="d-flex justify-content-center mt-5">
+        <div style="width:430px">
+
+          <gv-existence-time [cardState]="'expanded'" [state]="'editable'" [existenceTime]="existenceTime"></gv-existence-time>
+
+        </div>
+      </div>
+      `
   })
   .add('State: Edit – new', {
     template: `
@@ -84,7 +109,27 @@ export default sandboxOf(ExistenceTimeComponent, {
       </div>
       `
   })
-  .add('State: Edit – Begins', {
+  .add('State: Edit – Begin of Begin (82a)', {
+    context: {
+      existenceTime: {
+        p82a: new TimePrimitive({
+          calendar: 'gregorian',
+          julianDay: 2451180,
+          duration: '1 year'
+        })
+      }
+    },
+    template: `
+      <div class="d-flex justify-content-center mt-5">
+        <div style="width:430px">
+
+          <gv-existence-time [cardState]="'expanded'" [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
+
+        </div>
+      </div>
+      `
+  })
+  .add('State: Edit – End of Begin (81a)', {
     context: {
       existenceTime: {
         p81a: new TimePrimitive({
@@ -103,4 +148,110 @@ export default sandboxOf(ExistenceTimeComponent, {
         </div>
       </div>
       `
-  });;
+  })
+  .add('State: Edit – Begin of End (81b)', {
+    context: {
+      existenceTime: {
+        p81b: new TimePrimitive({
+          calendar: 'gregorian',
+          julianDay: 2451180,
+          duration: '1 year'
+        })
+      }
+    },
+    template: `
+      <div class="d-flex justify-content-center mt-5">
+        <div style="width:430px">
+
+          <gv-existence-time [cardState]="'expanded'" [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
+
+        </div>
+      </div>
+      `
+  })
+  .add('State: Edit – End of end (82b)', {
+    context: {
+      existenceTime: {
+        p82b: new TimePrimitive({
+          calendar: 'gregorian',
+          julianDay: 2451180,
+          duration: '1 year'
+        })
+      }
+    },
+    template: `
+      <div class="d-flex justify-content-center mt-5">
+        <div style="width:430px">
+
+          <gv-existence-time [cardState]="'expanded'" [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
+
+        </div>
+      </div>
+      `
+  })
+  .add('State: Edit – Outer (82)', {
+    context: {
+      existenceTime: {
+        p82: new TimePrimitive({
+          calendar: 'gregorian',
+          julianDay: 2451180,
+          duration: '1 year'
+        })
+      }
+    },
+    template: `
+      <div class="d-flex justify-content-center mt-5">
+        <div style="width:430px">
+
+          <gv-existence-time [cardState]="'expanded'" [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
+
+        </div>
+      </div>
+      `
+  })
+  .add('State: Edit – Inner (81)', {
+    context: {
+      existenceTime: {
+        p81: new TimePrimitive({
+          calendar: 'gregorian',
+          julianDay: 2451180,
+          duration: '1 year'
+        })
+      }
+    },
+    template: `
+      <div class="d-flex justify-content-center mt-5">
+        <div style="width:430px">
+
+          <gv-existence-time [cardState]="'expanded'" [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
+
+        </div>
+      </div>
+      `
+  })
+
+  .add('State: Edit – Begin&End (81a, 81b)', {
+    context: {
+      existenceTime: {
+        p81a: new TimePrimitive({
+          calendar: 'gregorian',
+          julianDay: 2431180,
+          duration: '1 day'
+        }),
+        p81b: new TimePrimitive({
+          calendar: 'gregorian',
+          julianDay: 2451180,
+          duration: '1 year'
+        })
+      }
+    },
+    template: `
+      <div class="d-flex justify-content-center mt-5">
+        <div style="width:430px">
+
+          <gv-existence-time [cardState]="'expanded'" [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
+
+        </div>
+      </div>
+      `
+  })

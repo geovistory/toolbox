@@ -24,7 +24,7 @@ import { TimePrimitive } from '../shared/classes/date-time/time-primitive';
 import { ValidationService } from '../shared/services/validation.service';
 import { Fieldset } from './fieldset/fieldset';
 import { ExistenceTime } from './existence-time';
-import { Field , FieldState } from './field/field';
+import { Field, FieldState } from './field/field';
 
 
 
@@ -127,6 +127,8 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
 
   fieldsets: Fieldsets;
 
+  // cached existenceTime for restoring model on cancel
+  existenceTimeCache: ExistenceTime;
 
   // Initial Form used to create the first TimePrimitive
   initialForm: FormGroup;
@@ -170,7 +172,10 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
 
   ngOnInit() {
 
+    this.cardState = 'collapsed';
+
     this.existenceTime = new ExistenceTime(this.existenceTime);
+
 
     this.fieldsets = {
       begin: new Fieldset({
@@ -297,19 +302,28 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
 
     this.mainFormBtnsVisible = true;
 
+    if (this.state === 'edit' && !this.formHasValue()) {
+      this.initialTpState = 'edit'
+    }
+
+
+    if (this.mainFormVisible) {
+      this.existenceTimeCache = new ExistenceTime(this.existenceTime)
+    }
+
   }
 
 
 
   /**
-   * Updates the given field
-   *
-   * @param  {type} field: Field         description
-   * @param  {type} val: TimePrimitive   description
-   * @param  {type} isImplicit?: boolean description
-   * @param  {type} state?: FieldState   description
-   * @return {type}                      description
-   */
+  * Updates the given field
+  *
+  * @param  {type} field: Field         description
+  * @param  {type} val: TimePrimitive   description
+  * @param  {type} isImplicit?: boolean description
+  * @param  {type} state?: FieldState   description
+  * @return {type}                      description
+  */
   updateField(field: Field, isImplicit?: boolean, state?: FieldState) {
 
     if (isImplicit !== undefined) {
@@ -322,14 +336,14 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
 
 
   /**
-    * Updates  the given field and the formControl of mainForm
-   *
-   * @param  {type} field: Field         description
-   * @param  {type} val: TimePrimitive   description
-   * @param  {type} isImplicit?: boolean description
-   * @param  {type} state?: FieldState   description
-   * @return {type}                      description
-   */
+  * Updates  the given field and the formControl of mainForm
+  *
+  * @param  {type} field: Field         description
+  * @param  {type} val: TimePrimitive   description
+  * @param  {type} isImplicit?: boolean description
+  * @param  {type} state?: FieldState   description
+  * @return {type}                      description
+  */
   updateFieldAndCtrl(field: Field, val: TimePrimitive, isImplicit?: boolean, state?: FieldState) {
     // update field and existenceTime
     this.updateField(field, isImplicit, state);
@@ -354,13 +368,13 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
 
 
   /**
-   * changeOwnExistenceTime - Change the existence time of the given field.
-   * The exististence time is only changed, if the field's state is editing.
-   *
-   * @param  {type} field: Field                 description
-   * @param  {type} timePrimitive: TimePrimitive description
-   * @return {type}                              description
-   */
+  * changeOwnExistenceTime - Change the existence time of the given field.
+  * The exististence time is only changed, if the field's state is editing.
+  *
+  * @param  {type} field: Field                 description
+  * @param  {type} timePrimitive: TimePrimitive description
+  * @return {type}                              description
+  */
   changeOwnExistenceTime(field: Field, timePrimitive: TimePrimitive) {
     if (field.state === 'edit')
       this.existenceTime[field.tpName] = timePrimitive;
@@ -455,13 +469,13 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
 
 
   /**
-   * Called before Validation. Updates beg field values
-   */
+  * Called before Validation. Updates beg field values
+  */
   updateBeg() {
     const begField = this.fieldsets.begin.fields.beg;
 
     // since on form init, field state will be addBtn, we have to get away from it
-    const state = begField.state === 'addBtn' ? 'editable': begField.state;
+    const state = begField.state === 'addBtn' ? 'editable' : begField.state;
 
     if (this.existenceTime.p82a || this.existenceTime.p82 || this.existenceTime.p81) {
       // if there in not only p81a that helps to imply Beg, set to null
@@ -478,13 +492,13 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
 
 
   /**
-   * Called before Validation. Updates end field values
-   */
+  * Called before Validation. Updates end field values
+  */
   updateEnd() {
     const field = this.fieldsets.end.fields.end;
 
     // since on form init, field state will be addBtn, we have to get away from it
-    const state = field.state === 'addBtn' ? 'editable': field.state;
+    const state = field.state === 'addBtn' ? 'editable' : field.state;
 
     if (this.existenceTime.p82b || this.existenceTime.p82 || this.existenceTime.p81) {
       // if there in not only p81b that helps to imply Beg, set to null
@@ -501,13 +515,13 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
 
 
   /**
-   * Called before Validation. Updates inner field values
-   */
+  * Called before Validation. Updates inner field values
+  */
   updateInner() {
     const field = this.fieldsets.inner.fields.inner;
 
     // since on form init, field state will be addBtn, we have to get away from it
-    const state = field.state === 'addBtn' ? 'editable': field.state;
+    const state = field.state === 'addBtn' ? 'editable' : field.state;
 
     if (this.existenceTime.p81) {
       this.updateFieldAndCtrl(field, this.existenceTime.p81, false, state);
@@ -516,18 +530,18 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
       this.updateFieldAndCtrl(field, null, true, 'addBtn');
     }
     else {
-      this.updateFieldAndCtrl(field, null, false, state);
+      this.updateFieldAndCtrl(field, null, true, state);
     }
   }
 
   /**
-   * Called before Validation. Updates outer field values
-   */
+  * Called before Validation. Updates outer field values
+  */
   updateOuter() {
     const field = this.fieldsets.outer.fields.outer;
 
     // since on form init, field state will be addBtn, we have to get away from it
-    const state = field.state === 'addBtn' ? 'editable': field.state;
+    const state = field.state === 'addBtn' ? 'editable' : field.state;
 
     if (this.existenceTime.p82) {
       this.updateFieldAndCtrl(field, this.existenceTime.p82, false, state);
@@ -536,13 +550,13 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
       this.updateFieldAndCtrl(field, null, true, 'addBtn');
     }
     else {
-      this.updateFieldAndCtrl(field, null, false, state);
+      this.updateFieldAndCtrl(field, null, true, state);
     }
   }
 
   /**
-   * Called before Validation. Updates begBeg or leftOuter field values
-   */
+  * Called before Validation. Updates begBeg or leftOuter field values
+  */
   update82a(fieldName: 'begBeg' | 'leftOuter') {
 
     const field = this.fieldsets.begin.fields[fieldName] || this.fieldsets.outer.fields[fieldName];
@@ -561,8 +575,8 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
   }
 
   /**
-   * Called before Validation. Updates endEnd or rightOuter field values
-   */
+  * Called before Validation. Updates endEnd or rightOuter field values
+  */
   update82b(fieldName: 'endEnd' | 'rightOuter') {
 
     const field = this.fieldsets.end.fields[fieldName] || this.fieldsets.outer.fields[fieldName];
@@ -583,13 +597,13 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
 
 
   /**
-   * Called before Validation. Updates endBeg or leftInner field values
-   */
+  * Called before Validation. Updates endBeg or leftInner field values
+  */
   update81a(fieldName: 'endBeg' | 'leftInner') {
     const field = this.fieldsets.begin.fields[fieldName] || this.fieldsets.inner.fields[fieldName];
 
     // since on form init, field state will be addBtn, we have to get away from it
-    const state = field.state === 'addBtn' ? 'editable': field.state;
+    const state = field.state === 'addBtn' ? 'editable' : field.state;
 
     if (this.existenceTime.p81a) {
       this.updateFieldAndCtrl(field, this.existenceTime.p81a, false, state);
@@ -604,13 +618,13 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
 
 
   /**
-   * Called before Validation. Updates endBeg or leftInner field values
-   */
+  * Called before Validation. Updates endBeg or leftInner field values
+  */
   update81b(fieldName: 'begEnd' | 'rightInner') {
     const field = this.fieldsets.end.fields[fieldName] || this.fieldsets.inner.fields[fieldName];
 
     // since on form init, field state will be addBtn, we have to get away from it
-    const state = field.state === 'addBtn' ? 'editable': field.state;
+    const state = field.state === 'addBtn' ? 'editable' : field.state;
 
     if (this.existenceTime.p81b) {
       this.updateFieldAndCtrl(field, this.existenceTime.p81b, false, state);
@@ -1031,28 +1045,6 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
 
 
   /**
-  * start editing the main form
-  */
-  startEditingMainForm(): void {
-    // show main form buttons
-    this.mainFormBtnsVisible = true;
-    this.updateAllFields();
-  }
-
-  /**
-  * stop editing main form
-  */
-  stopEditingMainForm(): void {
-
-    this.stopEditingFields();
-
-    this.state = 'editable';
-
-
-  }
-
-
-  /**
   * start choosing meaning of first TimePrimitive
   */
   startChooseStatement() {
@@ -1084,10 +1076,19 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
   chooseBegins() {
     this._chooseStatementVisible = false;
 
+    // cache the current model
+    this.existenceTimeCache = new ExistenceTime(this.existenceTime);
+
     this.existenceTime.p81a = this.initialTimePrimitive;
 
-    this.startEditingMainForm()
+    this.updateAllFields();
 
+    this.state = 'edit';
+
+    // show main form buttons
+    this.mainFormBtnsVisible = true;
+
+    this.mainForm.markAsDirty();
   }
 
   /**
@@ -1098,9 +1099,9 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
 
     this.existenceTime.p81 = this.initialTimePrimitive;
 
-    this.state = 'editable';
+    this.updateAllFields();
 
-    this.startEditingMainForm()
+    this.state = 'editable';
 
   }
 
@@ -1110,12 +1111,60 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
   */
   chooseAtSomeTimeWithin() {
 
+
     this.existenceTime.p82 = this.initialTimePrimitive;
+
+    this.updateAllFields();
 
     this.state = 'editable';
 
-    this.startEditingMainForm()
   }
+
+
+
+  /**
+  * start editing the main form
+  *
+  */
+  startEditingMainForm(): void {
+
+    // cache the current model
+    this.existenceTimeCache = new ExistenceTime(this.existenceTime);
+
+    // show main form buttons
+    this.mainFormBtnsVisible = true;
+
+    this.updateAllFields();
+
+    this.state = 'edit';
+
+  }
+
+  /**
+  * stop editing main form
+  */
+  stopEditingMainForm(): void {
+
+
+    this.stopEditingFields();
+
+    this.existenceTime = this.existenceTimeCache;
+
+    this.updateAllFields();
+
+    this.state = 'editable';
+
+
+  }
+
+
+  /**
+   * submit the main form
+   */
+   onSubmitMainForm():void{
+
+   }
+
 
 
   labelOfTimePrimitive(tp: TimePrimitive) {
@@ -1190,9 +1239,6 @@ export class ExistenceTimeComponent extends PropertyComponent implements OnInit,
   }
 
 
-  /**
-  * Visibility within the main form
-  */
 
 
 

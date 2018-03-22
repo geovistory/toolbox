@@ -1,9 +1,16 @@
 <!-- This is a generic template used by child components! -->
 <fieldset>
 
-  <legend class="font-sm text-secondary">{{fieldset.label}}</legend>
+  <div class="d-flex flex-row">
+    <legend class="gv-flex-grow-1 gv-pointer font-sm" (click)="toggle()">
 
-  <div [@slideInOut]="isExpanded">
+      <i class="fa fa-caret-right text-muted" [ngClass]="{'fa-rotate-90': (isExpanded==='expanded')}"></i>
+      <span class="text-secondary">{{fieldset.label}}</span>
+    </legend>
+  </div>
+
+  <!-- TODO: replace this *ngIf with [@slideInOut] -->
+  <div *ngIf="isExpanded === 'expanded'">
     <ng-content></ng-content>
   </div>
 

@@ -1,6 +1,16 @@
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { initializePlayground } from 'angular-playground';
-import { CustomPlaygroundModule } from './custom-playground.module';
+import { PlaygroundModule } from 'angular-playground';
 
-initializePlayground('gv-root');
-platformBrowserDynamic().bootstrapModule(CustomPlaygroundModule);
+PlaygroundModule
+  .configure({
+      selector: 'gv-root',
+      overlay: false,
+      modules: [
+        BrowserModule,
+        BrowserAnimationsModule
+      ]
+  });
+
+platformBrowserDynamic().bootstrapModule(PlaygroundModule);

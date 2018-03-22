@@ -1,6 +1,7 @@
 // This is a generic component, used with child components!
 
 import { Component, OnInit, Input } from '@angular/core';
+import { FormGroup} from '@angular/forms';
 import {
   trigger,
   state,
@@ -11,6 +12,7 @@ import {
 } from '@angular/animations';
 
 import { Fieldset } from './fieldset';
+import { ExistenceTime } from '../existence-time';
 
 @Component({
   selector: 'gv-fieldset',
@@ -54,15 +56,23 @@ import { Fieldset } from './fieldset';
 })
 export class FieldsetComponent implements OnInit {
 
+  @Input() formGroup: FormGroup;
+
   @Input() fieldset: Fieldset;
+
+  @Input() existenceTime: ExistenceTime;
 
   isExpanded: 'collapsed' | 'expanded';
 
-  constructor() { }
+  constructor() {
+    this.isExpanded = 'collapsed'
+  }
 
   ngOnInit() {
   }
 
-
+  toggle() {
+    this.isExpanded = (this.isExpanded === 'collapsed' ? 'expanded' : 'collapsed');
+  }
 
 }
