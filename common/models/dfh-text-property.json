@@ -19,8 +19,8 @@
   "properties": {
     "dfh_pk_text_property": {
       "type": "number",
-      "required": true,
-      "id": true
+      "id": true,
+      "required": true
     },
     "dfh_text_property": {
       "type": "string",

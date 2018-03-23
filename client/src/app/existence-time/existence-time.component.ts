@@ -25,6 +25,7 @@ import { ValidationService } from '../shared/services/validation.service';
 import { Fieldset } from './fieldset/fieldset';
 import { ExistenceTime } from './existence-time';
 import { Field, FieldState } from './field/field';
+import { InfRole } from '../shared/sdk/models/InfRole';
 
 
 

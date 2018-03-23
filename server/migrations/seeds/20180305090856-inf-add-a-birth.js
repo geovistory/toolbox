@@ -41,9 +41,15 @@ exports.up = function(db, callback) {
   -- add an Birth
   insert_birth AS (
     INSERT INTO information.temporal_entity (fk_class, notes)
-    SELECT dfh_pk_class, notes
-    FROM data_for_history.class AS c
-    WHERE c.dfh_pk_class = 5 -- Birth
+    VALUES (
+      (
+
+        SELECT dfh_pk_class
+        FROM data_for_history.class AS c
+        WHERE c.dfh_pk_class = 5 -- Birth
+      ),
+      'TestBirth'
+    )
     ON CONFLICT DO NOTHING
     RETURNING  pk_temporal_entity, pk_entity, entity_version
   ),

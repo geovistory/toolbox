@@ -34,7 +34,16 @@ exports.up = function(db, callback) {
   (3, 'R61', 3, 4, 'Occured in kind of context', 0, -1, 1, 1),
   (4, 'P96', 5, 1, 'By Mother', 1, -1, 1, 1),
   (5, 'P97', 5, 1, 'From Father', 1, -1, 1, 1),
-  (6, 'P98', 5, 1, 'Brought into life', 1, 1, 1, 9)
+  (6, 'P98', 5, 1, 'Brought into life', 1, 1, 1, 9),
+
+  -- properties to time_primitives
+  (71, 'P81', 22, 335, 'Ongoing throughout', 0, -1, 0, -1),
+  (150, 'P81a', 22, 335, 'End of begin', 0, -1, 0, -1),
+  (151, 'P81b', 22, 335, 'Begin of end', 0, -1, 0, -1),
+  (72, 'P82', 22, 335, 'At some time within', 0, -1, 0, -1),
+  (152, 'P82a', 22, 335, 'Begin of begin', 0, -1, 0, -1),
+  (153, 'P82b', 22, 335, 'End of end', 0, -1, 0, -1)
+
   `;
   console.log(sql);
 

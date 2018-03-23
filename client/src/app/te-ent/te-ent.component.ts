@@ -36,11 +36,11 @@ import { DfhClass } from '../shared/sdk/models/DfhClass';
     trigger('slideInOut', [
       state('expanded', style({
         height: '*',
-        overflow:'visible'
+        overflow: 'visible'
       })),
       state('collapsed', style({
         height: '0px',
-        overflow:'hidden'
+        overflow: 'hidden'
       })),
       transition('expanded => collapsed', animate('400ms ease-in-out', keyframes([
         style({
@@ -90,10 +90,11 @@ export class TeEntComponent extends PropSectionListComponent implements OnInit {
   @Input() fkClass: number;
 
   // If true, the UI for communiy statistics is visible
-  @Input() communityStatsVisible:boolean;
+  @Input() communityStatsVisible: boolean;
 
   // If true, CRM info is visible in UI
-  @Input() ontoInfoVisible:boolean;
+  @Input() ontoInfoVisible: boolean;
+
 
   /**
   * Outputs

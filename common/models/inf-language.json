@@ -58,27 +58,5 @@
       "permission": "ALLOW"
     }
   ],
-  "methods": {
-     "queryByString": {
-      "accepts": {
-        "arg": "queryString",
-        "type": "string",
-        "http": {
-          "source": "query"
-        }
-      },
-      "returns": {
-        "arg": "languages",
-        "type": [
-          "Language"
-        ],
-        "root": true
-      },
-      "description": "Perform a ranked search on languages by search string.",
-      "http": {
-        "path": "/query-by-string",
-        "verb": "get"
-      }
-    }
-  }
+  "methods": {}
 }

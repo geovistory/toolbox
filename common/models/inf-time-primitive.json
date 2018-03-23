@@ -1,0 +1,87 @@
+{
+  "name": "InfTimePrimitive",
+  "base": "InfEntityVersion",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "v_time_primitive_version"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "fk_class": {
+      "type": "number",
+      "required": true,
+      "default": 335
+    },
+    "julian_day": {
+      "type": "number",
+      "required": true
+    },
+    "duration": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find",
+        "findComplex",
+        "findOrCreateInfTimePrimitive"
+      ]
+    }
+  ],
+  "methods": {
+    "findOrCreateInfTimePrimitive": {
+      "accepts": [
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": "InfTimePrimitive",
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfTimePrimitive",
+        "root": true
+      },
+      "description": "Find or create a time primitive version and update the project relation if needed.",
+      "http": {
+        "path": "/findOrCreate",
+        "verb": "post"
+      }
+    }
+  }
+}

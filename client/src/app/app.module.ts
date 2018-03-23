@@ -102,6 +102,7 @@ import { FieldsetBeginComponent } from './existence-time/fieldset-begin/fieldset
 import { FieldsetOuterComponent } from './existence-time/fieldset-outer/fieldset-outer.component';
 import { FieldsetInnerComponent } from './existence-time/fieldset-inner/fieldset-inner.component';
 import { FieldsetEndComponent } from './existence-time/fieldset-end/fieldset-end.component';
+import { ProjectSandboxComponent } from './project-sandbox/project-sandbox.component';
 
 @NgModule({
   declarations: [
@@ -175,7 +176,8 @@ import { FieldsetEndComponent } from './existence-time/fieldset-end/fieldset-end
     FieldsetBeginComponent,
     FieldsetEndComponent,
     FieldsetInnerComponent,
-    FieldsetOuterComponent
+    FieldsetOuterComponent,
+    ProjectSandboxComponent
   ],
   imports: [
     BrowserModule,

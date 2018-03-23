@@ -23,7 +23,10 @@ exports.up = function(db, callback) {
   (2, 'E82', 'Actor Appellation'),
   (3, 'F52', 'Name Use Activity'),
   (4, 'E56', 'Language'),
-  (5, 'E67', 'Birth')
+  (5, 'E67', 'Birth'),
+  (335, 'E61', 'Time Primitive'),
+  (22, 'E2', 'Temporal Entity')
+
   `;
   console.log(sql);
 

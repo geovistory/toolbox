@@ -72,7 +72,8 @@
       "foreignKey": "dfh_fk_property"
     }
   },
-  "acls": [{
+  "acls": [
+    {
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "DENY",

@@ -537,6 +537,15 @@ module.exports = function(InfPersistentItem) {
                 }
                 // ,
                 // "entity_version_project_rels": innerJoinThisProject
+              },
+              "time_primitive": {
+                "$relation": {
+                  "name": "time_primitive",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
               }
             }
           }
