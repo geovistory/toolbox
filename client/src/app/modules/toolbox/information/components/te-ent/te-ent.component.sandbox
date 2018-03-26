@@ -30,22 +30,22 @@ import { FieldsetOuterComponent } from '../existence-time/fieldset-outer/fieldse
 import { FieldsetBeginComponent } from '../existence-time/fieldset-begin/fieldset-begin.component';
 import { FieldsetEndComponent } from '../existence-time/fieldset-end/fieldset-end.component';
 import { TeEntComponent } from './te-ent.component';
-import { PropSectionOfTeEntComponent } from '../prop-section-of-te-ent/prop-section-of-te-ent.component';
-import { RoleOfTeEntComponent } from '../role-of-te-ent/role-of-te-ent.component';
+import { TeEntRoleSetComponent } from '../te-ent-role-set/te-ent-role-set.component';
+import { TeEntRoleComponent } from '../te-ent-role/te-ent-role.component';
 import { PeItComponent } from '../pe-it/pe-it.component';
 import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
 import { PeItAppellationComponent } from '../pe-it-appellation/pe-it-appellation.component';
 import { PeItLanguageComponent } from '../pe-it-language/pe-it-language.component';
 import { PeItEntityPreviewComponent } from '../pe-it-entity-preview/pe-it-entity-preview.component';
 import { PeItEntityAddComponent } from '../pe-it-entity-add/pe-it-entity-add.component';
-import { PropSectionListOfPeItComponent } from '../prop-section-list-of-pe-it/prop-section-list-of-pe-it.component';
+import { PeItRoleSetListComponent } from '../pe-it-role-set-list/pe-it-role-set-list.component';
 import { EntityEditorSettingsComponent } from '../entity-editor-settings/entity-editor-settings.component';
 import { AppellationLabelViewComponent } from '../appellation-label-view/appellation-label-view.component';
 import { AppellationLabelEditComponent } from '../appellation-label-edit/appellation-label-edit.component';
 import { AppellationLabelCreateComponent } from '../appellation-label-create/appellation-label-create.component';
 import { LanguageSearchTypeaheadComponent } from '../language-search-typeahead/language-search-typeahead.component';
-import { PropSectionOfPeItComponent } from '../prop-section-of-pe-it/prop-section-of-pe-it.component';
-import { RoleOfPeItComponent } from '../role-of-pe-it/role-of-pe-it.component';
+import { PeItRoleSetComponent } from '../pe-it-role-set/pe-it-role-set.component';
+import { PeItRoleComponent } from '../pe-it-role/pe-it-role.component';
 import { AppellationLabelEditorComponent } from '../appellation-label-editor/appellation-label-editor.component';
 import { AppellationLabelTokenComponent } from '../appellation-label-token/appellation-label-token.component';
 import { ClassService } from '../shared/services/class.service';
@@ -68,23 +68,23 @@ export default sandboxOf(TeEntComponent, {
     FieldsetEndComponent,
     FieldsetOuterComponent,
     FieldsetInnerComponent,
-    PropSectionOfTeEntComponent,
-    PropSectionOfPeItComponent,
-    RoleOfTeEntComponent,
+    TeEntRoleSetComponent,
+    PeItRoleSetComponent,
+    TeEntRoleComponent,
     PeItComponent,
     PeItEntityComponent,
     PeItAppellationComponent,
     PeItLanguageComponent,
     PeItEntityPreviewComponent,
     PeItEntityAddComponent,
-    PropSectionListOfPeItComponent,
+    PeItRoleSetListComponent,
     EntityEditorSettingsComponent,
     AppellationLabelViewComponent,
     AppellationLabelEditComponent,
     AppellationLabelEditorComponent,
     AppellationLabelCreateComponent,
     LanguageSearchTypeaheadComponent,
-    RoleOfPeItComponent,
+    PeItRoleComponent,
     AppellationLabelTokenComponent,
     ProjectSandboxComponent
 

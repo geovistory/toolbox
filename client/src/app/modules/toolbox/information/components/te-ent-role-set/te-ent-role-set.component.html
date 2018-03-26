@@ -47,16 +47,16 @@
 
       <!-- The roles that are added -->
 
-      <gv-role-of-te-ent *ngFor="let role of roles"
+      <gv-te-ent-role *ngFor="let role of roles"
       [role]="role"
       [parentProperty]="property"
       [isOutgoing]="isOutgoing"
       [pointTo]="pointTo"
-      [roleState]="'edit'"
+      [roleState]="'editable'"
       (readyToAdd)="onRoleReadyToAdd($event)"
       (appeChange)="emitAppeChange($event)"
       (roleRemoved)="onRoleRemoved($event)"
-      (onRequestStandard)="changeStandardRole($event)"></gv-role-of-te-ent>
+      (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
 
       <div class="card-body" *ngIf="roles.length === 0 && addButtonVisible">
         <button class="btn btn-primary" (click)="startAddingRole()">
@@ -96,14 +96,14 @@
 
           <div class="card-body" *ngIf="rolesInOtherProjects.length">
 
-            <gv-role-of-te-ent *ngFor="let role of rolesInOtherProjects"
+            <gv-te-ent-role *ngFor="let role of rolesInOtherProjects"
             [role]="role"
             [parentProperty]="property"
             [isOutgoing]="isOutgoing"
             [pointTo]="'TeEnt'"
             [roleState]="'add'"
             (readyToAdd)="onRoleReadyToAdd($event)"
-            ></gv-role-of-te-ent>
+            ></gv-te-ent-role>
           </div>
 
           <div class="card-body pt-0" *ngIf="rolesInNoProject && rolesInOtherProjects.length">
@@ -119,14 +119,14 @@
 
           <div class="card-body" *ngIf="rolesInNoProject && rolesInNoProjectVisible">
 
-            <gv-role-of-te-ent *ngFor="let role of rolesInNoProject"
+            <gv-te-ent-role *ngFor="let role of rolesInNoProject"
             [role]="role"
             [parentProperty]="property"
             [isOutgoing]="isOutgoing"
             [pointTo]="'TeEnt'"
             [roleState]="'add'"
             (readyToAdd)="onRoleReadyToAdd($event)"
-            ></gv-role-of-te-ent>
+            ></gv-te-ent-role>
           </div>
 
           <div class="card-body" *ngIf="rolesInNoProjectVisible || rolesInOtherProjects.length">
@@ -145,7 +145,7 @@
       <!-- Create a new Role -->
       <div class="border-top border-gray-500" *ngIf="addRoleState=== 'createNew'">
 
-        <gv-role-of-te-ent
+        <gv-te-ent-role
         [role]="roleToCreate"
         [pointTo]="'PeIt'"
         [pkTargetClass]="pkTargetClass"
@@ -154,7 +154,7 @@
         [roleState]="'create'"
         (roleCreated)="onRoleCreated($event)"
         (roleCreationCanceled)="onRoleCreationCanceled()"
-        ></gv-role-of-te-ent>
+        ></gv-te-ent-role>
 
       </div>
 
@@ -178,7 +178,7 @@
 
     <div class="card-body">
       <div *ngFor="let role of roles">
-        <gv-role-of-te-ent
+        <gv-te-ent-role
         [role]="role"
         [parentProperty]="property"
         [isOutgoing]="isOutgoing"
@@ -186,7 +186,7 @@
         [roleState]="propState"
         (appeChange)="emitAppeChange($event)"
         (readyToAdd)="onRoleReadyToAdd($event)"
-        (onRequestStandard)="changeStandardRole($event)"></gv-role-of-te-ent>
+        (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
       </div>
     </div>
 
@@ -205,7 +205,7 @@
 
     <div class="card-body">
       <div *ngFor="let role of roles">
-        <gv-role-of-te-ent
+        <gv-te-ent-role
         [role]="role"
         [parentProperty]="property"
         [isOutgoing]="isOutgoing"
@@ -213,7 +213,7 @@
         [roleState]="propState"
         (appeChange)="emitAppeChange($event)"
         (readyToAdd)="onRoleReadyToAdd($event)"
-        (onRequestStandard)="changeStandardRole($event)"></gv-role-of-te-ent>
+        (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
       </div>
     </div>
 
@@ -244,18 +244,18 @@
 
     <div [@slideInOut]="cardState">
       <!-- <div  class="card-body">
-        <gv-role-of-te-ent *ngFor="let role of roles"
+        <gv-te-ent-role *ngFor="let role of roles"
         [role]="roleToCreate"
         [pointTo]="'PeIt'"
         [pkTargetClass]="pkTargetClass"
         [fkProperty]="fkProperty"
         [roleState]="'create'"
         (readyToCreate)="roleReadyToCreate($event)"
-        (notReadyToCreate)="roleNotReadyToCreate()"></gv-role-of-te-ent>
+        (notReadyToCreate)="roleNotReadyToCreate()"></gv-te-ent-role>
       </div> -->
 
 
-      <gv-role-of-te-ent
+      <gv-te-ent-role
       [role]="roleToCreate"
       [pointTo]="'PeIt'"
       [pkTargetClass]="pkTargetClass"
@@ -265,7 +265,7 @@
       (notReadyToCreate)="roleNotReadyToCreate()"
       (roleCreated)="onRoleCreated($event)"
       (roleCreationCanceled)="onRoleCreationCanceled()"
-      ></gv-role-of-te-ent>
+      ></gv-te-ent-role>
 
     </div>
   </span>
@@ -283,7 +283,7 @@
 
     <div class="card-body">
       <div *ngFor="let role of roles">
-        <gv-role-of-te-ent
+        <gv-te-ent-role
         [role]="role"
         [parentProperty]="property"
         [isOutgoing]="isOutgoing"
@@ -292,7 +292,7 @@
         [communityStatsVisible]="communityStatsVisible"
         [ontoInfoVisible]="ontoInfoVisible"
         (appeChange)="emitAppeChange($event)"
-        ></gv-role-of-te-ent>
+        ></gv-te-ent-role>
       </div>
     </div>
 

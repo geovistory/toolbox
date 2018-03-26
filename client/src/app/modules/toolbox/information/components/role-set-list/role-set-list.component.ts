@@ -14,7 +14,7 @@ import { InfRole, InfPersistentItem, DfhProperty, EntityEditorService } from 'ap
 import { DirectionAwareProperty, PropertyService } from '../../shared/property.service';
 import { DirectedRolesPerProperty, RoleService } from '../../shared/role.service';
 
-export class PropSectionListComponent implements OnInit {
+export class RoleSetListComponent implements OnInit {
 
   /**
   * Inputs
@@ -36,7 +36,7 @@ export class PropSectionListComponent implements OnInit {
   @Input() ingoingProperties: DfhProperty[];
 
   // state of this component
-  @Input() propSectionListState: string;
+  @Input() RoleSetListState: string;
 
   // state of adding new information section
   @Input() set addingInformation(val: boolean) {
@@ -112,10 +112,10 @@ export class PropSectionListComponent implements OnInit {
   */
   get addButtonVisible() {
 
-    if (this.propSectionListState === 'selectProp') return false;
-    if (this.propSectionListState === 'add') return false;
-    if (this.propSectionListState === 'create') return false;
-    if (this.propSectionListState === 'add-pe-it') return false;
+    if (this.RoleSetListState === 'selectProp') return false;
+    if (this.RoleSetListState === 'add') return false;
+    if (this.RoleSetListState === 'create') return false;
+    if (this.RoleSetListState === 'add-pe-it') return false;
 
 
     return true;
@@ -128,7 +128,7 @@ export class PropSectionListComponent implements OnInit {
 
   ngOnInit() {
 
-    this.propState = this.propSectionListState;
+    this.propState = this.RoleSetListState;
 
     // this.propertyToAdd = null;
 
@@ -142,7 +142,7 @@ export class PropSectionListComponent implements OnInit {
     this.ingoingDirectionAwareProperties = this.propertyService
       .toDirectionAwareProperties(false, this.ingoingProperties)
 
-    if (this.propSectionListState === 'create') {
+    if (this.RoleSetListState === 'create') {
 
       //TODO find smarter choice of the default property to add on create
       this.propertyToAdd = this.ingoingDirectionAwareProperties.filter(odap => {

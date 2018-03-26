@@ -14,8 +14,8 @@ export class PeItLanguageComponent implements OnInit {
   */
 
   // the language
-  @Input() language:InfLanguage;
-  @Input() peItLangState:string;
+  @Input() language: InfLanguage;
+  @Input() peItLangState: string;
 
   /**
   * Outputs
@@ -34,10 +34,10 @@ export class PeItLanguageComponent implements OnInit {
   */
 
   // for add-pe-it state the language to add to project
-  langToAdd:InfLanguage;
+  langToAdd: InfLanguage;
 
   // for edit state, the new selected language
-  newLang:InfLanguage;
+  newLang: InfLanguage;
 
   constructor(
     public entityEditor: EntityEditorService,
@@ -58,10 +58,11 @@ export class PeItLanguageComponent implements OnInit {
   }
 
 
-  languageChange(language:InfLanguage){
+  languageChange(language: InfLanguage) {
 
-    if(language && language.pk_entity && this.language.pk_entity !== language.pk_entity){
+    if (language && language.pk_entity && this.language.pk_entity !== language.pk_entity) {
       this.newLang = new InfLanguage(language);
+      this.readyToCreate.emit(this.newLang)
     }
     else {
       this.newLang = undefined;
@@ -69,11 +70,11 @@ export class PeItLanguageComponent implements OnInit {
     }
   }
 
-save(){
-  if(this.newLang) this.readyToCreate.emit(this.newLang);
-}
+  save() {
+    if (this.newLang) this.readyToCreate.emit(this.newLang);
+  }
 
-  cancel(){
+  cancel() {
     this.cancelEdit.emit();
   }
 

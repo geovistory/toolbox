@@ -34,7 +34,7 @@
           *ngIf="showAppellationUI"
           class="gv-flex-grow-1"
           [appellation]="appellation"
-          [peItAppeState]="valueEntitiesState"
+          [peItAppeState]="peItState"
           (readyToCreate)=emitReadyToCreate($event)
           (notReadyToCreate)=emitNotReadyToCreate()
           (readyToAdd)="onAppeReadyToAdd($event)"

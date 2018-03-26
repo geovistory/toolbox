@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PropSectionOfTeEntComponent } from './prop-section-of-te-ent.component';
+import { PeItRoleSetListComponent } from './pe-it-role-set-list.component';
 
-describe('PropSectionOfTeEntComponent', () => {
-  let component: PropSectionOfTeEntComponent;
-  let fixture: ComponentFixture<PropSectionOfTeEntComponent>;
+describe('PeItRoleSetListComponent', () => {
+  let component: PeItRoleSetListComponent;
+  let fixture: ComponentFixture<PeItRoleSetListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PropSectionOfTeEntComponent ]
+      declarations: [ PeItRoleSetListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PropSectionOfTeEntComponent);
+    fixture = TestBed.createComponent(PeItRoleSetListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

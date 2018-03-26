@@ -13,7 +13,7 @@
 
   </div>
 
-  <div class="d-flex flex-row" *ngIf="peItAppeState === 'view'">
+  <div class="d-flex flex-row" *ngIf="peItAppeState === 'editable'">
 
     <div class="gv-flex-grow-1" >
       <gv-appellation-label-view [appellation]="appellation"></gv-appellation-label-view>
@@ -23,10 +23,10 @@
 
   <div *ngIf="peItAppeState === 'edit'">
 
-    <gv-appellation-label-edit
-    [appellationLabel]="appellationLabel"
-    (onCancel)="onCancel()"
-    (onChange)="save($event)"></gv-appellation-label-edit>
+    <gv-appellation-label-editor [appellationLabel]="appellationLabel"
+    (readyToCreate)="emitReadyToCreate($event)"
+    (notReadyToCreate)="emitNotReadyToCreate()"
+    ></gv-appellation-label-editor>
 
   </div>
 

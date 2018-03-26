@@ -4,11 +4,11 @@ import { ActiveProjectService, EntityEditorService, InfRoleApi, InfAppellation, 
 import { EprService } from '../../shared/epr.service';
 
 @Component({
-  selector: 'gv-role-of-te-ent',
-  templateUrl: './role-of-te-ent.component.html',
-  styleUrls: ['./role-of-te-ent.component.scss']
+  selector: 'gv-te-ent-role',
+  templateUrl: './te-ent-role.component.html',
+  styleUrls: ['./te-ent-role.component.scss']
 })
-export class RoleOfTeEntComponent extends RoleComponent implements OnInit {
+export class TeEntRoleComponent extends RoleComponent implements OnInit {
 
 
 /**
@@ -61,5 +61,13 @@ export class RoleOfTeEntComponent extends RoleComponent implements OnInit {
 
   }
 
+  startEditing(){
+    this.roleState = 'edit';
+  }
+
+  stopEditing(){
+    this.roleState = 'editable';
+  }
+  
 
 }

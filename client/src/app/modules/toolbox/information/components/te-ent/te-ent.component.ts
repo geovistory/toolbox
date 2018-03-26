@@ -10,11 +10,11 @@ import {
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
-import { PropSectionListComponent } from '../prop-section-list/prop-section-list.component';
+import { RoleSetListComponent } from '../role-set-list/role-set-list.component';
 import { InfTemporalEntity, DfhProperty, InfRole, DfhClass, ActiveProjectService, EntityEditorService, InfEntityProjectRel } from 'app/core';
 import { AppellationStdBool } from '../role/role.component';
 import { DirectedRolesPerProperty, RoleService } from '../../shared/role.service';
-import { PropSectionOfTeEntComponent } from '../prop-section-of-te-ent/prop-section-of-te-ent.component';
+import { TeEntRoleSetComponent } from '../te-ent-role-set/te-ent-role-set.component';
 import { PropertyService } from '../../shared/property.service';
 import { ClassService } from '../../shared/class.service';
 import { AppellationLabel } from '../../shared/appellation-label/appellation-label';
@@ -62,7 +62,7 @@ import { AppellationLabel } from '../../shared/appellation-label/appellation-lab
     ])
   ]
 })
-export class TeEntComponent extends PropSectionListComponent implements OnInit {
+export class TeEntComponent extends RoleSetListComponent implements OnInit {
 
   /**
   * Inputs
@@ -131,8 +131,8 @@ export class TeEntComponent extends PropSectionListComponent implements OnInit {
   //Class of this peIt
   dfhClass: DfhClass;
 
-  // Array of children PropSectionOfTeEntComponent
-  @ViewChildren(PropSectionOfTeEntComponent) propertyComponents: QueryList<PropSectionOfTeEntComponent>
+  // Array of children TeEntRoleSetComponent
+  @ViewChildren(TeEntRoleSetComponent) RoleSetComponents: QueryList<TeEntRoleSetComponent>
 
   constructor(
     roleService: RoleService,
@@ -225,11 +225,11 @@ export class TeEntComponent extends PropSectionListComponent implements OnInit {
 
     let allValid = true;
 
-    this.propertyComponents.forEach(propertyComponent => {
+    this.RoleSetComponents.forEach(RoleSetComponent => {
 
-      if (!propertyComponent.isReadyToCreate && !propertyComponent.isCircular) allValid = false;
+      if (!RoleSetComponent.isReadyToCreate && !RoleSetComponent.isCircular) allValid = false;
 
-      rolesToCreate = rolesToCreate.concat(propertyComponent.rolesToCreate);
+      rolesToCreate = rolesToCreate.concat(RoleSetComponent.rolesToCreate);
 
     })
 

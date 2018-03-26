@@ -1,12 +1,12 @@
 <div class="d-flex flex-column gv-flex-grow-1" [ngClass]="{'dev-view': entityEditor.devView}">
 
   <span *ngIf="entityEditor.devView">
-    [state: {{propSectionListState}}]
+    [state: {{RoleSetListState}}]
   </span>
 
   <!-- Add-Pe-It State -->
 
-  <div class="d-flex flex-column gv-flex-grow-1" *ngIf="propSectionListState === 'add-pe-it'">
+  <div class="d-flex flex-column gv-flex-grow-1" *ngIf="RoleSetListState === 'add-pe-it'">
 
     <div class="btn-group gv-flex-shrink-0 d-flex mb-3" role="group" aria-label="Basic example">
       <div class="gv-flex-grow-1 bg-gray-700 text-white rounded-left gv-card-spacer-x align-self-stretch d-flex">
@@ -28,7 +28,7 @@
 
     <!-- Create a new PeIt -->
 
-    <gv-prop-section-of-pe-it
+    <gv-pe-it-role-set
     *ngFor="let propertySection of directedRolesPerProperty"
     [propertySection]="propertySection"
     [isOutgoing]="propertySection.isOutgoing"
@@ -44,16 +44,16 @@
     (readyToAdd)="onRolesReadyToAdd($event)"
     (notReadyToAdd)="onRolesNotReadyToAdd()"
     (removePropertySectionReq)="onRemovePropertySectionReq($event)"
-    ></gv-prop-section-of-pe-it>
+    ></gv-pe-it-role-set>
 
   </div>
 
 
   <!-- Create State -->
 
-  <div *ngIf="propSectionListState === 'create' && propertyToAdd">
+  <div *ngIf="RoleSetListState === 'create' && propertyToAdd">
     <!-- Create a new PeIt -->
-    <gv-prop-section-of-pe-it
+    <gv-pe-it-role-set
     [fkProperty]="propertyToAdd.property.dfh_pk_property"
     [isOutgoing]="propertyToAdd.isOutgoing"
     [propState]="'create-pe-it'"
@@ -64,14 +64,14 @@
     (notReadyToCreate)="emitNotReadyToCreate()"
     (propStateChange)="onPropStateChange($event)"
     (rolesAdded)="onRolesAdded($event)"
-    ></gv-prop-section-of-pe-it>
+    ></gv-pe-it-role-set>
 
   </div>
 
 
   <!-- Edit State -->
 
-  <div class="d-flex flex-column gv-flex-grow-1" *ngIf="propSectionListState === 'edit'">
+  <div class="d-flex flex-column gv-flex-grow-1" *ngIf="RoleSetListState === 'edit'">
 
     <div class="btn-group gv-flex-shrink-0 d-flex mb-3" role="group" aria-label="Basic example">
       <div class="gv-flex-grow-1 bg-gray-700 text-white rounded-left gv-card-spacer-x align-self-stretch d-flex">
@@ -93,7 +93,7 @@
 
     <div class="gv-body gv-flex-grow-1" style="overflow-y:auto">
 
-      <gv-prop-section-of-pe-it
+      <gv-pe-it-role-set
       *ngFor="let propertySection of directedRolesPerProperty"
       [propertySection]="propertySection"
       [isOutgoing]="propertySection.isOutgoing"
@@ -109,7 +109,7 @@
       (readyToAdd)="onRolesReadyToAdd($event)"
       (notReadyToAdd)="onRolesNotReadyToAdd()"
       (removePropertySectionReq)="onRemovePropertySectionReq($event)"
-      ></gv-prop-section-of-pe-it>
+      ></gv-pe-it-role-set>
 
     </div>
 
@@ -165,7 +165,7 @@
 
   <!-- View State -->
 
-  <div class="d-flex flex-column gv-flex-grow-1" *ngIf="propSectionListState === 'view'">
+  <div class="d-flex flex-column gv-flex-grow-1" *ngIf="RoleSetListState === 'view'">
 
     <div class="btn-group gv-flex-shrink-0 d-flex mb-3" role="group" aria-label="Basic example">
       <div class="gv-flex-grow-1 bg-gray-700 text-white rounded-left gv-card-spacer-x align-self-stretch d-flex">
@@ -186,7 +186,7 @@
     </div>
 
 
-    <gv-prop-section-of-pe-it
+    <gv-pe-it-role-set
     *ngFor="let propertySection of directedRolesPerProperty"
     [propertySection]="propertySection"
     [isOutgoing]="propertySection.isOutgoing"
@@ -202,7 +202,7 @@
     (readyToAdd)="onRolesReadyToAdd($event)"
     (notReadyToAdd)="onRolesNotReadyToAdd()"
     (removePropertySectionReq)="onRemovePropertySectionReq($event)"
-    ></gv-prop-section-of-pe-it>
+    ></gv-pe-it-role-set>
 
   </div>
 

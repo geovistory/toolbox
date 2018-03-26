@@ -5,11 +5,11 @@ import { ActiveProjectService, EntityEditorService, InfRoleApi } from 'app/core'
 import { EprService } from '../../shared/epr.service';
 
 @Component({
-  selector: 'gv-role-of-pe-it',
-  templateUrl: './role-of-pe-it.component.html',
-  styleUrls: ['./role-of-pe-it.component.scss']
+  selector: 'gv-pe-it-role',
+  templateUrl: './pe-it-role.component.html',
+  styleUrls: ['./pe-it-role.component.scss']
 })
-export class RoleOfPeItComponent extends RoleComponent implements OnInit {
+export class PeItRoleComponent extends RoleComponent implements OnInit {
 
   constructor(
     activeProjectService: ActiveProjectService,

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RoleOfTeEntComponent } from './role-of-te-ent.component';
+import { RoleSetComponent } from './property.component';
 
-describe('RoleOfTeEntComponent', () => {
-  let component: RoleOfTeEntComponent;
-  let fixture: ComponentFixture<RoleOfTeEntComponent>;
+describe('RoleSetComponent', () => {
+  let component: RoleSetComponent;
+  let fixture: ComponentFixture<RoleSetComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RoleOfTeEntComponent ]
+      declarations: [ RoleSetComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RoleOfTeEntComponent);
+    fixture = TestBed.createComponent(RoleSetComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

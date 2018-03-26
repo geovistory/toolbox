@@ -13,7 +13,7 @@ import { DatePipe } from '@angular/common';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 
-import { PropertyComponent } from '../property/property.component';
+import { RoleSetComponent } from '../role-set/role-set.component';
 
 import { Fieldset } from './fieldset/fieldset';
 import { ExistenceTime } from './existence-time';
@@ -79,7 +79,7 @@ interface Fieldsets {
     ])
   ]
 })
-export class ExistenceTimeComponent extends PropertyComponent implements OnInit, AfterViewInit {
+export class ExistenceTimeComponent extends RoleSetComponent implements OnInit, AfterViewInit {
 
 
   /**

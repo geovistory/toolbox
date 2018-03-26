@@ -17,7 +17,7 @@ import { PropertyService } from '../../shared/property.service';
 import { UtilitiesService } from '../../shared/utilities.service';
 
 
-export class PropertyComponent implements OnChanges, OnInit {
+export class RoleSetComponent implements OnChanges, OnInit {
 
 
   @Input() propertySection: DirectedRolesPerProperty;

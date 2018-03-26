@@ -18,8 +18,8 @@ import { timer } from 'rxjs/observable/timer';
 import { RolePointToEnum, RoleComponent, AppellationStdBool } from '../role/role.component';
 import { TeEntComponent } from '../te-ent/te-ent.component';
 import { PeItComponent } from '../pe-it/pe-it.component';
-import { PropertyComponent } from '../property/property.component';
-import { RoleOfTeEntComponent } from '../role-of-te-ent/role-of-te-ent.component';
+import { RoleSetComponent } from '../role-set/role-set.component';
+import { TeEntRoleComponent } from '../te-ent-role/te-ent-role.component';
 import { InfTemporalEntity, InfRole, InfEntityProjectRelApi, InfRoleApi, ActiveProjectService, EntityEditorService } from 'app/core';
 import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
@@ -28,9 +28,9 @@ import { UtilitiesService } from '../../shared/utilities.service';
 
 
 @Component({
-  selector: 'gv-prop-section-of-te-ent',
-  templateUrl: './prop-section-of-te-ent.component.html',
-  styleUrls: ['./prop-section-of-te-ent.component.scss'],
+  selector: 'gv-te-ent-role-set',
+  templateUrl: './te-ent-role-set.component.html',
+  styleUrls: ['./te-ent-role-set.component.scss'],
   animations: [
     trigger('slideInOut', [
       state('expanded', style({
@@ -67,7 +67,7 @@ import { UtilitiesService } from '../../shared/utilities.service';
     ])
   ]
 })
-export class PropSectionOfTeEntComponent extends PropertyComponent implements OnChanges, OnInit {
+export class TeEntRoleSetComponent extends RoleSetComponent implements OnChanges, OnInit {
 
   /**
   * Inputs
@@ -80,7 +80,7 @@ export class PropSectionOfTeEntComponent extends PropertyComponent implements On
   @Input() parentRole: InfRole;
 
   // Array of children RoleComponents
-  @ViewChildren(RoleOfTeEntComponent) roleComponents: QueryList<RoleOfTeEntComponent>
+  @ViewChildren(TeEntRoleComponent) roleComponents: QueryList<TeEntRoleComponent>
 
 
   constructor(

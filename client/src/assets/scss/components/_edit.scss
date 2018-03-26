@@ -2,6 +2,7 @@
   min-width: 64rem;
   gv-project-edit-panel{
     position: 'relative';
+    gv-proxy-route,
     gv-entity-editor,
     gv-entity-editor > div,
     gv-entity-editor > div > div,
@@ -53,7 +54,7 @@
       // margin-right: 10px;
       padding-left: 15px;
       .card.gv-naming,
-      .card.gv-prop-section-list {
+      .card.gv-role-set-list {
         margin-bottom: .5rem;
       }
     }

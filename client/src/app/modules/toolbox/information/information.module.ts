@@ -41,11 +41,11 @@ import { PeItEntityPreviewComponent } from './components/pe-it-entity-preview/pe
 import { PeItEntityPreviewModalComponent } from './components/pe-it-entity-preview-modal/pe-it-entity-preview-modal.component';
 import { PeItLanguageComponent } from './components/pe-it-language/pe-it-language.component';
 import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
-import { PropSectionListOfPeItComponent } from './components/prop-section-list-of-pe-it/prop-section-list-of-pe-it.component';
-import { PropSectionOfPeItComponent } from './components/prop-section-of-pe-it/prop-section-of-pe-it.component';
-import { PropSectionOfTeEntComponent } from './components/prop-section-of-te-ent/prop-section-of-te-ent.component';
-import { RoleOfPeItComponent } from './components/role-of-pe-it/role-of-pe-it.component';
-import { RoleOfTeEntComponent } from './components/role-of-te-ent/role-of-te-ent.component';
+import { PeItRoleSetListComponent } from './components/pe-it-role-set-list/pe-it-role-set-list.component';
+import { PeItRoleSetComponent } from './components/pe-it-role-set/pe-it-role-set.component';
+import { TeEntRoleSetComponent } from './components/te-ent-role-set/te-ent-role-set.component';
+import { PeItRoleComponent } from './components/pe-it-role/pe-it-role.component';
+import { TeEntRoleComponent } from './components/te-ent-role/te-ent-role.component';
 import { RoleToDateComponent } from './components/role-to-date/role-to-date.component';
 import { TeEntComponent } from './components/te-ent/te-ent.component';
 import { TimePrimitiveComponent } from './components/time-primitive/time-primitive.component';
@@ -114,11 +114,11 @@ import { AppellationService } from './shared/appellation.service';
     PeItEntityPreviewModalComponent,
     PeItLanguageComponent,
     ProjectEntitiesComponent,
-    PropSectionListOfPeItComponent,
-    PropSectionOfPeItComponent,
-    PropSectionOfTeEntComponent,
-    RoleOfPeItComponent,
-    RoleOfTeEntComponent,
+    PeItRoleSetListComponent,
+    PeItRoleSetComponent,
+    TeEntRoleSetComponent,
+    PeItRoleComponent,
+    TeEntRoleComponent,
     RoleToDateComponent,
     TeEntComponent,
     TimePrimitiveComponent,

@@ -11,14 +11,14 @@
        {{mostPopularAppeString}} {{stdAppeString}} <small class="text-muted">{{dfhClass?.dfh_standard_label}}</small>
     </h5>
 
-    <gv-prop-section-list-of-pe-it
-    [propSectionListState]="'view'"
+    <gv-pe-it-role-set-list
+    [RoleSetListState]="'view'"
     [parentPeIt]="peIt"
     [roles]="peIt?.pi_roles"
     [outgoingProperties]="outgoingProperties"
     [ingoingProperties]="ingoingProperties"
     (appeChange)="whenAppeChange($event)"
-    ></gv-prop-section-list-of-pe-it>
+    ></gv-pe-it-role-set-list>
 
   </div>
 
@@ -31,14 +31,14 @@
       [ready: {{isReadyToCreate}}]
     </span>
 
-    <gv-prop-section-list-of-pe-it
-    [propSectionListState]="'create'"
+    <gv-pe-it-role-set-list
+    [RoleSetListState]="'create'"
     [parentPeIt]="peItToCreate"
     [outgoingProperties]="outgoingProperties"
     [ingoingProperties]="ingoingProperties"
     (readyToCreate)="emitReadyToCreate($event)"
     (notReadyToCreate)="emitNotReadyToCreate()"
-    ></gv-prop-section-list-of-pe-it>
+    ></gv-pe-it-role-set-list>
 
 
   </div>
@@ -51,9 +51,9 @@
        {{mostPopularAppeString}}
     </h5>
 
-    <gv-prop-section-list-of-pe-it
+    <gv-pe-it-role-set-list
     [roles]="peIt.pi_roles"
-    [propSectionListState]="peItEntityState"
+    [RoleSetListState]="peItEntityState"
     [parentPeIt]="peIt"
     [outgoingProperties]="outgoingProperties"
     [ingoingProperties]="ingoingProperties"
@@ -62,7 +62,7 @@
     (readyToAdd)="onRolesReadyToAdd($event)"
     (notReadyToAdd)="onRolesNotReadyToAdd()"
     (appeChange)="whenAppeChange($event)"
-    ></gv-prop-section-list-of-pe-it>
+    ></gv-pe-it-role-set-list>
 
 
   </div>
@@ -95,16 +95,16 @@
     <div class="d-flex flex-row gv-flex-grow-1 m-3">
 
       <div class="d-flex gv-flex-grow-1" style="max-width:450px">
-        <gv-prop-section-list-of-pe-it
+        <gv-pe-it-role-set-list
         class="gv-flex-grow-1 d-flex flex-row"
         [roles]="peIt.pi_roles"
-        [propSectionListState]="peItEntityState"
+        [RoleSetListState]="peItEntityState"
         [pkEntity]="pkEntity"
         [parentPeIt]="peIt"
         [outgoingProperties]="outgoingProperties"
         [ingoingProperties]="ingoingProperties"
         (appeChange)="whenAppeChange($event)"
-        ></gv-prop-section-list-of-pe-it>
+        ></gv-pe-it-role-set-list>
       </div>
 
       <div class="d-flex gv-flex-grow-1 ml-3">
@@ -122,7 +122,6 @@
           <div class="card gv-flex-grow-1 mb-3">
             <div class="card-body">
 
-              <gv-time-primitive></gv-time-primitive>
 
             </div>
           </div>

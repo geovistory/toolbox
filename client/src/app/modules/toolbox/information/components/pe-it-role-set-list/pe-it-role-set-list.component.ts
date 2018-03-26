@@ -10,15 +10,15 @@ import {
 
 import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
 import { AppellationStdBool } from '../role/role.component';
-import { PropSectionListComponent } from '../prop-section-list/prop-section-list.component';
+import { RoleSetListComponent } from '../role-set-list/role-set-list.component';
 import { InfRole, EntityEditorService } from 'app/core';
 import { PropertyService } from '../../shared/property.service';
 import { RoleService } from '../../shared/role.service';
 
 @Component({
-  selector: 'gv-prop-section-list-of-pe-it',
-  templateUrl: './prop-section-list-of-pe-it.component.html',
-  styleUrls: ['./prop-section-list-of-pe-it.component.scss'],
+  selector: 'gv-pe-it-role-set-list',
+  templateUrl: './pe-it-role-set-list.component.html',
+  styleUrls: ['./pe-it-role-set-list.component.scss'],
   animations: [
     trigger('slideInOut', [
       state('expanded', style({
@@ -55,7 +55,7 @@ import { RoleService } from '../../shared/role.service';
     ])
   ]
 })
-export class PropSectionListOfPeItComponent extends PropSectionListComponent implements OnInit, OnChanges {
+export class PeItRoleSetListComponent extends RoleSetListComponent implements OnInit, OnChanges {
 
   /**
   * Outputs

@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
-import { PropertyComponent } from '../property/property.component';
+import { RoleSetComponent } from '../role-set/role-set.component';
 import { InfAppellation, InfRole, DfhProperty, ActiveProjectService, EntityEditorService, InfRoleApi, InfEntityProjectRel, InfLanguage, InfTemporalEntity } from 'app/core';
 import { EprService } from '../../shared/epr.service';
+import { create } from 'domain';
 
 export enum RolePointToEnum {
   PeIt = "PeIt",
@@ -27,7 +28,7 @@ export class RoleComponent implements OnInit {
 
   @Input() pointTo: string;
 
-  @Input() roleState: string;
+  @Input() roleState: 'view' | 'editable' | 'edit' | 'create' | 'add' | 'add-pe-it' | 'create-te-ent' | 'create-pe-it';
 
   @Input() pkTargetClass: string;
 
@@ -94,7 +95,7 @@ export class RoleComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if ((this.roleState === 'create' || this.roleState === 'create-te-ent' || this.roleState === 'create-pe-it' ) && this.role === undefined) {
+    if ((this.roleState === 'create' ||  this.roleState === 'create-te-ent' ||  this.roleState === 'create-pe-it') && this.role === undefined) {
       this.role = new InfRole();
       this.role.fk_property = this.fkProperty;
     }
@@ -202,6 +203,45 @@ export class RoleComponent implements OnInit {
 
   }
 
+
+  /**
+ * updateRole - called when user updates a role
+ *
+ */
+  updateRole() {
+
+    // create new role with children
+    this.roleApi.findOrCreateInfRole(
+      this.activeProjectService.project.pk_project,
+      this.role
+    ).subscribe(roles => {
+
+      const createdRole = roles[0];
+
+      // if the new role is really a different role than the previous one
+      if (this.roleToAdd.pk_entity != createdRole.pk_entity) {
+
+        // remove the old role from the project
+        this.roleApi.changeRoleProjectRelation(
+          this.activeProjectService.project.pk_project, false, this.roleToAdd
+        ).subscribe(result => {
+          const removedRole: InfRole = result[0]
+          
+          // emit the new role added to the project
+          this.roleCreated.emit(createdRole);
+          
+          // emit that this role is removed from project
+          this.roleRemoved.emit(removedRole);
+
+        })
+      }else{
+        this.roleCreated.emit(createdRole);
+      }
+
+
+    })
+
+  }
 
   /**
   * cancelCreateRole - called when user cancels to create a role

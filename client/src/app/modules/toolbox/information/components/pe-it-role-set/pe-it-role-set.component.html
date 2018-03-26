@@ -21,7 +21,7 @@
         <!-- The roles that are added -->
 
         <div class="card-body">
-          <gv-role-of-pe-it *ngFor="let role of roles"
+          <gv-pe-it-role *ngFor="let role of roles"
           [role]="role"
           [parentProperty]="property"
           [isOutgoing]="isOutgoing"
@@ -33,7 +33,7 @@
           (onRequestStandard)="changeStandardRole($event)"
           (readyToAdd)="onRoleReadyToAdd($event)"
           (roleRemoved)="onRoleRemoved($event)"
-          ></gv-role-of-pe-it>
+          ></gv-pe-it-role>
         </div>
 
         <div class="border-top border-gray-500">
@@ -70,14 +70,14 @@
 
               <div class="card-body" *ngIf="rolesInOtherProjects.length">
 
-                <gv-role-of-pe-it *ngFor="let role of rolesInOtherProjects"
+                <gv-pe-it-role *ngFor="let role of rolesInOtherProjects"
                 [role]="role"
                 [parentProperty]="property"
                 [isOutgoing]="isOutgoing"
                 [pointTo]="'TeEnt'"
                 [roleState]="'add'"
                 (readyToAdd)="onRoleReadyToAdd($event)"
-                ></gv-role-of-pe-it>
+                ></gv-pe-it-role>
               </div>
 
               <div class="card-body pt-0" *ngIf="rolesInNoProject && rolesInOtherProjects.length">
@@ -93,14 +93,14 @@
 
               <div class="card-body" *ngIf="rolesInNoProject && rolesInNoProjectVisible">
 
-                <gv-role-of-pe-it *ngFor="let role of rolesInNoProject"
+                <gv-pe-it-role *ngFor="let role of rolesInNoProject"
                 [role]="role"
                 [parentProperty]="property"
                 [isOutgoing]="isOutgoing"
                 [pointTo]="'TeEnt'"
                 [roleState]="'add'"
                 (readyToAdd)="onRoleReadyToAdd($event)"
-                ></gv-role-of-pe-it>
+                ></gv-pe-it-role>
               </div>
 
               <div class="card-body" *ngIf="rolesInNoProjectVisible || rolesInOtherProjects.length">
@@ -121,7 +121,7 @@
           <!-- Create a new Role -->
           <div *ngIf="addRoleState=== 'createNew'">
 
-            <gv-role-of-pe-it
+            <gv-pe-it-role
             [role]="roleToCreate"
             [pointTo]="'TeEnt'"
             [pkTargetClass]="pkTargetClass"
@@ -129,7 +129,7 @@
             [roleState]="'create'"
             (roleCreated)="onRoleCreated($event)"
             (roleCreationCanceled)="onRoleCreationCanceled()"
-            ></gv-role-of-pe-it>
+            ></gv-pe-it-role>
 
           </div>
 
@@ -149,7 +149,7 @@
       <ng-container *ngTemplateOutlet="header"></ng-container>
       <div class="card-body">
         <div *ngFor="let role of roles">
-          <gv-role-of-pe-it
+          <gv-pe-it-role
           [role]="role"
           [parentProperty]="property"
           [isOutgoing]="isOutgoing"
@@ -158,7 +158,7 @@
           [isStandardRoleToAdd]="(role === mostPopularRole)"
           (readyToAdd)="onRoleReadyToAdd($event)"
           (appeChange)="emitAppeChange($event)"
-          (onRequestStandard)="changeStandardRole($event)"></gv-role-of-pe-it>
+          (onRequestStandard)="changeStandardRole($event)"></gv-pe-it-role>
         </div>
       </div>
     </div>
@@ -179,7 +179,7 @@
       </div>
 
       <div class="card-body">
-        <gv-role-of-pe-it
+        <gv-pe-it-role
         [role]="roleToCreate"
         [pointTo]="'TeEnt'"
         [pkTargetClass]="pkTargetClass"
@@ -187,7 +187,7 @@
         [roleState]="'create'"
         (readyToCreate)="roleReadyToCreate($event)"
         (notReadyToCreate)="roleNotReadyToCreate()"
-        ></gv-role-of-pe-it>
+        ></gv-pe-it-role>
       </div>
 
       <div class="card-body">
@@ -213,7 +213,7 @@
     <div class="card bg-secondary text-white mb-3">
       <div class="card-body">
 
-        <gv-role-of-pe-it
+        <gv-pe-it-role
         [role]="roleToCreate"
         [pointTo]="'TeEnt'"
         [pkTargetClass]="pkTargetClass"
@@ -221,7 +221,7 @@
         [roleState]="'create-pe-it'"
         (readyToCreate)="roleReadyToCreate($event)"
         (notReadyToCreate)="roleNotReadyToCreate()"
-        ></gv-role-of-pe-it>
+        ></gv-pe-it-role>
       </div>
     </div>
 
@@ -239,7 +239,7 @@
       <div [@slideInOut]="cardState">
         <div class="card-body">
           <div *ngFor="let role of roles">
-            <gv-role-of-pe-it
+            <gv-pe-it-role
             [role]="role"
             [parentProperty]="property"
             [isOutgoing]="isOutgoing"
@@ -248,7 +248,7 @@
             [ontoInfoVisible]="ontoInfoVisible"
             [roleState]="propState"
             (appeChange)="emitAppeChange($event)"
-            ></gv-role-of-pe-it>
+            ></gv-pe-it-role>
           </div>
         </div>
       </div>

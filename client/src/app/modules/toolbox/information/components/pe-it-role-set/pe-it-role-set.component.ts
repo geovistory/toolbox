@@ -18,8 +18,8 @@ import { timer } from 'rxjs/observable/timer';
 import { RolePointToEnum, RoleComponent, AppellationStdBool } from '../role/role.component';
 import { PeItComponent } from '../pe-it/pe-it.component';
 import { TeEntComponent } from '../te-ent/te-ent.component';
-import { PropertyComponent } from '../property/property.component';
-import { RoleOfPeItComponent } from '../role-of-pe-it/role-of-pe-it.component';
+import { RoleSetComponent } from '../role-set/role-set.component';
+import { PeItRoleComponent } from '../pe-it-role/pe-it-role.component';
 import { InfPersistentItem, InfEntityProjectRelApi, InfRoleApi, ActiveProjectService, EntityEditorService, InfRole } from 'app/core';
 import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
@@ -28,9 +28,9 @@ import { UtilitiesService } from '../../shared/utilities.service';
 
 
 @Component({
-  selector: 'gv-prop-section-of-pe-it',
-  templateUrl: './prop-section-of-pe-it.component.html',
-  styleUrls: ['./prop-section-of-pe-it.component.scss'],
+  selector: 'gv-pe-it-role-set',
+  templateUrl: './pe-it-role-set.component.html',
+  styleUrls: ['./pe-it-role-set.component.scss'],
   animations: [
     trigger('slideInOut', [
       state('expanded', style({
@@ -67,7 +67,7 @@ import { UtilitiesService } from '../../shared/utilities.service';
     ])
   ]
 })
-export class PropSectionOfPeItComponent extends PropertyComponent implements OnChanges, OnInit {
+export class PeItRoleSetComponent extends RoleSetComponent implements OnChanges, OnInit {
 
   /**
   * Inputs
@@ -77,7 +77,7 @@ export class PropSectionOfPeItComponent extends PropertyComponent implements OnC
   @Input() parentPeIt: InfPersistentItem;
 
   // Array of children RoleComponents
-  @ViewChildren(RoleOfPeItComponent) roleComponents: QueryList<RoleOfPeItComponent>
+  @ViewChildren(PeItRoleComponent) roleComponents: QueryList<PeItRoleComponent>
 
 
   constructor(
