@@ -20,7 +20,6 @@ import { PassiveLinkModule } from 'app/shared/directives';
 
 // This modules components
 import { AppellationLabelCreateComponent } from './components/appellation-label-create/appellation-label-create.component';
-import { AppellationLabelEditComponent } from './components/appellation-label-edit/appellation-label-edit.component';
 import { AppellationLabelEditorComponent } from './components/appellation-label-editor/appellation-label-editor.component';
 import { AppellationLabelTokenComponent } from './components/appellation-label-token/appellation-label-token.component';
 import { AppellationLabelViewComponent } from './components/appellation-label-view/appellation-label-view.component';
@@ -93,7 +92,6 @@ import { AppellationService } from './shared/appellation.service';
   declarations: [ 
     EntityEditorComponent,
     AppellationLabelCreateComponent,
-    AppellationLabelEditComponent,
     AppellationLabelEditorComponent,
     AppellationLabelTokenComponent,
     AppellationLabelViewComponent,

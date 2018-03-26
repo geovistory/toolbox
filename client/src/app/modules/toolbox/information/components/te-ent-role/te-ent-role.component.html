@@ -154,35 +154,8 @@
   <div *ngIf="roleState === 'edit'">
 
     <!-- include component PeIt (passing the PeIt) -->
-    <gv-pe-it [peItState]="roleState" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
-      (readyToCreate)="peItReadyToCreate($event)" (notReadyToCreate)="peItNotReadyToCreate()" [childOfTeEnt]="true" (appeChange)="emitAppeChange($event)"
-      (appeReadyToAdd)="onAppeReadyToAdd($event)" (langReadyToAdd)="onLangReadyToAdd($event)">
-
-      <div dropdownItems>
-        <button class="dropdown-item" (click)="removeFromProject()">Remove</button>
-      </div>
-
-      <div belowHeader>
-        <div class="card-body pt-0 gv-community-statistics d-flex justify-content-start small" *ngIf="communityStatsVisible">
-
-          <!-- Community data statistics -->
-          <ul class="gv-ul-sm">
-            <li class="gv-li-inline">
-              <a href class="gv-passive-link text-secondary" (click)="openProjectsModal()" title="Added by {{role.is_in_project_count}} {{role.is_in_project_count === 1 ? 'project':'projects'}}">
-                <span>
-                  <i class="fa fa-check"></i> {{role.is_in_project_count}}</span>
-              </a>
-            </li>
-            <li class="gv-li-inline">
-              <a href class="gv-passive-link text-secondary" (click)="openVersionHistoryModal()" title="Used as standard by {{role.is_standard_in_project_count}} {{role.is_standard_in_project_count === 1 ? 'project':'projects'}}">
-                <span>
-                  <i class="fa fa-eye"></i> {{role.is_standard_in_project_count}}</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-
-      </div>
+    <gv-pe-it [peItState]="roleState" [appellation]="roleInEdit?.appellation" [language]="roleInEdit?.language" [pkEntity]="roleInEdit.fk_entity"
+      (readyToCreate)="changeRoleInEdit($event)" (notReadyToCreate)="peItNotReadyToCreate()" [childOfTeEnt]="true">
     </gv-pe-it>
 
     <div class="card-body">

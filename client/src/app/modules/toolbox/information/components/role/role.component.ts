@@ -2,7 +2,6 @@ import { Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter } fro
 import { RoleSetComponent } from '../role-set/role-set.component';
 import { InfAppellation, InfRole, DfhProperty, ActiveProjectService, EntityEditorService, InfRoleApi, InfEntityProjectRel, InfLanguage, InfTemporalEntity } from 'app/core';
 import { EprService } from '../../shared/epr.service';
-import { create } from 'domain';
 
 export enum RolePointToEnum {
   PeIt = "PeIt",
@@ -87,11 +86,11 @@ export class RoleComponent implements OnInit {
 
 
   constructor(
-    private activeProjectService: ActiveProjectService,
+    protected activeProjectService: ActiveProjectService,
     private eprService: EprService,
     private ref: ChangeDetectorRef,
     public entityEditor: EntityEditorService,
-    private roleApi: InfRoleApi
+    protected roleApi: InfRoleApi
   ) { }
 
   ngOnInit() {
@@ -198,46 +197,6 @@ export class RoleComponent implements OnInit {
     ).subscribe(newRole => {
 
       this.roleCreated.emit(newRole[0]);
-
-    })
-
-  }
-
-
-  /**
- * updateRole - called when user updates a role
- *
- */
-  updateRole() {
-
-    // create new role with children
-    this.roleApi.findOrCreateInfRole(
-      this.activeProjectService.project.pk_project,
-      this.role
-    ).subscribe(roles => {
-
-      const createdRole = roles[0];
-
-      // if the new role is really a different role than the previous one
-      if (this.roleToAdd.pk_entity != createdRole.pk_entity) {
-
-        // remove the old role from the project
-        this.roleApi.changeRoleProjectRelation(
-          this.activeProjectService.project.pk_project, false, this.roleToAdd
-        ).subscribe(result => {
-          const removedRole: InfRole = result[0]
-          
-          // emit the new role added to the project
-          this.roleCreated.emit(createdRole);
-          
-          // emit that this role is removed from project
-          this.roleRemoved.emit(removedRole);
-
-        })
-      }else{
-        this.roleCreated.emit(createdRole);
-      }
-
 
     })
 

@@ -16,7 +16,7 @@ module.exports = function(InfLanguage) {
       notes: data.notes,
     };
 
-    return InfLanguage.findOrCreateVersion(InfLanguage, projectId, dataObject);
+    return InfLanguage.findOrCreateEntity(InfLanguage, projectId, dataObject);
 
   }
 

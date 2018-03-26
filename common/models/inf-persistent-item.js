@@ -80,7 +80,7 @@ module.exports = function(InfPersistentItem) {
       requestedPeIt = data;
     }
 
-    return InfPersistentItem.findOrCreateVersion(InfPersistentItem, projectId, dataObject)
+    return InfPersistentItem.findOrCreateEntity(InfPersistentItem, projectId, dataObject)
       .then((resultingPeIts) => {
         // pick first item of array
         const resultingPeIt = resultingPeIts[0];

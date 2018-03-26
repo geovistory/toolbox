@@ -94,7 +94,7 @@ module.exports = function(InfRole) {
   InfRole.findOrCreateInfRole = function(projectId, role, ctx) {
 
     const dataObject = {
-      pk_entity: role.pk_entity,
+      // pk_entity: role.pk_entity,
       fk_entity: role.fk_entity,
       fk_temporal_entity: role.fk_temporal_entity,
       fk_property: role.fk_property,
@@ -242,7 +242,7 @@ module.exports = function(InfRole) {
         })
     } else {
 
-      return InfRole.findOrCreateVersion(InfRole, projectId, dataObject)
+      return InfRole.findOrCreateEntity(InfRole, projectId, dataObject)
 
     }
 

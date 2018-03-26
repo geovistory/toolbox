@@ -4,13 +4,13 @@ const Promise = require('bluebird');
 
 const HttpErrors = require('http-errors');
 
-module.exports = function(InfEntityVersion) {
+module.exports = function (InfEntityVersion) {
 
 
-  InfEntityVersion.changeProjectRelation = function(projectId, isInProject, data) {
+  InfEntityVersion.changeProjectRelation = function (projectId, isInProject, data) {
     var res;
     var rej;
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       res = resolve;
       rej = reject;
 
@@ -19,7 +19,7 @@ module.exports = function(InfEntityVersion) {
       // If no epr delivered, return nothing
       if (!data.entity_version_project_rels) {
         res([]);
-      } else if  (data.entity_version_project_rels.length > 1) {
+      } else if (data.entity_version_project_rels.length > 1) {
         var newEpr = {
           "fk_entity": data.pk_entity,
           "fk_project": projectId,
@@ -40,7 +40,7 @@ module.exports = function(InfEntityVersion) {
           "fk_entity": data.pk_entity,
           "fk_project": projectId,
           "is_in_project": requestedEpr.is_in_project || isInProject,
-          "is_standard_in_project": requestedEpr.is_standard_in_project ||  null,
+          "is_standard_in_project": requestedEpr.is_standard_in_project || null,
           "fk_entity_version_concat": data.pk_entity_version_concat
         };
       }
@@ -54,13 +54,13 @@ module.exports = function(InfEntityVersion) {
         const InfEntityProjectRel = InfEntityVersion.app.models.InfEntityProjectRel;
         // Search for an epr with that pk_entity and that projectId
         InfEntityProjectRel.findOrCreate({
-              "where": {
-                "fk_entity": data.pk_entity,
-                "fk_project": projectId
-              }
-            },
-            newEpr
-          )
+          "where": {
+            "fk_entity": data.pk_entity,
+            "fk_project": projectId
+          }
+        },
+          newEpr
+        )
           .then(result => {
             const resultingEpr = result[0];
             const wasCreated = result[1];
@@ -71,7 +71,7 @@ module.exports = function(InfEntityVersion) {
 
             } else {
 
-              const cb = function(err, instances) {
+              const cb = function (err, instances) {
                 if (err)
                   rej(err);
                 res(instances);
@@ -90,7 +90,7 @@ module.exports = function(InfEntityVersion) {
   }
 
 
-  InfEntityVersion.findOrCreateVersion = function(Model, projectId, dataObject) {
+  InfEntityVersion.findOrCreateVersion = function (Model, projectId, dataObject) {
 
     const filter = {
       where: dataObject,
@@ -106,21 +106,21 @@ module.exports = function(InfEntityVersion) {
 
     const InfEntityProjectRel = Model.app.models.InfEntityProjectRel;
 
-    const find = function(pkInfEntityVersionConcat) {
+    const find = function (pkInfEntityVersionConcat) {
 
       return Model.findOne({
-          where: {
-            pk_entity_version_concat: pkInfEntityVersionConcat
-          },
-          include: {
-            relation: "entity_version_project_rels",
-            scope: {
-              where: {
-                fk_project: projectId
-              }
+        where: {
+          pk_entity_version_concat: pkInfEntityVersionConcat
+        },
+        include: {
+          relation: "entity_version_project_rels",
+          scope: {
+            where: {
+              fk_project: projectId
             }
           }
-        })
+        }
+      })
         .then((res) => {
           return [res];
         })
@@ -129,7 +129,7 @@ module.exports = function(InfEntityVersion) {
     };
 
     // Function to create and return a version
-    const create = function(dataObject, epr) {
+    const create = function (dataObject, epr) {
 
       // Create a new version and return pk_entity_version_concat in the result
       return Model.create(dataObject)
@@ -144,12 +144,12 @@ module.exports = function(InfEntityVersion) {
 
             // Create a new InfEntityProjectRel
             return InfEntityProjectRel.create({
-                "fk_project": projectId,
-                "fk_entity_version_concat": result.pk_entity_version_concat,
-                "is_in_project": true
-              }).catch((err) => {
-                return err
-              })
+              "fk_project": projectId,
+              "fk_entity_version_concat": result.pk_entity_version_concat,
+              "is_in_project": true
+            }).catch((err) => {
+              return err
+            })
               .then((epr) => {
                 return find(epr.fk_entity_version_concat);
               });
@@ -169,7 +169,7 @@ module.exports = function(InfEntityVersion) {
             const keys = Object.keys(properties);
 
             // iterate over the keys
-            keys.forEach(function(alias) {
+            keys.forEach(function (alias) {
 
               if (epr[alias] && !properties[alias].generated) {
                 // add all properties to the newEpr, that are not generated
@@ -226,11 +226,11 @@ module.exports = function(InfEntityVersion) {
           else {
 
             return InfEntityProjectRel.findOne({
-                "where": {
-                  "fk_entity": dataObject.pk_entity,
-                  "fk_project": projectId
-                }
-              })
+              "where": {
+                "fk_entity": dataObject.pk_entity,
+                "fk_project": projectId
+              }
+            })
               .catch((err) => {
                 return err;
               })
@@ -250,8 +250,123 @@ module.exports = function(InfEntityVersion) {
 
   };
 
+
+
+  InfEntityVersion.findOrCreateEntity = function (Model, projectId, dataObject) {
+
+    const InfEntityProjectRel = Model.app.models.InfEntityProjectRel;
+
+    const filter = {
+      where: dataObject,
+      include: {
+        relation: "entity_version_project_rels",
+        scope: {
+          where: {
+            fk_project: projectId
+          }
+        }
+      }
+    }
+
+    const find = function (pk_entity_version_concat) {
+      //find the entity and include the epr
+      return Model.findOne({
+        where: {
+          pk_entity_version_concat: pk_entity_version_concat
+        },
+        include: {
+          relation: "entity_version_project_rels",
+          scope: {
+            where: {
+              fk_project: projectId
+            }
+          }
+        }
+      }).then((res) => {
+        return [res];
+      })
+        .catch(err => err);
+    }
+
+    // Find or create an entity with this values
+    return Model.findOrCreate(filter, dataObject)
+      .catch((err) => {
+        return err;
+      })
+      .then((result) => {
+
+        console.log(result);
+
+        let resultingEntity = result[0];
+
+        // Search for eprs to given project
+        return resultingEntity.entity_version_project_rels({
+          where: {
+            fk_project: projectId
+          }
+        }).then(eprs => {
+
+          // if epr to given project exisiting
+          if (eprs.length > 0) {
+
+            var epr = eprs[0];
+
+
+            let newEpr = {}
+
+            // get properties of the epr model definition
+            const properties = InfEntityProjectRel.definition.properties;
+
+            // get the keys (property names) of the properties
+            const keys = Object.keys(properties);
+
+            // iterate over the keys
+            keys.forEach(function (alias) {
+
+              if (epr[alias] && !properties[alias].generated) {
+                // add all properties to the newEpr, that are not generated
+                newEpr[alias] = epr[alias];
+              }
+            })
+
+            // make it in project
+            newEpr.is_in_project = true;
+
+            newEpr.pk_entity_version_project_rel = epr.pk_entity_version_project_rel;
+
+            // execute the query
+            return InfEntityProjectRel.upsert(newEpr).then(resultingEpr => {
+              return find(resultingEpr.fk_entity_version_concat)
+            });
+          }
+          else {
+
+            // create a new epr
+            var newEpr = new InfEntityProjectRel({
+              "fk_entity": resultingEntity.pk_entity,
+              "fk_project": projectId,
+              "is_in_project": true, // make it in project
+              "fk_entity_version_concat": resultingEntity.pk_entity_version_concat
+            })
+
+            // persist it in DB
+            return newEpr.save().then(resultingEpr => {
+              return find(resultingEpr.fk_entity_version_concat)
+            });
+          }
+
+
+
+        })
+
+      });
+
+
+  };
+
+
   //TODO IS this still needed?
-  InfEntityVersion.createRole = function(projectId, role, resultingEntity) {
+  InfEntityVersion.createRole = function (projectId, role, resultingEntity) {
 
     // … prepare the Role Model Constructor
 

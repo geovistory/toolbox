@@ -56,6 +56,7 @@
       (readyToAdd)="onRoleReadyToAdd($event)"
       (appeChange)="emitAppeChange($event)"
       (roleRemoved)="onRoleRemoved($event)"
+      (roleCreated)="onRoleCreated($event)"
       (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
 
       <div class="card-body" *ngIf="roles.length === 0 && addButtonVisible">
