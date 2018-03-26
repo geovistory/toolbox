@@ -1,5 +1,5 @@
 import { Component, HostListener} from '@angular/core';
-import { EntityEditorService } from './shared/services/entity-editor.service';
+import { EntityEditorService } from './core';
 
 @Component({
   selector: 'gv-root',

@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { InfRole } from '../sdk/models/InfRole';
+import { InfRole } from 'app/core';
 
 @Pipe({
   name: 'gvNameVisible'

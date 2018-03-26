@@ -10,7 +10,7 @@
     "postinstall": "bash postinstall.sh",
     "start": "node .",
     "posttest": "npm run lint && nsp check",
-    "build:sdk": "./node_modules/.bin/lb-sdk server/server client/src/app/shared/sdk -d ng2web -i enabled",
+    "build:sdk": "./node_modules/.bin/lb-sdk server/server client/src/app/core/sdk -d ng2web -i enabled",
     "db-migrate": "node_modules/db-migrate/bin/db-migrate --config server/migrate-db-config.json --migrations-dir server/migrations"
   },
   "dependencies": {
