@@ -37,7 +37,6 @@ import { AppellationLabelEditorComponent } from '../appellation-label-editor/app
 import { AppellationLabelTokenComponent } from '../appellation-label-token/appellation-label-token.component';
 import { ControlMessagesComponent } from 'app/shared/components/control-messages/control-messages.component';
 import { TimePrimitiveComponent } from '../time-primitive/time-primitive.component';
-import { ProjectSandboxComponent } from '../../../projects/components/project-sandbox/project-sandbox.component';
 import { ValidationService, InfEntityProjectRelApi, ActiveProjectService, EntityEditorService } from 'app/core';
 import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
