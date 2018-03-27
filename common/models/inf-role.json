@@ -33,6 +33,9 @@
     },
     "is_standard_in_project_count": {
       "type": "number"
+    },
+    "community_favorite_calendar": {
+      "type": "number"
     }
   },
   "validations": [],

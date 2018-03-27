@@ -101,13 +101,8 @@ module.exports = function(InfRole) {
       notes: role.notes,
     };
 
-    let requestedRole;
+    let requestedRole = ctx ? ctx.req.body : role;
 
-    if (ctx) {
-      requestedRole = ctx.req.body;
-    } else {
-      requestedRole = role;
-    }
 
     if (requestedRole.temporal_entity && Object.keys(requestedRole.temporal_entity).length > 0) {
 
@@ -252,10 +247,13 @@ module.exports = function(InfRole) {
         .then((resultingEntities) => {
           const resultingEntity = resultingEntities[0];
 
-          // … prepare the Role to create
-          dataObject.fk_entity = resultingEntity.pk_entity;
+          // … prepare the Role to create 
+          requestedRole.fk_entity = resultingEntity.pk_entity;
 
-          return InfRole.findOrCreateInfRole(projectId, dataObject)
+          //delete the time_primitive since we just created it
+          delete requestedRole.time_primitive;
+
+          return InfRole.findOrCreateInfRole(projectId, requestedRole)
             .then((resultingRoles) => {
 
               let res = resultingRoles[0].toJSON();
@@ -274,7 +272,7 @@ module.exports = function(InfRole) {
     } 
     else {
 
-      return InfRole.findOrCreateEntity(InfRole, projectId, dataObject)
+      return InfRole.findOrCreateEntity(InfRole, projectId, dataObject, requestedRole)
 
     }
 

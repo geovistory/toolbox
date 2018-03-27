@@ -61,100 +61,136 @@ export class PropertyService {
   */
 
 
-  getPropertyByPkProperty(pk): Observable<{}> {
-
-    // If property already exists in cache, return it as observable
-    if (this.propByPkCache[pk])
-      return Observable.of(this.propByPkCache[pk]);
-
+  getPropertyByPkProperty(pk): Observable<DfhProperty> {
     // If there is already an api call with this pk, return that observable
     // to avoid multiple api calls to the same pk
     if (this.propByPkRequestCache[pk])
       return this.propByPkRequestCache[pk];
 
-    // Else make a api call and add the observables to a propByPkRequestCache
-    this.propByPkRequestCache[pk] = this.propertyApi.findById(pk, this.filter)
-      .map(property => {
+    // Else create a new observable
+    this.propByPkRequestCache[pk] = new Observable((observer) => {
 
-        // add to cache
-        this.propByPkCache[pk] = property;
+      // If property already exists in cache, return it as observable
+      if (this.propByPkCache[pk]) {
+        observer.next(this.propByPkCache[pk]);
+        observer.complete();
+      }
 
-        // remove the observable from cache
-        delete this.propByPkRequestCache[pk];
+      // Else make a api call and add the observables to a propByPkRequestCache
+      this.propertyApi.findById(pk, this.filter)
+        .subscribe((property: DfhProperty) => {
 
-        return property;
+          // add to cache
+          this.propByPkCache[pk] = property;
 
-      });
+          // return data
+          observer.next(property);
 
+          // complete observer
+          observer.complete();
+
+          // remove the observable from cache
+          delete this.propByPkRequestCache[pk];
+
+        });
+    })
+
+    // Return the observable
     return this.propByPkRequestCache[pk];
-
   }
 
   getPropertyByFkDomainClass(fk): Observable<DfhProperty[]> {
-
-    // If property already exists in cache, return it as observable
-    if (this.propByDomainFkCache[fk])
-      return Observable.of(this.propByDomainFkCache[fk]);
-
     // If there is already an api call with this domain fk, return that observable
     // to avoid multiple api calls to the same domain fk
     if (this.propByDomainFkRequestCache[fk])
       return this.propByDomainFkRequestCache[fk];
 
-    // Else make a api call and add the observables to a propByPkRequestCache
-    this.propByDomainFkRequestCache[fk] = this.propertyApi
-      .find({
-        "where": { "dfh_has_domain": fk },
-        ...this.filter
-      }).map(property => {
 
-        // add to cache
-        this.propByDomainFkCache[fk] = property;
+    // Else create and cache a new observable
+    this.propByDomainFkRequestCache[fk] = new Observable((observer) => {
 
-        // remove the observable from cache
-        delete this.propByDomainFkRequestCache[fk];
+      // If property already exists in cache, return it as observable
+      if (this.propByDomainFkCache[fk]) {
+        observer.next(this.propByDomainFkCache[fk]);
+        observer.complete();
+      }
 
-        return property;
+      // Else make a api call and add the observables to a propByPkRequestCache
+      this.propertyApi
+        .find({
+          "where": { "dfh_has_domain": fk },
+          ...this.filter
+        }).subscribe((props: DfhProperty[]) => {
 
-      });
+          const properties = props.map(prop => new DfhProperty(prop));
 
+          // add to cache
+          this.propByDomainFkCache[fk] = properties;
+
+          // return data
+          observer.next(properties);
+
+          // complete observer
+          observer.complete();
+
+          // remove the observable from cache
+          delete this.propByDomainFkRequestCache[fk];
+
+        });
+
+
+    })
+
+    // Return the observable
     return this.propByDomainFkRequestCache[fk];
-
 
   }
 
 
   getPropertyByFkRangeClass(fk): Observable<DfhProperty[]> {
 
-    // If property already exists in cache, return it as observable
-    if (this.propByRangeFkCache[fk])
-      return Observable.of(this.propByRangeFkCache[fk]);
-
     // If there is already an api call with this range fk, return that observable
     // to avoid multiple api calls to the same range fk
     if (this.propByRangeFkRequestCache[fk])
       return this.propByRangeFkRequestCache[fk];
 
-    // Else make a api call and add the observables to a propByPkRequestCache
-    this.propByRangeFkRequestCache[fk] = this.propertyApi
-      .find({
-        "where": { "dfh_has_range": fk },
-        ...this.filter
-      })
-      .map(property => {
 
-        // add to cache
-        this.propByRangeFkCache[fk] = property;
+    // Else create and cache a new observable
+    this.propByRangeFkRequestCache[fk] = new Observable((observer) => {
 
-        // remove the observable from cache
-        delete this.propByRangeFkRequestCache[fk];
+      // If property already exists in cache, return it as observable
+      if (this.propByRangeFkCache[fk]) {
+        observer.next(this.propByRangeFkCache[fk]);
+        observer.complete();
+      }
 
-        return property;
+      // Else make a api call
+      this.propertyApi
+        .find({
+          "where": { "dfh_has_range": fk },
+          ...this.filter
+        }).subscribe((props: DfhProperty[]) => {
 
-      });
+          const properties = props.map(prop => new DfhProperty(prop));
 
+          // add to cache
+          this.propByDomainFkCache[fk] = properties;
+
+          // return data
+          observer.next(properties);
+
+          // complete observer
+          observer.complete();
+
+          // remove the observable from cache
+          delete this.propByRangeFkRequestCache[fk];
+
+        });
+
+    });
+
+    // Return the observable
     return this.propByRangeFkRequestCache[fk];
-
 
   }
 
@@ -172,13 +208,13 @@ export class PropertyService {
 
 
     return properties.map(property => {
-      let labelSg: string= '';
+      let labelSg: string = '';
 
       if (isOutgoing)
         labelSg = property.labels.find(l => l.notes === 'label.sg').dfh_label;
 
       else if (!isOutgoing)
-          labelSg = property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
+        labelSg = property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
 
       return {
         'isOutgoing': isOutgoing,
@@ -201,14 +237,14 @@ export class PropertyService {
    * @param  {boolean} isOutgoing:boolean  if true, range is relevant, else domain
    * @return {boolean}                     true if valid
    */
-  validateQuantity(quantityOfRoles:number, property:DfhProperty, isOutgoing:boolean):boolean{
+  validateQuantity(quantityOfRoles: number, property: DfhProperty, isOutgoing: boolean): boolean {
     let max, min;
 
-    if (isOutgoing){
+    if (isOutgoing) {
       max = property.dfh_range_instances_max_quantifier;
       min = property.dfh_range_instances_min_quantifier;
     }
-    else{
+    else {
       max = property.dfh_domain_instances_max_quantifier;
       min = property.dfh_domain_instances_min_quantifier;
     }

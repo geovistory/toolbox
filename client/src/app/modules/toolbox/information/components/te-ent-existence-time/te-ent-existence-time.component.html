@@ -1,5 +1,12 @@
-<gv-existence-time 
-[existenceTime]="existenceTime"
-[state]="'editable'"
-(submit)="onSubmitExistenceTime($event)"
-></gv-existence-time>
+<span *ngIf="entityEditor.devView">
+    <ng-container *ngTemplateOutlet="dev"></ng-container>
+</span>
+
+<gv-existence-time [existenceTime]="existenceTime" [state]="state" (onSubmit)="onSubmitExistenceTime($event)"></gv-existence-time>
+
+
+<ng-template #dev>
+    <span>
+        [state: {{state}}]
+    </span>
+</ng-template>

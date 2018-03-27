@@ -103,7 +103,7 @@ export class ExistenceTimeComponent  extends RoleSetComponent implements OnInit,
   /**
    * Output
    */
-  @Output() submit:EventEmitter<ExistenceTime> = new EventEmitter();
+  @Output() onSubmit:EventEmitter<ExistenceTime> = new EventEmitter();
   
   
   /**
@@ -1171,7 +1171,7 @@ export class ExistenceTimeComponent  extends RoleSetComponent implements OnInit,
    */
   onSubmitMainForm(): void {
 
-    this.submit.emit(this.existenceTime);
+    this.onSubmit.emit(this.existenceTime);
   }
 
 

@@ -25,7 +25,8 @@ module.exports = function (InfEntityVersion) {
           "fk_project": projectId,
           "is_in_project": isInProject,
           "is_standard_in_project": null,
-          "fk_entity_version_concat": data.pk_entity_version_concat
+          "fk_entity_version_concat": data.pk_entity_version_concat,
+          "calendar": null
         };
       } else {
 
@@ -41,7 +42,8 @@ module.exports = function (InfEntityVersion) {
           "fk_project": projectId,
           "is_in_project": requestedEpr.is_in_project || isInProject,
           "is_standard_in_project": requestedEpr.is_standard_in_project || null,
-          "fk_entity_version_concat": data.pk_entity_version_concat
+          "fk_entity_version_concat": data.pk_entity_version_concat,
+          "calendar": requestedEpr.calendar || null
         };
       }
 
@@ -251,8 +253,19 @@ module.exports = function (InfEntityVersion) {
   };
 
 
-
-  InfEntityVersion.findOrCreateEntity = function (Model, projectId, dataObject) {
+  /**
+   * Finds or creates an entity.
+   * 
+   * The data object is relevant for finding an entity. 
+   * - Provide a pk_entity for entities that have only an pk to identify themselfes (e.g. PeIt or TeEnt)
+   * - Provide no pk_entity if you want to find a value-like item (e.g. TimePrimitive or Appellation)
+   * 
+   * @param {LoopackModel} Model The loopback model like e.g. InfRole
+   * @param {number} projectId the project id
+   * @param {any} dataObject the data object containing the values we check for existing entities
+   * @param {any} requestedObject [optional] plain object. Provide a entity_version_project_rel to customize the project relation    
+   */
+  InfEntityVersion.findOrCreateEntity = function (Model, projectId, dataObject, requestedObject) {
 
     const InfEntityProjectRel = Model.app.models.InfEntityProjectRel;
 
@@ -306,56 +319,50 @@ module.exports = function (InfEntityVersion) {
           }
         }).then(eprs => {
 
+
+          let existingEpr = eprs[0] ? eprs[0] : {};
+
+          let reqEpr = {};
+          if (requestedObject)
+            if (requestedObject.entity_version_project_rels)
+              reqEpr = requestedObject.entity_version_project_rels[0];
+
+
+          // create a new epr 
+          var newEpr = new InfEntityProjectRel({
+            "fk_entity": resultingEntity.pk_entity,
+            "fk_entity_version_concat": resultingEntity.pk_entity_version_concat,
+            "fk_project": projectId,
+
+            // use the requested value, or the existing or true
+            "is_in_project": reqEpr.is_in_project || existingEpr.is_in_project || true,
+
+            // use the requested value, or the existing or false
+            "is_standard_in_project": reqEpr.is_standard_in_project || existingEpr.is_standard_in_project || false,
+
+            // use the requested value, or the existing or undefined
+            "calendar": reqEpr.calendar || existingEpr.is_standard_in_project || undefined,
+          })
+
+
           // if epr to given project exisiting
           if (eprs.length > 0) {
 
-            var epr = eprs[0];
+            // add the pk
+            newEpr.pk_entity_version_project_rel = existingEpr.pk_entity_version_project_rel;
 
-
-            let newEpr = {}
-
-            // get properties of the epr model definition
-            const properties = InfEntityProjectRel.definition.properties;
-
-            // get the keys (property names) of the properties
-            const keys = Object.keys(properties);
-
-            // iterate over the keys
-            keys.forEach(function (alias) {
-
-              if (epr[alias] && !properties[alias].generated) {
-                // add all properties to the newEpr, that are not generated
-                newEpr[alias] = epr[alias];
-              }
-            })
-
-            // make it in project
-            newEpr.is_in_project = true;
-
-            newEpr.pk_entity_version_project_rel = epr.pk_entity_version_project_rel;
-
-            // execute the query
+            // update it in DB
             return InfEntityProjectRel.upsert(newEpr).then(resultingEpr => {
               return find(resultingEpr.fk_entity_version_concat)
             });
           }
           else {
 
-            // create a new epr
-            var newEpr = new InfEntityProjectRel({
-              "fk_entity": resultingEntity.pk_entity,
-              "fk_project": projectId,
-              "is_in_project": true, // make it in project
-              "fk_entity_version_concat": resultingEntity.pk_entity_version_concat
-            })
-
-            // persist it in DB
+            // create it in DB
             return newEpr.save().then(resultingEpr => {
               return find(resultingEpr.fk_entity_version_concat)
             });
           }
-
-
 
         })
 

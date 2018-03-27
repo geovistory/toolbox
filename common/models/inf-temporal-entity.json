@@ -13,7 +13,8 @@
     "SetupRemoteMethods": {
       "disableAllExcept": [
         "find",
-        "findOrCreateInfTemporalEntity"
+        "findOrCreateInfTemporalEntity",
+        "changeTeEntProjectRelation"
       ]
     }
   },
@@ -73,6 +74,54 @@
       "description": "Find or create a temporal entity version.",
       "http": {
         "path": "/findOrCreate",
+        "verb": "post"
+      }
+    },
+    "changeTeEntProjectRelation": {
+      "accepts": [
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "isInProject",
+          "type": "boolean",
+          "required": true,
+          "description": "Include or exclude from project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": "InfTemporalEntity",
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfTemporalEntity",
+        "root": true
+      },
+      "description": "Relate a nested object of a InfTemporalEntity to the project.",
+      "http": {
+        "path": "/change-project-relation",
         "verb": "post"
       }
     }

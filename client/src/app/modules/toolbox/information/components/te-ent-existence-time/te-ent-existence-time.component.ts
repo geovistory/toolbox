@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { InfRole, InfTemporalEntity, TimePrimitive } from 'app/core';
+import { InfRole, InfTemporalEntity, TimePrimitive, EntityEditorService } from 'app/core';
 import { TeEntService } from '../../shared/te-ent.service';
 import { ExistenceTime } from '../existence-time';
 import { RoleSetComponent } from '../role-set/role-set.component';
@@ -22,34 +22,35 @@ export class TeEntExistenceTimeComponent implements OnInit {
   existenceTime: ExistenceTime;
 
   constructor(
+    public entityEditor:EntityEditorService,
     private teEntService: TeEntService
   ) { }
 
   ngOnInit() {
-    this.teEntService.buildExistenceTime(this.teEnt).subscribe((existenceTime: ExistenceTime) => {
+    this.setExistenceTime(this.teEnt);
+  }
+
+  setExistenceTime(teEnt: InfTemporalEntity) {    
+    this.teEntService.buildExistenceTime(teEnt).subscribe((existenceTime: ExistenceTime) => {
       this.existenceTime = existenceTime;
     });
   }
 
-
-
-  /**
+/**
  * Called when a user submits a new existence time
  * @param existenceTime the new existence time
  */
   onSubmitExistenceTime(existenceTime: ExistenceTime) {
-    let ext = new ExistenceTime()
 
-    ext.p81a = new TimePrimitive()
-    ext.p81a.duration = '1 year'
-    ext.p81a.calendar= "gregorian"
-    ext.p81a.julianDay = 2415021;
+    this.state = 'edit';
 
-    ext.p81b = new TimePrimitive();
-    ext.p81b.duration = '1 year'
-    ext.p81a.calendar= "gregorian"
-    ext.p81a.julianDay = 2451545;
-    this.teEntService.updateExistenceTime(ext, this.teEnt)
+    this.teEntService.upsertExistenceTime(existenceTime, this.teEnt).subscribe(teEnt => {
+
+      this.setExistenceTime(teEnt);
+
+      this.state = 'editable';
+
+    })
   }
 
 }
