@@ -46,7 +46,7 @@
           *ngIf="showLanguageUI"
           class="gv-flex-grow-1"
           [language]="language"
-          [peItLangState]="valueEntitiesState"
+          [peItLangState]="peItState"
           (readyToCreate)=emitReadyToCreate($event)
           (notReadyToCreate)=emitNotReadyToCreate()
           (readyToAdd)="onLangReadyToAdd($event)"
@@ -68,16 +68,16 @@
         </div>
       </div>
 
-      <div class="d-flex align-items-center" *ngIf="valueEntitiesState==='view' && peItState !== 'view'">
+      <!-- <div class="d-flex align-items-center" *ngIf="valueEntitiesState==='view' && peItState !== 'view'">
 
         <div class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
           <button class="btn btn-link" ngbDropdownToggle><i class="fa fa-ellipsis-v"></i></button>
           <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
 
-            <!-- dropdown of appe & lang -->
+            <!-- dropdown of appe & lang 
             <button *ngIf="!showEntityUI" class="dropdown-item" (click)="edit()">Edit</button>
 
-            <!-- dropdown of enitiy preview -->
+            <!-- dropdown of enitiy preview 
             <button *ngIf="showEntityUI && childOfTeEnt" class="dropdown-item" (click)="open()">Open...</button>
 
             <ng-content select="[dropdownItems]"></ng-content>
@@ -85,10 +85,7 @@
           </div>
         </div>
 
-
-
-
-      </div>
+      </div> -->
 
 
     </div>

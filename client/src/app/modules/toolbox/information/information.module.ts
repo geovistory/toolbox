@@ -52,6 +52,7 @@ import { VersionModalComponent } from './components/version-modal/version-modal.
 import { InformationRoutingModule } from './information-routing.module';
 import { EntityEditorComponent } from './pages/entity-editor/entity.editor.component';
 import { FieldsetComponent, FieldsetBeginComponent, FieldsetEndComponent, FieldsetInnerComponent, FieldsetOuterComponent, FieldComponent } from './components/existence-time';
+import { TeEntExistenceTimeComponent } from './components/te-ent-existence-time/te-ent-existence-time.component';
 
 // This modules pipes
 import { PropertyPipe } from './shared/property.pipe';
@@ -66,6 +67,8 @@ import { PropertyService } from './shared/property.service';
 import { RoleService } from './shared/role.service';
 import { EprService } from './shared/epr.service';
 import { AppellationService } from './shared/appellation.service';
+import { TeEntService } from './shared/te-ent.service';
+import { ConfigService } from './shared/config.service';
 
 
 @NgModule({
@@ -75,7 +78,7 @@ import { AppellationService } from './shared/appellation.service';
     ReactiveFormsModule,
     // BrowserAnimationsModule,
     
-
+    
     SlimLoadingBarModule,
     NgbModule,
     // ElasticInputModule,
@@ -126,7 +129,8 @@ import { AppellationService } from './shared/appellation.service';
     FieldsetEndComponent,
     FieldsetInnerComponent,
     FieldsetOuterComponent,
-    FieldComponent,    
+    FieldComponent,
+    TeEntExistenceTimeComponent,
   ],
   providers: [
     PropertyPipe,
@@ -139,7 +143,9 @@ import { AppellationService } from './shared/appellation.service';
     RoleService,
     ValidationService,
     EprService,
-    AppellationService
+    AppellationService,
+    TeEntService,
+    ConfigService
   ]
 })
 export class InformationModule { }

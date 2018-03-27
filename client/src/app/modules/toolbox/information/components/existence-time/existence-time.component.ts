@@ -1,4 +1,4 @@
-import { Input, Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Input, Component, OnInit, OnChanges, AfterViewInit, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   trigger,
@@ -79,7 +79,7 @@ interface Fieldsets {
     ])
   ]
 })
-export class ExistenceTimeComponent extends RoleSetComponent implements OnInit, AfterViewInit {
+export class ExistenceTimeComponent  extends RoleSetComponent implements OnInit, OnChanges, AfterViewInit {
 
 
   /**
@@ -100,6 +100,12 @@ export class ExistenceTimeComponent extends RoleSetComponent implements OnInit, 
   @Input() existenceTime: ExistenceTime;
 
 
+  /**
+   * Output
+   */
+  @Output() submit:EventEmitter<ExistenceTime> = new EventEmitter();
+  
+  
   /**
   *  Properties
   */
@@ -141,6 +147,7 @@ export class ExistenceTimeComponent extends RoleSetComponent implements OnInit, 
 
   private _chooseStatementVisible: boolean;
 
+  cardState;
 
   mainFormBtnsVisible: boolean;
 
@@ -159,20 +166,9 @@ export class ExistenceTimeComponent extends RoleSetComponent implements OnInit, 
     private validationService: ValidationService
   ) {
     super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector)
-
     this.initialFormDefinition = {
       timePrimitive: [null, Validators.required]
     };
-
-  }
-
-
-  ngOnInit() {
-
-    this.cardState = 'collapsed';
-
-    this.existenceTime = new ExistenceTime(this.existenceTime);
-
 
     this.fieldsets = {
       begin: new Fieldset({
@@ -294,6 +290,21 @@ export class ExistenceTimeComponent extends RoleSetComponent implements OnInit, 
         }
       })
     }
+
+  }
+
+  ngOnChanges(){
+    if(this.existenceTime) {
+      this.existenceTime = new ExistenceTime(this.existenceTime);
+      this.updateAllFields();
+    }
+  }
+
+  ngOnInit() {
+
+    this.cardState = 'collapsed';
+
+    this.existenceTime = new ExistenceTime(this.existenceTime);
 
     this.createForms();
 
@@ -1158,9 +1169,10 @@ export class ExistenceTimeComponent extends RoleSetComponent implements OnInit, 
   /**
    * submit the main form
    */
-   onSubmitMainForm():void{
+  onSubmitMainForm(): void {
 
-   }
+    this.submit.emit(this.existenceTime);
+  }
 
 
 

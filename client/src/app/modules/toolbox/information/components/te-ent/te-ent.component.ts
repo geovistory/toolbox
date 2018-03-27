@@ -18,6 +18,8 @@ import { TeEntRoleSetComponent } from '../te-ent-role-set/te-ent-role-set.compon
 import { PropertyService } from '../../shared/property.service';
 import { ClassService } from '../../shared/class.service';
 import { AppellationLabel } from '../../shared/appellation-label/appellation-label';
+import { ExistenceTime } from '../existence-time';
+import { TeEntService } from '../../shared/te-ent.service';
 
 
 
@@ -140,7 +142,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
     ref: ChangeDetectorRef,
     private activeProjectService: ActiveProjectService,
     private classService: ClassService,
-    public entityEditor: EntityEditorService
+    public entityEditor: EntityEditorService,
   ) {
     super(roleService, propertyService, entityEditor, ref)
   }
@@ -306,5 +308,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
     this.displayLabel = label.getString();
     this.appeChange.emit(appeStd)
   }
+
+
 
 }

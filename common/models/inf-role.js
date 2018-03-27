@@ -109,7 +109,7 @@ module.exports = function(InfRole) {
       requestedRole = role;
     }
 
-    if (requestedRole.temporal_entity) {
+    if (requestedRole.temporal_entity && Object.keys(requestedRole.temporal_entity).length > 0) {
 
       //create the temporal_entity first
       const InfTemporalEntity = InfRole.app.models.InfTemporalEntity;
@@ -143,7 +143,7 @@ module.exports = function(InfRole) {
     }
 
     // if the role points to a persistent item
-    if (requestedRole.persistent_item) {
+    if (requestedRole.persistent_item && Object.keys(requestedRole.persistent_item).length > 0) {
 
       // prepare parameters
       const InfPersistentItem = InfRole.app.models.InfPersistentItem;
@@ -177,7 +177,7 @@ module.exports = function(InfRole) {
     }
 
     // if the role points to a appellation
-    else if (requestedRole.appellation) {
+    else if (requestedRole.appellation && Object.keys(requestedRole.appellation).length > 0) {
 
       // prepare parameters
       const InfAppellation = InfRole.app.models.InfAppellation;
@@ -211,7 +211,7 @@ module.exports = function(InfRole) {
 
 
     // if the role points to a language
-    else if (requestedRole.language) {
+    else if (requestedRole.language && Object.keys(requestedRole.language).length > 0) {
 
       // prepare parameters
       const InfLanguage = InfRole.app.models.InfLanguage;
@@ -240,7 +240,39 @@ module.exports = function(InfRole) {
         .catch((err) => {
           return err;
         })
-    } else {
+    } 
+     // if the role points to a time_primitive
+     else if (requestedRole.time_primitive && Object.keys(requestedRole.time_primitive).length > 0) {
+
+      // prepare parameters
+      const InfTimePrimitive = InfRole.app.models.InfTimePrimitive;
+
+      // find or create the time_primitive and the role pointing to it
+      return InfTimePrimitive.findOrCreateInfTimePrimitive(projectId, requestedRole.time_primitive)
+        .then((resultingEntities) => {
+          const resultingEntity = resultingEntities[0];
+
+          // … prepare the Role to create
+          dataObject.fk_entity = resultingEntity.pk_entity;
+
+          return InfRole.findOrCreateInfRole(projectId, dataObject)
+            .then((resultingRoles) => {
+
+              let res = resultingRoles[0].toJSON();
+              res.time_primitive = resultingEntity.toJSON();
+
+              return [res];
+
+            })
+            .catch((err) => {
+              return err;
+            })
+        })
+        .catch((err) => {
+          return err;
+        })
+    } 
+    else {
 
       return InfRole.findOrCreateEntity(InfRole, projectId, dataObject)
 

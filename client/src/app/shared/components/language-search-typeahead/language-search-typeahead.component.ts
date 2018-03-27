@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
@@ -24,28 +24,14 @@ export class LanguageSearchTypeaheadComponent implements OnInit {
   public languageSearch: any;
   searching = false;
   searchFailed = false;
-  hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
+  hideSearchingWhenUnsubscribed = new Observable(() => () => {
+    this.searching = false
+  });
 
-  _language:InfLanguage;
+  @Input() language: InfLanguage;
 
-  @Input() get language(){
-    return this._language;
-  }
 
   @Output() languageChange = new EventEmitter();
-
-  set language(language){
-    if(!language){
-        this.languageChange.emit();
-    }
-    else if(typeof language === 'string'){
-      this.languageChange.emit();
-    }
-    else if(language.pk_entity){
-      this._language = language;
-      this.languageChange.emit(this._language);
-    }
-  }
 
 
   constructor(
@@ -55,22 +41,34 @@ export class LanguageSearchTypeaheadComponent implements OnInit {
   ngOnInit() {
   }
 
+  onSelectItem(event) {
+    this.languageChange.emit(new InfLanguage(event.item));
+  }
+
+  onKeyUp() {
+    if (!this.language) {
+      this.languageChange.emit();
+    }
+    else if (typeof this.language === 'string') {
+      this.languageChange.emit();
+    }
+  }
 
   search = (text$: Observable<string>) =>
-  text$
-  .debounceTime(300)
-  .distinctUntilChanged()
-  .do(() => this.searching = true)
-  .switchMap(term =>
-    this.languageApi.queryByString(term)
-    .do(() => this.searchFailed = false)
-    .catch(() => {
-      this.searchFailed = true;
-      return Observable.of([]);
-    }))
-    .do(() => this.searching = false)
-    .merge(this.hideSearchingWhenUnsubscribed);
+    text$
+      .debounceTime(300)
+      .distinctUntilChanged()
+      .do(() => this.searching = true)
+      .switchMap(term =>
+        this.languageApi.queryByString(term)
+          .do(() => this.searchFailed = false)
+          .catch(() => {
+            this.searchFailed = true;
+            return Observable.of([]);
+          }))
+      .do(() => this.searching = false)
+      .merge(this.hideSearchingWhenUnsubscribed);
 
-    formatter = (x) => x.notes;
+  formatter = (x) => x.notes;
 
 }

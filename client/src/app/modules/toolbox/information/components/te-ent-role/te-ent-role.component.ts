@@ -16,7 +16,7 @@ export class TeEntRoleComponent extends RoleComponent implements OnInit {
   */
 
   // the role being edited
-  roleInEdit:InfRole;
+  roleInEdit: InfRole;
 
   /**
    * Inputs
@@ -85,7 +85,7 @@ export class TeEntRoleComponent extends RoleComponent implements OnInit {
     this.roleState = 'editable';
   }
 
-  changeRoleInEdit(entity){
+  changeRoleInEdit(entity) {
     if (entity instanceof InfAppellation) {
       this.roleInEdit.appellation = entity
     }
@@ -102,46 +102,42 @@ export class TeEntRoleComponent extends RoleComponent implements OnInit {
 
   }
 
-    /**
- * updateRole - called when user updates a role
- *
- */
-updateRole() {
+  /**
+* updateRole - called when user updates a role
+*
+*/
+  updateRole() {
 
-  // create new role with children
-  this.roleApi.findOrCreateInfRole(
-    this.activeProjectService.project.pk_project,
-    this.roleInEdit
-  ).subscribe(roles => {
+    // create new role with children
+    this.roleApi.findOrCreateInfRole(
+      this.activeProjectService.project.pk_project,
+      this.roleInEdit
+    ).subscribe(roles => {
 
-    const createdRole = roles[0];
+      const createdRole = roles[0];
 
-    // if the new role is really a different role than the previous one
-    if (this.role.pk_entity != createdRole.pk_entity) {
+      // // if the new role is really a different role than the previous one
+      // if (this.role.pk_entity != createdRole.pk_entity) {
 
-     this.role.entity_version_project_rels[0].is_in_project = false;
-      
+      this.role.entity_version_project_rels[0].is_in_project = false;
+
       // remove the old role from the project
       this.roleApi.changeRoleProjectRelation(
         this.activeProjectService.project.pk_project, false, this.role
       ).subscribe(result => {
         const removedRole: InfRole = result[0]
-        
+
         // emit the new role added to the project
         this.roleCreated.emit(createdRole);
-        
+
         // emit that this role is removed from project
         this.roleRemoved.emit(removedRole);
 
       })
-    }else{
-      this.roleCreated.emit(createdRole);
     }
 
-
-  })
-
-}
-
+      // }
+    )
+  }
 
 }

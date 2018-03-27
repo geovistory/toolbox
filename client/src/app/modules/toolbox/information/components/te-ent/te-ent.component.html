@@ -8,6 +8,7 @@
 
     <ng-container *ngTemplateOutlet="header"></ng-container>
 
+    <button (click)="onSubmitExistenceTime()">ext</button>
 
     <div [@slideInOut]="cardBodyState">
 
@@ -91,7 +92,6 @@
 
   <div class="card gv-name" *ngIf="teEntState === 'create'">
 
-    <div class="gv-card-body-wrapper">
 
       <gv-te-ent-role-set
       *ngFor="let property of outgoingProperties"
@@ -118,8 +118,6 @@
       ></gv-te-ent-role-set>
 
       <ng-container *ngTemplateOutlet="dating"></ng-container>
-
-    </div>
 
   </div>
 
@@ -172,11 +170,10 @@
 </ng-template>
 
 <ng-template #dating>
-  <gv-existence-time
-  [roles]="teEnt.te_roles"
-  [propState]="teEntState"
+  <gv-te-ent-existence-time
+  [teEnt]="teEnt"
   [state]="'editable'"
-  ></gv-existence-time>
+  ></gv-te-ent-existence-time>
 </ng-template>
 
 <ng-template #dev>

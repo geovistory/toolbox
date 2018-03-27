@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { ActiveProjectService } from 'app/core';
 
 @Component({
@@ -8,18 +8,22 @@ import { ActiveProjectService } from 'app/core';
 })
 export class ProjectSandboxComponent implements OnInit {
 
-  pkProject;
+  @Input() pkProject;
 
   @Output() projectReady: EventEmitter<void> = new EventEmitter()
 
   constructor(
     private activeProjectService:ActiveProjectService
-  ) { }
+  ) {
 
-  ngOnInit() {
     this.activeProjectService.onProjectChange().subscribe(success=>{
       this.projectReady.emit();
     })
+
+   }
+
+  ngOnInit() {
+    if(this.pkProject) this.setProject();
   }
 
 

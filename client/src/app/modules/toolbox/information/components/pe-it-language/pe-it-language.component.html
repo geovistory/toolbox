@@ -19,17 +19,6 @@
       <gv-language-search-typeahead
       [language]="language"
       (languageChange)="languageChange($event)"></gv-language-search-typeahead>
-
-      <fieldset>
-        <div class="form-group">
-          <button type="submit" class="gv-stop-edit-btn btn btn-primary" *ngIf="newLang">
-            Save
-          </button>
-          <button type="button" class="gv-stop-edit-btn btn btn-link" (click)="cancel()">
-            Cancel
-          </button>
-        </div>
-      </fieldset>
     </form>
   </div>
 
@@ -43,6 +32,10 @@
   </div>
 
   <div *ngIf="peItLangState === 'view'">
+    {{language.notes}}
+  </div>
+
+  <div *ngIf="peItLangState === 'editable'">
     {{language.notes}}
   </div>
 </div>

@@ -39,6 +39,9 @@ export class PeItLanguageComponent implements OnInit {
   // for edit state, the new selected language
   newLang: InfLanguage;
 
+  // initial language
+  initLang: InfLanguage;
+
   constructor(
     public entityEditor: EntityEditorService,
     private activeProjectService: ActiveProjectService,
@@ -46,6 +49,8 @@ export class PeItLanguageComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.initLang = new InfLanguage(this.language)
+
     if (this.peItLangState === 'add-pe-it') {
 
       //emit it
@@ -60,7 +65,7 @@ export class PeItLanguageComponent implements OnInit {
 
   languageChange(language: InfLanguage) {
 
-    if (language && language.pk_entity && this.language.pk_entity !== language.pk_entity) {
+    if (language && language.pk_entity) {
       this.newLang = new InfLanguage(language);
       this.readyToCreate.emit(this.newLang)
     }

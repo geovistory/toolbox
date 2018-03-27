@@ -19,6 +19,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeModule } from './modules/home/home.module';
 import { AuthGuard, ActiveAccountService, ActiveProjectService, SDKBrowserModule, EntityEditorService } from './core';
+import { PassiveLinkModule } from './shared/directives';
+import { ControlMessagesModule, LanguageSearchTypeaheadModule } from './shared/components';
 
 
 @NgModule({
@@ -36,7 +38,10 @@ import { AuthGuard, ActiveAccountService, ActiveProjectService, SDKBrowserModule
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    HomeModule
+    HomeModule,
+    PassiveLinkModule,
+    ControlMessagesModule,
+    LanguageSearchTypeaheadModule
   ],
   providers: [
     EntityEditorService,

@@ -6,23 +6,12 @@ import { registerLocaleData, DatePipe } from '@angular/common';
 import localeDeCh from '@angular/common/locales/de-CH';
 registerLocaleData(localeDeCh);
 
-import { SDKBrowserModule } from '../core/sdk/index';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
-import { ValidationService } from '../shared/services/validation.service';
-import { ControlMessagesComponent } from '../control-messages/control-messages.component';
-import { TimePrimitiveComponent } from '../time-primitive/time-primitive.component';
-import { InfEntityProjectRelApi } from '../core/sdk/services/custom/InfEntityProjectRel';
-import { ActiveProjectService } from '../shared/services/active-project.service';
-import { RoleService } from '../shared/services/role.service';
-import { PropertyService } from '../shared/services/property.service';
-import { UtilitiesService } from '../shared/services/utilities.service';
-import { EntityEditorService } from '../shared/services/entity-editor.service';
-import { PassiveLinkDirective } from '../passive-link.directive';
-import { TimePrimitive } from '../shared/classes/date-time/time-primitive';
+
 import { ExistenceTimeComponent } from '../existence-time/existence-time.component';
 import { FieldComponent } from '../existence-time/field/field.component';
 import { FieldsetInnerComponent } from '../existence-time/fieldset-inner/fieldset-inner.component';
@@ -41,29 +30,36 @@ import { PeItEntityAddComponent } from '../pe-it-entity-add/pe-it-entity-add.com
 import { PeItRoleSetListComponent } from '../pe-it-role-set-list/pe-it-role-set-list.component';
 import { EntityEditorSettingsComponent } from '../entity-editor-settings/entity-editor-settings.component';
 import { AppellationLabelViewComponent } from '../appellation-label-view/appellation-label-view.component';
-import { AppellationLabelEditComponent } from '../appellation-label-edit/appellation-label-edit.component';
 import { AppellationLabelCreateComponent } from '../appellation-label-create/appellation-label-create.component';
-import { LanguageSearchTypeaheadComponent } from '../language-search-typeahead/language-search-typeahead.component';
 import { PeItRoleSetComponent } from '../pe-it-role-set/pe-it-role-set.component';
 import { PeItRoleComponent } from '../pe-it-role/pe-it-role.component';
 import { AppellationLabelEditorComponent } from '../appellation-label-editor/appellation-label-editor.component';
 import { AppellationLabelTokenComponent } from '../appellation-label-token/appellation-label-token.component';
-import { ClassService } from '../shared/services/class.service';
-import { ProjectSandboxComponent } from '../project-sandbox/project-sandbox.component';
-import { EprService } from '../shared/services/epr.service';
-import { PeItService } from '../shared/services/pe-it.service';
-import { ActivePeItService } from '../shared/services/active-pe-it.service';
-import { PropertyPipe } from '../shared/pipes/property';
+import { ControlMessagesComponent } from 'app/shared/components/control-messages/control-messages.component';
+import { TimePrimitiveComponent } from '../time-primitive/time-primitive.component';
+import { ProjectSandboxComponent } from '../../../projects/components/project-sandbox/project-sandbox.component';
+import { ValidationService, InfEntityProjectRelApi, ActiveProjectService, EntityEditorService } from 'app/core';
+import { RoleService } from '../../shared/role.service';
+import { PropertyService } from '../../shared/property.service';
+import { UtilitiesService } from '../../shared/utilities.service';
+import { ClassService } from '../../shared/class.service';
+import { EprService } from '../../shared/epr.service';
+import { PeItService } from '../../shared/pe-it.service';
+import { ActivePeItService } from '../../shared/active-pe-it.service';
+import { PropertyPipe } from '../../shared/property.pipe';
+import { TeEntExistenceTimeComponent } from '../te-ent-existence-time/te-ent-existence-time.component';
+import { LanguageSearchTypeaheadComponent } from '../../../../../shared/components/language-search-typeahead/language-search-typeahead.component';
+import { TeEntService } from '../../shared/te-ent.service';
+import { ConfigService } from '../../shared/config.service';
 
 
 
 export default sandboxOf(TeEntComponent, {
   declarations: [
     ExistenceTimeComponent,
+    TeEntExistenceTimeComponent,
     FieldComponent,
-    ControlMessagesComponent,
     TimePrimitiveComponent,
-    PassiveLinkDirective,
     FieldsetBeginComponent,
     FieldsetEndComponent,
     FieldsetOuterComponent,
@@ -80,21 +76,14 @@ export default sandboxOf(TeEntComponent, {
     PeItRoleSetListComponent,
     EntityEditorSettingsComponent,
     AppellationLabelViewComponent,
-    AppellationLabelEditComponent,
     AppellationLabelEditorComponent,
     AppellationLabelCreateComponent,
-    LanguageSearchTypeaheadComponent,
     PeItRoleComponent,
     AppellationLabelTokenComponent,
-    ProjectSandboxComponent
-
+    LanguageSearchTypeaheadComponent
   ],
   imports: [
-    ReactiveFormsModule,
-    FormsModule,
-    SDKBrowserModule.forRoot(),
-    SlimLoadingBarModule.forRoot(),
-    NgbModule.forRoot()
+    
   ],
   providers: [
     ValidationService,
@@ -110,9 +99,11 @@ export default sandboxOf(TeEntComponent, {
     PeItService,
     ActivePeItService,
     PropertyPipe,
+    TeEntService,
+    ConfigService
   ]
 })
-  .add('State: Edit – no value', {
+  .add('State: Edit – birth with exist.-time', {
     context:{
       projectReady: false,
       parentRole: {"fk_property": 6,
@@ -240,6 +231,7 @@ export default sandboxOf(TeEntComponent, {
             "fk_entity_version_concat": "70850_1",
             "is_in_project": true,
             "is_standard_in_project": null,
+            "calendar": "julian",
             "tmsp_last_modification": "2018-03-22T17:02:32.865136+00:00"
           }],
           "appellation": {},
@@ -262,9 +254,9 @@ export default sandboxOf(TeEntComponent, {
       }
     },
     template: `
-    <div class="d-flex justify-content-center mt-5">
+    <div class="d-flex justify-content-center py-5 bg-secondary">
       <div style="width:430px">
-        <gv-project-sandbox (projectReady)="projectReady=true"></gv-project-sandbox>
+        <gv-project-sandbox (projectReady)="projectReady=true" [pkProject]="15" ></gv-project-sandbox>
         <gv-te-ent [teEntState]="'edit'" [teEnt]="teEnt" [parentRole]="parentRole" *ngIf="projectReady"></gv-te-ent>
       </div>
     </div>

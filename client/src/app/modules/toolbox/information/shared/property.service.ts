@@ -90,7 +90,7 @@ export class PropertyService {
 
   }
 
-  getPropertyByFkDomainClass(fk) {
+  getPropertyByFkDomainClass(fk): Observable<DfhProperty[]> {
 
     // If property already exists in cache, return it as observable
     if (this.propByDomainFkCache[fk])
@@ -124,7 +124,7 @@ export class PropertyService {
   }
 
 
-  getPropertyByFkRangeClass(fk) {
+  getPropertyByFkRangeClass(fk): Observable<DfhProperty[]> {
 
     // If property already exists in cache, return it as observable
     if (this.propByRangeFkCache[fk])

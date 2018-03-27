@@ -8,20 +8,11 @@ registerLocaleData(localeDeCh);
 
 
 import { TimePrimitiveComponent } from './time-primitive.component';
-import { ControlMessagesComponent } from '../control-messages/control-messages.component';
-import { ValidationService } from '../shared/services/validation.service';
-import { TimePrimitive } from '../shared/classes/date-time/time-primitive';
-import { PassiveLinkDirective } from '../passive-link.directive';
+import { TimePrimitive, ValidationService } from 'app/core';
+
 
 
 export default sandboxOf(TimePrimitiveComponent, {
-  declarations: [
-    ControlMessagesComponent,
-    PassiveLinkDirective
-  ],
-  imports: [
-    ReactiveFormsModule,
-  ],
   providers: [
     ValidationService,
     DatePipe
@@ -48,6 +39,22 @@ export default sandboxOf(TimePrimitiveComponent, {
     <div class="d-flex justify-content-center mt-5">
       <div style="width:430px">
         <gv-time-primitive [state]="'edit'" [timePrimitive]="tp"></gv-time-primitive>
+      </div>
+    </div>
+    `
+  })
+  .add('State: Editable – existing', {
+    context: {
+      tp: new TimePrimitive({
+        'julianDay': 2444270,
+        'duration': '1 year',
+        'calendar':'gregorian'
+      })
+    },
+    template: `
+    <div class="d-flex justify-content-center mt-5">
+      <div style="width:430px">
+        <gv-time-primitive [state]="'editable'" [timePrimitive]="tp"></gv-time-primitive>
       </div>
     </div>
     `

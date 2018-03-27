@@ -4,7 +4,7 @@ module.exports = function(InfTimePrimitive) {
   InfTimePrimitive.findOrCreateInfTimePrimitive = function(projectId, data) {
 
     const dataObject = {
-      begin: data.begin,
+      duration: data.duration,
       julian_day: data.julian_day,
       //pk_entity: data.pk_entity,
       notes: data.notes,

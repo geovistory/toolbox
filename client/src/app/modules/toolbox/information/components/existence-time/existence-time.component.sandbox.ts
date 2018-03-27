@@ -18,29 +18,28 @@ import { FieldsetBeginComponent } from './fieldset-begin/fieldset-begin.componen
 import { FieldsetOuterComponent } from './fieldset-outer/fieldset-outer.component';
 import { FieldsetEndComponent } from './fieldset-end/fieldset-end.component';
 import { FieldsetInnerComponent } from './fieldset-inner/fieldset-inner.component';
+import { ValidationService, InfEntityProjectRelApi, ActiveProjectService, TimePrimitive } from 'app/core';
+import { RoleService } from '../../shared/role.service';
+import { PropertyService } from '../../shared/property.service';
+import { UtilitiesService } from '../../shared/utilities.service';
+import { EntityEditorService } from '../../../../../core/entity-editor/entity-editor.service';
+import { TimePrimitiveComponent } from '../time-primitive/time-primitive.component';
 
 
 
 export default sandboxOf(ExistenceTimeComponent, {
   declarations: [
     FieldComponent,
-    ControlMessagesComponent,
-    TimePrimitiveComponent,
-    PassiveLinkDirective,
     FieldsetBeginComponent,
     FieldsetEndComponent,
     FieldsetOuterComponent,
     FieldsetInnerComponent,
+    TimePrimitiveComponent
   ],
   imports: [
-    ReactiveFormsModule,
-    FormsModule,
-    SDKBrowserModule.forRoot(),
-    SlimLoadingBarModule.forRoot(),
-    NgbModule.forRoot()
   ],
   providers: [
-    ValidationService,
+    ValidationService,    
     InfEntityProjectRelApi,
     ActiveProjectService,
     RoleService,

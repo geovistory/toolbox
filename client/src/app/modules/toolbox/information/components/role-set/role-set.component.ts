@@ -53,7 +53,7 @@ export class RoleSetComponent implements OnChanges, OnInit {
   };
 
   // state of the card below the header
-  @Input() cardState:'collapsed'|'expanded';
+  @Input() cardState: 'collapsed' | 'expanded';
 
 
   /**
@@ -161,7 +161,9 @@ export class RoleSetComponent implements OnChanges, OnInit {
     if (this.propState == 'add-pe-it')
       this.sortRolesByPopularity();
 
-    this.cardState = 'collapsed';
+    if (this.propState == 'create') this.cardState = 'expanded';
+    else this.cardState = 'collapsed';
+
   }
 
   get propState(): string {
@@ -296,35 +298,35 @@ export class RoleSetComponent implements OnChanges, OnInit {
 
     Observable.combineLatest(observables)
       .subscribe(
-      (value) => {
+        (value) => {
 
-        // update the epr of the new Std in client memory
-        roleC.epr = value[0];
-        roleC.isStandardInProject = value[0].is_standard_in_project;
-        roleC.role.is_standard_in_project_count++;
-
-        // unset loadingStdChange flag
-        roleC.loadingStdChange = false;
-
-        // update the epr of old Std Roles (should be only one) in client memory
-        for (let i = 0; i < rolesToChange.length; i++) {
-
-          if (
-            rolesToChange[i].isStandardInProject === true
-            && value[i + 1].is_standard_in_project === false
-          ) {
-            rolesToChange[i].role.is_standard_in_project_count--;
-          }
-
-          rolesToChange[i].epr = value[i + 1];
-          rolesToChange[i].isStandardInProject = value[i + 1].is_standard_in_project;
+          // update the epr of the new Std in client memory
+          roleC.epr = value[0];
+          roleC.isStandardInProject = value[0].is_standard_in_project;
+          roleC.role.is_standard_in_project_count++;
 
           // unset loadingStdChange flag
-          rolesToChange[i].loadingStdChange = false;
+          roleC.loadingStdChange = false;
 
-        }
+          // update the epr of old Std Roles (should be only one) in client memory
+          for (let i = 0; i < rolesToChange.length; i++) {
 
-      })
+            if (
+              rolesToChange[i].isStandardInProject === true
+              && value[i + 1].is_standard_in_project === false
+            ) {
+              rolesToChange[i].role.is_standard_in_project_count--;
+            }
+
+            rolesToChange[i].epr = value[i + 1];
+            rolesToChange[i].isStandardInProject = value[i + 1].is_standard_in_project;
+
+            // unset loadingStdChange flag
+            rolesToChange[i].loadingStdChange = false;
+
+          }
+
+        })
 
   }
 
