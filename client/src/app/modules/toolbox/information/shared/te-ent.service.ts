@@ -115,13 +115,18 @@ export class TeEntService {
     }
 
     this.filterRolesPointingToTimePrimitive(teEnt).subscribe(roles => {
-      roles.forEach(role => {
+      roles.forEach((role: InfRole) => {
         var key = keyByPk[role.fk_property]
-        existenceTime[key]= new TimePrimitive();
-        existenceTime[key].duration =role.time_primitive.duration;
+        existenceTime[key] = new TimePrimitive();
+        existenceTime[key].duration = role.time_primitive.duration;
         existenceTime[key].julianDay = parseInt(role.time_primitive.julian_day);
-        existenceTime[key].calendar = 'julian';
-        
+
+        // Set calendar information for project view
+        if (role.entity_version_project_rels && role.entity_version_project_rels[0].calendar)
+          existenceTime[key].calendar = role.entity_version_project_rels[0].calendar;
+
+          // Calendar information for repository view
+        else existenceTime[key].calendar = role.community_favorite_calendar;
       });
       emitter.emit(existenceTime);
     })

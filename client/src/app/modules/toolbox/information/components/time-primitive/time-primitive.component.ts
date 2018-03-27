@@ -256,9 +256,9 @@ this.subscribeToFormChanges()
 
 
       // AUTO ADAPT CALENDAR
-      // if calendar field is pristine, fit calendar to the date
+      // if calendar field is pristine, and form is dirty (user changed a value), fit calendar to the date
       // according to the switch-day of 2299161 (1582-10-4/1582-10-15)
-      if (calendarField.pristine) {
+      if (calendarField.pristine && fg.dirty) {
         var g = new GregorianDateTime();
         g.year = yearField.value;
         g.month = monthField.value;

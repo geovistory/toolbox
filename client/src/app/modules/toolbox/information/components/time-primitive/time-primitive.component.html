@@ -101,7 +101,7 @@
     <div class="input-group" *ngIf="editingCalendar">
       <div class="input-group-prepend"> <span class="input-group-text"><i class="fa fa-calendar"></i>&nbsp;Calendar
       </span> </div> <select class="form-control" class="custom-select" formControlName="calendar" (change)="editingCalendar=false">
-        <option value="gregorian" selected>Gregorian</option>
+        <option value="gregorian">Gregorian</option>
         <option value="julian">Julian</option>
       </select> </div>
       <gv-control-messages [control]="form?.controls.calendar"></gv-control-messages>

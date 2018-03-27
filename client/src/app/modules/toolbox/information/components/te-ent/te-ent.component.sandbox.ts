@@ -102,7 +102,7 @@ export default sandboxOf(TeEntComponent, {
     ConfigService
   ]
 })
-  .add('State: Edit – birth with exist.-time', {
+  .add('State: Edit – birth with project calendar info', {
     context:{
       projectReady: false,
       parentRole: {"fk_property": 6,
@@ -222,6 +222,7 @@ export default sandboxOf(TeEntComponent, {
           "sys_period": "[\"2018-03-22 17:02:32.865136+00\",)",
           "is_latest_version": true,
           "is_community_favorite": true,
+          "community_favorite_calendar": "julian", // <-- Calendar information for repository view
           "entity_version_project_rels": [{
             "pk_entity_version_project_rel": 4235,
             "fk_project": 15,
@@ -230,14 +231,124 @@ export default sandboxOf(TeEntComponent, {
             "fk_entity_version_concat": "70850_1",
             "is_in_project": true,
             "is_standard_in_project": null,
-            "calendar": "julian",
+            "calendar": "julian", // <-- Calendar information for project view
             "tmsp_last_modification": "2018-03-22T17:02:32.865136+00:00"
           }],
           "appellation": {},
           "language": {},
           "time_primitive": {
             "fk_class": 335,
-            "julian_day": "1971231",
+            "julian_day": "2371231",
+            "duration": "1 day",
+            "pk_entity_version_concat": "70851_1",
+            "pk_entity": 70851,
+            "entity_version": 1,
+            "notes": null,
+            "tmsp_creation": "2018-03-22T17:02:32.865136+00:00",
+            "tmsp_last_modification": "2018-03-22T17:02:32.865136+00:00",
+            "sys_period": "[\"2018-03-22 17:02:32.865136+00\",)",
+            "is_latest_version": true,
+            "is_community_favorite": true
+          }
+        }]
+      }
+    },
+    template: `
+    <div class="d-flex justify-content-center py-5 bg-secondary">
+      <div style="width:430px">
+        <gv-project-sandbox (projectReady)="projectReady=true" [pkProject]="15" ></gv-project-sandbox>
+        <gv-te-ent [teEntState]="'edit'" [teEnt]="teEnt" [parentRole]="parentRole" *ngIf="projectReady"></gv-te-ent>
+      </div>
+    </div>
+    `
+  })
+  
+  .add('State: Edit – birth with repo calendar info', {
+    context:{
+      projectReady: false,
+      parentRole: {"fk_property": 6,
+      "fk_entity": 70831,
+      "fk_temporal_entity": 70844,
+      "is_in_project_count": 1,
+      "is_standard_in_project_count": 0,
+      "pk_entity_version_concat": "70843_1",
+      "pk_entity": 70843,
+      "entity_version": 1,
+      "notes": null,
+      "tmsp_creation": "2018-03-22T16:58:32.093486+00:00",
+      "tmsp_last_modification": "2018-03-22T16:58:32.093486+00:00",
+      "sys_period": "[\"2018-03-22 16:58:32.093486+00\",)",
+      "is_latest_version": true,
+      "is_community_favorite": true
+    },
+      teEnt: {
+        "fk_class": 5,
+        "notes": "TestBirth",
+        "pk_entity_version_concat": "70844_1",
+        "pk_entity": 70844,
+        "entity_version": 1,
+        "tmsp_creation": "2018-03-22T16:58:32.093486+00:00",
+        "tmsp_last_modification": "2018-03-22T16:58:32.093486+00:00",
+        "sys_period": "[\"2018-03-22 16:58:32.093486+00\",)",
+        "is_latest_version": true,
+        "is_community_favorite": true,
+        "te_roles": [{
+          "fk_property": 6,
+          "fk_entity": 70831,
+          "fk_temporal_entity": 70844,
+          "is_in_project_count": 1,
+          "is_standard_in_project_count": 0,
+          "pk_entity_version_concat": "70843_1",
+          "pk_entity": 70843,
+          "entity_version": 1,
+          "notes": null,
+          "tmsp_creation": "2018-03-22T16:58:32.093486+00:00",
+          "tmsp_last_modification": "2018-03-22T16:58:32.093486+00:00",
+          "sys_period": "[\"2018-03-22 16:58:32.093486+00\",)",
+          "is_latest_version": true,
+          "is_community_favorite": true,
+          "appellation": {},
+          "language": {},
+          "time_primitive": {}
+        }, {
+          "fk_property": 4,
+          "fk_entity": null,
+          "fk_temporal_entity": 70844,
+          "is_in_project_count": 1,
+          "is_standard_in_project_count": 0,
+          "pk_entity_version_concat": "70846_1",
+          "pk_entity": 70846,
+          "entity_version": 1,
+          "notes": null,
+          "tmsp_creation": "2018-03-22T16:58:32.093486+00:00",
+          "tmsp_last_modification": "2018-03-22T16:58:32.093486+00:00",
+          "sys_period": "[\"2018-03-22 16:58:32.093486+00\",)",
+          "is_latest_version": true,
+          "is_community_favorite": true,
+          "appellation": {},
+          "language": {},
+          "time_primitive": {}
+        }, {
+          "fk_property": 72,
+          "fk_entity": 70851,
+          "fk_temporal_entity": 70844,
+          "is_in_project_count": 1,
+          "is_standard_in_project_count": 0,
+          "pk_entity_version_concat": "70850_1",
+          "pk_entity": 70850,
+          "entity_version": 1,
+          "notes": "At some time within",
+          "tmsp_creation": "2018-03-22T17:02:32.865136+00:00",
+          "tmsp_last_modification": "2018-03-22T17:02:32.865136+00:00",
+          "sys_period": "[\"2018-03-22 17:02:32.865136+00\",)",
+          "is_latest_version": true,
+          "is_community_favorite": true,
+          "community_favorite_calendar": "gregorian", // <-- Calendar information for repository view
+          "appellation": {},
+          "language": {},
+          "time_primitive": {
+            "fk_class": 335,
+            "julian_day": "2371231",
             "duration": "1 day",
             "pk_entity_version_concat": "70851_1",
             "pk_entity": 70851,

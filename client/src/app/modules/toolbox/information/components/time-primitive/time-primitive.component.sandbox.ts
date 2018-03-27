@@ -27,12 +27,28 @@ export default sandboxOf(TimePrimitiveComponent, {
     </div>
     `
   })
-  .add('State: Edit – existing', {
+  .add('State: Edit – existing gregorian', {
     context: {
       tp: new TimePrimitive({
-        'julianDay': 2444270,
-        'duration': '1 year',
+        'julianDay': 2371231,
+        'duration': '1 day',
         'calendar':'gregorian'
+      })
+    },
+    template: `
+    <div class="d-flex justify-content-center mt-5">
+      <div style="width:430px">
+        <gv-time-primitive [state]="'edit'" [timePrimitive]="tp"></gv-time-primitive>
+      </div>
+    </div>
+    `
+  })
+  .add('State: Edit – existing julian', {
+    context: {
+      tp: new TimePrimitive({
+        'julianDay': 2371231,
+        'duration': '1 day',
+        'calendar':'julian'
       })
     },
     template: `
