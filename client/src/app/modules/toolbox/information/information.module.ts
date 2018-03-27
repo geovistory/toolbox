@@ -131,6 +131,7 @@ import { ConfigService } from './shared/config.service';
     FieldsetOuterComponent,
     FieldComponent,
     TeEntExistenceTimeComponent,
+    PropertyPipe,
   ],
   providers: [
     PropertyPipe,
@@ -146,6 +147,9 @@ import { ConfigService } from './shared/config.service';
     AppellationService,
     TeEntService,
     ConfigService
-  ]
+  ],
+  entryComponents : [
+    EntityAddModalComponent
+  ],
 })
 export class InformationModule { }
