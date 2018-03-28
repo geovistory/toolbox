@@ -19,8 +19,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeModule } from './modules/home/home.module';
 import { AuthGuard, ActiveAccountService, ActiveProjectService, SDKBrowserModule, EntityEditorService } from './core';
-import { PassiveLinkModule } from './shared/directives';
-import { ControlMessagesModule, LanguageSearchTypeaheadModule } from './shared/components';
+import { PassiveLinkModule } from './shared';
+import { ControlMessagesModule, LanguageSearchTypeaheadModule } from './shared';
 
 
 @NgModule({

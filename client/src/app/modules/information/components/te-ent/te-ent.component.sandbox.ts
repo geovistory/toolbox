@@ -47,7 +47,7 @@ import { PeItService } from '../../shared/pe-it.service';
 import { ActivePeItService } from '../../shared/active-pe-it.service';
 import { PropertyPipe } from '../../shared/property.pipe';
 import { TeEntExistenceTimeComponent } from '../te-ent-existence-time/te-ent-existence-time.component';
-import { LanguageSearchTypeaheadComponent } from '../../../../../shared/components/language-search-typeahead/language-search-typeahead.component';
+import { LanguageSearchTypeaheadComponent } from 'app/shared/components/language-search-typeahead/language-search-typeahead.component';
 import { TeEntService } from '../../shared/te-ent.service';
 import { ConfigService } from '../../shared/config.service';
 

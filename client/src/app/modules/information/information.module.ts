@@ -15,8 +15,8 @@ import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { SDKBrowserModule, ValidationService } from 'app/core';
 
 // Shared components and directives
-import { ControlMessagesModule, LanguageSearchTypeaheadModule } from 'app/shared/components';
-import { PassiveLinkModule } from 'app/shared/directives';
+import { ControlMessagesModule, LanguageSearchTypeaheadModule } from 'app/shared';
+import { PassiveLinkModule } from 'app/shared';
 
 // This modules components
 import { AppellationLabelCreateComponent } from './components/appellation-label-create/appellation-label-create.component';

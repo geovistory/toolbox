@@ -14,8 +14,7 @@ import { ProjectSettingsCollaboratorsComponent } from './components/project-sett
 import { ProjectSettingsDataComponent } from './components/project-settings-data/project-settings-data.component';
 import { ProjectSettingsProfileComponent } from './components/project-settings-profile/project-settings-profile.component';
 import { ProjectsRoutingModule } from './projects-routing.module';
-import { NavbarModule } from '../../../shared/components/navbar/navbar.module';
-import { ProxyRouteModule } from '../../../shared/components/proxy-route';
+import { NavbarModule, ProxyRouteModule } from 'app/shared';
 
 @NgModule({
   imports: [

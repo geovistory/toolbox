@@ -38,7 +38,7 @@ const routes: Routes = [
       },
       {
         path: 'projects',
-        loadChildren: './modules/toolbox/projects/projects.module#ProjectsModule',
+        loadChildren: './modules/projects/projects.module#ProjectsModule',
         canActivate: [AuthGuard]
       },
       fallbackRoute

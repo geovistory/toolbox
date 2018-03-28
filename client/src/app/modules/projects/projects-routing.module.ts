@@ -8,7 +8,7 @@ import { ProjectSettingsComponent } from './components/project-settings/project-
 import { ProjectSettingsProfileComponent } from './components/project-settings-profile/project-settings-profile.component';
 import { ProjectSettingsCollaboratorsComponent } from './components/project-settings-collaborators/project-settings-collaborators.component';
 import { ProjectSettingsDataComponent } from './components/project-settings-data/project-settings-data.component';
-import { ProxyRouteComponent } from '../../../shared/components/proxy-route';
+import { ProxyRouteComponent } from 'app/shared/components/proxy-route';
 
 
 const routes: Routes = [

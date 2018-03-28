@@ -22,7 +22,7 @@ import { ValidationService, InfEntityProjectRelApi, ActiveProjectService, TimePr
 import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
 import { UtilitiesService } from '../../shared/utilities.service';
-import { EntityEditorService } from '../../../../../core/entity-editor/entity-editor.service';
+import { EntityEditorService } from 'app/core/entity-editor/entity-editor.service';
 import { TimePrimitiveComponent } from '../time-primitive/time-primitive.component';
 
 
