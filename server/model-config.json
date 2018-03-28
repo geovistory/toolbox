@@ -111,5 +111,9 @@
   "DfhTextProperty": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "InfTimePrimitive": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }

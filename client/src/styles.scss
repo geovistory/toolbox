@@ -109,6 +109,10 @@ button {
   }
 }
 
+.font-sm {
+  font-size: $font-size-sm;
+}
+
 .dropdown-toggle::after {
     display:none;
 }
@@ -241,4 +245,14 @@ gv-property{
     font-size:6rem;
     color: $gray-200;
   }
+}
+
+// Forms
+
+.ng-touched.ng-invalid {
+  @extend .is-invalid;
+}
+
+.ng-touched.ng-valid {
+  @extend .is-valid;
 }

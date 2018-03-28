@@ -1,0 +1,10 @@
+<ng-template #rt let-r="result" let-t="term">
+  {{ r.notes}}
+  <small class="text-muted">{{ r.iso6391}}</small>
+</ng-template>
+
+<input id="typeahead-http" type="text" class="form-control"
+[class.is-invalid]="searchFailed" (selectItem)="onSelectItem($event)" [(ngModel)]="language" (keyup)="onKeyUp()" #languageSearch="ngModel"
+[ngbTypeahead]="search" [resultTemplate]="rt" placeholder="Search for a language"
+[inputFormatter]="formatter"  />
+

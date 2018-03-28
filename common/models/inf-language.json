@@ -59,7 +59,7 @@
     }
   ],
   "methods": {
-     "queryByString": {
+    "queryByString": {
       "accepts": {
         "arg": "queryString",
         "type": "string",

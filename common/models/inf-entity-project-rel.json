@@ -37,6 +37,9 @@
     "is_standard_in_project": {
       "type": "boolean"
     },
+    "calendar": {
+      "type": "string"
+    },
     "tmsp_last_modification": {
       "type": "string",
       "generated": true

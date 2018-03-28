@@ -1,0 +1,43 @@
+<div [ngClass]="{'dev-view': entityEditor.devView}">
+
+  <span *ngIf="entityEditor.devView">
+    [state: {{peItAppeState}}]
+  </span>
+
+
+  <div class="d-flex flex-row" *ngIf="peItAppeState === 'add-pe-it' || peItAppeState === 'add' ">
+
+    <div class="gv-flex-grow-1" >
+      <gv-appellation-label-view [appellation]="appellation"></gv-appellation-label-view>
+    </div>
+
+  </div>
+
+  <div class="d-flex flex-row" *ngIf="peItAppeState === 'editable'">
+
+    <div class="gv-flex-grow-1" >
+      <gv-appellation-label-view [appellation]="appellation"></gv-appellation-label-view>
+    </div>
+
+  </div>
+
+  <div *ngIf="peItAppeState === 'edit'">
+
+    <gv-appellation-label-editor [appellationLabel]="appellationLabel"
+    (readyToCreate)="emitReadyToCreate($event)"
+    (notReadyToCreate)="emitNotReadyToCreate()"
+    ></gv-appellation-label-editor>
+
+  </div>
+
+
+  <div class="d-flex flex-row" *ngIf="peItAppeState === 'create'">
+
+    <gv-appellation-label-create
+    (readyToCreate)="emitReadyToCreate($event)"
+    (notReadyToCreate)=emitNotReadyToCreate()
+    ></gv-appellation-label-create>
+
+  </div>
+
+</div>

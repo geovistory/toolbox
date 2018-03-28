@@ -80,7 +80,7 @@ module.exports = function(InfPersistentItem) {
       requestedPeIt = data;
     }
 
-    return InfPersistentItem.findOrCreateVersion(InfPersistentItem, projectId, dataObject)
+    return InfPersistentItem.findOrCreateEntity(InfPersistentItem, projectId, dataObject)
       .then((resultingPeIts) => {
         // pick first item of array
         const resultingPeIt = resultingPeIts[0];
@@ -537,6 +537,15 @@ module.exports = function(InfPersistentItem) {
                 }
                 // ,
                 // "entity_version_project_rels": innerJoinThisProject
+              },
+              "time_primitive": {
+                "$relation": {
+                  "name": "time_primitive",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
               }
             }
           }

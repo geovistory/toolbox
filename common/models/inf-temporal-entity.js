@@ -80,7 +80,7 @@ module.exports = function(InfTemporalEntity) {
       requestedTeEnt = data;
     }
 
-    return InfTemporalEntity.findOrCreateVersion(InfTemporalEntity, projectId, dataObject)
+    return InfTemporalEntity.findOrCreateEntity(InfTemporalEntity, projectId, dataObject)
       .then((resultingTeEnts) => {
 
         //TODO pick first item of array
