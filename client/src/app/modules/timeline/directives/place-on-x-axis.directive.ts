@@ -2,13 +2,14 @@ import { Directive, Input, ElementRef, OnChanges } from '@angular/core';
 import { Point } from '../models/point';
 import { D3Service } from '../shared/d3.service';
 import { XAxisDefinition } from '../models/x-axis-definition';
+import { TimePrimitive } from 'app/core';
 
 @Directive({
   selector: '[placeOnXAxis]'
 })
 export class PlaceOnXAxisDirective implements OnChanges {
 
-  @Input('placeOnXAxis') placeOnXAxis: {point:Point, xAxis:XAxisDefinition};
+  @Input('placeOnXAxis') placeOnXAxis: {timePrimitive:TimePrimitive, xAxis:XAxisDefinition};
 
   constructor(private d3Service: D3Service, private _element: ElementRef) { }
 

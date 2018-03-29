@@ -2,10 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TimelineComponent } from './components/timeline/timeline.component';
 import { PointComponent } from './components/point/point.component';
-import { DraggableDirective } from './directives/draggable.directive';
 import { XAxisComponent } from './components/x-axis/x-axis.component';
 import { PlaceOnXAxisDirective } from './directives/place-on-x-axis.directive';
 import { DraggableXAxisDirective } from './directives/draggable-x-axis.directive';
+import { LeftOuterVisualComponent } from './components/left-outer-visual/left-outer-visual.component';
+import { ExistenceTimeVisualComponent } from './components/existence-time-visual/existence-time-visual.component';
+import { TeEntVisualComponent } from './components/te-ent-visual/te-ent-visual.component';
+import { LeftInnerVisualComponent } from './components/left-inner-visual/left-inner-visual.component';
+import { RightInnerVisualComponent } from './components/right-inner-visual/right-inner-visual.component';
+import { RightOuterVisualComponent } from './components/right-outer-visual/right-outer-visual.component';
+import { InnerVisualComponent } from './components/inner-visual/inner-visual.component';
 
 @NgModule({
   imports: [
@@ -14,10 +20,16 @@ import { DraggableXAxisDirective } from './directives/draggable-x-axis.directive
   declarations: [
     TimelineComponent,
     PointComponent,
-    DraggableDirective,
     DraggableXAxisDirective,
     XAxisComponent,
-    PlaceOnXAxisDirective
+    PlaceOnXAxisDirective,
+    LeftOuterVisualComponent,
+    ExistenceTimeVisualComponent,
+    TeEntVisualComponent,
+    LeftInnerVisualComponent,
+    RightInnerVisualComponent,
+    RightOuterVisualComponent,
+    InnerVisualComponent
   ]
 })
 export class TimelineModule { }

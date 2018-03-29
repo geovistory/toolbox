@@ -18,7 +18,7 @@ export class XAxisComponent implements OnChanges {
   }
 
   initXAxis(){
-    this.d3Service.apllyXAxis(this._element.nativeElement, this.xAxis);
+    this.d3Service.applyXAxis(this._element.nativeElement, this.xAxis);
   }
 
 }

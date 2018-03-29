@@ -4,6 +4,10 @@ import { Point } from '../models/point';
 import { Timeline } from '../models/timeline';
 import { XAxisDefinition } from '../models/x-axis-definition';
 import { Observable } from 'rxjs/Observable';
+import { TimePrimitive, InfPersistentItem } from 'app/core';
+import { ExistenceTime } from '../../information/components/existence-time';
+import { $ } from 'protractor';
+import { TimePrimitiveVisual } from '../models/time-primitive-visual';
 
 @Injectable()
 export class D3Service {
@@ -22,45 +26,6 @@ export class D3Service {
   applyZoomableBehaviour() { }
 
 
-
-  /** 
-   * A method to bind a draggable behaviour to an svg element
-   */
-  applyDraggableBehaviour(element, point: Point) {
-    const d3element = d3.select(element);
-
-    function started() {
-      /** Preventing propagation of dragstart to parent elements */
-      d3.event.sourceEvent.stopPropagation();
-
-      // if (!d3.event.active) {
-      //   graph.simulation.alphaTarget(0.3).restart();
-      // }
-
-      d3.event.on("drag", dragged).on("end", ended);
-
-      function dragged() {
-        point.x = d3.event.x;
-        point.y = d3.event.y;
-        console.log(d3.event.x)
-      }
-
-      function ended() {
-        // if (!d3.event.active) {
-        //   graph.simulation.alphaTarget(0);
-        // }
-
-        // point.x = null;
-        // point.y = null;
-      }
-    }
-
-    d3element.call(d3.drag()
-      .on("start", started));
-  }
-
-
-
   /**
    * A method to bind a draggable behaviour to a xAxis element
    */
@@ -73,18 +38,19 @@ export class D3Service {
       var started = () => {
         /** Preventing propagation of dragstart to parent elements */
         d3.event.sourceEvent.stopPropagation();
-        
+
         let beforeDraggedX = d3.event.x;
-        
+
         function dragged() {
-          observer.next({endX: d3.event.x , startX:beforeDraggedX})
+          const diff = beforeDraggedX - d3.event.x;
+          observer.next(diff)
           beforeDraggedX = d3.event.x;
         }
-        
+
         var ended = () => {
-          
+
         }
-        
+
         d3.event.on("drag", dragged).on("end", ended);
 
       }
@@ -102,9 +68,8 @@ export class D3Service {
   /** 
    * A method to create an x-axis out of an svg element 
    */
-  apllyXAxis(element, xAxis: XAxisDefinition) {
+  applyXAxis(element, xAxis: XAxisDefinition) {
     const d3element = d3.select(element);
-
 
     const axis = d3.axisBottom(xAxis.scale).ticks(20);
 
@@ -117,20 +82,152 @@ export class D3Service {
   /** 
    * A method to place  an x-axis out of an svg element 
    */
-  placeOnXAxis(element, options: { point: Point, xAxis: XAxisDefinition }) {
+  placeOnXAxis(element, options: { timePrimitive: TimePrimitive, xAxis: XAxisDefinition }) {
     const d3element = d3.select(element);
 
-    d3element.attr("transform", "translate(" + options.xAxis.scale(options.point.x) + ", 300)")
+    d3element.attr("transform", "translate(" + options.xAxis.scale(options.timePrimitive.getDate()) + ", 300)")
   }
 
 
+
+  /** 
+   * A method to place the left outer symbol on x-axis
+   */
+  placeLeftOuterVisualOnXAxis(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
+    this.leftBracket(element, xAxis, options);
+  }
+
+
+  /** 
+ * A method to place the left inner symbol on x-axis
+ */
+  placeLeftInnerVisualOnXAxis(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
+    this.leftBracket(element, xAxis, options);
+  }
+
+  /** 
+    * A method to place the right inner symbol on x-axis
+    */
+  placeRightInnerVisualOnXAxis(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
+    this.rightBracket(element, xAxis, options);
+  }
+
+
+  /** 
+    * A method to place the right outer symbol on x-axis
+    */
+  placeRightOuterVisualOnXAxis(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
+    this.rightBracket(element, xAxis, options);
+  }
+
+    /** 
+    * A method to place the right outer symbol on x-axis
+    */
+   placeInnerVisualOnXAxis(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
+    this.rectangle(element, xAxis, options);
+  }
+
+
+  private leftBracket(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
+    const d3element = d3.select(element);
+    const strokeWidth = TimePrimitiveVisual.strokeWidth
+    const halfStroke = strokeWidth / 2;
+
+    var t = halfStroke; //  y top
+    var l = xAxis.scale(options.startDate) + halfStroke; //  x left
+    var h = TimePrimitiveVisual.barHeight - halfStroke; //  y bottom
+    var r = l + TimePrimitiveVisual.brackedWidth;
+
+    let openPath = [];
+    openPath.push('M' + r + ' ' + t); // start right top 
+    openPath.push('L' + l + ' ' + t); // go left
+    openPath.push('L' + l + ' ' + h); // go down
+    openPath.push('L' + r + ' ' + h); // go right
+    d3element.selectAll('.gv-open-path').attr('d', openPath.join(' ')).attr('stroke-width', TimePrimitiveVisual.strokeWidth);
+
+
+    var t = strokeWidth; //  y top
+    l = l + halfStroke; //  x left
+    var xr = xAxis.scale(options.endDate);
+    var r = xr > l ? xr : l; //  x right
+    var h = TimePrimitiveVisual.barHeight - strokeWidth; //  y bottom
+
+    let closedPath = [];
+    closedPath.push('M' + l + ' ' + t); // start left top 
+    closedPath.push('L' + r + ' ' + t); // go right
+    closedPath.push('L' + r + ' ' + h); // go down
+    closedPath.push('L' + l + ' ' + h); // go left
+    closedPath.push('Z') // close path
+    d3element.selectAll('.gv-closed-path').attr('d', closedPath.join(' '));
+
+  }
+
+  private rightBracket(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
+    const d3element = d3.select(element);
+    const strokeWidth = TimePrimitiveVisual.strokeWidth
+    const halfStroke = strokeWidth / 2;
+
+    var t = halfStroke; //  y top
+    var r = xAxis.scale(options.endDate) - halfStroke; //  x right
+    var h = TimePrimitiveVisual.barHeight - halfStroke; //  y bottom
+    var l = r - TimePrimitiveVisual.brackedWidth;
+
+    let openPath = [];
+    openPath.push('M' + l + ' ' + t); // start left top 
+    openPath.push('L' + r + ' ' + t); // go right
+    openPath.push('L' + r + ' ' + h); // go down
+    openPath.push('L' + l + ' ' + h); // go left
+    d3element.selectAll('.gv-open-path').attr('d', openPath.join(' ')).attr('stroke-width', TimePrimitiveVisual.strokeWidth);
+
+
+    t = strokeWidth; //  y top
+    r = r - halfStroke; //  x right
+    const xl = xAxis.scale(options.startDate);
+    l = xl < r ? xl : r; //  x left
+    h = TimePrimitiveVisual.barHeight - strokeWidth; //  y bottom
+
+    let closedPath = [];
+    closedPath.push('M' + l + ' ' + t); // start left top 
+    closedPath.push('L' + r + ' ' + t); // go right
+    closedPath.push('L' + r + ' ' + h); // go down
+    closedPath.push('L' + l + ' ' + h); // go left
+    closedPath.push('Z') // close path
+    d3element.selectAll('.gv-closed-path').attr('d', closedPath.join(' '));
+
+  }
+
+  /**
+   * Creates a rectangle on the child with class .gv-closed-path
+   * @param d3element 
+   * @param l left
+   * @param r right
+   * @param h height
+   */
+  private rectangle(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
+    const d3element = d3.select(element);
+    const strokeWidth = TimePrimitiveVisual.strokeWidth;
+
+    const t = strokeWidth; //  y top
+    
+    const r = xAxis.scale(options.endDate);
+    const l = xAxis.scale(options.startDate); //  x left
+    const h = TimePrimitiveVisual.barHeight - strokeWidth; //  y bottom
+
+    let closedPath = [];
+    closedPath.push('M' + l + ' ' + t); // start left top 
+    closedPath.push('L' + r + ' ' + t); // go right
+    closedPath.push('L' + r + ' ' + h); // go down
+    closedPath.push('L' + l + ' ' + h); // go left
+    closedPath.push('Z') // close path
+    d3element.selectAll('.gv-rectangle').attr('d', closedPath.join(' '));
+  }
 
 
   /** The interactable timeline chart
   * This method does not interact with the document, purely physical calculations with d3
   */
-  getTimeline(points: Point[], options) {
-    return new Timeline(points, options);
+  getTimeline(persistentItems: InfPersistentItem[], options) {
+    return new Timeline(persistentItems, options);
   }
 
 

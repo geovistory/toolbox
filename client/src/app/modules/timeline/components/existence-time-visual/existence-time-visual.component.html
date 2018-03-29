@@ -1,0 +1,40 @@
+
+<!-- Left outer visual -->
+
+<svg:g 
+*ngIf="existenceTimeOnXAxis.existenceTime.p82a"
+[leftOuterVisual]="{timePrimitive:existenceTimeOnXAxis.existenceTime.p82a, xAxis:existenceTimeOnXAxis.xAxis}" 
+></svg:g>
+
+
+<!-- right outer visual -->
+<svg:g 
+*ngIf="existenceTimeOnXAxis.existenceTime.p82b"
+[rightOuterVisual]="{timePrimitive:existenceTimeOnXAxis.existenceTime.p82b, xAxis:existenceTimeOnXAxis.xAxis}" 
+></svg:g>
+
+<!-- outer visual -->
+
+
+<!-- Left inner visual -->
+<svg:g 
+*ngIf="existenceTimeOnXAxis.existenceTime.p81a"
+[leftInnerVisual]="{timePrimitive:existenceTimeOnXAxis.existenceTime.p81a, xAxis:existenceTimeOnXAxis.xAxis}" 
+></svg:g>
+
+
+<!-- right inner visual -->
+<svg:g 
+*ngIf="existenceTimeOnXAxis.existenceTime.p81b"
+[rightInnerVisual]="{timePrimitive:existenceTimeOnXAxis.existenceTime.p81b, xAxis:existenceTimeOnXAxis.xAxis}" 
+></svg:g>
+
+
+
+<!-- inner visual -->
+<svg:g 
+*ngIf="inner"
+[innerVisual]="{startEnd:inner, xAxis:existenceTimeOnXAxis.xAxis}" 
+></svg:g>
+
+

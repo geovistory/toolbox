@@ -1,0 +1,29 @@
+import { Component, Input, ElementRef, OnInit, DoCheck } from '@angular/core';
+import { TimePrimitive } from 'app/core';
+import { XAxisDefinition } from '../../models/x-axis-definition';
+import { D3Service } from '../../shared/d3.service';
+import { TimePrimitiveVisual } from '../../models/time-primitive-visual';
+
+@Component({
+  selector: '[rightOuterVisual]',
+  templateUrl: './right-outer-visual.component.html',
+  styleUrls: ['./right-outer-visual.component.scss']
+})
+export class RightOuterVisualComponent extends TimePrimitiveVisual implements OnInit, DoCheck {
+
+  @Input('rightOuterVisual') rightOuterOnXAxis : {timePrimitive:TimePrimitive, xAxis:XAxisDefinition};
+
+  constructor(d3Service: D3Service, _element: ElementRef) {
+    super(d3Service, _element)
+  }
+
+  ngOnInit(): void {
+    this.initTimePrimitiveVisual(this.rightOuterOnXAxis)
+  }
+
+  ngDoCheck() {
+
+    this.d3Service.placeRightOuterVisualOnXAxis(this._element.nativeElement, this.rightOuterOnXAxis.xAxis, this);
+  }
+
+}

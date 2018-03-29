@@ -1,0 +1,30 @@
+import { Component, Input, ElementRef, OnInit, DoCheck } from '@angular/core';
+import { TimePrimitive } from 'app/core';
+import { XAxisDefinition } from '../../models/x-axis-definition';
+import { D3Service } from '../../shared/d3.service';
+import { TimePrimitiveVisual } from '../../models/time-primitive-visual';
+
+@Component({
+  selector: '[innerVisual]',
+  templateUrl: './inner-visual.component.html',
+  styleUrls: ['./inner-visual.component.scss']
+})
+export class InnerVisualComponent extends TimePrimitiveVisual implements OnInit, DoCheck {
+
+  @Input('innerVisual') innerOnXAxis: { startEnd: { start: Date, end: Date }, xAxis: XAxisDefinition };
+
+  constructor(d3Service: D3Service, _element: ElementRef) {
+    super(d3Service, _element)
+  }
+
+  ngOnInit(): void {
+    this.startDate = this.innerOnXAxis.startEnd.start;
+    this.endDate = this.innerOnXAxis.startEnd.end;
+  }
+
+  ngDoCheck() {
+
+    this.d3Service.placeInnerVisualOnXAxis(this._element.nativeElement, this.innerOnXAxis.xAxis, this);
+  }
+
+} 

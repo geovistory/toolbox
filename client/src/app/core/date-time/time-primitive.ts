@@ -49,9 +49,19 @@ export class TimePrimitive {
    *
    */
   getDate(calendar:CalendarType = this.calendar):Date|null{
-
     return this.getDateTime(calendar).getDate();
   }
+
+
+  /**
+   * Get a Date object of the last second of the duration of this TimePrimitive.
+   *
+   */
+  getEndDate(calendar:CalendarType = this.calendar):Date|null{
+    const dt = this.getDateTime()
+    return  dt.getEndOf(this.duration).getDate();
+  }
+
 
 
   /**

@@ -1,12 +1,18 @@
 <svg #svg [attr.width]="_options.width" [attr.height]="_options.height" draggableXAxis (onDrag)="onDrag($event)">
-  <g [attr.transform]="'translate(' + timeline.xAxis.marginLeft + ',0)'">
-    <g>
-      <g [pointVisual]="point" [placeOnXAxis]="{point:point, xAxis:timeline.xAxis}" *ngFor="let point of points"></g>
-    </g>
-    <g>
-      <g [xAxisVisual]="timeline.xAxis"></g>
-    </g>
+
+  <g [attr.transform]="'translate(' + timeline.xAxis.marginLeft + ',10)'">
+
+    <!-- rows -->
+    <g *ngFor="let teEnt of timeline.temporalEntities; let i = index"
+    [attr.transform]="'translate(0,' + ((timeline.options.barHeight + timeline.options.barMarginBottom) * i) + ')'"
+    [teEntVisual]="{temporalEntity:teEnt, xAxis:timeline.xAxis}" 
+    ></g>
+
+    <!-- xAxis -->
+    <g [xAxisVisual]="timeline.xAxis"></g>
+
   </g>
+
 </svg>
 
 
@@ -14,4 +20,5 @@
   <button class="btn btn-primary" (click)="changeDomain()">change xAxis-domain</button>
   <button class="btn btn-primary" (click)="zoomIn()">Zoom In</button>
   <button class="btn btn-primary" (click)="zoomOut()">Zoom Out</button>
+  <button class="btn btn-primary" (click)="zoomToExtent()">Zoom To Extent</button>
 </div>

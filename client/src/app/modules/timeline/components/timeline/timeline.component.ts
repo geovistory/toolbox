@@ -1,13 +1,19 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostListener, Input } from '@angular/core';
 import { D3Service } from '../../shared/d3.service';
 import { Point } from '../../models/point';
 import { Timeline } from '../../models/timeline';
+import { InfTemporalEntity, TimePrimitive, InfPersistentItem } from 'app/core';
+import { ExistenceTime } from '../../../information/components/existence-time';
+import { TimePrimitiveVisual } from '../../models/time-primitive-visual';
 
 export interface TimelineOptions {
   width: number,
   height: number,
-  domainStart: number,
-  domainEnd: number,
+  domainStart: Date,
+  domainEnd: Date,
+  zoomFactor: number, // increase for smaller zoom steps
+  barHeight: number, // pixels
+  barMarginBottom: number // pixels
 }
 
 @Component({
@@ -17,15 +23,21 @@ export interface TimelineOptions {
 })
 export class TimelineComponent implements OnInit, AfterViewInit {
 
-  points: Point[];  
+  @HostListener('scroll', ['$event'])
 
-  readonly ZOOMFACTOR = 8;
+  @Input() persistentItems:InfPersistentItem[];
+
+
+
 
   private _options: TimelineOptions = {
     width: 600,
     height: 400,
-    domainStart: 100,
-    domainEnd: 505
+    domainStart: new Date(1000, 0, 1),
+    domainEnd: new Date(2000, 0, 1),
+    zoomFactor: 8,
+    barHeight: TimePrimitiveVisual.barHeight,
+    barMarginBottom: 20
   };
 
 
@@ -38,13 +50,6 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
   constructor(private d3Service: D3Service) {
 
-    /**
-     * Mock some data
-     */
-    this.points = [
-      new Point(250, 300, 'Punkt 1'),
-      new Point(500, 80, 'Punkt 2')
-    ]
 
   }
 
@@ -53,7 +58,7 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   ngOnInit() {
 
     /** Receiving an initialized timeline from our custom d3 service */
-    this.timeline = this.d3Service.getTimeline(this.points, this.options);
+    this.timeline = this.d3Service.getTimeline(this.persistentItems, this.options);
 
   }
 
@@ -62,45 +67,44 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   changeDomain() {
-    this.options.domainEnd = 0;
-    this.options.domainEnd = 800;
+    this.options.domainEnd = new Date(1000, 0, 1);
+    this.options.domainEnd = new Date(2000, 0, 1);
     this.timeline.init(this.options)
   }
 
-  onDrag(obj) {
+  onDrag(rangeDiff) {
     /** convert dif in range (pixels) to dif in domain */
 
-    const start = this.timeline.xAxis.scale.invert(obj.startX);
-    const end = this.timeline.xAxis.scale.invert(obj.endX);
-    const domainDiff = start-end;
-    this.options.domainStart += domainDiff;
-    this.options.domainEnd += domainDiff;
-
+    const rangeStart = this.timeline.xAxis.scale(this.options.domainStart)
+    const rangeEnd = this.timeline.xAxis.scale(this.options.domainEnd)
+    this.options.domainStart = this.timeline.xAxis.scale.invert(rangeStart + rangeDiff);
+    this.options.domainEnd  = this.timeline.xAxis.scale.invert(rangeEnd + rangeDiff);
+   
     this.timeline.init(this.options)
   }
 
+
   zoomIn(){
-    const minMax = this.options.domainEnd - this.options.domainStart;
 
-    const diff = minMax / this.ZOOMFACTOR;
+    this.timeline.zoomIn()
 
-    this.options.domainEnd -= diff;
-
-    this.options.domainStart += diff;
-
-    this.timeline.init(this.options)
   }
 
   zoomOut(){
-    const minMax = this.options.domainEnd - this.options.domainStart;
 
-    const diff = minMax / this.ZOOMFACTOR;
+    this.timeline.zoomOut()
 
-    this.options.domainEnd += diff;
+  }
 
-    this.options.domainStart -= diff;
+  zoomToExtent(){
 
-    this.timeline.init(this.options)
+    this.timeline.zoomToExtent()
+
+  }
+
+
+  onScroll(event){
+    console.log(event)
   }
 
 
