@@ -16,6 +16,7 @@ import { LeftInnerVisualComponent } from '../left-inner-visual/left-inner-visual
 import { RightInnerVisualComponent } from '../right-inner-visual/right-inner-visual.component';
 import { RightOuterVisualComponent } from '../right-outer-visual/right-outer-visual.component';
 import { InnerVisualComponent } from '../inner-visual/inner-visual.component';
+import { OuterVisualComponent } from '../outer-visual/outer-visual.component';
 
 
 
@@ -32,7 +33,8 @@ export default sandboxOf(TimelineComponent, {
     RightOuterVisualComponent,
     ExistenceTimeVisualComponent,
     TeEntVisualComponent,
-    InnerVisualComponent
+    InnerVisualComponent,
+    OuterVisualComponent
   ],
   providers: [
     D3Service

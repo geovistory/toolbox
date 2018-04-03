@@ -120,36 +120,28 @@ export class D3Service {
     this.rightBracket(element, xAxis, options);
   }
 
-    /** 
-    * A method to place the right outer symbol on x-axis
-    */
-   placeInnerVisualOnXAxis(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
+  /** 
+  * A method to place the right outer symbol on x-axis
+  */
+  placeInnerVisualOnXAxis(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
     this.rectangle(element, xAxis, options);
   }
 
+  /** 
+* A method to place the right outer symbol on x-axis
+*/
+  placeOuterVisualOnXAxis(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
+    this.rectangle(element, xAxis, options);
+  }
 
   private leftBracket(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
     const d3element = d3.select(element);
     const strokeWidth = TimePrimitiveVisual.strokeWidth
     const halfStroke = strokeWidth / 2;
 
-    var t = halfStroke; //  y top
-    var l = xAxis.scale(options.startDate) + halfStroke; //  x left
-    var h = TimePrimitiveVisual.barHeight - halfStroke; //  y bottom
-    var r = l + TimePrimitiveVisual.brackedWidth;
-
-    let openPath = [];
-    openPath.push('M' + r + ' ' + t); // start right top 
-    openPath.push('L' + l + ' ' + t); // go left
-    openPath.push('L' + l + ' ' + h); // go down
-    openPath.push('L' + r + ' ' + h); // go right
-    d3element.selectAll('.gv-open-path').attr('d', openPath.join(' ')).attr('stroke-width', TimePrimitiveVisual.strokeWidth);
-
-
     var t = strokeWidth; //  y top
-    l = l + halfStroke; //  x left
-    var xr = xAxis.scale(options.endDate);
-    var r = xr > l ? xr : l; //  x right
+    var l = xAxis.scale(options.startDate); //  x left
+    var r = xAxis.scale(options.endDate);
     var h = TimePrimitiveVisual.barHeight - strokeWidth; //  y bottom
 
     let closedPath = [];
@@ -160,6 +152,19 @@ export class D3Service {
     closedPath.push('Z') // close path
     d3element.selectAll('.gv-closed-path').attr('d', closedPath.join(' '));
 
+    var t = halfStroke; //  y top
+    l = l - halfStroke; //  x left
+    var r = l + TimePrimitiveVisual.brackedWidth;
+    var h = TimePrimitiveVisual.barHeight - halfStroke; //  y bottom
+
+    let openPath = [];
+    openPath.push('M' + r + ' ' + t); // start right top 
+    openPath.push('L' + l + ' ' + t); // go left
+    openPath.push('L' + l + ' ' + h); // go down
+    openPath.push('L' + r + ' ' + h); // go right
+    d3element.selectAll('.gv-open-path').attr('d', openPath.join(' ')).attr('stroke-width', TimePrimitiveVisual.strokeWidth);
+
+
   }
 
   private rightBracket(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
@@ -167,24 +172,10 @@ export class D3Service {
     const strokeWidth = TimePrimitiveVisual.strokeWidth
     const halfStroke = strokeWidth / 2;
 
-    var t = halfStroke; //  y top
-    var r = xAxis.scale(options.endDate) - halfStroke; //  x right
-    var h = TimePrimitiveVisual.barHeight - halfStroke; //  y bottom
-    var l = r - TimePrimitiveVisual.brackedWidth;
-
-    let openPath = [];
-    openPath.push('M' + l + ' ' + t); // start left top 
-    openPath.push('L' + r + ' ' + t); // go right
-    openPath.push('L' + r + ' ' + h); // go down
-    openPath.push('L' + l + ' ' + h); // go left
-    d3element.selectAll('.gv-open-path').attr('d', openPath.join(' ')).attr('stroke-width', TimePrimitiveVisual.strokeWidth);
-
-
-    t = strokeWidth; //  y top
-    r = r - halfStroke; //  x right
-    const xl = xAxis.scale(options.startDate);
-    l = xl < r ? xl : r; //  x left
-    h = TimePrimitiveVisual.barHeight - strokeWidth; //  y bottom
+    var t = strokeWidth; //  y top
+    var l = xAxis.scale(options.startDate); //  x left
+    var r = xAxis.scale(options.endDate); //  x right
+    var h = TimePrimitiveVisual.barHeight - strokeWidth; //  y bottom
 
     let closedPath = [];
     closedPath.push('M' + l + ' ' + t); // start left top 
@@ -193,6 +184,19 @@ export class D3Service {
     closedPath.push('L' + l + ' ' + h); // go left
     closedPath.push('Z') // close path
     d3element.selectAll('.gv-closed-path').attr('d', closedPath.join(' '));
+
+    t = halfStroke; //  y top
+    r = r + halfStroke; //  x right
+    l = r - TimePrimitiveVisual.brackedWidth;
+    h = TimePrimitiveVisual.barHeight - halfStroke; //  y bottom
+
+    let openPath = [];
+    openPath.push('M' + l + ' ' + t); // start left top 
+    openPath.push('L' + r + ' ' + t); // go right
+    openPath.push('L' + r + ' ' + h); // go down
+    openPath.push('L' + l + ' ' + h); // go left
+    d3element.selectAll('.gv-open-path').attr('d', openPath.join(' ')).attr('stroke-width', TimePrimitiveVisual.strokeWidth);
+
 
   }
 
@@ -208,7 +212,7 @@ export class D3Service {
     const strokeWidth = TimePrimitiveVisual.strokeWidth;
 
     const t = strokeWidth; //  y top
-    
+
     const r = xAxis.scale(options.endDate);
     const l = xAxis.scale(options.startDate); //  x left
     const h = TimePrimitiveVisual.barHeight - strokeWidth; //  y bottom

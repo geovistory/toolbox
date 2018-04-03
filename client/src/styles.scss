@@ -273,6 +273,7 @@ gv-property {
     fill: lighten(theme-color("info"), 20%);
 }
 
-.gv-closed-path.gv-outer {
+.gv-closed-path.gv-outer,
+.gv-rectangle.gv-outer {
     fill: lighten(theme-color("info"), 50%);
 }

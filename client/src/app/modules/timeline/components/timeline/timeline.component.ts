@@ -73,14 +73,9 @@ export class TimelineComponent implements OnInit, AfterViewInit {
   }
 
   onDrag(rangeDiff) {
-    /** convert dif in range (pixels) to dif in domain */
 
-    const rangeStart = this.timeline.xAxis.scale(this.options.domainStart)
-    const rangeEnd = this.timeline.xAxis.scale(this.options.domainEnd)
-    this.options.domainStart = this.timeline.xAxis.scale.invert(rangeStart + rangeDiff);
-    this.options.domainEnd  = this.timeline.xAxis.scale.invert(rangeEnd + rangeDiff);
-   
-    this.timeline.init(this.options)
+    this.timeline.move(rangeDiff);
+  
   }
 
 

@@ -5,9 +5,9 @@ import { TimePrimitive } from "app/core";
 
 export class TimePrimitiveVisual {
 
-  static readonly barHeight = 40; // pixels
-  static readonly brackedWidth = 20; // width of the enclosing brackets at the lefter or righter end of a bar in pixels
-  static readonly strokeWidth = 10; // pixels
+  static readonly barHeight = 14; // pixels
+  static readonly brackedWidth = 4; // width of the enclosing brackets at the lefter or righter end of a bar in pixels
+  static readonly strokeWidth = 2; // pixels
 
 
   startDate: Date;

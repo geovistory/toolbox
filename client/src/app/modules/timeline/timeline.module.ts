@@ -12,6 +12,7 @@ import { LeftInnerVisualComponent } from './components/left-inner-visual/left-in
 import { RightInnerVisualComponent } from './components/right-inner-visual/right-inner-visual.component';
 import { RightOuterVisualComponent } from './components/right-outer-visual/right-outer-visual.component';
 import { InnerVisualComponent } from './components/inner-visual/inner-visual.component';
+import { OuterVisualComponent } from './components/outer-visual/outer-visual.component';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import { InnerVisualComponent } from './components/inner-visual/inner-visual.com
     LeftInnerVisualComponent,
     RightInnerVisualComponent,
     RightOuterVisualComponent,
-    InnerVisualComponent
+    InnerVisualComponent,
+    OuterVisualComponent
   ]
 })
 export class TimelineModule { }

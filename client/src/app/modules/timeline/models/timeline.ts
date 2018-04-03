@@ -112,6 +112,18 @@ export class Timeline {
         this.init(this.options)
     }
 
+    /**
+     * Moves the timeline for a given number of pixels.
+     * 
+     * @param rangeDiff pixels to move
+     */
+    move(rangeDiff){
+        const rangeStart = this.xAxis.scale(this.options.domainStart)
+        const rangeEnd = this.xAxis.scale(this.options.domainEnd)
+        this.options.domainStart = this.xAxis.scale.invert(rangeStart + rangeDiff);
+        this.options.domainEnd  = this.xAxis.scale.invert(rangeEnd + rangeDiff);
+        this.init(this.options)
+    }
 
     getTimeLineChart() {
 
