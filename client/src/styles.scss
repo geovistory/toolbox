@@ -257,23 +257,63 @@ gv-property {
     @extend .is-valid;
 }
 
-// Timeline
-.gv-open-path {
-    stroke: darken(theme-color("info"), 20%);
-    fill: none;
-}
-
-.gv-closed-path {
-    stroke: none;
-    fill-opacity: .8;
-}
-
-.gv-closed-path.gv-inner,
-.gv-rectangle.gv-inner {
-    fill: lighten(theme-color("info"), 20%);
-}
-
-.gv-closed-path.gv-outer,
-.gv-rectangle.gv-outer {
-    fill: lighten(theme-color("info"), 50%);
+gv-timeline {
+    path.domain {
+        stroke: none // no outer line around xAxis
+    }
+    .header {
+        .tick>line {
+            stroke: none;
+        }
+        .tick>text {
+            fill: theme-color(dark);
+        }
+    }
+    .rows {
+        border-top: 1px solid theme-color("primary");
+        .tick>text {
+            fill: none;
+        }
+        .x-axis-julian {
+            .tick>line {
+                stroke: theme-color("success"); // stroke-dasharray: 7;
+            }
+        }
+        .x-axis-gregorian {
+            .tick>line {
+                stroke: theme-color(warning); // stroke-dasharray: 7;
+            }
+        }
+    }
+    .row {
+        font-size: $font-size-xs;
+    }
+    .row:nth-child(odd) .row-bg {
+        fill: $gray-200;
+    }
+    .row:nth-child(even) .row-bg {
+        fill: $white;
+    }
+    .row:hover .row-bg {
+        fill: lighten(theme-color("success"), 20%);
+    }
+    .gv-open-path {
+        stroke: darken(theme-color("info"), 20%);
+        fill: none;
+    }
+    .gv-closed-path {
+        stroke: none;
+        fill-opacity: .8;
+    }
+    .gv-closed-path.gv-inner,
+    .gv-rectangle.gv-inner {
+        fill: lighten(theme-color("info"), 20%);
+    }
+    .gv-closed-path.gv-outer,
+    .gv-rectangle.gv-outer {
+        fill: lighten(theme-color("info"), 50%);
+    }
+    .separator-line{
+        stroke: theme-color("primary"); 
+    }
 }

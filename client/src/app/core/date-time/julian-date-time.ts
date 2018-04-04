@@ -70,7 +70,7 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
 
   removeYear() {
     this.year--;
-    if(this.year ===0) {
+    if (this.year === 0) {
       this.year = -1;
     }
     if (this.day > this.lengthOfMonth()) {
@@ -246,11 +246,7 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
     this.day = monthDay.day;
 
 
-    return {
-      year: this.year,
-      month: this.month,
-      day: this.day
-    }
+    return this;
 
   }
 
@@ -264,6 +260,44 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
     return !(this.year % 4) ? true : false;
   }
 
+
+  getJulianSecond() {
+    let seconds = this.getJulianDay() * 60 * 60 * 24; // first second of the day
+    if (this.seconds > 0) seconds = seconds + this.seconds;
+    if (this.minutes > 0) seconds = seconds + this.minutes * 60;
+    if (this.hours > 0) seconds = seconds + this.hours * 60 * 60;
+    return seconds;
+  }
+
+  /**
+   * Set this JulianDateTime from given julian second
+   * @param julianSecond julian second
+   */
+  fromJulianSecond(julianSecond) {
+
+    const secsPerDay = 60 * 60 * 24;
+
+    // number of full days
+    const julianDay = Math.floor(julianSecond / secsPerDay);
+
+    // number of seconds of the julian day
+    const secsOfDay = julianSecond % secsPerDay;
+
+    // number of ours of the day
+    this.hours = Math.floor(secsOfDay / (60 * 60))
+
+    // number of seconds of the last hour
+    const secsOfHour = this.hours % (60 * 60);
+
+    // number of ours of the day
+    this.minutes = Math.floor(secsOfHour / 60)
+    
+    // secs of the last minute
+    this.seconds = this.minutes % 60;
+
+    return this.fromJulianDay(julianDay);
+
+  }
 
 
 }

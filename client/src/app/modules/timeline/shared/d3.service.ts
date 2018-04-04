@@ -57,7 +57,6 @@ export class D3Service {
 
       d3element.call(d3.drag()
         .on("start", started));
-
     })
 
   }
@@ -71,78 +70,70 @@ export class D3Service {
   applyXAxis(element, xAxis: XAxisDefinition) {
     const d3element = d3.select(element);
 
-    const axis = d3.axisBottom(xAxis.scale).ticks(20);
+    const axis = d3.axisBottom(xAxis.scale)
+      .tickSizeInner(xAxis.tickSizeInner)
+      .tickSizeOuter(xAxis.tickSizeOuter)
+      .tickPadding(xAxis.tickPadding);
 
-    const distanceFromTop = (xAxis.containerHeight - xAxis.marginBottom);
+    const distanceFromTop = xAxis.marginTop;
 
     d3element.attr("transform", "translate(0," + distanceFromTop + ")").call(axis);
   }
 
 
   /** 
-   * A method to place  an x-axis out of an svg element 
-   */
-  placeOnXAxis(element, options: { timePrimitive: TimePrimitive, xAxis: XAxisDefinition }) {
-    const d3element = d3.select(element);
-
-    d3element.attr("transform", "translate(" + options.xAxis.scale(options.timePrimitive.getDate()) + ", 300)")
-  }
-
-
-
-  /** 
    * A method to place the left outer symbol on x-axis
    */
-  placeLeftOuterVisualOnXAxis(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
-    this.leftBracket(element, xAxis, options);
+  placeLeftOuterVisualOnXAxis(element, timeline: Timeline, options: TimePrimitiveVisual) {
+    this.leftBracket(element, timeline, options);
   }
 
 
   /** 
  * A method to place the left inner symbol on x-axis
  */
-  placeLeftInnerVisualOnXAxis(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
-    this.leftBracket(element, xAxis, options);
+  placeLeftInnerVisualOnXAxis(element, timeline: Timeline, options: TimePrimitiveVisual) {
+    this.leftBracket(element, timeline, options);
   }
 
   /** 
     * A method to place the right inner symbol on x-axis
     */
-  placeRightInnerVisualOnXAxis(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
-    this.rightBracket(element, xAxis, options);
+  placeRightInnerVisualOnXAxis(element, timeline: Timeline, options: TimePrimitiveVisual) {
+    this.rightBracket(element, timeline, options);
   }
 
 
   /** 
     * A method to place the right outer symbol on x-axis
     */
-  placeRightOuterVisualOnXAxis(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
-    this.rightBracket(element, xAxis, options);
+  placeRightOuterVisualOnXAxis(element, timeline: Timeline, options: TimePrimitiveVisual) {
+    this.rightBracket(element, timeline, options);
   }
 
   /** 
   * A method to place the right outer symbol on x-axis
   */
-  placeInnerVisualOnXAxis(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
-    this.rectangle(element, xAxis, options);
+  placeInnerVisualOnXAxis(element, timeline: Timeline, options: TimePrimitiveVisual) {
+    this.rectangle(element, timeline, options);
   }
 
   /** 
 * A method to place the right outer symbol on x-axis
 */
-  placeOuterVisualOnXAxis(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
-    this.rectangle(element, xAxis, options);
+  placeOuterVisualOnXAxis(element, timeline: Timeline, options: TimePrimitiveVisual) {
+    this.rectangle(element, timeline, options);
   }
 
-  private leftBracket(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
+  private leftBracket(element, timeline: Timeline, options: TimePrimitiveVisual) {
     const d3element = d3.select(element);
-    const strokeWidth = TimePrimitiveVisual.strokeWidth
+    const strokeWidth = timeline.options.bracketStrokeWidth;
     const halfStroke = strokeWidth / 2;
 
     var t = strokeWidth; //  y top
-    var l = xAxis.scale(options.startDate); //  x left
-    var r = xAxis.scale(options.endDate);
-    var h = TimePrimitiveVisual.barHeight - strokeWidth; //  y bottom
+    var l = timeline.xAxis.scale(options.startDate); //  x left
+    var r = timeline.xAxis.scale(options.endDate);
+    var h = timeline.options.barHeight - strokeWidth; //  y bottom
 
     let closedPath = [];
     closedPath.push('M' + l + ' ' + t); // start left top 
@@ -150,32 +141,37 @@ export class D3Service {
     closedPath.push('L' + r + ' ' + h); // go down
     closedPath.push('L' + l + ' ' + h); // go left
     closedPath.push('Z') // close path
-    d3element.selectAll('.gv-closed-path').attr('d', closedPath.join(' '));
+    d3element.selectAll('.gv-closed-path')
+      .attr('transform', "translate(0," + timeline.options.rowPaddingTop + ")")
+      .attr('d', closedPath.join(' '));
 
     var t = halfStroke; //  y top
     l = l - halfStroke; //  x left
-    var r = l + TimePrimitiveVisual.brackedWidth;
-    var h = TimePrimitiveVisual.barHeight - halfStroke; //  y bottom
+    var r = l + timeline.options.bracketWidth;
+    var h = timeline.options.barHeight - halfStroke; //  y bottom
 
     let openPath = [];
     openPath.push('M' + r + ' ' + t); // start right top 
     openPath.push('L' + l + ' ' + t); // go left
     openPath.push('L' + l + ' ' + h); // go down
     openPath.push('L' + r + ' ' + h); // go right
-    d3element.selectAll('.gv-open-path').attr('d', openPath.join(' ')).attr('stroke-width', TimePrimitiveVisual.strokeWidth);
+    d3element.selectAll('.gv-open-path')
+      .attr('transform', "translate(0," + timeline.options.rowPaddingTop + ")")
+      .attr('d', openPath.join(' '))
+      .attr('stroke-width', timeline.options.bracketStrokeWidth);
 
 
   }
 
-  private rightBracket(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
+  private rightBracket(element, timeline: Timeline, options: TimePrimitiveVisual) {
     const d3element = d3.select(element);
-    const strokeWidth = TimePrimitiveVisual.strokeWidth
+    const strokeWidth = timeline.options.bracketStrokeWidth
     const halfStroke = strokeWidth / 2;
 
     var t = strokeWidth; //  y top
-    var l = xAxis.scale(options.startDate); //  x left
-    var r = xAxis.scale(options.endDate); //  x right
-    var h = TimePrimitiveVisual.barHeight - strokeWidth; //  y bottom
+    var l = timeline.xAxis.scale(options.startDate); //  x left
+    var r = timeline.xAxis.scale(options.endDate); //  x right
+    var h = timeline.options.barHeight - strokeWidth; //  y bottom
 
     let closedPath = [];
     closedPath.push('M' + l + ' ' + t); // start left top 
@@ -183,19 +179,24 @@ export class D3Service {
     closedPath.push('L' + r + ' ' + h); // go down
     closedPath.push('L' + l + ' ' + h); // go left
     closedPath.push('Z') // close path
-    d3element.selectAll('.gv-closed-path').attr('d', closedPath.join(' '));
+    d3element.selectAll('.gv-closed-path')
+      .attr('transform', "translate(0," + timeline.options.rowPaddingTop + ")")
+      .attr('d', closedPath.join(' '));
 
     t = halfStroke; //  y top
     r = r + halfStroke; //  x right
-    l = r - TimePrimitiveVisual.brackedWidth;
-    h = TimePrimitiveVisual.barHeight - halfStroke; //  y bottom
+    l = r - timeline.options.bracketWidth;
+    h = timeline.options.barHeight - halfStroke; //  y bottom
 
     let openPath = [];
     openPath.push('M' + l + ' ' + t); // start left top 
     openPath.push('L' + r + ' ' + t); // go right
     openPath.push('L' + r + ' ' + h); // go down
     openPath.push('L' + l + ' ' + h); // go left
-    d3element.selectAll('.gv-open-path').attr('d', openPath.join(' ')).attr('stroke-width', TimePrimitiveVisual.strokeWidth);
+    d3element.selectAll('.gv-open-path')
+      .attr('transform', "translate(0," + timeline.options.rowPaddingTop + ")")
+      .attr('d', openPath.join(' '))
+      .attr('stroke-width', timeline.options.bracketStrokeWidth);
 
 
   }
@@ -207,15 +208,15 @@ export class D3Service {
    * @param r right
    * @param h height
    */
-  private rectangle(element, xAxis: XAxisDefinition, options: TimePrimitiveVisual) {
+  private rectangle(element, timeline: Timeline, options: TimePrimitiveVisual) {
     const d3element = d3.select(element);
-    const strokeWidth = TimePrimitiveVisual.strokeWidth;
+    const strokeWidth = timeline.options.bracketStrokeWidth;
 
     const t = strokeWidth; //  y top
 
-    const r = xAxis.scale(options.endDate);
-    const l = xAxis.scale(options.startDate); //  x left
-    const h = TimePrimitiveVisual.barHeight - strokeWidth; //  y bottom
+    const r = timeline.xAxis.scale(options.endDate);
+    const l = timeline.xAxis.scale(options.startDate); //  x left
+    const h = timeline.options.barHeight - strokeWidth; //  y bottom
 
     let closedPath = [];
     closedPath.push('M' + l + ' ' + t); // start left top 
@@ -223,7 +224,28 @@ export class D3Service {
     closedPath.push('L' + r + ' ' + h); // go down
     closedPath.push('L' + l + ' ' + h); // go left
     closedPath.push('Z') // close path
-    d3element.selectAll('.gv-rectangle').attr('d', closedPath.join(' '));
+    d3element.selectAll('.gv-rectangle')
+      .attr('transform', "translate(0," + timeline.options.rowPaddingTop + ")")
+      .attr('d', closedPath.join(' '));
+  }
+
+
+  applyWrapText(element, text:string, width: number, padding: number) {
+    const d3element = d3.select(element);
+
+    function wrap() {
+      var self = d3.select(this),
+        textLength = self.node().getComputedTextLength(),
+        text = self.text();
+      while (textLength > (width - 2 * padding) && text.length > 0) {
+        text = text.slice(0, -1);
+        self.text(text + '...');
+        textLength = self.node().getComputedTextLength();
+      }
+    }
+
+    d3element.append('tspan').text(function (d) { return text; }).each(wrap);
+
   }
 
 

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { TimelineComponent } from './components/timeline/timeline.component';
 import { PointComponent } from './components/point/point.component';
 import { XAxisComponent } from './components/x-axis/x-axis.component';
-import { PlaceOnXAxisDirective } from './directives/place-on-x-axis.directive';
 import { DraggableXAxisDirective } from './directives/draggable-x-axis.directive';
 import { LeftOuterVisualComponent } from './components/left-outer-visual/left-outer-visual.component';
 import { ExistenceTimeVisualComponent } from './components/existence-time-visual/existence-time-visual.component';
@@ -13,6 +12,7 @@ import { RightInnerVisualComponent } from './components/right-inner-visual/right
 import { RightOuterVisualComponent } from './components/right-outer-visual/right-outer-visual.component';
 import { InnerVisualComponent } from './components/inner-visual/inner-visual.component';
 import { OuterVisualComponent } from './components/outer-visual/outer-visual.component';
+import { WrapTextDirective } from './directives/wrap-text.directive';
 
 @NgModule({
   imports: [
@@ -23,7 +23,6 @@ import { OuterVisualComponent } from './components/outer-visual/outer-visual.com
     PointComponent,
     DraggableXAxisDirective,
     XAxisComponent,
-    PlaceOnXAxisDirective,
     LeftOuterVisualComponent,
     ExistenceTimeVisualComponent,
     TeEntVisualComponent,
@@ -31,7 +30,8 @@ import { OuterVisualComponent } from './components/outer-visual/outer-visual.com
     RightInnerVisualComponent,
     RightOuterVisualComponent,
     InnerVisualComponent,
-    OuterVisualComponent
+    OuterVisualComponent,
+    WrapTextDirective
   ]
 })
 export class TimelineModule { }

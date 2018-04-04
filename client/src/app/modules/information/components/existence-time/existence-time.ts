@@ -24,18 +24,18 @@ export class ExistenceTime {
   * 
   * @returns object with min Date and max Date or null, if no TimePrimitive available
   */
-  getMinMaxTimePrimitive(): { min: TimePrimitive, max: TimePrimitive }|null {
+  getMinMaxTimePrimitive(): { min: TimePrimitive, max: TimePrimitive } | null {
     return ExistenceTime.getMinMaxTimePrimitveOfArray(this.getArrayOfTimePrimitives());
   }
 
   /**
    * @returns array of TimePrimitives of this ExistenceTime
    */
-  getArrayOfTimePrimitives():TimePrimitive[]{
+  getArrayOfTimePrimitives(): TimePrimitive[] {
     let array = [];
-    
+
     this.tpKeys.forEach(key => {
-      if(this[key]){
+      if (this[key]) {
         array.push(this[key]);
       }
     })
@@ -51,23 +51,25 @@ export class ExistenceTime {
   * 
   * @returns object with min Date and max Date or null, if no TimePrimitive available
   */
-  static getMinMaxTimePrimitveOfArray(tps:TimePrimitive[]){
+  static getMinMaxTimePrimitveOfArray(tps: TimePrimitive[]) {
 
-    if (!tps || tps.length < 1) return null;
+    if (!tps || tps.length < 1) return null;
 
     let min = tps[0];
-    let max= tps[0];
+    let max = tps[0];
 
-    tps.forEach(tp => {        
+    tps.forEach(tp => {
 
-        // if this timePrimitive is earlier than min, set this as new min
-        min = tp.getDate() < min.getDate() ? tp : min;
-        
-        // if this timePrimitive is later than max, set this as new max
-        max = tp.getEndDate() > max.getEndDate() ? tp : max;
+      // if this timePrimitive is earlier than min, set this as new min
+      min = tp.getJulianSecond() < min.getJulianSecond() ? tp : min;
+
+      // if this timePrimitive is later than max, set this as new max
+      max = tp.getJulianSecond() > max.getJulianSecond() ? tp : max;
 
     })
 
     return { min: min, max: max };
   }
+
+
 }

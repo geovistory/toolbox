@@ -3,7 +3,7 @@ import { Point } from "./point";
 import { TimelineOptions } from "../components/timeline/timeline.component";
 import { XAxisDefinition } from "./x-axis-definition";
 import { ExistenceTime } from "../../information/components/existence-time";
-import { InfPersistentItem, InfTemporalEntity } from "../../../core";
+import { InfPersistentItem, InfTemporalEntity, GregorianDateTime, JulianDateTime } from "../../../core";
 
 
 /**
@@ -18,7 +18,14 @@ export class Timeline {
 
     public temporalEntities: InfTemporalEntity[];
 
+    /** xAxis fixed top */
     public xAxis: XAxisDefinition;
+    public xAxisGreg: XAxisDefinition;
+
+    /** xAxis ticks on rows */
+    public xAxisTicks: XAxisDefinition;
+    public xAxisGregTicks: XAxisDefinition;
+
 
     public options: TimelineOptions;
 
@@ -30,13 +37,13 @@ export class Timeline {
      */
     constructor(persistentItems: InfPersistentItem[], options: TimelineOptions) {
 
-
         this.initData(persistentItems);
 
         this.options = options;
 
         // this will also trigger a this.init
         this.zoomToExtent();
+
     }
 
     /**
@@ -57,7 +64,64 @@ export class Timeline {
 
         this.options = options;
 
-        this.xAxis = new XAxisDefinition(options.domainStart, options.domainEnd, options.width, options.height)
+        const switchBetweenCalendars = 2299161 * 24 * 60 * 60;
+
+        /** xAxis fixed top */
+
+        let xAxisTopOptions = {
+            domainStart: options.domainStart,
+            domainEnd: options.domainEnd,
+            containerWidth: options.width,
+            containerHeight: options.height,
+            tickSizeInner: 0,
+            tickSizeOuter: 0
+        }
+
+        // Julian fixed top
+        this.xAxis = new XAxisDefinition({
+            ...xAxisTopOptions,
+            maxJulianSecond: switchBetweenCalendars, // visible until ~1582
+            calendar: 'julian',
+        })
+
+        // Gregorian fiyed top
+        this.xAxisGreg = new XAxisDefinition({
+            ...xAxisTopOptions,
+            minJulianSecond: switchBetweenCalendars, // visible from ~1582
+            calendar: 'gregorian',
+        })
+
+
+
+        const tickSize = this.temporalEntities.length * this.options.rowHeight;
+
+        /** xAxis ticks on rows */
+        let xAxisOnRows = {
+            domainStart: options.domainStart,
+            domainEnd: options.domainEnd,
+            containerWidth: options.width,
+            containerHeight: options.height,
+            tickSizeInner: tickSize,
+            tickSizeOuter: 0,
+            marginTop: 0
+        }
+
+        // Julian on rows
+        this.xAxisTicks = new XAxisDefinition({
+            ...xAxisOnRows,
+            calendar: 'julian',
+            maxJulianSecond: switchBetweenCalendars, // visible until introduction of gregorian calendar in 1582
+        })
+
+        //Gregorian on rows        
+        this.xAxisGregTicks = new XAxisDefinition({
+            ...xAxisOnRows,
+            calendar: 'gregorian',
+            minJulianSecond: switchBetweenCalendars, // visible from introduction of gregorian calendae in 1582
+        })
+
+
+
 
     }
 
@@ -73,12 +137,15 @@ export class Timeline {
 
         const minMax = ExistenceTime.getMinMaxTimePrimitveOfArray(timePrimitives);
 
-        this.options.domainStart = minMax.min.getDate();
+        // zoom out a little bit
+        const domainDiff = Math.abs(minMax.min.getJulianSecond() - minMax.max.getJulianSecond());
+        const margin = domainDiff * 0.05;
 
-        this.options.domainEnd = minMax.max.getEndDate();
+        this.options.domainStart = minMax.min.getJulianSecond() - margin;
 
+        this.options.domainEnd = minMax.max.getLastSecond() + margin;
 
-       this.init(this.options);
+        this.init(this.options);
 
     }
 
@@ -117,11 +184,11 @@ export class Timeline {
      * 
      * @param rangeDiff pixels to move
      */
-    move(rangeDiff){
+    move(rangeDiff) {
         const rangeStart = this.xAxis.scale(this.options.domainStart)
         const rangeEnd = this.xAxis.scale(this.options.domainEnd)
         this.options.domainStart = this.xAxis.scale.invert(rangeStart + rangeDiff);
-        this.options.domainEnd  = this.xAxis.scale.invert(rangeEnd + rangeDiff);
+        this.options.domainEnd = this.xAxis.scale.invert(rangeEnd + rangeDiff);
         this.init(this.options)
     }
 

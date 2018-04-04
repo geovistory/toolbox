@@ -1,5 +1,6 @@
 import { EventEmitter } from '@angular/core';
 import { Granularity } from './date-time-commons';
+import { GregorianDateTime, JulianDateTime } from '.';
 
 
 export interface HoursMinutesSeconds {
@@ -32,18 +33,30 @@ export interface DateTime {
   onDateChange: EventEmitter<YearMonthDay>;
 
   /**
-   * Convert date values (year, month, day) to julian day and return it
+   * get the julian day 
    *
    * @return {number}  julian day
    */
   getJulianDay(): number;
 
   /**
-   * Convert julian day to date values (year, month, day)
+   * Set julian day of the DateTime value (only affecting year, month, day)
    *
-   * @return {year:number, month:number, day:number} year, month and day in julian calendar
+   * @param julianSecond julian second
    */
-  fromJulianDay(julianDay: number): { year: number, month: number, day: number };
+  fromJulianDay(julianDay: number): GregorianDateTime|JulianDateTime;
+
+/**
+ * get the julian second
+ */
+  getJulianSecond():number
+
+  /**
+   * Set julian second of the DateTime value (affecting year, month, day, hours, minutes, seconds)
+   * 
+   * @param julianSecond julian second
+   */
+  fromJulianSecond(julianSecond:number): GregorianDateTime|JulianDateTime;
 
 
   /**
@@ -79,5 +92,6 @@ export interface DateTime {
   getDate(): Date;
 
   emitDateChange()
+
 }
 

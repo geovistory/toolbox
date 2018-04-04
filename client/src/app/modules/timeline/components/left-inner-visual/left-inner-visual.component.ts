@@ -3,6 +3,7 @@ import { TimePrimitive } from 'app/core';
 import { XAxisDefinition } from '../../models/x-axis-definition';
 import { D3Service } from '../../shared/d3.service';
 import { TimePrimitiveVisual } from '../../models/time-primitive-visual';
+import { Timeline } from '../../models/timeline';
 
 @Component({
   selector: '[leftInnerVisual]',
@@ -11,7 +12,7 @@ import { TimePrimitiveVisual } from '../../models/time-primitive-visual';
 })
 export class LeftInnerVisualComponent extends TimePrimitiveVisual implements OnInit, DoCheck {
 
-  @Input('leftInnerVisual') leftInnerOnXAxis : {timePrimitive:TimePrimitive, xAxis:XAxisDefinition};
+  @Input('leftInnerVisual') leftInnerOnXAxis : {timePrimitive:TimePrimitive, timeline:Timeline};
 
   constructor(d3Service: D3Service, _element: ElementRef) {
     super(d3Service, _element)
@@ -23,7 +24,7 @@ export class LeftInnerVisualComponent extends TimePrimitiveVisual implements OnI
 
   ngDoCheck() {
     
-    this.d3Service.placeLeftInnerVisualOnXAxis(this._element.nativeElement, this.leftInnerOnXAxis.xAxis, this);
+    this.d3Service.placeLeftInnerVisualOnXAxis(this._element.nativeElement, this.leftInnerOnXAxis.timeline, this);
   }
 
 } 

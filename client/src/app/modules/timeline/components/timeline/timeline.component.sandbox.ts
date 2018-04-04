@@ -3,7 +3,6 @@ import { TimelineComponent } from './timeline.component';
 import { D3Service } from '../../shared/d3.service';
 import { PointComponent } from '../point/point.component';
 import { XAxisComponent } from '../x-axis/x-axis.component';
-import { PlaceOnXAxisDirective } from '../../directives/place-on-x-axis.directive';
 import { DraggableXAxisDirective } from '../../directives/draggable-x-axis.directive';
 import { LeftOuterVisualComponent } from '../left-outer-visual/left-outer-visual.component';
 import { ExistenceTime } from '../../../information/components/existence-time';
@@ -17,6 +16,7 @@ import { RightInnerVisualComponent } from '../right-inner-visual/right-inner-vis
 import { RightOuterVisualComponent } from '../right-outer-visual/right-outer-visual.component';
 import { InnerVisualComponent } from '../inner-visual/inner-visual.component';
 import { OuterVisualComponent } from '../outer-visual/outer-visual.component';
+import { WrapTextDirective } from '../../directives/wrap-text.directive';
 
 
 
@@ -25,7 +25,6 @@ export default sandboxOf(TimelineComponent, {
   declarations: [
     PointComponent,
     XAxisComponent,
-    PlaceOnXAxisDirective,
     DraggableXAxisDirective,
     LeftInnerVisualComponent,
     LeftOuterVisualComponent,
@@ -34,7 +33,8 @@ export default sandboxOf(TimelineComponent, {
     ExistenceTimeVisualComponent,
     TeEntVisualComponent,
     InnerVisualComponent,
-    OuterVisualComponent
+    OuterVisualComponent,
+    WrapTextDirective
   ],
   providers: [
     D3Service
@@ -46,7 +46,7 @@ export default sandboxOf(TimelineComponent, {
     },
     template: `
     <div class="d-flex justify-content-center mt-5">
-        <gv-timeline class="border border-primary" [persistentItems]="peIts"></gv-timeline>
+        <gv-timeline class="border border-primary p-3" [persistentItems]="peIts"></gv-timeline>
     </div>
     `
   })

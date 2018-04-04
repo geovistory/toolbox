@@ -1,24 +1,46 @@
-<svg #svg [attr.width]="_options.width" [attr.height]="_options.height" draggableXAxis (onDrag)="onDrag($event)">
+<div class="border border-primary">
+  <div class="header" [ngStyle]="{'height': _options.headerHeight +'px'}">
 
-  <g [attr.transform]="'translate(' + timeline.xAxis.marginLeft + ',10)'">
+    <svg #svg [attr.width]="_options.width" [attr.height]="_options.headerHeight" draggableXAxis (onDrag)="onDrag($event)">
+      <!-- xAxis fixed top-->
+      <g class="x-axis-julian" [xAxisVisual]="timeline.xAxis"></g>
+      <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGreg"></g>
+      
+      <!-- Rectangle at top left to cover label -->
+      <svg:rect fill="white" [attr.width]="timeline.xAxis.marginLeft" [attr.height]="_options.headerHeight"></svg:rect>
+   
+      <!-- line separating left from rigth area -->
+      <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft" [attr.y2]="_options.headerHeight" />
 
-    <!-- rows -->
-    <g *ngFor="let teEnt of timeline.temporalEntities; let i = index"
-    [attr.transform]="'translate(0,' + ((timeline.options.barHeight + timeline.options.barMarginBottom) * i) + ')'"
-    [teEntVisual]="{temporalEntity:teEnt, xAxis:timeline.xAxis}" 
-    ></g>
+    </svg>
+  </div>
 
-    <!-- xAxis -->
-    <g [xAxisVisual]="timeline.xAxis"></g>
+  <div class="rows" [ngStyle]="{'height': _options.bodyHeight +'px'}" style="overflow:auto">
 
-  </g>
+    <svg [attr.width]="_options.width" [attr.height]="(timeline.temporalEntities.length * timeline.options.rowHeight)" draggableXAxis
+      (onDrag)="onDrag($event)">
 
-</svg>
+      <!-- rows -->
+      <g class="row" *ngFor="let teEnt of timeline.temporalEntities; let i = index" [attr.transform]="'translate(0,' + (timeline.options.rowHeight * i) + ')'"
+      [teEntVisual]="{temporalEntity:teEnt, timeline:timeline}"></g>
+            
+      <!-- xAxis ticks on rows-->
+      <g class="x-axis-julian" [xAxisVisual]="timeline.xAxisTicks"></g>
+      <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGregTicks"></g>
+      
+      <!-- line separating labels from existence time -->
+      <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft" [attr.y2]="(timeline.options.rowHeight * timeline.temporalEntities.length)" />
 
+    </svg>
+
+  </div>
+</div>
 
 <div class="mt-3">
   <button class="btn btn-primary" (click)="changeDomain()">change xAxis-domain</button>
   <button class="btn btn-primary" (click)="zoomIn()">Zoom In</button>
   <button class="btn btn-primary" (click)="zoomOut()">Zoom Out</button>
   <button class="btn btn-primary" (click)="zoomToExtent()">Zoom To Extent</button>
+  {{timeline.xAxis.resolution}}
+
 </div>
