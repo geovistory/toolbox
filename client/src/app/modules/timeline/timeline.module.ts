@@ -13,10 +13,13 @@ import { RightOuterVisualComponent } from './components/right-outer-visual/right
 import { InnerVisualComponent } from './components/inner-visual/inner-visual.component';
 import { OuterVisualComponent } from './components/outer-visual/outer-visual.component';
 import { WrapTextDirective } from './directives/wrap-text.directive';
+import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
+import { D3Service } from './shared/d3.service';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    DimensionChangeModule
   ],
   declarations: [
     TimelineComponent,
@@ -31,7 +34,13 @@ import { WrapTextDirective } from './directives/wrap-text.directive';
     RightOuterVisualComponent,
     InnerVisualComponent,
     OuterVisualComponent,
-    WrapTextDirective
+    WrapTextDirective,
+  ],
+  providers: [
+    D3Service
+  ],
+  exports: [
+    TimelineComponent
   ]
 })
 export class TimelineModule { }

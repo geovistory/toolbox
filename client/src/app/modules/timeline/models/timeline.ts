@@ -41,8 +41,14 @@ export class Timeline {
 
         this.options = options;
 
-        // this will also trigger a this.init
-        this.zoomToExtent();
+        if (this.temporalEntities.length > 0) {
+
+            // this will also trigger a this.init
+            this.zoomToExtent();
+            
+        } else {
+            this.init(this.options);
+        }
 
     }
 
@@ -53,10 +59,16 @@ export class Timeline {
 
         this.persistentItems = persistentItems;
 
-        /** get the first persistent item for now. this is enough for the timeline of one given persitentItem */
-        const persistentItem: InfPersistentItem = persistentItems[0];
+        if (persistentItems && persistentItems.length > 0) {
 
-        this.temporalEntities = persistentItem.pi_roles.map(role => role.temporal_entity)
+            /** get the first persistent item for now. this is enough for the timeline of one given persitentItem */
+            const persistentItem: InfPersistentItem = persistentItems[0];
+
+            this.temporalEntities = persistentItem.pi_roles.map(role => role.temporal_entity)
+
+        } else {
+            this.temporalEntities = [];
+        }
 
     }
 

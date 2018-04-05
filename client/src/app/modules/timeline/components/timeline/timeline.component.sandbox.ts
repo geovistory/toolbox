@@ -8,6 +8,7 @@ import { LeftOuterVisualComponent } from '../left-outer-visual/left-outer-visual
 import { ExistenceTime } from '../../../information/components/existence-time';
 import { TimePrimitive } from 'app/core';
 
+
 import { personPeIts } from './timeline.component.sandbox.mock';
 import { ExistenceTimeVisualComponent } from '../existence-time-visual/existence-time-visual.component';
 import { TeEntVisualComponent } from '../te-ent-visual/te-ent-visual.component';
@@ -17,6 +18,7 @@ import { RightOuterVisualComponent } from '../right-outer-visual/right-outer-vis
 import { InnerVisualComponent } from '../inner-visual/inner-visual.component';
 import { OuterVisualComponent } from '../outer-visual/outer-visual.component';
 import { WrapTextDirective } from '../../directives/wrap-text.directive';
+import { DimensionChangeDirective } from '../../../../shared/directives/dimension-change/dimension-change.directive';
 
 
 
@@ -34,19 +36,71 @@ export default sandboxOf(TimelineComponent, {
     TeEntVisualComponent,
     InnerVisualComponent,
     OuterVisualComponent,
-    WrapTextDirective
+    WrapTextDirective,
+    DimensionChangeDirective
   ],
   providers: [
     D3Service
   ]
 })
-  .add('State: Edit – new', {
+  .add('State: Flex-Item', {
     context: {
       peIts: personPeIts
     },
     template: `
-    <div class="d-flex justify-content-center mt-5">
-        <gv-timeline class="border border-primary p-3" [persistentItems]="peIts"></gv-timeline>
+
+    <div class="d-flex">
+
+      <div class="d-flex flex-column mt-5 gv-flex-grow-1" style="overflow:hidden">
+
+        <div class="p-3 border"> some flex item </div>
+
+          <gv-timeline class="border border-primary p-3" [persistentItems]="peIts"></gv-timeline>
+
+        <div class="p-3 border"> some flex item </div>
+
+      </div> 
+      
+      
+      <div class="d-flex flex-column mt-5">
+
+        <div class="p-3 border"> some flex item </div>
+
+          <gv-timeline class="border border-primary p-3" [persistentItems]="peIts"></gv-timeline>
+
+        <div class="p-3 border"> some flex item </div>
+
+      </div>    
+
     </div>
+
+
     `
+  })
+  .add('State: Mockdata', {
+    context: {
+      peIts: personPeIts
+    },
+    template: `
+    
+    <div class="d-flex flex-column mt-5" >
+      <div class="p-3 border"> some flex item </div>
+      <div class="d-flex d-flex-grow-1">
+          <gv-timeline class="border border-primary p-3" [persistentItems]="peIts"></gv-timeline>   
+      </div>
+      <div class="p-3 border"> some flex item </div>
+    </div>
+  `
+  })
+  .add('State: Empty', {
+    template: `
+    
+    <div class="d-flex flex-column mt-5" >
+      <div class="p-3 border"> some flex item </div>
+      <div class="d-flex d-flex-grow-1">
+          <gv-timeline class="border border-primary p-3"></gv-timeline>   
+      </div>
+      <div class="p-3 border"> some flex item </div>
+    </div>
+  `
   })

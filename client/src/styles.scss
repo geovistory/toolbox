@@ -313,7 +313,11 @@ gv-timeline {
     .gv-rectangle.gv-outer {
         fill: lighten(theme-color("info"), 50%);
     }
-    .separator-line{
-        stroke: theme-color("primary"); 
+    .separator-line {
+        stroke: theme-color("primary");
+    }
+    .no-data-text {
+        fill: theme-color("secondary");
+        font-size: $font-size-xs;
     }
 }

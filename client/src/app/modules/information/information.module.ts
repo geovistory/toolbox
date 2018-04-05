@@ -69,6 +69,8 @@ import { EprService } from './shared/epr.service';
 import { AppellationService } from './shared/appellation.service';
 import { TeEntService } from './shared/te-ent.service';
 import { ConfigService } from './shared/config.service';
+import { TimelineModule } from '../timeline/timeline.module';
+import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timeline.component';
 
 
 @NgModule({
@@ -89,7 +91,8 @@ import { ConfigService } from './shared/config.service';
     //Own reusable components
     LanguageSearchTypeaheadModule,
     ControlMessagesModule,
-    PassiveLinkModule
+    PassiveLinkModule,
+    TimelineModule
 
   ],
   declarations: [ 
@@ -132,6 +135,7 @@ import { ConfigService } from './shared/config.service';
     FieldComponent,
     TeEntExistenceTimeComponent,
     PropertyPipe,
+    PeItTimelineComponent,
   ],
   providers: [
     PropertyPipe,

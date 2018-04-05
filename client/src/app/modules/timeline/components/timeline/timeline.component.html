@@ -1,46 +1,70 @@
-<div class="border border-primary">
-  <div class="header" [ngStyle]="{'height': _options.headerHeight +'px'}">
-
-    <svg #svg [attr.width]="_options.width" [attr.height]="_options.headerHeight" draggableXAxis (onDrag)="onDrag($event)">
-      <!-- xAxis fixed top-->
-      <g class="x-axis-julian" [xAxisVisual]="timeline.xAxis"></g>
-      <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGreg"></g>
-      
-      <!-- Rectangle at top left to cover label -->
-      <svg:rect fill="white" [attr.width]="timeline.xAxis.marginLeft" [attr.height]="_options.headerHeight"></svg:rect>
-   
-      <!-- line separating left from rigth area -->
-      <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft" [attr.y2]="_options.headerHeight" />
-
-    </svg>
+<div gvDimensionChange (onDimensionsChange)="onDimensionsChange($event)">
+  <div class="border border-primary">
+    <div class="header" [ngStyle]="{'height': _options.headerHeight +'px'}">
+  
+      <svg #svg [attr.width]="_options.width" [attr.height]="_options.headerHeight" draggableXAxis (onDrag)="onDrag($event)">
+        <!-- xAxis fixed top-->
+        <g class="x-axis-julian" [xAxisVisual]="timeline.xAxis"></g>
+        <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGreg"></g>
+        
+        <!-- Rectangle at top left to cover label -->
+        <svg:rect fill="white" [attr.width]="timeline.xAxis.marginLeft" [attr.height]="_options.headerHeight"></svg:rect>
+     
+        <!-- line separating left from rigth area -->
+        <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft" [attr.y2]="_options.headerHeight" />
+  
+      </svg>
+    </div>
+  
+    <div class="rows" [ngStyle]="{'height': _options.bodyHeight +'px'}" style="overflow-y:auto;overflow-x: hidden;" *ngIf="timeline.temporalEntities.length > 0">
+  
+      <svg [attr.width]="_options.width" [attr.height]="(timeline.temporalEntities.length * timeline.options.rowHeight)" draggableXAxis
+        (onDrag)="onDrag($event)">
+  
+        <!-- rows -->
+        <g class="row" *ngFor="let teEnt of timeline.temporalEntities; let i = index" [attr.transform]="'translate(0,' + (timeline.options.rowHeight * i) + ')'"
+        [teEntVisual]="{temporalEntity:teEnt, timeline:timeline}"></g>
+              
+        <!-- xAxis ticks on rows-->
+        <g class="x-axis-julian" [xAxisVisual]="timeline.xAxisTicks"></g>
+        <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGregTicks"></g>
+        
+        <!-- line separating labels from existence time -->
+        <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft" [attr.y2]="(timeline.options.rowHeight * timeline.temporalEntities.length)" />
+  
+      </svg>
+  
+    </div>
+  
+    <div class="rows" [ngStyle]="{'height': 20 +'px'}" style="overflow:auto" style="overflow-y:auto;overflow-x: hidden;" *ngIf="timeline.temporalEntities.length === 0">
+        <svg  [attr.width]="_options.width" [attr.height]="20" draggableXAxis
+        (onDrag)="onDrag($event)">
+              
+        <!-- xAxis ticks on rows-->
+        <g class="x-axis-julian" [xAxisVisual]="timeline.xAxisTicks"></g>
+        <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGregTicks"></g>
+        
+        <!-- line separating labels from existence time -->
+        <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft" [attr.y2]="20" />
+  
+        <svg:text class="no-data-text" [attr.transform]="'translate('+ (timeline.xAxis.marginLeft + 5) +', 13)'">No temporal information available</svg:text>
+      </svg>
+    </div>
   </div>
+  
+  <div class="btn-group d-flex mt-3" role="group" aria-label="timeline controls">
+    <div class="gv-flex-grow-1 bg-gray-700 text-white rounded-left gv-card-spacer-x align-self-stretch d-flex">
+      <div class="align-self-center">
+        <i class="fa fa-calendar"></i>  Timeline
+      </div>
+    </div>
+    <button class="btn btn-gray-700" (click)="zoomOut()"><i class="fa fa-search-minus"></i></button>
+    <button class="btn btn-gray-700" (click)="zoomIn()"><i class="fa fa-search-plus"></i></button>
+    <button class="btn btn-gray-700" (click)="zoomToExtent()"><i class="fa fa-arrows-alt"></i></button>
 
-  <div class="rows" [ngStyle]="{'height': _options.bodyHeight +'px'}" style="overflow:auto">
-
-    <svg [attr.width]="_options.width" [attr.height]="(timeline.temporalEntities.length * timeline.options.rowHeight)" draggableXAxis
-      (onDrag)="onDrag($event)">
-
-      <!-- rows -->
-      <g class="row" *ngFor="let teEnt of timeline.temporalEntities; let i = index" [attr.transform]="'translate(0,' + (timeline.options.rowHeight * i) + ')'"
-      [teEntVisual]="{temporalEntity:teEnt, timeline:timeline}"></g>
-            
-      <!-- xAxis ticks on rows-->
-      <g class="x-axis-julian" [xAxisVisual]="timeline.xAxisTicks"></g>
-      <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGregTicks"></g>
-      
-      <!-- line separating labels from existence time -->
-      <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft" [attr.y2]="(timeline.options.rowHeight * timeline.temporalEntities.length)" />
-
-    </svg>
-
+    <!-- <button class="btn btn-gray-700"><i class="fa fa-step-backward"></i></button>
+    <button class="btn btn-gray-700"><i class="fa fa-play"></i></button>
+    <button class="btn btn-gray-700"><i class="fa fa-step-forward"></i></button> -->
   </div>
-</div>
-
-<div class="mt-3">
-  <button class="btn btn-primary" (click)="changeDomain()">change xAxis-domain</button>
-  <button class="btn btn-primary" (click)="zoomIn()">Zoom In</button>
-  <button class="btn btn-primary" (click)="zoomOut()">Zoom Out</button>
-  <button class="btn btn-primary" (click)="zoomToExtent()">Zoom To Extent</button>
-  {{timeline.xAxis.resolution}}
 
 </div>

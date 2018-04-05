@@ -31,6 +31,7 @@
     "bootstrap": "^4.0.0",
     "core-js": "^2.4.1",
     "d3": "^5.0.0",
+    "element-resize-detector": "^1.1.14",
     "font-awesome": "^4.7.0",
     "ng2-slim-loading-bar": "^4.0.0",
     "rxjs": "^5.1.0",

@@ -1,4 +1,5 @@
-import { Component, OnInit, AfterViewInit, HostListener, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, DoCheck, ElementRef, HostBinding, ChangeDetectorRef } from '@angular/core';
+
 import { D3Service } from '../../shared/d3.service';
 import { Point } from '../../models/point';
 import { Timeline } from '../../models/timeline';
@@ -27,18 +28,18 @@ export interface TimelineOptions {
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.scss']
 })
-export class TimelineComponent implements OnInit, AfterViewInit {
+export class TimelineComponent implements OnInit, AfterViewInit, DoCheck {
 
-  @HostListener('scroll', ['$event'])
+  @Input() persistentItems: any[];
 
-  @Input() persistentItems: InfPersistentItem[];
+  @HostBinding('style.width') outerWidth: string = '100%';
 
 
   private _options: TimelineOptions = {
-    width: 600,
+    width: 0,
     bodyHeight: 180,
     headerHeight: 27,
-    domainStart: 0,
+    domainStart: 1721426 * 60 * 60 * 24,
     domainEnd: 2454000 * 60 * 60 * 24,
     zoomFactor: 3,
     rowHeight: 22,
@@ -51,13 +52,12 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
 
   get options() {
-    this._options.width = window.innerWidth - 100;
     this._options.height = this._options.headerHeight + this._options.bodyHeight;
     return this._options;
   }
 
 
-  constructor(private d3Service: D3Service) {
+  constructor(private d3Service: D3Service, private _element: ElementRef, private ref:ChangeDetectorRef) {
 
   }
 
@@ -67,12 +67,26 @@ export class TimelineComponent implements OnInit, AfterViewInit {
 
     /** Receiving an initialized timeline from our custom d3 service */
     this.timeline = this.d3Service.getTimeline(this.persistentItems, this.options);
+
+  }
+
+  onDimensionsChange(event) {
+    const newWidth =  event.dimensions.width - 17;
+    if(this.options.width !== newWidth){
+    this._options.width = newWidth;
+      this.timeline.init(this.options)
+      this.ref.detectChanges()
+    }
   }
 
   ngAfterViewInit() {
-    this.timeline.init(this.options)
+   
   }
 
+  ngDoCheck(){
+    this._element.nativeElement;
+    // this.timeline.initData(this.persistentItems)
+  }
 
   onDrag(rangeDiff) {
 
