@@ -12,6 +12,9 @@ import { EntityAddModalService } from '../../shared/entity-add-modal.service';
 import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
 import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
 import { PropertyPipe } from '../../shared/property.pipe';
+import { PeItEntityActions } from '../pe-it-entity/pe-it-entity.actions';
+import { NgRedux } from '@angular-redux/store';
+import { IPeIt } from '../pe-it-entity/pe-it-entity.model';
 
 
 @Component({
@@ -30,7 +33,7 @@ export class PeItEntityAddComponent extends PeItEntityComponent implements OnIni
   /**
    * Output
    */
-  @Output() selected:EventEmitter<number> = new EventEmitter();
+  @Output() selected: EventEmitter<number> = new EventEmitter();
 
 
   constructor(
@@ -43,12 +46,14 @@ export class PeItEntityAddComponent extends PeItEntityComponent implements OnIni
     classService: ClassService,
     entityEditor: EntityEditorService,
     changeDetector: ChangeDetectorRef,
+    actions: PeItEntityActions,
+    ngRedux: NgRedux<IPeIt>,
     private entityAddModalService: EntityAddModalService,
     private modalService: NgbModal,
     private router: Router,
     private route: ActivatedRoute,
   ) {
-    super(peItApi, peItService, activeProjectService, propertyPipe, activePeItService, slimLoadingBarService, classService, entityEditor, changeDetector)
+    super(peItApi, peItService, activeProjectService, propertyPipe, activePeItService, slimLoadingBarService, classService, entityEditor, changeDetector, actions, ngRedux)
 
   }
   ngOnInit() {
@@ -67,7 +72,7 @@ export class PeItEntityAddComponent extends PeItEntityComponent implements OnIni
     this.entityAddModalService.state = 'search-existing';
     this.entityAddModalService.selectRoleRange = true;
     this.entityAddModalService.selectedClass = this.dfhClass;
-    this.entityAddModalService.onSelect.subscribe(pkEntity=>{
+    this.entityAddModalService.onSelect.subscribe(pkEntity => {
       this.selected.emit(pkEntity);
     })
 

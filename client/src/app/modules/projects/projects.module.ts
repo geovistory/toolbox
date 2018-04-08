@@ -15,6 +15,7 @@ import { ProjectSettingsDataComponent } from './components/project-settings-data
 import { ProjectSettingsProfileComponent } from './components/project-settings-profile/project-settings-profile.component';
 import { ProjectsRoutingModule } from './projects-routing.module';
 import { NavbarModule, ProxyRouteModule } from 'app/shared';
+import { ProjectsActions } from './api/projects.actions';
 
 @NgModule({
   imports: [
@@ -35,6 +36,9 @@ import { NavbarModule, ProxyRouteModule } from 'app/shared';
     ProjectSettingsCollaboratorsComponent,
     ProjectSettingsDataComponent,
     ProjectSettingsProfileComponent
+  ],
+  providers: [
+    ProjectsActions
   ]
 })
 export class ProjectsModule { }

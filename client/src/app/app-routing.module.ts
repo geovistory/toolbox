@@ -29,12 +29,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        loadChildren: './modules/login-and-registration/login-and-registration.module#LoginAndRegistrationModule',
-      },
-      {
-        path: 'account',
         loadChildren: './modules/account/account.module#AccountModule',
-        canActivate: [AuthGuard]
       },
       {
         path: 'projects',

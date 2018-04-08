@@ -12,6 +12,9 @@ import { ActivePeItService } from '../../shared/active-pe-it.service';
 import { ClassService } from '../../shared/class.service';
 import { AppellationLabel } from '../../shared/appellation-label/appellation-label';
 import { PropertyPipe } from '../../shared/property.pipe';
+import { PeItEntityActions } from '../pe-it-entity/pe-it-entity.actions';
+import { NgRedux } from '@angular-redux/store';
+import { IPeIt } from '../pe-it-entity/pe-it-entity.model';
 
 @Component({
   selector: 'gv-pe-it-entity-preview',
@@ -39,12 +42,14 @@ export class PeItEntityPreviewComponent extends PeItEntityComponent implements O
     classService: ClassService,
     entityEditor: EntityEditorService,
     changeDetector: ChangeDetectorRef,
+    actions: PeItEntityActions,
+    ngRedux: NgRedux<IPeIt>,
     private modalService: NgbModal,
     private router: Router,
     private route: ActivatedRoute,
     private eprApi: InfEntityProjectRelApi
   ) {
-    super(peItApi, peItService, activeProjectService, propertyPipe, activePeItService, slimLoadingBarService, classService, entityEditor, changeDetector)
+    super(peItApi, peItService, activeProjectService, propertyPipe, activePeItService, slimLoadingBarService, classService, entityEditor, changeDetector, actions, ngRedux)
 
   }
 

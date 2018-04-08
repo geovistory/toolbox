@@ -45,7 +45,7 @@ export class Timeline {
 
             // this will also trigger a this.init
             this.zoomToExtent();
-            
+
         } else {
             this.init(this.options);
         }
@@ -143,19 +143,24 @@ export class Timeline {
         this.temporalEntities.forEach((teEnt: any) => {
             const ext: ExistenceTime = teEnt.existenceTime;
             const minMaxOfExTime = ext.getMinMaxTimePrimitive();
-            timePrimitives.push(minMaxOfExTime.min)
-            timePrimitives.push(minMaxOfExTime.max)
+
+            if (minMaxOfExTime) {
+                timePrimitives.push(minMaxOfExTime.min);
+                timePrimitives.push(minMaxOfExTime.max);
+            }
         })
+        if (timePrimitives.length > 0) {
 
-        const minMax = ExistenceTime.getMinMaxTimePrimitveOfArray(timePrimitives);
+            const minMax = ExistenceTime.getMinMaxTimePrimitveOfArray(timePrimitives);
 
-        // zoom out a little bit
-        const domainDiff = Math.abs(minMax.min.getJulianSecond() - minMax.max.getJulianSecond());
-        const margin = domainDiff * 0.05;
+            // zoom out a little bit
+            const domainDiff = Math.abs(minMax.min.getJulianSecond() - minMax.max.getJulianSecond());
+            const margin = domainDiff * 0.05;
 
-        this.options.domainStart = minMax.min.getJulianSecond() - margin;
+            this.options.domainStart = minMax.min.getJulianSecond() - margin;
 
-        this.options.domainEnd = minMax.max.getLastSecond() + margin;
+            this.options.domainEnd = minMax.max.getLastSecond() + margin;
+        }
 
         this.init(this.options);
 

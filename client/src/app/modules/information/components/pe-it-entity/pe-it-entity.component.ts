@@ -1,4 +1,6 @@
 import { Component, OnChanges, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { dispatch, select, select$, WithSubStore, NgRedux } from '@angular-redux/store';
+import { Observable } from 'rxjs/Observable';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
@@ -11,7 +13,15 @@ import { AppellationStdBool } from '../role/role.component';
 import { AppellationLabel } from '../../shared/appellation-label/appellation-label';
 import { PropertyPipe } from '../../shared/property.pipe';
 
+import { peItEntityReducer } from './pe-it-entity.reducer';
+import { PeItEntityActions } from './pe-it-entity.actions';
+import { IPeIt } from './pe-it-entity.model';
 
+
+@WithSubStore({
+  basePathMethodName: 'getBasePath',
+  localReducer: peItEntityReducer,
+})
 @Component({
   selector: 'gv-pe-it-entity',
   templateUrl: './pe-it-entity.component.html',
@@ -45,6 +55,15 @@ export class PeItEntityComponent implements OnChanges {
   @Output() readyToAdd: EventEmitter<InfPersistentItem> = new EventEmitter;
 
   @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter;
+
+
+  /**
+   * Dispatches
+   */
+
+  @dispatch() loadSucceeded = (peIt) => {
+    return this.actions.loadSucceeded(peIt)
+   };
 
   /**
   * Properties
@@ -98,10 +117,13 @@ export class PeItEntityComponent implements OnChanges {
     private slimLoadingBarService: SlimLoadingBarService,
     protected classService: ClassService,
     public entityEditor: EntityEditorService,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private actions: PeItEntityActions,
+    private ngRedux: NgRedux<IPeIt>
   ) {
   }
 
+  getBasePath = () => ['information','activePeIt']
 
   /**
   * Methods
@@ -125,6 +147,8 @@ export class PeItEntityComponent implements OnChanges {
         this.initDfhClass(this.peIt.fk_class);
 
       })
+
+      
 
     }
 
@@ -250,6 +274,8 @@ export class PeItEntityComponent implements OnChanges {
       (peIts: InfPersistentItem[]) => {
 
         this.peIt = peIts[0];
+
+        this.loadSucceeded(this.peIt);
 
         // initialize the ingoing Properties
         this.classService.getIngoingProperties(this.peIt.fk_class)

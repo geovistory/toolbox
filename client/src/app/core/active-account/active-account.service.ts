@@ -6,6 +6,8 @@ import { LoopBackAuth } from '../sdk/services/core/auth.service';
 import { AccountApi } from '../sdk/services/custom/Account';
 import { environment } from '../../../environments/environment';
 import { LoopBackConfig } from '../sdk/lb.config';
+import { AccountActions } from '../../modules/account/api/actions';
+
 
 @Injectable()
 export class ActiveAccountService {
@@ -16,7 +18,7 @@ export class ActiveAccountService {
 
   constructor(
     private authService: LoopBackAuth,
-    private userApi: AccountApi,
+    private userApi: AccountApi
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);

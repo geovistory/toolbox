@@ -1,9 +1,9 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
-import {Observable} from 'rxjs/Observable';
+import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
@@ -18,24 +18,35 @@ import { environment } from 'environments/environment';
 import { EntityAddModalService } from '../../shared/entity-add-modal.service';
 import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
 
+import { dispatch, select, select$, WithSubStore } from '@angular-redux/store';
+import { projectEntitiesComponentReducer } from './reducers';
 
+@WithSubStore({
+  basePathMethodName: 'getBasePath',
+  localReducer: projectEntitiesComponentReducer,
+})
 @Component({
   selector: 'gv-project-entities',
   templateUrl: './project-entities.component.html',
-  styleUrls: ['./project-entities.component.scss']
+  styleUrls: ['./project-entities.component.scss'],
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectEntitiesComponent implements OnInit {
+
+  static readonly TEST_STORE = 'TEST_STORE'
+
+  getBasePath = () => ['peIt'];
 
   persistentItems: InfPersistentItem[] = [];
   projectId: number;
 
   //Pagination
-  collectionSize:number; // number of search results
-  limit:number = 10; // max number of results on a page
-  page:number = 1; // current page
+  collectionSize: number; // number of search results
+  limit: number = 10; // max number of results on a page
+  page: number = 1; // current page
 
   //Search
-  searchString:string;
+  searchString: string;
   loading: boolean = false;
   errorMessages: any;
 
@@ -58,6 +69,7 @@ export class ProjectEntitiesComponent implements OnInit {
   }
 
   ngOnInit() {
+
     this.searchProjectPeIts();
     this.entityAddModalService.onAdd.subscribe(success => {
       this.searchProjectPeIts();
@@ -67,53 +79,60 @@ export class ProjectEntitiesComponent implements OnInit {
     })
   }
 
+
+  /**
+ * TRY TO Dispach an action on the store
+ */
+  @dispatch() testStore = () => ({ type: 'TEST_STORE' });
+
+
   searchProjectPeIts() {
     this.startLoading();
     this.persistentItems = [];
     this.errorMessages = {};
     this.persistentItemApi.searchInProject(this.projectId, this.searchString, this.limit, this.page)
-    .subscribe(
-      (response) => {
-        this.completeLoading();
+      .subscribe(
+        (response) => {
+          this.completeLoading();
 
-        this.persistentItems = response.data;
-        this.collectionSize = response.totalCount;
-      },
-      error => {
-        this.resetLoading();
+          this.persistentItems = response.data;
+          this.collectionSize = response.totalCount;
+        },
+        error => {
+          this.resetLoading();
 
-        // TODO: Alert
-        this.errorMessages = error.error.details.messages;
-      }
-    );
+          // TODO: Alert
+          this.errorMessages = error.error.details.messages;
+        }
+      );
   }
 
-  openEntityModal(){
+  openEntityModal() {
     const modalRef = this.modalService.open(EntityAddModalComponent, this.entityModalOptions);
     modalRef.componentInstance.projectId = this.projectId;
     this.entityAddModalService.state = 'choose-class';
 
   }
 
-  openEntity(pkInfPersistentItem){
+  openEntity(pkInfPersistentItem) {
     this.router.navigate(['../entity', pkInfPersistentItem], {
       relativeTo: this.activatedRoute, queryParamsHandling: 'merge'
     })
     // routerLink="../entity/{{persistentItem.pk_persistent_item}}" queryParamsHandling="merge"
   }
 
-  get hitsFrom(){
-    return (this.limit * (this.page-1))+1;
+  get hitsFrom() {
+    return (this.limit * (this.page - 1)) + 1;
   }
-  get hitsTo(){
-    const upper = (this.limit * (this.page-1)) + this.limit;
+  get hitsTo() {
+    const upper = (this.limit * (this.page - 1)) + this.limit;
     return upper > this.collectionSize ? this.collectionSize : upper;
   }
 
-  pageChange(){
+  pageChange() {
     this.searchProjectPeIts();
   }
-  searchStringChange(){
+  searchStringChange() {
     this.page = 1;
     this.searchProjectPeIts();
   }

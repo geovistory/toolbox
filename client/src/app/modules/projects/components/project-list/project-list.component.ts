@@ -4,6 +4,9 @@ import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { Observable } from 'rxjs';
 import { Project, Account, AccountApi, LoopBackAuth, LoopBackConfig } from 'app/core';
 import { environment } from 'environments/environment';
+import { NgRedux } from '@angular-redux/store';
+import { IProjectList } from '../../projects.model';
+import { ProjectsActions } from '../../api/projects.actions';
 
 
 @Component({
@@ -13,13 +16,18 @@ import { environment } from 'environments/environment';
 })
 export class ProjectListComponent implements OnInit {
 
+ 
   projects: Project[] = [];
   loadingComplete = false;
+
+
 
   constructor(
     private accountApi: AccountApi,
     private authService: LoopBackAuth,
-    private slimLoadingBarService: SlimLoadingBarService
+    private slimLoadingBarService: SlimLoadingBarService,
+    private ngRedux: NgRedux<IProjectList>,
+    private actions: ProjectsActions
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -35,32 +43,36 @@ export class ProjectListComponent implements OnInit {
       (accounts: Array<Account>) => {
 
         this.projects = accounts[0].projects;
-      this.completeLoading();
+
+        this.actions.loadProjectsSucceeded(this.projects)
+        
+        this.completeLoading();
       });
-    }
-
-    open(){
-      alert('TODO: open project')
-    }
-
-
-    /**
-     * Loading Bar Logic
-     */
-
-    startLoading() {
-      this.slimLoadingBarService.progress = 20;
-      this.slimLoadingBarService.start(() => {
-      });
-    }
-
-    stopLoading() {
-      this.slimLoadingBarService.stop();
-    }
-
-    completeLoading() {
-      this.slimLoadingBarService.complete();
-      this.loadingComplete = true;
-    }
-
   }
+
+
+
+  open() {
+    alert('TODO: open project')
+  }
+
+  /**
+   * Loading Bar Logic
+   */
+
+  startLoading() {
+    this.slimLoadingBarService.progress = 20;
+    this.slimLoadingBarService.start(() => {
+    });
+  }
+
+  stopLoading() {
+    this.slimLoadingBarService.stop();
+  }
+
+  completeLoading() {
+    this.slimLoadingBarService.complete();
+    this.loadingComplete = true;
+  }
+
+}

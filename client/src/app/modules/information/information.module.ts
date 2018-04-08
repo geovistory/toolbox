@@ -71,6 +71,8 @@ import { TeEntService } from './shared/te-ent.service';
 import { ConfigService } from './shared/config.service';
 import { TimelineModule } from '../timeline/timeline.module';
 import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timeline.component';
+import { StoreModule } from '../../core/store/module';
+import { PeItEntityActions } from './components/pe-it-entity/pe-it-entity.actions';
 
 
 @NgModule({
@@ -89,6 +91,7 @@ import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timelin
     InformationRoutingModule,
     
     //Own reusable components
+    StoreModule,
     LanguageSearchTypeaheadModule,
     ControlMessagesModule,
     PassiveLinkModule,
@@ -150,7 +153,8 @@ import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timelin
     EprService,
     AppellationService,
     TeEntService,
-    ConfigService
+    ConfigService,
+    PeItEntityActions
   ],
   entryComponents : [
     EntityAddModalComponent
