@@ -143,19 +143,24 @@ export class Timeline {
         this.temporalEntities.forEach((teEnt: any) => {
             const ext: ExistenceTime = teEnt.existenceTime;
             const minMaxOfExTime = ext.getMinMaxTimePrimitive();
-            timePrimitives.push(minMaxOfExTime.min)
-            timePrimitives.push(minMaxOfExTime.max)
+            if(minMaxOfExTime){
+                timePrimitives.push(minMaxOfExTime.min)
+                timePrimitives.push(minMaxOfExTime.max)
+            }
         })
 
-        const minMax = ExistenceTime.getMinMaxTimePrimitveOfArray(timePrimitives);
+        if(timePrimitives.length>0){
 
-        // zoom out a little bit
-        const domainDiff = Math.abs(minMax.min.getJulianSecond() - minMax.max.getJulianSecond());
-        const margin = domainDiff * 0.05;
-
-        this.options.domainStart = minMax.min.getJulianSecond() - margin;
-
-        this.options.domainEnd = minMax.max.getLastSecond() + margin;
+            const minMax = ExistenceTime.getMinMaxTimePrimitveOfArray(timePrimitives);
+            
+            // zoom out a little bit
+            const domainDiff = Math.abs(minMax.min.getJulianSecond() - minMax.max.getJulianSecond());
+            const margin = domainDiff * 0.05;
+            
+            this.options.domainStart = minMax.min.getJulianSecond() - margin;
+            
+            this.options.domainEnd = minMax.max.getLastSecond() + margin;
+        }
 
         this.init(this.options);
 
@@ -169,7 +174,7 @@ export class Timeline {
         const rangeEnd = this.xAxis.scale(this.options.domainEnd)
         const minMax = rangeEnd - rangeStart;
         const rangeDiff = minMax / this.options.zoomFactor;
-
+        
         this.options.domainStart = this.xAxis.scale.invert(rangeStart + rangeDiff);
 
         this.options.domainEnd = this.xAxis.scale.invert(rangeEnd - rangeDiff);

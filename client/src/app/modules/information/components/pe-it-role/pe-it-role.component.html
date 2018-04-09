@@ -20,7 +20,7 @@
       [teEntState]="'create'"
       [parentProperty]="parentProperty"
       [parentRole]="role"
-      [isOutgoing]="isOutgoing"
+      [isOutgoing]="isOutgoing"      
       (readyToCreate)="teEntReadyToCreate($event)"
       (notReadyToCreate)="teEntNotReadyToCreate()"
       ></gv-te-ent>
@@ -192,6 +192,7 @@
     [ontoInfoVisible]="ontoInfoVisible"
     (appeChange)="emitAppeChange($event)"
     (readyToAdd)="onTeEntReadyToAdd($event)"
+    (teEntUpdated)="onTeEntUpdated($event)"
     >
     <div headerRight class="d-flex">
 

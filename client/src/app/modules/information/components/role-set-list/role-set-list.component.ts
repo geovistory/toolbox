@@ -56,6 +56,9 @@ export class RoleSetListComponent implements OnInit {
   // emit to say that adding informaion is finished
   @Output() stopAddingInformation: EventEmitter<void> = new EventEmitter();
 
+  // emit to say that the roles have been updated
+  @Output() rolesUpdated: EventEmitter<InfRole[]> = new EventEmitter();
+
 
   /**
   * Properties
@@ -297,6 +300,24 @@ export class RoleSetListComponent implements OnInit {
     this.setDirectedRolesPerProperty(this.roles);
 
   }
+
+  /**
+  * called when a role (and its children) are updated
+  */
+  onRolesUpdated(updatedRoles: InfRole[]) {
+    for (let i = 0; i < this.roles.length; i++) {
+      const r = this.roles[i];
+      for (let j = 0; j < updatedRoles.length; j++) {
+        const ur = updatedRoles[j];
+        if (r.pk_entity == ur.pk_entity) {
+          this.roles[i] = ur;
+        }
+      }
+    }
+
+    this.rolesUpdated.emit(this.roles);
+  }
+
 
 
 

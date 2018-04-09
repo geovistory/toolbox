@@ -4,9 +4,10 @@
  * the information module and the timeline module.
  */
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { InfPersistentItem, InfTemporalEntity } from '../../../../core';
 import { TeEntService } from '../../shared/te-ent.service';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'gv-pe-it-timeline',
@@ -15,7 +16,7 @@ import { TeEntService } from '../../shared/te-ent.service';
 })
 export class PeItTimelineComponent implements OnInit {
 
-  @Input() peIt: InfPersistentItem;
+  @Input() peIt$: Observable<InfPersistentItem>;
 
   // true after successfully creating Timeline Data 
   timeLinePeIts;
@@ -27,7 +28,9 @@ export class PeItTimelineComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.createTimelineData()
+    this.peIt$.subscribe(peIt => {
+      this.createTimelineData(peIt)   
+    });
   }
 
 
@@ -36,12 +39,12 @@ export class PeItTimelineComponent implements OnInit {
    * related to the existence time of the temporal entity.
    * Keeps only p81, p82, … .
    */
-  createTimelineData() {
+  createTimelineData(peIt) {
 
     let newPeIt = {}
 
     //clone the peIt
-    Object.assign(newPeIt, this.peIt);
+    Object.assign(newPeIt, peIt);
 
     const makeNewRole = async (teEnt, newRole) => {
 
@@ -57,7 +60,7 @@ export class PeItTimelineComponent implements OnInit {
     }
 
     // iterate over all roles of the peIt
-    const waitForRoles = this.peIt.pi_roles.map(async (pi_role) => {
+    const waitForRoles = peIt.pi_roles.map(async (pi_role) => {
 
       let newRole = {
         temporal_entity: {
@@ -82,8 +85,6 @@ export class PeItTimelineComponent implements OnInit {
       newPeIt['pi_roles'] = newRoles;
       this.timeLinePeIts = [newPeIt];
     })
-
-
 
   }
 

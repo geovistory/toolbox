@@ -258,30 +258,37 @@ gv-property {
 }
 
 gv-timeline {
+    $bg-timeline: $gray-600;
+    $font-color: $white;
+    .timeline-container{
+        background-color: $bg-timeline;
+
+    }
     path.domain {
         stroke: none // no outer line around xAxis
     }
     .header {
         .tick>line {
-            stroke: none;
+            stroke: none;            
         }
         .tick>text {
-            fill: theme-color(dark);
+            font-size: $font-size-xs;
+            fill: $font-color
         }
     }
     .rows {
-        border-top: 1px solid theme-color("primary");
+        border-top: 1px solid theme-color(dark);
         .tick>text {
             fill: none;
         }
         .x-axis-julian {
             .tick>line {
-                stroke: theme-color("success"); // stroke-dasharray: 7;
+                stroke:  $gray-400; // stroke-dasharray: 7;
             }
         }
         .x-axis-gregorian {
             .tick>line {
-                stroke: theme-color(warning); // stroke-dasharray: 7;
+                stroke: $gray-400; // stroke-dasharray: 7;
             }
         }
     }
@@ -290,12 +297,20 @@ gv-timeline {
     }
     .row:nth-child(odd) .row-bg {
         fill: $gray-200;
+        opacity: 0.2;
     }
     .row:nth-child(even) .row-bg {
         fill: $white;
-    }
+        opacity: 0.2;
+    }    
     .row:hover .row-bg {
-        fill: lighten(theme-color("success"), 20%);
+        fill: $gray-300;
+    }
+    .row-label-bg{
+        fill: $bg-timeline
+    }
+    text.row-label{
+        fill: $font-color;
     }
     .gv-open-path {
         stroke: darken(theme-color("info"), 20%);
@@ -314,10 +329,13 @@ gv-timeline {
         fill: lighten(theme-color("info"), 50%);
     }
     .separator-line {
-        stroke: theme-color("primary");
+        stroke: theme-color("dark");
+    }
+    .cover-rect {
+        fill: $bg-timeline;
     }
     .no-data-text {
         fill: theme-color("secondary");
-        font-size: $font-size-xs;
+        font-size: $font-size-sm;
     }
 }

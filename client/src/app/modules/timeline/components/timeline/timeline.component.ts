@@ -10,7 +10,7 @@ import { TimePrimitiveVisual } from '../../models/time-primitive-visual';
 export interface TimelineOptions {
   width: number,
   headerHeight: number, // height of header (where the labels of xAxis are displayed)
-  bodyHeight: number, // height of scrollable body (where the existence times are displayed)
+  bodyMaxHeight: number, // max height of scrollable body (where the existence times are displayed)
   domainStart: number, // julian day in seconds
   domainEnd: number,
   zoomFactor: number, // increase for smaller zoom steps
@@ -19,8 +19,10 @@ export interface TimelineOptions {
   rowPaddingTop: number,
   barHeight: number, // height of bars including the strockes of the brackets
   bracketStrokeWidth: number, // stroke width of left or right brackets of existence time visuals
-  bracketWidth: number,  
+  bracketWidth: number,
   height?: number, // total height (sum of headerHeight and bodyHeight)
+  bodyHeight?: number, // height of scrollable body (barHeight * temporalEntities.length or bodyMaxHeight)
+  timeColWidth?: number // width of the column with the timeline 
 }
 
 @Component({
@@ -30,14 +32,14 @@ export interface TimelineOptions {
 })
 export class TimelineComponent implements OnInit, AfterViewInit, DoCheck {
 
-  @Input() persistentItems: any[];
+  @Input() persistentItems: InfPersistentItem[];
 
   @HostBinding('style.width') outerWidth: string = '100%';
 
 
   private _options: TimelineOptions = {
-    width: 0,
-    bodyHeight: 180,
+    width: 200,
+    bodyMaxHeight: 180,
     headerHeight: 27,
     domainStart: 1721426 * 60 * 60 * 24,
     domainEnd: 2454000 * 60 * 60 * 24,
@@ -47,17 +49,19 @@ export class TimelineComponent implements OnInit, AfterViewInit, DoCheck {
     rowPaddingTop: 5,
     barHeight: 14,
     bracketStrokeWidth: 2,
-    bracketWidth:4
+    bracketWidth: 4
   };
 
 
   get options() {
+    const rowsHeight = this._options.rowHeight * this.persistentItems[0].pi_roles.length + 7;
+    this._options.bodyHeight = this._options.bodyMaxHeight < rowsHeight ? this._options.bodyMaxHeight : rowsHeight;
     this._options.height = this._options.headerHeight + this._options.bodyHeight;
+
     return this._options;
   }
 
-
-  constructor(private d3Service: D3Service, private _element: ElementRef, private ref:ChangeDetectorRef) {
+  constructor(private d3Service: D3Service, private _element: ElementRef, private ref: ChangeDetectorRef) {
 
   }
 
@@ -71,19 +75,19 @@ export class TimelineComponent implements OnInit, AfterViewInit, DoCheck {
   }
 
   onDimensionsChange(event) {
-    const newWidth =  event.dimensions.width - 17;
-    if(this.options.width !== newWidth){
-    this._options.width = newWidth;
+    const newWidth = event.dimensions.width - 17;
+    if (this.options.width !== newWidth) {
+      this._options.width = newWidth;
       this.timeline.init(this.options)
       this.ref.detectChanges()
     }
   }
 
   ngAfterViewInit() {
-   
+
   }
 
-  ngDoCheck(){
+  ngDoCheck() {
     this._element.nativeElement;
     // this.timeline.initData(this.persistentItems)
   }

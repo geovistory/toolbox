@@ -106,6 +106,8 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
   // emit appellation and a flag to say if this is the standard appellation
   @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
 
+  @Output() teEntUpdated: EventEmitter<InfTemporalEntity> = new EventEmitter;
+
   /**
   * Properties
   */
@@ -309,6 +311,8 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
     this.appeChange.emit(appeStd)
   }
 
-
+  onExistenceTimeUpdated(teEnt:InfTemporalEntity){
+    this.teEntUpdated.emit(teEnt);
+  }
 
 }

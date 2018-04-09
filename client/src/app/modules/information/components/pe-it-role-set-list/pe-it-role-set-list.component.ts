@@ -139,5 +139,4 @@ export class PeItRoleSetListComponent extends RoleSetListComponent implements On
     this.notReadyToAdd.emit();
   }
 
-
 }

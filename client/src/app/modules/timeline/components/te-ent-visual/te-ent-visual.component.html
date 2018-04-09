@@ -6,9 +6,9 @@
 <svg:g [existenceTimeVisual]="{existenceTime:teEnt.existenceTime, timeline:timeline}" ></svg:g>
 
 <!-- Background behind label -->
-<svg:rect class="row-bg" [attr.width]="xAxis.marginLeft" [attr.height]="timeline.options.rowHeight"></svg:rect>
+<svg:rect class="row-label-bg" [attr.width]="xAxis.marginLeft" [attr.height]="timeline.options.rowHeight"></svg:rect>
 
 <svg:g>
-    <svg:text [attr.transform]="'translate(3,'+ (timeline.options.rowHeight - timeline.options.rowPaddingBottom) +')'" [wrapText]="{text: teEnt.label ,width:xAxis.marginLeft, padding:6}"> 
+    <svg:text class="row-label" [attr.transform]="'translate(3,'+ (timeline.options.rowHeight - timeline.options.rowPaddingBottom) +')'" [wrapText]="{text: teEnt.label ,width:xAxis.marginLeft, padding:6}"> 
     </svg:text>
 </svg:g>

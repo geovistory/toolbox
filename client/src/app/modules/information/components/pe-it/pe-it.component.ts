@@ -54,6 +54,7 @@ export class PeItComponent implements OnInit {
 
   @Output() peItNotReadyToAdd: EventEmitter<void> = new EventEmitter;
 
+  @Output() peItUpdated: EventEmitter<InfPersistentItem> = new EventEmitter;
 
   // Appellation related
 
@@ -214,6 +215,10 @@ export class PeItComponent implements OnInit {
 
   onPeItNotReadyToAdd() {
     this.peItNotReadyToAdd.emit()
+  }
+
+  onPeItUpdated(peIt: InfPersistentItem) {
+    this.peItUpdated.emit(peIt)
   }
 
 

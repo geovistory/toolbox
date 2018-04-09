@@ -1,5 +1,6 @@
 import { Component, OnChanges, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 import { PeItComponent, PeItStates } from '../pe-it/pe-it.component';
@@ -46,6 +47,9 @@ export class PeItEntityComponent implements OnChanges {
 
   @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter;
 
+  @Output() peItUpdated: EventEmitter<InfPersistentItem> = new EventEmitter;
+
+
   /**
   * Properties
   */
@@ -58,6 +62,9 @@ export class PeItEntityComponent implements OnChanges {
 
   // Persistent Item used by this component
   peIt: InfPersistentItem;
+  
+  // Persistent Item as BehaviorSubject
+  peIt$: BehaviorSubject<InfPersistentItem> = new BehaviorSubject(undefined);
 
   // Persistent Item to be created
   peItToCreate: InfPersistentItem;
@@ -209,6 +216,8 @@ export class PeItEntityComponent implements OnChanges {
 
         this.peIt = peIts[0];
 
+        // emit the new peIt
+        this.peIt$.next(this.peIt);
 
         // initialize the ingoing Properties
         this.classService.getIngoingProperties(this.peIt.fk_class)
@@ -250,6 +259,9 @@ export class PeItEntityComponent implements OnChanges {
       (peIts: InfPersistentItem[]) => {
 
         this.peIt = peIts[0];
+
+        // Emit the new peIt
+        this.peIt$.next(this.peIt);
 
         // initialize the ingoing Properties
         this.classService.getIngoingProperties(this.peIt.fk_class)
@@ -335,6 +347,17 @@ export class PeItEntityComponent implements OnChanges {
   */
   onRolesNotReadyToAdd(roles: InfRole[]) {
     this.notReadyToAdd.emit();
+  }
+
+  /**
+  * called when roles of property (section) are not ready to be added
+  */
+  onRolesUpdated(roles: InfRole[]) {
+    this.peIt.pi_roles = roles;
+    this.peItUpdated.emit(this.peIt);
+
+    // emit the new peIt
+    this.peIt$.next(this.peIt);
   }
 
   /**

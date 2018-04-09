@@ -77,6 +77,8 @@ export class RoleSetComponent implements OnChanges, OnInit {
 
   @Output() removePropertySectionReq: EventEmitter<DirectedRolesPerProperty> = new EventEmitter();
 
+  @Output() rolesUpdated: EventEmitter<InfRole[]> = new EventEmitter();
+
   /**
   * Properties
   */
@@ -488,6 +490,20 @@ export class RoleSetComponent implements OnChanges, OnInit {
       }
     }
   }
+
+  /**
+  * called when user updates a role (or its children)
+  */
+  onRoleUpdated(updatedRole: InfRole) {
+    for (let i = 0; i < this.roles.length; i++) {
+      if (this.roles[i].pk_entity === updatedRole.pk_entity) {
+        this.roles[i] = updatedRole;
+        this.rolesUpdated.emit(this.roles)
+        break;
+      }
+    }
+  }
+
 
   onRoleReadyToAdd(role: InfRole) {
 
