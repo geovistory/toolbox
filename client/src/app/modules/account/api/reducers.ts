@@ -3,7 +3,6 @@ import { IAccount } from "../account.model";
 
 const INITIAL_STATE: IAccount = {
   record: undefined,
-  activePeIt: undefined
 };
 
 const accountRootReducer = (lastState: IAccount = INITIAL_STATE, action: AccountAction): IAccount => {

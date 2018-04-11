@@ -13,7 +13,7 @@ import 'rxjs/add/observable/combineLatest';
 import { RoleSetListComponent } from '../role-set-list/role-set-list.component';
 import { InfTemporalEntity, DfhProperty, InfRole, DfhClass, ActiveProjectService, EntityEditorService, InfEntityProjectRel } from 'app/core';
 import { AppellationStdBool } from '../role/role.component';
-import { DirectedRolesPerProperty, RoleService } from '../../shared/role.service';
+import { RoleSets, RoleService } from '../../shared/role.service';
 import { TeEntRoleSetComponent } from '../te-ent-role-set/te-ent-role-set.component';
 import { PropertyService } from '../../shared/property.service';
 import { ClassService } from '../../shared/class.service';
@@ -116,7 +116,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
 
   // directed roles per property,
   // e.g.: [{fkProperty: 'P52', isOutgoing: true, roles: []},…]
-  directedRolesPerProperty: DirectedRolesPerProperty[];
+  directedRolesPerProperty: RoleSets[];
 
   isReadyToCreate: boolean;
 
@@ -206,7 +206,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
 
       if (this.teEntState !== 'create') {
         this.setDirectionAwareProperties();
-        this.setDirectedRolesPerProperty(this.teEnt.te_roles);
+        this.setRoleSets(this.teEnt.te_roles);
       }
 
     })

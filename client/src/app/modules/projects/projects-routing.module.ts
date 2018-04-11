@@ -9,6 +9,7 @@ import { ProjectSettingsProfileComponent } from './components/project-settings-p
 import { ProjectSettingsCollaboratorsComponent } from './components/project-settings-collaborators/project-settings-collaborators.component';
 import { ProjectSettingsDataComponent } from './components/project-settings-data/project-settings-data.component';
 import { ProxyRouteComponent } from 'app/shared/components/proxy-route';
+import { InformationModule } from '../information/information.module';
 
 
 const routes: Routes = [
@@ -38,7 +39,7 @@ const routes: Routes = [
             children: [
               {
                 path: '',
-                loadChildren: '../information/information.module#InformationModule'
+                loadChildren:  () => InformationModule
               }
             ]
           },

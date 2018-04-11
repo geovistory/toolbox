@@ -13,8 +13,8 @@
       <small class="text-muted">{{dfhClass?.dfh_standard_label}}</small>
     </h5>
 
-    <gv-pe-it-role-set-list [RoleSetListState]="'view'" [parentPeIt]="peIt" [roles]="peIt?.pi_roles" [outgoingProperties]="outgoingProperties"
-      [ingoingProperties]="ingoingProperties" (appeChange)="whenAppeChange($event)"></gv-pe-it-role-set-list>
+    <!-- <gv-pe-it-role-set-list [RoleSetListState]="'view'" [parentPeIt]="peIt" [roles]="peIt?.pi_roles" [outgoingProperties]="outgoingProperties"
+      [ingoingProperties]="ingoingProperties" (appeChange)="whenAppeChange($event)"></gv-pe-it-role-set-list> -->
 
   </div>
 
@@ -26,9 +26,9 @@
     <span *ngIf="entityEditor.devView">
       [ready: {{isReadyToCreate}}]
     </span>
-
+<!-- 
     <gv-pe-it-role-set-list [RoleSetListState]="'create'" [parentPeIt]="peItToCreate" [outgoingProperties]="outgoingProperties"
-      [ingoingProperties]="ingoingProperties" (readyToCreate)="emitReadyToCreate($event)" (notReadyToCreate)="emitNotReadyToCreate()"></gv-pe-it-role-set-list>
+      [ingoingProperties]="ingoingProperties" (readyToCreate)="emitReadyToCreate($event)" (notReadyToCreate)="emitNotReadyToCreate()"></gv-pe-it-role-set-list> -->
 
 
   </div>
@@ -40,11 +40,11 @@
     <h5 class="mt-2 mb-4">
       {{mostPopularAppeString}}
     </h5>
-
+<!-- 
     <gv-pe-it-role-set-list [roles]="peIt.pi_roles" [RoleSetListState]="peItEntityState" [parentPeIt]="peIt" [outgoingProperties]="outgoingProperties"
       [ingoingProperties]="ingoingProperties" (readyToCreate)="emitReadyToCreate($event)" (notReadyToCreate)="emitNotReadyToCreate()"
       (readyToAdd)="onRolesReadyToAdd($event)" (notReadyToAdd)="onRolesNotReadyToAdd()" (appeChange)="whenAppeChange($event)"></gv-pe-it-role-set-list>
-
+ -->
 
   </div>
 
@@ -77,9 +77,9 @@
     <div class="d-flex flex-row gv-flex-grow-1 m-3" style="flex-basis:100%">
 
       <div class="d-flex gv-flex-grow-1" style="flex-basis:35%">
-        <gv-pe-it-role-set-list class="gv-flex-grow-1 d-flex flex-row" [roles]="peIt.pi_roles" [RoleSetListState]="peItEntityState"
+        <!-- <gv-pe-it-role-set-list class="gv-flex-grow-1 d-flex flex-row" [roles]="peIt.pi_roles" [RoleSetListState]="peItEntityState"
           [pkEntity]="pkEntity" [parentPeIt]="peIt" [outgoingProperties]="outgoingProperties" [ingoingProperties]="ingoingProperties"
-          (appeChange)="whenAppeChange($event)"></gv-pe-it-role-set-list>
+          (appeChange)="whenAppeChange($event)"></gv-pe-it-role-set-list> -->
       </div>
 
       <div class="d-flex ml-3" style="flex-basis:65%; overflow:hidden">
@@ -103,7 +103,7 @@
             </div>
           </div>
 
-          <gv-pe-it-timeline [peIt]="peIt"></gv-pe-it-timeline>
+          <!-- <gv-pe-it-timeline [peIt]="peIt"></gv-pe-it-timeline> -->
 
         </div>
       </div>

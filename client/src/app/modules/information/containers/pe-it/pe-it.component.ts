@@ -1,43 +1,64 @@
-import { Component, OnChanges, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
-import { dispatch, select, select$, WithSubStore, NgRedux } from '@angular-redux/store';
+import { Component, OnChanges, Input, Output, EventEmitter, ChangeDetectorRef, OnInit } from '@angular/core';
+import { dispatch, select, select$, WithSubStore, NgRedux, ObservableStore } from '@angular-redux/store';
 import { Observable } from 'rxjs/Observable';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
-import { PeItComponent, PeItStates } from '../pe-it/pe-it.component';
-import { InfPersistentItem, DfhProperty, DfhClass, InfPersistentItemApi, ActiveProjectService, EntityEditorService, InfEntityProjectRel, InfRole } from 'app/core';
+import { InfPersistentItem, DfhProperty, DfhClass, InfPersistentItemApi, ActiveProjectService, EntityEditorService, InfEntityProjectRel, InfRole, Project } from 'app/core';
 import { PeItService } from '../../shared/pe-it.service';
 import { ActivePeItService } from '../../shared/active-pe-it.service';
 import { ClassService } from '../../shared/class.service';
-import { AppellationStdBool } from '../role/role.component';
 import { AppellationLabel } from '../../shared/appellation-label/appellation-label';
 import { PropertyPipe } from '../../shared/property.pipe';
 
-import { peItEntityReducer } from './pe-it-entity.reducer';
-import { PeItEntityActions } from './pe-it-entity.actions';
-import { IPeIt } from './pe-it-entity.model';
+import { EditorStates } from '../../information.models';
+import { peItReducer } from './pe-it.reducer';
+import { PeItActions } from './pe-it.actions';
+import { IPeItState } from './pe-it.model';
+import { AppellationStdBool } from '../../components/role/role.component';
 
 
 @WithSubStore({
-  basePathMethodName: 'getBasePath',
-  localReducer: peItEntityReducer,
+  localReducer:peItReducer,
+  basePathMethodName:'getBasePath'
 })
 @Component({
-  selector: 'gv-pe-it-entity',
-  templateUrl: './pe-it-entity.component.html',
-  styleUrls: ['./pe-it-entity.component.scss']
+  selector: 'gv-pe-it',
+  templateUrl: './pe-it.component.html',
+  styleUrls: ['./pe-it.component.scss']
 })
-export class PeItEntityComponent implements OnChanges {
+export class PeItComponent implements OnInit {
 
-  /**
-  * Inputs
-  */
+  @Input() parentPath: string[];
+  getBasePath = () => [...this.parentPath, 'peItState']
+  localStore: ObservableStore<IPeItState>;
+
 
   // Primary key of the peIt
-  @Input() pkEntity: number;
+  @select() pkEntity$: Observable<number>;
+  pkEntity: number;
 
   // State of this component
-  @Input() peItEntityState: string;
+  @select(['state']) peItEntityState$: Observable<EditorStates>;
+  peItEntityState: EditorStates;
+
+
+  /**
+   * Dispatches
+   */
+
+  @dispatch() peItToAddUpdated = (peIt) => {
+    return this.actions.peItToAddUpdated(peIt)
+  };
+
+  @dispatch() peItToCreateUpdated = (peIt) => {
+    return this.actions.peItToCreateUpdated(peIt)
+  };
+
+  @dispatch() roleSetsInitialized = () => {
+    return this.actions.roleSetsInitialized()
+  };
+
 
   // FkClass of peIt
   @Input() fkClass: number;
@@ -57,13 +78,7 @@ export class PeItEntityComponent implements OnChanges {
   @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter;
 
 
-  /**
-   * Dispatches
-   */
 
-  @dispatch() loadSucceeded = (peIt) => {
-    return this.actions.loadSucceeded(peIt)
-   };
 
   /**
   * Properties
@@ -118,58 +133,73 @@ export class PeItEntityComponent implements OnChanges {
     protected classService: ClassService,
     public entityEditor: EntityEditorService,
     private changeDetector: ChangeDetectorRef,
-    private actions: PeItEntityActions,
-    private ngRedux: NgRedux<IPeIt>
+    private actions: PeItActions,
+    private ngRedux: NgRedux<IPeItState>
   ) {
   }
 
-  getBasePath = () => ['information','activePeIt']
 
   /**
   * Methods
   */
 
-  ngOnChanges() {
+  ngOnInit() {
+    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(),peItReducer);
 
-    this.pkProject = this.activeProjectService.project.pk_project;
+    this.roleSetsInitialized()
+    
+    Observable.combineLatest(
+      this.pkEntity$,
+      this.peItEntityState$,
+      this.ngRedux.select<Project>('activeProject')
+    ).subscribe(result => {
+      this.pkEntity = result[0]
+      this.peItEntityState = result[1]
+      this.pkProject = this.activeProjectService.project.pk_project; // TODO: get this from store
 
-    // if no state provided on input, default to edit
+      this.init()
+    })
 
-    this.peItEntityState = this.peItEntityState ? this.peItEntityState : PeItStates.edit;
+
+  }
+
+  init() {
 
     // if it is not create state
 
     if (["preview", "edit", "view"].indexOf(this.peItEntityState) !== -1) {
 
       // Query the peIt and set the peIt by a call to the Api
-      this.queryRichObjectOfProject().subscribe(() => {
-
-        this.initDfhClass(this.peIt.fk_class);
-
+      this.queryRichObjectOfProject().subscribe((peIt) => {
+        this.localStore.dispatch(this.actions.peItToEditUpdated(peIt))
+        this.initRoleSets(peIt.fk_class)
       })
 
-      
+
 
     }
+
 
     if (this.peItEntityState == "add-pe-it") {
 
       // Query the peIt and set the peIt by a call to the Api
-      this.queryRichObjectOfRepo().subscribe(() => {
-
-        this.initDfhClass(this.peIt.fk_class);
+      this.queryRichObjectOfRepo().subscribe(peIt => {
 
         // make a copy
-        this.peItToAdd = new InfPersistentItem(this.peIt);
+        let peItToAdd = new InfPersistentItem(peIt);
 
         // add an epr
-        this.peItToAdd.entity_version_project_rels = [
+        peItToAdd.entity_version_project_rels = [
           new InfEntityProjectRel({
             fk_project: this.activeProjectService.project.pk_project,
             is_in_project: true,
             fk_entity_version_concat: this.peIt.pk_entity_version_concat
           })
         ]
+
+        this.peItToAddUpdated(peIt)
+
+        this.initRoleSets(peIt.fk_class)
 
       })
 
@@ -178,15 +208,13 @@ export class PeItEntityComponent implements OnChanges {
     if (this.peItEntityState == "add") {
 
       // Query the peIt and set the peIt by a call to the Api
-      this.queryRichObjectOfRepo().subscribe(() => {
-
-        this.initDfhClass(this.peIt.fk_class);
+      this.queryRichObjectOfRepo().subscribe((peIt) => {
 
         // make a copy
-        this.peItToAdd = new InfPersistentItem(this.peIt);
+        let peItToAdd = new InfPersistentItem(peIt);
 
         // add an epr
-        this.peItToAdd.entity_version_project_rels = [
+        peItToAdd.entity_version_project_rels = [
           new InfEntityProjectRel({
             fk_project: this.activeProjectService.project.pk_project,
             is_in_project: false,
@@ -194,62 +222,46 @@ export class PeItEntityComponent implements OnChanges {
           })
         ]
 
+        this.peItToAddUpdated(peIt)
+
+        this.initRoleSets(peIt.fk_class)
       })
 
     }
 
     else if (this.peItEntityState == "create") {
 
-      // initialize the ingoing Properties
-      this.classService.getIngoingProperties(this.fkClass)
-        .subscribe((props: DfhProperty[]) => {
-          this.ingoingProperties = props;
-        });
 
-      // initialize the outgoing Properties
-      this.classService.getOutgoingProperties(this.fkClass)
-        .subscribe((props: DfhProperty[]) => {
-          this.outgoingProperties = props;
-        });
+      this.initRoleSets(this.fkClass)
 
-      this.peItToCreate = new InfPersistentItem();
-      this.peItToCreate.fk_class = this.fkClass;
+      let peItToCreate = new InfPersistentItem({
+        fk_class: this.fkClass
+      });
 
-      this.initDfhClass(this.fkClass);
+      this.classService.getByPk(this.fkClass).subscribe(cla => {
+        peItToCreate.dfh_class = cla;
+        this.peItToCreateUpdated(peItToCreate)
+      })
 
 
     }
 
   }
 
-  queryRichObjectOfRepo() {
+  queryRichObjectOfRepo(): EventEmitter<InfPersistentItem> {
 
-    const onDone = new EventEmitter()
+    const onDone: EventEmitter<InfPersistentItem> = new EventEmitter()
 
     this.startLoading();
 
     this.peItApi.nestedObjectOfRepo(this.pkEntity).subscribe(
       (peIts: InfPersistentItem[]) => {
 
-        this.peIt = peIts[0];
+        const peIt = peIts[0];
 
-
-        // initialize the ingoing Properties
-        this.classService.getIngoingProperties(this.peIt.fk_class)
-          .subscribe((props: DfhProperty[]) => {
-            this.ingoingProperties = props;
-          });
-
-        // initialize the outgoing Properties
-        this.classService.getOutgoingProperties(this.peIt.fk_class)
-          .subscribe((props: DfhProperty[]) => {
-            this.outgoingProperties = props;
-          });
-
+        onDone.emit(peIt);
 
         this.completeLoading();
-
-        onDone.emit();
 
       });
 
@@ -257,14 +269,10 @@ export class PeItEntityComponent implements OnChanges {
 
   }
 
-  initDfhClass(fkClass) {
-    this.classService.getByPk(fkClass).subscribe((dfhClass) => {
-      this.dfhClass = dfhClass;
-    })
-  }
 
-  queryRichObjectOfProject() {
-    const onDone = new EventEmitter()
+
+  queryRichObjectOfProject(): EventEmitter<InfPersistentItem> {
+    const onDone: EventEmitter<InfPersistentItem> = new EventEmitter()
 
     this.startLoading();
 
@@ -272,30 +280,31 @@ export class PeItEntityComponent implements OnChanges {
 
     this.peItApi.nestedObjectOfProject(pkProject, this.pkEntity).subscribe(
       (peIts: InfPersistentItem[]) => {
+        const peIt = peIts[0];
 
-        this.peIt = peIts[0];
 
-        this.loadSucceeded(this.peIt);
-
-        // initialize the ingoing Properties
-        this.classService.getIngoingProperties(this.peIt.fk_class)
-          .subscribe((props: DfhProperty[]) => {
-            this.ingoingProperties = props;
-          });
-
-        // initialize the outgoing Properties
-        this.classService.getOutgoingProperties(this.peIt.fk_class)
-          .subscribe((props: DfhProperty[]) => {
-            this.outgoingProperties = props;
-          });
+        onDone.emit(peIt);
 
         this.completeLoading();
-
-        onDone.emit();
-
       });
 
     return onDone;
+
+  }
+
+
+  initRoleSets(fkClass) {
+
+    Observable.combineLatest(
+      this.classService.getIngoingProperties(fkClass),
+      this.classService.getOutgoingProperties(fkClass)
+    ).subscribe(result => {
+
+      const ingoingProperties = result[0];
+      const outgoingProperties = result[1];
+
+      // TODO init role sets!!
+    })
 
   }
 

@@ -18,7 +18,7 @@ export interface DirectedRole {
   isOutgoing: boolean;
   role: InfRole;
 }
-export interface DirectedRolesPerProperty {
+export interface RoleSets {
   fkProperty: number;
   isOutgoing: boolean;
   roles: InfRole[];
@@ -80,12 +80,12 @@ export class RoleService {
    * @param {Property[]} ingoing array of ingoing properties (depending on context)
    * @param {Property[]} outgoing array of outgoing properties (depending on context)
    *
-   * @return {DirectedRolesPerProperty[]} Array of DirectedRolesPerProperty
+   * @return {RoleSets[]} Array of RoleSets
    */
-  toDirectedRolesPerProperty(roles: InfRole[], ingoing: DfhProperty[], outgoing: DfhProperty[]): DirectedRolesPerProperty[] {
+  toRoleSets(roles: InfRole[], ingoing: DfhProperty[], outgoing: DfhProperty[]): RoleSets[] {
 
     // declare array that will be returned
-    const directedRolesPerProperty: DirectedRolesPerProperty[] = [];
+    const directedRolesPerProperty: RoleSets[] = [];
 
     // create array of ingoing fk_property
     const fkPropIn: number[] = ingoing.map(p => p.dfh_pk_property)
@@ -107,7 +107,7 @@ export class RoleService {
 
     // create directed roles per property
     outgoingRolesPerProperty.forEach(rpp => {
-      const drpp: DirectedRolesPerProperty = {
+      const drpp: RoleSets = {
         isOutgoing: true,
         fkProperty: rpp.fkProperty,
         roles: rpp.roles
@@ -117,7 +117,7 @@ export class RoleService {
 
     // create directed roles per property
     ingoingRolesPerProperty.forEach(rpp => {
-      const drpp: DirectedRolesPerProperty = {
+      const drpp: RoleSets = {
         isOutgoing: false,
         fkProperty: rpp.fkProperty,
         roles: rpp.roles

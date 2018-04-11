@@ -8,9 +8,9 @@ import localeDeCh from '@angular/common/locales/de-CH';
 registerLocaleData(localeDeCh);
 
 // Third party imports
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {ElasticInputModule} from 'angular2-elastic-input';
-import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ElasticInputModule } from 'angular2-elastic-input';
+import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { NgReduxModule } from '@angular-redux/store';
 import { NgReduxRouterModule } from '@angular-redux/router';
 
@@ -23,6 +23,7 @@ import { PassiveLinkModule } from './shared';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule } from './shared';
 import { StoreModule } from './core/store/module';
 import { InformationModule } from './modules/information/information.module';
+import { ProjectsModule } from './modules/projects/projects.module';
 
 
 @NgModule({
@@ -43,7 +44,7 @@ import { InformationModule } from './modules/information/information.module';
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    // HomeModule,
+    ProjectsModule,
     PassiveLinkModule,
     ControlMessagesModule,
     LanguageSearchTypeaheadModule,
@@ -56,7 +57,7 @@ import { InformationModule } from './modules/information/information.module';
     AuthGuard,
     { provide: LOCALE_ID, useValue: 'de-CH' }
   ],
-  entryComponents : [
+  entryComponents: [
     AppComponent
   ],
   bootstrap: [AppComponent]

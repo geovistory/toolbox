@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { Route, Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './core';
 import { HomeComponent } from './modules/home/pages/home.component';
+import { ProjectListComponent } from './modules/projects/components/project-list/project-list.component';
+import { ProjectsModule } from './modules/projects/projects.module';
 
 
 
@@ -33,7 +35,7 @@ const routes: Routes = [
       },
       {
         path: 'projects',
-        loadChildren: './modules/projects/projects.module#ProjectsModule',
+        loadChildren: () => ProjectsModule,
         canActivate: [AuthGuard]
       },
       fallbackRoute

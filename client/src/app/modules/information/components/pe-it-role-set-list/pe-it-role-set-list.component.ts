@@ -8,7 +8,6 @@ import {
   keyframes
 } from '@angular/animations';
 
-import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
 import { AppellationStdBool } from '../role/role.component';
 import { RoleSetListComponent } from '../role-set-list/role-set-list.component';
 import { InfRole, EntityEditorService } from 'app/core';
@@ -93,7 +92,7 @@ export class PeItRoleSetListComponent extends RoleSetListComponent implements On
     if (this.outgoingProperties && this.ingoingProperties) {
 
       this.setDirectionAwareProperties();
-      this.setDirectedRolesPerProperty(this.roles);
+      this.setRoleSets(this.roles);
 
     }
   }

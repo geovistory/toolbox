@@ -493,6 +493,15 @@ module.exports = function(InfPersistentItem) {
       "where": ["pk_entity", "=", pkEntity],
       "include": {
         "entity_version_project_rels": innerJoinThisProject,
+        "dfh_class": {
+          "$relation": {
+            "name": "dfh_class",
+            "joinType": "inner join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          }
+        },
         "pi_roles": {
           "$relation": {
             "name": "pi_roles",
@@ -566,7 +575,15 @@ module.exports = function(InfPersistentItem) {
         "pk_entity": "asc"
       }],
       "include": {
-
+        "dfh_class": {
+          "$relation": {
+            "name": "dfh_class",
+            "joinType": "inner join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          }
+        },
         /** include all roles … */
         "pi_roles": {
           "$relation": {

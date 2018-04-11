@@ -13,8 +13,8 @@
     Please fill all fields below and click "Ok".
   </div> -->
 
-    <gv-pe-it [peItState]="'create'" [fkClass]="pkTargetClass" [childOfTeEnt]="true" (readyToCreate)="peItReadyToCreate($event)"
-      (notReadyToCreate)="peItNotReadyToCreate()"></gv-pe-it>
+    <!-- <gv-pe-it [peItState]="'create'" [fkClass]="pkTargetClass" [childOfTeEnt]="true" (readyToCreate)="peItReadyToCreate($event)"
+      (notReadyToCreate)="peItNotReadyToCreate()"></gv-pe-it> -->
 
     <div class="card-body">
       <button [ngClass]="{disabled:(!isReadyToCreate)}" type="button" class="btn btn-primary" (click)="createRole()">Ok</button>
@@ -29,8 +29,8 @@
 
 
     <div class="card-body">
-      <gv-pe-it [peItState]="'create'" [fkClass]="pkTargetClass" [childOfTeEnt]="true" (readyToCreate)="peItReadyToCreate($event)"
-        (notReadyToCreate)="peItNotReadyToCreate()"></gv-pe-it>
+      <!-- <gv-pe-it [peItState]="'create'" [fkClass]="pkTargetClass" [childOfTeEnt]="true" (readyToCreate)="peItReadyToCreate($event)"
+        (notReadyToCreate)="peItNotReadyToCreate()"></gv-pe-it> -->
     </div>
 
 
@@ -40,8 +40,8 @@
 
   <div *ngIf="roleState=='add'">
 
-    <gv-pe-it class="gv-flex-grow-1" [peItState]="roleState" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
-      [childOfTeEnt]="true" (appeChange)="emitAppeChange($event)" (appeReadyToAdd)="onAppeReadyToAdd($event)" (langReadyToAdd)="onLangReadyToAdd($event)">
+    <!-- <gv-pe-it class="gv-flex-grow-1" [peItState]="roleState" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
+      [childOfTeEnt]="true" (appeChange)="emitAppeChange($event)" (appeReadyToAdd)="onAppeReadyToAdd($event)" (langReadyToAdd)="onLangReadyToAdd($event)"> -->
       <div headerLeft>
 
         <!-- UI for is in project -->
@@ -64,15 +64,15 @@
         </div>
 
       </div>
-    </gv-pe-it>
+    <!-- </gv-pe-it> -->
 
   </div>
 
   <div class="d-flex flex-row" *ngIf="roleState === 'add-pe-it'">
 
     <!-- include component PeIt (passing the PeIt) -->
-    <gv-pe-it class="gv-flex-grow-1" [peItState]="roleState" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
-      [childOfTeEnt]="true" (appeChange)="emitAppeChange($event)" (appeReadyToAdd)="onAppeReadyToAdd($event)" (langReadyToAdd)="onLangReadyToAdd($event)"></gv-pe-it>
+    <!-- <gv-pe-it class="gv-flex-grow-1" [peItState]="roleState" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
+      [childOfTeEnt]="true" (appeChange)="emitAppeChange($event)" (appeReadyToAdd)="onAppeReadyToAdd($event)" (langReadyToAdd)="onLangReadyToAdd($event)"></gv-pe-it> -->
 
     <!-- <div class="gv-in-project"> -->
     <!-- [attr.disabled]="roleToAdd.entity_version_project_rels[0].is_standard_in_project || changeIsInProjectLoading ? 'disabled' : null" -->
@@ -101,13 +101,12 @@
   <div class="d-flex" *ngIf="roleState === 'editable'">
 
     <!-- include component PeIt (passing the PeIt) -->
-    <gv-pe-it class="gv-flex-grow-1" [peItState]="roleState" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
+    <!-- <gv-pe-it class="gv-flex-grow-1" [peItState]="roleState" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
       [childOfTeEnt]="true" (appeChange)="emitAppeChange($event)" (appeReadyToAdd)="onAppeReadyToAdd($event)" (langReadyToAdd)="onLangReadyToAdd($event)">
 
       <div belowHeader>
         <div class="card-body pt-0 gv-community-statistics d-flex justify-content-start small" *ngIf="communityStatsVisible">
 
-          <!-- Community data statistics -->
           <ul class="gv-ul-sm">
             <li class="gv-li-inline">
               <a href class="gv-passive-link text-secondary" (click)="openProjectsModal()" title="Added by {{role.is_in_project_count}} {{role.is_in_project_count === 1 ? 'project':'projects'}}">
@@ -125,7 +124,7 @@
         </div>
 
       </div>
-    </gv-pe-it>
+    </gv-pe-it> -->
 
     <div class="d-flex align-items-center">
 
@@ -154,9 +153,9 @@
   <div *ngIf="roleState === 'edit'">
 
     <!-- include component PeIt (passing the PeIt) -->
-    <gv-pe-it [peItState]="roleState" [appellation]="roleInEdit?.appellation" [language]="roleInEdit?.language" [pkEntity]="roleInEdit.fk_entity"
+    <!-- <gv-pe-it [peItState]="roleState" [appellation]="roleInEdit?.appellation" [language]="roleInEdit?.language" [pkEntity]="roleInEdit.fk_entity"
       (readyToCreate)="changeRoleInEdit($event)" (notReadyToCreate)="peItNotReadyToCreate()" [childOfTeEnt]="true">
-    </gv-pe-it>
+    </gv-pe-it> -->
 
     <div class="card-body">
       <button [ngClass]="{disabled:(!isReadyToCreate)}" type="button" class="btn btn-primary" (click)="updateRole()">Ok</button>
@@ -171,13 +170,12 @@
   <div *ngIf="roleState === 'view'">
 
     <!-- include component PeIt (passing the PeIt) -->
-    <gv-pe-it [peItState]="roleState" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
+    <!-- <gv-pe-it [peItState]="roleState" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
       [childOfTeEnt]="true" (appeChange)="emitAppeChange($event)">
 
       <div belowHeader>
         <div class="card-body pt-0 gv-community-statistics d-flex justify-content-start small" *ngIf="communityStatsVisible">
 
-          <!-- Community data statistics -->
           <ul class="gv-ul-sm">
             <li class="gv-li-inline">
               <a href class="gv-passive-link text-secondary" (click)="openProjectsModal()" title="Added by {{role.is_in_project_count}} {{role.is_in_project_count === 1 ? 'project':'projects'}}">
@@ -195,7 +193,7 @@
         </div>
 
       </div>
-    </gv-pe-it>
+    </gv-pe-it> -->
 
   </div>
 

@@ -8,11 +8,10 @@ import {
   keyframes
 } from '@angular/animations';
 
-import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
 import { AppellationStdBool } from '../role/role.component';
 import { InfRole, InfPersistentItem, DfhProperty, EntityEditorService } from 'app/core';
 import { DirectionAwareProperty, PropertyService } from '../../shared/property.service';
-import { DirectedRolesPerProperty, RoleService } from '../../shared/role.service';
+import { RoleSets, RoleService } from '../../shared/role.service';
 
 export class RoleSetListComponent implements OnInit {
 
@@ -82,7 +81,7 @@ export class RoleSetListComponent implements OnInit {
 
   // directed roles per property,
   // e.g.: [{fkProperty: 'P52', isOutgoing: true, roles: []},…]
-  directedRolesPerProperty: DirectedRolesPerProperty[] = [];
+  directedRolesPerProperty: RoleSets[] = [];
 
   // Array of possible ingoing Properties of the class of the parent peIt
   ingoingDirectionAwareProperties: DirectionAwareProperty[];
@@ -154,10 +153,10 @@ export class RoleSetListComponent implements OnInit {
     }
   }
 
-  setDirectedRolesPerProperty(roles) {
+  setRoleSets(roles) {
     if (roles) {
 
-      this.directedRolesPerProperty = this.roleService.toDirectedRolesPerProperty(
+      this.directedRolesPerProperty = this.roleService.toRoleSets(
         roles,
         this.ingoingProperties,
         this.outgoingProperties
@@ -234,7 +233,7 @@ export class RoleSetListComponent implements OnInit {
 
     // add a property sections
 
-    const newPropertySection: DirectedRolesPerProperty = {
+    const newPropertySection: RoleSets = {
       isOutgoing: this.propertyToAdd.isOutgoing,
       fkProperty: this.propertyToAdd.property.dfh_pk_property,
       roles: []
@@ -275,7 +274,7 @@ export class RoleSetListComponent implements OnInit {
   /**
   * Called when the user closes an empty property section
   */
-  onRemovePropertySectionReq(propSection: DirectedRolesPerProperty) {
+  onRemovePropertySectionReq(propSection: RoleSets) {
     var index = this.directedRolesPerProperty.indexOf(propSection, 0);
     if (index > -1) {
       this.directedRolesPerProperty.splice(index, 1);
@@ -294,7 +293,7 @@ export class RoleSetListComponent implements OnInit {
 
     this.roles = this.roles.concat(roles);
 
-    this.setDirectedRolesPerProperty(this.roles);
+    this.setRoleSets(this.roles);
 
   }
 

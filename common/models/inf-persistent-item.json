@@ -27,6 +27,12 @@
       "model": "InfRole",
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
+    },
+    "dfh_class": {
+      "type": "belongsTo",
+      "model": "DfhClass",
+      "primaryKey": "dfh_pk_class",
+      "foreignKey": "fk_class"
     }
   },
   "acls": [

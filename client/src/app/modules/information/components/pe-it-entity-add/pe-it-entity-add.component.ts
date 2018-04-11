@@ -9,12 +9,12 @@ import { ActiveProjectService, EntityEditorService, InfPersistentItemApi } from 
 import { ActivePeItService } from '../../shared/active-pe-it.service';
 import { ClassService } from '../../shared/class.service';
 import { EntityAddModalService } from '../../shared/entity-add-modal.service';
-import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
 import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
 import { PropertyPipe } from '../../shared/property.pipe';
-import { PeItEntityActions } from '../pe-it-entity/pe-it-entity.actions';
 import { NgRedux } from '@angular-redux/store';
-import { IPeIt } from '../pe-it-entity/pe-it-entity.model';
+import { PeItActions } from '../../containers/pe-it/pe-it.actions';
+import { IPeItState } from '../../containers/pe-it/pe-it.model';
+import { PeItComponent } from '../../containers/pe-it/pe-it.component';
 
 
 @Component({
@@ -22,7 +22,7 @@ import { IPeIt } from '../pe-it-entity/pe-it-entity.model';
   templateUrl: './pe-it-entity-add.component.html',
   styleUrls: ['./pe-it-entity-add.component.scss']
 })
-export class PeItEntityAddComponent extends PeItEntityComponent implements OnInit {
+export class PeItEntityAddComponent extends PeItComponent implements OnInit {
 
 
   /**
@@ -46,8 +46,8 @@ export class PeItEntityAddComponent extends PeItEntityComponent implements OnIni
     classService: ClassService,
     entityEditor: EntityEditorService,
     changeDetector: ChangeDetectorRef,
-    actions: PeItEntityActions,
-    ngRedux: NgRedux<IPeIt>,
+    actions: PeItActions,
+    ngRedux: NgRedux<IPeItState>,
     private entityAddModalService: EntityAddModalService,
     private modalService: NgbModal,
     private router: Router,
@@ -57,7 +57,7 @@ export class PeItEntityAddComponent extends PeItEntityComponent implements OnIni
 
   }
   ngOnInit() {
-    this.initDfhClass(this.fkClass);
+    // this.initDfhClass(this.fkClass);
   }
   ngOnChanges() {
   }
@@ -71,7 +71,7 @@ export class PeItEntityAddComponent extends PeItEntityComponent implements OnIni
     this.entityAddModalService.previousState = undefined;
     this.entityAddModalService.state = 'search-existing';
     this.entityAddModalService.selectRoleRange = true;
-    this.entityAddModalService.selectedClass = this.dfhClass;
+    // this.entityAddModalService.selectedClass = this.dfhClass;
     this.entityAddModalService.onSelect.subscribe(pkEntity => {
       this.selected.emit(pkEntity);
     })

@@ -11,7 +11,7 @@ import { timer } from 'rxjs/observable/timer';
 import { PeItComponent } from '../pe-it/pe-it.component';
 import { TeEntComponent } from '../te-ent/te-ent.component';
 import { RolePointToEnum, RoleComponent, AppellationStdBool } from '../role/role.component';
-import { DirectedRolesPerProperty, RoleService } from '../../shared/role.service';
+import { RoleSets, RoleService } from '../../shared/role.service';
 import { InfRole, DfhProperty, InfEntityProjectRelApi, InfRoleApi, ActiveProjectService, EntityEditorService } from 'app/core';
 import { PropertyService } from '../../shared/property.service';
 import { UtilitiesService } from '../../shared/utilities.service';
@@ -20,7 +20,7 @@ import { UtilitiesService } from '../../shared/utilities.service';
 export class RoleSetComponent implements OnChanges, OnInit {
 
 
-  @Input() propertySection: DirectedRolesPerProperty;
+  @Input() propertySection: RoleSets;
 
   // fk_property that all roles of this kind should have
   @Input() fkProperty: number;
@@ -75,7 +75,7 @@ export class RoleSetComponent implements OnChanges, OnInit {
 
   @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter();
 
-  @Output() removePropertySectionReq: EventEmitter<DirectedRolesPerProperty> = new EventEmitter();
+  @Output() removePropertySectionReq: EventEmitter<RoleSets> = new EventEmitter();
 
   /**
   * Properties

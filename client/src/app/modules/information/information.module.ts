@@ -12,7 +12,7 @@ import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 
 // Core services
 
-import { SDKBrowserModule, ValidationService } from 'app/core';
+import { SDKBrowserModule, ValidationService, IAppState } from 'app/core';
 
 // Shared components and directives
 import { ControlMessagesModule, LanguageSearchTypeaheadModule } from 'app/shared';
@@ -32,9 +32,7 @@ import { EntityAddSearchExistingComponent } from './components/entity-add-search
 import { EntityEditorSettingsComponent } from './components/entity-editor-settings/entity-editor-settings.component';
 import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
 import { ExistenceTimeComponent } from './components/existence-time/existence-time.component';
-import { PeItComponent } from './components/pe-it/pe-it.component';
 import { PeItAppellationComponent } from './components/pe-it-appellation/pe-it-appellation.component';
-import { PeItEntityComponent } from './components/pe-it-entity/pe-it-entity.component';
 import { PeItEntityAddComponent } from './components/pe-it-entity-add/pe-it-entity-add.component';
 import { PeItEntityPreviewComponent } from './components/pe-it-entity-preview/pe-it-entity-preview.component';
 import { PeItEntityPreviewModalComponent } from './components/pe-it-entity-preview-modal/pe-it-entity-preview-modal.component';
@@ -50,7 +48,6 @@ import { TeEntComponent } from './components/te-ent/te-ent.component';
 import { TimePrimitiveComponent } from './components/time-primitive/time-primitive.component';
 import { VersionModalComponent } from './components/version-modal/version-modal.component';
 import { InformationRoutingModule } from './information-routing.module';
-import { EntityEditorComponent } from './pages/entity-editor/entity.editor.component';
 import { FieldsetComponent, FieldsetBeginComponent, FieldsetEndComponent, FieldsetInnerComponent, FieldsetOuterComponent, FieldComponent } from './components/existence-time';
 import { TeEntExistenceTimeComponent } from './components/te-ent-existence-time/te-ent-existence-time.component';
 
@@ -71,34 +68,37 @@ import { TeEntService } from './shared/te-ent.service';
 import { ConfigService } from './shared/config.service';
 import { TimelineModule } from '../timeline/timeline.module';
 import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timeline.component';
-import { StoreModule } from '../../core/store/module';
-import { PeItEntityActions } from './components/pe-it-entity/pe-it-entity.actions';
+import { EntityEditorComponent } from './containers/entity-editor/entity.editor.component';
+import { EntityEditorActions } from './containers/entity-editor/entity-editor.actions';
+import { PeItActions } from './containers/pe-it/pe-it.actions';
+import { PeItComponent } from './containers/pe-it/pe-it.component';
+import { NgRedux } from '@angular-redux/store';
+import { IAppStateWithInformation } from './api/information.model';
 
 
 @NgModule({
   imports: [
-    CommonModule,    
-    FormsModule, 
+    CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     // BrowserAnimationsModule,
-    
-    
+
+
     SlimLoadingBarModule,
     NgbModule,
     // ElasticInputModule,
-    
+
     // SDKBrowserModule,
     InformationRoutingModule,
-    
+
     //Own reusable components
-    StoreModule,
     LanguageSearchTypeaheadModule,
     ControlMessagesModule,
     PassiveLinkModule,
     TimelineModule
 
   ],
-  declarations: [ 
+  declarations: [
     EntityEditorComponent,
     AppellationLabelCreateComponent,
     AppellationLabelEditorComponent,
@@ -115,7 +115,6 @@ import { PeItEntityActions } from './components/pe-it-entity/pe-it-entity.action
     ExistenceTimeComponent,
     PeItComponent,
     PeItAppellationComponent,
-    PeItEntityComponent,
     PeItEntityAddComponent,
     PeItEntityPreviewComponent,
     PeItEntityPreviewModalComponent,
@@ -154,10 +153,12 @@ import { PeItEntityActions } from './components/pe-it-entity/pe-it-entity.action
     AppellationService,
     TeEntService,
     ConfigService,
-    PeItEntityActions
+    PeItActions,
+    EntityEditorActions
   ],
-  entryComponents : [
+  entryComponents: [
     EntityAddModalComponent
   ],
 })
-export class InformationModule { }
+export class InformationModule {
+}

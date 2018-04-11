@@ -1,12 +1,13 @@
 import { IAccount } from "../../modules/account/account.model";
 import { IProjectList } from "../../modules/projects/projects.model";
-import { IPeIt } from "../../modules/information/components/pe-it-entity/pe-it-entity.model";
-import { IInformation } from "../../modules/information/information.model";
+import { Project } from "app/core";
+import { IInformationState } from "../../modules/information/api/information.model";
 
 export interface IAppState {
     account?: IAccount,
     projects?: IProjectList
-    information?: IInformation,
+    activeProject?: Project
     routes?: any,
+    information?: IInformationState
     // feedback?: any
 }

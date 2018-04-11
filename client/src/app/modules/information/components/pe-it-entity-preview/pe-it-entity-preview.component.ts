@@ -4,7 +4,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 
-import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
 import { PeItEntityPreviewModalComponent } from '../pe-it-entity-preview-modal/pe-it-entity-preview-modal.component';
 import { InfPersistentItemApi, ActiveProjectService, EntityEditorService, InfEntityProjectRelApi, InfRole } from 'app/core';
 import { PeItService } from '../../shared/pe-it.service';
@@ -12,16 +11,17 @@ import { ActivePeItService } from '../../shared/active-pe-it.service';
 import { ClassService } from '../../shared/class.service';
 import { AppellationLabel } from '../../shared/appellation-label/appellation-label';
 import { PropertyPipe } from '../../shared/property.pipe';
-import { PeItEntityActions } from '../pe-it-entity/pe-it-entity.actions';
 import { NgRedux } from '@angular-redux/store';
-import { IPeIt } from '../pe-it-entity/pe-it-entity.model';
+import { PeItComponent } from '../../containers/pe-it/pe-it.component';
+import { PeItActions } from '../../containers/pe-it/pe-it.actions';
+import { IPeItState } from '../../containers/pe-it/pe-it.model';
 
 @Component({
   selector: 'gv-pe-it-entity-preview',
   templateUrl: './pe-it-entity-preview.component.html',
   styleUrls: ['./pe-it-entity-preview.component.scss']
 })
-export class PeItEntityPreviewComponent extends PeItEntityComponent implements OnInit {
+export class PeItEntityPreviewComponent extends PeItComponent implements OnInit {
 
 
   /**
@@ -42,8 +42,8 @@ export class PeItEntityPreviewComponent extends PeItEntityComponent implements O
     classService: ClassService,
     entityEditor: EntityEditorService,
     changeDetector: ChangeDetectorRef,
-    actions: PeItEntityActions,
-    ngRedux: NgRedux<IPeIt>,
+    actions: PeItActions,
+    ngRedux: NgRedux<IPeItState>,
     private modalService: NgbModal,
     private router: Router,
     private route: ActivatedRoute,

@@ -13,14 +13,15 @@ import { createLogger } from 'redux-logger';
 
 // The top-level reducers and epics that make up our app's logic.
 import { IAppState } from './model';
-import { rootReducer } from './reducers';
+import { createRootReducer } from './reducers';
 // import { RootEpics } from './epics';
 import { INITIAL_STATE } from './initial-state';
+import { ActiveProjectActions } from '../active-project/active-project.action';
 
 
 @NgModule({
     imports: [NgReduxModule, NgReduxRouterModule],
-    providers: [ NgReduxRouter]
+    providers: [ NgReduxRouter, ActiveProjectActions]
 })
 export class StoreModule {
     constructor(
@@ -34,7 +35,7 @@ export class StoreModule {
         // it too.
         ngRedux.configureStore(
             // RootReducer
-            rootReducer,
+            createRootReducer(),
 
             // Initial state
             INITIAL_STATE,
