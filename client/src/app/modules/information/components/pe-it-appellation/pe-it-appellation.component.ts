@@ -2,8 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { InfAppellation, InfAppellationApi, ActiveProjectService, EntityEditorService, InfEntityProjectRel } from 'app/core';
-import { AppellationStdBool } from '../role/role.component';
 import { AppellationLabel } from '../../shared/appellation-label/appellation-label';
+import { AppellationStdBool } from '../role/role.component';
 
 
 

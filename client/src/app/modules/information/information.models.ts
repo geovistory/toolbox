@@ -1,7 +1,6 @@
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
 import { InfTemporalEntity, InfRole, InfPersistentItem, InfAppellation, InfLanguage, DfhProperty, DfhClass } from "app/core";
 import { ExistenceTime } from "./components/existence-time";
-import { RoleSets } from "./shared/role.service";
 
 export type CollapsedExpanded = 'collapsed' | 'expanded';
 

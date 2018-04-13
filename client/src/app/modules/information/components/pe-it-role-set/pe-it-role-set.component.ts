@@ -1,6 +1,6 @@
 import {
   Component, OnChanges, OnInit, Input, Output, ViewChildren,
-  QueryList, EventEmitter, ChangeDetectorRef
+  QueryList, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy
 } from '@angular/core';
 import {
   trigger,
@@ -15,18 +15,26 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 import { timer } from 'rxjs/observable/timer';
 
-import { RolePointToEnum, RoleComponent, AppellationStdBool } from '../role/role.component';
 import { PeItComponent } from '../pe-it/pe-it.component';
 import { TeEntComponent } from '../te-ent/te-ent.component';
 import { RoleSetComponent } from '../role-set/role-set.component';
 import { PeItRoleComponent } from '../pe-it-role/pe-it-role.component';
-import { InfPersistentItem, InfEntityProjectRelApi, InfRoleApi, ActiveProjectService, EntityEditorService, InfRole } from 'app/core';
+import { InfPersistentItem, InfEntityProjectRelApi, InfRoleApi, ActiveProjectService, EntityEditorService, InfRole, DfhProperty } from 'app/core';
 import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
 import { UtilitiesService } from '../../shared/utilities.service';
+import { WithSubStore, ObservableStore, NgRedux, select } from '@angular-redux/store';
+import { EditorStates, CollapsedExpanded } from '../../information.models';
+import { roleSetReducer } from '../role-set/role-set.reducer';
+import { IRoleSetState } from '../role-set/role-set.model';
+import { RoleSetActions } from '../role-set/role-set.actions';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
-
-
+@AutoUnsubscribe()
+@WithSubStore({
+  localReducer: roleSetReducer,
+  basePathMethodName: 'getBasePath'
+})
 @Component({
   selector: 'gv-pe-it-role-set',
   templateUrl: './pe-it-role-set.component.html',
@@ -65,9 +73,13 @@ import { UtilitiesService } from '../../shared/utilities.service';
         })
       ])))
     ])
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PeItRoleSetComponent extends RoleSetComponent implements OnChanges, OnInit {
+
+export class PeItRoleSetComponent extends RoleSetComponent {
+
+
 
   /**
   * Inputs
@@ -88,10 +100,16 @@ export class PeItRoleSetComponent extends RoleSetComponent implements OnChanges,
     propertyService: PropertyService,
     util: UtilitiesService,
     public entityEditor: EntityEditorService,
-    changeDetector: ChangeDetectorRef
+    changeDetector: ChangeDetectorRef,
+     ngRedux: NgRedux<IRoleSetState>,
+     actions: RoleSetActions
+
   ) {
-    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector)
+    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector,ngRedux,actions)
+
   }
+
+
 
   /**
   * Called when user click on Add a [*]
@@ -146,8 +164,8 @@ export class PeItRoleSetComponent extends RoleSetComponent implements OnChanges,
     this.addRoleState = 'createNew';
   }
 
-  get removeSectionBtnVisible(){
-    if(this.roles && (this.roles.length ===0)) return true;
+  get removeSectionBtnVisible() {
+    if (this.roles && (this.roles.length === 0)) return true;
 
     return false;
   }

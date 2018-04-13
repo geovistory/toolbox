@@ -19,6 +19,24 @@ export const peItReducer =
         return lastState;
     }
 
+    switch (action.type) {
+      case PeItActions.PEIT_TO_CREATE_UPDATED:
+        lastState.peItToCreate = action.payload.peItToCreate;
+        return lastState;
+    }
+
+    switch (action.type) {
+      case PeItActions.PEIT_TO_ADD_UPDATED:
+        lastState.peItToAdd = action.payload.peItToAdd;
+        return lastState;
+    }
+
+    switch (action.type) {
+      case PeItActions.PE_IT_ROLE_SET_LIST_INITIALIZED:
+        lastState.piRoleSetListState = action.payload.piRoleSetListState;
+        return lastState;
+    }
+
     return lastState;
   };
 

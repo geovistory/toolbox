@@ -1,7 +1,13 @@
 import { Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { RoleSetComponent } from '../role-set/role-set.component';
-import { InfAppellation, InfRole, DfhProperty, ActiveProjectService, EntityEditorService, InfRoleApi, InfEntityProjectRel, InfLanguage, InfTemporalEntity } from 'app/core';
+import { InfAppellation, InfRole, DfhProperty, ActiveProjectService, EntityEditorService, InfRoleApi, InfEntityProjectRel, InfLanguage, InfTemporalEntity, Project } from 'app/core';
 import { EprService } from '../../shared/epr.service';
+import { ObservableStore, select, NgRedux } from '@angular-redux/store';
+import { Observable } from 'rxjs/Observable';
+import { EditorStates, CollapsedExpanded } from '../../information.models';
+import { RoleActions } from './role.actions';
+import { IRoleState } from './role.model';
+import { roleReducer } from './role.reducers';
 
 export enum RolePointToEnum {
   PeIt = "PeIt",
@@ -16,6 +22,26 @@ export interface AppellationStdBool {
 }
 
 export class RoleComponent implements OnInit {
+  @Input() parentPath: string[];
+  @Input() index: string;
+  localStore: ObservableStore<IRoleState>;
+
+  getBasePath = () => this.index ?
+    [... this.parentPath, 'childRoleStates', this.index] :
+    null;
+
+  @select() role$: Observable<InfRole>;
+  @select() isOutgoing$: Observable<boolean>;
+  @select() state$: Observable<EditorStates>;
+  @select() toggle$: Observable<CollapsedExpanded>;
+  @select() isStandardRoleToAdd$: Observable<boolean>;
+  @select() isStandardInProject$: Observable<boolean>;
+  @select() roleToCreate$: Observable<InfRole>;
+  @select() roleToAdd$: Observable<InfRole>;
+
+  property$: Observable<DfhProperty>;
+  activeProject$: Observable<Project>;
+
 
   /**
   * Inputs
@@ -48,7 +74,7 @@ export class RoleComponent implements OnInit {
   * Outputs
   */
 
-  @Output() onRequestStandard: EventEmitter<RoleComponent> = new EventEmitter();
+  @Output() onRequestStandard: EventEmitter<any> = new EventEmitter();
 
   @Output() readyToCreate: EventEmitter<InfRole> = new EventEmitter;
 
@@ -90,37 +116,94 @@ export class RoleComponent implements OnInit {
     private eprService: EprService,
     private ref: ChangeDetectorRef,
     public entityEditor: EntityEditorService,
-    protected roleApi: InfRoleApi
+    protected roleApi: InfRoleApi,
+    private ngRedux: NgRedux<IRoleState>,
+    protected actions: RoleActions
   ) { }
 
   ngOnInit() {
-    if ((this.roleState === 'create' ||  this.roleState === 'create-te-ent' ||  this.roleState === 'create-pe-it') && this.role === undefined) {
-      this.role = new InfRole();
-      this.role.fk_property = this.fkProperty;
-    }
+    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), roleReducer);
+    this.property$ = this.ngRedux.select<DfhProperty>([...this.parentPath, 'property']);
+    this.activeProject$ = this.ngRedux.select<Project>('activeProject');
 
+    this.initState();
 
-    // make a copy
-    this.roleToAdd = new InfRole(this.role);
+  }
 
-    let eprToAdd = new InfEntityProjectRel({
-      fk_project: this.activeProjectService.project.pk_project,
-      fk_entity_version_concat: this.role.pk_entity_version_concat
+  initState() {
+
+    Observable.zip(
+      this.state$,
+      this.role$,
+      this.activeProject$,
+    ).subscribe(result => {
+      const state = result[0];
+      const role = result[1];
+      const activeProject = result[3];
+
+      if ((state === 'create' || state === 'create-te-ent' || state === 'create-pe-it') && role === undefined) {
+        this.initRoleToCreate()
+      }
+
+      if (state === 'add' || state === 'add-pe-it' || state === 'create-pe-it') {
+        this.initRoleToAdd(role)
+      }
+
+      if (role)
+        this.initIsStandardInProject(role)
+
+      this.initChildren();
     })
 
-    if (
-      (this.roleState === 'add-pe-it' || this.roleState === 'create-pe-it')
-      && this.isStandardRoleToAdd
-    ) {
-      eprToAdd.is_standard_in_project = true;
-    }
-
-    // add an epr
-    this.roleToAdd.entity_version_project_rels = [eprToAdd]
-
-    if (this.epr)
-      this.isStandardInProject = this.epr.is_standard_in_project;
   }
+
+
+  initChildren(){}
+
+
+  initRoleToCreate() {
+    this.property$.subscribe(property => {
+      const roleToCreate = new InfRole();
+      roleToCreate.fk_property = property.dfh_pk_property;
+      this.localStore.dispatch(this.actions.roleToCreateUpdated(roleToCreate))
+    })
+  }
+
+
+
+  initRoleToAdd(role) {
+    this.activeProject$.subscribe(activeProject => {
+
+      // make a copy
+      const roleToAdd = new InfRole(this.role);
+
+      let eprToAdd = new InfEntityProjectRel({
+        fk_project: this.activeProjectService.project.pk_project,
+        fk_entity_version_concat: this.role.pk_entity_version_concat
+      })
+
+      if (
+        (this.roleState === 'add-pe-it' || this.roleState === 'create-pe-it')
+        && this.isStandardRoleToAdd
+      ) {
+        eprToAdd.is_standard_in_project = true;
+      }
+
+      // add an epr
+      this.roleToAdd.entity_version_project_rels = [eprToAdd]
+
+      this.localStore.dispatch(this.actions.roleToAddUpdated(roleToAdd))
+    })
+  }
+
+
+
+  initIsStandardInProject(role: InfRole) {
+    if (role.entity_version_project_rels[0])
+      this.localStore.dispatch(this.actions.isStandardInProjectUpdated(role.entity_version_project_rels[0].is_standard_in_project))
+  }
+
+
 
 
   /**
@@ -323,5 +406,6 @@ export class RoleComponent implements OnInit {
     this.appellation = appeStd.appellation;
     this.appeChange.emit(appeStd)
   }
+
 
 }

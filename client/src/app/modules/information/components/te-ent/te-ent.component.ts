@@ -12,17 +12,26 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 import { RoleSetListComponent } from '../role-set-list/role-set-list.component';
 import { InfTemporalEntity, DfhProperty, InfRole, DfhClass, ActiveProjectService, EntityEditorService, InfEntityProjectRel } from 'app/core';
-import { AppellationStdBool } from '../role/role.component';
-import { RoleSets, RoleService } from '../../shared/role.service';
+import { RoleService } from '../../shared/role.service';
 import { TeEntRoleSetComponent } from '../te-ent-role-set/te-ent-role-set.component';
 import { PropertyService } from '../../shared/property.service';
 import { ClassService } from '../../shared/class.service';
 import { AppellationLabel } from '../../shared/appellation-label/appellation-label';
 import { ExistenceTime } from '../existence-time';
 import { TeEntService } from '../../shared/te-ent.service';
+import { IRoleSetState } from '../role-set/role-set.model';
+import { AppellationStdBool } from '../role/role.component';
+import { WithSubStore, ObservableStore } from '@angular-redux/store';
+import { teEntReducer } from './te-ent.reducer';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { ITeEntState } from './te-ent.model';
 
 
-
+@AutoUnsubscribe()
+@WithSubStore({
+  localReducer: teEntReducer,
+  basePathMethodName: 'getBasePath'
+})
 @Component({
   selector: 'gv-te-ent',
   templateUrl: './te-ent.component.html',
@@ -65,6 +74,13 @@ import { TeEntService } from '../../shared/te-ent.service';
   ]
 })
 export class TeEntComponent extends RoleSetListComponent implements OnInit {
+
+
+  @Input() parentPath: string[];
+
+  getBasePath = () => [...this.parentPath, 'childTeEnt']
+  basePath: string[];
+  localStore: ObservableStore<ITeEntState>;
 
   /**
   * Inputs
@@ -116,7 +132,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
 
   // directed roles per property,
   // e.g.: [{fkProperty: 'P52', isOutgoing: true, roles: []},…]
-  directedRolesPerProperty: RoleSets[];
+  roleSets: IRoleSetState[];
 
   isReadyToCreate: boolean;
 
@@ -142,7 +158,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
     ref: ChangeDetectorRef,
     private activeProjectService: ActiveProjectService,
     private classService: ClassService,
-    public entityEditor: EntityEditorService,
+    public entityEditor: EntityEditorService
   ) {
     super(roleService, propertyService, entityEditor, ref)
   }
@@ -205,7 +221,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
       this.outgoingProperties = result[1];
 
       if (this.teEntState !== 'create') {
-        this.setDirectionAwareProperties();
+        this.setDirectionAwareProperties(this.ingoingProperties, this.outgoingProperties);
         this.setRoleSets(this.teEnt.te_roles);
       }
 

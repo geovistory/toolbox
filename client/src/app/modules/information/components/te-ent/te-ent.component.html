@@ -11,7 +11,7 @@
     <div [@slideInOut]="cardBodyState">
 
       <gv-te-ent-role-set
-      *ngFor="let property of directedRolesPerProperty"
+      *ngFor="let property of roleSets"
       [propertySection]="property"
       [isOutgoing]="property.isOutgoing"
       [roles]="property.roles"
@@ -19,7 +19,7 @@
       [pointTo]="'PeIt'"
       [parentEntityPk]="parentRole.fk_entity"
       [parentTeEnt]="teEnt"
-      [propState]="teEntState"
+      [state]="teEntState"
       [parentRole]="parentRole"
       [communityStatsVisible]="communityStatsVisible"
       [ontoInfoVisible]="ontoInfoVisible"
@@ -97,7 +97,7 @@
       [parentRole]="parentRole"
       [fkProperty]="property.dfh_pk_property"
       [pointTo]="'PeIt'"
-      [propState]="'create'"
+      [state]="'create'"
       [isOutgoing]="true"
       (readyToCreate)="propertyReadyToCreate($event)"
       (notReadyToCreate)="propertyNotReadyToCreate()"
@@ -109,7 +109,7 @@
       [parentRole]="parentRole"
       [fkProperty]="property.dfh_pk_property"
       [pointTo]="'PeIt'"
-      [propState]="'create'"
+      [state]="'create'"
       [isOutgoing]="false"
       (readyToCreate)="propertyReadyToCreate($event)"
       (notReadyToCreate)="propertyNotReadyToCreate()"
@@ -128,7 +128,7 @@
     <div [@slideInOut]="cardBodyState">
 
       <gv-te-ent-role-set
-      *ngFor="let property of directedRolesPerProperty"
+      *ngFor="let property of roleSets"
       [propertySection]="property"
       [isOutgoing]="property.isOutgoing"
       [roles]="property.roles"
@@ -136,7 +136,7 @@
       [pointTo]="'PeIt'"
       [parentEntityPk]="parentRole.fk_entity"
       [parentTeEnt]="teEnt"
-      [propState]="teEntState"
+      [state]="teEntState"
       [parentRole]="parentRole"
       [communityStatsVisible]="communityStatsVisible"
       [ontoInfoVisible]="ontoInfoVisible"

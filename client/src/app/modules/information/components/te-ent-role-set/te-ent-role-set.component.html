@@ -1,6 +1,6 @@
 <div *ngIf="!isCircular && (property!==undefined)" [ngClass]="{'dev-view': entityEditor.devView}">
   <span *ngIf="entityEditor.devView">
-    [state: {{propState}}]
+    [state: {{state}}]
     [readyToCreate: {{isReadyToCreate}}]
     [readyToAdd: {{rolesToAdd?.length}}]
     [communityStatsVisible {{communityStatsVisible}}]
@@ -20,7 +20,7 @@
   <!--
   ************************* Edit State ************************* -->
 
-  <span *ngIf="propState === 'edit'">
+  <span *ngIf="state === 'edit'">
 
 
 
@@ -167,7 +167,7 @@
   <!--
   ************************* Add-Pe-It State ************************* -->
 
-  <span *ngIf="propState === 'add-pe-it'">
+  <span *ngIf="state === 'add-pe-it'">
 
     <div class="card-body gv-property-section-header d-flex flex-row gv-to-pe-it">
       <div class="gv-label gv-flex-grow-1"> {{roleLabel}} </div>
@@ -184,7 +184,7 @@
         [parentProperty]="property"
         [isOutgoing]="isOutgoing"
         [pointTo]="pointTo"
-        [roleState]="propState"
+        [roleState]="state"
         (appeChange)="emitAppeChange($event)"
         (readyToAdd)="onRoleReadyToAdd($event)"
         (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
@@ -197,7 +197,7 @@
   <!--
   ************************* Add State ************************* -->
 
-  <span *ngIf="propState === 'add'">
+  <span *ngIf="state === 'add'">
 
     <div class="card-body gv-property-section-header d-flex flex-row gv-to-pe-it">
       <div class="gv-label gv-flex-grow-1"> {{roleLabel}} </div>
@@ -211,7 +211,7 @@
         [parentProperty]="property"
         [isOutgoing]="isOutgoing"
         [pointTo]="pointTo"
-        [roleState]="propState"
+        [roleState]="state"
         (appeChange)="emitAppeChange($event)"
         (readyToAdd)="onRoleReadyToAdd($event)"
         (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
@@ -224,7 +224,7 @@
   <!--
   ************************* Create State ************************* -->
 
-  <span *ngIf="propState === 'create'">
+  <span *ngIf="state === 'create'">
 
     <div class="btn-group d-flex flex-row gv-h5">
       <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
@@ -275,7 +275,7 @@
   <!--
   ************************* View State ************************* -->
 
-  <span *ngIf="propState === 'view'">
+  <span *ngIf="state === 'view'">
 
     <div class="card-body gv-property-section-header d-flex flex-row gv-to-pe-it">
       <div class="gv-label gv-flex-grow-1"> {{roleLabel}} </div>
@@ -289,7 +289,7 @@
         [parentProperty]="property"
         [isOutgoing]="isOutgoing"
         [pointTo]="pointTo"
-        [roleState]="propState"
+        [roleState]="state"
         [communityStatsVisible]="communityStatsVisible"
         [ontoInfoVisible]="ontoInfoVisible"
         (appeChange)="emitAppeChange($event)"

@@ -8,12 +8,14 @@ import {
   keyframes
 } from '@angular/animations';
 
-import { AppellationStdBool } from '../role/role.component';
 import { InfRole, InfPersistentItem, DfhProperty, EntityEditorService } from 'app/core';
 import { DirectionAwareProperty, PropertyService } from '../../shared/property.service';
-import { RoleSets, RoleService } from '../../shared/role.service';
+import { RoleService } from '../../shared/role.service';
+import { EditorStates } from '../../information.models';
+import { IRoleSetState } from '../role-set/role-set.model';
+import { AppellationStdBool } from '../role/role.component';
 
-export class RoleSetListComponent implements OnInit {
+export class RoleSetListComponent  {
 
   /**
   * Inputs
@@ -35,7 +37,7 @@ export class RoleSetListComponent implements OnInit {
   @Input() ingoingProperties: DfhProperty[];
 
   // state of this component
-  @Input() RoleSetListState: string;
+  state:EditorStates;
 
   // state of adding new information section
   @Input() set addingInformation(val: boolean) {
@@ -54,6 +56,9 @@ export class RoleSetListComponent implements OnInit {
 
   // emit to say that adding informaion is finished
   @Output() stopAddingInformation: EventEmitter<void> = new EventEmitter();
+
+  // emit to say that the roles have been updated
+  @Output() rolesUpdated: EventEmitter<InfRole[]> = new EventEmitter();
 
 
   /**
@@ -81,7 +86,7 @@ export class RoleSetListComponent implements OnInit {
 
   // directed roles per property,
   // e.g.: [{fkProperty: 'P52', isOutgoing: true, roles: []},…]
-  directedRolesPerProperty: RoleSets[] = [];
+  roleSets: IRoleSetState[] = [];
 
   // Array of possible ingoing Properties of the class of the parent peIt
   ingoingDirectionAwareProperties: DirectionAwareProperty[];
@@ -99,7 +104,7 @@ export class RoleSetListComponent implements OnInit {
     protected roleService: RoleService,
     private propertyService: PropertyService,
     public entityEditor: EntityEditorService,
-    private ref: ChangeDetectorRef
+    protected ref: ChangeDetectorRef
 
   ) { }
 
@@ -110,11 +115,11 @@ export class RoleSetListComponent implements OnInit {
   * @return {bookean}  true if add button should be visible
   */
   get addButtonVisible() {
-
-    if (this.RoleSetListState === 'selectProp') return false;
-    if (this.RoleSetListState === 'add') return false;
-    if (this.RoleSetListState === 'create') return false;
-    if (this.RoleSetListState === 'add-pe-it') return false;
+    
+    if (this.state ==  'selectProp') return false;
+    if (this.state === 'add') return false;
+    if (this.state === 'create') return false;
+    if (this.state === 'add-pe-it') return false;
 
 
     return true;
@@ -125,23 +130,15 @@ export class RoleSetListComponent implements OnInit {
   * Methods
   */
 
-  ngOnInit() {
-
-    this.propState = this.RoleSetListState;
-
-    // this.propertyToAdd = null;
-
-  }
-
-  setDirectionAwareProperties() {
+  setDirectionAwareProperties(ingoingProperties, outgoingProperties) {
 
     this.outgoingDirectionAwareProperties = this.propertyService
-      .toDirectionAwareProperties(true, this.outgoingProperties)
+      .toDirectionAwareProperties(true, outgoingProperties)
 
     this.ingoingDirectionAwareProperties = this.propertyService
-      .toDirectionAwareProperties(false, this.ingoingProperties)
+      .toDirectionAwareProperties(false, ingoingProperties)
 
-    if (this.RoleSetListState === 'create') {
+    if (this.state === 'create') {
 
       //TODO find smarter choice of the default property to add on create
       this.propertyToAdd = this.ingoingDirectionAwareProperties.filter(odap => {
@@ -156,11 +153,11 @@ export class RoleSetListComponent implements OnInit {
   setRoleSets(roles) {
     if (roles) {
 
-      this.directedRolesPerProperty = this.roleService.toRoleSets(
-        roles,
-        this.ingoingProperties,
-        this.outgoingProperties
-      );
+      // this.roleSets = this.roleService.toRoleSets(
+      //   roles,
+      //   this.ingoingProperties,
+      //   this.outgoingProperties
+      // );
     }
   }
 
@@ -224,26 +221,26 @@ export class RoleSetListComponent implements OnInit {
   }
 
 
-  /**
-  * called, when user selected a the kind of property to add
-  */
-  startSelectRoles() {
-    if (this.propertyToAdd)
-      this.selectPropState = 'init';
+  // /**
+  // * called, when user selected a the kind of property to add
+  // */
+  // startSelectRoles() {
+  //   if (this.propertyToAdd)
+  //     this.selectPropState = 'init';
 
-    // add a property sections
+  //   // add a property sections
 
-    const newPropertySection: RoleSets = {
-      isOutgoing: this.propertyToAdd.isOutgoing,
-      fkProperty: this.propertyToAdd.property.dfh_pk_property,
-      roles: []
-    }
+  //   const newPropertySection: RoleSets = {
+  //     isOutgoing: this.propertyToAdd.isOutgoing,
+  //     fkProperty: this.propertyToAdd.property.dfh_pk_property,
+  //     roles: []
+  //   }
 
-    this.directedRolesPerProperty.push(newPropertySection);
+  //   this.roleSets.push(newPropertySection);
 
-    this.propertyToAdd = null;
+  //   this.propertyToAdd = null;
 
-  }
+  // }
 
 
 
@@ -251,7 +248,7 @@ export class RoleSetListComponent implements OnInit {
   * Method to find out if a property section is already added
   */
   propSectionAdded(directionAwareProp: DirectionAwareProperty): boolean {
-    return (this.directedRolesPerProperty.find(drpp => {
+    return (this.roleSets.find(drpp => {
       return (
         drpp.isOutgoing == directionAwareProp.isOutgoing &&
         drpp.fkProperty == directionAwareProp.property.dfh_pk_property
@@ -274,10 +271,10 @@ export class RoleSetListComponent implements OnInit {
   /**
   * Called when the user closes an empty property section
   */
-  onRemovePropertySectionReq(propSection: RoleSets) {
-    var index = this.directedRolesPerProperty.indexOf(propSection, 0);
+  onRemovePropertySectionReq(propSection: IRoleSetState) {
+    var index = this.roleSets.indexOf(propSection, 0);
     if (index > -1) {
-      this.directedRolesPerProperty.splice(index, 1);
+      this.roleSets.splice(index, 1);
     }
   }
 
@@ -296,6 +293,24 @@ export class RoleSetListComponent implements OnInit {
     this.setRoleSets(this.roles);
 
   }
+
+  /**
+  * called when a role (and its children) are updated
+  */
+  onRolesUpdated(updatedRoles: InfRole[]) {
+    for (let i = 0; i < this.roles.length; i++) {
+      const r = this.roles[i];
+      for (let j = 0; j < updatedRoles.length; j++) {
+        const ur = updatedRoles[j];
+        if (r.pk_entity == ur.pk_entity) {
+          this.roles[i] = ur;
+        }
+      }
+    }
+
+    this.rolesUpdated.emit(this.roles);
+  }
+
 
 
 

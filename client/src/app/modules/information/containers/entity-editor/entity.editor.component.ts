@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ActiveProjectService, EntityEditorService, IAppState } from 'app/core';
 import { WithSubStore, NgRedux, dispatch, select, ObservableStore } from '@angular-redux/store';
@@ -8,17 +8,18 @@ import { Observable } from 'rxjs/Observable';
 import { PeItState, IPeItState } from './../pe-it/pe-it.model';
 import { IAppStateWithInformation } from '../../api/information.model';
 import { entityEditorReducer } from './entity-editor.reducer';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 
 const INITIAL_STATE: IEntityEditorWrapper = {
 
 };
 
-
+@AutoUnsubscribe()
 @Component({
   selector: 'gv-entity-editor',
   templateUrl: './entity.editor.component.html',
-  styleUrls: ['./entity.editor.component.scss']
+  styleUrls: ['./entity.editor.component.scss'],
 })
 export class EntityEditorComponent implements OnInit {
 

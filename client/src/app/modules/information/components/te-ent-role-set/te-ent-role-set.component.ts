@@ -15,7 +15,6 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 import { timer } from 'rxjs/observable/timer';
 
-import { RolePointToEnum, RoleComponent, AppellationStdBool } from '../role/role.component';
 import { TeEntComponent } from '../te-ent/te-ent.component';
 import { PeItComponent } from '../pe-it/pe-it.component';
 import { RoleSetComponent } from '../role-set/role-set.component';
@@ -24,6 +23,9 @@ import { InfTemporalEntity, InfRole, InfEntityProjectRelApi, InfRoleApi, ActiveP
 import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
 import { UtilitiesService } from '../../shared/utilities.service';
+import { NgRedux } from '@angular-redux/store';
+import { RoleSetActions } from '../role-set/role-set.actions';
+import { IRoleSetState } from '../role-set/role-set.model';
 
 
 
@@ -67,7 +69,7 @@ import { UtilitiesService } from '../../shared/utilities.service';
     ])
   ]
 })
-export class TeEntRoleSetComponent extends RoleSetComponent implements OnChanges, OnInit {
+export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
 
   /**
   * Inputs
@@ -91,9 +93,12 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnChanges
     propertyService: PropertyService,
     util: UtilitiesService,
     public entityEditor: EntityEditorService,
-    changeDetector: ChangeDetectorRef
+    changeDetector: ChangeDetectorRef,
+    ngRedux: NgRedux<IRoleSetState>,
+    actions: RoleSetActions
+
   ) {
-    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector)
+    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions)
   }
 
 
@@ -141,7 +146,7 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnChanges
         }
 
         if (
-          this.propState === 'create' &&
+          this.state === 'create' &&
           this.fkProperty == this.parentRole.fk_property
         ) {
 
@@ -177,21 +182,21 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnChanges
     const apiCall = this.roleApi.alternativesNotInProjectByTeEntPk(fkTemporalEntity, fkProperty, fkProject)
 
     Observable.combineLatest([waitAtLeast, apiCall])
-    .subscribe((results) => {
+      .subscribe((results) => {
 
-      this.rolesNotInProjectLoading = false;
+        this.rolesNotInProjectLoading = false;
 
-      this.rolesInOtherProjects = results[1]
-      .filter(role => role.is_in_project_count > 0);
+        this.rolesInOtherProjects = results[1]
+          .filter(role => role.is_in_project_count > 0);
 
-      this.rolesInNoProject = results[1]
-      .filter(role => role.is_in_project_count == 0);
+        this.rolesInNoProject = results[1]
+          .filter(role => role.is_in_project_count == 0);
 
-      if (results[1].length === 0) {
-        this.startCreateNewRole();
-      }
+        if (results[1].length === 0) {
+          this.startCreateNewRole();
+        }
 
-    })
+      })
 
 
   }
@@ -213,7 +218,7 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnChanges
   * and pointing to the parent persistent item
   */
   startCreateNewRole() {
-    // this.propStateChange.emit('createRole');
+    // this.stateChange.emit('createRole');
 
     this.roleToCreate = new InfRole();
     this.roleToCreate.fk_property = this.fkProperty;

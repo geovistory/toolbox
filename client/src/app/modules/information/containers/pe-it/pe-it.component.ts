@@ -1,8 +1,10 @@
-import { Component, OnChanges, Input, Output, EventEmitter, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, OnChanges, Input, Output, EventEmitter, ChangeDetectorRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { dispatch, select, select$, WithSubStore, NgRedux, ObservableStore } from '@angular-redux/store';
 import { Observable } from 'rxjs/Observable';
+import "rxjs/add/observable/zip";
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 import { InfPersistentItem, DfhProperty, DfhClass, InfPersistentItemApi, ActiveProjectService, EntityEditorService, InfEntityProjectRel, InfRole, Project } from 'app/core';
 import { PeItService } from '../../shared/pe-it.service';
@@ -15,22 +17,25 @@ import { EditorStates } from '../../information.models';
 import { peItReducer } from './pe-it.reducer';
 import { PeItActions } from './pe-it.actions';
 import { IPeItState } from './pe-it.model';
+import { PiRoleSetListState } from './../pe-it-role-set-list/pe-it-role-set-list.model';
 import { AppellationStdBool } from '../../components/role/role.component';
 
-
+@AutoUnsubscribe()
 @WithSubStore({
-  localReducer:peItReducer,
-  basePathMethodName:'getBasePath'
+  localReducer: peItReducer,
+  basePathMethodName: 'getBasePath'
 })
 @Component({
   selector: 'gv-pe-it',
   templateUrl: './pe-it.component.html',
-  styleUrls: ['./pe-it.component.scss']
+  styleUrls: ['./pe-it.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PeItComponent implements OnInit {
 
   @Input() parentPath: string[];
   getBasePath = () => [...this.parentPath, 'peItState']
+  basePath:string[];
   localStore: ObservableStore<IPeItState>;
 
 
@@ -55,8 +60,8 @@ export class PeItComponent implements OnInit {
     return this.actions.peItToCreateUpdated(peIt)
   };
 
-  @dispatch() roleSetsInitialized = () => {
-    return this.actions.roleSetsInitialized()
+  @dispatch() roleSetsInitialized = (roleSetListState) => {
+    return this.actions.roleSetsInitialized(roleSetListState)
   };
 
 
@@ -144,19 +149,18 @@ export class PeItComponent implements OnInit {
   */
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(),peItReducer);
+    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), peItReducer);
+    this.basePath = this.getBasePath();
 
-    this.roleSetsInitialized()
-    
-    Observable.combineLatest(
+    Observable.zip(
       this.pkEntity$,
       this.peItEntityState$,
       this.ngRedux.select<Project>('activeProject')
     ).subscribe(result => {
       this.pkEntity = result[0]
       this.peItEntityState = result[1]
-      this.pkProject = this.activeProjectService.project.pk_project; // TODO: get this from store
-
+      this.pkProject = result[2].pk_project
+    
       this.init()
     })
 
@@ -165,17 +169,16 @@ export class PeItComponent implements OnInit {
 
   init() {
 
-    // if it is not create state
 
+
+    // if it is not create state
     if (["preview", "edit", "view"].indexOf(this.peItEntityState) !== -1) {
 
       // Query the peIt and set the peIt by a call to the Api
       this.queryRichObjectOfProject().subscribe((peIt) => {
         this.localStore.dispatch(this.actions.peItToEditUpdated(peIt))
-        this.initRoleSets(peIt.fk_class)
+        this.initRoleSets(peIt.fk_class, peIt.pi_roles)
       })
-
-
 
     }
 
@@ -199,7 +202,7 @@ export class PeItComponent implements OnInit {
 
         this.peItToAddUpdated(peIt)
 
-        this.initRoleSets(peIt.fk_class)
+        this.initRoleSets(peIt.fk_class, peIt.pi_roles)
 
       })
 
@@ -224,7 +227,7 @@ export class PeItComponent implements OnInit {
 
         this.peItToAddUpdated(peIt)
 
-        this.initRoleSets(peIt.fk_class)
+        this.initRoleSets(peIt.fk_class, peIt.pi_roles)
       })
 
     }
@@ -293,9 +296,9 @@ export class PeItComponent implements OnInit {
   }
 
 
-  initRoleSets(fkClass) {
+  initRoleSets(fkClass, roles:InfRole[]=[]) {
 
-    Observable.combineLatest(
+    Observable.zip(
       this.classService.getIngoingProperties(fkClass),
       this.classService.getOutgoingProperties(fkClass)
     ).subscribe(result => {
@@ -303,11 +306,23 @@ export class PeItComponent implements OnInit {
       const ingoingProperties = result[0];
       const outgoingProperties = result[1];
 
-      // TODO init role sets!!
+      const child = new PiRoleSetListState({
+        pkEntity:this.pkEntity,
+        roles: roles.map(r=>new InfRole(r)),
+        outgoingProperties: outgoingProperties,
+        ingoingProperties: ingoingProperties,
+        parentPeIt: this.peIt,
+        state: this.peItEntityState,
+        ontoInfoVisible: false,
+        communityStatsVisible: false,
+        selectPropState: 'init'
+      })
+
+      this.roleSetsInitialized(child);
+      
     })
 
   }
-
 
 
   /**

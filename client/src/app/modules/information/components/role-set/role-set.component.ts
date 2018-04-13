@@ -10,17 +10,70 @@ import { timer } from 'rxjs/observable/timer';
 
 import { PeItComponent } from '../pe-it/pe-it.component';
 import { TeEntComponent } from '../te-ent/te-ent.component';
-import { RolePointToEnum, RoleComponent, AppellationStdBool } from '../role/role.component';
-import { RoleSets, RoleService } from '../../shared/role.service';
-import { InfRole, DfhProperty, InfEntityProjectRelApi, InfRoleApi, ActiveProjectService, EntityEditorService } from 'app/core';
+import { RoleService } from '../../shared/role.service';
+import { InfRole, DfhProperty, InfEntityProjectRelApi, InfRoleApi, ActiveProjectService, EntityEditorService, InfPersistentItem } from 'app/core';
 import { PropertyService } from '../../shared/property.service';
 import { UtilitiesService } from '../../shared/utilities.service';
+import { EditorStates, CollapsedExpanded } from '../../information.models';
+import { ObservableStore, NgRedux, select } from '@angular-redux/store';
+import { IRoleSetState } from './role-set.model';
+import { RoleSetActions } from './role-set.actions';
+import { roleSetReducer } from './role-set.reducer';
+import { isObject } from 'util';
+import { IRoleState, RoleState } from '../role/role.model';
+import { AppellationStdBool } from '../role/role.component';
+
+export type RoleLabelObj = {
+  default: string
+  pl: string
+  sg: string
+}
+
+export class RoleSetComponent implements OnInit {
+
+  @Input() parentPath: string[];
+  @Input() index: string;
+  localStore: ObservableStore<IRoleSetState>;
+
+  getBasePath = () => this.index ?
+    [... this.parentPath, 'roleSets', this.index] :
+    null;
+  basePath: string[];
+
+  // Since we're observing an array of items, we need to set up a 'trackBy'
+  // parameter so Angular doesn't tear down and rebuild the list's DOM every
+  // time there's an update.
+  getKey(_, item) {
+    return item.tkey;
+  }
+
+  @select() roles$: Observable<InfRole[]>
+
+  @select() property$: Observable<DfhProperty>
+
+  @select() fkProperty$: Observable<number>
+
+  @select() isOutgoing$: Observable<boolean>
+
+  @select() parentPeIt$: Observable<InfPersistentItem>
+
+  @select() parentEntityPk$: Observable<number>
 
 
-export class RoleSetComponent implements OnChanges, OnInit {
+  @select() state$: Observable<EditorStates>;
+
+  @select() toggle$: Observable<CollapsedExpanded>
+
+  @select() ontoInfoVisible$: Observable<boolean>
+
+  @select() communityStatsVisible$: Observable<boolean>
+
+  @select() roleLabel$: Observable<RoleLabelObj>
+
+  @select() childRoleStates$: Observable<IRoleState[]>
 
 
-  @Input() propertySection: RoleSets;
+  @Input() propertySection: any;
 
   // fk_property that all roles of this kind should have
   @Input() fkProperty: number;
@@ -44,13 +97,11 @@ export class RoleSetComponent implements OnChanges, OnInit {
   @Input() ontoInfoVisible: boolean;
 
   /**
-  * set propState - The state of this component
+  * set state - The state of this component
   *
   * @param  {state} state string 'view', 'add' or 'create'
   */
-  @Input() set propState(state: string) {
-    this._propState = state;
-  };
+  @Input() state: EditorStates;
 
   // state of the card below the header
   @Input() cardState: 'collapsed' | 'expanded';
@@ -60,7 +111,7 @@ export class RoleSetComponent implements OnChanges, OnInit {
   * Outputs
   */
 
-  @Output() propStateChange: EventEmitter<string> = new EventEmitter();
+  @Output() stateChange: EventEmitter<string> = new EventEmitter();
 
   @Output() readyToCreate: EventEmitter<InfRole[]> = new EventEmitter;
 
@@ -75,15 +126,14 @@ export class RoleSetComponent implements OnChanges, OnInit {
 
   @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter();
 
-  @Output() removePropertySectionReq: EventEmitter<RoleSets> = new EventEmitter();
+  @Output() removePropertySectionReq: EventEmitter<IRoleSetState> = new EventEmitter();
 
-  /**
-  * Properties
-  */
+  @Output() rolesUpdated: EventEmitter<InfRole[]> = new EventEmitter();
+
+
 
   // the property
   property: DfhProperty;
-
 
   // max. mumber of possible alternatives -1=infinite
   maxAlternatives: number;
@@ -93,9 +143,6 @@ export class RoleSetComponent implements OnChanges, OnInit {
 
   // thisComponent
   thisComponent = this;
-
-  // state of this components (has getter and setter)
-  protected _propState: string;
 
   // role to create, when creating a new role
   roleToCreate: InfRole;
@@ -139,10 +186,12 @@ export class RoleSetComponent implements OnChanges, OnInit {
     protected roleApi: InfRoleApi,
     protected activeProject: ActiveProjectService,
     private roleService: RoleService,
-    private propertyService: PropertyService,
+    protected propertyService: PropertyService,
     private util: UtilitiesService,
     public entityEditor: EntityEditorService,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private ngRedux: NgRedux<IRoleSetState>,
+    private actions: RoleSetActions
   ) { }
 
 
@@ -150,102 +199,123 @@ export class RoleSetComponent implements OnChanges, OnInit {
   * Methods
   */
 
-  ngOnChanges() {
-    if (this.fkProperty)
-      this.propertyService.getPropertyByPkProperty(this.fkProperty).subscribe((prop: DfhProperty) => {
-        this.property = prop;
-      });
-  }
+
 
   ngOnInit() {
-    if (this.propState == 'add-pe-it')
+    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), roleSetReducer);
+    this.basePath = this.getBasePath();
+
+    /** init property */
+    Observable.combineLatest(
+      this.fkProperty$,
+      this.isOutgoing$
+    ).subscribe(result => {
+      const fkProperty = result[0]
+      const isOutgoing = result[1]
+
+      if (fkProperty && (isOutgoing != undefined)) this.initProperty(fkProperty, isOutgoing)
+    })
+
+    this.childRoleStates$.subscribe(a => {
+
+    })
+
+    this.initChildren()
+
+    if (this.state == 'add-pe-it')
       this.sortRolesByPopularity();
 
-    if (this.propState == 'create') this.cardState = 'expanded';
+    if (this.state == 'create') this.cardState = 'expanded';
     else this.cardState = 'collapsed';
-
   }
 
-  get propState(): string {
-    return this._propState;
+
+  initProperty(fkProperty: number, isOutgoing: boolean) {
+    if (fkProperty)
+      // Load the dfh property
+      this.propertyService.getPropertyByPkProperty(fkProperty).subscribe((prop: DfhProperty) => {
+
+        this.localStore.dispatch(this.actions.propertyLoaded(prop));
+
+        /** init the label */
+        this.initRoleLabel(isOutgoing, prop);
+
+        /** init the pk target class */
+        this.initPkTargetClass(isOutgoing, prop);
+
+      });
   }
 
 
   /**
-  * returns the pk_class of the target class.
+  * initializes the pk_class of the target class.
   * if this.isOutgoing === true, return the range class
   * if this.isOutgoing === false, return the domain class 
   *
   * @return {number}  pk of the target class
   */
-  get pkTargetClass(): number {
-
-    if (this.isOutgoing === true) return this.property.dfh_has_range;
-
-    if (this.isOutgoing === false) return this.property.dfh_has_domain;
-
+  initPkTargetClass(isOutgoing: boolean, property: DfhProperty) {
+    const pk = isOutgoing ? property.dfh_has_range : property.dfh_has_domain;
+    this.localStore.dispatch(this.actions.targetPkUpdated(pk))
   }
-
 
   /**
-  * returns the label of the property, depending on the direction of the
-  * property (is it an outgoing or an ingoing property) and the cardinality
-  * (can there be only one role instance ore multiple).
-  *
-  * @return {string}  label of the property
-  */
-  get roleLabel(): string {
-    if (this.isOutgoing) {
-      if (this.property.dfh_range_instances_max_quantifier === 1) {
-
-        // TODO return label singular (this.property.label.sg)
-
-        return this.property.labels.find(l => l.notes === 'label.sg').dfh_label;
-
-      }
-
-      // TODO return label plural (this.property.label.pl)
-
-      return this.property.labels.find(l => l.notes === 'label.pl').dfh_label;
-
-    } else if (this.isOutgoing === false) {
-      if (this.property.dfh_domain_instances_max_quantifier === 1) {
-
-        // TODO return inversed label singular (this.property.label_inversed.sg)
-        return this.property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
-
-      }
-
-      // TODO return inversed label plural (this.property.label_inversed.pl)
-      return this.property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label;
-
-    } else {
-      // TODO Error
-      console.log('isOutgoing is not defined')
-    }
-  }
-
-  get roleLabelObj() {
-    if (this.isOutgoing) {
+   * initializes the label of the property, depending on the direction of the
+   * property (is it an outgoing or an ingoing property) and the cardinality
+   * (can there be only one role instance ore multiple).
+   */
+  initRoleLabel(isOutgoing: boolean, property: DfhProperty) {
+    let roleLabel: RoleLabelObj;
+    if (isOutgoing) {
 
       // TODO return an object containing label.pl and label.sg
-      return {
-        'sg': this.property.labels.find(l => l.notes === 'label.sg').dfh_label,
-        'pl': this.property.labels.find(l => l.notes === 'label.pl').dfh_label
+      const sg = property.labels.find(l => l.notes === 'label.sg').dfh_label;
+      const pl = property.labels.find(l => l.notes === 'label.pl').dfh_label;
+
+      roleLabel = {
+        sg: sg,
+        pl: pl,
+        default: property.dfh_domain_instances_max_quantifier === 1 ? sg : pl
       }
 
-    } else if (this.isOutgoing === false) {
+    } else if (isOutgoing === false) {
 
       // TODO return an object containing inversed_label.pl and inversed_label.sg
+      const sg = property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
+      const pl = property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label;
 
-      return {
-        'sg': this.property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label,
-        'pl': this.property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label
-      };
+      roleLabel = {
+        sg: sg,
+        pl: pl,
+        default: property.dfh_domain_instances_max_quantifier === 1 ? sg : pl
+      }
+
 
     } else {
-      return undefined;
+      roleLabel = undefined;
     }
+
+    this.localStore.dispatch(this.actions.roleLabelUpdated(roleLabel))
+
+  }
+
+  initChildren() {
+    Observable.zip(
+      this.roles$,
+      this.state$
+    ).subscribe(result => {
+      const roles = result["0"], state = result["1"];
+      if (roles && state) {
+        const roleStates: IRoleState[] = roles.map(role => {
+          return new RoleState({
+            role,
+            state
+          })
+        })
+        this.localStore.dispatch(this.actions.childRolesUpdated(roleStates))
+      }
+    })
+
   }
 
 
@@ -256,77 +326,77 @@ export class RoleSetComponent implements OnChanges, OnInit {
   * @param  {RoleComponent} roleC     RoleComponent of the role that wants to be standard
   * @return {void}
   */
-  changeStandardRole(roleC: RoleComponent) {
+  changeStandardRole(roleC) {
 
-    let observables = [];
+    // let observables = [];
 
-    // set loadingStdChange flag of the given component
-    roleC.loadingStdChange = true;
+    // // set loadingStdChange flag of the given component
+    // roleC.loadingStdChange = true;
 
-    // Create observable of api call to make the given role new standard
+    // // Create observable of api call to make the given role new standard
 
-    observables.push(this.eprApi.patchAttributes(
-      roleC.epr.pk_entity_version_project_rel,
-      {
-        is_standard_in_project: true
-      }
-    ))
+    // observables.push(this.eprApi.patchAttributes(
+    //   roleC.epr.pk_entity_version_project_rel,
+    //   {
+    //     is_standard_in_project: true
+    //   }
+    // ))
 
-    // Get all standard Roles to disable (should be only one)
+    // // Get all standard Roles to disable (should be only one)
 
-    const rolesToChange = [];
+    // const rolesToChange = [];
 
-    this.roleComponents.forEach(roleComponent => {
-      if (roleComponent && roleComponent.isStandardInProject) {
+    // this.roleComponents.forEach(roleComponent => {
+    //   if (roleComponent && roleComponent.isStandardInProject) {
 
-        // set loadingStdChange flag of the RoleComponent
-        roleComponent.loadingStdChange = true;
+    //     // set loadingStdChange flag of the RoleComponent
+    //     roleComponent.loadingStdChange = true;
 
-        // push the role Component to an array that will be used later
-        rolesToChange.push(roleComponent);
+    //     // push the role Component to an array that will be used later
+    //     rolesToChange.push(roleComponent);
 
-        // Create observable of api call to disable the old standard
-        observables.push(this.eprApi.patchAttributes(
-          roleComponent.epr.pk_entity_version_project_rel,
-          {
-            is_standard_in_project: false
-          }
-        ))
+    //     // Create observable of api call to disable the old standard
+    //     observables.push(this.eprApi.patchAttributes(
+    //       roleComponent.epr.pk_entity_version_project_rel,
+    //       {
+    //         is_standard_in_project: false
+    //       }
+    //     ))
 
-      }
-    });
+    //   }
+    // });
 
-    Observable.combineLatest(observables)
-      .subscribe(
-        (value) => {
+    // Observable.combineLatest(observables)
+    //   .subscribe(
+    //     (value) => {
 
-          // update the epr of the new Std in client memory
-          roleC.epr = value[0];
-          roleC.isStandardInProject = value[0].is_standard_in_project;
-          roleC.role.is_standard_in_project_count++;
+    //       // update the epr of the new Std in client memory
+    //       roleC.epr = value[0];
+    //       roleC.isStandardInProject = value[0].is_standard_in_project;
+    //       roleC.role.is_standard_in_project_count++;
 
-          // unset loadingStdChange flag
-          roleC.loadingStdChange = false;
+    //       // unset loadingStdChange flag
+    //       roleC.loadingStdChange = false;
 
-          // update the epr of old Std Roles (should be only one) in client memory
-          for (let i = 0; i < rolesToChange.length; i++) {
+    //       // update the epr of old Std Roles (should be only one) in client memory
+    //       for (let i = 0; i < rolesToChange.length; i++) {
 
-            if (
-              rolesToChange[i].isStandardInProject === true
-              && value[i + 1].is_standard_in_project === false
-            ) {
-              rolesToChange[i].role.is_standard_in_project_count--;
-            }
+    //         if (
+    //           rolesToChange[i].isStandardInProject === true
+    //           && value[i + 1].is_standard_in_project === false
+    //         ) {
+    //           rolesToChange[i].role.is_standard_in_project_count--;
+    //         }
 
-            rolesToChange[i].epr = value[i + 1];
-            rolesToChange[i].isStandardInProject = value[i + 1].is_standard_in_project;
+    //         rolesToChange[i].epr = value[i + 1];
+    //         rolesToChange[i].isStandardInProject = value[i + 1].is_standard_in_project;
 
-            // unset loadingStdChange flag
-            rolesToChange[i].loadingStdChange = false;
+    //         // unset loadingStdChange flag
+    //         rolesToChange[i].loadingStdChange = false;
 
-          }
+    //       }
 
-        })
+    //     })
 
   }
 
@@ -344,7 +414,7 @@ export class RoleSetComponent implements OnChanges, OnInit {
 
     this.addRoleState = 'init';
 
-    this.propStateChange.emit('selectProp');
+    this.stateChange.emit('selectProp');
   }
 
 
@@ -356,7 +426,7 @@ export class RoleSetComponent implements OnChanges, OnInit {
   */
   cancelCreateNewRole() {
 
-    this.propStateChange.emit('selectRoles');
+    this.stateChange.emit('selectRoles');
 
     this.addRoleState = 'init';
 
@@ -365,17 +435,17 @@ export class RoleSetComponent implements OnChanges, OnInit {
   }
 
 
-  get maxCardinality() {
-    if (this.isOutgoing) return this.property.dfh_range_instances_max_quantifier;
-    else if (this.isOutgoing === false) return this.property.dfh_domain_instances_max_quantifier;
-    else console.log('isOutgoing is not defined')
-  }
+  // get maxCardinality() {
+  //   if (this.isOutgoing) return this.property.dfh_range_instances_max_quantifier;
+  //   else if (this.isOutgoing === false) return this.property.dfh_domain_instances_max_quantifier;
+  //   else console.log('isOutgoing is not defined')
+  // }
 
-  get minCardinality() {
-    if (this.isOutgoing) return this.property.dfh_range_instances_min_quantifier;
-    else if (this.isOutgoing === false) return this.property.dfh_domain_instances_min_quantifier;
-    else console.log('isOutgoing is not defined')
-  }
+  // get minCardinality() {
+  //   if (this.isOutgoing) return this.property.dfh_range_instances_min_quantifier;
+  //   else if (this.isOutgoing === false) return this.property.dfh_domain_instances_min_quantifier;
+  //   else console.log('isOutgoing is not defined')
+  // }
 
 
   /**
@@ -488,6 +558,20 @@ export class RoleSetComponent implements OnChanges, OnInit {
       }
     }
   }
+
+  /**
+  * called when user updates a role (or its children)
+  */
+  onRoleUpdated(updatedRole: InfRole) {
+    for (let i = 0; i < this.roles.length; i++) {
+      if (this.roles[i].pk_entity === updatedRole.pk_entity) {
+        this.roles[i] = updatedRole;
+        this.rolesUpdated.emit(this.roles)
+        break;
+      }
+    }
+  }
+
 
   onRoleReadyToAdd(role: InfRole) {
 

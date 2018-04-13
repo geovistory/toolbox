@@ -10,15 +10,26 @@ import { combineReducers, Reducer } from 'redux';
 
 // Define the global store shape by combining our application's
 // reducers together into a given structure.
-export function createRootReducer(asyncReducers = {}): Reducer<any> {
-  return composeReducers(
+// export function createRootReducer(asyncReducers = {}): Reducer<any> {
+//   return composeReducers(
+//     defaultFormReducer(),
+//     combineReducers(Object.assign({
+//       account: createAccountReducer(),
+//       projects: createProjectsReducer(),
+//       activeProject: createActiveProjectReducer(),
+//       routes: routerReducer,
+//       information: createInformationReducer()
+//     }, asyncReducers))
+//   )
+// }
+
+export const rootReducer = composeReducers(
     defaultFormReducer(),
-    combineReducers(Object.assign({
+    combineReducers({
       account: createAccountReducer(),
       projects: createProjectsReducer(),
       activeProject: createActiveProjectReducer(),
       routes: routerReducer,
       information: createInformationReducer()
-    }, asyncReducers))
+    })
   )
-}

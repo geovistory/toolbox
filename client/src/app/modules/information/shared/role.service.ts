@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { InfRole, DfhProperty } from 'app/core';
+import { RoleSetState, IRoleSetState } from '../components/role-set/role-set.model';
 
 interface Label {
   sg: string;
@@ -18,11 +19,7 @@ export interface DirectedRole {
   isOutgoing: boolean;
   role: InfRole;
 }
-export interface RoleSets {
-  fkProperty: number;
-  isOutgoing: boolean;
-  roles: InfRole[];
-}
+
 
 @Injectable()
 export class RoleService {
@@ -70,22 +67,24 @@ export class RoleService {
   }
 
 
+
   /**
-   * transform roles to an array grouped by property and direction of the role.
-   * This is useful for adding property sections to the gui, since for each
-   * property there needs to be a property section and each property section
-   * needs to know if it is outgoing or ingoing (for the display label)
-   *
-   * @param {InfRole[]} roles array of roles
+   * create RoleSetStates out of 
+   * - the roles of a PeIti
+   * - the ingoing properties of the PeIt-class
+   * - the outgoing properties of the PeIt-class
+   * - generic options for all RoleSetStates
+   * 
+   * @param {InfRole[]} roles array of roles a PeIti
    * @param {Property[]} ingoing array of ingoing properties (depending on context)
    * @param {Property[]} outgoing array of outgoing properties (depending on context)
    *
-   * @return {RoleSets[]} Array of RoleSets
+   * @return {RoleSets[]} Array of RoleSetState, the model of the Gui-Element for RoleSets
    */
-  toRoleSets(roles: InfRole[], ingoing: DfhProperty[], outgoing: DfhProperty[]): RoleSets[] {
+  toRoleSetStates(roles: InfRole[], ingoing: DfhProperty[], outgoing: DfhProperty[], options: IRoleSetState = {}): IRoleSetState[] {
 
     // declare array that will be returned
-    const directedRolesPerProperty: RoleSets[] = [];
+    const roleSets: IRoleSetState[] = [];
 
     // create array of ingoing fk_property
     const fkPropIn: number[] = ingoing.map(p => p.dfh_pk_property)
@@ -105,29 +104,33 @@ export class RoleService {
     // group outgoing Roles by Property
     const outgoingRolesPerProperty = this.getRolesPerProperty(outgoingRoles);
 
-    // create directed roles per property
+    // create role sets
     outgoingRolesPerProperty.forEach(rpp => {
-      const drpp: RoleSets = {
+      const roleSet = new RoleSetState(Object.assign(options, {
         isOutgoing: true,
         fkProperty: rpp.fkProperty,
         roles: rpp.roles
-      }
-      directedRolesPerProperty.push(drpp);
+      }))
+
+      roleSets.push(roleSet);
     })
 
-    // create directed roles per property
+    // create role sets
     ingoingRolesPerProperty.forEach(rpp => {
-      const drpp: RoleSets = {
+      const roleSet = new RoleSetState(Object.assign(options, {
         isOutgoing: false,
         fkProperty: rpp.fkProperty,
         roles: rpp.roles
-      }
-      directedRolesPerProperty.push(drpp);
+      }))
+
+      roleSets.push(roleSet);
     })
 
+    return roleSets;
 
-    return directedRolesPerProperty;
   }
+
+
 
   /**
     * Group roles by fk_property. Return an obj, where
@@ -157,6 +160,8 @@ export class RoleService {
 
     return rolesByPropertyArr;
   }
+
+
 
 
 }

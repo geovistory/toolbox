@@ -2,7 +2,7 @@
   <span *ngIf="entityEditor.devView">
     [state: {{peItEntityState}}]
   </span>
-  
+
 
   <!-- View State -->
 
@@ -26,7 +26,7 @@
     <span *ngIf="entityEditor.devView">
       [ready: {{isReadyToCreate}}]
     </span>
-<!-- 
+    <!-- 
     <gv-pe-it-role-set-list [RoleSetListState]="'create'" [parentPeIt]="peItToCreate" [outgoingProperties]="outgoingProperties"
       [ingoingProperties]="ingoingProperties" (readyToCreate)="emitReadyToCreate($event)" (notReadyToCreate)="emitNotReadyToCreate()"></gv-pe-it-role-set-list> -->
 
@@ -40,7 +40,7 @@
     <h5 class="mt-2 mb-4">
       {{mostPopularAppeString}}
     </h5>
-<!-- 
+    <!-- 
     <gv-pe-it-role-set-list [roles]="peIt.pi_roles" [RoleSetListState]="peItEntityState" [parentPeIt]="peIt" [outgoingProperties]="outgoingProperties"
       [ingoingProperties]="ingoingProperties" (readyToCreate)="emitReadyToCreate($event)" (notReadyToCreate)="emitNotReadyToCreate()"
       (readyToAdd)="onRolesReadyToAdd($event)" (notReadyToAdd)="onRolesNotReadyToAdd()" (appeChange)="whenAppeChange($event)"></gv-pe-it-role-set-list>
@@ -51,7 +51,7 @@
 
   <!-- Edit and ViewCommunity States  -->
 
-  <div *ngIf="['edit', 'viewCommunity'].indexOf(peItEntityState) > -1 && !loading">
+  <div *ngIf="(peItEntityState$ | async) === 'edit'">
 
     <!-- Title / Standard Appellations of PeIt -->
 
@@ -75,11 +75,8 @@
     <!-- Tools to edit PeIt  -->
 
     <div class="d-flex flex-row gv-flex-grow-1 m-3" style="flex-basis:100%">
-
       <div class="d-flex gv-flex-grow-1" style="flex-basis:35%">
-        <!-- <gv-pe-it-role-set-list class="gv-flex-grow-1 d-flex flex-row" [roles]="peIt.pi_roles" [RoleSetListState]="peItEntityState"
-          [pkEntity]="pkEntity" [parentPeIt]="peIt" [outgoingProperties]="outgoingProperties" [ingoingProperties]="ingoingProperties"
-          (appeChange)="whenAppeChange($event)"></gv-pe-it-role-set-list> -->
+        <gv-pe-it-role-set-list class="gv-flex-grow-1 d-flex flex-row" [parentPath]="basePath" (appeChange)="whenAppeChange($event)"></gv-pe-it-role-set-list>
       </div>
 
       <div class="d-flex ml-3" style="flex-basis:65%; overflow:hidden">

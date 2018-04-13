@@ -32,13 +32,13 @@ import { EntityAddSearchExistingComponent } from './components/entity-add-search
 import { EntityEditorSettingsComponent } from './components/entity-editor-settings/entity-editor-settings.component';
 import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
 import { ExistenceTimeComponent } from './components/existence-time/existence-time.component';
+import { PeItRoleSetListComponent } from './containers/pe-it-role-set-list/pe-it-role-set-list.component';
 import { PeItAppellationComponent } from './components/pe-it-appellation/pe-it-appellation.component';
 import { PeItEntityAddComponent } from './components/pe-it-entity-add/pe-it-entity-add.component';
 import { PeItEntityPreviewComponent } from './components/pe-it-entity-preview/pe-it-entity-preview.component';
 import { PeItEntityPreviewModalComponent } from './components/pe-it-entity-preview-modal/pe-it-entity-preview-modal.component';
 import { PeItLanguageComponent } from './components/pe-it-language/pe-it-language.component';
 import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
-import { PeItRoleSetListComponent } from './components/pe-it-role-set-list/pe-it-role-set-list.component';
 import { PeItRoleSetComponent } from './components/pe-it-role-set/pe-it-role-set.component';
 import { TeEntRoleSetComponent } from './components/te-ent-role-set/te-ent-role-set.component';
 import { PeItRoleComponent } from './components/pe-it-role/pe-it-role.component';
@@ -74,6 +74,10 @@ import { PeItActions } from './containers/pe-it/pe-it.actions';
 import { PeItComponent } from './containers/pe-it/pe-it.component';
 import { NgRedux } from '@angular-redux/store';
 import { IAppStateWithInformation } from './api/information.model';
+import { PiRoleSetListActions } from './containers/pe-it-role-set-list/pe-it-role-set-list-actions';
+import { KeysPipe } from '../../shared/pipes/keys.pipe';
+import { RoleSetActions } from './components/role-set/role-set.actions';
+import { RoleActions } from './components/role/role.actions';
 
 
 @NgModule({
@@ -138,6 +142,7 @@ import { IAppStateWithInformation } from './api/information.model';
     TeEntExistenceTimeComponent,
     PropertyPipe,
     PeItTimelineComponent,
+    KeysPipe
   ],
   providers: [
     PropertyPipe,
@@ -154,7 +159,10 @@ import { IAppStateWithInformation } from './api/information.model';
     TeEntService,
     ConfigService,
     PeItActions,
-    EntityEditorActions
+    EntityEditorActions,
+    PiRoleSetListActions,
+    RoleSetActions,
+    RoleActions
   ],
   entryComponents: [
     EntityAddModalComponent

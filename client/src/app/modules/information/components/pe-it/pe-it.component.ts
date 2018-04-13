@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 
-import { AppellationStdBool } from '../role/role.component';
 import { PeItEntityPreviewComponent } from '../pe-it-entity-preview/pe-it-entity-preview.component';
 import { InfAppellation, InfLanguage, InfPersistentItem, EntityEditorService } from 'app/core';
 import { UtilitiesService } from '../../shared/utilities.service';
+import { AppellationStdBool } from '../role/role.component';
 
 export enum PeItStates {
   view = "view",

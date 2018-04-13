@@ -38,6 +38,7 @@
     "flux-standard-action": "^2.0.1",
     "font-awesome": "^4.7.0",
     "ng2-slim-loading-bar": "^4.0.0",
+    "ngx-auto-unsubscribe": "^2.3.0",
     "ramda": "^0.25.0",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",

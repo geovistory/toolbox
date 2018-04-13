@@ -12,8 +12,9 @@ export const entityEditorReducer =
 
         switch (action.type) {
             case EntityEditorActions.ENTITY_EDITOR_INITIALIZED:
-                return action.payload                
-                
+                const y = 'a';
+                return action.payload
+
         }
 
         return lastState;

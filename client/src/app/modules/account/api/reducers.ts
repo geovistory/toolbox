@@ -7,14 +7,16 @@ const INITIAL_STATE: IAccount = {
 
 const accountRootReducer = (lastState: IAccount = INITIAL_STATE, action: AccountAction): IAccount => {
   switch (action.type) {
-    case AccountActions.LOGIN_SUCCEEDED: return {
-      ...lastState, record: action.payload
-    };
+    case AccountActions.LOGIN_SUCCEEDED:
+      return {
+        ...lastState, record: action.payload
+      };
   }
   switch (action.type) {
-    case AccountActions.ACCOUNT_UPDATED: return {
-      ...lastState, record: action.payload
-    };
+    case AccountActions.ACCOUNT_UPDATED:
+      return {
+        ...lastState, record: action.payload
+      };
   }
 
 

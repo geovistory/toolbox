@@ -25,7 +25,6 @@ import { PeItAppellationComponent } from '../pe-it-appellation/pe-it-appellation
 import { PeItLanguageComponent } from '../pe-it-language/pe-it-language.component';
 import { PeItEntityPreviewComponent } from '../pe-it-entity-preview/pe-it-entity-preview.component';
 import { PeItEntityAddComponent } from '../pe-it-entity-add/pe-it-entity-add.component';
-import { PeItRoleSetListComponent } from '../pe-it-role-set-list/pe-it-role-set-list.component';
 import { EntityEditorSettingsComponent } from '../entity-editor-settings/entity-editor-settings.component';
 import { AppellationLabelViewComponent } from '../appellation-label-view/appellation-label-view.component';
 import { AppellationLabelCreateComponent } from '../appellation-label-create/appellation-label-create.component';
@@ -49,6 +48,7 @@ import { LanguageSearchTypeaheadComponent } from 'app/shared/components/language
 import { TeEntService } from '../../shared/te-ent.service';
 import { ConfigService } from '../../shared/config.service';
 import { PeItComponent } from '../../containers/pe-it/pe-it.component';
+import { PeItRoleSetListComponent } from '../../containers/pe-it-role-set-list/pe-it-role-set-list.component';
 
 
 
