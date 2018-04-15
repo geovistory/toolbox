@@ -33,7 +33,7 @@ export interface IRoleSetState {
     targetClassPk?: number;
 
     //Children
-    childRoleStates?: IRoleState[]
+    childRoleStates?: {}
 }
 
 export class RoleSetState implements IRoleSetState {
@@ -61,7 +61,7 @@ export class RoleSetState implements IRoleSetState {
     targetClassPk?: number;
 
     //Children
-    childRoleStates?: IRoleState[]
+    childRoleStates?: {}
 
     constructor(data?: IRoleSetState) {
         Object.assign(

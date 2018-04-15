@@ -30,6 +30,8 @@ export class RoleComponent implements OnInit {
     [... this.parentPath, 'childRoleStates', this.index] :
     null;
 
+  basePath: string[]
+
   @select() role$: Observable<InfRole>;
   @select() isOutgoing$: Observable<boolean>;
   @select() state$: Observable<EditorStates>;
@@ -41,6 +43,7 @@ export class RoleComponent implements OnInit {
 
   property$: Observable<DfhProperty>;
   activeProject$: Observable<Project>;
+
 
 
   /**
@@ -122,13 +125,17 @@ export class RoleComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), roleReducer);
+    this.basePath = this.getBasePath();
+    this.localStore = this.ngRedux.configureSubStore(this.basePath, roleReducer);
     this.property$ = this.ngRedux.select<DfhProperty>([...this.parentPath, 'property']);
     this.activeProject$ = this.ngRedux.select<Project>('activeProject');
 
     this.initState();
 
+    this.init()
   }
+
+  init(){}
 
   initState() {
 
@@ -158,7 +165,7 @@ export class RoleComponent implements OnInit {
   }
 
 
-  initChildren(){}
+  initChildren() { }
 
 
   initRoleToCreate() {

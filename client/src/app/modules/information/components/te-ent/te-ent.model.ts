@@ -1,32 +1,45 @@
 import { InfTemporalEntity, InfRole, DfhProperty } from "app/core";
 import { CollapsedExpanded, EditorStates } from "../../information.models";
 import { ExistenceTime } from "../existence-time";
-import { IPiRoleSetListState } from "../../containers/pe-it-role-set-list/pe-it-role-set-list.model";
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
+import { IRoleSetListState } from "../role-set-list/role-set-list.model";
 
 
 
 
 export interface ITeEntState {
+    teEntToEdit?: InfTemporalEntity;
+    teEntToAdd?: InfTemporalEntity;
+    teEntToCreate?: InfTemporalEntity;
+
+    /** before init */
     teEnt?: InfTemporalEntity;
-    parentProperty?: DfhProperty;
-    parentRole?: InfRole;
+
     label?: string;
     state?: EditorStates;
     toggle?: CollapsedExpanded;
-    ontoInfoVisible?: boolean;
-    communityStatsVisible?: boolean;
 
-    childRoleSetList?: BehaviorSubject<IPiRoleSetListState[]>;
-    // existenceTimeState: BehaviorSubject<ITeExistenceTimeState>
+    roleSetList?: IRoleSetListState;
+
 }
 
 
 export class TeEntState implements ITeEntState {
 
+    teEntToEdit?: InfTemporalEntity;
+    teEntToAdd?: InfTemporalEntity;
+    teEntToCreate?: InfTemporalEntity;
 
-    
-    constructor(data?:ITeEntState) {
+    /** before init */
+    teEnt?: InfTemporalEntity;
+
+    label?: string;
+    state?: EditorStates;
+    toggle?: CollapsedExpanded;
+
+    roleSetList?: IRoleSetListState;
+
+    constructor(data?: ITeEntState) {
         Object.assign(this, data)
     }
 

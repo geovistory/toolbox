@@ -74,10 +74,11 @@ import { PeItActions } from './containers/pe-it/pe-it.actions';
 import { PeItComponent } from './containers/pe-it/pe-it.component';
 import { NgRedux } from '@angular-redux/store';
 import { IAppStateWithInformation } from './api/information.model';
-import { PiRoleSetListActions } from './containers/pe-it-role-set-list/pe-it-role-set-list-actions';
 import { KeysPipe } from '../../shared/pipes/keys.pipe';
 import { RoleSetActions } from './components/role-set/role-set.actions';
 import { RoleActions } from './components/role/role.actions';
+import { RoleSetListActions } from './components/role-set-list/role-set-list-actions';
+import { TeEntActions } from './components/te-ent/te-ent.actions';
 
 
 @NgModule({
@@ -160,9 +161,10 @@ import { RoleActions } from './components/role/role.actions';
     ConfigService,
     PeItActions,
     EntityEditorActions,
-    PiRoleSetListActions,
+    RoleSetListActions,
     RoleSetActions,
-    RoleActions
+    RoleActions,
+    TeEntActions
   ],
   entryComponents: [
     EntityAddModalComponent

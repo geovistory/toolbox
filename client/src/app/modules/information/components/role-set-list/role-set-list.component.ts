@@ -12,10 +12,201 @@ import { InfRole, InfPersistentItem, DfhProperty, EntityEditorService } from 'ap
 import { DirectionAwareProperty, PropertyService } from '../../shared/property.service';
 import { RoleService } from '../../shared/role.service';
 import { EditorStates } from '../../information.models';
-import { IRoleSetState } from '../role-set/role-set.model';
+import { IRoleSetState, RoleSetState } from '../role-set/role-set.model';
 import { AppellationStdBool } from '../role/role.component';
+import { NgRedux, select, ObservableStore } from '@angular-redux/store';
+import { IRoleSetListState, SelectPropStateType } from '../role-set-list/role-set-list.model';
+import { Observable } from 'rxjs/Observable';
+import { roleSetListReducer } from './role-set-list-reducer';
+import { ClassService } from '../../shared/class.service';
+import { RoleSetListActions } from './role-set-list-actions';
+import { IPeItState } from '../../containers/pe-it/pe-it.model';
+import { ITeEntState } from '../te-ent/te-ent.model';
+import { PeItActions } from '../../containers/pe-it/pe-it.actions';
+import { TeEntActions } from '../te-ent/te-ent.actions';
 
-export class RoleSetListComponent  {
+export class RoleSetListComponent implements OnInit {
+
+  @Input() parentPath: string[];
+
+  initStore() { } // override this in derived class
+  basePath: string[];
+  localStore: ObservableStore<IPeItState | ITeEntState>;
+  actions: PeItActions | TeEntActions;
+
+  // Since we're observing an array of items, we need to set up a 'trackBy'
+  // parameter so Angular doesn't tear down and rebuild the list's DOM every
+  // time there's an update.
+  getKey(_, roleSet: IRoleSetState) {
+    return roleSet.fkProperty;
+  }
+
+  @select() state$: Observable<EditorStates>;
+  @select() selectPropState$: Observable<SelectPropStateType>;
+
+  @select() fkClass$: Observable<number>;
+
+  @select() pkEntity$: Observable<number>
+  @select() roles$: Observable<InfRole[]>
+  @select() outgoingProperties$: Observable<DfhProperty[]>
+  @select() ingoingProperties$: Observable<DfhProperty[]>
+  @select() ingoingPropertiesToAdd$?: DirectionAwareProperty[];
+  @select() outgoingPropertiesToAdd$?: DirectionAwareProperty[];
+  @select() parentPeIt$: Observable<InfPersistentItem>
+
+  @select() propertyToAdd$: Observable<DirectionAwareProperty>; // Poperty that is currently chosen in order to add a role of this kind
+  @select() ontoInfoVisible$: Observable<boolean>
+  @select() communityStatsVisible$: Observable<boolean>
+
+  @select() roleSets$: Observable<RoleSetState[]>
+
+
+  constructor(
+    protected classService: ClassService,
+    private roleService: RoleService,
+    private propertyService: PropertyService,
+    protected entityEditor: EntityEditorService,
+  ) { }
+
+  ngOnInit() {
+    // Initialize the store by one of the derived classes
+    this.initStore()
+
+    // Initialize the children in this class
+    this.initChildren()
+
+    // Initialize the rest in the derived class
+    this.init()
+
+  }
+
+
+
+  initChildren() {
+
+    // Wait for the fkClass to be ready
+    this.fkClass$
+      .subscribe(fkClass => {
+        if (fkClass)
+          Observable.zip(
+            // Generate ingoing and outgoing properties
+            this.classService.getIngoingProperties(fkClass),
+            this.classService.getOutgoingProperties(fkClass),
+            this.roles$,
+            this.state$
+          ).subscribe(result => {
+            const ingoingProperties = result[0];
+            const outgoingProperties = result[1];
+            const roles = result[2];
+            const state = result[3];
+
+            // Generate Direction Aware Properties (they appear in the select/dropdown to add new RoleSet)
+            const ingoingPropertiesToAdd = this.propertyService.toDirectionAwareProperties(false, ingoingProperties)
+            const outgoingPropertiesToAdd = this.propertyService.toDirectionAwareProperties(true, outgoingProperties)
+
+            // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
+            const options: IRoleSetState = { state: state }
+            const roleSetStates = this.roleService.toRoleSetStates(roles, ingoingProperties, outgoingProperties, options)
+
+            // Dispatch
+            this.localStore.dispatch(this.actions.roleSetsInitialized(ingoingProperties, outgoingProperties, roleSetStates, ingoingPropertiesToAdd, outgoingPropertiesToAdd))
+
+          })
+      })
+  }
+
+  initFkClassAndRoles(fkClass: number, roles: InfRole[] = []) {
+    this.classService.getByPk(fkClass).subscribe((dfhClass) => {
+      this.localStore.dispatch(this.actions.fkClassAndRolesInitialized(fkClass, dfhClass, roles))
+    })
+  }
+
+
+  init() { };
+
+  /** ************
+   * User Interactions 
+   ****************/
+
+  startSelectProperty() {
+    this.localStore.dispatch(this.actions.startSelectProperty())
+  }
+
+  stopSelectProperty() {
+    this.localStore.dispatch(this.actions.stopSelectProperty())
+  }
+
+  /**
+  * called, when user selected a the kind of property to add
+  */
+  startSelectRoles() {
+
+    // add a role set
+
+    const newRoleSetState: RoleSetState = {
+      isOutgoing: this.propertyToAdd.isOutgoing,
+      property: this.propertyToAdd.property,
+      fkProperty: this.propertyToAdd.property.dfh_pk_property,
+      roles: []
+    }
+
+    this.roleSets$.subscribe(roleSets => {
+
+      roleSets[newRoleSetState.fkProperty] = newRoleSetState;
+
+      this.localStore.dispatch(this.actions.startSelectRoles(roleSets))
+    })
+
+  }
+
+
+  /**
+  * Show ui with community statistics like
+  * - is in project count
+  * - is standard in project count
+  */
+  showCommunityStats() {
+    this.localStore.dispatch(this.actions.communityStatsVisibilityToggled(true))
+  }
+
+  /**
+  * Hide ui with community statistics like
+  * - is in project count
+  * - is standard in project count
+  */
+  hideCommunityStats() {
+    this.localStore.dispatch(this.actions.communityStatsVisibilityToggled(false))
+  }
+
+
+  /**
+  * Show CRM Info in UI
+  */
+  showOntoInfo() {
+    this.localStore.dispatch(this.actions.ontoInfoVisibilityToggled(true))
+  }
+
+  /**
+  * Hide CRM Info in UI
+  */
+  hideOntoInfo() {
+    this.localStore.dispatch(this.actions.ontoInfoVisibilityToggled(false))
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   /**
   * Inputs
@@ -37,7 +228,7 @@ export class RoleSetListComponent  {
   @Input() ingoingProperties: DfhProperty[];
 
   // state of this component
-  state:EditorStates;
+  state: EditorStates;
 
   // state of adding new information section
   @Input() set addingInformation(val: boolean) {
@@ -100,13 +291,6 @@ export class RoleSetListComponent  {
   // If true, the CRM Info (with links) is visible
   ontoInfoVisible: boolean;
 
-  constructor(
-    protected roleService: RoleService,
-    private propertyService: PropertyService,
-    public entityEditor: EntityEditorService,
-    protected ref: ChangeDetectorRef
-
-  ) { }
 
 
   /**
@@ -115,8 +299,8 @@ export class RoleSetListComponent  {
   * @return {bookean}  true if add button should be visible
   */
   get addButtonVisible() {
-    
-    if (this.state ==  'selectProp') return false;
+
+    if (this.state == 'selectProp') return false;
     if (this.state === 'add') return false;
     if (this.state === 'create') return false;
     if (this.state === 'add-pe-it') return false;
@@ -124,30 +308,6 @@ export class RoleSetListComponent  {
 
     return true;
 
-  }
-
-  /**
-  * Methods
-  */
-
-  setDirectionAwareProperties(ingoingProperties, outgoingProperties) {
-
-    this.outgoingDirectionAwareProperties = this.propertyService
-      .toDirectionAwareProperties(true, outgoingProperties)
-
-    this.ingoingDirectionAwareProperties = this.propertyService
-      .toDirectionAwareProperties(false, ingoingProperties)
-
-    if (this.state === 'create') {
-
-      //TODO find smarter choice of the default property to add on create
-      this.propertyToAdd = this.ingoingDirectionAwareProperties.filter(odap => {
-        return odap.property.dfh_pk_property === 1 //'R63'
-      })[0]
-
-      this.ref.detectChanges();
-
-    }
   }
 
   setRoleSets(roles) {
@@ -159,65 +319,6 @@ export class RoleSetListComponent  {
       //   this.outgoingProperties
       // );
     }
-  }
-
-
-  /**
-  * Show ui with community statistics like
-  * - is in project count
-  * - is standard in project count
-  */
-  showCommunityStats() {
-    this.communityStatsVisible = true;
-  }
-
-  /**
-  * Hide ui with community statistics like
-  * - is in project count
-  * - is standard in project count
-  */
-  hideCommunityStats() {
-    this.communityStatsVisible = false;
-  }
-
-
-
-  /**
-  * Show CRM Info in UI
-  */
-  showOntoInfo() {
-    this.ontoInfoVisible = true;
-  }
-
-  /**
-  * Hide CRM Info in UI
-  */
-  hideOntoInfo() {
-    this.ontoInfoVisible = false;
-  }
-
-
-  /**
-  * startSelectProperty - called, when user clicks on add info
-  */
-  startSelectProperty() {
-    this.selectPropState = 'selectProp';
-    this.propertyToAdd = null;
-
-  }
-
-
-  /**
-  * stopSelectProperty - called, when user clicks on close button of property
-  * selector or the info has been added successfully
-  */
-  stopSelectProperty() {
-
-    this.selectPropState = 'init';
-
-    this.stopAddingInformation.emit()
-
-    this.propertyToAdd = null;
   }
 
 

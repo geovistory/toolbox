@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
-import { InfPersistentItem } from 'app/core';
+import { InfPersistentItem, InfRole } from 'app/core';
 import {  IPeItState } from './pe-it.model';
-import { PiRoleSetListState } from '../pe-it-role-set-list/pe-it-role-set-list.model';
+import { RoleSetListState } from '../../components/role-set-list/role-set-list.model';
+import { RoleSetListActions } from '../../components/role-set-list/role-set-list-actions';
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = IPeItState;
@@ -11,15 +12,12 @@ interface MetaData { };
 export type PeItAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
-export class PeItActions {
+export class PeItActions extends RoleSetListActions {
   static readonly PEIT_TO_EDIT_UPDATED = 'PEIT_TO_EDIT_UPDATED';
 
   static readonly PEIT_TO_ADD_UPDATED = 'PEIT_TO_ADD_UPDATED';
 
   static readonly PEIT_TO_CREATE_UPDATED = 'PEIT_TO_CREATE_UPDATED';
-
-  static readonly PE_IT_ROLE_SET_LIST_INITIALIZED = 'PE_IT_ROLE_SET_LIST_INITIALIZED';
-
 
   @dispatch()
 
@@ -47,14 +45,5 @@ export class PeItActions {
     }
   })
 
-  /**
- * Called when the role sets are initialized
- */
-  roleSetsInitialized = (piRoleSetListState: PiRoleSetListState): PeItAction => ({
-    type: PeItActions.PE_IT_ROLE_SET_LIST_INITIALIZED,
-    meta: null,
-    payload: {
-      piRoleSetListState
-    }
-  })
+
 }

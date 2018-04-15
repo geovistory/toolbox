@@ -1,11 +1,10 @@
 import { BehaviorSubject } from "rxjs";
 import { InfPersistentItem, DfhClass } from "app/core";
 import { CollapsedExpanded, EditorStates } from "../../information.models";
-import { PiRoleSetListState } from "./../pe-it-role-set-list/pe-it-role-set-list.model";
+import { RoleSetListState } from "../../components/role-set-list/role-set-list.model";
 
 
-
-export interface IPeItState {
+export interface IPeItState extends RoleSetListState {
     /** db data */
     peItToEdit?: InfPersistentItem;
     peItToAdd?: InfPersistentItem;
@@ -21,7 +20,6 @@ export interface IPeItState {
     ontoInfoVisible?: boolean;
     communityStatsVisible?: boolean
 
-    piRoleSetListState?: PiRoleSetListState
 }
 
 export class PeItState implements IPeItState {
@@ -40,7 +38,6 @@ export class PeItState implements IPeItState {
     ontoInfoVisible?: boolean;
     communityStatsVisible?: boolean
 
-    piRoleSetListState?: PiRoleSetListState
 
     constructor(data?:IPeItState) {
         Object.assign(this, data)

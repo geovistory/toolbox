@@ -23,12 +23,16 @@ import { InfTemporalEntity, InfRole, InfEntityProjectRelApi, InfRoleApi, ActiveP
 import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
 import { UtilitiesService } from '../../shared/utilities.service';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux, WithSubStore } from '@angular-redux/store';
 import { RoleSetActions } from '../role-set/role-set.actions';
 import { IRoleSetState } from '../role-set/role-set.model';
+import { roleSetReducer } from '../role-set/role-set.reducer';
 
 
-
+@WithSubStore({
+  basePathMethodName: 'getBasePath',
+  localReducer: roleSetReducer
+})
 @Component({
   selector: 'gv-te-ent-role-set',
   templateUrl: './te-ent-role-set.component.html',

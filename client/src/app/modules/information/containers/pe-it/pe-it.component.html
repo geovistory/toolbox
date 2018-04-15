@@ -1,57 +1,71 @@
 <div [ngClass]="{'dev-view': entityEditor.devView}">
   <span *ngIf="entityEditor.devView">
-    [state: {{peItEntityState}}]
+    [state: {{(state$ | async)}}]
   </span>
 
 
-  <!-- View State -->
-
-  <div *ngIf="peItEntityState === 'view' && !loading">
-
-    <h5 class="mt-2 mb-4">
-      {{mostPopularAppeString}} {{stdAppeString}}
-      <small class="text-muted">{{dfhClass?.dfh_standard_label}}</small>
-    </h5>
-
-    <!-- <gv-pe-it-role-set-list [RoleSetListState]="'view'" [parentPeIt]="peIt" [roles]="peIt?.pi_roles" [outgoingProperties]="outgoingProperties"
-      [ingoingProperties]="ingoingProperties" (appeChange)="whenAppeChange($event)"></gv-pe-it-role-set-list> -->
-
-  </div>
-
-
   <!-- Create State -->
-
-  <div *ngIf="peItEntityState === 'create'">
+<!-- 
+  <div *ngIf="(state$ | async) === 'create'">
 
     <span *ngIf="entityEditor.devView">
       [ready: {{isReadyToCreate}}]
     </span>
-    <!-- 
-    <gv-pe-it-role-set-list [RoleSetListState]="'create'" [parentPeIt]="peItToCreate" [outgoingProperties]="outgoingProperties"
-      [ingoingProperties]="ingoingProperties" (readyToCreate)="emitReadyToCreate($event)" (notReadyToCreate)="emitNotReadyToCreate()"></gv-pe-it-role-set-list> -->
+   
+    <div *ngIf="(state$ | async) === 'create' && propertyToAdd">
+        <gv-pe-it-role-set [fkProperty]="propertyToAdd.property.dfh_pk_property" [isOutgoing]="propertyToAdd.isOutgoing" [state]="'create-pe-it'"
+          [pointTo]="'TeEnt'" [parentPeIt]="parentPeIt" [parentEntityPk]="pkEntity" (readyToCreate)="emitReadyToCreate($event)"
+          (notReadyToCreate)="emitNotReadyToCreate()" (stateChange)="onPropStateChange($event)" (rolesAdded)="onRolesAdded($event)"></gv-pe-it-role-set>
+    
+      </div>
 
-
-  </div>
+  </div> -->
 
   <!-- Add State -->
 
-  <div *ngIf="peItEntityState === 'add-pe-it' && !loading">
+  <!-- <div *ngIf="(state$ | async) === 'add-pe-it' && !loading">
 
     <h5 class="mt-2 mb-4">
       {{mostPopularAppeString}}
     </h5>
-    <!-- 
-    <gv-pe-it-role-set-list [roles]="peIt.pi_roles" [RoleSetListState]="peItEntityState" [parentPeIt]="peIt" [outgoingProperties]="outgoingProperties"
-      [ingoingProperties]="ingoingProperties" (readyToCreate)="emitReadyToCreate($event)" (notReadyToCreate)="emitNotReadyToCreate()"
-      (readyToAdd)="onRolesReadyToAdd($event)" (notReadyToAdd)="onRolesNotReadyToAdd()" (appeChange)="whenAppeChange($event)"></gv-pe-it-role-set-list>
- -->
 
-  </div>
+    <div class="d-flex flex-column gv-flex-grow-1" *ngIf="(state$ | async) === 'add-pe-it'">
+
+        <div class="btn-group gv-flex-shrink-0 d-flex mb-3" role="group" aria-label="Basic example">
+          <div class="gv-flex-grow-1 bg-gray-700 text-white rounded-left gv-card-spacer-x align-self-stretch d-flex">
+            <div class="align-self-center">
+              <i class="fa fa-lightbulb-o"></i> Properties
+            </div>
+          </div>
+          <div class="btn-group" ngbDropdown placement="bottom-right">
+            <button class="btn btn-gray-700" ngbDropdownToggle>
+              <i class="fa fa-ellipsis-v"></i>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+              <button class="dropdown-item" (click)="showCommunityStats()" *ngIf="!communityStatsVisible">Show Community Statistics</button>
+              <button class="dropdown-item" (click)="hideCommunityStats()" *ngIf="communityStatsVisible">Hide Community Statistics</button>
+              <button class="dropdown-item" (click)="showOntoInfo()" *ngIf="!ontoInfoVisible">Show Ontology Info</button>
+              <button class="dropdown-item" (click)="hideOntoInfo()" *ngIf="ontoInfoVisible">Hide Ontology Info</button>
+    
+            </div>
+          </div>
+        </div>
+    
+    
+        <gv-pe-it-role-set *ngFor="let propertySection of roleSets" [propertySection]="propertySection" [isOutgoing]="propertySection.isOutgoing"
+          [roles]="propertySection.roles" [fkProperty]="propertySection.fkProperty" [pointTo]="'TeEnt'" [parentEntityPk]="pkEntity"
+          [parentPeIt]="parentPeIt" [state]="state" [communityStatsVisible]="communityStatsVisible" [ontoInfoVisible]="ontoInfoVisible"
+          (appeChange)="emitAppeChange($event)" (readyToAdd)="onRolesReadyToAdd($event)" (notReadyToAdd)="onRolesNotReadyToAdd()"
+          (removePropertySectionReq)="onRemovePropertySectionReq($event)"></gv-pe-it-role-set>
+    
+      </div>    
+
+  </div> -->
 
 
   <!-- Edit and ViewCommunity States  -->
 
-  <div *ngIf="(peItEntityState$ | async) === 'edit'">
+  <div *ngIf="(state$ | async) === 'edit'">
 
     <!-- Title / Standard Appellations of PeIt -->
 
@@ -75,8 +89,80 @@
     <!-- Tools to edit PeIt  -->
 
     <div class="d-flex flex-row gv-flex-grow-1 m-3" style="flex-basis:100%">
-      <div class="d-flex gv-flex-grow-1" style="flex-basis:35%">
-        <gv-pe-it-role-set-list class="gv-flex-grow-1 d-flex flex-row" [parentPath]="basePath" (appeChange)="whenAppeChange($event)"></gv-pe-it-role-set-list>
+      <div class="d-flex flex-column gv-flex-grow-1" style="flex-basis:35%">
+
+
+        <div class="btn-group gv-flex-shrink-0 d-flex mb-3" role="group" aria-label="Basic example">
+          <div class="gv-flex-grow-1 bg-gray-700 text-white rounded-left gv-card-spacer-x align-self-stretch d-flex">
+            <div class="align-self-center">
+              <i class="fa fa-lightbulb-o"></i> Properties
+            </div>
+          </div>
+          <div class="btn-group" ngbDropdown placement="bottom-right">
+            <button class="btn btn-gray-700" ngbDropdownToggle>
+              <i class="fa fa-ellipsis-v"></i>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+              <button class="dropdown-item" (click)="showCommunityStats()" *ngIf="!(communityStatsVisible$|async)">Show Community Statistics</button>
+              <button class="dropdown-item" (click)="hideCommunityStats()" *ngIf="(communityStatsVisible$|async)">Hide Community Statistics</button>
+              <button class="dropdown-item" (click)="showOntoInfo()" *ngIf="!(ontoInfoVisible$|async)">Show Ontology Info</button>
+              <button class="dropdown-item" (click)="hideOntoInfo()" *ngIf="(ontoInfoVisible$|async)">Hide Ontology Info</button>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="gv-body gv-flex-grow-1" style="overflow-y:auto">
+          <gv-pe-it-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
+            (appeChange)="emitAppeChange($event)" (readyToAdd)="onRolesReadyToAdd($event)" (notReadyToAdd)="onRolesNotReadyToAdd()"
+            (removePropertySectionReq)="onRemovePropertySectionReq($event)" (rolesUpdated)="onRolesUpdated($event)"></gv-pe-it-role-set>
+        </div>
+
+        <div class="gv-footer mt-3">
+
+          <!-- Step 1 for adding a new property -->
+
+          <button class="btn btn-secondary btn-block bg-gray-700" (click)="startSelectProperty()" *ngIf="(selectPropState$ | async) === 'init'">
+            <i class="fa fa-plus"></i> Add a property ...
+          </button>
+
+          <!-- Step 2 for adding new Property section -->
+
+          <div class="card gv-naming bg-gray-700" *ngIf="(selectPropState$ | async) === 'selectProp'">
+
+            <div class="card-header bt-1">
+              <div class="d-flex">
+                <div class="gv-h4 text-white gv-flex-grow-1 align-self-center">
+                  What do you want to add?
+                </div>
+                <button type="button" name="button" class="btn btn-link text-white align-self-center btn-sm" (click)="stopSelectProperty()">
+                  <i class="fa fa-close"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="input-group">
+                <select [(ngModel)]="propertyToAdd" (onChange)="startSelectRoles()" class="custom-select">
+                  <option [ngValue]="null">Select…</option>
+
+                  <option [disabled]="propSectionAdded(propertyToAdd)" *ngFor="let propertyToAdd of (ingoingPropertiesToAdd$|async)" [ngValue]="propertyToAdd">
+
+                    {{propertyToAdd?.labelSg}} {{propSectionAdded(propertyToAdd) ? '(already added)':''}}
+
+                  </option>
+                  <option [disabled]="propSectionAdded(propertyToAdd)" *ngFor="let propertyToAdd of (outgoingPropertiesToAdd$|async)" [ngValue]="propertyToAdd">
+
+                    {{propertyToAdd?.labelSg}} {{propSectionAdded(propertyToAdd) ? '(already added)':''}}
+
+                  </option>
+                </select>
+                <button type="button" name="button" class="btn btn-primary input-group-append" *ngIf="propertyToAdd" (click)="startSelectRoles()">Ok</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <div class="d-flex ml-3" style="flex-basis:65%; overflow:hidden">
@@ -106,4 +192,48 @@
       </div>
     </div>
   </div>
+
+    <!-- View State -->
+
+  <!-- <div *ngIf="(state$ | async) === 'view' && !loading">
+
+    <h5 class="mt-2 mb-4">
+      {{mostPopularAppeString}} {{stdAppeString}}
+      <small class="text-muted">{{dfhClass?.dfh_standard_label}}</small>
+    </h5>
+
+
+    <div class="d-flex flex-column gv-flex-grow-1">
+
+        <div class="btn-group gv-flex-shrink-0 d-flex mb-3" role="group" aria-label="Basic example">
+          <div class="gv-flex-grow-1 bg-gray-700 text-white rounded-left gv-card-spacer-x align-self-stretch d-flex">
+            <div class="align-self-center">
+              <i class="fa fa-lightbulb-o"></i> Properties
+            </div>
+          </div>
+          <div class="btn-group" ngbDropdown placement="bottom-right">
+            <button class="btn btn-gray-700" ngbDropdownToggle>
+              <i class="fa fa-ellipsis-v"></i>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+              <button class="dropdown-item" (click)="showCommunityStats()" *ngIf="!communityStatsVisible">Show Community Statistics</button>
+              <button class="dropdown-item" (click)="hideCommunityStats()" *ngIf="communityStatsVisible">Hide Community Statistics</button>
+              <button class="dropdown-item" (click)="showOntoInfo()" *ngIf="!ontoInfoVisible">Show Ontology Info</button>
+              <button class="dropdown-item" (click)="hideOntoInfo()" *ngIf="ontoInfoVisible">Hide Ontology Info</button>
+    
+            </div>
+          </div>
+        </div>
+    
+    
+        <gv-pe-it-role-set *ngFor="let propertySection of roleSets" [propertySection]="propertySection" [isOutgoing]="propertySection.isOutgoing"
+          [roles]="propertySection.roles" [fkProperty]="propertySection.fkProperty" [pointTo]="'TeEnt'" [parentEntityPk]="pkEntity"
+          [parentPeIt]="parentPeIt" [state]="state" [communityStatsVisible]="communityStatsVisible" [ontoInfoVisible]="ontoInfoVisible"
+          (appeChange)="emitAppeChange($event)" (readyToAdd)="onRolesReadyToAdd($event)" (notReadyToAdd)="onRolesNotReadyToAdd()"
+          (removePropertySectionReq)="onRemovePropertySectionReq($event)"></gv-pe-it-role-set>
+    
+      </div>
+  </div> -->
+
+
 </div>

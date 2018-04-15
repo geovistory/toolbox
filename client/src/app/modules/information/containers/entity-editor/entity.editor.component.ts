@@ -84,7 +84,8 @@ export class EntityEditorComponent implements OnInit {
     let wrapper = new EntityEditorWrapper({
       peItState: new PeItState({
         pkEntity: this.pkEntity,
-        state: 'edit'
+        state: 'edit',
+        selectPropState: 'init'
       })
     }); 
 

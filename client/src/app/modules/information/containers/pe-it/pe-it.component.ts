@@ -14,11 +14,16 @@ import { AppellationLabel } from '../../shared/appellation-label/appellation-lab
 import { PropertyPipe } from '../../shared/property.pipe';
 
 import { EditorStates } from '../../information.models';
-import { peItReducer } from './pe-it.reducer';
 import { PeItActions } from './pe-it.actions';
 import { IPeItState } from './pe-it.model';
-import { PiRoleSetListState } from './../pe-it-role-set-list/pe-it-role-set-list.model';
 import { AppellationStdBool } from '../../components/role/role.component';
+import { RoleSetListState, IRoleSetListState } from '../../components/role-set-list/role-set-list.model';
+import { RoleSetListComponent } from '../../components/role-set-list/role-set-list.component';
+import { RoleService } from '../../shared/role.service';
+import { PropertyService } from '../../shared/property.service';
+import { RoleSetActions } from '../../components/role-set/role-set.actions';
+import { RoleSetListActions } from '../../components/role-set-list/role-set-list-actions';
+import { peItReducer } from './pe-it.reducer';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -31,11 +36,11 @@ import { AppellationStdBool } from '../../components/role/role.component';
   styleUrls: ['./pe-it.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PeItComponent implements OnInit {
+export class PeItComponent extends RoleSetListComponent implements OnInit {
 
   @Input() parentPath: string[];
   getBasePath = () => [...this.parentPath, 'peItState']
-  basePath:string[];
+  basePath: string[];
   localStore: ObservableStore<IPeItState>;
 
 
@@ -44,8 +49,7 @@ export class PeItComponent implements OnInit {
   pkEntity: number;
 
   // State of this component
-  @select(['state']) peItEntityState$: Observable<EditorStates>;
-  peItEntityState: EditorStates;
+  state: EditorStates;
 
 
   /**
@@ -58,10 +62,6 @@ export class PeItComponent implements OnInit {
 
   @dispatch() peItToCreateUpdated = (peIt) => {
     return this.actions.peItToCreateUpdated(peIt)
-  };
-
-  @dispatch() roleSetsInitialized = (roleSetListState) => {
-    return this.actions.roleSetsInitialized(roleSetListState)
   };
 
 
@@ -135,12 +135,15 @@ export class PeItComponent implements OnInit {
     private propertyPipe: PropertyPipe,
     private activePeItService: ActivePeItService,
     private slimLoadingBarService: SlimLoadingBarService,
-    protected classService: ClassService,
     public entityEditor: EntityEditorService,
     private changeDetector: ChangeDetectorRef,
-    private actions: PeItActions,
-    private ngRedux: NgRedux<IPeItState>
+    private ngRedux: NgRedux<IPeItState>,
+    public actions: PeItActions,
+    classService: ClassService,
+    roleService: RoleService,
+    propertyService: PropertyService,
   ) {
+    super(classService, roleService, propertyService, entityEditor)
   }
 
 
@@ -148,42 +151,44 @@ export class PeItComponent implements OnInit {
   * Methods
   */
 
-  ngOnInit() {
+  // gets called by base class onInit
+  initStore() {
     this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), peItReducer);
     this.basePath = this.getBasePath();
+  }
 
+  // gets called by base class onInit
+  init() {
     Observable.zip(
       this.pkEntity$,
-      this.peItEntityState$,
+      this.state$,
       this.ngRedux.select<Project>('activeProject')
     ).subscribe(result => {
       this.pkEntity = result[0]
-      this.peItEntityState = result[1]
+      this.state = result[1]
       this.pkProject = result[2].pk_project
-    
-      this.init()
+
+      this.initState()
     })
 
 
   }
 
-  init() {
 
-
-
+  initState() {
     // if it is not create state
-    if (["preview", "edit", "view"].indexOf(this.peItEntityState) !== -1) {
+    if (["preview", "edit", "view"].indexOf(this.state) !== -1) {
 
       // Query the peIt and set the peIt by a call to the Api
       this.queryRichObjectOfProject().subscribe((peIt) => {
         this.localStore.dispatch(this.actions.peItToEditUpdated(peIt))
-        this.initRoleSets(peIt.fk_class, peIt.pi_roles)
+        this.initFkClassAndRoles(peIt.fk_class, peIt.pi_roles)
       })
 
     }
 
 
-    if (this.peItEntityState == "add-pe-it") {
+    if (this.state == "add-pe-it") {
 
       // Query the peIt and set the peIt by a call to the Api
       this.queryRichObjectOfRepo().subscribe(peIt => {
@@ -202,13 +207,13 @@ export class PeItComponent implements OnInit {
 
         this.peItToAddUpdated(peIt)
 
-        this.initRoleSets(peIt.fk_class, peIt.pi_roles)
+        this.initFkClassAndRoles(peIt.fk_class, peIt.pi_roles)
 
       })
 
     }
 
-    if (this.peItEntityState == "add") {
+    if (this.state == "add") {
 
       // Query the peIt and set the peIt by a call to the Api
       this.queryRichObjectOfRepo().subscribe((peIt) => {
@@ -227,15 +232,15 @@ export class PeItComponent implements OnInit {
 
         this.peItToAddUpdated(peIt)
 
-        this.initRoleSets(peIt.fk_class, peIt.pi_roles)
+        this.initFkClassAndRoles(peIt.fk_class, peIt.pi_roles)
       })
 
     }
 
-    else if (this.peItEntityState == "create") {
+    else if (this.state == "create") {
 
 
-      this.initRoleSets(this.fkClass)
+      this.initFkClassAndRoles(this.fkClass)
 
       let peItToCreate = new InfPersistentItem({
         fk_class: this.fkClass
@@ -247,9 +252,21 @@ export class PeItComponent implements OnInit {
       })
 
 
+      //TODO find smarter choice of the default property to add on create
+      //  this.in$.subscribe(
+      //    idaps=>{
+
+      //     idaps.filter(odap => {
+      //       return odap.property.dfh_pk_property === 1 //'R63'
+      //     })[0]  
+      //    }
+      //  )
+
+
     }
 
   }
+
 
   queryRichObjectOfRepo(): EventEmitter<InfPersistentItem> {
 
@@ -295,34 +312,6 @@ export class PeItComponent implements OnInit {
 
   }
 
-
-  initRoleSets(fkClass, roles:InfRole[]=[]) {
-
-    Observable.zip(
-      this.classService.getIngoingProperties(fkClass),
-      this.classService.getOutgoingProperties(fkClass)
-    ).subscribe(result => {
-
-      const ingoingProperties = result[0];
-      const outgoingProperties = result[1];
-
-      const child = new PiRoleSetListState({
-        pkEntity:this.pkEntity,
-        roles: roles.map(r=>new InfRole(r)),
-        outgoingProperties: outgoingProperties,
-        ingoingProperties: ingoingProperties,
-        parentPeIt: this.peIt,
-        state: this.peItEntityState,
-        ontoInfoVisible: false,
-        communityStatsVisible: false,
-        selectPropState: 'init'
-      })
-
-      this.roleSetsInitialized(child);
-      
-    })
-
-  }
 
 
   /**

@@ -1,39 +1,37 @@
-<div *ngIf="!isCircular && (property!==undefined)" [ngClass]="{'dev-view': entityEditor.devView}">
+<!-- *ngIf="!isCircular && (property!==undefined)"  -->
+<div [ngClass]="{'dev-view': entityEditor.devView}">
   <span *ngIf="entityEditor.devView">
-    [state: {{state}}]
-    [readyToCreate: {{isReadyToCreate}}]
-    [readyToAdd: {{rolesToAdd?.length}}]
-    [communityStatsVisible {{communityStatsVisible}}]
+    [(state$ | async): {{(state$ | async)}}] [readyToCreate: {{isReadyToCreate}}] [readyToAdd: {{rolesToAdd?.length}}] [communityStatsVisible
+    {{communityStatsVisible}}]
   </span>
-
-
+  
+  
   <span *ngIf="isOutgoing === true && entityEditor.devView">
     [dom: {{property.dfh_has_domain}} – prop: {{property.dfh_pk_property}} – range: {{property.dfh_has_range}}]
   </span>
-
+  
   <span *ngIf="isOutgoing === false && entityEditor.devView">
     [range: {{property.dfh_has_range}} – prop: {{property.dfh_pk_property}} – dom: {{property.dfh_has_domain}}]
   </span>
-
-
+  
 
   <!--
   ************************* Edit State ************************* -->
 
-  <span *ngIf="state === 'edit'">
+  <span *ngIf="(state$ | async) === 'edit'">
 
 
 
     <div class="btn-group d-flex flex-row gv-h5">
       <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
         <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardState==='expanded')}"></i>
-        <span *ngIf="roles && roles.length">{{roles.length}}</span>        
-        {{roleLabel}}
+        <span *ngIf="(roles$ | async) && (roles$ | async).length">{{(roles$ | async)?.length}}</span>
+        {{(roleLabel$ | async)?.default}}
       </button>
       <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="ontoInfoVisible">
         <div class="align-self-center">
-          <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{property.dfh_pk_property}}" target="_blank" >
-            {{property.dfh_identifier_in_namespace}}
+          <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{property.dfh_pk_property}}" target="_blank">
+            {{(property$|async).dfh_identifier_in_namespace}}
           </a>
         </div>
       </div>
@@ -47,21 +45,13 @@
 
       <!-- The roles that are added -->
 
-      <gv-te-ent-role *ngFor="let role of roles"
-      [role]="role"
-      [parentProperty]="property"
-      [isOutgoing]="isOutgoing"
-      [pointTo]="pointTo"
-      [roleState]="'editable'"
-      (readyToAdd)="onRoleReadyToAdd($event)"
-      (appeChange)="emitAppeChange($event)"
-      (roleRemoved)="onRoleRemoved($event)"
-      (roleCreated)="onRoleCreated($event)"
-      (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
+      <gv-te-ent-role *ngFor="let entry of (childRoleStates$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
+        (readyToAdd)="onRoleReadyToAdd($event)" (appeChange)="emitAppeChange($event)" (roleRemoved)="onRoleRemoved($event)"
+        (roleCreated)="onRoleCreated($event)" (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
 
-      <div class="card-body" *ngIf="roles.length === 0 && addButtonVisible">
+      <div class="card-body" *ngIf=" (childRoleStates$ | async).length === 0 && addButtonVisible">
         <button class="btn btn-primary" (click)="startAddingRole()">
-          Add {{roleLabel}}
+          Add {{(roleLabel$ | async).default}}
         </button>
         <button class="btn btn-link" (click)="removePropertySection()">
           cancel
@@ -70,47 +60,43 @@
 
       <!-- Select existing Roles -->
 
-      <div class="border-top border-gray-500" *ngIf="addRoleState=== 'selectExisting'" >
+      <div class="border-top border-gray-500" *ngIf="addRoleState=== 'selectExisting'">
 
 
         <div class="card-body" *ngIf="rolesNotInProjectLoading">
-          <i class="fa fa-spinner fa-pulse"></i>  Searching for existing {{roleLabelObj.sg}}…
+          <i class="fa fa-spinner fa-pulse"></i> Searching for existing {{(roleLabel$ | async).sg}}…
         </div>
 
         <span *ngIf="!rolesNotInProjectLoading">
           <div class="card-body gv-property-section-header">
-            {{rolesInOtherProjects.length}} {{rolesInOtherProjects.length === 1 ? roleLabelObj.sg : roleLabelObj.pl}} found in other projects
+            {{rolesInOtherProjects.length}} {{rolesInOtherProjects.length === 1 ? (roleLabel$ | async).sg : (roleLabel$ | async).pl}} found in other
+            projects
           </div>
 
           <div class="card-body" *ngIf="rolesInOtherProjects.length">
-            <div class="gv-label gv-flex-grow-1"> Add an existing {{roleLabelObj.sg}} from below or <a href="" class="gv-passive-link" (click)="startCreateNewRole()">create a new name</a>.</div>
+            <div class="gv-label gv-flex-grow-1"> Add an existing {{(roleLabel$ | async).sg}} from below or
+              <a href="" class="gv-passive-link" (click)="startCreateNewRole()">create a new name</a>.</div>
           </div>
 
           <div class="card-body" *ngIf="!rolesInOtherProjects.length && !rolesInNoProjectVisible">
             <div class="gv-label gv-flex-grow-1">
-              <a href="" class="btn btn-primary gv-passive-link" (click)="startCreateNewRole()">Create a new {{roleLabelObj.sg}}</a>
+              <a href="" class="btn btn-primary gv-passive-link" (click)="startCreateNewRole()">Create a new {{(roleLabel$ | async).sg}}</a>
               <a href="" class="btn btn-link gv-passive-link" (click)="rolesInNoProjectVisible=true">
-                Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? roleLabelObj.sg : roleLabelObj.pl}} used by no Projects
+                Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? (roleLabel$ | async).sg : (roleLabel$ | async).pl}} used by no Projects
               </a>
             </div>
           </div>
 
           <div class="card-body" *ngIf="rolesInOtherProjects.length">
 
-            <gv-te-ent-role *ngFor="let role of rolesInOtherProjects"
-            [role]="role"
-            [parentProperty]="property"
-            [isOutgoing]="isOutgoing"
-            [pointTo]="'TeEnt'"
-            [roleState]="'add'"
-            (readyToAdd)="onRoleReadyToAdd($event)"
-            ></gv-te-ent-role>
+            <gv-te-ent-role *ngFor="let role of rolesInOtherProjects" [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing"
+              [pointTo]="'TeEnt'" [roleState]="'add'" (readyToAdd)="onRoleReadyToAdd($event)"></gv-te-ent-role>
           </div>
 
           <div class="card-body pt-0" *ngIf="rolesInNoProject && rolesInOtherProjects.length">
             <small>
               <a href="" class="gv-passive-link text-light" (click)="rolesInNoProjectVisible=true" *ngIf="!rolesInNoProjectVisible">
-                Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? roleLabelObj.sg : roleLabelObj.pl}} used by no Projects.
+                Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? (roleLabel$ | async).sg : (roleLabel$ | async).pl}} used by no Projects.
               </a>
               <a href="" class="gv-passive-link text-light" (click)="rolesInNoProjectVisible=false" *ngIf="rolesInNoProjectVisible">
                 Hide
@@ -120,24 +106,14 @@
 
           <div class="card-body" *ngIf="rolesInNoProject && rolesInNoProjectVisible">
 
-            <gv-te-ent-role *ngFor="let role of rolesInNoProject"
-            [role]="role"
-            [parentProperty]="property"
-            [isOutgoing]="isOutgoing"
-            [pointTo]="'TeEnt'"
-            [roleState]="'add'"
-            (readyToAdd)="onRoleReadyToAdd($event)"
-            ></gv-te-ent-role>
+            <gv-te-ent-role *ngFor="let role of rolesInNoProject" [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing"
+              [pointTo]="'TeEnt'" [roleState]="'add'" (readyToAdd)="onRoleReadyToAdd($event)"></gv-te-ent-role>
           </div>
 
           <div class="card-body" *ngIf="rolesInNoProjectVisible || rolesInOtherProjects.length">
-            <button type="button" class="btn btn-primary"
-            [ngClass]="{disabled:(!isReadyToAddRoles)}"
-            (click)="addSelectedRolesToProject()"
-            >Add selected</button>
+            <button type="button" class="btn btn-primary" [ngClass]="{disabled:(!isReadyToAddRoles)}" (click)="addSelectedRolesToProject()">Add selected</button>
 
-            <button type="button" class="btn btn-link"
-            (click)="cancelSelectRoles()">Cancel</button>
+            <button type="button" class="btn btn-link" (click)="cancelSelectRoles()">Cancel</button>
           </div>
         </span>
 
@@ -146,16 +122,8 @@
       <!-- Create a new Role -->
       <div class="border-top border-gray-500" *ngIf="addRoleState=== 'createNew'">
 
-        <gv-te-ent-role
-        [role]="roleToCreate"
-        [pointTo]="'PeIt'"
-        [pkTargetClass]="pkTargetClass"
-        [fkProperty]="fkProperty"
-        [fkTeEnt]="parentTeEnt.pk_entity"
-        [roleState]="'create'"
-        (roleCreated)="onRoleCreated($event)"
-        (roleCreationCanceled)="onRoleCreationCanceled()"
-        ></gv-te-ent-role>
+        <gv-te-ent-role [role]="roleToCreate" [pointTo]="'PeIt'" [pkTargetClass]="pkTargetClass" [fkProperty]="fkProperty" [fkTeEnt]="parentTeEnt.pk_entity"
+          [roleState]="'create'" (roleCreated)="onRoleCreated($event)" (roleCreationCanceled)="onRoleCreationCanceled()"></gv-te-ent-role>
 
       </div>
 
@@ -167,10 +135,10 @@
   <!--
   ************************* Add-Pe-It State ************************* -->
 
-  <span *ngIf="state === 'add-pe-it'">
+  <span *ngIf="(state$ | async) === 'add-pe-it'">
 
     <div class="card-body gv-property-section-header d-flex flex-row gv-to-pe-it">
-      <div class="gv-label gv-flex-grow-1"> {{roleLabel}} </div>
+      <div class="gv-label gv-flex-grow-1"> {{(roleLabel$ | async).default}} </div>
       <button type="button" class="gv-edit-btn btn btn-link btn-sm" name="button" *ngIf="addButtonVisible">
         <i class="fa fa-plus"></i>
       </button>
@@ -179,15 +147,8 @@
 
     <div class="card-body">
       <div *ngFor="let role of roles">
-        <gv-te-ent-role
-        [role]="role"
-        [parentProperty]="property"
-        [isOutgoing]="isOutgoing"
-        [pointTo]="pointTo"
-        [roleState]="state"
-        (appeChange)="emitAppeChange($event)"
-        (readyToAdd)="onRoleReadyToAdd($event)"
-        (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
+        <gv-te-ent-role [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing" [pointTo]="pointTo" [roleState]="(state$ | async)"
+          (appeChange)="emitAppeChange($event)" (readyToAdd)="onRoleReadyToAdd($event)" (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
       </div>
     </div>
 
@@ -197,24 +158,17 @@
   <!--
   ************************* Add State ************************* -->
 
-  <span *ngIf="state === 'add'">
+  <span *ngIf="(state$ | async) === 'add'">
 
     <div class="card-body gv-property-section-header d-flex flex-row gv-to-pe-it">
-      <div class="gv-label gv-flex-grow-1"> {{roleLabel}} </div>
+      <div class="gv-label gv-flex-grow-1"> {{(roleLabel$ | async).default}} </div>
     </div>
 
 
     <div class="card-body">
       <div *ngFor="let role of roles">
-        <gv-te-ent-role
-        [role]="role"
-        [parentProperty]="property"
-        [isOutgoing]="isOutgoing"
-        [pointTo]="pointTo"
-        [roleState]="state"
-        (appeChange)="emitAppeChange($event)"
-        (readyToAdd)="onRoleReadyToAdd($event)"
-        (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
+        <gv-te-ent-role [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing" [pointTo]="pointTo" [roleState]="(state$ | async)"
+          (appeChange)="emitAppeChange($event)" (readyToAdd)="onRoleReadyToAdd($event)" (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
       </div>
     </div>
 
@@ -224,16 +178,16 @@
   <!--
   ************************* Create State ************************* -->
 
-  <span *ngIf="state === 'create'">
+  <span *ngIf="(state$ | async) === 'create'">
 
     <div class="btn-group d-flex flex-row gv-h5">
       <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
         <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardState==='expanded')}"></i>
-        {{roleLabel}}
+        {{(roleLabel$ | async).default}}
       </button>
       <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="ontoInfoVisible">
         <div class="align-self-center">
-          <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{property.dfh_pk_property}}" target="_blank" >
+          <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{property.dfh_pk_property}}" target="_blank">
             {{property.dfh_identifier_in_namespace}}
           </a>
         </div>
@@ -256,17 +210,9 @@
       </div> -->
 
 
-      <gv-te-ent-role
-      [role]="roleToCreate"
-      [pointTo]="'PeIt'"
-      [pkTargetClass]="pkTargetClass"
-      [fkProperty]="fkProperty"
-      [roleState]="'create-te-ent'"
-      (readyToCreate)="roleReadyToCreate($event)"
-      (notReadyToCreate)="roleNotReadyToCreate()"
-      (roleCreated)="onRoleCreated($event)"
-      (roleCreationCanceled)="onRoleCreationCanceled()"
-      ></gv-te-ent-role>
+      <gv-te-ent-role [role]="roleToCreate" [pointTo]="'PeIt'" [pkTargetClass]="pkTargetClass" [fkProperty]="fkProperty" [roleState]="'create-te-ent'"
+        (readyToCreate)="roleReadyToCreate($event)" (notReadyToCreate)="roleNotReadyToCreate()" (roleCreated)="onRoleCreated($event)"
+        (roleCreationCanceled)="onRoleCreationCanceled()"></gv-te-ent-role>
 
     </div>
   </span>
@@ -275,25 +221,17 @@
   <!--
   ************************* View State ************************* -->
 
-  <span *ngIf="state === 'view'">
+  <span *ngIf="(state$ | async) === 'view'">
 
     <div class="card-body gv-property-section-header d-flex flex-row gv-to-pe-it">
-      <div class="gv-label gv-flex-grow-1"> {{roleLabel}} </div>
+      <div class="gv-label gv-flex-grow-1"> {{(roleLabel$ | async).default}} </div>
     </div>
 
 
     <div class="card-body">
       <div *ngFor="let role of roles">
-        <gv-te-ent-role
-        [role]="role"
-        [parentProperty]="property"
-        [isOutgoing]="isOutgoing"
-        [pointTo]="pointTo"
-        [roleState]="state"
-        [communityStatsVisible]="communityStatsVisible"
-        [ontoInfoVisible]="ontoInfoVisible"
-        (appeChange)="emitAppeChange($event)"
-        ></gv-te-ent-role>
+        <gv-te-ent-role [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing" [pointTo]="pointTo" [roleState]="(state$ | async)"
+          [communityStatsVisible]="communityStatsVisible" [ontoInfoVisible]="ontoInfoVisible" (appeChange)="emitAppeChange($event)"></gv-te-ent-role>
       </div>
     </div>
 
