@@ -16,6 +16,8 @@ export class RoleSetListActions {
 
   static readonly ROLE_SETS_INITIALIZED = 'ROLE_SETS_INITIALIZED';
 
+  static readonly FK_CLASS_AND_ROLES_INITIALIZED = 'FK_CLASS_AND_ROLES_INITIALIZED';
+
   static readonly START_SELECT_PROPERTY = 'START_SELECT_PROPERTY';
 
   static readonly STOP_SELECT_PROPERTY = 'STOP_SELECT_PROPERTY';
@@ -24,15 +26,10 @@ export class RoleSetListActions {
 
   static readonly START_SELECT_ROLES = 'START_SELECT_ROLES';
 
-  static readonly COMMUNITY_STATS_VISIBILITY_TOGGLED = 'COMMUNITY_STATS_VISIBILITY_TOGGLED';
-
-  static readonly ONTO_INFO_VISIBILITY_TOGGLED = 'ONTO_INFO_VISIBILITY_TOGGLED';
-
-  static readonly FK_CLASS_AND_ROLES_INITIALIZED = 'FK_CLASS_AND_ROLES_INITIALIZED';
-
   @dispatch()
 
-  roleSetsInitialized = (ingoingProperties: DfhProperty[], outgoingProperties: DfhProperty[], roleSets: IRoleSetState[],ingoingPropertiesToAdd: DirectionAwareProperty[], outgoingPropertiesToAdd: DirectionAwareProperty[]): RoleSetListAction => ({
+
+  roleSetsInitialized = (ingoingProperties: DfhProperty[], outgoingProperties: DfhProperty[], roleSets: IRoleSetState[], ingoingPropertiesToAdd: DirectionAwareProperty[], outgoingPropertiesToAdd: DirectionAwareProperty[]): RoleSetListAction => ({
     type: RoleSetListActions.ROLE_SETS_INITIALIZED,
     meta: null,
     payload: {
@@ -80,24 +77,8 @@ export class RoleSetListActions {
     }
   })
 
-  communityStatsVisibilityToggled = (communityStatsVisible: boolean): RoleSetListAction => ({
-    type: RoleSetListActions.COMMUNITY_STATS_VISIBILITY_TOGGLED,
-    meta: null,
-    payload: {
-      communityStatsVisible
-    }
-  })
 
-  ontoInfoVisibilityToggled = (ontoInfoVisible: boolean): RoleSetListAction => ({
-    type: RoleSetListActions.ONTO_INFO_VISIBILITY_TOGGLED,
-    meta: null,
-    payload: {
-      ontoInfoVisible
-    }
-  })
-
-  
-  fkClassAndRolesInitialized = (fkClass: number, dfhClass:DfhClass, roles:InfRole[]): RoleSetListAction => ({
+  fkClassAndRolesInitialized = (fkClass: number, dfhClass: DfhClass, roles: InfRole[]): RoleSetListAction => ({
     type: RoleSetListActions.FK_CLASS_AND_ROLES_INITIALIZED,
     meta: null,
     payload: {

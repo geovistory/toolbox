@@ -48,7 +48,6 @@ import { LanguageSearchTypeaheadComponent } from 'app/shared/components/language
 import { TeEntService } from '../../shared/te-ent.service';
 import { ConfigService } from '../../shared/config.service';
 import { PeItComponent } from '../../containers/pe-it/pe-it.component';
-import { PeItRoleSetListComponent } from '../../containers/pe-it-role-set-list/pe-it-role-set-list.component';
 
 
 
@@ -70,7 +69,6 @@ export default sandboxOf(TeEntComponent, {
     PeItLanguageComponent,
     PeItEntityPreviewComponent,
     PeItEntityAddComponent,
-    PeItRoleSetListComponent,
     EntityEditorSettingsComponent,
     AppellationLabelViewComponent,
     AppellationLabelEditorComponent,

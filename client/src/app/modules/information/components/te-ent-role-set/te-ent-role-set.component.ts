@@ -16,7 +16,6 @@ import 'rxjs/add/observable/combineLatest';
 import { timer } from 'rxjs/observable/timer';
 
 import { TeEntComponent } from '../te-ent/te-ent.component';
-import { PeItComponent } from '../pe-it/pe-it.component';
 import { RoleSetComponent } from '../role-set/role-set.component';
 import { TeEntRoleComponent } from '../te-ent-role/te-ent-role.component';
 import { InfTemporalEntity, InfRole, InfEntityProjectRelApi, InfRoleApi, ActiveProjectService, EntityEditorService } from 'app/core';
@@ -76,17 +75,20 @@ import { roleSetReducer } from '../role-set/role-set.reducer';
 export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
 
   /**
-  * Inputs
+  * Paths to other slices of the store
   */
+  parentPeItStatePath: string[];
 
-  // The parent TemporalEntity
-  @Input() parentTeEnt: InfTemporalEntity;
+  /**
+   * Local Store Observables
+   */
 
-  //the role that is parent of the parent temporal entity
-  @Input() parentRole: InfRole;
 
-  // Array of children RoleComponents
-  @ViewChildren(TeEntRoleComponent) roleComponents: QueryList<TeEntRoleComponent>
+  /**
+  * Other Store Observables
+  */
+  ontoInfoVisible$: Observable<boolean>
+  communityStatsVisible$: Observable<boolean>
 
 
   constructor(
@@ -105,6 +107,42 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
     super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions)
   }
 
+  init() {
+
+    this.initPaths()
+
+    this.initObservablesOutsideLocalStore();
+
+    this.initSubsciptions();
+
+  }
+  /**
+   * init paths to different slices of the store
+   */
+  initPaths() {
+    // transforms e.g. ['information', 'entityEditor', 'peItState', 'roleSets', '1']
+    // to ['information', 'entityEditor', 'peItState']
+    this.parentPeItStatePath = this.parentPath.slice(0, (this.parentPath.length - 5));
+  }
+
+
+  /**
+   * init observables to other slices of the store than the local store
+   * (to select observables from local store, use @select decorator)
+   */
+  initObservablesOutsideLocalStore() {
+    this.ontoInfoVisible$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'ontoInfoVisible']);
+  }
+
+  /**
+   * init subscriptions to observables in the store
+   * subscribe all here, so it is only subscribed once on init and not multiple times on user interactions
+   */
+  initSubsciptions() {
+
+  }
+
+
 
   /**
   * get isCircular - returns true if this roles point back to the same peIt
@@ -117,53 +155,53 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
   */
   get isCircular() {
 
-    // Return true, if all of this.roles are identical with the parent role
-    // of the parent teEnt.
+    // // Return true, if all of this.roles are identical with the parent role
+    // // of the parent teEnt.
 
-    if (this.pointTo === 'PeIt') {
-      if (this.parentRole) {
+    // if (this.pointTo === 'PeIt') {
+    //   if (this.parentRole) {
 
-        if (this.roles) {
-          if (this.roles.length) {
-            // If there are roles, we are obviously not in create state.
-            // If all of this.roles are identical with the parent role
-            // of the parent teEnt return true to say that this is circular
+    //     if (this.roles) {
+    //       if (this.roles.length) {
+    //         // If there are roles, we are obviously not in create state.
+    //         // If all of this.roles are identical with the parent role
+    //         // of the parent teEnt return true to say that this is circular
 
-            let count = 0;
-            this.roles.forEach(role => {
-              if (role.pk_entity == this.parentRole.pk_entity) {
+    //         let count = 0;
+    //         this.roles.forEach(role => {
+    //           if (role.pk_entity == this.parentRole.pk_entity) {
 
-                // If this is a circular role, remove its epr so that it is not
-                // two times in the entity tree. This prevents that changing the
-                // entity project relation is interfered by this second (unused)
-                // role
+    //             // If this is a circular role, remove its epr so that it is not
+    //             // two times in the entity tree. This prevents that changing the
+    //             // entity project relation is interfered by this second (unused)
+    //             // role
 
-                delete role.entity_version_project_rels;
+    //             delete role.entity_version_project_rels;
 
-                count++;
-              }
-            })
-            if (this.roles.length === count) {
-              return true;
-            }
-          }
-        }
+    //             count++;
+    //           }
+    //         })
+    //         if (this.roles.length === count) {
+    //           return true;
+    //         }
+    //       }
+    //     }
 
-        if (
-          this.state === 'create' &&
-          this.fkProperty == this.parentRole.fk_property
-        ) {
+    //     if (
+    //       this.state === 'create' &&
+    //       this.fkProperty == this.parentRole.fk_property
+    //     ) {
 
-          // If we are in create state
-          // and this.fkProperty is identical with the parent role fk_property
-          // return true to say that this is circular
+    //       // If we are in create state
+    //       // and this.fkProperty is identical with the parent role fk_property
+    //       // return true to say that this is circular
 
-          return true;
-        }
-      }
-    }
+    return true;
+    //     }
+    //   }
+    // }
 
-    return false;
+    // return false;
   }
 
 
@@ -172,48 +210,48 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
   */
   startAddingRole() {
 
-    this.rolesInNoProjectVisible = false;
+    // this.rolesInNoProjectVisible = false;
 
-    this.addRoleState = 'selectExisting'
+    // this.addRoleState = 'selectExisting'
 
-    this.rolesNotInProjectLoading = true;
+    // this.rolesNotInProjectLoading = true;
 
-    const fkProperty = this.property.dfh_pk_property;
-    const fkTemporalEntity = this.parentTeEnt.pk_entity;
-    const fkProject = this.activeProject.project.pk_project;
+    // const fkProperty = this.property.dfh_pk_property;
+    // const fkTemporalEntity = this.parentTeEnt.pk_entity;
+    // const fkProject = this.activeProject.project.pk_project;
 
-    const waitAtLeast = timer(800);
-    const apiCall = this.roleApi.alternativesNotInProjectByTeEntPk(fkTemporalEntity, fkProperty, fkProject)
+    // const waitAtLeast = timer(800);
+    // const apiCall = this.roleApi.alternativesNotInProjectByTeEntPk(fkTemporalEntity, fkProperty, fkProject)
 
-    Observable.combineLatest([waitAtLeast, apiCall])
-      .subscribe((results) => {
+    // Observable.combineLatest([waitAtLeast, apiCall])
+    //   .subscribe((results) => {
 
-        this.rolesNotInProjectLoading = false;
+    //     this.rolesNotInProjectLoading = false;
 
-        this.rolesInOtherProjects = results[1]
-          .filter(role => role.is_in_project_count > 0);
+    //     this.rolesInOtherProjects = results[1]
+    //       .filter(role => role.is_in_project_count > 0);
 
-        this.rolesInNoProject = results[1]
-          .filter(role => role.is_in_project_count == 0);
+    //     this.rolesInNoProject = results[1]
+    //       .filter(role => role.is_in_project_count == 0);
 
-        if (results[1].length === 0) {
-          this.startCreateNewRole();
-        }
+    //     if (results[1].length === 0) {
+    //       this.startCreateNewRole();
+    //     }
 
-      })
+    //   })
 
 
   }
 
-  get addButtonVisible(): boolean {
+  // get addButtonVisible(): boolean {
 
-    if (this.cardState === 'collapsed') return false;
-    if (this.addRoleState === 'init') return true;
+  //   if (this.cardState === 'collapsed') return false;
+  //   if (this.addRoleState === 'init') return true;
 
-    // TODO add logic according to quantities
+  //   // TODO add logic according to quantities
 
-    return false;
-  }
+  //   return false;
+  // }
 
 
   /**
@@ -224,11 +262,14 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
   startCreateNewRole() {
     // this.stateChange.emit('createRole');
 
-    this.roleToCreate = new InfRole();
-    this.roleToCreate.fk_property = this.fkProperty;
-    this.roleToCreate.fk_temporal_entity = this.parentTeEnt.pk_entity;
+    // this.roleToCreate = new InfRole();
+    // this.roleToCreate.fk_property = this.fkProperty;
+    // this.roleToCreate.fk_temporal_entity = this.parentTeEnt.pk_entity;
 
-    this.addRoleState = 'createNew';
+    // this.addRoleState = 'createNew';
   }
+
+  // // Array of children RoleComponents
+  // @ViewChildren(TeEntRoleComponent) roleComponents: QueryList<TeEntRoleComponent>
 
 }

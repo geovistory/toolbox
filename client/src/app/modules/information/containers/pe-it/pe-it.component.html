@@ -113,9 +113,7 @@
         </div>
 
         <div class="gv-body gv-flex-grow-1" style="overflow-y:auto">
-          <gv-pe-it-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
-            (appeChange)="emitAppeChange($event)" (readyToAdd)="onRolesReadyToAdd($event)" (notReadyToAdd)="onRolesNotReadyToAdd()"
-            (removePropertySectionReq)="onRemovePropertySectionReq($event)" (rolesUpdated)="onRolesUpdated($event)"></gv-pe-it-role-set>
+          <gv-pe-it-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"></gv-pe-it-role-set>
         </div>
 
         <div class="gv-footer mt-3">

@@ -5,7 +5,7 @@ import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 
 import { PeItEntityPreviewModalComponent } from '../pe-it-entity-preview-modal/pe-it-entity-preview-modal.component';
-import { InfPersistentItemApi, ActiveProjectService, EntityEditorService, InfEntityProjectRelApi, InfRole } from 'app/core';
+import { InfPersistentItemApi, ActiveProjectService, EntityEditorService, InfEntityProjectRelApi, InfRole, Project, InfPersistentItem } from 'app/core';
 import { PeItService } from '../../shared/pe-it.service';
 import { ActivePeItService } from '../../shared/active-pe-it.service';
 import { ClassService } from '../../shared/class.service';
@@ -15,6 +15,9 @@ import { NgRedux } from '@angular-redux/store';
 import { PeItComponent } from '../../containers/pe-it/pe-it.component';
 import { PeItActions } from '../../containers/pe-it/pe-it.actions';
 import { IPeItState } from '../../containers/pe-it/pe-it.model';
+import { RoleService } from '../../shared/role.service';
+import { PropertyService } from '../../shared/property.service';
+import { NumberSymbol } from '@angular/common';
 
 @Component({
   selector: 'gv-pe-it-entity-preview',
@@ -23,6 +26,8 @@ import { IPeItState } from '../../containers/pe-it/pe-it.model';
 })
 export class PeItEntityPreviewComponent extends PeItComponent implements OnInit {
 
+  @Input() pkEntity: number;
+  @Input() peIt: InfPersistentItem;
 
   /**
   * Properties
@@ -39,24 +44,26 @@ export class PeItEntityPreviewComponent extends PeItComponent implements OnInit 
     propertyPipe: PropertyPipe,
     activePeItService: ActivePeItService,
     slimLoadingBarService: SlimLoadingBarService,
-    classService: ClassService,
     entityEditor: EntityEditorService,
     changeDetector: ChangeDetectorRef,
-    actions: PeItActions,
     ngRedux: NgRedux<IPeItState>,
+    actions: PeItActions,
+    classService: ClassService,
+    roleService: RoleService,
+    propertyService: PropertyService,
     private modalService: NgbModal,
     private router: Router,
     private route: ActivatedRoute,
     private eprApi: InfEntityProjectRelApi
   ) {
-    super(peItApi, peItService, activeProjectService, propertyPipe, activePeItService, slimLoadingBarService, classService, entityEditor, changeDetector, actions, ngRedux)
-
+    super(peItApi, peItService, propertyPipe, activePeItService, slimLoadingBarService, entityEditor, changeDetector, ngRedux, actions, classService, roleService, propertyService)
   }
 
   ngOnChanges() {
   }
 
-  ngOnInit() {
+  //gets called by base class
+  init() {
     this.checkIfInProject().subscribe(() => {
       if (this.isInProject) {
         this.queryRichObjectOfProject().subscribe(() => {
@@ -74,23 +81,24 @@ export class PeItEntityPreviewComponent extends PeItComponent implements OnInit 
 
   checkIfInProject() {
     const onDone = new EventEmitter();
+    this.ngRedux.select<Project>('activeProject').subscribe(project => {
 
-    const pkProject = this.activeProjectService.project.pk_project;
-    const pkEntity = this.pkEntity || (this.peIt ? this.peIt.pk_entity:undefined);
-    this.eprApi.find({
-      'where': {
-        'fk_entity': pkEntity,
-        'fk_project': pkProject
-      }
-    }).subscribe(eprs => {
-      if (eprs.length > 0) {
-        this.isInProject = true;
-      }
-      else {
-        this.isInProject = false;
-      }
+      const pkEntity = this.pkEntity || (this.peIt ? this.peIt.pk_entity : undefined);
+      this.eprApi.find({
+        'where': {
+          'fk_entity': pkEntity,
+          'fk_project': project.pk_project
+        }
+      }).subscribe(eprs => {
+        if (eprs.length > 0) {
+          this.isInProject = true;
+        }
+        else {
+          this.isInProject = false;
+        }
 
-      onDone.emit()
+        onDone.emit()
+      })
     })
 
     return onDone;
@@ -101,82 +109,82 @@ export class PeItEntityPreviewComponent extends PeItComponent implements OnInit 
     if (this.peIt.pi_roles) {
 
       this.peIt.pi_roles.filter((role => role.fk_property === 1)) // R63
-      .forEach(role => {
-      const appeObj = role.temporal_entity.te_roles
-      .filter((role) => {
-        return (
-          role.fk_property === 2 && // R64
-          role.entity_version_project_rels[0].is_in_project
-        )
-      })
+        .forEach(role => {
+          const appeObj = role.temporal_entity.te_roles
+            .filter((role) => {
+              return (
+                role.fk_property === 2 && // R64
+                role.entity_version_project_rels[0].is_in_project
+              )
+            })
+          [0].appellation;
+
+          this.previewData.appellationString = new AppellationLabel(appeObj.appellation_label).getString();
+        })
+    }
+  }
+
+
+  setPreviewDataOfRepo() {
+    if (this.peIt.pi_roles) {
+
+      let mostPopularAppe: InfRole;
+      let highestCount: number = 0;
+
+      this.peIt.pi_roles.filter((role => role.fk_property === 1)) // R63
+        .forEach(role => {
+
+          if (highestCount < role.is_standard_in_project_count) {
+            mostPopularAppe = role;
+            highestCount = role.is_standard_in_project_count;
+          }
+        })
+
+      const appeObj = mostPopularAppe.temporal_entity.te_roles
+        .filter((role) => {
+          return (
+            role.fk_property === 2 // R64
+          )
+        })
       [0].appellation;
 
       this.previewData.appellationString = new AppellationLabel(appeObj.appellation_label).getString();
-    })
-  }
-}
-
-
-setPreviewDataOfRepo() {
-  if (this.peIt.pi_roles) {
-
-    let mostPopularAppe: InfRole;
-    let highestCount: number = 0;
-
-    this.peIt.pi_roles.filter((role => role.fk_property === 1)) // R63
-    .forEach(role => {
-
-    if (highestCount < role.is_standard_in_project_count) {
-      mostPopularAppe = role;
-      highestCount = role.is_standard_in_project_count;
     }
-  })
-
-  const appeObj = mostPopularAppe.temporal_entity.te_roles
-  .filter((role) => {
-    return (
-      role.fk_property === 2 // R64
-    )
-  })
-  [0].appellation;
-
-  this.previewData.appellationString = new AppellationLabel(appeObj.appellation_label).getString();
-}
-}
+  }
 
 
-open() {
-  // const urlTree = this.router.createUrlTree(["..", this.pkEntity], { relativeTo: this.route, preserveQueryParams:true });
-  // window.open(this.router.serializeUrl(urlTree), '_blank')
-  const open = () => {
+  open() {
+    // const urlTree = this.router.createUrlTree(["..", this.pkEntity], { relativeTo: this.route, preserveQueryParams:true });
+    // window.open(this.router.serializeUrl(urlTree), '_blank')
+    const open = () => {
 
-  this.router.navigate(["../", this.pkEntity], {
-    relativeTo: this.route,
-    queryParamsHandling: 'merge'
-  })
-  .then(() => {
-    console.log('ok')
-  }).catch(() => {
-    console.log('oops')
-  })
-}
-
-
-const entityModalOptions: NgbModalOptions = {
-  size: 'lg'
-}
-
-const modalRef = this.modalService.open(PeItEntityPreviewModalComponent, entityModalOptions);
-
-modalRef.componentInstance.isInProject = this.isInProject;
-modalRef.componentInstance.stdAppe = this.previewData.appellationString;
-modalRef.componentInstance.pkEntity = this.pkEntity;
-
-modalRef.result
-.then(() => { open() })
-.catch(() => { });
+      this.router.navigate(["../", this.pkEntity], {
+        relativeTo: this.route,
+        queryParamsHandling: 'merge'
+      })
+        .then(() => {
+          console.log('ok')
+        }).catch(() => {
+          console.log('oops')
+        })
+    }
 
 
-}
+    const entityModalOptions: NgbModalOptions = {
+      size: 'lg'
+    }
+
+    const modalRef = this.modalService.open(PeItEntityPreviewModalComponent, entityModalOptions);
+
+    modalRef.componentInstance.isInProject = this.isInProject;
+    modalRef.componentInstance.stdAppe = this.previewData.appellationString;
+    modalRef.componentInstance.pkEntity = this.pkEntity;
+
+    modalRef.result
+      .then(() => { open() })
+      .catch(() => { });
+
+
+  }
 
 }

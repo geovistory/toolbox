@@ -24,13 +24,13 @@
 
     <div class="btn-group d-flex flex-row gv-h5">
       <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
-        <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardState==='expanded')}"></i>
+        <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
         <span *ngIf="(roles$ | async) && (roles$ | async).length">{{(roles$ | async)?.length}}</span>
         {{(roleLabel$ | async)?.default}}
       </button>
-      <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="ontoInfoVisible">
+      <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
         <div class="align-self-center">
-          <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{property.dfh_pk_property}}" target="_blank">
+          <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(property$|async).dfh_pk_property}}" target="_blank">
             {{(property$|async).dfh_identifier_in_namespace}}
           </a>
         </div>
@@ -41,7 +41,7 @@
     </div>
 
 
-    <div [@slideInOut]="cardState">
+    <div [@slideInOut]="(toggle$|async)">
 
       <!-- The roles that are added -->
 
@@ -89,8 +89,8 @@
 
           <div class="card-body" *ngIf="rolesInOtherProjects.length">
 
-            <gv-te-ent-role *ngFor="let role of rolesInOtherProjects" [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing"
-              [pointTo]="'TeEnt'" [roleState]="'add'" (readyToAdd)="onRoleReadyToAdd($event)"></gv-te-ent-role>
+            <!-- <gv-te-ent-role *ngFor="let role of rolesInOtherProjects" [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing"
+              [pointTo]="'TeEnt'" [roleState]="'add'" (readyToAdd)="onRoleReadyToAdd($event)"></gv-te-ent-role> -->
           </div>
 
           <div class="card-body pt-0" *ngIf="rolesInNoProject && rolesInOtherProjects.length">
@@ -106,8 +106,8 @@
 
           <div class="card-body" *ngIf="rolesInNoProject && rolesInNoProjectVisible">
 
-            <gv-te-ent-role *ngFor="let role of rolesInNoProject" [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing"
-              [pointTo]="'TeEnt'" [roleState]="'add'" (readyToAdd)="onRoleReadyToAdd($event)"></gv-te-ent-role>
+            <!-- <gv-te-ent-role *ngFor="let role of rolesInNoProject" [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing"
+              [pointTo]="'TeEnt'" [roleState]="'add'" (readyToAdd)="onRoleReadyToAdd($event)"></gv-te-ent-role> -->
           </div>
 
           <div class="card-body" *ngIf="rolesInNoProjectVisible || rolesInOtherProjects.length">
@@ -122,8 +122,8 @@
       <!-- Create a new Role -->
       <div class="border-top border-gray-500" *ngIf="addRoleState=== 'createNew'">
 
-        <gv-te-ent-role [role]="roleToCreate" [pointTo]="'PeIt'" [pkTargetClass]="pkTargetClass" [fkProperty]="fkProperty" [fkTeEnt]="parentTeEnt.pk_entity"
-          [roleState]="'create'" (roleCreated)="onRoleCreated($event)" (roleCreationCanceled)="onRoleCreationCanceled()"></gv-te-ent-role>
+        <!-- <gv-te-ent-role [role]="roleToCreate" [pointTo]="'PeIt'" [pkTargetClass]="pkTargetClass" [fkProperty]="fkProperty" [fkTeEnt]="parentTeEnt.pk_entity"
+          [roleState]="'create'" (roleCreated)="onRoleCreated($event)" (roleCreationCanceled)="onRoleCreationCanceled()"></gv-te-ent-role> -->
 
       </div>
 
@@ -147,8 +147,8 @@
 
     <div class="card-body">
       <div *ngFor="let role of roles">
-        <gv-te-ent-role [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing" [pointTo]="pointTo" [roleState]="(state$ | async)"
-          (appeChange)="emitAppeChange($event)" (readyToAdd)="onRoleReadyToAdd($event)" (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
+        <!-- <gv-te-ent-role [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing" [pointTo]="pointTo" [roleState]="(state$ | async)"
+          (appeChange)="emitAppeChange($event)" (readyToAdd)="onRoleReadyToAdd($event)" (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role> -->
       </div>
     </div>
 
@@ -167,8 +167,8 @@
 
     <div class="card-body">
       <div *ngFor="let role of roles">
-        <gv-te-ent-role [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing" [pointTo]="pointTo" [roleState]="(state$ | async)"
-          (appeChange)="emitAppeChange($event)" (readyToAdd)="onRoleReadyToAdd($event)" (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
+        <!-- <gv-te-ent-role [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing" [pointTo]="pointTo" [roleState]="(state$ | async)"
+          (appeChange)="emitAppeChange($event)" (readyToAdd)="onRoleReadyToAdd($event)" (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role> -->
       </div>
     </div>
 
@@ -209,10 +209,10 @@
         (notReadyToCreate)="roleNotReadyToCreate()"></gv-te-ent-role>
       </div> -->
 
-
+<!-- 
       <gv-te-ent-role [role]="roleToCreate" [pointTo]="'PeIt'" [pkTargetClass]="pkTargetClass" [fkProperty]="fkProperty" [roleState]="'create-te-ent'"
         (readyToCreate)="roleReadyToCreate($event)" (notReadyToCreate)="roleNotReadyToCreate()" (roleCreated)="onRoleCreated($event)"
-        (roleCreationCanceled)="onRoleCreationCanceled()"></gv-te-ent-role>
+        (roleCreationCanceled)="onRoleCreationCanceled()"></gv-te-ent-role> -->
 
     </div>
   </span>
@@ -230,8 +230,8 @@
 
     <div class="card-body">
       <div *ngFor="let role of roles">
-        <gv-te-ent-role [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing" [pointTo]="pointTo" [roleState]="(state$ | async)"
-          [communityStatsVisible]="communityStatsVisible" [ontoInfoVisible]="ontoInfoVisible" (appeChange)="emitAppeChange($event)"></gv-te-ent-role>
+        <!-- <gv-te-ent-role [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing" [pointTo]="pointTo" [roleState]="(state$ | async)"
+          [communityStatsVisible]="communityStatsVisible" [ontoInfoVisible]="ontoInfoVisible" (appeChange)="emitAppeChange($event)"></gv-te-ent-role> -->
       </div>
     </div>
 

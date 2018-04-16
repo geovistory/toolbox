@@ -9,8 +9,6 @@ const INITIAL_STATE: IRoleSetListState = {
   roles: [],
   ingoingProperties: [],
   outgoingProperties: [],
-  communityStatsVisible: false,
-  ontoInfoVisible: false,
   state: 'edit',
   selectPropState: 'init',
   parentPeIt: null,
@@ -51,20 +49,6 @@ export const roleSetListReducer =
           ...lastState,
           roleSets: action.payload.roleSets,
           selectPropState: action.payload.selectPropState
-        }
-        break;
-
-      case RoleSetListActions.COMMUNITY_STATS_VISIBILITY_TOGGLED:
-        lastState = {
-          ...lastState,
-          communityStatsVisible: action.payload.communityStatsVisible
-        }
-        break;
-
-      case RoleSetListActions.ONTO_INFO_VISIBILITY_TOGGLED:
-        lastState = {
-          ...lastState,
-          ontoInfoVisible: action.payload.ontoInfoVisible
         }
         break;
 

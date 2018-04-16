@@ -15,11 +15,10 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 import { timer } from 'rxjs/observable/timer';
 
-import { PeItComponent } from '../pe-it/pe-it.component';
 import { TeEntComponent } from '../te-ent/te-ent.component';
 import { RoleSetComponent } from '../role-set/role-set.component';
 import { PeItRoleComponent } from '../pe-it-role/pe-it-role.component';
-import { InfPersistentItem, InfEntityProjectRelApi, InfRoleApi, ActiveProjectService, EntityEditorService, InfRole, DfhProperty } from 'app/core';
+import { InfPersistentItem, InfEntityProjectRelApi, InfRoleApi, ActiveProjectService, EntityEditorService, InfRole, DfhProperty, Project } from 'app/core';
 import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
 import { UtilitiesService } from '../../shared/utilities.service';
@@ -79,18 +78,28 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 export class PeItRoleSetComponent extends RoleSetComponent {
 
-
-
-  /**
-  * Inputs
-  */
-
-  // The parent PeIt Entity
-  @Input() parentPeIt: InfPersistentItem;
-
   // Array of children RoleComponents
   @ViewChildren(PeItRoleComponent) roleComponents: QueryList<PeItRoleComponent>
 
+
+  /**
+  * Paths to other slices of the store
+  */
+  parentPeItStatePath: string[];
+
+
+  /**
+   * Other store Observables
+   */
+
+  ontoInfoVisible$: Observable<boolean>
+  communityStatsVisible$: Observable<boolean>
+
+
+  // needed on this. scope for user interactions where we can't add subcriptions on each click
+  property: DfhProperty;
+  parentPeIt: InfPersistentItem;
+  fkProject: number
 
   constructor(
     eprApi: InfEntityProjectRelApi,
@@ -101,13 +110,50 @@ export class PeItRoleSetComponent extends RoleSetComponent {
     util: UtilitiesService,
     public entityEditor: EntityEditorService,
     changeDetector: ChangeDetectorRef,
-     ngRedux: NgRedux<IRoleSetState>,
-     actions: RoleSetActions
+    ngRedux: NgRedux<IRoleSetState>,
+    actions: RoleSetActions
 
   ) {
-    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector,ngRedux,actions)
+    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions)
 
   }
+
+
+  init() {
+
+    this.initPaths()
+
+    this.initObservablesOutsideLocalStore();
+
+    this.initSubsciptions();
+
+  }
+
+  /**
+   * init paths to different slices of the store
+   */
+  initPaths() {
+    this.parentPeItStatePath = this.parentPath;
+  }
+
+  /**
+   * init observables to other slices of the store than the local store
+   * (to select observables from local store, use @select decorator)
+   */
+  initObservablesOutsideLocalStore() {
+    this.ontoInfoVisible$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'ontoInfoVisible']);
+  }
+
+  /**
+   * init subscriptions to observables in the store
+   * subscribe all here, so it is only subscribed once on init and not multiple times on user interactions
+   */
+  initSubsciptions() {
+    this.property$.subscribe(p => this.property = p)
+    this.ngRedux.select<InfPersistentItem>([...this.parentPeItStatePath, 'peItToEdit']).subscribe(i => this.parentPeIt = i)
+    this.ngRedux.select<Project>('activeProject').subscribe(p => this.fkProject = p.pk_project)
+  }
+
 
 
 
@@ -116,35 +162,35 @@ export class PeItRoleSetComponent extends RoleSetComponent {
   */
   startAddingRole() {
 
-    this.rolesInNoProjectVisible = false;
+    // this.rolesInNoProjectVisible = false;
 
-    this.addRoleState = 'selectExisting'
+    // this.addRoleState = 'selectExisting'
 
-    this.rolesNotInProjectLoading = true;
+    // this.rolesNotInProjectLoading = true;
 
-    const fkProperty = this.property.dfh_pk_property;
-    const fkEntity = this.parentPeIt.pk_entity;
-    const fkProject = this.activeProject.project.pk_project;
+    // const fkProperty = this.property.dfh_pk_property;
+    // const fkEntity = this.parentPeIt.pk_entity;
+    // const fkProject = this.fkProject;
 
-    const waitAtLeast = timer(800);
-    const apiCall = this.roleApi.alternativesNotInProjectByEntityPk(fkEntity, fkProperty, fkProject)
+    // const waitAtLeast = timer(800);
+    // const apiCall = this.roleApi.alternativesNotInProjectByEntityPk(fkEntity, fkProperty, fkProject)
 
-    Observable.combineLatest([waitAtLeast, apiCall])
-      .subscribe((results) => {
+    // Observable.combineLatest([waitAtLeast, apiCall])
+    //   .subscribe((results) => {
 
-        this.rolesNotInProjectLoading = false;
+    //     this.rolesNotInProjectLoading = false;
 
-        this.rolesInOtherProjects = results[1]
-          .filter(role => role.is_in_project_count > 0);
+    //     this.rolesInOtherProjects = results[1]
+    //       .filter(role => role.is_in_project_count > 0);
 
-        this.rolesInNoProject = results[1]
-          .filter(role => role.is_in_project_count == 0);
+    //     this.rolesInNoProject = results[1]
+    //       .filter(role => role.is_in_project_count == 0);
 
-        if (results[1].length === 0) {
-          this.startCreateNewRole();
-        }
+    //     if (results[1].length === 0) {
+    //       this.startCreateNewRole();
+    //     }
 
-      })
+    //   })
 
 
   }
@@ -157,17 +203,17 @@ export class PeItRoleSetComponent extends RoleSetComponent {
   startCreateNewRole() {
     // this.propStateChange.emit('createRole');
 
-    this.roleToCreate = new InfRole();
-    this.roleToCreate.fk_property = this.fkProperty;
-    this.roleToCreate.fk_entity = this.parentEntityPk;
+    //   this.roleToCreate = new InfRole();
+    //   this.roleToCreate.fk_property = this.fkProperty;
+    //   this.roleToCreate.fk_entity = this.parentEntityPk;
 
-    this.addRoleState = 'createNew';
-  }
+    //   this.addRoleState = 'createNew';
+    // }
 
-  get removeSectionBtnVisible() {
-    if (this.roles && (this.roles.length === 0)) return true;
+    // get removeSectionBtnVisible() {
+    //   if (this.roles && (this.roles.length === 0)) return true;
 
-    return false;
+    //   return false;
   }
 
 }

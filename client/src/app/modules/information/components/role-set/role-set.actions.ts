@@ -5,6 +5,7 @@ import { IRoleSetState } from './role-set.model';
 import { DfhProperty } from '../../../../core';
 import { RoleLabelObj } from './role-set.component';
 import { IRoleState } from '../role/role.model';
+import { CollapsedExpanded } from '../../information.models';
 
 // replace PiRoleSet with name of component
 
@@ -21,23 +22,28 @@ export class RoleSetActions {
   static readonly ROLE_LABEL_UPDATED = 'ROLE_LABEL_UPDATED';
   static readonly TARGET_CLASS_PK_UPDATED = 'TARGET_CLASS_PK_UPDATED';
   static readonly CHILD_ROLES_UPDATED = 'CHILD_ROLES_UPDATED';
-  
+  // TODO INIT ACTIONS
+  static readonly ROLES_SORTED_BY_POPULARITY = 'ROLES_SORTED_BY_POPULARITY';
   
   // TODO
-  static readonly ROLES_SORTED_BY_POPULARITY = 'ROLES_SORTED_BY_POPULARITY';
+
+
+  // change standard label
   static readonly DISPLAY_ROLE_FOR_DOMAIN_UPDATED = 'DISPLAY_ROLE_FOR_DOMAIN_UPDATED';
+
+  static readonly CANCEL_CREATE_NEW_ROLE = 'CANCEL_CREATE_NEW_ROLE';
   static readonly ROLE_READY_TO_CREATE = 'ROLE_READY_TO_CREATE';
   static readonly ROLE_NOT_READY_TO_CREATE = 'ROLE_NOT_READY_TO_CREATE';
-  static readonly CANCEL_CREATE_NEW_ROLE = 'CANCEL_CREATE_NEW_ROLE';
-  
   static readonly ENTITIES_TO_CREATE_PERSISTED = 'ENTITIES_TO_CREATE_PERSISTED';
+  
   static readonly ADDED_SELECTED_ROLES_TO_PROJECT = 'ADDED_SELECTED_ROLES_TO_PROJECT';
   
   static readonly CANCEL_SELECT_ROLES = 'CANCEL_SELECT_ROLES'; // Maybe not a role set action but a role set list action!
   static readonly PROPERTY_SECTION_REMOVED = 'PROPERTY_SECTION_REMOVED';  // Maybe not a role set action but a role set list action!
 
-  static readonly TOGGLE_STATE_CHANGED = 'TOGGLE_STATE_CHANGED';
+  static readonly SET_TOGGLE = 'SET_TOGGLE';
 
+  static readonly TOGGLE = 'TOGGLE';
 
 
 
@@ -75,5 +81,20 @@ export class RoleSetActions {
     }
   })
 
+
+  setToggle = (toggle:CollapsedExpanded) => ({
+    type: RoleSetActions.SET_TOGGLE,
+    meta: null,
+    payload: {
+      toggle
+    }
+  })
+
+
+  toggle = () => ({
+    type: RoleSetActions.TOGGLE,
+    meta: null,
+    payload: null
+  })
 
 }

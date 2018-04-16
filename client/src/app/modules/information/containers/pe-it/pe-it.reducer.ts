@@ -39,6 +39,19 @@ export const peItReducer = (lastState: IPeItState = INITIAL_STATE, action: PeItA
       }
       break;
 
+    case PeItActions.ONTO_INFO_VISIBILITY_TOGGLED:
+      lastState = {
+        ...lastState,
+        ontoInfoVisible: action.payload.ontoInfoVisible,
+      }
+      break;
+
+    case PeItActions.COMMUNITY_STATS_VISIBILITY_TOGGLED:
+      lastState = {
+        ...lastState,
+        communityStatsVisible: action.payload.communityStatsVisible,
+      }
+      break;
   }
 
   return lastState;

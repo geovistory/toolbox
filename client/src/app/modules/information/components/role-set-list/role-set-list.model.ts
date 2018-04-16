@@ -24,8 +24,6 @@ export interface IRoleSetListState {
 
     selectPropState?: SelectPropStateType; // state of child components for adding or creating properties
     propertyToAdd?: DirectionAwareProperty; // Poperty that is currently chosen in order to add a role of this kind
-    ontoInfoVisible?: boolean,
-    communityStatsVisible?: boolean
 
     roleSets?: RoleSetState[]
 
@@ -46,8 +44,6 @@ export class RoleSetListState implements IRoleSetListState {
     state?: EditorStates;
     selectPropState?: SelectPropStateType;
     propertyToAdd?: DirectionAwareProperty;
-    ontoInfoVisible?: boolean;
-    communityStatsVisible?: boolean;
 
     roleSets?: RoleSetState[]
 

@@ -51,7 +51,7 @@ export class TeEntRoleComponent extends RoleComponent {
         }
         else {
           this.showEntityPreviewUI = true;
-          this.pkEntity = this.role.fk_entity;
+          this.pkEntity = role.fk_entity;
         }
       }
     })

@@ -16,7 +16,7 @@ import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { InfPersistentItem, InfPersistentItemApi, LoopBackConfig } from 'app/core';
 import { environment } from 'environments/environment';
 import { EntityAddModalService } from '../../shared/entity-add-modal.service';
-import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
+// import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
 
 import { dispatch, select, select$, WithSubStore } from '@angular-redux/store';
 import { projectEntitiesComponentReducer } from './reducers';
@@ -108,9 +108,9 @@ export class ProjectEntitiesComponent implements OnInit {
   }
 
   openEntityModal() {
-    const modalRef = this.modalService.open(EntityAddModalComponent, this.entityModalOptions);
-    modalRef.componentInstance.projectId = this.projectId;
-    this.entityAddModalService.state = 'choose-class';
+    // const modalRef = this.modalService.open(EntityAddModalComponent, this.entityModalOptions);
+    // modalRef.componentInstance.projectId = this.projectId;
+    // this.entityAddModalService.state = 'choose-class';
 
   }
 

@@ -19,6 +19,10 @@ export class PeItActions extends RoleSetListActions {
 
   static readonly PEIT_TO_CREATE_UPDATED = 'PEIT_TO_CREATE_UPDATED';
 
+  static readonly COMMUNITY_STATS_VISIBILITY_TOGGLED = 'COMMUNITY_STATS_VISIBILITY_TOGGLED';
+
+  static readonly ONTO_INFO_VISIBILITY_TOGGLED = 'ONTO_INFO_VISIBILITY_TOGGLED';
+
   @dispatch()
 
   peItToEditUpdated = (peItToEdit: InfPersistentItem): PeItAction => ({
@@ -45,5 +49,20 @@ export class PeItActions extends RoleSetListActions {
     }
   })
 
+  communityStatsVisibilityToggled = (communityStatsVisible: boolean): PeItAction => ({
+    type: PeItActions.COMMUNITY_STATS_VISIBILITY_TOGGLED,
+    meta: null,
+    payload: {
+      communityStatsVisible
+    }
+  })
+
+  ontoInfoVisibilityToggled = (ontoInfoVisible: boolean): PeItAction => ({
+    type: PeItActions.ONTO_INFO_VISIBILITY_TOGGLED,
+    meta: null,
+    payload: {
+      ontoInfoVisible
+    }
+  })
 
 }

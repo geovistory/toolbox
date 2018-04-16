@@ -86,84 +86,28 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
   basePath: string[];
   localStore: ObservableStore<ITeEntState>;
 
+  /**
+  * Paths to other slices of the store
+  */
+  parentPeItStatePath: string[];
+
+  /**
+   * Local Store Observables
+   */
   @select() teEnt$: Observable<InfTemporalEntity>;
   @select() teEntToEdit$: Observable<InfTemporalEntity>;
   @select() teEntToAdd$: Observable<InfTemporalEntity>;
   @select() teEntToCreate$: Observable<InfTemporalEntity>;
-
   @select() label$: Observable<string>;
   @select() toggle$: Observable<CollapsedExpanded>;
-
   @select() roleSetList$: Observable<IRoleSetListState>;
 
-
-
   /**
-  * Inputs
-  */
+   * Other Store Observables
+   */
+  ontoInfoVisible$: Observable<boolean>
+  communityStatsVisible$: Observable<boolean>
 
-  // The Temporal Entity
-  @Input() teEnt: InfTemporalEntity;
-
-  @Input() parentProperty: DfhProperty;
-
-  @Input() parentRole: InfRole;
-
-  @Input() isOutgoing: boolean;
-
-  // The state of this component
-  @Input() teEntState: string;
-
-  @Input() fkClass: number;
-
-  // If true, the UI for communiy statistics is visible
-  @Input() communityStatsVisible: boolean;
-
-  // If true, CRM info is visible in UI
-  @Input() ontoInfoVisible: boolean;
-
-
-  /**
-  * Outputs
-  */
-
-  @Output() readyToCreate: EventEmitter<InfTemporalEntity> = new EventEmitter;
-
-  @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
-
-  @Output() readyToAdd: EventEmitter<InfTemporalEntity> = new EventEmitter;
-
-  @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter;
-
-  // emit appellation and a flag to say if this is the standard appellation
-  @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
-
-  /**
-  * Properties
-  */
-
-  outgoingProperties: DfhProperty[]
-
-  ingoingProperties: DfhProperty[]
-
-  // directed roles per property,
-  // e.g.: [{fkProperty: 'P52', isOutgoing: true, roles: []},…]
-  roleSets: IRoleSetState[];
-
-  isReadyToCreate: boolean;
-
-  // if 'collapsed': only header section is visible
-  // if 'expanded': all visible
-  cardBodyState: string = 'collapsed';
-
-  displayLabel: string;
-
-  // For add-pe-it-state: Temporal Entity to be Added
-  teEntToAdd: InfTemporalEntity;
-
-
-  //Class of this peIt
-  dfhClass: DfhClass;
 
   // Array of children TeEntRoleSetComponent
   @ViewChildren(TeEntRoleSetComponent) RoleSetComponents: QueryList<TeEntRoleSetComponent>
@@ -191,20 +135,54 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
 
   // gets called by base class onInit
   init() {
-    this.state$.subscribe(state => {
-      this.initState(state)
-    })
+    this.initState()
+
+    this.initPaths()
+
+    this.initObservablesOutsideLocalStore();
+
+    this.initSubsciptions();
   }
 
-  initState(state) {
-    if (state === 'add-pe-it')
-      this.initTeEntToAdd()
 
-    if (state === 'create')
-      this.initTeEntToCreate()
+  /**
+* init paths to different slices of the store
+*/
+  initPaths() {
+    // transforms e.g. ['information', 'entityEditor', 'peItState', 'roleSets', '1', 'childRoleStates', '79060']
+    // to ['information', 'entityEditor', 'peItState']
+    this.parentPeItStatePath = this.parentPath.slice(0, (this.parentPath.length - 4));
+  }
 
-    if (state === 'edit')
-      this.initTeEntToRemove()
+  /**
+ * init observables to other slices of the store than the local store
+ * (to select observables from local store, use @select decorator)
+ */
+  initObservablesOutsideLocalStore() {
+    this.ontoInfoVisible$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'ontoInfoVisible']);
+  }
+
+  /**
+   * init subscriptions to observables in the store
+   * subscribe all here, so it is only subscribed once on init and not multiple times on user interactions
+   */
+  initSubsciptions() {
+
+  }
+
+
+  initState() {
+    this.state$.subscribe(state => {
+
+      if (state === 'add-pe-it')
+        this.initTeEntToAdd()
+
+      if (state === 'create')
+        this.initTeEntToCreate()
+
+      if (state === 'edit')
+        this.initTeEntToRemove()
+    })
   }
 
   initTeEntToAdd() {
@@ -269,80 +247,81 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
   propertyReadyToCreate(roles: InfRole[]) {
 
 
-    let rolesToCreate: InfRole[] = [];
+    // let rolesToCreate: InfRole[] = [];
 
-    let allValid = true;
+    // let allValid = true;
 
-    this.RoleSetComponents.forEach(RoleSetComponent => {
+    // this.RoleSetComponents.forEach(RoleSetComponent => {
 
-      if (!RoleSetComponent.isReadyToCreate && !RoleSetComponent.isCircular) allValid = false;
+    //   if (!RoleSetComponent.isReadyToCreate && !RoleSetComponent.isCircular) allValid = false;
 
-      rolesToCreate = rolesToCreate.concat(RoleSetComponent.rolesToCreate);
+    //   rolesToCreate = rolesToCreate.concat(RoleSetComponent.rolesToCreate);
 
-    })
+    // })
 
-    if (allValid) {
+    // if (allValid) {
 
-      this.teEnt.te_roles = rolesToCreate;
+    //   this.teEnt.te_roles = rolesToCreate;
 
-      this.isReadyToCreate = true;
+    //   this.isReadyToCreate = true;
 
-      this.readyToCreate.emit(this.teEnt);
+    //   this.readyToCreate.emit(this.teEnt);
 
-    }
+    // }
 
   }
 
   propertyNotReadyToCreate() {
 
-    this.isReadyToCreate = false;
+    // this.isReadyToCreate = false;
 
-    this.notReadyToCreate.emit()
+    // this.notReadyToCreate.emit()
 
   }
 
   onPropertyReadyToAdd(rolesToAdd: InfRole[]) {
 
-    let newRoles = [];
+    // let newRoles = [];
 
-    // For each role coming in from property component
-    rolesToAdd.forEach(roleToAdd => {
+    // // For each role coming in from property component
+    // rolesToAdd.forEach(roleToAdd => {
 
-      let exists = false;
+    //   let exists = false;
 
-      for (let i = 0; i < this.teEntToAdd.te_roles.length; i++) {
+    //   for (let i = 0; i < this.teEntToAdd.te_roles.length; i++) {
 
-        // Check if the role is allready in the teEntToAdd
-        if (this.teEntToAdd.te_roles[i].pk_entity === roleToAdd.pk_entity) {
+    //     // Check if the role is allready in the teEntToAdd
+    //     if (this.teEntToAdd.te_roles[i].pk_entity === roleToAdd.pk_entity) {
 
-          // if yes replace it with the new one
-          this.teEntToAdd.te_roles[i] = roleToAdd;
-          exists = true;
-        }
-      }
+    //       // if yes replace it with the new one
+    //       this.teEntToAdd.te_roles[i] = roleToAdd;
+    //       exists = true;
+    //     }
+    //   }
 
-      // else add it to a temporary array
-      if (!exists) {
-        newRoles.push(roleToAdd);
-      }
+    //   // else add it to a temporary array
+    //   if (!exists) {
+    //     newRoles.push(roleToAdd);
+    //   }
 
-    })
-    // add all the new roles to teEntToAdd
-    this.teEntToAdd.te_roles.concat(newRoles);
+    // })
+    // // add all the new roles to teEntToAdd
+    // this.teEntToAdd.te_roles.concat(newRoles);
 
-    this.readyToAdd.emit(this.teEntToAdd);
+    // this.readyToAdd.emit(this.teEntToAdd);
 
   }
 
   onPropertyNotReadyToAdd() {
-    this.notReadyToAdd.emit();
+    // this.notReadyToAdd.emit();
   }
 
+  /**
+  * toggleCardBody - toggles the state of the card in order to collapse or
+  * expand the card in the UI
+  */
   toggleCardBody() {
-    if (this.cardBodyState === 'collapsed')
-      this.cardBodyState = 'expanded'
-    else
-      this.cardBodyState = 'collapsed'
+    this.localStore.dispatch(this.actions.toggle())
   }
 
   /**
@@ -350,11 +329,82 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
   */
 
   emitAppeChange(appeStd: AppellationStdBool) {
-    const label = new AppellationLabel(appeStd.appellation.appellation_label);
-    this.displayLabel = label.getString();
-    this.appeChange.emit(appeStd)
+    // const label = new AppellationLabel(appeStd.appellation.appellation_label);
+    // this.displayLabel = label.getString();
+    // this.appeChange.emit(appeStd)
   }
 
+
+
+
+
+
+  /**
+  * Inputs
+  */
+
+  // // The Temporal Entity
+  // @Input() teEnt: InfTemporalEntity;
+
+  // @Input() parentProperty: DfhProperty;
+
+  // @Input() parentRole: InfRole;
+
+  // @Input() isOutgoing: boolean;
+
+  // // The state of this component
+  // @Input() teEntState: string;
+
+  // @Input() fkClass: number;
+
+  // // If true, the UI for communiy statistics is visible
+  // @Input() communityStatsVisible: boolean;
+
+  // // If true, CRM info is visible in UI
+  // @Input() ontoInfoVisible: boolean;
+
+
+  /**
+  * Outputs
+  */
+
+  // @Output() readyToCreate: EventEmitter<InfTemporalEntity> = new EventEmitter;
+
+  // @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
+
+  // @Output() readyToAdd: EventEmitter<InfTemporalEntity> = new EventEmitter;
+
+  // @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter;
+
+  // // emit appellation and a flag to say if this is the standard appellation
+  // @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
+
+  // /**
+  // * Properties
+  // */
+
+  // outgoingProperties: DfhProperty[]
+
+  // ingoingProperties: DfhProperty[]
+
+  // // directed roles per property,
+  // // e.g.: [{fkProperty: 'P52', isOutgoing: true, roles: []},…]
+  // roleSets: IRoleSetState[];
+
+  // isReadyToCreate: boolean;
+
+  // // if 'collapsed': only header section is visible
+  // // if 'expanded': all visible
+  // cardBodyState: string = 'collapsed';
+
+  // displayLabel: string;
+
+  // // For add-pe-it-state: Temporal Entity to be Added
+  // teEntToAdd: InfTemporalEntity;
+
+
+  // //Class of this peIt
+  // dfhClass: DfhClass;
 
 
 }

@@ -10,11 +10,9 @@
 
     <ng-container *ngTemplateOutlet="header"></ng-container>
 
-    <div [@slideInOut]="cardBodyState">
+    <div [@slideInOut]="(toggle$|async)">
 
-      <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
-        (appeChange)="emitAppeChange($event)" (readyToAdd)="onPropertyReadyToAdd($event)" (notReadyToAdd)="onPropertyNotReadyToAdd()"
-        (removePropertySectionReq)="onRemovePropertySectionReq($event)"></gv-te-ent-role-set>
+      <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"></gv-te-ent-role-set>
 
       <ng-container *ngTemplateOutlet="dating"></ng-container>
 
@@ -73,13 +71,12 @@
   <!-- Create State -->
 
   <div class="card gv-name" *ngIf="(state$ | async) === 'create'">
-
-
+<!-- 
     <gv-te-ent-role-set *ngFor="let property of outgoingProperties" [roles]="property.roles" [parentRole]="parentRole" [fkProperty]="property.dfh_pk_property"
       [pointTo]="'PeIt'" [state]="'create'" [isOutgoing]="true" (readyToCreate)="propertyReadyToCreate($event)" (notReadyToCreate)="propertyNotReadyToCreate()"></gv-te-ent-role-set>
 
     <gv-te-ent-role-set *ngFor="let property of ingoingProperties" [roles]="property.roles" [parentRole]="parentRole" [fkProperty]="property.dfh_pk_property"
-      [pointTo]="'PeIt'" [state]="'create'" [isOutgoing]="false" (readyToCreate)="propertyReadyToCreate($event)" (notReadyToCreate)="propertyNotReadyToCreate()"></gv-te-ent-role-set>
+      [pointTo]="'PeIt'" [state]="'create'" [isOutgoing]="false" (readyToCreate)="propertyReadyToCreate($event)" (notReadyToCreate)="propertyNotReadyToCreate()"></gv-te-ent-role-set> -->
 
     <ng-container *ngTemplateOutlet="dating"></ng-container>
 
@@ -92,12 +89,12 @@
     <ng-container *ngTemplateOutlet="header"></ng-container>
 
     <div [@slideInOut]="cardBodyState">
-
+<!-- 
       <gv-te-ent-role-set *ngFor="let property of roleSets" [propertySection]="property" [isOutgoing]="property.isOutgoing" [roles]="property.roles"
         [fkProperty]="property.fkProperty" [pointTo]="'PeIt'" [parentEntityPk]="parentRole.fk_entity" [parentTeEnt]="teEnt"
         [state]="(state$ | async)" [parentRole]="parentRole" [communityStatsVisible]="communityStatsVisible" [ontoInfoVisible]="ontoInfoVisible"
         (appeChange)="emitAppeChange($event)"></gv-te-ent-role-set>
-
+ -->
       <ng-container *ngTemplateOutlet="dating"></ng-container>
 
     </div>
@@ -113,9 +110,16 @@
   <div class="card-header gv-name-header d-flex flex-row">
     <ng-content select="[headerLeft]"></ng-content>
     <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
-      <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardBodyState==='expanded')}"></i>
+      <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
       <span *ngIf="displayLabel">{{displayLabel}}</span>
-      <span *ngIf="!displayLabel">{{dfhClass?.dfh_standard_label}}</span>
+      <span *ngIf="!displayLabel">{{(dfhClass|async)?.dfh_standard_label}}</span>
+    </div>
+    <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+      <div class="align-self-center">
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(dfhClass$|async)?.dfh_pk_class}}" target="_blank">
+          {{(dfhClass$|async)?.dfh_identifier_in_namespace}}
+        </a>
+      </div>
     </div>
     <ng-content select="[headerRight]"></ng-content>
   </div>

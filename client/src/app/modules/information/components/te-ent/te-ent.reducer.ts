@@ -7,7 +7,6 @@ import { roleSetListReducer } from '../role-set-list/role-set-list-reducer';
 
 
 const INITIAL_STATE: ITeEntState = {
-
 };
 
 
@@ -35,6 +34,20 @@ export const teEntReducer = (lastState: ITeEntState = INITIAL_STATE, action: TeE
         ...lastState,
         teEntToCreate: action.payload.teEntToCreate
       }
+      break;
+
+    case TeEntActions.SET_TOGGLE:
+      lastState = {
+        ...lastState,
+        toggle: action.payload.toggle
+      };
+      break;
+
+    case TeEntActions.TOGGLE:
+      lastState = {
+        ...lastState,
+        toggle: lastState.toggle === 'expanded' ? 'collapsed' : 'expanded'
+      };
       break;
   }
 

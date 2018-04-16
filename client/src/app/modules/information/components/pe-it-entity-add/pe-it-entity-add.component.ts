@@ -9,12 +9,14 @@ import { ActiveProjectService, EntityEditorService, InfPersistentItemApi } from 
 import { ActivePeItService } from '../../shared/active-pe-it.service';
 import { ClassService } from '../../shared/class.service';
 import { EntityAddModalService } from '../../shared/entity-add-modal.service';
-import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
+// import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
 import { PropertyPipe } from '../../shared/property.pipe';
 import { NgRedux } from '@angular-redux/store';
 import { PeItActions } from '../../containers/pe-it/pe-it.actions';
 import { IPeItState } from '../../containers/pe-it/pe-it.model';
 import { PeItComponent } from '../../containers/pe-it/pe-it.component';
+import { RoleService } from '../../shared/role.service';
+import { PropertyService } from '../../shared/property.service';
 
 
 @Component({
@@ -39,23 +41,24 @@ export class PeItEntityAddComponent extends PeItComponent implements OnInit {
   constructor(
     peItApi: InfPersistentItemApi,
     peItService: PeItService,
-    activeProjectService: ActiveProjectService,
     propertyPipe: PropertyPipe,
     activePeItService: ActivePeItService,
     slimLoadingBarService: SlimLoadingBarService,
-    classService: ClassService,
     entityEditor: EntityEditorService,
     changeDetector: ChangeDetectorRef,
     actions: PeItActions,
     ngRedux: NgRedux<IPeItState>,
+    classService: ClassService,
+    roleService: RoleService,
+    propertyService: PropertyService,
     private entityAddModalService: EntityAddModalService,
     private modalService: NgbModal,
     private router: Router,
     private route: ActivatedRoute,
   ) {
-    super(peItApi, peItService, activeProjectService, propertyPipe, activePeItService, slimLoadingBarService, classService, entityEditor, changeDetector, actions, ngRedux)
-
+    super(peItApi, peItService, propertyPipe, activePeItService, slimLoadingBarService, entityEditor, changeDetector, ngRedux, actions, classService, roleService, propertyService)
   }
+
   ngOnInit() {
     // this.initDfhClass(this.fkClass);
   }
@@ -63,18 +66,18 @@ export class PeItEntityAddComponent extends PeItComponent implements OnInit {
   }
 
   openModal() {
-    const entityModalOptions: NgbModalOptions = {
-      size: 'lg'
-    }
-    const modalRef = this.modalService.open(EntityAddModalComponent, entityModalOptions);
+    // const entityModalOptions: NgbModalOptions = {
+    //   size: 'lg'
+    // }
+    // const modalRef = this.modalService.open(EntityAddModalComponent, entityModalOptions);
 
-    this.entityAddModalService.previousState = undefined;
-    this.entityAddModalService.state = 'search-existing';
-    this.entityAddModalService.selectRoleRange = true;
-    // this.entityAddModalService.selectedClass = this.dfhClass;
-    this.entityAddModalService.onSelect.subscribe(pkEntity => {
-      this.selected.emit(pkEntity);
-    })
+    // this.entityAddModalService.previousState = undefined;
+    // this.entityAddModalService.state = 'search-existing';
+    // this.entityAddModalService.selectRoleRange = true;
+    // // this.entityAddModalService.selectedClass = this.dfhClass;
+    // this.entityAddModalService.onSelect.subscribe(pkEntity => {
+    //   this.selected.emit(pkEntity);
+    // })
 
   }
 

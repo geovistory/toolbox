@@ -32,7 +32,6 @@ import { EntityAddSearchExistingComponent } from './components/entity-add-search
 import { EntityEditorSettingsComponent } from './components/entity-editor-settings/entity-editor-settings.component';
 import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
 import { ExistenceTimeComponent } from './components/existence-time/existence-time.component';
-import { PeItRoleSetListComponent } from './containers/pe-it-role-set-list/pe-it-role-set-list.component';
 import { PeItAppellationComponent } from './components/pe-it-appellation/pe-it-appellation.component';
 import { PeItEntityAddComponent } from './components/pe-it-entity-add/pe-it-entity-add.component';
 import { PeItEntityPreviewComponent } from './components/pe-it-entity-preview/pe-it-entity-preview.component';
@@ -43,7 +42,6 @@ import { PeItRoleSetComponent } from './components/pe-it-role-set/pe-it-role-set
 import { TeEntRoleSetComponent } from './components/te-ent-role-set/te-ent-role-set.component';
 import { PeItRoleComponent } from './components/pe-it-role/pe-it-role.component';
 import { TeEntRoleComponent } from './components/te-ent-role/te-ent-role.component';
-import { RoleToDateComponent } from './components/role-to-date/role-to-date.component';
 import { TeEntComponent } from './components/te-ent/te-ent.component';
 import { TimePrimitiveComponent } from './components/time-primitive/time-primitive.component';
 import { VersionModalComponent } from './components/version-modal/version-modal.component';
@@ -110,27 +108,25 @@ import { TeEntActions } from './components/te-ent/te-ent.actions';
     AppellationLabelTokenComponent,
     AppellationLabelViewComponent,
     DfhIdComponent,
-    EntityAddAddExistingComponent,
-    EntityAddChooseClassComponent,
-    EntityAddCreateNewComponent,
-    EntityAddModalComponent,
-    EntityAddSearchExistingComponent,
+    // EntityAddAddExistingComponent,
+    // EntityAddChooseClassComponent,
+    // EntityAddCreateNewComponent,
+    // EntityAddModalComponent,
+    // EntityAddSearchExistingComponent,
     EntityEditorSettingsComponent,
     EntitySearchHitComponent,
     ExistenceTimeComponent,
     PeItComponent,
     PeItAppellationComponent,
     PeItEntityAddComponent,
-    PeItEntityPreviewComponent,
+    // PeItEntityPreviewComponent,
     PeItEntityPreviewModalComponent,
     PeItLanguageComponent,
     ProjectEntitiesComponent,
-    PeItRoleSetListComponent,
     PeItRoleSetComponent,
     TeEntRoleSetComponent,
     PeItRoleComponent,
     TeEntRoleComponent,
-    RoleToDateComponent,
     TeEntComponent,
     TimePrimitiveComponent,
     VersionModalComponent,
@@ -167,7 +163,7 @@ import { TeEntActions } from './components/te-ent/te-ent.actions';
     TeEntActions
   ],
   entryComponents: [
-    EntityAddModalComponent
+    // EntityAddModalComponent
   ],
 })
 export class InformationModule {

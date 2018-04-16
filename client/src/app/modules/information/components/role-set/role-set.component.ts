@@ -8,7 +8,6 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 import { timer } from 'rxjs/observable/timer';
 
-import { PeItComponent } from '../pe-it/pe-it.component';
 import { TeEntComponent } from '../te-ent/te-ent.component';
 import { RoleService } from '../../shared/role.service';
 import { InfRole, DfhProperty, InfEntityProjectRelApi, InfRoleApi, ActiveProjectService, EntityEditorService, InfPersistentItem } from 'app/core';
@@ -47,6 +46,9 @@ export class RoleSetComponent implements OnInit {
     return item.tkey;
   }
 
+  /**
+   * Local store Observables
+   */
   @select() roles$: Observable<InfRole[]>
 
   @select() property$: Observable<DfhProperty>
@@ -59,127 +61,13 @@ export class RoleSetComponent implements OnInit {
 
   @select() parentEntityPk$: Observable<number>
 
-
   @select() state$: Observable<EditorStates>;
 
   @select() toggle$: Observable<CollapsedExpanded>
 
-  @select() ontoInfoVisible$: Observable<boolean>
-
-  @select() communityStatsVisible$: Observable<boolean>
-
   @select() roleLabel$: Observable<RoleLabelObj>
 
   @select() childRoleStates$: Observable<IRoleState[]>
-
-
-  @Input() propertySection: any;
-
-  // fk_property that all roles of this kind should have
-  @Input() fkProperty: number;
-
-  // roles of one kind (with the same fk_property)
-  @Input() roles: InfRole[];
-
-  // The parent entity of this property is domain if true and range if false
-  @Input() isOutgoing: boolean;
-
-  // point to TeEnt or PeIt
-  @Input() pointTo: string;
-
-  // primary key of the parent entity
-  @Input() parentEntityPk: number;
-
-  // If true, the UI for communiy statistics is visible
-  @Input() communityStatsVisible: boolean;
-
-  // If true, CRM info is visible in UI
-  @Input() ontoInfoVisible: boolean;
-
-  /**
-  * set state - The state of this component
-  *
-  * @param  {state} state string 'view', 'add' or 'create'
-  */
-  @Input() state: EditorStates;
-
-  // state of the card below the header
-  @Input() cardState: 'collapsed' | 'expanded';
-
-
-  /**
-  * Outputs
-  */
-
-  @Output() stateChange: EventEmitter<string> = new EventEmitter();
-
-  @Output() readyToCreate: EventEmitter<InfRole[]> = new EventEmitter;
-
-  @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
-
-  @Output() rolesAdded: EventEmitter<InfRole[]> = new EventEmitter;
-
-  // emit appellation and a flag to say if this is the standard appellation
-  @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
-
-  @Output() readyToAdd: EventEmitter<InfRole[]> = new EventEmitter();
-
-  @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter();
-
-  @Output() removePropertySectionReq: EventEmitter<IRoleSetState> = new EventEmitter();
-
-  @Output() rolesUpdated: EventEmitter<InfRole[]> = new EventEmitter();
-
-
-
-  // the property
-  property: DfhProperty;
-
-  // max. mumber of possible alternatives -1=infinite
-  maxAlternatives: number;
-
-  // If ui allows to choose standard alternative for property
-  hasStandard: boolean;
-
-  // thisComponent
-  thisComponent = this;
-
-  // role to create, when creating a new role
-  roleToCreate: InfRole;
-
-  rolesToCreate: InfRole[];
-
-  isReadyToCreate: boolean;
-
-  // roles to add, when in add-pe-it state
-  rolesToAdd: InfRole[] = [];
-
-  // roles used by other projects in repo but not in this project
-  rolesInOtherProjects: InfRole[];
-
-  // roles not used by no project
-  rolesInNoProject: InfRole[];
-
-  // if true, roles used by no project are visible
-  rolesInNoProjectVisible: boolean;
-
-  // true while loading rolesInOtherProjects via api call
-  rolesNotInProjectLoading: boolean;
-
-  // isReadyToAddRoles
-  get isReadyToAddRoles(): boolean {
-    return (this.rolesToAdd.filter(r => {
-      return r.entity_version_project_rels[0].is_in_project
-    }).length > 0)
-  }
-
-  // add role state
-  addRoleState: string = 'init'; //init, selectExisting, createNew
-
-  // Latest modified role alternative with highest is_standard_in_project_count
-  mostPopularRole: InfRole;
-
-  roleComponents;
 
   constructor(
     private eprApi: InfEntityProjectRelApi,
@@ -190,7 +78,7 @@ export class RoleSetComponent implements OnInit {
     private util: UtilitiesService,
     public entityEditor: EntityEditorService,
     private changeDetector: ChangeDetectorRef,
-    private ngRedux: NgRedux<IRoleSetState>,
+    protected ngRedux: NgRedux<IRoleSetState>,
     private actions: RoleSetActions
   ) { }
 
@@ -216,18 +104,13 @@ export class RoleSetComponent implements OnInit {
       if (fkProperty && (isOutgoing != undefined)) this.initProperty(fkProperty, isOutgoing)
     })
 
-    this.childRoleStates$.subscribe(a => {
-
-    })
-
     this.initChildren()
 
-    if (this.state == 'add-pe-it')
-      this.sortRolesByPopularity();
-
-    if (this.state == 'create') this.cardState = 'expanded';
-    else this.cardState = 'collapsed';
+    this.init();
   }
+
+  init() { } // hook for child classes
+
 
 
   initProperty(fkProperty: number, isOutgoing: boolean) {
@@ -314,9 +197,131 @@ export class RoleSetComponent implements OnInit {
         })
         this.localStore.dispatch(this.actions.childRolesUpdated(roleStates))
       }
+
+      if (state) {
+        if (state == 'add-pe-it')
+          this.sortRolesByPopularity();
+
+        if (state == 'create')
+          this.localStore.dispatch(this.actions.setToggle('expanded'));
+        else
+          this.localStore.dispatch(this.actions.setToggle('collapsed'));
+      }
     })
 
   }
+
+
+
+
+
+
+
+
+
+  // // // point to TeEnt or PeIt
+  // // @Input() pointTo: string;
+
+  // // // primary key of the parent entity
+  // // @Input() parentEntityPk: number;
+
+  // // // If true, the UI for communiy statistics is visible
+  // // @Input() communityStatsVisible: boolean;
+
+  // // // If true, CRM info is visible in UI
+  // // @Input() ontoInfoVisible: boolean;
+
+  // /**
+  // * set state - The state of this component
+  // *
+  // * @param  {state} state string 'view', 'add' or 'create'
+  // */
+  // @Input() state: EditorStates;
+
+  // // state of the card below the header
+  // @Input() cardState: 'collapsed' | 'expanded';
+
+
+
+
+  /**
+  * Outputs
+  */
+
+  //  @Output() stateChange: EventEmitter<string> = new EventEmitter();
+
+  //  @Output() readyToCreate: EventEmitter<InfRole[]> = new EventEmitter;
+
+  //  @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
+
+  //  @Output() rolesAdded: EventEmitter<InfRole[]> = new EventEmitter;
+
+  //  // emit appellation and a flag to say if this is the standard appellation
+  //  @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
+
+  //  @Output() readyToAdd: EventEmitter<InfRole[]> = new EventEmitter();
+
+  //  @Output() notReadyToAdd: EventEmitter<void> = new EventEmitter();
+
+  //  @Output() removePropertySectionReq: EventEmitter<IRoleSetState> = new EventEmitter();
+
+  //  @Output() rolesUpdated: EventEmitter<InfRole[]> = new EventEmitter();
+
+
+
+
+  // // add role state
+  // addRoleState: string = 'init'; //init, selectExisting, createNew
+
+  // // Latest modified role alternative with highest is_standard_in_project_count
+  // mostPopularRole: InfRole;
+
+  // roleComponents;
+
+  // // the property
+  // property: DfhProperty;
+
+  // // max. mumber of possible alternatives -1=infinite
+  // maxAlternatives: number;
+
+  // // If ui allows to choose standard alternative for property
+  // hasStandard: boolean;
+
+  // // thisComponent
+  // thisComponent = this;
+
+  // // role to create, when creating a new role
+  // roleToCreate: InfRole;
+
+  // rolesToCreate: InfRole[];
+
+  // isReadyToCreate: boolean;
+
+  // // roles to add, when in add-pe-it state
+  // rolesToAdd: InfRole[] = [];
+
+  // // roles used by other projects in repo but not in this project
+  // rolesInOtherProjects: InfRole[];
+
+  // // roles not used by no project
+  // rolesInNoProject: InfRole[];
+
+  // // if true, roles used by no project are visible
+  // rolesInNoProjectVisible: boolean;
+
+  // // true while loading rolesInOtherProjects via api call
+  // rolesNotInProjectLoading: boolean;
+
+  // isReadyToAddRoles
+  // get isReadyToAddRoles(): boolean {
+  //   return (this.rolesToAdd.filter(r => {
+  //     return r.entity_version_project_rels[0].is_in_project
+  //   }).length > 0)
+  // }
+
+
+
+
 
 
   /**
@@ -412,9 +417,9 @@ export class RoleSetComponent implements OnInit {
   */
   cancelSelectRoles() {
 
-    this.addRoleState = 'init';
+    // this.addRoleState = 'init';
 
-    this.stateChange.emit('selectProp');
+    // this.stateChange.emit('selectProp');
   }
 
 
@@ -426,11 +431,11 @@ export class RoleSetComponent implements OnInit {
   */
   cancelCreateNewRole() {
 
-    this.stateChange.emit('selectRoles');
+    // this.stateChange.emit('selectRoles');
 
-    this.addRoleState = 'init';
+    // this.addRoleState = 'init';
 
-    this.roleToCreate = undefined;
+    // this.roleToCreate = undefined;
 
   }
 
@@ -460,36 +465,36 @@ export class RoleSetComponent implements OnInit {
   */
   roleReadyToCreate(role) {
 
-    this.rolesToCreate = [];
+    // this.rolesToCreate = [];
 
-    let rolesValid = true;
-    if (this.roleComponents) {
+    // let rolesValid = true;
+    // if (this.roleComponents) {
 
-      this.roleComponents.forEach(roleComponent => {
+    //   this.roleComponents.forEach(roleComponent => {
 
-        if (!roleComponent.isReadyToCreate) rolesValid = false;
+    //     if (!roleComponent.isReadyToCreate) rolesValid = false;
 
-        this.rolesToCreate.push(roleComponent.role);
+    //     this.rolesToCreate.push(roleComponent.role);
 
-      })
+    //   })
 
-      const quantityValid = this.propertyService.validateQuantity(
-        this.rolesToCreate.length,
-        this.property,
-        this.isOutgoing
-      )
+    //   const quantityValid = this.propertyService.validateQuantity(
+    //     this.rolesToCreate.length,
+    //     this.property,
+    //     this.isOutgoing
+    //   )
 
-      if (rolesValid && quantityValid) {
+    //   if (rolesValid && quantityValid) {
 
-        this.isReadyToCreate = true;
+    //     this.isReadyToCreate = true;
 
-        this.changeDetector.detectChanges()
+    //     this.changeDetector.detectChanges()
 
-        this.readyToCreate.emit(this.rolesToCreate);
+    //     this.readyToCreate.emit(this.rolesToCreate);
 
-      }
+    //   }
 
-    }
+    // }
 
   }
 
@@ -498,28 +503,28 @@ export class RoleSetComponent implements OnInit {
   */
   roleNotReadyToCreate() {
 
-    this.isReadyToCreate = false;
-    this.changeDetector.detectChanges()
+    // this.isReadyToCreate = false;
+    // this.changeDetector.detectChanges()
 
-    this.notReadyToCreate.emit();
+    // this.notReadyToCreate.emit();
 
   }
 
   persistEntitiesToCreate(fkEntity) {
 
-    this.rolesToCreate.forEach((role) => {
-      role.fk_entity = fkEntity;
-    })
+    // this.rolesToCreate.forEach((role) => {
+    //   role.fk_entity = fkEntity;
+    // })
 
-    this.roleApi.findOrCreateInfRole(
-      this.activeProject.project.pk_project,
-      this.rolesToCreate[0]
-    ).subscribe(newRoles => {
+    // this.roleApi.findOrCreateInfRole(
+    //   this.activeProject.project.pk_project,
+    //   this.rolesToCreate[0]
+    // ).subscribe(newRoles => {
 
-      this.rolesAdded.emit(newRoles);
+    //   this.rolesAdded.emit(newRoles);
 
-      this.roleToCreate = undefined;
-    })
+    //   this.roleToCreate = undefined;
+    // })
 
   }
 
@@ -528,22 +533,22 @@ export class RoleSetComponent implements OnInit {
   */
 
   removePropertySection() {
-    this.removePropertySectionReq.emit(this.propertySection);
+    // this.removePropertySectionReq.emit(this.propertySection);
   }
 
   /**
   *  called when user cancels creating a new role
   */
   onRoleCreationCanceled() {
-    this.addRoleState = 'init';
+    // this.addRoleState = 'init';
   }
 
   /**
   * called when user created a new role
   */
   onRoleCreated(role: InfRole) {
-    this.roles.push(role);
-    this.addRoleState = 'init';
+    // this.roles.push(role);
+    // this.addRoleState = 'init';
   }
 
 
@@ -551,65 +556,65 @@ export class RoleSetComponent implements OnInit {
   * called when user removed a role from project
   */
   onRoleRemoved(removedRole: InfRole) {
-    for (let i = 0; i < this.roles.length; i++) {
-      if (this.roles[i].pk_entity === removedRole.pk_entity) {
-        this.roles.splice(i, 1);
-        break;
-      }
-    }
+    // for (let i = 0; i < this.roles.length; i++) {
+    //   if (this.roles[i].pk_entity === removedRole.pk_entity) {
+    //     this.roles.splice(i, 1);
+    //     break;
+    //   }
+    // }
   }
 
   /**
   * called when user updates a role (or its children)
   */
   onRoleUpdated(updatedRole: InfRole) {
-    for (let i = 0; i < this.roles.length; i++) {
-      if (this.roles[i].pk_entity === updatedRole.pk_entity) {
-        this.roles[i] = updatedRole;
-        this.rolesUpdated.emit(this.roles)
-        break;
-      }
-    }
+    // for (let i = 0; i < this.roles.length; i++) {
+    //   if (this.roles[i].pk_entity === updatedRole.pk_entity) {
+    //     this.roles[i] = updatedRole;
+    //     this.rolesUpdated.emit(this.roles)
+    //     break;
+    //   }
+    // }
   }
 
 
   onRoleReadyToAdd(role: InfRole) {
 
-    let exists = false;
+    // let exists = false;
 
-    // replace if existing (this happens when user changes epr settings)
-    for (let i = 0; i < this.rolesToAdd.length; i++) {
-      if (this.rolesToAdd[i].pk_entity === role.pk_entity) {
-        this.rolesToAdd[i] = role;
-        exists = true;
-      }
-    }
+    // // replace if existing (this happens when user changes epr settings)
+    // for (let i = 0; i < this.rolesToAdd.length; i++) {
+    //   if (this.rolesToAdd[i].pk_entity === role.pk_entity) {
+    //     this.rolesToAdd[i] = role;
+    //     exists = true;
+    //   }
+    // }
 
-    // else push it
-    if (!exists) {
-      this.rolesToAdd.push(role);
-    }
+    // // else push it
+    // if (!exists) {
+    //   this.rolesToAdd.push(role);
+    // }
 
-    // // count number of roles that are selected to be in project
-    // const inProjectCount = this.rolesToAdd.filter(role =>
-    //   role.entity_version_project_rels[0].is_in_project
-    // ).length
-    //
-    // const quantityValid = this.propertyService.validateQuantity(
-    //   inProjectCount,
-    //   this.property,
-    //   this.isOutgoing
-    // )
-    //
-    // // check if this number is according to quantity definition
-    // if (quantityValid) {
+    // // // count number of roles that are selected to be in project
+    // // const inProjectCount = this.rolesToAdd.filter(role =>
+    // //   role.entity_version_project_rels[0].is_in_project
+    // // ).length
+    // //
+    // // const quantityValid = this.propertyService.validateQuantity(
+    // //   inProjectCount,
+    // //   this.property,
+    // //   this.isOutgoing
+    // // )
+    // //
+    // // // check if this number is according to quantity definition
+    // // if (quantityValid) {
+    // // this.readyToAdd.emit(this.rolesToAdd);
+    // // }
+    // // else {
+    // //   this.notReadyToAdd.emit();
+    // // }
+
     // this.readyToAdd.emit(this.rolesToAdd);
-    // }
-    // else {
-    //   this.notReadyToAdd.emit();
-    // }
-
-    this.readyToAdd.emit(this.rolesToAdd);
 
 
   }
@@ -624,29 +629,29 @@ export class RoleSetComponent implements OnInit {
   */
   addSelectedRolesToProject() {
 
-    let observables = [];
-    this.rolesToAdd.forEach(role => {
-      if (role.entity_version_project_rels[0].is_in_project) {
-        observables.push(this.roleApi.changeRoleProjectRelation(
-          this.activeProject.project.pk_project, true, role)
-        );
-      }
+    // let observables = [];
+    // this.rolesToAdd.forEach(role => {
+    //   if (role.entity_version_project_rels[0].is_in_project) {
+    //     observables.push(this.roleApi.changeRoleProjectRelation(
+    //       this.activeProject.project.pk_project, true, role)
+    //     );
+    //   }
 
-    })
+    // })
 
-    Observable.combineLatest(observables)
-      .subscribe(results => {
-        results.forEach((result: InfRole[]) => {
+    // Observable.combineLatest(observables)
+    //   .subscribe(results => {
+    //     results.forEach((result: InfRole[]) => {
 
-          let addedRole = result[0];
+    //       let addedRole = result[0];
 
-          addedRole.is_in_project_count++;
+    //       addedRole.is_in_project_count++;
 
-          this.roles.push(addedRole);
+    //       this.roles.push(addedRole);
 
-          this.addRoleState = 'init';
-        })
-      })
+    //       this.addRoleState = 'init';
+    //     })
+    //   })
   }
 
   /**
@@ -654,7 +659,7 @@ export class RoleSetComponent implements OnInit {
   * expand the card in the UI
   */
   toggleCardBody() {
-    this.cardState = this.cardState === 'expanded' ? 'collapsed' : 'expanded';
+    this.localStore.dispatch(this.actions.toggle())
   }
 
 
@@ -667,33 +672,23 @@ export class RoleSetComponent implements OnInit {
   */
   sortRolesByPopularity() {
 
-    // sort by is_standard_in_project_count and
-    this.roles.sort((roleA, roleB) => {
-      var a = roleA.is_standard_in_project_count
-      var b = roleB.is_standard_in_project_count
+    // // sort by is_standard_in_project_count and
+    // this.roles.sort((roleA, roleB) => {
+    //   var a = roleA.is_standard_in_project_count
+    //   var b = roleB.is_standard_in_project_count
 
-      if (a < b) {
-        return 1;
-      }
-      if (a > b) {
-        return -1;
-      }
-      // a muss gleich b sein
-      return 0;
-    })
+    //   if (a < b) {
+    //     return 1;
+    //   }
+    //   if (a > b) {
+    //     return -1;
+    //   }
+    //   // a muss gleich b sein
+    //   return 0;
+    // })
 
-    this.mostPopularRole = this.roles[0];
+    // this.mostPopularRole = this.roles[0];
   }
 
-  /**
-  * Methods for event bubbeling
-  */
-
-  emitAppeChange(appeStd: AppellationStdBool) {
-
-    appeStd.isMostPopular = (this.mostPopularRole == appeStd.role);
-
-    this.appeChange.emit(appeStd)
-  }
 
 }
