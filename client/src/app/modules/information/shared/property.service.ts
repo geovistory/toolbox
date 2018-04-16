@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { DfhPropertyApi, DfhProperty } from 'app/core';
+import { IRoleSetState, RoleSetState } from '../components/role-set/role-set.model';
+import { RoleLabelObj } from '../components/role-set/role-set.component';
 
 interface Label {
   sg?: string;
@@ -10,12 +12,6 @@ interface Label {
 }
 
 
-
-export interface DirectionAwareProperty {
-  isOutgoing: boolean;
-  property: DfhProperty;
-  labelSg: string;
-}
 
 
 @Injectable()
@@ -196,34 +192,62 @@ export class PropertyService {
 
 
   /**
-  * Convert array of Property to an array of DirectionAwareProperty
+  * Convert array of Property to an array of IRoleSetState
   *
   * @param {boolean} isOutgoing direction: true=outgoing, false=ingoing
   * @param {DfhProperty[]} properties array of properties to Convert
-  * @return {DirectionAwareProperty[]} array of DirectionAwareProperty
+  * @return {IRoleSetState[]} array of IRoleSetState
   */
-  toDirectionAwareProperties(isOutgoing: boolean, properties: DfhProperty[]): DirectionAwareProperty[] {
-
+  toDirectionAwareProperties(isOutgoing: boolean, properties: DfhProperty[]): IRoleSetState[] {
     if (!properties) return [];
 
-
     return properties.map(property => {
-      let labelSg: string = '';
-
-      if (isOutgoing)
-        labelSg = property.labels.find(l => l.notes === 'label.sg').dfh_label;
-
-      else if (!isOutgoing)
-        labelSg = property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
-
-      return {
-        'isOutgoing': isOutgoing,
-        'property': property,
-        'labelSg': labelSg
-      }
+      return new RoleSetState({
+        isOutgoing: isOutgoing,
+        property: property,
+        roleLabel: this.createLabelObject(property, isOutgoing)
+      })
     });
   }
 
+
+  /**
+   * create a label object for the property
+   * @param property 
+   * @param isOutgoing 
+   */
+  createLabelObject(property: DfhProperty, isOutgoing: boolean): RoleLabelObj {
+    let labelObj: RoleLabelObj;
+    if (isOutgoing) {
+
+      // TODO return an object containing label.pl and label.sg
+      const sg = property.labels.find(l => l.notes === 'label.sg').dfh_label;
+      const pl = property.labels.find(l => l.notes === 'label.pl').dfh_label;
+
+      labelObj = {
+        sg: sg,
+        pl: pl,
+        default: property.dfh_domain_instances_max_quantifier === 1 ? sg : pl
+      }
+
+    } else if (isOutgoing === false) {
+
+      // TODO return an object containing inversed_label.pl and inversed_label.sg
+      const sg = property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
+      const pl = property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label;
+
+      labelObj = {
+        sg: sg,
+        pl: pl,
+        default: property.dfh_domain_instances_max_quantifier === 1 ? sg : pl
+      }
+
+
+    } else {
+      labelObj = undefined;
+    }
+    return labelObj;
+  }
 
   /**
    * quantityIsValid - Verify if the quantity of roles is valid according to the

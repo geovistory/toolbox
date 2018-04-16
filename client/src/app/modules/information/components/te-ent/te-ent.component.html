@@ -20,21 +20,20 @@
 
         <!-- Step 1 for adding a new property -->
 
-        <button class="btn btn-light btn-sm btn-block text-secondary rounded-top-0" (click)="selectPropState = 'selectProp'" *ngIf="selectPropState === 'init'">
+        <button class="btn btn-light btn-sm btn-block text-secondary rounded-top-0" (click)="startSelectProperty()" *ngIf="(selectPropState$ | async) === 'init'">
           <i class="fa fa-plus"></i> Add a property ...
         </button>
 
-
         <!-- Step 2 for adding new Property section -->
 
-        <div class="d-flex flex-column gv-flex-grow-1 bg-light border-top border-gray" *ngIf="selectPropState === 'selectProp'">
+        <div class="d-flex flex-column gv-flex-grow-1 bg-light border-top border-gray" *ngIf="(selectPropState$ | async) === 'selectProp'">
 
           <div class="card-header bt-1">
             <div class="d-flex">
               <div class="gv-flex-grow-1 align-self-center">
                 What do you want to add?
               </div>
-              <button type="button" name="button" class="btn btn-link align-self-center btn-sm" (click)="selectPropState = 'init'">
+              <button type="button" name="button" class="btn btn-link align-self-center btn-sm" (click)="stopSelectProperty()">
                 <i class="fa fa-close"></i>
               </button>
             </div>
@@ -42,21 +41,21 @@
 
           <div class="card-body">
             <div class="input-group">
-              <select [(ngModel)]="propertyToAdd" class="custom-select">
+              <select [(ngModel)]="roleSetToAdd" class="custom-select">
                 <option [ngValue]="null">Select…</option>
 
-                <option [disabled]="propSectionAdded(propertyToAdd)" *ngFor="let propertyToAdd of ingoingDirectionAwareProperties" [ngValue]="propertyToAdd">
+                <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (ingoingPropertiesToAdd$|async)" [ngValue]="roleSetToAdd">
 
-                  {{propertyToAdd?.labelSg}} {{propSectionAdded(propertyToAdd) ? '(already added)':''}}
+                  {{roleSetToAdd?.labelSg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
 
                 </option>
-                <option [disabled]="propSectionAdded(propertyToAdd)" *ngFor="let propertyToAdd of outgoingDirectionAwareProperties" [ngValue]="propertyToAdd">
+                <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (outgoingPropertiesToAdd$|async)" [ngValue]="roleSetToAdd">
 
-                  {{propertyToAdd?.labelSg}} {{propSectionAdded(propertyToAdd) ? '(already added)':''}}
+                  {{roleSetToAdd?.labelSg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
 
                 </option>
               </select>
-              <button type="button" name="button" class="btn btn-primary input-group-append" *ngIf="propertyToAdd" (click)="startSelectRoles()">Ok</button>
+              <button type="button" name="button" class="btn btn-primary input-group-append" *ngIf="roleSetToAdd" (click)="addRoleSet(roleSetToAdd)">Ok</button>
             </div>
           </div>
         </div>

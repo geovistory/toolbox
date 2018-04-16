@@ -7,7 +7,7 @@ import { IRoleSetListState } from "../role-set-list/role-set-list.model";
 
 
 
-export interface ITeEntState {
+export interface ITeEntState extends IRoleSetListState{
     teEntToEdit?: InfTemporalEntity;
     teEntToAdd?: InfTemporalEntity;
     teEntToCreate?: InfTemporalEntity;

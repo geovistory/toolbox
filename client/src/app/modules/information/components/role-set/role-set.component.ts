@@ -148,35 +148,8 @@ export class RoleSetComponent implements OnInit {
    * (can there be only one role instance ore multiple).
    */
   initRoleLabel(isOutgoing: boolean, property: DfhProperty) {
-    let roleLabel: RoleLabelObj;
-    if (isOutgoing) {
 
-      // TODO return an object containing label.pl and label.sg
-      const sg = property.labels.find(l => l.notes === 'label.sg').dfh_label;
-      const pl = property.labels.find(l => l.notes === 'label.pl').dfh_label;
-
-      roleLabel = {
-        sg: sg,
-        pl: pl,
-        default: property.dfh_domain_instances_max_quantifier === 1 ? sg : pl
-      }
-
-    } else if (isOutgoing === false) {
-
-      // TODO return an object containing inversed_label.pl and inversed_label.sg
-      const sg = property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
-      const pl = property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label;
-
-      roleLabel = {
-        sg: sg,
-        pl: pl,
-        default: property.dfh_domain_instances_max_quantifier === 1 ? sg : pl
-      }
-
-
-    } else {
-      roleLabel = undefined;
-    }
+    const roleLabel = this.propertyService.createLabelObject(property, isOutgoing);
 
     this.localStore.dispatch(this.actions.roleLabelUpdated(roleLabel))
 

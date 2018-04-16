@@ -2,7 +2,6 @@
 import { Action } from 'redux';
 import { IRoleSetListState } from './role-set-list.model';
 import { RoleSetListAction, RoleSetListActions } from './role-set-list-actions';
-import { indexBy, prop } from 'ramda';
 
 
 const INITIAL_STATE: IRoleSetListState = {
@@ -22,7 +21,7 @@ export const roleSetListReducer =
       case RoleSetListActions.ROLE_SETS_INITIALIZED:
         lastState = {
           ...lastState,
-          roleSets: indexBy(prop('fkProperty'), action.payload.roleSets),
+          roleSets: action.payload.roleSets,
           ingoingProperties: action.payload.ingoingProperties,
           outgoingProperties: action.payload.outgoingProperties,
           ingoingPropertiesToAdd: action.payload.ingoingPropertiesToAdd,
@@ -44,10 +43,13 @@ export const roleSetListReducer =
         }
         break;
 
-      case RoleSetListActions.START_SELECT_ROLES:
+      case RoleSetListActions.ROLE_SET_ADDED:
         lastState = {
           ...lastState,
-          roleSets: action.payload.roleSets,
+          roleSets: {
+            ...lastState.roleSets,
+            ...action.payload.roleSets
+          },
           selectPropState: action.payload.selectPropState
         }
         break;

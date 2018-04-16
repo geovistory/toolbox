@@ -45,7 +45,8 @@ export class PeItRoleComponent extends RoleComponent implements OnInit {
         const childTeEnt = new TeEntState({
           teEnt: new InfTemporalEntity(result["0"].temporal_entity),
           state: result["1"],
-          toggle: 'collapsed'
+          toggle: 'collapsed',
+          selectPropState: 'init'
         })
         this.localStore.dispatch(this.actions.childTeEntInitialized(childTeEnt))
       }

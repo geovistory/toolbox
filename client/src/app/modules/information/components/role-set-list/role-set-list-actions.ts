@@ -5,6 +5,7 @@ import { IRoleSetListState } from './role-set-list.model';
 import { IRoleSetState, RoleSetState } from '../../components/role-set/role-set.model';
 import { DfhProperty, InfRole, DfhClass } from 'app/core';
 import { DirectionAwareProperty } from '../../shared/property.service';
+import { indexBy, prop } from 'ramda';
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = IRoleSetListState;
@@ -24,7 +25,7 @@ export class RoleSetListActions {
 
   static readonly PROPERTY_SELECTED = 'PROPERTY_SELECTED';
 
-  static readonly START_SELECT_ROLES = 'START_SELECT_ROLES';
+  static readonly ROLE_SET_ADDED = 'ROLE_SET_ADDED';
 
   @dispatch()
 
@@ -37,7 +38,7 @@ export class RoleSetListActions {
       outgoingPropertiesToAdd,
       ingoingProperties,
       outgoingProperties,
-      roleSets
+      roleSets: indexBy(prop('fkProperty'), roleSets)
     }
   })
 
@@ -68,11 +69,11 @@ export class RoleSetListActions {
   /**
   * called, when user selected a the kind of property to add
   */
-  startSelectRoles = (roleSets: RoleSetState[]): RoleSetListAction => ({
-    type: RoleSetListActions.START_SELECT_ROLES,
+  addRoleSet = (roleSet: RoleSetState): RoleSetListAction => ({
+    type: RoleSetListActions.ROLE_SET_ADDED,
     meta: null,
     payload: {
-      roleSets,
+      roleSets: indexBy(prop('fkProperty'), [roleSet]),
       selectPropState: 'init'
     }
   })

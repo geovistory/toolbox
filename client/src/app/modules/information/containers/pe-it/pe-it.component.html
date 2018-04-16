@@ -141,21 +141,21 @@
 
             <div class="card-body">
               <div class="input-group">
-                <select [(ngModel)]="propertyToAdd" (onChange)="startSelectRoles()" class="custom-select">
+                <select [(ngModel)]="roleSetToAdd" class="custom-select">
                   <option [ngValue]="null">Select…</option>
 
-                  <option [disabled]="propSectionAdded(propertyToAdd)" *ngFor="let propertyToAdd of (ingoingPropertiesToAdd$|async)" [ngValue]="propertyToAdd">
+                  <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (ingoingPropertiesToAdd$|async)" [ngValue]="roleSetToAdd">
 
-                    {{propertyToAdd?.labelSg}} {{propSectionAdded(propertyToAdd) ? '(already added)':''}}
+                    {{roleSetToAdd?.labelSg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
 
                   </option>
-                  <option [disabled]="propSectionAdded(propertyToAdd)" *ngFor="let propertyToAdd of (outgoingPropertiesToAdd$|async)" [ngValue]="propertyToAdd">
+                  <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (outgoingPropertiesToAdd$|async)" [ngValue]="roleSetToAdd">
 
-                    {{propertyToAdd?.labelSg}} {{propSectionAdded(propertyToAdd) ? '(already added)':''}}
+                    {{roleSetToAdd?.labelSg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
 
                   </option>
                 </select>
-                <button type="button" name="button" class="btn btn-primary input-group-append" *ngIf="propertyToAdd" (click)="startSelectRoles()">Ok</button>
+                <button type="button" name="button" class="btn btn-primary input-group-append" *ngIf="roleSetToAdd" (click)="addRoleSet(roleSetToAdd)">Ok</button>
               </div>
             </div>
           </div>

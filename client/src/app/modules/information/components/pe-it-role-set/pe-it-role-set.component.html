@@ -198,12 +198,12 @@
     <button class="btn btn-secondary btn-block text-left rounded-bottom-0" (click)="toggleCardBody()">
       <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
       <span *ngIf="roles && roles.length">{{roles.length}}</span>
-      {{(roleLabel$ | async).default}}
+      {{(roleLabel$ | async)?.default}}
     </button>
     <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
       <div class="align-self-center">
-        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(property$|async).dfh_pk_property}}" target="_blank">
-          {{(property$|async).dfh_identifier_in_namespace}}
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(property$|async)?.dfh_pk_property}}" target="_blank">
+          {{(property$|async)?.dfh_identifier_in_namespace}}
         </a>
       </div>
     </div>
