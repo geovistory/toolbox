@@ -25,7 +25,6 @@ import { StoreModule } from './core/store/module';
 import { InformationModule } from './modules/information/information.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 
-
 @NgModule({
   declarations: [
     AppComponent

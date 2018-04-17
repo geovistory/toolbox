@@ -18,6 +18,7 @@ import { IPeItState } from '../../containers/pe-it/pe-it.model';
 import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
 import { NumberSymbol } from '@angular/common';
+import { RoleSetListService } from '../../shared/role-set-list.service';
 
 @Component({
   selector: 'gv-pe-it-entity-preview',
@@ -54,9 +55,10 @@ export class PeItEntityPreviewComponent extends PeItComponent implements OnInit 
     private modalService: NgbModal,
     private router: Router,
     private route: ActivatedRoute,
-    private eprApi: InfEntityProjectRelApi
+    private eprApi: InfEntityProjectRelApi,
+    roleSetListService: RoleSetListService
   ) {
-    super(peItApi, peItService, propertyPipe, activePeItService, slimLoadingBarService, entityEditor, changeDetector, ngRedux, actions, classService, roleService, propertyService)
+    super(peItApi, peItService, propertyPipe, activePeItService, slimLoadingBarService, entityEditor, changeDetector, ngRedux, actions, classService, roleService, propertyService, roleSetListService)
   }
 
   ngOnChanges() {

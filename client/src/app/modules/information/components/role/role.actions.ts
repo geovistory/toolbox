@@ -17,9 +17,10 @@ export type RoleAction = FluxStandardAction<Payload, MetaData>;
 export class RoleActions {
   static readonly ROLE_TO_CREATE_UPDATED = 'ROLE_TO_CREATE_UPDATED';
   static readonly ROLE_TO_ADD_UPDATED = 'ROLE_TO_ADD_UPDATED';
-  static readonly IS_STANDARD_IN_PROJECT_UPDATED = 'IS_STANDARD_IN_PROJECT_UPDATED';
+  // static readonly SET_DISPLAY_ROLE_FOR_RANGE = 'SET_DISPLAY_ROLE_FOR_RANGE';
+  // static readonly SET_DISPLAY_ROLE_FOR_DOMAIN = 'SET_DISPLAY_ROLE_FOR_DOMAIN ';
 
-  static readonly CHILD_TE_ENT_INITIALIZED = 'CHILD_TE_ENT_INITIALIZED';
+  // static readonly CHILD_TE_ENT_INITIALIZED = 'CHILD_TE_ENT_INITIALIZED';
 
 
   @dispatch()
@@ -41,20 +42,28 @@ export class RoleActions {
     }
   })
 
-  isStandardInProjectUpdated = (isStandardInProject:boolean): RoleAction => ({
-    type: RoleActions.IS_STANDARD_IN_PROJECT_UPDATED,
-    meta: null,
-    payload: {
-      isStandardInProject
-    }
-  })
+  // setDisplayRoleForRange = (isDisplayRoleForRange:boolean): RoleAction => ({
+  //   type: RoleActions.SET_DISPLAY_ROLE_FOR_RANGE,
+  //   meta: null,
+  //   payload: {
+  //     isDisplayRoleForRange
+  //   }
+  // })
 
-  childTeEntInitialized = (childTeEnt:ITeEntState): RoleAction => ({
-    type: RoleActions.CHILD_TE_ENT_INITIALIZED,
-    meta: null,
-    payload: {
-      childTeEnt
-    }
-  })
+  // setDisplayRoleForDomain = (isDisplayRoleForDomain:boolean): RoleAction => ({
+  //   type: RoleActions.SET_DISPLAY_ROLE_FOR_DOMAIN,
+  //   meta: null,
+  //   payload: {
+  //     isDisplayRoleForDomain
+  //   }
+  // })
+
+  // childTeEntInitialized = (childTeEnt:ITeEntState): RoleAction => ({
+  //   type: RoleActions.CHILD_TE_ENT_INITIALIZED,
+  //   meta: null,
+  //   payload: {
+  //     childTeEnt
+  //   }
+  // })
 
 }

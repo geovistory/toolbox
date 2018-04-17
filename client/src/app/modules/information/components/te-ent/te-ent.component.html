@@ -4,8 +4,8 @@
     <ng-container *ngTemplateOutlet="dev"></ng-container>
   </span>
 
-  <!-- Not View or Create State -->
-  <div class="card gv-name" *ngIf="(state$ | async) !== 'create' && (state$ | async) !== 'view'">
+  <!-- Editable State -->
+  <div class="card gv-name" *ngIf="(state$ | async) === 'editable'">
 
 
     <ng-container *ngTemplateOutlet="header"></ng-container>
@@ -44,14 +44,14 @@
               <select [(ngModel)]="roleSetToAdd" class="custom-select">
                 <option [ngValue]="null">Select…</option>
 
-                <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (ingoingPropertiesToAdd$|async)" [ngValue]="roleSetToAdd">
+                <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (ingoingRoleSets$|async)" [ngValue]="roleSetToAdd">
 
-                  {{roleSetToAdd?.labelSg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
+                  {{roleSetToAdd?.label.sg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
 
                 </option>
-                <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (outgoingPropertiesToAdd$|async)" [ngValue]="roleSetToAdd">
+                <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (outgoingRoleSets$|async)" [ngValue]="roleSetToAdd">
 
-                  {{roleSetToAdd?.labelSg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
+                  {{roleSetToAdd?.label.sg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
 
                 </option>
               </select>
@@ -70,7 +70,7 @@
   <!-- Create State -->
 
   <div class="card gv-name" *ngIf="(state$ | async) === 'create'">
-<!-- 
+    <!-- 
     <gv-te-ent-role-set *ngFor="let property of outgoingProperties" [roles]="property.roles" [parentRole]="parentRole" [fkProperty]="property.dfh_pk_property"
       [pointTo]="'PeIt'" [state]="'create'" [isOutgoing]="true" (readyToCreate)="propertyReadyToCreate($event)" (notReadyToCreate)="propertyNotReadyToCreate()"></gv-te-ent-role-set>
 
@@ -88,7 +88,7 @@
     <ng-container *ngTemplateOutlet="header"></ng-container>
 
     <div [@slideInOut]="cardBodyState">
-<!-- 
+      <!-- 
       <gv-te-ent-role-set *ngFor="let property of roleSets" [propertySection]="property" [isOutgoing]="property.isOutgoing" [roles]="property.roles"
         [fkProperty]="property.fkProperty" [pointTo]="'PeIt'" [parentEntityPk]="parentRole.fk_entity" [parentTeEnt]="teEnt"
         [state]="(state$ | async)" [parentRole]="parentRole" [communityStatsVisible]="communityStatsVisible" [ontoInfoVisible]="ontoInfoVisible"
@@ -110,8 +110,8 @@
     <ng-content select="[headerLeft]"></ng-content>
     <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
       <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
-      <span *ngIf="displayLabel">{{displayLabel}}</span>
-      <span *ngIf="!displayLabel">{{(dfhClass|async)?.dfh_standard_label}}</span>
+      <span *ngIf="label">{{label}}</span>
+      <span *ngIf="!label">{{(dfhClass|async)?.dfh_standard_label}}</span>
     </div>
     <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
       <div class="align-self-center">

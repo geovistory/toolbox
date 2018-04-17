@@ -10,6 +10,7 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { TeEntState } from '../te-ent/te-ent.model';
 import { Observable } from 'rxjs/Observable';
 import { roleReducer } from '../role/role.reducers';
+import { PeItRoleService } from '../../shared/pe-it-role.service';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -30,7 +31,8 @@ export class PeItRoleComponent extends RoleComponent implements OnInit {
     entityEditor: EntityEditorService,
     roleApi: InfRoleApi,
     ngRedux: NgRedux<IRoleState>,
-    actions: RoleActions
+    actions: RoleActions,
+    private peItRoleService: PeItRoleService
   ) {
     super(activeProjectService, eprService, ref, entityEditor, roleApi, ngRedux, actions)
   }
@@ -42,13 +44,9 @@ export class PeItRoleComponent extends RoleComponent implements OnInit {
       this.state$
     ).subscribe(result => {
       if (result["0"] && result["1"]) {
-        const childTeEnt = new TeEntState({
-          teEnt: new InfTemporalEntity(result["0"].temporal_entity),
-          state: result["1"],
-          toggle: 'collapsed',
-          selectPropState: 'init'
-        })
-        this.localStore.dispatch(this.actions.childTeEntInitialized(childTeEnt))
+        const childTeEnt = this.peItRoleService.createChildren(result[0], result[1])
+        if (childTeEnt)
+          this.localStore.dispatch(this.actions.childTeEntInitialized(childTeEnt))
       }
     })
   }

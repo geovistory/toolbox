@@ -8,6 +8,7 @@ import { EditorStates, CollapsedExpanded } from '../../information.models';
 import { RoleActions } from './role.actions';
 import { IRoleState } from './role.model';
 import { roleReducer } from './role.reducers';
+import { BehaviorSubject } from 'rxjs';
 
 export enum RolePointToEnum {
   PeIt = "PeIt",
@@ -16,7 +17,7 @@ export enum RolePointToEnum {
 
 export interface AppellationStdBool {
   appellation: InfAppellation;
-  isStandardInProject: boolean;
+  isDisplayRoleInProject: boolean;
   isMostPopular?: boolean;
   role?: InfRole;
 }
@@ -37,9 +38,12 @@ export class RoleComponent implements OnInit {
   @select() state$: Observable<EditorStates>;
   @select() toggle$: Observable<CollapsedExpanded>;
   @select() isStandardRoleToAdd$: Observable<boolean>;
-  @select() isStandardInProject$: Observable<boolean>;
+  @select() isDisplayRoleForDomain$: Observable<boolean>;
+  @select() isDisplayRoleForRange$: Observable<boolean>;
   @select() roleToCreate$: Observable<InfRole>;
   @select() roleToAdd$: Observable<InfRole>;
+
+  isDisplayRoleInProject$: BehaviorSubject<boolean> = BehaviorSubject.create();
 
   property$: Observable<DfhProperty>;
   activeProject$: Observable<Project>;
@@ -64,33 +68,32 @@ export class RoleComponent implements OnInit {
     this.property$ = this.ngRedux.select<DfhProperty>([...this.parentPath, 'property']);
     this.activeProject$ = this.ngRedux.select<Project>('activeProject');
 
-    this.state$.subscribe(state => {
-      this.initState(state);
-    })
+    this.initState();
+    
+    this.initSubscriptions();
 
-    this.init()
+    this.init();
   }
 
   init() { }
 
-  initState(state) {
-
-    this.initIsStandardInProject()
-
-    if ((state === 'create' || state === 'create-te-ent' || state === 'create-pe-it')) {
-      this.initRoleToCreate()
-    }
-
-    if (state === 'add' || state === 'add-pe-it' || state === 'create-pe-it') {
-      this.initRoleToAdd(state)
-    }
+  initState() {
+    this.state$.subscribe(state => {
 
 
-    this.initChildren();
+      if ((state === 'create' || state === 'create-te-ent' || state === 'create-pe-it')) {
+        this.initRoleToCreate()
+      }
+
+      if (state === 'add' || state === 'add-pe-it' || state === 'create-pe-it') {
+        this.initRoleToAdd(state)
+      }
+
+
+      // this.initChildren(); SINGLE_INIT
+    })
 
   }
-
-
 
   initChildren() { }
 
@@ -102,8 +105,6 @@ export class RoleComponent implements OnInit {
       this.localStore.dispatch(this.actions.roleToCreateUpdated(roleToCreate))
     })
   }
-
-
 
   initRoleToAdd(state) {
     Observable.zip(
@@ -134,16 +135,32 @@ export class RoleComponent implements OnInit {
   }
 
 
+  initSubscriptions(){
 
-  initIsStandardInProject() {
-    this.role$.subscribe(role => {
-      if (role && role.entity_version_project_rels[0])
-        this.localStore.dispatch(this.actions.isStandardInProjectUpdated(role.entity_version_project_rels[0].is_standard_in_project))
+    // Observe if this role is a display role for the project
+    // since this depends on the isOutgoing and the corresponding
+    // - isDisplayRoleForDomain or isDisplayRoleForRange -
+    // this value can be calculated allways on the fly
+    this.isOutgoing$.subscribe(isOutgoing=>{
+      if(isOutgoing === true){
+        this.isDisplayRoleForDomain$.subscribe(bool=>{
+          this.isDisplayRoleInProject$.next(bool)
+        })
+      }else if (isOutgoing === false){
+        this.isDisplayRoleForRange$.subscribe(bool=>{
+          this.isDisplayRoleInProject$.next(bool)
+        })
+      }
     })
+
+
+    this.isDisplayRoleInProject$.subscribe(bool=>{
+      if(bool === true){
+        // get the string from the child and push it to the labels of the parent
+      }
+    })
+
   }
-
-
-
 
 
 
@@ -216,7 +233,7 @@ export class RoleComponent implements OnInit {
   //  // If the role points to a teEnt with a child appellation
   //  appellation: InfAppellation;
 
-  //  private _isStandardInProject: boolean;
+  //  private _isDisplayRoleInProject: boolean;
 
 
 
@@ -240,7 +257,7 @@ export class RoleComponent implements OnInit {
   // */
   // set epr(epr: InfEntityProjectRel) {
   //   this.eprService.updateEprOfEntity(this.role, epr);
-  //   this.isStandardInProject = this.epr.is_standard_in_project;
+  //   this.isDisplayRoleInProject = this.epr.is_standard_in_project;
   //   // this.ref.detectChanges();
   // }
 
@@ -261,17 +278,17 @@ export class RoleComponent implements OnInit {
   // *
   // * @return {boolen}  description
   // */
-  // get isStandardInProject(): boolean {
-  //   return this._isStandardInProject;
+  // get isDisplayRoleInProject(): boolean {
+  //   return this._isDisplayRoleInProject;
   // }
 
-  // set isStandardInProject(bool: boolean) {
-  //   this._isStandardInProject = bool;
+  // set isDisplayRoleInProject(bool: boolean) {
+  //   this._isDisplayRoleInProject = bool;
 
   //   if (this.appellation) {
   //     this.appeChange.emit({
   //       appellation: this.appellation,
-  //       isStandardInProject: bool
+  //       isDisplayRoleInProject: bool
   //     })
   //   }
 
@@ -342,7 +359,7 @@ export class RoleComponent implements OnInit {
   * removeFromProject - called when user removes a role (nested) from project
   */
   removeFromProject() {
-    // if (this.isStandardInProject) {
+    // if (this.isDisplayRoleInProject) {
     //   alert("You can't remove the standard item. Make another item standard and try again.")
     // } else {
 
@@ -422,7 +439,7 @@ export class RoleComponent implements OnInit {
   */
 
   emitAppeChange(appeStd: AppellationStdBool) {
-    // appeStd.isStandardInProject = this.isStandardInProject;
+    // appeStd.isDisplayRoleInProject = this.isDisplayRoleInProject;
     // appeStd.role = this.role;
     // this.appellation = appeStd.appellation;
     // this.appeChange.emit(appeStd)

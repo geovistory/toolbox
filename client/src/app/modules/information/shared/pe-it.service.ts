@@ -1,11 +1,16 @@
-import { Injectable } from '@angular/core';
-
+import { Injectable, Inject, forwardRef } from '@angular/core';
+import { indexBy } from 'ramda';
 import { Observable } from 'rxjs/Observable';
+
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 
 import { ActivePeItService } from './active-pe-it.service';
 import { InfPersistentItemApi, InfTemporalEntityApi, InfAppellationApi, InfRoleApi, InfLanguageApi, InfPersistentItem, InfTemporalEntity, InfAppellation, InfRole } from 'app/core';
+import { RoleSetListService } from './role-set-list.service';
+import { ClassService } from './class.service';
+import { PeItState } from '../containers/pe-it/pe-it.model';
+import { roleSetKey } from '../components/role-set-list/role-set-list-actions';
 
 
 @Injectable()
@@ -17,7 +22,10 @@ export class PeItService {
     private appellationApi: InfAppellationApi,
     private roleApi: InfRoleApi,
     private languageApi: InfLanguageApi,
-    private activePeItService: ActivePeItService
+    private activePeItService: ActivePeItService,
+    private peItApi: InfPersistentItemApi,
+    private classService: ClassService,
+    @Inject(forwardRef(() => RoleSetListService))  private roleSetListService: RoleSetListService
   ) {
 
   }
@@ -45,7 +53,6 @@ export class PeItService {
       }
     });
   }
-
 
 
 }

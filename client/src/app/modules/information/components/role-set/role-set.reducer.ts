@@ -1,10 +1,8 @@
 
 import { Action } from 'redux';
 import { IRoleSetState } from './role-set.model';
-import { RoleSetAction, RoleSetActions } from './role-set.actions';
+import { RoleSetAction, RoleSetActions, roleStateKey } from './role-set.actions';
 import { indexBy, prop } from 'ramda';
-
-
 
 const INITIAL_STATE: IRoleSetState = {
 
@@ -25,7 +23,7 @@ export const roleSetReducer =
       case RoleSetActions.ROLE_LABEL_UPDATED:
         lastState = {
           ...lastState,
-          roleLabel: action.payload.roleLabel
+          label: action.payload.label
         };
         break;
 
@@ -39,7 +37,7 @@ export const roleSetReducer =
       case RoleSetActions.CHILD_ROLES_UPDATED:
         lastState = {
           ...lastState,
-          childRoleStates: indexBy((item) => item.role.pk_entity, action.payload.childRoleStates)
+          childRoleStates: indexBy(roleStateKey, action.payload.childRoleStates)
         };
         break;
 
@@ -55,6 +53,10 @@ export const roleSetReducer =
           ...lastState,
           toggle: lastState.toggle === 'expanded' ? 'collapsed' : 'expanded'
         };
+        break;
+
+      case RoleSetActions.ROLE_SET_REMOVED:
+        lastState = undefined
         break;
 
     }

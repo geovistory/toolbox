@@ -27,21 +27,29 @@ export const roleReducer =
         };
     }
 
-    switch (action.type) {
-      case RoleActions.IS_STANDARD_IN_PROJECT_UPDATED:
-        return {
-          ...lastState,
-          isStandardInProject: action.payload.isStandardInProject
-        };
-    }
+    // switch (action.type) {
+    //   case RoleActions.SET_DISPLAY_ROLE_FOR_RANGE:
+    //     return {
+    //       ...lastState,
+    //       isDisplayRoleForRange: action.payload.isDisplayRoleForRange
+    //     };
+    // }
 
-    switch (action.type) {
-      case RoleActions.CHILD_TE_ENT_INITIALIZED:
-        return {
-          ...lastState,
-          childTeEnt: action.payload.childTeEnt
-        };
-    }
+    // switch (action.type) {
+    //   case RoleActions.SET_DISPLAY_ROLE_FOR_DOMAIN:
+    //     return {
+    //       ...lastState,
+    //       isDisplayRoleForDomain: action.payload.isDisplayRoleForDomain
+    //     };
+    // }
+
+    // switch (action.type) {
+    //   case RoleActions.CHILD_TE_ENT_INITIALIZED:
+    //     return {
+    //       ...lastState,
+    //       childTeEnt: action.payload.childTeEnt
+    //     };
+    // }
 
     return lastState;
   };

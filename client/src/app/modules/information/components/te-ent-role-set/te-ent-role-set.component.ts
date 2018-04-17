@@ -26,6 +26,7 @@ import { NgRedux, WithSubStore } from '@angular-redux/store';
 import { RoleSetActions } from '../role-set/role-set.actions';
 import { IRoleSetState } from '../role-set/role-set.model';
 import { roleSetReducer } from '../role-set/role-set.reducer';
+import { RoleSetService } from '../../shared/role-set.service';
 
 
 @WithSubStore({
@@ -101,10 +102,10 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
     public entityEditor: EntityEditorService,
     changeDetector: ChangeDetectorRef,
     ngRedux: NgRedux<IRoleSetState>,
-    actions: RoleSetActions
-
+    actions: RoleSetActions,
+    roleSetService:RoleSetService
   ) {
-    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions)
+    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions, roleSetService)
   }
 
   init() {

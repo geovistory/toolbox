@@ -3,9 +3,9 @@
     <ng-container *ngTemplateOutlet="dev"></ng-container>
   </span>
   <!--
-    ************************* Edit State ************************* -->
+    ************************* Editable State ************************* -->
     
-    <span *ngIf="(state$ | async) === 'edit'">
+    <span *ngIf="(state$ | async) === 'editable'">
 
     <div class="card bg-secondary text-white mb-3">
 
@@ -23,8 +23,8 @@
         </div>
 
         <div class="border-top border-gray-500">
-          <div class="btn btn-block btn-secondary rounded-top-0" (click)="startAddingRole()" *ngIf="addRoleState=== 'init'">
-            Add a {{(roleLabel$ | async).sg}}…
+          <div class="btn btn-block btn-secondary rounded-top-0" (click)="startAddingRole()" *ngIf="addRoleState === 'init'">
+            Add a {{(label$ | async).sg}}…
           </div>
 
           <!-- Select existing Roles -->
@@ -33,25 +33,25 @@
 
 
             <div class="card-body" *ngIf="rolesNotInProjectLoading">
-              <i class="fa fa-spinner fa-pulse"></i> Searching for existing {{(roleLabel$ | async).sg}}…
+              <i class="fa fa-spinner fa-pulse"></i> Searching for existing {{(label$ | async).sg}}…
             </div>
 
             <span *ngIf="!rolesNotInProjectLoading">
               <div class="card-body gv-property-section-header">
-                {{rolesInOtherProjects.length}} {{rolesInOtherProjects.length === 1 ? (roleLabel$ | async).sg : (roleLabel$ | async).pl}} found in other
+                {{rolesInOtherProjects.length}} {{rolesInOtherProjects.length === 1 ? (label$ | async).sg : (label$ | async).pl}} found in other
                 projects
               </div>
 
               <div class="card-body" *ngIf="rolesInOtherProjects.length">
-                <div class="gv-label gv-flex-grow-1"> Add an existing {{(roleLabel$ | async).sg}} from below or
+                <div class="gv-label gv-flex-grow-1"> Add an existing {{(label$ | async).sg}} from below or
                   <a href="" class="gv-passive-link" (click)="startCreateNewRole()">create a new name</a>.</div>
               </div>
 
               <div class="card-body" *ngIf="!rolesInOtherProjects.length && !rolesInNoProjectVisible">
                 <div class="gv-label gv-flex-grow-1">
-                  <a href="" class="btn btn-primary gv-passive-link" (click)="startCreateNewRole()">Create a new {{(roleLabel$ | async).sg}}</a>
+                  <a href="" class="btn btn-primary gv-passive-link" (click)="startCreateNewRole()">Create a new {{(label$ | async).sg}}</a>
                   <a href="" class="btn btn-link gv-passive-link" (click)="rolesInNoProjectVisible=true">
-                    Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? (roleLabel$ | async).sg : (roleLabel$ | async).pl}} used by no Projects
+                    Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? (label$ | async).sg : (label$ | async).pl}} used by no Projects
                   </a>
                 </div>
               </div>
@@ -65,7 +65,7 @@
               <div class="card-body pt-0" *ngIf="rolesInNoProject && rolesInOtherProjects.length">
                 <small>
                   <a href="" class="gv-passive-link text-light" (click)="rolesInNoProjectVisible=true" *ngIf="!rolesInNoProjectVisible">
-                    Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? (roleLabel$ | async).sg : (roleLabel$ | async).pl}} used by no Projects.
+                    Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? (label$ | async).sg : (label$ | async).pl}} used by no Projects.
                   </a>
                   <a href="" class="gv-passive-link text-light" (click)="rolesInNoProjectVisible=false" *ngIf="rolesInNoProjectVisible">
                     Hide
@@ -143,7 +143,7 @@
 
       <div class="card-body">
         <button [ngClass]="{disabled:(!isReadyToCreate)}" type="button" class="btn btn-primary" (click)="persistEntitiesToCreate(parentPeIt.pk_entity)">Ok</button>
-        <button type="button" class="btn btn-link" (click)="cancelCreateNewRole()">Cancel</button>
+        <button type="button" class="btn btn-link" (click)="removeRoleSet()">Cancel</button>
       </div>
     </div>
 
@@ -198,7 +198,7 @@
     <button class="btn btn-secondary btn-block text-left rounded-bottom-0" (click)="toggleCardBody()">
       <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
       <span *ngIf="roles && roles.length">{{roles.length}}</span>
-      {{(roleLabel$ | async)?.default}}
+      {{(label$ | async)?.default}}
     </button>
     <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
       <div class="align-self-center">

@@ -25,10 +25,12 @@ import { WithSubStore, ObservableStore, NgRedux, select } from '@angular-redux/s
 import { teEntReducer } from './te-ent.reducer';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { ITeEntState } from './te-ent.model';
-import { IRoleSetListState } from '../role-set-list/role-set-list.model';
+import { IRoleSetListState, IRoleSets } from '../role-set-list/role-set-list.model';
 import { RoleSetListActions } from '../role-set-list/role-set-list-actions';
 import { EditorStates, CollapsedExpanded } from '../../information.models';
 import { TeEntActions } from './te-ent.actions';
+import { IRoleState } from '../role/role.model';
+import { RoleSetListService } from '../../shared/role-set-list.service';
 
 
 @AutoUnsubscribe()
@@ -98,7 +100,6 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
   @select() teEntToEdit$: Observable<InfTemporalEntity>;
   @select() teEntToAdd$: Observable<InfTemporalEntity>;
   @select() teEntToCreate$: Observable<InfTemporalEntity>;
-  @select() label$: Observable<string>;
   @select() toggle$: Observable<CollapsedExpanded>;
   @select() roleSetList$: Observable<IRoleSetListState>;
 
@@ -107,6 +108,12 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
    */
   ontoInfoVisible$: Observable<boolean>
   communityStatsVisible$: Observable<boolean>
+
+
+  /**
+   * Class properties that filled by a store observable
+   */
+  label:string;
 
 
   // Array of children TeEntRoleSetComponent
@@ -119,9 +126,10 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
     classService: ClassService,
     entityEditor: EntityEditorService,
     private ngRedux: NgRedux<ITeEntState>,
-    public actions: TeEntActions
+    public actions: TeEntActions,
+    protected roleSetListService:RoleSetListService
   ) {
-    super(classService, roleService, propertyService, entityEditor)
+    super(classService, roleService, propertyService, entityEditor, roleSetListService)
   }
 
   /**
@@ -141,7 +149,8 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
 
     this.initObservablesOutsideLocalStore();
 
-    this.initSubsciptions();
+    this.initTeEntSubscriptions();
+
   }
 
 
@@ -166,7 +175,16 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
    * init subscriptions to observables in the store
    * subscribe all here, so it is only subscribed once on init and not multiple times on user interactions
    */
-  initSubsciptions() {
+  initTeEntSubscriptions() {
+
+
+    /**
+    * gets the Appellation is for given teEnt roleSets that is for display in this project
+    * @param teEntRoleSets {key: obj<IRoleSetState>}
+    */
+    this.localStore.select<IRoleSets>(['roleSets']).subscribe((teEntRoleSets) => {
+      this.label = this.roleSetListService.getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets);
+    })
 
   }
 
@@ -174,71 +192,71 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
   initState() {
     this.state$.subscribe(state => {
 
-      if (state === 'add-pe-it')
-        this.initTeEntToAdd()
+      // if (state === 'add-pe-it')
+        // this.initTeEntToAdd()
 
-      if (state === 'create')
-        this.initTeEntToCreate()
+      // if (state === 'create')
+      //   this.initTeEntToCreate()
 
-      if (state === 'edit')
-        this.initTeEntToRemove()
+      // if (state === 'editable')
+      //   this.initTeEntToRemove()
     })
   }
 
-  initTeEntToAdd() {
-    Observable.zip(this.teEnt$, this.ngRedux.select<Project>('activeProject'))
-      .subscribe(result => {
-        const teEnt = result["0"], project = result["1"];
+  // initTeEntToAdd() {
+  //   Observable.zip(this.teEnt$, this.ngRedux.select<Project>('activeProject'))
+  //     .subscribe(result => {
+  //       const teEnt = result["0"], project = result["1"];
 
-        let teEntToAdd = new InfTemporalEntity(teEnt);
+  //       let teEntToAdd = new InfTemporalEntity(teEnt);
 
-        // add an epr with is in project true
-        teEntToAdd.entity_version_project_rels = [
-          new InfEntityProjectRel({
-            fk_project: project.pk_project,
-            is_in_project: true,
-            fk_entity_version_concat: teEnt.pk_entity_version_concat
-          })
-        ]
+  //       // add an epr with is in project true
+  //       teEntToAdd.entity_version_project_rels = [
+  //         new InfEntityProjectRel({
+  //           fk_project: project.pk_project,
+  //           is_in_project: true,
+  //           fk_entity_version_concat: teEnt.pk_entity_version_concat
+  //         })
+  //       ]
 
-        this.localStore.dispatch(this.actions.teEntToAddUpdated(teEntToAdd));
+  //       this.localStore.dispatch(this.actions.teEntToAddUpdated(teEntToAdd));
 
-        this.initFkClassAndRoles(teEnt.fk_class, teEnt.te_roles);
-      })
-  }
+  //       // this.initFkClassAndRoles(teEnt.fk_class, teEnt.te_roles);
+  //     })
+  // }
 
-  initTeEntToCreate() {
-    this.fkClass$.subscribe(fkClass => {
-      let teEntToCreate = new InfTemporalEntity();
-      teEntToCreate.fk_class = fkClass;
+  // initTeEntToCreate() {
+  //   this.fkClass$.subscribe(fkClass => {
+  //     let teEntToCreate = new InfTemporalEntity();
+  //     teEntToCreate.fk_class = fkClass;
 
-      this.localStore.dispatch(this.actions.teEntToCreateUpdated(teEntToCreate));
+  //     this.localStore.dispatch(this.actions.teEntToCreateUpdated(teEntToCreate));
 
-      this.initFkClassAndRoles(teEntToCreate.fk_class, teEntToCreate.te_roles);
+  //     // this.initFkClassAndRoles(teEntToCreate.fk_class, teEntToCreate.te_roles);
 
-    })
-  }
+  //   })
+  // }
 
-  initTeEntToRemove() {
-    Observable.zip(this.teEnt$, this.ngRedux.select<Project>('activeProject'))
-      .subscribe(result => {
-        const teEnt = result["0"], project = result["1"];
+  // initTeEntToRemove() {
+  //   Observable.zip(this.teEnt$, this.ngRedux.select<Project>('activeProject'))
+  //     .subscribe(result => {
+  //       const teEnt = result["0"], project = result["1"];
 
-        let teEntToAdd = new InfTemporalEntity(teEnt);
+  //       let teEntToAdd = new InfTemporalEntity(teEnt);
 
-        // add an epr with is in project undefined, so that it can be used to remove
-        teEntToAdd.entity_version_project_rels = [
-          new InfEntityProjectRel({
-            fk_project: project.pk_project,
-            fk_entity_version_concat: teEnt.pk_entity_version_concat
-          })
-        ]
+  //       // add an epr with is in project undefined, so that it can be used to remove
+  //       teEntToAdd.entity_version_project_rels = [
+  //         new InfEntityProjectRel({
+  //           fk_project: project.pk_project,
+  //           fk_entity_version_concat: teEnt.pk_entity_version_concat
+  //         })
+  //       ]
 
-        this.localStore.dispatch(this.actions.teEntToAddUpdated(teEntToAdd));
+  //       this.localStore.dispatch(this.actions.teEntToAddUpdated(teEntToAdd));
 
-        this.initFkClassAndRoles(teEnt.fk_class, teEnt.te_roles);
-      })
-  }
+  //       // this.initFkClassAndRoles(teEnt.fk_class, teEnt.te_roles);
+  //     })
+  // }
 
 
 

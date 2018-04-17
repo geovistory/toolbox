@@ -63,9 +63,9 @@
   </div> -->
 
 
-  <!-- Edit and ViewCommunity States  -->
+  <!-- Editable States  -->
 
-  <div *ngIf="(state$ | async) === 'edit'">
+  <div *ngIf="(state$ | async) === 'editable'">
 
     <!-- Title / Standard Appellations of PeIt -->
 
@@ -73,8 +73,8 @@
       <section class="row">
         <div class="col-md-8">
           <h2>
-            {{stdAppeString}}
-            <small class="text-muted">{{dfhClass?.dfh_standard_label}}</small>
+            {{label}}
+            <small class="text-muted">{{(dfhClass$|async)?.dfh_standard_label}}</small>
           </h2>
         </div>
         <span *ngIf="entityEditor.devView">
@@ -144,14 +144,14 @@
                 <select [(ngModel)]="roleSetToAdd" class="custom-select">
                   <option [ngValue]="null">Select…</option>
 
-                  <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (ingoingPropertiesToAdd$|async)" [ngValue]="roleSetToAdd">
+                  <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (ingoingRoleSets$|async)" [ngValue]="roleSetToAdd">
 
-                    {{roleSetToAdd?.labelSg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
+                    {{roleSetToAdd?.label.sg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
 
                   </option>
-                  <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (outgoingPropertiesToAdd$|async)" [ngValue]="roleSetToAdd">
+                  <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (outgoingRoleSets$|async)" [ngValue]="roleSetToAdd">
 
-                    {{roleSetToAdd?.labelSg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
+                    {{roleSetToAdd?.label.sg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
 
                   </option>
                 </select>

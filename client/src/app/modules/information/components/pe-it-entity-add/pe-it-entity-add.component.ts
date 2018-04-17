@@ -17,6 +17,7 @@ import { IPeItState } from '../../containers/pe-it/pe-it.model';
 import { PeItComponent } from '../../containers/pe-it/pe-it.component';
 import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
+import { RoleSetListService } from '../../shared/role-set-list.service';
 
 
 @Component({
@@ -55,8 +56,9 @@ export class PeItEntityAddComponent extends PeItComponent implements OnInit {
     private modalService: NgbModal,
     private router: Router,
     private route: ActivatedRoute,
+    roleSetListService: RoleSetListService
   ) {
-    super(peItApi, peItService, propertyPipe, activePeItService, slimLoadingBarService, entityEditor, changeDetector, ngRedux, actions, classService, roleService, propertyService)
+    super(peItApi, peItService, propertyPipe, activePeItService, slimLoadingBarService, entityEditor, changeDetector, ngRedux, actions, classService, roleService, propertyService, roleSetListService)
   }
 
   ngOnInit() {

@@ -15,26 +15,26 @@ export const teEntReducer = (lastState: ITeEntState = INITIAL_STATE, action: TeE
   lastState = roleSetListReducer(lastState, action);
 
   switch (action.type) {
-    case TeEntActions.TE_ENT_TO_EDIT_UPDATED:
-      lastState = {
-        ...lastState,
-        teEntToEdit: action.payload.teEntToEdit
-      }
-      break;
+    // case TeEntActions.TE_ENT_TO_EDIT_UPDATED:
+    //   lastState = {
+    //     ...lastState,
+    //     teEntToEdit: action.payload.teEntToEdit
+    //   }
+    //   break;
 
-    case TeEntActions.TE_ENT_TO_ADD_UPDATED:
-      lastState = {
-        ...lastState,
-        teEntToAdd: action.payload.teEntToAdd
-      }
-      break;
+    // case TeEntActions.TE_ENT_TO_ADD_UPDATED:
+    //   lastState = {
+    //     ...lastState,
+    //     teEntToAdd: action.payload.teEntToAdd
+    //   }
+    //   break;
 
-    case TeEntActions.TE_ENT_TO_CREATE_UPDATED:
-      lastState = {
-        ...lastState,
-        teEntToCreate: action.payload.teEntToCreate
-      }
-      break;
+    // case TeEntActions.TE_ENT_TO_CREATE_UPDATED:
+    //   lastState = {
+    //     ...lastState,
+    //     teEntToCreate: action.payload.teEntToCreate
+    //   }
+    //   break;
 
     case TeEntActions.SET_TOGGLE:
       lastState = {
@@ -49,6 +49,13 @@ export const teEntReducer = (lastState: ITeEntState = INITIAL_STATE, action: TeE
         toggle: lastState.toggle === 'expanded' ? 'collapsed' : 'expanded'
       };
       break;
+
+      // case TeEntActions.TE_ENT_LABEL_UPDATED:
+      // lastState = {
+      //   ...lastState,
+      //   label: action.payload.label
+      // };
+      // break;
   }
 
   return lastState;

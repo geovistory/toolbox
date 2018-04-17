@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { DfhPropertyApi, DfhProperty } from 'app/core';
 import { IRoleSetState, RoleSetState } from '../components/role-set/role-set.model';
-import { RoleLabelObj } from '../components/role-set/role-set.component';
+import { RoleSetLabelObj } from '../components/role-set/role-set.component';
 
 interface Label {
   sg?: string;
@@ -198,14 +198,14 @@ export class PropertyService {
   * @param {DfhProperty[]} properties array of properties to Convert
   * @return {IRoleSetState[]} array of IRoleSetState
   */
-  toDirectionAwareProperties(isOutgoing: boolean, properties: DfhProperty[]): IRoleSetState[] {
+  toRoleSets(isOutgoing: boolean, properties: DfhProperty[]): IRoleSetState[] {
     if (!properties) return [];
 
     return properties.map(property => {
       return new RoleSetState({
         isOutgoing: isOutgoing,
         property: property,
-        roleLabel: this.createLabelObject(property, isOutgoing)
+        label: this.createLabelObject(property, isOutgoing)
       })
     });
   }
@@ -216,8 +216,8 @@ export class PropertyService {
    * @param property 
    * @param isOutgoing 
    */
-  createLabelObject(property: DfhProperty, isOutgoing: boolean): RoleLabelObj {
-    let labelObj: RoleLabelObj;
+  createLabelObject(property: DfhProperty, isOutgoing: boolean): RoleSetLabelObj {
+    let labelObj: RoleSetLabelObj;
     if (isOutgoing) {
 
       // TODO return an object containing label.pl and label.sg
@@ -241,7 +241,6 @@ export class PropertyService {
         pl: pl,
         default: property.dfh_domain_instances_max_quantifier === 1 ? sg : pl
       }
-
 
     } else {
       labelObj = undefined;

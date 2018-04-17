@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ActiveProjectService, EntityEditorService, IAppState } from 'app/core';
+import { ActiveProjectService, EntityEditorService, IAppState, InfPersistentItemApi, Project, InfPersistentItem } from 'app/core';
 import { WithSubStore, NgRedux, dispatch, select, ObservableStore } from '@angular-redux/store';
 import { IEntityEditorWrapper, EntityEditorWrapper } from './entity-editor.model';
 import { EntityEditorActions, EntityEditorAction } from './entity-editor.actions';
@@ -9,6 +9,13 @@ import { PeItState, IPeItState } from './../pe-it/pe-it.model';
 import { IAppStateWithInformation } from '../../api/information.model';
 import { entityEditorReducer } from './entity-editor.reducer';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { PeItService } from '../../shared/pe-it.service';
+import { ClassService } from '../../shared/class.service';
+import { RoleSetListService } from '../../shared/role-set-list.service';
+import { EditorStates } from '../../information.models';
+import { indexBy } from 'ramda';
+import { roleSetKey } from '../../components/role-set-list/role-set-list-actions';
+import { StateCreatorService } from '../../shared/state-creator.service';
 
 
 const INITIAL_STATE: IEntityEditorWrapper = {
@@ -41,6 +48,8 @@ export class EntityEditorComponent implements OnInit {
   // Flag to indicate that the activeProject is set
   activeProjectReady: boolean;
 
+  pkProject: number;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private activeProjectService: ActiveProjectService,
@@ -48,6 +57,8 @@ export class EntityEditorComponent implements OnInit {
     private rootStore: NgRedux<IAppState>,
     private ngRedux: NgRedux<IEntityEditorWrapper>,
     private actions: EntityEditorActions,
+    private stateCreator: StateCreatorService
+
   ) {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, entityEditorReducer);
 
@@ -80,20 +91,30 @@ export class EntityEditorComponent implements OnInit {
   ngOnInit() {
     // Initialize the substore of this component
 
+    this.initEditor()
 
-    let wrapper = new EntityEditorWrapper({
-      peItState: new PeItState({
-        pkEntity: this.pkEntity,
-        state: 'edit',
-        selectPropState: 'init'
-      })
-    }); 
 
-    this.localStore.dispatch(this.actions.entityEditorInitialized(wrapper));
 
   }
 
 
+  initEditor() {
+    const state: EditorStates = 'editable';
+
+    const projecSubs = this.ngRedux.select<Project>('activeProject').subscribe(project => {
+      if (project && this.pkProject != project.pk_project) {
+        this.pkProject = project.pk_project;
+
+        this.stateCreator.initializePeItState(this.pkEntity, project.pk_project, state).subscribe(peItState => {
+          let wrapper = new EntityEditorWrapper({
+            peItState: peItState
+          });
+
+          this.localStore.dispatch(this.actions.entityEditorInitialized(wrapper));
+        })
+      }
+    })
+  }
 
 }
 

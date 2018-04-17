@@ -77,6 +77,10 @@ import { RoleSetActions } from './components/role-set/role-set.actions';
 import { RoleActions } from './components/role/role.actions';
 import { RoleSetListActions } from './components/role-set-list/role-set-list-actions';
 import { TeEntActions } from './components/te-ent/te-ent.actions';
+import { RoleSetListService } from './shared/role-set-list.service';
+import { RoleSetService } from './shared/role-set.service';
+import { PeItRoleService } from './shared/pe-it-role.service';
+import { StateCreatorService } from './shared/state-creator.service';
 
 
 @NgModule({
@@ -142,6 +146,7 @@ import { TeEntActions } from './components/te-ent/te-ent.actions';
     KeysPipe
   ],
   providers: [
+    RoleSetListActions,
     PropertyPipe,
     EntityAddModalService,
     UtilitiesService,
@@ -153,14 +158,17 @@ import { TeEntActions } from './components/te-ent/te-ent.actions';
     ValidationService,
     EprService,
     AppellationService,
-    TeEntService,
     ConfigService,
+    RoleSetListService,
+    RoleSetService,
     PeItActions,
     EntityEditorActions,
-    RoleSetListActions,
+    PeItRoleService,
     RoleSetActions,
     RoleActions,
-    TeEntActions
+    TeEntActions,
+    TeEntService,
+    StateCreatorService
   ],
   entryComponents: [
     // EntityAddModalComponent

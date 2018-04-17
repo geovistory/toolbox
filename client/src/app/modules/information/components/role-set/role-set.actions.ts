@@ -3,9 +3,14 @@ import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { IRoleSetState } from './role-set.model';
 import { DfhProperty } from '../../../../core';
-import { RoleLabelObj } from './role-set.component';
+import { RoleSetLabelObj } from './role-set.component';
 import { IRoleState } from '../role/role.model';
 import { CollapsedExpanded } from '../../information.models';
+
+
+export function roleStateKey (roleState: IRoleState) { return roleState.role.pk_entity };
+
+
 
 // replace PiRoleSet with name of component
 
@@ -24,7 +29,7 @@ export class RoleSetActions {
   static readonly CHILD_ROLES_UPDATED = 'CHILD_ROLES_UPDATED';
   // TODO INIT ACTIONS
   static readonly ROLES_SORTED_BY_POPULARITY = 'ROLES_SORTED_BY_POPULARITY';
-  
+
   // TODO
 
 
@@ -35,9 +40,9 @@ export class RoleSetActions {
   static readonly ROLE_READY_TO_CREATE = 'ROLE_READY_TO_CREATE';
   static readonly ROLE_NOT_READY_TO_CREATE = 'ROLE_NOT_READY_TO_CREATE';
   static readonly ENTITIES_TO_CREATE_PERSISTED = 'ENTITIES_TO_CREATE_PERSISTED';
-  
+
   static readonly ADDED_SELECTED_ROLES_TO_PROJECT = 'ADDED_SELECTED_ROLES_TO_PROJECT';
-  
+
   static readonly CANCEL_SELECT_ROLES = 'CANCEL_SELECT_ROLES'; // Maybe not a role set action but a role set list action!
   static readonly PROPERTY_SECTION_REMOVED = 'PROPERTY_SECTION_REMOVED';  // Maybe not a role set action but a role set list action!
 
@@ -45,11 +50,12 @@ export class RoleSetActions {
 
   static readonly TOGGLE = 'TOGGLE';
 
+  static readonly ROLE_SET_REMOVED = 'ROLE_SET_REMOVED';
 
 
   @dispatch()
 
-  propertyLoaded = (property:DfhProperty): RoleSetAction => ({
+  propertyLoaded = (property: DfhProperty): RoleSetAction => ({
     type: RoleSetActions.PROPERTY_LOADED,
     meta: null,
     payload: {
@@ -57,15 +63,15 @@ export class RoleSetActions {
     }
   })
 
-  roleLabelUpdated = (roleLabel:RoleLabelObj): RoleSetAction => ({
+  labelUpdated = (label: RoleSetLabelObj): RoleSetAction => ({
     type: RoleSetActions.ROLE_LABEL_UPDATED,
     meta: null,
     payload: {
-      roleLabel
+      label
     }
   })
 
-  targetPkUpdated = (targetClassPk:number): RoleSetAction => ({
+  targetPkUpdated = (targetClassPk: number): RoleSetAction => ({
     type: RoleSetActions.TARGET_CLASS_PK_UPDATED,
     meta: null,
     payload: {
@@ -73,7 +79,7 @@ export class RoleSetActions {
     }
   })
 
-  childRolesUpdated = (childRoleStates:IRoleState[]) => ({
+  childRolesUpdated = (childRoleStates: IRoleState[]) => ({
     type: RoleSetActions.CHILD_ROLES_UPDATED,
     meta: null,
     payload: {
@@ -82,7 +88,7 @@ export class RoleSetActions {
   })
 
 
-  setToggle = (toggle:CollapsedExpanded) => ({
+  setToggle = (toggle: CollapsedExpanded) => ({
     type: RoleSetActions.SET_TOGGLE,
     meta: null,
     payload: {
@@ -96,5 +102,15 @@ export class RoleSetActions {
     meta: null,
     payload: null
   })
+
+  /**
+* called, when user selected a the kind of property to add
+*/
+  removeRoleSet = (): RoleSetAction => ({
+    type: RoleSetActions.ROLE_SET_REMOVED,
+    meta: null,
+    payload: null
+  })
+
 
 }

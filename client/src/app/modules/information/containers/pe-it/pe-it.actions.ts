@@ -19,6 +19,8 @@ export class PeItActions extends RoleSetListActions {
 
   static readonly PEIT_TO_CREATE_UPDATED = 'PEIT_TO_CREATE_UPDATED';
 
+  static readonly PE_IT_LABEL_UPDATED = 'PE_IT_LABEL_UPDATED';
+
   static readonly COMMUNITY_STATS_VISIBILITY_TOGGLED = 'COMMUNITY_STATS_VISIBILITY_TOGGLED';
 
   static readonly ONTO_INFO_VISIBILITY_TOGGLED = 'ONTO_INFO_VISIBILITY_TOGGLED';
@@ -62,6 +64,14 @@ export class PeItActions extends RoleSetListActions {
     meta: null,
     payload: {
       ontoInfoVisible
+    }
+  })
+
+  peItLabelUpdated = (label: string): PeItAction => ({
+    type: PeItActions.PE_IT_LABEL_UPDATED,
+    meta: null,
+    payload: {
+      label
     }
   })
 

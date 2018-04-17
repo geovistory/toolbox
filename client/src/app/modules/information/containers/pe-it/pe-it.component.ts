@@ -17,7 +17,7 @@ import { EditorStates } from '../../information.models';
 import { PeItActions } from './pe-it.actions';
 import { IPeItState } from './pe-it.model';
 import { AppellationStdBool } from '../../components/role/role.component';
-import { RoleSetListState, IRoleSetListState } from '../../components/role-set-list/role-set-list.model';
+import { RoleSetListState, IRoleSetListState, IRoleSets } from '../../components/role-set-list/role-set-list.model';
 import { RoleSetListComponent } from '../../components/role-set-list/role-set-list.component';
 import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
@@ -25,6 +25,9 @@ import { RoleSetActions } from '../../components/role-set/role-set.actions';
 import { RoleSetListActions } from '../../components/role-set-list/role-set-list-actions';
 import { peItReducer } from './pe-it.reducer';
 import { BehaviorSubject } from 'rxjs';
+import { RoleSetState, IRoleSetState } from '../../components/role-set/role-set.model';
+import { IRoleState } from '../../components/role/role.model';
+import { RoleSetListService } from '../../shared/role-set-list.service';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -52,7 +55,14 @@ export class PeItComponent extends RoleSetListComponent implements OnInit {
   @select() ontoInfoVisible$: Observable<boolean>
   @select() communityStatsVisible$: Observable<boolean>
 
+
   pkEntity: number;
+
+  /**
+   * Class properties that filled by a store observable
+   */
+  label: string;
+
 
   /**
    * Dispatches
@@ -79,8 +89,9 @@ export class PeItComponent extends RoleSetListComponent implements OnInit {
     classService: ClassService,
     roleService: RoleService,
     propertyService: PropertyService,
+    roleSetListService: RoleSetListService
   ) {
-    super(classService, roleService, propertyService, entityEditor)
+    super(classService, roleService, propertyService, entityEditor, roleSetListService)
   }
 
 
@@ -96,29 +107,31 @@ export class PeItComponent extends RoleSetListComponent implements OnInit {
 
   // gets called by base class onInit
   init() {
-    this.state$.subscribe(state => {
-      this.initState(state)
-    })
+    // this.initState();
+    this.initPeItSubscriptions()
   }
 
 
-  initState(state) {
 
-    if (state == "add-pe-it") {
-      this.initPeItToAddPeIt()
-    }
+  initState() {
+    this.state$.subscribe(state => {
 
-    else if (state == "add") {
-      this.initPeItToAdd()
-    }
+      if (state == "add-pe-it") {
+        this.initPeItToAddPeIt()
+      }
 
-    else if (state == "edit") {
-      this.initPeItToEdit()
-    }
+      else if (state == "add") {
+        this.initPeItToAdd()
+      }
 
-    else if (state == "create") {
-      this.initPeItToCreate()
-    }
+      else if (state == "editable") {
+        this.initPeItToEdit()
+      }
+
+      else if (state == "create") {
+        this.initPeItToCreate()
+      }
+    })
   }
 
   initPeItToAdd() {
@@ -143,8 +156,6 @@ export class PeItComponent extends RoleSetListComponent implements OnInit {
       ]
 
       this.peItToAddUpdated(peIt)
-
-      this.initFkClassAndRoles(peIt.fk_class, peIt.pi_roles)
     })
   }
 
@@ -171,15 +182,12 @@ export class PeItComponent extends RoleSetListComponent implements OnInit {
 
       this.peItToAddUpdated(peIt)
 
-      this.initFkClassAndRoles(peIt.fk_class, peIt.pi_roles)
-
     })
   }
 
   initPeItToCreate() {
     this.fkClass$.subscribe(fkClass => {
       if (fkClass) {
-        this.initFkClassAndRoles(fkClass)
 
         let peItToCreate = new InfPersistentItem({
           fk_class: fkClass
@@ -211,12 +219,23 @@ export class PeItComponent extends RoleSetListComponent implements OnInit {
     this.queryRichObjectOfProject().subscribe((peIt) => {
       if (peIt) {
         this.localStore.dispatch(this.actions.peItToEditUpdated(peIt))
-        this.initFkClassAndRoles(peIt.fk_class, peIt.pi_roles)
       }
     })
   }
 
 
+
+  initPeItSubscriptions() {
+
+    /**
+     * gets the Temporal Entity of type AppellationUseForLanguage that is for display for this peIt in this project
+     */
+    this.localStore.select<IRoleSets>(['roleSets']).subscribe((peItRoleSets) => {
+      this.label = this.roleSetListService.getDisplayAppeLabelOfPeItRoleSets(peItRoleSets);
+    })
+
+
+  }
 
 
 
@@ -392,7 +411,7 @@ export class PeItComponent extends RoleSetListComponent implements OnInit {
   */
 
   // whenAppeChange(appeStd: AppellationStdBool) {
-  //   if (appeStd.isStandardInProject) {
+  //   if (appeStd.isDisplayRoleInProject) {
   //     const label = new AppellationLabel(appeStd.appellation.appellation_label);
   //     this.stdAppeString = label.getString();
   //     this.changeDetector.detectChanges()

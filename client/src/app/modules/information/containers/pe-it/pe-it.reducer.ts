@@ -52,6 +52,13 @@ export const peItReducer = (lastState: IPeItState = INITIAL_STATE, action: PeItA
         communityStatsVisible: action.payload.communityStatsVisible,
       }
       break;
+
+    case PeItActions.PE_IT_LABEL_UPDATED:
+    lastState = {
+      ...lastState,
+      label: action.payload.label,
+    }
+    break;
   }
 
   return lastState;

@@ -4,9 +4,9 @@
     [state: {{state}}] [pk: {{role.pk_entity_version_concat}}] [ready: {{isReadyToCreate}}] [commStatsVisible: {{communityStatsVisible}}]
   </span>
 
-  <!-- Component in Edit State -->
+  <!-- Component in Editable State -->
 
-  <div *ngIf="(state$ | async) === 'edit'">
+  <div *ngIf="(state$ | async) === 'editable'">
 
 
     <!-- TeEnt Component (passing the temporal entity) -->
@@ -16,15 +16,15 @@
 
         <!-- UI for standard in project -->
 
-        <div class="gv-standard-in-project" *ngIf="standardInProjectVisible">
+        <div class="gv-standard-in-project">
 
           <!-- If is standard -->
 
-          <i class="fa fa-eye gv-true text-primary" title="Is standard" *ngIf="isStandardInProject"></i>
+          <i class="fa fa-eye gv-true text-primary" title="Is standard" *ngIf="(isDisplayRoleInProject$|async)"></i>
 
           <!-- If not standard -->
 
-          <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="!isStandardInProject" [attr.disabled]="loadingStdChange ? 'disabled' : null"
+          <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="!(isDisplayRoleInProject$|async)" [attr.disabled]="loadingStdChange ? 'disabled' : null"
             (click)="requestStandard()" title="Make standard">
             <i class="fa fa-eye-slash gv-false"></i>
           </button>

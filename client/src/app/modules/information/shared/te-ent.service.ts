@@ -1,10 +1,14 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, Inject, forwardRef } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 import { ExistenceTime } from '../components/existence-time';
 import { InfTemporalEntity, ActiveProjectService, InfRole, DfhProperty, InfTemporalEntityApi, TimePrimitive, InfTimePrimitive, InfEntityProjectRel } from 'app/core';
 import { ConfigService } from './config.service';
 import { PropertyService } from './property.service';
+import { EditorStates } from '../information.models';
+import { BehaviorSubject } from 'rxjs';
+import { ITeEntState, TeEntState } from '../components/te-ent/te-ent.model';
+import { ClassService } from './class.service';
 
 @Injectable()
 export class TeEntService {
@@ -15,8 +19,8 @@ export class TeEntService {
     private activeProject: ActiveProjectService,
     private config: ConfigService,
     private propertyService: PropertyService,
-    private teEntApi: InfTemporalEntityApi
-  ) { }
+    private teEntApi: InfTemporalEntityApi,
+    private classService: ClassService  ) { }
 
   /**
    * Returns an observable that emitts an array of DfhProperty 
@@ -210,7 +214,7 @@ export class TeEntService {
         // Set calendar information for repository view
         else if (role.community_favorite_calendar)
           existenceTime[key].calendar = role.community_favorite_calendar;
-        
+
         // If no calendar information is provided, throw error
         else throw Error('no calendar information provided');
       });
@@ -241,5 +245,7 @@ export class TeEntService {
     return emitter;
 
   }
+
+
 
 }

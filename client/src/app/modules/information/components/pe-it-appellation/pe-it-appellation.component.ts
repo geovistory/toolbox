@@ -60,7 +60,7 @@ export class PeItAppellationComponent implements OnInit {
       this.appellationLabel = new AppellationLabel(this.appellation.appellation_label);
       this.appeChange.emit({
         appellation: this.appellation,
-        isStandardInProject: false
+        isDisplayRoleInProject: false
       })
     }
 
@@ -135,7 +135,7 @@ export class PeItAppellationComponent implements OnInit {
 
       this.appeChange.emit({
         appellation: this.appellation,
-        isStandardInProject: false
+        isDisplayRoleInProject: false
       })
 
     })

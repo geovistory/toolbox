@@ -16,13 +16,15 @@ export type TeEntAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
 export class TeEntActions extends RoleSetListActions {
-  static readonly TE_ENT_TO_EDIT_UPDATED = 'TE_ENT_TO_EDIT_UPDATED';
+  // static readonly TE_ENT_TO_EDIT_UPDATED = 'TE_ENT_TO_EDIT_UPDATED';
 
-  static readonly TE_ENT_TO_ADD_UPDATED = 'TE_ENT_TO_ADD_UPDATED';
+  // static readonly TE_ENT_TO_ADD_UPDATED = 'TE_ENT_TO_ADD_UPDATED';
 
-  static readonly TE_ENT_TO_CREATE_UPDATED = 'TE_ENT_TO_CREATE_UPDATED';
+  // static readonly TE_ENT_TO_CREATE_UPDATED = 'TE_ENT_TO_CREATE_UPDATED';
 
-  static readonly TE_ENT_ROLE_SET_LIST_INITIALIZED = 'TE_ENT_ROLE_SET_LIST_INITIALIZED';
+  // static readonly TE_ENT_ROLE_SET_LIST_INITIALIZED = 'TE_ENT_ROLE_SET_LIST_INITIALIZED';
+
+  // static readonly TE_ENT_LABEL_UPDATED = 'TE_ENT_LABEL_UPDATED';
 
   static readonly SET_TOGGLE = 'SET_TOGGLE';
 
@@ -30,31 +32,31 @@ export class TeEntActions extends RoleSetListActions {
 
   @dispatch()
 
-  teEntToEditUpdated = (teEntToEdit: InfTemporalEntity): TeEntAction => ({
-    type: TeEntActions.TE_ENT_TO_EDIT_UPDATED,
-    meta: null,
-    payload: {
-      teEntToEdit
-    }
-  })
+  // teEntToEditUpdated = (teEntToEdit: InfTemporalEntity): TeEntAction => ({
+  //   type: TeEntActions.TE_ENT_TO_EDIT_UPDATED,
+  //   meta: null,
+  //   payload: {
+  //     teEntToEdit
+  //   }
+  // })
 
-  teEntToAddUpdated = (teEntToAdd: InfTemporalEntity): TeEntAction => ({
-    type: TeEntActions.TE_ENT_TO_ADD_UPDATED,
-    meta: null,
-    payload: {
-      teEntToAdd
-    }
-  })
+  // teEntToAddUpdated = (teEntToAdd: InfTemporalEntity): TeEntAction => ({
+  //   type: TeEntActions.TE_ENT_TO_ADD_UPDATED,
+  //   meta: null,
+  //   payload: {
+  //     teEntToAdd
+  //   }
+  // })
 
-  teEntToCreateUpdated = (teEntToCreate: InfTemporalEntity): TeEntAction => ({
-    type: TeEntActions.TE_ENT_TO_CREATE_UPDATED,
-    meta: null,
-    payload: {
-      teEntToCreate
-    }
-  })
+  // teEntToCreateUpdated = (teEntToCreate: InfTemporalEntity): TeEntAction => ({
+  //   type: TeEntActions.TE_ENT_TO_CREATE_UPDATED,
+  //   meta: null,
+  //   payload: {
+  //     teEntToCreate
+  //   }
+  // })
 
-  setToggle = (toggle: CollapsedExpanded) => ({
+  setToggle = (toggle: CollapsedExpanded): TeEntAction  => ({
     type: TeEntActions.SET_TOGGLE,
     meta: null,
     payload: {
@@ -62,11 +64,18 @@ export class TeEntActions extends RoleSetListActions {
     }
   })
 
-  toggle = () => ({
+  toggle = (): TeEntAction  => ({
     type: TeEntActions.TOGGLE,
     meta: null,
     payload: null
   })
 
+  // teEntLabelUpdated = (label:string): TeEntAction  => ({
+  //   type: TeEntActions.TE_ENT_LABEL_UPDATED,
+  //   meta: null,
+  //   payload: {
+  //     label
+  //   }
+  // })
 
 }

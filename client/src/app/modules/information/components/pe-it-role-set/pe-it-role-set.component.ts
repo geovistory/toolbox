@@ -28,6 +28,10 @@ import { roleSetReducer } from '../role-set/role-set.reducer';
 import { IRoleSetState } from '../role-set/role-set.model';
 import { RoleSetActions } from '../role-set/role-set.actions';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { IPeItState } from '../../containers/pe-it/pe-it.model';
+import { peItReducer } from '../../containers/pe-it/pe-it.reducer';
+import { PeItActions } from '../../containers/pe-it/pe-it.actions';
+import { RoleSetService } from '../../shared/role-set.service';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -89,6 +93,11 @@ export class PeItRoleSetComponent extends RoleSetComponent {
 
 
   /**
+   * Stores to other slices of the store
+   */
+  // parentPeItStore:ObservableStore<IPeItState>
+
+  /**
    * Other store Observables
    */
 
@@ -111,10 +120,12 @@ export class PeItRoleSetComponent extends RoleSetComponent {
     public entityEditor: EntityEditorService,
     changeDetector: ChangeDetectorRef,
     ngRedux: NgRedux<IRoleSetState>,
-    actions: RoleSetActions
-
+    actions: RoleSetActions,
+    private peItRedux: NgRedux<IPeItState>,
+    private peItActions: PeItActions,
+    roleSetService:RoleSetService
   ) {
-    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions)
+    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions, roleSetService)
 
   }
 
@@ -122,6 +133,8 @@ export class PeItRoleSetComponent extends RoleSetComponent {
   init() {
 
     this.initPaths()
+
+    // this.initStores()
 
     this.initObservablesOutsideLocalStore();
 
@@ -135,6 +148,13 @@ export class PeItRoleSetComponent extends RoleSetComponent {
   initPaths() {
     this.parentPeItStatePath = this.parentPath;
   }
+
+  /**
+ * init stores to different slices of the store
+ */
+  // initStores() {
+  // this.parentPeItStore = this.peItRedux.configureSubStore(this.parentPeItStatePath, peItReducer);
+  // }
 
   /**
    * init observables to other slices of the store than the local store
@@ -153,9 +173,6 @@ export class PeItRoleSetComponent extends RoleSetComponent {
     this.ngRedux.select<InfPersistentItem>([...this.parentPeItStatePath, 'peItToEdit']).subscribe(i => this.parentPeIt = i)
     this.ngRedux.select<Project>('activeProject').subscribe(p => this.fkProject = p.pk_project)
   }
-
-
-
 
   /**
   * Called when user click on Add a [*]

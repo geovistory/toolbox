@@ -3,15 +3,19 @@ import { InfPersistentItem, DfhProperty, InfRole } from "app/core";
 import { CollapsedExpanded, EditorStates } from "../../information.models";
 
 import { IPeItState } from "../../containers/pe-it/pe-it.model";
-import { RoleLabelObj } from "./role-set.component";
+import { RoleSetLabelObj } from "./role-set.component";
 import { IRoleState } from "../role/role.model";
+
+export interface IRoleStates {
+    [key: string]: IRoleState;
+}
 
 export type AddRoleState = 'init' | 'selectExisting' | 'createNew';
 
 export interface IRoleSetState {
     property?: DfhProperty;
     isOutgoing?: boolean;
-    fkProperty?: number;
+    // fkProperty?: number;
 
     roles?: InfRole[];
 
@@ -29,17 +33,17 @@ export interface IRoleSetState {
     ontoInfoVisible?: boolean;
     communityStatsVisible?: boolean;
 
-    roleLabel?: RoleLabelObj;
+    label?: RoleSetLabelObj;
     targetClassPk?: number;
 
     //Children
-    childRoleStates?: {}
+    childRoleStates?: IRoleStates
 }
 
 export class RoleSetState implements IRoleSetState {
     property?: DfhProperty;
     isOutgoing?: boolean;
-    fkProperty?: number;
+    // fkProperty?: number;
 
     roles?: InfRole[];
 
@@ -57,11 +61,11 @@ export class RoleSetState implements IRoleSetState {
     ontoInfoVisible?: boolean;
     communityStatsVisible?: boolean;
 
-    roleLabel?: RoleLabelObj;
+    label?: RoleSetLabelObj;
     targetClassPk?: number;
 
     //Children
-    childRoleStates?: {}
+    childRoleStates?: IRoleStates
 
     constructor(data?: IRoleSetState) {
         Object.assign(

@@ -1,6 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, forwardRef, Inject } from '@angular/core';
 import { InfRole, DfhProperty } from 'app/core';
 import { RoleSetState, IRoleSetState } from '../components/role-set/role-set.model';
+import { groupBy, prop } from 'ramda';
+import { BehaviorSubject } from 'rxjs';
+import { IRoleState, RoleState } from '../components/role/role.model';
+import { EditorStates } from '../information.models';
 
 interface Label {
   sg: string;
@@ -20,14 +24,12 @@ export interface DirectedRole {
   role: InfRole;
 }
 
-
 @Injectable()
 export class RoleService {
 
   /**
   * Properties
   */
-
 
 
   constructor() { }
@@ -69,65 +71,40 @@ export class RoleService {
 
 
   /**
-   * create RoleSetStates out of 
-   * - the roles of a PeIti
-   * - the ingoing properties of the PeIt-class
-   * - the outgoing properties of the PeIt-class
-   * - generic options for all RoleSetStates
+   * Adds roles to given role sets and assigns generic options for all RoleSetStates
    * 
    * @param {InfRole[]} roles array of roles a PeIti
-   * @param {Property[]} ingoing array of ingoing properties (depending on context)
-   * @param {Property[]} outgoing array of outgoing properties (depending on context)
-   *
-   * @return {RoleSets[]} Array of RoleSetState, the model of the Gui-Element for RoleSets
+   * @param {RoleSetState[]} ingoingRoleSets array of ingoing properties (depending on context)
+   * @param {RoleSetState[]} outgoingRoleSets array of outgoing properties (depending on context)
+   * @param {RoleSetState} options any other option that should be apllied to all of the roleSets
+   * @return {RoleSetState[]} Array of RoleSetState, the model of the Gui-Element for RoleSets
    */
-  toRoleSetStates(roles: InfRole[], ingoing: DfhProperty[], outgoing: DfhProperty[], options: IRoleSetState = {}): IRoleSetState[] {
+  addRolesToRoleSets(roles: InfRole[], ingoingRoleSets: RoleSetState[], outgoingRoleSets: RoleSetState[], options: IRoleSetState = {}): IRoleSetState[] {
 
     // declare array that will be returned
     const roleSets: IRoleSetState[] = [];
 
-    // create array of ingoing fk_property
-    const fkPropIn: number[] = ingoing.map(p => p.dfh_pk_property)
+    const rolesByFkProp = groupBy(prop('fk_property'), roles)
 
-    // create array of outgoing fk_property
-    const fkPropOut: number[] = outgoing.map(p => p.dfh_pk_property)
-
-    // filter for ingoing Roles
-    const ingoingRoles = roles.filter(role => fkPropIn.includes(role.fk_property))
-
-    // filter for outgoing Roles
-    const outgoingRoles = roles.filter(role => fkPropOut.includes(role.fk_property))
-
-    // group ingoing Roles by Property
-    const ingoingRolesPerProperty = this.getRolesPerProperty(ingoingRoles);
-
-    // group outgoing Roles by Property
-    const outgoingRolesPerProperty = this.getRolesPerProperty(outgoingRoles);
-
-    // create role sets
-    outgoingRolesPerProperty.forEach(rpp => {
-      const roleSet = new RoleSetState(Object.assign(options, {
-        isOutgoing: true,
-        fkProperty: rpp.fkProperty,
-        roles: rpp.roles
+    // enrich role sets with roles
+    ingoingRoleSets.forEach(rs => {
+      const roleSet = new RoleSetState(Object.assign(rs, options, {
+        roles: rolesByFkProp[rs.property.dfh_pk_property]
       }))
-
-      roleSets.push(roleSet);
+      if (roleSet.roles && roleSet.roles.length)
+        roleSets.push(roleSet);
     })
 
-    // create role sets
-    ingoingRolesPerProperty.forEach(rpp => {
-      const roleSet = new RoleSetState(Object.assign(options, {
-        isOutgoing: false,
-        fkProperty: rpp.fkProperty,
-        roles: rpp.roles
+    // enrich role sets with roles
+    outgoingRoleSets.forEach(rs => {
+      const roleSet = new RoleSetState(Object.assign(rs, options, {
+        roles: rolesByFkProp[rs.property.dfh_pk_property]
       }))
-
-      roleSets.push(roleSet);
+      if (roleSet.roles && roleSet.roles.length)
+        roleSets.push(roleSet);
     })
 
     return roleSets;
-
   }
 
 
@@ -160,8 +137,6 @@ export class RoleService {
 
     return rolesByPropertyArr;
   }
-
-
 
 
 }

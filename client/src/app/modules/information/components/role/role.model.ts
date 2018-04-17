@@ -17,7 +17,22 @@ export interface IRoleState {
     roleToCreate?: InfRole;
     roleToAdd?: InfRole;
 
-    isStandardInProject?:boolean;
+    /**
+     * This field flags roles that are used by the project to produce a display label of a range entity (thus normally a Persistent Item). 
+     * It is up to the application logic to create this label. This is usually done by following the path from the Role to the 
+     * TemporalEntity and from there to the Role with is_display_role_for_domain=true to some object 
+     * like an appellationLabel or a date, that can be used to create a display label.
+     */
+    isDisplayRoleForRange?:boolean;
+
+    /**
+     * This field flags roles that are used by the project to produce a display label of a domain entity (thus normally a Temporal Entity).
+     *  It is up to the application logic to create this label. This done by following the path from the Role to the 
+     * range entity like an appellationLabel or a date, that can be used to create a display label.
+     */
+    isDisplayRoleForDomain?:boolean;
+
+
     isStandardRoleToAdd?:boolean;
 
     childTeEnt?:ITeEntState;
@@ -37,7 +52,9 @@ export class RoleState implements IRoleState {
     roleToCreate?: InfRole;
     roleToAdd?: InfRole;
 
-    isStandardInProject?:boolean;
+    isDisplayRoleForRange?:boolean;
+    isDisplayRoleForDomain?:boolean;
+
     isStandardRoleToAdd?:boolean;
 
     childTeEnt? :ITeEntState;

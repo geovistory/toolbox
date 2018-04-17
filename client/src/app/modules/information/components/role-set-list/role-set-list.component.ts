@@ -9,7 +9,7 @@ import {
 } from '@angular/animations';
 
 import { InfRole, InfPersistentItem, DfhProperty, EntityEditorService, DfhClass } from 'app/core';
-import { DirectionAwareProperty, PropertyService } from '../../shared/property.service';
+import { PropertyService } from '../../shared/property.service';
 import { RoleService } from '../../shared/role.service';
 import { EditorStates } from '../../information.models';
 import { IRoleSetState, RoleSetState } from '../role-set/role-set.model';
@@ -19,11 +19,12 @@ import { IRoleSetListState, SelectPropStateType } from '../role-set-list/role-se
 import { Observable } from 'rxjs/Observable';
 import { roleSetListReducer } from './role-set-list-reducer';
 import { ClassService } from '../../shared/class.service';
-import { RoleSetListActions } from './role-set-list-actions';
+import { RoleSetListActions, roleSetKey } from './role-set-list-actions';
 import { IPeItState } from '../../containers/pe-it/pe-it.model';
 import { ITeEntState } from '../te-ent/te-ent.model';
 import { PeItActions } from '../../containers/pe-it/pe-it.actions';
 import { TeEntActions } from '../te-ent/te-ent.actions';
+import { RoleSetListService } from '../../shared/role-set-list.service';
 
 export class RoleSetListComponent implements OnInit {
 
@@ -37,22 +38,23 @@ export class RoleSetListComponent implements OnInit {
   // Since we're observing an array of items, we need to set up a 'trackBy'
   // parameter so Angular doesn't tear down and rebuild the list's DOM every
   // time there's an update.
-  getKey(_, roleSet: IRoleSetState) {
-    return roleSet.fkProperty;
+  getKey(_, item) {
+    return item.key;
   }
 
   @select() state$: Observable<EditorStates>;
   @select() selectPropState$: Observable<SelectPropStateType>;
   @select() fkClass$: Observable<number>;
   @select() dfhClass$: Observable<DfhClass>;
+  @select() label$: Observable<string>;
   @select() pkEntity$: Observable<number>
   @select() roles$: Observable<InfRole[]>
   @select() outgoingProperties$: Observable<DfhProperty[]>
   @select() ingoingProperties$: Observable<DfhProperty[]>
-  @select() ingoingPropertiesToAdd$?: DirectionAwareProperty[];
-  @select() outgoingPropertiesToAdd$?: DirectionAwareProperty[];
+  @select() ingoingRoleSets$?: RoleSetState[];
+  @select() outgoingRoleSets$?: RoleSetState[];
   @select() parentPeIt$: Observable<InfPersistentItem>;
-  @select() propertyToAdd$: Observable<DirectionAwareProperty>; // Poperty that is currently chosen in order to add a role of this kind
+  @select() propertyToAdd$: Observable<RoleSetState>; // Poperty that is currently chosen in order to add a role of this kind
   @select() roleSets$: Observable<{}>;
 
   /**
@@ -66,6 +68,7 @@ export class RoleSetListComponent implements OnInit {
     private roleService: RoleService,
     private propertyService: PropertyService,
     protected entityEditor: EntityEditorService,
+    protected roleSetListService: RoleSetListService,
   ) { }
 
   ngOnInit() {
@@ -73,7 +76,7 @@ export class RoleSetListComponent implements OnInit {
     this.initStore()
 
     // Initialize the children in this class
-    this.initChildren()
+    // this.initChildren() SINGLE_INIT
 
     // Initializes subscriptions
     this.initSubscriptions()
@@ -85,50 +88,27 @@ export class RoleSetListComponent implements OnInit {
 
 
 
-  initChildren() {
+  // initChildren() {
 
-    // Wait for the fkClass to be ready
-    this.fkClass$
-      .subscribe(fkClass => {
-        if (fkClass)
-          Observable.zip(
-            // Generate ingoing and outgoing properties
-            this.classService.getIngoingProperties(fkClass),
-            this.classService.getOutgoingProperties(fkClass),
-            this.roles$,
-            this.state$
-          ).subscribe(result => {
-            const ingoingProperties = result[0];
-            const outgoingProperties = result[1];
-            const roles = result[2];
-            const state = result[3];
+  //   this.roleSetListService.initChildren(this.fkClass$, this.roles$, this.state$).subscribe(result => {
+  //     if (result)
+  //       this.localStore.dispatch(this.actions.roleSetsInitialized(result.roleSetsWithRoles, result.ingoingRoleSets, result.outgoingRoleSets))
 
-            // Generate Direction Aware Properties (they appear in the select/dropdown to add new RoleSet)
-            const ingoingPropertiesToAdd = this.propertyService.toDirectionAwareProperties(false, ingoingProperties)
-            const outgoingPropertiesToAdd = this.propertyService.toDirectionAwareProperties(true, outgoingProperties)
+  //   })
 
-            // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
-            const options: IRoleSetState = { state: state }
-            const roleSetStates = this.roleService.toRoleSetStates(roles, ingoingProperties, outgoingProperties, options)
+  // }
 
-            // Dispatch
-            this.localStore.dispatch(this.actions.roleSetsInitialized(ingoingProperties, outgoingProperties, roleSetStates, ingoingPropertiesToAdd, outgoingPropertiesToAdd))
-
-          })
-      })
-  }
-
-  initSubscriptions() {
-    this.roleSets$.subscribe(rs => 
+  private initSubscriptions() {
+    this.roleSets$.subscribe(rs =>
       this.roleSets = rs
     )
   }
 
-  initFkClassAndRoles(fkClass: number, roles: InfRole[] = []) {
-    this.classService.getByPk(fkClass).subscribe((dfhClass) => {
-      this.localStore.dispatch(this.actions.fkClassAndRolesInitialized(fkClass, dfhClass, roles))
-    })
-  }
+  // initFkClassAndRoles(fkClass: number, roles: InfRole[] = []) {
+  //   this.classService.getByPk(fkClass).subscribe((dfhClass) => {
+  //     this.localStore.dispatch(this.actions.fkClassAndRolesInitialized(fkClass, dfhClass, roles))
+  //   })
+  // }
 
 
   init() { }; // hook for child class
@@ -148,14 +128,13 @@ export class RoleSetListComponent implements OnInit {
   /**
   * called, when user selected a the kind of property to add
   */
-  addRoleSet(propertyToAdd:DirectionAwareProperty) {
+  addRoleSet(propertyToAdd: RoleSetState) {
 
     // add a role set
     const newRoleSetState: RoleSetState = {
-      isOutgoing: propertyToAdd.isOutgoing,
-      property: propertyToAdd.property,
-      fkProperty: propertyToAdd.property.dfh_pk_property,
+      ...propertyToAdd,
       state: 'create',
+      toggle: 'expanded',
       roles: []
     }
 
@@ -246,9 +225,9 @@ export class RoleSetListComponent implements OnInit {
   /**
   * Method to find out if a property section is already added
   */
-  roleSetAdded(directionAwareProp: DirectionAwareProperty): boolean {
-    const roleSet: RoleSetState = this.roleSets[directionAwareProp.property.dfh_pk_property];
-    if (roleSet && roleSet.isOutgoing === directionAwareProp.isOutgoing) return true;
+  roleSetAdded(roleSetToAdd: RoleSetState): boolean {
+    const roleSet: RoleSetState = this.roleSets[roleSetKey(roleSetToAdd)];
+    if (roleSet && roleSet.isOutgoing === roleSetToAdd.isOutgoing) return true;
     else return false
   }
 

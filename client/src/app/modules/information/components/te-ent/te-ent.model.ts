@@ -19,7 +19,7 @@ export interface ITeEntState extends IRoleSetListState{
     state?: EditorStates;
     toggle?: CollapsedExpanded;
 
-    roleSetList?: IRoleSetListState;
+    // roleSetList?: IRoleSetListState;
 
 }
 
@@ -37,7 +37,7 @@ export class TeEntState implements ITeEntState {
     state?: EditorStates;
     toggle?: CollapsedExpanded;
 
-    roleSetList?: IRoleSetListState;
+    // roleSetList?: IRoleSetListState;
 
     constructor(data?: ITeEntState) {
         Object.assign(this, data)
