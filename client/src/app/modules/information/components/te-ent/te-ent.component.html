@@ -4,7 +4,8 @@
     <ng-container *ngTemplateOutlet="dev"></ng-container>
   </span>
 
-  <!-- Editable State -->
+  <!--
+  ************************* Editable State ******************* -->
   <div class="card gv-name" *ngIf="(state$ | async) === 'editable'">
 
 
@@ -67,7 +68,26 @@
   </div>
 
 
-  <!-- Create State -->
+  <!--
+  ************************* Add PeIt State ******************* -->
+  <div class="card gv-name" *ngIf="(state$ | async) === 'add-pe-it'">
+
+    <ng-container *ngTemplateOutlet="header"></ng-container>
+    
+    <div [@slideInOut]="(toggle$|async)">
+
+      <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"></gv-te-ent-role-set>
+
+      <ng-container *ngTemplateOutlet="dating"></ng-container>
+
+    </div>
+
+  </div>
+
+
+
+  <!--
+  ************************* Create State ******************* -->
 
   <div class="card gv-name" *ngIf="(state$ | async) === 'create'">
     <!-- 
@@ -81,13 +101,18 @@
 
   </div>
 
-  <!-- View State -->
 
+
+
+  <!--
+  ************************* View State ******************* -->
   <div class="card gv-name" *ngIf="(state$ | async) === 'view'">
 
     <ng-container *ngTemplateOutlet="header"></ng-container>
 
-    <div [@slideInOut]="cardBodyState">
+    <div [@slideInOut]="(toggle$|async)">
+      <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"></gv-te-ent-role-set>
+
       <!-- 
       <gv-te-ent-role-set *ngFor="let property of roleSets" [propertySection]="property" [isOutgoing]="property.isOutgoing" [roles]="property.roles"
         [fkProperty]="property.fkProperty" [pointTo]="'PeIt'" [parentEntityPk]="parentRole.fk_entity" [parentTeEnt]="teEnt"
@@ -111,7 +136,7 @@
     <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
       <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
       <span *ngIf="label">{{label}}</span>
-      <span *ngIf="!label">{{(dfhClass|async)?.dfh_standard_label}}</span>
+      <span *ngIf="!label">{{(dfhClass$|async)?.dfh_standard_label}}</span>
     </div>
     <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
       <div class="align-self-center">

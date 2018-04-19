@@ -23,6 +23,7 @@ export interface IRoleSetListState {
     
     /** gui */
     state?: EditorStates,
+    label?:string;
   
     
     ingoingRoleSets?: RoleSetState[];
@@ -46,7 +47,8 @@ export class RoleSetListState implements IRoleSetListState {
     
     /** gui */
     state?: EditorStates;
-    
+    label?:string;
+
     ingoingRoleSets?: RoleSetState[];
     outgoingRoleSets?: RoleSetState[];
     selectPropState?: SelectPropStateType; // state of child components for adding or creating properties

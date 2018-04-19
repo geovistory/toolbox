@@ -1,5 +1,5 @@
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
-import { InfPersistentItem, DfhProperty, InfRole } from "app/core";
+import { InfPersistentItem, DfhProperty, InfRole, InfTemporalEntity } from "app/core";
 import { CollapsedExpanded, EditorStates } from "../../information.models";
 
 import { IPeItState } from "../../containers/pe-it/pe-it.model";
@@ -21,24 +21,38 @@ export interface IRoleSetState {
 
     // related to adding roles
     rolesToAdd?: InfRole[];
-    rolesInOtherProjects?: InfRole[];
     rolesInNoProject?: InfRole[];
-    addRoleState?: AddRoleState;
-
-    // related to creating roles
-    rolesToCreate?: InfRole[];
-
+    rolesInNoProjectVisible?: boolean;
+        
     state?: EditorStates;
     toggle?: CollapsedExpanded;
     ontoInfoVisible?: boolean;
     communityStatsVisible?: boolean;
-
+    
     label?: RoleSetLabelObj;
     targetClassPk?: number;
+    
+    //Roles that are added to the project
+    roleStatesInProject?: IRoleStates
+    roleStatesInProjectVisible?: boolean
+    
+    //Roles that are added to at least one other project
+    roleStatesInOtherProjects?:IRoleStates;
+    roleStatesInOtherProjectsVisible?: boolean
+    
+    //Roles that are in no project (that have been removed from at least the project that created it)
+    roleStatesInNoProject?:IRoleStates;
+    roleStatesInNoProjectVisible?: boolean
+    
+    //Roles currently being created
+    roleStatesToCreate?:IRoleState;
+    roleStatesToCreateVisible?: boolean
+    
+    //True during loading of roles in other projects and roles in no project    
+    rolesNotInProjectLoading?:boolean;    
 
-    //Children
-    childRoleStates?: IRoleStates
 }
+
 
 export class RoleSetState implements IRoleSetState {
     property?: DfhProperty;
@@ -49,23 +63,36 @@ export class RoleSetState implements IRoleSetState {
 
     // related to adding roles
     rolesToAdd?: InfRole[];
-    rolesInOtherProjects?: InfRole[];
     rolesInNoProject?: InfRole[];
-    addRoleState?: AddRoleState;
-
-    // related to creating roles
-    rolesToCreate?: InfRole[];
-
+    rolesInNoProjectVisible?: boolean;
+        
     state?: EditorStates;
     toggle?: CollapsedExpanded;
     ontoInfoVisible?: boolean;
     communityStatsVisible?: boolean;
-
+    
     label?: RoleSetLabelObj;
     targetClassPk?: number;
+    
+    //Roles that are added to the project
+    roleStatesInProject?: IRoleStates
+    roleStatesInProjectVisible?: boolean
+    
+    //Roles that are added to at least one other project
+    roleStatesInOtherProjects?:IRoleStates;
+    roleStatesInOtherProjectsVisible?: boolean
+    
+    //Roles that are in no project (that have been removed from at least the project that created it)
+    roleStatesInNoProject?:IRoleStates;
+    roleStatesInNoProjectVisible?: boolean
+    
+    //Roles currently being created
+    roleStatesToCreate?:IRoleState;
+    roleStatesToCreateVisible?: boolean
+    
+    //True during loading of roles in other projects and roles in no project    
+    rolesNotInProjectLoading?:boolean;    
 
-    //Children
-    childRoleStates?: IRoleStates
 
     constructor(data?: IRoleSetState) {
         Object.assign(

@@ -114,6 +114,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
    * Class properties that filled by a store observable
    */
   label:string;
+  parentRoleState:IRoleState;
 
 
   // Array of children TeEntRoleSetComponent
@@ -158,7 +159,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
 * init paths to different slices of the store
 */
   initPaths() {
-    // transforms e.g. ['information', 'entityEditor', 'peItState', 'roleSets', '1', 'childRoleStates', '79060']
+    // transforms e.g. ['information', 'entityEditor', 'peItState', 'roleSets', '1', 'roleStatesInProject', '79060']
     // to ['information', 'entityEditor', 'peItState']
     this.parentPeItStatePath = this.parentPath.slice(0, (this.parentPath.length - 4));
   }
@@ -177,6 +178,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
    */
   initTeEntSubscriptions() {
 
+    this.ngRedux.select<IRoleState>(this.parentPath).subscribe(d => this.parentRoleState = d)
 
     /**
     * gets the Appellation is for given teEnt roleSets that is for display in this project

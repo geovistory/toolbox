@@ -13,11 +13,6 @@ export type PeItAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
 export class PeItActions extends RoleSetListActions {
-  static readonly PEIT_TO_EDIT_UPDATED = 'PEIT_TO_EDIT_UPDATED';
-
-  static readonly PEIT_TO_ADD_UPDATED = 'PEIT_TO_ADD_UPDATED';
-
-  static readonly PEIT_TO_CREATE_UPDATED = 'PEIT_TO_CREATE_UPDATED';
 
   static readonly PE_IT_LABEL_UPDATED = 'PE_IT_LABEL_UPDATED';
 
@@ -27,29 +22,7 @@ export class PeItActions extends RoleSetListActions {
 
   @dispatch()
 
-  peItToEditUpdated = (peItToEdit: InfPersistentItem): PeItAction => ({
-    type: PeItActions.PEIT_TO_EDIT_UPDATED,
-    meta: null,
-    payload: {
-      peItToEdit
-    }
-  })
 
-  peItToAddUpdated = (peItToAdd: InfPersistentItem): PeItAction => ({
-    type: PeItActions.PEIT_TO_ADD_UPDATED,
-    meta: null,
-    payload: {
-      peItToAdd
-    }
-  })
-
-  peItToCreateUpdated = (peItToCreate: InfPersistentItem): PeItAction => ({
-    type: PeItActions.PEIT_TO_CREATE_UPDATED,
-    meta: null,
-    payload: {
-      peItToCreate
-    }
-  })
 
   communityStatsVisibilityToggled = (communityStatsVisible: boolean): PeItAction => ({
     type: PeItActions.COMMUNITY_STATS_VISIBILITY_TOGGLED,

@@ -138,5 +138,18 @@ export class RoleService {
     return rolesByPropertyArr;
   }
 
+  /**
+   * Returns true, if this is the display role for the project
+   * @param isOutgoing 
+   * @param isDisplayRoleForDomain 
+   * @param isDisplayRoleForRange 
+   * @returns boolen
+   */
+  static isDisplayRole(isOutgoing: boolean, isDisplayRoleForDomain: boolean, isDisplayRoleForRange: boolean): boolean {
+    if (isOutgoing === true && isDisplayRoleForDomain) return true;
+    if (isOutgoing === false && isDisplayRoleForRange) return true;
+    return false
+  }
+
 
 }

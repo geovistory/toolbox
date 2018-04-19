@@ -3,6 +3,7 @@ import { Action } from 'redux';
 import { IRoleSetState } from './role-set.model';
 import { RoleSetAction, RoleSetActions, roleStateKey } from './role-set.actions';
 import { indexBy, prop } from 'ramda';
+import { IRoleSets } from '../role-set-list/role-set-list.model';
 
 const INITIAL_STATE: IRoleSetState = {
 
@@ -17,27 +18,6 @@ export const roleSetReducer =
         lastState = {
           ...lastState,
           property: action.payload.property
-        };
-        break;
-
-      case RoleSetActions.ROLE_LABEL_UPDATED:
-        lastState = {
-          ...lastState,
-          label: action.payload.label
-        };
-        break;
-
-      case RoleSetActions.TARGET_CLASS_PK_UPDATED:
-        lastState = {
-          ...lastState,
-          targetClassPk: action.payload.targetClassPk
-        };
-        break;
-
-      case RoleSetActions.CHILD_ROLES_UPDATED:
-        lastState = {
-          ...lastState,
-          childRoleStates: indexBy(roleStateKey, action.payload.childRoleStates)
         };
         break;
 
@@ -58,6 +38,51 @@ export const roleSetReducer =
       case RoleSetActions.ROLE_SET_REMOVED:
         lastState = undefined
         break;
+
+      case RoleSetActions.START_ADDING_ROLE:
+        lastState = {
+          ...lastState,
+          rolesNotInProjectLoading: true,
+        }
+        break;
+
+
+      case RoleSetActions.ALTERNATIVE_ROLES_LOADED:
+        lastState = {
+          ...lastState,
+          rolesNotInProjectLoading: false,
+          roleStatesInOtherProjectsVisible: true,
+          roleStatesInOtherProjects: action.payload.roleStatesInOtherProjects,
+          roleStatesInNoProject: action.payload.roleStatesInNoProject,
+
+        }
+        break;
+
+      case RoleSetActions.START_CREATE_NEW_ROLE:
+        lastState = {
+          ...lastState,
+          roleStatesToCreate: action.payload.roleStatesToCreate
+        }
+        break;
+
+        case RoleSetActions.STOP_CREATE_NEW_ROLE:
+        lastState = {
+          ...lastState,
+          roleStatesInOtherProjectsVisible: false,
+          roleStatesInOtherProjects: action.payload.roleStatesInOtherProjects,
+          roleStatesInNoProject: action.payload.roleStatesInNoProject,
+          roleStatesToCreate: action.payload.roleStatesToCreate
+        }
+        break;
+        
+
+      case RoleSetActions.ROLE_SET_UPDATED:
+        lastState = {
+          ...lastState,
+          roleStatesInProject: action.payload.roleStatesInProject
+        }
+        break;
+
 
     }
 

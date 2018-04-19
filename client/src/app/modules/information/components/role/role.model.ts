@@ -1,7 +1,8 @@
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
-import { InfRole, DfhProperty } from "app/core";
+import { InfRole, DfhProperty, DfhClass } from "app/core";
 import { EditorStates, CollapsedExpanded } from "../../information.models";
 import { ITeEntState } from "../te-ent/te-ent.model";
+import { IPeItState } from "../../containers/pe-it/pe-it.model";
 
 
 export interface IRoleState {
@@ -13,6 +14,13 @@ export interface IRoleState {
     ontoInfoVisible?: boolean,
     communityStatsVisible?: boolean
 
+    /**
+     * The target class of a RoleState. 
+     * Used to select persistent Items or temporal entities of the given dfhClass.
+     * E.g.: When selecting the Father of a Birth, targetDfhClass is used to initialize
+     * the GUI for selecting a person.  
+     */
+    targetDfhClass?: DfhClass;
 
     roleToCreate?: InfRole;
     roleToAdd?: InfRole;
@@ -23,19 +31,33 @@ export interface IRoleState {
      * TemporalEntity and from there to the Role with is_display_role_for_domain=true to some object 
      * like an appellationLabel or a date, that can be used to create a display label.
      */
-    isDisplayRoleForRange?:boolean;
+    isDisplayRoleForRange?: boolean;
 
     /**
      * This field flags roles that are used by the project to produce a display label of a domain entity (thus normally a Temporal Entity).
      *  It is up to the application logic to create this label. This done by following the path from the Role to the 
      * range entity like an appellationLabel or a date, that can be used to create a display label.
      */
-    isDisplayRoleForDomain?:boolean;
+    isDisplayRoleForDomain?: boolean;
+    isStandardRoleToAdd?: boolean;
+
+    /** True while changing the display role (eye) */
+    changingDisplayRole?: boolean;
+
+    /** true if the parent role of the parent teEnt is the same role */
+    isCircular?: boolean;
+
+    isReadyToCreate?: boolean;
+
+    childTeEnt?: ITeEntState;
 
 
-    isStandardRoleToAdd?:boolean;
+    /** For roles pointing to a peIt (used for preview) */
+    peItState?: IPeItState
 
-    childTeEnt?:ITeEntState;
+    // appellation: IAppellationState
+    // language: ILanguageState
+    // existenceTime: IExistenceTimeState
 
 }
 
@@ -49,17 +71,29 @@ export class RoleState implements IRoleState {
     ontoInfoVisible?: boolean;
     communityStatsVisible?: boolean;
 
+    targetDfhClass?: DfhClass;
+
     roleToCreate?: InfRole;
     roleToAdd?: InfRole;
 
-    isDisplayRoleForRange?:boolean;
-    isDisplayRoleForDomain?:boolean;
+    isDisplayRoleForRange?: boolean;
+    isDisplayRoleForDomain?: boolean;
 
-    isStandardRoleToAdd?:boolean;
+    changingDisplayRole?: boolean;
 
-    childTeEnt? :ITeEntState;
+    /** true if the parent role of the parent teEnt is the same role */
+    isCircular?: boolean;
 
-    constructor(data?:IRoleState) {
+    isStandardRoleToAdd?: boolean;
+
+    isReadyToCreate?: boolean;
+
+    childTeEnt?: ITeEntState;
+
+    /** For roles pointing to a peIt (used for preview) */
+    peItState?: IPeItState
+
+    constructor(data?: IRoleState) {
         Object.assign(this, data)
     }
 }

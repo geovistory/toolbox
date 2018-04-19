@@ -18,26 +18,6 @@ export const peItReducer = (lastState: IPeItState = INITIAL_STATE, action: PeItA
   lastState = roleSetListReducer(lastState, action)
 
   switch (action.type) {
-    case PeItActions.PEIT_TO_EDIT_UPDATED:
-      lastState = {
-        ...lastState,
-        peItToEdit: action.payload.peItToEdit
-      }
-      break;
-
-    case PeItActions.PEIT_TO_CREATE_UPDATED:
-      lastState = {
-        ...lastState,
-        peItToCreate: action.payload.peItToCreate
-      }
-      break;
-
-    case PeItActions.PEIT_TO_ADD_UPDATED:
-      lastState = {
-        ...lastState,
-        peItToAdd: action.payload.peItToAdd,
-      }
-      break;
 
     case PeItActions.ONTO_INFO_VISIBILITY_TOGGLED:
       lastState = {

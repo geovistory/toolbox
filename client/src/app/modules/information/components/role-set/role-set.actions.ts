@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
-import { IRoleSetState } from './role-set.model';
-import { DfhProperty } from '../../../../core';
+import { IRoleSetState, IRoleStates } from './role-set.model';
+import { DfhProperty, InfRole } from 'app/core';
 import { RoleSetLabelObj } from './role-set.component';
 import { IRoleState } from '../role/role.model';
 import { CollapsedExpanded } from '../../information.models';
 
 
-export function roleStateKey (roleState: IRoleState) { return roleState.role.pk_entity };
+export function roleStateKey(roleState: IRoleState) { return roleState.role.pk_entity };
 
 
 
@@ -23,10 +23,7 @@ export type RoleSetAction = FluxStandardAction<Payload, MetaData>;
 export class RoleSetActions {
   static readonly PROPERTY_LOADED = 'PROPERTY_LOADED';
 
-  // INIT ACTIONS
-  static readonly ROLE_LABEL_UPDATED = 'ROLE_LABEL_UPDATED';
-  static readonly TARGET_CLASS_PK_UPDATED = 'TARGET_CLASS_PK_UPDATED';
-  static readonly CHILD_ROLES_UPDATED = 'CHILD_ROLES_UPDATED';
+
   // TODO INIT ACTIONS
   static readonly ROLES_SORTED_BY_POPULARITY = 'ROLES_SORTED_BY_POPULARITY';
 
@@ -36,7 +33,13 @@ export class RoleSetActions {
   // change standard label
   static readonly DISPLAY_ROLE_FOR_DOMAIN_UPDATED = 'DISPLAY_ROLE_FOR_DOMAIN_UPDATED';
 
-  static readonly CANCEL_CREATE_NEW_ROLE = 'CANCEL_CREATE_NEW_ROLE';
+  static readonly START_ADDING_ROLE = 'START_ADDING_ROLE';
+  static readonly ALTERNATIVE_ROLES_LOADED = 'ALTERNATIVE_ROLES_LOADED';
+
+  static readonly START_CREATE_NEW_ROLE = 'START_CREATE_NEW_ROLE';
+  static readonly STOP_CREATE_NEW_ROLE = 'STOP_CREATE_NEW_ROLE';
+
+  static readonly ROLE_SET_UPDATED = 'ROLE_SET_UPDATED';
   static readonly ROLE_READY_TO_CREATE = 'ROLE_READY_TO_CREATE';
   static readonly ROLE_NOT_READY_TO_CREATE = 'ROLE_NOT_READY_TO_CREATE';
   static readonly ENTITIES_TO_CREATE_PERSISTED = 'ENTITIES_TO_CREATE_PERSISTED';
@@ -52,6 +55,9 @@ export class RoleSetActions {
 
   static readonly ROLE_SET_REMOVED = 'ROLE_SET_REMOVED';
 
+  static readonly DISPLAY_ROLE_CHANGED = 'DISPLAY_ROLE_CHANGED';
+
+
 
   @dispatch()
 
@@ -60,30 +66,6 @@ export class RoleSetActions {
     meta: null,
     payload: {
       property
-    }
-  })
-
-  labelUpdated = (label: RoleSetLabelObj): RoleSetAction => ({
-    type: RoleSetActions.ROLE_LABEL_UPDATED,
-    meta: null,
-    payload: {
-      label
-    }
-  })
-
-  targetPkUpdated = (targetClassPk: number): RoleSetAction => ({
-    type: RoleSetActions.TARGET_CLASS_PK_UPDATED,
-    meta: null,
-    payload: {
-      targetClassPk
-    }
-  })
-
-  childRolesUpdated = (childRoleStates: IRoleState[]) => ({
-    type: RoleSetActions.CHILD_ROLES_UPDATED,
-    meta: null,
-    payload: {
-      childRoleStates
     }
   })
 
@@ -113,4 +95,46 @@ export class RoleSetActions {
   })
 
 
+  startAddingRole = (): RoleSetAction => ({
+    type: RoleSetActions.START_ADDING_ROLE,
+    meta: null,
+    payload: null
+  })
+
+  alternativeRolesLoaded = (roleStatesInOtherProjects: IRoleStates, roleStatesInNoProject: IRoleStates): RoleSetAction => ({
+    type: RoleSetActions.ALTERNATIVE_ROLES_LOADED,
+    meta: null,
+    payload: {
+      roleStatesInOtherProjects,
+      roleStatesInNoProject
+    }
+  })
+
+  startCreateNewRole = (roleStatesToCreate:IRoleStates): RoleSetAction => ({
+    type: RoleSetActions.START_CREATE_NEW_ROLE,
+    meta: null,
+    payload: {
+      roleStatesToCreate
+    }
+  })
+
+
+  stopCreateNewRole = (): RoleSetAction => ({
+    type: RoleSetActions.STOP_CREATE_NEW_ROLE,
+    meta: null,
+    payload: {
+      roleStatesInOtherProjects: undefined,
+      roleStatesInNoProject: undefined,
+      roleStatesToCreate: undefined
+    }
+  })
+
+
+  roleSetUpdated= (roleStatesInProject:IRoleStates): RoleSetAction => ({
+    type: RoleSetActions.ROLE_SET_UPDATED,
+    meta: null,
+    payload: {
+      roleStatesInProject
+    }
+  })
 }

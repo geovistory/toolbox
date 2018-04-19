@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ActiveProjectService, EntityEditorService, IAppState, InfPersistentItemApi, Project, InfPersistentItem } from 'app/core';
 import { WithSubStore, NgRedux, dispatch, select, ObservableStore } from '@angular-redux/store';
@@ -28,7 +28,7 @@ const INITIAL_STATE: IEntityEditorWrapper = {
   templateUrl: './entity.editor.component.html',
   styleUrls: ['./entity.editor.component.scss'],
 })
-export class EntityEditorComponent implements OnInit {
+export class EntityEditorComponent implements OnInit, OnDestroy {
 
   readonly basePath = ['information', 'entityEditor']
   getBasePath = () => this.basePath
@@ -45,8 +45,8 @@ export class EntityEditorComponent implements OnInit {
   // State that will be passed to the included PeItComponent on init
   peItState: string;
 
-  // Flag to indicate that the activeProject is set
-  activeProjectReady: boolean;
+  // Flag to indicate that the editor is initialized
+  initialized: boolean;
 
   pkProject: number;
 
@@ -62,20 +62,8 @@ export class EntityEditorComponent implements OnInit {
   ) {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, entityEditorReducer);
 
-
-    // wait for the project to be set
-    this.activeProjectService.onProjectChange().subscribe(project => {
-      this.activeProjectReady = true;
-    })
-
     // trigger the activation of the project
     this.activeProjectService.setActiveProject(this.activatedRoute.snapshot.parent.params['id']);
-
-    //get pkEntity from url
-    this.activatedRoute.params.subscribe(params => {
-      this.pkEntity = params['id'];
-    })
-
 
   }
 
@@ -93,17 +81,32 @@ export class EntityEditorComponent implements OnInit {
 
     this.initEditor()
 
-
-
   }
 
+  ngOnDestroy(){
+    this.destroyEditor()
+  }
 
   initEditor() {
     const state: EditorStates = 'editable';
 
-    const projecSubs = this.ngRedux.select<Project>('activeProject').subscribe(project => {
-      if (project && this.pkProject != project.pk_project) {
+    Observable.combineLatest(
+      this.ngRedux.select<Project>('activeProject'),
+      this.activatedRoute.params
+    ).subscribe(result => {
+      const project = result[0]
+      const params = result[1]
+      if (
+        project && params && params['id'] && 
+        (
+          this.pkProject != project.pk_project ||
+          params['id'] && this.pkEntity != params['id']
+        )
+      ) {
         this.pkProject = project.pk_project;
+
+        //get pkEntity from url
+        this.pkEntity = params['id'];
 
         this.stateCreator.initializePeItState(this.pkEntity, project.pk_project, state).subscribe(peItState => {
           let wrapper = new EntityEditorWrapper({
@@ -111,11 +114,17 @@ export class EntityEditorComponent implements OnInit {
           });
 
           this.localStore.dispatch(this.actions.entityEditorInitialized(wrapper));
+          this.initialized = true;
         })
       }
     })
   }
 
+
+  destroyEditor(){
+    this.localStore.dispatch(this.actions.entityEditorDestroyed());
+
+  }
 }
 
 

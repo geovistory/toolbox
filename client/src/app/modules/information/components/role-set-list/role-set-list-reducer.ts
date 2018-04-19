@@ -16,14 +16,13 @@ export const roleSetListReducer =
   (lastState: IRoleSetListState = INITIAL_STATE, action: RoleSetListAction): IRoleSetListState => {
 
     switch (action.type) {
-      // case RoleSetListActions.ROLE_SETS_INITIALIZED:
-      //   lastState = {
-      //     ...lastState,
-      //     roleSets: action.payload.roleSets,
-      //     ingoingRoleSets: action.payload.ingoingRoleSets,
-      //     outgoingRoleSets: action.payload.outgoingRoleSets
-      //   }
-      //   break;
+
+      case RoleSetListActions.ROLE_SET_LIST_DISPLAY_LABEL_UPDATED:
+        lastState = {
+          ...lastState,
+          label: action.payload.label
+        }
+        break;
 
       case RoleSetListActions.START_SELECT_PROPERTY:
         lastState = {

@@ -4,8 +4,8 @@
   </span>
   <!--
     ************************* Editable State ************************* -->
-    
-    <span *ngIf="(state$ | async) === 'editable'">
+
+  <span *ngIf="(state$ | async) === 'editable'">
 
     <div class="card bg-secondary text-white mb-3">
 
@@ -16,10 +16,9 @@
         <!-- The roles that are added -->
 
         <div class="card-body">
-          <gv-pe-it-role *ngFor="let entry of (childRoleStates$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
-           (appeChange)="emitAppeChange($event)"
-            (onRequestStandard)="changeStandardRole($event)" (readyToAdd)="onRoleReadyToAdd($event)" (roleRemoved)="onRoleRemoved($event)"
-            ></gv-pe-it-role>
+          <gv-pe-it-role *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
+            (appeChange)="emitAppeChange($event)" (onRequestStandard)="changeStandardRole($event)" (readyToAdd)="onRoleReadyToAdd($event)"
+            (roleRemoved)="onRoleRemoved($event)"></gv-pe-it-role>
         </div>
 
         <div class="border-top border-gray-500">
@@ -38,8 +37,8 @@
 
             <span *ngIf="!rolesNotInProjectLoading">
               <div class="card-body gv-property-section-header">
-                {{rolesInOtherProjects.length}} {{rolesInOtherProjects.length === 1 ? (label$ | async).sg : (label$ | async).pl}} found in other
-                projects
+                {{rolesInOtherProjects.length}} {{rolesInOtherProjects.length === 1 ? (label$ | async).sg : (label$ | async).pl}} found in
+                other projects
               </div>
 
               <div class="card-body" *ngIf="rolesInOtherProjects.length">
@@ -51,7 +50,8 @@
                 <div class="gv-label gv-flex-grow-1">
                   <a href="" class="btn btn-primary gv-passive-link" (click)="startCreateNewRole()">Create a new {{(label$ | async).sg}}</a>
                   <a href="" class="btn btn-link gv-passive-link" (click)="rolesInNoProjectVisible=true">
-                    Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? (label$ | async).sg : (label$ | async).pl}} used by no Projects
+                    Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? (label$ | async).sg : (label$ | async).pl}} used by
+                    no Projects
                   </a>
                 </div>
               </div>
@@ -65,7 +65,8 @@
               <div class="card-body pt-0" *ngIf="rolesInNoProject && rolesInOtherProjects.length">
                 <small>
                   <a href="" class="gv-passive-link text-light" (click)="rolesInNoProjectVisible=true" *ngIf="!rolesInNoProjectVisible">
-                    Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? (label$ | async).sg : (label$ | async).pl}} used by no Projects.
+                    Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? (label$ | async).sg : (label$ | async).pl}} used by
+                    no Projects.
                   </a>
                   <a href="" class="gv-passive-link text-light" (click)="rolesInNoProjectVisible=false" *ngIf="rolesInNoProjectVisible">
                     Hide
@@ -92,7 +93,7 @@
 
           <!-- Create a new Role -->
           <div *ngIf="addRoleState=== 'createNew'">
-<!-- 
+            <!-- 
             <gv-pe-it-role [role]="roleToCreate" [pointTo]="'TeEnt'" [pkTargetClass]="pkTargetClass" [fkProperty]="fkProperty" [roleState]="'create'"
               (roleCreated)="onRoleCreated($event)" (roleCreationCanceled)="onRoleCreationCanceled()"></gv-pe-it-role> -->
 
@@ -110,13 +111,12 @@
 
   <span *ngIf="(state$ | async) === 'add-pe-it'">
     <div class="card bg-secondary text-white mb-3">
-
       <ng-container *ngTemplateOutlet="header"></ng-container>
-      <div class="card-body">
-        <div *ngFor="let role of roles">
-          <!-- <gv-pe-it-role [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing" [pointTo]="pointTo" [roleState]="propState"
-            [isStandardRoleToAdd]="(role === mostPopularRole)" (readyToAdd)="onRoleReadyToAdd($event)" (appeChange)="emitAppeChange($event)"
-            (onRequestStandard)="changeStandardRole($event)"></gv-pe-it-role> -->
+      <div [@slideInOut]="(toggle$|async)">
+        <div class="card-body">
+          <gv-pe-it-role *ngFor="let entry of (roleStatesInOtherProjects$ | async) | keys; trackBy:getKey" [parentPath]="basePath"
+            [index]="entry.key" intermediatePathSegment="roleStatesInOtherProjects" (appeChange)="emitAppeChange($event)" (onRequestStandard)="changeStandardRole($event)"
+            (readyToAdd)="onRoleReadyToAdd($event)" (roleRemoved)="onRoleRemoved($event)"></gv-pe-it-role>
         </div>
       </div>
     </div>
@@ -132,13 +132,14 @@
 
       <ng-container *ngTemplateOutlet="header"></ng-container>
 
-      <div class="card-body text-white">
+      <!-- <div class="card-body text-white">
         Please fill all fields below and click "Ok".
-      </div>
+      </div> -->
 
       <div class="card-body">
-        <!-- <gv-pe-it-role [role]="roleToCreate" [pointTo]="'TeEnt'" [pkTargetClass]="pkTargetClass" [fkProperty]="fkProperty" [roleState]="'create'"
-          (readyToCreate)="roleReadyToCreate($event)" (notReadyToCreate)="roleNotReadyToCreate()"></gv-pe-it-role> -->
+        <gv-pe-it-role *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
+          intermediatePathSegment="roleStatesInProject" (appeChange)="emitAppeChange($event)" (readyToAdd)="onRoleReadyToAdd($event)"
+          (roleRemoved)="onRoleRemoved($event)"></gv-pe-it-role>
       </div>
 
       <div class="card-body">
@@ -154,14 +155,17 @@
   <!--
   ************************* Create PeIt State ******************* -->
 
-  <span *ngIf="(state$ | async) === 'create-pe-it'">
-
+  <span *ngIf="(state$ | async) === 'create'">
     <div class="card bg-secondary text-white mb-3">
-      <div class="card-body">
 
-        <!-- <gv-pe-it-role [role]="roleToCreate" [pointTo]="'TeEnt'" [pkTargetClass]="pkTargetClass" [fkProperty]="fkProperty" [roleState]="'create-pe-it'"
-          (readyToCreate)="roleReadyToCreate($event)" (notReadyToCreate)="roleNotReadyToCreate()"></gv-pe-it-role> -->
+      <ng-container *ngTemplateOutlet="header"></ng-container>
+
+      <div class="card-body">
+        <gv-pe-it-role *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
+          intermediatePathSegment="roleStatesInProject" (appeChange)="emitAppeChange($event)" (readyToAdd)="onRoleReadyToAdd($event)"
+          (roleRemoved)="onRoleRemoved($event)"></gv-pe-it-role>
       </div>
+
     </div>
 
   </span>
@@ -175,19 +179,15 @@
 
       <ng-container *ngTemplateOutlet="header"></ng-container>
 
-      <div [@slideInOut]="cardState">
+      <div [@slideInOut]="(toggle$|async)">
         <div class="card-body">
-          <div *ngFor="let role of roles">
-            <!-- <gv-pe-it-role [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing" [pointTo]="pointTo" [communityStatsVisible]="communityStatsVisible"
-              [ontoInfoVisible]="ontoInfoVisible" [roleState]="propState" (appeChange)="emitAppeChange($event)"></gv-pe-it-role> -->
-          </div>
+          <gv-pe-it-role *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
+            (appeChange)="emitAppeChange($event)" (onRequestStandard)="changeStandardRole($event)" (readyToAdd)="onRoleReadyToAdd($event)"
+            (roleRemoved)="onRoleRemoved($event)"></gv-pe-it-role>
         </div>
       </div>
     </div>
-
   </span>
-
-
 </div>
 
 

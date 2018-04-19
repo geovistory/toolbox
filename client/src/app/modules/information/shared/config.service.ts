@@ -19,8 +19,17 @@ export class ConfigService {
     'p82b': 153
   };
 
-  // dfh_pk_property used to connect an appellation with an appellation use
+  // dfh_pk_property used to connect an appellation use with an entity
+  readonly PROPERTY_PK_R63_NAMES = 1;
+  
+  // dfh_pk_property used to connect an appellation use with an appellation
   readonly PROPERTY_PK_R64_USED_NAME = 2;
 
 
+
+  // dfh_pk_class of appellation use
+  readonly CLASS_PK_APPELLATION_USE = 3;
+
+  // dfh_pk_class of appellation
+  readonly CLASS_PK_APPELLATION = 2;
 }

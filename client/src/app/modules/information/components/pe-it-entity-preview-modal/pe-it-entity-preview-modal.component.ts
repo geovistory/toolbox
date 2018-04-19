@@ -11,8 +11,7 @@ import { InfPersistentItem, InfPersistentItemApi, ActiveProjectService } from 'a
 })
 export class PeItEntityPreviewModalComponent implements OnInit {
 
-  @Input() stdAppe: string;
-  @Input() pkEntity: number;
+  @Input() parentPath: string[];
   @Input() isInProject:boolean;
 
   isReadyToAdd: boolean;

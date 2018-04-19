@@ -62,19 +62,19 @@ export class PeItComponent extends RoleSetListComponent implements OnInit {
    * Class properties that filled by a store observable
    */
   label: string;
-
+  peItState: IPeItState;
 
   /**
    * Dispatches
    */
 
-  @dispatch() peItToAddUpdated = (peIt) => {
-    return this.actions.peItToAddUpdated(peIt)
-  };
+  // @dispatch() peItToAddUpdated = (peIt) => {
+  //   return this.actions.peItToAddUpdated(peIt)
+  // };
 
-  @dispatch() peItToCreateUpdated = (peIt) => {
-    return this.actions.peItToCreateUpdated(peIt)
-  };
+  // @dispatch() peItToCreateUpdated = (peIt) => {
+  //   return this.actions.peItToCreateUpdated(peIt)
+  // };
 
   constructor(
     private peItApi: InfPersistentItemApi,
@@ -113,125 +113,128 @@ export class PeItComponent extends RoleSetListComponent implements OnInit {
 
 
 
-  initState() {
-    this.state$.subscribe(state => {
+  // initState() {
+  //   this.state$.subscribe(state => {
 
-      if (state == "add-pe-it") {
-        this.initPeItToAddPeIt()
-      }
+  //     if (state == "add-pe-it") {
+  //       this.initPeItToAddPeIt()
+  //     }
 
-      else if (state == "add") {
-        this.initPeItToAdd()
-      }
+  //     else if (state == "add") {
+  //       this.initPeItToAdd()
+  //     }
 
-      else if (state == "editable") {
-        this.initPeItToEdit()
-      }
+  //     else if (state == "editable") {
+  //       this.initPeItToEdit()
+  //     }
 
-      else if (state == "create") {
-        this.initPeItToCreate()
-      }
-    })
-  }
+  //     else if (state == "create") {
+  //       this.initPeItToCreate()
+  //     }
+  //   })
+  // }
 
-  initPeItToAdd() {
-    Observable.zip(
-      // Query the peIt and set the peIt by a call to the Api
-      this.queryRichObjectOfRepo(),
-      this.ngRedux.select<Project>('activeProject')
-    ).subscribe(result => {
+  // initPeItToAdd() {
+  //   Observable.zip(
+  //     // Query the peIt and set the peIt by a call to the Api
+  //     this.queryRichObjectOfRepo(),
+  //     this.ngRedux.select<Project>('activeProject')
+  //   ).subscribe(result => {
 
-      const peIt = result["0"], project = result["1"];
+  //     const peIt = result["0"], project = result["1"];
 
-      // make a copy
-      let peItToAdd = new InfPersistentItem(peIt);
+  //     // make a copy
+  //     let peItToAdd = new InfPersistentItem(peIt);
 
-      // add an epr
-      peItToAdd.entity_version_project_rels = [
-        new InfEntityProjectRel({
-          fk_project: project.pk_project,
-          is_in_project: false,
-          fk_entity_version_concat: peIt.pk_entity_version_concat
-        })
-      ]
+  //     // add an epr
+  //     peItToAdd.entity_version_project_rels = [
+  //       new InfEntityProjectRel({
+  //         fk_project: project.pk_project,
+  //         is_in_project: false,
+  //         fk_entity_version_concat: peIt.pk_entity_version_concat
+  //       })
+  //     ]
 
-      this.peItToAddUpdated(peIt)
-    })
-  }
+  //     this.peItToAddUpdated(peIt)
+  //   })
+  // }
 
-  initPeItToAddPeIt() {
-    Observable.zip(
-      // Query the peIt and set the peIt by a call to the Api
-      this.queryRichObjectOfRepo(),
-      this.ngRedux.select<Project>('activeProject')
-    ).subscribe(result => {
+  // initPeItToAddPeIt() {
+  //   Observable.zip(
+  //     // Query the peIt and set the peIt by a call to the Api
+  //     this.queryRichObjectOfRepo(),
+  //     this.ngRedux.select<Project>('activeProject')
+  //   ).subscribe(result => {
 
-      const peIt = result["0"], project = result["1"];
+  //     const peIt = result["0"], project = result["1"];
 
-      // make a copy
-      let peItToAdd = new InfPersistentItem(peIt);
+  //     // make a copy
+  //     let peItToAdd = new InfPersistentItem(peIt);
 
-      // add an epr
-      peItToAdd.entity_version_project_rels = [
-        new InfEntityProjectRel({
-          fk_project: project.pk_project,
-          is_in_project: true,
-          fk_entity_version_concat: peIt.pk_entity_version_concat
-        })
-      ]
+  //     // add an epr
+  //     peItToAdd.entity_version_project_rels = [
+  //       new InfEntityProjectRel({
+  //         fk_project: project.pk_project,
+  //         is_in_project: true,
+  //         fk_entity_version_concat: peIt.pk_entity_version_concat
+  //       })
+  //     ]
 
-      this.peItToAddUpdated(peIt)
+  //     this.peItToAddUpdated(peIt)
 
-    })
-  }
+  //   })
+  // }
 
-  initPeItToCreate() {
-    this.fkClass$.subscribe(fkClass => {
-      if (fkClass) {
+  // initPeItToCreate() {
+  //   this.fkClass$.subscribe(fkClass => {
+  //     if (fkClass) {
 
-        let peItToCreate = new InfPersistentItem({
-          fk_class: fkClass
-        });
+  //       let peItToCreate = new InfPersistentItem({
+  //         fk_class: fkClass
+  //       });
 
-        this.classService.getByPk(fkClass).subscribe(cla => {
-          peItToCreate.dfh_class = cla;
-          this.peItToCreateUpdated(peItToCreate)
-        })
+  //       this.classService.getByPk(fkClass).subscribe(cla => {
+  //         peItToCreate.dfh_class = cla;
+  //         this.peItToCreateUpdated(peItToCreate)
+  //       })
 
-        throw new Error('implentation for automatically adding a roleSet on create')
+  //       throw new Error('implentation for automatically adding a roleSet on create')
 
 
-        //TODO find smarter choice of the default property to add on create
-        //  this.in$.subscribe(
-        //    idaps=>{
+  //       //TODO find smarter choice of the default property to add on create
+  //       //  this.in$.subscribe(
+  //       //    idaps=>{
 
-        //     idaps.filter(odap => {
-        //       return odap.property.dfh_pk_property === 1 //'R63'
-        //     })[0]  
-        //    }
-        //  )
+  //       //     idaps.filter(odap => {
+  //       //       return odap.property.dfh_pk_property === 1 //'R63'
+  //       //     })[0]  
+  //       //    }
+  //       //  )
 
-      }
-    })
-  }
+  //     }
+  //   })
+  // }
 
-  initPeItToEdit() {
-    this.queryRichObjectOfProject().subscribe((peIt) => {
-      if (peIt) {
-        this.localStore.dispatch(this.actions.peItToEditUpdated(peIt))
-      }
-    })
-  }
+  // initPeItToEdit() {
+  //   this.queryRichObjectOfProject().subscribe((peIt) => {
+  //     if (peIt) {
+  //       this.localStore.dispatch(this.actions.peItToEditUpdated(peIt))
+  //     }
+  //   })
+  // }
 
 
 
   initPeItSubscriptions() {
+    this.localStore.select<IPeItState>('').subscribe(d => this.peItState = d)
 
     /**
      * gets the Temporal Entity of type AppellationUseForLanguage that is for display for this peIt in this project
      */
-    this.localStore.select<IRoleSets>(['roleSets']).subscribe((peItRoleSets) => {
+    this.localStore.select<IRoleSets>('roleSets').subscribe((peItRoleSets) => {
       this.label = this.roleSetListService.getDisplayAppeLabelOfPeItRoleSets(peItRoleSets);
+      // if (this.label)
+      //   this.localStore.dispatch(this.actions.roleSetsListDisplayLabelUpdated(this.label))
     })
 
 

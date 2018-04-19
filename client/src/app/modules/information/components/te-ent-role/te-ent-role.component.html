@@ -4,25 +4,29 @@
     [state: {{(state$|async)}}] [pk: {{role.pk_entity_version_concat}}] [ready: {{isReadyToCreate}}] [commStatsVisible: {{communityStatsVisible}}]
   </span>
 
-  <!-- Component in Create State -->
+  <!--
+  ************************* Create State ************************* -->
+
 
   <div *ngIf="(state$|async) === 'create'">
 
-    <!-- <div class="card-body">
-    Please fill all fields below and click "Ok".
-  </div> -->
+    <div *ngIf="showEntityUI && (targetDfhClass$|async)" class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
+      <gv-pe-it-entity-preview [parentPath]="basePath"></gv-pe-it-entity-preview>
+      <gv-pe-it-entity-add *ngIf="!(isReadyToCreate$|async)" [dfhClass]="(targetDfhClass$|async)" (selected)="pkEntitySelected($event)"></gv-pe-it-entity-add>
+    </div>
 
-    <!-- <gv-pe-it [peItState]="'create'" [fkClass]="pkTargetClass" [childOfTeEnt]="true" (readyToCreate)="peItReadyToCreate($event)"
-      (notReadyToCreate)="peItNotReadyToCreate()"></gv-pe-it> -->
 
     <div class="card-body">
-      <button [ngClass]="{disabled:(!isReadyToCreate)}" type="button" class="btn btn-primary" (click)="createRole()">Ok</button>
+      <button [ngClass]="{disabled:(!isReadyToCreate$|async)}" type="button" class="btn btn-primary" (click)="createRole()">Ok</button>
       <button type="button" class="btn btn-link" (click)="cancelCreateRole()">Cancel</button>
     </div>
 
   </div>
 
-  <!-- Component in Create TeEnt State -->
+
+
+  <!--
+  ************************* Create TeEnt State ************************* -->
 
   <div *ngIf="(state$|async) === 'create-te-ent'">
 
@@ -35,7 +39,8 @@
 
   </div>
 
-  <!-- Component in Add State -->
+  <!--
+  ************************* Add State ************************* -->
 
   <div *ngIf="(state$|async)=='add'">
 
@@ -67,7 +72,12 @@
 
   </div>
 
+  <!--
+  ************************* Add PeIt State ************************* -->
+
   <div class="d-flex flex-row" *ngIf="(state$|async) === 'add-pe-it'">
+
+    <ng-container *ngTemplateOutlet="object"></ng-container>
 
     <!-- include component PeIt (passing the PeIt) -->
     <!-- <gv-pe-it class="gv-flex-grow-1" [peItState]="(state$|async)" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
@@ -94,7 +104,8 @@
   </div>
 
 
-  <!-- Editable State -->
+  <!--
+  ************************* Edit State ************************* -->
 
 
   <div *ngIf="(state$|async) === 'edit'">
@@ -134,7 +145,9 @@
   </div>
 
 
-  <!-- Component in Edit State -->
+
+  <!--
+  ************************* Editable State ************************* -->
 
 
   <div class="d-flex" *ngIf="(state$|async) === 'editable'">
@@ -146,10 +159,8 @@
       <div class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
         <div class="align-self-center gv-flex-grow-1 d-flex">
 
-          <!-- if (fk_class == 'R64') => PeItAppellation (pass appellation) -->
-          <gv-pe-it-appellation *ngIf="showAppellationUI" class="gv-flex-grow-1" [appellation]="appellation" [peItAppeState]="(state$|async)"
-            (readyToCreate)=emitReadyToCreate($event) (notReadyToCreate)=emitNotReadyToCreate() (readyToAdd)="onAppeReadyToAdd($event)"
-            (appeChange)="emitAppeChange($event)" (cancelEdit)="onCancelEdit()"></gv-pe-it-appellation>
+          <ng-container *ngTemplateOutlet="object"></ng-container>
+
 
           <!-- <gv-pe-it-language
               *ngIf="showLanguageUI"
@@ -197,7 +208,7 @@
     
           </div> -->
 
-      <div class="d-flex align-items-center">
+      <div class="d-flex align-items-center" *ngIf="!(isCircular$|async)">
 
         <div class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
           <button class="btn btn-link" ngbDropdownToggle>
@@ -222,13 +233,16 @@
 
   </div>
 
-  <!-- View State -->
-
+  <!--
+  ************************* View State ************************* -->
 
   <div *ngIf="(state$|async) === 'view'">
+    <div class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
+      <ng-container *ngTemplateOutlet="object"></ng-container>
+    </div>
 
-    <!-- include component PeIt (passing the PeIt) -->
-    <!-- <gv-pe-it [peItState]="(state$|async)" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
+    <!-- include component PeIt (passing the PeIt)
+    <gv-pe-it [peItState]="(state$|async)" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
       [childOfTeEnt]="true" (appeChange)="emitAppeChange($event)">
 
       <div belowHeader>
@@ -258,3 +272,40 @@
 
 
 </div>
+
+
+
+
+<ng-template #object>
+  <!-- <p>appe: {{showAppellationUI}}</p>
+  <br>
+  <p>lang: {{showLanguageUI}}</p>
+  <br>
+  <p>entity: {{showEntityPreviewUI}}</p> -->
+
+  <!-- <gv-pe-it-appellation *ngIf="showAppellationUI" class="gv-flex-grow-1" [appellation]="appellation" [peItAppeState]="(state$|async)"
+    (readyToCreate)=emitReadyToCreate($event) (notReadyToCreate)=emitNotReadyToCreate() (readyToAdd)="onAppeReadyToAdd($event)"
+    (appeChange)="emitAppeChange($event)" (cancelEdit)="onCancelEdit()"></gv-pe-it-appellation> -->
+
+  <!-- <gv-pe-it-language *ngIf="showLanguageUI" class="gv-flex-grow-1" [language]="language" [peItLangState]="(state$|async)" (readyToCreate)=emitReadyToCreate($event)
+    (notReadyToCreate)=emitNotReadyToCreate() (readyToAdd)="onLangReadyToAdd($event)" (cancelEdit)="onCancelEdit()"></gv-pe-it-language>
+
+    Hoi {{showLanguageUI}} -->
+
+
+  <gv-pe-it-entity-preview *ngIf="showEntityUI" [parentPath]="basePath" [isCircular]="(isCircular$|async)"></gv-pe-it-entity-preview>
+
+
+  <!-- if (fk_class == 'R64') => PeItAppellation (pass appellation) -->
+  <gv-pe-it-appellation *ngIf="showAppellationUI" class="gv-flex-grow-1" [appellation]="appellation" [peItAppeState]="(state$|async)"
+    (readyToCreate)=emitReadyToCreate($event) (notReadyToCreate)=emitNotReadyToCreate() (readyToAdd)="onAppeReadyToAdd($event)"
+    (appeChange)="emitAppeChange($event)" (cancelEdit)="onCancelEdit()"></gv-pe-it-appellation>
+
+  <!-- <gv-pe-it-entity-add
+      class="gv-flex-grow-1 mt-2"
+      *ngIf="showEntityUI && childOfTeEnt && valueEntitiesState==='create'"
+      (selected)=peItSelected($event)
+      [fkClass]="fkClass"
+      ></gv-pe-it-entity-add> -->
+
+</ng-template>

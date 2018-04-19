@@ -32,4 +32,65 @@ export class RoleSetService {
       }))
   }
 
+
+  static getRoleStatesContainerForState(roleSet: IRoleSetState): IRoleStates {
+    let roleStates: IRoleStates;
+
+    switch (roleSet.state) {
+      /** if the roleset is in editable mode, the roles that are in project need to be taken */
+      case 'editable':
+        return roleSet.roleStatesInProject;
+
+      /** 
+       * if the roleset is in add-pe-it mode, the roles that are in other projects need to be taken.
+       */
+      case 'add-pe-it':
+        return roleSet.roleStatesInOtherProjects
+
+
+      default:
+        return roleSet.roleStatesInProject;
+    }
+
+  }
+
+  /**
+   * find role of roleSet with highest number of display count.
+   * @param roleStates 
+   */
+  static getDisplayRangeFavoriteOfRoleStates(roleStates: IRoleStates): number {
+    let highestCount = -1;
+    let pkEntityWithHighestCount;
+    for (const j in roleStates) {
+      if (roleStates.hasOwnProperty(j)) {
+        const roleState: IRoleState = roleStates[j];
+        if (roleState.role.is_standard_in_project_count > highestCount) {
+          highestCount = roleState.role.is_standard_in_project_count;
+          pkEntityWithHighestCount = roleState.role.pk_entity;
+        }
+      }
+    }
+    return pkEntityWithHighestCount;
+  }
+
+  /**
+ * find role of roleSet with highest number of display count.
+ * @param roleStates 
+ */
+  static getDisplayRangeFavoriteOfRoles(roles: InfRole[]): number {
+    let highestCount = -1;
+    let pkEntityWithHighestCount;
+
+    for (let index = 0; index < roles.length; index++) {
+      const role = roles[index];
+      if (role.is_standard_in_project_count > highestCount) {
+        highestCount = role.is_standard_in_project_count;
+        pkEntityWithHighestCount = role.pk_entity;
+      }
+    }
+
+    return pkEntityWithHighestCount;
+  }
+
+
 }

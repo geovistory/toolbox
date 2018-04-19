@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
@@ -11,7 +11,7 @@ import { ActivePeItService } from '../../shared/active-pe-it.service';
 import { ClassService } from '../../shared/class.service';
 import { AppellationLabel } from '../../shared/appellation-label/appellation-label';
 import { PropertyPipe } from '../../shared/property.pipe';
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux, WithSubStore } from '@angular-redux/store';
 import { PeItComponent } from '../../containers/pe-it/pe-it.component';
 import { PeItActions } from '../../containers/pe-it/pe-it.actions';
 import { IPeItState } from '../../containers/pe-it/pe-it.model';
@@ -19,16 +19,26 @@ import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
 import { NumberSymbol } from '@angular/common';
 import { RoleSetListService } from '../../shared/role-set-list.service';
+import { peItReducer } from '../../containers/pe-it/pe-it.reducer';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
+@AutoUnsubscribe()
+@WithSubStore({
+  localReducer: peItReducer,
+  basePathMethodName: 'getBasePath'
+})
 @Component({
   selector: 'gv-pe-it-entity-preview',
   templateUrl: './pe-it-entity-preview.component.html',
-  styleUrls: ['./pe-it-entity-preview.component.scss']
+  styleUrls: ['./pe-it-entity-preview.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PeItEntityPreviewComponent extends PeItComponent implements OnInit {
 
   @Input() pkEntity: number;
   @Input() peIt: InfPersistentItem;
+  @Input() isCircular: boolean;
+
 
   /**
   * Properties
@@ -65,94 +75,94 @@ export class PeItEntityPreviewComponent extends PeItComponent implements OnInit 
   }
 
   //gets called by base class
-  init() {
-    this.checkIfInProject().subscribe(() => {
-      if (this.isInProject) {
-        this.queryRichObjectOfProject().subscribe(() => {
-          this.setPreviewDataOfProject();
-        });
-      }
-      else {
-        this.queryRichObjectOfRepo().subscribe(() => {
-          this.setPreviewDataOfRepo();
-        });
-      }
-    });
-  }
+  // init() {
+  //   this.checkIfInProject().subscribe(() => {
+  //     if (this.isInProject) {
+  //       this.queryRichObjectOfProject().subscribe(() => {
+  //         this.setPreviewDataOfProject();
+  //       });
+  //     }
+  //     else {
+  //       this.queryRichObjectOfRepo().subscribe(() => {
+  //         this.setPreviewDataOfRepo();
+  //       });
+  //     }
+  //   });
+  // }
 
 
-  checkIfInProject() {
-    const onDone = new EventEmitter();
-    this.ngRedux.select<Project>('activeProject').subscribe(project => {
+  // checkIfInProject() {
+  //   const onDone = new EventEmitter();
+  //   this.ngRedux.select<Project>('activeProject').subscribe(project => {
 
-      const pkEntity = this.pkEntity || (this.peIt ? this.peIt.pk_entity : undefined);
-      this.eprApi.find({
-        'where': {
-          'fk_entity': pkEntity,
-          'fk_project': project.pk_project
-        }
-      }).subscribe(eprs => {
-        if (eprs.length > 0) {
-          this.isInProject = true;
-        }
-        else {
-          this.isInProject = false;
-        }
+  //     const pkEntity = this.pkEntity || (this.peIt ? this.peIt.pk_entity : undefined);
+  //     this.eprApi.find({
+  //       'where': {
+  //         'fk_entity': pkEntity,
+  //         'fk_project': project.pk_project
+  //       }
+  //     }).subscribe(eprs => {
+  //       if (eprs.length > 0) {
+  //         this.isInProject = true;
+  //       }
+  //       else {
+  //         this.isInProject = false;
+  //       }
 
-        onDone.emit()
-      })
-    })
+  //       onDone.emit()
+  //     })
+  //   })
 
-    return onDone;
-  }
-
-
-  setPreviewDataOfProject() {
-    if (this.peIt.pi_roles) {
-
-      this.peIt.pi_roles.filter((role => role.fk_property === 1)) // R63
-        .forEach(role => {
-          const appeObj = role.temporal_entity.te_roles
-            .filter((role) => {
-              return (
-                role.fk_property === 2 && // R64
-                role.entity_version_project_rels[0].is_in_project
-              )
-            })
-          [0].appellation;
-
-          this.previewData.appellationString = new AppellationLabel(appeObj.appellation_label).getString();
-        })
-    }
-  }
+  //   return onDone;
+  // }
 
 
-  setPreviewDataOfRepo() {
-    if (this.peIt.pi_roles) {
+  // setPreviewDataOfProject() {
+  //   if (this.peIt.pi_roles) {
 
-      let mostPopularAppe: InfRole;
-      let highestCount: number = 0;
+  //     this.peIt.pi_roles.filter((role => role.fk_property === 1)) // R63
+  //       .forEach(role => {
+  //         const appeObj = role.temporal_entity.te_roles
+  //           .filter((role) => {
+  //             return (
+  //               role.fk_property === 2 && // R64
+  //               role.entity_version_project_rels[0].is_in_project
+  //             )
+  //           })
+  //         [0].appellation;
 
-      this.peIt.pi_roles.filter((role => role.fk_property === 1)) // R63
-        .forEach(role => {
+  //         this.previewData.appellationString = new AppellationLabel(appeObj.appellation_label).getString();
+  //       })
+  //   }
+  // }
 
-          if (highestCount < role.is_standard_in_project_count) {
-            mostPopularAppe = role;
-            highestCount = role.is_standard_in_project_count;
-          }
-        })
 
-      const appeObj = mostPopularAppe.temporal_entity.te_roles
-        .filter((role) => {
-          return (
-            role.fk_property === 2 // R64
-          )
-        })
-      [0].appellation;
+  // setPreviewDataOfRepo() {
+  //   if (this.peIt.pi_roles) {
 
-      this.previewData.appellationString = new AppellationLabel(appeObj.appellation_label).getString();
-    }
-  }
+  //     let mostPopularAppe: InfRole;
+  //     let highestCount: number = 0;
+
+  //     this.peIt.pi_roles.filter((role => role.fk_property === 1)) // R63
+  //       .forEach(role => {
+
+  //         if (highestCount < role.is_standard_in_project_count) {
+  //           mostPopularAppe = role;
+  //           highestCount = role.is_standard_in_project_count;
+  //         }
+  //       })
+
+  //     const appeObj = mostPopularAppe.temporal_entity.te_roles
+  //       .filter((role) => {
+  //         return (
+  //           role.fk_property === 2 // R64
+  //         )
+  //       })
+  //     [0].appellation;
+
+  //     this.previewData.appellationString = new AppellationLabel(appeObj.appellation_label).getString();
+  //   }
+  // }
 
 
   open() {
@@ -160,7 +170,7 @@ export class PeItEntityPreviewComponent extends PeItComponent implements OnInit 
     // window.open(this.router.serializeUrl(urlTree), '_blank')
     const open = () => {
 
-      this.router.navigate(["../", this.pkEntity], {
+      this.router.navigate(["../", this.peItState.peIt.pk_entity], {
         relativeTo: this.route,
         queryParamsHandling: 'merge'
       })
@@ -178,9 +188,8 @@ export class PeItEntityPreviewComponent extends PeItComponent implements OnInit 
 
     const modalRef = this.modalService.open(PeItEntityPreviewModalComponent, entityModalOptions);
 
-    modalRef.componentInstance.isInProject = this.isInProject;
-    modalRef.componentInstance.stdAppe = this.previewData.appellationString;
-    modalRef.componentInstance.pkEntity = this.pkEntity;
+    modalRef.componentInstance.isInProject = (this.peItState.peIt.entity_version_project_rels && this.peItState.peIt.entity_version_project_rels.length)
+    modalRef.componentInstance.parentPath = this.parentPath;
 
     modalRef.result
       .then(() => { open() })

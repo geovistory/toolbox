@@ -20,6 +20,7 @@ import { EntityAddModalService } from '../../shared/entity-add-modal.service';
 
 import { dispatch, select, select$, WithSubStore } from '@angular-redux/store';
 import { projectEntitiesComponentReducer } from './reducers';
+import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -108,9 +109,9 @@ export class ProjectEntitiesComponent implements OnInit {
   }
 
   openEntityModal() {
-    // const modalRef = this.modalService.open(EntityAddModalComponent, this.entityModalOptions);
-    // modalRef.componentInstance.projectId = this.projectId;
-    // this.entityAddModalService.state = 'choose-class';
+    const modalRef = this.modalService.open(EntityAddModalComponent, this.entityModalOptions);
+    modalRef.componentInstance.projectId = this.projectId;
+    this.entityAddModalService.state = 'choose-class';
 
   }
 

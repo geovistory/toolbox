@@ -227,7 +227,7 @@ export class PropertyService {
       labelObj = {
         sg: sg,
         pl: pl,
-        default: property.dfh_domain_instances_max_quantifier === 1 ? sg : pl
+        default: property.dfh_range_instances_max_quantifier === 1 ? sg : pl
       }
 
     } else if (isOutgoing === false) {

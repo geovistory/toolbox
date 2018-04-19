@@ -73,9 +73,10 @@ export class RoleSetListService {
 
     const detailedNames: IRoleSetState = teEntRoleSets[this.dfhConfig.PROPERTY_PK_R64_USED_NAME + '_outgoing'];
     if (detailedNames) {
-      for (const key in detailedNames.childRoleStates) {
-        if (detailedNames.childRoleStates.hasOwnProperty(key)) {
-          const r: IRoleState = detailedNames.childRoleStates[key];
+      const roleStates = RoleSetService.getRoleStatesContainerForState(detailedNames)
+      for (const key in roleStates) {
+        if (roleStates.hasOwnProperty(key)) {
+          const r: IRoleState = roleStates[key];
 
           //TODO Add this if clause as soon as we have DisplayRoleForDomain in the db
           // if ((r.isOutgoing && r.isDisplayRoleForRange) || (!r.isOutgoing && r.isDisplayRoleForDomain)) {
@@ -99,12 +100,16 @@ export class RoleSetListService {
     // get ingoing roles pointing to appellation usage (R63)
     const names: RoleSetState = peItRoleSets['1_ingoing'];
     if (names) {
-      for (const key in names.childRoleStates) {
-        if (names.childRoleStates.hasOwnProperty(key)) {
-          const r: IRoleState = names.childRoleStates[key];
-          if ((r.isOutgoing && r.isDisplayRoleForRange) || (!r.isOutgoing && r.isDisplayRoleForDomain)) {
-            if (r.childTeEnt && r.childTeEnt.roleSets)
-              return this.getDisplayAppeLabelOfTeEntRoleSets(r.childTeEnt.roleSets)
+      const roleStates = RoleSetService.getRoleStatesContainerForState(names)
+      for (const key in roleStates) {
+        if (roleStates.hasOwnProperty(key)) {
+          const r: IRoleState = roleStates[key];
+          if ((!r.isOutgoing && r.isDisplayRoleForRange) || (r.isOutgoing && r.isDisplayRoleForDomain)) {
+            if (r.childTeEnt && r.childTeEnt.roleSets){
+              var label = this.getDisplayAppeLabelOfTeEntRoleSets(r.childTeEnt.roleSets);
+              console.log(label)
+              return label;
+            }
           }
         }
       }

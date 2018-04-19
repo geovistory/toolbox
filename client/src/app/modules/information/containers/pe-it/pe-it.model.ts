@@ -6,9 +6,7 @@ import { RoleSetListState } from "../../components/role-set-list/role-set-list.m
 
 export interface IPeItState extends RoleSetListState {
     /** db data */
-    peItToEdit?: InfPersistentItem;
-    peItToAdd?: InfPersistentItem;
-    peItToCreate?: InfPersistentItem;
+    peIt?: InfPersistentItem;
 
     /** init data */
     pkEntity?: number
@@ -24,9 +22,7 @@ export interface IPeItState extends RoleSetListState {
 
 export class PeItState implements IPeItState {
     /** db data */
-    peItToEdit?: InfPersistentItem;
-    peItToAdd?: InfPersistentItem;
-    peItToCreate?: InfPersistentItem;
+    peIt?: InfPersistentItem;
 
     /** init data */
     pkEntity?: number

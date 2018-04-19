@@ -81,6 +81,9 @@ import { RoleSetListService } from './shared/role-set-list.service';
 import { RoleSetService } from './shared/role-set.service';
 import { PeItRoleService } from './shared/pe-it-role.service';
 import { StateCreatorService } from './shared/state-creator.service';
+import { StateToDataService } from './shared/state-to-data.service';
+import { EntityAddExistingActions } from './components/entity-add-add-existing/entity-add-add-existing.actions';
+import { EntityCreateNewActions } from './components/entity-add-create-new/entity-add-create-new.actions';
 
 
 @NgModule({
@@ -112,18 +115,18 @@ import { StateCreatorService } from './shared/state-creator.service';
     AppellationLabelTokenComponent,
     AppellationLabelViewComponent,
     DfhIdComponent,
-    // EntityAddAddExistingComponent,
-    // EntityAddChooseClassComponent,
-    // EntityAddCreateNewComponent,
-    // EntityAddModalComponent,
-    // EntityAddSearchExistingComponent,
+    EntityAddAddExistingComponent,
+    EntityAddChooseClassComponent,
+    EntityAddCreateNewComponent,
+    EntityAddModalComponent,
+    EntityAddSearchExistingComponent,
     EntityEditorSettingsComponent,
     EntitySearchHitComponent,
     ExistenceTimeComponent,
     PeItComponent,
     PeItAppellationComponent,
     PeItEntityAddComponent,
-    // PeItEntityPreviewComponent,
+    PeItEntityPreviewComponent,
     PeItEntityPreviewModalComponent,
     PeItLanguageComponent,
     ProjectEntitiesComponent,
@@ -168,10 +171,14 @@ import { StateCreatorService } from './shared/state-creator.service';
     RoleActions,
     TeEntActions,
     TeEntService,
-    StateCreatorService
+    StateCreatorService,
+    StateToDataService,
+    EntityAddExistingActions,
+    EntityCreateNewActions
   ],
   entryComponents: [
-    // EntityAddModalComponent
+    EntityAddModalComponent,
+    PeItEntityPreviewModalComponent
   ],
 })
 export class InformationModule {

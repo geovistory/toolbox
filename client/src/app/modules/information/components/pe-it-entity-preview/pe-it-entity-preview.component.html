@@ -1,1 +1,8 @@
-<a href="" class="gv-passive-link" (click)=open()>{{previewData.appellationString}}</a>
+<div *ngIf="isCircular">
+    {{label}}
+    <small class="text-muted">{{(dfhClass$|async)?.dfh_standard_label}} (self)</small>
+</div>
+<a *ngIf="!isCircular" href="" class="gv-passive-link" (click)=open()>
+    {{label}}
+    <small class="text-muted">{{(dfhClass$|async)?.dfh_standard_label}}</small>
+</a>

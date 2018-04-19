@@ -26,6 +26,9 @@ import { IRoleSetState } from '../role-set/role-set.model';
 import { RoleSetActions } from '../role-set/role-set.actions';
 import { NgRedux } from '@angular-redux/store';
 import { RoleSetService } from '../../shared/role-set.service';
+import { IRoleState } from '../role/role.model';
+import { RoleActions } from '../role/role.actions';
+import { StateCreatorService } from '../../shared/state-creator.service';
 
 
 
@@ -170,9 +173,12 @@ export class ExistenceTimeComponent extends RoleSetComponent implements OnInit, 
     private validationService: ValidationService,
     ngRedux: NgRedux<IRoleSetState>,
     actions: RoleSetActions,
-    roleSetService:RoleSetService
+    roleSetService: RoleSetService,
+    roleStore: NgRedux<IRoleState>,
+    roleActions: RoleActions,
+    protected stateCreator: StateCreatorService
   ) {
-    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions, roleSetService)
+    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator)
     this.initialFormDefinition = {
       timePrimitive: [null, Validators.required]
     };

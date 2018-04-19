@@ -11,6 +11,8 @@ import { RoleSetListService } from './role-set-list.service';
 import { ClassService } from './class.service';
 import { PeItState } from '../containers/pe-it/pe-it.model';
 import { roleSetKey } from '../components/role-set-list/role-set-list-actions';
+import { EprService } from './epr.service';
+import {  ReplaySubject } from 'rxjs';
 
 
 @Injectable()
@@ -25,7 +27,8 @@ export class PeItService {
     private activePeItService: ActivePeItService,
     private peItApi: InfPersistentItemApi,
     private classService: ClassService,
-    @Inject(forwardRef(() => RoleSetListService))  private roleSetListService: RoleSetListService
+    private eprService: EprService,
+     private roleSetListService: RoleSetListService
   ) {
 
   }
@@ -53,6 +56,33 @@ export class PeItService {
       }
     });
   }
+
+  getNestedObject(pkEntity: number, pkProject?: number): ReplaySubject<InfPersistentItem> {
+
+    const subject = new ReplaySubject<InfPersistentItem>(null);
+
+    this.eprService.checkIfInProject(pkEntity, pkProject).subscribe(isInProject => {
+      if (isInProject) {
+        this.peItApi.nestedObjectOfProject(pkProject, pkEntity).subscribe((peIts: InfPersistentItem[]) => {
+                    
+          subject.next(peIts[0]);
+
+        });
+      }
+      else {
+        this.peItApi.nestedObjectOfRepo(pkEntity).subscribe((peIts: InfPersistentItem[]) => {
+
+          subject.next(peIts[0]);
+
+        })
+      }
+    })
+
+    return subject;
+
+  }
+
+
 
 
 }

@@ -9,6 +9,10 @@ import { RoleActions } from './role.actions';
 import { IRoleState } from './role.model';
 import { roleReducer } from './role.reducers';
 import { BehaviorSubject } from 'rxjs';
+import { IRoleStates, IRoleSetState } from '../role-set/role-set.model';
+import { RoleService } from '../../shared/role.service';
+import { StateToDataService } from '../../shared/state-to-data.service';
+import { StateCreatorService } from '../../shared/state-creator.service';
 
 export enum RolePointToEnum {
   PeIt = "PeIt",
@@ -24,12 +28,17 @@ export interface AppellationStdBool {
 
 export class RoleComponent implements OnInit {
   @Input() parentPath: string[];
+  @Input() intermediatePathSegment: string;
   @Input() index: string;
   localStore: ObservableStore<IRoleState>;
 
-  getBasePath = () => this.index ?
-    [... this.parentPath, 'childRoleStates', this.index] :
-    null;
+  getBasePath = () => {
+    const segment = this.intermediatePathSegment ? this.intermediatePathSegment : 'roleStatesInProject';
+
+    return this.index ?
+      [... this.parentPath, segment, this.index] :
+      null
+  };
 
   basePath: string[]
 
@@ -40,16 +49,28 @@ export class RoleComponent implements OnInit {
   @select() isStandardRoleToAdd$: Observable<boolean>;
   @select() isDisplayRoleForDomain$: Observable<boolean>;
   @select() isDisplayRoleForRange$: Observable<boolean>;
-  @select() roleToCreate$: Observable<InfRole>;
   @select() roleToAdd$: Observable<InfRole>;
+  @select() changingDisplayRole$: Observable<boolean>;
+  @select() targetDfhClass$: Observable<boolean>;
+  @select() isReadyToCreate$: Observable<boolean>;
+  @select() isCircular$: Observable<boolean>;
 
-  isDisplayRoleInProject$: BehaviorSubject<boolean> = BehaviorSubject.create();
+  isDisplayRoleInProject: boolean;
 
   property$: Observable<DfhProperty>;
   activeProject$: Observable<Project>;
+  activeProject: Project;
 
+  roleState: IRoleState;
+  parentRoleSetState: IRoleSetState;
 
+  /**
+  * Outputs
+  */
 
+  @Output() onRequestStandard: EventEmitter<{ roleState: IRoleState, key: string }> = new EventEmitter();
+
+  @Output() roleCreated: EventEmitter<IRoleState> = new EventEmitter();
 
 
   constructor(
@@ -58,42 +79,39 @@ export class RoleComponent implements OnInit {
     private ref: ChangeDetectorRef,
     public entityEditor: EntityEditorService,
     protected roleApi: InfRoleApi,
-    private ngRedux: NgRedux<IRoleState>,
-    protected actions: RoleActions
+    protected ngRedux: NgRedux<IRoleState>,
+    protected actions: RoleActions,
+    protected stateCreator: StateCreatorService
   ) { }
 
   ngOnInit() {
-    this.basePath = this.getBasePath();
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, roleReducer);
-    this.property$ = this.ngRedux.select<DfhProperty>([...this.parentPath, 'property']);
-    this.activeProject$ = this.ngRedux.select<Project>('activeProject');
 
-    this.initState();
-    
     this.initSubscriptions();
+
+    // this.initState();
 
     this.init();
   }
 
   init() { }
 
-  initState() {
-    this.state$.subscribe(state => {
+  // initState() {
+  //   this.state$.subscribe(state => {
 
 
-      if ((state === 'create' || state === 'create-te-ent' || state === 'create-pe-it')) {
-        this.initRoleToCreate()
-      }
+  //     if ((state === 'create' || state === 'create-te-ent' || state === 'create-pe-it')) {
+  //       this.initRoleToCreate()
+  //     }
 
-      if (state === 'add' || state === 'add-pe-it' || state === 'create-pe-it') {
-        this.initRoleToAdd(state)
-      }
+  //     if (state === 'add' || state === 'add-pe-it' || state === 'create-pe-it') {
+  //       this.initRoleToAdd(state)
+  //     }
 
 
-      // this.initChildren(); SINGLE_INIT
-    })
+  //     // this.initChildren(); SINGLE_INIT
+  //   })
 
-  }
+  // }
 
   initChildren() { }
 
@@ -135,34 +153,42 @@ export class RoleComponent implements OnInit {
   }
 
 
-  initSubscriptions(){
+  initSubscriptions() {
+    this.basePath = this.getBasePath();
+    this.localStore = this.ngRedux.configureSubStore(this.basePath, roleReducer);
+
+    this.property$ = this.ngRedux.select<DfhProperty>([...this.parentPath, 'property']);
+    this.activeProject$ = this.ngRedux.select<Project>('activeProject');
+
+    this.ngRedux.select<IRoleSetState>([...this.parentPath]).subscribe(d => this.parentRoleSetState = d);
+    this.activeProject$.subscribe(d => this.activeProject = d);
+    this.localStore.select<IRoleState>('').subscribe(d => this.roleState = d)
 
     // Observe if this role is a display role for the project
     // since this depends on the isOutgoing and the corresponding
     // - isDisplayRoleForDomain or isDisplayRoleForRange -
     // this value can be calculated allways on the fly
-    this.isOutgoing$.subscribe(isOutgoing=>{
-      if(isOutgoing === true){
-        this.isDisplayRoleForDomain$.subscribe(bool=>{
-          this.isDisplayRoleInProject$.next(bool)
+    this.isOutgoing$.subscribe(isOutgoing => {
+      if (isOutgoing === true) {
+        this.isDisplayRoleForDomain$.subscribe(bool => {
+          this.isDisplayRoleInProject = bool;
         })
-      }else if (isOutgoing === false){
-        this.isDisplayRoleForRange$.subscribe(bool=>{
-          this.isDisplayRoleInProject$.next(bool)
+      } else if (isOutgoing === false) {
+        this.isDisplayRoleForRange$.subscribe(bool => {
+          this.isDisplayRoleInProject = bool;
         })
-      }
-    })
-
-
-    this.isDisplayRoleInProject$.subscribe(bool=>{
-      if(bool === true){
-        // get the string from the child and push it to the labels of the parent
       }
     })
 
   }
 
 
+  /**
+  * requestStandard - tells the parent Property that it wants to become standard
+  */
+  requestStandard(): void {
+    this.onRequestStandard.emit({ roleState: this.roleState, key: this.index });
+  }
 
 
 
@@ -195,11 +221,6 @@ export class RoleComponent implements OnInit {
   //  // true for latest modified role with highest is_standard_in_project_count
   //  @Input() isStandardRoleToAdd: boolean;
 
-  //  /**
-  //  * Outputs
-  //  */
-
-  //  @Output() onRequestStandard: EventEmitter<any> = new EventEmitter();
 
   //  @Output() readyToCreate: EventEmitter<InfRole> = new EventEmitter;
 
@@ -210,11 +231,7 @@ export class RoleComponent implements OnInit {
 
   //  @Output() readyToAdd: EventEmitter<InfRole> = new EventEmitter();
 
-  //  @Output() roleCreated: EventEmitter<InfRole> = new EventEmitter();
-
-  //  @Output() roleCreationCanceled: EventEmitter<void> = new EventEmitter();
-
-  //  @Output() roleRemoved: EventEmitter<InfRole> = new EventEmitter();
+   @Output() roleCreationCanceled: EventEmitter<void> = new EventEmitter();
 
 
   //  /**
@@ -296,13 +313,6 @@ export class RoleComponent implements OnInit {
   // }
 
 
-  /**
-  * requestStandard - tells the parent Property that it wants to become standard
-  */
-  requestStandard(): void {
-    // this.onRequestStandard.emit(this);
-  }
-
 
 
   /**
@@ -311,15 +321,27 @@ export class RoleComponent implements OnInit {
   */
   createRole() {
 
+    // findOrCreate the InfRole
+    this.roleApi.findOrCreateInfRole(
+      this.activeProject.pk_project,
+      this.roleState.role
+    ).subscribe(newRole => {
 
-    // this.roleApi.findOrCreateInfRole(
-    //   this.activeProjectService.project.pk_project,
-    //   this.role
-    // ).subscribe(newRole => {
+      // create RoleState with child PeItState of selected peIt
+      this.stateCreator.initializeRoleState(newRole[0], 'editable', this.roleState.isOutgoing)
+      .subscribe(roleState=>{
+        
+        // add the initialized peItState to the new RoleState
+        roleState.peItState = this.roleState.peItState;
 
-    //   this.roleCreated.emit(newRole[0]);
+        // emit the RoleState to TeEntRoleSet
+        this.roleCreated.emit(roleState);
 
-    // })
+        // remove this RoleState (which was only for create)
+        this.localStore.dispatch(this.actions.roleStateRemoved())
+      });
+    })
+
 
   }
 
@@ -329,8 +351,9 @@ export class RoleComponent implements OnInit {
   */
   cancelCreateRole() {
 
-    // this.roleCreationCanceled.emit();
+    this.localStore.dispatch(this.actions.roleStateRemoved());
 
+    this.roleCreationCanceled.emit()
   }
 
 
@@ -359,17 +382,21 @@ export class RoleComponent implements OnInit {
   * removeFromProject - called when user removes a role (nested) from project
   */
   removeFromProject() {
-    // if (this.isDisplayRoleInProject) {
-    //   alert("You can't remove the standard item. Make another item standard and try again.")
-    // } else {
+    if (RoleService.isDisplayRole(this.roleState.isOutgoing, this.roleState.isDisplayRoleForDomain, this.roleState.isDisplayRoleForRange)) {
+      alert("You can't remove the standard item. Make another item standard and try again.")
+    } else {
 
-    //   this.roleApi.changeRoleProjectRelation(
-    //     this.activeProjectService.project.pk_project, false, this.roleToAdd
-    //   ).subscribe(result => {
-    //     const removedRole: InfRole = result[0]
-    //     this.roleRemoved.emit(removedRole);
-    //   })
-    // }
+      const roleToRemove = StateToDataService.roleStateToRoleToRelate(this.roleState)
+
+      console.log(roleToRemove)
+
+      this.roleApi.changeRoleProjectRelation(
+        this.activeProject.pk_project, false, roleToRemove
+      ).subscribe(result => {
+        const removedRole: InfRole = result[0]
+        this.localStore.dispatch(this.actions.roleStateRemoved())
+      })
+    }
   }
 
 

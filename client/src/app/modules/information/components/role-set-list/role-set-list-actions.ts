@@ -30,18 +30,19 @@ export class RoleSetListActions {
 
   static readonly ROLE_SET_ADDED = 'ROLE_SET_ADDED';
 
+  static readonly ROLE_SET_LIST_DISPLAY_LABEL_UPDATED = 'ROLE_SET_LIST_DISPLAY_LABEL_UPDATED';
+
+
   @dispatch()
 
 
-  // roleSetsInitialized = (roleSets: IRoleSetState[], ingoingRoleSets: RoleSetState[], outgoingRoleSets: RoleSetState[]): RoleSetListAction => ({
-  //   type: RoleSetListActions.ROLE_SETS_INITIALIZED,
-  //   meta: null,
-  //   payload: {
-  //     ingoingRoleSets,
-  //     outgoingRoleSets,
-  //     roleSets: indexBy(roleSetKey, roleSets)
-  //   }
-  // })
+  roleSetsListDisplayLabelUpdated = (label:string): RoleSetListAction => ({
+    type: RoleSetListActions.ROLE_SET_LIST_DISPLAY_LABEL_UPDATED,
+    meta: null,
+    payload: {
+      label
+    }
+  })
 
   /**
   * startSelectProperty - called, when user clicks on add a property

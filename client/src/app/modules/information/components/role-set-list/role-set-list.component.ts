@@ -62,7 +62,6 @@ export class RoleSetListComponent implements OnInit {
    */
   roleSets: {}
 
-
   constructor(
     protected classService: ClassService,
     private roleService: RoleService,

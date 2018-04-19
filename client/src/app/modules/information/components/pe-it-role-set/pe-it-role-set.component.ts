@@ -32,6 +32,11 @@ import { IPeItState } from '../../containers/pe-it/pe-it.model';
 import { peItReducer } from '../../containers/pe-it/pe-it.reducer';
 import { PeItActions } from '../../containers/pe-it/pe-it.actions';
 import { RoleSetService } from '../../shared/role-set.service';
+import { IRoleState } from '../role/role.model';
+import { RoleActions } from '../role/role.actions';
+import { IRoleSetListState } from '../role-set-list/role-set-list.model';
+import { StateCreatorService } from '../../shared/state-creator.service';
+import { ClassService } from '../../shared/class.service';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -123,9 +128,13 @@ export class PeItRoleSetComponent extends RoleSetComponent {
     actions: RoleSetActions,
     private peItRedux: NgRedux<IPeItState>,
     private peItActions: PeItActions,
-    roleSetService:RoleSetService
+    roleSetService: RoleSetService,
+    roleStore: NgRedux<IRoleState>,
+    roleActions: RoleActions,
+    protected stateCreator: StateCreatorService,
+    protected classService: ClassService
   ) {
-    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions, roleSetService)
+    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService)
 
   }
 
@@ -170,7 +179,7 @@ export class PeItRoleSetComponent extends RoleSetComponent {
    */
   initSubsciptions() {
     this.property$.subscribe(p => this.property = p)
-    this.ngRedux.select<InfPersistentItem>([...this.parentPeItStatePath, 'peItToEdit']).subscribe(i => this.parentPeIt = i)
+    this.ngRedux.select<InfPersistentItem>([...this.parentPeItStatePath, 'peIt']).subscribe(i => this.parentPeIt = i)
     this.ngRedux.select<Project>('activeProject').subscribe(p => this.fkProject = p.pk_project)
   }
 
