@@ -20,7 +20,8 @@ export class ValidationService {
       'mustEndBefore': `Must end before ${validatorValue.fieldLabel}`,
       'mustStartAfter': `Must start after ${validatorValue.fieldLabel}`,
       'mustBeginBeforeEnd': `Must begin before ${validatorValue.fieldLabel} ends`,
-      'mustEndAfterBegin': `Must end after ${validatorValue.fieldLabel} begins`
+      'mustEndAfterBegin': `Must end after ${validatorValue.fieldLabel} begins`,
+      'validateLanguage': `Please select a language`
     };
 
     if(config[validatorName]) return config[validatorName];

@@ -171,57 +171,7 @@
 
       <ng-content select="[headerLeft]"></ng-content>
 
-      <div class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
-        <div class="align-self-center gv-flex-grow-1 d-flex">
-
-          <ng-container *ngTemplateOutlet="object"></ng-container>
-
-
-          <!-- <gv-pe-it-language
-              *ngIf="showLanguageUI"
-              class="gv-flex-grow-1"
-              [language]="language"
-              [peItLangState]="(state$|async)"
-              (readyToCreate)=emitReadyToCreate($event)
-              (notReadyToCreate)=emitNotReadyToCreate()
-              (readyToAdd)="onLangReadyToAdd($event)"
-              (cancelEdit)="onCancelEdit()"
-              ></gv-pe-it-language> -->
-
-          <!-- <gv-pe-it-entity-preview
-              *ngIf="showEntityUI && childOfTeEnt && (valueEntitiesState==='view' || valueEntitiesState==='add')"
-              [pkEntity]="pkEntity"
-              ></gv-pe-it-entity-preview> -->
-
-          <!-- <gv-pe-it-entity-add
-              class="gv-flex-grow-1 mt-2"
-              *ngIf="showEntityUI && childOfTeEnt && valueEntitiesState==='create'"
-              (selected)=peItSelected($event)
-              [fkClass]="fkClass"
-              ></gv-pe-it-entity-add> -->
-
-        </div>
-
-      </div>
-
-      <!-- <div class="d-flex align-items-center" *ngIf="valueEntitiesState==='view' && peItState !== 'view'">
-    
-            <div class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
-              <button class="btn btn-link" ngbDropdownToggle><i class="fa fa-ellipsis-v"></i></button>
-              <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
-    
-                <!-- dropdown of appe & lang 
-                <button *ngIf="!showEntityUI" class="dropdown-item" (click)="edit()">Edit</button>
-    
-                <!-- dropdown of enitiy preview 
-                <button *ngIf="showEntityUI && childOfTeEnt" class="dropdown-item" (click)="open()">Open...</button>
-    
-                <ng-content select="[dropdownItems]"></ng-content>
-    
-              </div>
-            </div>
-    
-          </div> -->
+      <ng-container *ngTemplateOutlet="object"></ng-container>
 
       <div class="d-flex align-items-center" *ngIf="!(isCircular$|async)">
 
@@ -292,39 +242,24 @@
 
 
 <ng-template #object>
-  <form [formGroup]="formGroup" *ngIf="formGroup && roleState">
+  <div class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
 
-    <!-- <p>appe: {{showAppellationUI}}</p>
-  <br>
-  <p>lang: {{showLanguageUI}}</p>
-  <br>
-  <p>entity: {{showEntityPreviewUI}}</p> -->
-
-    <!-- <gv-appellation *ngIf="showAppellationUI" class="gv-flex-grow-1" [appellation]="appellation" [peItAppeState]="(state$|async)"
-    (readyToCreate)=emitReadyToCreate($event) (notReadyToCreate)=emitNotReadyToCreate() (readyToAdd)="onAppeReadyToAdd($event)"
-    (appeChange)="emitAppeChange($event)" (cancelEdit)="onCancelEdit()"></gv-appellation> -->
-
-    <!-- <gv-pe-it-language *ngIf="showLanguageUI" class="gv-flex-grow-1" [language]="language" [peItLangState]="(state$|async)" (readyToCreate)=emitReadyToCreate($event)
-    (notReadyToCreate)=emitNotReadyToCreate() (readyToAdd)="onLangReadyToAdd($event)" (cancelEdit)="onCancelEdit()"></gv-pe-it-language>
-
-    Hoi {{showLanguageUI}} -->
+    <form [formGroup]="formGroup" *ngIf="formGroup && roleState" class="align-self-center gv-flex-grow-1">
 
 
-    <gv-pe-it-entity-preview *ngIf="roleState.peItState" [parentPath]="basePath" [isCircular]="(isCircular$|async)"></gv-pe-it-entity-preview>
+      <gv-pe-it-entity-preview *ngIf="(peItState$ |async)" [parentPath]="basePath" [isCircular]="(isCircular$|async)" [formControlName]="formControlName"
+        (touched)="markAsTouched()"></gv-pe-it-entity-preview>
 
-    <!-- if (fk_class == 'R64') => PeItAppellation (pass appellation) -->
-    <gv-appellation *ngIf="roleState.appeState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
-      (touched)="markAsTouched()" (readyToCreate)=emitReadyToCreate($event) (notReadyToCreate)=emitNotReadyToCreate() (readyToAdd)="onAppeReadyToAdd($event)"
-      (appeChange)="emitAppeChange($event)" (cancelEdit)="onCancelEdit()"></gv-appellation>
+      <gv-appellation *ngIf="roleState.appeState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
+        (touched)="markAsTouched()"></gv-appellation>
 
+      <gv-language *ngIf="roleState.langState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
+        (touched)="markAsTouched()"></gv-language>
 
+      <div>
+        <gv-control-messages *ngIf="formGroup.get(formControlName)" [control]="formGroup.get(formControlName)"></gv-control-messages>
+      </div>
 
-    <!-- <gv-pe-it-entity-add
-        class="gv-flex-grow-1 mt-2"
-        *ngIf="showEntityUI && childOfTeEnt && valueEntitiesState==='create'"
-        (selected)=peItSelected($event)
-        [fkClass]="fkClass"
-        ></gv-pe-it-entity-add> -->
-
-  </form>
+    </form>
+  </div>
 </ng-template>

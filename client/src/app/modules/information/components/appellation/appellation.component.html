@@ -5,15 +5,7 @@
   </span>
 
 
-  <div class="d-flex flex-row" *ngIf="peItAppeState === 'add-pe-it' || peItAppeState === 'add' ">
-
-    <div class="gv-flex-grow-1">
-      <gv-appellation-label-view [appellation]="appellation"></gv-appellation-label-view>
-    </div>
-
-  </div>
-
-  <div class="d-flex flex-row" *ngIf="peItAppeState === 'editable'">
+  <div class="d-flex flex-row" *ngIf="peItAppeState === 'add-pe-it' || peItAppeState === 'add' || peItAppeState === 'editable'">
 
     <div class="gv-flex-grow-1">
       <gv-appellation-label-view [appellation]="appellation"></gv-appellation-label-view>

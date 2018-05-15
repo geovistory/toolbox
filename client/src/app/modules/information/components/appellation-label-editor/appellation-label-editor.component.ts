@@ -21,10 +21,6 @@ export class AppellationLabelEditorComponent implements OnInit, ControlValueAcce
 
   appellationLabel: AppellationLabel;
 
-  @Output() readyToCreate: EventEmitter<AppellationLabel> = new EventEmitter();
-
-  @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter();
-
   @Output() touched: EventEmitter<void> = new EventEmitter();
 
 
@@ -157,6 +153,7 @@ export class AppellationLabelEditorComponent implements OnInit, ControlValueAcce
       this.onTouched()
     this.touched.emit()
   }
+
   /****************************************
    *  ControlValueAccessor implementation *
    ****************************************/

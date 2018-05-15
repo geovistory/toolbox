@@ -22,12 +22,11 @@ import { TeEntComponent } from './te-ent.component';
 import { TeEntRoleSetComponent } from '../te-ent-role-set/te-ent-role-set.component';
 import { TeEntRoleComponent } from '../te-ent-role/te-ent-role.component';
 import { AppellationComponent } from '../appellation/appellation.component';
-import { PeItLanguageComponent } from '../pe-it-language/pe-it-language.component';
+import { LanguageComponent } from '../language/language.component';
 import { PeItEntityPreviewComponent } from '../pe-it-entity-preview/pe-it-entity-preview.component';
 import { PeItEntityAddComponent } from '../pe-it-entity-add/pe-it-entity-add.component';
 import { EntityEditorSettingsComponent } from '../entity-editor-settings/entity-editor-settings.component';
 import { AppellationLabelViewComponent } from '../appellation-label-view/appellation-label-view.component';
-import { AppellationLabelCreateComponent } from '../appellation-label-create/appellation-label-create.component';
 import { PeItRoleSetComponent } from '../pe-it-role-set/pe-it-role-set.component';
 import { PeItRoleComponent } from '../pe-it-role/pe-it-role.component';
 import { AppellationLabelEditorComponent } from '../appellation-label-editor/appellation-label-editor.component';
@@ -66,13 +65,12 @@ export default sandboxOf(TeEntComponent, {
     TeEntRoleComponent,
     PeItComponent,
     AppellationComponent,
-    PeItLanguageComponent,
+    LanguageComponent,
     PeItEntityPreviewComponent,
     PeItEntityAddComponent,
     EntityEditorSettingsComponent,
     AppellationLabelViewComponent,
     AppellationLabelEditorComponent,
-    AppellationLabelCreateComponent,
     PeItRoleComponent,
     AppellationLabelTokenComponent,
     LanguageSearchTypeaheadComponent

@@ -34,9 +34,6 @@ export class AppellationComponent implements OnInit, ControlValueAccessor {
 
   appeState: IAppellationState;
 
-  /**
-  * Inputs
-  */
   appellation: InfAppellation;
 
   peItAppeState: string;
@@ -104,10 +101,6 @@ export class AppellationComponent implements OnInit, ControlValueAccessor {
       else {
         this.onChange(null)
       }
-    })
-
-    this.formGroup.statusChanges.subscribe(status=>{
-
     })
 
   }
@@ -251,8 +244,6 @@ export class AppellationComponent implements OnInit, ControlValueAccessor {
    * Update the model and changes needed for the view here.
    */
   writeValue(appellation: InfAppellation): void {
-
-    let formCrtlsToRemove: string[] = [];
 
     this.formGroup.addControl('appellationLabel', new FormControl(
       this.appeState.appellation.appellation_label,

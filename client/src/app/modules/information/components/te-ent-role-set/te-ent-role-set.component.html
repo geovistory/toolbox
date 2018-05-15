@@ -165,8 +165,6 @@
             <gv-te-ent-role *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="roleStatesToCreate"
               [formControlName]="entry.key" (touched)="markAsTouched()" class="form-control rounded-0"></gv-te-ent-role>
 
-            <gv-control-messages class="pl-2" *ngIf="formGroup.get(entry.key)" [control]="formGroup.get(entry.key)"></gv-control-messages>
-
             <div class="card-body">
               <button type="button" class="btn btn-link" (click)="cancelCreateRole(entry.key)">Cancel</button>
             </div>

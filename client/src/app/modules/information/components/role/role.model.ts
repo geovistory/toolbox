@@ -3,6 +3,7 @@ import { EditorStates, CollapsedExpanded } from "../../information.models";
 import { ITeEntState } from "../te-ent/te-ent.model";
 import { IPeItState } from "../../containers/pe-it/pe-it.model";
 import { IAppellationState } from "../appellation/appellation.model";
+import { ILanguageState } from "../language/language.model";
 
 
 export interface IRoleState {
@@ -56,8 +57,8 @@ export interface IRoleState {
     peItState?: IPeItState
 
     appeState?: IAppellationState
-    // langState: ILanguageState
-    // timePrimitiveState: ITimePrimitiveState
+    langState?: ILanguageState;
+    // timePrimitiveState?: ITimePrimitiveState
 
 }
 
@@ -94,6 +95,7 @@ export class RoleState implements IRoleState {
     peItState?: IPeItState
 
     appeState?: IAppellationState
+    langState?: ILanguageState;
 
     constructor(data?: IRoleState) {
         Object.assign(this, data)

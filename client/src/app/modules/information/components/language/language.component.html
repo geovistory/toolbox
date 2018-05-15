@@ -1,0 +1,15 @@
+<div [ngClass]="{'dev-view': entityEditor.devView}">
+  
+  <span *ngIf="entityEditor.devView">
+    [state: {{peItLangState}}]
+  </span>
+
+  <form [formGroup]="formGroup" *ngIf="peItLangState === 'edit' || peItLangState === 'create' ||  peItLangState === 'create-te-ent-role' || peItLangState === 'create-pe-it-role' || peItLangState === 'create-pe-it'">
+    <gv-language-search-typeahead [language]="language" formControlName="language" (touched)="markAsTouched()"></gv-language-search-typeahead>
+  </form>
+
+  <div *ngIf="peItLangState === 'add' || peItLangState === 'add-pe-it' || peItLangState === 'view' || peItLangState === 'editable'">
+    {{language.notes}}
+  </div>
+
+</div>

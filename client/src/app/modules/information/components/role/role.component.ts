@@ -84,6 +84,10 @@ export class RoleComponent implements OnInit, ControlValueAccessor {
     'timePrimitiveState': {
       nameInState: 'timePrimitive',
       nameInApi: 'time_primitive'
+    },
+    'peItState': {
+      nameInState: 'peIt',
+      nameInApi: 'fk_entity'
     }
   };
 
@@ -111,12 +115,6 @@ export class RoleComponent implements OnInit, ControlValueAccessor {
     // create the formGroup used by the form to edit the role
     this.formGroup = this.fb.group({});
 
-    // subscribe to form changes here
-    this.formGroup.valueChanges.subscribe(val => {
-      if (this.formGroup.get(this.formControlName)) {
-
-      }
-    })
   }
 
   ngOnInit() {

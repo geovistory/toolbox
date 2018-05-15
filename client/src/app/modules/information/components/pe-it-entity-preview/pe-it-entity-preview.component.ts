@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter, ChangeDetectionStrategy, forwardRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
@@ -21,59 +21,103 @@ import { NumberSymbol } from '@angular/common';
 import { RoleSetListService } from '../../shared/role-set-list.service';
 import { peItReducer } from '../../containers/pe-it/pe-it.reducer';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { StateCreatorService } from '../../shared/state-creator.service';
 
 @AutoUnsubscribe()
-@WithSubStore({
-  localReducer: peItReducer,
-  basePathMethodName: 'getBasePath'
-})
 @Component({
   selector: 'gv-pe-it-entity-preview',
   templateUrl: './pe-it-entity-preview.component.html',
   styleUrls: ['./pe-it-entity-preview.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => PeItEntityPreviewComponent),
+      multi: true
+    }
+  ]
 })
-export class PeItEntityPreviewComponent extends PeItComponent implements OnInit {
+export class PeItEntityPreviewComponent implements OnInit, ControlValueAccessor {
 
   @Input() pkEntity: number;
-  @Input() peIt: InfPersistentItem;
   @Input() isCircular: boolean;
+
+  @Input() parentPath: string[];
+
+  getBasePath = () => [...this.parentPath, 'peItState']
+  basePath: string[];
+
+  peItState: IPeItState;
+
+  /**
+  * Outputs
+  */
+  @Output() touched: EventEmitter<void> = new EventEmitter();
+
 
 
   /**
   * Properties
   */
-
-  previewData: { appellationString?: string } = {};
+  label: string;
 
   isInProject: boolean;
 
+  isSelected: boolean = false;
+
+  pkProject: number;
+
   constructor(
-    peItApi: InfPersistentItemApi,
-    peItService: PeItService,
-    activeProjectService: ActiveProjectService,
-    propertyPipe: PropertyPipe,
-    activePeItService: ActivePeItService,
-    slimLoadingBarService: SlimLoadingBarService,
-    entityEditor: EntityEditorService,
-    changeDetector: ChangeDetectorRef,
-    ngRedux: NgRedux<IPeItState>,
-    actions: PeItActions,
-    classService: ClassService,
-    roleService: RoleService,
-    propertyService: PropertyService,
-    private modalService: NgbModal,
-    private router: Router,
     private route: ActivatedRoute,
-    private eprApi: InfEntityProjectRelApi,
-    roleSetListService: RoleSetListService,
-    fb: FormBuilder
+    private router: Router,
+    private ngRedux: NgRedux<IPeItState>,
+    private modalService: NgbModal,
+    private fb: FormBuilder,
+    private roleSetListService: RoleSetListService,
+    private stateCreator: StateCreatorService,
+    private ref: ChangeDetectorRef
   ) {
-    super(peItApi, peItService, propertyPipe, activePeItService, slimLoadingBarService, entityEditor, changeDetector, ngRedux, actions, classService, roleService, propertyService, roleSetListService, fb)
   }
 
-  ngOnChanges() {
+
+  ngOnInit() {
+
+    this.basePath = this.getBasePath();
+    this.ngRedux.select<IPeItState>(this.basePath).subscribe(d => {
+      this.peItState = d;
+      if (d)
+        this.label = this.roleSetListService.getDisplayAppeLabelOfPeItRoleSets(d.roleSets);
+      this.ref.detectChanges()
+    })
+
+    this.ngRedux.select<number>(['activeProject', 'pk_project']).subscribe(d => {
+      this.pkProject = d;
+    })
+
+
+  }
+
+
+  // called when the entity add modal is opened 
+  addModalOpened() {
+    this.markAsTouched();
+
+    // send null to the parent form
+    this.onChange(null)
+  }
+
+  // called when a entity was selected in the entity add modal  
+  selected(pkEntity: number) {
+    this.isSelected = true
+
+    this.stateCreator.initializePeItState(pkEntity, this.pkProject, 'view').subscribe(peItState => {
+      this.label = this.roleSetListService.getDisplayAppeLabelOfPeItRoleSets(peItState.roleSets);
+      this.ref.detectChanges()
+    })
+
+    // send the pkEntity to the parent form
+    this.onChange(pkEntity)
   }
 
   //gets called by base class
@@ -200,4 +244,53 @@ export class PeItEntityPreviewComponent extends PeItComponent implements OnInit 
 
   }
 
+
+  /****************************************
+ *  ControlValueAccessor implementation *
+ ****************************************/
+
+  /**
+   * Allows Angular to update the model.
+   * Update the model and changes needed for the view here.
+   */
+  writeValue(pk_entity: number): void {
+
+
+  }
+
+
+  /**
+   * Allows Angular to register a function to call when the model changes.
+   * Save the function as a property to call later here.
+   */
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  /**
+   * gets replaced by angular on registerOnChange
+   * This function helps to type the onChange function for the use in this class.
+   */
+  onChange = (pk_entity: number | null) => {
+  };
+
+  /**
+   * Allows Angular to register a function to call when the input has been touched.
+   * Save the function as a property to call later here.
+   */
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  /**
+   * gets replaced by angular on registerOnTouched
+   * Call this function when the form has been touched.
+   */
+  onTouched = () => {
+  };
+
+  markAsTouched() {
+    this.onTouched()
+    this.touched.emit()
+  }
 }

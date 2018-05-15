@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
@@ -26,7 +26,7 @@ import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.co
   templateUrl: './pe-it-entity-add.component.html',
   styleUrls: ['./pe-it-entity-add.component.scss']
 })
-export class PeItEntityAddComponent {
+export class PeItEntityAddComponent implements OnInit {
 
 
   /**
@@ -38,6 +38,8 @@ export class PeItEntityAddComponent {
    * Output
    */
   @Output() selected: EventEmitter<number> = new EventEmitter();
+
+  @Output() open: EventEmitter<number> = new EventEmitter();
 
 
   constructor(
@@ -62,7 +64,14 @@ export class PeItEntityAddComponent {
     // super(peItApi, peItService, propertyPipe, activePeItService, slimLoadingBarService, entityEditor, changeDetector, ngRedux, actions, classService, roleService, propertyService, roleSetListService)
   }
 
+  ngOnInit(){
+    this.openModal()
+  }
+
   openModal() {
+
+    this.open.emit();
+
     const entityModalOptions: NgbModalOptions = {
       size: 'lg'
     }

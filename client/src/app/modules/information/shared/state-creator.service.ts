@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InfPersistentItem, InfPersistentItemApi, InfRole, InfTemporalEntity, InfAppellation } from 'app/core';
+import { InfPersistentItem, InfPersistentItemApi, InfRole, InfTemporalEntity, InfAppellation, InfLanguage, DfhClass } from 'app/core';
 import { indexBy, groupBy, prop } from 'ramda';
 
 import { ClassService } from './class.service';
@@ -21,6 +21,7 @@ import { RoleSetService } from './role-set.service';
 import { ConfigService } from './config.service';
 import { IAppellationState, AppellationState } from '../components/appellation/appellation.model';
 import { AppellationLabel } from './appellation-label/appellation-label';
+import { ILanguageState, LanguageState } from '../components/language/language.model';
 
 
 @Injectable()
@@ -250,10 +251,9 @@ export class StateCreatorService {
             iRoleState.roleStatesInProject = roleStates;
             break;
 
-          // default:
-
-          //   iRoleState.roleStatesInProject = roleStates;
-          //   break;
+          case 'view':
+            iRoleState.roleStatesInProject = roleStates;
+            break;
         }
 
         /** Assings options to RolSet (this can come from the two functions before) */
@@ -333,6 +333,15 @@ export class StateCreatorService {
       })
     }
 
+    /** If role leads to Language */
+    // else if (role.appellation && Object.keys(role.appellation).length){
+    else if (role.fk_property == this.configService.PROPERTY_PK_R61_USED_LANGUAGE && isOutgoing) {
+      this.initializeLangState(role.language, state).subscribe(langState => {
+        roleState.langState = langState;
+        subject.next(roleState);
+      })
+    }
+
     else {
 
       // check if it is circular
@@ -340,7 +349,10 @@ export class StateCreatorService {
         roleState.isCircular = true;
       }
 
-      return new BehaviorSubject(roleState)
+      this.inizializeLeafPeItState(state, options.targetDfhClass).subscribe(peItState=>{
+        roleState.peItState = peItState;
+        subject.next(roleState)
+      })
 
     }
 
@@ -379,7 +391,7 @@ export class StateCreatorService {
           ingoingRoleSets,
           outgoingRoleSets
         })
-        
+
         subject.next(teEntState);
       }
     })
@@ -388,8 +400,9 @@ export class StateCreatorService {
   }
 
 
-  /** States of leaf objects  */
-
+  /** 
+   * Initializers for States of Leaf objects  
+   * */
 
   initializeAppeState(appellation: InfAppellation, state: EditorStates): Subject<IAppellationState> {
 
@@ -403,6 +416,27 @@ export class StateCreatorService {
     })
 
     return new BehaviorSubject(appeState)
+  }
+
+
+  initializeLangState(language: InfLanguage, state: EditorStates): Subject<ILanguageState> {
+
+    const langState = new LanguageState({
+      language,
+      state
+    })
+
+    return new BehaviorSubject(langState)
+  }
+
+
+  inizializeLeafPeItState(state:EditorStates, dfhClass:DfhClass): Subject<IPeItState>{
+    const peItState = new PeItState({
+      state,
+      dfhClass
+    })
+
+    return new BehaviorSubject(peItState)
   }
 
 }

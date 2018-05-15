@@ -19,7 +19,6 @@ import { ControlMessagesModule, LanguageSearchTypeaheadModule } from 'app/shared
 import { PassiveLinkModule } from 'app/shared';
 
 // This modules components
-import { AppellationLabelCreateComponent } from './components/appellation-label-create/appellation-label-create.component';
 import { AppellationLabelEditorComponent } from './components/appellation-label-editor/appellation-label-editor.component';
 import { AppellationLabelTokenComponent } from './components/appellation-label-token/appellation-label-token.component';
 import { AppellationLabelViewComponent } from './components/appellation-label-view/appellation-label-view.component';
@@ -36,7 +35,7 @@ import { AppellationComponent } from './components/appellation/appellation.compo
 import { PeItEntityAddComponent } from './components/pe-it-entity-add/pe-it-entity-add.component';
 import { PeItEntityPreviewComponent } from './components/pe-it-entity-preview/pe-it-entity-preview.component';
 import { PeItEntityPreviewModalComponent } from './components/pe-it-entity-preview-modal/pe-it-entity-preview-modal.component';
-import { PeItLanguageComponent } from './components/pe-it-language/pe-it-language.component';
+import { LanguageComponent } from './components/language/language.component';
 import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
 import { PeItRoleSetComponent } from './components/pe-it-role-set/pe-it-role-set.component';
 import { TeEntRoleSetComponent } from './components/te-ent-role-set/te-ent-role-set.component';
@@ -112,7 +111,6 @@ import { NgReduxFormModule } from '@angular-redux/form';
   ],
   declarations: [
     EntityEditorComponent,
-    AppellationLabelCreateComponent,
     AppellationLabelEditorComponent,
     AppellationLabelTokenComponent,
     AppellationLabelViewComponent,
@@ -130,7 +128,7 @@ import { NgReduxFormModule } from '@angular-redux/form';
     PeItEntityAddComponent,
     PeItEntityPreviewComponent,
     PeItEntityPreviewModalComponent,
-    PeItLanguageComponent,
+    LanguageComponent,
     ProjectEntitiesComponent,
     PeItRoleSetComponent,
     TeEntRoleSetComponent,

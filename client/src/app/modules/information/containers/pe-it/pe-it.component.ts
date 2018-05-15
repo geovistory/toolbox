@@ -98,7 +98,7 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
     roleService: RoleService,
     propertyService: PropertyService,
     roleSetListService: RoleSetListService,
-    private fb: FormBuilder,
+    protected fb: FormBuilder,
   ) {
     super(classService, roleService, propertyService, entityEditor, roleSetListService);
 
@@ -143,8 +143,11 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
   init() {
     // this.initState();
     this.initPeItSubscriptions()
+    this.initPeItChildren()
   }
 
+  // hook for child classes
+  initPeItChildren(){} 
 
 
   // initState() {

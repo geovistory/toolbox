@@ -41,6 +41,8 @@ export class TeEntRoleComponent extends RoleComponent {
   appellation: InfAppellation;
   pkEntity: number;
 
+  leafPeItStateInitialized: boolean;
+
   @select() peItState$: Observable<IPeItState>;
 
 
@@ -60,12 +62,15 @@ export class TeEntRoleComponent extends RoleComponent {
 
   init() {
 
+    this.peItState$.subscribe(a => {
+
+    })
+
     const toggle$ = this.ngRedux.select<CollapsedExpanded>([...this.parentPath, 'toggle']);
-    Observable.combineLatest(this.role$, toggle$, this.peItState$)
+    Observable.combineLatest(this.role$, toggle$)
       .subscribe(result => {
         const role = result[0];
         const toggle = result[1];
-        const peItStateInitialized = (result[2]);
 
         this.showAppellationUI = this.showLanguageUI = this.showEntityUI = false;
 
@@ -83,8 +88,8 @@ export class TeEntRoleComponent extends RoleComponent {
             this.showEntityUI = true;
 
             // initialize peIt preview on first expanding of role set
-            if (toggle === 'expanded' && !peItStateInitialized && role.fk_entity) {
-              this.initPeItState(role.fk_entity)
+            if (toggle === 'expanded' && !this.leafPeItStateInitialized && role.fk_entity) {
+              this.initPeItState(role.fk_entity).subscribe(done => { this.leafPeItStateInitialized = true })
             }
 
           }
@@ -184,13 +189,13 @@ export class TeEntRoleComponent extends RoleComponent {
   */
 
   startEditing() {
-    this.stateCreator.initializeRoleState(this.roleState.role, 'edit',this.roleState.isOutgoing).subscribe(roleState=>{
+    this.stateCreator.initializeRoleState(this.roleState.role, 'edit', this.roleState.isOutgoing).subscribe(roleState => {
       this.localStore.dispatch(this.actions.startEditingRole(roleState))
     })
   }
 
   stopEditing() {
-    this.stateCreator.initializeRoleState(this.roleState.role, 'editable',this.roleState.isOutgoing).subscribe(roleState=>{
+    this.stateCreator.initializeRoleState(this.roleState.role, 'editable', this.roleState.isOutgoing).subscribe(roleState => {
       this.localStore.dispatch(this.actions.startEditingRole(roleState))
     })
   }
