@@ -15,35 +15,28 @@ export type RoleAction = FluxStandardAction<Payload, any>;
 
 @Injectable()
 export class RoleActions {
-  static readonly ROLE_TO_CREATE_UPDATED = 'ROLE_TO_CREATE_UPDATED';
-  static readonly ROLE_TO_ADD_UPDATED = 'ROLE_TO_ADD_UPDATED';
+  static readonly INF_ROLE_UPDATED = 'INF_ROLE_UPDATED';
 
   static readonly CHANGE_DISPLAY_ROLE_LOADING = 'CHANGE_DISPLAY_ROLE_LOADING';
   static readonly CHANGE_DISPLAY_ROLE_SUCCEEDED = 'CHANGE_DISPLAY_ROLE_SUCCEEDED';
 
+  static readonly START_EDITING_ROLE = 'START_EDITING_ROLE';
+  static readonly STOP_EDITING_ROLE = 'STOP_EDITING_ROLE';
+
+
   static readonly ROLE_STATE_REMOVED = 'ROLE_STATE_REMOVED';
 
   static readonly LEAF_PE_IT_STATE_ADDED = 'LEAF_PE_IT_STATE_ADDED';
-
   static readonly LEAF_PK_ENTITY_SELECTED = 'LEAF_PK_ENTITY_SELECTED';
 
 
   @dispatch()
 
-  roleToCreateUpdated = (roleToCreate: InfRole): RoleAction => ({
-    type: RoleActions.ROLE_TO_CREATE_UPDATED,
+  infRoleUpdated = (role: InfRole): RoleAction => ({
+    type: RoleActions.INF_ROLE_UPDATED,
     meta: null,
     payload: {
-      roleToCreate
-    }
-  })
-
-
-  roleToAddUpdated = (roleToAdd: InfRole): RoleAction => ({
-    type: RoleActions.ROLE_TO_CREATE_UPDATED,
-    meta: null,
-    payload: {
-      roleToAdd
+      role
     }
   })
 
@@ -55,6 +48,19 @@ export class RoleActions {
       changingDisplayRole: bool
     }
   })
+
+  startEditingRole = (payload:IRoleState): RoleAction=>({
+    type: RoleActions.START_EDITING_ROLE,
+    meta: null,
+    payload
+  })
+
+  stopEditingRole = (payload:IRoleState): RoleAction=>({
+    type: RoleActions.STOP_EDITING_ROLE,
+    meta: null,
+    payload
+  })
+
 
   /**
    * If the role is outgoing, this means that it can be display role for the domain.

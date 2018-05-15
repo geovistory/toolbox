@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input, Output, EventEmitter, ChangeDetectorRef, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnChanges, Input, Output, EventEmitter, ChangeDetectorRef, OnInit, ChangeDetectionStrategy, forwardRef } from '@angular/core';
 import { dispatch, select, select$, WithSubStore, NgRedux, ObservableStore } from '@angular-redux/store';
 import { Observable } from 'rxjs/Observable';
 import "rxjs/add/observable/zip";
@@ -28,6 +28,7 @@ import { BehaviorSubject } from 'rxjs';
 import { RoleSetState, IRoleSetState } from '../../components/role-set/role-set.model';
 import { IRoleState } from '../../components/role/role.model';
 import { RoleSetListService } from '../../shared/role-set-list.service';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -39,8 +40,15 @@ import { RoleSetListService } from '../../shared/role-set-list.service';
   templateUrl: './pe-it.component.html',
   styleUrls: ['./pe-it.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => PeItComponent),
+      multi: true
+    }
+  ]
 })
-export class PeItComponent extends RoleSetListComponent implements OnInit {
+export class PeItComponent extends RoleSetListComponent implements OnInit, ControlValueAccessor {
 
   @Input() parentPath: string[];
   getBasePath = () => [...this.parentPath, 'peItState']
@@ -89,9 +97,35 @@ export class PeItComponent extends RoleSetListComponent implements OnInit {
     classService: ClassService,
     roleService: RoleService,
     propertyService: PropertyService,
-    roleSetListService: RoleSetListService
+    roleSetListService: RoleSetListService,
+    private fb: FormBuilder,
   ) {
-    super(classService, roleService, propertyService, entityEditor, roleSetListService)
+    super(classService, roleService, propertyService, entityEditor, roleSetListService);
+
+    // create the formGroup used to create a peIt
+    this.formGroup = this.fb.group({})
+
+    // subscribe to form changes here
+    this.formGroup.valueChanges.subscribe(val => {
+      if (this.formGroup.valid) {
+
+        // build a peIt with all pi_roles given by the form's controls 
+        let peIt = new InfPersistentItem(this.peItState.peIt);
+        peIt.pi_roles = [];
+        Object.keys(this.formGroup.controls).forEach(key => {
+          if (this.formGroup.get(key)) {
+            peIt.pi_roles = [...peIt.pi_roles, ...this.formGroup.get(key).value]
+          }
+        })
+
+        // send the peIt the parent form
+        this.onChange(peIt)
+      }
+      else {
+        this.onChange(null)
+      }
+    })
+
   }
 
 
@@ -329,7 +363,23 @@ export class PeItComponent extends RoleSetListComponent implements OnInit {
   }
 
 
+  /**
+  * called, when user selected a the kind of property to add
+  */
+  addRoleSet(propertyToAdd: RoleSetState) {
 
+
+    // add a role set
+    const newRoleSetState: RoleSetState = {
+      ...propertyToAdd,
+      state: this.peItState.state === 'editable' ? 'create-pe-it-role' : this.peItState.state,
+      toggle: 'expanded',
+      roles: []
+    }
+
+    this.localStore.dispatch(this.actions.addRoleSet(newRoleSetState))
+
+  }
 
 
   /**
@@ -425,6 +475,83 @@ export class PeItComponent extends RoleSetListComponent implements OnInit {
   //     this.changeDetector.detectChanges()
   //   }
   // }
+
+
+
+
+  /****************************************
+   *  ControlValueAccessor implementation *
+   ****************************************/
+
+  /**
+   * Allows Angular to update the model.
+   * Update the model and changes needed for the view here.
+   */
+  writeValue(peIt: InfPersistentItem): void {
+
+    let formCtrlDefs: { [controlName: string]: any } = {};
+    let formCrtlsToRemove: string[] = [];
+
+    // add controls for each child roleSet
+    Object.keys(this.peItState.roleSets).forEach((key) => {
+      if (this.peItState.roleSets[key]) {
+
+        this.formGroup.addControl(key, new FormControl(
+          this.peItState.roleSets[key].roles,
+          [
+            Validators.required
+          ]
+        ))
+      }
+      else {
+        formCrtlsToRemove.push(key);
+      }
+    })
+
+    // remove control of removed chiild state
+    formCrtlsToRemove.forEach(key => {
+      this.formGroup.removeControl(key);
+    })
+
+  }
+
+
+  /**
+   * Allows Angular to register a function to call when the model changes.
+   * Save the function as a property to call later here.
+   */
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  /**
+   * gets replaced by angular on registerOnChange
+   * This function helps to type the onChange function for the use in this class.
+   */
+  onChange = (peIt: InfPersistentItem | null) => {
+  };
+
+  /**
+ * Allows Angular to register a function to call when the input has been touched.
+ * Save the function as a property to call later here.
+ */
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  /**
+  * gets replaced by angular on registerOnTouched
+  * Call this function when the form has been touched.
+  */
+  onTouched = () => {
+  };
+
+  markAsTouched() {
+    this.onTouched()
+    this.touched.emit()
+  }
+
+  @Output() touched: EventEmitter<void> = new EventEmitter();
 
 
   /**

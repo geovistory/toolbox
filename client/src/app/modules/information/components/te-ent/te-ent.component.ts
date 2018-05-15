@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input, ViewChildren, QueryList, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, ViewChildren, QueryList, Output, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy, forwardRef } from '@angular/core';
 import {
   trigger,
   state,
@@ -19,18 +19,19 @@ import { ClassService } from '../../shared/class.service';
 import { AppellationLabel } from '../../shared/appellation-label/appellation-label';
 import { ExistenceTime } from '../existence-time';
 import { TeEntService } from '../../shared/te-ent.service';
-import { IRoleSetState } from '../role-set/role-set.model';
+import { IRoleSetState, RoleSetState } from '../role-set/role-set.model';
 import { AppellationStdBool } from '../role/role.component';
 import { WithSubStore, ObservableStore, NgRedux, select } from '@angular-redux/store';
 import { teEntReducer } from './te-ent.reducer';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { ITeEntState } from './te-ent.model';
 import { IRoleSetListState, IRoleSets } from '../role-set-list/role-set-list.model';
-import { RoleSetListActions } from '../role-set-list/role-set-list-actions';
+import { RoleSetListActions, roleSetKey } from '../role-set-list/role-set-list-actions';
 import { EditorStates, CollapsedExpanded } from '../../information.models';
 import { TeEntActions } from './te-ent.actions';
 import { IRoleState } from '../role/role.model';
 import { RoleSetListService } from '../../shared/role-set-list.service';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 
 @AutoUnsubscribe()
@@ -77,9 +78,17 @@ import { RoleSetListService } from '../../shared/role-set-list.service';
         })
       ])))
     ])
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => TeEntComponent),
+      multi: true
+    }
   ]
 })
-export class TeEntComponent extends RoleSetListComponent implements OnInit {
+export class TeEntComponent extends RoleSetListComponent implements OnInit, ControlValueAccessor {
 
 
   @Input() parentPath: string[];
@@ -113,14 +122,15 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
   /**
    * Class properties that filled by a store observable
    */
-  label:string;
-  parentRoleState:IRoleState;
-
+  label: string;
+  parentRoleState: IRoleState;
+  teEnState: ITeEntState;
 
   // Array of children TeEntRoleSetComponent
   @ViewChildren(TeEntRoleSetComponent) RoleSetComponents: QueryList<TeEntRoleSetComponent>
 
   constructor(
+    private fb: FormBuilder,
     roleService: RoleService,
     propertyService: PropertyService,
     private activeProjectService: ActiveProjectService,
@@ -128,9 +138,33 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
     entityEditor: EntityEditorService,
     private ngRedux: NgRedux<ITeEntState>,
     public actions: TeEntActions,
-    protected roleSetListService:RoleSetListService
+    protected roleSetListService: RoleSetListService
   ) {
     super(classService, roleService, propertyService, entityEditor, roleSetListService)
+
+    // create the formGroup used to create a teEnt
+    this.formGroup = this.fb.group({})
+
+    // subscribe to form changes here
+    this.formGroup.valueChanges.subscribe(val => {
+      if (this.formGroup.valid) {
+
+        // build a teEnt with all pi_roles given by the form's controls 
+        let teEnt = new InfTemporalEntity(this.teEnState.teEnt);
+        teEnt.te_roles = [];
+        Object.keys(this.formGroup.controls).forEach(key => {
+          if (this.formGroup.get(key)) {
+            teEnt.te_roles = [...teEnt.te_roles, ...this.formGroup.get(key).value]
+          }
+        })
+
+        // send the teEnt the parent form
+        this.onChange(teEnt)
+      }
+      else {
+        this.onChange(null)
+      }
+    })
   }
 
   /**
@@ -144,6 +178,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
 
   // gets called by base class onInit
   init() {
+
     this.initState()
 
     this.initPaths()
@@ -152,8 +187,38 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
 
     this.initTeEntSubscriptions();
 
+    this.initForm();
   }
 
+  /**
+   * Initializes the form controls
+   */
+  initForm() {
+    let formCtrlDefs: { [controlName: string]: any } = {};
+    let formCrtlsToRemove: string[] = [];
+
+    // add controls for each child roleSet
+    if (this.teEnState.roleSets)
+      Object.keys(this.teEnState.roleSets).forEach((key) => {
+        if (this.teEnState.roleSets[key]) {
+
+          this.formGroup.addControl(key, new FormControl(
+            this.teEnState.roleSets[key].roles,
+            [
+              Validators.required
+            ]
+          ))
+        }
+        else {
+          formCrtlsToRemove.push(key);
+        }
+      })
+
+    // remove control of removed chiild state
+    formCrtlsToRemove.forEach(key => {
+      this.formGroup.removeControl(key);
+    })
+  }
 
   /**
 * init paths to different slices of the store
@@ -179,6 +244,8 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
   initTeEntSubscriptions() {
 
     this.ngRedux.select<IRoleState>(this.parentPath).subscribe(d => this.parentRoleState = d)
+    this.localStore.select<ITeEntState>('').subscribe(d => this.teEnState = d)
+
 
     /**
     * gets the Appellation is for given teEnt roleSets that is for display in this project
@@ -195,7 +262,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
     this.state$.subscribe(state => {
 
       // if (state === 'add-pe-it')
-        // this.initTeEntToAdd()
+      // this.initTeEntToAdd()
 
       // if (state === 'create')
       //   this.initTeEntToCreate()
@@ -204,6 +271,35 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
       //   this.initTeEntToRemove()
     })
   }
+
+
+  /**
+* called, when user selected a the kind of property to add
+*/
+  addRoleSet(propertyToAdd: RoleSetState) {
+
+    // add a role set
+    const newRoleSetState: RoleSetState = {
+      ...propertyToAdd,
+      state: this.teEnState.state === 'editable' ? 'create-te-ent-role' : this.teEnState.state,
+      toggle: 'expanded',
+      roles: []
+    }
+
+    // add a form conrtol
+    this.formGroup.addControl(
+      roleSetKey(newRoleSetState), new FormControl(
+        newRoleSetState.roles,
+        [
+          Validators.required
+        ]
+      )
+    )
+
+    this.localStore.dispatch(this.actions.addRoleSet(newRoleSetState))
+
+  }
+
 
   // initTeEntToAdd() {
   //   Observable.zip(this.teEnt$, this.ngRedux.select<Project>('activeProject'))
@@ -425,6 +521,60 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit {
 
   // //Class of this peIt
   // dfhClass: DfhClass;
+
+
+
+  /****************************************
+   *  ControlValueAccessor implementation *
+   ****************************************/
+
+  /**
+   * Allows Angular to update the model.
+   * Update the model and changes needed for the view here.
+   */
+  writeValue(teEnt: InfTemporalEntity): void {
+
+    // take model from state in ngOnInit()
+
+  }
+
+
+  /**
+   * Allows Angular to register a function to call when the model changes.
+   * Save the function as a property to call later here.
+   */
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  /**
+   * gets replaced by angular on registerOnChange
+   * This function helps to type the onChange function for the use in this class.
+   */
+  onChange = (teEnt: InfTemporalEntity | null) => {
+  };
+
+  /**
+   * Allows Angular to register a function to call when the input has been touched.
+   * Save the function as a property to call later here.
+   */
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  /**
+  * gets replaced by angular on registerOnTouched
+  * Call this function when the form has been touched.
+  */
+  onTouched = () => {
+  };
+
+  markAsTouched() {
+    this.onTouched()
+    this.touched.emit()
+  }
+
+  @Output() touched: EventEmitter<void> = new EventEmitter();
 
 
 }

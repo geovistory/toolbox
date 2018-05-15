@@ -14,17 +14,10 @@ export const roleReducer =
   (lastState: IRoleState = INITIAL_STATE, action: RoleAction): IRoleState => {
 
     switch (action.type) {
-      case RoleActions.ROLE_TO_CREATE_UPDATED:
+      case RoleActions.INF_ROLE_UPDATED:
         lastState = {
           ...lastState,
-          roleToCreate: action.payload.roleToCreate
-        };
-        break;
-
-      case RoleActions.ROLE_TO_CREATE_UPDATED:
-        lastState = {
-          ...lastState,
-          roleToCreate: action.payload.roleToCreate
+          role: action.payload.role
         };
         break;
 
@@ -35,8 +28,15 @@ export const roleReducer =
         };
         break;
 
+      case RoleActions.START_EDITING_ROLE:
+        lastState = action.payload;
+        break;
 
-      /**
+      case RoleActions.STOP_EDITING_ROLE:
+        lastState = action.payload;
+        break;
+      
+        /**
       * If the role is outgoing, this means that it can be display role for the domain.
       * In this case, the entity_project_relation.is_display_role_for_domain will be adapted.
       * 
@@ -95,7 +95,7 @@ export const roleReducer =
           role: {
             ...lastState.role,
             fk_entity: action.payload.role.fk_entity
-          } 
+          }
         };
         break;
 

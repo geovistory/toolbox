@@ -45,12 +45,13 @@ export interface IRoleSetState {
     roleStatesInNoProjectVisible?: boolean
     
     //Roles currently being created
-    roleStatesToCreate?:IRoleState;
+    roleStatesToCreate?:IRoleStates;
     roleStatesToCreateVisible?: boolean
     
     //True during loading of roles in other projects and roles in no project    
     rolesNotInProjectLoading?:boolean;    
 
+    formGroup?: InfRole[];
 }
 
 
@@ -87,12 +88,13 @@ export class RoleSetState implements IRoleSetState {
     roleStatesInNoProjectVisible?: boolean
     
     //Roles currently being created
-    roleStatesToCreate?:IRoleState;
+    roleStatesToCreate?:IRoleStates;
     roleStatesToCreateVisible?: boolean
     
     //True during loading of roles in other projects and roles in no project    
     rolesNotInProjectLoading?:boolean;    
 
+    formGroup?: InfRole[];
 
     constructor(data?: IRoleSetState) {
         Object.assign(

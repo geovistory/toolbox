@@ -21,7 +21,7 @@ import { FieldsetEndComponent } from '../existence-time/fieldset-end/fieldset-en
 import { TeEntComponent } from './te-ent.component';
 import { TeEntRoleSetComponent } from '../te-ent-role-set/te-ent-role-set.component';
 import { TeEntRoleComponent } from '../te-ent-role/te-ent-role.component';
-import { PeItAppellationComponent } from '../pe-it-appellation/pe-it-appellation.component';
+import { AppellationComponent } from '../appellation/appellation.component';
 import { PeItLanguageComponent } from '../pe-it-language/pe-it-language.component';
 import { PeItEntityPreviewComponent } from '../pe-it-entity-preview/pe-it-entity-preview.component';
 import { PeItEntityAddComponent } from '../pe-it-entity-add/pe-it-entity-add.component';
@@ -65,7 +65,7 @@ export default sandboxOf(TeEntComponent, {
     PeItRoleSetComponent,
     TeEntRoleComponent,
     PeItComponent,
-    PeItAppellationComponent,
+    AppellationComponent,
     PeItLanguageComponent,
     PeItEntityPreviewComponent,
     PeItEntityAddComponent,

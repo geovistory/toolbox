@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter, ChangeDetectionStrategy, forwardRef } from '@angular/core';
 
 import { RoleComponent } from '../role/role.component';
 import { ActiveProjectService, EntityEditorService, InfRoleApi, InfTemporalEntity } from 'app/core';
@@ -12,6 +12,7 @@ import { Observable } from 'rxjs/Observable';
 import { roleReducer } from '../role/role.reducers';
 import { PeItRoleService } from '../../shared/pe-it-role.service';
 import { StateCreatorService } from '../../shared/state-creator.service';
+import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -21,7 +22,15 @@ import { StateCreatorService } from '../../shared/state-creator.service';
 @Component({
   selector: 'gv-pe-it-role',
   templateUrl: './pe-it-role.component.html',
-  styleUrls: ['./pe-it-role.component.scss']
+  styleUrls: ['./pe-it-role.component.scss'],
+  changeDetection:ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => PeItRoleComponent),
+      multi: true
+    }
+  ]
 })
 export class PeItRoleComponent extends RoleComponent implements OnInit {
 
@@ -33,9 +42,10 @@ export class PeItRoleComponent extends RoleComponent implements OnInit {
     roleApi: InfRoleApi,
     ngRedux: NgRedux<IRoleState>,
     actions: RoleActions,
-    protected stateCreator: StateCreatorService
+    protected stateCreator: StateCreatorService,
+    fb: FormBuilder
   ) {
-    super(activeProjectService, eprService, ref, entityEditor, roleApi, ngRedux, actions, stateCreator)
+    super(activeProjectService, eprService, ref, entityEditor, roleApi, ngRedux, actions, stateCreator, fb)
   }
 
 

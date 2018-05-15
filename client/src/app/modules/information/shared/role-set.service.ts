@@ -93,4 +93,28 @@ export class RoleSetService {
   }
 
 
+  /**
+   * Verify if more roles can be added in given roleSet
+   *
+   * @param  quantityOfRoles  quantity of roles in roleSet
+   * @param  roleSet roleSetState
+   * @return  true, if more roles are possible
+   */
+  moreRolesPossible(quantityOfRoles: number, roleSet: IRoleSetState): boolean {
+    let max, min;
+
+    if (roleSet.isOutgoing) {
+      max = roleSet.property.dfh_range_instances_max_quantifier;
+    }
+    else {
+      max = roleSet.property.dfh_domain_instances_max_quantifier;
+    }
+
+    max = (max === -1 ? Number.POSITIVE_INFINITY : max);
+
+    /** increase the quantityOfRoles by one and check if this would still be ok */
+    return ((quantityOfRoles + 1) <= max)
+
+  }
+
 }

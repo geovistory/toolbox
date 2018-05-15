@@ -1,0 +1,30 @@
+<div [ngClass]="{'dev-view': entityEditor.devView}">
+
+  <span *ngIf="entityEditor.devView">
+      [state: {{peItAppeState}}]
+  </span>
+
+
+  <div class="d-flex flex-row" *ngIf="peItAppeState === 'add-pe-it' || peItAppeState === 'add' ">
+
+    <div class="gv-flex-grow-1">
+      <gv-appellation-label-view [appellation]="appellation"></gv-appellation-label-view>
+    </div>
+
+  </div>
+
+  <div class="d-flex flex-row" *ngIf="peItAppeState === 'editable'">
+
+    <div class="gv-flex-grow-1">
+      <gv-appellation-label-view [appellation]="appellation"></gv-appellation-label-view>
+    </div>
+
+  </div>
+
+  <form [formGroup]="formGroup" class="d-flex flex-row" *ngIf=" peItAppeState === 'edit' || peItAppeState === 'create' || peItAppeState === 'create-pe-it' || peItAppeState === 'create-pe-it-role'">
+
+    <gv-appellation-label-editor formControlName="appellationLabel" (touched)="markAsTouched()"></gv-appellation-label-editor>
+
+  </form>
+
+</div>

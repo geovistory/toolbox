@@ -12,7 +12,9 @@ import { EntityCreateNewActions } from './entity-add-create-new.actions';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { StateToDataService } from '../../shared/state-to-data.service';
 import { entityCreateNewReducer } from './entity-add-create-new.reducer';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'gv-entity-add-create-new',
   templateUrl: './entity-add-create-new.component.html',

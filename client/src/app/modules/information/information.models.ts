@@ -12,8 +12,9 @@ export type EditorStates =
     | 'add'  // allow to add existing data to the project.
     | 'add-pe-it'  // allow to add an existing PeIt to the project.
     | 'selectProp'
-    | 'create-te-ent'  // create a new TeEnt.
-    | 'create-pe-it'; // create a new PeIt.
+    | 'create-pe-it' // create a new PeIt.
+    | 'create-pe-it-role'  // create a pe-it-role at once with child te-ent and te-ent-roles 
+    | 'create-te-ent-role'  // create a pe-te-ent-role
 
 
 // export interface ITeRoleWrapper {

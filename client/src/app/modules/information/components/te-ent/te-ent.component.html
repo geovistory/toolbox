@@ -5,15 +5,18 @@
   </span>
 
   <!--
-  ************************* Editable State ******************* -->
-  <div class="card gv-name" *ngIf="(state$ | async) === 'editable'">
+  ************************* Editable & Create PeIt-Role States ******************* -->
+  <div class="card gv-name" *ngIf="(state$ | async) === 'editable' || (state$ | async) === 'create-pe-it-role'">
 
 
     <ng-container *ngTemplateOutlet="header"></ng-container>
 
     <div [@slideInOut]="(toggle$|async)">
 
-      <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"></gv-te-ent-role-set>
+      <form [formGroup]="formGroup" *ngIf="formGroup">
+        <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
+          [formControlName]="entry.key" (touched)="markAsTouched()" (onRemoveRoleSet)="removeRoleSet(entry.key)"></gv-te-ent-role-set>
+      </form>
 
       <ng-container *ngTemplateOutlet="dating"></ng-container>
 
@@ -73,7 +76,7 @@
   <div class="card gv-name" *ngIf="(state$ | async) === 'add-pe-it'">
 
     <ng-container *ngTemplateOutlet="header"></ng-container>
-    
+
     <div [@slideInOut]="(toggle$|async)">
 
       <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"></gv-te-ent-role-set>
@@ -87,21 +90,24 @@
 
 
   <!--
-  ************************* Create State ******************* -->
+  ************************* Create PeIt State ******************* -->
 
-  <div class="card gv-name" *ngIf="(state$ | async) === 'create'">
-    <!-- 
-    <gv-te-ent-role-set *ngFor="let property of outgoingProperties" [roles]="property.roles" [parentRole]="parentRole" [fkProperty]="property.dfh_pk_property"
-      [pointTo]="'PeIt'" [state]="'create'" [isOutgoing]="true" (readyToCreate)="propertyReadyToCreate($event)" (notReadyToCreate)="propertyNotReadyToCreate()"></gv-te-ent-role-set>
+  <div class="card gv-name" *ngIf="(state$ | async) === 'create-pe-it'">
 
-    <gv-te-ent-role-set *ngFor="let property of ingoingProperties" [roles]="property.roles" [parentRole]="parentRole" [fkProperty]="property.dfh_pk_property"
-      [pointTo]="'PeIt'" [state]="'create'" [isOutgoing]="false" (readyToCreate)="propertyReadyToCreate($event)" (notReadyToCreate)="propertyNotReadyToCreate()"></gv-te-ent-role-set> -->
+    <ng-container *ngTemplateOutlet="header"></ng-container>
 
-    <ng-container *ngTemplateOutlet="dating"></ng-container>
+    <div [@slideInOut]="(toggle$|async)">
+
+      <form [formGroup]="formGroup" *ngIf="formGroup">
+        <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
+          [formControlName]="entry.key" (touched)="markAsTouched()" class="form-control rounded-0"></gv-te-ent-role-set>
+      </form>
+
+      <ng-container *ngTemplateOutlet="dating"></ng-container>
+
+    </div>
 
   </div>
-
-
 
 
   <!--

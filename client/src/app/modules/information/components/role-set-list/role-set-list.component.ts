@@ -25,6 +25,7 @@ import { ITeEntState } from '../te-ent/te-ent.model';
 import { PeItActions } from '../../containers/pe-it/pe-it.actions';
 import { TeEntActions } from '../te-ent/te-ent.actions';
 import { RoleSetListService } from '../../shared/role-set-list.service';
+import { FormGroup } from '@angular/forms';
 
 export class RoleSetListComponent implements OnInit {
 
@@ -61,6 +62,11 @@ export class RoleSetListComponent implements OnInit {
    * class properties filled by observables 
    */
   roleSets: {}
+
+  /**
+   * Properties
+   */
+  formGroup: FormGroup;
 
   constructor(
     protected classService: ClassService,
@@ -124,22 +130,7 @@ export class RoleSetListComponent implements OnInit {
     this.localStore.dispatch(this.actions.stopSelectProperty())
   }
 
-  /**
-  * called, when user selected a the kind of property to add
-  */
-  addRoleSet(propertyToAdd: RoleSetState) {
 
-    // add a role set
-    const newRoleSetState: RoleSetState = {
-      ...propertyToAdd,
-      state: 'create',
-      toggle: 'expanded',
-      roles: []
-    }
-
-    this.localStore.dispatch(this.actions.addRoleSet(newRoleSetState))
-
-  }
 
 
 
@@ -225,21 +216,26 @@ export class RoleSetListComponent implements OnInit {
   * Method to find out if a property section is already added
   */
   roleSetAdded(roleSetToAdd: RoleSetState): boolean {
+    if (!this.roleSets) return false;
     const roleSet: RoleSetState = this.roleSets[roleSetKey(roleSetToAdd)];
     if (roleSet && roleSet.isOutgoing === roleSetToAdd.isOutgoing) return true;
     else return false
   }
 
 
-  // /**
-  // * Called when the user closes an empty property section
-  // */
-  // onRemovePropertySectionReq(propSection: IRoleSetState) {
-  //   var index = this.roleSets.indexOf(propSection, 0);
-  //   if (index > -1) {
-  //     this.roleSets.splice(index, 1);
-  //   }
-  // }
+
+
+  /**
+  * Called when the user closes an empty roleSet
+  */
+  removeRoleSet(key: string) {
+
+    /** remove the roleSet from state */
+    this.localStore.dispatch(this.actions.removeRoleSet(key));
+    
+    /** remove the formControl from form */
+    this.formGroup.removeControl(key)
+  }
 
   // /**
   // * called when a child propertComponent has added new roles

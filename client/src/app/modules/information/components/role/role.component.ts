@@ -13,6 +13,9 @@ import { IRoleStates, IRoleSetState } from '../role-set/role-set.model';
 import { RoleService } from '../../shared/role.service';
 import { StateToDataService } from '../../shared/state-to-data.service';
 import { StateCreatorService } from '../../shared/state-creator.service';
+import { FormGroup, Validators, FormControl, ControlValueAccessor, FormBuilder } from '@angular/forms';
+import { ɵPRE_STYLE } from '@angular/animations';
+import { equals } from 'ramda';
 
 export enum RolePointToEnum {
   PeIt = "PeIt",
@@ -26,7 +29,7 @@ export interface AppellationStdBool {
   role?: InfRole;
 }
 
-export class RoleComponent implements OnInit {
+export class RoleComponent implements OnInit, ControlValueAccessor {
   @Input() parentPath: string[];
   @Input() intermediatePathSegment: string;
   @Input() index: string;
@@ -64,6 +67,28 @@ export class RoleComponent implements OnInit {
   roleState: IRoleState;
   parentRoleSetState: IRoleSetState;
 
+  // names of child states and of the RoleState object with the key of the value within the child state 
+  childStatesConfig: { [key: string]: { nameInState: string, nameInApi: string } } = {
+    'childTeEnt': {
+      nameInState: 'teEnt',
+      nameInApi: 'temporal_entity'
+    },
+    'appeState': {
+      nameInState: 'appellation',
+      nameInApi: 'appellation'
+    },
+    'langState': {
+      nameInState: 'language',
+      nameInApi: 'language'
+    },
+    'timePrimitiveState': {
+      nameInState: 'timePrimitive',
+      nameInApi: 'time_primitive'
+    }
+  };
+
+  formControlName: string;
+  formControl:FormControl;
   /**
   * Outputs
   */
@@ -71,7 +96,6 @@ export class RoleComponent implements OnInit {
   @Output() onRequestStandard: EventEmitter<{ roleState: IRoleState, key: string }> = new EventEmitter();
 
   @Output() roleCreated: EventEmitter<IRoleState> = new EventEmitter();
-
 
   constructor(
     protected activeProjectService: ActiveProjectService,
@@ -81,14 +105,69 @@ export class RoleComponent implements OnInit {
     protected roleApi: InfRoleApi,
     protected ngRedux: NgRedux<IRoleState>,
     protected actions: RoleActions,
-    protected stateCreator: StateCreatorService
-  ) { }
+    protected stateCreator: StateCreatorService,
+    private fb: FormBuilder
+  ) {
+    // create the formGroup used by the form to edit the role
+    this.formGroup = this.fb.group({});
+
+    // subscribe to form changes here
+    this.formGroup.valueChanges.subscribe(val => {
+      if (this.formGroup.get(this.formControlName)) {
+
+      }
+    })
+  }
 
   ngOnInit() {
 
     this.initSubscriptions();
 
     // this.initState();
+
+    // add a control for the child of the role
+    Object.keys(this.childStatesConfig).forEach((key) => {
+      if (this.roleState[key]) {
+
+
+        const childStateConfig = this.childStatesConfig[key]
+        this.formControlName = childStateConfig.nameInApi;
+        const formControlValue = this.roleState[key][childStateConfig.nameInState];
+        this.formControl = new FormControl(
+          formControlValue,
+          [
+            Validators.required
+          ]
+        )
+
+        // subscribe to form control changes 
+        this.formControl.valueChanges.subscribe(val => {
+
+            // build a InfRole
+            let role: InfRole = new InfRole(this.roleState.role);
+
+            // add the form control value
+            role[this.formControlName] = this.formGroup.get(this.formControlName).value;
+
+            // send the changes to the parent form
+            if (this.formControl.valid) {
+              this.onChange(role)
+            }
+            else {
+              this.onChange(null)
+            }
+
+            // // update the redux state, if the form value differs from the state value 
+            // this.localStore.dispatch(this.actions.infRoleUpdated(role))
+            // if (!equals(this.roleState.role, role)) {
+            // }          
+
+        })
+
+        this.formGroup.addControl(this.formControlName, this.formControl)
+
+      }
+    })
 
     this.init();
   }
@@ -120,7 +199,7 @@ export class RoleComponent implements OnInit {
     this.property$.subscribe(property => {
       const roleToCreate = new InfRole();
       roleToCreate.fk_property = property.dfh_pk_property;
-      this.localStore.dispatch(this.actions.roleToCreateUpdated(roleToCreate))
+      this.localStore.dispatch(this.actions.infRoleUpdated(roleToCreate))
     })
   }
 
@@ -148,7 +227,7 @@ export class RoleComponent implements OnInit {
         // add an epr
         roleToAdd.entity_version_project_rels = [eprToAdd]
 
-        this.localStore.dispatch(this.actions.roleToAddUpdated(roleToAdd))
+        this.localStore.dispatch(this.actions.infRoleUpdated(roleToAdd))
       })
   }
 
@@ -193,7 +272,6 @@ export class RoleComponent implements OnInit {
 
 
 
-
   //   /**
   //   * Inputs
   //   */
@@ -231,7 +309,6 @@ export class RoleComponent implements OnInit {
 
   //  @Output() readyToAdd: EventEmitter<InfRole> = new EventEmitter();
 
-   @Output() roleCreationCanceled: EventEmitter<void> = new EventEmitter();
 
 
   //  /**
@@ -329,32 +406,23 @@ export class RoleComponent implements OnInit {
 
       // create RoleState with child PeItState of selected peIt
       this.stateCreator.initializeRoleState(newRole[0], 'editable', this.roleState.isOutgoing)
-      .subscribe(roleState=>{
-        
-        // add the initialized peItState to the new RoleState
-        roleState.peItState = this.roleState.peItState;
+        .subscribe(roleState => {
 
-        // emit the RoleState to TeEntRoleSet
-        this.roleCreated.emit(roleState);
+          // add the initialized peItState to the new RoleState
+          roleState.peItState = this.roleState.peItState;
 
-        // remove this RoleState (which was only for create)
-        this.localStore.dispatch(this.actions.roleStateRemoved())
-      });
+          // emit the RoleState to TeEntRoleSet
+          this.roleCreated.emit(roleState);
+
+          // remove this RoleState (which was only for create)
+          this.localStore.dispatch(this.actions.roleStateRemoved())
+        });
     })
 
 
   }
 
-  /**
-  * cancelCreateRole - called when user cancels to create a role
-  *
-  */
-  cancelCreateRole() {
 
-    this.localStore.dispatch(this.actions.roleStateRemoved());
-
-    this.roleCreationCanceled.emit()
-  }
 
 
   teEntReadyToCreate(teEnt: InfTemporalEntity) {
@@ -471,6 +539,62 @@ export class RoleComponent implements OnInit {
     // this.appellation = appeStd.appellation;
     // this.appeChange.emit(appeStd)
   }
+
+
+
+
+  /****************************************
+   *  ControlValueAccessor implementation *
+   ****************************************/
+  formGroup: FormGroup;
+
+  /**
+   * Allows Angular to update the model.
+   * Update the model and changes needed for the view here.
+   */
+  writeValue(role: InfRole): void {
+
+    // the model is taken from the state on init
+
+  }
+
+
+  /**
+   * Allows Angular to register a function to call when the model changes.
+   * Save the function as a property to call later here.
+   */
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  /**
+   * gets replaced by angular on registerOnChange
+   * This function helps to type the onChange function for the use in this class.
+   */
+  onChange = (peIt: InfRole | null) => {
+  };
+
+  /**
+   * Allows Angular to register a function to call when the input has been touched.
+   * Save the function as a property to call later here.
+   */
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  /**
+  * gets replaced by angular on registerOnTouched
+  * Call this function when the form has been touched.
+  */
+  onTouched = () => {
+  };
+
+  markAsTouched() {
+    this.onTouched()
+    this.touched.emit()
+  }
+
+  @Output() touched: EventEmitter<void> = new EventEmitter();
 
 
 }

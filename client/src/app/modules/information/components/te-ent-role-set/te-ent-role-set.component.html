@@ -16,9 +16,8 @@
 
 
   <!--
-  ************************* Editable State && Create State ************************* -->
-
-  <span *ngIf="(state$ | async) === 'editable' || (state$ | async) === 'create'">
+  ************************* Editable State && Create-te-ent-role ************************* -->
+  <span *ngIf="(state$ | async) === 'editable' || (state$ | async) === 'create-te-ent-role'">
 
 
     <ng-container *ngTemplateOutlet="header"></ng-container>
@@ -29,10 +28,10 @@
 
       <gv-te-ent-role *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
         (readyToAdd)="onRoleReadyToAdd($event)" (appeChange)="emitAppeChange($event)" (roleRemoved)="onRoleRemoved($event)"
-        (roleCreated)="onRoleCreated($event)" (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
+        (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
 
       <!-- If no roles in Project, show a big add button -->
-      <div class="card-body" *ngIf=" (roleStatesInProject$ | async)?.length === 0 && addButtonVisible">
+      <div class="card-body" *ngIf="!(roleStatesInProject$ | async) && !(roleStatesToCreate$ | async) && addButtonVisible">
         <button class="btn btn-primary" (click)="startAddingRole()">
           Add {{(label$ | async).default}}
         </button>
@@ -44,12 +43,21 @@
 
       <!-- Roles currently being created -->
 
-      <div class="border-top border-gray-500" *ngIf="((roleStatesToCreate$|async)?.roleStateToCreate)">
-        <div class="card-body">
+      <div class="border-top border-gray-500" *ngIf="((roleStatesToCreate$|async) | keys).length">
+
+        <!-- <div class="card-body">
           Add a {{(label$ | async).sg}}
-        </div>
-        <gv-te-ent-role *ngFor="let entry of (roleStatesToCreate$ | async) | keys; trackBy:getKey" [parentPath]="basePath" intermediatePathSegment="roleStatesToCreate"
-          [index]="entry.key" (roleCreationCanceled)="onRoleCreationCanceled($event)" (roleCreated)="onRoleCreated($event)"></gv-te-ent-role>
+        </div> -->
+
+        <form [formGroup]="formGroup" *ngIf="formGroup" [connect]="formValPath">
+
+          <div *ngFor="let entry of (roleStatesToCreate$ | async) | keys; trackBy:getKey">
+
+            <gv-te-ent-role *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="roleStatesToCreate"
+              [formControlName]="entry.key" (touched)="markAsTouched()" class="form-control rounded-0"></gv-te-ent-role>
+          </div>
+        </form>
+
       </div>
 
 
@@ -124,6 +132,53 @@
   </span>
 
 
+  <!--
+  ************************* Create-pe-it-role ************************* -->
+  <span *ngIf="(state$ | async) === 'create-pe-it-role'">
+
+
+    <ng-container *ngTemplateOutlet="header"></ng-container>
+
+    <div [@slideInOut]="(toggle$|async)">
+
+      <!-- If no roles in Project, show a big add button -->
+      <div class="card-body" *ngIf="!(roleStatesInProject$ | async) && !((roleStatesToCreate$ | async) | keys).length && addButtonVisible">
+        <button class="btn btn-outline-primary" (click)="startAddingRole()">
+            Add a {{(label$ | async).sg}}
+        </button>
+        <button class="btn btn-link pull-right" (click)="removeRoleSet()">
+          cancel
+        </button>
+      </div>
+
+
+      <!-- Roles currently being created -->
+
+      <div class="border-top border-gray-500" *ngIf="((roleStatesToCreate$|async) | keys).length">
+
+        <!-- <div class="card-body">
+            Add a {{(label$ | async).sg}}
+          </div> -->
+
+        <form [formGroup]="formGroup" *ngIf="formGroup">
+          <div *ngFor="let entry of (roleStatesToCreate$ | async) | keys; trackBy:getKey">
+            <gv-te-ent-role *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="roleStatesToCreate"
+              [formControlName]="entry.key" (touched)="markAsTouched()" class="form-control rounded-0"></gv-te-ent-role>
+
+            <gv-control-messages class="pl-2" *ngIf="formGroup.get(entry.key)" [control]="formGroup.get(entry.key)"></gv-control-messages>
+
+            <div class="card-body">
+              <button type="button" class="btn btn-link" (click)="cancelCreateRole(entry.key)">Cancel</button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </span>
+
+
 
   <!--
   ************************* Add-Pe-It State ************************* -->
@@ -134,7 +189,8 @@
 
     <div [@slideInOut]="(toggle$|async)">
       <div class="card-body">
-        <gv-te-ent-role *ngFor="let entry of (roleStatesInOtherProjects$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="roleStatesInOtherProjects"></gv-te-ent-role>
+        <gv-te-ent-role *ngFor="let entry of (roleStatesInOtherProjects$ | async) | keys; trackBy:getKey" [parentPath]="basePath"
+          [index]="entry.key" intermediatePathSegment="roleStatesInOtherProjects"></gv-te-ent-role>
       </div>
     </div>
 
@@ -153,6 +209,25 @@
 
     <div class="card-body">
       <gv-te-ent-role *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"></gv-te-ent-role>
+    </div>
+
+  </span>
+
+
+  <!--
+  ************************* Create PeIt State ************************* -->
+
+  <span *ngIf="(state$ | async) === 'create-pe-it'">
+
+    <ng-container *ngTemplateOutlet="header"></ng-container>
+
+    <div [@slideInOut]="(toggle$|async)">
+      <form [formGroup]="formGroup" *ngIf="formGroup">
+        <div *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey">
+          <gv-te-ent-role *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="roleStatesInProject"
+            [formControlName]="entry.key" (touched)="markAsTouched()" class="form-control rounded-0"></gv-te-ent-role>
+        </div>
+      </form>
     </div>
 
   </span>

@@ -32,7 +32,7 @@ import { EntityAddSearchExistingComponent } from './components/entity-add-search
 import { EntityEditorSettingsComponent } from './components/entity-editor-settings/entity-editor-settings.component';
 import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
 import { ExistenceTimeComponent } from './components/existence-time/existence-time.component';
-import { PeItAppellationComponent } from './components/pe-it-appellation/pe-it-appellation.component';
+import { AppellationComponent } from './components/appellation/appellation.component';
 import { PeItEntityAddComponent } from './components/pe-it-entity-add/pe-it-entity-add.component';
 import { PeItEntityPreviewComponent } from './components/pe-it-entity-preview/pe-it-entity-preview.component';
 import { PeItEntityPreviewModalComponent } from './components/pe-it-entity-preview-modal/pe-it-entity-preview-modal.component';
@@ -84,6 +84,8 @@ import { StateCreatorService } from './shared/state-creator.service';
 import { StateToDataService } from './shared/state-to-data.service';
 import { EntityAddExistingActions } from './components/entity-add-add-existing/entity-add-add-existing.actions';
 import { EntityCreateNewActions } from './components/entity-add-create-new/entity-add-create-new.actions';
+import { CreatePeItFormComponent } from './components/create-pe-it-form/create-pe-it-form.component';
+import { NgReduxFormModule } from '@angular-redux/form';
 
 
 @NgModule({
@@ -93,7 +95,7 @@ import { EntityCreateNewActions } from './components/entity-add-create-new/entit
     ReactiveFormsModule,
     // BrowserAnimationsModule,
 
-
+    NgReduxFormModule,
     SlimLoadingBarModule,
     NgbModule,
     // ElasticInputModule,
@@ -124,7 +126,7 @@ import { EntityCreateNewActions } from './components/entity-add-create-new/entit
     EntitySearchHitComponent,
     ExistenceTimeComponent,
     PeItComponent,
-    PeItAppellationComponent,
+    AppellationComponent,
     PeItEntityAddComponent,
     PeItEntityPreviewComponent,
     PeItEntityPreviewModalComponent,
@@ -146,7 +148,8 @@ import { EntityCreateNewActions } from './components/entity-add-create-new/entit
     TeEntExistenceTimeComponent,
     PropertyPipe,
     PeItTimelineComponent,
-    KeysPipe
+    KeysPipe,
+    CreatePeItFormComponent
   ],
   providers: [
     RoleSetListActions,

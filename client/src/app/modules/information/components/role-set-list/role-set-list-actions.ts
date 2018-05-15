@@ -12,7 +12,7 @@ export function roleSetKey(roleSet: RoleSetState) {
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = IRoleSetListState;
-interface MetaData { };
+interface MetaData { [key:string]:any };
 export type RoleSetListAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
@@ -30,13 +30,15 @@ export class RoleSetListActions {
 
   static readonly ROLE_SET_ADDED = 'ROLE_SET_ADDED';
 
+  static readonly ROLE_SET_REMOVED = 'ROLE_SET_REMOVED';
+
   static readonly ROLE_SET_LIST_DISPLAY_LABEL_UPDATED = 'ROLE_SET_LIST_DISPLAY_LABEL_UPDATED';
 
 
   @dispatch()
 
 
-  roleSetsListDisplayLabelUpdated = (label:string): RoleSetListAction => ({
+  roleSetsListDisplayLabelUpdated = (label: string): RoleSetListAction => ({
     type: RoleSetListActions.ROLE_SET_LIST_DISPLAY_LABEL_UPDATED,
     meta: null,
     payload: {
@@ -80,6 +82,14 @@ export class RoleSetListActions {
     }
   })
 
+  /**
+* called, when user selected a the kind of property to add
+*/
+  removeRoleSet = (key: string): RoleSetListAction => ({
+    type: RoleSetListActions.ROLE_SET_REMOVED,
+    meta: { key },
+    payload: null
+  })
 
 
   // fkClassAndRolesInitialized = (fkClass: number, dfhClass: DfhClass, roles: InfRole[]): RoleSetListAction => ({

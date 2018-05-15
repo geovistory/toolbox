@@ -24,6 +24,19 @@ import { PropertyService } from '../../shared/property.service';
 import { UtilitiesService } from '../../shared/utilities.service';
 import { EntityEditorService } from 'app/core/entity-editor/entity-editor.service';
 import { TimePrimitiveComponent } from '../time-primitive/time-primitive.component';
+import { NgRedux } from '@angular-redux/store';
+import { ActiveProjectActions } from '../../../../core/active-project/active-project.action';
+import { RoleSetActions } from '../role-set/role-set.actions';
+import { RoleActions } from '../role/role.actions';
+import { RoleSetService } from '../../shared/role-set.service';
+import { TeEntActions } from '../te-ent/te-ent.actions';
+import { StateCreatorService } from '../../shared/state-creator.service';
+import { ClassService } from '../../shared/class.service';
+import { PeItService } from '../../shared/pe-it.service';
+import { ActivePeItService } from '../../shared/active-pe-it.service';
+import { EprService } from '../../shared/epr.service';
+import { RoleSetListService } from '../../shared/role-set-list.service';
+import { ConfigService } from '../../shared/config.service';
 
 
 
@@ -46,7 +59,22 @@ export default sandboxOf(ExistenceTimeComponent, {
     PropertyService,
     UtilitiesService,
     EntityEditorService,
-    DatePipe
+    DatePipe,
+    NgRedux,
+    ActiveProjectService,
+    ActiveProjectActions,
+    RoleSetActions,
+    RoleSetService,
+    RoleActions,
+    TeEntActions,
+    PeItService,
+    StateCreatorService,
+    ClassService,
+    ActivePeItService,
+    EprService,
+    RoleSetListService,
+    ConfigService,
+
   ]
 })
 
@@ -55,7 +83,7 @@ export default sandboxOf(ExistenceTimeComponent, {
     <div class="d-flex justify-content-center mt-5">
       <div style="width:430px">
 
-        <gv-existence-time [state]="'editable'"></gv-existence-time>
+        <gv-existence-time [parentPath]="['']" [state]="'editable'"></gv-existence-time>
 
       </div>
     </div>

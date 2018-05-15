@@ -4,6 +4,9 @@ import { Route, Routes, RouterModule } from '@angular/router';
 import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
 import { EntityEditorComponent } from './containers/entity-editor/entity.editor.component';
 
+// TODO: This line is temporary and can be removed when the form to create peIt is finished
+import { CreatePeItFormComponent } from './components/create-pe-it-form/create-pe-it-form.component';
+
 
 const routes: Routes = [
   {
@@ -15,6 +18,11 @@ const routes: Routes = [
     component: EntityEditorComponent
   },
 
+  // TODO: This route is temporary and can be removed when the form to create peIt is finished
+  {
+    path: 'temp-create-pe-it',
+    component: CreatePeItFormComponent
+  }
 ];
 
 @NgModule({

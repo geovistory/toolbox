@@ -37,7 +37,10 @@ export class RoleSetActions {
   static readonly ALTERNATIVE_ROLES_LOADED = 'ALTERNATIVE_ROLES_LOADED';
 
   static readonly START_CREATE_NEW_ROLE = 'START_CREATE_NEW_ROLE';
-  static readonly STOP_CREATE_NEW_ROLE = 'STOP_CREATE_NEW_ROLE';
+  static readonly STOP_CREATE_NEW_ROLE = 'STOP_CREATE_NEW_ROLE'; // removes all roleStatesToCreate
+
+  static readonly ROLE_CREATION_CANCELLED = 'ROLE_CREATION_CANCELLED'; // removes one roleStateToCreate
+
 
   static readonly ROLE_SET_UPDATED = 'ROLE_SET_UPDATED';
   static readonly ROLE_READY_TO_CREATE = 'ROLE_READY_TO_CREATE';
@@ -126,6 +129,15 @@ export class RoleSetActions {
       roleStatesInOtherProjects: undefined,
       roleStatesInNoProject: undefined,
       roleStatesToCreate: undefined
+    }
+  })
+
+
+  roleCreationCancelled = (roleStatesToCreate:IRoleStates): RoleSetAction => ({
+    type: RoleSetActions.ROLE_CREATION_CANCELLED,
+    meta: null,
+    payload: {
+      roleStatesToCreate
     }
   })
 

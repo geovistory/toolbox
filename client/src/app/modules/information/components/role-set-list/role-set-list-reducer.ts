@@ -49,6 +49,16 @@ export const roleSetListReducer =
         }
         break;
 
+        case RoleSetListActions.ROLE_SET_REMOVED:
+        let newRoleSets = Object.assign({}, lastState.roleSets);
+        delete newRoleSets[action.meta.key];
+
+        lastState = {
+          ...lastState,
+          roleSets: newRoleSets
+        }
+        break;
+
 
       // case RoleSetListActions.FK_CLASS_AND_ROLES_INITIALIZED:
       //   lastState = {

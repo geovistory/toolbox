@@ -21,6 +21,7 @@ import { NumberSymbol } from '@angular/common';
 import { RoleSetListService } from '../../shared/role-set-list.service';
 import { peItReducer } from '../../containers/pe-it/pe-it.reducer';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { FormBuilder } from '@angular/forms';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -66,9 +67,10 @@ export class PeItEntityPreviewComponent extends PeItComponent implements OnInit 
     private router: Router,
     private route: ActivatedRoute,
     private eprApi: InfEntityProjectRelApi,
-    roleSetListService: RoleSetListService
+    roleSetListService: RoleSetListService,
+    fb: FormBuilder
   ) {
-    super(peItApi, peItService, propertyPipe, activePeItService, slimLoadingBarService, entityEditor, changeDetector, ngRedux, actions, classService, roleService, propertyService, roleSetListService)
+    super(peItApi, peItService, propertyPipe, activePeItService, slimLoadingBarService, entityEditor, changeDetector, ngRedux, actions, classService, roleService, propertyService, roleSetListService, fb)
   }
 
   ngOnChanges() {

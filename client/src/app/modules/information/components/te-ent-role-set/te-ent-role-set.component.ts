@@ -1,6 +1,6 @@
 import {
   Component, OnChanges, OnInit, Input, Output, ViewChildren,
-  QueryList, EventEmitter, ChangeDetectorRef
+  QueryList, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy, forwardRef
 } from '@angular/core';
 import {
   trigger,
@@ -34,6 +34,7 @@ import { ITeEntState } from '../te-ent/te-ent.model';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { ClassService } from '../../shared/class.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { FormBuilder, NG_VALUE_ACCESSOR, FormGroup, Validators, FormControl } from '@angular/forms';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -78,6 +79,14 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
         })
       ])))
     ])
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => TeEntRoleSetComponent),
+      multi: true
+    }
   ]
 })
 export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
@@ -117,9 +126,10 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
     roleStore: NgRedux<IRoleState>,
     roleActions: RoleActions,
     protected stateCreator: StateCreatorService,
-    protected classService: ClassService
+    protected classService: ClassService,
+    fb: FormBuilder
   ) {
-    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService)
+    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
   }
 
   init() {
@@ -186,7 +196,7 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
     //   const roles = this.roleSetState.roles;
     //   const parentRole = this.parentRoleState.role;
     //   if (roles && roles.length) {
-         
+
     //       // If there are roles, we are obviously not in create state.
     //       // If all of this.roles are identical with the parent role
     //       // of the parent teEnt return true to say that this is circular
@@ -208,7 +218,7 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
     //       if (roles.length === count) {
     //         return true;
     //       }
-        
+
     //   }
 
     //   if (
@@ -239,9 +249,17 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
 
     this.localStore.dispatch(this.actions.startAddingRole())
 
+
     const fkProperty = this.roleSetState.property.dfh_pk_property;
     const fkTemporalEntity = this.parentTeEntState.teEnt.pk_entity;
     const fkProject = this.activeProject.project.pk_project;
+
+    // in case we are creating a new peItRole, the intermediate teEnt is not yet persisted and
+    // no altenatives can be searched
+    if (!fkTemporalEntity) {
+      this.startCreateNewRole();
+      return;
+    }
 
     const waitAtLeast = timer(800);
     const apiCall = this.roleApi.alternativesNotInProjectByTeEntPk(fkTemporalEntity, fkProperty, fkProject)
@@ -255,14 +273,6 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
         const inOther$ = this.stateCreator.initializeRoleStates(rolesInOtherProjects, 'add', this.roleSetState.isOutgoing)
         const inNo$ = this.stateCreator.initializeRoleStates(rolesInNoProject, 'add', this.roleSetState.isOutgoing)
 
-        inOther$.subscribe(a => {
-          a
-        })
-
-        inNo$.subscribe(a => {
-          a
-        })
-
         Observable.combineLatest(inOther$, inNo$).subscribe(results => {
           const roleStatesInOtherProjects = results[0], roleStatesInNoProjects = results[1]
 
@@ -270,11 +280,11 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
             roleStatesInOtherProjects,
             roleStatesInNoProjects
           ))
+          if (rolesInOtherProjects.length === 0) {
+            this.startCreateNewRole();
+          }
         })
 
-        if (rolesInOtherProjects.length === 0) {
-          this.startCreateNewRole();
-        }
       })
 
   }
@@ -294,7 +304,10 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
   * Creates a new IRoleStates of the kind of property of this component
   * and pointing to the parent persistent item
   */
+
+
   startCreateNewRole() {
+
     const roleToCreate = new InfRole();
     roleToCreate.fk_property = this.roleSetState.property.dfh_pk_property;
     roleToCreate.fk_temporal_entity = this.parentTeEntState.teEnt.pk_entity;
@@ -302,8 +315,23 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
     this.classService.getByPk(this.roleSetState.targetClassPk).subscribe(targetDfhClass => {
       const options: IRoleState = { targetDfhClass }
 
-      this.stateCreator.initializeRoleState(roleToCreate, 'create', this.roleSetState.isOutgoing, options).subscribe(roleStateToCreate => {
-        const roleStatesToCreate: IRoleStates = { 'roleStateToCreate': roleStateToCreate }
+      const state = this.roleSetState.state == 'editable' ? 'create-te-ent-role' : this.roleSetState.state;
+
+      this.stateCreator.initializeRoleState(roleToCreate, state, this.roleSetState.isOutgoing, options).subscribe(roleStateToCreate => {
+
+        /** add a form control */
+        const formControlName = 'new_role_' + this.createFormControlCount; // TODO: create this name roleSetKey function
+        this.createFormControlCount++;
+        this.formGroup.addControl(formControlName, new FormControl(
+          roleStateToCreate.role,
+          [
+            Validators.required
+          ]
+        ))
+
+        /** update the state */
+        const roleStatesToCreate: IRoleStates = {};
+        roleStatesToCreate[formControlName] = roleStateToCreate;
         this.localStore.dispatch(this.actions.startCreateNewRole(roleStatesToCreate))
       })
     })

@@ -3,9 +3,9 @@
     <ng-container *ngTemplateOutlet="dev"></ng-container>
   </span>
   <!--
-    ************************* Editable State ************************* -->
+    ************************* Editable State & Create PeIt-Role State ************************* -->
 
-  <span *ngIf="(state$ | async) === 'editable'">
+  <span *ngIf="(state$ | async) === 'editable' || (state$ | async) === 'create-pe-it-role'">
 
     <div class="card bg-secondary text-white mb-3">
 
@@ -21,84 +21,120 @@
             (roleRemoved)="onRoleRemoved($event)"></gv-pe-it-role>
         </div>
 
+        <!-- If no roles in Project, show a big add button -->
+        <!-- <div class="card-body" *ngIf="!(roleStatesInProject$ | async) && addButtonVisible">
+          <button class="btn btn-primary" (click)="startAddingRole()">
+            Add {{(label$ | async).default}}
+          </button>
+          <button class="btn btn-link" (click)="removePropertySection()">
+            cancel
+          </button>
+        </div> -->
+
+
         <div class="border-top border-gray-500">
-          <div class="btn btn-block btn-secondary rounded-top-0" (click)="startAddingRole()" *ngIf="addRoleState === 'init'">
-            Add a {{(label$ | async).sg}}…
+          <!-- Roles currently being created -->
+
+          <div class="border-top border-gray-500" *ngIf="((roleStatesToCreate$|async) | keys).length">
+
+            <!-- <div class="card-body">
+              Add a {{(label$ | async).sg}}
+            </div> -->
+            <div class="card-body">
+
+              <form [formGroup]="formGroup" *ngIf="formGroup" [connect]="formValPath">
+                <div *ngFor="let entry of (roleStatesToCreate$ | async) | keys; trackBy:getKey">
+                  <gv-pe-it-role [parentPath]="basePath" intermediatePathSegment="roleStatesToCreate" class="form-control rounded-0" [index]="entry.key"
+                    [formControlName]="entry.key" (touched)="markAsTouched()"></gv-pe-it-role>
+
+                </div>
+
+                <div class="card-body">
+                  <button [disabled]="formGroup.invalid" type="button" class="btn btn-primary" (click)="createRoles()">Ok</button>
+                  <button type="button" class="btn btn-link" (click)="cancelCreateRoles()">Cancel</button>
+                </div>
+              </form>
+
+            </div>
           </div>
 
-          <!-- Select existing Roles -->
 
-          <div *ngIf="addRoleState=== 'selectExisting'">
+          <!-- Spinner for when loading roles not in project -->
+
+          <div class="card-body" *ngIf="(rolesNotInProjectLoading$|async)">
+            <i class="fa fa-spinner fa-pulse"></i> Searching for existing {{(label$ | async).sg}}…
+          </div>
 
 
-            <div class="card-body" *ngIf="rolesNotInProjectLoading">
-              <i class="fa fa-spinner fa-pulse"></i> Searching for existing {{(label$ | async).sg}}…
+
+
+          <!-- Roles that are added to at least one other project -->
+
+          <span *ngIf="(roleStatesInOtherProjectsVisible$|async)">
+
+            <div class="card-body gv-property-section-header">
+              {{(roleStatesInOtherProjects$|async)?.length ? (roleStatesInOtherProjects$|async)?.length : 0 }} {{(roleStatesInOtherProjects$|async)?.length
+              === 1 ? (label$ | async).sg : (label$ | async).pl}} found in other projects
             </div>
 
-            <span *ngIf="!rolesNotInProjectLoading">
-              <div class="card-body gv-property-section-header">
-                {{rolesInOtherProjects.length}} {{rolesInOtherProjects.length === 1 ? (label$ | async).sg : (label$ | async).pl}} found in
-                other projects
+            <!-- <div class="card-body" *ngIf="rolesInOtherProjects.length">
+              <div class="gv-label gv-flex-grow-1"> Add an existing {{(label$ | async).sg}} from below or
+                <a href="" class="gv-passive-link" (click)="startCreateNewRole()">create a new name</a>.</div>
+            </div>
+
+            <div class="card-body" *ngIf="!rolesInOtherProjects.length && !rolesInNoProjectVisible">
+              <div class="gv-label gv-flex-grow-1">
+                <a href="" class="btn btn-primary gv-passive-link" (click)="startCreateNewRole()">Create a new {{(label$ | async).sg}}</a>
+                <a href="" class="btn btn-link gv-passive-link" (click)="rolesInNoProjectVisible=true">
+                  Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? (label$ | async).sg : (label$ | async).pl}} used by
+                  no Projects
+                </a>
               </div>
+            </div> -->
+            <div class="card-body" *ngIf="(roleStatesInOtherProjects$|async)?.length">
+              <gv-pe-it-role *ngFor="let entry of (roleStatesInOtherProjects$ | async) | keys; trackBy:getKey" [parentPath]="basePath"
+                intermediatePathSegment="roleStatesInOtherProjects" [index]="entry.key"></gv-pe-it-role>
+            </div>
+          </span>
 
-              <div class="card-body" *ngIf="rolesInOtherProjects.length">
-                <div class="gv-label gv-flex-grow-1"> Add an existing {{(label$ | async).sg}} from below or
-                  <a href="" class="gv-passive-link" (click)="startCreateNewRole()">create a new name</a>.</div>
-              </div>
 
-              <div class="card-body" *ngIf="!rolesInOtherProjects.length && !rolesInNoProjectVisible">
-                <div class="gv-label gv-flex-grow-1">
-                  <a href="" class="btn btn-primary gv-passive-link" (click)="startCreateNewRole()">Create a new {{(label$ | async).sg}}</a>
-                  <a href="" class="btn btn-link gv-passive-link" (click)="rolesInNoProjectVisible=true">
-                    Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? (label$ | async).sg : (label$ | async).pl}} used by
-                    no Projects
-                  </a>
-                </div>
-              </div>
 
-              <div class="card-body" *ngIf="rolesInOtherProjects.length">
+          <!-- Roles that are in no project -->
 
-                <!-- <gv-pe-it-role *ngFor="let role of rolesInOtherProjects" [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing"
+          <span *ngIf="(roleStatesInNoProject$|async)?.length">
+
+
+            <div class="card-body pt-0">
+              <small>
+                <a href="" class="gv-passive-link text-light" (click)="showRolesInNoProject()" *ngIf="!(roleStatesInNoProjectVisible$|async)">
+                  Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? (label$ | async).sg : (label$ | async).pl}} used by
+                  no Projects.
+                </a>
+                <a href="" class="gv-passive-link text-light" (click)="rolesInNoProjectVisible=false" *ngIf="(roleStatesInNoProjectVisible$|async)">
+                  Hide
+                </a>
+              </small>
+            </div>
+
+            <div class="card-body" *ngIf="(roleStatesInNoProjectVisible$|async)">
+
+              <!-- <gv-pe-it-role *ngFor="let role of rolesInNoProject" [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing"
                   [pointTo]="'TeEnt'" [roleState]="'add'" (readyToAdd)="onRoleReadyToAdd($event)"></gv-pe-it-role> -->
-              </div>
+            </div>
+          </span>
 
-              <div class="card-body pt-0" *ngIf="rolesInNoProject && rolesInOtherProjects.length">
-                <small>
-                  <a href="" class="gv-passive-link text-light" (click)="rolesInNoProjectVisible=true" *ngIf="!rolesInNoProjectVisible">
-                    Show {{rolesInNoProject.length}} {{rolesInOtherProjects.length === 1 ? (label$ | async).sg : (label$ | async).pl}} used by
-                    no Projects.
-                  </a>
-                  <a href="" class="gv-passive-link text-light" (click)="rolesInNoProjectVisible=false" *ngIf="rolesInNoProjectVisible">
-                    Hide
-                  </a>
-                </small>
-              </div>
-
-              <div class="card-body" *ngIf="rolesInNoProject && rolesInNoProjectVisible">
-
-                <!-- <gv-pe-it-role *ngFor="let role of rolesInNoProject" [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing"
-                  [pointTo]="'TeEnt'" [roleState]="'add'" (readyToAdd)="onRoleReadyToAdd($event)"></gv-pe-it-role> -->
-              </div>
-
-              <div class="card-body" *ngIf="rolesInNoProjectVisible || rolesInOtherProjects.length">
-                <button type="button" class="btn btn-primary" [ngClass]="{disabled:(!isReadyToAddRoles)}" (click)="addSelectedRolesToProject()">Add selected</button>
-
-                <button type="button" class="btn btn-link" (click)="cancelSelectRoles()">Cancel</button>
-              </div>
-            </span>
-
+          <div class="card-body" *ngIf="(roleStatesInNoProjectVisible$|async) || (roleStatesInOtherProjects$|async)?.length">
+            <button type="button" class="btn btn-primary" [ngClass]="{disabled:(!isReadyToAddRoles)}" (click)="addSelectedRolesToProject()">Add selected</button>
+            <button type="button" class="btn btn-link" (click)="cancelSelectRoles()">Cancel</button>
           </div>
 
 
+        </div>
 
-          <!-- Create a new Role -->
-          <div *ngIf="addRoleState=== 'createNew'">
-            <!-- 
-            <gv-pe-it-role [role]="roleToCreate" [pointTo]="'TeEnt'" [pkTargetClass]="pkTargetClass" [fkProperty]="fkProperty" [roleState]="'create'"
-              (roleCreated)="onRoleCreated($event)" (roleCreationCanceled)="onRoleCreationCanceled()"></gv-pe-it-role> -->
-
+        <div class="border-top border-gray-500">
+          <div class="btn btn-block btn-secondary rounded-top-0" (click)="startAddingRole()" *ngIf="addButtonVisible && ((roleStatesToCreate$|async) | keys).length == 0">
+            Add a {{(label$ | async).sg}}…
           </div>
-
         </div>
       </div>
     </div>
@@ -125,45 +161,22 @@
 
 
   <!--
-  ************************* Create State ************************* -->
-
-  <span *ngIf="(state$ | async) === 'create'">
-    <div class="card bg-secondary text-white mb-3">
-
-      <ng-container *ngTemplateOutlet="header"></ng-container>
-
-      <!-- <div class="card-body text-white">
-        Please fill all fields below and click "Ok".
-      </div> -->
-
-      <div class="card-body">
-        <gv-pe-it-role *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
-          intermediatePathSegment="roleStatesInProject" (appeChange)="emitAppeChange($event)" (readyToAdd)="onRoleReadyToAdd($event)"
-          (roleRemoved)="onRoleRemoved($event)"></gv-pe-it-role>
-      </div>
-
-      <div class="card-body">
-        <button [ngClass]="{disabled:(!isReadyToCreate)}" type="button" class="btn btn-primary" (click)="persistEntitiesToCreate(parentPeIt.pk_entity)">Ok</button>
-        <button type="button" class="btn btn-link" (click)="removeRoleSet()">Cancel</button>
-      </div>
-    </div>
-
-  </span>
-
-
-
-  <!--
   ************************* Create PeIt State ******************* -->
 
-  <span *ngIf="(state$ | async) === 'create'">
+  <span *ngIf="(state$ | async) === 'create-pe-it'">
     <div class="card bg-secondary text-white mb-3">
 
       <ng-container *ngTemplateOutlet="header"></ng-container>
 
-      <div class="card-body">
-        <gv-pe-it-role *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
-          intermediatePathSegment="roleStatesInProject" (appeChange)="emitAppeChange($event)" (readyToAdd)="onRoleReadyToAdd($event)"
-          (roleRemoved)="onRoleRemoved($event)"></gv-pe-it-role>
+      <div [@slideInOut]="(toggle$|async)">
+        <div class="card-body">
+          <form [formGroup]="formGroup" *ngIf="formGroup">
+            <div *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey">
+              <gv-pe-it-role *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="roleStatesInProject"
+                [formControlName]="entry.key" (touched)="markAsTouched()" class="form-control rounded-0"></gv-pe-it-role>
+            </div>
+          </form>
+        </div>
       </div>
 
     </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter, ChangeDetectionStrategy, forwardRef } from '@angular/core';
 import { ActiveProjectService, EntityEditorService, InfRoleApi, InfAppellation, InfLanguage, InfRole } from 'app/core';
 import { EprService } from '../../shared/epr.service';
 import { RoleComponent } from '../role/role.component';
@@ -12,6 +12,7 @@ import { StateCreatorService } from '../../shared/state-creator.service';
 import { IPeItState } from '../../containers/pe-it/pe-it.model';
 import { ReplaySubject, Subject } from 'rxjs';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -21,7 +22,15 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 @Component({
   selector: 'gv-te-ent-role',
   templateUrl: './te-ent-role.component.html',
-  styleUrls: ['./te-ent-role.component.scss']
+  styleUrls: ['./te-ent-role.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => TeEntRoleComponent),
+      multi: true
+    }
+  ]
 })
 export class TeEntRoleComponent extends RoleComponent {
 
@@ -43,9 +52,10 @@ export class TeEntRoleComponent extends RoleComponent {
     roleApi: InfRoleApi,
     protected ngRedux: NgRedux<IRoleState>,
     actions: RoleActions,
-    protected stateCreator: StateCreatorService
+    protected stateCreator: StateCreatorService,
+    fb: FormBuilder
   ) {
-    super(activeProjectService, eprService, ref, entityEditor, roleApi, ngRedux, actions, stateCreator)
+    super(activeProjectService, eprService, ref, entityEditor, roleApi, ngRedux, actions, stateCreator, fb)
   }
 
   init() {
@@ -70,16 +80,13 @@ export class TeEntRoleComponent extends RoleComponent {
           }
           else {
             this.pkEntity = role.fk_entity;
+            this.showEntityUI = true;
 
             // initialize peIt preview on first expanding of role set
             if (toggle === 'expanded' && !peItStateInitialized && role.fk_entity) {
-              this.initPeItState(role.fk_entity).subscribe(() => {
-                this.showEntityUI = true;
-              })
+              this.initPeItState(role.fk_entity)
             }
-            if (toggle === 'expanded' && peItStateInitialized) {
-              this.showEntityUI = true;
-            }
+
           }
         }
       })
@@ -172,21 +179,21 @@ export class TeEntRoleComponent extends RoleComponent {
   //   }
 
 
-  //   /**
-  //   * Methods specific to edit state
-  //   */
+  /**
+  * Methods specific to edit state
+  */
 
-  //   startEditing() {
-  //     this.roleInEdit = new InfRole(this.role);
-  //     this.roleInEdit.appellation = new InfAppellation(this.role.appellation)
-  //     this.roleInEdit.language = new InfLanguage(this.role.language)
-  //     this.roleState = 'edit';
-  //   }
+  startEditing() {
+    this.stateCreator.initializeRoleState(this.roleState.role, 'edit',this.roleState.isOutgoing).subscribe(roleState=>{
+      this.localStore.dispatch(this.actions.startEditingRole(roleState))
+    })
+  }
 
-  //   stopEditing() {
-  //     this.roleInEdit = undefined;
-  //     this.roleState = 'editable';
-  //   }
+  stopEditing() {
+    this.stateCreator.initializeRoleState(this.roleState.role, 'editable',this.roleState.isOutgoing).subscribe(roleState=>{
+      this.localStore.dispatch(this.actions.startEditingRole(roleState))
+    })
+  }
 
   //   changeRoleInEdit(entity) {
   //     if (entity instanceof InfAppellation) {

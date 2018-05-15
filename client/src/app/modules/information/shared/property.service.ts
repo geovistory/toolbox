@@ -205,6 +205,7 @@ export class PropertyService {
       return new RoleSetState({
         isOutgoing: isOutgoing,
         property: property,
+        targetClassPk: isOutgoing ? property.dfh_has_range : property.dfh_has_domain,
         label: this.createLabelObject(property, isOutgoing)
       })
     });

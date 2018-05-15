@@ -61,11 +61,13 @@ export const roleSetReducer =
       case RoleSetActions.START_CREATE_NEW_ROLE:
         lastState = {
           ...lastState,
-          roleStatesToCreate: action.payload.roleStatesToCreate
+          rolesNotInProjectLoading: false,
+          // Extends the roleStatesToCreate
+          roleStatesToCreate: Object.assign({}, lastState.roleStatesToCreate, action.payload.roleStatesToCreate)
         }
         break;
 
-        case RoleSetActions.STOP_CREATE_NEW_ROLE:
+      case RoleSetActions.STOP_CREATE_NEW_ROLE:
         lastState = {
           ...lastState,
           roleStatesInOtherProjectsVisible: false,
@@ -74,7 +76,7 @@ export const roleSetReducer =
           roleStatesToCreate: action.payload.roleStatesToCreate
         }
         break;
-        
+
 
       case RoleSetActions.ROLE_SET_UPDATED:
         lastState = {
@@ -83,6 +85,12 @@ export const roleSetReducer =
         }
         break;
 
+      case RoleSetActions.ROLE_CREATION_CANCELLED:
+        lastState = {
+          ...lastState,
+          roleStatesToCreate: action.payload.roleStatesToCreate
+        }
+        break;
 
     }
 

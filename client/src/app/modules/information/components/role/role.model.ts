@@ -1,8 +1,8 @@
-import { BehaviorSubject } from "rxjs/BehaviorSubject";
 import { InfRole, DfhProperty, DfhClass } from "app/core";
 import { EditorStates, CollapsedExpanded } from "../../information.models";
 import { ITeEntState } from "../te-ent/te-ent.model";
 import { IPeItState } from "../../containers/pe-it/pe-it.model";
+import { IAppellationState } from "../appellation/appellation.model";
 
 
 export interface IRoleState {
@@ -22,8 +22,8 @@ export interface IRoleState {
      */
     targetDfhClass?: DfhClass;
 
-    roleToCreate?: InfRole;
-    roleToAdd?: InfRole;
+    // roleToCreate?: InfRole;
+    // roleToAdd?: InfRole;
 
     /**
      * This field flags roles that are used by the project to produce a display label of a range entity (thus normally a Persistent Item). 
@@ -55,9 +55,9 @@ export interface IRoleState {
     /** For roles pointing to a peIt (used for preview) */
     peItState?: IPeItState
 
-    // appellation: IAppellationState
-    // language: ILanguageState
-    // existenceTime: IExistenceTimeState
+    appeState?: IAppellationState
+    // langState: ILanguageState
+    // timePrimitiveState: ITimePrimitiveState
 
 }
 
@@ -73,8 +73,8 @@ export class RoleState implements IRoleState {
 
     targetDfhClass?: DfhClass;
 
-    roleToCreate?: InfRole;
-    roleToAdd?: InfRole;
+    // roleToCreate?: InfRole;
+    // roleToAdd?: InfRole;
 
     isDisplayRoleForRange?: boolean;
     isDisplayRoleForDomain?: boolean;
@@ -92,6 +92,8 @@ export class RoleState implements IRoleState {
 
     /** For roles pointing to a peIt (used for preview) */
     peItState?: IPeItState
+
+    appeState?: IAppellationState
 
     constructor(data?: IRoleState) {
         Object.assign(this, data)

@@ -19,6 +19,8 @@ import { PeItService } from './pe-it.service';
 import { Subject } from 'rxjs/Subject';
 import { RoleSetService } from './role-set.service';
 import { ConfigService } from './config.service';
+import { IAppellationState, AppellationState } from '../components/appellation/appellation.model';
+import { AppellationLabel } from './appellation-label/appellation-label';
 
 
 @Injectable()
@@ -50,12 +52,13 @@ export class StateCreatorService {
     appeUse.fk_class = this.configService.CLASS_PK_APPELLATION_USE;
     roleToAppellation.fk_property = this.configService.PROPERTY_PK_R64_USED_NAME;
     appellation.fk_class = this.configService.CLASS_PK_APPELLATION;
-    
+
+    peIt.fk_class = fkClass;
     peIt.pi_roles = [roleToAppeUse];
     roleToAppeUse.temporal_entity = appeUse;
     appeUse.te_roles = [roleToAppellation];
     roleToAppellation.appellation = appellation;
-    
+
 
     // Get DfhClass Observable
     const dfhClass$ = this.classService.getByPk(fkClass);
@@ -149,7 +152,10 @@ export class StateCreatorService {
       const outgoingRoleSets = this.propertyService.toRoleSets(true, outgoingProperties)
 
       // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
-      const options: IRoleSetState = { state: state, toggle: 'collapsed' }
+      const options: IRoleSetState = {
+        state: state,
+        toggle: (state === 'create' || state === 'create-pe-it' || state === 'create-pe-it-role') ? 'expanded' : 'collapsed'
+      }
       const childRoleSets$ = this.initializeChildRoleSets(roles, ingoingRoleSets, outgoingRoleSets, options, parentRolePk)
 
       childRoleSets$.subscribe(childRoleSets => {
@@ -171,24 +177,39 @@ export class StateCreatorService {
   * @param {RoleSetState} options any other option that should be apllied to all of the roleSets
   * @return {IRoleSets} Object of RoleSetState, the model of the Gui-Element for RoleSets
   */
-  private initializeChildRoleSets(roles: InfRole[], ingoingRoleSets: RoleSetState[], outgoingRoleSets: RoleSetState[], options: IRoleSetState = {}, parentRolePk?: number): ReplaySubject<IRoleSets> {
+  private initializeChildRoleSets(roles: InfRole[], ingoingRoleSets: RoleSetState[], outgoingRoleSets: RoleSetState[], options: IRoleSetState = {}, parentRolePk?: number): Subject<IRoleSets> {
     const subject = new ReplaySubject<IRoleSets>();
+
+    const givenRoleSets = [...ingoingRoleSets, ...outgoingRoleSets];
 
     // declare array that will be returned
     const roleSets$: Observable<IRoleSetState>[] = [];
 
-    const rolesByFkProp = groupBy(prop('fk_property'), roles)
-
-    const givenRoleSets = [...ingoingRoleSets, ...outgoingRoleSets];
-
-    // enrich role sets with roles and child RoleStates
-    givenRoleSets.forEach(rs => {
-      const r = rolesByFkProp[rs.property.dfh_pk_property];
-      if (r && r.length > 0) {
-        const roleSet$ = this.initializeRoleSetState(r, Object.assign(rs, options), parentRolePk);
+    if (options.state === 'create-pe-it-role') {
+      // add a roleSet for each givenRoleSet 
+      givenRoleSets.forEach(rs => {
+        const emptyRole = new InfRole()
+        const roleSet$ = this.initializeRoleSetState([emptyRole], Object.assign(rs, options), parentRolePk);
         roleSets$.push(roleSet$);
-      }
-    })
+      });
+    }
+    else if (!roles || !roles.length) return new BehaviorSubject(undefined)
+    else {
+
+      const rolesByFkProp = groupBy(prop('fk_property'), roles)
+
+      // enrich role sets with roles and child RoleStates
+      givenRoleSets.forEach(rs => {
+
+        // add a roleSet only for the given roles  
+        const r = rolesByFkProp[rs.property.dfh_pk_property];
+        if (r && r.length > 0) {
+          const roleSet$ = this.initializeRoleSetState(r, Object.assign(rs, options), parentRolePk);
+          roleSets$.push(roleSet$);
+        }
+
+      })
+    }
 
     Observable.combineLatest(roleSets$).subscribe(roleSets => {
       subject.next(indexBy(roleSetKey, roleSets))
@@ -222,10 +243,17 @@ export class StateCreatorService {
           /** if the roleset is in add-pe-it mode, the roles that are in other projects need to be taken */
           case 'add-pe-it':
             iRoleState.roleStatesInOtherProjects = roleStates;
-          default:
+            break;
 
+          /** if the roleset is in create-pe-it mode, add the states to roleStatesInProject, since they will be in Project later */
+          case 'create-pe-it':
             iRoleState.roleStatesInProject = roleStates;
             break;
+
+          // default:
+
+          //   iRoleState.roleStatesInProject = roleStates;
+          //   break;
         }
 
         /** Assings options to RolSet (this can come from the two functions before) */
@@ -243,7 +271,7 @@ export class StateCreatorService {
     if (!roles || !roles.length) return new BehaviorSubject(undefined)
 
     /** if there are no eprs, this will be roles from Repo, not from Project */
-    if (!roles[0].entity_version_project_rels)
+    if (!roles[0].entity_version_project_rels && roles[0].pk_entity)
       var displayRoleForRangePk = RoleSetService.getDisplayRangeFavoriteOfRoles(roles)
 
     const roleStateArray$: Observable<IRoleState>[] = [];
@@ -284,7 +312,28 @@ export class StateCreatorService {
       roleState.isDisplayRoleForRange = role.entity_version_project_rels[0].is_standard_in_project;;
     }
 
-    if (!role.temporal_entity) {
+    /** If role leads to TeEnt */
+    if (role.temporal_entity && Object.keys(role.temporal_entity).length) {
+      // add the parent role pk of the roleState to the peEnt
+      const willBeParentRolePk = role.pk_entity;
+
+      this.initializeTeEntState(role.temporal_entity, state, willBeParentRolePk).subscribe(teEntState => {
+        roleState.childTeEnt = teEntState;
+        subject.next(roleState);
+      })
+
+    }
+
+    /** If role leads to Appe */
+    // else if (role.appellation && Object.keys(role.appellation).length){
+    else if (role.fk_property == this.configService.PROPERTY_PK_R64_USED_NAME && isOutgoing) {
+      this.initializeAppeState(role.appellation, state).subscribe(appeState => {
+        roleState.appeState = appeState;
+        subject.next(roleState);
+      })
+    }
+
+    else {
 
       // check if it is circular
       if (role.pk_entity === parentRolePk) {
@@ -292,17 +341,6 @@ export class StateCreatorService {
       }
 
       return new BehaviorSubject(roleState)
-
-    } else {
-
-      // add the parent role pk of the roleState to the peEnt
-
-      const willBeParentRolePk = role.pk_entity;
-
-      this.initializeTeEntState(role.temporal_entity, state, willBeParentRolePk).subscribe(teEntState => {
-        roleState.childTeEnt = teEntState;
-        subject.next(roleState);
-      })
 
     }
 
@@ -333,7 +371,7 @@ export class StateCreatorService {
           teEnt: teEnt,
           state: state,
           selectPropState: 'init',
-          toggle: 'collapsed',
+          toggle: (state === 'create' || state === 'create-pe-it' || state === 'create-pe-it-role') ? 'expanded' : 'collapsed',
           teEntToAdd: teEnt,
           fkClass: teEnt.fk_class,
           dfhClass,
@@ -341,7 +379,7 @@ export class StateCreatorService {
           ingoingRoleSets,
           outgoingRoleSets
         })
-
+        
         subject.next(teEntState);
       }
     })
@@ -350,5 +388,21 @@ export class StateCreatorService {
   }
 
 
+  /** States of leaf objects  */
+
+
+  initializeAppeState(appellation: InfAppellation, state: EditorStates): Subject<IAppellationState> {
+
+    // if no appellation provided, create an emtpy appellation with an empty appellationLabel
+    let appe = appellation ? new InfAppellation(appellation) : new InfAppellation();
+    appe.appellation_label = (appellation && appellation.appellation_label) ? new AppellationLabel(appellation.appellation_label) : new AppellationLabel();
+
+    const appeState = new AppellationState({
+      appellation: appe,
+      state
+    })
+
+    return new BehaviorSubject(appeState)
+  }
 
 }

@@ -74,34 +74,6 @@
   </div>
 
 
-  <!--
-  ************************* Create State ******************* -->
-
-  <div *ngIf="(state$ | async) === 'create'">
-
-    <div class="card-body text-white">
-      Please fill all fields below and click "Ok".
-    </div>
-
-    <div class="card-body">
-
-      <!-- <gv-te-ent
-      [fkClass]="pkTargetClass"
-      [teEntState]="'create'"
-      [parentProperty]="parentProperty"
-      [parentRole]="role"
-      [isOutgoing]="isOutgoing"
-      (readyToCreate)="teEntReadyToCreate($event)"
-      (notReadyToCreate)="teEntNotReadyToCreate()"
-      ></gv-te-ent> -->
-    </div>
-
-    <div class="card-body">
-      <button [ngClass]="{disabled:(!isReadyToCreate)}" type="button" class="btn btn-primary" (click)="createRole()">Ok</button>
-      <button type="button" class="btn btn-link" (click)="cancelCreateRole()">Cancel</button>
-    </div>
-
-  </div>
 
 
 
@@ -160,28 +132,29 @@
 
   </div>
 
+  <!--
+  ************************* Create PeI-Role State ******************* -->
+<!-- 
+  <div *ngIf="(state$ | async) === 'create-pe-it-role'">
 
+      <gv-te-ent [parentPath]="basePath"> </gv-te-ent>
+  
+    </div>
+   -->
   <!--
   ************************* Create PeIt State ******************* -->
 
-  <div *ngIf="(state$ | async) === 'create-pe-it'">
+  <div *ngIf="(state$ | async) === 'create-pe-it' || (state$ | async) === 'create-pe-it-role'">
 
-    <div class="card-body text-white">
-      Please fill all fields below and click "Ok".
-    </div>
-
-    <div class="card-body">
-
-      <!-- <gv-te-ent
-      [fkClass]="pkTargetClass"
-      [teEntState]="'create'"
-      [parentProperty]="parentProperty"
-      [parentRole]="role"
-      [isOutgoing]="isOutgoing"
-      (readyToCreate)="teEntReadyToCreate($event)"
-      (notReadyToCreate)="teEntNotReadyToCreate()"
-      ></gv-te-ent> -->
-    </div>
+    <form [formGroup]="formGroup" *ngIf="formGroup">
+      <gv-te-ent [parentPath]="basePath" [formControlName]="formControlName"  (touched)="markAsTouched()" class="form-control rounded-0">
+        <div belowHeader>
+          <div class="card-body pt-0 gv-community-statistics d-flex justify-content-start small">
+            <ng-container *ngTemplateOutlet="communtiyStats"></ng-container>
+          </div>
+        </div>
+      </gv-te-ent>
+    </form>
 
   </div>
 
@@ -190,7 +163,7 @@
   ************************* Add-Pe-It State ************************* -->
 
   <div *ngIf="(state$ | async) === 'add-pe-it'">
-    
+
     <!-- TeEnt Component (passing the temporal entity) -->
     <gv-te-ent [parentPath]="basePath">
 
@@ -259,7 +232,7 @@
 
 <!-- Community data statistics -->
 <ng-template #communtiyStats>
-  <ul class="gv-ul-sm">
+  <ul class="gv-ul-sm" *ngIf="(communityStatsVisible$|async)">
     <li class="gv-li-inline">
       <a href class="gv-passive-link text-secondary" (click)="openProjectsModal()" title="Added by {{roleState?.role.is_in_project_count}} {{roleState?.role.is_in_project_count == 1 ? 'project':'projects'}}">
         <span>

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PeItAppellationComponent } from './pe-it-appellation.component';
+import { CreatePeItFormComponent } from './create-pe-it-form.component';
 
-describe('PeItAppellationComponent', () => {
-  let component: PeItAppellationComponent;
-  let fixture: ComponentFixture<PeItAppellationComponent>;
+describe('CreatePeItFormComponent', () => {
+  let component: CreatePeItFormComponent;
+  let fixture: ComponentFixture<CreatePeItFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PeItAppellationComponent ]
+      declarations: [ CreatePeItFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PeItAppellationComponent);
+    fixture = TestBed.createComponent(CreatePeItFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
