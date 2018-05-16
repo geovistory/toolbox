@@ -254,18 +254,149 @@ module.exports = function (InfEntityVersion) {
 
 
   /**
-   * Finds or creates an entity.
+   * Finds or creates an InfPersistentItem or InfTemporalEntity.
    * 
-   * The data object is relevant for finding an entity. 
-   * - Provide a pk_entity for entities that have only an pk to identify themselfes (e.g. PeIt or TeEnt)
-   * - Provide no pk_entity if you want to find a value-like item (e.g. TimePrimitive or Appellation)
+   * The data object is relevant for finding or creating an entity. 
+   * - Provide no pk_entity to create a new record.
+   * - Provide a pk_entity to find a record. If no record is found, an error is thrown. 
+   * 
+   * The requstedObject is relevant for related models.
+   * - Provide a entity_version_project_rel[0] to customize the project relation
+   * - Provide pi_roles or te_roles to findOrCreate the roles and its children
+   * 
+   * Remark: To findOrCreate a role or an object (InfRole; InfTimePrimitive, InfAppellation, ...), use findOrCreateObjectOrRole
+   * 
+   * @param {LoopackModel} Model The loopback model InfPersistentItem or InfTemporalEntity.
+   * @param {number} projectId the project id
+   * @param {any} dataObject the data object containing the values we check for existing entities (pk_entity) or to create (notes)
+   * @param {any} requestedObject [optional] plain object. 
+   */
+  InfEntityVersion.findOrCreatePeItOrTeEnt = function (Model, projectId, dataObject, requestedObject) {
+
+    // cleanup data object: remove all undefined properties to avoid creating e.g. pk_entity = undefined 
+    Object.keys(dataObject).forEach(key=>{
+      if(dataObject[key]==undefined){
+        delete dataObject[key]
+      }
+    })
+
+    const InfEntityProjectRel = Model.app.models.InfEntityProjectRel;
+
+    const filter = {
+      where: dataObject,
+      include: {
+        relation: "entity_version_project_rels",
+        scope: {
+          where: {
+            fk_project: projectId
+          }
+        }
+      }
+    }
+
+    const find = function (pk_entity_version_concat) {
+      //find the entity and include the epr
+      return Model.findOne({
+        where: {
+          pk_entity_version_concat: pk_entity_version_concat
+        },
+        include: {
+          relation: "entity_version_project_rels",
+          scope: {
+            where: {
+              fk_project: projectId
+            }
+          }
+        }
+      }).then((res) => {
+        return [res];
+      })
+        .catch(err => err);
+    }
+
+
+    // If there is a pk_entity, find the record
+    if (dataObject.pk_entity) {
+      //find the entity and include the epr
+      return Model.findOne({
+        where: {
+          pk_entity: dataObject.pk_entity
+        },
+        include: {
+          relation: "entity_version_project_rels",
+          scope: {
+            where: {
+              fk_project: projectId
+            }
+          }
+        }
+      }).then((res) => {
+        return [res];
+      }).catch(err => err);
+    }
+
+    // If there is no pk_entity, create the record
+    else {
+      return Model.create(dataObject).catch((err) => {
+        return err;
+      })
+        .then((resultingEntity) => {
+          if (!resultingEntity) return Error('Something went wrong with createing a peIt or TeEnt');
+
+          // create the project relation
+
+          let reqEpr = {};
+      
+          // create a new epr 
+          var newEpr = new InfEntityProjectRel({
+            "fk_entity": resultingEntity.pk_entity,
+            "fk_entity_version_concat": resultingEntity.pk_entity_version_concat,
+            "fk_project": projectId,
+
+            // use the requested value or true
+            "is_in_project": reqEpr.is_in_project || true,
+
+            // use the requested value or false
+            "is_standard_in_project": reqEpr.is_standard_in_project || false,
+
+            // use false, since calendar is only for role eprs
+            "calendar": undefined,
+          })
+
+          // persist epr in DB
+          return newEpr.save().then(resultingEpr => {
+            return find(resultingEpr.fk_entity_version_concat)
+          });
+
+        })
+    }
+
+
+  };
+
+
+  /**
+   * Finds or creates a role or an object (InfRole; InfTimePrimitive, InfAppellation, ...).
+   *
+   * The data object is relevant for finding a record. 
+   * - Provide a data object with all values relevant to uniquely identify this type of record.
+   * - The method will remove the pk_entity from the data object, if one is provided accidentially.
+   *
+   * Explanation: The values of roles and objects are unique. For example, there can't be two roles with 
+   * the same fk_entity and fk_temporal_entity, and there can't be two timePrimitives with the same values. 
+   * Therefore the 'unique identifier' relevant to findOrCreate are the values of the objects, not the pk_entity. 
+   * 
+   * Remark: To find or create a role or an object (e.g. InfRole, InfTimePrimitive or InfAppellation), use find or create object
    * 
    * @param {LoopackModel} Model The loopback model like e.g. InfRole
    * @param {number} projectId the project id
    * @param {any} dataObject the data object containing the values we check for existing entities
    * @param {any} requestedObject [optional] plain object. Provide a entity_version_project_rel to customize the project relation    
    */
-  InfEntityVersion.findOrCreateEntity = function (Model, projectId, dataObject, requestedObject) {
+  InfEntityVersion.findOrCreateObjectOrRole = function (Model, projectId, dataObject, requestedObject) {
+
+    // make sure no pk_entity is used for findOrReplace below
+    delete dataObject.pk_entity;
 
     const InfEntityProjectRel = Model.app.models.InfEntityProjectRel;
 
@@ -370,6 +501,8 @@ module.exports = function (InfEntityVersion) {
 
 
   };
+
+
 
 
   //TODO IS this still needed?

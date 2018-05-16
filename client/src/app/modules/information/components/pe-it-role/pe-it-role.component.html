@@ -147,7 +147,7 @@
   <div *ngIf="(state$ | async) === 'create-pe-it' || (state$ | async) === 'create-pe-it-role'">
 
     <form [formGroup]="formGroup" *ngIf="formGroup">
-      <gv-te-ent [parentPath]="basePath" [formControlName]="formControlName"  (touched)="markAsTouched()" class="form-control rounded-0">
+      <gv-te-ent [parentPath]="basePath" [formControlName]="formControlName"  (touched)="markAsTouched()">
         <div belowHeader>
           <div class="card-body pt-0 gv-community-statistics d-flex justify-content-start small">
             <ng-container *ngTemplateOutlet="communtiyStats"></ng-container>

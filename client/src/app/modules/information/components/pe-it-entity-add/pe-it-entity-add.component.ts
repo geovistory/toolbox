@@ -43,21 +43,6 @@ export class PeItEntityAddComponent implements OnInit {
 
 
   constructor(
-    // peItApi: InfPersistentItemApi,
-    // peItService: PeItService,
-    // propertyPipe: PropertyPipe,
-    // activePeItService: ActivePeItService,
-    // slimLoadingBarService: SlimLoadingBarService,
-    // entityEditor: EntityEditorService,
-    // changeDetector: ChangeDetectorRef,
-    // actions: PeItActions,
-    // ngRedux: NgRedux<IPeItState>,
-    // classService: ClassService,
-    // roleService: RoleService,
-    // propertyService: PropertyService,
-    // private router: Router,
-    // private route: ActivatedRoute,
-    // roleSetListService: RoleSetListService
     private modalService: NgbModal,
     private entityAddModalService: EntityAddModalService
   ) {

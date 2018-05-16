@@ -29,7 +29,6 @@ import { StateCreatorService } from '../../shared/state-creator.service';
   selector: 'gv-pe-it-entity-preview',
   templateUrl: './pe-it-entity-preview.component.html',
   styleUrls: ['./pe-it-entity-preview.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -76,7 +75,6 @@ export class PeItEntityPreviewComponent implements OnInit, ControlValueAccessor 
     private fb: FormBuilder,
     private roleSetListService: RoleSetListService,
     private stateCreator: StateCreatorService,
-    private ref: ChangeDetectorRef
   ) {
   }
 
@@ -88,7 +86,6 @@ export class PeItEntityPreviewComponent implements OnInit, ControlValueAccessor 
       this.peItState = d;
       if (d)
         this.label = this.roleSetListService.getDisplayAppeLabelOfPeItRoleSets(d.roleSets);
-      this.ref.detectChanges()
     })
 
     this.ngRedux.select<number>(['activeProject', 'pk_project']).subscribe(d => {
@@ -113,103 +110,11 @@ export class PeItEntityPreviewComponent implements OnInit, ControlValueAccessor 
 
     this.stateCreator.initializePeItState(pkEntity, this.pkProject, 'view').subscribe(peItState => {
       this.label = this.roleSetListService.getDisplayAppeLabelOfPeItRoleSets(peItState.roleSets);
-      this.ref.detectChanges()
     })
 
     // send the pkEntity to the parent form
     this.onChange(pkEntity)
   }
-
-  //gets called by base class
-  // init() {
-  //   this.checkIfInProject().subscribe(() => {
-  //     if (this.isInProject) {
-  //       this.queryRichObjectOfProject().subscribe(() => {
-  //         this.setPreviewDataOfProject();
-  //       });
-  //     }
-  //     else {
-  //       this.queryRichObjectOfRepo().subscribe(() => {
-  //         this.setPreviewDataOfRepo();
-  //       });
-  //     }
-  //   });
-  // }
-
-
-  // checkIfInProject() {
-  //   const onDone = new EventEmitter();
-  //   this.ngRedux.select<Project>('activeProject').subscribe(project => {
-
-  //     const pkEntity = this.pkEntity || (this.peIt ? this.peIt.pk_entity : undefined);
-  //     this.eprApi.find({
-  //       'where': {
-  //         'fk_entity': pkEntity,
-  //         'fk_project': project.pk_project
-  //       }
-  //     }).subscribe(eprs => {
-  //       if (eprs.length > 0) {
-  //         this.isInProject = true;
-  //       }
-  //       else {
-  //         this.isInProject = false;
-  //       }
-
-  //       onDone.emit()
-  //     })
-  //   })
-
-  //   return onDone;
-  // }
-
-
-  // setPreviewDataOfProject() {
-  //   if (this.peIt.pi_roles) {
-
-  //     this.peIt.pi_roles.filter((role => role.fk_property === 1)) // R63
-  //       .forEach(role => {
-  //         const appeObj = role.temporal_entity.te_roles
-  //           .filter((role) => {
-  //             return (
-  //               role.fk_property === 2 && // R64
-  //               role.entity_version_project_rels[0].is_in_project
-  //             )
-  //           })
-  //         [0].appellation;
-
-  //         this.previewData.appellationString = new AppellationLabel(appeObj.appellation_label).getString();
-  //       })
-  //   }
-  // }
-
-
-  // setPreviewDataOfRepo() {
-  //   if (this.peIt.pi_roles) {
-
-  //     let mostPopularAppe: InfRole;
-  //     let highestCount: number = 0;
-
-  //     this.peIt.pi_roles.filter((role => role.fk_property === 1)) // R63
-  //       .forEach(role => {
-
-  //         if (highestCount < role.is_standard_in_project_count) {
-  //           mostPopularAppe = role;
-  //           highestCount = role.is_standard_in_project_count;
-  //         }
-  //       })
-
-  //     const appeObj = mostPopularAppe.temporal_entity.te_roles
-  //       .filter((role) => {
-  //         return (
-  //           role.fk_property === 2 // R64
-  //         )
-  //       })
-  //     [0].appellation;
-
-  //     this.previewData.appellationString = new AppellationLabel(appeObj.appellation_label).getString();
-  //   }
-  // }
-
 
   open() {
     // const urlTree = this.router.createUrlTree(["..", this.pkEntity], { relativeTo: this.route, preserveQueryParams:true });

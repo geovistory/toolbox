@@ -12,7 +12,9 @@ import { ClassService } from './class.service';
 import { PeItState } from '../containers/pe-it/pe-it.model';
 import { roleSetKey } from '../components/role-set-list/role-set-list-actions';
 import { EprService } from './epr.service';
-import {  ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
+import { TeEntService } from './te-ent.service';
+import { ConfigService } from './config.service';
 
 
 @Injectable()
@@ -28,7 +30,8 @@ export class PeItService {
     private peItApi: InfPersistentItemApi,
     private classService: ClassService,
     private eprService: EprService,
-     private roleSetListService: RoleSetListService
+    private roleSetListService: RoleSetListService,
+    private dfhConfig: ConfigService
   ) {
 
   }
@@ -64,7 +67,7 @@ export class PeItService {
     this.eprService.checkIfInProject(pkEntity, pkProject).subscribe(isInProject => {
       if (isInProject) {
         this.peItApi.nestedObjectOfProject(pkProject, pkEntity).subscribe((peIts: InfPersistentItem[]) => {
-                    
+
           subject.next(peIts[0]);
 
         });
@@ -83,6 +86,30 @@ export class PeItService {
   }
 
 
+  /**
+  * Returns the teEnt (Name Use Activity) that has is for display in this project, from the given peIt
+  * 
+  * @param peIt 
+  * @returns InfTemporalEntity that has a appellation label for display
+  */
+  getDisplayAppeLabelOfPeIt(peIt: InfPersistentItem): InfTemporalEntity | null {
+    if (!peIt) return null
+
+    const rolesToAppeUse: InfRole[] = peIt.pi_roles.filter(
+      role => (
+        role &&
+        //TODO Add a better clause as soon as we have DisplayRoleForDomain/Range
+        role.entity_version_project_rels &&
+        role.entity_version_project_rels[0] &&
+        role.entity_version_project_rels[0].is_standard_in_project &&
+
+        // TODO this could be passed in by methods parameter 
+        role.fk_property == this.dfhConfig.PROPERTY_PK_R63_NAMES
+      ))
+
+    return rolesToAppeUse.length ? new InfTemporalEntity(rolesToAppeUse[0].temporal_entity) : null;
+
+  }
 
 
 }

@@ -67,6 +67,8 @@ export class RoleSetListComponent implements OnInit {
    * Properties
    */
   formGroup: FormGroup;
+  label: string;
+  labelInEdit:string;
 
   constructor(
     protected classService: ClassService,

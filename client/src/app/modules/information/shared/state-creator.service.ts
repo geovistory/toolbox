@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InfPersistentItem, InfPersistentItemApi, InfRole, InfTemporalEntity, InfAppellation, InfLanguage, DfhClass } from 'app/core';
+import { InfPersistentItem, InfPersistentItemApi, InfRole, InfTemporalEntity, InfAppellation, InfLanguage, DfhClass, InfEntityProjectRel } from 'app/core';
 import { indexBy, groupBy, prop } from 'ramda';
 
 import { ClassService } from './class.service';
@@ -38,16 +38,21 @@ export class StateCreatorService {
 
 
 
-  initializePeItToCreate(fkClass): ReplaySubject<IPeItState> {
+  initializePeItToCreate(fkClass, labelString?: string): ReplaySubject<IPeItState> {
     const subject = new ReplaySubject(null);
 
     const state = 'create-pe-it'
 
     let peIt = new InfPersistentItem();
     let roleToAppeUse = new InfRole();
+    roleToAppeUse.entity_version_project_rels = [new InfEntityProjectRel()];
+    roleToAppeUse.entity_version_project_rels[0].is_standard_in_project = true; // TODO: change for is_display_role_for_range
     let appeUse = new InfTemporalEntity;
     let roleToAppellation = new InfRole;
+    roleToAppellation.entity_version_project_rels = [new InfEntityProjectRel()];
+    roleToAppellation.entity_version_project_rels[0].is_standard_in_project = true; // TODO: change for is_display_role_for_domain
     let appellation = new InfAppellation;
+    if (labelString) appellation.appellation_label = new AppellationLabel(null, labelString)
 
     roleToAppeUse.fk_property = this.configService.PROPERTY_PK_R63_NAMES;
     appeUse.fk_class = this.configService.CLASS_PK_APPELLATION_USE;
@@ -349,7 +354,7 @@ export class StateCreatorService {
         roleState.isCircular = true;
       }
 
-      this.inizializeLeafPeItState(state, options.targetDfhClass).subscribe(peItState=>{
+      this.inizializeLeafPeItState(state, options.targetDfhClass).subscribe(peItState => {
         roleState.peItState = peItState;
         subject.next(roleState)
       })
@@ -430,7 +435,7 @@ export class StateCreatorService {
   }
 
 
-  inizializeLeafPeItState(state:EditorStates, dfhClass:DfhClass): Subject<IPeItState>{
+  inizializeLeafPeItState(state: EditorStates, dfhClass: DfhClass): Subject<IPeItState> {
     const peItState = new PeItState({
       state,
       dfhClass

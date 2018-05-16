@@ -54,7 +54,7 @@
           <div *ngFor="let entry of (roleStatesToCreate$ | async) | keys; trackBy:getKey">
 
             <gv-te-ent-role *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="roleStatesToCreate"
-              [formControlName]="entry.key" (touched)="markAsTouched()" class="form-control rounded-0"></gv-te-ent-role>
+              [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role>
           </div>
         </form>
 
@@ -163,7 +163,7 @@
         <form [formGroup]="formGroup" *ngIf="formGroup">
           <div *ngFor="let entry of (roleStatesToCreate$ | async) | keys; trackBy:getKey">
             <gv-te-ent-role *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="roleStatesToCreate"
-              [formControlName]="entry.key" (touched)="markAsTouched()" class="form-control rounded-0"></gv-te-ent-role>
+              [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role>
 
             <div class="card-body">
               <button type="button" class="btn btn-link" (click)="cancelCreateRole(entry.key)">Cancel</button>
@@ -223,7 +223,7 @@
       <form [formGroup]="formGroup" *ngIf="formGroup">
         <div *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey">
           <gv-te-ent-role *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="roleStatesInProject"
-            [formControlName]="entry.key" (touched)="markAsTouched()" class="form-control rounded-0"></gv-te-ent-role>
+            [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role>
         </div>
       </form>
     </div>

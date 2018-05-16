@@ -11,7 +11,7 @@ module.exports = function(InfAppellation) {
       fk_class: data.fk_class
     };
 
-    return InfAppellation.findOrCreateEntity(InfAppellation, projectId, dataObject);
+    return InfAppellation.findOrCreateObjectOrRole(InfAppellation, projectId, dataObject);
 
   }
 

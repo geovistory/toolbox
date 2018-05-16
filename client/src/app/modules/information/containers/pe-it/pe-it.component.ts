@@ -6,7 +6,7 @@ import "rxjs/add/observable/zip";
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
-import { InfPersistentItem, DfhProperty, DfhClass, InfPersistentItemApi, ActiveProjectService, EntityEditorService, InfEntityProjectRel, InfRole, Project } from 'app/core';
+import { InfPersistentItem, DfhProperty, DfhClass, InfPersistentItemApi, ActiveProjectService, EntityEditorService, InfEntityProjectRel, InfRole, Project, InfTemporalEntity } from 'app/core';
 import { PeItService } from '../../shared/pe-it.service';
 import { ActivePeItService } from '../../shared/active-pe-it.service';
 import { ClassService } from '../../shared/class.service';
@@ -29,6 +29,7 @@ import { RoleSetState, IRoleSetState } from '../../components/role-set/role-set.
 import { IRoleState } from '../../components/role/role.model';
 import { RoleSetListService } from '../../shared/role-set-list.service';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
+import { TeEntService } from '../../shared/te-ent.service';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -99,6 +100,7 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
     propertyService: PropertyService,
     roleSetListService: RoleSetListService,
     protected fb: FormBuilder,
+    private teEntService: TeEntService
   ) {
     super(classService, roleService, propertyService, entityEditor, roleSetListService);
 
@@ -107,17 +109,21 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
 
     // subscribe to form changes here
     this.formGroup.valueChanges.subscribe(val => {
+
+      // build a peIt with all pi_roles given by the form's controls 
+      let peIt = new InfPersistentItem(this.peItState.peIt);
+      peIt.pi_roles = [];
+      Object.keys(this.formGroup.controls).forEach(key => {
+        if (this.formGroup.get(key)) {
+          peIt.pi_roles = [...peIt.pi_roles, ...this.formGroup.get(key).value]
+        }
+      })
+
+      // try to retrieve a appellation label
+      const displayAppeUse:InfTemporalEntity = this.peItService.getDisplayAppeLabelOfPeIt(peIt) 
+      this.labelInEdit = this.teEntService.getDisplayAppeLabelOfTeEnt(displayAppeUse);
+
       if (this.formGroup.valid) {
-
-        // build a peIt with all pi_roles given by the form's controls 
-        let peIt = new InfPersistentItem(this.peItState.peIt);
-        peIt.pi_roles = [];
-        Object.keys(this.formGroup.controls).forEach(key => {
-          if (this.formGroup.get(key)) {
-            peIt.pi_roles = [...peIt.pi_roles, ...this.formGroup.get(key).value]
-          }
-        })
-
         // send the peIt the parent form
         this.onChange(peIt)
       }
@@ -147,7 +153,7 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
   }
 
   // hook for child classes
-  initPeItChildren(){} 
+  initPeItChildren() { }
 
 
   // initState() {

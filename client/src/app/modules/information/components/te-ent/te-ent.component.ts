@@ -122,7 +122,6 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
   /**
    * Class properties that filled by a store observable
    */
-  label: string;
   parentRoleState: IRoleState;
   teEnState: ITeEntState;
 
@@ -138,7 +137,8 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
     entityEditor: EntityEditorService,
     private ngRedux: NgRedux<ITeEntState>,
     public actions: TeEntActions,
-    protected roleSetListService: RoleSetListService
+    protected roleSetListService: RoleSetListService,
+    private teEntService: TeEntService
   ) {
     super(classService, roleService, propertyService, entityEditor, roleSetListService)
 
@@ -147,17 +147,19 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
 
     // subscribe to form changes here
     this.formGroup.valueChanges.subscribe(val => {
+      // build a teEnt with all pi_roles given by the form's controls 
+      let teEnt = new InfTemporalEntity(this.teEnState.teEnt);
+      teEnt.te_roles = [];
+      Object.keys(this.formGroup.controls).forEach(key => {
+        if (this.formGroup.get(key)) {
+          teEnt.te_roles = [...teEnt.te_roles, ...this.formGroup.get(key).value]
+        }
+      })
+
+      // try to retrieve a appellation label
+      this.labelInEdit = this.teEntService.getDisplayAppeLabelOfTeEnt(teEnt);
+
       if (this.formGroup.valid) {
-
-        // build a teEnt with all pi_roles given by the form's controls 
-        let teEnt = new InfTemporalEntity(this.teEnState.teEnt);
-        teEnt.te_roles = [];
-        Object.keys(this.formGroup.controls).forEach(key => {
-          if (this.formGroup.get(key)) {
-            teEnt.te_roles = [...teEnt.te_roles, ...this.formGroup.get(key).value]
-          }
-        })
-
         // send the teEnt the parent form
         this.onChange(teEnt)
       }

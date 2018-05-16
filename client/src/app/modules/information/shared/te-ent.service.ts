@@ -2,13 +2,14 @@ import { Injectable, EventEmitter, Inject, forwardRef } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 import { ExistenceTime } from '../components/existence-time';
-import { InfTemporalEntity, ActiveProjectService, InfRole, DfhProperty, InfTemporalEntityApi, TimePrimitive, InfTimePrimitive, InfEntityProjectRel } from 'app/core';
+import { InfTemporalEntity, ActiveProjectService, InfRole, DfhProperty, InfTemporalEntityApi, TimePrimitive, InfTimePrimitive, InfEntityProjectRel, InfAppellation } from 'app/core';
 import { ConfigService } from './config.service';
 import { PropertyService } from './property.service';
 import { EditorStates } from '../information.models';
 import { BehaviorSubject } from 'rxjs';
 import { ITeEntState, TeEntState } from '../components/te-ent/te-ent.model';
 import { ClassService } from './class.service';
+import { AppellationLabel } from './appellation-label/appellation-label';
 
 @Injectable()
 export class TeEntService {
@@ -20,7 +21,9 @@ export class TeEntService {
     private config: ConfigService,
     private propertyService: PropertyService,
     private teEntApi: InfTemporalEntityApi,
-    private classService: ClassService  ) { }
+    private classService: ClassService,
+    private dfhConfig: ConfigService
+  ) { }
 
   /**
    * Returns an observable that emitts an array of DfhProperty 
@@ -248,4 +251,21 @@ export class TeEntService {
 
 
 
+  /**
+* Returns the Appellation Label String that is for display in this project, from the given teEnt
+* @param teEnt 
+* @returns appellation label as pure string
+*/
+  getDisplayAppeLabelOfTeEnt(teEnt: InfTemporalEntity): string | null {
+    if (!teEnt) return null
+
+
+    const rolesToAppe: InfRole[] = teEnt.te_roles.filter(
+      role => (role && role.appellation && role.appellation.appellation_label
+        //TODO Add a clause as soon as we have DisplayRoleForDomain in the db to filter for the role that is standard?? or is this not happening on forms?
+      ))
+
+    return rolesToAppe.length ? new AppellationLabel(rolesToAppe[0].appellation.appellation_label).getString() : null;
+
+  }
 }

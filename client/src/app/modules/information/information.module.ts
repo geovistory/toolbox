@@ -83,7 +83,6 @@ import { StateCreatorService } from './shared/state-creator.service';
 import { StateToDataService } from './shared/state-to-data.service';
 import { EntityAddExistingActions } from './components/entity-add-add-existing/entity-add-add-existing.actions';
 import { EntityCreateNewActions } from './components/entity-add-create-new/entity-add-create-new.actions';
-import { CreatePeItFormComponent } from './components/create-pe-it-form/create-pe-it-form.component';
 import { NgReduxFormModule } from '@angular-redux/form';
 
 
@@ -147,7 +146,6 @@ import { NgReduxFormModule } from '@angular-redux/form';
     PropertyPipe,
     PeItTimelineComponent,
     KeysPipe,
-    CreatePeItFormComponent
   ],
   providers: [
     RoleSetListActions,

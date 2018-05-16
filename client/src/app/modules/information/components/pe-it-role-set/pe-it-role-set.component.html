@@ -44,9 +44,8 @@
 
               <form [formGroup]="formGroup" *ngIf="formGroup" [connect]="formValPath">
                 <div *ngFor="let entry of (roleStatesToCreate$ | async) | keys; trackBy:getKey">
-                  <gv-pe-it-role [parentPath]="basePath" intermediatePathSegment="roleStatesToCreate" class="form-control rounded-0" [index]="entry.key"
+                  <gv-pe-it-role [parentPath]="basePath" intermediatePathSegment="roleStatesToCreate" [index]="entry.key"
                     [formControlName]="entry.key" (touched)="markAsTouched()"></gv-pe-it-role>
-
                 </div>
 
                 <div class="card-body">
@@ -173,7 +172,7 @@
           <form [formGroup]="formGroup" *ngIf="formGroup">
             <div *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey">
               <gv-pe-it-role *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="roleStatesInProject"
-                [formControlName]="entry.key" (touched)="markAsTouched()" class="form-control rounded-0"></gv-pe-it-role>
+                [formControlName]="entry.key" (touched)="markAsTouched()"></gv-pe-it-role>
             </div>
           </form>
         </div>
