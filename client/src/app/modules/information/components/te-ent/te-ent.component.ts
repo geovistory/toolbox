@@ -146,7 +146,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
     this.formGroup = this.fb.group({})
 
     // subscribe to form changes here
-    this.formGroup.valueChanges.subscribe(val => {
+    this.subs.push(this.formGroup.valueChanges.subscribe(val => {
       // build a teEnt with all pi_roles given by the form's controls 
       let teEnt = new InfTemporalEntity(this.teEnState.teEnt);
       teEnt.te_roles = [];
@@ -166,7 +166,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
       else {
         this.onChange(null)
       }
-    })
+    }))
   }
 
   /**
@@ -246,32 +246,24 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
   initTeEntSubscriptions() {
 
     this.ngRedux.select<IRoleState>(this.parentPath).subscribe(d => this.parentRoleState = d)
-    this.localStore.select<ITeEntState>('').subscribe(d => this.teEnState = d)
+    this.subs.push(this.localStore.select<ITeEntState>('').subscribe(d => {
+      this.teEnState = d
+    }))
 
 
     /**
     * gets the Appellation is for given teEnt roleSets that is for display in this project
     * @param teEntRoleSets {key: obj<IRoleSetState>}
     */
-    this.localStore.select<IRoleSets>(['roleSets']).subscribe((teEntRoleSets) => {
+    this.subs.push(this.localStore.select<IRoleSets>(['roleSets']).subscribe((teEntRoleSets) => {
       this.label = this.roleSetListService.getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets);
-    })
+    }))
 
   }
 
 
   initState() {
-    this.state$.subscribe(state => {
 
-      // if (state === 'add-pe-it')
-      // this.initTeEntToAdd()
-
-      // if (state === 'create')
-      //   this.initTeEntToCreate()
-
-      // if (state === 'editable')
-      //   this.initTeEntToRemove()
-    })
   }
 
 

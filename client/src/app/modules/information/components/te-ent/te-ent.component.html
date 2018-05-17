@@ -5,8 +5,69 @@
   </span>
 
   <!--
-  ************************* Editable & Create PeIt-Role States ******************* -->
-  <div class="card gv-name" *ngIf="(state$ | async) === 'editable' || (state$ | async) === 'create-pe-it-role'">
+  ************************* Editable ******************* -->
+  <div class="card gv-name" *ngIf="(state$ | async) === 'editable'">
+
+    <ng-container *ngTemplateOutlet="header"></ng-container>
+
+    <div [@slideInOut]="(toggle$|async)">
+
+      <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key" (onRemoveRoleSet)="removeRoleSet(entry.key)"></gv-te-ent-role-set>
+
+      <ng-container *ngTemplateOutlet="dating"></ng-container>
+
+      <div class="gv-footer border-top border-white">
+
+        <!-- Step 1 for adding a new property -->
+
+        <button class="btn btn-light btn-sm btn-block text-secondary rounded-top-0" (click)="startSelectProperty()" *ngIf="(selectPropState$ | async) === 'init'">
+          <i class="fa fa-plus"></i> Add a property ...
+        </button>
+
+        <!-- Step 2 for adding new Property section -->
+
+        <div class="d-flex flex-column gv-flex-grow-1 bg-light border-top border-gray" *ngIf="(selectPropState$ | async) === 'selectProp'">
+
+          <div class="card-header bt-1">
+            <div class="d-flex">
+              <div class="gv-flex-grow-1 align-self-center">
+                What do you want to add?
+              </div>
+              <button type="button" name="button" class="btn btn-link align-self-center btn-sm" (click)="stopSelectProperty()">
+                <i class="fa fa-close"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="input-group">
+              <select [(ngModel)]="roleSetToAdd" class="custom-select">
+                <option [ngValue]="null">Select…</option>
+
+                <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (ingoingRoleSets$|async)" [ngValue]="roleSetToAdd">
+
+                  {{roleSetToAdd?.label.sg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
+
+                </option>
+                <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (outgoingRoleSets$|async)" [ngValue]="roleSetToAdd">
+
+                  {{roleSetToAdd?.label.sg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
+
+                </option>
+              </select>
+              <button type="button" name="button" class="btn btn-primary input-group-append" *ngIf="roleSetToAdd" (click)="addRoleSet(roleSetToAdd)">Ok</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!--
+  ************************* Create PeIt-Role States ******************* -->
+  <div class="card gv-name" *ngIf="(state$ | async) === 'create-pe-it-role'">
 
 
     <ng-container *ngTemplateOutlet="header"></ng-container>
@@ -66,9 +127,8 @@
       </div>
 
     </div>
-
-
   </div>
+
 
 
   <!--
@@ -119,12 +179,6 @@
     <div [@slideInOut]="(toggle$|async)">
       <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"></gv-te-ent-role-set>
 
-      <!-- 
-      <gv-te-ent-role-set *ngFor="let property of roleSets" [propertySection]="property" [isOutgoing]="property.isOutgoing" [roles]="property.roles"
-        [fkProperty]="property.fkProperty" [pointTo]="'PeIt'" [parentEntityPk]="parentRole.fk_entity" [parentTeEnt]="teEnt"
-        [state]="(state$ | async)" [parentRole]="parentRole" [communityStatsVisible]="communityStatsVisible" [ontoInfoVisible]="ontoInfoVisible"
-        (appeChange)="emitAppeChange($event)"></gv-te-ent-role-set>
- -->
       <ng-container *ngTemplateOutlet="dating"></ng-container>
 
     </div>

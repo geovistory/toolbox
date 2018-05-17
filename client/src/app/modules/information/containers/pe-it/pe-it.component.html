@@ -16,6 +16,7 @@
     <div class="d-flex flex-column gv-flex-grow-1">
 
       <ng-container *ngTemplateOutlet="propertiesHeader"></ng-container>
+      
       <form [formGroup]="formGroup" *ngIf="formGroup">
         <gv-pe-it-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
           [formControlName]="entry.key" (touched)="markAsTouched()"></gv-pe-it-role-set>
@@ -37,12 +38,6 @@
       <ng-container *ngTemplateOutlet="propertiesHeader"></ng-container>
 
       <gv-pe-it-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"></gv-pe-it-role-set>
-
-      <!-- <gv-pe-it-role-set *ngFor="let propertySection of roleSets" [propertySection]="propertySection" [isOutgoing]="propertySection.isOutgoing"
-          [roles]="propertySection.roles" [fkProperty]="propertySection.fkProperty" [pointTo]="'TeEnt'" [parentEntityPk]="pkEntity"
-          [parentPeIt]="parentPeIt" [state]="state" [communityStatsVisible]="communityStatsVisible" [ontoInfoVisible]="ontoInfoVisible"
-          (appeChange)="emitAppeChange($event)" (readyToAdd)="onRolesReadyToAdd($event)" (notReadyToAdd)="onRolesNotReadyToAdd()"
-          (removePropertySectionReq)="onRemovePropertySectionReq($event)"></gv-pe-it-role-set> -->
 
     </div>
 
@@ -68,7 +63,7 @@
         <ng-container *ngTemplateOutlet="propertiesHeader"></ng-container>
 
         <div class="gv-body gv-flex-grow-1" style="overflow-y:auto">
-          <gv-pe-it-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"></gv-pe-it-role-set>
+          <gv-pe-it-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key" (onRemoveRoleSet)="removeRoleSet(entry.key)"></gv-pe-it-role-set>
         </div>
 
         <div class="gv-footer mt-3">

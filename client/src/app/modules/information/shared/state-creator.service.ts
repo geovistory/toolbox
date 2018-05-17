@@ -78,7 +78,7 @@ export class StateCreatorService {
         const roleSets = result[1].childRoleSets;
         const ingoingRoleSets = result[1].ingoingRoleSets;
         const outgoingRoleSets = result[1].outgoingRoleSets;
-
+        
         const peItState = new PeItState({
           state: state,
           selectPropState: 'init',
@@ -111,13 +111,17 @@ export class StateCreatorService {
 
       // Get RoleSetListChildren Observable (returning roleSets etc.)
       const roleSetsListChildren$ = this.initRoleSetListState(peIt.fk_class, peIt.pi_roles, state)
-
+      roleSetsListChildren$.subscribe(a=>{
+      
+      })
       Observable.combineLatest(dfhClass$, roleSetsListChildren$).subscribe(result => {
         if (result[0] && result[1]) {
           const dfhClass = result[0];
           const roleSets = result[1].childRoleSets;
           const ingoingRoleSets = result[1].ingoingRoleSets;
           const outgoingRoleSets = result[1].outgoingRoleSets;
+          
+          delete peIt.pi_roles; // those only pollute the state. retrieve them from roleSets
 
           const peItState = new PeItState({
             pkEntity: pkEntity,
@@ -210,7 +214,7 @@ export class StateCreatorService {
         // add a roleSet only for the given roles  
         const r = rolesByFkProp[rs.property.dfh_pk_property];
         if (r && r.length > 0) {
-          const roleSet$ = this.initializeRoleSetState(r, Object.assign(rs, options), parentRolePk);
+          const roleSet$ = this.initializeRoleSetState(r, Object.assign({}, rs, options), parentRolePk);
           roleSets$.push(roleSet$);
         }
 
@@ -286,7 +290,13 @@ export class StateCreatorService {
       var options = role.pk_entity === displayRoleForRangePk ?
         { isDisplayRoleForRange: true } : undefined;
 
-      roleStateArray$.push(this.initializeRoleState(role, state, isOutgoing, options, parentRolePk));
+      // /** exclude the circular role */
+      if (role.pk_entity === parentRolePk) {
+        console.log(role.pk_entity)
+      } 
+      // else {
+        roleStateArray$.push(this.initializeRoleState(role, state, isOutgoing, options, parentRolePk));
+      // }
     });
 
     Observable.combineLatest(roleStateArray$).subscribe(roleStateArr => {
@@ -302,8 +312,11 @@ export class StateCreatorService {
 
     if (!role) return new BehaviorSubject(undefined)
 
+
+
+
     let roleState = new RoleState({
-      role,
+      role : new InfRole(role),
       state: state,
       isOutgoing: isOutgoing,
       isCircular: false,
@@ -383,6 +396,8 @@ export class StateCreatorService {
         const roleSets = result[1].childRoleSets;
         const ingoingRoleSets = result[1].ingoingRoleSets;
         const outgoingRoleSets = result[1].outgoingRoleSets;
+
+        delete teEnt.te_roles; // those only pollute the state. retrieve them from roleSets
 
         const teEntState = new TeEntState({
           teEnt: teEnt,

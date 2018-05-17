@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, forwardRef, OnDestroy } from '@angular/core';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { InfAppellation, InfAppellationApi, ActiveProjectService, EntityEditorService, InfEntityProjectRel } from 'app/core';
@@ -9,6 +9,7 @@ import { IAppellationState } from './appellation.model';
 import { NgRedux, ObservableStore } from '@angular-redux/store';
 import { NG_VALUE_ACCESSOR, FormBuilder, FormGroup, FormControl, Validators, ControlValueAccessor } from '@angular/forms';
 import { Token, TokenInterface } from '../../shared/appellation-token/appellation-token';
+import { Subscription } from 'rxjs';
 
 
 @AutoUnsubscribe()
@@ -25,7 +26,7 @@ import { Token, TokenInterface } from '../../shared/appellation-token/appellatio
     }
   ]
 })
-export class AppellationComponent implements OnInit, ControlValueAccessor {
+export class AppellationComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
   @Input() parentPath: string[];
 
@@ -64,6 +65,7 @@ export class AppellationComponent implements OnInit, ControlValueAccessor {
 
   appellationLabelInEdit: AppellationLabel;
 
+  subs: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -78,7 +80,7 @@ export class AppellationComponent implements OnInit, ControlValueAccessor {
     this.formGroup = this.fb.group({})
 
     // subscribe to form changes here
-    this.formGroup.valueChanges.subscribe(val => {
+    this.subs.push(this.formGroup.valueChanges.subscribe(val => {
       if (this.formGroup.valid) {
 
         // build a appe with the appellation_label given by the formControl 
@@ -101,20 +103,32 @@ export class AppellationComponent implements OnInit, ControlValueAccessor {
       else {
         this.onChange(null)
       }
-    })
+    }))
 
+  }
+
+  ngOnDestroy() {
+    this.subs.forEach(sub => sub.unsubscribe())
   }
 
   ngOnInit() {
 
     this.basePath = this.getBasePath();
-    this.ngRedux.select<IAppellationState>(this.basePath).subscribe(d => {
+    this.subs.push(this.ngRedux.select<IAppellationState>(this.basePath).subscribe(d => {
       this.appeState = d;
-      if(d){
+      if (d) {
         this.appellation = this.appeState.appellation;
         this.peItAppeState = this.appeState.state;
+
+        this.formGroup.addControl('appellationLabel', new FormControl(
+          this.appeState.appellation.appellation_label,
+          [
+            Validators.required
+          ]
+        ))
+
       }
-    });
+    }));
 
     if (this.appellation.appellation_label) {
       this.appellationLabel = new AppellationLabel(this.appellation.appellation_label);
@@ -180,7 +194,7 @@ export class AppellationComponent implements OnInit, ControlValueAccessor {
   save(appeLabel: AppellationLabel) {
     this.startLoading();
 
-    this.appellationApi.findOrCreateAppellation(
+    this.subs.push(this.appellationApi.findOrCreateAppellation(
       this.activeProjectService.project.pk_project,
       {
         pk_entity: this.appellation.pk_entity,
@@ -198,7 +212,8 @@ export class AppellationComponent implements OnInit, ControlValueAccessor {
         isDisplayRoleInProject: false
       })
 
-    })
+    }))
+
     this.cancelEdit.emit()
 
   }
@@ -245,12 +260,6 @@ export class AppellationComponent implements OnInit, ControlValueAccessor {
    */
   writeValue(appellation: InfAppellation): void {
 
-    this.formGroup.addControl('appellationLabel', new FormControl(
-      this.appeState.appellation.appellation_label,
-      [
-        Validators.required
-      ]
-    ))
 
   }
 
@@ -285,7 +294,7 @@ export class AppellationComponent implements OnInit, ControlValueAccessor {
   onTouched = () => {
   };
 
-  markAsTouched(){
+  markAsTouched() {
     this.onTouched()
     this.touched.emit()
   }

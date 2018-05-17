@@ -12,7 +12,10 @@ export const entityEditorReducer =
         switch (action.type) {
 
             case EntityEditorActions.ENTITY_EDITOR_INITIALIZED:
-                lastState = Object.assign({}, lastState, action.payload);
+                lastState = {
+                    ... lastState,
+                    ... action.payload
+                };
                 break;
 
             case EntityEditorActions.ENTITY_EDITOR_DESTROYED:

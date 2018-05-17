@@ -1,7 +1,7 @@
 <div [ngClass]="{'dev-view': entityEditor.devView}">
 
   <span *ngIf="entityEditor.devView">
-      [state: {{peItAppeState}}]
+    [state: {{peItAppeState}}]
   </span>
 
 
@@ -13,7 +13,7 @@
 
   </div>
 
-  <form [formGroup]="formGroup" class="d-flex flex-row" *ngIf=" peItAppeState === 'edit' || peItAppeState === 'create' || peItAppeState === 'create-pe-it' || peItAppeState === 'create-pe-it-role'">
+  <form [formGroup]="formGroup" class="d-flex flex-row" *ngIf=" peItAppeState === 'edit' || peItAppeState === 'create' || peItAppeState === 'create-pe-it' || peItAppeState === 'create-pe-it-role' || peItAppeState === 'create-te-ent-role'">
 
     <gv-appellation-label-editor formControlName="appellationLabel" (touched)="markAsTouched()"></gv-appellation-label-editor>
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import {
   trigger,
   state,
@@ -26,8 +26,9 @@ import { PeItActions } from '../../containers/pe-it/pe-it.actions';
 import { TeEntActions } from '../te-ent/te-ent.actions';
 import { RoleSetListService } from '../../shared/role-set-list.service';
 import { FormGroup } from '@angular/forms';
+import { Subscriber, Subscription } from 'rxjs';
 
-export class RoleSetListComponent implements OnInit {
+export class RoleSetListComponent implements OnInit, OnDestroy {
 
   @Input() parentPath: string[];
 
@@ -68,7 +69,8 @@ export class RoleSetListComponent implements OnInit {
    */
   formGroup: FormGroup;
   label: string;
-  labelInEdit:string;
+  labelInEdit: string;
+  subs: Subscription[] = []
 
   constructor(
     protected classService: ClassService,
@@ -77,6 +79,10 @@ export class RoleSetListComponent implements OnInit {
     protected entityEditor: EntityEditorService,
     protected roleSetListService: RoleSetListService,
   ) { }
+
+  ngOnDestroy() {
+    this.subs.forEach(sub => sub.unsubscribe())
+  }
 
   ngOnInit() {
     // Initialize the store by one of the derived classes
@@ -106,9 +112,9 @@ export class RoleSetListComponent implements OnInit {
   // }
 
   private initSubscriptions() {
-    this.roleSets$.subscribe(rs =>
+    this.subs.push(this.roleSets$.subscribe(rs =>
       this.roleSets = rs
-    )
+    ))
   }
 
   // initFkClassAndRoles(fkClass: number, roles: InfRole[] = []) {
@@ -234,7 +240,7 @@ export class RoleSetListComponent implements OnInit {
 
     /** remove the roleSet from state */
     this.localStore.dispatch(this.actions.removeRoleSet(key));
-    
+
     /** remove the formControl from form */
     this.formGroup.removeControl(key)
   }

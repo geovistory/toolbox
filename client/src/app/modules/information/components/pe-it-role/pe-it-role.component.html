@@ -4,8 +4,7 @@
     [state: {{state}}] [pk: {{role.pk_entity_version_concat}}] [ready: {{isReadyToCreate}}] [commStatsVisible: {{communityStatsVisible}}]
   </span>
 
-
-  <!--
+<!--
   ************************* Editable State ******************* -->
 
   <div *ngIf="(state$ | async) === 'editable'">
@@ -13,7 +12,6 @@
 
     <!-- TeEnt Component (passing the temporal entity) -->
     <gv-te-ent [parentPath]="basePath" (appeChange)="emitAppeChange($event)" (readyToAdd)="onTeEntReadyToAdd($event)">
-
       <div headerRight class="d-flex">
 
         <!-- UI for standard in project -->
@@ -22,11 +20,11 @@
 
           <!-- If is standard -->
 
-          <i class="fa fa-eye gv-true text-primary" title="Is standard" *ngIf="isDisplayRoleInProject"></i>
+          <i class="fa fa-eye gv-true text-primary" title="Is standard" *ngIf="(isDisplayRoleInProject$|async)"></i>
 
           <!-- If not standard -->
 
-          <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="!isDisplayRoleInProject" [attr.disabled]="(changingDisplayRole$|async) ? 'disabled' : null"
+          <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="!(isDisplayRoleInProject$|async)" [attr.disabled]="(changingDisplayRole$|async) ? 'disabled' : null"
             (click)="requestStandard()" title="Make standard">
             <i class="fa fa-eye-slash gv-false"></i>
           </button>
@@ -35,15 +33,8 @@
 
         <!-- dropdown -->
 
+        <ng-content select="[headerRight]"></ng-content>
 
-        <div ngbDropdown placement="bottom-right" class="gv-name-dropdown">
-          <button class="btn btn-link" ngbDropdownToggle>
-            <i class="fa fa-ellipsis-v"></i>
-          </button>
-          <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
-            <button class="dropdown-item" (click)="removeFromProject()">Remove from project</button>
-          </div>
-        </div>
 
       </div>
 
@@ -142,7 +133,7 @@
     </div>
    -->
   <!--
-  ************************* Create PeIt State ******************* -->
+  ************************* Create PeIt State &&  PeI-Role State ******************* -->
 
   <div *ngIf="(state$ | async) === 'create-pe-it' || (state$ | async) === 'create-pe-it-role'">
 

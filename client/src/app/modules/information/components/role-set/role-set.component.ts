@@ -1,6 +1,6 @@
 import {
   OnChanges, OnInit, Input, Output, ViewChildren,
-  QueryList, EventEmitter, ChangeDetectorRef
+  QueryList, EventEmitter, ChangeDetectorRef, OnDestroy
 } from '@angular/core';
 
 
@@ -30,7 +30,8 @@ import { roleSetListReducer } from '../role-set-list/role-set-list-reducer';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { ClassService } from '../../shared/class.service';
 import { ControlValueAccessor, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subscription, ReplaySubject } from 'rxjs';
+import { StateToDataService } from '../../shared/state-to-data.service';
 
 export type RoleSetLabelObj = {
   default: string
@@ -38,7 +39,7 @@ export type RoleSetLabelObj = {
   sg: string
 }
 
-export class RoleSetComponent implements OnInit, ControlValueAccessor {
+export class RoleSetComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
   @Input() parentPath: string[];
 
@@ -49,8 +50,8 @@ export class RoleSetComponent implements OnInit, ControlValueAccessor {
   basePath: string[];
   localStore: ObservableStore<IRoleSetState>;
 
-  parentStore: ObservableStore<IRoleSetListState>
   addButtonVisible: boolean = true;
+  removeRoleSetBtnVisible: boolean = false;
 
   /**
   * Paths to other slices of the store
@@ -60,8 +61,9 @@ export class RoleSetComponent implements OnInit, ControlValueAccessor {
   // parameter so Angular doesn't tear down and rebuild the list's DOM every
   // time there's an update.
   getKey(_, item) {
-    return item.tkey;
+    return item.key;
   }
+
 
   /**
    * Local store Observables
@@ -111,6 +113,7 @@ export class RoleSetComponent implements OnInit, ControlValueAccessor {
   formGroup: FormGroup; // formGroup to create roles
   formValPath: string[];
   createFormControlCount: number = 0;
+  subs: Subscription[] = []; // for unsubscribe onDestroy
 
   /**
    * Outputs
@@ -141,7 +144,7 @@ export class RoleSetComponent implements OnInit, ControlValueAccessor {
     this.formGroup = this.fb.group({});
 
     // subscribe to form changes here
-    this.formGroup.valueChanges.subscribe(val => {
+    this.subs.push(this.formGroup.valueChanges.subscribe(val => {
       if (this.formGroup.valid) {
 
         // build a array of InfRole
@@ -158,16 +161,14 @@ export class RoleSetComponent implements OnInit, ControlValueAccessor {
       else {
         this.onChange(null)
       }
-    })
+    }))
+
   }
 
 
   /**
   * Methods
   */
-
-  temp:Subscription;
-
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), roleSetReducer);
     this.basePath = this.getBasePath();
@@ -176,32 +177,63 @@ export class RoleSetComponent implements OnInit, ControlValueAccessor {
     /** prepare the formGroup */
     this.formValPath = [...this.basePath, 'formGroup'];
 
+
+
     // /** subscribe here for changes in the create-roles-form  */
     // this.formGroup.valueChanges.subscribe(val => {
 
     // })
 
-    // this.parentStore = this.roleSetListStore.configureSubStore(this.parentPath, roleSetListReducer);
-    this.roleStatesInProject$.subscribe(d => this.roleStatesInProject = d)
+    this.subs.push(this.roleStatesInProject$.subscribe(d => { this.roleStatesInProject = d; }))
 
-    this.ngRedux.select<Project>('activeProject').subscribe(d => this.project = d);
+    this.subs.push(this.ngRedux.select<Project>('activeProject').subscribe(d => this.project = d));
 
-    this.localStore.select<IRoleSetState>('').subscribe(d => this.roleSetState = d)
+    this.subs.push(this.localStore.select<IRoleSetState>('').subscribe(d => {
+      this.roleSetState = d
+      
+      let formCtrlDefs: { [controlName: string]: any } = {};
+      let formCrtlsToRemove: string[] = [];
 
-    this.temp = Observable.combineLatest(this.toggle$, this.roleStatesToCreate$, this.roleStatesInProject$).subscribe(res => {
+      // add controls for each child roleSet
+      if (this.roleSetState && this.roleSetState.roleStatesInProject)
+        Object.keys(this.roleSetState.roleStatesInProject).forEach((key) => {
+          if (this.roleSetState.roleStatesInProject[key]) {
+
+            this.formGroup.addControl(key, new FormControl(
+              this.roleSetState.roleStatesInProject[key].role,
+              [
+                Validators.required
+              ]
+            ))
+          }
+          else {
+            formCrtlsToRemove.push(key);
+          }
+        })
+
+      // remove control of removed chiild state
+      formCrtlsToRemove.forEach(key => {
+        this.formGroup.removeControl(key);
+      })
+
+    }));
+
+    this.subs.push(Observable.combineLatest(this.toggle$, this.roleStatesToCreate$, this.roleStatesInProject$).subscribe(res => {
       const toggle = res[0], roleStatesToCreate = res[1], roleStatesInProject = res[2];
 
-      if(this.roleSetState){
+      if (this.roleSetState) {
         // count roles of this roleSet that are in the project or currently being created 
         const rolesCount = Object.keys(roleStatesToCreate || {}).length + Object.keys(roleStatesInProject || {}).length;
-        
+
         // check if more roles would be possible in this role set
         const moreRolesPossible = this.roleSetService.moreRolesPossible(rolesCount, this.roleSetState);
-        
+
         // assign the add button visibility
         this.addButtonVisible = (toggle === 'expanded' && moreRolesPossible);
+
+        this.removeRoleSetBtnVisible = ((!roleStatesToCreate || roleStatesToCreate == {}) && (!roleStatesInProject || roleStatesInProject == {}));
       }
-    })
+    }))
 
     // this.initProperty()
 
@@ -219,8 +251,8 @@ export class RoleSetComponent implements OnInit, ControlValueAccessor {
 
   init() { } // hook for child classes
 
-  ngOnDestroy(){
-    this.temp;
+  ngOnDestroy() {
+    this.subs.forEach(sub => sub.unsubscribe());
   }
 
 
@@ -455,7 +487,7 @@ export class RoleSetComponent implements OnInit, ControlValueAccessor {
       }
     });
 
-    Observable.combineLatest(observables)
+    this.subs.push(Observable.combineLatest(observables)
       .subscribe(
         (value) => {
 
@@ -470,7 +502,7 @@ export class RoleSetComponent implements OnInit, ControlValueAccessor {
             this.getChildRoleStore(roleStateKey(rolesToChange[i])).dispatch(this.roleActions.changeDisplayRoleSucceeded(false, rolesToChange[i].isOutgoing))
           }
 
-        })
+        }))
 
   }
 
@@ -627,41 +659,28 @@ export class RoleSetComponent implements OnInit, ControlValueAccessor {
 
 
 
-
-
-  createRoles() {
-    console.log(this.roleSetState.formGroup)
-  }
-
   /**
-  * called when user created a new role
+  * removeFromProject - called when user removes a role (nested) from project
   */
-  onRoleCreated(roleState: IRoleState) {
-    const newRoleSetStates: IRoleStates = {
-      ...this.roleSetState.roleStatesInProject,
-      ...indexBy(roleStateKey, [roleState])
+  removeFromProject(key: string) {
+    const roleState = this.roleSetState.roleStatesInProject[key];
+    if (RoleService.isDisplayRole(roleState.isOutgoing, roleState.isDisplayRoleForDomain, roleState.isDisplayRoleForRange)) {
+      alert("You can't remove the standard item. Make another item standard and try again.")
+    } else {
+
+      const roleToRemove = StateToDataService.roleStateToRoleToRelate(roleState)
+
+      console.log(roleToRemove)
+
+      this.subs.push(this.roleApi.changeRoleProjectRelation(
+        this.project.pk_project, false, roleToRemove
+      ).subscribe(result => {
+        this.localStore.dispatch(this.actions.roleRemovedFromProject(key))
+      }))
     }
-
-    this.localStore.dispatch(this.actions.roleSetUpdated(newRoleSetStates))
-    this.localStore.dispatch(this.actions.stopCreateNewRole())
-
-    // this.roles.push(role);
-    // this.addRoleState = 'init';
-
   }
 
 
-  /**
-  * called when user removed a role from project
-  */
-  onRoleRemoved(removedRole: InfRole) {
-    // for (let i = 0; i < this.roles.length; i++) {
-    //   if (this.roles[i].pk_entity === removedRole.pk_entity) {
-    //     this.roles.splice(i, 1);
-    //     break;
-    //   }
-    // }
-  }
 
   /**
   * called when user updates a role (or its children)
@@ -801,30 +820,6 @@ export class RoleSetComponent implements OnInit, ControlValueAccessor {
    */
   writeValue(roles: InfRole[]): void {
 
-    let formCtrlDefs: { [controlName: string]: any } = {};
-    let formCrtlsToRemove: string[] = [];
-
-    // add controls for each child roleSet
-    if (this.roleSetState.roleStatesInProject)
-      Object.keys(this.roleSetState.roleStatesInProject).forEach((key) => {
-        if (this.roleSetState.roleStatesInProject[key]) {
-
-          this.formGroup.addControl(key, new FormControl(
-            this.roleSetState.roleStatesInProject[key].role,
-            [
-              Validators.required
-            ]
-          ))
-        }
-        else {
-          formCrtlsToRemove.push(key);
-        }
-      })
-
-    // remove control of removed chiild state
-    formCrtlsToRemove.forEach(key => {
-      this.formGroup.removeControl(key);
-    })
 
   }
 

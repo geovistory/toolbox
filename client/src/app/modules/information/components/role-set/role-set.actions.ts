@@ -16,11 +16,12 @@ export function roleStateKey(roleState: IRoleState) { return roleState.role.pk_e
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = IRoleSetState;
-interface MetaData { };
+interface MetaData { [key: string]: any };
 export type RoleSetAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
 export class RoleSetActions {
+
   static readonly PROPERTY_LOADED = 'PROPERTY_LOADED';
 
 
@@ -38,11 +39,17 @@ export class RoleSetActions {
 
   static readonly START_CREATE_NEW_ROLE = 'START_CREATE_NEW_ROLE';
   static readonly STOP_CREATE_NEW_ROLE = 'STOP_CREATE_NEW_ROLE'; // removes all roleStatesToCreate
-
   static readonly ROLE_CREATION_CANCELLED = 'ROLE_CREATION_CANCELLED'; // removes one roleStateToCreate
 
+  static readonly ROLES_CREATED = 'ROLES_CREATED';
+  static readonly ROLE_REMOVED_FROM_PROJECT = 'ROLE_REMOVED_FROM_PROJECT';
 
-  static readonly ROLE_SET_UPDATED = 'ROLE_SET_UPDATED';
+
+
+  static readonly START_EDITING_ROLE = 'START_EDITING_ROLE';
+  static readonly STOP_EDITING_ROLE = 'STOP_EDITING_ROLE';
+  static readonly UPDATE_ROLE = 'UPDATE_ROLE';
+
   static readonly ROLE_READY_TO_CREATE = 'ROLE_READY_TO_CREATE';
   static readonly ROLE_NOT_READY_TO_CREATE = 'ROLE_NOT_READY_TO_CREATE';
   static readonly ENTITIES_TO_CREATE_PERSISTED = 'ENTITIES_TO_CREATE_PERSISTED';
@@ -113,7 +120,7 @@ export class RoleSetActions {
     }
   })
 
-  startCreateNewRole = (roleStatesToCreate:IRoleStates): RoleSetAction => ({
+  startCreateNewRole = (roleStatesToCreate: IRoleStates): RoleSetAction => ({
     type: RoleSetActions.START_CREATE_NEW_ROLE,
     meta: null,
     payload: {
@@ -133,7 +140,7 @@ export class RoleSetActions {
   })
 
 
-  roleCreationCancelled = (roleStatesToCreate:IRoleStates): RoleSetAction => ({
+  roleCreationCancelled = (roleStatesToCreate: IRoleStates): RoleSetAction => ({
     type: RoleSetActions.ROLE_CREATION_CANCELLED,
     meta: null,
     payload: {
@@ -142,11 +149,49 @@ export class RoleSetActions {
   })
 
 
-  roleSetUpdated= (roleStatesInProject:IRoleStates): RoleSetAction => ({
-    type: RoleSetActions.ROLE_SET_UPDATED,
+  rolesCreated = (roleStatesInProject: IRoleStates): RoleSetAction => ({
+    type: RoleSetActions.ROLES_CREATED,
     meta: null,
     payload: {
       roleStatesInProject
     }
   })
+
+  /**
+ * Removes the current RoleState from the Store. Called upon successfully removing a role
+ */
+  roleRemovedFromProject = (key: String): RoleSetAction => ({
+    type: RoleSetActions.ROLE_REMOVED_FROM_PROJECT,
+    meta: { key },
+    payload: null
+  })
+
+  startEditingRole = (key: string, roleState: IRoleState): RoleSetAction => ({
+    type: RoleSetActions.START_EDITING_ROLE,
+    meta: {
+      key,
+      roleState
+    },
+    payload: null
+  })
+
+  stopEditingRole = (key: string, roleState: IRoleState): RoleSetAction => ({
+    type: RoleSetActions.STOP_EDITING_ROLE,
+    meta: {
+      key,
+      roleState
+    },
+    payload: null
+  })
+
+  updateRole = (key: string, roleStatesInProject: IRoleStates): RoleSetAction => ({
+    type: RoleSetActions.UPDATE_ROLE,
+    meta: {
+      key
+    },
+    payload: {
+      roleStatesInProject
+    }
+  })
+
 }

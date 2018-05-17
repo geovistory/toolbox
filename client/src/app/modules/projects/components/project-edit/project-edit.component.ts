@@ -54,7 +54,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // this.queryParamsSubsciption.unsubscribe();
+    this.queryParamsSubsciption.unsubscribe();
   }
 
 

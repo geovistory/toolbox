@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter, ChangeDetectionStrategy, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter, ChangeDetectionStrategy, forwardRef, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
@@ -23,6 +23,7 @@ import { peItReducer } from '../../containers/pe-it/pe-it.reducer';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { FormBuilder, ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { StateCreatorService } from '../../shared/state-creator.service';
+import { Subscription } from 'rxjs';
 
 @AutoUnsubscribe()
 @Component({
@@ -37,7 +38,7 @@ import { StateCreatorService } from '../../shared/state-creator.service';
     }
   ]
 })
-export class PeItEntityPreviewComponent implements OnInit, ControlValueAccessor {
+export class PeItEntityPreviewComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
   @Input() pkEntity: number;
   @Input() isCircular: boolean;
@@ -67,6 +68,8 @@ export class PeItEntityPreviewComponent implements OnInit, ControlValueAccessor 
 
   pkProject: number;
 
+  subs: Subscription[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -75,6 +78,7 @@ export class PeItEntityPreviewComponent implements OnInit, ControlValueAccessor 
     private fb: FormBuilder,
     private roleSetListService: RoleSetListService,
     private stateCreator: StateCreatorService,
+    private ref:ChangeDetectorRef
   ) {
   }
 
@@ -82,17 +86,20 @@ export class PeItEntityPreviewComponent implements OnInit, ControlValueAccessor 
   ngOnInit() {
 
     this.basePath = this.getBasePath();
-    this.ngRedux.select<IPeItState>(this.basePath).subscribe(d => {
+    this.subs.push(this.ngRedux.select<IPeItState>(this.basePath).subscribe(d => {
       this.peItState = d;
       if (d)
         this.label = this.roleSetListService.getDisplayAppeLabelOfPeItRoleSets(d.roleSets);
-    })
+    }))
 
-    this.ngRedux.select<number>(['activeProject', 'pk_project']).subscribe(d => {
+    this.subs.push(this.ngRedux.select<number>(['activeProject', 'pk_project']).subscribe(d => {
       this.pkProject = d;
-    })
+    }))
+  }
 
-
+  ngOnDestroy() {
+    this.subs.forEach(sub => sub.unsubscribe())
+    this.ref.detach()
   }
 
 
@@ -108,9 +115,10 @@ export class PeItEntityPreviewComponent implements OnInit, ControlValueAccessor 
   selected(pkEntity: number) {
     this.isSelected = true
 
-    this.stateCreator.initializePeItState(pkEntity, this.pkProject, 'view').subscribe(peItState => {
+    this.subs.push(this.stateCreator.initializePeItState(pkEntity, this.pkProject, 'view').subscribe(peItState => {
       this.label = this.roleSetListService.getDisplayAppeLabelOfPeItRoleSets(peItState.roleSets);
-    })
+      this.ref.detectChanges()
+    }))
 
     // send the pkEntity to the parent form
     this.onChange(pkEntity)

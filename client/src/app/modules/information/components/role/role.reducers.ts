@@ -28,14 +28,6 @@ export const roleReducer =
         };
         break;
 
-      case RoleActions.START_EDITING_ROLE:
-        lastState = action.payload;
-        break;
-
-      case RoleActions.STOP_EDITING_ROLE:
-        lastState = action.payload;
-        break;
-      
         /**
       * If the role is outgoing, this means that it can be display role for the domain.
       * In this case, the entity_project_relation.is_display_role_for_domain will be adapted.
@@ -76,10 +68,6 @@ export const roleReducer =
         };
         break;
 
-
-      case RoleActions.ROLE_STATE_REMOVED:
-        lastState = undefined;
-        break;
 
       case RoleActions.LEAF_PE_IT_STATE_ADDED:
         lastState = {

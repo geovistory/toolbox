@@ -25,32 +25,13 @@
 
 
   <!--
-  ************************* Create PeIt State & Create PeIt-Role State ************************* -->
+  ************************* Create PeIt State & Create PeIt-Role State & Create TeEnt-Role State ************************* -->
 
-  <div *ngIf="(state$|async) === 'create-pe-it' || (state$|async) === 'create-pe-it-role'">
+  <div *ngIf="(state$|async) === 'create-pe-it' || (state$|async) === 'create-pe-it-role' || (state$|async) === 'create-te-ent-role'">
 
     <ng-container *ngTemplateOutlet="object"></ng-container>
 
   </div>
-
-  <!--
-  ************************* Create PeIt-Role State ************************* -->
-
-  <!-- <div *ngIf="(state$|async) === 'create-pe-it-role'">
-
-    <ng-container *ngTemplateOutlet="object"></ng-container>
-
-    <div *ngIf="showEntityUI && (targetDfhClass$|async)" class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
-      <gv-pe-it-entity-preview [parentPath]="basePath"></gv-pe-it-entity-preview>
-      <gv-pe-it-entity-add *ngIf="!(isReadyToCreate$|async)" [dfhClass]="(targetDfhClass$|async)" (selected)="pkEntitySelected($event)"></gv-pe-it-entity-add>
-    </div>
-
-    <div class="card-body">
-      <button type="button" class="btn btn-link" (click)="cancelCreateRole()">Cancel</button>
-    </div>
-
-  </div> -->
-
 
 
   <!--
@@ -124,37 +105,31 @@
 
   <div *ngIf="(state$|async) === 'edit'">
 
-    <!-- include component PeIt (passing the PeIt) -->
-    <!-- <gv-pe-it class="gv-flex-grow-1" [peItState]="(state$|async)" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
-      [childOfTeEnt]="true" (appeChange)="emitAppeChange($event)" (appeReadyToAdd)="onAppeReadyToAdd($event)" (langReadyToAdd)="onLangReadyToAdd($event)">
+    <div class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
 
-      <div belowHeader>
-        <div class="card-body pt-0 gv-community-statistics d-flex justify-content-start small" *ngIf="communityStatsVisible">
+      <form [formGroup]="formGroup" [connect]="formValPath" *ngIf="formGroup && roleState" class="align-self-center gv-flex-grow-1">
 
-          <ul class="gv-ul-sm">
-            <li class="gv-li-inline">
-              <a href class="gv-passive-link text-secondary" (click)="openProjectsModal()" title="Added by {{role.is_in_project_count}} {{role.is_in_project_count === 1 ? 'project':'projects'}}">
-                <span>
-                  <i class="fa fa-check"></i> {{role.is_in_project_count}}</span>
-              </a>
-            </li>
-            <li class="gv-li-inline">
-              <a href class="gv-passive-link text-secondary" (click)="openVersionHistoryModal()" title="Used as standard by {{role.is_standard_in_project_count}} {{role.is_standard_in_project_count === 1 ? 'project':'projects'}}">
-                <span>
-                  <i class="fa fa-eye"></i> {{role.is_standard_in_project_count}}</span>
-              </a>
-            </li>
-          </ul>
+        <div *ngIf="(leafPeItLoading$ |async)">
+          <i class="fa fa-spinner fa-pulse"></i> Loading</div>
+        <gv-pe-it-entity-preview *ngIf="(peItState$ |async) && !(leafPeItLoading$ |async)" [parentPath]="basePath" [isCircular]="(isCircular$|async)"
+          [formControlName]="formControlName" (touched)="markAsTouched()"></gv-pe-it-entity-preview>
+
+        <gv-appellation *ngIf="roleState.appeState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
+          (touched)="markAsTouched()"></gv-appellation>
+
+        <gv-language *ngIf="roleState.langState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
+          (touched)="markAsTouched()"></gv-language>
+
+        <div>
+          <gv-control-messages *ngIf="formGroup.get(formControlName)" [control]="formGroup.get(formControlName)"></gv-control-messages>
         </div>
 
-      </div>
-    </gv-pe-it> -->
+        <div class="card-body">
+          <button [ngClass]="{disabled:(formGroup.invalid)}" type="button" class="btn btn-primary" (click)="okEdit()">Ok</button>
+          <button type="button" class="btn btn-link" (click)="cancelEdit()">Cancel</button>
+        </div>
 
-    <ng-container *ngTemplateOutlet="object"></ng-container>
-
-    <div class="card-body">
-      <button [ngClass]="{disabled:(!isReadyToCreate)}" type="button" class="btn btn-primary" (click)="updateRole()">Ok</button>
-      <button type="button" class="btn btn-link" (click)="stopEditing()">Cancel</button>
+      </form>
     </div>
 
   </div>
@@ -174,21 +149,7 @@
       <ng-container *ngTemplateOutlet="object"></ng-container>
 
       <div class="d-flex align-items-center" *ngIf="!(isCircular$|async)">
-
-        <div class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
-          <button class="btn btn-link" ngbDropdownToggle>
-            <i class="fa fa-ellipsis-v"></i>
-          </button>
-          <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
-
-            <!-- start editing -->
-            <button class="dropdown-item" (click)="startEditing()">Edit</button>
-
-            <button class="dropdown-item" (click)="removeFromProject()">Remove</button>
-
-          </div>
-        </div>
-
+        <ng-content select="[headerRight]"></ng-content>
       </div>
 
     </div>
@@ -246,9 +207,10 @@
 
     <form [formGroup]="formGroup" *ngIf="formGroup && roleState" class="align-self-center gv-flex-grow-1">
 
-
-      <gv-pe-it-entity-preview *ngIf="(peItState$ |async)" [parentPath]="basePath" [isCircular]="(isCircular$|async)" [formControlName]="formControlName"
-        (touched)="markAsTouched()"></gv-pe-it-entity-preview>
+      <div *ngIf="(leafPeItLoading$ |async)">
+        <i class="fa fa-spinner fa-pulse"></i> Loading</div>
+      <gv-pe-it-entity-preview *ngIf="(peItState$ |async) && !(leafPeItLoading$ |async)" [parentPath]="basePath" [isCircular]="(isCircular$|async)"
+        [formControlName]="formControlName" (touched)="markAsTouched()"></gv-pe-it-entity-preview>
 
       <gv-appellation *ngIf="roleState.appeState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
         (touched)="markAsTouched()"></gv-appellation>

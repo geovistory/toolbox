@@ -84,14 +84,11 @@ export class EntityAddModalService {
   ) { }
 
   changePeItProjectRelation() {
-
-
     return this.persistentItemApi.changePeItProjectRelation(
       this.activeProjectService.project.pk_project,
       true,
       StateToDataService.peItStateToPeItToRelate(this.peItStateToAdd)
     )
-
   }
 
   createPeIt() {

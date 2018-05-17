@@ -2,6 +2,8 @@
   <span *ngIf="entityEditor.devView">
     <ng-container *ngTemplateOutlet="dev"></ng-container>
   </span>
+
+
   <!--
     ************************* Editable State & Create PeIt-Role State ************************* -->
 
@@ -12,13 +14,22 @@
       <ng-container *ngTemplateOutlet="header"></ng-container>
 
       <div [@slideInOut]="(toggle$|async)">
-
         <!-- The roles that are added -->
-
         <div class="card-body">
           <gv-pe-it-role *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
             (appeChange)="emitAppeChange($event)" (onRequestStandard)="changeStandardRole($event)" (readyToAdd)="onRoleReadyToAdd($event)"
-            (roleRemoved)="onRoleRemoved($event)"></gv-pe-it-role>
+            (roleRemoved)="onRoleRemoved($event)">
+
+            <div headerRight ngbDropdown placement="bottom-right" class="gv-name-dropdown">
+              <button class="btn btn-link" ngbDropdownToggle>
+                <i class="fa fa-ellipsis-v"></i>
+              </button>
+              <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+                <button class="dropdown-item" (click)="removeFromProject(entry.key)">Remove from project </button>
+              </div>
+            </div>
+
+          </gv-pe-it-role>
         </div>
 
         <!-- If no roles in Project, show a big add button -->
@@ -44,8 +55,8 @@
 
               <form [formGroup]="formGroup" *ngIf="formGroup" [connect]="formValPath">
                 <div *ngFor="let entry of (roleStatesToCreate$ | async) | keys; trackBy:getKey">
-                  <gv-pe-it-role [parentPath]="basePath" intermediatePathSegment="roleStatesToCreate" [index]="entry.key"
-                    [formControlName]="entry.key" (touched)="markAsTouched()"></gv-pe-it-role>
+                  <gv-pe-it-role [parentPath]="basePath" intermediatePathSegment="roleStatesToCreate" [index]="entry.key" [formControlName]="entry.key"
+                    (touched)="markAsTouched()"></gv-pe-it-role>
                 </div>
 
                 <div class="card-body">
@@ -219,7 +230,7 @@
         </a>
       </div>
     </div>
-    <button class="btn btn-secondary rounded-bottom-0" (click)="removePropertySection()" *ngIf="removeSectionBtnVisible">
+    <button class="btn btn-secondary rounded-bottom-0" (click)="removeRoleSet()" *ngIf="removeRoleSetBtnVisible">
       <i class="fa fa-close"></i>
     </button>
   </div>

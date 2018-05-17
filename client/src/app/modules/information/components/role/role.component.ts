@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ChangeDetectorRef, Output, EventEmitter, OnChanges, OnInit, OnDestroy } from '@angular/core';
 import { RoleSetComponent } from '../role-set/role-set.component';
 import { InfAppellation, InfRole, DfhProperty, ActiveProjectService, EntityEditorService, InfRoleApi, InfEntityProjectRel, InfLanguage, InfTemporalEntity, Project } from 'app/core';
 import { EprService } from '../../shared/epr.service';
@@ -8,10 +8,9 @@ import { EditorStates, CollapsedExpanded } from '../../information.models';
 import { RoleActions } from './role.actions';
 import { IRoleState } from './role.model';
 import { roleReducer } from './role.reducers';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subscription } from 'rxjs';
 import { IRoleStates, IRoleSetState } from '../role-set/role-set.model';
 import { RoleService } from '../../shared/role.service';
-import { StateToDataService } from '../../shared/state-to-data.service';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { FormGroup, Validators, FormControl, ControlValueAccessor, FormBuilder } from '@angular/forms';
 import { ɵPRE_STYLE } from '@angular/animations';
@@ -29,7 +28,7 @@ export interface AppellationStdBool {
   role?: InfRole;
 }
 
-export class RoleComponent implements OnInit, ControlValueAccessor {
+export class RoleComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() parentPath: string[];
   @Input() intermediatePathSegment: string;
   @Input() index: string;
@@ -58,7 +57,7 @@ export class RoleComponent implements OnInit, ControlValueAccessor {
   @select() isReadyToCreate$: Observable<boolean>;
   @select() isCircular$: Observable<boolean>;
 
-  isDisplayRoleInProject: boolean;
+  isDisplayRoleInProject$: ReplaySubject<boolean> = new ReplaySubject();
 
   property$: Observable<DfhProperty>;
   activeProject$: Observable<Project>;
@@ -92,7 +91,10 @@ export class RoleComponent implements OnInit, ControlValueAccessor {
   };
 
   formControlName: string;
-  formControl:FormControl;
+  formControl: FormControl;
+
+  subs: Subscription[] = []
+
   /**
   * Outputs
   */
@@ -116,7 +118,9 @@ export class RoleComponent implements OnInit, ControlValueAccessor {
     this.formGroup = this.fb.group({});
 
   }
-
+  ngOnDestroy() {
+    this.subs.forEach(sub => sub.unsubscribe())
+  }
   ngOnInit() {
 
     this.initSubscriptions();
@@ -139,28 +143,36 @@ export class RoleComponent implements OnInit, ControlValueAccessor {
         )
 
         // subscribe to form control changes 
-        this.formControl.valueChanges.subscribe(val => {
+        this.subs.push(this.formControl.valueChanges.subscribe(val => {
+
+          // send the changes to the parent form
+          if (this.formControl.valid) {
 
             // build a InfRole
             let role: InfRole = new InfRole(this.roleState.role);
 
-            // add the form control value
-            role[this.formControlName] = this.formGroup.get(this.formControlName).value;
+            // add the value to the role
+            role[this.formControlName] = this.formGroup.get(this.formControlName).value
 
-            // send the changes to the parent form
-            if (this.formControl.valid) {
-              this.onChange(role)
+            // if this is not a leaf peIt
+            if (this.formControlName !== 'fk_entity') {
+
+              // add also the fk_class
+              role[this.formControlName].fk_class = (val && val.fk_class) ? val.fk_class : this.roleState.targetDfhClass.dfh_pk_class;
             }
-            else {
-              this.onChange(null)
-            }
 
-            // // update the redux state, if the form value differs from the state value 
-            // this.localStore.dispatch(this.actions.infRoleUpdated(role))
-            // if (!equals(this.roleState.role, role)) {
-            // }          
+            this.onChange(role)
+          }
+          else {
+            this.onChange(null)
+          }
 
-        })
+          // // update the redux state, if the form value differs from the state value 
+          // this.localStore.dispatch(this.actions.infRoleUpdated(role))
+          // if (!equals(this.roleState.role, role)) {
+          // }          
+
+        }))
 
         this.formGroup.addControl(this.formControlName, this.formControl)
 
@@ -194,15 +206,15 @@ export class RoleComponent implements OnInit, ControlValueAccessor {
 
 
   initRoleToCreate() {
-    this.property$.subscribe(property => {
+    this.subs.push(this.property$.subscribe(property => {
       const roleToCreate = new InfRole();
       roleToCreate.fk_property = property.dfh_pk_property;
       this.localStore.dispatch(this.actions.infRoleUpdated(roleToCreate))
-    })
+    }))
   }
 
   initRoleToAdd(state) {
-    Observable.zip(
+    this.subs.push(Observable.zip(
       this.activeProject$, this.role$, this.isStandardRoleToAdd$
     )
       .subscribe(result => {
@@ -226,7 +238,7 @@ export class RoleComponent implements OnInit, ControlValueAccessor {
         roleToAdd.entity_version_project_rels = [eprToAdd]
 
         this.localStore.dispatch(this.actions.infRoleUpdated(roleToAdd))
-      })
+      }))
   }
 
 
@@ -237,25 +249,25 @@ export class RoleComponent implements OnInit, ControlValueAccessor {
     this.property$ = this.ngRedux.select<DfhProperty>([...this.parentPath, 'property']);
     this.activeProject$ = this.ngRedux.select<Project>('activeProject');
 
-    this.ngRedux.select<IRoleSetState>([...this.parentPath]).subscribe(d => this.parentRoleSetState = d);
-    this.activeProject$.subscribe(d => this.activeProject = d);
-    this.localStore.select<IRoleState>('').subscribe(d => this.roleState = d)
+    this.subs.push(this.ngRedux.select<IRoleSetState>([...this.parentPath]).subscribe(d => this.parentRoleSetState = d));
+    this.subs.push(this.activeProject$.subscribe(d => this.activeProject = d));
+    this.subs.push(this.localStore.select<IRoleState>('').subscribe(d => this.roleState = d))
 
     // Observe if this role is a display role for the project
     // since this depends on the isOutgoing and the corresponding
     // - isDisplayRoleForDomain or isDisplayRoleForRange -
     // this value can be calculated allways on the fly
-    this.isOutgoing$.subscribe(isOutgoing => {
+    this.subs.push(this.isOutgoing$.subscribe(isOutgoing => {
       if (isOutgoing === true) {
-        this.isDisplayRoleForDomain$.subscribe(bool => {
-          this.isDisplayRoleInProject = bool;
-        })
+        this.subs.push(this.isDisplayRoleForDomain$.subscribe(bool => {
+          this.isDisplayRoleInProject$.next(bool);
+        }))
       } else if (isOutgoing === false) {
-        this.isDisplayRoleForRange$.subscribe(bool => {
-          this.isDisplayRoleInProject = bool;
-        })
+        this.subs.push(this.isDisplayRoleForRange$.subscribe(bool => {
+          this.isDisplayRoleInProject$.next(bool);
+        }))
       }
-    })
+    }))
 
   }
 
@@ -267,7 +279,9 @@ export class RoleComponent implements OnInit, ControlValueAccessor {
     this.onRequestStandard.emit({ roleState: this.roleState, key: this.index });
   }
 
-
+  log(a) {
+    console.log(a)
+  }
 
 
   //   /**
@@ -390,35 +404,35 @@ export class RoleComponent implements OnInit, ControlValueAccessor {
 
 
 
-  /**
-  * createRole - called when user confirms to create a role (with all children)
-  *
-  */
-  createRole() {
+  // /**
+  // * createRole - called when user confirms to create a role (with all children)
+  // *
+  // */
+  // createRole() {
 
-    // findOrCreate the InfRole
-    this.roleApi.findOrCreateInfRole(
-      this.activeProject.pk_project,
-      this.roleState.role
-    ).subscribe(newRole => {
+  //   // findOrCreate the InfRole
+  //   this.roleApi.findOrCreateInfRole(
+  //     this.activeProject.pk_project,
+  //     this.roleState.role
+  //   ).subscribe(newRole => {
 
-      // create RoleState with child PeItState of selected peIt
-      this.stateCreator.initializeRoleState(newRole[0], 'editable', this.roleState.isOutgoing)
-        .subscribe(roleState => {
+  //     // create RoleState with child PeItState of selected peIt
+  //     this.stateCreator.initializeRoleState(newRole[0], 'editable', this.roleState.isOutgoing)
+  //       .subscribe(roleState => {
 
-          // add the initialized peItState to the new RoleState
-          roleState.peItState = this.roleState.peItState;
+  //         // add the initialized peItState to the new RoleState
+  //         roleState.peItState = this.roleState.peItState;
 
-          // emit the RoleState to TeEntRoleSet
-          this.roleCreated.emit(roleState);
+  //         // emit the RoleState to TeEntRoleSet
+  //         this.roleCreated.emit(roleState);
 
-          // remove this RoleState (which was only for create)
-          this.localStore.dispatch(this.actions.roleStateRemoved())
-        });
-    })
+  //         // remove this RoleState (which was only for create)
+  //         this.localStore.dispatch(this.actions.roleStateRemoved())
+  //       });
+  //   })
 
 
-  }
+  // }
 
 
 
@@ -442,28 +456,6 @@ export class RoleComponent implements OnInit, ControlValueAccessor {
 
   }
 
-
-
-  /**
-  * removeFromProject - called when user removes a role (nested) from project
-  */
-  removeFromProject() {
-    if (RoleService.isDisplayRole(this.roleState.isOutgoing, this.roleState.isDisplayRoleForDomain, this.roleState.isDisplayRoleForRange)) {
-      alert("You can't remove the standard item. Make another item standard and try again.")
-    } else {
-
-      const roleToRemove = StateToDataService.roleStateToRoleToRelate(this.roleState)
-
-      console.log(roleToRemove)
-
-      this.roleApi.changeRoleProjectRelation(
-        this.activeProject.pk_project, false, roleToRemove
-      ).subscribe(result => {
-        const removedRole: InfRole = result[0]
-        this.localStore.dispatch(this.actions.roleStateRemoved())
-      })
-    }
-  }
 
 
   /**

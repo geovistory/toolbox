@@ -4,6 +4,7 @@ import { ITeEntState } from "../te-ent/te-ent.model";
 import { IPeItState } from "../../containers/pe-it/pe-it.model";
 import { IAppellationState } from "../appellation/appellation.model";
 import { ILanguageState } from "../language/language.model";
+import { FormGroup } from "@angular/forms";
 
 
 export interface IRoleState {
@@ -60,6 +61,9 @@ export interface IRoleState {
     langState?: ILanguageState;
     // timePrimitiveState?: ITimePrimitiveState
 
+    // used for editing a te ent role
+    formGroup?:FormGroup;
+
 }
 
 
@@ -96,6 +100,8 @@ export class RoleState implements IRoleState {
 
     appeState?: IAppellationState
     langState?: ILanguageState;
+
+    formGroup?:FormGroup;    
 
     constructor(data?: IRoleState) {
         Object.assign(this, data)

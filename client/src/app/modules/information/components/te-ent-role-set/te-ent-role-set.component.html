@@ -27,40 +27,55 @@
       <!-- The roles in project -->
 
       <gv-te-ent-role *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
-        (readyToAdd)="onRoleReadyToAdd($event)" (appeChange)="emitAppeChange($event)" (roleRemoved)="onRoleRemoved($event)"
-        (onRequestStandard)="changeStandardRole($event)"></gv-te-ent-role>
+        (stopEditing)="stopEditing(entry.key)" (startUpdating)="startUpdatingRole(entry.key, $event)">
+
+        <div headerRight class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
+          <button class="btn btn-link" ngbDropdownToggle>
+            <i class="fa fa-ellipsis-v"></i>
+          </button>
+          <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+
+            <!-- start editing -->
+            <button class="dropdown-item" (click)="startEditing(entry.key)">Edit</button>
+
+            <button class="dropdown-item" (click)="removeFromProject(entry.key)">Remove</button>
+
+          </div>
+        </div>
+      </gv-te-ent-role>
+
+
+
+
 
       <!-- If no roles in Project, show a big add button -->
       <div class="card-body" *ngIf="!(roleStatesInProject$ | async) && !(roleStatesToCreate$ | async) && addButtonVisible">
         <button class="btn btn-primary" (click)="startAddingRole()">
           Add {{(label$ | async).default}}
         </button>
-        <button class="btn btn-link" (click)="removePropertySection()">
-          cancel
+        <button class="btn btn-link" (click)="removeRoleSet()">
+          Cancel
         </button>
       </div>
 
 
       <!-- Roles currently being created -->
-
       <div class="border-top border-gray-500" *ngIf="((roleStatesToCreate$|async) | keys).length">
 
-        <!-- <div class="card-body">
-          Add a {{(label$ | async).sg}}
-        </div> -->
 
         <form [formGroup]="formGroup" *ngIf="formGroup" [connect]="formValPath">
-
           <div *ngFor="let entry of (roleStatesToCreate$ | async) | keys; trackBy:getKey">
-
             <gv-te-ent-role *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="roleStatesToCreate"
               [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role>
+          </div>
+
+          <div class="card-body">
+            <button [disabled]="formGroup.invalid" type="button" class="btn btn-primary" (click)="createRoles()">Ok</button>
+            <button type="button" class="btn btn-link" (click)="cancelCreateRoles()">Cancel</button>
           </div>
         </form>
 
       </div>
-
-
 
 
       <!-- Spinner for when loading roles not in project -->
@@ -144,7 +159,7 @@
       <!-- If no roles in Project, show a big add button -->
       <div class="card-body" *ngIf="!(roleStatesInProject$ | async) && !((roleStatesToCreate$ | async) | keys).length && addButtonVisible">
         <button class="btn btn-outline-primary" (click)="startAddingRole()">
-            Add a {{(label$ | async).sg}}
+          Add a {{(label$ | async).sg}}
         </button>
         <button class="btn btn-link pull-right" (click)="removeRoleSet()">
           cancel
@@ -183,7 +198,7 @@
 
   <span *ngIf="(state$ | async) === 'add-pe-it'">
 
-    <ng-container *ngTemplateOutlet="header"></ng-container>
+    <ng-container *ngTemplateOutlet="header; context: { hideAddButton : true } "></ng-container>
 
     <div [@slideInOut]="(toggle$|async)">
       <div class="card-body">
@@ -288,7 +303,7 @@
 
 <!-- ************************** NG TEMPLATES ****************************** -->
 
-<ng-template #header>
+<ng-template #header let-hideAddButton="hideAddButton">
   <div class="btn-group d-flex flex-row gv-h5">
     <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
       <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
@@ -302,7 +317,7 @@
         </a>
       </div>
     </div>
-    <div class="btn btn-link btn-sm" (click)="startAddingRole()" *ngIf="addButtonVisible">
+    <div class="btn btn-link btn-sm" (click)="startAddingRole()" *ngIf="addButtonVisible && !hideAddButton">
       <i class="fa fa-plus"></i>
     </div>
   </div>

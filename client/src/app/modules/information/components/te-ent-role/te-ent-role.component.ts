@@ -13,6 +13,7 @@ import { IPeItState } from '../../containers/pe-it/pe-it.model';
 import { ReplaySubject, Subject } from 'rxjs';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { pick } from 'ramda';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -42,8 +43,25 @@ export class TeEntRoleComponent extends RoleComponent {
   pkEntity: number;
 
   leafPeItStateInitialized: boolean;
+  leafPeItLoading$: ReplaySubject<boolean>;
+  formValPath: string[];
 
   @select() peItState$: Observable<IPeItState>;
+
+
+  @Output() stopEditing: EventEmitter<void> = new EventEmitter();
+  @Output() startUpdating: EventEmitter<InfRole> = new EventEmitter();
+
+  cancelEdit() {
+    this.stopEditing.emit()
+  }
+  okEdit(){
+    let role = new InfRole(pick(['fk_temporal_entity','fk_property'],this.roleState.role));
+    
+    role[this.formControlName] = this.formGroup.get(this.formControlName).value;
+
+    this.startUpdating.emit(role)
+  }
 
 
   constructor(
@@ -58,16 +76,18 @@ export class TeEntRoleComponent extends RoleComponent {
     fb: FormBuilder
   ) {
     super(activeProjectService, eprService, ref, entityEditor, roleApi, ngRedux, actions, stateCreator, fb)
+
+    this.leafPeItLoading$ = new ReplaySubject<boolean>();
   }
 
   init() {
 
-    this.peItState$.subscribe(a => {
-
-    })
+    /** prepare the formGroup */
+    this.formValPath = [...this.basePath, 'formGroup'];
+    
 
     const toggle$ = this.ngRedux.select<CollapsedExpanded>([...this.parentPath, 'toggle']);
-    Observable.combineLatest(this.role$, toggle$)
+    this.subs.push( Observable.combineLatest(this.role$, toggle$)
       .subscribe(result => {
         const role = result[0];
         const toggle = result[1];
@@ -89,12 +109,14 @@ export class TeEntRoleComponent extends RoleComponent {
 
             // initialize peIt preview on first expanding of role set
             if (toggle === 'expanded' && !this.leafPeItStateInitialized && role.fk_entity) {
-              this.initPeItState(role.fk_entity).subscribe(done => { this.leafPeItStateInitialized = true })
+              this.initPeItState(role.fk_entity).subscribe(done => {
+                this.leafPeItStateInitialized = true
+              })
             }
 
           }
         }
-      })
+      }))
   }
 
 
@@ -104,10 +126,13 @@ export class TeEntRoleComponent extends RoleComponent {
    */
   initPeItState(pkEntity): Subject<boolean> {
     const subject = new ReplaySubject<boolean>()
-    this.stateCreator.initializePeItState(pkEntity, this.activeProject.pk_project, 'view').subscribe(peItState => {
+    this.leafPeItLoading$.next(true);
+
+    this.subs.push(this.stateCreator.initializePeItState(pkEntity, this.activeProject.pk_project, 'view').subscribe(peItState => {
       this.localStore.dispatch(this.actions.leafPeItStateAdded(peItState))
+      this.leafPeItLoading$.next(false);
       subject.next(true)
-    });
+    }));
     return subject;
   }
 
@@ -183,22 +208,6 @@ export class TeEntRoleComponent extends RoleComponent {
 
   //   }
 
-
-  /**
-  * Methods specific to edit state
-  */
-
-  startEditing() {
-    this.stateCreator.initializeRoleState(this.roleState.role, 'edit', this.roleState.isOutgoing).subscribe(roleState => {
-      this.localStore.dispatch(this.actions.startEditingRole(roleState))
-    })
-  }
-
-  stopEditing() {
-    this.stateCreator.initializeRoleState(this.roleState.role, 'editable', this.roleState.isOutgoing).subscribe(roleState => {
-      this.localStore.dispatch(this.actions.startEditingRole(roleState))
-    })
-  }
 
   //   changeRoleInEdit(entity) {
   //     if (entity instanceof InfAppellation) {

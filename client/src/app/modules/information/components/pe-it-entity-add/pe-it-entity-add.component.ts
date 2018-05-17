@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
@@ -19,6 +19,7 @@ import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
 import { RoleSetListService } from '../../shared/role-set-list.service';
 import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
+import { Subscriber, Subscription } from 'rxjs';
 
 
 @Component({
@@ -26,13 +27,13 @@ import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.co
   templateUrl: './pe-it-entity-add.component.html',
   styleUrls: ['./pe-it-entity-add.component.scss']
 })
-export class PeItEntityAddComponent implements OnInit {
+export class PeItEntityAddComponent implements OnInit, OnDestroy {
 
 
   /**
    * Inputs
    */
-  @Input()  dfhClass: DfhClass;
+  @Input() dfhClass: DfhClass;
 
   /**
    * Output
@@ -41,6 +42,7 @@ export class PeItEntityAddComponent implements OnInit {
 
   @Output() open: EventEmitter<number> = new EventEmitter();
 
+  subs: Subscription[] = [];
 
   constructor(
     private modalService: NgbModal,
@@ -49,8 +51,11 @@ export class PeItEntityAddComponent implements OnInit {
     // super(peItApi, peItService, propertyPipe, activePeItService, slimLoadingBarService, entityEditor, changeDetector, ngRedux, actions, classService, roleService, propertyService, roleSetListService)
   }
 
-  ngOnInit(){
+  ngOnInit() {
     this.openModal()
+  }
+  ngOnDestroy() {
+    this.subs.forEach(sub => sub.unsubscribe())
   }
 
   openModal() {
@@ -66,10 +71,10 @@ export class PeItEntityAddComponent implements OnInit {
     this.entityAddModalService.state = 'search-existing';
     this.entityAddModalService.selectRoleRange = true;
     this.entityAddModalService.selectedClass = this.dfhClass;
-    this.entityAddModalService.onSelect.subscribe(pkEntity => {
+    this.subs.push(this.entityAddModalService.onSelect.subscribe(pkEntity => {
       this.selected.emit(pkEntity);
 
-    })
+    }))
 
   }
 

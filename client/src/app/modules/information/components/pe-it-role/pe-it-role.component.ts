@@ -32,7 +32,7 @@ import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
     }
   ]
 })
-export class PeItRoleComponent extends RoleComponent implements OnInit {
+export class PeItRoleComponent extends RoleComponent {
 
   constructor(
     activeProjectService: ActiveProjectService,
@@ -47,6 +47,7 @@ export class PeItRoleComponent extends RoleComponent implements OnInit {
   ) {
     super(activeProjectService, eprService, ref, entityEditor, roleApi, ngRedux, actions, stateCreator, fb)
   }
+
 
 
 }

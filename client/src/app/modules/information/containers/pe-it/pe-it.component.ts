@@ -108,7 +108,7 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
     this.formGroup = this.fb.group({})
 
     // subscribe to form changes here
-    this.formGroup.valueChanges.subscribe(val => {
+    this.subs.push( this.formGroup.valueChanges.subscribe(val => {
 
       // build a peIt with all pi_roles given by the form's controls 
       let peIt = new InfPersistentItem(this.peItState.peIt);
@@ -130,7 +130,7 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
       else {
         this.onChange(null)
       }
-    })
+    }))
 
   }
 
@@ -269,16 +269,16 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
 
 
   initPeItSubscriptions() {
-    this.localStore.select<IPeItState>('').subscribe(d => this.peItState = d)
+    this.subs.push( this.localStore.select<IPeItState>('').subscribe(d => this.peItState = d))
 
     /**
      * gets the Temporal Entity of type AppellationUseForLanguage that is for display for this peIt in this project
      */
-    this.localStore.select<IRoleSets>('roleSets').subscribe((peItRoleSets) => {
+    this.subs.push( this.localStore.select<IRoleSets>('roleSets').subscribe((peItRoleSets) => {
       this.label = this.roleSetListService.getDisplayAppeLabelOfPeItRoleSets(peItRoleSets);
       // if (this.label)
       //   this.localStore.dispatch(this.actions.roleSetsListDisplayLabelUpdated(this.label))
-    })
+    }))
 
 
   }
@@ -290,7 +290,7 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
     const onDone: BehaviorSubject<InfPersistentItem> = new BehaviorSubject(null)
 
     this.startLoading();
-    this.pkEntity$.subscribe(pkEntity => {
+    this.subs.push( this.pkEntity$.subscribe(pkEntity => {
 
       this.peItApi.nestedObjectOfRepo(pkEntity).subscribe(
         (peIts: InfPersistentItem[]) => {
@@ -302,7 +302,7 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
           this.completeLoading();
 
         })
-    });
+    }));
 
     return onDone;
 
@@ -315,7 +315,7 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
 
     this.startLoading();
 
-    Observable.zip(this.ngRedux.select<Project>('activeProject'), this.pkEntity$)
+    this.subs.push( Observable.zip(this.ngRedux.select<Project>('activeProject'), this.pkEntity$)
       .subscribe(result => {
         const project = result[0], pkEntity = result[1];
         if (project && pkEntity)
@@ -329,7 +329,7 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
               this.completeLoading();
             });
 
-      })
+      }))
 
 
     return onDone;

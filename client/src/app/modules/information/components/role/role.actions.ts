@@ -20,12 +20,6 @@ export class RoleActions {
   static readonly CHANGE_DISPLAY_ROLE_LOADING = 'CHANGE_DISPLAY_ROLE_LOADING';
   static readonly CHANGE_DISPLAY_ROLE_SUCCEEDED = 'CHANGE_DISPLAY_ROLE_SUCCEEDED';
 
-  static readonly START_EDITING_ROLE = 'START_EDITING_ROLE';
-  static readonly STOP_EDITING_ROLE = 'STOP_EDITING_ROLE';
-
-
-  static readonly ROLE_STATE_REMOVED = 'ROLE_STATE_REMOVED';
-
   static readonly LEAF_PE_IT_STATE_ADDED = 'LEAF_PE_IT_STATE_ADDED';
   static readonly LEAF_PK_ENTITY_SELECTED = 'LEAF_PK_ENTITY_SELECTED';
 
@@ -47,18 +41,6 @@ export class RoleActions {
     payload: {
       changingDisplayRole: bool
     }
-  })
-
-  startEditingRole = (payload:IRoleState): RoleAction=>({
-    type: RoleActions.START_EDITING_ROLE,
-    meta: null,
-    payload
-  })
-
-  stopEditingRole = (payload:IRoleState): RoleAction=>({
-    type: RoleActions.STOP_EDITING_ROLE,
-    meta: null,
-    payload
   })
 
 
@@ -106,16 +88,6 @@ export class RoleActions {
       role   
     }
   })
-
-  /**
-   * Removes the current RoleState from the Store. Called upon successfully removing a role
-   */
-  roleStateRemoved = (): RoleAction => ({
-    type: RoleActions.ROLE_STATE_REMOVED,
-    meta: null,
-    payload: null
-  })
-
 
 
 }

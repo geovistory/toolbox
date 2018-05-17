@@ -18,7 +18,7 @@ import { timer } from 'rxjs/observable/timer';
 import { TeEntComponent } from '../te-ent/te-ent.component';
 import { RoleSetComponent } from '../role-set/role-set.component';
 import { TeEntRoleComponent } from '../te-ent-role/te-ent-role.component';
-import { InfTemporalEntity, InfRole, InfEntityProjectRelApi, InfRoleApi, ActiveProjectService, EntityEditorService, Project, DfhClass } from 'app/core';
+import { InfTemporalEntity, InfRole, InfEntityProjectRelApi, InfRoleApi, ActiveProjectService, EntityEditorService, Project, DfhClass, InfTemporalEntityApi } from 'app/core';
 import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
 import { UtilitiesService } from '../../shared/utilities.service';
@@ -35,6 +35,7 @@ import { StateCreatorService } from '../../shared/state-creator.service';
 import { ClassService } from '../../shared/class.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { FormBuilder, NG_VALUE_ACCESSOR, FormGroup, Validators, FormControl } from '@angular/forms';
+import { StateToDataService } from '../../shared/state-to-data.service';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -127,7 +128,8 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
     roleActions: RoleActions,
     protected stateCreator: StateCreatorService,
     protected classService: ClassService,
-    fb: FormBuilder
+    fb: FormBuilder,
+    private teEntApi: InfTemporalEntityApi
   ) {
     super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
   }
@@ -171,8 +173,8 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
    * subscribe all here, so it is only subscribed once on init and not multiple times on user interactions
    */
   initSubsciptions() {
-    this.ngRedux.select<ITeEntState>(this.parentPath).subscribe(d => this.parentTeEntState = d)
-    this.ngRedux.select<IRoleState>(this.parentRoleStatePath).subscribe(d => this.parentRoleState = d)
+    this.subs.push( this.ngRedux.select<ITeEntState>(this.parentPath).subscribe(d => this.parentTeEntState = d))
+    this.subs.push( this.ngRedux.select<IRoleState>(this.parentRoleStatePath).subscribe(d => this.parentRoleState = d))
 
   }
 
@@ -264,7 +266,7 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
     const waitAtLeast = timer(800);
     const apiCall = this.roleApi.alternativesNotInProjectByTeEntPk(fkTemporalEntity, fkProperty, fkProject)
 
-    Observable.combineLatest([waitAtLeast, apiCall])
+    this.subs.push(Observable.combineLatest([waitAtLeast, apiCall])
       .subscribe((results) => {
 
         const rolesInOtherProjects = results[1].filter(role => role.is_in_project_count > 0);
@@ -273,7 +275,7 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
         const inOther$ = this.stateCreator.initializeRoleStates(rolesInOtherProjects, 'add', this.roleSetState.isOutgoing)
         const inNo$ = this.stateCreator.initializeRoleStates(rolesInNoProject, 'add', this.roleSetState.isOutgoing)
 
-        Observable.combineLatest(inOther$, inNo$).subscribe(results => {
+        this.subs.push(Observable.combineLatest(inOther$, inNo$).subscribe(results => {
           const roleStatesInOtherProjects = results[0], roleStatesInNoProjects = results[1]
 
           this.localStore.dispatch(this.actions.alternativeRolesLoaded(
@@ -283,9 +285,9 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
           if (rolesInOtherProjects.length === 0) {
             this.startCreateNewRole();
           }
-        })
+        }))
 
-      })
+      }))
 
   }
 
@@ -312,7 +314,7 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
     roleToCreate.fk_property = this.roleSetState.property.dfh_pk_property;
     roleToCreate.fk_temporal_entity = this.parentTeEntState.teEnt.pk_entity;
 
-    this.classService.getByPk(this.roleSetState.targetClassPk).subscribe(targetDfhClass => {
+    this.subs.push(this.classService.getByPk(this.roleSetState.targetClassPk).subscribe(targetDfhClass => {
       const options: IRoleState = { targetDfhClass }
 
       const state = this.roleSetState.state == 'editable' ? 'create-te-ent-role' : this.roleSetState.state;
@@ -320,7 +322,7 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
       this.stateCreator.initializeRoleState(roleToCreate, state, this.roleSetState.isOutgoing, options).subscribe(roleStateToCreate => {
 
         /** add a form control */
-        const formControlName = 'new_role_' + this.createFormControlCount; // TODO: create this name roleSetKey function
+        const formControlName = 'new_role_' + this.createFormControlCount;
         this.createFormControlCount++;
         this.formGroup.addControl(formControlName, new FormControl(
           roleStateToCreate.role,
@@ -334,10 +336,72 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
         roleStatesToCreate[formControlName] = roleStateToCreate;
         this.localStore.dispatch(this.actions.startCreateNewRole(roleStatesToCreate))
       })
-    })
+    }))
   }
 
-  // // Array of children RoleComponents
-  // @ViewChildren(TeEntRoleComponent) roleComponents: QueryList<TeEntRoleComponent>
+  createRoles() {
+    if (this.formGroup.valid) {
+
+      // prepare peIt 
+      const t = new InfTemporalEntity(this.parentTeEntState.teEnt);
+      t.te_roles = [];
+      Object.keys(this.formGroup.controls).forEach(key => {
+        if (this.formGroup.get(key)) {
+          // add roles to create to peIt
+          t.te_roles.push(this.formGroup.get(key).value)
+        }
+      })
+
+      // call api
+      this.subs.push(this.teEntApi.findOrCreateInfTemporalEntity(this.project.pk_project, t).subscribe(teEnts => {
+        const roles: InfRole[] = teEnts[0].te_roles;
+
+        this.subs.push( this.stateCreator.initializeRoleStates(roles, 'editable', this.roleSetState.isOutgoing).subscribe(roleStates => {
+          // update the state
+          this.localStore.dispatch(this.actions.rolesCreated(roleStates))
+        }))
+
+      }))
+
+    }
+  }
+
+  /**
+* Methods specific to edit state
+*/
+
+  startEditing(key) {
+    const roleset = this.roleSetState.roleStatesInProject[key];
+
+    this.subs.push( this.stateCreator.initializeRoleState(roleset.role, 'edit', roleset.isOutgoing).subscribe(roleState => {
+      this.localStore.dispatch(this.actions.startEditingRole(key, roleState))
+    }))
+  }
+
+  stopEditing(key) {
+    const roleset = this.roleSetState.roleStatesInProject[key];
+    this.subs.push(this.stateCreator.initializeRoleState(roleset.role, 'editable', roleset.isOutgoing).subscribe(roleState => {
+      this.localStore.dispatch(this.actions.startEditingRole(key, roleState))
+    }))
+  }
+
+  startUpdatingRole(key, role: InfRole) {
+
+    const oldRole = StateToDataService.roleStateToRoleToRelate(this.roleSetState.roleStatesInProject[key]);
+
+    // call api
+    this.subs.push( Observable.combineLatest(
+      this.roleApi.changeRoleProjectRelation(this.project.pk_project, false, oldRole),
+      this.roleApi.findOrCreateInfRole(this.project.pk_project, role)
+    ).subscribe(result => {
+      const newRoles = result[1];
+
+      this.subs.push( this.stateCreator.initializeRoleStates(newRoles, 'editable', this.roleSetState.isOutgoing).subscribe(roleStates => {
+        // update the state
+        this.localStore.dispatch(this.actions.updateRole(key, roleStates))
+      }))
+    }))
+
+  }
 
 }
