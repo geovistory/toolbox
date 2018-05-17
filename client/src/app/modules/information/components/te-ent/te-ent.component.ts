@@ -134,7 +134,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
     propertyService: PropertyService,
     private activeProjectService: ActiveProjectService,
     classService: ClassService,
-    entityEditor: EntityEditorService,
+    public entityEditor: EntityEditorService,
     private ngRedux: NgRedux<ITeEntState>,
     public actions: TeEntActions,
     protected roleSetListService: RoleSetListService,

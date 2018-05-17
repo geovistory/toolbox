@@ -37,7 +37,7 @@ export class TimelineComponent implements OnInit, AfterViewInit, DoCheck {
   @HostBinding('style.width') outerWidth: string = '100%';
 
 
-  private _options: TimelineOptions = {
+  _options: TimelineOptions = {
     width: 200,
     bodyMaxHeight: 180,
     headerHeight: 27,

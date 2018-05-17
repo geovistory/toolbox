@@ -5,7 +5,7 @@ import { HomeComponent } from './modules/home/pages/home.component';
 import { ProjectListComponent } from './modules/projects/components/project-list/project-list.component';
 import { ProjectsModule } from './modules/projects/projects.module';
 
-
+export function getProjectModule() { return ProjectsModule };
 
 const indexRoute: Route = {
   path: '',
@@ -24,7 +24,7 @@ const routes: Routes = [
   {
     path: '',
     children: [
-      indexRoute,      
+      indexRoute,
       {
         path: 'home',
         loadChildren: './modules/home/home.module#HomeModule'
@@ -35,7 +35,7 @@ const routes: Routes = [
       },
       {
         path: 'projects',
-        loadChildren: () => ProjectsModule,
+        loadChildren: getProjectModule,
         canActivate: [AuthGuard]
       },
       fallbackRoute

@@ -6,11 +6,11 @@
   </span>
 
 
-  <span *ngIf="isOutgoing === true && entityEditor.devView">
+  <span *ngIf="(isOutgoing$ | async) === true && entityEditor.devView">
     [dom: {{property.dfh_has_domain}} – prop: {{property.dfh_pk_property}} – range: {{property.dfh_has_range}}]
   </span>
 
-  <span *ngIf="isOutgoing === false && entityEditor.devView">
+  <span *ngIf="(isOutgoing$ | async) === false && entityEditor.devView">
     [range: {{property.dfh_has_range}} – prop: {{property.dfh_pk_property}} – dom: {{property.dfh_has_domain}}]
   </span>
 

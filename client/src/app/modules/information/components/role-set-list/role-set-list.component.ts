@@ -76,7 +76,7 @@ export class RoleSetListComponent implements OnInit, OnDestroy {
     protected classService: ClassService,
     private roleService: RoleService,
     private propertyService: PropertyService,
-    protected entityEditor: EntityEditorService,
+    public entityEditor: EntityEditorService,
     protected roleSetListService: RoleSetListService,
   ) { }
 

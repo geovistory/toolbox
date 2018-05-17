@@ -11,6 +11,8 @@ import { ProjectSettingsDataComponent } from './components/project-settings-data
 import { ProxyRouteComponent } from 'app/shared/components/proxy-route';
 import { InformationModule } from '../information/information.module';
 
+export function getInformationModule() { return InformationModule };
+
 
 const routes: Routes = [
   {
@@ -39,7 +41,7 @@ const routes: Routes = [
             children: [
               {
                 path: '',
-                loadChildren:  () => InformationModule
+                loadChildren:  getInformationModule
               }
             ]
           },
