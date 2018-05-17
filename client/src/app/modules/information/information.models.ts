@@ -1,96 +1,56 @@
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
-import { InfTemporalEntity, InfRole, InfPersistentItem, InfAppellation, InfLanguage } from "app/core";
+import { InfTemporalEntity, InfRole, InfPersistentItem, InfAppellation, InfLanguage, DfhProperty, DfhClass } from "app/core";
 import { ExistenceTime } from "./components/existence-time";
 
 export type CollapsedExpanded = 'collapsed' | 'expanded';
 
-export interface IPeItWrapper {
-    data: {
-        peIt$: BehaviorSubject<InfPersistentItem>,
-    }
-
-    gui: {
-        displayLabel$: BehaviorSubject<string>,
-        editorState$: BehaviorSubject<'view' | 'editable' | 'edit'>,
-        editorCollapsed$: BehaviorSubject<CollapsedExpanded>,
-        ontoInfoVisible$: BehaviorSubject<boolean>,
-    }
-
-    children: {
-        roles$: BehaviorSubject<InfRole[]>,
-    }
-}
-
-export interface IPiRoleWrapper {
-    data: {
-        role$: BehaviorSubject<InfRole>,
-    }
-
-    gui: {
-        editorState$: BehaviorSubject<'view' | 'editable' | 'edit'>,
-        editorCollapsed$: BehaviorSubject<CollapsedExpanded>,
-        ontoInfoVisible$: BehaviorSubject<boolean>,
-    }
-
-    children: {
-        teEntWrapper$?: BehaviorSubject<ITeEntWrapper>,
-      }
-}
+export type EditorStates =
+    'view'  // readonly state. no buttons to switch to edit state, no remove buttons, ect. 
+    | 'editable' // read state with buttons to switch to edit state, with remove buttons, ect.
+    | 'edit' // write state. inputs or forms are visible and allow to modify data.
+    | 'create' // write state. intputs or forms are visible and allow to create new data.
+    | 'add'  // allow to add existing data to the project.
+    | 'add-pe-it'  // allow to add an existing PeIt to the project.
+    | 'selectProp'
+    | 'create-pe-it' // create a new PeIt.
+    | 'create-pe-it-role'  // create a pe-it-role at once with child te-ent and te-ent-roles 
+    | 'create-te-ent-role'  // create a pe-te-ent-role
 
 
-export interface ITeEntWrapper {
-    data: {
-        teEnt$: BehaviorSubject<InfTemporalEntity>,
-    }
+// export interface ITeRoleWrapper {
+//     data: {
+//         role$: BehaviorSubject<InfRole>,
+//     }
 
-    gui: {
-        displayLabel$: BehaviorSubject<string>,
-        editorState$: BehaviorSubject<'view' | 'editable' | 'edit'>,
-        editorCollapsed$: BehaviorSubject<CollapsedExpanded>,
-        ontoInfoVisible$: BehaviorSubject<boolean>,
-    }
+//     gui: {
+//         state$: BehaviorSubject<'view' | 'editable' | 'edit'>,
+//         toggle$: BehaviorSubject<CollapsedExpanded>,
+//         ontoInfoVisible$: BehaviorSubject<boolean>,
+//     }
 
-    children: {
-        roles$: BehaviorSubject<InfRole[]>,
-        existenceTime: BehaviorSubject<ExistenceTime>
-    }
-}
+//     children: {
+//         peItWrapper$?: BehaviorSubject<ITeEntWrapper>,
+//         appellationWrapper$?: BehaviorSubject<IAppellationWrapper>,
+//         languageWrapper$?: BehaviorSubject<ILanguageWrapper>
+//     }
+// }
 
-
-export interface ITeRoleWrapper {
-    data: {
-        role$: BehaviorSubject<InfRole>,
-    }
-
-    gui: {
-        editorState$: BehaviorSubject<'view' | 'editable' | 'edit'>,
-        editorCollapsed$: BehaviorSubject<CollapsedExpanded>,
-        ontoInfoVisible$: BehaviorSubject<boolean>,
-    }
-
-    children: {
-        peItWrapper$?: BehaviorSubject<ITeEntWrapper>,
-        appellationWrapper$?: BehaviorSubject<IAppellationWrapper>,
-        languageWrapper$?:BehaviorSubject<ILanguageWrapper>
-    }
-}
-
-export interface IAppellationWrapper {
-    data: {
-        appellation$: BehaviorSubject<InfAppellation>,
-    }
-    gui: {
-        editorState$: BehaviorSubject<'view' | 'editable' | 'edit'>,
-    }
-}
+// export interface IAppellationWrapper {
+//     data: {
+//         appellation$: BehaviorSubject<InfAppellation>,
+//     }
+//     gui: {
+//         state$: BehaviorSubject<'view' | 'editable' | 'edit'>,
+//     }
+// }
 
 
 
-export interface ILanguageWrapper {
-    data: {
-        language$: BehaviorSubject<InfLanguage>,
-    }
-    gui: {
-        editorState$: BehaviorSubject<'view' | 'editable' | 'edit'>,
-    }
-}
+// export interface ILanguageWrapper {
+//     data: {
+//         language$: BehaviorSubject<InfLanguage>,
+//     }
+//     gui: {
+//         state$: BehaviorSubject<'view' | 'editable' | 'edit'>,
+//     }
+// }

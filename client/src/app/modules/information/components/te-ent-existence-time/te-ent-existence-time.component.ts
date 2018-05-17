@@ -1,15 +1,16 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { InfRole, InfTemporalEntity, TimePrimitive, EntityEditorService } from 'app/core';
 import { TeEntService } from '../../shared/te-ent.service';
 import { ExistenceTime } from '../existence-time';
 import { RoleSetComponent } from '../role-set/role-set.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'gv-te-ent-existence-time',
   templateUrl: './te-ent-existence-time.component.html',
   styleUrls: ['./te-ent-existence-time.component.scss']
 })
-export class TeEntExistenceTimeComponent implements OnInit {
+export class TeEntExistenceTimeComponent implements OnInit, OnDestroy {
 
   /**
    * Inputs
@@ -26,20 +27,25 @@ export class TeEntExistenceTimeComponent implements OnInit {
    * Properties
    */
   existenceTime: ExistenceTime;
+  subs: Subscription[] = [];
 
   constructor(
     public entityEditor: EntityEditorService,
     private teEntService: TeEntService
   ) { }
 
+  ngOnDestroy() {
+    this.subs.forEach(sub=>sub.unsubscribe())
+  }
+
   ngOnInit() {
     this.setExistenceTime(this.teEnt);
   }
 
   setExistenceTime(teEnt: InfTemporalEntity) {
-    this.teEntService.buildExistenceTime(teEnt).subscribe((existenceTime: ExistenceTime) => {
+    this.subs.push(  this.teEntService.buildExistenceTime(teEnt).subscribe((existenceTime: ExistenceTime) => {
       this.existenceTime = existenceTime;
-    });
+    }));
   }
 
   /**
@@ -50,7 +56,7 @@ export class TeEntExistenceTimeComponent implements OnInit {
 
     this.state = 'edit';
 
-    this.teEntService.upsertExistenceTime(existenceTime, this.teEnt).subscribe(teEnt => {
+    this.subs.push(this.teEntService.upsertExistenceTime(existenceTime, this.teEnt).subscribe(teEnt => {
 
       this.setExistenceTime(teEnt);
 
@@ -58,7 +64,7 @@ export class TeEntExistenceTimeComponent implements OnInit {
 
       this.state = 'editable';
 
-    })
+    }))
   }
 
 }

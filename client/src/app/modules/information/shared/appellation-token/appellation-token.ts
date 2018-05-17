@@ -3,8 +3,9 @@ import { AppellationLabelTokenComponent } from "../../components/appellation-lab
 export interface TokenInterface {
   "id"?: number,
   "string": string,
-  "autofocus": boolean,
-  "isSeparator": boolean,
+  "autofocus"?: boolean,
+  "isSeparator"?: boolean,
+  typeId?: number,
   "type"?: any,
   "appellationLabelTokenComponent"?: AppellationLabelTokenComponent
 }
@@ -12,9 +13,9 @@ export interface TokenInterface {
 export class Token implements TokenInterface {
   id?: number;
   string: string;
-  autofocus: boolean;
-  isSeparator: boolean;
-  typeId: number;
+  autofocus?: boolean;
+  isSeparator?: boolean;
+  typeId?: number;
   appellationLabelTokenComponent?: AppellationLabelTokenComponent;
   type?:Object;
 

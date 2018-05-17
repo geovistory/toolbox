@@ -80,7 +80,7 @@ module.exports = function(InfPersistentItem) {
       requestedPeIt = data;
     }
 
-    return InfPersistentItem.findOrCreateEntity(InfPersistentItem, projectId, dataObject)
+    return InfPersistentItem.findOrCreatePeItOrTeEnt(InfPersistentItem, projectId, dataObject)
       .then((resultingPeIts) => {
         // pick first item of array
         const resultingPeIt = resultingPeIts[0];
@@ -187,7 +187,7 @@ module.exports = function(InfPersistentItem) {
         (
           SELECT jsonb_array_elements(appellation_label->'tokens') as token, appe.pk_entity, appellation_label
           FROM information.v_appellation_version as appe
-          INNER JOIN epr_of_project as epr on epr.fk_entity_version_concat = appe.pk_entity_version_concat
+          -- INNER JOIN epr_of_project as epr on epr.fk_entity_version_concat = appe.pk_entity_version_concat
         ) AS tokens
         -- WHERE tokens.token->>'isSeparator' = 'false'
       ) AS token
@@ -493,6 +493,15 @@ module.exports = function(InfPersistentItem) {
       "where": ["pk_entity", "=", pkEntity],
       "include": {
         "entity_version_project_rels": innerJoinThisProject,
+        "dfh_class": {
+          "$relation": {
+            "name": "dfh_class",
+            "joinType": "inner join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          }
+        },
         "pi_roles": {
           "$relation": {
             "name": "pi_roles",
@@ -525,7 +534,7 @@ module.exports = function(InfPersistentItem) {
                     "pk_entity": "asc"
                   }]
                 },
-                "entity_version_project_rels": innerJoinThisProject
+                // "entity_version_project_rels": innerJoinThisProject
               },
               "language": {
                 "$relation": {
@@ -566,7 +575,15 @@ module.exports = function(InfPersistentItem) {
         "pk_entity": "asc"
       }],
       "include": {
-
+        "dfh_class": {
+          "$relation": {
+            "name": "dfh_class",
+            "joinType": "inner join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          }
+        },
         /** include all roles … */
         "pi_roles": {
           "$relation": {
@@ -576,13 +593,6 @@ module.exports = function(InfPersistentItem) {
             "orderBy": [{
               "pk_entity": "asc"
             }]
-          },
-          "entity_version_project_rels": {
-            "$relation": {
-              "name": "entity_version_project_rels",
-              "joinType": "left join"
-              //  "where": ["is_community_favorite", "=", "true"],
-            }
           },
 
           /** include the temporal_entity of the role */

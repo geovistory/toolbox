@@ -1,11 +1,14 @@
-<div [ngClass]="{'dev-view': entityEditor.devView}"> <span *ngIf="entityEditor.devView"><ng-container *ngTemplateOutlet="dev"></ng-container></span>
+<div [ngClass]="{'dev-view': entityEditor.devView}">
+  <span *ngIf="entityEditor.devView">
+    <ng-container *ngTemplateOutlet="dev"></ng-container>
+  </span>
 
   <ng-container *ngTemplateOutlet="header"></ng-container>
 
-  <div [@slideInOut]="cardState">
+  <div [@slideInOut]="'expanded'">
 
     <div class="card-body">
-
+      
       <div *ngIf="state === 'editable'">
         <button type="button" class="btn btn-block btn-primary" *ngIf="!formHasValue()" (click)="startEditingInitialForm()">
           Add
@@ -16,79 +19,49 @@
           <div class="gv-flex-grow-1">
             <div class="d-flex" *ngIf="existenceTime.p82">
               At some time within&nbsp;
-              <gv-time-primitive
-              [state]="'view'"
-              [show]="'duration'"
-              [timePrimitive]="existenceTime.p82"
-              ></gv-time-primitive>
+              <gv-time-primitive [state]="'view'" [show]="'duration'" [timePrimitive]="existenceTime.p82"></gv-time-primitive>
             </div>
 
             <div class="d-flex" *ngIf="existenceTime.p81">
               Throughout&nbsp;
-              <gv-time-primitive
-              [state]="'view'"
-              [show]="'duration'"
-              [timePrimitive]="existenceTime.p81"
-              ></gv-time-primitive>
+              <gv-time-primitive [state]="'view'" [show]="'duration'" [timePrimitive]="existenceTime.p81"></gv-time-primitive>
             </div>
 
             <div class="d-flex" *ngIf="existenceTime.p81a && !existenceTime.p82a">
               Begin&nbsp;
-              <gv-time-primitive
-              [state]="'view'"
-              [show]="'duration'"
-              [timePrimitive]="existenceTime.p81a"
-              ></gv-time-primitive>
+              <gv-time-primitive [state]="'view'" [show]="'duration'" [timePrimitive]="existenceTime.p81a"></gv-time-primitive>
             </div>
 
             <div class="d-flex" *ngIf="existenceTime.p81b && !existenceTime.p82b">
               End&nbsp;
-              <gv-time-primitive
-              [state]="'view'"
-              [show]="'duration'"
-              [timePrimitive]="existenceTime.p81b"
-              ></gv-time-primitive>
+              <gv-time-primitive [state]="'view'" [show]="'duration'" [timePrimitive]="existenceTime.p81b"></gv-time-primitive>
             </div>
 
 
             <div class="d-flex" *ngIf="existenceTime.p81a && existenceTime.p82a">
               Surely existing from&nbsp;
-              <gv-time-primitive
-              [state]="'view'"
-              [show]="'lastSecond'"
-              [timePrimitive]="existenceTime.p81a"
-              ></gv-time-primitive>
+              <gv-time-primitive [state]="'view'" [show]="'lastSecond'" [timePrimitive]="existenceTime.p81a"></gv-time-primitive>
             </div>
 
             <div class="d-flex" *ngIf="existenceTime.p81b && existenceTime.p82b">
               Surely existing to&nbsp;
-              <gv-time-primitive
-              [state]="'view'"
-              [show]="'firstSecond'"
-              [timePrimitive]="existenceTime.p81b"
-              ></gv-time-primitive>
+              <gv-time-primitive [state]="'view'" [show]="'firstSecond'" [timePrimitive]="existenceTime.p81b"></gv-time-primitive>
             </div>
 
             <div class="d-flex" *ngIf="existenceTime.p82a">
               Not existing before&nbsp;
-              <gv-time-primitive
-              [state]="'view'"
-              [show]="'firstSecond'"
-              [timePrimitive]="existenceTime.p82a"
-              ></gv-time-primitive>
+              <gv-time-primitive [state]="'view'" [show]="'firstSecond'" [timePrimitive]="existenceTime.p82a"></gv-time-primitive>
             </div>
             <div class="d-flex" *ngIf="existenceTime.p82b">
               Not existing after&nbsp;
-              <gv-time-primitive
-              [state]="'view'"
-              [show]="'lastSecond'"
-              [timePrimitive]="existenceTime.p82b"
-              ></gv-time-primitive>
+              <gv-time-primitive [state]="'view'" [show]="'lastSecond'" [timePrimitive]="existenceTime.p82b"></gv-time-primitive>
             </div>
           </div>
 
           <div class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
-            <button class="btn btn-link" type="button" ngbDropdownToggle><i class="fa fa-ellipsis-v"></i></button>
+            <button class="btn btn-link" type="button" ngbDropdownToggle>
+              <i class="fa fa-ellipsis-v"></i>
+            </button>
             <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
               <button type="button" name="button" class="dropdown-item" (click)="startEditingMainForm()">edit</button>
             </div>
@@ -105,12 +78,7 @@
         <div class="form-row" *ngIf="initialTimePrimitiveVisible">
           <div class="col mb-3">
             <label class="sr-only">Date</label>
-            <gv-time-primitive
-            [state]="'edit'"
-            [show]="'firstSecond'"
-            formControlName="timePrimitive"
-            (onSubmit)="startChooseStatement()"
-            ></gv-time-primitive>
+            <gv-time-primitive [state]="'edit'" [show]="'firstSecond'" formControlName="timePrimitive" (onSubmit)="startChooseStatement()"></gv-time-primitive>
           </div>
         </div>
 
@@ -137,21 +105,21 @@
               </div>
               <div class="card-body">
                 <p class="card-text text-muted font-sm">
-                  This phenomena was ongoing at some time within {{initTpLabel}} but not before the begin of {{initTpLabel}}
-                  and not after the end of {{initTpLabel}}.
+                  This phenomena was ongoing at some time within {{initTpLabel}} but not before the begin of {{initTpLabel}} and not after
+                  the end of {{initTpLabel}}.
                 </p>
                 <button class="btn btn-link">Select and save</button>
               </div>
             </div>
 
-            <div class="card gv-pointer"  (click)="chooseThroughout()">
+            <div class="card gv-pointer" (click)="chooseThroughout()">
               <div class="card-body">
                 Throughout {{initTpLabel}}
               </div>
               <div class="card-body">
                 <p class="card-text text-muted font-sm">
-                  This phenomena was ongoing throughout {{initTpLabel}}.
-                  It was surely ongoing from the begin of {{initTpLabel}} to the end of {{initTpLabel}}.
+                  This phenomena was ongoing throughout {{initTpLabel}}. It was surely ongoing from the begin of {{initTpLabel}} to the end
+                  of {{initTpLabel}}.
                 </p>
                 <button class="btn btn-link">Select and save</button>
               </div>
@@ -182,11 +150,9 @@
 
             <div class="form-row mb-3" *ngFor="let field of [fieldset.fields.beg]">
 
-              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1"
-              (onRemove)="removeValueFromField($event.fieldset, $event.field)"
-              (onCancel)="cancelEditingField($event.fieldset, $event.field)"
-              (onSubmit)="submitEditingField($event.fieldset, $event.field)"
-              (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
+              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1" (onRemove)="removeValueFromField($event.fieldset, $event.field)"
+                (onCancel)="cancelEditingField($event.fieldset, $event.field)" (onSubmit)="submitEditingField($event.fieldset, $event.field)"
+                (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
 
             </div>
 
@@ -195,11 +161,9 @@
 
             <div class="form-row pl-5 mb-3" *ngFor="let field of [fieldset.fields.begBeg]">
 
-              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1"
-              (onRemove)="removeValueFromField($event.fieldset, $event.field)"
-              (onCancel)="cancelEditingField($event.fieldset, $event.field)"
-              (onSubmit)="submitEditingField($event.fieldset, $event.field)"
-              (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
+              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1" (onRemove)="removeValueFromField($event.fieldset, $event.field)"
+                (onCancel)="cancelEditingField($event.fieldset, $event.field)" (onSubmit)="submitEditingField($event.fieldset, $event.field)"
+                (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
 
             </div>
 
@@ -207,11 +171,9 @@
 
             <div class="form-row pl-5 mb-3" *ngFor="let field of [fieldset.fields.endBeg]">
 
-              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1"
-              (onRemove)="removeValueFromField($event.fieldset, $event.field)"
-              (onCancel)="cancelEditingField($event.fieldset, $event.field)"
-              (onSubmit)="submitEditingField($event.fieldset, $event.field)"
-              (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
+              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1" (onRemove)="removeValueFromField($event.fieldset, $event.field)"
+                (onCancel)="cancelEditingField($event.fieldset, $event.field)" (onSubmit)="submitEditingField($event.fieldset, $event.field)"
+                (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
 
             </div>
 
@@ -220,38 +182,32 @@
 
         <!-- End -->
         <span *ngFor="let fieldset of [fieldsets.end]">
-          <gv-fieldset-end *ngIf="fieldset.visible" [fieldset]="fieldset"  [formGroup]="mainForm" [existenceTime]="existenceTime">
+          <gv-fieldset-end *ngIf="fieldset.visible" [fieldset]="fieldset" [formGroup]="mainForm" [existenceTime]="existenceTime">
 
             <!-- End > Ends -->
-            <div class="form-row mb-3"  *ngFor="let field of [fieldset.fields.end]">
+            <div class="form-row mb-3" *ngFor="let field of [fieldset.fields.end]">
 
-              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1"
-              (onRemove)="removeValueFromField($event.fieldset, $event.field)"
-              (onCancel)="cancelEditingField($event.fieldset, $event.field)"
-              (onSubmit)="submitEditingField($event.fieldset, $event.field)"
-              (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
+              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1" (onRemove)="removeValueFromField($event.fieldset, $event.field)"
+                (onCancel)="cancelEditingField($event.fieldset, $event.field)" (onSubmit)="submitEditingField($event.fieldset, $event.field)"
+                (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
 
             </div>
 
             <!-- End > BegEnd -->
-            <div class="form-row pl-5 mb-3"  *ngFor="let field of [fieldset.fields.begEnd]">
+            <div class="form-row pl-5 mb-3" *ngFor="let field of [fieldset.fields.begEnd]">
 
-              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1"
-              (onRemove)="removeValueFromField($event.fieldset, $event.field)"
-              (onCancel)="cancelEditingField($event.fieldset, $event.field)"
-              (onEdit)="startEditingField($event.fieldset, $event.field)"
-              (onSubmit)="submitEditingField($event.fieldset, $event.field)"></gv-field>
+              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1" (onRemove)="removeValueFromField($event.fieldset, $event.field)"
+                (onCancel)="cancelEditingField($event.fieldset, $event.field)" (onEdit)="startEditingField($event.fieldset, $event.field)"
+                (onSubmit)="submitEditingField($event.fieldset, $event.field)"></gv-field>
 
             </div>
 
             <!-- End > endEnd -->
-            <div class="form-row pl-5 mb-3"  *ngFor="let field of [fieldset.fields.endEnd]">
+            <div class="form-row pl-5 mb-3" *ngFor="let field of [fieldset.fields.endEnd]">
 
-              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1"
-              (onRemove)="removeValueFromField($event.fieldset, $event.field)"
-              (onCancel)="cancelEditingField($event.fieldset, $event.field)"
-              (onSubmit)="submitEditingField($event.fieldset, $event.field)"
-              (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
+              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1" (onRemove)="removeValueFromField($event.fieldset, $event.field)"
+                (onCancel)="cancelEditingField($event.fieldset, $event.field)" (onSubmit)="submitEditingField($event.fieldset, $event.field)"
+                (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
 
             </div>
 
@@ -260,38 +216,32 @@
 
         <!-- Inner bounds -->
         <span *ngFor="let fieldset of [fieldsets.inner]">
-          <gv-fieldset-inner *ngIf="fieldset.visible" [fieldset]="fieldset"  [formGroup]="mainForm" [existenceTime]="existenceTime">
+          <gv-fieldset-inner *ngIf="fieldset.visible" [fieldset]="fieldset" [formGroup]="mainForm" [existenceTime]="existenceTime">
 
             <!-- Inner Bound -->
-            <div class="form-row mb-3"  *ngFor="let field of [fieldset.fields.inner]">
+            <div class="form-row mb-3" *ngFor="let field of [fieldset.fields.inner]">
 
-              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1"
-              (onRemove)="removeValueFromField($event.fieldset, $event.field)"
-              (onCancel)="cancelEditingField($event.fieldset, $event.field)"
-              (onSubmit)="submitEditingField($event.fieldset, $event.field)"
-              (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
+              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1" (onRemove)="removeValueFromField($event.fieldset, $event.field)"
+                (onCancel)="cancelEditingField($event.fieldset, $event.field)" (onSubmit)="submitEditingField($event.fieldset, $event.field)"
+                (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
 
             </div>
 
             <!-- Left Inner Bound -->
-            <div class="form-row pl-5 mb-3"  *ngFor="let field of [fieldset.fields.leftInner]">
+            <div class="form-row pl-5 mb-3" *ngFor="let field of [fieldset.fields.leftInner]">
 
-              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1"
-              (onRemove)="removeValueFromField($event.fieldset, $event.field)"
-              (onCancel)="cancelEditingField($event.fieldset, $event.field)"
-              (onSubmit)="submitEditingField($event.fieldset, $event.field)"
-              (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
+              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1" (onRemove)="removeValueFromField($event.fieldset, $event.field)"
+                (onCancel)="cancelEditingField($event.fieldset, $event.field)" (onSubmit)="submitEditingField($event.fieldset, $event.field)"
+                (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
 
             </div>
 
             <!-- Right Inner Bound -->
-            <div class="form-row pl-5 mb-3"  *ngFor="let field of [fieldset.fields.rightInner]">
+            <div class="form-row pl-5 mb-3" *ngFor="let field of [fieldset.fields.rightInner]">
 
-              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1"
-              (onRemove)="removeValueFromField($event.fieldset, $event.field)"
-              (onCancel)="cancelEditingField($event.fieldset, $event.field)"
-              (onSubmit)="submitEditingField($event.fieldset, $event.field)"
-              (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
+              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1" (onRemove)="removeValueFromField($event.fieldset, $event.field)"
+                (onCancel)="cancelEditingField($event.fieldset, $event.field)" (onSubmit)="submitEditingField($event.fieldset, $event.field)"
+                (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
 
             </div>
 
@@ -301,38 +251,32 @@
 
         <!-- Outer bounds -->
         <span *ngFor="let fieldset of [fieldsets.outer]">
-          <gv-fieldset-outer *ngIf="fieldset.visible" [fieldset]="fieldset"  [formGroup]="mainForm" [existenceTime]="existenceTime">
+          <gv-fieldset-outer *ngIf="fieldset.visible" [fieldset]="fieldset" [formGroup]="mainForm" [existenceTime]="existenceTime">
 
             <!-- Outer Bound -->
-            <div class="form-row mb-3"  *ngFor="let field of [fieldset.fields.outer]">
+            <div class="form-row mb-3" *ngFor="let field of [fieldset.fields.outer]">
 
-              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1"
-              (onRemove)="removeValueFromField($event.fieldset, $event.field)"
-              (onCancel)="cancelEditingField($event.fieldset, $event.field)"
-              (onSubmit)="submitEditingField($event.fieldset, $event.field)"
-              (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
+              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1" (onRemove)="removeValueFromField($event.fieldset, $event.field)"
+                (onCancel)="cancelEditingField($event.fieldset, $event.field)" (onSubmit)="submitEditingField($event.fieldset, $event.field)"
+                (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
 
             </div>
 
             <!-- Left Outer -->
-            <div class="form-row pl-5 mb-3"  *ngFor="let field of [fieldset.fields.leftOuter]">
+            <div class="form-row pl-5 mb-3" *ngFor="let field of [fieldset.fields.leftOuter]">
 
-              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1"
-              (onRemove)="removeValueFromField($event.fieldset, $event.field)"
-              (onCancel)="cancelEditingField($event.fieldset, $event.field)"
-              (onSubmit)="submitEditingField($event.fieldset, $event.field)"
-              (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
+              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1" (onRemove)="removeValueFromField($event.fieldset, $event.field)"
+                (onCancel)="cancelEditingField($event.fieldset, $event.field)" (onSubmit)="submitEditingField($event.fieldset, $event.field)"
+                (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
 
             </div>
 
             <!-- Right Outer -->
-            <div class="form-row pl-5 mb-3"  *ngFor="let field of [fieldset.fields.rightOuter]">
+            <div class="form-row pl-5 mb-3" *ngFor="let field of [fieldset.fields.rightOuter]">
 
-              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1"
-              (onRemove)="removeValueFromField($event.fieldset, $event.field)"
-              (onCancel)="cancelEditingField($event.fieldset, $event.field)"
-              (onSubmit)="submitEditingField($event.fieldset, $event.field)"
-              (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
+              <gv-field [field]="field" [fieldset]="fieldset" [formGroup]="mainForm" class="gv-flex-grow-1" (onRemove)="removeValueFromField($event.fieldset, $event.field)"
+                (onCancel)="cancelEditingField($event.fieldset, $event.field)" (onSubmit)="submitEditingField($event.fieldset, $event.field)"
+                (onEdit)="startEditingField($event.fieldset, $event.field)"></gv-field>
 
             </div>
 
@@ -363,51 +307,56 @@
 {{mainForm.value | json}}
 </pre> -->
 
-</div>
-<!-- ************************** NG TEMPLATES ****************************** -->
-<ng-template #header>
-  <div class="btn-group d-flex flex-row gv-h5"> <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
-    <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardState==='expanded')}"></i>
-    When
-  </button> </div>
-</ng-template>
-
-<ng-template #dev> <span>
-  [state: {{state}}]
-</span> </ng-template>
-
-
-
-<ng-template #tpField let-field="field" let-fieldset="fieldset">
-
-  <div class="gv-flex-grow-1 d-flex flex-row align-items-center" *ngIf="field.state ==='editable'">
-
-    <!-- Symbol -->
-    <div class="mr-3 text-info gv-time-symbol">
-      <i class="fa fa-arrow-right"></i>
+  </div>
+  <!-- ************************** NG TEMPLATES ****************************** -->
+  <ng-template #header>
+    <div class="btn-group d-flex flex-row gv-h5">
+      <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
+        <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': (cardState==='expanded')}"></i>
+        When
+      </button>
     </div>
+  </ng-template>
 
-    <!-- Date preview -->
-    <div class="gv-flex-grow-1 font-sm text-info">
-      <label class="text-info mb-0">{{field.label}}</label> <br>
-      <span *ngIf="mainForm.controls[field.ctrlName].value">
-        {{field.datePrefix}} {{labelOfTimePrimitive(mainForm.controls[field.ctrlName].value)}}
-      </span>
-    </div>
+  <ng-template #dev>
+    <span>
+      [state: {{state}}]
+    </span>
+  </ng-template>
 
-    <!-- Dropdown -->
-    <div class="">
-      <div class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
-        <button class="btn btn-link" type="button" ngbDropdownToggle><i class="fa fa-ellipsis-v"></i></button>
-        <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
-          <button type="button" class="dropdown-item" (click)="startEditingField(fieldset, field)">Edit</button>
+
+
+  <ng-template #tpField let-field="field" let-fieldset="fieldset">
+
+    <div class="gv-flex-grow-1 d-flex flex-row align-items-center" *ngIf="field.state ==='editable'">
+
+      <!-- Symbol -->
+      <div class="mr-3 text-info gv-time-symbol">
+        <i class="fa fa-arrow-right"></i>
+      </div>
+
+      <!-- Date preview -->
+      <div class="gv-flex-grow-1 font-sm text-info">
+        <label class="text-info mb-0">{{field.label}}</label>
+        <br>
+        <span *ngIf="mainForm.controls[field.ctrlName].value">
+          {{field.datePrefix}} {{labelOfTimePrimitive(mainForm.controls[field.ctrlName].value)}}
+        </span>
+      </div>
+
+      <!-- Dropdown -->
+      <div class="">
+        <div class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
+          <button class="btn btn-link" type="button" ngbDropdownToggle>
+            <i class="fa fa-ellipsis-v"></i>
+          </button>
+          <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+            <button type="button" class="dropdown-item" (click)="startEditingField(fieldset, field)">Edit</button>
+          </div>
         </div>
       </div>
+
     </div>
 
-  </div>
 
-
-</ng-template>
-
-
+  </ng-template>

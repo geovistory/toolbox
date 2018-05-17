@@ -50,7 +50,7 @@ export class EntityAddModalComponent implements OnInit, OnDestroy {
     this.modalService.pkEntity = undefined;
 
     // The persistent Item to Add
-    this.modalService.peItToAdd = undefined;
+    this.modalService.peItStateToAdd = undefined;
 
     // The persistent item to create
     this.modalService.peItToCreate = undefined;

@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { Route, Routes, RouterModule } from '@angular/router';
 
 import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
-import { EntityEditorComponent } from './pages/entity-editor/entity.editor.component';
-
+import { EntityEditorComponent } from './containers/entity-editor/entity.editor.component';
 
 const routes: Routes = [
   {
@@ -13,8 +12,7 @@ const routes: Routes = [
   {
     path: 'entity/:id',
     component: EntityEditorComponent
-  },
-
+  }
 ];
 
 @NgModule({

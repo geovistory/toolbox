@@ -20,4 +20,26 @@ export class ConfigService {
   };
 
 
+  /**
+   * Dfh Properties
+   */
+
+  // dfh_pk_property used to connect an appellation use with an entity
+  readonly PROPERTY_PK_R63_NAMES = 1;
+
+  // dfh_pk_property used to connect an appellation use with an appellation
+  readonly PROPERTY_PK_R64_USED_NAME = 2;
+
+  // dfh_pk_property used to connect an appellation use with a language
+  readonly PROPERTY_PK_R61_USED_LANGUAGE = 3;
+
+  /**
+   * Dfh Classes
+   */
+
+  // dfh_pk_class of appellation use
+  readonly CLASS_PK_APPELLATION_USE = 3;
+
+  // dfh_pk_class of appellation
+  readonly CLASS_PK_APPELLATION = 2;
 }

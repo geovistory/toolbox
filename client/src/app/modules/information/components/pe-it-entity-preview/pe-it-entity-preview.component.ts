@@ -1,177 +1,209 @@
-import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter, ChangeDetectionStrategy, forwardRef, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 
-import { PeItEntityComponent } from '../pe-it-entity/pe-it-entity.component';
 import { PeItEntityPreviewModalComponent } from '../pe-it-entity-preview-modal/pe-it-entity-preview-modal.component';
-import { InfPersistentItemApi, ActiveProjectService, EntityEditorService, InfEntityProjectRelApi, InfRole } from 'app/core';
+import { InfPersistentItemApi, ActiveProjectService, EntityEditorService, InfEntityProjectRelApi, InfRole, Project, InfPersistentItem } from 'app/core';
 import { PeItService } from '../../shared/pe-it.service';
 import { ActivePeItService } from '../../shared/active-pe-it.service';
 import { ClassService } from '../../shared/class.service';
 import { AppellationLabel } from '../../shared/appellation-label/appellation-label';
 import { PropertyPipe } from '../../shared/property.pipe';
+import { NgRedux, WithSubStore } from '@angular-redux/store';
+import { PeItComponent } from '../../containers/pe-it/pe-it.component';
+import { PeItActions } from '../../containers/pe-it/pe-it.actions';
+import { IPeItState } from '../../containers/pe-it/pe-it.model';
+import { RoleService } from '../../shared/role.service';
+import { PropertyService } from '../../shared/property.service';
+import { NumberSymbol } from '@angular/common';
+import { RoleSetListService } from '../../shared/role-set-list.service';
+import { peItReducer } from '../../containers/pe-it/pe-it.reducer';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { FormBuilder, ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { StateCreatorService } from '../../shared/state-creator.service';
+import { Subscription } from 'rxjs';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'gv-pe-it-entity-preview',
   templateUrl: './pe-it-entity-preview.component.html',
-  styleUrls: ['./pe-it-entity-preview.component.scss']
+  styleUrls: ['./pe-it-entity-preview.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => PeItEntityPreviewComponent),
+      multi: true
+    }
+  ]
 })
-export class PeItEntityPreviewComponent extends PeItEntityComponent implements OnInit {
+export class PeItEntityPreviewComponent implements OnInit, OnDestroy, ControlValueAccessor {
+
+  @Input() pkEntity: number;
+  @Input() isCircular: boolean;
+
+  @Input() parentPath: string[];
+
+  getBasePath = () => [...this.parentPath, 'peItState']
+  basePath: string[];
+
+  peItState: IPeItState;
+
+  /**
+  * Outputs
+  */
+  @Output() touched: EventEmitter<void> = new EventEmitter();
+
 
 
   /**
   * Properties
   */
-
-  previewData: { appellationString?: string } = {};
+  label: string;
 
   isInProject: boolean;
 
+  isSelected: boolean = false;
+
+  pkProject: number;
+
+  subs: Subscription[] = [];
+
   constructor(
-    peItApi: InfPersistentItemApi,
-    peItService: PeItService,
-    activeProjectService: ActiveProjectService,
-    propertyPipe: PropertyPipe,
-    activePeItService: ActivePeItService,
-    slimLoadingBarService: SlimLoadingBarService,
-    classService: ClassService,
-    entityEditor: EntityEditorService,
-    changeDetector: ChangeDetectorRef,
-    private modalService: NgbModal,
-    private router: Router,
     private route: ActivatedRoute,
-    private eprApi: InfEntityProjectRelApi
+    private router: Router,
+    private ngRedux: NgRedux<IPeItState>,
+    private modalService: NgbModal,
+    private fb: FormBuilder,
+    private roleSetListService: RoleSetListService,
+    private stateCreator: StateCreatorService,
+    private ref:ChangeDetectorRef
   ) {
-    super(peItApi, peItService, activeProjectService, propertyPipe, activePeItService, slimLoadingBarService, classService, entityEditor, changeDetector)
-
   }
 
-  ngOnChanges() {
-  }
 
   ngOnInit() {
-    this.checkIfInProject().subscribe(() => {
-      if (this.isInProject) {
-        this.queryRichObjectOfProject().subscribe(() => {
-          this.setPreviewDataOfProject();
-        });
-      }
-      else {
-        this.queryRichObjectOfRepo().subscribe(() => {
-          this.setPreviewDataOfRepo();
-        });
-      }
-    });
+
+    this.basePath = this.getBasePath();
+    this.subs.push(this.ngRedux.select<IPeItState>(this.basePath).subscribe(d => {
+      this.peItState = d;
+      if (d)
+        this.label = this.roleSetListService.getDisplayAppeLabelOfPeItRoleSets(d.roleSets);
+    }))
+
+    this.subs.push(this.ngRedux.select<number>(['activeProject', 'pk_project']).subscribe(d => {
+      this.pkProject = d;
+    }))
+  }
+
+  ngOnDestroy() {
+    this.subs.forEach(sub => sub.unsubscribe())
+    this.ref.detach()
   }
 
 
-  checkIfInProject() {
-    const onDone = new EventEmitter();
+  // called when the entity add modal is opened 
+  addModalOpened() {
+    this.markAsTouched();
 
-    const pkProject = this.activeProjectService.project.pk_project;
-    const pkEntity = this.pkEntity || (this.peIt ? this.peIt.pk_entity:undefined);
-    this.eprApi.find({
-      'where': {
-        'fk_entity': pkEntity,
-        'fk_project': pkProject
-      }
-    }).subscribe(eprs => {
-      if (eprs.length > 0) {
-        this.isInProject = true;
-      }
-      else {
-        this.isInProject = false;
-      }
-
-      onDone.emit()
-    })
-
-    return onDone;
+    // send null to the parent form
+    this.onChange(null)
   }
 
+  // called when a entity was selected in the entity add modal  
+  selected(pkEntity: number) {
+    this.isSelected = true
 
-  setPreviewDataOfProject() {
-    if (this.peIt.pi_roles) {
+    this.subs.push(this.stateCreator.initializePeItState(pkEntity, this.pkProject, 'view').subscribe(peItState => {
+      this.label = this.roleSetListService.getDisplayAppeLabelOfPeItRoleSets(peItState.roleSets);
+      this.ref.detectChanges()
+    }))
 
-      this.peIt.pi_roles.filter((role => role.fk_property === 1)) // R63
-      .forEach(role => {
-      const appeObj = role.temporal_entity.te_roles
-      .filter((role) => {
-        return (
-          role.fk_property === 2 && // R64
-          role.entity_version_project_rels[0].is_in_project
-        )
+    // send the pkEntity to the parent form
+    this.onChange(pkEntity)
+  }
+
+  open() {
+    // const urlTree = this.router.createUrlTree(["..", this.pkEntity], { relativeTo: this.route, preserveQueryParams:true });
+    // window.open(this.router.serializeUrl(urlTree), '_blank')
+    const open = () => {
+
+      this.router.navigate(["../", this.peItState.peIt.pk_entity], {
+        relativeTo: this.route,
+        queryParamsHandling: 'merge'
       })
-      [0].appellation;
-
-      this.previewData.appellationString = new AppellationLabel(appeObj.appellation_label).getString();
-    })
-  }
-}
-
-
-setPreviewDataOfRepo() {
-  if (this.peIt.pi_roles) {
-
-    let mostPopularAppe: InfRole;
-    let highestCount: number = 0;
-
-    this.peIt.pi_roles.filter((role => role.fk_property === 1)) // R63
-    .forEach(role => {
-
-    if (highestCount < role.is_standard_in_project_count) {
-      mostPopularAppe = role;
-      highestCount = role.is_standard_in_project_count;
+        .then(() => {
+          console.log('ok')
+        }).catch(() => {
+          console.log('oops')
+        })
     }
-  })
-
-  const appeObj = mostPopularAppe.temporal_entity.te_roles
-  .filter((role) => {
-    return (
-      role.fk_property === 2 // R64
-    )
-  })
-  [0].appellation;
-
-  this.previewData.appellationString = new AppellationLabel(appeObj.appellation_label).getString();
-}
-}
 
 
-open() {
-  // const urlTree = this.router.createUrlTree(["..", this.pkEntity], { relativeTo: this.route, preserveQueryParams:true });
-  // window.open(this.router.serializeUrl(urlTree), '_blank')
-  const open = () => {
+    const entityModalOptions: NgbModalOptions = {
+      size: 'lg'
+    }
 
-  this.router.navigate(["../", this.pkEntity], {
-    relativeTo: this.route,
-    queryParamsHandling: 'merge'
-  })
-  .then(() => {
-    console.log('ok')
-  }).catch(() => {
-    console.log('oops')
-  })
-}
+    const modalRef = this.modalService.open(PeItEntityPreviewModalComponent, entityModalOptions);
+
+    modalRef.componentInstance.isInProject = (this.peItState.peIt.entity_version_project_rels && this.peItState.peIt.entity_version_project_rels.length)
+    modalRef.componentInstance.parentPath = this.parentPath;
+
+    modalRef.result
+      .then(() => { open() })
+      .catch(() => { });
 
 
-const entityModalOptions: NgbModalOptions = {
-  size: 'lg'
-}
-
-const modalRef = this.modalService.open(PeItEntityPreviewModalComponent, entityModalOptions);
-
-modalRef.componentInstance.isInProject = this.isInProject;
-modalRef.componentInstance.stdAppe = this.previewData.appellationString;
-modalRef.componentInstance.pkEntity = this.pkEntity;
-
-modalRef.result
-.then(() => { open() })
-.catch(() => { });
+  }
 
 
-}
+  /****************************************
+ *  ControlValueAccessor implementation *
+ ****************************************/
 
+  /**
+   * Allows Angular to update the model.
+   * Update the model and changes needed for the view here.
+   */
+  writeValue(pk_entity: number): void {
+
+
+  }
+
+
+  /**
+   * Allows Angular to register a function to call when the model changes.
+   * Save the function as a property to call later here.
+   */
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  /**
+   * gets replaced by angular on registerOnChange
+   * This function helps to type the onChange function for the use in this class.
+   */
+  onChange = (pk_entity: number | null) => {
+  };
+
+  /**
+   * Allows Angular to register a function to call when the input has been touched.
+   * Save the function as a property to call later here.
+   */
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  /**
+   * gets replaced by angular on registerOnTouched
+   * Call this function when the form has been touched.
+   */
+  onTouched = () => {
+  };
+
+  markAsTouched() {
+    this.onTouched()
+    this.touched.emit()
+  }
 }

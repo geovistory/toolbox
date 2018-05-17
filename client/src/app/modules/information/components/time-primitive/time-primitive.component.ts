@@ -29,12 +29,12 @@ export class TimePrimitiveComponent implements OnInit, ControlValueAccessor {
 
   @Input() timePrimitive: TimePrimitive;
 
-  @Input() state: 'edit' | 'editable' | 'view';
+  @Input() state: 'edit' |  'editable' | 'view';
 
   @Input() show:
-  'duration' // shows duration of DateTime
-  | 'firstSecond'  // shows first second of DateTime
-  | 'lastSecond'; // show last second DateTime
+    'duration' // shows duration of DateTime
+    | 'firstSecond'  // shows first second of DateTime
+    | 'lastSecond'; // show last second DateTime
 
 
   @Input() currentCal: CalendarType;
@@ -43,10 +43,10 @@ export class TimePrimitiveComponent implements OnInit, ControlValueAccessor {
   @Input() disabled = false;
 
   // Flag indicates if submit button is visible in edit state
-  @Input() submitBtnVisible:boolean;
+  @Input() submitBtnVisible: boolean;
 
   // Flag indicates if cancel button is visible in edit state
-  @Input() cancelBtnVisible:boolean;
+  @Input() cancelBtnVisible: boolean;
 
   /**
    * Outputs
@@ -87,7 +87,7 @@ export class TimePrimitiveComponent implements OnInit, ControlValueAccessor {
   form: FormGroup;
 
   onChange = (timePtimitive: TimePrimitive | null) => {
-   };
+  };
 
   editingCalendar = false;
 
@@ -156,7 +156,7 @@ export class TimePrimitiveComponent implements OnInit, ControlValueAccessor {
 
       // If all required values of timePrimitive ok, pass the timePtimitive to
       // the onChange function, that may be registered by parent's form control
-      if (tp.calendar && tp.julianDay && tp.duration){
+      if (tp.calendar && tp.julianDay && tp.duration) {
         this.timePrimitive = tp;
         this.onChange(tp);
       }
@@ -225,7 +225,7 @@ export class TimePrimitiveComponent implements OnInit, ControlValueAccessor {
         validator: this.validateForm(this)
       }
     );
-this.subscribeToFormChanges()
+    this.subscribeToFormChanges()
   }
 
 
@@ -420,12 +420,12 @@ this.subscribeToFormChanges()
   */
   writeValue(timePrimitive: TimePrimitive): void {
 
-    if(timePrimitive === null){
+    if (timePrimitive === null) {
       this.timePrimitive = new TimePrimitive({
-           calendar: 'julian'
+        calendar: 'julian'
       })
     }
-    else{
+    else {
       this.timePrimitive = timePrimitive;
     }
 

@@ -22,6 +22,14 @@ import { TimePrimitive, InfEntityProjectRelApi, InfRoleApi, ActiveProjectService
 import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
 import { UtilitiesService } from '../../shared/utilities.service';
+import { IRoleSetState } from '../role-set/role-set.model';
+import { RoleSetActions } from '../role-set/role-set.actions';
+import { NgRedux } from '@angular-redux/store';
+import { RoleSetService } from '../../shared/role-set.service';
+import { IRoleState } from '../role/role.model';
+import { RoleActions } from '../role/role.actions';
+import { StateCreatorService } from '../../shared/state-creator.service';
+import { ClassService } from '../../shared/class.service';
 
 
 
@@ -79,7 +87,7 @@ interface Fieldsets {
     ])
   ]
 })
-export class ExistenceTimeComponent  extends RoleSetComponent implements OnInit, OnChanges, AfterViewInit {
+export class ExistenceTimeComponent extends RoleSetComponent implements OnInit, OnChanges, AfterViewInit {
 
 
   /**
@@ -103,9 +111,9 @@ export class ExistenceTimeComponent  extends RoleSetComponent implements OnInit,
   /**
    * Output
    */
-  @Output() onSubmit:EventEmitter<ExistenceTime> = new EventEmitter();
-  
-  
+  @Output() onSubmit: EventEmitter<ExistenceTime> = new EventEmitter();
+
+
   /**
   *  Properties
   */
@@ -161,11 +169,18 @@ export class ExistenceTimeComponent  extends RoleSetComponent implements OnInit,
     public entityEditor: EntityEditorService,
     changeDetector: ChangeDetectorRef,
     private slimLoadingBarService: SlimLoadingBarService,
-    private fb: FormBuilder,
     private datePipe: DatePipe,
-    private validationService: ValidationService
+    private validationService: ValidationService,
+    ngRedux: NgRedux<IRoleSetState>,
+    actions: RoleSetActions,
+    roleSetService: RoleSetService,
+    roleStore: NgRedux<IRoleState>,
+    roleActions: RoleActions,
+    protected stateCreator: StateCreatorService,
+    classService: ClassService,
+    protected fb: FormBuilder,
   ) {
-    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector)
+    super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
     this.initialFormDefinition = {
       timePrimitive: [null, Validators.required]
     };
@@ -293,8 +308,8 @@ export class ExistenceTimeComponent  extends RoleSetComponent implements OnInit,
 
   }
 
-  ngOnChanges(){
-    if(this.existenceTime) {
+  ngOnChanges() {
+    if (this.existenceTime) {
       this.existenceTime = new ExistenceTime(this.existenceTime);
       this.updateAllFields();
     }

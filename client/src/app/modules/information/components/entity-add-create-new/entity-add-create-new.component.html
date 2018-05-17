@@ -1,10 +1,7 @@
-<div class="gv-create-new">
+<form *ngIf="formGroup" [connect]="['information', 'entityCreateNew', 'formValue']" [formGroup]="formGroup" (ngSubmit)="submit()">
 
-  <p>Start by adding some minimal information</p>
+  <div class="form-group">
+    <gv-pe-it *ngIf="formGroup.get(formCtrlName)" [parentPath]="basePath" [formControlName]="formCtrlName"></gv-pe-it>
+  </div>
 
-  <gv-pe-it [fkClass]="modalService.selectedClass.dfh_pk_class" [peItState]="'create'"
-  (peItReadyToCreate)="onPeItReadyToCreate($event)"
-  (peItNotReadyToCreate)="onPeItNotReadyToCreate()"
-  ></gv-pe-it>
-
-</div>
+</form>

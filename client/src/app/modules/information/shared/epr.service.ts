@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, InfEntityProjectRel } from 'app/core';
+import { ActiveProjectService, InfEntityProjectRel, InfEntityProjectRelApi } from 'app/core';
+import { ReplaySubject } from 'rxjs';
 
 
 @Injectable()
 export class EprService {
 
   constructor(
-    private activeProjectService:ActiveProjectService
+    private activeProjectService: ActiveProjectService,
+    private eprApi: InfEntityProjectRelApi
   ) { }
 
 
@@ -17,13 +19,13 @@ export class EprService {
   * @param  {any} entity   InfPersistentItem, InfRole, InfTemporalEntity, InfAppellation, InfLanguage
   * @return {type}        description
   */
-  getEprOfEntity (entity){
-    if(!entity.entity_version_project_rels) return undefined;
+  getEprOfEntity(entity) {
+    if (!entity.entity_version_project_rels) return undefined;
 
     const eprs = entity.entity_version_project_rels.filter(
       epr => epr.fk_project === this.activeProjectService.project.pk_project
     )
-    if (eprs.length !== 1){
+    if (eprs.length !== 1) {
       // TODO error
     }
     return eprs[0];
@@ -36,13 +38,46 @@ export class EprService {
   * @param  {any} entity   InfPersistentItem, InfRole, InfTemporalEntity, InfAppellation, InfLanguage
   * @param  {InfEntityProjectRel} epr
   */
-  updateEprOfEntity (entity, epr:InfEntityProjectRel){
+  updateEprOfEntity(entity, epr: InfEntityProjectRel) {
     let eprs = entity.entity_version_project_rels;
     for (let i = 0; i < eprs.length; i++) {
-      if(eprs[i].pk_entity_version_project_rel == epr.pk_entity_version_project_rel){
+      if (eprs[i].pk_entity_version_project_rel == epr.pk_entity_version_project_rel) {
         eprs[i] = epr;
       }
     }
+  }
+
+
+  /**
+   * checks if the entity with given pkEntity is in project of given pkProject.
+   * @param pkProject 
+   * @param pkEntity 
+   */
+  checkIfInProject(pkEntity: number, pkProject?: number): ReplaySubject<boolean> {
+    const onDone = new ReplaySubject<boolean>();
+
+    if (!pkProject) onDone.next(false);
+
+    let isInProject;
+
+    this.eprApi.find({
+      'where': {
+        'fk_entity': pkEntity,
+        'fk_project': pkProject
+      }
+    }).subscribe(eprs => {
+      if (eprs.length > 0) {
+
+        onDone.next(true)
+      }
+      else {
+        onDone.next(false);
+      }
+
+    })
+
+
+    return onDone;
   }
 
 }

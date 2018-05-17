@@ -11,23 +11,21 @@
 
 <div class="modal-body" *ngIf="!isInProject">
 
-  <gv-pe-it [pkEntity]="pkEntity" [peItState]="'add-pe-it'"
+  <!-- <gv-pe-it [pkEntity]="pkEntity" [peItState]="'add-pe-it'"
   (peItReadyToAdd)="onPeItReadyToAdd($event)"
   (peItNotReadyToAdd)="onPeItNotReadyToAdd()"
-  ></gv-pe-it>
+  ></gv-pe-it> -->
 
 </div>
 
 
 <div class="modal-body" *ngIf="isInProject">
-
-  <gv-pe-it [pkEntity]="pkEntity" [peItState]="'view'"></gv-pe-it>
-
+  <gv-pe-it [parentPath]="parentPath"></gv-pe-it>
 </div>
 
 <div class="modal-footer d-flex flex-column align-items-stretch">
   <p *ngIf="!isInProject">
-    {{stdAppe}} is not yet added to your Project. Do you want to add {{stdAppe}} to your Project?
+    This unit is not yet added to your Project. Do you want to add it to your Project?
   </p>
   <div class="d-flex justify-content-end">
     <button class="btn btn-link btn" (click)="modal.dismiss('Cancel click')">
@@ -37,7 +35,7 @@
       Add and Open {{stdAppe}}
     </button>
     <button type="button" class="btn btn-primary btn" (click)="open()" *ngIf="isInProject">
-      Open {{stdAppe}}
+      Open
     </button>
   </div>
 </div>

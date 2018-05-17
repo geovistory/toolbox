@@ -43,6 +43,12 @@
       "type": "hasMany",
       "model": "DfhTextProperty",
       "foreignKey": "dfh_fk_class"
+    },
+    "persistent_items": {
+      "type": "hasMany",
+      "model": "InfPersistentItem",
+      "foreignKey": "fk_class",
+      "primaryKey": "dfh_pk_class"
     }
   },
   "acls": [

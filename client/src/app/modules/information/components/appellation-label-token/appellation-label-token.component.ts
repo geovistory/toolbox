@@ -45,7 +45,11 @@ export class AppellationLabelTokenComponent implements OnInit, AfterViewChecked,
 
   @Output() focusOnPreviousTokenRequest: EventEmitter<Token> = new EventEmitter();
 
+  @Output() typeChange: EventEmitter<Token> = new EventEmitter();
 
+  @Output() didBlur: EventEmitter<void> = new EventEmitter();
+
+  @Output() wasFocused: EventEmitter<void> = new EventEmitter();
 
 
   /**
@@ -125,7 +129,7 @@ export class AppellationLabelTokenComponent implements OnInit, AfterViewChecked,
     
     if (!this.afterViewChecked) {
       if (this.token.autofocus) {
-        this.focus()
+        this.doFocus()
       }
     }
 
@@ -162,8 +166,15 @@ export class AppellationLabelTokenComponent implements OnInit, AfterViewChecked,
     }
   }
 
+  onBlur(){
+    this.didBlur.emit();
+  }
 
-  focus(caretPosition?: number) {
+  onFocus(){
+    this.wasFocused.emit();
+  }
+
+  doFocus(caretPosition?: number) {
     this.focusEventEmitter.emit(caretPosition ? caretPosition : undefined);
   }
 
@@ -223,7 +234,7 @@ export class AppellationLabelTokenComponent implements OnInit, AfterViewChecked,
       // setTimeout(() => this.setTokenString(thisTokenString), 0);
       this.setTokenString(thisTokenString)
 
-      // insert token after, containing test of string, e.g. ' Jacob Müller '
+      // insert token after, containing rest of string, e.g. ' Jacob Müller '
       this.insertTokenAfter(newTokenString, isSeparator);
 
     }  // if string is only a separator-character but token is no separator-token
@@ -250,7 +261,7 @@ export class AppellationLabelTokenComponent implements OnInit, AfterViewChecked,
       newToken: new Token({
         string: newTokenString,
         type: undefined,
-        autofocus: true,
+        autofocus: false,
         isSeparator: isSeparator
       }),
       index: this.index
@@ -266,7 +277,7 @@ export class AppellationLabelTokenComponent implements OnInit, AfterViewChecked,
       newToken: new Token({
         string: newTokenString,
         type: undefined,
-        autofocus: true,
+        autofocus: false,
         isSeparator: isSeparator
       }),
       index: this.index
@@ -315,6 +326,8 @@ export class AppellationLabelTokenComponent implements OnInit, AfterViewChecked,
       this.selectedNamePartType = [];
       this.token.typeId = null;
     }
+
+    this.typeChange.emit(this.token)
 
     this.stopEditingType();
   }

@@ -1,5 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, forwardRef, Inject } from '@angular/core';
 import { InfRole, DfhProperty } from 'app/core';
+import { RoleSetState, IRoleSetState } from '../components/role-set/role-set.model';
+import { groupBy, prop } from 'ramda';
+import { BehaviorSubject } from 'rxjs';
+import { IRoleState, RoleState } from '../components/role/role.model';
+import { EditorStates } from '../information.models';
 
 interface Label {
   sg: string;
@@ -18,11 +23,6 @@ export interface DirectedRole {
   isOutgoing: boolean;
   role: InfRole;
 }
-export interface DirectedRolesPerProperty {
-  fkProperty: number;
-  isOutgoing: boolean;
-  roles: InfRole[];
-}
 
 @Injectable()
 export class RoleService {
@@ -30,7 +30,6 @@ export class RoleService {
   /**
   * Properties
   */
-
 
 
   constructor() { }
@@ -70,64 +69,45 @@ export class RoleService {
   }
 
 
+
   /**
-   * transform roles to an array grouped by property and direction of the role.
-   * This is useful for adding property sections to the gui, since for each
-   * property there needs to be a property section and each property section
-   * needs to know if it is outgoing or ingoing (for the display label)
-   *
-   * @param {InfRole[]} roles array of roles
-   * @param {Property[]} ingoing array of ingoing properties (depending on context)
-   * @param {Property[]} outgoing array of outgoing properties (depending on context)
-   *
-   * @return {DirectedRolesPerProperty[]} Array of DirectedRolesPerProperty
+   * Adds roles to given role sets and assigns generic options for all RoleSetStates
+   * 
+   * @param {InfRole[]} roles array of roles a PeIti
+   * @param {RoleSetState[]} ingoingRoleSets array of ingoing properties (depending on context)
+   * @param {RoleSetState[]} outgoingRoleSets array of outgoing properties (depending on context)
+   * @param {RoleSetState} options any other option that should be apllied to all of the roleSets
+   * @return {RoleSetState[]} Array of RoleSetState, the model of the Gui-Element for RoleSets
    */
-  toDirectedRolesPerProperty(roles: InfRole[], ingoing: DfhProperty[], outgoing: DfhProperty[]): DirectedRolesPerProperty[] {
+  addRolesToRoleSets(roles: InfRole[], ingoingRoleSets: RoleSetState[], outgoingRoleSets: RoleSetState[], options: IRoleSetState = {}): IRoleSetState[] {
 
     // declare array that will be returned
-    const directedRolesPerProperty: DirectedRolesPerProperty[] = [];
+    const roleSets: IRoleSetState[] = [];
 
-    // create array of ingoing fk_property
-    const fkPropIn: number[] = ingoing.map(p => p.dfh_pk_property)
+    const rolesByFkProp = groupBy(prop('fk_property'), roles)
 
-    // create array of outgoing fk_property
-    const fkPropOut: number[] = outgoing.map(p => p.dfh_pk_property)
-
-    // filter for ingoing Roles
-    const ingoingRoles = roles.filter(role => fkPropIn.includes(role.fk_property))
-
-    // filter for outgoing Roles
-    const outgoingRoles = roles.filter(role => fkPropOut.includes(role.fk_property))
-
-    // group ingoing Roles by Property
-    const ingoingRolesPerProperty = this.getRolesPerProperty(ingoingRoles);
-
-    // group outgoing Roles by Property
-    const outgoingRolesPerProperty = this.getRolesPerProperty(outgoingRoles);
-
-    // create directed roles per property
-    outgoingRolesPerProperty.forEach(rpp => {
-      const drpp: DirectedRolesPerProperty = {
-        isOutgoing: true,
-        fkProperty: rpp.fkProperty,
-        roles: rpp.roles
-      }
-      directedRolesPerProperty.push(drpp);
+    // enrich role sets with roles
+    ingoingRoleSets.forEach(rs => {
+      const roleSet = new RoleSetState(Object.assign(rs, options, {
+        roles: rolesByFkProp[rs.property.dfh_pk_property]
+      }))
+      if (roleSet.roles && roleSet.roles.length)
+        roleSets.push(roleSet);
     })
 
-    // create directed roles per property
-    ingoingRolesPerProperty.forEach(rpp => {
-      const drpp: DirectedRolesPerProperty = {
-        isOutgoing: false,
-        fkProperty: rpp.fkProperty,
-        roles: rpp.roles
-      }
-      directedRolesPerProperty.push(drpp);
+    // enrich role sets with roles
+    outgoingRoleSets.forEach(rs => {
+      const roleSet = new RoleSetState(Object.assign(rs, options, {
+        roles: rolesByFkProp[rs.property.dfh_pk_property]
+      }))
+      if (roleSet.roles && roleSet.roles.length)
+        roleSets.push(roleSet);
     })
 
-
-    return directedRolesPerProperty;
+    return roleSets;
   }
+
+
 
   /**
     * Group roles by fk_property. Return an obj, where
@@ -156,6 +136,19 @@ export class RoleService {
     }
 
     return rolesByPropertyArr;
+  }
+
+  /**
+   * Returns true, if this is the display role for the project
+   * @param isOutgoing 
+   * @param isDisplayRoleForDomain 
+   * @param isDisplayRoleForRange 
+   * @returns boolen
+   */
+  static isDisplayRole(isOutgoing: boolean, isDisplayRoleForDomain: boolean, isDisplayRoleForRange: boolean): boolean {
+    if (isOutgoing === true && isDisplayRoleForDomain) return true;
+    if (isOutgoing === false && isDisplayRoleForRange) return true;
+    return false
   }
 
 

@@ -1,5 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { InfEntityProjectRel, DfhClass, InfPersistentItem, ActiveProjectService, InfEntityProjectRelApi, InfPersistentItemApi } from 'app/core';
+import { IPeItState } from '../containers/pe-it/pe-it.model';
+import { StateToDataService } from './state-to-data.service';
 
 
 export enum EntityAddModalState {
@@ -63,7 +65,7 @@ export class EntityAddModalService {
   pkEntity: number;
 
   // The persistent Item to Add
-  peItToAdd: InfPersistentItem;
+  peItStateToAdd: IPeItState;
 
   // The persistent item to create
   peItToCreate: InfPersistentItem;
@@ -82,13 +84,11 @@ export class EntityAddModalService {
   ) { }
 
   changePeItProjectRelation() {
-
     return this.persistentItemApi.changePeItProjectRelation(
       this.activeProjectService.project.pk_project,
       true,
-      this.peItToAdd
+      StateToDataService.peItStateToPeItToRelate(this.peItStateToAdd)
     )
-
   }
 
   createPeIt() {
