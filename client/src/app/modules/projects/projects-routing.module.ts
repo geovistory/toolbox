@@ -41,7 +41,8 @@ const routes: Routes = [
             children: [
               {
                 path: '',
-                loadChildren:  getInformationModule
+                loadChildren: '../information/information.module#InformationModule'
+                // line above instead of loadChildren: InformationModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116         
               }
             ]
           },

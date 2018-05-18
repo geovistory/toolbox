@@ -5,6 +5,7 @@ import { HomeComponent } from './modules/home/pages/home.component';
 import { ProjectListComponent } from './modules/projects/components/project-list/project-list.component';
 import { ProjectsModule } from './modules/projects/projects.module';
 
+
 export function getProjectModule() { return ProjectsModule };
 
 const indexRoute: Route = {
@@ -35,7 +36,8 @@ const routes: Routes = [
       },
       {
         path: 'projects',
-        loadChildren: getProjectModule,
+        loadChildren: './modules/projects/projects.module#ProjectsModule',
+        // line above instead of loadChildren: getProjectModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116 
         canActivate: [AuthGuard]
       },
       fallbackRoute
