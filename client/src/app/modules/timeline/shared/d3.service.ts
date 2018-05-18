@@ -6,7 +6,6 @@ import { XAxisDefinition } from '../models/x-axis-definition';
 import { Observable } from 'rxjs/Observable';
 import { TimePrimitive, InfPersistentItem } from 'app/core';
 import { ExistenceTime } from '../../information/components/existence-time';
-import { $ } from 'protractor';
 import { TimePrimitiveVisual } from '../models/time-primitive-visual';
 
 @Injectable()
