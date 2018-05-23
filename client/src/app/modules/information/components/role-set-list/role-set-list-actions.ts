@@ -7,7 +7,7 @@ import { DfhProperty, InfRole, DfhClass } from 'app/core';
 import { indexBy, prop } from 'ramda';
 
 export function roleSetKey(roleSet: RoleSetState) {
-  return roleSet.property.dfh_pk_property + '_' + (roleSet.isOutgoing ? 'outgoing' : 'ingoing')
+  return '_' + roleSet.property.dfh_pk_property + '_' + (roleSet.isOutgoing ? 'outgoing' : 'ingoing')
 }
 
 // Flux-standard-action gives us stronger typing of our actions.

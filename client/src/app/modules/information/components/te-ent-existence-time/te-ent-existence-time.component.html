@@ -2,11 +2,34 @@
     <ng-container *ngTemplateOutlet="dev"></ng-container>
 </span>
 
-<gv-existence-time [existenceTime]="existenceTime" [state]="state" (onSubmit)="onSubmitExistenceTime($event)"></gv-existence-time>
+<!-- <gv-existence-time [existenceTime]="existenceTime" [state]="state" (onSubmit)="onSubmitExistenceTime($event)"></gv-existence-time> -->
 
+Existence Time {{existenceTimeState?.ingoingRoleSets.length}}
 
-<ng-template #dev>
-    <span>
-        [state: {{state}}]
-    </span>
-</ng-template>
+<div class="p-2">
+
+    <form>
+        
+        <!-- End of begin -->
+        <div class="form-group">
+            
+            <gv-te-ent-role-set *ngIf="existenceTimeState?.roleSets?._150_ingoing" [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntStatePath" index="_150_ingoing" (onRemoveRoleSet)="removeRoleSet('_150_ingoing')"></gv-te-ent-role-set>
+            
+            <button class="btn btn-link" *ngIf="!existenceTimeState?.roleSets?._150_ingoing" (click)="addRoleSet(150)">Add End of Begin</button>
+            
+        </div>
+        
+        
+        <!-- Begin of end -->
+        <div class="form-group">
+            
+            <gv-te-ent-role-set *ngIf="existenceTimeState?.roleSets?._151_ingoing" [parentPath]="basePath" index="_151_ingoing" (onRemoveRoleSet)="removeRoleSet('_151_ingoing')"></gv-te-ent-role-set>
+            
+            <button class="btn btn-link" *ngIf="!existenceTimeState?.roleSets?._151_ingoing" (click)="addRoleSet(151)">Add Begin of end</button>
+            
+        </div>
+        
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

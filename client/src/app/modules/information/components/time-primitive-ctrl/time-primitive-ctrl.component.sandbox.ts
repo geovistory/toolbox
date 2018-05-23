@@ -7,12 +7,12 @@ import localeDeCh from '@angular/common/locales/de-CH';
 registerLocaleData(localeDeCh);
 
 
-import { TimePrimitiveComponent } from './time-primitive.component';
+import { TimePrimitiveCtrlComponent } from './time-primitive-ctrl.component';
 import { TimePrimitive, ValidationService } from 'app/core';
 
 
 
-export default sandboxOf(TimePrimitiveComponent, {
+export default sandboxOf(TimePrimitiveCtrlComponent, {
   providers: [
     ValidationService,
     DatePipe
@@ -22,7 +22,7 @@ export default sandboxOf(TimePrimitiveComponent, {
     template: `
     <div class="d-flex justify-content-center mt-5">
       <div style="width:430px">
-        <gv-time-primitive [state]="'edit'">Hey playground!</gv-time-primitive>
+        <gv-time-primitive-ctrl [state]="'edit'">Hey playground!</gv-time-primitive-ctrl>
       </div>
     </div>
     `
@@ -38,7 +38,7 @@ export default sandboxOf(TimePrimitiveComponent, {
     template: `
     <div class="d-flex justify-content-center mt-5">
       <div style="width:430px">
-        <gv-time-primitive [state]="'edit'" [timePrimitive]="tp"></gv-time-primitive>
+        <gv-time-primitive-ctrl [state]="'edit'" [timePrimitive]="tp"></gv-time-primitive-ctrl>
       </div>
     </div>
     `
@@ -54,7 +54,7 @@ export default sandboxOf(TimePrimitiveComponent, {
     template: `
     <div class="d-flex justify-content-center mt-5">
       <div style="width:430px">
-        <gv-time-primitive [state]="'edit'" [timePrimitive]="tp"></gv-time-primitive>
+        <gv-time-primitive-ctrl [state]="'edit'" [timePrimitive]="tp"></gv-time-primitive-ctrl>
       </div>
     </div>
     `
@@ -70,7 +70,7 @@ export default sandboxOf(TimePrimitiveComponent, {
     template: `
     <div class="d-flex justify-content-center mt-5">
       <div style="width:430px">
-        <gv-time-primitive [state]="'editable'" [timePrimitive]="tp"></gv-time-primitive>
+        <gv-time-primitive-ctrl [state]="'editable'" [timePrimitive]="tp"></gv-time-primitive-ctrl>
       </div>
     </div>
     `
@@ -85,7 +85,7 @@ export default sandboxOf(TimePrimitiveComponent, {
     template: `
     <div class="d-flex justify-content-center mt-5">
       <div style="width:430px">
-        <gv-time-primitive [state]="'view'" [show]="'firstSecond'" currentCal="gregorian" [timePrimitive]="tp"></gv-time-primitive>
+        <gv-time-primitive-ctrl [state]="'view'" [show]="'firstSecond'" currentCal="gregorian" [timePrimitive]="tp"></gv-time-primitive-ctrl>
       </div>
     </div>
     `
@@ -100,7 +100,7 @@ export default sandboxOf(TimePrimitiveComponent, {
     template: `
     <div class="d-flex justify-content-center mt-5">
       <div style="width:430px">
-        <gv-time-primitive [state]="'view'" [show]="'lastSecond'" currentCal="gregorian" [timePrimitive]="tp"></gv-time-primitive>
+        <gv-time-primitive-ctrl [state]="'view'" [show]="'lastSecond'" currentCal="gregorian" [timePrimitive]="tp"></gv-time-primitive-ctrl>
       </div>
     </div>
     `
@@ -115,7 +115,7 @@ export default sandboxOf(TimePrimitiveComponent, {
     template: `
       <div class="d-flex justify-content-center mt-5">
         <div style="width:430px">
-          <gv-time-primitive [state]="'view'" [show]="'duration'" currentCal="gregorian" [timePrimitive]="tp"></gv-time-primitive>
+          <gv-time-primitive-ctrl [state]="'view'" [show]="'duration'" currentCal="gregorian" [timePrimitive]="tp"></gv-time-primitive-ctrl>
         </div>
       </div>
       `
@@ -130,7 +130,7 @@ export default sandboxOf(TimePrimitiveComponent, {
     template: `
       <div class="d-flex justify-content-center mt-5">
         <div style="width:430px">
-          <gv-time-primitive [state]="'view'" [show]="'duration'" currentCal="gregorian" [timePrimitive]="tp"></gv-time-primitive>
+          <gv-time-primitive-ctrl [state]="'view'" [show]="'duration'" currentCal="gregorian" [timePrimitive]="tp"></gv-time-primitive-ctrl>
         </div>
       </div>
       `
@@ -145,7 +145,7 @@ export default sandboxOf(TimePrimitiveComponent, {
     template: `
       <div class="d-flex justify-content-center mt-5">
         <div style="width:430px">
-          <gv-time-primitive [state]="'view'" [show]="'duration'" currentCal="gregorian" [timePrimitive]="tp"></gv-time-primitive>
+          <gv-time-primitive-ctrl [state]="'view'" [show]="'duration'" currentCal="gregorian" [timePrimitive]="tp"></gv-time-primitive-ctrl>
         </div>
       </div>
       `
@@ -160,7 +160,7 @@ export default sandboxOf(TimePrimitiveComponent, {
     template: `
       <div class="d-flex justify-content-center mt-5">
         <div style="width:430px">
-          <gv-time-primitive [state]="'view'" [show]="'duration'" currentCal="gregorian" [timePrimitive]="tp"></gv-time-primitive>
+          <gv-time-primitive-ctrl [state]="'view'" [show]="'duration'" currentCal="gregorian" [timePrimitive]="tp"></gv-time-primitive-ctrl>
         </div>
       </div>
       `

@@ -125,121 +125,18 @@ export class RoleComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
     this.initSubscriptions();
 
-    // this.initState();
 
-    // add a control for the child of the role
-    Object.keys(this.childStatesConfig).forEach((key) => {
-      if (this.roleState[key]) {
-
-
-        const childStateConfig = this.childStatesConfig[key]
-        this.formControlName = childStateConfig.nameInApi;
-        const formControlValue = this.roleState[key][childStateConfig.nameInState];
-        this.formControl = new FormControl(
-          formControlValue,
-          [
-            Validators.required
-          ]
-        )
-
-        // subscribe to form control changes 
-        this.subs.push(this.formControl.valueChanges.subscribe(val => {
-
-          // send the changes to the parent form
-          if (this.formControl.valid) {
-
-            // build a InfRole
-            let role: InfRole = new InfRole(this.roleState.role);
-
-            // add the value to the role
-            role[this.formControlName] = this.formGroup.get(this.formControlName).value
-
-            // if this is not a leaf peIt
-            if (this.formControlName !== 'fk_entity') {
-
-              // add also the fk_class
-              role[this.formControlName].fk_class = (val && val.fk_class) ? val.fk_class : this.roleState.targetDfhClass.dfh_pk_class;
-            }
-
-            this.onChange(role)
-          }
-          else {
-            this.onChange(null)
-          }
-
-          // // update the redux state, if the form value differs from the state value 
-          // this.localStore.dispatch(this.actions.infRoleUpdated(role))
-          // if (!equals(this.roleState.role, role)) {
-          // }          
-
-        }))
-
-        this.formGroup.addControl(this.formControlName, this.formControl)
-
-      }
-    })
 
     this.init();
   }
 
   init() { }
 
-  // initState() {
-  //   this.state$.subscribe(state => {
-
-
-  //     if ((state === 'create' || state === 'create-te-ent' || state === 'create-pe-it')) {
-  //       this.initRoleToCreate()
-  //     }
-
-  //     if (state === 'add' || state === 'add-pe-it' || state === 'create-pe-it') {
-  //       this.initRoleToAdd(state)
-  //     }
-
-
-  //     // this.initChildren(); SINGLE_INIT
-  //   })
-
-  // }
 
   initChildren() { }
 
 
-  initRoleToCreate() {
-    this.subs.push(this.property$.subscribe(property => {
-      const roleToCreate = new InfRole();
-      roleToCreate.fk_property = property.dfh_pk_property;
-      this.localStore.dispatch(this.actions.infRoleUpdated(roleToCreate))
-    }))
-  }
-
-  initRoleToAdd(state) {
-    this.subs.push(Observable.zip(
-      this.activeProject$, this.role$, this.isStandardRoleToAdd$
-    )
-      .subscribe(result => {
-        const activeProject = result[0], role = result[1], isStandardRoleToAdd = result[2];
-
-        // make a copy
-        const roleToAdd = new InfRole(role);
-
-        let eprToAdd = new InfEntityProjectRel({
-          fk_project: this.activeProjectService.project.pk_project,
-          fk_entity_version_concat: role.pk_entity_version_concat
-        })
-
-        if (
-          (state === 'add-pe-it' || state === 'create-pe-it') && isStandardRoleToAdd
-        ) {
-          eprToAdd.is_standard_in_project = true;
-        }
-
-        // add an epr
-        roleToAdd.entity_version_project_rels = [eprToAdd]
-
-        this.localStore.dispatch(this.actions.infRoleUpdated(roleToAdd))
-      }))
-  }
+  // 
 
 
   initSubscriptions() {
@@ -251,7 +148,67 @@ export class RoleComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
     this.subs.push(this.ngRedux.select<IRoleSetState>([...this.parentPath]).subscribe(d => this.parentRoleSetState = d));
     this.subs.push(this.activeProject$.subscribe(d => this.activeProject = d));
-    this.subs.push(this.localStore.select<IRoleState>('').subscribe(d => this.roleState = d))
+    this.subs.push(this.localStore.select<IRoleState>('').subscribe(d => {
+      this.roleState = d
+      if (this.roleState) {
+        // add a control for the child of the role
+        Object.keys(this.childStatesConfig).forEach((key) => {
+          if (this.roleState[key]) {
+
+
+            const childStateConfig = this.childStatesConfig[key]
+            this.formControlName = childStateConfig.nameInApi;
+
+            // use the role as the control's value
+            const formControlValue = this.roleState.role;
+            this.formControl = new FormControl(
+              formControlValue,
+              [
+                Validators.required
+              ]
+            )
+
+            this.formGroup.addControl(this.formControlName, this.formControl)
+
+
+            // subscribe to form control changes 
+            this.subs.push(this.formControl.valueChanges.subscribe((val: InfRole) => {
+
+              // send the changes to the parent form
+              if (this.formControl.valid) {
+
+                // // build a InfRole
+                // let role: InfRole = new InfRole(this.roleState.role);
+
+                // // add the value to the role
+                // role[this.formControlName] = this.formGroup.get(this.formControlName).value
+
+                // // if this is not a leaf peIt
+                // if (this.formControlName !== 'fk_entity') {
+
+                //   // add also the fk_class
+                //   role[this.formControlName].fk_class = (val && val.fk_class) ? val.fk_class : this.roleState.targetDfhClass.dfh_pk_class;
+                // }
+
+                this.onChange(val);
+              }
+              else {
+                this.onChange(null)
+              }
+
+              // // update the redux state, if the form value differs from the state value 
+              // this.localStore.dispatch(this.actions.infRoleUpdated(role))
+              // if (!equals(this.roleState.role, role)) {
+              // }          
+
+            }))
+
+
+          }
+        })
+      }
+
+    }))
 
     // Observe if this role is a display role for the project
     // since this depends on the isOutgoing and the corresponding
@@ -284,62 +241,6 @@ export class RoleComponent implements OnInit, OnDestroy, ControlValueAccessor {
   }
 
 
-  //   /**
-  //   * Inputs
-  //   */
-
-  //  @Input() role: InfRole;
-
-  //  @Input() isOutgoing: boolean;
-
-  //  @Input() pointTo: string;
-
-  //  @Input() roleState: 'view' | 'editable' | 'edit' | 'create' | 'add' | 'add-pe-it' | 'create-te-ent' | 'create-pe-it';
-
-  //  @Input() pkTargetClass: string;
-
-  //  @Input() fkProperty: number;
-
-  //  @Input() parentProperty: DfhProperty;
-
-  //  // If true, the UI for communiy statistics is visible
-  //  @Input() communityStatsVisible: boolean;
-
-  //  // If true, CRM info is visible in UI
-  //  @Input() ontoInfoVisible: boolean;
-
-  //  // true for latest modified role with highest is_standard_in_project_count
-  //  @Input() isStandardRoleToAdd: boolean;
-
-
-  //  @Output() readyToCreate: EventEmitter<InfRole> = new EventEmitter;
-
-  //  @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
-
-  //  // emit appellation and a flag to say if this is the standard appellation
-  //  @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
-
-  //  @Output() readyToAdd: EventEmitter<InfRole> = new EventEmitter();
-
-
-
-  //  /**
-  //  * Properties
-  //  */
-
-  //  // Used in add-pe-it state
-  //  roleToAdd: InfRole;
-
-  //  // Flag to disable the standard toggle button while loading 
-  //  loadingStdChange: boolean = false;
-
-  //  // true if the role is ready to create (only for create state)
-  //  isReadyToCreate: boolean;
-
-  //  // If the role points to a teEnt with a child appellation
-  //  appellation: InfAppellation;
-
-  //  private _isDisplayRoleInProject: boolean;
 
 
 
@@ -347,7 +248,41 @@ export class RoleComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
 
 
+  // initRoleToCreate() {
+  //   this.subs.push(this.property$.subscribe(property => {
+  //     const roleToCreate = new InfRole();
+  //     roleToCreate.fk_property = property.dfh_pk_property;
+  //     this.localStore.dispatch(this.actions.infRoleUpdated(roleToCreate))
+  //   }))
+  // }
 
+  // initRoleToAdd(state) {
+  //   this.subs.push(Observable.zip(
+  //     this.activeProject$, this.role$, this.isStandardRoleToAdd$
+  //   )
+  //     .subscribe(result => {
+  //       const activeProject = result[0], role = result[1], isStandardRoleToAdd = result[2];
+
+  //       // make a copy
+  //       const roleToAdd = new InfRole(role);
+
+  //       let eprToAdd = new InfEntityProjectRel({
+  //         fk_project: this.activeProjectService.project.pk_project,
+  //         fk_entity_version_concat: role.pk_entity_version_concat
+  //       })
+
+  //       if (
+  //         (state === 'add-pe-it' || state === 'create-pe-it') && isStandardRoleToAdd
+  //       ) {
+  //         eprToAdd.is_standard_in_project = true;
+  //       }
+
+  //       // add an epr
+  //       roleToAdd.entity_version_project_rels = [eprToAdd]
+
+  //       this.localStore.dispatch(this.actions.infRoleUpdated(roleToAdd))
+  //     }))
+  // }
 
 
   /**
@@ -561,7 +496,7 @@ export class RoleComponent implements OnInit, OnDestroy, ControlValueAccessor {
    * gets replaced by angular on registerOnChange
    * This function helps to type the onChange function for the use in this class.
    */
-  onChange = (peIt: InfRole | null) => {
+  onChange = (role: InfRole | null) => {
   };
 
   /**

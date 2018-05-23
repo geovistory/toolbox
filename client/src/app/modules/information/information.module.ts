@@ -42,7 +42,7 @@ import { TeEntRoleSetComponent } from './components/te-ent-role-set/te-ent-role-
 import { PeItRoleComponent } from './components/pe-it-role/pe-it-role.component';
 import { TeEntRoleComponent } from './components/te-ent-role/te-ent-role.component';
 import { TeEntComponent } from './components/te-ent/te-ent.component';
-import { TimePrimitiveComponent } from './components/time-primitive/time-primitive.component';
+import { TimePrimitiveCtrlComponent } from './components/time-primitive-ctrl/time-primitive-ctrl.component';
 import { VersionModalComponent } from './components/version-modal/version-modal.component';
 import { InformationRoutingModule } from './information-routing.module';
 import { FieldsetComponent, FieldsetBeginComponent, FieldsetEndComponent, FieldsetInnerComponent, FieldsetOuterComponent, FieldComponent } from './components/existence-time';
@@ -84,6 +84,9 @@ import { StateToDataService } from './shared/state-to-data.service';
 import { EntityAddExistingActions } from './components/entity-add-add-existing/entity-add-add-existing.actions';
 import { EntityCreateNewActions } from './components/entity-add-create-new/entity-add-create-new.actions';
 import { NgReduxFormModule } from '@angular-redux/form';
+import { ExistenceTimeActions } from './components/te-ent-existence-time/te-ent-existence-time.actions';
+import { TimePrimitiveComponent } from './components/time-primitive/time-primitive.component';
+import { TimePrimitiveViewComponent } from './components/time-primitive-view/time-primitive-view.component';
 
 
 @NgModule({
@@ -134,7 +137,7 @@ import { NgReduxFormModule } from '@angular-redux/form';
     PeItRoleComponent,
     TeEntRoleComponent,
     TeEntComponent,
-    TimePrimitiveComponent,
+    TimePrimitiveCtrlComponent,
     VersionModalComponent,
     FieldsetComponent,
     FieldsetBeginComponent,
@@ -146,6 +149,8 @@ import { NgReduxFormModule } from '@angular-redux/form';
     PropertyPipe,
     PeItTimelineComponent,
     KeysPipe,
+    TimePrimitiveComponent,
+    TimePrimitiveViewComponent,
   ],
   providers: [
     RoleSetListActions,
@@ -173,7 +178,8 @@ import { NgReduxFormModule } from '@angular-redux/form';
     StateCreatorService,
     StateToDataService,
     EntityAddExistingActions,
-    EntityCreateNewActions
+    EntityCreateNewActions,
+    ExistenceTimeActions
   ],
   entryComponents: [
     EntityAddModalComponent,

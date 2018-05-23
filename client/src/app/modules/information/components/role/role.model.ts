@@ -5,6 +5,7 @@ import { IPeItState } from "../../containers/pe-it/pe-it.model";
 import { IAppellationState } from "../appellation/appellation.model";
 import { ILanguageState } from "../language/language.model";
 import { FormGroup } from "@angular/forms";
+import { ITimePrimitiveState } from "../time-primitive/time-primitive.model";
 
 
 export interface IRoleState {
@@ -59,7 +60,7 @@ export interface IRoleState {
 
     appeState?: IAppellationState
     langState?: ILanguageState;
-    // timePrimitiveState?: ITimePrimitiveState
+    timePrimitiveState?: ITimePrimitiveState;
 
     // used for editing a te ent role
     formGroup?:FormGroup;
@@ -100,6 +101,7 @@ export class RoleState implements IRoleState {
 
     appeState?: IAppellationState
     langState?: ILanguageState;
+    timePrimitiveState?: ITimePrimitiveState;
 
     formGroup?:FormGroup;    
 

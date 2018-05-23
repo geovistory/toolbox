@@ -10,6 +10,8 @@ import {
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
+import { pick } from 'ramda';
+
 import { RoleSetListComponent } from '../role-set-list/role-set-list.component';
 import { InfTemporalEntity, DfhProperty, InfRole, DfhClass, ActiveProjectService, EntityEditorService, InfEntityProjectRel, Project } from 'app/core';
 import { RoleService } from '../../shared/role.service';
@@ -147,21 +149,27 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
 
     // subscribe to form changes here
     this.subs.push(this.formGroup.valueChanges.subscribe(val => {
+
+      // build the role
+      let role = new InfRole(pick(['fk_entity', 'fk_property'], this.parentRoleState.role));
+
+
+
       // build a teEnt with all pi_roles given by the form's controls 
-      let teEnt = new InfTemporalEntity(this.teEnState.teEnt);
-      teEnt.te_roles = [];
+      role.temporal_entity = new InfTemporalEntity(this.teEnState.teEnt);
+      role.temporal_entity.te_roles = [];
       Object.keys(this.formGroup.controls).forEach(key => {
         if (this.formGroup.get(key)) {
-          teEnt.te_roles = [...teEnt.te_roles, ...this.formGroup.get(key).value]
+          role.temporal_entity.te_roles = [...role.temporal_entity.te_roles, ...this.formGroup.get(key).value]
         }
       })
 
       // try to retrieve a appellation label
-      this.labelInEdit = this.teEntService.getDisplayAppeLabelOfTeEnt(teEnt);
+      this.labelInEdit = this.teEntService.getDisplayAppeLabelOfTeEnt(role.temporal_entity);
 
       if (this.formGroup.valid) {
         // send the teEnt the parent form
-        this.onChange(teEnt)
+        this.onChange(role)
       }
       else {
         this.onChange(null)
@@ -528,7 +536,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
    * Allows Angular to update the model.
    * Update the model and changes needed for the view here.
    */
-  writeValue(teEnt: InfTemporalEntity): void {
+  writeValue(role: InfRole): void {
 
     // take model from state in ngOnInit()
 
@@ -547,7 +555,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
    * gets replaced by angular on registerOnChange
    * This function helps to type the onChange function for the use in this class.
    */
-  onChange = (teEnt: InfTemporalEntity | null) => {
+  onChange = (role: InfRole | null) => {
   };
 
   /**

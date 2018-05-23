@@ -71,7 +71,7 @@ export class RoleSetListService {
   getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets: IRoleSets): string {
     if (!teEntRoleSets) return null
 
-    const detailedNames: IRoleSetState = teEntRoleSets[this.dfhConfig.PROPERTY_PK_R64_USED_NAME + '_outgoing'];
+    const detailedNames: IRoleSetState = teEntRoleSets['_' + this.dfhConfig.PROPERTY_PK_R64_USED_NAME + '_outgoing'];
     if (detailedNames) {
       const roleStates = RoleSetService.getRoleStatesContainerForState(detailedNames)
       for (const key in roleStates) {
@@ -98,7 +98,7 @@ export class RoleSetListService {
     if (!peItRoleSets) return null
 
     // get ingoing roles pointing to appellation usage (R63)
-    const names: RoleSetState = peItRoleSets['1_ingoing'];
+    const names: RoleSetState = peItRoleSets['_1_ingoing'];
     if (names) {
       const roleStates = RoleSetService.getRoleStatesContainerForState(names)
       for (const key in roleStates) {

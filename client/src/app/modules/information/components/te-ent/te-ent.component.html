@@ -12,7 +12,8 @@
 
     <div [@slideInOut]="(toggle$|async)">
 
-      <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key" (onRemoveRoleSet)="removeRoleSet(entry.key)"></gv-te-ent-role-set>
+      <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [parentTeEntStatePath]="basePath" [index]="entry.key"
+        (onRemoveRoleSet)="removeRoleSet(entry.key)"></gv-te-ent-role-set>
 
       <ng-container *ngTemplateOutlet="dating"></ng-container>
 
@@ -75,7 +76,7 @@
     <div [@slideInOut]="(toggle$|async)">
 
       <form [formGroup]="formGroup" *ngIf="formGroup">
-        <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
+        <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [parentTeEntStatePath]="basePath" [index]="entry.key"
           [formControlName]="entry.key" (touched)="markAsTouched()" (onRemoveRoleSet)="removeRoleSet(entry.key)"></gv-te-ent-role-set>
       </form>
 
@@ -139,7 +140,7 @@
 
     <div [@slideInOut]="(toggle$|async)">
 
-      <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"></gv-te-ent-role-set>
+      <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [parentTeEntStatePath]="basePath" [index]="entry.key"></gv-te-ent-role-set>
 
       <ng-container *ngTemplateOutlet="dating"></ng-container>
 
@@ -159,7 +160,7 @@
     <div [@slideInOut]="(toggle$|async)">
 
       <form [formGroup]="formGroup" *ngIf="formGroup">
-        <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
+        <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [parentTeEntStatePath]="basePath" [index]="entry.key"
           [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role-set>
       </form>
 
@@ -177,7 +178,7 @@
     <ng-container *ngTemplateOutlet="header"></ng-container>
 
     <div [@slideInOut]="(toggle$|async)">
-      <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"></gv-te-ent-role-set>
+      <gv-te-ent-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [parentTeEntStatePath]="basePath" [index]="entry.key"></gv-te-ent-role-set>
 
       <ng-container *ngTemplateOutlet="dating"></ng-container>
 
@@ -212,10 +213,7 @@
 </ng-template>
 
 <ng-template #dating>
-  <!-- <gv-te-ent-existence-time
-  [teEnt]="teEnt"
-  [state]="'editable'"
-  ></gv-te-ent-existence-time> -->
+  <gv-te-ent-existence-time [parentPath]="basePath"></gv-te-ent-existence-time>
 </ng-template>
 
 <ng-template #dev>

@@ -33,6 +33,14 @@ export class ConfigService {
   // dfh_pk_property used to connect an appellation use with a language
   readonly PROPERTY_PK_R61_USED_LANGUAGE = 3;
 
+
+
+  /**
+  * Dfh Properties leading to a TimePrimitiveClasses
+  */
+  readonly PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE = [71, 72, 150, 151, 152, 153]
+
+
   /**
    * Dfh Classes
    */
@@ -42,4 +50,9 @@ export class ConfigService {
 
   // dfh_pk_class of appellation
   readonly CLASS_PK_APPELLATION = 2;
+
+
+  // dfh_pk_class of time primitive
+  readonly CLASS_PK_TIME_PRIMITIVE = 335;
+
 }

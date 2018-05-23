@@ -218,12 +218,17 @@ export class PropertyService {
    * @param isOutgoing 
    */
   createLabelObject(property: DfhProperty, isOutgoing: boolean): RoleSetLabelObj {
+    let sg = 'n.N.'
+    let pl = 'n.N.'
+
     let labelObj: RoleSetLabelObj;
     if (isOutgoing) {
 
       // TODO return an object containing label.pl and label.sg
-      const sg = property.labels.find(l => l.notes === 'label.sg').dfh_label;
-      const pl = property.labels.find(l => l.notes === 'label.pl').dfh_label;
+      if (property.labels.length) {
+        sg = property.labels.find(l => l.notes === 'label.sg').dfh_label;
+        pl = property.labels.find(l => l.notes === 'label.pl').dfh_label;
+      }
 
       labelObj = {
         sg: sg,
@@ -234,8 +239,10 @@ export class PropertyService {
     } else if (isOutgoing === false) {
 
       // TODO return an object containing inversed_label.pl and inversed_label.sg
-      const sg = property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
-      const pl = property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label;
+      if (property.labels.length) {
+        sg = property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
+        pl = property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label;
+      }
 
       labelObj = {
         sg: sg,

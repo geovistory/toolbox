@@ -55,12 +55,8 @@ export class TeEntRoleComponent extends RoleComponent {
   cancelEdit() {
     this.stopEditing.emit()
   }
-  okEdit(){
-    let role = new InfRole(pick(['fk_temporal_entity','fk_property'],this.roleState.role));
-    
-    role[this.formControlName] = this.formGroup.get(this.formControlName).value;
-
-    this.startUpdating.emit(role)
+  okEdit() {
+    this.startUpdating.emit(this.formGroup.get(this.formControlName).value)
   }
 
 
@@ -84,10 +80,10 @@ export class TeEntRoleComponent extends RoleComponent {
 
     /** prepare the formGroup */
     this.formValPath = [...this.basePath, 'formGroup'];
-    
+
 
     const toggle$ = this.ngRedux.select<CollapsedExpanded>([...this.parentPath, 'toggle']);
-    this.subs.push( Observable.combineLatest(this.role$, toggle$)
+    this.subs.push(Observable.combineLatest(this.role$, toggle$)
       .subscribe(result => {
         const role = result[0];
         const toggle = result[1];

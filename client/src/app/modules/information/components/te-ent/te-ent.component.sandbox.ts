@@ -32,7 +32,7 @@ import { PeItRoleComponent } from '../pe-it-role/pe-it-role.component';
 import { AppellationLabelEditorComponent } from '../appellation-label-editor/appellation-label-editor.component';
 import { AppellationLabelTokenComponent } from '../appellation-label-token/appellation-label-token.component';
 import { ControlMessagesComponent } from 'app/shared/components/control-messages/control-messages.component';
-import { TimePrimitiveComponent } from '../time-primitive/time-primitive.component';
+import { TimePrimitiveCtrlComponent } from '../time-primitive-ctrl/time-primitive-ctrl.component';
 import { ValidationService, InfEntityProjectRelApi, ActiveProjectService, EntityEditorService } from 'app/core';
 import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
@@ -55,7 +55,7 @@ export default sandboxOf(TeEntComponent, {
     ExistenceTimeComponent,
     TeEntExistenceTimeComponent,
     FieldComponent,
-    TimePrimitiveComponent,
+    TimePrimitiveCtrlComponent,
     FieldsetBeginComponent,
     FieldsetEndComponent,
     FieldsetOuterComponent,

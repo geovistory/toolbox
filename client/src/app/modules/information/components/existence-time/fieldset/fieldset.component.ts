@@ -1,7 +1,7 @@
 // This is a generic component, used with child components!
 
-import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup} from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import {
   trigger,
   state,
@@ -13,6 +13,7 @@ import {
 
 import { Fieldset } from './fieldset';
 import { ExistenceTime } from '../existence-time';
+import { Field } from '../field/field';
 
 @Component({
   selector: 'gv-fieldset',
@@ -62,6 +63,12 @@ export class FieldsetComponent implements OnInit {
 
   @Input() existenceTime: ExistenceTime;
 
+
+  @Output() onEdit: EventEmitter<Field> = new EventEmitter();
+  @Output() onRemove: EventEmitter<Field> = new EventEmitter();
+  @Output() onCancel: EventEmitter<Field> = new EventEmitter();
+  @Output() onSubmit: EventEmitter<Field> = new EventEmitter();
+
   isExpanded: 'collapsed' | 'expanded';
 
   constructor() {
@@ -74,5 +81,7 @@ export class FieldsetComponent implements OnInit {
   toggle() {
     this.isExpanded = (this.isExpanded === 'collapsed' ? 'expanded' : 'collapsed');
   }
+
+
 
 }

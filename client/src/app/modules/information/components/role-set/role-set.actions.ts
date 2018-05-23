@@ -8,7 +8,7 @@ import { IRoleState } from '../role/role.model';
 import { CollapsedExpanded } from '../../information.models';
 
 
-export function roleStateKey(roleState: IRoleState) { return roleState.role.pk_entity };
+export function roleStateKey(roleState: IRoleState) { return  '_' + roleState.role.pk_entity };
 
 
 

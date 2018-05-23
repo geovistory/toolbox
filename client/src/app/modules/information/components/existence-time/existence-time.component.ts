@@ -133,7 +133,7 @@ export class ExistenceTimeComponent extends RoleSetComponent implements OnInit, 
   // label of timePrimitive when choosing an option
   initTpLabel: string;
 
-  // state of initial TimePrimitiveComponent
+  // state of initial TimePrimitiveCtrlComponent
   initialTpState: 'editable' | 'view' | 'edit';
 
   fieldsets: Fieldsets;
@@ -991,8 +991,14 @@ export class ExistenceTimeComponent extends RoleSetComponent implements OnInit, 
 
     }
 
-    // store the current time primitive, so it can be reset on cancel
+    // reset the from control's value
     this.mainForm.get(field.ctrlName).setValue(field.tpForReset);
+    
+    // if the reset value is falsy, delete the timePrimitive from existenceTime
+    if (!field.tpForReset) {
+      delete this.existenceTime[field.tpName];
+      this.mainForm.get(field.ctrlName).reset();
+    }
 
     // show main form buttons
     this.mainFormBtnsVisible = true;

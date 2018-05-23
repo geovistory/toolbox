@@ -1,7 +1,7 @@
 <div [formGroup]="formGroup" *ngIf="field.state !== 'addBtn'">
 
 
-  <gv-time-primitive
+  <gv-time-primitive-ctrl
   [ngClass]="{'form-control':((!field.isImplicit && formGroup?.get(field.ctrlName).value) || field.state ==='edit'), 'd-flex px-2 py-1 gv-is-implicit': ((field.isImplicit || !formGroup?.get(field.ctrlName).value) && !field.state ==='edit')}"
   [state]="field.state"
   [show]="'duration'"
@@ -22,7 +22,7 @@
   </span>
 
 
-</gv-time-primitive>
+</gv-time-primitive-ctrl>
 
 <gv-control-messages [control]="formGroup?.controls[field.ctrlName]"></gv-control-messages>
 

@@ -6,13 +6,19 @@ import { DateTime } from './interfaces';
 
 export type CalendarType = 'gregorian' | 'julian';
 
+interface ITimePrimitive {
+  julianDay?: number;
+  duration?: Granularity;
+  calendar?: CalendarType;
+}
+
 export class TimePrimitive {
 
   julianDay: number;
   duration: Granularity;
-  calendar?: CalendarType; // the calendar initialy used by user to create time primitive
+  calendar: CalendarType; // the calendar initialy used by user to create time primitive
 
-  constructor(data?) {
+  constructor(data?:ITimePrimitive) {
     Object.assign(this, data);
   }
 

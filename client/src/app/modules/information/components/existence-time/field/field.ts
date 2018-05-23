@@ -9,6 +9,7 @@ export class Field {
   datePrefix: string;
   tpName: string;
   ctrlName: string;
+  visible: boolean;
 
   // // ctrlNames (p81, p81a …) that are uses by this field.
   // ctrlNames: Array<string>;

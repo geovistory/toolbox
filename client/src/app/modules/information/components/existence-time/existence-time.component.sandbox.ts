@@ -23,7 +23,7 @@ import { RoleService } from '../../shared/role.service';
 import { PropertyService } from '../../shared/property.service';
 import { UtilitiesService } from '../../shared/utilities.service';
 import { EntityEditorService } from 'app/core/entity-editor/entity-editor.service';
-import { TimePrimitiveComponent } from '../time-primitive/time-primitive.component';
+import { TimePrimitiveCtrlComponent } from '../time-primitive-ctrl/time-primitive-ctrl.component';
 import { NgRedux } from '@angular-redux/store';
 import { ActiveProjectActions } from '../../../../core/active-project/active-project.action';
 import { RoleSetActions } from '../role-set/role-set.actions';
@@ -47,7 +47,7 @@ export default sandboxOf(ExistenceTimeComponent, {
     FieldsetEndComponent,
     FieldsetOuterComponent,
     FieldsetInnerComponent,
-    TimePrimitiveComponent
+    TimePrimitiveCtrlComponent
   ],
   imports: [
   ],
@@ -108,7 +108,7 @@ export default sandboxOf(ExistenceTimeComponent, {
       <div class="d-flex justify-content-center mt-5">
         <div style="width:430px">
 
-          <gv-existence-time [cardState]="'expanded'" [state]="'editable'" [existenceTime]="existenceTime"></gv-existence-time>
+          <gv-existence-time [state]="'editable'" [existenceTime]="existenceTime"></gv-existence-time>
 
         </div>
       </div>
@@ -139,7 +139,7 @@ export default sandboxOf(ExistenceTimeComponent, {
       <div class="d-flex justify-content-center mt-5">
         <div style="width:430px">
 
-          <gv-existence-time [cardState]="'expanded'" [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
+          <gv-existence-time [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
 
         </div>
       </div>
@@ -159,7 +159,7 @@ export default sandboxOf(ExistenceTimeComponent, {
       <div class="d-flex justify-content-center mt-5">
         <div style="width:430px">
 
-          <gv-existence-time [cardState]="'expanded'" [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
+          <gv-existence-time [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
 
         </div>
       </div>
@@ -179,7 +179,7 @@ export default sandboxOf(ExistenceTimeComponent, {
       <div class="d-flex justify-content-center mt-5">
         <div style="width:430px">
 
-          <gv-existence-time [cardState]="'expanded'" [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
+          <gv-existence-time [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
 
         </div>
       </div>
@@ -199,7 +199,7 @@ export default sandboxOf(ExistenceTimeComponent, {
       <div class="d-flex justify-content-center mt-5">
         <div style="width:430px">
 
-          <gv-existence-time [cardState]="'expanded'" [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
+          <gv-existence-time [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
 
         </div>
       </div>
@@ -219,7 +219,7 @@ export default sandboxOf(ExistenceTimeComponent, {
       <div class="d-flex justify-content-center mt-5">
         <div style="width:430px">
 
-          <gv-existence-time [cardState]="'expanded'" [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
+          <gv-existence-time [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
 
         </div>
       </div>
@@ -239,7 +239,7 @@ export default sandboxOf(ExistenceTimeComponent, {
       <div class="d-flex justify-content-center mt-5">
         <div style="width:430px">
 
-          <gv-existence-time [cardState]="'expanded'" [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
+          <gv-existence-time [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
 
         </div>
       </div>
@@ -265,7 +265,7 @@ export default sandboxOf(ExistenceTimeComponent, {
       <div class="d-flex justify-content-center mt-5">
         <div style="width:430px">
 
-          <gv-existence-time [cardState]="'expanded'" [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
+          <gv-existence-time [state]="'edit'" [existenceTime]="existenceTime"></gv-existence-time>
 
         </div>
       </div>

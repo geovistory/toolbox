@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, forwardRef, OnDestroy } from '@angular/core';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
-import { InfAppellation, InfAppellationApi, ActiveProjectService, EntityEditorService, InfEntityProjectRel } from 'app/core';
+import { InfAppellation, InfAppellationApi, ActiveProjectService, EntityEditorService, InfEntityProjectRel, InfRole } from 'app/core';
 import { AppellationLabel } from '../../shared/appellation-label/appellation-label';
 import { AppellationStdBool } from '../role/role.component';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -10,7 +10,8 @@ import { NgRedux, ObservableStore } from '@angular-redux/store';
 import { NG_VALUE_ACCESSOR, FormBuilder, FormGroup, FormControl, Validators, ControlValueAccessor } from '@angular/forms';
 import { Token, TokenInterface } from '../../shared/appellation-token/appellation-token';
 import { Subscription } from 'rxjs';
-
+import { IRoleState } from '../role/role.model';
+import { pick } from 'ramda';
 
 @AutoUnsubscribe()
 @Component({
@@ -43,15 +44,6 @@ export class AppellationComponent implements OnInit, OnDestroy, ControlValueAcce
   /**
   * Outputs
   */
-
-  @Output() readyToCreate: EventEmitter<InfAppellation> = new EventEmitter;
-
-  @Output() notReadyToCreate: EventEmitter<void> = new EventEmitter;
-
-  @Output() appeChange: EventEmitter<AppellationStdBool> = new EventEmitter;
-
-  @Output() readyToAdd: EventEmitter<InfAppellation> = new EventEmitter();
-
   @Output() cancelEdit: EventEmitter<void> = new EventEmitter();
 
   @Output() touched: EventEmitter<void> = new EventEmitter();
@@ -67,6 +59,16 @@ export class AppellationComponent implements OnInit, OnDestroy, ControlValueAcce
 
   subs: Subscription[] = [];
 
+  formGroup: FormGroup;
+
+  appeCtrl: FormControl;
+
+  // parent role, needed to create a proper role value to emit onChange of the form
+  role: InfRole;
+
+  //  needed to create a proper appellation value to emit onChange of the form
+  fkClass: number;
+
   constructor(
     private fb: FormBuilder,
     private appellationApi: InfAppellationApi,
@@ -76,29 +78,34 @@ export class AppellationComponent implements OnInit, OnDestroy, ControlValueAcce
     private ngRedux: NgRedux<IAppellationState>,
   ) {
 
+    // create the form control
+    this.appeCtrl = new FormControl(null, [Validators.required]);
+
     // create the formGroup used to create/edit an appellation
     this.formGroup = this.fb.group({})
+    this.formGroup.addControl('appellationLabel', this.appeCtrl)
 
     // subscribe to form changes here
     this.subs.push(this.formGroup.valueChanges.subscribe(val => {
-      if (this.formGroup.valid) {
+      if (this.formGroup.valid && this.role) {
+
+        // build the role
+        const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role));
 
         // build a appe with the appellation_label given by the formControl 
-        let appe = new InfAppellation(this.appeState.appellation);
+        role.appellation = new InfAppellation({
+          fk_class: this.fkClass,
+          ...this.appeState.appellation
+        });
 
         if (this.formGroup.get('appellationLabel')) {
 
-          appe.appellation_label = this.formGroup.get('appellationLabel').value
-          // appe.appellation_label.tokens = this.formGroup.get('appellationLabel').value.tokens.map((token:TokenInterface)=>{
-          //   return new Token({
-          //     string: token.string,
-          //     typeId: token.typeId
-          //   })
-          // })
+          role.appellation.appellation_label = this.formGroup.get('appellationLabel').value
+
         }
 
         // send the appe the parent form
-        this.onChange(appe)
+        this.onChange(role)
       }
       else {
         this.onChange(null)
@@ -120,61 +127,24 @@ export class AppellationComponent implements OnInit, OnDestroy, ControlValueAcce
         this.appellation = this.appeState.appellation;
         this.peItAppeState = this.appeState.state;
 
-        this.formGroup.addControl('appellationLabel', new FormControl(
-          this.appeState.appellation.appellation_label,
-          [
-            Validators.required
-          ]
-        ))
+        const label = (this.appeState && this.appeState.appellation && this.appeState.appellation.appellation_label) ?
+          new AppellationLabel(this.appeState.appellation.appellation_label) : null;
 
+        this.appeCtrl.setValue(label, { onlySelf: true, emitEvent: false })
       }
     }));
 
-    if (this.appellation.appellation_label) {
-      this.appellationLabel = new AppellationLabel(this.appellation.appellation_label);
-      this.appeChange.emit({
-        appellation: this.appellation,
-        isDisplayRoleInProject: false
-      })
-    }
+    this.subs.push(this.ngRedux.select<IRoleState>(this.parentPath).subscribe(d => {
+      if (d) {
+        this.role = d.role;
+        this.fkClass = d.appeState.appellation.fk_class ?
+          d.appeState.appellation.fk_class : d.targetDfhClass.dfh_pk_class;
+      }
+    }))
+
 
     this.peItAppeState = this.peItAppeState ? this.peItAppeState : 'view';
 
-
-    // if (this.peItAppeState === 'add-pe-it') {
-    //
-    //   // make a copy
-    //   let appe = new InfAppellation(this.appellation);
-    //
-    //   // add an epr
-    //   appe.entity_version_project_rels = [
-    //     new InfEntityProjectRel({
-    //       fk_project: this.activeProjectService.project.pk_project,
-    //       is_in_project: true,
-    //       fk_entity_version_concat: this.appellation.pk_entity_version_concat
-    //     })
-    //   ]
-    //
-    //   // emit it
-    //   this.readyToAdd.emit(appe);
-    // }
-
-    // if (this.peItAppeState === 'add') {
-
-    // make a copy
-    let appe = new InfAppellation(this.appellation);
-
-    // add an epr
-    appe.entity_version_project_rels = [
-      new InfEntityProjectRel({
-        fk_project: this.activeProjectService.project.pk_project,
-        fk_entity_version_concat: this.appellation.pk_entity_version_concat
-      })
-    ]
-
-    // emit it
-    this.readyToAdd.emit(appe);
-    // }
 
   }
 
@@ -191,36 +161,36 @@ export class AppellationComponent implements OnInit, OnDestroy, ControlValueAcce
     this.cancelEdit.emit()
   }
 
-  save(appeLabel: AppellationLabel) {
-    this.startLoading();
+  // save(appeLabel: AppellationLabel) {
+  //   this.startLoading();
 
-    this.subs.push(this.appellationApi.findOrCreateAppellation(
-      this.activeProjectService.project.pk_project,
-      {
-        pk_entity: this.appellation.pk_entity,
-        fk_class: this.appellation.fk_class,
-        appellation_label: appeLabel
-      }
-    ).subscribe(appellations => {
-      this.completeLoading();
+  //   this.subs.push(this.appellationApi.findOrCreateAppellation(
+  //     this.activeProjectService.project.pk_project,
+  //     {
+  //       pk_entity: this.appellation.pk_entity,
+  //       fk_class: this.appellation.fk_class,
+  //       appellation_label: appeLabel
+  //     }
+  //   ).subscribe(appellations => {
+  //     this.completeLoading();
 
-      this.appellation = new InfAppellation(appellations[0])
-      this.appellationLabel = new AppellationLabel(this.appellation.appellation_label);
+  //     this.appellation = new InfAppellation(appellations[0])
+  //     this.appellationLabel = new AppellationLabel(this.appellation.appellation_label);
 
-      this.appeChange.emit({
-        appellation: this.appellation,
-        isDisplayRoleInProject: false
-      })
+  //     this.appeChange.emit({
+  //       appellation: this.appellation,
+  //       isDisplayRoleInProject: false
+  //     })
 
-    }))
+  //   }))
 
-    this.cancelEdit.emit()
+  //   this.cancelEdit.emit()
 
-  }
+  // }
 
-  create(appeLabel: AppellationLabel) {
-    console.log(appeLabel);
-  }
+  // create(appeLabel: AppellationLabel) {
+  //   console.log(appeLabel);
+  // }
 
 
 
@@ -228,19 +198,19 @@ export class AppellationComponent implements OnInit, OnDestroy, ControlValueAcce
   * Methods specific to create state
   */
 
-  emitReadyToCreate(appellationLabel: AppellationLabel) {
+  // emitReadyToCreate(appellationLabel: AppellationLabel) {
 
-    this.appellation.appellation_label = appellationLabel;
+  //   this.appellation.appellation_label = appellationLabel;
 
-    this.readyToCreate.emit(this.appellation)
+  //   this.readyToCreate.emit(this.appellation)
 
-  }
+  // }
 
-  emitNotReadyToCreate() {
+  // emitNotReadyToCreate() {
 
-    this.notReadyToCreate.emit()
+  //   this.notReadyToCreate.emit()
 
-  }
+  // }
 
   /**
   * Methods specific to add state
@@ -252,13 +222,12 @@ export class AppellationComponent implements OnInit, OnDestroy, ControlValueAcce
   /****************************************
    *  ControlValueAccessor implementation *
    ****************************************/
-  formGroup: FormGroup;
 
   /**
    * Allows Angular to update the model.
    * Update the model and changes needed for the view here.
    */
-  writeValue(appellation: InfAppellation): void {
+  writeValue(role: InfRole): void {
 
 
   }
@@ -276,7 +245,7 @@ export class AppellationComponent implements OnInit, OnDestroy, ControlValueAcce
    * gets replaced by angular on registerOnChange
    * This function helps to type the onChange function for the use in this class.
    */
-  onChange = (appe: InfAppellation | null) => {
+  onChange = (role: InfRole | null) => {
   };
 
   /**

@@ -95,7 +95,9 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
   /**
   * Paths to other slices of the store
   */
+  @Input() parentTeEntStatePath: string[];
   parentPeItStatePath: string[];
+
   parentRoleStatePath: string[]
   /**
    * Local Store Observables
@@ -173,8 +175,8 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
    * subscribe all here, so it is only subscribed once on init and not multiple times on user interactions
    */
   initSubsciptions() {
-    this.subs.push( this.ngRedux.select<ITeEntState>(this.parentPath).subscribe(d => this.parentTeEntState = d))
-    this.subs.push( this.ngRedux.select<IRoleState>(this.parentRoleStatePath).subscribe(d => this.parentRoleState = d))
+    this.subs.push(this.ngRedux.select<ITeEntState>(this.parentTeEntStatePath).subscribe(d => this.parentTeEntState = d))
+    this.subs.push(this.ngRedux.select<IRoleState>(this.parentRoleStatePath).subscribe(d => this.parentRoleState = d))
 
   }
 
@@ -356,7 +358,7 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
       this.subs.push(this.teEntApi.findOrCreateInfTemporalEntity(this.project.pk_project, t).subscribe(teEnts => {
         const roles: InfRole[] = teEnts[0].te_roles;
 
-        this.subs.push( this.stateCreator.initializeRoleStates(roles, 'editable', this.roleSetState.isOutgoing).subscribe(roleStates => {
+        this.subs.push(this.stateCreator.initializeRoleStates(roles, 'editable', this.roleSetState.isOutgoing).subscribe(roleStates => {
           // update the state
           this.localStore.dispatch(this.actions.rolesCreated(roleStates))
         }))
@@ -373,7 +375,7 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
   startEditing(key) {
     const roleset = this.roleSetState.roleStatesInProject[key];
 
-    this.subs.push( this.stateCreator.initializeRoleState(roleset.role, 'edit', roleset.isOutgoing).subscribe(roleState => {
+    this.subs.push(this.stateCreator.initializeRoleState(roleset.role, 'edit', roleset.isOutgoing).subscribe(roleState => {
       this.localStore.dispatch(this.actions.startEditingRole(key, roleState))
     }))
   }
@@ -381,7 +383,7 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
   stopEditing(key) {
     const roleset = this.roleSetState.roleStatesInProject[key];
     this.subs.push(this.stateCreator.initializeRoleState(roleset.role, 'editable', roleset.isOutgoing).subscribe(roleState => {
-      this.localStore.dispatch(this.actions.startEditingRole(key, roleState))
+      this.localStore.dispatch(this.actions.stopEditingRole(key, roleState))
     }))
   }
 
@@ -390,13 +392,13 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
     const oldRole = StateToDataService.roleStateToRoleToRelate(this.roleSetState.roleStatesInProject[key]);
 
     // call api
-    this.subs.push( Observable.combineLatest(
+    this.subs.push(Observable.combineLatest(
       this.roleApi.changeRoleProjectRelation(this.project.pk_project, false, oldRole),
       this.roleApi.findOrCreateInfRole(this.project.pk_project, role)
     ).subscribe(result => {
       const newRoles = result[1];
 
-      this.subs.push( this.stateCreator.initializeRoleStates(newRoles, 'editable', this.roleSetState.isOutgoing).subscribe(roleStates => {
+      this.subs.push(this.stateCreator.initializeRoleStates(newRoles, 'editable', this.roleSetState.isOutgoing).subscribe(roleStates => {
         // update the state
         this.localStore.dispatch(this.actions.updateRole(key, roleStates))
       }))

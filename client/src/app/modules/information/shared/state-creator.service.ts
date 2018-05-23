@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InfPersistentItem, InfPersistentItemApi, InfRole, InfTemporalEntity, InfAppellation, InfLanguage, DfhClass, InfEntityProjectRel } from 'app/core';
+import { InfPersistentItem, InfPersistentItemApi, InfRole, InfTemporalEntity, InfAppellation, InfLanguage, DfhClass, InfEntityProjectRel, InfTimePrimitive } from 'app/core';
 import { indexBy, groupBy, prop } from 'ramda';
 
 import { ClassService } from './class.service';
@@ -22,6 +22,8 @@ import { ConfigService } from './config.service';
 import { IAppellationState, AppellationState } from '../components/appellation/appellation.model';
 import { AppellationLabel } from './appellation-label/appellation-label';
 import { ILanguageState, LanguageState } from '../components/language/language.model';
+import { IExistenceTimeState, ExistenceTimeState } from '../components/te-ent-existence-time/te-ent-existence-time.model';
+import { TimePrimitiveState } from '../components/time-primitive/time-primitive.model';
 
 
 @Injectable()
@@ -78,7 +80,7 @@ export class StateCreatorService {
         const roleSets = result[1].childRoleSets;
         const ingoingRoleSets = result[1].ingoingRoleSets;
         const outgoingRoleSets = result[1].outgoingRoleSets;
-        
+
         const peItState = new PeItState({
           state: state,
           selectPropState: 'init',
@@ -111,16 +113,13 @@ export class StateCreatorService {
 
       // Get RoleSetListChildren Observable (returning roleSets etc.)
       const roleSetsListChildren$ = this.initRoleSetListState(peIt.fk_class, peIt.pi_roles, state)
-      roleSetsListChildren$.subscribe(a=>{
-      
-      })
       Observable.combineLatest(dfhClass$, roleSetsListChildren$).subscribe(result => {
         if (result[0] && result[1]) {
           const dfhClass = result[0];
           const roleSets = result[1].childRoleSets;
           const ingoingRoleSets = result[1].ingoingRoleSets;
           const outgoingRoleSets = result[1].outgoingRoleSets;
-          
+
           delete peIt.pi_roles; // those only pollute the state. retrieve them from roleSets
 
           const peItState = new PeItState({
@@ -221,6 +220,8 @@ export class StateCreatorService {
       })
     }
 
+    if (!roleSets$.length) return new BehaviorSubject(undefined)
+
     Observable.combineLatest(roleSets$).subscribe(roleSets => {
       subject.next(indexBy(roleSetKey, roleSets))
     })
@@ -260,6 +261,11 @@ export class StateCreatorService {
             iRoleState.roleStatesInProject = roleStates;
             break;
 
+          /** if the roleset is in create-te-ent mode, add the states to roleStatesInProject, since they will be in Project later */
+          case 'create-te-ent-role':
+            iRoleState.roleStatesInProject = roleStates;
+            break;
+
           case 'view':
             iRoleState.roleStatesInProject = roleStates;
             break;
@@ -293,9 +299,9 @@ export class StateCreatorService {
       // /** exclude the circular role */
       if (role.pk_entity === parentRolePk) {
         console.log(role.pk_entity)
-      } 
+      }
       // else {
-        roleStateArray$.push(this.initializeRoleState(role, state, isOutgoing, options, parentRolePk));
+      roleStateArray$.push(this.initializeRoleState(role, state, isOutgoing, options, parentRolePk));
       // }
     });
 
@@ -316,7 +322,7 @@ export class StateCreatorService {
 
 
     let roleState = new RoleState({
-      role : new InfRole(role),
+      role: new InfRole(role),
       state: state,
       isOutgoing: isOutgoing,
       isCircular: false,
@@ -360,6 +366,15 @@ export class StateCreatorService {
       })
     }
 
+    /** If role leads to TimePrimitive */
+    else if (this.configService.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.indexOf(role.fk_property) > -1 && isOutgoing === false) {
+      this.initializeTimePrimitiveState(role.time_primitive, state).subscribe(timePrimitiveState => {
+        roleState.timePrimitiveState = timePrimitiveState;
+        subject.next(roleState);
+      })
+    }
+
+
     else {
 
       // check if it is circular
@@ -367,7 +382,7 @@ export class StateCreatorService {
         roleState.isCircular = true;
       }
 
-      this.inizializeLeafPeItState(state, options.targetDfhClass).subscribe(peItState => {
+      this.initializeLeafPeItState(state, options.targetDfhClass).subscribe(peItState => {
         roleState.peItState = peItState;
         subject.next(roleState)
       })
@@ -390,12 +405,21 @@ export class StateCreatorService {
     // Get RoleSetListChildren Observable (returning roleSets etc.)
     const roleSetsListChildren$ = this.initRoleSetListState(teEnt.fk_class, teEnt.te_roles, state, parentRolePk)
 
-    Observable.combineLatest(dfhClass$, roleSetsListChildren$).subscribe(result => {
-      if (result[0] && result[1]) {
+    // Get ExistenceTimeState Observable
+    const existenceTimeState$ = this.initializeExistenceTimeState(teEnt.te_roles, state);
+
+    Observable.combineLatest(dfhClass$, roleSetsListChildren$,
+      existenceTimeState$
+    ).subscribe(result => {
+      if (result[0] && result[1]
+        && result[2]
+      ) {
         const dfhClass = result[0];
         const roleSets = result[1].childRoleSets;
         const ingoingRoleSets = result[1].ingoingRoleSets;
         const outgoingRoleSets = result[1].outgoingRoleSets;
+        const existenceTimeState = result[2];
+
 
         delete teEnt.te_roles; // those only pollute the state. retrieve them from roleSets
 
@@ -408,6 +432,7 @@ export class StateCreatorService {
           fkClass: teEnt.fk_class,
           dfhClass,
           roleSets,
+          existenceTimeState,
           ingoingRoleSets,
           outgoingRoleSets
         })
@@ -418,6 +443,39 @@ export class StateCreatorService {
 
     return subject;
   }
+
+
+  initializeExistenceTimeState(roles: InfRole[], state: EditorStates): Subject<IExistenceTimeState> {
+    const subject = new ReplaySubject();
+
+    // get all InfProperties leading to a timePrimitive
+    this.classService.getIngoingProperties(this.configService.CLASS_PK_TIME_PRIMITIVE).subscribe(ingoingProperties => {
+
+      // Generate RoleSets
+      const ingoingRoleSets = this.propertyService.toRoleSets(false, ingoingProperties)
+
+      // Generate roleSets 
+      const options: IRoleSetState = {
+        state: state,
+        toggle: 'expanded'
+      }
+
+      const childRoleSets$ = this.initializeChildRoleSets(roles, ingoingRoleSets, [], options)
+
+      childRoleSets$.subscribe(roleSets => {
+        subject.next(new ExistenceTimeState({
+          roleSets,
+          ingoingRoleSets
+        }));
+      })
+
+    })
+
+    return subject;
+  }
+
+
+
 
 
   /** 
@@ -450,7 +508,16 @@ export class StateCreatorService {
   }
 
 
-  inizializeLeafPeItState(state: EditorStates, dfhClass: DfhClass): Subject<IPeItState> {
+  initializeTimePrimitiveState(timePrimitive: InfTimePrimitive, state: EditorStates): Subject<IPeItState> {
+    const timePrimitiveState = new TimePrimitiveState({
+      timePrimitive,
+      state
+    })
+
+    return new BehaviorSubject(timePrimitiveState)
+  }
+
+  initializeLeafPeItState(state: EditorStates, dfhClass: DfhClass): Subject<IPeItState> {
     const peItState = new PeItState({
       state,
       dfhClass

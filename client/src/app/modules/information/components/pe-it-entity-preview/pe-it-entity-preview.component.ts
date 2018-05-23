@@ -24,6 +24,8 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { FormBuilder, ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { Subscription } from 'rxjs';
+import { IRoleState } from '../role/role.model';
+import { pick } from 'ramda';
 
 @AutoUnsubscribe()
 @Component({
@@ -70,6 +72,9 @@ export class PeItEntityPreviewComponent implements OnInit, OnDestroy, ControlVal
 
   subs: Subscription[] = [];
 
+  // parent role, needed to create a proper role value to emit onChange of the form
+  role: InfRole;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -78,7 +83,7 @@ export class PeItEntityPreviewComponent implements OnInit, OnDestroy, ControlVal
     private fb: FormBuilder,
     private roleSetListService: RoleSetListService,
     private stateCreator: StateCreatorService,
-    private ref:ChangeDetectorRef
+    private ref: ChangeDetectorRef
   ) {
   }
 
@@ -90,6 +95,12 @@ export class PeItEntityPreviewComponent implements OnInit, OnDestroy, ControlVal
       this.peItState = d;
       if (d)
         this.label = this.roleSetListService.getDisplayAppeLabelOfPeItRoleSets(d.roleSets);
+    }))
+
+    this.subs.push(this.ngRedux.select<IRoleState>(this.parentPath).subscribe(d => {
+      if (d)
+        this.role = d.role;
+
     }))
 
     this.subs.push(this.ngRedux.select<number>(['activeProject', 'pk_project']).subscribe(d => {
@@ -120,8 +131,14 @@ export class PeItEntityPreviewComponent implements OnInit, OnDestroy, ControlVal
       this.ref.detectChanges()
     }))
 
+    // build the role
+    const role = new InfRole({
+      ...pick(['fk_temporal_entity', 'fk_property'], this.role),
+      fk_entity: pkEntity
+    });
+
     // send the pkEntity to the parent form
-    this.onChange(pkEntity)
+    this.onChange(role)
   }
 
   open() {
@@ -184,7 +201,7 @@ export class PeItEntityPreviewComponent implements OnInit, OnDestroy, ControlVal
    * gets replaced by angular on registerOnChange
    * This function helps to type the onChange function for the use in this class.
    */
-  onChange = (pk_entity: number | null) => {
+  onChange = (role: InfRole | null) => {
   };
 
   /**
