@@ -4,7 +4,6 @@
   <gv-time-primitive-ctrl
   [ngClass]="{'form-control':((!field.isImplicit && formGroup?.get(field.ctrlName).value) || field.state ==='edit'), 'd-flex px-2 py-1 gv-is-implicit': ((field.isImplicit || !formGroup?.get(field.ctrlName).value) && !field.state ==='edit')}"
   [state]="field.state"
-  [show]="'duration'"
   [submitBtnVisible]="true" [cancelBtnVisible]="true"
   formControlName="{{field.ctrlName}}"
   (onSubmit)="onSubmit.emit({fieldset:fieldset, field:field})"

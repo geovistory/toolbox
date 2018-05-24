@@ -12,7 +12,6 @@ import { CalendarType } from 'app/core/date-time/time-primitive';
   templateUrl: './time-primitive-ctrl.component.html',
   styleUrls: ['./time-primitive-ctrl.component.scss'],
   providers: [
-    DatePipe,
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => TimePrimitiveCtrlComponent),
@@ -30,12 +29,6 @@ export class TimePrimitiveCtrlComponent implements OnInit, ControlValueAccessor 
   @Input() timePrimitive: TimePrimitive;
 
   @Input() state: 'edit' | 'editable' | 'view';
-
-  @Input() show:
-    'duration' // shows duration of DateTime
-    | 'firstSecond'  // shows first second of DateTime
-    | 'lastSecond'; // show last second DateTime
-
 
   @Input() currentCal: CalendarType;
 
@@ -55,6 +48,7 @@ export class TimePrimitiveCtrlComponent implements OnInit, ControlValueAccessor 
   @Output() onEdit: EventEmitter<void> = new EventEmitter();
   @Output() onCancel: EventEmitter<void> = new EventEmitter();
   @Output() onSubmit: EventEmitter<void> = new EventEmitter();
+  @Output() touched: EventEmitter<void> = new EventEmitter();
 
 
   @HostBinding('style.opacity')
@@ -94,7 +88,6 @@ export class TimePrimitiveCtrlComponent implements OnInit, ControlValueAccessor 
   constructor(
     private fb: FormBuilder,
     private validationService: ValidationService,
-    private datePipe: DatePipe
   ) {
     this.gregorianDateTime = new GregorianDateTime();
     this.julianDateTime = new JulianDateTime();
@@ -165,34 +158,6 @@ export class TimePrimitiveCtrlComponent implements OnInit, ControlValueAccessor 
         this.onChange(null);
     });
   }
-
-
-
-  get displayLabel(): string {
-    if (!this.currentCal || !this.timePrimitive) return null;
-
-    let tp = new TimePrimitive(this.timePrimitive)
-    let dt = tp.getDateTime(this.currentCal);
-
-    switch (this.show) {
-
-      case "duration":
-        return this.datePipe.transform(dt.getDate(), tp.getShortesDateFormatString());
-
-      case "firstSecond":
-        return this.datePipe.transform(dt.getDate(), tp.getDateFormatString('1 second'));
-
-      case "lastSecond":
-        dt.toLastSecondOf(this.timePrimitive.duration);
-        return this.datePipe.transform(dt.getDate(), tp.getDateFormatString('1 second'));
-
-      default:
-        return '';
-
-    }
-  }
-
-
 
   createForm(year = null, month = null, day = null, hours = null, minutes = null, seconds = null) {
 

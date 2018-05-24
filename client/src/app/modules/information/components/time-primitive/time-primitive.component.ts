@@ -1,11 +1,14 @@
 import { Component, OnInit, ChangeDetectionStrategy, forwardRef, OnDestroy, Output, EventEmitter, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { InfTimePrimitive, TimePrimitive } from 'app/core';
+import { InfTimePrimitive, TimePrimitive, InfRole, InfEntityProjectRel } from 'app/core';
 import { NgRedux } from '@angular-redux/store';
 import { ITimePrimitiveState } from './time-primitive.model';
 import { EditorStates } from '../../information.models';
 import { ConfigService } from '../../shared/config.service';
+import { CalendarType } from '../../../../core/date-time/time-primitive';
+import { IRoleState } from '../role/role.model';
+import { pick } from 'ramda';
 
 @Component({
   selector: 'gv-time-primitive',
@@ -34,10 +37,21 @@ export class TimePrimitiveComponent implements OnInit, OnDestroy, ControlValueAc
 
   subs: Subscription[] = [];
 
+  tpCtrl: FormControl;
+
+  // parent role, needed to create a proper role value to emit onChange of the form
+  role: InfRole;
+
+  //  needed to create a proper appellation value to emit onChange of the form
+  fkClass: number;
+
+  // needed for child time primitive view
+  timePrimitive:TimePrimitive;
+  calendar:CalendarType;
+
   constructor(
     private fb: FormBuilder,
-    private ngRedux: NgRedux<ITimePrimitiveState>,
-    private configService: ConfigService
+    private ngRedux: NgRedux<ITimePrimitiveState>
   ) {
     this.formCtrl = new FormControl(
       null,
@@ -46,25 +60,38 @@ export class TimePrimitiveComponent implements OnInit, OnDestroy, ControlValueAc
       ]
     );
 
-    // create the formGroup used to create/edit a timePrimitive
+    // create the form control
+    this.tpCtrl = new FormControl(null, [Validators.required]);
+
+    // create the formGroup used to create/edit an appellation
     this.formGroup = this.fb.group({})
+    this.formGroup.addControl('timePrimitiveCtrl', this.tpCtrl)
+
 
     // subscribe to form changes here
-    this.subs.push(this.formGroup.valueChanges.subscribe((formVal) => {
+    this.subs.push(this.tpCtrl.valueChanges.subscribe((tpVal: TimePrimitive) => {
 
-      const val: TimePrimitive = formVal.timePrimitiveCtrl;
+      if (this.formGroup.valid && tpVal) {
 
-      if (this.formGroup.valid && val) {
+        // build the role
+        let role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role));
 
         // from TimePrimitive to InfTimePrimitve
-        let infTp = new InfTimePrimitive({
-          duration: val.duration,
-          julian_day: val.julianDay,
-          fk_class: this.configService.CLASS_PK_TIME_PRIMITIVE
+        role.time_primitive = new InfTimePrimitive({
+          duration: tpVal.duration,
+          julian_day: tpVal.julianDay,
+          fk_class: this.fkClass
         });
 
+        // build a epr with the calendar information
+        role.entity_version_project_rels = [
+          new InfEntityProjectRel({
+            calendar: tpVal.calendar as string
+          } as InfEntityProjectRel)
+        ]
+
         // send the tp the parent form
-        this.onChange(infTp)
+        this.onChange(role)
 
       }
       else {
@@ -75,6 +102,15 @@ export class TimePrimitiveComponent implements OnInit, OnDestroy, ControlValueAc
 
   ngOnInit() {
     this.basePath = this.getBasePath();
+
+    this.subs.push(this.ngRedux.select<IRoleState>(this.parentPath).subscribe(d => {
+      if (d) {
+        this.role = d.role;
+        this.fkClass = (d.timePrimitiveState.timePrimitive && d.timePrimitiveState.timePrimitive.fk_class) ?
+          d.timePrimitiveState.timePrimitive.fk_class : d.targetDfhClass.dfh_pk_class;
+      }
+    }))
+
     this.subs.push(this.ngRedux.select<ITimePrimitiveState>(this.basePath).subscribe(d => {
       if (d) {
         this.timePrimitiveState = d;
@@ -85,17 +121,16 @@ export class TimePrimitiveComponent implements OnInit, OnDestroy, ControlValueAc
         const infTp: InfTimePrimitive = this.timePrimitiveState.timePrimitive;
         let tp: TimePrimitive = null;
         let obj: any = {}
-        
+
         if (
-          infTp.duration && infTp.julian_day &&
-          infTp.entity_version_project_rels &&
-          infTp.entity_version_project_rels[0].calendar
+          infTp && infTp.duration && infTp.julian_day &&
+          this.getCalendarFromRole(this.role)
         ) {
           // add duration
           obj.duration = infTp.duration
 
           // add calendar
-          obj.calendar = infTp.calendar
+          obj.calendar = this.getCalendarFromRole(this.role)
 
           // add julian day
           obj.julianDay = infTp.julian_day;
@@ -103,17 +138,26 @@ export class TimePrimitiveComponent implements OnInit, OnDestroy, ControlValueAc
           tp = new TimePrimitive({ ...obj })
         }
 
+        // set value of FormControl
+        this.tpCtrl.setValue(tp, { onlySelf: true, emitEvent: false })
 
-        this.formGroup.addControl('timePrimitiveCtrl', new FormControl(
-          tp,
-          [
-            Validators.required
-          ]
-        ))
+        // set the value for TimePrimitiveView
+        this.timePrimitive = tp;
+        this.calendar = this.getCalendarFromRole(this.role)
       }
     }));
   }
 
+  getCalendarFromRole(role: InfRole): CalendarType {
+    if (!role) return null;
+
+    const cal = (role.entity_version_project_rels && role.entity_version_project_rels[0].calendar) ?
+      role.entity_version_project_rels[0].calendar :
+      role.community_favorite_calendar ?
+        role.community_favorite_calendar : null;
+
+    return cal as CalendarType;
+  }
 
   ngOnDestroy() {
     this.subs.forEach(sub => sub.unsubscribe())
@@ -130,7 +174,7 @@ export class TimePrimitiveComponent implements OnInit, OnDestroy, ControlValueAc
    * Allows Angular to update the model.
    * Update the model and changes needed for the view here.
    */
-  writeValue(tp: InfTimePrimitive): void {
+  writeValue(role: InfRole): void {
 
 
   }
@@ -148,7 +192,7 @@ export class TimePrimitiveComponent implements OnInit, OnDestroy, ControlValueAc
    * gets replaced by angular on registerOnChange
    * This function helps to type the onChange function for the use in this class.
    */
-  onChange = (tp: InfTimePrimitive | null) => {
+  onChange = (role: InfRole | null) => {
   };
 
   /**

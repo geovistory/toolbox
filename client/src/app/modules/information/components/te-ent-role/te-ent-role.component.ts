@@ -99,6 +99,9 @@ export class TeEntRoleComponent extends RoleComponent {
             this.showLanguageUI = true;
             this.language = new InfLanguage(role.language)
           }
+          else if (role.time_primitive && role.time_primitive.fk_class) {            
+
+          }
           else {
             this.pkEntity = role.fk_entity;
             this.showEntityUI = true;

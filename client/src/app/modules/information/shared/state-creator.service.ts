@@ -266,6 +266,11 @@ export class StateCreatorService {
             iRoleState.roleStatesInProject = roleStates;
             break;
 
+
+          case 'exist-time':
+            iRoleState.roleStatesInProject = roleStates;
+            break;
+
           case 'view':
             iRoleState.roleStatesInProject = roleStates;
             break;
@@ -456,7 +461,7 @@ export class StateCreatorService {
 
       // Generate roleSets 
       const options: IRoleSetState = {
-        state: state,
+        state: 'exist-time',
         toggle: 'expanded'
       }
 

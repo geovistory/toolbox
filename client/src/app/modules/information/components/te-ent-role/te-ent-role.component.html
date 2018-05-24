@@ -120,6 +120,9 @@
         <gv-language *ngIf="roleState.langState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
           (touched)="markAsTouched()"></gv-language>
 
+        <gv-time-primitive *ngIf="roleState.timePrimitiveState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
+          (touched)="markAsTouched()"></gv-time-primitive>
+
         <div>
           <gv-control-messages *ngIf="formGroup.get(formControlName)" [control]="formGroup.get(formControlName)"></gv-control-messages>
         </div>
@@ -140,7 +143,7 @@
   ************************* Editable State ************************* -->
 
 
-  <div class="d-flex" *ngIf="(state$|async) === 'editable'">
+  <div class="d-flex" *ngIf="(state$|async) === 'editable' || (state$|async) === 'exist-time'">
 
     <div class="btn-group gv-flex-grow-1 gv-flex-shrink-0 d-flex">
 
@@ -221,7 +224,7 @@
       <gv-time-primitive *ngIf="roleState.timePrimitiveState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
         (touched)="markAsTouched()"></gv-time-primitive>
       <div>
-        
+
         <gv-control-messages *ngIf="formGroup.get(formControlName)" [control]="formGroup.get(formControlName)"></gv-control-messages>
       </div>
 

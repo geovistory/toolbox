@@ -19,42 +19,42 @@
           <div class="gv-flex-grow-1">
             <div class="d-flex" *ngIf="existenceTime.p82">
               At some time within&nbsp;
-              <gv-time-primitive-ctrl [state]="'view'" [show]="'duration'" [timePrimitive]="existenceTime.p82"></gv-time-primitive-ctrl>
+              <gv-time-primitive-view [show]="'duration'" [timePrimitive]="existenceTime.p82"></gv-time-primitive-view>
             </div>
 
             <div class="d-flex" *ngIf="existenceTime.p81">
               Throughout&nbsp;
-              <gv-time-primitive-ctrl [state]="'view'" [show]="'duration'" [timePrimitive]="existenceTime.p81"></gv-time-primitive-ctrl>
+              <gv-time-primitive-view [show]="'duration'" [timePrimitive]="existenceTime.p81"></gv-time-primitive-view>
             </div>
 
             <div class="d-flex" *ngIf="existenceTime.p81a && !existenceTime.p82a">
               Begin&nbsp;
-              <gv-time-primitive-ctrl [state]="'view'" [show]="'duration'" [timePrimitive]="existenceTime.p81a"></gv-time-primitive-ctrl>
+              <gv-time-primitive-view [show]="'duration'" [timePrimitive]="existenceTime.p81a"></gv-time-primitive-view>
             </div>
 
             <div class="d-flex" *ngIf="existenceTime.p81b && !existenceTime.p82b">
               End&nbsp;
-              <gv-time-primitive-ctrl [state]="'view'" [show]="'duration'" [timePrimitive]="existenceTime.p81b"></gv-time-primitive-ctrl>
+              <gv-time-primitive-view [show]="'duration'" [timePrimitive]="existenceTime.p81b"></gv-time-primitive-view>
             </div>
 
 
             <div class="d-flex" *ngIf="existenceTime.p81a && existenceTime.p82a">
               Surely existing from&nbsp;
-              <gv-time-primitive-ctrl [state]="'view'" [show]="'lastSecond'" [timePrimitive]="existenceTime.p81a"></gv-time-primitive-ctrl>
+              <gv-time-primitive-view [show]="'lastSecond'" [timePrimitive]="existenceTime.p81a"></gv-time-primitive-view>
             </div>
 
             <div class="d-flex" *ngIf="existenceTime.p81b && existenceTime.p82b">
               Surely existing to&nbsp;
-              <gv-time-primitive-ctrl [state]="'view'" [show]="'firstSecond'" [timePrimitive]="existenceTime.p81b"></gv-time-primitive-ctrl>
+              <gv-time-primitive-view [show]="'firstSecond'" [timePrimitive]="existenceTime.p81b"></gv-time-primitive-view>
             </div>
 
             <div class="d-flex" *ngIf="existenceTime.p82a">
               Not existing before&nbsp;
-              <gv-time-primitive-ctrl [state]="'view'" [show]="'firstSecond'" [timePrimitive]="existenceTime.p82a"></gv-time-primitive-ctrl>
+              <gv-time-primitive-view [show]="'firstSecond'" [timePrimitive]="existenceTime.p82a"></gv-time-primitive-view>
             </div>
             <div class="d-flex" *ngIf="existenceTime.p82b">
               Not existing after&nbsp;
-              <gv-time-primitive-ctrl [state]="'view'" [show]="'lastSecond'" [timePrimitive]="existenceTime.p82b"></gv-time-primitive-ctrl>
+              <gv-time-primitive-view [show]="'lastSecond'" [timePrimitive]="existenceTime.p82b"></gv-time-primitive-view>
             </div>
           </div>
 
@@ -78,7 +78,7 @@
         <div class="form-row" *ngIf="initialTimePrimitiveVisible">
           <div class="col mb-3">
             <label class="sr-only">Date</label>
-            <gv-time-primitive-ctrl [state]="'edit'" [show]="'firstSecond'" formControlName="timePrimitive" (onSubmit)="startChooseStatement()"></gv-time-primitive-ctrl>
+            <!-- <gv-time-primitive-ctrl [state]="'edit'" [show]="'firstSecond'" formControlName="timePrimitive" (onSubmit)="startChooseStatement()"></gv-time-primitive-ctrl> -->
           </div>
         </div>
 

@@ -24,6 +24,15 @@ export const existenceTimeReducer =
         }
         break;
 
+        case ExistenceTimeActions.EX_TIME_ROLESET_REMOVED:
+        let newRoleSets = Object.assign({}, lastState.roleSets);
+        delete newRoleSets[action.meta.key];
+
+        lastState = {
+          ...lastState,
+          roleSets: newRoleSets
+        }
+        break;
     }
 
 

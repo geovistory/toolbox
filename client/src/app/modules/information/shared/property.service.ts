@@ -226,8 +226,10 @@ export class PropertyService {
 
       // TODO return an object containing label.pl and label.sg
       if (property.labels.length) {
-        sg = property.labels.find(l => l.notes === 'label.sg').dfh_label;
-        pl = property.labels.find(l => l.notes === 'label.pl').dfh_label;
+        if (property.labels.find(l => l.notes === 'label.sg'))
+          sg = property.labels.find(l => l.notes === 'label.sg').dfh_label;
+        if (property.labels.find(l => l.notes === 'label.pl'))
+          pl = property.labels.find(l => l.notes === 'label.pl').dfh_label;
       }
 
       labelObj = {
@@ -240,8 +242,10 @@ export class PropertyService {
 
       // TODO return an object containing inversed_label.pl and inversed_label.sg
       if (property.labels.length) {
-        sg = property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
-        pl = property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label;
+        if (property.labels.find(l => l.notes === 'label_inversed.sg'))
+          sg = property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
+        if (property.labels.find(l => l.notes === 'label_inversed.pl'))
+          pl = property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label;
       }
 
       labelObj = {

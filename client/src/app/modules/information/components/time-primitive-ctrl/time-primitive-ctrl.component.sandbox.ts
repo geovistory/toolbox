@@ -74,8 +74,11 @@ export default sandboxOf(TimePrimitiveCtrlComponent, {
       </div>
     </div>
     `
-  })
-  .add('State: View – firstSecond of 1980', {
+  });
+
+  /* 
+  
+   .add('State: View – firstSecond of 1980', {
     context: {
       tp: new TimePrimitive({
         'julianDay': 2444270,
@@ -164,4 +167,6 @@ export default sandboxOf(TimePrimitiveCtrlComponent, {
         </div>
       </div>
       `
-  });;
+  })
+  
+  */

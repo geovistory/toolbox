@@ -4,32 +4,38 @@
 
 <!-- <gv-existence-time [existenceTime]="existenceTime" [state]="state" (onSubmit)="onSubmitExistenceTime($event)"></gv-existence-time> -->
 
-Existence Time {{existenceTimeState?.ingoingRoleSets.length}}
+Existence Time {{existenceTimeState?.ingoingRoleSets.length}} {{existenceTimeState?.state}}
 
 <div class="p-2">
 
-    <form>
-        
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmitExistenceTime()">
+
         <!-- End of begin -->
         <div class="form-group">
-            
-            <gv-te-ent-role-set *ngIf="existenceTimeState?.roleSets?._150_ingoing" [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntStatePath" index="_150_ingoing" (onRemoveRoleSet)="removeRoleSet('_150_ingoing')"></gv-te-ent-role-set>
-            
+
+            <gv-te-ent-role-set *ngIf="existenceTimeState?.roleSets?._150_ingoing" [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntStatePath" class="form-control p-0 rounded-0"
+                index="_150_ingoing" (onRemoveRoleSet)="removeRoleSet('_150_ingoing')" formControlName="_150_ingoing" (touched)="markAsTouched()"></gv-te-ent-role-set>
+
             <button class="btn btn-link" *ngIf="!existenceTimeState?.roleSets?._150_ingoing" (click)="addRoleSet(150)">Add End of Begin</button>
-            
+
         </div>
-        
-        
+
+
         <!-- Begin of end -->
         <div class="form-group">
-            
-            <gv-te-ent-role-set *ngIf="existenceTimeState?.roleSets?._151_ingoing" [parentPath]="basePath" index="_151_ingoing" (onRemoveRoleSet)="removeRoleSet('_151_ingoing')"></gv-te-ent-role-set>
-            
+
+            <gv-te-ent-role-set *ngIf="existenceTimeState?.roleSets?._151_ingoing" [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntStatePath" class="form-control p-0 rounded-0"
+                index="_151_ingoing" (onRemoveRoleSet)="removeRoleSet('_151_ingoing')" formControlName="_151_ingoing" (touched)="markAsTouched()"></gv-te-ent-role-set>
+
             <button class="btn btn-link" *ngIf="!existenceTimeState?.roleSets?._151_ingoing" (click)="addRoleSet(151)">Add Begin of end</button>
-            
+
         </div>
-        
-        
-        <button type="submit" class="btn btn-primary">Submit</button>
+
+
+        <button type="submit" class="btn btn-primary" [disabled]="formGroup.invalid || formGroup.pristine">Ok</button>
     </form>
+
+    valid: {{formGroup.valid}}
+
+    {{formGroup.value | json}}
 </div>

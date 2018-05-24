@@ -387,6 +387,22 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
     }))
   }
 
+
+  startEditingExistTime(key) {
+    const roleset = this.roleSetState.roleStatesInProject[key];
+
+    this.subs.push(this.stateCreator.initializeRoleState(roleset.role, 'create-te-ent-role', roleset.isOutgoing).subscribe(roleState => {
+      this.localStore.dispatch(this.actions.startEditingRole(key, roleState))
+    }))
+  }
+
+  stopEditingExistTime(key) {
+    const roleset = this.roleSetState.roleStatesInProject[key];
+    this.subs.push(this.stateCreator.initializeRoleState(roleset.role, 'exist-time', roleset.isOutgoing).subscribe(roleState => {
+      this.localStore.dispatch(this.actions.stopEditingRole(key, roleState))
+    }))
+  }
+
   startUpdatingRole(key, role: InfRole) {
 
     const oldRole = StateToDataService.roleStateToRoleToRelate(this.roleSetState.roleStatesInProject[key]);

@@ -15,6 +15,7 @@ export type EditorStates =
     | 'create-pe-it' // create a new PeIt.
     | 'create-pe-it-role'  // create a pe-it-role at once with child te-ent and te-ent-roles 
     | 'create-te-ent-role'  // create a pe-te-ent-role
+    | 'exist-time'
 
 
 // export interface ITeRoleWrapper {

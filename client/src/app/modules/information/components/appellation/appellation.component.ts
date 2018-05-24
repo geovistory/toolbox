@@ -119,20 +119,7 @@ export class AppellationComponent implements OnInit, OnDestroy, ControlValueAcce
   }
 
   ngOnInit() {
-
     this.basePath = this.getBasePath();
-    this.subs.push(this.ngRedux.select<IAppellationState>(this.basePath).subscribe(d => {
-      this.appeState = d;
-      if (d) {
-        this.appellation = this.appeState.appellation;
-        this.peItAppeState = this.appeState.state;
-
-        const label = (this.appeState && this.appeState.appellation && this.appeState.appellation.appellation_label) ?
-          new AppellationLabel(this.appeState.appellation.appellation_label) : null;
-
-        this.appeCtrl.setValue(label, { onlySelf: true, emitEvent: false })
-      }
-    }));
 
     this.subs.push(this.ngRedux.select<IRoleState>(this.parentPath).subscribe(d => {
       if (d) {
@@ -142,9 +129,20 @@ export class AppellationComponent implements OnInit, OnDestroy, ControlValueAcce
       }
     }))
 
+    this.subs.push(this.ngRedux.select<IAppellationState>(this.basePath).subscribe(d => {
+      if (d) {
+        this.appeState = d;
+        this.peItAppeState = this.appeState.state;
 
-    this.peItAppeState = this.peItAppeState ? this.peItAppeState : 'view';
+        // from InfAppellation to AppellationLabel
+        this.appellation = this.appeState.appellation;
+        const label = (this.appeState && this.appeState.appellation && this.appeState.appellation.appellation_label) ?
+          new AppellationLabel(this.appeState.appellation.appellation_label) : null;
 
+        // set value of FormControl
+        this.appeCtrl.setValue(label, { onlySelf: true, emitEvent: false })
+      }
+    }));
 
   }
 

@@ -16,6 +16,7 @@ export class ExistenceTimeActions {
 
   static readonly EX_TIME_ROLESET_ADDED = 'EX_TIME_ROLESET_ADDED';
 
+  static readonly EX_TIME_ROLESET_REMOVED = 'EX_TIME_ROLESET_REMOVED';
 
 
   @dispatch()
@@ -26,6 +27,12 @@ export class ExistenceTimeActions {
     payload: {
       roleSets
     }
+  })
+
+  removeRoleSet = (key: string): ExistenceTimeAction => ({
+    type: ExistenceTimeActions.EX_TIME_ROLESET_REMOVED,
+    meta: { key },
+    payload: null
   })
 
 }
