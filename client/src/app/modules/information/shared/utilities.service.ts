@@ -29,4 +29,12 @@ export class UtilitiesService {
     }, obj);
   }
 
+  static objToArr(obj:{}) {
+    let arr = [];
+    Object.keys(obj).forEach(key => {
+      arr.push(obj[key]);
+    })
+    return arr;
+  }
+
 }

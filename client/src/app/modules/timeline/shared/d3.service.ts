@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 import { Point } from '../models/point';
-import { Timeline } from '../models/timeline';
+import { Timeline, TimeLineData } from '../models/timeline';
 import { XAxisDefinition } from '../models/x-axis-definition';
 import { Observable } from 'rxjs/Observable';
 import { TimePrimitive, InfPersistentItem } from 'app/core';
@@ -251,8 +251,8 @@ export class D3Service {
   /** The interactable timeline chart
   * This method does not interact with the document, purely physical calculations with d3
   */
-  getTimeline(persistentItems: InfPersistentItem[], options) {
-    return new Timeline(persistentItems, options);
+  getTimeline(data: TimeLineData, options) {
+    return new Timeline(data, options);
   }
 
 

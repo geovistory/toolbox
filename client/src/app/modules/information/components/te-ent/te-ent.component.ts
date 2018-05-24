@@ -189,8 +189,6 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
   // gets called by base class onInit
   init() {
 
-    this.initState()
-
     this.initPaths()
 
     this.initObservablesOutsideLocalStore();
@@ -198,6 +196,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
     this.initTeEntSubscriptions();
 
     this.initForm();
+
   }
 
   @Output() teEntUpdated: EventEmitter<InfTemporalEntity> = new EventEmitter;
@@ -258,6 +257,7 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
     this.ngRedux.select<IRoleState>(this.parentPath).subscribe(d => this.parentRoleState = d)
     this.subs.push(this.localStore.select<ITeEntState>('').subscribe(d => {
       this.teEnState = d
+      console.log(JSON.stringify(d))
     }))
 
 
@@ -268,11 +268,6 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
     this.subs.push(this.localStore.select<IRoleSets>(['roleSets']).subscribe((teEntRoleSets) => {
       this.label = this.roleSetListService.getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets);
     }))
-
-  }
-
-
-  initState() {
 
   }
 

@@ -1,9 +1,9 @@
-import { Component, OnInit, AfterViewInit, Input, DoCheck, ElementRef, HostBinding, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, DoCheck, ElementRef, HostBinding, ChangeDetectorRef, OnChanges } from '@angular/core';
 
 import { D3Service } from '../../shared/d3.service';
 import { Point } from '../../models/point';
-import { Timeline } from '../../models/timeline';
-import { InfTemporalEntity, TimePrimitive, InfPersistentItem, GregorianDateTime } from 'app/core';
+import { Timeline, TimeLineData } from '../../models/timeline';
+import { TimePrimitive, InfPersistentItem, GregorianDateTime } from 'app/core';
 import { ExistenceTime } from '../../../information/components/existence-time';
 import { TimePrimitiveVisual } from '../../models/time-primitive-visual';
 
@@ -21,7 +21,7 @@ export interface TimelineOptions {
   bracketStrokeWidth: number, // stroke width of left or right brackets of existence time visuals
   bracketWidth: number,
   height?: number, // total height (sum of headerHeight and bodyHeight)
-  bodyHeight?: number, // height of scrollable body (barHeight * temporalEntities.length or bodyMaxHeight)
+  bodyHeight?: number, // height of scrollable body (barHeight * data.rows.length or bodyMaxHeight)
   timeColWidth?: number // width of the column with the timeline 
 }
 
@@ -30,9 +30,9 @@ export interface TimelineOptions {
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.scss']
 })
-export class TimelineComponent implements OnInit, AfterViewInit, DoCheck {
+export class TimelineComponent implements OnChanges, AfterViewInit, DoCheck {
 
-  @Input() persistentItems: InfPersistentItem[];
+  @Input() data: TimeLineData;
 
   @HostBinding('style.width') outerWidth: string = '100%';
 
@@ -54,7 +54,7 @@ export class TimelineComponent implements OnInit, AfterViewInit, DoCheck {
 
 
   get options() {
-    const rowsHeight = this._options.rowHeight * this.persistentItems[0].pi_roles.length + 7;
+    const rowsHeight = this._options.rowHeight * this.data.rows.length + 7;
     this._options.bodyHeight = this._options.bodyMaxHeight < rowsHeight ? this._options.bodyMaxHeight : rowsHeight;
     this._options.height = this._options.headerHeight + this._options.bodyHeight;
 
@@ -67,10 +67,11 @@ export class TimelineComponent implements OnInit, AfterViewInit, DoCheck {
 
   timeline: Timeline;
 
-  ngOnInit() {
+  ngOnChanges() {
+    this.data = this.data ? this.data : { rows: [] };
 
     /** Receiving an initialized timeline from our custom d3 service */
-    this.timeline = this.d3Service.getTimeline(this.persistentItems, this.options);
+    this.timeline = this.d3Service.getTimeline(this.data, this.options);
 
   }
 

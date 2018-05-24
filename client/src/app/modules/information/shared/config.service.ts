@@ -40,6 +40,14 @@ export class ConfigService {
   */
   readonly PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE = [71, 72, 150, 151, 152, 153]
 
+  static PROPERTY_PK_TO_EXISTENCE_TIME_KEY = {
+    71: 'p81',
+    72: 'p82',
+    150: 'p81a',
+    151: 'p81b',
+    152: 'p82a',
+    153: 'p82b'
+  } 
 
   /**
    * Dfh Classes

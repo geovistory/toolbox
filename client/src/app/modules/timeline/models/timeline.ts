@@ -3,8 +3,21 @@ import { Point } from "./point";
 import { TimelineOptions } from "../components/timeline/timeline.component";
 import { XAxisDefinition } from "./x-axis-definition";
 import { ExistenceTime } from "../../information/components/existence-time";
-import { InfPersistentItem, InfTemporalEntity, GregorianDateTime, JulianDateTime } from "../../../core";
+import { InfPersistentItem, GregorianDateTime, JulianDateTime } from "../../../core";
 
+export interface TimeLineRow {
+    label: string;
+    existenceTime: ExistenceTime;
+    // storeConnector: {
+    //     path: string[];
+    //     reducerMethod: Function;
+    //     actions: ? injection needed?
+    // }
+}
+
+export interface TimeLineData {
+    rows: TimeLineRow[]
+}
 
 /**
  * This class generates all data that are needed to create a visual
@@ -14,9 +27,6 @@ export class Timeline {
 
     public ticker: EventEmitter<any> = new EventEmitter();
 
-    public persistentItems: InfPersistentItem[];
-
-    public temporalEntities: InfTemporalEntity[];
 
     /** xAxis fixed top */
     public xAxis: XAxisDefinition;
@@ -35,13 +45,13 @@ export class Timeline {
      * @param timePrimitives the timePrimitives that will be displayed on the timeline
      * @param options options about the outline of the chart
      */
-    constructor(persistentItems: InfPersistentItem[], options: TimelineOptions) {
+    constructor(public data: TimeLineData, options: TimelineOptions) {
 
-        this.initData(persistentItems);
-
+        
+        
         this.options = options;
 
-        if (this.temporalEntities.length > 0) {
+        if (this.data.rows.length > 0) {
 
             // this will also trigger a this.init
             this.zoomToExtent();
@@ -52,25 +62,7 @@ export class Timeline {
 
     }
 
-    /**
-     * Initialize data
-     */
-    initData(persistentItems) {
 
-        this.persistentItems = persistentItems;
-
-        if (persistentItems && persistentItems.length > 0) {
-
-            /** get the first persistent item for now. this is enough for the timeline of one given persitentItem */
-            const persistentItem: InfPersistentItem = persistentItems[0];
-
-            this.temporalEntities = persistentItem.pi_roles.map(role => role.temporal_entity)
-
-        } else {
-            this.temporalEntities = [];
-        }
-
-    }
 
     init(options: TimelineOptions) {
 
@@ -105,7 +97,7 @@ export class Timeline {
 
 
 
-        const tickSize = this.temporalEntities.length * this.options.rowHeight;
+        const tickSize = this.data.rows.length * this.options.rowHeight;
 
         /** xAxis ticks on rows */
         let xAxisOnRows = {
@@ -140,8 +132,8 @@ export class Timeline {
     zoomToExtent() {
 
         const timePrimitives = []
-        this.temporalEntities.forEach((teEnt: any) => {
-            const ext: ExistenceTime = teEnt.existenceTime;
+        this.data.rows.forEach((row: TimeLineRow) => {
+            const ext: ExistenceTime = row.existenceTime;
             const minMaxOfExTime = ext.getMinMaxTimePrimitive();
 
             if (minMaxOfExTime) {

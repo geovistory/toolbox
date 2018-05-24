@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { IRoleState } from '../components/role/role.model';
-import { InfRole, InfEntityProjectRel, InfTemporalEntity, InfPersistentItem } from '../../../core';
+import { InfRole, InfEntityProjectRel, InfTemporalEntity, InfPersistentItem, U, TimePrimitive } from 'app/core';
 import { ITeEntState } from '../components/te-ent/te-ent.model';
-import { IRoleSetState, IRoleStates } from '../components/role-set/role-set.model';
+import { IRoleSetState, IRoleStates, RoleSetState } from '../components/role-set/role-set.model';
 import { IRoleSets } from '../components/role-set-list/role-set-list.model';
 import { IPeItState } from '../containers/pe-it/pe-it.model';
 import { RoleSetService } from './role-set.service';
-import { IExistenceTimeState } from '../components/te-ent-existence-time/te-ent-existence-time.model';
+import { IExistenceTimeState, ExistenceTimeState } from '../components/te-ent-existence-time/te-ent-existence-time.model';
+import { ExistenceTime } from '../components/existence-time';
+import { ConfigService } from './config.service';
 
 @Injectable()
 export class StateToDataService {
@@ -169,4 +171,29 @@ export class StateToDataService {
   static existenceTimeToRolesToRelate(teEntState: IExistenceTimeState, eprOptions?: InfEntityProjectRel): InfRole[] {
     return StateToDataService.roleSetsToRolesToRelate(teEntState.roleSets, eprOptions);
   }
+
+  static existenceTimeStateToExistenceTime(exisTimeState: IExistenceTimeState): ExistenceTime {
+    if (!exisTimeState) return null;
+
+    let et = new ExistenceTime();
+
+    const conf = ConfigService.PROPERTY_PK_TO_EXISTENCE_TIME_KEY;
+
+    if (exisTimeState.roleSets)
+      U.obj2Arr(exisTimeState.roleSets).map((set: IRoleSetState) => {
+        if (set.roleStatesInProject)
+          U.obj2Arr(set.roleStatesInProject).map((sta: IRoleState) => {
+            const pkProp = sta.role.fk_property;
+            const existTimeKey = conf[pkProp];
+            if (existTimeKey) {
+              et[existTimeKey] = U.InfTpAndInfRole2Tp(sta.role.time_primitive, sta.role)
+            }
+          })
+      })
+
+    return et;
+  }
+
+
+
 }

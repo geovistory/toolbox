@@ -1,9 +1,71 @@
 import { ExistenceTime } from "../../../information/components/existence-time";
 import { TimePrimitive } from "app/core";
+import { TimeLineData } from "../../models/timeline";
 
 /**
  * A person (peIt) with two appellation uses (teEnt) that have its existence times 
  */
+
+export const timeLineData: TimeLineData = {
+    rows: [
+        {
+            label: 'Name: Johannes Jacob Meier Langer Name',
+            existenceTime: new ExistenceTime({
+                p82a: new TimePrimitive({
+                    julianDay: 2394000,
+                    duration: '1 year',
+                    calendar: 'julian'
+                }),
+                p81a: new TimePrimitive({
+                    julianDay: 2394100,
+                    duration: '1 month',
+                    calendar: 'julian'
+                }),
+                p81b: new TimePrimitive({
+                    julianDay: 2394700,
+                    duration: '1 day',
+                    calendar: 'julian'
+                }),
+                p82b: new TimePrimitive({
+                    julianDay: 2394770,
+                    duration: '1 month',
+                    calendar: 'julian'
+                })
+            })
+        },
+        {
+            label: 'Name: Hans Meier',
+            existenceTime: new ExistenceTime({
+                p81a: new TimePrimitive({
+                    julianDay: 2395632,
+                    duration: '1 day',
+                    calendar: 'julian'
+                }),
+                p81b: new TimePrimitive({
+                    julianDay: 2395932,
+                    duration: '1 month',
+                    calendar: 'gregorian'
+                }),
+            })
+        },
+        {
+            label: 'Erwerb: Titel',
+            existenceTime: new ExistenceTime({
+                p81a: new TimePrimitive({
+                    julianDay: 2395642,
+                    duration: '1 day',
+                    calendar: 'julian'
+                }),
+                p81b: new TimePrimitive({
+                    julianDay: 2395982,
+                    duration: '1 month',
+                    calendar: 'gregorian'
+                }),
+            })
+        }
+    ]
+}
+
 export const personPeIts = [
     {
         "fk_class": 1,
@@ -84,7 +146,7 @@ export const personPeIts = [
                         }
                     ],
                     label: 'Name: Johannes Jacob Meier Langer Name',
-                    "existenceTime": new ExistenceTime({
+                    existenceTime: new ExistenceTime({
                         p82a: new TimePrimitive({
                             julianDay: 2394000,
                             duration: '1 year',

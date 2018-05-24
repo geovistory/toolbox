@@ -1,13 +1,17 @@
 /**
- * This Component takes a persistent item and prepares the data for
- * its display in the timeline. The component is a bridge between
+ * This Component listenes for changes in the store and retrieves data
+ * for display in the timeline. The component is a bridge between
  * the information module and the timeline module.
  */
 
 import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
-import { InfPersistentItem, InfTemporalEntity } from '../../../../core';
-import { TeEntService } from '../../shared/te-ent.service';
-import { Observable } from 'rxjs/Observable';
+import { NgRedux } from '@angular-redux/store';
+import { IRoleSets } from '../role-set-list/role-set-list.model';
+import { IRoleSetState } from '../role-set/role-set.model';
+import { IRoleState } from '../role/role.model';
+import { TimeLineData } from '../../../timeline/models/timeline';
+import { StateToDataService } from '../../shared/state-to-data.service';
+import { U } from 'app/core';
 
 @Component({
   selector: 'gv-pe-it-timeline',
@@ -16,75 +20,50 @@ import { Observable } from 'rxjs/Observable';
 })
 export class PeItTimelineComponent implements OnInit {
 
-  @Input() peIt$: Observable<InfPersistentItem>;
+  @Input() path: string[];
 
-  // true after successfully creating Timeline Data 
-  timeLinePeIts;
+  timeLineData: TimeLineData;
 
   constructor(
-    private teEntService: TeEntService
-  ) { 
-    this.timeLinePeIts = [];
+    private ngRedux: NgRedux<IRoleSets>
+  ) {
   }
 
   ngOnInit() {
-    this.peIt$.subscribe(peIt => {
-      this.createTimelineData(peIt)   
-    });
+
+
+    // subscribe to RoleSets
+    this.ngRedux.select<IRoleSets>([...this.path, 'roleSets']).subscribe(roleSets => {
+      this.timeLineData = {
+        rows: []
+      }
+
+      U.obj2Arr(roleSets).forEach((set: IRoleSetState) => {
+        // get all TeEntStates
+
+        U.obj2Arr(set.roleStatesInProject).forEach((roleS: IRoleState) => {
+
+          // create a TimeLineRow for each TeEntState
+          this.timeLineData.rows.push({
+            existenceTime: StateToDataService.existenceTimeStateToExistenceTime(roleS.childTeEnt.existenceTimeState),
+            label: roleS.childTeEnt.label ? roleS.childTeEnt.label : ''
+          })
+
+        })
+      })
+
+
+
+    })
+
+
   }
 
 
   /** 
-   * filters out all roles of temporal entities, that are not
-   * related to the existence time of the temporal entity.
-   * Keeps only p81, p82, … .
    */
   createTimelineData(peIt) {
 
-    let newPeIt = {}
-
-    //clone the peIt
-    Object.assign(newPeIt, peIt);
-
-    const makeNewRole = async (teEnt, newRole) => {
-
-      await new Promise((resolve)=>{
-        this.teEntService.buildExistenceTime(teEnt).subscribe(existenceTime => {
-          newRole.temporal_entity.existenceTime = existenceTime;
-          newRole.temporal_entity.label = 'Test'
-          resolve();
-        })
-      })
-
-      return newRole;
-    }
-
-    // iterate over all roles of the peIt
-    const waitForRoles = peIt.pi_roles.map(async (pi_role) => {
-
-      let newRole = {
-        temporal_entity: {
-          existenceTime: {},
-          label: ''
-        }
-      };
- 
-      // clone the role object
-      Object.assign(newRole, pi_role);
-
-      // get the temporal entity of the role
-      const teEnt = pi_role.temporal_entity instanceof InfTemporalEntity ?
-        pi_role.temporal_entity : new InfTemporalEntity(pi_role.temporal_entity);
-
-      // create the existence time object and append it to the new Eole
-      return makeNewRole(teEnt, newRole);
-
-    })
-
-    Promise.all(waitForRoles).then((newRoles) => {
-      newPeIt['pi_roles'] = newRoles;
-      this.timeLinePeIts = [newPeIt];
-    })
 
   }
 
