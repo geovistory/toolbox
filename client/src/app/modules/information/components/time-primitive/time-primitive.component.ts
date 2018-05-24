@@ -5,7 +5,6 @@ import { InfTimePrimitive, TimePrimitive, InfRole, InfEntityProjectRel } from 'a
 import { NgRedux } from '@angular-redux/store';
 import { ITimePrimitiveState } from './time-primitive.model';
 import { EditorStates } from '../../information.models';
-import { ConfigService } from '../../shared/config.service';
 import { CalendarType } from '../../../../core/date-time/time-primitive';
 import { IRoleState } from '../role/role.model';
 import { pick } from 'ramda';

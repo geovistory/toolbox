@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { ExistenceTime } from '../components/existence-time';
 import { InfTemporalEntity, ActiveProjectService, InfRole, DfhProperty, InfTemporalEntityApi, TimePrimitive, InfTimePrimitive, InfEntityProjectRel, InfAppellation } from 'app/core';
-import { ConfigService } from './config.service';
+import { DfhConfig } from './dfh-config';
 import { PropertyService } from './property.service';
 import { EditorStates } from '../information.models';
 import { BehaviorSubject } from 'rxjs';
@@ -18,11 +18,9 @@ export class TeEntService {
 
   constructor(
     private activeProject: ActiveProjectService,
-    private config: ConfigService,
     private propertyService: PropertyService,
     private teEntApi: InfTemporalEntityApi,
     private classService: ClassService,
-    private dfhConfig: ConfigService
   ) { }
 
   /**
@@ -30,7 +28,7 @@ export class TeEntService {
    * that have TimePrimitive as range
    */
   relevantProperties(): Observable<DfhProperty[]> {
-    const rangeClassPk = this.config.timePrimitiveClass;
+    const rangeClassPk = DfhConfig.timePrimitiveClass;
     return this.propertyService.getPropertyByFkRangeClass(rangeClassPk)
   }
 
@@ -55,7 +53,7 @@ export class TeEntService {
         teEnt.te_roles = [];
 
         // add roles and time primitives
-        const keys = Object.keys(this.config.existenceTimeToFk)
+        const keys = Object.keys(DfhConfig.existenceTimeToFk)
         for (const key in newExistenceTime) {
           if (newExistenceTime.hasOwnProperty(key) && keys.includes(key)) {
             const timePrimitive: TimePrimitive = newExistenceTime[key];
@@ -63,12 +61,12 @@ export class TeEntService {
             const infTimePrimitive = new InfTimePrimitive({
               julian_day: timePrimitive.julianDay,
               duration: timePrimitive.duration,
-              fk_class: this.config.timePrimitiveClass
+              fk_class: DfhConfig.timePrimitiveClass
             });
 
             let role = new InfRole();
             role.fk_temporal_entity = teEnt.pk_entity;
-            role.fk_property = this.config.existenceTimeToFk[key];
+            role.fk_property = DfhConfig.existenceTimeToFk[key];
             role.time_primitive = infTimePrimitive;
 
             // add calendar info to epr to role
@@ -198,8 +196,8 @@ export class TeEntService {
 
     // switch keys and vals
     let keyByPk = {};
-    for (let key in this.config.existenceTimeToFk) {
-      let value = this.config.existenceTimeToFk[key];
+    for (let key in DfhConfig.existenceTimeToFk) {
+      let value = DfhConfig.existenceTimeToFk[key];
       keyByPk[value] = key;
     }
 

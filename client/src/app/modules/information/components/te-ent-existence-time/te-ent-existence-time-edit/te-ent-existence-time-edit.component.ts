@@ -6,7 +6,7 @@ import { IExistenceTimeState } from '../te-ent-existence-time.model';
 import { NgRedux, WithSubStore } from '@angular-redux/store';
 import { ExistenceTimeActions } from '../te-ent-existence-time.actions';
 import { StateCreatorService } from '../../../shared/state-creator.service';
-import { ConfigService } from '../../../shared/config.service';
+import { DfhConfig } from '../../../shared/dfh-config';
 import { FormBuilder, NG_VALUE_ACCESSOR, FormGroup, FormControl, Validators } from '@angular/forms';
 import { slideInOut } from '../../../shared/animations';
 import { ITeEntState } from '../../te-ent/te-ent.model';
@@ -52,7 +52,6 @@ export class TeEntExistenceTimeEditComponent extends TeEntExistenceTimeComponent
     protected ngRedux: NgRedux<IExistenceTimeState>,
     protected actions: ExistenceTimeActions,
     protected stateCreator: StateCreatorService,
-    protected configService: ConfigService,
     protected teEntApi: InfTemporalEntityApi,
     protected fb: FormBuilder
   ) {
@@ -143,7 +142,7 @@ export class TeEntExistenceTimeEditComponent extends TeEntExistenceTimeComponent
 
     const role = new InfRole();
     role.time_primitive = new InfTimePrimitive();
-    role.time_primitive.fk_class = this.configService.CLASS_PK_TIME_PRIMITIVE;
+    role.time_primitive.fk_class = DfhConfig.CLASS_PK_TIME_PRIMITIVE;
     role.fk_property = roleSetTemplate.property.dfh_pk_property
 
     // update the state

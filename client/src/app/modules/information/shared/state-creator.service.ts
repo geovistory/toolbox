@@ -18,12 +18,13 @@ import { TeEntState, ITeEntState } from '../components/te-ent/te-ent.model';
 import { PeItService } from './pe-it.service';
 import { Subject } from 'rxjs/Subject';
 import { RoleSetService } from './role-set.service';
-import { ConfigService } from './config.service';
+import { DfhConfig } from './dfh-config';
 import { IAppellationState, AppellationState } from '../components/appellation/appellation.model';
 import { AppellationLabel } from './appellation-label/appellation-label';
 import { ILanguageState, LanguageState } from '../components/language/language.model';
 import { IExistenceTimeState, ExistenceTimeState } from '../components/te-ent-existence-time/te-ent-existence-time.model';
 import { TimePrimitiveState } from '../components/time-primitive/time-primitive.model';
+import { StateToDataService } from './state-to-data.service';
 
 
 @Injectable()
@@ -35,7 +36,6 @@ export class StateCreatorService {
     private classService: ClassService,
     private propertyService: PropertyService,
     private peItService: PeItService,
-    private configService: ConfigService
   ) { }
 
 
@@ -56,10 +56,10 @@ export class StateCreatorService {
     let appellation = new InfAppellation;
     if (labelString) appellation.appellation_label = new AppellationLabel(null, labelString)
 
-    roleToAppeUse.fk_property = this.configService.PROPERTY_PK_R63_NAMES;
-    appeUse.fk_class = this.configService.CLASS_PK_APPELLATION_USE;
-    roleToAppellation.fk_property = this.configService.PROPERTY_PK_R64_USED_NAME;
-    appellation.fk_class = this.configService.CLASS_PK_APPELLATION;
+    roleToAppeUse.fk_property = DfhConfig.PROPERTY_PK_R63_NAMES;
+    appeUse.fk_class = DfhConfig.CLASS_PK_APPELLATION_USE;
+    roleToAppellation.fk_property = DfhConfig.PROPERTY_PK_R64_USED_NAME;
+    appellation.fk_class = DfhConfig.CLASS_PK_APPELLATION;
 
     peIt.fk_class = fkClass;
     peIt.pi_roles = [roleToAppeUse];
@@ -131,7 +131,8 @@ export class StateCreatorService {
             dfhClass,
             roleSets,
             ingoingRoleSets,
-            outgoingRoleSets
+            outgoingRoleSets,
+            label: StateToDataService.getDisplayAppeLabelOfPeItRoleSets(roleSets)
           })
 
           subject.next(peItState);
@@ -378,7 +379,7 @@ export class StateCreatorService {
 
     /** If role leads to Appe */
     // else if (role.appellation && Object.keys(role.appellation).length){
-    else if (role.fk_property == this.configService.PROPERTY_PK_R64_USED_NAME && isOutgoing) {
+    else if (role.fk_property == DfhConfig.PROPERTY_PK_R64_USED_NAME && isOutgoing) {
       this.initializeAppeState(role.appellation, state).subscribe(appeState => {
         roleState.appeState = appeState;
         subject.next(roleState);
@@ -387,7 +388,7 @@ export class StateCreatorService {
 
     /** If role leads to Language */
     // else if (role.appellation && Object.keys(role.appellation).length){
-    else if (role.fk_property == this.configService.PROPERTY_PK_R61_USED_LANGUAGE && isOutgoing) {
+    else if (role.fk_property == DfhConfig.PROPERTY_PK_R61_USED_LANGUAGE && isOutgoing) {
       this.initializeLangState(role.language, state).subscribe(langState => {
         roleState.langState = langState;
         subject.next(roleState);
@@ -395,7 +396,7 @@ export class StateCreatorService {
     }
 
     /** If role leads to TimePrimitive */
-    else if (this.configService.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.indexOf(role.fk_property) > -1 && isOutgoing === false) {
+    else if (DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.indexOf(role.fk_property) > -1 && isOutgoing === false) {
       this.initializeTimePrimitiveState(role.time_primitive, state).subscribe(timePrimitiveState => {
         roleState.timePrimitiveState = timePrimitiveState;
         subject.next(roleState);
@@ -462,7 +463,8 @@ export class StateCreatorService {
           roleSets,
           existenceTimeState,
           ingoingRoleSets,
-          outgoingRoleSets
+          outgoingRoleSets,
+          label: StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(roleSets)
         })
 
         subject.next(teEntState);
@@ -477,7 +479,7 @@ export class StateCreatorService {
     const subject = new ReplaySubject();
 
     // get all InfProperties leading to a timePrimitive
-    this.classService.getIngoingProperties(this.configService.CLASS_PK_TIME_PRIMITIVE).subscribe(ingoingProperties => {
+    this.classService.getIngoingProperties(DfhConfig.CLASS_PK_TIME_PRIMITIVE).subscribe(ingoingProperties => {
 
       // Generate RoleSets
       const ingoingRoleSets = this.propertyService.toRoleSets(false, ingoingProperties)

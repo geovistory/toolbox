@@ -36,7 +36,7 @@ import { PeItService } from '../../shared/pe-it.service';
 import { ActivePeItService } from '../../shared/active-pe-it.service';
 import { EprService } from '../../shared/epr.service';
 import { RoleSetListService } from '../../shared/role-set-list.service';
-import { ConfigService } from '../../shared/config.service';
+import { DfhConfig } from '../../shared/dfh-config';
 
 
 
@@ -73,7 +73,7 @@ export default sandboxOf(ExistenceTimeComponent, {
     ActivePeItService,
     EprService,
     RoleSetListService,
-    ConfigService,
+    DfhConfig,
 
   ]
 })

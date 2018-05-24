@@ -34,6 +34,7 @@ import { TeEntActions } from './te-ent.actions';
 import { IRoleState } from '../role/role.model';
 import { RoleSetListService } from '../../shared/role-set-list.service';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { StateToDataService } from '../../shared/state-to-data.service';
 
 
 @AutoUnsubscribe()
@@ -257,7 +258,6 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
     this.ngRedux.select<IRoleState>(this.parentPath).subscribe(d => this.parentRoleState = d)
     this.subs.push(this.localStore.select<ITeEntState>('').subscribe(d => {
       this.teEnState = d
-      console.log(JSON.stringify(d))
     }))
 
 
@@ -266,7 +266,11 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
     * @param teEntRoleSets {key: obj<IRoleSetState>}
     */
     this.subs.push(this.localStore.select<IRoleSets>(['roleSets']).subscribe((teEntRoleSets) => {
-      this.label = this.roleSetListService.getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets);
+      this.label = StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets);
+
+      if (this.teEnState.label !== this.label)
+        this.localStore.dispatch(this.actions.roleSetsListDisplayLabelUpdated(this.label))
+
     }))
 
   }

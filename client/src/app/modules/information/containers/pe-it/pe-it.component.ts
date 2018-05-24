@@ -30,6 +30,7 @@ import { IRoleState } from '../../components/role/role.model';
 import { RoleSetListService } from '../../shared/role-set-list.service';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { TeEntService } from '../../shared/te-ent.service';
+import { StateToDataService } from '../../shared/state-to-data.service';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -108,7 +109,7 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
     this.formGroup = this.fb.group({})
 
     // subscribe to form changes here
-    this.subs.push( this.formGroup.valueChanges.subscribe(val => {
+    this.subs.push(this.formGroup.valueChanges.subscribe(val => {
 
       // build a peIt with all pi_roles given by the form's controls 
       let peIt = new InfPersistentItem(this.peItState.peIt);
@@ -120,7 +121,7 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
       })
 
       // try to retrieve a appellation label
-      const displayAppeUse:InfTemporalEntity = this.peItService.getDisplayAppeLabelOfPeIt(peIt) 
+      const displayAppeUse: InfTemporalEntity = this.peItService.getDisplayAppeLabelOfPeIt(peIt)
       this.labelInEdit = this.teEntService.getDisplayAppeLabelOfTeEnt(displayAppeUse);
 
       if (this.formGroup.valid) {
@@ -269,15 +270,16 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
 
 
   initPeItSubscriptions() {
-    this.subs.push( this.localStore.select<IPeItState>('').subscribe(d => this.peItState = d))
+    this.subs.push(this.localStore.select<IPeItState>('').subscribe(d => this.peItState = d))
 
     /**
      * gets the Temporal Entity of type AppellationUseForLanguage that is for display for this peIt in this project
      */
-    this.subs.push( this.localStore.select<IRoleSets>('roleSets').subscribe((peItRoleSets) => {
-      this.label = this.roleSetListService.getDisplayAppeLabelOfPeItRoleSets(peItRoleSets);
-      // if (this.label)
-      //   this.localStore.dispatch(this.actions.roleSetsListDisplayLabelUpdated(this.label))
+    this.subs.push(this.localStore.select<IRoleSets>('roleSets').subscribe((peItRoleSets) => {
+      this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(peItRoleSets);
+
+      if (this.peItState.label !== this.label)
+        this.localStore.dispatch(this.actions.roleSetsListDisplayLabelUpdated(this.label))
     }))
 
 
@@ -290,7 +292,7 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
     const onDone: BehaviorSubject<InfPersistentItem> = new BehaviorSubject(null)
 
     this.startLoading();
-    this.subs.push( this.pkEntity$.subscribe(pkEntity => {
+    this.subs.push(this.pkEntity$.subscribe(pkEntity => {
 
       this.peItApi.nestedObjectOfRepo(pkEntity).subscribe(
         (peIts: InfPersistentItem[]) => {
@@ -315,7 +317,7 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
 
     this.startLoading();
 
-    this.subs.push( Observable.zip(this.ngRedux.select<Project>('activeProject'), this.pkEntity$)
+    this.subs.push(Observable.zip(this.ngRedux.select<Project>('activeProject'), this.pkEntity$)
       .subscribe(result => {
         const project = result[0], pkEntity = result[1];
         if (project && pkEntity)

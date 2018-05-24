@@ -6,7 +6,7 @@ import { PropertyService } from './property.service';
 import { Observable } from 'rxjs/Observable';
 import { IRoleSets } from '../components/role-set-list/role-set-list.model';
 import { IRoleSetState, RoleSetState } from '../components/role-set/role-set.model';
-import { ConfigService } from './config.service';
+import { DfhConfig } from './dfh-config';
 import { AppellationLabel } from './appellation-label/appellation-label';
 import { IRoleState, RoleState } from '../components/role/role.model';
 import { RoleSetService } from './role-set.service';
@@ -14,6 +14,7 @@ import { InfRole } from 'app/core';
 import { roleStateKey } from '../components/role-set/role-set.actions';
 import { indexBy, groupBy, prop } from 'ramda';
 import { roleSetKey } from '../components/role-set-list/role-set-list-actions';
+import { StateToDataService } from './state-to-data.service';
 
 @Injectable()
 export class RoleSetListService {
@@ -21,7 +22,6 @@ export class RoleSetListService {
   constructor(
     private classService: ClassService,
     private propertyService: PropertyService,
-    private dfhConfig: ConfigService,
     private roleService: RoleService
   ) { }
 
@@ -58,63 +58,6 @@ export class RoleSetListService {
 
 
     return subject;
-  }
-
-
-
-
-  /**
- * Returns the Appellation Label String that is for display in this project, from the given teEnt roleSets
- * @param teEntRoleSets 
- * @returns appellation label as pure string
- */
-  getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets: IRoleSets): string {
-    if (!teEntRoleSets) return null
-
-    const detailedNames: IRoleSetState = teEntRoleSets['_' + this.dfhConfig.PROPERTY_PK_R64_USED_NAME + '_outgoing'];
-    if (detailedNames) {
-      const roleStates = RoleSetService.getRoleStatesContainerForState(detailedNames)
-      for (const key in roleStates) {
-        if (roleStates.hasOwnProperty(key)) {
-          const r: IRoleState = roleStates[key];
-
-          //TODO Add this if clause as soon as we have DisplayRoleForDomain in the db
-          // if ((r.isOutgoing && r.isDisplayRoleForRange) || (!r.isOutgoing && r.isDisplayRoleForDomain)) {
-          if (r.role && r.role.appellation && r.role.appellation.appellation_label) {
-            return new AppellationLabel(r.role.appellation.appellation_label).getString();
-          }
-          // }
-
-        }
-      }
-
-      return null;
-    }
-  }
-
-
-
-  getDisplayAppeLabelOfPeItRoleSets(peItRoleSets: IRoleSets): string {
-    if (!peItRoleSets) return null
-
-    // get ingoing roles pointing to appellation usage (R63)
-    const names: RoleSetState = peItRoleSets['_1_ingoing'];
-    if (names) {
-      const roleStates = RoleSetService.getRoleStatesContainerForState(names)
-      for (const key in roleStates) {
-        if (roleStates.hasOwnProperty(key)) {
-          const r: IRoleState = roleStates[key];
-          if ((!r.isOutgoing && r.isDisplayRoleForRange) || (r.isOutgoing && r.isDisplayRoleForDomain)) {
-            if (r.childTeEnt && r.childTeEnt.roleSets){
-              var label = this.getDisplayAppeLabelOfTeEntRoleSets(r.childTeEnt.roleSets);
-              console.log(label)
-              return label;
-            }
-          }
-        }
-      }
-    }
-    return null;
   }
 
 }

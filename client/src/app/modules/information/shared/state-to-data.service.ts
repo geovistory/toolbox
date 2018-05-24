@@ -8,7 +8,8 @@ import { IPeItState } from '../containers/pe-it/pe-it.model';
 import { RoleSetService } from './role-set.service';
 import { IExistenceTimeState, ExistenceTimeState } from '../components/te-ent-existence-time/te-ent-existence-time.model';
 import { ExistenceTime } from '../components/existence-time';
-import { ConfigService } from './config.service';
+import { DfhConfig } from './dfh-config';
+import { AppellationLabel } from './appellation-label/appellation-label';
 
 @Injectable()
 export class StateToDataService {
@@ -172,12 +173,16 @@ export class StateToDataService {
     return StateToDataService.roleSetsToRolesToRelate(teEntState.roleSets, eprOptions);
   }
 
+  /**
+   * Convert IExistenceTimeState to ExistenceTime
+   * @param exisTimeState 
+   */
   static existenceTimeStateToExistenceTime(exisTimeState: IExistenceTimeState): ExistenceTime {
     if (!exisTimeState) return null;
 
     let et = new ExistenceTime();
 
-    const conf = ConfigService.PROPERTY_PK_TO_EXISTENCE_TIME_KEY;
+    const conf = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY;
 
     if (exisTimeState.roleSets)
       U.obj2Arr(exisTimeState.roleSets).map((set: IRoleSetState) => {
@@ -192,6 +197,66 @@ export class StateToDataService {
       })
 
     return et;
+  }
+
+  /**
+   * Extracts Appellation Label string from the given TeEnt-RoleSets
+   * 
+   * @param teEntRoleSets 
+   * @returns appellation label as pure string
+   */
+  static getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets: IRoleSets): string {
+    if (!teEntRoleSets) return null
+
+    const detailedNames: IRoleSetState = teEntRoleSets['_' + DfhConfig.PROPERTY_PK_R64_USED_NAME + '_outgoing'];
+    if (detailedNames) {
+      const roleStates = RoleSetService.getRoleStatesContainerForState(detailedNames)
+      for (const key in roleStates) {
+        if (roleStates.hasOwnProperty(key)) {
+          const r: IRoleState = roleStates[key];
+
+          //TODO Add this if clause as soon as we have DisplayRoleForDomain in the db
+          // if ((r.isOutgoing && r.isDisplayRoleForRange) || (!r.isOutgoing && r.isDisplayRoleForDomain)) {
+          if (r.role && r.role.appellation && r.role.appellation.appellation_label) {
+            return new AppellationLabel(r.role.appellation.appellation_label).getString();
+          }
+          // }
+
+        }
+      }
+
+      return null;
+    }
+  }
+
+
+
+  /**
+   * Extracts Appellation Label string from the given PeIt-RoleSets
+   * @param teEntRoleSets 
+   * @returns appellation label as pure string
+   */
+ static getDisplayAppeLabelOfPeItRoleSets(peItRoleSets: IRoleSets): string {
+    if (!peItRoleSets) return null
+
+    // get ingoing roles pointing to appellation usage (R63)
+    const names: RoleSetState = peItRoleSets['_1_ingoing'];
+    if (names) {
+      const roleStates = RoleSetService.getRoleStatesContainerForState(names)
+      for (const key in roleStates) {
+        if (roleStates.hasOwnProperty(key)) {
+          const r: IRoleState = roleStates[key];
+          if ((!r.isOutgoing && r.isDisplayRoleForRange) || (r.isOutgoing && r.isDisplayRoleForDomain)) {
+            if (r.childTeEnt && r.childTeEnt.roleSets){
+              var label = StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(r.childTeEnt.roleSets);
+              console.log(label)
+              return label;
+            }
+          }
+        }
+      }
+    }
+    return null;
   }
 
 

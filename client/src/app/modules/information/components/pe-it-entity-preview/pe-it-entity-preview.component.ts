@@ -26,6 +26,7 @@ import { StateCreatorService } from '../../shared/state-creator.service';
 import { Subscription } from 'rxjs';
 import { IRoleState } from '../role/role.model';
 import { pick } from 'ramda';
+import { StateToDataService } from '../../shared/state-to-data.service';
 
 @AutoUnsubscribe()
 @Component({
@@ -81,7 +82,6 @@ export class PeItEntityPreviewComponent implements OnInit, OnDestroy, ControlVal
     private ngRedux: NgRedux<IPeItState>,
     private modalService: NgbModal,
     private fb: FormBuilder,
-    private roleSetListService: RoleSetListService,
     private stateCreator: StateCreatorService,
     private ref: ChangeDetectorRef
   ) {
@@ -94,7 +94,7 @@ export class PeItEntityPreviewComponent implements OnInit, OnDestroy, ControlVal
     this.subs.push(this.ngRedux.select<IPeItState>(this.basePath).subscribe(d => {
       this.peItState = d;
       if (d)
-        this.label = this.roleSetListService.getDisplayAppeLabelOfPeItRoleSets(d.roleSets);
+        this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(d.roleSets);
     }))
 
     this.subs.push(this.ngRedux.select<IRoleState>(this.parentPath).subscribe(d => {
@@ -127,7 +127,7 @@ export class PeItEntityPreviewComponent implements OnInit, OnDestroy, ControlVal
     this.isSelected = true
 
     this.subs.push(this.stateCreator.initializePeItState(pkEntity, this.pkProject, 'view').subscribe(peItState => {
-      this.label = this.roleSetListService.getDisplayAppeLabelOfPeItRoleSets(peItState.roleSets);
+      this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(peItState.roleSets);
       this.ref.detectChanges()
     }))
 

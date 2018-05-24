@@ -14,7 +14,7 @@ import { roleSetKey } from '../components/role-set-list/role-set-list-actions';
 import { EprService } from './epr.service';
 import { ReplaySubject } from 'rxjs';
 import { TeEntService } from './te-ent.service';
-import { ConfigService } from './config.service';
+import { DfhConfig } from './dfh-config';
 
 
 @Injectable()
@@ -31,7 +31,6 @@ export class PeItService {
     private classService: ClassService,
     private eprService: EprService,
     private roleSetListService: RoleSetListService,
-    private dfhConfig: ConfigService
   ) {
 
   }
@@ -104,7 +103,7 @@ export class PeItService {
         role.entity_version_project_rels[0].is_standard_in_project &&
 
         // TODO this could be passed in by methods parameter 
-        role.fk_property == this.dfhConfig.PROPERTY_PK_R63_NAMES
+        role.fk_property == DfhConfig.PROPERTY_PK_R63_NAMES
       ))
 
     return rolesToAppeUse.length ? new InfTemporalEntity(rolesToAppeUse[0].temporal_entity) : null;

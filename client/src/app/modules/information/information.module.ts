@@ -62,7 +62,6 @@ import { RoleService } from './shared/role.service';
 import { EprService } from './shared/epr.service';
 import { AppellationService } from './shared/appellation.service';
 import { TeEntService } from './shared/te-ent.service';
-import { ConfigService } from './shared/config.service';
 import { TimelineModule } from '../timeline/timeline.module';
 import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timeline.component';
 import { EntityEditorComponent } from './containers/entity-editor/entity.editor.component';
@@ -173,7 +172,6 @@ import { TeEntExistenceTimeAddComponent } from './components/te-ent-existence-ti
     ValidationService,
     EprService,
     AppellationService,
-    ConfigService,
     RoleSetListService,
     RoleSetService,
     PeItActions,

@@ -45,7 +45,7 @@ import { PropertyPipe } from '../../shared/property.pipe';
 import { TeEntExistenceTimeComponent } from '../te-ent-existence-time/te-ent-existence-time.component';
 import { LanguageSearchTypeaheadComponent } from 'app/shared/components/language-search-typeahead/language-search-typeahead.component';
 import { TeEntService } from '../../shared/te-ent.service';
-import { ConfigService } from '../../shared/config.service';
+import { DfhConfig } from '../../shared/dfh-config';
 import { PeItComponent } from '../../containers/pe-it/pe-it.component';
 
 
@@ -93,7 +93,7 @@ export default sandboxOf(TeEntComponent, {
     ActivePeItService,
     PropertyPipe,
     TeEntService,
-    ConfigService
+    DfhConfig
   ]
 })
   .add('State: Edit – birth with project calendar info', {
