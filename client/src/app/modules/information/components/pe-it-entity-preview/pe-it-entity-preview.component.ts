@@ -166,6 +166,7 @@ export class PeItEntityPreviewComponent implements OnInit, OnDestroy, ControlVal
 
     modalRef.componentInstance.isInProject = (this.peItState.peIt.entity_version_project_rels && this.peItState.peIt.entity_version_project_rels.length)
     modalRef.componentInstance.parentPath = this.parentPath;
+    modalRef.componentInstance.peItState = this.peItState;
 
     modalRef.result
       .then(() => { open() })

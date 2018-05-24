@@ -267,8 +267,10 @@ export class TeEntComponent extends RoleSetListComponent implements OnInit, Cont
     */
     this.subs.push(this.localStore.select<IRoleSets>(['roleSets']).subscribe((teEntRoleSets) => {
       this.label = StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets);
+      const oldLabel = (this.teEnState && this.teEnState.label) ? this.teEnState.label : undefined;
 
-      if (this.teEnState.label !== this.label)
+      // update store
+      if (oldLabel !== this.label)
         this.localStore.dispatch(this.actions.roleSetsListDisplayLabelUpdated(this.label))
 
     }))

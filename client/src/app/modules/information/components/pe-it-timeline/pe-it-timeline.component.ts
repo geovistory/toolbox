@@ -40,13 +40,14 @@ export class PeItTimelineComponent implements OnInit {
 
       U.obj2Arr(roleSets).forEach((set: IRoleSetState) => {
         // get all TeEntStates
+        const setLabel = set.label.default;
 
         U.obj2Arr(set.roleStatesInProject).forEach((roleS: IRoleState) => {
 
           // create a TimeLineRow for each TeEntState
           this.timeLineData.rows.push({
             existenceTime: StateToDataService.existenceTimeStateToExistenceTime(roleS.childTeEnt.existenceTimeState),
-            label: roleS.childTeEnt.label ? roleS.childTeEnt.label : ''
+            label: setLabel + (roleS.childTeEnt.label ? ': ' + roleS.childTeEnt.label : '')
           })
 
         })

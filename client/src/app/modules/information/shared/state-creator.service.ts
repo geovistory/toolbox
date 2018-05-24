@@ -289,9 +289,9 @@ export class StateCreatorService {
             iRoleState.roleStatesInProject = roleStates;
             break;
 
-          case 'create-pe-it-role':
-            iRoleState.roleStatesInProject = roleStates;
-            break;
+          // case 'create-pe-it-role':
+          //   iRoleState.roleStatesInProject = roleStates;
+          //   break;
 
           case 'view':
             iRoleState.roleStatesInProject = roleStates;

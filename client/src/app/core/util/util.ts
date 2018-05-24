@@ -11,9 +11,14 @@ export class U {
 
     static obj2Arr(obj: { [key: string]: any }): any[] {
         let arr = [];
+
+        if (obj == undefined) return arr;
+
         Object.keys(obj).forEach(key => {
             arr.push(obj[key]);
         })
+
+
         return arr;
     }
 
@@ -57,7 +62,7 @@ export class U {
     }
 
 
-    
+
 
 
 }

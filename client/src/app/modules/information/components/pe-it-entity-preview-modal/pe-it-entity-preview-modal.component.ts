@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { InfPersistentItem, InfPersistentItemApi, ActiveProjectService } from 'app/core';
+import { StateToDataService } from '../../shared/state-to-data.service';
+import { IPeItState } from '../../containers/pe-it/pe-it.model';
 
 
 @Component({
@@ -13,10 +15,7 @@ export class PeItEntityPreviewModalComponent implements OnInit {
 
   @Input() parentPath: string[];
   @Input() isInProject:boolean;
-
-  isReadyToAdd: boolean;
-  peIt:InfPersistentItem;
-  peItToAdd:InfPersistentItem;
+  @Input() peItState:IPeItState;
 
   constructor(
     public modal: NgbActiveModal,
@@ -29,16 +28,12 @@ export class PeItEntityPreviewModalComponent implements OnInit {
 
   }
 
-  onPeItReadyToAdd(peIt:InfPersistentItem) {
-    this.peItToAdd = peIt;
-    this.isReadyToAdd = true;
-  }
 
   addAndOpen(){
     this.peItApi.changePeItProjectRelation(
       this.activeProjectService.project.pk_project,
       true,
-      this.peItToAdd
+      StateToDataService.peItStateToPeItToRelate(this.peItState)
     ).subscribe(peIts=>{
       this.modal.close();
     })

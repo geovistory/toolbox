@@ -277,8 +277,10 @@ export class PeItComponent extends RoleSetListComponent implements OnInit, Contr
      */
     this.subs.push(this.localStore.select<IRoleSets>('roleSets').subscribe((peItRoleSets) => {
       this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(peItRoleSets);
+      const oldLabel = (this.peItState && this.peItState.label) ? this.peItState.label : undefined;
 
-      if (this.peItState.label !== this.label)
+      // update store
+      if (oldLabel !== this.label)
         this.localStore.dispatch(this.actions.roleSetsListDisplayLabelUpdated(this.label))
     }))
 

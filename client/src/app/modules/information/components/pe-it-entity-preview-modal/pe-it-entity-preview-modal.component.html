@@ -9,17 +9,9 @@
 </div>
 <ng2-slim-loading-bar color="inherit"></ng2-slim-loading-bar>
 
-<div class="modal-body" *ngIf="!isInProject">
-
-  <!-- <gv-pe-it [pkEntity]="pkEntity" [peItState]="'add-pe-it'"
-  (peItReadyToAdd)="onPeItReadyToAdd($event)"
-  (peItNotReadyToAdd)="onPeItNotReadyToAdd()"
-  ></gv-pe-it> -->
-
-</div>
+<div class="modal-body">
 
 
-<div class="modal-body" *ngIf="isInProject">
   <gv-pe-it [parentPath]="parentPath"></gv-pe-it>
 </div>
 
@@ -31,8 +23,8 @@
     <button class="btn btn-link btn" (click)="modal.dismiss('Cancel click')">
       Cancel
     </button>
-    <button type="button" class="btn btn-primary btn" (click)="addAndOpen()" *ngIf="isReadyToAdd && !isInProject">
-      Add and Open {{stdAppe}}
+    <button type="button" class="btn btn-primary btn" (click)="addAndOpen()" *ngIf="!isInProject">
+      Add and Open
     </button>
     <button type="button" class="btn btn-primary btn" (click)="open()" *ngIf="isInProject">
       Open
