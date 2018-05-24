@@ -83,32 +83,20 @@ export class TeEntRoleComponent extends RoleComponent {
 
 
     const toggle$ = this.ngRedux.select<CollapsedExpanded>([...this.parentPath, 'toggle']);
-    this.subs.push(Observable.combineLatest(this.role$, toggle$)
+
+    
+    this.subs.push(Observable.combineLatest(this.roleState$, toggle$)
       .subscribe(result => {
-        const role = result[0];
+        const roleState = result[0];
         const toggle = result[1];
 
-        this.showAppellationUI = this.showLanguageUI = this.showEntityUI = false;
-
-        if (role) {
-          if (role.appellation && role.appellation.fk_class) {
-            this.showAppellationUI = true;
-            this.appellation = new InfAppellation(role.appellation)
-          }
-          else if (role.language && role.language.fk_class) {
-            this.showLanguageUI = true;
-            this.language = new InfLanguage(role.language)
-          }
-          else if (role.time_primitive && role.time_primitive.fk_class) {            
-
-          }
-          else {
-            this.pkEntity = role.fk_entity;
-            this.showEntityUI = true;
+        if (roleState && toggle) {
+          if (!roleState.langState && !roleState.timePrimitiveState && !roleState.appeState && !roleState.childTeEnt ) {
+            this.pkEntity = roleState.role.fk_entity;
 
             // initialize peIt preview on first expanding of role set
-            if (toggle === 'expanded' && !this.leafPeItStateInitialized && role.fk_entity) {
-              this.initPeItState(role.fk_entity).subscribe(done => {
+            if (toggle === 'expanded' && !this.leafPeItStateInitialized && this.pkEntity) {
+              this.initPeItState(this.pkEntity).subscribe(done => {
                 this.leafPeItStateInitialized = true
               })
             }

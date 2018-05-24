@@ -4,14 +4,14 @@
     [state: {{state}}] [pk: {{role.pk_entity_version_concat}}] [ready: {{isReadyToCreate}}] [commStatsVisible: {{communityStatsVisible}}]
   </span>
 
-<!--
+  <!--
   ************************* Editable State ******************* -->
 
   <div *ngIf="(state$ | async) === 'editable'">
 
 
     <!-- TeEnt Component (passing the temporal entity) -->
-    <gv-te-ent [parentPath]="basePath" (appeChange)="emitAppeChange($event)" (readyToAdd)="onTeEntReadyToAdd($event)">
+    <gv-te-ent [parentPath]="basePath">
       <div headerRight class="d-flex">
 
         <!-- UI for standard in project -->
@@ -71,7 +71,7 @@
   <!-- Not used?
   ************************* Add State ************************* -->
 
-  <div *ngIf="(state$ | async) === 'add'">
+  <div *ngIf="(state$ | async) === 'add' && (role$|async)">
 
     <!-- TeEnt Component (passing the temporal entity) -->
     <gv-te-ent [parentPath]="basePath">
@@ -83,16 +83,16 @@
           <!-- [attr.disabled]="roleToAdd.entity_version_project_rels[0].is_standard_in_project || changeIsInProjectLoading ? 'disabled' : null" -->
 
           <!-- Is in project -->
-          <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="roleToAdd.entity_version_project_rels[0].is_in_project"
+          <!-- <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="(role$|async)?.entity_version_project_rels[0]?.is_in_project"
             (click)="deselect()">
             <i class="fa fa-check-square-o"></i>
-          </button>
+          </button> -->
 
           <!-- Is not in project -->
-          <button type="button" name="button" class="btn btn-link btn-sm" [attr.disabled]="changeIsInProjectLoading ? 'disabled' : null"
-            *ngIf="!roleToAdd.entity_version_project_rels[0].is_in_project" (click)="select()">
+          <!-- <button type="button" name="button" class="btn btn-link btn-sm" [attr.disabled]="changeIsInProjectLoading ? 'disabled' : null"
+            *ngIf="!(role$|async)?.entity_version_project_rels[0].is_in_project" (click)="select()">
             <i class="fa fa-square-o"></i>
-          </button>
+          </button> -->
 
         </div>
 
@@ -103,15 +103,15 @@
           <!-- Community data statistics -->
           <ul class="gv-ul-sm">
             <li class="gv-li-inline">
-              <a href class="gv-passive-link text-secondary" (click)="openProjectsModal()" title="Added by {{role.is_in_project_count}} {{role.is_in_project_count == 1 ? 'project':'projects'}}">
+              <a href class="gv-passive-link text-secondary" (click)="openProjectsModal()" title="Added by {{(role$|async)?.is_in_project_count}} {{(role$|async)?.is_in_project_count == 1 ? 'project':'projects'}}">
                 <span>
-                  <i class="fa fa-check"></i> {{role.is_in_project_count}}</span>
+                  <i class="fa fa-check"></i> {{(role$|async)?.is_in_project_count}}</span>
               </a>
             </li>
             <li class="gv-li-inline">
-              <a href class="gv-passive-link text-secondary" (click)="openVersionHistoryModal()" title="Used as standard by {{role.is_standard_in_project_count}} {{role.is_standard_in_project_count == 1 ? 'project':'projects'}}">
+              <a href class="gv-passive-link text-secondary" (click)="openVersionHistoryModal()" title="Used as standard by {{(role$|async)?.is_standard_in_project_count}} {{(role$|async)?.is_standard_in_project_count == 1 ? 'project':'projects'}}">
                 <span>
-                  <i class="fa fa-eye"></i> {{role.is_standard_in_project_count}}</span>
+                  <i class="fa fa-eye"></i> {{(role$|async)?.is_standard_in_project_count}}</span>
               </a>
             </li>
           </ul>
@@ -125,7 +125,7 @@
 
   <!--
   ************************* Create PeI-Role State ******************* -->
-<!-- 
+  <!-- 
   <div *ngIf="(state$ | async) === 'create-pe-it-role'">
 
       <gv-te-ent [parentPath]="basePath"> </gv-te-ent>
@@ -138,7 +138,7 @@
   <div *ngIf="(state$ | async) === 'create-pe-it' || (state$ | async) === 'create-pe-it-role'">
 
     <form [formGroup]="formGroup" *ngIf="formGroup">
-      <gv-te-ent [parentPath]="basePath" [formControlName]="formControlName"  (touched)="markAsTouched()">
+      <gv-te-ent [parentPath]="basePath" [formControlName]="formControlName" (touched)="markAsTouched()">
         <div belowHeader>
           <div class="card-body pt-0 gv-community-statistics d-flex justify-content-start small">
             <ng-container *ngTemplateOutlet="communtiyStats"></ng-container>

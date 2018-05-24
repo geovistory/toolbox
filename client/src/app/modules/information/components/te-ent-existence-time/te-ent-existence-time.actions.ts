@@ -18,6 +18,14 @@ export class ExistenceTimeActions {
 
   static readonly EX_TIME_ROLESET_REMOVED = 'EX_TIME_ROLESET_REMOVED';
 
+  static readonly EX_TIME_START_EDITING = 'EX_TIME_START_EDITING';
+
+  static readonly EX_TIME_STOP_EDITING = 'EX_TIME_STOP_EDITING';
+  
+  static readonly EX_TIME_UPDATED = 'EX_TIME_UPDATED';
+
+  static readonly TOGGLE = 'TOGGLE';
+
 
   @dispatch()
 
@@ -35,4 +43,28 @@ export class ExistenceTimeActions {
     payload: null
   })
 
+  toggle = () => ({
+    type: ExistenceTimeActions.TOGGLE,
+    meta: null,
+    payload: null
+  })
+
+  startEditing = (): ExistenceTimeAction => ({
+    type: ExistenceTimeActions.EX_TIME_START_EDITING,
+    meta: null,
+    payload: null
+  })
+
+  stopEditing = (payload:IExistenceTimeState): ExistenceTimeAction => ({
+    type: ExistenceTimeActions.EX_TIME_STOP_EDITING,
+    meta: null,
+    payload
+  })
+
+  existenceTimeUpdated = (payload:IExistenceTimeState): ExistenceTimeAction => ({
+    type: ExistenceTimeActions.EX_TIME_UPDATED,
+    meta: null,
+    payload
+  })
+  
 }

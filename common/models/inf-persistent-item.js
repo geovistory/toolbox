@@ -622,8 +622,6 @@ module.exports = function(InfPersistentItem) {
                     "pk_entity": "asc"
                   }]
                 }
-                //,...innerJoinThisProject, // … get project's version
-
               },
               "appellation": {
                 "$relation": {
@@ -634,9 +632,16 @@ module.exports = function(InfPersistentItem) {
                     "pk_entity": "asc"
                   }]
                 }
+              },
+              "time_primitive": {
+                "$relation": {
+                  "name": "time_primitive",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
               }
-              //,...innerJoinThisProject, // … get project's version
-
             }
           }
         }

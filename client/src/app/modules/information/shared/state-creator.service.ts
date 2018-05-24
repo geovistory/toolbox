@@ -256,6 +256,24 @@ export class StateCreatorService {
             iRoleState.roleStatesInOtherProjects = roleStates;
             break;
 
+          case 'add':
+
+            Object.keys(roleStates).forEach(key => {
+              if (roleStates[key].role.is_in_project_count > 0) {
+                iRoleState.roleStatesInOtherProjects = {
+                  ...iRoleState.roleStatesInOtherProjects,
+                  [key]: roleStates[key]
+                }
+              } else {
+                iRoleState.roleStatesInNoProject = {
+                  ...iRoleState.roleStatesInNoProject,
+                  [key]: roleStates[key]
+                }
+              }
+            })
+
+            break;
+
           /** if the roleset is in create-pe-it mode, add the states to roleStatesInProject, since they will be in Project later */
           case 'create-pe-it':
             iRoleState.roleStatesInProject = roleStates;
@@ -266,14 +284,19 @@ export class StateCreatorService {
             iRoleState.roleStatesInProject = roleStates;
             break;
 
-
           case 'exist-time':
+            iRoleState.roleStatesInProject = roleStates;
+            break;
+
+          case 'create-pe-it-role':
             iRoleState.roleStatesInProject = roleStates;
             break;
 
           case 'view':
             iRoleState.roleStatesInProject = roleStates;
             break;
+
+
         }
 
         /** Assings options to RolSet (this can come from the two functions before) */
@@ -450,7 +473,7 @@ export class StateCreatorService {
   }
 
 
-  initializeExistenceTimeState(roles: InfRole[], state: EditorStates): Subject<IExistenceTimeState> {
+  initializeExistenceTimeState(roles: InfRole[], state: EditorStates, options: IExistenceTimeState = {}): Subject<IExistenceTimeState> {
     const subject = new ReplaySubject();
 
     // get all InfProperties leading to a timePrimitive
@@ -460,15 +483,18 @@ export class StateCreatorService {
       const ingoingRoleSets = this.propertyService.toRoleSets(false, ingoingProperties)
 
       // Generate roleSets 
-      const options: IRoleSetState = {
-        state: 'exist-time',
+      const roleSetOptions: IRoleSetState = {
+        state,
         toggle: 'expanded'
       }
 
-      const childRoleSets$ = this.initializeChildRoleSets(roles, ingoingRoleSets, [], options)
+      const childRoleSets$ = this.initializeChildRoleSets(roles, ingoingRoleSets, [], roleSetOptions)
 
       childRoleSets$.subscribe(roleSets => {
         subject.next(new ExistenceTimeState({
+          roles,
+          toggle: options.toggle ? options.toggle : 'collapsed',
+          state,
           roleSets,
           ingoingRoleSets
         }));

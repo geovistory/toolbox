@@ -205,6 +205,10 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
 
 
   fromJulianDay(julianDay: number) {
+    
+    if (typeof julianDay === 'string') {
+      julianDay = parseInt(julianDay)
+    }
 
     // number of full 4 year cycles
     var n4 = Math.floor((julianDay + (3 * 365)) / 1461);
@@ -291,7 +295,7 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
 
     // number of ours of the day
     this.minutes = Math.floor(secsOfHour / 60)
-    
+
     // secs of the last minute
     this.seconds = this.minutes % 60;
 

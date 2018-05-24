@@ -221,8 +221,8 @@ export class PeItRoleSetComponent extends RoleSetComponent {
     this.subs.push(Observable.combineLatest([waitAtLeast, apiCall])
       .subscribe((results) => {
 
-        const rolesInOtherProjects = results[1].filter(role => role.is_in_project_count > 0);
-        const rolesInNoProject = results[1].filter(role => role.is_in_project_count == 0);
+        const rolesInOtherProjects = results[1].filter(role => parseInt(role.is_in_project_count) > 0);
+        const rolesInNoProject = results[1].filter(role => parseInt(role.is_in_project_count) == 0);
 
         const inOther$ = this.stateCreator.initializeRoleStates(rolesInOtherProjects, 'add', this.roleSetState.isOutgoing)
         const inNo$ = this.stateCreator.initializeRoleStates(rolesInNoProject, 'add', this.roleSetState.isOutgoing)

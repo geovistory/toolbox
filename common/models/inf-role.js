@@ -362,8 +362,16 @@ module.exports = function (InfRole) {
                     "pk_entity": "asc"
                   }]
                 }
+              },
+              "time_primitive": {
+                "$relation": {
+                  "name": "time_primitive",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
               }
-              //,...innerJoinThisProject, // … get project's version
 
             }
           }
@@ -453,8 +461,16 @@ module.exports = function (InfRole) {
                 "pk_entity": "asc"
               }]
             }
+          },
+          "time_primitive": {
+            "$relation": {
+              "name": "time_primitive",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
           }
-          //,...innerJoinThisProject, // … get project's version
 
         }
       };

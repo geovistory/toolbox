@@ -1,0 +1,59 @@
+<ng-container *ngTemplateOutlet="header; context:{editBtn:true}"></ng-container>
+
+<div [@slideInOut]="(toggle$|async)">
+    <div class="p-2">
+
+        <!-- Begin of begin -->
+        <div class="form-group">
+
+            <gv-exist-time-role-set *ngIf="existenceTimeState?.roleSets?._152_ingoing" class="form-control p-0 rounded-0" index="_152_ingoing"
+                [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntStatePath" (onRemoveRoleSet)="removeRoleSet('_152_ingoing')"></gv-exist-time-role-set>
+
+        </div>
+
+        <!-- End of begin -->
+        <div class="form-group">
+
+            <gv-exist-time-role-set *ngIf="existenceTimeState?.roleSets?._150_ingoing" class="form-control p-0 rounded-0" index="_150_ingoing"
+                [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntStatePath" (onRemoveRoleSet)="removeRoleSet('_150_ingoing')"></gv-exist-time-role-set>
+
+        </div>
+
+
+        <!-- Begin of end -->
+        <div class="form-group">
+
+            <gv-exist-time-role-set *ngIf="existenceTimeState?.roleSets?._151_ingoing" class="form-control p-0 rounded-0" index="_151_ingoing"
+                [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntStatePath" (onRemoveRoleSet)="removeRoleSet('_151_ingoing')"></gv-exist-time-role-set>
+
+        </div>
+
+        <!-- End of end -->
+        <div class="form-group">
+
+            <gv-exist-time-role-set *ngIf="existenceTimeState?.roleSets?._153_ingoing" class="form-control p-0 rounded-0" index="_153_ingoing"
+                [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntStatePath" (onRemoveRoleSet)="removeRoleSet('_153_ingoing')"></gv-exist-time-role-set>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ************************** NG TEMPLATES ****************************** -->
+
+<ng-template #header let-editBtn="editBtn">
+    <div class="btn-group d-flex flex-row gv-h5">
+        <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
+            <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
+            When
+        </button>
+        <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+            <div class="align-self-center">
+                <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/50" target="_blank">
+                    E52
+                </a>
+            </div>
+        </div>
+    </div>
+</ng-template>

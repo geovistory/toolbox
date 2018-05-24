@@ -2,14 +2,7 @@ import {
   Component, OnChanges, OnInit, Input, Output, ViewChildren,
   QueryList, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy, forwardRef
 } from '@angular/core';
-import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition,
-  keyframes
-} from '@angular/animations';
+
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
@@ -36,6 +29,7 @@ import { ClassService } from '../../shared/class.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { FormBuilder, NG_VALUE_ACCESSOR, FormGroup, Validators, FormControl } from '@angular/forms';
 import { StateToDataService } from '../../shared/state-to-data.service';
+import { slideInOut } from '../../shared/animations';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -46,41 +40,7 @@ import { StateToDataService } from '../../shared/state-to-data.service';
   selector: 'gv-te-ent-role-set',
   templateUrl: './te-ent-role-set.component.html',
   styleUrls: ['./te-ent-role-set.component.scss'],
-  animations: [
-    trigger('slideInOut', [
-      state('expanded', style({
-        height: '*',
-      })),
-      state('collapsed', style({
-        height: '0px',
-        overflow: 'hidden'
-      })),
-      transition('expanded => collapsed', animate('400ms ease-in-out', keyframes([
-        style({
-          height: '*',
-          overflow: 'hidden',
-          offset: 0
-        }),
-        style({
-          height: '0px',
-          display: 'hidden',
-          offset: 1
-        })
-      ]))),
-      transition('collapsed => expanded', animate('400ms ease-in-out', keyframes([
-        style({
-          height: '0px',
-          overflow: 'hidden',
-          offset: 0
-        }),
-        style({
-          height: '*',
-          display: 'hidden',
-          offset: 1
-        })
-      ])))
-    ])
-  ],
+  animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
@@ -131,7 +91,7 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
     protected stateCreator: StateCreatorService,
     protected classService: ClassService,
     fb: FormBuilder,
-    private teEntApi: InfTemporalEntityApi
+    protected teEntApi: InfTemporalEntityApi
   ) {
     super(eprApi, roleApi, activeProject, roleService, propertyService, util, entityEditor, changeDetector, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
   }
@@ -144,7 +104,15 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
 
     this.initSubsciptions();
 
+    this.initTeEntRoleSetChild();
   }
+
+  /** 
+   * hook for child classes to get called on init
+   * never add logic to this method here, since may be overridden by child class.
+  */
+  initTeEntRoleSetChild(){}
+  
   /**
    * init paths to different slices of the store
    */
@@ -372,6 +340,10 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
 * Methods specific to edit state
 */
 
+  /**
+   * Start editing a RoleState
+   * @param key: the key of the RoleState in the store 
+   */
   startEditing(key) {
     const roleset = this.roleSetState.roleStatesInProject[key];
 
@@ -380,25 +352,13 @@ export class TeEntRoleSetComponent extends RoleSetComponent implements OnInit {
     }))
   }
 
+    /**
+   * Start editing a RoleState
+   * @param key: the key of the RoleState in the store 
+   */
   stopEditing(key) {
     const roleset = this.roleSetState.roleStatesInProject[key];
     this.subs.push(this.stateCreator.initializeRoleState(roleset.role, 'editable', roleset.isOutgoing).subscribe(roleState => {
-      this.localStore.dispatch(this.actions.stopEditingRole(key, roleState))
-    }))
-  }
-
-
-  startEditingExistTime(key) {
-    const roleset = this.roleSetState.roleStatesInProject[key];
-
-    this.subs.push(this.stateCreator.initializeRoleState(roleset.role, 'create-te-ent-role', roleset.isOutgoing).subscribe(roleState => {
-      this.localStore.dispatch(this.actions.startEditingRole(key, roleState))
-    }))
-  }
-
-  stopEditingExistTime(key) {
-    const roleset = this.roleSetState.roleStatesInProject[key];
-    this.subs.push(this.stateCreator.initializeRoleState(roleset.role, 'exist-time', roleset.isOutgoing).subscribe(roleState => {
       this.localStore.dispatch(this.actions.stopEditingRole(key, roleState))
     }))
   }

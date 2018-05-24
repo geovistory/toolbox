@@ -216,6 +216,10 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
 
   fromJulianDay(julianDay: number) {
 
+    if (typeof julianDay === 'string') {
+      julianDay = parseInt(julianDay)
+    }
+    
     // julian day of year 1 AD
     var julianDay0 = 1721426;
 

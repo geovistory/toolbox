@@ -257,7 +257,7 @@ export class TeEntService {
 * @returns appellation label as pure string
 */
   getDisplayAppeLabelOfTeEnt(teEnt: InfTemporalEntity): string | null {
-    if (!teEnt) return null
+    if (!teEnt || !teEnt.te_roles) return null
 
 
     const rolesToAppe: InfRole[] = teEnt.te_roles.filter(

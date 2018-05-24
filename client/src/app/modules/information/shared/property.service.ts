@@ -170,7 +170,7 @@ export class PropertyService {
           const properties = props.map(prop => new DfhProperty(prop));
 
           // add to cache
-          this.propByDomainFkCache[fk] = properties;
+          this.propByRangeFkCache[fk] = properties;
 
           // return data
           observer.next(properties);

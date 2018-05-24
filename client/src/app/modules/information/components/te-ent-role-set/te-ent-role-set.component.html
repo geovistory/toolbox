@@ -189,73 +189,6 @@
     </div>
   </span>
 
-  <!--
-  ************************* Exist-Time ************************* -->
-  <span *ngIf="(state$ | async) === 'exist-time'">
-
-
-    <ng-container *ngTemplateOutlet="header"></ng-container>
-
-    <div [@slideInOut]="(toggle$|async)">
-
-      <!-- If no roles in Project, show a big add button -->
-      <div class="card-body" *ngIf="!(roleStatesInProject$ | async) && !((roleStatesToCreate$ | async) | keys).length && addButtonVisible">
-        <button class="btn btn-outline-primary" (click)="startAddingRole()">
-          Add a {{(label$ | async).sg}}
-        </button>
-        <button class="btn btn-link pull-right" (click)="removeRoleSet()">
-          cancel
-        </button>
-      </div>
-
-
-      <!-- Roles currently being created -->
-
-      <form [formGroup]="formGroup" *ngIf="formGroup">
-
-        <div class="border-top border-gray-500" *ngIf="((roleStatesToCreate$|async) | keys).length">
-
-          <div *ngFor="let entry of (roleStatesToCreate$ | async) | keys; trackBy:getKey">
-            <gv-te-ent-role *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="roleStatesToCreate"
-              [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role>
-
-            <div class="card-body">
-              <button type="button" class="btn btn-link" (click)="cancelCreateRole(entry.key)">Cancel</button>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- The roles in project -->
-        <div *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey">
-          <gv-te-ent-role *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" [formControlName]="entry.key"
-            (touched)="markAsTouched()">
-            <div headerRight class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
-
-              <button class="btn btn-link" ngbDropdownToggle>
-                <i class="fa fa-ellipsis-v"></i>
-              </button>
-              <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
-
-                <!-- start editing -->
-                <button class="dropdown-item" (click)="startEditingExistTime(entry.key)">Edit</button>
-
-                <button class="dropdown-item" (click)="removeFromProjectExistTime(entry.key)">Remove</button>
-
-              </div>
-            </div>
-          </gv-te-ent-role>
-
-          <div class="card-body" *ngIf="entry.value.state === 'create-te-ent-role'">
-            <button type="button" class="btn btn-link" (click)="stopEditingExistTime(entry.key)">Cancel</button>
-          </div>
-        </div>
-
-      </form>
-
-    </div>
-  </span>
-
 
   <!--
   ************************* Add-Pe-It State ************************* -->
@@ -279,13 +212,13 @@
 
   <span *ngIf="(state$ | async) === 'add'">
 
-    <div class="card-body gv-property-section-header d-flex flex-row gv-to-pe-it">
-      <div class="gv-label gv-flex-grow-1"> {{(label$ | async).default}} </div>
-    </div>
+    <ng-container *ngTemplateOutlet="header; context: { hideAddButton : true } "></ng-container>
 
-
-    <div class="card-body">
-      <gv-te-ent-role *ngFor="let entry of (roleStatesInProject$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"></gv-te-ent-role>
+    <div [@slideInOut]="(toggle$|async)">
+      <div class="card-body">
+        <gv-te-ent-role *ngFor="let entry of (roleStatesInOtherProjects$ | async) | keys; trackBy:getKey" [parentPath]="basePath"
+          [index]="entry.key" intermediatePathSegment="roleStatesInOtherProjects"></gv-te-ent-role>
+      </div>
     </div>
 
   </span>

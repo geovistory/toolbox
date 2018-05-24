@@ -49,21 +49,23 @@
         <!-- [attr.disabled]="roleToAdd.entity_version_project_rels[0].is_standard_in_project || changeIsInProjectLoading ? 'disabled' : null" -->
 
         <!-- Is in project -->
-        <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="roleToAdd.entity_version_project_rels[0].is_in_project"
+        <!-- <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="roleToAdd.entity_version_project_rels[0].is_in_project"
           (click)="deselect()">
           <i class="fa fa-check-square-o"></i>
-        </button>
+        </button> -->
 
         <!-- Is not in project -->
-        <button type="button" name="button" class="btn btn-link btn-sm" [attr.disabled]="changeIsInProjectLoading ? 'disabled' : null"
+        <!-- <button type="button" name="button" class="btn btn-link btn-sm" [attr.disabled]="changeIsInProjectLoading ? 'disabled' : null"
           *ngIf="!roleToAdd.entity_version_project_rels[0].is_in_project" (click)="select()">
           <i class="fa fa-square-o"></i>
-        </button>
+        </button> -->
 
       </div>
 
     </div>
     <!-- </gv-pe-it> -->
+
+    <ng-container *ngTemplateOutlet="object"></ng-container>
 
   </div>
 
@@ -136,7 +138,6 @@
     </div>
 
   </div>
-
 
 
   <!--

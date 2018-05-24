@@ -1,41 +1,25 @@
-<span *ngIf="entityEditor.devView">
-    <ng-container *ngTemplateOutlet="dev"></ng-container>
-</span>
+<!--
+    ************************* Editable State ************************* -->
+<div *ngIf="(state$|async) === 'editable'">
 
-<!-- <gv-existence-time [existenceTime]="existenceTime" [state]="state" (onSubmit)="onSubmitExistenceTime($event)"></gv-existence-time> -->
+    <gv-te-ent-existence-time-editable [parentPath]="parentPath"></gv-te-ent-existence-time-editable>
 
-Existence Time {{existenceTimeState?.ingoingRoleSets.length}} {{existenceTimeState?.state}}
-
-<div class="p-2">
-
-    <form [formGroup]="formGroup" (ngSubmit)="onSubmitExistenceTime()">
-
-        <!-- End of begin -->
-        <div class="form-group">
-
-            <gv-te-ent-role-set *ngIf="existenceTimeState?.roleSets?._150_ingoing" [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntStatePath" class="form-control p-0 rounded-0"
-                index="_150_ingoing" (onRemoveRoleSet)="removeRoleSet('_150_ingoing')" formControlName="_150_ingoing" (touched)="markAsTouched()"></gv-te-ent-role-set>
-
-            <button class="btn btn-link" *ngIf="!existenceTimeState?.roleSets?._150_ingoing" (click)="addRoleSet(150)">Add End of Begin</button>
-
-        </div>
+</div>
 
 
-        <!-- Begin of end -->
-        <div class="form-group">
 
-            <gv-te-ent-role-set *ngIf="existenceTimeState?.roleSets?._151_ingoing" [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntStatePath" class="form-control p-0 rounded-0"
-                index="_151_ingoing" (onRemoveRoleSet)="removeRoleSet('_151_ingoing')" formControlName="_151_ingoing" (touched)="markAsTouched()"></gv-te-ent-role-set>
+<!--
+        ************************* Edit State ************************* -->
 
-            <button class="btn btn-link" *ngIf="!existenceTimeState?.roleSets?._151_ingoing" (click)="addRoleSet(151)">Add Begin of end</button>
-
-        </div>
+<div *ngIf="(state$|async) === 'edit'">
+    <gv-te-ent-existence-time-edit [parentPath]="parentPath"></gv-te-ent-existence-time-edit>
+</div>
 
 
-        <button type="submit" class="btn btn-primary" [disabled]="formGroup.invalid || formGroup.pristine">Ok</button>
-    </form>
+<!--
+    ************************* Add State ************************* -->
+<div *ngIf="(state$|async) === 'add-pe-it' || (state$|async) === 'add'">
 
-    valid: {{formGroup.valid}}
+    <gv-te-ent-existence-time-add [parentPath]="parentPath"></gv-te-ent-existence-time-add>
 
-    {{formGroup.value | json}}
 </div>

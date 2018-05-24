@@ -40,8 +40,13 @@ module.exports = function (InfEntityVersion) {
         var newEpr = {
           "fk_entity": data.pk_entity,
           "fk_project": projectId,
-          "is_in_project": requestedEpr.is_in_project || isInProject,
-          "is_standard_in_project": requestedEpr.is_standard_in_project || null,
+
+          // use the requested value or the one given by the api call
+          "is_in_project": [requestedEpr.is_in_project, isInProject].find(item => item !== undefined),
+
+          // use the requested value or null
+          "is_standard_in_project": [requestedEpr.is_standard_in_project, null].find(item => item !== undefined),
+
           "fk_entity_version_concat": data.pk_entity_version_concat,
           "calendar": requestedEpr.calendar || null
         };
@@ -274,8 +279,8 @@ module.exports = function (InfEntityVersion) {
   InfEntityVersion.findOrCreatePeItOrTeEnt = function (Model, projectId, dataObject, requestedObject) {
 
     // cleanup data object: remove all undefined properties to avoid creating e.g. pk_entity = undefined 
-    Object.keys(dataObject).forEach(key=>{
-      if(dataObject[key]==undefined){
+    Object.keys(dataObject).forEach(key => {
+      if (dataObject[key] == undefined) {
         delete dataObject[key]
       }
     })
@@ -346,7 +351,7 @@ module.exports = function (InfEntityVersion) {
           // create the project relation
 
           let reqEpr = {};
-      
+
           // create a new epr 
           var newEpr = new InfEntityProjectRel({
             "fk_entity": resultingEntity.pk_entity,
@@ -354,10 +359,10 @@ module.exports = function (InfEntityVersion) {
             "fk_project": projectId,
 
             // use the requested value or true
-            "is_in_project": reqEpr.is_in_project || true,
-
+            "is_in_project": [reqEpr.is_in_project, true].find(item => item !== undefined),
+            
             // use the requested value or false
-            "is_standard_in_project": reqEpr.is_standard_in_project || false,
+            "is_standard_in_project": [reqEpr.is_standard_in_project,  false].find(item => item !== undefined),
 
             // use false, since calendar is only for role eprs
             "calendar": undefined,
@@ -466,10 +471,10 @@ module.exports = function (InfEntityVersion) {
             "fk_project": projectId,
 
             // use the requested value, or the existing or true
-            "is_in_project": reqEpr.is_in_project || existingEpr.is_in_project || true,
+            "is_in_project": [reqEpr.is_in_project, existingEpr.is_in_project, true].find(item => item !== undefined),
 
             // use the requested value, or the existing or false
-            "is_standard_in_project": reqEpr.is_standard_in_project || existingEpr.is_standard_in_project || false,
+            "is_standard_in_project": [reqEpr.is_standard_in_project, existingEpr.is_standard_in_project, false].find(item => item !== undefined),
 
             // use the requested value, or the existing or undefined
             "calendar": reqEpr.calendar || existingEpr.is_standard_in_project || undefined,

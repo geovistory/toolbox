@@ -28,13 +28,13 @@ export const roleReducer =
         };
         break;
 
-        /**
-      * If the role is outgoing, this means that it can be display role for the domain.
-      * In this case, the entity_project_relation.is_display_role_for_domain will be adapted.
-      * 
-      * If the role is ingoing, this means that it can be display role for the range.
-      * In this case, the entity_project_relation.is_display_role_for_range will be adapted.  
-      */
+      /**
+    * If the role is outgoing, this means that it can be display role for the domain.
+    * In this case, the entity_project_relation.is_display_role_for_domain will be adapted.
+    * 
+    * If the role is ingoing, this means that it can be display role for the range.
+    * In this case, the entity_project_relation.is_display_role_for_range will be adapted.  
+    */
       case RoleActions.CHANGE_DISPLAY_ROLE_SUCCEEDED:
         var epr: InfEntityProjectRel = new InfEntityProjectRel;
         Object.assign(epr, lastState.role.entity_version_project_rels[0]);
@@ -84,6 +84,13 @@ export const roleReducer =
             ...lastState.role,
             fk_entity: action.payload.role.fk_entity
           }
+        };
+        break;
+
+      case RoleActions.CHANGE_ROLE_STATE_STATE:
+        lastState = {
+          ...lastState,
+          state: action.payload.state
         };
         break;
 

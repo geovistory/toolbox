@@ -14,6 +14,29 @@ export const existenceTimeReducer =
 
     switch (action.type) {
 
+      case ExistenceTimeActions.TOGGLE:
+        lastState = {
+          ...lastState,
+          toggle: lastState.toggle === 'expanded' ? 'collapsed' : 'expanded'
+        };
+        break;
+
+      case ExistenceTimeActions.EX_TIME_START_EDITING:
+        lastState = {
+          ...lastState,
+          state: 'edit'
+        };
+        break;
+
+      case ExistenceTimeActions.EX_TIME_STOP_EDITING:
+        lastState = action.payload;
+        break;
+
+      case ExistenceTimeActions.EX_TIME_UPDATED:
+        lastState = action.payload;
+        break;
+
+
       case ExistenceTimeActions.EX_TIME_ROLESET_ADDED:
         lastState = {
           ...lastState,
@@ -24,7 +47,7 @@ export const existenceTimeReducer =
         }
         break;
 
-        case ExistenceTimeActions.EX_TIME_ROLESET_REMOVED:
+      case ExistenceTimeActions.EX_TIME_ROLESET_REMOVED:
         let newRoleSets = Object.assign({}, lastState.roleSets);
         delete newRoleSets[action.meta.key];
 
@@ -33,6 +56,7 @@ export const existenceTimeReducer =
           roleSets: newRoleSets
         }
         break;
+
     }
 
 

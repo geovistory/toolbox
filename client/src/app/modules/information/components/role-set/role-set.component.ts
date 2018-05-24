@@ -114,6 +114,8 @@ export class RoleSetComponent implements OnInit, OnDestroy, ControlValueAccessor
   createFormControlCount: number = 0;
   subs: Subscription[] = []; // for unsubscribe onDestroy
 
+  fromValueForReset:any;
+
   /**
    * Outputs
    */
@@ -139,10 +141,25 @@ export class RoleSetComponent implements OnInit, OnDestroy, ControlValueAccessor
     protected fb: FormBuilder
   ) {
 
-    // create the formGroup used to create/edit the roleSet's InfRole[]
-    this.formGroup = this.fb.group({});
+    this.initForm();
 
-    // subscribe to form changes here
+    this.initFormSubscription();
+
+  }
+
+  /**
+   * Inits the formGroup used in template.
+   */
+  initForm() {
+    //   create the formGroup used to create/edit the roleSet's InfRole[]
+    this.formGroup = this.fb.group({});
+  }
+
+  /**
+   * Subcscibes to form value changes
+   */
+  initFormSubscription() {
+
     this.subs.push(this.formGroup.valueChanges.subscribe(val => {
       if (this.formGroup.valid) {
 
@@ -161,7 +178,6 @@ export class RoleSetComponent implements OnInit, OnDestroy, ControlValueAccessor
         this.onChange(null)
       }
     }))
-
   }
 
 
@@ -172,49 +188,17 @@ export class RoleSetComponent implements OnInit, OnDestroy, ControlValueAccessor
     this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), roleSetReducer);
     this.basePath = this.getBasePath();
 
-
-    /** prepare the formGroup */
+    /** prepare the formGroup connection path for @ng-redux/forms */
     this.formValPath = [...this.basePath, 'formGroup'];
 
 
-
-    // /** subscribe here for changes in the create-roles-form  */
-    // this.formGroup.valueChanges.subscribe(val => {
-
-    // })
-
     this.subs.push(this.roleStatesInProject$.subscribe(d => { this.roleStatesInProject = d; }))
 
+    // Subscribe to the activeProject, to get the pk_project needed for api call
     this.subs.push(this.ngRedux.select<Project>('activeProject').subscribe(d => this.project = d));
 
     this.subs.push(this.localStore.select<IRoleSetState>('').subscribe(d => {
       this.roleSetState = d
-
-      let formCtrlDefs: { [controlName: string]: any } = {};
-      let formCrtlsToRemove: string[] = [];
-
-      // add controls for each child roleSet
-      if (this.roleSetState && this.roleSetState.roleStatesInProject)
-        Object.keys(this.roleSetState.roleStatesInProject).forEach((key) => {
-          if (this.roleSetState.roleStatesInProject[key]) {
-
-            this.formGroup.addControl(key, new FormControl(
-              this.roleSetState.roleStatesInProject[key].role,
-              [
-                Validators.required
-              ]
-            ))
-          }
-          else {
-            formCrtlsToRemove.push(key);
-          }
-        })
-
-      // remove control of removed chiild state
-      formCrtlsToRemove.forEach(key => {
-        this.formGroup.removeControl(key);
-      })
-
     }));
 
     this.subs.push(Observable.combineLatest(this.toggle$, this.roleStatesToCreate$, this.roleStatesInProject$).subscribe(res => {
@@ -234,21 +218,50 @@ export class RoleSetComponent implements OnInit, OnDestroy, ControlValueAccessor
       }
     }))
 
-    // this.initProperty()
-
-    // this.initChildren() SINGLE_INIT
 
     this.init();
-
-
-    // if (state) {
-    //   if (state == 'add-pe-it')
-    //     this.sortRolesByPopularity();
-    // }
 
   }
 
   init() { } // hook for child classes
+
+
+  /**
+   * Initializes the form controls
+  */
+  initFormCtrls() {
+
+    let formCtrlDefs: { [controlName: string]: any } = {};
+    let formCrtlsToRemove: string[] = [];
+
+    // add controls for each child roleSet
+    if (this.roleSetState && this.roleSetState.roleStatesInProject)
+      Object.keys(this.roleSetState.roleStatesInProject).forEach((key) => {
+        if (this.roleSetState.roleStatesInProject[key]) {
+
+          this.formGroup.addControl(key, new FormControl(
+            this.roleSetState.roleStatesInProject[key].role,
+            [
+              Validators.required
+            ]
+          ))
+        }
+        else {
+          formCrtlsToRemove.push(key);
+        }
+      })
+
+    // remove control of removed chiild state
+    formCrtlsToRemove.forEach(key => {
+      this.formGroup.removeControl(key);
+    })
+
+    // assign the value after initializing all form controls
+    this.fromValueForReset = this.formGroup.value;
+
+  }
+
+
 
   ngOnDestroy() {
     this.subs.forEach(sub => sub.unsubscribe());
@@ -413,6 +426,14 @@ export class RoleSetComponent implements OnInit, OnDestroy, ControlValueAccessor
   }
 
 
+  /**
+   * can be called, on cancelling edinting the form,
+   * so that the initial value of the form is emitted by this.onChange()
+   */
+  resetForm(){
+    this.formGroup.reset(this.fromValueForReset);
+  }
+
 
   /****************************************
    *  ControlValueAccessor implementation *
@@ -434,6 +455,15 @@ export class RoleSetComponent implements OnInit, OnDestroy, ControlValueAccessor
    */
   registerOnChange(fn: any): void {
     this.onChange = fn;
+
+    /**
+     * initializes form contols after the role set component is registered by 
+     * the parent's form, so that when initialization of the form controls 
+     * triggers the subscription of the form's valueChanges, the onChange method
+     * was allready registered.
+     */
+    this.initFormCtrls();
+
   }
 
   /**
@@ -441,6 +471,7 @@ export class RoleSetComponent implements OnInit, OnDestroy, ControlValueAccessor
    * This function helps to type the onChange function for the use in this class.
    */
   onChange = (peIt: InfRole[] | null) => {
+    console.warn('Oups: onChange got called before this.registerOnChange() was called')
   };
 
   /**

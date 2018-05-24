@@ -81,9 +81,8 @@
           <!-- Roles that are added to at least one other project -->
 
           <span *ngIf="(roleStatesInOtherProjectsVisible$|async)">
-
             <div class="card-body gv-property-section-header">
-              {{(roleStatesInOtherProjects$|async)?.length ? (roleStatesInOtherProjects$|async)?.length : 0 }} {{(roleStatesInOtherProjects$|async)?.length
+              {{((roleStatesInOtherProjects$|async) | keys)?.length ? ((roleStatesInOtherProjects$|async) | keys)?.length : 0 }} {{((roleStatesInOtherProjects$|async) | keys)?.length
               === 1 ? (label$ | async).sg : (label$ | async).pl}} found in other projects
             </div>
 
@@ -101,7 +100,7 @@
                 </a>
               </div>
             </div> -->
-            <div class="card-body" *ngIf="(roleStatesInOtherProjects$|async)?.length">
+            <div class="card-body" *ngIf="((roleStatesInOtherProjects$|async) | keys)?.length">
               <gv-pe-it-role *ngFor="let entry of (roleStatesInOtherProjects$ | async) | keys; trackBy:getKey" [parentPath]="basePath"
                 intermediatePathSegment="roleStatesInOtherProjects" [index]="entry.key"></gv-pe-it-role>
             </div>

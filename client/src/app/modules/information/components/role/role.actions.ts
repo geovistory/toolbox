@@ -3,7 +3,7 @@ import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { IRoleState } from './role.model';
 import { InfRole } from 'app/core';
-import { CollapsedExpanded } from '../../information.models';
+import { CollapsedExpanded, EditorStates } from '../../information.models';
 import { ITeEntState } from '../te-ent/te-ent.model';
 import { IPeItState } from '../../containers/pe-it/pe-it.model';
 
@@ -23,6 +23,8 @@ export class RoleActions {
   static readonly LEAF_PE_IT_STATE_ADDED = 'LEAF_PE_IT_STATE_ADDED';
   static readonly LEAF_PK_ENTITY_SELECTED = 'LEAF_PK_ENTITY_SELECTED';
 
+  static readonly CHANGE_ROLE_STATE_STATE = 'CHANGE_ROLE_STATE_STATE';
+  
 
   @dispatch()
 
@@ -86,6 +88,14 @@ export class RoleActions {
     payload: {
       isReadyToCreate: true,
       role   
+    }
+  })
+
+  changeState = (state:EditorStates): RoleAction => ({
+    type: RoleActions.CHANGE_ROLE_STATE_STATE,
+    meta: null,
+    payload: {
+      state
     }
   })
 

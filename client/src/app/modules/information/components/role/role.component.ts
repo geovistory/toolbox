@@ -56,6 +56,7 @@ export class RoleComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @select() targetDfhClass$: Observable<boolean>;
   @select() isReadyToCreate$: Observable<boolean>;
   @select() isCircular$: Observable<boolean>;
+  roleState$: Observable<IRoleState>;
 
   isDisplayRoleInProject$: ReplaySubject<boolean> = new ReplaySubject();
 
@@ -144,11 +145,12 @@ export class RoleComponent implements OnInit, OnDestroy, ControlValueAccessor {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, roleReducer);
 
     this.property$ = this.ngRedux.select<DfhProperty>([...this.parentPath, 'property']);
+    this.roleState$ = this.localStore.select<IRoleState>('');
     this.activeProject$ = this.ngRedux.select<Project>('activeProject');
 
     this.subs.push(this.ngRedux.select<IRoleSetState>([...this.parentPath]).subscribe(d => this.parentRoleSetState = d));
     this.subs.push(this.activeProject$.subscribe(d => this.activeProject = d));
-    this.subs.push(this.localStore.select<IRoleState>('').subscribe(d => {
+    this.subs.push(this.roleState$.subscribe(d => {
       this.roleState = d
       if (this.roleState) {
         // add a control for the child of the role

@@ -6,6 +6,7 @@ import { IRoleSetState, IRoleStates } from '../components/role-set/role-set.mode
 import { IRoleSets } from '../components/role-set-list/role-set-list.model';
 import { IPeItState } from '../containers/pe-it/pe-it.model';
 import { RoleSetService } from './role-set.service';
+import { IExistenceTimeState } from '../components/te-ent-existence-time/te-ent-existence-time.model';
 
 @Injectable()
 export class StateToDataService {
@@ -73,8 +74,10 @@ export class StateToDataService {
     teEnt.entity_version_project_rels = [StateToDataService.createEpr(teEnt, eprOptions)]
 
 
-    teEnt.te_roles = StateToDataService.roleSetsToRolesToRelate(teEntState.roleSets, eprOptions)
-
+    teEnt.te_roles = [
+      ...StateToDataService.roleSetsToRolesToRelate(teEntState.roleSets, eprOptions),
+      ...StateToDataService.existenceTimeToRolesToRelate(teEntState.existenceTimeState, eprOptions)
+    ]
     //  .map(role=>{
     //   return StateToDataService.roleStateToRoleToRelate
     // })
@@ -157,4 +160,13 @@ export class StateToDataService {
     return roles;
   }
 
+  /**
+   * Transforms a given ExistenceTimeState object to an object that can be passed to the
+   * api in order to chante the project relation roles (and potentially to its children)
+   * 
+   * @param teEntState 
+   */
+  static existenceTimeToRolesToRelate(teEntState: IExistenceTimeState, eprOptions?: InfEntityProjectRel): InfRole[] {
+    return StateToDataService.roleSetsToRolesToRelate(teEntState.roleSets, eprOptions);
+  }
 }

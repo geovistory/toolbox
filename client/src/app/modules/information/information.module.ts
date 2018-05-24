@@ -87,6 +87,10 @@ import { NgReduxFormModule } from '@angular-redux/form';
 import { ExistenceTimeActions } from './components/te-ent-existence-time/te-ent-existence-time.actions';
 import { TimePrimitiveComponent } from './components/time-primitive/time-primitive.component';
 import { TimePrimitiveViewComponent } from './components/time-primitive-view/time-primitive-view.component';
+import { ExistTimeRoleSetComponent } from './components/te-ent-role-set/exist-time-role-set/exist-time-role-set.component';
+import { TeEntExistenceTimeEditableComponent } from './components/te-ent-existence-time/te-ent-existence-time-editable/te-ent-existence-time-editable.component';
+import { TeEntExistenceTimeEditComponent } from './components/te-ent-existence-time/te-ent-existence-time-edit/te-ent-existence-time-edit.component';
+import { TeEntExistenceTimeAddComponent } from './components/te-ent-existence-time/te-ent-existence-time-add/te-ent-existence-time-add.component';
 
 
 @NgModule({
@@ -151,6 +155,10 @@ import { TimePrimitiveViewComponent } from './components/time-primitive-view/tim
     KeysPipe,
     TimePrimitiveComponent,
     TimePrimitiveViewComponent,
+    ExistTimeRoleSetComponent,
+    TeEntExistenceTimeEditableComponent,
+    TeEntExistenceTimeEditComponent,
+    TeEntExistenceTimeAddComponent,
   ],
   providers: [
     RoleSetListActions,
