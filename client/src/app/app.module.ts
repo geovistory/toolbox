@@ -3,31 +3,36 @@ import { NgModule, LOCALE_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { registerLocaleData } from '@angular/common';
 import localeDeCh from '@angular/common/locales/de-CH';
-
 registerLocaleData(localeDeCh);
 
 // Third party imports
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {ElasticInputModule} from 'angular2-elastic-input';
-import {SlimLoadingBarModule} from 'ng2-slim-loading-bar';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ElasticInputModule } from 'angular2-elastic-input';
+import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
+import { NgReduxModule } from '@angular-redux/store';
+import { NgReduxRouterModule } from '@angular-redux/router';
 
 // Own imports
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeModule } from './modules/home/home.module';
 import { AuthGuard, ActiveAccountService, ActiveProjectService, SDKBrowserModule, EntityEditorService } from './core';
-import { PassiveLinkModule } from './shared/directives';
-import { ControlMessagesModule, LanguageSearchTypeaheadModule } from './shared/components';
-
+import { PassiveLinkModule } from './shared';
+import { ControlMessagesModule, LanguageSearchTypeaheadModule } from './shared';
+import { StoreModule } from './core/store/module';
+import { InformationModule } from './modules/information/information.module';
+import { ProjectsModule } from './modules/projects/projects.module';
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
+    NgReduxRouterModule,
+    NgReduxModule,
+    StoreModule,
     SDKBrowserModule.forRoot(),
     NgbModule.forRoot(),
     ElasticInputModule.forRoot(),
@@ -38,10 +43,11 @@ import { ControlMessagesModule, LanguageSearchTypeaheadModule } from './shared/c
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    HomeModule,
+    ProjectsModule,
     PassiveLinkModule,
     ControlMessagesModule,
-    LanguageSearchTypeaheadModule
+    LanguageSearchTypeaheadModule,
+    // InformationModule
   ],
   providers: [
     EntityEditorService,
@@ -50,7 +56,7 @@ import { ControlMessagesModule, LanguageSearchTypeaheadModule } from './shared/c
     AuthGuard,
     { provide: LOCALE_ID, useValue: 'de-CH' }
   ],
-  entryComponents : [
+  entryComponents: [
     AppComponent
   ],
   bootstrap: [AppComponent]

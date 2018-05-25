@@ -1,0 +1,83 @@
+<ng-container *ngTemplateOutlet="header; context:{editBtn:false}"></ng-container>
+
+<div [@slideInOut]="(toggle$|async)">
+  <div class="p-2">
+
+
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmitExistenceTime()">
+
+
+      <!-- Begin of Begin -->
+      <div class="form-group">
+
+        <gv-exist-time-role-set *ngIf="existenceTimeState?.roleSets?._152_ingoing" class="form-control p-0 rounded-0" index="_152_ingoing"
+          [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntStatePath" (onRemoveRoleSet)="removeRoleSet('_152_ingoing')"
+          formControlName="_152_ingoing" (touched)="markAsTouched()"></gv-exist-time-role-set>
+
+        <button class="btn btn-link" *ngIf="!existenceTimeState?.roleSets?._152_ingoing" (click)="addRoleSet(152)">Add Begin of begin</button>
+
+      </div>
+
+      <!-- End of begin -->
+      <div class="form-group">
+
+        <gv-exist-time-role-set *ngIf="existenceTimeState?.roleSets?._150_ingoing" class="form-control p-0 rounded-0" index="_150_ingoing"
+          [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntStatePath" (onRemoveRoleSet)="removeRoleSet('_150_ingoing')"
+          formControlName="_150_ingoing" (touched)="markAsTouched()"></gv-exist-time-role-set>
+
+        <button class="btn btn-link" *ngIf="!existenceTimeState?.roleSets?._150_ingoing" (click)="addRoleSet(150)">Add End of Begin</button>
+
+      </div>
+
+
+      <!-- Begin of end -->
+      <div class="form-group">
+
+        <gv-exist-time-role-set *ngIf="existenceTimeState?.roleSets?._151_ingoing" class="form-control p-0 rounded-0" index="_151_ingoing"
+          [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntStatePath" (onRemoveRoleSet)="removeRoleSet('_151_ingoing')"
+          formControlName="_151_ingoing" (touched)="markAsTouched()"></gv-exist-time-role-set>
+
+        <button class="btn btn-link" *ngIf="!existenceTimeState?.roleSets?._151_ingoing" (click)="addRoleSet(151)">Add Begin of end</button>
+
+      </div>
+
+      <!-- End of End -->
+      <div class="form-group">
+
+        <gv-exist-time-role-set *ngIf="existenceTimeState?.roleSets?._153_ingoing" class="form-control p-0 rounded-0" index="_153_ingoing"
+          [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntStatePath" (onRemoveRoleSet)="removeRoleSet('_153_ingoing')"
+          formControlName="_153_ingoing" (touched)="markAsTouched()"></gv-exist-time-role-set>
+
+        <button class="btn btn-link" *ngIf="!existenceTimeState?.roleSets?._153_ingoing" (click)="addRoleSet(153)">Add End of end</button>
+
+      </div>
+
+
+      <button type="submit" class="btn btn-primary" [disabled]="formGroup.invalid || formGroup.pristine">Ok</button>
+      <button type="submit" class="btn btn-link" (click)="stopEditing()">Cancel</button>
+    </form>
+
+  </div>
+</div>
+
+
+<!-- ************************** NG TEMPLATES ****************************** -->
+
+<ng-template #header let-editBtn="editBtn">
+  <div class="btn-group d-flex flex-row gv-h5">
+    <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
+      <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
+      When
+    </button>
+    <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+      <div class="align-self-center">
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/50" target="_blank">
+          E52
+        </a>
+      </div>
+    </div>
+    <div class="btn btn-link btn-sm" (click)="startEditing()" *ngIf="(toggle$|async) ==='expanded' && editBtn">
+      <i class="fa fa-edit"></i>
+    </div>
+  </div>
+</ng-template>

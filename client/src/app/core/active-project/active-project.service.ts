@@ -5,6 +5,10 @@ import { LoopBackAuth } from '../sdk/services/core/auth.service';
 import { ProjectApi } from '../sdk/services/custom/Project';
 import { environment } from '../../../environments/environment';
 import { LoopBackConfig } from '../sdk/lb.config';
+import { NgRedux } from '@angular-redux/store';
+import { ProjectsActions } from '../../modules/projects/api/projects.actions';
+import { IProject } from '../../modules/projects/projects.model';
+import { ActiveProjectActions } from './active-project.action';
 
 @Injectable()
 export class ActiveProjectService {
@@ -12,17 +16,23 @@ export class ActiveProjectService {
   project: Project;
 
   constructor(
-    private projectApi: ProjectApi
+    private projectApi: ProjectApi,
+    private ngRedux: NgRedux<IProject>,
+    private actions: ActiveProjectActions
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
+
+    this.changeProjectEventEmitter.subscribe(project => {
+      this.ngRedux.dispatch(this.actions.activeProjectUpdated(project))
+    })
   }
 
-  onProjectChange():EventEmitter<Project> {
+  onProjectChange(): EventEmitter<Project> {
     return this.changeProjectEventEmitter;
   }
 
-  private getProject(id:number):void {
+  private getProject(id: number): void {
     this.projectApi.find({
       where: {
         "pk_project": id
@@ -42,11 +52,11 @@ export class ActiveProjectService {
    * @param  {number or string} id    Project Id
    *
    */
-  setActiveProject(id):void{
-    if(this.project && this.project.pk_project == id){
+  setActiveProject(id): void {
+    if (this.project && this.project.pk_project == id) {
       this.changeProjectEventEmitter.emit(this.project);
     }
-    else{
+    else {
       this.getProject(id);
     }
   }

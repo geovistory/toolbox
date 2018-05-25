@@ -1,8 +1,0 @@
-<div [ngClass]="{'dev-view': entityEditor.devView}">
-  <a class="gv-back-btn btn btn-link" routerLink="../../search"  queryParamsHandling="merge">
-    <i class="fa fa-arrow-left"></i>  Search
-  </a>
-  <div *ngIf="activeProjectReady">
-    <gv-pe-it [pkEntity]="pkEntity" [peItState]="peItState"></gv-pe-it>
-  </div>
-</div>

@@ -2,6 +2,7 @@ import { EventEmitter } from '@angular/core';
 
 import { DateTime, YearMonthDay } from './interfaces';
 import { DateTimeCommons, Granularity } from './date-time-commons';
+import { JulianDateTime } from '.';
 
 /**
  * Class to represent a Julian Date and Time
@@ -215,21 +216,24 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
 
   fromJulianDay(julianDay: number) {
 
+    if (typeof julianDay === 'string') {
+      julianDay = parseInt(julianDay)
+    }
+    
     // julian day of year 1 AD
     var julianDay0 = 1721426;
 
     var firstDayOfGregorianCal = 2299161;
 
     // conversion of julian day earlier than the introduction of
-    // the gregorian calendar October 15th of 1582 are not supported
-    // since this makes no sense
+    // the gregorian calendar October 15th of 1582 are calculated
+    // with the julian calendar algoritms
     if (julianDay < firstDayOfGregorianCal) {
 
-      this.year = undefined
-
-      this.month = undefined
-
-      this.day = undefined
+      const jdt = new JulianDateTime().fromJulianDay(julianDay);
+      this.year = jdt.year;
+      this.month = jdt.month;
+      this.day = jdt.day;
 
     }
     else {
@@ -284,11 +288,7 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
       this.day = monthDay.day;
     }
 
-    return {
-      year: this.year,
-      month: this.month,
-      day: this.day
-    }
+    return this;
   }
 
 
@@ -303,6 +303,48 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
     return ((!(year % 4) && year % 100) || !(year % 400)) ? true : false;
   }
 
+  /**
+   * returns julian day in seconds
+   * 
+   * TODO: return julian day plus time in seconds
+   */
+  getJulianSecond(){
+     let seconds = this.getJulianDay() * 60 * 60 * 24; // first second of the day
+     if (this.seconds > 0) seconds = seconds + this.seconds;
+     if (this.minutes > 0) seconds = seconds + this.minutes * 60;
+     if(this.hours > 0) seconds = seconds + this.hours * 60 * 60;
+     return seconds;
+  }
+
+  /**
+   * Set this JulianDateTime from given julian second
+   * @param julianSecond julian second
+   */
+  fromJulianSecond(julianSecond) {
+
+    const secsPerDay = 60 * 60 * 24;
+
+    // number of full days
+    const julianDay = Math.floor(julianSecond / secsPerDay);
+
+    // number of seconds of the julian day
+    const secsOfDay = julianSecond % secsPerDay;
+
+    // number of ours of the day
+    this.hours = Math.floor(secsOfDay / (60 * 60))
+
+    // number of seconds of the last hour
+    const secsOfHour = this.hours % (60 * 60);
+
+    // number of ours of the day
+    this.minutes = Math.floor(secsOfHour / 60)
+    
+    // secs of the last minute
+    this.seconds = this.minutes % 60;
+
+    return this.fromJulianDay(julianDay);
+
+  }
 
 
 }

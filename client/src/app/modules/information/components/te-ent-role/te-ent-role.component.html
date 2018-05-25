@@ -1,0 +1,234 @@
+<div [ngClass]="{'dev-view': entityEditor.devView}">
+
+  <span *ngIf="entityEditor.devView">
+    [state: {{(state$|async)}}] [pk: {{role.pk_entity_version_concat}}] [ready: {{isReadyToCreate}}] [commStatsVisible: {{communityStatsVisible}}]
+  </span>
+
+  <!--
+  ************************* Create State ************************* -->
+
+
+  <div *ngIf="(state$|async) === 'create'">
+
+    <div *ngIf="showEntityUI && (targetDfhClass$|async)" class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
+      <gv-pe-it-entity-preview [parentPath]="basePath"></gv-pe-it-entity-preview>
+      <gv-pe-it-entity-add *ngIf="!(isReadyToCreate$|async)" [dfhClass]="(targetDfhClass$|async)" (selected)="pkEntitySelected($event)"></gv-pe-it-entity-add>
+    </div>
+
+
+    <div class="card-body">
+      <button [ngClass]="{disabled:!(isReadyToCreate$|async)}" type="button" class="btn btn-primary" (click)="createRole()">Ok</button>
+      <button type="button" class="btn btn-link" (click)="cancelCreateRole()">Cancel</button>
+    </div>
+
+  </div>
+
+
+  <!--
+  ************************* Create PeIt State & Create PeIt-Role State & Create TeEnt-Role State ************************* -->
+
+  <div *ngIf="(state$|async) === 'create-pe-it' || (state$|async) === 'create-pe-it-role' || (state$|async) === 'create-te-ent-role'">
+
+    <ng-container *ngTemplateOutlet="object"></ng-container>
+
+  </div>
+
+
+  <!--
+  ************************* Add State ************************* -->
+
+  <div *ngIf="(state$|async)=='add'">
+
+    <!-- <gv-pe-it class="gv-flex-grow-1" [peItState]="(state$|async)" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
+      [childOfTeEnt]="true" (appeChange)="emitAppeChange($event)" (appeReadyToAdd)="onAppeReadyToAdd($event)" (langReadyToAdd)="onLangReadyToAdd($event)"> -->
+    <div headerLeft>
+
+      <!-- UI for is in project -->
+
+      <div class="gv-in-project">
+        <!-- [attr.disabled]="roleToAdd.entity_version_project_rels[0].is_standard_in_project || changeIsInProjectLoading ? 'disabled' : null" -->
+
+        <!-- Is in project -->
+        <!-- <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="roleToAdd.entity_version_project_rels[0].is_in_project"
+          (click)="deselect()">
+          <i class="fa fa-check-square-o"></i>
+        </button> -->
+
+        <!-- Is not in project -->
+        <!-- <button type="button" name="button" class="btn btn-link btn-sm" [attr.disabled]="changeIsInProjectLoading ? 'disabled' : null"
+          *ngIf="!roleToAdd.entity_version_project_rels[0].is_in_project" (click)="select()">
+          <i class="fa fa-square-o"></i>
+        </button> -->
+
+      </div>
+
+    </div>
+    <!-- </gv-pe-it> -->
+
+    <ng-container *ngTemplateOutlet="object"></ng-container>
+
+  </div>
+
+  <!--
+  ************************* Add PeIt State ************************* -->
+
+  <div class="d-flex flex-row" *ngIf="(state$|async) === 'add-pe-it'">
+
+    <ng-container *ngTemplateOutlet="object"></ng-container>
+
+    <!-- include component PeIt (passing the PeIt) -->
+    <!-- <gv-pe-it class="gv-flex-grow-1" [peItState]="(state$|async)" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
+      [childOfTeEnt]="true" (appeChange)="emitAppeChange($event)" (appeReadyToAdd)="onAppeReadyToAdd($event)" (langReadyToAdd)="onLangReadyToAdd($event)"></gv-pe-it> -->
+
+    <!-- <div class="gv-in-project"> -->
+    <!-- [attr.disabled]="roleToAdd.entity_version_project_rels[0].is_standard_in_project || changeIsInProjectLoading ? 'disabled' : null" -->
+
+    <!-- Is in project -->
+    <!-- <button type="button" name="button" class="btn btn-link btn-sm"
+  *ngIf="roleToAdd.entity_version_project_rels[0].is_in_project"
+  (click)="deselect()">
+  <i class="fa fa-check-square-o" ></i> </button> -->
+
+    <!-- Is not in project -->
+    <!-- <button type="button" name="button" class="btn btn-link btn-sm"
+  [attr.disabled]="changeIsInProjectLoading ? 'disabled' : null"
+  *ngIf="!roleToAdd.entity_version_project_rels[0].is_in_project"
+  (click)="select()">
+  <i class="fa fa-square-o"></i></button> -->
+
+    <!-- </div> -->
+
+  </div>
+
+
+  <!--
+  ************************* Edit State ************************* -->
+
+
+  <div *ngIf="(state$|async) === 'edit'">
+
+    <div class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
+
+      <form [formGroup]="formGroup" [connect]="formValPath" *ngIf="formGroup && roleState" class="align-self-center gv-flex-grow-1">
+
+        <div *ngIf="(leafPeItLoading$ |async)">
+          <i class="fa fa-spinner fa-pulse"></i> Loading</div>
+        <gv-pe-it-entity-preview *ngIf="(peItState$ |async) && !(leafPeItLoading$ |async)" [parentPath]="basePath" [isCircular]="(isCircular$|async)"
+          [formControlName]="formControlName" (touched)="markAsTouched()"></gv-pe-it-entity-preview>
+
+        <gv-appellation *ngIf="roleState.appeState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
+          (touched)="markAsTouched()"></gv-appellation>
+
+        <gv-language *ngIf="roleState.langState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
+          (touched)="markAsTouched()"></gv-language>
+
+        <gv-time-primitive *ngIf="roleState.timePrimitiveState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
+          (touched)="markAsTouched()"></gv-time-primitive>
+
+        <div>
+          <gv-control-messages *ngIf="formGroup.get(formControlName)" [control]="formGroup.get(formControlName)"></gv-control-messages>
+        </div>
+
+        <div class="card-body">
+          <button [ngClass]="{disabled:(formGroup.invalid)}" type="button" class="btn btn-primary" (click)="okEdit()">Ok</button>
+          <button type="button" class="btn btn-link" (click)="cancelEdit()">Cancel</button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+
+
+  <!--
+  ************************* Editable State ************************* -->
+
+
+  <div class="d-flex" *ngIf="(state$|async) === 'editable' || (state$|async) === 'exist-time'">
+
+    <div class="btn-group gv-flex-grow-1 gv-flex-shrink-0 d-flex">
+
+      <ng-content select="[headerLeft]"></ng-content>
+
+      <ng-container *ngTemplateOutlet="object"></ng-container>
+
+      <div class="d-flex align-items-center" *ngIf="!(isCircular$|async)">
+        <ng-content select="[headerRight]"></ng-content>
+      </div>
+
+    </div>
+
+
+
+
+  </div>
+
+  <!--
+  ************************* View State ************************* -->
+
+  <div *ngIf="(state$|async) === 'view'">
+    <div class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
+      <ng-container *ngTemplateOutlet="object"></ng-container>
+    </div>
+
+    <!-- include component PeIt (passing the PeIt)
+    <gv-pe-it [peItState]="(state$|async)" [appellation]="role?.appellation" [language]="role?.language" [pkEntity]="role.fk_entity"
+      [childOfTeEnt]="true" (appeChange)="emitAppeChange($event)">
+
+      <div belowHeader>
+        <div class="card-body pt-0 gv-community-statistics d-flex justify-content-start small" *ngIf="communityStatsVisible">
+
+          <ul class="gv-ul-sm">
+            <li class="gv-li-inline">
+              <a href class="gv-passive-link text-secondary" (click)="openProjectsModal()" title="Added by {{role.is_in_project_count}} {{role.is_in_project_count === 1 ? 'project':'projects'}}">
+                <span>
+                  <i class="fa fa-check"></i> {{role.is_in_project_count}}</span>
+              </a>
+            </li>
+            <li class="gv-li-inline">
+              <a href class="gv-passive-link text-secondary" (click)="openVersionHistoryModal()" title="Used as standard by {{role.is_standard_in_project_count}} {{role.is_standard_in_project_count === 1 ? 'project':'projects'}}">
+                <span>
+                  <i class="fa fa-eye"></i> {{role.is_standard_in_project_count}}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </gv-pe-it> -->
+
+  </div>
+
+
+
+</div>
+
+
+
+
+<ng-template #object>
+  <div class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
+
+    <form [formGroup]="formGroup" *ngIf="formGroup && roleState" class="align-self-center gv-flex-grow-1">
+
+      <div *ngIf="(leafPeItLoading$ |async)">
+        <i class="fa fa-spinner fa-pulse"></i> Loading</div>
+      <gv-pe-it-entity-preview *ngIf="(peItState$ |async) && !(leafPeItLoading$ |async)" [parentPath]="basePath" [isCircular]="(isCircular$|async)"
+        [formControlName]="formControlName" (touched)="markAsTouched()"></gv-pe-it-entity-preview>
+
+      <gv-appellation *ngIf="roleState.appeState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
+        (touched)="markAsTouched()"></gv-appellation>
+
+      <gv-language *ngIf="roleState.langState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
+        (touched)="markAsTouched()"></gv-language>
+
+      <gv-time-primitive *ngIf="roleState.timePrimitiveState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
+        (touched)="markAsTouched()"></gv-time-primitive>
+      <div>
+
+        <gv-control-messages *ngIf="formGroup.get(formControlName)" [control]="formGroup.get(formControlName)"></gv-control-messages>
+      </div>
+
+    </form>
+  </div>
+</ng-template>

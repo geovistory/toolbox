@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports = function(InfRole) {
+module.exports = function (InfRole) {
 
-  InfRole.changeRoleProjectRelation = function(projectId, isInProject, role, ctx) {
+  InfRole.changeRoleProjectRelation = function (projectId, isInProject, role, ctx) {
 
     let requestedRole;
 
@@ -91,7 +91,7 @@ module.exports = function(InfRole) {
   }
 
 
-  InfRole.findOrCreateInfRole = function(projectId, role, ctx) {
+  InfRole.findOrCreateInfRole = function (projectId, role, ctx) {
 
     const dataObject = {
       // pk_entity: role.pk_entity,
@@ -117,7 +117,7 @@ module.exports = function(InfRole) {
           dataObject.fk_temporal_entity = resultingTeEnt.pk_entity;
 
           // call the api to find or create the role that points to the teEnt
-          return InfRole.findOrCreateInfRole(projectId, dataObject)
+          return InfRole.findOrCreateObjectOrRole(InfRole, projectId, dataObject, requestedRole)
             .then((roles) => {
 
               let res = roles[0].toJSON()
@@ -152,7 +152,7 @@ module.exports = function(InfRole) {
           // … prepare the Role to create
           dataObject.fk_entity = resultingPeIt.pk_entity;
 
-          return InfRole.findOrCreateInfRole(projectId, dataObject)
+          return InfRole.findOrCreateObjectOrRole(InfRole, projectId, dataObject, requestedRole)
             .then((resultingRoles) => {
 
               let res = resultingRole[0].toJSON();
@@ -185,7 +185,7 @@ module.exports = function(InfRole) {
           // … prepare the Role to create
           dataObject.fk_entity = resultingEntity.pk_entity;
 
-          return InfRole.findOrCreateInfRole(projectId, dataObject)
+          return InfRole.findOrCreateObjectOrRole(InfRole, projectId, dataObject, requestedRole)
             .then((resultingRoles) => {
 
               let res = resultingRoles[0].toJSON();
@@ -219,7 +219,7 @@ module.exports = function(InfRole) {
           // … prepare the Role to create
           dataObject.fk_entity = resultingEntity.pk_entity;
 
-          return InfRole.findOrCreateInfRole(projectId, dataObject)
+          return InfRole.findOrCreateObjectOrRole(InfRole, projectId, dataObject, requestedRole)
             .then((resultingRoles) => {
 
               let res = resultingRoles[0].toJSON();
@@ -235,9 +235,9 @@ module.exports = function(InfRole) {
         .catch((err) => {
           return err;
         })
-    } 
-     // if the role points to a time_primitive
-     else if (requestedRole.time_primitive && Object.keys(requestedRole.time_primitive).length > 0) {
+    }
+    // if the role points to a time_primitive
+    else if (requestedRole.time_primitive && Object.keys(requestedRole.time_primitive).length > 0) {
 
       // prepare parameters
       const InfTimePrimitive = InfRole.app.models.InfTimePrimitive;
@@ -248,12 +248,9 @@ module.exports = function(InfRole) {
           const resultingEntity = resultingEntities[0];
 
           // … prepare the Role to create 
-          requestedRole.fk_entity = resultingEntity.pk_entity;
+          dataObject.fk_entity = resultingEntity.pk_entity;
 
-          //delete the time_primitive since we just created it
-          delete requestedRole.time_primitive;
-
-          return InfRole.findOrCreateInfRole(projectId, requestedRole)
+          return InfRole.findOrCreateObjectOrRole(InfRole, projectId, dataObject, requestedRole)
             .then((resultingRoles) => {
 
               let res = resultingRoles[0].toJSON();
@@ -269,17 +266,17 @@ module.exports = function(InfRole) {
         .catch((err) => {
           return err;
         })
-    } 
+    }
     else {
 
-      return InfRole.findOrCreateEntity(InfRole, projectId, dataObject, requestedRole)
+      return InfRole.findOrCreateObjectOrRole(InfRole, projectId, dataObject, requestedRole)
 
     }
 
   }
 
 
-  InfRole.alternativesNotInProjectByEntityPk = function(entityPk, propertyPk, projectId, cb) {
+  InfRole.alternativesNotInProjectByEntityPk = function (entityPk, propertyPk, projectId, cb) {
 
     const rolesInProjectFilter = {
       /** Select roles with fk_entity and fk_property … */
@@ -304,7 +301,7 @@ module.exports = function(InfRole) {
       }
     }
 
-    const findThem = function(err, roles) {
+    const findThem = function (err, roles) {
 
       const entitiesInProj = []
 
@@ -365,8 +362,16 @@ module.exports = function(InfRole) {
                     "pk_entity": "asc"
                   }]
                 }
+              },
+              "time_primitive": {
+                "$relation": {
+                  "name": "time_primitive",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
               }
-              //,...innerJoinThisProject, // … get project's version
 
             }
           }
@@ -387,7 +392,7 @@ module.exports = function(InfRole) {
 
 
 
-  InfRole.alternativesNotInProjectByTeEntPk = function(teEntPk, propertyPk, projectId, cb) {
+  InfRole.alternativesNotInProjectByTeEntPk = function (teEntPk, propertyPk, projectId, cb) {
 
     const rolesInProjectFilter = {
       /** Select roles with fk_temporal_entity and fk_property … */
@@ -412,7 +417,7 @@ module.exports = function(InfRole) {
       }
     }
 
-    const findThem = function(err, roles) {
+    const findThem = function (err, roles) {
 
       const entitiesInProj = []
 
@@ -456,8 +461,16 @@ module.exports = function(InfRole) {
                 "pk_entity": "asc"
               }]
             }
+          },
+          "time_primitive": {
+            "$relation": {
+              "name": "time_primitive",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
           }
-          //,...innerJoinThisProject, // … get project's version
 
         }
       };

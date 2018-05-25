@@ -2,8 +2,11 @@ import { NgModule } from '@angular/core';
 import { Route, Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './core';
 import { HomeComponent } from './modules/home/pages/home.component';
+import { ProjectListComponent } from './modules/projects/components/project-list/project-list.component';
+import { ProjectsModule } from './modules/projects/projects.module';
 
 
+export function getProjectModule() { return ProjectsModule };
 
 const indexRoute: Route = {
   path: '',
@@ -22,23 +25,19 @@ const routes: Routes = [
   {
     path: '',
     children: [
-      indexRoute,      
+      indexRoute,
       {
         path: 'home',
         loadChildren: './modules/home/home.module#HomeModule'
       },
       {
         path: '',
-        loadChildren: './modules/login-and-registration/login-and-registration.module#LoginAndRegistrationModule',
-      },
-      {
-        path: 'account',
         loadChildren: './modules/account/account.module#AccountModule',
-        canActivate: [AuthGuard]
       },
       {
         path: 'projects',
-        loadChildren: './modules/toolbox/projects/projects.module#ProjectsModule',
+        loadChildren: './modules/projects/projects.module#ProjectsModule',
+        // line above instead of loadChildren: getProjectModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116 
         canActivate: [AuthGuard]
       },
       fallbackRoute

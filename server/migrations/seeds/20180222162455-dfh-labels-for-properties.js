@@ -8,14 +8,14 @@ var seed;
 * We receive the dbmigrate dependency from dbmigrate initially.
 * This enables us to not have to rely on NODE_PATH.
 */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
 
-exports.up = function(db, callback) {
+exports.up = function (db, callback) {
   const sql = `
   INSERT INTO data_for_history.label (dfh_fk_property, dfh_label, notes)
   VALUES
@@ -47,15 +47,24 @@ exports.up = function(db, callback) {
   (6, 'Born child', 'label.sg'),
   (6, 'Born children', 'label.pl'),
   (6, 'Birth', 'label_inversed.sg'),
-  (6, 'Births', 'label_inversed.pl');
-  `;
+  (6, 'Births', 'label_inversed.pl'),
+
+  (71, 'Ongoing throughout' , 'label_inversed.sg'),
+  (150,'End of begin'       , 'label_inversed.sg'),
+  (151,'Begin of end'       , 'label_inversed.sg'),
+  (72, 'At some time within', 'label_inversed.sg'),
+  (152,'Begin of begin'     , 'label_inversed.sg'),
+  (153,'End of end'         , 'label_inversed.sg')
+  
+  
+  ;  `;
   console.log(sql);
 
   db.runSql(sql, callback);
 
 };
 
-exports.down = function(db, callback) {
+exports.down = function (db, callback) {
   const sql = `
   TRUNCATE data_for_history.label CASCADE;
   `;

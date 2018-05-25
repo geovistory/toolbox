@@ -1,0 +1,240 @@
+<div [ngClass]="{'dev-view': entityEditor.devView}">
+
+  <span *ngIf="entityEditor.devView">
+    [state: {{state}}] [pk: {{role.pk_entity_version_concat}}] [ready: {{isReadyToCreate}}] [commStatsVisible: {{communityStatsVisible}}]
+  </span>
+
+  <!--
+  ************************* Editable State ******************* -->
+
+  <div *ngIf="(state$ | async) === 'editable'">
+
+
+    <!-- TeEnt Component (passing the temporal entity) -->
+    <gv-te-ent [parentPath]="basePath">
+      <div headerRight class="d-flex">
+
+        <!-- UI for standard in project -->
+
+        <div class="gv-standard-in-project">
+
+          <!-- If is standard -->
+
+          <i class="fa fa-eye gv-true text-primary" title="Is standard" *ngIf="(isDisplayRoleInProject$|async)"></i>
+
+          <!-- If not standard -->
+
+          <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="!(isDisplayRoleInProject$|async)" [attr.disabled]="(changingDisplayRole$|async) ? 'disabled' : null"
+            (click)="requestStandard()" title="Make standard">
+            <i class="fa fa-eye-slash gv-false"></i>
+          </button>
+
+        </div>
+
+        <!-- dropdown -->
+
+        <ng-content select="[headerRight]"></ng-content>
+
+
+      </div>
+
+
+      <div belowHeader>
+        <div class="card-body pt-0 gv-community-statistics d-flex justify-content-start small" *ngIf="communityStatsVisible">
+
+          <!-- Community data statistics -->
+          <ul class="gv-ul-sm">
+            <li class="gv-li-inline">
+              <a href class="gv-passive-link text-secondary" (click)="openProjectsModal()" title="Added by {{role.is_in_project_count}} {{role.is_in_project_count === 1 ? 'project':'projects'}}">
+                <span>
+                  <i class="fa fa-check"></i> {{role.is_in_project_count}}</span>
+              </a>
+            </li>
+            <li class="gv-li-inline">
+              <a href class="gv-passive-link text-secondary" (click)="openVersionHistoryModal()" title="Used as standard by {{role.is_standard_in_project_count}} {{role.is_standard_in_project_count === 1 ? 'project':'projects'}}">
+                <span>
+                  <i class="fa fa-eye"></i> {{role.is_standard_in_project_count}}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </gv-te-ent>
+
+  </div>
+
+
+
+
+
+  <!-- Not used?
+  ************************* Add State ************************* -->
+
+  <div *ngIf="(state$ | async) === 'add' && (role$|async)">
+
+    <!-- TeEnt Component (passing the temporal entity) -->
+    <gv-te-ent [parentPath]="basePath">
+      <div headerLeft>
+
+        <!-- UI for is in project -->
+
+        <div class="gv-in-project">
+          <!-- [attr.disabled]="roleToAdd.entity_version_project_rels[0].is_standard_in_project || changeIsInProjectLoading ? 'disabled' : null" -->
+
+          <!-- Is in project -->
+          <!-- <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="(role$|async)?.entity_version_project_rels[0]?.is_in_project"
+            (click)="deselect()">
+            <i class="fa fa-check-square-o"></i>
+          </button> -->
+
+          <!-- Is not in project -->
+          <!-- <button type="button" name="button" class="btn btn-link btn-sm" [attr.disabled]="changeIsInProjectLoading ? 'disabled' : null"
+            *ngIf="!(role$|async)?.entity_version_project_rels[0].is_in_project" (click)="select()">
+            <i class="fa fa-square-o"></i>
+          </button> -->
+
+        </div>
+
+      </div>
+      <div belowHeader>
+        <div class="card-body pt-0 gv-community-statistics d-flex justify-content-start small">
+
+          <!-- Community data statistics -->
+          <ul class="gv-ul-sm">
+            <li class="gv-li-inline">
+              <a href class="gv-passive-link text-secondary" (click)="openProjectsModal()" title="Added by {{(role$|async)?.is_in_project_count}} {{(role$|async)?.is_in_project_count == 1 ? 'project':'projects'}}">
+                <span>
+                  <i class="fa fa-check"></i> {{(role$|async)?.is_in_project_count}}</span>
+              </a>
+            </li>
+            <li class="gv-li-inline">
+              <a href class="gv-passive-link text-secondary" (click)="openVersionHistoryModal()" title="Used as standard by {{(role$|async)?.is_standard_in_project_count}} {{(role$|async)?.is_standard_in_project_count == 1 ? 'project':'projects'}}">
+                <span>
+                  <i class="fa fa-eye"></i> {{(role$|async)?.is_standard_in_project_count}}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </gv-te-ent>
+
+
+  </div>
+
+  <!--
+  ************************* Create PeI-Role State ******************* -->
+  <!-- 
+  <div *ngIf="(state$ | async) === 'create-pe-it-role'">
+
+      <gv-te-ent [parentPath]="basePath"> </gv-te-ent>
+  
+    </div>
+   -->
+  <!--
+  ************************* Create PeIt State &&  PeI-Role State ******************* -->
+
+  <div *ngIf="(state$ | async) === 'create-pe-it' || (state$ | async) === 'create-pe-it-role'">
+
+    <form [formGroup]="formGroup" *ngIf="formGroup">
+      <gv-te-ent [parentPath]="basePath" [formControlName]="formControlName" (touched)="markAsTouched()">
+        <div belowHeader>
+          <div class="card-body pt-0 gv-community-statistics d-flex justify-content-start small">
+            <ng-container *ngTemplateOutlet="communtiyStats"></ng-container>
+          </div>
+        </div>
+      </gv-te-ent>
+    </form>
+
+  </div>
+
+
+  <!--
+  ************************* Add-Pe-It State ************************* -->
+
+  <div *ngIf="(state$ | async) === 'add-pe-it'">
+
+    <!-- TeEnt Component (passing the temporal entity) -->
+    <gv-te-ent [parentPath]="basePath">
+
+      <div headerRight class="d-flex">
+
+        <div headerLeft *ngIf="true==false">
+
+          <!-- UI for is in project -->
+
+          <div class="gv-in-project">
+            <!-- [attr.disabled]="roleToAdd.entity_version_project_rels[0].is_standard_in_project || changeIsInProjectLoading ? 'disabled' : null" -->
+
+            <!-- Is in project -->
+            <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="roleToAdd.entity_version_project_rels[0].is_in_project"
+              (click)="deselect()">
+              <i class="fa fa-check-square-o"></i>
+            </button>
+
+            <!-- Is not in project -->
+            <button type="button" name="button" class="btn btn-link btn-sm" [attr.disabled]="changeIsInProjectLoading ? 'disabled' : null"
+              *ngIf="!roleToAdd.entity_version_project_rels[0].is_in_project" (click)="select()">
+              <i class="fa fa-square-o"></i>
+            </button>
+
+          </div>
+
+        </div>
+        <!-- UI for standard in project -->
+        <!-- <div class="gv-standard-in-project">
+          <i class="fa fa-eye gv-true text-primary" title="Is standard" *ngIf="isStandardRoleToAdd"></i>
+        </div> -->
+      </div>
+
+      <div belowHeader>
+        <div class="card-body pt-0 gv-community-statistics d-flex justify-content-start small">
+          <ng-container *ngTemplateOutlet="communtiyStats"></ng-container>
+        </div>
+      </div>
+    </gv-te-ent>
+
+  </div>
+
+
+  <!--
+  ************************* View State ******************* -->
+
+  <div *ngIf="(state$ | async) === 'view'">
+
+    <!-- TeEnt Component (passing the temporal entity) -->
+    <gv-te-ent [parentPath]="basePath">
+      <div belowHeader>
+        <div class="card-body pt-0 gv-community-statistics d-flex justify-content-start small">
+          <ng-container *ngTemplateOutlet="communtiyStats"></ng-container>
+        </div>
+      </div>
+    </gv-te-ent>
+
+
+  </div>
+
+</div>
+
+
+
+<!-- ************************** NG TEMPLATES ****************************** -->
+
+<!-- Community data statistics -->
+<ng-template #communtiyStats>
+  <ul class="gv-ul-sm" *ngIf="(communityStatsVisible$|async)">
+    <li class="gv-li-inline">
+      <a href class="gv-passive-link text-secondary" (click)="openProjectsModal()" title="Added by {{roleState?.role.is_in_project_count}} {{roleState?.role.is_in_project_count == 1 ? 'project':'projects'}}">
+        <span>
+          <i class="fa fa-check"></i> {{roleState?.role.is_in_project_count}}</span>
+      </a>
+    </li>
+    <li class="gv-li-inline">
+      <a href class="gv-passive-link text-secondary" title="Used as standard by {{roleState?.role.is_standard_in_project_count}} {{roleState?.role.is_standard_in_project_count == 1 ? 'project':'projects'}}">
+        <span>
+          <i class="fa fa-eye"></i> {{roleState?.role.is_standard_in_project_count}}</span>
+      </a>
+    </li>
+  </ul>
+</ng-template>

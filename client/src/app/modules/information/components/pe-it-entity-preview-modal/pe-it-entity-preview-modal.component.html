@@ -1,0 +1,33 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    Info
+  </h4>
+
+  <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<ng2-slim-loading-bar color="inherit"></ng2-slim-loading-bar>
+
+<div class="modal-body">
+
+
+  <gv-pe-it [parentPath]="parentPath"></gv-pe-it>
+</div>
+
+<div class="modal-footer d-flex flex-column align-items-stretch">
+  <p *ngIf="!isInProject">
+    This unit is not yet added to your Project. Do you want to add it to your Project?
+  </p>
+  <div class="d-flex justify-content-end">
+    <button class="btn btn-link btn" (click)="modal.dismiss('Cancel click')">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary btn" (click)="addAndOpen()" *ngIf="!isInProject">
+      Add and Open
+    </button>
+    <button type="button" class="btn btn-primary btn" (click)="open()" *ngIf="isInProject">
+      Open
+    </button>
+  </div>
+</div>

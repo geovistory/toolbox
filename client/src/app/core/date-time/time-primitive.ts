@@ -6,13 +6,19 @@ import { DateTime } from './interfaces';
 
 export type CalendarType = 'gregorian' | 'julian';
 
+interface ITimePrimitive {
+  julianDay?: number;
+  duration?: Granularity;
+  calendar?: CalendarType;
+}
+
 export class TimePrimitive {
 
   julianDay: number;
   duration: Granularity;
-  calendar?: CalendarType; // the calendar initialy used by user to create time primitive
+  calendar: CalendarType; // the calendar initialy used by user to create time primitive
 
-  constructor(data?) {
+  constructor(data?:ITimePrimitive) {
     Object.assign(this, data);
   }
 
@@ -34,13 +40,13 @@ export class TimePrimitive {
    * Get a DateTime object according to the given calendar.
    *
    */
-  getDateTime(calendar:CalendarType = this.calendar):GregorianDateTime|JulianDateTime|null{
+  getDateTime(calendar: CalendarType = this.calendar): GregorianDateTime | JulianDateTime | null {
 
-    if(!calendar) return null;
+    if (!calendar) return null;
 
-    if(calendar ==='gregorian') return this.getGregorianDateTime();
+    if (calendar === 'gregorian') return this.getGregorianDateTime();
 
-    if(calendar ==='julian') return this.getJulianDateTime();
+    if (calendar === 'julian') return this.getJulianDateTime();
   }
 
 
@@ -49,11 +55,8 @@ export class TimePrimitive {
    *
    */
   getDate(calendar:CalendarType = this.calendar):Date|null{
-
     return this.getDateTime(calendar).getDate();
   }
-
-
   /**
    * Get a string that defines the format usable with the DatePipe,
    * a according to the given granularity
@@ -84,6 +87,25 @@ export class TimePrimitive {
   getShortesDateFormatString(): string {
 
     return this.getDateFormatString(this.duration);
+  }
+
+  /**
+   * Get the julian day in seconds
+   * TODO: integrate time 
+  */
+  getJulianSecond(): number {
+    return this.julianDay * 60 * 60 * 24;
+  }
+
+
+  /**
+   * Get the last second of this TimePrimitive. This depends on the calendar,
+   * since the month february and leap years differ from one calendar to the other
+   *
+   */
+  getLastSecond(calendar: CalendarType = this.calendar): number | null {
+    const dt = this.getDateTime()
+    return dt.getEndOf(this.duration).getJulianSecond();
   }
 
 }

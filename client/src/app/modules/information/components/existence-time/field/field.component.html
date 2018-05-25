@@ -1,0 +1,33 @@
+<div [formGroup]="formGroup" *ngIf="field.state !== 'addBtn'">
+
+
+  <gv-time-primitive-ctrl
+  [ngClass]="{'form-control':((!field.isImplicit && formGroup?.get(field.ctrlName).value) || field.state ==='edit'), 'd-flex px-2 py-1 gv-is-implicit': ((field.isImplicit || !formGroup?.get(field.ctrlName).value) && !field.state ==='edit')}"
+  [state]="field.state"
+  [submitBtnVisible]="true" [cancelBtnVisible]="true"
+  formControlName="{{field.ctrlName}}"
+  (onSubmit)="onSubmit.emit({fieldset:fieldset, field:field})"
+  (onCancel)="onCancel.emit({fieldset:fieldset, field:field})"
+  >
+
+  <span datePrefix [ngClass]="{'text-muted': field.isImplicit}">
+    <label class="mb-0">{{field.label}}</label> <br>
+    {{field.datePrefix}}
+  </span>
+
+  <span dropdownItems>
+    <button type="button" class="dropdown-item" (click)="onEdit.emit({fieldset:fieldset, field:field})">Edit</button>
+    <button type="button" class="dropdown-item" (click)="onRemove.emit({fieldset:fieldset, field:field})" *ngIf="!field.isImplicit && formGroup?.get(field.ctrlName).value">Remove</button>
+  </span>
+
+
+</gv-time-primitive-ctrl>
+
+<gv-control-messages [control]="formGroup?.controls[field.ctrlName]"></gv-control-messages>
+
+</div>
+
+<div class="d-flex gv-flex-grow-1 align-items-center font-sm pl-3" *ngIf="field.state === 'addBtn'" >
+  <span class="">{{field.label}}</span>
+   <button type="button" name="button" class="btn btn-link btn-sm" (click)="field.state = 'edit'">Add</button>
+</div>

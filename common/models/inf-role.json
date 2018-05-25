@@ -35,7 +35,7 @@
       "type": "number"
     },
     "community_favorite_calendar": {
-      "type": "number"
+      "type": "string"
     }
   },
   "validations": [],

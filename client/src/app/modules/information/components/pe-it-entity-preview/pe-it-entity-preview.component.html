@@ -1,0 +1,23 @@
+<div *ngIf="peItState?.state == 'view' || peItState?.state == 'editable'">
+    <div *ngIf="isCircular">
+        {{label}}
+        <small class="text-muted">{{peItState?.dfhClass?.dfh_standard_label}} (self)</small>
+    </div>
+    <a *ngIf="!isCircular" href="" class="gv-passive-link" (click)=open()>
+        {{label}}
+        <small class="text-muted">{{peItState?.dfhClass?.dfh_standard_label}}</small>
+    </a>
+</div>
+
+
+
+<div *ngIf="peItState?.state == 'create-pe-it-role' || peItState?.state == 'create-pe-it' || peItState?.state == 'create-te-ent-role' || peItState?.state == 'edit'">
+
+    <gv-pe-it-entity-add [dfhClass]="peItState?.dfhClass" (open)="addModalOpened()" (selected)="selected($event)" *ngIf="!isSelected"></gv-pe-it-entity-add>
+
+    <div *ngIf="isSelected">
+        {{label}}
+        <small class="text-muted">{{peItState?.dfhClass?.dfh_standard_label}}</small>
+    </div>
+    
+</div>
