@@ -1,0 +1,54 @@
+{
+  "name": "InfChunk",
+  "base": "InfEntityVersion",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "chunk"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "fk_digital_object": {
+      "type": "number",
+      "required": true
+    },
+    "js_quill_data": {
+      "type": "object",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "chunk": {
+      "type": "belongsTo",
+      "model": "InfDigitalObject",
+      "foreignKey": "fk_digital_object",
+      "primaryKey": "pk_entity"
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find"
+      ]
+    }
+  ],
+  "methods": {}
+}

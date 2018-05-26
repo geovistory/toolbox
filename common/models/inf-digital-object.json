@@ -1,0 +1,50 @@
+{
+  "name": "InfDigitalObject",
+  "base": "InfEntityVersion",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "digital_object"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "js_quill_data": {
+      "type": "object",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "chunks": {
+      "type": "hasMany",
+      "model": "InfChunk",
+      "foreignKey": "fk_digital_object",
+      "primaryKey": "pk_entity"
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find"
+      ]
+    }
+  ],
+  "methods": {}
+}

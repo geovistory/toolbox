@@ -1,0 +1,61 @@
+{
+  "name": "InfEntityAssociation",
+  "base": "InfEntityVersion",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "entity_association"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "fk_property": {
+      "type": "number",
+      "required": true
+    },
+    "fk_domain_entity": {
+      "type": "number",
+      "required": true
+    },
+    "fk_range_entity": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "chunk": {
+      "type": "belongsTo",
+      "model": "InfChunk",
+      "foreignKey": "fk_domain_entity",
+      "primaryKey": "pk_entity"
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find",
+        "findOrCreateInfEntityAssociation"
+      ]
+    }
+  ],
+  "methods": {
+
+  }
+}
