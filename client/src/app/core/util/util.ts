@@ -23,6 +23,21 @@ export class U {
     }
 
     /**
+     * converts object to array with {key: value} objects, e.g.:
+     * {'a': 12, 'b': 99} --> [{key: 'a', value: 12, key: 'b', value: 99}]
+     * 
+     * @param obj 
+     */
+    static obj2KeyValueArr(obj: { [key: string]: any }): {key: string, value: any}[] {
+        let keys = [];
+        for (let key in obj) {
+          keys.push({key: key, value: obj[key]});
+        }
+        return keys;
+    }
+
+
+    /**
      *  Converts InfTimePrimitve and CalendarType to TimePrimitive 
     */
     static InfTp2Tp(infTp: InfTimePrimitive, calendar: CalendarType): TimePrimitive {

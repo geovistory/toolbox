@@ -1,5 +1,5 @@
 <div class="card-body font-sm text-muted">
-  Mentions:
+  Mentiones:
 </div>
 
 <div *ngFor="let item of mentionedEntities | keys" class="btn-group d-flex" style="flex-shrink:0;">
@@ -8,7 +8,12 @@
       <gv-mentioned-entity-view [mentionedEntity]="item.value"></gv-mentioned-entity-view>
     </div>
   </div>
-  <button class="btn btn-link" (click)="show()">
-    <i class="fa fa-search"></i>
+  <button class="btn btn-link" (click)="remove(item.key)">
+    <i class="fa fa-close"></i>
   </button>
 </div>
+
+<div class="card-body text-muted">
+    Choose mentioned entities on the right to add them.
+</div>
+  

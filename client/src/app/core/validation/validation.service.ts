@@ -21,7 +21,8 @@ export class ValidationService {
       'mustStartAfter': `Must start after ${validatorValue.fieldLabel}`,
       'mustBeginBeforeEnd': `Must begin before ${validatorValue.fieldLabel} ends`,
       'mustEndAfterBegin': `Must end after ${validatorValue.fieldLabel} begins`,
-      'validateLanguage': `Please select a language`
+      'validateLanguage': `Please select a language`,
+      'noItem': 'At least one item is required'
     };
 
     if(config[validatorName]) return config[validatorName];

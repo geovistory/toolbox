@@ -6,13 +6,22 @@ import { AnnotationCtrlComponent } from './containers/annotation-ctrl/annotation
 import { ChunkViewComponent } from './components/chunk-view/chunk-view.component';
 import { MentionedEntitiesViewComponent } from './components/mentioned-entities-view/mentioned-entities-view.component';
 import { MentionedEntityViewComponent } from './components/mentioned-entity-view/mentioned-entity-view.component';
+import { MentionedEntitiesCtrlComponent } from './containers/mentioned-entities-ctrl/mentioned-entities-ctrl.component';
 
 
 @NgModule({
   imports: [
     CommonModule
   ],
-  declarations: [AnnotationPanelComponent, AnnotationViewComponent, AnnotationCtrlComponent],
+  declarations: [
+    AnnotationPanelComponent, 
+    AnnotationCtrlComponent, 
+    MentionedEntitiesCtrlComponent,
+    AnnotationViewComponent, 
+    ChunkViewComponent,
+    MentionedEntitiesViewComponent,
+    MentionedEntityViewComponent
+  ],
   exports: [
     AnnotationPanelComponent
   ]

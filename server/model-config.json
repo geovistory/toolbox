@@ -115,5 +115,17 @@
   "InfTimePrimitive": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "InfChunk": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "InfEntityAssociation": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "InfDigitalObject": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }
