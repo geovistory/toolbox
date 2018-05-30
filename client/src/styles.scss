@@ -339,3 +339,17 @@ gv-timeline {
         font-size: $font-size-sm;
     }
 }
+
+
+// gv-quill-view
+
+gv-quill-view {
+    .ql-container.ql-snow {
+        height: auto;
+        border: none;
+    }
+    
+    .ql-editor {
+        padding: 0;
+    }   
+}

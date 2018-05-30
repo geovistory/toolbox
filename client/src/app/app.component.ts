@@ -6,15 +6,16 @@ import { NgRedux, select } from '@angular-redux/store';
   selector: 'gv-root',
   host: {
     '(window:keydown)': 'keydown($event)',
-    '(window:keyup)': 'keyup($event)'
+    '(window:keyup)': 'keyup($event)',
   },
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
 
+
   constructor(
-    private entityEditor: EntityEditorService
+    private entityEditor: EntityEditorService,
   ) {}
 
 
@@ -28,5 +29,6 @@ export class AppComponent {
       // this.entityEditor.showDfhId = false;
     }
   };
+
 
 }

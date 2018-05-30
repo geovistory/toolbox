@@ -20,7 +20,8 @@
       "prefix": "gv",
       "styles": [
         "styles.scss",
-        "../node_modules/font-awesome/css/font-awesome.css"
+        "../node_modules/font-awesome/css/font-awesome.css",
+        "../node_modules/quill/dist/quill.snow.css"        
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",
@@ -46,7 +47,8 @@
       "prefix": "gv",
       "styles": [
         "styles.scss",
-        "../node_modules/font-awesome/css/font-awesome.css"
+        "../node_modules/font-awesome/css/font-awesome.css",
+        "../node_modules/quill/dist/quill.snow.css"
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",
