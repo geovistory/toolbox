@@ -30,7 +30,7 @@ export interface TimelineOptions {
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.scss']
 })
-export class TimelineComponent implements OnChanges, AfterViewInit, DoCheck {
+export class TimelineComponent implements OnChanges, AfterViewInit {
 
   @Input() data: TimeLineData;
 
@@ -86,11 +86,6 @@ export class TimelineComponent implements OnChanges, AfterViewInit, DoCheck {
 
   ngAfterViewInit() {
 
-  }
-
-  ngDoCheck() {
-    this._element.nativeElement;
-    // this.timeline.initData(this.persistentItems)
   }
 
   onDrag(rangeDiff) {

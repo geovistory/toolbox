@@ -20,19 +20,21 @@ export default sandboxOf(QuillEditComponent, {
 })
     .add('Quill-Edit | New text ', {
         context: {
-            latestId: 7,
-            contents: {}
+            quillDoc: {
+                latestId: 7,
+                contents: {}
+            }
         },
         template: `
         <div class="container">
             <div class="row">
                 <div class="col-6">
-                    <gv-quill-edit [contents]="contents" [latestId]="latestId" (latestIdChange)="latestId=$event"
-                    (contentChange)="contents=$event" (htmlChange)="html=$event"></gv-quill-edit>
+                    <gv-quill-edit [quillDoc]="quillDoc"
+                    (quillDocChange)="quillDoc=$event" (htmlChange)="html=$event"></gv-quill-edit>
                 </div>
                 <div class="col-6 font-sm" style="height:500px;">
                     <strong>
-                    Latest Token Id: {{latestId}}
+                    Latest Token Id: {{quillDoc.latestId}}
                     </strong>
                     <br>
 
@@ -50,7 +52,7 @@ export default sandboxOf(QuillEditComponent, {
                     </strong>
 
                     <pre>
-                    {{contents | json:2}}
+                    {{quillDoc | json:2}}
                     </pre>
                 </div>
             </div>
@@ -59,19 +61,18 @@ export default sandboxOf(QuillEditComponent, {
     })
     .add('Quill-Edit | Existing Text ', {
         context: {
-            latestId: textBüchel.latestId,
-            contents: textBüchel.contents
+            quillDoc: textBüchel,
         },
         template: `
         <div class="container">
             <div class="row">
                 <div class="col-6">
-                    <gv-quill-edit [contents]="contents" [latestId]="latestId" (latestIdChange)="latestId=$event"
-                    (contentChange)="contents=$event" (htmlChange)="html=$event"></gv-quill-edit>
+                    <gv-quill-edit [quillDoc]="quillDoc"
+                    (quillDocChange)="quillDoc=$event" (htmlChange)="html=$event"></gv-quill-edit>
                 </div>
                 <div class="col-6 font-sm" style="height:500px;">
                     <strong>
-                    Latest Token Id: {{latestId}}
+                    Latest Token Id: {{quillDoc.latestId}}
                     </strong>
                     <br>
 
@@ -89,7 +90,44 @@ export default sandboxOf(QuillEditComponent, {
                     </strong>
 
                     <pre>
-                    {{contents | json:2}}
+                    {{quillDoc | json:2}}
+                    </pre>
+                </div>
+            </div>
+        </div>
+        `
+    })
+    .add('Quill-Edit | Readonly ', {
+        context: {
+            quillDoc: textBüchel
+        },
+        template: `
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <gv-quill-edit [quillDoc]="quillDoc" [readOnly]="true"></gv-quill-edit>
+                </div>
+                <div class="col-6 font-sm" style="height:500px;">
+                    <strong>
+                    Latest Token Id: {{quillDoc.latestId}}
+                    </strong>
+                    <br>
+
+                    <strong>
+                    HTML:
+                    </strong>
+                    <br>
+                    <pre>
+                    {{html}}
+                    </pre>
+
+
+                    <strong>
+                    JSON:
+                    </strong>
+
+                    <pre>
+                    {{quillDoc | json:2}}
                     </pre>
                 </div>
             </div>
@@ -98,8 +136,7 @@ export default sandboxOf(QuillEditComponent, {
     })
     .add('Quill-Edit | Annotations Visible', {
         context: {
-            latestId: textBüchel.latestId,
-            contents: textBüchel.contents,
+            quillDoc: textBüchel,
             annotatedNodes: [
                 ['20', 1],
                 ['21', 3],
@@ -111,8 +148,8 @@ export default sandboxOf(QuillEditComponent, {
         <div class="container">
             <div class="row">
                 <div class="col-6">
-                    <gv-quill-edit [contents]="contents" [latestId]="latestId" [annotationsVisible]="annotationsVisible" 
-                    [annotatedNodes]="annotatedNodes" (contentChange)="contents=$event"></gv-quill-edit>
+                    <gv-quill-edit [quillDoc]="quillDoc" [annotationsVisible]="annotationsVisible" 
+                    [annotatedNodes]="annotatedNodes" (quillDocChange)="quillDoc=$event"></gv-quill-edit>
                 </div>
                 <div class="col-6 font-sm" style="height:500px;">                    
 
@@ -127,7 +164,7 @@ export default sandboxOf(QuillEditComponent, {
                     Content:
                     </strong>
                     <pre>
-                    {{contents | json:2}}
+                    {{quillDoc | json:2}}
                     </pre>
                 </div>
 
@@ -137,8 +174,7 @@ export default sandboxOf(QuillEditComponent, {
     })
     .add('Quill-Edit | Annotations Not Visible', {
         context: {
-            latestId: textBüchel.latestId,
-            contents: textBüchel.contents,
+            quillDoc: textBüchel,
             annotatedNodes: [
                 ['20', 1],
                 ['21', 3],
@@ -150,8 +186,8 @@ export default sandboxOf(QuillEditComponent, {
         <div class="container">
             <div class="row">
                 <div class="col-6">
-                    <gv-quill-edit [contents]="contents" [latestId]="latestId" [annotationsVisible]="annotationsVisible" 
-                    [annotatedNodes]="annotatedNodes" (contentChange)="contents=$event"></gv-quill-edit>
+                    <gv-quill-edit [quillDoc]="quillDoc" [annotationsVisible]="annotationsVisible" 
+                    [annotatedNodes]="annotatedNodes" (quillDocChange)="quillDoc=$event"></gv-quill-edit>
                 </div>
                 <div class="col-6 font-sm" style="height:500px;">                    
 
@@ -166,7 +202,7 @@ export default sandboxOf(QuillEditComponent, {
                     Content:
                     </strong>
                     <pre>
-                    {{contents | json:2}}
+                    {{quillDoc | json:2}}
                     </pre>
                 </div>
 
@@ -176,8 +212,7 @@ export default sandboxOf(QuillEditComponent, {
     })
     .add('Quill-Edit | Creating Annotation', {
         context: {
-            latestId: textBüchel.latestId,
-            contents: textBüchel.contents,
+            quillDoc: textBüchel,
             annotatedNodes: [
                 ['20', 1],
                 ['21', 3],
@@ -191,8 +226,8 @@ export default sandboxOf(QuillEditComponent, {
         <div class="container">
             <div class="row">
                 <div class="col-6">
-                    <gv-quill-edit [contents]="contents" [latestId]="latestId" [annotationsVisible]="annotationsVisible" 
-                    [annotatedNodes]="annotatedNodes" [creatingAnnotation]="creatingAnnotation" (contentChange)="contents=$event" (selectedDeltaChange)="selectedDelta=$event"></gv-quill-edit>
+                    <gv-quill-edit [quillDoc]="quillDoc" [annotationsVisible]="annotationsVisible" 
+                    [annotatedNodes]="annotatedNodes" [creatingAnnotation]="creatingAnnotation" (quillDocChange)="quillDoc=$event" (selectedDeltaChange)="selectedDelta=$event"></gv-quill-edit>
 
                 </div>
                 <div class="col-6 font-sm" style="height:500px;">                    

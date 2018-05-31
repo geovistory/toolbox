@@ -1,0 +1,72 @@
+<!-- ********************** Source List *************************** 
+ * - If nor 'create' nor 'edit' nor 'remove' vars of substore are truthy, 
+ *      show a create source button
+ *      show a SourceSearchHitComponent for each entry in 'list' with open and remove buttons
+ *      passing SourceSearchHitState via Input
+-->
+<div *ngIf="!((create$ | async) || (edit$ | async) || (remove$ | async))">
+
+  <div class="gv-edit-panel-header">
+    <h2>
+      <i class="gv-icon-source text-info"></i> Sources
+    </h2>
+
+    <button class="btn btn-link" (click)="startCreate()">
+      <i class="fa fa-plus"></i> Add source
+    </button>
+  </div>
+
+  <div class="gv-edit-panel-body">
+
+    <div class="mb-5" *ngFor="let entry of (list$|async) | keys">
+
+      <gv-source-search-hit [sourceSearchHit]="entry.value"> </gv-source-search-hit>
+
+      <button class="btn btn-sm btn-primary" (click)="open(entry)">Open</button>
+      <button class="btn btn-sm btn-link" (click)="startRemove(entry)">Remove</button>
+    </div>
+
+
+    <!-- <ul>
+      <li>
+        <a routerLink="../source/1" queryParamsHandling="merge">Source 1</a>
+      </li>
+      <li>
+        <a routerLink="../source/2" queryParamsHandling="merge">Source 2</a>
+      </li>
+    </ul> -->
+  </div>
+
+</div>
+
+<!-- ********************** Create Source ***************************
+ * - If 'create' is truthy, show a form with SourceCreateFormComponent
+ *     listening to submit and cancel Outputs 
+ -->
+<div *ngIf="(create$ | async)">
+  <gv-source-create-form (cancel)="cancelCreate()"></gv-source-create-form>
+</div>
+
+<!-- ********************** Edit Source *************************** 
+ * - If 'edit' is truthy, show a SourceDetailComponent 
+ *   passing store path to 'edit' via Input
+ *   listening to onChange Output to update the 'list'
+-->
+
+<div *ngIf="(edit$ | async)" class="gv-flex-grow-1 d-flex flex-column">
+  <gv-source-detail (close)="close()" (submit)="save()" [path]="editPath" class="gv-flex-grow-1 d-flex flex-column"></gv-source-detail>
+</div>
+
+<!-- ********************** Remove Source *************************** 
+ * - If 'remove' is truthy, show a SourceSearchHitComponent with 'are you sure', cancel and remove buttons
+ *   passing store path to 'remove' via Input 
+-->
+<div *ngIf="(remove$ | async)">
+  <div class="my-3">
+    <h5> Remove Source </h5>
+    <p> Are you sure?</p>
+  </div>
+  <gv-source-search-hit [sourceSearchHit]="(remove$|async)"> </gv-source-search-hit>
+  <button class="btn btn-outline-danger">Remove</button>
+  <button class="btn btn-outline-secondary" (click)="cancelRemove()">Cancel</button>
+</div>

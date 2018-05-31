@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AnnotationPanelComponent } from './annotation-panel.component';
+import { SourceSearchHitComponent } from './source-search-hit.component';
 
-describe('AnnotationPanelComponent', () => {
-  let component: AnnotationPanelComponent;
-  let fixture: ComponentFixture<AnnotationPanelComponent>;
+describe('SourceSearchHitComponent', () => {
+  let component: SourceSearchHitComponent;
+  let fixture: ComponentFixture<SourceSearchHitComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AnnotationPanelComponent ]
+      declarations: [ SourceSearchHitComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AnnotationPanelComponent);
+    fixture = TestBed.createComponent(SourceSearchHitComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

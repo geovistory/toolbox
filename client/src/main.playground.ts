@@ -12,6 +12,7 @@ import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { ProjectSandboxModule } from 'app/shared/components/project-sandbox/project-sandbox.module';
 import { NgReduxRouterModule } from '@angular-redux/router';
 import { NgReduxModule } from '@angular-redux/store';
+import { KeyskModule } from 'app/shared/pipes/keys.module';
 
 PlaygroundModule
   .configure({
@@ -28,7 +29,7 @@ PlaygroundModule
         PassiveLinkModule,
         FormsModule,
         ReactiveFormsModule,
-        ProjectSandboxModule
+        ProjectSandboxModule,
       ]
   });
 

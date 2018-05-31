@@ -15,7 +15,7 @@
 
 
 // export class Chunk {
-//     jsQuillData: object; //TODO -> jsQuill's AbstractDelta Type
+//     quillDelta: object; //TODO -> jsQuill's AbstractDelta Type
 //     fkDigitalObject: number;  // reference to source 
 // }
 

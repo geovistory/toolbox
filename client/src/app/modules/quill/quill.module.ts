@@ -13,6 +13,10 @@ import { QuillViewComponent } from './quill-view/quill-view.component';
   providers:[
     QuillService
   ],
-  declarations: [QuillEditComponent, QuillViewComponent]
+  declarations: [QuillEditComponent, QuillViewComponent],
+  exports: [
+    QuillEditComponent,
+    QuillViewComponent
+  ]
 })
 export class QuillModule { }

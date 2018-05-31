@@ -7,11 +7,16 @@ import { ChunkViewComponent } from './components/chunk-view/chunk-view.component
 import { MentionedEntitiesViewComponent } from './components/mentioned-entities-view/mentioned-entities-view.component';
 import { MentionedEntityViewComponent } from './components/mentioned-entity-view/mentioned-entity-view.component';
 import { MentionedEntitiesCtrlComponent } from './containers/mentioned-entities-ctrl/mentioned-entities-ctrl.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { KeysPipe } from 'app/shared/pipes/keys.pipe';
+import { ControlMessagesModule } from 'app/shared';
 
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule,
+    ControlMessagesModule
   ],
   declarations: [
     AnnotationPanelComponent, 
@@ -20,10 +25,12 @@ import { MentionedEntitiesCtrlComponent } from './containers/mentioned-entities-
     AnnotationViewComponent, 
     ChunkViewComponent,
     MentionedEntitiesViewComponent,
-    MentionedEntityViewComponent
+    MentionedEntityViewComponent,        
+  ],
+  providers: [  
   ],
   exports: [
-    AnnotationPanelComponent
+    AnnotationPanelComponent,
   ]
 })
 export class AnnotationModule { }

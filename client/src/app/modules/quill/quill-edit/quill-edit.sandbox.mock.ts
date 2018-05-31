@@ -1,6 +1,6 @@
-import { GvQuill } from "../quil.models";
+import { QuillDoc } from "../quil.models";
 
-export const textBüchel: GvQuill = {
+export const textBüchel: QuillDoc = {
     latestId: 60,
     contents:
         {

@@ -24,14 +24,14 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
  * - interacts with store
  * - interacts with api
  * 
- * Template if (edit$):
- * - Shows a Form with ok and cancel button
+ * Template if the 'edit' variable in the store is truthy:
+ * - Shows a Form to edit (or create) one Annotation with ok and cancel button
  * - The FormGroup has a FormControl, the AnnotationCtrlComponent, to which it passes
  *   via ControlValueAccessor the AnnotationState and 
  *   via Input the substore path to 'edit'
  * 
- * Template if (!edit$): 
- * - for each view.entities show AnnotationViewComponent and pass in the AnnotationState (buttons for edit and remove can be added to panel)
+ * Template if the 'edit' variable in the store is falsy:
+ * - for each view.entities in store show AnnotationViewComponent and pass in the AnnotationState (buttons for edit and remove can be added to panel)
  */
 export class AnnotationPanelComponent implements OnInit, OnDestroy {
 

@@ -3,6 +3,7 @@ import { QuillService } from '../quill.service';
 import * as Delta from 'quill-delta/lib/delta';
 import { QuillNodeHandler } from '../quill-node-handler';
 import { Subscription } from 'rxjs';
+import { QuillDoc } from '..';
 
 @Component({
   selector: 'gv-quill-edit',
@@ -11,27 +12,29 @@ import { Subscription } from 'rxjs';
 })
 export class QuillEditComponent implements OnInit {
 
-  @Input() contents: Delta;
-  @Input() latestId: number;
+  // the Data containing a standard jsQuill-Delta object and a latestId
+  @Input() quillDoc: QuillDoc;
 
+  // If true, the editor is not content editable
+  @Input() readOnly: boolean;
+
+  // If true, the editor is not content editable, but it emits a Delta with selected nodes
+  @Input() creatingAnnotation: boolean;
+
+  @Input() annotationsVisible: boolean;
   @Input() set annotatedNodes(arr: [string, number][]) {
     this._annotatedNodes = new Map(arr);
   }
+
+  @Output() quillDocChange: EventEmitter<QuillDoc> = new EventEmitter()
+  @Output() htmlChange: EventEmitter<string> = new EventEmitter()
+  @Output() selectedDeltaChange: EventEmitter<Delta> = new EventEmitter()
+
   private _annotatedNodes: Map<string, number>; // string: id of node, number intensity of highlight
-
-  @Input() annotationsVisible: boolean;
-
-  // if true, the editor is not content editable, but it emits a Delta with selected nodes
-  @Input() creatingAnnotation: boolean;
 
   // needed for creating annotation: maps nodeid with object containing isSelected-boolean and op (from Delta.ops)
   nodeSelctionMap = new Map<string, { isSelected: boolean, op: any }>();
 
-
-  @Output() contentChange: EventEmitter<any> = new EventEmitter()
-  @Output() htmlChange: EventEmitter<string> = new EventEmitter()
-  @Output() latestIdChange: EventEmitter<number> = new EventEmitter()
-  @Output() selectedDeltaChange: EventEmitter<Delta> = new EventEmitter()
 
   // the selected Delta, when creating an annotation
   private selectedDelta: Delta;
@@ -41,7 +44,16 @@ export class QuillEditComponent implements OnInit {
 
   Quill;
 
+  // Next node inerted will get id = latestId + 1 
+  latestId: number;
+
+  // The jsQuill-Delta object 
+  contents: Delta;
+
   html: string;
+
+  nodeSubs = new Map<string, Subscription[]>(); // string=nodeid, subscriptions on this nodes events
+
 
   @ViewChild('editor') editorElem: ElementRef;
 
@@ -54,15 +66,37 @@ export class QuillEditComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.latestId = this.quillDoc.latestId;
+    this.contents = this.quillDoc.contents;
+
     if (this.latestId === undefined) {
       throw new Error('No latestId provided')
     }
 
+    // unsubscribe from node subscriptions
+    this.nodeSubs.forEach(subs => {
+      subs.forEach((sub: Subscription) => {
+        sub.unsubscribe()
+      });
+    })
+    // reset nodeSubs
+    this.nodeSubs = new Map<string, Subscription[]>();
 
-    this.quillEditor = new this.Quill(this.editorElem.nativeElement, {
-      theme: 'snow',
-      readOnly: this.creatingAnnotation ? true : false
-    });
+    let editorConfig: any = {
+      theme: 'snow'
+    }
+
+    if (this.creatingAnnotation || this.readOnly) {
+      editorConfig = {
+        ...editorConfig,
+        readOnly: true,
+        modules: {
+          toolbar: false
+        }
+      }
+    }
+
+    this.quillEditor = new this.Quill(this.editorElem.nativeElement, editorConfig);
 
     // register for text changes
     this.quillEditor.on('text-change', (delta, oldDelta, source) => {
@@ -94,7 +128,6 @@ export class QuillEditComponent implements OnInit {
 
   }
 
-
   contentChanged(delta, oldDelta, source) {
 
     // if the user changed the content
@@ -104,8 +137,6 @@ export class QuillEditComponent implements OnInit {
       const nodenizeResult = this.quillService.nodenizeContentChange(delta, oldDelta, this.latestId);
 
       this.latestId = nodenizeResult.latestId;
-
-      this.latestIdChange.emit(this.latestId)
 
       this.quillEditor.updateContents(nodenizeResult.delta)
 
@@ -137,11 +168,13 @@ export class QuillEditComponent implements OnInit {
 
   updateContents() {
     this.contents = this.quillEditor.getContents();
-    this.contentChange.emit(this.contents)
+    this.quillDocChange.emit({
+      latestId: this.latestId,
+      contents: this.contents
+    })
   }
 
 
-  nodeSubs = new Map<string, Subscription[]>(); // string=nodeid, subscriptions on this nodes events
 
   /**
    * called when QuillJs adds some nodes, i.e. when user edits the text

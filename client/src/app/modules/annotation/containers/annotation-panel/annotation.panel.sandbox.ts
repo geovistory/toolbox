@@ -46,7 +46,7 @@ export default sandboxOf(AnnotationPanelComponent, {
         view: {
           _annot_1: {
             chunk: new Chunk({
-              jsQuillData: {
+              quillDelta: {
                 text: 'I am some text'
               }
             }),
@@ -75,7 +75,7 @@ export default sandboxOf(AnnotationPanelComponent, {
           },
           _annot_2: {
             chunk: new Chunk({
-              jsQuillData: {
+              quillDelta: {
                 text: 'some other words'
               }
             }),
@@ -89,7 +89,7 @@ export default sandboxOf(AnnotationPanelComponent, {
           },
           _annot_3: {
             chunk: new Chunk({
-              jsQuillData: {
+              quillDelta: {
                 text: 'some other words'
               }
             }),
@@ -152,7 +152,7 @@ export default sandboxOf(AnnotationPanelComponent, {
           selectingSegment: true,
           selectingEntities: false,
           chunk: new Chunk({
-            jsQuillData: {
+            quillDelta: {
               text: 'I am some text'
             }
           }),
@@ -176,7 +176,7 @@ export default sandboxOf(AnnotationPanelComponent, {
           selectingSegment: false,
           selectingEntities: true,
           chunk: new Chunk({
-            jsQuillData: {
+            quillDelta: {
               text: 'I am some text'
             }
           }),
@@ -221,7 +221,7 @@ export default sandboxOf(AnnotationPanelComponent, {
         },
         remove: {
           chunk: new Chunk({
-            jsQuillData: {
+            quillDelta: {
               text: 'I am some text'
             }
           }),

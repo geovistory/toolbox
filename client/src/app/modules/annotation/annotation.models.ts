@@ -1,5 +1,5 @@
 import { InfEntityAssociation } from "app/core";
-
+import * as Delta from 'quill-delta/lib/delta';
 
 /**
  * Root state interface of this model
@@ -7,7 +7,7 @@ import { InfEntityAssociation } from "app/core";
 export interface IAnnotationPanelState {
     view?: { [key: string]: AnnotationState };
     edit?: AnnotationCtrlState;
-    remove?: AnnotationCtrlState;    
+    remove?: AnnotationState;    
 }
 
 /**
@@ -16,7 +16,7 @@ export interface IAnnotationPanelState {
 export interface AnnotationState {
 
     // reference to the exact place of mentioning within a digital object
-    chunk: Chunk; // add other types of references here, like a spot in a image
+    chunk: IChunk; // add other types of references here, like a spot in a image
 
     // entities mentioned by the chunk
     mentionedEntities: { [key: string]: MentionedEntity }
@@ -29,7 +29,7 @@ export interface AnnotationState {
 export interface AnnotationCtrlState {
 
     // reference to the exact place of mentioning within a digital object
-    chunk?: Chunk; // add other types of references here, like a spot in a image
+    chunk?: IChunk; // add other types of references here, like a spot in a image
 
     // entities mentioned by the chunk
     mentionedEntities?: { [key: string]: MentionedEntity }
@@ -43,12 +43,12 @@ export interface AnnotationCtrlState {
 
 
 export interface IChunk {
-    jsQuillData?: object; //TODO -> jsQuill's AbstractDelta Type
+    quillDelta?: Delta; //TODO -> jsQuill's AbstractDelta Type
     fkDigitalObject?: number;  // reference to source 
 }
 
 export class Chunk {
-    jsQuillData: object; //TODO -> jsQuill's AbstractDelta Type
+    quillDelta: object; //TODO -> jsQuill's AbstractDelta Type
     fkDigitalObject: number;  // reference to source 
 
     constructor(data?: IChunk) {
