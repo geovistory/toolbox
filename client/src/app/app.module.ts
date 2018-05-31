@@ -24,6 +24,7 @@ import { ControlMessagesModule, LanguageSearchTypeaheadModule } from './shared';
 import { StoreModule } from './core/store/module';
 import { InformationModule } from './modules/information/information.module';
 import { ProjectsModule } from './modules/projects/projects.module';
+import { KeysModule } from './shared/pipes/keys.module';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,7 @@ import { ProjectsModule } from './modules/projects/projects.module';
     PassiveLinkModule,
     ControlMessagesModule,
     LanguageSearchTypeaheadModule,
-    // InformationModule
+    KeysModule
   ],
   providers: [
     EntityEditorService,

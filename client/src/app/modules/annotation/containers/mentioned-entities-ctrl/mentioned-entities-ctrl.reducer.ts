@@ -15,6 +15,15 @@ export const mentionedEntityCtrlReducer =
                 break;
         }
 
+        switch (action.type) {
+            case MentionedEntityCtrlActions.ADD_MENTIONED_ENTITY:
+                lastState = {
+                    ...lastState,
+                    ...action.payload
+                }
+                break;
+        }
+
 
         return lastState;
     };

@@ -7,7 +7,10 @@ import { SourceDetailComponent } from './containers/source-detail/source-detail.
 const routes: Routes = [
   {
     path: 'search',
-    component: SourceListComponent
+    component: SourceListComponent,
+    data: {
+      reduxPath: ['sources']
+    }
   },
   {
     path: 'source/:id',

@@ -2,9 +2,14 @@ import { IEntityEditorWrapper } from "../containers/entity-editor/entity-editor.
 import { IAppState } from "app/core";
 
 export interface IInformationState {
-    entityEditor: IEntityEditorWrapper 
+    entityEditor?: IEntityEditorWrapper,
+    list?: { [key: string]: IPeItSearchHitState }
 }
 
 export interface IAppStateWithInformation extends IAppState {
-    information: IInformationState 
+    information: IInformationState
+}
+
+export interface IPeItSearchHitState {
+
 }

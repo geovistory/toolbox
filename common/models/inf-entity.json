@@ -1,0 +1,49 @@
+{
+  "name": "InfEntity",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "pk_entity": {
+      "id": true,
+      "type": "number",
+      "generated": true
+    },
+    "notes": {
+      "type": "string",
+      "required": false
+    },
+    "entity_version": {
+      "type": "number",
+      "default": 9999
+    },
+    "tmsp_creation": {
+      "type": "string",
+      "generated": true,
+      "hidden": true
+    },
+    "tmsp_last_modification": {
+      "type": "string",
+      "generated": true,
+      "hidden": true
+    },
+    "sys_period": {
+      "type": "string",
+      "generated": true,
+      "hidden": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "eprs": {
+      "type": "hasMany",
+      "model": "InfEntityProjectRel",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

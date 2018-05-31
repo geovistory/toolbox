@@ -5,6 +5,7 @@ import { ISourceDetailState, ISourceSearchHitState } from '../../sources.models'
 import { IAnnotationPanelState } from '../../../annotation';
 import * as Delta from 'quill-delta/lib/delta';
 import { QuillDoc } from 'app/modules/quill';
+import { InfDigitalObject } from '../../../../core';
 
 // replace SourceDetail with name of component
 
@@ -73,11 +74,13 @@ export class SourceDetailActions {
   })
 
 
-  onQuillDocChange = (edit: QuillDoc): SourceDetailAction => ({
+  onQuillDocChange = (quillDoc: QuillDoc): SourceDetailAction => ({
     type: SourceDetailActions.SOURCE_DETAIL_ON_QUILL_CHANGE,
     meta: null,
     payload: {
-      edit
+      edit: {
+        js_quill_data: quillDoc
+      } as InfDigitalObject
     }
   })
 

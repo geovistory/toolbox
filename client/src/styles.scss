@@ -1,8 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
-
 /* You can add global styles to this file, and also import other style files */
-
 
 /**
 * Bootstrap
@@ -11,14 +9,12 @@
 
 @import "src/assets/scss/bootstrap";
 $font-size-xs: .68rem;
-
 /**
 * Custom Fonts / Glyphs
 * Font-awesome is imported in angular-cli.json
 */
 
 @import "src/assets/scss/glyphter-font/css/geovistory-font";
-
 /**
 * Components
 * Styles for one angular component or multiple angular components with
@@ -51,7 +47,6 @@ $font-size-xs: .68rem;
 @import "src/assets/scss/components/_version_modal";
 // Entity Add Modal
 @import "src/assets/scss/components/_appellation_label_editor";
-
 /**
 * Generic stuff
 */
@@ -260,16 +255,15 @@ gv-property {
 gv-timeline {
     $bg-timeline: $gray-600;
     $font-color: $white;
-    .timeline-container{
+    .timeline-container {
         background-color: $bg-timeline;
-
     }
     path.domain {
         stroke: none // no outer line around xAxis
     }
     .header {
         .tick>line {
-            stroke: none;            
+            stroke: none;
         }
         .tick>text {
             font-size: $font-size-xs;
@@ -283,7 +277,7 @@ gv-timeline {
         }
         .x-axis-julian {
             .tick>line {
-                stroke:  $gray-400; // stroke-dasharray: 7;
+                stroke: $gray-400; // stroke-dasharray: 7;
             }
         }
         .x-axis-gregorian {
@@ -302,14 +296,14 @@ gv-timeline {
     .row:nth-child(even) .row-bg {
         fill: $white;
         opacity: 0.2;
-    }    
+    }
     .row:hover .row-bg {
         fill: $gray-300;
     }
-    .row-label-bg{
+    .row-label-bg {
         fill: $bg-timeline
     }
-    text.row-label{
+    text.row-label {
         fill: $font-color;
     }
     .gv-open-path {
@@ -340,16 +334,30 @@ gv-timeline {
     }
 }
 
-
 // gv-quill-view
-
 gv-quill-view {
     .ql-container.ql-snow {
         height: auto;
         border: none;
     }
-    
     .ql-editor {
         padding: 0;
-    }   
+    }
+}
+
+gv-quill-edit {
+    .ql-container.ql-snow {
+        @extend .d-flex;
+        @extend .flex-column;
+        @extend .gv-flex-grow-1;
+    }
+    .ql-editor {
+        @extend .gv-flex-grow-1;
+    }
+}
+
+gv-source-list {
+    @extend .d-flex;
+    @extend .gv-flex-grow-1;
+    @extend .flex-column;
 }

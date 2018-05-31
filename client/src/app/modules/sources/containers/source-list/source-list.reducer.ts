@@ -18,6 +18,16 @@ export const sourceListReducer =
         }
 
         switch (action.type) {
+            case SourceListActions.SOURCE_LIST_SEARCH_HITS_UPDATED:
+                lastState = {
+                    ...lastState,
+                    list: action.payload.list
+                }
+                break;
+        }
+
+
+        switch (action.type) {
             case SourceListActions.SOURCE_LIST_OPEN:
                 lastState = {
                     ...lastState,
@@ -42,6 +52,12 @@ export const sourceListReducer =
         }
 
         switch (action.type) {
+            case SourceListActions.SOURCE_LIST_REMOVED:
+                lastState = omit(['remove'], lastState);
+                break;
+        }
+
+        switch (action.type) {
             case SourceListActions.SOURCE_LIST_START_CREATE:
                 lastState = {
                     ...lastState,
@@ -59,6 +75,19 @@ export const sourceListReducer =
         switch (action.type) {
             case SourceListActions.SOURCE_LIST_CLOSE:
                 lastState = omit(['edit'], lastState);
+                break;
+        }
+
+
+        switch (action.type) {
+            case SourceListActions.SOURCE_LIST_SOURCE_UPDATED:
+                lastState = {
+                    ...lastState,
+                    edit: {
+                        ...omit(['edit'], lastState.edit),
+                        view: action.payload.edit.view,
+                    }
+                };
                 break;
         }
 

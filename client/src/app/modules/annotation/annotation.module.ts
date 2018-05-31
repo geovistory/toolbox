@@ -10,13 +10,17 @@ import { MentionedEntitiesCtrlComponent } from './containers/mentioned-entities-
 import { ReactiveFormsModule } from '@angular/forms';
 import { KeysPipe } from 'app/shared/pipes/keys.pipe';
 import { ControlMessagesModule } from 'app/shared';
+import { KeysModule } from '../../shared/pipes/keys.module';
+import { QuillModule } from 'app/modules/quill';
 
 
 @NgModule({
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    ControlMessagesModule
+    ControlMessagesModule,
+    QuillModule,
+    KeysModule
   ],
   declarations: [
     AnnotationPanelComponent, 

@@ -24,7 +24,7 @@ exports.up = function (db, callback) {
   CREATE TABLE information.chunk
   (
     pk_chunk serial PRIMARY KEY,
-    js_quill_data json,
+    js_quill_data jsonb,
     fk_digital_object integer
     )
   INHERITS (information.entity)

@@ -22,18 +22,19 @@ import { AnnotationPanelActions } from "app/modules/annotation/containers/annota
 import { AnnotationCtrlActions } from "app/modules/annotation/containers/annotation-ctrl/annotation-ctrl.actions";
 import { MentionedEntityCtrlActions } from "app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions";
 import { AnnotationPanelComponent } from "app/modules/annotation/containers/annotation-panel/annotation-panel.component";
-
+import { RouterModule } from "@angular/router";
 
 export default sandboxOf(SourceListComponent, {
   imports: [
+    RouterModule.forRoot([]),
     SourceSanboxStoreModule,
     QuillModule,
   ],
-  declarations: [    
-    KeysPipe,    
+  declarations: [
+    KeysPipe,
     SourceSearchHitComponent,
     SourceDetailComponent,
-    SourceCreateFormComponent,   
+    SourceCreateFormComponent,
     AnnotationPanelComponent,
     AnnotationViewComponent,
     AnnotationCtrlComponent,
@@ -41,10 +42,10 @@ export default sandboxOf(SourceListComponent, {
     AnnotationViewComponent,
     ChunkViewComponent,
     MentionedEntitiesViewComponent,
-    MentionedEntityViewComponent 
+    MentionedEntityViewComponent
   ],
   providers: [
-    KeysPipe,    
+    KeysPipe,
     SourceListActions,
     SourceDetailActions,
     AnnotationPanelActions,
@@ -107,7 +108,10 @@ export default sandboxOf(SourceListComponent, {
           }
         },
         edit: {
-          view: textBüchel,
+          view: {
+            js_quill_data: textBüchel,
+            notes: 'Emmanuel Büchel'
+          } as InfDigitalObject
         }
       } as ISourceListState
     },
@@ -129,7 +133,10 @@ export default sandboxOf(SourceListComponent, {
           }
         },
         edit: {
-          view: textBüchel,
+          view: {
+            js_quill_data: textBüchel,
+            notes: 'Emmanuel Büchel'
+          } as InfDigitalObject,
         }
       } as ISourceListState
     },

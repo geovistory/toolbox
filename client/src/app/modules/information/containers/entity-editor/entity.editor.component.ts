@@ -6,7 +6,6 @@ import { IEntityEditorWrapper, EntityEditorWrapper } from './entity-editor.model
 import { EntityEditorActions, EntityEditorAction } from './entity-editor.actions';
 import { Observable } from 'rxjs/Observable';
 import { PeItState, IPeItState } from './../pe-it/pe-it.model';
-import { IAppStateWithInformation } from '../../api/information.model';
 import { entityEditorReducer } from './entity-editor.reducer';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { PeItService } from '../../shared/pe-it.service';

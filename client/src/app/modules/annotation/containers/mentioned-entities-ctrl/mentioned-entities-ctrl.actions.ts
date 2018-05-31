@@ -11,6 +11,7 @@ export type MentionedEntityCtrlAction = FluxStandardAction<Payload, any>;
 @Injectable()
 export class MentionedEntityCtrlActions {
     static readonly REMOVE_MENTIONED_ENTITY = 'REMOVE_MENTIONED_ENTITY';
+    static readonly ADD_MENTIONED_ENTITY = 'ADD_MENTIONED_ENTITY';
 
     @dispatch()
 
@@ -21,5 +22,14 @@ export class MentionedEntityCtrlActions {
         payload: null
     })
 
+
+
+    addMentionedEntity = (entity: MentionedEntity): MentionedEntityCtrlAction => ({
+        type: MentionedEntityCtrlActions.ADD_MENTIONED_ENTITY,
+        meta: null,
+        payload: {
+            [entity.pkEntity]: entity
+        }
+    })
 
 }

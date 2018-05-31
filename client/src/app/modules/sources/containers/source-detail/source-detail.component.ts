@@ -8,7 +8,7 @@ import { QuillDoc } from 'app/modules/quill';
 import { IAnnotationPanelState, Chunk } from 'app/modules/annotation';
 import { SourceDetailActions } from './source-detail.actions';
 import * as Delta from 'quill-delta/lib/delta';
-import { InfEntityAssociation } from 'app/core';
+import { InfEntityAssociation, InfDigitalObject } from 'app/core';
 
 /**
  * A Container to show and edit the details of a source
@@ -70,17 +70,19 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
   @Input() initState: ISourceDetailState;
 
   @Output() close: EventEmitter<void> = new EventEmitter();
+  @Output() onSave: EventEmitter<InfDigitalObject> = new EventEmitter();
 
+  @select() label$: Observable<boolean>;
   @select() view$: Observable<boolean>;
-  @select() edit$: Observable<QuillDoc>;
-  @select(['annotationPanel', 'edit', 'selectingSegment']) selectingSegment$: Observable<QuillDoc>;
-  @select() annotate$: Observable<QuillDoc>;
+  @select() edit$: Observable<InfDigitalObject>;
+  @select(['annotationPanel', 'edit', 'selectingSegment']) selectingSegment$: Observable<InfDigitalObject>;
+  @select() annotate$: Observable<InfDigitalObject>;
   @select() annotationPanel$: Observable<IAnnotationPanelState>;
 
   annotationPanelPath: string[];
   annotatedNodes;
   annotationPanel: IAnnotationPanelState;
-
+  digitalObject: InfDigitalObject; // emitted on save
   subs: Subscription[] = []
 
   constructor(
@@ -98,6 +100,10 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
       if (!bool) {
         this.stopCreateAnnotation();
       }
+    }))
+
+    this.subs.push(this.edit$.subscribe((digitalObject: InfDigitalObject) => {
+      this.digitalObject = digitalObject;
     }))
 
   }
@@ -127,7 +133,7 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
    * - emit onSave() event
    */
   save() {
-
+    this.onSave.emit(this.digitalObject);
   }
 
 
@@ -179,10 +185,10 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * called when content is changed
+   * called when quillDoc is changed
    */
-  @dispatch() onQuillDocChange(content: Delta) {
-    return this.actions.onQuillDocChange(content)
+  @dispatch() onQuillDocChange(quillDoc: QuillDoc) {
+    return this.actions.onQuillDocChange(quillDoc)
   }
 
   initAnnotations() {

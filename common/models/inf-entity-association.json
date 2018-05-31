@@ -1,6 +1,6 @@
 {
   "name": "InfEntityAssociation",
-  "base": "InfEntityVersion",
+  "base": "InfEntity",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
@@ -36,6 +36,12 @@
       "model": "InfChunk",
       "foreignKey": "fk_domain_entity",
       "primaryKey": "pk_entity"
+    },
+    "persistent_item": {
+      "type": "belongsTo",
+      "model": "InfPersistentItem",
+      "foreignKey": "fk_range_entity",
+      "primaryKey": "pk_entity"
     }
   },
   "acls": [
@@ -56,6 +62,44 @@
     }
   ],
   "methods": {
-
+    "findOrCreateInfEntityAssociation": {
+      "accepts": [
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": "InfEntityAssociation",
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfEntityAssociation",
+        "root": true
+      },
+      "description": "Find or create an information entity association.",
+      "http": {
+        "path": "/findOrCreate",
+        "verb": "post"
+      }
+    }
   }
 }

@@ -31,10 +31,9 @@ export interface ISourceSearchHitState {
  * The state of a source being edited
  */
 export interface ISourceDetailState {
-    view?: QuillDoc;
-    edit?: QuillDoc;
-    annotate?: QuillDoc;
+    view?: InfDigitalObject;
+    edit?: InfDigitalObject;
+    annotate?: InfDigitalObject;
     annotationPanel?: IAnnotationPanelState;
 }
-
 

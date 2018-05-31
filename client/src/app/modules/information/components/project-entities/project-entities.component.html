@@ -2,7 +2,8 @@
 
   <section class="row">
     <div class="col-md-8">
-      <h2><i class="gv-icon-information-simple text-primary"></i> Data Units</h2>
+      <h2>
+        <i class="gv-icon-information-simple text-primary"></i> Data Units</h2>
     </div>
     <div class="col-md-4">
       <div class="btn-group float-right mt-2" role="group">
@@ -21,9 +22,12 @@
       <div class="gv-search">
         <form (ngSubmit)="searchStringChange()">
           <div class="input-group">
-            <input type="text" name="searchString" class="form-control" aria-describedby="search"  autocomplete="off" placeholder="Search …" [(ngModel)]="searchString">
+            <input type="text" name="searchString" class="form-control" aria-describedby="search" autocomplete="off" placeholder="Search …"
+              [(ngModel)]="searchString">
             <span class="input-group-append">
-              <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+              <button class="btn btn-primary" type="submit">
+                <i class="fa fa-search"></i>
+              </button>
             </span>
           </div>
         </form>
@@ -44,7 +48,7 @@
   <div class="row" *ngIf="!loading">
     <div class="col">
       <div class="gv-search-hits-count mt-2">
-        <span  *ngIf="collectionSize > limit">
+        <span *ngIf="collectionSize > limit">
           {{hitsFrom}}-{{hitsTo}} of
         </span>
         {{collectionSize | number}} {{(collectionSize == 1 ? 'result' : 'results')}}
@@ -54,20 +58,18 @@
 
   <!-- <gv-loading-spinner [loading]="loading"></gv-loading-spinner> -->
 
-  <div class="row mt-2"  *ngIf="!loading">
+  <div class="row mt-2" *ngIf="!loading">
     <div class="col">
       <div class="gv-search-hits">
-        <gv-entity-search-hit *ngFor="let hit of persistentItems" [persistentItem]="hit" (onOpen)=openEntity($event)></gv-entity-search-hit>
+        <gv-entity-search-hit *ngFor="let hit of persistentItems" [persistentItem]="hit" [selectingMentionedEntities]="(selectingEntities$ | async)"
+          (onSelectAsMentioned)="selectMentionedEntity($event)" (onOpen)=openEntity($event)></gv-entity-search-hit>
       </div>
     </div>
   </div>
   <div class="row mt-5" *ngIf="!loading">
     <div class="col">
-      <ngb-pagination *ngIf="collectionSize > limit" [maxSize]="5"
-        [collectionSize]="collectionSize" [(page)]="page"
-        [pageSize]="limit" (pageChange)="pageChange()"
-        aria-label="Default pagination"></ngb-pagination>
-      </div>
+      <ngb-pagination *ngIf="collectionSize > limit" [maxSize]="5" [collectionSize]="collectionSize" [(page)]="page" [pageSize]="limit"
+        (pageChange)="pageChange()" aria-label="Default pagination"></ngb-pagination>
     </div>
   </div>
-
+</div>

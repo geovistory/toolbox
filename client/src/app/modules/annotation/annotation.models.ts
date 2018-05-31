@@ -5,7 +5,7 @@ import * as Delta from 'quill-delta/lib/delta';
  * Root state interface of this model
  */
 export interface IAnnotationPanelState {
-    view?: { [key: string]: AnnotationState };
+    view?: AnnotationState ;
     edit?: AnnotationCtrlState;
     remove?: AnnotationState;    
 }

@@ -29,7 +29,7 @@
     },
     "fk_entity_version_concat": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "is_in_project": {
       "type": "boolean"

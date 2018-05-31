@@ -13,4 +13,4 @@ import { KeysPipe } from './keys.pipe';
     KeysPipe
   ]
 })
-export class KeyskModule { }
+export class KeysModule { }

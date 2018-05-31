@@ -1,5 +1,5 @@
 import { InformationAction } from "./information.actions";
-import { IInformationState, IAppStateWithInformation } from "./information.model";
+import { IInformationState } from "./information.model";
 import { EntityEditorActions } from "../containers/entity-editor/entity-editor.actions";
 
 const INITIAL_STATE: IInformationState = {

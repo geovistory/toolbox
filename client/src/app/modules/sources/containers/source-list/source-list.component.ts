@@ -1,11 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { WithSubStore, dispatch, select } from '@angular-redux/store';
+import { WithSubStore, dispatch, select, NgRedux } from '@angular-redux/store';
 import { sourceListReducer } from './source-list.reducer';
 import { ISourceListState, ISourceSearchHitState, ISourceDetailState } from '../..';
 import { SourceListActions } from './source-list.actions';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { textBüchel } from '../../../quill/quill-edit/quill-edit.sandbox.mock';
+import { ActivatedRoute } from '@angular/router';
+import { Project, InfDigitalObjectApi, InfDigitalObject } from 'app/core';
+import { QuillDoc } from '../../../quill';
 
 /**
  * Container to manage the sources (digital objects): Search, create, show, edit, remove
@@ -43,7 +46,8 @@ import { textBüchel } from '../../../quill/quill-edit/quill-edit.sandbox.mock';
   templateUrl: './source-list.component.html',
   styleUrls: ['./source-list.component.scss']
 })
-export class SourceListComponent implements OnInit {
+export class SourceListComponent implements OnInit, OnDestroy {
+
 
   // path to the substore
   @Input() path: string[] | string;
@@ -56,21 +60,50 @@ export class SourceListComponent implements OnInit {
   @select() remove$: Observable<ISourceSearchHitState>;
   @select() create$: Observable<boolean>;
   @select() list$: Observable<{ [key: string]: ISourceSearchHitState }>;
-
+  project$: Observable<Project>;
 
   editPath: string[] | string;
 
+  hitToRemove: ISourceSearchHitState;
+
+  subs: Subscription[] = [];
+
   constructor(
-    private actions: SourceListActions
-  ) { }
+    private actions: SourceListActions,
+    private activatedRoute: ActivatedRoute,
+    private ngRedux: NgRedux<Project>,
+    private digitObjApi: InfDigitalObjectApi
+  ) {
+    // if component is activated by ng-router, take base path here
+    this.subs.push(activatedRoute.data.subscribe(d => {
+      this.path = d.reduxPath;
+    }))
+
+    // observe the active project 
+    this.project$ = ngRedux.select<Project>('activeProject');
+
+    // observe and store the remove hit
+    this.subs.push(this.remove$.subscribe(r => {
+      this.hitToRemove = r;
+    }))
+
+  }
 
   ngOnInit() {
     // initial state is useful for sandboxing the component
     if (this.initState) this.updateState(this.initState)
 
     this.editPath = this.path === '' ? ['edit'] :
-    typeof this.path === 'string' ? [...[this.path], 'edit'] :
-      [...this.path, 'edit'];
+      typeof this.path === 'string' ? [...[this.path], 'edit'] :
+        [...this.path, 'edit'];
+
+    // Init the sources list 
+    this.search();
+
+  }
+
+  ngOnDestroy() {
+    this.subs.forEach(sub => sub.unsubscribe);
   }
 
   /**
@@ -85,8 +118,48 @@ export class SourceListComponent implements OnInit {
    * Querys the database for sources filtered by 'filter' and on success
    * - update store: 'list'
    */
-  getList() {
-    //TODO
+  search() {
+    // TODO apply make a better filter with searchstring, limit, offset, and search only for sources in project
+    this.subs.push(this.project$.subscribe(p => {
+      if (p)
+        this.subs.push(this.digitObjApi.find({ order: 'pk_entity DESC' }).subscribe((res: InfDigitalObject[]) => {
+          const list: { [key: string]: ISourceSearchHitState } = {}
+
+          let i = 0;
+          res.forEach(digitObj => {
+            list['_source_' + i] = {
+              id: digitObj.pk_entity,
+              label: digitObj.notes
+            } as ISourceSearchHitState;
+            ++i;
+          })
+
+          this.searchHitsUpdated(list)
+
+        }))
+    }))
+  }
+
+  /**
+   * Updates the list of search hits in store
+   */
+  @dispatch() searchHitsUpdated(list: { [key: string]: ISourceSearchHitState }) {
+    return this.actions.searchHitsUpdated(list);
+  }
+
+  openSearchHit(searchHit: ISourceSearchHitState) {
+    const pk = searchHit.id;
+
+    //TODO query db for source related to project
+    this.digitObjApi.find({ where: { 'pk_entity': pk } }).subscribe((digiObjs: InfDigitalObject[]) => {
+      const editState: ISourceDetailState = {
+        view: digiObjs[0]
+      }
+      this.open(editState);
+    })
+
+
+
   }
 
   /**
@@ -94,16 +167,7 @@ export class SourceListComponent implements OnInit {
    * - creates a SourceDetailState
    * - update store: 'edit'
    */
-  @dispatch() open(searchHit: ISourceSearchHitState) {
-    const pk = searchHit.id;
-
-    //TODO query db for source
-    const editState = {
-      view: textBüchel,
-      editDigitalObject: false,
-      showAnnotatedSegments: false
-    } as ISourceDetailState
-
+  @dispatch() open(editState: ISourceDetailState) {
     return this.actions.open(editState)
   }
 
@@ -118,11 +182,24 @@ export class SourceListComponent implements OnInit {
   /**
    * Save the changes made on Digital Object
    * - calls api to persist the changes in db and on success
-   *    - updates store: updates 'digitalObject', sets 'editDigitalObject' false
+   *    - updates store: updates 'edit', 'view', sets 'edit', 'edit' false
    *    - emits onChange Output
    */
-  save() {
-    // TODO
+  save(digitalObject: InfDigitalObject) {
+
+    // TODO make saving with epr and versioning
+
+    this.digitObjApi.replaceOrCreate(digitalObject).subscribe((result: InfDigitalObject) => {
+      this.sourceUpdated(result);
+    })
+
+  }
+
+  /**
+   *  Updates store: updates 'edit', 'view', sets 'edit', 'edit' false
+   */
+  @dispatch() sourceUpdated(digitalObject: InfDigitalObject) {
+    return this.actions.sourceUpdated(digitalObject);
   }
 
   /**
@@ -130,15 +207,15 @@ export class SourceListComponent implements OnInit {
    * in order to apply the changes to the list
    */
   onSourceChange() {
-    this.getList()
+    this.search()
   }
 
   /**
    * Leads to the 'are you sure?' question
    * - update store: set 'remove' = add a clone of entry
    */
-  @dispatch() startRemove(entry: ISourceSearchHitState) {
-    return this.actions.startRemove(entry);
+  @dispatch() startRemove(hit: ISourceSearchHitState) {
+    return this.actions.startRemove(hit);
   }
 
   /**
@@ -150,12 +227,29 @@ export class SourceListComponent implements OnInit {
   }
 
   /**
+   * Back to list
+   * - update store: delete 'remove' 
+   */
+  @dispatch() removed() {
+    return this.actions.removed()
+  }
+
+  /**
    * Call api to remove the digital object from project, on success
    * - update store: delete 'remove'
    * - getList() 
    */
-  remove(entry: ISourceSearchHitState) {
-    // TODO
+  remove() {
+
+    // TODO make removing from project with epr
+
+    this.subs.push(this.digitObjApi.deleteById(this.hitToRemove.id).subscribe((deleted) => {
+      this.removed();
+      this.search();
+    }))
+
+
+
   }
 
   /**
@@ -180,8 +274,17 @@ export class SourceListComponent implements OnInit {
    * Create SourceDetailState
    * - update store: set edit: new SourceDetailState 
    */
-  submitCreate() {
-    // TODO
+  submitCreate(dObj: InfDigitalObject) {
+
+    // TODO make saving with epr and versioning
+
+    this.subs.push(this.digitObjApi.replaceOrCreate(dObj).subscribe((digitalObject: InfDigitalObject) => {
+      const editState: ISourceDetailState = {
+        edit: digitalObject,
+      }
+      this.open(editState);
+      this.cancelCreate()
+    }))
   }
 
 }

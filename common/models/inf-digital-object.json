@@ -1,6 +1,6 @@
 {
   "name": "InfDigitalObject",
-  "base": "InfEntityVersion",
+  "base": "PersistedModel",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
@@ -16,6 +16,34 @@
     }
   },
   "properties": {
+    "pk_entity": {
+      "id": true,
+      "type": "number",
+      "generated": true
+    },
+    "entity_version": {
+      "type": "number",
+      "default": 1
+    },
+    "notes": {
+      "type": "string",
+      "required": false
+    },
+    "tmsp_creation": {
+      "type": "string",
+      "generated": true,
+      "hidden": true
+    },
+    "tmsp_last_modification": {
+      "type": "string",
+      "generated": true,
+      "hidden": true
+    },
+    "sys_period": {
+      "type": "string",
+      "generated": true,
+      "hidden": true
+    },
     "js_quill_data": {
       "type": "object",
       "required": true
@@ -42,7 +70,9 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "find"
+        "find",
+        "replaceOrCreate",
+        "deleteById"
       ]
     }
   ],

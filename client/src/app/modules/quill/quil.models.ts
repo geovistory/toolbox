@@ -6,3 +6,5 @@ export interface QuillDoc {
     latestId: number,
     contents: any
 }
+
+

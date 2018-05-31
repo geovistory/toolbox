@@ -40,7 +40,10 @@ export const sourceDetailReducer =
             case SourceDetailActions.SOURCE_DETAIL_ON_QUILL_CHANGE:
                 lastState = {
                     ...lastState,
-                    edit: clone(action.payload.edit)
+                    edit: {
+                        ...lastState.edit,
+                        js_quill_data: clone(action.payload.edit.js_quill_data)
+                    }
                 }
                 break;
         }

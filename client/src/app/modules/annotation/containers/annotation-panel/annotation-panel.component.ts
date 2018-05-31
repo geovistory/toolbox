@@ -3,10 +3,12 @@ import { NgRedux, WithSubStore, ObservableStore, dispatch, select } from '@angul
 import { annotationPanelReducer } from './annotation-panel.reducer';
 import { AnnotationPanelActions } from './annotation-panel.actions';
 import { KeysPipe } from 'app/shared/pipes/keys.pipe';
-import { IAnnotationPanelState, AnnotationCtrlState, AnnotationState } from '../../annotation.models';
+import { IAnnotationPanelState, AnnotationCtrlState, AnnotationState, MentionedEntity } from '../../annotation.models';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Subscription, Observable } from 'rxjs';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { InfChunk, IAppState, InfEntityAssociation, U } from 'app/core';
+import { DfhConfig } from '../../../information/shared/dfh-config';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -44,8 +46,8 @@ export class AnnotationPanelComponent implements OnInit, OnDestroy {
   @Input() initState: IAnnotationPanelState;
 
   @select() edit$: Observable<AnnotationCtrlState>;
-  @select() remove$: Observable<AnnotationCtrlState>;
-  @select() view$;
+  @select() remove$: Observable<AnnotationState>;
+  @select() view$: Observable<AnnotationState>;;
 
   formGroup: FormGroup;
   annotationCtrl: FormControl;
@@ -54,7 +56,7 @@ export class AnnotationPanelComponent implements OnInit, OnDestroy {
   subs: Subscription[] = [];
 
   constructor(
-    private ngRedux: NgRedux<IAnnotationPanelState>,
+    private ngRedux: NgRedux<IAppState>,
     private actions: AnnotationPanelActions,
     private fb: FormBuilder
   ) {
@@ -130,7 +132,21 @@ export class AnnotationPanelComponent implements OnInit, OnDestroy {
    * - on success add annotation to substore path 'view'
    */
   save() {
-    alert('todo')
+    const val: AnnotationState = this.annotationCtrl.value;
+
+    let c = {
+      js_quill_data: val.chunk.quillDelta,
+      fk_digital_object: this.ngRedux.getState().sources.edit.view.pk_entity,
+      entity_associations: U.obj2Arr(val.mentionedEntities).map((me: MentionedEntity) => {
+        return {
+          fk_range_entity: me.pkEntity,
+          fk_property: DfhConfig.PROPERTY_PK_MENTIONES
+        } as InfEntityAssociation
+      })
+    } as InfChunk
+
+
+    console.log(JSON.stringify(c))
   }
 
   /**

@@ -139,7 +139,7 @@ export class AnnotationCtrlComponent implements OnInit, OnDestroy, ControlValueA
         this.onChange = fn;
 
         if (this.formGroup.valid) {
-            this.onChange(this.formGroup.value)
+            this.onChange(this.annotationState)
         } else {
             this.onChange(null)
         }
@@ -150,7 +150,7 @@ export class AnnotationCtrlComponent implements OnInit, OnDestroy, ControlValueA
          */
         this.subs.push(this.formGroup.valueChanges.subscribe(val => {
             if (this.formGroup.valid) {
-                this.onChange(val)
+                this.onChange(this.annotationState)
             } else {
                 this.onChange(null)
             }
