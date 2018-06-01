@@ -3,7 +3,11 @@ import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { IAnnotationPanelState, Chunk, AnnotationState } from '../../annotation.models';
 import { InfEntityAssociation } from 'app/core';
-import { clone } from 'ramda'
+import { clone, indexBy } from 'ramda'
+
+export function annotationStateKey(a: AnnotationState) {
+  return '_annot' + a.chunk.pkEntity;
+}
 
 // replace AnnotationPanel with name of component
 
@@ -15,6 +19,7 @@ export type AnnotationPanelAction = FluxStandardAction<Payload, any>;
 export class AnnotationPanelActions {
   static readonly ANNOTATION_PANEL_STATE_UPDATED = 'ANNOTATION_PANEL_STATE_UPDATED';
   static readonly START_CREATE_ANNOTATION = 'START_CREATE_ANNOTATION';
+  static readonly ANNOTATION_PANEL_CREATED_ANNOTATION = 'ANNOTATION_PANEL_CREATED_ANNOTATION';  
   static readonly START_EDIT_ANNOTATION = 'START_EDIT_ANNOTATION';
   static readonly CANCEL_EDIT_ANNOTATION = 'CANCEL_EDIT_ANNOTATION';
   static readonly START_REMOVE_ANNOTATION = 'START_REMOVE_ANNOTATION';
@@ -38,6 +43,16 @@ export class AnnotationPanelActions {
           selectingSegment: true,
           selectingEntities: false
         }
+      }
+    }
+  }
+
+  createdAnnotation = (view: AnnotationState): AnnotationPanelAction => {
+    return {
+      type: AnnotationPanelActions.ANNOTATION_PANEL_CREATED_ANNOTATION,
+      meta: null,
+      payload: {
+        view: indexBy(annotationStateKey, [view])
       }
     }
   }

@@ -26,6 +26,18 @@ export const annotationPanelReducer =
         }
 
         switch (action.type) {
+            case AnnotationPanelActions.ANNOTATION_PANEL_CREATED_ANNOTATION:
+                lastState = {
+                    ...omit(['edit'], lastState),
+                    view: {
+                        ...lastState.view,
+                        ...action.payload.view
+                    }
+                }
+                break;
+        }
+
+        switch (action.type) {
             case AnnotationPanelActions.START_EDIT_ANNOTATION:
                 lastState = {
                     ...lastState,

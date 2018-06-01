@@ -7,7 +7,7 @@ import { IAnnotationPanelState, AnnotationCtrlState, AnnotationState, MentionedE
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Subscription, Observable } from 'rxjs';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { InfChunk, IAppState, InfEntityAssociation, U } from 'app/core';
+import { InfChunk, IAppState, InfEntityAssociation, U, InfChunkApi } from 'app/core';
 import { DfhConfig } from '../../../information/shared/dfh-config';
 
 @AutoUnsubscribe()
@@ -58,7 +58,8 @@ export class AnnotationPanelComponent implements OnInit, OnDestroy {
   constructor(
     private ngRedux: NgRedux<IAppState>,
     private actions: AnnotationPanelActions,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private chunkApi: InfChunkApi
   ) {
     this.annotationCtrl = new FormControl(null, [Validators.required])
     this.formGroup = this.fb.group({ 'annotationCtrl': this.annotationCtrl })
@@ -129,7 +130,7 @@ export class AnnotationPanelComponent implements OnInit, OnDestroy {
    * Saves annotation 
    * - gets the data from formControl of AnnotationCtrlComponent 
    * - calls api to findOrCreate InfChunk with InfEntityAssociation[] with InfEntityProjectRel[]
-   * - on success add annotation to substore path 'view'
+   * - on success call created()
    */
   save() {
     const val: AnnotationState = this.annotationCtrl.value;
@@ -145,9 +146,28 @@ export class AnnotationPanelComponent implements OnInit, OnDestroy {
       })
     } as InfChunk
 
-
-    console.log(JSON.stringify(c))
+    this.chunkApi.findOrCreateChunk(this.ngRedux.getState().activeProject.pk_project, c).subscribe(res => {
+      const chunk = res[0];
+      this.created(chunk)
+    })
   }
+
+  /**
+   * Created a new annotation
+   * - add annotation to substore path 'view'
+   */
+  @dispatch() created(c: InfChunk) {
+
+    // TODO: retrieve the mentioned entities or so
+    return this.actions.createdAnnotation({
+      chunk: {
+        pkEntity: c.pk_entity,
+        quillDelta: c.js_quill_data
+      },
+      mentionedEntities: {}
+    } as AnnotationState)
+  }
+
 
   /**
    * Start removeing an annotation from project

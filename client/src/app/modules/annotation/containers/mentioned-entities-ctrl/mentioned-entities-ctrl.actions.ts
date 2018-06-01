@@ -3,6 +3,9 @@ import { FluxStandardAction } from "flux-standard-action";
 import { Injectable } from "@angular/core";
 import { dispatch } from "@angular-redux/store";
 
+export function mentionedEntityKey(m: MentionedEntity) {
+    return '_mentioned_' + m.pkEntity;
+  }
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = { [key: string]: MentionedEntity };

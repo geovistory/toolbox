@@ -57,7 +57,8 @@
       "permission": "ALLOW",
       "property": [
         "find",
-        "findOrCreateInfEntityAssociation"
+        "findOrCreateInfEntityAssociation",
+        "nestedObjectOfProject"
       ]
     }
   ],
@@ -99,6 +100,38 @@
       "http": {
         "path": "/findOrCreate",
         "verb": "post"
+      }
+    },
+    "nestedObjectOfProject": {
+      "accepts": [
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Project id",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the entity association (pk_entity)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfEntityAssociation",
+        "root": true
+      },
+      "description": "Get e nested object of all information about the entity association of the project.",
+      "http": {
+        "path": "/nested-object-of-project",
+        "verb": "get"
       }
     }
   }

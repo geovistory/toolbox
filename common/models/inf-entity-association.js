@@ -52,6 +52,8 @@ module.exports = function (InfEntityAssociation) {
     }
 
 
+
+
     // if (requestedEa.temporal_entity && Object.keys(requestedEa.temporal_entity).length > 0) {
 
     //   //create the temporal_entity first
@@ -92,6 +94,48 @@ module.exports = function (InfEntityAssociation) {
     }
 
   }
+
+
+
+   /**
+    * nestedObjectOfProject - get a rich object of the entityAssociation with its
+    * domain and range entity
+   *
+   * @param  {number} pkProject primary key of project
+   * @param  {number} pkEntity  pk_entity of the entityAssociation
+   */
+  InfEntityAssociation.nestedObjectOfProject = function(projectId, pkEntity, cb) {
+
+    const innerJoinThisProject = {
+      "$relation": {
+        "name": "eprs",
+        "joinType": "inner join",
+        "where": [
+          "fk_project", "=", projectId,
+          "and", "is_in_project", "=", "true"
+        ]
+      }
+    };
+
+    const filter = {
+      "where": ["pk_entity", "=", pkEntity],
+      "include": {
+        "eprs": innerJoinThisProject,
+        "chunk": {
+          "$relation": {
+            "name": "chunk",
+            "joinType": "inner join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          },
+        }
+      }
+    }
+
+    return InfEntityAssociation.findComplex(filter, cb);
+  }
+
 
 
 };

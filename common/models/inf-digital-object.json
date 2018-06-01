@@ -72,9 +72,43 @@
       "property": [
         "find",
         "replaceOrCreate",
-        "deleteById"
+        "deleteById",
+        "nestedObjectOfProject"
       ]
     }
   ],
-  "methods": {}
+  "methods": {
+    "nestedObjectOfProject": {
+      "accepts": [
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Project id",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the digital object (pk_entity)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfDigitalObject",
+        "root": true
+      },
+      "description": "Get e nested object of all information about the digital object of the project.",
+      "http": {
+        "path": "/nested-object-of-project",
+        "verb": "get"
+      }
+    }
+  }
 }

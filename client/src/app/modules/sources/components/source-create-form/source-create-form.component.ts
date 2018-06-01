@@ -31,7 +31,8 @@ export class SourceCreateFormComponent implements OnInit {
   @Output() ok: EventEmitter<InfDigitalObject> = new EventEmitter();
 
   model: { label?: string } = {};
-
+  errorMessages:any;
+  
   constructor() { }
 
   ngOnInit() {

@@ -1,14 +1,17 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { WithSubStore, select, dispatch } from '@angular-redux/store';
+import { WithSubStore, select, dispatch, NgRedux } from '@angular-redux/store';
 import { sourceDetailReducer } from './source-detail.reducer';
 import { ISourceDetailState } from '../..';
 import { Observable, Subscription } from 'rxjs';
 import { QuillDoc } from 'app/modules/quill';
-import { IAnnotationPanelState, Chunk } from 'app/modules/annotation';
+import { IAnnotationPanelState, Chunk, AnnotationState, MentionedEntity } from 'app/modules/annotation';
 import { SourceDetailActions } from './source-detail.actions';
 import * as Delta from 'quill-delta/lib/delta';
-import { InfEntityAssociation, InfDigitalObject } from 'app/core';
+import { InfEntityAssociation, InfDigitalObject, InfDigitalObjectApi, IAppState } from 'app/core';
+import { indexBy } from 'ramda'
+import { annotationStateKey } from 'app/modules/annotation/containers/annotation-panel/annotation-panel.actions';
+import { mentionedEntityKey } from '../../../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 
 /**
  * A Container to show and edit the details of a source
@@ -86,7 +89,9 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
   subs: Subscription[] = []
 
   constructor(
-    private actions: SourceDetailActions
+    private actions: SourceDetailActions,
+    private digtObjApi: InfDigitalObjectApi,
+    private ngRedux: NgRedux<IAppState>
   ) { }
 
   ngOnInit() {
@@ -193,6 +198,46 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
 
   initAnnotations() {
 
+    this.subs.push(this.digtObjApi.nestedObjectOfProject(
+      this.ngRedux.getState().activeProject.pk_project,
+      this.ngRedux.getState().sources.edit.view.pk_entity,
+    ).subscribe((digitObjs: InfDigitalObject[]) => {
+      const digitObj = digitObjs[0];
+
+      console.log(digitObj)
+      let nodes = new Map();
+
+      this.annotationPanel = {
+        view: indexBy(annotationStateKey, digitObj.chunks.map(chunk => {
+          const delta = JSON.parse(chunk.js_quill_data);
+
+          delta.ops.forEach(op => {
+            if (op.attributes && op.attributes.node && !(op.attributes.node == '_dots_')) {
+              const count = nodes.get(op.attributes.node) ? nodes.get(op.attributes.node) : 0;
+              nodes.set(op.attributes.node, (count + 1))
+            }
+          })
+
+          return {
+            chunk: {
+              pkEntity: chunk.pk_entity,
+              fkDigitalObject: chunk.fk_digital_object,
+              quillDelta: JSON.parse(chunk.js_quill_data) // TODO why does it store the deltas stringified??
+            },
+            mentionedEntities: indexBy(mentionedEntityKey, chunk.entity_associations.map(ea=>{
+              return {
+                pkEntity: ea.fk_range_entity,
+                entityAssociation: ea,
+                label: '' // TODO lazy load pe it or eager load ?
+              } as MentionedEntity
+            }))
+          } as AnnotationState;
+        }))
+      }
+      this.annotatedNodes = Array.from(nodes);
+
+
+    }))
     this.annotatedNodes = [
       ['20', 1],
       ['21', 3],

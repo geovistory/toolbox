@@ -1,6 +1,6 @@
 import { Component, OnInit, forwardRef, Input, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, ControlValueAccessor, NG_VALUE_ACCESSOR, FormBuilder, Validators } from '@angular/forms';
-import { AnnotationState } from '../../annotation.models';
+import { AnnotationCtrlState } from '../../annotation.models';
 import { WithSubStore, dispatch } from '@angular-redux/store';
 import { AnnotationCtrlActions } from './annotation-ctrl.actions';
 import { annotationCtrlReducer } from './annotation-ctrl.reducer';
@@ -44,7 +44,7 @@ export class AnnotationCtrlComponent implements OnInit, OnDestroy, ControlValueA
     mentionedEntitiesCtrl: FormControl;
     mentionedEntitiesCtrlPath: string[];
 
-    annotationState: AnnotationState;
+    annotationState: AnnotationCtrlState;
 
     subs: Subscription[] = [];
 
@@ -126,7 +126,7 @@ export class AnnotationCtrlComponent implements OnInit, OnDestroy, ControlValueA
      * ControlValueAccessor implementation
      **********************************************/
 
-    writeValue(annotationState: AnnotationState): void {
+    writeValue(annotationState: AnnotationCtrlState): void {
 
         this.annotationState = annotationState;
 
@@ -157,7 +157,7 @@ export class AnnotationCtrlComponent implements OnInit, OnDestroy, ControlValueA
         }))
 
     }
-    onChange(annotationState: AnnotationState) { }
+    onChange(annotationState: AnnotationCtrlState) { }
 
     registerOnTouched(fn: any): void {
         this.onTouched = fn;

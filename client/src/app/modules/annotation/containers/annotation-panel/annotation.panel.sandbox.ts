@@ -14,6 +14,7 @@ import { MentionedEntitiesViewComponent } from "../../components/mentioned-entit
 import { MentionedEntityViewComponent } from "../../components/mentioned-entity-view/mentioned-entity-view.component";
 import { AnnotationCtrlActions } from "../annotation-ctrl/annotation-ctrl.actions";
 import { MentionedEntityCtrlActions } from "../mentioned-entities-ctrl/mentioned-entities-ctrl.actions";
+import { QuillModule } from "app/modules/quill";
 
 
 
@@ -21,6 +22,7 @@ import { MentionedEntityCtrlActions } from "../mentioned-entities-ctrl/mentioned
 export default sandboxOf(AnnotationPanelComponent, {
   imports: [
     AnnotationSanboxStoreModule,
+    QuillModule
   ],
   declarations: [
     KeysPipe,
