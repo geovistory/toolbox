@@ -15,43 +15,5 @@ export type EditorStates =
     | 'create-pe-it' // create a new PeIt.
     | 'create-pe-it-role'  // create a pe-it-role at once with child te-ent and te-ent-roles 
     | 'create-te-ent-role'  // create a pe-te-ent-role
-    | 'exist-time'
+    | 'exist-time';
 
-
-// export interface ITeRoleWrapper {
-//     data: {
-//         role$: BehaviorSubject<InfRole>,
-//     }
-
-//     gui: {
-//         state$: BehaviorSubject<'view' | 'editable' | 'edit'>,
-//         toggle$: BehaviorSubject<CollapsedExpanded>,
-//         ontoInfoVisible$: BehaviorSubject<boolean>,
-//     }
-
-//     children: {
-//         peItWrapper$?: BehaviorSubject<ITeEntWrapper>,
-//         appellationWrapper$?: BehaviorSubject<IAppellationWrapper>,
-//         languageWrapper$?: BehaviorSubject<ILanguageWrapper>
-//     }
-// }
-
-// export interface IAppellationWrapper {
-//     data: {
-//         appellation$: BehaviorSubject<InfAppellation>,
-//     }
-//     gui: {
-//         state$: BehaviorSubject<'view' | 'editable' | 'edit'>,
-//     }
-// }
-
-
-
-// export interface ILanguageWrapper {
-//     data: {
-//         language$: BehaviorSubject<InfLanguage>,
-//     }
-//     gui: {
-//         state$: BehaviorSubject<'view' | 'editable' | 'edit'>,
-//     }
-// }

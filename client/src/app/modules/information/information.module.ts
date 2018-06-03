@@ -69,7 +69,6 @@ import { EntityEditorActions } from './containers/entity-editor/entity-editor.ac
 import { PeItActions } from './containers/pe-it/pe-it.actions';
 import { PeItComponent } from './containers/pe-it/pe-it.component';
 import { NgRedux } from '@angular-redux/store';
-import { IAppStateWithInformation } from './api/information.model';
 import { KeysPipe } from '../../shared/pipes/keys.pipe';
 import { RoleSetActions } from './components/role-set/role-set.actions';
 import { RoleActions } from './components/role/role.actions';
@@ -90,6 +89,8 @@ import { ExistTimeRoleSetComponent } from './components/te-ent-role-set/exist-ti
 import { TeEntExistenceTimeEditableComponent } from './components/te-ent-existence-time/te-ent-existence-time-editable/te-ent-existence-time-editable.component';
 import { TeEntExistenceTimeEditComponent } from './components/te-ent-existence-time/te-ent-existence-time-edit/te-ent-existence-time-edit.component';
 import { TeEntExistenceTimeAddComponent } from './components/te-ent-existence-time/te-ent-existence-time-add/te-ent-existence-time-add.component';
+import { KeysModule } from '../../shared/pipes/keys.module';
+import { MentionedEntityCtrlActions } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 
 
 @NgModule({
@@ -111,7 +112,8 @@ import { TeEntExistenceTimeAddComponent } from './components/te-ent-existence-ti
     LanguageSearchTypeaheadModule,
     ControlMessagesModule,
     PassiveLinkModule,
-    TimelineModule
+    TimelineModule,
+    KeysModule
 
   ],
   declarations: [
@@ -151,7 +153,6 @@ import { TeEntExistenceTimeAddComponent } from './components/te-ent-existence-ti
     TeEntExistenceTimeComponent,
     PropertyPipe,
     PeItTimelineComponent,
-    KeysPipe,
     TimePrimitiveComponent,
     TimePrimitiveViewComponent,
     ExistTimeRoleSetComponent,
@@ -185,7 +186,8 @@ import { TeEntExistenceTimeAddComponent } from './components/te-ent-existence-ti
     StateToDataService,
     EntityAddExistingActions,
     EntityCreateNewActions,
-    ExistenceTimeActions
+    ExistenceTimeActions,
+    MentionedEntityCtrlActions
   ],
   entryComponents: [
     EntityAddModalComponent,

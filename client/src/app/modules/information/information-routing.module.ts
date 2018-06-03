@@ -7,7 +7,10 @@ import { EntityEditorComponent } from './containers/entity-editor/entity.editor.
 const routes: Routes = [
   {
     path: 'search',
-    component: ProjectEntitiesComponent
+    component: ProjectEntitiesComponent,
+    data: {
+      reduxPath: ['information']
+    }
   },
   {
     path: 'entity/:id',

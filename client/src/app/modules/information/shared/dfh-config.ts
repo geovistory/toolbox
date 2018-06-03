@@ -30,6 +30,9 @@ export class DfhConfig {
   // dfh_pk_property used to connect an appellation use with a language
   static PROPERTY_PK_R61_USED_LANGUAGE = 3;
 
+  // dfh_pk_property used to connect a chunk as domain use with a persitent item or temporal entity as range 
+  static PROPERTY_PK_MENTIONES = 4;
+
 
 
   /**

@@ -1,0 +1,14 @@
+<div class="card-body font-sm text-muted">
+  This entities are mentioned:
+</div>
+
+<div *ngFor="let item of mentionedEntities | keys" class="btn-group d-flex" style="flex-shrink:0;">
+  <div class="gv-flex-grow-1 rounded-left gv-card-spacer-x align-self-stretch d-flex">
+    <div class="align-self-center">
+      <gv-mentioned-entity-view [mentionedEntity]="item.value"></gv-mentioned-entity-view>
+    </div>
+  </div>
+  <button class="btn btn-link" (click)="remove(item.key)">
+    <i class="fa fa-close"></i> remove
+  </button>
+</div>

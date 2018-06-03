@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, EventEmitter, ChangeDetectionStrategy, OnDestroy, Input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -18,13 +18,20 @@ import { environment } from 'environments/environment';
 import { EntityAddModalService } from '../../shared/entity-add-modal.service';
 // import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
 
-import { dispatch, select, select$, WithSubStore } from '@angular-redux/store';
-import { projectEntitiesComponentReducer } from './reducers';
+import { dispatch, select, select$, WithSubStore, NgRedux, ObservableStore } from '@angular-redux/store';
 import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
+import { projectEntitiesReducer } from './project-entities.reducers';
+import { Subscription } from 'rxjs';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { ProjectEntitiesActions } from './project-entities.actions';
+import { MentionedEntity } from 'app/modules/annotation';
+import { mentionedEntityCtrlReducer } from '../../../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.reducer';
+import { MentionedEntityCtrlActions } from '../../../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 
+@AutoUnsubscribe()
 @WithSubStore({
   basePathMethodName: 'getBasePath',
-  localReducer: projectEntitiesComponentReducer,
+  localReducer: projectEntitiesReducer,
 })
 @Component({
   selector: 'gv-project-entities',
@@ -32,14 +39,17 @@ import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.co
   styleUrls: ['./project-entities.component.scss'],
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectEntitiesComponent implements OnInit {
+export class ProjectEntitiesComponent implements OnInit, OnDestroy {
 
-  static readonly TEST_STORE = 'TEST_STORE'
-
-  getBasePath = () => ['peIt'];
+  // path to the substore
+  @Input() path: string[] | string;
+  getBasePath() { return this.path }
 
   persistentItems: InfPersistentItem[] = [];
   projectId: number;
+
+  selectingEntities$: Observable<boolean>;
+  mentionedEntitiesCrtlStore: ObservableStore<{ [key: string]: MentionedEntity }>
 
   //Pagination
   collectionSize: number; // number of search results
@@ -56,22 +66,39 @@ export class ProjectEntitiesComponent implements OnInit {
     size: 'lg'
   }
 
+  subs: Subscription[] = [];
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private persistentItemApi: InfPersistentItemApi,
     private modalService: NgbModal,
     private entityAddModalService: EntityAddModalService,
     private router: Router,
-    private slimLoadingBarService: SlimLoadingBarService
+    private slimLoadingBarService: SlimLoadingBarService,
+    private ngRedux: NgRedux<any>,
+    private mEntitiesActions: MentionedEntityCtrlActions,
+
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
     this.projectId = activatedRoute.snapshot.parent.params['id'];
+
+    // if component is activated by ng-router, take base path here
+    this.subs.push(activatedRoute.data.subscribe(d => {
+      this.path = d.reduxPath;
+    }))
+
+    // listen to selecting entities for annotation
+    this.selectingEntities$ = ngRedux.select<boolean>(['sources', 'edit', 'annotationPanel', 'edit', 'selectingEntities'])
+    this.mentionedEntitiesCrtlStore = ngRedux.configureSubStore(['sources', 'edit', 'annotationPanel', 'edit', 'mentionedEntities'], mentionedEntityCtrlReducer)
+
   }
 
   ngOnInit() {
 
+    // init the search
     this.searchProjectPeIts();
+
     this.entityAddModalService.onAdd.subscribe(success => {
       this.searchProjectPeIts();
     })
@@ -81,11 +108,9 @@ export class ProjectEntitiesComponent implements OnInit {
   }
 
 
-  /**
- * TRY TO Dispach an action on the store
- */
-  @dispatch() testStore = () => ({ type: 'TEST_STORE' });
-
+  ngOnDestroy() {
+    this.subs.forEach(sub => sub.unsubscribe);
+  }
 
   searchProjectPeIts() {
     this.startLoading();
@@ -122,6 +147,10 @@ export class ProjectEntitiesComponent implements OnInit {
     // routerLink="../entity/{{persistentItem.pk_persistent_item}}" queryParamsHandling="merge"
   }
 
+  selectMentionedEntity(entity: MentionedEntity) {
+    this.mentionedEntitiesCrtlStore.dispatch(this.mEntitiesActions.addMentionedEntity(entity))
+  }
+
   get hitsFrom() {
     return (this.limit * (this.page - 1)) + 1;
   }
@@ -133,6 +162,7 @@ export class ProjectEntitiesComponent implements OnInit {
   pageChange() {
     this.searchProjectPeIts();
   }
+
   searchStringChange() {
     this.page = 1;
     this.searchProjectPeIts();

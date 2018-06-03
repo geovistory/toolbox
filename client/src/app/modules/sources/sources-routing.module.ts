@@ -1,17 +1,20 @@
 import { NgModule } from '@angular/core';
 import { Route, Routes, RouterModule } from '@angular/router';
-import { SourceComponent } from './components/source/source.component';
-import { ProjectSourcesComponent } from './components/project-sources/project-sources.component';
+import { SourceListComponent } from './containers/source-list/source-list.component';
+import { SourceDetailComponent } from './containers/source-detail/source-detail.component';
 
 
 const routes: Routes = [
   {
     path: 'search',
-    component: ProjectSourcesComponent
+    component: SourceListComponent,
+    data: {
+      reduxPath: ['sources']
+    }
   },
   {
     path: 'source/:id',
-    component: SourceComponent
+    component: SourceDetailComponent
   }
 ];
 

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AppellationLabel } from '../../shared/appellation-label/appellation-label';
 import { ActiveProjectService } from 'app/core';
+import { MentionedEntity } from 'app/modules/annotation';
 
 @Component({
   selector: 'gv-entity-search-hit',
@@ -10,6 +11,8 @@ import { ActiveProjectService } from 'app/core';
 export class EntitySearchHitComponent implements OnInit {
 
   @Input() persistentItem:any;
+
+  @Input() selectingMentionedEntities:boolean;
 
 
   /**
@@ -29,6 +32,8 @@ export class EntitySearchHitComponent implements OnInit {
   @Output() onAdd: EventEmitter<number> = new EventEmitter();
   @Output() onOpen: EventEmitter<number> = new EventEmitter();
   @Output() onSelect: EventEmitter<number> = new EventEmitter();
+  @Output() onSelectAsMentioned: EventEmitter<MentionedEntity> = new EventEmitter();
+
 
   standardAppellationLabel: AppellationLabel;
   moreAppellationLabels: Array<AppellationLabel> = [];
@@ -111,6 +116,14 @@ export class EntitySearchHitComponent implements OnInit {
 
   select(){
     this.onSelect.emit(this.persistentItem.pk_entity)
+  }
+
+  selectAsMentioned(){
+    const mentionedEntity = {
+      label: this.standardAppellationLabel.getString(),
+      pkEntity: this.persistentItem.pk_entity
+    } as MentionedEntity
+    this.onSelectAsMentioned.emit(mentionedEntity)
   }
 
 
