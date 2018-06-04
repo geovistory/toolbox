@@ -23,7 +23,8 @@ exports.up = function (db, callback) {
 
   CREATE TABLE information.place
   (
-    geo_point GEOGRAPHY(POINT,4326)
+    geo_point GEOGRAPHY(POINT,4326),
+    fk_class integer REFERENCES data_for_history.class (dfh_pk_class)
   )
   INHERITS (information.entity)
   WITH (
