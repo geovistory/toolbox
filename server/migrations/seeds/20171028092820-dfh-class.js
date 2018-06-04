@@ -25,7 +25,10 @@ exports.up = function(db, callback) {
   (4, 'E56', 'Language'),
   (5, 'E67', 'Birth'),
   (335, 'E61', 'Time Primitive'),
-  (22, 'E2', 'Temporal Entity')
+  (22, 'E2', 'Temporal Entity'),
+  (363, 'histC8', 'Geographical Place'),
+  (84, 'E93', 'Presence'),
+  (51, 'E53', 'Place')  
 
   `;
   console.log(sql);
