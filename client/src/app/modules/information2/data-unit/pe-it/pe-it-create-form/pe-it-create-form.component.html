@@ -1,0 +1,32 @@
+pe-it-create-form works!
+
+<ng-container *ngTemplateOutlet="header"></ng-container>
+
+<div class="d-flex flex-column gv-flex-grow-1">
+
+  <ng-container *ngTemplateOutlet="propertiesHeader"></ng-container>
+
+  <form [formGroup]="formGroup" *ngIf="formGroup"  [connect]="['formValue']" [formGroup]="formGroup">
+    <gv-pe-it-create-ctrl [parentPath]="parentPath" [formControlName]="formCtrlName"></gv-pe-it-create-ctrl>
+
+    <!-- <gv-pe-it-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
+      [formControlName]="entry.key" (touched)="markAsTouched()"></gv-pe-it-role-set> -->
+  </form>
+</div>
+
+
+{{formGroup.value | json}}
+
+
+<ng-template #header>
+  <section class="row">
+    <div class="col-md-8">
+      <h2>
+        <span *ngIf="labelInEdit">{{labelInEdit}}</span>
+        <span *ngIf="label && !labelInEdit">{{label}}</span>
+        <small class="text-muted">{{(dfhClass$|async)?.dfh_standard_label}}</small>
+      </h2>
+    </div>
+    <!-- <gv-entity-editor-settings class="col-md-4 text-right"></gv-entity-editor-settings> -->
+  </section>
+</ng-template>

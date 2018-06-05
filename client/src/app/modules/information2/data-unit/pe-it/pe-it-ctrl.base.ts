@@ -1,0 +1,148 @@
+import { Input, OnInit, OnDestroy } from "@angular/core";
+
+import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
+import { WithSubStore, dispatch, NgRedux, ObservableStore, select } from "@angular-redux/store";
+import { FormBuilder, ControlValueAccessor } from "@angular/forms";
+import { Subscription, Observable } from "rxjs";
+import { InfPersistentItem } from "app/core";
+import { peItReducer } from "./pe-it.reducer";
+import { PeItDetail } from "../../information.models";
+import { PeItActions } from "./pe-it.actions";
+import { DataUnitBase } from "../data-unit.base";
+
+
+
+/**
+ * hooks in on the level of
+ * PeItDetail
+ *
+ * Abstract class for components that 
+ * - act as a form control for its parent
+ * - have a reactive form as child  
+ */
+@AutoUnsubscribe()
+@WithSubStore({
+    localReducer: peItReducer,
+    basePathMethodName: 'getBasePath'
+})
+export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueAccessor, OnInit {
+
+    // @WithSubStore needs a empty string for root     
+    getBasePath = () => {
+        return this.parentPath ? [...this.parentPath, 'peItState'] : ''
+    }
+
+    // ngRedux.configureSubStore needs a empty array for root 
+    getBaseForConfigSubStore = () => {
+        return this.parentPath ? [...this.parentPath, 'peItState'] : []
+    }
+
+    @select() peIt$: Observable<InfPersistentItem>
+
+
+    localStore: ObservableStore<PeItDetail>;
+
+
+    constructor(
+        protected ngRedux: NgRedux<any>,
+        protected actions: PeItActions,
+        protected fb: FormBuilder
+    ) {
+        super(fb)
+        this.initForm()
+
+
+    }
+
+    // if provided, initialState will be dispatched onInit replacing the lastState of substore 
+    @Input() initState: PeItDetail;
+    peItState: PeItDetail;
+
+    ngOnInit() {
+        // initial state is useful for sandboxing the component
+        if (this.initState) this.updateState(this.initState)
+
+        this.onInitPeItBaseChild()
+    }
+
+
+    // gets called by base class onInit
+    initStore() {
+        this.localStore = this.ngRedux.configureSubStore(this.getBaseForConfigSubStore(), peItReducer);
+        this.subs.push(this.localStore.select<PeItDetail>('').subscribe(d => {
+            this.peItState = d
+        }))
+    }
+
+    /**
+     * Updates the state of substore
+     */
+    @dispatch() updateState(payload: PeItDetail) {
+        return this.actions.stateUpdated(payload)
+    }
+
+
+
+    /**
+     * Inits the formGroup used in template.
+     */
+    initForm() {
+        //   create the formGroup used to create/edit the roleSet's InfRole[]
+        this.formGroup = this.fb.group({});
+    }
+
+    /**
+     * initializes form contols after the role set component is registered by 
+     * the parent's form, so that when initialization of the form controls 
+     * triggers the subscription of the form's valueChanges, the onChange method
+     * was allready registered.
+     */
+    abstract initFormCtrls(): void;
+
+    /**
+    * Subscribe to FormValueChanges here
+    */
+    abstract subscribeFormChanges(): void;
+
+
+    /**
+     * gets replaced by angular on registerOnChange
+     * Implement this function helps on a chlid component 
+     * to type the onChange function for the use in this class.
+     */
+    abstract onChange(controlValue): void;
+
+    /**
+    * gets replaced by angular on registerOnTouched
+    * Call this function when the form has been touched.
+    */
+    private onTouched = () => { };
+
+    /**
+     * gets called on setting the value of the form control
+     * @param obj 
+     */
+    abstract writeValue(obj: any): void;
+
+    registerOnChange(fn: any): void {
+        this.onChange = fn;
+
+        this.subscribeFormChanges();
+
+        this.initFormCtrls();
+
+    }
+    registerOnTouched(fn: any): void {
+        this.onTouched = fn;
+    }
+    setDisabledState?(isDisabled: boolean): void {
+        throw new Error("Method not implemented.");
+    }
+
+
+    /***************************
+     *  Hooks for child class
+    ****************************/
+    abstract onInitPeItBaseChild(): void;
+
+}

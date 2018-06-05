@@ -28,7 +28,7 @@ import { KeysModule } from './shared/pipes/keys.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     NgReduxRouterModule,
