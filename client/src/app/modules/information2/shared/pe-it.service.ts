@@ -5,9 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 
-import { ActivePeItService } from './active-pe-it.service';
 import { InfPersistentItemApi, InfTemporalEntityApi, InfAppellationApi, InfRoleApi, InfLanguageApi, InfPersistentItem, InfTemporalEntity, InfAppellation, InfRole } from 'app/core';
-import { RoleSetListService } from './role-set-list.service';
 import { ClassService } from './class.service';
 import { EprService } from './epr.service';
 import { ReplaySubject } from 'rxjs';
@@ -24,11 +22,9 @@ export class PeItService {
     private appellationApi: InfAppellationApi,
     private roleApi: InfRoleApi,
     private languageApi: InfLanguageApi,
-    private activePeItService: ActivePeItService,
     private peItApi: InfPersistentItemApi,
     private classService: ClassService,
     private eprService: EprService,
-    private roleSetListService: RoleSetListService,
   ) {
 
   }

@@ -1,7 +1,8 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { InfEntityProjectRel, DfhClass, InfPersistentItem, ActiveProjectService, InfEntityProjectRelApi, InfPersistentItemApi } from 'app/core';
+import { InfEntityProjectRel, DfhClass, InfPersistentItem,  InfEntityProjectRelApi, InfPersistentItemApi, IAppState } from 'app/core';
 import { StateToDataService } from './state-to-data.service';
 import { PeItDetail } from '../information.models';
+import { NgRedux } from '@angular-redux/store';
 
 
 export enum EntityAddModalState {
@@ -79,7 +80,7 @@ export class EntityAddModalService {
 
   constructor(
     private entityProjectRelApi: InfEntityProjectRelApi,
-    private activeProjectService: ActiveProjectService,
+    private ngRedux: NgRedux<IAppState>,
     private persistentItemApi: InfPersistentItemApi
   ) { }
 
@@ -95,7 +96,7 @@ export class EntityAddModalService {
 
   createPeIt() {
     return this.persistentItemApi.findOrCreatePeIt(
-      this.activeProjectService.project.pk_project,
+      this.ngRedux.getState().activeProject.pk_project,
       this.peItToCreate
     )
   }

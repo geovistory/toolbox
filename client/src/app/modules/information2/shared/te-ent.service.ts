@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter, Inject, forwardRef } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
-import { InfTemporalEntity, ActiveProjectService, InfRole, DfhProperty, InfTemporalEntityApi, TimePrimitive, InfTimePrimitive, InfEntityProjectRel, InfAppellation, ExistenceTime } from 'app/core';
+import { InfTemporalEntity, InfRole, DfhProperty, InfTemporalEntityApi, TimePrimitive, InfTimePrimitive, InfEntityProjectRel, InfAppellation, ExistenceTime } from 'app/core';
 import { DfhConfig } from './dfh-config';
 import { PropertyService } from './property.service';
 import { BehaviorSubject } from 'rxjs';
@@ -14,7 +14,6 @@ export class TeEntService {
   properties: DfhProperty[];
 
   constructor(
-    private activeProject: ActiveProjectService,
     private propertyService: PropertyService,
     private teEntApi: InfTemporalEntityApi,
     private classService: ClassService,
@@ -29,156 +28,156 @@ export class TeEntService {
     return this.propertyService.getPropertyByFkRangeClass(rangeClassPk)
   }
 
-  /**
-   * Persists the existence time of a temporal entity to data base
-   * @param newExistenceTime the new ExistenceTime object
-   * @param temporalEntity the temporal entity with nested roles that defined the old existence time
-   * @return {Observable<teEnt>} returns an Observable with the updated teEnt with the new roles for existence time 
-   */
-  upsertExistenceTime(newExistenceTime: ExistenceTime, temporalEntity: InfTemporalEntity): Observable<InfTemporalEntity> {
-    const observable: Observable<InfTemporalEntity> = new Observable((observer) => {
+  // /**
+  //  * Persists the existence time of a temporal entity to data base
+  //  * @param newExistenceTime the new ExistenceTime object
+  //  * @param temporalEntity the temporal entity with nested roles that defined the old existence time
+  //  * @return {Observable<teEnt>} returns an Observable with the updated teEnt with the new roles for existence time 
+  //  */
+  // upsertExistenceTime(newExistenceTime: ExistenceTime, temporalEntity: InfTemporalEntity): Observable<InfTemporalEntity> {
+  //   const observable: Observable<InfTemporalEntity> = new Observable((observer) => {
 
-      let rolesToRemove: InfRole[] = []; // roles to remove from the teEnt and from the project 
-      let rolesToAdd: InfRole[]; // roles to add to the teEnt
+  //     let rolesToRemove: InfRole[] = []; // roles to remove from the teEnt and from the project 
+  //     let rolesToAdd: InfRole[]; // roles to add to the teEnt
 
-      // get all DfhProperties that have TimePrimitives as range
-      this.filterRolesPointingToTimePrimitive(temporalEntity).subscribe((oldRolesToTp: InfRole[]) => {
-        const oldRoles = oldRolesToTp;
+  //     // get all DfhProperties that have TimePrimitives as range
+  //     this.filterRolesPointingToTimePrimitive(temporalEntity).subscribe((oldRolesToTp: InfRole[]) => {
+  //       const oldRoles = oldRolesToTp;
 
-        // Create a nested object of the teEnt
-        let teEnt = new InfTemporalEntity(temporalEntity);
-        teEnt.te_roles = [];
+  //       // Create a nested object of the teEnt
+  //       let teEnt = new InfTemporalEntity(temporalEntity);
+  //       teEnt.te_roles = [];
 
-        // add roles and time primitives
-        const keys = Object.keys(DfhConfig.existenceTimeToFk)
-        for (const key in newExistenceTime) {
-          if (newExistenceTime.hasOwnProperty(key) && keys.includes(key)) {
-            const timePrimitive: TimePrimitive = newExistenceTime[key];
+  //       // add roles and time primitives
+  //       const keys = Object.keys(DfhConfig.existenceTimeToFk)
+  //       for (const key in newExistenceTime) {
+  //         if (newExistenceTime.hasOwnProperty(key) && keys.includes(key)) {
+  //           const timePrimitive: TimePrimitive = newExistenceTime[key];
 
-            const infTimePrimitive = new InfTimePrimitive({
-              julian_day: timePrimitive.julianDay,
-              duration: timePrimitive.duration,
-              fk_class: DfhConfig.timePrimitiveClass
-            });
+  //           const infTimePrimitive = new InfTimePrimitive({
+  //             julian_day: timePrimitive.julianDay,
+  //             duration: timePrimitive.duration,
+  //             fk_class: DfhConfig.timePrimitiveClass
+  //           });
 
-            let role = new InfRole();
-            role.fk_temporal_entity = teEnt.pk_entity;
-            role.fk_property = DfhConfig.existenceTimeToFk[key];
-            role.time_primitive = infTimePrimitive;
+  //           let role = new InfRole();
+  //           role.fk_temporal_entity = teEnt.pk_entity;
+  //           role.fk_property = DfhConfig.existenceTimeToFk[key];
+  //           role.time_primitive = infTimePrimitive;
 
-            // add calendar info to epr to role
-            role.entity_version_project_rels = [];
-            role.entity_version_project_rels[0] = new InfEntityProjectRel();
-            role.entity_version_project_rels[0].is_in_project = true;
-            role.entity_version_project_rels[0].calendar = timePrimitive.calendar;
+  //           // add calendar info to epr to role
+  //           role.entity_version_project_rels = [];
+  //           role.entity_version_project_rels[0] = new InfEntityProjectRel();
+  //           role.entity_version_project_rels[0].is_in_project = true;
+  //           role.entity_version_project_rels[0].calendar = timePrimitive.calendar;
 
-            teEnt.te_roles.push(role);
-          }
-        }
+  //           teEnt.te_roles.push(role);
+  //         }
+  //       }
 
-        // persist this in DB
-        this.teEntApi.findOrCreateInfTemporalEntity(
-          this.activeProject.project.pk_project,
-          teEnt
-        ).subscribe(teEnts => {
+  //       // persist this in DB
+  //       this.teEntApi.findOrCreateInfTemporalEntity(
+  //         this.activeProject.project.pk_project,
+  //         teEnt
+  //       ).subscribe(teEnts => {
 
-          rolesToAdd = teEnts[0].te_roles;
+  //         rolesToAdd = teEnts[0].te_roles;
 
-          // Iterate over the old timePrimitive-roles of teEnt 
-          oldRoles.forEach(oldR => {
-            let wasRemoved = true;
+  //         // Iterate over the old timePrimitive-roles of teEnt 
+  //         oldRoles.forEach(oldR => {
+  //           let wasRemoved = true;
 
-            // If the resultingRole was already there in oldRoles, remove the newRole from rolesToAdd
-            for (let i = 0; i < rolesToAdd.length; i++) {
-              const newR = rolesToAdd[i];
-              if (oldR.pk_entity == newR.pk_entity) {
-                wasRemoved = false;
-                rolesToAdd.splice(i, 1);
-                break;
-              }
-            }
+  //           // If the resultingRole was already there in oldRoles, remove the newRole from rolesToAdd
+  //           for (let i = 0; i < rolesToAdd.length; i++) {
+  //             const newR = rolesToAdd[i];
+  //             if (oldR.pk_entity == newR.pk_entity) {
+  //               wasRemoved = false;
+  //               rolesToAdd.splice(i, 1);
+  //               break;
+  //             }
+  //           }
 
-            // If the role was removed, add the oldRole to rolesToRemove
-            if (wasRemoved) {
-              rolesToRemove.push(oldR);
-            }
-          });
+  //           // If the role was removed, add the oldRole to rolesToRemove
+  //           if (wasRemoved) {
+  //             rolesToRemove.push(oldR);
+  //           }
+  //         });
 
-          // remove the rolesToRemove from project and from the temporalEntity
+  //         // remove the rolesToRemove from project and from the temporalEntity
 
-          this.removeRolesFromTeEnt(temporalEntity, rolesToRemove)
-            .subscribe(teEnt => {
+  //         this.removeRolesFromTeEnt(temporalEntity, rolesToRemove)
+  //           .subscribe(teEnt => {
 
-              // Now iterate over rolesToAdd and push them to the teEnt
-              rolesToAdd.forEach(roleToAdd => {
-                teEnt.te_roles.push(roleToAdd);
-              });
-              //return the teEnt
-              observer.next(teEnt);
-              observer.complete();
-            })
-
-
-        });
-      });
-    })
-    return observable;
-  };
+  //             // Now iterate over rolesToAdd and push them to the teEnt
+  //             rolesToAdd.forEach(roleToAdd => {
+  //               teEnt.te_roles.push(roleToAdd);
+  //             });
+  //             //return the teEnt
+  //             observer.next(teEnt);
+  //             observer.complete();
+  //           })
 
 
-  /**
-   * Remove roles from given teEnt and from active project.
-   * 
-   * Remarks:
-   * - Provide a proper epr for the teEnt
-   * - Provide propert eprs for roles
-   * 
-   * @param teEnt Parent teEnt of the roles
-   * @param roles roles to remove from project
-   * @returns Observable<InfTemporalEntity>
-   */
-  removeRolesFromTeEnt(teEnt: InfTemporalEntity, roles: InfRole[]): Observable<InfTemporalEntity> {
-    const rolesToRemove = roles;
-    const observable: Observable<InfTemporalEntity> = new Observable(observer => {
+  //       });
+  //     });
+  //   })
+  //   return observable;
+  // };
 
-      // if nothing to remove
-      if (rolesToRemove.length === 0) {
-        observer.next(teEnt);
-        observer.complete();
-        return;
-      }
 
-      let teEntForQuery = new InfTemporalEntity(teEnt);
-      teEntForQuery.te_roles = []
+  // /**
+  //  * Remove roles from given teEnt and from active project.
+  //  * 
+  //  * Remarks:
+  //  * - Provide a proper epr for the teEnt
+  //  * - Provide propert eprs for roles
+  //  * 
+  //  * @param teEnt Parent teEnt of the roles
+  //  * @param roles roles to remove from project
+  //  * @returns Observable<InfTemporalEntity>
+  //  */
+  // removeRolesFromTeEnt(teEnt: InfTemporalEntity, roles: InfRole[]): Observable<InfTemporalEntity> {
+  //   const rolesToRemove = roles;
+  //   const observable: Observable<InfTemporalEntity> = new Observable(observer => {
 
-      rolesToRemove.forEach(role => {
-        if (role.entity_version_project_rels && role.entity_version_project_rels.length == 1) {
-          role.entity_version_project_rels[0].is_in_project = false;
-        }
-        else {
-          role.entity_version_project_rels = [];
-        }
+  //     // if nothing to remove
+  //     if (rolesToRemove.length === 0) {
+  //       observer.next(teEnt);
+  //       observer.complete();
+  //       return;
+  //     }
 
-        // push role to remove to teEntForQuery
-        teEntForQuery.te_roles.push(role);
+  //     let teEntForQuery = new InfTemporalEntity(teEnt);
+  //     teEntForQuery.te_roles = []
 
-        // remove role to remove from given teEnt
-        const i = teEnt.te_roles.findIndex(r => r.pk_entity == role.pk_entity)
-        if (i > -1) teEnt.te_roles.splice(i, 1)
-      });
+  //     rolesToRemove.forEach(role => {
+  //       if (role.entity_version_project_rels && role.entity_version_project_rels.length == 1) {
+  //         role.entity_version_project_rels[0].is_in_project = false;
+  //       }
+  //       else {
+  //         role.entity_version_project_rels = [];
+  //       }
 
-      const isInProject = false;
-      this.teEntApi.changeTeEntProjectRelation(this.activeProject.project.pk_project, isInProject, teEntForQuery)
-        .subscribe(result => {
+  //       // push role to remove to teEntForQuery
+  //       teEntForQuery.te_roles.push(role);
 
-          observer.next(teEnt);
-          observer.complete();
-        })
+  //       // remove role to remove from given teEnt
+  //       const i = teEnt.te_roles.findIndex(r => r.pk_entity == role.pk_entity)
+  //       if (i > -1) teEnt.te_roles.splice(i, 1)
+  //     });
 
-    })
+  //     const isInProject = false;
+  //     this.teEntApi.changeTeEntProjectRelation(this.activeProject.project.pk_project, isInProject, teEntForQuery)
+  //       .subscribe(result => {
 
-    return observable;
-  }
+  //         observer.next(teEnt);
+  //         observer.complete();
+  //       })
+
+  //   })
+
+  //   return observable;
+  // }
 
 
 

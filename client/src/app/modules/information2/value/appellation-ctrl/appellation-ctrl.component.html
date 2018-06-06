@@ -1,3 +1,3 @@
-<p>
-  appellation-ctrl works!
-</p>
+<form [formGroup]="formGroup" class="d-flex flex-row">
+  <gv-appellation-label-editor *ngIf="appeCtrl" formControlName="appellationLabel" (touched)="markAsTouched()"></gv-appellation-label-editor>
+</form>

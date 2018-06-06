@@ -1,4 +1,47 @@
-<p>
-  te-ent-role-set-create-ctrl works!
-  <gv-te-ent-role-create-ctrl></gv-te-ent-role-create-ctrl>
-</p>
+<ng-container *ngTemplateOutlet="header"></ng-container>
+
+
+<!-- If no roles in Project, show a big add button -->
+<div class="card-body" *ngIf="!(roleStatesInProject$ | async) && !((_role_list$ | async) | keys).length && addButtonVisible">
+  <button class="btn btn-outline-primary" (click)="startAddingRole()">
+    Add a {{(label$ | async)?.sg}}
+  </button>
+  <button class="btn btn-link pull-right" (click)="removeRoleSet()">
+    cancel
+  </button>
+</div>
+
+<form [formGroup]="formGroup" *ngIf="formGroup">
+  <div *ngFor="let entry of (_role_list$ | async) | keys; trackBy:getKey">
+    <gv-te-ent-role-create-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="_role_list"
+      [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role-create-ctrl>
+
+    <div class="card-body">
+      <button type="button" class="btn btn-outline-secondary" (click)="cancelCreateRole(entry.key)">Cancel</button>
+    </div>
+
+  </div>
+</form>
+
+
+
+<!-- ************************** NG TEMPLATES ****************************** -->
+
+<ng-template #header let-hideAddButton="hideAddButton">
+  <div class="btn-group d-flex flex-row gv-h5">
+
+    <div class="gv-btn-spacer-sm">
+      {{(label$ | async)?.default}}
+    </div>
+    <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+      <div class="align-self-center">
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(property$|async).dfh_pk_property}}" target="_blank">
+          {{(property$|async).dfh_identifier_in_namespace}}
+        </a>
+      </div>
+    </div>
+    <div class="btn btn-link btn-sm" (click)="startAddingRole()" *ngIf="addButtonVisible && !hideAddButton">
+      <i class="fa fa-plus"></i>
+    </div>
+  </div>
+</ng-template>

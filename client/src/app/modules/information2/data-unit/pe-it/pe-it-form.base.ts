@@ -1,16 +1,14 @@
-import { Input, OnInit, OnDestroy } from "@angular/core";
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { InfPersistentItem } from 'app/core';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Observable } from 'rxjs';
 
-import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
-import { WithSubStore, dispatch, NgRedux, ObservableStore, select } from "@angular-redux/store";
-import { FormBuilder } from "@angular/forms";
-import { Subscription, Observable } from "rxjs";
-import { InfPersistentItem } from "app/core";
-import { peItReducer } from "./pe-it.reducer";
-import { PeItDetail } from "../../information.models";
-import { PeItActions } from "./pe-it.actions";
-import { DataUnitBase } from "../data-unit.base";
-
-
+import { PeItDetail } from '../../information.models';
+import { DataUnitBase } from '../data-unit.base';
+import { PeItActions } from './pe-it.actions';
+import { peItReducer } from './pe-it.reducer';
 
 /**
  * hooks in on the level of
@@ -25,16 +23,15 @@ export abstract class PeItFormBase extends DataUnitBase implements OnInit {
 
     // @WithSubStore needs a empty string for root     
     getBasePath = () => {
-        return this.parentPath ? [...this.parentPath, 'peItState'] : ''
+        return this.parentPath ? [...this.parentPath, '_peIt'] : ''
     }
 
     // ngRedux.configureSubStore needs a empty array for root 
     getBaseForConfigSubStore = () => {
-        return this.parentPath ? [...this.parentPath, 'peItState'] : []
+        return this.parentPath ? [...this.parentPath, '_peIt'] : []
     }
 
     @select() peIt$: Observable<InfPersistentItem>
-
 
     localStore: ObservableStore<PeItDetail>;
 
@@ -47,14 +44,10 @@ export abstract class PeItFormBase extends DataUnitBase implements OnInit {
         super(fb)
     }
 
-    // if provided, initialState will be dispatched onInit replacing the lastState of substore 
-    @Input() initState: PeItDetail;
     peItState: PeItDetail;
 
     ngOnInit() {
         // initial state is useful for sandboxing the component
-        if (this.initState) this.updateState(this.initState)
-
         this.onInitPeItBaseChild()
     }
 
@@ -65,13 +58,6 @@ export abstract class PeItFormBase extends DataUnitBase implements OnInit {
         this.subs.push(this.localStore.select<PeItDetail>('').subscribe(d => {
             this.peItState = d
         }))
-    }
-
-    /**
-     * Updates the state of substore
-     */
-    @dispatch() updateState(payload: PeItDetail) {
-        return this.actions.stateUpdated(payload)
     }
 
 

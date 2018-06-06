@@ -1,20 +1,18 @@
-import { dispatch, NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder } from '@angular/forms';
-import { InfPersistentItem } from 'app/core';
+import { InfTemporalEntity } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable } from 'rxjs';
 
-import { PeItDetail } from '../../information.models';
+import { TeEntDetail } from '../../information.models';
 import { DataUnitBase } from '../data-unit.base';
-import { PeItActions } from './pe-it.actions';
-import { peItReducer } from './pe-it.reducer';
-
-
+import { TeEntActions } from './te-ent.actions';
+import { teEntReducer } from './te-ent.reducer';
 
 /**
  * hooks in on the level of
- * PeItDetail
+ * TeEntDetail
  *
  * Abstract class for components that 
  * - act as a form control for its parent
@@ -22,67 +20,57 @@ import { peItReducer } from './pe-it.reducer';
  */
 @AutoUnsubscribe()
 @WithSubStore({
-    localReducer: peItReducer,
+    localReducer: teEntReducer,
     basePathMethodName: 'getBasePath'
 })
-export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueAccessor, OnInit {
+export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValueAccessor, OnInit {
 
     // @WithSubStore needs a empty string for root     
     getBasePath = () => {
-        return this.parentPath ? [...this.parentPath, '_peIt'] : ''
+        return this.parentPath ? [...this.parentPath, '_teEnt'] : ''
     }
 
-    basePath: string |  string[];
+    basePath: string | string[];
 
     // ngRedux.configureSubStore needs a empty array for root 
     getBaseForConfigSubStore = () => {
-        return this.parentPath ? [...this.parentPath, '_peIt'] : []
+        return this.parentPath ? [...this.parentPath, '_teEnt'] : []
     }
 
-    @select() peIt$: Observable<InfPersistentItem>
+    @select() teEnt$: Observable<InfTemporalEntity>
 
-    localStore: ObservableStore<PeItDetail>;
+    localStore: ObservableStore<TeEntDetail>;
 
 
     constructor(
         protected ngRedux: NgRedux<any>,
-        protected actions: PeItActions,
+        protected actions: TeEntActions,
         protected fb: FormBuilder
     ) {
         super(fb)
         this.initForm()
-
-
     }
 
     // if provided, initialState will be dispatched onInit replacing the lastState of substore 
-    @Input() initState: PeItDetail;
-    peItState: PeItDetail;
+    @Input() initState: TeEntDetail;
+    teEntState: TeEntDetail;
 
     ngOnInit() {
-        // initial state is useful for sandboxing the component
-        if (this.initState) this.updateState(this.initState)
 
         this.basePath = this.getBaseForConfigSubStore();
 
-        this.onInitPeItBaseChild()
+        this.onInitTeEntBaseChild()
     }
 
 
     // gets called by base class onInit
     initStore() {
-        this.localStore = this.ngRedux.configureSubStore(this.getBaseForConfigSubStore(), peItReducer);
-        this.subs.push(this.localStore.select<PeItDetail>('').subscribe(d => {
-            this.peItState = d
+        this.localStore = this.ngRedux.configureSubStore(this.getBaseForConfigSubStore(), teEntReducer);
+        this.subs.push(this.localStore.select<TeEntDetail>('').subscribe(d => {
+            this.teEntState = d
         }))
     }
 
-    /**
-     * Updates the state of substore
-     */
-    @dispatch() updateState(payload: PeItDetail) {
-        return this.actions.stateUpdated(payload)
-    }
 
 
 
@@ -119,7 +107,7 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
     * gets replaced by angular on registerOnTouched
     * Call this function when the form has been touched.
     */
-    private onTouched = () => { };
+    protected onTouched = () => { };
 
     /**
      * gets called on setting the value of the form control
@@ -143,15 +131,16 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
     }
 
 
-    /***************************
-     *  Hooks for child class
-    ****************************/
-    abstract onInitPeItBaseChild(): void;
-
     markAsTouched() {
         this.onTouched()
         this.touched.emit()
     }
 
     @Output() touched: EventEmitter<void> = new EventEmitter();
+
+    /***************************
+     *  Hooks for child class
+    ****************************/
+    abstract onInitTeEntBaseChild(): void;
+
 }

@@ -1,4 +1,38 @@
-<p>
-  te-ent-create-ctrl works!
-  <gv-te-ent-role-set-create-ctrl></gv-te-ent-role-set-create-ctrl>
-</p>
+<div class="card gv-name">
+  <ng-container *ngTemplateOutlet="header"></ng-container>
+  
+  <form [formGroup]="formGroup" *ngIf="formGroup">
+    <div *ngFor="let entry of (_roleSet_list$ | async) | keys; trackBy:getKey">
+      <gv-te-ent-role-set-create-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [parentTeEntStatePath]="basePath"
+        [index]="entry.key" [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role-set-create-ctrl>
+    </div>
+  </form>
+
+  <ng-container *ngTemplateOutlet="dating"></ng-container>
+</div>
+
+
+<!-- ************************** NG TEMPLATES ****************************** -->
+
+<ng-template #header>
+  <div class="card-header gv-name-header d-flex flex-row">
+    <ng-content select="[headerLeft]"></ng-content>
+    <div class="gv-flex-grow-1">
+      <span *ngIf="labelInEdit">{{labelInEdit}}</span>
+      <span *ngIf="label && !labelInEdit">{{label}}</span>
+      <span *ngIf="!label && !labelInEdit">{{(dfhClass$|async)?.dfh_standard_label}}</span>
+    </div>
+    <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+      <div class="align-self-center">
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(dfhClass$|async)?.dfh_pk_class}}" target="_blank">
+          {{(dfhClass$|async)?.dfh_identifier_in_namespace}}
+        </a>
+      </div>
+    </div>
+    <ng-content select="[headerRight]"></ng-content>
+  </div>
+</ng-template>
+
+<ng-template #dating>
+  <!-- <gv-te-ent-existence-time [parentPath]="basePath"></gv-te-ent-existence-time> -->
+</ng-template>

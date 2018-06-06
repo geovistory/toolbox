@@ -1,5 +1,6 @@
- pe-it-create-ctrl works!
 <form [formGroup]="formGroup" *ngIf="formGroup">
-  <!-- <gv-pe-it-role-set *ngFor="let entry of (roleSets$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
-      [formControlName]="entry.key" (touched)="markAsTouched()"></gv-pe-it-role-set> -->
-</form>
+  <div *ngFor="let entry of (_roleSet_list$ | async) | keys; trackBy:getKey" >
+      <gv-pe-it-role-set-create-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath"
+       [index]="entry.key" [formControlName]="entry.key" (touched)="markAsTouched()"></gv-pe-it-role-set-create-ctrl>
+    </div>
+  </form>

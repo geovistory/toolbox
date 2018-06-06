@@ -96,10 +96,19 @@ export interface RoleSet {
     roles?: InfRole[];
 
     // gui
+    label?: RoleSetLabelObj;
     property?: DfhProperty
     isOutgoing?: boolean;
     toggle?: CollapsedExpanded;
     targetClassPk?: number;
+
+    //True during loading of roles in other projects and roles in no project    
+    rolesNotInProjectLoading?: boolean;
+    roleStatesToCreateVisible?: boolean
+    roleStatesInNoProjectVisible?: boolean
+    roleStatesInOtherProjectsVisible?: boolean
+    roleStatesInProjectVisible?: boolean
+
 }
 
 /*******************************
@@ -108,6 +117,7 @@ export interface RoleSet {
 
 export interface RoleSetForm {
     _role_add_list?: RoleDetailList
+    _role_add_in_no_project_list?: RoleDetailList
 
     _role_create_list?: RoleDetailList
 }
@@ -156,6 +166,13 @@ export interface RoleDetail {
 
     /** true if the parent role of the parent teEnt is the same role */
     isCircular?: boolean;
+
+
+    /** True while changing the display role (eye) */
+    changingDisplayRole?: boolean;
+
+    isReadyToCreate?: boolean;
+
 }
 
 
@@ -165,7 +182,7 @@ export interface RoleDetail {
 
 export interface AppeDetail {
     appellation?: InfAppellation
- }
+}
 export interface LangDetail { }
 export interface TimePrimitveDetail { }
 

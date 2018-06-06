@@ -125,6 +125,24 @@ export class U {
 
     }
 
+    /**
+    * Returns the first teEnt (Name Use Activity) of the given peIt
+    * 
+    * @param peIt 
+    * @returns InfTemporalEntity that has a appellation label for display
+    */
+    static getFirstAppeTeEntOfPeIt(peIt: InfPersistentItem): InfTemporalEntity | null {
+        if (!peIt) return null
+
+        const roleToAppeUse: InfRole = peIt.pi_roles.find(
+            role => (
+                role && role.fk_property == DfhConfig.PROPERTY_PK_R63_NAMES
+            ))
+
+        return roleToAppeUse ? new InfTemporalEntity(roleToAppeUse.temporal_entity) : null;
+
+    }
+
 
 
 

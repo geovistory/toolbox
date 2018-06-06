@@ -1,24 +1,15 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition,
-  keyframes
-} from '@angular/animations';
-import { FormGroup, FormBuilder } from '@angular/forms';
-
-import { Subscriber, Subscription } from 'rxjs';
+import { ObservableStore, select } from '@angular-redux/store';
+import { Input, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { DfhClass, DfhProperty, InfPersistentItem } from 'app/core';
+import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
-import { NgRedux, select, ObservableStore } from '@angular-redux/store';
 
-import { InfRole, InfPersistentItem, DfhProperty, EntityEditorService, DfhClass } from 'app/core';
-import { PeItDetail, TeEntDetail, SelectPropStateType, RoleSet, RoleSetList } from '../information.models';
+import { roleSetKey } from '../information.helpers';
+import { PeItDetail, RoleSet, RoleSetList, SelectPropStateType, TeEntDetail } from '../information.models';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
-import { roleSetKey } from '../information.helpers';
-import { ClassService, RoleService, PropertyService, RoleSetListService } from '../../information/shared';
+
 
 export abstract class DataUnitBase implements OnInit, OnDestroy {
   subs: Subscription[] = []
@@ -26,6 +17,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   formGroup:FormGroup;
 
   @Input() parentPath: string[];
+  
 
   abstract initStore():void; // override this in derived class
 
@@ -52,6 +44,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   @select() parentPeIt$: Observable<InfPersistentItem>;
   @select() propertyToAdd$: Observable<RoleSet>; // Poperty that is currently chosen in order to add a role of this kind
   @select() _roleSet_list$: Observable<RoleSetList>;
+
 
   constructor(protected fb:FormBuilder){
     this.formGroup = this.fb.group({})
@@ -87,15 +80,16 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
   }
 
-  private initSubscriptions() {
+
+  initSubscriptions() {
     this.subs.push(this._roleSet_list$.subscribe(rs =>
       this.roleSets = rs
     ))
   }
 
 
-
   init() { }; // hook for child class
+
 
   /** ************
    * User Interactions 

@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, InfEntityProjectRel, InfEntityProjectRelApi } from 'app/core';
+import {  InfEntityProjectRel, InfEntityProjectRelApi, IAppState } from 'app/core';
 import { ReplaySubject } from 'rxjs';
+import { NgRedux } from '@angular-redux/store';
 
 
 @Injectable()
 export class EprService {
 
   constructor(
-    private activeProjectService: ActiveProjectService,
+    private ngRedux: NgRedux<IAppState>,
     private eprApi: InfEntityProjectRelApi
   ) { }
 
@@ -23,7 +24,7 @@ export class EprService {
     if (!entity.entity_version_project_rels) return undefined;
 
     const eprs = entity.entity_version_project_rels.filter(
-      epr => epr.fk_project === this.activeProjectService.project.pk_project
+      epr => epr.fk_project === this.ngRedux.getState().activeProject.pk_project
     )
     if (eprs.length !== 1) {
       // TODO error

@@ -1,4 +1,4 @@
-import { AppellationLabelTokenComponent } from "../../../information/components/appellation-label-token/appellation-label-token.component";
+import { AppellationLabelTokenComponent } from "../../value/appellation-ctrl/appellation-label-token/appellation-label-token.component";
 
 export interface TokenInterface {
   "id"?: number,

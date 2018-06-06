@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, Validators, FormGroup, NgForm } from '@angular/forms';
 import { NgRedux, WithSubStore } from '@angular-redux/store';
 import { PeItActions } from '../pe-it.actions';
 import { PeItFormBase } from '../pe-it-form.base';
 import { peItReducer } from '../pe-it.reducer';
+import { InfPersistentItem, U, InfTemporalEntity } from 'app/core';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -16,7 +17,9 @@ import { peItReducer } from '../pe-it.reducer';
 })
 export class PeItCreateFormComponent extends PeItFormBase {
 
+  peIt: InfPersistentItem;
 
+  @ViewChild('f') form: NgForm;
 
   formCtrlName = 'persistent_item';
 
@@ -27,44 +30,34 @@ export class PeItCreateFormComponent extends PeItFormBase {
 
   ) {
     super(ngRedux, actions, fb)
+
+    this.subscribeFormChanges();
+
   }
 
   onInitPeItBaseChild(): void {
 
-    // we call those functions here, since the Form won't be used as form control
-    // and thus Base Class will not call this onRegisterChange
-    this.initFormCtrls();
-    this.subscribeFormChanges();
+    this.subs.push(
+      this.form.valueChanges.subscribe(val => {
+        const displayAppeUse: InfTemporalEntity = U.getFirstAppeTeEntOfPeIt(val.peIt)
+        this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(displayAppeUse);
+      })
+    )
 
+  }
+
+
+  submit(){
+    console.log(this.form.value)
   }
 
   // not needed since not used as form control
   writeValue(obj: any): void { }
 
-  subscribeFormChanges(): void {
-    this.subs.push(this.formGroup.valueChanges.subscribe(val => {
-      var x = val;
-    }))
+  subscribeFormChanges(): void { }
 
-  }
+  initFormCtrls(): void { }
 
-  initFormCtrls(): void {
-
-    this.subs.push(this.peIt$.subscribe(peIt => {
-      this.formGroup.addControl(this.formCtrlName, new FormControl(
-        peIt,
-        [
-          Validators.required
-        ]
-      ))
-
-    }))
-
-    this.subs.push(this.dfhClass$.subscribe(c => {
-      var x = c
-    }))
-
-  }
   onChange(controlValue: any): void {
     throw new Error("Method not implemented.");
   }
