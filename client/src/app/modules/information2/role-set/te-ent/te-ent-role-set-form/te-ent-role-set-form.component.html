@@ -1,3 +1,38 @@
-<p>
-  te-ent-role-set-form works!
-</p>
+<form [formGroup]="formGroup" ngSubmit="submit()">
+
+  <div *ngFor="let entry of role_create_list | keys; trackBy:getKey">
+
+    <gv-te-ent-role-create-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="roleCreateListPath" [index]="entry.key" intermediatePathSegment="_role_create_list"
+      [formControlName]="entry.key"></gv-te-ent-role-create-ctrl>
+  </div>
+
+  <div class="card-body">
+    <button [disabled]="formGroup.invalid" type="submit" class="btn btn-primary">Ok</button>
+    <button type="button" class="btn btn-link" (click)="cancelCreateRoles()">Cancel</button>
+  </div>
+
+</form>
+
+
+
+<!-- Roles currently being created -->
+
+
+
+
+
+<div>
+  <p>Form.valid: {{formGroup?.valid | json}}</p>
+
+  <p>Form.touched: {{formGroup?.touched | json}}</p>
+
+  <p>Form.dirty: {{formGroup?.dirty | json}}</p>
+
+  <p>Form.submitted: {{formGroup?.submitted | json}}</p>
+
+  <p>Form.value </p>
+  <pre>
+      {{formGroup?.value | json}}
+  </pre>
+
+</div>

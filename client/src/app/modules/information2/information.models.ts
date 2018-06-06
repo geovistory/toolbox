@@ -116,10 +116,11 @@ export interface RoleSet {
  *******************************/
 
 export interface RoleSetForm {
-    _role_add_list?: RoleDetailList
-    _role_add_in_no_project_list?: RoleDetailList
-
     _role_create_list?: RoleDetailList
+    
+    _role_add_list?: RoleDetailList
+
+    _role_add_in_no_project_list?: RoleDetailList
 }
 
 /*******************************

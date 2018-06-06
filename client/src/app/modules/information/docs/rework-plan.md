@@ -22,7 +22,7 @@ Create tree
 
 * doing – create forms
 * * ok – pe-it-create-form
-* * doing – te-ent-role-set-form
+* * ok – te-ent-role-set-form
 * * pe-it-role-set-form
 
 Add tree
