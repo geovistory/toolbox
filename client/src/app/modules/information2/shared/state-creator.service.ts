@@ -14,8 +14,8 @@ import { RoleSetService } from './role-set.service';
 import { DfhConfig } from './dfh-config';
 import { AppellationLabel } from './appellation-label/appellation-label';
 import { PeItDetail, RoleSetList, RoleSet,  RoleDetailList, RoleDetail, TeEntDetail, ExistenceTimeDetail, AppeDetail, LangDetail, TimePrimitveDetail,  } from '../information.models';
-import { StateToDataService } from '../../information/shared';
 import { roleSetKey, roleDetailKey } from '../information.helpers';
+import { StateToDataService } from './state-to-data.service';
 
 
 
