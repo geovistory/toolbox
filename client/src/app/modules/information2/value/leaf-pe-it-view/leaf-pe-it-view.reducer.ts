@@ -1,5 +1,5 @@
 import { PeItDetail } from '../../information.models';
-import { LeafPeItAction, LeafPeItActions } from './pe-it-entity-preview.actions';
+import { LeafPeItAction, LeafPeItActions } from './leaf-pe-it-view.actions';
 
 
 

@@ -1,7 +1,7 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { sandboxOf } from 'angular-playground';
 import { Project } from 'app/core';
-import { InitPeItEditableStateModule } from 'app/shared';
+import { InitPeItEditableStateModule, LanguageSearchTypeaheadModule } from 'app/shared';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { KeysModule } from 'app/shared/pipes/keys.module';
 
@@ -43,13 +43,14 @@ import { TeEntService } from '../../../shared/te-ent.service';
 import { AppellationCtrlModule } from '../../../value/appellation-ctrl/appellation-ctrl.module';
 import { AppellationViewComponent } from '../../../value/appellation-view/appellation-view.component';
 import { LanguageViewComponent } from '../../../value/language-view/language-view.component';
-import { PeItEntityPreviewModule } from '../../../value/pe-it-entity-preview/pe-it-entity-preview.module';
+import { PeItEntityPreviewModule } from '../../../value/leaf-pe-it-view/leaf-pe-it-view.module';
 import { TeEntAddCtrlComponent } from '../../te-ent/te-ent-add-ctrl/te-ent-add-ctrl.component';
 import { TeEntCreateCtrlComponent } from '../../te-ent/te-ent-create-ctrl/te-ent-create-ctrl.component';
 import { TeEntEditableComponent } from '../../te-ent/te-ent-editable/te-ent-editable.component';
 import { TeEntActions } from '../../te-ent/te-ent.actions';
 import { PeItActions } from '../pe-it.actions';
 import { PeItEditableComponent } from './pe-it-editable.component';
+import { LanguageCtrlComponent } from '../../../value/language-ctrl/language-ctrl.component';
 
 export default sandboxOf(PeItEditableComponent, {
   imports: [
@@ -58,7 +59,8 @@ export default sandboxOf(PeItEditableComponent, {
     KeysModule,
     BrowserAnimationsModule,
     PeItEntityPreviewModule,
-    AppellationCtrlModule
+    AppellationCtrlModule,
+    LanguageSearchTypeaheadModule
   ],
   declarations: [
     PeItRoleSetEditableComponent,
@@ -73,12 +75,12 @@ export default sandboxOf(PeItEditableComponent, {
     TeEntRoleCreateCtrlComponent,
     TeEntCreateCtrlComponent,
     PeItRoleCreateCtrlComponent,
-  
     PeItRoleSetAddCtrlComponent,
     PeItRoleAddCtrlComponent,
     TeEntAddCtrlComponent,
     TeEntRoleSetAddCtrlComponent,
     TeEntRoleAddCtrlComponent,
+    LanguageCtrlComponent
 
   ],
   providers: [

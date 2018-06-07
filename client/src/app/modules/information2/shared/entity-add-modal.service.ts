@@ -3,6 +3,7 @@ import { InfEntityProjectRel, DfhClass, InfPersistentItem,  InfEntityProjectRelA
 import { StateToDataService } from './state-to-data.service';
 import { PeItDetail } from '../information.models';
 import { NgRedux } from '@angular-redux/store';
+import { Observable, Subject } from 'rxjs';
 
 
 export enum EntityAddModalState {
@@ -92,6 +93,7 @@ export class EntityAddModalService {
     //   true,
     //   StateToDataService.peItStateToPeItToRelate(this.peItStateToAdd)
     // )
+    return {} as Subject<any>;
   }
 
   createPeIt() {

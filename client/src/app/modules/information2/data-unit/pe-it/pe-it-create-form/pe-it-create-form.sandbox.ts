@@ -46,7 +46,7 @@ export default sandboxOf(PeItCreateFormComponent, {
     TeEntRoleCreateCtrlComponent,
     AppellationCtrlComponent,
     AppellationLabelEditorComponent,
-    AppellationLabelTokenComponent
+    AppellationLabelTokenComponent,
   ],
   providers: [
     PeItActions,

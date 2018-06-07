@@ -2,17 +2,15 @@
 
   <form [formGroup]="formGroup" *ngIf="formGroup && roleState && formControlName" class="align-self-center gv-flex-grow-1">
 
-    <gv-appellation-ctrl *ngIf="roleState._appe" class="gv-flex-grow-1" [formControlName]="formControlName"
-      (touched)="markAsTouched()"></gv-appellation-ctrl>
+    <gv-appellation-ctrl *ngIf="roleState._appe" class="gv-flex-grow-1" [formControlName]="formControlName" (touched)="markAsTouched()"></gv-appellation-ctrl>
+
+    <gv-language-ctrl *ngIf="roleState._lang" class="gv-flex-grow-1" [formControlName]="formControlName" (touched)="markAsTouched()"></gv-language-ctrl>
 
     <!-- <div *ngIf="(leafPeItLoading$ |async)">
       <i class="fa fa-spinner fa-pulse"></i> Loading</div>
-    <gv-pe-it-entity-preview *ngIf="(peItState$ |async) && !(leafPeItLoading$ |async)" [parentPath]="basePath" [isCircular]="(isCircular$|async)"
-      [formControlName]="formControlName" (touched)="markAsTouched()"></gv-pe-it-entity-preview>
+    <gv-leaf-pe-it-view *ngIf="(peItState$ |async) && !(leafPeItLoading$ |async)" [parentPath]="basePath" [isCircular]="(isCircular$|async)"
+      [formControlName]="formControlName" (touched)="markAsTouched()"></gv-leaf-pe-it-view>
 
-
-    <gv-language *ngIf="roleState.langState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
-      (touched)="markAsTouched()"></gv-language>
 
     <gv-time-primitive *ngIf="roleState.timePrimitiveState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
       (touched)="markAsTouched()"></gv-time-primitive>

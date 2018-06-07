@@ -7,11 +7,11 @@ import { PeItDetail } from '../../../information.models';
 
 
 @Component({
-  selector: 'gv-pe-it-entity-preview-modal',
-  templateUrl: './pe-it-entity-preview-modal.component.html',
-  styleUrls: ['./pe-it-entity-preview-modal.component.scss']
+  selector: 'gv-leaf-pe-it-view-modal',
+  templateUrl: './leaf-pe-it-view-modal.component.html',
+  styleUrls: ['./leaf-pe-it-view-modal.component.scss']
 })
-export class PeItEntityPreviewModalComponent implements OnInit {
+export class LeafPeItViewComponent implements OnInit {
 
   @Input() parentPath: string[];
   @Input() isInProject:boolean;

@@ -3,19 +3,16 @@
   <ng-content select="[headerLeft]"></ng-content>
 
   <div class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
-
-
-    <div *ngIf="(leafPeItLoading$ |async)">
-      <i class="fa fa-spinner fa-pulse"></i> Loading
-    </div>
-    <gv-pe-it-entity-preview *ngIf="leafPeItStateInitialized && !(leafPeItLoading$ |async)" [parentPath]="basePath" [isCircular]="(isCircular$|async)"></gv-pe-it-entity-preview>
     
+    <gv-leaf-pe-it-view *ngIf="roleState._leaf_peIt !== undefined && toggle === 'expanded' && roleState.role.fk_entity" [pkEntity]="roleState.role.fk_entity"
+      [basePath]="(basePath.concat('_leaf_peIt'))" [isCircular]="(isCircular$|async)"></gv-leaf-pe-it-view>
+
     <gv-appellation-view *ngIf="roleState._appe" class="gv-flex-grow-1" [appellation]="roleState._appe.appellation"></gv-appellation-view>
-    
-    <gv-language-view *ngIf="roleState._lang" class="gv-flex-grow-1" [language]="roleState._lang.language"></gv-language-view>
-    
 
-<!--     
+    <gv-language-view *ngIf="roleState._lang" class="gv-flex-grow-1" [language]="roleState._lang.language"></gv-language-view>
+
+
+    <!--     
 
 
     <gv-language *ngIf="roleState.langState" class="gv-flex-grow-1" [parentPath]="basePath" (touched)="markAsTouched()"></gv-language>

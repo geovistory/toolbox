@@ -1,18 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Third party imports
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ElasticInputModule } from 'angular2-elastic-input';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 
 // Core services
 
-import { SDKBrowserModule, ValidationService, IAppState } from 'app/core';
+import {ValidationService, } from 'app/core';
 
 // Shared components and directives
 import { ControlMessagesModule, LanguageSearchTypeaheadModule } from 'app/shared';
@@ -68,8 +65,6 @@ import { EntityEditorComponent } from './containers/entity-editor/entity.editor.
 import { EntityEditorActions } from './containers/entity-editor/entity-editor.actions';
 import { PeItActions } from './containers/pe-it/pe-it.actions';
 import { PeItComponent } from './containers/pe-it/pe-it.component';
-import { NgRedux } from '@angular-redux/store';
-import { KeysPipe } from '../../shared/pipes/keys.pipe';
 import { RoleSetActions } from './components/role-set/role-set.actions';
 import { RoleActions } from './components/role/role.actions';
 import { RoleSetListActions } from './components/role-set-list/role-set-list-actions';

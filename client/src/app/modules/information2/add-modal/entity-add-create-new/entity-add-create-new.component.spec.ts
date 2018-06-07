@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PeItEntityPreviewComponent } from './pe-it-entity-preview.component';
+import { EntityAddCreateNewComponent } from './entity-add-create-new.component';
 
-describe('PeItEntityPreviewComponent', () => {
-  let component: PeItEntityPreviewComponent;
-  let fixture: ComponentFixture<PeItEntityPreviewComponent>;
+describe('EntityAddCreateNewComponent', () => {
+  let component: EntityAddCreateNewComponent;
+  let fixture: ComponentFixture<EntityAddCreateNewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PeItEntityPreviewComponent ]
+      declarations: [ EntityAddCreateNewComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PeItEntityPreviewComponent);
+    fixture = TestBed.createComponent(EntityAddCreateNewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

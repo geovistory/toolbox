@@ -1,19 +1,17 @@
 import { NgRedux, WithSubStore } from '@angular-redux/store';
-import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-import { InfRole, IAppState } from 'app/core';
+import { IAppState, InfRole } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { pick } from 'ramda';
-import { Subscription, ReplaySubject } from 'rxjs';
+import { ReplaySubject, Subscription } from 'rxjs';
 
+import { PeItDetail } from '../../information.models';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { StateToDataService } from '../../shared/state-to-data.service';
-import { PeItDetail, RoleDetail } from '../../information.models';
-import { PeItEntityPreviewModalComponent } from './pe-it-entity-preview-modal/pe-it-entity-preview-modal.component';
-import { LeafPeItActions } from './pe-it-entity-preview.actions';
-import { leafPeItReducer } from './pe-it-entity-preview.reducer';
+import { LeafPeItViewComponent } from './leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
+import { LeafPeItActions } from './leaf-pe-it-view.actions';
+import { leafPeItReducer } from './leaf-pe-it-view.reducer';
 
 
 @AutoUnsubscribe()
@@ -22,9 +20,9 @@ import { leafPeItReducer } from './pe-it-entity-preview.reducer';
   localReducer: leafPeItReducer
 })
 @Component({
-  selector: 'gv-pe-it-entity-preview',
-  templateUrl: './pe-it-entity-preview.component.html',
-  styleUrls: ['./pe-it-entity-preview.component.scss'],
+  selector: 'gv-leaf-pe-it-view',
+  templateUrl: './leaf-pe-it-view.component.html',
+  styleUrls: ['./leaf-pe-it-view.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -82,13 +80,14 @@ export class PeItEntityPreviewComponent extends LeafPeItActions implements OnIni
 
   ngOnInit() {
 
-    // this.subs.push(this.ngRedux.select<PeItDetail>(this.basePath).subscribe(d => {
-    //   this.peItState = d;
-    //   if (d)
-    //     this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(d._roleSet_list);
-    // }))
+    this.subs.push(this.ngRedux.select<PeItDetail>(this.basePath).subscribe(d => {
+      this.peItState = d;
+      if (d.pkEntity)
+        this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(d._roleSet_list);
+      else
+        this.initPeItState()
+    }))
 
-    this.initPeItState()
 
   }
 
@@ -141,7 +140,7 @@ export class PeItEntityPreviewComponent extends LeafPeItActions implements OnIni
       size: 'lg'
     }
 
-    const modalRef = this.modalService.open(PeItEntityPreviewModalComponent, entityModalOptions);
+    const modalRef = this.modalService.open(LeafPeItViewComponent, entityModalOptions);
 
     modalRef.componentInstance.isInProject = (this.peItState.peIt.entity_version_project_rels && this.peItState.peIt.entity_version_project_rels.length)
     modalRef.componentInstance.parentPath = this.basePath;

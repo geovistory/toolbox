@@ -26,38 +26,45 @@ import { TeEntRoleSetEditableComponent } from './role-set/te-ent/te-ent-role-set
 import { TeEntRoleSetFormComponent } from './role-set/te-ent/te-ent-role-set-form/te-ent-role-set-form.component';
 import { LanguageViewComponent } from './value/language-view/language-view.component';
 import { LanguageCtrlComponent } from './value/language-ctrl/language-ctrl.component';
+import { InformationRoutingModule } from '../information/information-routing.module';
+import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
+import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
 
 @NgModule({
   imports: [
-    CommonModule
-  ],  
+    CommonModule,
+    InformationRoutingModule
+  ],
   declarations: [
     PeItRoleCreateCtrlComponent,
-     PeItRoleAddCtrlComponent,
-     PeItRoleEditableComponent,
-     TeEntRoleCreateCtrlComponent,
-     TeEntRoleAddCtrlComponent,
-     TeEntRoleEditableComponent,
-     PeItEditableComponent,
-     PeItAddCtrlComponent,
-     PeItCreateCtrlComponent,
-     PeItCreateFormComponent,
-     PeItAddFormComponent,
-     PeItRoleSetCreateCtrlComponent,
-     PeItRoleSetAddCtrlComponent,
-     PeItRoleSetEditableComponent,
-     PeItRoleSetFormComponent,
-     TeEntRoleSetCreateCtrlComponent,
-     TeEntRoleSetAddCtrlComponent,
-     TeEntRoleSetEditableComponent,
-     TeEntRoleSetFormComponent,
-     AppellationViewComponent,
-     AppellationCtrlComponent,
-     TeEntCreateCtrlComponent,
-     TeEntAddCtrlComponent,
-     TeEntEditableComponent,
-     LanguageViewComponent,
-     LanguageCtrlComponent
-    ]
+    PeItRoleAddCtrlComponent,
+    PeItRoleEditableComponent,
+    TeEntRoleCreateCtrlComponent,
+    TeEntRoleAddCtrlComponent,
+    TeEntRoleEditableComponent,
+    PeItEditableComponent,
+    PeItAddCtrlComponent,
+    PeItCreateCtrlComponent,
+    PeItCreateFormComponent,
+    PeItAddFormComponent,
+    PeItRoleSetCreateCtrlComponent,
+    PeItRoleSetAddCtrlComponent,
+    PeItRoleSetEditableComponent,
+    PeItRoleSetFormComponent,
+    TeEntRoleSetCreateCtrlComponent,
+    TeEntRoleSetAddCtrlComponent,
+    TeEntRoleSetEditableComponent,
+    TeEntRoleSetFormComponent,
+    AppellationViewComponent,
+    AppellationCtrlComponent,
+    TeEntCreateCtrlComponent,
+    TeEntAddCtrlComponent,
+    TeEntEditableComponent,
+    LanguageViewComponent,
+    LanguageCtrlComponent,
+
+    ProjectEntitiesComponent,
+    EntitySearchHitComponent
+  ]
 })
 export class Information2Module { }

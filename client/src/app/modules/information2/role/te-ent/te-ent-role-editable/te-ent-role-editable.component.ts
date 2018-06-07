@@ -34,6 +34,8 @@ export class TeEntRoleEditableComponent extends RoleBase {
   @Output() stopEditing: EventEmitter<void> = new EventEmitter();
   @Output() startUpdating: EventEmitter<InfRole> = new EventEmitter();
 
+  toggle: CollapsedExpanded;
+
   cancelEdit() {
     this.stopEditing.emit()
   }
@@ -61,43 +63,11 @@ export class TeEntRoleEditableComponent extends RoleBase {
 
     const toggle$ = this.ngRedux.select<CollapsedExpanded>([...this.parentPath, 'toggle']);
 
+    this.subs.push(toggle$.subscribe(t => this.toggle = t))
 
-    this.subs.push(Observable.combineLatest(this.roleState$, toggle$)
-      .subscribe(result => {
-        const roleState = result[0];
-        const toggle = result[1];
-
-        if (roleState && toggle) {
-          if (!roleState._lang && !roleState._timePrimitive && !roleState._appe && !roleState._teEnt && !roleState._leaf_teEnt) {
-            this.pkEntity = roleState.role.fk_entity;
-
-            // initialize peIt preview on first expanding of role set
-            if (toggle === 'expanded' && !this.leafPeItStateInitialized && this.pkEntity) {
-              this.initPeItState(this.pkEntity).subscribe(done => {
-                this.leafPeItStateInitialized = true
-              })
-            }
-
-          }
-        }
-      }))
   }
 
 
-  /**
-   * Initializes the peIt preview
-   */
-  initPeItState(pkEntity): Subject<boolean> {
-    const subject = new ReplaySubject<boolean>()
-    this.leafPeItLoading$.next(true);
-
-    this.subs.push(this.stateCreator.initializePeItState(pkEntity, this.activeProject.pk_project).subscribe(peItState => {
-      this.localStore.dispatch(this.actions.leafPeItStateAdded(peItState))
-      this.leafPeItLoading$.next(false);
-      subject.next(true)
-    }));
-    return subject;
-  }
 
 
   /**
@@ -106,7 +76,7 @@ export class TeEntRoleEditableComponent extends RoleBase {
   pkEntitySelected(pkEntity: number) {
 
     // init the peItState that is visible as a preview before confirming to add the role
-    this.initPeItState(pkEntity);
+    // this.initPeItState(pkEntity);
 
     // update the infRole data  
     let role = new InfRole(this.roleState.role);

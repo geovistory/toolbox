@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 
-import { PeItEntityPreviewModalComponent } from './pe-it-entity-preview-modal/pe-it-entity-preview-modal.component';
-import { PeItEntityPreviewComponent } from './pe-it-entity-preview.component';
+import { LeafPeItViewComponent } from './leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
+import { PeItEntityPreviewComponent } from './leaf-pe-it-view.component';
 
 @NgModule({
     imports: [
@@ -12,7 +12,7 @@ import { PeItEntityPreviewComponent } from './pe-it-entity-preview.component';
     ],
     declarations: [
         PeItEntityPreviewComponent,
-        PeItEntityPreviewModalComponent
+        LeafPeItViewComponent
     ],
     providers: [
         
@@ -21,7 +21,7 @@ import { PeItEntityPreviewComponent } from './pe-it-entity-preview.component';
         PeItEntityPreviewComponent
     ],
     entryComponents:[
-        PeItEntityPreviewModalComponent
+        LeafPeItViewComponent
     ]
 })
 export class PeItEntityPreviewModule { }

@@ -73,7 +73,7 @@ create forms
 View Value components
 * ok – appellation-view
 * ok – language-view
-* doing – leaf-pe-it-view
+* ok – leaf-pe-it-view
 * time-primitive-view
 
 
