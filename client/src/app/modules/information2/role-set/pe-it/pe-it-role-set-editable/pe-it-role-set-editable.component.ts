@@ -187,6 +187,9 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
 
       this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, this.roleSetState.isOutgoing, options).subscribe(roleStateToCreate => {
 
+
+        console.log(JSON.stringify(roleStateToCreate))
+
         /** add a form control */
         const formControlName = 'new_role_' + this.createFormControlCount;
         this.createFormControlCount++;

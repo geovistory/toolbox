@@ -41,6 +41,7 @@ export const roleSetReducer =
       case RoleSetActions.START_ADDING_ROLE:
         lastState = {
           ...lastState,
+          _role_set_form: {},
           rolesNotInProjectLoading: true,
         }
         break;
@@ -63,9 +64,8 @@ export const roleSetReducer =
         lastState = {
           ...lastState,
           rolesNotInProjectLoading: false,
-          // Extends the roleStatesToCreate
           _role_set_form: {
-            ...lastState._role_set_form,
+            ...omit(['_role_add_list'], lastState._role_set_form),
             _role_create_list: Object.assign({},
               lastState._role_set_form._role_create_list,
               action.payload._role_set_form._role_create_list)
@@ -142,6 +142,25 @@ export const roleSetReducer =
           _role_list: {
             ...omit([action.meta.key], lastState._role_list),
             ...action.payload._role_list
+          }
+        };
+        break;
+
+        case RoleSetActions.ADD_ROLE_TO_ROLE_LIST:
+        lastState = {
+          ...lastState,
+          _role_list: {
+            ...lastState._role_list,
+            [action.meta.key]: action.meta.roleDetail
+          }
+        };
+        break;
+
+        case RoleSetActions.REMOVE_ROLE_FROM_ROLE_LIST:
+        lastState = {
+          ...lastState,
+          _role_list: {
+            ...omit([action.meta.key],lastState._role_list),
           }
         };
         break;

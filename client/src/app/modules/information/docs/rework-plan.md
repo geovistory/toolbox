@@ -37,11 +37,6 @@ View Value components
 * doing – leaf-pe-it-view
 * time-primitive-view
 
-* doing – create forms
-* * ok – pe-it-create-form
-* * ok – te-ent-role-set-form
-* * ok – pe-it-role-set-form
-
 Add tree
 * ok – create a sandbox that gets nested object of repo by api call, add all the add components
 * * ok – pe-it-add-form
@@ -51,10 +46,15 @@ Add tree
 * * ok – te-ent-add-ctrl
 * * ok – te-ent-role-set-add-ctrl
 * * ok – te-ent-role-add-ctrl
-* doing - logic for epr
+* ok - logic for epr
 * * ok – create logic for choosing is_in_project
-* * logic for choosing is_standard_for_range / domain
+* * ok – logic for choosing is_standard_for_range / domain
 * * * ok – add is_standard_for_domain_range by finding the highest count
-* * * prevent uncheck is_in_project when is_standard_for_range/domain
+* * * ok – prevent uncheck is_in_project when is_standard_for_range/domain
 
 
+
+* doing – create forms
+* * ok – pe-it-create-form
+* * doing – te-ent-role-set-form
+* * doing – pe-it-role-set-form

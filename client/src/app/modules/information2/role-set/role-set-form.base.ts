@@ -1,53 +1,68 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { ControlValueAccessor, FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { select, WithSubStore } from '@angular-redux/store';
+import { Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { WithSubStore, select } from '@angular-redux/store';
 import { Observable, Subscription } from 'rxjs';
-import { InfRole } from 'app/core';
-import { RoleSetForm, RoleDetailList } from '../information.models';
 
+import { RoleDetailList, RoleSetForm } from '../information.models';
+import { roleSetReducer } from './role-set.reducer';
+import { InfEntityProjectRel, InfRole, U } from 'app/core';
+import { createTimelineInstruction } from '@angular/animations/browser/src/dsl/animation_timeline_instruction';
 
+@AutoUnsubscribe()
+@WithSubStore({
+    basePathMethodName: 'getBasePath',
+    localReducer: roleSetReducer
+})
 export abstract class RoleSetFormBase implements OnInit {
 
 
     @Input() parentPath: string[];
 
+    @Output() cancelCreateRoles: EventEmitter<void> = new EventEmitter()
+    @Output() startCreateNewRole: EventEmitter<void> = new EventEmitter()
+    @Output() createRoles: EventEmitter<InfRole[]> = new EventEmitter()
+
     @select() _role_set_form$: Observable<RoleSetForm>
 
-    role_set_form: RoleSetForm;
-    role_create_list: RoleDetailList;
-    role_add_list: RoleDetailList;
+    _role_set_form: RoleSetForm;
+    _role_create_list: RoleDetailList;
+    _role_add_list: RoleDetailList;
 
 
     getBasePath = () => [...this.parentPath];
 
-    roleCreateListPath: string[];
+    roleSetFormPath: string[];
 
     subs: Subscription[] = []; // for unsubscribe onDestroy
 
-    formGroup: FormGroup; // formGroup to create roles
+    createForm: FormGroup; // createForm to create roles
+    addForm: FormGroup; // addForm to add existing roles
 
     constructor(protected fb: FormBuilder) {
-        this.initForm();
+        this.initForms();
 
         this.initFormSubscription();
 
     }
 
     ngOnInit() {
-        this.roleCreateListPath = [...this.parentPath, '_role_set_form'];
+        this.roleSetFormPath = [...this.parentPath, '_role_set_form'];
 
         this.subs.push(
             this._role_set_form$.subscribe(d => {
-                this.role_set_form = d;
-                if (d)
-                    this.role_create_list = d._role_create_list;
+                this._role_set_form = d;
+                if (d) {
+                    this._role_create_list = d._role_create_list;
+                    this._role_add_list = d._role_add_list;
+                }
 
                 this.initFormCtrls();
 
             })
         )
     }
+
     ngOnDestroy() {
         this.subs.forEach(sub => sub.unsubscribe());
     }
@@ -55,11 +70,13 @@ export abstract class RoleSetFormBase implements OnInit {
 
 
     /**
-   * Inits the formGroup used in template.
+   * Inits the addForm used in template.
    */
-    initForm() {
-        //   create the formGroup used to create/edit the roleSet's InfRole[]
-        this.formGroup = this.fb.group({});
+    initForms() {
+        this.addForm = this.fb.group({}, {
+            validator: this.addFormValidator.bind(this)
+        });
+        this.createForm = this.fb.group({});
     }
 
 
@@ -68,12 +85,32 @@ export abstract class RoleSetFormBase implements OnInit {
      */
     initFormSubscription() {
 
-        this.subs.push(this.formGroup.valueChanges.subscribe(val => {
-            if (this.formGroup.valid) {
+        this.subs.push(this.addForm.valueChanges.subscribe(val => {
+            if (this.addForm.valid) {
 
             }
-
         }))
+
+
+
+        this.subs.push(this.createForm.valueChanges.subscribe(val => {
+            if (this.createForm.valid) {
+
+            }
+        }))
+    }
+
+    addFormValidator(group: FormGroup) {
+        const inProj = U.obj2Arr(group.controls).filter(ctrl => {
+            const role: InfRole = ctrl.value;
+            return role && role.entity_version_project_rels &&
+                role.entity_version_project_rels[0] &&
+                role.entity_version_project_rels[0].is_in_project
+        })
+
+        if (inProj.length < 1) return {
+            oneItemRequired: true
+        }
     }
 
     /**
@@ -81,25 +118,41 @@ export abstract class RoleSetFormBase implements OnInit {
      */
     initFormCtrls() {
 
-        let formCtrlDefs: { [controlName: string]: any } = {};
-        let formCrtlsToRemove: string[] = [];
 
-        // add controls for each child roleSet
-        if (this.role_set_form && this.role_set_form._role_create_list)
-            Object.keys(this.role_set_form._role_create_list).forEach((key) => {
-                const roleDetail = this.role_set_form._role_create_list[key]
+        // add controls for each role to create
+        if (this._role_set_form && this._role_set_form._role_create_list) {
+            Object.keys(this._role_set_form._role_create_list).forEach((key) => {
+                const roleDetail = this._role_set_form._role_create_list[key]
                 if (roleDetail) {
-
-                    this.formGroup.addControl(key, new FormControl(
-                        roleDetail.role,
-                        [
-                            Validators.required
-                        ]
-                    ))
-
-
+                    const role = roleDetail.role;
+                    const roleCtrl = new FormControl(role, [Validators.required]);
+                    this.createForm.addControl(key, roleCtrl)
                 }
             })
+        }
+
+        // add controls for each role to add
+        if (this._role_set_form && this._role_set_form._role_add_list) {
+            Object.keys(this._role_set_form._role_add_list).forEach((key) => {
+                const roleDetail = this._role_set_form._role_add_list[key]
+                if (roleDetail) {
+
+                    const role = roleDetail.role;
+
+                    // prepare the role for relation with project
+                    role.entity_version_project_rels = [
+                        role.entity_version_project_rels ?
+                            role.entity_version_project_rels[0] : {
+                                is_in_project: false,
+                                is_standard_in_project: false
+                            } as InfEntityProjectRel
+                    ]
+
+                    const roleCtrl = new FormControl(role, [Validators.required]);
+                    this.addForm.addControl(key, roleCtrl)
+                }
+            })
+        }
 
     }
 

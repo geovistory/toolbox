@@ -1,6 +1,6 @@
 import { ObservableStore, select } from '@angular-redux/store';
 import { Input, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { DfhClass, DfhProperty, InfPersistentItem } from 'app/core';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
@@ -14,12 +14,12 @@ import { TeEntActions } from './te-ent/te-ent.actions';
 export abstract class DataUnitBase implements OnInit, OnDestroy {
   subs: Subscription[] = []
 
-  formGroup:FormGroup;
+  formGroup: FormGroup;
 
   @Input() parentPath: string[];
-  
 
-  abstract initStore():void; // override this in derived class
+
+  abstract initStore(): void; // override this in derived class
 
   localStore: ObservableStore<TeEntDetail | PeItDetail>;
   protected actions: PeItActions | TeEntActions;
@@ -46,7 +46,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   @select() _roleSet_list$: Observable<RoleSetList>;
 
 
-  constructor(protected fb:FormBuilder){
+  constructor(protected fb: FormBuilder) {
     this.formGroup = this.fb.group({})
   }
 
@@ -88,12 +88,13 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   }
 
 
-  abstract init():void; // hook for child class
+  abstract init(): void; // hook for child class
 
 
   /** ************
    * User Interactions 
    ****************/
+
 
   startSelectProperty() {
     this.localStore.dispatch(this.actions.startSelectProperty())
@@ -103,6 +104,32 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
     this.localStore.dispatch(this.actions.stopSelectProperty())
   }
 
+
+  /**
+* called, when user selected a the kind of property to add
+*/
+  addRoleSet(propertyToAdd: RoleSet) {
+
+    // add a role set
+    const newRoleSet: RoleSet = {
+      ...propertyToAdd,
+      toggle: 'expanded',
+      roles: []
+    }
+
+    // add a form conrtol
+    this.formGroup.addControl(
+      roleSetKey(newRoleSet), new FormControl(
+        newRoleSet.roles,
+        [
+          Validators.required
+        ]
+      )
+    )
+
+    this.localStore.dispatch(this.actions.addRoleSet(newRoleSet))
+
+  }
 
   /**
   * Method to find out if a property section is already added

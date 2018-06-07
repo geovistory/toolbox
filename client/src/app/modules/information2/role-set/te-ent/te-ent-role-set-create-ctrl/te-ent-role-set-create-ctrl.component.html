@@ -3,11 +3,11 @@
 
 <!-- If no roles in Project, show a big add button -->
 <div class="card-body" *ngIf="!(roleStatesInProject$ | async) && !((_role_list$ | async) | keys).length && addButtonVisible">
-  <button class="btn btn-outline-primary" (click)="startAddingRole()">
+  <button class="btn btn-outline-primary" (click)="startCreateRole()">
     Add a {{(label$ | async)?.sg}}
   </button>
   <button class="btn btn-link pull-right" (click)="removeRoleSet()">
-    cancel
+    Cancel
   </button>
 </div>
 

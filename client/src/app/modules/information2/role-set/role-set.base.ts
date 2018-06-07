@@ -1,31 +1,23 @@
-import {
-    OnChanges, OnInit, Input, Output, ViewChildren,
-    QueryList, EventEmitter, ChangeDetectorRef, OnDestroy
-} from '@angular/core';
-
-
-import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
-import { timer } from 'rxjs/observable/timer';
-import { indexBy } from 'ramda'
-import { InfRole, DfhProperty, InfEntityProjectRelApi, InfRoleApi, EntityEditorService, InfPersistentItem, Project, IAppState } from 'app/core';
 
-import { ObservableStore, NgRedux, select, WithSubStore } from '@angular-redux/store';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { DfhProperty, IAppState, InfEntityProjectRelApi, InfPersistentItem, InfRole, InfRoleApi, Project } from 'app/core';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+
+import { CollapsedExpanded, RoleDetail, RoleDetailList, RoleSet, RoleSetForm } from '../information.models';
+import { RoleActions } from '../role/role.actions';
+import { roleReducer } from '../role/role.reducers';
+import { ClassService } from '../shared/class.service';
+import { RoleSetService } from '../shared/role-set.service';
+import { RoleService } from '../shared/role.service';
+import { StateCreatorService } from '../shared/state-creator.service';
 import { RoleSetActions, roleStateKey } from './role-set.actions';
 import { roleSetReducer } from './role-set.reducer';
-import { isObject } from 'util';
 
-import { ControlValueAccessor, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { Subscription, ReplaySubject } from 'rxjs';
-import { RoleSet, CollapsedExpanded, RoleDetailList, RoleDetail, RoleSetForm } from '../information.models';
-import { RoleSetService } from '../shared/role-set.service';
-import { StateCreatorService } from '../shared/state-creator.service';
-import { ClassService } from '../shared/class.service';
-import { RoleActions } from '../role/role.actions';
-import { RoleService } from '../shared/role.service';
-import { roleReducer } from '../role/role.reducers';
-import { StateToDataService } from '../shared/state-to-data.service';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 export type RoleSetLabelObj = {
     default: string
@@ -371,11 +363,6 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     *
     */
     cancelCreateRoles() {
-
-        /** remove all form controls from form */
-        Object.keys(this.roleSetState._role_set_form._role_create_list).forEach(key => {
-            this.formGroup.removeControl(key)
-        })
 
         /** remove the RoleState from state */
         this.localStore.dispatch(this.actions.stopCreateNewRole());

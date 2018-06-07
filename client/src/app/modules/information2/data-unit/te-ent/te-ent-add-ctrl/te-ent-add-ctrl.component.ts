@@ -38,18 +38,19 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
     // add controls for each roleSet of _roleSet_list
     this.subs.push(this._roleSet_list$.subscribe(roleSetList => {
 
-      Object.keys(roleSetList).forEach((key) => {
-        if (roleSetList[key]) {
+      if (roleSetList)
+        Object.keys(roleSetList).forEach((key) => {
+          if (roleSetList[key]) {
 
-          this.formGroup.addControl(key, new FormControl(
-            roleSetList[key].roles,
-            [
-              Validators.required
-            ]
-          ))
-        }
+            this.formGroup.addControl(key, new FormControl(
+              roleSetList[key].roles,
+              [
+                Validators.required
+              ]
+            ))
+          }
 
-      })
+        })
     }))
 
   }

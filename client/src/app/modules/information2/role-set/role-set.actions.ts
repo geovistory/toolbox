@@ -6,7 +6,7 @@ import { DfhProperty } from 'app/core';
 
 
 
-export function roleStateKey(roleState: RoleDetail) { return  '_' + roleState.role.pk_entity };
+export function roleStateKey(roleState: RoleDetail) { return '_' + roleState.role.pk_entity };
 
 
 
@@ -42,8 +42,6 @@ export class RoleSetActions {
   static readonly ROLES_CREATED = 'ROLES_CREATED';
   static readonly ROLE_REMOVED_FROM_PROJECT = 'ROLE_REMOVED_FROM_PROJECT';
 
-
-
   static readonly START_EDITING_ROLE = 'START_EDITING_ROLE';
   static readonly STOP_EDITING_ROLE = 'STOP_EDITING_ROLE';
   static readonly UPDATE_ROLE = 'UPDATE_ROLE';
@@ -65,6 +63,9 @@ export class RoleSetActions {
 
   static readonly DISPLAY_ROLE_CHANGED = 'DISPLAY_ROLE_CHANGED';
 
+  static readonly ADD_ROLE_TO_ROLE_LIST = 'ADD_ROLE_TO_ROLE_LIST';
+
+  static readonly REMOVE_ROLE_FROM_ROLE_LIST = 'REMOVE_ROLE_FROM_ROLE_LIST';
 
 
   @dispatch()
@@ -113,7 +114,7 @@ export class RoleSetActions {
     type: RoleSetActions.ALTERNATIVE_ROLES_LOADED,
     meta: null,
     payload: {
-      _role_set_form:{
+      _role_set_form: {
         _role_add_list,
         _role_add_in_no_project_list
       }
@@ -124,7 +125,7 @@ export class RoleSetActions {
     type: RoleSetActions.START_CREATE_NEW_ROLE,
     meta: null,
     payload: {
-      _role_set_form:{
+      _role_set_form: {
         _role_create_list,
 
       }
@@ -135,9 +136,7 @@ export class RoleSetActions {
   stopCreateNewRole = (): RoleSetAction => ({
     type: RoleSetActions.STOP_CREATE_NEW_ROLE,
     meta: null,
-    payload: {
-      _role_set_form: undefined
-    }
+    payload: null
   })
 
 
@@ -145,7 +144,7 @@ export class RoleSetActions {
     type: RoleSetActions.ROLE_CREATION_CANCELLED,
     meta: null,
     payload: {
-      _role_set_form:{
+      _role_set_form: {
         _role_create_list
       }
     }
@@ -196,5 +195,24 @@ export class RoleSetActions {
       _role_list
     }
   })
+
+
+  addRoleToRoleList = (key: string, roleDetail: RoleDetail): RoleSetAction => ({
+    type: RoleSetActions.ADD_ROLE_TO_ROLE_LIST,
+    meta: {
+      key,
+      roleDetail
+    },
+    payload: null
+  })
+
+  removeRoleFromRoleList = (key: string): RoleSetAction => ({
+    type: RoleSetActions.REMOVE_ROLE_FROM_ROLE_LIST,
+    meta: {
+      key
+    },
+    payload: null
+  })
+
 
 }

@@ -10,10 +10,13 @@ import { ClassService } from '../shared/class.service';
 import { RoleSetBase } from './role-set.base';
 import { clone } from 'ramda'
 
-export class RoleSetAddCtrlBase extends RoleSetBase {
+export abstract class RoleSetAddCtrlBase extends RoleSetBase {
 
   init(): void {
+    this.initRoleSetAddCtrlBaseChild()
   }
+
+  abstract initRoleSetAddCtrlBaseChild(): void;
 
   constructor(
     protected eprApi: InfEntityProjectRelApi,

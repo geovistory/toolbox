@@ -131,31 +131,7 @@ export class TeEntEditableComponent extends DataUnitBase {
   }
 
 
-  /**
-  * called, when user selected a the kind of property to add
-  */
-  addRoleSet(propertyToAdd: RoleSet) {
 
-    // add a role set
-    const newRoleSet: RoleSet = {
-      ...propertyToAdd,
-      toggle: 'expanded',
-      roles: []
-    }
-
-    // add a form conrtol
-    this.formGroup.addControl(
-      roleSetKey(newRoleSet), new FormControl(
-        newRoleSet.roles,
-        [
-          Validators.required
-        ]
-      )
-    )
-
-    this.localStore.dispatch(this.actions.addRoleSet(newRoleSet))
-
-  }
 
   /**
   * toggleCardBody - toggles the state of the card in order to collapse or

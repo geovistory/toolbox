@@ -1,9 +1,9 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, forwardRef } from '@angular/core';
-import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { IAppState, InfEntityProjectRelApi, InfRoleApi } from 'app/core';
+import { FormBuilder, NG_VALUE_ACCESSOR, FormControl, Validators } from '@angular/forms';
+import { IAppState, InfEntityProjectRelApi, InfRoleApi, InfTemporalEntityApi, InfRole } from 'app/core';
 
-import { RoleDetail } from '../../../information.models';
+import { RoleDetail, RoleDetailList } from '../../../information.models';
 import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
@@ -43,9 +43,51 @@ export class TeEntRoleSetCreateCtrlComponent extends TeEntRoleSetBase {
     protected roleActions: RoleActions,
     protected stateCreator: StateCreatorService,
     protected classService: ClassService,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    teEntApi: InfTemporalEntityApi
+
   ) {
-    super(eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb, teEntApi)
+  }
+
+  startCreateRole() {
+    const roleToCreate = new InfRole();
+    roleToCreate.fk_property = this.roleSetState.property.dfh_pk_property;
+    roleToCreate.fk_temporal_entity = this.parentTeEntState.teEnt.pk_entity;
+
+    this.subs.push(this.classService.getByPk(this.roleSetState.targetClassPk).subscribe(targetDfhClass => {
+      const options: RoleDetail = { targetDfhClass }
+
+      this.stateCreator.initializeRoleDetail(roleToCreate, this.roleSetState.isOutgoing, options).subscribe(roleStateToCreate => {
+
+        /** add a form control */
+        const formControlName = 'new_role_' + this.createFormControlCount;
+        this.createFormControlCount++;
+        this.formGroup.addControl(formControlName, new FormControl(
+          roleStateToCreate.role,
+          [
+            Validators.required
+          ]
+        ))
+
+        /** update the state */
+        this.localStore.dispatch(this.actions.addRoleToRoleList(formControlName, roleStateToCreate))
+      })
+    }))
+  }
+
+  /**
+* called when user cancels to create one specific role
+*
+*/
+  cancelCreateRole(key) {
+
+    /** remove the form control from form */
+    this.formGroup.removeControl(key)
+
+    /** remove the RoleState from state */
+    this.localStore.dispatch(this.actions.removeRoleFromRoleList(key));
+
   }
 
 

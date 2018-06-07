@@ -1,7 +1,7 @@
 import { sandboxOf } from "angular-playground";
 import { InitStateModule } from "app/shared/components/init-state/init-state.module";
 import { AppellationCtrlModule } from "../../../value/appellation-ctrl/appellation-ctrl.module";
-import { InfRole, DfhLabel, DfhProperty, DfhClass } from "app/core";
+import { InfRole, DfhLabel, DfhProperty, DfhClass, Project } from "app/core";
 import { RoleDetail, RoleSet } from "../../../information.models";
 import { TeEntRoleCreateCtrlComponent } from "../../../role/te-ent/te-ent-role-create-ctrl/te-ent-role-create-ctrl.component";
 import { KeysModule } from "app/shared/pipes/keys.module";
@@ -19,6 +19,7 @@ import { TeEntRoleSetCreateCtrlComponent } from "../../../role-set/te-ent/te-ent
 import { PeItRoleCreateCtrlComponent } from "./pe-it-role-create-ctrl.component";
 import { TeEntActions } from "../../../data-unit/te-ent/te-ent.actions";
 import { TeEntCreateCtrlComponent } from "../../../data-unit/te-ent/te-ent-create-ctrl/te-ent-create-ctrl.component";
+import { roleCreateMock } from "./mock";
 
 
 
@@ -94,6 +95,50 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        template: `
+            <gv-init-state [initState]="initState"></gv-init-state>
+
+            <div class="d-flex justify-content-center mt-5">
+                <div style="width:430px;height:400px" class="d-flex">
+                    <form #f="ngForm">
+                        <gv-pe-it-role-create-ctrl [parentPath]="parentPath" [index]="index"
+                            name="val" [(ngModel)]="model.val" #val="ngModel" required>
+                        </gv-pe-it-role-create-ctrl>
+                    </form>                               
+                </div>
+                <div>
+                    <p>Form.valid: {{f.valid | json}}</p>
+        
+                    <p>Form.touched: {{f.touched | json}}</p>
+        
+                    <p>Form.dirty: {{f.dirty | json}}</p>
+        
+                    <p>Form.value </p>
+                    <pre>
+                        {{f.value | json}}
+                    </pre>
+        
+                </div>
+            </div>
+        `
+    })
+    .add('PeIt Role Create Ctrl | Massive mock ', {
+        context: {
+            model: {
+            },
+            parentPath: ['_role_set_1'],
+            index: '_role_detail_1',
+            initState: {
+                activeProject:{
+                    pk_project: 52
+                } as Project,
+                '_role_set_1': {
+                    _role_list: {
+                        _role_detail_1: roleCreateMock
                     }
                 }
             }

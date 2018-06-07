@@ -390,3 +390,8 @@ gv-source-list {
     @extend .gv-flex-grow-1;
     @extend .flex-column;
 }
+
+gv-pe-it-role-set-editable, {
+    min-width: 360px;
+    display: block;
+}
