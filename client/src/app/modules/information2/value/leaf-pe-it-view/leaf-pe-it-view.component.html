@@ -1,4 +1,4 @@
-<div *ngIf="isCircular">
+<div *ngIf="isCircular && ! (leafPeItLoading$ |async)">
     {{label}}
     <small class="text-muted">{{peItState?.dfhClass?.dfh_standard_label}} (self)</small>
 </div>
@@ -6,3 +6,7 @@
     {{label}}
     <small class="text-muted">{{peItState?.dfhClass?.dfh_standard_label}}</small>
 </a>
+
+<div *ngIf="(leafPeItLoading$ |async)">
+    <i class="fa fa-spinner fa-pulse"></i> Loading
+</div>

@@ -18,7 +18,6 @@ Create tree
 * * ok - pe-it-create-form
 * ok – create-pe-it-form
 * * ok – Make the  form beautiful
-* * Add functionality for adding/removing roles and rolesets 
 
 
 Editable tree
@@ -31,11 +30,6 @@ Editable tree
 * * ok – te-ent-role-editable
 
 
-View Value components
-* ok – appellation-view
-* ok – language-view
-* doing – leaf-pe-it-view
-* time-primitive-view
 
 Add tree
 * ok – create a sandbox that gets nested object of repo by api call, add all the add components
@@ -53,8 +47,34 @@ Add tree
 * * * ok – prevent uncheck is_in_project when is_standard_for_range/domain
 
 
+Create Value components
+* ok – appellation-ctrl
+* ok – language-ctrl
+* leaf-pe-it-ctrl
+* time-primitive-ctrl
 
-* doing – create forms
-* * ok – pe-it-create-form
-* * doing – te-ent-role-set-form
-* * doing – pe-it-role-set-form
+create forms
+* doing – pe-it-create-form
+* * call api to init a create state
+* * Add functionality for adding/removing roles and rolesets 
+* * persist the new entity!!
+
+
+
+* doing – pe-it-role-set-form
+* * persist the selcted existing roles
+* * create the new roles
+
+* doing – te-ent-role-set-form
+* * persist the selcted existing roles
+* * create the new roles
+
+
+View Value components
+* ok – appellation-view
+* ok – language-view
+* doing – leaf-pe-it-view
+* time-primitive-view
+
+
+

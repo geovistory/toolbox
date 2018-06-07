@@ -2,7 +2,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, forwardRef } from '@angular/core';
 import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { IAppState, InfEntityProjectRelApi, InfRoleApi } from 'app/core';
+import { IAppState, InfEntityProjectRelApi, InfRoleApi, InfTemporalEntityApi } from 'app/core';
 
 import { RoleDetail } from '../../../information.models';
 import { RoleActions } from '../../../role/role.actions';
@@ -44,9 +44,10 @@ export class TeEntRoleSetAddCtrlComponent extends TeEntRoleSetBase {
     protected roleActions: RoleActions,
     protected stateCreator: StateCreatorService,
     protected classService: ClassService,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    teEntApi: InfTemporalEntityApi
   ) {
-    super(eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb, teEntApi)
   }
 
 

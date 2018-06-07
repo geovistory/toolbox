@@ -29,6 +29,8 @@ import { RoleSetActions } from '../../role-set.actions';
 })
 
 export class PeItRoleSetAddCtrlComponent extends RoleSetAddCtrlBase {
+  initRoleSetAddCtrlBaseChild(): void {
+  }
 
   init(): void {
   }
