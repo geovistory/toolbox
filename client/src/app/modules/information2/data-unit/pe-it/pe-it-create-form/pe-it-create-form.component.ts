@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, Validators, FormGroup, NgForm } from '@angular/forms';
 import { NgRedux, WithSubStore } from '@angular-redux/store';
-import { PeItActions } from '../pe-it.actions';
+import { Component, ViewChild } from '@angular/core';
+import { FormBuilder, NgForm } from '@angular/forms';
+import { InfPersistentItem, InfTemporalEntity, U } from 'app/core';
+
 import { PeItFormBase } from '../pe-it-form.base';
+import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
-import { InfPersistentItem, U, InfTemporalEntity } from 'app/core';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

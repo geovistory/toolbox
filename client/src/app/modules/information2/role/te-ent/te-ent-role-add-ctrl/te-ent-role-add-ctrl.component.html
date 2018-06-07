@@ -1,3 +1,47 @@
-<p>
-  te-ent-role-add-ctrl works!
-</p>
+<div class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
+
+  <ng-content select="[headerLeft]"></ng-content>
+
+
+
+  <form [formGroup]="formGroup" *ngIf="formGroup && roleState && formControlName" class="align-self-center gv-flex-grow-1">
+
+    <div class="d-flex">
+      <input class="mr-2 align-self-center" type="checkbox" [formControlName]="'is_in_project'" *ngIf="!(isCircular$|async)">
+
+      <div class="gv-flex-grow-1">
+
+        <div *ngIf="(leafPeItLoading$ |async)">
+          <i class="fa fa-spinner fa-pulse"></i> Loading
+        </div>
+        <gv-pe-it-entity-preview *ngIf="leafPeItStateInitialized && !(leafPeItLoading$ |async)" [parentPath]="basePath" [isCircular]="(isCircular$|async)"></gv-pe-it-entity-preview>
+
+        <gv-appellation-view *ngIf="roleState._appe" class="gv-flex-grow-1" [appellation]="roleState._appe.appellation"></gv-appellation-view>
+
+        <gv-language-view *ngIf="roleState._lang" class="gv-flex-grow-1" [language]="roleState._lang.language"></gv-language-view>
+
+        <!-- 
+        <div *ngIf="(leafPeItLoading$ |async)">
+          <i class="fa fa-spinner fa-pulse"></i> Loading
+        </div>
+        <gv-pe-it-entity-preview *ngIf="(peItState$ |async) && !(leafPeItLoading$ |async)" [parentPath]="basePath" [isCircular]="(isCircular$|async)"
+          [formControlName]="formControlName" (touched)="markAsTouched()"></gv-pe-it-entity-preview>
+    
+    
+        <gv-language *ngIf="roleState.langState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
+          (touched)="markAsTouched()"></gv-language>
+    
+        <gv-time-primitive *ngIf="roleState.timePrimitiveState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
+          (touched)="markAsTouched()"></gv-time-primitive>
+        -->
+
+      </div>
+    </div>
+
+    <!--  <gv-control-messages *ngIf="formGroup.get(formControlName)" [control]="formGroup.get(formControlName)"></gv-control-messages> -->
+
+  </form>
+
+  <ng-content select="[headerRight]"></ng-content>
+
+</div>

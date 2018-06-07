@@ -1,3 +1,32 @@
-<p>
-  pe-it-role-add-ctrl works!
-</p>
+<form [formGroup]="formGroup" *ngIf="formGroup && formGroup.get(formControlName)">
+  <gv-te-ent-add-ctrl [parentPath]="basePath" [formControlName]="formControlName" (touched)="markAsTouched()">
+
+    <div headerLeft>
+      <!-- UI for is in project -->
+
+      <div class="gv-in-project">
+
+
+        <input type="checkbox" [formControlName]="'is_in_project'">
+        
+
+      </div>
+
+    </div>
+    <div headerRight>
+
+      <!-- Is standard -->
+      <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="isStandard">
+        <i class="fa fa-eye text-primary"></i>
+      </button>
+
+      <!-- Is not standard -->
+      <button type="button" name="button" class="btn btn-link btn-sm" *ngIf="!isStandard && isInProject" (click)="makeStandard()">
+        <i class="fa fa-eye-slash text-muted"></i>
+      </button>
+
+    </div>
+
+
+  </gv-te-ent-add-ctrl>
+</form>

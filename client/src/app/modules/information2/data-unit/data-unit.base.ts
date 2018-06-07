@@ -88,7 +88,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   }
 
 
-  init() { }; // hook for child class
+  abstract init():void; // hook for child class
 
 
   /** ************

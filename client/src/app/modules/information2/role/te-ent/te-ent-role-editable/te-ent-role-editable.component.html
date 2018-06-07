@@ -1,3 +1,32 @@
-<p>
-  te-ent-role-editable works!
-</p>
+<div class="btn-group gv-flex-grow-1 gv-flex-shrink-0 d-flex">
+
+  <ng-content select="[headerLeft]"></ng-content>
+
+  <div class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
+
+
+    <div *ngIf="(leafPeItLoading$ |async)">
+      <i class="fa fa-spinner fa-pulse"></i> Loading
+    </div>
+    <gv-pe-it-entity-preview *ngIf="leafPeItStateInitialized && !(leafPeItLoading$ |async)" [parentPath]="basePath" [isCircular]="(isCircular$|async)"></gv-pe-it-entity-preview>
+    
+    <gv-appellation-view *ngIf="roleState._appe" class="gv-flex-grow-1" [appellation]="roleState._appe.appellation"></gv-appellation-view>
+    
+    <gv-language-view *ngIf="roleState._lang" class="gv-flex-grow-1" [language]="roleState._lang.language"></gv-language-view>
+    
+
+<!--     
+
+
+    <gv-language *ngIf="roleState.langState" class="gv-flex-grow-1" [parentPath]="basePath" (touched)="markAsTouched()"></gv-language>
+
+    <gv-time-primitive *ngIf="roleState.timePrimitiveState" class="gv-flex-grow-1" [parentPath]="basePath" (touched)="markAsTouched()"></gv-time-primitive>
+ -->
+
+  </div>
+
+  <div class="d-flex align-items-center" *ngIf="!(isCircular$|async)">
+    <ng-content select="[headerRight]"></ng-content>
+  </div>
+
+</div>

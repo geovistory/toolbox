@@ -58,11 +58,9 @@ export default sandboxOf(PeItCreateCtrlComponent, {
         context: {
             model: {
             },
-            parentPath: ['root'],
+            basePath: ['_peIt_create_form'],
             initState: {
-                root: {
-                    _peIt: mockPerson
-                }
+                _peIt_create_form: mockPerson
             }
         },
         template: `
@@ -71,7 +69,7 @@ export default sandboxOf(PeItCreateCtrlComponent, {
             <div class="d-flex justify-content-center mt-5">
                 <div style="width:430px;height:400px" class="d-flex">
                     <form #f="ngForm">
-                        <gv-pe-it-create-ctrl [parentPath]="parentPath"
+                        <gv-pe-it-create-ctrl [basePath]="basePath"
                             name="val" [(ngModel)]="model.val" #val="ngModel" required>
                         </gv-pe-it-create-ctrl>
                     </form>                               

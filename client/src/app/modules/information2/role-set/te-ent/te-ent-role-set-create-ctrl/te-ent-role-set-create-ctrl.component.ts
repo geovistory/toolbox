@@ -1,15 +1,15 @@
-import { Component, OnInit, forwardRef, Input } from '@angular/core';
-import { slideInOut } from '../../../shared/animations';
-import { NG_VALUE_ACCESSOR, FormBuilder } from '@angular/forms';
-import { RoleSetBase } from '../../role-set.base';
-import { InfEntityProjectRelApi, InfRoleApi } from 'app/core';
-import { RoleSet, RoleDetail } from '../../../information.models';
 import { NgRedux } from '@angular-redux/store';
-import { RoleSetActions } from '../../role-set.actions';
-import { RoleSetService } from '../../../shared/role-set.service';
+import { Component, forwardRef } from '@angular/core';
+import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { IAppState, InfEntityProjectRelApi, InfRoleApi } from 'app/core';
+
+import { RoleDetail } from '../../../information.models';
 import { RoleActions } from '../../../role/role.actions';
-import { StateCreatorService } from '../../../shared/state-creator.service';
+import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
+import { RoleSetService } from '../../../shared/role-set.service';
+import { StateCreatorService } from '../../../shared/state-creator.service';
+import { RoleSetActions } from '../../role-set.actions';
 import { TeEntRoleSetBase } from '../te-ent-role-set.base';
 
 @Component({
@@ -36,7 +36,7 @@ export class TeEntRoleSetCreateCtrlComponent extends TeEntRoleSetBase {
   constructor(
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
-    protected ngRedux: NgRedux<RoleSet>,
+    protected ngRedux: NgRedux<IAppState>,
     protected actions: RoleSetActions,
     protected roleSetService: RoleSetService,
     protected roleStore: NgRedux<RoleDetail>,

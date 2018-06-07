@@ -1,6 +1,6 @@
 import { Component, OnInit, forwardRef } from '@angular/core';
 import { RoleSetBase } from '../../role-set.base';
-import { InfEntityProjectRelApi, InfRoleApi } from 'app/core';
+import { InfEntityProjectRelApi, InfRoleApi, IAppState } from 'app/core';
 import { NgRedux } from '@angular-redux/store';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetService } from '../../../shared/role-set.service';
@@ -34,7 +34,7 @@ export class PeItRoleSetCreateCtrlComponent extends RoleSetBase  {
   constructor(
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
-    protected ngRedux: NgRedux<RoleSet>,
+    protected ngRedux: NgRedux<IAppState>,
     protected actions: RoleSetActions,
     protected roleSetService: RoleSetService,
     protected roleStore: NgRedux<RoleDetail>,

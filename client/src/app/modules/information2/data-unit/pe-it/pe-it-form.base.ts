@@ -1,5 +1,5 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { OnInit } from '@angular/core';
+import { OnInit, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { InfPersistentItem } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -21,16 +21,8 @@ import { peItReducer } from './pe-it.reducer';
 })
 export abstract class PeItFormBase extends DataUnitBase implements OnInit {
 
-    // @WithSubStore needs a empty string for root     
-    getBasePath = () => {
-        return this.parentPath ? [...this.parentPath, '_peIt'] : ''
-    }
-
-    // ngRedux.configureSubStore needs a empty array for root 
-    getBaseForConfigSubStore = () => {
-        return this.parentPath ? [...this.parentPath, '_peIt'] : []
-    }
-
+    @Input() basePath: string[];
+    getBasePath = ():string[] => this.basePath;
     @select() peIt$: Observable<InfPersistentItem>
 
     localStore: ObservableStore<PeItDetail>;
@@ -46,7 +38,7 @@ export abstract class PeItFormBase extends DataUnitBase implements OnInit {
 
     peItState: PeItDetail;
 
-    ngOnInit() {
+    init() {
         // initial state is useful for sandboxing the component
         this.onInitPeItBaseChild()
     }
@@ -54,7 +46,8 @@ export abstract class PeItFormBase extends DataUnitBase implements OnInit {
 
     // gets called by base class onInit
     initStore() {
-        this.localStore = this.ngRedux.configureSubStore(this.getBaseForConfigSubStore(), peItReducer);
+
+        this.localStore = this.ngRedux.configureSubStore(this.basePath, peItReducer);
         this.subs.push(this.localStore.select<PeItDetail>('').subscribe(d => {
             this.peItState = d
         }))

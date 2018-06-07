@@ -20,18 +20,41 @@ Create tree
 * * ok – Make the  form beautiful
 * * Add functionality for adding/removing roles and rolesets 
 
+
+Editable tree
+* ok - create a sandbox that generates the state by api call, add all the editable components
+* * ok – pe-it-editable
+* * ok - pe-it-role-set-editable
+* * ok – pe-it-role-editable
+* * ok – te-ent-editable
+* * ok – te-ent-role-set-editable
+* * ok – te-ent-role-editable
+
+
+View Value components
+* ok – appellation-view
+* ok – language-view
+* doing – leaf-pe-it-view
+* time-primitive-view
+
 * doing – create forms
 * * ok – pe-it-create-form
 * * ok – te-ent-role-set-form
-* * pe-it-role-set-form
+* * ok – pe-it-role-set-form
 
 Add tree
-* * pe-it-add-form
+* ok – create a sandbox that gets nested object of repo by api call, add all the add components
+* * ok – pe-it-add-form
+* * ok – pe-it-add-ctrl
+* * ok – pe-it-role-set-add-ctrl
+* * ok – pe-it-role-add-ctrl
+* * ok – te-ent-add-ctrl
+* * ok – te-ent-role-set-add-ctrl
+* * ok – te-ent-role-add-ctrl
+* doing - logic for epr
+* * ok – create logic for choosing is_in_project
+* * logic for choosing is_standard_for_range / domain
+* * * ok – add is_standard_for_domain_range by finding the highest count
+* * * prevent uncheck is_in_project when is_standard_for_range/domain
 
-* * pe-it-editable
 
-
-Editable tree
-
-* create a sandbox.store for role-set
-* create sandboxes for 

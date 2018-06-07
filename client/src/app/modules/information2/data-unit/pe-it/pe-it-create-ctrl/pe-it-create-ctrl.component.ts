@@ -4,11 +4,12 @@ import { WithSubStore, NgRedux } from '@angular-redux/store';
 import { PeItActions } from '../pe-it.actions';
 import { InfPersistentItem, InfTemporalEntity, U } from 'app/core';
 import { PeItCtrlBase } from '../pe-it-ctrl.base';
+import { peItReducer } from '../pe-it.reducer';
 
-// @WithSubStore({
-//   basePathMethodName:'getBasePath',
-//   localReducer: peItReducer
-// })
+@WithSubStore({
+  basePathMethodName:'getBasePath',
+  localReducer: peItReducer
+})
 @Component({
   selector: 'gv-pe-it-create-ctrl',
   templateUrl: './pe-it-create-ctrl.component.html',
@@ -37,7 +38,6 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
 
 
   initFormCtrls(): void {
-
     // add controls for each roleSet of _roleSet_list
     this.subs.push(this._roleSet_list$.subscribe(roleSetList => {
       Object.keys(roleSetList).forEach((key) => {

@@ -1,3 +1,32 @@
-<p>
-  pe-it-role-set-form works!
-</p>
+<form [formGroup]="formGroup" ngSubmit="submit()">
+
+  <div *ngFor="let entry of role_create_list | keys; trackBy:getKey">
+    {{entry.key}}
+    <gv-pe-it-role-create-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="roleCreateListPath" [index]="entry.key" intermediatePathSegment="_role_create_list"
+      [formControlName]="entry.key"></gv-pe-it-role-create-ctrl>
+
+
+
+
+  </div>
+
+  <!-- TODO add gv-pe-it-role-add-ctrl -->
+
+  <!-- 
+    
+          FOR JONAS OF TOMORROW
+    
+          der nächste schritt ist dieses Formular zu machen.
+    
+          Die frage ist, wie das zusammenspiel mit pe it role set editable geht: Wer dispatched? 
+    
+         -->
+
+  <button type="button" class="btn btn-link" (click)="startCreateNewRole()">Cancel</button>
+
+  <div class="card-body">
+    <button [disabled]="formGroup.invalid" type="submit" class="btn btn-primary">Ok</button>
+    <button type="button" class="btn btn-link" (click)="cancelCreateRoles()">Cancel</button>
+  </div>
+
+</form>

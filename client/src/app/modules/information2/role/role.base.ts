@@ -1,18 +1,27 @@
-import { Component, Input, ChangeDetectorRef, Output, EventEmitter, OnChanges, OnInit, OnDestroy } from '@angular/core';
-import { InfAppellation, InfRole, DfhProperty, ActiveProjectService, EntityEditorService, InfRoleApi, InfEntityProjectRel, InfLanguage, InfTemporalEntity, Project } from 'app/core';
-import { ObservableStore, select, NgRedux } from '@angular-redux/store';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { DfhProperty, InfRole, Project } from 'app/core';
+import { ReplaySubject, Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
-import { RoleActions } from './role.actions';
+
+import {
+  AppeDetail,
+  CollapsedExpanded,
+  LangDetail,
+  PeItDetail,
+  RoleDetail,
+  RoleSet,
+  TeEntDetail,
+  TimePrimitveDetail,
+} from '../information.models';
 import { roleReducer } from './role.reducers';
-import { BehaviorSubject, ReplaySubject, Subscription } from 'rxjs';
 
-import { FormGroup, Validators, FormControl, ControlValueAccessor, FormBuilder } from '@angular/forms';
-import { ɵPRE_STYLE } from '@angular/animations';
-import { equals } from 'ramda';
-import { CollapsedExpanded, RoleDetail, RoleSet, TeEntDetail, AppeDetail, LangDetail, TimePrimitveDetail, PeItDetail } from '../information.models';
-
-
-export class RoleBase implements OnInit, OnDestroy, ControlValueAccessor {
+@WithSubStore({
+  basePathMethodName: 'getBasePath',
+  localReducer: roleReducer
+})
+export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() parentPath: string[];
   @Input() intermediatePathSegment: string;
   @Input() index: string;
@@ -112,7 +121,7 @@ export class RoleBase implements OnInit, OnDestroy, ControlValueAccessor {
     this.init();
   }
 
-  init() { }
+  abstract init(): void;
 
 
   initChildren() { }
@@ -151,7 +160,7 @@ export class RoleBase implements OnInit, OnDestroy, ControlValueAccessor {
   }
 
 
-  initFormCtrl() {
+  initFormCtrl(role) {
     // add a control for the child of the role
     Object.keys(this.childStatesConfig).forEach((key) => {
       if (this.roleState[key]) {
@@ -213,7 +222,7 @@ export class RoleBase implements OnInit, OnDestroy, ControlValueAccessor {
   writeValue(role: InfRole): void {
 
     // the model is taken from the state on init
-    this.initFormCtrl()
+    this.initFormCtrl(role)
 
   }
 

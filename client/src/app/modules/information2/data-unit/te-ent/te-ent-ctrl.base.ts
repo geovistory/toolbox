@@ -55,7 +55,7 @@ export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValue
     @Input() initState: TeEntDetail;
     teEntState: TeEntDetail;
 
-    ngOnInit() {
+    init() {
 
         this.basePath = this.getBaseForConfigSubStore();
 

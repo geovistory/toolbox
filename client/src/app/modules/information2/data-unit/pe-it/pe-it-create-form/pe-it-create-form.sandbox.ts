@@ -68,18 +68,16 @@ export default sandboxOf(PeItCreateFormComponent, {
     context: {
       model: {},
       initState: {
-        root: {
-          _peIt: mockPerson
-        }
+        _peIt_create_form: mockPerson
       },
-      parentPath: ['root']
+      basePath: ['_peIt_create_form']
     },
     template: `
     <gv-init-state [initState]="initState"></gv-init-state>
 
     <div class="d-flex justify-content-center mt-5">
         <div style="width:430px;height:400px" class="d-flex">
-                <gv-pe-it-create-form [parentPath]="parentPath"></gv-pe-it-create-form>
+                <gv-pe-it-create-form [basePath]="basePath"></gv-pe-it-create-form>
         </div>
     </div>
     

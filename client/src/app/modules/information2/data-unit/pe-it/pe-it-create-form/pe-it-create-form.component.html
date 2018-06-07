@@ -14,7 +14,7 @@
   <ng-container *ngTemplateOutlet="propertiesHeader"></ng-container>
 
   <form #f="ngForm" ngSubmit="submit()">
-    <gv-pe-it-create-ctrl [parentPath]="parentPath" name="peIt" [(ngModel)]="peIt" #val="ngModel" required></gv-pe-it-create-ctrl>
+    <gv-pe-it-create-ctrl [basePath]="basePath" name="peIt" [(ngModel)]="peIt" #val="ngModel" required></gv-pe-it-create-ctrl>
     
     <button class="btn btn-primary" type="submit" [disabled]="f.invalid && f.submitted">Create</button>
 

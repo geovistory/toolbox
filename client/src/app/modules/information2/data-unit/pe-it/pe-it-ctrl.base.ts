@@ -27,17 +27,9 @@ import { peItReducer } from './pe-it.reducer';
 })
 export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueAccessor, OnInit {
 
-    // @WithSubStore needs a empty string for root     
-    getBasePath = () => {
-        return this.parentPath ? [...this.parentPath, '_peIt'] : ''
-    }
 
-    basePath: string |  string[];
-
-    // ngRedux.configureSubStore needs a empty array for root 
-    getBaseForConfigSubStore = () => {
-        return this.parentPath ? [...this.parentPath, '_peIt'] : []
-    }
+    @Input() basePath: string[];
+    getBasePath = ():string[] => this.basePath;
 
     @select() peIt$: Observable<InfPersistentItem>
 
@@ -59,11 +51,9 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
     @Input() initState: PeItDetail;
     peItState: PeItDetail;
 
-    ngOnInit() {
+    init() {
         // initial state is useful for sandboxing the component
         if (this.initState) this.updateState(this.initState)
-
-        this.basePath = this.getBaseForConfigSubStore();
 
         this.onInitPeItBaseChild()
     }
@@ -71,7 +61,7 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
 
     // gets called by base class onInit
     initStore() {
-        this.localStore = this.ngRedux.configureSubStore(this.getBaseForConfigSubStore(), peItReducer);
+        this.localStore = this.ngRedux.configureSubStore(this.basePath, peItReducer);
         this.subs.push(this.localStore.select<PeItDetail>('').subscribe(d => {
             this.peItState = d
         }))

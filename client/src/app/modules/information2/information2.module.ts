@@ -24,6 +24,8 @@ import { TeEntRoleSetCreateCtrlComponent } from './role-set/te-ent/te-ent-role-s
 import { TeEntRoleSetAddCtrlComponent } from './role-set/te-ent/te-ent-role-set-add-ctrl/te-ent-role-set-add-ctrl.component';
 import { TeEntRoleSetEditableComponent } from './role-set/te-ent/te-ent-role-set-editable/te-ent-role-set-editable.component';
 import { TeEntRoleSetFormComponent } from './role-set/te-ent/te-ent-role-set-form/te-ent-role-set-form.component';
+import { LanguageViewComponent } from './value/language-view/language-view.component';
+import { LanguageCtrlComponent } from './value/language-ctrl/language-ctrl.component';
 
 @NgModule({
   imports: [
@@ -53,7 +55,9 @@ import { TeEntRoleSetFormComponent } from './role-set/te-ent/te-ent-role-set-for
      AppellationCtrlComponent,
      TeEntCreateCtrlComponent,
      TeEntAddCtrlComponent,
-     TeEntEditableComponent
+     TeEntEditableComponent,
+     LanguageViewComponent,
+     LanguageCtrlComponent
     ]
 })
 export class Information2Module { }

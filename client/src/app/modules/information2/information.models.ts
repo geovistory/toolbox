@@ -142,6 +142,8 @@ export interface RoleDetail {
     // gui
     isOutgoing?: boolean,
 
+    toggle?: CollapsedExpanded;
+
     /**
      * This field flags roles that are used by the project to produce a display label of a range entity (thus normally a Persistent Item). 
      * It is up to the application logic to create this label. This is usually done by following the path from the Role to the 

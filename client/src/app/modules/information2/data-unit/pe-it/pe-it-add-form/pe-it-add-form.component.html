@@ -1,3 +1,24 @@
-<p>
-  pe-it-add-form works!
-</p>
+<section class="row">
+  <div class="col-md-8">
+    <h2>
+      <span *ngIf="labelInEdit">{{labelInEdit}}</span>
+      <span *ngIf="label && !labelInEdit">{{label}}</span>
+      <small class="text-muted">{{(dfhClass$|async)?.dfh_standard_label}}</small>
+    </h2>
+  </div>
+  <!-- <gv-entity-editor-settings class="col-md-4 text-right"></gv-entity-editor-settings> -->
+</section>
+
+<div class="d-flex flex-column gv-flex-grow-1">
+
+  <ng-container *ngTemplateOutlet="propertiesHeader"></ng-container>
+
+  <form #f="ngForm" ngSubmit="submit()">
+    <gv-pe-it-add-ctrl [basePath]="basePath" name="peIt" [(ngModel)]="peIt" #val="ngModel" required></gv-pe-it-add-ctrl>
+    
+    <button class="btn btn-primary" type="submit" [disabled]="f.invalid && f.submitted">Add</button>
+
+  </form>
+
+</div>
+

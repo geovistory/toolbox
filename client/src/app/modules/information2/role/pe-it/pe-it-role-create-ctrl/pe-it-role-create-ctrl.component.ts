@@ -18,6 +18,10 @@ import { NgRedux } from '@angular-redux/store';
 })
 export class PeItRoleCreateCtrlComponent extends RoleBase {
 
+  init(): void {
+
+  }
+
   constructor(
     protected ngRedux: NgRedux<RoleDetail>,
     protected fb: FormBuilder

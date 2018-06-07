@@ -6,6 +6,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import "rxjs/add/observable/zip";
+import "rxjs/add/observable/combineLatest";
 
 import { ClassService } from './class.service';
 import { PropertyService } from './property.service';

@@ -8,7 +8,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 import { timer } from 'rxjs/observable/timer';
 import { indexBy } from 'ramda'
-import { InfRole, DfhProperty, InfEntityProjectRelApi, InfRoleApi, EntityEditorService, InfPersistentItem, Project } from 'app/core';
+import { InfRole, DfhProperty, InfEntityProjectRelApi, InfRoleApi, EntityEditorService, InfPersistentItem, Project, IAppState } from 'app/core';
 
 import { ObservableStore, NgRedux, select, WithSubStore } from '@angular-redux/store';
 import { RoleSetActions, roleStateKey } from './role-set.actions';
@@ -122,7 +122,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     constructor(
         protected eprApi: InfEntityProjectRelApi,
         protected roleApi: InfRoleApi,
-        protected ngRedux: NgRedux<RoleSet>,
+        protected ngRedux: NgRedux<IAppState>,
         protected actions: RoleSetActions,
         protected roleSetService: RoleSetService,
         protected roleStore: NgRedux<RoleDetail>,
@@ -222,7 +222,6 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     */
     initFormCtrls() {
 
-        let formCtrlDefs: { [controlName: string]: any } = {};
         let formCrtlsToRemove: string[] = [];
 
         // add controls for each child roleSet

@@ -1,8 +1,9 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
-import { NG_VALUE_ACCESSOR, FormBuilder } from '@angular/forms';
-import { RoleBase } from '../../role.base';
 import { NgRedux } from '@angular-redux/store';
+import { Component, forwardRef } from '@angular/core';
+import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
+
 import { RoleDetail } from '../../../information.models';
+import { RoleBase } from '../../role.base';
 
 @Component({
   selector: 'gv-te-ent-role-create-ctrl',
@@ -18,6 +19,9 @@ import { RoleDetail } from '../../../information.models';
 })
 export class TeEntRoleCreateCtrlComponent extends RoleBase {
 
+  init(): void {
+
+  }
   constructor(
     protected ngRedux: NgRedux<RoleDetail>,
     protected fb: FormBuilder
