@@ -1,5 +1,5 @@
 
-import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { InfAppellation } from 'app/core';
 import { AppellationService } from '../../shared/appellation.service';
 
@@ -7,7 +7,8 @@ import { AppellationService } from '../../shared/appellation.service';
 @Component({
   selector: 'gv-appellation-view',
   templateUrl: './appellation-view.component.html',
-  styleUrls: ['./appellation-view.component.scss']
+  styleUrls: ['./appellation-view.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppellationViewComponent implements OnInit {
 

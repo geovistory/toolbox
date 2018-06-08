@@ -1,7 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
-import { Component, forwardRef } from '@angular/core';
-import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { InfEntityProjectRel, InfRole } from 'app/core';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
+import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { RoleDetail } from '../../../information.models';
 import { RoleAddCtrlBase } from '../../role-add-ctrl.base';
@@ -10,6 +9,7 @@ import { RoleAddCtrlBase } from '../../role-add-ctrl.base';
   selector: 'gv-pe-it-role-add-ctrl',
   templateUrl: './pe-it-role-add-ctrl.component.html',
   styleUrls: ['./pe-it-role-add-ctrl.component.scss'],
+  changeDetection:ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

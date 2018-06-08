@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
 import { PeItRoleCreateCtrlComponent } from './role/pe-it/pe-it-role-create-ctrl/pe-it-role-create-ctrl.component';
 import { PeItRoleAddCtrlComponent } from './role/pe-it/pe-it-role-add-ctrl/pe-it-role-add-ctrl.component';
 import { PeItRoleEditableComponent } from './role/pe-it/pe-it-role-editable/pe-it-role-editable.component';
@@ -26,45 +27,69 @@ import { TeEntRoleSetEditableComponent } from './role-set/te-ent/te-ent-role-set
 import { TeEntRoleSetFormComponent } from './role-set/te-ent/te-ent-role-set-form/te-ent-role-set-form.component';
 import { LanguageViewComponent } from './value/language-view/language-view.component';
 import { LanguageCtrlComponent } from './value/language-ctrl/language-ctrl.component';
-import { InformationRoutingModule } from '../information/information-routing.module';
-import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
 import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
+import { TestComponent } from './test/test.component';
+import { InformationRoutingModule } from './information-routing.module';
+import { EntityEditorComponent } from './containers/entity-editor/entity.editor.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgReduxFormModule } from '@angular-redux/form';
+import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { LanguageSearchTypeaheadModule, ControlMessagesModule, PassiveLinkModule } from 'app/shared';
+import { TimelineModule } from 'app/modules/timeline/timeline.module';
+import { KeysModule } from 'app/shared/pipes/keys.module';
+import { EntityAddModalModule } from './add-modal/entity-add-modal.module';
+import { EntitySearchHitModule } from './components/entity-search-hit/entity-search-hit.module';
+import { PeItService } from './shared/pe-it.service';
+import { TeEntService } from './shared/te-ent.service';
+import { ClassService } from './shared/class.service';
+import { PropertyService } from './shared/property.service';
+import { RoleService } from './shared/role.service';
+import { EprService } from './shared/epr.service';
+import { RoleSetService } from './shared/role-set.service';
 
 @NgModule({
   imports: [
     CommonModule,
-    InformationRoutingModule
+    FormsModule,
+    ReactiveFormsModule,
+    // BrowserAnimationsModule,
+
+    NgReduxFormModule,
+    SlimLoadingBarModule,
+    NgbModule,
+    // ElasticInputModule,
+
+    // SDKBrowserModule,
+    InformationRoutingModule,
+
+    //App wide reusable components
+    LanguageSearchTypeaheadModule,
+    ControlMessagesModule,
+    PassiveLinkModule,
+    TimelineModule,
+    KeysModule,
+
+    // Sub-Modules
+    EntityAddModalModule,
+
+    // Module wide reusable components
+    EntitySearchHitModule
+
   ],
   declarations: [
-    PeItRoleCreateCtrlComponent,
-    PeItRoleAddCtrlComponent,
-    PeItRoleEditableComponent,
-    TeEntRoleCreateCtrlComponent,
-    TeEntRoleAddCtrlComponent,
-    TeEntRoleEditableComponent,
-    PeItEditableComponent,
-    PeItAddCtrlComponent,
-    PeItCreateCtrlComponent,
-    PeItCreateFormComponent,
-    PeItAddFormComponent,
-    PeItRoleSetCreateCtrlComponent,
-    PeItRoleSetAddCtrlComponent,
-    PeItRoleSetEditableComponent,
-    PeItRoleSetFormComponent,
-    TeEntRoleSetCreateCtrlComponent,
-    TeEntRoleSetAddCtrlComponent,
-    TeEntRoleSetEditableComponent,
-    TeEntRoleSetFormComponent,
-    AppellationViewComponent,
-    AppellationCtrlComponent,
-    TeEntCreateCtrlComponent,
-    TeEntAddCtrlComponent,
-    TeEntEditableComponent,
-    LanguageViewComponent,
-    LanguageCtrlComponent,
-
     ProjectEntitiesComponent,
-    EntitySearchHitComponent
+    EntityEditorComponent,
+    TestComponent,
+  ],
+  providers: [
+    PeItService,
+    TeEntService,
+    ClassService,
+    PropertyService,
+    RoleService,
+    EprService,
+    RoleSetService,
   ]
 })
 export class Information2Module { }

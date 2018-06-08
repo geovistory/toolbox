@@ -1,5 +1,5 @@
 
-import { composeReducers, defaultFormReducer } from '@angular-redux/form';
+import { composeReducers, defaultFormReducer, FORM_CHANGED } from '@angular-redux/form';
 import { routerReducer } from '@angular-redux/router';
 import { createAccountReducer } from 'app/modules/account/api/reducers';
 import { createProjectsReducer } from '../../modules/projects/api/projects.reducers';

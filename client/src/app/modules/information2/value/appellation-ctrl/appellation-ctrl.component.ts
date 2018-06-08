@@ -1,19 +1,19 @@
-import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
-import { Component, forwardRef, OnInit, OnDestroy, Input, Output, EventEmitter } from "@angular/core";
-import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormGroup, FormControl, FormBuilder, Validators } from "@angular/forms";
-import { AppellationLabel } from "../../shared/appellation-label";
-import { Subscription } from "rxjs/Subscription";
-import { SlimLoadingBarService } from "ng2-slim-loading-bar";
-import { NgRedux } from "@angular-redux/store";
+import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, OnDestroy, Output } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
+import { InfAppellation, InfAppellationApi, InfRole } from 'app/core';
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { pick } from 'ramda';
-import { RoleDetail, AppeDetail } from "../../information.models";
-import { InfRole, InfAppellationApi, InfAppellation } from "app/core";
+import { Subscription } from 'rxjs/Subscription';
+
+import { AppellationLabel } from '../../shared/appellation-label';
 
 @AutoUnsubscribe()
 @Component({
   selector: 'gv-appellation-ctrl',
   templateUrl: './appellation-ctrl.component.html',
   styleUrls: ['./appellation-ctrl.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

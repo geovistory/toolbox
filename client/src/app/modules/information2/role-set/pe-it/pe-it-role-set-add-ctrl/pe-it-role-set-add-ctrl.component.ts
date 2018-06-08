@@ -1,5 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IAppState, InfEntityProjectRelApi, InfRoleApi } from 'app/core';
 
@@ -19,6 +19,7 @@ import { RoleSetActions } from '../../role-set.actions';
   animations: [
     slideInOut
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

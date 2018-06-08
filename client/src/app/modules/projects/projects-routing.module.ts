@@ -10,8 +10,11 @@ import { ProjectSettingsCollaboratorsComponent } from './components/project-sett
 import { ProjectSettingsDataComponent } from './components/project-settings-data/project-settings-data.component';
 import { ProxyRouteComponent } from 'app/shared/components/proxy-route';
 import { InformationModule } from '../information/information.module';
+import { Information2Module } from '../information2/information2.module';
 
 export function getInformationModule() { return InformationModule };
+
+export function getInformation2Module() { return Information2Module };
 
 
 const routes: Routes = [
@@ -23,6 +26,7 @@ const routes: Routes = [
     path: 'create',
     component: ProjectCreateComponent
   },
+
   {
     path: ':id',
     children: [
@@ -30,6 +34,7 @@ const routes: Routes = [
         path: '',
         component: ProjectDashboardComponent,
       },
+
       {
         path: 'edit',
         component: ProjectEditComponent,
@@ -46,6 +51,7 @@ const routes: Routes = [
               }
             ]
           },
+          //TEMP->
           {
             path: '',
             outlet: 'sources',
@@ -53,10 +59,23 @@ const routes: Routes = [
             children: [
               {
                 path: '',
-                loadChildren: '../sources/sources.module#SourcesModule'
+                loadChildren: '../information2/information2.module#Information2Module'
+                // line above instead of loadChildren: InformationModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116         
               }
             ]
-          }
+          },
+          // ->TEMP
+          // {
+          //   path: '',
+          //   outlet: 'sources',
+          //   component: ProxyRouteComponent,
+          //   children: [
+          //     {
+          //       path: '',
+          //       loadChildren: '../sources/sources.module#SourcesModule'
+          //     }
+          //   ]
+          // }
         ]
       },
       {

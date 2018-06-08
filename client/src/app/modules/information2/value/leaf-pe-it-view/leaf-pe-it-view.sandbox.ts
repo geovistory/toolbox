@@ -11,13 +11,13 @@ import { RoleSetService } from '../../shared/role-set.service';
 import { RoleService } from '../../shared/role.service';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { TeEntService } from '../../shared/te-ent.service';
-import { PeItEntityPreviewComponent } from './leaf-pe-it-view.component';
+import { LeafPeItViewComponent } from './leaf-pe-it-view.component';
 import { LeafPeItViewModule } from './leaf-pe-it-view-modal/leaf-pe-it-view-modal.module';
 
 
 
 
-export default sandboxOf(PeItEntityPreviewComponent, {
+export default sandboxOf(LeafPeItViewComponent, {
     imports: [
         InitStateModule,
         LeafPeItViewModule

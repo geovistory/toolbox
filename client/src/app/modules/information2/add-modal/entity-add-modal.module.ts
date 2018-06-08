@@ -11,8 +11,11 @@ import { EntityAddModalComponent } from './entity-add-modal/entity-add-modal.com
 import { EntityAddSearchExistingComponent } from './entity-add-search-existing/entity-add-search-existing.component';
 import { NgReduxFormModule } from '@angular-redux/form';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
-import { EntitySearchHitComponent } from '../components/entity-search-hit/entity-search-hit.component';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { EntitySearchHitModule } from '../components/entity-search-hit/entity-search-hit.module';
+import { EntityCreateNewActions } from './entity-add-create-new/entity-add-create-new.actions';
+import { EntityAddExistingActions } from './entity-add-add-existing/entity-add-add-existing.actions';
+import { StateCreatorService } from '../shared/state-creator.service';
 
 @NgModule({
     imports: [
@@ -22,7 +25,8 @@ import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
         ReactiveFormsModule,
         NgReduxFormModule,
         SlimLoadingBarModule,
-        NgbPaginationModule
+        NgbPaginationModule,
+        EntitySearchHitModule
     ],
     declarations: [
         EntityAddAddExistingComponent,
@@ -30,10 +34,12 @@ import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
         EntityAddCreateNewComponent,
         EntityAddModalComponent,
         EntityAddSearchExistingComponent,
-        EntitySearchHitComponent        
     ],
     providers: [
-        EntityAddModalService
+        EntityAddModalService,
+        EntityCreateNewActions,
+        EntityAddExistingActions,
+        StateCreatorService
     ],
     exports: [
     ],

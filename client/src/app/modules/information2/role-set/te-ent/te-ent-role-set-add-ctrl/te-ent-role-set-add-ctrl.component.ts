@@ -1,6 +1,6 @@
 
 import { NgRedux } from '@angular-redux/store';
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IAppState, InfEntityProjectRelApi, InfRoleApi, InfTemporalEntityApi } from 'app/core';
 
@@ -17,6 +17,7 @@ import { TeEntRoleSetBase } from '../te-ent-role-set.base';
   selector: 'gv-te-ent-role-set-add-ctrl',
   templateUrl: './te-ent-role-set-add-ctrl.component.html',
   styleUrls: ['./te-ent-role-set-add-ctrl.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     slideInOut
   ],

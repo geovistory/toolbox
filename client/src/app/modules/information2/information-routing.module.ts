@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { EntityEditorComponent } from './containers/entity-editor/entity.editor.component';
 import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
+import { TestComponent } from './test/test.component';
 
 
 const routes: Routes = [
@@ -13,9 +14,13 @@ const routes: Routes = [
       reduxPath: ['information']
     }
   },
+  // {
+  //   path: 'entity/:id',
+  //   component: EntityEditorComponent
+  // },
   {
-    path: 'entity/:id',
-    component: EntityEditorComponent
+    path: 'test',
+    component: TestComponent
   }
 ];
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
+import { Component, OnInit, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormControl, Validators, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WithSubStore, NgRedux } from '@angular-redux/store';
 import { PeItActions } from '../pe-it.actions';
@@ -9,6 +9,7 @@ import { PeItCtrlBase } from '../pe-it-ctrl.base';
   selector: 'gv-pe-it-add-ctrl',
   templateUrl: './pe-it-add-ctrl.component.html',
   styleUrls: ['./pe-it-add-ctrl.component.scss'],
+  changeDetection:ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

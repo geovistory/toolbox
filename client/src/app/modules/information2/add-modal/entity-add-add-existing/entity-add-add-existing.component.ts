@@ -1,17 +1,15 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { InfEntityProjectRel, InfPersistentItemApi, Project } from 'app/core';
+import { IAppState, InfEntityProjectRel, InfPersistentItemApi, Project } from 'app/core';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { Observable } from 'rxjs/Observable';
 
+import { Information, PeItDetail } from '../../information.models';
 import { EntityAddModalService, EntityAddModalState } from '../../shared/entity-add-modal.service';
 import { StateCreatorService } from '../../shared/state-creator.service';
-import { StateToDataService } from '../../shared/state-to-data.service';
 import { EntityAddExistingActions } from './entity-add-add-existing.actions';
-import { EntityAddExistingState, IEntityAddExistingState } from './entity-add-add-existing.model';
 import { entityAddExistingReducer } from './entity-add-add-existing.reducer';
-import { PeItDetail } from '../../information.models';
 
 
 @WithSubStore({
@@ -25,25 +23,23 @@ import { PeItDetail } from '../../information.models';
 })
 export class EntityAddAddExistingComponent implements OnInit {
 
-  readonly basePath = ['information', 'entityAddExisiting']
+  readonly basePath = ['information']
   getBasePath = () => this.basePath
-  localStore: ObservableStore<IEntityAddExistingState>;
+  localStore: ObservableStore<Information>;
 
 
-  @select() peItState$: Observable<PeItDetail>;
+  @select() _peIt_add_form$: Observable<PeItDetail>;
 
   loading;
 
   pkEntity: number;
 
   constructor(
-    private persistentItemApi: InfPersistentItemApi,
     private modalService: EntityAddModalService,
-    private activeModal: NgbActiveModal,
     private slimLoadingBarService: SlimLoadingBarService,
-    private ngRedux: NgRedux<IEntityAddExistingState>,
+    private ngRedux: NgRedux<IAppState>,
     private actions: EntityAddExistingActions,
-    private stateCreator:StateCreatorService
+    private stateCreator: StateCreatorService
   ) {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, entityAddExistingReducer);
 
@@ -55,25 +51,26 @@ export class EntityAddAddExistingComponent implements OnInit {
 
 
     this.ngRedux.select<Project>('activeProject').subscribe(project => {
-        this.stateCreator.initializePeItState(this.pkEntity, project.pk_project).subscribe(peItState => {
-          let wrapper = new EntityAddExistingState({
-            peItState: peItState
-          });
+      this.stateCreator.initializePeItState(this.pkEntity, project.pk_project).subscribe(peItDetail => {
 
-          this.localStore.dispatch(this.actions.entityAddExistingInitialized(wrapper));
+        this.localStore.dispatch(this.actions.entityAddExistingInitialized({
+          _peIt_add_form: peItDetail
+        } as Information));
 
-          this.modalService.addButtonVisible = true;
+        this.modalService.addButtonVisible = true;
 
-          //TEMP
-          let epr= new InfEntityProjectRel;
-          epr.fk_project = project.pk_project;
-          this.peItState$.subscribe(d=> this.modalService.peItStateToAdd = d)
+        //TEMP
+        let epr = new  InfEntityProjectRel;
+        epr.fk_project = project.pk_project;
+        this._peIt_add_form$.subscribe(d => {
+          this.modalService.peItToAdd = d.form.peIt
         })
+      })
     })
 
   }
-  
-  ngOnDestroy(){
+
+  ngOnDestroy() {
     this.localStore.dispatch(this.actions.entityAddExistingDestroyed())
   }
 

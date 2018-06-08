@@ -1,5 +1,5 @@
 import { NgRedux, WithSubStore } from '@angular-redux/store';
-import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { IAppState, InfRole } from 'app/core';
@@ -9,7 +9,6 @@ import { ReplaySubject, Subscription } from 'rxjs';
 import { PeItDetail } from '../../information.models';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { StateToDataService } from '../../shared/state-to-data.service';
-import { LeafPeItViewComponent } from './leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
 import { LeafPeItActions } from './leaf-pe-it-view.actions';
 import { leafPeItReducer } from './leaf-pe-it-view.reducer';
 
@@ -23,15 +22,16 @@ import { leafPeItReducer } from './leaf-pe-it-view.reducer';
   selector: 'gv-leaf-pe-it-view',
   templateUrl: './leaf-pe-it-view.component.html',
   styleUrls: ['./leaf-pe-it-view.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => PeItEntityPreviewComponent),
+      useExisting: forwardRef(() => LeafPeItViewComponent),
       multi: true
     }
   ]
 })
-export class PeItEntityPreviewComponent extends LeafPeItActions implements OnInit, OnDestroy {
+export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, OnDestroy {
 
   @Input() pkEntity: number;
   @Input() isCircular: boolean;

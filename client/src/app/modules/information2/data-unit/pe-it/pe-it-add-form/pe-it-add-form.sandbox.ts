@@ -26,6 +26,7 @@ import { TeEntActions } from '../../te-ent/te-ent.actions';
 import { PeItAddCtrlComponent } from '../pe-it-add-ctrl/pe-it-add-ctrl.component';
 import { PeItActions } from '../pe-it.actions';
 import { PeItAddFormComponent } from './pe-it-add-form.component';
+import { NgReduxFormConnectModule } from '@angular-redux/form';
 
 export default sandboxOf(PeItAddFormComponent, {
   imports: [
@@ -34,7 +35,7 @@ export default sandboxOf(PeItAddFormComponent, {
     KeysModule,
     BrowserAnimationsModule,
     PeItEntityPreviewModule,
-
+    NgReduxFormConnectModule
   ],
   declarations: [
     PeItAddCtrlComponent,
@@ -64,6 +65,7 @@ export default sandboxOf(PeItAddFormComponent, {
 })
   .add('PeIt add form', {
     context: {
+      f: {},
       basePath: ['_peIt_add_form'],
       pkProject: -1, // use a pk of a project that has the pkEntity not yet added 
       pkEntity: 152831,
@@ -83,9 +85,23 @@ export default sandboxOf(PeItAddFormComponent, {
 
         <gv-init-state [initState]="state"></gv-init-state>
 
-        <gv-pe-it-add-form [basePath]="basePath"></gv-pe-it-add-form>
-        
+        <gv-pe-it-add-form [basePath]="basePath" (formChange)="f = $event"></gv-pe-it-add-form>
+
       </div>
+
+      <div>
+        <p>Form.valid: {{f.valid | json}}</p>
+
+        <p>Form.touched: {{f.touched | json}}</p>
+
+        <p>Form.dirty: {{f.dirty | json}}</p>
+
+        <p>Form.value </p>
+        <pre>
+            {{f.value | json}}
+        </pre>
+
+    </div>
     </div>
     `
   })

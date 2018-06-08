@@ -1,4 +1,5 @@
 import { InfPersistentItem, DfhClass, DfhProperty, InfRole, InfTemporalEntity, InfAppellation } from "app/core";
+import { FormGroup } from "@angular/forms";
 
 /**
  * Root state for Information Module
@@ -37,6 +38,7 @@ export interface DataUnit {
     fkClass?: number;
     dfhClass?: DfhClass;
 
+
     /** gui */
     label?: string;
     toggle?: CollapsedExpanded;
@@ -58,6 +60,8 @@ export interface PeItDetail extends DataUnit {
 
     // record
     peIt?: InfPersistentItem;
+
+    form?;
 
     /** display data */
     ontoInfoVisible?: boolean;

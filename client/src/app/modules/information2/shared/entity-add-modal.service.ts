@@ -67,7 +67,7 @@ export class EntityAddModalService {
   pkEntity: number;
 
   // The persistent Item to Add
-  peItStateToAdd: PeItDetail;
+  peItToAdd: InfPersistentItem;
 
   // The persistent item to create
   peItToCreate: InfPersistentItem;

@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
-import { InfPersistentItem } from 'app/core';
-import { IEntityAddExistingState } from './entity-add-add-existing.model';
+import { Information } from '../../information.models';
 
 // Flux-standard-action gives us stronger typing of our actions.
-type Payload = IEntityAddExistingState;
+type Payload = Information;
 interface MetaData { };
 export type EntityAddExistingAction = FluxStandardAction<Payload, MetaData>;
 

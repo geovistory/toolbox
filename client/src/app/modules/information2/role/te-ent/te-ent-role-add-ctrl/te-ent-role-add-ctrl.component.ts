@@ -1,5 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { RoleDetail } from '../../../information.models';
@@ -10,6 +10,7 @@ import { RoleAddCtrlBase } from '../../role-add-ctrl.base';
   selector: 'gv-te-ent-role-add-ctrl',
   templateUrl: './te-ent-role-add-ctrl.component.html',
   styleUrls: ['./te-ent-role-add-ctrl.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -28,6 +29,7 @@ export class TeEntRoleAddCtrlComponent extends RoleAddCtrlBase {
     protected fb: FormBuilder
   ) {
     super(ngRedux, fb)
+    console.log('TeEntRoleAddCtrlComponent')
   }
 
 }
