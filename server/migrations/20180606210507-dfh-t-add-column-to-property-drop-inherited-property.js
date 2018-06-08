@@ -22,6 +22,11 @@ exports.up = function(db, callback) {
     ADD COLUMN dfh_fk_property_of_origin INTEGER;
   ALTER TABLE data_for_history.property_vt
     ADD COLUMN dfh_fk_property_of_origin INTEGER;
+
+  -- this column name has to be adapted to the new API labelling
+  ALTER TABLE data_for_history.property_profile_view RENAME COLUMN dfh_pk_inherited_property TO dfh_fk_property_of_origin;
+  ALTER TABLE data_for_history.property_profile_view_vt RENAME COLUMN dfh_pk_inherited_property TO dfh_fk_property_of_origin;
+
   -- the data_for_history.inherited_property isn't any more in use, even not in OntoME
   DROP TABLE IF EXISTS data_for_history.inherited_property CASCADE;
   DROP TABLE IF EXISTS data_for_history.inherited_property_vt CASCADE;
@@ -39,6 +44,9 @@ exports.down = function(db, callback) {
       DROP COLUMN dfh_fk_property_of_origin;
     ALTER TABLE data_for_history.property_vt
         DROP COLUMN dfh_fk_property_of_origin;
+
+    ALTER TABLE data_for_history.property_profile_view RENAME COLUMN dfh_fk_property_of_origin TO dfh_pk_inherited_property;
+    ALTER TABLE data_for_history.property_profile_view_vt RENAME COLUMN dfh_fk_property_of_origin TO dfh_pk_inherited_property;
 
     CREATE TABLE data_for_history.inherited_property (
       dfh_pk_inherited_property         integer,
