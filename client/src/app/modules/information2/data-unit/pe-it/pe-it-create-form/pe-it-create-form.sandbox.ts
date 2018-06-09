@@ -28,6 +28,8 @@ import { AppellationLabelTokenComponent } from "../../../value/appellation-ctrl/
 import { AppellationLabelEditorComponent } from "../../../value/appellation-ctrl/appellation-label-editor/appellation-label-editor.component";
 import { AppellationService } from "../../../shared/appellation.service";
 import { InitStateModule } from "app/shared/components/init-state/init-state.module";
+import { LanguageCtrlComponent } from "../../../value/language-ctrl/language-ctrl.component";
+import { LanguageSearchTypeaheadModule } from "app/shared";
 
 
 export default sandboxOf(PeItCreateFormComponent, {
@@ -35,7 +37,8 @@ export default sandboxOf(PeItCreateFormComponent, {
     InitStateModule,
     NgReduxFormModule,
     KeysModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    LanguageSearchTypeaheadModule
   ],
   declarations: [
     PeItCreateCtrlComponent,
@@ -47,6 +50,8 @@ export default sandboxOf(PeItCreateFormComponent, {
     AppellationCtrlComponent,
     AppellationLabelEditorComponent,
     AppellationLabelTokenComponent,
+    LanguageCtrlComponent
+    
   ],
   providers: [
     PeItActions,

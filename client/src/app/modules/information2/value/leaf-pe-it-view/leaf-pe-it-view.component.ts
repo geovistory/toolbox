@@ -81,10 +81,14 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
 
   ngOnInit() {
 
+
     console.log('LeafPeItViewComponent onInit', this.pkEntity)
-    this.initPeItState()
-    
-    
+    const peItDetail = this.ngRedux.configureSubStore(this.basePath, leafPeItReducer).getState();
+    if (!peItDetail.peIt)
+      this.initPeItState();
+    else
+      this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(peItDetail._roleSet_list);
+
     // this.subs.push(this.ngRedux.select<PeItDetail>(this.basePath).subscribe(d => {
     //   this.peItState = d;
     //   if (d.pkEntity)
