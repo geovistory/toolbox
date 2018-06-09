@@ -6,43 +6,25 @@ import { InitStateModule } from 'app/shared/components/init-state/init-state.mod
 import { KeysModule } from 'app/shared/pipes/keys.module';
 
 import {
-    PeItRoleSetEditableComponent,
-} from '../../../role-set/pe-it/pe-it-role-set-editable/pe-it-role-set-editable.component';
+    PeItRoleSetAddCtrlComponent,
+} from '../../../role-set/pe-it/pe-it-role-set-add-ctrl/pe-it-role-set-add-ctrl.component';
 import { RoleSetActions } from '../../../role-set/role-set.actions';
 import {
-    TeEntRoleSetEditableComponent,
-} from '../../../role-set/te-ent/te-ent-role-set-editable/te-ent-role-set-editable.component';
-import { PeItRoleEditableComponent } from '../../../role/pe-it/pe-it-role-editable/pe-it-role-editable.component';
+    TeEntRoleSetAddCtrlComponent,
+} from '../../../role-set/te-ent/te-ent-role-set-add-ctrl/te-ent-role-set-add-ctrl.component';
+import { PeItRoleAddCtrlComponent } from '../../../role/pe-it/pe-it-role-add-ctrl/pe-it-role-add-ctrl.component';
 import { RoleActions } from '../../../role/role.actions';
-import { TeEntRoleEditableComponent } from '../../../role/te-ent/te-ent-role-editable/te-ent-role-editable.component';
-import { ClassService } from '../../../shared/class.service';
-import { EprService } from '../../../shared/epr.service';
-import { PeItService } from '../../../shared/pe-it.service';
-import { PropertyService } from '../../../shared/property.service';
+import { TeEntRoleAddCtrlComponent } from '../../../role/te-ent/te-ent-role-add-ctrl/te-ent-role-add-ctrl.component';
+import { AppellationService } from '../../../shared/appellation.service';
 import { RoleSetService } from '../../../shared/role-set.service';
 import { RoleService } from '../../../shared/role.service';
-import { StateCreatorService } from '../../../shared/state-creator.service';
-import { TeEntService } from '../../../shared/te-ent.service';
-import { TeEntEditableComponent } from '../../te-ent/te-ent-editable/te-ent-editable.component';
-import { TeEntActions } from '../../te-ent/te-ent.actions';
-import { PeItActions } from '../pe-it.actions';
 import { AppellationViewComponent } from '../../../value/appellation-view/appellation-view.component';
-import { AppellationService } from '../../../shared/appellation.service';
 import { LanguageViewComponent } from '../../../value/language-view/language-view.component';
-import { LeafPeItViewComponent } from '../../../value/leaf-pe-it-view/leaf-pe-it-view.component';
-import { PeItEntityPreviewModule } from '../../../value/leaf-pe-it-view/leaf-pe-it-view.module';
-import { PeItRoleSetFormComponent } from '../../../role-set/pe-it/pe-it-role-set-form/pe-it-role-set-form.component';
-import { TeEntRoleSetCreateCtrlComponent } from '../../../role-set/te-ent/te-ent-role-set-create-ctrl/te-ent-role-set-create-ctrl.component';
-import { TeEntRoleCreateCtrlComponent } from '../../../role/te-ent/te-ent-role-create-ctrl/te-ent-role-create-ctrl.component';
-import { TeEntCreateCtrlComponent } from '../../te-ent/te-ent-create-ctrl/te-ent-create-ctrl.component';
-import { PeItRoleCreateCtrlComponent } from '../../../role/pe-it/pe-it-role-create-ctrl/pe-it-role-create-ctrl.component';
-import { AppellationCtrlModule } from '../../../value/appellation-ctrl/appellation-ctrl.module';
-import { PeItAddCtrlComponent } from '../pe-it-add-ctrl/pe-it-add-ctrl.component';
-import { PeItRoleSetAddCtrlComponent } from '../../../role-set/pe-it/pe-it-role-set-add-ctrl/pe-it-role-set-add-ctrl.component';
-import { PeItRoleAddCtrlComponent } from '../../../role/pe-it/pe-it-role-add-ctrl/pe-it-role-add-ctrl.component';
+import { LeafPeItViewModule } from '../../../value/leaf-pe-it-view/leaf-pe-it-view.module';
 import { TeEntAddCtrlComponent } from '../../te-ent/te-ent-add-ctrl/te-ent-add-ctrl.component';
-import { TeEntRoleSetAddCtrlComponent } from '../../../role-set/te-ent/te-ent-role-set-add-ctrl/te-ent-role-set-add-ctrl.component';
-import { TeEntRoleAddCtrlComponent } from '../../../role/te-ent/te-ent-role-add-ctrl/te-ent-role-add-ctrl.component';
+import { TeEntActions } from '../../te-ent/te-ent.actions';
+import { PeItAddCtrlComponent } from '../pe-it-add-ctrl/pe-it-add-ctrl.component';
+import { PeItActions } from '../pe-it.actions';
 
 export default sandboxOf(PeItAddCtrlComponent, {
     imports: [
@@ -50,7 +32,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
         InitStateModule,
         KeysModule,
         BrowserAnimationsModule,
-        PeItEntityPreviewModule,
+        LeafPeItViewModule,
 
     ],
     declarations: [

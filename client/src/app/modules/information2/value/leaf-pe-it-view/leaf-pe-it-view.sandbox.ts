@@ -12,7 +12,7 @@ import { RoleService } from '../../shared/role.service';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { TeEntService } from '../../shared/te-ent.service';
 import { LeafPeItViewComponent } from './leaf-pe-it-view.component';
-import { LeafPeItViewModule } from './leaf-pe-it-view-modal/leaf-pe-it-view-modal.module';
+import { LeafPeItViewModule } from './leaf-pe-it-view.module';
 
 
 
@@ -35,7 +35,8 @@ export default sandboxOf(LeafPeItViewComponent, {
         TeEntService,
         EprService,
         AppellationService
-    ]
+    ],
+    declareComponent: false
 })
     .add('Leaf-PeIt | View not Circular ', {
         context: {

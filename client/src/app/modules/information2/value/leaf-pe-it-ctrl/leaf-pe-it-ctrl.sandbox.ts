@@ -1,20 +1,17 @@
 import { sandboxOf } from 'angular-playground';
 import { InfRole } from 'app/core';
 
-import { LeafPeItCtrlComponent } from './leaf-pe-it-ctrl.component';
-import { NgReduxModule } from '@angular-redux/store';
-import { EntityAddModalModule } from '../../add-modal/entity-add-modal.module';
-import { PeItAddFormModule } from '../../data-unit/pe-it/pe-it-add-form/pe-it-add-form.module';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
+import { LeafPeItCtrlComponent } from './leaf-pe-it-ctrl.component';
+import { LeafPeItCtrlModule } from './leaf-pe-it-ctrl.module';
 
 
 
 export default sandboxOf(LeafPeItCtrlComponent, {
+    declareComponent: false,
     imports: [
         InitStateModule,
-        NgReduxModule,
-        EntityAddModalModule,
-        PeItAddFormModule
+        LeafPeItCtrlModule
     ],
     declarations: [
 
@@ -25,9 +22,9 @@ export default sandboxOf(LeafPeItCtrlComponent, {
 })
     .add('Leaf PeIt Ctrl ', {
         context: {
-            initState:{
-                activeProject:{
-                    pk_project:50
+            initState: {
+                activeProject: {
+                    pk_project: 50
                 }
             },
             model: {

@@ -11,7 +11,7 @@ import { PeItDetail } from '../../../information.models';
   templateUrl: './leaf-pe-it-view-modal.component.html',
   styleUrls: ['./leaf-pe-it-view-modal.component.scss']
 })
-export class LeafPeItViewComponent implements OnInit {
+export class LeafPeItViewModalComponent implements OnInit {
 
   @Input() parentPath: string[];
   @Input() isInProject:boolean;

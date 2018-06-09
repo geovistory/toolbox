@@ -1,24 +1,16 @@
-import { sandboxOf } from "angular-playground";
-import { AppellationCtrlComponent } from "./appellation-ctrl.component";
-import { FormsModule } from "@angular/forms";
-import { AppellationLabelEditorComponent } from "./appellation-label-editor/appellation-label-editor.component";
-import { AppellationLabelTokenComponent } from "./appellation-label-token/appellation-label-token.component";
-import { AppellationService } from "../../shared/appellation.service";
-import { InfRole } from "app/core";
+import { sandboxOf } from 'angular-playground';
+import { InfRole } from 'app/core';
+
+import { Information2Module } from '../../information2.module';
+import { AppellationCtrlComponent } from './appellation-ctrl.component';
 
 
 
 export default sandboxOf(AppellationCtrlComponent, {
     imports: [
-        FormsModule,
+        Information2Module
     ],
-    declarations: [
-        AppellationLabelEditorComponent,
-        AppellationLabelTokenComponent
-    ],
-    providers: [
-        AppellationService
-    ]
+    declareComponent:false
 })
     .add('Appellation Ctrl | New ', {
         context: {

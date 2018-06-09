@@ -1,21 +1,15 @@
-import { FormsModule } from '@angular/forms';
 import { sandboxOf } from 'angular-playground';
 import { InfRole } from 'app/core';
+
 import { LanguageCtrlComponent } from './language-ctrl.component';
-import { LanguageSearchTypeaheadModule } from 'app/shared';
+import { LanguageCtrlModule } from './language-ctrl.module';
 
 
 
 export default sandboxOf(LanguageCtrlComponent, {
+    declareComponent:false,
     imports: [
-        FormsModule,
-        LanguageSearchTypeaheadModule
-    ],
-    declarations: [
-      
-    ],
-    providers: [
-      
+        LanguageCtrlModule
     ]
 })
     .add('Language Ctrl | Select ', {

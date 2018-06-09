@@ -20,7 +20,7 @@ import { RoleSetService } from '../../../shared/role-set.service';
 import { RoleService } from '../../../shared/role.service';
 import { AppellationViewComponent } from '../../../value/appellation-view/appellation-view.component';
 import { LanguageViewComponent } from '../../../value/language-view/language-view.component';
-import { PeItEntityPreviewModule } from '../../../value/leaf-pe-it-view/leaf-pe-it-view.module';
+import { LeafPeItViewModule } from '../../../value/leaf-pe-it-view/leaf-pe-it-view.module';
 import { TeEntAddCtrlComponent } from '../../te-ent/te-ent-add-ctrl/te-ent-add-ctrl.component';
 import { TeEntActions } from '../../te-ent/te-ent.actions';
 import { PeItAddCtrlComponent } from '../pe-it-add-ctrl/pe-it-add-ctrl.component';
@@ -34,7 +34,7 @@ export default sandboxOf(PeItAddFormComponent, {
     InitStateModule,
     KeysModule,
     BrowserAnimationsModule,
-    PeItEntityPreviewModule,
+    LeafPeItViewModule,
     NgReduxFormConnectModule
   ],
   declarations: [

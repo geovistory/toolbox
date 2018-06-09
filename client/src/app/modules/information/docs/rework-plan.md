@@ -59,20 +59,22 @@ create forms
 * * ok – debug multiple inits
 * * ok - debug view update on display standard change
 * * ok - filtering of pe-it object
-* * persist the added entity!!
+* * ok – persist the added entity!!
+
+* doing – pe-it-role-set-form
+* * add a sandbox
+* * make the add selected work with api call!
+* * make the create new work with api call!
+
+* doing – te-ent-role-set-form
+* * add a sandbox
+* * make the add selected work with api call!
+* * make the create new work with api call!
 
 * doing – pe-it-create-form
 * * call api to init a create state
 * * Add functionality for adding/removing roles and rolesets 
 * * persist the new entity!!
-
-* doing – pe-it-role-set-form
-* * persist the selcted existing roles
-* * create the new roles
-
-* doing – te-ent-role-set-form
-* * persist the selcted existing roles
-* * create the new roles
 
 
 View Value components

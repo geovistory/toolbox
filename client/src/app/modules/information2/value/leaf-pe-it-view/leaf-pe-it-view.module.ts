@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { LeafPeItViewComponent } from './leaf-pe-it-view.component';
+import { LeafPeItViewModalComponent } from './leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
 
 
 
@@ -12,7 +13,7 @@ import { LeafPeItViewComponent } from './leaf-pe-it-view.component';
     ],
     declarations: [
         LeafPeItViewComponent,
-        LeafPeItViewComponent
+        LeafPeItViewModalComponent
     ],
     providers: [
         
@@ -21,7 +22,7 @@ import { LeafPeItViewComponent } from './leaf-pe-it-view.component';
         LeafPeItViewComponent
     ],
     entryComponents:[
-        LeafPeItViewComponent
+        LeafPeItViewModalComponent
     ]
 })
-export class PeItEntityPreviewModule { }
+export class LeafPeItViewModule { }

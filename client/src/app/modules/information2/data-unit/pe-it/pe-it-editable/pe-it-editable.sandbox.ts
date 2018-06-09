@@ -43,7 +43,7 @@ import { TeEntService } from '../../../shared/te-ent.service';
 import { AppellationCtrlModule } from '../../../value/appellation-ctrl/appellation-ctrl.module';
 import { AppellationViewComponent } from '../../../value/appellation-view/appellation-view.component';
 import { LanguageViewComponent } from '../../../value/language-view/language-view.component';
-import { PeItEntityPreviewModule } from '../../../value/leaf-pe-it-view/leaf-pe-it-view.module';
+import { LeafPeItViewModule } from '../../../value/leaf-pe-it-view/leaf-pe-it-view.module';
 import { TeEntAddCtrlComponent } from '../../te-ent/te-ent-add-ctrl/te-ent-add-ctrl.component';
 import { TeEntCreateCtrlComponent } from '../../te-ent/te-ent-create-ctrl/te-ent-create-ctrl.component';
 import { TeEntEditableComponent } from '../../te-ent/te-ent-editable/te-ent-editable.component';
@@ -58,7 +58,7 @@ export default sandboxOf(PeItEditableComponent, {
     InitStateModule,
     KeysModule,
     BrowserAnimationsModule,
-    PeItEntityPreviewModule,
+    LeafPeItViewModule,
     AppellationCtrlModule,
     LanguageSearchTypeaheadModule
   ],
