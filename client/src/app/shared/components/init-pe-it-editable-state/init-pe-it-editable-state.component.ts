@@ -17,9 +17,6 @@ export class InitPeItEditableStateComponent implements OnInit {
   constructor(private stateCreator: StateCreatorService) { }
 
   ngOnInit() {
-    
-    console.log([this.pkEntity, this.pkProject])
-
     this.stateCreator.initializePeItState(this.pkEntity, this.pkProject).subscribe(peItDetail => {
       this.stateCreated.emit(peItDetail);
     })

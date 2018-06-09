@@ -2,14 +2,14 @@ import { Component, OnInit, forwardRef, ChangeDetectionStrategy } from '@angular
 import { FormBuilder, FormControl, Validators, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WithSubStore, NgRedux } from '@angular-redux/store';
 import { PeItActions } from '../pe-it.actions';
-import { InfPersistentItem, InfTemporalEntity, U } from 'app/core';
+import { InfPersistentItem, InfTemporalEntity, U, InfEntityProjectRel } from 'app/core';
 import { PeItCtrlBase } from '../pe-it-ctrl.base';
 
 @Component({
   selector: 'gv-pe-it-add-ctrl',
   templateUrl: './pe-it-add-ctrl.component.html',
   styleUrls: ['./pe-it-add-ctrl.component.scss'],
-  changeDetection:ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -30,6 +30,8 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
 
   ) {
     super(ngRedux, actions, fb)
+    console.log('PeItAddCtrlComponent')
+
   }
 
 
@@ -62,7 +64,7 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
       this.formGroup.valueChanges.subscribe(val => {
 
         // build a peIt with all pi_roles given by the form's controls 
-        let peIt = new InfPersistentItem(this.peIt);
+        let peIt = new InfPersistentItem(this.peItState.peIt);
 
         peIt.pi_roles = [];
         Object.keys(this.formGroup.controls).forEach(key => {
@@ -70,6 +72,13 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
             peIt.pi_roles = [...peIt.pi_roles, ...this.formGroup.get(key).value]
           }
         })
+
+
+        // create the epr
+        peIt.entity_version_project_rels = [{
+          is_in_project: true,
+        } as InfEntityProjectRel];
+
 
         // try to retrieve a appellation label
         const displayAppeUse: InfTemporalEntity = U.getDisplayAppeLabelOfPeIt(peIt)

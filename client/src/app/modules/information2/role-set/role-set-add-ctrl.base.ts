@@ -50,17 +50,17 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
         if (this.roleSetState._role_list[key]) {
           let role = this.roleSetState._role_list[key].role;
 
-          // if this role is most used to create the display label of range 
-          const is_standard_in_project = (role.pk_entity == favoriteDisplayForRangePk);
+          if (this.roleSetState._role_list[key].isCircular !== true) {
+            // if this role is most used to create the display label of range 
+            const is_standard_in_project = (role.pk_entity == favoriteDisplayForRangePk);
 
-          // prepare the role for relation with project
-          const epr = role.entity_version_project_rels ?
-            role.entity_version_project_rels[0] : {
-              is_in_project: true,
-              is_standard_in_project
-            } as InfEntityProjectRel
-
-          role.entity_version_project_rels = [epr];
+            const epr = role.entity_version_project_rels ?
+              role.entity_version_project_rels[0] : {
+                is_in_project: true,
+                is_standard_in_project
+              } as InfEntityProjectRel
+            role.entity_version_project_rels = [epr];
+          }
 
           const roleCtrl = new FormControl(role, [Validators.required]);
           this.formGroup.addControl(key, roleCtrl)

@@ -245,7 +245,6 @@ export class StateToDataService {
           if ((!r.isOutgoing && r.isDisplayRoleForRange) || (r.isOutgoing && r.isDisplayRoleForDomain)) {
             if (r._teEnt && r._teEnt._roleSet_list){
               var label = StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(r._teEnt._roleSet_list);
-              console.log(label)
               return label;
             }
           }

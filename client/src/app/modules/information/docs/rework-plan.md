@@ -54,12 +54,17 @@ Create Value components
 * time-primitive-ctrl
 
 create forms
+
+* doing – pe-it-add-form
+* * ok – debug multiple inits
+* * ok - debug view update on display standard change
+* * ok - filtering of pe-it object
+* * persist the added entity!!
+
 * doing – pe-it-create-form
 * * call api to init a create state
 * * Add functionality for adding/removing roles and rolesets 
 * * persist the new entity!!
-
-
 
 * doing – pe-it-role-set-form
 * * persist the selcted existing roles

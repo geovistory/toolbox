@@ -13,10 +13,11 @@
 
   <ng-container *ngTemplateOutlet="propertiesHeader"></ng-container>
 
-  <form #f="ngForm" ngSubmit="submit()" [connect]="basePath.concat('form')">
+  <form #f="ngForm" (ngSubmit)="submit()">
     <gv-pe-it-add-ctrl [basePath]="basePath" name="peIt" [(ngModel)]="peIt" #val="ngModel" required></gv-pe-it-add-ctrl>
     
-    <button class="btn btn-primary" type="submit" [disabled]="f.invalid && f.submitted">Add</button>
+    <button *ngIf="addBtn" class="btn btn-primary" type="submit" [disabled]="f.invalid && f.submitted">Add</button>
+    <button *ngIf="cancelBtn" class="btn btn-outline-secondary" type="button" (click)="cancel.emit()">Cancel</button>
 
   </form>
 

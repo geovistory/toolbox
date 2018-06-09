@@ -49,6 +49,7 @@ export class PeItRoleSetAddCtrlComponent extends RoleSetAddCtrlBase {
     protected fb: FormBuilder
   ) {
     super(eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    console.log('PeItRoleSetAddCtrlComponent')
   }
 
 

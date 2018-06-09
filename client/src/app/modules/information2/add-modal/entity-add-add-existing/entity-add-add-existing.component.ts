@@ -10,6 +10,7 @@ import { EntityAddModalService, EntityAddModalState } from '../../shared/entity-
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { EntityAddExistingActions } from './entity-add-add-existing.actions';
 import { entityAddExistingReducer } from './entity-add-add-existing.reducer';
+import { NgForm } from '@angular/forms';
 
 
 @WithSubStore({
@@ -50,24 +51,30 @@ export class EntityAddAddExistingComponent implements OnInit {
     this.modalService.previousState = EntityAddModalState[1];
 
 
-    this.ngRedux.select<Project>('activeProject').subscribe(project => {
-      this.stateCreator.initializePeItState(this.pkEntity, project.pk_project).subscribe(peItDetail => {
+    this.stateCreator.initializePeItState(
+      this.pkEntity,
+      this.ngRedux.getState().activeProject.pk_project
+    ).subscribe(peItDetail => {
 
-        this.localStore.dispatch(this.actions.entityAddExistingInitialized({
-          _peIt_add_form: peItDetail
-        } as Information));
+      this.localStore.dispatch(this.actions.entityAddExistingInitialized({
+        _peIt_add_form: peItDetail
+      } as Information));
 
-        this.modalService.addButtonVisible = true;
+      // this.modalService.addButtonVisible = true;
 
-        //TEMP
-        let epr = new  InfEntityProjectRel;
-        epr.fk_project = project.pk_project;
-        this._peIt_add_form$.subscribe(d => {
-          this.modalService.peItToAdd = d.form.peIt
-        })
-      })
+      // //TEMP
+      // let epr = new  InfEntityProjectRel;
+      // epr.fk_project = project.pk_project;
+      // this._peIt_add_form$.subscribe(d => {
+      //   this.modalService.peItToAdd = d.form.peIt
+      // })
     })
 
+  }
+
+  formChange(form:NgForm){
+    this.modalService.addButtonVisible = form.valid;
+    this.modalService.peItToAdd = form.value.peIt;
   }
 
   ngOnDestroy() {

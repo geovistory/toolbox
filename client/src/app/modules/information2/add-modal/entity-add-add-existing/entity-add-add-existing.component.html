@@ -1,4 +1,4 @@
 
-<gv-pe-it-add-form  *ngIf="_peIt_add_form$|async" [basePath]="basePath.concat('_peIt_add_form')"></gv-pe-it-add-form>
+<gv-pe-it-add-form  *ngIf="_peIt_add_form$|async" [basePath]="basePath.concat('_peIt_add_form')" (formChange)="formChange($event)"></gv-pe-it-add-form>
 
 

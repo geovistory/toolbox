@@ -132,7 +132,7 @@ export class U {
     * @returns InfTemporalEntity that has a appellation label for display
     */
     static getFirstAppeTeEntOfPeIt(peIt: InfPersistentItem): InfTemporalEntity | null {
-        if (!peIt) return null
+        if (!peIt ||  !peIt.pi_roles) return null
 
         const roleToAppeUse: InfRole = peIt.pi_roles.find(
             role => (

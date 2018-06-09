@@ -1,5 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
-import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { RoleDetail } from '../../../information.models';
@@ -19,13 +19,18 @@ import { RoleAddCtrlBase } from '../../role-add-ctrl.base';
   ]
 })
 export class PeItRoleAddCtrlComponent extends RoleAddCtrlBase {
-
+  
   constructor(
     protected ngRedux: NgRedux<RoleDetail>,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    protected ref: ChangeDetectorRef
   ) {
-    super(ngRedux, fb)
+    super(ngRedux, fb, ref)
+    console.log('PeItRoleAddCtrlComponent')
+    
   }
-
+  
+  initRoleAddCtrlBaseChild(): void {
+  }
 
 }

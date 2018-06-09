@@ -49,6 +49,7 @@ export class TeEntRoleSetAddCtrlComponent extends TeEntRoleSetBase {
     teEntApi: InfTemporalEntityApi
   ) {
     super(eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb, teEntApi)
+    console.log('TeEntRoleSetAddCtrlComponent')
   }
 
 

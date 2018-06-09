@@ -1,5 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
-import { Component, forwardRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, forwardRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { RoleDetail } from '../../../information.models';
@@ -21,14 +21,16 @@ import { RoleAddCtrlBase } from '../../role-add-ctrl.base';
 })
 export class TeEntRoleAddCtrlComponent extends RoleAddCtrlBase {
 
-  init(): void {
-
+  initRoleAddCtrlBaseChild(): void {
   }
+
+
   constructor(
     protected ngRedux: NgRedux<RoleDetail>,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    protected ref: ChangeDetectorRef
   ) {
-    super(ngRedux, fb)
+    super(ngRedux, fb, ref)
     console.log('TeEntRoleAddCtrlComponent')
   }
 

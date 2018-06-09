@@ -1,9 +1,6 @@
-import { Injectable, EventEmitter } from '@angular/core';
-import { InfEntityProjectRel, DfhClass, InfPersistentItem,  InfEntityProjectRelApi, InfPersistentItemApi, IAppState } from 'app/core';
-import { StateToDataService } from './state-to-data.service';
-import { PeItDetail } from '../information.models';
 import { NgRedux } from '@angular-redux/store';
-import { Observable, Subject } from 'rxjs';
+import { EventEmitter, Injectable } from '@angular/core';
+import { DfhClass, IAppState, InfEntityProjectRel, InfPersistentItem, InfPersistentItemApi } from 'app/core';
 
 
 export enum EntityAddModalState {
@@ -80,20 +77,16 @@ export class EntityAddModalService {
   createButtonVisible: boolean;
 
   constructor(
-    private entityProjectRelApi: InfEntityProjectRelApi,
     private ngRedux: NgRedux<IAppState>,
     private persistentItemApi: InfPersistentItemApi
   ) { }
 
   changePeItProjectRelation() {
-
-    console.error('New implementation needed: Use the form value of pe-it-add-form instead of state and peItStateToPeItToRelate()');
-    // return this.persistentItemApi.changePeItProjectRelation(
-    //   this.activeProjectService.project.pk_project,
-    //   true,
-    //   StateToDataService.peItStateToPeItToRelate(this.peItStateToAdd)
-    // )
-    return {} as Subject<any>;
+    return this.persistentItemApi.changePeItProjectRelation(
+      this.ngRedux.getState().activeProject.pk_project,
+      true,
+      this.peItToAdd
+    )
   }
 
   createPeIt() {

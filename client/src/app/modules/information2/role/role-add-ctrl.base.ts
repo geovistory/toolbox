@@ -4,18 +4,23 @@ import { InfEntityProjectRel, InfRole } from 'app/core';
 
 import { RoleDetail } from '../information.models';
 import { RoleBase } from './role.base';
+import { ChangeDetectorRef } from '@angular/core';
 
-export class RoleAddCtrlBase extends RoleBase {
+export abstract class RoleAddCtrlBase extends RoleBase {
 
   isStandard: boolean;
   isInProject: boolean;
 
   init(): void {
+    this.initRoleAddCtrlBaseChild()
   }
+
+  abstract initRoleAddCtrlBaseChild(): void;
 
   constructor(
     protected ngRedux: NgRedux<RoleDetail>,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    protected ref: ChangeDetectorRef
   ) {
     super(ngRedux, fb)
 
@@ -30,14 +35,12 @@ export class RoleAddCtrlBase extends RoleBase {
 
     this.formGroup.addControl('is_in_project', new FormControl())
 
-
   }
 
 
   subscribeFormChanges() {
     // subscribe to form control changes 
     this.subs.push(this.formGroup.valueChanges.subscribe(() => {
-      this.isInProject = this.formGroup.get('is_in_project').value;
       this.emitVal();
     }))
   }
@@ -46,12 +49,15 @@ export class RoleAddCtrlBase extends RoleBase {
     // send the changes to the parent form
     if (this.formGroup.valid) {
       const role: InfRole = this.formGroup.get(this.formControlName).value;
+      this.isInProject = this.formGroup.get('is_in_project').value;
 
-      // create the epr
-      role.entity_version_project_rels = [{
-        is_in_project: this.isInProject,
-        is_standard_in_project: this.isStandard
-      } as InfEntityProjectRel];
+      // create the epr unless it is a circular role
+      if (this.localStore.getState().isCircular !== true) {
+        role.entity_version_project_rels = [{
+          is_in_project: this.isInProject,
+          is_standard_in_project: this.isStandard
+        } as InfEntityProjectRel];
+      }
 
       this.onChange(role);
     }
@@ -68,22 +74,25 @@ export class RoleAddCtrlBase extends RoleBase {
  */
   writeValue(role: InfRole): void {
 
-    // add a control for the epr option "is_standard_in_project" (is_display_role_for_range)
-    this.isStandard = role.entity_version_project_rels[0].is_standard_in_project
-    this.isInProject = role.entity_version_project_rels[0].is_in_project;
+    if (this.localStore.getState().isCircular !== true) {
+      // add a control for the epr option "is_standard_in_project" (is_display_role_for_range)
+      this.isStandard = role.entity_version_project_rels[0].is_standard_in_project
+      this.isInProject = role.entity_version_project_rels[0].is_in_project;
 
-    // get control for the epr option "is_in_project"
-    const isInProjectCtrl = this.formGroup.get('is_in_project');
+      // get control for the epr option "is_in_project"
+      const isInProjectCtrl = this.formGroup.get('is_in_project');
 
-    // update its value
-    isInProjectCtrl.setValue(this.isInProject)
+      // update its value
+      isInProjectCtrl.setValue(this.isInProject)
 
-    // if this is not standard, enable the is in project ctrl
-    if (this.isStandard) isInProjectCtrl.disable()
-    else isInProjectCtrl.enable();
+      // if this is not standard, enable the is in project ctrl
+      if (this.isStandard) isInProjectCtrl.disable()
+      else isInProjectCtrl.enable();
+    }
 
     this.formGroup.get(this.formControlName).setValue(role)
 
+    this.ref.detectChanges()
   }
 
 

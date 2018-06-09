@@ -18,8 +18,6 @@ import { peItReducer } from '../pe-it.reducer';
 })
 export class PeItCreateFormComponent extends PeItFormBase {
 
-  peIt: InfPersistentItem;
-
   @ViewChild('f') form: NgForm;
 
   formCtrlName = 'persistent_item';

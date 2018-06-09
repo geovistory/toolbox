@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
-import { Component, ViewChild, Output, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, NgForm, FormGroup } from '@angular/forms';
-import { InfPersistentItem, InfTemporalEntity, U } from 'app/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Output, ViewChild, Input } from '@angular/core';
+import { FormBuilder, NgForm } from '@angular/forms';
+import { InfTemporalEntity, U, InfPersistentItemApi, InfPersistentItem } from 'app/core';
 
 import { PeItFormBase } from '../pe-it-form.base';
 import { PeItActions } from '../pe-it.actions';
@@ -10,15 +10,20 @@ import { PeItActions } from '../pe-it.actions';
   selector: 'gv-pe-it-add-form',
   templateUrl: './pe-it-add-form.component.html',
   styleUrls: ['./pe-it-add-form.component.scss'],
-  changeDetection:ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PeItAddFormComponent extends PeItFormBase {
 
-  peIt: InfPersistentItem;
+  peIt: InfPersistentItem; // ngForm model
 
   @ViewChild('f') form: NgForm;
 
+  @Input() addBtn:boolean;
+  @Input() cancelBtn:boolean;
+
   @Output() formChange: EventEmitter<NgForm> = new EventEmitter();
+  @Output() added: EventEmitter<InfPersistentItem> = new EventEmitter();
+  @Output() cancel: EventEmitter<void> = new EventEmitter();
 
   formCtrlName = 'persistent_item';
 
@@ -26,11 +31,12 @@ export class PeItAddFormComponent extends PeItFormBase {
     protected ngRedux: NgRedux<any>,
     protected actions: PeItActions,
     protected fb: FormBuilder,
-    protected ref: ChangeDetectorRef
+    protected ref: ChangeDetectorRef,
+    protected peItApi: InfPersistentItemApi
 
   ) {
     super(ngRedux, actions, fb)
-
+    console.log('PeItAddFormComponent')
 
   }
 
@@ -42,8 +48,9 @@ export class PeItAddFormComponent extends PeItFormBase {
         this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(displayAppeUse);
 
         this.formChange.emit(this.form)
+        console.log(this.form)
 
-        // this.ref.detectChanges()
+        this.ref.detectChanges()
 
       })
     )
@@ -54,7 +61,15 @@ export class PeItAddFormComponent extends PeItFormBase {
 
 
   submit() {
-    console.log(this.form.value)
+
+    this.peItApi.changePeItProjectRelation(
+      this.ngRedux.getState().activeProject.pk_project,
+      true,
+      this.form.value.peIt
+    ).subscribe((resultingPeIt:InfPersistentItem) =>{
+      this.added.emit(resultingPeIt)
+    })
+
   }
 
   // not needed since not used as form control

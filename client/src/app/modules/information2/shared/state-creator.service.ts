@@ -322,7 +322,6 @@ export class StateCreatorService {
 
       // /** exclude the circular role */
       if (role.pk_entity === parentRolePk) {
-        console.log(role.pk_entity)
       }
       // else {
       roleDetailArray$.push(this.initializeRoleDetail(role, isOutgoing, options, parentRolePk));
