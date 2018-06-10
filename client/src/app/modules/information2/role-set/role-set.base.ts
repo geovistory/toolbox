@@ -8,7 +8,7 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 
-import { CollapsedExpanded, RoleDetail, RoleDetailList, RoleSet, RoleSetForm } from '../information.models';
+import { CollapsedExpanded, RoleDetail, RoleDetailList, RoleSet, RoleSetForm, RoleSetLabelObj } from '../information.models';
 import { RoleActions } from '../role/role.actions';
 import { roleReducer } from '../role/role.reducers';
 import { ClassService } from '../shared/class.service';
@@ -19,12 +19,6 @@ import { RoleSetActions, roleStateKey } from './role-set.actions';
 import { roleSetReducer } from './role-set.reducer';
 import { StateToDataService } from '../shared/state-to-data.service';
 
-
-export type RoleSetLabelObj = {
-    default: string
-    pl: string
-    sg: string
-}
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -334,7 +328,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
 
     getChildRoleStore(key): ObservableStore<RoleDetail> {
-        return this.roleStore.configureSubStore([... this.basePath, 'roleStatesInProject', key], roleReducer);
+        return this.roleStore.configureSubStore([... this.basePath, '_role_list', key], roleReducer);
     }
 
 

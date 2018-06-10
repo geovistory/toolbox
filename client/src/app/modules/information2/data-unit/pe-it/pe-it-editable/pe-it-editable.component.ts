@@ -3,12 +3,13 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 
-import { PeItDetail, RoleSet } from '../../../information.models';
+import { PeItDetail, RoleSet, RoleSetList } from '../../../information.models';
 import { DataUnitBase } from '../../data-unit.base';
 import { PeItActions } from '../pe-it.actions';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { peItReducer } from '../pe-it.reducer';
 import { slideInOut } from '../../../shared/animations';
+import { StateToDataService } from '../../../shared/state-to-data.service';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -64,9 +65,32 @@ export class PeItEditableComponent extends DataUnitBase {
   init() {
     this.basePath = this.getBasePath();
 
+    this.initPeItSubscriptions()
+
   }
 
+  /**
+   * init subscriptions to observables in the store
+   * subscribe all here, so it is only subscribed once on init and not multiple times on user interactions
+   */
+  initPeItSubscriptions() {
+    this.subs.push(this.localStore.select<PeItDetail>('').subscribe(d => {
+      this.peItState = d
+    }))
 
+    /**
+    * gets the Appellation is for given peIt roleSets that is for display in this project
+    */
+    this.subs.push(this.localStore.select<RoleSetList>(['_roleSet_list']).subscribe((roleSets) => {
+      this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(roleSets);
+      const oldLabel = (this.peItState && this.peItState.label) ? this.peItState.label : undefined;
+
+      // update store
+      if (this.peItState && oldLabel !== this.label)
+        this.localStore.dispatch(this.actions.roleSetsListDisplayLabelUpdated(this.label))
+
+    }))
+  }
 
   /**
   * Show ui with community statistics like

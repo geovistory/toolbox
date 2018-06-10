@@ -109,6 +109,7 @@ export class TeEntEditableComponent extends DataUnitBase {
   initTeEntSubscriptions() {
 
     this.ngRedux.select<RoleDetail>(this.parentPath).subscribe(d => this.parentRoleState = d)
+    
     this.subs.push(this.localStore.select<TeEntDetail>('').subscribe(d => {
       this.teEnState = d
     }))
@@ -116,7 +117,6 @@ export class TeEntEditableComponent extends DataUnitBase {
 
     /**
     * gets the Appellation is for given teEnt roleSets that is for display in this project
-    * @param teEntRoleSets {key: obj<RoleSet>}
     */
     this.subs.push(this.localStore.select<RoleSetList>(['_roleSet_list']).subscribe((teEntRoleSets) => {
       this.label = StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets);

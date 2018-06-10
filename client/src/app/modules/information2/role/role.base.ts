@@ -16,7 +16,9 @@ import {
   TimePrimitveDetail,
 } from '../information.models';
 import { roleReducer } from './role.reducers';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
+@AutoUnsubscribe()
 @WithSubStore({
   basePathMethodName: 'getBasePath',
   localReducer: roleReducer
