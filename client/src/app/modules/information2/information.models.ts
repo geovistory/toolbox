@@ -36,6 +36,7 @@ export interface DataUnit {
     fkClass?: number;
     dfhClass?: DfhClass;
 
+    parentPeIt?: InfPersistentItem,
 
     /** gui */
     label?: string;
@@ -80,7 +81,6 @@ export interface TeEntDetail extends DataUnit {
 
     _existenceTime?: ExistenceTimeDetail;
 
-    parentPeIt?: InfPersistentItem,
 
 
 }

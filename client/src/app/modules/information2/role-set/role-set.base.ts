@@ -17,6 +17,7 @@ import { RoleService } from '../shared/role.service';
 import { StateCreatorService } from '../shared/state-creator.service';
 import { RoleSetActions, roleStateKey } from './role-set.actions';
 import { roleSetReducer } from './role-set.reducer';
+import { StateToDataService } from '../shared/state-to-data.service';
 
 
 export type RoleSetLabelObj = {
@@ -379,16 +380,14 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
             alert("You can't remove the standard item. Make another item standard and try again.")
         } else {
 
-            console.error('missing function:')
-
-            // const roleToRemove = StateToDataService.roleStateToRoleToRelate(roleState)
+            const roleToRemove = StateToDataService.roleStateToRoleToRelate(roleState)
 
 
-            // this.subs.push(this.roleApi.changeRoleProjectRelation(
-            //     this.project.pk_project, false, roleToRemove
-            // ).subscribe(result => {
-            //     this.localStore.dispatch(this.actions.roleRemovedFromProject(key))
-            // }))
+            this.subs.push(this.roleApi.changeRoleProjectRelation(
+                this.project.pk_project, false, roleToRemove
+            ).subscribe(result => {
+                this.localStore.dispatch(this.actions.roleRemovedFromProject(key))
+            }))
         }
     }
 

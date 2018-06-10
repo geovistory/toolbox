@@ -23,7 +23,7 @@ import { roleSetReducer } from '../../role-set.reducer';
   selector: 'gv-pe-it-role-set-form',
   templateUrl: './pe-it-role-set-form.component.html',
   styleUrls: ['./pe-it-role-set-form.component.scss'],
-  changeDetection:ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PeItRoleSetFormComponent extends RoleSetFormBase {
 
@@ -38,12 +38,12 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
   constructor(
     protected fb: FormBuilder,
     protected ngRedux: NgRedux<IAppState>,
+    protected ref: ChangeDetectorRef,
     protected roleApi: InfRoleApi,
     protected stateCreator: StateCreatorService,
     protected actions: RoleSetActions,
     protected classService: ClassService,
     protected peItApi: InfPersistentItemApi,
-    protected ref: ChangeDetectorRef
   ) {
     super(fb, ngRedux, ref)
     console.log('PeItRoleSetFormComponent')
@@ -86,10 +86,11 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
             roleStatesInNoProjects
           ))
 
-          this.initAddFormCtrls(roleStatesInOtherProjects)
 
           if (rolesInOtherProjects.length === 0) {
             this.startCreateNewRole();
+          } else {
+            this.initAddFormCtrls(roleStatesInOtherProjects)
           }
 
         })
@@ -180,31 +181,51 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
     }
   }
 
-//   /**
-//  * called when user cancels to create one specific role
-//  *
-//  */
-//   cancelCreateRole(key) {
+  addRoles() {
+    const s = this.localStore.getState();
 
-//     /** remove the form control from form */
-//     this.formGroup.removeControl(key)
+    if (this.addForm.valid) {
 
-//     /** remove the RoleState from state */
-//     const roleStates = Object.assign({}, this.roleSetState._role_set_form._role_create_list);
-//     delete roleStates[key];
-//     this.localStore.dispatch(this.actions.roleCreationCancelled(roleStates));
+      // prepare peIt 
+      const p = new InfPersistentItem(this.parentPeItStore.getState().peIt);
+      p.pi_roles = [];
 
-//   }
+      Object.keys(this.addForm.controls).forEach(key => {
+        if (this.addForm.get(key)) {
+          // add roles to create to peIt
+          p.pi_roles.push(this.addForm.get(key).value)
+        }
+      })
 
-  /**
-  *  called when user cancels to create new roles
-  *
-  */
-  cancelCreateRoles() {
+      console.log(p)
+      // call api
+      this.subs.push(this.peItApi.changePeItProjectRelation(this.ngRedux.getState().activeProject.pk_project, true, p).subscribe(peIts => {
+        const roles: InfRole[] = peIts[0].pi_roles;
 
-    /** remove the RoleState from state */
-    this.localStore.dispatch(this.actions.stopCreateNewRole());
+          // update the form group
+          Object.keys(this.addForm.controls).forEach(key => {
+            this.addForm.removeControl(key)
+          })
 
+
+          // update the state
+          this.subs.push(this.stateCreator.initializeRoleDetails(roles, s.isOutgoing).subscribe(roleStates => {
+            this.localStore.dispatch(this.actions.rolesCreated(roleStates))
+          }))
+
+        }))
+      }
   }
 
-}
+    /**
+    *  called when user cancels to create new roles
+    *
+    */
+    cancelCreateRoles() {
+
+      /** remove the RoleState from state */
+      this.localStore.dispatch(this.actions.stopCreateNewRole());
+
+    }
+
+  }

@@ -27,147 +27,96 @@ export class StateToDataService {
 
 
 
-  // /**
-  // * Transforms a given PeItState object to an object that can be passed to the
-  //  * api in order to change the project relation to the peIt (and potentially to its children)
-  //  */
-  // static peItStateToPeItToRelate(peItDetail: PeItDetail, eprOptions?: InfEntityProjectRel): InfPersistentItem {
-  //   let peIt = new InfPersistentItem(peItDetail.peIt);
-  //   peIt.entity_version_project_rels = [StateToDataService.createEpr(peIt, eprOptions)]
+  /**
+  * Transforms a given PeItState object to an object that can be passed to the
+   * api in order to change the project relation to the peIt (and potentially to its children)
+   */
+  static peItStateToPeItToRelate(peItDetail: PeItDetail, eprOptions?: InfEntityProjectRel): InfPersistentItem {
+    let peIt = new InfPersistentItem(peItDetail.peIt);
+    peIt.entity_version_project_rels = [StateToDataService.createEpr(peIt, eprOptions)]
 
-  //   peIt.pi_roles = StateToDataService.roleSetsToRolesToRelate(peItDetail._roleSet_list, eprOptions)
+    peIt.pi_roles = StateToDataService.roleSetsToRolesToRelate(peItDetail._roleSet_list, eprOptions)
 
-  //   return peIt;
-  // }
-
-
-  // /**
-  //  * Transforms a given RoleState object to an object that can be passed to the
-  //  * api in order to chante the project relation to the role (and potentially to its children)
-  //  */
-  // static roleStateToRoleToRelate(roleState: RoleDetail, eprOptions?: InfEntityProjectRel): InfRole {
-  //   let role = new InfRole(roleState.role);
-  //   role.entity_version_project_rels = [StateToDataService.createEpr(role, eprOptions)]
-
-  //   /** If the role leads to a peIt or an object, this means that only the role needs to be removed from project */
-  //   if (!roleState._teEnt) {
-  //     return role;
-  //   }
-  //   /** If the role leads to a temporal entity, this means that the temporal entity and its roles need to be removed from project */
-  //   else if (roleState._teEnt) {
-  //     role.temporal_entity = StateToDataService.teEntToTeEntToRelate(roleState._teEnt, eprOptions)
-  //     return role;
-  //   }
-  // }
-
-  // /**
-  //  * Transforms a given TeEntState object to an object that can be passed to the
-  //  * api in order to chante the project relation to the teEnt (and potentially to its children)
-  //  * 
-  //  * @param teEntState 
-  //  */
-  // static teEntToTeEntToRelate(teEntState: TeEntDetail, eprOptions?: InfEntityProjectRel): InfTemporalEntity {
-  //   let teEnt = new InfTemporalEntity(teEntState.teEnt);
-  //   teEnt.entity_version_project_rels = [StateToDataService.createEpr(teEnt, eprOptions)]
+    return peIt;
+  }
 
 
-  //   teEnt.te_roles = [
-  //     ...StateToDataService.roleSetsToRolesToRelate(teEntState._roleSet_list, eprOptions),
-  //     ...StateToDataService.existenceTimeToRolesToRelate(teEntState._existenceTime, eprOptions)
-  //   ]
-  //   //  .map(role=>{
-  //   //   return StateToDataService.roleStateToRoleToRelate
-  //   // })
+  /**
+   * Transforms a given RoleState object to an object that can be passed to the
+   * api in order to chante the project relation to the role (and potentially to its children)
+   */
+  static roleStateToRoleToRelate(roleState: RoleDetail, eprOptions?: InfEntityProjectRel): InfRole {
+    let role = new InfRole(roleState.role);
+    role.entity_version_project_rels = [StateToDataService.createEpr(role, eprOptions)]
 
-  //   return teEnt;
-  // }
+    /** If the role leads to a peIt or an object, this means that only the role needs to be removed from project */
+    if (!roleState._teEnt) {
+      return role;
+    }
+    /** If the role leads to a temporal entity, this means that the temporal entity and its roles need to be removed from project */
+    else if (roleState._teEnt) {
+      role.temporal_entity = StateToDataService.teEntToTeEntToRelate(roleState._teEnt, eprOptions)
+      return role;
+    }
+  }
 
-  // static roleSetsToRolesToRelate(roleSets: RoleSetList, eprOptions?: InfEntityProjectRel): InfRole[] {
-
-  //   let roles: InfRole[] = [];
-
-  //   /** for each RoleSetState */
-  //   for (const i in roleSets) {
-  //     if (roleSets.hasOwnProperty(i)) {
-  //       const roleSet: RoleSet = roleSets[i];
-  //       let roleStates: RoleDetailList;
-
-  //       roleSet._role_list
-
-  //       // switch (roleSet.state) {
-  //       //   /** if the roleset is in editable mode, the roles that are in project need to be taken */
-  //       //   case 'editable':
-  //       //     roleStates = roleSet.roleStatesInProject;
-
-  //       //     /** for each RoleState */
-  //       //     for (const j in roleStates) {
-  //       //       if (roleStates.hasOwnProperty(j)) {
-  //       //         const roleState: RoleDetail = roleStates[j]
-  //       //         if (!roleState.isCircular)
-  //       //           roles.push(StateToDataService.roleStateToRoleToRelate(roleState, eprOptions));
-
-  //       //       }
-  //       //     }
-
-  //       //     break;
-
-  //       //   /** 
-  //       //    * if the roleset is in add-pe-it mode, the roles that are in other projects need to be taken.
-  //       //    * in this case, we take some of the community data and put it in the epr.
-  //       //    */
-  //       //   case 'add-pe-it':
-  //       //     roleStates = roleSet.roleStatesInOtherProjects
-
-  //       //     // find role of roleSet with highest number of display count.
-  //       //     let pkEntityWithHighestCount = RoleSetService.getDisplayRangeFavoriteOfRoleStates(roleStates);
-
-  //       //     /** for each RoleState */
-  //       //     for (const j in roleStates) {
-  //       //       let eprOpt = eprOptions ? eprOptions : new InfEntityProjectRel()
-
-  //       //       if (roleStates.hasOwnProperty(j)) {
-  //       //         const roleState: RoleDetail = roleStates[j]
-
-  //       //         // take over the community favorite calendar
-  //       //         if (roleState.role.community_favorite_calendar) {
-  //       //           eprOpt.calendar = roleState.role.community_favorite_calendar;
-  //       //         }
-
-  //       //         // take over the community favorite display role
-  //       //         if (roleState.role.pk_entity === pkEntityWithHighestCount) {
-  //       //           eprOpt.is_standard_in_project = true;
-  //       //         } else {
-  //       //           eprOpt.is_standard_in_project = false;
-  //       //         }
-
-  //       //         if (!roleState.isCircular)
-  //       //           roles.push(StateToDataService.roleStateToRoleToRelate(roleState, eprOpt));
-
-  //       //       }
-  //       //     }
+  /**
+   * Transforms a given TeEntState object to an object that can be passed to the
+   * api in order to chante the project relation to the teEnt (and potentially to its children)
+   * 
+   * @param teEntState 
+   */
+  static teEntToTeEntToRelate(teEntState: TeEntDetail, eprOptions?: InfEntityProjectRel): InfTemporalEntity {
+    let teEnt = new InfTemporalEntity(teEntState.teEnt);
+    teEnt.entity_version_project_rels = [StateToDataService.createEpr(teEnt, eprOptions)]
 
 
-  //       //   default:
-  //       //     break;
-  //       // }
+    teEnt.te_roles = [
+      ...StateToDataService.roleSetsToRolesToRelate(teEntState._roleSet_list, eprOptions),
+      ...StateToDataService.existenceTimeToRolesToRelate(teEntState._existenceTime, eprOptions)
+    ]
 
 
+    return teEnt;
+  }
 
-  //     }
-  //   }
+  static roleSetsToRolesToRelate(roleSets: RoleSetList, eprOptions?: InfEntityProjectRel): InfRole[] {
 
-  //   return roles;
-  // }
+    let roles: InfRole[] = [];
 
-  // /**
-  //  * Transforms a given ExistenceTimeState object to an object that can be passed to the
-  //  * api in order to chante the project relation roles (and potentially to its children)
-  //  * 
-  //  * @param teEntState 
-  //  */
-  // static existenceTimeToRolesToRelate(teEntState: ExistenceTimeDetail, eprOptions?: InfEntityProjectRel): InfRole[] {
-  //   return StateToDataService.roleSetsToRolesToRelate(teEntState.roleSets, eprOptions);
-  // }
+    /** for each RoleSetState */
+    for (const i in roleSets) {
+      if (roleSets.hasOwnProperty(i)) {
+        const roleSet: RoleSet = roleSets[i];
+        let roleDetailList: RoleDetailList = roleSet._role_list;
+
+        /** for each RoleState */
+        for (const j in roleDetailList) {
+          if (roleDetailList.hasOwnProperty(j)) {
+            const roleState: RoleDetail = roleDetailList[j]
+            if (!roleState.isCircular)
+              roles.push(StateToDataService.roleStateToRoleToRelate(roleState, eprOptions));
+          }
+        }
+
+      }
+    }
+
+    return roles;
+  }
+
+  /**
+   * Transforms a given ExistenceTimeState object to an object that can be passed to the
+   * api in order to chante the project relation roles (and potentially to its children)
+   * 
+   * @param teEntState 
+   */
+  static existenceTimeToRolesToRelate(teEntState: ExistenceTimeDetail, eprOptions?: InfEntityProjectRel): InfRole[] {
+    if (teEntState)
+      return StateToDataService.roleSetsToRolesToRelate(teEntState._roleSet_list, eprOptions);
+    else
+      return []
+  }
 
   /**
    * Convert ExistenceTimeDetail to ExistenceTime
@@ -232,7 +181,7 @@ export class StateToDataService {
    * @param teEntRoleSets 
    * @returns appellation label as pure string
    */
- static getDisplayAppeLabelOfPeItRoleSets(peItRoleSets: RoleSetList): string {
+  static getDisplayAppeLabelOfPeItRoleSets(peItRoleSets: RoleSetList): string {
     if (!peItRoleSets) return null
 
     // get ingoing roles pointing to appellation usage (R63)
@@ -243,7 +192,7 @@ export class StateToDataService {
         if (roleStates.hasOwnProperty(key)) {
           const r: RoleDetail = roleStates[key];
           if ((!r.isOutgoing && r.isDisplayRoleForRange) || (r.isOutgoing && r.isDisplayRoleForDomain)) {
-            if (r._teEnt && r._teEnt._roleSet_list){
+            if (r._teEnt && r._teEnt._roleSet_list) {
               var label = StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(r._teEnt._roleSet_list);
               return label;
             }

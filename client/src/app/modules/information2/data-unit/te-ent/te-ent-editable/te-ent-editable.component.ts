@@ -123,7 +123,7 @@ export class TeEntEditableComponent extends DataUnitBase {
       const oldLabel = (this.teEnState && this.teEnState.label) ? this.teEnState.label : undefined;
 
       // update store
-      if (oldLabel !== this.label)
+      if (this.teEnState && oldLabel !== this.label)
         this.localStore.dispatch(this.actions.roleSetsListDisplayLabelUpdated(this.label))
 
     }))

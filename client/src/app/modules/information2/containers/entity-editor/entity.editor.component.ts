@@ -5,10 +5,10 @@ import { ActiveProjectService, EntityEditorService, IAppState, Project } from 'a
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable } from 'rxjs/Observable';
 
+import { PeItDetail, Information } from '../../information.models';
 import { StateCreatorService } from '../../shared/state-creator.service';
-import { EntityEditorActions } from './entity-editor.actions';
-import { EntityEditorWrapper, IEntityEditorWrapper } from './entity-editor.model';
-import { entityEditorReducer } from './entity-editor.reducer';
+import { InformationActions } from '../../information.actions';
+import { informationReducer } from '../../information.reducer';
 
 
 @AutoUnsubscribe()
@@ -19,9 +19,9 @@ import { entityEditorReducer } from './entity-editor.reducer';
 })
 export class EntityEditorComponent implements OnInit, OnDestroy {
 
-  readonly basePath = ['information', 'entityEditor']
+  readonly basePath = ['information']
   getBasePath = () => this.basePath
-  localStore: ObservableStore<IEntityEditorWrapper>;
+  localStore: ObservableStore<Information>;
 
   /**
   * Properties
@@ -43,12 +43,12 @@ export class EntityEditorComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private activeProjectService: ActiveProjectService,
     public entityEditor: EntityEditorService,
-    private ngRedux: NgRedux<IEntityEditorWrapper>,
-    private actions: EntityEditorActions,
+    private ngRedux: NgRedux<IAppState>,
+    private actions: InformationActions,
     private stateCreator: StateCreatorService
 
   ) {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, entityEditorReducer);
+    this.localStore = this.ngRedux.configureSubStore(this.basePath, informationReducer);
 
     // trigger the activation of the project
     this.activeProjectService.setActiveProject(this.activatedRoute.snapshot.parent.params['id']);
@@ -71,7 +71,7 @@ export class EntityEditorComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.destroyEditor()
   }
 
@@ -84,7 +84,7 @@ export class EntityEditorComponent implements OnInit, OnDestroy {
       const project = result[0]
       const params = result[1]
       if (
-        project && params && params['id'] && 
+        project && params && params['id'] &&
         (
           this.pkProject != project.pk_project ||
           params['id'] && this.pkEntity != params['id']
@@ -96,11 +96,7 @@ export class EntityEditorComponent implements OnInit, OnDestroy {
         this.pkEntity = params['id'];
 
         this.stateCreator.initializePeItState(this.pkEntity, project.pk_project).subscribe(peItState => {
-          let wrapper = new EntityEditorWrapper({
-            peItState: peItState
-          });
-
-          this.localStore.dispatch(this.actions.entityEditorInitialized(wrapper));
+          this.localStore.dispatch(this.actions.entityEditorInitialized(peItState));
           this.initialized = true;
         })
       }
@@ -108,7 +104,7 @@ export class EntityEditorComponent implements OnInit, OnDestroy {
   }
 
 
-  destroyEditor(){
+  destroyEditor() {
     this.localStore.dispatch(this.actions.entityEditorDestroyed());
 
   }

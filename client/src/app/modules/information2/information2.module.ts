@@ -17,6 +17,7 @@ import { EntityAddModalComponent } from './add-modal/entity-add-modal/entity-add
 import {
   EntityAddSearchExistingComponent,
 } from './add-modal/entity-add-search-existing/entity-add-search-existing.component';
+import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
 import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
 import { EntityEditorComponent } from './containers/entity-editor/entity.editor.component';
 import { PeItAddCtrlComponent } from './data-unit/pe-it/pe-it-add-ctrl/pe-it-add-ctrl.component';
@@ -30,6 +31,7 @@ import { TeEntCreateCtrlComponent } from './data-unit/te-ent/te-ent-create-ctrl/
 import { TeEntEditableComponent } from './data-unit/te-ent/te-ent-editable/te-ent-editable.component';
 import { TeEntActions } from './data-unit/te-ent/te-ent.actions';
 import { InformationRoutingModule } from './information-routing.module';
+import { InformationActions } from './information.actions';
 import { PeItRoleSetAddCtrlComponent } from './role-set/pe-it/pe-it-role-set-add-ctrl/pe-it-role-set-add-ctrl.component';
 import {
   PeItRoleSetCreateCtrlComponent,
@@ -52,6 +54,7 @@ import { RoleActions } from './role/role.actions';
 import { TeEntRoleAddCtrlComponent } from './role/te-ent/te-ent-role-add-ctrl/te-ent-role-add-ctrl.component';
 import { TeEntRoleCreateCtrlComponent } from './role/te-ent/te-ent-role-create-ctrl/te-ent-role-create-ctrl.component';
 import { TeEntRoleEditableComponent } from './role/te-ent/te-ent-role-editable/te-ent-role-editable.component';
+import { AppellationService } from './shared/appellation.service';
 import { ClassService } from './shared/class.service';
 import { EntityAddModalService } from './shared/entity-add-modal.service';
 import { EprService } from './shared/epr.service';
@@ -74,8 +77,6 @@ import { LanguageViewComponent } from './value/language-view/language-view.compo
 import { LeafPeItCtrlComponent } from './value/leaf-pe-it-ctrl/leaf-pe-it-ctrl.component';
 import { LeafPeItViewModalComponent } from './value/leaf-pe-it-view/leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
 import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.component';
-import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
-import { AppellationService } from './shared/appellation.service';
 
 @NgModule({
   imports: [
@@ -160,6 +161,9 @@ import { AppellationService } from './shared/appellation.service';
     EntityAddModalService,
     EntityCreateNewActions,
     EntityAddExistingActions,
+   
+    // Information (root) 
+    InformationActions,
 
     // Data Unit
     PeItActions,

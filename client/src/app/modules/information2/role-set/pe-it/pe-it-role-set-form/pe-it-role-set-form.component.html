@@ -3,7 +3,7 @@
 </button>
 
 <!-- Step 1: Form for adding existing roles -->
-<form [formGroup]="addForm" ngSubmit="addRoles()" *ngIf="_role_add_list">
+<form [formGroup]="addForm" (ngSubmit)="addRoles()" *ngIf="_role_add_list">
   <div class="card-body text-white">
     Community data
   </div>
@@ -18,7 +18,7 @@
   
   <div class="card-body">
     <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Add selected</button>
-    <button type="button" class="btn btn-primary" (click)="startCreateNewRole()">Create new</button>
+    <button type="submit" class="btn btn-primary">Create new</button>
 
   </div>
 

@@ -1,10 +1,11 @@
-import { WithSubStore } from '@angular-redux/store';
-import { Component } from '@angular/core';
+import { WithSubStore, NgRedux } from '@angular-redux/store';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 import { RoleSetFormBase } from '../../role-set-form.base';
 import { roleSetReducer } from '../../role-set.reducer';
+import { IAppState } from 'app/core';
 
 
 @AutoUnsubscribe()
@@ -18,9 +19,15 @@ import { roleSetReducer } from '../../role-set.reducer';
   styleUrls: ['./te-ent-role-set-form.component.scss']
 })
 export class TeEntRoleSetFormComponent  extends RoleSetFormBase {
+  initRoleSetFormBaseChild(): void {
+    throw new Error("Method not implemented.");
+  }
 
-  constructor(protected fb: FormBuilder) {
-    super(fb)
+  constructor(
+    protected ngRedux: NgRedux<IAppState>,
+    protected ref: ChangeDetectorRef,
+    protected fb: FormBuilder) {
+    super(fb,ngRedux,ref)
 
   }
 

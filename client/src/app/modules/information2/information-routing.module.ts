@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
+import { EntityEditorComponent } from './containers/entity-editor/entity.editor.component';
 
 
 const routes: Routes = [
@@ -12,10 +13,10 @@ const routes: Routes = [
       reduxPath: ['information']
     }
   },
-  // {
-  //   path: 'entity/:id',
-  //   component: EntityEditorComponent
-  // },
+  {
+    path: 'entity/:id',
+    component: EntityEditorComponent
+  },
 ];
 
 @NgModule({

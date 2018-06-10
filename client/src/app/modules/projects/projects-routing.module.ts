@@ -46,25 +46,12 @@ const routes: Routes = [
             children: [
               {
                 path: '',
-                loadChildren: '../information/information.module#InformationModule'
-                // line above instead of loadChildren: InformationModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116         
-              }
-            ]
-          },
-          //TEMP->
-          {
-            path: '',
-            outlet: 'sources',
-            component: ProxyRouteComponent,
-            children: [
-              {
-                path: '',
                 loadChildren: '../information2/information2.module#Information2Module'
                 // line above instead of loadChildren: InformationModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116         
               }
             ]
           },
-          // ->TEMP
+          // //TEMP->
           // {
           //   path: '',
           //   outlet: 'sources',
@@ -72,10 +59,23 @@ const routes: Routes = [
           //   children: [
           //     {
           //       path: '',
-          //       loadChildren: '../sources/sources.module#SourcesModule'
+          //       loadChildren: '../information2/information2.module#Information2Module'
+          //       // line above instead of loadChildren: InformationModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116         
           //     }
           //   ]
-          // }
+          // },
+          // // ->TEMP
+          {
+            path: '',
+            outlet: 'sources',
+            component: ProxyRouteComponent,
+            children: [
+              {
+                path: '',
+                loadChildren: '../sources/sources.module#SourcesModule'
+              }
+            ]
+          }
         ]
       },
       {
