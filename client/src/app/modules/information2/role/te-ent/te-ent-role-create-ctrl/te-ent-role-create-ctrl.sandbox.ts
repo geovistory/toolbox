@@ -1,10 +1,11 @@
 import { sandboxOf } from 'angular-playground';
-import { InfRole } from 'app/core';
+import { InfRole, InfAppellation } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
 import { RoleDetail, RoleSet } from '../../../information.models';
 import { Information2Module } from '../../../information2.module';
 import { TeEntRoleCreateCtrlComponent } from './te-ent-role-create-ctrl.component';
+import { DfhConfig } from '../../../shared/dfh-config';
 
 
 
@@ -18,31 +19,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
 })
     .add('TeEnt Role Create Ctrl | Appe filled ', {
         context: {
-            model: {
-                role: {
-                    fk_property: 99,
-                    appellation: {
-                        appellation_label: {
-                            tokens: [
-                                {
-                                    "id": 0,
-                                    "string": "Hallo",
-                                    "isSeparator": false
-                                },
-                                {
-                                    "string": " ",
-                                    "isSeparator": true
-                                },
-                                {
-                                    "string": "Welt",
-                                    "isSeparator": false
-                                }
-                            ],
-                            "latestTokenId": 2
-                        }
-                    }
-                }
-            },
+            model: {},
             parentPath: ['_role_set_1'],
             index: '_role_1',
             initState: {
@@ -52,6 +29,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                             role: {
                                 fk_property: 99,
                                 appellation: {
+                                    fk_class: DfhConfig.CLASS_PK_APPELLATION,
                                     appellation_label: {
                                         tokens: [
                                             {

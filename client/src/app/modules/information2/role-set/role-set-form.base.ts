@@ -5,8 +5,9 @@ import { IAppState, InfEntityProjectRel, InfRole, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable, Subscription } from 'rxjs';
 
-import { RoleDetailList, RoleSet, RoleSetForm } from '../information.models';
+import { RoleDetailList, RoleSet, RoleSetForm, RoleDetail } from '../information.models';
 import { roleSetReducer } from './role-set.reducer';
+import { RoleSetActions } from './role-set.actions';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -27,11 +28,19 @@ export abstract class RoleSetFormBase implements OnInit {
     @select() _role_set_form$: Observable<RoleSetForm>
 
     _role_set_form: RoleSetForm;
-    _role_create_list: RoleDetailList;
+    _role_create_list: RoleDetailList = {};
     _role_add_list: RoleDetailList;
 
 
     getBasePath = () => [...this.parentPath];
+
+
+    // Since we're observing an array of items, we need to set up a 'trackBy'
+    // parameter so Angular doesn't tear down and rebuild the list's DOM every
+    // time there's an update.
+    getKey(_, item) {
+        return item.key;
+    }
 
     roleSetFormPath: string[];
 
@@ -47,7 +56,9 @@ export abstract class RoleSetFormBase implements OnInit {
     constructor(
         protected fb: FormBuilder,
         protected ngRedux: NgRedux<IAppState>,
-        protected ref: ChangeDetectorRef
+        protected ref: ChangeDetectorRef,
+        protected actions: RoleSetActions,
+
     ) {
 
 
@@ -142,26 +153,37 @@ export abstract class RoleSetFormBase implements OnInit {
     /**
       * Initializes the form controls
      */
-    initCreateFormCtrls() {
+    initCreateFormCtrls(roleDetail: RoleDetail) {
 
 
-        // add controls for each role to create
-        if (this._role_set_form && this._role_set_form._role_create_list) {
-            Object.keys(this._role_set_form._role_create_list).forEach((key) => {
-                const roleDetail = this._role_set_form._role_create_list[key]
-                if (roleDetail) {
-                    const role = roleDetail.role;
-                    const roleCtrl = new FormControl(role, [Validators.required]);
-                    this.createForm.addControl(key, roleCtrl)
-                }
-            })
-        }
+        /** add a form control */
+        const formControlName = 'new_role_' + this.createFormControlCount;
+        this.createFormControlCount++;
+        this.createForm.addControl(formControlName, new FormControl(roleDetail.role, [Validators.required]))
+
+        /** update the state */
+        this._role_create_list[formControlName] = roleDetail;
+        this.localStore.dispatch(this.actions.startCreateNewRole(this._role_create_list))
+
+        this.ref.detectChanges()
+
+        // // add controls for each role to create
+        // if (this._role_set_form && this._role_set_form._role_create_list) {
+        //     Object.keys(this._role_set_form._role_create_list).forEach((key) => {
+        //         const roleDetail = this._role_set_form._role_create_list[key]
+        //         if (roleDetail) {
+        //             const role = roleDetail.role;
+        //             const roleCtrl = new FormControl(role, [Validators.required]);
+        //             this.createForm.addControl(key, roleCtrl)
+        //         }
+        //     })
+        // }
     }
 
     /**
     * Initializes the form controls
     */
-    initAddFormCtrls(_role_add_list:RoleDetailList) {
+    initAddFormCtrls(_role_add_list: RoleDetailList) {
         this._role_add_list = _role_add_list;
         // add controls for each role to add
         Object.keys(_role_add_list).forEach((key) => {

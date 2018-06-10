@@ -45,7 +45,7 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
     protected classService: ClassService,
     protected peItApi: InfPersistentItemApi,
   ) {
-    super(fb, ngRedux, ref)
+    super(fb, ngRedux, ref, actions)
     console.log('PeItRoleSetFormComponent')
 
   }
@@ -127,19 +127,8 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
 
       this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, s.isOutgoing, options).subscribe(roleStateToCreate => {
 
+        this.initCreateFormCtrls(roleStateToCreate)
 
-        console.log(JSON.stringify(roleStateToCreate))
-
-        /** add a form control */
-        const formControlName = 'new_role_' + this.createFormControlCount;
-        this.createFormControlCount++;
-        this.createForm.addControl(formControlName, new FormControl(
-          roleStateToCreate.role, [Validators.required]))
-
-        /** update the state */
-        const roleDetailList: RoleDetailList = {};
-        roleDetailList[formControlName] = roleStateToCreate;
-        this.localStore.dispatch(this.actions.startCreateNewRole(roleDetailList))
       }))
     })
     )
@@ -161,6 +150,7 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
           p.pi_roles.push(this.createForm.get(key).value)
         }
       })
+      // console.log(p)
 
       // call api
       this.subs.push(this.peItApi.findOrCreatePeIt(this.ngRedux.getState().activeProject.pk_project, p).subscribe(peIts => {
@@ -170,7 +160,6 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
         Object.keys(this.createForm.controls).forEach(key => {
           this.createForm.removeControl(key)
         })
-
 
         // update the state
         this.subs.push(this.stateCreator.initializeRoleDetails(roles, s.isOutgoing).subscribe(roleStates => {
@@ -197,7 +186,6 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
         }
       })
 
-      console.log(p)
       // call api
       this.subs.push(this.peItApi.changePeItProjectRelation(this.ngRedux.getState().activeProject.pk_project, true, p).subscribe(peIts => {
         const roles: InfRole[] = peIts[0].pi_roles;

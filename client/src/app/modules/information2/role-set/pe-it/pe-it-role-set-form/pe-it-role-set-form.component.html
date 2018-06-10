@@ -26,14 +26,12 @@
 
 
 <!-- Step 2: Form for creating new roles -->
-<form [formGroup]="createForm" ngSubmit="createRoles()" *ngIf="_role_create_list">
-
+<form [formGroup]="createForm" (ngSubmit)="createRoles()" *ngIf="_role_create_list">
 
   <div class="card-body">
-    <div *ngFor="let entry of _role_create_list | keys; trackBy:getKey">
-      {{entry.key}}
+    <div *ngFor="let entry of (_role_set_form$ | async)?._role_create_list | keys; trackBy:getKey">
       <gv-pe-it-role-create-ctrl *ngIf="createForm.get(entry.key)" [parentPath]="roleSetFormPath" [index]="entry.key" intermediatePathSegment="_role_create_list"
-        [formControlName]="entry.key"></gv-pe-it-role-create-ctrl>
+      [formControlName]="entry.key"></gv-pe-it-role-create-ctrl>
     </div>
   </div>
 

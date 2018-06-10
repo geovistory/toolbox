@@ -106,7 +106,6 @@ export const roleSetReducer =
 
       case RoleSetActions.ROLE_REMOVED_FROM_PROJECT:
 
-
         lastState = {
           ...lastState,
           _role_list: omit([action.meta.key], lastState._role_list)

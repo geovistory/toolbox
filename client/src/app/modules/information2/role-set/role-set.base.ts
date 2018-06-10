@@ -382,7 +382,6 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
             const roleToRemove = StateToDataService.roleStateToRoleToRelate(roleState)
 
-
             this.subs.push(this.roleApi.changeRoleProjectRelation(
                 this.project.pk_project, false, roleToRemove
             ).subscribe(result => {

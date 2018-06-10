@@ -15,7 +15,7 @@ import { PeItService } from './pe-it.service';
 import { RoleSetService } from './role-set.service';
 import { DfhConfig } from './dfh-config';
 import { AppellationLabel } from './appellation-label/appellation-label';
-import { PeItDetail, RoleSetList, RoleSet,  RoleDetailList, RoleDetail, TeEntDetail, ExistenceTimeDetail, AppeDetail, LangDetail, TimePrimitveDetail,  } from '../information.models';
+import { PeItDetail, RoleSetList, RoleSet, RoleDetailList, RoleDetail, TeEntDetail, ExistenceTimeDetail, AppeDetail, LangDetail, TimePrimitveDetail, } from '../information.models';
 import { roleSetKey, roleDetailKey } from '../information.helpers';
 import { StateToDataService } from './state-to-data.service';
 
@@ -342,8 +342,6 @@ export class StateCreatorService {
     if (!role) return new BehaviorSubject(undefined)
 
 
-
-
     let roleDetail: RoleDetail = {
       role: new InfRole(role),
       isOutgoing: isOutgoing,
@@ -373,6 +371,13 @@ export class StateCreatorService {
     /** If role leads to Appe */
     // else if (role.appellation && Object.keys(role.appellation).length){
     else if (role.fk_property == DfhConfig.PROPERTY_PK_R64_USED_NAME && isOutgoing) {
+
+      // when targetDfhClass is provided we are in create state and we need the fk_class
+      if (options.targetDfhClass) roleDetail.role.appellation = {
+        ...role.appellation,
+        fk_class: options.targetDfhClass.dfh_pk_class
+      }
+
       this.initializeAppeState(role.appellation).subscribe(appeState => {
         roleDetail._appe = appeState;
         subject.next(roleDetail);
@@ -380,8 +385,15 @@ export class StateCreatorService {
     }
 
     /** If role leads to Language */
-    // else if (role.appellation && Object.keys(role.appellation).length){
+    // else if (role.language && Object.keys(role.language).length){
     else if (role.fk_property == DfhConfig.PROPERTY_PK_R61_USED_LANGUAGE && isOutgoing) {
+
+      // when targetDfhClass is provided we are in create state and we need the fk_class
+      if (options.targetDfhClass) roleDetail.role.language = {
+        ...role.language,
+        fk_class: options.targetDfhClass.dfh_pk_class
+      }
+
       this.initializeLangState(role.language).subscribe(langState => {
         roleDetail._lang = langState;
         subject.next(roleDetail);
@@ -390,6 +402,13 @@ export class StateCreatorService {
 
     /** If role leads to TimePrimitive */
     else if (DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.indexOf(role.fk_property) > -1 && isOutgoing === false) {
+
+      // when targetDfhClass is provided we are in create state and we need the fk_class
+      if (options.targetDfhClass) roleDetail.role.time_primitive = {
+        ...role.time_primitive,
+        fk_class: options.targetDfhClass.dfh_pk_class
+      }
+
       this.initializeTimePrimitiveState(role.time_primitive).subscribe(timePrimitiveState => {
         roleDetail._timePrimitive = timePrimitiveState;
         subject.next(roleDetail);

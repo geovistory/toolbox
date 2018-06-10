@@ -60,7 +60,9 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
       let role = new InfRole(pick(['fk_entity', 'fk_property'], this.parentRole));
 
       // build a teEnt with all pi_roles given by the form's controls 
-      role.temporal_entity = new InfTemporalEntity();
+      role.temporal_entity = {
+        fk_class: this.teEntState.dfhClass.dfh_pk_class
+      } as InfTemporalEntity;
       role.temporal_entity.te_roles = [];
       Object.keys(this.formGroup.controls).forEach(key => {
         if (this.formGroup.get(key)) {

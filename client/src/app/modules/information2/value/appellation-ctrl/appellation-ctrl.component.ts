@@ -53,9 +53,6 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
   // parent role, needed to create a proper role value to emit onChange of the form
   role: InfRole;
 
-  //  needed to create a proper appellation value to emit onChange of the form
-  fkClass: number;
-
   constructor(
     private fb: FormBuilder,
     private appellationApi: InfAppellationApi,
@@ -86,7 +83,6 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
 
         // build a appe with the appellation_label given by the formControl 
         role.appellation = new InfAppellation({
-          fk_class: this.fkClass,
           ...this.appellation
         });
 

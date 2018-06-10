@@ -6,6 +6,7 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { RoleSetFormBase } from '../../role-set-form.base';
 import { roleSetReducer } from '../../role-set.reducer';
 import { IAppState } from 'app/core';
+import { RoleSetActions } from '../../role-set.actions';
 
 
 @AutoUnsubscribe()
@@ -26,8 +27,10 @@ export class TeEntRoleSetFormComponent  extends RoleSetFormBase {
   constructor(
     protected ngRedux: NgRedux<IAppState>,
     protected ref: ChangeDetectorRef,
-    protected fb: FormBuilder) {
-    super(fb,ngRedux,ref)
+    protected fb: FormBuilder,
+    protected actions: RoleSetActions,
+  ) {
+    super(fb,ngRedux,ref, actions)
 
   }
 
