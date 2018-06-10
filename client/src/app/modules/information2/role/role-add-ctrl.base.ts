@@ -74,7 +74,11 @@ export abstract class RoleAddCtrlBase extends RoleBase {
  */
   writeValue(role: InfRole): void {
 
-    if (this.localStore.getState().isCircular !== true) {
+    if (
+      role &&
+      this.localStore.getState() &&
+      this.localStore.getState().isCircular !== true
+    ) {
       // add a control for the epr option "is_standard_in_project" (is_display_role_for_range)
       this.isStandard = role.entity_version_project_rels[0].is_standard_in_project
       this.isInProject = role.entity_version_project_rels[0].is_in_project;

@@ -1,16 +1,9 @@
 import { Injectable } from '@angular/core';
-
+import { DfhProperty, DfhPropertyApi } from 'app/core';
+import { omit } from 'ramda';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { DfhPropertyApi, DfhProperty } from 'app/core';
-import { RoleSetLabelObj, RoleSet } from '../information.models';
 
-
-interface Label {
-  sg?: string;
-  pl?: string;
-}
-
+import { RoleSet, RoleSetLabelObj } from '../information.models';
 
 
 
@@ -204,7 +197,7 @@ export class PropertyService {
     return properties.map(property => {
       return {
         isOutgoing: isOutgoing,
-        property: property,
+        property: omit(['labels'],property),
         targetClassPk: isOutgoing ? property.dfh_has_range : property.dfh_has_domain,
         label: this.createLabelObject(property, isOutgoing)
       } as RoleSet

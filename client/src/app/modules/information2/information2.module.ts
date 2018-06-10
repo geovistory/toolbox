@@ -8,21 +8,74 @@ import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule
 import { KeysModule } from 'app/shared/pipes/keys.module';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 
-import { EntityAddModalModule } from './add-modal/entity-add-modal.module';
-import { EntitySearchHitModule } from './components/entity-search-hit/entity-search-hit.module';
+import { EntityAddExistingActions } from './add-modal/entity-add-add-existing/entity-add-add-existing.actions';
+import { EntityAddAddExistingComponent } from './add-modal/entity-add-add-existing/entity-add-add-existing.component';
+import { EntityAddChooseClassComponent } from './add-modal/entity-add-choose-class/entity-add-choose-class.component';
+import { EntityCreateNewActions } from './add-modal/entity-add-create-new/entity-add-create-new.actions';
+import { EntityAddCreateNewComponent } from './add-modal/entity-add-create-new/entity-add-create-new.component';
+import { EntityAddModalComponent } from './add-modal/entity-add-modal/entity-add-modal.component';
+import {
+  EntityAddSearchExistingComponent,
+} from './add-modal/entity-add-search-existing/entity-add-search-existing.component';
 import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
 import { EntityEditorComponent } from './containers/entity-editor/entity.editor.component';
+import { PeItAddCtrlComponent } from './data-unit/pe-it/pe-it-add-ctrl/pe-it-add-ctrl.component';
+import { PeItAddFormComponent } from './data-unit/pe-it/pe-it-add-form/pe-it-add-form.component';
+import { PeItCreateCtrlComponent } from './data-unit/pe-it/pe-it-create-ctrl/pe-it-create-ctrl.component';
+import { PeItCreateFormComponent } from './data-unit/pe-it/pe-it-create-form/pe-it-create-form.component';
+import { PeItEditableComponent } from './data-unit/pe-it/pe-it-editable/pe-it-editable.component';
+import { PeItActions } from './data-unit/pe-it/pe-it.actions';
+import { TeEntAddCtrlComponent } from './data-unit/te-ent/te-ent-add-ctrl/te-ent-add-ctrl.component';
+import { TeEntCreateCtrlComponent } from './data-unit/te-ent/te-ent-create-ctrl/te-ent-create-ctrl.component';
+import { TeEntEditableComponent } from './data-unit/te-ent/te-ent-editable/te-ent-editable.component';
+import { TeEntActions } from './data-unit/te-ent/te-ent.actions';
 import { InformationRoutingModule } from './information-routing.module';
+import { PeItRoleSetAddCtrlComponent } from './role-set/pe-it/pe-it-role-set-add-ctrl/pe-it-role-set-add-ctrl.component';
+import {
+  PeItRoleSetCreateCtrlComponent,
+} from './role-set/pe-it/pe-it-role-set-create-ctrl/pe-it-role-set-create-ctrl.component';
+import { PeItRoleSetEditableComponent } from './role-set/pe-it/pe-it-role-set-editable/pe-it-role-set-editable.component';
+import { PeItRoleSetFormComponent } from './role-set/pe-it/pe-it-role-set-form/pe-it-role-set-form.component';
+import { RoleSetActions } from './role-set/role-set.actions';
+import { TeEntRoleSetAddCtrlComponent } from './role-set/te-ent/te-ent-role-set-add-ctrl/te-ent-role-set-add-ctrl.component';
+import {
+  TeEntRoleSetCreateCtrlComponent,
+} from './role-set/te-ent/te-ent-role-set-create-ctrl/te-ent-role-set-create-ctrl.component';
+import {
+  TeEntRoleSetEditableComponent,
+} from './role-set/te-ent/te-ent-role-set-editable/te-ent-role-set-editable.component';
+import { TeEntRoleSetFormComponent } from './role-set/te-ent/te-ent-role-set-form/te-ent-role-set-form.component';
+import { PeItRoleAddCtrlComponent } from './role/pe-it/pe-it-role-add-ctrl/pe-it-role-add-ctrl.component';
+import { PeItRoleCreateCtrlComponent } from './role/pe-it/pe-it-role-create-ctrl/pe-it-role-create-ctrl.component';
+import { PeItRoleEditableComponent } from './role/pe-it/pe-it-role-editable/pe-it-role-editable.component';
+import { RoleActions } from './role/role.actions';
+import { TeEntRoleAddCtrlComponent } from './role/te-ent/te-ent-role-add-ctrl/te-ent-role-add-ctrl.component';
+import { TeEntRoleCreateCtrlComponent } from './role/te-ent/te-ent-role-create-ctrl/te-ent-role-create-ctrl.component';
+import { TeEntRoleEditableComponent } from './role/te-ent/te-ent-role-editable/te-ent-role-editable.component';
 import { ClassService } from './shared/class.service';
+import { EntityAddModalService } from './shared/entity-add-modal.service';
 import { EprService } from './shared/epr.service';
 import { PeItService } from './shared/pe-it.service';
 import { PropertyService } from './shared/property.service';
 import { RoleSetService } from './shared/role-set.service';
 import { RoleService } from './shared/role.service';
+import { StateCreatorService } from './shared/state-creator.service';
 import { TeEntService } from './shared/te-ent.service';
 import { AppellationCtrlComponent } from './value/appellation-ctrl/appellation-ctrl.component';
-import { AppellationLabelEditorComponent } from './value/appellation-ctrl/appellation-label-editor/appellation-label-editor.component';
-import { AppellationLabelTokenComponent } from './value/appellation-ctrl/appellation-label-token/appellation-label-token.component';
+import {
+  AppellationLabelEditorComponent,
+} from './value/appellation-ctrl/appellation-label-editor/appellation-label-editor.component';
+import {
+  AppellationLabelTokenComponent,
+} from './value/appellation-ctrl/appellation-label-token/appellation-label-token.component';
+import { AppellationViewComponent } from './value/appellation-view/appellation-view.component';
+import { LanguageCtrlComponent } from './value/language-ctrl/language-ctrl.component';
+import { LanguageViewComponent } from './value/language-view/language-view.component';
+import { LeafPeItCtrlComponent } from './value/leaf-pe-it-ctrl/leaf-pe-it-ctrl.component';
+import { LeafPeItViewModalComponent } from './value/leaf-pe-it-view/leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
+import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.component';
+import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
+import { AppellationService } from './shared/appellation.service';
 
 @NgModule({
   imports: [
@@ -45,20 +98,84 @@ import { AppellationLabelTokenComponent } from './value/appellation-ctrl/appella
     PassiveLinkModule,
     TimelineModule,
     KeysModule,
-    
-
-    // Module wide reusable components
-    EntitySearchHitModule
 
   ],
   declarations: [
-    ProjectEntitiesComponent,
     EntityEditorComponent,
+    ProjectEntitiesComponent,
+    EntitySearchHitComponent,
+
+    // Add Modal
+    EntityAddAddExistingComponent,
+    EntityAddChooseClassComponent,
+    EntityAddCreateNewComponent,
+    EntityAddModalComponent,
+    EntityAddSearchExistingComponent,
+
+    // Data Unit > PeIt
+    PeItAddCtrlComponent,
+    PeItCreateCtrlComponent,
+    PeItEditableComponent,
+    PeItAddFormComponent,
+    PeItCreateFormComponent,
+
+    // Data Unit > TeEnt
+    TeEntAddCtrlComponent,
+    TeEntCreateCtrlComponent,
+    TeEntEditableComponent,
+
+    // Role Set
+    PeItRoleSetAddCtrlComponent,
+    PeItRoleSetCreateCtrlComponent,
+    PeItRoleSetEditableComponent,
+    PeItRoleSetFormComponent,
+    TeEntRoleSetAddCtrlComponent,
+    TeEntRoleSetCreateCtrlComponent,
+    TeEntRoleSetEditableComponent,
+    TeEntRoleSetFormComponent,
+
+    // Role
+    PeItRoleAddCtrlComponent,
+    PeItRoleCreateCtrlComponent,
+    PeItRoleEditableComponent,
+    TeEntRoleAddCtrlComponent,
+    TeEntRoleCreateCtrlComponent,
+    TeEntRoleEditableComponent,
+
+    // Value
     AppellationCtrlComponent,
+    AppellationViewComponent,
     AppellationLabelEditorComponent,
-    AppellationLabelTokenComponent
+    AppellationLabelTokenComponent,
+    LanguageCtrlComponent,
+    LanguageViewComponent,
+    LeafPeItCtrlComponent,
+    LeafPeItViewComponent,
+    LeafPeItViewModalComponent
+
   ],
   providers: [
+
+    // Add Modal
+    EntityAddModalService,
+    EntityCreateNewActions,
+    EntityAddExistingActions,
+
+    // Data Unit
+    PeItActions,
+    TeEntActions,
+
+    // Role Set
+    RoleSetActions,
+
+    // Role
+    RoleActions,
+
+    // Value
+    AppellationService,
+
+    // Shared
+    StateCreatorService,
     PeItService,
     TeEntService,
     ClassService,
@@ -68,8 +185,52 @@ import { AppellationLabelTokenComponent } from './value/appellation-ctrl/appella
     RoleSetService,
   ],
   exports: [
-    AppellationCtrlComponent,
+    // Put all components here, that are used by another module, or in a sandbox
+  
+    // Add Modal
+    EntityAddModalComponent,
 
+    // Data Unit > PeIt
+    PeItAddCtrlComponent,
+    PeItCreateCtrlComponent,
+    PeItEditableComponent,
+    PeItAddFormComponent,
+    PeItCreateFormComponent,
+
+    // Data Unit > TeEnt
+    TeEntAddCtrlComponent,
+    TeEntCreateCtrlComponent,
+    TeEntEditableComponent,
+
+    // Role Set
+    PeItRoleSetAddCtrlComponent,
+    PeItRoleSetCreateCtrlComponent,
+    PeItRoleSetEditableComponent,
+    PeItRoleSetFormComponent,
+    TeEntRoleSetAddCtrlComponent,
+    TeEntRoleSetCreateCtrlComponent,
+    TeEntRoleSetEditableComponent,
+    TeEntRoleSetFormComponent,
+
+    // Role
+    PeItRoleAddCtrlComponent,
+    PeItRoleCreateCtrlComponent,
+    PeItRoleEditableComponent,
+    TeEntRoleAddCtrlComponent,
+    TeEntRoleCreateCtrlComponent,
+    TeEntRoleEditableComponent,
+
+    // Value
+    AppellationCtrlComponent,
+    AppellationViewComponent,
+    LanguageCtrlComponent,
+    LanguageViewComponent,
+    LeafPeItCtrlComponent,
+    LeafPeItViewComponent,
+  ],
+  entryComponents: [
+    LeafPeItViewModalComponent,
+    EntityAddModalComponent
   ]
 })
 export class Information2Module { }

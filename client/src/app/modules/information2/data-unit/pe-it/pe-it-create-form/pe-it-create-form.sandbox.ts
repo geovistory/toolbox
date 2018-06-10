@@ -1,73 +1,17 @@
-import { sandboxOf } from "angular-playground";
-import { PeItCreateFormComponent } from "./pe-it-create-form.component";
-import { DfhClass, DfhProperty, DfhLabel } from "app/core";
-import { mockPerson } from "./sandbox.mock";
-import { PeItRoleSetCreateCtrlComponent } from "../../../role-set/pe-it/pe-it-role-set-create-ctrl/pe-it-role-set-create-ctrl.component";
-import { PeItRoleCreateCtrlComponent } from "../../../role/pe-it/pe-it-role-create-ctrl/pe-it-role-create-ctrl.component";
-import { TeEntCreateCtrlComponent } from "../../te-ent/te-ent-create-ctrl/te-ent-create-ctrl.component";
-import { TeEntRoleSetCreateCtrlComponent } from "../../../role-set/te-ent/te-ent-role-set-create-ctrl/te-ent-role-set-create-ctrl.component";
-import { TeEntRoleCreateCtrlComponent } from "../../../role/te-ent/te-ent-role-create-ctrl/te-ent-role-create-ctrl.component";
-import { AppellationCtrlComponent } from "../../../value/appellation-ctrl/appellation-ctrl.component";
-import { PeItCreateCtrlComponent } from "../pe-it-create-ctrl/pe-it-create-ctrl.component";
-import { PeItActions } from "../pe-it.actions";
-import { NgReduxFormModule } from "@angular-redux/form";
-import { KeysModule } from "app/shared/pipes/keys.module";
-import { RoleSetActions } from "../../../role-set/role-set.actions";
-import { RoleActions } from "../../../role/role.actions";
-import { StateCreatorService } from "../../../shared/state-creator.service";
-import { RoleSetService } from "../../../shared/role-set.service";
-import { RoleService } from "../../../shared/role.service";
-import { ClassService } from "../../../shared/class.service";
-import { PropertyService } from "../../../shared/property.service";
-import { PeItService } from "../../../shared/pe-it.service";
-import { TeEntService } from "../../../shared/te-ent.service";
-import { EprService } from "../../../shared/epr.service";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { TeEntActions } from "../../te-ent/te-ent.actions";
-import { AppellationLabelTokenComponent } from "../../../value/appellation-ctrl/appellation-label-token/appellation-label-token.component";
-import { AppellationLabelEditorComponent } from "../../../value/appellation-ctrl/appellation-label-editor/appellation-label-editor.component";
-import { AppellationService } from "../../../shared/appellation.service";
-import { InitStateModule } from "app/shared/components/init-state/init-state.module";
-import { LanguageCtrlComponent } from "../../../value/language-ctrl/language-ctrl.component";
-import { LanguageSearchTypeaheadModule } from "app/shared";
+import { sandboxOf } from 'angular-playground';
+import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
+
+import { PeItCreateFormComponent } from './pe-it-create-form.component';
+import { mockPerson } from './sandbox.mock';
+import { Information2Module } from '../../../information2.module';
 
 
 export default sandboxOf(PeItCreateFormComponent, {
   imports: [
     InitStateModule,
-    NgReduxFormModule,
-    KeysModule,
-    BrowserAnimationsModule,
-    LanguageSearchTypeaheadModule
+    Information2Module
   ],
-  declarations: [
-    PeItCreateCtrlComponent,
-    PeItRoleSetCreateCtrlComponent,
-    PeItRoleCreateCtrlComponent,
-    TeEntCreateCtrlComponent,
-    TeEntRoleSetCreateCtrlComponent,
-    TeEntRoleCreateCtrlComponent,
-    AppellationCtrlComponent,
-    AppellationLabelEditorComponent,
-    AppellationLabelTokenComponent,
-    LanguageCtrlComponent
-    
-  ],
-  providers: [
-    PeItActions,
-    RoleSetActions,
-    RoleActions,
-    TeEntActions,
-    RoleSetService,
-    RoleService,
-    ClassService,
-    PropertyService,
-    StateCreatorService,
-    PeItService,
-    TeEntService,
-    EprService,
-    AppellationService
-  ]
+  declareComponent: false
 })
   .add('PeIt Create Form | Person ', {
     context: {

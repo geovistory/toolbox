@@ -1,10 +1,10 @@
-import { NgRedux, WithSubStore } from '@angular-redux/store';
+import { NgRedux, WithSubStore, select } from '@angular-redux/store';
 import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-import { IAppState, InfRole } from 'app/core';
+import { IAppState, InfRole, InfPersistentItem } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { ReplaySubject, Subscription } from 'rxjs';
+import { ReplaySubject, Subscription, Observable } from 'rxjs';
 
 import { PeItDetail } from '../../information.models';
 import { StateCreatorService } from '../../shared/state-creator.service';
@@ -66,6 +66,9 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
   // parent role, needed to create a proper role value to emit onChange of the form
   role: InfRole;
 
+  @select() peIt$: Observable<InfPersistentItem>;
+  @select() loading$: Observable<boolean>;
+
   constructor(
     // private route: ActivatedRoute,
     // private router: Router,
@@ -78,14 +81,27 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
     console.log('LeafPeItViewComponent')
   }
 
-
   ngOnInit() {
 
 
-    console.log('LeafPeItViewComponent onInit', this.pkEntity)
     const peItDetail = this.ngRedux.configureSubStore(this.basePath, leafPeItReducer).getState();
-    if (!peItDetail.peIt)
+
+    // this.subs.push(
+    //   this.loading$.subscribe(bool=>{
+    //     if(bool !== true){
+    //       this.initPeItState();
+    //     }else{
+    //       this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(peItDetail._roleSet_list);
+
+    //     }
+    //   })
+    // )
+    if (!peItDetail.peIt) {
+      console.log('LeafPeItViewComponent leafPeItStartLoading', this.pkEntity)
+      // this.leafPeItStartLoading();
       this.initPeItState();
+    }
+
     else
       this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(peItDetail._roleSet_list);
 
@@ -108,6 +124,7 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
   initPeItState() {
     this.leafPeItLoading$ = new ReplaySubject<boolean>();
     this.leafPeItLoading$.next(true);
+    this.leafPeItStartLoading();
 
     const pkProject = this.ngRedux.getState().activeProject.pk_project;
     this.subs.push(

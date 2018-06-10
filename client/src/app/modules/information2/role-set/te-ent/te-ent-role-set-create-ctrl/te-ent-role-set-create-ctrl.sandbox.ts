@@ -1,45 +1,19 @@
-import { sandboxOf } from "angular-playground";
-import { TeEntRoleSetCreateCtrlComponent } from "./te-ent-role-set-create-ctrl.component";
-import { InitStateModule } from "app/shared/components/init-state/init-state.module";
-import { AppellationCtrlModule } from "../../../value/appellation-ctrl/appellation-ctrl.module";
-import { InfRole, DfhLabel, DfhProperty } from "app/core";
-import { RoleDetail, RoleSet } from "../../../information.models";
-import { TeEntRoleCreateCtrlComponent } from "../../../role/te-ent/te-ent-role-create-ctrl/te-ent-role-create-ctrl.component";
-import { KeysModule } from "app/shared/pipes/keys.module";
-import { RoleSetActions } from "../../role-set.actions";
-import { RoleSetService } from "../../../shared/role-set.service";
-import { RoleService } from "../../../shared/role.service";
-import { RoleActions } from "../../../role/role.actions";
-import { StateCreatorService } from "../../../shared/state-creator.service";
-import { ClassService } from "../../../shared/class.service";
-import { PropertyService } from "../../../shared/property.service";
-import { PeItService } from "../../../shared/pe-it.service";
-import { TeEntService } from "../../../shared/te-ent.service";
-import { EprService } from "../../../shared/epr.service";
+import { sandboxOf } from 'angular-playground';
+import { DfhProperty, InfRole } from 'app/core';
+import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
+
+import { RoleDetail, RoleSet } from '../../../information.models';
+import { Information2Module } from '../../../information2.module';
+import { TeEntRoleSetCreateCtrlComponent } from './te-ent-role-set-create-ctrl.component';
 
 
 
 export default sandboxOf(TeEntRoleSetCreateCtrlComponent, {
     imports: [
         InitStateModule,
-        AppellationCtrlModule,
-        KeysModule
+        Information2Module
     ],
-    declarations: [
-        TeEntRoleCreateCtrlComponent
-    ],
-    providers: [
-        RoleSetActions,
-        RoleSetService,
-        RoleService,
-        RoleActions,
-        StateCreatorService,
-        ClassService,
-        PropertyService,
-        PeItService,
-        TeEntService,
-        EprService,
-    ]
+    declareComponent: false
 })
     .add('TeEnt RoleSet Create Ctrl | Detailed Name ', {
         context: {

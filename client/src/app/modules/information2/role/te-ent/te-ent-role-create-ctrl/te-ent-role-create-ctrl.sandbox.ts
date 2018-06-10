@@ -1,10 +1,10 @@
-import { TeEntRoleCreateCtrlComponent } from "./te-ent-role-create-ctrl.component";
-import { sandboxOf } from "angular-playground";
-import { InitStateModule } from "app/shared/components/init-state/init-state.module";
-import { AppellationCtrlModule } from "../../../value/appellation-ctrl/appellation-ctrl.module";
-import { RoleDetail, RoleSet } from "../../../information.models";
-import { InfRole } from "app/core";
-import { AppellationLabel } from "../../../shared/appellation-label";
+import { sandboxOf } from 'angular-playground';
+import { InfRole } from 'app/core';
+import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
+
+import { RoleDetail, RoleSet } from '../../../information.models';
+import { Information2Module } from '../../../information2.module';
+import { TeEntRoleCreateCtrlComponent } from './te-ent-role-create-ctrl.component';
 
 
 
@@ -12,14 +12,9 @@ import { AppellationLabel } from "../../../shared/appellation-label";
 export default sandboxOf(TeEntRoleCreateCtrlComponent, {
     imports: [
         InitStateModule,
-        AppellationCtrlModule
+        Information2Module
     ],
-    declarations: [
-
-    ],
-    providers: [
-
-    ]
+    declareComponent: false
 })
     .add('TeEnt Role Create Ctrl | Appe filled ', {
         context: {

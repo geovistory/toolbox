@@ -2,14 +2,14 @@ import { sandboxOf } from 'angular-playground';
 import { InfRole } from 'app/core';
 
 import { LanguageCtrlComponent } from './language-ctrl.component';
-import { LanguageCtrlModule } from './language-ctrl.module';
+import { Information2Module } from '../../information2.module';
 
 
 
 export default sandboxOf(LanguageCtrlComponent, {
     declareComponent:false,
     imports: [
-        LanguageCtrlModule
+        Information2Module
     ]
 })
     .add('Language Ctrl | Select ', {

@@ -1,5 +1,4 @@
-import { InfPersistentItem, DfhClass, DfhProperty, InfRole, InfTemporalEntity, InfAppellation } from "app/core";
-import { FormGroup } from "@angular/forms";
+import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity } from 'app/core';
 
 /**
  * Root state for Information Module
@@ -33,7 +32,6 @@ export interface DataUnit {
     pkEntity?: number,
     // roles?: InfRole[],
 
-    parentPeIt?: InfPersistentItem,
 
     fkClass?: number;
     dfhClass?: DfhClass;
@@ -66,6 +64,7 @@ export interface PeItDetail extends DataUnit {
     /** display data */
     ontoInfoVisible?: boolean;
     communityStatsVisible?: boolean
+    loading?:boolean; //for leaf pe it view
 }
 
 
@@ -81,6 +80,9 @@ export interface TeEntDetail extends DataUnit {
 
     _existenceTime?: ExistenceTimeDetail;
 
+    parentPeIt?: InfPersistentItem,
+
+
 }
 
 
@@ -92,7 +94,7 @@ export interface TeEntDetail extends DataUnit {
 
 export interface RoleSet {
 
-    _role_list?: RoleDetailList
+    _role_list?: RoleDetailList;
 
     _role_set_form?: RoleSetForm
 

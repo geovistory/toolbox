@@ -57,6 +57,8 @@ export class PeItEditableComponent extends DataUnitBase {
     protected fb: FormBuilder
   ) {
     super(fb)
+    console.log('PeItEditableComponent')
+
   }
 
   init() {

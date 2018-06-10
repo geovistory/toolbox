@@ -14,7 +14,18 @@ export const leafPeItReducer =
         switch (action.type) {
 
             case LeafPeItActions.LEAF_PE_IT_STATE_ADDED:
-                lastState = action.payload
+                lastState = {
+                    ...lastState,
+                    ...action.payload,
+                    // loading: false
+                }
+                break;
+
+            case LeafPeItActions.LEAF_PE_IT_START_LOADING:
+                lastState = {
+                    ...lastState,
+                    loading: true
+                }
                 break;
 
         }

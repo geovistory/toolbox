@@ -31,7 +31,7 @@
         </button>
       </div> -->
 
-    <gv-pe-it-role-set-form *ngIf="(_role_set_form$ | async)" [parentPath]="basePath" (startCreateNewRole)="startCreateNewRole()"
+    <gv-pe-it-role-set-form *ngIf="(_role_set_form$ | async)" [parentPath]="basePath" [parentPeItPath]="parentPeItStatePath" (startCreateNewRole)="startCreateNewRole()"
       (cancelCreateRoles)="cancelCreateRoles()" (createRoles)="createRoles($event)"></gv-pe-it-role-set-form>
 
 

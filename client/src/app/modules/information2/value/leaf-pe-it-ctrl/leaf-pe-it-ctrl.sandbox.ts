@@ -2,23 +2,17 @@ import { sandboxOf } from 'angular-playground';
 import { InfRole } from 'app/core';
 
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
+import { Information2Module } from '../../information2.module';
 import { LeafPeItCtrlComponent } from './leaf-pe-it-ctrl.component';
-import { LeafPeItCtrlModule } from './leaf-pe-it-ctrl.module';
 
 
 
 export default sandboxOf(LeafPeItCtrlComponent, {
-    declareComponent: false,
     imports: [
         InitStateModule,
-        LeafPeItCtrlModule
+        Information2Module
     ],
-    declarations: [
-
-    ],
-    providers: [
-
-    ]
+    declareComponent: false
 })
     .add('Leaf PeIt Ctrl ', {
         context: {

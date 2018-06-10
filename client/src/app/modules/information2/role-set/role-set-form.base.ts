@@ -1,13 +1,12 @@
-import { select, WithSubStore } from '@angular-redux/store';
-import { Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { EventEmitter, Input, OnInit, Output, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { IAppState, InfEntityProjectRel, InfRole, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable, Subscription } from 'rxjs';
 
-import { RoleDetailList, RoleSetForm } from '../information.models';
+import { RoleDetailList, RoleSet, RoleSetForm } from '../information.models';
 import { roleSetReducer } from './role-set.reducer';
-import { InfEntityProjectRel, InfRole, U } from 'app/core';
-import { createTimelineInstruction } from '@angular/animations/browser/src/dsl/animation_timeline_instruction';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -19,9 +18,11 @@ export abstract class RoleSetFormBase implements OnInit {
 
     @Input() parentPath: string[];
 
-    @Output() cancelCreateRoles: EventEmitter<void> = new EventEmitter()
-    @Output() startCreateNewRole: EventEmitter<void> = new EventEmitter()
-    @Output() createRoles: EventEmitter<InfRole[]> = new EventEmitter()
+    @Output() addFormChange: EventEmitter<FormGroup> = new EventEmitter();
+    @Output() createFormChange: EventEmitter<FormGroup> = new EventEmitter();
+    @Output() onCancelCreateRoles: EventEmitter<void> = new EventEmitter()
+    @Output() onStartCreateNewRole: EventEmitter<void> = new EventEmitter()
+    @Output() onCreateRoles: EventEmitter<InfRole[]> = new EventEmitter()
 
     @select() _role_set_form$: Observable<RoleSetForm>
 
@@ -39,7 +40,17 @@ export abstract class RoleSetFormBase implements OnInit {
     createForm: FormGroup; // createForm to create roles
     addForm: FormGroup; // addForm to add existing roles
 
-    constructor(protected fb: FormBuilder) {
+    localStore: ObservableStore<RoleSet>;
+
+    createFormControlCount: number = 0;
+
+    constructor(
+        protected fb: FormBuilder,
+        protected ngRedux: NgRedux<IAppState>,
+        protected ref: ChangeDetectorRef
+    ) {
+
+
         this.initForms();
 
         this.initFormSubscription();
@@ -47,21 +58,36 @@ export abstract class RoleSetFormBase implements OnInit {
     }
 
     ngOnInit() {
+
+        this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), roleSetReducer)
+
         this.roleSetFormPath = [...this.parentPath, '_role_set_form'];
 
-        this.subs.push(
-            this._role_set_form$.subscribe(d => {
-                this._role_set_form = d;
-                if (d) {
-                    this._role_create_list = d._role_create_list;
-                    this._role_add_list = d._role_add_list;
-                }
+        this.initRoleSetFormBaseChild()
 
-                this.initFormCtrls();
+        // this._role_add_list$.subscribe(d => {
+        //     if(d) this.initAddFormCtrls(d);
+        // })
 
-            })
-        )
+        // this.initFormCtrls();
+
+        // this.subs.push(
+        //     this._role_set_form$.subscribe(d => {
+        //         this._role_set_form = d;
+        //         if (d) {
+        //             this._role_create_list = d._role_create_list;
+        //             this._role_add_list = d._role_add_list;
+        //             this.initFormCtrls();
+        //         }
+
+
+        //     })
+        // )
+
+
     }
+
+    abstract initRoleSetFormBaseChild(): void
 
     ngOnDestroy() {
         this.subs.forEach(sub => sub.unsubscribe());
@@ -116,7 +142,7 @@ export abstract class RoleSetFormBase implements OnInit {
     /**
       * Initializes the form controls
      */
-    initFormCtrls() {
+    initCreateFormCtrls() {
 
 
         // add controls for each role to create
@@ -130,30 +156,35 @@ export abstract class RoleSetFormBase implements OnInit {
                 }
             })
         }
+    }
 
+    /**
+    * Initializes the form controls
+    */
+    initAddFormCtrls(_role_add_list:RoleDetailList) {
+        this._role_add_list = _role_add_list;
         // add controls for each role to add
-        if (this._role_set_form && this._role_set_form._role_add_list) {
-            Object.keys(this._role_set_form._role_add_list).forEach((key) => {
-                const roleDetail = this._role_set_form._role_add_list[key]
-                if (roleDetail) {
+        Object.keys(_role_add_list).forEach((key) => {
+            const roleDetail = _role_add_list[key]
+            if (roleDetail && roleDetail.role) {
 
-                    const role = roleDetail.role;
+                const role = roleDetail.role;
 
-                    // prepare the role for relation with project
-                    role.entity_version_project_rels = [
-                        role.entity_version_project_rels ?
-                            role.entity_version_project_rels[0] : {
-                                is_in_project: false,
-                                is_standard_in_project: false
-                            } as InfEntityProjectRel
-                    ]
+                // prepare the role for relation with project
+                role.entity_version_project_rels = [
+                    role.entity_version_project_rels ?
+                        role.entity_version_project_rels[0] : {
+                            is_in_project: false,
+                            is_standard_in_project: false
+                        } as InfEntityProjectRel
+                ]
 
-                    const roleCtrl = new FormControl(role, [Validators.required]);
-                    this.addForm.addControl(key, roleCtrl)
-                }
-            })
-        }
+                const roleCtrl = new FormControl(role, [Validators.required]);
+                this.addForm.addControl(key, roleCtrl)
+            }
+        })
 
+        this.ref.detectChanges()
     }
 
     abstract submit(): void;

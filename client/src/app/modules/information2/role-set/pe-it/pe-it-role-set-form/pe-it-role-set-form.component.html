@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-link" (click)="cancelCreateRoles.emit()">
+<button type="button" class="btn btn-link" (click)="cancelCreateRoles()">
   <i class="fa fa-close"></i>
 </button>
 
@@ -18,7 +18,7 @@
   
   <div class="card-body">
     <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Add selected</button>
-    <button type="button" class="btn btn-primary" (click)="startCreateNewRole.emit()">Create new</button>
+    <button type="button" class="btn btn-primary" (click)="startCreateNewRole()">Create new</button>
 
   </div>
 
@@ -40,6 +40,6 @@
 
   <div class="card-body">
     <button [disabled]="createForm.invalid" type="submit" class="btn btn-primary">Ok</button>
-    <button type="button" class="btn btn-link" (click)="cancelCreateRoles.emit()">Cancel</button>
+    <button type="button" class="btn btn-link" (click)="cancelCreateRoles()">Cancel</button>
   </div>
 </form>

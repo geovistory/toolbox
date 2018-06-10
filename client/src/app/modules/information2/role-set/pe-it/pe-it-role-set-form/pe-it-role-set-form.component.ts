@@ -1,9 +1,17 @@
-import { WithSubStore } from '@angular-redux/store';
-import { Component,  } from '@angular/core';
-import { FormBuilder,  } from '@angular/forms';
+import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
+import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { IAppState, InfPersistentItem, InfPersistentItemApi, InfRole, InfRoleApi, InfTemporalEntity } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Observable } from 'rxjs';
+import { timer } from 'rxjs/observable/timer';
 
+import { peItReducer } from '../../../data-unit/pe-it/pe-it.reducer';
+import { PeItDetail, RoleDetail, RoleDetailList } from '../../../information.models';
+import { ClassService } from '../../../shared/class.service';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetFormBase } from '../../role-set-form.base';
+import { RoleSetActions } from '../../role-set.actions';
 import { roleSetReducer } from '../../role-set.reducer';
 
 @AutoUnsubscribe()
@@ -14,19 +22,189 @@ import { roleSetReducer } from '../../role-set.reducer';
 @Component({
   selector: 'gv-pe-it-role-set-form',
   templateUrl: './pe-it-role-set-form.component.html',
-  styleUrls: ['./pe-it-role-set-form.component.scss']
+  styleUrls: ['./pe-it-role-set-form.component.scss'],
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class PeItRoleSetFormComponent extends RoleSetFormBase {
 
 
-  
-  constructor(protected fb: FormBuilder) {
-    super(fb)
+  @Input() parentPeItPath: string[];
+
+  parentPeItStore: ObservableStore<PeItDetail>;
+
+  submit(): void {
+  }
+
+  constructor(
+    protected fb: FormBuilder,
+    protected ngRedux: NgRedux<IAppState>,
+    protected roleApi: InfRoleApi,
+    protected stateCreator: StateCreatorService,
+    protected actions: RoleSetActions,
+    protected classService: ClassService,
+    protected peItApi: InfPersistentItemApi,
+    protected ref: ChangeDetectorRef
+  ) {
+    super(fb, ngRedux, ref)
+    console.log('PeItRoleSetFormComponent')
 
   }
 
-  submit() {
-    // (click)="createRoles()"
+  initRoleSetFormBaseChild(): void {
+    this.parentPeItStore = this.ngRedux.configureSubStore(this.parentPeItPath, peItReducer)
+
+    this.loadAlternativeRoles()
+  }
+
+
+  loadAlternativeRoles() {
+
+    const s = this.localStore.getState();
+    const ps = this.parentPeItStore.getState();
+
+    const fkProperty = s.property.dfh_pk_property;
+    const fkEntity = ps.peIt.pk_entity;
+    const fkProject = this.ngRedux.getState().activeProject.pk_project;
+
+    const waitAtLeast = timer(800);
+    const apiCall = this.roleApi.alternativesNotInProjectByEntityPk(fkEntity, fkProperty, fkProject)
+
+    this.subs.push(Observable.combineLatest([waitAtLeast, apiCall])
+      .subscribe((results) => {
+
+        const rolesInOtherProjects = results[1].filter(role => parseInt(role.is_in_project_count) > 0);
+        const rolesInNoProject = results[1].filter(role => parseInt(role.is_in_project_count) == 0);
+
+        const inOther$ = this.stateCreator.initializeRoleDetails(rolesInOtherProjects, s.isOutgoing)
+        const inNo$ = this.stateCreator.initializeRoleDetails(rolesInNoProject, s.isOutgoing)
+
+        Observable.combineLatest(inOther$, inNo$).subscribe(results => {
+          const roleStatesInOtherProjects = results[0], roleStatesInNoProjects = results[1]
+
+          this.localStore.dispatch(this.actions.alternativeRolesLoaded(
+            roleStatesInOtherProjects,
+            roleStatesInNoProjects
+          ))
+
+          this.initAddFormCtrls(roleStatesInOtherProjects)
+
+          if (rolesInOtherProjects.length === 0) {
+            this.startCreateNewRole();
+          }
+
+        })
+      }))
+
+  }
+
+
+  /**
+  * Called when user clicks on create new or when loading alternative roles returned 0 alt. roles
+  * Creates a new RoleDetail of the kind of property of this component
+  * and pointing to the parent persistent item
+  */
+  startCreateNewRole() {
+
+    const s = this.localStore.getState();
+    const ps = this.parentPeItStore.getState();
+
+
+    this.subs.push(this.classService.getByPk(s.targetClassPk).subscribe(targetDfhClass => {
+
+      const roleToCreate = new InfRole();
+      roleToCreate.fk_property = s.property.dfh_pk_property;
+      roleToCreate.fk_entity = ps.peIt.pk_entity;
+
+      let teEnt = new InfTemporalEntity;
+      teEnt.fk_class = targetDfhClass.dfh_pk_class;
+      roleToCreate.temporal_entity = teEnt;
+
+      const options: RoleDetail = {
+        targetDfhClass,
+        toggle: 'expanded'
+      }
+
+      this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, s.isOutgoing, options).subscribe(roleStateToCreate => {
+
+
+        console.log(JSON.stringify(roleStateToCreate))
+
+        /** add a form control */
+        const formControlName = 'new_role_' + this.createFormControlCount;
+        this.createFormControlCount++;
+        this.createForm.addControl(formControlName, new FormControl(
+          roleStateToCreate.role, [Validators.required]))
+
+        /** update the state */
+        const roleDetailList: RoleDetailList = {};
+        roleDetailList[formControlName] = roleStateToCreate;
+        this.localStore.dispatch(this.actions.startCreateNewRole(roleDetailList))
+      }))
+    })
+    )
+  }
+
+
+  createRoles() {
+    const s = this.localStore.getState();
+
+    if (this.createForm.valid) {
+
+      // prepare peIt 
+      const p = new InfPersistentItem(this.parentPeItStore.getState().peIt);
+      p.pi_roles = [];
+
+      Object.keys(this.createForm.controls).forEach(key => {
+        if (this.createForm.get(key)) {
+          // add roles to create to peIt
+          p.pi_roles.push(this.createForm.get(key).value)
+        }
+      })
+
+      // call api
+      this.subs.push(this.peItApi.findOrCreatePeIt(this.ngRedux.getState().activeProject.pk_project, p).subscribe(peIts => {
+        const roles: InfRole[] = peIts[0].pi_roles;
+
+        // update the form group
+        Object.keys(this.createForm.controls).forEach(key => {
+          this.createForm.removeControl(key)
+        })
+
+
+        // update the state
+        this.subs.push(this.stateCreator.initializeRoleDetails(roles, s.isOutgoing).subscribe(roleStates => {
+          this.localStore.dispatch(this.actions.rolesCreated(roleStates))
+        }))
+
+      }))
+    }
+  }
+
+//   /**
+//  * called when user cancels to create one specific role
+//  *
+//  */
+//   cancelCreateRole(key) {
+
+//     /** remove the form control from form */
+//     this.formGroup.removeControl(key)
+
+//     /** remove the RoleState from state */
+//     const roleStates = Object.assign({}, this.roleSetState._role_set_form._role_create_list);
+//     delete roleStates[key];
+//     this.localStore.dispatch(this.actions.roleCreationCancelled(roleStates));
+
+//   }
+
+  /**
+  *  called when user cancels to create new roles
+  *
+  */
+  cancelCreateRoles() {
+
+    /** remove the RoleState from state */
+    this.localStore.dispatch(this.actions.stopCreateNewRole());
+
   }
 
 }

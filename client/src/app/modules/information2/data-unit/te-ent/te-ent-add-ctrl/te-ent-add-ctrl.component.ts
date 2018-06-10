@@ -2,11 +2,12 @@ import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { InfRole, InfTemporalEntity, U, InfEntityProjectRel } from 'app/core';
-import { pick } from 'ramda';
 
 import { TeEntCtrlBase } from '../te-ent-ctrl.base';
 import { TeEntActions } from '../te-ent.actions';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'gv-te-ent-add-ctrl',
   templateUrl: './te-ent-add-ctrl.component.html',
@@ -36,9 +37,12 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
   }
 
   initFormCtrls(): void {
+    if (this.localStore.getState()) {
 
-    // add controls for each roleSet of _roleSet_list
-    this.subs.push(this._roleSet_list$.subscribe(roleSetList => {
+      // add controls for each roleSet of _roleSet_list
+      const roleSetList = this.localStore.getState()._roleSet_list;
+
+      // this.subs.push(this._roleSet_list$.subscribe(roleSetList => {
 
       if (roleSetList)
         Object.keys(roleSetList).forEach((key) => {
@@ -53,7 +57,8 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
           }
 
         })
-    }))
+      // }))
+    }
 
   }
 
@@ -64,21 +69,23 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
       let role = new InfRole(this.parentRole);
 
       // build a teEnt with all pi_roles given by the form's controls 
-      role.temporal_entity = new InfTemporalEntity(this.teEntState.teEnt);
-      role.temporal_entity.te_roles = [];
-      Object.keys(this.formGroup.controls).forEach(key => {
-        if (this.formGroup.get(key)) {
-          role.temporal_entity.te_roles = [...role.temporal_entity.te_roles, ...this.formGroup.get(key).value]
-        }
-      })
+      if (this.teEntState) {
+        role.temporal_entity = new InfTemporalEntity(this.teEntState.teEnt);
+        role.temporal_entity.te_roles = [];
+        Object.keys(this.formGroup.controls).forEach(key => {
+          if (this.formGroup.get(key)) {
+            role.temporal_entity.te_roles = [...role.temporal_entity.te_roles, ...this.formGroup.get(key).value]
+          }
+        })
 
-      // create the epr
-      role.temporal_entity.entity_version_project_rels = [{
-        is_in_project: true,
-      } as InfEntityProjectRel];
+        // create the epr
+        role.temporal_entity.entity_version_project_rels = [{
+          is_in_project: true,
+        } as InfEntityProjectRel];
 
-      // try to retrieve a appellation label
-      this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(role.temporal_entity);
+        // try to retrieve a appellation label
+        this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(role.temporal_entity);
+      }
 
       if (this.formGroup.valid) {
         // send the teEnt the parent form

@@ -119,7 +119,7 @@ export abstract class TeEntRoleSetBase extends RoleSetAddCtrlBase {
     */
     startAddingRole() {
 
-
+        // initializes the role set form
         this.localStore.dispatch(this.actions.startAddingRole())
 
 

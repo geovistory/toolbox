@@ -2,17 +2,8 @@ import { sandboxOf } from 'angular-playground';
 
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { PeItDetail } from '../../information.models';
-import { AppellationService } from '../../shared/appellation.service';
-import { ClassService } from '../../shared/class.service';
-import { EprService } from '../../shared/epr.service';
-import { PeItService } from '../../shared/pe-it.service';
-import { PropertyService } from '../../shared/property.service';
-import { RoleSetService } from '../../shared/role-set.service';
-import { RoleService } from '../../shared/role.service';
-import { StateCreatorService } from '../../shared/state-creator.service';
-import { TeEntService } from '../../shared/te-ent.service';
+import { Information2Module } from '../../information2.module';
 import { LeafPeItViewComponent } from './leaf-pe-it-view.component';
-import { LeafPeItViewModule } from './leaf-pe-it-view.module';
 
 
 
@@ -20,21 +11,7 @@ import { LeafPeItViewModule } from './leaf-pe-it-view.module';
 export default sandboxOf(LeafPeItViewComponent, {
     imports: [
         InitStateModule,
-        LeafPeItViewModule
-    ],
-    declarations: [
-
-    ],
-    providers: [    
-        StateCreatorService,
-        ClassService,
-        PropertyService,
-        RoleSetService,
-        RoleService,
-        PeItService,
-        TeEntService,
-        EprService,
-        AppellationService
+        Information2Module
     ],
     declareComponent: false
 })

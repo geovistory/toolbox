@@ -1,50 +1,19 @@
 import { sandboxOf } from 'angular-playground';
-import { DfhProperty, InfRole, DfhClass } from 'app/core';
+import { DfhProperty, InfRole } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
-import { KeysModule } from 'app/shared/pipes/keys.module';
 
-import { RoleDetail, RoleSet, RoleSetList, RoleDetailList, RoleSetForm } from '../../../information.models';
-import { RoleActions } from '../../../role/role.actions';
-import {
-    TeEntRoleCreateCtrlComponent,
-} from '../../../role/te-ent/te-ent-role-create-ctrl/te-ent-role-create-ctrl.component';
-import { ClassService } from '../../../shared/class.service';
-import { EprService } from '../../../shared/epr.service';
-import { PeItService } from '../../../shared/pe-it.service';
-import { PropertyService } from '../../../shared/property.service';
-import { RoleSetService } from '../../../shared/role-set.service';
-import { RoleService } from '../../../shared/role.service';
-import { StateCreatorService } from '../../../shared/state-creator.service';
-import { TeEntService } from '../../../shared/te-ent.service';
-import { AppellationCtrlModule } from '../../../value/appellation-ctrl/appellation-ctrl.module';
-import { RoleSetActions } from '../../role-set.actions';
-import { TeEntRoleSetCreateCtrlComponent } from '../te-ent-role-set-create-ctrl/te-ent-role-set-create-ctrl.component';
+import { RoleDetail, RoleDetailList, RoleSetForm } from '../../../information.models';
+import { Information2Module } from '../../../information2.module';
 import { TeEntRoleSetFormComponent } from './te-ent-role-set-form.component';
 
 
 
 export default sandboxOf(TeEntRoleSetFormComponent, {
     imports: [
-        InitStateModule,
-        AppellationCtrlModule,
-        KeysModule
+        InitStateModule,    
+        Information2Module
     ],
-    declarations: [
-        TeEntRoleCreateCtrlComponent,
-        TeEntRoleSetCreateCtrlComponent
-    ],
-    providers: [
-        RoleSetActions,
-        RoleSetService,
-        RoleService,
-        RoleActions,
-        StateCreatorService,
-        ClassService,
-        PropertyService,
-        PeItService,
-        TeEntService,
-        EprService,
-    ]
+    declareComponent: false
 })
     .add('TeEnt RoleSet Form | Born Children', {
         context: {

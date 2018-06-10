@@ -1,64 +1,18 @@
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { sandboxOf } from 'angular-playground';
 import { Project } from 'app/core';
 import { InitPeItEditableStateModule } from 'app/shared';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
-import { KeysModule } from 'app/shared/pipes/keys.module';
 
-import {
-    PeItRoleSetAddCtrlComponent,
-} from '../../../role-set/pe-it/pe-it-role-set-add-ctrl/pe-it-role-set-add-ctrl.component';
-import { RoleSetActions } from '../../../role-set/role-set.actions';
-import {
-    TeEntRoleSetAddCtrlComponent,
-} from '../../../role-set/te-ent/te-ent-role-set-add-ctrl/te-ent-role-set-add-ctrl.component';
-import { PeItRoleAddCtrlComponent } from '../../../role/pe-it/pe-it-role-add-ctrl/pe-it-role-add-ctrl.component';
-import { RoleActions } from '../../../role/role.actions';
-import { TeEntRoleAddCtrlComponent } from '../../../role/te-ent/te-ent-role-add-ctrl/te-ent-role-add-ctrl.component';
-import { AppellationService } from '../../../shared/appellation.service';
-import { RoleSetService } from '../../../shared/role-set.service';
-import { RoleService } from '../../../shared/role.service';
-import { AppellationViewComponent } from '../../../value/appellation-view/appellation-view.component';
-import { LanguageViewComponent } from '../../../value/language-view/language-view.component';
-import { LeafPeItViewModule } from '../../../value/leaf-pe-it-view/leaf-pe-it-view.module';
-import { TeEntAddCtrlComponent } from '../../te-ent/te-ent-add-ctrl/te-ent-add-ctrl.component';
-import { TeEntActions } from '../../te-ent/te-ent.actions';
+import { Information2Module } from '../../../information2.module';
 import { PeItAddCtrlComponent } from '../pe-it-add-ctrl/pe-it-add-ctrl.component';
-import { PeItActions } from '../pe-it.actions';
 
 export default sandboxOf(PeItAddCtrlComponent, {
     imports: [
         InitPeItEditableStateModule,
         InitStateModule,
-        KeysModule,
-        BrowserAnimationsModule,
-        LeafPeItViewModule,
-
+        Information2Module
     ],
-    declarations: [
-        PeItRoleSetAddCtrlComponent,
-        PeItRoleAddCtrlComponent,
-        TeEntAddCtrlComponent,
-        TeEntRoleSetAddCtrlComponent,
-        TeEntRoleAddCtrlComponent,
-        AppellationViewComponent,
-        LanguageViewComponent,
-    ],
-    providers: [
-        PeItActions,
-        TeEntActions,
-        RoleSetActions,
-        RoleActions,
-        RoleSetService,
-        RoleService,
-        // StateCreatorService,
-        // ClassService,
-        // PropertyService,
-        // PeItService,
-        // TeEntService,
-        // EprService,
-        AppellationService,
-    ]
+    declareComponent: false
 })
     .add('PeIt add form', {
         context: {
