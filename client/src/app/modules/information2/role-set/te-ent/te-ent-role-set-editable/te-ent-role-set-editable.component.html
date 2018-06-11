@@ -21,9 +21,8 @@
     </div>
   </gv-te-ent-role-editable>
 
-
   <!-- If no roles in Project, show a big add button -->
-  <div class="card-body" *ngIf="!(_role_list$ | async) && !(roleStatesToCreate$ | async) && addButtonVisible">
+  <div class="card-body" *ngIf="!(_role_list$ | async) && !(_role_set_form$ | async) && addButtonVisible">
     <button class="btn btn-primary" (click)="startAddingRole()">
       Add {{(label$ | async).default}}
     </button>
@@ -32,24 +31,8 @@
     </button>
   </div>
 
-
-  <!-- Roles currently being created -->
-  <div class="border-top border-gray-500" *ngIf="((roleStatesToCreate$|async) | keys).length">
-
-
-    <form [formGroup]="formGroup" *ngIf="formGroup" [connect]="formValPath">
-      <div *ngFor="let entry of (roleStatesToCreate$ | async) | keys; trackBy:getKey">
-        <!-- <gv-te-ent-role *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="roleStatesToCreate"
-          [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role> -->
-      </div>
-
-      <div class="card-body">
-        <button [disabled]="formGroup.invalid" type="button" class="btn btn-primary" (click)="createRoles()">Ok</button>
-        <button type="button" class="btn btn-link" (click)="cancelCreateRoles()">Cancel</button>
-      </div>
-    </form>
-
-  </div>
+  <gv-te-ent-role-set-form *ngIf="(_role_set_form$ | async)" [parentPath]="basePath" [parentTeEntPath]="parentTeEntStatePath"
+    (createRoles)="createRoles($event)"></gv-te-ent-role-set-form>
 
 
   <!-- Spinner for when loading roles not in project -->
@@ -58,63 +41,11 @@
     <i class="fa fa-spinner fa-pulse"></i> Searching for existing {{(label$ | async).sg}}…
   </div>
 
-
-
-  <!-- Roles that are added to at least one other project -->
-
-  <span *ngIf="(roleStatesInOtherProjectsVisible$|async)">
-    <div class="card-body gv-property-section-header">
-      {{(roleStatesInOtherProjects$|async)?.length ? (roleStatesInOtherProjects$|async)?.length : 0 }} {{(roleStatesInOtherProjects$|async)?.length
-      === 1 ? (label$ | async).sg : (label$ | async).pl}} found in other projects
-    </div>
-
-    <!-- <div class="card-body" *ngIf="(roleStatesInOtherProjects$|async)?.length">
-      <div class="gv-label gv-flex-grow-1"> Add an existing {{(label$ | async).sg}} from below or
-        <a href="" class="gv-passive-link" (click)="startCreateNewRole()">create a new name</a>.</div>
-    </div> -->
-
-    <!-- <div class="card-body" *ngIf="!(roleStatesInOtherProjects$|async)?.length && !(roleStatesInNoProjectVisible$|async)">
-      <div class="gv-label gv-flex-grow-1">
-        <a href="" class="btn btn-primary gv-passive-link" (click)="startCreateNewRole()">Create a new {{(label$ | async).sg}}</a>
-        <a href="" class="btn btn-link gv-passive-link" (click)="showRolesInNoProject()">
-          Show {{(roleStatesInNoProject$|async)?.length}} {{(roleStatesInOtherProjects$|async)?.length === 1 ? (label$ | async).sg : (label$
-          | async).pl}} used by no Projects
-        </a>
-      </div>
-    </div> -->
-
-    <div class="card-body" *ngIf="(roleStatesInOtherProjects$|async)?.length">
-      <!-- <gv-te-ent-role *ngFor="let entry of (roleStatesInOtherProjects$ | async) | keys; trackBy:getKey" [parentPath]="basePath"
-        intermediatePathSegment="roleStatesInOtherProjects" [index]="entry.key"></gv-te-ent-role> -->
-    </div>
-  </span>
-
-  <!-- Roles that are in no project -->
-
-  <span *ngIf="(roleStatesInNoProject$|async)?.length">
-
-    <div class="card-body pt-0">
-      <small>
-        <a href="" class="gv-passive-link text-light" (click)="showRolesInNoProject()" *ngIf="!(roleStatesInNoProjectVisible$|async)">
-          Show {{(roleStatesInNoProject$|async)?.length}} {{(roleStatesInOtherProjects$|async)?.length === 1 ? (label$ | async).sg
-          : (label$ | async).pl}} used by no Projects.
-        </a>
-        <a href="" class="gv-passive-link text-light" (click)="hideRolesInNoProject()" *ngIf="(roleStatesInNoProjectVisible$|async)">
-          Hide
-        </a>
-      </small>
-
-      <div class="card-body" *ngIf="(roleStatesInNoProjectVisible$|async)">
-        <!-- <gv-te-ent-role *ngFor="let role of (roleStatesInNoProject$|async)" [role]="role" [parentProperty]="property" [isOutgoing]="isOutgoing"
-            [pointTo]="'TeEnt'" [roleState]="'add'" (readyToAdd)="onRoleReadyToAdd($event)"></gv-te-ent-role> -->
-      </div>
-    </div>
-  </span>
-
+<!-- 
   <div class="card-body" *ngIf="(roleStatesInNoProjectVisible$|async) || (roleStatesInOtherProjects$|async)?.length">
     <button type="button" class="btn btn-primary" [ngClass]="{disabled:(!isReadyToAddRoles)}" (click)="addSelectedRolesToProject()">Add selected</button>
     <button type="button" class="btn btn-link" (click)="cancelSelectRoles()">Cancel</button>
-  </div>
+  </div> -->
 
 
 </div>
@@ -124,21 +55,21 @@
 <!-- ************************** NG TEMPLATES ****************************** -->
 
 <ng-template #header let-hideAddButton="hideAddButton">
-    <div class="btn-group d-flex flex-row gv-h5">
-      <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
-        <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
-        <span *ngIf="(roles$ | async) && (roles$ | async).length">{{(roles$ | async)?.length}}</span>
-        {{(label$ | async)?.default}}
-      </button>
-      <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
-        <div class="align-self-center">
-          <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(property$|async).dfh_pk_property}}" target="_blank">
-            {{(property$|async).dfh_identifier_in_namespace}}
-          </a>
-        </div>
-      </div>
-      <div class="btn btn-link btn-sm" (click)="startAddingRole()" *ngIf="addButtonVisible && !hideAddButton">
-        <i class="fa fa-plus"></i>
+  <div class="btn-group d-flex flex-row gv-h5">
+    <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
+      <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
+      <span *ngIf="(roles$ | async) && (roles$ | async).length">{{(roles$ | async)?.length}}</span>
+      {{(label$ | async)?.default}}
+    </button>
+    <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+      <div class="align-self-center">
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(property$|async).dfh_pk_property}}" target="_blank">
+          {{(property$|async).dfh_identifier_in_namespace}}
+        </a>
       </div>
     </div>
-  </ng-template>
+    <div class="btn btn-link btn-sm" (click)="startAddingRole()" *ngIf="addButtonVisible && !hideAddButton">
+      <i class="fa fa-plus"></i>
+    </div>
+  </div>
+</ng-template>

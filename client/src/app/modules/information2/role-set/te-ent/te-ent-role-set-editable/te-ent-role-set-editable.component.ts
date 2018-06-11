@@ -46,6 +46,18 @@ export class TeEntRoleSetEditableComponent extends TeEntRoleSetBase {
     super(eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb, teEntApi)
   }
 
+  /**
+  * Called when user click on Add a [*]
+  * 
+  * Searches alternative roles.
+  * If no alternative roles used by at least one project found, continue creating new role directly.
+  */
+  startAddingRole() {
 
+
+    this.localStore.dispatch(this.actions.startAddingRole())
+
+
+  }
 
 }

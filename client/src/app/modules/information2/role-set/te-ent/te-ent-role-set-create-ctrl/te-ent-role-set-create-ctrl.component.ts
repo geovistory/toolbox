@@ -8,7 +8,7 @@ import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
-import { StateCreatorService } from '../../../shared/state-creator.service';
+import { StateCreatorService, StateSettings } from '../../../shared/state-creator.service';
 import { RoleSetActions } from '../../role-set.actions';
 import { TeEntRoleSetBase } from '../te-ent-role-set.base';
 
@@ -60,8 +60,11 @@ export class TeEntRoleSetCreateCtrlComponent extends TeEntRoleSetBase {
         targetDfhClass,
         isOutgoing: this.roleSetState.isOutgoing
       }
-
-      this.stateCreator.initializeRoleDetail(roleToCreate, options).subscribe(roleStateToCreate => {
+      const settings: StateSettings = {
+        isCreateMode: true
+      }
+      
+      this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
 
         /** add a form control */
         const formControlName = 'new_role_' + this.createFormControlCount;

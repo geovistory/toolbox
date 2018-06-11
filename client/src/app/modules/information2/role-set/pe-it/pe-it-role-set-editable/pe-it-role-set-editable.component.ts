@@ -60,11 +60,8 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
     protected stateCreator: StateCreatorService,
     protected classService: ClassService,
     protected fb: FormBuilder,
-    private peItApi: InfPersistentItemApi
   ) {
     super(eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
-    console.log('PeItRoleSetEditableComponent')
-
   }
 
 
