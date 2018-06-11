@@ -79,7 +79,7 @@ export default sandboxOf(PeItRoleSetFormComponent, {
                     },
                     "_roleSet_list": {
                         "_1_ingoing": {
-                            _role_set_form: {},
+                            _role_set_form: {}, // <- add this to init the role set (gv-pe-it-role-set-form)
                             "isOutgoing": false,
                             "property": {
                                 "dfh_pk_property": 1,

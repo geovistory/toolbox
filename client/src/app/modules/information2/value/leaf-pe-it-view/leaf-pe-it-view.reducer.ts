@@ -21,6 +21,10 @@ export const leafPeItReducer =
                 }
                 break;
 
+            case LeafPeItActions.LEAF_PE_IT_STATE_REMOVED:
+                lastState = {}
+                break;
+
             case LeafPeItActions.LEAF_PE_IT_START_LOADING:
                 lastState = {
                     ...lastState,

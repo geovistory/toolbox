@@ -1,14 +1,24 @@
-import { NgRedux, WithSubStore, select } from '@angular-redux/store';
-import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { NgRedux, select, WithSubStore } from '@angular-redux/store';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  forwardRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-import { IAppState, InfRole, InfPersistentItem } from 'app/core';
+import { IAppState, InfPersistentItem, InfRole } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { ReplaySubject, Subscription, Observable } from 'rxjs';
+import { Observable, ReplaySubject, Subscription } from 'rxjs';
 
 import { PeItDetail } from '../../information.models';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { StateToDataService } from '../../shared/state-to-data.service';
+import { LeafPeItViewModalComponent } from './leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
 import { LeafPeItActions } from './leaf-pe-it-view.actions';
 import { leafPeItReducer } from './leaf-pe-it-view.reducer';
 
@@ -168,7 +178,7 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
       size: 'lg'
     }
 
-    const modalRef = this.modalService.open(LeafPeItViewComponent, entityModalOptions);
+    const modalRef = this.modalService.open(LeafPeItViewModalComponent, entityModalOptions);
 
     modalRef.componentInstance.isInProject = (this.peItState.peIt.entity_version_project_rels && this.peItState.peIt.entity_version_project_rels.length)
     modalRef.componentInstance.parentPath = this.basePath;

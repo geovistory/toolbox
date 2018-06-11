@@ -46,7 +46,7 @@ export default sandboxOf(PeItEditableComponent, {
     context: {
       basePath: ['_peIt_editable'],
       pkProject: 52,
-      pkEntity: 152831,
+      pkEntity: 152852,
       state: {
         activeProject: {
           pk_project: 52

@@ -6,8 +6,14 @@
 
     <gv-language-ctrl *ngIf="roleState._lang" class="gv-flex-grow-1" [formControlName]="formControlName" (touched)="markAsTouched()"></gv-language-ctrl>
 
-    <gv-leaf-pe-it-view *ngIf="(isCircular$|async)" [pkEntity]="roleState.role.fk_entity" [basePath]="(basePath.concat('_leaf_peIt'))"
+    <gv-leaf-pe-it-view *ngIf="(isCircular$|async) && roleState.role.fk_entity" [pkEntity]="roleState.role.fk_entity" [basePath]="(basePath.concat('_leaf_peIt'))"
       [isCircular]="true"></gv-leaf-pe-it-view>
+
+    <gv-leaf-pe-it-ctrl *ngIf="!(isCircular$|async) && roleState._leaf_peIt" [formControlName]="formControlName" (touched)="markAsTouched()" [basePath]="(basePath.concat('_leaf_peIt'))"
+      [dfhClass]="roleState.targetDfhClass"></gv-leaf-pe-it-ctrl>
+    <!-- {{(!(isCircular$|async) && roleState._leaf_peIt) | json}} |
+     {{!(isCircular$|async) | json}} |
+     {{ (roleState._leaf_peIt) | json}} -->
 
     <!-- <div *ngIf="(leafPeItLoading$ |async)">
       <i class="fa fa-spinner fa-pulse"></i> Loading</div>

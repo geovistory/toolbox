@@ -17,6 +17,7 @@ export class LeafPeItActions {
   static readonly LEAF_PE_IT_START_LOADING = 'LEAF_PE_IT_START_LOADING';
 
   static readonly LEAF_PE_IT_STATE_ADDED = 'LEAF_PE_IT_STATE_ADDED';
+  static readonly LEAF_PE_IT_STATE_REMOVED = 'LEAF_PE_IT_STATE_REMOVED';
   static readonly LEAF_PK_ENTITY_SELECTED = 'LEAF_PK_ENTITY_SELECTED';
 
 
@@ -29,6 +30,17 @@ export class LeafPeItActions {
     meta: null,
     payload
   })
+
+  @dispatch()
+  /**
+   * Attaches the given peItState (quite a huge object!) to the current role
+   */
+  leafPeItStateRemoved = (): LeafPeItAction => ({
+    type: LeafPeItActions.LEAF_PE_IT_STATE_REMOVED,
+    meta: null,
+    payload: null
+  })
+
 
   @dispatch()
   leafPeItStartLoading = (): LeafPeItAction => ({

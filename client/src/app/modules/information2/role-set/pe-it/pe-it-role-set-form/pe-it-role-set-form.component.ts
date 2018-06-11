@@ -9,7 +9,7 @@ import { timer } from 'rxjs/observable/timer';
 import { peItReducer } from '../../../data-unit/pe-it/pe-it.reducer';
 import { PeItDetail, RoleDetail, RoleDetailList } from '../../../information.models';
 import { ClassService } from '../../../shared/class.service';
-import { StateCreatorService } from '../../../shared/state-creator.service';
+import { StateCreatorService, StateSettings } from '../../../shared/state-creator.service';
 import { RoleSetFormBase } from '../../role-set-form.base';
 import { RoleSetActions } from '../../role-set.actions';
 import { roleSetReducer } from '../../role-set.reducer';
@@ -141,12 +141,15 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
         targetDfhClass,
         toggle: 'expanded',
         _teEnt: {
-          selectPropState: 'selectProp',
+          selectPropState: 'init',
         }
+      }
+      const settings: StateSettings ={
+        isCreateMode: true
       }
 
       // initialize the state
-      this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, s.isOutgoing, options).subscribe(roleStateToCreate => {
+      this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, s.isOutgoing, options, settings).subscribe(roleStateToCreate => {
 
         this.initCreateFormCtrls(roleStateToCreate)
 

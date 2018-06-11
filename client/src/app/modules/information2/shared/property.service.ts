@@ -38,7 +38,7 @@ export class PropertyService {
 
 
   // filter object to include labels and properties on api calls
-  filter: object = { "include": ["labels", "text_properties"] };
+  filter: object = { "include": ["labels", "text_properties", "domain_class", "range_class"] };
 
   constructor(
     private propertyApi: DfhPropertyApi
@@ -197,8 +197,9 @@ export class PropertyService {
     return properties.map(property => {
       return {
         isOutgoing: isOutgoing,
-        property: omit(['labels'],property),
+        property: omit(['labels', 'domain_class', 'range_class'], property),
         targetClassPk: isOutgoing ? property.dfh_has_range : property.dfh_has_domain,
+        targetClass: isOutgoing ? property.range_class : property.domain_class,
         label: this.createLabelObject(property, isOutgoing)
       } as RoleSet
     });

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy, forwardRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy, forwardRef, ChangeDetectorRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { DfhClass, InfRole } from 'app/core';
@@ -7,9 +7,17 @@ import { Subscription } from 'rxjs';
 
 import { EntityAddModalComponent } from '../../add-modal/entity-add-modal/entity-add-modal.component';
 import { EntityAddModalService } from '../../shared/entity-add-modal.service';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { WithSubStore } from '@angular-redux/store';
+import { leafPeItReducer } from '../leaf-pe-it-view/leaf-pe-it-view.reducer';
+import { LeafPeItActions } from '../leaf-pe-it-view/leaf-pe-it-view.actions';
 
-// import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
 
+@AutoUnsubscribe()
+@WithSubStore({
+  basePathMethodName: 'getBasePath',
+  localReducer: leafPeItReducer
+})
 @Component({
   selector: 'gv-leaf-pe-it-ctrl',
   templateUrl: './leaf-pe-it-ctrl.component.html',
@@ -23,14 +31,18 @@ import { EntityAddModalService } from '../../shared/entity-add-modal.service';
     }
   ]
 })
-export class LeafPeItCtrlComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class LeafPeItCtrlComponent  extends LeafPeItActions implements OnInit, OnDestroy, ControlValueAccessor {
 
   role: InfRole;
+
+  pkEntity:number;
 
   /**
    * Inputs
    */
   @Input() dfhClass: DfhClass;
+  @Input() basePath: string[];
+  getBasePath = () => this.basePath;
 
   /**
    * Output
@@ -46,26 +58,38 @@ export class LeafPeItCtrlComponent implements OnInit, OnDestroy, ControlValueAcc
 
   constructor(
     private modalService: NgbModal,
-    private entityAddModalService: EntityAddModalService
+    private entityAddModalService: EntityAddModalService,
+    private ref: ChangeDetectorRef
   ) {
-    // super(peItApi, peItService, propertyPipe, activePeItService, slimLoadingBarService, entityEditor, changeDetector, ngRedux, actions, classService, roleService, propertyService, roleSetListService)
+    super()
   }
 
   ngOnInit() {
-    this.openModal()
+    // this.openModal()
   }
   ngOnDestroy() {
     this.subs.forEach(sub => sub.unsubscribe())
   }
 
+  reset(){
+
+    this.pkEntity = undefined;
+    this.onChange(null)
+    this.leafPeItStateRemoved()
+    this.ref.detectChanges()
+
+  }
+
   openModal() {
+
+    this.pkEntity = undefined;
 
     this.open.emit();
 
     const entityModalOptions: NgbModalOptions = {
       size: 'lg'
     }
-    const modalRef = this.modalService.open(EntityAddModalComponent, entityModalOptions);
+    this.modalService.open(EntityAddModalComponent, entityModalOptions);
 
     this.entityAddModalService.previousState = undefined;
     this.entityAddModalService.state = 'search-existing';
@@ -73,6 +97,9 @@ export class LeafPeItCtrlComponent implements OnInit, OnDestroy, ControlValueAcc
     this.entityAddModalService.selectedClass = this.dfhClass;
     this.subs.push(this.entityAddModalService.onSelect.subscribe(pkEntity => {
       this.selected.emit(pkEntity);
+
+      this.pkEntity = pkEntity;
+      this.ref.detectChanges()
 
       // build the role
       const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role));
