@@ -6,6 +6,7 @@ import { InfRole, InfTemporalEntity, U, InfEntityProjectRel } from 'app/core';
 import { TeEntCtrlBase } from '../te-ent-ctrl.base';
 import { TeEntActions } from '../te-ent.actions';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { slideInOut } from '../../../shared/animations';
 
 @AutoUnsubscribe()
 @Component({
@@ -13,6 +14,7 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
   templateUrl: './te-ent-add-ctrl.component.html',
   styleUrls: ['./te-ent-add-ctrl.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [slideInOut],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -33,7 +35,6 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
   ) {
     super(ngRedux, actions, fb)
     console.log('TeEntAddCtrlComponent')
-
   }
 
   initFormCtrls(): void {
@@ -106,5 +107,15 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
   }
 
   onInitTeEntBaseChild(): void { }
+
+
+
+  /**
+  * toggleCardBody - toggles the state of the card in order to collapse or
+  * expand the card in the UI
+  */
+  toggleCardBody() {
+    this.localStore.dispatch(this.actions.toggle())
+  }
 
 }

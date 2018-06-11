@@ -38,6 +38,7 @@ export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValue
     }
 
     @select() teEnt$: Observable<InfTemporalEntity>
+    @select() toggle$: Observable<boolean>
 
     localStore: ObservableStore<TeEntDetail>;
 

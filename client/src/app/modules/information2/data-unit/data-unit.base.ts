@@ -114,7 +114,10 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
     const newRoleSet: RoleSet = {
       ...propertyToAdd,
       toggle: 'expanded',
-      roles: []
+      roles: [],
+      rolesNotInProjectLoading: true,
+      roleStatesInOtherProjectsVisible: false,
+      _role_set_form: {}
     }
 
     // add a form conrtol

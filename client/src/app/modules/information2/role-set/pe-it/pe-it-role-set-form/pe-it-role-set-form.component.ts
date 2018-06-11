@@ -122,7 +122,10 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
 
       const options: RoleDetail = {
         targetDfhClass,
-        toggle: 'expanded'
+        toggle: 'expanded',
+        _teEnt: {
+          selectPropState: 'selectProp'
+        }
       }
 
       this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, s.isOutgoing, options).subscribe(roleStateToCreate => {

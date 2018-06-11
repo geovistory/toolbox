@@ -239,62 +239,6 @@ export class StateCreatorService {
           _role_list
         }
 
-
-
-        // switch (options.state) {
-        //   /** if the roleset is in editable mode, the roles that are in project need to be taken */
-        //   case 'editable':
-        //     roleSet.roleDetailsInProject = roleDetails;
-        //     break;
-
-        //   /** if the roleset is in add-pe-it mode, the roles that are in other projects need to be taken */
-        //   case 'add-pe-it':
-        //     roleSet.roleDetailsInOtherProjects = roleDetails;
-        //     break;
-
-        //   case 'add':
-
-        //     Object.keys(roleDetails).forEach(key => {
-        //       if (roleDetails[key].role.is_in_project_count > 0) {
-        //         roleSet.roleDetailsInOtherProjects = {
-        //           ...roleSet.roleDetailsInOtherProjects,
-        //           [key]: roleDetails[key]
-        //         }
-        //       } else {
-        //         roleSet.roleDetailsInNoProject = {
-        //           ...roleSet.roleDetailsInNoProject,
-        //           [key]: roleDetails[key]
-        //         }
-        //       }
-        //     })
-
-        //     break;
-
-        //   /** if the roleset is in create-pe-it mode, add the states to roleDetailsInProject, since they will be in Project later */
-        //   case 'create-pe-it':
-        //     roleSet.roleDetailsInProject = roleDetails;
-        //     break;
-
-        //   /** if the roleset is in create-te-ent mode, add the states to roleDetailsInProject, since they will be in Project later */
-        //   case 'create-te-ent-role':
-        //     roleSet.roleDetailsInProject = roleDetails;
-        //     break;
-
-        //   case 'exist-time':
-        //     roleSet.roleDetailsInProject = roleDetails;
-        //     break;
-
-        //   // case 'create-pe-it-role':
-        //   //   roleSet.roleDetailsInProject = roleDetails;
-        //   //   break;
-
-        //   case 'view':
-        //     roleSet.roleDetailsInProject = roleDetails;
-        //     break;
-
-
-        // }
-
         /** Assings options to RolSet (this can come from the two functions before) */
         subject.next(Object.assign(options, roleSet))
       }
@@ -362,7 +306,10 @@ export class StateCreatorService {
       const willBeParentRolePk = role.pk_entity;
 
       this.initializeTeEntState(role.temporal_entity, willBeParentRolePk).subscribe(teEntState => {
-        roleDetail._teEnt = teEntState;
+        roleDetail._teEnt = {
+          ...teEntState,
+          ...roleDetail._teEnt 
+        };
         subject.next(roleDetail);
       })
 

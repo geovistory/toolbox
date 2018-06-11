@@ -1,14 +1,16 @@
 <div class="card gv-name">
   <ng-container *ngTemplateOutlet="header"></ng-container>
-  
-  <form [formGroup]="formGroup" *ngIf="formGroup">
-    <div *ngFor="let entry of (_roleSet_list$ | async) | keys; trackBy:getKey">
-      <gv-te-ent-role-set-add-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [parentTeEntStatePath]="basePath"
-        [index]="entry.key" [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role-set-add-ctrl>
-    </div>
-  </form>
+  <div [@slideInOut]="(toggle$|async)">
 
-  <ng-container *ngTemplateOutlet="dating"></ng-container>
+    <form [formGroup]="formGroup" *ngIf="formGroup">
+      <div *ngFor="let entry of (_roleSet_list$ | async) | keys; trackBy:getKey">
+        <gv-te-ent-role-set-add-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [parentTeEntStatePath]="basePath" [index]="entry.key"
+          [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role-set-add-ctrl>
+      </div>
+    </form>
+
+    <ng-container *ngTemplateOutlet="dating"></ng-container>
+  </div>
 </div>
 
 
@@ -17,7 +19,8 @@
 <ng-template #header>
   <div class="card-header gv-name-header d-flex flex-row">
     <ng-content select="[headerLeft]"></ng-content>
-    <div class="gv-flex-grow-1">
+    <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
+      <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
       <span *ngIf="labelInEdit">{{labelInEdit}}</span>
       <span *ngIf="label && !labelInEdit">{{label}}</span>
       <span *ngIf="!label && !labelInEdit">{{(dfhClass$|async)?.dfh_standard_label}}</span>
