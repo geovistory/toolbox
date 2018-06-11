@@ -75,8 +75,8 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
         const rolesInOtherProjects = results[1].filter(role => parseInt(role.is_in_project_count) > 0);
         const rolesInNoProject = results[1].filter(role => parseInt(role.is_in_project_count) == 0);
 
-        const inOther$ = this.stateCreator.initializeRoleDetails(rolesInOtherProjects, s.isOutgoing)
-        const inNo$ = this.stateCreator.initializeRoleDetails(rolesInNoProject, s.isOutgoing)
+        const inOther$ = this.stateCreator.initializeRoleDetails(rolesInOtherProjects, { isOutgoing: s.isOutgoing })
+        const inNo$ = this.stateCreator.initializeRoleDetails(rolesInNoProject, { isOutgoing: s.isOutgoing })
 
         Observable.combineLatest(inOther$, inNo$).subscribe(results => {
           const roleStatesInOtherProjects = results[0], roleStatesInNoProjects = results[1]
@@ -139,17 +139,18 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
 
       const options: RoleDetail = {
         targetDfhClass,
+        isOutgoing: s.isOutgoing,
         toggle: 'expanded',
         _teEnt: {
           selectPropState: 'init',
         }
       }
-      const settings: StateSettings ={
+      const settings: StateSettings = {
         isCreateMode: true
       }
 
       // initialize the state
-      this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, s.isOutgoing, options, settings).subscribe(roleStateToCreate => {
+      this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
 
         this.initCreateFormCtrls(roleStateToCreate)
 
@@ -186,7 +187,7 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
         })
 
         // update the state
-        this.subs.push(this.stateCreator.initializeRoleDetails(roles, s.isOutgoing).subscribe(roleStates => {
+        this.subs.push(this.stateCreator.initializeRoleDetails(roles, { isOutgoing: s.isOutgoing }).subscribe(roleStates => {
           this.localStore.dispatch(this.actions.rolesCreated(roleStates))
         }))
 
@@ -221,7 +222,7 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
 
 
         // update the state
-        this.subs.push(this.stateCreator.initializeRoleDetails(roles, s.isOutgoing).subscribe(roleStates => {
+        this.subs.push(this.stateCreator.initializeRoleDetails(roles, { isOutgoing: s.isOutgoing }).subscribe(roleStates => {
           this.localStore.dispatch(this.actions.rolesCreated(roleStates))
         }))
 

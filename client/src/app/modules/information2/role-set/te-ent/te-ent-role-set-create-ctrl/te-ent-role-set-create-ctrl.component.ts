@@ -56,9 +56,12 @@ export class TeEntRoleSetCreateCtrlComponent extends TeEntRoleSetBase {
     roleToCreate.fk_temporal_entity = this.parentTeEntState.teEnt.pk_entity;
 
     this.subs.push(this.classService.getByPk(this.roleSetState.targetClassPk).subscribe(targetDfhClass => {
-      const options: RoleDetail = { targetDfhClass }
+      const options: RoleDetail = {
+        targetDfhClass,
+        isOutgoing: this.roleSetState.isOutgoing
+      }
 
-      this.stateCreator.initializeRoleDetail(roleToCreate, this.roleSetState.isOutgoing, options).subscribe(roleStateToCreate => {
+      this.stateCreator.initializeRoleDetail(roleToCreate, options).subscribe(roleStateToCreate => {
 
         /** add a form control */
         const formControlName = 'new_role_' + this.createFormControlCount;

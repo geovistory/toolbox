@@ -38,6 +38,7 @@ import { PeItService } from './pe-it.service';
 import { PropertyService } from './property.service';
 import { RoleSetService } from './role-set.service';
 import { StateToDataService } from './state-to-data.service';
+import { BROWSER_NOOP_ANIMATIONS_PROVIDERS } from '@angular/platform-browser/animations/src/providers';
 
 
 export interface StateSettings {
@@ -270,11 +271,16 @@ export class StateCreatorService {
 
     if (!roles || !roles.length) return new BehaviorSubject(undefined)
 
-
-    this.initializeRoleDetails(roles, options.isOutgoing, settings).subscribe((_role_list: RoleDetailList) => {
+    const roleDetailTemplate: RoleDetail = {
+      isOutgoing: options.isOutgoing,
+      targetDfhClass: options.targetClass
+    }
+    
+    this.initializeRoleDetails(roles, roleDetailTemplate, settings).subscribe((_role_list: RoleDetailList) => {
       if (_role_list) {
         /** Creates the RoleSet */
         let roleSet: RoleSet = {
+          ...options,
           targetClassPk: options.isOutgoing ? options.property.dfh_has_range : options.property.dfh_has_domain,
           _role_list
         }
@@ -288,7 +294,7 @@ export class StateCreatorService {
   }
 
 
-  initializeRoleDetails(roles: InfRole[], isOutgoing: boolean, settings: StateSettings = {}): Subject<RoleDetailList> {
+  initializeRoleDetails(roles: InfRole[], options: RoleDetail = {}, settings: StateSettings = {}): Subject<RoleDetailList> {
     const subject = new ReplaySubject<RoleDetailList>();
 
     if (!roles || !roles.length) return new BehaviorSubject(undefined)
@@ -301,14 +307,13 @@ export class StateCreatorService {
     roles.forEach(role => {
 
       /** if there is a community favorite for display for range, add it as an option  */
-      var options = role.pk_entity === displayRoleForRangePk ?
-        { isDisplayRoleForRange: true } : undefined;
+      if (role.pk_entity === displayRoleForRangePk) options.isDisplayRoleForRange = true;
 
       // /** exclude the circular role */
       if (role.pk_entity === settings.parentRolePk) {
       }
       // else {
-      roleDetailArray$.push(this.initializeRoleDetail(role, isOutgoing, options, settings));
+      roleDetailArray$.push(this.initializeRoleDetail(role, options, settings));
       // }
     });
 
@@ -320,7 +325,7 @@ export class StateCreatorService {
     return subject;
   }
 
-  initializeRoleDetail(role: InfRole, isOutgoing: boolean, options: RoleDetail = {}, settings: StateSettings = {}): Subject<RoleDetail> {
+  initializeRoleDetail(role: InfRole, options: RoleDetail = {}, settings: StateSettings = {}): Subject<RoleDetail> {
     const subject = new ReplaySubject<RoleDetail>();
 
     if (!role) return new BehaviorSubject(undefined)
@@ -328,7 +333,6 @@ export class StateCreatorService {
 
     let roleDetail: RoleDetail = {
       role: new InfRole(role),
-      isOutgoing: isOutgoing,
       isCircular: false,
       ...options
     };
@@ -357,7 +361,7 @@ export class StateCreatorService {
 
     /** If role leads to Appe */
     // else if (role.appellation && Object.keys(role.appellation).length){
-    else if (role.fk_property == DfhConfig.PROPERTY_PK_R64_USED_NAME && isOutgoing) {
+    else if (role.fk_property == DfhConfig.PROPERTY_PK_R64_USED_NAME && options.isOutgoing) {
 
       // when targetDfhClass is provided we are in create state and we need the fk_class
       if (options.targetDfhClass) roleDetail.role.appellation = {
@@ -373,7 +377,7 @@ export class StateCreatorService {
 
     /** If role leads to Language */
     // else if (role.language && Object.keys(role.language).length){
-    else if (role.fk_property == DfhConfig.PROPERTY_PK_R61_USED_LANGUAGE && isOutgoing) {
+    else if (role.fk_property == DfhConfig.PROPERTY_PK_R61_USED_LANGUAGE && options.isOutgoing) {
 
       // when targetDfhClass is provided we are in create state and we need the fk_class
       if (options.targetDfhClass) roleDetail.role.language = {
@@ -388,7 +392,7 @@ export class StateCreatorService {
     }
 
     /** If role leads to TimePrimitive */
-    else if (DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.indexOf(role.fk_property) > -1 && isOutgoing === false) {
+    else if (DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.indexOf(role.fk_property) > -1 && options.isOutgoing === false) {
 
       // when targetDfhClass is provided we are in create state and we need the fk_class
       if (options.targetDfhClass) roleDetail.role.time_primitive = {

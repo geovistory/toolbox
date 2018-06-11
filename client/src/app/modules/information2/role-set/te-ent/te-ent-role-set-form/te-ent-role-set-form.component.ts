@@ -76,8 +76,8 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
         const rolesInOtherProjects = results[1].filter(role => parseInt(role.is_in_project_count) > 0);
         const rolesInNoProject = results[1].filter(role => parseInt(role.is_in_project_count) == 0);
 
-        const inOther$ = this.stateCreator.initializeRoleDetails(rolesInOtherProjects, s.isOutgoing)
-        const inNo$ = this.stateCreator.initializeRoleDetails(rolesInNoProject, s.isOutgoing)
+        const inOther$ = this.stateCreator.initializeRoleDetails(rolesInOtherProjects, { isOutgoing: s.isOutgoing })
+        const inNo$ = this.stateCreator.initializeRoleDetails(rolesInNoProject, { isOutgoing: s.isOutgoing })
 
         Observable.combineLatest(inOther$, inNo$).subscribe(results => {
           const roleStatesInOtherProjects = results[0], roleStatesInNoProjects = results[1]
@@ -118,11 +118,11 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
         fk_temporal_entity: ps.teEnt.pk_entity,
       } as InfRole;
 
-      const options: RoleDetail = { targetDfhClass }
+      const options: RoleDetail = { targetDfhClass, isOutgoing: s.isOutgoing }
       const settings: StateSettings = { isCreateMode: true }
 
       // initialize the state
-      this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, s.isOutgoing, options, settings).subscribe(roleStateToCreate => {
+      this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
 
         this.initCreateFormCtrls(roleStateToCreate)
 
@@ -140,7 +140,7 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
       // prepare teEnt 
       const t = new InfTemporalEntity(this.parentTeEntStore.getState().teEnt);
       t.te_roles = [];
-      
+
       Object.keys(this.createForm.controls).forEach(key => {
         if (this.createForm.get(key)) {
           // add roles to create to peIt
@@ -159,7 +159,7 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
         })
 
         // update the state
-        this.subs.push(this.stateCreator.initializeRoleDetails(roles, s.isOutgoing).subscribe(roleStates => {
+        this.subs.push(this.stateCreator.initializeRoleDetails(roles, { isOutgoing: s.isOutgoing }).subscribe(roleStates => {
           this.localStore.dispatch(this.actions.rolesCreated(roleStates))
         }))
 
@@ -194,7 +194,7 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
 
 
         // update the state
-        this.subs.push(this.stateCreator.initializeRoleDetails(roles, s.isOutgoing).subscribe(roleStates => {
+        this.subs.push(this.stateCreator.initializeRoleDetails(roles, { isOutgoing: s.isOutgoing }).subscribe(roleStates => {
           this.localStore.dispatch(this.actions.rolesCreated(roleStates))
         }))
 

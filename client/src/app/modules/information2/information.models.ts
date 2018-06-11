@@ -107,6 +107,7 @@ export interface RoleSet {
     isOutgoing?: boolean;
     toggle?: CollapsedExpanded;
     targetClassPk?: number;
+    targetClass?: DfhClass;
 
     //True during loading of roles in other projects and roles in no project    
     rolesNotInProjectLoading?: boolean;

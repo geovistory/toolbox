@@ -143,8 +143,8 @@ export abstract class TeEntRoleSetBase extends RoleSetAddCtrlBase {
                 const rolesInOtherProjects = results[1].filter(role => role.is_in_project_count > 0);
                 const rolesInNoProject = results[1].filter(role => role.is_in_project_count == 0);
 
-                const inOther$ = this.stateCreator.initializeRoleDetails(rolesInOtherProjects, this.roleSetState.isOutgoing)
-                const inNo$ = this.stateCreator.initializeRoleDetails(rolesInNoProject, this.roleSetState.isOutgoing)
+                const inOther$ = this.stateCreator.initializeRoleDetails(rolesInOtherProjects, { isOutgoing: this.roleSetState.isOutgoing })
+                const inNo$ = this.stateCreator.initializeRoleDetails(rolesInNoProject, { isOutgoing: this.roleSetState.isOutgoing })
 
                 this.subs.push(Observable.combineLatest(inOther$, inNo$).subscribe(results => {
                     const roleStatesInOtherProjects = results[0], roleStatesInNoProjects = results[1]
@@ -177,9 +177,9 @@ export abstract class TeEntRoleSetBase extends RoleSetAddCtrlBase {
         roleToCreate.fk_temporal_entity = this.parentTeEntState.teEnt.pk_entity;
 
         this.subs.push(this.classService.getByPk(this.roleSetState.targetClassPk).subscribe(targetDfhClass => {
-            const options: RoleDetail = { targetDfhClass }
+            const options: RoleDetail = { targetDfhClass, isOutgoing: this.roleSetState.isOutgoing }
 
-            this.stateCreator.initializeRoleDetail(roleToCreate, this.roleSetState.isOutgoing, options).subscribe(roleStateToCreate => {
+            this.stateCreator.initializeRoleDetail(roleToCreate, options).subscribe(roleStateToCreate => {
 
                 /** add a form control */
                 const formControlName = 'new_role_' + this.createFormControlCount;
@@ -216,7 +216,7 @@ export abstract class TeEntRoleSetBase extends RoleSetAddCtrlBase {
             this.subs.push(this.teEntApi.findOrCreateInfTemporalEntity(this.project.pk_project, t).subscribe(teEnts => {
                 const roles: InfRole[] = teEnts[0].te_roles;
 
-                this.subs.push(this.stateCreator.initializeRoleDetails(roles, this.roleSetState.isOutgoing).subscribe(roleStates => {
+                this.subs.push(this.stateCreator.initializeRoleDetails(roles, { isOutgoing: this.roleSetState.isOutgoing }).subscribe(roleStates => {
                     // update the state
                     this.localStore.dispatch(this.actions.rolesCreated(roleStates))
                 }))
@@ -237,7 +237,7 @@ export abstract class TeEntRoleSetBase extends RoleSetAddCtrlBase {
     startEditing(key) {
         const roleset = this.roleSetState._role_list[key];
 
-        this.subs.push(this.stateCreator.initializeRoleDetail(roleset.role, roleset.isOutgoing).subscribe(roleState => {
+        this.subs.push(this.stateCreator.initializeRoleDetail(roleset.role, { isOutgoing: roleset.isOutgoing }).subscribe(roleState => {
             this.localStore.dispatch(this.actions.startEditingRole(key, roleState))
         }))
     }
@@ -248,7 +248,7 @@ export abstract class TeEntRoleSetBase extends RoleSetAddCtrlBase {
    */
     stopEditing(key) {
         const roleset = this.roleSetState._role_list[key];
-        this.subs.push(this.stateCreator.initializeRoleDetail(roleset.role, roleset.isOutgoing).subscribe(roleState => {
+        this.subs.push(this.stateCreator.initializeRoleDetail(roleset.role, { isOutgoing: roleset.isOutgoing }).subscribe(roleState => {
             this.localStore.dispatch(this.actions.stopEditingRole(key, roleState))
         }))
     }
