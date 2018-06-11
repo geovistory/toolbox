@@ -22,8 +22,8 @@ export default sandboxOf(PeItRoleSetFormComponent, {
             createForm: {},
             cancelled: undefined,
             added: undefined,
-            parentPath: ['_peIt', '_roleSet_list', '_role_set_1'],
-            parentPeItStatePath: ['_peIt'],
+            parentPath: ['_peIt_editable', '_roleSet_list', '_1_ingoing'],
+            parentPeItStatePath: ['_peIt_editable'],
             initState: {
                 "activeProject": {
                     "pk_project": 52
@@ -752,9 +752,9 @@ export default sandboxOf(PeItRoleSetFormComponent, {
             <gv-init-state [initState]="initState"></gv-init-state>
 
             <div class="d-flex justify-content-center mt-5">
-                <div style="width:430px;height:400px" class="d-flex">
+                <div style="width:430px;height:400px" class="d-flex bg-secondary">
    
-                    <gv-pe-it-role-set-form [parentPath]="parentPath" [parentPeItPath]="parentPeItStatePath" (addFormChange)="addForm = $event" 
+                    <gv-pe-it-role-set-form [parentPath]="parentPath" [parentPeItPath]="parentPeItStatePath" (createRoles)="createRoles($event)" (addFormChange)="addForm = $event" 
                     (createFormChange)="createForm = $event" ></gv-pe-it-role-set-form>
                     
 

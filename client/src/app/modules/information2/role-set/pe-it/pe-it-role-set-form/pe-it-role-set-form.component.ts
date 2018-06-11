@@ -112,22 +112,40 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
 
     this.subs.push(this.classService.getByPk(s.targetClassPk).subscribe(targetDfhClass => {
 
-      const roleToCreate = new InfRole();
-      roleToCreate.fk_property = s.property.dfh_pk_property;
-      roleToCreate.fk_entity = ps.peIt.pk_entity;
+      // pi_role that will be created  
+      const roleToCreate = {
 
-      let teEnt = new InfTemporalEntity;
-      teEnt.fk_class = targetDfhClass.dfh_pk_class;
-      roleToCreate.temporal_entity = teEnt;
+        // the fk_property is defined by the RoleSet
+        fk_property: s.property.dfh_pk_property,
+        // the fk_entity is defined by the parent PeItDetail
+        fk_entity: ps.peIt.pk_entity,
+
+        temporal_entity: {
+          fk_class: targetDfhClass.dfh_pk_class,
+
+          // circular role, that appears from the beginning on, when user creates new pi_role 
+          te_roles: [
+            {
+              // the fk_property is defined by the RoleSet
+              fk_property: s.property.dfh_pk_property,
+              // the fk_entity is defined by the parent PeItDetail
+              fk_entity: ps.peIt.pk_entity,
+            }
+          ]
+
+        } as InfTemporalEntity
+      } as InfRole
+
 
       const options: RoleDetail = {
         targetDfhClass,
         toggle: 'expanded',
         _teEnt: {
-          selectPropState: 'selectProp'
+          selectPropState: 'selectProp',
         }
       }
 
+      // initialize the state
       this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, s.isOutgoing, options).subscribe(roleStateToCreate => {
 
         this.initCreateFormCtrls(roleStateToCreate)
@@ -193,30 +211,30 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
       this.subs.push(this.peItApi.changePeItProjectRelation(this.ngRedux.getState().activeProject.pk_project, true, p).subscribe(peIts => {
         const roles: InfRole[] = peIts[0].pi_roles;
 
-          // update the form group
-          Object.keys(this.addForm.controls).forEach(key => {
-            this.addForm.removeControl(key)
-          })
+        // update the form group
+        Object.keys(this.addForm.controls).forEach(key => {
+          this.addForm.removeControl(key)
+        })
 
 
-          // update the state
-          this.subs.push(this.stateCreator.initializeRoleDetails(roles, s.isOutgoing).subscribe(roleStates => {
-            this.localStore.dispatch(this.actions.rolesCreated(roleStates))
-          }))
-
+        // update the state
+        this.subs.push(this.stateCreator.initializeRoleDetails(roles, s.isOutgoing).subscribe(roleStates => {
+          this.localStore.dispatch(this.actions.rolesCreated(roleStates))
         }))
-      }
-  }
 
-    /**
-    *  called when user cancels to create new roles
-    *
-    */
-    cancelCreateRoles() {
-
-      /** remove the RoleState from state */
-      this.localStore.dispatch(this.actions.stopCreateNewRole());
-
+      }))
     }
+  }
+
+  /**
+  *  called when user cancels to create new roles
+  *
+  */
+  cancelCreateRoles() {
+
+    /** remove the RoleState from state */
+    this.localStore.dispatch(this.actions.stopCreateNewRole());
 
   }
+
+}
