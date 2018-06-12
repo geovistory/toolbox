@@ -60,12 +60,14 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
 
 
   subscribeFormChanges(): void {
+    
+    const s = this.localStore.getState();
 
     this.subs.push(
       this.formGroup.valueChanges.subscribe(val => {
 
         // build a peIt with all pi_roles given by the form's controls 
-        let peIt = new InfPersistentItem(this.peIt);
+        let peIt = new InfPersistentItem();
 
         peIt.pi_roles = [];
         Object.keys(this.formGroup.controls).forEach(key => {
@@ -73,6 +75,8 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
             peIt.pi_roles = [...peIt.pi_roles, ...this.formGroup.get(key).value]
           }
         })
+
+        peIt.fk_class = s.dfhClass.dfh_pk_class;
 
         // try to retrieve a appellation label
         const displayAppeUse: InfTemporalEntity = U.getDisplayAppeLabelOfPeIt(peIt)

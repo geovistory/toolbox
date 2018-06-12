@@ -1,7 +1,1 @@
-<form *ngIf="formGroup" [connect]="['information', 'entityCreateNew', 'formValue']" [formGroup]="formGroup" (ngSubmit)="submit()">
-
-  <div class="form-group">
-    <!-- <gv-pe-it *ngIf="formGroup.get(formCtrlName)" [parentPath]="basePath" [formControlName]="formCtrlName"></gv-pe-it> -->
-  </div>
-
-</form>
+<gv-pe-it-create-form [basePath]="basePath.concat('_peIt_create_form')" (formChange)="formChange($event) ; f=$event"></gv-pe-it-create-form>

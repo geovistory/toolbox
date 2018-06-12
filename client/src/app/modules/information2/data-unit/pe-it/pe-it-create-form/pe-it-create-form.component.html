@@ -16,7 +16,7 @@
   <form #f="ngForm" ngSubmit="submit()">
     <gv-pe-it-create-ctrl [basePath]="basePath" name="peIt" [(ngModel)]="peIt" #val="ngModel" required></gv-pe-it-create-ctrl>
     
-    <button class="btn btn-primary" type="submit" [disabled]="f.invalid && f.submitted">Create</button>
+    <button *ngIf="createBtn" class="btn btn-primary" type="submit" [disabled]="f.invalid && f.submitted">Create</button>
 
   </form>
 

@@ -1,7 +1,7 @@
 import { NgRedux, WithSubStore } from '@angular-redux/store';
-import { Component, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, NgForm } from '@angular/forms';
-import { InfPersistentItem, InfTemporalEntity, U } from 'app/core';
+import { InfTemporalEntity, U } from 'app/core';
 
 import { PeItFormBase } from '../pe-it-form.base';
 import { PeItActions } from '../pe-it.actions';
@@ -19,6 +19,10 @@ import { peItReducer } from '../pe-it.reducer';
 export class PeItCreateFormComponent extends PeItFormBase {
 
   @ViewChild('f') form: NgForm;
+
+  @Input() createBtn:boolean;
+  @Input() cancelBtn:boolean;
+  @Output() formChange: EventEmitter<NgForm> = new EventEmitter();
 
   formCtrlName = 'persistent_item';
 
@@ -40,6 +44,7 @@ export class PeItCreateFormComponent extends PeItFormBase {
       this.form.valueChanges.subscribe(val => {
         const displayAppeUse: InfTemporalEntity = U.getFirstAppeTeEntOfPeIt(val.peIt)
         this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(displayAppeUse);
+        this.formChange.emit(this.form)
       })
     )
 

@@ -15,7 +15,7 @@ export default sandboxOf(PeItCreateFormComponent, {
 })
   .add('PeIt Create Form | Person ', {
     context: {
-      model: {},
+      f: {},
       initState: {
         _peIt_create_form: mockPerson
       },
@@ -24,12 +24,30 @@ export default sandboxOf(PeItCreateFormComponent, {
     template: `
     <gv-init-state [initState]="initState"></gv-init-state>
 
-    <div class="d-flex justify-content-center mt-5">
-        <div style="width:430px;height:400px" class="d-flex">
-                <gv-pe-it-create-form [basePath]="basePath"></gv-pe-it-create-form>
+    <div class="container">
+      <div class="row">
+        <div style="width:430px;height:700px" class="col-6">
+
+        <gv-pe-it-create-form [basePath]="basePath"  (formChange)="f = $event" ></gv-pe-it-create-form>
+
         </div>
+
+        <div class="col-6" >
+
+        <p>Form.valid: {{f.valid | json}}</p>
+
+            <p>Form.touched: {{f.touched | json}}</p>
+
+            <p>Form.dirty: {{f.dirty | json}}</p>
+
+            <p>Form.value </p>
+            <pre>{{f.value | json}}</pre>
+            
+        </div>
+      </div>
     </div>
-    
+
+
     
         `
   })

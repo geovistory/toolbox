@@ -50,7 +50,6 @@ export class PeItAddFormComponent extends PeItFormBase {
         this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(displayAppeUse);
 
         this.formChange.emit(this.form)
-        console.log('add form value', this.form.value)
         this.ref.detectChanges()
 
       })

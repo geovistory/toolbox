@@ -38,6 +38,20 @@ export const informationReducer =
                 }
                 break;
 
+            case InformationActions.PE_IT_CREATE_ADDED:
+                lastState = {
+                    ...lastState,
+                    _peIt_create_form: action.payload._peIt_create_form
+                };
+                break;
+
+            case InformationActions.PE_IT_CREATE_DESTROYED:
+                lastState = {
+                    ...omit(['_peIt_create_form'], lastState),
+                }
+                break;
+
+
         };
 
 

@@ -1,8 +1,11 @@
-import { DfhClass, DfhLabel, DfhProperty, InfRole } from "app/core";
+import { DfhClass, DfhLabel, DfhProperty, InfRole, InfPersistentItem } from "app/core";
 import { PeItDetail, RoleDetail, RoleSet } from "../../../information.models";
 import { DfhConfig } from "../../../shared/dfh-config";
 
 export const mockPerson: PeItDetail = {
+    peIt: {
+        fk_class: 1
+    } as InfPersistentItem,
     dfhClass: {
         dfh_pk_class: 1,
         dfh_standard_label: 'Person'
@@ -31,6 +34,9 @@ export const mockPerson: PeItDetail = {
                 _role_detail_1: {
                     role: {
                         fk_property: DfhConfig.PROPERTY_PK_R63_NAMES,
+                        entity_version_project_rels: [{
+                            is_standard_in_project: true
+                        }]
                     } as InfRole,
                     _teEnt: {
                         dfhClass: {
@@ -59,7 +65,10 @@ export const mockPerson: PeItDetail = {
                                 _role_list: {
                                     _role_1: {
                                         role: {
-                                            fk_property: 99,
+                                            fk_property: DfhConfig.PROPERTY_PK_R64_USED_NAME,
+                                            appellation: {
+                                                fk_class: DfhConfig.CLASS_PK_APPELLATION
+                                            }
                                         } as InfRole,
                                         _appe: {
                                         }

@@ -47,4 +47,22 @@ export class InformationActions {
   });
 
 
+  static readonly PE_IT_CREATE_ADDED = 'PE_IT_CREATE_ADDED';
+  static readonly PE_IT_CREATE_DESTROYED = 'PE_IT_CREATE_DESTROYED';
+
+  @dispatch()
+  peItCreateFormAdded = (_peIt_create_form: PeItDetail): InformationAction => ({
+    type: InformationActions.PE_IT_CREATE_ADDED,
+    meta: null,
+    payload:{
+      _peIt_create_form
+    }
+  });
+  peItCreateFormDestroyed = (): InformationAction => ({
+    type: InformationActions.PE_IT_CREATE_DESTROYED,
+    meta: null,
+    payload: null
+  });
+
+
 }
