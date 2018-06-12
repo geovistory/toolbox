@@ -27,4 +27,24 @@ export class InformationActions {
     meta: null,
     payload: null
   });
+
+
+  static readonly ENTITY_ADD_EXISTING_INITIALIZED = 'ENTITY_ADD_EXISTING_INITIALIZED';
+  static readonly ENTITY_ADD_EXISTING_DESTROYED = 'ENTITY_ADD_EXISTING_DESTROYED';
+
+  @dispatch()
+  entityAddExistingInitialized = (_peIt_add_form: PeItDetail): InformationAction => ({
+    type: InformationActions.ENTITY_ADD_EXISTING_INITIALIZED,
+    meta: null,
+    payload:{
+      _peIt_add_form
+    }
+  });
+  entityAddExistingDestroyed = (): InformationAction => ({
+    type: InformationActions.ENTITY_ADD_EXISTING_DESTROYED,
+    meta: null,
+    payload: null
+  });
+
+
 }

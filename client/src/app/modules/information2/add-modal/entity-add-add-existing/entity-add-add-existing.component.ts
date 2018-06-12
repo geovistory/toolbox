@@ -1,20 +1,19 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, OnInit } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { IAppState, InfEntityProjectRel, InfPersistentItemApi, Project } from 'app/core';
+import { NgForm } from '@angular/forms';
+import { IAppState } from 'app/core';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { Observable } from 'rxjs/Observable';
 
 import { Information, PeItDetail } from '../../information.models';
+import { informationReducer } from '../../information.reducer';
 import { EntityAddModalService, EntityAddModalState } from '../../shared/entity-add-modal.service';
 import { StateCreatorService } from '../../shared/state-creator.service';
-import { EntityAddExistingActions } from './entity-add-add-existing.actions';
-import { entityAddExistingReducer } from './entity-add-add-existing.reducer';
-import { NgForm } from '@angular/forms';
+import { InformationActions } from '../../information.actions';
 
 
 @WithSubStore({
-  localReducer: entityAddExistingReducer,
+  localReducer: informationReducer,
   basePathMethodName: 'getBasePath'
 })
 @Component({
@@ -39,10 +38,10 @@ export class EntityAddAddExistingComponent implements OnInit {
     private modalService: EntityAddModalService,
     private slimLoadingBarService: SlimLoadingBarService,
     private ngRedux: NgRedux<IAppState>,
-    private actions: EntityAddExistingActions,
+    private actions: InformationActions,
     private stateCreator: StateCreatorService
   ) {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, entityAddExistingReducer);
+    this.localStore = this.ngRedux.configureSubStore(this.basePath, informationReducer);
 
   }
 
@@ -56,23 +55,13 @@ export class EntityAddAddExistingComponent implements OnInit {
       this.ngRedux.getState().activeProject.pk_project
     ).subscribe(peItDetail => {
 
-      this.localStore.dispatch(this.actions.entityAddExistingInitialized({
-        _peIt_add_form: peItDetail
-      } as Information));
+      this.localStore.dispatch(this.actions.entityAddExistingInitialized(peItDetail));
 
-      // this.modalService.addButtonVisible = true;
-
-      // //TEMP
-      // let epr = new  InfEntityProjectRel;
-      // epr.fk_project = project.pk_project;
-      // this._peIt_add_form$.subscribe(d => {
-      //   this.modalService.peItToAdd = d.form.peIt
-      // })
     })
 
   }
 
-  formChange(form:NgForm){
+  formChange(form: NgForm) {
     this.modalService.addButtonVisible = form.valid;
     this.modalService.peItToAdd = form.value.peIt;
   }

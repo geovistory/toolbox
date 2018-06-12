@@ -8,10 +8,8 @@ import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule
 import { KeysModule } from 'app/shared/pipes/keys.module';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 
-import { EntityAddExistingActions } from './add-modal/entity-add-add-existing/entity-add-add-existing.actions';
 import { EntityAddAddExistingComponent } from './add-modal/entity-add-add-existing/entity-add-add-existing.component';
 import { EntityAddChooseClassComponent } from './add-modal/entity-add-choose-class/entity-add-choose-class.component';
-import { EntityCreateNewActions } from './add-modal/entity-add-create-new/entity-add-create-new.actions';
 import { EntityAddCreateNewComponent } from './add-modal/entity-add-create-new/entity-add-create-new.component';
 import { EntityAddModalComponent } from './add-modal/entity-add-modal/entity-add-modal.component';
 import {
@@ -159,9 +157,7 @@ import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.c
 
     // Add Modal
     EntityAddModalService,
-    EntityCreateNewActions,
-    EntityAddExistingActions,
-   
+    
     // Information (root) 
     InformationActions,
 

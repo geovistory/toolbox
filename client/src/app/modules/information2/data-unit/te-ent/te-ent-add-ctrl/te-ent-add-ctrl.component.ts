@@ -75,7 +75,8 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
         role.temporal_entity.te_roles = [];
         Object.keys(this.formGroup.controls).forEach(key => {
           if (this.formGroup.get(key)) {
-            role.temporal_entity.te_roles = [...role.temporal_entity.te_roles, ...this.formGroup.get(key).value]
+            const val = this.formGroup.get(key).value;
+            role.temporal_entity.te_roles = [...role.temporal_entity.te_roles, ...val]
           }
         })
 
@@ -91,9 +92,12 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
       if (this.formGroup.valid) {
         // send the teEnt the parent form
         this.onChange(role)
+        console.log(role.temporal_entity.te_roles)
       }
       else {
-        this.onChange(null)
+        this.onChange(null);
+        console.log(null);
+        
       }
     }))
   }

@@ -23,6 +23,21 @@ export const informationReducer =
                     ...omit(['_peIt_editable'], lastState),
                 }
                 break;
+
+
+            case InformationActions.ENTITY_ADD_EXISTING_INITIALIZED:
+                lastState = {
+                    ...lastState,
+                    _peIt_add_form: action.payload._peIt_add_form
+                };
+                break;
+
+            case InformationActions.ENTITY_ADD_EXISTING_DESTROYED:
+                lastState = {
+                    ...omit(['_peIt_add_form'], lastState),
+                }
+                break;
+
         };
 
 

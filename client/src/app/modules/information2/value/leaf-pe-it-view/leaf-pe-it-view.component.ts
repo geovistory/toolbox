@@ -33,13 +33,13 @@ import { leafPeItReducer } from './leaf-pe-it-view.reducer';
   templateUrl: './leaf-pe-it-view.component.html',
   styleUrls: ['./leaf-pe-it-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => LeafPeItViewComponent),
-      multi: true
-    }
-  ]
+  // providers: [
+  //   {
+  //     provide: NG_VALUE_ACCESSOR,
+  //     useExisting: forwardRef(() => LeafPeItViewComponent),
+  //     multi: true
+  //   }
+  // ]
 })
 export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, OnDestroy {
 
