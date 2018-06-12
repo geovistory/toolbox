@@ -10,6 +10,7 @@ export abstract class RoleAddCtrlBase extends RoleBase {
 
   isStandard: boolean;
   isInProject: boolean;
+  role: InfRole;
 
   init(): void {
     this.initRoleAddCtrlBaseChild()
@@ -25,20 +26,40 @@ export abstract class RoleAddCtrlBase extends RoleBase {
     super(ngRedux, fb)
 
     this.formControlName = 'role_ctrl';
-    this.initFormCtrls()
+
+    this.initForm();
+
+
+  }
+
+  initForm() {
+    this.formGroup = this.fb.group({
+      [this.formControlName]: new FormControl(this.role, [Validators.required]),
+      'is_in_project': new FormControl()
+    });
   }
 
 
-  initFormCtrls() {
+  initFormCtrlValues() {
 
-    this.formGroup.addControl(this.formControlName, new FormControl(null, [Validators.required]))
+    this.formGroup.get(this.formControlName).setValue(this.role)
 
-    this.formGroup.addControl('is_in_project', new FormControl())
+    // this.formGroup.get('is_in_project').setValue(this.isInProject)
+    // get control for the epr option "is_in_project"
+    const isInProjectCtrl = this.formGroup.get('is_in_project');
+
+    // update its value
+    isInProjectCtrl.setValue(this.isInProject)
+
+    // if this is not standard, enable the is in project ctrl
+    if (this.isStandard) isInProjectCtrl.disable()
+    else isInProjectCtrl.enable();
 
   }
 
 
   subscribeFormChanges() {
+
     // subscribe to form control changes 
     this.subs.push(this.formGroup.valueChanges.subscribe(() => {
       this.emitVal();
@@ -46,10 +67,13 @@ export abstract class RoleAddCtrlBase extends RoleBase {
   }
 
   emitVal() {
+
     // send the changes to the parent form
     if (this.formGroup.valid) {
-      const role: InfRole = this.formGroup.get(this.formControlName).value;
       this.isInProject = this.formGroup.get('is_in_project').value;
+
+      const role = new InfRole(this.formGroup.get(this.formControlName).value);
+
 
       // create the epr unless it is a circular role
       if (this.localStore.getState().isCircular !== true) {
@@ -73,32 +97,36 @@ export abstract class RoleAddCtrlBase extends RoleBase {
  * Update the model and changes needed for the view here.
  */
   writeValue(role: InfRole): void {
+    this.role = role;
 
     if (
-      role &&
+      role && role.entity_version_project_rels && role.entity_version_project_rels[0] &&
       this.localStore.getState() &&
       this.localStore.getState().isCircular !== true
     ) {
       // add a control for the epr option "is_standard_in_project" (is_display_role_for_range)
       this.isStandard = role.entity_version_project_rels[0].is_standard_in_project
       this.isInProject = role.entity_version_project_rels[0].is_in_project;
-
-      // get control for the epr option "is_in_project"
-      const isInProjectCtrl = this.formGroup.get('is_in_project');
-
-      // update its value
-      isInProjectCtrl.setValue(this.isInProject)
-
-      // if this is not standard, enable the is in project ctrl
-      if (this.isStandard) isInProjectCtrl.disable()
-      else isInProjectCtrl.enable();
     }
 
-    this.formGroup.get(this.formControlName).setValue(role)
+    // this.formGroup.get(this.formControlName).setValue(role)
+    // the model is taken from the state on init
+    this.initFormCtrlValues()
 
     this.ref.detectChanges()
   }
 
+  /**
+   * Allows Angular to register a function to call when the model changes.
+   * Save the function as a property to call later here.
+   */
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+
+    this.subscribeFormChanges();
+
+
+  }
 
   makeStandard() {
     this.isStandard = true;
@@ -107,6 +135,8 @@ export abstract class RoleAddCtrlBase extends RoleBase {
 
     this.emitVal();
   }
+
+
 
 
 }

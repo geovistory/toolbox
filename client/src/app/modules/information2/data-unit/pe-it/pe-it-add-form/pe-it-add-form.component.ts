@@ -42,6 +42,8 @@ export class PeItAddFormComponent extends PeItFormBase {
 
   onInitPeItBaseChild(): void {
 
+    this.peIt = this.peItState.peIt
+
     this.subs.push(
       this.form.valueChanges.subscribe(val => {
         const displayAppeUse: InfTemporalEntity = U.getFirstAppeTeEntOfPeIt(val.peIt)

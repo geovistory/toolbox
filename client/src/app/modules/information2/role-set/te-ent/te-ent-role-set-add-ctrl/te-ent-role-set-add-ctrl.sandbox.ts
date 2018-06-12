@@ -19,51 +19,7 @@ export default sandboxOf(TeEntRoleSetAddCtrlComponent, {
             model: {
                 "roles": [
                     {
-                        "fk_property": 2,
-                        "fk_entity": 152868,
-                        "fk_temporal_entity": 152864,
-                        "is_in_project_count": 1,
-                        "is_standard_in_project_count": 0,
-                        "community_favorite_calendar": null,
-                        "pk_entity_version_concat": "152870_1",
-                        "pk_entity": 152870,
-                        "entity_version": 1,
-                        "notes": null,
-                        "is_latest_version": true,
-                        "is_community_favorite": true,
-                        "appellation": {
-                            "appellation_label": {
-                                "tokens": [
-                                    {
-                                        "id": 0,
-                                        "string": "Hildegards",
-                                        "typeId": 1,
-                                        "isSeparator": false
-                                    },
-                                    {
-                                        "id": 1,
-                                        "string": " ",
-                                        "isSeparator": true
-                                    },
-                                    {
-                                        "id": 2,
-                                        "string": "Lanzs",
-                                        "typeId": 3,
-                                        "isSeparator": false
-                                    }
-                                ],
-                                "latestTokenId": 4
-                            },
-                            "fk_class": 2,
-                            "notes": null,
-                            "pk_entity_version_concat": "152868_1",
-                            "pk_entity": 152868,
-                            "entity_version": 1,
-                            "is_latest_version": true,
-                            "is_community_favorite": true
-                        },
-                        "language": {},
-                        "time_primitive": {}
+                        "fk_property": 2
                     }
                 ]
             },

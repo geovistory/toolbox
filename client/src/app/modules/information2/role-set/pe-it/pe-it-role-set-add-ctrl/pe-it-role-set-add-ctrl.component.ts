@@ -33,8 +33,7 @@ export class PeItRoleSetAddCtrlComponent extends RoleSetAddCtrlBase {
   initRoleSetAddCtrlBaseChild(): void {
   }
 
-  init(): void {
-  }
+
 
   constructor(
     protected eprApi: InfEntityProjectRelApi,

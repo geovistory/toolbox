@@ -9,21 +9,14 @@ import { StateCreatorService } from '../shared/state-creator.service';
 import { ClassService } from '../shared/class.service';
 import { RoleSetBase } from './role-set.base';
 import { clone } from 'ramda'
-import { AfterViewInit } from '@angular/core';
 
-export abstract class RoleSetAddCtrlBase extends RoleSetBase {
-
-
-  ctrlsInitialized = false;
+export abstract class RoleSetCreateCtrlBase extends RoleSetBase {
 
   init(): void {
-    this.initRoleSetAddCtrlBaseChild()
-    this.initFormCtrls()
-
+    this.initRoleSetCreateCtrlBaseChild()
   }
 
-
-  abstract initRoleSetAddCtrlBaseChild(): void;
+  abstract initRoleSetCreateCtrlBaseChild(): void;
 
   constructor(
     protected eprApi: InfEntityProjectRelApi,
@@ -47,37 +40,7 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
   initFormCtrls() {
 
 
-    // add controls for each child roleSet unless it is circular
-    if (this.roleSetState && this.roleSetState._role_list) {
-
-
-      Object.keys(this.roleSetState._role_list).forEach((key) => {
-        if (this.roleSetState._role_list[key]) {
-
-          let roleCtrl: FormControl;
-
-          // for the circular case
-          if (this.roleSetState._role_list[key].isCircular == true) {
-            roleCtrl = new FormControl(null);
-          }
-          // for normal cases that are not circular
-          else {
-            roleCtrl = new FormControl(null, [Validators.required]);
-          }
-
-          this.formGroup.addControl(key, roleCtrl)
-
-
-
-        }
-      })
-    }
-    this.ctrlsInitialized = true;
-  }
-
-  initFormCtrlValues(roles: InfRole[]) {
-
-    // add vals for each child roleSet unless it is circular
+    // add controls for each child roleSet
     if (this.roleSetState && this.roleSetState._role_list) {
 
       // Find  handle the communities display range favorite
@@ -85,17 +48,9 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
 
       Object.keys(this.roleSetState._role_list).forEach((key) => {
         if (this.roleSetState._role_list[key]) {
-
-          let roleCtrl = this.formGroup.get(key);
-
           let role = this.roleSetState._role_list[key].role;
 
-          // for the circular case
-          if (this.roleSetState._role_list[key].isCircular == true) {
-            roleCtrl.setValue(role);
-          }
-          // for normal cases that are not circular
-          else {
+          if (this.roleSetState._role_list[key].isCircular !== true) {
             // if this role is most used to create the display label of range 
             const is_standard_in_project = (role.pk_entity == favoriteDisplayForRangePk);
 
@@ -105,60 +60,55 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
                 is_standard_in_project
               } as InfEntityProjectRel
             role.entity_version_project_rels = [epr];
-
-            roleCtrl.setValue(role);
           }
+
+          const roleCtrl = new FormControl(role, [Validators.required]);
+          this.formGroup.addControl(key, roleCtrl)
+
+
+          /**
+           * subscribe to each form control (role) in order to
+           * manage dependencies between the roles of the RoleSet 
+           */
+          roleCtrl.valueChanges.subscribe((ctrlVal: InfRole) => {
+            // if is display role, disable other display roles
+            if (ctrlVal && ctrlVal.entity_version_project_rels && ctrlVal.entity_version_project_rels[0].is_standard_in_project) {
+              this.disableDisplayRoleExeptFor(key)
+            }
+          })
 
         }
       })
     }
-
   }
+
+
 
   /**
  * Subcscibes to form value changes
  */
   initFormSubscription() {
 
-    /**
-   * subscribe to each form control (role) in order to
-   * manage dependencies between the roles of the RoleSet 
-   */
-    Object.keys(this.formGroup.controls).forEach(key => {
-      if (this.formGroup.get(key)) {
-        this.formGroup.get(key).valueChanges.subscribe((ctrlVal: InfRole) => {
-          // if is display role, disable other display roles
-          if (ctrlVal && ctrlVal.entity_version_project_rels && ctrlVal.entity_version_project_rels[0].is_standard_in_project) {
-            this.disableDisplayRoleExeptFor(key)
-          }
-        })
-      }
-    })
+
 
     this.subs.push(this.formGroup.valueChanges.subscribe(val => {
-      this.emitVal()
-    }))
-  }
+      if (this.formGroup.valid) {
 
-  emitVal() {
+        // build a array of InfRole
+        let roles: InfRole[] = [];
+        Object.keys(this.formGroup.controls).forEach(key => {
+          if (this.formGroup.get(key)) {
+            roles.push(this.formGroup.get(key).value)
+          }
+        })
 
-    // build a array of InfRole
-    let roles: InfRole[] = [];
-    Object.keys(this.formGroup.controls).forEach(key => {
-      if (this.formGroup.get(key)) {
-        const role = this.formGroup.get(key).value
-        roles.push(role)
+        // send the peIt the parent form
+        this.onChange(roles)
       }
-    })
-
-    if (this.formGroup.valid) {
-
-      // send the peIt the parent form
-      this.onChange(roles)
-    }
-    else {
-      this.onChange(null)
-    }
+      else {
+        this.onChange(null)
+      }
+    }))
   }
 
   disableDisplayRoleExeptFor = (ctrlKey) => {
@@ -181,30 +131,5 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
       }
     })
   }
-
-
-  /**
-   * Allows Angular to update the model.
-   * Update the model and changes needed for the view here.
-   */
-  writeValue(roles: InfRole[]): void {
-    if (this.ctrlsInitialized)
-      this.initFormCtrlValues(roles)
-
-  }
-
-
-  /**
-   * Allows Angular to register a function to call when the model changes.
-   * Save the function as a property to call later here.
-   */
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
-
-    this.initFormSubscription();
-
-  }
-
-
 
 }

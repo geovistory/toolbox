@@ -44,6 +44,7 @@ import { BROWSER_NOOP_ANIMATIONS_PROVIDERS } from '@angular/platform-browser/ani
 export interface StateSettings {
   parentRolePk?: number;
   isCreateMode?: boolean;
+  isAddMode?: boolean;
 }
 
 
@@ -118,7 +119,7 @@ export class StateCreatorService {
   }
 
 
-  initializePeItState(pkEntity: number, pkProject: number): ReplaySubject<PeItDetail> {
+  initializePeItState(pkEntity: number, pkProject: number, settings: StateSettings = {}): ReplaySubject<PeItDetail> {
     const subject = new ReplaySubject(null)
 
 
@@ -129,7 +130,7 @@ export class StateCreatorService {
       const dfhClass$ = this.classService.getByPk(peIt.fk_class);
 
       // Get RoleSetListChildren Observable (returning roleSets etc.)
-      const roleSetsListChildren$ = this.initRoleSetListState(peIt.fk_class, peIt.pi_roles)
+      const roleSetsListChildren$ = this.initRoleSetListState(peIt.fk_class, peIt.pi_roles, settings)
       Observable.combineLatest(dfhClass$, roleSetsListChildren$).subscribe(result => {
         if (result[0] && result[1]) {
           const dfhClass = result[0];
@@ -137,7 +138,8 @@ export class StateCreatorService {
           const ingoingRoleSets = result[1].ingoingRoleSets;
           const outgoingRoleSets = result[1].outgoingRoleSets;
 
-          delete peIt.pi_roles; // those only pollute the state. retrieve them from roleSets
+          if (!settings.isAddMode)
+            delete peIt.pi_roles; // those only pollute the state unless we are in add mode.
 
           const peItDetail: PeItDetail = {
             pkEntity: pkEntity,
@@ -159,7 +161,6 @@ export class StateCreatorService {
 
     return subject;
   }
-
 
 
   initRoleSetListState(fkClass, roles, settings: StateSettings = {}): ReplaySubject<{ childRoleSets: RoleSetList, ingoingRoleSets: RoleSet[], outgoingRoleSets: RoleSet[] }> {
@@ -275,7 +276,7 @@ export class StateCreatorService {
       isOutgoing: options.isOutgoing,
       targetDfhClass: options.targetClass
     }
-    
+
     this.initializeRoleDetails(roles, roleDetailTemplate, settings).subscribe((_role_list: RoleDetailList) => {
       if (_role_list) {
         /** Creates the RoleSet */
@@ -458,8 +459,8 @@ export class StateCreatorService {
         const outgoingRoleSets = result[1].outgoingRoleSets;
         const existenceTimeState = result[2];
 
-
-        delete teEnt.te_roles; // those only pollute the state. retrieve them from roleSets
+        if (!settings.isAddMode)
+          delete teEnt.te_roles; // those only pollute the state. retrieve them from roleSets
 
         const teEntState: TeEntDetail = {
           selectPropState: 'init',

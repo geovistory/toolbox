@@ -1,5 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
-import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { InfRole, InfTemporalEntity, U, InfEntityProjectRel } from 'app/core';
 
@@ -25,16 +25,23 @@ import { slideInOut } from '../../../shared/animations';
 })
 export class TeEntAddCtrlComponent extends TeEntCtrlBase {
 
+  ctrlsInitialized = false;
+
 
   parentRole: InfRole;
 
   constructor(
     protected ngRedux: NgRedux<any>,
     protected actions: TeEntActions,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    protected ref: ChangeDetectorRef
   ) {
     super(ngRedux, actions, fb)
     console.log('TeEntAddCtrlComponent')
+  }
+
+  onInitTeEntBaseChild(): void {
+    this.initFormCtrls()
   }
 
   initFormCtrls(): void {
@@ -44,21 +51,17 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
       const roleSetList = this.localStore.getState()._roleSet_list;
 
       // this.subs.push(this._roleSet_list$.subscribe(roleSetList => {
-
       if (roleSetList)
         Object.keys(roleSetList).forEach((key) => {
           if (roleSetList[key]) {
 
-            this.formGroup.addControl(key, new FormControl(
-              roleSetList[key].roles,
-              [
-                Validators.required
-              ]
-            ))
+            this.formGroup.addControl(key, new FormControl(null, [Validators.required]))
           }
 
         })
-      // }))
+
+
+      this.ctrlsInitialized = true;
     }
 
   }
@@ -76,7 +79,8 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
         Object.keys(this.formGroup.controls).forEach(key => {
           if (this.formGroup.get(key)) {
             const val = this.formGroup.get(key).value;
-            role.temporal_entity.te_roles = [...role.temporal_entity.te_roles, ...val]
+            if (val)
+              role.temporal_entity.te_roles = [...role.temporal_entity.te_roles, ...val]
           }
         })
 
@@ -87,20 +91,43 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
 
         // try to retrieve a appellation label
         this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(role.temporal_entity);
+        this.ref.detectChanges()
       }
 
+
+
+
       if (this.formGroup.valid) {
+
         // send the teEnt the parent form
         this.onChange(role)
-        console.log(role.temporal_entity.te_roles)
+
       }
       else {
+
         this.onChange(null);
-        console.log(null);
-        
+
       }
     }))
   }
+
+
+
+  initFormCtrlValues() {
+    if (this.localStore.getState()) {
+
+      // add values to controls for each roleSet of _roleSet_list
+      const roleSetList = this.localStore.getState()._roleSet_list;
+
+      if (roleSetList)
+        Object.keys(roleSetList).forEach((key) => {
+          if (roleSetList[key]) {
+            this.formGroup.get(key).setValue(roleSetList[key].roles)
+          }
+        })
+    }
+  }
+
 
   onChange(role: InfRole): void {
     console.error('called before registerOnChange')
@@ -108,9 +135,19 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
 
   writeValue(parentRole: InfRole): void {
     this.parentRole = parentRole ? parentRole : new InfRole();
+
+    if (this.ctrlsInitialized)
+      this.initFormCtrlValues()
   }
 
-  onInitTeEntBaseChild(): void { }
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+
+    this.subscribeFormChanges();
+
+  }
+
+
 
 
 
