@@ -46,7 +46,6 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
   */
   initFormCtrls() {
 
-
     // add controls for each child roleSet unless it is circular
     if (this.roleSetState && this.roleSetState._role_list) {
 

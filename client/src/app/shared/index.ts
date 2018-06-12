@@ -1,5 +1,3 @@
-export { InitPeItAddStateModule } from './components/init-pe-it-add-state/init-pe-it-add-state.module';
-
 export { InitPeItEditableStateModule } from './components/init-pe-it-editable-state/init-pe-it-editable-state.module';
 
 export { DomChangeModule } from './directives/dom-change/dom-change.module';

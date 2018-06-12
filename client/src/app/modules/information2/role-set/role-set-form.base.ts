@@ -65,7 +65,7 @@ export abstract class RoleSetFormBase implements OnInit {
 
         this.initForms();
 
-        this.initFormSubscription();
+        // this.initFormSubscription();
 
     }
 
@@ -124,7 +124,7 @@ export abstract class RoleSetFormBase implements OnInit {
     initFormSubscription() {
 
         this.subs.push(this.addForm.valueChanges.subscribe(val => {
-                this.addFormChange.emit(this.addForm)
+            this.addFormChange.emit(this.addForm)
         }))
 
 
@@ -182,26 +182,43 @@ export abstract class RoleSetFormBase implements OnInit {
     */
     initAddFormCtrls(_role_add_list: RoleDetailList) {
         this._role_add_list = _role_add_list;
+
         // add controls for each role to add
         Object.keys(_role_add_list).forEach((key) => {
-            const roleDetail = _role_add_list[key]
-            if (roleDetail && roleDetail.role) {
-
-                const role = roleDetail.role;
-
-                // prepare the role for relation with project
-                role.entity_version_project_rels = [
-                    role.entity_version_project_rels ?
-                        role.entity_version_project_rels[0] : {
-                            is_in_project: false,
-                            is_standard_in_project: false
-                        } as InfEntityProjectRel
-                ]
-
-                const roleCtrl = new FormControl(role, [Validators.required]);
+            if(_role_add_list[key]){
+                const roleCtrl = new FormControl(null, [Validators.required]);
                 this.addForm.addControl(key, roleCtrl)
             }
         })
+
+        // init the form subscription
+
+        this.subs.push(this.addForm.valueChanges.subscribe(val => {
+            this.addFormChange.emit(this.addForm)
+        }))
+
+        // add the control values
+        // setTimout is needed in order to make the form ctrls work…
+        setTimeout(()=>{
+            Object.keys(_role_add_list).forEach((key) => {
+                const roleDetail = _role_add_list[key]
+                if (roleDetail && roleDetail.role) {
+    
+                    const role = roleDetail.role;
+    
+                    // prepare the role for relation with project
+                    role.entity_version_project_rels = [
+                        role.entity_version_project_rels ?
+                            role.entity_version_project_rels[0] : {
+                                is_in_project: false,
+                                is_standard_in_project: false
+                            } as InfEntityProjectRel
+                    ]
+                    this.addForm.get(key).setValue(role)
+                }
+            })
+        }, 0)
+
 
         this.ref.detectChanges()
     }

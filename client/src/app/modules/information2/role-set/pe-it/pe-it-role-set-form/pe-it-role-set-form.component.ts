@@ -213,16 +213,18 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
 
       // call api
       this.subs.push(this.peItApi.changePeItProjectRelation(this.ngRedux.getState().activeProject.pk_project, true, p).subscribe(peIts => {
-        const roles: InfRole[] = peIts[0].pi_roles;
+        const rolesInProj: InfRole[] = peIts[0].pi_roles.filter((r: InfRole) => {
+          if (r.entity_version_project_rels && r.entity_version_project_rels[0] && r.entity_version_project_rels[0].is_in_project)
+            return r
+        });
 
         // update the form group
         Object.keys(this.addForm.controls).forEach(key => {
           this.addForm.removeControl(key)
         })
 
-
         // update the state
-        this.subs.push(this.stateCreator.initializeRoleDetails(roles, { isOutgoing: s.isOutgoing }).subscribe(roleStates => {
+        this.subs.push(this.stateCreator.initializeRoleDetails(rolesInProj, { isOutgoing: s.isOutgoing }).subscribe(roleStates => {
           this.localStore.dispatch(this.actions.rolesCreated(roleStates))
         }))
 
