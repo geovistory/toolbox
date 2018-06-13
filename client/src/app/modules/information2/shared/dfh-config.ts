@@ -22,13 +22,13 @@ export class DfhConfig {
    */
 
   // dfh_pk_property used to connect an appellation use with an entity
-  static PROPERTY_PK_R63_NAMES = 1;
-
-  // dfh_pk_property used to connect an appellation use with an appellation
-  static PROPERTY_PK_R64_USED_NAME = 2;
+  static PROPERTY_PK_R63_NAMES = 1111;
 
   // dfh_pk_property used to connect an appellation use with a language
-  static PROPERTY_PK_R61_USED_LANGUAGE = 3;
+  static PROPERTY_PK_R61_USED_LANGUAGE = 1112;
+
+  // dfh_pk_property used to connect an appellation use with an appellation
+  static PROPERTY_PK_R64_USED_NAME = 1113;
 
   // dfh_pk_property used to connect a chunk as domain use with a persitent item or temporal entity as range 
   static PROPERTY_PK_MENTIONES = 4;
@@ -48,18 +48,17 @@ export class DfhConfig {
     151: 'p81b',
     152: 'p82a',
     153: 'p82b'
-  } 
+  }
 
   /**
    * Dfh Classes
    */
 
   // dfh_pk_class of appellation use
-  static CLASS_PK_APPELLATION_USE = 3;
+  static CLASS_PK_APPELLATION_USE = 365;
 
   // dfh_pk_class of appellation
-  static CLASS_PK_APPELLATION = 2;
-
+  static CLASS_PK_APPELLATION = 40;
 
   // dfh_pk_class of time primitive
   static CLASS_PK_TIME_PRIMITIVE = 335;

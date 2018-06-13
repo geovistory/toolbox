@@ -34,7 +34,7 @@ exports.up = function(db, callback) {
   for (var i = 0; i < iso6393.length; i++) {
     const row = '(' +
     escapeSingleQuotes(iso6393[i].iso6393) + ',' +
-    "4," +
+    "54," +
     escapeSingleQuotes(iso6393[i].type) + ',' +
     escapeSingleQuotes(iso6393[i].scope) + ',' +
     escapeSingleQuotes(iso6393[i].iso6392B) + ',' +
