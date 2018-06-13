@@ -1,0 +1,69 @@
+<div class="btn-group d-flex flex-row gv-h5">
+  <button class="btn btn-light btn-sm btn-block text-left rounded-0">
+    <i class="fa fa-caret-right fa-rotate-90"></i>
+    When
+  </button>
+  <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+    <div class="align-self-center">
+      <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/50" target="_blank">
+        E52
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="p-2">
+
+  <form [formGroup]="formGroup">
+
+
+    <!-- Begin of Begin -->
+    <div class="form-group">
+
+      <gv-ex-time-role-set-create-ctrl *ngIf="(_roleSet_list?._152_outgoing) && formGroup.get('_152_outgoing')" [parentPath]="basePath"
+        [parentTeEntStatePath]="parentTeEntPath" formControlName="_152_outgoing" [index]="'_152_outgoing'" (onRemoveRoleSet)="removeRoleSet('_152_outgoing')"></gv-ex-time-role-set-create-ctrl>
+
+      <button class="btn btn-link" type="button" *ngIf="!(_roleSet_list?._152_outgoing)" (click)="addRoleSet(152)">Add Begin of begin</button>
+
+    </div>
+
+    <!-- End of begin -->
+    <div class="form-group">
+
+      <gv-ex-time-role-set-create-ctrl *ngIf="(_roleSet_list?._150_outgoing) && formGroup.get('_150_outgoing')" [parentPath]="basePath"
+        [parentTeEntStatePath]="parentTeEntPath" formControlName="_150_outgoing" [index]="'_150_outgoing'" (onRemoveRoleSet)="removeRoleSet('_150_outgoing')"></gv-ex-time-role-set-create-ctrl>
+
+
+      <button class="btn btn-link" type="button" *ngIf="!(_roleSet_list?._150_outgoing)" (click)="addRoleSet(150)">Add End of Begin</button>
+
+    </div>
+
+
+    <!-- Begin of end -->
+    <div class="form-group">
+
+
+      <gv-ex-time-role-set-create-ctrl *ngIf="(_roleSet_list?._151_outgoing) && formGroup.get('_151_outgoing')" [parentPath]="basePath"
+        [parentTeEntStatePath]="parentTeEntPath" formControlName="_151_outgoing" [index]="'_151_outgoing'" (onRemoveRoleSet)="removeRoleSet('_151_outgoing')"></gv-ex-time-role-set-create-ctrl>
+
+
+      <button class="btn btn-link" type="button" *ngIf="!(_roleSet_list?._151_outgoing)" (click)="addRoleSet(151)">Add Begin of end</button>
+
+    </div>
+
+    <!-- End of End -->
+    <div class="form-group">
+
+      <gv-ex-time-role-set-create-ctrl *ngIf="(_roleSet_list?._153_outgoing) && formGroup.get('_153_outgoing')" [parentPath]="basePath"
+        [parentTeEntStatePath]="parentTeEntPath" formControlName="_153_outgoing" [index]="'_153_outgoing'" (onRemoveRoleSet)="removeRoleSet('_153_outgoing')"></gv-ex-time-role-set-create-ctrl>
+
+      <button class="btn btn-link" type="button" *ngIf="!(_roleSet_list?._153_outgoing)" (click)="addRoleSet(153)">Add End of end</button>
+
+    </div>
+
+
+    <button type="submit" class="btn btn-primary" [disabled]="formGroup.invalid || formGroup.pristine" (click)="onSubmitExistenceTime()">Ok</button>
+    <button class="btn btn-link" (click)="stopEditing.emit()">Cancel</button>
+  </form>
+
+</div>

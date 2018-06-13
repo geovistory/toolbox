@@ -75,6 +75,20 @@ import { LanguageViewComponent } from './value/language-view/language-view.compo
 import { LeafPeItCtrlComponent } from './value/leaf-pe-it-ctrl/leaf-pe-it-ctrl.component';
 import { LeafPeItViewModalComponent } from './value/leaf-pe-it-view/leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
 import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.component';
+import { ExistenceTimeEditableComponent } from './existence-time/existence-time-editable/existence-time-editable.component';
+import { ExistenceTimeCreateCtrlComponent } from './existence-time/existence-time-create-ctrl/existence-time-create-ctrl.component';
+import { ExistenceTimeAddCtrlComponent } from './existence-time/existence-time-add-ctrl/existence-time-add-ctrl.component';
+import { ExistenceTimeActions } from './existence-time/existence-time.actions';
+import { ExistenceTimeEditComponent } from './existence-time/existence-time-edit/existence-time-edit.component';
+import { ExTimeRoleSetFormComponent } from './role-set/ex-time/ex-time-role-set-form/ex-time-role-set-form.component';
+import { ExTimeRoleSetAddCtrlComponent } from './role-set/ex-time/ex-time-role-set-add-ctrl/ex-time-role-set-add-ctrl.component';
+import { ExTimeRoleSetCreateCtrlComponent } from './role-set/ex-time/ex-time-role-set-create-ctrl/ex-time-role-set-create-ctrl.component';
+import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
+import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
+import { ValidationService } from 'app/core';
+import { ExTimeRoleSetEditableComponent } from './role-set/ex-time/ex-time-role-set-editable/ex-time-role-set-editable.component';
+import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timeline.component';
+import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 
 @NgModule({
   imports: [
@@ -103,6 +117,7 @@ import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.c
     EntityEditorComponent,
     ProjectEntitiesComponent,
     EntitySearchHitComponent,
+    PeItTimelineComponent,
 
     // Add Modal
     EntityAddAddExistingComponent,
@@ -123,6 +138,11 @@ import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.c
     TeEntCreateCtrlComponent,
     TeEntEditableComponent,
 
+    // Existence Time
+    ExistenceTimeEditableComponent,
+    ExistenceTimeCreateCtrlComponent,
+    ExistenceTimeAddCtrlComponent,
+
     // Role Set
     PeItRoleSetAddCtrlComponent,
     PeItRoleSetCreateCtrlComponent,
@@ -132,6 +152,9 @@ import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.c
     TeEntRoleSetCreateCtrlComponent,
     TeEntRoleSetEditableComponent,
     TeEntRoleSetFormComponent,
+    ExTimeRoleSetFormComponent,
+    ExTimeRoleSetAddCtrlComponent,
+    ExTimeRoleSetCreateCtrlComponent,
 
     // Role
     PeItRoleAddCtrlComponent,
@@ -150,20 +173,28 @@ import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.c
     LanguageViewComponent,
     LeafPeItCtrlComponent,
     LeafPeItViewComponent,
-    LeafPeItViewModalComponent
+    LeafPeItViewModalComponent,
+    ExistenceTimeEditComponent,
+    TimePrimitiveCtrlComponent,
+    TimePrimitiveViewComponent,
+    ExTimeRoleSetEditableComponent
+
 
   ],
   providers: [
 
     // Add Modal
     EntityAddModalService,
-    
+
     // Information (root) 
     InformationActions,
 
     // Data Unit
     PeItActions,
     TeEntActions,
+
+    // Existence Time
+    ExistenceTimeActions,
 
     // Role Set
     RoleSetActions,
@@ -183,10 +214,13 @@ import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.c
     RoleService,
     EprService,
     RoleSetService,
+    ValidationService,
+
+    MentionedEntityCtrlActions
   ],
   exports: [
     // Put all components here, that are used by another module, or in a sandbox
-  
+
     // Add Modal
     EntityAddModalComponent,
 
@@ -201,6 +235,11 @@ import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.c
     TeEntAddCtrlComponent,
     TeEntCreateCtrlComponent,
     TeEntEditableComponent,
+
+    // Existence Time
+    ExistenceTimeEditableComponent,
+    ExistenceTimeCreateCtrlComponent,
+    ExistenceTimeAddCtrlComponent,
 
     // Role Set
     PeItRoleSetAddCtrlComponent,
@@ -227,6 +266,8 @@ import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.c
     LanguageViewComponent,
     LeafPeItCtrlComponent,
     LeafPeItViewComponent,
+    TimePrimitiveViewComponent,
+
   ],
   entryComponents: [
     LeafPeItViewModalComponent,

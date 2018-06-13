@@ -1,6 +1,5 @@
 <ng-container *ngTemplateOutlet="header"></ng-container>
 
-
 <!-- If no roles in Project, show a big add button -->
 <div class="card-body" *ngIf="!((_role_list$ | async) | keys).length && addButtonVisible">
   <button class="btn btn-outline-primary" (click)="startCreateRole()">
@@ -13,6 +12,7 @@
 
 
 <form [formGroup]="formGroup" *ngIf="formGroup">
+  
   <div *ngFor="let entry of (_role_list$ | async) | keys; trackBy:getKey" class="d-flex">
 
     <gv-te-ent-role-create-ctrl class="gv-flex-grow-1 align-self-center" *ngIf="formGroup.get(entry.key)" [parentPath]="basePath"

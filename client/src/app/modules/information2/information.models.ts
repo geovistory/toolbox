@@ -55,16 +55,18 @@ export interface PeItSearchHit {
 
 }
 
+
+
 export interface PeItDetail extends DataUnit {
 
     // record
     peIt?: InfPersistentItem;
 
-    form?;
+    form?:any;
 
     /** display data */
     ontoInfoVisible?: boolean;
-    communityStatsVisible?: boolean
+    communityStatsVisible?: boolean;
     loading?:boolean; //for leaf pe it view
 }
 
@@ -79,10 +81,22 @@ export interface TeEntDetail extends DataUnit {
     // record
     teEnt?: InfTemporalEntity;
 
-    _existenceTime?: ExistenceTimeDetail;
+    _existenceTime?: ExistenceTimeDetail; // for editable, add and create
+    _existenceTime_edit?: ExistenceTimeDetail; // for edit (form that controls consistency between different time-roles)
 
 
+}
 
+export interface ExistenceTimeDetail {
+
+    _roleSet_list?: RoleSetList;
+
+    // records
+    roles?: InfRole[];
+
+    // gui
+    toggle?: CollapsedExpanded;
+    outgoingRoleSets?: RoleSet[];
 }
 
 
@@ -217,15 +231,3 @@ export type RoleSetLabelObj = {
     sg: string
 }
 
-
-export interface ExistenceTimeDetail {
-
-    _roleSet_list?: RoleSetList;
-
-    // records
-    roles?: InfRole[];
-
-    // gui
-    toggle?: CollapsedExpanded;
-    ingoingRoleSets?: RoleSet[];
-}

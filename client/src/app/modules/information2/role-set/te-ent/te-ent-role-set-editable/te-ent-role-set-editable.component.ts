@@ -5,13 +5,12 @@ import { IAppState, InfEntityProjectRelApi, InfRole, InfRoleApi, InfTemporalEnti
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable } from 'rxjs/Observable';
 
-import { RoleDetail, RoleDetailList, TeEntDetail, RoleSet } from '../../../information.models';
+import { RoleDetail, RoleDetailList, RoleSet, TeEntDetail } from '../../../information.models';
 import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
 import { StateCreatorService } from '../../../shared/state-creator.service';
-import { RoleSetAddCtrlBase } from '../../role-set-add-ctrl.base';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetBase } from '../../role-set.base';
 

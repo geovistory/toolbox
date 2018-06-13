@@ -1,0 +1,51 @@
+<div class="btn-group d-flex flex-row gv-h5">
+    <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
+        <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
+        When
+    </button>
+    <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+        <div class="align-self-center">
+            <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/50" target="_blank">
+                E52
+            </a>
+        </div>
+    </div>
+    <div class="btn btn-link btn-sm" (click)="startEditing.emit()" *ngIf="(toggle$|async) ==='expanded'">
+        <i class="fa fa-edit"></i>
+    </div>
+</div>
+
+<div [@slideInOut]="(toggle$|async)">
+    <div class="p-2">
+
+        <!-- Begin of begin -->
+        <div class="form-group">
+
+            <gv-ex-time-role-set-editable *ngIf="(_roleSet_list?._152_outgoing)" [parentPath]="basePath" [index]="'_152_outgoing'" (onRemoveRoleSet)="removeRoleSet('_152_outgoing')"></gv-ex-time-role-set-editable>
+
+        </div>
+
+        <!-- End of begin -->
+        <div class="form-group">
+
+            <gv-ex-time-role-set-editable *ngIf="(_roleSet_list?._150_outgoing)" [parentPath]="basePath" [index]="'_150_outgoing'" (onRemoveRoleSet)="removeRoleSet('_150_outgoing')"></gv-ex-time-role-set-editable>
+
+        </div>
+
+
+        <!-- Begin of end -->
+        <div class="form-group">
+
+            <gv-ex-time-role-set-editable *ngIf="(_roleSet_list?._151_outgoing)" [parentPath]="basePath" [index]="'_151_outgoing'" (onRemoveRoleSet)="removeRoleSet('_151_outgoing')"></gv-ex-time-role-set-editable>
+
+        </div>
+
+        <!-- End of end -->
+        <div class="form-group">
+
+            <gv-ex-time-role-set-editable *ngIf="(_roleSet_list?._153_outgoing)" [parentPath]="basePath" [index]="'_153_outgoing'" (onRemoveRoleSet)="removeRoleSet('_153_outgoing')"></gv-ex-time-role-set-editable>
+
+        </div>
+
+    </div>
+</div>

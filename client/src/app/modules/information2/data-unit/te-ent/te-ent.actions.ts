@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { InfTemporalEntity } from 'app/core';
-import { TeEntDetail, CollapsedExpanded } from '../../information.models';
+import { TeEntDetail, CollapsedExpanded, ExistenceTimeDetail } from '../../information.models';
 import { DataUnitActions } from '../data-unit.actions';
 
 
@@ -28,6 +28,14 @@ export class TeEntActions extends DataUnitActions {
   static readonly SET_TOGGLE = 'SET_TOGGLE';
 
   static readonly TOGGLE = 'TOGGLE';
+
+
+  static readonly EX_TIME_START_EDITING = 'EX_TIME_START_EDITING';
+
+  static readonly EX_TIME_STOP_EDITING = 'EX_TIME_STOP_EDITING';
+
+  static readonly EX_TIME_UPDATED = 'EX_TIME_UPDATED';
+
 
   @dispatch()
 
@@ -69,12 +77,24 @@ export class TeEntActions extends DataUnitActions {
     payload: null
   })
 
-  // teEntLabelUpdated = (label:string): TeEntAction  => ({
-  //   type: TeEntActions.TE_ENT_LABEL_UPDATED,
-  //   meta: null,
-  //   payload: {
-  //     label
-  //   }
-  // })
+  startEditingExTime = (): TeEntAction => ({
+    type: TeEntActions.EX_TIME_START_EDITING,
+    meta: null,
+    payload: null
+  })
+
+  stopEditingExTime = (): TeEntAction => ({
+    type: TeEntActions.EX_TIME_STOP_EDITING,
+    meta: null,
+    payload: null
+  })
+
+  existenceTimeUpdated = (_existenceTime:ExistenceTimeDetail): TeEntAction => ({
+    type: TeEntActions.EX_TIME_UPDATED,
+    meta: null,
+    payload:{
+      _existenceTime
+    }
+  })
 
 }

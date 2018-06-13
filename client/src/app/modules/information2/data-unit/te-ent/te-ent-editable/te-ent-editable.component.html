@@ -6,7 +6,11 @@
     <gv-te-ent-role-set-editable *ngFor="let entry of (_roleSet_list$ | async) | keys; trackBy:getKey" [parentPath]="basePath"
       [parentTeEntStatePath]="basePath" [index]="entry.key" (onRemoveRoleSet)="removeRoleSet(entry.key)"></gv-te-ent-role-set-editable>
 
-    <ng-container *ngTemplateOutlet="dating"></ng-container>
+    <gv-existence-time-editable *ngIf="(_existenceTime$ | async) && !(_existenceTime_edit$ | async)"
+    [basePath]="basePath.concat('_existenceTime')" (startEditing)="startEditingExistenceTime()"></gv-existence-time-editable>
+   
+    <gv-existence-time-edit *ngIf="_existenceTime_edit$ | async" (submitted)="existenceTimeUpdated($event)"
+    [basePath]="basePath.concat('_existenceTime_edit')" (stopEditing)="stopEditingExistenceTime()"></gv-existence-time-edit>
 
     <div class="gv-footer border-top border-white">
 
@@ -77,8 +81,4 @@
     <ng-content select="[headerRight]"></ng-content>
   </div>
   <ng-content select="[belowHeader]"></ng-content>
-</ng-template>
-
-<ng-template #dating>
-  <!-- <gv-te-ent-existence-time [parentPath]="basePath"></gv-te-ent-existence-time> -->
 </ng-template>

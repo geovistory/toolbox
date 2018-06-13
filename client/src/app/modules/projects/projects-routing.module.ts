@@ -1,21 +1,24 @@
 import { NgModule } from '@angular/core';
-import { Route, Routes, RouterModule } from '@angular/router';
-import { ProjectListComponent } from './components/project-list/project-list.component';
+import { RouterModule, Routes } from '@angular/router';
+import { ProxyRouteComponent } from 'app/shared/components/proxy-route';
+
+import { Information2Module } from '../information2/information2.module';
 import { ProjectCreateComponent } from './components/project-create/project-create.component';
 import { ProjectDashboardComponent } from './components/project-dashboard/project-dashboard.component';
 import { ProjectEditComponent } from './components/project-edit/project-edit.component';
-import { ProjectSettingsComponent } from './components/project-settings/project-settings.component';
-import { ProjectSettingsProfileComponent } from './components/project-settings-profile/project-settings-profile.component';
-import { ProjectSettingsCollaboratorsComponent } from './components/project-settings-collaborators/project-settings-collaborators.component';
+import { ProjectListComponent } from './components/project-list/project-list.component';
+import {
+  ProjectSettingsCollaboratorsComponent,
+} from './components/project-settings-collaborators/project-settings-collaborators.component';
 import { ProjectSettingsDataComponent } from './components/project-settings-data/project-settings-data.component';
-import { ProxyRouteComponent } from 'app/shared/components/proxy-route';
-import { InformationModule } from '../information/information.module';
-import { Information2Module } from '../information2/information2.module';
+import { ProjectSettingsProfileComponent } from './components/project-settings-profile/project-settings-profile.component';
+import { ProjectSettingsComponent } from './components/project-settings/project-settings.component';
+import { SourcesModule } from '../sources';
 
-export function getInformationModule() { return InformationModule };
 
 export function getInformation2Module() { return Information2Module };
 
+export function getSourcesModule() { return SourcesModule };
 
 const routes: Routes = [
   {
@@ -51,20 +54,6 @@ const routes: Routes = [
               }
             ]
           },
-          // //TEMP->
-          // {
-          //   path: '',
-          //   outlet: 'sources',
-          //   component: ProxyRouteComponent,
-          //   children: [
-          //     {
-          //       path: '',
-          //       loadChildren: '../information2/information2.module#Information2Module'
-          //       // line above instead of loadChildren: InformationModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116         
-          //     }
-          //   ]
-          // },
-          // // ->TEMP
           {
             path: '',
             outlet: 'sources',

@@ -1,9 +1,9 @@
-import { Component, Input, ElementRef, OnInit, DoCheck } from '@angular/core';
+import { Component, DoCheck, ElementRef, Input, OnInit } from '@angular/core';
 import { TimePrimitive } from 'app/core';
-import { XAxisDefinition } from '../../models/x-axis-definition';
-import { D3Service } from '../../shared/d3.service';
+
 import { TimePrimitiveVisual } from '../../models/time-primitive-visual';
 import { Timeline } from '../../models/timeline';
+import { D3Service } from '../../shared/d3.service';
 
 @Component({
   selector: '[rightInnerVisual]',

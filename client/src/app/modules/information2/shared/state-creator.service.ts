@@ -393,7 +393,7 @@ export class StateCreatorService {
     }
 
     /** If role leads to TimePrimitive */
-    else if (DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.indexOf(role.fk_property) > -1 && options.isOutgoing === false) {
+    else if (DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.indexOf(role.fk_property) > -1 && options.isOutgoing === true) {
 
       // when targetDfhClass is provided we are in create state and we need the fk_class
       if (options.targetDfhClass) roleDetail.role.time_primitive = {
@@ -457,10 +457,11 @@ export class StateCreatorService {
         const _roleSet_list = result[1].childRoleSets;
         const ingoingRoleSets = result[1].ingoingRoleSets;
         const outgoingRoleSets = result[1].outgoingRoleSets;
-        const existenceTimeState = result[2];
+        const _existenceTime = result[2];
 
         if (!settings.isAddMode)
           delete teEnt.te_roles; // those only pollute the state. retrieve them from roleSets
+
 
         const teEntState: TeEntDetail = {
           selectPropState: 'init',
@@ -469,7 +470,7 @@ export class StateCreatorService {
           fkClass: teEnt.fk_class,
           dfhClass,
           _roleSet_list,
-          // existenceTimeState,
+          _existenceTime, // todo: according to "settings" add the values to 
           ingoingRoleSets,
           outgoingRoleSets,
           label: StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(_roleSet_list)
@@ -489,22 +490,22 @@ export class StateCreatorService {
     // get all InfProperties leading to a timePrimitive
     this.classService.getIngoingProperties(DfhConfig.CLASS_PK_TIME_PRIMITIVE).subscribe(ingoingProperties => {
 
-      // Generate RoleSets
-      const ingoingRoleSets = this.propertyService.toRoleSets(false, ingoingProperties)
+      // Generate RoleSets (from the perspective of the TemporalEntity, those are outgoing)
+      const outgoingRoleSets = this.propertyService.toRoleSets(true, ingoingProperties)
 
       // Generate roleSets 
       const roleSetOptions: RoleSet = {
         toggle: 'expanded'
       }
 
-      const childRoleSets$ = this.initializeChildRoleSets(roles, ingoingRoleSets, [], roleSetOptions)
+      const childRoleSets$ = this.initializeChildRoleSets(roles, [], outgoingRoleSets, roleSetOptions)
 
-      childRoleSets$.subscribe(roleSets => {
+      childRoleSets$.subscribe(_roleSet_list => {
         subject.next({
           roles,
           toggle: options.toggle ? options.toggle : 'collapsed',
-          roleSets,
-          ingoingRoleSets
+          _roleSet_list,
+          outgoingRoleSets
         } as ExistenceTimeDetail);
       })
 

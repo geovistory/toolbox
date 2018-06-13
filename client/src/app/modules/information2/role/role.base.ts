@@ -165,7 +165,7 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
   initFormCtrl(role) {
     // add a control for the child of the role
     Object.keys(this.childStatesConfig).forEach((key) => {
-      if (this.roleState[key]) {
+      if (this.roleState && this.roleState[key]) {
 
 
         const childStateConfig = this.childStatesConfig[key]

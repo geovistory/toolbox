@@ -1,5 +1,4 @@
-import { ExistenceTime } from "../../../information/components/existence-time";
-import { TimePrimitive } from "app/core";
+import { TimePrimitive, ExistenceTime } from "app/core";
 import { TimeLineData } from "../../models/timeline";
 
 /**

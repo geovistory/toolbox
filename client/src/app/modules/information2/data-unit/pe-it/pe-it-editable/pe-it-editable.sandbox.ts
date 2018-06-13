@@ -17,11 +17,11 @@ export default sandboxOf(PeItEditableComponent, {
   .add('View ', {
     context: {
       basePath: ['_peIt_editable'],
-      pkProject: 52,
-      pkEntity: 152831,
+      pkProject: 57,
+      pkEntity: 162152,
       state: {
         activeProject: {
-          pk_project: 52
+          pk_project: 57
         } as Project,
         _peIt_editable: undefined
       }
@@ -45,11 +45,11 @@ export default sandboxOf(PeItEditableComponent, {
   .add('Generate PeIt Edit State ', {
     context: {
       basePath: ['_peIt_editable'],
-      pkProject: 52,
-      pkEntity: 152831,
+      pkProject: 57,
+      pkEntity: 162152,
       state: {
         activeProject: {
-          pk_project: 52
+          pk_project: 57
         } as Project,
         _peIt_editable: undefined
       }

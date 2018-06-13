@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
-import { Point } from '../models/point';
+import { Observable } from 'rxjs/Observable';
+
+import { TimePrimitiveVisual } from '../models/time-primitive-visual';
 import { Timeline, TimeLineData } from '../models/timeline';
 import { XAxisDefinition } from '../models/x-axis-definition';
-import { Observable } from 'rxjs/Observable';
-import { TimePrimitive, InfPersistentItem } from 'app/core';
-import { ExistenceTime } from '../../information/components/existence-time';
-import { TimePrimitiveVisual } from '../models/time-primitive-visual';
 
 @Injectable()
 export class D3Service {

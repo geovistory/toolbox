@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { DataUnitBase } from '../../data-unit.base';
 import { ObservableStore, NgRedux, WithSubStore, select } from '@angular-redux/store';
-import { TeEntDetail, RoleDetail, RoleSetList, RoleSet } from '../../../information.models';
+import { TeEntDetail, RoleDetail, RoleSetList, RoleSet, ExistenceTimeDetail } from '../../../information.models';
 import { Observable } from 'rxjs/Observable';
 import { TeEntActions } from '../te-ent.actions';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
@@ -34,6 +34,8 @@ export class TeEntEditableComponent extends DataUnitBase {
   localStore: ObservableStore<TeEntDetail>;
 
   @select() toggle$: Observable<boolean>
+  @select() _existenceTime$: Observable<ExistenceTimeDetail>;
+  @select() _existenceTime_edit$: Observable<ExistenceTimeDetail>;
 
   /**
   * Paths to other slices of the store
@@ -131,7 +133,17 @@ export class TeEntEditableComponent extends DataUnitBase {
   }
 
 
+  startEditingExistenceTime(){
+    this.localStore.dispatch(this.actions.startEditingExTime())
+  }
 
+  stopEditingExistenceTime(){
+    this.localStore.dispatch(this.actions.stopEditingExTime())
+  }
+
+  existenceTimeUpdated(data:ExistenceTimeDetail){
+    this.localStore.dispatch(this.actions.existenceTimeUpdated(data))
+  }
 
   /**
   * toggleCardBody - toggles the state of the card in order to collapse or

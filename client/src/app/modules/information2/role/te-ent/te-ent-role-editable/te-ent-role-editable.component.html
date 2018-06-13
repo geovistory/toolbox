@@ -3,7 +3,7 @@
   <ng-content select="[headerLeft]"></ng-content>
 
   <div class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
-    
+
     <gv-leaf-pe-it-view *ngIf="roleState._leaf_peIt !== undefined && toggle === 'expanded' && roleState.role.fk_entity" [pkEntity]="roleState.role.fk_entity"
       [basePath]="(basePath.concat('_leaf_peIt'))" [isCircular]="(isCircular$|async)"></gv-leaf-pe-it-view>
 
@@ -11,13 +11,13 @@
 
     <gv-language-view *ngIf="roleState._lang" class="gv-flex-grow-1" [language]="roleState._lang.language"></gv-language-view>
 
+    <gv-time-primitive-view *ngIf="roleState._timePrimitive" [role]="roleState.role" show="duration"></gv-time-primitive-view>
 
     <!--     
 
 
     <gv-language *ngIf="roleState.langState" class="gv-flex-grow-1" [parentPath]="basePath" (touched)="markAsTouched()"></gv-language>
 
-    <gv-time-primitive *ngIf="roleState.timePrimitiveState" class="gv-flex-grow-1" [parentPath]="basePath" (touched)="markAsTouched()"></gv-time-primitive>
  -->
 
   </div>

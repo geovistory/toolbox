@@ -9,22 +9,12 @@
     <gv-leaf-pe-it-view *ngIf="(isCircular$|async) && roleState.role.fk_entity" [pkEntity]="roleState.role.fk_entity" [basePath]="(basePath.concat('_leaf_peIt'))"
       [isCircular]="true"></gv-leaf-pe-it-view>
 
-    <gv-leaf-pe-it-ctrl *ngIf="!(isCircular$|async) && roleState._leaf_peIt" [formControlName]="formControlName" (touched)="markAsTouched()" [basePath]="(basePath.concat('_leaf_peIt'))"
-      [dfhClass]="roleState.targetDfhClass"></gv-leaf-pe-it-ctrl>
-    <!-- {{(!(isCircular$|async) && roleState._leaf_peIt) | json}} |
-     {{!(isCircular$|async) | json}} |
-     {{ (roleState._leaf_peIt) | json}} -->
+    <gv-leaf-pe-it-ctrl *ngIf="!(isCircular$|async) && roleState._leaf_peIt" [formControlName]="formControlName" (touched)="markAsTouched()"
+      [basePath]="(basePath.concat('_leaf_peIt'))" [dfhClass]="roleState.targetDfhClass"></gv-leaf-pe-it-ctrl>
 
-    <!-- <div *ngIf="(leafPeItLoading$ |async)">
-      <i class="fa fa-spinner fa-pulse"></i> Loading</div>
-    <gv-leaf-pe-it-view *ngIf="(peItState$ |async) && !(leafPeItLoading$ |async)" [parentPath]="basePath" [isCircular]="(isCircular$|async)"
-      [formControlName]="formControlName" (touched)="markAsTouched()"></gv-leaf-pe-it-view>
+    <gv-time-primitive-ctrl *ngIf="roleState._timePrimitive" [formControlName]="formControlName" (touched)="markAsTouched()"></gv-time-primitive-ctrl>
 
-
-    <gv-time-primitive *ngIf="roleState.timePrimitiveState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
-      (touched)="markAsTouched()"></gv-time-primitive>
-    <div>
-
+    <!--
       <gv-control-messages *ngIf="formGroup.get(formControlName)" [control]="formGroup.get(formControlName)"></gv-control-messages> 
     </div>-->
 

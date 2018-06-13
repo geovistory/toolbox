@@ -1,14 +1,14 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { NgRedux, WithSubStore, ObservableStore, dispatch, select } from '@angular-redux/store';
-import { annotationPanelReducer } from './annotation-panel.reducer';
-import { AnnotationPanelActions } from './annotation-panel.actions';
-import { KeysPipe } from 'app/shared/pipes/keys.pipe';
-import { IAnnotationPanelState, AnnotationCtrlState, AnnotationState, MentionedEntity } from '../../annotation.models';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { Subscription, Observable } from 'rxjs';
+import { dispatch, NgRedux, select, WithSubStore } from '@angular-redux/store';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { IAppState, InfChunk, InfChunkApi, InfEntityAssociation, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { InfChunk, IAppState, InfEntityAssociation, U, InfChunkApi } from 'app/core';
-import { DfhConfig } from '../../../information/shared/dfh-config';
+import { Observable, Subscription } from 'rxjs';
+
+import { AnnotationCtrlState, AnnotationState, IAnnotationPanelState, MentionedEntity } from '../../annotation.models';
+import { AnnotationPanelActions } from './annotation-panel.actions';
+import { annotationPanelReducer } from './annotation-panel.reducer';
+import { DfhConfig } from '../../../information2/shared/dfh-config';
 
 @AutoUnsubscribe()
 @WithSubStore({

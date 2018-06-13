@@ -1,8 +1,8 @@
 import { TimePrimitive, InfTimePrimitive, InfRole, InfTemporalEntity, InfPersistentItem } from "..";
 import { CalendarType } from "../date-time/time-primitive";
 import { Granularity } from "../date-time/date-time-commons";
-import { AppellationLabel } from "../../modules/information/shared/appellation-label/appellation-label";
 import { DfhConfig } from "../../modules/information2/shared/dfh-config";
+import { AppellationLabel } from "../../modules/information2/shared/appellation-label";
 
 /**
  * Utilities class for static functions
