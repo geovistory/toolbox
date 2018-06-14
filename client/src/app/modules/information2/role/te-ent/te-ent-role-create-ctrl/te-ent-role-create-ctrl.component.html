@@ -14,9 +14,12 @@
 
     <gv-time-primitive-ctrl *ngIf="roleState._timePrimitive" [formControlName]="formControlName" (touched)="markAsTouched()"></gv-time-primitive-ctrl>
 
+    <gv-place-ctrl *ngIf="roleState._place" [formControlName]="formControlName" (touched)="markAsTouched()"></gv-place-ctrl>
+
     <!--
       <gv-control-messages *ngIf="formGroup.get(formControlName)" [control]="formGroup.get(formControlName)"></gv-control-messages> 
     </div>-->
 
   </form>
 </div>
+

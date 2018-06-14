@@ -9,18 +9,33 @@ import { StateCreatorService, StateSettings } from 'app/modules/information2/sha
 })
 export class InitPeItEditableStateComponent implements OnInit {
 
+  // editable or select
   @Input() pkProject: number;
   @Input() pkEntity: number;
-  @Input() settings:StateSettings;
-  @Output() stateCreated: EventEmitter<PeItDetail> = new EventEmitter();
+  
+  // create
+  @Input() fkClass: number;
+  @Input() label: string;
 
+  @Input() settings: StateSettings;
+  @Output() stateCreated: EventEmitter<PeItDetail> = new EventEmitter();
+  
 
   constructor(private stateCreator: StateCreatorService) { }
 
   ngOnInit() {
 
-    this.stateCreator.initializePeItState(this.pkEntity, this.pkProject, this.settings).subscribe(peItDetail => {
-      this.stateCreated.emit(peItDetail);
-    })
+    if (this.settings.isCreateMode) {
+      this.stateCreator.initializePeItToCreate(this.fkClass, 'Max').subscribe(peItDetail => {
+        this.stateCreated.emit(peItDetail);
+      })
+
+    }
+    else {
+      this.stateCreator.initializePeItState(this.pkEntity, this.pkProject, this.settings).subscribe(peItDetail => {
+        this.stateCreated.emit(peItDetail);
+      })
+    }
+
   }
 }

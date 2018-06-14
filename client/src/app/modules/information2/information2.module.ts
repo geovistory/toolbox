@@ -89,6 +89,8 @@ import { ValidationService } from 'app/core';
 import { ExTimeRoleSetEditableComponent } from './role-set/ex-time/ex-time-role-set-editable/ex-time-role-set-editable.component';
 import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timeline.component';
 import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
+import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
+import { PlaceViewComponent } from './value/place-view/place-view.component';
 
 @NgModule({
   imports: [
@@ -177,7 +179,9 @@ import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-e
     ExistenceTimeEditComponent,
     TimePrimitiveCtrlComponent,
     TimePrimitiveViewComponent,
-    ExTimeRoleSetEditableComponent
+    ExTimeRoleSetEditableComponent,
+    PlaceCtrlComponent,
+    PlaceViewComponent
 
 
   ],
@@ -267,6 +271,8 @@ import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-e
     LeafPeItCtrlComponent,
     LeafPeItViewComponent,
     TimePrimitiveViewComponent,
+    PlaceCtrlComponent,
+    PlaceViewComponent
 
   ],
   entryComponents: [

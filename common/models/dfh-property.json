@@ -42,6 +42,9 @@
     "dfh_standard_label": {
       "type": "string"
     },
+    "dfh_fk_property_of_origin": {
+      "type": "number"
+    },
     "dfh_domain_instances_min_quantifier": {
       "type": "number",
       "required": true

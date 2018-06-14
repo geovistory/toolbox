@@ -74,3 +74,40 @@ export default sandboxOf(TeEntRoleEditableComponent, {
             </div>
         `
     })
+
+    .add('TeEnt Role Editable | Place ', {
+        context: {
+            parentPath: ['_role_set_1'],
+            index: '_role_1',
+            initState: {
+                _role_set_1: {
+                    _role_list: {
+                        _role_1: {
+                            role: {
+                                fk_property: 152,
+                                place: {
+                                    fk_class: 51,
+                                    lat: 12,
+                                    long: 12
+                                }
+                            } as InfRole,
+                            isCircular: false,
+                            isOutgoing: true,
+                            isDisplayRoleForRange: true,
+                            _place: {}
+                        } as RoleDetail
+                    }
+                } as RoleSet
+            }
+
+        },
+        template: `
+            <gv-init-state [initState]="initState"></gv-init-state>
+
+            <div class="d-flex justify-content-center mt-5">
+                <div style="width:430px" class="d-flex">
+                        <gv-te-ent-role-editable [parentPath]="parentPath" [index]="index"></gv-te-ent-role-editable>
+                </div>
+            </div>
+        `
+    })

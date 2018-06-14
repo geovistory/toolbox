@@ -24,6 +24,11 @@ export class DfhConfig {
   // dfh_pk_property used to connect an appellation use with an entity
   static PROPERTY_PK_R63_NAMES = 1111;
 
+  static PROPERTY_PK_PERSON_TO_APPE = 1192;
+  static PROPERTY_PK_GROUP_TO_APPE = 1193;
+  static PROPERTY_PK_GEO_PLACE_TO_APPE = 1194;
+  static PROPERTY_PK_BUILT_WORK_TO_APPE = 1195;
+
   // dfh_pk_property used to connect an appellation use with a language
   static PROPERTY_PK_R61_USED_LANGUAGE = 1112;
 

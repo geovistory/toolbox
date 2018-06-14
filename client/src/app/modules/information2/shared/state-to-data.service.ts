@@ -185,9 +185,19 @@ export class StateToDataService {
     if (!peItRoleSets) return null
 
     // get ingoing roles pointing to appellation usage (R63)
-    const names: RoleSet = peItRoleSets['_1_ingoing'];
+
+
+    
+    const names: RoleSet[] = U.obj2Arr(peItRoleSets).map((roleSet: RoleSet) => {
+      if(roleSet && roleSet.property && roleSet.property.dfh_fk_property_of_origin === DfhConfig.PROPERTY_PK_R63_NAMES){
+          return roleSet;
+      }
+    })
+
+    const name: RoleSet = names[0];
+
     if (names) {
-      const roleStates = RoleSetService.getRoleStatesContainerForState(names)
+      const roleStates = RoleSetService.getRoleStatesContainerForState(name)
       for (const key in roleStates) {
         if (roleStates.hasOwnProperty(key)) {
           const r: RoleDetail = roleStates[key];

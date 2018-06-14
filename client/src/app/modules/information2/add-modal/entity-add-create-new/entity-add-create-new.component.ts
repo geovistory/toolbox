@@ -1,16 +1,20 @@
-import { NgRedux, ObservableStore } from '@angular-redux/store';
+import { NgRedux, ObservableStore, WithSubStore, select } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 
 import { mockPerson } from '../../data-unit/pe-it/pe-it-create-form/sandbox.mock';
 import { InformationActions } from '../../information.actions';
-import { Information } from '../../information.models';
+import { Information, PeItDetail } from '../../information.models';
 import { informationReducer } from '../../information.reducer';
 import { EntityAddModalService, EntityAddModalState } from '../../shared/entity-add-modal.service';
+import { StateCreatorService } from '../../shared/state-creator.service';
 
-
+@WithSubStore({
+    basePathMethodName:'getBasePath',
+    localReducer:informationReducer
+})
 @AutoUnsubscribe({
     includeArrays: true
 })
@@ -31,6 +35,9 @@ export class EntityAddCreateNewComponent implements OnInit {
     loading: boolean = false;
     errorMessages: any;
 
+    initialized = false;
+
+    @select() _peIt_create_form$: Observable<PeItDetail>
 
     subs: Subscription[] = [];
 
@@ -38,7 +45,8 @@ export class EntityAddCreateNewComponent implements OnInit {
         private modalService: EntityAddModalService,
         private ngRedux: NgRedux<Information>,
         private actions: InformationActions,
-        private ref: ChangeDetectorRef
+        private ref: ChangeDetectorRef,
+        private stateCreator: StateCreatorService
     ) {
         this.localStore = this.ngRedux.configureSubStore(this.basePath, informationReducer);
 
@@ -55,11 +63,12 @@ export class EntityAddCreateNewComponent implements OnInit {
 
         // TODO: write a simple stateCreator function that returns something similar to the mockPerson, with the respective sub-property for the appellation 
         // Init the state
-        // this.subs.push(this.stateCreator.initializePeItToCreate(this.modalService.selectedClass.dfh_pk_class, this.modalService.searchString).subscribe(peItState => {
+        this.subs.push(this.stateCreator.initializePeItToCreate(this.modalService.selectedClass.dfh_pk_class, this.modalService.searchString).subscribe(peItState => {
 
-        // }))
+            this.localStore.dispatch(this.actions.peItCreateFormAdded(peItState));
+            this.initialized=true;
+        }))
 
-        this.localStore.dispatch(this.actions.peItCreateFormAdded(mockPerson));
 
 
 

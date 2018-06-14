@@ -6,24 +6,30 @@
       </div>
     </div>
     <div class="col-4">
-      <input type="text" name="filterClasses" class="form-control" aria-describedby="search"  autocomplete="off" placeholder="Filter classes…">
+      <input type="text" name="filterClasses" class="form-control" aria-describedby="search" autocomplete="off" placeholder="Filter classes…">
     </div>
   </div>
   <div class="my-3">
     <div *ngFor="let class of classes" class="card">
-      <div class="card-body gv-pointer" (click)="selectClass(class)">
-        <h4 class="card-title">
+      <div class="card-header gv-pointer bg-white" (click)="selectClass(class)">
+        <h4 class="card-title mb-0">
           {{class.dfh_standard_label}}
+
+  
         </h4>
+      </div>
+      <div class="card-body gv-pointer" (click)="selectClass(class)">
         <p class="card-text">
           {{class?.text_properties[0]?.dfh_text_property}}
         </p>
       </div>
-      <div class="card-footer d-flex align-items-center">
-        <a target="_blank" href="http://ontologies.dataforhistory.org/class/{{class.dfh_pk_class}}" class="gv-flex-grow-1">Class info</a>
-        <small class="text-muted">CRM: {{class.dfh_identifier_in_namespace}}</small>
+      <div class="card-footer d-flex bg-white justify-content-between align-items-end">
+        <button class="btn btn-primary" (click)="selectClass(class)">Select</button>
+
+        <a target="_blank" href="http://ontologies.dataforhistory.org/class/{{class.dfh_pk_class}}">
+          <small class="text-muted">CRM: {{class.dfh_identifier_in_namespace}} </small>
+        </a>
       </div>
     </div>
   </div>
 </div>
-

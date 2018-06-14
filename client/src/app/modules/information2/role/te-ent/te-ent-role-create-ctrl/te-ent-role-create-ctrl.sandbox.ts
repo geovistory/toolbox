@@ -211,7 +211,6 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
         `
     })
 
-
     .add('TeEnt Role Create Ctrl | Time Primitive Empty', {
         context: {
             model: {
@@ -272,9 +271,6 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             </div>
         `
     })
-
-
-
 
     .add('TeEnt Role Create Ctrl | Time Primitive Filled', {
         context: {
@@ -347,3 +343,63 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
         `
     })
 
+
+    .add('TeEnt Role Create Ctrl | Place Empty', {
+        context: {
+            model: {
+                role: {
+                    fk_property: 999
+                }
+            },
+            parentPath: ['_role_set_1'],
+            index: '_role_1',
+            initState: {
+                activeProject: {
+                    pk_project: 50
+                } as Project,
+                _role_set_1: {
+                    _role_list: {
+                        _role_1: {
+                            targetDfhClass: {
+                                "dfh_pk_class": 333,
+                                "dfh_identifier_in_namespace": "XYZ",
+                                "dfh_standard_label": "Place"
+                            },
+                            role: {
+                                pk_entity: 123123,
+                                fk_property: 999
+                            } as InfRole,
+                            _place: {}
+                        } as RoleDetail
+                    }
+                } as RoleSet
+            }
+
+        },
+        template: `
+            <gv-init-state [initState]="initState"></gv-init-state>
+
+            <div class="d-flex justify-content-center mt-5">
+                <div style="width:430px;height:400px" class="d-flex">
+                    <form #f="ngForm">
+                        <gv-te-ent-role-create-ctrl [parentPath]="parentPath" [index]="index"
+                            name="role" [(ngModel)]="model.role" #role="ngModel" required>
+                        </gv-te-ent-role-create-ctrl>
+                    </form>                               
+                </div>
+                <div>
+                    <p>Form.valid: {{f.valid | json}}</p>
+        
+                    <p>Form.touched: {{f.touched | json}}</p>
+        
+                    <p>Form.dirty: {{f.dirty | json}}</p>
+        
+                    <p>Form.value </p>
+                    <pre>
+                        {{f.value | json}}
+                    </pre>
+        
+                </div>
+            </div>
+        `
+    })

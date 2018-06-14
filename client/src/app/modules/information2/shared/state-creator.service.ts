@@ -11,6 +11,7 @@ import {
   InfRole,
   InfTemporalEntity,
   InfTimePrimitive,
+  DfhProperty,
 } from 'app/core';
 import { groupBy, indexBy, prop } from 'ramda';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -38,7 +39,6 @@ import { PeItService } from './pe-it.service';
 import { PropertyService } from './property.service';
 import { RoleSetService } from './role-set.service';
 import { StateToDataService } from './state-to-data.service';
-import { BROWSER_NOOP_ANIMATIONS_PROVIDERS } from '@angular/platform-browser/animations/src/providers';
 
 
 export interface StateSettings {
@@ -62,58 +62,91 @@ export class StateCreatorService {
   initializePeItToCreate(fkClass, labelString?: string): ReplaySubject<PeItDetail> {
     const subject = new ReplaySubject(null);
 
-    const state = 'create-pe-it'
 
-    let peIt = new InfPersistentItem();
-    let roleToAppeUse = new InfRole();
-    roleToAppeUse.entity_version_project_rels = [new InfEntityProjectRel()];
-    roleToAppeUse.entity_version_project_rels[0].is_standard_in_project = true; // TODO: change for is_display_role_for_range
-    let appeUse = new InfTemporalEntity;
-    let roleToAppellation = new InfRole;
-    roleToAppellation.entity_version_project_rels = [new InfEntityProjectRel()];
-    roleToAppellation.entity_version_project_rels[0].is_standard_in_project = true; // TODO: change for is_display_role_for_domain
-    let appellation = new InfAppellation;
-    if (labelString) appellation.appellation_label = new AppellationLabel(null, labelString)
+    Observable.combineLatest(
+      // Get DfhClass Observable
+      this.classService.getByPk(fkClass),
+      // get the property leading to appellaion first
+      this.classService.getIngoingAppellationProperty(fkClass)
 
-    roleToAppeUse.fk_property = DfhConfig.PROPERTY_PK_R63_NAMES;
-    appeUse.fk_class = DfhConfig.CLASS_PK_APPELLATION_USE;
-    roleToAppellation.fk_property = DfhConfig.PROPERTY_PK_R64_USED_NAME;
-    appellation.fk_class = DfhConfig.CLASS_PK_APPELLATION;
+    ).subscribe(res => {
 
-    peIt.fk_class = fkClass;
-    peIt.pi_roles = [roleToAppeUse];
-    roleToAppeUse.temporal_entity = appeUse;
-    appeUse.te_roles = [roleToAppellation];
-    roleToAppellation.appellation = appellation;
+      const dfhClass = res[0], propertyToAppe = res[1];
 
+      if (dfhClass && propertyToAppe) {
 
-    // Get DfhClass Observable
-    const dfhClass$ = this.classService.getByPk(fkClass);
-
-    // Get RoleSetListChildren Observable (returning roleSets etc.)
-    const roleSetsListChildren$ = this.initRoleSetListState(fkClass, peIt.pi_roles)
-
-    Observable.combineLatest(dfhClass$, roleSetsListChildren$).subscribe(result => {
-      if (result[0] && result[1]) {
-        const dfhClass = result[0];
-        const _roleSet_list = result[1].childRoleSets;
-        const ingoingRoleSets = result[1].ingoingRoleSets;
-        const outgoingRoleSets = result[1].outgoingRoleSets;
-
-        const peItDetail: PeItDetail = {
-          selectPropState: 'init',
-          peIt,
-          fkClass,
-          dfhClass,
-          _roleSet_list,
-          ingoingRoleSets,
-          outgoingRoleSets
+        const state = {
+          peIt: {
+            fk_class: fkClass
+          } as InfPersistentItem,
+          dfhClass: dfhClass,
+          ingoingRoleSets: [],
+          outgoingRoleSets: [],
+          _roleSet_list: {
+            _role_set_1: {
+              label: {
+                default: 'Names',
+                sg: 'Name',
+                pl: 'Names'
+              },
+              property: propertyToAppe,
+              _role_list: {
+                _role_detail_1: {
+                  role: {
+                    fk_property: propertyToAppe.dfh_pk_property,
+                    entity_version_project_rels: [{
+                      is_standard_in_project: true
+                    }]
+                  } as InfRole,
+                  _teEnt: {
+                    dfhClass: {
+                      dfh_pk_class: DfhConfig.CLASS_PK_APPELLATION_USE,
+                      dfh_standard_label: "Name",
+                    } as DfhClass,
+                    _roleSet_list: {
+                      _role_set_1: {
+                        label: {
+                          default: 'Detailed Name',
+                          sg: 'Detailed Name',
+                          pl: 'Detailed Names'
+                        },
+                        property: {
+                          "dfh_pk_property": 2,
+                          "dfh_identifier_in_namespace": "R64",
+                          "dfh_has_domain": 3,
+                          "dfh_has_range": 2,
+                          "dfh_standard_label": "Used Name",
+                          "dfh_domain_instances_min_quantifier": 0,
+                          "dfh_domain_instances_max_quantifier": -1,
+                          "dfh_range_instances_min_quantifier": 1,
+                          "dfh_range_instances_max_quantifier": 1,
+                        } as DfhProperty,
+                        _role_list: {
+                          _role_1: {
+                            role: {
+                              fk_property: DfhConfig.PROPERTY_PK_R64_USED_NAME,
+                              appellation: {
+                                fk_class: DfhConfig.CLASS_PK_APPELLATION
+                              }
+                            } as InfRole,
+                            _appe: {
+                            }
+                          } as RoleDetail
+                        },
+                      } as RoleSet
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
 
-        subject.next(peItDetail);
-
+        subject.next(state)
       }
+
     })
+
 
     return subject;
   }

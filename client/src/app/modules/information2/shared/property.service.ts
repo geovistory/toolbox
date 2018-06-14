@@ -4,6 +4,7 @@ import { omit } from 'ramda';
 import { Observable } from 'rxjs/Observable';
 
 import { RoleSet, RoleSetLabelObj } from '../information.models';
+import { DfhConfig } from './dfh-config';
 
 
 
@@ -184,6 +185,36 @@ export class PropertyService {
   }
 
 
+
+  /**
+   * searches for properties that have the given pk as range
+   * and a dfh_fk_property_of_origin == 1111
+   * @param pk 
+   */
+  getPropertyFromClassToAppellation(pk): Observable<DfhProperty> {
+
+    return new Observable((observer) => {
+
+      // Else make a api call and add the observables to a propByPkRequestCache
+      this.propertyApi.find({
+        "where": { "dfh_has_range": pk, "dfh_fk_property_of_origin": DfhConfig.PROPERTY_PK_R63_NAMES },
+        ...this.filter
+      }).subscribe((properties: DfhProperty[]) => {
+
+        const property = properties[0];
+
+        // return data
+        observer.next(property);
+
+        // complete observer
+        observer.complete();
+
+      });
+    })
+
+  }
+
+
   /**
   * Convert array of Property to an array of RoleSet
   *
@@ -218,6 +249,11 @@ export class PropertyService {
     let labelObj: RoleSetLabelObj;
     if (isOutgoing) {
 
+      if (property) {
+        sg = 'n.N. sg: ' + property.dfh_standard_label;
+        pl = 'n.N. pl: ' + property.dfh_standard_label;
+      }
+
       // TODO return an object containing label.pl and label.sg
       if (property.labels.length) {
         if (property.labels.find(l => l.notes === 'label.sg'))
@@ -233,6 +269,12 @@ export class PropertyService {
       }
 
     } else if (isOutgoing === false) {
+
+      if (property) {
+        sg = 'n.N. inv.sg: ' + property.dfh_standard_label;
+        pl = 'n.N. inv.pl: ' + property.dfh_standard_label;
+      }
+
 
       // TODO return an object containing inversed_label.pl and inversed_label.sg
       if (property.labels.length) {

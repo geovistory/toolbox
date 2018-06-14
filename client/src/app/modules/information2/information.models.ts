@@ -1,3 +1,4 @@
+import { InfPlace } from '../../core/sdk';
 import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity } from 'app/core';
 
 /**
@@ -62,12 +63,12 @@ export interface PeItDetail extends DataUnit {
     // record
     peIt?: InfPersistentItem;
 
-    form?:any;
+    form?: any;
 
     /** display data */
     ontoInfoVisible?: boolean;
     communityStatsVisible?: boolean;
-    loading?:boolean; //for leaf pe it view
+    loading?: boolean; //for leaf pe it view
 }
 
 
@@ -138,7 +139,7 @@ export interface RoleSet {
 
 export interface RoleSetForm {
     _role_create_list?: RoleDetailList
-    
+
     _role_add_list?: RoleDetailList
 
     _role_add_in_no_project_list?: RoleDetailList
@@ -156,6 +157,7 @@ export interface RoleDetail {
     _timePrimitive?: TimePrimitveDetail;
     _leaf_peIt?: PeItDetail
     _leaf_teEnt?: TeEntDetail
+    _place?: PlaceDetail;
 
     // record
     role?: InfRole;
@@ -209,7 +211,7 @@ export interface AppeDetail {
 }
 export interface LangDetail { }
 export interface TimePrimitveDetail { }
-
+export interface PlaceDetail { }
 
 /*******************************
  * List interfaces

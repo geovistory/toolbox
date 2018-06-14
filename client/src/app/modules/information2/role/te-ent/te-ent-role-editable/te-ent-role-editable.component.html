@@ -13,12 +13,7 @@
 
     <gv-time-primitive-view *ngIf="roleState._timePrimitive" [role]="roleState.role" show="duration"></gv-time-primitive-view>
 
-    <!--     
-
-
-    <gv-language *ngIf="roleState.langState" class="gv-flex-grow-1" [parentPath]="basePath" (touched)="markAsTouched()"></gv-language>
-
- -->
+    <gv-place-view *ngIf="roleState._place" [role]="roleState.role"></gv-place-view>
 
   </div>
 

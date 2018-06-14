@@ -31,6 +31,14 @@
   },
   "validations": [],
   "relations": {
+    "class_profile_view": {
+      "type": "hasMany",
+      "model": "DfhClassProfileView",
+      "foreignKey": "dfh_fk_class",
+      "options": {
+        "nestRemoting": false
+      }
+    },
     "labels": {
       "type": "hasMany",
       "model": "DfhLabel",
@@ -66,9 +74,34 @@
         "find",
         "findById",
         "__get__labels",
-        "__get__text_properties"
+        "__get__text_properties",
+        "selectedPeItClassesOfProfile"
       ]
     }
   ],
-  "methods": {}
+  "methods": {
+    "selectedPeItClassesOfProfile": {
+      "accepts": [
+        {
+          "arg": "dfh_pk_profile",
+          "type": "number",
+          "required": true,
+          "description": "Profile id",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": ["DfhClass"],
+        "root": true
+      },
+      "description": "Get all classes that are selected by the profile of the specified primary-key.",
+      "http": {
+        "path": "/selected-pe-it-classes-of-profile",
+        "verb": "get"
+      }
+    }
+  }
 }

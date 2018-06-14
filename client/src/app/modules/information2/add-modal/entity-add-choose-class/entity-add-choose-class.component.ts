@@ -1,6 +1,6 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { DfhClass } from 'app/core';
-import { ClassService } from '../../shared/class.service';
+import { Component, OnInit } from '@angular/core';
+import { DfhClass, DfhClassApi } from 'app/core';
+
 import { EntityAddModalService } from '../../shared/entity-add-modal.service';
 
 
@@ -16,13 +16,15 @@ export class EntityAddChooseClassComponent implements OnInit {
 
   constructor(
     private modalService: EntityAddModalService,
-    private classService: ClassService
+    private classApi: DfhClassApi 
   ) {
   }
 
   ngOnInit() {
 
-    this.classService.getAll().subscribe((classes:DfhClass[]) => {
+    const profileId = 4; // Geovistory Basic Profile
+    
+    this.classApi.selectedPeItClassesOfProfile(profileId).subscribe((classes:DfhClass[]) => {
       this.classes = classes;
     });
 

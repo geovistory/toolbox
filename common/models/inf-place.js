@@ -5,8 +5,8 @@ module.exports = function(InfPlace) {
   InfPlace.findOrCreatePlace = function(projectId, data) {
 
     const dataObject = {
-      geo_point: data.geo_point,
-      notes: data.notes,
+      long: data.long,
+      lat: data.lat,
       fk_class: data.fk_class
     };
 

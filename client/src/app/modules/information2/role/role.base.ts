@@ -90,6 +90,10 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
     '_leaf_peIt': {
       nameInState: 'peIt',
       nameInApi: 'fk_entity'
+    },
+    '_place': {
+      nameInState: 'place',
+      nameInApi: 'place'
     }
   };
 

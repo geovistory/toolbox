@@ -27,6 +27,17 @@ export class ClassService {
 
   }
 
+  /**
+   * Get the property leading to the appellation for the given class.
+   * It searches properties where fkClass is range and that are inherited from property 1111
+   * @param {string} fkClass key of the class
+   * @return {Observable}
+   */
+  getIngoingAppellationProperty(fkClass: number) {
+
+    return this.propertyService.getPropertyFromClassToAppellation(fkClass);
+
+  }
 
 
 
@@ -43,7 +54,7 @@ export class ClassService {
 
 
   getAll() {
-    return this.classApi.find({"include": "text_properties"});
+    return this.classApi.find({ "include": "text_properties" });
   }
 
 
@@ -53,8 +64,8 @@ export class ClassService {
    * @param  {number} pkClass:number dhf_primary_key
    * @return {Observable<DfhClass>}
    */
-  getByPk(pkClass:number):Observable<DfhClass> {
-    return this.classApi.findById(pkClass, {"include": "text_properties"});
+  getByPk(pkClass: number): Observable<DfhClass> {
+    return this.classApi.findById(pkClass, { "include": "text_properties" });
   }
 
 }

@@ -6,7 +6,7 @@
     "validateUpsert": true,
     "postgresql": {
       "schema": "information",
-      "table": "place"
+      "table": "v_place"
     }
   },
   "mixins": {
@@ -16,8 +16,12 @@
     }
   },
   "properties": {
-    "geo_point": {
-      "type": "any",
+    "long": {
+      "type": "number",
+      "required": true
+    },
+    "lat": {
+      "type": "number",
       "required": true
     },
     "fk_class": {
