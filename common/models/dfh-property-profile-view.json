@@ -27,7 +27,7 @@
     "removed_from_api": {
       "type": "boolean"
     },
-    "dfh_fk_property": {
+    "dfh_pk_property": {
       "type": "number"
     }
   },
@@ -36,7 +36,7 @@
     "property": {
       "type": "belongsTo",
       "model": "DfhProperty",
-      "foreignKey": "dfh_fk_property",
+      "foreignKey": "dfh_pk_property",
       "primaryKey": "dfh_pk_property"
     }
   },

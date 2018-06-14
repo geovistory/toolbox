@@ -135,5 +135,9 @@
   "DfhClassProfileView":{
     "dataSource": "postgres1",
     "public": true
+  },
+  "DfhPropertyProfileView":{
+    "dataSource": "postgres1",
+    "public": true
   }
 }
