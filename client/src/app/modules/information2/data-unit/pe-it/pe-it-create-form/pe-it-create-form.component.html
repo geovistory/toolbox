@@ -11,8 +11,6 @@
 
 <div class="d-flex flex-column gv-flex-grow-1">
 
-  <ng-container *ngTemplateOutlet="propertiesHeader"></ng-container>
-
   <form #f="ngForm" ngSubmit="submit()">
     <gv-pe-it-create-ctrl [basePath]="basePath" name="peIt" [(ngModel)]="peIt" #val="ngModel" required></gv-pe-it-create-ctrl>
     

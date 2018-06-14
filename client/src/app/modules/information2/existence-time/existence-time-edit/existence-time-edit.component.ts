@@ -37,6 +37,7 @@ export class ExistenceTimeEditComponent implements OnInit {
 
   _roleSet_list: RoleSetList;
   @select() _roleSet_list$: Observable<RoleSetList>;
+  @select() ontoInfoVisible$: Observable<boolean>;
 
 
   localStore: ObservableStore<ExistenceTimeDetail>

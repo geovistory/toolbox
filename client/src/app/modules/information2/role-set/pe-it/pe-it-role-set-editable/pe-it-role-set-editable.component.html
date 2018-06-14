@@ -44,7 +44,7 @@
   </div>
 
   <div class="border-top border-gray-500">
-    <div class="btn btn-block btn-secondary rounded-top-0" (click)="startAddingRole()" *ngIf="addButtonVisible && ((roleStatesToCreate$|async) | keys).length == 0">
+    <div class="btn btn-block btn-secondary rounded-top-0" (click)="startAddingRole()" *ngIf="addButtonVisible">
       Add a {{(label$ | async).sg}}…
     </div>
   </div>

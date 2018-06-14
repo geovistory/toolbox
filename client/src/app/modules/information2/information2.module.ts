@@ -3,11 +3,15 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ValidationService } from 'app/core';
 import { TimelineModule } from 'app/modules/timeline/timeline.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from 'app/shared';
 import { KeysModule } from 'app/shared/pipes/keys.module';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 
+import {
+  MentionedEntityCtrlActions,
+} from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 import { EntityAddAddExistingComponent } from './add-modal/entity-add-add-existing/entity-add-add-existing.component';
 import { EntityAddChooseClassComponent } from './add-modal/entity-add-choose-class/entity-add-choose-class.component';
 import { EntityAddCreateNewComponent } from './add-modal/entity-add-create-new/entity-add-create-new.component';
@@ -16,6 +20,7 @@ import {
   EntityAddSearchExistingComponent,
 } from './add-modal/entity-add-search-existing/entity-add-search-existing.component';
 import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
+import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timeline.component';
 import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
 import { EntityEditorComponent } from './containers/entity-editor/entity.editor.component';
 import { PeItAddCtrlComponent } from './data-unit/pe-it/pe-it-add-ctrl/pe-it-add-ctrl.component';
@@ -28,8 +33,25 @@ import { TeEntAddCtrlComponent } from './data-unit/te-ent/te-ent-add-ctrl/te-ent
 import { TeEntCreateCtrlComponent } from './data-unit/te-ent/te-ent-create-ctrl/te-ent-create-ctrl.component';
 import { TeEntEditableComponent } from './data-unit/te-ent/te-ent-editable/te-ent-editable.component';
 import { TeEntActions } from './data-unit/te-ent/te-ent.actions';
+import { ExistenceTimeAddCtrlComponent } from './existence-time/existence-time-add-ctrl/existence-time-add-ctrl.component';
+import {
+  ExistenceTimeCreateCtrlComponent,
+} from './existence-time/existence-time-create-ctrl/existence-time-create-ctrl.component';
+import { ExistenceTimeEditComponent } from './existence-time/existence-time-edit/existence-time-edit.component';
+import { ExistenceTimeEditableComponent } from './existence-time/existence-time-editable/existence-time-editable.component';
+import { ExistenceTimeActions } from './existence-time/existence-time.actions';
 import { InformationRoutingModule } from './information-routing.module';
 import { InformationActions } from './information.actions';
+import {
+  ExTimeRoleSetAddCtrlComponent,
+} from './role-set/ex-time/ex-time-role-set-add-ctrl/ex-time-role-set-add-ctrl.component';
+import {
+  ExTimeRoleSetCreateCtrlComponent,
+} from './role-set/ex-time/ex-time-role-set-create-ctrl/ex-time-role-set-create-ctrl.component';
+import {
+  ExTimeRoleSetEditableComponent,
+} from './role-set/ex-time/ex-time-role-set-editable/ex-time-role-set-editable.component';
+import { ExTimeRoleSetFormComponent } from './role-set/ex-time/ex-time-role-set-form/ex-time-role-set-form.component';
 import { PeItRoleSetAddCtrlComponent } from './role-set/pe-it/pe-it-role-set-add-ctrl/pe-it-role-set-add-ctrl.component';
 import {
   PeItRoleSetCreateCtrlComponent,
@@ -75,22 +97,10 @@ import { LanguageViewComponent } from './value/language-view/language-view.compo
 import { LeafPeItCtrlComponent } from './value/leaf-pe-it-ctrl/leaf-pe-it-ctrl.component';
 import { LeafPeItViewModalComponent } from './value/leaf-pe-it-view/leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
 import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.component';
-import { ExistenceTimeEditableComponent } from './existence-time/existence-time-editable/existence-time-editable.component';
-import { ExistenceTimeCreateCtrlComponent } from './existence-time/existence-time-create-ctrl/existence-time-create-ctrl.component';
-import { ExistenceTimeAddCtrlComponent } from './existence-time/existence-time-add-ctrl/existence-time-add-ctrl.component';
-import { ExistenceTimeActions } from './existence-time/existence-time.actions';
-import { ExistenceTimeEditComponent } from './existence-time/existence-time-edit/existence-time-edit.component';
-import { ExTimeRoleSetFormComponent } from './role-set/ex-time/ex-time-role-set-form/ex-time-role-set-form.component';
-import { ExTimeRoleSetAddCtrlComponent } from './role-set/ex-time/ex-time-role-set-add-ctrl/ex-time-role-set-add-ctrl.component';
-import { ExTimeRoleSetCreateCtrlComponent } from './role-set/ex-time/ex-time-role-set-create-ctrl/ex-time-role-set-create-ctrl.component';
-import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
-import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
-import { ValidationService } from 'app/core';
-import { ExTimeRoleSetEditableComponent } from './role-set/ex-time/ex-time-role-set-editable/ex-time-role-set-editable.component';
-import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timeline.component';
-import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
+import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
+import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
 
 @NgModule({
   imports: [
@@ -220,7 +230,8 @@ import { PlaceViewComponent } from './value/place-view/place-view.component';
     RoleSetService,
     ValidationService,
 
-    MentionedEntityCtrlActions
+    MentionedEntityCtrlActions,
+
   ],
   exports: [
     // Put all components here, that are used by another module, or in a sandbox
@@ -272,7 +283,9 @@ import { PlaceViewComponent } from './value/place-view/place-view.component';
     LeafPeItViewComponent,
     TimePrimitiveViewComponent,
     PlaceCtrlComponent,
-    PlaceViewComponent
+    PlaceViewComponent,
+
+
 
   ],
   entryComponents: [

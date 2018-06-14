@@ -27,6 +27,7 @@ export class ExistenceTimeEditableComponent implements OnInit {
 
   localStore: ObservableStore<ExistenceTimeDetail>
 
+  @select() ontoInfoVisible$:Observable<boolean>
   @select() toggle$: Observable<boolean>
   _roleSet_list: RoleSetList;
 

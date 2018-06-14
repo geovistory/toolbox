@@ -1,9 +1,9 @@
  {{(label$ | async)?.default}}
 
-<a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(property$|async).dfh_pk_property}}" target="_blank"
+<!-- <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(property$|async).dfh_pk_property}}" target="_blank"
   *ngIf="(ontoInfoVisible$|async)">
   {{(property$|async).dfh_identifier_in_namespace}}
-</a>
+</a> -->
 
 <gv-te-ent-role-editable *ngFor="let entry of (_role_list$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key">
 </gv-te-ent-role-editable>

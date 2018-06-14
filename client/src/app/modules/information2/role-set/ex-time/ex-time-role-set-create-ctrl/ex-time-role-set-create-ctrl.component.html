@@ -1,14 +1,14 @@
 <ng-container *ngTemplateOutlet="header"></ng-container>
 
 <!-- If no roles in Project, show a big add button -->
-<div class="card-body" *ngIf="!((_role_list$ | async) | keys).length && addButtonVisible">
+<!-- <div class="card-body" *ngIf="!((_role_list$ | async) | keys).length && addButtonVisible">
   <button class="btn btn-outline-primary" (click)="startCreateRole()">
     Add a {{(label$ | async)?.sg}}
   </button>
   <button class="btn btn-link pull-right" (click)="removeRoleSet()">
     Cancel
   </button>
-</div>
+</div> -->
 
 
 <form [formGroup]="formGroup" *ngIf="formGroup">
