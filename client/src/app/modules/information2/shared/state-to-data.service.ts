@@ -196,7 +196,7 @@ export class StateToDataService {
 
     const name: RoleSet = names[0];
 
-    if (names) {
+    if (name) {
       const roleStates = RoleSetService.getRoleStatesContainerForState(name)
       for (const key in roleStates) {
         if (roleStates.hasOwnProperty(key)) {
