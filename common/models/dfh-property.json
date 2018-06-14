@@ -83,6 +83,11 @@
       "type": "belongsTo",
       "model": "DfhClass",
       "foreignKey": "dfh_has_range"
+    },
+    "dfh_property_profile_view": {
+      "type": "hasOne",
+      "model": "DfhPropertyProfileView",
+      "foreignKey": "dfh_fk_property"
     }
   },
   "acls": [
