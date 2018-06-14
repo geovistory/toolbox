@@ -48,7 +48,8 @@
     "rxjs": "^5.1.0",
     "socket.io-client": "^2.0.3",
     "typescript": "~2.5.0",
-    "zone.js": "^0.8.4"
+    "zone.js": "^0.8.4",
+    "ngx-json-viewer": "^2.3.0"
   },
   "devDependencies": {
     "@angular/language-service": "^4.0.0",
@@ -67,7 +68,6 @@
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
-    "ngx-json-viewer": "^2.3.0",
     "protractor": "~5.1.2",
     "ts-node": "~3.0.4",
     "tslint": "~5.3.2"
