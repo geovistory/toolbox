@@ -250,8 +250,8 @@ export class PropertyService {
     if (isOutgoing) {
 
       if (property) {
-        sg = 'n.N. sg: ' + property.dfh_standard_label;
-        pl = 'n.N. pl: ' + property.dfh_standard_label;
+        sg = '[sg: ' + property.dfh_pk_property + ': ' + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
+        pl = '[pl: ' + property.dfh_pk_property + ': ' + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
       }
 
       // TODO return an object containing label.pl and label.sg
@@ -271,8 +271,8 @@ export class PropertyService {
     } else if (isOutgoing === false) {
 
       if (property) {
-        sg = 'n.N. inv.sg: ' + property.dfh_standard_label;
-        pl = 'n.N. inv.pl: ' + property.dfh_standard_label;
+        sg = '[inv.sg: ' + property.dfh_pk_property + ': ' + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
+        pl = '[inv.pl: ' + property.dfh_pk_property + ': ' + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
       }
 
 
