@@ -1,3 +1,5 @@
+export { InitPeItEditableStateModule } from './components/init-pe-it-editable-state/init-pe-it-editable-state.module';
+
 export { DomChangeModule } from './directives/dom-change/dom-change.module';
 
 export { ProxyRouteModule } from './components/proxy-route';

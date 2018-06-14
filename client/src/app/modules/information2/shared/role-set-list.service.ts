@@ -1,0 +1,59 @@
+import { Injectable, Inject, forwardRef } from '@angular/core';
+import { ClassService } from './class.service';
+import { BehaviorSubject } from 'rxjs';
+import { RoleService } from './role.service';
+import { PropertyService } from './property.service';
+import { Observable } from 'rxjs/Observable';
+import { DfhConfig } from './dfh-config';
+import { AppellationLabel } from './appellation-label/appellation-label';
+import { RoleSetService } from './role-set.service';
+import { InfRole } from 'app/core';
+import { indexBy, groupBy, prop } from 'ramda';
+import { StateToDataService } from './state-to-data.service';
+import { RoleSet } from '../information.models';
+
+@Injectable()
+export class RoleSetListService {
+
+  constructor(
+    private classService: ClassService,
+    private propertyService: PropertyService,
+    private roleService: RoleService
+  ) { }
+
+  //TODO Remove this in favor to initRoleSetList
+  initChildren(fkClass$, roles$, state$): BehaviorSubject<{ roleSetsWithRoles: RoleSet[], ingoingRoleSets: RoleSet[], outgoingRoleSets: RoleSet[] }> {
+    const subject: BehaviorSubject<{ roleSetsWithRoles: RoleSet[], ingoingRoleSets: RoleSet[], outgoingRoleSets: RoleSet[] }> = new BehaviorSubject(null)
+
+    fkClass$.subscribe(fkClass => {
+      if (fkClass)
+        Observable.zip(
+          // Generate ingoing and outgoing properties
+          this.classService.getIngoingProperties(fkClass),
+          this.classService.getOutgoingProperties(fkClass),
+          roles$,
+          state$
+        ).subscribe(result => {
+          const ingoingProperties = result[0];
+          const outgoingProperties = result[1];
+          const roles = result[2];
+          const state = result[3];
+
+          // Generate Direction Aware Properties (they appear in the select/dropdown to add new RoleSet)
+          const ingoingRoleSets = this.propertyService.toRoleSets(false, ingoingProperties)
+          const outgoingRoleSets = this.propertyService.toRoleSets(true, outgoingProperties)
+
+          // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
+          const options: RoleSet = { toggle: 'collapsed' }
+          const roleSetsWithRoles = this.roleService.addRolesToRoleSets(roles, ingoingRoleSets, outgoingRoleSets, options)
+
+          subject.next({ roleSetsWithRoles, ingoingRoleSets, outgoingRoleSets });
+
+        })
+    })
+
+
+    return subject;
+  }
+
+}

@@ -10,9 +10,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ElasticInputModule } from 'angular2-elastic-input';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { ProjectSandboxModule } from 'app/shared/components/project-sandbox/project-sandbox.module';
-import { NgReduxRouterModule } from '@angular-redux/router';
-import { NgReduxModule } from '@angular-redux/store';
-import { AppRoutingModule } from 'app/app-routing.module';
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
 
 PlaygroundModule
   .configure({
@@ -30,6 +28,7 @@ PlaygroundModule
         FormsModule,
         ReactiveFormsModule,
         ProjectSandboxModule,
+        NgxJsonViewerModule
       ]
   });
 

@@ -1,0 +1,9 @@
+<div [ngClass]="{'dev-view': entityEditor.devView}">
+  <a class="gv-back-btn btn btn-link" routerLink="../../search"  queryParamsHandling="merge">
+    <i class="fa fa-arrow-left"></i>  Search
+  </a>
+  <div *ngIf="initialized">
+    <gv-pe-it-editable class="gv-flex-grow-1  d-flex flex-column" [basePath]="basePath.concat('_peIt_editable')"></gv-pe-it-editable>
+  </div>
+</div>
+

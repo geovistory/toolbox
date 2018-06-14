@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, DoCheck } from '@angular/core';
-import { ExistenceTime } from '../../../information/components/existence-time';
-import { XAxisDefinition } from '../../models/x-axis-definition';
+import { Component, DoCheck, Input } from '@angular/core';
+
 import { Timeline, TimeLineRow } from '../../models/timeline';
+import { XAxisDefinition } from '../../models/x-axis-definition';
 
 @Component({
   selector: '[teEntVisual]',

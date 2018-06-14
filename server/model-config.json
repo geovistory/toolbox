@@ -127,5 +127,13 @@
   "InfDigitalObject": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "InfPlace": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "DfhClassProfileView":{
+    "dataSource": "postgres1",
+    "public": true
   }
 }

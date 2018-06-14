@@ -1,8 +1,7 @@
-import { Component, OnInit, Input, DoCheck } from '@angular/core';
-import { ExistenceTime } from '../../../information/components/existence-time';
-import { XAxisDefinition } from '../../models/x-axis-definition';
-import { TimePrimitive } from '../../../../core';
+import { Component, DoCheck, Input } from '@angular/core';
+
 import { Timeline } from '../../models/timeline';
+import { ExistenceTime } from 'app/core';
 
 @Component({
   selector: '[existenceTimeVisual]',

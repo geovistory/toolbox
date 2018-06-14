@@ -42,6 +42,9 @@
     "dfh_standard_label": {
       "type": "string"
     },
+    "dfh_fk_property_of_origin": {
+      "type": "number"
+    },
     "dfh_domain_instances_min_quantifier": {
       "type": "number",
       "required": true
@@ -70,6 +73,16 @@
       "type": "hasMany",
       "model": "DfhTextProperty",
       "foreignKey": "dfh_fk_property"
+    },
+    "domain_class": {
+      "type": "belongsTo",
+      "model": "DfhClass",
+      "foreignKey": "dfh_has_domain"
+    },
+    "range_class": {
+      "type": "belongsTo",
+      "model": "DfhClass",
+      "foreignKey": "dfh_has_range"
     }
   },
   "acls": [

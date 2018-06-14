@@ -16,7 +16,7 @@ import { ProjectSettingsProfileComponent } from './components/project-settings-p
 import { ProjectsRoutingModule } from './projects-routing.module';
 import { NavbarModule, ProxyRouteModule } from 'app/shared';
 import { ProjectsActions } from './api/projects.actions';
-import { InformationModule } from '../information/information.module';
+import { Information2Module } from '../information2/information2.module';
 
 @NgModule({
   imports: [
@@ -26,7 +26,7 @@ import { InformationModule } from '../information/information.module';
     FormsModule,
     NgbModule,
     ProxyRouteModule,
-    InformationModule
+    Information2Module
   ],
   declarations: [
     ProjectCreateComponent,

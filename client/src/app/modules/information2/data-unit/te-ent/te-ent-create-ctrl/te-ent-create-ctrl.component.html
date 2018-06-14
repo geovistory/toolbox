@@ -1,0 +1,84 @@
+<div class="card gv-name">
+  <ng-container *ngTemplateOutlet="header"></ng-container>
+  
+  <form [formGroup]="formGroup" *ngIf="formGroup">
+    <div *ngFor="let entry of (_roleSet_list$ | async) | keys; trackBy:getKey">
+      <gv-te-ent-role-set-create-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [parentTeEntStatePath]="basePath" (onRemoveRoleSet)="removeRoleSet(entry.key)"
+        [index]="entry.key" [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role-set-create-ctrl>
+    </div>
+  </form>
+
+  <ng-container *ngTemplateOutlet="dating"></ng-container>
+
+  <div class="gv-footer border-top border-white">
+
+      <!-- Step 1 for adding a new property -->
+
+      <button class="btn btn-light btn-sm btn-block text-secondary rounded-top-0" (click)="startSelectProperty()" *ngIf="(selectPropState$ | async) === 'init'">
+        <i class="fa fa-plus"></i> Add a property ...
+      </button>
+
+      <!-- Step 2 for adding new Property section -->
+
+      <div class="d-flex flex-column gv-flex-grow-1 bg-light border-top border-gray" *ngIf="(selectPropState$ | async) === 'selectProp'">
+
+        <div class="card-header bt-1">
+          <div class="d-flex">
+            <div class="gv-flex-grow-1 align-self-center">
+              What do you want to add?
+            </div>
+            <button type="button" name="button" class="btn btn-link align-self-center btn-sm" (click)="stopSelectProperty()">
+              <i class="fa fa-close"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="input-group">
+            <select [(ngModel)]="roleSetToAdd" class="custom-select">
+              <option [ngValue]="null">Select…</option>
+
+              <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (ingoingRoleSets$|async)" [ngValue]="roleSetToAdd">
+
+                {{roleSetToAdd?.label.sg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
+
+              </option>
+              <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (outgoingRoleSets$|async)" [ngValue]="roleSetToAdd">
+
+                {{roleSetToAdd?.label.sg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
+
+              </option>
+            </select>
+            <button type="button" name="button" class="btn btn-primary input-group-append" *ngIf="roleSetToAdd" (click)="addRoleSet(roleSetToAdd)">Ok</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+
+<!-- ************************** NG TEMPLATES ****************************** -->
+
+<ng-template #header>
+  <div class="card-header gv-name-header d-flex flex-row">
+    <ng-content select="[headerLeft]"></ng-content>
+    <div class="gv-flex-grow-1">
+      <span *ngIf="labelInEdit">{{labelInEdit}}</span>
+      <span *ngIf="label && !labelInEdit">{{label}}</span>
+      <span *ngIf="!label && !labelInEdit">{{(dfhClass$|async)?.dfh_standard_label}}</span>
+    </div>
+    <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+      <div class="align-self-center">
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(dfhClass$|async)?.dfh_pk_class}}" target="_blank">
+          {{(dfhClass$|async)?.dfh_identifier_in_namespace}}
+        </a>
+      </div>
+    </div>
+    <ng-content select="[headerRight]"></ng-content>
+  </div>
+</ng-template>
+
+<ng-template #dating>
+  <!-- <gv-te-ent-existence-time [parentPath]="basePath"></gv-te-ent-existence-time> -->
+</ng-template>

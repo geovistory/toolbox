@@ -1,9 +1,8 @@
-import { EventEmitter } from "@angular/core";
-import { Point } from "./point";
-import { TimelineOptions } from "../components/timeline/timeline.component";
-import { XAxisDefinition } from "./x-axis-definition";
-import { ExistenceTime } from "../../information/components/existence-time";
-import { InfPersistentItem, GregorianDateTime, JulianDateTime } from "../../../core";
+import { EventEmitter } from '@angular/core';
+import { ExistenceTime } from 'app/core';
+
+import { TimelineOptions } from '../components/timeline/timeline.component';
+import { XAxisDefinition } from './x-axis-definition';
 
 export interface TimeLineRow {
     label: string;

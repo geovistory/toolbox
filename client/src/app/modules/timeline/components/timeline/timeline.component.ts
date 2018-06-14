@@ -1,11 +1,7 @@
-import { Component, OnInit, AfterViewInit, Input, DoCheck, ElementRef, HostBinding, ChangeDetectorRef, OnChanges } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostBinding, Input, OnChanges } from '@angular/core';
 
-import { D3Service } from '../../shared/d3.service';
-import { Point } from '../../models/point';
 import { Timeline, TimeLineData } from '../../models/timeline';
-import { TimePrimitive, InfPersistentItem, GregorianDateTime } from 'app/core';
-import { ExistenceTime } from '../../../information/components/existence-time';
-import { TimePrimitiveVisual } from '../../models/time-primitive-visual';
+import { D3Service } from '../../shared/d3.service';
 
 export interface TimelineOptions {
   width: number,

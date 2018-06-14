@@ -1,0 +1,74 @@
+<div class="card bg-secondary text-white mb-3">
+
+  <ng-container *ngTemplateOutlet="header"></ng-container>
+
+  <div [@slideInOut]="(toggle$|async)">
+    <!-- The roles that are added -->
+    <div class="card-body">
+      <gv-pe-it-role-editable *ngFor="let entry of (_role_list$ | async) | keys; trackBy:getKey" [parentPath]="basePath" intermediatePathSegment="_role_list"
+        [index]="entry.key" (appeChange)="emitAppeChange($event)" (onRequestStandard)="changeStandardRole($event)" (readyToAdd)="onRoleReadyToAdd($event)"
+        (roleRemoved)="onRoleRemoved($event)">
+
+        <div headerRight ngbDropdown placement="bottom-right" class="gv-name-dropdown">
+          <button class="btn btn-link" ngbDropdownToggle>
+            <i class="fa fa-ellipsis-v"></i>
+          </button>
+          <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+            <button class="dropdown-item" (click)="removeFromProject(entry.key)">Remove from project </button>
+          </div>
+        </div>
+
+      </gv-pe-it-role-editable>
+    </div>
+
+    <!-- If no roles in Project, show a big add button -->
+    <!-- <div class="card-body" *ngIf="!(_role_list$ | async) && addButtonVisible">
+        <button class="btn btn-primary" (click)="startAddingRole()">
+          Add {{(label$ | async).default}}
+        </button>
+        <button class="btn btn-link" (click)="removePropertySection()">
+          cancel
+        </button>
+      </div> -->
+
+    <gv-pe-it-role-set-form *ngIf="(_role_set_form$ | async)" [parentPath]="basePath" [parentPeItPath]="parentPeItStatePath" (createRoles)="createRoles($event)"></gv-pe-it-role-set-form>
+
+
+    <!-- Spinner for when loading roles not in project -->
+
+    <div class="card-body" *ngIf="(rolesNotInProjectLoading$|async)">
+      <i class="fa fa-spinner fa-pulse"></i> Searching for existing {{(label$ | async).sg}}…
+    </div>
+
+
+  </div>
+
+  <div class="border-top border-gray-500">
+    <div class="btn btn-block btn-secondary rounded-top-0" (click)="startAddingRole()" *ngIf="addButtonVisible">
+      Add a {{(label$ | async).sg}}…
+    </div>
+  </div>
+</div>
+
+
+<!-- ************************** NG TEMPLATES ****************************** -->
+
+<ng-template #header>
+  <div class="btn-group d-flex flex-row">
+    <button class="btn btn-secondary btn-block text-left rounded-bottom-0" (click)="toggleCardBody()">
+      <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
+      <span *ngIf="roles && roles.length">{{roles.length}}</span>
+      {{(label$ | async)?.default}}
+    </button>
+    <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+      <div class="align-self-center">
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(property$|async)?.dfh_pk_property}}" target="_blank">
+          {{(property$|async)?.dfh_identifier_in_namespace}}
+        </a>
+      </div>
+    </div>
+    <button class="btn btn-secondary rounded-bottom-0" (click)="removeRoleSet()" *ngIf="removeRoleSetBtnVisible">
+      <i class="fa fa-close"></i>
+    </button>
+  </div>
+</ng-template>

@@ -1,0 +1,49 @@
+<ng-container *ngTemplateOutlet="header"></ng-container>
+
+<!-- If no roles in Project, show a big add button -->
+<!-- <div class="card-body" *ngIf="!((_role_list$ | async) | keys).length && addButtonVisible">
+  <button class="btn btn-outline-primary" (click)="startCreateRole()">
+    Add a {{(label$ | async)?.sg}}
+  </button>
+  <button class="btn btn-link pull-right" (click)="removeRoleSet()">
+    Cancel
+  </button>
+</div> -->
+
+
+<form [formGroup]="formGroup" *ngIf="formGroup">
+  
+  <div *ngFor="let entry of (_role_list$ | async) | keys; trackBy:getKey" class="d-flex">
+
+    <gv-te-ent-role-create-ctrl class="gv-flex-grow-1 align-self-center" *ngIf="formGroup.get(entry.key)" [parentPath]="basePath"
+      [index]="entry.key" intermediatePathSegment="_role_list" [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role-create-ctrl>
+
+    <button type="button" class="btn btn-sm btn-link align-self-center" (click)="onRemoveRoleSet.emit()" *ngIf="!entry.value.isCircular">
+      <i class="fa fa-close"></i>
+    </button>
+
+  </div>
+</form>
+
+
+
+<!-- ************************** NG TEMPLATES ****************************** -->
+
+<ng-template #header let-hideAddButton="hideAddButton">
+  <div class="btn-group d-flex flex-row gv-h5">
+
+    <div class="gv-flex-grow-1 gv-btn-spacer-sm">
+      {{(label$ | async)?.default}}
+    </div>
+    <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+      <div class="align-self-center">
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(property$|async).dfh_pk_property}}" target="_blank">
+          {{(property$|async).dfh_identifier_in_namespace}}
+        </a>
+      </div>
+    </div>
+    <div class="btn btn-link btn-sm" (click)="startCreateRole()" *ngIf="addButtonVisible && !hideAddButton">
+      <i class="fa fa-plus"></i>
+    </div>
+  </div>
+</ng-template>

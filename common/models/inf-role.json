@@ -69,6 +69,12 @@
       "model": "InfTemporalEntity",
       "foreignKey": "fk_temporal_entity",
       "primaryKey": "pk_entity"
+    },
+    "place": {
+      "type": "belongsTo",
+      "model": "InfPlace",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
     }
   },
   "acls": [

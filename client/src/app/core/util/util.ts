@@ -1,6 +1,8 @@
-import { TimePrimitive, InfTimePrimitive, InfRole } from "..";
+import { TimePrimitive, InfTimePrimitive, InfRole, InfTemporalEntity, InfPersistentItem } from "..";
 import { CalendarType } from "../date-time/time-primitive";
 import { Granularity } from "../date-time/date-time-commons";
+import { DfhConfig } from "../../modules/information2/shared/dfh-config";
+import { AppellationLabel } from "../../modules/information2/shared/appellation-label";
 
 /**
  * Utilities class for static functions
@@ -28,10 +30,10 @@ export class U {
      * 
      * @param obj 
      */
-    static obj2KeyValueArr(obj: { [key: string]: any }): {key: string, value: any}[] {
+    static obj2KeyValueArr(obj: { [key: string]: any }): { key: string, value: any }[] {
         let keys = [];
         for (let key in obj) {
-          keys.push({key: key, value: obj[key]});
+            keys.push({ key: key, value: obj[key] });
         }
         return keys;
     }
@@ -76,6 +78,70 @@ export class U {
         return cal as CalendarType;
     }
 
+
+
+
+    /**
+    * Returns the Appellation Label String that is for display in this project, from the given teEnt
+    * @param teEnt 
+    * @returns appellation label as pure string
+    */
+    static getDisplayAppeLabelOfTeEnt(teEnt: InfTemporalEntity): string | null {
+        if (!teEnt || !teEnt.te_roles) return null
+
+
+        const rolesToAppe: InfRole[] = teEnt.te_roles.filter(
+            role => (role && role.appellation && role.appellation.appellation_label
+                //TODO Add a clause as soon as we have DisplayRoleForDomain in the db to filter for the role that is standard?? or is this not happening on forms?
+            ))
+
+        return rolesToAppe.length ? new AppellationLabel(rolesToAppe[0].appellation.appellation_label).getString() : null;
+
+    }
+
+
+    /**
+    * Returns the teEnt (Name Use Activity) that has is for display in this project, from the given peIt
+    * 
+    * @param peIt 
+    * @returns InfTemporalEntity that has a appellation label for display
+    */
+    static getDisplayAppeLabelOfPeIt(peIt: InfPersistentItem): InfTemporalEntity | null {
+        if (!peIt) return null
+
+        const rolesToAppeUse: InfRole[] = peIt.pi_roles.filter(
+            role => (
+                role &&
+                //TODO Add a better clause as soon as we have DisplayRoleForDomain/Range
+                role.entity_version_project_rels &&
+                role.entity_version_project_rels[0] &&
+                role.entity_version_project_rels[0].is_standard_in_project &&
+
+                // TODO this could be passed in by methods parameter 
+                role.fk_property == DfhConfig.PROPERTY_PK_R63_NAMES
+            ))
+
+        return rolesToAppeUse.length ? new InfTemporalEntity(rolesToAppeUse[0].temporal_entity) : null;
+
+    }
+
+    /**
+    * Returns the first teEnt (Name Use Activity) of the given peIt
+    * 
+    * @param peIt 
+    * @returns InfTemporalEntity that has a appellation label for display
+    */
+    static getFirstAppeTeEntOfPeIt(peIt: InfPersistentItem): InfTemporalEntity | null {
+        if (!peIt ||  !peIt.pi_roles) return null
+
+        const roleToAppeUse: InfRole = peIt.pi_roles.find(
+            role => (
+                role && role.fk_property == DfhConfig.PROPERTY_PK_R63_NAMES
+            ))
+
+        return roleToAppeUse ? new InfTemporalEntity(roleToAppeUse.temporal_entity) : null;
+
+    }
 
 
 
