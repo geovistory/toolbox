@@ -188,7 +188,7 @@ export class StateToDataService {
 
 
     
-    const names: RoleSet[] = U.obj2Arr(peItRoleSets).map((roleSet: RoleSet) => {
+    const names: RoleSet[] = U.obj2Arr(peItRoleSets).filter((roleSet: RoleSet) => {
       if(roleSet && roleSet.property && roleSet.property.dfh_fk_property_of_origin === DfhConfig.PROPERTY_PK_R63_NAMES){
           return roleSet;
       }

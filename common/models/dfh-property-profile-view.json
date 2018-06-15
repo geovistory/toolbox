@@ -1,0 +1,60 @@
+{
+  "name": "DfhPropertyProfileView",
+  "base": "DfhEntity",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "data_for_history",
+      "table": "property_profile_view"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "pk_entity": {
+      "id": true,
+      "type": "number",
+      "generated": true
+    },
+    "is_enabled_in_profile": {
+      "type": "boolean"
+    },
+    "removed_from_api": {
+      "type": "boolean"
+    },
+    "dfh_pk_property": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "property": {
+      "type": "belongsTo",
+      "model": "DfhProperty",
+      "foreignKey": "dfh_pk_property",
+      "primaryKey": "dfh_pk_property"
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find"
+      ]
+    }
+  ],
+  "methods": {}
+}

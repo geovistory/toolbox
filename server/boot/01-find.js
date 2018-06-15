@@ -12,7 +12,9 @@ var include = [
   "InfDigitalObject",
   "InfPlace",
   "DfhClass",
-  "DfhClassProfileView"
+  "DfhClassProfileView",
+  "DfhProperty",
+  "DfhPropertyProfileView"
 ];
 
 module.exports = function (app) {

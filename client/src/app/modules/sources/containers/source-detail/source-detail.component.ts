@@ -238,90 +238,14 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
 
 
     }))
-    this.annotatedNodes = [
-      ['20', 1],
-      ['21', 3],
-      ['24', 5]
-    ]
+    // this.annotatedNodes = [
+    //   ['20', 1],
+    //   ['21', 3],
+    //   ['24', 5]
+    // ]
 
     this.annotationPanel = {
       view: {
-        _annot_1: {
-          chunk: new Chunk({
-            quillDelta: {
-              "ops": [
-                {
-                  "attributes": {
-                    "node": "20"
-                  },
-                  "insert": "Emmanuel"
-                },
-                {
-                  "attributes": {
-                    "node": "21"
-                  },
-                  "insert": " "
-                },
-                {
-                  "attributes": {
-                    "node": "24"
-                  },
-                  "insert": "Büchel"
-                }
-              ]
-            }
-          }),
-          mentionedEntities: {
-            _entity_123: {
-              pkEntity: 123,
-              entityAssociation: new InfEntityAssociation(),
-              label: 'Bern'
-            },
-            _entity_124: {
-              pkEntity: 124,
-              entityAssociation: new InfEntityAssociation(),
-              label: 'Moritz'
-            },
-            _entity_125: {
-              pkEntity: 125,
-              entityAssociation: new InfEntityAssociation(),
-              label: 'Bern'
-            },
-            _entity_126: {
-              pkEntity: 126,
-              entityAssociation: new InfEntityAssociation(),
-              label: 'Moritz'
-            }
-          }
-        },
-        _annot_2: {
-          chunk: new Chunk({
-            quillDelta: {
-              text: 'some other words'
-            }
-          }),
-          mentionedEntities: {
-            _entity_400: {
-              pkEntity: 400,
-              entityAssociation: new InfEntityAssociation(),
-              label: 'Hans Muster'
-            }
-          }
-        },
-        _annot_3: {
-          chunk: new Chunk({
-            quillDelta: {
-              text: 'some other words'
-            }
-          }),
-          mentionedEntities: {
-            _entity_400: {
-              pkEntity: 400,
-              entityAssociation: new InfEntityAssociation(),
-              label: 'Hans Muster'
-            }
-          }
-        }
       }
     }
   }
