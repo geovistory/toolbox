@@ -55,6 +55,15 @@ export class DfhConfig {
     153: 'p82b'
   }
 
+
+  /**
+   * Dfh Property leading to a Place (Geo Coordinates)
+   */
+  static PROPERTY_PK_WHERE_PLACE_IS_RANGE = 148
+
+  
+
+
   /**
    * Dfh Classes
    */
@@ -68,4 +77,7 @@ export class DfhConfig {
   // dfh_pk_class of time primitive
   static CLASS_PK_TIME_PRIMITIVE = 335;
 
+
+  // dfh_pk_class of place (not geographical place!)
+  static CLASS_PK_PLACE = 51;
 }

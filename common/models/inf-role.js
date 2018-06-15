@@ -46,7 +46,26 @@ module.exports = function (InfRole) {
           } else {
             return [requestedRole];
           }
-        } else if (requestedRole.appellation) {
+        } 
+        
+        // else if (requestedRole.place) {
+        //   if (requestedRole.place.eprs) {
+        //     //add the place to the project
+        //     const InfPlace = InfRole.app.models.InfPlace;
+        //     return InfPlace.changeProjectRelation(projectId, isInProject, requestedRole.place)
+        //       .then((results) => {
+        //         requestedRole.place = results[0];
+        //         return [requestedRole];
+        //       })
+        //       .catch((err) => {
+        //         return err;
+        //       })
+        //   } else {
+        //     return [requestedRole];
+        //   }
+        // } 
+        
+        else if (requestedRole.appellation) {
           if (requestedRole.appellation.entity_version_project_rels) {
 
             //add the appellation to the project
@@ -170,6 +189,43 @@ module.exports = function (InfRole) {
         })
 
     }
+
+
+
+    // if the role points to a place
+    else if (requestedRole.place && Object.keys(requestedRole.place).length > 0) {
+
+      // prepare parameters
+      const InfPlace = InfRole.app.models.InfPlace;
+
+      // find or create the place and the role pointing to it
+      return InfPlace.findOrCreatePlace(projectId, requestedRole.place)
+        .then((resultingEntities) => {
+          const resultingEntity = resultingEntities[0];
+
+          // … prepare the Role to create
+          dataObject.fk_entity = resultingEntity.pk_entity;
+
+          return InfRole.findOrCreateObjectOrRole(InfRole, projectId, dataObject, requestedRole)
+            .then((resultingRoles) => {
+
+              let res = resultingRoles[0].toJSON();
+              res.place = resultingEntity.toJSON();
+
+              return [res];
+
+            })
+            .catch((err) => {
+              return err;
+            })
+        })
+        .catch((err) => {
+          return err;
+        })
+
+    }
+
+
 
     // if the role points to a appellation
     else if (requestedRole.appellation && Object.keys(requestedRole.appellation).length > 0) {
