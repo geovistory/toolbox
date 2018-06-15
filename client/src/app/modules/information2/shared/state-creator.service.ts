@@ -12,6 +12,7 @@ import {
   InfTemporalEntity,
   InfTimePrimitive,
   DfhProperty,
+  InfPlace,
 } from 'app/core';
 import { groupBy, indexBy, prop } from 'ramda';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -31,6 +32,7 @@ import {
   RoleSetList,
   TeEntDetail,
   TimePrimitveDetail,
+  PlaceDetail,
 } from '../information.models';
 import { AppellationLabel } from './appellation-label/appellation-label';
 import { ClassService } from './class.service';
@@ -425,6 +427,23 @@ export class StateCreatorService {
       })
     }
 
+    /** If role leads to Place (in the sense of geo coordinates!) */
+    // else if (role.place && Object.keys(role.place).length){
+    else if (role.fk_property == DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE && options.isOutgoing) {
+
+      // when targetDfhClass is provided we are in create state and we need the fk_class
+      if (options.targetDfhClass) roleDetail.role.place = {
+        ...role.place,
+        fk_class: options.targetDfhClass.dfh_pk_class
+      }
+
+      this.initializePlaceState(role.place).subscribe(placeDetail => {
+        roleDetail._place = placeDetail;
+        subject.next(roleDetail);
+      })
+    }
+
+
     /** If role leads to TimePrimitive */
     else if (DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.indexOf(role.fk_property) > -1 && options.isOutgoing === true) {
 
@@ -585,6 +604,13 @@ export class StateCreatorService {
     }
 
     return new BehaviorSubject(timePrimitiveState)
+  }
+
+
+  initializePlaceState(place: InfPlace): Subject<PlaceDetail> {
+    const placeDetail: PlaceDetail = {}
+
+    return new BehaviorSubject(placeDetail)
   }
 
   initializeLeafPeItState(dfhClass: DfhClass): Subject<PeItDetail> {

@@ -3,6 +3,7 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormGroup, FormBuilder, Valida
 import { Subscription } from 'rxjs';
 import { InfRole, InfPlace } from 'app/core';
 import { pick } from 'ramda'
+import { DfhConfig } from '../../shared/dfh-config';
 
 @Component({
   selector: 'gv-place-ctrl',
@@ -54,11 +55,12 @@ export class PlaceCtrlComponent implements OnInit, OnDestroy, ControlValueAccess
       if (this.formGroup.valid) {
 
         // build the role
-        let role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role));
+        let role = new InfRole(pick(['fk_temporal_entity', 'fk_property', 'fk_class'], this.role));
 
         role.place = {
           lat: val.lat,
-          long: val.long
+          long: val.long,
+          fk_class: DfhConfig.CLASS_PK_PLACE
         } as InfPlace
 
         // send the role to the parent form
