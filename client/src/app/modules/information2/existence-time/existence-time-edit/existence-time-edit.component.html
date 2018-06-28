@@ -13,21 +13,45 @@
 </div> -->
 
 
-<!-- Navigate to help and back -->
-<div class="modal-body d-flex justify-content-end">
-  <button class="btn btn-link" *ngIf="(mode$ | async) !== 'advanced'" (click)="showAdvancedMode()">Advanced mode</button>
-  <button class="btn btn-link" *ngIf="!(helpVisible$ | async) && (mode$ | async) === 'advanced'" (click)="showHelp()">Help</button>
-  <button class="btn btn-link" *ngIf="(helpVisible$ | async)" (click)="hideHelp()">Back</button>
-</div>
 
 
-<div class="modal-body" *ngIf="(helpVisible$ | async)">
-  <gv-existence-time-help></gv-existence-time-help>
+
+<div *ngIf="(helpVisible$ | async)">
+  <div class="modal-header">
+    <h2 class="modal-title">
+      Edit temporal information
+      <small class="text-muted">(Help)</small>
+    </h2>
+
+    <button type="button" class="close" aria-label="Back" (click)="hideHelp()">
+      <span aria-hidden="true">Back</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <gv-existence-time-help></gv-existence-time-help>
+  </div>
+  
 </div>
 
 <!-- Main content -->
 <div *ngIf="!(helpVisible$ | async)">
+  <div class="modal-header">
+    <h2 class="modal-title">
+      Edit temporal information
+    </h2>
 
+    <button type="button" class="close" aria-label="Close" (click)="stopEditing.emit()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <!-- <ng2-slim-loading-bar color="inherit"></ng2-slim-loading-bar> -->
+
+  <!-- Navigate to help and back -->
+  <div class="modal-body d-flex justify-content-end">
+    <button class="btn btn-link" *ngIf="(mode$ | async) !== 'advanced'" (click)="showAdvancedMode()">Advanced mode</button>
+    <button class="btn btn-link" *ngIf="(mode$ | async) === 'advanced'" (click)="showHelp()">Help</button>
+  </div>
 
   <form [formGroup]="formGroup">
 
@@ -40,7 +64,7 @@
       <div class="modal-body" *ngIf="((_roleSet_list$ | async)?._72_outgoing) && formGroup.get('_72_outgoing')">
 
         <ng-container *ngTemplateOutlet="header; context:{key:'_72_outgoing', label: 'At some time within'}"></ng-container>
-          <!-- <span *ngIf="(mode$ | async) !== 'one-date'">
+        <!-- <span *ngIf="(mode$ | async) !== 'one-date'">
         </span> -->
 
         <gv-ex-time-role-set-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_72_outgoing"
