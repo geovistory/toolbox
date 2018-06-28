@@ -1,11 +1,11 @@
 import { NgRedux, ObservableStore, WithSubStore, select } from '@angular-redux/store';
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { IAppState, InfRole, InfTimePrimitive, InfEntityProjectRel, InfTemporalEntity, InfTemporalEntityApi, U } from 'app/core';
 import { union } from 'ramda';
 
 import { roleSetKey } from '../../information.helpers';
-import { ExistenceTimeDetail, RoleSet, TeEntDetail, RoleDetail, RoleDetailList, RoleSetList } from '../../information.models';
+import { ExistenceTimeDetail, RoleSet, TeEntDetail, RoleDetail, RoleDetailList, RoleSetList, ExTimeModalMode, ExistenceTimeEdit } from '../../information.models';
 import { DfhConfig } from '../../shared/dfh-config';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { ExistenceTimeActions } from '../existence-time.actions';
@@ -13,10 +13,12 @@ import { existenceTimeReducer } from '../existence-time.reducer';
 import { Subscription, Observable } from 'rxjs';
 import { dropLast } from 'ramda'
 import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
+import { ExTimeEditActions } from './existence-time-edit.actions';
+import { existenceTimeEditReducer } from './existence-time-edit.reducer';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
-  localReducer: existenceTimeReducer
+  localReducer: existenceTimeEditReducer
 })
 @Component({
   selector: 'gv-existence-time-edit',
@@ -24,11 +26,10 @@ import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
   styleUrls: ['./existence-time-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ExistenceTimeEditComponent implements OnInit {
+export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnInit {
 
   @Input() basePath: string[]
   getBasePath = () => this.basePath;
-  parentTeEntPath: string[];
 
   @Output() stopEditing: EventEmitter<void> = new EventEmitter();
 
@@ -38,12 +39,16 @@ export class ExistenceTimeEditComponent implements OnInit {
   _roleSet_list: RoleSetList;
   @select() _roleSet_list$: Observable<RoleSetList>;
   @select() ontoInfoVisible$: Observable<boolean>;
-
+  @select() helpVisible$: Observable<boolean>
+  @select() mode$: Observable<ExTimeModalMode>
 
   localStore: ObservableStore<ExistenceTimeDetail>
   parentTeEntStore: ObservableStore<TeEntDetail>; // needed for creating a value to send to api
 
   formGroup: FormGroup;
+
+  // true, once user clicked on save
+  submitClicked = false;
 
   // From Value given on Init. Need to be removed from project, if edited
   initialFormVal;
@@ -55,8 +60,10 @@ export class ExistenceTimeEditComponent implements OnInit {
     protected actions: ExistenceTimeActions,
     protected stateCreator: StateCreatorService,
     protected teEntApi: InfTemporalEntityApi,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    protected ref: ChangeDetectorRef
   ) {
+    super();
 
     this.initForm();
 
@@ -65,20 +72,38 @@ export class ExistenceTimeEditComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, existenceTimeReducer);
+    this.localStore = this.ngRedux.configureSubStore(this.basePath, existenceTimeEditReducer);
+    this.parentTeEntStore = this.ngRedux.configureSubStore(dropLast(2, this.basePath), teEntReducer)
 
-    this.parentTeEntPath = dropLast(1, this.basePath)
-    this.parentTeEntStore = this.ngRedux.configureSubStore(this.parentTeEntPath, teEntReducer)
+    this.initShortCuts(this.localStore.getState())
+    this.initFormCtrls();
 
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, existenceTimeReducer);
-
-    this.subs.push(this.localStore.select<ExistenceTimeDetail>('').subscribe(d => {
+    this.subs.push(this.localStore.select<ExistenceTimeEdit>('').subscribe(d => {
       if (d) {
         this._roleSet_list = d._roleSet_list;
-        this.initFormCtrls();
       }
     }))
   }
+
+
+  initShortCuts(state: ExistenceTimeEdit) {
+
+    // If init in one-date mode and the roleSet for "At some time within" is not yet there 
+    if (state.mode === 'one-date' && (state._roleSet_list === undefined || state._roleSet_list._72_outgoing === undefined)) {
+      this.addRoleSet(72)
+    }
+
+    // If init in begin-end mode and the roleSet for "Begin" is not yet there 
+    if (state.mode === 'begin-end' && (state._roleSet_list === undefined || state._roleSet_list._150_outgoing === undefined)) {
+      this.addRoleSet(150)
+    }
+
+    // If init in begin-end mode and the roleSet for "End" is not yet there 
+    if (state.mode === 'begin-end' && (state._roleSet_list === undefined || state._roleSet_list._151_outgoing === undefined)) {
+      this.addRoleSet(151)
+    }
+  }
+
 
   ngOnDestroy() {
     this.subs.forEach(sub => sub.unsubscribe())
@@ -145,7 +170,7 @@ export class ExistenceTimeEditComponent implements OnInit {
 
     // update the state
     this.stateCreator.initializeRoleSet([role], roleSetTemplate).subscribe(roleSet => {
-      this.localStore.dispatch(this.actions.addRoleSet({ [roleSetKey(roleSet)]: roleSet }))
+      this.localStore.dispatch(this.roleSetAdded({ [roleSetKey(roleSet)]: roleSet }))
     })
 
     // add a form control
@@ -157,6 +182,8 @@ export class ExistenceTimeEditComponent implements OnInit {
         ]
       )
     )
+
+    this.submitClicked = false;
   };
 
 
@@ -168,10 +195,13 @@ export class ExistenceTimeEditComponent implements OnInit {
   removeRoleSet(key: string) {
 
     // update the state
-    this.localStore.dispatch(this.actions.removeRoleSet(key))
+    this.localStore.dispatch(this.roleSetRemoved(key))
 
     // remove the form control
-    this.formGroup.removeControl(key)
+    setTimeout(() => {
+      this.formGroup.removeControl(key),
+        this.ref.detectChanges()
+    }, 0)
 
   }
 
@@ -180,6 +210,8 @@ export class ExistenceTimeEditComponent implements OnInit {
    * Called when a user submits a new existence time
    */
   onSubmitExistenceTime() {
+
+    this.submitClicked = true;
 
     if (this.formGroup.valid) {
       const newCtrls = this.formGroup.value;
@@ -259,6 +291,13 @@ export class ExistenceTimeEditComponent implements OnInit {
           this.submitted.emit(existTimeDetail)
         })
       }))
+    }
+    else {
+      Object.keys(this.formGroup.controls).forEach(key => {
+        if (this.formGroup.get(key)) {
+          this.formGroup.get(key).markAsTouched()
+        }
+      })
     }
   }
 }

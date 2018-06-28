@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ExistenceTimeEditComponent } from './existence-time-edit.component';
+import { ExistenceTimeHelpComponent } from './existence-time-help.component';
 
-describe('ExistenceTimeEditComponent', () => {
-  let component: ExistenceTimeEditComponent;
-  let fixture: ComponentFixture<ExistenceTimeEditComponent>;
+describe('ExistenceTimeHelpComponent', () => {
+  let component: ExistenceTimeHelpComponent;
+  let fixture: ComponentFixture<ExistenceTimeHelpComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ExistenceTimeEditComponent ]
+      declarations: [ ExistenceTimeHelpComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ExistenceTimeEditComponent);
+    fixture = TestBed.createComponent(ExistenceTimeHelpComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

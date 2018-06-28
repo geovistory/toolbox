@@ -2,13 +2,13 @@
   <div class="form-row">
     <div class="form-group" [ngClass]="{'col-sm-12': (!monthVisible && !dayVisible), 'col-sm-6': (monthVisible && !dayVisible), 'col-sm-4': (monthVisible && dayVisible)}">
       <label class="font-sm text-muted">Year*</label>
-      <input type="number" class="form-control" formControlName="year" placeholder="Year" (blur)="touched.emit()"/>
+      <input type="number" class="form-control" formControlName="year" placeholder="Year" (blur)="markAsTouched()"/>
       <gv-control-messages [control]="form?.controls.year"></gv-control-messages>
     </div>
     <div class="form-group" *ngIf="monthVisible" [ngClass]="{'col-sm-6': (!dayVisible), 'col-sm-4': (dayVisible)}">
       <label class="font-sm text-muted">Month</label>
       <!-- <input type="number" class="form-control" formControlName="month" placeholder="Month"/> -->
-      <select class="form-control" class="custom-select" formControlName="month" (blur)="touched.emit()">
+      <select class="form-control" class="custom-select" formControlName="month" (blur)="markAsTouched()">
         <option [ngValue]="null" selected></option>
         <option value="1">January</option>
         <option value="2">February</option>
@@ -27,7 +27,7 @@
     </div>
     <div class="form-group col-sm-4" *ngIf="dayVisible">
       <label class="font-sm text-muted">Day</label>
-      <input type="number" class="form-control" formControlName="day" placeholder="Day" (blur)="touched.emit()"/>
+      <input type="number" class="form-control" formControlName="day" placeholder="Day" (blur)="markAsTouched()"/>
       <gv-control-messages [control]="form?.controls.day"></gv-control-messages>
     </div>
   </div>
@@ -46,7 +46,7 @@
       <label class="font-sm text-muted">Hours</label>
       <div class="input-group">
 
-        <input type="number" class="form-control" formControlName="hours" placeholder="0-23" (blur)="touched.emit()"/>
+        <input type="number" class="form-control" formControlName="hours" placeholder="0-23" (blur)="markAsTouched()"/>
         <div class="input-group-append" *ngIf="removeTimeBtnVisible">
           <button class="btn btn-outline-secondary" (click)="hideTimeInputs()">
             <i class="fa fa-close"></i>
@@ -58,13 +58,13 @@
 
     <div class="form-group col-sm-4" *ngIf="minutesVisible">
       <label class="font-sm text-muted">Minutes</label>
-      <input type="number" class="form-control" formControlName="minutes" placeholder="0-59" (blur)="touched.emit()"/>
+      <input type="number" class="form-control" formControlName="minutes" placeholder="0-59" (blur)="markAsTouched()"/>
       <gv-control-messages [control]="form?.controls.minutes"></gv-control-messages>
     </div>
 
     <div class="form-group col-sm-4" *ngIf="secondsVisible">
       <label class="font-sm text-muted">Seconds</label>
-      <input type="number" class="form-control" formControlName="seconds" placeholder="0-59" (blur)="touched.emit()"/>
+      <input type="number" class="form-control" formControlName="seconds" placeholder="0-59" (blur)="markAsTouched()"/>
       <gv-control-messages [control]="form?.controls.seconds"></gv-control-messages>
     </div>
 
@@ -90,7 +90,7 @@
             <i class="fa fa-calendar"></i>&nbsp;Calendar
           </span>
         </div>
-        <select class="form-control" class="custom-select" formControlName="calendar" (change)="editingCalendar=false" (blur)="touched.emit()">
+        <select class="form-control" class="custom-select" formControlName="calendar" (change)="editingCalendar=false" (blur)="markAsTouched()">
           <option value="gregorian">Gregorian</option>
           <option value="julian">Julian</option>
         </select>

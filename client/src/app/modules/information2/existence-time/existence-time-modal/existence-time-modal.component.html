@@ -1,0 +1,12 @@
+<div class="modal-header">
+  <h2 class="modal-title">
+    Edit temporal information
+  </h2>
+
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<!-- <ng2-slim-loading-bar color="inherit"></ng2-slim-loading-bar> -->
+
+<gv-existence-time-edit [basePath]="basePath" (stopEditing)="activeModal.dismiss('Cancel click')" (submitted)="activeModal.close($event)"></gv-existence-time-edit>

@@ -133,18 +133,6 @@ export class TeEntEditableComponent extends DataUnitBase {
   }
 
 
-  startEditingExistenceTime(){
-    this.localStore.dispatch(this.actions.startEditingExTime())
-  }
-
-  stopEditingExistenceTime(){
-    this.localStore.dispatch(this.actions.stopEditingExTime())
-  }
-
-  existenceTimeUpdated(data:ExistenceTimeDetail){
-    this.localStore.dispatch(this.actions.existenceTimeUpdated(data))
-  }
-
   /**
   * toggleCardBody - toggles the state of the card in order to collapse or
   * expand the card in the UI
