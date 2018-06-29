@@ -16,14 +16,14 @@
 
 
 
-<div *ngIf="(helpVisible$ | async)">
+<div *ngIf="(helpMode$ | async) === 'long'">
   <div class="modal-header">
     <h2 class="modal-title">
       Edit temporal information
       <small class="text-muted">(Help)</small>
     </h2>
 
-    <button type="button" class="close" aria-label="Back" (click)="hideHelp()">
+    <button type="button" class="close" aria-label="Back" (click)="setHelpMode('hidden')">
       <span aria-hidden="true">Back</span>
     </button>
   </div>
@@ -31,14 +31,16 @@
   <div class="modal-body">
     <gv-existence-time-help></gv-existence-time-help>
   </div>
-  
+
 </div>
 
+
+
 <!-- Main content -->
-<div *ngIf="!(helpVisible$ | async)">
+<div *ngIf="(helpMode$ | async) !== 'long'">
   <div class="modal-header">
     <h2 class="modal-title">
-      Edit temporal information
+      Edit temporal existence
     </h2>
 
     <button type="button" class="close" aria-label="Close" (click)="stopEditing.emit()">
@@ -50,16 +52,26 @@
   <!-- Navigate to help and back -->
   <div class="modal-body d-flex justify-content-end">
     <button class="btn btn-link" *ngIf="(mode$ | async) !== 'advanced'" (click)="showAdvancedMode()">Advanced mode</button>
-    <button class="btn btn-link" *ngIf="(mode$ | async) === 'advanced'" (click)="showHelp()">Help</button>
+    <button class="btn btn-link" *ngIf="(mode$ | async) === 'advanced' && (helpMode$ | async) === 'hidden' " (click)="setHelpMode('short')">Help</button>
+  </div>
+
+
+  <div class="modal-body d-flex flex-column" *ngIf="(helpMode$ | async) === 'short'">
+    <img src="/assets/images/time-span.png" alt="Time Span Structure" class="img-fluid border mt-3 mb-2 align-self-center" style="max-width: 430px;">
+
+    <i class="align-self-center mb-5">
+      Components to define temporal existence of phenomena.  
+      <a href="" class="gv-passive-link" (click)="setHelpMode('long')">Read more...</a>
+    </i>
   </div>
 
   <form [formGroup]="formGroup">
 
 
     <!-- At some time within -->
-    <div class="border-bottom" *ngIf="(mode$ | async) !== 'begin-end'">
+    <div class="border-bottom border-top" *ngIf="(mode$ | async) !== 'begin-end'">
 
-      <button class="btn btn-link" type="button" *ngIf="!((_roleSet_list$ | async)?._72_outgoing)" (click)="addRoleSet(72)">+ At some time within</button>
+      <button class="btn btn-link" type="button" *ngIf="!((_roleSet_list$ | async)?._72_outgoing)" (click)="addRoleSet(72, ['_152_outgoing', '_153_outgoing'], ['_152_outgoing', '_153_outgoing'])">+ At some time within</button>
 
       <div class="modal-body" *ngIf="((_roleSet_list$ | async)?._72_outgoing) && formGroup.get('_72_outgoing')">
 
@@ -76,29 +88,12 @@
     </div>
 
 
-    <!-- Ongoing throughout -->
-    <div class="border-bottom" *ngIf="(mode$ | async) === 'advanced'">
-
-      <button class="btn btn-link" type="button" *ngIf="!((_roleSet_list$ | async)?._71_outgoing)" (click)="addRoleSet(71)">+ Ongoing throughout</button>
-
-      <div class="modal-body" *ngIf="((_roleSet_list$ | async)?._71_outgoing) && formGroup.get('_71_outgoing')">
-
-        <ng-container *ngTemplateOutlet="header; context:{key:'_71_outgoing', label: 'Ongoing throughout'}"></ng-container>
-
-        <gv-ex-time-role-set-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_71_outgoing"
-          [index]="'_71_outgoing'"></gv-ex-time-role-set-create-ctrl>
-
-        <gv-control-messages class="d-flex ml-2" [control]="formGroup?.get('_71_outgoing')"></gv-control-messages>
-
-      </div>
-    </div>
 
 
     <!-- Begin of Begin -->
-    <div class="border-bottom" *ngIf="(mode$ | async) === 'advanced'">
+    <div class="border-bottom pl-3" *ngIf="(mode$ | async) === 'advanced'">
 
-
-      <button class="btn btn-link" type="button" *ngIf="!((_roleSet_list$ | async)?._152_outgoing)" (click)="addRoleSet(152)">+ Earliest possible begin</button>
+      <button class="btn btn-link" type="button" *ngIf="!((_roleSet_list$ | async)?._152_outgoing)" (click)="addRoleSet(152, ['_72_outgoing', '_153_outgoing'], ['_72_outgoing'])">+ Earliest possible begin</button>
 
       <div class="modal-body" *ngIf="((_roleSet_list$ | async)?._152_outgoing) && formGroup.get('_152_outgoing')">
 
@@ -113,10 +108,47 @@
 
     </div>
 
-    <!-- End of begin -->
-    <div class="border-bottom" *ngIf="(mode$ | async) !== 'one-date'">
 
-      <button class="btn btn-link" type="button" *ngIf="!((_roleSet_list$ | async)?._150_outgoing)" (click)="addRoleSet(150)">+ Begin</button>
+    <!-- End of End -->
+    <div class="border-bottom pl-3" *ngIf="(mode$ | async) === 'advanced'">
+
+      <button class="btn btn-link" type="button" *ngIf="!((_roleSet_list$ | async)?._153_outgoing)" (click)="addRoleSet(153, ['_72_outgoing', '_152_outgoing'], ['_72_outgoing'])">+ Latest possible end</button>
+
+      <div class="modal-body" *ngIf="((_roleSet_list$ | async)?._153_outgoing) && formGroup.get('_153_outgoing')">
+
+        <ng-container *ngTemplateOutlet="header; context:{key:'_153_outgoing', label: 'Latest possible end'}"></ng-container>
+
+        <gv-ex-time-role-set-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_153_outgoing"
+          [index]="'_153_outgoing'"></gv-ex-time-role-set-create-ctrl>
+
+        <gv-control-messages class="d-flex ml-2" [control]="formGroup?.get('_153_outgoing')"></gv-control-messages>
+
+      </div>
+
+    </div>
+
+    <!-- Ongoing throughout -->
+    <div class="border-bottom border-top mt-5" *ngIf="(mode$ | async) === 'advanced'">
+
+      <button class="btn btn-link" type="button" *ngIf="!((_roleSet_list$ | async)?._71_outgoing)" (click)="addRoleSet(71, ['_150_outgoing', '_151_outgoing'], ['_150_outgoing', '_151_outgoing'])">+ Ongoing throughout</button>
+
+      <div class="modal-body" *ngIf="((_roleSet_list$ | async)?._71_outgoing) && formGroup.get('_71_outgoing')">
+
+        <ng-container *ngTemplateOutlet="header; context:{key:'_71_outgoing', label: 'Ongoing throughout'}"></ng-container>
+
+        <gv-ex-time-role-set-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_71_outgoing"
+          [index]="'_71_outgoing'"></gv-ex-time-role-set-create-ctrl>
+
+        <gv-control-messages class="d-flex ml-2" [control]="formGroup?.get('_71_outgoing')"></gv-control-messages>
+
+      </div>
+    </div>
+
+
+    <!-- End of begin -->
+    <div class="border-bottom pl-3" *ngIf="(mode$ | async) !== 'one-date'">
+
+      <button class="btn btn-link" type="button" *ngIf="!((_roleSet_list$ | async)?._150_outgoing)" (click)="addRoleSet(150, ['_71_outgoing', '_151_outgoing'], ['_71_outgoing'])">+ Begin</button>
 
       <div class="modal-body" *ngIf="((_roleSet_list$ | async)?._150_outgoing) && formGroup.get('_150_outgoing')">
 
@@ -133,9 +165,9 @@
 
 
     <!-- Begin of end -->
-    <div class="border-bottom" *ngIf="(mode$ | async) !== 'one-date'">
+    <div class="border-bottom pl-3" *ngIf="(mode$ | async) !== 'one-date'">
 
-      <button class="btn btn-link" type="button" *ngIf="!((_roleSet_list$ | async)?._151_outgoing)" (click)="addRoleSet(151)">+ End</button>
+      <button class="btn btn-link" type="button" *ngIf="!((_roleSet_list$ | async)?._151_outgoing)" (click)="addRoleSet(151, ['_71_outgoing', '_150_outgoing'], ['_71_outgoing'])">+ End</button>
 
       <div class="modal-body" *ngIf="((_roleSet_list$ | async)?._151_outgoing) && formGroup.get('_151_outgoing')">
 
@@ -145,24 +177,6 @@
           [index]="'_151_outgoing'"></gv-ex-time-role-set-create-ctrl>
 
         <gv-control-messages class="d-flex ml-2" [control]="formGroup?.get('_151_outgoing')"></gv-control-messages>
-
-      </div>
-
-    </div>
-
-    <!-- End of End -->
-    <div class="border-bottom" *ngIf="(mode$ | async) === 'advanced'">
-
-      <button class="btn btn-link" type="button" *ngIf="!((_roleSet_list$ | async)?._153_outgoing)" (click)="addRoleSet(153)">+ Latest possible end</button>
-
-      <div class="modal-body" *ngIf="((_roleSet_list$ | async)?._153_outgoing) && formGroup.get('_153_outgoing')">
-
-        <ng-container *ngTemplateOutlet="header; context:{key:'_153_outgoing', label: 'Latest possible end'}"></ng-container>
-
-        <gv-ex-time-role-set-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_153_outgoing"
-          [index]="'_153_outgoing'"></gv-ex-time-role-set-create-ctrl>
-
-        <gv-control-messages class="d-flex ml-2" [control]="formGroup?.get('_153_outgoing')"></gv-control-messages>
 
       </div>
 

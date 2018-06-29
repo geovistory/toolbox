@@ -20,7 +20,7 @@ export const existenceTimeReducer =
           ...lastState,
           _existenceTime_edit: {
             ...lastState,
-            helpVisible: false,
+            helpMode: 'hidden',
             mode: action.meta.mode
           }
         };

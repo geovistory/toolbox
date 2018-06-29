@@ -78,6 +78,42 @@ export class U {
         return cal as CalendarType;
     }
 
+    /**
+     * Converts InfRole to TimePrimitive
+     * @param r the InfRole to convert
+     */
+    static infRole2TimePrimitive(r: InfRole): TimePrimitive {
+
+        // from InfTimePrimitve to TimePrimitive 
+        const infTp: InfTimePrimitive = r ? r.time_primitive : null;
+        let timePrimitive: TimePrimitive = null;
+        let obj: any = {}
+    
+        if (
+            infTp && infTp.duration && infTp.julian_day &&
+            U.getCalendarFromRole(r)
+        ) {
+            // add duration
+            obj.duration = infTp.duration
+    
+            // add calendar
+            obj.calendar = U.getCalendarFromRole(r)
+    
+            // add julian day
+            obj.julianDay = infTp.julian_day;
+    
+            timePrimitive = new TimePrimitive({ ...obj })
+        }
+    
+        if (timePrimitive === null) {
+           return new TimePrimitive({
+                calendar: 'julian'
+            })
+        }
+        else {
+           return timePrimitive;
+        }
+    }
 
 
 

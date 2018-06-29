@@ -104,8 +104,8 @@ export interface ExistenceTimeDetail {
 
 export interface ExistenceTimeEdit extends ExistenceTimeDetail {
     
-    // flag for showing/hiding help of existence time
-    helpVisible?: boolean;
+    // mode of help
+    helpMode?: ExTimeHelpMode;
 
     mode?: ExTimeModalMode;
 
@@ -240,6 +240,7 @@ export interface RoleDetailList { [key: string]: RoleDetail }
 export type CollapsedExpanded = 'collapsed' | 'expanded';
 export type SelectPropStateType = 'init' | 'selectProp'
 export type ExTimeModalMode = 'one-date' | 'begin-end' | 'advanced';
+export type ExTimeHelpMode = 'hidden' | 'short' | 'long';
 export type RoleSetLabelObj = {
     default: string
     pl: string

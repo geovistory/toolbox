@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { TimePrimitive } from 'app/core';
+import { TimePrimitive, U } from 'app/core';
+import { infRole2TimePrimitive } from '../../modules/information2/information.helpers';
 
 @Injectable()
 export class ValidationService {
@@ -17,15 +18,17 @@ export class ValidationService {
       'requiredBy-minutes': `Required if minutes are set`,
       'requiredBy-seconds': `Required if seconds are set`,
       'beforeGregorian': `Gregorian calendar can't be used with dates before October 15th 1582`,
-      'mustEndBefore': `Must end before ${validatorValue.fieldLabel}`,
-      'mustStartAfter': `Must start after ${validatorValue.fieldLabel}`,
-      'mustBeginBeforeEnd': `Must begin before ${validatorValue.fieldLabel} ends`,
-      'mustEndAfterBegin': `Must end after ${validatorValue.fieldLabel} begins`,
+      'cantBeginBeforeBegin': `Can't begin before '${validatorValue.fieldLabel}'`,
+      'cantBeginAfter': `Can't begin after '${validatorValue.fieldLabel}'`,
+      'cantEndAfterEnd': `Can't end after '${validatorValue.fieldLabel}'`,
+      'cantEndBefore': `Can't end before '${validatorValue.fieldLabel}'`,
+      'mustBeginBeforeEnd': `Can't be later than '${validatorValue.fieldLabel}'`,
+      'mustEndAfterBegin': `Can't be earlier than '${validatorValue.fieldLabel}'`,
       'validateLanguage': `Please select a language`,
       'noItem': 'At least one item is required'
     };
 
-    if(config[validatorName]) return config[validatorName];
+    if (config[validatorName]) return config[validatorName];
 
     return config[validatorName.split('-')[0]];
   }
@@ -69,14 +72,14 @@ export class ValidationService {
 
 
   /**
-  * First given TimePrimitive must end before second TimePrimitive.
+  * First given TimePrimitive can't begin earlier than second TimePrimitive.
   *
   * @param {string} first Name of field with TimePrimitive value
   * @param {string} firstLabel Label for the first field
   * @param {string} second  Name of field with TimePrimitive value
   * @param {string} secondLabel Laebel for the second field value
   */
-  mustNotIntersect(first: string, firstLabel:string, second: string, secondLabel:string): Function {
+  cantBeginBeforeBegin(first: string, firstLabel: string, second: string, secondLabel: string): Function {
     return (formGroup: FormGroup): void => {
 
       let firstField = formGroup.controls[first];
@@ -86,31 +89,77 @@ export class ValidationService {
       if (firstField.value && secondField.value) {
 
         // get the julian day of the end of the first time primitive
-        const firstTp: TimePrimitive = firstField.value;
-        const firstJulianDay = firstTp.getDateTime().getEndOf(firstTp.duration).getJulianDay();
+        const firstTp: TimePrimitive = U.infRole2TimePrimitive(firstField.value[0]);
+        const firstJulianDay = firstTp.getDateTime().getJulianDay();
 
         // get the julian day of the begin of the second time primitive
-        const secondTp: TimePrimitive = secondField.value;
+        const secondTp: TimePrimitive = U.infRole2TimePrimitive(secondField.value[0]);
         const secondJulianDay = secondTp.getDateTime().getJulianDay();
 
         // validate fields
 
-        if (firstJulianDay > secondJulianDay) {
-          this.addError(firstField, ('mustEndBefore-' + second), {
+        if (firstJulianDay < secondJulianDay) {
+          this.addError(firstField, ('cantBeginBeforeBegin-' + second), {
             fieldLabel: secondLabel
           })
-          this.addError(secondField, ('mustStartAfter-' + first), {
+          this.addError(secondField, ('cantBeginAfter-' + first), {
             fieldLabel: firstLabel
           })
-        }else{
-          this.removeError(firstField, ('mustEndBefore-' + second))
-          this.removeError(secondField, ('mustStartAfter-' + first))
+        } else {
+          this.removeError(firstField, ('cantBeginBeforeBegin-' + second))
+          this.removeError(secondField, ('cantBeginAfter-' + first))
         }
 
       } else {
-        this.removeError(firstField, ('mustEndBefore-' + second))
-        this.removeError(secondField, ('mustStartAfter-' + first))
+        this.removeError(firstField, ('cantBeginBeforeBegin-' + second))
+        this.removeError(secondField, ('cantBeginAfter-' + first))
 
+      }
+
+    }
+  }
+
+  /**
+  * First given TimePrimitive can't end before than second TimePrimitive.
+  *
+  * @param {string} first Name of field with TimePrimitive value
+  * @param {string} firstLabel Label for the first field
+  * @param {string} second  Name of field with TimePrimitive value
+  * @param {string} secondLabel Laebel for the second field value
+  */
+  cantEndBeforeEnd(first: string, firstLabel: string, second: string, secondLabel: string): Function {
+    return (formGroup: FormGroup): void => {
+
+      let firstField = formGroup.controls[first];
+      let secondField = formGroup.controls[second];
+
+      // if both fields have a value
+      if (firstField.value && secondField.value) {
+
+        // get the julian day of the end of the first time primitive
+        const firstTp: TimePrimitive = U.infRole2TimePrimitive(firstField.value[0]);
+        const firstJulianDay = firstTp.getDateTime().getEndOf(firstTp.duration).getJulianDay();
+
+        // get the julian day of the begin of the second time primitive
+        const secondTp: TimePrimitive = U.infRole2TimePrimitive(secondField.value[0]);
+        const secondJulianDay = secondTp.getDateTime().getEndOf(secondTp.duration).getJulianDay();
+
+        // validate fields
+        if (firstJulianDay < secondJulianDay) {
+          this.addError(firstField, ('cantEndBefore-' + second), {
+            fieldLabel: secondLabel
+          })
+          this.addError(secondField, ('cantEndAfterEnd-' + first), {
+            fieldLabel: firstLabel
+          })
+        } else {
+          this.removeError(firstField, ('cantEndBefore-' + second))
+          this.removeError(secondField, ('cantEndAfterEnd-' + first))
+        }
+
+      } else {
+        this.removeError(firstField, ('cantEndBefore-' + second))
+        this.removeError(secondField, ('cantEndAfterEnd-' + first))
       }
 
     }
@@ -118,53 +167,53 @@ export class ValidationService {
 
 
 
-    /**
-    * First given TimePrimitive must begin before second TimePrimitive ends.
-    *
-    * @param {string} first Name of field with TimePrimitive value
-    * @param {string} firstLabel Label for the first field
-    * @param {string} second  Name of field with TimePrimitive value
-    * @param {string} secondLabel Laebel for the second field value
-    */
-    mustBeginBeforeEnd(first: string, firstLabel:string, second: string, secondLabel:string): Function {
-      return (formGroup: FormGroup): void => {
+  /**
+  * First given TimePrimitive must begin before second TimePrimitive ends.
+  *
+  * @param {string} first Name of field with TimePrimitive value
+  * @param {string} firstLabel Label for the first field
+  * @param {string} second  Name of field with TimePrimitive value
+  * @param {string} secondLabel Laebel for the second field value
+  */
+  mustBeginBeforeEnd(first: string, firstLabel: string, second: string, secondLabel: string): Function {
+    return (formGroup: FormGroup): void => {
 
-        let firstField = formGroup.controls[first];
-        let secondField = formGroup.controls[second];
+      let firstField = formGroup.controls[first];
+      let secondField = formGroup.controls[second];
 
-        // if both fields have a value
-        if (firstField.value && secondField.value) {
+      // if both fields have a value
+      if (firstField.value && secondField.value) {
 
-          // get the julian day of the begin of the first time primitive
-          const firstTp: TimePrimitive = firstField.value;
-          const firstJulianDay = firstTp.getDateTime().getJulianDay();
+        // get the julian day of the begin of the first time primitive
+        const firstTp: TimePrimitive = U.infRole2TimePrimitive(firstField.value[0]);
+        const firstJulianDay = firstTp.getDateTime().getJulianDay();
 
-          // get the julian day of the end of the second time primitive
-          const secondTp: TimePrimitive = secondField.value;
-          const secondJulianDay = secondTp.getDateTime().getEndOf(secondTp.duration).getJulianDay();
+        // get the julian day of the end of the second time primitive
+        const secondTp: TimePrimitive = U.infRole2TimePrimitive(secondField.value[0]);
+        const secondJulianDay = secondTp.getDateTime().getEndOf(secondTp.duration).getJulianDay();
 
-          // validate fields
+        // validate fields
 
-          if (firstJulianDay > secondJulianDay) {
-            this.addError(firstField, ('mustBeginBeforeEnd-' + second), {
-              fieldLabel: secondLabel
-            })
-            this.addError(secondField, ('mustEndAfterBegin-' + first), {
-              fieldLabel: firstLabel
-            })
-          }else{
-            this.removeError(firstField, ('mustBeginBeforeEnd-' + second))
-            this.removeError(secondField, ('mustEndAfterBegin-' + first))
-          }
-
+        if (firstJulianDay >= secondJulianDay) {
+          this.addError(firstField, ('mustBeginBeforeEnd-' + second), {
+            fieldLabel: secondLabel
+          })
+          this.addError(secondField, ('mustEndAfterBegin-' + first), {
+            fieldLabel: firstLabel
+          })
         } else {
           this.removeError(firstField, ('mustBeginBeforeEnd-' + second))
           this.removeError(secondField, ('mustEndAfterBegin-' + first))
-
         }
 
+      } else {
+        this.removeError(firstField, ('mustBeginBeforeEnd-' + second))
+        this.removeError(secondField, ('mustEndAfterBegin-' + first))
+
       }
+
     }
+  }
 
 
 

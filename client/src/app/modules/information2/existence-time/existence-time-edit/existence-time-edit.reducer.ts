@@ -4,17 +4,11 @@ import { ExTimeEditActions, ExTimeEditAction } from "./existence-time-edit.actio
 export const existenceTimeEditReducer =
     (lastState: ExistenceTimeEdit = {}, action: ExTimeEditAction): ExistenceTimeEdit => {
         switch (action.type) {
-            case ExTimeEditActions.EX_TIME_MODAL_SHOW_HELP:
-                lastState = {
-                    ...lastState,
-                    helpVisible: true
-                };
-                break;
 
-            case ExTimeEditActions.EX_TIME_MODAL_HIDE_HELP:
+            case ExTimeEditActions.EX_TIME_MODAL_SET_HELP_MODE:
                 lastState = {
                     ...lastState,
-                    helpVisible: false
+                    helpMode: action.payload.helpMode
                 };
                 break;
 
