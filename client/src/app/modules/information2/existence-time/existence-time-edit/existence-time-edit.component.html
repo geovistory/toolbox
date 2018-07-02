@@ -75,9 +75,9 @@
 
       <div class="modal-body" *ngIf="((_roleSet_list$ | async)?._72_outgoing) && formGroup.get('_72_outgoing')">
 
-        <ng-container *ngTemplateOutlet="header; context:{key:'_72_outgoing', label: 'At some time within'}"></ng-container>
-        <!-- <span *ngIf="(mode$ | async) !== 'one-date'">
-        </span> -->
+        <span *ngIf="(mode$ | async) !== 'one-date'">
+            <ng-container *ngTemplateOutlet="header; context:{key:'_72_outgoing', label: 'At some time within'}"></ng-container>
+        </span>
 
         <gv-ex-time-role-set-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_72_outgoing"
           [index]="'_72_outgoing'"></gv-ex-time-role-set-create-ctrl>

@@ -231,12 +231,17 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
     role.time_primitive = new InfTimePrimitive();
     role.time_primitive.fk_class = DfhConfig.CLASS_PK_TIME_PRIMITIVE;
 
-    // if this roleSet should inherit the role from a roleSet 
+    // if this roleSet should inherit the time primitive from another roleSet 
     if (inheritFrom) {
       for (let i = 0; i < inheritFrom.length; i++) {
         const key = inheritFrom[i];
         if (this.formGroup.get(key) && this.formGroup.get(key).value) {
-          role = this.formGroup.get(key).value[0]
+          const r = this.formGroup.get(key).value[0];
+          role.time_primitive = r.time_primitive;
+          role.entity_version_project_rels = [{
+            calendar : r.entity_version_project_rels[0].calendar
+          } as InfEntityProjectRel]          
+          role.fk_property = fkProperty;
           break;
         }
       }
@@ -316,7 +321,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
         const newRoles: InfRole[] = newCtrls[key], initRoles: InfRole[] = initCtrls[key];
 
         // if the control was added
-        if (!initRoles) {
+        if (!initRoles === undefined) {
           // add the role of the new control to rolesToAdd
           rolesToAdd = [...rolesToAdd, ...newRoles];
         }
@@ -344,12 +349,14 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
       // change the epr of the roles to add
       rolesToAdd.forEach(r => {
         // no need to creat a new epr, since the roles to add come with one that contains calendar info
-        r.entity_version_project_rels[0].is_in_project = true;
+        if (r)
+          r.entity_version_project_rels[0].is_in_project = true;
       });
 
       // change the epr of the roles to remove
       rolesToRemove.forEach(r => {
-        r.entity_version_project_rels = [new InfEntityProjectRel({ is_in_project: false } as InfEntityProjectRel)];
+        if (r)
+          r.entity_version_project_rels = [new InfEntityProjectRel({ is_in_project: false } as InfEntityProjectRel)];
       });
 
       // create a InfTemporalEntity to send to the api

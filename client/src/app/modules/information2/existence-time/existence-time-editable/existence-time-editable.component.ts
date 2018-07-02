@@ -4,11 +4,13 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, Subscription } from 'rxjs';
 
 import { IAppState } from '../../../../core';
-import { ExistenceTimeDetail, RoleSetList, ExTimeModalMode } from '../../information.models';
+import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
+import { ExistenceTimeDetail, ExTimeModalMode, RoleSetList, TeEntDetail } from '../../information.models';
 import { slideInOut } from '../../shared/animations';
 import { ExistenceTimeModalComponent } from '../existence-time-modal/existence-time-modal.component';
 import { ExistenceTimeActions } from '../existence-time.actions';
 import { existenceTimeReducer } from '../existence-time.reducer';
+import { dropLast } from 'ramda';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -30,7 +32,8 @@ export class ExistenceTimeEditableComponent implements OnInit {
   @Output() stopEditing: EventEmitter<ExistenceTimeDetail> = new EventEmitter();
 
   localStore: ObservableStore<ExistenceTimeDetail>
-
+  parentTeEntStore: ObservableStore<TeEntDetail>;
+  
   @select() ontoInfoVisible$: Observable<boolean>
   @select() toggle$: Observable<boolean>
   _roleSet_list: RoleSetList;
@@ -50,6 +53,8 @@ export class ExistenceTimeEditableComponent implements OnInit {
 
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, existenceTimeReducer);
+    this.parentTeEntStore = this.ngRedux.configureSubStore(dropLast(1, this.basePath), teEntReducer)
+
     this.subs.push(this.localStore.select<ExistenceTimeDetail>('').subscribe(d => {
       if (d) {
         this._roleSet_list = d._roleSet_list;
