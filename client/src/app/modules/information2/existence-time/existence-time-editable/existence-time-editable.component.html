@@ -10,41 +10,72 @@
             </a>
         </div>
     </div>
-    <div class="btn btn-link btn-sm" (click)="startEditing.emit()" *ngIf="(toggle$|async) ==='expanded'">
-        <i class="fa fa-edit"></i>
-    </div>
 </div>
 
 <div [@slideInOut]="(toggle$|async)">
-    <div class="p-2">
+
+    <!-- Empty existence time -->
+    <div class="p-2" *ngIf="isEmpty">
+        <button class="btn btn-primary btn-block" (click)="openModal('one-date')">Add one date</button>
+        <button class="btn btn-primary btn-block" (click)="openModal('begin-end')">Add begin and end</button>
+        <button class="btn btn-link btn-block" (click)="openModal('advanced')">Advanced mode</button>
+    </div>
+
+    <!-- Hase some value -->
+    <div class="p-2" *ngIf="!isEmpty">
+        <!-- At some time within -->
+        <div class="d-flex align-items-center" *ngIf="(_roleSet_list?._72_outgoing)">
+            <div *ngIf="(_roleSet_list | keys).length > 1">At some time within:</div>
+
+            <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_72_outgoing'"></gv-ex-time-role-set-editable>
+
+        </div>
 
         <!-- Begin of begin -->
-        <div class="form-group">
+        <div class="d-flex align-items-center" *ngIf="(_roleSet_list?._152_outgoing)">
+            <div>Earliest possible begin:</div>
 
-            <gv-ex-time-role-set-editable *ngIf="(_roleSet_list?._152_outgoing)" [parentPath]="basePath" [index]="'_152_outgoing'" (onRemoveRoleSet)="removeRoleSet('_152_outgoing')"></gv-ex-time-role-set-editable>
+            <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_152_outgoing'"></gv-ex-time-role-set-editable>
+
+        </div>
+
+        <!-- End of end -->
+        <div class="d-flex align-items-center" *ngIf="(_roleSet_list?._153_outgoing)">
+            <div>Latest possible end:</div>
+
+            <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_153_outgoing'"></gv-ex-time-role-set-editable>
+
+        </div>
+
+        <!-- Ongoing throughout -->
+        <div class="d-flex align-items-center" *ngIf="(_roleSet_list?._71_outgoing)">
+            <div>Ongoing throughout:</div>
+
+            <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_71_outgoing'"></gv-ex-time-role-set-editable>
 
         </div>
 
         <!-- End of begin -->
-        <div class="form-group">
+        <div class="d-flex align-items-center" *ngIf="(_roleSet_list?._150_outgoing)">
 
-            <gv-ex-time-role-set-editable *ngIf="(_roleSet_list?._150_outgoing)" [parentPath]="basePath" [index]="'_150_outgoing'" (onRemoveRoleSet)="removeRoleSet('_150_outgoing')"></gv-ex-time-role-set-editable>
+            <div>Begin:</div>
+
+            <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_150_outgoing'"></gv-ex-time-role-set-editable>
 
         </div>
 
 
         <!-- Begin of end -->
-        <div class="form-group">
+        <div class="d-flex align-items-center" *ngIf="(_roleSet_list?._151_outgoing)">
 
-            <gv-ex-time-role-set-editable *ngIf="(_roleSet_list?._151_outgoing)" [parentPath]="basePath" [index]="'_151_outgoing'" (onRemoveRoleSet)="removeRoleSet('_151_outgoing')"></gv-ex-time-role-set-editable>
+            <div>End:</div>
+
+            <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_151_outgoing'"></gv-ex-time-role-set-editable>
 
         </div>
 
-        <!-- End of end -->
-        <div class="form-group">
-
-            <gv-ex-time-role-set-editable *ngIf="(_roleSet_list?._153_outgoing)" [parentPath]="basePath" [index]="'_153_outgoing'" (onRemoveRoleSet)="removeRoleSet('_153_outgoing')"></gv-ex-time-role-set-editable>
-
+        <div class="mt-3">
+            <button class="btn btn-primary" (click)="openModal()">Edit</button>
         </div>
 
     </div>

@@ -83,22 +83,35 @@ export interface TeEntDetail extends DataUnit {
     teEnt?: InfTemporalEntity;
 
     _existenceTime?: ExistenceTimeDetail; // for editable, add and create
-    _existenceTime_edit?: ExistenceTimeDetail; // for edit (form that controls consistency between different time-roles)
-
-
+    
+    
 }
 
 export interface ExistenceTimeDetail {
-
+    
     _roleSet_list?: RoleSetList;
-
+    
     // records
     roles?: InfRole[];
-
+    
     // gui
     toggle?: CollapsedExpanded;
     outgoingRoleSets?: RoleSet[];
+    
+    // for edit (form that controls consistency between different time-roles)
+    _existenceTime_edit?: ExistenceTimeEdit; 
 }
+
+export interface ExistenceTimeEdit extends ExistenceTimeDetail {
+    
+    // mode of help
+    helpMode?: ExTimeHelpMode;
+
+    mode?: ExTimeModalMode;
+
+    
+}
+
 
 
 /*******************************
@@ -221,12 +234,13 @@ export interface RoleSetList { [key: string]: RoleSet }
 export interface RoleDetailList { [key: string]: RoleDetail }
 
 /*******************************
- * Other interfaces 
+ * Types
  *******************************/
 
 export type CollapsedExpanded = 'collapsed' | 'expanded';
 export type SelectPropStateType = 'init' | 'selectProp'
-
+export type ExTimeModalMode = 'one-date' | 'begin-end' | 'advanced';
+export type ExTimeHelpMode = 'hidden' | 'short' | 'long';
 export type RoleSetLabelObj = {
     default: string
     pl: string

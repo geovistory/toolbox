@@ -7,11 +7,8 @@
       [parentTeEntStatePath]="basePath" [index]="entry.key" (onRemoveRoleSet)="removeRoleSet(entry.key)"></gv-te-ent-role-set-editable>
 
     <gv-existence-time-editable *ngIf="(_existenceTime$ | async) && !(_existenceTime_edit$ | async)"
-    [basePath]="basePath.concat('_existenceTime')" (startEditing)="startEditingExistenceTime()"></gv-existence-time-editable>
+    [basePath]="basePath.concat('_existenceTime')"></gv-existence-time-editable>
    
-    <gv-existence-time-edit *ngIf="_existenceTime_edit$ | async" (submitted)="existenceTimeUpdated($event)"
-    [basePath]="basePath.concat('_existenceTime_edit')" (stopEditing)="stopEditingExistenceTime()"></gv-existence-time-edit>
-
     <div class="gv-footer border-top border-white">
 
       <!-- Step 1 for adding a new property -->

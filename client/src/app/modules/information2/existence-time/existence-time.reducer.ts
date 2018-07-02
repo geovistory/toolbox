@@ -1,6 +1,7 @@
 
 import { ExistenceTimeAction, ExistenceTimeActions } from './existence-time.actions';
-import {ExistenceTimeDetail} from '../information.models'
+import { ExistenceTimeDetail } from '../information.models'
+import { omit } from 'ramda'
 
 const INITIAL_STATE: ExistenceTimeDetail = {
 
@@ -12,6 +13,27 @@ export const existenceTimeReducer =
 
     switch (action.type) {
 
+
+
+      case ExistenceTimeActions.EX_TIME_START_EDITING:
+        lastState = {
+          ...lastState,
+          _existenceTime_edit: {
+            ...lastState,
+            helpMode: 'hidden',
+            mode: action.meta.mode
+          }
+        };
+        break;
+
+      case ExistenceTimeActions.EX_TIME_UPDATED:
+        lastState = action.payload;
+        break;
+
+      case ExistenceTimeActions.EX_TIME_STOP_EDITING:
+        lastState = omit(['_existenceTime_edit'], lastState);
+        break;
+
       case ExistenceTimeActions.TOGGLE:
         lastState = {
           ...lastState,
@@ -19,26 +41,6 @@ export const existenceTimeReducer =
         };
         break;
 
-
-      case ExistenceTimeActions.EX_TIME_ROLESET_ADDED:
-        lastState = {
-          ...lastState,
-          _roleSet_list: {
-            ...lastState._roleSet_list,
-            ...action.payload._roleSet_list
-          }
-        }
-        break;
-
-      case ExistenceTimeActions.EX_TIME_ROLESET_REMOVED:
-        let newRoleSets = Object.assign({}, lastState._roleSet_list);
-        delete newRoleSets[action.meta.key];
-
-        lastState = {
-          ...lastState,
-          _roleSet_list: newRoleSets
-        }
-        break;
 
     }
 

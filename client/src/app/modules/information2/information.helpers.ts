@@ -25,7 +25,7 @@ export function getCalendarFromRole(role: InfRole): CalendarType {
 export function infRole2TimePrimitive(r: InfRole): TimePrimitive {
 
     // from InfTimePrimitve to TimePrimitive 
-    const infTp: InfTimePrimitive = r.time_primitive;
+    const infTp: InfTimePrimitive = r ? r.time_primitive : null;
     let timePrimitive: TimePrimitive = null;
     let obj: any = {}
 

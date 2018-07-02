@@ -8,7 +8,8 @@ registerLocaleData(localeDeCh);
 
 
 import { TimePrimitiveCtrlComponent } from './time-primitive-ctrl.component';
-import { TimePrimitive, ValidationService } from 'app/core';
+import { TimePrimitive, ValidationService, InfRole, InfTimePrimitive, InfEntityProjectRel } from 'app/core';
+import { DfhConfig } from '../../shared/dfh-config';
 
 
 
@@ -18,37 +19,84 @@ export default sandboxOf(TimePrimitiveCtrlComponent, {
     DatePipe
   ]
 })
-  .add('State: Edit – new', {
-    template: `
-    <div class="d-flex justify-content-center mt-5">
-      <div style="width:430px">
-        <gv-time-primitive-ctrl [state]="'edit'">Hey playground!</gv-time-primitive-ctrl>
-      </div>
-    </div>
-    `
-  })
-  .add('State: Edit – existing gregorian', {
+
+  .add('Time Primitive Ctrl | Empty ', {
     context: {
-      tp: new TimePrimitive({
-        'julianDay': 2371231,
-        'duration': '1 day',
-        'calendar':'gregorian'
-      })
+      model: {
+        role: {
+          fk_property: 99
+        } as InfRole
+      }
     },
     template: `
-    <div class="d-flex justify-content-center mt-5">
-      <div style="width:430px">
-        <gv-time-primitive-ctrl [state]="'edit'" [timePrimitive]="tp"></gv-time-primitive-ctrl>
+  <div class="d-flex justify-content-center mt-5">
+      <div style="width:430px;height:400px" class="d-flex">
+          <form #f="ngForm">
+          <gv-time-primitive-ctrl  name="role" [(ngModel)]="model.role" #role="ngModel" required>Hey playground!</gv-time-primitive-ctrl>
+          </form>                               
       </div>
-    </div>
-    `
+      <div>
+          <p>Form.valid: {{f.valid | json}}</p>
+
+          <p>Form.touched: {{f.touched | json}}</p>
+
+          <p>Form.dirty: {{f.dirty | json}}</p>
+
+          <p>Form.value </p>
+          <pre>
+              {{f.value | json}}
+          </pre>
+    
+      </div>
+  </div>`
+  })
+  .add('Time Primitive Ctrl | Existing gregorian ', {
+    context: {
+      model: {
+        role: {
+          fk_property: 99,
+          pk_entity: 1234,
+          time_primitive: new InfTimePrimitive({
+            'julian_day': 2371231,
+            'duration': '1 day',
+            fk_class: DfhConfig.timePrimitiveClass
+          }),
+          entity_version_project_rels: [
+            {
+              calendar: 'gregorian'
+            } as InfEntityProjectRel
+          ]
+        } as InfRole
+      }
+    },
+    template: `
+  <div class="d-flex justify-content-center mt-5">
+      <div style="width:430px;height:400px" class="d-flex">
+          <form #f="ngForm">
+          <gv-time-primitive-ctrl  name="role" [(ngModel)]="model.role" #role="ngModel" required>Hey playground!</gv-time-primitive-ctrl>
+          </form>                               
+      </div>
+      <div>
+          <p>Form.valid: {{f.valid | json}}</p>
+
+          <p>Form.touched: {{f.touched | json}}</p>
+
+          <p>Form.dirty: {{f.dirty | json}}</p>
+
+          <p>Form.value </p>
+          <pre>
+              {{f.value | json}}
+          </pre>
+    
+      </div>
+  </div>`
   })
   .add('State: Edit – existing julian', {
     context: {
       tp: new TimePrimitive({
         'julianDay': 2371231,
         'duration': '1 day',
-        'calendar':'julian'
+        'calendar': 'julian'
       })
     },
     template: `
@@ -64,7 +112,7 @@ export default sandboxOf(TimePrimitiveCtrlComponent, {
       tp: new TimePrimitive({
         'julianDay': 2444270,
         'duration': '1 year',
-        'calendar':'gregorian'
+        'calendar': 'gregorian'
       })
     },
     template: `

@@ -2,7 +2,7 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 
-import { ExistenceTimeDetail, RoleSetList } from '../information.models';
+import { ExistenceTimeDetail, RoleSetList, ExTimeModalMode } from '../information.models';
 
 
 // Flux-standard-action gives us stronger typing of our actions.
@@ -13,27 +13,36 @@ export type ExistenceTimeAction = FluxStandardAction<Payload, MetaData>;
 @Injectable()
 export class ExistenceTimeActions {
 
-  static readonly EX_TIME_ROLESET_ADDED = 'EX_TIME_ROLESET_ADDED';
 
-  static readonly EX_TIME_ROLESET_REMOVED = 'EX_TIME_ROLESET_REMOVED';
-  
+  static readonly EX_TIME_START_EDITING = 'EX_TIME_START_EDITING';
+
+  static readonly EX_TIME_STOP_EDITING = 'EX_TIME_STOP_EDITING';
+
+  static readonly EX_TIME_UPDATED = 'EX_TIME_UPDATED';
+
   static readonly TOGGLE = 'TOGGLE';
 
 
   @dispatch()
 
-  addRoleSet = (_roleSet_list: RoleSetList): ExistenceTimeAction => ({
-    type: ExistenceTimeActions.EX_TIME_ROLESET_ADDED,
-    meta: null,
-    payload: {
-      _roleSet_list
-    }
+  startEditingExTime = (mode: ExTimeModalMode): ExistenceTimeAction => ({
+    type: ExistenceTimeActions.EX_TIME_START_EDITING,
+    meta: {
+      mode
+    },
+    payload: null
   })
 
-  removeRoleSet = (key: string): ExistenceTimeAction => ({
-    type: ExistenceTimeActions.EX_TIME_ROLESET_REMOVED,
-    meta: { key },
+  stopEditingExTime = (): ExistenceTimeAction => ({
+    type: ExistenceTimeActions.EX_TIME_STOP_EDITING,
+    meta: null,
     payload: null
+  })
+
+  existenceTimeUpdated = (payload: ExistenceTimeDetail): ExistenceTimeAction => ({
+    type: ExistenceTimeActions.EX_TIME_UPDATED,
+    meta: null,
+    payload
   })
 
   toggle = () => ({
@@ -43,5 +52,5 @@ export class ExistenceTimeActions {
   })
 
 
-  
+
 }

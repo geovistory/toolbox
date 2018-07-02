@@ -34,9 +34,6 @@ import { TeEntCreateCtrlComponent } from './data-unit/te-ent/te-ent-create-ctrl/
 import { TeEntEditableComponent } from './data-unit/te-ent/te-ent-editable/te-ent-editable.component';
 import { TeEntActions } from './data-unit/te-ent/te-ent.actions';
 import { ExistenceTimeAddCtrlComponent } from './existence-time/existence-time-add-ctrl/existence-time-add-ctrl.component';
-import {
-  ExistenceTimeCreateCtrlComponent,
-} from './existence-time/existence-time-create-ctrl/existence-time-create-ctrl.component';
 import { ExistenceTimeEditComponent } from './existence-time/existence-time-edit/existence-time-edit.component';
 import { ExistenceTimeEditableComponent } from './existence-time/existence-time-editable/existence-time-editable.component';
 import { ExistenceTimeActions } from './existence-time/existence-time.actions';
@@ -101,6 +98,8 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
+import { ExistenceTimeModalComponent } from './existence-time/existence-time-modal/existence-time-modal.component';
+import { ExistenceTimeHelpComponent } from './existence-time/existence-time-help/existence-time-help.component';
 
 @NgModule({
   imports: [
@@ -152,7 +151,6 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
 
     // Existence Time
     ExistenceTimeEditableComponent,
-    ExistenceTimeCreateCtrlComponent,
     ExistenceTimeAddCtrlComponent,
 
     // Role Set
@@ -167,6 +165,7 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     ExTimeRoleSetFormComponent,
     ExTimeRoleSetAddCtrlComponent,
     ExTimeRoleSetCreateCtrlComponent,
+    ExistenceTimeModalComponent,
 
     // Role
     PeItRoleAddCtrlComponent,
@@ -191,7 +190,8 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     TimePrimitiveViewComponent,
     ExTimeRoleSetEditableComponent,
     PlaceCtrlComponent,
-    PlaceViewComponent
+    PlaceViewComponent,
+    ExistenceTimeHelpComponent,
 
 
   ],
@@ -253,7 +253,6 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
 
     // Existence Time
     ExistenceTimeEditableComponent,
-    ExistenceTimeCreateCtrlComponent,
     ExistenceTimeAddCtrlComponent,
 
     // Role Set
@@ -281,6 +280,7 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     LanguageViewComponent,
     LeafPeItCtrlComponent,
     LeafPeItViewComponent,
+    TimePrimitiveCtrlComponent,
     TimePrimitiveViewComponent,
     PlaceCtrlComponent,
     PlaceViewComponent,
@@ -290,7 +290,8 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
   ],
   entryComponents: [
     LeafPeItViewModalComponent,
-    EntityAddModalComponent
+    EntityAddModalComponent,
+    ExistenceTimeModalComponent
   ]
 })
 export class Information2Module { }

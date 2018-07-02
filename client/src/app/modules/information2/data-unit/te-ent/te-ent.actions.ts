@@ -30,13 +30,6 @@ export class TeEntActions extends DataUnitActions {
   static readonly TOGGLE = 'TOGGLE';
 
 
-  static readonly EX_TIME_START_EDITING = 'EX_TIME_START_EDITING';
-
-  static readonly EX_TIME_STOP_EDITING = 'EX_TIME_STOP_EDITING';
-
-  static readonly EX_TIME_UPDATED = 'EX_TIME_UPDATED';
-
-
   @dispatch()
 
   // teEntToEditUpdated = (teEntToEdit: InfTemporalEntity): TeEntAction => ({
@@ -77,24 +70,6 @@ export class TeEntActions extends DataUnitActions {
     payload: null
   })
 
-  startEditingExTime = (): TeEntAction => ({
-    type: TeEntActions.EX_TIME_START_EDITING,
-    meta: null,
-    payload: null
-  })
 
-  stopEditingExTime = (): TeEntAction => ({
-    type: TeEntActions.EX_TIME_STOP_EDITING,
-    meta: null,
-    payload: null
-  })
-
-  existenceTimeUpdated = (_existenceTime:ExistenceTimeDetail): TeEntAction => ({
-    type: TeEntActions.EX_TIME_UPDATED,
-    meta: null,
-    payload:{
-      _existenceTime
-    }
-  })
 
 }

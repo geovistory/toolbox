@@ -1,4 +1,4 @@
-import { Component, EventEmitter, forwardRef, HostBinding, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, forwardRef, HostBinding, Input, OnInit, Output, OnDestroy } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import {
   GregorianDateTime,
@@ -13,6 +13,7 @@ import { CalendarType } from 'app/core/date-time/time-primitive';
 import { pick } from 'ramda';
 
 import { infRole2TimePrimitive } from '../../information.helpers';
+import { Observable, Subscription, Subject, BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'gv-time-primitive-ctrl',
@@ -26,7 +27,7 @@ import { infRole2TimePrimitive } from '../../information.helpers';
     }
   ]
 })
-export class TimePrimitiveCtrlComponent implements OnInit, ControlValueAccessor {
+export class TimePrimitiveCtrlComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
 
   /**
@@ -94,12 +95,33 @@ export class TimePrimitiveCtrlComponent implements OnInit, ControlValueAccessor 
 
   editingCalendar = false;
 
+  registerOnChangeCalled: Subject<boolean>;
+  writeValueCalled: Subject<boolean>;
+
+  subs: Subscription[] = [];
+
   constructor(
     private fb: FormBuilder,
     private validationService: ValidationService,
   ) {
     this.gregorianDateTime = new GregorianDateTime();
     this.julianDateTime = new JulianDateTime();
+
+    this.registerOnChangeCalled = new BehaviorSubject(null)
+    this.writeValueCalled = new BehaviorSubject(null)
+
+    // emitValue as soon as registerOnChange and WriteValue have been called once 
+    this.subs.push(
+      Observable.combineLatest(
+        this.registerOnChangeCalled,
+        this.writeValueCalled
+      ).subscribe((result) => {
+        if (result[0] && result[1]) {
+          this.emitVal();
+        }
+      })
+    )
+
   }
 
   ngOnInit() {
@@ -126,77 +148,108 @@ export class TimePrimitiveCtrlComponent implements OnInit, ControlValueAccessor 
 
   }
 
+  ngOnDestroy() {
+    this.subs.forEach(sub => sub.unsubscribe())
+  }
+
   subscribeToFormChanges() {
 
     // register form changes to update view
     this.form.valueChanges.subscribe(val => {
+      this.emitVal()
+    });
+  }
 
-      var tp = new TimePrimitive();
+  /**
+   * Compares given InfRole and TimePrimitive.
+   * Returns true, if equal
+   * @param role 
+   * @param tp 
+   */
+  roleEqualsTimePrimitive(role: InfRole, tp: TimePrimitive): boolean {
+    if (
+      role.time_primitive &&
+      role.time_primitive.duration == tp.duration &&
+      role.time_primitive.julian_day == tp.julianDay &&
+      role.entity_version_project_rels &&
+      role.entity_version_project_rels[0].calendar == tp.calendar
+    )
+      return true;
+    else return false;
+  }
 
-      if (this.form && this.form.status === 'VALID') {
+  emitVal() {
+    var tp = new TimePrimitive();
 
-        // update duration
-        this.updateDurationInfo();
+    if (this.form && this.form.status === 'VALID') {
 
-        // update Gregorian Info
-        this.updateGregorianInfo();
+      // update duration
+      this.updateDurationInfo();
 
-        // update Julian Info
-        this.updateJulianInfo();
+      // update Gregorian Info
+      this.updateGregorianInfo();
+
+      // update Julian Info
+      this.updateJulianInfo();
 
 
-        // update tp
-        tp.calendar = this.currentCal;
-        if (this.currentCal === 'gregorian') {
-          tp.julianDay = this.gregorianDateTime.getJulianDay();
-          tp.duration = this.gregorianDateTime.getGranularity();
-        }
-        else if (this.currentCal === 'julian') {
-          tp.julianDay = this.julianDateTime.getJulianDay();
-          tp.duration = this.julianDateTime.getGranularity();
-        }
-
+      // update tp
+      tp.calendar = this.currentCal;
+      if (this.currentCal === 'gregorian') {
+        tp.julianDay = this.gregorianDateTime.getJulianDay();
+        tp.duration = this.gregorianDateTime.getGranularity();
+      }
+      else if (this.currentCal === 'julian') {
+        tp.julianDay = this.julianDateTime.getJulianDay();
+        tp.duration = this.julianDateTime.getGranularity();
       }
 
-      // If all required values of timePrimitive ok, pass the timePtimitive to
-      // the onChange function, that may be registered by parent's form control
-      if (tp.calendar && tp.julianDay && tp.duration) {
+    }
 
-        // build the role
-        let role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role));
+    // If all required values of timePrimitive ok, pass the timePtimitive to
+    // the onChange function, that may be registered by parent's form control
+    if (tp.calendar && tp.julianDay && tp.duration) {
 
-        // from TimePrimitive to InfTimePrimitve
-        const infTp = {
-          duration: tp.duration,
-          julian_day: tp.julianDay,
-          fk_class: undefined,
-          pk_entity_version_concat:undefined,
-          pk_entity:undefined,
-          entity_version:undefined,
-          notes:undefined,
-          tmsp_creation:undefined,
-          tmsp_last_modification:undefined,
-          entity_version_project_rels:undefined,
-          is_community_favorite:undefined,
-          is_latest_version:undefined,
-          sys_period:undefined
-        } as InfTimePrimitive;
-        role.time_primitive = infTp;
+      // build the role
+      let role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role));
 
-        // build a epr with the calendar information
-        role.entity_version_project_rels = [
-          {
-            calendar: tp.calendar as string
-          } as InfEntityProjectRel
-        ]
+      // from TimePrimitive to InfTimePrimitve
+      const infTp = {
+        duration: tp.duration,
+        julian_day: tp.julianDay,
+        fk_class: undefined,
+        pk_entity_version_concat: undefined,
+        pk_entity: undefined,
+        entity_version: undefined,
+        notes: undefined,
+        tmsp_creation: undefined,
+        tmsp_last_modification: undefined,
+        entity_version_project_rels: undefined,
+        is_community_favorite: undefined,
+        is_latest_version: undefined,
+        sys_period: undefined
+      } as InfTimePrimitive;
+      role.time_primitive = infTp;
 
-        this.timePrimitive = tp;
+      // build a epr with the calendar information
+      role.entity_version_project_rels = [
+        {
+          calendar: tp.calendar as string
+        } as InfEntityProjectRel
+      ]
+
+      this.timePrimitive = tp;
+
+      if (this.roleEqualsTimePrimitive(this.role, tp)){
+        this.onChange(this.role);
+      }
+      else {
         this.onChange(role);
       }
-      // else send null to the parent's form control
-      else
-        this.onChange(null);
-    });
+    }
+    // else send null to the parent's form control
+    else
+      this.onChange(null);
   }
 
   initFormControls() {
@@ -455,6 +508,9 @@ export class TimePrimitiveCtrlComponent implements OnInit, ControlValueAccessor 
 
     // update Julian Info
     this.updateJulianInfo();
+
+    this.writeValueCalled.next(true);
+
   }
 
 
@@ -468,6 +524,8 @@ export class TimePrimitiveCtrlComponent implements OnInit, ControlValueAccessor 
     this.onChange = fn;
 
     this.subscribeToFormChanges()
+
+    this.registerOnChangeCalled.next(true)
   }
 
   /**
@@ -475,7 +533,9 @@ export class TimePrimitiveCtrlComponent implements OnInit, ControlValueAccessor 
   * Save the function as a property to call later here.
   */
   registerOnTouched(fn: any): void {
+    this.onTouched = fn;
   }
+  onTouched() { };
 
   /**
   * Allows Angular to disable the input.
@@ -484,6 +544,10 @@ export class TimePrimitiveCtrlComponent implements OnInit, ControlValueAccessor 
     this.disabled = isDisabled;
   }
 
+  markAsTouched() {
+    this.onTouched()
+    this.touched.emit()
+  }
 
   showTimeInputs() {
     this.timeInputsVisible = true;

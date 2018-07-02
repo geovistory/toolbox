@@ -1,11 +1,16 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { slideInOut } from '../../shared/animations';
-import { WithSubStore, ObservableStore, NgRedux, select } from '@angular-redux/store';
-import { existenceTimeReducer } from '../existence-time.reducer';
-import { ExistenceTimeDetail, RoleSetList } from '../../information.models';
-import { IAppState } from '../../../../core';
-import { ExistenceTimeActions } from '../existence-time.actions';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, Subscription } from 'rxjs';
+
+import { IAppState } from '../../../../core';
+import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
+import { ExistenceTimeDetail, ExTimeModalMode, RoleSetList, TeEntDetail } from '../../information.models';
+import { slideInOut } from '../../shared/animations';
+import { ExistenceTimeModalComponent } from '../existence-time-modal/existence-time-modal.component';
+import { ExistenceTimeActions } from '../existence-time.actions';
+import { existenceTimeReducer } from '../existence-time.reducer';
+import { dropLast } from 'ramda';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -15,7 +20,8 @@ import { Observable, Subscription } from 'rxjs';
   selector: 'gv-existence-time-editable',
   templateUrl: './existence-time-editable.component.html',
   styleUrls: ['./existence-time-editable.component.scss'],
-  animations: [slideInOut]
+  animations: [slideInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExistenceTimeEditableComponent implements OnInit {
 
@@ -26,27 +32,89 @@ export class ExistenceTimeEditableComponent implements OnInit {
   @Output() stopEditing: EventEmitter<ExistenceTimeDetail> = new EventEmitter();
 
   localStore: ObservableStore<ExistenceTimeDetail>
-
-  @select() ontoInfoVisible$:Observable<boolean>
+  parentTeEntStore: ObservableStore<TeEntDetail>;
+  
+  @select() ontoInfoVisible$: Observable<boolean>
   @select() toggle$: Observable<boolean>
   _roleSet_list: RoleSetList;
+
+  // true, if there is no termporal information
+  isEmpty: boolean = true;
 
   subs: Subscription[] = [];
 
   constructor(
     protected ngRedux: NgRedux<IAppState>,
-    protected actions: ExistenceTimeActions
+    protected actions: ExistenceTimeActions,
+    private modalService: NgbModal
   ) {
 
   }
 
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, existenceTimeReducer);
+    this.parentTeEntStore = this.ngRedux.configureSubStore(dropLast(1, this.basePath), teEntReducer)
+
     this.subs.push(this.localStore.select<ExistenceTimeDetail>('').subscribe(d => {
-      if (d)
+      if (d) {
         this._roleSet_list = d._roleSet_list;
+
+        // if there is temporal information, set isEmpty to false
+        if (this._roleSet_list && Object.keys(this._roleSet_list).length > 0) {
+          this.isEmpty = false;
+        }
+        else{
+          this.isEmpty = true;
+        }
+
+      }
     }))
   }
+
+  openModal(mode: ExTimeModalMode) {
+
+    if (!mode) {
+      // if only "at some time within" is given, open in "one-date" mode
+      if (Object.keys(this._roleSet_list).length === 1 && this._roleSet_list._72_outgoing) {
+        mode = 'one-date';
+      }
+      // else if only "begin" and "end" is given, open in "begin-end" mode
+      else if (
+        Object.keys(this._roleSet_list).length === 2 &&
+        this._roleSet_list._150_outgoing &&
+        this._roleSet_list._151_outgoing
+      ) {
+        mode = 'begin-end';
+      }
+      else {
+        mode = "advanced";
+      }
+
+    }
+
+    this.startEditingExistenceTime(mode);
+
+    const modalRef = this.modalService.open(ExistenceTimeModalComponent, {
+      size: 'lg',
+      backdrop: 'static'
+    });
+    modalRef.componentInstance.basePath = this.basePath.concat('_existenceTime_edit');
+
+    modalRef.result
+      .then((data) => {
+        this.localStore.dispatch(this.actions.existenceTimeUpdated(data))
+      })
+      .catch(() => {
+        this.localStore.dispatch(this.actions.stopEditingExTime())
+      })
+  }
+
+
+
+  startEditingExistenceTime(mode) {
+    this.localStore.dispatch(this.actions.startEditingExTime(mode))
+  }
+
 
   ngOnDestroy() {
     this.subs.forEach(sub => sub.unsubscribe())
