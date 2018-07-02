@@ -11,7 +11,7 @@ module.exports = function(InfTimePrimitive) {
       fk_class: data.fk_class
     };
 
-    return InfTimePrimitive.findOrCreateObjectOrRole(InfTimePrimitive, projectId, dataObject);
+    return InfTimePrimitive.findOrCreateByValue(InfTimePrimitive, projectId, dataObject);
 
   }
 };

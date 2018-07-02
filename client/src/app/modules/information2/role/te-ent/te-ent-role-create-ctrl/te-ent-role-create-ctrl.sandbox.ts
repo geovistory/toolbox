@@ -114,6 +114,9 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                                 fk_property: 99
                             } as InfRole,
                             _appe: {
+                            },
+                            targetDfhClass: {
+                                dfh_pk_class: 1234
                             }
                         } as RoleDetail
                     }

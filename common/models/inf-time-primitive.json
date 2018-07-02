@@ -1,12 +1,12 @@
 {
   "name": "InfTimePrimitive",
-  "base": "InfEntityVersion",
+  "base": "InfEntity",
   "idInjection": true,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "information",
-      "table": "v_time_primitive_version"
+      "table": "v_time_primitive"
     }
   },
   "mixins": {
@@ -18,8 +18,7 @@
   "properties": {
     "fk_class": {
       "type": "number",
-      "required": true,
-      "default": 335
+      "required": true
     },
     "julian_day": {
       "type": "number",

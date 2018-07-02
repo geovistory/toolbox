@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { DfhProperty, InfRole, Project } from 'app/core';
+import { DfhProperty, InfRole, Project, U } from 'app/core';
 import { ReplaySubject, Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 
@@ -17,6 +17,7 @@ import {
 } from '../information.models';
 import { roleReducer } from './role.reducers';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { runInThisContext } from 'vm';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -97,6 +98,8 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
     }
   };
 
+  childStateConfig: { nameInState: string, nameInApi: string };
+
   formControlName: string;
   formControl: FormControl;
 
@@ -136,6 +139,13 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
   initSubscriptions() {
     this.basePath = this.getBasePath();
     this.localStore = this.ngRedux.configureSubStore(this.basePath, roleReducer);
+
+
+    U.obj2KeyValueArr(this.childStatesConfig).forEach(item => {
+      const state = this.localStore.getState();
+      if (state[item.key])
+        this.childStateConfig = item.value;
+    });
 
     this.property$ = this.ngRedux.select<DfhProperty>([...this.parentPath, 'property']);
     this.roleState$ = this.localStore.select<RoleDetail>('');
@@ -194,11 +204,19 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
     // subscribe to form control changes 
     this.subs.push(this.formGroup.valueChanges.subscribe((ctrls) => {
 
-      const val: InfRole = ctrls[this.formControlName];
+      let role: InfRole = ctrls[this.formControlName];
+
+      // assing the fk_class to the child entity / value
+      if (role && this.roleState.targetDfhClass && this.roleState.targetDfhClass.dfh_pk_class) {
+        role[this.childStateConfig.nameInApi] = {
+          ...role[this.childStateConfig.nameInApi],
+          fk_class: this.roleState.targetDfhClass.dfh_pk_class
+        };
+      }
 
       // send the changes to the parent form
       if (this.formGroup.valid) {
-        this.onChange(val);
+        this.onChange(role);
       }
       else {
         this.onChange(null)
