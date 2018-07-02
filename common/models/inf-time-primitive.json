@@ -1,6 +1,6 @@
 {
   "name": "InfTimePrimitive",
-  "base": "InfEntity",
+  "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true,
@@ -16,6 +16,11 @@
     }
   },
   "properties": {
+    "pk_entity": {
+      "id": true,
+      "type": "number",
+      "generated": true
+    },
     "fk_class": {
       "type": "number",
       "required": true
@@ -44,43 +49,9 @@
       "permission": "ALLOW",
       "property": [
         "find",
-        "findComplex",
-        "findOrCreateInfTimePrimitive"
+        "findComplex"
       ]
     }
   ],
-  "methods": {
-    "findOrCreateInfTimePrimitive": {
-      "accepts": [
-        {
-          "arg": "projectId",
-          "type": "number",
-          "required": true,
-          "description": "Id of the project",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "data",
-          "type": "InfTimePrimitive",
-          "required": true,
-          "description": "data",
-          "http": {
-            "source": "body"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": "InfTimePrimitive",
-        "root": true
-      },
-      "description": "Find or create a time primitive version and update the project relation if needed.",
-      "http": {
-        "path": "/findOrCreate",
-        "verb": "post"
-      }
-    }
-  }
+  "methods": {  }
 }

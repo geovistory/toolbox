@@ -299,9 +299,10 @@ module.exports = function (InfRole) {
       const InfTimePrimitive = InfRole.app.models.InfTimePrimitive;
 
       // find or create the time_primitive and the role pointing to it
-      return InfTimePrimitive.findOrCreateInfTimePrimitive(projectId, requestedRole.time_primitive)
-        .then((resultingEntities) => {
-          const resultingEntity = resultingEntities[0];
+      return InfTimePrimitive.findOrCreate(requestedRole.time_primitive)
+        .then((result) => {
+          
+          let resultingEntity = result[0];
 
           // … prepare the Role to create 
           dataObject.fk_entity = resultingEntity.pk_entity;
