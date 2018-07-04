@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(Project) {
+module.exports = function (Project) {
 
   // Project.validatesUniquenessOf('name', {message: 'Project name already exists'});
 
@@ -20,7 +20,7 @@ module.exports = function(Project) {
   * @param  {type} cb        callback
   * @return {void}
   */
-  Project.createWithLabelAndDescription = function(accountId, pkLanguage, label, textProperty, cb) {
+  Project.createWithLabelAndDescription = function (accountId, pkLanguage, label, textProperty, cb) {
 
     var params = [
       accountId,
@@ -47,7 +47,7 @@ module.exports = function(Project) {
     SELECT pk_project, $1, 'owner' FROM insert_project
     `;
 
-    if(textProperty){
+    if (textProperty) {
 
       params.push(textProperty);
 
@@ -77,34 +77,132 @@ module.exports = function(Project) {
     const connector = Project.dataSource.connector;
     connector.execute(sql_stmt, params, (err, result) => {
       var success = true;
-      if (err){
+      if (err) {
         success = false;
       }
       cb(err, success);
     });
   };
 
-  Project.addEntity = function(pk_project, fk_entity, cb) {
+  // Project.addEntity = function(pk_project, fk_entity, cb) {
 
-    var params = [
-      pk_project, // $1
-      fk_entity // $2
-    ];
+  //   var params = [
+  //     pk_project, // $1
+  //     fk_entity // $2
+  //   ];
 
-    var sql_stmt = `
-    INSERT INTO information.entity_project_rel (fk_project, fk_entity, in_project)
-    VALUES ($1, $2, true);
-    `;
+  //   var sql_stmt = `
+  //   INSERT INTO information.entity_project_rel (fk_project, fk_entity, in_project)
+  //   VALUES ($1, $2, true);
+  //   `;
 
-    const connector = Project.dataSource.connector;
-    connector.execute(sql_stmt, params, (err, result) => {
-      var success = true;
-      if (err){
-        success = false;
+  //   const connector = Project.dataSource.connector;
+  //   connector.execute(sql_stmt, params, (err, result) => {
+  //     var success = true;
+  //     if (err){
+  //       success = false;
+  //     }
+  //     cb(err, success);
+  //   });
+  // };
+
+
+  /**
+   * Gets the reference model of the project:
+   * - DfhClasses available for project, including
+   *    - Ingoing and Outgoing DfhProperties available for project, including
+   *        - Boolean that indicates
+   *    
+   */
+  Project.getReferenceModel = function (projectId, cb) {
+
+    // shortcut as long as no epr for classes in use
+    const DfhClass = Project.app.models.DfhClass;
+
+    const propertiesSelect = {
+      include: [
+        "dfh_pk_property",
+        "dfh_identifier_in_namespace",
+        "dfh_has_domain",
+        "dfh_has_range",
+        "dfh_fk_property_of_origin",
+        "dfh_domain_instances_min_quantifier",
+        "dfh_domain_instances_max_quantifier",
+        "dfh_range_instances_min_quantifier",
+        "dfh_range_instances_max_quantifier"
+      ]
+    };
+
+    const property_profile_view = {
+      "$relation": {
+        "name": "property_profile_view",
+        "joinType": "inner join",
+        "where": [
+          "removed_from_api", "=", "false"
+        ],
+        select: false
       }
-      cb(err, success);
-    });
-  };
+    };
+
+
+    const labels = {
+      "$relation": {
+        "name": "labels",
+        "joinType": "left join",
+        select: { include: ["dfh_label", "notes"] },
+        "where": [
+          "notes", "IN", ['label.sg', 'label.pl', 'label_inversed.sg', 'label_inversed.pl']
+        ],
+      }
+    };
+
+    const filter = {
+      select: {
+        include: ["dfh_pk_class", "dfh_identifier_in_namespace", "dfh_standard_label"]
+      },
+      "include": {
+        "class_profile_view": {
+          "$relation": {
+            "name": "class_profile_view",
+            "joinType": "inner join",
+            "where": [
+              "dfh_profile_association_type", "=", "selected"
+            ],
+            select: false
+          }
+        },
+        "ingoing_properties": {
+          "$relation": {
+            "name": "ingoing_properties",
+            "joinType": "left join",
+            select: propertiesSelect,
+          },
+          property_profile_view,
+          labels
+        },
+        "outgoing_properties": {
+          "$relation": {
+            "name": "outgoing_properties",
+            "joinType": "left join",
+            select: propertiesSelect,
+          },
+          property_profile_view,
+          labels
+        },
+        "text_properties": {
+          "$relation": {
+            "name": "text_properties",
+            "joinType": "left join"
+          }
+        },
+      }
+    }
+
+    return DfhClass.findComplex(filter, cb);
+
+  }
+
+
 
 
 }

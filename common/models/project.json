@@ -19,7 +19,7 @@
   "properties": {
     "notes": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "pk_project": {
       "type": "number",
@@ -87,7 +87,8 @@
         "createWithLabelAndDescription",
         "find",
         "addEntity",
-        "findComplex"
+        "findComplex",
+        "getReferenceModel"
       ]
     }
   ],
@@ -144,22 +145,13 @@
         "verb": "post"
       }
     },
-    "addEntity": {
+    "getReferenceModel": {
       "accepts": [
         {
           "arg": "projectId",
           "type": "number",
           "required": true,
-          "description": "Project Id",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "entitySemkey",
-          "type": "string",
-          "required": true,
-          "description": "Semkey of entity",
+          "description": "Id of project",
           "http": {
             "source": "query"
           }
@@ -168,13 +160,13 @@
       "returns": {
         "arg": "success",
         "type": [
-          "boolean"
+          "object"
         ],
         "root": true
       },
-      "description": "Adds an exisiting entity (PeIt, Appe, …) to the project.",
+      "description": "Classes and Properties of this Project",
       "http": {
-        "path": "/add-entity",
+        "path": "/get-reference-model",
         "verb": "post"
       }
     }

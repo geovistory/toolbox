@@ -33,12 +33,7 @@
   },
   "validations": [],
   "relations": {
-    "property": {
-      "type": "belongsTo",
-      "model": "DfhProperty",
-      "foreignKey": "dfh_pk_property",
-      "primaryKey": "dfh_pk_property"
-    }
+
   },
   "acls": [
     {

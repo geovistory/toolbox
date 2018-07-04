@@ -1,0 +1,60 @@
+{
+  "name": "ComUiContext",
+  "base": "PersistedModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "commons",
+      "table": "ui_context"
+    }
+  },
+  "properties": {
+    "pk_entity": {
+      "type": "number",
+      "id": true,
+      "generated": true
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "ui_property_config": {
+      "type": "hasMany",
+      "model": "ComUiPropertyConfig",
+      "foreignKey": "fk_ui_context",
+      "primaryKey": "pk_entity"
+    },
+    "ui_class_config": {
+      "type": "hasMany",
+      "model": "ui_class_config",
+      "foreignKey": "fk_ui_context",
+      "primaryKey": "pk_entity"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find"
+      ]
+    }
+  ],
+  "methods": {}
+}

@@ -1,0 +1,82 @@
+{
+  "name": "ComUiPropertyConfig",
+  "base": "PersistedModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "commons",
+      "table": "ui_property_config"
+    }
+  },
+  "properties": {
+    "pk_entity": {
+      "type": "number",
+      "id": true,
+      "generated": true
+    },
+    "fk_ui_context": {
+      "type": "number",
+      "required": true
+    },
+    "fk_project": {
+      "type": "number",
+      "required": true
+    },
+    "fk_property": {
+      "type": "number",
+      "required": true
+    },
+    "property_is_outgoing": {
+      "type": "boolean",
+      "required": true
+    },
+    "ord_num": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "ui_context": {
+      "type": "belongsTo",
+      "model": "ComUiContext",
+      "foreignKey": "fk_ui_context",
+      "primaryKey": "pk_entity"
+    },
+    "property": {
+      "type": "belongsTo",
+      "model": "DfhProperty",
+      "foreignKey": "fk_property",
+      "primaryKey": "dfh_pk_property"
+    },
+    "project": {
+      "type": "belongsTo",
+      "model": "Project",
+      "foreignKey": "fk_project",
+      "primaryKey": "pk_project"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find"
+      ]
+    }
+  ],
+  "methods": {}
+}

@@ -132,11 +132,23 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "DfhClassProfileView":{
+  "DfhClassProfileView": {
     "dataSource": "postgres1",
     "public": true
   },
-  "DfhPropertyProfileView":{
+  "DfhPropertyProfileView": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "ComUiContext": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "ComUiPropertyConfig": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "ComUiClassConfig": {
     "dataSource": "postgres1",
     "public": true
   }

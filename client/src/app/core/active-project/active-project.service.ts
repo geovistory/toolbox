@@ -9,6 +9,7 @@ import { NgRedux } from '@angular-redux/store';
 import { ProjectsActions } from '../../modules/projects/api/projects.actions';
 import { IProject } from '../../modules/projects/projects.model';
 import { ActiveProjectActions } from './active-project.action';
+import { DfhClass } from '../sdk';
 
 @Injectable()
 export class ActiveProjectService {
@@ -45,6 +46,20 @@ export class ActiveProjectService {
   }
 
 
+
+  private getProjectCrm(id: number): void {
+    this.projectApi.getReferenceModel(id).subscribe((classes: DfhClass[]) => {
+
+      let crm = {}
+      classes.map((cla: DfhClass) => {
+        crm[cla.dfh_pk_class] = cla;
+      })
+
+      this.ngRedux.dispatch(this.actions.projectCrmLoaded(crm))
+
+    });
+  }
+
   /**
    * setActiveProject - set the active project by providing the
    * project's id. This id can be a number or a string, e.g. 134 or "134"
@@ -58,6 +73,7 @@ export class ActiveProjectService {
     }
     else {
       this.getProject(id);
+      this.getProjectCrm(id);
     }
   }
 

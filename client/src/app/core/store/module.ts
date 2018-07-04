@@ -10,25 +10,30 @@ import { provideReduxForms } from '@angular-redux/form';
 
 // Redux ecosystem stuff.
 import { createLogger } from 'redux-logger';
+import dynamicMiddlewares from 'redux-dynamic-middlewares'
 
 // The top-level reducers and epics that make up our app's logic.
 import { IAppState } from './model';
 import { rootReducer } from './reducers';
-// import { RootEpics } from './epics';
 import { INITIAL_STATE } from './initial-state';
 import { ActiveProjectActions } from '../active-project/active-project.action';
+import { RootEpics } from './epics';
 
 
 @NgModule({
     imports: [NgReduxModule, NgReduxRouterModule],
-    providers: [ NgReduxRouter, ActiveProjectActions]
+    providers: [
+        NgReduxRouter,
+        ActiveProjectActions,
+        RootEpics
+    ]
 })
 export class StoreModule {
     constructor(
         public ngRedux: NgRedux<IAppState>,
         devTools: DevToolsExtension,
         ngReduxRouter: NgReduxRouter,
-        // rootEpics: RootEpics, // TEMP_REDUX
+        rootEpics: RootEpics
     ) {
         // Tell Redux about our reducers and epics. If the Redux DevTools
         // chrome extension is available in the browser, tell Redux about
@@ -43,7 +48,8 @@ export class StoreModule {
             // Middleware
             [
                 createLogger(),
-                //   ...rootEpics.createEpics() // TEMP_REDUX
+                ...rootEpics.createEpics(),
+                dynamicMiddlewares,
             ],
             // Enhancers
             devTools.isEnabled() ? [devTools.enhancer()] : []

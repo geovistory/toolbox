@@ -1,13 +1,17 @@
-import { IAccount } from "../../modules/account/account.model";
-import { IProjectList } from "../../modules/projects/projects.model";
-import { Project } from "app/core";
-import { ISourceListState } from "../../modules/sources";
-import { Information } from "../../modules/information2/information.models";
+import { IAccount } from '../../modules/account/account.model';
+import { Admin } from '../../modules/admin/admin.models';
+import { Information } from '../../modules/information2/information.models';
+import { IProjectList } from '../../modules/projects/projects.model';
+import { ISourceListState } from '../../modules/sources';
+import { ProjectDetail } from '../active-project/active-project.action';
+import { LoadingBar } from '../loading-bar/loading-bar.models';
 
 export interface IAppState {
     account?: IAccount,
+    admin?: Admin,
+    loadingBar?: LoadingBar,
     projects?: IProjectList
-    activeProject?: Project
+    activeProject?: ProjectDetail
     routes?: any,
     information?: Information,
     sources?: ISourceListState

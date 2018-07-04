@@ -7,6 +7,8 @@ import { informationReducer } from '../../modules/information2/information.reduc
 import { createProjectsReducer } from '../../modules/projects/api/projects.reducers';
 import { sourceListReducer } from '../../modules/sources/containers/source-list/source-list.reducer';
 import { createActiveProjectReducer } from '../active-project/active-project.reducer';
+import { adminReducer } from '../../modules/admin/admin.reducer';
+import { loadingBarReducer } from '../loading-bar/api/loading-bar.reducer';
 
 
 
@@ -14,6 +16,8 @@ export const rootReducer = composeReducers(
     defaultFormReducer(),
     combineReducers({
       account: createAccountReducer(),
+      admin: adminReducer,
+      loadingBar: loadingBarReducer,
       projects: createProjectsReducer(),
       activeProject: createActiveProjectReducer(),
       routes: routerReducer,

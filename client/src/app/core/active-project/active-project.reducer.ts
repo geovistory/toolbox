@@ -1,13 +1,23 @@
 
-import { Project } from "app/core";
-import { ActiveProjectActions, ActiveProjectAction } from "./active-project.action";
+import { ActiveProjectActions, ActiveProjectAction, ProjectDetail } from "./active-project.action";
 
-const INITIAL_STATE: Project = null;
+const INITIAL_STATE: ProjectDetail = null;
 
-const activeProjectReducer = (lastState: Project = INITIAL_STATE, action: ActiveProjectAction): Project => {
+const activeProjectReducer = (lastState: ProjectDetail = INITIAL_STATE, action: ActiveProjectAction): ProjectDetail => {
     switch (action.type) {
         case ActiveProjectActions.ACTIVE_PROJECT_UPDATED:
-            return action.payload;
+            lastState = {
+                ...lastState,
+                ...action.payload
+            };
+            break;
+
+        case ActiveProjectActions.PROJECT_CRM_LOADED:
+            lastState = {
+                ...lastState,
+                crm: action.payload.crm
+            }
+            break;
     }
 
     return lastState;

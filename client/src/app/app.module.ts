@@ -17,6 +17,8 @@ import { StoreModule } from './core/store/module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { LoadingBarModule } from './core/loading-bar/loading-bar.module';
 
 registerLocaleData(localeDeCh);
 
@@ -34,6 +36,8 @@ registerLocaleData(localeDeCh);
     NgbModule.forRoot(),
     ElasticInputModule.forRoot(),
     SlimLoadingBarModule.forRoot(),
+    DndModule.forRoot(),
+    LoadingBarModule,
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
@@ -41,6 +45,7 @@ registerLocaleData(localeDeCh);
     ReactiveFormsModule,
     AppRoutingModule,
     ProjectsModule,
+    AdminModule,
     PassiveLinkModule,
     ControlMessagesModule,
     LanguageSearchTypeaheadModule,
