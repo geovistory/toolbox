@@ -13,6 +13,7 @@ import {
   InfTimePrimitive,
   DfhProperty,
   InfPlace,
+  U,
 } from 'app/core';
 import { groupBy, indexBy, prop } from 'ramda';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -210,8 +211,8 @@ export class StateCreatorService {
       const outgoingProperties = result[1];
 
       // Generate Direction Aware Properties (they appear in the select/dropdown to add new RoleSet)
-      const ingoingRoleSets = this.propertyService.toRoleSets(false, ingoingProperties)
-      const outgoingRoleSets = this.propertyService.toRoleSets(true, outgoingProperties)
+      const ingoingRoleSets = U.infProperties2RoleSets(false, ingoingProperties)
+      const outgoingRoleSets = U.infProperties2RoleSets(true, outgoingProperties)
 
       // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
       const options: RoleSet = {
@@ -543,7 +544,7 @@ export class StateCreatorService {
     this.classService.getIngoingProperties(DfhConfig.CLASS_PK_TIME_PRIMITIVE).subscribe(ingoingProperties => {
 
       // Generate RoleSets (from the perspective of the TemporalEntity, those are outgoing)
-      const outgoingRoleSets = this.propertyService.toRoleSets(true, ingoingProperties)
+      const outgoingRoleSets = U.infProperties2RoleSets(true, ingoingProperties)
 
       // Generate roleSets 
       const roleSetOptions: RoleSet = {

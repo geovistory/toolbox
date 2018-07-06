@@ -13,36 +13,45 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db, callback) {
   const sql = `
   
-  CREATE TABLE commons.ui_class_config (
+  CREATE TABLE commons.ui_context_config (
     fk_ui_context integer NOT NULL,
     fk_project integer REFERENCES commons.project (pk_project),
-    fk_class integer REFERENCES data_for_history.class (dfh_pk_class) NOT NULL,
-    fk_target_ui_context integer NOT NULL,
+    fk_property integer REFERENCES data_for_history.property (dfh_pk_property) NOT NULL,
+    property_is_outgoing boolean NOT NULL,
+    fk_property_set integer NOT NULL,
     ord_num integer
   )
   INHERITS (commons.entity);
 
+  -- unique indexes instead of unique constraint because of nullable pk_project
+  -- see: https://stackoverflow.com/questions/8289100/create-unique-constraint-with-null-columns
+  CREATE UNIQUE INDEX ui_context_config_4col_uni_idx ON commons.ui_context_config  (fk_ui_context, fk_project, fk_property, property_is_outgoing)
+  WHERE fk_project IS NOT NULL;
+  CREATE UNIQUE INDEX ui_context_config_3col_uni_idx ON commons.ui_context_config  (fk_ui_context, fk_property, property_is_outgoing)
+  WHERE fk_project IS NULL;
+
+
   CREATE TRIGGER creation_tmsp
   BEFORE INSERT
-  ON commons.ui_class_config
+  ON commons.ui_context_config
   FOR EACH ROW
   EXECUTE PROCEDURE commons.tmsp_creation();
 
   CREATE TRIGGER last_modification_tmsp
   BEFORE INSERT OR UPDATE
-  ON commons.ui_class_config
+  ON commons.ui_context_config
   FOR EACH ROW
   EXECUTE PROCEDURE commons.tmsp_last_modification();
 
   CREATE TRIGGER insert_schema_table_name BEFORE INSERT
-  ON commons.ui_class_config FOR EACH ROW
+  ON commons.ui_context_config FOR EACH ROW
   EXECUTE PROCEDURE commons.insert_schema_table_name();
 
   -- Trigger: create_entity_version_key
 
   CREATE TRIGGER create_entity_version_key
   BEFORE INSERT
-  ON commons.ui_class_config
+  ON commons.ui_context_config
   FOR EACH ROW
   EXECUTE PROCEDURE commons.create_entity_version_key();
 
@@ -50,18 +59,18 @@ exports.up = function(db, callback) {
 
   CREATE TRIGGER update_entity_version_key
   BEFORE UPDATE
-  ON commons.ui_class_config
+  ON commons.ui_context_config
   FOR EACH ROW
   EXECUTE PROCEDURE commons.update_entity_version_key();
 
   -- versioning
 
-  CREATE TABLE commons.ui_class_config_vt (LIKE commons.ui_class_config);
+  CREATE TABLE commons.ui_context_config_vt (LIKE commons.ui_context_config);
 
   CREATE TRIGGER versioning_trigger
-  BEFORE INSERT OR UPDATE OR DELETE ON commons.ui_class_config
+  BEFORE INSERT OR UPDATE OR DELETE ON commons.ui_context_config
   FOR EACH ROW EXECUTE PROCEDURE versioning(
-    'sys_period', 'commons.ui_class_config_vt', true
+    'sys_period', 'commons.ui_context_config_vt', true
   );
   `
   db.runSql(sql, callback)
@@ -70,8 +79,8 @@ exports.up = function(db, callback) {
 
 exports.down = function(db, callback) {
   const sql = `
-  DROP TABLE IF EXISTS commons.ui_class_config CASCADE;
-  DROP TABLE IF EXISTS commons.ui_class_config_vt CASCADE;
+  DROP TABLE IF EXISTS commons.ui_context_config CASCADE;
+  DROP TABLE IF EXISTS commons.ui_context_config_vt CASCADE;
   `
   db.runSql(sql, callback)
 };

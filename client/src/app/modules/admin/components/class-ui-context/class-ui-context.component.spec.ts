@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ClassComponent } from './class.component';
+import { ClassUiContextComponent } from './class-ui-context.component';
 
-describe('ClassComponent', () => {
-  let component: ClassComponent;
-  let fixture: ComponentFixture<ClassComponent>;
+describe('ClassUiContextComponent', () => {
+  let component: ClassUiContextComponent;
+  let fixture: ComponentFixture<ClassUiContextComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ClassComponent ]
+      declarations: [ ClassUiContextComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ClassComponent);
+    fixture = TestBed.createComponent(ClassUiContextComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -8,17 +8,18 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ElasticInputModule } from 'angular2-elastic-input';
+import { DndModule } from 'ng2-dnd';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ActiveAccountService, ActiveProjectService, AuthGuard, EntityEditorService, SDKBrowserModule } from './core';
+import { LoadingBarModule } from './core/loading-bar/loading-bar.module';
 import { StoreModule } from './core/store/module';
+import { AdminModule } from './modules/admin/admin.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
-import { AdminModule } from './modules/admin/admin.module';
-import { LoadingBarModule } from './core/loading-bar/loading-bar.module';
 
 registerLocaleData(localeDeCh);
 

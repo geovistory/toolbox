@@ -16,8 +16,10 @@ var include = [
   "DfhProperty",
   "DfhPropertyProfileView",
   "ComUiContext",
-  "ComUiPropertyConfig",
-  "ComUiClassConfig"
+  "ComUiContextConfig",
+  "ComUiClassConfig",
+  "ComPropertySet",
+  "ComPropertySetClassRel"
 ];
 
 module.exports = function (app) {

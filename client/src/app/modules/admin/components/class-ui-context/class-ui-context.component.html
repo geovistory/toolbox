@@ -1,0 +1,53 @@
+<div>
+  <h4>Define UI-Context</h4>
+  <p> Move items between enabled and disabled and define the order of enabled items.</p>
+  <div class="row">
+
+    <div class="col-sm-6">
+      <p>Enabled in UI context</p>
+
+      <div class="card border-success" dnd-sortable-container [sortableData]="containerEnabled?.widgets" [dropZones]="['widget-dropZone']">
+        <div class="card-header text-success">
+          {{containerEnabled?.name}}
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            <li *ngFor="let widget of containerEnabled?.widgets; let x = index" class="list-group-item" dnd-sortable [sortableIndex]="x"
+              [dragEnabled]="!(loading$ | async)" [dragData]="widget" (onDropSuccess)="droppedInEnabled($event)">
+
+              <small class="text-muted">
+                {{widget.metaInfo}}
+              </small>
+              <div>{{widget.name}}</div>
+
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+      <p>Not available in UI context</p>
+
+      <div class="card" dnd-sortable-container [sortableData]="containerDisabled?.widgets" [dropZones]="['widget-dropZone']">
+        <div class="card-header">
+          {{containerDisabled?.name}}
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            <li *ngFor="let widget of containerDisabled?.widgets; let x = index" class="list-group-item" dnd-sortable [sortableIndex]="x"
+              [dragEnabled]="!(loading$ | async)" [dragData]="widget" (onDropSuccess)="droppedInDisabled($event)">
+              <small class="text-muted">
+                {{widget.metaInfo}}
+              </small>
+              <div>{{widget.name}}</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+</div>

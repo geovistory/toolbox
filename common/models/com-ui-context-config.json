@@ -1,12 +1,12 @@
 {
-  "name": "ComUiPropertyConfig",
+  "name": "ComUiContextConfig",
   "base": "PersistedModel",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "commons",
-      "table": "ui_property_config"
+      "table": "ui_context_config"
     }
   },
   "properties": {
@@ -21,7 +21,7 @@
     },
     "fk_project": {
       "type": "number",
-      "required": true
+      "required": false
     },
     "fk_property": {
       "type": "number",
@@ -46,6 +46,12 @@
     "property": {
       "type": "belongsTo",
       "model": "DfhProperty",
+      "foreignKey": "fk_property",
+      "primaryKey": "dfh_pk_property"
+    },
+    "property_set": {
+      "type": "belongsTo",
+      "model": "DfhPropertySet",
       "foreignKey": "fk_property",
       "primaryKey": "dfh_pk_property"
     },
@@ -74,7 +80,7 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "find"
+        "find", "patchOrCreate"
       ]
     }
   ],

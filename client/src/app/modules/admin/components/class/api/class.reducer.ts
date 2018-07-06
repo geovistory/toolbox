@@ -1,5 +1,6 @@
-import { indexBy, prop } from 'ramda';
+import { pick } from 'ramda';
 import { Action } from 'redux';
+
 import { ClassDetail } from '../../../admin.models';
 import { ClassAPIAction, ClassAPIActions } from './class.actions';
 
@@ -8,7 +9,6 @@ const INITIAL_STATE: ClassDetail = {
   loading: false,
   error: null,
 };
-
 
 export function classReducer(state: ClassDetail = INITIAL_STATE, a: Action): ClassDetail {
 
@@ -23,10 +23,11 @@ export function classReducer(state: ClassDetail = INITIAL_STATE, a: Action): Cla
         loading: true,
         error: null,
       };
+
     case ClassAPIActions.LOAD_SUCCEEDED:
       return {
         ...state,
-        class: action.payload,
+        class: pick(['dfh_standard_label'], action.payload),
         loading: false,
         error: null,
       };

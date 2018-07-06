@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DfhProperty, DfhPropertyApi } from 'app/core';
-import { omit } from 'ramda';
 import { Observable } from 'rxjs/Observable';
 
-import { RoleSet, RoleSetLabelObj } from '../information.models';
 import { DfhConfig } from './dfh-config';
 
 
@@ -214,87 +212,6 @@ export class PropertyService {
 
   }
 
-
-  /**
-  * Convert array of Property to an array of RoleSet
-  *
-  * @param {boolean} isOutgoing direction: true=outgoing, false=ingoing
-  * @param {DfhProperty[]} properties array of properties to Convert
-  * @return {RoleSet[]} array of RoleSet
-  */
-  toRoleSets(isOutgoing: boolean, properties: DfhProperty[]): RoleSet[] {
-    if (!properties) return [];
-
-    return properties.map(property => {
-      return {
-        isOutgoing: isOutgoing,
-        property: omit(['labels', 'domain_class', 'range_class'], property),
-        targetClassPk: isOutgoing ? property.dfh_has_range : property.dfh_has_domain,
-        targetClass: isOutgoing ? property.range_class : property.domain_class,
-        label: this.createLabelObject(property, isOutgoing)
-      } as RoleSet
-    });
-  }
-
-
-  /**
-   * create a label object for the property
-   * @param property 
-   * @param isOutgoing 
-   */
-  createLabelObject(property: DfhProperty, isOutgoing: boolean): RoleSetLabelObj {
-    let sg = 'n.N.'
-    let pl = 'n.N.'
-
-    let labelObj: RoleSetLabelObj;
-    if (isOutgoing) {
-
-      if (property) {
-        sg = '[sg: ' + property.dfh_pk_property + ': ' + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
-        pl = '[pl: ' + property.dfh_pk_property + ': ' + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
-      }
-
-      // TODO return an object containing label.pl and label.sg
-      if (property.labels.length) {
-        if (property.labels.find(l => l.notes === 'label.sg'))
-          sg = property.labels.find(l => l.notes === 'label.sg').dfh_label;
-        if (property.labels.find(l => l.notes === 'label.pl'))
-          pl = property.labels.find(l => l.notes === 'label.pl').dfh_label;
-      }
-
-      labelObj = {
-        sg: sg,
-        pl: pl,
-        default: property.dfh_range_instances_max_quantifier === 1 ? sg : pl
-      }
-
-    } else if (isOutgoing === false) {
-
-      if (property) {
-        sg = '[inv.sg: ' + property.dfh_pk_property + ': ' + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
-        pl = '[inv.pl: ' + property.dfh_pk_property + ': ' + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
-      }
-
-
-      // TODO return an object containing inversed_label.pl and inversed_label.sg
-      if (property.labels.length) {
-        if (property.labels.find(l => l.notes === 'label_inversed.sg'))
-          sg = property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
-        if (property.labels.find(l => l.notes === 'label_inversed.pl'))
-          pl = property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label;
-      }
-
-      labelObj = {
-        sg: sg,
-        pl: pl,
-        default: property.dfh_domain_instances_max_quantifier === 1 ? sg : pl
-      }
-
-    } else {
-      labelObj = undefined;
-    }
-    return labelObj;
-  }
 
   /**
    * quantityIsValid - Verify if the quantity of roles is valid according to the

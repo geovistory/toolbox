@@ -1,4 +1,5 @@
-import {  DfhClassInterface } from "../../core";
+import { DfhClassInterface } from '../../core';
+import { RoleSet } from '../information2/information.models';
 
 
 
@@ -14,7 +15,24 @@ export interface ClassList {
 }
 
 export interface ClassDetail {
-    class?: DfhClassInterface
+    class?: DfhClassInterface;
+    uiContext?: ClassUiContext;
     loading: boolean;
     error: any;
+}
+
+export interface ClassUiContext {
+    class?: DfhClassInterface;
+    containerDisabled?: Container;
+    containerEnabled?: Container;
+    loading: boolean;
+    error: any;
+}
+
+export class Container {
+    constructor(public name: string, public widgets: Array<Widget>) { }
+}
+
+export class Widget {
+    constructor(public name: string, public metaInfo:string, public roleSet: RoleSet) { }
 }

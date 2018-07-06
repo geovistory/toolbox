@@ -1,9 +1,12 @@
-import { TimePrimitive, InfTimePrimitive, InfRole, InfTemporalEntity, InfPersistentItem } from "..";
+import { TimePrimitive, InfTimePrimitive, InfRole, InfTemporalEntity, InfPersistentItem, DfhProperty } from "..";
 import { CalendarType } from "../date-time/time-primitive";
 import { Granularity } from "../date-time/date-time-commons";
 import { DfhConfig } from "../../modules/information2/shared/dfh-config";
 import { AppellationLabel } from "../../modules/information2/shared/appellation-label";
-
+import { RoleSet, RoleSetLabelObj, RoleSetList } from "../../modules/information2/information.models";
+import { indexBy, omit } from 'ramda';
+import { roleSetKey } from "../../modules/information2/information.helpers";
+import { ComUiContextConfig } from "../sdk";
 /**
  * Utilities class for static functions
  */
@@ -88,30 +91,30 @@ export class U {
         const infTp: InfTimePrimitive = r ? r.time_primitive : null;
         let timePrimitive: TimePrimitive = null;
         let obj: any = {}
-    
+
         if (
             infTp && infTp.duration && infTp.julian_day &&
             U.getCalendarFromRole(r)
         ) {
             // add duration
             obj.duration = infTp.duration
-    
+
             // add calendar
             obj.calendar = U.getCalendarFromRole(r)
-    
+
             // add julian day
             obj.julianDay = infTp.julian_day;
-    
+
             timePrimitive = new TimePrimitive({ ...obj })
         }
-    
+
         if (timePrimitive === null) {
-           return new TimePrimitive({
+            return new TimePrimitive({
                 calendar: 'julian'
             })
         }
         else {
-           return timePrimitive;
+            return timePrimitive;
         }
     }
 
@@ -168,7 +171,7 @@ export class U {
     * @returns InfTemporalEntity that has a appellation label for display
     */
     static getFirstAppeTeEntOfPeIt(peIt: InfPersistentItem): InfTemporalEntity | null {
-        if (!peIt ||  !peIt.pi_roles) return null
+        if (!peIt || !peIt.pi_roles) return null
 
         const roleToAppeUse: InfRole = peIt.pi_roles.find(
             role => (
@@ -180,6 +183,124 @@ export class U {
     }
 
 
+
+    /**
+    * Convert array of Property to an array of RoleSet
+    *
+    * @param {boolean} isOutgoing direction: true=outgoing, false=ingoing
+    * @param {DfhProperty[]} properties array of properties to Convert
+    * @return {RoleSet[]} array of RoleSet
+    */
+    static infProperties2RoleSets(isOutgoing: boolean, properties: DfhProperty[]): RoleSet[] {
+        if (!properties) return [];
+
+        return properties.map(property => {
+            return {
+                isOutgoing: isOutgoing,
+                property: omit(['labels', 'domain_class', 'range_class'], property),
+                targetClassPk: isOutgoing ? property.dfh_has_range : property.dfh_has_domain,
+                targetClass: isOutgoing ? property.range_class : property.domain_class,
+                label: this.createLabelObject(property, isOutgoing)
+            } as RoleSet
+        });
+    }
+
+    /**
+     * Converts array of ingoing Property and array of outgoing Property to RoleSetList
+     * @param ingoingProperties 
+     * @param outgoingProperties 
+     */
+    static roleSetsFromProperties(ingoingProperties: DfhProperty[], outgoingProperties: DfhProperty[]): RoleSetList {
+        return indexBy(roleSetKey, [
+            ...U.infProperties2RoleSets(false, ingoingProperties),
+            ...U.infProperties2RoleSets(true, outgoingProperties)
+        ])
+    };
+
+    /**
+     * Gets ord_num of RoleSet or null, if not available
+     * 
+     * @param roleSet 
+     */
+    static ordNumOfRoleSet(roleSet: RoleSet): number | null {
+        
+        if(!U.uiPropConfigOfTRoleSet(roleSet)) return null;
+
+        return U.uiPropConfigOfTRoleSet(roleSet).ord_num;
+    }
+
+    /**
+     * gets ui_context_config of RoleSet or null, if not available
+     * @param roleSet 
+     */
+    static uiPropConfigOfTRoleSet(roleSet: RoleSet): ComUiContextConfig | null {
+        if (!roleSet) return null;
+
+        if (!roleSet.property) return null;
+
+        if (!roleSet.property.ui_context_config || !roleSet.property.ui_context_config[0]) return null;
+
+        return roleSet.property.ui_context_config[0];
+    }
+
+    /**
+     * create a label object for the property
+     * @param property 
+     * @param isOutgoing 
+     */
+    static createLabelObject(property: DfhProperty, isOutgoing: boolean): RoleSetLabelObj {
+        let sg = 'n.N.'
+        let pl = 'n.N.'
+
+        let labelObj: RoleSetLabelObj;
+        if (isOutgoing) {
+
+            if (property) {
+                sg = '[sg: ' + property.dfh_pk_property + ': ' + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
+                pl = '[pl: ' + property.dfh_pk_property + ': ' + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
+            }
+
+            // TODO return an object containing label.pl and label.sg
+            if (property.labels.length) {
+                if (property.labels.find(l => l.notes === 'label.sg'))
+                    sg = property.labels.find(l => l.notes === 'label.sg').dfh_label;
+                if (property.labels.find(l => l.notes === 'label.pl'))
+                    pl = property.labels.find(l => l.notes === 'label.pl').dfh_label;
+            }
+
+            labelObj = {
+                sg: sg,
+                pl: pl,
+                default: property.dfh_range_instances_max_quantifier === 1 ? sg : pl
+            }
+
+        } else if (isOutgoing === false) {
+
+            if (property) {
+                sg = '[inv.sg: ' + property.dfh_pk_property + ': ' + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
+                pl = '[inv.pl: ' + property.dfh_pk_property + ': ' + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
+            }
+
+
+            // TODO return an object containing inversed_label.pl and inversed_label.sg
+            if (property.labels.length) {
+                if (property.labels.find(l => l.notes === 'label_inversed.sg'))
+                    sg = property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
+                if (property.labels.find(l => l.notes === 'label_inversed.pl'))
+                    pl = property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label;
+            }
+
+            labelObj = {
+                sg: sg,
+                pl: pl,
+                default: property.dfh_domain_instances_max_quantifier === 1 ? sg : pl
+            }
+
+        } else {
+            labelObj = undefined;
+        }
+        return labelObj;
+    }
 
 
 }

@@ -36,11 +36,11 @@ export class ClassAPIEpics {
       .ofType(ClassAPIActions.LOAD_CLASS_DETAILS)
       .switchMap((action) => new Observable<LoadingBarAction>((globalStore) => {
         globalStore.next(this.loadingBarActions.startLoading());
-        this.classApi.propertiesAndUiElements(action.meta.pkClass)
-          .subscribe((data: DfhClass[]) => {
+        this.classApi.findById(action.meta.pkClass)
+          .subscribe((data: DfhClass) => {
             globalStore.next(this.loadingBarActions.completeLoading());
-
-            subStore.dispatch(this.actions.loadSucceeded(data[0]));
+            
+            subStore.dispatch(this.actions.loadSucceeded(data));
           }, error => {
             subStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
           })

@@ -6,7 +6,8 @@ import { DfhClass } from 'app/core';
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = DfhClass;
 interface MetaData {
-  pkClass?: number
+  pkClass?: number;
+  pkUiContext?: number;
 };
 export type ClassAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -17,9 +18,9 @@ export class ClassAPIActions {
   static readonly LOAD_SUCCEEDED = 'LOAD_SUCCEEDED';
   static readonly LOAD_FAILED = 'LOAD_FAILED';
 
-  @dispatch() loadClassDetails = (pkClass: number): ClassAPIAction => ({
+  @dispatch() loadClassDetails = (pkClass: number, pkUiContext:number): ClassAPIAction => ({
     type: ClassAPIActions.LOAD_CLASS_DETAILS,
-    meta: { pkClass },
+    meta: { pkClass, pkUiContext },
     payload: null,
   });
 

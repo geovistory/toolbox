@@ -1,12 +1,12 @@
 {
-  "name": "ComUiContext",
+  "name": "ComPropertySetClassRel",
   "base": "PersistedModel",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "commons",
-      "table": "ui_context"
+      "table": "property_set_class_rel"
     }
   },
   "properties": {
@@ -14,21 +14,20 @@
       "type": "number",
       "id": true,
       "generated": true
-    },
-    "description": {
-      "type": "string"
-    },
-    "label": {
-      "type": "string"
     }
   },
   "validations": [],
   "relations": {
-    "ui_context_config": {
-      "type": "hasMany",
-      "model": "ComUiContextConfig",
-      "foreignKey": "fk_ui_context",
+    "property_set": {
+      "type": "belongsTo",
+      "model": "ComPropertySet",
+      "foreignKey": "fk_property_set",
       "primaryKey": "pk_entity"
+    },
+    "class": {
+      "type": "belongsTo",
+      "model": "DfhClass",
+      "foreignKey": "fk_class"
     }
   },
   "mixins": {
@@ -48,9 +47,7 @@
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
-      "property": [
-        "find"
-      ]
+      "property": []
     }
   ],
   "methods": {}

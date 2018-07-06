@@ -131,11 +131,12 @@ export interface RoleSet {
 
     // gui
     label?: RoleSetLabelObj;
-    property?: DfhProperty
+    property?: DfhProperty;
     isOutgoing?: boolean;
     toggle?: CollapsedExpanded;
     targetClassPk?: number;
     targetClass?: DfhClass;
+    ordNum?:number;
 
     //True during loading of roles in other projects and roles in no project    
     rolesNotInProjectLoading?: boolean;

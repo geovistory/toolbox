@@ -8,11 +8,15 @@ import { ClassListAPIEpics } from './components/class-list/api/class-list.epics'
 import { ClassListComponent } from './components/class-list/class-list.component';
 import { ClassComponent } from './components/class/class.component';
 import { MainComponent } from './components/main/main.component';
-import { LoadingBarModule } from '../../core/loading-bar/loading-bar.module';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { KeysModule } from '../../shared/pipes/keys.module';
 import { ClassAPIEpics } from './components/class/api/class.epics';
 import { ClassAPIActions } from './components/class/api/class.actions';
+import { DndModule } from 'ng2-dnd';
+import { FormsModule } from '@angular/forms';
+import { ClassUiContextComponent } from './components/class-ui-context/class-ui-context.component';
+import { ClassUiContextAPIActions } from './components/class-ui-context/api/class-ui-context.actions';
+import { ClassUiContextAPIEpics } from './components/class-ui-context/api/class-ui-context.epics';
 
 @NgModule({
   imports: [
@@ -20,14 +24,18 @@ import { ClassAPIActions } from './components/class/api/class.actions';
     NgbCollapseModule,
     AdminRoutingModule,
     SlimLoadingBarModule,
-    KeysModule
+    KeysModule,
+    DndModule,
+    FormsModule
   ],
   providers:[
     ClassListAPIActions,
     ClassListAPIEpics,
     ClassAPIActions,
-    ClassAPIEpics
+    ClassAPIEpics,
+    ClassUiContextAPIActions,
+    ClassUiContextAPIEpics
   ],
-  declarations: [MainComponent, ClassComponent, ClassListComponent]
+  declarations: [MainComponent, ClassComponent, ClassListComponent, ClassUiContextComponent]
 })
 export class AdminModule { }

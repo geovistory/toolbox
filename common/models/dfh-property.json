@@ -91,6 +91,11 @@
       "options": {
         "nestRemoting": false
       }
+    },
+    "ui_context_config": {
+      "type": "hasMany",
+      "model": "ComUiContextConfig",
+      "foreignKey": "fk_property"
     }
   },
   "acls": [

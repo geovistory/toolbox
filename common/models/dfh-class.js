@@ -54,8 +54,7 @@ module.exports = function (DfhClass) {
    *    - Ui elements of the class
    *    
    */
-  DfhClass.propertiesAndUiElements = function (pk_class, cb) {
-
+  DfhClass.propertiesAndUiElements = function (pk_class, pk_ui_context, pk_project, cb) {
 
     const propertiesSelect = {
       include: [
@@ -94,6 +93,31 @@ module.exports = function (DfhClass) {
       }
     };
 
+    const ui_context_config = (isOutgoing) => {
+      return {
+        "$relation": {
+          "name": "ui_context_config",
+          "joinType": "left join",
+          "where": [
+            "property_is_outgoing", "=", JSON.stringify(isOutgoing), 'AND',
+            "fk_project", ...(pk_project ? ['=', pk_project] : ['IS NULL']), 'AND',
+            "fk_ui_context", '=', pk_ui_context
+          ],
+        }
+      }
+    }
+
+    const ui_context = (pk_entity) => {
+      return {
+        "$relation": {
+          "name": "ui_context",
+          "joinType": "left join",
+          "where": ["pk_entity", "=", JSON.stringify(pk_entity)],
+          "orderBy": [{ "pk_entity": "asc" }]
+        }
+      }
+    }
+
     const filter = {
       select: {
         include: ["dfh_pk_class", "dfh_identifier_in_namespace", "dfh_standard_label"]
@@ -106,7 +130,7 @@ module.exports = function (DfhClass) {
             "where": [
               "dfh_profile_association_type", "=", "selected"
             ],
-            select: false
+            select: { include: ['dfh_fk_system_type', 'dfh_type_label'] }
           }
         },
         "ingoing_properties": {
@@ -116,7 +140,8 @@ module.exports = function (DfhClass) {
             select: propertiesSelect,
           },
           property_profile_view,
-          labels
+          ui_context_config: ui_context_config(false),
+          labels,
         },
         "outgoing_properties": {
           "$relation": {
@@ -125,29 +150,30 @@ module.exports = function (DfhClass) {
             select: propertiesSelect,
           },
           property_profile_view,
+          ui_context_config: ui_context_config(true),
           labels
         },
-        "ui_class_config": {
+        "property_set_class_rel": {
           "$relation": {
-            "name": "ui_class_config",
+            "name": "property_set_class_rel",
             "joinType": "left join",
+            select: { include: [] }
           },
-          "ui_context": {
-            "$relation": {
-              "name": "ui_context",
-              "joinType": "left join",
-              "orderBy": [{
-                "pk_entity": "asc"
-              }]
-            }
-          },
-          "target_ui_context": {
-            "$relation": {
-              "name": "target_ui_context",
-              "joinType": "left join",
-              "orderBy": [{
-                "pk_entity": "asc"
-              }]
+          property_set: {
+            $relation: {
+              name: "property_set",
+              joinType: "left join",
+              "orderBy": [{ "pk_entity": "asc" }]
+            },
+            ui_context_configs: {
+              "$relation": {
+                "name": "ui_context_configs",
+                "joinType": "left join",
+                "where": [
+                  "fk_project", ...(pk_project ? ['=', pk_project] : ['IS NULL']), 'AND',
+                  "fk_ui_context", '=', pk_ui_context
+                ],
+              }
             }
           }
         },

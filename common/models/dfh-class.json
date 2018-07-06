@@ -64,11 +64,17 @@
       "foreignKey": "dfh_has_domain",
       "primaryKey": "dfh_pk_class"
     },
-    "ui_class_config":{
+    "property_set_class_rel":{
       "type": "hasMany",
-      "model": "ComUiClassConfig",
+      "model": "ComPropertySetClassRel",
+      "foreignKey": "fk_class"
+    },
+    "property_sets":{
+      "type": "hasMany",
+      "model": "ComPropertySet",
       "foreignKey": "fk_class",
-      "primaryKey": "dfh_pk_class"
+      "through": "ComPropertySetClassRel",
+      "keyThrough": "fk_property_set"
     },
     "persistent_items": {
       "type": "hasMany",
@@ -127,8 +133,25 @@
         {
           "arg": "pk_class",
           "type": "number",
-          "required": false,
+          "required": true,
           "description": "Provide the dfh_pk_class to query one specific class",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_ui_context",
+          "type": "number",
+          "required": true,
+          "description": "Provide the pk_entity of the ui_context to query",
+          "http": {
+            "source": "query"
+          }
+        },  {
+          "arg": "pk_project",
+          "type": "number",
+          "required": false,
+          "description": "Provide a pk_project for loading the settings of a project or leaf it blank to query the default settings.",
           "http": {
             "source": "query"
           }

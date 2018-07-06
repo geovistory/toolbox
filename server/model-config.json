@@ -144,12 +144,16 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "ComUiPropertyConfig": {
+  "ComUiContextConfig": {
     "dataSource": "postgres1",
     "public": true
   },
-  "ComUiClassConfig": {
+  "ComPropertySet": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "ComPropertySetClassRel": {
+    "dataSource": "postgres1",
+    "public": false
   }
 }

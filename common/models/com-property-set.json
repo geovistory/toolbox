@@ -1,12 +1,12 @@
 {
-  "name": "ComUiContext",
+  "name": "ComPropertySet",
   "base": "PersistedModel",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "commons",
-      "table": "ui_context"
+      "table": "property_set"
     }
   },
   "properties": {
@@ -24,11 +24,18 @@
   },
   "validations": [],
   "relations": {
-    "ui_context_config": {
+    "ui_context_configs": {
       "type": "hasMany",
       "model": "ComUiContextConfig",
       "foreignKey": "fk_ui_context",
       "primaryKey": "pk_entity"
+    },
+    "classes": {
+      "type": "hasMany",
+      "model": "DfhClass",
+      "foreignKey": "fk_property_set",
+      "through": "ComPropertySetClassRel",
+      "keyThrough": "fk_class"
     }
   },
   "mixins": {
