@@ -47,7 +47,7 @@ export class ClassUiContextAPIEpics {
           .subscribe((data: DfhClass[]) => {
             globalStore.next(this.loadingBarActions.completeLoading());
 
-            subStore.dispatch(this.actions.loadSucceeded(data[0]));
+            subStore.dispatch(this.actions.loadSucceeded(data[0], pkUiContext));
           }, error => {
             subStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
           })

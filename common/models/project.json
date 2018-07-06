@@ -148,10 +148,10 @@
     "getReferenceModel": {
       "accepts": [
         {
-          "arg": "projectId",
+          "arg": "pk_project",
           "type": "number",
           "required": true,
-          "description": "Id of project",
+          "description": "Pk of project",
           "http": {
             "source": "query"
           }

@@ -6,7 +6,7 @@ import { AppellationLabel } from "../../modules/information2/shared/appellation-
 import { RoleSet, RoleSetLabelObj, RoleSetList } from "../../modules/information2/information.models";
 import { indexBy, omit } from 'ramda';
 import { roleSetKey } from "../../modules/information2/information.helpers";
-import { ComUiContextConfig } from "../sdk";
+import { ComUiContextConfig, ComPropertySet } from "../sdk";
 /**
  * Utilities class for static functions
  */
@@ -222,18 +222,19 @@ export class U {
      * 
      * @param roleSet 
      */
-    static ordNumOfRoleSet(roleSet: RoleSet): number | null {
-        
-        if(!U.uiPropConfigOfTRoleSet(roleSet)) return null;
+    static ordNumFromRoleSet(roleSet: RoleSet): number | null {
 
-        return U.uiPropConfigOfTRoleSet(roleSet).ord_num;
+        if (!U.uiContextConfigFromRoleSet(roleSet)) return null;
+
+        return U.uiContextConfigFromRoleSet(roleSet).ord_num;
     }
+
 
     /**
      * gets ui_context_config of RoleSet or null, if not available
      * @param roleSet 
      */
-    static uiPropConfigOfTRoleSet(roleSet: RoleSet): ComUiContextConfig | null {
+    static uiContextConfigFromRoleSet(roleSet: RoleSet): ComUiContextConfig | null {
         if (!roleSet) return null;
 
         if (!roleSet.property) return null;
@@ -242,6 +243,35 @@ export class U {
 
         return roleSet.property.ui_context_config[0];
     }
+
+    /**
+    * Gets ord_num of ComPropertySet or null, if not available
+    * 
+    * @param propSet 
+    */
+    static ordNumFromPropSet(propSet: ComPropertySet): number | null {
+
+        const config = U.uiContextConfigFromPropSet(propSet);
+
+        if (!config) return null;
+
+        return config.ord_num;
+    }
+
+    /**
+     * gets ui_context_config of PropSet or null, if not available
+     * @param propSet 
+     */
+    static uiContextConfigFromPropSet(propSet: ComPropertySet): ComUiContextConfig | null {
+
+        if (!propSet.ui_context_configs) return null;
+
+        if (!propSet.ui_context_configs[0]) return null;
+
+        return propSet.ui_context_configs[0];
+    }
+
+
 
     /**
      * create a label object for the property

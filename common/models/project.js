@@ -114,7 +114,7 @@ module.exports = function (Project) {
    *        - Boolean that indicates
    *    
    */
-  Project.getReferenceModel = function (projectId, cb) {
+  Project.getReferenceModel = function (pk_project, cb) {
 
     // shortcut as long as no epr for classes in use
     const DfhClass = Project.app.models.DfhClass;
@@ -156,6 +156,20 @@ module.exports = function (Project) {
       }
     };
 
+
+
+    const ui_context_config = (isOutgoing) => {
+      return {
+        "$relation": {
+          "name": "ui_context_config",
+          "joinType": "left join",
+          "where": [
+            "property_is_outgoing", "=", JSON.stringify(isOutgoing)
+          ],
+        }
+      }
+    }
+
     const filter = {
       select: {
         include: ["dfh_pk_class", "dfh_identifier_in_namespace", "dfh_standard_label"]
@@ -171,6 +185,12 @@ module.exports = function (Project) {
             select: false
           }
         },
+        "text_properties": {
+          "$relation": {
+            "name": "text_properties",
+            "joinType": "left join"
+          }
+        },
         "ingoing_properties": {
           "$relation": {
             "name": "ingoing_properties",
@@ -178,7 +198,8 @@ module.exports = function (Project) {
             select: propertiesSelect,
           },
           property_profile_view,
-          labels
+          ui_context_config: ui_context_config(false),
+          labels,
         },
         "outgoing_properties": {
           "$relation": {
@@ -187,14 +208,29 @@ module.exports = function (Project) {
             select: propertiesSelect,
           },
           property_profile_view,
+          ui_context_config: ui_context_config(true),
           labels
         },
-        "text_properties": {
+        "property_set_class_rel": {
           "$relation": {
-            "name": "text_properties",
-            "joinType": "left join"
+            "name": "property_set_class_rel",
+            "joinType": "left join",
+            select: { include: [] }
+          },
+          property_set: {
+            $relation: {
+              name: "property_set",
+              joinType: "left join",
+              "orderBy": [{ "pk_entity": "asc" }]
+            },
+            ui_context_configs: {
+              "$relation": {
+                "name": "ui_context_configs",
+                "joinType": "left join"
+              }
+            }
           }
-        },
+        }
       }
     }
 

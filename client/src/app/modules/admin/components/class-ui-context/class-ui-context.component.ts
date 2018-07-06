@@ -98,7 +98,7 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
       for (let i = 0; i < widgets.length; i++) {
         const widget = widgets[i];
 
-        let propertyConfig = U.uiPropConfigOfTRoleSet(widget.roleSet);
+        let propertyConfig = U.uiContextConfigFromRoleSet(widget.roleSet);
 
         if (propertyConfig && propertyConfig.ord_num !== null) {
           propertyConfig.ord_num = null;
@@ -123,16 +123,13 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
         const widget = widgets[i];
 
 
-        // if there is no ui_context_config or the ord_num is wrong
-        if (U.ordNumOfRoleSet(widget.roleSet) != i) {
+        // if the ord_num is wrong
+        if (widget.uiContextConfig.ord_num != i) {
 
           const newPropConf: ComUiContextConfig = {
-            ...U.uiPropConfigOfTRoleSet(widget.roleSet),
+            ...widget.uiContextConfig,
             ord_num: i,
-            // fk_project: null,
-            fk_property: widget.roleSet.property.dfh_pk_property,
-            property_is_outgoing: widget.roleSet.isOutgoing,
-            fk_ui_context: this.pkUiContext
+            // fk_project: null
           }
 
           uiPropConfs.push(newPropConf)

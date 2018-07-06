@@ -19,6 +19,9 @@ exports.up = function (db, callback) {
   )
   INHERITS (commons.entity);
 
+  ALTER TABLE commons.property_set_class_rel
+  ADD UNIQUE (fk_class, fk_property_set);
+
   CREATE TRIGGER creation_tmsp
   BEFORE INSERT
   ON commons.property_set_class_rel

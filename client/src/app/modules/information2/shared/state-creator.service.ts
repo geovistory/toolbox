@@ -1,18 +1,19 @@
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/observable/zip';
 
+import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import {
   DfhClass,
+  DfhProperty,
+  IAppState,
   InfAppellation,
-  InfEntityProjectRel,
   InfLanguage,
   InfPersistentItem,
+  InfPlace,
   InfRole,
   InfTemporalEntity,
   InfTimePrimitive,
-  DfhProperty,
-  InfPlace,
   U,
 } from 'app/core';
 import { groupBy, indexBy, prop } from 'ramda';
@@ -27,19 +28,18 @@ import {
   ExistenceTimeDetail,
   LangDetail,
   PeItDetail,
+  PlaceDetail,
   RoleDetail,
   RoleDetailList,
   RoleSet,
   RoleSetList,
   TeEntDetail,
   TimePrimitveDetail,
-  PlaceDetail,
 } from '../information.models';
 import { AppellationLabel } from './appellation-label/appellation-label';
 import { ClassService } from './class.service';
 import { DfhConfig } from './dfh-config';
 import { PeItService } from './pe-it.service';
-import { PropertyService } from './property.service';
 import { RoleSetService } from './role-set.service';
 import { StateToDataService } from './state-to-data.service';
 
@@ -56,8 +56,8 @@ export class StateCreatorService {
 
   constructor(
     private classService: ClassService,
-    private propertyService: PropertyService,
     private peItService: PeItService,
+    private ngRedux: NgRedux<IAppState>
   ) { }
 
 
@@ -164,6 +164,7 @@ export class StateCreatorService {
 
       // Get DfhClass Observable
       const dfhClass$ = this.classService.getByPk(peIt.fk_class);
+      const dfhClass = this.ngRedux.getState().activeProject.crm[peIt.fk_class];
 
       // Get RoleSetListChildren Observable (returning roleSets etc.)
       const roleSetsListChildren$ = this.initRoleSetListState(peIt.fk_class, peIt.pi_roles, settings)

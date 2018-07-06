@@ -154,6 +154,6 @@
   },
   "ComPropertySetClassRel": {
     "dataSource": "postgres1",
-    "public": false
+    "public": true
   }
 }

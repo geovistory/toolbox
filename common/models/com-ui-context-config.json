@@ -25,11 +25,15 @@
     },
     "fk_property": {
       "type": "number",
-      "required": true
+      "required": false
+    },
+    "fk_property_set": {
+      "type": "number",
+      "required": false
     },
     "property_is_outgoing": {
       "type": "boolean",
-      "required": true
+      "required": false
     },
     "ord_num": {
       "type": "number"
@@ -51,9 +55,9 @@
     },
     "property_set": {
       "type": "belongsTo",
-      "model": "DfhPropertySet",
-      "foreignKey": "fk_property",
-      "primaryKey": "dfh_pk_property"
+      "model": "ComPropertySet",
+      "foreignKey": "fk_property_set",
+      "primaryKey": "pk_entity"
     },
     "project": {
       "type": "belongsTo",

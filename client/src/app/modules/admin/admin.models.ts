@@ -1,4 +1,4 @@
-import { DfhClassInterface } from '../../core';
+import { DfhClassInterface, ComPropertySet, ComUiContextConfig } from '../../core';
 import { RoleSet } from '../information2/information.models';
 
 
@@ -34,5 +34,5 @@ export class Container {
 }
 
 export class Widget {
-    constructor(public name: string, public metaInfo:string, public roleSet: RoleSet) { }
+    constructor(public name: string, public metaInfo:string, public roleSet: RoleSet, public propSet: ComPropertySet, public uiContextConfig: ComUiContextConfig) { }
 }

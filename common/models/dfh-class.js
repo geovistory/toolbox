@@ -107,17 +107,6 @@ module.exports = function (DfhClass) {
       }
     }
 
-    const ui_context = (pk_entity) => {
-      return {
-        "$relation": {
-          "name": "ui_context",
-          "joinType": "left join",
-          "where": ["pk_entity", "=", JSON.stringify(pk_entity)],
-          "orderBy": [{ "pk_entity": "asc" }]
-        }
-      }
-    }
-
     const filter = {
       select: {
         include: ["dfh_pk_class", "dfh_identifier_in_namespace", "dfh_standard_label"]

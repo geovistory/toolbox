@@ -16,18 +16,25 @@ exports.up = function(db, callback) {
   CREATE TABLE commons.ui_context_config (
     fk_ui_context integer NOT NULL,
     fk_project integer REFERENCES commons.project (pk_project),
-    fk_property integer REFERENCES data_for_history.property (dfh_pk_property) NOT NULL,
-    property_is_outgoing boolean NOT NULL,
-    fk_property_set integer NOT NULL,
+    fk_property integer REFERENCES data_for_history.property (dfh_pk_property),
+    property_is_outgoing boolean,
+    fk_property_set integer,
     ord_num integer
   )
   INHERITS (commons.entity);
 
   -- unique indexes instead of unique constraint because of nullable pk_project
   -- see: https://stackoverflow.com/questions/8289100/create-unique-constraint-with-null-columns
-  CREATE UNIQUE INDEX ui_context_config_4col_uni_idx ON commons.ui_context_config  (fk_ui_context, fk_project, fk_property, property_is_outgoing)
+  CREATE UNIQUE INDEX ui_context_config_for_prop_and_proj_uni_idx ON commons.ui_context_config  (fk_ui_context, fk_project, fk_property, property_is_outgoing)
   WHERE fk_project IS NOT NULL;
-  CREATE UNIQUE INDEX ui_context_config_3col_uni_idx ON commons.ui_context_config  (fk_ui_context, fk_property, property_is_outgoing)
+
+  CREATE UNIQUE INDEX ui_context_config_for_prop_no_proj_uni_idx ON commons.ui_context_config  (fk_ui_context, fk_property, property_is_outgoing)
+  WHERE fk_project IS NULL;
+
+  CREATE UNIQUE INDEX ui_context_config_for_prop_set_and_proj_uni_idx ON commons.ui_context_config  (fk_ui_context, fk_project, fk_property_set)
+  WHERE fk_project IS NOT NULL;
+
+  CREATE UNIQUE INDEX ui_context_config_for_prop_set_no_proj_uni_idx ON commons.ui_context_config  (fk_ui_context, fk_property_set)
   WHERE fk_project IS NULL;
 
 

@@ -27,8 +27,7 @@
     "ui_context_configs": {
       "type": "hasMany",
       "model": "ComUiContextConfig",
-      "foreignKey": "fk_ui_context",
-      "primaryKey": "pk_entity"
+      "foreignKey": "fk_property_set"
     },
     "classes": {
       "type": "hasMany",

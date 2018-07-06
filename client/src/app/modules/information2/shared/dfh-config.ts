@@ -80,4 +80,13 @@ export class DfhConfig {
 
   // dfh_pk_class of place (not geographical place!)
   static CLASS_PK_PLACE = 51;
+
+
+
+/**
+ * System Types
+ */
+
+ static PK_SYSTEM_TYPE_TEMPORAL_ENTITY = 9;
+
 }
