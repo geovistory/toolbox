@@ -12,8 +12,8 @@
     <ng-container *ngTemplateOutlet="propertiesHeader"></ng-container>
 
     <div class="gv-body gv-flex-grow-1" style="overflow-y:auto">
-      <gv-pe-it-role-set-editable *ngFor="let entry of (_roleSet_list$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
-        (onRemoveRoleSet)="removeRoleSet(entry.key)"></gv-pe-it-role-set-editable>
+      <gv-pe-it-role-set-editable *ngFor="let entry of (_roleSet_list$ | async) | keys; trackBy:getKey" [parentPath]="basePath"
+        [index]="entry.key" (onRemoveRoleSet)="removeRoleSet(entry.key)"></gv-pe-it-role-set-editable>
     </div>
 
     <div class="gv-footer mt-3">
@@ -80,6 +80,7 @@
       <div class="card gv-flex-grow-1 mb-3">
         <div class="card-body">
 
+          {{testDfhClass | json}}
 
         </div>
       </div>

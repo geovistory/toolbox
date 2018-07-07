@@ -10,6 +10,7 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { peItReducer } from '../pe-it.reducer';
 import { slideInOut } from '../../../shared/animations';
 import { StateToDataService } from '../../../shared/state-to-data.service';
+import { DfhClass, IAppState } from 'app/core';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -53,7 +54,7 @@ export class PeItEditableComponent extends DataUnitBase {
   }
 
   constructor(
-    protected ngRedux: NgRedux<any>,
+    protected ngRedux: NgRedux<IAppState>,
     protected actions: PeItActions,
     protected fb: FormBuilder
   ) {

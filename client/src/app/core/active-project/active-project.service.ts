@@ -47,19 +47,6 @@ export class ActiveProjectService {
 
 
 
-  private getProjectCrm(id: number): void {
-    this.projectApi.getReferenceModel(id).subscribe((classes: DfhClass[]) => {
-
-      let crm = {}
-      classes.map((cla: DfhClass) => {
-        crm[cla.dfh_pk_class] = cla;
-      })
-
-      this.ngRedux.dispatch(this.actions.projectCrmLoaded(crm))
-
-    });
-  }
-
   /**
    * setActiveProject - set the active project by providing the
    * project's id. This id can be a number or a string, e.g. 134 or "134"
@@ -73,7 +60,7 @@ export class ActiveProjectService {
     }
     else {
       this.getProject(id);
-      this.getProjectCrm(id);
+      this.ngRedux.dispatch(this.actions.activeProjectLoadCrm(id))
     }
   }
 

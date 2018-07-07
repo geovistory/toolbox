@@ -49,9 +49,45 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "find"
+        "find",
+        "uiConfig"
       ]
     }
   ],
-  "methods": {}
+  "methods": {
+    "uiConfig": {
+      "accepts": [
+        {
+          "arg": "pk_ui_context",
+          "type": "number",
+          "required": false,
+          "description": "pk_entity of ui_context",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": false,
+          "description": "pk_project of project",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "DfhClass"
+        ],
+        "root": true
+      },
+      "description": "Get the UI Configuration for classes.",
+      "http": {
+        "path": "/ui-config",
+        "verb": "get"
+      }
+    }
+  }
 }

@@ -1,5 +1,6 @@
 
-import { ActiveProjectActions, ActiveProjectAction, ProjectDetail } from "./active-project.action";
+import { ActiveProjectActions, ActiveProjectAction } from "./active-project.action";
+import { ProjectDetail } from "./active-project.models";
 
 const INITIAL_STATE: ProjectDetail = null;
 

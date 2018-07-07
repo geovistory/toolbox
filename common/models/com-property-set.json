@@ -29,6 +29,11 @@
       "model": "ComUiContextConfig",
       "foreignKey": "fk_property_set"
     },
+    "property_set_class_rels": {
+      "type": "hasMany",
+      "model": "ComPropertySetClassRel",
+      "foreignKey": "fk_property_set"
+    },
     "classes": {
       "type": "hasMany",
       "model": "DfhClass",

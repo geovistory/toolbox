@@ -20,6 +20,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
+import { ActiveProjectEpics } from 'app/core/active-project/active-project.epics';
 
 registerLocaleData(localeDeCh);
 
@@ -56,6 +57,7 @@ registerLocaleData(localeDeCh);
     EntityEditorService,
     ActiveAccountService,
     ActiveProjectService,
+    ActiveProjectEpics,
     AuthGuard,
     { provide: LOCALE_ID, useValue: 'de-CH' }
   ],

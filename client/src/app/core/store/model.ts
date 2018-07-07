@@ -3,8 +3,8 @@ import { Admin } from '../../modules/admin/admin.models';
 import { Information } from '../../modules/information2/information.models';
 import { IProjectList } from '../../modules/projects/projects.model';
 import { ISourceListState } from '../../modules/sources';
-import { ProjectDetail } from '../active-project/active-project.action';
 import { LoadingBar } from '../loading-bar/loading-bar.models';
+import { ProjectDetail } from '../active-project/active-project.models';
 
 export interface IAppState {
     account?: IAccount,

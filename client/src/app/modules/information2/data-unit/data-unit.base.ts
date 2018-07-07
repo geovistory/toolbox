@@ -1,7 +1,7 @@
 import { ObservableStore, select } from '@angular-redux/store';
 import { Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { DfhClass, DfhProperty, InfPersistentItem } from 'app/core';
+import { DfhClass, DfhProperty, InfPersistentItem, Project } from 'app/core';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 

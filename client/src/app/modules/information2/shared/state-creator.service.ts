@@ -164,7 +164,6 @@ export class StateCreatorService {
 
       // Get DfhClass Observable
       const dfhClass$ = this.classService.getByPk(peIt.fk_class);
-      const dfhClass = this.ngRedux.getState().activeProject.crm[peIt.fk_class];
 
       // Get RoleSetListChildren Observable (returning roleSets etc.)
       const roleSetsListChildren$ = this.initRoleSetListState(peIt.fk_class, peIt.pi_roles, settings)
