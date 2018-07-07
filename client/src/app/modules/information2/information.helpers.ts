@@ -3,9 +3,12 @@ import { InfRole, InfTimePrimitive } from "app/core";
 import { CalendarType, TimePrimitive } from "app/core/date-time/time-primitive";
 
 export function roleSetKey(roleSet: RoleSet) {
-    return '_' + roleSet.property.dfh_pk_property + '_' + (roleSet.isOutgoing ? 'outgoing' : 'ingoing')
+    return roleSetKeyFromParams(roleSet.property.dfh_pk_property, roleSet.isOutgoing)
 }
 
+export function roleSetKeyFromParams(fkProp: number, isOutgoing: boolean) {
+    return '_' + fkProp + '_' + (isOutgoing ? 'outgoing' : 'ingoing')
+}
 
 export function roleDetailKey(roleDetail: RoleDetail) { return '_' + roleDetail.role.pk_entity };
 
@@ -46,12 +49,12 @@ export function infRole2TimePrimitive(r: InfRole): TimePrimitive {
     }
 
     if (timePrimitive === null) {
-       return new TimePrimitive({
+        return new TimePrimitive({
             calendar: 'julian'
         })
     }
     else {
-       return timePrimitive;
+        return timePrimitive;
     }
 }
 

@@ -15,3 +15,4 @@ export * from './sdk/models';
 export * from './sdk/services';
 export * from './sdk/services/core';
 export * from './sdk/services/custom';
+export * from './active-project/active-project.models';

@@ -48,7 +48,7 @@ export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValue
         protected actions: TeEntActions,
         protected fb: FormBuilder
     ) {
-        super(fb)
+        super(ngRedux, fb);
         this.initForm()
     }
 

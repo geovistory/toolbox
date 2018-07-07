@@ -41,7 +41,7 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
         protected actions: PeItActions,
         protected fb: FormBuilder
     ) {
-        super(fb)
+        super(ngRedux, fb);
         this.initForm()
 
 

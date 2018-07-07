@@ -2,7 +2,7 @@
 import { Action } from 'redux';
 import { DataUnitAction, DataUnitActions } from './data-unit.actions';
 import { DataUnit } from '../information.models';
-
+import { omit } from 'ramda'
 
 const INITIAL_STATE: DataUnit = {
   selectPropState: 'init',
@@ -47,7 +47,7 @@ export const dataUnitReducer =
         }
         break;
 
-        case DataUnitActions.ROLE_SET_REMOVED:
+      case DataUnitActions.ROLE_SET_REMOVED:
         let newRoleSets = Object.assign({}, lastState._roleSet_list);
         delete newRoleSets[action.meta.key];
 
@@ -55,6 +55,10 @@ export const dataUnitReducer =
           ...lastState,
           _roleSet_list: newRoleSets
         }
+        break;
+
+      case DataUnitActions.PROP_SET_REMOVED:
+        lastState = omit([action.meta.stateKey], lastState)
         break;
 
     }

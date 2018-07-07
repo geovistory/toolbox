@@ -35,7 +35,7 @@ export abstract class PeItFormBase extends DataUnitBase implements OnInit {
         protected actions: PeItActions,
         protected fb: FormBuilder
     ) {
-        super(fb)
+        super(ngRedux, fb);
     }
 
     peItState: PeItDetail;

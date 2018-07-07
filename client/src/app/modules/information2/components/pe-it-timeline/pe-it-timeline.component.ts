@@ -42,11 +42,12 @@ export class PeItTimelineComponent implements OnInit {
 
         U.obj2Arr(set._role_list).forEach((roleS: RoleDetail) => {
 
-          // create a TimeLineRow for each TeEntState
-          this.timeLineData.rows.push({
-            existenceTime: StateToDataService.existenceTimeStateToExistenceTime(roleS._teEnt._existenceTime),
-            label: setLabel + (roleS._teEnt.label ? ': ' + roleS._teEnt.label : '')
-          })
+          if (roleS._teEnt._existenceTime)
+            // create a TimeLineRow for each TeEntState
+            this.timeLineData.rows.push({
+              existenceTime: StateToDataService.existenceTimeStateToExistenceTime(roleS._teEnt._existenceTime),
+              label: setLabel + (roleS._teEnt.label ? ': ' + roleS._teEnt.label : '')
+            })
 
         })
       })

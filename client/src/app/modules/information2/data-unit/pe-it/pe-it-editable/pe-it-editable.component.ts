@@ -1,16 +1,16 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { ComConfig, IAppState, UiContext } from 'app/core';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable } from 'rxjs/Observable';
 
 import { PeItDetail, RoleSet, RoleSetList } from '../../../information.models';
-import { DataUnitBase } from '../../data-unit.base';
-import { PeItActions } from '../pe-it.actions';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { peItReducer } from '../pe-it.reducer';
 import { slideInOut } from '../../../shared/animations';
 import { StateToDataService } from '../../../shared/state-to-data.service';
-import { DfhClass, IAppState } from 'app/core';
+import { DataUnitBase } from '../../data-unit.base';
+import { PeItActions } from '../pe-it.actions';
+import { peItReducer } from '../pe-it.reducer';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -40,6 +40,7 @@ export class PeItEditableComponent extends DataUnitBase {
   @select() ontoInfoVisible$: Observable<boolean>
   @select() communityStatsVisible$: Observable<boolean>
 
+  uiContext: UiContext;
 
   pkEntity: number;
 
@@ -58,13 +59,15 @@ export class PeItEditableComponent extends DataUnitBase {
     protected actions: PeItActions,
     protected fb: FormBuilder
   ) {
-    super(fb)
+    super(ngRedux, fb);
     console.log('PeItEditableComponent')
 
   }
 
   init() {
     this.basePath = this.getBasePath();
+
+    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
 
     this.initPeItSubscriptions()
 

@@ -10,7 +10,7 @@ import { roleSetKey } from '../information.helpers';
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = DataUnit;
-interface MetaData { [key:string]:any };
+interface MetaData { [key: string]: any };
 export type DataUnitAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
@@ -29,6 +29,10 @@ export class DataUnitActions {
   static readonly ROLE_SET_ADDED = 'ROLE_SET_ADDED';
 
   static readonly ROLE_SET_REMOVED = 'ROLE_SET_REMOVED';
+
+  static readonly PROP_SET_ADDED = 'PROP_SET_ADDED';
+
+  static readonly PROP_SET_REMOVED = 'PROP_SET_REMOVED';
 
   static readonly ROLE_SET_LIST_DISPLAY_LABEL_UPDATED = 'ROLE_SET_LIST_DISPLAY_LABEL_UPDATED';
 
@@ -86,6 +90,27 @@ export class DataUnitActions {
   removeRoleSet = (key: string): DataUnitAction => ({
     type: DataUnitActions.ROLE_SET_REMOVED,
     meta: { key },
+    payload: null
+  })
+
+
+  /**
+ * called, when user selected a the kind of propSet to add
+ */
+  addPropSet = (pkPropSet: number): DataUnitAction => ({
+    type: DataUnitActions.PROP_SET_ADDED,
+    meta: { pkPropSet },
+    payload: {
+      selectPropState: 'init'
+    }
+  })
+
+  /**
+  * called, when user selected a the kind of propSet to add
+  */
+  removePropSet = (stateKey: string): DataUnitAction => ({
+    type: DataUnitActions.PROP_SET_REMOVED,
+    meta: { stateKey },
     payload: null
   })
 

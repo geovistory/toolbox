@@ -12,8 +12,11 @@
     <ng-container *ngTemplateOutlet="propertiesHeader"></ng-container>
 
     <div class="gv-body gv-flex-grow-1" style="overflow-y:auto">
-      <gv-pe-it-role-set-editable *ngFor="let entry of (_roleSet_list$ | async) | keys; trackBy:getKey" [parentPath]="basePath"
-        [index]="entry.key" (onRemoveRoleSet)="removeRoleSet(entry.key)"></gv-pe-it-role-set-editable>
+
+      <div *ngFor="let el of uiContext.uiElements">
+        <gv-pe-it-role-set-editable *ngIf="(_roleSet_list$ | async)[el.roleSetKey]" [parentPath]="basePath" [index]="el.roleSetKey"
+          (onRemoveRoleSet)="removeRoleSet(el.roleSetKey)"></gv-pe-it-role-set-editable>
+      </div>
     </div>
 
     <div class="gv-footer mt-3">
@@ -44,16 +47,10 @@
             <select [(ngModel)]="roleSetToAdd" class="custom-select">
               <option [ngValue]="null">Select…</option>
 
-              <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (ingoingRoleSets$|async)" [ngValue]="roleSetToAdd">
-
-                {{roleSetToAdd?.label.sg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
-
+              <option *ngFor="let el of uiContext.uiElements" [disabled]="roleSetAdded(el.roleSetKey)"  [ngValue]="classConfig?.roleSets[el.roleSetKey]">
+                {{classConfig?.roleSets[el.roleSetKey]?.label.sg}} {{roleSetAdded(el.roleSetKey) ? '(already added)':''}}
               </option>
-              <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (outgoingRoleSets$|async)" [ngValue]="roleSetToAdd">
 
-                {{roleSetToAdd?.label.sg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
-
-              </option>
             </select>
             <button type="button" name="button" class="btn btn-primary input-group-append" *ngIf="roleSetToAdd" (click)="addRoleSet(roleSetToAdd)">Ok</button>
           </div>
@@ -80,7 +77,7 @@
       <div class="card gv-flex-grow-1 mb-3">
         <div class="card-body">
 
-          {{testDfhClass | json}}
+
 
         </div>
       </div>

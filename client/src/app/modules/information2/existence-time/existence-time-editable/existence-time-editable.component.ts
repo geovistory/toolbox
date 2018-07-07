@@ -30,6 +30,7 @@ export class ExistenceTimeEditableComponent implements OnInit {
 
   @Output() startEditing: EventEmitter<void> = new EventEmitter();
   @Output() stopEditing: EventEmitter<ExistenceTimeDetail> = new EventEmitter();
+  @Output() onRemovePropSet: EventEmitter<void> = new EventEmitter();
 
   localStore: ObservableStore<ExistenceTimeDetail>
   parentTeEntStore: ObservableStore<TeEntDetail>;
@@ -118,6 +119,10 @@ export class ExistenceTimeEditableComponent implements OnInit {
 
   ngOnDestroy() {
     this.subs.forEach(sub => sub.unsubscribe())
+  }
+
+  doRemovePropSet(){
+    this.onRemovePropSet.emit()
   }
 
 

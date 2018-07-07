@@ -1,7 +1,7 @@
-import { ObservableStore, select } from '@angular-redux/store';
+import { ObservableStore, select, NgRedux } from '@angular-redux/store';
 import { Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { DfhClass, DfhProperty, InfPersistentItem, Project } from 'app/core';
+import { DfhClass, DfhProperty, InfPersistentItem, Project, IAppState, ClassConfig, ComConfig } from 'app/core';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 
@@ -9,6 +9,11 @@ import { roleSetKey } from '../information.helpers';
 import { PeItDetail, RoleSet, RoleSetList, SelectPropStateType, TeEntDetail } from '../information.models';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
+
+// maps pk_property_set to key in ngRedux store
+const propSetMap = {
+  [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME]: '_existenceTime'
+}
 
 
 export abstract class DataUnitBase implements OnInit, OnDestroy {
@@ -21,7 +26,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
   abstract initStore(): void; // override this in derived class
 
-  localStore: ObservableStore<TeEntDetail | PeItDetail>;
+  abstract localStore: ObservableStore<TeEntDetail | PeItDetail>;
   protected actions: PeItActions | TeEntActions;
 
   // Since we're observing an array of items, we need to set up a 'trackBy'
@@ -45,8 +50,12 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   @select() propertyToAdd$: Observable<RoleSet>; // Poperty that is currently chosen in order to add a role of this kind
   @select() _roleSet_list$: Observable<RoleSetList>;
 
+  classConfig: ClassConfig;
 
-  constructor(protected fb: FormBuilder) {
+  constructor(
+    protected ngRedux: NgRedux<IAppState>,
+    protected fb: FormBuilder
+  ) {
     this.formGroup = this.fb.group({})
   }
 
@@ -68,6 +77,8 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   ngOnInit() {
     // Initialize the store by one of the derived classes
     this.initStore()
+
+    this.classConfig = this.ngRedux.getState().activeProject.crm[this.localStore.getState().fkClass];
 
     // Initialize the children in this class
     // this.initChildren() SINGLE_INIT
@@ -137,10 +148,8 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   /**
   * Method to find out if a property section is already added
   */
-  roleSetAdded(roleSetToAdd: RoleSet): boolean {
-    if (!this.roleSets) return false;
-    const roleSet: RoleSet = this.roleSets[roleSetKey(roleSetToAdd)];
-    if (roleSet && roleSet.isOutgoing === roleSetToAdd.isOutgoing) return true;
+  roleSetAdded(roleSetKey: string): boolean {
+    if (this.roleSets && this.roleSets[roleSetKey]) return true;
     else return false
   }
 
@@ -159,6 +168,20 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
     this.formGroup.removeControl(key)
   }
 
+
+ 
+
+  /**
+  * Called when the user closes an empty roleSet
+  */
+  removePropSet(key: number) {
+
+    /** remove the roleSet from state */
+    this.localStore.dispatch(this.actions.removePropSet(propSetMap[key]));
+
+    // /** remove the formControl from form */
+    // this.formGroup.removeControl(propSetMap[key])
+  }
 
 
 }

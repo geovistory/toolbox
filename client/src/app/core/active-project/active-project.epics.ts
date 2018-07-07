@@ -5,7 +5,7 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/startWith';
 
 import { Injectable } from '@angular/core';
-import { DfhClass, IAppState, LoadingBarActions } from 'app/core';
+import { DfhClass, IAppState, LoadingBarActions, U } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { sort } from 'ramda';
 import { createEpicMiddleware, Epic } from 'redux-observable';
@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 import { ComUiContext, ComUiContextApi, ComUiContextConfig, ProjectApi } from '../sdk';
 import { ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
+import { roleSetKey, roleSetKeyFromParams } from '../../modules/information2/information.helpers';
 
 @Injectable()
 export class ActiveProjectEpics {
@@ -45,11 +46,10 @@ export class ActiveProjectEpics {
 
             let crm: ProjectCrm = {}
             classes.map((cla: DfhClass) => {
-              crm[cla.dfh_pk_class] = cla;
+              crm[cla.dfh_pk_class] = this.classConfigFromDfhClass(cla);
             })
 
             const uiContexts: ComUiContext[] = res[1];
-
 
             uiContexts.forEach(uiCtxt => {
               if (uiCtxt.ui_context_config)
@@ -94,6 +94,20 @@ export class ActiveProjectEpics {
       }))
   }
 
+  /**
+   * Converts a DfhClass to a ClassConfig
+   * @param dfhC 
+   */
+  private classConfigFromDfhClass(dfhC: DfhClass): ClassConfig {
+    let cConf: ClassConfig = {
+      label: dfhC.dfh_standard_label,
+      dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,
+      dfh_pk_class: dfhC.dfh_pk_class,
+      roleSets: U.roleSetsFromProperties(dfhC.ingoing_properties, dfhC.outgoing_properties)
+    };
+
+    return cConf;
+  }
 
   private addUiConfToClassConfig(cConf: ClassConfig, uiCtxt: ComUiContext, uiConf: ComUiContextConfig) {
 
@@ -119,17 +133,19 @@ export class ActiveProjectEpics {
       return a.ord_num - b.ord_num
     };
 
-    const unsortedUiEls = [
-      ...cUiCtxt.uiElements,
-      {
+    // if this uiConf is enabled (has a ordNum)
+    if (uiConf.ord_num >= 0) {
+      // add the ui-context-config to the uiElements
+      cUiCtxt.uiElements.push({
         ord_num: uiConf.ord_num,
         fk_property: uiConf.fk_property,
         property_is_outgoing: uiConf.property_is_outgoing,
+        roleSetKey: uiConf.fk_property ? roleSetKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
         fk_property_set: uiConf.fk_property_set
-      }
-    ];
+      })
 
-    // add the ui-context-config to the sorted array of ui-elements of this ui-context
-    cUiCtxt.uiElements = sort(ordNum, unsortedUiEls)
+      // sort the array of uiElements by the ordNum
+      cUiCtxt.uiElements = sort(ordNum, cUiCtxt.uiElements)
+    }
   }
 }

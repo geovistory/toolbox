@@ -3,12 +3,15 @@
 
   <div [@slideInOut]="(toggle$|async)">
 
-    <gv-te-ent-role-set-editable *ngFor="let entry of (_roleSet_list$ | async) | keys; trackBy:getKey" [parentPath]="basePath"
-      [parentTeEntStatePath]="basePath" [index]="entry.key" (onRemoveRoleSet)="removeRoleSet(entry.key)"></gv-te-ent-role-set-editable>
+    <div *ngFor="let el of uiContext.uiElements">
+      <gv-te-ent-role-set-editable *ngIf="(_roleSet_list$ | async)[el.roleSetKey]" [parentPath]="basePath" [parentTeEntStatePath]="basePath"
+        [index]="el.roleSetKey" (onRemoveRoleSet)="removeRoleSet(el.roleSetKey)"></gv-te-ent-role-set-editable>
 
-    <gv-existence-time-editable *ngIf="(_existenceTime$ | async) && !(_existenceTime_edit$ | async)"
-    [basePath]="basePath.concat('_existenceTime')"></gv-existence-time-editable>
-   
+      <gv-existence-time-editable *ngIf="el.fk_property_set === comConfig.PK_PROPERTY_SET_EXISTENCE_TIME && (_existenceTime$ | async) && !(_existenceTime_edit$ | async)"
+        [basePath]="basePath.concat('_existenceTime')" (onRemovePropSet)="removePropSet(el.fk_property_set)"></gv-existence-time-editable>
+    </div>
+
+
     <div class="gv-footer border-top border-white">
 
       <!-- Step 1 for adding a new property -->
@@ -33,27 +36,32 @@
         </div>
 
         <div class="card-body">
+          <input
+          id="typeahead-focus"
+          type="text"
+          class="form-control"
+          [(ngModel)]="model"
+          [ngbTypeahead]="search"
+          (focus)="focus$.next($event.target.value)"
+          (click)="click$.next($event.target.value)"
+          #instance="ngbTypeahead"
+        />
+        </div>
+        <div class="card-body">
           <div class="input-group">
             <select [(ngModel)]="roleSetToAdd" class="custom-select">
               <option [ngValue]="null">Select…</option>
 
-              <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (ingoingRoleSets$|async)" [ngValue]="roleSetToAdd">
-
-                {{roleSetToAdd?.label.sg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
-
+              <option *ngFor="let el of uiContext.uiElements" [disabled]="roleSetAdded(el.roleSetKey)" [ngValue]="classConfig?.roleSets[el.roleSetKey]">
+                {{classConfig?.roleSets[el.roleSetKey]?.label.sg}} {{roleSetAdded(el.roleSetKey) ? '(already added)':''}}
               </option>
-              <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (outgoingRoleSets$|async)" [ngValue]="roleSetToAdd">
 
-                {{roleSetToAdd?.label.sg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
-
-              </option>
             </select>
             <button type="button" name="button" class="btn btn-primary input-group-append" *ngIf="roleSetToAdd" (click)="addRoleSet(roleSetToAdd)">Ok</button>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
