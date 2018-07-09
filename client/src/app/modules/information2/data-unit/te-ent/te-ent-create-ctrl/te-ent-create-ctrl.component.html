@@ -5,7 +5,7 @@
 
     <div *ngFor="let el of uiContext.uiElements">
       {{el.roleSetKey}}
-      <gv-te-ent-role-set-create-ctrl *ngIf="(_roleSet_list$ | async)[el.roleSetKey]" [parentPath]="basePath" [parentTeEntStatePath]="basePath"
+      <gv-te-ent-role-set-create-ctrl *ngIf="(_children$ | async)[el.roleSetKey]" [parentPath]="basePath" [parentTeEntStatePath]="basePath"
         [index]="el.roleSetKey" (onRemoveRoleSet)="removeRoleSet(el.roleSetKey)"  [formControlName]="el.roleSetKey" (touched)="markAsTouched()"></gv-te-ent-role-set-create-ctrl>
 <!-- 
       <gv-existence-time-editable *ngIf="el.fk_property_set === comConfig.PK_PROPERTY_SET_EXISTENCE_TIME && (_existenceTime$ | async) && !(_existenceTime_edit$ | async)"
@@ -13,7 +13,7 @@
     </div>
 
 
-    <!-- <div *ngFor="let entry of (_roleSet_list$ | async) | keys; trackBy:getKey">
+    <!-- <div *ngFor="let entry of (_children$ | async) | keys; trackBy:getKey">
       <gv-te-ent-role-set-create-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [parentTeEntStatePath]="basePath"
         (onRemoveRoleSet)="removeRoleSet(entry.key)" [index]="entry.key" [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role-set-create-ctrl>
     </div> -->

@@ -1,10 +1,10 @@
 import { NgRedux, ObservableStore, WithSubStore, select } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
-import { IAppState, InfRole, InfTimePrimitive, InfEntityProjectRel, InfTemporalEntity, InfTemporalEntityApi, U, ValidationService } from 'app/core';
+import { IAppState, InfRole, InfTimePrimitive, InfEntityProjectRel, InfTemporalEntity, InfTemporalEntityApi, U, ValidationService, ComConfig } from 'app/core';
 import { union } from 'ramda';
 
-import { roleSetKey } from '../../information.helpers';
+import { roleSetKey, roleSetKeyFromParams } from '../../information.helpers';
 import { ExistenceTimeDetail, RoleSet, TeEntDetail, RoleDetail, RoleDetailList, RoleSetList, ExTimeModalMode, ExistenceTimeEdit, ExTimeHelpMode } from '../../information.models';
 import { DfhConfig } from '../../shared/dfh-config';
 import { StateCreatorService } from '../../shared/state-creator.service';
@@ -36,13 +36,13 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
   @Output() submitted: EventEmitter<ExistenceTimeDetail> = new EventEmitter();
 
 
-  _roleSet_list: RoleSetList;
-  @select() _roleSet_list$: Observable<RoleSetList>;
+  _children: RoleSetList;
+  @select() _children$: Observable<RoleSetList>;
   @select() ontoInfoVisible$: Observable<boolean>;
   @select() helpMode$: Observable<ExTimeHelpMode>
   @select() mode$: Observable<ExTimeModalMode>
 
-  localStore: ObservableStore<ExistenceTimeDetail>
+  localStore: ObservableStore<ExistenceTimeEdit>
   parentTeEntStore: ObservableStore<TeEntDetail>; // needed for creating a value to send to api
 
   formGroup: FormGroup;
@@ -74,14 +74,14 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
 
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, existenceTimeEditReducer);
-    this.parentTeEntStore = this.ngRedux.configureSubStore(dropLast(2, this.basePath), teEntReducer)
+    this.parentTeEntStore = this.ngRedux.configureSubStore(dropLast(3, this.basePath), teEntReducer)
 
     this.initShortCuts(this.localStore.getState())
     this.initFormCtrls();
 
     this.subs.push(this.localStore.select<ExistenceTimeEdit>('').subscribe(d => {
       if (d) {
-        this._roleSet_list = d._roleSet_list;
+        this._children = d._children;
       }
     }))
   }
@@ -90,17 +90,17 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
   initShortCuts(state: ExistenceTimeEdit) {
 
     // If init in one-date mode and the roleSet for "At some time within" is not yet there 
-    if (state.mode === 'one-date' && (state._roleSet_list === undefined || state._roleSet_list._72_outgoing === undefined)) {
+    if (state.mode === 'one-date' && (state._children === undefined || state._children._72_outgoing === undefined)) {
       this.addRoleSet(72)
     }
 
     // If init in begin-end mode and the roleSet for "Begin" is not yet there 
-    if (state.mode === 'begin-end' && (state._roleSet_list === undefined || state._roleSet_list._150_outgoing === undefined)) {
+    if (state.mode === 'begin-end' && (state._children === undefined || state._children._150_outgoing === undefined)) {
       this.addRoleSet(150)
     }
 
     // If init in begin-end mode and the roleSet for "End" is not yet there 
-    if (state.mode === 'begin-end' && (state._roleSet_list === undefined || state._roleSet_list._151_outgoing === undefined)) {
+    if (state.mode === 'begin-end' && (state._children === undefined || state._children._151_outgoing === undefined)) {
       this.addRoleSet(151)
     }
   }
@@ -186,7 +186,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
 */
   initFormCtrls() {
 
-    const rs = this.localStore.getState()._roleSet_list;
+    const rs = this.localStore.getState()._children;
 
     // iterate over roleSets of the existence time state
     if (rs)
@@ -221,11 +221,10 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
    */
   addRoleSet(fkProperty: number, inheritFrom?: string[], replace?: string[]) {
 
+    const state = this.ngRedux.getState();
+    
     // find the outgoing roleSet to add
-    const roleSetTemplate: RoleSet = {
-      ...this.localStore.getState().outgoingRoleSets.find(rs => rs.property.dfh_pk_property == fkProperty),
-      // _role_set_form: {}
-    }
+    let roleSetTemplate: RoleSet = state.activeProject.crm[DfhConfig.ClASS_PK_TIME_SPAN].roleSets[roleSetKeyFromParams(fkProperty, true)];
 
     let role = new InfRole();
     role.time_primitive = new InfTimePrimitive();
@@ -239,8 +238,8 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
           const r = this.formGroup.get(key).value[0];
           role.time_primitive = r.time_primitive;
           role.entity_version_project_rels = [{
-            calendar : r.entity_version_project_rels[0].calendar
-          } as InfEntityProjectRel]          
+            calendar: r.entity_version_project_rels[0].calendar
+          } as InfEntityProjectRel]
           role.fk_property = fkProperty;
           break;
         }
@@ -250,7 +249,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
     // if this roleSet should replace a roleSet 
     if (replace) {
       replace.forEach(key => {
-        if (key && this._roleSet_list && this._roleSet_list[key]) {
+        if (key && this._children && this._children[key]) {
           this.removeRoleSet(key);
         }
       })
@@ -363,8 +362,8 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
       const teEnt = new InfTemporalEntity({
         ...this.parentTeEntStore.getState().teEnt,
         te_roles: [
-          ...rolesToRemove, // first all roles are removed from project 
-          ...rolesToAdd // than all roles are created or added to project
+          ...rolesToRemove.filter(r=>(r)), // first all roles are removed from project 
+          ...rolesToAdd.filter(r=>(r)) // than all roles are created or added to project
         ]
       } as InfTemporalEntity)
 
@@ -379,7 +378,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
         ];
 
         // update the state
-        this.stateCreator.initializeExistenceTimeState(roles, { toggle: 'expanded' }).subscribe(existTimeDetail => {
+        this.stateCreator.initializeExistenceTimeState(roles, new ExistenceTimeDetail({ toggle: 'expanded' })).subscribe(existTimeDetail => {
           this.submitted.emit(existTimeDetail)
         })
       }))

@@ -40,7 +40,7 @@ export class RoleSetListService {
           const outgoingRoleSets = U.infProperties2RoleSets(true, outgoingProperties)
 
           // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
-          const options: RoleSet = { toggle: 'collapsed' }
+          const options = new RoleSet({ toggle: 'collapsed' })
           const roleSetsWithRoles = this.roleService.addRolesToRoleSets(roles, ingoingRoleSets, outgoingRoleSets, options)
 
           subject.next({ roleSetsWithRoles, ingoingRoleSets, outgoingRoleSets });

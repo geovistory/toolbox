@@ -60,7 +60,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                         "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
                         "text_properties": []
                     },
-                    "_roleSet_list": {
+                    "_children": {
                         "_1_ingoing": {
                             "isOutgoing": false,
                             "property": {
@@ -166,7 +166,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                             "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
                                             "text_properties": []
                                         },
-                                        "_roleSet_list": {
+                                        "_children": {
                                             "_2_outgoing": {
                                                 "isOutgoing": true,
                                                 "property": {
@@ -564,7 +564,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                         "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
                         "text_properties": []
                     },
-                    "_roleSet_list": {
+                    "_children": {
                         "_1_ingoing": {
                             "isOutgoing": false,
                             "property": {
@@ -669,7 +669,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                             "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
                                             "text_properties": []
                                         },
-                                        "_roleSet_list": {
+                                        "_children": {
                                             "_1_outgoing": {
                                                 "isOutgoing": true,
                                                 "property": {
@@ -1233,7 +1233,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                             "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
                                             "text_properties": []
                                         },
-                                        "_roleSet_list": {
+                                        "_children": {
                                             "_1_outgoing": {
                                                 "isOutgoing": true,
                                                 "property": {
@@ -1840,7 +1840,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                             "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
                                             "text_properties": []
                                         },
-                                        "_roleSet_list": {
+                                        "_children": {
                                             "_4_outgoing": {
                                                 "isOutgoing": true,
                                                 "property": {
@@ -2297,7 +2297,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                             "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
                                             "text_properties": []
                                         },
-                                        "_roleSet_list": {
+                                        "_children": {
                                             "_4_outgoing": {
                                                 "isOutgoing": true,
                                                 "property": {

@@ -14,7 +14,7 @@
     <div class="gv-body gv-flex-grow-1" style="overflow-y:auto">
 
       <div *ngFor="let el of uiContext.uiElements">
-        <gv-pe-it-role-set-editable *ngIf="(_roleSet_list$ | async)[el.roleSetKey]" [parentPath]="basePath" [index]="el.roleSetKey"
+        <gv-pe-it-role-set-editable *ngIf="(_children$ | async)[el.roleSetKey]" [parentPath]="basePath" [index]="el.roleSetKey"
           (onRemoveRoleSet)="removeRoleSet(el.roleSetKey)"></gv-pe-it-role-set-editable>
       </div>
     </div>
@@ -82,7 +82,7 @@
         </div>
       </div>
 
-      <gv-pe-it-timeline [path]="basePath"></gv-pe-it-timeline>
+      <!-- <gv-pe-it-timeline [path]="basePath"></gv-pe-it-timeline> -->
 
     </div>
   </div>

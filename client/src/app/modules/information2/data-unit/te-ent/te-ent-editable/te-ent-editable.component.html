@@ -4,11 +4,11 @@
   <div [@slideInOut]="(toggle$|async)">
 
     <div *ngFor="let el of uiContext.uiElements">
-      <gv-te-ent-role-set-editable *ngIf="(_roleSet_list$ | async)[el.roleSetKey]" [parentPath]="basePath" [parentTeEntStatePath]="basePath"
+      <gv-te-ent-role-set-editable *ngIf="(_children$ | async)[el.roleSetKey]" [parentPath]="basePath" [parentTeEntStatePath]="basePath"
         [index]="el.roleSetKey" (onRemoveRoleSet)="removeRoleSet(el.roleSetKey)"></gv-te-ent-role-set-editable>
 
-      <gv-existence-time-editable *ngIf="el.fk_property_set === comConfig.PK_PROPERTY_SET_EXISTENCE_TIME && (_existenceTime$ | async) && !(_existenceTime_edit$ | async)"
-        [basePath]="basePath.concat('_existenceTime')" (onRemovePropSet)="removePropSet(el.fk_property_set)"></gv-existence-time-editable>
+      <gv-existence-time-editable *ngIf="el.fk_property_set === comConfig.PK_PROPERTY_SET_EXISTENCE_TIME && (_children$ | async)?._existenceTime"
+        [basePath]="basePath.concat('_children').concat('_existenceTime')" (onRemovePropSet)="removePropSet(el.fk_property_set)"></gv-existence-time-editable>
     </div>
 
 

@@ -22,9 +22,9 @@ export class ExTimeEditActions {
     @dispatch() setHelpMode = (helpMode: ExTimeHelpMode): ExTimeEditAction => ({
         type: ExTimeEditActions.EX_TIME_MODAL_SET_HELP_MODE,
         meta: null,
-        payload: {
+        payload: new ExistenceTimeEdit({
             helpMode
-        }
+        })
     })
 
     @dispatch() showAdvancedMode = (): ExTimeEditAction => ({
@@ -34,12 +34,12 @@ export class ExTimeEditActions {
     })
 
 
-    @dispatch() roleSetAdded = (_roleSet_list: RoleSetList): ExTimeEditAction => ({
+    @dispatch() roleSetAdded = (_children: RoleSetList): ExTimeEditAction => ({
         type: ExTimeEditActions.EX_TIME_ROLESET_ADDED,
         meta: null,
-        payload: {
-            _roleSet_list
-        }
+        payload: new ExistenceTimeEdit({
+            _children
+        })
     })
 
     @dispatch() roleSetRemoved = (key: string): ExTimeEditAction => ({

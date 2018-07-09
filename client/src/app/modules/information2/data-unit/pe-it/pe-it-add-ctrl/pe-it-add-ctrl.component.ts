@@ -44,10 +44,10 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
   initFormCtrls(): void {
     if (this.localStore.getState()) {
 
-      // add controls for each roleSet of _roleSet_list
-      const roleSetList = this.localStore.getState()._roleSet_list;
+      // add controls for each roleSet of _children
+      const roleSetList = this.localStore.getState()._children;
 
-      // this.subs.push(this._roleSet_list$.subscribe(roleSetList => {
+      // this.subs.push(this._children$.subscribe(roleSetList => {
       if (roleSetList)
         Object.keys(roleSetList).forEach((key) => {
           if (roleSetList[key]) {
@@ -108,8 +108,8 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
   initFormCtrlValues() {
     if (this.localStore.getState()) {
 
-      // add values to controls for each roleSet of _roleSet_list
-      const roleSetList = this.localStore.getState()._roleSet_list;
+      // add values to controls for each roleSet of _children
+      const roleSetList = this.localStore.getState()._children;
 
       if (roleSetList)
         Object.keys(roleSetList).forEach((key) => {

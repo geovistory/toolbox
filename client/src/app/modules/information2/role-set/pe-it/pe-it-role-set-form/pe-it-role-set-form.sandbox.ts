@@ -22,7 +22,7 @@ export default sandboxOf(PeItRoleSetFormComponent, {
             createForm: {},
             cancelled: undefined,
             added: undefined,
-            parentPath: ['_peIt_editable', '_roleSet_list', '_1_ingoing'],
+            parentPath: ['_peIt_editable', '_children', '_1_ingoing'],
             parentPeItStatePath: ['_peIt_editable'],
             initState: {
                 "activeProject": {
@@ -77,7 +77,7 @@ export default sandboxOf(PeItRoleSetFormComponent, {
                         "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
                         "text_properties": []
                     },
-                    "_roleSet_list": {
+                    "_children": {
                         "_1_ingoing": {
                             _role_set_form: {}, // <- add this to init the role set (gv-pe-it-role-set-form)
                             "isOutgoing": false,
@@ -201,7 +201,7 @@ export default sandboxOf(PeItRoleSetFormComponent, {
                                             "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
                                             "text_properties": []
                                         },
-                                        "_roleSet_list": {
+                                        "_children": {
                                             "_1_outgoing": {
                                                 "isOutgoing": true,
                                                 "property": {

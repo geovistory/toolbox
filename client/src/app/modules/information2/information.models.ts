@@ -91,7 +91,7 @@ export interface TeEntDetail extends DataUnit {
 export interface ExistenceTimeDetailInterface {
     readonly type?: DataUnitChildType;
 
-    _roleSet_list?: RoleSetList;
+    _children?: RoleSetList;
 
     // records
     roles?: InfRole[];
@@ -107,7 +107,7 @@ export interface ExistenceTimeDetailInterface {
 export class ExistenceTimeDetail implements ExistenceTimeDetailInterface {
     readonly type: DataUnitChildType = 'ExistenceTimeDetail';
 
-    _roleSet_list: RoleSetList;
+    _children: RoleSetList;
     roles: InfRole[];
     toggle: CollapsedExpanded;
     outgoingRoleSets: RoleSet[];
@@ -118,13 +118,21 @@ export class ExistenceTimeDetail implements ExistenceTimeDetailInterface {
     }
 }
 
-export interface ExistenceTimeEdit extends ExistenceTimeDetail {
+export interface ExistenceTimeEditInterface extends ExistenceTimeDetailInterface {
+        // mode of help
+        helpMode?: ExTimeHelpMode;
 
-    // mode of help
-    helpMode?: ExTimeHelpMode;
+        mode?: ExTimeModalMode;
+}
 
-    mode?: ExTimeModalMode;
+export class ExistenceTimeEdit extends ExistenceTimeDetail {
+    helpMode: ExTimeHelpMode;
+    mode: ExTimeModalMode;
 
+    constructor(data?: ExistenceTimeEditInterface) {
+        super()
+        Object.assign(this, data);
+    }
 
 }
 

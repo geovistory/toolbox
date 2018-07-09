@@ -34,7 +34,7 @@ export class ExTimeRoleSetCreateCtrlComponent implements OnInit, OnDestroy, Cont
 
   @Input() index: string;
   getBasePath = () => this.index ?
-    [...this.parentPath, '_roleSet_list', this.index] :
+    [...this.parentPath, '_children', this.index] :
     null;
   basePath: string[];
   localStore: ObservableStore<RoleSet>;

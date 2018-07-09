@@ -150,7 +150,7 @@ export class TeEntEditableComponent extends DataUnitBase {
     /**
     * gets the Appellation is for given teEnt roleSets that is for display in this project
     */
-    this.subs.push(this.localStore.select<RoleSetList>(['_roleSet_list']).subscribe((teEntRoleSets) => {
+    this.subs.push(this.localStore.select<RoleSetList>(['_children']).subscribe((teEntRoleSets) => {
       this.label = StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets);
       const oldLabel = (this.teEnState && this.teEnState.label) ? this.teEnState.label : undefined;
 
@@ -217,7 +217,7 @@ export class TeEntEditableComponent extends DataUnitBase {
 
       if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
 
-        this.stateCreator.initializeExistenceTimeState([], { toggle: 'expanded' }).subscribe(val => {
+        this.stateCreator.initializeExistenceTimeState([], new ExistenceTimeDetail({ toggle: 'expanded' }), { isCreateMode: true }).subscribe(val => {
           this.addPropSet('_existenceTime', val)
         })
 

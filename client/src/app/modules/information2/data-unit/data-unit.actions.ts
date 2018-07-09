@@ -79,7 +79,7 @@ export class DataUnitActions {
     type: DataUnitActions.ROLE_SET_ADDED,
     meta: null,
     payload: {
-      _roleSet_list: indexBy(roleSetKey, [roleSet]),
+      _children: indexBy(roleSetKey, [roleSet]),
       selectPropState: 'init'
     }
   })

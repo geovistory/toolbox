@@ -23,7 +23,7 @@ import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Subject } from 'rxjs/Subject';
 
-import { dataUnitChildKey, roleDetailKey } from '../information.helpers';
+import { dataUnitChildKey, roleDetailKey, roleSetKey } from '../information.helpers';
 import {
   AppeDetail,
   DataUnit,
@@ -88,7 +88,7 @@ export class StateCreatorService {
           dfhClass: dfhClass,
           ingoingRoleSets: [],
           outgoingRoleSets: [],
-          _roleSet_list: {
+          _children: {
             _role_set_1: {
               label: {
                 default: 'Names',
@@ -176,7 +176,7 @@ export class StateCreatorService {
           fkClass: peIt.fk_class,
           peIt,
           selectPropState: 'init',
-          // label: StateToDataService.getDisplayAppeLabelOfPeItRoleSets(_roleSet_list)
+          // label: StateToDataService.getDisplayAppeLabelOfPeItRoleSets(_children)
         }
 
         subject.next(peItDetail);
@@ -263,7 +263,8 @@ export class StateCreatorService {
         // if this ui-element is a Existence-Time PropSet
         else if (el.fk_property_set == ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
           const options = new ExistenceTimeDetail({ toggle: 'collapsed' });
-          // children$.push(this.initializeExistenceTimeState(roles, options));
+          const extime = this.initializeExistenceTimeState(roles, options, settings);
+          children$.push(extime);
         }
 
       });
@@ -273,7 +274,7 @@ export class StateCreatorService {
     if (!children$.length) return new BehaviorSubject(undefined)
 
     Observable.combineLatest(children$).subscribe((children: DataUnitChild[]) => {
-      subject.next(indexBy(dataUnitChildKey, children))
+      subject.next(indexBy(dataUnitChildKey, children.filter(c=>(c))));
     })
 
     return subject;
@@ -296,9 +297,9 @@ export class StateCreatorService {
       if (_role_list) {
         /** Creates the RoleSet */
         let roleSet: RoleSet = {
+          _role_list,
           ...options,
           targetClassPk: options.isOutgoing ? options.property.dfh_has_range : options.property.dfh_has_domain,
-          _role_list
         }
 
         /** Assings options to RolSet (this can come from the two functions before) */
@@ -482,7 +483,7 @@ export class StateCreatorService {
         teEnt: teEnt,
         fkClass: teEnt.fk_class,
         _children
-        // label: StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(_roleSet_list)
+        // label: StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(_children)
       }
 
       subject.next(teEntState);
@@ -493,16 +494,36 @@ export class StateCreatorService {
   }
 
 
-  initializeExistenceTimeState(roles: InfRole[], options: ExistenceTimeDetail = new ExistenceTimeDetail()): Subject<ExistenceTimeDetail> {
+  initializeExistenceTimeState(roles: InfRole[], options: ExistenceTimeDetail = new ExistenceTimeDetail(), settings: StateSettings = {}): Subject<ExistenceTimeDetail> {
     const subject = new ReplaySubject<ExistenceTimeDetail>();
 
-    this.initDataUnitChildList(DfhConfig.ClASS_PK_TIME_SPAN, roles).subscribe(_roleSet_list => {
-      subject.next({
-        roles,
-        toggle: options.toggle ? options.toggle : 'collapsed',
-        _roleSet_list
-      } as ExistenceTimeDetail);
+    const rolesByFkProp = groupBy(prop('fk_property'), roles);
+    const rsts = this.ngRedux.getState().activeProject.crm[DfhConfig.ClASS_PK_TIME_SPAN].roleSets;
+
+    let children$: Observable<RoleSet>[] = []
+    const ext = new ExistenceTimeDetail({
+      roles: [],
+      toggle: options.toggle ? options.toggle : 'collapsed'
     })
+
+    if (settings.isCreateMode) return new BehaviorSubject(ext);
+
+    U.obj2Arr(rsts).forEach((rs: RoleSet) => {
+      const roles = rolesByFkProp[rs.property.dfh_pk_property];
+      if (roles) {
+        ext.roles = [...ext.roles, ...roles]
+        children$.push(this.initializeRoleSet(roles, rs));
+      }
+    })
+
+    if (!children$.length) return new BehaviorSubject(null);
+    else
+      Observable.combineLatest(children$).subscribe(children => {
+
+        ext._children = indexBy(roleSetKey, children)
+
+        subject.next(ext);
+      })
 
     return subject;
   }

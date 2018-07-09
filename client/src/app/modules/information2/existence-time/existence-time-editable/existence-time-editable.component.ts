@@ -37,7 +37,7 @@ export class ExistenceTimeEditableComponent implements OnInit {
   
   @select() ontoInfoVisible$: Observable<boolean>
   @select() toggle$: Observable<boolean>
-  _roleSet_list: RoleSetList;
+  _children: RoleSetList;
 
   // true, if there is no termporal information
   isEmpty: boolean = true;
@@ -54,14 +54,14 @@ export class ExistenceTimeEditableComponent implements OnInit {
 
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, existenceTimeReducer);
-    this.parentTeEntStore = this.ngRedux.configureSubStore(dropLast(1, this.basePath), teEntReducer)
+    this.parentTeEntStore = this.ngRedux.configureSubStore(dropLast(2, this.basePath), teEntReducer)
 
     this.subs.push(this.localStore.select<ExistenceTimeDetail>('').subscribe(d => {
       if (d) {
-        this._roleSet_list = d._roleSet_list;
+        this._children = d._children;
 
         // if there is temporal information, set isEmpty to false
-        if (this._roleSet_list && Object.keys(this._roleSet_list).length > 0) {
+        if (this._children && Object.keys(this._children).length > 0) {
           this.isEmpty = false;
         }
         else{
@@ -76,14 +76,14 @@ export class ExistenceTimeEditableComponent implements OnInit {
 
     if (!mode) {
       // if only "at some time within" is given, open in "one-date" mode
-      if (Object.keys(this._roleSet_list).length === 1 && this._roleSet_list._72_outgoing) {
+      if (Object.keys(this._children).length === 1 && this._children._72_outgoing) {
         mode = 'one-date';
       }
       // else if only "begin" and "end" is given, open in "begin-end" mode
       else if (
-        Object.keys(this._roleSet_list).length === 2 &&
-        this._roleSet_list._150_outgoing &&
-        this._roleSet_list._151_outgoing
+        Object.keys(this._children).length === 2 &&
+        this._children._150_outgoing &&
+        this._children._151_outgoing
       ) {
         mode = 'begin-end';
       }

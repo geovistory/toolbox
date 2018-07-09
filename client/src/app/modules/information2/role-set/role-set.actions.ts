@@ -73,9 +73,9 @@ export class RoleSetActions {
   propertyLoaded = (property: DfhProperty): RoleSetAction => ({
     type: RoleSetActions.PROPERTY_LOADED,
     meta: null,
-    payload: {
+    payload: new RoleSet({
       property
-    }
+    })
   })
 
 
@@ -113,23 +113,23 @@ export class RoleSetActions {
   alternativeRolesLoaded = (_role_add_list: RoleDetailList, _role_add_in_no_project_list: RoleDetailList): RoleSetAction => ({
     type: RoleSetActions.ALTERNATIVE_ROLES_LOADED,
     meta: null,
-    payload: {
+    payload: new RoleSet({
       _role_set_form: {
         _role_add_list,
         _role_add_in_no_project_list
       }
-    }
+    })
   })
 
   startCreateNewRole = (_role_create_list: RoleDetailList): RoleSetAction => ({
     type: RoleSetActions.START_CREATE_NEW_ROLE,
     meta: null,
-    payload: {
+    payload: new RoleSet({
       _role_set_form: {
         _role_create_list,
 
       }
-    }
+    })
   })
 
 
@@ -143,20 +143,20 @@ export class RoleSetActions {
   roleCreationCancelled = (_role_create_list: RoleDetailList): RoleSetAction => ({
     type: RoleSetActions.ROLE_CREATION_CANCELLED,
     meta: null,
-    payload: {
+    payload: new RoleSet({
       _role_set_form: {
         _role_create_list
       }
-    }
+    })
   })
 
 
   rolesCreated = (_role_list: RoleDetailList): RoleSetAction => ({
     type: RoleSetActions.ROLES_CREATED,
     meta: null,
-    payload: {
+    payload: new RoleSet({
       _role_list
-    }
+    })
   })
 
   /**
@@ -191,9 +191,9 @@ export class RoleSetActions {
     meta: {
       key
     },
-    payload: {
+    payload: new RoleSet({
       _role_list
-    }
+    })
   })
 
 

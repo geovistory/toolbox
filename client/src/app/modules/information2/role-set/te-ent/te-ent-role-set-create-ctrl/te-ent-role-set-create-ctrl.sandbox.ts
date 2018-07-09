@@ -23,8 +23,8 @@ export default sandboxOf(TeEntRoleSetCreateCtrlComponent, {
             index: '_role_set_1',
             initState: {
                 _teEnt: {
-                    _roleSet_list: {
-                        _role_set_1: {
+                    _children: {
+                        _role_set_1:  new RoleSet({
                             label: {
                                 default: 'Detailed Name',
                                 sg: 'Detailed Name',
@@ -50,7 +50,7 @@ export default sandboxOf(TeEntRoleSetCreateCtrlComponent, {
                                 "dfh_range_instances_min_quantifier": 1,
                                 "dfh_range_instances_max_quantifier": 1,
                             } as DfhProperty
-                        } as RoleSet
+                        })
                     }
                 }
             }
@@ -90,8 +90,8 @@ export default sandboxOf(TeEntRoleSetCreateCtrlComponent, {
             index: '_role_set_1',
             initState: {
                 _teEnt: {
-                    _roleSet_list: {
-                        _role_set_1: {
+                    _children: {
+                        _role_set_1:  new RoleSet({
                             label: {
                                 default: 'Language',
                                 sg: 'Language',
@@ -117,7 +117,7 @@ export default sandboxOf(TeEntRoleSetCreateCtrlComponent, {
                                 "dfh_range_instances_min_quantifier": 1,
                                 "dfh_range_instances_max_quantifier": 1,
                             } as DfhProperty
-                        } as RoleSet
+                        })
                     }
                 }
             }

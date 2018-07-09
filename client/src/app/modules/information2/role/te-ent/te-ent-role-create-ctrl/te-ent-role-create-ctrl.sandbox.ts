@@ -23,7 +23,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             parentPath: ['_role_set_1'],
             index: '_role_1',
             initState: {
-                _role_set_1: {
+                _role_set_1: new RoleSet({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -65,7 +65,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                             }
                         } as RoleDetail
                     }
-                } as RoleSet
+                } )
             }
 
         },
@@ -107,7 +107,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             parentPath: ['_role_set_1'],
             index: '_role_1',
             initState: {
-                _role_set_1: {
+                _role_set_1: new RoleSet({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -120,7 +120,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                             }
                         } as RoleDetail
                     }
-                } as RoleSet
+                })
             }
 
         },
@@ -165,7 +165,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: {
+                _role_set_1: new RoleSet({
                     _role_list: {
                         _role_1: {
                             targetDfhClass: {
@@ -182,7 +182,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                             }
                         } as RoleDetail
                     }
-                } as RoleSet
+                } )
             }
 
         },
@@ -227,7 +227,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: {
+                _role_set_1:new RoleSet( {
                     _role_list: {
                         _role_1: {
                             targetDfhClass: {
@@ -243,7 +243,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                             }
                         } as RoleDetail
                     }
-                } as RoleSet
+                } )
             }
 
         },
@@ -288,7 +288,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: {
+                _role_set_1: new RoleSet({
                     _role_list: {
                         _role_1: {
                             targetDfhClass: {
@@ -314,7 +314,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                             }
                         } as RoleDetail
                     }
-                } as RoleSet
+                } )
             }
 
         },
@@ -360,7 +360,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: {
+                _role_set_1: new RoleSet({
                     _role_list: {
                         _role_1: {
                             targetDfhClass: {
@@ -375,7 +375,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                             _place: {}
                         } as RoleDetail
                     }
-                } as RoleSet
+                } )
             }
 
         },

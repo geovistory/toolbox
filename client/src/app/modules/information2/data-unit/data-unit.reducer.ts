@@ -40,33 +40,39 @@ export const dataUnitReducer =
       case DataUnitActions.ROLE_SET_ADDED:
         lastState = {
           ...lastState,
-          _roleSet_list: {
-            ...lastState._roleSet_list,
-            ...action.payload._roleSet_list
+          _children: {
+            ...lastState._children,
+            ...action.payload._children
           },
           selectPropState: action.payload.selectPropState
         }
         break;
 
       case DataUnitActions.ROLE_SET_REMOVED:
-        let newRoleSets = Object.assign({}, lastState._roleSet_list);
+        let newRoleSets = Object.assign({}, lastState._children);
         delete newRoleSets[action.meta.key];
 
         lastState = {
           ...lastState,
-          _roleSet_list: newRoleSets
+          _children: newRoleSets
         }
         break;
 
       case DataUnitActions.PROP_SET_REMOVED:
-        lastState = omit([action.meta.stateKey], lastState)
+        lastState = {
+          ...lastState,
+          _children: omit([action.meta.stateKey], lastState._children)
+        }
         break;
 
       case DataUnitActions.PROP_SET_ADDED:
         lastState = {
           ...lastState,
           selectPropState: action.payload.selectPropState,
-          [action.meta.key]: action.meta.val
+          _children: {
+            ...lastState._children,
+            [action.meta.key]: action.meta.val
+          }
         }
         break;
     }

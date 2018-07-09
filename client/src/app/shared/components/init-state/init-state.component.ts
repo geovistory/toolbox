@@ -3,9 +3,6 @@ import { NgRedux, DevToolsExtension } from '@angular-redux/store';
 import { provideReduxForms } from '@angular-redux/form';
 
 
-
-
-
 export const rootReducer = (lastState, action) => {
   return lastState;
 };

@@ -101,7 +101,7 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
     //     if(bool !== true){
     //       this.initPeItState();
     //     }else{
-    //       this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(peItDetail._roleSet_list);
+    //       this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(peItDetail._children);
 
     //     }
     //   })
@@ -113,12 +113,12 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
     }
 
     else
-      this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(peItDetail._roleSet_list);
+      this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(peItDetail._children);
 
     // this.subs.push(this.ngRedux.select<PeItDetail>(this.basePath).subscribe(d => {
     //   this.peItState = d;
     //   if (d.pkEntity)
-    //   this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(d._roleSet_list);
+    //   this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(d._children);
     //   else if (d)
     //   console.log('LeafPeItViewComponent initPeItState (api call)')
     //   this.initPeItState()
@@ -142,7 +142,7 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
 
         this.peItState = peItState;
         if (peItState)
-          this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(peItState._roleSet_list);
+          this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(peItState._children);
 
         this.leafPeItStateAdded(peItState)
         this.leafPeItLoading$.next(false);

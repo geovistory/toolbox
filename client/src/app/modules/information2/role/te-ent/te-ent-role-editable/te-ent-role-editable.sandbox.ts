@@ -21,7 +21,7 @@ export default sandboxOf(TeEntRoleEditableComponent, {
             parentPath: ['_role_set_1'],
             index: '_role_1',
             initState: {
-                _role_set_1: {
+                _role_set_1:new RoleSet( {
                     _role_list: {
                         _role_1: {
                             role: {
@@ -60,7 +60,7 @@ export default sandboxOf(TeEntRoleEditableComponent, {
                             }
                         } as RoleDetail
                     }
-                } as RoleSet
+                } )
             }
 
         },
@@ -80,7 +80,7 @@ export default sandboxOf(TeEntRoleEditableComponent, {
             parentPath: ['_role_set_1'],
             index: '_role_1',
             initState: {
-                _role_set_1: {
+                _role_set_1: new RoleSet({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -97,7 +97,7 @@ export default sandboxOf(TeEntRoleEditableComponent, {
                             _place: {}
                         } as RoleDetail
                     }
-                } as RoleSet
+                } )
             }
 
         },

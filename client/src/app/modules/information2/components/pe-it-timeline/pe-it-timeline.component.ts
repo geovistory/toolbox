@@ -9,7 +9,7 @@ import { NgRedux } from '@angular-redux/store';
 import { TimeLineData } from '../../../timeline/models/timeline';
 import { StateToDataService } from '../../shared/state-to-data.service';
 import { U } from 'app/core';
-import { RoleSetList, RoleSet, RoleDetail } from '../../information.models';
+import { RoleSetList, RoleSet, RoleDetail, ExistenceTimeDetail } from '../../information.models';
 
 @Component({
   selector: 'gv-pe-it-timeline',
@@ -31,7 +31,7 @@ export class PeItTimelineComponent implements OnInit {
 
 
     // subscribe to RoleSets
-    this.ngRedux.select<RoleSetList>([...this.path, '_roleSet_list']).subscribe(roleSets => {
+    this.ngRedux.select<RoleSetList>([...this.path, '_children']).subscribe(roleSets => {
       this.timeLineData = {
         rows: []
       }
@@ -42,10 +42,10 @@ export class PeItTimelineComponent implements OnInit {
 
         U.obj2Arr(set._role_list).forEach((roleS: RoleDetail) => {
 
-          if (roleS._teEnt._existenceTime)
+          if (roleS._teEnt._children._existenceTime)
             // create a TimeLineRow for each TeEntState
             this.timeLineData.rows.push({
-              existenceTime: StateToDataService.existenceTimeStateToExistenceTime(roleS._teEnt._existenceTime),
+              existenceTime: StateToDataService.existenceTimeStateToExistenceTime(roleS._teEnt._children._existenceTime as ExistenceTimeDetail),
               label: setLabel + (roleS._teEnt.label ? ': ' + roleS._teEnt.label : '')
             })
 

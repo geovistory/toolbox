@@ -4,9 +4,9 @@ import { RoleSetAction, RoleSetActions, roleStateKey } from './role-set.actions'
 import { indexBy, prop, omit } from 'ramda';
 import { RoleSet } from '../information.models';
 
-const INITIAL_STATE: RoleSet = {
+const INITIAL_STATE = new RoleSet({
 
-};
+});
 
 
 export const roleSetReducer =

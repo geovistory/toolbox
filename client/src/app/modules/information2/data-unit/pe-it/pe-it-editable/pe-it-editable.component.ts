@@ -85,7 +85,7 @@ export class PeItEditableComponent extends DataUnitBase {
     /**
     * gets the Appellation is for given peIt roleSets that is for display in this project
     */
-    this.subs.push(this.localStore.select<RoleSetList>(['_roleSet_list']).subscribe((roleSets) => {
+    this.subs.push(this.localStore.select<RoleSetList>(['_children']).subscribe((roleSets) => {
       this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(roleSets);
       const oldLabel = (this.peItState && this.peItState.label) ? this.peItState.label : undefined;
 

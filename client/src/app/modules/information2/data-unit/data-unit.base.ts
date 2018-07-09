@@ -48,7 +48,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   @select() outgoingRoleSets$?: RoleSet[];
   @select() parentPeIt$: Observable<InfPersistentItem>;
   @select() propertyToAdd$: Observable<RoleSet>; // Poperty that is currently chosen in order to add a role of this kind
-  @select() _roleSet_list$: Observable<RoleSetList>;
+  @select() _children$: Observable<RoleSetList>;
 
   classConfig: ClassConfig;
 
@@ -93,7 +93,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
 
   initSubscriptions() {
-    this.subs.push(this._roleSet_list$.subscribe(rs =>
+    this.subs.push(this._children$.subscribe(rs =>
       this.roleSets = rs
     ))
   }

@@ -41,8 +41,8 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
   initFormCtrls(): void {
 
-    // add controls for each roleSet of _roleSet_list
-    this.subs.push(this._roleSet_list$.subscribe(roleSetList => {
+    // add controls for each roleSet of _children
+    this.subs.push(this._children$.subscribe(roleSetList => {
       if (roleSetList)
         Object.keys(roleSetList).forEach((key) => {
           if (roleSetList[key]) {
