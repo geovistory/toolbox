@@ -1,5 +1,5 @@
 import { InfPlace } from '../../core/sdk';
-import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity } from 'app/core';
+import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity, UiElement } from 'app/core';
 
 /**
  * Root state for Information Module
@@ -48,6 +48,12 @@ export interface DataUnit {
     propertyToAdd?: RoleSet; // role set that is currently chosen in order to add a role of this kind
 }
 
+// The options for RoleSet or PropSet available to add to a class instance 
+export interface AddOption {
+    label: string,
+    uiElement: UiElement
+}
+
 /*******************************
  * PeIt Interface
  *******************************/
@@ -83,33 +89,33 @@ export interface TeEntDetail extends DataUnit {
     teEnt?: InfTemporalEntity;
 
     _existenceTime?: ExistenceTimeDetail; // for editable, add and create
-    
-    
+
+
 }
 
 export interface ExistenceTimeDetail {
-    
+
     _roleSet_list?: RoleSetList;
-    
+
     // records
     roles?: InfRole[];
-    
+
     // gui
     toggle?: CollapsedExpanded;
     outgoingRoleSets?: RoleSet[];
-    
+
     // for edit (form that controls consistency between different time-roles)
-    _existenceTime_edit?: ExistenceTimeEdit; 
+    _existenceTime_edit?: ExistenceTimeEdit;
 }
 
 export interface ExistenceTimeEdit extends ExistenceTimeDetail {
-    
+
     // mode of help
     helpMode?: ExTimeHelpMode;
 
     mode?: ExTimeModalMode;
 
-    
+
 }
 
 
@@ -136,7 +142,7 @@ export interface RoleSet {
     toggle?: CollapsedExpanded;
     targetClassPk?: number;
     targetClass?: DfhClass;
-    ordNum?:number;
+    ordNum?: number;
 
     //True during loading of roles in other projects and roles in no project    
     rolesNotInProjectLoading?: boolean;
@@ -233,6 +239,7 @@ export interface PlaceDetail { }
 
 export interface RoleSetList { [key: string]: RoleSet }
 export interface RoleDetailList { [key: string]: RoleDetail }
+
 
 /*******************************
  * Types

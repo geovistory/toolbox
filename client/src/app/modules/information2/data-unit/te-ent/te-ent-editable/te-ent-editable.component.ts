@@ -1,19 +1,21 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { DataUnitBase } from '../../data-unit.base';
 import { ObservableStore, NgRedux, WithSubStore, select } from '@angular-redux/store';
-import { TeEntDetail, RoleDetail, RoleSetList, RoleSet, ExistenceTimeDetail } from '../../../information.models';
+import { TeEntDetail, RoleDetail, RoleSetList, RoleSet, ExistenceTimeDetail, AddOption } from '../../../information.models';
 import { Observable } from 'rxjs/Observable';
 import { TeEntActions } from '../te-ent.actions';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { teEntReducer } from '../te-ent.reducer';
 import { StateToDataService } from '../../../shared/state-to-data.service';
-import { roleSetKey } from '../../../information.helpers';
+import { roleSetKey, roleSetKeyFromParams } from '../../../information.helpers';
 import { slideInOut } from '../../../shared/animations';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { UiContext, ComConfig } from 'app/core';
+import { UiContext, ComConfig, UiElement } from 'app/core';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, merge, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, merge, map, combineLatest } from 'rxjs/operators';
+import { Widget } from '../../../../admin/admin.models';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 
 
 @AutoUnsubscribe()
@@ -61,13 +63,16 @@ export class TeEntEditableComponent extends DataUnitBase {
 
   uiContext: UiContext;
 
-  comConfig = ComConfig;
+  addOptions: AddOption[];
+  selectedAddOption: AddOption;
 
+  comConfig = ComConfig;
 
   constructor(
     protected ngRedux: NgRedux<any>,
     protected actions: TeEntActions,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    protected stateCreator: StateCreatorService
   ) {
     super(ngRedux, fb);
   }
@@ -88,6 +93,22 @@ export class TeEntEditableComponent extends DataUnitBase {
     this.initPaths()
 
     this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
+
+    this.addOptions = this.uiContext.uiElements.map(el => {
+      if (el.fk_property) {
+        const roleSet = this.classConfig.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
+        return {
+          label: roleSet.label.default,
+          uiElement: el
+        }
+      }
+      else if (el.fk_property_set) {
+        return {
+          label: el.property_set.label,
+          uiElement: el
+        }
+      }
+    })
 
     this.initObservablesOutsideLocalStore();
 
@@ -157,32 +178,53 @@ export class TeEntEditableComponent extends DataUnitBase {
    * TODO: extract to component 
    */
 
-  model: any;
-
   @ViewChild('instance') instance: NgbTypeahead;
   focus$ = new Subject<string>();
   click$ = new Subject<string>();
 
-
+  typeaheadWitdh: number;
 
   search = (text$: Observable<string>) => {
+
+    this.selectedAddOption = undefined;
+
     const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
     const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
     const inputFocus$ = this.focus$;
 
-    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-      map(term => (term === '' ? states
-        : states.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10))
-    );
+    // filter options not yet added
+    const options = this.addOptions.filter(o => (this.addOptionAdded(o) == false))
+
+    return Observable.merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).map((term) =>
+      (term === '' ? options : options
+        .filter(o => (
+          o.label.toLowerCase().indexOf(term.toLowerCase()) > -1  // where search term matches
+        ))
+      ).slice(0, 10)
+    )
   }
+
+
+
+  addOptionSelected($event) {
+    const o: AddOption = $event.item;
+
+    if (o.uiElement.roleSetKey) {
+      this.addRoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey])
+    }
+
+    else if (o.uiElement.fk_property_set) {
+
+      if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
+
+        this.stateCreator.initializeExistenceTimeState([], { toggle: 'expanded' }).subscribe(val => {
+          this.addPropSet('_existenceTime', val)
+        })
+
+      }
+
+    }
+
+  }
+
 }
-
-
-export const states = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado',
-  'Connecticut', 'Delaware', 'District Of Columbia', 'Federated States Of Micronesia', 'Florida', 'Georgia',
-  'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine',
-  'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana',
-  'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-  'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island',
-  'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Islands', 'Virginia',
-  'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];

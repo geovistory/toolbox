@@ -3,7 +3,7 @@ import { TeEntCtrlBase } from '../te-ent-ctrl.base';
 import { NgRedux } from '@angular-redux/store';
 import { TeEntActions } from '../te-ent.actions';
 import { FormBuilder, NG_VALUE_ACCESSOR, FormControl, Validators } from '@angular/forms';
-import { InfTemporalEntity, InfRole, U } from 'app/core';
+import { InfTemporalEntity, InfRole, U, UiContext, ComConfig } from 'app/core';
 import { pick } from 'ramda';
 
 @Component({
@@ -24,12 +24,19 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
   parentRole: InfRole;
 
+  uiContext: UiContext;
+
   constructor(
     protected ngRedux: NgRedux<any>,
     protected actions: TeEntActions,
     protected fb: FormBuilder
   ) {
     super(ngRedux, actions, fb)
+  }
+
+
+  onInitTeEntBaseChild(): void { 
+    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
   }
 
   initFormCtrls(): void {
@@ -90,7 +97,5 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
   writeValue(parentRole: InfRole): void {
     this.parentRole = parentRole ? parentRole : new InfRole();
   }
-
-  onInitTeEntBaseChild(): void { }
 
 }

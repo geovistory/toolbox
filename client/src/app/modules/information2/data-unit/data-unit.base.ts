@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 
 import { roleSetKey } from '../information.helpers';
-import { PeItDetail, RoleSet, RoleSetList, SelectPropStateType, TeEntDetail } from '../information.models';
+import { PeItDetail, RoleSet, RoleSetList, SelectPropStateType, TeEntDetail, AddOption } from '../information.models';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
 
@@ -146,10 +146,21 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   }
 
   /**
+   * DEPRECATED: use addOptionAdded instead
   * Method to find out if a property section is already added
   */
   roleSetAdded(roleSetKey: string): boolean {
     if (this.roleSets && this.roleSets[roleSetKey]) return true;
+    else return false
+  }
+
+  /**
+  * Method to find out if a addOption is already added
+  */
+  addOptionAdded(o: AddOption): boolean {
+
+    if (this.roleSets && this.roleSets[o.uiElement.roleSetKey]) return true;
+    if (this.localStore.getState()[propSetMap[o.uiElement.fk_property_set]]) return true;
     else return false
   }
 
@@ -168,8 +179,21 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
     this.formGroup.removeControl(key)
   }
 
+  /**
+  * Called when the user closes an empty roleSet
+  * 
+  * @param keyInState: the key in the state
+  * @param val: the state object to add to the state
+  */
+  addPropSet(keyInState: string, val: any) {
 
- 
+    /** remove the roleSet from state */
+    this.localStore.dispatch(this.actions.addPropSet(keyInState, val));
+
+    // /** remove the formControl from form */
+    // this.formGroup.removeControl(propSetMap[key])
+  }
+
 
   /**
   * Called when the user closes an empty roleSet

@@ -141,7 +141,8 @@ export class ActiveProjectEpics {
         fk_property: uiConf.fk_property,
         property_is_outgoing: uiConf.property_is_outgoing,
         roleSetKey: uiConf.fk_property ? roleSetKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
-        fk_property_set: uiConf.fk_property_set
+        fk_property_set: uiConf.fk_property_set,
+        property_set: uiConf.fk_property_set ? uiConf.property_set : undefined
       })
 
       // sort the array of uiElements by the ordNum

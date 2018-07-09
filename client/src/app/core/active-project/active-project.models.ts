@@ -1,7 +1,7 @@
 import { DfhClassInterface, ProjectInterface } from 'app/core';
 
 import { RoleSetList } from '../../modules/information2/information.models';
-import { ComUiContextInterface } from '../sdk';
+import { ComUiContextInterface, ComPropertySet } from '../sdk';
 
 export interface ProjectDetail extends ProjectInterface {
     crm?: ProjectCrm
@@ -28,9 +28,10 @@ export interface UiContext extends ComUiContextInterface {
 // short version of ComUiContextConfig
 export interface UiElement {
     fk_property?: number,
-    fk_property_set?: number,
     property_is_outgoing?: boolean,
     roleSetKey?: string,
+    fk_property_set?: number,
+    property_set?: ComPropertySet
     ord_num: number
 }
 

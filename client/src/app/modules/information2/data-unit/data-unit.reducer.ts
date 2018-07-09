@@ -3,6 +3,7 @@ import { Action } from 'redux';
 import { DataUnitAction, DataUnitActions } from './data-unit.actions';
 import { DataUnit } from '../information.models';
 import { omit } from 'ramda'
+import { Meta } from '../../../../../node_modules/@angular/platform-browser';
 
 const INITIAL_STATE: DataUnit = {
   selectPropState: 'init',
@@ -61,6 +62,13 @@ export const dataUnitReducer =
         lastState = omit([action.meta.stateKey], lastState)
         break;
 
+      case DataUnitActions.PROP_SET_ADDED:
+        lastState = {
+          ...lastState,
+          selectPropState: action.payload.selectPropState,
+          [action.meta.key]: action.meta.val
+        }
+        break;
     }
 
 

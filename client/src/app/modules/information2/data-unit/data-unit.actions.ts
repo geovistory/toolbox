@@ -97,9 +97,9 @@ export class DataUnitActions {
   /**
  * called, when user selected a the kind of propSet to add
  */
-  addPropSet = (pkPropSet: number): DataUnitAction => ({
+  addPropSet = (key: string, val:any): DataUnitAction => ({
     type: DataUnitActions.PROP_SET_ADDED,
-    meta: { pkPropSet },
+    meta: { key,val },
     payload: {
       selectPropState: 'init'
     }

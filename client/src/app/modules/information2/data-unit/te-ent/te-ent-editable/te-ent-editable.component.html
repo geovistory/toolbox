@@ -35,29 +35,15 @@
           </div>
         </div>
 
-        <div class="card-body">
-          <input
-          id="typeahead-focus"
-          type="text"
-          class="form-control"
-          [(ngModel)]="model"
-          [ngbTypeahead]="search"
-          (focus)="focus$.next($event.target.value)"
-          (click)="click$.next($event.target.value)"
-          #instance="ngbTypeahead"
-        />
-        </div>
-        <div class="card-body">
-          <div class="input-group">
-            <select [(ngModel)]="roleSetToAdd" class="custom-select">
-              <option [ngValue]="null">Select…</option>
+        <ng-template #rt let-r="result" let-t="term">
+          <div [ngStyle]="{'width.px': typeaheadWitdh}">{{r.label}}</div>
+        </ng-template>
 
-              <option *ngFor="let el of uiContext.uiElements" [disabled]="roleSetAdded(el.roleSetKey)" [ngValue]="classConfig?.roleSets[el.roleSetKey]">
-                {{classConfig?.roleSets[el.roleSetKey]?.label.sg}} {{roleSetAdded(el.roleSetKey) ? '(already added)':''}}
-              </option>
-
-            </select>
-            <button type="button" name="button" class="btn btn-primary input-group-append" *ngIf="roleSetToAdd" (click)="addRoleSet(roleSetToAdd)">Ok</button>
+        <div class="card-body">
+          <div gvDimensionChange (onDimensionsChange)="typeaheadWitdh=($event.dimensions.width - 60)">
+            <input id="typeahead-focus" type="text" class="form-control" [(ngModel)]="selectedAddOption" [ngbTypeahead]="search" [resultTemplate]="rt"
+              (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)" (selectItem)="addOptionSelected($event)"
+              placeholder="Select..." gvAutofocus #instance="ngbTypeahead" />
           </div>
         </div>
       </div>
