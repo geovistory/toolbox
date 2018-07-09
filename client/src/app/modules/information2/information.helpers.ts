@@ -1,6 +1,21 @@
-import { RoleSet, RoleDetail } from "./information.models";
+import { RoleSet, RoleDetail, DataUnitChild } from "./information.models";
 import { InfRole, InfTimePrimitive } from "app/core";
 import { CalendarType, TimePrimitive } from "app/core/date-time/time-primitive";
+
+
+export function dataUnitChildKey(child: DataUnitChild) {
+
+    switch (child.type) {
+        case 'RoleSet':
+            return roleSetKey(child as RoleSet);
+
+        case 'ExistenceTimeDetail':
+            return '_existenceTime';
+
+        default:
+            break;
+    }
+}
 
 export function roleSetKey(roleSet: RoleSet) {
     return roleSetKeyFromParams(roleSet.property.dfh_pk_property, roleSet.isOutgoing)

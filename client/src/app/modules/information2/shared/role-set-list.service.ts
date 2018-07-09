@@ -17,7 +17,7 @@ export class RoleSetListService {
     private roleService: RoleService
   ) { }
 
-  //TODO Remove this in favor to initRoleSetList
+  //TODO Remove this in favor to initDataUnitChildList
   initChildren(fkClass$, roles$, state$): BehaviorSubject<{ roleSetsWithRoles: RoleSet[], ingoingRoleSets: RoleSet[], outgoingRoleSets: RoleSet[] }> {
     const subject: BehaviorSubject<{ roleSetsWithRoles: RoleSet[], ingoingRoleSets: RoleSet[], outgoingRoleSets: RoleSet[] }> = new BehaviorSubject(null)
 

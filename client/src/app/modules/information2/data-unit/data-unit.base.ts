@@ -11,7 +11,7 @@ import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
 
 // maps pk_property_set to key in ngRedux store
-const propSetMap = {
+export const propSetMap = {
   [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME]: '_existenceTime'
 }
 

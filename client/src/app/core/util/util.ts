@@ -7,6 +7,7 @@ import { RoleSet, RoleSetLabelObj, RoleSetList } from "../../modules/information
 import { indexBy, omit } from 'ramda';
 import { roleSetKey } from "../../modules/information2/information.helpers";
 import { ComUiContextConfig, ComPropertySet } from "../sdk";
+import { ClassConfig, UiContext, UiElement } from "../active-project/active-project.models";
 /**
  * Utilities class for static functions
  */

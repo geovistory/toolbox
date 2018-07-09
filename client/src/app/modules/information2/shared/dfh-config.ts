@@ -77,6 +77,7 @@ export class DfhConfig {
   // dfh_pk_class of time primitive
   static CLASS_PK_TIME_PRIMITIVE = 335;
 
+  static ClASS_PK_TIME_SPAN = 50;
 
   // dfh_pk_class of place (not geographical place!)
   static CLASS_PK_PLACE = 51;

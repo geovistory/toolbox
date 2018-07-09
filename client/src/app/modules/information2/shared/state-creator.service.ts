@@ -4,6 +4,7 @@ import 'rxjs/add/observable/zip';
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import {
+  ComConfig,
   DfhClass,
   DfhProperty,
   IAppState,
@@ -22,9 +23,12 @@ import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Subject } from 'rxjs/Subject';
 
-import { roleDetailKey, roleSetKey } from '../information.helpers';
+import { dataUnitChildKey, roleDetailKey } from '../information.helpers';
 import {
   AppeDetail,
+  DataUnit,
+  DataUnitChild,
+  DataUnitChildList,
   ExistenceTimeDetail,
   LangDetail,
   PeItDetail,
@@ -32,7 +36,6 @@ import {
   RoleDetail,
   RoleDetailList,
   RoleSet,
-  RoleSetList,
   TeEntDetail,
   TimePrimitveDetail,
 } from '../information.models';
@@ -106,8 +109,8 @@ export class StateCreatorService {
                       dfh_pk_class: DfhConfig.CLASS_PK_APPELLATION_USE,
                       dfh_standard_label: "Name",
                     } as DfhClass,
-                    _roleSet_list: {
-                      _role_set_1: {
+                    _children: {
+                      _role_set_1: new RoleSet({
                         label: {
                           default: 'Detailed Name',
                           sg: 'Detailed Name',
@@ -136,7 +139,7 @@ export class StateCreatorService {
                             }
                           } as RoleDetail
                         },
-                      } as RoleSet
+                      })
                     }
                   }
                 }
@@ -162,144 +165,120 @@ export class StateCreatorService {
     // Get peIt from DB
     this.peItService.getNestedObject(pkEntity, pkProject).subscribe((peIt: InfPersistentItem) => {
 
-      // Get DfhClass Observable
-      const dfhClass$ = this.classService.getByPk(peIt.fk_class);
+      this.initDataUnitChildList(peIt.fk_class, peIt.pi_roles, settings).subscribe(dataUnitChildList => {
 
-      // Get RoleSetListChildren Observable (returning roleSets etc.)
-      const roleSetsListChildren$ = this.initRoleSetListState(peIt.fk_class, peIt.pi_roles, settings)
-      Observable.combineLatest(dfhClass$, roleSetsListChildren$).subscribe(result => {
-        if (result[0] && result[1]) {
-          const dfhClass = result[0];
-          const _roleSet_list = result[1].childRoleSets;
-          const ingoingRoleSets = result[1].ingoingRoleSets;
-          const outgoingRoleSets = result[1].outgoingRoleSets;
+        if (!settings.isAddMode)
+          delete peIt.pi_roles; // those only pollute the state unless we are in add mode.
 
-          if (!settings.isAddMode)
-            delete peIt.pi_roles; // those only pollute the state unless we are in add mode.
-
-          const peItDetail: PeItDetail = {
-            pkEntity: pkEntity,
-            selectPropState: 'init',
-            fkClass: peIt.fk_class,
-            peIt,
-            dfhClass,
-            _roleSet_list,
-            ingoingRoleSets,
-            outgoingRoleSets,
-            label: StateToDataService.getDisplayAppeLabelOfPeItRoleSets(_roleSet_list)
-          }
-
-          subject.next(peItDetail);
-
+        const peItDetail: PeItDetail = {
+          _children: dataUnitChildList,
+          pkEntity: pkEntity,
+          fkClass: peIt.fk_class,
+          peIt,
+          selectPropState: 'init',
+          // label: StateToDataService.getDisplayAppeLabelOfPeItRoleSets(_roleSet_list)
         }
-      })
+
+        subject.next(peItDetail);
+
+      });
+
     });
 
     return subject;
   }
 
 
-  initRoleSetListState(fkClass, roles, settings: StateSettings = {}): ReplaySubject<{ childRoleSets: RoleSetList, ingoingRoleSets: RoleSet[], outgoingRoleSets: RoleSet[] }> {
-    const subject = new ReplaySubject<{ childRoleSets: RoleSetList, ingoingRoleSets: RoleSet[], outgoingRoleSets: RoleSet[] }>()
-
-    Observable.zip(
-      // Generate ingoing and outgoing properties
-      this.classService.getIngoingProperties(fkClass),
-      this.classService.getOutgoingProperties(fkClass),
-    ).subscribe(result => {
-      const ingoingProperties = result[0];
-      const outgoingProperties = result[1];
-
-      // Generate Direction Aware Properties (they appear in the select/dropdown to add new RoleSet)
-      const ingoingRoleSets = U.infProperties2RoleSets(false, ingoingProperties)
-      const outgoingRoleSets = U.infProperties2RoleSets(true, outgoingProperties)
-
-      // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
-      const options: RoleSet = {
-        toggle: settings.isCreateMode ? 'expanded' : 'collapsed'
-      }
-      const childRoleSets$ = this.initializeChildRoleSets(roles, ingoingRoleSets, outgoingRoleSets, options, settings)
-
-      childRoleSets$.subscribe(childRoleSets => {
-        subject.next({ childRoleSets, ingoingRoleSets, outgoingRoleSets });
-      })
-
-    })
-
-    return subject;
-  }
-
-
   /**
-  * Initialize RoleSets of RoleSetList
-  * 
-  * @param {InfRole[]} roles array of roles a PeIti
-  * @param {RoleSet[]} ingoingRoleSets array of ingoing properties (depending on context)
-  * @param {RoleSet[]} outgoingRoleSets array of outgoing properties (depending on context)
-  * @param {RoleSet} options any other option that should be apllied to all of the roleSets
-  * @return {RoleSetList} Object of RoleSet, the model of the Gui-Element for RoleSets
-  */
-  private initializeChildRoleSets(roles: InfRole[], ingoingRoleSets: RoleSet[], outgoingRoleSets: RoleSet[], options: RoleSet = {}, settings: StateSettings = {}): Subject<RoleSetList> {
-    const subject = new ReplaySubject<RoleSetList>();
+* Initialize RoleSetList
+* 
+* @param {number} fkClass fk_class of PeIt
+* @param {InfRole[]} roles array of roles a PeIt
+* @param {InfStateSettings} settings settings to create the state
+* 
+* @return {DataUnit} Object of RoleSet, the model of the Gui-Element for RoleSets
+*/
+  initDataUnitChildList(fkClass: number, roles: InfRole[], settings: StateSettings = {}): Subject<DataUnitChildList> {
 
-    const givenRoleSets = [...ingoingRoleSets, ...outgoingRoleSets];
+    const subject = new ReplaySubject<DataUnitChildList>()
 
     // declare array that will be returned
-    const roleSets$: Observable<RoleSet>[] = [];
+    const children$: Observable<DataUnitChild>[] = [];
 
-    // if (settings.isCreateMode) {
-    //   // add a roleSet for each givenRoleSet 
-    //   givenRoleSets.forEach(rs => {
-    //     const emptyRole = new InfRole()
-    //     const roleSet$ = this.initializeRoleSet([emptyRole], Object.assign(rs, options), settings);
-    //     roleSets$.push(roleSet$);
-    //   });
-    // }
-    // else 
-    if (!roles || !roles.length) return new BehaviorSubject(undefined)
+
+    // Get DfhClass Observable
+    const classConfig = this.ngRedux.getState().activeProject.crm[fkClass];
+
+    if (settings.isCreateMode) {
+      const uiContext = classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_CREATE];
+
+      // add a roleSet for each roleSet in this ui-context
+      uiContext.uiElements.forEach(el => {
+
+        // if this is a element for a RoleSet
+        if (el.roleSetKey) {
+          // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
+          const options = new RoleSet({ toggle: 'expanded' })
+          const emptyRole = new InfRole();
+          const roleSetDef = classConfig.roleSets[el.roleSetKey];
+          const roleSet$ = this.initializeRoleSet([emptyRole], Object.assign(roleSetDef, options), settings);
+          children$.push(roleSet$);
+        }
+
+        // if this ui-element is a Existence-Time PropSet
+        else if (el.fk_property_set == ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
+          const options = new ExistenceTimeDetail({ toggle: 'expanded' });
+          children$.push(this.initializeExistenceTimeState([], options));
+        }
+      });
+    }
+    else if (!roles || !roles.length) return new BehaviorSubject(undefined)
     else {
+
+      const uiContext = classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
+
       const rolesByFkProp = groupBy(prop('fk_property'), roles)
 
-      // enrich role sets with roles and child RoleDetails
-      givenRoleSets.forEach(rs => {
+      let r: InfRole[];
 
-        let r: InfRole[];
+      // for each uiElement in this ui-context
+      uiContext.uiElements.forEach(el => {
 
-        // take existing roles of this property  
-        r = rolesByFkProp[rs.property.dfh_pk_property];
+        // if this is a element for a RoleSet
+        if (el.roleSetKey) {
+          // enrich RoleSet with roles and child RoleDetails
 
-        if (
-          // if this is in createMode  
-          settings.isCreateMode &&
-          // and if it is nor yet set (prevents from overwriting the circular role)
-          !r &&
-          // and if the min quantifier is 1
-          (
-            (rs.isOutgoing === true && rs.property.dfh_range_instances_min_quantifier == 1) ||
-            (rs.isOutgoing === false && rs.property.dfh_domain_instances_min_quantifier == 1)
-          )
-        ) {
-          r = [{
-            fk_property: rs.property.dfh_pk_property
-          } as InfRole]
+          // take existing roles of this property  
+          r = rolesByFkProp[el.fk_property];
+
+          // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
+          const options = new RoleSet({ toggle: 'collapsed' })
+          const roleSetDef = classConfig.roleSets[el.roleSetKey];
+          if (r && r.length > 0) {
+            const roleSet$ = this.initializeRoleSet(r, Object.assign(roleSetDef, options), settings);
+            children$.push(roleSet$);
+          }
         }
 
-        if (r && r.length > 0) {
-          const roleSet$ = this.initializeRoleSet(r, Object.assign({}, rs, options), settings);
-          roleSets$.push(roleSet$);
+        // if this ui-element is a Existence-Time PropSet
+        else if (el.fk_property_set == ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
+          const options = new ExistenceTimeDetail({ toggle: 'collapsed' });
+          // children$.push(this.initializeExistenceTimeState(roles, options));
         }
-      })
+
+      });
+
     }
 
-    if (!roleSets$.length) return new BehaviorSubject(undefined)
+    if (!children$.length) return new BehaviorSubject(undefined)
 
-    Observable.combineLatest(roleSets$).subscribe(roleSets => {
-      subject.next(indexBy(roleSetKey, roleSets))
+    Observable.combineLatest(children$).subscribe((children: DataUnitChild[]) => {
+      subject.next(indexBy(dataUnitChildKey, children))
     })
-
 
     return subject;
   }
+
 
 
 
@@ -490,78 +469,39 @@ export class StateCreatorService {
 
     if (!teEnt) return new BehaviorSubject(undefined)
 
-
-    // Get DfhClass Observable
-    const dfhClass$ = this.classService.getByPk(teEnt.fk_class);
-
-    // Get RoleSetListChildren Observable (returning roleSets etc.)
-    const roleSetsListChildren$ = this.initRoleSetListState(teEnt.fk_class, teEnt.te_roles, settings)
-
-    // Get ExistenceTimeState Observable
-    const existenceTimeState$ = this.initializeExistenceTimeState(teEnt.te_roles);
-
-    Observable.combineLatest(dfhClass$, roleSetsListChildren$,
-      existenceTimeState$
-    ).subscribe(result => {
-      if (result[0] && result[1]
-        && result[2]
-      ) {
-        const dfhClass = result[0];
-        const _roleSet_list = result[1].childRoleSets;
-        const ingoingRoleSets = result[1].ingoingRoleSets;
-        const outgoingRoleSets = result[1].outgoingRoleSets;
-        const _existenceTime = result[2];
-
-        if (!settings.isAddMode)
-          delete teEnt.te_roles; // those only pollute the state. retrieve them from roleSets
+    // Get children
+    this.initDataUnitChildList(teEnt.fk_class, teEnt.te_roles, settings).subscribe(_children => {
 
 
-        const teEntState: TeEntDetail = {
-          selectPropState: 'init',
-          toggle: 'collapsed',
-          teEnt: teEnt,
-          fkClass: teEnt.fk_class,
-          dfhClass,
-          _roleSet_list,
-          _existenceTime, // todo: according to "settings" add the values to 
-          ingoingRoleSets,
-          outgoingRoleSets,
-          label: StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(_roleSet_list)
-        }
+      if (!settings.isAddMode)
+        delete teEnt.te_roles; // those only pollute the state. retrieve them from roleSets
 
-        subject.next(teEntState);
+      const teEntState: TeEntDetail = {
+        selectPropState: 'init',
+        toggle: 'collapsed',
+        teEnt: teEnt,
+        fkClass: teEnt.fk_class,
+        _children
+        // label: StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(_roleSet_list)
       }
+
+      subject.next(teEntState);
+
     })
 
     return subject;
   }
 
 
-  initializeExistenceTimeState(roles: InfRole[], options: ExistenceTimeDetail = {}): Subject<ExistenceTimeDetail> {
-    const subject = new ReplaySubject();
+  initializeExistenceTimeState(roles: InfRole[], options: ExistenceTimeDetail = new ExistenceTimeDetail()): Subject<ExistenceTimeDetail> {
+    const subject = new ReplaySubject<ExistenceTimeDetail>();
 
-    // get all InfProperties leading to a timePrimitive
-    this.classService.getIngoingProperties(DfhConfig.CLASS_PK_TIME_PRIMITIVE).subscribe(ingoingProperties => {
-
-      // Generate RoleSets (from the perspective of the TemporalEntity, those are outgoing)
-      const outgoingRoleSets = U.infProperties2RoleSets(true, ingoingProperties)
-
-      // Generate roleSets 
-      const roleSetOptions: RoleSet = {
-        toggle: 'expanded'
-      }
-
-      const childRoleSets$ = this.initializeChildRoleSets(roles, [], outgoingRoleSets, roleSetOptions)
-
-      childRoleSets$.subscribe(_roleSet_list => {
-        subject.next({
-          roles,
-          toggle: options.toggle ? options.toggle : 'collapsed',
-          _roleSet_list,
-          outgoingRoleSets
-        } as ExistenceTimeDetail);
-      })
-
+    this.initDataUnitChildList(DfhConfig.ClASS_PK_TIME_SPAN, roles).subscribe(_roleSet_list => {
+      subject.next({
+        roles,
+        toggle: options.toggle ? options.toggle : 'collapsed',
+        _roleSet_list
+      } as ExistenceTimeDetail);
     })
 
     return subject;
