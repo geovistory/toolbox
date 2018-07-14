@@ -4,7 +4,7 @@ import { FluxStandardAction } from 'flux-standard-action';
 
 import { DfhProperty, InfRole, DfhClass } from 'app/core';
 import { indexBy, prop } from 'ramda';
-import { DataUnit, RoleSet } from '../information.models';
+import { DataUnit, RoleSet, DataUnitLabel } from '../information.models';
 import { roleSetKey } from '../information.helpers';
 
 
@@ -40,7 +40,7 @@ export class DataUnitActions {
   @dispatch()
 
 
-  roleSetsListDisplayLabelUpdated = (label: string): DataUnitAction => ({
+  roleSetsListDisplayLabelUpdated = (label: DataUnitLabel): DataUnitAction => ({
     type: DataUnitActions.ROLE_SET_LIST_DISPLAY_LABEL_UPDATED,
     meta: null,
     payload: {

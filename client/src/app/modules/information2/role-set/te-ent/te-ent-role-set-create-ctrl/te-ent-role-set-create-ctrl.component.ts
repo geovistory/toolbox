@@ -118,31 +118,30 @@ export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
     roleToCreate.fk_property = this.roleSetState.property.dfh_pk_property;
     roleToCreate.fk_temporal_entity = this.parentTeEntState.teEnt.pk_entity;
 
-    this.subs.push(this.classService.getByPk(this.roleSetState.targetClassPk).subscribe(targetDfhClass => {
-      const options: RoleDetail = {
-        targetDfhClass,
-        isOutgoing: this.roleSetState.isOutgoing
-      }
-      const settings: StateSettings = {
-        isCreateMode: true
-      }
+    const options: RoleDetail = {
+      targetClassPk: this.roleSetState.targetClassPk,
+      isOutgoing: this.roleSetState.isOutgoing
+    }
+    const settings: StateSettings = {
+      isCreateMode: true
+    }
 
-      this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
+    this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
 
-        /** add a form control */
-        const formControlName = 'new_role_' + this.createFormControlCount;
-        this.createFormControlCount++;
-        this.formGroup.addControl(formControlName, new FormControl(
-          roleStateToCreate.role,
-          [
-            Validators.required
-          ]
-        ))
+      /** add a form control */
+      const formControlName = 'new_role_' + this.createFormControlCount;
+      this.createFormControlCount++;
+      this.formGroup.addControl(formControlName, new FormControl(
+        roleStateToCreate.role,
+        [
+          Validators.required
+        ]
+      ))
 
-        /** update the state */
-        this.localStore.dispatch(this.actions.addRoleToRoleList(formControlName, roleStateToCreate))
-      })
-    }))
+      /** update the state */
+      this.localStore.dispatch(this.actions.addRoleToRoleList(formControlName, roleStateToCreate))
+    })
+
   }
 
   /**

@@ -197,17 +197,7 @@ export const generatedMockPerson = {
                     },
                     "isCircular": false,
                     "isOutgoing": false,
-                    "targetDfhClass": {
-                        "dfh_pk_class": 365,
-                        "dfh_identifier_in_namespace": "histC10",
-                        "dfh_standard_label": "Appellation for language",
-                        "pk_entity": 569,
-                        "entity_version": 2,
-                        "notes": null,
-                        "tmsp_creation": "2018-04-19T17:14:58.782Z",
-                        "tmsp_last_modification": "2018-06-14T06:50:12.793Z",
-                        "sys_period": "[\"2018-06-14 06:50:12.79349+00\",)"
-                    },
+                    targetClassPk: 365,
                     "isDisplayRoleForRange": true,
                     "isDisplayRoleForDomain": null,
                     "_teEnt": {
@@ -320,17 +310,7 @@ export const generatedMockPerson = {
                                         },
                                         "isCircular": false,
                                         "isOutgoing": true,
-                                        "targetDfhClass": {
-                                            "dfh_pk_class": 40,
-                                            "dfh_identifier_in_namespace": "E41",
-                                            "dfh_standard_label": "Appellation",
-                                            "pk_entity": 87,
-                                            "entity_version": 2,
-                                            "notes": null,
-                                            "tmsp_creation": "2018-04-16T22:06:42.020Z",
-                                            "tmsp_last_modification": "2018-06-14T06:50:12.793Z",
-                                            "sys_period": "[\"2018-06-14 06:50:12.79349+00\",)"
-                                        },
+                                        targetClassPk: 40,
                                         "isDisplayRoleForRange": true,
                                         "isDisplayRoleForDomain": null,
                                         "_appe": {

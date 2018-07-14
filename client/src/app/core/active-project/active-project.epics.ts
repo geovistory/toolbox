@@ -46,7 +46,7 @@ export class ActiveProjectEpics {
 
             let crm: ProjectCrm = {}
             classes.map((cla: DfhClass) => {
-              crm[cla.dfh_pk_class] = this.classConfigFromDfhClass(cla);
+              crm[cla.dfh_pk_class] = U.classConfigFromDfhClass(cla);
             })
 
             const uiContexts: ComUiContext[] = res[1];
@@ -94,20 +94,7 @@ export class ActiveProjectEpics {
       }))
   }
 
-  /**
-   * Converts a DfhClass to a ClassConfig
-   * @param dfhC 
-   */
-  private classConfigFromDfhClass(dfhC: DfhClass): ClassConfig {
-    let cConf: ClassConfig = {
-      label: dfhC.dfh_standard_label,
-      dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,
-      dfh_pk_class: dfhC.dfh_pk_class,
-      roleSets: U.roleSetsFromProperties(dfhC.ingoing_properties, dfhC.outgoing_properties)
-    };
 
-    return cConf;
-  }
 
   private addUiConfToClassConfig(cConf: ClassConfig, uiCtxt: ComUiContext, uiConf: ComUiContextConfig) {
 
@@ -134,7 +121,7 @@ export class ActiveProjectEpics {
     };
 
     // if this uiConf is enabled (has a ordNum)
-    if (uiConf.ord_num >= 0) {
+    if (uiConf.ord_num !== null) {
       // add the ui-context-config to the uiElements
       cUiCtxt.uiElements.push({
         ord_num: uiConf.ord_num,

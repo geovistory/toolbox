@@ -24,7 +24,7 @@
     </div>
     <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
       <div class="align-self-center">
-        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(property$|async)?.dfh_pk_property}}" target="_blank">
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/property/{{(property$|async)?.dfh_pk_property}}" target="_blank">
           {{(property$|async)?.dfh_identifier_in_namespace}}
         </a>
       </div>

@@ -1,5 +1,5 @@
-import { InfPlace } from '../../core/sdk';
-import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity, UiElement } from 'app/core';
+import { InfPlace, InfLanguage, InfTimePrimitive } from '../../core/sdk';
+import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity, UiElement, TimePrimitive } from 'app/core';
 
 /**
  * Root state for Information Module
@@ -37,7 +37,7 @@ export interface DataUnit {
     parentPeIt?: InfPersistentItem,
 
     /** gui */
-    label?: string;
+    label?: DataUnitLabel;
     toggle?: CollapsedExpanded;
     ingoingRoleSets?: RoleSet[];
     outgoingRoleSets?: RoleSet[];
@@ -119,10 +119,10 @@ export class ExistenceTimeDetail implements ExistenceTimeDetailInterface {
 }
 
 export interface ExistenceTimeEditInterface extends ExistenceTimeDetailInterface {
-        // mode of help
-        helpMode?: ExTimeHelpMode;
+    // mode of help
+    helpMode?: ExTimeHelpMode;
 
-        mode?: ExTimeModalMode;
+    mode?: ExTimeModalMode;
 }
 
 export class ExistenceTimeEdit extends ExistenceTimeDetail {
@@ -149,6 +149,7 @@ export interface RoleSetInterface {
 
     _role_list?: RoleDetailList;
 
+    // used for adding roles to a data unit that is in project
     _role_set_form?: RoleSetForm
 
     // record
@@ -160,7 +161,11 @@ export interface RoleSetInterface {
     isOutgoing?: boolean;
     toggle?: CollapsedExpanded;
     targetClassPk?: number;
+    targetMinQuantity?: number;
+    targetMaxQuantity?: number;
+
     targetClass?: DfhClass;
+
     ordNum?: number;
 
     //True during loading of roles in other projects and roles in no project    
@@ -183,6 +188,8 @@ export class RoleSet implements RoleSetInterface {
     isOutgoing: boolean;
     toggle: CollapsedExpanded;
     targetClassPk: number;
+    targetMinQuantity?: number;
+    targetMaxQuantity?: number;
     targetClass: DfhClass;
     ordNum: number;
     rolesNotInProjectLoading: boolean;
@@ -247,12 +254,12 @@ export interface RoleDetail {
     isDisplayRoleForDomain?: boolean;
 
     /**
-     * The target class of a RoleState. 
+     * Pk of target class of a RoleState. 
      * Used to select persistent Items or temporal entities of the given dfhClass.
-     * E.g.: When selecting the Father of a Birth, targetDfhClass is used to initialize
+     * E.g.: When selecting the Father of a Birth, this pk is used to initialize
      * the GUI for selecting a person.  
      */
-    targetDfhClass?: DfhClass;
+    targetClassPk?: number;
 
     /** true if the parent role of the parent teEnt is the same role */
     isCircular?: boolean;
@@ -273,9 +280,44 @@ export interface RoleDetail {
 export interface AppeDetail {
     appellation?: InfAppellation
 }
-export interface LangDetail { }
-export interface TimePrimitveDetail { }
-export interface PlaceDetail { }
+export interface LangDetail {
+    language?: InfLanguage
+}
+export interface TimePrimitveDetail {
+    timePrimitive?: InfTimePrimitive
+}
+export interface PlaceDetail {
+    place?: InfPlace
+}
+
+
+/*******************************
+* DataUnit Label interfaces
+*******************************/
+
+
+export interface DataUnitLabel {
+    hasMore?: boolean;
+    parts: DataUnitChildLabel[];
+}
+export interface DataUnitChildLabel {
+    introducer?: string;
+    roleLabel?: RoleLabel;
+    prefix?: string;
+    suffix?: string;
+
+}
+export interface RoleLabel {
+    type: 'te-ent' | 'ex-time' | 'lang' | 'appe' | 'place' | 'leaf-pe-it';
+    string?: string;  // for other types
+    exTimeLabel?: ExTimeLabel; // for type 'time-prim'
+}
+export interface ExTimeLabel {
+    earliest?: TimePrimitive;
+    latest?: TimePrimitive;
+}
+
+
 
 /*******************************
  * List interfaces
@@ -284,6 +326,8 @@ export interface PlaceDetail { }
 export interface DataUnitChildList { [keyInState: string]: DataUnitChild; }
 export interface RoleSetList { [key: string]: RoleSet }
 export interface RoleDetailList { [key: string]: RoleDetail }
+
+
 
 
 /*******************************
@@ -297,4 +341,7 @@ export type ExTimeHelpMode = 'hidden' | 'short' | 'long';
 export type RoleSetLabelObj = { default: string; pl: string; sg: string; }
 export type DataUnitChild = RoleSet | ExistenceTimeDetail;
 export type DataUnitChildType = 'RoleSet' | 'ExistenceTimeDetail';
+
+
+
 

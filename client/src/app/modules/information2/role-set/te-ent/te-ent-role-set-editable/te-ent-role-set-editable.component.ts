@@ -10,7 +10,7 @@ import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
-import { StateCreatorService } from '../../../shared/state-creator.service';
+import { StateCreatorService, StateSettings } from '../../../shared/state-creator.service';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetBase } from '../../role-set.base';
 
@@ -62,9 +62,9 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
 
   init(): void {
     this.initPaths()
-  
+
     this.initObservablesOutsideLocalStore();
-  
+
     this.initSubsciptions();
   }
 
@@ -132,27 +132,25 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
     roleToCreate.fk_property = this.roleSetState.property.dfh_pk_property;
     roleToCreate.fk_temporal_entity = this.parentTeEntState.teEnt.pk_entity;
 
-    this.subs.push(this.classService.getByPk(this.roleSetState.targetClassPk).subscribe(targetDfhClass => {
-      const options: RoleDetail = { targetDfhClass, isOutgoing: this.roleSetState.isOutgoing }
+    const options: RoleDetail = { targetClassPk: this.roleSetState.targetClassPk, isOutgoing: this.roleSetState.isOutgoing };
+    const settings: StateSettings = { isCreateMode: true };
+    this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
 
-      this.stateCreator.initializeRoleDetail(roleToCreate, options).subscribe(roleStateToCreate => {
+      /** add a form control */
+      const formControlName = 'new_role_' + this.createFormControlCount;
+      this.createFormControlCount++;
+      this.formGroup.addControl(formControlName, new FormControl(
+        roleStateToCreate.role,
+        [
+          Validators.required
+        ]
+      ))
 
-        /** add a form control */
-        const formControlName = 'new_role_' + this.createFormControlCount;
-        this.createFormControlCount++;
-        this.formGroup.addControl(formControlName, new FormControl(
-          roleStateToCreate.role,
-          [
-            Validators.required
-          ]
-        ))
-
-        /** update the state */
-        const roleStatesToCreate: RoleDetailList = {};
-        roleStatesToCreate[formControlName] = roleStateToCreate;
-        this.localStore.dispatch(this.actions.startCreateNewRole(roleStatesToCreate))
-      })
-    }))
+      /** update the state */
+      const roleStatesToCreate: RoleDetailList = {};
+      roleStatesToCreate[formControlName] = roleStateToCreate;
+      this.localStore.dispatch(this.actions.startCreateNewRole(roleStatesToCreate))
+    })
   }
 
   createRoles() {

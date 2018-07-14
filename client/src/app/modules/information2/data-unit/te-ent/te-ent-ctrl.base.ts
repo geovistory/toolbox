@@ -9,6 +9,7 @@ import { TeEntDetail } from '../../information.models';
 import { DataUnitBase } from '../data-unit.base';
 import { TeEntActions } from './te-ent.actions';
 import { teEntReducer } from './te-ent.reducer';
+import { StateCreatorService } from '../../shared/state-creator.service';
 
 /**
  * hooks in on the level of
@@ -46,9 +47,10 @@ export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValue
     constructor(
         protected ngRedux: NgRedux<any>,
         protected actions: TeEntActions,
-        protected fb: FormBuilder
+        protected fb: FormBuilder,
+        protected stateCreator: StateCreatorService
     ) {
-        super(ngRedux, fb);
+        super(ngRedux, fb, stateCreator);
         this.initForm()
     }
 

@@ -38,6 +38,13 @@ export class DfhConfig {
   // dfh_pk_property used to connect a chunk as domain use with a persitent item or temporal entity as range 
   static PROPERTY_PK_MENTIONES = 4;
 
+  static PROPERTY_PK_AT_SOME_TIME_WITHIN = 72;
+  static PROPERTY_PK_ONGOING_THROUGHOUT = 71;
+  static PROPERTY_PK_BEGIN_OF_BEGIN = 152;
+  static PROPERTY_PK_END_OF_END = 153;
+  static PROPERTY_PK_END_OF_BEGIN = 150;
+  static PROPERTY_PK_BEGIN_OF_END = 151;
+  
 
 
   /**
@@ -55,13 +62,15 @@ export class DfhConfig {
     153: 'p82b'
   }
 
+  
+
 
   /**
    * Dfh Property leading to a Place (Geo Coordinates)
    */
   static PROPERTY_PK_WHERE_PLACE_IS_RANGE = 148
 
-  
+
 
 
   /**
@@ -74,6 +83,9 @@ export class DfhConfig {
   // dfh_pk_class of appellation
   static CLASS_PK_APPELLATION = 40;
 
+  // dfh_pk_class of language
+  static CLASS_PK_LANGUAGE = 54;
+
   // dfh_pk_class of time primitive
   static CLASS_PK_TIME_PRIMITIVE = 335;
 
@@ -84,10 +96,11 @@ export class DfhConfig {
 
 
 
-/**
- * System Types
- */
+  /**
+   * System Types
+   */
 
- static PK_SYSTEM_TYPE_TEMPORAL_ENTITY = 9;
+  static PK_SYSTEM_TYPE_TEMPORAL_ENTITY = 9;
+  static PK_SYSTEM_TYPE_PERSISTENT_ITEM = 8;
 
 }

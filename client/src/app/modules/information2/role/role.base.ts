@@ -47,7 +47,7 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
   @select() isDisplayRoleForRange$: Observable<boolean>;
   @select() roleToAdd$: Observable<InfRole>;
   @select() changingDisplayRole$: Observable<boolean>;
-  @select() targetDfhClass$: Observable<boolean>;
+  @select() targetClassPk$: Observable<number>;
   @select() isReadyToCreate$: Observable<boolean>;
   @select() isCircular$: Observable<boolean>;
 
@@ -206,11 +206,12 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
       let role: InfRole = ctrls[this.formControlName];
 
       // assing the fk_class to the child entity / value
-      if (role && this.roleState.targetDfhClass && this.roleState.targetDfhClass.dfh_pk_class) {
-        role[this.childStateConfig.nameInApi] = {
-          ...role[this.childStateConfig.nameInApi],
-          fk_class: this.roleState.targetDfhClass.dfh_pk_class
-        };
+      if (role && this.roleState.targetClassPk) {
+        if (this.childStateConfig.nameInApi !== 'fk_entity')
+          role[this.childStateConfig.nameInApi] = {
+            ...role[this.childStateConfig.nameInApi],
+            fk_class: this.roleState.targetClassPk
+          };
       }
 
       // send the changes to the parent form

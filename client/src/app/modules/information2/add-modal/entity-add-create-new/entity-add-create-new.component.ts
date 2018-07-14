@@ -57,7 +57,7 @@ export class EntityAddCreateNewComponent implements OnInit {
 
         this.modalService.previousState = EntityAddModalState[1];
 
-        this.modalService.modalTitle = "Create a new " + this.modalService.selectedClass.dfh_standard_label
+        this.modalService.modalTitle = "Create a new " + this.modalService.selectedClass.label
 
         this.modalService.addButtonVisible = false;
 

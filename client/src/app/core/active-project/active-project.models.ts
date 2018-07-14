@@ -15,6 +15,7 @@ export interface ClassConfig {
     label: string;
     dfh_identifier_in_namespace: string;
     dfh_pk_class: number;
+    dfh_fk_system_type: number; // to distinguish TeEnts from PeIts
     roleSets?: RoleSetList;
     uiContexts?: {
         [pk: number]: UiContext
@@ -42,6 +43,7 @@ var x: ProjectDetail = {
         21: {
             dfh_pk_class: 21,
             dfh_identifier_in_namespace: 'E51',
+            dfh_fk_system_type:8,
             label: 'Person',
             roleSets: {
 

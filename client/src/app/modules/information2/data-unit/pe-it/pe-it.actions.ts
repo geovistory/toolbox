@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { InfPersistentItem, InfRole } from 'app/core';
-import { PeItDetail } from '../../information.models';
+import { PeItDetail, DataUnitLabel } from '../../information.models';
 import { DataUnitActions } from '../data-unit.actions';
 
 
@@ -46,7 +46,7 @@ export class PeItActions extends DataUnitActions {
     }
   })
 
-  peItLabelUpdated = (label: string): PeItAction => ({
+  peItLabelUpdated = (label: DataUnitLabel): PeItAction => ({
     type: PeItActions.PE_IT_LABEL_UPDATED,
     meta: null,
     payload: {

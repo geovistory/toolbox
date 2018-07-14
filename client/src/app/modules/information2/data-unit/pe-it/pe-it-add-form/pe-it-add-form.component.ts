@@ -5,6 +5,7 @@ import { InfTemporalEntity, U, InfPersistentItemApi, InfPersistentItem } from 'a
 
 import { PeItFormBase } from '../pe-it-form.base';
 import { PeItActions } from '../pe-it.actions';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 
 @Component({
   selector: 'gv-pe-it-add-form',
@@ -32,10 +33,10 @@ export class PeItAddFormComponent extends PeItFormBase {
     protected actions: PeItActions,
     protected fb: FormBuilder,
     protected ref: ChangeDetectorRef,
-    protected peItApi: InfPersistentItemApi
-
+    protected peItApi: InfPersistentItemApi,
+    protected stateCreator: StateCreatorService
   ) {
-    super(ngRedux, actions, fb)
+    super(ngRedux, actions, fb, stateCreator)
     console.log('PeItAddFormComponent')
 
   }

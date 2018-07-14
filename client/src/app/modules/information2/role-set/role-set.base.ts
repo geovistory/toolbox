@@ -62,6 +62,8 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     @select() parentEntityPk$: Observable<number>
     @select() toggle$: Observable<CollapsedExpanded>
     @select() label$: Observable<RoleSetLabelObj>
+    @select() targetMaxQuantity$: Observable<number>
+
     @select() rolesNotInProjectLoading$: Observable<boolean>;
 
     @select() _role_list$: Observable<RoleDetailList>

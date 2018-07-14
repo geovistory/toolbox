@@ -98,11 +98,11 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
       for (let i = 0; i < widgets.length; i++) {
         const widget = widgets[i];
 
-        let propertyConfig = U.uiContextConfigFromRoleSet(widget.roleSet);
+        let uiContextConfig = widget.uiContextConfig;
 
-        if (propertyConfig && propertyConfig.ord_num !== null) {
-          propertyConfig.ord_num = null;
-          this.updateUiPropConfig([propertyConfig]);
+        if (uiContextConfig && uiContextConfig.ord_num !== null) {
+          uiContextConfig.ord_num = null;
+          this.updateUiContextConfig([uiContextConfig]);
         }
       }
     }
@@ -137,7 +137,7 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
       }
 
       if (uiPropConfs.length)
-        this.updateUiPropConfig(uiPropConfs);
+        this.updateUiContextConfig(uiPropConfs);
 
     }
   } ƒ

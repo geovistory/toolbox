@@ -31,9 +31,11 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
   @Input() basePath: string[]
   getBasePath = () => this.basePath;
 
+  @Input() mode: 'create' | 'editable';
+
   @Output() stopEditing: EventEmitter<void> = new EventEmitter();
 
-  @Output() submitted: EventEmitter<ExistenceTimeDetail> = new EventEmitter();
+  @Output() submitted: EventEmitter<{ toAdd: InfRole[], toRemove: InfRole[], unchanged: InfRole[] }> = new EventEmitter();
 
 
   _children: RoleSetList;
@@ -59,7 +61,6 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
     protected ngRedux: NgRedux<IAppState>,
     protected actions: ExistenceTimeActions,
     protected stateCreator: StateCreatorService,
-    protected teEntApi: InfTemporalEntityApi,
     protected fb: FormBuilder,
     protected ref: ChangeDetectorRef,
     protected validationService: ValidationService
@@ -222,9 +223,9 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
   addRoleSet(fkProperty: number, inheritFrom?: string[], replace?: string[]) {
 
     const state = this.ngRedux.getState();
-    
+
     // find the outgoing roleSet to add
-    let roleSetTemplate: RoleSet = state.activeProject.crm[DfhConfig.ClASS_PK_TIME_SPAN].roleSets[roleSetKeyFromParams(fkProperty, true)];
+    let roleSetTemplate: RoleSet = new RoleSet(state.activeProject.crm[DfhConfig.ClASS_PK_TIME_SPAN].roleSets[roleSetKeyFromParams(fkProperty, true)]);
 
     let role = new InfRole();
     role.time_primitive = new InfTimePrimitive();
@@ -359,29 +360,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
       });
 
       // create a InfTemporalEntity to send to the api
-      const teEnt = new InfTemporalEntity({
-        ...this.parentTeEntStore.getState().teEnt,
-        te_roles: [
-          ...rolesToRemove.filter(r=>(r)), // first all roles are removed from project 
-          ...rolesToAdd.filter(r=>(r)) // than all roles are created or added to project
-        ]
-      } as InfTemporalEntity)
-
-      this.subs.push(this.teEntApi.findOrCreateInfTemporalEntity(
-        this.ngRedux.getState().activeProject.pk_project, teEnt
-      ).subscribe(teEnts => {
-        const roles = [
-          // get the resulting roles of the and filter out the ones that are in project
-          ...teEnts[0].te_roles.filter(role => (role.entity_version_project_rels && role.entity_version_project_rels[0].is_in_project)),
-          // concat with the roles that were unchanged
-          ...unchangedRoles
-        ];
-
-        // update the state
-        this.stateCreator.initializeExistenceTimeState(roles, new ExistenceTimeDetail({ toggle: 'expanded' })).subscribe(existTimeDetail => {
-          this.submitted.emit(existTimeDetail)
-        })
-      }))
+      this.submitted.emit({ toAdd: rolesToAdd, toRemove: rolesToRemove, unchanged: unchangedRoles });
     }
     else {
       Object.keys(this.formGroup.controls).forEach(key => {
@@ -391,6 +370,8 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
       })
     }
   }
+
+
 }
 
 

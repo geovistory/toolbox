@@ -79,7 +79,7 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
     // add vals for each child roleSet unless it is circular
     if (this.roleSetState && this.roleSetState._role_list) {
 
-      // Find  handle the communities display range favorite
+      // Find the communities display range favorite
       const favoriteDisplayForRangePk = RoleSetService.getDisplayRangeFavoriteOfRoleStates(this.roleSetState._role_list);
 
       Object.keys(this.roleSetState._role_list).forEach((key) => {

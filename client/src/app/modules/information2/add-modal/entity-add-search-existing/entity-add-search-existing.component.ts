@@ -67,7 +67,7 @@ export class EntityAddSearchExistingComponent implements OnInit, OnChanges {
 
   ngOnChanges(){
     if(this.modalService.selectedClass){
-      this.modalService.modalTitle = 'Add a ' + this.modalService.selectedClass.dfh_standard_label;
+      this.modalService.modalTitle = 'Add a ' + this.modalService.selectedClass.label;
     }
 
     if(this.hidden ===false && !this.modalService.selectRoleRange){

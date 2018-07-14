@@ -53,25 +53,25 @@ export class ClassUiContextAPIActions {
   })
 
 
-  @dispatch() updateUiPropConfig = (uiPropConfigs: ComUiContextConfig[]): ClassUiContextAPIAction => ({
+  @dispatch() updateUiContextConfig = (uiPropConfigs: ComUiContextConfig[]): ClassUiContextAPIAction => ({
     type: ClassUiContextAPIActions.UPDATE_UI_PROP_CONFIG,
     meta: { uiPropConfigs },
     payload: null,
   });
 
-  @dispatch() updateUiPropConfigStarted = (): ClassUiContextAPIAction => ({
+  @dispatch() updateUiContextConfigStarted = (): ClassUiContextAPIAction => ({
     type: ClassUiContextAPIActions.UPDATE_UI_PROP_CONFIG_STARTED,
     meta: null,
     payload: null,
   })
 
-  @dispatch() updateUiPropConfigSucceeded = (uiPropConfigs: ComUiContextConfig[]): ClassUiContextAPIAction => ({
+  @dispatch() updateUiContextConfigSucceeded = (uiPropConfigs: ComUiContextConfig[]): ClassUiContextAPIAction => ({
     type: ClassUiContextAPIActions.UPDATE_UI_PROP_CONFIG_SUCCEEDED,
     meta: { uiPropConfigs },
     payload: null
   })
 
-  @dispatch() updateUiPropConfigFailed = (error): ClassUiContextAPIAction => ({
+  @dispatch() updateUiContextConfigFailed = (error): ClassUiContextAPIAction => ({
     type: ClassUiContextAPIActions.UPDATE_UI_PROP_CONFIG_FAILED,
     meta: null,
     payload: null,

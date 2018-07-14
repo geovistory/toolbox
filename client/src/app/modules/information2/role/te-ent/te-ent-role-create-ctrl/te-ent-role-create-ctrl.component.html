@@ -10,7 +10,7 @@
       [isCircular]="true"></gv-leaf-pe-it-view>
 
     <gv-leaf-pe-it-ctrl *ngIf="!(isCircular$|async) && roleState._leaf_peIt" [formControlName]="formControlName" (touched)="markAsTouched()"
-      [basePath]="(basePath.concat('_leaf_peIt'))" [dfhClass]="roleState.targetDfhClass"></gv-leaf-pe-it-ctrl>
+      [basePath]="(basePath.concat('_leaf_peIt'))" [pkClass]="roleState.targetClassPk"></gv-leaf-pe-it-ctrl>
 
     <gv-time-primitive-ctrl *ngIf="roleState._timePrimitive" [formControlName]="formControlName" (touched)="markAsTouched()"></gv-time-primitive-ctrl>
 

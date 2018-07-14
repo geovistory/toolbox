@@ -21,7 +21,7 @@ export default sandboxOf(TeEntRoleEditableComponent, {
             parentPath: ['_role_set_1'],
             index: '_role_1',
             initState: {
-                _role_set_1:new RoleSet( {
+                _role_set_1: new RoleSet({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -39,17 +39,7 @@ export default sandboxOf(TeEntRoleEditableComponent, {
                             } as InfRole,
                             isCircular: false,
                             isOutgoing: false,
-                            targetDfhClass: {
-                                dfh_pk_class: 22,
-                                dfh_identifier_in_namespace: 'E2',
-                                dfh_standard_label: 'Temporal Entity',
-                                pk_entity: 787,
-                                entity_version: 1,
-                                notes: null,
-                                tmsp_creation: '2018-06-12T16:17:27.562Z',
-                                tmsp_last_modification: '2018-06-12T16:17:27.562Z',
-                                sys_period: '["2018-06-12 16:17:27.562493+00",)'
-                            } as DfhClass,
+                            targetClassPk: 22,
                             isDisplayRoleForRange: true,
                             _timePrimitive: {
                                 timePrimitive: {
@@ -60,7 +50,7 @@ export default sandboxOf(TeEntRoleEditableComponent, {
                             }
                         } as RoleDetail
                     }
-                } )
+                })
             }
 
         },
@@ -97,7 +87,7 @@ export default sandboxOf(TeEntRoleEditableComponent, {
                             _place: {}
                         } as RoleDetail
                     }
-                } )
+                })
             }
 
         },

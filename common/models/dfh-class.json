@@ -99,12 +99,36 @@
         "findById",
         "__get__labels",
         "__get__text_properties",
+        "selectedClassesOfProfile",
         "selectedPeItClassesOfProfile",
         "propertiesAndUiElements"
       ]
     }
   ],
   "methods": {
+    "selectedClassesOfProfile": {
+      "accepts": [
+        {
+          "arg": "dfh_pk_profile",
+          "type": "number",
+          "required": false,
+          "description": "Profile id",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": ["DfhClass"],
+        "root": true
+      },
+      "description": "Get all classes that are selected by the profile of the specified primary-key.",
+      "http": {
+        "path": "/selected-classes-of-profile",
+        "verb": "get"
+      }
+    },
     "selectedPeItClassesOfProfile": {
       "accepts": [
         {
@@ -122,7 +146,7 @@
         "type": ["DfhClass"],
         "root": true
       },
-      "description": "Get all classes that are selected by the profile of the specified primary-key.",
+      "description": "Get all classes of persistent items that are selected and, if provided, filtered by the profile of the specified primary-key.",
       "http": {
         "path": "/selected-pe-it-classes-of-profile",
         "verb": "get"

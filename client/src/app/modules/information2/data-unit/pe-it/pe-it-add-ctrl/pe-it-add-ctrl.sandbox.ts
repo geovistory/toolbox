@@ -128,17 +128,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                     },
                                     "isCircular": false,
                                     "isOutgoing": false,
-                                    "targetDfhClass": {
-                                        "dfh_pk_class": 3,
-                                        "dfh_identifier_in_namespace": "F52",
-                                        "dfh_standard_label": "Name Use Activity",
-                                        "pk_entity": 728,
-                                        "entity_version": 1,
-                                        "notes": null,
-                                        "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                        "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                        "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                    },
+                                    targetClassPk: 3,                            
                                     "isDisplayRoleForDomain": null,
                                     "isDisplayRoleForRange": false,
                                     "_teEnt": {
@@ -258,17 +248,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                         },
                                                         "isCircular": false,
                                                         "isOutgoing": true,
-                                                        "targetDfhClass": {
-                                                            "dfh_pk_class": 2,
-                                                            "dfh_identifier_in_namespace": "E82",
-                                                            "dfh_standard_label": "Actor Appellation",
-                                                            "pk_entity": 727,
-                                                            "entity_version": 1,
-                                                            "notes": null,
-                                                            "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                                            "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                                            "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                                        },
+                                                        targetClassPk: 2,
                                                         "isDisplayRoleForDomain": null,
                                                         "isDisplayRoleForRange": null,
                                                         "_appe": {
@@ -632,17 +612,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                     },
                                     "isCircular": false,
                                     "isOutgoing": false,
-                                    "targetDfhClass": {
-                                        "dfh_pk_class": 3,
-                                        "dfh_identifier_in_namespace": "F52",
-                                        "dfh_standard_label": "Name Use Activity",
-                                        "pk_entity": 728,
-                                        "entity_version": 1,
-                                        "notes": null,
-                                        "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                        "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                        "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                    },
+                                    targetClassPk: 3,
                                     "isDisplayRoleForRange": true,
                                     "_teEnt": {
                                         "selectPropState": "init",
@@ -731,17 +701,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                         },
                                                         "isCircular": false,
                                                         "isOutgoing": true,
-                                                        "targetDfhClass": {
-                                                            "dfh_pk_class": 1,
-                                                            "dfh_identifier_in_namespace": "E21",
-                                                            "dfh_standard_label": "Person",
-                                                            "pk_entity": 726,
-                                                            "entity_version": 1,
-                                                            "notes": null,
-                                                            "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                                            "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                                            "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                                        },
+                                                        targetClassPk: 1,
                                                         "isDisplayRoleForRange": true,
                                                         "_leaf_peIt": {
                                                             "dfhClass": {
@@ -850,17 +810,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                         },
                                                         "isCircular": false,
                                                         "isOutgoing": true,
-                                                        "targetDfhClass": {
-                                                            "dfh_pk_class": 2,
-                                                            "dfh_identifier_in_namespace": "E82",
-                                                            "dfh_standard_label": "Actor Appellation",
-                                                            "pk_entity": 727,
-                                                            "entity_version": 1,
-                                                            "notes": null,
-                                                            "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                                            "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                                            "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                                        },
+                                                        targetClassPk: 2,
                                                         "isDisplayRoleForRange": true,
                                                         "_appe": {
                                                             "appellation": {
@@ -972,17 +922,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                         },
                                                         "isCircular": false,
                                                         "isOutgoing": true,
-                                                        "targetDfhClass": {
-                                                            "dfh_pk_class": 4,
-                                                            "dfh_identifier_in_namespace": "E56",
-                                                            "dfh_standard_label": "Language",
-                                                            "pk_entity": 729,
-                                                            "entity_version": 1,
-                                                            "notes": null,
-                                                            "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                                            "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                                            "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                                        },
+                                                        targetClassPk: 4,
                                                         "isDisplayRoleForRange": true,
                                                         "_lang": {
                                                             "language": {
@@ -1196,17 +1136,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                     },
                                     "isCircular": false,
                                     "isOutgoing": false,
-                                    "targetDfhClass": {
-                                        "dfh_pk_class": 3,
-                                        "dfh_identifier_in_namespace": "F52",
-                                        "dfh_standard_label": "Name Use Activity",
-                                        "pk_entity": 728,
-                                        "entity_version": 1,
-                                        "notes": null,
-                                        "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                        "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                        "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                    },
+                                    targetClassPk: 3,
                                     "isDisplayRoleForRange": true,
                                     "_teEnt": {
                                         "selectPropState": "init",
@@ -1295,17 +1225,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                         },
                                                         "isCircular": false,
                                                         "isOutgoing": true,
-                                                        "targetDfhClass": {
-                                                            "dfh_pk_class": 1,
-                                                            "dfh_identifier_in_namespace": "E21",
-                                                            "dfh_standard_label": "Person",
-                                                            "pk_entity": 726,
-                                                            "entity_version": 1,
-                                                            "notes": null,
-                                                            "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                                            "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                                            "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                                        },
+                                                        targetClassPk: 1,
                                                         "isDisplayRoleForRange": true,
                                                         "_leaf_peIt": {
                                                             "dfhClass": {
@@ -1414,17 +1334,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                         },
                                                         "isCircular": false,
                                                         "isOutgoing": true,
-                                                        "targetDfhClass": {
-                                                            "dfh_pk_class": 2,
-                                                            "dfh_identifier_in_namespace": "E82",
-                                                            "dfh_standard_label": "Actor Appellation",
-                                                            "pk_entity": 727,
-                                                            "entity_version": 1,
-                                                            "notes": null,
-                                                            "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                                            "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                                            "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                                        },
+                                                        targetClassPk: 2,
                                                         "isDisplayRoleForRange": true,
                                                         "_appe": {
                                                             "appellation": {
@@ -1536,17 +1446,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                         },
                                                         "isCircular": false,
                                                         "isOutgoing": true,
-                                                        "targetDfhClass": {
-                                                            "dfh_pk_class": 4,
-                                                            "dfh_identifier_in_namespace": "E56",
-                                                            "dfh_standard_label": "Language",
-                                                            "pk_entity": 729,
-                                                            "entity_version": 1,
-                                                            "notes": null,
-                                                            "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                                            "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                                            "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                                        },
+                                                        targetClassPk: 4,
                                                         "isDisplayRoleForRange": true,
                                                         "_lang": {
                                                             "language": {
@@ -1803,17 +1703,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                     },
                                     "isCircular": false,
                                     "isOutgoing": false,
-                                    "targetDfhClass": {
-                                        "dfh_pk_class": 5,
-                                        "dfh_identifier_in_namespace": "E67",
-                                        "dfh_standard_label": "Birth",
-                                        "pk_entity": 730,
-                                        "entity_version": 1,
-                                        "notes": null,
-                                        "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                        "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                        "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                    },
+                                    targetClassPk: 5,
                                     "isDisplayRoleForRange": true,
                                     "_teEnt": {
                                         "selectPropState": "init",
@@ -1902,17 +1792,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                         },
                                                         "isCircular": false,
                                                         "isOutgoing": true,
-                                                        "targetDfhClass": {
-                                                            "dfh_pk_class": 1,
-                                                            "dfh_identifier_in_namespace": "E21",
-                                                            "dfh_standard_label": "Person",
-                                                            "pk_entity": 726,
-                                                            "entity_version": 1,
-                                                            "notes": null,
-                                                            "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                                            "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                                            "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                                        },
+                                                        targetClassPk: 1,
                                                         "isDisplayRoleForRange": true,
                                                         "_leaf_peIt": {
                                                             "dfhClass": {
@@ -1991,17 +1871,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                         },
                                                         "isCircular": false,
                                                         "isOutgoing": true,
-                                                        "targetDfhClass": {
-                                                            "dfh_pk_class": 1,
-                                                            "dfh_identifier_in_namespace": "E21",
-                                                            "dfh_standard_label": "Person",
-                                                            "pk_entity": 726,
-                                                            "entity_version": 1,
-                                                            "notes": null,
-                                                            "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                                            "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                                            "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                                        },
+                                                        targetClassPk: 1,
                                                         "isDisplayRoleForRange": true,
                                                         "_leaf_peIt": {
                                                             "dfhClass": {
@@ -2080,17 +1950,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                         },
                                                         "isCircular": false,
                                                         "isOutgoing": true,
-                                                        "targetDfhClass": {
-                                                            "dfh_pk_class": 1,
-                                                            "dfh_identifier_in_namespace": "E21",
-                                                            "dfh_standard_label": "Person",
-                                                            "pk_entity": 726,
-                                                            "entity_version": 1,
-                                                            "notes": null,
-                                                            "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                                            "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                                            "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                                        },
+                                                        targetClassPk: 1,
                                                         "isDisplayRoleForRange": true,
                                                         "_leaf_peIt": {
                                                             "dfhClass": {
@@ -2260,17 +2120,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                     },
                                     "isCircular": false,
                                     "isOutgoing": false,
-                                    "targetDfhClass": {
-                                        "dfh_pk_class": 5,
-                                        "dfh_identifier_in_namespace": "E67",
-                                        "dfh_standard_label": "Birth",
-                                        "pk_entity": 730,
-                                        "entity_version": 1,
-                                        "notes": null,
-                                        "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                        "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                        "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                    },
+                                    targetClassPk: 5,
                                     "isDisplayRoleForRange": true,
                                     "_teEnt": {
                                         "selectPropState": "init",
@@ -2359,17 +2209,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                         },
                                                         "isCircular": false,
                                                         "isOutgoing": true,
-                                                        "targetDfhClass": {
-                                                            "dfh_pk_class": 1,
-                                                            "dfh_identifier_in_namespace": "E21",
-                                                            "dfh_standard_label": "Person",
-                                                            "pk_entity": 726,
-                                                            "entity_version": 1,
-                                                            "notes": null,
-                                                            "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                                            "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                                            "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                                        },
+                                                        targetClassPk: 1,
                                                         "isDisplayRoleForRange": true,
                                                         "_leaf_peIt": {
                                                             "dfhClass": {
@@ -2448,17 +2288,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                         },
                                                         "isCircular": true,
                                                         "isOutgoing": true,
-                                                        "targetDfhClass": {
-                                                            "dfh_pk_class": 1,
-                                                            "dfh_identifier_in_namespace": "E21",
-                                                            "dfh_standard_label": "Person",
-                                                            "pk_entity": 726,
-                                                            "entity_version": 1,
-                                                            "notes": null,
-                                                            "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                                            "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                                            "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                                        },
+                                                        targetClassPk: 1,
                                                         "isDisplayRoleForRange": true,
                                                         "_leaf_peIt": {
                                                             "dfhClass": {
@@ -2494,17 +2324,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                         },
                                                         "isCircular": false,
                                                         "isOutgoing": true,
-                                                        "targetDfhClass": {
-                                                            "dfh_pk_class": 1,
-                                                            "dfh_identifier_in_namespace": "E21",
-                                                            "dfh_standard_label": "Person",
-                                                            "pk_entity": 726,
-                                                            "entity_version": 1,
-                                                            "notes": null,
-                                                            "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                                                            "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                                                            "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                                                        },
+                                                        targetClassPk: 1,
                                                         "isDisplayRoleForRange": true,
                                                         "_leaf_peIt": {
                                                             "dfhClass": {

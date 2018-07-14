@@ -3,10 +3,10 @@ import { CalendarType } from "../date-time/time-primitive";
 import { Granularity } from "../date-time/date-time-commons";
 import { DfhConfig } from "../../modules/information2/shared/dfh-config";
 import { AppellationLabel } from "../../modules/information2/shared/appellation-label";
-import { RoleSet, RoleSetLabelObj, RoleSetList } from "../../modules/information2/information.models";
+import { RoleSet, RoleSetLabelObj, RoleSetList, RoleDetail, AppeDetail, LangDetail, DataUnitChildList, DataUnitChild, ExistenceTimeDetail, PeItDetail, TimePrimitveDetail, DataUnitLabel, RoleLabel, ExTimeLabel, DataUnitChildLabel } from "../../modules/information2/information.models";
 import { indexBy, omit } from 'ramda';
-import { roleSetKey } from "../../modules/information2/information.helpers";
-import { ComUiContextConfig, ComPropertySet } from "../sdk";
+import { roleSetKey, roleSetKeyFromParams } from "../../modules/information2/information.helpers";
+import { ComUiContextConfig, ComPropertySet, DfhClass } from "../sdk";
 import { ClassConfig, UiContext, UiElement } from "../active-project/active-project.models";
 /**
  * Utilities class for static functions
@@ -15,7 +15,7 @@ import { ClassConfig, UiContext, UiElement } from "../active-project/active-proj
 export class U {
 
 
-    static obj2Arr(obj: { [key: string]: any }): any[] {
+    static obj2Arr<T>(obj: { [key: string]: T }): T[] {
         let arr = [];
 
         if (obj == undefined) return arr;
@@ -195,10 +195,14 @@ export class U {
     static infProperties2RoleSets(isOutgoing: boolean, properties: DfhProperty[]): RoleSet[] {
         if (!properties) return [];
 
+
+
         return properties.map(property => {
             return {
                 isOutgoing: isOutgoing,
                 property: omit(['labels', 'domain_class', 'range_class'], property),
+                targetMaxQuantity: isOutgoing ? property.dfh_range_instances_max_quantifier : property.dfh_domain_instances_max_quantifier,
+                targetMinQuantity: isOutgoing ? property.dfh_range_instances_min_quantifier : property.dfh_domain_instances_min_quantifier,
                 targetClassPk: isOutgoing ? property.dfh_has_range : property.dfh_has_domain,
                 targetClass: isOutgoing ? property.range_class : property.domain_class,
                 label: this.createLabelObject(property, isOutgoing)
@@ -333,5 +337,165 @@ export class U {
         return labelObj;
     }
 
+
+    /**
+ * Converts a DfhClass to a ClassConfig
+ * @param dfhC 
+ */
+    static classConfigFromDfhClass(dfhC: DfhClass): ClassConfig {
+        let cConf: ClassConfig = {
+            dfh_fk_system_type: (!dfhC.class_profile_view ? null : !dfhC.class_profile_view[0] ? null : !dfhC.class_profile_view[0].dfh_fk_system_type ? null : dfhC.class_profile_view[0].dfh_fk_system_type),
+            label: dfhC.dfh_standard_label,
+            dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,
+            dfh_pk_class: dfhC.dfh_pk_class
+        };
+
+        if (dfhC.ingoing_properties || dfhC.outgoing_properties)
+            cConf.roleSets = U.roleSetsFromProperties(dfhC.ingoing_properties, dfhC.outgoing_properties)
+
+        return cConf;
+    }
+
+
+    static labelFromDataUnitChildList(r: DataUnitChildList): DataUnitLabel {
+        // get the first 3 data UnitsChildren's labels
+        const duChildren = U.obj2Arr(r);
+
+        return {
+            parts: duChildren.slice(0, 2).map(c => U.labelFromDataUnitChild(c)),
+            hasMore: (duChildren.length > 2)
+        }
+    }
+
+
+    static labelFromDataUnitChild(c: DataUnitChild): DataUnitChildLabel {
+        if (c.type == 'RoleSet')
+            return U.labelFromRoleSet(c as RoleSet);
+        else if (c.type == 'ExistenceTimeDetail')
+            return U.labelFromExTime(c as ExistenceTimeDetail);
+
+        else return null;
+    }
+
+
+    static labelFromRoleSet(r: RoleSet): DataUnitChildLabel {
+        let duChild: DataUnitChildLabel = {};
+
+        const roleDetails = U.obj2Arr(r._role_list);
+
+        duChild.roleLabel = U.labelFromRoleDetail(roleDetails[0]);
+
+        if (roleDetails.length > 1)
+            duChild.suffix = '(+' + (roleDetails.length - 1) + ')';
+
+        duChild.introducer = r.label.sg;
+
+        return duChild;
+    }
+
+
+
+    static labelFromRoleDetail(r: RoleDetail): RoleLabel {
+
+        if (r._teEnt) return {
+            type: 'te-ent',
+            string: U.labelFromDataUnitChildList(r._teEnt._children).parts[0].roleLabel.string
+        };
+
+        if (r._appe) return { type: 'appe', string: U.labelFromAppeDetail(r._appe) };
+        if (r._lang) return { type: 'lang', string: U.labelFromLangDetail(r._lang) };
+        if (r._place) return { type: 'place', string: 'to do: pl_place-label' };
+        if (r._leaf_peIt) return { type: 'leaf-pe-it', string: U.labelFromLeafPeIt(r._leaf_peIt) };
+
+        console.warn('labelFromRoleDetail: This kind of RoleDetail does not produce labels');
+    }
+
+
+    static labelFromAppeDetail(a: AppeDetail): string {
+        if (a && a.appellation && a.appellation.appellation_label)
+            return new AppellationLabel(a.appellation.appellation_label).getString();
+
+        else return null;
+    }
+
+    static labelFromLangDetail(l: LangDetail): string {
+        if (l && l.language)
+            return l.language.iso6391;
+
+        else return null;
+    }
+
+    static labelFromTimePrimitive(r: InfRole): TimePrimitive {
+        if (r)
+            return U.infRole2TimePrimitive(r)
+
+        else return null;
+    }
+
+    static labelFromLeafPeIt(l: PeItDetail): string {
+        if (l._children) {
+
+            const p = U.labelFromDataUnitChildList(l._children)
+
+            if (p && p.parts && p.parts[0] && p.parts[0].roleLabel)
+                return p.parts[0].roleLabel.string;
+        }
+
+        else return null;
+    }
+
+
+
+    static labelFromExTime(e: ExistenceTimeDetail): DataUnitChildLabel {
+        let earliest: TimePrimitive, latest: TimePrimitive;
+        let eRoleDetail, lRoleDetail;
+
+        if (e && e._children) {
+            const c = e._children;
+            const bOb = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_BEGIN, true)];
+            const eOb = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_BEGIN, true)];
+            const bOe = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_END, true)];
+            const eOe = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_END, true)];
+            const at = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_AT_SOME_TIME_WITHIN, true)];
+            const ong = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_ONGOING_THROUGHOUT, true)];
+
+            // Get earliest date
+            const earliestArr = [bOb, eOb, at, ong, bOe, eOe].filter(rs => (rs))
+            if (earliestArr && earliestArr[0]) {
+                if (earliestArr[0]._role_list) {
+                    var roleDetails = U.obj2Arr(earliestArr[0]._role_list);
+                    if (roleDetails[0]) {
+                        eRoleDetail = roleDetails[0];
+                        earliest = U.labelFromTimePrimitive(eRoleDetail.role);
+                    }
+                }
+            }
+
+            // Get latest date
+            const latestArr = [eOe, bOe, at, ong, eOb, bOb].filter(rs => (rs))
+            if (latestArr && latestArr[0]) {
+                if (latestArr[0]._role_list) {
+                    var roleDetails = U.obj2Arr(latestArr[0]._role_list);
+                    if (roleDetails[0]) {
+                        lRoleDetail = roleDetails[0];
+                        // if latest equals earliest, don't add it
+                        if (lRoleDetail != eRoleDetail)
+                            latest = U.labelFromTimePrimitive(lRoleDetail.role);
+                    }
+                }
+            }
+        }
+
+        if (!earliest && !latest) return null;
+
+        return {
+            introducer: 'When',
+            roleLabel: {
+                type: 'ex-time',
+                exTimeLabel: { earliest, latest }
+            }
+        }
+
+    }
 
 }

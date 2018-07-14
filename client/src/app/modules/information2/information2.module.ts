@@ -102,6 +102,8 @@ import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
+import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.component';
+import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.component';
 
 @NgModule({
   imports: [
@@ -196,6 +198,10 @@ import { DimensionChangeModule } from '../../shared/directives/dimension-change/
     PlaceCtrlComponent,
     PlaceViewComponent,
     ExistenceTimeHelpComponent,
+
+    // Reusable
+    TeEntLabelComponent,
+    PeItLabelComponent,
 
 
   ],

@@ -32,7 +32,7 @@ export class ClassUiContextAPIEpics {
   public createEpics(subStore: ObservableStore<ClassDetail>, pkClass: number, pkUiContext: number) {
     return [
       createEpicMiddleware(this.createLoadClassEpic(subStore, pkClass, pkUiContext)),
-      createEpicMiddleware(this.createUpdateUiPropConfigEpic(subStore, pkClass, pkUiContext)),
+      createEpicMiddleware(this.createupdateUiContextConfigEpic(subStore, pkClass, pkUiContext)),
     ];
   }
 
@@ -55,12 +55,12 @@ export class ClassUiContextAPIEpics {
   }
 
 
-  private createUpdateUiPropConfigEpic(subStore: ObservableStore<ClassDetail>, pkClass: number, pkUiContext: number): Epic<FluxStandardAction<any, any>, IAppState> {
+  private createupdateUiContextConfigEpic(subStore: ObservableStore<ClassDetail>, pkClass: number, pkUiContext: number): Epic<FluxStandardAction<any, any>, IAppState> {
     return (action$, store) => action$
       .ofType(ClassUiContextAPIActions.UPDATE_UI_PROP_CONFIG)
       .switchMap((action) => new Observable<LoadingBarAction>((globalStore) => {
         globalStore.next(this.loadingBarActions.startLoading());
-        subStore.dispatch(this.actions.updateUiPropConfigStarted());
+        subStore.dispatch(this.actions.updateUiContextConfigStarted());
 
         Observable.combineLatest(
           action.meta.uiPropConfigs.map(data => this.uiPropConfigApi.patchOrCreate(data))
@@ -69,7 +69,7 @@ export class ClassUiContextAPIEpics {
             subStore.dispatch(this.actions.loadClassUiContext());
 
           }, error => {
-            subStore.dispatch(this.actions.updateUiPropConfigFailed({ status: '' + error.status }))
+            subStore.dispatch(this.actions.updateUiContextConfigFailed({ status: '' + error.status }))
           })
       }))
   }

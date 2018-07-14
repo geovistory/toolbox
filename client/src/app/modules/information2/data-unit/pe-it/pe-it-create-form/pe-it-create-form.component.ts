@@ -6,6 +6,7 @@ import { InfTemporalEntity, U } from 'app/core';
 import { PeItFormBase } from '../pe-it-form.base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -29,10 +30,10 @@ export class PeItCreateFormComponent extends PeItFormBase {
   constructor(
     protected ngRedux: NgRedux<any>,
     protected actions: PeItActions,
-    protected fb: FormBuilder
-
+    protected fb: FormBuilder,
+    protected stateCreator: StateCreatorService
   ) {
-    super(ngRedux, actions, fb)
+    super(ngRedux, actions, fb, stateCreator)
 
     this.subscribeFormChanges();
 

@@ -2,12 +2,17 @@
 
 module.exports = function (DfhClass) {
 
-  DfhClass.selectedPeItClassesOfProfile = function (dfh_pk_profile, cb) {
+  /**
+   * Black list of classes that should never be directly used by users 
+   * to produce instances
+   */
+  const blackList = [
+    75, // Actor Appellation
+    364, // Geographical Place Type
+    443 // Built work Type
+  ]
 
-    const blackList = [
-      75, // Actor Appellation
-      364 // Geographical Place Type
-    ]
+  DfhClass.selectedPeItClassesOfProfile = function (dfh_pk_profile, cb) {
 
     const filter = {
       /** 
@@ -20,6 +25,7 @@ module.exports = function (DfhClass) {
       "include": {
         "class_profile_view": {
           "$relation": {
+            select: "false",
             "name": "class_profile_view",
             "joinType": "inner join",
             "where": [
@@ -44,6 +50,44 @@ module.exports = function (DfhClass) {
 
   }
 
+
+  DfhClass.selectedClassesOfProfile = function (dfh_pk_profile, cb) {
+
+    const filter = {
+      /** 
+       * Select persistent items by pk_entity
+       */
+      "where": ["dfh_pk_class", "NOT IN", blackList],
+      "orderBy": [{
+        "pk_entity": "asc"
+      }],
+      "include": {
+        "class_profile_view": {
+          "$relation": {
+            // select: "false",
+            "name": "class_profile_view",
+            "joinType": "inner join",
+            "where": [
+              "dfh_profile_association_type", "=", "selected",
+              ...(dfh_pk_profile ? ["and", "dfh_fk_profile", "=", dfh_pk_profile] : [])
+            ],
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          }
+        },
+        "text_properties": {
+          "$relation": {
+            "name": "text_properties",
+            "joinType": "left join"
+          }
+        }
+      }
+    }
+
+    return DfhClass.findComplex(filter, cb)
+
+  }
 
 
 
@@ -145,8 +189,9 @@ module.exports = function (DfhClass) {
         "property_set_class_rel": {
           "$relation": {
             "name": "property_set_class_rel",
-            "joinType": "left join",
-            select: { include: [] }
+            "joinType": "left join"
+            // ,
+            // select: { include: [] }
           },
           property_set: {
             $relation: {

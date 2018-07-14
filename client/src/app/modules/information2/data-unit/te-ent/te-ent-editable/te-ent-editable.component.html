@@ -8,7 +8,7 @@
         [index]="el.roleSetKey" (onRemoveRoleSet)="removeRoleSet(el.roleSetKey)"></gv-te-ent-role-set-editable>
 
       <gv-existence-time-editable *ngIf="el.fk_property_set === comConfig.PK_PROPERTY_SET_EXISTENCE_TIME && (_children$ | async)?._existenceTime"
-        [basePath]="basePath.concat('_children').concat('_existenceTime')" (onRemovePropSet)="removePropSet(el.fk_property_set)"></gv-existence-time-editable>
+        [basePath]="basePath.concat('_children').concat('_existenceTime')" (onRemovePropSet)="removePropSet(el.fk_property_set)" mode="editable"></gv-existence-time-editable>
     </div>
 
 
@@ -56,16 +56,15 @@
 <ng-template #header>
   <div class="card-header gv-name-header d-flex flex-row">
     <ng-content select="[headerLeft]"></ng-content>
+    <div><i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i></div>
     <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
-      <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
       <span *ngIf="labelInEdit">{{labelInEdit}}</span>
-      <span *ngIf="label && !labelInEdit">{{label}}</span>
-      <span *ngIf="!label && !labelInEdit">{{(dfhClass$|async)?.dfh_standard_label}}</span>
+      <gv-te-ent-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-te-ent-label>
     </div>
     <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
       <div class="align-self-center">
-        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(dfhClass$|async)?.dfh_pk_class}}" target="_blank">
-          {{(dfhClass$|async)?.dfh_identifier_in_namespace}}
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{classConfig.dfh_pk_class}}" target="_blank">
+          {{classConfig.dfh_identifier_in_namespace}}
         </a>
       </div>
     </div>

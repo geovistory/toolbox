@@ -52,7 +52,8 @@ export class EntityAddAddExistingComponent implements OnInit {
 
     this.stateCreator.initializePeItState(
       this.pkEntity,
-      this.ngRedux.getState().activeProject.pk_project
+      this.ngRedux.getState().activeProject.pk_project,
+      { isAddMode: true }
     ).subscribe(peItDetail => {
 
       this.localStore.dispatch(this.actions.entityAddExistingInitialized(peItDetail));

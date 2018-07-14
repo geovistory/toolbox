@@ -182,13 +182,14 @@ module.exports = function (Project) {
             "where": [
               "dfh_profile_association_type", "=", "selected"
             ],
-            select: false
+            select: { include: ["dfh_fk_system_type", "dfh_type_label"] }
           }
         },
         "text_properties": {
           "$relation": {
             "name": "text_properties",
-            "joinType": "left join"
+            "joinType": "left join",
+            select: { include: ["dfh_text_property", "dfh_language_iso_code"] }
           }
         },
         "ingoing_properties": {

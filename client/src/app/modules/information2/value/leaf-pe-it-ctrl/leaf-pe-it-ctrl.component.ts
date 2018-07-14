@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy, forwardRef, ChangeDetectorRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-import { DfhClass, InfRole } from 'app/core';
+import { DfhClass, InfRole, IAppState, ClassConfig } from 'app/core';
 import { pick } from 'ramda';
 import { Subscription } from 'rxjs';
 
 import { EntityAddModalComponent } from '../../add-modal/entity-add-modal/entity-add-modal.component';
 import { EntityAddModalService } from '../../shared/entity-add-modal.service';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { WithSubStore } from '@angular-redux/store';
+import { WithSubStore, NgRedux } from '@angular-redux/store';
 import { leafPeItReducer } from '../leaf-pe-it-view/leaf-pe-it-view.reducer';
 import { LeafPeItActions } from '../leaf-pe-it-view/leaf-pe-it-view.actions';
 
@@ -40,7 +40,7 @@ export class LeafPeItCtrlComponent  extends LeafPeItActions implements OnInit, O
   /**
    * Inputs
    */
-  @Input() dfhClass: DfhClass;
+  @Input() pkClass: number;
   @Input() basePath: string[];
   getBasePath = () => this.basePath;
 
@@ -53,18 +53,21 @@ export class LeafPeItCtrlComponent  extends LeafPeItActions implements OnInit, O
 
   @Output() touched: EventEmitter<void> = new EventEmitter();
 
+  classConfig:ClassConfig;
 
   subs: Subscription[] = [];
 
   constructor(
+    private ngRedux:NgRedux<IAppState>,
     private modalService: NgbModal,
     private entityAddModalService: EntityAddModalService,
     private ref: ChangeDetectorRef
   ) {
     super()
   }
-
+  
   ngOnInit() {
+    this.classConfig = this.ngRedux.getState().activeProject.crm[this.pkClass];
     // this.openModal()
   }
   ngOnDestroy() {
@@ -94,7 +97,7 @@ export class LeafPeItCtrlComponent  extends LeafPeItActions implements OnInit, O
     this.entityAddModalService.previousState = undefined;
     this.entityAddModalService.state = 'search-existing';
     this.entityAddModalService.selectRoleRange = true;
-    this.entityAddModalService.selectedClass = this.dfhClass;
+    this.entityAddModalService.selectedClass = this.classConfig;
     this.subs.push(this.entityAddModalService.onSelect.subscribe(pkEntity => {
       this.selected.emit(pkEntity);
 

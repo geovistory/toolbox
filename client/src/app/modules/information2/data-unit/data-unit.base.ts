@@ -1,14 +1,17 @@
-import { ObservableStore, select, NgRedux } from '@angular-redux/store';
-import { Input, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { DfhClass, DfhProperty, InfPersistentItem, Project, IAppState, ClassConfig, ComConfig } from 'app/core';
-import { Subscription } from 'rxjs';
+import { NgRedux, ObservableStore, select } from '@angular-redux/store';
+import { Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem } from 'app/core';
+import { Subject, Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 
-import { roleSetKey } from '../information.helpers';
-import { PeItDetail, RoleSet, RoleSetList, SelectPropStateType, TeEntDetail, AddOption } from '../information.models';
+import { NgbTypeahead } from '../../../../../node_modules/@ng-bootstrap/ng-bootstrap';
+import { roleSetKey, roleSetKeyFromParams } from '../information.helpers';
+import { AddOption, PeItDetail, RoleSet, RoleSetList, SelectPropStateType, TeEntDetail, ExistenceTimeDetail, DataUnitLabel } from '../information.models';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
+import { StateCreatorService } from '../shared/state-creator.service';
 
 // maps pk_property_set to key in ngRedux store
 export const propSetMap = {
@@ -33,7 +36,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   // parameter so Angular doesn't tear down and rebuild the list's DOM every
   // time there's an update.
   getKey(_, item) {
-    return item.key;
+    return _;
   }
 
   @select() selectPropState$: Observable<SelectPropStateType>;
@@ -50,11 +53,14 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   @select() propertyToAdd$: Observable<RoleSet>; // Poperty that is currently chosen in order to add a role of this kind
   @select() _children$: Observable<RoleSetList>;
 
+  comConfig = ComConfig;
   classConfig: ClassConfig;
+
 
   constructor(
     protected ngRedux: NgRedux<IAppState>,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    protected stateCreator: StateCreatorService
   ) {
     this.formGroup = this.fb.group({})
   }
@@ -67,8 +73,11 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   /**
    * Properties
    */
-  label: string;
+  label: DataUnitLabel;
   labelInEdit: string;
+
+  addOptions: AddOption[];
+  selectedAddOption: AddOption;
 
   ngOnDestroy() {
     this.subs.forEach(sub => sub.unsubscribe())
@@ -79,6 +88,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
     this.initStore()
 
     this.classConfig = this.ngRedux.getState().activeProject.crm[this.localStore.getState().fkClass];
+
 
     // Initialize the children in this class
     // this.initChildren() SINGLE_INIT
@@ -93,9 +103,25 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
 
   initSubscriptions() {
-    this.subs.push(this._children$.subscribe(rs =>
-      this.roleSets = rs
-    ))
+    this.subs.push(this._children$.subscribe(rs => {
+      this.roleSets = rs;
+      if (this.roleSets)
+        this.addOptions = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE].uiElements.map(el => {
+          if (el.fk_property && !this.roleSets[el.roleSetKey]) {
+            const roleSet = this.classConfig.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
+            return {
+              label: roleSet.label.default,
+              uiElement: el
+            }
+          }
+          else if (el.fk_property_set && !this.roleSets[propSetMap[el.fk_property_set]]) {
+            return {
+              label: el.property_set.label,
+              uiElement: el
+            }
+          }
+        }).filter(o => (o))
+    }))
   }
 
 
@@ -154,15 +180,15 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
     else return false
   }
 
-  /**
-  * Method to find out if a addOption is already added
-  */
-  addOptionAdded(o: AddOption): boolean {
+  // /**
+  // * Method to find out if a addOption is already added
+  // */
+  // addOptionAdded(o: AddOption): boolean {
 
-    if (this.roleSets && this.roleSets[o.uiElement.roleSetKey]) return true;
-    if (this.localStore.getState()[propSetMap[o.uiElement.fk_property_set]]) return true;
-    else return false
-  }
+  //   if (this.roleSets && this.roleSets[o.uiElement.roleSetKey]) return true;
+  //   if (this.roleSets && ) return true;
+  //   else return false
+  // }
 
 
 
@@ -190,8 +216,15 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
     /** remove the roleSet from state */
     this.localStore.dispatch(this.actions.addPropSet(keyInState, val));
 
-    // /** remove the formControl from form */
-    // this.formGroup.removeControl(propSetMap[key])
+    // add a form conrtol
+    this.formGroup.addControl(
+      keyInState, new FormControl(
+        null,
+        [
+          Validators.required
+        ]
+      )
+    )
   }
 
 
@@ -203,9 +236,64 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
     /** remove the roleSet from state */
     this.localStore.dispatch(this.actions.removePropSet(propSetMap[key]));
 
-    // /** remove the formControl from form */
-    // this.formGroup.removeControl(propSetMap[key])
+    /** remove the formControl from form */
+    this.formGroup.removeControl(propSetMap[key])
   }
 
+
+
+  /**
+   * Typeahead. 
+   * TODO: extract to component 
+   */
+
+  @ViewChild('instance') instance: NgbTypeahead;
+  focus$ = new Subject<string>();
+  click$ = new Subject<string>();
+
+  typeaheadWitdh: number;
+
+  search = (text$: Observable<string>) => {
+
+    this.selectedAddOption = undefined;
+
+    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
+    const inputFocus$ = this.focus$;
+
+    // filter options not yet added
+    const options = this.addOptions;
+
+    return Observable.merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).map((term) =>
+      (term === '' ? options : options
+        .filter(o => (
+          o.label.toLowerCase().indexOf(term.toLowerCase()) > -1  // where search term matches
+        ))
+      ).slice(0, 10)
+    )
+  }
+
+
+
+  addOptionSelected($event) {
+    const o: AddOption = $event.item;
+
+    if (o.uiElement.roleSetKey) {
+      this.addRoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey])
+    }
+
+    else if (o.uiElement.fk_property_set) {
+
+      if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
+
+        this.stateCreator.initializeExistenceTimeState([], new ExistenceTimeDetail({ toggle: 'expanded' }), { isCreateMode: true }).subscribe(val => {
+          this.addPropSet('_existenceTime', val)
+        })
+
+      }
+
+    }
+
+  }
 
 }

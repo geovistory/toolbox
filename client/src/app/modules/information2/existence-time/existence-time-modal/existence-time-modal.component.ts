@@ -12,6 +12,7 @@ export class ExistenceTimeModalComponent implements OnInit {
 
 
   @Input() basePath: string[];
+  @Input() mode: 'create' | 'editable';
 
   constructor(public activeModal: NgbActiveModal) {   }
 

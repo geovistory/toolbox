@@ -98,13 +98,11 @@ export class StateToDataService {
           }
         }
         else if (child.type == 'ExistenceTimeDetail') {
-          U.obj2Arr((child as ExistenceTimeDetail)._children).forEach((c: RoleSetList) => {
-            U.obj2Arr(c).forEach((roleSet: RoleSet) => {
-              U.obj2Arr(roleSet._role_list).forEach((roleDetail: RoleDetail) => {
-                if (!roleDetail.isCircular)
-                  roles.push(StateToDataService.roleStateToRoleToRelate(roleDetail, eprOptions));
-              });
-            })
+          U.obj2Arr((child as ExistenceTimeDetail)._children).forEach((roleSet: RoleSet) => {
+            U.obj2Arr(roleSet._role_list).forEach((roleDetail: RoleDetail) => {
+              if (!roleDetail.isCircular)
+                roles.push(StateToDataService.roleStateToRoleToRelate(roleDetail, eprOptions));
+            });
           })
         }
 
@@ -153,74 +151,74 @@ export class StateToDataService {
     return et;
   }
 
-  /**
-   * Extracts Appellation Label string from the given TeEnt-RoleSets
-   * 
-   * @param teEntRoleSets 
-   * @returns appellation label as pure string
-   */
-  static getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets: RoleSetList): string {
-    if (!teEntRoleSets) return null
+  // /**
+  //  * Extracts Appellation Label string from the given TeEnt-RoleSets
+  //  * 
+  //  * @param teEntRoleSets 
+  //  * @returns appellation label as pure string
+  //  */
+  // static getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets: RoleSetList): string {
+  //   if (!teEntRoleSets) return null
 
-    const detailedNames: RoleSet = teEntRoleSets['_' + DfhConfig.PROPERTY_PK_R64_USED_NAME + '_outgoing'];
-    if (detailedNames) {
-      const roleStates = RoleSetService.getRoleStatesContainerForState(detailedNames)
-      for (const key in roleStates) {
-        if (roleStates.hasOwnProperty(key)) {
-          const r: RoleDetail = roleStates[key];
+  //   const detailedNames: RoleSet = teEntRoleSets['_' + DfhConfig.PROPERTY_PK_R64_USED_NAME + '_outgoing'];
+  //   if (detailedNames) {
+  //     const roleStates = RoleSetService.getRoleStatesContainerForState(detailedNames)
+  //     for (const key in roleStates) {
+  //       if (roleStates.hasOwnProperty(key)) {
+  //         const r: RoleDetail = roleStates[key];
 
-          //TODO Add this if clause as soon as we have DisplayRoleForDomain in the db
-          // if ((r.isOutgoing && r.isDisplayRoleForRange) || (!r.isOutgoing && r.isDisplayRoleForDomain)) {
-          if (r.role && r.role.appellation && r.role.appellation.appellation_label) {
-            return new AppellationLabel(r.role.appellation.appellation_label).getString();
-          }
-          // }
+  //         //TODO Add this if clause as soon as we have DisplayRoleForDomain in the db
+  //         // if ((r.isOutgoing && r.isDisplayRoleForRange) || (!r.isOutgoing && r.isDisplayRoleForDomain)) {
+  //         if (r.role && r.role.appellation && r.role.appellation.appellation_label) {
+  //           return new AppellationLabel(r.role.appellation.appellation_label).getString();
+  //         }
+  //         // }
 
-        }
-      }
+  //       }
+  //     }
 
-      return null;
-    }
-  }
-
-
-
-  /**
-   * Extracts Appellation Label string from the given PeIt-RoleSets
-   * @param teEntRoleSets 
-   * @returns appellation label as pure string
-   */
-  static getDisplayAppeLabelOfPeItRoleSets(peItRoleSets: DataUnitChildList): string {
-    if (!peItRoleSets) return null
-
-    // get ingoing roles pointing to appellation usage (R63)
+  //     return null;
+  //   }
+  // }
 
 
 
-    const names: RoleSet[] = U.obj2Arr(peItRoleSets).filter((roleSet: RoleSet) => {
-      if (roleSet && roleSet.property && roleSet.property.dfh_fk_property_of_origin === DfhConfig.PROPERTY_PK_R63_NAMES) {
-        return roleSet;
-      }
-    })
+  // /**
+  //  * Extracts Appellation Label string from the given PeIt-RoleSets
+  //  * @param teEntRoleSets 
+  //  * @returns appellation label as pure string
+  //  */
+  // static getDisplayAppeLabelOfPeItRoleSets(peItRoleSets: DataUnitChildList): string {
+  //   if (!peItRoleSets) return null
 
-    const name: RoleSet = names[0];
+  //   // get ingoing roles pointing to appellation usage (R63)
 
-    if (name) {
-      const roleStates = RoleSetService.getRoleStatesContainerForState(name)
-      for (const key in roleStates) {
-        if (roleStates.hasOwnProperty(key)) {
-          const r: RoleDetail = roleStates[key];
-          if ((!r.isOutgoing && r.isDisplayRoleForRange) || (r.isOutgoing && r.isDisplayRoleForDomain)) {
-            if (r._teEnt && r._teEnt._children) {
-              // var label = StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(r._teEnt._children);
-              return 'label to do';
-            }
-          }
-        }
-      }
-    }
-    return null;
-  }
+
+
+  //   const names: RoleSet[] = U.obj2Arr(peItRoleSets).filter((roleSet: RoleSet) => {
+  //     if (roleSet && roleSet.property && roleSet.property.dfh_fk_property_of_origin === DfhConfig.PROPERTY_PK_R63_NAMES) {
+  //       return roleSet;
+  //     }
+  //   })
+
+  //   const name: RoleSet = names[0];
+
+  //   if (name) {
+  //     const roleStates = RoleSetService.getRoleStatesContainerForState(name)
+  //     for (const key in roleStates) {
+  //       if (roleStates.hasOwnProperty(key)) {
+  //         const r: RoleDetail = roleStates[key];
+  //         if ((!r.isOutgoing && r.isDisplayRoleForRange) || (r.isOutgoing && r.isDisplayRoleForDomain)) {
+  //           if (r._teEnt && r._teEnt._children) {
+  //             // var label = StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(r._teEnt._children);
+  //             return 'label to do';
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  //   return null;
+  // }
 
 
 

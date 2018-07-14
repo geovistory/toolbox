@@ -1,9 +1,9 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, OnDestroy, forwardRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, Subscription } from 'rxjs';
 
-import { IAppState } from '../../../../core';
+import { IAppState, InfRole, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
 import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
 import { ExistenceTimeDetail, ExTimeModalMode, RoleSetList, TeEntDetail } from '../../information.models';
 import { slideInOut } from '../../shared/animations';
@@ -11,6 +11,8 @@ import { ExistenceTimeModalComponent } from '../existence-time-modal/existence-t
 import { ExistenceTimeActions } from '../existence-time.actions';
 import { existenceTimeReducer } from '../existence-time.reducer';
 import { dropLast } from 'ramda';
+import { StateCreatorService, StateSettings } from '../../shared/state-creator.service';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -21,12 +23,22 @@ import { dropLast } from 'ramda';
   templateUrl: './existence-time-editable.component.html',
   styleUrls: ['./existence-time-editable.component.scss'],
   animations: [slideInOut],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => ExistenceTimeEditableComponent),
+      multi: true
+    }
+  ]
 })
-export class ExistenceTimeEditableComponent implements OnInit {
+export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
   @Input() basePath: string[]
   getBasePath = () => this.basePath;
+
+  @Input() mode: 'editable' | 'create';
+
 
   @Output() startEditing: EventEmitter<void> = new EventEmitter();
   @Output() stopEditing: EventEmitter<ExistenceTimeDetail> = new EventEmitter();
@@ -34,8 +46,8 @@ export class ExistenceTimeEditableComponent implements OnInit {
 
   localStore: ObservableStore<ExistenceTimeDetail>
   parentTeEntStore: ObservableStore<TeEntDetail>;
-  
-  @select() ontoInfoVisible$: Observable<boolean>
+
+  ontoInfoVisible$: Observable<boolean>
   @select() toggle$: Observable<boolean>
   _children: RoleSetList;
 
@@ -47,14 +59,23 @@ export class ExistenceTimeEditableComponent implements OnInit {
   constructor(
     protected ngRedux: NgRedux<IAppState>,
     protected actions: ExistenceTimeActions,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    protected stateCreator: StateCreatorService,
+    protected teEntApi: InfTemporalEntityApi
   ) {
 
   }
 
   ngOnInit() {
+
+    if (!this.mode) throw new Error('mode of existence-time-editable is not defined');
+
     this.localStore = this.ngRedux.configureSubStore(this.basePath, existenceTimeReducer);
     this.parentTeEntStore = this.ngRedux.configureSubStore(dropLast(2, this.basePath), teEntReducer)
+
+    const parentPeItPath = dropLast(7, this.basePath);
+
+    this.ontoInfoVisible$ = this.ngRedux.select<boolean>([...parentPeItPath, 'ontoInfoVisible']);
 
     this.subs.push(this.localStore.select<ExistenceTimeDetail>('').subscribe(d => {
       if (d) {
@@ -64,7 +85,7 @@ export class ExistenceTimeEditableComponent implements OnInit {
         if (this._children && Object.keys(this._children).length > 0) {
           this.isEmpty = false;
         }
-        else{
+        else {
           this.isEmpty = true;
         }
 
@@ -100,10 +121,12 @@ export class ExistenceTimeEditableComponent implements OnInit {
       backdrop: 'static'
     });
     modalRef.componentInstance.basePath = this.basePath.concat('_existenceTime_edit');
+    modalRef.componentInstance.mode = this.mode;
 
     modalRef.result
       .then((data) => {
-        this.localStore.dispatch(this.actions.existenceTimeUpdated(data))
+        if (this.mode == 'editable') this.save(data)
+        else if (this.mode == 'create') this.emitCtrlVals(data);
       })
       .catch(() => {
         this.localStore.dispatch(this.actions.stopEditingExTime())
@@ -121,7 +144,7 @@ export class ExistenceTimeEditableComponent implements OnInit {
     this.subs.forEach(sub => sub.unsubscribe())
   }
 
-  doRemovePropSet(){
+  doRemovePropSet() {
     this.onRemovePropSet.emit()
   }
 
@@ -133,4 +156,99 @@ export class ExistenceTimeEditableComponent implements OnInit {
   toggleCardBody() {
     this.localStore.dispatch(this.actions.toggle())
   }
+
+
+
+
+  private save(data: { toRemove: InfRole[], toAdd: InfRole[], unchanged: InfRole[] }) {
+
+    const teEnt = new InfTemporalEntity({
+      ...this.parentTeEntStore.getState().teEnt,
+      te_roles: [
+        ...data.toRemove.filter(r => (r)),
+        ...data.toAdd.filter(r => (r)) // than all roles are created or added to project
+      ]
+    } as InfTemporalEntity);
+    this.subs.push(this.teEntApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_project, teEnt).subscribe(teEnts => {
+      const roles = [
+        // get the resulting roles of the and filter out the ones that are in project
+        ...teEnts[0].te_roles.filter(role => (role.entity_version_project_rels && role.entity_version_project_rels[0].is_in_project)),
+        // concat with the roles that were unchanged
+        ...data.unchanged
+      ];
+      // update the state
+      this.stateCreator.initializeExistenceTimeState(roles, new ExistenceTimeDetail({ toggle: 'expanded' })).subscribe(existTimeDetail => {
+        this.localStore.dispatch(this.actions.existenceTimeUpdated(existTimeDetail))
+      });
+    }));
+  }
+
+  emitCtrlVals(data: { toRemove: InfRole[], toAdd: InfRole[], unchanged: InfRole[] }) {
+
+    const settings: StateSettings = {
+      isCreateMode: data.toAdd.length ? false : true
+    }
+
+
+    this.stateCreator.initializeExistenceTimeState(data.toAdd, new ExistenceTimeDetail({ toggle: 'expanded' }), settings).subscribe(existTimeDetail => {
+      this.localStore.dispatch(this.actions.existenceTimeUpdated(existTimeDetail))
+    });
+    this.markAsTouched();
+    this.onChange(data.toAdd)
+  }
+
+
+  /****************************************
+ *  ControlValueAccessor implementation *
+ ****************************************/
+
+  /**
+   * Allows Angular to update the model.
+   * Update the model and changes needed for the view here.
+   */
+  writeValue(roles: InfRole[]): void {
+
+  }
+
+
+  /**
+   * Allows Angular to register a function to call when the model changes.
+   * Save the function as a property to call later here.
+   */
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+
+  }
+
+  /**
+   * gets replaced by angular on registerOnChange
+   * This function helps to type the onChange function for the use in this class.
+   */
+  onChange = (roles: InfRole[] | null) => {
+    console.error('called before registerOnChange')
+  };
+
+  /**
+   * Allows Angular to register a function to call when the input has been touched.
+   * Save the function as a property to call later here.
+   */
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  /**
+   * gets replaced by angular on registerOnTouched
+   * Call this function when the form has been touched.
+   */
+  onTouched = () => {
+  };
+
+  @Output() touched: EventEmitter<void> = new EventEmitter();
+
+  markAsTouched() {
+    this.onTouched()
+    this.touched.emit()
+  }
+
+
 }

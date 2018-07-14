@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { EventEmitter, Injectable } from '@angular/core';
-import { DfhClass, IAppState, InfEntityProjectRel, InfPersistentItem, InfPersistentItemApi } from 'app/core';
+import { DfhClass, IAppState, InfEntityProjectRel, InfPersistentItem, InfPersistentItemApi, ClassConfig } from 'app/core';
 
 
 export enum EntityAddModalState {
@@ -52,7 +52,7 @@ export class EntityAddModalService {
   addButtonVisible: boolean;
 
   // Class of the entity to add
-  selectedClass: DfhClass;
+  selectedClass: ClassConfig;
 
   // Current modal title
   modalTitle: string;

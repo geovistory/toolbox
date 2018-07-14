@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TeEntCreateCtrlComponent } from './te-ent-create-ctrl.component';
+import { TeEntLabelComponent } from './te-ent-label.component';
 
-describe('TeEntCreateCtrlComponent', () => {
-  let component: TeEntCreateCtrlComponent;
-  let fixture: ComponentFixture<TeEntCreateCtrlComponent>;
+describe('TeEntLabelComponent', () => {
+  let component: TeEntLabelComponent;
+  let fixture: ComponentFixture<TeEntLabelComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TeEntCreateCtrlComponent ]
+      declarations: [ TeEntLabelComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TeEntCreateCtrlComponent);
+    fixture = TestBed.createComponent(TeEntLabelComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

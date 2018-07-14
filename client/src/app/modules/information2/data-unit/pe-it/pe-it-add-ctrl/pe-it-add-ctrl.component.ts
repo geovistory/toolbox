@@ -2,8 +2,9 @@ import { Component, OnInit, forwardRef, ChangeDetectionStrategy, ChangeDetectorR
 import { FormBuilder, FormControl, Validators, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WithSubStore, NgRedux } from '@angular-redux/store';
 import { PeItActions } from '../pe-it.actions';
-import { InfPersistentItem, InfTemporalEntity, U, InfEntityProjectRel } from 'app/core';
+import { InfPersistentItem, InfTemporalEntity, U, InfEntityProjectRel, UiContext, ComConfig } from 'app/core';
 import { PeItCtrlBase } from '../pe-it-ctrl.base';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 
 @Component({
   selector: 'gv-pe-it-add-ctrl',
@@ -25,18 +26,25 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
   // the data model of this control
   peIt: InfPersistentItem;
 
+  uiContext: UiContext;
+
+
   constructor(
     protected ngRedux: NgRedux<any>,
     protected actions: PeItActions,
     protected fb: FormBuilder,
-    protected ref: ChangeDetectorRef
+    protected ref: ChangeDetectorRef,
+    protected stateCreator: StateCreatorService
   ) {
-    super(ngRedux, actions, fb)
+    super(ngRedux, actions, fb, stateCreator)
     console.log('PeItAddCtrlComponent')
 
   }
 
   onInitPeItBaseChild(): void {
+
+    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
+
     this.initFormCtrls()
   }
 

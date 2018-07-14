@@ -1,16 +1,17 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ComConfig, IAppState, UiContext } from 'app/core';
+import { ComConfig, IAppState, UiContext, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable } from 'rxjs/Observable';
 
-import { PeItDetail, RoleSet, RoleSetList } from '../../../information.models';
+import { PeItDetail, RoleSet, RoleSetList, DataUnitLabel } from '../../../information.models';
 import { slideInOut } from '../../../shared/animations';
 import { StateToDataService } from '../../../shared/state-to-data.service';
 import { DataUnitBase } from '../../data-unit.base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -47,7 +48,6 @@ export class PeItEditableComponent extends DataUnitBase {
   /**
    * Class properties that filled by a store observable
    */
-  label: string;
   peItState: PeItDetail;
 
   initStore(): void {
@@ -57,9 +57,10 @@ export class PeItEditableComponent extends DataUnitBase {
   constructor(
     protected ngRedux: NgRedux<IAppState>,
     protected actions: PeItActions,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    protected stateCreator: StateCreatorService
   ) {
-    super(ngRedux, fb);
+    super(ngRedux, fb, stateCreator);
     console.log('PeItEditableComponent')
 
   }
@@ -82,18 +83,18 @@ export class PeItEditableComponent extends DataUnitBase {
       this.peItState = d
     }))
 
-    /**
-    * gets the Appellation is for given peIt roleSets that is for display in this project
-    */
-    this.subs.push(this.localStore.select<RoleSetList>(['_children']).subscribe((roleSets) => {
-      this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(roleSets);
-      const oldLabel = (this.peItState && this.peItState.label) ? this.peItState.label : undefined;
+    // /**
+    // * gets the Appellation is for given peIt roleSets that is for display in this project
+    // */
+    // this.subs.push(this.localStore.select<RoleSetList>(['_children']).subscribe((_children) => {
+    //   this.label = U.labelFromDataUnitChildList(_children);
+    //   const oldLabel = (this.peItState && this.peItState.label) ? this.peItState.label : undefined;
 
-      // update store
-      if (this.peItState && oldLabel !== this.label)
-        this.localStore.dispatch(this.actions.roleSetsListDisplayLabelUpdated(this.label))
+    //   // update store
+    //   if (this.peItState && oldLabel !== this.label)
+    //     this.localStore.dispatch(this.actions.roleSetsListDisplayLabelUpdated(this.label))
 
-    }))
+    // }))
   }
 
   /**

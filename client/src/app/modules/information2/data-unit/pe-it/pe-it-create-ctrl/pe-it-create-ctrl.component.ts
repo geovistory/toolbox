@@ -5,6 +5,7 @@ import { PeItActions } from '../pe-it.actions';
 import { InfPersistentItem, InfTemporalEntity, U } from 'app/core';
 import { PeItCtrlBase } from '../pe-it-ctrl.base';
 import { peItReducer } from '../pe-it.reducer';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 
 @WithSubStore({
   basePathMethodName:'getBasePath',
@@ -30,28 +31,35 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
   constructor(
     protected ngRedux: NgRedux<any>,
     protected actions: PeItActions,
-    protected fb: FormBuilder
-
+    protected fb: FormBuilder,
+    protected stateCreator: StateCreatorService
   ) {
-    super(ngRedux, actions, fb)
+    super(ngRedux, actions, fb, stateCreator)
   }
 
 
   initFormCtrls(): void {
     // add controls for each roleSet of _children
     this.subs.push(this._children$.subscribe(roleSetList => {
-      Object.keys(roleSetList).forEach((key) => {
-        if (roleSetList[key]) {
-
-          this.formGroup.addControl(key, new FormControl(
-            roleSetList[key].roles,
-            [
-              Validators.required
-            ]
-          ))
-        }
-
+      U.obj2KeyValueArr(roleSetList).forEach(item=>{      
+        this.formGroup.addControl(item.key, new FormControl(
+          item.value.roles,
+          [
+            Validators.required
+          ]
+        ))
       })
+
+      // Object.keys(roleSetList).forEach((key) => {
+      //   if (roleSetList[key]) {
+      //     this.formGroup.addControl(key, new FormControl(
+      //       roleSetList[key].roles,
+      //       [
+      //         Validators.required
+      //       ]
+      //     ))
+      //   }
+      // })
     }))
 
   }
@@ -76,7 +84,7 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
           }
         })
 
-        peIt.fk_class = s.dfhClass.dfh_pk_class;
+        peIt.fk_class = s.fkClass;
 
         // try to retrieve a appellation label
         const displayAppeUse: InfTemporalEntity = U.getDisplayAppeLabelOfPeIt(peIt)

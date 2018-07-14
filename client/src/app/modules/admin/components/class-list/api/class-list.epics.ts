@@ -15,6 +15,7 @@ import { createEpicMiddleware, Epic } from 'redux-observable';
 import { ClassList } from '../../../admin.models';
 import { ClassListAPIActions } from './class-list.actions';
 import { ObservableInput, Observable } from 'rxjs/Observable';
+import { DfhConfig } from '../../../../information2/shared/dfh-config';
 
 
 
@@ -36,7 +37,7 @@ export class ClassListAPIEpics {
       .ofType(ClassListAPIActions.LOAD_CLASSES)
       .switchMap(() => new Observable<LoadingBarAction>((globalStore) => {
         globalStore.next(this.loadingBarActions.startLoading());
-        this.classApi.find()
+        this.classApi.selectedClassesOfProfile()
           .subscribe((data: DfhClass[]) => {
             globalStore.next(this.loadingBarActions.completeLoading());
             subStore.dispatch(this.actions.loadSucceeded(data));
