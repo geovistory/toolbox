@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 
-import { DfhProperty, InfRole, DfhClass } from 'app/core';
+import { DfhProperty, InfRole, DfhClass, UiContext } from 'app/core';
 import { indexBy, prop } from 'ramda';
 import { DataUnit, RoleSet, DataUnitLabel } from '../information.models';
 import { roleSetKey } from '../information.helpers';
@@ -74,10 +74,15 @@ export class DataUnitActions {
 
   /**
   * called, when user selected a the kind of property to add
+  * 
+  * @param: roleSet to add
+  * @param: uiContext of the class, used sort the _children  
   */
-  addRoleSet = (roleSet: RoleSet): DataUnitAction => ({
+  addRoleSet = (roleSet: RoleSet, uiContext: UiContext): DataUnitAction => ({
     type: DataUnitActions.ROLE_SET_ADDED,
-    meta: null,
+    meta: {
+      uiContext
+    },
     payload: {
       _children: indexBy(roleSetKey, [roleSet]),
       selectPropState: 'init'
@@ -97,9 +102,9 @@ export class DataUnitActions {
   /**
  * called, when user selected a the kind of propSet to add
  */
-  addPropSet = (key: string, val:any): DataUnitAction => ({
+  addPropSet = (key: string, val: any, uiContext: UiContext): DataUnitAction => ({
     type: DataUnitActions.PROP_SET_ADDED,
-    meta: { key,val },
+    meta: { key, val, uiContext },
     payload: {
       selectPropState: 'init'
     }

@@ -23,7 +23,7 @@ import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Subject } from 'rxjs/Subject';
 
-import { dataUnitChildKey, roleDetailKey, roleSetKey } from '../information.helpers';
+import { dataUnitChildKey, roleDetailKey, roleSetKey, roleSetKeyFromParams } from '../information.helpers';
 import {
   AppeDetail,
   DataUnit,
@@ -49,6 +49,7 @@ import { StateToDataService } from './state-to-data.service';
 
 export interface StateSettings {
   parentRolePk?: number;
+  parentProperty?: DfhProperty;
   isCreateMode?: boolean;
   isAddMode?: boolean;
 }
@@ -143,8 +144,11 @@ export class StateCreatorService {
       };
     }
 
+    const crm = this.ngRedux.getState().activeProject.crm;
+
     // Get DfhClass Observable
-    const classConfig = this.ngRedux.getState().activeProject.crm[fkClass];
+    const classConfig = crm.classes[fkClass];
+
 
     if (settings.isCreateMode) {
       const uiContext = classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_CREATE];
@@ -153,19 +157,32 @@ export class StateCreatorService {
       if (uiContext && uiContext.uiElements)
         uiContext.uiElements.forEach(el => {
 
-          // if this is a element for a RoleSet
-          if (el.roleSetKey) {
-            // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
-            const options = new RoleSet({ toggle: 'expanded' })
-            const newRole = {
-              fk_property: el.fk_property,
-              entity_version_project_rels: [{
-                is_in_project: true
-              }]
-            } as InfRole;
-            const roleSetDef = classConfig.roleSets[el.roleSetKey];
-            const roleSet$ = this.initializeRoleSet([newRole], Object.assign({}, roleSetDef, options), settings);
-            children$.push(roleSet$);
+          // if this is a element for a RoleSet 
+          if (
+            el.roleSetKey
+          ) {
+            let roleSetDef = classConfig.roleSets[el.roleSetKey];
+            // exclude the circular roleSet:
+            if (
+              // exclude the roleSets with the same property 
+              el.fk_property != settings.parentProperty.dfh_pk_property &&
+              // and the roleSets with the same property_of_origin as the parent roleSet 
+              crm.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)].property.dfh_fk_property_of_origin !=
+              settings.parentProperty.dfh_fk_property_of_origin
+            ) {
+
+              // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
+              const options = new RoleSet({ toggle: 'expanded' })
+              const newRole = {
+                fk_property: el.fk_property,
+                entity_version_project_rels: [{
+                  is_in_project: true
+                }]
+              } as InfRole;
+
+              const roleSet$ = this.initializeRoleSet([newRole], Object.assign({}, roleSetDef, options), settings);
+              children$.push(roleSet$);
+            }
           }
 
           // if this ui-element is a Existence-Time PropSet
@@ -243,7 +260,6 @@ export class StateCreatorService {
       roles = roles.slice(0, options.targetMaxQuantity)
     }
 
-
     this.initializeRoleDetails(roles, roleDetailTemplate, settings).subscribe((_role_list: RoleDetailList) => {
 
 
@@ -311,7 +327,7 @@ export class StateCreatorService {
       roleDetail.isDisplayRoleForRange = role.entity_version_project_rels[0].is_standard_in_project;;
     }
 
-    const targetClassConfig = this.ngRedux.getState().activeProject.crm[options.targetClassPk];
+    const targetClassConfig = this.ngRedux.getState().activeProject.crm.classes[options.targetClassPk];
 
     /** If role leads to TeEnt */
     if (
@@ -320,6 +336,8 @@ export class StateCreatorService {
     ) {
       // add the parent role pk of the roleDetail to the peEnt
       settings.parentRolePk = role.pk_entity;
+      settings.parentProperty = this.ngRedux.getState().activeProject.crm
+        .roleSets[roleSetKeyFromParams(role.fk_property, options.isOutgoing)].property;
 
       // if we are in create mode we need the fk_class
       if (settings.isCreateMode) {
@@ -474,7 +492,7 @@ export class StateCreatorService {
     const subject = new ReplaySubject<ExistenceTimeDetail>();
 
     const rolesByFkProp = groupBy(prop('fk_property'), roles);
-    const rsts = clone(this.ngRedux.getState().activeProject.crm[DfhConfig.ClASS_PK_TIME_SPAN].roleSets);
+    const rsts = clone(this.ngRedux.getState().activeProject.crm.classes[DfhConfig.ClASS_PK_TIME_SPAN].roleSets);
 
     let children$: Observable<RoleSet>[] = []
     const ext = new ExistenceTimeDetail({

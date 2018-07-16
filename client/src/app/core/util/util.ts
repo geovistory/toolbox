@@ -34,7 +34,7 @@ export class U {
      * 
      * @param obj 
      */
-    static obj2KeyValueArr(obj: { [key: string]: any }): { key: string, value: any }[] {
+    static obj2KeyValueArr<T>(obj: { [key: string]: T }): { key: string, value: T }[] {
         let keys = [];
         for (let key in obj) {
             keys.push({ key: key, value: obj[key] });
@@ -347,7 +347,8 @@ export class U {
             dfh_fk_system_type: (!dfhC.class_profile_view ? null : !dfhC.class_profile_view[0] ? null : !dfhC.class_profile_view[0].dfh_fk_system_type ? null : dfhC.class_profile_view[0].dfh_fk_system_type),
             label: dfhC.dfh_standard_label,
             dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,
-            dfh_pk_class: dfhC.dfh_pk_class
+            dfh_pk_class: dfhC.dfh_pk_class,
+            uiContexts: []
         };
 
         if (dfhC.ingoing_properties || dfhC.outgoing_properties)
@@ -369,9 +370,9 @@ export class U {
 
 
     static labelFromDataUnitChild(c: DataUnitChild): DataUnitChildLabel {
-        if (c.type == 'RoleSet')
+        if (c && c.type == 'RoleSet')
             return U.labelFromRoleSet(c as RoleSet);
-        else if (c.type == 'ExistenceTimeDetail')
+        else if (c && c.type == 'ExistenceTimeDetail')
             return U.labelFromExTime(c as ExistenceTimeDetail);
 
         else return null;
@@ -388,7 +389,7 @@ export class U {
         if (roleDetails.length > 1)
             duChild.suffix = '(+' + (roleDetails.length - 1) + ')';
 
-        duChild.introducer = r.label.sg;
+        duChild.introducer = r.label.default;
 
         return duChild;
     }
@@ -397,17 +398,29 @@ export class U {
 
     static labelFromRoleDetail(r: RoleDetail): RoleLabel {
 
-        if (r._teEnt) return {
-            type: 'te-ent',
-            string: U.labelFromDataUnitChildList(r._teEnt._children).parts[0].roleLabel.string
-        };
+        if (r._teEnt) {
+            if (r._teEnt._children)
+                return {
+                    type: 'te-ent',
+                    string: U.labelFromDataUnitChildList(r._teEnt._children).parts[0].roleLabel.string
+                };
 
-        if (r._appe) return { type: 'appe', string: U.labelFromAppeDetail(r._appe) };
-        if (r._lang) return { type: 'lang', string: U.labelFromLangDetail(r._lang) };
-        if (r._place) return { type: 'place', string: 'to do: pl_place-label' };
-        if (r._leaf_peIt) return { type: 'leaf-pe-it', string: U.labelFromLeafPeIt(r._leaf_peIt) };
+            else return {
+                type: 'te-ent',
+                string: ''
+            }
+        }
 
-        console.warn('labelFromRoleDetail: This kind of RoleDetail does not produce labels');
+        else if (r._appe) return { type: 'appe', string: U.labelFromAppeDetail(r._appe) };
+        else if (r._lang) return { type: 'lang', string: U.labelFromLangDetail(r._lang) };
+        else if (r._place) return { type: 'place', string: 'to do: pl_place-label' };
+        else if (r._leaf_peIt) return { type: 'leaf-pe-it', string: U.labelFromLeafPeIt(r._leaf_peIt) };
+
+        else {
+            console.warn('labelFromRoleDetail: This kind of RoleDetail does not produce labels');
+
+        }
+
     }
 
 

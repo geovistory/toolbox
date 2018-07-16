@@ -24,13 +24,6 @@ module.exports = function (ComUiContext) {
                             name: "property_set",
                             joinType: "left join",
                             orderBy: [{ pk_entity: "asc" }]
-                        },
-                        property_set_class_rels: {
-                            $relation: {
-                                name: 'property_set_class_rels',
-                                joinType: "left join",
-                                orderBy: [{ pk_entity: "asc" }]
-                            }
                         }
                     }
                 }

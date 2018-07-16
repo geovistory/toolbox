@@ -212,23 +212,16 @@ module.exports = function (Project) {
           ui_context_config: ui_context_config(true),
           labels
         },
-        "property_set_class_rel": {
+        "ui_context_configs": {
           "$relation": {
-            "name": "property_set_class_rel",
-            "joinType": "left join",
-            select: { include: [] }
+            "name": "ui_context_configs",
+            "joinType": "left join"
           },
           property_set: {
             $relation: {
               name: "property_set",
               joinType: "left join",
               "orderBy": [{ "pk_entity": "asc" }]
-            },
-            ui_context_configs: {
-              "$relation": {
-                "name": "ui_context_configs",
-                "joinType": "left join"
-              }
             }
           }
         }

@@ -225,7 +225,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
     const state = this.ngRedux.getState();
 
     // find the outgoing roleSet to add
-    let roleSetTemplate: RoleSet = new RoleSet(state.activeProject.crm[DfhConfig.ClASS_PK_TIME_SPAN].roleSets[roleSetKeyFromParams(fkProperty, true)]);
+    let roleSetTemplate: RoleSet = new RoleSet(state.activeProject.crm.roleSets[roleSetKeyFromParams(fkProperty, true)]);
 
     let role = new InfRole();
     role.time_primitive = new InfTimePrimitive();

@@ -4,6 +4,7 @@ import { DataUnitAction, DataUnitActions } from './data-unit.actions';
 import { DataUnit } from '../information.models';
 import { omit } from 'ramda'
 import { Meta } from '../../../../../node_modules/@angular/platform-browser';
+import { sortChildrenByUiContext } from '../information.helpers';
 
 const INITIAL_STATE: DataUnit = {
   selectPropState: 'init',
@@ -40,10 +41,13 @@ export const dataUnitReducer =
       case DataUnitActions.ROLE_SET_ADDED:
         lastState = {
           ...lastState,
-          _children: {
-            ...lastState._children,
-            ...action.payload._children
-          },
+          _children: sortChildrenByUiContext(
+            {
+              ...lastState._children,
+              ...action.payload._children
+            },
+            action.meta.uiContext
+          ),
           selectPropState: action.payload.selectPropState
         }
         break;
@@ -69,10 +73,13 @@ export const dataUnitReducer =
         lastState = {
           ...lastState,
           selectPropState: action.payload.selectPropState,
-          _children: {
-            ...lastState._children,
-            [action.meta.key]: action.meta.val
-          }
+          _children: sortChildrenByUiContext(
+            {
+              ...lastState._children,
+              [action.meta.key]: action.meta.val
+            },
+            action.meta.uiContext
+          )
         }
         break;
     }

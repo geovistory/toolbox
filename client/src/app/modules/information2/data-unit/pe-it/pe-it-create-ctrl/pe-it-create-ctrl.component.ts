@@ -2,7 +2,7 @@ import { Component, OnInit, forwardRef } from '@angular/core';
 import { FormBuilder, FormControl, Validators, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WithSubStore, NgRedux } from '@angular-redux/store';
 import { PeItActions } from '../pe-it.actions';
-import { InfPersistentItem, InfTemporalEntity, U } from 'app/core';
+import { InfPersistentItem, InfTemporalEntity, U, UiContext } from 'app/core';
 import { PeItCtrlBase } from '../pe-it-ctrl.base';
 import { peItReducer } from '../pe-it.reducer';
 import { StateCreatorService } from '../../../shared/state-creator.service';
@@ -27,6 +27,8 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
 
   // the data model of this control
   peIt: InfPersistentItem;
+
+  uiContext: UiContext;
 
   constructor(
     protected ngRedux: NgRedux<any>,

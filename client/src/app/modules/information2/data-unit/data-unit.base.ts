@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem } from 'app/core';
+import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, UiContext } from 'app/core';
 import { Subject, Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
@@ -36,7 +36,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   // parameter so Angular doesn't tear down and rebuild the list's DOM every
   // time there's an update.
   getKey(_, item) {
-    return _;
+    return item.key;
   }
 
   @select() selectPropState$: Observable<SelectPropStateType>;
@@ -55,7 +55,6 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
   comConfig = ComConfig;
   classConfig: ClassConfig;
-
 
   constructor(
     protected ngRedux: NgRedux<IAppState>,
@@ -76,8 +75,9 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   label: DataUnitLabel;
   labelInEdit: string;
 
-  addOptions: AddOption[];
   selectedAddOption: AddOption;
+
+  abstract uiContext: UiContext;
 
   ngOnDestroy() {
     this.subs.forEach(sub => sub.unsubscribe())
@@ -87,8 +87,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
     // Initialize the store by one of the derived classes
     this.initStore()
 
-    this.classConfig = this.ngRedux.getState().activeProject.crm[this.localStore.getState().fkClass];
-
+    this.classConfig = this.ngRedux.getState().activeProject.crm.classes[this.localStore.getState().fkClass];
 
     // Initialize the children in this class
     // this.initChildren() SINGLE_INIT
@@ -105,23 +104,29 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   initSubscriptions() {
     this.subs.push(this._children$.subscribe(rs => {
       this.roleSets = rs;
-      if (this.roleSets)
-        this.addOptions = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE].uiElements.map(el => {
-          if (el.fk_property && !this.roleSets[el.roleSetKey]) {
-            const roleSet = this.classConfig.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
-            return {
-              label: roleSet.label.default,
-              uiElement: el
-            }
-          }
-          else if (el.fk_property_set && !this.roleSets[propSetMap[el.fk_property_set]]) {
-            return {
-              label: el.property_set.label,
-              uiElement: el
-            }
-          }
-        }).filter(o => (o))
+
     }))
+  }
+
+
+  get addOptions(): AddOption[] {
+    return this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE].uiElements.map(el => {
+      if (
+        el.fk_property && !this.roleSets[el.roleSetKey]
+      ) {
+        const roleSet = this.classConfig.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
+        return {
+          label: roleSet.label.default,
+          uiElement: el
+        }
+      }
+      else if (el.fk_property_set && !this.roleSets[propSetMap[el.fk_property_set]]) {
+        return {
+          label: el.property_set.label,
+          uiElement: el
+        }
+      }
+    }).filter(o => (o))
   }
 
 
@@ -167,7 +172,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
       )
     )
 
-    this.localStore.dispatch(this.actions.addRoleSet(newRoleSet))
+    this.localStore.dispatch(this.actions.addRoleSet(newRoleSet, this.uiContext))
 
   }
 
@@ -214,7 +219,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   addPropSet(keyInState: string, val: any) {
 
     /** remove the roleSet from state */
-    this.localStore.dispatch(this.actions.addPropSet(keyInState, val));
+    this.localStore.dispatch(this.actions.addPropSet(keyInState, val, this.uiContext));
 
     // add a form conrtol
     this.formGroup.addControl(
@@ -231,13 +236,13 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   /**
   * Called when the user closes an empty roleSet
   */
-  removePropSet(key: number) {
+  removePropSet(keyInState: string) {
 
     /** remove the roleSet from state */
-    this.localStore.dispatch(this.actions.removePropSet(propSetMap[key]));
+    this.localStore.dispatch(this.actions.removePropSet(keyInState));
 
     /** remove the formControl from form */
-    this.formGroup.removeControl(propSetMap[key])
+    this.formGroup.removeControl(keyInState)
   }
 
 

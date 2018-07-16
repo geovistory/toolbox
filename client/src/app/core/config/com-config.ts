@@ -13,7 +13,7 @@ export class ComConfig {
     static readonly PK_UI_CONTEXT_CREATE = 104;
     static readonly PK_UI_CONTEXT_ADD = 105;
 
-    static readonly PK_PROPERTY_SET_EXISTENCE_TIME = 110;
+    static readonly PK_PROPERTY_SET_EXISTENCE_TIME = 224;
 
 
 } 

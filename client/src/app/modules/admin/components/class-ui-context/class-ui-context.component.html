@@ -16,7 +16,7 @@
               [dragEnabled]="!(loading$ | async)" [dragData]="widget" (onDropSuccess)="droppedInEnabled($event)">
 
               <small class="text-muted">
-                {{widget.metaInfo}} {{widget?.uiContextConfig?.pk_entity}}
+                {{widget.metaInfo}} | pk_ui_context_conf:{{widget?.uiContextConfig?.pk_entity}} | ord_num: {{widget?.uiContextConfig?.ord_num}}
               </small>
               <div>{{widget.name}}</div>
 
@@ -38,7 +38,7 @@
             <li *ngFor="let widget of containerDisabled?.widgets; let x = index" class="list-group-item" dnd-sortable [sortableIndex]="x"
               [dragEnabled]="!(loading$ | async)" [dragData]="widget" (onDropSuccess)="droppedInDisabled($event)">
               <small class="text-muted">
-                {{widget.metaInfo}} {{widget?.uiContextConfig?.pk_entity}}
+                {{widget.metaInfo}} | pk_ui_context_conf:{{widget?.uiContextConfig?.pk_entity}} | ord_num: {{widget?.uiContextConfig?.ord_num}}
               </small>
               <div>{{widget.name}}</div>
             </li>

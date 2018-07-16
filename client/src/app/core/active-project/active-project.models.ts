@@ -8,8 +8,11 @@ export interface ProjectDetail extends ProjectInterface {
 }
 
 export interface ProjectCrm {
-    [dfh_pk_class: number]: ClassConfig
+    classes?: ClassConfigList;
+    roleSets?: RoleSetList;
 }
+
+export type ClassConfigList = { [dfh_pk_class: number]: ClassConfig };
 
 export interface ClassConfig {
     label: string;
@@ -31,6 +34,7 @@ export interface UiElement {
     fk_property?: number,
     property_is_outgoing?: boolean,
     roleSetKey?: string,
+    propSetKey?: string,
     fk_property_set?: number,
     property_set?: ComPropertySet
     ord_num: number
@@ -40,28 +44,33 @@ export interface UiElement {
 
 var x: ProjectDetail = {
     crm: {
-        21: {
-            dfh_pk_class: 21,
-            dfh_identifier_in_namespace: 'E51',
-            dfh_fk_system_type:8,
-            label: 'Person',
-            roleSets: {
+        roleSets: {
 
-            },
-            uiContexts: {
-                103: {
-                    label: 'Editable',
-                    uiElements: [
-                        {
-                            fk_property_set: 12,
-                            ord_num: 0
-                        },
-                        {
-                            fk_property: 113,
-                            property_is_outgoing: true,
-                            ord_num: 1
-                        }
-                    ]
+        },
+        classes: {
+            21: {
+                dfh_pk_class: 21,
+                dfh_identifier_in_namespace: 'E51',
+                dfh_fk_system_type: 8,
+                label: 'Person',
+                roleSets: {
+
+                },
+                uiContexts: {
+                    103: {
+                        label: 'Editable',
+                        uiElements: [
+                            {
+                                fk_property_set: 12,
+                                ord_num: 0
+                            },
+                            {
+                                fk_property: 113,
+                                property_is_outgoing: true,
+                                ord_num: 1
+                            }
+                        ]
+                    }
                 }
             }
         }

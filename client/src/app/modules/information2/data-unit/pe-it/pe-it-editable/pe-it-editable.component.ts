@@ -130,22 +130,4 @@ export class PeItEditableComponent extends DataUnitBase {
     this.localStore.dispatch(this.actions.ontoInfoVisibilityToggled(false))
   }
 
-
-  /**
-  * called, when user selected a the kind of property to add
-  */
-  addRoleSet(propertyToAdd: RoleSet) {
-
-
-    // add a role set
-    const newRoleSet: RoleSet = {
-      ...propertyToAdd,
-      toggle: 'expanded',
-      roles: []
-    }
-
-    this.localStore.dispatch(this.actions.addRoleSet(newRoleSet))
-
-  }
-
 }

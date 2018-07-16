@@ -3,12 +3,16 @@
 
   <div [@slideInOut]="(toggle$|async)">
 
-    <div *ngFor="let el of uiContext.uiElements">
-      <gv-te-ent-role-set-editable *ngIf="(_children$ | async)[el.roleSetKey]" [parentPath]="basePath" [parentTeEntStatePath]="basePath"
-        [index]="el.roleSetKey" (onRemoveRoleSet)="removeRoleSet(el.roleSetKey)"></gv-te-ent-role-set-editable>
+    <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
+      <span [ngSwitch]="item.key">
 
-      <gv-existence-time-editable *ngIf="el.fk_property_set === comConfig.PK_PROPERTY_SET_EXISTENCE_TIME && (_children$ | async)?._existenceTime"
-        [basePath]="basePath.concat('_children').concat('_existenceTime')" (onRemovePropSet)="removePropSet(el.fk_property_set)" mode="editable"></gv-existence-time-editable>
+        <gv-existence-time-editable *ngSwitchCase="'_existenceTime'" mode="editable" [basePath]="basePath.concat('_children').concat(item.key)"
+          (onRemovePropSet)="removePropSet(item.key)"></gv-existence-time-editable>
+
+        <gv-te-ent-role-set-editable *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath" [index]="item.key"
+          (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-te-ent-role-set-editable>
+
+      </span>
     </div>
 
 
@@ -56,7 +60,9 @@
 <ng-template #header>
   <div class="card-header gv-name-header d-flex flex-row">
     <ng-content select="[headerLeft]"></ng-content>
-    <div><i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i></div>
+    <div>
+      <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
+    </div>
     <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
       <span *ngIf="labelInEdit">{{labelInEdit}}</span>
       <gv-te-ent-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-te-ent-label>

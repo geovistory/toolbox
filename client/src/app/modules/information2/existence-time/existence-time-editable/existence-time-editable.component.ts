@@ -80,16 +80,18 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
     this.subs.push(this.localStore.select<ExistenceTimeDetail>('').subscribe(d => {
       if (d) {
         this._children = d._children;
-
-        // if there is temporal information, set isEmpty to false
-        if (this._children && Object.keys(this._children).length > 0) {
-          this.isEmpty = false;
-        }
-        else {
-          this.isEmpty = true;
-        }
-
       }
+      else this._children = undefined;
+
+
+      // if there is temporal information, set isEmpty to false
+      if (this._children && Object.keys(this._children).length > 0) {
+        this.isEmpty = false;
+      }
+      else {
+        this.isEmpty = true;
+      }
+
     }))
   }
 

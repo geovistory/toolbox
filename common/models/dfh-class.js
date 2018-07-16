@@ -186,28 +186,17 @@ module.exports = function (DfhClass) {
           ui_context_config: ui_context_config(true),
           labels
         },
-        "property_set_class_rel": {
+        "ui_context_configs": {
           "$relation": {
-            "name": "property_set_class_rel",
-            "joinType": "left join"
-            // ,
-            // select: { include: [] }
+            "name": "ui_context_configs",
+            "joinType": "left join",
+            where: ["fk_ui_context", '=', pk_ui_context]
           },
           property_set: {
             $relation: {
               name: "property_set",
               joinType: "left join",
               "orderBy": [{ "pk_entity": "asc" }]
-            },
-            ui_context_configs: {
-              "$relation": {
-                "name": "ui_context_configs",
-                "joinType": "left join",
-                "where": [
-                  "fk_project", ...(pk_project ? ['=', pk_project] : ['IS NULL']), 'AND',
-                  "fk_ui_context", '=', pk_ui_context
-                ],
-              }
             }
           }
         },

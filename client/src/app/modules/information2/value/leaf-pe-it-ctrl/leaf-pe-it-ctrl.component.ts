@@ -67,7 +67,7 @@ export class LeafPeItCtrlComponent  extends LeafPeItActions implements OnInit, O
   }
   
   ngOnInit() {
-    this.classConfig = this.ngRedux.getState().activeProject.crm[this.pkClass];
+    this.classConfig = this.ngRedux.getState().activeProject.crm.classes[this.pkClass];
     // this.openModal()
   }
   ngOnDestroy() {

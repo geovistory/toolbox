@@ -59,30 +59,24 @@ const createContainers = (dfhClass: DfhClass, pkUiContext: number): { containerD
 
 
   // add widget for each ui-element in ui_class_config (custom elements that are not RoleSets / Properties)
-  if (dfhClass.property_set_class_rel) {
-    dfhClass.property_set_class_rel.forEach((d: { property_set: ComPropertySet }) => {
+  if (dfhClass.ui_context_configs) {
+    dfhClass.ui_context_configs.forEach((uiContextConf) => {
 
-      const propSet = d.property_set
+      if (uiContextConf.fk_property_set) {
 
-      let uiContextConf = U.uiContextConfigFromPropSet(propSet);
+        const ordNum = uiContextConf.ord_num;
 
-      if (!uiContextConf) {
-        uiContextConf = {
-          fk_property_set: propSet.pk_entity,
-          fk_ui_context: pkUiContext
-        } as ComUiContextConfig;
-      }
+        const propSet = uiContextConf.property_set;
 
-      const ordNum = U.ordNumFromPropSet(propSet);
+        // if ordNum set, it is enabled
+        if (ordNum !== null) {
+          enabledWidgets.push(new Widget(propSet.label, 'custom property set', null, propSet, uiContextConf))
+        }
 
-      // if ordNum set, it is enabled
-      if (ordNum !== null) {
-        enabledWidgets.push(new Widget(propSet.label, 'custom property set', null, propSet, uiContextConf))
-      }
-
-      // if ordNum falsy, it is disabled
-      else {
-        disabledWidgets.push(new Widget(propSet.label, 'custom property set', null, propSet, uiContextConf))
+        // if ordNum falsy, it is disabled
+        else {
+          disabledWidgets.push(new Widget(propSet.label, 'custom property set', null, propSet, uiContextConf))
+        }
       }
 
     })
@@ -90,7 +84,7 @@ const createContainers = (dfhClass: DfhClass, pkUiContext: number): { containerD
   }
 
   // sort function
-  var diff = (a: Widget, b: Widget) => { return U.ordNumFromRoleSet(a.roleSet) - U.ordNumFromRoleSet(b.roleSet); };
+  var diff = (a: Widget, b: Widget) => { return a.uiContextConfig.ord_num - b.uiContextConfig.ord_num; };
 
   return {
     containerEnabled: new Container('Enabled in UI context', sort(diff, enabledWidgets)),

@@ -3,20 +3,18 @@
 
   <form [formGroup]="formGroup" *ngIf="formGroup">
 
-    <div *ngFor="let el of uiContext.uiElements">
-
-      <gv-te-ent-role-set-create-ctrl *ngIf="(_children$ | async)[el.roleSetKey]" [parentPath]="basePath" [parentTeEntStatePath]="basePath"
-        [index]="el.roleSetKey" (onRemoveRoleSet)="removeRoleSet(el.roleSetKey)" [formControlName]="el.roleSetKey" (touched)="markAsTouched()"></gv-te-ent-role-set-create-ctrl>
-
-      <gv-existence-time-editable *ngIf="el.fk_property_set === comConfig.PK_PROPERTY_SET_EXISTENCE_TIME && (_children$ | async)?._existenceTime"
-        [basePath]="basePath.concat('_children').concat('_existenceTime')" (onRemovePropSet)="removePropSet(el.fk_property_set)" mode="create" [formControlName]="'_existenceTime'" (touched)="markAsTouched()"></gv-existence-time-editable>
-    </div>
-
-
-    <!-- <div *ngFor="let entry of (_children$ | async) | keys; trackBy:getKey">
-      <gv-te-ent-role-set-create-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [parentTeEntStatePath]="basePath"
-        (onRemoveRoleSet)="removeRoleSet(entry.key)" [index]="entry.key" [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role-set-create-ctrl>
-    </div> -->
+    <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
+        <span [ngSwitch]="item.key">
+  
+          <gv-existence-time-editable *ngSwitchCase="'_existenceTime'" [basePath]="basePath.concat('_children').concat(item.key)"
+            (onRemovePropSet)="removePropSet(item.key)" mode="create" [formControlName]="item.key" (touched)="markAsTouched()"></gv-existence-time-editable>
+  
+          <gv-te-ent-role-set-create-ctrl *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath" [index]="item.key"
+            (onRemoveRoleSet)="removeRoleSet(item.key)" [formControlName]="item.key" (touched)="markAsTouched()"></gv-te-ent-role-set-create-ctrl>
+  
+        </span>
+      </div>
+  
   </form>
 
   <ng-container *ngTemplateOutlet="dating"></ng-container>

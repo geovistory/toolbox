@@ -3,7 +3,7 @@ import 'rxjs/add/observable/combineLatest';
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { DfhProperty, IAppState, InfEntityProjectRelApi, InfPersistentItem, InfRole, InfRoleApi, Project } from 'app/core';
+import { DfhProperty, IAppState, InfEntityProjectRelApi, InfPersistentItem, InfRole, InfRoleApi, Project, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
@@ -23,7 +23,7 @@ import { StateToDataService } from '../shared/state-to-data.service';
 @AutoUnsubscribe()
 @WithSubStore({
     basePathMethodName: 'getBasePath',
-    localReducer:roleSetReducer
+    localReducer: roleSetReducer
 })
 export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAccessor {
 
@@ -68,7 +68,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
     @select() _role_list$: Observable<RoleDetailList>
     @select() _role_set_form$: Observable<RoleSetForm>
-    
+
     //Roles that are added to the project
     @select() roleStatesInProjectVisible$: Observable<boolean>
 
@@ -101,6 +101,8 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     subs: Subscription[] = []; // for unsubscribe onDestroy
 
     fromValueForReset: any;
+
+    hasOnlyCircularRole: boolean;
 
     /**
      * Outputs
@@ -172,7 +174,14 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
         this.formValPath = [...this.basePath, 'formGroup'];
 
 
-        this.subs.push(this._role_list$.subscribe(d => { this.roleStatesInProject = d; }))
+        this.subs.push(this._role_list$.subscribe(d => {
+            this.roleStatesInProject = d;
+            
+            const r = U.obj2Arr(d);
+            if (r.length == 1 && r[0].isCircular === true) this.hasOnlyCircularRole = true;
+            else this.hasOnlyCircularRole = false;
+
+        }))
 
         // Subscribe to the activeProject, to get the pk_project needed for api call
         this.subs.push(this.ngRedux.select<Project>('activeProject').subscribe(d => this.project = d));
@@ -203,7 +212,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
     }
 
-    abstract init():void // hook for child classes
+    abstract init(): void // hook for child classes
 
 
     /**

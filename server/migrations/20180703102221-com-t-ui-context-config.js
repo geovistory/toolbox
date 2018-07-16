@@ -19,6 +19,7 @@ exports.up = function(db, callback) {
     fk_property integer REFERENCES data_for_history.property (dfh_pk_property),
     property_is_outgoing boolean,
     fk_property_set integer,
+    fk_class_for_property_set integer,
     ord_num integer
   )
   INHERITS (commons.entity);
@@ -31,10 +32,10 @@ exports.up = function(db, callback) {
   CREATE UNIQUE INDEX ui_context_config_for_prop_no_proj_uni_idx ON commons.ui_context_config  (fk_ui_context, fk_property, property_is_outgoing)
   WHERE fk_project IS NULL;
 
-  CREATE UNIQUE INDEX ui_context_config_for_prop_set_and_proj_uni_idx ON commons.ui_context_config  (fk_ui_context, fk_project, fk_property_set)
+  CREATE UNIQUE INDEX ui_context_config_for_prop_set_and_proj_uni_idx ON commons.ui_context_config  (fk_ui_context, fk_project, fk_property_set, fk_class_for_property_set)
   WHERE fk_project IS NOT NULL;
 
-  CREATE UNIQUE INDEX ui_context_config_for_prop_set_no_proj_uni_idx ON commons.ui_context_config  (fk_ui_context, fk_property_set)
+  CREATE UNIQUE INDEX ui_context_config_for_prop_set_no_proj_uni_idx ON commons.ui_context_config  (fk_ui_context, fk_property_set, fk_class_for_property_set)
   WHERE fk_project IS NULL;
 
 

@@ -12,10 +12,8 @@
     <ng-container *ngTemplateOutlet="propertiesHeader"></ng-container>
 
     <div class="gv-body gv-flex-grow-1" style="overflow-y:auto">
-
-      <div *ngFor="let el of uiContext.uiElements; trackBy:getKey" >
-        <gv-pe-it-role-set-editable *ngIf="(_children$ | async)[el.roleSetKey]" [parentPath]="basePath" [index]="el.roleSetKey"
-          (onRemoveRoleSet)="removeRoleSet(el.roleSetKey)"></gv-pe-it-role-set-editable>
+      <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
+        <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-pe-it-role-set-editable>
       </div>
     </div>
 
@@ -47,7 +45,7 @@
             <select [(ngModel)]="roleSetToAdd" class="custom-select">
               <option [ngValue]="null">Select…</option>
 
-              <option *ngFor="let el of uiContext.uiElements" [disabled]="roleSetAdded(el.roleSetKey)"  [ngValue]="classConfig?.roleSets[el.roleSetKey]">
+              <option *ngFor="let el of uiContext.uiElements" [disabled]="roleSetAdded(el.roleSetKey)" [ngValue]="classConfig?.roleSets[el.roleSetKey]">
                 {{classConfig?.roleSets[el.roleSetKey]?.label.sg}} {{roleSetAdded(el.roleSetKey) ? '(already added)':''}}
               </option>
 
@@ -93,7 +91,7 @@
 <!-- ************************** NG TEMPLATES ****************************** -->
 
 <ng-template #header>
-  <gv-pe-it-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>  
+  <gv-pe-it-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
 </ng-template>
 
 <ng-template #propertiesHeader>

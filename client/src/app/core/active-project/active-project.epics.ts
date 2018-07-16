@@ -14,7 +14,7 @@ import { Observable } from 'rxjs';
 import { ComUiContext, ComUiContextApi, ComUiContextConfig, ProjectApi } from '../sdk';
 import { ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { roleSetKey, roleSetKeyFromParams } from '../../modules/information2/information.helpers';
+import { roleSetKey, roleSetKeyFromParams, propSetKeyFromFk } from '../../modules/information2/information.helpers';
 
 @Injectable()
 export class ActiveProjectEpics {
@@ -44,9 +44,17 @@ export class ActiveProjectEpics {
           .subscribe((res) => {
             const classes: DfhClass[] = res[0];
 
-            let crm: ProjectCrm = {}
+            let crm: ProjectCrm = {
+              classes: {},
+              roleSets: {}
+            }
             classes.map((cla: DfhClass) => {
-              crm[cla.dfh_pk_class] = U.classConfigFromDfhClass(cla);
+              crm.classes[cla.dfh_pk_class] = U.classConfigFromDfhClass(cla);
+
+              // add roleSets
+              U.obj2KeyValueArr(crm.classes[cla.dfh_pk_class].roleSets).forEach(rs => {
+                crm.roleSets[rs.key] = rs.value;
+              })
             })
 
             const uiContexts: ComUiContext[] = res[1];
@@ -58,21 +66,15 @@ export class ActiveProjectEpics {
                   // add roleSet configs to crm
                   if (uiConf.fk_property) {
                     // retrieve the classConfig
-                    const cConf = crm[uiConf.property_is_outgoing ? uiConf.property.dfh_has_domain : uiConf.property.dfh_has_range];
+                    const cConf = crm.classes[uiConf.property_is_outgoing ? uiConf.property.dfh_has_domain : uiConf.property.dfh_has_range];
                     this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
                   }
 
                   // add propSet configs to crm
                   else if (uiConf.fk_property_set) {
-                    const propSet = uiConf.property_set
-                    if (propSet.property_set_class_rels) {
-                      const cRels = propSet.property_set_class_rels;
-                      cRels.forEach(cRel => {
-                        // retrieve the classConfig
-                        const cConf = crm[cRel.fk_class];
-                        this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
-                      })
-                    }
+                    // retrieve the classConfig
+                    const cConf = crm.classes[uiConf.fk_class_for_property_set];
+                    this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
                   }
 
                 })
@@ -129,7 +131,8 @@ export class ActiveProjectEpics {
         property_is_outgoing: uiConf.property_is_outgoing,
         roleSetKey: uiConf.fk_property ? roleSetKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
         fk_property_set: uiConf.fk_property_set,
-        property_set: uiConf.fk_property_set ? uiConf.property_set : undefined
+        property_set: uiConf.fk_property_set ? uiConf.property_set : undefined,
+        propSetKey: uiConf.fk_property_set ? propSetKeyFromFk(uiConf.fk_property_set) : undefined
       })
 
       // sort the array of uiElements by the ordNum
