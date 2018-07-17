@@ -23,7 +23,7 @@ import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Subject } from 'rxjs/Subject';
 
-import { dataUnitChildKey, roleDetailKey, roleSetKey, roleSetKeyFromParams } from '../information.helpers';
+import { dataUnitChildKey, roleDetailKey, roleSetKey, roleSetKeyFromParams, sortRoleDetailsByOrdNum } from '../information.helpers';
 import {
   AppeDetail,
   DataUnit,
@@ -163,12 +163,15 @@ export class StateCreatorService {
           ) {
             let roleSetDef = classConfig.roleSets[el.roleSetKey];
             // exclude the circular roleSet:
+            const parentProperty = settings.parentProperty ? settings.parentProperty : null;
+            const parentPropPk = parentProperty ? parentProperty.dfh_pk_property : null;
+            const parentOrigPropPk = parentProperty ? parentProperty.dfh_fk_property_of_origin : null;
             if (
+
               // exclude the roleSets with the same property 
-              el.fk_property != settings.parentProperty.dfh_pk_property &&
+              el.fk_property != parentPropPk &&
               // and the roleSets with the same property_of_origin as the parent roleSet 
-              crm.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)].property.dfh_fk_property_of_origin !=
-              settings.parentProperty.dfh_fk_property_of_origin
+              crm.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)].property.dfh_fk_property_of_origin != parentOrigPropPk
             ) {
 
               // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
@@ -301,7 +304,10 @@ export class StateCreatorService {
     });
 
     Observable.combineLatest(roleDetailArray$).subscribe(roleDetailArr => {
-      const roleDetails: RoleDetailList = indexBy(roleDetailKey, roleDetailArr)
+
+      const sortedByOrdNum = sortRoleDetailsByOrdNum(roleDetailArr);
+
+      const roleDetails: RoleDetailList = indexBy(roleDetailKey, sortedByOrdNum)
       subject.next(roleDetails);
     })
 

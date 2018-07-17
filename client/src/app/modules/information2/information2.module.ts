@@ -104,6 +104,8 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
 import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.component';
 import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.component';
+import { DndModule } from '../../../../node_modules/ng2-dnd';
+import { RoleSetApiEpics } from './role-set/role-set.epics';
 
 @NgModule({
   imports: [
@@ -128,6 +130,7 @@ import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.compone
     DimensionChangeModule,
     TimelineModule,
     KeysModule,
+    DndModule
 
   ],
   declarations: [
@@ -222,7 +225,8 @@ import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.compone
 
     // Role Set
     RoleSetActions,
-
+    RoleSetApiEpics,
+    
     // Role
     RoleActions,
 

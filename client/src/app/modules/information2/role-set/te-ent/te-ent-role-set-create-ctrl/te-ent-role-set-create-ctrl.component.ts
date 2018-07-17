@@ -13,6 +13,7 @@ import { StateCreatorService, StateSettings } from '../../../shared/state-creato
 import { RoleSetAddCtrlBase } from '../../role-set-add-ctrl.base';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetCreateCtrlBase } from '../../role-set-create-ctrl.base';
+import { RoleSetApiEpics } from '../../role-set.epics';
 
 @Component({
   selector: 'gv-te-ent-role-set-create-ctrl',
@@ -52,6 +53,7 @@ export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
 
 
   constructor(
+    protected epics: RoleSetApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
     protected ngRedux: NgRedux<IAppState>,
@@ -65,7 +67,7 @@ export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
     teEntApi: InfTemporalEntityApi
 
   ) {
-    super(eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
   }
 
   initRoleSetCreateCtrlBaseChild() {

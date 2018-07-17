@@ -4,15 +4,16 @@
 
     <form [formGroup]="formGroup" *ngIf="formGroup">
 
+      <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
+        <span [ngSwitch]="item.key">
 
-      <div *ngFor="let el of uiContext.uiElements">
-        <gv-te-ent-role-set-add-ctrl *ngIf="(_children$ | async)[el.roleSetKey]" [parentPath]="basePath" [parentTeEntStatePath]="basePath"
-          [index]="el.roleSetKey" [formControlName]="el.roleSetKey" (touched)="markAsTouched()"></gv-te-ent-role-set-add-ctrl>
+          <gv-existence-time-add-ctrl *ngSwitchCase="'_existenceTime'" mode="add" [basePath]="basePath.concat('_children').concat(item.key)"
+            [formControlName]="'_existenceTime'" (touched)="markAsTouched()"></gv-existence-time-add-ctrl>
 
+          <gv-te-ent-role-set-add-ctrl *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath" [index]="item.key"
+            [formControlName]="item.kex" (touched)="markAsTouched()"></gv-te-ent-role-set-add-ctrl>
 
-        <gv-existence-time-add-ctrl mode="add" *ngIf="el.fk_property_set === comConfig.PK_PROPERTY_SET_EXISTENCE_TIME && (_children$ | async)?._existenceTime"
-          [basePath]="basePath.concat('_children').concat('_existenceTime')" [formControlName]="'_existenceTime'" (touched)="markAsTouched()"
-          ></gv-existence-time-add-ctrl>
+        </span>
       </div>
 
 

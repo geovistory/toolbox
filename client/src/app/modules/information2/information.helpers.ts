@@ -1,7 +1,7 @@
-import { RoleSet, RoleDetail, DataUnitChild, DataUnitChildList } from "./information.models";
+import { RoleSet, RoleDetail, DataUnitChild, DataUnitChildList, RoleDetailList } from "./information.models";
 import { InfRole, InfTimePrimitive, UiContext, U, ComConfig } from "app/core";
 import { CalendarType, TimePrimitive } from "app/core/date-time/time-primitive";
-
+import { indexBy, sort } from 'ramda'
 
 export function dataUnitChildKey(child: DataUnitChild) {
 
@@ -111,4 +111,43 @@ export function sortChildrenByUiContext(_children: DataUnitChildList, uiContext:
     })
 
     return res;
+}
+
+
+
+/**
+ * returns a copy of the given RoleDetail[], where the items are sorted 
+ * according to the ord_num in the epr.
+ * 
+ * @param roleDetailArray a RoleDetail[]
+ * @returns a sorted copy of RoleDetail[] 
+ */
+export function sortRoleDetailsByOrdNum(roleDetailArray: RoleDetail[]): RoleDetail[] {
+
+    const diff = (rdA: RoleDetail, rdB: RoleDetail) => {
+
+        const a = rdA.role.entity_version_project_rels ? rdA.role.entity_version_project_rels[0].ord_num : undefined;
+        const b = rdB.role.entity_version_project_rels ? rdB.role.entity_version_project_rels[0].ord_num : undefined;
+
+        if (a === undefined || b === undefined) return 0;
+
+        return a - b;
+    }
+
+    return sort(diff, roleDetailArray);
+}
+
+
+
+/**
+ * returns a copy of the given RoleDetailList, where the items are sorted 
+ * according to the ord_num in the epr.
+ * 
+ * @param roleDetailArray a RoleDetailList
+ * @returns a sorted copy of RoleDetailList 
+ */
+export function sortRoleDetailListByOrdNum(roleDetailArray: RoleDetailList): RoleDetailList {
+
+    return indexBy(roleDetailKey, sortRoleDetailsByOrdNum(U.obj2Arr(roleDetailArray)))
+
 }

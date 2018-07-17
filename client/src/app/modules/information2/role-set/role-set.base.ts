@@ -3,8 +3,19 @@ import 'rxjs/add/observable/combineLatest';
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { DfhProperty, IAppState, InfEntityProjectRelApi, InfPersistentItem, InfRole, InfRoleApi, Project, U } from 'app/core';
+import {
+    DfhProperty,
+    IAppState,
+    InfEntityProjectRel,
+    InfEntityProjectRelApi,
+    InfPersistentItem,
+    InfRole,
+    InfRoleApi,
+    Project,
+    U,
+} from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 
@@ -15,9 +26,10 @@ import { ClassService } from '../shared/class.service';
 import { RoleSetService } from '../shared/role-set.service';
 import { RoleService } from '../shared/role.service';
 import { StateCreatorService } from '../shared/state-creator.service';
-import { RoleSetActions, roleStateKey } from './role-set.actions';
-import { roleSetReducer } from './role-set.reducer';
 import { StateToDataService } from '../shared/state-to-data.service';
+import { RoleSetActions, roleStateKey } from './role-set.actions';
+import { RoleSetApiEpics } from './role-set.epics';
+import { roleSetReducer } from './role-set.reducer';
 
 
 @AutoUnsubscribe()
@@ -35,6 +47,8 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
         null;
     basePath: string[];
     localStore: ObservableStore<RoleSet>;
+
+    reduxMiddlewares: any[] = [];
 
     addButtonVisible: boolean = true;
     removeRoleSetBtnVisible: boolean = false;
@@ -63,6 +77,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     @select() toggle$: Observable<CollapsedExpanded>
     @select() label$: Observable<RoleSetLabelObj>
     @select() targetMaxQuantity$: Observable<number>
+    @select() dragEnabled$: Observable<boolean>
 
     @select() rolesNotInProjectLoading$: Observable<boolean>;
 
@@ -70,7 +85,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     @select() _role_set_form$: Observable<RoleSetForm>
 
     //Roles that are added to the project
-    @select() roleStatesInProjectVisible$: Observable<boolean>
+    @select() _role_listVisible$: Observable<boolean>
 
     //Roles that are added to at least one other project
     @select() roleStatesInOtherProjectsVisible$: Observable<boolean>
@@ -86,9 +101,11 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     * Other Store Observables
     */
 
-    roleStatesInProject: RoleDetailList
+    _role_list: RoleDetailList
     project: Project;
     roleSetState: RoleSet;
+
+    roleDetails: { key: string, value: RoleDetail }[];
 
 
     /**
@@ -111,6 +128,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     @Output() onRemoveRoleSet: EventEmitter<void> = new EventEmitter();
 
     constructor(
+        protected epics: RoleSetApiEpics,
         protected eprApi: InfEntityProjectRelApi,
         protected roleApi: InfRoleApi,
         protected ngRedux: NgRedux<IAppState>,
@@ -175,13 +193,21 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
 
         this.subs.push(this._role_list$.subscribe(d => {
-            this.roleStatesInProject = d;
-            
-            const r = U.obj2Arr(d);
-            if (r.length == 1 && r[0].isCircular === true) this.hasOnlyCircularRole = true;
-            else this.hasOnlyCircularRole = false;
+            this._role_list = d;
+
+            this.roleDetails = U.obj2KeyValueArr(d);
+
+            // const r = U.obj2Arr(d);
+            // if (r.length == 1 && r[0].isCircular === true) this.hasOnlyCircularRole = true;
+            // else this.hasOnlyCircularRole = false;
 
         }))
+
+
+        this.reduxMiddlewares = this.epics.createEpics(this.localStore, this.basePath)
+        this.reduxMiddlewares.forEach(mw => {
+            addMiddleware(mw)
+        })
 
         // Subscribe to the activeProject, to get the pk_project needed for api call
         this.subs.push(this.ngRedux.select<Project>('activeProject').subscribe(d => this.project = d));
@@ -191,11 +217,11 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
         }));
 
         this.subs.push(Observable.combineLatest(this.toggle$, this._role_set_form$, this._role_list$).subscribe(res => {
-            const toggle = res[0], roleStatesToCreate = res[1], roleStatesInProject = res[2];
+            const toggle = res[0], roleStatesToCreate = res[1], _role_list = res[2];
 
             if (this.roleSetState) {
                 // count roles of this roleSet that are in the project or currently being created 
-                const rolesCount = Object.keys(roleStatesToCreate || {}).length + Object.keys(roleStatesInProject || {}).length;
+                const rolesCount = Object.keys(roleStatesToCreate || {}).length + Object.keys(_role_list || {}).length;
 
                 // check if more roles would be possible in this role set
                 const moreRolesPossible = this.roleSetService.moreRolesPossible(rolesCount, this.roleSetState);
@@ -203,7 +229,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
                 // assign the add button visibility
                 this.addButtonVisible = (toggle === 'expanded' && moreRolesPossible);
 
-                this.removeRoleSetBtnVisible = ((!roleStatesToCreate || roleStatesToCreate == {}) && (!roleStatesInProject || roleStatesInProject == {}));
+                this.removeRoleSetBtnVisible = ((!roleStatesToCreate || roleStatesToCreate == {}) && (!_role_list || _role_list == {}));
             }
         }))
 
@@ -252,6 +278,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
 
     ngOnDestroy() {
+        this.reduxMiddlewares.forEach(mw => { removeMiddleware(mw) })
         this.subs.forEach(sub => sub.unsubscribe());
     }
 
@@ -297,8 +324,8 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
         const rolesToChange: RoleDetail[] = [];
 
-        Object.keys(this.roleStatesInProject).forEach(key => {
-            const roleState: RoleDetail = this.roleStatesInProject[key];
+        Object.keys(this._role_list).forEach(key => {
+            const roleState: RoleDetail = this._role_list[key];
             const isDisplayRole = RoleService.isDisplayRole(roleState.isOutgoing, roleState.isDisplayRoleForDomain, roleState.isDisplayRoleForRange)
             if (roleState && isDisplayRole) {
 
@@ -415,6 +442,37 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
         this.formGroup.reset(this.fromValueForReset);
     }
 
+
+
+
+    /**
+   * called when a RoleDetail is dragged
+   */
+    onDrag($event: { key: string, value: RoleDetail }) {
+
+        let changedEprs: InfEntityProjectRel[] = []
+
+        // check, if ui_context_config needs update
+        for (let i = 0; i < this.roleDetails.length; i++) {
+
+            const epr = U.eprFromRoleDetail(this.roleDetails[i].value);
+
+            // if the ord_num is wrong
+            if (epr.ord_num != i) {
+
+
+
+                changedEprs.push({
+                    ...epr,
+                    ord_num: i,
+                })
+            }
+        }
+
+        if (changedEprs.length)
+            this.localStore.dispatch(this.actions.updateOrder(changedEprs));
+
+    }
 
     /****************************************
      *  ControlValueAccessor implementation *

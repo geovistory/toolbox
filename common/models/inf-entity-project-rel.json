@@ -15,6 +15,10 @@
       "id": true,
       "generated": true
     },
+    "pk_entity": {
+      "type": "number",
+      "generated": true
+    },
     "fk_project": {
       "type": "number",
       "required": true
@@ -39,6 +43,9 @@
     },
     "calendar": {
       "type": "string"
+    },
+    "ord_num": {
+      "type": "number"
     },
     "tmsp_last_modification": {
       "type": "string",

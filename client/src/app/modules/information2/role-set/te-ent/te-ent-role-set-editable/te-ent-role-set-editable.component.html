@@ -1,27 +1,30 @@
-<div *ngIf="!hasOnlyCircularRole">
+<div *ngIf="!hasOnlyCircularRole" (mouseenter)="enableDrag()"  (mouseleave)="disableDrag()"  (touchstart)="enableDrag()">
 
   <ng-container *ngTemplateOutlet="header"></ng-container>
 
   <div [@slideInOut]="(toggle$|async)">
-
     <!-- The roles in project -->
+    <div dnd-sortable-container [sortableData]="roleDetails" [dropZones]="['dropZone-'+index]">
+      <div *ngFor="let entry of roleDetails; trackBy:getKey; let i = index" dnd-sortable [sortableIndex]="i" [dragData]="entry"
+        (onDragEnd)="onDrag($event)" [dragEnabled]="(dragEnabled$|async)">
+        <gv-te-ent-role-editable [parentPath]="basePath" [index]="entry.key" (stopEditing)="stopEditing(entry.key)" (startUpdating)="startUpdatingRole(entry.key, $event)">
+          <div headerRight class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
 
-    <gv-te-ent-role-editable *ngFor="let entry of (_role_list$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
-      (stopEditing)="stopEditing(entry.key)" (startUpdating)="startUpdatingRole(entry.key, $event)">
-      <div headerRight class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
+            <button class="btn btn-link" ngbDropdownToggle>
+              <i class="fa fa-ellipsis-v"></i>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
 
-        <button class="btn btn-link" ngbDropdownToggle>
-          <i class="fa fa-ellipsis-v"></i>
-        </button>
-        <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+              <!-- <button class="dropdown-item" (click)="startEditing(entry.key)">Edit</button> -->
 
-          <!-- <button class="dropdown-item" (click)="startEditing(entry.key)">Edit</button> -->
+              <button class="dropdown-item" (click)="removeFromProject(entry.key)">Remove</button>
 
-          <button class="dropdown-item" (click)="removeFromProject(entry.key)">Remove</button>
+            </div>
+          </div>
+        </gv-te-ent-role-editable>
 
-        </div>
       </div>
-    </gv-te-ent-role-editable>
+    </div>
 
     <!-- If no roles in Project, show a big add button -->
     <div class="card-body" *ngIf="!(_role_list$ | async) && !(_role_set_form$ | async) && addButtonVisible">

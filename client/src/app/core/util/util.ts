@@ -6,7 +6,7 @@ import { AppellationLabel } from "../../modules/information2/shared/appellation-
 import { RoleSet, RoleSetLabelObj, RoleSetList, RoleDetail, AppeDetail, LangDetail, DataUnitChildList, DataUnitChild, ExistenceTimeDetail, PeItDetail, TimePrimitveDetail, DataUnitLabel, RoleLabel, ExTimeLabel, DataUnitChildLabel } from "../../modules/information2/information.models";
 import { indexBy, omit } from 'ramda';
 import { roleSetKey, roleSetKeyFromParams } from "../../modules/information2/information.helpers";
-import { ComUiContextConfig, ComPropertySet, DfhClass } from "../sdk";
+import { ComUiContextConfig, ComPropertySet, DfhClass, InfEntityProjectRel } from "../sdk";
 import { ClassConfig, UiContext, UiElement } from "../active-project/active-project.models";
 /**
  * Utilities class for static functions
@@ -508,6 +508,32 @@ export class U {
                 exTimeLabel: { earliest, latest }
             }
         }
+
+    }
+
+    /**
+     *  Extracts the first InfEntityProjectRel from InfRole 
+    */
+    static eprFromInfRole(role: InfRole): InfEntityProjectRel | null {
+
+        return (role && role.entity_version_project_rels && role.entity_version_project_rels[0]) ?
+            role.entity_version_project_rels[0] : null;
+
+    }
+
+
+
+    /**
+     *  Extracts the first InfEntityProjectRel from RoleDetail 
+    */
+    static eprFromRoleDetail(roleDetail: RoleDetail): InfEntityProjectRel | null {
+
+        return (
+            roleDetail &&
+            roleDetail.role &&
+            roleDetail.role.entity_version_project_rels &&
+            roleDetail.role.entity_version_project_rels[0]
+        ) ? roleDetail.role.entity_version_project_rels[0] : null;
 
     }
 

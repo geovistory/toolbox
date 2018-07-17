@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { RoleDetail, RoleDetailList, CollapsedExpanded, RoleSet } from '../information.models';
-import { DfhProperty } from 'app/core';
+import { DfhProperty, InfEntityProjectRel } from 'app/core';
 
 
 
@@ -26,7 +26,6 @@ export class RoleSetActions {
   // TODO INIT ACTIONS
   static readonly ROLES_SORTED_BY_POPULARITY = 'ROLES_SORTED_BY_POPULARITY';
 
-  // TODO
 
 
   // change standard label
@@ -66,6 +65,13 @@ export class RoleSetActions {
   static readonly ADD_ROLE_TO_ROLE_LIST = 'ADD_ROLE_TO_ROLE_LIST';
 
   static readonly REMOVE_ROLE_FROM_ROLE_LIST = 'REMOVE_ROLE_FROM_ROLE_LIST';
+
+  static readonly ROLE_SET_UPDATE_ORDER = 'ROLE_SET_UPDATE_ORDER';
+  static readonly ROLE_SET_UPDATE_ORDER_SUCCEEDED = 'ROLE_SET_UPDATE_ORDER_SUCCEEDED';
+  static readonly ROLE_SET_UPDATE_ORDER_FAILED = 'ROLE_SET_UPDATE_ORDER_FAILED';
+
+  static readonly ROLE_SET_ENABLE_DRAG = 'ROLE_SET_ENABLE_DRAG';
+  static readonly ROLE_SET_DISABLE_DRAG = 'ROLE_SET_DISABLE_DRAG';
 
 
   @dispatch()
@@ -215,4 +221,33 @@ export class RoleSetActions {
   })
 
 
+  updateOrder = (eprs:InfEntityProjectRel[]): RoleSetAction => ({
+    type: RoleSetActions.ROLE_SET_UPDATE_ORDER,
+    meta: {
+      eprs
+    },
+    payload: null
+  })
+
+
+  updateOrderSucceeded = (eprs:InfEntityProjectRel[]): RoleSetAction => ({
+    type: RoleSetActions.ROLE_SET_UPDATE_ORDER_SUCCEEDED,
+    meta: {
+      eprs
+    },
+    payload: null
+  })
+
+
+  enableDrag = (): RoleSetAction => ({
+    type: RoleSetActions.ROLE_SET_ENABLE_DRAG,
+    meta: null,
+    payload: null
+  })
+
+  disableDrag = (): RoleSetAction => ({
+    type: RoleSetActions.ROLE_SET_DISABLE_DRAG,
+    meta: null,
+    payload: null
+  })
 }

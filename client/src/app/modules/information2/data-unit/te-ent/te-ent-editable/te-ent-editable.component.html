@@ -1,5 +1,24 @@
 <div class="card gv-name">
-  <ng-container *ngTemplateOutlet="header"></ng-container>
+
+  <div class="card-header gv-name-header d-flex flex-row">
+    <ng-content select="[headerLeft]"></ng-content>
+    <div>
+      <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
+    </div>
+    <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
+      <span *ngIf="labelInEdit">{{labelInEdit}}</span>
+      <gv-te-ent-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-te-ent-label>
+    </div>
+    <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+      <div class="align-self-center">
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{classConfig.dfh_pk_class}}" target="_blank">
+          {{classConfig.dfh_identifier_in_namespace}}
+        </a>
+      </div>
+    </div>
+    <ng-content select="[headerRight]"></ng-content>
+  </div>
+  <ng-content select="[belowHeader]"></ng-content>
 
   <div [@slideInOut]="(toggle$|async)">
 
@@ -56,25 +75,3 @@
 </div>
 
 <!-- ************************** NG TEMPLATES ****************************** -->
-
-<ng-template #header>
-  <div class="card-header gv-name-header d-flex flex-row">
-    <ng-content select="[headerLeft]"></ng-content>
-    <div>
-      <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
-    </div>
-    <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
-      <span *ngIf="labelInEdit">{{labelInEdit}}</span>
-      <gv-te-ent-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-te-ent-label>
-    </div>
-    <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
-      <div class="align-self-center">
-        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{classConfig.dfh_pk_class}}" target="_blank">
-          {{classConfig.dfh_identifier_in_namespace}}
-        </a>
-      </div>
-    </div>
-    <ng-content select="[headerRight]"></ng-content>
-  </div>
-  <ng-content select="[belowHeader]"></ng-content>
-</ng-template>

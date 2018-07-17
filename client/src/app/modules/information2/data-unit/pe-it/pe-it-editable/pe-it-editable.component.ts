@@ -1,17 +1,17 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ComConfig, IAppState, UiContext, U } from 'app/core';
+import { ComConfig, IAppState, UiContext } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable } from 'rxjs/Observable';
 
-import { PeItDetail, RoleSet, RoleSetList, DataUnitLabel } from '../../../information.models';
+import { PeItDetail } from '../../../information.models';
 import { slideInOut } from '../../../shared/animations';
-import { StateToDataService } from '../../../shared/state-to-data.service';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 import { DataUnitBase } from '../../data-unit.base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
-import { StateCreatorService } from '../../../shared/state-creator.service';
+
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -73,6 +73,7 @@ export class PeItEditableComponent extends DataUnitBase {
     this.initPeItSubscriptions()
 
   }
+
 
   /**
    * init subscriptions to observables in the store

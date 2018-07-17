@@ -163,6 +163,7 @@ export interface RoleSetInterface {
     targetClassPk?: number;
     targetMinQuantity?: number;
     targetMaxQuantity?: number;
+    dragEnabled?:boolean;
 
     targetClass?: DfhClass;
 
@@ -190,6 +191,7 @@ export class RoleSet implements RoleSetInterface {
     targetClassPk: number;
     targetMinQuantity?: number;
     targetMaxQuantity?: number;
+    dragEnabled:boolean;
     targetClass: DfhClass;
     ordNum: number;
     rolesNotInProjectLoading: boolean;

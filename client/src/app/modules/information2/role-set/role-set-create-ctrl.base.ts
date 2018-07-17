@@ -1,5 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { IAppState, InfEntityProjectRel, InfEntityProjectRelApi, InfRoleApi, InfRole, U } from 'app/core';
 import { RoleSetActions } from './role-set.actions';
 import { RoleSetService } from '../shared/role-set.service';
@@ -9,6 +9,7 @@ import { StateCreatorService } from '../shared/state-creator.service';
 import { ClassService } from '../shared/class.service';
 import { RoleSetBase } from './role-set.base';
 import { clone } from 'ramda'
+import { RoleSetApiEpics } from './role-set.epics';
 
 export abstract class RoleSetCreateCtrlBase extends RoleSetBase {
 
@@ -19,6 +20,7 @@ export abstract class RoleSetCreateCtrlBase extends RoleSetBase {
   abstract initRoleSetCreateCtrlBaseChild(): void;
 
   constructor(
+    protected epics: RoleSetApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
     protected ngRedux: NgRedux<IAppState>,
@@ -30,7 +32,7 @@ export abstract class RoleSetCreateCtrlBase extends RoleSetBase {
     protected classService: ClassService,
     protected fb: FormBuilder
   ) {
-    super(eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
   }
 
 
@@ -115,7 +117,7 @@ export abstract class RoleSetCreateCtrlBase extends RoleSetBase {
     U.obj2KeyValueArr(this.formGroup.controls).forEach(item => {
       if (item.key != ctrlKey) {
         // disable is_standard_in_project
-        const ctrl: FormControl = item.value;
+        const ctrl: AbstractControl = item.value;
         let role: InfRole = clone(ctrl.value);
 
         role.entity_version_project_rels[0] = {

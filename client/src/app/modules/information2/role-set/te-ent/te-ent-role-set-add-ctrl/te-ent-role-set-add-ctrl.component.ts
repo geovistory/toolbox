@@ -12,23 +12,24 @@ import { RoleSetService } from '../../../shared/role-set.service';
 import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetAddCtrlBase } from '../../role-set-add-ctrl.base';
 import { RoleSetActions } from '../../role-set.actions';
+import { RoleSetApiEpics } from '../../role-set.epics';
 
 
 @Component({
-  selector: 'gv-te-ent-role-set-add-ctrl',
-  templateUrl: './te-ent-role-set-add-ctrl.component.html',
-  styleUrls: ['./te-ent-role-set-add-ctrl.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    slideInOut
-  ],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => TeEntRoleSetAddCtrlComponent),
-      multi: true
-    }
-  ]
+    selector: 'gv-te-ent-role-set-add-ctrl',
+    templateUrl: './te-ent-role-set-add-ctrl.component.html',
+    styleUrls: ['./te-ent-role-set-add-ctrl.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    animations: [
+        slideInOut
+    ],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => TeEntRoleSetAddCtrlComponent),
+            multi: true
+        }
+    ]
 })
 export class TeEntRoleSetAddCtrlComponent extends RoleSetAddCtrlBase {
 
@@ -36,82 +37,83 @@ export class TeEntRoleSetAddCtrlComponent extends RoleSetAddCtrlBase {
     /**
     * Paths to other slices of the store
     */
-   @Input() parentTeEntStatePath: string[];
-   parentPeItStatePath: string[];
+    @Input() parentTeEntStatePath: string[];
+    parentPeItStatePath: string[];
 
-   parentRoleDetailPath: string[]
+    parentRoleDetailPath: string[]
 
-   /**
-    * Other Store Observables
-    */
-   ontoInfoVisible$: Observable<boolean>
-   communityStatsVisible$: Observable<boolean>
+    /**
+     * Other Store Observables
+     */
+    ontoInfoVisible$: Observable<boolean>
+    communityStatsVisible$: Observable<boolean>
 
-   roleSetState: RoleSet;
-   parentTeEntState: TeEntDetail;
-   parentRoleDetail: RoleDetail;
-
-
-   constructor(
-       protected eprApi: InfEntityProjectRelApi,
-       protected roleApi: InfRoleApi,
-       protected ngRedux: NgRedux<IAppState>,
-       protected actions: RoleSetActions,
-       protected roleSetService: RoleSetService,
-       protected roleStore: NgRedux<RoleDetail>,
-       protected roleActions: RoleActions,
-       protected stateCreator: StateCreatorService,
-       protected classService: ClassService,
-       protected fb: FormBuilder,
-       private teEntApi: InfTemporalEntityApi
-
-   ) {
-       super(eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
-   }
-
-   initRoleSetAddCtrlBaseChild() {
-
-       this.initPaths()
-
-       this.initObservablesOutsideLocalStore();
-
-       this.initSubsciptions();
-
-   }
-
-   /**
-      * init paths to different slices of the store
-      */
-   initPaths() {
-       // transforms e.g. 
-       // ['information', 'entityEditor', 'peItState', 'roleSets', '1_ingoing', '_role_list', '88899', 'childTeEnt'] to
-       // ['information', 'entityEditor', 'peItState']
-       this.parentPeItStatePath = this.parentPath.slice(0, (this.parentPath.length - 5));
-
-       // transforms e.g. 
-       // ['information', 'entityEditor', 'peItState', 'roleSets', '1_ingoing', '_role_list', '88899', 'childTeEnt'] to
-       // ['information', 'entityEditor', 'peItState', 'roleSets', '1_ingoing', ]
-       this.parentRoleDetailPath = this.parentPath.slice(0, (this.parentPath.length - 3));
-
-   }
+    roleSetState: RoleSet;
+    parentTeEntState: TeEntDetail;
+    parentRoleDetail: RoleDetail;
 
 
-   /**
-    * init observables to other slices of the store than the local store
-    * (to select observables from local store, use @select decorator)
-    */
-   initObservablesOutsideLocalStore() {
-       this.ontoInfoVisible$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'ontoInfoVisible']);
-   }
+    constructor(
+        protected epics: RoleSetApiEpics,
+        protected eprApi: InfEntityProjectRelApi,
+        protected roleApi: InfRoleApi,
+        protected ngRedux: NgRedux<IAppState>,
+        protected actions: RoleSetActions,
+        protected roleSetService: RoleSetService,
+        protected roleStore: NgRedux<RoleDetail>,
+        protected roleActions: RoleActions,
+        protected stateCreator: StateCreatorService,
+        protected classService: ClassService,
+        protected fb: FormBuilder,
+        private teEntApi: InfTemporalEntityApi
 
-   /**
-    * init subscriptions to observables in the store
-    * subscribe all here, so it is only subscribed once on init and not multiple times on user interactions
-    */
-   initSubsciptions() {
-       this.subs.push(this.ngRedux.select<TeEntDetail>(this.parentTeEntStatePath).subscribe(d => this.parentTeEntState = d))
-       this.subs.push(this.ngRedux.select<RoleDetail>(this.parentRoleDetailPath).subscribe(d => this.parentRoleDetail = d))
+    ) {
+        super(epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    }
 
-   }
+    initRoleSetAddCtrlBaseChild() {
+
+        this.initPaths()
+
+        this.initObservablesOutsideLocalStore();
+
+        this.initSubsciptions();
+
+    }
+
+    /**
+       * init paths to different slices of the store
+       */
+    initPaths() {
+        // transforms e.g. 
+        // ['information', 'entityEditor', 'peItState', 'roleSets', '1_ingoing', '_role_list', '88899', 'childTeEnt'] to
+        // ['information', 'entityEditor', 'peItState']
+        this.parentPeItStatePath = this.parentPath.slice(0, (this.parentPath.length - 5));
+
+        // transforms e.g. 
+        // ['information', 'entityEditor', 'peItState', 'roleSets', '1_ingoing', '_role_list', '88899', 'childTeEnt'] to
+        // ['information', 'entityEditor', 'peItState', 'roleSets', '1_ingoing', ]
+        this.parentRoleDetailPath = this.parentPath.slice(0, (this.parentPath.length - 3));
+
+    }
+
+
+    /**
+     * init observables to other slices of the store than the local store
+     * (to select observables from local store, use @select decorator)
+     */
+    initObservablesOutsideLocalStore() {
+        this.ontoInfoVisible$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'ontoInfoVisible']);
+    }
+
+    /**
+     * init subscriptions to observables in the store
+     * subscribe all here, so it is only subscribed once on init and not multiple times on user interactions
+     */
+    initSubsciptions() {
+        this.subs.push(this.ngRedux.select<TeEntDetail>(this.parentTeEntStatePath).subscribe(d => this.parentTeEntState = d))
+        this.subs.push(this.ngRedux.select<RoleDetail>(this.parentRoleDetailPath).subscribe(d => this.parentRoleDetail = d))
+
+    }
 
 }

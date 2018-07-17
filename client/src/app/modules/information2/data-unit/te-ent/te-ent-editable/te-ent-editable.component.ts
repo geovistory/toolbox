@@ -1,18 +1,17 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ComConfig, UiContext, U } from 'app/core';
+import { ComConfig, UiContext } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable } from 'rxjs/Observable';
 
-import { ExistenceTimeDetail, RoleDetail, RoleSetList, TeEntDetail } from '../../../information.models';
+import { ExistenceTimeDetail, RoleDetail, TeEntDetail } from '../../../information.models';
+import { RoleSetActions } from '../../../role-set/role-set.actions';
 import { slideInOut } from '../../../shared/animations';
 import { StateCreatorService } from '../../../shared/state-creator.service';
-import { StateToDataService } from '../../../shared/state-to-data.service';
 import { DataUnitBase } from '../../data-unit.base';
 import { TeEntActions } from '../te-ent.actions';
 import { teEntReducer } from '../te-ent.reducer';
-
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -27,7 +26,6 @@ import { teEntReducer } from '../te-ent.reducer';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeEntEditableComponent extends DataUnitBase {
-
 
   @Input() parentPath: string[];
 
@@ -75,8 +73,8 @@ export class TeEntEditableComponent extends DataUnitBase {
    */
   // gets called by base class onInit
   initStore() {
-    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), teEntReducer);
     this.basePath = this.getBasePath();
+    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), teEntReducer);
   }
 
 
@@ -98,9 +96,10 @@ export class TeEntEditableComponent extends DataUnitBase {
 * init paths to different slices of the store
 */
   initPaths() {
-    // transforms e.g. ['information', 'entityEditor', 'peItState', 'roleSets', '1', 'roleStatesInProject', '79060']
-    // to ['information', 'entityEditor', 'peItState']
+    // transforms e.g.  ['information', 'entityEditor', 'peItState', 'roleSets', '1', '_role_list', '79060']
+    // to               ['information', 'entityEditor', 'peItState']
     this.parentPeItStatePath = this.parentPath.slice(0, (this.parentPath.length - 4));
+
   }
 
   /**
@@ -147,7 +146,5 @@ export class TeEntEditableComponent extends DataUnitBase {
   toggleCardBody() {
     this.localStore.dispatch(this.actions.toggle())
   }
-
-
 
 }

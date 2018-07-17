@@ -140,6 +140,6 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
         this.updateUiContextConfig(uiPropConfs);
 
     }
-  } ƒ
+  } 
 
 }
