@@ -5,10 +5,8 @@
       - Show all _children, including such of properties, that are disabled in the adding project
       - but make only those children selectable / addable, that are enabled 
    -->
-  <div *ngFor="let el of uiContext.uiElements; trackBy:getKey">
-    <div  *ngIf="(_children$ | async)[el.roleSetKey]">
-      <gv-pe-it-role-set-add-ctrl *ngIf="formGroup.get(el.roleSetKey)" [parentPath]="basePath" [index]="el.roleSetKey" [formControlName]="el.roleSetKey"
+  <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
+      <gv-pe-it-role-set-add-ctrl *ngIf="formGroup.get(item.key)" [parentPath]="basePath" [index]="item.key" [formControlName]="item.key"
         (touched)="markAsTouched()"></gv-pe-it-role-set-add-ctrl>
-    </div>
   </div>
 </form>

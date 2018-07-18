@@ -8,7 +8,7 @@ import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { NgbTypeahead } from '../../../../../node_modules/@ng-bootstrap/ng-bootstrap';
 import { roleSetKey, roleSetKeyFromParams } from '../information.helpers';
-import { AddOption, PeItDetail, RoleSet, RoleSetList, SelectPropStateType, TeEntDetail, ExistenceTimeDetail, DataUnitLabel } from '../information.models';
+import { AddOption, PeItDetail, RoleSet, RoleSetList, SelectPropStateType, TeEntDetail, ExistenceTimeDetail, DataUnitLabel, RoleSetInterface } from '../information.models';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
 import { StateCreatorService } from '../shared/state-creator.service';
@@ -112,7 +112,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   get addOptions(): AddOption[] {
     return this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE].uiElements.map(el => {
       if (
-        el.fk_property && !this.roleSets[el.roleSetKey]
+       this.roleSets && el.fk_property && !this.roleSets[el.roleSetKey]
       ) {
         const roleSet = this.classConfig.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
         return {
@@ -120,7 +120,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
           uiElement: el
         }
       }
-      else if (el.fk_property_set && !this.roleSets[propSetMap[el.fk_property_set]]) {
+      else if (this.roleSets && el.fk_property_set && !this.roleSets[propSetMap[el.fk_property_set]]) {
         return {
           label: el.property_set.label,
           uiElement: el
@@ -150,17 +150,17 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   /**
 * called, when user selected a the kind of property to add
 */
-  addRoleSet(propertyToAdd: RoleSet) {
+  addRoleSet(propertyToAdd: RoleSetInterface) {
 
     // add a role set
-    const newRoleSet: RoleSet = {
+    const newRoleSet = new RoleSet({
       ...propertyToAdd,
       toggle: 'expanded',
       roles: [],
       rolesNotInProjectLoading: true,
       roleStatesInOtherProjectsVisible: false,
       _role_set_form: {}
-    }
+    })
 
     // add a form conrtol
     this.formGroup.addControl(

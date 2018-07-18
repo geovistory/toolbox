@@ -98,7 +98,7 @@ export class StateToDataService {
           }
         }
         else if (child.type == 'ExistenceTimeDetail') {
-          U.obj2Arr((child as ExistenceTimeDetail)._children).forEach((roleSet: RoleSet) => {
+          U.obj2Arr((child as ExistenceTimeDetail)._children).forEach((roleSet) => {
             U.obj2Arr(roleSet._role_list).forEach((roleDetail: RoleDetail) => {
               if (!roleDetail.isCircular)
                 roles.push(StateToDataService.roleStateToRoleToRelate(roleDetail, eprOptions));
@@ -120,7 +120,7 @@ export class StateToDataService {
    */
   static existenceTimeToRolesToRelate(teEntState: ExistenceTimeDetail, eprOptions?: InfEntityProjectRel): InfRole[] {
     if (teEntState)
-      return StateToDataService.roleSetsToRolesToRelate(teEntState._children, eprOptions);
+      return StateToDataService.roleSetsToRolesToRelate(teEntState._children as DataUnitChildList, eprOptions);
     else
       return []
   }

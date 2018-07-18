@@ -1,3 +1,18 @@
+<div class="btn-group d-flex flex-row gv-h5">
+  <button class="btn btn-light btn-sm btn-block text-left rounded-0">
+      When
+  </button>
+  <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+      <div class="align-self-center">
+          <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/50" target="_blank">
+              E52
+          </a>
+      </div>
+  </div>
+</div>
+
+
+
 <div class="p-2">
   <!-- At some time within -->
   <div class="d-flex align-items-center" *ngIf="(_children?._72_outgoing)">

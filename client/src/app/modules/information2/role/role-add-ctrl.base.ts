@@ -51,9 +51,9 @@ export abstract class RoleAddCtrlBase extends RoleBase {
     // update its value
     isInProjectCtrl.setValue(this.isInProject)
 
-    // if this is not standard, enable the is in project ctrl
-    if (this.isStandard) isInProjectCtrl.disable()
-    else isInProjectCtrl.enable();
+    // // if this is not standard, enable the is in project ctrl
+    // if (this.isStandard) isInProjectCtrl.disable()
+    // else isInProjectCtrl.enable();
 
   }
 
@@ -131,7 +131,7 @@ export abstract class RoleAddCtrlBase extends RoleBase {
   makeStandard() {
     this.isStandard = true;
 
-    this.formGroup.get('is_in_project').disable()
+    // this.formGroup.get('is_in_project').disable()
 
     this.emitVal();
   }

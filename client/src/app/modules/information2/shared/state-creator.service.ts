@@ -16,6 +16,7 @@ import {
   InfTemporalEntity,
   InfTimePrimitive,
   U,
+  DfhPropertyInterface,
 } from 'app/core';
 import { groupBy, indexBy, prop, clone } from 'ramda';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -49,7 +50,7 @@ import { StateToDataService } from './state-to-data.service';
 
 export interface StateSettings {
   parentRolePk?: number;
-  parentProperty?: DfhProperty;
+  parentProperty?: DfhPropertyInterface;
   isCreateMode?: boolean;
   isAddMode?: boolean;
 }

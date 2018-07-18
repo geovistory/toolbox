@@ -1,16 +1,17 @@
 import { NgRedux, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-import { IAppState, InfPersistentItem, InfRole, U, ClassConfig } from 'app/core';
+import { ClassConfig, IAppState, InfPersistentItem, InfRole } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { dropLast } from 'ramda';
 import { Observable, ReplaySubject, Subscription } from 'rxjs';
 
-import { DataUnitLabel, PeItDetail, DataUnitChildList } from '../../information.models';
+import { DataUnitChildList, DataUnitLabel, PeItDetail } from '../../information.models';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { LeafPeItViewModalComponent } from './leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
 import { LeafPeItActions } from './leaf-pe-it-view.actions';
 import { leafPeItReducer } from './leaf-pe-it-view.reducer';
-
+import { ActivatedRoute, Router } from '@angular/router';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -71,8 +72,8 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
   @select() loading$: Observable<boolean>;
 
   constructor(
-    // private route: ActivatedRoute,
-    // private router: Router,
+    private route: ActivatedRoute,
+    private router: Router,
     private ngRedux: NgRedux<IAppState>,
     private modalService: NgbModal,
     protected stateCreator: StateCreatorService
@@ -91,7 +92,7 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
 
     if (!peItDetail.peIt) {
       // console.log('LeafPeItViewComponent leafPeItStartLoading', this.pkEntity)
-      
+
       this.initPeItState();
     }
 
@@ -134,15 +135,15 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
     // window.open(this.router.serializeUrl(urlTree), '_blank')
     const open = () => {
 
-      // this.router.navigate(["../", this.peItState.peIt.pk_entity], {
-      //   relativeTo: this.route,
-      //   queryParamsHandling: 'merge'
-      // })
-      //   .then(() => {
-      //     console.log('ok')
-      //   }).catch(() => {
-      //     console.log('oops')
-      //   })
+      this.router.navigate(["../", this.peItState.peIt.pk_entity], {
+        relativeTo: this.route,
+        queryParamsHandling: 'merge'
+      })
+        .then(() => {
+          console.log('ok')
+        }).catch(() => {
+          console.log('oops')
+        })
     }
 
 

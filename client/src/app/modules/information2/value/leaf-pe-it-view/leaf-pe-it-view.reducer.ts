@@ -1,7 +1,7 @@
+import { clone } from 'ramda';
+
 import { PeItDetail } from '../../information.models';
 import { LeafPeItAction, LeafPeItActions } from './leaf-pe-it-view.actions';
-
-
 
 const INITIAL_STATE: PeItDetail = {
 
@@ -17,6 +17,7 @@ export const leafPeItReducer =
                 lastState = {
                     ...lastState,
                     ...action.payload,
+                    _leaf_peIt_modal: clone(action.payload)
                     // loading: false
                 }
                 break;

@@ -1,7 +1,7 @@
 <!-- Title / Standard Appellations of PeIt -->
 
 <div class="gv-edit-panel-header">
-  <ng-container *ngTemplateOutlet="header"></ng-container>
+  <gv-pe-it-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
 </div>
 
 <!-- Tools to edit PeIt  -->
@@ -89,10 +89,6 @@
 
 
 <!-- ************************** NG TEMPLATES ****************************** -->
-
-<ng-template #header>
-  <gv-pe-it-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
-</ng-template>
 
 <ng-template #propertiesHeader>
   <div class="btn-group gv-flex-shrink-0 d-flex mb-3" role="group" aria-label="Basic example">

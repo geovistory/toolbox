@@ -1,4 +1,4 @@
-import { InfPlace, InfLanguage, InfTimePrimitive } from '../../core/sdk';
+import { InfPlace, InfLanguage, InfTimePrimitive, DfhPropertyInterface } from '../../core/sdk';
 import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity, UiElement, TimePrimitive } from 'app/core';
 
 /**
@@ -74,6 +74,7 @@ export interface PeItDetail extends DataUnit {
     ontoInfoVisible?: boolean;
     communityStatsVisible?: boolean;
     loading?: boolean; //for leaf pe it view
+    _leaf_peIt_modal?:PeItDetail // for leaf pe it view modal
 }
 
 
@@ -157,7 +158,7 @@ export interface RoleSetInterface {
 
     // gui
     label?: RoleSetLabelObj;
-    property?: DfhProperty;
+    property?: DfhPropertyInterface;
     isOutgoing?: boolean;
     toggle?: CollapsedExpanded;
     targetClassPk?: number;
@@ -185,7 +186,7 @@ export class RoleSet implements RoleSetInterface {
     _role_set_form: RoleSetForm;
     roles: InfRole[];
     label: RoleSetLabelObj;
-    property: DfhProperty;
+    property: DfhPropertyInterface;
     isOutgoing: boolean;
     toggle: CollapsedExpanded;
     targetClassPk: number;
@@ -229,6 +230,7 @@ export interface RoleDetail {
     _lang?: LangDetail;
     _timePrimitive?: TimePrimitveDetail;
     _leaf_peIt?: PeItDetail
+
     _leaf_teEnt?: TeEntDetail
     _place?: PlaceDetail;
 
@@ -326,7 +328,7 @@ export interface ExTimeLabel {
  *******************************/
 
 export interface DataUnitChildList { [keyInState: string]: DataUnitChild; }
-export interface RoleSetList { [key: string]: RoleSet }
+export interface RoleSetList { [key: string]: RoleSetInterface }
 export interface RoleDetailList { [key: string]: RoleDetail }
 
 

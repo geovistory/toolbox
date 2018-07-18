@@ -198,7 +198,7 @@ export class U {
 
 
         return properties.map(property => {
-            return {
+            const res = new RoleSet({
                 isOutgoing: isOutgoing,
                 property: omit(['labels', 'domain_class', 'range_class'], property),
                 targetMaxQuantity: isOutgoing ? property.dfh_range_instances_max_quantifier : property.dfh_domain_instances_max_quantifier,
@@ -206,7 +206,9 @@ export class U {
                 targetClassPk: isOutgoing ? property.dfh_has_range : property.dfh_has_domain,
                 targetClass: isOutgoing ? property.range_class : property.domain_class,
                 label: this.createLabelObject(property, isOutgoing)
-            } as RoleSet
+            })
+
+            return res;
         });
     }
 
@@ -348,7 +350,7 @@ export class U {
             label: dfhC.dfh_standard_label,
             dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,
             dfh_pk_class: dfhC.dfh_pk_class,
-            uiContexts: []
+            uiContexts: {}
         };
 
         if (dfhC.ingoing_properties || dfhC.outgoing_properties)
