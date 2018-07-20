@@ -61,6 +61,9 @@ exports.up = function(db, callback) {
     'sys_period', 'commons.property_set_vt', true
   );
 
+
+  Insert into commons.property_set ("label",description)
+  VALUES ('When', 'Existence Time or Time Span of a Temporal Entity')
   `
   db.runSql(sql, callback)
 
