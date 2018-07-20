@@ -12,6 +12,7 @@ import { MentionedEntityViewComponent } from './components/mentioned-entity-view
 import { AnnotationCtrlComponent } from './containers/annotation-ctrl/annotation-ctrl.component';
 import { AnnotationPanelComponent } from './containers/annotation-panel/annotation-panel.component';
 import { MentionedEntitiesCtrlComponent } from './containers/mentioned-entities-ctrl/mentioned-entities-ctrl.component';
+import { Information2Module } from '../information2/information2.module';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { MentionedEntitiesCtrlComponent } from './containers/mentioned-entities-
     ReactiveFormsModule,
     ControlMessagesModule,
     QuillModule,
-    KeysModule
+    KeysModule,
+    Information2Module
   ],
   declarations: [
     AnnotationPanelComponent, 

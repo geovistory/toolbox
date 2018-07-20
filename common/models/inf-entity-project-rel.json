@@ -16,8 +16,7 @@
       "generated": true
     },
     "pk_entity": {
-      "type": "number",
-      "generated": true
+      "type": "number"
     },
     "fk_project": {
       "type": "number",

@@ -106,6 +106,7 @@ import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.comp
 import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.component';
 import { DndModule } from '../../../../node_modules/ng2-dnd';
 import { RoleSetApiEpics } from './role-set/role-set.epics';
+import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it-label.component';
 
 @NgModule({
   imports: [
@@ -205,6 +206,7 @@ import { RoleSetApiEpics } from './role-set/role-set.epics';
     // Reusable
     TeEntLabelComponent,
     PeItLabelComponent,
+    LeafPeItLabelComponent,
 
 
   ],

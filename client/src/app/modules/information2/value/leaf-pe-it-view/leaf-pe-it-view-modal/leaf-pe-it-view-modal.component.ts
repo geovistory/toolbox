@@ -25,7 +25,7 @@ export class LeafPeItViewModalComponent implements OnInit {
   constructor(
     public modal: NgbActiveModal,
     private peItApi: InfPersistentItemApi,
-    private ngRedux: NgRedux<IAppState>;
+    private ngRedux: NgRedux<IAppState>
   ) {
   }
 

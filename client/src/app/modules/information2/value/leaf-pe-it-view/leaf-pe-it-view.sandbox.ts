@@ -2,8 +2,9 @@ import { sandboxOf } from 'angular-playground';
 
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { PeItDetail } from '../../information.models';
-import { Information2Module } from '../../information2.module';
 import { LeafPeItViewComponent } from './leaf-pe-it-view.component';
+import { Information2Module } from '../../information2.module';
+import { RouterModule } from '../../../../../../node_modules/@angular/router';
 
 
 
@@ -11,7 +12,8 @@ import { LeafPeItViewComponent } from './leaf-pe-it-view.component';
 export default sandboxOf(LeafPeItViewComponent, {
     imports: [
         InitStateModule,
-        Information2Module
+        Information2Module,
+        RouterModule
     ],
     declareComponent: false
 })

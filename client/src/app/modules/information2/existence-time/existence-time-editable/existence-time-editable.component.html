@@ -37,61 +37,69 @@
     </div>
 
     <!-- Hase some value -->
-    <div class="p-2" *ngIf="!isEmpty">
-        <!-- At some time within -->
-        <div class="d-flex align-items-center" *ngIf="(_children?._72_outgoing)">
-            <div *ngIf="(_children | keys).length > 1">At some time within:</div>
+    <div class="pl-2 py-2 d-flex" *ngIf="!isEmpty">
+        <div class="gv-flex-grow-1">
+            <!-- At some time within -->
+            <div class="d-flex align-items-center" *ngIf="(_children?._72_outgoing)">
+                <div *ngIf="(_children | keys).length > 1">At some time within:</div>
 
-            <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_72_outgoing'"></gv-ex-time-role-set-editable>
+                <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_72_outgoing'"></gv-ex-time-role-set-editable>
+
+            </div>
+
+            <!-- Begin of begin -->
+            <div class="d-flex align-items-center" *ngIf="(_children?._152_outgoing)">
+                <div>Earliest possible begin:</div>
+
+                <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_152_outgoing'"></gv-ex-time-role-set-editable>
+
+            </div>
+
+            <!-- End of end -->
+            <div class="d-flex align-items-center" *ngIf="(_children?._153_outgoing)">
+                <div>Latest possible end:</div>
+
+                <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_153_outgoing'"></gv-ex-time-role-set-editable>
+
+            </div>
+
+            <!-- Ongoing throughout -->
+            <div class="d-flex align-items-center" *ngIf="(_children?._71_outgoing)">
+                <div>Ongoing throughout:</div>
+
+                <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_71_outgoing'"></gv-ex-time-role-set-editable>
+
+            </div>
+
+            <!-- End of begin -->
+            <div class="d-flex align-items-center" *ngIf="(_children?._150_outgoing)">
+
+                <div>Begin:</div>
+
+                <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_150_outgoing'"></gv-ex-time-role-set-editable>
+
+            </div>
+
+
+            <!-- Begin of end -->
+            <div class="d-flex align-items-center" *ngIf="(_children?._151_outgoing)">
+
+                <div>End:</div>
+
+                <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_151_outgoing'"></gv-ex-time-role-set-editable>
+
+            </div>
 
         </div>
-
-        <!-- Begin of begin -->
-        <div class="d-flex align-items-center" *ngIf="(_children?._152_outgoing)">
-            <div>Earliest possible begin:</div>
-
-            <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_152_outgoing'"></gv-ex-time-role-set-editable>
-
+        <div class="d-flex flex-column justify-content-center">
+            <div class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
+                <button class="btn btn-link" ngbDropdownToggle>
+                    <i class="fa fa-ellipsis-v"></i>
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+                    <button class="dropdown-item" (click)="openModal()">Edit</button>
+                </div>
+            </div>
         </div>
-
-        <!-- End of end -->
-        <div class="d-flex align-items-center" *ngIf="(_children?._153_outgoing)">
-            <div>Latest possible end:</div>
-
-            <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_153_outgoing'"></gv-ex-time-role-set-editable>
-
-        </div>
-
-        <!-- Ongoing throughout -->
-        <div class="d-flex align-items-center" *ngIf="(_children?._71_outgoing)">
-            <div>Ongoing throughout:</div>
-
-            <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_71_outgoing'"></gv-ex-time-role-set-editable>
-
-        </div>
-
-        <!-- End of begin -->
-        <div class="d-flex align-items-center" *ngIf="(_children?._150_outgoing)">
-
-            <div>Begin:</div>
-
-            <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_150_outgoing'"></gv-ex-time-role-set-editable>
-
-        </div>
-
-
-        <!-- Begin of end -->
-        <div class="d-flex align-items-center" *ngIf="(_children?._151_outgoing)">
-
-            <div>End:</div>
-
-            <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_151_outgoing'"></gv-ex-time-role-set-editable>
-
-        </div>
-
-        <div class="mt-3">
-            <button class="btn btn-primary" (click)="openModal()">Edit</button>
-        </div>
-
     </div>
 </div>

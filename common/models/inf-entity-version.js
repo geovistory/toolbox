@@ -84,7 +84,7 @@ module.exports = function (InfEntityVersion) {
                 res(instances);
               };
 
-              resultingEpr.replaceAttributes(newEpr, cb);
+              resultingEpr.patchAttributes(newEpr, cb);
             }
 
           })
@@ -477,7 +477,7 @@ module.exports = function (InfEntityVersion) {
             "is_standard_in_project": [reqEpr.is_standard_in_project, existingEpr.is_standard_in_project, false].find(item => item !== undefined),
 
             // use the requested value, or the existing or undefined
-            "calendar": reqEpr.calendar || existingEpr.is_standard_in_project || undefined,
+            "calendar": reqEpr.calendar || existingEpr.calendar || undefined,
           })
 
 

@@ -88,9 +88,10 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
 
     const peItDetail = this.ngRedux.configureSubStore(this.basePath, leafPeItReducer).getState();
 
-    this.classConfig = this.ngRedux.getState().activeProject.crm.classes[peItDetail.fkClass];
+    if (peItDetail && peItDetail.fkClass)
+      this.classConfig = this.ngRedux.getState().activeProject.crm.classes[peItDetail.fkClass];
 
-    if (!peItDetail.peIt) {
+    if (!peItDetail || !peItDetail.peIt) {
       // console.log('LeafPeItViewComponent leafPeItStartLoading', this.pkEntity)
 
       this.initPeItState();
@@ -114,8 +115,10 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
       this.stateCreator.initializePeItState(this.pkEntity, pkProject).subscribe(peItState => {
 
         this.peItState = peItState;
-        // if (peItState)
-        //   this.label = U.labelFromDataUnitChildList(peItState._children);
+
+        if (peItState && peItState.fkClass && !this.classConfig)
+          this.classConfig = this.ngRedux.getState().activeProject.crm.classes[peItState.fkClass];
+
 
         this.leafPeItStateAdded(peItState)
         this.leafPeItLoading$.next(false);

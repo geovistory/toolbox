@@ -87,8 +87,6 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
     // Initialize the store by one of the derived classes
     this.initStore()
 
-    this.classConfig = this.ngRedux.getState().activeProject.crm.classes[this.localStore.getState().fkClass];
-
     // Initialize the children in this class
     // this.initChildren() SINGLE_INIT
 
@@ -104,7 +102,11 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   initSubscriptions() {
     this.subs.push(this._children$.subscribe(rs => {
       this.roleSets = rs;
+    }))
 
+    this.subs.push(this.fkClass$.subscribe(fkClass => {
+      if (fkClass)
+        this.classConfig = this.ngRedux.getState().activeProject.crm.classes[fkClass];
     }))
   }
 
@@ -112,7 +114,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   get addOptions(): AddOption[] {
     return this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE].uiElements.map(el => {
       if (
-       this.roleSets && el.fk_property && !this.roleSets[el.roleSetKey]
+        this.roleSets && el.fk_property && !this.roleSets[el.roleSetKey]
       ) {
         const roleSet = this.classConfig.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
         return {

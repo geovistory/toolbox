@@ -5,16 +5,19 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/startWith';
 
 import { Injectable } from '@angular/core';
-import { DfhClass, IAppState, LoadingBarActions, U } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { sort } from 'ramda';
 import { createEpicMiddleware, Epic } from 'redux-observable';
 import { Observable } from 'rxjs';
 
-import { ComUiContext, ComUiContextApi, ComUiContextConfig, ProjectApi } from '../sdk';
+import { propSetKeyFromFk, roleSetKey, roleSetKeyFromParams } from '../../modules/information2/information.helpers';
+import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
+import { ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, ProjectApi } from '../sdk';
+import { IAppState } from '../store/model';
+import { U } from '../util/util';
 import { ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { roleSetKey, roleSetKeyFromParams, propSetKeyFromFk } from '../../modules/information2/information.helpers';
+
 
 @Injectable()
 export class ActiveProjectEpics {

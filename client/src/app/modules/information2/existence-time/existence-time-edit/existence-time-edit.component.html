@@ -23,8 +23,8 @@
       <small class="text-muted">(Help)</small>
     </h2>
 
-    <button type="button" class="close" aria-label="Back" (click)="setHelpMode('hidden')">
-      <span aria-hidden="true">Back</span>
+    <button type="button" class="close" aria-label="Back" (click)="setHelpMode('short')">
+      <span aria-hidden="true">&times;</span>
     </button>
   </div>
 
@@ -53,14 +53,19 @@
   <div class="modal-body d-flex justify-content-end">
     <button class="btn btn-link" *ngIf="(mode$ | async) !== 'advanced'" (click)="showAdvancedMode()">Advanced mode</button>
     <button class="btn btn-link" *ngIf="(mode$ | async) === 'advanced' && (helpMode$ | async) === 'hidden' " (click)="setHelpMode('short')">Help</button>
+    <button class="btn btn-link" *ngIf="(helpMode$ | async) === 'short'" (click)="setHelpMode('hidden')">
+      <i class="fa fa-close"></i>
+    </button>
   </div>
 
 
   <div class="modal-body d-flex flex-column" *ngIf="(helpMode$ | async) === 'short'">
+
+
     <img src="/assets/images/time-span.png" alt="Time Span Structure" class="img-fluid border mt-3 mb-2 align-self-center" style="max-width: 430px;">
 
     <i class="align-self-center mb-5">
-      Components defining the temporal existence of phenomena.  
+      Components defining the temporal existence of phenomena.
       <a href="" class="gv-passive-link" (click)="setHelpMode('long')">Read more...</a>
     </i>
   </div>
@@ -76,7 +81,7 @@
       <div class="modal-body" *ngIf="((_children$ | async)?._72_outgoing) && formGroup.get('_72_outgoing')">
 
         <span *ngIf="(mode$ | async) !== 'one-date'">
-            <ng-container *ngTemplateOutlet="header; context:{key:'_72_outgoing', label: 'At some time within'}"></ng-container>
+          <ng-container *ngTemplateOutlet="header; context:{key:'_72_outgoing', label: 'At some time within'}"></ng-container>
         </span>
 
         <gv-ex-time-role-set-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_72_outgoing"
@@ -204,14 +209,15 @@
     <div class="gv-flex-grow-1 gv-card-spacer-x">{{label}}</div>
     <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
       <div class="align-self-center">
-        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/property/{{(property$|async).dfh_pk_property}}" target="_blank">
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/property/{{(property$|async).dfh_pk_property}}"
+          target="_blank">
           {{(property$|async).dfh_identifier_in_namespace}}
         </a>
       </div>
     </div>
 
     <button type="button" class="btn btn-sm btn-link align-self-center" (click)="removeRoleSet(key)" title="Remove">
-      <i class="fa fa-close"></i>
+      <i class="fa fa-trash"></i>
     </button>
   </div>
 
