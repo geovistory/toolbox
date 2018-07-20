@@ -24,7 +24,7 @@ import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Subject } from 'rxjs/Subject';
 
-import { dataUnitChildKey, roleDetailKey, roleSetKey, roleSetKeyFromParams, sortRoleDetailsByOrdNum } from '../information.helpers';
+import { dataUnitChildKey, roleDetailKey, roleSetKey, roleSetKeyFromParams, sortRoleDetailsByOrdNum, similarRoleSet } from '../information.helpers';
 import {
   AppeDetail,
   DataUnit,
@@ -39,6 +39,7 @@ import {
   RoleSet,
   TeEntDetail,
   TimePrimitveDetail,
+  RoleSetInterface,
 } from '../information.models';
 import { AppellationLabel } from './appellation-label/appellation-label';
 import { ClassService } from './class.service';
@@ -50,7 +51,7 @@ import { StateToDataService } from './state-to-data.service';
 
 export interface StateSettings {
   parentRolePk?: number;
-  parentProperty?: DfhPropertyInterface;
+  parentRoleSet?: RoleSetInterface;
   isCreateMode?: boolean;
   isAddMode?: boolean;
 }
@@ -163,17 +164,9 @@ export class StateCreatorService {
             el.roleSetKey
           ) {
             let roleSetDef = classConfig.roleSets[el.roleSetKey];
-            // exclude the circular roleSet:
-            const parentProperty = settings.parentProperty ? settings.parentProperty : null;
-            const parentPropPk = parentProperty ? parentProperty.dfh_pk_property : null;
-            const parentOrigPropPk = parentProperty ? parentProperty.dfh_fk_property_of_origin : null;
-            if (
 
-              // exclude the roleSets with the same property 
-              el.fk_property != parentPropPk &&
-              // and the roleSets with the same property_of_origin as the parent roleSet 
-              crm.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)].property.dfh_fk_property_of_origin != parentOrigPropPk
-            ) {
+            // exclude the circular RoleSets
+            if (!similarRoleSet(roleSetDef, settings.parentRoleSet)) {
 
               // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
               const options = new RoleSet({ toggle: 'expanded' })
@@ -343,8 +336,8 @@ export class StateCreatorService {
     ) {
       // add the parent role pk of the roleDetail to the peEnt
       settings.parentRolePk = role.pk_entity;
-      settings.parentProperty = this.ngRedux.getState().activeProject.crm
-        .roleSets[roleSetKeyFromParams(role.fk_property, options.isOutgoing)].property;
+      settings.parentRoleSet = this.ngRedux.getState().activeProject.crm
+        .roleSets[roleSetKeyFromParams(role.fk_property, options.isOutgoing)];
 
       // if we are in create mode we need the fk_class
       if (settings.isCreateMode) {

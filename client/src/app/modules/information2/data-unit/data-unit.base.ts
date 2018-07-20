@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, UiContext } from 'app/core';
+import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, UiContext, UiElement } from 'app/core';
 import { Subject, Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
@@ -79,6 +79,8 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
   abstract uiContext: UiContext;
 
+  uiElementsForAddInfo: UiElement[];
+
   ngOnDestroy() {
     this.subs.forEach(sub => sub.unsubscribe())
   }
@@ -86,6 +88,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   ngOnInit() {
     // Initialize the store by one of the derived classes
     this.initStore()
+
 
     // Initialize the children in this class
     // this.initChildren() SINGLE_INIT
@@ -105,31 +108,13 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
     }))
 
     this.subs.push(this.fkClass$.subscribe(fkClass => {
-      if (fkClass)
+      if (fkClass) {
         this.classConfig = this.ngRedux.getState().activeProject.crm.classes[fkClass];
+        this.uiElementsForAddInfo = this.classConfig.uiContexts[this.comConfig.PK_UI_CONTEXT_EDITABLE].uiElements;
+      }
     }))
   }
 
-
-  get addOptions(): AddOption[] {
-    return this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE].uiElements.map(el => {
-      if (
-        this.roleSets && el.fk_property && !this.roleSets[el.roleSetKey]
-      ) {
-        const roleSet = this.classConfig.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
-        return {
-          label: roleSet.label.default,
-          uiElement: el
-        }
-      }
-      else if (this.roleSets && el.fk_property_set && !this.roleSets[propSetMap[el.fk_property_set]]) {
-        return {
-          label: el.property_set.label,
-          uiElement: el
-        }
-      }
-    }).filter(o => (o))
-  }
 
 
   abstract init(): void; // hook for child class
@@ -245,39 +230,6 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
     /** remove the formControl from form */
     this.formGroup.removeControl(keyInState)
-  }
-
-
-
-  /**
-   * Typeahead. 
-   * TODO: extract to component 
-   */
-
-  @ViewChild('instance') instance: NgbTypeahead;
-  focus$ = new Subject<string>();
-  click$ = new Subject<string>();
-
-  typeaheadWitdh: number;
-
-  search = (text$: Observable<string>) => {
-
-    this.selectedAddOption = undefined;
-
-    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
-    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
-    const inputFocus$ = this.focus$;
-
-    // filter options not yet added
-    const options = this.addOptions;
-
-    return Observable.merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).map((term) =>
-      (term === '' ? options : options
-        .filter(o => (
-          o.label.toLowerCase().indexOf(term.toLowerCase()) > -1  // where search term matches
-        ))
-      ).slice(0, 10)
-    )
   }
 
 

@@ -58,17 +58,8 @@
           </div>
         </div>
 
-        <ng-template #rt let-r="result" let-t="term">
-          <div [ngStyle]="{'width.px': typeaheadWitdh}">{{r.label}}</div>
-        </ng-template>
+        <gv-add-info-selector [uiElements]="uiElementsForAddInfo" [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)" [excludeRoleSet]="(parentRoleSet$ | async)"></gv-add-info-selector>
 
-        <div class="card-body">
-          <div gvDimensionChange (onDimensionsChange)="typeaheadWitdh=($event.dimensions.width - 60)">
-            <input id="typeahead-focus" type="text" class="form-control" [(ngModel)]="selectedAddOption" [ngbTypeahead]="search" [resultTemplate]="rt"
-              (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)" (selectItem)="addOptionSelected($event)"
-              placeholder="Select..." gvAutofocus #instance="ngbTypeahead" />
-          </div>
-        </div>
       </div>
     </div>
   </div>

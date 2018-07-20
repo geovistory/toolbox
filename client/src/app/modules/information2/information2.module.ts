@@ -107,6 +107,7 @@ import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.compone
 import { DndModule } from '../../../../node_modules/ng2-dnd';
 import { RoleSetApiEpics } from './role-set/role-set.epics';
 import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it-label.component';
+import { AddInfoSelectorComponent } from './components/add-info-selector/add-info-selector.component';
 
 @NgModule({
   imports: [
@@ -207,6 +208,7 @@ import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it
     TeEntLabelComponent,
     PeItLabelComponent,
     LeafPeItLabelComponent,
+    AddInfoSelectorComponent,
 
 
   ],

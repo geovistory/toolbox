@@ -1,0 +1,11 @@
+<ng-template #rt let-r="result" let-t="term">
+    <div [ngStyle]="{'width.px': typeaheadWitdh}">{{r.label}}</div>
+  </ng-template>
+
+  <div class="card-body">
+    <div gvDimensionChange (onDimensionsChange)="typeaheadWitdh=($event.dimensions.width - 60)">
+      <input id="typeahead-focus" type="text" class="form-control" [(ngModel)]="selectedAddOption" [ngbTypeahead]="search" [resultTemplate]="rt"
+        (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)" (selectItem)="addOptionSelected.emit($event)"
+        placeholder="Select..." gvAutofocus #instance="ngbTypeahead" />
+    </div>
+  </div>

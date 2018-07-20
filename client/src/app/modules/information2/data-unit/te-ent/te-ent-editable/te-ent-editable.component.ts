@@ -5,7 +5,7 @@ import { ComConfig, UiContext } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable } from 'rxjs/Observable';
 
-import { ExistenceTimeDetail, RoleDetail, TeEntDetail } from '../../../information.models';
+import { ExistenceTimeDetail, RoleDetail, TeEntDetail, RoleSet } from '../../../information.models';
 import { RoleSetActions } from '../../../role-set/role-set.actions';
 import { slideInOut } from '../../../shared/animations';
 import { StateCreatorService } from '../../../shared/state-creator.service';
@@ -47,7 +47,7 @@ export class TeEntEditableComponent extends DataUnitBase {
    */
   ontoInfoVisible$: Observable<boolean>
   communityStatsVisible$: Observable<boolean>
-
+  parentRoleSet$: Observable<RoleSet>
 
   /**
    * Class properties that filled by a store observable
@@ -108,6 +108,9 @@ export class TeEntEditableComponent extends DataUnitBase {
   */
   initObservablesOutsideLocalStore() {
     this.ontoInfoVisible$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'ontoInfoVisible']);
+
+    this.parentRoleSet$ = this.ngRedux.select<RoleSet>(this.parentPath.slice(0, (this.parentPath.length - 2)));
+
   }
 
   /**

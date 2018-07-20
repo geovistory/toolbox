@@ -1,4 +1,4 @@
-import { RoleSet, RoleDetail, DataUnitChild, DataUnitChildList, RoleDetailList } from "./information.models";
+import { RoleSet, RoleDetail, DataUnitChild, DataUnitChildList, RoleDetailList, RoleSetInterface } from "./information.models";
 import { InfRole, InfTimePrimitive, UiContext, U, ComConfig } from "app/core";
 import { CalendarType, TimePrimitive } from "app/core/date-time/time-primitive";
 import { indexBy, sort } from 'ramda'
@@ -150,4 +150,30 @@ export function sortRoleDetailListByOrdNum(roleDetailArray: RoleDetailList): Rol
 
     return indexBy(roleDetailKey, sortRoleDetailsByOrdNum(U.obj2Arr(roleDetailArray)))
 
+}
+
+
+/**
+ * Checks if RoleSet a is of the same property or property-of-origin as RoleSet b.
+ * This is useful to check if a RoleSet is circular in a tree of RoleSets and DataUnits
+ * 
+ * @param a RoleSet you want to test if it is circular 
+ * @param b RoleSet to compare with (typically the parent RoleSet in the tree)
+ */
+export function similarRoleSet(a: RoleSetInterface, b: RoleSetInterface): boolean {
+    if (!a || !b) return false;
+
+    if (
+        (
+            a.property.dfh_pk_property === b.property.dfh_pk_property ||
+            (
+                a.property.dfh_fk_property_of_origin &&
+                a.property.dfh_fk_property_of_origin === b.property.dfh_fk_property_of_origin
+            )
+        )
+        && a.isOutgoing != b.isOutgoing
+    )
+        return true;
+
+    else return false;
 }
