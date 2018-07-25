@@ -94,6 +94,9 @@ export class DfhConfig {
   // dfh_pk_class of place (not geographical place!)
   static CLASS_PK_PLACE = 51;
 
+  static CLASS_PK_PRESENCE = 84;
+
+
 
 
   /**

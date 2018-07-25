@@ -104,10 +104,12 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
 import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.component';
 import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.component';
-import { DndModule } from '../../../../node_modules/ng2-dnd';
+import { DndModule } from 'ng2-dnd';
 import { RoleSetApiEpics } from './role-set/role-set.epics';
 import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it-label.component';
-import { AddInfoSelectorComponent } from './components/add-info-selector/add-info-selector.component';
+import { AddInfoTeEntComponent } from './components/add-info-te-ent/add-info-te-ent.component';
+import { AddInfoPeItComponent } from './components/add-info-pe-it/add-info-pe-it.component';
+import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
 
 @NgModule({
   imports: [
@@ -132,6 +134,7 @@ import { AddInfoSelectorComponent } from './components/add-info-selector/add-inf
     DimensionChangeModule,
     TimelineModule,
     KeysModule,
+    HighlightModule,
     DndModule
 
   ],
@@ -208,8 +211,8 @@ import { AddInfoSelectorComponent } from './components/add-info-selector/add-inf
     TeEntLabelComponent,
     PeItLabelComponent,
     LeafPeItLabelComponent,
-    AddInfoSelectorComponent,
-
+    AddInfoTeEntComponent,
+    AddInfoPeItComponent
 
   ],
   providers: [

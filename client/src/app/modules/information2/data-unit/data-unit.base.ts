@@ -237,17 +237,28 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   addOptionSelected($event) {
     const o: AddOption = $event.item;
 
-    if (o.uiElement.roleSetKey) {
-      this.addRoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey])
-    }
+    // if this option is already added
+    if (o.added) {
+      
+      this.stopSelectProperty();
 
-    else if (o.uiElement.fk_property_set) {
+    } else {
 
-      if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
+      // if this is a role set
+      if (o.uiElement.roleSetKey) {
+        this.addRoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey])
+      }
 
-        this.stateCreator.initializeExistenceTimeState([], new ExistenceTimeDetail({ toggle: 'expanded' }), { isCreateMode: true }).subscribe(val => {
-          this.addPropSet('_existenceTime', val)
-        })
+      // if this is a prop set
+      else if (o.uiElement.fk_property_set) {
+
+        if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
+
+          this.stateCreator.initializeExistenceTimeState([], new ExistenceTimeDetail({ toggle: 'expanded' }), { isCreateMode: true }).subscribe(val => {
+            this.addPropSet('_existenceTime', val)
+          })
+
+        }
 
       }
 

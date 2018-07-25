@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddInfoSelectorComponent } from './add-info-selector.component';
+import { AddInfoTeEntComponent } from './add-info-te-ent.component';
 
-describe('AddInfoSelectorComponent', () => {
-  let component: AddInfoSelectorComponent;
-  let fixture: ComponentFixture<AddInfoSelectorComponent>;
+describe('AddInfoTeEntComponent', () => {
+  let component: AddInfoTeEntComponent;
+  let fixture: ComponentFixture<AddInfoTeEntComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddInfoSelectorComponent ]
+      declarations: [ AddInfoTeEntComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddInfoSelectorComponent);
+    fixture = TestBed.createComponent(AddInfoTeEntComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
