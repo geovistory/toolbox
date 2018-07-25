@@ -12,8 +12,8 @@ export const mockPerson: PeItDetail = {
     } as DfhClass,
     ingoingRoleSets: [],
     outgoingRoleSets: [],
-    _roleSet_list: {
-        _role_set_1: {
+    _children: {
+        _role_set_1: new  RoleSet( {
             label: {
                 default: 'Names',
                 sg: 'Name',
@@ -44,8 +44,8 @@ export const mockPerson: PeItDetail = {
                             dfh_identifier_in_namespace: "F52",
                             dfh_standard_label: "Name Use Activity",
                         } as DfhClass,
-                        _roleSet_list: {
-                            _role_set_1: {
+                        _children: {
+                            _role_set_1: new  RoleSet({
                                 label: {
                                     default: 'Detailed Name',
                                     sg: 'Detailed Name',
@@ -74,12 +74,12 @@ export const mockPerson: PeItDetail = {
                                         }
                                     } as RoleDetail
                                 },
-                            } as RoleSet
+                            })
                         }
                     }
                 }
             }
-        }
+        })
     }
 }
 
@@ -140,7 +140,7 @@ export const generatedMockPerson = {
             }
         ]
     },
-    "_roleSet_list": {
+    "_children": {
         "_1194_ingoing": {
             "isOutgoing": false,
             "property": {
@@ -197,17 +197,7 @@ export const generatedMockPerson = {
                     },
                     "isCircular": false,
                     "isOutgoing": false,
-                    "targetDfhClass": {
-                        "dfh_pk_class": 365,
-                        "dfh_identifier_in_namespace": "histC10",
-                        "dfh_standard_label": "Appellation for language",
-                        "pk_entity": 569,
-                        "entity_version": 2,
-                        "notes": null,
-                        "tmsp_creation": "2018-04-19T17:14:58.782Z",
-                        "tmsp_last_modification": "2018-06-14T06:50:12.793Z",
-                        "sys_period": "[\"2018-06-14 06:50:12.79349+00\",)"
-                    },
+                    targetClassPk: 365,
                     "isDisplayRoleForRange": true,
                     "isDisplayRoleForDomain": null,
                     "_teEnt": {
@@ -253,7 +243,7 @@ export const generatedMockPerson = {
                                 }
                             ]
                         },
-                        "_roleSet_list": {
+                        "_children": {
                             "_1113_outgoing": {
                                 "isOutgoing": true,
                                 "property": {
@@ -320,17 +310,7 @@ export const generatedMockPerson = {
                                         },
                                         "isCircular": false,
                                         "isOutgoing": true,
-                                        "targetDfhClass": {
-                                            "dfh_pk_class": 40,
-                                            "dfh_identifier_in_namespace": "E41",
-                                            "dfh_standard_label": "Appellation",
-                                            "pk_entity": 87,
-                                            "entity_version": 2,
-                                            "notes": null,
-                                            "tmsp_creation": "2018-04-16T22:06:42.020Z",
-                                            "tmsp_last_modification": "2018-06-14T06:50:12.793Z",
-                                            "sys_period": "[\"2018-06-14 06:50:12.79349+00\",)"
-                                        },
+                                        targetClassPk: 40,
                                         "isDisplayRoleForRange": true,
                                         "isDisplayRoleForDomain": null,
                                         "_appe": {

@@ -1,7 +1,7 @@
 <!-- Title / Standard Appellations of PeIt -->
 
 <div class="gv-edit-panel-header">
-  <ng-container *ngTemplateOutlet="header"></ng-container>
+  <gv-pe-it-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
 </div>
 
 <!-- Tools to edit PeIt  -->
@@ -12,8 +12,9 @@
     <ng-container *ngTemplateOutlet="propertiesHeader"></ng-container>
 
     <div class="gv-body gv-flex-grow-1" style="overflow-y:auto">
-      <gv-pe-it-role-set-editable *ngFor="let entry of (_roleSet_list$ | async) | keys; trackBy:getKey" [parentPath]="basePath" [index]="entry.key"
-        (onRemoveRoleSet)="removeRoleSet(entry.key)"></gv-pe-it-role-set-editable>
+      <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
+        <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-pe-it-role-set-editable>
+      </div>
     </div>
 
     <div class="gv-footer mt-3">
@@ -44,16 +45,10 @@
             <select [(ngModel)]="roleSetToAdd" class="custom-select">
               <option [ngValue]="null">Select…</option>
 
-              <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (ingoingRoleSets$|async)" [ngValue]="roleSetToAdd">
-
-                {{roleSetToAdd?.label.sg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
-
+              <option *ngFor="let el of uiContext.uiElements" [disabled]="roleSetAdded(el.roleSetKey)" [ngValue]="classConfig?.roleSets[el.roleSetKey]">
+                {{classConfig?.roleSets[el.roleSetKey]?.label.sg}} {{roleSetAdded(el.roleSetKey) ? '(already added)':''}}
               </option>
-              <option [disabled]="roleSetAdded(roleSetToAdd)" *ngFor="let roleSetToAdd of (outgoingRoleSets$|async)" [ngValue]="roleSetToAdd">
 
-                {{roleSetToAdd?.label.sg}} {{roleSetAdded(roleSetToAdd) ? '(already added)':''}}
-
-              </option>
             </select>
             <button type="button" name="button" class="btn btn-primary input-group-append" *ngIf="roleSetToAdd" (click)="addRoleSet(roleSetToAdd)">Ok</button>
           </div>
@@ -78,8 +73,8 @@
       </div>
 
       <div class="card gv-flex-grow-1 mb-3">
-        <div class="card-body">
-
+        <div class="card-body p-0" style="overflow: hidden;">
+          <img src="/assets/images/map.jpg" class="img-fluid" alt="Responsive image">
 
         </div>
       </div>
@@ -94,19 +89,6 @@
 
 <!-- ************************** NG TEMPLATES ****************************** -->
 
-<ng-template #header>
-  <section class="row">
-    <div class="col-md-8">
-      <h2>
-        <span *ngIf="labelInEdit">{{labelInEdit}}</span>
-        <span *ngIf="label && !labelInEdit">{{label}}</span>
-        <small class="text-muted">{{(dfhClass$|async)?.dfh_standard_label}}</small>
-      </h2>
-    </div>
-    <!-- <gv-entity-editor-settings class="col-md-4 text-right"></gv-entity-editor-settings> -->
-  </section>
-</ng-template>
-
 <ng-template #propertiesHeader>
   <div class="btn-group gv-flex-shrink-0 d-flex mb-3" role="group" aria-label="Basic example">
     <div class="gv-flex-grow-1 bg-gray-700 text-white rounded-left gv-card-spacer-x align-self-stretch d-flex">
@@ -119,10 +101,10 @@
         <i class="fa fa-ellipsis-v"></i>
       </button>
       <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
-        <button class="dropdown-item" (click)="showCommunityStats()" *ngIf="!communityStatsVisible">Show Community Statistics</button>
-        <button class="dropdown-item" (click)="hideCommunityStats()" *ngIf="communityStatsVisible">Hide Community Statistics</button>
-        <button class="dropdown-item" (click)="showOntoInfo()" *ngIf="!ontoInfoVisible">Show Ontology Info</button>
-        <button class="dropdown-item" (click)="hideOntoInfo()" *ngIf="ontoInfoVisible">Hide Ontology Info</button>
+        <button class="dropdown-item" (click)="showCommunityStats()" *ngIf="!(communityStatsVisible$|async)">Show Community Statistics</button>
+        <button class="dropdown-item" (click)="hideCommunityStats()" *ngIf="(communityStatsVisible$|async)">Hide Community Statistics</button>
+        <button class="dropdown-item" (click)="showOntoInfo()" *ngIf="!(ontoInfoVisible$|async)">Show Ontology Info</button>
+        <button class="dropdown-item" (click)="hideOntoInfo()" *ngIf="(ontoInfoVisible$|async)">Hide Ontology Info</button>
 
       </div>
     </div>

@@ -3,7 +3,7 @@ import { InfRole, InfEntityProjectRel, InfTemporalEntity, InfPersistentItem, U, 
 import { RoleSetService } from './role-set.service';
 import { DfhConfig } from './dfh-config';
 import { AppellationLabel } from './appellation-label/appellation-label';
-import { PeItDetail, RoleDetailList, RoleSetList, RoleSet, RoleDetail, TeEntDetail, ExistenceTimeDetail } from '../information.models';
+import { PeItDetail, RoleDetailList, RoleSetList, RoleSet, RoleDetail, TeEntDetail, ExistenceTimeDetail, DataUnitChildList, DataUnitChild } from '../information.models';
 
 @Injectable()
 export class StateToDataService {
@@ -35,7 +35,7 @@ export class StateToDataService {
     let peIt = new InfPersistentItem(peItDetail.peIt);
     peIt.entity_version_project_rels = [StateToDataService.createEpr(peIt, eprOptions)]
 
-    peIt.pi_roles = StateToDataService.roleSetsToRolesToRelate(peItDetail._roleSet_list, eprOptions)
+    peIt.pi_roles = StateToDataService.roleSetsToRolesToRelate(peItDetail._children, eprOptions)
 
     return peIt;
   }
@@ -71,32 +71,39 @@ export class StateToDataService {
     teEnt.entity_version_project_rels = [StateToDataService.createEpr(teEnt, eprOptions)]
 
 
-    teEnt.te_roles = [
-      ...StateToDataService.roleSetsToRolesToRelate(teEntState._roleSet_list, eprOptions),
-      ...StateToDataService.existenceTimeToRolesToRelate(teEntState._existenceTime, eprOptions)
-    ]
-
+    teEnt.te_roles = StateToDataService.roleSetsToRolesToRelate(teEntState._children, eprOptions);
 
     return teEnt;
   }
 
-  static roleSetsToRolesToRelate(roleSets: RoleSetList, eprOptions?: InfEntityProjectRel): InfRole[] {
+  static roleSetsToRolesToRelate(children: DataUnitChildList, eprOptions?: InfEntityProjectRel): InfRole[] {
 
     let roles: InfRole[] = [];
 
-    /** for each RoleSetState */
-    for (const i in roleSets) {
-      if (roleSets.hasOwnProperty(i)) {
-        const roleSet: RoleSet = roleSets[i];
-        let roleDetailList: RoleDetailList = roleSet._role_list;
+    /** for each RoleSet */
+    for (const i in children) {
+      if (children.hasOwnProperty(i)) {
+        const child: DataUnitChild = children[i];
 
-        /** for each RoleState */
-        for (const j in roleDetailList) {
-          if (roleDetailList.hasOwnProperty(j)) {
-            const roleState: RoleDetail = roleDetailList[j]
-            if (!roleState.isCircular)
-              roles.push(StateToDataService.roleStateToRoleToRelate(roleState, eprOptions));
+        if (child.type == 'RoleSet') {
+          let roleDetailList: RoleDetailList = (child as RoleSet)._role_list;
+
+          /** for each RoleState */
+          for (const j in roleDetailList) {
+            if (roleDetailList.hasOwnProperty(j)) {
+              const roleState: RoleDetail = roleDetailList[j]
+              if (!roleState.isCircular)
+                roles.push(StateToDataService.roleStateToRoleToRelate(roleState, eprOptions));
+            }
           }
+        }
+        else if (child.type == 'ExistenceTimeDetail') {
+          U.obj2Arr((child as ExistenceTimeDetail)._children).forEach((roleSet) => {
+            U.obj2Arr(roleSet._role_list).forEach((roleDetail: RoleDetail) => {
+              if (!roleDetail.isCircular)
+                roles.push(StateToDataService.roleStateToRoleToRelate(roleDetail, eprOptions));
+            });
+          })
         }
 
       }
@@ -113,7 +120,7 @@ export class StateToDataService {
    */
   static existenceTimeToRolesToRelate(teEntState: ExistenceTimeDetail, eprOptions?: InfEntityProjectRel): InfRole[] {
     if (teEntState)
-      return StateToDataService.roleSetsToRolesToRelate(teEntState._roleSet_list, eprOptions);
+      return StateToDataService.roleSetsToRolesToRelate(teEntState._children as DataUnitChildList, eprOptions);
     else
       return []
   }
@@ -129,8 +136,8 @@ export class StateToDataService {
 
     const conf = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY;
 
-    if (existTimeDetail._roleSet_list)
-      U.obj2Arr(existTimeDetail._roleSet_list).map((set: RoleSet) => {
+    if (existTimeDetail._children)
+      U.obj2Arr(existTimeDetail._children).map((set: RoleSet) => {
         if (set._role_list)
           U.obj2Arr(set._role_list).map((sta: RoleDetail) => {
             const pkProp = sta.role.fk_property;
@@ -144,74 +151,74 @@ export class StateToDataService {
     return et;
   }
 
-  /**
-   * Extracts Appellation Label string from the given TeEnt-RoleSets
-   * 
-   * @param teEntRoleSets 
-   * @returns appellation label as pure string
-   */
-  static getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets: RoleSetList): string {
-    if (!teEntRoleSets) return null
+  // /**
+  //  * Extracts Appellation Label string from the given TeEnt-RoleSets
+  //  * 
+  //  * @param teEntRoleSets 
+  //  * @returns appellation label as pure string
+  //  */
+  // static getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets: RoleSetList): string {
+  //   if (!teEntRoleSets) return null
 
-    const detailedNames: RoleSet = teEntRoleSets['_' + DfhConfig.PROPERTY_PK_R64_USED_NAME + '_outgoing'];
-    if (detailedNames) {
-      const roleStates = RoleSetService.getRoleStatesContainerForState(detailedNames)
-      for (const key in roleStates) {
-        if (roleStates.hasOwnProperty(key)) {
-          const r: RoleDetail = roleStates[key];
+  //   const detailedNames: RoleSet = teEntRoleSets['_' + DfhConfig.PROPERTY_PK_R64_USED_NAME + '_outgoing'];
+  //   if (detailedNames) {
+  //     const roleStates = RoleSetService.getRoleStatesContainerForState(detailedNames)
+  //     for (const key in roleStates) {
+  //       if (roleStates.hasOwnProperty(key)) {
+  //         const r: RoleDetail = roleStates[key];
 
-          //TODO Add this if clause as soon as we have DisplayRoleForDomain in the db
-          // if ((r.isOutgoing && r.isDisplayRoleForRange) || (!r.isOutgoing && r.isDisplayRoleForDomain)) {
-          if (r.role && r.role.appellation && r.role.appellation.appellation_label) {
-            return new AppellationLabel(r.role.appellation.appellation_label).getString();
-          }
-          // }
+  //         //TODO Add this if clause as soon as we have DisplayRoleForDomain in the db
+  //         // if ((r.isOutgoing && r.isDisplayRoleForRange) || (!r.isOutgoing && r.isDisplayRoleForDomain)) {
+  //         if (r.role && r.role.appellation && r.role.appellation.appellation_label) {
+  //           return new AppellationLabel(r.role.appellation.appellation_label).getString();
+  //         }
+  //         // }
 
-        }
-      }
+  //       }
+  //     }
 
-      return null;
-    }
-  }
-
-
-
-  /**
-   * Extracts Appellation Label string from the given PeIt-RoleSets
-   * @param teEntRoleSets 
-   * @returns appellation label as pure string
-   */
-  static getDisplayAppeLabelOfPeItRoleSets(peItRoleSets: RoleSetList): string {
-    if (!peItRoleSets) return null
-
-    // get ingoing roles pointing to appellation usage (R63)
+  //     return null;
+  //   }
+  // }
 
 
-    
-    const names: RoleSet[] = U.obj2Arr(peItRoleSets).filter((roleSet: RoleSet) => {
-      if(roleSet && roleSet.property && roleSet.property.dfh_fk_property_of_origin === DfhConfig.PROPERTY_PK_R63_NAMES){
-          return roleSet;
-      }
-    })
 
-    const name: RoleSet = names[0];
+  // /**
+  //  * Extracts Appellation Label string from the given PeIt-RoleSets
+  //  * @param teEntRoleSets 
+  //  * @returns appellation label as pure string
+  //  */
+  // static getDisplayAppeLabelOfPeItRoleSets(peItRoleSets: DataUnitChildList): string {
+  //   if (!peItRoleSets) return null
 
-    if (name) {
-      const roleStates = RoleSetService.getRoleStatesContainerForState(name)
-      for (const key in roleStates) {
-        if (roleStates.hasOwnProperty(key)) {
-          const r: RoleDetail = roleStates[key];
-          if ((!r.isOutgoing && r.isDisplayRoleForRange) || (r.isOutgoing && r.isDisplayRoleForDomain)) {
-            if (r._teEnt && r._teEnt._roleSet_list) {
-              var label = StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(r._teEnt._roleSet_list);
-              return label;
-            }
-          }
-        }
-      }
-    }
-    return null;
-  }
+  //   // get ingoing roles pointing to appellation usage (R63)
+
+
+
+  //   const names: RoleSet[] = U.obj2Arr(peItRoleSets).filter((roleSet: RoleSet) => {
+  //     if (roleSet && roleSet.property && roleSet.property.dfh_fk_property_of_origin === DfhConfig.PROPERTY_PK_R63_NAMES) {
+  //       return roleSet;
+  //     }
+  //   })
+
+  //   const name: RoleSet = names[0];
+
+  //   if (name) {
+  //     const roleStates = RoleSetService.getRoleStatesContainerForState(name)
+  //     for (const key in roleStates) {
+  //       if (roleStates.hasOwnProperty(key)) {
+  //         const r: RoleDetail = roleStates[key];
+  //         if ((!r.isOutgoing && r.isDisplayRoleForRange) || (r.isOutgoing && r.isDisplayRoleForDomain)) {
+  //           if (r._teEnt && r._teEnt._children) {
+  //             // var label = StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(r._teEnt._children);
+  //             return 'label to do';
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  //   return null;
+  // }
 
 
 

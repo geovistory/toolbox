@@ -1,8 +1,9 @@
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux, ObservableStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { IAppState, InfEntityProjectRelApi, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { dropLast } from 'ramda';
 import { Observable } from 'rxjs/Observable';
 
 import { RoleDetail, RoleDetailList, RoleSet, TeEntDetail } from '../../../information.models';
@@ -10,9 +11,11 @@ import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
-import { StateCreatorService } from '../../../shared/state-creator.service';
+import { StateCreatorService, StateSettings } from '../../../shared/state-creator.service';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetBase } from '../../role-set.base';
+import { RoleSetApiEpics } from '../../role-set.epics';
+import { roleSetReducer } from '../../role-set.reducer';
 
 @AutoUnsubscribe()
 @Component({
@@ -30,6 +33,7 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
     */
   @Input() parentTeEntStatePath: string[];
   parentPeItStatePath: string[];
+  peItRoleSetStore: ObservableStore<RoleSet>;
 
   parentRoleDetailPath: string[]
 
@@ -45,6 +49,7 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
 
 
   constructor(
+    protected epics: RoleSetApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
     protected ngRedux: NgRedux<IAppState>,
@@ -57,14 +62,14 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
     protected fb: FormBuilder,
     protected teEntApi: InfTemporalEntityApi
   ) {
-    super(eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
   }
 
   init(): void {
     this.initPaths()
-  
+
     this.initObservablesOutsideLocalStore();
-  
+
     this.initSubsciptions();
   }
 
@@ -73,14 +78,16 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
         */
   initPaths() {
     // transforms e.g. 
-    // ['information', 'entityEditor', 'peItState', 'roleSets', '1_ingoing', '_role_list', '88899', 'childTeEnt'] to
-    // ['information', 'entityEditor', 'peItState']
+    // ['information', '_peIt_editable', '_children', '_1_ingoing', '_role_list', '_88899', '_teEnt'] to
+    // ['information', '_peIt_editable']
     this.parentPeItStatePath = this.parentPath.slice(0, (this.parentPath.length - 5));
 
     // transforms e.g. 
-    // ['information', 'entityEditor', 'peItState', 'roleSets', '1_ingoing', '_role_list', '88899', 'childTeEnt'] to
-    // ['information', 'entityEditor', 'peItState', 'roleSets', '1_ingoing', ]
+    // ['information', '_peIt_editable', '_children', '_1_ingoing', '_role_list', '_88899', '_teEnt'] to
+    // ['information', '_peIt_editable', '_children', '_1_ingoing', ]
     this.parentRoleDetailPath = this.parentPath.slice(0, (this.parentPath.length - 3));
+
+    this.peItRoleSetStore = this.ngRedux.configureSubStore(dropLast(3, this.parentPath), roleSetReducer)
 
   }
 
@@ -132,27 +139,25 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
     roleToCreate.fk_property = this.roleSetState.property.dfh_pk_property;
     roleToCreate.fk_temporal_entity = this.parentTeEntState.teEnt.pk_entity;
 
-    this.subs.push(this.classService.getByPk(this.roleSetState.targetClassPk).subscribe(targetDfhClass => {
-      const options: RoleDetail = { targetDfhClass, isOutgoing: this.roleSetState.isOutgoing }
+    const options: RoleDetail = { targetClassPk: this.roleSetState.targetClassPk, isOutgoing: this.roleSetState.isOutgoing };
+    const settings: StateSettings = { isCreateMode: true };
+    this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
 
-      this.stateCreator.initializeRoleDetail(roleToCreate, options).subscribe(roleStateToCreate => {
+      /** add a form control */
+      const formControlName = 'new_role_' + this.createFormControlCount;
+      this.createFormControlCount++;
+      this.formGroup.addControl(formControlName, new FormControl(
+        roleStateToCreate.role,
+        [
+          Validators.required
+        ]
+      ))
 
-        /** add a form control */
-        const formControlName = 'new_role_' + this.createFormControlCount;
-        this.createFormControlCount++;
-        this.formGroup.addControl(formControlName, new FormControl(
-          roleStateToCreate.role,
-          [
-            Validators.required
-          ]
-        ))
-
-        /** update the state */
-        const roleStatesToCreate: RoleDetailList = {};
-        roleStatesToCreate[formControlName] = roleStateToCreate;
-        this.localStore.dispatch(this.actions.startCreateNewRole(roleStatesToCreate))
-      })
-    }))
+      /** update the state */
+      const roleStatesToCreate: RoleDetailList = {};
+      roleStatesToCreate[formControlName] = roleStateToCreate;
+      this.localStore.dispatch(this.actions.startCreateNewRole(roleStatesToCreate))
+    })
   }
 
   createRoles() {
@@ -227,6 +232,23 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
     //     }))
     // }))
 
+  }
+
+
+  enableDrag() {
+    if (this.peItRoleSetStore.getState().dragEnabled)
+      this.peItRoleSetStore.dispatch(this.actions.disableDrag())
+
+    if (!this.localStore.getState().dragEnabled)
+      this.localStore.dispatch(this.actions.enableDrag())
+  }
+
+  disableDrag() {
+    if (!this.peItRoleSetStore.getState().dragEnabled)
+      this.peItRoleSetStore.dispatch(this.actions.enableDrag())
+
+    if (this.localStore.getState().dragEnabled)
+      this.localStore.dispatch(this.actions.disableDrag())
   }
 
 }

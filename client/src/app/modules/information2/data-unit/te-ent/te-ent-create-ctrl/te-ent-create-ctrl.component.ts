@@ -3,8 +3,9 @@ import { TeEntCtrlBase } from '../te-ent-ctrl.base';
 import { NgRedux } from '@angular-redux/store';
 import { TeEntActions } from '../te-ent.actions';
 import { FormBuilder, NG_VALUE_ACCESSOR, FormControl, Validators } from '@angular/forms';
-import { InfTemporalEntity, InfRole, U } from 'app/core';
+import { InfTemporalEntity, InfRole, U, UiContext, ComConfig } from 'app/core';
 import { pick } from 'ramda';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 
 @Component({
   selector: 'gv-te-ent-create-ctrl',
@@ -24,18 +25,26 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
   parentRole: InfRole;
 
+  uiContext: UiContext;
+
   constructor(
     protected ngRedux: NgRedux<any>,
     protected actions: TeEntActions,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    protected stateCreator: StateCreatorService
   ) {
-    super(ngRedux, actions, fb)
+    super(ngRedux, actions, fb, stateCreator)
+  }
+
+
+  onInitTeEntBaseChild(): void { 
+    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
   }
 
   initFormCtrls(): void {
 
-    // add controls for each roleSet of _roleSet_list
-    this.subs.push(this._roleSet_list$.subscribe(roleSetList => {
+    // add controls for each roleSet of _children
+    this.subs.push(this._children$.subscribe(roleSetList => {
       if (roleSetList)
         Object.keys(roleSetList).forEach((key) => {
           if (roleSetList[key]) {
@@ -61,7 +70,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
       // build a teEnt with all pi_roles given by the form's controls 
       role.temporal_entity = {
-        fk_class: this.teEntState.dfhClass.dfh_pk_class
+        fk_class: this.teEntState.fkClass
       } as InfTemporalEntity;
       role.temporal_entity.te_roles = [];
       Object.keys(this.formGroup.controls).forEach(key => {
@@ -90,7 +99,5 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
   writeValue(parentRole: InfRole): void {
     this.parentRole = parentRole ? parentRole : new InfRole();
   }
-
-  onInitTeEntBaseChild(): void { }
 
 }

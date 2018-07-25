@@ -52,6 +52,30 @@
       "model": "DfhTextProperty",
       "foreignKey": "dfh_fk_class"
     },
+    "ingoing_properties": {
+      "type": "hasMany",
+      "model": "DfhProperty",
+      "foreignKey": "dfh_has_range",
+      "primaryKey": "dfh_pk_class"
+    },
+    "outgoing_properties": {
+      "type": "hasMany",
+      "model": "DfhProperty",
+      "foreignKey": "dfh_has_domain",
+      "primaryKey": "dfh_pk_class"
+    },
+    "ui_context_configs":{
+      "type": "hasMany",
+      "model": "ComUiContextConfig",
+      "foreignKey": "fk_class_for_property_set"
+    },
+    "property_sets":{
+      "type": "hasMany",
+      "model": "ComPropertySet",
+      "foreignKey": "fk_class_for_property_set",
+      "through": "ComUiContextConfig",
+      "keyThrough": "fk_property_set"
+    },
     "persistent_items": {
       "type": "hasMany",
       "model": "InfPersistentItem",
@@ -75,11 +99,36 @@
         "findById",
         "__get__labels",
         "__get__text_properties",
-        "selectedPeItClassesOfProfile"
+        "selectedClassesOfProfile",
+        "selectedPeItClassesOfProfile",
+        "propertiesAndUiElements"
       ]
     }
   ],
   "methods": {
+    "selectedClassesOfProfile": {
+      "accepts": [
+        {
+          "arg": "dfh_pk_profile",
+          "type": "number",
+          "required": false,
+          "description": "Profile id",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": ["DfhClass"],
+        "root": true
+      },
+      "description": "Get all classes that are selected by the profile of the specified primary-key.",
+      "http": {
+        "path": "/selected-classes-of-profile",
+        "verb": "get"
+      }
+    },
     "selectedPeItClassesOfProfile": {
       "accepts": [
         {
@@ -97,9 +146,49 @@
         "type": ["DfhClass"],
         "root": true
       },
-      "description": "Get all classes that are selected by the profile of the specified primary-key.",
+      "description": "Get all classes of persistent items that are selected and, if provided, filtered by the profile of the specified primary-key.",
       "http": {
         "path": "/selected-pe-it-classes-of-profile",
+        "verb": "get"
+      }
+    },
+    "propertiesAndUiElements": {
+      "accepts": [
+        {
+          "arg": "pk_class",
+          "type": "number",
+          "required": true,
+          "description": "Provide the dfh_pk_class to query one specific class",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_ui_context",
+          "type": "number",
+          "required": true,
+          "description": "Provide the pk_entity of the ui_context to query",
+          "http": {
+            "source": "query"
+          }
+        },  {
+          "arg": "pk_project",
+          "type": "number",
+          "required": false,
+          "description": "Provide a pk_project for loading the settings of a project or leaf it blank to query the default settings.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": ["DfhClass"],
+        "root": true
+      },
+      "description": "Get ingoing and outgoing properties and ui elements of class",
+      "http": {
+        "path": "/properties-and-ui-elements",
         "verb": "get"
       }
     }

@@ -3,9 +3,9 @@ import { ExistenceTimeAction, ExistenceTimeActions } from './existence-time.acti
 import { ExistenceTimeDetail } from '../information.models'
 import { omit } from 'ramda'
 
-const INITIAL_STATE: ExistenceTimeDetail = {
+const INITIAL_STATE  = new  ExistenceTimeDetail({
 
-};
+});
 
 
 export const existenceTimeReducer =

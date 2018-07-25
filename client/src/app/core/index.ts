@@ -1,3 +1,5 @@
+export { ComConfig } from './config/com-config';
+export { LoadingBarAction, LoadingBarActions } from './loading-bar/api/loading-bar.actions';
 export { ExistenceTime } from './existence-time/existence-time';
 export { ValidationService } from './validation/validation.service';
 export { EntityEditorService } from './entity-editor/entity-editor.service';
@@ -13,3 +15,4 @@ export * from './sdk/models';
 export * from './sdk/services';
 export * from './sdk/services/core';
 export * from './sdk/services/custom';
+export * from './active-project/active-project.models';

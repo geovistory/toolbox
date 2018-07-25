@@ -84,10 +84,18 @@
       "model": "DfhClass",
       "foreignKey": "dfh_has_range"
     },
-    "dfh_property_profile_view": {
-      "type": "hasOne",
+    "property_profile_view": {
+      "type": "hasMany",
       "model": "DfhPropertyProfileView",
-      "foreignKey": "dfh_pk_property"
+      "foreignKey": "dfh_pk_property",
+      "options": {
+        "nestRemoting": false
+      }
+    },
+    "ui_context_config": {
+      "type": "hasMany",
+      "model": "ComUiContextConfig",
+      "foreignKey": "fk_property"
     }
   },
   "acls": [

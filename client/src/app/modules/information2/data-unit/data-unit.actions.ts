@@ -2,15 +2,15 @@ import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 
-import { DfhProperty, InfRole, DfhClass } from 'app/core';
+import { DfhProperty, InfRole, DfhClass, UiContext } from 'app/core';
 import { indexBy, prop } from 'ramda';
-import { DataUnit, RoleSet } from '../information.models';
+import { DataUnit, RoleSet, DataUnitLabel } from '../information.models';
 import { roleSetKey } from '../information.helpers';
 
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = DataUnit;
-interface MetaData { [key:string]:any };
+interface MetaData { [key: string]: any };
 export type DataUnitAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
@@ -30,13 +30,17 @@ export class DataUnitActions {
 
   static readonly ROLE_SET_REMOVED = 'ROLE_SET_REMOVED';
 
+  static readonly PROP_SET_ADDED = 'PROP_SET_ADDED';
+
+  static readonly PROP_SET_REMOVED = 'PROP_SET_REMOVED';
+
   static readonly ROLE_SET_LIST_DISPLAY_LABEL_UPDATED = 'ROLE_SET_LIST_DISPLAY_LABEL_UPDATED';
 
 
   @dispatch()
 
 
-  roleSetsListDisplayLabelUpdated = (label: string): DataUnitAction => ({
+  roleSetsListDisplayLabelUpdated = (label: DataUnitLabel): DataUnitAction => ({
     type: DataUnitActions.ROLE_SET_LIST_DISPLAY_LABEL_UPDATED,
     meta: null,
     payload: {
@@ -70,12 +74,17 @@ export class DataUnitActions {
 
   /**
   * called, when user selected a the kind of property to add
+  * 
+  * @param: roleSet to add
+  * @param: uiContext of the class, used sort the _children  
   */
-  addRoleSet = (roleSet: RoleSet): DataUnitAction => ({
+  addRoleSet = (roleSet: RoleSet, uiContext: UiContext): DataUnitAction => ({
     type: DataUnitActions.ROLE_SET_ADDED,
-    meta: null,
+    meta: {
+      uiContext
+    },
     payload: {
-      _roleSet_list: indexBy(roleSetKey, [roleSet]),
+      _children: indexBy(roleSetKey, [roleSet]),
       selectPropState: 'init'
     }
   })
@@ -86,6 +95,27 @@ export class DataUnitActions {
   removeRoleSet = (key: string): DataUnitAction => ({
     type: DataUnitActions.ROLE_SET_REMOVED,
     meta: { key },
+    payload: null
+  })
+
+
+  /**
+ * called, when user selected a the kind of propSet to add
+ */
+  addPropSet = (key: string, val: any, uiContext: UiContext): DataUnitAction => ({
+    type: DataUnitActions.PROP_SET_ADDED,
+    meta: { key, val, uiContext },
+    payload: {
+      selectPropState: 'init'
+    }
+  })
+
+  /**
+  * called, when user selected a the kind of propSet to add
+  */
+  removePropSet = (stateKey: string): DataUnitAction => ({
+    type: DataUnitActions.PROP_SET_REMOVED,
+    meta: { stateKey },
     payload: null
   })
 

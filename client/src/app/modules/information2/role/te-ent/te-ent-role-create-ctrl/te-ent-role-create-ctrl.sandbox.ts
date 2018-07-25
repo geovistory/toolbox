@@ -1,11 +1,12 @@
 import { sandboxOf } from 'angular-playground';
-import { InfRole, Project } from 'app/core';
+import { InfRole, Project, ProjectDetail } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
 import { RoleDetail, RoleSet } from '../../../information.models';
 import { Information2Module } from '../../../information2.module';
 import { TeEntRoleCreateCtrlComponent } from './te-ent-role-create-ctrl.component';
 import { DfhConfig } from '../../../shared/dfh-config';
+import { crm } from '../../../information.sandbox.mock';
 
 
 
@@ -23,7 +24,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             parentPath: ['_role_set_1'],
             index: '_role_1',
             initState: {
-                _role_set_1: {
+                _role_set_1: new RoleSet({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -65,7 +66,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                             }
                         } as RoleDetail
                     }
-                } as RoleSet
+                })
             }
 
         },
@@ -107,7 +108,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             parentPath: ['_role_set_1'],
             index: '_role_1',
             initState: {
-                _role_set_1: {
+                _role_set_1: new RoleSet({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -115,12 +116,10 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                             } as InfRole,
                             _appe: {
                             },
-                            targetDfhClass: {
-                                dfh_pk_class: 1234
-                            }
+                            targetClassPk: 1234
                         } as RoleDetail
                     }
-                } as RoleSet
+                })
             }
 
         },
@@ -163,17 +162,13 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             index: '_role_1',
             initState: {
                 activeProject: {
-                    pk_project: 50
-                } as Project,
-                _role_set_1: {
+                    crm: crm,
+                    pk_project: 12
+                },
+                _role_set_1: new RoleSet({
                     _role_list: {
                         _role_1: {
-                            targetDfhClass: {
-                                "dfh_pk_class": 1,
-                                "dfh_identifier_in_namespace": "E21",
-                                "dfh_standard_label": "Person",
-                                "pk_entity": 726,
-                            },
+                            targetClassPk: 21,
                             role: {
                                 fk_property: 99
                             } as InfRole,
@@ -182,7 +177,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                             }
                         } as RoleDetail
                     }
-                } as RoleSet
+                })
             }
 
         },
@@ -227,14 +222,10 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: {
+                _role_set_1: new RoleSet({
                     _role_list: {
                         _role_1: {
-                            targetDfhClass: {
-                                "dfh_pk_class": DfhConfig.CLASS_PK_TIME_PRIMITIVE,
-                                "dfh_identifier_in_namespace": "XYZ",
-                                "dfh_standard_label": "Time Primitive"
-                            },
+                            targetClassPk: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
                             role: {
                                 fk_property: DfhConfig.existenceTimeToFk.p82a
                             } as InfRole,
@@ -243,7 +234,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                             }
                         } as RoleDetail
                     }
-                } as RoleSet
+                })
             }
 
         },
@@ -288,14 +279,10 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: {
+                _role_set_1: new RoleSet({
                     _role_list: {
                         _role_1: {
-                            targetDfhClass: {
-                                "dfh_pk_class": DfhConfig.CLASS_PK_TIME_PRIMITIVE,
-                                "dfh_identifier_in_namespace": "XYZ",
-                                "dfh_standard_label": "Time Primitive"
-                            },
+                            targetClassPk: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
                             role: {
                                 pk_entity: 123123,
                                 fk_property: DfhConfig.existenceTimeToFk.p82a,
@@ -314,7 +301,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                             }
                         } as RoleDetail
                     }
-                } as RoleSet
+                })
             }
 
         },
@@ -360,14 +347,10 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: {
+                _role_set_1: new RoleSet({
                     _role_list: {
                         _role_1: {
-                            targetDfhClass: {
-                                "dfh_pk_class": 333,
-                                "dfh_identifier_in_namespace": "XYZ",
-                                "dfh_standard_label": "Place"
-                            },
+                            targetClassPk: 333,
                             role: {
                                 pk_entity: 123123,
                                 fk_property: 999
@@ -375,7 +358,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                             _place: {}
                         } as RoleDetail
                     }
-                } as RoleSet
+                })
             }
 
         },

@@ -12,8 +12,8 @@ export default sandboxOf(TeEntCreateCtrlComponent, {
     imports: [
         InitStateModule,
         Information2Module
-  ],
-  declareComponent: false
+    ],
+    declareComponent: false
 })
     .add('TeEnt Create Ctrl | Name Use Activity ', {
         context: {
@@ -28,8 +28,8 @@ export default sandboxOf(TeEntCreateCtrlComponent, {
                             dfh_identifier_in_namespace: "F52",
                             dfh_standard_label: "Name Use Activity",
                         } as DfhClass,
-                        _roleSet_list: {
-                            _role_set_1: {
+                        _children: {
+                            _role_set_1: new RoleSet({
                                 label: {
                                     default: 'Detailed Name',
                                     sg: 'Detailed Name',
@@ -55,7 +55,7 @@ export default sandboxOf(TeEntCreateCtrlComponent, {
                                     "dfh_range_instances_min_quantifier": 1,
                                     "dfh_range_instances_max_quantifier": 1,
                                 } as DfhProperty
-                            } as RoleSet
+                            })
                         }
                     }
                 }

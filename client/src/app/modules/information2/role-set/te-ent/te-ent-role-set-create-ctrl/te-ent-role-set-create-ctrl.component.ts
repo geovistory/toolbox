@@ -13,6 +13,7 @@ import { StateCreatorService, StateSettings } from '../../../shared/state-creato
 import { RoleSetAddCtrlBase } from '../../role-set-add-ctrl.base';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetCreateCtrlBase } from '../../role-set-create-ctrl.base';
+import { RoleSetApiEpics } from '../../role-set.epics';
 
 @Component({
   selector: 'gv-te-ent-role-set-create-ctrl',
@@ -52,6 +53,7 @@ export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
 
 
   constructor(
+    protected epics: RoleSetApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
     protected ngRedux: NgRedux<IAppState>,
@@ -65,7 +67,7 @@ export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
     teEntApi: InfTemporalEntityApi
 
   ) {
-    super(eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
   }
 
   initRoleSetCreateCtrlBaseChild() {
@@ -118,31 +120,30 @@ export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
     roleToCreate.fk_property = this.roleSetState.property.dfh_pk_property;
     roleToCreate.fk_temporal_entity = this.parentTeEntState.teEnt.pk_entity;
 
-    this.subs.push(this.classService.getByPk(this.roleSetState.targetClassPk).subscribe(targetDfhClass => {
-      const options: RoleDetail = {
-        targetDfhClass,
-        isOutgoing: this.roleSetState.isOutgoing
-      }
-      const settings: StateSettings = {
-        isCreateMode: true
-      }
+    const options: RoleDetail = {
+      targetClassPk: this.roleSetState.targetClassPk,
+      isOutgoing: this.roleSetState.isOutgoing
+    }
+    const settings: StateSettings = {
+      isCreateMode: true
+    }
 
-      this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
+    this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
 
-        /** add a form control */
-        const formControlName = 'new_role_' + this.createFormControlCount;
-        this.createFormControlCount++;
-        this.formGroup.addControl(formControlName, new FormControl(
-          roleStateToCreate.role,
-          [
-            Validators.required
-          ]
-        ))
+      /** add a form control */
+      const formControlName = 'new_role_' + this.createFormControlCount;
+      this.createFormControlCount++;
+      this.formGroup.addControl(formControlName, new FormControl(
+        roleStateToCreate.role,
+        [
+          Validators.required
+        ]
+      ))
 
-        /** update the state */
-        this.localStore.dispatch(this.actions.addRoleToRoleList(formControlName, roleStateToCreate))
-      })
-    }))
+      /** update the state */
+      this.localStore.dispatch(this.actions.addRoleToRoleList(formControlName, roleStateToCreate))
+    })
+
   }
 
   /**

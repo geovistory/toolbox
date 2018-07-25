@@ -1,15 +1,17 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { ComConfig, IAppState, UiContext } from 'app/core';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable } from 'rxjs/Observable';
 
-import { PeItDetail, RoleSet, RoleSetList } from '../../../information.models';
+import { PeItDetail } from '../../../information.models';
+import { slideInOut } from '../../../shared/animations';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 import { DataUnitBase } from '../../data-unit.base';
 import { PeItActions } from '../pe-it.actions';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { peItReducer } from '../pe-it.reducer';
-import { slideInOut } from '../../../shared/animations';
-import { StateToDataService } from '../../../shared/state-to-data.service';
+
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -39,13 +41,13 @@ export class PeItEditableComponent extends DataUnitBase {
   @select() ontoInfoVisible$: Observable<boolean>
   @select() communityStatsVisible$: Observable<boolean>
 
+  uiContext: UiContext;
 
   pkEntity: number;
 
   /**
    * Class properties that filled by a store observable
    */
-  label: string;
   peItState: PeItDetail;
 
   initStore(): void {
@@ -53,11 +55,12 @@ export class PeItEditableComponent extends DataUnitBase {
   }
 
   constructor(
-    protected ngRedux: NgRedux<any>,
+    protected ngRedux: NgRedux<IAppState>,
     protected actions: PeItActions,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    protected stateCreator: StateCreatorService
   ) {
-    super(fb)
+    super(ngRedux, fb, stateCreator);
     console.log('PeItEditableComponent')
 
   }
@@ -65,9 +68,12 @@ export class PeItEditableComponent extends DataUnitBase {
   init() {
     this.basePath = this.getBasePath();
 
+    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
+
     this.initPeItSubscriptions()
 
   }
+
 
   /**
    * init subscriptions to observables in the store
@@ -78,18 +84,18 @@ export class PeItEditableComponent extends DataUnitBase {
       this.peItState = d
     }))
 
-    /**
-    * gets the Appellation is for given peIt roleSets that is for display in this project
-    */
-    this.subs.push(this.localStore.select<RoleSetList>(['_roleSet_list']).subscribe((roleSets) => {
-      this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(roleSets);
-      const oldLabel = (this.peItState && this.peItState.label) ? this.peItState.label : undefined;
+    // /**
+    // * gets the Appellation is for given peIt roleSets that is for display in this project
+    // */
+    // this.subs.push(this.localStore.select<RoleSetList>(['_children']).subscribe((_children) => {
+    //   this.label = U.labelFromDataUnitChildList(_children);
+    //   const oldLabel = (this.peItState && this.peItState.label) ? this.peItState.label : undefined;
 
-      // update store
-      if (this.peItState && oldLabel !== this.label)
-        this.localStore.dispatch(this.actions.roleSetsListDisplayLabelUpdated(this.label))
+    //   // update store
+    //   if (this.peItState && oldLabel !== this.label)
+    //     this.localStore.dispatch(this.actions.roleSetsListDisplayLabelUpdated(this.label))
 
-    }))
+    // }))
   }
 
   /**
@@ -123,24 +129,6 @@ export class PeItEditableComponent extends DataUnitBase {
   */
   hideOntoInfo() {
     this.localStore.dispatch(this.actions.ontoInfoVisibilityToggled(false))
-  }
-
-
-  /**
-  * called, when user selected a the kind of property to add
-  */
-  addRoleSet(propertyToAdd: RoleSet) {
-
-
-    // add a role set
-    const newRoleSet: RoleSet = {
-      ...propertyToAdd,
-      toggle: 'expanded',
-      roles: []
-    }
-
-    this.localStore.dispatch(this.actions.addRoleSet(newRoleSet))
-
   }
 
 }

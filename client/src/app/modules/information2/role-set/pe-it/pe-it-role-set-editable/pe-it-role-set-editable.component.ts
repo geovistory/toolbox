@@ -1,18 +1,22 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { InfEntityProjectRelApi, InfRoleApi, DfhProperty, InfPersistentItem, Project, IAppState, InfRole, InfTemporalEntity, InfPersistentItemApi } from 'app/core';
+import { FormBuilder } from '@angular/forms';
+import { DfhProperty, IAppState, InfEntityProjectRelApi, InfPersistentItem, InfRoleApi, Project } from 'app/core';
 
-import { RoleDetail, RoleSet, PeItDetail, RoleDetailList } from '../../../information.models';
+import { Observable } from 'rxjs/Observable';
+
+import { PeItDetail, RoleDetail } from '../../../information.models';
 import { RoleActions } from '../../../role/role.actions';
+import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
 import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetBase } from '../../role-set.base';
-import { Observable } from 'rxjs/Observable';
-import { timer } from 'rxjs/observable/timer';
-import { slideInOut } from '../../../shared/animations';
+import { RoleSetApiEpics } from '../../role-set.epics';
+
+
+
 
 @Component({
   selector: 'gv-pe-it-role-set-editable',
@@ -22,7 +26,6 @@ import { slideInOut } from '../../../shared/animations';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PeItRoleSetEditableComponent extends RoleSetBase {
-
 
   /**
   * Paths to other slices of the store
@@ -50,6 +53,7 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
   parentPeItState: PeItDetail;
 
   constructor(
+    protected epics: RoleSetApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
     protected ngRedux: NgRedux<IAppState>,
@@ -61,9 +65,13 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
     protected classService: ClassService,
     protected fb: FormBuilder,
   ) {
-    super(eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
   }
 
+
+  test() {
+    this.localStore.dispatch({ type: 'TEST' })
+  }
 
   init() {
 
@@ -76,6 +84,7 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
     this.initSubsciptions();
 
   }
+
 
   /**
    * init paths to different slices of the store
@@ -128,5 +137,9 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
 
   }
 
+  enableDrag() {
+    if (!this.localStore.getState().dragEnabled)
+      this.localStore.dispatch(this.actions.enableDrag())
+  }
 
 }

@@ -11,6 +11,7 @@ import { ElasticInputModule } from 'angular2-elastic-input';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { ProjectSandboxModule } from 'app/shared/components/project-sandbox/project-sandbox.module';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { LoadingBarModule } from 'app/core/loading-bar/loading-bar.module';
 
 PlaygroundModule
   .configure({
@@ -28,7 +29,8 @@ PlaygroundModule
         FormsModule,
         ReactiveFormsModule,
         ProjectSandboxModule,
-        NgxJsonViewerModule
+        NgxJsonViewerModule,
+        LoadingBarModule
       ]
   });
 

@@ -1,9 +1,12 @@
 <div *ngIf="isCircular && ! (leafPeItLoading$ |async)">
-    {{label}}
+    <gv-leaf-pe-it-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-leaf-pe-it-label>
+
+    
     <small class="text-muted">{{peItState?.dfhClass?.dfh_standard_label}} (self)</small>
 </div>
 <a *ngIf="!isCircular" href="" class="gv-passive-link" (click)=open()>
-    {{label}}
+    <gv-leaf-pe-it-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-leaf-pe-it-label>
+
     <small class="text-muted">{{peItState?.dfhClass?.dfh_standard_label}}</small>
 </a>
 

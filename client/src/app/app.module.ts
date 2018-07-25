@@ -8,15 +8,19 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ElasticInputModule } from 'angular2-elastic-input';
+import { DndModule } from 'ng2-dnd';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ActiveAccountService, ActiveProjectService, AuthGuard, EntityEditorService, SDKBrowserModule } from './core';
+import { LoadingBarModule } from './core/loading-bar/loading-bar.module';
 import { StoreModule } from './core/store/module';
+import { AdminModule } from './modules/admin/admin.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
+import { ActiveProjectEpics } from 'app/core/active-project/active-project.epics';
 
 registerLocaleData(localeDeCh);
 
@@ -34,6 +38,8 @@ registerLocaleData(localeDeCh);
     NgbModule.forRoot(),
     ElasticInputModule.forRoot(),
     SlimLoadingBarModule.forRoot(),
+    DndModule.forRoot(),
+    LoadingBarModule,
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
@@ -41,6 +47,7 @@ registerLocaleData(localeDeCh);
     ReactiveFormsModule,
     AppRoutingModule,
     ProjectsModule,
+    AdminModule,
     PassiveLinkModule,
     ControlMessagesModule,
     LanguageSearchTypeaheadModule,
@@ -50,6 +57,7 @@ registerLocaleData(localeDeCh);
     EntityEditorService,
     ActiveAccountService,
     ActiveProjectService,
+    ActiveProjectEpics,
     AuthGuard,
     { provide: LOCALE_ID, useValue: 'de-CH' }
   ],

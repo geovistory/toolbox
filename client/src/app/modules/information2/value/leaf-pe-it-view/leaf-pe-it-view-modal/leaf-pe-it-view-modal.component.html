@@ -7,12 +7,16 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<ng2-slim-loading-bar color="inherit"></ng2-slim-loading-bar>
 
 <div class="modal-body">
 
 <!-- Todo add gv-pe-it-view -->
   <!-- <gv-pe-it-editable [basePath]="parentPath"></gv-pe-it-editable> -->
+
+  <gv-pe-it-add-form  *ngIf="!isInProject" [basePath]="parentPath.concat('_leaf_peIt_modal')" (formChange)="formChange($event)"></gv-pe-it-add-form>
+
+  <gv-pe-it-editable  *ngIf="isInProject" [basePath]="parentPath.concat('_leaf_peIt_modal')"></gv-pe-it-editable>
+
 
 </div>
 
@@ -24,7 +28,7 @@
     <button class="btn btn-link btn" (click)="modal.dismiss('Cancel click')">
       Cancel
     </button>
-    <button type="button" class="btn btn-primary btn" (click)="addAndOpen()" *ngIf="!isInProject">
+    <button [disabled]="addButtonDisabled" type="button" class="btn btn-primary btn" (click)="addAndOpen()" *ngIf="!isInProject">
       Add and Open
     </button>
     <button type="button" class="btn btn-primary btn" (click)="open()" *ngIf="isInProject">

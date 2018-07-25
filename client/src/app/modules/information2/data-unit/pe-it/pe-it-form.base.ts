@@ -9,6 +9,7 @@ import { PeItDetail } from '../../information.models';
 import { DataUnitBase } from '../data-unit.base';
 import { PeItActions } from './pe-it.actions';
 import { peItReducer } from './pe-it.reducer';
+import { StateCreatorService } from '../../shared/state-creator.service';
 
 /**
  * hooks in on the level of
@@ -33,9 +34,10 @@ export abstract class PeItFormBase extends DataUnitBase implements OnInit {
     constructor(
         protected ngRedux: NgRedux<any>,
         protected actions: PeItActions,
-        protected fb: FormBuilder
-    ) {
-        super(fb)
+        protected fb: FormBuilder,
+        protected stateCreator: StateCreatorService
+      ) {
+          super(ngRedux, fb, stateCreator);
     }
 
     peItState: PeItDetail;

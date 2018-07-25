@@ -1,11 +1,12 @@
 import { sandboxOf } from 'angular-playground';
-import { Project } from 'app/core';
+import { Project, ProjectDetail } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
 import { Information2Module } from '../../../information2.module';
 import { PeItAddFormComponent } from './pe-it-add-form.component';
 import { InitPeItEditableStateModule } from 'app/shared';
 import { StateSettings } from '../../../shared/state-creator.service';
+import { crm } from '../../../information.sandbox.mock';
 
 export default sandboxOf(PeItAddFormComponent, {
   imports: [
@@ -22,26 +23,29 @@ export default sandboxOf(PeItAddFormComponent, {
       added: undefined,
       basePath: ['_peIt_add_form'],
       pkProject: -1, // use a pk of a project that has the pkEntity not yet added 
-      pkEntity: 153083,
+      pkEntity: 34239,
       settings:{
         isAddMode:true
       } as StateSettings,
       state: {
         activeProject: {
-          pk_project: -1 // use same pkProject
-        } as Project,
+          pk_project: -1, // use same pkProject
+          crm: crm
+        } ,
         _peIt_add_form: undefined
       }
     },
     template: `
-    <gv-init-pe-it-editable-state [pkProject]="pkProject" [pkEntity]="pkEntity" [settings]="settings" (stateCreated)="state._peIt_add_form = $event"
-    ></gv-init-pe-it-editable-state>
+    <gv-init-state [initState]="state">    
+        <gv-init-pe-it-editable-state [pkProject]="pkProject" [pkEntity]="pkEntity" [settings]="settings" (stateCreated)="state._peIt_add_form = $event"
+      ></gv-init-pe-it-editable-state>
+    </gv-init-state>
+
 
     <div class="container">
       <div class="row" *ngIf="state._peIt_add_form">
         <div style="width:430px;height:700px" class="col-6">
 
-          <gv-init-state [initState]="state"></gv-init-state>
 
           <gv-pe-it-add-form [basePath]="basePath" (formChange)="f = $event" 
           (added)="added = $event" addBtn="true" cancelBtn="true" 
@@ -172,7 +176,7 @@ export default sandboxOf(PeItAddFormComponent, {
             "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
             "text_properties": []
           },
-          "_roleSet_list": {
+          "_children": {
             "_1_ingoing": {
               "isOutgoing": false,
               "property": {
@@ -266,17 +270,7 @@ export default sandboxOf(PeItAddFormComponent, {
                   },
                   "isCircular": false,
                   "isOutgoing": false,
-                  "targetDfhClass": {
-                    "dfh_pk_class": 3,
-                    "dfh_identifier_in_namespace": "F52",
-                    "dfh_standard_label": "Name Use Activity",
-                    "pk_entity": 728,
-                    "entity_version": 1,
-                    "notes": null,
-                    "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                    "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                    "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                  },
+                  targetClassPk: 3,
                   "isDisplayRoleForDomain": null,
                   "isDisplayRoleForRange": false,
                   "_teEnt": {
@@ -317,7 +311,7 @@ export default sandboxOf(PeItAddFormComponent, {
                       "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
                       "text_properties": []
                     },
-                    "_roleSet_list": {
+                    "_children": {
                       "_2_outgoing": {
                         "isOutgoing": true,
                         "property": {
@@ -422,17 +416,7 @@ export default sandboxOf(PeItAddFormComponent, {
                             },
                             "isCircular": false,
                             "isOutgoing": true,
-                            "targetDfhClass": {
-                              "dfh_pk_class": 2,
-                              "dfh_identifier_in_namespace": "E82",
-                              "dfh_standard_label": "Actor Appellation",
-                              "pk_entity": 727,
-                              "entity_version": 1,
-                              "notes": null,
-                              "tmsp_creation": "2018-06-04T10:18:05.637Z",
-                              "tmsp_last_modification": "2018-06-04T10:18:05.637Z",
-                              "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)"
-                            },
+                            targetClassPk: 2,
                             "isDisplayRoleForDomain": null,
                             "isDisplayRoleForRange": null,
                             "_appe": {

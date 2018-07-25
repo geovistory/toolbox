@@ -1,11 +1,12 @@
 import { NgRedux, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, NgForm } from '@angular/forms';
-import { InfTemporalEntity, U } from 'app/core';
+import { InfTemporalEntity, U, UiContext } from 'app/core';
 
 import { PeItFormBase } from '../pe-it-form.base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -26,13 +27,15 @@ export class PeItCreateFormComponent extends PeItFormBase {
 
   formCtrlName = 'persistent_item';
 
+  uiContext: UiContext;
+
   constructor(
     protected ngRedux: NgRedux<any>,
     protected actions: PeItActions,
-    protected fb: FormBuilder
-
+    protected fb: FormBuilder,
+    protected stateCreator: StateCreatorService
   ) {
-    super(ngRedux, actions, fb)
+    super(ngRedux, actions, fb, stateCreator)
 
     this.subscribeFormChanges();
 

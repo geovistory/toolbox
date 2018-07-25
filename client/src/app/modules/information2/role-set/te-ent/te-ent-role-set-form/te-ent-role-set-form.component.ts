@@ -5,7 +5,7 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 
 import { RoleSetFormBase } from '../../role-set-form.base';
 import { roleSetReducer } from '../../role-set.reducer';
-import { IAppState, InfRoleApi, InfRole, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
+import { IAppState, InfRoleApi, InfRole, InfTemporalEntity, InfTemporalEntityApi, InfEntityProjectRel } from 'app/core';
 import { RoleSetActions } from '../../role-set.actions';
 import { teEntReducer } from '../../../data-unit/te-ent/te-ent.reducer';
 import { TeEntDetail, RoleDetail } from '../../../information.models';
@@ -110,25 +110,21 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
     const s = this.localStore.getState();
     const ps = this.parentTeEntStore.getState();
 
+    const roleToCreate = {
+      fk_property: s.property.dfh_pk_property,
+      fk_temporal_entity: ps.teEnt.pk_entity,
+    } as InfRole;
 
-    this.subs.push(this.classService.getByPk(s.targetClassPk).subscribe(targetDfhClass => {
+    const options: RoleDetail = { targetClassPk: s.targetClassPk, isOutgoing: s.isOutgoing }
+    const settings: StateSettings = { isCreateMode: true }
 
-      const roleToCreate = {
-        fk_property: s.property.dfh_pk_property,
-        fk_temporal_entity: ps.teEnt.pk_entity,
-      } as InfRole;
+    // initialize the state
+    this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
 
-      const options: RoleDetail = { targetDfhClass, isOutgoing: s.isOutgoing }
-      const settings: StateSettings = { isCreateMode: true }
+      this.initCreateFormCtrls(roleStateToCreate)
 
-      // initialize the state
-      this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
+    }))
 
-        this.initCreateFormCtrls(roleStateToCreate)
-
-      }))
-    })
-    )
   }
 
 
@@ -143,8 +139,10 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
 
       Object.keys(this.createForm.controls).forEach(key => {
         if (this.createForm.get(key)) {
+          let role: InfRole = this.createForm.get(key).value;
+          role.entity_version_project_rels = [{ is_in_project: true } as InfEntityProjectRel]
           // add roles to create to peIt
-          t.te_roles.push(this.createForm.get(key).value)
+          t.te_roles.push(role)
         }
       })
 

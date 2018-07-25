@@ -1,4 +1,4 @@
-<button *ngIf="!pkEntity" type="button" name="button" class="btn btn-block btn-primary" (click)="openModal()">Select a {{dfhClass?.dfh_standard_label}}</button>
+<button *ngIf="!pkEntity" type="button" name="button" class="btn btn-block btn-primary" (click)="openModal()">Select a {{classConfig?.label}}</button>
 
 
 <gv-leaf-pe-it-view *ngIf="pkEntity" [pkEntity]="pkEntity" [basePath]="basePath" [isCircular]="false"></gv-leaf-pe-it-view>

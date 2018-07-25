@@ -77,7 +77,7 @@ export class RoleService {
    * @param {RoleSet} options any other option that should be apllied to all of the roleSets
    * @return {RoleSet[]} Array of RoleSet, the model of the Gui-Element for RoleSets
    */
-  addRolesToRoleSets(roles: InfRole[], ingoingRoleSets: RoleSet[], outgoingRoleSets: RoleSet[], options: RoleSet = {}): RoleSet[] {
+  addRolesToRoleSets(roles: InfRole[], ingoingRoleSets: RoleSet[], outgoingRoleSets: RoleSet[], options = new RoleSet()): RoleSet[] {
 
     // declare array that will be returned
     const roleSets: RoleSet[] = [];

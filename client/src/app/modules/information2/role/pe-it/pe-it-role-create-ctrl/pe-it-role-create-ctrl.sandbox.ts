@@ -6,6 +6,8 @@ import { RoleDetail, RoleSet } from '../../../information.models';
 import { Information2Module } from '../../../information2.module';
 import { roleCreateMock } from './mock';
 import { PeItRoleCreateCtrlComponent } from './pe-it-role-create-ctrl.component';
+import { crm } from '../../../information.sandbox.mock';
+import { DfhConfig } from '../../../shared/dfh-config';
 
 
 
@@ -21,45 +23,113 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
             model: {
             },
             parentPath: ['_role_set_1'],
-            index: '_role_detail_1',
+            index: 'new_role_0',
             initState: {
+                activeProject: {
+                    crm: crm
+                },
                 '_role_set_1': {
                     _role_list: {
-                        _role_detail_1: {
-                            _teEnt: {
-                                dfhClass: {
-                                    dfh_pk_class: 3,
-                                    dfh_identifier_in_namespace: "F52",
-                                    dfh_standard_label: "Name Use Activity",
-                                } as DfhClass,
-                                _roleSet_list: {
-                                    _role_set_1: {
-                                        label: {
-                                            default: 'Detailed Name',
-                                            sg: 'Detailed Name',
-                                            pl: 'Detailed Names'
-                                        },
-                                        _role_list: {
-                                            _role_1: {
-                                                role: {
-                                                    fk_property: 99,
-                                                } as InfRole,
-                                                _appe: {
-                                                }
-                                            } as RoleDetail
-                                        },
-                                        property: {
-                                            "dfh_pk_property": 2,
-                                            "dfh_identifier_in_namespace": "R64",
-                                            "dfh_has_domain": 3,
-                                            "dfh_has_range": 2,
-                                            "dfh_standard_label": "Used Name",
+                        "new_role_0": {
+                            "role": {
+                                "fk_property": 1193,
+                                "fk_entity": 33995,
+                                "temporal_entity": {
+                                    "fk_class": 365
+                                }
+                            },
+                            "isCircular": false,
+                            "targetClassPk": 365,
+                            "isOutgoing": false,
+                            "toggle": "expanded",
+                            "_teEnt": {
+                                "selectPropState": "init",
+                                "toggle": "collapsed",
+                                "teEnt": {
+                                    "fk_class": 365
+                                },
+                                "fkClass": 365,
+                                "_children": {
+                                    "_1113_outgoing": {
+                                        "isOutgoing": true,
+                                        "property": {
+                                            "dfh_pk_property": 1113,
+                                            "dfh_identifier_in_namespace": "histP11",
+                                            "dfh_has_domain": 365,
+                                            "dfh_has_range": 40,
+                                            "dfh_fk_property_of_origin": null,
                                             "dfh_domain_instances_min_quantifier": 0,
-                                            "dfh_domain_instances_max_quantifier": -1,
+                                            "dfh_domain_instances_max_quantifier": 1,
                                             "dfh_range_instances_min_quantifier": 1,
                                             "dfh_range_instances_max_quantifier": 1,
-                                        } as DfhProperty
-                                    } as RoleSet
+                                            "ui_context_config": [
+                                                {
+                                                    "pk_entity": 169,
+                                                    "fk_ui_context": 104,
+                                                    "fk_project": null,
+                                                    "fk_property": 1113,
+                                                    "fk_property_set": null,
+                                                    "property_is_outgoing": true,
+                                                    "ord_num": 0
+                                                },
+                                                {
+                                                    "pk_entity": 150,
+                                                    "fk_ui_context": 103,
+                                                    "fk_project": null,
+                                                    "fk_property": 1113,
+                                                    "fk_property_set": null,
+                                                    "property_is_outgoing": true,
+                                                    "ord_num": 0
+                                                }
+                                            ]
+                                        },
+                                        "targetClassPk": 40,
+                                        "label": {
+                                            "sg": "Detailed Name",
+                                            "pl": "Detailed Names",
+                                            "default": "Detailed Name"
+                                        },
+                                        "type": "RoleSet",
+                                        "toggle": "expanded",
+                                        "_role_list": {
+                                            "_undefined": {
+                                                "role": {
+                                                    "appellation": {
+                                                        "fk_class": 40
+                                                    },
+                                                    "entity_version_project_rels": [
+                                                        {
+                                                            "is_in_project": true,
+                                                            "is_standard_in_project": true
+                                                        }
+                                                    ]
+                                                },
+                                                "isCircular": false,
+                                                "isOutgoing": true,
+                                                "targetClassPk": 40,
+                                                "isDisplayRoleForRange": true,
+                                                "_appe": {
+                                                    "appellation": {
+                                                        "appellation_label": {
+                                                            "tokens": [
+                                                                {
+                                                                    "id": 0,
+                                                                    "string": "",
+                                                                    "isSeparator": false
+                                                                }
+                                                            ],
+                                                            "latestTokenId": 0
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "_existenceTime": {
+                                        "type": "ExistenceTimeDetail",
+                                        "roles": [],
+                                        "toggle": "expanded"
+                                    }
                                 }
                             }
                         }
@@ -101,7 +171,7 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
             parentPath: ['_role_set_1'],
             index: '_role_detail_1',
             initState: {
-                activeProject:{
+                activeProject: {
                     pk_project: 52
                 } as Project,
                 '_role_set_1': {

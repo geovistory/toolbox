@@ -3,10 +3,26 @@
   <div [@slideInOut]="(toggle$|async)">
 
     <form [formGroup]="formGroup" *ngIf="formGroup">
-      <div *ngFor="let entry of (_roleSet_list$ | async) | keys; trackBy:getKey">
+
+      <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
+        <span [ngSwitch]="item.key">
+
+          <gv-existence-time-add-ctrl *ngSwitchCase="'_existenceTime'" mode="add" [basePath]="basePath.concat('_children').concat(item.key)"
+            [formControlName]="'_existenceTime'" (touched)="markAsTouched()"></gv-existence-time-add-ctrl>
+
+          <gv-te-ent-role-set-add-ctrl *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath" [index]="item.key"
+            [formControlName]="item.key" (touched)="markAsTouched()"></gv-te-ent-role-set-add-ctrl>
+
+        </span>
+      </div>
+
+
+
+      <!-- 
+      <div *ngFor="let entry of (_children$ | async) | keys; trackBy:getKey">
         <gv-te-ent-role-set-add-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [parentTeEntStatePath]="basePath" [index]="entry.key"
           [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role-set-add-ctrl>
-      </div>
+      </div> -->
     </form>
 
     <ng-container *ngTemplateOutlet="dating"></ng-container>
@@ -22,8 +38,7 @@
     <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
       <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
       <span *ngIf="labelInEdit">{{labelInEdit}}</span>
-      <span *ngIf="label && !labelInEdit">{{label}}</span>
-      <span *ngIf="!label && !labelInEdit">{{(dfhClass$|async)?.dfh_standard_label}}</span>
+      <gv-te-ent-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-te-ent-label>
     </div>
     <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
       <div class="align-self-center">

@@ -1,10 +1,11 @@
 import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Output, ViewChild, Input } from '@angular/core';
 import { FormBuilder, NgForm } from '@angular/forms';
-import { InfTemporalEntity, U, InfPersistentItemApi, InfPersistentItem } from 'app/core';
+import { InfTemporalEntity, U, InfPersistentItemApi, InfPersistentItem, UiContext } from 'app/core';
 
 import { PeItFormBase } from '../pe-it-form.base';
 import { PeItActions } from '../pe-it.actions';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 
 @Component({
   selector: 'gv-pe-it-add-form',
@@ -13,29 +14,31 @@ import { PeItActions } from '../pe-it.actions';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PeItAddFormComponent extends PeItFormBase {
-
+  
   peIt: InfPersistentItem; // ngForm model
-
+  
   @ViewChild('f') form: NgForm;
-
+  
   @Input() addBtn:boolean;
   @Input() cancelBtn:boolean;
-
+  
   @Output() formChange: EventEmitter<NgForm> = new EventEmitter();
   @Output() added: EventEmitter<InfPersistentItem> = new EventEmitter();
   @Output() cancel: EventEmitter<void> = new EventEmitter();
-
+  
   formCtrlName = 'persistent_item';
+  
+  uiContext: UiContext;
 
   constructor(
     protected ngRedux: NgRedux<any>,
     protected actions: PeItActions,
     protected fb: FormBuilder,
     protected ref: ChangeDetectorRef,
-    protected peItApi: InfPersistentItemApi
-
+    protected peItApi: InfPersistentItemApi,
+    protected stateCreator: StateCreatorService
   ) {
-    super(ngRedux, actions, fb)
+    super(ngRedux, actions, fb, stateCreator)
     console.log('PeItAddFormComponent')
 
   }

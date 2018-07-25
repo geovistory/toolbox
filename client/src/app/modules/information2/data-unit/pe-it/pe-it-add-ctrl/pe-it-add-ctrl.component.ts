@@ -2,8 +2,9 @@ import { Component, OnInit, forwardRef, ChangeDetectionStrategy, ChangeDetectorR
 import { FormBuilder, FormControl, Validators, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WithSubStore, NgRedux } from '@angular-redux/store';
 import { PeItActions } from '../pe-it.actions';
-import { InfPersistentItem, InfTemporalEntity, U, InfEntityProjectRel } from 'app/core';
+import { InfPersistentItem, InfTemporalEntity, U, InfEntityProjectRel, UiContext, ComConfig } from 'app/core';
 import { PeItCtrlBase } from '../pe-it-ctrl.base';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 
 @Component({
   selector: 'gv-pe-it-add-ctrl',
@@ -25,18 +26,25 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
   // the data model of this control
   peIt: InfPersistentItem;
 
+  uiContext: UiContext;
+
+
   constructor(
     protected ngRedux: NgRedux<any>,
     protected actions: PeItActions,
     protected fb: FormBuilder,
-    protected ref: ChangeDetectorRef
+    protected ref: ChangeDetectorRef,
+    protected stateCreator: StateCreatorService
   ) {
-    super(ngRedux, actions, fb)
+    super(ngRedux, actions, fb, stateCreator)
     console.log('PeItAddCtrlComponent')
 
   }
 
   onInitPeItBaseChild(): void {
+
+    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
+
     this.initFormCtrls()
   }
 
@@ -44,10 +52,10 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
   initFormCtrls(): void {
     if (this.localStore.getState()) {
 
-      // add controls for each roleSet of _roleSet_list
-      const roleSetList = this.localStore.getState()._roleSet_list;
+      // add controls for each roleSet of _children
+      const roleSetList = this.localStore.getState()._children;
 
-      // this.subs.push(this._roleSet_list$.subscribe(roleSetList => {
+      // this.subs.push(this._children$.subscribe(roleSetList => {
       if (roleSetList)
         Object.keys(roleSetList).forEach((key) => {
           if (roleSetList[key]) {
@@ -108,8 +116,8 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
   initFormCtrlValues() {
     if (this.localStore.getState()) {
 
-      // add values to controls for each roleSet of _roleSet_list
-      const roleSetList = this.localStore.getState()._roleSet_list;
+      // add values to controls for each roleSet of _children
+      const roleSetList = this.localStore.getState()._children;
 
       if (roleSetList)
         Object.keys(roleSetList).forEach((key) => {

@@ -15,7 +15,7 @@ export const createState = function (appeProperty) {
         } as DfhClass,
         ingoingRoleSets: [],
         outgoingRoleSets: [],
-        _roleSet_list: {
+        _children: {
             _role_set_1: {
                 label: {
                     default: 'Names',
@@ -47,8 +47,8 @@ export const createState = function (appeProperty) {
                                 dfh_identifier_in_namespace: "F52",
                                 dfh_standard_label: "Name Use Activity",
                             } as DfhClass,
-                            _roleSet_list: {
-                                _role_set_1: {
+                            _children: {
+                                _role_set_1: new RoleSet({
                                     label: {
                                         default: 'Detailed Name',
                                         sg: 'Detailed Name',
@@ -77,7 +77,7 @@ export const createState = function (appeProperty) {
                                             }
                                         } as RoleDetail
                                     },
-                                } as RoleSet
+                                }) 
                             }
                         }
                     }

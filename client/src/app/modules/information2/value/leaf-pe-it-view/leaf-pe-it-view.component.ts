@@ -1,27 +1,17 @@
 import { NgRedux, select, WithSubStore } from '@angular-redux/store';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  forwardRef,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-import { IAppState, InfPersistentItem, InfRole } from 'app/core';
+import { ClassConfig, IAppState, InfPersistentItem, InfRole } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { dropLast } from 'ramda';
 import { Observable, ReplaySubject, Subscription } from 'rxjs';
 
-import { PeItDetail } from '../../information.models';
+import { DataUnitChildList, DataUnitLabel, PeItDetail } from '../../information.models';
 import { StateCreatorService } from '../../shared/state-creator.service';
-import { StateToDataService } from '../../shared/state-to-data.service';
 import { LeafPeItViewModalComponent } from './leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
 import { LeafPeItActions } from './leaf-pe-it-view.actions';
 import { leafPeItReducer } from './leaf-pe-it-view.reducer';
-
+import { ActivatedRoute, Router } from '@angular/router';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -59,11 +49,12 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
   leafPeItStateInitialized: boolean;
   leafPeItLoading$: ReplaySubject<boolean>;
 
+  classConfig: ClassConfig;
 
   /**
   * Properties
   */
-  label: string;
+  label: DataUnitLabel;
 
   isInProject: boolean;
 
@@ -77,11 +68,12 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
   role: InfRole;
 
   @select() peIt$: Observable<InfPersistentItem>;
+  @select() _children$: Observable<DataUnitChildList>;
   @select() loading$: Observable<boolean>;
 
   constructor(
-    // private route: ActivatedRoute,
-    // private router: Router,
+    private route: ActivatedRoute,
+    private router: Router,
     private ngRedux: NgRedux<IAppState>,
     private modalService: NgbModal,
     protected stateCreator: StateCreatorService
@@ -96,35 +88,17 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
 
     const peItDetail = this.ngRedux.configureSubStore(this.basePath, leafPeItReducer).getState();
 
-    // this.subs.push(
-    //   this.loading$.subscribe(bool=>{
-    //     if(bool !== true){
-    //       this.initPeItState();
-    //     }else{
-    //       this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(peItDetail._roleSet_list);
+    if (peItDetail && peItDetail.fkClass)
+      this.classConfig = this.ngRedux.getState().activeProject.crm.classes[peItDetail.fkClass];
 
-    //     }
-    //   })
-    // )
-    if (!peItDetail.peIt) {
-      console.log('LeafPeItViewComponent leafPeItStartLoading', this.pkEntity)
-      // this.leafPeItStartLoading();
+    if (!peItDetail || !peItDetail.peIt) {
+      // console.log('LeafPeItViewComponent leafPeItStartLoading', this.pkEntity)
+
       this.initPeItState();
     }
 
-    else
-      this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(peItDetail._roleSet_list);
-
-    // this.subs.push(this.ngRedux.select<PeItDetail>(this.basePath).subscribe(d => {
-    //   this.peItState = d;
-    //   if (d.pkEntity)
-    //   this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(d._roleSet_list);
-    //   else if (d)
-    //   console.log('LeafPeItViewComponent initPeItState (api call)')
-    //   this.initPeItState()
-
-    // }))
-
+    // else
+    //   this.label = U.labelFromDataUnitChildList(peItDetail._children);
 
   }
 
@@ -141,8 +115,10 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
       this.stateCreator.initializePeItState(this.pkEntity, pkProject).subscribe(peItState => {
 
         this.peItState = peItState;
-        if (peItState)
-          this.label = StateToDataService.getDisplayAppeLabelOfPeItRoleSets(peItState._roleSet_list);
+
+        if (peItState && peItState.fkClass && !this.classConfig)
+          this.classConfig = this.ngRedux.getState().activeProject.crm.classes[peItState.fkClass];
+
 
         this.leafPeItStateAdded(peItState)
         this.leafPeItLoading$.next(false);
@@ -162,15 +138,15 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
     // window.open(this.router.serializeUrl(urlTree), '_blank')
     const open = () => {
 
-      // this.router.navigate(["../", this.peItState.peIt.pk_entity], {
-      //   relativeTo: this.route,
-      //   queryParamsHandling: 'merge'
-      // })
-      //   .then(() => {
-      //     console.log('ok')
-      //   }).catch(() => {
-      //     console.log('oops')
-      //   })
+      this.router.navigate(["../", this.peItState.peIt.pk_entity], {
+        relativeTo: this.route,
+        queryParamsHandling: 'merge'
+      })
+        .then(() => {
+          console.log('ok')
+        }).catch(() => {
+          console.log('oops')
+        })
     }
 
 

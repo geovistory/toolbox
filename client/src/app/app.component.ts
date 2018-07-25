@@ -1,6 +1,7 @@
 import { Component, HostListener } from '@angular/core';
-import { EntityEditorService } from './core';
+import { EntityEditorService, LoopBackConfig } from './core';
 import { NgRedux, select } from '@angular-redux/store';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'gv-root',
@@ -16,7 +17,11 @@ export class AppComponent {
 
   constructor(
     private entityEditor: EntityEditorService,
-  ) {}
+    
+  ) {
+    LoopBackConfig.setBaseURL(environment.baseUrl);
+    LoopBackConfig.setApiVersion(environment.apiVersion);
+  }
 
 
   keydown($event) {

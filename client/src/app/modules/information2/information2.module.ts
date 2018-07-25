@@ -9,6 +9,7 @@ import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule
 import { KeysModule } from 'app/shared/pipes/keys.module';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 
+import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.module';
 import {
   MentionedEntityCtrlActions,
 } from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
@@ -36,6 +37,8 @@ import { TeEntActions } from './data-unit/te-ent/te-ent.actions';
 import { ExistenceTimeAddCtrlComponent } from './existence-time/existence-time-add-ctrl/existence-time-add-ctrl.component';
 import { ExistenceTimeEditComponent } from './existence-time/existence-time-edit/existence-time-edit.component';
 import { ExistenceTimeEditableComponent } from './existence-time/existence-time-editable/existence-time-editable.component';
+import { ExistenceTimeHelpComponent } from './existence-time/existence-time-help/existence-time-help.component';
+import { ExistenceTimeModalComponent } from './existence-time/existence-time-modal/existence-time-modal.component';
 import { ExistenceTimeActions } from './existence-time/existence-time.actions';
 import { InformationRoutingModule } from './information-routing.module';
 import { InformationActions } from './information.actions';
@@ -98,8 +101,13 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
-import { ExistenceTimeModalComponent } from './existence-time/existence-time-modal/existence-time-modal.component';
-import { ExistenceTimeHelpComponent } from './existence-time/existence-time-help/existence-time-help.component';
+import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
+import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.component';
+import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.component';
+import { DndModule } from '../../../../node_modules/ng2-dnd';
+import { RoleSetApiEpics } from './role-set/role-set.epics';
+import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it-label.component';
+import { AddInfoSelectorComponent } from './components/add-info-selector/add-info-selector.component';
 
 @NgModule({
   imports: [
@@ -120,8 +128,11 @@ import { ExistenceTimeHelpComponent } from './existence-time/existence-time-help
     LanguageSearchTypeaheadModule,
     ControlMessagesModule,
     PassiveLinkModule,
+    AutofocusModule,
+    DimensionChangeModule,
     TimelineModule,
     KeysModule,
+    DndModule
 
   ],
   declarations: [
@@ -193,6 +204,12 @@ import { ExistenceTimeHelpComponent } from './existence-time/existence-time-help
     PlaceViewComponent,
     ExistenceTimeHelpComponent,
 
+    // Reusable
+    TeEntLabelComponent,
+    PeItLabelComponent,
+    LeafPeItLabelComponent,
+    AddInfoSelectorComponent,
+
 
   ],
   providers: [
@@ -212,7 +229,8 @@ import { ExistenceTimeHelpComponent } from './existence-time/existence-time-help
 
     // Role Set
     RoleSetActions,
-
+    RoleSetApiEpics,
+    
     // Role
     RoleActions,
 

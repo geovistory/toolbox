@@ -19,7 +19,7 @@ export default sandboxOf(TeEntRoleSetFormComponent, {
             createForm: {},
             cancelled: undefined,
             added: undefined,
-            parentPath: ['_teEnt', '_roleSet_list', '_6_outgoing'],
+            parentPath: ['_teEnt', '_children', '_6_outgoing'],
             parentTeEntStatePath: ['_teEnt'],
             initState: {
                 "activeProject": {
@@ -63,7 +63,7 @@ export default sandboxOf(TeEntRoleSetFormComponent, {
                         "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
                         "text_properties": []
                     },
-                    "_roleSet_list": {
+                    "_children": {
                         "_6_outgoing": {
                             _role_set_form: {}, // <- add this to init the role set (gv-te-ent-role-set-form)
                             "isOutgoing": true,
@@ -276,7 +276,7 @@ export default sandboxOf(TeEntRoleSetFormComponent, {
             createForm: {},
             cancelled: undefined,
             added: undefined,
-            parentPath: ['_teEnt', '_roleSet_list', '_6_outgoing'],
+            parentPath: ['_teEnt', '_children', '_6_outgoing'],
             parentTeEntStatePath: ['_teEnt'],
             initState: {
                 "activeProject": {
@@ -320,7 +320,7 @@ export default sandboxOf(TeEntRoleSetFormComponent, {
                         "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
                         "text_properties": []
                     },
-                    "_roleSet_list": {
+                    "_children": {
                         "_6_outgoing": {
                             _role_set_form: {}, // <- add this to init the role set (gv-te-ent-role-set-form)
                             "isOutgoing": true,
@@ -494,7 +494,7 @@ export default sandboxOf(TeEntRoleSetFormComponent, {
             createForm: {},
             cancelled: undefined,
             added: undefined,
-            parentPath: ['_teEnt', '_roleSet_list', '_2_outgoing'],
+            parentPath: ['_teEnt', '_children', '_2_outgoing'],
             parentTeEntStatePath: ['_teEnt'],
             initState: {
                 "activeProject": {
@@ -538,7 +538,7 @@ export default sandboxOf(TeEntRoleSetFormComponent, {
                       "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
                       "text_properties": []
                     },
-                    "_roleSet_list": {
+                    "_children": {
                       "_1_outgoing": {
                         "isOutgoing": true,
                         "property": {

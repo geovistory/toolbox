@@ -109,54 +109,50 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
     const s = this.localStore.getState();
     const ps = this.parentPeItStore.getState();
 
+    // pi_role that will be created  
+    const roleToCreate = {
 
-    this.subs.push(this.classService.getByPk(s.targetClassPk).subscribe(targetDfhClass => {
+      // the fk_property is defined by the RoleSet
+      fk_property: s.property.dfh_pk_property,
+      // the fk_entity is defined by the parent PeItDetail
+      fk_entity: ps.peIt.pk_entity,
 
-      // pi_role that will be created  
-      const roleToCreate = {
+      temporal_entity: {
+        fk_class: s.targetClassPk,
 
-        // the fk_property is defined by the RoleSet
-        fk_property: s.property.dfh_pk_property,
-        // the fk_entity is defined by the parent PeItDetail
-        fk_entity: ps.peIt.pk_entity,
+        // circular role, that appears from the beginning on, when user creates new pi_role 
+        te_roles: [
+          {
+            // the fk_property is defined by the RoleSet
+            fk_property: s.property.dfh_pk_property,
+            // the fk_entity is defined by the parent PeItDetail
+            fk_entity: ps.peIt.pk_entity,
+          }
+        ]
 
-        temporal_entity: {
-          fk_class: targetDfhClass.dfh_pk_class,
-
-          // circular role, that appears from the beginning on, when user creates new pi_role 
-          te_roles: [
-            {
-              // the fk_property is defined by the RoleSet
-              fk_property: s.property.dfh_pk_property,
-              // the fk_entity is defined by the parent PeItDetail
-              fk_entity: ps.peIt.pk_entity,
-            }
-          ]
-
-        } as InfTemporalEntity
-      } as InfRole
+      } as InfTemporalEntity
+    } as InfRole
 
 
-      const options: RoleDetail = {
-        targetDfhClass,
-        isOutgoing: s.isOutgoing,
-        toggle: 'expanded',
-        _teEnt: {
-          selectPropState: 'init',
-        }
+    const options: RoleDetail = {
+      targetClassPk: s.targetClassPk,
+      isOutgoing: s.isOutgoing,
+      toggle: 'expanded',
+      _teEnt: {
+        selectPropState: 'init',
       }
-      const settings: StateSettings = {
-        isCreateMode: true
-      }
+    }
+    const settings: StateSettings = {
+      isCreateMode: true
+    }
 
-      // initialize the state
-      this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
+    // initialize the state
+    this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
 
-        this.initCreateFormCtrls(roleStateToCreate)
+      this.initCreateFormCtrls(roleStateToCreate)
 
-      }))
-    })
-    )
+    }))
+
   }
 
 

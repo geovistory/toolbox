@@ -14,11 +14,15 @@ import { MentionedEntity } from '../../annotation.models';
 })
 export class MentionedEntityViewComponent implements OnInit {
 
-    @Input() mentionedEntity: MentionedEntity;
+  @Input() mentionedEntity: MentionedEntity;
+
+
+  basePath: string[];
 
   constructor() { }
 
   ngOnInit() {
+    this.basePath = ['mentionedEntities', this.mentionedEntity.pkEntity.toString()]
   }
 
 }

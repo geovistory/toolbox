@@ -2,7 +2,7 @@ import { ExistenceTimeEdit } from "../../information.models";
 import { ExTimeEditActions, ExTimeEditAction } from "./existence-time-edit.actions";
 
 export const existenceTimeEditReducer =
-    (lastState: ExistenceTimeEdit = {}, action: ExTimeEditAction): ExistenceTimeEdit => {
+    (lastState = new ExistenceTimeEdit(), action: ExTimeEditAction): ExistenceTimeEdit => {
         switch (action.type) {
 
             case ExTimeEditActions.EX_TIME_MODAL_SET_HELP_MODE:
@@ -22,20 +22,20 @@ export const existenceTimeEditReducer =
             case ExTimeEditActions.EX_TIME_ROLESET_ADDED:
                 lastState = {
                     ...lastState,
-                    _roleSet_list: {
-                        ...lastState._roleSet_list,
-                        ...action.payload._roleSet_list
+                    _children: {
+                        ...lastState._children,
+                        ...action.payload._children
                     }
                 }
                 break;
 
             case ExTimeEditActions.EX_TIME_ROLESET_REMOVED:
-                let newRoleSets = Object.assign({}, lastState._roleSet_list);
+                let newRoleSets = Object.assign({}, lastState._children);
                 delete newRoleSets[action.meta.key];
 
                 lastState = {
                     ...lastState,
-                    _roleSet_list: newRoleSets
+                    _children: newRoleSets
                 }
                 break;
         }

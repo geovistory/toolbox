@@ -1,5 +1,5 @@
-import { InfPlace } from '../../core/sdk';
-import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity } from 'app/core';
+import { InfPlace, InfLanguage, InfTimePrimitive, DfhPropertyInterface } from '../../core/sdk';
+import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity, UiElement, TimePrimitive } from 'app/core';
 
 /**
  * Root state for Information Module
@@ -27,25 +27,30 @@ export interface Information {
  *******************************/
 
 export interface DataUnit {
-    // role sets like e.g. 'mother', 'born children'
-    _roleSet_list?: RoleSetList;
+
+    _children?: DataUnitChildList;
 
     pkEntity?: number,
-    // roles?: InfRole[],
-
-
     fkClass?: number;
     dfhClass?: DfhClass;
 
     parentPeIt?: InfPersistentItem,
 
     /** gui */
-    label?: string;
+    label?: DataUnitLabel;
     toggle?: CollapsedExpanded;
     ingoingRoleSets?: RoleSet[];
     outgoingRoleSets?: RoleSet[];
     selectPropState?: SelectPropStateType; // state of child components for adding or creating properties
     propertyToAdd?: RoleSet; // role set that is currently chosen in order to add a role of this kind
+
+}
+
+
+// The options for RoleSet or PropSet available to add to a class instance 
+export interface AddOption {
+    label: string,
+    uiElement: UiElement
 }
 
 /*******************************
@@ -69,6 +74,7 @@ export interface PeItDetail extends DataUnit {
     ontoInfoVisible?: boolean;
     communityStatsVisible?: boolean;
     loading?: boolean; //for leaf pe it view
+    _leaf_peIt_modal?:PeItDetail // for leaf pe it view modal
 }
 
 
@@ -81,35 +87,54 @@ export interface TeEntDetail extends DataUnit {
 
     // record
     teEnt?: InfTemporalEntity;
-
-    _existenceTime?: ExistenceTimeDetail; // for editable, add and create
-    
-    
 }
 
-export interface ExistenceTimeDetail {
-    
-    _roleSet_list?: RoleSetList;
-    
+export interface ExistenceTimeDetailInterface {
+    readonly type?: DataUnitChildType;
+
+    _children?: RoleSetList;
+
     // records
     roles?: InfRole[];
-    
+
     // gui
     toggle?: CollapsedExpanded;
     outgoingRoleSets?: RoleSet[];
-    
+
     // for edit (form that controls consistency between different time-roles)
-    _existenceTime_edit?: ExistenceTimeEdit; 
+    _existenceTime_edit?: ExistenceTimeEdit;
 }
 
-export interface ExistenceTimeEdit extends ExistenceTimeDetail {
-    
+export class ExistenceTimeDetail implements ExistenceTimeDetailInterface {
+    readonly type: DataUnitChildType = 'ExistenceTimeDetail';
+
+    _children: RoleSetList;
+    roles: InfRole[];
+    toggle: CollapsedExpanded;
+    outgoingRoleSets: RoleSet[];
+    _existenceTime_edit: ExistenceTimeEdit;
+
+    constructor(data?: ExistenceTimeDetailInterface) {
+        Object.assign(this, data);
+    }
+}
+
+export interface ExistenceTimeEditInterface extends ExistenceTimeDetailInterface {
     // mode of help
     helpMode?: ExTimeHelpMode;
 
     mode?: ExTimeModalMode;
+}
 
-    
+export class ExistenceTimeEdit extends ExistenceTimeDetail {
+    helpMode: ExTimeHelpMode;
+    mode: ExTimeModalMode;
+
+    constructor(data?: ExistenceTimeEditInterface) {
+        super()
+        Object.assign(this, data);
+    }
+
 }
 
 
@@ -120,10 +145,12 @@ export interface ExistenceTimeEdit extends ExistenceTimeDetail {
  *   are not persisted in db: no need to create, add or edit role sets
  *******************************/
 
-export interface RoleSet {
+export interface RoleSetInterface {
+    readonly type?: DataUnitChildType;
 
     _role_list?: RoleDetailList;
 
+    // used for adding roles to a data unit that is in project
     _role_set_form?: RoleSetForm
 
     // record
@@ -131,11 +158,17 @@ export interface RoleSet {
 
     // gui
     label?: RoleSetLabelObj;
-    property?: DfhProperty
+    property?: DfhPropertyInterface;
     isOutgoing?: boolean;
     toggle?: CollapsedExpanded;
     targetClassPk?: number;
+    targetMinQuantity?: number;
+    targetMaxQuantity?: number;
+    dragEnabled?:boolean;
+
     targetClass?: DfhClass;
+
+    ordNum?: number;
 
     //True during loading of roles in other projects and roles in no project    
     rolesNotInProjectLoading?: boolean;
@@ -145,6 +178,34 @@ export interface RoleSet {
     roleStatesInProjectVisible?: boolean
 
 }
+
+export class RoleSet implements RoleSetInterface {
+    readonly type: DataUnitChildType = 'RoleSet';
+
+    _role_list: RoleDetailList;
+    _role_set_form: RoleSetForm;
+    roles: InfRole[];
+    label: RoleSetLabelObj;
+    property: DfhPropertyInterface;
+    isOutgoing: boolean;
+    toggle: CollapsedExpanded;
+    targetClassPk: number;
+    targetMinQuantity?: number;
+    targetMaxQuantity?: number;
+    dragEnabled:boolean;
+    targetClass: DfhClass;
+    ordNum: number;
+    rolesNotInProjectLoading: boolean;
+    roleStatesToCreateVisible: boolean;
+    roleStatesInNoProjectVisible: boolean;
+    roleStatesInOtherProjectsVisible: boolean;
+    roleStatesInProjectVisible: boolean;
+
+    constructor(data?: RoleSetInterface) {
+        Object.assign(this, data);
+    }
+}
+
 
 /*******************************
  * RoleSetForm Interface
@@ -169,6 +230,7 @@ export interface RoleDetail {
     _lang?: LangDetail;
     _timePrimitive?: TimePrimitveDetail;
     _leaf_peIt?: PeItDetail
+
     _leaf_teEnt?: TeEntDetail
     _place?: PlaceDetail;
 
@@ -196,12 +258,12 @@ export interface RoleDetail {
     isDisplayRoleForDomain?: boolean;
 
     /**
-     * The target class of a RoleState. 
+     * Pk of target class of a RoleState. 
      * Used to select persistent Items or temporal entities of the given dfhClass.
-     * E.g.: When selecting the Father of a Birth, targetDfhClass is used to initialize
+     * E.g.: When selecting the Father of a Birth, this pk is used to initialize
      * the GUI for selecting a person.  
      */
-    targetDfhClass?: DfhClass;
+    targetClassPk?: number;
 
     /** true if the parent role of the parent teEnt is the same role */
     isCircular?: boolean;
@@ -222,16 +284,55 @@ export interface RoleDetail {
 export interface AppeDetail {
     appellation?: InfAppellation
 }
-export interface LangDetail { }
-export interface TimePrimitveDetail { }
-export interface PlaceDetail { }
+export interface LangDetail {
+    language?: InfLanguage
+}
+export interface TimePrimitveDetail {
+    timePrimitive?: InfTimePrimitive
+}
+export interface PlaceDetail {
+    place?: InfPlace
+}
+
+
+/*******************************
+* DataUnit Label interfaces
+*******************************/
+
+
+export interface DataUnitLabel {
+    hasMore?: boolean;
+    parts: DataUnitChildLabel[];
+}
+export interface DataUnitChildLabel {
+    introducer?: string;
+    roleLabel?: RoleLabel;
+    prefix?: string;
+    suffix?: string;
+
+}
+export interface RoleLabel {
+    type: 'te-ent' | 'ex-time' | 'lang' | 'appe' | 'place' | 'leaf-pe-it';
+    string?: string;  // for other types
+    exTimeLabel?: ExTimeLabel; // for type 'time-prim'
+}
+export interface ExTimeLabel {
+    earliest?: TimePrimitive;
+    latest?: TimePrimitive;
+}
+
+
 
 /*******************************
  * List interfaces
  *******************************/
 
-export interface RoleSetList { [key: string]: RoleSet }
+export interface DataUnitChildList { [keyInState: string]: DataUnitChild; }
+export interface RoleSetList { [key: string]: RoleSetInterface }
 export interface RoleDetailList { [key: string]: RoleDetail }
+
+
+
 
 /*******************************
  * Types
@@ -241,9 +342,10 @@ export type CollapsedExpanded = 'collapsed' | 'expanded';
 export type SelectPropStateType = 'init' | 'selectProp'
 export type ExTimeModalMode = 'one-date' | 'begin-end' | 'advanced';
 export type ExTimeHelpMode = 'hidden' | 'short' | 'long';
-export type RoleSetLabelObj = {
-    default: string
-    pl: string
-    sg: string
-}
+export type RoleSetLabelObj = { default: string; pl: string; sg: string; }
+export type DataUnitChild = RoleSet | ExistenceTimeDetail;
+export type DataUnitChildType = 'RoleSet' | 'ExistenceTimeDetail';
+
+
+
 

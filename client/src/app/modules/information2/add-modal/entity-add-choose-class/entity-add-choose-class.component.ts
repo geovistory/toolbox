@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DfhClass, DfhClassApi } from 'app/core';
+import { DfhClass, DfhClassApi, U } from 'app/core';
 
 import { EntityAddModalService } from '../../shared/entity-add-modal.service';
 
@@ -33,7 +33,7 @@ export class EntityAddChooseClassComponent implements OnInit {
   }
 
   selectClass(cla: DfhClass) {
-    this.modalService.selectedClass = cla;
+    this.modalService.selectedClass = U.classConfigFromDfhClass(cla);
     this.setEntityModalState('search-existing');
   }
 

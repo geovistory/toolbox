@@ -1,12 +1,14 @@
 
 import { Action } from 'redux';
 import { RoleSetAction, RoleSetActions, roleStateKey } from './role-set.actions';
-import { indexBy, prop, omit } from 'ramda';
-import { RoleSet } from '../information.models';
+import { RoleSet, RoleDetailList, RoleDetail } from '../information.models';
+import { indexBy, prop, omit, sort } from 'ramda';
+import { InfEntityProjectRel, U } from 'app/core';
+import { sortRoleDetailsByOrdNum, sortRoleDetailListByOrdNum } from '../information.helpers';
 
-const INITIAL_STATE: RoleSet = {
+const INITIAL_STATE = new RoleSet({
 
-};
+});
 
 
 export const roleSetReducer =
@@ -145,7 +147,7 @@ export const roleSetReducer =
         };
         break;
 
-        case RoleSetActions.ADD_ROLE_TO_ROLE_LIST:
+      case RoleSetActions.ADD_ROLE_TO_ROLE_LIST:
         lastState = {
           ...lastState,
           _role_list: {
@@ -155,12 +157,57 @@ export const roleSetReducer =
         };
         break;
 
-        case RoleSetActions.REMOVE_ROLE_FROM_ROLE_LIST:
+      case RoleSetActions.REMOVE_ROLE_FROM_ROLE_LIST:
         lastState = {
           ...lastState,
           _role_list: {
-            ...omit([action.meta.key],lastState._role_list),
+            ...omit([action.meta.key], lastState._role_list),
           }
+        };
+        break;
+
+      case RoleSetActions.ROLE_SET_UPDATE_ORDER_SUCCEEDED:
+        // update the eprs of of the roles in _role_list
+        const updateEprs = (list: RoleDetailList, eprs: InfEntityProjectRel[]): RoleDetailList => {
+          let newVal: RoleDetailList = {}
+          const newEprsByPk = indexBy(prop('pk_entity'), eprs);
+          U.obj2KeyValueArr(list).forEach(item => {
+            const roleD = item.value;
+            const oldEpr = roleD.role.entity_version_project_rels[0];
+            if (newEprsByPk[oldEpr.pk_entity]) {
+              const newEpr = newEprsByPk[oldEpr.pk_entity]
+              newVal[item.key] = {
+                ...roleD,
+                role: {
+                  ...roleD.role,
+                  entity_version_project_rels: [newEpr]
+                }
+              }
+            }
+          })
+          return newVal;
+        }
+
+
+
+        lastState = {
+          ...lastState,
+          _role_list: sortRoleDetailListByOrdNum(updateEprs(lastState._role_list, action.meta.eprs))
+        }
+
+        break;
+
+      case RoleSetActions.ROLE_SET_ENABLE_DRAG:
+        lastState = {
+          ...lastState,
+          dragEnabled: true
+        };
+        break;
+
+      case RoleSetActions.ROLE_SET_DISABLE_DRAG:
+        lastState = {
+          ...lastState,
+          dragEnabled: false
         };
         break;
 

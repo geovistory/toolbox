@@ -1,12 +1,13 @@
 import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, forwardRef, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { InfRole, InfTemporalEntity, U, InfEntityProjectRel } from 'app/core';
+import { InfRole, InfTemporalEntity, U, InfEntityProjectRel, UiContext, ComConfig } from 'app/core';
 
 import { TeEntCtrlBase } from '../te-ent-ctrl.base';
 import { TeEntActions } from '../te-ent.actions';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { slideInOut } from '../../../shared/animations';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 
 @AutoUnsubscribe()
 @Component({
@@ -30,27 +31,32 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
 
   parentRole: InfRole;
 
+  uiContext: UiContext;
+
   constructor(
     protected ngRedux: NgRedux<any>,
     protected actions: TeEntActions,
     protected fb: FormBuilder,
-    protected ref: ChangeDetectorRef
+    protected ref: ChangeDetectorRef,
+    protected stateCreator: StateCreatorService
   ) {
-    super(ngRedux, actions, fb)
+    super(ngRedux, actions, fb, stateCreator)
     console.log('TeEntAddCtrlComponent')
   }
 
   onInitTeEntBaseChild(): void {
+    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
+
     this.initFormCtrls()
   }
 
   initFormCtrls(): void {
     if (this.localStore.getState()) {
 
-      // add controls for each roleSet of _roleSet_list
-      const roleSetList = this.localStore.getState()._roleSet_list;
+      // add controls for each roleSet of _children
+      const roleSetList = this.localStore.getState()._children;
 
-      // this.subs.push(this._roleSet_list$.subscribe(roleSetList => {
+      // this.subs.push(this._children$.subscribe(roleSetList => {
       if (roleSetList)
         Object.keys(roleSetList).forEach((key) => {
           if (roleSetList[key]) {
@@ -116,8 +122,8 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
   initFormCtrlValues() {
     if (this.localStore.getState()) {
 
-      // add values to controls for each roleSet of _roleSet_list
-      const roleSetList = this.localStore.getState()._roleSet_list;
+      // add values to controls for each roleSet of _children
+      const roleSetList = this.localStore.getState()._children;
 
       if (roleSetList)
         Object.keys(roleSetList).forEach((key) => {

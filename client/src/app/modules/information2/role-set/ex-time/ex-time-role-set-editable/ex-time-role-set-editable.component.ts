@@ -9,6 +9,7 @@ import { RoleActions } from '../../../role/role.actions';
 import { StateCreatorService } from '../../../shared/state-creator.service';
 import { ClassService } from '../../../shared/class.service';
 import { FormBuilder } from '@angular/forms';
+import { RoleSetApiEpics } from '../../role-set.epics';
 
 @Component({
   selector: 'gv-ex-time-role-set-editable',
@@ -19,6 +20,7 @@ export class ExTimeRoleSetEditableComponent  extends RoleSetBase {
 
 
   constructor(
+    protected epics: RoleSetApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
     protected ngRedux: NgRedux<IAppState>,
@@ -31,7 +33,7 @@ export class ExTimeRoleSetEditableComponent  extends RoleSetBase {
     protected fb: FormBuilder,
     protected teEntApi: InfTemporalEntityApi
   ) {
-    super(eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
   }
   
   init(): void {

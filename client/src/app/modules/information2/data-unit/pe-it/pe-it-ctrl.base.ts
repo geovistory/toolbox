@@ -9,6 +9,7 @@ import { PeItDetail } from '../../information.models';
 import { DataUnitBase } from '../data-unit.base';
 import { PeItActions } from './pe-it.actions';
 import { peItReducer } from './pe-it.reducer';
+import { StateCreatorService } from '../../shared/state-creator.service';
 
 
 
@@ -29,7 +30,7 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
 
 
     @Input() basePath: string[];
-    getBasePath = ():string[] => this.basePath;
+    getBasePath = (): string[] => this.basePath;
 
     @select() peIt$: Observable<InfPersistentItem>
 
@@ -39,9 +40,10 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
     constructor(
         protected ngRedux: NgRedux<any>,
         protected actions: PeItActions,
-        protected fb: FormBuilder
+        protected fb: FormBuilder,
+        protected stateCreator: StateCreatorService
     ) {
-        super(fb)
+        super(ngRedux, fb, stateCreator);
         this.initForm()
 
 

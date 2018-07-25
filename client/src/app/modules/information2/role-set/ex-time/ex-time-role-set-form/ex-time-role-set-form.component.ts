@@ -37,7 +37,7 @@ export class ExTimeRoleSetFormComponent extends RoleSetFormBase implements Contr
 
   @Input() parentTeEntPath: string[];
 
-  @Output() touched: EventEmitter<void> = new EventEmitter();  
+  @Output() touched: EventEmitter<void> = new EventEmitter();
 
   parentTeEntStore: ObservableStore<TeEntDetail>;
 
@@ -123,24 +123,19 @@ export class ExTimeRoleSetFormComponent extends RoleSetFormBase implements Contr
     const ps = this.parentTeEntStore.getState();
 
 
-    this.subs.push(this.classService.getByPk(s.targetClassPk).subscribe(targetDfhClass => {
+    const roleToCreate = {
+      fk_property: s.property.dfh_pk_property,
+      fk_temporal_entity: ps.teEnt.pk_entity,
+    } as InfRole;
 
-      const roleToCreate = {
-        fk_property: s.property.dfh_pk_property,
-        fk_temporal_entity: ps.teEnt.pk_entity,
-      } as InfRole;
+    const options: RoleDetail = { targetClassPk: s.targetClassPk, isOutgoing: s.isOutgoing }
+    const settings: StateSettings = { isCreateMode: true }
 
-      const options: RoleDetail = { targetDfhClass, isOutgoing: s.isOutgoing }
-      const settings: StateSettings = { isCreateMode: true }
+    // initialize the state
+    this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
+      this.initCreateFormCtrls(roleStateToCreate)
+    }))
 
-      // initialize the state
-      this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
-
-        this.initCreateFormCtrls(roleStateToCreate)
-
-      }))
-    })
-    )
   }
 
 

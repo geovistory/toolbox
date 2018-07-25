@@ -77,17 +77,7 @@ export default sandboxOf(TeEntEditableComponent, {
                     },
                     "isCircular": false,
                     "isOutgoing": false,
-                    "targetDfhClass": {
-                        "dfh_pk_class": 3,
-                        "dfh_identifier_in_namespace": "F52",
-                        "dfh_standard_label": "Name Use Activity",
-                        "pk_entity": 783,
-                        "entity_version": 1,
-                        "notes": null,
-                        "tmsp_creation": "2018-06-12T16:17:27.562Z",
-                        "tmsp_last_modification": "2018-06-12T16:17:27.562Z",
-                        "sys_period": "[\"2018-06-12 16:17:27.562493+00\",)"
-                    },
+                    targetClassPk: 3,
                     "isDisplayRoleForDomain": null,
                     "isDisplayRoleForRange": true,
                     "_teEnt": {
@@ -95,7 +85,7 @@ export default sandboxOf(TeEntEditableComponent, {
                             "roles": [
                             ],
                             "toggle": "collapsed",
-                            _roleSet_list: {
+                            _children: {
                                 _152_ingoing: {
                                     isOutgoing: false,
                                     property: {
@@ -153,17 +143,7 @@ export default sandboxOf(TeEntEditableComponent, {
                                             },
                                             isCircular: false,
                                             isOutgoing: false,
-                                            targetDfhClass: {
-                                                dfh_pk_class: 22,
-                                                dfh_identifier_in_namespace: 'E2',
-                                                dfh_standard_label: 'Temporal Entity',
-                                                pk_entity: 787,
-                                                entity_version: 1,
-                                                notes: null,
-                                                tmsp_creation: '2018-06-12T16:17:27.562Z',
-                                                tmsp_last_modification: '2018-06-12T16:17:27.562Z',
-                                                sys_period: '["2018-06-12 16:17:27.562493+00",)'
-                                            },
+                                            targetClassPk: 22,
                                             isDisplayRoleForRange: true,
                                             _timePrimitive: {
                                                 timePrimitive: {
@@ -458,7 +438,7 @@ export default sandboxOf(TeEntEditableComponent, {
                             "sys_period": "[\"2018-06-12 16:17:27.562493+00\",)",
                             "text_properties": []
                         },
-                        "_roleSet_list": {
+                        "_children": {
                             "_1_outgoing": {
                                 "isOutgoing": true,
                                 "property": {
@@ -533,17 +513,7 @@ export default sandboxOf(TeEntEditableComponent, {
                                         },
                                         "isCircular": false,
                                         "isOutgoing": true,
-                                        "targetDfhClass": {
-                                            "dfh_pk_class": 1,
-                                            "dfh_identifier_in_namespace": "E21",
-                                            "dfh_standard_label": "Person",
-                                            "pk_entity": 781,
-                                            "entity_version": 1,
-                                            "notes": null,
-                                            "tmsp_creation": "2018-06-12T16:17:27.562Z",
-                                            "tmsp_last_modification": "2018-06-12T16:17:27.562Z",
-                                            "sys_period": "[\"2018-06-12 16:17:27.562493+00\",)"
-                                        },
+                                        targetClassPk: 1,
                                         "isDisplayRoleForDomain": null,
                                         "isDisplayRoleForRange": true,
                                         "_leaf_peIt": {
@@ -666,17 +636,7 @@ export default sandboxOf(TeEntEditableComponent, {
                                         },
                                         "isCircular": false,
                                         "isOutgoing": true,
-                                        "targetDfhClass": {
-                                            "dfh_pk_class": 2,
-                                            "dfh_identifier_in_namespace": "E82",
-                                            "dfh_standard_label": "Actor Appellation",
-                                            "pk_entity": 782,
-                                            "entity_version": 1,
-                                            "notes": null,
-                                            "tmsp_creation": "2018-06-12T16:17:27.562Z",
-                                            "tmsp_last_modification": "2018-06-12T16:17:27.562Z",
-                                            "sys_period": "[\"2018-06-12 16:17:27.562493+00\",)"
-                                        },
+                                        targetClassPk: 2,
                                         "isDisplayRoleForDomain": null,
                                         "isDisplayRoleForRange": null,
                                         "_appe": {
@@ -802,17 +762,7 @@ export default sandboxOf(TeEntEditableComponent, {
                                         },
                                         "isCircular": false,
                                         "isOutgoing": true,
-                                        "targetDfhClass": {
-                                            "dfh_pk_class": 4,
-                                            "dfh_identifier_in_namespace": "E56",
-                                            "dfh_standard_label": "Language",
-                                            "pk_entity": 784,
-                                            "entity_version": 1,
-                                            "notes": null,
-                                            "tmsp_creation": "2018-06-12T16:17:27.562Z",
-                                            "tmsp_last_modification": "2018-06-12T16:17:27.562Z",
-                                            "sys_period": "[\"2018-06-12 16:17:27.562493+00\",)"
-                                        },
+                                        targetClassPk: 4,
                                         "isDisplayRoleForDomain": null,
                                         "isDisplayRoleForRange": null,
                                         "_lang": {

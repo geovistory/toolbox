@@ -1,6 +1,12 @@
 <form [formGroup]="formGroup" *ngIf="formGroup">
-  <div *ngFor="let entry of (_roleSet_list$ | async) | keys; trackBy:getKey">
-    <gv-pe-it-role-set-add-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" [formControlName]="entry.key"
-      (touched)="markAsTouched()"></gv-pe-it-role-set-add-ctrl>
+
+  <!-- 
+    In future we could inverse the logic: 
+      - Show all _children, including such of properties, that are disabled in the adding project
+      - but make only those children selectable / addable, that are enabled 
+   -->
+  <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
+      <gv-pe-it-role-set-add-ctrl *ngIf="formGroup.get(item.key)" [parentPath]="basePath" [index]="item.key" [formControlName]="item.key"
+        (touched)="markAsTouched()"></gv-pe-it-role-set-add-ctrl>
   </div>
 </form>
