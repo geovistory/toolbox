@@ -329,9 +329,15 @@ export class StateCreatorService {
 
     const targetClassConfig = this.ngRedux.getState().activeProject.crm.classes[options.targetClassPk];
 
-    /** If role leads to TeEnt */
+    /** If role leads to TeEnt or Presence */
     if (
-      (targetClassConfig && targetClassConfig.dfh_fk_system_type == DfhConfig.PK_SYSTEM_TYPE_TEMPORAL_ENTITY)
+      ( 
+        targetClassConfig && (
+          targetClassConfig.dfh_fk_system_type == DfhConfig.PK_SYSTEM_TYPE_TEMPORAL_ENTITY 
+          || targetClassConfig.dfh_pk_class == DfhConfig.CLASS_PK_PRESENCE
+
+        )
+      )
       || role.temporal_entity && role.temporal_entity.pk_entity
     ) {
       // add the parent role pk of the roleDetail to the peEnt

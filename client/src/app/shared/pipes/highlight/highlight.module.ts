@@ -1,17 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
-import { KeysPipe } from './keys.pipe';
+import { HighlightPipe } from './highlight.pipe';
 
 @NgModule({
   imports: [
     CommonModule
   ],
   declarations: [
-    KeysPipe
+    HighlightPipe
   ],
   exports: [
-    KeysPipe
+    HighlightPipe
   ]
 })
-export class KeysModule { }
+export class HighlightModule { }

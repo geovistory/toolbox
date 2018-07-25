@@ -50,7 +50,8 @@ export interface DataUnit {
 // The options for RoleSet or PropSet available to add to a class instance 
 export interface AddOption {
     label: string,
-    uiElement: UiElement
+    uiElement: UiElement,
+    added: boolean
 }
 
 /*******************************

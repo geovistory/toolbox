@@ -9,25 +9,19 @@
 <div class="d-flex flex-row gv-flex-grow-1 m-3" style="flex-basis:100%">
   <div class="d-flex flex-column gv-flex-grow-1" style="flex-basis:35%;">
 
-    <ng-container *ngTemplateOutlet="propertiesHeader"></ng-container>
+    <div class="gv-footer mb-3">
 
-    <div class="gv-body gv-flex-grow-1" style="overflow-y:auto">
-      <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
-        <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-pe-it-role-set-editable>
-      </div>
-    </div>
-
-    <div class="gv-footer mt-3">
+      <ng-container *ngTemplateOutlet="propertiesHeader"></ng-container>
 
       <!-- Step 1 for adding a new property -->
 
-      <button class="btn btn-secondary btn-block bg-gray-700" (click)="startSelectProperty()" *ngIf="(selectPropState$ | async) === 'init'">
+      <button class="btn btn-outline-secondary btn-block" (click)="startSelectProperty()" *ngIf="(selectPropState$ | async) === 'init'">
         <i class="fa fa-plus"></i> Add a property ...
       </button>
 
       <!-- Step 2 for adding new Property section -->
 
-      <div class="card gv-naming bg-gray-700" *ngIf="(selectPropState$ | async) === 'selectProp'">
+      <!-- <div class="card gv-naming bg-gray-700" *ngIf="(selectPropState$ | async) === 'selectProp'">
 
         <div class="card-header bt-1">
           <div class="d-flex">
@@ -40,19 +34,16 @@
           </div>
         </div>
 
-        <div class="card-body">
-          <div class="input-group">
-            <select [(ngModel)]="roleSetToAdd" class="custom-select">
-              <option [ngValue]="null">Select…</option>
+        
+      </div> -->
+      <gv-add-info-pe-it *ngIf="(selectPropState$ | async) === 'selectProp'" [uiElements]="uiElementsForAddInfo" [classConfig]="classConfig"
+        [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)" (cancel)="stopSelectProperty()"></gv-add-info-pe-it>
+    </div>
 
-              <option *ngFor="let el of uiContext.uiElements" [disabled]="roleSetAdded(el.roleSetKey)" [ngValue]="classConfig?.roleSets[el.roleSetKey]">
-                {{classConfig?.roleSets[el.roleSetKey]?.label.sg}} {{roleSetAdded(el.roleSetKey) ? '(already added)':''}}
-              </option>
 
-            </select>
-            <button type="button" name="button" class="btn btn-primary input-group-append" *ngIf="roleSetToAdd" (click)="addRoleSet(roleSetToAdd)">Ok</button>
-          </div>
-        </div>
+    <div class="gv-body gv-flex-grow-1" style="overflow-y:auto">
+      <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
+        <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-pe-it-role-set-editable>
       </div>
     </div>
 

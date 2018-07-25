@@ -8,11 +8,11 @@ import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'gv-add-info-selector',
-  templateUrl: './add-info-selector.component.html',
-  styleUrls: ['./add-info-selector.component.scss']
+  selector: 'gv-add-info-te-ent',
+  templateUrl: './add-info-te-ent.component.html',
+  styleUrls: ['./add-info-te-ent.component.scss']
 })
-export class AddInfoSelectorComponent implements OnInit, OnDestroy {
+export class AddInfoTeEntComponent implements OnInit, OnDestroy {
 
   @Input() uiElements: UiElement[];
   @Input() classConfig: ClassConfig;
@@ -38,13 +38,15 @@ export class AddInfoSelectorComponent implements OnInit, OnDestroy {
           const roleSet = this.classConfig.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
           return {
             label: roleSet.label.default,
-            uiElement: el
+            uiElement: el,
+            added: false
           }
         }
         else if (children && el.fk_property_set && !children[propSetMap[el.fk_property_set]]) {
           return {
             label: el.property_set.label,
-            uiElement: el
+            uiElement: el,
+            added: false
           }
         }
       }).filter(o => (o))

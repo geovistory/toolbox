@@ -98,6 +98,11 @@ $value in $grays {
     font-size: $font-size-sm;
 }
 
+.gv-highlight{ 
+    color: theme-color("success");
+    font-weight: 600;
+}
+
 .dropdown-toggle::after {
     display: none;
 }
