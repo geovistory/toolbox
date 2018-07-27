@@ -1,0 +1,3 @@
+[submodule "client/angular-cesium-fork"]
+	path = client/angular-cesium-fork
+	url = https://github.com/joschne/angular-cesium.git
