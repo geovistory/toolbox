@@ -1,12 +1,11 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Observable, Subscription, Subject } from 'rxjs';
-import { UiElement, ClassConfig, IAppState, U, UiContext, ComConfig } from 'app/core';
+import { UiElement, ClassConfig, IAppState, U } from 'app/core';
 import { RoleSetList, DataUnitChildList, AddOption } from '../../information.models';
 import { roleSetKeyFromParams, similarRoleSet } from '../../information.helpers';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
-import { DfhConfig } from '../../shared/dfh-config';
 
 interface PeItAddOption extends AddOption {
   label: string; // concatenation of all strings, used for search 
@@ -56,13 +55,9 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
           const level1propLabel = level1RoleSet.label.default;
           const cla = crm.classes[level1RoleSet.targetClassPk];
           const classLabel = cla.label;
-
-          const level2propsLabels = cla.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE].uiElements.map(el => {
-            if (el.property_set) {
-              return el.property_set.label;
-            }
-            else (!similarRoleSet(level1RoleSet, crm.roleSets[el.roleSetKey]))
-            return crm.roleSets[el.roleSetKey].label.default
+          const level2propsLabels = U.obj2Arr(cla.roleSets).map(rs => {
+            if (!similarRoleSet(level1RoleSet, rs))
+              return rs.label.default
           }).filter(l => l);
 
           const option: PeItAddOption = {
