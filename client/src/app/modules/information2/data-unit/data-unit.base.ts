@@ -82,7 +82,9 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   uiElementsForAddInfo: UiElement[];
 
   ngOnDestroy() {
+    
     this.subs.forEach(sub => sub.unsubscribe())
+
   }
 
   ngOnInit() {
@@ -98,6 +100,9 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
     // Initialize the rest in the derived class
     this.init()
+
+    // Calls this generic action that can be listened to in any reducer
+    this.localStore.dispatch(this.actions.dataUnitInit())
 
   }
 
@@ -239,7 +244,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
     // if this option is already added
     if (o.added) {
-      
+
       this.stopSelectProperty();
 
     } else {

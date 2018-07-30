@@ -1,13 +1,14 @@
-import { TimePrimitive, InfTimePrimitive, InfRole, InfTemporalEntity, InfPersistentItem, DfhProperty } from "..";
+import { TimePrimitive, InfTimePrimitive, InfRole, InfTemporalEntity, InfPersistentItem, DfhProperty, ExistenceTime } from "..";
 import { CalendarType } from "../date-time/time-primitive";
 import { Granularity } from "../date-time/date-time-commons";
 import { DfhConfig } from "../../modules/information2/shared/dfh-config";
 import { AppellationLabel } from "../../modules/information2/shared/appellation-label";
-import { RoleSet, RoleSetLabelObj, RoleSetList, RoleDetail, AppeDetail, LangDetail, DataUnitChildList, DataUnitChild, ExistenceTimeDetail, PeItDetail, TimePrimitveDetail, DataUnitLabel, RoleLabel, ExTimeLabel, DataUnitChildLabel } from "../../modules/information2/information.models";
+import { RoleSet, RoleSetLabelObj, RoleSetList, RoleDetail, AppeDetail, LangDetail, DataUnitChildList, DataUnitChild, ExistenceTimeDetail, PeItDetail, TimePrimitveDetail, DataUnitLabel, RoleLabel, ExTimeLabel, DataUnitChildLabel, TeEntDetail, DataUnit } from "../../modules/information2/information.models";
 import { indexBy, omit } from 'ramda';
 import { roleSetKey, roleSetKeyFromParams } from "../../modules/information2/information.helpers";
 import { ComUiContextConfig, ComPropertySet, DfhClass, InfEntityProjectRel } from "../sdk";
 import { ClassConfig, UiContext, UiElement } from "../active-project/active-project.models";
+import { ActionType, AcNotification, AcEntity } from "angular-cesium";
 /**
  * Utilities class for static functions
  */
@@ -539,4 +540,152 @@ export class U {
 
     }
 
+    static czmlPacketsFromPresences(presences: TeEntDetail[]): { earliestJulianDate: CesiumJulianDate, latestJulianDate: CesiumJulianDate, czmlPackets: any[] } | null {
+        if (!presences) return null;
+
+
+        let res: { earliestJulianDate: CesiumJulianDate, latestJulianDate: CesiumJulianDate, czmlPackets: any[] } = {
+            earliestJulianDate: undefined,
+            latestJulianDate: undefined,
+            czmlPackets: []
+        };
+
+        presences.forEach(presence => {
+
+            // validate presence
+            if (presence.fkClass != DfhConfig.CLASS_PK_PRESENCE) return null;
+
+            // return false if no DateUnitChildren 
+            if (!presence._children) return null;
+
+            // return false if no RoleSet leading to a Place 
+            const placeSet = presence._children[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
+            if (!placeSet || placeSet.type != 'RoleSet') return null;
+
+            // return false if no Place in first RoleDetail
+            const placeRoleDetail = U.obj2Arr(placeSet._role_list)[0];
+            if (!placeRoleDetail || !placeRoleDetail.role || !placeRoleDetail.role.place) return null;
+
+            // return false if no pk_entity in first RoleDetail
+            if (!placeRoleDetail || !placeRoleDetail.role || !placeRoleDetail.role.pk_entity) return null;
+
+            let czmlPacket = {}
+
+            // colors used for dynamic color change
+            const colorInactive = [255, 0, 255, 100], colorActive = [255, 0, 255, 200];
+            let colorRgba: any[] = colorActive;
+
+            // get the Existence Time of that TeEnt 
+            const exTime = U.ExTimeFromExTimeDetail(presence._children['_existenceTime'] as ExistenceTimeDetail);
+            if (exTime) {
+
+                const minMax = exTime.getMinMaxTimePrimitive();
+
+                const min = new Cesium.JulianDate(minMax.min.julianDay);
+                const max = new Cesium.JulianDate(minMax.max.getDateTime().getEndOf(minMax.max.duration).getJulianDay());
+
+                const minStr = Cesium.JulianDate.toIso8601(min);
+                const maxStr = Cesium.JulianDate.toIso8601(max);
+
+                const before = Cesium.JulianDate.addSeconds(min, -1, min);
+                const beforeStr = Cesium.JulianDate.toIso8601(before);
+
+                const after = Cesium.JulianDate.addSeconds(max, 1, max);
+                const afterStr = Cesium.JulianDate.toIso8601(after);
+
+                colorRgba = [
+                    beforeStr, ...colorInactive,
+                    minStr, ...colorActive,
+                    maxStr, ...colorActive,
+                    afterStr, ...colorInactive,
+                ];
+
+                if (res.earliestJulianDate === undefined || Cesium.JulianDate.greaterThan(res.earliestJulianDate, before))
+                    res.earliestJulianDate = before;
+
+                if (res.latestJulianDate === undefined ||  Cesium.JulianDate.lessThan(res.latestJulianDate, after))
+                    res.latestJulianDate = after;
+            }
+
+            const placeRole = placeRoleDetail.role;
+            const place = placeRole.place;
+
+            czmlPacket = {
+                ...czmlPacket,
+                "id": placeRole.pk_entity,
+                "position": {
+                    "cartographicRadians": [place.long, place.lat, 150000]
+                },
+                "point": {
+                    "color": {
+                        "rgba": colorRgba,
+                        forwardExtrapolationType: 'HOLD',
+                        backwardExtrapolationType: 'HOLD'
+                    },
+                    "outlineColor": {
+                        "rgba": [255, 0, 0, 200]
+                    },
+                    "outlineWidth": 3,
+                    "pixelSize": 15
+                }
+            }
+
+            res.czmlPackets.push(czmlPacket)
+
+        })
+
+        if (res.earliestJulianDate == undefined)
+            res.earliestJulianDate = Cesium.JulianDate.fromIso8601('1200-01-01');
+
+        if (res.latestJulianDate == undefined)
+            res.latestJulianDate = Cesium.JulianDate.fromIso8601('2020-01-01');
+
+        const earliestStr = Cesium.JulianDate.toIso8601(res.earliestJulianDate);
+        const latestStr = Cesium.JulianDate.toIso8601(res.latestJulianDate);
+        const availability = [earliestStr, latestStr].join('/');
+
+        res.czmlPackets.forEach(packet => {
+            packet['availability'] = availability
+        })
+
+        return res;
+    }
+
+
+
+    static presencesFromPeIt(peItDetail: PeItDetail): TeEntDetail[] {
+
+        const roleSet = U.obj2Arr(peItDetail._children).find((child: DataUnitChild) => {
+            if (child.type == 'RoleSet')
+                if ((child as RoleSet).targetClassPk == DfhConfig.CLASS_PK_PRESENCE)
+                    return true;
+            return false
+        }) as RoleSet;
+
+        if (!roleSet) return [];
+
+        return U.obj2Arr(roleSet._role_list).map(roleDetail => roleDetail._teEnt)
+    }
+
+    static acNotificationFromPacket = (packet, actionType: ActionType): AcNotification => ({
+        id: packet.id,
+        entity: new AcEntity(packet),
+        actionType
+    })
+
+
+    static ExTimeFromExTimeDetail = (exTimeDetail: ExistenceTimeDetail): ExistenceTime | null => {
+
+        if (!exTimeDetail) return null;
+
+        let e = new ExistenceTime();
+
+        U.obj2Arr(exTimeDetail._children).forEach(rs => {
+            const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[rs.property.dfh_pk_property]
+            if (key)
+                e[key] = U.infRole2TimePrimitive(U.obj2Arr(rs._role_list)[0].role);
+        })
+
+        return e;
+    }
 }

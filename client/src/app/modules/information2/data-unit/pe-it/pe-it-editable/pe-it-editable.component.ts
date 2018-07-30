@@ -1,5 +1,5 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, AfterViewInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, IAppState, UiContext } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -26,7 +26,14 @@ import { peItReducer } from '../pe-it.reducer';
   changeDetection: ChangeDetectionStrategy.OnPush,
 
 })
-export class PeItEditableComponent extends DataUnitBase {
+export class PeItEditableComponent extends DataUnitBase implements AfterViewInit {
+
+  afterViewInit = false;
+  ngAfterViewInit(): void {
+    setTimeout(()=>{
+      this.afterViewInit = true;
+    }, 2000)
+  }
 
   @Input() basePath: string[];
   getBasePath = () => this.basePath;

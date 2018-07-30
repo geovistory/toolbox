@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
-import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares'
-import { PeItPresenceLayerAPIEpics } from './api/pe-it-presence-layer.epics';
 import { NgRedux } from '@angular-redux/store';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AcLayerComponent, AcNotification, ActionType, MapsManagerService } from 'angular-cesium';
 import { IAppState, U } from 'app/core';
-import { AcLayerComponent, AcNotification, AcEntity, ActionType } from 'angular-cesium';
-import { Observable, Subject, } from 'rxjs';
-import { path } from 'ramda'
+import { path } from 'ramda';
+import { Observable, Subject } from 'rxjs';
+
+import { PeItDetail } from '../../information.models';
 
 @Component({
   selector: 'gv-pe-it-presence-layer',
@@ -24,20 +24,17 @@ export class PeItPresenceLayerComponent implements OnInit, OnDestroy {
 
   reduxMiddlewares = [];
 
+  // packet ids that are added. used to identify packets to remove upon state change
+  packetIds: string[] = [];
+
   constructor(
-    private epics: PeItPresenceLayerAPIEpics,
-    public ngRedux: NgRedux<IAppState>
+    public ngRedux: NgRedux<IAppState>,
+    private mapsManagerService: MapsManagerService
   ) { }
 
   ngOnInit(): void {
-    this.reduxMiddlewares = this.epics.createEpics(this)
-    this.reduxMiddlewares.forEach(mw => addMiddleware(mw))
 
-    const peItDetail = path(this.path, this.ngRedux.getState())
-
-    const acNotications = U.presencesFromPeIt(peItDetail)
-      .map(presence => U.czmlPacketFromPresence(presence))
-      .map(czmlPacket => U.acNotificationFromPacket(czmlPacket, ActionType.ADD_UPDATE));
+    const scene = this.mapsManagerService.getMap().getCesiumSerivce().getScene();
 
     // init stream of czml packets
     this.czmlPackets$ = Observable.from(
@@ -45,33 +42,30 @@ export class PeItPresenceLayerComponent implements OnInit, OnDestroy {
         U.acNotificationFromPacket({
           "id": "document",
           "version": "1.0"
-        }, ActionType.ADD_UPDATE),
-        // U.acNotificationFromPacket({
-        //   "id": "point",
-        //   "availability": "2012-08-04T16:00:00Z/2012-08-04T16:10:00Z",
-        //   "position": {
-        //     "epoch": "2012-08-04T16:00:00Z",
-        //     "cartographicDegrees": [
-        //       0, -70, 20, 150000,
-        //       100, -80, 44, 150000,
-        //       200, -90, 18, 150000,
-        //       300, -98, 52, 150000
-        //     ]
-        //   },
-        //   "point": {
-        //     "color": {
-        //       "rgba": [255, 255, 255, 128]
-        //     },
-        //     "outlineColor": {
-        //       "rgba": [255, 0, 0, 128]
-        //     },
-        //     "outlineWidth": 3,
-        //     "pixelSize": 15
-        //   }
-        // }, ActionType.ADD_UPDATE),
-        ...acNotications
+        }, ActionType.ADD_UPDATE)
       ]
     ).merge(this.updater)
+
+    // update czml-packets upon change of state 
+    this.ngRedux.select<PeItDetail>(this.path).subscribe(peItDetail => {
+
+      // remove all entities of the layer
+      this.layer.removeAll();
+
+      // redraw all entities of the peItDetail
+      const presences = U.presencesFromPeIt(peItDetail)
+      const processedPrecences = U.czmlPacketsFromPresences(presences);
+
+      processedPrecences.czmlPackets.forEach(czmlPacket => {
+        const acNotification = U.acNotificationFromPacket(czmlPacket, ActionType.ADD_UPDATE);
+        this.updater.next(acNotification);
+      });
+
+      // Explicitly render a new frame
+      scene.requestRender();
+
+    })
+
 
   }
 
@@ -87,7 +81,7 @@ export class PeItPresenceLayerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.reduxMiddlewares.forEach(mw => removeMiddleware(mw))
+    // this.reduxMiddlewares.forEach(mw => removeMiddleware(mw))
   }
 
 

@@ -32,11 +32,11 @@
     "loopback-component-explorer": "^4.0.0",
     "loopback-connector-postgresql": "^2.8.0",
     "loopback-setup-remote-methods-mixin": "^1.0.4",
+    "rxjs": "~5.5.2",
     "serve-favicon": "^2.0.1",
     "strong-error-handler": "^2.0.0",
     "tracer": "^0.8.11",
-    "typescript": "^2.6.1",
-    "rxjs": "~5.5.2"
+    "typescript": "^2.6.1"
   },
   "devDependencies": {
     "eslint": "^3.17.1",

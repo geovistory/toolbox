@@ -134,21 +134,25 @@ exports.up = function (db, callback) {
     (1113, 'Names with this details', 'label_inversed.sg'),
     (1113, 'Name with this details', 'label_inversed.pl'), 
   
-    (1184, 'Place', 'label.sg'),
-    (1184, 'Places', 'label.pl'),
-    (1184, 'Has geolocalization (time related)', 'label_inversed.sg'),
-    (1184, 'Has geolocalizations (time related)', 'label_inversed.pl'),
-  
-  
-  
-  
+    (1181, 'Place', 'label.sg'),
+    (1181, 'Places', 'label.pl'),
+    (1181, 'Geolocalization (time related)', 'label_inversed.sg'),
+    (1181, 'Geolocalizations (time related)', 'label_inversed.pl'),
+
+    
     ------------- Built Work ------------
     (1195, 'Entity with this Name', 'label.sg'),
     (1195, 'Entities with this Name', 'label.pl'),
     (1195, 'Name', 'label_inversed.sg'),
     (1195, 'Names', 'label_inversed.pl'),
     
+    (1184, 'Place', 'label.sg'),
+    (1184, 'Places', 'label.pl'),
+    (1184, 'Geolocalization (time related)', 'label_inversed.sg'),
+    (1184, 'Geolocalizations (time related)', 'label_inversed.pl'),
   
+  
+    
     -------------  Place -----------------
     
     (148, 'Geocoordinates', 'label.sg'),
@@ -193,14 +197,13 @@ exports.up = function (db, callback) {
     (151,'Begin of end'       , 'label_inversed.sg'),
     (72, 'At some time within', 'label_inversed.sg'),
     (152,'Begin of begin'     , 'label_inversed.sg'),
-    (153,'End of end'         , 'label_inversed.sg')
+    (153,'End of end'         , 'label_inversed.sg'),
     (71, 'Ongoing throughout' , 'label.pl'),
     (150,'End of begin'       , 'label.pl'),
     (151,'Begin of end'       , 'label.pl'),
     (72, 'At some time within', 'label.pl'),
     (152,'Begin of begin'     , 'label.pl'),
     (153,'End of end'         , 'label.pl')
-    ;
   
   ;`;
   console.log(sql);

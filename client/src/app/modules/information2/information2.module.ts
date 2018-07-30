@@ -6,10 +6,13 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationService } from 'app/core';
 import { TimelineModule } from 'app/modules/timeline/timeline.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from 'app/shared';
+import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
 import { KeysModule } from 'app/shared/pipes/keys.module';
+import { DndModule } from 'ng2-dnd';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 
 import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.module';
+import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
 import {
   MentionedEntityCtrlActions,
 } from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
@@ -20,10 +23,16 @@ import { EntityAddModalComponent } from './add-modal/entity-add-modal/entity-add
 import {
   EntityAddSearchExistingComponent,
 } from './add-modal/entity-add-search-existing/entity-add-search-existing.component';
+import { AddInfoPeItComponent } from './components/add-info-pe-it/add-info-pe-it.component';
+import { AddInfoTeEntComponent } from './components/add-info-te-ent/add-info-te-ent.component';
 import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
+import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it-label.component';
+import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.component';
 import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timeline.component';
 import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
+import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.component';
 import { EntityEditorComponent } from './containers/entity-editor/entity.editor.component';
+import { PeItPresenceLayerComponent } from './containers/pe-it-presence-layer/pe-it-presence-layer.component';
 import { PeItAddCtrlComponent } from './data-unit/pe-it/pe-it-add-ctrl/pe-it-add-ctrl.component';
 import { PeItAddFormComponent } from './data-unit/pe-it/pe-it-add-form/pe-it-add-form.component';
 import { PeItCreateCtrlComponent } from './data-unit/pe-it/pe-it-create-ctrl/pe-it-create-ctrl.component';
@@ -59,6 +68,7 @@ import {
 import { PeItRoleSetEditableComponent } from './role-set/pe-it/pe-it-role-set-editable/pe-it-role-set-editable.component';
 import { PeItRoleSetFormComponent } from './role-set/pe-it/pe-it-role-set-form/pe-it-role-set-form.component';
 import { RoleSetActions } from './role-set/role-set.actions';
+import { RoleSetApiEpics } from './role-set/role-set.epics';
 import { TeEntRoleSetAddCtrlComponent } from './role-set/te-ent/te-ent-role-set-add-ctrl/te-ent-role-set-add-ctrl.component';
 import {
   TeEntRoleSetCreateCtrlComponent,
@@ -101,15 +111,9 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
-import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
-import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.component';
-import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.component';
-import { DndModule } from 'ng2-dnd';
-import { RoleSetApiEpics } from './role-set/role-set.epics';
-import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it-label.component';
-import { AddInfoTeEntComponent } from './components/add-info-te-ent/add-info-te-ent.component';
-import { AddInfoPeItComponent } from './components/add-info-pe-it/add-info-pe-it.component';
-import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
+import { AngularCesiumModule, AngularCesiumWidgetsModule } from 'angular-cesium';
+import { MapComponent } from './containers/map/map.component';
+import { PolygonsEditorLayerComponent } from './containers/polygons-editor-layer/polygons-editor-layer.component';
 
 @NgModule({
   imports: [
@@ -135,7 +139,9 @@ import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
     TimelineModule,
     KeysModule,
     HighlightModule,
-    DndModule
+    DndModule,
+    AngularCesiumModule,
+    AngularCesiumWidgetsModule
 
   ],
   declarations: [
@@ -143,6 +149,11 @@ import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
     ProjectEntitiesComponent,
     EntitySearchHitComponent,
     PeItTimelineComponent,
+
+    // PeIt Map
+    MapComponent,
+    PeItPresenceLayerComponent,
+    PolygonsEditorLayerComponent,
 
     // Add Modal
     EntityAddAddExistingComponent,
@@ -212,7 +223,9 @@ import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
     PeItLabelComponent,
     LeafPeItLabelComponent,
     AddInfoTeEntComponent,
-    AddInfoPeItComponent
+    AddInfoPeItComponent,
+
+
 
   ],
   providers: [
@@ -233,7 +246,7 @@ import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
     // Role Set
     RoleSetActions,
     RoleSetApiEpics,
-    
+
     // Role
     RoleActions,
 
@@ -252,6 +265,7 @@ import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
     ValidationService,
 
     MentionedEntityCtrlActions,
+
 
   ],
   exports: [

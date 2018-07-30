@@ -89,7 +89,6 @@ export class TeEntEditableComponent extends DataUnitBase {
 
     this.initTeEntSubscriptions();
 
-
   }
 
   /**

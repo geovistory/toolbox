@@ -148,7 +148,7 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
     this.removeSecond();
   }
 
-  getEndOf(duration: Granularity): GregorianDateTime {
+  getEndOf(duration: Granularity = this.getGranularity()): GregorianDateTime {
 
     var dt = new GregorianDateTime(this);
     dt.toLastSecondOf(duration);

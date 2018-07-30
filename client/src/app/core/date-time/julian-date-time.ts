@@ -150,7 +150,7 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
     this.removeSecond();
   }
 
-  getEndOf(duration: Granularity): JulianDateTime {
+  getEndOf(duration: Granularity= this.getGranularity()): JulianDateTime {
 
     var dt = new JulianDateTime(this);
     dt.toLastSecondOf(duration);

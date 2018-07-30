@@ -7,7 +7,6 @@ export { ActiveAccountService } from './active-account/active-account.service';
 export { ActiveProjectService } from './active-project/active-project.service'
 export { AuthGuard } from './auth/auth-guard.service';
 export { DateTimeCommons, GregorianDateTime, JulianDateTime, TimePrimitive } from './date-time';
-export { StoreModule } from './store/module';
 export { IAppState } from './store/model';
 export { U } from './util/util'
 export * from './sdk';
