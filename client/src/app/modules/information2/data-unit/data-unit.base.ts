@@ -1,5 +1,5 @@
 import { NgRedux, ObservableStore, select } from '@angular-redux/store';
-import { Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Input, OnDestroy, OnInit, ViewChild, destroyPlatform } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, UiContext, UiElement } from 'app/core';
 import { Subject, Subscription } from 'rxjs';
@@ -82,10 +82,14 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   uiElementsForAddInfo: UiElement[];
 
   ngOnDestroy() {
-    
+
     this.subs.forEach(sub => sub.unsubscribe())
 
+    this.destroy()
+
   }
+
+  destroy() { } // todo make this abstract and implement in all deferred calsses
 
   ngOnInit() {
     // Initialize the store by one of the derived classes

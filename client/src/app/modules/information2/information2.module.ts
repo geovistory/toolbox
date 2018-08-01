@@ -114,6 +114,7 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
 import { AngularCesiumModule, AngularCesiumWidgetsModule } from 'angular-cesium';
 import { MapComponent } from './containers/map/map.component';
 import { PolygonsEditorLayerComponent } from './containers/polygons-editor-layer/polygons-editor-layer.component';
+import { TeEntAPIEpics } from './data-unit/te-ent/te-ent.epics';
 
 @NgModule({
   imports: [
@@ -239,6 +240,7 @@ import { PolygonsEditorLayerComponent } from './containers/polygons-editor-layer
     // Data Unit
     PeItActions,
     TeEntActions,
+    TeEntAPIEpics,
 
     // Existence Time
     ExistenceTimeActions,

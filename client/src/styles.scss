@@ -98,7 +98,7 @@ $value in $grays {
     font-size: $font-size-sm;
 }
 
-.gv-highlight{ 
+.gv-highlight {
     color: theme-color("success");
     font-weight: 600;
 }
@@ -232,6 +232,11 @@ gv-property {
     user-select: none;
     border: $btn-border-width solid transparent;
     @include button-size($btn-padding-y-lg, $btn-padding-x-lg, $font-size-lg, $btn-line-height-lg, $btn-border-radius-lg);
+}
+
+.gv-border-selected {
+    @extend .border;
+    border-color: #00ffff !important;
 }
 
 // Navbar (main)
@@ -396,7 +401,8 @@ gv-source-list {
     @extend .flex-column;
 }
 
-gv-pe-it-role-set-editable, {
+gv-pe-it-role-set-editable,
+    {
     min-width: 360px;
     display: block;
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { InfTemporalEntity } from 'app/core';
-import { TeEntDetail, CollapsedExpanded, ExistenceTimeDetail } from '../../information.models';
+import { TeEntDetail, CollapsedExpanded, ExistenceTimeDetail, TeEntAccentuation } from '../../information.models';
 import { DataUnitActions } from '../data-unit.actions';
 
 
@@ -11,7 +11,9 @@ import { DataUnitActions } from '../data-unit.actions';
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = TeEntDetail;
 interface MetaData {
-  path?: string[]
+  path?: string[];
+  accentuation?: TeEntAccentuation;
+  timespanActivated?: boolean;
 };
 export type TeEntAction = FluxStandardAction<Payload, MetaData>;
 
@@ -22,6 +24,10 @@ export class TeEntActions extends DataUnitActions {
   static readonly SET_TOGGLE = 'SET_TOGGLE';
 
   static readonly TOGGLE = 'TOGGLE';
+
+  static readonly TE_ENT_SET_ACCENTUATION = 'TE_ENT_SET_ACCENTUATION';
+
+  static readonly TE_ENT_SET_TIMESPAN_ACTIVATED = 'TE_ENT_SET_TIMESPAN_ACTIVATED';
 
   
 
@@ -36,6 +42,22 @@ export class TeEntActions extends DataUnitActions {
   @dispatch() toggle = (): TeEntAction => ({
     type: TeEntActions.TOGGLE,
     meta: null,
+    payload: null
+  })
+
+  @dispatch() setAccentuation = (accentuation:TeEntAccentuation): TeEntAction => ({
+    type: TeEntActions.TE_ENT_SET_ACCENTUATION,
+    meta: {
+      accentuation
+    },
+    payload: null
+  })
+
+  @dispatch() setTimespanActivated = (timespanActivated): TeEntAction => ({
+    type: TeEntActions.TE_ENT_SET_TIMESPAN_ACTIVATED,
+    meta: {
+      timespanActivated
+    },
     payload: null
   })
 

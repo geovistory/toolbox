@@ -75,7 +75,7 @@ export interface PeItDetail extends DataUnit {
     ontoInfoVisible?: boolean;
     communityStatsVisible?: boolean;
     loading?: boolean; //for leaf pe it view
-    _leaf_peIt_modal?:PeItDetail // for leaf pe it view modal
+    _leaf_peIt_modal?: PeItDetail // for leaf pe it view modal
 }
 
 
@@ -88,6 +88,13 @@ export interface TeEntDetail extends DataUnit {
 
     // record
     teEnt?: InfTemporalEntity;
+
+    // accentuation tells if a TeEnt is clicked, mouseovered or similar 
+    accentuation?: TeEntAccentuation;
+
+    // true if timefilter (cursor of timeline) is inside Timespan of TeEnt 
+    timespanActivated?: boolean;
+    
 }
 
 export interface ExistenceTimeDetailInterface {
@@ -165,7 +172,7 @@ export interface RoleSetInterface {
     targetClassPk?: number;
     targetMinQuantity?: number;
     targetMaxQuantity?: number;
-    dragEnabled?:boolean;
+    dragEnabled?: boolean;
 
     targetClass?: DfhClass;
 
@@ -193,7 +200,7 @@ export class RoleSet implements RoleSetInterface {
     targetClassPk: number;
     targetMinQuantity?: number;
     targetMaxQuantity?: number;
-    dragEnabled:boolean;
+    dragEnabled: boolean;
     targetClass: DfhClass;
     ordNum: number;
     rolesNotInProjectLoading: boolean;
@@ -346,7 +353,7 @@ export type ExTimeHelpMode = 'hidden' | 'short' | 'long';
 export type RoleSetLabelObj = { default: string; pl: string; sg: string; }
 export type DataUnitChild = RoleSet | ExistenceTimeDetail;
 export type DataUnitChildType = 'RoleSet' | 'ExistenceTimeDetail';
-
+export type TeEntAccentuation = 'highlighted' | 'selected' | 'none';
 
 
 

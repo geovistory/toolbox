@@ -1,11 +1,11 @@
-<div class="card gv-name">
+<div class="card gv-name" [ngClass]="{'gv-border-selected': ((accentuation$ | async) === 'selected')}">
 
   <div class="card-header gv-name-header d-flex flex-row">
     <ng-content select="[headerLeft]"></ng-content>
     <div>
       <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
     </div>
-    <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
+    <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody(); accentuateAsSelected()">
       <span *ngIf="labelInEdit">{{labelInEdit}}</span>
       <gv-te-ent-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-te-ent-label>
     </div>

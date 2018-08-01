@@ -3,14 +3,15 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, UiContext } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares';
 import { Observable } from 'rxjs/Observable';
 
-import { ExistenceTimeDetail, RoleDetail, TeEntDetail, RoleSet } from '../../../information.models';
-import { RoleSetActions } from '../../../role-set/role-set.actions';
+import { ExistenceTimeDetail, RoleDetail, RoleSet, TeEntDetail, TeEntAccentuation } from '../../../information.models';
 import { slideInOut } from '../../../shared/animations';
 import { StateCreatorService } from '../../../shared/state-creator.service';
 import { DataUnitBase } from '../../data-unit.base';
 import { TeEntActions } from '../te-ent.actions';
+import { TeEntAPIEpics } from '../te-ent.epics';
 import { teEntReducer } from '../te-ent.reducer';
 
 @AutoUnsubscribe()
@@ -36,6 +37,7 @@ export class TeEntEditableComponent extends DataUnitBase {
   @select() toggle$: Observable<boolean>
   @select() _existenceTime$: Observable<ExistenceTimeDetail>;
   @select() _existenceTime_edit$: Observable<ExistenceTimeDetail>;
+  @select() accentuation$: Observable<TeEntAccentuation>;
 
   /**
   * Paths to other slices of the store
@@ -57,9 +59,10 @@ export class TeEntEditableComponent extends DataUnitBase {
 
   uiContext: UiContext;
 
-
+  reduxMiddlewares = [];
 
   constructor(
+    private epics: TeEntAPIEpics,
     protected ngRedux: NgRedux<any>,
     protected actions: TeEntActions,
     protected fb: FormBuilder,
@@ -75,6 +78,10 @@ export class TeEntEditableComponent extends DataUnitBase {
   initStore() {
     this.basePath = this.getBasePath();
     this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), teEntReducer);
+
+    this.reduxMiddlewares = this.epics.createEpics(this.localStore, this.basePath)
+    this.reduxMiddlewares.forEach(mw => { addMiddleware(mw) })
+
   }
 
 
@@ -89,6 +96,10 @@ export class TeEntEditableComponent extends DataUnitBase {
 
     this.initTeEntSubscriptions();
 
+  }
+
+  destroy() {
+    this.reduxMiddlewares.forEach(mw => { removeMiddleware(mw) })
   }
 
   /**
@@ -147,6 +158,14 @@ export class TeEntEditableComponent extends DataUnitBase {
   */
   toggleCardBody() {
     this.localStore.dispatch(this.actions.toggle())
+  }
+
+  accentuateAsSelected() {
+    this.localStore.dispatch(this.actions.setAccentuation('selected'))
+  }
+
+  accentuateAsHighlighted() {
+    this.localStore.dispatch(this.actions.setAccentuation('highlighted'))
   }
 
 }
