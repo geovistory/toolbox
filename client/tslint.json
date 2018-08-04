@@ -2,7 +2,11 @@
   "rulesDirectory": [
     "node_modules/codelyzer"
   ],
+  "extends": [
+    "rxjs-tslint-rules"
+  ],
   "rules": {
+    "rxjs-no-unsafe-takeuntil": true,
     "arrow-return-shorthand": true,
     "callable-types": true,
     "class-name": true,
@@ -10,12 +14,14 @@
       true,
       "check-space"
     ],
-    "curly": true,
+    "curly": [
+      true,
+      "ignore-same-line"
+    ],
     "eofline": true,
     "forin": true,
     "import-blacklist": [
-      true,
-      "rxjs"
+      true
     ],
     "import-spacing": true,
     "indent": [

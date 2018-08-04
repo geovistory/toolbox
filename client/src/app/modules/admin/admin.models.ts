@@ -34,5 +34,6 @@ export class Container {
 }
 
 export class Widget {
-    constructor(public name: string, public metaInfo:string, public roleSet: RoleSet, public propSet: ComPropertySet, public uiContextConfig: ComUiContextConfig) { }
+    constructor(public name: string, public metaInfo: string, public roleSet: RoleSet,
+        public propSet: ComPropertySet, public uiContextConfig: ComUiContextConfig) { }
 }

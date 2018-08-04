@@ -2,8 +2,7 @@ import { NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { Input, OnDestroy, OnInit, ViewChild, destroyPlatform } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, UiContext, UiElement } from 'app/core';
-import { Subject, Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { Subject, Subscription ,  Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { NgbTypeahead } from '../../../../../node_modules/@ng-bootstrap/ng-bootstrap';

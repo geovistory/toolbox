@@ -1,14 +1,8 @@
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/startWith';
-
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { sort } from 'ramda';
-import { createEpicMiddleware, Epic } from 'redux-observable';
-import { Observable } from 'rxjs';
+import { ofType, Epic, combineEpics } from 'redux-observable';
+import { Observable, combineLatest } from 'rxjs';
 
 import { propSetKeyFromFk, roleSetKey, roleSetKeyFromParams } from '../../modules/information2/information.helpers';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
@@ -17,6 +11,8 @@ import { IAppState } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
+import { Action } from 'redux';
+import { switchMap } from 'rxjs/operators';
 
 
 @Injectable()
@@ -28,30 +24,31 @@ export class ActiveProjectEpics {
     private loadingBarActions: LoadingBarActions
   ) { }
 
-  public createEpics() {
-    return [
-      createEpicMiddleware(this.createLoadClassListEpic())
-    ];
+  public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
+    return combineEpics(
+      this.createLoadClassListEpic()
+    );
   }
 
-  private createLoadClassListEpic(): Epic<FluxStandardAction<any, any>, IAppState> {
-    return (action$, store) => action$
-      .ofType(ActiveProjectActions.PROJECT_LOAD_CRM)
-      .switchMap((action) => new Observable<FluxStandardAction<any, any>>((globalStore) => {
+  private createLoadClassListEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
+    return (action$, store) => action$.pipe(
+
+      ofType(ActiveProjectActions.PROJECT_LOAD_CRM),
+      switchMap((action) => new Observable<Action>((globalStore) => {
         globalStore.next(this.loadingBarActions.startLoading());
 
-        Observable.combineLatest(
+        combineLatest(
           this.projectApi.getReferenceModel(action.meta.pk_project),
-          this.uiContextApi.uiConfig(undefined, action.meta.pk_project)
+          this.uiContextApi.uiConfig(null, action.meta.pk_project)
         )
           .subscribe((res) => {
             const classes: DfhClass[] = res[0];
 
-            let crm: ProjectCrm = {
+            const crm: ProjectCrm = {
               classes: {},
               roleSets: {}
             }
-            classes.map((cla: DfhClass) => {
+            classes.forEach((cla: DfhClass) => {
               crm.classes[cla.dfh_pk_class] = U.classConfigFromDfhClass(cla);
 
               // add roleSets
@@ -63,7 +60,7 @@ export class ActiveProjectEpics {
             const uiContexts: ComUiContext[] = res[1];
 
             uiContexts.forEach(uiCtxt => {
-              if (uiCtxt.ui_context_config)
+              if (uiCtxt.ui_context_config) {
                 uiCtxt.ui_context_config.forEach(uiConf => {
 
                   // add roleSet configs to crm
@@ -71,16 +68,15 @@ export class ActiveProjectEpics {
                     // retrieve the classConfig
                     const cConf = crm.classes[uiConf.property_is_outgoing ? uiConf.property.dfh_has_domain : uiConf.property.dfh_has_range];
                     this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
-                  }
-
-                  // add propSet configs to crm
-                  else if (uiConf.fk_property_set) {
+                  } else if (uiConf.fk_property_set) {
+                    // add propSet configs to crm
                     // retrieve the classConfig
                     const cConf = crm.classes[uiConf.fk_class_for_property_set];
                     this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
                   }
 
                 })
+              }
             })
 
 
@@ -97,6 +93,8 @@ export class ActiveProjectEpics {
 
 
       }))
+
+    )
   }
 
 
@@ -108,14 +106,14 @@ export class ActiveProjectEpics {
     // if this class has no ui Context object yet, add empty object
     if (!cConf.uiContexts) cConf.uiContexts = {};
 
-    // add the ui-context to the class in ProjectCrm 
+    // add the ui-context to the class in ProjectCrm
     cConf.uiContexts[uiCtxt.pk_entity] = {
       ...cConf.uiContexts[uiCtxt.pk_entity],
       label: uiCtxt.label
     }
 
     // ui-context of this class
-    let cUiCtxt = cConf.uiContexts[uiCtxt.pk_entity];
+    const cUiCtxt = cConf.uiContexts[uiCtxt.pk_entity];
 
     // if this ui-context has no uiElements object yet, add empty array
     if (!cUiCtxt.uiElements) cUiCtxt.uiElements = [];

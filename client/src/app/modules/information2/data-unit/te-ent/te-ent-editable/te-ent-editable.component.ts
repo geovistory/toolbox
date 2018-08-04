@@ -3,8 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, UiContext } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { ExistenceTimeDetail, RoleDetail, RoleSet, TeEntDetail, TeEntAccentuation } from '../../../information.models';
 import { slideInOut } from '../../../shared/animations';
@@ -30,7 +29,6 @@ export class TeEntEditableComponent extends DataUnitBase {
 
   @Input() parentPath: string[];
 
-  getBasePath = () => [...this.parentPath, '_teEnt']
   basePath: string[];
   localStore: ObservableStore<TeEntDetail>;
 
@@ -70,6 +68,8 @@ export class TeEntEditableComponent extends DataUnitBase {
   ) {
     super(ngRedux, fb, stateCreator);
   }
+  
+  getBasePath = () => [...this.parentPath, '_teEnt']
 
   /**
    * Methods

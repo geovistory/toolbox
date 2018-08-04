@@ -2,11 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ClassListAPIActions } from './api/class-list.actions';
 import { WithSubStore, NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { classListReducer } from './api/class-list.reducer';
-import { IAppState } from '../../../../core';
+import { IAppState } from 'app/core';
 import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares'
 import { ClassListAPIEpics } from './api/class-list.epics';
 import { ClassList } from '../../admin.models';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { RootEpics } from 'app/core/store/epics';
 
 
 @WithSubStore({
@@ -20,15 +21,14 @@ import { Observable } from 'rxjs';
 })
 export class ClassListComponent extends ClassListAPIActions implements OnInit, OnDestroy {
 
-  getBasePath = () => ['admin', 'classList'];
-
   localStore: ObservableStore<ClassList>
 
-  reduxMiddleware;
+  destroy$: Subject<boolean> = new Subject<boolean>();
 
-  @select() items$:Observable<any>;
+  @select() items$: Observable<any>;
 
   constructor(
+    private rootEpics: RootEpics,
     private epics: ClassListAPIEpics,
     private ngRedux: NgRedux<IAppState>
   ) {
@@ -36,17 +36,20 @@ export class ClassListComponent extends ClassListAPIActions implements OnInit, O
 
     this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), classListReducer)
 
-    this.reduxMiddleware = this.epics.createEpic(this.localStore)
-    addMiddleware(this.reduxMiddleware)
+    this.rootEpics.addEpic(this.epics.createEpic(this.localStore, this.destroy$));
 
     this.loadClasses()
   }
+
+  getBasePath = () => ['admin', 'classList'];
 
   ngOnInit() {
   }
 
   ngOnDestroy() {
-    removeMiddleware(this.reduxMiddleware)
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
+
 
 }

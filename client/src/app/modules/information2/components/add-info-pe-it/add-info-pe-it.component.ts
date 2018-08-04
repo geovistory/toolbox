@@ -1,14 +1,15 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core';
-import { Observable, Subscription, Subject } from 'rxjs';
-import { UiElement, ClassConfig, IAppState, U } from 'app/core';
-import { RoleSetList, DataUnitChildList, AddOption } from '../../information.models';
-import { roleSetKeyFromParams, similarRoleSet } from '../../information.helpers';
-import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { ClassConfig, IAppState, U, UiElement } from 'app/core';
+import { merge, Observable, Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
+
 import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
+import { roleSetKeyFromParams, similarRoleSet } from '../../information.helpers';
+import { AddOption, DataUnitChildList, RoleSetList } from '../../information.models';
 
 interface PeItAddOption extends AddOption {
-  label: string; // concatenation of all strings, used for search 
+  label: string; // concatenation of all strings, used for search
   level1propLabel: string; // label of the property connecting peIt with class
   classLabel: string; // label of the class (mostly teEnts)
   level2propsLabels: string[]; // label of the props of the class
@@ -30,6 +31,12 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
   @Output() addOptionSelected = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
 
+  @ViewChild('instance') instance: NgbTypeahead;
+  focus$ = new Subject<string>();
+  click$ = new Subject<string>();
+  term: string;
+
+  typeaheadWitdh: number;
   addOptions: PeItAddOption[];
 
   subs: Subscription[] = [];
@@ -56,8 +63,7 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
           const cla = crm.classes[level1RoleSet.targetClassPk];
           const classLabel = cla.label;
           const level2propsLabels = U.obj2Arr(cla.roleSets).map(rs => {
-            if (!similarRoleSet(level1RoleSet, rs))
-              return rs.label.default
+            if (!similarRoleSet(level1RoleSet, rs)) return rs.label.default
           }).filter(l => l);
 
           const option: PeItAddOption = {
@@ -83,14 +89,9 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
 
 
   /**
- * Typeahead. 
+ * Typeahead.
  */
-  @ViewChild('instance') instance: NgbTypeahead;
-  focus$ = new Subject<string>();
-  click$ = new Subject<string>();
-  term: string;
 
-  typeaheadWitdh: number;
 
   search = (text$: Observable<string>) => {
 
@@ -101,14 +102,16 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
     // filter options not yet added
     const options = this.addOptions;
 
-    return Observable.merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).map((term) => {
-      this.term = term;
-      return (term === '' ? options : options
-        .filter(o => (
-          o.label.toLowerCase().indexOf(term.toLowerCase()) > -1  // where search term matches
-        ))
-      ).slice(0, 10)
-    })
+    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+      map((term) => {
+        this.term = term;
+        return (term === '' ? options : options
+          .filter(o => (
+            o.label.toLowerCase().indexOf(term.toLowerCase()) > -1  // where search term matches
+          ))
+        ).slice(0, 10)
+      })
+    )
   }
 
 }

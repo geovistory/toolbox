@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DfhProperty, DfhPropertyApi } from 'app/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { DfhConfig } from './dfh-config';
 

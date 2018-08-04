@@ -15,5 +15,4 @@ export interface IAppState {
     routes?: any,
     information?: Information,
     sources?: ISourceListState
-    
 }

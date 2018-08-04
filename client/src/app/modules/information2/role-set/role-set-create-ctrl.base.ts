@@ -10,6 +10,7 @@ import { ClassService } from '../shared/class.service';
 import { RoleSetBase } from './role-set.base';
 import { clone } from 'ramda'
 import { RoleSetApiEpics } from './role-set.epics';
+import { RootEpics } from 'app/core/store/epics';
 
 export abstract class RoleSetCreateCtrlBase extends RoleSetBase {
 
@@ -20,6 +21,7 @@ export abstract class RoleSetCreateCtrlBase extends RoleSetBase {
   abstract initRoleSetCreateCtrlBaseChild(): void;
 
   constructor(
+    protected rootEpics: RootEpics,
     protected epics: RoleSetApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
@@ -32,7 +34,7 @@ export abstract class RoleSetCreateCtrlBase extends RoleSetBase {
     protected classService: ClassService,
     protected fb: FormBuilder
   ) {
-    super(epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
   }
 
 

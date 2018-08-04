@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { IAppState } from 'app/core';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { Information, PeItDetail } from '../../information.models';
 import { informationReducer } from '../../information.reducer';

@@ -12,7 +12,7 @@ export interface ProjectCrm {
     roleSets?: RoleSetList;
 }
 
-export type ClassConfigList = { [dfh_pk_class: number]: ClassConfig };
+export interface ClassConfigList { [dfh_pk_class: number]: ClassConfig };
 
 export interface ClassConfig {
     label: string;
@@ -42,7 +42,7 @@ export interface UiElement {
 
 
 
-var x: ProjectDetail = {
+const x: ProjectDetail = {
     crm: {
         roleSets: {
 

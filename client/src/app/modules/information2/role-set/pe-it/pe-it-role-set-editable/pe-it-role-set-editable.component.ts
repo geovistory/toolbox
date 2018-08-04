@@ -3,7 +3,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { DfhProperty, IAppState, InfEntityProjectRelApi, InfPersistentItem, InfRoleApi, Project } from 'app/core';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { PeItDetail, RoleDetail } from '../../../information.models';
 import { RoleActions } from '../../../role/role.actions';
@@ -14,6 +14,7 @@ import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetBase } from '../../role-set.base';
 import { RoleSetApiEpics } from '../../role-set.epics';
+import { RootEpics } from 'app/core/store/epics';
 
 
 
@@ -53,6 +54,7 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
   parentPeItState: PeItDetail;
 
   constructor(
+    protected rootEpics: RootEpics,
     protected epics: RoleSetApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
@@ -65,7 +67,7 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
     protected classService: ClassService,
     protected fb: FormBuilder,
   ) {
-    super(epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
   }
 
 
@@ -138,8 +140,7 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
   }
 
   enableDrag() {
-    if (!this.localStore.getState().dragEnabled)
-      this.localStore.dispatch(this.actions.enableDrag())
+    if (!this.localStore.getState().dragEnabled) this.localStore.dispatch(this.actions.enableDrag())
   }
 
 }

@@ -14,9 +14,9 @@
     "db-migrate": "node_modules/db-migrate/bin/db-migrate --config server/migrate-db-config.json --migrations-dir server/migrations"
   },
   "dependencies": {
-    "@angular/cli": "^1.2.6",
-    "@mean-expert/loopback-component-realtime": "^1.0.0-rc.9.5",
-    "@mean-expert/loopback-sdk-builder": "^2.1.0-rc.13.5",
+    "@angular/cli": "^1.7.4",
+    "@mean-expert/loopback-component-realtime": "^1.0.1",
+    "@mean-expert/loopback-sdk-builder": "^2.3.1",
     "@mean-expert/model": "^1.0.9",
     "bluebird": "^3.5.1",
     "cli-color": "^1.2.0",

@@ -18,18 +18,18 @@ export class TimePrimitive {
   duration: Granularity;
   calendar: CalendarType; // the calendar initialy used by user to create time primitive
 
-  constructor(data?:ITimePrimitive) {
+  constructor(data?: ITimePrimitive) {
     Object.assign(this, data);
   }
 
   getGregorianDateTime(): GregorianDateTime {
-    let g = new GregorianDateTime()
+    const g = new GregorianDateTime()
     g.fromJulianDay(this.julianDay);
     return g;
   }
 
   getJulianDateTime(): JulianDateTime {
-    let j = new JulianDateTime()
+    const j = new JulianDateTime()
     j.fromJulianDay(this.julianDay);
     return j;
   }
@@ -54,7 +54,7 @@ export class TimePrimitive {
    * Get a Date object according to the given calendar.
    *
    */
-  getDate(calendar:CalendarType = this.calendar):Date|null{
+  getDate(calendar: CalendarType = this.calendar): Date | null {
     return this.getDateTime(calendar).getDate();
   }
   /**
@@ -62,7 +62,7 @@ export class TimePrimitive {
    * a according to the given granularity
    */
   getDateFormatString(granularity: Granularity): string {
-    let string = 'MMM d, y GG, HH:mm:ss';
+    const string = 'MMM d, y GG, HH:mm:ss';
     switch (granularity) {
       case '1 year':
         return 'y GG';
@@ -91,7 +91,7 @@ export class TimePrimitive {
 
   /**
    * Get the julian day in seconds
-   * TODO: integrate time 
+   * TODO: integrate time
   */
   getJulianSecond(): number {
     return this.julianDay * 60 * 60 * 24;

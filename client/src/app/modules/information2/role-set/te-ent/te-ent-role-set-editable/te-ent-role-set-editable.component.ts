@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { IAppState, InfEntityProjectRelApi, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { dropLast } from 'ramda';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { RoleDetail, RoleDetailList, RoleSet, TeEntDetail } from '../../../information.models';
 import { RoleActions } from '../../../role/role.actions';
@@ -16,8 +16,11 @@ import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetBase } from '../../role-set.base';
 import { RoleSetApiEpics } from '../../role-set.epics';
 import { roleSetReducer } from '../../role-set.reducer';
+import { RootEpics } from 'app/core/store/epics';
 
-@AutoUnsubscribe()
+@AutoUnsubscribe({
+  blackList: ['destroy$']
+})
 @Component({
   selector: 'gv-te-ent-role-set-editable',
   templateUrl: './te-ent-role-set-editable.component.html',
@@ -25,7 +28,6 @@ import { roleSetReducer } from '../../role-set.reducer';
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class TeEntRoleSetEditableComponent extends RoleSetBase {
 
   /**
@@ -49,6 +51,7 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
 
 
   constructor(
+    protected rootEpics: RootEpics,
     protected epics: RoleSetApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
@@ -62,7 +65,7 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
     protected fb: FormBuilder,
     protected teEntApi: InfTemporalEntityApi
   ) {
-    super(epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
   }
 
   init(): void {
@@ -77,12 +80,12 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
         * init paths to different slices of the store
         */
   initPaths() {
-    // transforms e.g. 
+    // transforms e.g.
     // ['information', '_peIt_editable', '_children', '_1_ingoing', '_role_list', '_88899', '_teEnt'] to
     // ['information', '_peIt_editable']
     this.parentPeItStatePath = this.parentPath.slice(0, (this.parentPath.length - 5));
 
-    // transforms e.g. 
+    // transforms e.g.
     // ['information', '_peIt_editable', '_children', '_1_ingoing', '_role_list', '_88899', '_teEnt'] to
     // ['information', '_peIt_editable', '_children', '_1_ingoing', ]
     this.parentRoleDetailPath = this.parentPath.slice(0, (this.parentPath.length - 3));
@@ -112,7 +115,7 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
 
   /**
   * Called when user click on Add a [*]
-  * 
+  *
   * Searches alternative roles.
   * If no alternative roles used by at least one project found, continue creating new role directly.
   */
@@ -177,10 +180,11 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
       this.subs.push(this.teEntApi.findOrCreateInfTemporalEntity(this.project.pk_project, t).subscribe(teEnts => {
         const roles: InfRole[] = teEnts[0].te_roles;
 
-        this.subs.push(this.stateCreator.initializeRoleDetails(roles, { isOutgoing: this.roleSetState.isOutgoing }).subscribe(roleStates => {
-          // update the state
-          this.localStore.dispatch(this.actions.rolesCreated(roleStates))
-        }))
+        this.subs.push(this.stateCreator.initializeRoleDetails(roles, { isOutgoing: this.roleSetState.isOutgoing })
+          .subscribe(roleStates => {
+            // update the state
+            this.localStore.dispatch(this.actions.rolesCreated(roleStates))
+          }))
 
       }))
 
@@ -220,7 +224,7 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
     // const oldRole = StateToDataService.roleStateToRoleToRelate(this.roleSetState._role_list[key]);
 
     // // call api
-    // this.subs.push(Observable.combineLatest(
+    // this.subs.push(combineLatest(
     //     this.roleApi.changeRoleProjectRelation(this.project.pk_project, false, oldRole),
     //     this.roleApi.findOrCreateInfRole(this.project.pk_project, role)
     // ).subscribe(result => {
@@ -236,19 +240,15 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
 
 
   enableDrag() {
-    if (this.peItRoleSetStore.getState().dragEnabled)
-      this.peItRoleSetStore.dispatch(this.actions.disableDrag())
+    if (this.peItRoleSetStore.getState().dragEnabled) this.peItRoleSetStore.dispatch(this.actions.disableDrag())
 
-    if (!this.localStore.getState().dragEnabled)
-      this.localStore.dispatch(this.actions.enableDrag())
+    if (!this.localStore.getState().dragEnabled) this.localStore.dispatch(this.actions.enableDrag())
   }
 
   disableDrag() {
-    if (!this.peItRoleSetStore.getState().dragEnabled)
-      this.peItRoleSetStore.dispatch(this.actions.enableDrag())
+    if (!this.peItRoleSetStore.getState().dragEnabled) this.peItRoleSetStore.dispatch(this.actions.enableDrag())
 
-    if (this.localStore.getState().dragEnabled)
-      this.localStore.dispatch(this.actions.disableDrag())
+    if (this.localStore.getState().dragEnabled) this.localStore.dispatch(this.actions.disableDrag())
   }
 
 }

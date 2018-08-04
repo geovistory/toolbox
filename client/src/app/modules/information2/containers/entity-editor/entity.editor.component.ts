@@ -3,12 +3,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ActiveProjectService, EntityEditorService, IAppState, Project } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Observable } from 'rxjs/Observable';
-
-import { PeItDetail, Information } from '../../information.models';
-import { StateCreatorService } from '../../shared/state-creator.service';
+import { combineLatest } from 'rxjs';
 import { InformationActions } from '../../information.actions';
+import { Information } from '../../information.models';
 import { informationReducer } from '../../information.reducer';
+import { StateCreatorService } from '../../shared/state-creator.service';
+
 
 
 @AutoUnsubscribe()
@@ -20,7 +20,6 @@ import { informationReducer } from '../../information.reducer';
 export class EntityEditorComponent implements OnInit, OnDestroy {
 
   readonly basePath = ['information']
-  getBasePath = () => this.basePath
   localStore: ObservableStore<Information>;
 
   /**
@@ -75,9 +74,11 @@ export class EntityEditorComponent implements OnInit, OnDestroy {
     this.destroyEditor()
   }
 
+  getBasePath = () => this.basePath
+
   initEditor() {
 
-    Observable.combineLatest(
+    combineLatest(
       this.ngRedux.select<Project>('activeProject'),
       this.activatedRoute.params
     ).subscribe(result => {
@@ -92,7 +93,7 @@ export class EntityEditorComponent implements OnInit, OnDestroy {
       ) {
         this.pkProject = project.pk_project;
 
-        //get pkEntity from url
+        // Get pkEntity from url
         this.pkEntity = params['id'];
 
         this.stateCreator.initializePeItState(this.pkEntity, project.pk_project).subscribe(peItState => {

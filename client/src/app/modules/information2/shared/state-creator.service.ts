@@ -1,5 +1,5 @@
-import 'rxjs/add/observable/combineLatest';
-import 'rxjs/add/observable/zip';
+
+
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
@@ -19,10 +19,7 @@ import {
   DfhPropertyInterface,
 } from 'app/core';
 import { groupBy, indexBy, prop, clone } from 'ramda';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, combineLatest } from 'rxjs';
 
 import { dataUnitChildKey, roleDetailKey, roleSetKey, roleSetKeyFromParams, sortRoleDetailsByOrdNum, similarRoleSet } from '../information.helpers';
 import {
@@ -231,7 +228,7 @@ export class StateCreatorService {
 
     if (!children$.length) return new BehaviorSubject(undefined)
 
-    Observable.combineLatest(children$).subscribe((children: DataUnitChild[]) => {
+    combineLatest(children$).subscribe((children: DataUnitChild[]) => {
       subject.next(indexBy(dataUnitChildKey, children.filter(c => (c))));
     })
 
@@ -297,7 +294,7 @@ export class StateCreatorService {
 
     });
 
-    Observable.combineLatest(roleDetailArray$).subscribe(roleDetailArr => {
+    combineLatest(roleDetailArray$).subscribe(roleDetailArr => {
 
       const sortedByOrdNum = sortRoleDetailsByOrdNum(roleDetailArr);
 
@@ -331,9 +328,9 @@ export class StateCreatorService {
 
     /** If role leads to TeEnt or Presence */
     if (
-      ( 
+      (
         targetClassConfig && (
-          targetClassConfig.dfh_fk_system_type == DfhConfig.PK_SYSTEM_TYPE_TEMPORAL_ENTITY 
+          targetClassConfig.dfh_fk_system_type == DfhConfig.PK_SYSTEM_TYPE_TEMPORAL_ENTITY
           || targetClassConfig.dfh_pk_class == DfhConfig.CLASS_PK_PRESENCE
 
         )
@@ -528,14 +525,14 @@ export class StateCreatorService {
     })
 
     if (!children$.length) return new BehaviorSubject(null);
-    else
-      Observable.combineLatest(children$).subscribe(children => {
+    else {
+      combineLatest(children$).subscribe(children => {
 
         ext._children = indexBy(roleSetKey, children)
 
         subject.next(ext);
       })
-
+    }
     return subject;
   }
 

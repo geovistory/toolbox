@@ -12,6 +12,7 @@ import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetAddCtrlBase } from '../../role-set-add-ctrl.base';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetApiEpics } from '../../role-set.epics';
+import { RootEpics } from '../../../../../core/store/epics';
 
 @Component({
   selector: 'gv-pe-it-role-set-add-ctrl',
@@ -37,6 +38,7 @@ export class PeItRoleSetAddCtrlComponent extends RoleSetAddCtrlBase {
 
 
   constructor(
+    protected rootEpics: RootEpics,
     protected epics: RoleSetApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
@@ -49,7 +51,7 @@ export class PeItRoleSetAddCtrlComponent extends RoleSetAddCtrlBase {
     protected classService: ClassService,
     protected fb: FormBuilder
   ) {
-    super(epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
     console.log('PeItRoleSetAddCtrlComponent')
   }
 

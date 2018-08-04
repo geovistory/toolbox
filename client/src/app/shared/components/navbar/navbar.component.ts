@@ -9,7 +9,7 @@ import { environment } from 'environments/environment';
 import { AccountActions } from 'app/modules/account/api/actions';
 import { IAccount } from 'app/modules/account/account.model';
 import { NgRedux } from '@angular-redux/store';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @AutoUnsubscribe()
 @Component({

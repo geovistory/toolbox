@@ -2,8 +2,7 @@ import { Injectable, Inject, forwardRef } from '@angular/core';
 import { InfRole } from 'app/core';
 import { HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { indexBy, groupBy, prop } from 'ramda';
-import { BehaviorSubject } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject ,  Observable } from 'rxjs';
 import { RoleService } from './role.service';
 import { RoleDetailList, RoleDetail, RoleSet } from '../information.models';
 

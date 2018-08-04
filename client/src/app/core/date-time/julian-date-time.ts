@@ -30,8 +30,7 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
     if (this.month > 12) {
       this.month = 1
       this.addYear();
-    }
-    else if (this.day > this.lengthOfMonth()) {
+    }    else if (this.day > this.lengthOfMonth()) {
       this.day = this.lengthOfMonth()
     }
   }
@@ -84,8 +83,7 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
     if (this.month < 1) {
       this.month = 12;
       this.removeYear();
-    }
-    else if (this.day > this.lengthOfMonth()) {
+    }    else if (this.day > this.lengthOfMonth()) {
       this.day = this.lengthOfMonth()
     }
   }
@@ -127,20 +125,15 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
   add(duration: Granularity) {
     if (duration === '1 year') {
       this.addYear()
-    }
-    else if (duration === '1 month') {
+    }    else if (duration === '1 month') {
       this.addMonth()
-    }
-    else if (duration === '1 day') {
+    }    else if (duration === '1 day') {
       this.addDay()
-    }
-    else if (duration === '1 hour') {
+    }    else if (duration === '1 hour') {
       this.addHour()
-    }
-    else if (duration === '1 minute') {
+    }    else if (duration === '1 minute') {
       this.addMinute()
-    }
-    else if (duration === '1 second') {
+    }    else if (duration === '1 second') {
       this.addSecond()
     }
   }
@@ -152,7 +145,7 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
 
   getEndOf(duration: Granularity= this.getGranularity()): JulianDateTime {
 
-    var dt = new JulianDateTime(this);
+    const dt = new JulianDateTime(this);
     dt.toLastSecondOf(duration);
 
     return dt;
@@ -160,10 +153,10 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
 
 
   lengthOfMonth() {
-    var y = this.year, m = this.month;
+    const y = this.year, m = this.month;
 
     // Assume not leap year by default (note zero index for Jan)
-    var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
     // If evenly divisible by 4 and not one of the years 5 BC, 1 BC or 4 AD,
     // when Augustus dropped the leap year
@@ -211,16 +204,16 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
     }
 
     // number of full 4 year cycles
-    var n4 = Math.floor((julianDay + (3 * 365)) / 1461);
+    let n4 = Math.floor((julianDay + (3 * 365)) / 1461);
 
     // number of days of the last uncomplete 4 years cycle
-    var r4 = (julianDay + (3 * 365)) % 1461;
+    let r4 = (julianDay + (3 * 365)) % 1461;
 
     // number of full years of the last uncomplete 4 years cycle
-    var n1 = Math.floor(r4 / 365);
+    let n1 = Math.floor(r4 / 365);
 
     // number of days in the last year
-    var runningDay = r4 % 365;
+    let runningDay = r4 % 365;
 
     if (n1 === 4) {
       n1 = 3;
@@ -228,7 +221,7 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
     }
 
     // running year
-    var runningYear = 4 * n4 + n1;
+    let runningYear = 4 * n4 + n1;
 
     // if BC
     if (runningYear <= 4715) {
@@ -241,7 +234,7 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
 
     }
 
-    var monthDay = this.calcDateByRunningDay(runningDay, this.isLeapYear())
+    let monthDay = this.calcDateByRunningDay(runningDay, this.isLeapYear())
 
     // resulting month
     this.month = monthDay.month;

@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input, AfterViewInit } from '@angul
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, IAppState, UiContext } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { PeItDetail } from '../../../information.models';
 import { slideInOut } from '../../../shared/animations';

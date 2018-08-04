@@ -1,15 +1,16 @@
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/startWith';
+
+
+
+
 
 import { Injectable } from '@angular/core';
-import { IAppState } from 'app/core';
+import { FluxStandardAction } from 'flux-standard-action';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
-import { createEpicMiddleware, Epic } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { LoadingBarActions } from './loading-bar.actions';
 
-import { LoadingBarAction, LoadingBarActions } from './loading-bar.actions';
 
 
 
@@ -20,31 +21,33 @@ export class LoadingBarEpics {
     private actions: LoadingBarActions,
   ) { }
 
-  public createEpics() {
-    return [
-      createEpicMiddleware(this.createStartLoadingBarEpic()),
-      createEpicMiddleware(this.createCompleteLoadingBarEpic()),
-    ];
+  public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
+    return combineEpics(
+      this.createStartLoadingBarEpic(),
+      this.createCompleteLoadingBarEpic()
+    );
   }
 
-  private createCompleteLoadingBarEpic(): Epic<LoadingBarAction, IAppState> {
-    return (action$, store) => action$
-      .ofType(LoadingBarActions.COPMLETE)
-      .switchMap(() => {
+  private createCompleteLoadingBarEpic(): Epic {
+    return (action$, store) => action$.pipe(
+      ofType(LoadingBarActions.COPMLETE),
+      switchMap(() => {
         return Observable.create(observer => {
           this.service.complete()
           // observer.next(this.actions.stopLoading())
         })
-      });
+      })
+    )
   }
 
-  private createStartLoadingBarEpic(): Epic<LoadingBarAction, IAppState> {
-    return (action$, store) => action$
-      .ofType(LoadingBarActions.START)
-      .switchMap(() => {
+  private createStartLoadingBarEpic(): Epic {
+    return (action$, store) => action$.pipe(
+      ofType(LoadingBarActions.START),
+      switchMap(() => {
         return Observable.create(observer => {
-          this.service.start()          
+          this.service.start();
         })
-      });
+      })
+    )
   }
 }

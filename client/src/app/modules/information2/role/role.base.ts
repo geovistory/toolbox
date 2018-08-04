@@ -3,8 +3,7 @@ import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DfhProperty, InfRole, Project, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { ReplaySubject, Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { ReplaySubject, Subscription ,  Observable } from 'rxjs';
 
 import {
   AppeDetail,
