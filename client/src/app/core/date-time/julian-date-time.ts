@@ -30,7 +30,7 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
     if (this.month > 12) {
       this.month = 1
       this.addYear();
-    }    else if (this.day > this.lengthOfMonth()) {
+    } else if (this.day > this.lengthOfMonth()) {
       this.day = this.lengthOfMonth()
     }
   }
@@ -83,7 +83,7 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
     if (this.month < 1) {
       this.month = 12;
       this.removeYear();
-    }    else if (this.day > this.lengthOfMonth()) {
+    } else if (this.day > this.lengthOfMonth()) {
       this.day = this.lengthOfMonth()
     }
   }
@@ -125,15 +125,15 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
   add(duration: Granularity) {
     if (duration === '1 year') {
       this.addYear()
-    }    else if (duration === '1 month') {
+    } else if (duration === '1 month') {
       this.addMonth()
-    }    else if (duration === '1 day') {
+    } else if (duration === '1 day') {
       this.addDay()
-    }    else if (duration === '1 hour') {
+    } else if (duration === '1 hour') {
       this.addHour()
-    }    else if (duration === '1 minute') {
+    } else if (duration === '1 minute') {
       this.addMinute()
-    }    else if (duration === '1 second') {
+    } else if (duration === '1 second') {
       this.addSecond()
     }
   }
@@ -143,7 +143,7 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
     this.removeSecond();
   }
 
-  getEndOf(duration: Granularity= this.getGranularity()): JulianDateTime {
+  getEndOf(duration: Granularity = this.getGranularity()): JulianDateTime {
 
     const dt = new JulianDateTime(this);
     dt.toLastSecondOf(duration);
@@ -153,7 +153,8 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
 
 
   lengthOfMonth() {
-    const y = this.year, m = this.month;
+    const y = this.year;
+    let m = this.month;
 
     // Assume not leap year by default (note zero index for Jan)
     const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -198,7 +199,7 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
 
 
   fromJulianDay(julianDay: number) {
-    
+
     if (typeof julianDay === 'string') {
       julianDay = parseInt(julianDay)
     }

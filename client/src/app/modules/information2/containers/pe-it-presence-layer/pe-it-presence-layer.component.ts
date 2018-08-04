@@ -2,7 +2,6 @@ import { NgRedux } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AcLayerComponent, AcNotification, ActionType, MapsManagerService } from 'angular-cesium';
 import { IAppState, U } from 'app/core';
-import { path } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 
 import { PeItDetail } from '../../information.models';
@@ -40,26 +39,28 @@ export class PeItPresenceLayerComponent implements OnInit, OnDestroy {
     this.czmlPackets$ = Observable.from(
       [
         U.acNotificationFromPacket({
-          "id": "document",
-          "version": "1.0"
+          id: 'document',
+          version: '1.0'
         }, ActionType.ADD_UPDATE)
       ]
     ).merge(this.updater)
 
-    // update czml-packets upon change of state 
+    // update czml-packets upon change of state
     this.ngRedux.select<PeItDetail>(this.path).subscribe(peItDetail => {
 
       // remove all entities of the layer
       this.layer.removeAll();
 
-      // redraw all entities of the peItDetail
-      const presences = U.presencesFromPeIt(peItDetail)
-      const processedPrecences = U.czmlPacketsFromPresences(presences);
+      if (peItDetail) {
+        // redraw all entities of the peItDetail
+        const presences = U.presencesFromPeIt(peItDetail)
+        const processedPrecences = U.czmlPacketsFromPresences(presences);
 
-      processedPrecences.czmlPackets.forEach(czmlPacket => {
-        const acNotification = U.acNotificationFromPacket(czmlPacket, ActionType.ADD_UPDATE);
-        this.updater.next(acNotification);
-      });
+        processedPrecences.czmlPackets.forEach(czmlPacket => {
+          const acNotification = U.acNotificationFromPacket(czmlPacket, ActionType.ADD_UPDATE);
+          this.updater.next(acNotification);
+        });
+      }
 
       // Explicitly render a new frame
       scene.requestRender();

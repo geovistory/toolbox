@@ -34,8 +34,9 @@ export class ActiveProjectEpics {
     return (action$, store) => action$.pipe(
 
       ofType(ActiveProjectActions.PROJECT_LOAD_CRM),
-      switchMap((action) => new Observable<Action>((globalStore) => {
+      switchMap((action: FluxStandardAction<any, { pk_project: number }>) => new Observable<Action>((globalStore) => {
         globalStore.next(this.loadingBarActions.startLoading());
+
 
         combineLatest(
           this.projectApi.getReferenceModel(action.meta.pk_project),
@@ -87,10 +88,7 @@ export class ActiveProjectEpics {
 
           }, error => {
             // subStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
-          }
-          );
-
-
+          });
 
       }))
 

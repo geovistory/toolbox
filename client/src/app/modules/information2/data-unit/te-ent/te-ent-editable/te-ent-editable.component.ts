@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, UiContext } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { ExistenceTimeDetail, RoleDetail, RoleSet, TeEntDetail, TeEntAccentuation } from '../../../information.models';
 import { slideInOut } from '../../../shared/animations';
@@ -12,8 +12,11 @@ import { DataUnitBase } from '../../data-unit.base';
 import { TeEntActions } from '../te-ent.actions';
 import { TeEntAPIEpics } from '../te-ent.epics';
 import { teEntReducer } from '../te-ent.reducer';
+import { RootEpics } from '../../../../../core/store/epics';
 
-@AutoUnsubscribe()
+@AutoUnsubscribe({
+  blackList: ['destroy$']
+})
 @WithSubStore({
   localReducer: teEntReducer,
   basePathMethodName: 'getBasePath'
@@ -57,9 +60,10 @@ export class TeEntEditableComponent extends DataUnitBase {
 
   uiContext: UiContext;
 
-  reduxMiddlewares = [];
+  destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
+    private rootEpics: RootEpics,
     private epics: TeEntAPIEpics,
     protected ngRedux: NgRedux<any>,
     protected actions: TeEntActions,
@@ -68,7 +72,7 @@ export class TeEntEditableComponent extends DataUnitBase {
   ) {
     super(ngRedux, fb, stateCreator);
   }
-  
+
   getBasePath = () => [...this.parentPath, '_teEnt']
 
   /**
@@ -79,8 +83,7 @@ export class TeEntEditableComponent extends DataUnitBase {
     this.basePath = this.getBasePath();
     this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), teEntReducer);
 
-    this.reduxMiddlewares = this.epics.createEpics(this.localStore, this.basePath)
-    this.reduxMiddlewares.forEach(mw => { addMiddleware(mw) })
+    this.rootEpics.addEpic(this.epics.createEpics(this.localStore, this.basePath, this.destroy$))
 
   }
 
@@ -99,7 +102,8 @@ export class TeEntEditableComponent extends DataUnitBase {
   }
 
   destroy() {
-    this.reduxMiddlewares.forEach(mw => { removeMiddleware(mw) })
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe()
   }
 
   /**

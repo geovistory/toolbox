@@ -5,7 +5,6 @@ interface NodeModule {
 }
 declare var Cesium;
 
-
 interface CesiumJulianDate  {
   dayNumber: number;
   secondsOfDay: number;
