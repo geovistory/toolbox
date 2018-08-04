@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { PropertyService } from './property.service';
 import { DfhClassApi, DfhClass } from 'app/core';

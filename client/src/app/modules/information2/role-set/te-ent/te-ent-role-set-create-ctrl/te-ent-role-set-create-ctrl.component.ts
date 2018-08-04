@@ -14,6 +14,7 @@ import { RoleSetAddCtrlBase } from '../../role-set-add-ctrl.base';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetCreateCtrlBase } from '../../role-set-create-ctrl.base';
 import { RoleSetApiEpics } from '../../role-set.epics';
+import { RootEpics } from '../../../../../core/store/epics';
 
 @Component({
   selector: 'gv-te-ent-role-set-create-ctrl',
@@ -53,6 +54,7 @@ export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
 
 
   constructor(
+    protected rootEpics: RootEpics,
     protected epics: RoleSetApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
@@ -67,7 +69,7 @@ export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
     teEntApi: InfTemporalEntityApi
 
   ) {
-    super(epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
   }
 
   initRoleSetCreateCtrlBaseChild() {
@@ -84,12 +86,12 @@ export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
      * init paths to different slices of the store
      */
   initPaths() {
-    // transforms e.g. 
+    // transforms e.g.
     // ['information', 'entityEditor', 'peItState', 'roleSets', '1_ingoing', '_role_list', '88899', 'childTeEnt'] to
     // ['information', 'entityEditor', 'peItState']
     this.parentPeItStatePath = this.parentPath.slice(0, (this.parentPath.length - 5));
 
-    // transforms e.g. 
+    // transforms e.g.
     // ['information', 'entityEditor', 'peItState', 'roleSets', '1_ingoing', '_role_list', '88899', 'childTeEnt'] to
     // ['information', 'entityEditor', 'peItState', 'roleSets', '1_ingoing', ]
     this.parentRoleDetailPath = this.parentPath.slice(0, (this.parentPath.length - 3));

@@ -4,8 +4,8 @@ import { FluxStandardAction } from 'flux-standard-action';
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = any;
-interface MetaData { };
-export type LoadingBarAction = FluxStandardAction<Payload, MetaData>;
+interface MetaData { null };
+export type LoadingBarAction = FluxStandardAction<Payload, undefined>;
 
 @Injectable()
 export class LoadingBarActions {

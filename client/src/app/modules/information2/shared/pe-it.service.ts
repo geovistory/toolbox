@@ -1,6 +1,6 @@
 import { Injectable, Inject, forwardRef } from '@angular/core';
 import { indexBy } from 'ramda';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  ReplaySubject } from 'rxjs';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
@@ -8,7 +8,6 @@ import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { InfPersistentItemApi, InfTemporalEntityApi, InfAppellationApi, InfRoleApi, InfLanguageApi, InfPersistentItem, InfTemporalEntity, InfAppellation, InfRole } from 'app/core';
 import { ClassService } from './class.service';
 import { EprService } from './epr.service';
-import { ReplaySubject } from 'rxjs';
 import { TeEntService } from './te-ent.service';
 import { DfhConfig } from './dfh-config';
 

@@ -14,9 +14,9 @@
     "db-migrate": "node_modules/db-migrate/bin/db-migrate --config server/migrate-db-config.json --migrations-dir server/migrations"
   },
   "dependencies": {
-    "@angular/cli": "^1.2.6",
-    "@mean-expert/loopback-component-realtime": "^1.0.0-rc.9.5",
-    "@mean-expert/loopback-sdk-builder": "^2.1.0-rc.13.5",
+    "@angular/cli": "^1.7.4",
+    "@mean-expert/loopback-component-realtime": "^1.0.1",
+    "@mean-expert/loopback-sdk-builder": "^2.3.1",
     "@mean-expert/model": "^1.0.9",
     "bluebird": "^3.5.1",
     "cli-color": "^1.2.0",
@@ -32,11 +32,11 @@
     "loopback-component-explorer": "^4.0.0",
     "loopback-connector-postgresql": "^2.8.0",
     "loopback-setup-remote-methods-mixin": "^1.0.4",
+    "rxjs": "~5.5.2",
     "serve-favicon": "^2.0.1",
     "strong-error-handler": "^2.0.0",
     "tracer": "^0.8.11",
-    "typescript": "^2.6.1",
-    "rxjs": "~5.5.2"
+    "typescript": "^2.6.1"
   },
   "devDependencies": {
     "eslint": "^3.17.1",

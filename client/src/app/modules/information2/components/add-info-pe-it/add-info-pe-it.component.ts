@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core';
-import { Observable, Subscription, Subject } from 'rxjs';
+import { Observable, Subscription, Subject, merge } from 'rxjs';
 import { UiElement, ClassConfig, IAppState, U, UiContext, ComConfig } from 'app/core';
 import { RoleSetList, DataUnitChildList, AddOption } from '../../information.models';
 import { roleSetKeyFromParams, similarRoleSet } from '../../information.helpers';
-import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
 import { DfhConfig } from '../../shared/dfh-config';
@@ -31,6 +31,12 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
   @Output() addOptionSelected = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
 
+  @ViewChild('instance') instance: NgbTypeahead;
+  focus$ = new Subject<string>();
+  click$ = new Subject<string>();
+  term: string;
+
+  typeaheadWitdh: number;
   addOptions: PeItAddOption[];
 
   subs: Subscription[] = [];
@@ -88,14 +94,9 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
 
 
   /**
- * Typeahead. 
+ * Typeahead.
  */
-  @ViewChild('instance') instance: NgbTypeahead;
-  focus$ = new Subject<string>();
-  click$ = new Subject<string>();
-  term: string;
 
-  typeaheadWitdh: number;
 
   search = (text$: Observable<string>) => {
 
@@ -106,14 +107,16 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
     // filter options not yet added
     const options = this.addOptions;
 
-    return Observable.merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).map((term) => {
-      this.term = term;
-      return (term === '' ? options : options
-        .filter(o => (
-          o.label.toLowerCase().indexOf(term.toLowerCase()) > -1  // where search term matches
-        ))
-      ).slice(0, 10)
-    })
+    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+      map((term) => {
+        this.term = term;
+        return (term === '' ? options : options
+          .filter(o => (
+            o.label.toLowerCase().indexOf(term.toLowerCase()) > -1  // where search term matches
+          ))
+        ).slice(0, 10)
+      })
+    )
   }
 
 }

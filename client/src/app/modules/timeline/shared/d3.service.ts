@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { TimePrimitiveVisual } from '../models/time-primitive-visual';
 import { Timeline, TimeLineData } from '../models/timeline';

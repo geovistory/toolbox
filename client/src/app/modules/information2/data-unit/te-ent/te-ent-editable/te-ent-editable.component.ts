@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, UiContext } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { ExistenceTimeDetail, RoleDetail, TeEntDetail, RoleSet } from '../../../information.models';
 import { RoleSetActions } from '../../../role-set/role-set.actions';

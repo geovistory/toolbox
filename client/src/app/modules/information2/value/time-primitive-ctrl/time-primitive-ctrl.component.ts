@@ -13,7 +13,7 @@ import { CalendarType } from 'app/core/date-time/time-primitive';
 import { pick } from 'ramda';
 
 import { infRole2TimePrimitive } from '../../information.helpers';
-import { Observable, Subscription, Subject, BehaviorSubject } from 'rxjs';
+import { Observable, Subscription, Subject, BehaviorSubject, combineLatest } from 'rxjs';
 
 @Component({
   selector: 'gv-time-primitive-ctrl',
@@ -112,7 +112,7 @@ export class TimePrimitiveCtrlComponent implements OnInit, OnDestroy, ControlVal
 
     // emitValue as soon as registerOnChange and WriteValue have been called once 
     this.subs.push(
-      Observable.combineLatest(
+      combineLatest(
         this.registerOnChangeCalled,
         this.writeValueCalled
       ).subscribe((result) => {

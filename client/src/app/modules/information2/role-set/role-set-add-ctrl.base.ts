@@ -11,6 +11,7 @@ import { RoleSetBase } from './role-set.base';
 import { clone } from 'ramda'
 import { AfterViewInit } from '@angular/core';
 import { RoleSetApiEpics } from './role-set.epics';
+import { RootEpics } from 'app/core/store/epics';
 
 export abstract class RoleSetAddCtrlBase extends RoleSetBase {
 
@@ -27,6 +28,7 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
   abstract initRoleSetAddCtrlBaseChild(): void;
 
   constructor(
+    protected rootEpics: RootEpics,
     protected epics: RoleSetApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
@@ -39,7 +41,7 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
     protected classService: ClassService,
     protected fb: FormBuilder
   ) {
-    super(epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
   }
 
 
@@ -60,9 +62,8 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
           // for the circular case
           if (this.roleSetState._role_list[key].isCircular == true) {
             roleCtrl = new FormControl(null);
-          }
-          // for normal cases that are not circular
-          else {
+          } else {
+            // for normal cases that are not circular
             roleCtrl = new FormControl(null, [Validators.required]);
           }
 
@@ -87,16 +88,15 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
       Object.keys(this.roleSetState._role_list).forEach((key) => {
         if (this.roleSetState._role_list[key]) {
 
-          let roleCtrl = this.formGroup.get(key);
+          const roleCtrl = this.formGroup.get(key);
 
-          let role = this.roleSetState._role_list[key].role;
+          const role = this.roleSetState._role_list[key].role;
 
           // for the circular case
           if (this.roleSetState._role_list[key].isCircular == true) {
             roleCtrl.setValue(role);
-          }
-          // for normal cases that are not circular
-          else {
+          } else {
+            // for normal cases that are not circular
             // if this role is most used to create the display label of range 
             const is_standard_in_project = (role.pk_entity == favoriteDisplayForRangePk);
 
@@ -123,7 +123,7 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
 
     /**
    * subscribe to each form control (role) in order to
-   * manage dependencies between the roles of the RoleSet 
+   * manage dependencies between the roles of the RoleSet
    */
     Object.keys(this.formGroup.controls).forEach(key => {
       if (this.formGroup.get(key)) {
@@ -144,7 +144,7 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
   emitVal() {
 
     // build a array of InfRole
-    let roles: InfRole[] = [];
+    const roles: InfRole[] = [];
     Object.keys(this.formGroup.controls).forEach(key => {
       if (this.formGroup.get(key)) {
         const role = this.formGroup.get(key).value
@@ -156,8 +156,7 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
 
       // send the peIt the parent form
       this.onChange(roles)
-    }
-    else {
+    } else {
       this.onChange(null)
     }
   }
@@ -167,7 +166,7 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
       if (item.key != ctrlKey) {
         // disable is_standard_in_project
         const ctrl: AbstractControl = item.value;
-        let role: InfRole = clone(ctrl.value);
+        const role: InfRole = clone(ctrl.value);
 
         role.entity_version_project_rels[0] = {
           ...role.entity_version_project_rels[0],
@@ -189,8 +188,7 @@ export abstract class RoleSetAddCtrlBase extends RoleSetBase {
    * Update the model and changes needed for the view here.
    */
   writeValue(roles: InfRole[]): void {
-    if (this.ctrlsInitialized)
-      this.initFormCtrlValues(roles)
+    if (this.ctrlsInitialized) this.initFormCtrlValues(roles)
 
   }
 

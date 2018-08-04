@@ -4,7 +4,7 @@ import { InfAppellation, InfAppellationApi, InfRole } from 'app/core';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { pick } from 'ramda';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { AppellationLabel } from '../../shared/appellation-label';
 

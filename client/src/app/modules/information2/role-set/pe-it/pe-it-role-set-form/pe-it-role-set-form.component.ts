@@ -3,8 +3,7 @@ import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@a
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { IAppState, InfPersistentItem, InfPersistentItemApi, InfRole, InfRoleApi, InfTemporalEntity } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Observable } from 'rxjs';
-import { timer } from 'rxjs/observable/timer';
+import { Observable ,  timer, combineLatest } from 'rxjs';
 
 import { peItReducer } from '../../../data-unit/pe-it/pe-it.reducer';
 import { PeItDetail, RoleDetail, RoleDetailList } from '../../../information.models';
@@ -69,7 +68,7 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
     const waitAtLeast = timer(800);
     const apiCall = this.roleApi.alternativesNotInProjectByEntityPk(fkEntity, fkProperty, fkProject)
 
-    this.subs.push(Observable.combineLatest([waitAtLeast, apiCall])
+    this.subs.push(combineLatest([waitAtLeast, apiCall])
       .subscribe((results) => {
 
         const rolesInOtherProjects = results[1].filter(role => parseInt(role.is_in_project_count) > 0);
@@ -78,7 +77,7 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
         const inOther$ = this.stateCreator.initializeRoleDetails(rolesInOtherProjects, { isOutgoing: s.isOutgoing })
         const inNo$ = this.stateCreator.initializeRoleDetails(rolesInNoProject, { isOutgoing: s.isOutgoing })
 
-        Observable.combineLatest(inOther$, inNo$).subscribe(results => {
+        combineLatest(inOther$, inNo$).subscribe(results => {
           const roleStatesInOtherProjects = results[0], roleStatesInNoProjects = results[1]
 
           this.localStore.dispatch(this.actions.alternativeRolesLoaded(

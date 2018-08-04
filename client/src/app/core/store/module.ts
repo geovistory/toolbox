@@ -11,6 +11,7 @@ import { provideReduxForms } from '@angular-redux/form';
 // Redux ecosystem stuff.
 import { createLogger } from 'redux-logger';
 import dynamicMiddlewares from 'redux-dynamic-middlewares'
+import { createEpicMiddleware } from 'redux-observable';
 
 // The top-level reducers and epics that make up our app's logic.
 import { IAppState } from './model';
@@ -35,6 +36,9 @@ export class StoreModule {
         ngReduxRouter: NgReduxRouter,
         rootEpics: RootEpics
     ) {
+
+        const epicMiddleware = createEpicMiddleware();
+
         // Tell Redux about our reducers and epics. If the Redux DevTools
         // chrome extension is available in the browser, tell Redux about
         // it too.
@@ -48,12 +52,16 @@ export class StoreModule {
             // Middleware
             [
                 createLogger(),
-                ...rootEpics.createEpics(),
+                epicMiddleware,
                 dynamicMiddlewares,
             ],
             // Enhancers
             devTools.isEnabled() ? [devTools.enhancer()] : []
         );
+
+        // Apply rootEpic
+        epicMiddleware.run(rootEpics.getRootEpic());
+
 
         // Enable syncing of Angular router state with our Redux store.
         if (ngReduxRouter) {

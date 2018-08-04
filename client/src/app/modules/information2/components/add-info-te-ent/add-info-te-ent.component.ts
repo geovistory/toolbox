@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core';
-import { Observable, Subscription, Subject } from 'rxjs';
+import { Observable, Subscription, Subject, merge } from 'rxjs';
 import { UiElement, ClassConfig } from 'app/core';
 import { RoleSetList, AddOption, DataUnitChildList } from '../../information.models';
 import { roleSetKeyFromParams, similarRoleSet } from '../../information.helpers';
 import { propSetMap } from '../../data-unit/data-unit.base';
-import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -21,6 +21,11 @@ export class AddInfoTeEntComponent implements OnInit, OnDestroy {
 
   @Output() addOptionSelected = new EventEmitter<any>();
 
+  @ViewChild('instance') instance: NgbTypeahead;
+  focus$ = new Subject<string>();
+  click$ = new Subject<string>();
+
+  typeaheadWitdh: number;
   addOptions: AddOption[];
 
   subs: Subscription[] = [];
@@ -33,7 +38,8 @@ export class AddInfoTeEntComponent implements OnInit, OnDestroy {
 
       this.addOptions = this.uiElements.map(el => {
         if (
-          children && el.fk_property && !children[el.roleSetKey] && !similarRoleSet(this.classConfig.roleSets[el.roleSetKey], this.excludeRoleSet)
+          children && el.fk_property && !children[el.roleSetKey] &&
+          !similarRoleSet(this.classConfig.roleSets[el.roleSetKey], this.excludeRoleSet)
         ) {
           const roleSet = this.classConfig.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
           return {
@@ -41,8 +47,7 @@ export class AddInfoTeEntComponent implements OnInit, OnDestroy {
             uiElement: el,
             added: false
           }
-        }
-        else if (children && el.fk_property_set && !children[propSetMap[el.fk_property_set]]) {
+        } else if (children && el.fk_property_set && !children[propSetMap[el.fk_property_set]]) {
           return {
             label: el.property_set.label,
             uiElement: el,
@@ -61,13 +66,8 @@ export class AddInfoTeEntComponent implements OnInit, OnDestroy {
 
 
   /**
- * Typeahead. 
+ * Typeahead.
  */
-  @ViewChild('instance') instance: NgbTypeahead;
-  focus$ = new Subject<string>();
-  click$ = new Subject<string>();
-
-  typeaheadWitdh: number;
 
   search = (text$: Observable<string>) => {
 
@@ -78,12 +78,14 @@ export class AddInfoTeEntComponent implements OnInit, OnDestroy {
     // filter options not yet added
     const options = this.addOptions;
 
-    return Observable.merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).map((term) =>
-      (term === '' ? options : options
-        .filter(o => (
-          o.label.toLowerCase().indexOf(term.toLowerCase()) > -1  // where search term matches
-        ))
-      ).slice(0, 10)
+    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+      map((term) =>
+        (term === '' ? options : options
+          .filter(o => (
+            o.label.toLowerCase().indexOf(term.toLowerCase()) > -1  // where search term matches
+          ))
+        ).slice(0, 10)
+      )
     )
   }
 

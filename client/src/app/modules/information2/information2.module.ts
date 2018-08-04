@@ -233,7 +233,7 @@ import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
     // Role Set
     RoleSetActions,
     RoleSetApiEpics,
-    
+
     // Role
     RoleActions,
 

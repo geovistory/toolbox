@@ -134,8 +134,6 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
 
 
   open() {
-    // const urlTree = this.router.createUrlTree(["..", this.pkEntity], { relativeTo: this.route, preserveQueryParams:true });
-    // window.open(this.router.serializeUrl(urlTree), '_blank')
     const open = () => {
 
       this.router.navigate(["../", this.peItState.peIt.pk_entity], {
