@@ -39,6 +39,7 @@
     "typescript": "^2.6.1"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "^0.7.2",
     "eslint": "^3.17.1",
     "eslint-config-loopback": "^8.0.0",
     "nodemon": "^1.17.5",
