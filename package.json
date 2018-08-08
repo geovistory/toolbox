@@ -17,6 +17,7 @@
     "@angular/cli": "6.1.1",
     "@angular/compiler": "6.1.0",
     "@angular/compiler-cli": "6.1.0",
+    "@angular-devkit/build-angular": "~0.7.0",
     "@mean-expert/loopback-component-realtime": "^1.0.1",
     "@mean-expert/loopback-sdk-builder": "^2.3.1",
     "@mean-expert/model": "^1.0.9",
