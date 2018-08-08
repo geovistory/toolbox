@@ -552,7 +552,7 @@ export class U {
             const presence = presenceWithPath.teEntDetail;
 
             // timeSpanActivated === false
-            const colorInactive = [255, 255, 255, 200];
+            const colorInactive = [255, 255, 255, 100];
 
             // timeSpanActivated === true
             const colorActive = [32, 201, 251, 200];
@@ -801,7 +801,7 @@ export class U {
                                     const presence = p.teEntDetail;
 
                                     // timeSpanActivated === false
-                                    const colorInactive = [255, 255, 255, 200];
+                                    const colorInactive = [255, 255, 255, 100];
 
                                     // timeSpanActivated === true
                                     const colorActive = [32, 201, 251, 200];
