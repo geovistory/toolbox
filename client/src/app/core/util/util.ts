@@ -9,6 +9,7 @@ import { roleSetKey, roleSetKeyFromParams } from "../../modules/information2/inf
 import { ComUiContextConfig, ComPropertySet, DfhClass, InfEntityProjectRel } from "../sdk";
 import { ClassConfig, UiContext, UiElement } from "../active-project/active-project.models";
 import { ActionType, AcNotification, AcEntity } from "angular-cesium";
+import { dashCaseToCamelCase } from "../../../../node_modules/@angular/compiler/src/util";
 /**
  * Utilities class for static functions
  */
@@ -373,24 +374,21 @@ export class U {
 
 
     static labelFromDataUnitChild(c: DataUnitChild): DataUnitChildLabel {
-        if (c && c.type == 'RoleSet')
-            return U.labelFromRoleSet(c as RoleSet);
-        else if (c && c.type == 'ExistenceTimeDetail')
-            return U.labelFromExTime(c as ExistenceTimeDetail);
+        if (c && c.type == 'RoleSet') return U.labelFromRoleSet(c as RoleSet);
+        else if (c && c.type == 'ExistenceTimeDetail') return U.labelFromExTime(c as ExistenceTimeDetail);
 
         else return null;
     }
 
 
     static labelFromRoleSet(r: RoleSet): DataUnitChildLabel {
-        let duChild: DataUnitChildLabel = {};
+        const duChild: DataUnitChildLabel = {};
 
         const roleDetails = U.obj2Arr(r._role_list);
 
         duChild.roleLabel = U.labelFromRoleDetail(roleDetails[0]);
 
-        if (roleDetails.length > 1)
-            duChild.suffix = '(+' + (roleDetails.length - 1) + ')';
+        if (roleDetails.length > 1) duChild.suffix = '(+' + (roleDetails.length - 1) + ')';
 
         duChild.introducer = r.label.default;
 
@@ -402,21 +400,20 @@ export class U {
     static labelFromRoleDetail(r: RoleDetail): RoleLabel {
 
         if (r._teEnt) {
-            if (r._teEnt._children)
+            if (r._teEnt._children) {
                 return {
                     type: 'te-ent',
                     string: U.labelFromDataUnitChildList(r._teEnt._children).parts[0].roleLabel.string
                 };
-
-            else return {
-                type: 'te-ent',
-                string: ''
+            } else {
+                return {
+                    type: 'te-ent',
+                    string: ''
+                }
             }
-        }
-
-        else if (r._appe) return { type: 'appe', string: U.labelFromAppeDetail(r._appe) };
+        } else if (r._appe) return { type: 'appe', string: U.labelFromAppeDetail(r._appe) };
         else if (r._lang) return { type: 'lang', string: U.labelFromLangDetail(r._lang) };
-        else if (r._place) return { type: 'place', string: 'to do: pl_place-label' };
+        else if (r._place) return { type: 'place', string: 'Point on Map' };
         else if (r._leaf_peIt) return { type: 'leaf-pe-it', string: U.labelFromLeafPeIt(r._leaf_peIt) };
 
         else {
@@ -428,22 +425,20 @@ export class U {
 
 
     static labelFromAppeDetail(a: AppeDetail): string {
-        if (a && a.appellation && a.appellation.appellation_label)
+        if (a && a.appellation && a.appellation.appellation_label) {
             return new AppellationLabel(a.appellation.appellation_label).getString();
-
+        }
         else return null;
     }
 
     static labelFromLangDetail(l: LangDetail): string {
-        if (l && l.language)
-            return l.language.iso6391;
+        if (l && l.language) return l.language.iso6391;
 
         else return null;
     }
 
     static labelFromTimePrimitive(r: InfRole): TimePrimitive {
-        if (r)
-            return U.infRole2TimePrimitive(r)
+        if (r) return U.infRole2TimePrimitive(r)
 
         else return null;
     }
@@ -453,11 +448,10 @@ export class U {
 
             const p = U.labelFromDataUnitChildList(l._children)
 
-            if (p && p.parts && p.parts[0] && p.parts[0].roleLabel)
+            if (p && p.parts && p.parts[0] && p.parts[0].roleLabel) {
                 return p.parts[0].roleLabel.string;
-        }
-
-        else return null;
+            }
+        } else return null;
     }
 
 
@@ -491,12 +485,11 @@ export class U {
             const latestArr = [eOe, bOe, at, ong, eOb, bOb].filter(rs => (rs))
             if (latestArr && latestArr[0]) {
                 if (latestArr[0]._role_list) {
-                    var roleDetails = U.obj2Arr(latestArr[0]._role_list);
+                    const roleDetails = U.obj2Arr(latestArr[0]._role_list);
                     if (roleDetails[0]) {
                         lRoleDetail = roleDetails[0];
                         // if latest equals earliest, don't add it
-                        if (lRoleDetail != eRoleDetail)
-                            latest = U.labelFromTimePrimitive(lRoleDetail.role);
+                        if (lRoleDetail != eRoleDetail) latest = U.labelFromTimePrimitive(lRoleDetail.role);
                     }
                 }
             }
@@ -540,25 +533,49 @@ export class U {
 
     }
 
-    static czmlPacketsFromPresences(presences: TeEntDetail[]): { earliestJulianDate: CesiumJulianDate, latestJulianDate: CesiumJulianDate, czmlPackets: any[] } | null {
-        if (!presences) return null;
+    static czmlPacketsFromPresences(presencesWithPath: { path: string[]; teEntDetail: TeEntDetail; }[]): {
+        earliestJulianDate: CesiumJulianDate,
+        latestJulianDate: CesiumJulianDate,
+        czmlPackets: any[]
+    } | null {
+        if (!presencesWithPath) return null;
 
 
-        let res: { earliestJulianDate: CesiumJulianDate, latestJulianDate: CesiumJulianDate, czmlPackets: any[] } = {
+        const res: { earliestJulianDate: CesiumJulianDate, latestJulianDate: CesiumJulianDate, czmlPackets: any[] } = {
             earliestJulianDate: undefined,
             latestJulianDate: undefined,
             czmlPackets: []
         };
 
-        presences.forEach(presence => {
+        presencesWithPath.forEach(presenceWithPath => {
+
+            const presence = presenceWithPath.teEntDetail;
+
+            // timeSpanActivated === false
+            const colorInactive = [255, 255, 255, 200];
+
+            // timeSpanActivated === true
+            const colorActive = [32, 201, 251, 200];
+
+            // accentuation === 'selected'
+            const outlineColorSelected = [0, 255, 255, 255];
+            const outlineWidthSelected = 3;
+
+            // accentuation === 'highlighted'
+            const outlineColorHighlighted = [255, 206, 0, 255];
+            const outlineWidthHighlighted = 3;
+
+            // accentuation === 'none'
+            const outlineColorDefault = [26, 130, 95, 255]
+            const outlineWidthDefault = 1;
 
             // validate presence
             if (presence.fkClass != DfhConfig.CLASS_PK_PRESENCE) return null;
 
-            // return false if no DateUnitChildren 
+            // return false if no DateUnitChildren
             if (!presence._children) return null;
 
-            // return false if no RoleSet leading to a Place 
+            // return false if no RoleSet leading to a Place
             const placeSet = presence._children[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
             if (!placeSet || placeSet.type != 'RoleSet') return null;
 
@@ -569,13 +586,12 @@ export class U {
             // return false if no pk_entity in first RoleDetail
             if (!placeRoleDetail || !placeRoleDetail.role || !placeRoleDetail.role.pk_entity) return null;
 
-            let czmlPacket = {}
+            let czmlPacket: any = {}
 
             // colors used for dynamic color change
-            const colorInactive = [255, 0, 255, 100], colorActive = [255, 0, 255, 200];
-            let colorRgba: any[] = colorActive;
+            let colorRgba: any[] = colorInactive;
 
-            // get the Existence Time of that TeEnt 
+            // get the Existence Time of that TeEnt
             const exTime = U.ExTimeFromExTimeDetail(presence._children['_existenceTime'] as ExistenceTimeDetail);
             if (exTime) {
 
@@ -600,11 +616,13 @@ export class U {
                     afterStr, ...colorInactive,
                 ];
 
-                if (res.earliestJulianDate === undefined || Cesium.JulianDate.greaterThan(res.earliestJulianDate, before))
+                if (res.earliestJulianDate === undefined || Cesium.JulianDate.greaterThan(res.earliestJulianDate, before)) {
                     res.earliestJulianDate = before;
+                }
 
-                if (res.latestJulianDate === undefined ||  Cesium.JulianDate.lessThan(res.latestJulianDate, after))
+                if (res.latestJulianDate === undefined || Cesium.JulianDate.lessThan(res.latestJulianDate, after)) {
                     res.latestJulianDate = after;
+                }
             }
 
             const placeRole = placeRoleDetail.role;
@@ -612,60 +630,330 @@ export class U {
 
             czmlPacket = {
                 ...czmlPacket,
-                "id": placeRole.pk_entity,
-                "position": {
-                    "cartographicRadians": [place.long, place.lat, 150000]
+                id: placeRole.pk_entity,
+                position: {
+                    cartographicDegrees: [place.long, place.lat, 0]
                 },
-                "point": {
-                    "color": {
-                        "rgba": colorRgba,
+                point: {
+                    color: {
+                        rgba: colorRgba,
                         forwardExtrapolationType: 'HOLD',
                         backwardExtrapolationType: 'HOLD'
                     },
-                    "outlineColor": {
-                        "rgba": [255, 0, 0, 200]
+                    outlineColor: {
+                        rgba: [255, 0, 0, 200]
                     },
-                    "outlineWidth": 3,
-                    "pixelSize": 15
+                    outlineWidth: 3,
+                    pixelSize: 15
+                },
+                properties: {
+                    path: JSON.stringify(presenceWithPath.path)
                 }
+            }
+
+            switch (presence.accentuation) {
+                case 'selected':
+                    czmlPacket.point.outlineColor.rgba = outlineColorSelected;
+                    czmlPacket.point.outlineWidth = outlineWidthSelected;
+                    break;
+
+                case 'highlighted':
+                    czmlPacket.point.outlineColor.rgba = outlineColorHighlighted;
+                    czmlPacket.point.outlineWidth = outlineWidthHighlighted;
+                    break;
+
+                default:
+                    czmlPacket.point.outlineColor.rgba = outlineColorDefault;
+                    czmlPacket.point.outlineWidth = outlineWidthDefault;
+                    break;
             }
 
             res.czmlPackets.push(czmlPacket)
 
         })
 
-        if (res.earliestJulianDate == undefined)
+        if (res.earliestJulianDate == undefined) {
             res.earliestJulianDate = Cesium.JulianDate.fromIso8601('1200-01-01');
+        }
 
-        if (res.latestJulianDate == undefined)
+        if (res.latestJulianDate == undefined) {
             res.latestJulianDate = Cesium.JulianDate.fromIso8601('2020-01-01');
+        }
 
         const earliestStr = Cesium.JulianDate.toIso8601(res.earliestJulianDate);
         const latestStr = Cesium.JulianDate.toIso8601(res.latestJulianDate);
         const availability = [earliestStr, latestStr].join('/');
 
-        res.czmlPackets.forEach(packet => {
-            packet['availability'] = availability
-        })
+        // res.czmlPackets.forEach(packet => {
+        //     packet['availability'] = availability
+        // })
 
         return res;
     }
 
 
 
-    static presencesFromPeIt(peItDetail: PeItDetail): TeEntDetail[] {
+    static presencesFromPeIt(peItDetail: PeItDetail, path: string[]): { path: string[], teEntDetail: TeEntDetail }[] {
 
-        const roleSet = U.obj2Arr(peItDetail._children).find((child: DataUnitChild) => {
-            if (child.type == 'RoleSet')
-                if ((child as RoleSet).targetClassPk == DfhConfig.CLASS_PK_PRESENCE)
-                    return true;
+        const roleSetMap = U.obj2KeyValueArr(peItDetail._children).find((res) => {
+            const child: DataUnitChild = res.value;
+            if (child.type == 'RoleSet') {
+                if ((child as RoleSet).targetClassPk == DfhConfig.CLASS_PK_PRESENCE) return true;
+            }
             return false
-        }) as RoleSet;
+        });
 
-        if (!roleSet) return [];
+        if (!roleSetMap) return [];
 
-        return U.obj2Arr(roleSet._role_list).map(roleDetail => roleDetail._teEnt)
+        const roleSet = roleSetMap.value as RoleSet;
+        const roleSetPath = [...path, '_children', roleSetMap.key]
+
+
+        return U.obj2KeyValueArr(roleSet._role_list).map(roleDetailMap => ({
+            path: [...roleSetPath, '_role_list', roleDetailMap.key, '_teEnt'],
+            teEntDetail: roleDetailMap.value._teEnt
+        }))
     }
+
+
+    static teEntsWithoutPresencesFromPeIt(peItDetail: PeItDetail, path: string[]): { path: string[], teEntDetail: TeEntDetail }[] {
+
+        const result: { path: string[], teEntDetail: TeEntDetail }[] = []
+
+
+        // get rolesets to teEnts without presences
+        const keys = Object.keys(peItDetail._children);
+        const roleSets = {};
+        keys.forEach(key => {
+            const child: DataUnitChild = peItDetail._children[key];
+            if (child.type == 'RoleSet') {
+                if ((child as RoleSet).targetClassPk !== DfhConfig.CLASS_PK_PRESENCE) {
+                    roleSets[key] = child as RoleSet;
+                };
+            }
+        })
+
+
+        // for each roleSet get the roleSet and make the path
+        U.obj2KeyValueArr(roleSets).map(res => {
+            const roleSet = res.value as RoleSet;
+            const roleSetPath = [...path, '_children', res.key]
+
+            // get the teEnt of roleDetails with path
+            U.obj2KeyValueArr(roleSet._role_list).forEach(roleDetailMap => {
+
+                const teEntWithPath = {
+                    path: [...roleSetPath, '_role_list', roleDetailMap.key, '_teEnt'],
+                    teEntDetail: roleDetailMap.value._teEnt
+                }
+
+                result.push(teEntWithPath)
+            })
+
+        })
+
+        return result
+    }
+
+
+    static czmlPacketsFromTeEnts(teEntsWithPath: { path: string[]; teEntDetail: TeEntDetail; }[]): {
+        earliestJulianDate: CesiumJulianDate,
+        latestJulianDate: CesiumJulianDate,
+        czmlPackets: any[]
+    } | null {
+
+        const res: {
+            earliestJulianDate: CesiumJulianDate,
+            latestJulianDate: CesiumJulianDate,
+            czmlPackets: any[]
+        } = {
+            earliestJulianDate: undefined,
+            latestJulianDate: undefined,
+            czmlPackets: []
+        };
+
+        teEntsWithPath.forEach(teEntWithPath => {
+            const path = teEntWithPath.path;
+            const teEntDetail = teEntWithPath.teEntDetail;
+
+
+            // get leaf peIts...
+            U.obj2Arr(teEntDetail._children).forEach(duChild => {
+                if (duChild.type === 'RoleSet') {
+                    const rs = duChild as RoleSet;
+
+                    // of class geographical place or built work
+                    if (
+                        rs.targetClassPk === DfhConfig.CLASS_PK_GEOGRAPHICAL_PLACE ||
+                        rs.targetClassPk === DfhConfig.CLASS_PK_BUILT_WORK
+                    ) {
+
+                        // get leaf-peIts
+                        U.obj2Arr(rs._role_list).forEach(roleDetail => {
+                            if (roleDetail._leaf_peIt && !roleDetail._leaf_peIt.loading) {
+                                // get presences of leaf-peIts
+                                const presences = U.presencesFromPeIt(roleDetail._leaf_peIt, [])
+
+
+
+                                presences.forEach(p => {
+
+                                    const presence = p.teEntDetail;
+
+                                    // timeSpanActivated === false
+                                    const colorInactive = [255, 255, 255, 200];
+
+                                    // timeSpanActivated === true
+                                    const colorActive = [32, 201, 251, 200];
+
+                                    // accentuation === 'selected'
+                                    const outlineColorSelected = [0, 255, 255, 255];
+                                    const outlineWidthSelected = 3;
+
+                                    // accentuation === 'highlighted'
+                                    const outlineColorHighlighted = [255, 206, 0, 255];
+                                    const outlineWidthHighlighted = 3;
+
+                                    // accentuation === 'none'
+                                    const outlineColorDefault = [26, 130, 95, 255]
+                                    const outlineWidthDefault = 1;
+
+                                    // validate presence
+                                    if (presence.fkClass != DfhConfig.CLASS_PK_PRESENCE) return null;
+
+                                    // return false if no DateUnitChildren
+                                    if (!presence._children) return null;
+
+                                    // return false if no RoleSet leading to a Place
+                                    const placeSet = presence._children[
+                                        roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
+                                    if (!placeSet || placeSet.type != 'RoleSet') return null;
+
+                                    // return false if no Place in first RoleDetail
+                                    const placeRoleDetail = U.obj2Arr(placeSet._role_list)[0];
+                                    if (!placeRoleDetail || !placeRoleDetail.role || !placeRoleDetail.role.place) return null;
+
+                                    // return false if no pk_entity in first RoleDetail
+                                    if (!placeRoleDetail || !placeRoleDetail.role || !placeRoleDetail.role.pk_entity) return null;
+
+                                    let czmlPacket: any = {}
+
+                                    // colors used for dynamic color change
+                                    let colorRgba: any[] = colorInactive;
+
+                                    // get the Existence Time of initial TeEnt not the Presence
+                                    const exTime = U.ExTimeFromExTimeDetail(teEntDetail._children['_existenceTime'] as ExistenceTimeDetail);
+
+                                    // TODO: compare the exTime from initial teEnt with exTime of the presence and figure out which presence
+                                    // is best for displaying the teEnt on the map
+                                    // const exTime = U.ExTimeFromExTimeDetail(presence._children['_existenceTime'] as ExistenceTimeDetail);
+
+                                    // exTime of initial TeEnt not Presence!
+                                    if (exTime) {
+
+                                        const minMax = exTime.getMinMaxTimePrimitive();
+
+                                        const min = new Cesium.JulianDate(minMax.min.julianDay);
+                                        const max = new Cesium.JulianDate(minMax.max.getDateTime()
+                                            .getEndOf(minMax.max.duration).getJulianDay());
+
+                                        const minStr = Cesium.JulianDate.toIso8601(min);
+                                        const maxStr = Cesium.JulianDate.toIso8601(max);
+
+                                        const before = Cesium.JulianDate.addSeconds(min, -1, min);
+                                        const beforeStr = Cesium.JulianDate.toIso8601(before);
+
+                                        const after = Cesium.JulianDate.addSeconds(max, 1, max);
+                                        const afterStr = Cesium.JulianDate.toIso8601(after);
+
+                                        colorRgba = [
+                                            beforeStr, ...colorInactive,
+                                            minStr, ...colorActive,
+                                            maxStr, ...colorActive,
+                                            afterStr, ...colorInactive,
+                                        ];
+
+                                        if (res.earliestJulianDate === undefined || Cesium.JulianDate
+                                            .greaterThan(res.earliestJulianDate, before)) {
+                                            res.earliestJulianDate = before;
+                                        }
+
+                                        if (res.latestJulianDate === undefined || Cesium.JulianDate.lessThan(res.latestJulianDate, after)) {
+                                            res.latestJulianDate = after;
+                                        }
+                                    }
+
+                                    const placeRole = placeRoleDetail.role;
+                                    const place = placeRole.place;
+
+                                    czmlPacket = {
+                                        ...czmlPacket,
+                                        id: placeRole.pk_entity,
+                                        position: {
+                                            cartographicDegrees: [place.long, place.lat, 0]
+                                        },
+                                        point: {
+                                            color: {
+                                                rgba: colorRgba,
+                                                forwardExtrapolationType: 'HOLD',
+                                                backwardExtrapolationType: 'HOLD'
+                                            },
+                                            outlineColor: {
+                                                rgba: [255, 0, 0, 200]
+                                            },
+                                            outlineWidth: 3,
+                                            pixelSize: 15
+                                        },
+                                        properties: {
+                                            path: JSON.stringify(path) // path of initial teEnt (not presence)
+                                        }
+                                    }
+
+                                    switch (teEntDetail.accentuation) {
+                                        case 'selected':
+                                            czmlPacket.point.outlineColor.rgba = outlineColorSelected;
+                                            czmlPacket.point.outlineWidth = outlineWidthSelected;
+                                            break;
+
+                                        case 'highlighted':
+                                            czmlPacket.point.outlineColor.rgba = outlineColorHighlighted;
+                                            czmlPacket.point.outlineWidth = outlineWidthHighlighted;
+                                            break;
+
+                                        default:
+                                            czmlPacket.point.outlineColor.rgba = outlineColorDefault;
+                                            czmlPacket.point.outlineWidth = outlineWidthDefault;
+                                            break;
+                                    }
+
+                                    res.czmlPackets.push(czmlPacket)
+
+                                })
+
+                                if (res.earliestJulianDate == undefined) {
+                                    res.earliestJulianDate = Cesium.JulianDate.fromIso8601('1200-01-01');
+                                }
+
+                                if (res.latestJulianDate == undefined) {
+                                    res.latestJulianDate = Cesium.JulianDate.fromIso8601('2020-01-01');
+                                }
+
+                            }
+                        })
+
+
+                    }
+
+                }
+            })
+
+
+        })
+
+        return res;
+    }
+
+
 
     static acNotificationFromPacket = (packet, actionType: ActionType): AcNotification => ({
         id: packet.id,
@@ -678,14 +966,23 @@ export class U {
 
         if (!exTimeDetail) return null;
 
-        let e = new ExistenceTime();
+        const e = new ExistenceTime();
 
         U.obj2Arr(exTimeDetail._children).forEach(rs => {
             const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[rs.property.dfh_pk_property]
-            if (key)
-                e[key] = U.infRole2TimePrimitive(U.obj2Arr(rs._role_list)[0].role);
+            if (key) e[key] = U.infRole2TimePrimitive(U.obj2Arr(rs._role_list)[0].role);
         })
 
         return e;
+    }
+
+
+    static CesiumJulianDateFromJulianSecond = (julianSeconds: number): CesiumJulianDate => {
+        if (!julianSeconds) return;
+
+        const secondsOfFullDay = 60 * 60 * 24;
+        const dayNumber = Math.floor(julianSeconds / secondsOfFullDay);
+        const secondsOfDay = julianSeconds % secondsOfFullDay;
+        return new Cesium.JulianDate(dayNumber, secondsOfDay)
     }
 }

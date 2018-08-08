@@ -79,9 +79,9 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
       if (this.formGroup.valid && this.role) {
 
         // build the role
-        const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role));
+        const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role) as InfRole);
 
-        // build a appe with the appellation_label given by the formControl 
+        // build a appe with the appellation_label given by the formControl
         role.appellation = new InfAppellation({
           ...this.appellation
         });
@@ -94,8 +94,7 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
 
         // send the appe the parent form
         this.onChange(role)
-      }
-      else {
+      } else {
         this.onChange(null)
       }
     }))

@@ -1,49 +1,16 @@
-
-
-
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import {
-  ComConfig,
-  DfhClass,
-  DfhProperty,
-  IAppState,
-  InfAppellation,
-  InfLanguage,
-  InfPersistentItem,
-  InfPlace,
-  InfRole,
-  InfTemporalEntity,
-  InfTimePrimitive,
-  U,
-  DfhPropertyInterface,
-} from 'app/core';
-import { groupBy, indexBy, prop, clone } from 'ramda';
-import { BehaviorSubject, Observable, ReplaySubject, Subject, combineLatest } from 'rxjs';
-
-import { dataUnitChildKey, roleDetailKey, roleSetKey, roleSetKeyFromParams, sortRoleDetailsByOrdNum, similarRoleSet } from '../information.helpers';
-import {
-  AppeDetail,
-  DataUnit,
-  DataUnitChild,
-  DataUnitChildList,
-  ExistenceTimeDetail,
-  LangDetail,
-  PeItDetail,
-  PlaceDetail,
-  RoleDetail,
-  RoleDetailList,
-  RoleSet,
-  TeEntDetail,
-  TimePrimitveDetail,
-  RoleSetInterface,
-} from '../information.models';
+import { ComConfig, IAppState, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTimePrimitive, U, InfEntityProjectRel } from 'app/core';
+import { clone, groupBy, indexBy, prop } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
+import { dataUnitChildKey, roleDetailKey, roleSetKey, roleSetKeyFromParams, similarRoleSet, sortRoleDetailsByOrdNum } from '../information.helpers';
+import { AppeDetail, DataUnit, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleDetailList, RoleSet, RoleSetInterface, TeEntDetail, TimePrimitveDetail } from '../information.models';
 import { AppellationLabel } from './appellation-label/appellation-label';
 import { ClassService } from './class.service';
 import { DfhConfig } from './dfh-config';
 import { PeItService } from './pe-it.service';
 import { RoleSetService } from './role-set.service';
-import { StateToDataService } from './state-to-data.service';
+
 
 
 export interface StateSettings {
@@ -97,8 +64,8 @@ export class StateCreatorService {
 
       this.initDataUnitChildList(peIt.fk_class, peIt.pi_roles, settings).subscribe(dataUnitChildList => {
 
-        if (!settings.isAddMode)
-          delete peIt.pi_roles; // those only pollute the state unless we are in add mode.
+        // those only pollute the state unless we are in add mode.
+        if (!settings.isAddMode) delete peIt.pi_roles;
 
         const peItDetail: PeItDetail = {
           _children: dataUnitChildList,
@@ -121,11 +88,11 @@ export class StateCreatorService {
 
   /**
 * Initialize RoleSetList
-* 
+*
 * @param {number} fkClass fk_class of PeIt
 * @param {InfRole[]} roles array of roles a PeIt
 * @param {InfStateSettings} settings settings to create the state
-* 
+*
 * @return {DataUnit} Object of RoleSet, the model of the Gui-Element for RoleSets
 */
   initDataUnitChildList(fkClass: number, roles: InfRole[], settings: StateSettings = {}): Subject<DataUnitChildList> {
@@ -153,14 +120,14 @@ export class StateCreatorService {
       const uiContext = classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_CREATE];
 
       // add a roleSet for each roleSet in this ui-context
-      if (uiContext && uiContext.uiElements)
+      if (uiContext && uiContext.uiElements) {
         uiContext.uiElements.forEach(el => {
 
-          // if this is a element for a RoleSet 
+          // if this is a element for a RoleSet
           if (
             el.roleSetKey
           ) {
-            let roleSetDef = classConfig.roleSets[el.roleSetKey];
+            const roleSetDef = classConfig.roleSets[el.roleSetKey];
 
             // exclude the circular RoleSets
             if (!similarRoleSet(roleSetDef, settings.parentRoleSet)) {
@@ -177,33 +144,32 @@ export class StateCreatorService {
               const roleSet$ = this.initializeRoleSet([newRole], Object.assign({}, roleSetDef, options), settings);
               children$.push(roleSet$);
             }
-          }
+          } else if (el.fk_property_set == ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
 
-          // if this ui-element is a Existence-Time PropSet
-          else if (el.fk_property_set == ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
+            // if this ui-element is a Existence-Time PropSet
             const options = new ExistenceTimeDetail({ toggle: 'expanded' });
             children$.push(this.initializeExistenceTimeState([], options, settings));
           }
         });
-    }
-    else if (!roles || !roles.length) return new BehaviorSubject(undefined)
+      }
+    } else if (!roles || !roles.length) return new BehaviorSubject(undefined)
     else {
 
       const uiContext = classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
 
-      const rolesByFkProp = groupBy(prop('fk_property'), roles)
+      const rolesByFkProp = groupBy(prop('fk_property'), roles) as { [index: number]: InfRole[] }
 
       let r: InfRole[];
 
       // for each uiElement in this ui-context
-      if (uiContext && uiContext.uiElements)
+      if (uiContext && uiContext.uiElements) {
         uiContext.uiElements.forEach(el => {
 
           // if this is a element for a RoleSet
           if (el.roleSetKey) {
             // enrich RoleSet with roles and child RoleDetails
 
-            // take existing roles of this property  
+            // take existing roles of this property
             r = rolesByFkProp[el.fk_property];
 
             // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
@@ -213,16 +179,16 @@ export class StateCreatorService {
               const roleSet$ = this.initializeRoleSet(r, Object.assign({}, roleSetDef, options), settings);
               children$.push(roleSet$);
             }
-          }
+          } else if (el.fk_property_set == ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
 
-          // if this ui-element is a Existence-Time PropSet
-          else if (el.fk_property_set == ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
+            // if this ui-element is a Existence-Time PropSet
             const options = new ExistenceTimeDetail({ toggle: 'collapsed' });
             const extime = this.initializeExistenceTimeState(roles, options, settings);
             children$.push(extime);
           }
 
         });
+      }
 
     }
 
@@ -259,7 +225,7 @@ export class StateCreatorService {
 
       if (_role_list) {
         /** Creates the RoleSet */
-        let roleSet: RoleSet = {
+        const roleSet: RoleSet = {
           _role_list,
           ...options,
           targetClassPk: options.isOutgoing ? options.property.dfh_has_range : options.property.dfh_has_domain,
@@ -276,14 +242,14 @@ export class StateCreatorService {
 
   initializeRoleDetails(roles: InfRole[], options: RoleDetail = {}, settings: StateSettings = {}): Subject<RoleDetailList> {
     const subject = new ReplaySubject<RoleDetailList>();
-    let r: InfRole[];
+    let displayRoleForRangePk;
 
     if (!roles || !roles.length) return new BehaviorSubject(undefined)
 
     /** if there are no eprs, this will be roles from Repo, not from Project */
-    if (!roles[0].entity_version_project_rels && roles[0].pk_entity)
-      var displayRoleForRangePk = RoleSetService.getDisplayRangeFavoriteOfRoles(roles)
-
+    if (!roles[0].entity_version_project_rels && roles[0].pk_entity) {
+      displayRoleForRangePk = RoleSetService.getDisplayRangeFavoriteOfRoles(roles)
+    }
     const roleDetailArray$: Observable<RoleDetail>[] = [];
     roles.forEach((role, i, array) => {
 
@@ -311,7 +277,7 @@ export class StateCreatorService {
     if (!role) return new BehaviorSubject(undefined)
 
 
-    let roleDetail: RoleDetail = {
+    const roleDetail: RoleDetail = {
       role: new InfRole(role),
       isCircular: false,
       ...options
@@ -321,7 +287,7 @@ export class StateCreatorService {
       // TODO uncomment as soon as we have the corresponding data model
       // role.entity_version_project_rels[0].is_display_role_for_domain
       roleDetail.isDisplayRoleForDomain = null
-      roleDetail.isDisplayRoleForRange = role.entity_version_project_rels[0].is_standard_in_project;;
+      roleDetail.isDisplayRoleForRange = role.entity_version_project_rels[0].is_standard_in_project;
     }
 
     const targetClassConfig = this.ngRedux.getState().activeProject.crm.classes[options.targetClassPk];
@@ -358,93 +324,89 @@ export class StateCreatorService {
         subject.next(roleDetail);
       })
 
-    }
-
-    /** If role leads to Appe */
-    // else if (role.appellation && Object.keys(role.appellation).length){
-    else if (
+    } else if (
+      /** If role leads to Appe */
+      // else if (role.appellation && Object.keys(role.appellation).length){
       options.targetClassPk == DfhConfig.CLASS_PK_APPELLATION
       || (role.appellation && role.appellation.pk_entity)
     ) {
 
       // if we are in create mode we need the fk_class
-      if (settings.isCreateMode) roleDetail.role.appellation = {
-        ...role.appellation,
-        fk_class: options.targetClassPk
+      if (settings.isCreateMode) {
+        roleDetail.role.appellation = {
+          ...role.appellation,
+          fk_class: options.targetClassPk
+        }
       }
 
       this.initializeAppeState(role.appellation).subscribe(appeState => {
         roleDetail._appe = appeState;
         subject.next(roleDetail);
       })
-    }
-
-    /** If role leads to Language */
-    // else if (role.language && Object.keys(role.language).length){
-    else if (
+    } else if (
+      /** If role leads to Language */
+      // else if (role.language && Object.keys(role.language).length){
       options.targetClassPk == DfhConfig.CLASS_PK_LANGUAGE
       || (role.language && role.language.pk_entity)
     ) {
 
       // if we are in create mode we need the fk_class
-      if (settings.isCreateMode) roleDetail.role.language = {
-        ...role.language,
-        fk_class: options.targetClassPk
+      if (settings.isCreateMode) {
+        roleDetail.role.language = {
+          ...role.language,
+          fk_class: options.targetClassPk
+        }
       }
 
       this.initializeLangState(role.language).subscribe(langState => {
         roleDetail._lang = langState;
         subject.next(roleDetail);
       })
-    }
-
-    /** If role leads to Place (in the sense of geo coordinates!) */
-    // else if (role.place && Object.keys(role.place).length){
-    else if (
+    } else if (
+      /** If role leads to Place (in the sense of geo coordinates!) */
+      // else if (role.place && Object.keys(role.place).length){
       options.targetClassPk == DfhConfig.CLASS_PK_PLACE
       || (role.place && role.place.pk_entity)
     ) {
 
       // if we are in create mode we need the fk_class
-      if (settings.isCreateMode) roleDetail.role.place = {
-        ...role.place,
-        fk_class: options.targetClassPk
+      if (settings.isCreateMode) {
+        roleDetail.role.place = {
+          ...role.place,
+          fk_class: options.targetClassPk
+        }
       }
 
       this.initializePlaceState(role.place).subscribe(placeDetail => {
         roleDetail._place = placeDetail;
         subject.next(roleDetail);
       })
-    }
-
-
-    /** If role leads to TimePrimitive */
-    else if (
+    } else if (
+      /** If role leads to TimePrimitive */
       options.targetClassPk == DfhConfig.CLASS_PK_TIME_PRIMITIVE
       || (role.time_primitive && role.time_primitive.pk_entity)
     ) {
 
       // if we are in create mode we need the fk_class
-      if (settings.isCreateMode) roleDetail.role.time_primitive = {
-        ...role.time_primitive,
-        fk_class: options.targetClassPk
+      if (settings.isCreateMode) {
+        roleDetail.role.time_primitive = {
+          ...role.time_primitive,
+          fk_class: options.targetClassPk
+        }
       }
 
       this.initializeTimePrimitiveState(role.time_primitive).subscribe(timePrimitiveState => {
         roleDetail._timePrimitive = timePrimitiveState;
         subject.next(roleDetail);
       })
-    }
-
-
-    else {
+    } else {
 
       // check if it is circular
       if (
         // if not creat mode and the pk's of both roles are the same
         (!settings.isCreateMode && role.pk_entity === settings.parentRolePk) ||
-        // or if we are in create mode and the initialized role has a fk_entity 
-        // (means this is the circular role added upon start creating a new information) 
+        // or if we are in create mode and the initialized role has a fk_entity
+        // (means this is the circular role added upon start creating a new information)
         (settings.isCreateMode && role.fk_entity)
       ) {
         roleDetail.isCircular = true;
@@ -469,9 +431,8 @@ export class StateCreatorService {
     // Get children
     this.initDataUnitChildList(teEnt.fk_class, teEnt.te_roles, settings).subscribe(_children => {
 
-
-      if (!settings.isAddMode)
-        delete teEnt.te_roles; // those only pollute the state. retrieve them from roleSets
+      // those only pollute the state. retrieve them from roleSets
+      if (!settings.isAddMode) delete teEnt.te_roles;
 
       const teEntState: TeEntDetail = {
         selectPropState: 'init',
@@ -491,37 +452,44 @@ export class StateCreatorService {
   }
 
 
-  initializeExistenceTimeState(roles: InfRole[], options: ExistenceTimeDetail = new ExistenceTimeDetail(), settings: StateSettings = {}): Subject<ExistenceTimeDetail> {
+  initializeExistenceTimeState(
+    roles: InfRole[],
+    options: ExistenceTimeDetail = new ExistenceTimeDetail(),
+    settings: StateSettings = {}
+  ): Subject<ExistenceTimeDetail> {
+
     const subject = new ReplaySubject<ExistenceTimeDetail>();
-
-    const rolesByFkProp = groupBy(prop('fk_property'), roles);
+    const rolesByFkProp = groupBy(prop('fk_property'), roles) as { [index: number]: InfRole[] };
     const rsts = clone(this.ngRedux.getState().activeProject.crm.classes[DfhConfig.ClASS_PK_TIME_SPAN].roleSets);
-
-    let children$: Observable<RoleSet>[] = []
+    const children$: Observable<RoleSet>[] = []
     const ext = new ExistenceTimeDetail({
       roles: [],
       toggle: options.toggle ? options.toggle : 'collapsed'
     })
 
+
     if (settings.isCreateMode) return new BehaviorSubject(ext);
 
     U.obj2Arr(rsts).forEach((rs: RoleSet) => {
-      let roles = rolesByFkProp[rs.property.dfh_pk_property];
 
-      /**
-       * This is a shortcut method to take max one role per RoleSet
-       */
 
-      if (roles) {
+      if (rolesByFkProp[rs.property.dfh_pk_property]) {
+
+        /**
+         * This is a shortcut method to take max one role per RoleSet
+         */
+        const role = rolesByFkProp[rs.property.dfh_pk_property][0]
+
         if (settings.isAddMode) {
-          if (roles.length > 1) roles = roles.slice(0, 1);
-          roles[0].entity_version_project_rels = [{
+          role.entity_version_project_rels = [{
             is_in_project: true
-          }]
+          } as InfEntityProjectRel]
         }
-        ext.roles = [...ext.roles, ...roles]
-        children$.push(this.initializeRoleSet(roles, new RoleSet(rs)));
+
+        ext.roles = [...ext.roles, role]
+        children$.push(this.initializeRoleSet([role], new RoleSet(rs)));
       }
+
     })
 
     if (!children$.length) return new BehaviorSubject(null);
@@ -540,15 +508,16 @@ export class StateCreatorService {
 
 
 
-  /** 
-   * Initializers for States of Leaf objects  
+  /**
+   * Initializers for States of Leaf objects
    * */
 
   initializeAppeState(appellation: InfAppellation): Subject<AppeDetail> {
 
     // if no appellation provided, create an emtpy appellation with an empty appellationLabel
-    let appe = appellation ? new InfAppellation(appellation) : new InfAppellation();
-    appe.appellation_label = (appellation && appellation.appellation_label) ? new AppellationLabel(appellation.appellation_label) : new AppellationLabel();
+    const appe = appellation ? new InfAppellation(appellation) : new InfAppellation();
+    appe.appellation_label = (appellation && appellation.appellation_label) ?
+      new AppellationLabel(appellation.appellation_label) : new AppellationLabel();
 
     const appeState: AppeDetail = {
       appellation: appe

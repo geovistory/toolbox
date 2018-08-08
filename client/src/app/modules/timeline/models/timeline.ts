@@ -4,18 +4,30 @@ import { ExistenceTime } from 'app/core';
 import { TimelineOptions } from '../components/timeline/timeline.component';
 import { XAxisDefinition } from './x-axis-definition';
 
-export interface TimeLineRow {
-    label: string;
-    existenceTime: ExistenceTime;
-    // storeConnector: {
-    //     path: string[];
-    //     reducerMethod: Function;
-    //     actions: ? injection needed?
-    // }
+export type Accentuation = 'highlighted' | 'selected' | 'none';
+
+export interface RangeChangeEvent {
+    type: 'mousedown' | 'mousemove' | 'mouseup',
+    range: number
+}
+
+export interface TimeLineSettings {
+    domainStart?: number, // julian seconds
+    domainEnd?: number, // julian seconds
+    cursorPosition?: number; // julian day in seconds
 }
 
 export interface TimeLineData {
     rows: TimeLineRow[]
+}
+
+export interface TimeLineRow {
+    label: string;
+    existenceTime: ExistenceTime;
+    accentuation: Accentuation;
+    storeConnector?: {
+        path: string[];
+    }
 }
 
 /**
@@ -38,6 +50,40 @@ export class Timeline {
 
     public options: TimelineOptions;
 
+    static getExtent(rows, options): { firstSecond: number, lastSecond: number } {
+        const timePrimitives = []
+
+        rows.forEach((row: TimeLineRow) => {
+            const ext: ExistenceTime = row.existenceTime;
+            const minMaxOfExTime = ext.getMinMaxTimePrimitive();
+
+            if (minMaxOfExTime) {
+                timePrimitives.push(minMaxOfExTime.min);
+                timePrimitives.push(minMaxOfExTime.max);
+            }
+        })
+
+        if (timePrimitives.length > 0) {
+            const minMax = ExistenceTime.getMinMaxTimePrimitveOfArray(timePrimitives);
+            const firstSec = minMax.min.getJulianSecond();
+            const lastSec = minMax.max.getLastSecond();
+
+            const domainDiff = Math.abs(firstSec - lastSec);
+            const margin = domainDiff * 0.9;
+
+            const firstSecond = firstSec - margin;
+            const lastSecond = lastSec + margin;
+
+            return { firstSecond, lastSecond }
+        } else {
+            const firstSecond = options.domainStartDefault;
+            const lastSecond = options.domainEndDefault;
+
+            return { firstSecond, lastSecond };
+        }
+    }
+
+
 
     /**
      * Construct the TimeLineChart by passing in data (timePrimitives) and options
@@ -46,21 +92,11 @@ export class Timeline {
      */
     constructor(public data: TimeLineData, options: TimelineOptions) {
 
-        
-        
         this.options = options;
 
-        if (this.data.rows.length > 0) {
-
-            // this will also trigger a this.init
-            this.zoomToExtent();
-
-        } else {
-            this.init(this.options);
-        }
+        this.init(this.options);
 
     }
-
 
 
     init(options: TimelineOptions) {
@@ -71,7 +107,7 @@ export class Timeline {
 
         /** xAxis fixed top */
 
-        let xAxisTopOptions = {
+        const xAxisTopOptions = {
             domainStart: options.domainStart,
             domainEnd: options.domainEnd,
             containerWidth: options.width,
@@ -99,7 +135,7 @@ export class Timeline {
         const tickSize = this.data.rows.length * this.options.rowHeight;
 
         /** xAxis ticks on rows */
-        let xAxisOnRows = {
+        const xAxisOnRows = {
             domainStart: options.domainStart,
             domainEnd: options.domainEnd,
             containerWidth: options.width,
@@ -116,7 +152,7 @@ export class Timeline {
             maxJulianSecond: switchBetweenCalendars, // visible until introduction of gregorian calendar in 1582
         })
 
-        //Gregorian on rows        
+        // Gregorian on rows
         this.xAxisGregTicks = new XAxisDefinition({
             ...xAxisOnRows,
             calendar: 'gregorian',
@@ -124,72 +160,38 @@ export class Timeline {
         })
 
 
-
-
     }
 
-    zoomToExtent() {
 
-        const timePrimitives = []
-        this.data.rows.forEach((row: TimeLineRow) => {
-            const ext: ExistenceTime = row.existenceTime;
-            const minMaxOfExTime = ext.getMinMaxTimePrimitive();
+    getZoomInExtent(): { firstSecond: number, lastSecond: number } {
 
-            if (minMaxOfExTime) {
-                timePrimitives.push(minMaxOfExTime.min);
-                timePrimitives.push(minMaxOfExTime.max);
-            }
-        })
-        if (timePrimitives.length > 0) {
+        const rangeStart = this.xAxis.scale(this.options.domainStart)
+        const rangeEnd = this.xAxis.scale(this.options.domainEnd)
+        const minMax = rangeEnd - rangeStart;
+        const rangeDiff = minMax / this.options.zoomFactor;
 
-            const minMax = ExistenceTime.getMinMaxTimePrimitveOfArray(timePrimitives);
-
-            // zoom out a little bit
-            const domainDiff = Math.abs(minMax.min.getJulianSecond() - minMax.max.getJulianSecond());
-            const margin = domainDiff * 0.05;
-
-            this.options.domainStart = minMax.min.getJulianSecond() - margin;
-
-            this.options.domainEnd = minMax.max.getLastSecond() + margin;
+        return {
+            firstSecond: this.xAxis.scale.invert(rangeStart + rangeDiff),
+            lastSecond: this.xAxis.scale.invert(rangeEnd - rangeDiff)
         }
-
-        this.init(this.options);
-
     }
 
-
-
-    zoomIn() {
-
-        const rangeStart = this.xAxis.scale(this.options.domainStart)
-        const rangeEnd = this.xAxis.scale(this.options.domainEnd)
-        const minMax = rangeEnd - rangeStart;
-        const rangeDiff = minMax / this.options.zoomFactor;
-        
-        this.options.domainStart = this.xAxis.scale.invert(rangeStart + rangeDiff);
-
-        this.options.domainEnd = this.xAxis.scale.invert(rangeEnd - rangeDiff);
-
-        this.init(this.options)
-    }
-
-    zoomOut() {
+    getZoomOutExtent(): { firstSecond: number, lastSecond: number } {
 
         const rangeStart = this.xAxis.scale(this.options.domainStart)
         const rangeEnd = this.xAxis.scale(this.options.domainEnd)
         const minMax = rangeEnd - rangeStart;
         const rangeDiff = minMax / this.options.zoomFactor;
 
-        this.options.domainStart = this.xAxis.scale.invert(rangeStart - rangeDiff);
-
-        this.options.domainEnd = this.xAxis.scale.invert(rangeEnd + rangeDiff);
-
-        this.init(this.options)
+        return {
+            firstSecond: this.xAxis.scale.invert(rangeStart - rangeDiff),
+            lastSecond: this.xAxis.scale.invert(rangeEnd + rangeDiff)
+        }
     }
 
     /**
      * Moves the timeline for a given number of pixels.
-     * 
+     *
      * @param rangeDiff pixels to move
      */
     move(rangeDiff) {
@@ -200,8 +202,8 @@ export class Timeline {
         this.init(this.options)
     }
 
-    getTimeLineChart() {
-
+    changeCursorPosition(julianSecond: number): number {
+        return this.xAxis.scale.invert(julianSecond);
     }
 
 

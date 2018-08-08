@@ -44,7 +44,10 @@ export class TeEntAPIEpics {
             switchMap((action) => new Observable<Action>((globalStore) => {
                 // console.log('AccentuationEpic?')
 
-                if ((action as any).meta.accentuation !== 'none') {
+                const acc = localStore.getState().accentuation;
+
+                // if another component gets the accentuation that this component has
+                if (action.meta.accentuation !== 'none' && action.meta.accentuation === acc) {
                     if (isSiblingComponent(path)(action)) localStore.dispatch(this.teEntActions.setAccentuation('none'))
                 }
             })),

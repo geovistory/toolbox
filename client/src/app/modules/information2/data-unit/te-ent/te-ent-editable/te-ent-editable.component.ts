@@ -62,6 +62,9 @@ export class TeEntEditableComponent extends DataUnitBase {
 
   destroy$: Subject<boolean> = new Subject<boolean>();
 
+  // used for storing previous accentuation when mouse enters
+  previousAccentuation: TeEntAccentuation;
+
   constructor(
     private rootEpics: RootEpics,
     private epics: TeEntAPIEpics,
@@ -164,12 +167,25 @@ export class TeEntEditableComponent extends DataUnitBase {
     this.localStore.dispatch(this.actions.toggle())
   }
 
-  accentuateAsSelected() {
-    this.localStore.dispatch(this.actions.setAccentuation('selected'))
+  click() {
+    if (this.localStore.getState().accentuation !== 'selected') {
+      this.localStore.dispatch(this.actions.setAccentuation('selected'))
+    } else {
+      this.localStore.dispatch(this.actions.setAccentuation('highlighted'))
+    }
   }
 
-  accentuateAsHighlighted() {
-    this.localStore.dispatch(this.actions.setAccentuation('highlighted'))
+
+  mouseenter() {
+    if (this.localStore.getState().accentuation !== 'selected') {
+      this.localStore.dispatch(this.actions.setAccentuation('highlighted'))
+    }
+  }
+
+  mouseleave() {
+    if (this.localStore.getState().accentuation === 'highlighted') {
+      this.localStore.dispatch(this.actions.setAccentuation('none'))
+    }
   }
 
 }

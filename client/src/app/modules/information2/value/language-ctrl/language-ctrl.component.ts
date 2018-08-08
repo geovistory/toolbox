@@ -57,13 +57,12 @@ export class LanguageCtrlComponent implements OnDestroy, ControlValueAccessor {
       if (this.formGroup.valid) {
 
         // build the role
-        const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role));
+        const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role) as InfRole);
         role.language = new InfLanguage(this.formGroup.get('language').value);
 
         // send the role to the parent form
         this.onChange(role)
-      }
-      else {
+      } else {
         this.onChange(null)
       }
     }))

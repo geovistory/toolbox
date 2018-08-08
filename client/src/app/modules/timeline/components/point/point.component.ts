@@ -8,7 +8,7 @@ import { Point } from '../../models/point';
 })
 export class PointComponent implements OnInit {
 
-  @Input('pointVisual') point:Point
+  @Input('pointVisual') point: Point
 
   constructor() { }
 

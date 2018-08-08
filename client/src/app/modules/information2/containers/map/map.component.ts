@@ -1,5 +1,8 @@
-import { Component, ViewEncapsulation, Input } from '@angular/core';
-import { ViewerConfiguration } from 'angular-cesium';
+import { Component, ViewEncapsulation, Input, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { ViewerConfiguration, MapsManagerService } from 'angular-cesium';
+import { NgRedux } from '@angular-redux/store';
+import { IAppState, U } from 'app/core';
+import { Subject } from '../../../../../../node_modules/rxjs';
 
 @Component({
   selector: 'gv-map',
@@ -8,26 +11,52 @@ import { ViewerConfiguration } from 'angular-cesium';
   providers: [ViewerConfiguration],
   encapsulation: ViewEncapsulation.None,
 })
-export class MapComponent {
+export class MapComponent implements AfterViewInit, OnDestroy {
 
   @Input() path: string[];
 
-  constructor(viewerConf: ViewerConfiguration) {
+  destroy$ = new Subject<boolean>();
+
+  constructor(
+    viewerConf: ViewerConfiguration,
+    private mapsManagerService: MapsManagerService,
+    private ngRedux: NgRedux<IAppState>
+  ) {
     viewerConf.viewerOptions = {
-      selectionIndicator: false,
+      sceneMode: Cesium.SceneMode.SCENE3D,
+      selectionIndicator: true,
+      infoBox: true,
       timeline: true,
-      infoBox: false,
       fullscreenButton: false,
-      baseLayerPicker: true,
       animation: true,
       shouldAnimate: false,
       homeButton: false,
-      geocoder: false,
-      navigationHelpButton: false,
-      navigationInstructionsInitiallyVisible: true,
-      requestRenderMode : true
+      geocoder: true,
+      navigationHelpButton: true,
+      navigationInstructionsInitiallyVisible: false,
+      requestRenderMode: true,
+      imageryProvider: new Cesium.ArcGisMapServerImageryProvider({
+        url: '//services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
+      }),
+      baseLayerPicker: false
     };
 
   }
 
+  ngAfterViewInit() {
+    const viewer = this.mapsManagerService.getMap().getCesiumViewer();
+
+    this.ngRedux.select<number>([...this.path, 'timeLineSettings', 'cursorPosition'])
+      .takeUntil(this.destroy$)
+      .subscribe(pos => {
+        if (pos) {
+          const julianDate = U.CesiumJulianDateFromJulianSecond(pos);
+          viewer.clockViewModel.currentTime = julianDate;
+        }
+      })
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true)
+  }
 }

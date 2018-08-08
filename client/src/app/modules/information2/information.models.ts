@@ -1,5 +1,6 @@
 import { InfPlace, InfLanguage, InfTimePrimitive, DfhPropertyInterface } from '../../core/sdk';
 import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity, UiElement, TimePrimitive } from 'app/core';
+import { TimeLineSettings } from 'app/modules/timeline/models/timeline';
 
 /**
  * Root state for Information Module
@@ -47,7 +48,7 @@ export interface DataUnit {
 }
 
 
-// The options for RoleSet or PropSet available to add to a class instance 
+// The options for RoleSet or PropSet available to add to a class instance
 export interface AddOption {
     label: string,
     uiElement: UiElement,
@@ -74,8 +75,11 @@ export interface PeItDetail extends DataUnit {
     /** display data */
     ontoInfoVisible?: boolean;
     communityStatsVisible?: boolean;
-    loading?: boolean; //for leaf pe it view
+    loading?: boolean; // for leaf pe it view
     _leaf_peIt_modal?: PeItDetail // for leaf pe it view modal
+
+    /** Timeline */
+    timeLineSettings?: TimeLineSettings;
 }
 
 
@@ -89,12 +93,12 @@ export interface TeEntDetail extends DataUnit {
     // record
     teEnt?: InfTemporalEntity;
 
-    // accentuation tells if a TeEnt is clicked, mouseovered or similar 
+    // accentuation tells if a TeEnt is clicked, mouseovered or similar
     accentuation?: TeEntAccentuation;
 
-    // true if timefilter (cursor of timeline) is inside Timespan of TeEnt 
+    // true if timefilter (cursor of timeline) is inside Timespan of TeEnt
     timespanActivated?: boolean;
-    
+
 }
 
 export interface ExistenceTimeDetailInterface {
@@ -149,7 +153,7 @@ export class ExistenceTimeEdit extends ExistenceTimeDetail {
 
 /*******************************
  * RoleSet Interface
- * - there is only one interface since roleSets are produced in GUI on the fly and 
+ * - there is only one interface since roleSets are produced in GUI on the fly and
  *   are not persisted in db: no need to create, add or edit role sets
  *******************************/
 
@@ -178,7 +182,7 @@ export interface RoleSetInterface {
 
     ordNum?: number;
 
-    //True during loading of roles in other projects and roles in no project    
+    // True during loading of roles in other projects and roles in no project
     rolesNotInProjectLoading?: boolean;
     roleStatesToCreateVisible?: boolean
     roleStatesInNoProjectVisible?: boolean
@@ -251,25 +255,25 @@ export interface RoleDetail {
     toggle?: CollapsedExpanded;
 
     /**
-     * This field flags roles that are used by the project to produce a display label of a range entity (thus normally a Persistent Item). 
-     * It is up to the application logic to create this label. This is usually done by following the path from the Role to the 
-     * TemporalEntity and from there to the Role with is_display_role_for_domain=true to some object 
+     * This field flags roles that are used by the project to produce a display label of a range entity (thus normally a Persistent Item).
+     * It is up to the application logic to create this label. This is usually done by following the path from the Role to the
+     * TemporalEntity and from there to the Role with is_display_role_for_domain=true to some object
      * like an appellationLabel or a date, that can be used to create a display label.
      */
     isDisplayRoleForRange?: boolean;
 
     /**
      * This field flags roles that are used by the project to produce a display label of a domain entity (thus normally a Temporal Entity).
-     *  It is up to the application logic to create this label. This done by following the path from the Role to the 
+     *  It is up to the application logic to create this label. This done by following the path from the Role to the
      * range entity like an appellationLabel or a date, that can be used to create a display label.
      */
     isDisplayRoleForDomain?: boolean;
 
     /**
-     * Pk of target class of a RoleState. 
+     * Pk of target class of a RoleState.
      * Used to select persistent Items or temporal entities of the given dfhClass.
      * E.g.: When selecting the Father of a Birth, this pk is used to initialize
-     * the GUI for selecting a person.  
+     * the GUI for selecting a person.
      */
     targetClassPk?: number;
 
@@ -286,7 +290,7 @@ export interface RoleDetail {
 
 
 /*******************************
- * Leaf Entities Interfaces 
+ * Leaf Entities Interfaces
  *******************************/
 
 export interface AppeDetail {
@@ -329,8 +333,6 @@ export interface ExTimeLabel {
     latest?: TimePrimitive;
 }
 
-
-
 /*******************************
  * List interfaces
  *******************************/
@@ -343,14 +345,14 @@ export interface RoleDetailList { [key: string]: RoleDetail }
 
 
 /*******************************
- * Types
+ * Types or simple interfaces
  *******************************/
 
+export interface RoleSetLabelObj { default: string; pl: string; sg: string; }
 export type CollapsedExpanded = 'collapsed' | 'expanded';
 export type SelectPropStateType = 'init' | 'selectProp'
 export type ExTimeModalMode = 'one-date' | 'begin-end' | 'advanced';
 export type ExTimeHelpMode = 'hidden' | 'short' | 'long';
-export type RoleSetLabelObj = { default: string; pl: string; sg: string; }
 export type DataUnitChild = RoleSet | ExistenceTimeDetail;
 export type DataUnitChildType = 'RoleSet' | 'ExistenceTimeDetail';
 export type TeEntAccentuation = 'highlighted' | 'selected' | 'none';

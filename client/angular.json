@@ -19,7 +19,11 @@
             "assets": [
               "src/assets",
               "src/favicon.ico",
-              { "glob": "**/*", "input": "node_modules/cesium/Build/Cesium", "output": "./assets/cesium" }
+              {
+                "glob": "**/*",
+                "input": "node_modules/cesium/Build/Cesium",
+                "output": "./assets/cesium"
+              }
             ],
             "styles": [
               "src/styles.scss",
@@ -89,7 +93,11 @@
             "assets": [
               "src/assets",
               "src/favicon.ico",
-              { "glob": "**/*", "input": "node_modules/cesium/Build/Cesium", "output": "./assets/cesium" }
+              {
+                "glob": "**/*",
+                "input": "node_modules/cesium/Build/Cesium",
+                "output": "./assets/cesium"
+              }
             ]
           }
         },
@@ -143,14 +151,21 @@
             "polyfills": "src/polyfills.ts",
             "assets": [
               "src/assets",
-              "src/favicon.ico"
+              "src/favicon.ico",
+              {
+                "glob": "**/*",
+                "input": "node_modules/cesium/Build/Cesium",
+                "output": "./assets/cesium"
+              }
             ],
             "styles": [
               "src/styles.scss",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/quill/dist/quill.snow.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/cesium/Build/Cesium/Cesium.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -196,7 +211,9 @@
             "karmaConfig": "./karma.conf.js",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
-            "scripts": [],
+            "scripts": [
+              "node_modules/cesium/Build/Cesium/Cesium.js"
+            ],
             "styles": [
               "src/styles.scss",
               "node_modules/font-awesome/css/font-awesome.css",
@@ -204,7 +221,12 @@
             ],
             "assets": [
               "src/assets",
-              "src/favicon.ico"
+              "src/favicon.ico",
+              {
+                "glob": "**/*",
+                "input": "node_modules/cesium/Build/Cesium",
+                "output": "./assets/cesium"
+              }
             ]
           }
         },

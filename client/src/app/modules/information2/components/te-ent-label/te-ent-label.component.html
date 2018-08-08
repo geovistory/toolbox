@@ -14,6 +14,12 @@
     {{p?.roleLabel?.string}}
   </span>
 
+
+  <span *ngIf="p && p.roleLabel.type === 'place'">
+    <span class="text-muted">{{p?.introducer}}:</span>
+    {{p?.roleLabel?.string}}
+  </span>
+
   <span *ngIf="p && p.roleLabel.type === 'ex-time'">
     <span class="text-muted">{{p?.introducer}}:</span>
     {{getExTLabel(p?.roleLabel?.exTimeLabel)}}

@@ -1,1 +1,2 @@
-<gv-timeline [data]="timeLineData"></gv-timeline>
+<gv-timeline [data]="timeLineData" [path]="path.concat('timeLineSettings')" (rowMouseEnter)="rowMouseEnter($event)" (rowMouseLeave)="rowMouseLeave($event)"
+    (rowClick)="rowClick($event)"></gv-timeline>

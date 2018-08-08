@@ -94,6 +94,10 @@ $value in $grays {
     }
 }
 
+// Custom Variables
+$gv-color-highlighted: #ffce00;
+$gv-color-selected: #00ffff;
+// Custom Stuff
 .font-sm {
     font-size: $font-size-sm;
 }
@@ -236,7 +240,12 @@ gv-property {
 
 .gv-border-selected {
     @extend .border;
-    border-color: #00ffff !important;
+    border-color: $gv-color-selected !important;
+}
+
+.gv-border-highlighted {
+    @extend .border;
+    border-color: $gv-color-highlighted !important;
 }
 
 // Navbar (main)
@@ -336,8 +345,13 @@ gv-timeline {
         fill: $white;
         opacity: 0.2;
     }
-    .row:hover .row-bg {
-        fill: $gray-300;
+    .row .row-bg.selected {
+        fill: #ffffff;
+        opacity: 0.6;
+    }
+    .row .row-bg.highlighted {
+        fill: #ffffff;
+        opacity: 0.4;
     }
     .row-label-bg {
         fill: $bg-timeline
@@ -370,6 +384,14 @@ gv-timeline {
     .no-data-text {
         fill: theme-color("secondary");
         font-size: $font-size-sm;
+    }
+    .cursor-handle {
+        fill: theme-color("primary");
+        stroke: $white; // fill-opacity: .8;
+    }
+    .cursor-line {
+        stroke: theme-color("primary");
+        stroke-width: 2;
     }
 }
 
@@ -405,4 +427,12 @@ gv-pe-it-role-set-editable,
     {
     min-width: 360px;
     display: block;
+}
+
+gv-add-info-pe-it {
+    .dropdown-item.active {
+        color: inherit;
+        background-color: $gray-300;
+        // border: 1px solid theme-color("primary");
+    }
 }
