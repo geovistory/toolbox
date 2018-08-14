@@ -1,4 +1,14 @@
 <ac-map>
+
+  <ac-map-layer-provider [provider]="urlTemplateProvider" [options]="{
+                                subdomains: 'abc',
+                                url : cartoUrl
+                            }"> </ac-map-layer-provider>
+
+  <ac-map-layer-provider [provider]="urlTemplateProvider" [options]="{
+    url : asterUrl
+  }" [alpha]="0.3"> </ac-map-layer-provider>
+
   <gv-pe-it-presence-layer [path]="path"></gv-pe-it-presence-layer>
 
   <!-- <gv-polygons-editor-layer></gv-polygons-editor-layer> -->

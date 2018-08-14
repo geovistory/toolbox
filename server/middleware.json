@@ -46,6 +46,12 @@
       "paths": [
         "/cartodb-basemaps-proxy"
       ]
+    },
+    "./middleware/aster-proxy": {
+      "enabled": true,
+      "paths": [
+        "/aster-proxy"
+      ]
     }
   },
   "files": {

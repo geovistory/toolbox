@@ -1,5 +1,5 @@
 import { Component, ViewEncapsulation, Input, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import { ViewerConfiguration, MapsManagerService } from 'angular-cesium';
+import { ViewerConfiguration, MapsManagerService, MapLayerProviderOptions } from 'angular-cesium';
 import { NgRedux } from '@angular-redux/store';
 import { IAppState, U, LoopBackConfig } from 'app/core';
 import { Subject } from '../../../../../../node_modules/rxjs';
@@ -17,13 +17,19 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   destroy$ = new Subject<boolean>();
 
+  urlTemplateProvider = MapLayerProviderOptions.UrlTemplateImagery;
+
+  /** Configuration for Carto Basemap */
+  cartoUrl = LoopBackConfig.getPath() + '/cartodb-basemaps-proxy?s={s}&z={z}&x={x}&y={y}';
+
+  /** Configuration for Aster Basemap */
+  asterUrl = LoopBackConfig.getPath() + '/aster-proxy?z={z}&x={x}&y={y}';
+
   constructor(
     viewerConf: ViewerConfiguration,
     private mapsManagerService: MapsManagerService,
     private ngRedux: NgRedux<IAppState>,
   ) {
-
-    const baseUrl = LoopBackConfig.getPath();
 
     viewerConf.viewerOptions = {
       sceneMode: Cesium.SceneMode.SCENE3D,
@@ -38,10 +44,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       navigationHelpButton: true,
       navigationInstructionsInitiallyVisible: false,
       requestRenderMode: true,
-      imageryProvider: new Cesium.UrlTemplateImageryProvider({
-        subdomains: 'abc',
-        url: (baseUrl + '/cartodb-basemaps-proxy?s={s}&z={z}&x={x}&y={y}')
-      }),
       baseLayerPicker: false
     };
 
