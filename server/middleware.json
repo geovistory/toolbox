@@ -40,6 +40,14 @@
       ]
     }
   },
+  "routes:after": {
+    "./middleware/cartodb-basemaps-proxy": {
+      "enabled": true,
+      "paths": [
+        "/cartodb-basemaps-proxy"
+      ]
+    }
+  },
   "files": {
     "loopback#static": {
       "params": "$!../client/dist"

@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation, Input, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ViewerConfiguration, MapsManagerService } from 'angular-cesium';
 import { NgRedux } from '@angular-redux/store';
-import { IAppState, U } from 'app/core';
+import { IAppState, U, LoopBackConfig } from 'app/core';
 import { Subject } from '../../../../../../node_modules/rxjs';
 
 @Component({
@@ -20,8 +20,11 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   constructor(
     viewerConf: ViewerConfiguration,
     private mapsManagerService: MapsManagerService,
-    private ngRedux: NgRedux<IAppState>
+    private ngRedux: NgRedux<IAppState>,
   ) {
+
+    const baseUrl = LoopBackConfig.getPath();
+
     viewerConf.viewerOptions = {
       sceneMode: Cesium.SceneMode.SCENE3D,
       selectionIndicator: true,
@@ -35,8 +38,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       navigationHelpButton: true,
       navigationInstructionsInitiallyVisible: false,
       requestRenderMode: true,
-      imageryProvider: new Cesium.ArcGisMapServerImageryProvider({
-        url: '//services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'
+      imageryProvider: new Cesium.UrlTemplateImageryProvider({
+        subdomains: 'abc',
+        url: (baseUrl + '/cartodb-basemaps-proxy?s={s}&z={z}&x={x}&y={y}')
       }),
       baseLayerPicker: false
     };

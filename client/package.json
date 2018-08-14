@@ -30,7 +30,6 @@
     "@angular/router": "6.1.0",
     "@ng-bootstrap/ng-bootstrap": "^1.0.0",
     "@redux-utilities/reduce-reducers": "^0.1.5",
-    "angular-cesium": "file:angular-cesium-0.0.51.tgz",
     "angular2-elastic-input": "^1.4.2",
     "bootstrap": "^4.0.0",
     "cesium": "^1.47.0",
@@ -53,7 +52,8 @@
     "rxjs-compat": "^6.2.2",
     "socket.io-client": "^2.1.1",
     "typescript": "2.9.2",
-    "zone.js": "^0.8.26"
+    "zone.js": "^0.8.26",
+    "angular-cesium": "file:angular-cesium-0.0.51.tgz"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.7.0",
