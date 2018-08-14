@@ -144,7 +144,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist-playground",
+            "outputPath": "dist/playground",
             "index": "src/index.html",
             "main": "src/main.playground.ts",
             "tsConfig": "src/tsconfig.app.json",
