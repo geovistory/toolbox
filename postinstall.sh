@@ -8,8 +8,9 @@ echo ''
 # export GEOV_REV_DATABASE_URL='postgres://postgres:Guru@Marly@165.227.150.159:5432/geovistory_review?ssl=true' && export HEROKU_APP_NAME='geovistory-staging-pr-25' && export DB_ENV='review' && export DB_USER='postgres' && export DB_PASSWORD="Guru@Marly" && export DB_HOST='165.227.150.159' && export DB_PORT='5432' && sh postinstall.sh
 
 
-# if $DB_ENV = review
+# if $DB_ENV = review and the recreation process is not skipped
 
+# set skipDump to true if you want to skip the recreation process
 skipDump=true
 echo 'skipDump is: '$skipDump
 
