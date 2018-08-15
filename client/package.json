@@ -54,8 +54,7 @@
     "socket.io-client": "^2.1.1",
     "typescript": "2.9.2",
     "zone.js": "^0.8.26",
-    "angular-cesium": "file:angular-cesium-0.0.51.tgz",
-    "angular-playground": "^5.0.1"
+    "angular-cesium": "file:angular-cesium-0.0.51.tgz"
   },
   "devDependencies": {
     "@angular/language-service": "6.1.0",
@@ -67,6 +66,7 @@
     "@types/ramda": "^0.25.36",
     "@types/redux-logger": "^3.0.5",
     "@types/socket.io-client": "^1.4.29",
+    "angular-playground": "^5.0.1",
     "codelyzer": "~3.0.1",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",

@@ -8,8 +8,6 @@
   },
   "exclude": [
     "test.ts",
-    "**/*.spec.ts",
-    "**/*.sandbox.ts",
-    "**/*.playground.ts"
+    "**/*.spec.ts"
   ]
 }

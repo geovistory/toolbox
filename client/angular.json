@@ -147,7 +147,7 @@
             "outputPath": "dist/playground",
             "index": "src/index.html",
             "main": "src/main.playground.ts",
-            "tsConfig": "src/tsconfig.app.json",
+            "tsConfig": "src/tsconfig.playground.json",
             "polyfills": "src/polyfills.ts",
             "assets": [
               "src/assets",
@@ -234,7 +234,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "src/tsconfig.app.json",
+              "src/tsconfig.playground.json",
               "src/tsconfig.spec.json"
             ],
             "exclude": []
