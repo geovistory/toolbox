@@ -41,8 +41,7 @@
     "serve-favicon": "^2.0.1",
     "strong-error-handler": "^2.0.0",
     "tracer": "^0.8.11",
-    "typescript": "^2.6.1",
-    "webpack": "^4.4.1"
+    "typescript": "^2.6.1"
   },
   "devDependencies": {
     "eslint": "^3.17.1",

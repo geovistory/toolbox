@@ -10,7 +10,10 @@ echo ''
 
 # if $DB_ENV = review
 
-if [ $DB_ENV = 'review' ]
+skipDump=true
+echo 'skipDump is: '$skipDump
+
+if [ $DB_ENV = 'review' -a $skipDump = false ]
 then
   echo '================ Recreate database for review app ================'
   echo ''
