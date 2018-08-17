@@ -46,6 +46,7 @@ import { ToolbarExampleComponent } from './components/toolbar-example/toolbar-ex
 import { BoxesLayerComponent } from './components/boxes-layer/boxes-layer.component';
 import { TrackEntityLayerComponent } from './components/track-entity-layer/track-entity-layer.component';
 import { CzmlLayerComponent } from './components/czml-layer/czml-layer.component';
+import { LabelLayerComponent } from './components/label-layer/label-layer.component';
 
 
 @NgModule({
@@ -88,6 +89,7 @@ import { CzmlLayerComponent } from './components/czml-layer/czml-layer.component
     BoxesLayerComponent,
     TrackEntityLayerComponent,
     CzmlLayerComponent,
+    LabelLayerComponent
   ],
   imports: [
     BrowserModule,
