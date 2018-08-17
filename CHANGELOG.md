@@ -1,7 +1,10 @@
 ### Features
 * New `<ac-czml-desc>` component for adding CzmlDataSource to ac-layer.
 * New `czml-drawer` service 
-* New `<czml-layer` component in demo app to show usage of `<ac-czml-desc>`
+* New `<czml-layer` component in demo app to show usage of `<ac-czml-desc>
+
+### Fixes
+* Fixed Angular 6 AOT Compilation error  [#244](https://github.com/TGFTech/angular-cesium/issues/224) by removing angular2parse dependency and adding a angular-parse folder instead
 
 ## 0.0.52
 ### Fixes
