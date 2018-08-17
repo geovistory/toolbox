@@ -135,7 +135,7 @@ export class AcMapComponent implements OnChanges, OnInit, AfterViewInit, OnDestr
   }
 
   ngOnInit() {
-    this.mapsManagerService.registerMap(this.id, this);
+    this.id = this.mapsManagerService.registerMap(this.id, this);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
