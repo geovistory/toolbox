@@ -1,3 +1,6 @@
+### Features
+* Unregister map in `MapsManagerService` on destroy of `AcMapComponent`
+
 ## 0.0.52
 ### Fixes
 * Fixed shape editors 2D points bug - remove height reference

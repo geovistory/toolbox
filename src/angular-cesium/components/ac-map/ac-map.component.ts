@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, Input, OnChanges, OnInit, SimpleChanges, OnDestroy } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { CesiumService } from '../../services/cesium/cesium.service';
 import { BillboardDrawerService } from '../../services/drawers/billboard-drawer/billboard-drawer.service';
@@ -20,7 +20,7 @@ import { ConfigurationService } from '../../cesium-enhancements/ConfigurationSer
 import { ScreenshotService } from '../../services/screenshot/screenshot.service';
 import { ContextMenuService } from '../../services/context-menu/context-menu.service';
 import { CoordinateConverter } from '../../services/coordinate-converter/coordinate-converter.service';
-import {PolylinePrimitiveDrawerService} from '../../services/drawers/polyline-primitive-drawer/polyline-primitive-drawer.service'
+import { PolylinePrimitiveDrawerService } from '../../services/drawers/polyline-primitive-drawer/polyline-primitive-drawer.service'
 
 /**
  * This is a map implementation, creates the cesium map.
@@ -59,12 +59,12 @@ import {PolylinePrimitiveDrawerService} from '../../services/drawers/polyline-pr
     PolygonDrawerService,
     MapLayersService,
     CameraService,
-		ScreenshotService,
+    ScreenshotService,
     ContextMenuService,
     CoordinateConverter,
   ]
 })
-export class AcMapComponent implements OnChanges, OnInit, AfterViewInit {
+export class AcMapComponent implements OnChanges, OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Disable default plonter context menu
@@ -95,38 +95,38 @@ export class AcMapComponent implements OnChanges, OnInit, AfterViewInit {
   private mapContainer: HTMLElement;
 
   constructor(private _cesiumService: CesiumService,
-              private _cameraService: CameraService,
-              private _elemRef: ElementRef,
-              @Inject(DOCUMENT) private document: any,
-              private mapsManagerService: MapsManagerService,
-              private billboardDrawerService: BillboardDrawerService,
-              private labelDrawerService: LabelDrawerService,
-              private ellipseDrawerService: EllipseDrawerService,
-              private polylineDrawerService: PolylineDrawerService,
-              private polygonDrawerService: PolygonDrawerService,
-              private arcDrawerService: ArcDrawerService,
-              private pointDrawerService: PointDrawerService,
-              private mapEventsManager: MapEventsManagerService,
-              private keyboardControlService: KeyboardControlService,
-              private mapLayersService: MapLayersService,
-              private configurationService: ConfigurationService,
-              private screenshotService: ScreenshotService,
-              public contextMenuService: ContextMenuService,
-              private coordinateConverter: CoordinateConverter) {
+    private _cameraService: CameraService,
+    private _elemRef: ElementRef,
+    @Inject(DOCUMENT) private document: any,
+    private mapsManagerService: MapsManagerService,
+    private billboardDrawerService: BillboardDrawerService,
+    private labelDrawerService: LabelDrawerService,
+    private ellipseDrawerService: EllipseDrawerService,
+    private polylineDrawerService: PolylineDrawerService,
+    private polygonDrawerService: PolygonDrawerService,
+    private arcDrawerService: ArcDrawerService,
+    private pointDrawerService: PointDrawerService,
+    private mapEventsManager: MapEventsManagerService,
+    private keyboardControlService: KeyboardControlService,
+    private mapLayersService: MapLayersService,
+    private configurationService: ConfigurationService,
+    private screenshotService: ScreenshotService,
+    public contextMenuService: ContextMenuService,
+    private coordinateConverter: CoordinateConverter) {
     this.mapContainer = this.document.createElement('div');
     this.mapContainer.className = 'map-container';
     this._elemRef.nativeElement.appendChild(this.mapContainer);
     this._cesiumService.init(this.mapContainer);
     this._cameraService.init(this._cesiumService);
-		this.mapEventsManager.init();
-		this.billboardDrawerService.init();
-		this.labelDrawerService.init();
-		this.ellipseDrawerService.init();
-		this.polylineDrawerService.init();
-		this.polygonDrawerService.init();
-		this.arcDrawerService.init();
-		this.pointDrawerService.init();
-		this.keyboardControlService.init();
+    this.mapEventsManager.init();
+    this.billboardDrawerService.init();
+    this.labelDrawerService.init();
+    this.ellipseDrawerService.init();
+    this.polylineDrawerService.init();
+    this.polygonDrawerService.init();
+    this.arcDrawerService.init();
+    this.pointDrawerService.init();
+    this.keyboardControlService.init();
     this.contextMenuService.init(this.mapEventsManager);
   }
 
@@ -142,10 +142,14 @@ export class AcMapComponent implements OnChanges, OnInit, AfterViewInit {
       this._cameraService.cameraFlyTo(changes['flyTo'].currentValue);
     }
   }
-	
-	ngAfterViewInit(): void {
+
+  ngAfterViewInit(): void {
     this.mapLayersService.drawAllLayers();
-	}
+  }
+
+  ngOnDestroy(): void {
+    this.mapsManagerService.unregisterMap(this.id);
+  }
 
   /**
    * @returns {CesiumService} ac-map's cesium service
