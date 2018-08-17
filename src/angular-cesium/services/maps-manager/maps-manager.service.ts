@@ -30,6 +30,10 @@ export class MapsManagerService {
     this._Maps.set(mapId, acMap);
   }
 
+  unregisterMap(id: string) {
+    this._Maps.delete(id);
+  }
+
   private generateDefaultId(): string {
     this.defaultIdCounter++;
     return 'default-map-id-' + this.defaultIdCounter;

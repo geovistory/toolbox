@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, Input, OnChanges, OnInit, SimpleChanges, OnDestroy } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { CesiumService } from '../../services/cesium/cesium.service';
 import { BillboardDrawerService } from '../../services/drawers/billboard-drawer/billboard-drawer.service';
@@ -61,12 +61,12 @@ import { CzmlDrawerService } from '../../services/drawers/czml-drawer/czml-drawe
     PolygonDrawerService,    
     MapLayersService,
     CameraService,
-		ScreenshotService,
+    ScreenshotService,
     ContextMenuService,
     CoordinateConverter,
   ]
 })
-export class AcMapComponent implements OnChanges, OnInit, AfterViewInit {
+export class AcMapComponent implements OnChanges, OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Disable default plonter context menu
@@ -146,10 +146,14 @@ export class AcMapComponent implements OnChanges, OnInit, AfterViewInit {
       this._cameraService.cameraFlyTo(changes['flyTo'].currentValue);
     }
   }
-	
-	ngAfterViewInit(): void {
+
+  ngAfterViewInit(): void {
     this.mapLayersService.drawAllLayers();
-	}
+  }
+
+  ngOnDestroy(): void {
+    this.mapsManagerService.unregisterMap(this.id);
+  }
 
   /**
    * @returns {CesiumService} ac-map's cesium service
