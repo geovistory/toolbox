@@ -1,0 +1,11 @@
+<ng-template #rt let-r="result" let-t="term">
+  {{ r.notes}}
+  <small class="text-muted">{{ r.iso6391}}</small>
+</ng-template>
+
+<form [formGroup]="formGroup">
+
+  <input id="typeahead-http" type="text" class="form-control" formControlName="language" [class.is-invalid]="searchFailed"
+    [ngbTypeahead]="search" [resultTemplate]="rt" placeholder="Search for a language" [inputFormatter]="formatter" (blur)="touched.emit()" />
+
+</form>

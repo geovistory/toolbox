@@ -1,0 +1,74 @@
+<div class="card gv-name" [ngClass]="{
+  'gv-border-selected': ((accentuation$ | async) === 'selected'),
+  'gv-border-highlighted': ((accentuation$ | async) === 'highlighted')
+}" (mouseenter)="mouseenter()" (mouseleave)="mouseleave()">
+
+  <div class="card-header gv-name-header d-flex flex-row">
+    <ng-content select="[headerLeft]"></ng-content>
+    <div class="gv-flex-grow-1 d-flex" (click)="toggleCardBody()">
+      <div>
+        <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
+      </div>
+      <div class="gv-flex-grow-1 gv-pointer">
+        <span *ngIf="labelInEdit">{{labelInEdit}}</span>
+        <gv-te-ent-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-te-ent-label>
+      </div>
+    </div>
+    <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+      <div class="align-self-center">
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{classConfig.dfh_pk_class}}" target="_blank">
+          {{classConfig.dfh_identifier_in_namespace}}
+        </a>
+      </div>
+    </div>
+    <ng-content select="[headerRight]"></ng-content>
+  </div>
+  <ng-content select="[belowHeader]"></ng-content>
+
+  <div [@slideInOut]="(toggle$|async)">
+
+    <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
+      <span [ngSwitch]="item.key">
+
+        <gv-existence-time-editable *ngSwitchCase="'_existenceTime'" mode="editable" [basePath]="basePath.concat('_children').concat(item.key)"
+          (onRemovePropSet)="removePropSet(item.key)"></gv-existence-time-editable>
+
+        <gv-te-ent-role-set-editable *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath" [index]="item.key"
+          (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-te-ent-role-set-editable>
+
+      </span>
+    </div>
+
+
+    <div class="gv-footer border-top border-white">
+
+      <!-- Step 1 for adding a new property -->
+
+      <button class="btn btn-light btn-sm btn-block text-secondary rounded-top-0" (click)="startSelectProperty()" *ngIf="(selectPropState$ | async) === 'init'">
+        <i class="fa fa-plus"></i> Add a property ...
+      </button>
+
+      <!-- Step 2 for adding new Property section -->
+
+      <div class="d-flex flex-column gv-flex-grow-1 bg-light border-top border-gray" *ngIf="(selectPropState$ | async) === 'selectProp'">
+
+        <div class="card-header bt-1">
+          <div class="d-flex">
+            <div class="gv-flex-grow-1 align-self-center">
+              What do you want to add?
+            </div>
+            <button type="button" name="button" class="btn btn-link align-self-center btn-sm" (click)="stopSelectProperty()">
+              <i class="fa fa-close"></i>
+            </button>
+          </div>
+        </div>
+
+        <gv-add-info-te-ent [uiElements]="uiElementsForAddInfo" [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)"
+          [excludeRoleSet]="(parentRoleSet$ | async)"></gv-add-info-te-ent>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ************************** NG TEMPLATES ****************************** -->

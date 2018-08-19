@@ -1,0 +1,25 @@
+<section class="row">
+  <div class="col-md-8">
+    <h2>
+      {{label?.parts[0]?.roleLabel?.string}}
+      <small class="text-muted">{{classConfig?.label}}</small>
+    </h2>
+
+    <span *ngFor="let p of label.parts; let i = index">
+      <span *ngIf="i > 0">
+        <span *ngIf="p && p.roleLabel.type === 'te-ent' && p.roleLabel.string">
+          <small class="text-muted">{{p?.introducer}}:</small>
+          {{p?.roleLabel?.string}}
+          <small> {{p?.suffix}} </small>
+        </span>
+
+      </span>
+    </span>
+  </div>
+</section>
+
+<!-- <br>        
+◊
+<span style="font-size: 10pt">
+  {{label | json}}
+</span> -->

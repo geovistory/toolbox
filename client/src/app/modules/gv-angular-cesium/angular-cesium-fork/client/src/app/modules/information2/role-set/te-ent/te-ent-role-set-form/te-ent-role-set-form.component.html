@@ -1,0 +1,51 @@
+<!-- Step 1: Form for adding existing roles -->
+<form [formGroup]="addForm" (ngSubmit)="addRoles()" *ngIf="(_role_set_form$ | async)?._role_add_list">
+    <div class="card-body border-top d-flex">
+      <h5 class="gv-flex-grow-1 align-self-center m-0">
+        {{(label$ | async)?.pl}} found in other projects
+      </h5>
+    </div>
+    <div class="card-body">
+      Select and add a {{(label$ | async)?.sg}} from the list below, <br>
+      or create a new one.
+    </div>
+  
+    <div class="card-body">
+      <div *ngFor="let entry of _role_add_list | keys; trackBy:getKey">
+        <gv-te-ent-role-add-ctrl *ngIf="addForm.get(entry.key)" [parentPath]="roleSetFormPath" [index]="entry.key" intermediatePathSegment="_role_add_list"
+          [formControlName]="entry.key"></gv-te-ent-role-add-ctrl>
+      </div>
+    </div>
+  
+  
+    <div class="card-body">
+      <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Add selected</button>
+      <button type="submit" class="btn btn-primary" (click)="startCreateNewRole()">Create new</button>
+      <button type="button" class="btn btn-link" (click)="cancelCreateRoles()">Cancel</button>
+    </div>
+  
+  </form>
+  
+  
+  <!-- Step 2: Form for creating new roles -->
+  <form [formGroup]="createForm" (ngSubmit)="createRoles()" *ngIf="(_role_set_form$ | async)?._role_create_list">
+  
+    <div class="card-body border-top d-flex">
+      <h5 class="gv-flex-grow-1 align-self-center m-0">
+        Add a new {{(label$ | async)?.sg}}
+      </h5>
+    </div>
+  
+    <div class="card-body">
+      <div *ngFor="let entry of (_role_set_form$ | async)?._role_create_list | keys; trackBy:getKey">
+        <gv-te-ent-role-create-ctrl *ngIf="createForm.get(entry.key)" [parentPath]="roleSetFormPath" [index]="entry.key" intermediatePathSegment="_role_create_list"
+          [formControlName]="entry.key"></gv-te-ent-role-create-ctrl>
+      </div>
+    </div>
+  
+  
+    <div class="card-body">
+      <button [disabled]="createForm.invalid" type="submit" class="btn btn-primary">Save</button>
+      <button type="button" class="btn btn-link" (click)="cancelCreateRoles()">Cancel</button>
+    </div>
+  </form>

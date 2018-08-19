@@ -1,0 +1,38 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    Info
+  </h4>
+
+  <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+
+<!-- Todo add gv-pe-it-view -->
+  <!-- <gv-pe-it-editable [basePath]="parentPath"></gv-pe-it-editable> -->
+
+  <gv-pe-it-add-form  *ngIf="!isInProject" [basePath]="parentPath.concat('_leaf_peIt_modal')" (formChange)="formChange($event)"></gv-pe-it-add-form>
+
+  <gv-pe-it-editable  *ngIf="isInProject" [basePath]="parentPath.concat('_leaf_peIt_modal')"></gv-pe-it-editable>
+
+
+</div>
+
+<div class="modal-footer d-flex flex-column align-items-stretch">
+  <p *ngIf="!isInProject">
+    This unit is not yet added to your Project. Do you want to add it to your Project?
+  </p>
+  <div class="d-flex justify-content-end">
+    <button class="btn btn-link btn" (click)="modal.dismiss('Cancel click')">
+      Cancel
+    </button>
+    <button [disabled]="addButtonDisabled" type="button" class="btn btn-primary btn" (click)="addAndOpen()" *ngIf="!isInProject">
+      Add and Open
+    </button>
+    <button type="button" class="btn btn-primary btn" (click)="open()" *ngIf="isInProject">
+      Open
+    </button>
+  </div>
+</div>

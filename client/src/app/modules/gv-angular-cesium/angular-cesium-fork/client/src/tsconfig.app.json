@@ -1,0 +1,17 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/app",
+    "module": "esnext",
+    "baseUrl": "",
+    "types": []
+  },
+  "exclude": [
+    "test.ts",
+    "**/*.spec.ts",
+    "**/*.sandbox.ts",
+    "**/*.playground.ts",
+    "./app/modules/gv-angular-cesium/angular-cesium-fork/demo/",
+    "./app/modules/gv-angular-cesium/angular-cesium-fork/src/angular-cesium/utils/testingUtils.ts"
+  ]
+}

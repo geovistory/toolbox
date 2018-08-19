@@ -1,0 +1,87 @@
+<div class="d-flex mb-3 gv-flex-shrink-0">
+
+  <button class="btn btn-link text-info" (click)="close.emit()">
+    <i class="fa fa-arrow-left"></i> All Sources
+  </button>
+</div>
+
+<div class="d-flex m-3 gv-flex-shrink-0">
+  <div class="gv-flex-grow-1">
+    <h2>
+      {{( (view$ | async)?.notes ? (view$ | async)?.notes : (edit$ | async)?.notes ? (edit$ | async)?.notes : (annotate$ | async)?.notes
+      ? (annotate$ | async)?.notes : '' ) }}
+      <small class="text-muted">Source</small>
+    </h2>
+  </div>
+  <div>
+    <div class="float-right mt-2" role="group">
+      <button class="btn btn-secondary btn-sm" (click)="startEdit()" *ngIf="!((edit$ | async) || (annotationPanel$ | async)?.edit)">
+        <i class="fa fa-edit" aria-hidden="true"></i> Edit
+      </button>
+      <button class="btn btn-outline-primary btn-sm" (click)="cancelEdit()" *ngIf="(edit$ | async)">
+        Cancel
+      </button>
+      <button class="btn btn-primary btn-sm" (click)="save()" *ngIf="(edit$ | async)">
+        <i class="fa fa-save" aria-hidden="true"></i> Save
+      </button>
+      <button class="btn btn-sm btn-secondary" (click)="showAnnotations()" *ngIf="!(annotationPanel$ | async)">
+        <i class="fa fa-quote-left" aria-hidden="true"></i> Show Annotations
+      </button>
+      <button class="btn btn-sm btn-secondary" (click)="hideAnnotations()" *ngIf="((annotationPanel$ | async) && !(annotationPanel$ | async)?.edit)">
+        <i class="fa fa-quote-left" aria-hidden="true"></i> Hide Annotations
+      </button>
+      <button class="btn btn-sm btn-secondary" (click)="startCreateAnnotation()" *ngIf="(!(edit$ | async) && !(annotationPanel$ | async)?.edit && (annotationPanel$ | async))">
+        <i class="fa fa-plus" aria-hidden="true"></i> Create Annotation
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="p-3 gv-flex-grow-1 d-flex flex-row">
+  <div class="gv-flex-grow-1 d-flex flex-column">
+
+    <!-- View -->
+    <div class="gv-flex-grow-1 d-flex flex-row" *ngIf="!((edit$ | async) || (annotate$ | async))">
+      <gv-quill-edit *ngIf="!(annotationPanel$ | async)" class="gv-flex-grow-1 d-flex flex-column" [quillDoc]="(view$ | async).js_quill_data"
+        [readOnly]="true"></gv-quill-edit>
+
+      <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-flex-grow-1 d-flex flex-column" [quillDoc]="(view$ | async).js_quill_data"
+        [readOnly]="true" [annotationsVisible]="true" [annotatedNodes]="annotatedNodes" (selectedDeltaChange)="onSelectedDeltaChange($event)"></gv-quill-edit>
+
+    </div>
+
+    <!-- Edit -->
+    <div class="gv-flex-grow-1 d-flex flex-column" *ngIf="(edit$ | async)">
+      <gv-quill-edit *ngIf="!(annotationPanel$ | async)" class="gv-flex-grow-1 d-flex flex-column" [quillDoc]="(edit$ | async).js_quill_data"
+        [readOnly]="false" (quillDocChange)="onQuillDocChange($event)"></gv-quill-edit>
+
+      <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-flex-grow-1 d-flex flex-column" [quillDoc]="(edit$ | async).js_quill_data"
+        [annotationsVisible]="true" [annotatedNodes]="annotatedNodes" (quillDocChange)="onQuillDocChange($event)"></gv-quill-edit>
+
+    </div>
+
+    <!-- Annotate -->
+    <div class="gv-flex-grow-1 d-flex flex-column" *ngIf="(annotate$ | async)">
+      <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-flex-grow-1 d-flex flex-column" [quillDoc]="(annotate$ | async).js_quill_data"
+        [creatingAnnotation]="true" (selectedDeltaChange)="onSelectedDeltaChange($event)"></gv-quill-edit>
+    </div>
+
+
+  </div>
+
+  <div class="ml-3 d-flex " *ngIf="(annotationPanel$ | async) ">
+    <gv-annotation-panel class="d-flex flex-column gv-flex-grow-1 " [path]="annotationPanelPath"></gv-annotation-panel>
+  </div>
+
+
+</div>
+
+<!-- 
+    <gv-quill-edit  
+  
+  class="gv-flex-grow-1 d-flex flex-column " [contents]="(digitalObject$ | async)?.contents " [latestId]="(digitalObject$
+        | async)?.latestId "
+    [readOnly]="true " [annotationsVisible]="!(showAnnotations$ | async) " [annotatedNodes]="annotatedNodes "
+    (selectedDeltaChange)="onSelectedDeltaChange($event) "></gv-quill-edit>
+
+ -->

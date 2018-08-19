@@ -1,0 +1,57 @@
+{
+  "name": "InfTimePrimitive",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "v_time_primitive"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "pk_entity": {
+      "id": true,
+      "type": "number",
+      "generated": true
+    },
+    "fk_class": {
+      "type": "number",
+      "required": true
+    },
+    "julian_day": {
+      "type": "number",
+      "required": true
+    },
+    "duration": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find",
+        "findComplex"
+      ]
+    }
+  ],
+  "methods": {  }
+}

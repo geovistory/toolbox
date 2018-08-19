@@ -1,0 +1,23 @@
+<form [formGroup]="formGroup" *ngIf="formGroup && formGroup.get(formControlName)">
+  <gv-te-ent-add-ctrl [parentPath]="basePath" [formControlName]="formControlName" (touched)="markAsTouched()">
+
+    <div headerLeft>
+      <!-- UI for is in project -->
+
+      <div class="gv-in-project">
+
+
+        <input type="checkbox" [formControlName]="'is_in_project'">
+        
+
+      </div>
+
+    </div>
+    <div headerRight>
+
+
+    </div>
+
+
+  </gv-te-ent-add-ctrl>
+</form>

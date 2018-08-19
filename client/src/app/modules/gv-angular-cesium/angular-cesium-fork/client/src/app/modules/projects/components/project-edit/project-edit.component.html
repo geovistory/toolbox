@@ -1,0 +1,55 @@
+<gv-navbar>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a routerLink="/">
+        <i class="fa fa-home"></i> Home</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a routerLink="../../">Your Projects</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a routerLink="../">Project {{project?.labels[0].label}}</a>
+    </li>
+    <li class="breadcrumb-item">Edit project</li>
+  </ol>
+</gv-navbar>
+<div id="edit" class="gv-edit container-fluid">
+  <div class="row">
+    <gv-project-edit-panel id="sources" (goToState0Start)="sourcesGoToState0()" (goToState50Start)="sourcesGoToState50()" [stateInput]="sourcesState">
+
+      
+        
+        <div closeBtn>
+        <button type="button" name="button" class="btn btn-link text-info" title="Minimize">
+          <i class="fa fa-compress"></i>
+        </button>
+      </div>
+      <div expandBtn>
+          <i class="gv-icon-source text-info"></i>
+          <span class="gv-rotate-text-90 text-muted">Sources</span>
+      </div>
+      <div body>
+        <router-outlet name="sources"></router-outlet>
+      </div>
+    
+
+    </gv-project-edit-panel>
+
+    <gv-project-edit-panel id="information" (goToState0Start)="informationGoToState0()" (goToState50Start)="informationGoToState50()"
+      [stateInput]="informationState">
+
+      <div closeBtn>
+        <button type="button" name="button" class="btn btn-link" title="Minimize">
+          <i class="fa fa-compress"></i>
+        </button>
+      </div>
+      <div expandBtn>
+        <i class="gv-icon-information-simple text-primary"></i>
+        <span class="gv-rotate-text-90 text-muted">Data&nbsp;Units</span>
+      </div>
+      <div body>
+        <router-outlet name="information"></router-outlet>
+      </div>
+    </gv-project-edit-panel>
+  </div>
+</div>

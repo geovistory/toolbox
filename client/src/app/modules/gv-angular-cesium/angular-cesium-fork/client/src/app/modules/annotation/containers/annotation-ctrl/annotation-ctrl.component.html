@@ -1,0 +1,48 @@
+<!--******************************* step 1: selecting segment ************************** -->
+<!-- if (selectingSegment) show "Selecting Text" and ChunkViewComponent passing in the Chunk  -->
+<div class="mb-3" *ngIf="annotationState?.selectingSegment">
+  <h5>
+    Create an Annotation
+  </h5>
+  <h6 class="mb-5" *ngIf="!annotationState?.chunk?.quillDelta?.ops?.length">
+    Select some words in the source to the left.
+  </h6>
+
+</div>
+
+<div class="card mb-3" *ngIf="annotationState?.selectingSegment">
+
+  <div class="card-body">
+    <gv-chunk-view [chunk]="annotationState?.chunk"></gv-chunk-view>
+  </div>
+
+</div>
+
+<!-- if (chunk && selectingSegment) show next button (click)="next()" -->
+<button *ngIf="annotationState?.chunk?.quillDelta?.ops?.length && annotationState?.selectingSegment" class="btn btn-primary"
+  (click)="next()">Connect with data unit</button>
+
+
+<!--******************************* step 2: selecting entities ************************** -->
+<!-- if (!selectingSegment) show MentionedEntitiesCtrlComponent passing the MentionedEntity[] as formVal and the Path -->
+
+<div class="card my-3" *ngIf="!annotationState?.selectingSegment">
+
+
+  <div class="card-header bg-light border-bottom-0">
+    <gv-chunk-view [chunk]="annotationState?.chunk"></gv-chunk-view>
+  </div>
+
+  <!-- entities -->
+  <form [formGroup]="formGroup">
+    <gv-mentioned-entities-ctrl [formControlName]="'mentionedEntitiesCtrl'" [path]="mentionedEntitiesCtrlPath"></gv-mentioned-entities-ctrl>
+  </form>
+  <gv-control-messages class="ml-3" [control]="formGroup?.get('mentionedEntitiesCtrl')"></gv-control-messages>
+
+</div>
+
+<div class="mb-3" *ngIf="!annotationState?.selectingSegment">
+  <h6>
+    Select the data unit mentioned by this annotation (on the right side).
+  </h6>
+</div>
