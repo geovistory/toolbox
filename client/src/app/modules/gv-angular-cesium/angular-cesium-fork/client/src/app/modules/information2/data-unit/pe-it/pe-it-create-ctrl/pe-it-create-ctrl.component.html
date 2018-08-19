@@ -1,6 +1,0 @@
-<form [formGroup]="formGroup" *ngIf="formGroup">
-  <div *ngFor="let entry of (_children$ | async) | keys; trackBy:getKey" >
-      <gv-pe-it-role-set-create-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath"
-       [index]="entry.key" [formControlName]="entry.key" (touched)="markAsTouched()"></gv-pe-it-role-set-create-ctrl>
-    </div>
-  </form>
