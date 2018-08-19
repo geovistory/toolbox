@@ -96,12 +96,15 @@ export class PeItLayerComponent implements OnInit, OnDestroy {
 
             if (peItDetail) {
 
-                // redraw all entities of the peItDetail
+                // get all presences
                 const presences = U.presencesFromPeIt(peItDetail, this.path);
                 const processedPrecences = U.czmlPacketsFromPresences(presences);
-                const teEnts = U.teEntsWithoutPresencesFromPeIt(peItDetail, this.path);
-                const processedTeEnts = U.czmlPacketsFromTeEnts(teEnts);
 
+                // get all other te-ents
+                const teEnts = U.teEntsWithoutPresencesFromPeIt(peItDetail, this.path);
+                const processedTeEnts = U.czmlPacketsFromTeEnts(teEnts, this.ngRedux.getState().activeProject.crm);
+
+                // add all packets
                 processedPrecences.czmlPackets.forEach(czmlPacket => {
                     const acNotification = U.acNotificationFromPacket(czmlPacket, ActionType.ADD_UPDATE);
                     this.updater.next(acNotification);

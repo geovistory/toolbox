@@ -53,14 +53,21 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       navigationHelpButton: true,
       navigationInstructionsInitiallyVisible: false,
       requestRenderMode: true,
-      baseLayerPicker: false
+      baseLayerPicker: false,
+      resolutionScale: 2
     };
 
   }
 
+
+
   ngAfterViewInit() {
-    // register cursor position changes
     const viewer = this.acMap.getCesiumViewer();
+
+    // set resolution Scale (for clean rendering on retina displays)
+    viewer.resolutionScale = window.devicePixelRatio;
+
+    // register cursor position changes
     this.ngRedux.select<number>([...this.path, 'timeLineSettings', 'cursorPosition'])
       .takeUntil(this.destroy$)
       .subscribe(pos => {

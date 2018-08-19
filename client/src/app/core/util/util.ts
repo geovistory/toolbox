@@ -8,7 +8,7 @@ import {
 } from '../../modules/information2/information.models';
 import { AppellationLabel } from '../../modules/information2/shared/appellation-label';
 import { DfhConfig } from '../../modules/information2/shared/dfh-config';
-import { ClassConfig } from '../active-project/active-project.models';
+import { ClassConfig, ProjectCrm } from '../active-project/active-project.models';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType } from '../date-time/time-primitive';
 import { ComPropertySet, ComUiContextConfig, DfhClass, InfEntityProjectRel } from '../sdk';
@@ -760,7 +760,7 @@ export class U {
     }
 
 
-    static czmlPacketsFromTeEnts(teEntsWithPath: { path: string[]; teEntDetail: TeEntDetail; }[]): {
+    static czmlPacketsFromTeEnts(teEntsWithPath: { path: string[]; teEntDetail: TeEntDetail; }[], crm: ProjectCrm): {
         earliestJulianDate: CesiumJulianDate,
         latestJulianDate: CesiumJulianDate,
         czmlPackets: any[]
@@ -781,6 +781,7 @@ export class U {
             const teEntDetail = teEntWithPath.teEntDetail;
 
 
+
             // get leaf peIts...
             U.obj2Arr(teEntDetail._children).forEach(duChild => {
                 if (duChild.type === 'RoleSet') {
@@ -797,8 +798,6 @@ export class U {
                             if (roleDetail._leaf_peIt && !roleDetail._leaf_peIt.loading) {
                                 // get presences of leaf-peIts
                                 const presences = U.presencesFromPeIt(roleDetail._leaf_peIt, [])
-
-
 
                                 presences.forEach(p => {
 
@@ -857,9 +856,9 @@ export class U {
 
                                         const minMax = exTime.getMinMaxTimePrimitive();
 
-                                        const min = new Cesium.JulianDate(minMax.min.julianDay);
+                                        const min = new Cesium.JulianDate(minMax.min.julianDay, 0, Cesium.TimeStandard.TAI);
                                         const max = new Cesium.JulianDate(minMax.max.getDateTime()
-                                            .getEndOf(minMax.max.duration).getJulianDay());
+                                            .getEndOf(minMax.max.duration).getJulianDay(), 86400, Cesium.TimeStandard.TAI);
 
                                         const minStr = Cesium.JulianDate.toIso8601(min);
                                         const maxStr = Cesium.JulianDate.toIso8601(max);
@@ -907,6 +906,20 @@ export class U {
                                             },
                                             outlineWidth: 3,
                                             pixelSize: 15
+                                        },
+                                        label: {
+                                            id: 'label of: ' + placeRole.pk_entity,
+                                            text: crm.classes[teEntDetail.fkClass].label,
+                                            font: '14pt source sans pro',
+                                            horizontalOrigin: 'LEFT',
+                                            outlineColor: {
+                                                rgba: [50, 50, 50, 255]
+                                            },
+                                            outlineWidth: 3,
+                                            pixelOffset: {
+                                                cartesian2: [14.0, -14.0]
+                                            },
+                                            style: 'FILL_AND_OUTLINE',
                                         },
                                         properties: {
                                             path: JSON.stringify(path) // path of initial teEnt (not presence)
