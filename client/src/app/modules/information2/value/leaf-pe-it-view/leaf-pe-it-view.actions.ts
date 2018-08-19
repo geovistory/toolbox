@@ -9,13 +9,15 @@ import { PeItDetail } from '../../information.models';
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = PeItDetail;
-export type LeafPeItAction = FluxStandardAction<Payload, any>;
+interface MetaData {
+  pkEntity?: number
+}
+export type LeafPeItAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
 export class LeafPeItActions {
 
   static readonly LEAF_PE_IT_START_LOADING = 'LEAF_PE_IT_START_LOADING';
-
   static readonly LEAF_PE_IT_STATE_ADDED = 'LEAF_PE_IT_STATE_ADDED';
   static readonly LEAF_PE_IT_STATE_REMOVED = 'LEAF_PE_IT_STATE_REMOVED';
   static readonly LEAF_PK_ENTITY_SELECTED = 'LEAF_PK_ENTITY_SELECTED';
@@ -44,9 +46,11 @@ export class LeafPeItActions {
 
 
   @dispatch()
-  leafPeItStartLoading = (): LeafPeItAction => ({
+  leafPeItStartLoading = (pkEntity: number): LeafPeItAction => ({
     type: LeafPeItActions.LEAF_PE_IT_START_LOADING,
-    meta: null,
+    meta: {
+      pkEntity
+    },
     payload: null
   })
 

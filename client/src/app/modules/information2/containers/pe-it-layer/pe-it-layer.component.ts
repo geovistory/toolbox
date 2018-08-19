@@ -1,25 +1,41 @@
-import { NgRedux } from '@angular-redux/store';
-import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AcLayerComponent, AcNotification, ActionType, MapsManagerService, CesiumEvent, PickOptions } from 'angular-cesium';
+import { NgRedux, select, WithSubStore } from '@angular-redux/store';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { IAppState, U } from 'app/core';
 import { Observable, Subject } from 'rxjs';
-
-
-import { PeItDetail } from '../../information.models';
-import { map, filter } from '../../../../../../node_modules/rxjs/operators';
-import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
+import { filter, map } from '../../../../../../node_modules/rxjs/operators';
+import {
+    AcLayerComponent,
+    AcNotification,
+    ActionType,
+    CesiumEvent,
+    MapsManagerService,
+    PickOptions,
+    AcMapComponent
+} from '../../../gv-angular-cesium/angular-cesium-fork';
+import { peItReducer } from '../../data-unit/pe-it/pe-it.reducer';
 import { TeEntActions } from '../../data-unit/te-ent/te-ent.actions';
+import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
+import { PeItDetail } from '../../information.models';
 
-@Component({
-    selector: 'gv-pe-it-presence-layer',
-    templateUrl: './pe-it-presence-layer.component.html',
-    styleUrls: ['./pe-it-presence-layer.component.scss']
+
+@WithSubStore({
+    basePathMethodName: 'getBasePath',
+    localReducer: peItReducer
 })
-export class PeItPresenceLayerComponent implements OnInit, OnDestroy {
+@Component({
+    selector: 'gv-pe-it-layer',
+    templateUrl: './pe-it-layer.component.html',
+    styleUrls: ['./pe-it-layer.component.scss']
+})
+export class PeItLayerComponent implements OnInit, OnDestroy {
 
     @Input() path: string[];
 
+    @Input() acMap: AcMapComponent;
+
     @ViewChild(AcLayerComponent) layer: AcLayerComponent;
+
+    @select() leafPeItLoading$: Observable<boolean>;
 
     czmlPackets$: Observable<AcNotification>;
     show = true;
@@ -32,46 +48,59 @@ export class PeItPresenceLayerComponent implements OnInit, OnDestroy {
 
     destroy$ = new Subject<boolean>();
 
+    zoomed = false;
+
     constructor(
         public ngRedux: NgRedux<IAppState>,
-        private mapsManagerService: MapsManagerService,
         private teEntActions: TeEntActions,
-        private injector: Injector
-    ) {
-        const a = injector;
-    }
+    ) { }
+
+    getBasePath = () => this.path;
 
     ngOnInit(): void {
 
-        const scene = this.mapsManagerService.getMap().getCesiumSerivce().getScene();
-
-
         // init stream of czml packets
-        this.czmlPackets$ = Observable.from(
-            [
-                U.acNotificationFromPacket({
-                    id: 'document',
-                    version: '1.0'
-                }, ActionType.ADD_UPDATE)
-            ]
-        ).merge(this.updater)
+        this.initCzmlStream();
 
-        let zoomed = false;
+        // wait for loading of leaf-peIts
+        const sub = this.leafPeItLoading$.subscribe(loading => {
+            // as soon as loading is falsy (beacause loading is complete or there was no leaf peIts to load)
+            if (!loading) {
+                // unsubscribe
+                sub.unsubscribe();
+
+                this.flyToBrowserGeolocation();
+
+                // initialize the layer
+                this.initLayer();
+            }
+
+        })
+
+
+        this.initEvents()
+
+    }
+
+
+    private initLayer() {
+        const camera = this.acMap.getCameraService().getCamera();
+        camera.setView({ destination: Cesium.Cartesian3.fromDegrees(-117.16, 32.71, 15000.0) });
+        const scene = this.acMap.getCesiumSerivce().getScene();
+
 
         // update czml-packets upon change of state
         this.ngRedux.select<PeItDetail>(this.path).takeUntil(this.destroy$).subscribe(peItDetail => {
-
             // remove all entities of the layer
             this.layer.removeAll();
 
             if (peItDetail) {
+
                 // redraw all entities of the peItDetail
-
-                const presences = U.presencesFromPeIt(peItDetail, this.path)
+                const presences = U.presencesFromPeIt(peItDetail, this.path);
                 const processedPrecences = U.czmlPacketsFromPresences(presences);
-
-                const teEnts = U.teEntsWithoutPresencesFromPeIt(peItDetail, this.path)
-                const processedTeEnts = U.czmlPacketsFromTeEnts(teEnts)
+                const teEnts = U.teEntsWithoutPresencesFromPeIt(peItDetail, this.path);
+                const processedTeEnts = U.czmlPacketsFromTeEnts(teEnts);
 
                 processedPrecences.czmlPackets.forEach(czmlPacket => {
                     const acNotification = U.acNotificationFromPacket(czmlPacket, ActionType.ADD_UPDATE);
@@ -83,19 +112,23 @@ export class PeItPresenceLayerComponent implements OnInit, OnDestroy {
                     this.updater.next(acNotification);
                 });
 
-                if (!zoomed) {
-                    zoomed = this.flyToEntities();
+                if (!this.zoomed) {
+                    this.zoomed = this.zoomToEntities();
                 }
 
                 // Explicitly render a new frame
-                scene.requestRender();
-
+                // scene.requestRender();
             }
+        });
+    }
 
-        })
-
-        this.initEvents()
-
+    private initCzmlStream() {
+        this.czmlPackets$ = Observable.from([
+            U.acNotificationFromPacket({
+                id: 'document',
+                version: '1.0'
+            }, ActionType.ADD_UPDATE)
+        ]).merge(this.updater);
     }
 
     // update or add a czml packet to the layer
@@ -107,20 +140,32 @@ export class PeItPresenceLayerComponent implements OnInit, OnDestroy {
      * Zoom to the extend of the entities of this layer
      * @return true if datasource was available and zoom worked, else false
      */
-    flyToEntities(): boolean {
+    zoomToEntities(): boolean {
 
-        const dataSource = this.layer.getDrawerDataSourcesByName('czml')[0];
-        if (!dataSource) return false;
+        const dataSource = this.getDataSource();
+        if (!dataSource || !dataSource.entities || (dataSource.entities.values.length < 1)) return false;
 
-        const viewer = this.mapsManagerService.getMap().getCesiumViewer();
-        viewer.flyTo(dataSource, {
-            offset: {
-                heading: 0.0,
-                pitch: -Cesium.Math.PI_OVER_TWO,
-                range: 0.0
+        this.acMap.getCesiumViewer().zoomTo(dataSource, new Cesium.HeadingPitchRange(0.0, -Cesium.Math.PI_OVER_TWO, 20000.0));
+
+        return true;
+    }
+
+    flyToBrowserGeolocation() {
+        navigator.geolocation.getCurrentPosition((position) => {
+            if (!this.zoomed) {
+                this.acMap.getCesiumViewer().camera.flyTo({
+                    destination: Cesium.Cartesian3.fromDegrees(position.coords.longitude, position.coords.latitude, 100000),
+                    duration: 0
+                });
             }
         });
-        return true;
+    }
+
+    /**
+     * get the Cesium.DataSource of this PeItLayer
+     */
+    getDataSource() {
+        return this.layer.getDrawerDataSourcesByName('czml')[0];
     }
 
     // remove a czml packet from the layer
@@ -135,7 +180,7 @@ export class PeItPresenceLayerComponent implements OnInit, OnDestroy {
 
     initEvents() {
 
-        const mapEventsManagerService = this.mapsManagerService.getMap().getMapEventsManager();
+        const mapEventsManagerService = this.acMap.getMapEventsManager();
 
         const clickEvent$ = mapEventsManagerService.register({
             event: CesiumEvent.LEFT_CLICK,
@@ -185,7 +230,7 @@ export class PeItPresenceLayerComponent implements OnInit, OnDestroy {
 
         if (teEntStore.getState().accentuation !== 'selected') {
             teEntStore.dispatch(this.teEntActions.setAccentuation('selected'))
-            this.mapsManagerService.getMap().getCesiumViewer().selectedEntity = cesiumEntity;
+            this.acMap.getCesiumViewer().selectedEntity = cesiumEntity;
         } else {
             teEntStore.dispatch(this.teEntActions.setAccentuation('highlighted'))
         }

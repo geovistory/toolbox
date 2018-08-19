@@ -1,8 +1,11 @@
-import { Component, ViewEncapsulation, Input, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import { ViewerConfiguration, MapsManagerService, MapLayerProviderOptions } from 'angular-cesium';
 import { NgRedux } from '@angular-redux/store';
-import { IAppState, U, LoopBackConfig } from 'app/core';
-import { Subject } from '../../../../../../node_modules/rxjs';
+import { AfterViewInit, Component, Input, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
+import { IAppState, LoopBackConfig, U } from 'app/core';
+import { Subject } from 'rxjs';
+import { PeItLayerComponent } from '../pe-it-layer/pe-it-layer.component';
+import {
+  MapsManagerService, ViewerConfiguration, AcMapComponent, MapLayerProviderOptions,
+} from '../../../gv-angular-cesium/angular-cesium-fork';
 
 @Component({
   selector: 'gv-map',
@@ -14,6 +17,13 @@ import { Subject } from '../../../../../../node_modules/rxjs';
 export class MapComponent implements AfterViewInit, OnDestroy {
 
   @Input() path: string[];
+
+  @ViewChild(PeItLayerComponent) peItLayer: PeItLayerComponent;
+  @ViewChild(AcMapComponent) acMap: AcMapComponent;
+
+  // DataSouce used to fly to the extent of all entities
+  peItDataSource;
+
 
   destroy$ = new Subject<boolean>();
 
@@ -27,7 +37,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     viewerConf: ViewerConfiguration,
-    private mapsManagerService: MapsManagerService,
     private ngRedux: NgRedux<IAppState>,
   ) {
 
@@ -50,8 +59,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    const viewer = this.mapsManagerService.getMap().getCesiumViewer();
-
+    // register cursor position changes
+    const viewer = this.acMap.getCesiumViewer();
     this.ngRedux.select<number>([...this.path, 'timeLineSettings', 'cursorPosition'])
       .takeUntil(this.destroy$)
       .subscribe(pos => {
@@ -60,7 +69,18 @@ export class MapComponent implements AfterViewInit, OnDestroy {
           viewer.clockViewModel.currentTime = julianDate;
         }
       })
+
   }
+
+  // fly to entities
+  flyToPeItLayerEntities() {
+
+    this.acMap.getCameraService().flyTo(this.peItLayer.getDataSource(), {
+      offset: new Cesium.HeadingPitchRange(0.0, -Cesium.Math.PI_OVER_TWO, 20000.0)
+    })
+
+  }
+
 
   ngOnDestroy() {
     this.destroy$.next(true)

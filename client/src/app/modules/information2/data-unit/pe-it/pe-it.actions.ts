@@ -22,6 +22,9 @@ export class PeItActions extends DataUnitActions {
 
   static readonly ONTO_INFO_VISIBILITY_TOGGLED = 'ONTO_INFO_VISIBILITY_TOGGLED';
 
+  static readonly SET_LEAF_PE_IT_LOADING = 'SET_LEAF_PE_IT_LOADING';
+
+
   @dispatch()
 
   stateUpdated = (payload: PeItDetail): PeItAction => ({
@@ -51,6 +54,14 @@ export class PeItActions extends DataUnitActions {
     meta: null,
     payload: {
       label
+    }
+  })
+
+  setLeafPeItLoading = (leafPeItLoading: boolean): PeItAction => ({
+    type: PeItActions.SET_LEAF_PE_IT_LOADING,
+    meta: null,
+    payload: {
+      leafPeItLoading
     }
   })
 

@@ -25,22 +25,23 @@ export abstract class PeItFormBase extends DataUnitBase implements OnInit {
     peIt: InfPersistentItem;
 
     @Input() basePath: string[];
-    getBasePath = (): string[] => this.basePath;
     @select() peIt$: Observable<InfPersistentItem>
 
     localStore: ObservableStore<PeItDetail>;
 
+    peItState: PeItDetail;
 
     constructor(
         protected ngRedux: NgRedux<any>,
         protected actions: PeItActions,
         protected fb: FormBuilder,
         protected stateCreator: StateCreatorService
-      ) {
-          super(ngRedux, fb, stateCreator);
+    ) {
+        super(ngRedux, fb, stateCreator);
     }
 
-    peItState: PeItDetail;
+    getBasePath = (): string[] => this.basePath;
+
 
     init() {
         // initial state is useful for sandboxing the component

@@ -76,6 +76,7 @@ export interface PeItDetail extends DataUnit {
     ontoInfoVisible?: boolean;
     communityStatsVisible?: boolean;
     loading?: boolean; // for leaf pe it view
+    leafPeItLoading?: boolean;
     _leaf_peIt_modal?: PeItDetail // for leaf pe it view modal
 
     /** Timeline */

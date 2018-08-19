@@ -60,8 +60,6 @@ export class TeEntEditableComponent extends DataUnitBase {
 
   uiContext: UiContext;
 
-  destroy$: Subject<boolean> = new Subject<boolean>();
-
   // used for storing previous accentuation when mouse enters
   previousAccentuation: TeEntAccentuation;
 
@@ -105,8 +103,7 @@ export class TeEntEditableComponent extends DataUnitBase {
   }
 
   destroy() {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe()
+
   }
 
   /**

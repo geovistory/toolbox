@@ -12,7 +12,7 @@ import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { ProjectSandboxModule } from 'app/shared/components/project-sandbox/project-sandbox.module';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { LoadingBarModule } from 'app/core/loading-bar/loading-bar.module';
-import { AngularCesiumModule } from 'angular-cesium';
+import { AngularCesiumModule } from 'app/modules/gv-angular-cesium/angular-cesium-fork';
 
 PlaygroundModule
   .configure({

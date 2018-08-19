@@ -42,6 +42,13 @@ export const peItReducer = (lastState: PeItDetail = INITIAL_STATE, action: PeItA
         label: action.payload.label,
       }
       break;
+
+    case PeItActions.SET_LEAF_PE_IT_LOADING:
+      lastState = {
+        ...lastState,
+        leafPeItLoading: action.payload.leafPeItLoading,
+      }
+      break;
   }
 
   return lastState;

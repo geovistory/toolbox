@@ -32,7 +32,7 @@ import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timelin
 import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
 import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.component';
 import { EntityEditorComponent } from './containers/entity-editor/entity.editor.component';
-import { PeItPresenceLayerComponent } from './containers/pe-it-presence-layer/pe-it-presence-layer.component';
+import { PeItLayerComponent } from './containers/pe-it-layer/pe-it-layer.component';
 import { PeItAddCtrlComponent } from './data-unit/pe-it/pe-it-add-ctrl/pe-it-add-ctrl.component';
 import { PeItAddFormComponent } from './data-unit/pe-it/pe-it-add-form/pe-it-add-form.component';
 import { PeItCreateCtrlComponent } from './data-unit/pe-it/pe-it-create-ctrl/pe-it-create-ctrl.component';
@@ -111,18 +111,19 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
-import { AngularCesiumModule, AngularCesiumWidgetsModule } from 'angular-cesium';
 import { MapComponent } from './containers/map/map.component';
 import { PolygonsEditorLayerComponent } from './containers/polygons-editor-layer/polygons-editor-layer.component';
 import { TeEntAPIEpics } from './data-unit/te-ent/te-ent.epics';
+import { PeItApiEpics } from './data-unit/pe-it/api/pe-it.epics';
+import { GvAngularCesiumModule } from '../gv-angular-cesium/angular-cesium.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    // BrowserAnimationsModule,
-
+    GvAngularCesiumModule,
+    
     NgReduxFormModule,
     SlimLoadingBarModule,
     NgbModule,
@@ -131,7 +132,7 @@ import { TeEntAPIEpics } from './data-unit/te-ent/te-ent.epics';
     // SDKBrowserModule,
     InformationRoutingModule,
 
-    //App wide reusable components
+    // App wide reusable components
     LanguageSearchTypeaheadModule,
     ControlMessagesModule,
     PassiveLinkModule,
@@ -140,9 +141,7 @@ import { TeEntAPIEpics } from './data-unit/te-ent/te-ent.epics';
     TimelineModule,
     KeysModule,
     HighlightModule,
-    DndModule,
-    AngularCesiumModule,
-    AngularCesiumWidgetsModule
+    DndModule
 
   ],
   declarations: [
@@ -153,7 +152,7 @@ import { TeEntAPIEpics } from './data-unit/te-ent/te-ent.epics';
 
     // PeIt Map
     MapComponent,
-    PeItPresenceLayerComponent,
+    PeItLayerComponent,
     PolygonsEditorLayerComponent,
 
     // Add Modal
@@ -239,6 +238,7 @@ import { TeEntAPIEpics } from './data-unit/te-ent/te-ent.epics';
 
     // Data Unit
     PeItActions,
+    PeItApiEpics,
     TeEntActions,
     TeEntAPIEpics,
 

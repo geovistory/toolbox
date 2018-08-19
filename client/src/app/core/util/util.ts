@@ -1,15 +1,18 @@
-import { TimePrimitive, InfTimePrimitive, InfRole, InfTemporalEntity, InfPersistentItem, DfhProperty, ExistenceTime } from "..";
-import { CalendarType } from "../date-time/time-primitive";
-import { Granularity } from "../date-time/date-time-commons";
-import { DfhConfig } from "../../modules/information2/shared/dfh-config";
-import { AppellationLabel } from "../../modules/information2/shared/appellation-label";
-import { RoleSet, RoleSetLabelObj, RoleSetList, RoleDetail, AppeDetail, LangDetail, DataUnitChildList, DataUnitChild, ExistenceTimeDetail, PeItDetail, TimePrimitveDetail, DataUnitLabel, RoleLabel, ExTimeLabel, DataUnitChildLabel, TeEntDetail, DataUnit } from "../../modules/information2/information.models";
 import { indexBy, omit } from 'ramda';
-import { roleSetKey, roleSetKeyFromParams } from "../../modules/information2/information.helpers";
-import { ComUiContextConfig, ComPropertySet, DfhClass, InfEntityProjectRel } from "../sdk";
-import { ClassConfig, UiContext, UiElement } from "../active-project/active-project.models";
-import { ActionType, AcNotification, AcEntity } from "angular-cesium";
-import { dashCaseToCamelCase } from "../../../../node_modules/@angular/compiler/src/util";
+import { DfhProperty, ExistenceTime, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, TimePrimitive } from '..';
+import { roleSetKey, roleSetKeyFromParams } from '../../modules/information2/information.helpers';
+import {
+    AppeDetail, DataUnitChild, DataUnitChildLabel, DataUnitChildList, DataUnitLabel, ExistenceTimeDetail,
+    LangDetail, PeItDetail, RoleDetail, RoleLabel, RoleSet, RoleSetLabelObj, RoleSetList,
+    TeEntDetail
+} from '../../modules/information2/information.models';
+import { AppellationLabel } from '../../modules/information2/shared/appellation-label';
+import { DfhConfig } from '../../modules/information2/shared/dfh-config';
+import { ClassConfig } from '../active-project/active-project.models';
+import { Granularity } from '../date-time/date-time-commons';
+import { CalendarType } from '../date-time/time-primitive';
+import { ComPropertySet, ComUiContextConfig, DfhClass, InfEntityProjectRel } from '../sdk';
+import { ActionType, AcNotification, AcEntity } from '../../modules/gv-angular-cesium/angular-cesium-fork';
 /**
  * Utilities class for static functions
  */
@@ -37,9 +40,11 @@ export class U {
      * @param obj 
      */
     static obj2KeyValueArr<T>(obj: { [key: string]: T }): { key: string, value: T }[] {
-        let keys = [];
-        for (let key in obj) {
-            keys.push({ key: key, value: obj[key] });
+        const keys = [];
+        for (const key in obj) {
+            if (obj[key]) {
+                keys.push({ key: key, value: obj[key] });
+            }
         }
         return keys;
     }
@@ -115,8 +120,7 @@ export class U {
             return new TimePrimitive({
                 calendar: 'julian'
             })
-        }
-        else {
+        } else {
             return timePrimitive;
         }
     }
@@ -284,8 +288,8 @@ export class U {
 
     /**
      * create a label object for the property
-     * @param property 
-     * @param isOutgoing 
+     * @param property
+     * @param isOutgoing
      */
     static createLabelObject(property: DfhProperty, isOutgoing: boolean): RoleSetLabelObj {
         let sg = 'n.N.'
@@ -344,7 +348,7 @@ export class U {
 
     /**
  * Converts a DfhClass to a ClassConfig
- * @param dfhC 
+ * @param dfhC
  */
     static classConfigFromDfhClass(dfhC: DfhClass): ClassConfig {
         let cConf: ClassConfig = {
@@ -508,7 +512,7 @@ export class U {
     }
 
     /**
-     *  Extracts the first InfEntityProjectRel from InfRole 
+     *  Extracts the first InfEntityProjectRel from InfRole
     */
     static eprFromInfRole(role: InfRole): InfEntityProjectRel | null {
 
@@ -520,7 +524,7 @@ export class U {
 
 
     /**
-     *  Extracts the first InfEntityProjectRel from RoleDetail 
+     *  Extracts the first InfEntityProjectRel from RoleDetail
     */
     static eprFromRoleDetail(roleDetail: RoleDetail): InfEntityProjectRel | null {
 

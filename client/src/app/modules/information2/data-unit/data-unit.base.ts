@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { Input, OnDestroy, OnInit, ViewChild, destroyPlatform } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, UiContext, UiElement } from 'app/core';
-import { Subject, Subscription ,  Observable } from 'rxjs';
+import { Subject, Subscription, Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { NgbTypeahead } from '../../../../../node_modules/@ng-bootstrap/ng-bootstrap';
@@ -20,23 +20,16 @@ export const propSetMap = {
 
 export abstract class DataUnitBase implements OnInit, OnDestroy {
   subs: Subscription[] = []
+  destroy$: Subject<boolean> = new Subject<boolean>();
 
   formGroup: FormGroup;
 
   @Input() parentPath: string[];
 
 
-  abstract initStore(): void; // override this in derived class
 
   abstract localStore: ObservableStore<TeEntDetail | PeItDetail>;
   protected actions: PeItActions | TeEntActions;
-
-  // Since we're observing an array of items, we need to set up a 'trackBy'
-  // parameter so Angular doesn't tear down and rebuild the list's DOM every
-  // time there's an update.
-  getKey(_, item) {
-    return item.key;
-  }
 
   @select() selectPropState$: Observable<SelectPropStateType>;
   @select() fkClass$: Observable<number>;
@@ -55,16 +48,8 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   comConfig = ComConfig;
   classConfig: ClassConfig;
 
-  constructor(
-    protected ngRedux: NgRedux<IAppState>,
-    protected fb: FormBuilder,
-    protected stateCreator: StateCreatorService
-  ) {
-    this.formGroup = this.fb.group({})
-  }
-
   /**
-   * class properties filled by observables 
+   * class properties filled by observables
    */
   roleSets: {}
 
@@ -80,15 +65,34 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
   uiElementsForAddInfo: UiElement[];
 
-  ngOnDestroy() {
+  constructor(
+    protected ngRedux: NgRedux<IAppState>,
+    protected fb: FormBuilder,
+    protected stateCreator: StateCreatorService
+  ) {
+    this.formGroup = this.fb.group({})
+  }
 
+  abstract initStore(): void; // override this in derived class
+  destroy(): void { }; // todo make this abstract and implement in all deferred calsses
+  abstract init(): void; // hook for child class
+
+  // Since we're observing an array of items, we need to set up a 'trackBy'
+  // parameter so Angular doesn't tear down and rebuild the list's DOM every
+  // time there's an update.
+  getKey(_, item) {
+    return item.key;
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
     this.subs.forEach(sub => sub.unsubscribe())
 
     this.destroy()
 
   }
 
-  destroy() { } // todo make this abstract and implement in all deferred calsses
 
   ngOnInit() {
     // Initialize the store by one of the derived classes
@@ -104,8 +108,8 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
     // Initialize the rest in the derived class
     this.init()
 
-    // Calls this generic action that can be listened to in any reducer
-    this.localStore.dispatch(this.actions.dataUnitInit())
+    // // Calls this generic action that can be listened to in any reducer
+    // this.localStore.dispatch(this.actions.dataUnitInit())
 
   }
 
@@ -125,11 +129,10 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
 
 
-  abstract init(): void; // hook for child class
 
 
   /** ************
-   * User Interactions 
+   * User Interactions
    ****************/
 
 
@@ -207,7 +210,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
   /**
   * Called when the user closes an empty roleSet
-  * 
+  *
   * @param keyInState: the key in the state
   * @param val: the state object to add to the state
   */

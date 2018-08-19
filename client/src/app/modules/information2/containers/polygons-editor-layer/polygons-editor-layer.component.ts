@@ -1,5 +1,11 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import { PolygonsEditorService, PolygonEditorObservable, PolygonEditUpdate, LabelProps, EditActions } from 'angular-cesium';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+  PolygonEditUpdate,
+  PolygonsEditorService,
+  PolygonEditorObservable,
+  LabelProps,
+  EditActions
+} from '../../../gv-angular-cesium/angular-cesium-fork';
 
 @Component({
   selector: 'gv-polygons-editor-layer',
