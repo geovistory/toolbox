@@ -35,6 +35,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   /** Configuration for Aster Basemap */
   asterUrl = LoopBackConfig.getPath() + '/aster-proxy?z={z}&x={x}&y={y}';
 
+  // while true, loading spinner is visible
+  isLoading = true;
+
   constructor(
     viewerConf: ViewerConfiguration,
     private ngRedux: NgRedux<IAppState>,
@@ -66,6 +69,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     // set resolution Scale (for clean rendering on retina displays)
     viewer.resolutionScale = window.devicePixelRatio;
+
+    // remove the default imagery layer in order to reduce unnessecary traffic
+    const imgLayers = viewer.scene.imageryLayers;
+    imgLayers.remove(imgLayers.get(0), true)
 
     // register cursor position changes
     this.ngRedux.select<number>([...this.path, 'timeLineSettings', 'cursorPosition'])

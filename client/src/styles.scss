@@ -300,6 +300,10 @@ gv-property {
     @extend .is-valid;
 }
 
+/***************************
+ * Timeline
+ ***************************/
+
 gv-timeline {
     $bg-timeline: $gray-600;
     $font-color: $white;
@@ -395,7 +399,10 @@ gv-timeline {
     }
 }
 
-// gv-quill-view
+/***************************
+ * Quill
+ ***************************/
+
 gv-quill-view {
     .ql-container.ql-snow {
         height: auto;
@@ -432,7 +439,30 @@ gv-pe-it-role-set-editable,
 gv-add-info-pe-it {
     .dropdown-item.active {
         color: inherit;
-        background-color: $gray-300;
-        // border: 1px solid theme-color("primary");
+        background-color: $gray-300; // border: 1px solid theme-color("primary");
+    }
+}
+
+/***************************
+ * Cesium / Map
+ ***************************/
+
+gv-map {
+    ac-map {
+        .map-container {
+            flex: 1 1 100px;
+            height: 100px;
+            background-color: lightcyan;
+            position: relative;
+            border: 1px solid #00ffff; 
+            display: flex;
+            flex-direction: column;
+            flex-flow: column;
+            @extend .border;
+            
+            .cesium-viewer {
+                flex: 1 1 auto;
+            }
+        }
     }
 }

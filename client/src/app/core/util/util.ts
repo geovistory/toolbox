@@ -910,15 +910,28 @@ export class U {
                                         label: {
                                             id: 'label of: ' + placeRole.pk_entity,
                                             text: crm.classes[teEntDetail.fkClass].label,
-                                            font: '14pt source sans pro',
+                                            font: '16pt "source sans pro"',
                                             horizontalOrigin: 'LEFT',
+                                            fillColor: {
+                                                rgba: [20, 20, 20, 255]
+                                            },
                                             outlineColor: {
-                                                rgba: [50, 50, 50, 255]
+                                                rgba: [255, 255, 255, 230]
                                             },
-                                            outlineWidth: 3,
+                                            outlineWidth: 2,
                                             pixelOffset: {
-                                                cartesian2: [14.0, -14.0]
+                                                cartesian2: [12.0, -16.0]
                                             },
+                                            scaleByDistance: {
+                                                nearFarScalar: [1.5e2, 1.0, 8.0e6, 0.6]
+                                            },
+                                            translucencyByDistance: {
+                                                nearFarScalar: [1.5e2, 1.0, 8.0e6, 0.6]
+                                            },
+                                            // this makes sense if the point also scales
+                                            // pixelOffsetScaleByDistance: {
+                                            //     nearFarScalar: [1.5e2, 1.0, 8.0e6, 0.6]
+                                            // },
                                             style: 'FILL_AND_OUTLINE',
                                         },
                                         properties: {

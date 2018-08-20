@@ -313,7 +313,7 @@ export interface PlaceDetail {
 *******************************/
 
 
-export interface DataUnitLabel {
+export class DataUnitLabel {
     hasMore?: boolean;
     parts: DataUnitChildLabel[];
 }

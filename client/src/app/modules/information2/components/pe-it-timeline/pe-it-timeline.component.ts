@@ -60,11 +60,13 @@ export class PeItTimelineComponent implements OnInit, OnDestroy {
               const teD = roleDetail._teEnt;
               const teEntPath = [...roleDetailPath, '_teEnt'];
 
+              // const label = U.labelFromDataUnitChildList(teD._children).toString();
+
               // create a TimeLineRow for each TeEntState
               timeLineData.rows.push({
                 existenceTime: StateToDataService
                   .existenceTimeStateToExistenceTime(teD._children._existenceTime as ExistenceTimeDetail),
-                label: setLabel + U.labelFromDataUnitChildList(teD._children),
+                label: setLabel,
                 accentuation: teD.accentuation,
                 storeConnector: { path: teEntPath }
               })

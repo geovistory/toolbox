@@ -1,5 +1,5 @@
 import { NgRedux, select, WithSubStore } from '@angular-redux/store';
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { IAppState, U } from 'app/core';
 import { Observable, Subject } from 'rxjs';
 import { filter, map } from '../../../../../../node_modules/rxjs/operators';
@@ -33,9 +33,12 @@ export class PeItLayerComponent implements OnInit, OnDestroy {
 
     @Input() acMap: AcMapComponent;
 
+    @Output() readyToShow: EventEmitter<void> = new EventEmitter();
+
     @ViewChild(AcLayerComponent) layer: AcLayerComponent;
 
     @select() leafPeItLoading$: Observable<boolean>;
+
 
     czmlPackets$: Observable<AcNotification>;
     show = true;
@@ -62,14 +65,17 @@ export class PeItLayerComponent implements OnInit, OnDestroy {
         // init stream of czml packets
         this.initCzmlStream();
 
+        // fly to browser geolocation
+        this.flyToBrowserGeolocation();
+
         // wait for loading of leaf-peIts
-        const sub = this.leafPeItLoading$.subscribe(loading => {
+        const untilLoaded$ = new Subject<boolean>();
+        this.leafPeItLoading$.takeUntil(untilLoaded$).subscribe(loading => {
             // as soon as loading is falsy (beacause loading is complete or there was no leaf peIts to load)
             if (!loading) {
-                // unsubscribe
-                sub.unsubscribe();
 
-                this.flyToBrowserGeolocation();
+                // unsubscribe
+                untilLoaded$.next(true);
 
                 // initialize the layer
                 this.initLayer();
@@ -120,7 +126,7 @@ export class PeItLayerComponent implements OnInit, OnDestroy {
                 }
 
                 // Explicitly render a new frame
-                // scene.requestRender();
+                scene.requestRender();
             }
         });
     }
@@ -150,16 +156,23 @@ export class PeItLayerComponent implements OnInit, OnDestroy {
 
         this.acMap.getCesiumViewer().zoomTo(dataSource, new Cesium.HeadingPitchRange(0.0, -Cesium.Math.PI_OVER_TWO, 20000.0));
 
+        // parent map is loading until this one emits
+        this.readyToShow.emit()
+
         return true;
+
     }
 
     flyToBrowserGeolocation() {
         navigator.geolocation.getCurrentPosition((position) => {
             if (!this.zoomed) {
                 this.acMap.getCesiumViewer().camera.flyTo({
-                    destination: Cesium.Cartesian3.fromDegrees(position.coords.longitude, position.coords.latitude, 100000),
+                    destination: Cesium.Cartesian3.fromDegrees(position.coords.longitude, position.coords.latitude, 4500000),
                     duration: 0
                 });
+
+                // parent map is loading until this one emits
+                this.readyToShow.emit()
             }
         });
     }
