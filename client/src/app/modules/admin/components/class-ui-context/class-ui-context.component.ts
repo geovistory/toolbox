@@ -5,16 +5,17 @@ import { ComConfig, ComUiContextConfig, IAppState, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { pathOr } from 'ramda';
 import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 
 import { ClassDetail, Container } from '../../admin.models';
 import { ClassUiContextAPIActions } from './api/class-ui-context.actions';
 import { ClassUiContextAPIEpics } from './api/class-ui-context.epics';
 import { classUiContextReducer } from './api/class-ui-context.reducer';
+import { RootEpics } from 'app/core/store/epics';
 
 
 
-@AutoUnsubscribe()
+@AutoUnsubscribe({ blackList: ['until$'] })
 @WithSubStore({
   basePathMethodName: 'getBasePath',
   localReducer: classUiContextReducer
@@ -29,11 +30,8 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
   public readonly PK_UI_CONTEXT_EDITABLE = ComConfig.PK_UI_CONTEXT_EDITABLE;
   public readonly PK_UI_CONTEXT_CREATE = ComConfig.PK_UI_CONTEXT_CREATE;
 
-  getBasePath = () => ['admin', 'classDetail', 'uiContext'];
 
   localStore: ObservableStore<ClassDetail>
-
-  reduxMiddlewares: any[] = [];
 
   @select() class$: Observable<any>;
   @select() loading$: Observable<any>;
@@ -48,7 +46,11 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
 
   subs: Subscription[] = []
 
+  // emits when subscriptions to epic should be stopped
+  until$: Subject<boolean> = new Subject<boolean>();
+
   constructor(
+    private rootEpics: RootEpics,
     private epics: ClassUiContextAPIEpics,
     private ngRedux: NgRedux<IAppState>,
     private activatedRoute: ActivatedRoute
@@ -63,9 +65,11 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
     this.subs.push(this.activatedRoute.params.subscribe(params => {
       this.pkUiContext = params['pk_ui_context'];
 
-      this.reduxMiddlewares.forEach(mw => { removeMiddleware(mw) })
-      this.reduxMiddlewares = this.epics.createEpics(this.localStore, this.pkClass, this.pkUiContext)
-      this.reduxMiddlewares.forEach(mw => { addMiddleware(mw) })
+      this.until$.next(true)
+      this.until$.unsubscribe();
+      this.until$ = new Subject<boolean>();
+
+      this.rootEpics.addEpic(this.epics.createEpics(this.localStore, this.pkClass, this.pkUiContext, this.until$))
 
       this.loadClassUiContext()
     }))
@@ -75,11 +79,14 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
 
   }
 
+  getBasePath = () => ['admin', 'classDetail', 'uiContext'];
+
   ngOnInit() {
   }
 
   ngOnDestroy() {
-    this.reduxMiddlewares.forEach(mw => { removeMiddleware(mw) })
+    this.until$.next(true)
+    this.until$.unsubscribe();
     this.subs.forEach(sub => sub.unsubscribe());
   }
 
@@ -98,7 +105,7 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
       for (let i = 0; i < widgets.length; i++) {
         const widget = widgets[i];
 
-        let uiContextConfig = widget.uiContextConfig;
+        const uiContextConfig = widget.uiContextConfig;
 
         if (uiContextConfig && uiContextConfig.ord_num !== null) {
           uiContextConfig.ord_num = null;
@@ -115,7 +122,7 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
     if ($event) {
       const widgets = this.containerEnabled.widgets;
 
-      let uiPropConfs: ComUiContextConfig[] = []
+      const uiPropConfs: ComUiContextConfig[] = []
 
       // check, if ui_context_config needs update
       for (let i = 0; i < widgets.length; i++) {
@@ -136,10 +143,9 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
         }
       }
 
-      if (uiPropConfs.length)
-        this.updateUiContextConfig(uiPropConfs);
+      if (uiPropConfs.length) this.updateUiContextConfig(uiPropConfs);
 
     }
-  } 
+  }
 
 }

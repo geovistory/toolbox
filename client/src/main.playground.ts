@@ -12,6 +12,7 @@ import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { ProjectSandboxModule } from 'app/shared/components/project-sandbox/project-sandbox.module';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { LoadingBarModule } from 'app/core/loading-bar/loading-bar.module';
+import { AngularCesiumModule } from 'app/modules/gv-angular-cesium/angular-cesium-fork';
 
 PlaygroundModule
   .configure({
@@ -22,6 +23,7 @@ PlaygroundModule
         NgbModule.forRoot(),
         ElasticInputModule.forRoot(),
         SlimLoadingBarModule.forRoot(),
+        AngularCesiumModule.forRoot(),
         BrowserModule,
         BrowserAnimationsModule,
         ControlMessagesModule,
@@ -33,5 +35,7 @@ PlaygroundModule
         LoadingBarModule
       ]
   });
+
+  Cesium.buildModuleUrl.setBaseUrl('/assets/cesium/'); // If youre using Cesium version >= 1.42.0 add this line
 
 platformBrowserDynamic().bootstrapModule(PlaygroundModule);

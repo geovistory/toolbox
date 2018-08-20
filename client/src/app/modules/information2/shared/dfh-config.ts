@@ -44,7 +44,7 @@ export class DfhConfig {
   static PROPERTY_PK_END_OF_END = 153;
   static PROPERTY_PK_END_OF_BEGIN = 150;
   static PROPERTY_PK_BEGIN_OF_END = 151;
-  
+
 
 
   /**
@@ -62,7 +62,7 @@ export class DfhConfig {
     153: 'p82b'
   }
 
-  
+
 
 
   /**
@@ -93,6 +93,13 @@ export class DfhConfig {
 
   // dfh_pk_class of place (not geographical place!)
   static CLASS_PK_PLACE = 51;
+
+  // dfh_pk_class of geographical place (not place!)
+  static CLASS_PK_GEOGRAPHICAL_PLACE = 363;
+
+
+  // dfh_pk_class of built work
+  static CLASS_PK_BUILT_WORK = 441;
 
   static CLASS_PK_PRESENCE = 84;
 

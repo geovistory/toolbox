@@ -1,0 +1,11 @@
+<svg:g>
+  
+  <!-- Handle. Dimensions originally height=20px width=16px -->
+  <svg:path class="cursor-handle" [attr.transform]="'translate(-8,'+ (cursor.headerHeight - 20) +')'"
+  d="M8,0c4.922,0,8,1.275,8,5.849c0,6.79-4.819,11.667-7.103,13.759C8.557,19.921,8.299,20,8,20
+	s-0.557-0.079-0.897-0.392C4.819,17.517,0,12.639,0,5.849C0,1.275,3.078,0,8,0"  ></svg:path>
+
+
+  <line class="cursor-line" [attr.transform]="'translate(0,'+ cursor.headerHeight +')'" x1="0" y1="0" x2="0" [attr.y2]="cursor.bodyHeight"
+  />
+</svg:g>

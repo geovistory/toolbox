@@ -40,6 +40,20 @@
       ]
     }
   },
+  "routes:after": {
+    "./middleware/cartodb-basemaps-proxy": {
+      "enabled": true,
+      "paths": [
+        "/cartodb-basemaps-proxy"
+      ]
+    },
+    "./middleware/aster-proxy": {
+      "enabled": true,
+      "paths": [
+        "/aster-proxy"
+      ]
+    }
+  },
   "files": {
     "loopback#static": {
       "params": "$!../client/dist"

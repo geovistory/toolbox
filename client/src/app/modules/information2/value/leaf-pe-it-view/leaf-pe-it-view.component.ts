@@ -88,9 +88,9 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
 
     const peItDetail = this.ngRedux.configureSubStore(this.basePath, leafPeItReducer).getState();
 
-    if (peItDetail && peItDetail.fkClass)
+    if (peItDetail && peItDetail.fkClass) {
       this.classConfig = this.ngRedux.getState().activeProject.crm.classes[peItDetail.fkClass];
-
+    }
     if (!peItDetail || !peItDetail.peIt) {
       // console.log('LeafPeItViewComponent leafPeItStartLoading', this.pkEntity)
 
@@ -108,7 +108,7 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
   initPeItState() {
     this.leafPeItLoading$ = new ReplaySubject<boolean>();
     this.leafPeItLoading$.next(true);
-    this.leafPeItStartLoading();
+    this.leafPeItStartLoading(this.pkEntity);
 
     const pkProject = this.ngRedux.getState().activeProject.pk_project;
     this.subs.push(
@@ -116,9 +116,9 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
 
         this.peItState = peItState;
 
-        if (peItState && peItState.fkClass && !this.classConfig)
+        if (peItState && peItState.fkClass && !this.classConfig) {
           this.classConfig = this.ngRedux.getState().activeProject.crm.classes[peItState.fkClass];
-
+        }
 
         this.leafPeItStateAdded(peItState)
         this.leafPeItLoading$.next(false);
@@ -134,8 +134,6 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
 
 
   open() {
-    // const urlTree = this.router.createUrlTree(["..", this.pkEntity], { relativeTo: this.route, preserveQueryParams:true });
-    // window.open(this.router.serializeUrl(urlTree), '_blank')
     const open = () => {
 
       this.router.navigate(["../", this.peItState.peIt.pk_entity], {

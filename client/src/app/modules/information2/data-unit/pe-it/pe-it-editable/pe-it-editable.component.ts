@@ -1,9 +1,9 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, AfterViewInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, IAppState, UiContext } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { PeItDetail } from '../../../information.models';
 import { slideInOut } from '../../../shared/animations';
@@ -11,9 +11,14 @@ import { StateCreatorService } from '../../../shared/state-creator.service';
 import { DataUnitBase } from '../../data-unit.base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
+import { PeItBase } from '../pe-it-base';
+import { RootEpics } from 'app/core/store/epics';
+import { PeItApiEpics } from '../api/pe-it.epics';
 
 
-@AutoUnsubscribe()
+@AutoUnsubscribe({
+  blackList: ['destroy$']
+})
 @WithSubStore({
   localReducer: peItReducer,
   basePathMethodName: 'getBasePath'
@@ -26,10 +31,10 @@ import { peItReducer } from '../pe-it.reducer';
   changeDetection: ChangeDetectionStrategy.OnPush,
 
 })
-export class PeItEditableComponent extends DataUnitBase {
+export class PeItEditableComponent extends PeItBase implements AfterViewInit {
 
-  @Input() basePath: string[];
-  getBasePath = () => this.basePath;
+  afterViewInit = false;
+
 
   localStore: ObservableStore<PeItDetail>;
 
@@ -55,18 +60,18 @@ export class PeItEditableComponent extends DataUnitBase {
   }
 
   constructor(
+    protected rootEpics: RootEpics,
+    protected epics: PeItApiEpics,
     protected ngRedux: NgRedux<IAppState>,
     protected actions: PeItActions,
     protected fb: FormBuilder,
     protected stateCreator: StateCreatorService
   ) {
-    super(ngRedux, fb, stateCreator);
+    super(rootEpics, epics, ngRedux, actions, fb, stateCreator);
     console.log('PeItEditableComponent')
-
   }
 
-  init() {
-    this.basePath = this.getBasePath();
+  initPeItBaseChild() {
 
     this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
 
@@ -97,6 +102,13 @@ export class PeItEditableComponent extends DataUnitBase {
 
     // }))
   }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.afterViewInit = true;
+    }, 2000)
+  }
+
 
   /**
   * Show ui with community statistics like

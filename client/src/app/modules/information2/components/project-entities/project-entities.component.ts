@@ -1,12 +1,3 @@
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/merge';
-import 'rxjs/add/operator/switchMap';
-
 import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,8 +7,7 @@ import { MentionedEntity } from 'app/modules/annotation';
 import { environment } from 'environments/environment';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subscription } from 'rxjs';
 
 import {
   MentionedEntityCtrlActions,
@@ -25,9 +15,9 @@ import {
 import {
   mentionedEntityCtrlReducer,
 } from '../../../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.reducer';
+import { EntityAddModalComponent } from '../../add-modal/entity-add-modal/entity-add-modal.component';
 import { EntityAddModalService } from '../../shared/entity-add-modal.service';
 import { projectEntitiesReducer } from './project-entities.reducers';
-import { EntityAddModalComponent } from '../../add-modal/entity-add-modal/entity-add-modal.component';
 
 // import { EntityAddModalComponent } from '../entity-add-modal/entity-add-modal.component';
 
@@ -46,7 +36,7 @@ export class ProjectEntitiesComponent implements OnInit, OnDestroy {
 
   // path to the substore
   @Input() path: string[] | string;
-  getBasePath() { return this.path }
+
 
   persistentItems: InfPersistentItem[] = [];
   projectId: number;
@@ -54,14 +44,14 @@ export class ProjectEntitiesComponent implements OnInit, OnDestroy {
   selectingEntities$: Observable<boolean>;
   mentionedEntitiesCrtlStore: ObservableStore<{ [key: string]: MentionedEntity }>
 
-  //Pagination
+  // Pagination
   collectionSize: number; // number of search results
-  limit: number = 10; // max number of results on a page
-  page: number = 1; // current page
+  limit = 10; // max number of results on a page
+  page = 1; // current page
 
-  //Search
-  searchString: string;
-  loading: boolean = false;
+  // Search
+  searchString = '';
+  loading = false;
   errorMessages: any;
 
 
@@ -92,10 +82,14 @@ export class ProjectEntitiesComponent implements OnInit, OnDestroy {
     }))
 
     // listen to selecting entities for annotation
-    this.selectingEntities$ = ngRedux.select<boolean>(['sources', 'edit', 'annotationPanel', 'edit', 'selectingEntities'])
-    this.mentionedEntitiesCrtlStore = ngRedux.configureSubStore(['sources', 'edit', 'annotationPanel', 'edit', 'mentionedEntities'], mentionedEntityCtrlReducer)
+    this.selectingEntities$ = ngRedux.select<boolean>(['sources', 'edit', 'annotationPanel', 'edit', 'selectingEntities']);
+
+    this.mentionedEntitiesCrtlStore =
+      ngRedux.configureSubStore(['sources', 'edit', 'annotationPanel', 'edit', 'mentionedEntities'], mentionedEntityCtrlReducer)
 
   }
+
+  getBasePath() { return this.path }
 
   ngOnInit() {
 

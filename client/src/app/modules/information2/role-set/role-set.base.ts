@@ -1,4 +1,4 @@
-import 'rxjs/add/observable/combineLatest';
+
 
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
@@ -16,8 +16,7 @@ import {
 } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares';
-import { Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { Subscription, Observable, combineLatest, Subject } from 'rxjs';
 
 import { CollapsedExpanded, RoleDetail, RoleDetailList, RoleSet, RoleSetForm, RoleSetLabelObj } from '../information.models';
 import { RoleActions } from '../role/role.actions';
@@ -30,9 +29,12 @@ import { StateToDataService } from '../shared/state-to-data.service';
 import { RoleSetActions, roleStateKey } from './role-set.actions';
 import { RoleSetApiEpics } from './role-set.epics';
 import { roleSetReducer } from './role-set.reducer';
+import { RootEpics } from '../../../core/store/epics';
 
 
-@AutoUnsubscribe()
+@AutoUnsubscribe({
+    blackList: ['destroy$']
+})
 @WithSubStore({
     basePathMethodName: 'getBasePath',
     localReducer: roleSetReducer
@@ -42,27 +44,14 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     @Input() parentPath: string[];
 
     @Input() index: string;
-    getBasePath = () => this.index ?
-        [...this.parentPath, '_children', this.index] :
-        null;
+
     basePath: string[];
     localStore: ObservableStore<RoleSet>;
 
-    reduxMiddlewares: any[] = [];
+    destroy$: Subject<boolean> = new Subject<boolean>();
 
-    addButtonVisible: boolean = true;
-    removeRoleSetBtnVisible: boolean = false;
-
-    /**
-    * Paths to other slices of the store
-    */
-
-    // Since we're observing an array of items, we need to set up a 'trackBy'
-    // parameter so Angular doesn't tear down and rebuild the list's DOM every
-    // time there's an update.
-    getKey(_, item) {
-        return item.key;
-    }
+    addButtonVisible = true;
+    removeRoleSetBtnVisible = false;
 
 
     /**
@@ -84,16 +73,16 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     @select() _role_list$: Observable<RoleDetailList>
     @select() _role_set_form$: Observable<RoleSetForm>
 
-    //Roles that are added to the project
+    // Roles that are added to the project
     @select() _role_listVisible$: Observable<boolean>
 
-    //Roles that are added to at least one other project
+    // Roles that are added to at least one other project
     @select() roleStatesInOtherProjectsVisible$: Observable<boolean>
 
-    //Roles that are in no project (that have been removed from at least the project that created it)
+    // Roles that are in no project (that have been removed from at least the project that created it)
     @select() roleStatesInNoProjectVisible$: Observable<boolean>
 
-    //Roles currently being created
+    // Roles currently being created
     @select() roleStatesToCreateVisible$: Observable<boolean>
 
 
@@ -114,7 +103,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
     formGroup: FormGroup; // formGroup to create roles
     formValPath: string[];
-    createFormControlCount: number = 0;
+    createFormControlCount = 0;
     subs: Subscription[] = []; // for unsubscribe onDestroy
 
     fromValueForReset: any;
@@ -127,7 +116,10 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
     @Output() onRemoveRoleSet: EventEmitter<void> = new EventEmitter();
 
+    @Output() touched: EventEmitter<void> = new EventEmitter();
+
     constructor(
+        protected rootEpics: RootEpics,
         protected epics: RoleSetApiEpics,
         protected eprApi: InfEntityProjectRelApi,
         protected roleApi: InfRoleApi,
@@ -164,7 +156,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
             if (this.formGroup.valid) {
 
                 // build a array of InfRole
-                let roles: InfRole[] = [];
+                const roles: InfRole[] = [];
                 Object.keys(this.formGroup.controls).forEach(key => {
                     if (this.formGroup.get(key)) {
                         roles.push(this.formGroup.get(key).value)
@@ -173,8 +165,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
                 // send the peIt the parent form
                 this.onChange(roles)
-            }
-            else {
+            } else {
                 this.onChange(null)
             }
         }))
@@ -204,10 +195,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
         }))
 
 
-        this.reduxMiddlewares = this.epics.createEpics(this.localStore, this.basePath)
-        this.reduxMiddlewares.forEach(mw => {
-            addMiddleware(mw)
-        })
+        this.rootEpics.addEpic(this.epics.createEpics(this.localStore, this.basePath, this.destroy$));
 
         // Subscribe to the activeProject, to get the pk_project needed for api call
         this.subs.push(this.ngRedux.select<Project>('activeProject').subscribe(d => this.project = d));
@@ -216,7 +204,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
             this.roleSetState = d
         }));
 
-        this.subs.push(Observable.combineLatest(this.toggle$, this._role_set_form$, this._role_list$).subscribe(res => {
+        this.subs.push(combineLatest(this.toggle$, this._role_set_form$, this._role_list$).subscribe(res => {
             const toggle = res[0], roleStatesToCreate = res[1], _role_list = res[2];
 
             if (this.roleSetState) {
@@ -246,10 +234,10 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     */
     initFormCtrls() {
 
-        let formCrtlsToRemove: string[] = [];
+        const formCrtlsToRemove: string[] = [];
 
         // add controls for each child roleSet
-        if (this.roleSetState && this.roleSetState._role_list)
+        if (this.roleSetState && this.roleSetState._role_list) {
             Object.keys(this.roleSetState._role_list).forEach((key) => {
                 if (this.roleSetState._role_list[key]) {
 
@@ -259,11 +247,11 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
                             Validators.required
                         ]
                     ))
-                }
-                else {
+                } else {
                     formCrtlsToRemove.push(key);
                 }
             })
+        }
 
         // remove control of removed chiild state
         formCrtlsToRemove.forEach(key => {
@@ -278,11 +266,24 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
 
     ngOnDestroy() {
-        this.reduxMiddlewares.forEach(mw => { removeMiddleware(mw) })
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe();
         this.subs.forEach(sub => sub.unsubscribe());
     }
 
 
+
+
+    // Since we're observing an array of items, we need to set up a 'trackBy'
+    // parameter so Angular doesn't tear down and rebuild the list's DOM every
+    // time there's an update.
+    getKey(_, item) {
+        return item.key;
+    }
+
+    getBasePath = () => this.index ?
+        [...this.parentPath, '_children', this.index] :
+        null;
 
 
     /**
@@ -303,7 +304,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     */
     changeStandardRole(input: { roleState: RoleDetail, key: string }) {
 
-        let observables = [];
+        const observables = [];
 
 
         // set loadingStdChange flag of the given child Role
@@ -326,7 +327,11 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
         Object.keys(this._role_list).forEach(key => {
             const roleState: RoleDetail = this._role_list[key];
-            const isDisplayRole = RoleService.isDisplayRole(roleState.isOutgoing, roleState.isDisplayRoleForDomain, roleState.isDisplayRoleForRange)
+            const isDisplayRole = RoleService.isDisplayRole(
+                roleState.isOutgoing,
+                roleState.isDisplayRoleForDomain,
+                roleState.isDisplayRoleForRange
+            )
             if (roleState && isDisplayRole) {
 
                 // set loadingStdChange flag of the RoleState
@@ -345,7 +350,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
             }
         });
 
-        this.subs.push(Observable.combineLatest(observables)
+        this.subs.push(combineLatest(observables)
             .subscribe(
                 (value) => {
 
@@ -356,8 +361,13 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
                     // update the former display role states (should be only one) in store 
                     for (let i = 0; i < rolesToChange.length; i++) {
-                        const isDisplayRole = RoleService.isDisplayRole(rolesToChange[i].isOutgoing, rolesToChange[i].isDisplayRoleForDomain, rolesToChange[i].isDisplayRoleForRange)
-                        this.getChildRoleStore(roleStateKey(rolesToChange[i])).dispatch(this.roleActions.changeDisplayRoleSucceeded(false, rolesToChange[i].isOutgoing))
+                        const isDisplayRole = RoleService.isDisplayRole(
+                            rolesToChange[i].isOutgoing,
+                            rolesToChange[i].isDisplayRoleForDomain,
+                            rolesToChange[i].isDisplayRoleForRange
+                        )
+                        this.getChildRoleStore(roleStateKey(rolesToChange[i]))
+                            .dispatch(this.roleActions.changeDisplayRoleSucceeded(false, rolesToChange[i].isOutgoing))
                     }
 
                 }))
@@ -409,7 +419,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     removeFromProject(key: string) {
         const roleState = this.roleSetState._role_list[key];
         if (RoleService.isDisplayRole(roleState.isOutgoing, roleState.isDisplayRoleForDomain, roleState.isDisplayRoleForRange)) {
-            alert("You can't remove the standard item. Make another item standard and try again.")
+            alert('You can\'t remove the standard item. Make another item standard and try again.')
         } else {
 
             const roleToRemove = StateToDataService.roleStateToRoleToRelate(roleState)
@@ -417,7 +427,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
             this.subs.push(this.roleApi.changeRoleProjectRelation(
                 this.project.pk_project, false, roleToRemove
             ).subscribe(result => {
-                this.localStore.dispatch(this.actions.roleRemovedFromProject(key))
+                this.localStore.dispatch(this.actions.roleRemovedFromProject(key, roleState))
             }))
         }
     }
@@ -450,7 +460,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
    */
     onDrag($event: { key: string, value: RoleDetail }) {
 
-        let changedEprs: InfEntityProjectRel[] = []
+        const changedEprs: InfEntityProjectRel[] = []
 
         // check, if ui_context_config needs update
         for (let i = 0; i < this.roleDetails.length; i++) {
@@ -469,8 +479,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
             }
         }
 
-        if (changedEprs.length)
-            this.localStore.dispatch(this.actions.updateOrder(changedEprs));
+        if (changedEprs.length) this.localStore.dispatch(this.actions.updateOrder(changedEprs));
 
     }
 
@@ -533,6 +542,5 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
         this.touched.emit()
     }
 
-    @Output() touched: EventEmitter<void> = new EventEmitter();
 
 }

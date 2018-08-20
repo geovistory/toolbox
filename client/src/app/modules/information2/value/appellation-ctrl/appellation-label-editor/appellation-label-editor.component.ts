@@ -1,8 +1,23 @@
-import { Component, OnInit, Renderer, Input, Output, EventEmitter, ChangeDetectorRef, ViewChildren, QueryList, forwardRef, ChangeDetectionStrategy } from '@angular/core';
-import { AppellationLabelTokenComponent } from '../appellation-label-token/appellation-label-token.component';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormGroup } from '@angular/forms';
-import { AppellationLabel, InsertTokenRequest, UpdateTokenStringRequest, UpdateTokenIsSeparatorRequest } from '../../../shared/appellation-label/appellation-label';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  forwardRef,
+  OnInit,
+  Output,
+  QueryList,
+  ViewChildren,
+} from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+
+import {
+  AppellationLabel,
+  InsertTokenRequest,
+  UpdateTokenIsSeparatorRequest,
+  UpdateTokenStringRequest,
+} from '../../../shared/appellation-label/appellation-label';
 import { Token } from '../../../shared/appellation-token/appellation-token';
+import { AppellationLabelTokenComponent } from '../appellation-label-token/appellation-label-token.component';
 
 @Component({
   selector: 'gv-appellation-label-editor',
@@ -27,7 +42,6 @@ export class AppellationLabelEditorComponent implements OnInit, ControlValueAcce
   @ViewChildren(AppellationLabelTokenComponent) tokenComponents: QueryList<AppellationLabelTokenComponent>
 
   constructor(
-    private renderer: Renderer,
     private changeDetector: ChangeDetectorRef
   ) { }
 
@@ -133,7 +147,10 @@ export class AppellationLabelEditorComponent implements OnInit, ControlValueAcce
 
     // console.log('beforeFocusCall')
     this.isFocusing = true;
-    this.renderer.invokeElementMethod(component.element.nativeElement, 'focus', []);
+    
+    // TODO Add focus
+    // this.renderer.invokeElementMethod(component.element.nativeElement, 'focus', []);
+
     this.isFocusing = false;
     // console.log('afterFocusCall')
 

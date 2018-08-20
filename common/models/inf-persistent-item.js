@@ -555,6 +555,15 @@ module.exports = function(InfPersistentItem) {
                     "pk_entity": "asc"
                   }]
                 }
+              },
+              "place": {
+                "$relation": {
+                  "name": "place",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
               }
             }
           }
@@ -636,6 +645,15 @@ module.exports = function(InfPersistentItem) {
               "time_primitive": {
                 "$relation": {
                   "name": "time_primitive",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
+              },
+              "place": {
+                "$relation": {
+                  "name": "place",
                   "joinType": "left join",
                   "orderBy": [{
                     "pk_entity": "asc"

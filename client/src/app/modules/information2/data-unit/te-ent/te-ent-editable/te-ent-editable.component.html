@@ -1,13 +1,18 @@
-<div class="card gv-name">
+<div class="card gv-name" [ngClass]="{
+  'gv-border-selected': ((accentuation$ | async) === 'selected'),
+  'gv-border-highlighted': ((accentuation$ | async) === 'highlighted')
+}" (mouseenter)="mouseenter()" (mouseleave)="mouseleave()">
 
   <div class="card-header gv-name-header d-flex flex-row">
     <ng-content select="[headerLeft]"></ng-content>
-    <div>
-      <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
-    </div>
-    <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
-      <span *ngIf="labelInEdit">{{labelInEdit}}</span>
-      <gv-te-ent-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-te-ent-label>
+    <div class="gv-flex-grow-1 d-flex" (click)="toggleCardBody()">
+      <div>
+        <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
+      </div>
+      <div class="gv-flex-grow-1 gv-pointer">
+        <span *ngIf="labelInEdit">{{labelInEdit}}</span>
+        <gv-te-ent-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-te-ent-label>
+      </div>
     </div>
     <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
       <div class="align-self-center">
@@ -58,7 +63,8 @@
           </div>
         </div>
 
-        <gv-add-info-te-ent [uiElements]="uiElementsForAddInfo" [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)" [excludeRoleSet]="(parentRoleSet$ | async)"></gv-add-info-te-ent>
+        <gv-add-info-te-ent [uiElements]="uiElementsForAddInfo" [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)"
+          [excludeRoleSet]="(parentRoleSet$ | async)"></gv-add-info-te-ent>
 
       </div>
     </div>

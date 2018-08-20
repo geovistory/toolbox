@@ -11,6 +11,7 @@ import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { RoleSet, RoleDetail } from '../../../information.models';
 import { slideInOut } from '../../../shared/animations';
 import { RoleSetApiEpics } from '../../role-set.epics';
+import { RootEpics } from 'app/core/store/epics';
 
 @Component({
   selector: 'gv-pe-it-role-set-create-ctrl',
@@ -33,6 +34,7 @@ export class PeItRoleSetCreateCtrlComponent extends RoleSetBase  {
   }
 
   constructor(
+    protected rootEpics: RootEpics,
     protected epics: RoleSetApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
@@ -45,7 +47,7 @@ export class PeItRoleSetCreateCtrlComponent extends RoleSetBase  {
     protected classService: ClassService,
     protected fb: FormBuilder
   ) {
-    super(epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
   }
 
 

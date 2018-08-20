@@ -30,7 +30,10 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
 
 
     @Input() basePath: string[];
-    getBasePath = (): string[] => this.basePath;
+
+    // if provided, initialState will be dispatched onInit replacing the lastState of substore 
+    @Input() initState: PeItDetail;
+    peItState: PeItDetail;
 
     @select() peIt$: Observable<InfPersistentItem>
 
@@ -45,13 +48,11 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
     ) {
         super(ngRedux, fb, stateCreator);
         this.initForm()
-
-
     }
 
-    // if provided, initialState will be dispatched onInit replacing the lastState of substore 
-    @Input() initState: PeItDetail;
-    peItState: PeItDetail;
+
+    getBasePath = (): string[] => this.basePath;
+
 
     init() {
         // initial state is useful for sandboxing the component

@@ -1,10 +1,23 @@
 import {
-  Component, OnInit, AfterViewChecked, Input, Output, EventEmitter,
-  ViewChild, ChangeDetectorRef, Renderer, Inject, OnDestroy
+  AfterViewChecked,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
 } from '@angular/core';
-import { AppellationLabel, InsertTokenRequest, UpdateTokenStringRequest, UpdateTokenIsSeparatorRequest } from '../../../shared/appellation-label/appellation-label';
-import { AppellationService } from '../../../shared/appellation.service';
+
+import {
+  AppellationLabel,
+  InsertTokenRequest,
+  UpdateTokenIsSeparatorRequest,
+  UpdateTokenStringRequest,
+} from '../../../shared/appellation-label/appellation-label';
 import { Token } from '../../../shared/appellation-token/appellation-token';
+import { AppellationService } from '../../../shared/appellation.service';
 
 
 @Component({
@@ -75,12 +88,12 @@ export class AppellationLabelTokenComponent implements OnInit, AfterViewChecked,
   afterViewChecked: boolean = false;
 
   constructor(
-    private renderer: Renderer,
     private changeDetector: ChangeDetectorRef,
     public appellationService: AppellationService
   ) {
     this.focusEventEmitter.subscribe(caretPosition => {
-      this.renderer.invokeElementMethod(this.element.nativeElement, 'focus', []);
+      // TODO add focus
+      // this.renderer.invokeElementMethod(this.element.nativeElement, 'focus', []);
       if (caretPosition >= 0) {
         this.setCaret(caretPosition)
       }

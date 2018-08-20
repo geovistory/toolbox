@@ -3,3 +3,9 @@ declare var module: NodeModule;
 interface NodeModule {
   id: string;
 }
+declare var Cesium;
+
+interface CesiumJulianDate  {
+  dayNumber: number;
+  secondsOfDay: number;
+}

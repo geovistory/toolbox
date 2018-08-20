@@ -1,51 +1,36 @@
 import { sandboxOf } from 'angular-playground';
 
-import { DimensionChangeDirective } from '../../../../shared/directives/dimension-change/dimension-change.directive';
-import { DraggableXAxisDirective } from '../../directives/draggable-x-axis.directive';
-import { WrapTextDirective } from '../../directives/wrap-text.directive';
 import { D3Service } from '../../shared/d3.service';
-import { ExistenceTimeVisualComponent } from '../existence-time-visual/existence-time-visual.component';
-import { InnerVisualComponent } from '../inner-visual/inner-visual.component';
-import { LeftInnerVisualComponent } from '../left-inner-visual/left-inner-visual.component';
-import { LeftOuterVisualComponent } from '../left-outer-visual/left-outer-visual.component';
-import { OuterVisualComponent } from '../outer-visual/outer-visual.component';
-import { PointComponent } from '../point/point.component';
-import { RightInnerVisualComponent } from '../right-inner-visual/right-inner-visual.component';
-import { RightOuterVisualComponent } from '../right-outer-visual/right-outer-visual.component';
-import { TeEntVisualComponent } from '../te-ent-visual/te-ent-visual.component';
-import { XAxisComponent } from '../x-axis/x-axis.component';
+import { TimelineModule } from '../../timeline.module';
 import { TimelineComponent } from './timeline.component';
 import { timeLineData } from './timeline.component.sandbox.mock';
+import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
+import { TimeLineSettings } from '../../models/timeline';
 
 
 
 
 
 export default sandboxOf(TimelineComponent, {
-  declarations: [
-    PointComponent,
-    XAxisComponent,
-    DraggableXAxisDirective,
-    LeftInnerVisualComponent,
-    LeftOuterVisualComponent,
-    RightInnerVisualComponent,
-    RightOuterVisualComponent,
-    ExistenceTimeVisualComponent,
-    TeEntVisualComponent,
-    InnerVisualComponent,
-    OuterVisualComponent,
-    WrapTextDirective,
-    DimensionChangeDirective
+  imports: [
+    TimelineModule,
+    InitStateModule
   ],
+  declareComponent: false,
   providers: [
     D3Service
   ]
 })
   .add('State: Flex-Item', {
     context: {
-      timeLineData
+      timeLineData,
+      state: {
+        timelineSettings: {
+        } as TimeLineSettings
+      }
     },
     template: `
+    <gv-init-state [initState]="state"></gv-init-state>
 
     <div class="d-flex">
 
@@ -53,7 +38,7 @@ export default sandboxOf(TimelineComponent, {
 
         <div class="p-3 border"> some flex item </div>
 
-          <gv-timeline class="border border-primary p-3" [data]="timeLineData"></gv-timeline>
+          <gv-timeline class="border border-primary p-3" [data]="timeLineData" [path]="['timelineSettings']"></gv-timeline>
 
         <div class="p-3 border"> some flex item </div>
 
@@ -64,11 +49,11 @@ export default sandboxOf(TimelineComponent, {
 
         <div class="p-3 border"> some flex item </div>
 
-          <gv-timeline class="border border-primary p-3" [data]="timeLineData"></gv-timeline>
+          <gv-timeline class="border border-primary p-3" [data]="timeLineData" [path]="['timelineSettings']"></gv-timeline>
 
         <div class="p-3 border"> some flex item </div>
 
-      </div>    
+      </div>
 
     </div>
 
@@ -77,14 +62,19 @@ export default sandboxOf(TimelineComponent, {
   })
   .add('State: Mockdata', {
     context: {
-      timeLineData
+      timeLineData,
+      state: {
+        timelineSettings: {
+        } as TimeLineSettings
+      }
     },
     template: `
-    
+    <gv-init-state [initState]="state"></gv-init-state>
+
     <div class="d-flex flex-column mt-5" >
       <div class="p-3 border"> some flex item </div>
       <div class="d-flex d-flex-grow-1">
-          <gv-timeline class="border border-primary p-3" [data]="timeLineData"></gv-timeline>   
+          <gv-timeline class="border border-primary p-3" [data]="timeLineData" [path]="['timelineSettings']"></gv-timeline>   
       </div>
       <div class="p-3 border"> some flex item </div>
     </div>
@@ -92,7 +82,7 @@ export default sandboxOf(TimelineComponent, {
   })
   .add('State: Empty', {
     template: `
-    
+
     <div class="d-flex flex-column mt-5" >
       <div class="p-3 border"> some flex item </div>
       <div class="d-flex d-flex-grow-1">

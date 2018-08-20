@@ -3,17 +3,20 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, UiContext } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subject } from 'rxjs';
 
-import { ExistenceTimeDetail, RoleDetail, TeEntDetail, RoleSet } from '../../../information.models';
-import { RoleSetActions } from '../../../role-set/role-set.actions';
+import { ExistenceTimeDetail, RoleDetail, RoleSet, TeEntDetail, TeEntAccentuation } from '../../../information.models';
 import { slideInOut } from '../../../shared/animations';
 import { StateCreatorService } from '../../../shared/state-creator.service';
 import { DataUnitBase } from '../../data-unit.base';
 import { TeEntActions } from '../te-ent.actions';
+import { TeEntAPIEpics } from '../te-ent.epics';
 import { teEntReducer } from '../te-ent.reducer';
+import { RootEpics } from '../../../../../core/store/epics';
 
-@AutoUnsubscribe()
+@AutoUnsubscribe({
+  blackList: ['destroy$']
+})
 @WithSubStore({
   localReducer: teEntReducer,
   basePathMethodName: 'getBasePath'
@@ -29,13 +32,13 @@ export class TeEntEditableComponent extends DataUnitBase {
 
   @Input() parentPath: string[];
 
-  getBasePath = () => [...this.parentPath, '_teEnt']
   basePath: string[];
   localStore: ObservableStore<TeEntDetail>;
 
   @select() toggle$: Observable<boolean>
   @select() _existenceTime$: Observable<ExistenceTimeDetail>;
   @select() _existenceTime_edit$: Observable<ExistenceTimeDetail>;
+  @select() accentuation$: Observable<TeEntAccentuation>;
 
   /**
   * Paths to other slices of the store
@@ -57,9 +60,12 @@ export class TeEntEditableComponent extends DataUnitBase {
 
   uiContext: UiContext;
 
-
+  // used for storing previous accentuation when mouse enters
+  previousAccentuation: TeEntAccentuation;
 
   constructor(
+    private rootEpics: RootEpics,
+    private epics: TeEntAPIEpics,
     protected ngRedux: NgRedux<any>,
     protected actions: TeEntActions,
     protected fb: FormBuilder,
@@ -68,6 +74,8 @@ export class TeEntEditableComponent extends DataUnitBase {
     super(ngRedux, fb, stateCreator);
   }
 
+  getBasePath = () => [...this.parentPath, '_teEnt']
+
   /**
    * Methods
    */
@@ -75,6 +83,9 @@ export class TeEntEditableComponent extends DataUnitBase {
   initStore() {
     this.basePath = this.getBasePath();
     this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), teEntReducer);
+
+    this.rootEpics.addEpic(this.epics.createEpics(this.localStore, this.basePath, this.destroy$))
+
   }
 
 
@@ -89,6 +100,9 @@ export class TeEntEditableComponent extends DataUnitBase {
 
     this.initTeEntSubscriptions();
 
+  }
+
+  destroy() {
 
   }
 
@@ -148,6 +162,27 @@ export class TeEntEditableComponent extends DataUnitBase {
   */
   toggleCardBody() {
     this.localStore.dispatch(this.actions.toggle())
+  }
+
+  click() {
+    if (this.localStore.getState().accentuation !== 'selected') {
+      this.localStore.dispatch(this.actions.setAccentuation('selected'))
+    } else {
+      this.localStore.dispatch(this.actions.setAccentuation('highlighted'))
+    }
+  }
+
+
+  mouseenter() {
+    if (this.localStore.getState().accentuation !== 'selected') {
+      this.localStore.dispatch(this.actions.setAccentuation('highlighted'))
+    }
+  }
+
+  mouseleave() {
+    if (this.localStore.getState().accentuation === 'highlighted') {
+      this.localStore.dispatch(this.actions.setAccentuation('none'))
+    }
   }
 
 }

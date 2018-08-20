@@ -28,8 +28,19 @@ export const teEntReducer = (lastState: TeEntDetail = INITIAL_STATE, action: TeE
       };
       break;
 
+    case TeEntActions.TE_ENT_SET_ACCENTUATION:
+      lastState = {
+        ...lastState,
+        accentuation: action.meta.accentuation
+      };
+      break;
 
-
+    case TeEntActions.TE_ENT_SET_TIMESPAN_ACTIVATED:
+      lastState = {
+        ...lastState,
+        timespanActivated: action.meta.timespanActivated
+      };
+      break;
   }
 
   return lastState;

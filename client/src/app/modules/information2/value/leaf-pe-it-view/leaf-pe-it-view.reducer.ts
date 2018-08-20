@@ -17,8 +17,8 @@ export const leafPeItReducer =
                 lastState = {
                     ...lastState,
                     ...action.payload,
-                    _leaf_peIt_modal: clone(action.payload)
-                    // loading: false
+                    _leaf_peIt_modal: clone(action.payload),
+                    loading: false
                 }
                 break;
 

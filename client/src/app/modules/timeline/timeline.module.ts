@@ -15,6 +15,8 @@ import { OuterVisualComponent } from './components/outer-visual/outer-visual.com
 import { WrapTextDirective } from './directives/wrap-text.directive';
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
 import { D3Service } from './shared/d3.service';
+import { CursorVisualComponent } from './components/cursor/cursor.component';
+import { RangeEmitterOnMouseDownDirective } from './directives/range-emitter-on-mouse-down.directive';
 
 @NgModule({
   imports: [
@@ -35,6 +37,8 @@ import { D3Service } from './shared/d3.service';
     InnerVisualComponent,
     OuterVisualComponent,
     WrapTextDirective,
+    CursorVisualComponent,
+    RangeEmitterOnMouseDownDirective
   ],
   providers: [
     D3Service

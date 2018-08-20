@@ -31,7 +31,7 @@ export const existenceTimeReducer =
         break;
 
       case ExistenceTimeActions.EX_TIME_STOP_EDITING:
-        lastState = omit(['_existenceTime_edit'], lastState);
+        lastState = new  ExistenceTimeDetail(omit(['_existenceTime_edit'], lastState));
         break;
 
       case ExistenceTimeActions.TOGGLE:

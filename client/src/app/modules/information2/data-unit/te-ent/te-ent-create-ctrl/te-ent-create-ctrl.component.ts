@@ -37,7 +37,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
   }
 
 
-  onInitTeEntBaseChild(): void { 
+  onInitTeEntBaseChild(): void {
     this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
   }
 
@@ -45,7 +45,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
     // add controls for each roleSet of _children
     this.subs.push(this._children$.subscribe(roleSetList => {
-      if (roleSetList)
+      if (roleSetList) {
         Object.keys(roleSetList).forEach((key) => {
           if (roleSetList[key]) {
 
@@ -58,6 +58,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
           }
 
         })
+      }
     }))
 
   }
@@ -66,9 +67,9 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
     this.subs.push(this.formGroup.valueChanges.subscribe(val => {
 
       // build the role
-      let role = new InfRole(pick(['fk_entity', 'fk_property'], this.parentRole));
+      const role = new InfRole(pick(['fk_entity', 'fk_property'], this.parentRole) as InfRole);
 
-      // build a teEnt with all pi_roles given by the form's controls 
+      // build a teEnt with all pi_roles given by the form's controls
       role.temporal_entity = {
         fk_class: this.teEntState.fkClass
       } as InfTemporalEntity;
@@ -85,8 +86,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
       if (this.formGroup.valid) {
         // send the teEnt the parent form
         this.onChange(role)
-      }
-      else {
+      } else {
         this.onChange(null)
       }
     }))

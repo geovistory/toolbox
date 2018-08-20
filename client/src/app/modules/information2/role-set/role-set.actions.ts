@@ -166,11 +166,11 @@ export class RoleSetActions {
   })
 
   /**
- * Removes the current RoleState from the Store. Called upon successfully removing a role
- */
-  roleRemovedFromProject = (key: String): RoleSetAction => ({
+   * Removes the current RoleDetail from the Store. Called upon successfully removing a role
+   */
+  roleRemovedFromProject = (key: string, roleDetail:RoleDetail): RoleSetAction => ({
     type: RoleSetActions.ROLE_REMOVED_FROM_PROJECT,
-    meta: { key },
+    meta: { key, roleDetail },
     payload: null
   })
 
@@ -221,7 +221,7 @@ export class RoleSetActions {
   })
 
 
-  updateOrder = (eprs:InfEntityProjectRel[]): RoleSetAction => ({
+  updateOrder = (eprs: InfEntityProjectRel[]): RoleSetAction => ({
     type: RoleSetActions.ROLE_SET_UPDATE_ORDER,
     meta: {
       eprs
@@ -230,7 +230,7 @@ export class RoleSetActions {
   })
 
 
-  updateOrderSucceeded = (eprs:InfEntityProjectRel[]): RoleSetAction => ({
+  updateOrderSucceeded = (eprs: InfEntityProjectRel[]): RoleSetAction => ({
     type: RoleSetActions.ROLE_SET_UPDATE_ORDER_SUCCEEDED,
     meta: {
       eprs

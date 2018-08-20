@@ -77,7 +77,7 @@ export const roleSetReducer =
 
       case RoleSetActions.STOP_CREATE_NEW_ROLE:
         lastState = {
-          ...omit(['_role_set_form'], lastState),
+          ...new RoleSet(omit(['_role_set_form'], lastState)),
           roleStatesInOtherProjectsVisible: false,
         }
         break;
@@ -85,7 +85,7 @@ export const roleSetReducer =
 
       case RoleSetActions.ROLES_CREATED:
         lastState = {
-          ...omit(['_role_set_form'], lastState),
+          ...new RoleSet(omit(['_role_set_form'], lastState)),
           roleStatesInOtherProjectsVisible: false,
           _role_list: {
             ...lastState._role_list,
@@ -169,13 +169,13 @@ export const roleSetReducer =
       case RoleSetActions.ROLE_SET_UPDATE_ORDER_SUCCEEDED:
         // update the eprs of of the roles in _role_list
         const updateEprs = (list: RoleDetailList, eprs: InfEntityProjectRel[]): RoleDetailList => {
-          let newVal: RoleDetailList = {}
+          const newVal: RoleDetailList = {}
           const newEprsByPk = indexBy(prop('pk_entity'), eprs);
           U.obj2KeyValueArr(list).forEach(item => {
             const roleD = item.value;
             const oldEpr = roleD.role.entity_version_project_rels[0];
             if (newEprsByPk[oldEpr.pk_entity]) {
-              const newEpr = newEprsByPk[oldEpr.pk_entity]
+              const newEpr = newEprsByPk[oldEpr.pk_entity] as InfEntityProjectRel;
               newVal[item.key] = {
                 ...roleD,
                 role: {

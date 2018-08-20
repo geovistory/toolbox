@@ -31,18 +31,17 @@ import { LeafPeItActions } from '../leaf-pe-it-view/leaf-pe-it-view.actions';
     }
   ]
 })
-export class LeafPeItCtrlComponent  extends LeafPeItActions implements OnInit, OnDestroy, ControlValueAccessor {
+export class LeafPeItCtrlComponent extends LeafPeItActions implements OnInit, OnDestroy, ControlValueAccessor {
 
   role: InfRole;
 
-  pkEntity:number;
+  pkEntity: number;
 
   /**
    * Inputs
    */
   @Input() pkClass: number;
   @Input() basePath: string[];
-  getBasePath = () => this.basePath;
 
   /**
    * Output
@@ -53,19 +52,21 @@ export class LeafPeItCtrlComponent  extends LeafPeItActions implements OnInit, O
 
   @Output() touched: EventEmitter<void> = new EventEmitter();
 
-  classConfig:ClassConfig;
+  classConfig: ClassConfig;
 
   subs: Subscription[] = [];
 
   constructor(
-    private ngRedux:NgRedux<IAppState>,
+    private ngRedux: NgRedux<IAppState>,
     private modalService: NgbModal,
     private entityAddModalService: EntityAddModalService,
     private ref: ChangeDetectorRef
   ) {
     super()
   }
-  
+
+  getBasePath = () => this.basePath;
+
   ngOnInit() {
     this.classConfig = this.ngRedux.getState().activeProject.crm.classes[this.pkClass];
     // this.openModal()
@@ -74,7 +75,7 @@ export class LeafPeItCtrlComponent  extends LeafPeItActions implements OnInit, O
     this.subs.forEach(sub => sub.unsubscribe())
   }
 
-  reset(){
+  reset() {
 
     this.pkEntity = undefined;
     this.onChange(null)
@@ -105,7 +106,7 @@ export class LeafPeItCtrlComponent  extends LeafPeItActions implements OnInit, O
       this.ref.detectChanges()
 
       // build the role
-      const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role));
+      const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role) as InfRole);
       role.fk_entity = pkEntity;
 
       // send the role to the parent form

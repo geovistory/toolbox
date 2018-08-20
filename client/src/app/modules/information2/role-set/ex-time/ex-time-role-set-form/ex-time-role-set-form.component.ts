@@ -9,8 +9,7 @@ import { IAppState, InfRoleApi, InfRole, InfTemporalEntity, InfTemporalEntityApi
 import { RoleSetActions } from '../../role-set.actions';
 import { teEntReducer } from '../../../data-unit/te-ent/te-ent.reducer';
 import { TeEntDetail, RoleDetail } from '../../../information.models';
-import { timer } from 'rxjs/observable/timer';
-import { Observable } from 'rxjs';
+import { timer ,  Observable, combineLatest } from 'rxjs';
 import { StateCreatorService, StateSettings } from '../../../shared/state-creator.service';
 import { ClassService } from '../../../shared/class.service';
 
@@ -82,7 +81,7 @@ export class ExTimeRoleSetFormComponent extends RoleSetFormBase implements Contr
     const waitAtLeast = timer(0);
     const apiCall = this.roleApi.alternativesNotInProjectByTeEntPk(fkTemporalEntity, fkProperty, fkProject)
 
-    this.subs.push(Observable.combineLatest([waitAtLeast, apiCall])
+    this.subs.push(combineLatest([waitAtLeast, apiCall])
       .subscribe((results) => {
 
         const rolesInOtherProjects = results[1].filter(role => parseInt(role.is_in_project_count) > 0);
@@ -91,7 +90,7 @@ export class ExTimeRoleSetFormComponent extends RoleSetFormBase implements Contr
         const inOther$ = this.stateCreator.initializeRoleDetails(rolesInOtherProjects, { isOutgoing: s.isOutgoing })
         const inNo$ = this.stateCreator.initializeRoleDetails(rolesInNoProject, { isOutgoing: s.isOutgoing })
 
-        Observable.combineLatest(inOther$, inNo$).subscribe(results => {
+        combineLatest(inOther$, inNo$).subscribe(results => {
           const roleStatesInOtherProjects = results[0], roleStatesInNoProjects = results[1]
 
           this.localStore.dispatch(this.actions.alternativeRolesLoaded(

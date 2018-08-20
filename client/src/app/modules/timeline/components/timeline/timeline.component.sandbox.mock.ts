@@ -8,6 +8,7 @@ import { TimeLineData } from "../../models/timeline";
 export const timeLineData: TimeLineData = {
     rows: [
         {
+            accentuation: 'none',
             label: 'Name: Johannes Jacob Meier Langer Name',
             existenceTime: new ExistenceTime({
                 p82a: new TimePrimitive({
@@ -33,6 +34,7 @@ export const timeLineData: TimeLineData = {
             })
         },
         {
+            accentuation: 'none',
             label: 'Name: Hans Meier',
             existenceTime: new ExistenceTime({
                 p81a: new TimePrimitive({
@@ -48,6 +50,7 @@ export const timeLineData: TimeLineData = {
             })
         },
         {
+            accentuation: 'none',
             label: 'Erwerb: Titel',
             existenceTime: new ExistenceTime({
                 p81a: new TimePrimitive({

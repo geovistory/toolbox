@@ -13,6 +13,7 @@ import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetAddCtrlBase } from '../../role-set-add-ctrl.base';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetApiEpics } from '../../role-set.epics';
+import { RootEpics } from 'app/core/store/epics';
 
 
 @Component({
@@ -54,6 +55,7 @@ export class TeEntRoleSetAddCtrlComponent extends RoleSetAddCtrlBase {
 
 
     constructor(
+        protected rootEpics: RootEpics,
         protected epics: RoleSetApiEpics,
         protected eprApi: InfEntityProjectRelApi,
         protected roleApi: InfRoleApi,
@@ -68,7 +70,7 @@ export class TeEntRoleSetAddCtrlComponent extends RoleSetAddCtrlBase {
         private teEntApi: InfTemporalEntityApi
 
     ) {
-        super(epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+        super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
     }
 
     initRoleSetAddCtrlBaseChild() {

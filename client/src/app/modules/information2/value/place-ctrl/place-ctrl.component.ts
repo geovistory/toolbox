@@ -55,7 +55,7 @@ export class PlaceCtrlComponent implements OnInit, OnDestroy, ControlValueAccess
       if (this.formGroup.valid) {
 
         // build the role
-        let role = new InfRole(pick(['fk_temporal_entity', 'fk_property', 'fk_class'], this.role));
+        const role = new InfRole(pick(['fk_temporal_entity', 'fk_property', 'fk_class'], this.role) as InfRole);
 
         role.place = {
           lat: val.lat,
@@ -65,8 +65,7 @@ export class PlaceCtrlComponent implements OnInit, OnDestroy, ControlValueAccess
 
         // send the role to the parent form
         this.onChange(role)
-      }
-      else {
+      } else {
         this.onChange(null)
       }
     }))

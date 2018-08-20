@@ -8,14 +8,14 @@ import { NgReduxFormModule } from '@angular-redux/form';
   imports: [
     CommonModule,
     NgReduxModule,
-        
+
   ],
   declarations: [
     InitStateComponent
   ],
-  exports:[
+  exports: [
     InitStateComponent,
-    NgReduxFormModule 
+    NgReduxFormModule
   ]
 })
 export class InitStateModule { }

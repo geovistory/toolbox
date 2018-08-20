@@ -36,6 +36,7 @@ export class DataUnitActions {
 
   static readonly ROLE_SET_LIST_DISPLAY_LABEL_UPDATED = 'ROLE_SET_LIST_DISPLAY_LABEL_UPDATED';
 
+  static readonly DATA_UNIT_INIT = 'DATA_UNIT_INIT';
 
   @dispatch()
 
@@ -120,16 +121,13 @@ export class DataUnitActions {
   })
 
 
-  // fkClassAndRolesInitialized = (fkClass: number, dfhClass: DfhClass, roles: InfRole[]): DataUnitAction => ({
-  //   type: DataUnitActions.FK_CLASS_AND_ROLES_INITIALIZED,
-  //   meta: null,
-  //   payload: {
-  //     fkClass,
-  //     dfhClass,
-  //     roles
-  //   }
-  // })
-
-
+  /**
+  * called, OnInit of a data unit component
+  */
+  dataUnitInit = (): DataUnitAction => ({
+    type: DataUnitActions.DATA_UNIT_INIT,
+    meta: null,
+    payload: null
+  })
 
 }

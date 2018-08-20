@@ -1,10 +1,9 @@
 import { Injectable, EventEmitter, Inject, forwardRef } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  BehaviorSubject } from 'rxjs';
 
 import { InfTemporalEntity, InfRole, DfhProperty, InfTemporalEntityApi, TimePrimitive, InfTimePrimitive, InfEntityProjectRel, InfAppellation, ExistenceTime } from 'app/core';
 import { DfhConfig } from './dfh-config';
 import { PropertyService } from './property.service';
-import { BehaviorSubject } from 'rxjs';
 import { ClassService } from './class.service';
 import { AppellationLabel } from './appellation-label/appellation-label';
 

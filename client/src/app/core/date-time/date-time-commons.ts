@@ -249,12 +249,12 @@ export class DateTimeCommons {
     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
   }
 
-  static newJulian (data){
+  static newJulian(data) {
     return new JulianDateTime(data);
   }
 
 
-  static newGregorian (data){
+  static newGregorian(data) {
     return new GregorianDateTime(data);
   }
 }
