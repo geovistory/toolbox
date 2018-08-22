@@ -1,6 +1,6 @@
 import { IAccount } from '../../modules/account/account.model';
 import { Admin } from '../../modules/admin/admin.models';
-import { Information } from '../../modules/information2/information.models';
+import { Information } from '../../modules/information/information.models';
 import { IProjectList } from '../../modules/projects/projects.model';
 import { ISourceListState } from '../../modules/sources';
 import { LoadingBar } from '../loading-bar/loading-bar.models';

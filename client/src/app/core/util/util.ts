@@ -15,9 +15,9 @@ import {
     RoleSetLabelObj,
     RoleSetList,
     TeEntDetail
-} from '../../modules/information2/information.models';
-import { AppellationLabel } from '../../modules/information2/shared/appellation-label';
-import { DfhConfig } from '../../modules/information2/shared/dfh-config';
+} from '../../modules/information/information.models';
+import { AppellationLabel } from '../../modules/information/shared/appellation-label';
+import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { ClassConfig, ProjectCrm } from '../active-project/active-project.models';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';

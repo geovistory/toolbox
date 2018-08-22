@@ -5,7 +5,7 @@ import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { propSetKeyFromFk } from '../../modules/information2/information.helpers';
+import { propSetKeyFromFk } from '../../modules/information/information.helpers';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
 import { ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, ProjectApi } from '../sdk';
 import { U } from '../util/util';

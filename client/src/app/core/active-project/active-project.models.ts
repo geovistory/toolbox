@@ -1,6 +1,6 @@
 import { DfhClassInterface, ProjectInterface } from 'app/core';
 
-import { RoleSetList } from '../../modules/information2/information.models';
+import { RoleSetList } from '../../modules/information/information.models';
 import { ComUiContextInterface, ComPropertySet } from '../sdk';
 
 export interface ProjectDetail extends ProjectInterface {

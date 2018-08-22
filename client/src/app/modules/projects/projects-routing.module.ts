@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ProxyRouteComponent } from 'app/shared/components/proxy-route';
 
-import { Information2Module } from '../information2/information2.module';
+import { Information2Module } from '../information/information.module';
 import { ProjectCreateComponent } from './components/project-create/project-create.component';
 import { ProjectDashboardComponent } from './components/project-dashboard/project-dashboard.component';
 import { ProjectEditComponent } from './components/project-edit/project-edit.component';
@@ -49,7 +49,7 @@ const routes: Routes = [
             children: [
               {
                 path: '',
-                loadChildren: '../information2/information2.module#Information2Module'
+                loadChildren: '../information/information.module#Information2Module'
                 // line above instead of loadChildren: InformationModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116         
               }
             ]

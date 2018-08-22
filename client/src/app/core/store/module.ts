@@ -51,7 +51,7 @@ export class StoreModule {
 
             // Middleware
             [
-                createLogger(),
+                // createLogger(),
                 epicMiddleware,
                 dynamicMiddlewares,
             ],

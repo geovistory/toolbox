@@ -8,7 +8,7 @@ import { Observable, Subscription } from 'rxjs';
 import { AnnotationCtrlState, AnnotationState, IAnnotationPanelState, MentionedEntity } from '../../annotation.models';
 import { AnnotationPanelActions } from './annotation-panel.actions';
 import { annotationPanelReducer } from './annotation-panel.reducer';
-import { DfhConfig } from '../../../information2/shared/dfh-config';
+import { DfhConfig } from '../../../information/shared/dfh-config';
 
 @AutoUnsubscribe()
 @WithSubStore({

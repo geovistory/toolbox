@@ -1,5 +1,5 @@
 import { DfhClassInterface, ComPropertySet, ComUiContextConfig } from '../../core';
-import { RoleSet } from '../information2/information.models';
+import { RoleSet } from '../information/information.models';
 
 
 
