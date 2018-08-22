@@ -5,9 +5,9 @@ import { ActiveProjectService, EntityEditorService, IAppState, Project } from 'a
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest } from 'rxjs';
 import { InformationActions } from '../../information.actions';
-import { Information } from '../../information.models';
 import { informationReducer } from '../../information.reducer';
 import { StateCreatorService } from '../../shared/state-creator.service';
+import { Information } from '../../information.models';
 
 
 

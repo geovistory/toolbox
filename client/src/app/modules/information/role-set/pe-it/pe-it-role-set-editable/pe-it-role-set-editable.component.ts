@@ -5,7 +5,7 @@ import { DfhProperty, IAppState, InfEntityProjectRelApi, InfPersistentItem, InfR
 
 import { Observable } from 'rxjs';
 
-import { PeItDetail, RoleDetail } from '../../../information.models';
+import { PeItDetail, RoleDetail } from 'app/core/models';
 import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';

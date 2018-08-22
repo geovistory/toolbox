@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { InfRole, InfTemporalEntity } from 'app/core';
-import { TeEntDetail } from '../information.models';
+import { TeEntDetail } from 'app/core/models';
 
 @Injectable()
 export class PeItRoleService {

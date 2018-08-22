@@ -8,7 +8,7 @@ import { roleSetReducer } from '../../role-set.reducer';
 import { IAppState, InfRoleApi, InfRole, InfTemporalEntity, InfTemporalEntityApi, InfEntityProjectRel } from 'app/core';
 import { RoleSetActions } from '../../role-set.actions';
 import { teEntReducer } from '../../../data-unit/te-ent/te-ent.reducer';
-import { TeEntDetail, RoleDetail } from '../../../information.models';
+import { TeEntDetail, RoleDetail } from 'app/core/models';
 import { timer ,  Observable, combineLatest } from 'rxjs';
 import { StateCreatorService, StateSettings } from '../../../shared/state-creator.service';
 import { ClassService } from '../../../shared/class.service';

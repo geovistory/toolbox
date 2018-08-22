@@ -2,7 +2,7 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 
-import { PeItDetail } from '../../information.models';
+import { PeItDetail } from 'app/core/models';
 
 
 // replace Role with name of component

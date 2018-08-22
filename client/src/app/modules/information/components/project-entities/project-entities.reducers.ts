@@ -1,8 +1,7 @@
-import { Information } from '../../information.models';
 import { ProjectEntitiesAction } from './project-entities.actions';
+import { Information } from '../../information.models';
 
-const INITIAL_STATE: Information = {
-};
+const INITIAL_STATE: Information = new Information();
 
 
 export const projectEntitiesReducer =

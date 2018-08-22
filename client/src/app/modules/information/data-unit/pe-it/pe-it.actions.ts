@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { InfPersistentItem, InfRole } from 'app/core';
-import { PeItDetail, DataUnitLabel } from '../../information.models';
+import { PeItDetail, DataUnitLabel, PeItDetailI } from 'app/core/models';
 import { DataUnitActions } from '../data-unit.actions';
 
 
 // Flux-standard-action gives us stronger typing of our actions.
-type Payload = PeItDetail;
+type Payload = PeItDetailI;
 interface MetaData { };
 export type PeItAction = FluxStandardAction<Payload, MetaData>;
 

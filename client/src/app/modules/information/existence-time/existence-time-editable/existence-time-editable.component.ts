@@ -5,7 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 
 import { IAppState, InfRole, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
 import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
-import { ExistenceTimeDetail, ExTimeModalMode, RoleSetList, TeEntDetail } from '../../information.models';
+import { ExistenceTimeDetail, ExTimeModalMode, RoleSetList, TeEntDetail } from 'app/core/models';
 import { slideInOut } from '../../shared/animations';
 import { ExistenceTimeModalComponent } from '../existence-time-modal/existence-time-modal.component';
 import { ExistenceTimeActions } from '../existence-time.actions';

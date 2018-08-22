@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject ,  Observable } from 'rxjs';
 
-import { RoleSet } from '../information.models';
+import { RoleSet } from 'app/core/models';
 import { ClassService } from './class.service';
 import { PropertyService } from './property.service';
 import { RoleService } from './role.service';

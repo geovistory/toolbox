@@ -4,7 +4,7 @@ import { HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { indexBy, groupBy, prop } from 'ramda';
 import { BehaviorSubject ,  Observable } from 'rxjs';
 import { RoleService } from './role.service';
-import { RoleDetailList, RoleDetail, RoleSet } from '../information.models';
+import { RoleDetailList, RoleDetail, RoleSet } from 'app/core/models';
 
 
 @Injectable()

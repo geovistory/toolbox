@@ -1,7 +1,6 @@
-import { DfhClassInterface, ProjectInterface } from 'app/core';
+import { ComPropertySet, ComUiContextInterface, ProjectInterface } from 'app/core/sdk';
+import { RoleSetList } from 'app/core/models';
 
-import { RoleSetList } from '../../modules/information/information.models';
-import { ComUiContextInterface, ComPropertySet } from '../sdk';
 
 export interface ProjectDetail extends ProjectInterface {
     crm?: ProjectCrm
@@ -38,41 +37,4 @@ export interface UiElement {
     fk_property_set?: number,
     property_set?: ComPropertySet
     ord_num: number
-}
-
-
-
-const x: ProjectDetail = {
-    crm: {
-        roleSets: {
-
-        },
-        classes: {
-            21: {
-                dfh_pk_class: 21,
-                dfh_identifier_in_namespace: 'E51',
-                dfh_fk_system_type: 8,
-                label: 'Person',
-                roleSets: {
-
-                },
-                uiContexts: {
-                    103: {
-                        label: 'Editable',
-                        uiElements: [
-                            {
-                                fk_property_set: 12,
-                                ord_num: 0
-                            },
-                            {
-                                fk_property: 113,
-                                property_is_outgoing: true,
-                                ord_num: 1
-                            }
-                        ]
-                    }
-                }
-            }
-        }
-    }
 }

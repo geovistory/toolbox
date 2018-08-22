@@ -1,4 +1,4 @@
-import { TeEntDetail } from '../../information.models';
+import { TeEntDetail } from 'app/core/models';
 import { dataUnitReducer } from '../data-unit.reducer';
 import { TeEntAction, TeEntActions } from './te-ent.actions';
 

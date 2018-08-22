@@ -1,7 +1,7 @@
 import { Component, OnInit, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { RoleBase } from '../../role.base';
 import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { RoleDetail } from '../../../information.models';
+import { RoleDetail } from 'app/core/models';
 import { NgRedux } from '@angular-redux/store';
 
 @Component({

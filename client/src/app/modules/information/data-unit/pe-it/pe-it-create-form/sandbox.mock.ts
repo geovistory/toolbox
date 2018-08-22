@@ -1,8 +1,8 @@
-import { DfhClass, DfhLabel, DfhProperty, InfRole, InfPersistentItem, InfTemporalEntity, InfEntityProjectRel } from "app/core";
-import { PeItDetail, RoleDetail, RoleSet } from "../../../information.models";
+import { DfhClass, DfhLabel, DfhProperty, InfRole, InfPersistentItem, InfTemporalEntity, InfEntityProjectRel, DfhPropertyInterface, InfRoleInterface, DfhClassInterface } from "app/core";
+import { PeItDetail, RoleDetail, RoleSet, PeItDetailI, RoleDetailI, DataUnitChildList } from "app/core/models";
 import { DfhConfig } from "../../../shared/dfh-config";
 
-export const mockPerson: PeItDetail = {
+export const mockPerson: PeItDetailI = {
     peIt: {
         fk_class: 1
     } as InfPersistentItem,
@@ -13,7 +13,7 @@ export const mockPerson: PeItDetail = {
     ingoingRoleSets: [],
     outgoingRoleSets: [],
     _children: {
-        _role_set_1: new  RoleSet( {
+        _role_set_1: new  RoleSet({
             label: {
                 default: 'Names',
                 sg: 'Name',
@@ -29,7 +29,7 @@ export const mockPerson: PeItDetail = {
                 "dfh_domain_instances_max_quantifier": -1,
                 "dfh_range_instances_min_quantifier": 0,
                 "dfh_range_instances_max_quantifier": -1,
-            } as DfhProperty,
+            } as DfhPropertyInterface,
             _role_list: {
                 _role_detail_1: {
                     role: {
@@ -73,11 +73,11 @@ export const mockPerson: PeItDetail = {
                                         _appe: {
                                         }
                                     } as RoleDetail
-                                },
+                                }
                             })
-                        }
+                        } as DataUnitChildList
                     }
-                }
+                } as RoleDetail
             }
         })
     }

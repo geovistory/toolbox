@@ -1,17 +1,17 @@
 import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
-import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { IAppState, InfPersistentItem, InfPersistentItemApi, InfRole, InfRoleApi, InfTemporalEntity } from 'app/core';
+import { PeItDetail, RoleDetail } from 'app/core/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Observable ,  timer, combineLatest } from 'rxjs';
-
+import { combineLatest, timer } from 'rxjs';
 import { peItReducer } from '../../../data-unit/pe-it/pe-it.reducer';
-import { PeItDetail, RoleDetail, RoleDetailList } from '../../../information.models';
 import { ClassService } from '../../../shared/class.service';
 import { StateCreatorService, StateSettings } from '../../../shared/state-creator.service';
 import { RoleSetFormBase } from '../../role-set-form.base';
 import { RoleSetActions } from '../../role-set.actions';
 import { roleSetReducer } from '../../role-set.reducer';
+
 
 @AutoUnsubscribe()
 @WithSubStore({

@@ -18,7 +18,7 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares';
 import { Subscription, Observable, combineLatest, Subject } from 'rxjs';
 
-import { CollapsedExpanded, RoleDetail, RoleDetailList, RoleSet, RoleSetForm, RoleSetLabelObj } from '../information.models';
+import { CollapsedExpanded, RoleDetail, RoleDetailList, RoleSet, RoleSetForm, RoleSetLabel } from 'app/core/models';
 import { RoleActions } from '../role/role.actions';
 import { roleReducer } from '../role/role.reducers';
 import { ClassService } from '../shared/class.service';
@@ -64,7 +64,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     @select() parentPeIt$: Observable<InfPersistentItem>
     @select() parentEntityPk$: Observable<number>
     @select() toggle$: Observable<CollapsedExpanded>
-    @select() label$: Observable<RoleSetLabelObj>
+    @select() label$: Observable<RoleSetLabel>
     @select() targetMaxQuantity$: Observable<number>
     @select() dragEnabled$: Observable<boolean>
 

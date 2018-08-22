@@ -14,7 +14,7 @@ import {
   RoleSet,
   TeEntDetail,
   TimePrimitveDetail,
-} from '../information.models';
+} from 'app/core/models';
 import { roleReducer } from './role.reducers';
 
 @AutoUnsubscribe()

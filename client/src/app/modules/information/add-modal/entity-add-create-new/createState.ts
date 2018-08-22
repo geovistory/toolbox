@@ -1,6 +1,6 @@
 import { DfhClass, DfhProperty, InfPersistentItem, InfRole } from 'app/core';
 
-import { PeItDetail, RoleDetail, RoleSet } from '../../information.models';
+import { PeItDetail, RoleDetail, RoleSet } from 'app/core/models';
 import { DfhConfig } from '../../shared/dfh-config';
 
 export const createState = function (appeProperty) {

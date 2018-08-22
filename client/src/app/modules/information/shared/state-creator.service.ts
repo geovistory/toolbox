@@ -1,10 +1,10 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ComConfig, IAppState, InfAppellation, InfEntityProjectRel, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTimePrimitive, U } from 'app/core';
+import { AppeDetail, DataUnit, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleDetailList, RoleSet, RoleSetI, TeEntDetail, TimePrimitveDetail } from 'app/core/models';
 import { clone, groupBy, indexBy, prop } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { dataUnitChildKey, roleDetailKey, similarRoleSet, sortRoleDetailsByOrdNum } from '../information.helpers';
-import { AppeDetail, DataUnit, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleDetailList, RoleSet, RoleSetInterface, TeEntDetail, TimePrimitveDetail } from '../information.models';
 import { AppellationLabel } from './appellation-label/appellation-label';
 import { ClassService } from './class.service';
 import { DfhConfig } from './dfh-config';
@@ -15,7 +15,7 @@ import { RoleSetService } from './role-set.service';
 
 export interface StateSettings {
   parentRolePk?: number;
-  parentRoleSet?: RoleSetInterface;
+  parentRoleSet?: RoleSetI;
   isCreateMode?: boolean;
   isAddMode?: boolean;
 }

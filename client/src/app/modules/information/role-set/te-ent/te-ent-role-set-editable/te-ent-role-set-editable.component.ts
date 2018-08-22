@@ -6,7 +6,7 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { dropLast } from 'ramda';
 import { Observable } from 'rxjs';
 
-import { RoleDetail, RoleDetailList, RoleSet, TeEntDetail } from '../../../information.models';
+import { RoleDetail, RoleDetailList, RoleSet, TeEntDetail } from 'app/core/models';
 import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';

@@ -5,7 +5,7 @@ import { IAppState, InfEntityProjectRel, InfRole, InfTimePrimitive, U, Validatio
 import { dropLast, union } from 'ramda';
 import { Observable, Subscription } from 'rxjs';
 import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
-import { ExistenceTimeEdit, ExTimeHelpMode, ExTimeModalMode, RoleSet, RoleSetList, TeEntDetail } from '../../information.models';
+import { ExistenceTimeEdit, ExTimeHelpMode, ExTimeModalMode, RoleSet, RoleSetList, TeEntDetail } from 'app/core/models';
 import { DfhConfig } from '../../shared/dfh-config';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { ExistenceTimeActions } from '../existence-time.actions';

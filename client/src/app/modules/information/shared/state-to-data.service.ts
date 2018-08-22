@@ -3,7 +3,7 @@ import { InfRole, InfEntityProjectRel, InfTemporalEntity, InfPersistentItem, U, 
 import { RoleSetService } from './role-set.service';
 import { DfhConfig } from './dfh-config';
 import { AppellationLabel } from './appellation-label/appellation-label';
-import { PeItDetail, RoleDetailList, RoleSetList, RoleSet, RoleDetail, TeEntDetail, ExistenceTimeDetail, DataUnitChildList, DataUnitChild } from '../information.models';
+import { PeItDetail, RoleDetailList, RoleSetList, RoleSet, RoleDetail, TeEntDetail, ExistenceTimeDetail, DataUnitChildList, DataUnitChild } from 'app/core/models';
 
 @Injectable()
 export class StateToDataService {

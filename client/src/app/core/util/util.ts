@@ -12,10 +12,10 @@ import {
     RoleDetail,
     RoleLabel,
     RoleSet,
-    RoleSetLabelObj,
+    RoleSetLabel,
     RoleSetList,
     TeEntDetail
-} from '../../modules/information/information.models';
+} from 'app/core/models';
 import { AppellationLabel } from '../../modules/information/shared/appellation-label';
 import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { ClassConfig, ProjectCrm } from '../active-project/active-project.models';
@@ -310,11 +310,11 @@ export class U {
      * @param property
      * @param isOutgoing
      */
-    static createLabelObject(property: DfhProperty, isOutgoing: boolean): RoleSetLabelObj {
+    static createLabelObject(property: DfhProperty, isOutgoing: boolean): RoleSetLabel {
         let sg = 'n.N.'
         let pl = 'n.N.'
 
-        let labelObj: RoleSetLabelObj;
+        let labelObj: RoleSetLabel;
         if (isOutgoing) {
 
             if (property) {
@@ -414,17 +414,17 @@ export class U {
 
 
     static labelFromRoleSet(r: RoleSet): DataUnitChildLabel {
-        const duChild: DataUnitChildLabel = {};
+        const duChildLabel = new DataUnitChildLabel();
 
         const roleDetails = U.obj2Arr(r._role_list);
 
-        duChild.roleLabel = U.labelFromRoleDetail(roleDetails[0]);
+        duChildLabel.roleLabel = U.labelFromRoleDetail(roleDetails[0]);
 
-        if (roleDetails.length > 1) duChild.suffix = '(+' + (roleDetails.length - 1) + ')';
+        if (roleDetails.length > 1) duChildLabel.suffix = '(+' + (roleDetails.length - 1) + ')';
 
-        duChild.introducer = r.label.default;
+        duChildLabel.introducer = r.label.default;
 
-        return duChild;
+        return duChildLabel;
     }
 
 
@@ -528,13 +528,13 @@ export class U {
 
         if (!earliest && !latest) return null;
 
-        return {
+        return new DataUnitChildLabel({
             introducer: 'When',
             roleLabel: {
                 type: 'ex-time',
                 exTimeLabel: { earliest, latest }
             }
-        }
+        })
 
     }
 

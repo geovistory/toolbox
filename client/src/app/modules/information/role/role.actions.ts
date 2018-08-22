@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { InfRole } from 'app/core';
-import { RoleDetail, PeItDetail } from '../information.models';
+import { RoleDetail, PeItDetail } from 'app/core/models';
 
 // replace Role with name of component
 

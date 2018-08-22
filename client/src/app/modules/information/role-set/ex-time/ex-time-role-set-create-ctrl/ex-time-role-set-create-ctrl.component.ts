@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ChangeDetectionStrategy, forwardRef } from '@angular/core';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
+import { IAppState, InfRole } from 'app/core';
+import { RoleDetailList, RoleSet, RoleSetLabel } from 'app/core/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { WithSubStore, ObservableStore, select, NgRedux } from '@angular-redux/store';
-import { roleSetReducer } from '../../role-set.reducer';
-import { ControlValueAccessor, FormBuilder, FormGroup, Validators, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { RoleSet, RoleDetailList, RoleSetForm, RoleSetLabelObj } from '../../../information.models';
 import { Observable, Subscription } from 'rxjs';
-import { InfRole, IAppState } from 'app/core';
+import { roleSetReducer } from '../../role-set.reducer';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -59,7 +59,7 @@ export class ExTimeRoleSetCreateCtrlComponent implements OnInit, OnDestroy, Cont
   // @select() toggle$: Observable<CollapsedExpanded>
   // @select() rolesNotInProjectLoading$: Observable<boolean>;
 
-  @select() label$: Observable<RoleSetLabelObj>
+  @select() label$: Observable<RoleSetLabel>
   @select() _role_list$: Observable<RoleDetailList>
   // @select() _role_set_form$: Observable<RoleSetForm>
 

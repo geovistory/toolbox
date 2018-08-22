@@ -1,7 +1,7 @@
 
 import { Action } from 'redux';
 import { RoleSetAction, RoleSetActions, roleStateKey } from './role-set.actions';
-import { RoleSet, RoleDetailList, RoleDetail } from '../information.models';
+import { RoleSet, RoleDetailList, RoleDetail } from 'app/core/models';
 import { indexBy, prop, omit, sort } from 'ramda';
 import { InfEntityProjectRel, U } from 'app/core';
 import { sortRoleDetailsByOrdNum, sortRoleDetailListByOrdNum } from '../information.helpers';

@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { RoleBase } from '../../role.base';
 import { NgRedux, WithSubStore, select } from '@angular-redux/store';
 import { FormBuilder } from '@angular/forms';
-import { RoleDetail, CollapsedExpanded, PeItDetail } from '../../../information.models';
+import { RoleDetail, CollapsedExpanded, PeItDetail } from 'app/core/models';
 import { roleReducer } from '../../role.reducers';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { ReplaySubject, Observable, Subject } from 'rxjs';

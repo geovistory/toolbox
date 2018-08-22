@@ -8,7 +8,7 @@ import { RoleActions } from '../../../role/role.actions';
 import { StateCreatorService } from '../../../shared/state-creator.service';
 import { ClassService } from '../../../shared/class.service';
 import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { RoleSet, RoleDetail } from '../../../information.models';
+import { RoleSet, RoleDetail } from 'app/core/models';
 import { slideInOut } from '../../../shared/animations';
 import { RoleSetApiEpics } from '../../role-set.epics';
 import { RootEpics } from 'app/core/store/epics';

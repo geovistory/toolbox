@@ -1,6 +1,6 @@
 import { Action } from 'redux';
 import { RoleAction, RoleActions } from './role.actions';
-import { RoleDetail } from '../information.models';
+import { RoleDetail } from 'app/core/models';
 import { InfEntityProjectRel } from 'app/core';
 
 

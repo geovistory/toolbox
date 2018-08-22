@@ -1,6 +1,6 @@
 
 import { ExistenceTimeAction, ExistenceTimeActions } from './existence-time.actions';
-import { ExistenceTimeDetail } from '../information.models'
+import { ExistenceTimeDetail } from 'app/core/models'
 import { omit } from 'ramda'
 
 const INITIAL_STATE  = new  ExistenceTimeDetail({

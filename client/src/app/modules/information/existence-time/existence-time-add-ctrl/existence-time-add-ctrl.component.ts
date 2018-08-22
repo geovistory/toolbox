@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 
 import { existenceTimeReducer } from '../existence-time.reducer';
 import { InfRole, IAppState } from 'app/core';
-import { ExistenceTimeDetail, RoleSetList } from '../../information.models';
+import { ExistenceTimeDetail, RoleSetList } from 'app/core/models';
 
 
 @WithSubStore({

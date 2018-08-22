@@ -12,7 +12,7 @@ import { Subject } from 'rxjs';
 import { TimeLineData, TimeLineRow, TimeLineSettings } from '../../../timeline/models/timeline';
 import { TeEntActions } from '../../data-unit/te-ent/te-ent.actions';
 import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
-import { ExistenceTimeDetail, RoleSetList, TeEntAccentuation } from '../../information.models';
+import { ExistenceTimeDetail, RoleSetList, TeEntAccentuation } from 'app/core/models';
 import { StateToDataService } from '../../shared/state-to-data.service';
 
 @Component({

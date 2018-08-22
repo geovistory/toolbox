@@ -1,4 +1,4 @@
-import { ExistenceTimeEdit, RoleSetList, ExTimeHelpMode } from "../../information.models";
+import { ExistenceTimeEdit, RoleSetList, ExTimeHelpMode } from "app/core/models";
 import { FluxStandardAction } from "flux-standard-action";
 import { Injectable } from "@angular/core";
 import { dispatch } from "@angular-redux/store";

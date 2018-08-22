@@ -1,15 +1,15 @@
 
 import { Action } from 'redux';
 import { DataUnitAction, DataUnitActions } from './data-unit.actions';
-import { DataUnit } from '../information.models';
+import { DataUnit } from 'app/core/models';
 import { omit } from 'ramda'
 import { Meta } from '../../../../../node_modules/@angular/platform-browser';
 import { sortChildrenByUiContext } from '../information.helpers';
 
-const INITIAL_STATE: DataUnit = {
+const INITIAL_STATE = new DataUnit({
   selectPropState: 'init',
   parentPeIt: null,
-};
+});
 
 
 export const dataUnitReducer =

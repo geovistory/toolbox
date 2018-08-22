@@ -3,7 +3,7 @@ import { Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, U, UiContext, UiElement } from 'app/core';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { AddOption, DataUnitLabel, ExistenceTimeDetail, PeItDetail, RoleSet, RoleSetInterface, RoleSetList, SelectPropStateType, TeEntDetail } from '../information.models';
+import { AddOption, DataUnitLabel, ExistenceTimeDetail, PeItDetail, RoleSet, RoleSetI, RoleSetList, SelectPropStateType, TeEntDetail, RoleSetForm } from 'app/core/models';
 import { StateCreatorService } from '../shared/state-creator.service';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
@@ -145,7 +145,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   /**
 * called, when user selected a the kind of property to add
 */
-  addRoleSet(propertyToAdd: RoleSetInterface) {
+  addRoleSet(propertyToAdd: RoleSetI) {
 
     // add a role set
     const newRoleSet = new RoleSet({
@@ -154,7 +154,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
       roles: [],
       rolesNotInProjectLoading: true,
       roleStatesInOtherProjectsVisible: false,
-      _role_set_form: {}
+      _role_set_form: new RoleSetForm()
     })
 
     // add a form conrtol

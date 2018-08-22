@@ -5,7 +5,7 @@ import { ComConfig, UiContext } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable, Subject } from 'rxjs';
 
-import { ExistenceTimeDetail, RoleDetail, RoleSet, TeEntDetail, TeEntAccentuation } from '../../../information.models';
+import { ExistenceTimeDetail, RoleDetail, RoleSet, TeEntDetail, TeEntAccentuation } from 'app/core/models';
 import { slideInOut } from '../../../shared/animations';
 import { StateCreatorService } from '../../../shared/state-creator.service';
 import { DataUnitBase } from '../../data-unit.base';

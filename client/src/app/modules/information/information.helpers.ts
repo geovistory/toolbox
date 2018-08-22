@@ -1,5 +1,4 @@
-import { RoleSet, RoleDetail, DataUnitChild, DataUnitChildList, RoleDetailList, RoleSetInterface } from './information.models';
-import { InfRole, InfTimePrimitive, UiContext, U, ComConfig } from 'app/core';
+import { InfRole, InfTimePrimitive, UiContext, U, ComConfig, DataUnitChild, RoleSet, RoleDetail, DataUnitChildList, RoleDetailList, RoleSetI } from 'app/core';
 import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
 import { indexBy, sort } from 'ramda'
 
@@ -151,7 +150,7 @@ export function sortRoleDetailListByOrdNum(roleDetailArray: RoleDetailList): Rol
  * @param a RoleSet you want to test if it is circular
  * @param b RoleSet to compare with (typically the parent RoleSet in the tree)
  */
-export function similarRoleSet(a: RoleSetInterface, b: RoleSetInterface): boolean {
+export function similarRoleSet(a: RoleSetI, b: RoleSetI): boolean {
     if (!a || !b) return false;
 
     if (

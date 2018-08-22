@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgRedux, WithSubStore } from '@angular-redux/store';
-import { RoleDetail } from '../../../information.models';
+import { RoleDetail } from 'app/core/models';
 import { FormBuilder } from '@angular/forms';
 import { RoleBase } from '../../role.base';
 import { roleReducer } from '../../role.reducers';

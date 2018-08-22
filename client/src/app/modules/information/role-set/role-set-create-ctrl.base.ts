@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, Validators, AbstractControl } from '@angular/
 import { IAppState, InfEntityProjectRel, InfEntityProjectRelApi, InfRoleApi, InfRole, U } from 'app/core';
 import { RoleSetActions } from './role-set.actions';
 import { RoleSetService } from '../shared/role-set.service';
-import { RoleDetail } from '../information.models';
+import { RoleDetail } from 'app/core/models';
 import { RoleActions } from '../role/role.actions';
 import { StateCreatorService } from '../shared/state-creator.service';
 import { ClassService } from '../shared/class.service';

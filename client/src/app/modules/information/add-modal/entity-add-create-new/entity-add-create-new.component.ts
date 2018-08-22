@@ -6,10 +6,11 @@ import { Subscription, Observable } from 'rxjs';
 
 import { mockPerson } from '../../data-unit/pe-it/pe-it-create-form/sandbox.mock';
 import { InformationActions } from '../../information.actions';
-import { Information, PeItDetail } from '../../information.models';
+import { PeItDetail } from 'app/core/models';
 import { informationReducer } from '../../information.reducer';
 import { EntityAddModalService, EntityAddModalState } from '../../shared/entity-add-modal.service';
 import { StateCreatorService } from '../../shared/state-creator.service';
+import { Information } from '../../information.models';
 
 @WithSubStore({
     basePathMethodName:'getBasePath',

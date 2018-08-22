@@ -6,7 +6,7 @@ import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators'
 
 import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
 import {  similarRoleSet } from '../../information.helpers';
-import { AddOption, DataUnitChildList, RoleSetList } from '../../information.models';
+import { AddOption, DataUnitChildList, RoleSetList } from 'app/core/models';
 
 interface PeItAddOption extends AddOption {
   label: string; // concatenation of all strings, used for search

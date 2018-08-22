@@ -5,7 +5,7 @@ import { InfTemporalEntity } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable } from 'rxjs';
 
-import { TeEntDetail } from '../../information.models';
+import { TeEntDetail } from 'app/core/models';
 import { DataUnitBase } from '../data-unit.base';
 import { TeEntActions } from './te-ent.actions';
 import { teEntReducer } from './te-ent.reducer';

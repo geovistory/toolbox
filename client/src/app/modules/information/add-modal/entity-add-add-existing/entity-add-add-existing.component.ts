@@ -5,11 +5,12 @@ import { IAppState } from 'app/core';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { Observable } from 'rxjs';
 
-import { Information, PeItDetail } from '../../information.models';
+import { PeItDetail } from 'app/core/models';
 import { informationReducer } from '../../information.reducer';
 import { EntityAddModalService, EntityAddModalState } from '../../shared/entity-add-modal.service';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { InformationActions } from '../../information.actions';
+import { Information } from '../../information.models';
 
 
 @WithSubStore({

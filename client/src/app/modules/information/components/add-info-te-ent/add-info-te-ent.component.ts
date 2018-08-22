@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Observable, Subscription, Subject, merge } from 'rxjs';
 import { UiElement, ClassConfig, U } from 'app/core';
-import { RoleSetList, AddOption, DataUnitChildList } from '../../information.models';
+import { RoleSetList, AddOption, DataUnitChildList } from 'app/core/models';
 import {  similarRoleSet } from '../../information.helpers';
 import { propSetMap } from '../../data-unit/data-unit.base';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';

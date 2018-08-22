@@ -6,7 +6,7 @@ import { equals } from 'ramda';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { RoleSet } from '../information.models';
+import { RoleSet } from 'app/core/models';
 import { RoleSetActions } from './role-set.actions';
 
 

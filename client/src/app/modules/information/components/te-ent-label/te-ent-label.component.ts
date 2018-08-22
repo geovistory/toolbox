@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
-import { DataUnitLabel, RoleLabel, ExTimeLabel, DataUnitChildList } from '../../information.models';
+import { DataUnitLabel, RoleLabel, ExTimeLabel, DataUnitChildList } from 'app/core/models';
 import { DatePipe } from '@angular/common';
 import { TimePrimitive, ClassConfig, U } from 'app/core';
 

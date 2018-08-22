@@ -1,7 +1,7 @@
 import { sandboxOf } from 'angular-playground';
 
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
-import { PeItDetail } from '../../information.models';
+import { PeItDetail } from 'app/core/models';
 import { LeafPeItViewComponent } from './leaf-pe-it-view.component';
 import { Information2Module } from '../../information.module';
 import { RouterModule } from '../../../../../../node_modules/@angular/router';
