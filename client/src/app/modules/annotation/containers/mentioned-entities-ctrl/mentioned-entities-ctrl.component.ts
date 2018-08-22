@@ -1,11 +1,10 @@
-import { Component, OnInit, forwardRef, Input } from '@angular/core';
-import { MentionedEntity } from '../../annotation.models';
-import { ControlValueAccessor, FormGroup, FormBuilder, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { U } from 'app/core';
-import { select, dispatch, WithSubStore, ObservableStore, NgRedux } from '@angular-redux/store';
+import { dispatch, NgRedux, WithSubStore } from '@angular-redux/store';
+import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { mentionedEntityCtrlReducer } from './mentioned-entities-ctrl.reducer';
+import { MentionedEntity } from '../../annotation.models';
 import { MentionedEntityCtrlActions } from './mentioned-entities-ctrl.actions';
+import { mentionedEntityCtrlReducer } from './mentioned-entities-ctrl.reducer';
 
 
 /**
@@ -32,7 +31,7 @@ import { MentionedEntityCtrlActions } from './mentioned-entities-ctrl.actions';
         }
     ]
 })
-export class MentionedEntitiesCtrlComponent implements OnInit, ControlValueAccessor {
+export class MentionedEntitiesCtrlComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
     @Input() path: string[];
     getBasePath() { return this.path }
@@ -49,7 +48,9 @@ export class MentionedEntitiesCtrlComponent implements OnInit, ControlValueAcces
 
     }
 
-
+    ngOnDestroy(): void {
+    }
+  
     ngOnInit() {
 
         this.ngRedux.select<{ [key: string]: MentionedEntity }>(this.path).subscribe(me => {
