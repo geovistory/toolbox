@@ -1,13 +1,13 @@
-import { RoleSet, RoleDetail, DataUnitChild, DataUnitChildList, RoleDetailList, RoleSetInterface } from "./information.models";
-import { InfRole, InfTimePrimitive, UiContext, U, ComConfig } from "app/core";
-import { CalendarType, TimePrimitive } from "app/core/date-time/time-primitive";
+import { RoleSet, RoleDetail, DataUnitChild, DataUnitChildList, RoleDetailList, RoleSetInterface } from './information.models';
+import { InfRole, InfTimePrimitive, UiContext, U, ComConfig } from 'app/core';
+import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
 import { indexBy, sort } from 'ramda'
 
 export function dataUnitChildKey(child: DataUnitChild) {
 
     switch (child.type) {
         case 'RoleSet':
-            return roleSetKey(child as RoleSet);
+            return U.roleSetKey(child as RoleSet);
 
         case 'ExistenceTimeDetail':
             return '_existenceTime';
@@ -15,14 +15,6 @@ export function dataUnitChildKey(child: DataUnitChild) {
         default:
             break;
     }
-}
-
-export function roleSetKey(roleSet: RoleSet) {
-    return roleSetKeyFromParams(roleSet.property.dfh_pk_property, roleSet.isOutgoing)
-}
-
-export function roleSetKeyFromParams(fkProp: number, isOutgoing: boolean) {
-    return '_' + fkProp + '_' + (isOutgoing ? 'outgoing' : 'ingoing')
 }
 
 
@@ -55,10 +47,10 @@ export function getCalendarFromRole(role: InfRole): CalendarType {
 
 export function infRole2TimePrimitive(r: InfRole): TimePrimitive {
 
-    // from InfTimePrimitve to TimePrimitive 
+    // from InfTimePrimitve to TimePrimitive
     const infTp: InfTimePrimitive = r ? r.time_primitive : null;
     let timePrimitive: TimePrimitive = null;
-    let obj: any = {}
+    const obj: any = {}
 
     if (
         infTp && infTp.duration && infTp.julian_day &&
@@ -80,8 +72,7 @@ export function infRole2TimePrimitive(r: InfRole): TimePrimitive {
         return new TimePrimitive({
             calendar: 'julian'
         })
-    }
-    else {
+    }    else {
         return timePrimitive;
     }
 }
@@ -89,18 +80,18 @@ export function infRole2TimePrimitive(r: InfRole): TimePrimitive {
 /**
  * Returns a copy of the given _children object, where the items are sorted and filtered
  * according to the given uiContext.
- * 
- * The order is defined in uiContext.uiElements. 
+ *
+ * The order is defined in uiContext.uiElements.
  * If the key of an item in _children is not present in the given uiContext,
  * it will be omitted inthe returned DataUnitChildList
- * 
- * @param _children a DataUnitChildList 
+ *
+ * @param _children a DataUnitChildList
  * @param uiContext a uiContext definition object.
  */
 export function sortChildrenByUiContext(_children: DataUnitChildList, uiContext: UiContext): DataUnitChildList {
     if (!_children || !uiContext) return {};
 
-    let res: DataUnitChildList = {}
+    const res: DataUnitChildList = {}
 
     // create an array with the data unit child keys in the right order
     uiContext.uiElements.forEach(el => {
@@ -116,11 +107,11 @@ export function sortChildrenByUiContext(_children: DataUnitChildList, uiContext:
 
 
 /**
- * returns a copy of the given RoleDetail[], where the items are sorted 
+ * returns a copy of the given RoleDetail[], where the items are sorted
  * according to the ord_num in the epr.
- * 
+ *
  * @param roleDetailArray a RoleDetail[]
- * @returns a sorted copy of RoleDetail[] 
+ * @returns a sorted copy of RoleDetail[]
  */
 export function sortRoleDetailsByOrdNum(roleDetailArray: RoleDetail[]): RoleDetail[] {
 
@@ -140,11 +131,11 @@ export function sortRoleDetailsByOrdNum(roleDetailArray: RoleDetail[]): RoleDeta
 
 
 /**
- * returns a copy of the given RoleDetailList, where the items are sorted 
+ * returns a copy of the given RoleDetailList, where the items are sorted
  * according to the ord_num in the epr.
- * 
+ *
  * @param roleDetailArray a RoleDetailList
- * @returns a sorted copy of RoleDetailList 
+ * @returns a sorted copy of RoleDetailList
  */
 export function sortRoleDetailListByOrdNum(roleDetailArray: RoleDetailList): RoleDetailList {
 
@@ -156,8 +147,8 @@ export function sortRoleDetailListByOrdNum(roleDetailArray: RoleDetailList): Rol
 /**
  * Checks if RoleSet a is of the same property or property-of-origin as RoleSet b.
  * This is useful to check if a RoleSet is circular in a tree of RoleSets and DataUnits
- * 
- * @param a RoleSet you want to test if it is circular 
+ *
+ * @param a RoleSet you want to test if it is circular
  * @param b RoleSet to compare with (typically the parent RoleSet in the tree)
  */
 export function similarRoleSet(a: RoleSetInterface, b: RoleSetInterface): boolean {
@@ -172,8 +163,7 @@ export function similarRoleSet(a: RoleSetInterface, b: RoleSetInterface): boolea
             )
         )
         && a.isOutgoing != b.isOutgoing
-    )
-        return true;
+    ) return true;
 
     else return false;
 }

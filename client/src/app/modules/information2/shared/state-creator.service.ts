@@ -1,9 +1,9 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ComConfig, IAppState, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTimePrimitive, U, InfEntityProjectRel } from 'app/core';
+import { ComConfig, IAppState, InfAppellation, InfEntityProjectRel, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTimePrimitive, U } from 'app/core';
 import { clone, groupBy, indexBy, prop } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
-import { dataUnitChildKey, roleDetailKey, roleSetKey, roleSetKeyFromParams, similarRoleSet, sortRoleDetailsByOrdNum } from '../information.helpers';
+import { dataUnitChildKey, roleDetailKey, similarRoleSet, sortRoleDetailsByOrdNum } from '../information.helpers';
 import { AppeDetail, DataUnit, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleDetailList, RoleSet, RoleSetInterface, TeEntDetail, TimePrimitveDetail } from '../information.models';
 import { AppellationLabel } from './appellation-label/appellation-label';
 import { ClassService } from './class.service';
@@ -306,7 +306,7 @@ export class StateCreatorService {
       // add the parent role pk of the roleDetail to the peEnt
       settings.parentRolePk = role.pk_entity;
       settings.parentRoleSet = this.ngRedux.getState().activeProject.crm
-        .roleSets[roleSetKeyFromParams(role.fk_property, options.isOutgoing)];
+        .roleSets[U.roleSetKeyFromParams(role.fk_property, options.isOutgoing)];
 
       // if we are in create mode we need the fk_class
       if (settings.isCreateMode) {
@@ -496,7 +496,7 @@ export class StateCreatorService {
     else {
       combineLatest(children$).subscribe(children => {
 
-        ext._children = indexBy(roleSetKey, children)
+        ext._children = indexBy(U.roleSetKey, children)
 
         subject.next(ext);
       })

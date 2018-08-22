@@ -1,18 +1,17 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { sort } from 'ramda';
-import { ofType, Epic, combineEpics } from 'redux-observable';
-import { Observable, combineLatest } from 'rxjs';
-
-import { propSetKeyFromFk, roleSetKey, roleSetKeyFromParams } from '../../modules/information2/information.helpers';
+import { Action } from 'redux';
+import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineLatest, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { propSetKeyFromFk } from '../../modules/information2/information.helpers';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
 import { ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, ProjectApi } from '../sdk';
-import { IAppState } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { Action } from 'redux';
-import { switchMap } from 'rxjs/operators';
+
 
 
 @Injectable()
@@ -128,7 +127,7 @@ export class ActiveProjectEpics {
         ord_num: uiConf.ord_num,
         fk_property: uiConf.fk_property,
         property_is_outgoing: uiConf.property_is_outgoing,
-        roleSetKey: uiConf.fk_property ? roleSetKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
+        roleSetKey: uiConf.fk_property ? U.roleSetKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
         fk_property_set: uiConf.fk_property_set,
         property_set: uiConf.fk_property_set ? uiConf.property_set : undefined,
         propSetKey: uiConf.fk_property_set ? propSetKeyFromFk(uiConf.fk_property_set) : undefined

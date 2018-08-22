@@ -1,27 +1,45 @@
 import { indexBy, omit } from 'ramda';
-import { DfhProperty, ExistenceTime, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, TimePrimitive } from '..';
-import { roleSetKey, roleSetKeyFromParams } from '../../modules/information2/information.helpers';
+import { AcEntity, AcNotification, ActionType } from '../../modules/gv-angular-cesium/angular-cesium-fork';
 import {
-    AppeDetail, DataUnitChild, DataUnitChildLabel, DataUnitChildList, DataUnitLabel, ExistenceTimeDetail,
-    LangDetail, PeItDetail, RoleDetail, RoleLabel, RoleSet, RoleSetLabelObj, RoleSetList,
+    AppeDetail,
+    DataUnitChild,
+    DataUnitChildLabel,
+    DataUnitChildList,
+    DataUnitLabel,
+    ExistenceTimeDetail,
+    LangDetail,
+    PeItDetail,
+    RoleDetail,
+    RoleLabel,
+    RoleSet,
+    RoleSetLabelObj,
+    RoleSetList,
     TeEntDetail
 } from '../../modules/information2/information.models';
 import { AppellationLabel } from '../../modules/information2/shared/appellation-label';
 import { DfhConfig } from '../../modules/information2/shared/dfh-config';
 import { ClassConfig, ProjectCrm } from '../active-project/active-project.models';
 import { Granularity } from '../date-time/date-time-commons';
-import { CalendarType } from '../date-time/time-primitive';
-import { ComPropertySet, ComUiContextConfig, DfhClass, InfEntityProjectRel } from '../sdk';
-import { ActionType, AcNotification, AcEntity } from '../../modules/gv-angular-cesium/angular-cesium-fork';
+import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
+import { ComPropertySet, ComUiContextConfig, DfhClass, InfEntityProjectRel, InfTimePrimitive, InfRole, InfTemporalEntity, InfPersistentItem, DfhProperty } from '../sdk';
+import { ExistenceTime } from 'app/core/existence-time/existence-time';
+
 /**
  * Utilities class for static functions
  */
 
 export class U {
 
+    static roleSetKey(roleSet: RoleSet) {
+        return U.roleSetKeyFromParams(roleSet.property.dfh_pk_property, roleSet.isOutgoing)
+    }
+
+    static roleSetKeyFromParams(fkProp: number, isOutgoing: boolean) {
+        return '_' + fkProp + '_' + (isOutgoing ? 'outgoing' : 'ingoing')
+    }
 
     static obj2Arr<T>(obj: { [key: string]: T }): T[] {
-        let arr = [];
+        const arr = [];
 
         if (obj == undefined) return arr;
 
@@ -36,8 +54,8 @@ export class U {
     /**
      * converts object to array with {key: value} objects, e.g.:
      * {'a': 12, 'b': 99} --> [{key: 'a', value: 12, key: 'b', value: 99}]
-     * 
-     * @param obj 
+     *
+     * @param obj
      */
     static obj2KeyValueArr<T>(obj: { [key: string]: T }): { key: string, value: T }[] {
         const keys = [];
@@ -51,7 +69,7 @@ export class U {
 
 
     /**
-     *  Converts InfTimePrimitve and CalendarType to TimePrimitive 
+     *  Converts InfTimePrimitve and CalendarType to TimePrimitive
     */
     static InfTp2Tp(infTp: InfTimePrimitive, calendar: CalendarType): TimePrimitive {
 
@@ -76,7 +94,7 @@ export class U {
     }
 
     /**
-     *  Extracts the calendar from  InfTimePrimitve to TimePrimitive 
+     *  Extracts the calendar from  InfTimePrimitve to TimePrimitive
     */
     static getCalendarFromRole(role: InfRole): CalendarType {
         if (!role) return null;
@@ -95,10 +113,10 @@ export class U {
      */
     static infRole2TimePrimitive(r: InfRole): TimePrimitive {
 
-        // from InfTimePrimitve to TimePrimitive 
+        // from InfTimePrimitve to TimePrimitive
         const infTp: InfTimePrimitive = r ? r.time_primitive : null;
         let timePrimitive: TimePrimitive = null;
-        let obj: any = {}
+        const obj: any = {}
 
         if (
             infTp && infTp.duration && infTp.julian_day &&
@@ -129,7 +147,7 @@ export class U {
 
     /**
     * Returns the Appellation Label String that is for display in this project, from the given teEnt
-    * @param teEnt 
+    * @param teEnt
     * @returns appellation label as pure string
     */
     static getDisplayAppeLabelOfTeEnt(teEnt: InfTemporalEntity): string | null {
@@ -138,7 +156,8 @@ export class U {
 
         const rolesToAppe: InfRole[] = teEnt.te_roles.filter(
             role => (role && role.appellation && role.appellation.appellation_label
-                //TODO Add a clause as soon as we have DisplayRoleForDomain in the db to filter for the role that is standard?? or is this not happening on forms?
+                // TODO: Add a clause as soon as we have DisplayRoleForDomain in the db
+                // to filter for the role that is standard?? or is this not happening on forms?
             ))
 
         return rolesToAppe.length ? new AppellationLabel(rolesToAppe[0].appellation.appellation_label).getString() : null;
@@ -148,8 +167,8 @@ export class U {
 
     /**
     * Returns the teEnt (Name Use Activity) that has is for display in this project, from the given peIt
-    * 
-    * @param peIt 
+    *
+    * @param peIt
     * @returns InfTemporalEntity that has a appellation label for display
     */
     static getDisplayAppeLabelOfPeIt(peIt: InfPersistentItem): InfTemporalEntity | null {
@@ -158,12 +177,12 @@ export class U {
         const rolesToAppeUse: InfRole[] = peIt.pi_roles.filter(
             role => (
                 role &&
-                //TODO Add a better clause as soon as we have DisplayRoleForDomain/Range
+                // TODO Add a better clause as soon as we have DisplayRoleForDomain/Range
                 role.entity_version_project_rels &&
                 role.entity_version_project_rels[0] &&
                 role.entity_version_project_rels[0].is_standard_in_project &&
 
-                // TODO this could be passed in by methods parameter 
+                // TODO this could be passed in by methods parameter
                 role.fk_property == DfhConfig.PROPERTY_PK_R63_NAMES
             ))
 
@@ -173,8 +192,8 @@ export class U {
 
     /**
     * Returns the first teEnt (Name Use Activity) of the given peIt
-    * 
-    * @param peIt 
+    *
+    * @param peIt
     * @returns InfTemporalEntity that has a appellation label for display
     */
     static getFirstAppeTeEntOfPeIt(peIt: InfPersistentItem): InfTemporalEntity | null {
@@ -220,11 +239,11 @@ export class U {
 
     /**
      * Converts array of ingoing Property and array of outgoing Property to RoleSetList
-     * @param ingoingProperties 
-     * @param outgoingProperties 
+     * @param ingoingProperties
+     * @param outgoingProperties
      */
     static roleSetsFromProperties(ingoingProperties: DfhProperty[], outgoingProperties: DfhProperty[]): RoleSetList {
-        return indexBy(roleSetKey, [
+        return indexBy(U.roleSetKey, [
             ...U.infProperties2RoleSets(false, ingoingProperties),
             ...U.infProperties2RoleSets(true, outgoingProperties)
         ])
@@ -232,8 +251,8 @@ export class U {
 
     /**
      * Gets ord_num of RoleSet or null, if not available
-     * 
-     * @param roleSet 
+     *
+     * @param roleSet
      */
     static ordNumFromRoleSet(roleSet: RoleSet): number | null {
 
@@ -245,7 +264,7 @@ export class U {
 
     /**
      * gets ui_context_config of RoleSet or null, if not available
-     * @param roleSet 
+     * @param roleSet
      */
     static uiContextConfigFromRoleSet(roleSet: RoleSet): ComUiContextConfig | null {
         if (!roleSet) return null;
@@ -259,8 +278,8 @@ export class U {
 
     /**
     * Gets ord_num of ComPropertySet or null, if not available
-    * 
-    * @param propSet 
+    *
+    * @param propSet
     */
     static ordNumFromPropSet(propSet: ComPropertySet): number | null {
 
@@ -273,7 +292,7 @@ export class U {
 
     /**
      * gets ui_context_config of PropSet or null, if not available
-     * @param propSet 
+     * @param propSet
      */
     static uiContextConfigFromPropSet(propSet: ComPropertySet): ComUiContextConfig | null {
 
@@ -305,10 +324,12 @@ export class U {
 
             // TODO return an object containing label.pl and label.sg
             if (property.labels.length) {
-                if (property.labels.find(l => l.notes === 'label.sg'))
+                if (property.labels.find(l => l.notes === 'label.sg')) {
                     sg = property.labels.find(l => l.notes === 'label.sg').dfh_label;
-                if (property.labels.find(l => l.notes === 'label.pl'))
+                }
+                if (property.labels.find(l => l.notes === 'label.pl')) {
                     pl = property.labels.find(l => l.notes === 'label.pl').dfh_label;
+                }
             }
 
             labelObj = {
@@ -320,17 +341,21 @@ export class U {
         } else if (isOutgoing === false) {
 
             if (property) {
-                sg = '[inv.sg: ' + property.dfh_pk_property + ': ' + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
-                pl = '[inv.pl: ' + property.dfh_pk_property + ': ' + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
+                sg = '[inv.sg: ' + property.dfh_pk_property + ': '
+                    + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
+                pl = '[inv.pl: ' + property.dfh_pk_property + ': '
+                    + property.dfh_identifier_in_namespace + ' ' + property.dfh_standard_label;
             }
 
 
             // TODO return an object containing inversed_label.pl and inversed_label.sg
             if (property.labels.length) {
-                if (property.labels.find(l => l.notes === 'label_inversed.sg'))
+                if (property.labels.find(l => l.notes === 'label_inversed.sg')) {
                     sg = property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
-                if (property.labels.find(l => l.notes === 'label_inversed.pl'))
+                }
+                if (property.labels.find(l => l.notes === 'label_inversed.pl')) {
                     pl = property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label;
+                }
             }
 
             labelObj = {
@@ -351,17 +376,20 @@ export class U {
  * @param dfhC
  */
     static classConfigFromDfhClass(dfhC: DfhClass): ClassConfig {
-        let cConf: ClassConfig = {
-            dfh_fk_system_type: (!dfhC.class_profile_view ? null : !dfhC.class_profile_view[0] ? null : !dfhC.class_profile_view[0].dfh_fk_system_type ? null : dfhC.class_profile_view[0].dfh_fk_system_type),
+        const cConf: ClassConfig = {
+            dfh_fk_system_type: (!dfhC.class_profile_view ? null :
+                !dfhC.class_profile_view[0] ? null :
+                    !dfhC.class_profile_view[0].dfh_fk_system_type ? null :
+                        dfhC.class_profile_view[0].dfh_fk_system_type),
             label: dfhC.dfh_standard_label,
             dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,
             dfh_pk_class: dfhC.dfh_pk_class,
             uiContexts: {}
         };
 
-        if (dfhC.ingoing_properties || dfhC.outgoing_properties)
+        if (dfhC.ingoing_properties || dfhC.outgoing_properties) {
             cConf.roleSets = U.roleSetsFromProperties(dfhC.ingoing_properties, dfhC.outgoing_properties)
-
+        }
         return cConf;
     }
 
@@ -431,8 +459,7 @@ export class U {
     static labelFromAppeDetail(a: AppeDetail): string {
         if (a && a.appellation && a.appellation.appellation_label) {
             return new AppellationLabel(a.appellation.appellation_label).getString();
-        }
-        else return null;
+        } else return null;
     }
 
     static labelFromLangDetail(l: LangDetail): string {
@@ -466,18 +493,18 @@ export class U {
 
         if (e && e._children) {
             const c = e._children;
-            const bOb = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_BEGIN, true)];
-            const eOb = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_BEGIN, true)];
-            const bOe = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_END, true)];
-            const eOe = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_END, true)];
-            const at = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_AT_SOME_TIME_WITHIN, true)];
-            const ong = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_ONGOING_THROUGHOUT, true)];
+            const bOb = c[U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_BEGIN, true)];
+            const eOb = c[U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_BEGIN, true)];
+            const bOe = c[U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_END, true)];
+            const eOe = c[U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_END, true)];
+            const at = c[U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_AT_SOME_TIME_WITHIN, true)];
+            const ong = c[U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_ONGOING_THROUGHOUT, true)];
 
             // Get earliest date
             const earliestArr = [bOb, eOb, at, ong, bOe, eOe].filter(rs => (rs))
             if (earliestArr && earliestArr[0]) {
                 if (earliestArr[0]._role_list) {
-                    var roleDetails = U.obj2Arr(earliestArr[0]._role_list);
+                    const roleDetails = U.obj2Arr(earliestArr[0]._role_list);
                     if (roleDetails[0]) {
                         eRoleDetail = roleDetails[0];
                         earliest = U.labelFromTimePrimitive(eRoleDetail.role);
@@ -580,7 +607,7 @@ export class U {
             if (!presence._children) return null;
 
             // return false if no RoleSet leading to a Place
-            const placeSet = presence._children[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
+            const placeSet = presence._children[U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
             if (!placeSet || placeSet.type != 'RoleSet') return null;
 
             // return false if no Place in first RoleDetail
@@ -829,7 +856,7 @@ export class U {
 
                                     // return false if no RoleSet leading to a Place
                                     const placeSet = presence._children[
-                                        roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
+                                        U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
                                     if (!placeSet || placeSet.type != 'RoleSet') return null;
 
                                     // return false if no Place in first RoleDetail

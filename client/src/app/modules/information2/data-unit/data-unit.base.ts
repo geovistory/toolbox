@@ -1,16 +1,13 @@
 import { NgRedux, ObservableStore, select } from '@angular-redux/store';
-import { Input, OnDestroy, OnInit, ViewChild, destroyPlatform } from '@angular/core';
+import { Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, UiContext, UiElement } from 'app/core';
-import { Subject, Subscription, Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
-
-import { NgbTypeahead } from '../../../../../node_modules/@ng-bootstrap/ng-bootstrap';
-import { roleSetKey, roleSetKeyFromParams } from '../information.helpers';
-import { AddOption, PeItDetail, RoleSet, RoleSetList, SelectPropStateType, TeEntDetail, ExistenceTimeDetail, DataUnitLabel, RoleSetInterface } from '../information.models';
+import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, U, UiContext, UiElement } from 'app/core';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { AddOption, DataUnitLabel, ExistenceTimeDetail, PeItDetail, RoleSet, RoleSetInterface, RoleSetList, SelectPropStateType, TeEntDetail } from '../information.models';
+import { StateCreatorService } from '../shared/state-creator.service';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
-import { StateCreatorService } from '../shared/state-creator.service';
+
 
 // maps pk_property_set to key in ngRedux store
 export const propSetMap = {
@@ -162,7 +159,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
     // add a form conrtol
     this.formGroup.addControl(
-      roleSetKey(newRoleSet), new FormControl(
+      U.roleSetKey(newRoleSet), new FormControl(
         newRoleSet.roles,
         [
           Validators.required
@@ -255,13 +252,15 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
     } else {
 
-      // if this is a role set
       if (o.uiElement.roleSetKey) {
-        this.addRoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey])
-      }
 
-      // if this is a prop set
-      else if (o.uiElement.fk_property_set) {
+        // if this is a role set
+
+        this.addRoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey])
+
+      } else if (o.uiElement.fk_property_set) {
+
+        // if this is a prop set
 
         if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
 

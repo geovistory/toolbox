@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Observable, Subscription, Subject, merge } from 'rxjs';
-import { UiElement, ClassConfig } from 'app/core';
+import { UiElement, ClassConfig, U } from 'app/core';
 import { RoleSetList, AddOption, DataUnitChildList } from '../../information.models';
-import { roleSetKeyFromParams, similarRoleSet } from '../../information.helpers';
+import {  similarRoleSet } from '../../information.helpers';
 import { propSetMap } from '../../data-unit/data-unit.base';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
@@ -41,7 +41,7 @@ export class AddInfoTeEntComponent implements OnInit, OnDestroy {
           children && el.fk_property && !children[el.roleSetKey] &&
           !similarRoleSet(this.classConfig.roleSets[el.roleSetKey], this.excludeRoleSet)
         ) {
-          const roleSet = this.classConfig.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
+          const roleSet = this.classConfig.roleSets[U.roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
           return {
             label: roleSet.label.default,
             uiElement: el,

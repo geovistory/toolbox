@@ -1,20 +1,17 @@
-import { NgRedux, ObservableStore, WithSubStore, select } from '@angular-redux/store';
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
-import { IAppState, InfRole, InfTimePrimitive, InfEntityProjectRel, InfTemporalEntity, InfTemporalEntityApi, U, ValidationService, ComConfig } from 'app/core';
-import { union } from 'ramda';
-
-import { roleSetKey, roleSetKeyFromParams } from '../../information.helpers';
-import { ExistenceTimeDetail, RoleSet, TeEntDetail, RoleDetail, RoleDetailList, RoleSetList, ExTimeModalMode, ExistenceTimeEdit, ExTimeHelpMode } from '../../information.models';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { IAppState, InfEntityProjectRel, InfRole, InfTimePrimitive, U, ValidationService } from 'app/core';
+import { dropLast, union } from 'ramda';
+import { Observable, Subscription } from 'rxjs';
+import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
+import { ExistenceTimeEdit, ExTimeHelpMode, ExTimeModalMode, RoleSet, RoleSetList, TeEntDetail } from '../../information.models';
 import { DfhConfig } from '../../shared/dfh-config';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { ExistenceTimeActions } from '../existence-time.actions';
-import { existenceTimeReducer } from '../existence-time.reducer';
-import { Subscription, Observable } from 'rxjs';
-import { dropLast } from 'ramda'
-import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
 import { ExTimeEditActions } from './existence-time-edit.actions';
 import { existenceTimeEditReducer } from './existence-time-edit.reducer';
+
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -26,12 +23,12 @@ import { existenceTimeEditReducer } from './existence-time-edit.reducer';
   styleUrls: ['./existence-time-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnInit {
+export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() basePath: string[]
-  getBasePath = () => this.basePath;
 
-  @Input() mode: 'create' | 'editable';
+
+  @Input() mode: 'create' | 'editable';
 
   @Output() stopEditing: EventEmitter<void> = new EventEmitter();
 
@@ -73,6 +70,8 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
 
   }
 
+  getBasePath = () => this.basePath;
+
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, existenceTimeEditReducer);
     this.parentTeEntStore = this.ngRedux.configureSubStore(dropLast(3, this.basePath), teEntReducer)
@@ -90,17 +89,17 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
 
   initShortCuts(state: ExistenceTimeEdit) {
 
-    // If init in one-date mode and the roleSet for "At some time within" is not yet there 
+    // If init in one-date mode and the roleSet for "At some time within" is not yet there
     if (state.mode === 'one-date' && (state._children === undefined || state._children._72_outgoing === undefined)) {
       this.addRoleSet(72)
     }
 
-    // If init in begin-end mode and the roleSet for "Begin" is not yet there 
+    // If init in begin-end mode and the roleSet for "Begin" is not yet there
     if (state.mode === 'begin-end' && (state._children === undefined || state._children._150_outgoing === undefined)) {
       this.addRoleSet(150)
     }
 
-    // If init in begin-end mode and the roleSet for "End" is not yet there 
+    // If init in begin-end mode and the roleSet for "End" is not yet there
     if (state.mode === 'begin-end' && (state._children === undefined || state._children._151_outgoing === undefined)) {
       this.addRoleSet(151)
     }
@@ -130,50 +129,50 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
             else return false;
           }
 
-          // The begin of 'Earliest possible begin' must be earlier than the end of 'Latest possible end'   
-          if (has('_152_outgoing') && has('_153_outgoing'))
+          // The begin of 'Earliest possible begin' must be earlier than the end of 'Latest possible end'
+          if (has('_152_outgoing') && has('_153_outgoing')) {
             this.validationService.mustBeginBeforeEnd('_152_outgoing', 'Earliest possible begin', '_153_outgoing', 'Latest possible end')(fg);
-
-          // The begin of 'Begin' must be earlier than the end of 'End'   
-          if (has('_150_outgoing') && has('_151_outgoing'))
+          }
+          // The begin of 'Begin' must be earlier than the end of 'End'
+          if (has('_150_outgoing') && has('_151_outgoing')) {
             this.validationService.mustBeginBeforeEnd('_150_outgoing', 'Begin', '_151_outgoing', 'End')(fg);
-
-          // 'Begin' can't begin before 'Earliest possible begin'   
-          if (has('_150_outgoing') && has('_152_outgoing'))
+          }
+          // 'Begin' can't begin before 'Earliest possible begin'
+          if (has('_150_outgoing') && has('_152_outgoing')) {
             this.validationService.cantBeginBeforeBegin('_150_outgoing', 'Begin', '_152_outgoing', 'Earliest possible begin')(fg);
-
-          // 'Begin' can't begin before 'At some time within'   
-          if (has('_150_outgoing') && has('_72_outgoing'))
+          }
+          // 'Begin' can't begin before 'At some time within'
+          if (has('_150_outgoing') && has('_72_outgoing')) {
             this.validationService.cantBeginBeforeBegin('_150_outgoing', 'Begin', '_72_outgoing', 'At some time within')(fg);
-
-          // 'Latest possible end' can't end before 'End'   
-          if (has('_153_outgoing') && has('_151_outgoing'))
+          }
+          // 'Latest possible end' can't end before 'End'
+          if (has('_153_outgoing') && has('_151_outgoing')) {
             this.validationService.cantEndBeforeEnd('_153_outgoing', 'Latest possible end', '_151_outgoing', 'End')(fg);
-
-          // 'Latest possible end' can't end before 'End'   
-          if (has('_153_outgoing') && has('_151_outgoing'))
+          }
+          // 'Latest possible end' can't end before 'End'
+          if (has('_153_outgoing') && has('_151_outgoing')) {
             this.validationService.cantEndBeforeEnd('_153_outgoing', 'Latest possible end', '_151_outgoing', 'End')(fg);
-
-          // 'Latest possible end' can't end before  'Ongoing throughout'  
-          if (has('_153_outgoing') && has('_71_outgoing'))
+          }
+          // 'Latest possible end' can't end before  'Ongoing throughout'
+          if (has('_153_outgoing') && has('_71_outgoing')) {
             this.validationService.cantEndBeforeEnd('_153_outgoing', 'Latest possible end', '_71_outgoing', 'Ongoing throughout')(fg);
-
-          // 'At some time within' can't end before 'End'   
-          if (has('_72_outgoing') && has('_151_outgoing'))
+          }
+          // 'At some time within' can't end before 'End'
+          if (has('_72_outgoing') && has('_151_outgoing')) {
             this.validationService.cantEndBeforeEnd('_72_outgoing', 'At some time within', '_151_outgoing', 'End')(fg);
-
-          // 'At some time within' can't end before 'Ongoing throughout'   
-          if (has('_72_outgoing') && has('_71_outgoing'))
+          }
+          // 'At some time within' can't end before 'Ongoing throughout'
+          if (has('_72_outgoing') && has('_71_outgoing')) {
             this.validationService.cantEndBeforeEnd('_72_outgoing', 'At some time within', '_71_outgoing', 'Ongoing throughout')(fg);
-
-          // 'Ongoing throughout' can't begin before 'At some time within'   
-          if (has('_71_outgoing') && has('_72_outgoing'))
+          }
+          // 'Ongoing throughout' can't begin before 'At some time within'
+          if (has('_71_outgoing') && has('_72_outgoing')) {
             this.validationService.cantBeginBeforeBegin('_71_outgoing', 'Ongoing throughout', '_72_outgoing', 'At some time within')(fg);
-
-          // 'Ongoing throughout' can't begin before 'Earliest possible begin'   
-          if (has('_71_outgoing') && has('_152_outgoing'))
+          }
+          // 'Ongoing throughout' can't begin before 'Earliest possible begin'
+          if (has('_71_outgoing') && has('_152_outgoing')) {
             this.validationService.cantBeginBeforeBegin('_71_outgoing', 'Ongoing throughout', '_152_outgoing', 'Earliest possible begin')(fg);
-
+          }
 
           // this.validationService.mustNotIntersect('endBeg', 'End of Begin', 'begEnd', 'Begin of End')(fg);
         }
@@ -190,7 +189,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
     const rs = this.localStore.getState()._children;
 
     // iterate over roleSets of the existence time state
-    if (rs)
+    if (rs) {
       Object.keys(rs).forEach(key => {
         if (rs[key]) {
 
@@ -200,6 +199,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
 
         }
       })
+    }
   }
 
 
@@ -215,9 +215,9 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
   }
 
   /**
-   * 
+   *
    * @param fkProperty fk_property of the roleSet to add
-   * @param inheritFrom key of the RoleSet in RoleSetList of which the role should be inherited 
+   * @param inheritFrom key of the RoleSet in RoleSetList of which the role should be inherited
    * @param replace array of keys of roleSets that should be removed, when this is added
    */
   addRoleSet(fkProperty: number, inheritFrom?: string[], replace?: string[]) {
@@ -225,13 +225,13 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
     const state = this.ngRedux.getState();
 
     // find the outgoing roleSet to add
-    let roleSetTemplate: RoleSet = new RoleSet(state.activeProject.crm.roleSets[roleSetKeyFromParams(fkProperty, true)]);
+    const roleSetTemplate: RoleSet = new RoleSet(state.activeProject.crm.roleSets[U.roleSetKeyFromParams(fkProperty, true)]);
 
-    let role = new InfRole();
+    const role = new InfRole();
     role.time_primitive = new InfTimePrimitive();
     role.time_primitive.fk_class = DfhConfig.CLASS_PK_TIME_PRIMITIVE;
 
-    // if this roleSet should inherit the time primitive from another roleSet 
+    // if this roleSet should inherit the time primitive from another roleSet
     if (inheritFrom) {
       for (let i = 0; i < inheritFrom.length; i++) {
         const key = inheritFrom[i];
@@ -247,7 +247,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
       }
     }
 
-    // if this roleSet should replace a roleSet 
+    // if this roleSet should replace a roleSet
     if (replace) {
       replace.forEach(key => {
         if (key && this._children && this._children[key]) {
@@ -260,12 +260,12 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
 
     // update the state
     this.stateCreator.initializeRoleSet([role], roleSetTemplate).subscribe(roleSet => {
-      this.localStore.dispatch(this.roleSetAdded({ [roleSetKey(roleSet)]: roleSet }))
+      this.localStore.dispatch(this.roleSetAdded({ [U.roleSetKey(roleSet)]: roleSet }))
     })
 
     // add a form control
     this.formGroup.addControl(
-      roleSetKey(roleSetTemplate), new FormControl(
+      U.roleSetKey(roleSetTemplate), new FormControl(
         [role],
         [
           Validators.required
@@ -320,28 +320,33 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
       keys.forEach(key => {
         const newRoles: InfRole[] = newCtrls[key], initRoles: InfRole[] = initCtrls[key];
 
-        // if the control was added
         if (!initRoles === undefined) {
+          // if the control was added
+
           // add the role of the new control to rolesToAdd
           rolesToAdd = [...rolesToAdd, ...newRoles];
-        }
-        // if the role was removed
-        else if (!newRoles) {
+
+        } else if (!newRoles) {
+          // if the role was removed
+
           // add the role of the initial control to rolesToRemove
           rolesToRemove = [...rolesToRemove, ...initRoles];
-        }
-        // if the role was changed
-        else if (!newRoles[0].pk_entity) {
+
+        } else if (!newRoles[0].pk_entity) {
+          // if the role was changed
+
           // add the role of the initial control to the roles to remove
           rolesToRemove = [...rolesToRemove, ...initRoles];
 
           // add the role of the new control to the roles to add
           rolesToAdd = [...rolesToAdd, ...newRoles];
-        }
-        // if the role was unchanged
-        else if (newRoles[0].pk_entity) {
+
+        } else if (newRoles[0].pk_entity) {
+          // if the role was unchanged
+
           // add the role to the unchanged roles
           unchangedRoles = [...unchangedRoles, ...newRoles]
+
         }
 
       })
@@ -349,20 +354,19 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
       // change the epr of the roles to add
       rolesToAdd.forEach(r => {
         // no need to creat a new epr, since the roles to add come with one that contains calendar info
-        if (r)
-          r.entity_version_project_rels[0].is_in_project = true;
+        if (r) r.entity_version_project_rels[0].is_in_project = true;
       });
 
       // change the epr of the roles to remove
       rolesToRemove.forEach(r => {
-        if (r)
+        if (r) {
           r.entity_version_project_rels = [new InfEntityProjectRel({ is_in_project: false } as InfEntityProjectRel)];
+        }
       });
 
       // create a InfTemporalEntity to send to the api
       this.submitted.emit({ toAdd: rolesToAdd, toRemove: rolesToRemove, unchanged: unchangedRoles });
-    }
-    else {
+    } else {
       Object.keys(this.formGroup.controls).forEach(key => {
         if (this.formGroup.get(key)) {
           this.formGroup.get(key).markAsTouched()
@@ -373,5 +377,3 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
 
 
 }
-
-

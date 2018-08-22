@@ -3,8 +3,8 @@ import {
   CanActivate, Router, ActivatedRouteSnapshot,
   RouterStateSnapshot
 } from '@angular/router';
+import { ActiveAccountService } from '../active-account/active-account.service';
 
-import { ActiveAccountService } from 'app/core';
 
 
 @Injectable()
@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate {
 
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    let url: string = state.url;
+    const url: string = state.url;
 
     return this.checkLogin(url);
   }

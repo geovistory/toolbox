@@ -1,11 +1,10 @@
-import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
+import { Injectable } from '@angular/core';
+import { U, UiContext } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
+import { indexBy } from 'ramda';
+import { DataUnit, DataUnitLabel, RoleSet } from '../information.models';
 
-import { DfhProperty, InfRole, DfhClass, UiContext } from 'app/core';
-import { indexBy, prop } from 'ramda';
-import { DataUnit, RoleSet, DataUnitLabel } from '../information.models';
-import { roleSetKey } from '../information.helpers';
 
 
 // Flux-standard-action gives us stronger typing of our actions.
@@ -75,9 +74,9 @@ export class DataUnitActions {
 
   /**
   * called, when user selected a the kind of property to add
-  * 
+  *
   * @param: roleSet to add
-  * @param: uiContext of the class, used sort the _children  
+  * @param: uiContext of the class, used sort the _children
   */
   addRoleSet = (roleSet: RoleSet, uiContext: UiContext): DataUnitAction => ({
     type: DataUnitActions.ROLE_SET_ADDED,
@@ -85,7 +84,7 @@ export class DataUnitActions {
       uiContext
     },
     payload: {
-      _children: indexBy(roleSetKey, [roleSet]),
+      _children: indexBy(U.roleSetKey, [roleSet]),
       selectPropState: 'init'
     }
   })

@@ -1,8 +1,7 @@
-import { EventEmitter } from '@angular/core';
-
-import { DateTime, YearMonthDay } from './interfaces';
 import { DateTimeCommons, Granularity } from './date-time-commons';
-import { JulianDateTime } from '.';
+import { DateTime } from './interfaces';
+import { JulianDateTime } from './julian-date-time';
+
 
 /**
  * Class to represent a Julian Date and Time

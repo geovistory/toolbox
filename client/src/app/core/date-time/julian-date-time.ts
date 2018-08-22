@@ -1,7 +1,6 @@
-import { EventEmitter } from '@angular/core';
-
-import { DateTime, YearMonthDay } from './interfaces';
 import { DateTimeCommons, Granularity } from './date-time-commons';
+import { DateTime } from './interfaces';
+
 
 
 /**
