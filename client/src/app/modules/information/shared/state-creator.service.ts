@@ -87,14 +87,14 @@ export class StateCreatorService {
 
 
   /**
-* Initialize RoleSetList
-*
-* @param {number} fkClass fk_class of PeIt
-* @param {InfRole[]} roles array of roles a PeIt
-* @param {InfStateSettings} settings settings to create the state
-*
-* @return {DataUnit} Object of RoleSet, the model of the Gui-Element for RoleSets
-*/
+  * Initialize RoleSetList
+  *
+  * @param {number} fkClass fk_class of PeIt
+  * @param {InfRole[]} roles array of roles a PeIt
+  * @param {InfStateSettings} settings settings to create the state
+  *
+  * @return {DataUnit} Object of RoleSet, the model of the Gui-Element for RoleSets
+  */
   initDataUnitChildList(fkClass: number, roles: InfRole[], settings: StateSettings = {}): Subject<DataUnitChildList> {
 
     const subject = new ReplaySubject<DataUnitChildList>()
