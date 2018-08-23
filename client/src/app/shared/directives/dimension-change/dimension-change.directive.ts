@@ -8,32 +8,28 @@ const elementResizeDetectorMaker = require('element-resize-detector');
 @Directive({
   selector: '[gvDimensionChange]'
 })
-export class DimensionChangeDirective implements OnInit, OnDestroy
-{
+export class DimensionChangeDirective implements OnInit, OnDestroy {
 
-    public observer : any;
+  public observer: any;
+  private nativeElement;
+  @Output() onDimensionsChange: EventEmitter<any> = new EventEmitter();
 
-    @Output() onDimensionsChange : EventEmitter<any> = new EventEmitter();
+  constructor(public el: ElementRef) { }
 
-    constructor( public el : ElementRef ){}
+  ngOnInit() {
+    this.nativeElement = this.el.nativeElement;
+    const event = new Event('dimensions');
 
-    ngOnInit(){
-      const { nativeElement } = this.el;
-      const { offsetWidth : width, offsetHeight : height } = nativeElement;
+    this.observer = elementResizeDetectorMaker();
+    this.observer.listenTo(this.nativeElement, element => {
+      const { offsetWidth: width, offsetHeight: height } = element;
       const dimensions = { width, height };
-      const event = new Event( 'dimensions' );
+      event['dimensions'] = dimensions;
+      this.onDimensionsChange.emit(event);
+    })
+  }
 
-      this.observer = elementResizeDetectorMaker();
-      this.observer.listenTo( nativeElement, element =>
-      {
-          const { offsetWidth : width, offsetHeight : height } = element;
-          const dimensions = { width, height };
-          event[ 'dimensions' ] = dimensions;
-          this.onDimensionsChange.emit( event );
-      })
-    }
-
-    ngOnDestroy() {
-      this.observer.uninstall();
-    }
+  ngOnDestroy() {
+    this.observer.uninstall(this.nativeElement);
+  }
 };
