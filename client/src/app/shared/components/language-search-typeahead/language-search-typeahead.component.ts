@@ -1,17 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter, forwardRef } from '@angular/core';
-
-import { Observable } from 'rxjs';
-
-
-
-
-
-
-
-
+import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InfLanguage, InfLanguageApi } from 'app/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-
+import { Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, tap, switchMap, catchError } from 'rxjs/operators';
 
 
 @Component({
@@ -96,19 +87,23 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
 
 
   search = (text$: Observable<string>) =>
-    text$
-      .debounceTime(300)
-      .distinctUntilChanged()
-      .do(() => this.searching = true)
-      .switchMap(term =>
-        this.languageApi.queryByString(term)
-          .do(() => this.searchFailed = false)
-          .catch(() => {
-            this.searchFailed = true;
-            return Observable.of([]);
-          }))
-      .do(() => this.searching = false)
-      .merge(this.hideSearchingWhenUnsubscribed);
+
+  text$.pipe(
+    debounceTime(300),
+    distinctUntilChanged(),
+    tap(() => this.searching = true),
+    switchMap(term =>
+      this.languageApi.queryByString(term).pipe(
+        tap(() => this.searchFailed = false),
+        catchError(() => {
+          this.searchFailed = true;
+          return of([]);
+        }))
+    ),
+    tap(() => this.searching = false)
+  );
+
+
 
   formatter = (x) => x.notes;
 

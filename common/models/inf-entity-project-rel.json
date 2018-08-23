@@ -52,20 +52,7 @@
     }
   },
   "validations": [],
-  "relations": {
-    "persistent_item_version": {
-      "type": "belongsTo",
-      "model": "InfPersistentItem",
-      "foreignKey": "fk_entity_version_concat",
-      "primaryKey": "pk_entity_version_concat"
-    },
-    "information_language": {
-      "type": "belongsTo",
-      "model": "InfLanguage",
-      "foreignKey": "fk_entity_version_concat",
-      "primaryKey": "pk_entity_version_concat"
-    }
-  },
+  "relations": {},
   "acls": [],
   "methods": {}
 }

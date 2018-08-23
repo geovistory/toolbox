@@ -88,9 +88,12 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
   // fly to entities
   flyToPeItLayerEntities() {
+    const dataSource = this.peItLayer.getDataSource()
+    // if only one entity, set some distance from ground, else 0.0
+    const distance = dataSource.entities.values.length === 1 ? 200000 : 0.0;
 
-    this.acMap.getCameraService().flyTo(this.peItLayer.getDataSource(), {
-      offset: new Cesium.HeadingPitchRange(0.0, -Cesium.Math.PI_OVER_TWO, 20000.0)
+    this.acMap.getCameraService().flyTo(dataSource, {
+      offset: new Cesium.HeadingPitchRange(0.0, -Cesium.Math.PI_OVER_TWO, 0.0)
     })
 
   }

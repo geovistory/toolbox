@@ -1,17 +1,17 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { WithSubStore, select, dispatch, NgRedux } from '@angular-redux/store';
-import { sourceDetailReducer } from './source-detail.reducer';
-import { ISourceDetailState } from '../..';
-import { Observable, Subscription } from 'rxjs';
-import { QuillDoc } from 'app/modules/quill';
-import { IAnnotationPanelState, Chunk, AnnotationState, MentionedEntity } from 'app/modules/annotation';
-import { SourceDetailActions } from './source-detail.actions';
-import * as Delta from 'quill-delta/lib/delta';
-import { InfEntityAssociation, InfDigitalObject, InfDigitalObjectApi, IAppState } from 'app/core';
-import { indexBy } from 'ramda'
+import { dispatch, NgRedux, select, WithSubStore } from '@angular-redux/store';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { IAppState, InfDigitalObject, InfDigitalObjectApi } from 'app/core';
+import { AnnotationState, IAnnotationPanelState, MentionedEntity } from 'app/modules/annotation';
 import { annotationStateKey } from 'app/modules/annotation/containers/annotation-panel/annotation-panel.actions';
+import { QuillDoc } from 'app/modules/quill';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import * as Delta from 'quill-delta/lib/delta';
+import { indexBy } from 'ramda';
+import { Observable, Subscription } from 'rxjs';
+import { ISourceDetailState } from '../..';
 import { mentionedEntityKey } from '../../../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
+import { SourceDetailActions } from './source-detail.actions';
+import { sourceDetailReducer } from './source-detail.reducer';
 
 /**
  * A Container to show and edit the details of a source

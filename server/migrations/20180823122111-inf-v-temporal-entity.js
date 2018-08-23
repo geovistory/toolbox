@@ -45,11 +45,9 @@ exports.up = function (db, callback) {
         
             WITH _insert AS (
                 INSERT INTO information.temporal_entity (
-                    pk_entity, 
                     fk_class
                 ) 
                 VALUES (
-                    NEW.pk_entity, 
                     NEW.fk_class
                 )
                 -- return all fields of the new row

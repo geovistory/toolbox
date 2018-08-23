@@ -430,27 +430,32 @@ export class U {
 
 
     static labelFromRoleDetail(r: RoleDetail): RoleLabel {
+        if (r) {
 
-        if (r._teEnt) {
-            if (r._teEnt._children) {
-                return {
-                    type: 'te-ent',
-                    string: U.labelFromDataUnitChildList(r._teEnt._children).parts[0].roleLabel.string
-                };
-            } else {
-                return {
-                    type: 'te-ent',
-                    string: ''
+            if (r._teEnt) {
+                if (r._teEnt._children) {
+                    return {
+                        type: 'te-ent',
+                        string: U.labelFromDataUnitChildList(r._teEnt._children).parts[0].roleLabel.string
+                    };
+                } else {
+                    return {
+                        type: 'te-ent',
+                        string: ''
+                    }
                 }
+            } else if (r._appe) return { type: 'appe', string: U.labelFromAppeDetail(r._appe) };
+            else if (r._lang) return { type: 'lang', string: U.labelFromLangDetail(r._lang) };
+            else if (r._place) return { type: 'place', string: 'Point on Map' };
+            else if (r._leaf_peIt) return { type: 'leaf-pe-it', string: U.labelFromLeafPeIt(r._leaf_peIt) };
+
+            else {
+                console.warn('labelFromRoleDetail: This kind of RoleDetail does not produce labels');
+                
             }
-        } else if (r._appe) return { type: 'appe', string: U.labelFromAppeDetail(r._appe) };
-        else if (r._lang) return { type: 'lang', string: U.labelFromLangDetail(r._lang) };
-        else if (r._place) return { type: 'place', string: 'Point on Map' };
-        else if (r._leaf_peIt) return { type: 'leaf-pe-it', string: U.labelFromLeafPeIt(r._leaf_peIt) };
-
+        }
         else {
-            console.warn('labelFromRoleDetail: This kind of RoleDetail does not produce labels');
-
+            return new RoleLabel();
         }
 
     }

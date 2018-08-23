@@ -1,12 +1,12 @@
 {
   "name": "InfRole",
-  "base": "InfEntityVersion",
+  "base": "InfEntity",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "information",
-      "table": "v_role_version"
+      "table": "v_role"
     }
   },
   "mixins": {

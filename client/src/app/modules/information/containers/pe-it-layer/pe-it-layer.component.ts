@@ -154,7 +154,9 @@ export class PeItLayerComponent implements OnInit, OnDestroy {
         const dataSource = this.getDataSource();
         if (!dataSource || !dataSource.entities || (dataSource.entities.values.length < 1)) return false;
 
-        this.acMap.getCesiumViewer().zoomTo(dataSource, new Cesium.HeadingPitchRange(0.0, -Cesium.Math.PI_OVER_TWO, 20000.0));
+        // if only one entity, set some distance from ground, else 0.0
+        const distance = dataSource.entities.values.length === 1 ?  200000 : 0.0;
+        this.acMap.getCesiumViewer().zoomTo(dataSource, new Cesium.HeadingPitchRange(0.0, -Cesium.Math.PI_OVER_TWO, distance));
 
         // parent map is loading until this one emits
         this.readyToShow.emit()
