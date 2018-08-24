@@ -37,17 +37,11 @@ const createSqlStatementUp = (tableName) => {
   
   ----- ${tableName} -----
   
-  -- Drop Trigger versioning_trigger 
-  DROP TRIGGER versioning_trigger ON information.${tableName};
-  
   -- Drop Trigger create_entity_version_key 
-  DROP TRIGGER create_entity_version_key ON information.${tableName};
+  DROP TRIGGER IF EXISTS create_entity_version_key ON information.${tableName};
 
   -- Drop Trigger update_entity_version_key 
-  DROP TRIGGER update_entity_version_key ON information.${tableName};
-
-  -- Drop Version Table (Deletion of data with cascade is irreversible)
-  DROP TABLE information.${tableName}_vt CASCADE;
+  DROP TRIGGER IF EXISTS update_entity_version_key ON information.${tableName};
 
   `
 
@@ -64,13 +58,6 @@ const createSqlStatementDown = (tableName) => {
   
   ----- ${tableName} -----
 
-  -- Create Trigger versioning_trigger
-  CREATE TRIGGER versioning_trigger
-  BEFORE INSERT OR UPDATE OR DELETE ON information.${tableName}
-  FOR EACH ROW EXECUTE PROCEDURE versioning(
-    'sys_period', 'information.${tableName}_vt', true
-  );
-
   -- Create Trigger create_entity_version_key
   CREATE TRIGGER create_entity_version_key
   BEFORE INSERT
@@ -84,10 +71,6 @@ const createSqlStatementDown = (tableName) => {
   ON information.${tableName}
   FOR EACH ROW
   EXECUTE PROCEDURE commons.update_entity_version_key();
-
-  -- Create Version Table
-  CREATE TABLE information.${tableName}_vt (LIKE information.${tableName});
-
   `
 
   return downSql;

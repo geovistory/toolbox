@@ -31,6 +31,9 @@ const createSql = (tableName) =>{
   return `
     ALTER TABLE information.${tableName} 
       DROP COLUMN IF EXISTS entity_version CASCADE;
+
+    ALTER TABLE information.${tableName}_vt
+      DROP COLUMN IF EXISTS entity_version CASCADE;
   `
 }
 
@@ -66,8 +69,15 @@ exports.up = function (db, callback) {
 
 };
 
+
+const createSqlDown = (tableName) =>{
+  return `
+    ALTER TABLE information.${tableName}_vt
+      ADD COLUMN entity_version integer;
+  `
+}
 exports.down = function (db, callback) {
-  const sql = `
+  const sql1 = `
   -- ADD Column entity_version of generic parent table 'entity'
   ALTER TABLE information.entity 
     ADD COLUMN entity_version integer;
@@ -78,6 +88,11 @@ exports.down = function (db, callback) {
     WHERE entity_version IS NULL;
 
   `
+
+  const sql2 = tablesToModify.map(tableName => createSqlDown(tableName)).join('');
+  
+  const sql = sql1 + sql2;
+
   db.runSql(sql, callback)
 };
 

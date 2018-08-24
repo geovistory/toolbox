@@ -17,6 +17,7 @@ exports.setup = function (options, seedLink) {
 exports.up = function (db, callback) {
   const sql = ` 
   DROP TABLE information.dating;
+  DROP TABLE information.dating_vt;
   `
   db.runSql(sql, callback)
 
@@ -71,6 +72,16 @@ CREATE TRIGGER last_modification_tmsp
     ON information.dating
     FOR EACH ROW
     EXECUTE PROCEDURE commons.tmsp_last_modification();
+
+CREATE TABLE information.dating_vt (LIKE information.dating);
+
+  -- Trigger: versioning_trigger
+
+  CREATE TRIGGER versioning_trigger
+  BEFORE INSERT OR UPDATE OR DELETE ON information.dating
+  FOR EACH ROW EXECUTE PROCEDURE versioning(
+    'sys_period', 'information.dating_vt', true
+  );
   `
   db.runSql(sql, callback)
 };
