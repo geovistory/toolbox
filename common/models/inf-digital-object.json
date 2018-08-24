@@ -21,10 +21,6 @@
       "type": "number",
       "generated": true
     },
-    "entity_version": {
-      "type": "number",
-      "default": 1
-    },
     "notes": {
       "type": "string",
       "required": false

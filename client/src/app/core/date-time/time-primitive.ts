@@ -2,7 +2,6 @@
 import { Granularity } from './date-time-commons';
 import { GregorianDateTime } from './gregorian-date-time';
 import { JulianDateTime } from './julian-date-time';
-import { DateTime } from './interfaces';
 
 export type CalendarType = 'gregorian' | 'julian';
 

@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { TimePrimitive, U } from 'app/core';
-import { infRole2TimePrimitive } from '../../modules/information2/information.helpers';
+import { TimePrimitive } from 'app/core/date-time/time-primitive';
+import { U } from 'app/core/util/util';
+
 
 @Injectable()
 export class ValidationService {
 
 
   static getValidatorErrorMessage(validatorName: string, validatorValue?: any) {
-    let config = {
+    const config = {
       'required': 'Required',
       'min': `Minimum is ${validatorValue.min}`,
       'max': `Maximum is ${validatorValue.max}`,
@@ -44,15 +45,15 @@ export class ValidationService {
     return (formGroup: FormGroup): void => {
 
       // field that requires other fields
-      let f = formGroup.controls[byField];
+      const f = formGroup.controls[byField];
 
-      var errorName = 'requiredBy-' + byField;
+      const errorName = 'requiredBy-' + byField;
 
       // if this field has a value
       if (f.value) {
         // validate required fields
         requiredFields.forEach(fieldname => {
-          var formControl = formGroup.controls[fieldname];
+          const formControl = formGroup.controls[fieldname];
           if ((!formControl.value && formControl.value !== 0) || !formControl.valid) {
             this.addError(formControl, errorName, true)
           }
@@ -60,7 +61,7 @@ export class ValidationService {
 
       } else {
         requiredFields.forEach(fieldname => {
-          var formControl = formGroup.controls[fieldname];
+          const formControl = formGroup.controls[fieldname];
           this.removeError(formControl, errorName);
         })
       }
@@ -82,8 +83,8 @@ export class ValidationService {
   cantBeginBeforeBegin(first: string, firstLabel: string, second: string, secondLabel: string): Function {
     return (formGroup: FormGroup): void => {
 
-      let firstField = formGroup.controls[first];
-      let secondField = formGroup.controls[second];
+      const firstField = formGroup.controls[first];
+      const secondField = formGroup.controls[second];
 
       // if both fields have a value
       if (firstField.value && secondField.value) {
@@ -130,8 +131,8 @@ export class ValidationService {
   cantEndBeforeEnd(first: string, firstLabel: string, second: string, secondLabel: string): Function {
     return (formGroup: FormGroup): void => {
 
-      let firstField = formGroup.controls[first];
-      let secondField = formGroup.controls[second];
+      const firstField = formGroup.controls[first];
+      const secondField = formGroup.controls[second];
 
       // if both fields have a value
       if (firstField.value && secondField.value) {
@@ -178,8 +179,8 @@ export class ValidationService {
   mustBeginBeforeEnd(first: string, firstLabel: string, second: string, secondLabel: string): Function {
     return (formGroup: FormGroup): void => {
 
-      let firstField = formGroup.controls[first];
-      let secondField = formGroup.controls[second];
+      const firstField = formGroup.controls[first];
+      const secondField = formGroup.controls[second];
 
       // if both fields have a value
       if (firstField.value && secondField.value) {
@@ -226,10 +227,9 @@ export class ValidationService {
   * @param  {any} errorVal
   */
   addError(formControl: AbstractControl, errorName: string, errorVal: any): void {
-    if (formControl.errors)
-      formControl.errors[errorName] = errorVal;
+    if (formControl.errors) formControl.errors[errorName] = errorVal;
     else {
-      var error = {}
+      const error = {}
       error[errorName] = errorVal;
       formControl.setErrors(error);
       formControl.markAsTouched();
@@ -244,10 +244,12 @@ export class ValidationService {
   * @param  {any} errorVal
   */
   removeError(formControl: AbstractControl, errorName: string): void {
-    if (formControl.errors && formControl.errors[errorName])
+    if (formControl.errors && formControl.errors[errorName]) {
       delete formControl.errors[errorName];
-    if (formControl.errors && Object.keys(formControl.errors).length === 0)
+    }
+    if (formControl.errors && Object.keys(formControl.errors).length === 0) {
       formControl.setErrors(null);
+    }
   }
 
 }

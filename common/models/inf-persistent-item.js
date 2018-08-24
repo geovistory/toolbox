@@ -164,9 +164,10 @@ module.exports = function(InfPersistentItem) {
     ];
 
     var sql_stmt = `
+
     WITH
     epr_of_project AS (
-      SELECT fk_project, fk_entity, entity_version, fk_entity_version_concat, is_in_project, is_standard_in_project
+      SELECT fk_project, fk_entity, is_in_project, is_standard_in_project, ord_num
       FROM information.entity_version_project_rel
       WHERE is_in_project = true AND fk_project IN ($4)
     ),
@@ -186,7 +187,7 @@ module.exports = function(InfPersistentItem) {
         FROM
         (
           SELECT jsonb_array_elements(appellation_label->'tokens') as token, appe.pk_entity, appellation_label
-          FROM information.v_appellation_version as appe
+          FROM information.v_appellation as appe
           -- INNER JOIN epr_of_project as epr on epr.fk_entity_version_concat = appe.pk_entity_version_concat
         ) AS tokens
         -- WHERE tokens.token->>'isSeparator' = 'false'
@@ -195,19 +196,19 @@ module.exports = function(InfPersistentItem) {
       GROUP BY   token.pk_entity, token.appellation_label
     ),
     roles_in_project AS (
-      SELECT ro.fk_entity, ro.fk_property, ro.fk_temporal_entity, ro.is_community_favorite, ro.pk_entity_version_concat, epr.is_standard_in_project
-      FROM information.v_role_version as ro
-      INNER JOIN epr_of_project as epr on epr.fk_entity_version_concat = ro.pk_entity_version_concat
+      SELECT ro.fk_entity, ro.fk_property, ro.fk_temporal_entity, ro.pk_entity
+      FROM information.v_role as ro
+      INNER JOIN epr_of_project as epr on epr.fk_entity = ro.pk_entity
     ),
     te_ent_in_project AS (
-      SELECT te_ent.pk_entity, te_ent.fk_class, te_ent.is_community_favorite
-      FROM information.v_temporal_entity_version as te_ent
-      INNER JOIN epr_of_project as epr on epr.fk_entity_version_concat = te_ent.pk_entity_version_concat
+      SELECT te_ent.pk_entity, te_ent.fk_class
+      FROM information.v_temporal_entity as te_ent
+      INNER JOIN epr_of_project as epr on epr.fk_entity = te_ent.pk_entity
     ),
     pe_it_in_projet AS (
-      SELECT pi.pk_entity, pi.fk_class,  pi.entity_version,  pi.pk_entity_version_concat,  pi.tmsp_last_modification
-      FROM information.v_persistent_item_version as pi
-      INNER JOIN epr_of_project as epr on epr.fk_entity_version_concat = pi.pk_entity_version_concat
+      SELECT pi.pk_entity, pi.fk_class, pi.tmsp_last_modification
+      FROM information.v_persistent_item as pi
+      INNER JOIN epr_of_project as epr on epr.fk_entity = pi.pk_entity
     )
     Select
     count(pi.pk_entity) OVER() AS total_count,
@@ -221,14 +222,11 @@ module.exports = function(InfPersistentItem) {
     (
       SELECT
       pi.pk_entity,
-      pi.entity_version,
-      pi.pk_entity_version_concat,
       pi.fk_class,
       jsonb_agg(
         json_build_object(
           'pk_entity', pk_appellation,
           'appellation_label', appellation_label,
-          'r63_is_standard_in_project', is_standard_in_project,
           'r63_is_in_project_count', r63_is_in_project_count,
           'r63_is_standard_in_project_count', r63_is_standard_in_project_count
         )
@@ -243,26 +241,25 @@ module.exports = function(InfPersistentItem) {
         appe_in_project.pk_entity as pk_appellation,
         appe_in_project.appellation_string,
         appe_in_project.appellation_label as appellation_label,
-        r63.is_standard_in_project,
         jsonb_agg(DISTINCT r63_in_project.fk_project) as projects,
         count(CASE WHEN r63_in_project.is_in_project THEN 1 END) as r63_is_in_project_count,
         count(CASE WHEN r63_in_project.is_standard_in_project THEN 1 END) as r63_is_standard_in_project_count,
-        r63.fk_entity as pk_named_entity
+        r63.fk_entity as pk_named_entity,
+        r63_in_project.ord_num
         FROM
         roles_in_project as r64
         INNER JOIN appe_in_project ON appe_in_project.pk_entity = r64.fk_entity
         INNER JOIN te_ent_in_project AS appe_usage ON appe_usage.pk_entity = r64.fk_temporal_entity
         INNER JOIN roles_in_project AS r63 ON r63.fk_temporal_entity = r64.fk_temporal_entity
-        INNER JOIN epr_of_project AS r63_in_project ON r63_in_project.fk_entity_version_concat = r63.pk_entity_version_concat
+        INNER JOIN epr_of_project AS r63_in_project ON r63_in_project.fk_entity = r63.pk_entity
         WHERE r64.fk_property = 1113 --'R64'
-        -- AND r64.is_community_favorite = true
         AND r63.fk_property IN (1192, 1193, 1194, 1195) --'R63'
         AND appe_usage.fk_class = 365 --'F52'
-        AND appe_usage.is_community_favorite = true
-        GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity, r63.is_standard_in_project
+        GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity, r63_in_project.ord_num
+        ORDER BY r63_in_project.ord_num ASC
       ) AS appellations
       ON appellations.pk_named_entity = pi.pk_entity
-      GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, pi.pk_entity_version_concat, pi.entity_version, appellations.projects
+      GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, appellations.projects
       ORDER BY pi.tmsp_last_modification DESC
     ) AS pi, to_tsquery($1) q
     ` +
@@ -354,8 +351,6 @@ module.exports = function(InfPersistentItem) {
     (
       SELECT
       pi.pk_entity,
-      pi.entity_version,
-      pi.pk_entity_version_concat,
       pi.fk_class,
       jsonb_agg(
         json_build_object(
@@ -368,7 +363,7 @@ module.exports = function(InfPersistentItem) {
       string_agg(appellations.appellation_string, ' • ') AS appellation_string,
       appellations.projects,
       setweight(to_tsvector(string_agg(appellations.appellation_string, ' • ')), 'A') as document
-      FROM information.v_persistent_item_version AS pi
+      FROM information.v_persistent_item AS pi
       INNER JOIN
       (
         SELECT DISTINCT
@@ -380,7 +375,7 @@ module.exports = function(InfPersistentItem) {
         count(CASE WHEN r63_in_project.is_standard_in_project THEN 1 END) as r63_is_standard_in_project_count,
         r63.fk_entity as pk_named_entity
         FROM
-        information.v_role_version as r64
+        information.v_role as r64
         INNER JOIN
         (
           SELECT DISTINCT
@@ -399,8 +394,7 @@ module.exports = function(InfPersistentItem) {
             FROM
             (
               SELECT jsonb_array_elements(appellation_label->'tokens') as token, pk_entity, appellation_label
-              FROM information.v_appellation_version
-              WHERE is_community_favorite = true
+              FROM information.v_appellation
             ) AS tokens
             -- WHERE tokens.token->>'isSeparator' = 'false'
           ) AS token
@@ -409,18 +403,16 @@ module.exports = function(InfPersistentItem) {
         )
         AS appellation
         ON appellation.pk_entity = r64.fk_entity
-        INNER JOIN information.v_temporal_entity_version AS appe_usage ON appe_usage.pk_entity = r64.fk_temporal_entity
-        INNER JOIN information.v_role_version AS r63 ON r63.fk_temporal_entity = r64.fk_temporal_entity
-        INNER JOIN information.entity_version_project_rel AS r63_in_project ON r63_in_project.fk_entity_version_concat = r63.pk_entity_version_concat
+        INNER JOIN information.v_temporal_entity AS appe_usage ON appe_usage.pk_entity = r64.fk_temporal_entity
+        INNER JOIN information.v_role AS r63 ON r63.fk_temporal_entity = r64.fk_temporal_entity
+        INNER JOIN information.entity_version_project_rel AS r63_in_project ON r63_in_project.fk_entity = r63.pk_entity
         WHERE r64.fk_property = 1113 --'R64'
-        AND r64.is_community_favorite = true
         AND r63.fk_property IN (1192, 1193, 1194, 1195) --'R63'
         AND appe_usage.fk_class = 365 --'F52'
-        AND appe_usage.is_community_favorite = true
         GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity
       ) AS appellations
       ON appellations.pk_named_entity = pi.pk_entity
-      GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, pi.pk_entity_version_concat, pi.entity_version, appellations.projects
+      GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, appellations.projects
       ORDER BY pi.tmsp_last_modification DESC
     ) AS pi, to_tsquery($1) q
     WHERE document @@ q
@@ -579,7 +571,7 @@ module.exports = function(InfPersistentItem) {
 
     const filter = {
       /** Select persistent item by pk_entity … */
-      "where": ["pk_entity", "=", pkEntity, "and", "is_community_favorite", "=", "true"],
+      "where": ["pk_entity", "=", pkEntity],
       "orderBy": [{
         "pk_entity": "asc"
       }],
@@ -598,7 +590,6 @@ module.exports = function(InfPersistentItem) {
           "$relation": {
             "name": "pi_roles",
             "joinType": "left join",
-            //  "where": ["is_community_favorite", "=", "true"],
             "orderBy": [{
               "pk_entity": "asc"
             }]
@@ -609,7 +600,6 @@ module.exports = function(InfPersistentItem) {
             "$relation": {
               "name": "temporal_entity",
               "joinType": "inner join",
-              //  "where": ["is_community_favorite", "=", "true"],
               "orderBy": [{
                 "pk_entity": "asc"
               }]
@@ -626,7 +616,6 @@ module.exports = function(InfPersistentItem) {
                 "$relation": {
                   "name": "language",
                   "joinType": "left join",
-                  //"where": ["is_community_favorite", "=", "true"],
                   "orderBy": [{
                     "pk_entity": "asc"
                   }]
@@ -636,7 +625,6 @@ module.exports = function(InfPersistentItem) {
                 "$relation": {
                   "name": "appellation",
                   "joinType": "left join",
-                  //  "where": ["is_community_favorite", "=", "true"],
                   "orderBy": [{
                     "pk_entity": "asc"
                   }]

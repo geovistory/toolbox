@@ -4,13 +4,13 @@ import { DatePipe } from '@angular/common';
 import { Granularity, DateTimeCommons } from 'app/core/date-time/date-time-commons';
 import { CalendarType } from 'app/core/date-time/time-primitive';
 
-interface IXAxisDefinition{
-    marginLeft:number,
-    marginRight:number,
-    marginTop:number,
-    tickSizeInner:number,
-    tickSizeOuter:number,
-    tickPadding:number,
+interface IXAxisDefinition {
+    marginLeft: number,
+    marginRight: number,
+    marginTop: number,
+    tickSizeInner: number,
+    tickSizeOuter: number,
+    tickPadding: number,
 
     // Domain
     domainStart: number,
@@ -27,7 +27,7 @@ interface IXAxisDefinition{
     calendar: CalendarType;
 }
 
-export class XAxisDefinition implements IXAxisDefinition{
+export class XAxisDefinition implements IXAxisDefinition {
 
     /**
      * Add properties of xAxis here
@@ -68,7 +68,7 @@ export class XAxisDefinition implements IXAxisDefinition{
     scale;
 
     constructor(options) {
-        Object.assign(this,options);
+        Object.assign(this, options);
 
         this.resolution = Math.abs(this.domainStart - this.domainEnd) / (this.rangeEnd - this.rangeStart);
 
@@ -77,10 +77,13 @@ export class XAxisDefinition implements IXAxisDefinition{
 
     newDateTime(data?) {
         if (this.calendar === 'gregorian') {
-            return DateTimeCommons.newGregorian(data);
-        }
-        else if (this.calendar === 'julian') {
-            return DateTimeCommons.newJulian(data);
+
+            return new GregorianDateTime(data);
+
+        } else if (this.calendar === 'julian') {
+
+            return new JulianDateTime(data);
+
         }
     }
 
@@ -97,7 +100,7 @@ export class XAxisDefinition implements IXAxisDefinition{
          * Validates if a julianSecond is valid as tick and if yes, adds
          * it to the given ticks array
          */
-        const addTickIfValid = (ticks:Array<number>, julianSecond:number) => {
+        const addTickIfValid = (ticks: Array<number>, julianSecond: number) => {
 
             // check if it is inside the domain
             if (!(julianSecond <= this.domainEnd &&
@@ -175,7 +178,7 @@ export class XAxisDefinition implements IXAxisDefinition{
                             month: m,
                             day: Math.floor(lengthOfMonth / gaps * g + 1)
                         }).getJulianSecond()
-                        
+
                         addTickIfValid(ticks, tickVal);
 
                     }

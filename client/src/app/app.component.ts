@@ -16,7 +16,6 @@ export class AppComponent {
 
 
   constructor(
-    private entityEditor: EntityEditorService,
     
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
@@ -26,12 +25,10 @@ export class AppComponent {
 
   keydown($event) {
     if ($event.key === 'Alt') {
-      // this.entityEditor.showDfhId = true;
     }
   };
   keyup($event) {
     if ($event.key === 'Alt') {
-      // this.entityEditor.showDfhId = false;
     }
   };
 

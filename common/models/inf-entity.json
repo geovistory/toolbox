@@ -15,10 +15,6 @@
       "type": "string",
       "required": false
     },
-    "entity_version": {
-      "type": "number",
-      "default": 9999
-    },
     "tmsp_creation": {
       "type": "string",
       "generated": true,
@@ -37,7 +33,7 @@
   },
   "validations": [],
   "relations": {
-    "eprs": {
+    "entity_version_project_rels": {
       "type": "hasMany",
       "model": "InfEntityProjectRel",
       "foreignKey": "fk_entity",

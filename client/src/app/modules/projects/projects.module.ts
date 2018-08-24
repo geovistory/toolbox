@@ -16,7 +16,7 @@ import { ProjectSettingsProfileComponent } from './components/project-settings-p
 import { ProjectsRoutingModule } from './projects-routing.module';
 import { NavbarModule, ProxyRouteModule } from 'app/shared';
 import { ProjectsActions } from './api/projects.actions';
-import { Information2Module } from '../information2/information2.module';
+import { Information2Module } from '../information/information.module';
 
 @NgModule({
   imports: [

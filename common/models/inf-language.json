@@ -1,12 +1,12 @@
 {
   "name": "InfLanguage",
-  "base": "InfEntityVersion",
+  "base": "InfEntity",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "information",
-      "table": "v_language_version"
+      "table": "v_language"
     }
   },
   "mixins": {

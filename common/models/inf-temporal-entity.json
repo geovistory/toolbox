@@ -1,12 +1,12 @@
 {
   "name": "InfTemporalEntity",
-  "base": "InfEntityVersion",
+  "base": "InfEntity",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "information",
-      "table": "v_temporal_entity_version"
+      "table": "v_temporal_entity"
     }
   },
   "mixins": {

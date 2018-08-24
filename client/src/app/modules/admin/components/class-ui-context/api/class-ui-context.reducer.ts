@@ -4,7 +4,7 @@ import { Action } from 'redux';
 
 import { ClassUiContext, Container, Widget } from '../../../admin.models';
 import { ClassUiContextAPIAction, ClassUiContextAPIActions } from './class-ui-context.actions';
-import { DfhConfig } from '../../../../information2/shared/dfh-config';
+import { DfhConfig } from '../../../../information/shared/dfh-config';
 
 const INITIAL_STATE: ClassUiContext = {
   class: {},

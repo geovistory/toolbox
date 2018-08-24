@@ -1,9 +1,8 @@
-import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
+import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { IAnnotationPanelState, Chunk, AnnotationState } from '../../annotation.models';
-import { InfEntityAssociation } from 'app/core';
-import { clone, indexBy } from 'ramda'
+import { clone, indexBy } from 'ramda';
+import { AnnotationState, Chunk, IAnnotationPanelState } from '../../annotation.models';
 
 export function annotationStateKey(a: AnnotationState) {
   return '_annot' + a.chunk.pkEntity;

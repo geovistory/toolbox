@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import {LoopBackAuth, ActiveAccountService, Account, AccountApi, LoopBackConfig} from 'app/core';
@@ -17,13 +17,13 @@ import { Subscription } from 'rxjs';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']  
 })
-export class NavbarComponent implements OnInit {
-
+export class NavbarComponent implements OnInit, OnDestroy {
+  
   isNavbarCollapsed:boolean=true;
   account: Account;
-
+  
   subscription:Subscription;
-
+  
   constructor(
     private activeAccountService: ActiveAccountService,
     private authService: LoopBackAuth,
@@ -35,7 +35,7 @@ export class NavbarComponent implements OnInit {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
   }
-
+  
   ngOnInit(){
     this.subscription = this.activeAccountService.getAccount().subscribe(account => {
       this.account = account;
@@ -43,8 +43,10 @@ export class NavbarComponent implements OnInit {
     })
     this.activeAccountService.updateAccount();    
   }
-
-
+  
+  ngOnDestroy(): void {
+  }
+  
   logout(){
     this.accountApi.logout()
     .subscribe(

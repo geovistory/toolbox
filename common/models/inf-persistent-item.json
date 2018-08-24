@@ -1,12 +1,12 @@
 {
   "name": "InfPersistentItem",
-  "base": "InfEntityVersion",
+  "base": "InfEntity",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "information",
-      "table": "v_persistent_item_version"
+      "table": "v_persistent_item"
     }
   },
   "mixins": {
