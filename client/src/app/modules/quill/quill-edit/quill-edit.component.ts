@@ -35,7 +35,6 @@ export class QuillEditComponent implements OnInit {
   // needed for creating annotation: maps nodeid with object containing isSelected-boolean and op (from Delta.ops)
   nodeSelctionMap = new Map<string, { isSelected: boolean, op: any }>();
 
-
   // the selected Delta, when creating an annotation
   private selectedDelta: Delta;
 
@@ -54,8 +53,10 @@ export class QuillEditComponent implements OnInit {
 
   nodeSubs = new Map<string, Subscription[]>(); // string=nodeid, subscriptions on this nodes events
 
+  showTokenIds = false;
 
   @ViewChild('editor') editorElem: ElementRef;
+  @ViewChild('toolbar') toolbar: ElementRef;
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -83,16 +84,16 @@ export class QuillEditComponent implements OnInit {
     this.nodeSubs = new Map<string, Subscription[]>();
 
     let editorConfig: any = {
-      theme: 'snow'
+      theme: 'snow',
+      modules: {
+        toolbar: this.toolbar.nativeElement
+      }
     }
 
     if (this.creatingAnnotation || this.readOnly) {
       editorConfig = {
         ...editorConfig,
-        readOnly: true,
-        modules: {
-          toolbar: false
-        }
+        readOnly: true
       }
     }
 
@@ -261,6 +262,11 @@ export class QuillEditComponent implements OnInit {
     })
 
     this.selectedDeltaChange.emit(this.selectedDelta)
+  }
+
+
+  toggleShowTokenIds() {
+    this.showTokenIds = !this.showTokenIds;
   }
 
 }

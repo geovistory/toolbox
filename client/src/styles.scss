@@ -443,6 +443,18 @@ gv-add-info-pe-it {
     }
 }
 
+.gv-show-token-ids {
+    span[quillnode] {
+        background: lightpink;
+        margin: 0 1px;
+    }
+    span[quillnode]::after {
+        content: attr(quillnode);
+        vertical-align: super;
+        font-size: smaller;
+    }
+}
+
 /***************************
  * Cesium / Map
  ***************************/
@@ -454,12 +466,11 @@ gv-map {
             height: 100px;
             background-color: lightcyan;
             position: relative;
-            border: 1px solid #00ffff; 
+            border: 1px solid #00ffff;
             display: flex;
             flex-direction: column;
             flex-flow: column;
             @extend .border;
-            
             .cesium-viewer {
                 flex: 1 1 auto;
             }
