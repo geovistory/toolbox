@@ -1,8 +1,8 @@
 import { sandboxOf } from 'angular-playground';
 
-import { ViewerConfiguration } from 'angular-cesium';
 import { MapComponent } from './map.component';
 import { Information2Module } from '../../information.module';
+import { ViewerConfiguration } from 'app/modules/gv-angular-cesium/angular-cesium-fork';
 
 
 export default sandboxOf(MapComponent, {

@@ -2,10 +2,8 @@ import { NgRedux } from '@angular-redux/store';
 import { AfterViewInit, Component, Input, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
 import { IAppState, LoopBackConfig, U } from 'app/core';
 import { Subject } from 'rxjs';
+import { AcMapComponent, MapLayerProviderOptions, ViewerConfiguration } from '../../../gv-angular-cesium/angular-cesium-fork';
 import { PeItLayerComponent } from '../pe-it-layer/pe-it-layer.component';
-import {
-  MapsManagerService, ViewerConfiguration, AcMapComponent, MapLayerProviderOptions,
-} from '../../../gv-angular-cesium/angular-cesium-fork';
 
 @Component({
   selector: 'gv-map',
