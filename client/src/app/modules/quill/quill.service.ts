@@ -23,16 +23,22 @@ class NodeBlot extends Inline {
     // We will only be called with a node already
     // determined to be a Link blot, so we do
     // not need to check ourselves
-    return node.getAttribute('quillnode');    
+    return node.getAttribute('quillnode');
   }
 }
 
 Quill.register(NodeBlot, true);
 
+export type TokenType = 'regChar' | 'sepChar' | undefined;
+export type NextToken = { length: number, type: TokenType };
+
 @Injectable()
 export class QuillService {
 
   readonly SEPARATOR_REGEX = /[^\p{Sc}\p{So}\p{Mn}\p{P}\p{Z}À-ÿ\w]/
+
+  readonly BEGINING_SEPARATOR = /^[^\p{Sc}\p{So}\p{Mn}\p{P}\p{Z}À-ÿ\w]{0,1}/
+  readonly BEGINING_WORD = /^[\p{Sc}\p{So}\p{Mn}\p{P}\p{Z}À-ÿ\w]{0,}/
 
   constructor() { }
 
@@ -50,47 +56,123 @@ export class QuillService {
 
     // if user did insert something
     if (this.isInsert(delta)) {
+      let id = latestId;
+      const ops: any[] = [];
+      let lastTokenType: TokenType;
+      let nextToken: NextToken;
 
-      const retained = this.retainIndex(delta);
+      // init ops 
+      if (this.beginsWithRetain(delta)) {
+        // ad first op to new ops and remove the first item of ops
+        ops.push(delta.ops.shift());
 
-      // if there is some untouched content, retain it
-      if (retained) {
-        newDelta.retain(retained)
       }
 
-      // if insert contains a separator
-      if (this.insertsSeparator(delta)) {
+      // init lastTokenType
+      lastTokenType = this.initLastTokenType(oldDelta, ops);
 
-        const inserted = this.insertedLength(delta);
+      const addRetainOp = () => {
+        // init nextToken
+        nextToken = this.extractNextToken(delta);
 
-        // - nodenize the separator
-        const nodenize1 = this.nodenizeInsert(latestId);
-        latestId = nodenize1.latestId;
-        newDelta.ops = [...newDelta.ops, ...nodenize1.delta.ops]
+        // if not: last char before change and first char of change ar regChars 
+        if (!(lastTokenType === nextToken.type && lastTokenType === 'regChar')) {
+          // increase id
+          id = id + 1;
+        }
 
-        // - give the part after the insert a new id
-        const nodenize2 = this.nodenizeAfterInsert(oldDelta, retained, inserted, latestId);
-        latestId = nodenize2.latestId;
-        newDelta.ops = [...newDelta.ops, ...nodenize2.delta.ops]
+        ops.push({
+          retain: nextToken.length,
+          attributes: { node: id }
+        })
+
+        // memorize token type for next iteration 
+        lastTokenType = nextToken.type;
+
+        // if there are remaining ops, start next iteration
+        if (delta.ops.length) addRetainOp()
+
       }
-      // else if the insert comes after a separator  
-      // this finds also the special case of \n on lineend
-      else if (this.isAfterSeparator(oldDelta, retained)) {
 
-        // - nodenize the new inserts
-        const nodenize1 = this.nodenizeInsert(latestId);
-        latestId = nodenize1.latestId;
-        newDelta.ops = [...newDelta.ops, ...nodenize1.delta.ops]
+      // start nodenization
+      addRetainOp();
 
-      }      
-
+      newDelta.ops = ops;
+      latestId = id;
     }
 
     return { delta: newDelta, latestId: latestId };
 
   }
 
+  /**
+   * Returns the type of the last character before change
+   * if no last character, returns undefined.
+   * @param oldDelta 
+   * @param ops empty array or array containing one retain op 
+   */
+  initLastTokenType(oldDelta: Delta, ops: any[]): TokenType {
 
+    if (ops.length === 0) return undefined;
+    const retain = ops[0].retain;
+    const slicedDelta = oldDelta.slice((retain - 1), retain);
+    const lastChar = slicedDelta.ops[0].insert;
+    return this.hasSeparator(lastChar) ? 'sepChar' : 'regChar';
+  }
+
+  /**
+   * Returns the NextToken from given delta and removes
+   * this part from the delta (eighter a piece of string or a op item) 
+   * @param delta 
+   */
+  extractNextToken(delta: Delta): NextToken {
+
+    // if no next token, return NextToken of type undefined
+    if (!delta.ops.length || !delta.ops[0].insert) return { length: 0, type: undefined };
+
+    // get insert string
+    const insert = delta.ops[0].insert;
+
+    /**
+     * Drop first n characters of delta and remove op if empty 
+     * @param n length of string to remove from delta 
+     */
+    const removeFromDelta = (n: number) => {
+      // drop first n characters of string
+      delta.ops[0].insert = insert.substring(n);
+
+      // if op.insert is now empty, remove the op
+      if (delta.ops[0].insert === '') delta.ops.shift();
+    }
+
+    const begSep = this.BEGINING_SEPARATOR.exec(insert)[0];
+    if (begSep.length) {
+
+      // begSep must be a string of length = 1
+      if (begSep.length !== 1) throw new Error('Separator Tokens can contain max. one character');
+
+      removeFromDelta(begSep.length)
+
+      return {
+        length: begSep.length,
+        type: "sepChar"
+      }
+
+    }
+
+    const wordSep = this.BEGINING_WORD.exec(insert)[0];
+    if (wordSep.length) {
+
+      removeFromDelta(wordSep.length)
+
+      return {
+        length: wordSep.length,
+        type: "regChar"
+      }
+    }
+
+
+  }
 
 
   /**
@@ -102,6 +184,10 @@ export class QuillService {
       d.ops[0] && d.ops[0].hasOwnProperty('insert') ||
       d.ops[1] && d.ops[1].hasOwnProperty('insert')
     );
+  }
+
+  beginsWithRetain(d: Delta): boolean {
+    return d.ops[0].hasOwnProperty('retain') ? true : false;
   }
 
   /**

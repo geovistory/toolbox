@@ -13,6 +13,7 @@ import { ProjectSandboxModule } from 'app/shared/components/project-sandbox/proj
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { LoadingBarModule } from 'app/core/loading-bar/loading-bar.module';
 import { AngularCesiumModule } from 'app/modules/gv-angular-cesium/angular-cesium-fork';
+import { RouterModule } from '@angular/router';
 
 PlaygroundModule
   .configure({
@@ -24,6 +25,7 @@ PlaygroundModule
         ElasticInputModule.forRoot(),
         SlimLoadingBarModule.forRoot(),
         AngularCesiumModule.forRoot(),
+        RouterModule.forRoot([]),
         BrowserModule,
         BrowserAnimationsModule,
         ControlMessagesModule,

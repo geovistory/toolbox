@@ -25,13 +25,13 @@ import { DfhConfig } from '../../../information/shared/dfh-config';
  * Container to manage the Annotations: Create, show, edit, delete
  * - interacts with store
  * - interacts with api
- * 
+ *
  * Template if the 'edit' variable in the store is truthy:
  * - Shows a Form to edit (or create) one Annotation with ok and cancel button
  * - The FormGroup has a FormControl, the AnnotationCtrlComponent, to which it passes
- *   via ControlValueAccessor the AnnotationState and 
+ *   via ControlValueAccessor the AnnotationState and
  *   via Input the substore path to 'edit'
- * 
+ *
  * Template if the 'edit' variable in the store is falsy:
  * - for each view.entities in store show AnnotationViewComponent and pass in the AnnotationState (buttons for edit and remove can be added to panel)
  */
@@ -40,14 +40,10 @@ export class AnnotationPanelComponent implements OnInit, OnDestroy {
 
   // path to the substore
   @Input() path: string[] | string;
-  getBasePath() { return this.path }
-
-  // if provided, initialState will be dispatched onInit replacing the lastState of substore 
-  @Input() initState: IAnnotationPanelState;
 
   @select() edit$: Observable<AnnotationCtrlState>;
   @select() remove$: Observable<AnnotationState>;
-  @select() view$: Observable<AnnotationState>;;
+  @select() view$: Observable<AnnotationState>;
 
   formGroup: FormGroup;
   annotationCtrl: FormControl;
@@ -68,12 +64,12 @@ export class AnnotationPanelComponent implements OnInit, OnDestroy {
     })
   }
 
+  getBasePath() { return this.path }
+
   /**
-   * subscribe to 'annotationPanel' 
+   * subscribe to 'annotationPanel'
    */
   ngOnInit() {
-    // initial state is useful for sandboxing the component
-    if (this.initState) this.updateState(this.initState)
 
     this.annotationCtrlPath = this.path === '' ? ['edit'] :
       typeof this.path === 'string' ? [...[this.path], 'edit'] :
@@ -127,15 +123,15 @@ export class AnnotationPanelComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Saves annotation 
-   * - gets the data from formControl of AnnotationCtrlComponent 
+   * Saves annotation
+   * - gets the data from formControl of AnnotationCtrlComponent
    * - calls api to findOrCreate InfChunk with InfEntityAssociation[] with InfEntityProjectRel[]
    * - on success call created()
    */
   save() {
     const val: AnnotationState = this.annotationCtrl.value;
 
-    let c = {
+    const c = {
       js_quill_data: val.chunk.quillDelta,
       fk_digital_object: this.ngRedux.getState().sources.edit.view.pk_entity,
       entity_associations: U.obj2Arr(val.mentionedEntities).map((me: MentionedEntity) => {
@@ -186,7 +182,5 @@ export class AnnotationPanelComponent implements OnInit, OnDestroy {
   @dispatch() cancelRemove() {
     return this.actions.cancelRemoveAnnotation();
   }
-
-
 
 }
