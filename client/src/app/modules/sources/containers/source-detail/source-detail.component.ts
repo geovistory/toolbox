@@ -17,40 +17,40 @@ import { sourceDetailReducer } from './source-detail.reducer';
  * A Container to show and edit the details of a source
  * - interacts with store at the level of ISourceDetailState
  * - interacts with api
- *   - search for mentionings, 
+ *   - search for mentionings,
  *     - creates annotatedNodes Object for Quill
  *     - creates a AnnnotationPanelState
- * 
+ *
  * - Input: path to substore
  * - Output: onSave, triggered on saving a edit of the digital object or its name
  * - Output: onClose, triggered on closing a source
- * 
- * 
+ *
+ *
  * Template
  * - TEMP: use 'digitalObject', 'notes' as Title
- * 
+ *
  * - If 'edit' is true
  *   -  save edit and cancel edit buttons
- * 
+ *
  * - If 'edit' and 'annotationPanel', 'edit', 'selectingSegment' are false
  *   -  edit button
- * 
+ *
  * - If 'annotationPanel' is true
  *   -  hide annotations button
- * 
+ *
  * - If 'annotationPanel' and 'annotationPanel', 'edit', 'selectingSegment' are false
  *   -  show annotations button
- * 
- * - If 'edit' show QuillEditComponent 
+ *
+ * - If 'edit' show QuillEditComponent
  *       passing in 'edit' via Input 'quillDoc'
  *       passing in true via Input 'readOnly'
  *       passing in true via Input 'annotationsVisible'
  *       passing in annotatedNodes via Input 'annotatedNodes'
- *       listening to Output 'selectedDeltaChange' 
+ *       listening to Output 'selectedDeltaChange'
  *
- * - If 'annotationPanel' var of substore is thruthy, show AnnotationPanelComponent 
+ * - If 'annotationPanel' var of substore is thruthy, show AnnotationPanelComponent
  *   passing path to store 'annotationPanel' via Input
- *  
+ *
  */
 @AutoUnsubscribe()
 @WithSubStore({
@@ -67,9 +67,8 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
 
   // path to the substore
   @Input() path: string[];
-  getBasePath() { return this.path }
 
-  // if provided, initialState will be dispatched onInit replacing the lastState of substore 
+  // if provided, initialState will be dispatched onInit replacing the lastState of substore
   @Input() initState: ISourceDetailState;
 
   @Output() close: EventEmitter<void> = new EventEmitter();
@@ -93,6 +92,8 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
     private digtObjApi: InfDigitalObjectApi,
     private ngRedux: NgRedux<IAppState>
   ) { }
+
+  getBasePath() { return this.path }
 
   ngOnInit() {
     // TODO init annotations
@@ -155,7 +156,7 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
    * Hide the annotated segments in the digital object
    * - update store: set 'showAnnotations' false
    * - update store: set 'annotationPanel' false
-   * 
+   *
    */
   @dispatch() hideAnnotations() {
     return this.actions.hideAnnotations()
@@ -165,7 +166,7 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
  * Start create Annotation
  * - update store: set 'annotationPanel' 'edit' 'selectingSegment' = true
  * - update store: set 'annotationPanel' 'edit' 'selectingEntities' = false
- * 
+ *
  */
   @dispatch() startCreateAnnotation() {
     return this.actions.startCreateAnnotation()
@@ -173,14 +174,14 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
 
   /**
   * Creat Annotation was stopped
-  * 
+  *
   */
   @dispatch() stopCreateAnnotation() {
     return this.actions.stopCreateAnnotation()
   }
 
   /**
-   * called during creation of a new Annotation / Chunk, when 
+   * called during creation of a new Annotation / Chunk, when
    * user selects words/letters in QuillEditComponent
    * - create Chunk
    * - updates store: set 'annotationPanel', 'edit', 'chunk' = new Chunk
@@ -197,18 +198,19 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
   }
 
   initAnnotations() {
+    const s = this.ngRedux.getState();
+    const pkProject = s.activeProject.pk_project;
+    const pkEntity = s.sources.edit.view.pk_entity;
 
-    this.subs.push(this.digtObjApi.nestedObjectOfProject(
-      this.ngRedux.getState().activeProject.pk_project,
-      this.ngRedux.getState().sources.edit.view.pk_entity,
-    ).subscribe((digitObjs: InfDigitalObject[]) => {
-      const digitObj = digitObjs[0];
+    // init default annotation panel state
+    this.annotationPanel = { view: {} }
 
-      console.log(digitObj)
-      let nodes = new Map();
+    // init annotation panel state using given chunks
+    const buildAnnotationPanelState = (chunks) => {
 
+      const nodes = new Map();
       this.annotationPanel = {
-        view: indexBy(annotationStateKey, digitObj.chunks.map(chunk => {
+        view: indexBy(annotationStateKey, chunks.map(chunk => {
           const delta = JSON.parse(chunk.js_quill_data);
 
           delta.ops.forEach(op => {
@@ -224,7 +226,7 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
               fkDigitalObject: chunk.fk_digital_object,
               quillDelta: JSON.parse(chunk.js_quill_data) // TODO why does it store the deltas stringified??
             },
-            mentionedEntities: indexBy(mentionedEntityKey, chunk.entity_associations.map(ea=>{
+            mentionedEntities: indexBy(mentionedEntityKey, chunk.entity_associations.map(ea => {
               return {
                 pkEntity: ea.fk_range_entity,
                 entityAssociation: ea,
@@ -235,18 +237,20 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
         }))
       }
       this.annotatedNodes = Array.from(nodes);
+    }
 
+    // Look for chunks that are referenced to this digital object.
+    // For each chunk includes the associated (mentioned) entities
+    if (pkEntity) {
+      this.subs.push(this.digtObjApi.nestedObjectOfProject(pkProject, pkEntity)
+        .subscribe((digitObjs: InfDigitalObject[]) => {
+          const digitObj = digitObjs[0];
 
-    }))
-    // this.annotatedNodes = [
-    //   ['20', 1],
-    //   ['21', 3],
-    //   ['24', 5]
-    // ]
+          if (digitObj && digitObj.chunks.length) {
+            buildAnnotationPanelState(digitObj.chunks);
+          }
 
-    this.annotationPanel = {
-      view: {
-      }
+        }))
     }
   }
 }
