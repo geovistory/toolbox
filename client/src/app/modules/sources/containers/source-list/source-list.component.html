@@ -4,7 +4,7 @@
  *      show a SourceSearchHitComponent for each entry in 'list' with open and remove buttons
  *      passing SourceSearchHitState via Input
 -->
-<div *ngIf="!((create$ | async) || (edit$ | async) || (remove$ | async))">
+<div *ngIf="listVisible">
 
   <div class="gv-edit-panel-header">
 
@@ -53,7 +53,7 @@
  *     listening to ok and cancel Outputs 
  -->
 <div *ngIf="(create$ | async)" class="d-flex justify-content-center mt-5">
-  <gv-source-create-form (cancel)="cancelCreate()" (ok)="submitCreate($event)" [projectPk]="(project$ | async)?.pk_project"></gv-source-create-form>
+  <gv-source-create-form (cancel)="stopCreate()" (ok)="submitCreate($event)" [projectPk]="(project$ | async)?.pk_project"></gv-source-create-form>
 </div>
 
 <!-- ********************** Edit Source *************************** 

@@ -1,6 +1,5 @@
-import { InfDigitalObject } from "app/core";
-import { IAnnotationPanelState } from "app/modules/annotation/annotation.models";
-import { QuillDoc } from "../quill/quil.models";
+import { InfDigitalObject } from 'app/core';
+import { IAnnotationPanelState } from 'app/modules/annotation/annotation.models';
 
 
 /**

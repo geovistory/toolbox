@@ -67,7 +67,7 @@ export const sourceListReducer =
         }
 
         switch (action.type) {
-            case SourceListActions.SOURCE_LIST_CANCEL_CREATE:
+            case SourceListActions.SOURCE_LIST_STOP_CREATE:
                 lastState = omit(['create'], lastState);
                 break;
         }

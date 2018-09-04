@@ -1,40 +1,38 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { WithSubStore, dispatch, select, NgRedux } from '@angular-redux/store';
-import { sourceListReducer } from './source-list.reducer';
-import { ISourceListState, ISourceSearchHitState, ISourceDetailState } from '../..';
-import { SourceListActions } from './source-list.actions';
-import { Observable, Subscription } from 'rxjs';
-import { textBüchel } from '../../../quill/quill-edit/quill-edit.sandbox.mock';
+import { dispatch, NgRedux, select, WithSubStore } from '@angular-redux/store';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Project, InfDigitalObjectApi, InfDigitalObject } from 'app/core';
-import { QuillDoc } from '../../../quill';
+import { InfDigitalObject, InfDigitalObjectApi, Project } from 'app/core';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Observable, Subscription, combineLatest } from 'rxjs';
+import { ISourceDetailState, ISourceListState, ISourceSearchHitState } from '../..';
+import { SourceListActions } from './source-list.actions';
+import { sourceListReducer } from './source-list.reducer';
 
 /**
  * Container to manage the sources (digital objects): Search, create, show, edit, remove
  * - interacts with store on the level of ISourcesState
  * - interacts with api
  *   - search for sources and update 'list' var of substore
- *   
- * 
+ *
+ *
  * Template
- * - If nor 'create' nor 'edit' nor 'remove' vars of substore are truthy, 
+ * - If nor 'create' nor 'edit' nor 'remove' vars of substore are truthy,
  *      show a create source button
  *      show a SourceSearchHitComponent for each entry in 'list' with open and remove buttons
  *      passing SourceSearchHitState via Input
  *
  * - If 'create' is truthy, show a form with SourceCreateFormComponent
- *   listening to submit and cancel Outputs 
- * 
- * - If 'edit' is truthy, show a SourceDetailComponent 
+ *   listening to submit and cancel Outputs
+ *
+ * - If 'edit' is truthy, show a SourceDetailComponent
  *   passing store path to 'edit' via Input
  *   listening to onChange Output to update the 'list'
- * 
+ *
  * - If 'remove' is truthy, show a SourceSearchHitComponent with 'are you sure', cancel and remove buttons
- *   passing store path to 'remove' via Input 
- * 
+ *   passing store path to 'remove' via Input
+ *
  * Note: there must never be more than one of 'create', 'edit' and 'remove' vars of substore truthy at the same time
- * 
+ *
 */
 @AutoUnsubscribe()
 @WithSubStore({
@@ -51,9 +49,8 @@ export class SourceListComponent implements OnInit, OnDestroy {
 
   // path to the substore
   @Input() path: string[] | string;
-  getBasePath() { return this.path }
 
-  // if provided, initialState will be dispatched onInit replacing the lastState of substore 
+  // if provided, initialState will be dispatched onInit replacing the lastState of substore
   @Input() initState: ISourceListState;
 
   @select() edit$: Observable<ISourceDetailState>;
@@ -61,6 +58,8 @@ export class SourceListComponent implements OnInit, OnDestroy {
   @select() create$: Observable<boolean>;
   @select() list$: Observable<{ [key: string]: ISourceSearchHitState }>;
   project$: Observable<Project>;
+
+  listVisible: boolean;
 
   editPath: string[] | string;
 
@@ -70,16 +69,17 @@ export class SourceListComponent implements OnInit, OnDestroy {
 
   constructor(
     private actions: SourceListActions,
-    private activatedRoute: ActivatedRoute,
-    private ngRedux: NgRedux<Project>,
+    activatedRoute: ActivatedRoute,
+    ngRedux: NgRedux<Project>,
     private digitObjApi: InfDigitalObjectApi
   ) {
+
     // if component is activated by ng-router, take base path here
     this.subs.push(activatedRoute.data.subscribe(d => {
       this.path = d.reduxPath;
     }))
 
-    // observe the active project 
+    // observe the active project
     this.project$ = ngRedux.select<Project>('activeProject');
 
     // observe and store the remove hit
@@ -87,7 +87,14 @@ export class SourceListComponent implements OnInit, OnDestroy {
       this.hitToRemove = r;
     }))
 
+    this.subs.push(combineLatest(this.create$, this.edit$, this.remove$).subscribe(d => {
+      if (d[0] || d[1] || d[2]) this.listVisible = false;
+      else this.listVisible = true;
+    }))
+
   }
+
+  getBasePath() { return this.path }
 
   ngOnInit() {
     // initial state is useful for sandboxing the component
@@ -97,7 +104,7 @@ export class SourceListComponent implements OnInit, OnDestroy {
       typeof this.path === 'string' ? [...[this.path], 'edit'] :
         [...this.path, 'edit'];
 
-    // Init the sources list 
+    // Init the sources list
     this.search();
 
   }
@@ -121,7 +128,7 @@ export class SourceListComponent implements OnInit, OnDestroy {
   search() {
     // TODO apply make a better filter with searchstring, limit, offset, and search only for sources in project
     this.subs.push(this.project$.subscribe(p => {
-      if (p)
+      if (p) {
         this.subs.push(this.digitObjApi.find({ order: 'pk_entity DESC' }).subscribe((res: InfDigitalObject[]) => {
           const list: { [key: string]: ISourceSearchHitState } = {}
 
@@ -137,6 +144,7 @@ export class SourceListComponent implements OnInit, OnDestroy {
           this.searchHitsUpdated(list)
 
         }))
+      }
     }))
   }
 
@@ -150,7 +158,7 @@ export class SourceListComponent implements OnInit, OnDestroy {
   openSearchHit(searchHit: ISourceSearchHitState) {
     const pk = searchHit.id;
 
-    //TODO query db for source related to project
+    // TODO query db for source related to project
     this.digitObjApi.find({ where: { 'pk_entity': pk } }).subscribe((digiObjs: InfDigitalObject[]) => {
       const editState: ISourceDetailState = {
         view: digiObjs[0]
@@ -173,7 +181,7 @@ export class SourceListComponent implements OnInit, OnDestroy {
 
   /**
    * Closes a source
-   * - update store: delete 'edit' 
+   * - update store: delete 'edit'
    */
   @dispatch() close() {
     return this.actions.close()
@@ -220,7 +228,7 @@ export class SourceListComponent implements OnInit, OnDestroy {
 
   /**
    * Back to list
-   * - update store: delete 'remove' 
+   * - update store: delete 'remove'
    */
   @dispatch() cancelRemove() {
     return this.actions.cancelRemove()
@@ -228,7 +236,7 @@ export class SourceListComponent implements OnInit, OnDestroy {
 
   /**
    * Back to list
-   * - update store: delete 'remove' 
+   * - update store: delete 'remove'
    */
   @dispatch() removed() {
     return this.actions.removed()
@@ -237,7 +245,7 @@ export class SourceListComponent implements OnInit, OnDestroy {
   /**
    * Call api to remove the digital object from project, on success
    * - update store: delete 'remove'
-   * - getList() 
+   * - getList()
    */
   remove() {
 
@@ -254,7 +262,7 @@ export class SourceListComponent implements OnInit, OnDestroy {
 
   /**
    * Shows create form
-   * - updates store: set 'create' true 
+   * - updates store: set 'create' true
    */
   @dispatch() startCreate() {
     return this.actions.startCreate()
@@ -262,17 +270,17 @@ export class SourceListComponent implements OnInit, OnDestroy {
 
   /**
    * Hides create form
-   * - updates store: set 'create' false 
+   * - updates store: set 'create' false
    */
-  @dispatch() cancelCreate() {
-    return this.actions.cancelCreate()
+  @dispatch() stopCreate() {
+    return this.actions.stopCreate()
 
   }
 
   /**
    * Calls api to persists a new digital object in database, on success
    * Create SourceDetailState
-   * - update store: set edit: new SourceDetailState 
+   * - update store: set edit: new SourceDetailState
    */
   submitCreate(dObj: InfDigitalObject) {
 
@@ -281,9 +289,14 @@ export class SourceListComponent implements OnInit, OnDestroy {
     this.subs.push(this.digitObjApi.replaceOrCreate(dObj).subscribe((digitalObject: InfDigitalObject) => {
       const editState: ISourceDetailState = {
         edit: digitalObject,
+        view: digitalObject,
       }
+      // update the sources list
+      this.search();
+      // open the new source
       this.open(editState);
-      this.cancelCreate()
+      // close the create
+      this.stopCreate()
     }))
   }
 

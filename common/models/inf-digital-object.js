@@ -27,7 +27,7 @@ module.exports = function(InfDigitalObject) {
 
     const innerJoinThisProject = {
       "$relation": {
-        "name": "eprs",
+        "name": "entity_version_project_rels",
         "joinType": "inner join",
         "where": [
           "fk_project", "=", projectId,
@@ -39,7 +39,7 @@ module.exports = function(InfDigitalObject) {
     const filter = {
       "where": ["pk_entity", "=", pkEntity],
       "include": {
-        // "eprs": innerJoinThisProject, as soon as the epr is implemented
+        // "entity_version_project_rels": innerJoinThisProject, as soon as the epr is implemented
         "chunks": {
           "$relation": {
             "name": "chunks",
@@ -48,7 +48,7 @@ module.exports = function(InfDigitalObject) {
               "pk_entity": "asc"
             }]
           },
-          "eprs": innerJoinThisProject,
+          "entity_version_project_rels": innerJoinThisProject,
           "entity_associations": {
             "$relation": {
               "name": "entity_associations",

@@ -24,7 +24,7 @@ export class SourceListActions {
   static readonly SOURCE_LIST_REMOVED = 'SOURCE_LIST_REMOVED';
 
   static readonly SOURCE_LIST_START_CREATE = 'SOURCE_LIST_START_CREATE';
-  static readonly SOURCE_LIST_CANCEL_CREATE = 'SOURCE_LIST_CANCEL_CREATE';
+  static readonly SOURCE_LIST_STOP_CREATE = 'SOURCE_LIST_STOP_CREATE';
   static readonly SOURCE_LIST_SOURCE_UPDATED = 'SOURCE_LIST_SOURCE_UPDATED';
 
 
@@ -82,8 +82,8 @@ export class SourceListActions {
     payload: null
   })
 
-  cancelCreate = (): SourceListAction => ({
-    type: SourceListActions.SOURCE_LIST_CANCEL_CREATE,
+  stopCreate = (): SourceListAction => ({
+    type: SourceListActions.SOURCE_LIST_STOP_CREATE,
     meta: null,
     payload: null
   })

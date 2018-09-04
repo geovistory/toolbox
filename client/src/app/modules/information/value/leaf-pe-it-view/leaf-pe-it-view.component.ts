@@ -36,7 +36,6 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
   @Input() pkEntity: number;
   @Input() isCircular: boolean;
   @Input() basePath: string[];
-  getBasePath = () => this.basePath;
 
 
   peItState: PeItDetail;
@@ -58,7 +57,7 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
 
   isInProject: boolean;
 
-  isSelected: boolean = false;
+  isSelected = false;
 
   pkProject: number;
 
@@ -83,22 +82,19 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
     console.log('LeafPeItViewComponent')
   }
 
+  getBasePath = () => this.basePath;
+
   ngOnInit() {
 
 
-    const peItDetail = this.ngRedux.configureSubStore(this.basePath, leafPeItReducer).getState();
+    this.peItState = this.ngRedux.configureSubStore(this.basePath, leafPeItReducer).getState();
 
-    if (peItDetail && peItDetail.fkClass) {
-      this.classConfig = this.ngRedux.getState().activeProject.crm.classes[peItDetail.fkClass];
+    if (this.peItState && this.peItState.fkClass) {
+      this.classConfig = this.ngRedux.getState().activeProject.crm.classes[this.peItState.fkClass];
     }
-    if (!peItDetail || !peItDetail.peIt) {
-      // console.log('LeafPeItViewComponent leafPeItStartLoading', this.pkEntity)
-
+    if (!this.peItState || !this.peItState.peIt) {
       this.initPeItState();
     }
-
-    // else
-    //   this.label = U.labelFromDataUnitChildList(peItDetail._children);
 
   }
 
@@ -136,7 +132,7 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
   open() {
     const open = () => {
 
-      this.router.navigate(["../", this.peItState.peIt.pk_entity], {
+      this.router.navigate(['../', this.peItState.peIt.pk_entity], {
         relativeTo: this.route,
         queryParamsHandling: 'merge'
       })
