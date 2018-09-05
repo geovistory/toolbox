@@ -1,18 +1,21 @@
 <div class="font-normal">
-  <button *ngIf="!selectVisible" type="button" class="btn btn-sm btn-light mr-2" (click)="selectVisible=true">v{{selectedVersion}}</button>
-  
-  
+  <button *ngIf="!selectVisible" type="button" class="btn btn-sm btn-light mr-2" (click)="selectVisible=true">
+    v{{selectedVersion}} 
+    <span *ngIf="(selectedVersion < versionList[0].entityVersion)" class="text-danger">(old version)</span>
+  </button>
+
+
   <div *ngIf="selectVisible" class="form-inline">
-  
+
     <label class="mr-2">Change Version</label>
-  
-  
+
+
     <select class="form-control mr-2" (change)="change($event)" [(ngModel)]="selectedItem">
       <option *ngFor="let v of versionList" [ngValue]="v" [selected]="v.entityVersion === selectedVersion">v{{v.entityVersion}}</option>
     </select>
-    
+
     <button class="btn btn-outline-secondary" type="button" (click)="selectVisible=false">Cancel</button>
-  
-  
+
   </div>
+
 </div>
