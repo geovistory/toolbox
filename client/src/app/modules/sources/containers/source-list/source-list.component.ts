@@ -1,10 +1,10 @@
 import { dispatch, NgRedux, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { InfDigitalObject, InfDigitalObjectApi, Project } from 'app/core';
+import { InfDigitalObject, InfDigitalObjectApi, Project, IAppState, InfEntityProjectRelApi, InfEntityProjectRelInterface } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable, Subscription, combineLatest } from 'rxjs';
-import { ISourceDetailState, ISourceListState, ISourceSearchHitState } from '../..';
+import { ISourceDetailState, ISourceListState, ISourceSearchHitState, IVersion } from '../..';
 import { SourceListActions } from './source-list.actions';
 import { sourceListReducer } from './source-list.reducer';
 
@@ -70,8 +70,9 @@ export class SourceListComponent implements OnInit, OnDestroy {
   constructor(
     private actions: SourceListActions,
     activatedRoute: ActivatedRoute,
-    ngRedux: NgRedux<Project>,
-    private digitObjApi: InfDigitalObjectApi
+    private ngRedux: NgRedux<IAppState>,
+    private digitObjApi: InfDigitalObjectApi,
+    private eprApi: InfEntityProjectRelApi
   ) {
 
     // if component is activated by ng-router, take base path here
@@ -126,24 +127,28 @@ export class SourceListComponent implements OnInit, OnDestroy {
    * - update store: 'list'
    */
   search() {
+    // GEOV-186
     // TODO apply make a better filter with searchstring, limit, offset, and search only for sources in project
     this.subs.push(this.project$.subscribe(p => {
       if (p) {
-        this.subs.push(this.digitObjApi.find({ order: 'pk_entity DESC' }).subscribe((res: InfDigitalObject[]) => {
-          const list: { [key: string]: ISourceSearchHitState } = {}
 
-          let i = 0;
-          res.forEach(digitObj => {
-            list['_source_' + i] = {
-              id: digitObj.pk_entity,
-              label: digitObj.notes
-            } as ISourceSearchHitState;
-            ++i;
-          })
+        this.subs.push(this.digitObjApi.findProjectVersion(this.ngRedux.getState().activeProject.pk_project, null)
+          .subscribe((res: InfDigitalObject[]) => {
+            const list: { [key: string]: ISourceSearchHitState } = {}
 
-          this.searchHitsUpdated(list)
+            let i = 0;
+            res.forEach(digitObj => {
+              list['_source_' + i] = {
+                id: digitObj.pk_entity,
+                version: digitObj.entity_version,
+                label: digitObj.notes
+              } as ISourceSearchHitState;
+              ++i;
+            })
 
-        }))
+            this.searchHitsUpdated(list)
+
+          }))
       }
     }))
   }
@@ -156,17 +161,17 @@ export class SourceListComponent implements OnInit, OnDestroy {
   }
 
   openSearchHit(searchHit: ISourceSearchHitState) {
-    const pk = searchHit.id;
+    const pkEntity = searchHit.id;
 
+    // GEOV-186
     // TODO query db for source related to project
-    this.digitObjApi.find({ where: { 'pk_entity': pk } }).subscribe((digiObjs: InfDigitalObject[]) => {
-      const editState: ISourceDetailState = {
-        view: digiObjs[0]
-      }
-      this.open(editState);
-    })
-
-
+    this.subs.push(this.digitObjApi.findProjectVersion(this.ngRedux.getState().activeProject.pk_project, pkEntity)
+      .subscribe((digiObjs: InfDigitalObject[]) => {
+        const editState: ISourceDetailState = {
+          view: digiObjs[0]
+        }
+        this.open(editState);
+      }))
 
   }
 
@@ -197,9 +202,14 @@ export class SourceListComponent implements OnInit, OnDestroy {
 
     // TODO make saving with epr and versioning
 
-    this.digitObjApi.replaceOrCreate(digitalObject).subscribe((result: InfDigitalObject) => {
-      this.sourceUpdated(result);
-    })
+    // GEOV-186
+    this.digitObjApi.saveWithEpr(digitalObject, this.ngRedux.getState().activeProject.pk_project)
+      .subscribe((result: InfDigitalObject[]) => {
+        // update the edit.view state and remove the edit.edit state
+        this.sourceUpdated(result[0]);
+        // update the sources list
+        this.search();
+      })
 
   }
 
@@ -249,13 +259,18 @@ export class SourceListComponent implements OnInit, OnDestroy {
    */
   remove() {
 
-    // TODO make removing from project with epr
-
-    this.subs.push(this.digitObjApi.deleteById(this.hitToRemove.id).subscribe((deleted) => {
-      this.removed();
-      this.search();
-    }))
-
+    this.subs.push(
+      this.eprApi.updateEprAttributes(
+        this.ngRedux.getState().activeProject.pk_project,
+        this.hitToRemove.id,
+        { is_in_project: false } as InfEntityProjectRelInterface
+      ).subscribe((deleted) => {
+        // delete the remove state
+        this.removed();
+        // update the sources list
+        this.search();
+      })
+    )
 
 
   }
@@ -284,20 +299,58 @@ export class SourceListComponent implements OnInit, OnDestroy {
    */
   submitCreate(dObj: InfDigitalObject) {
 
-    // TODO make saving with epr and versioning
+    // save digital object with epr and versioning
+    this.subs.push(this.digitObjApi.saveWithEpr(dObj, this.ngRedux.getState().activeProject.pk_project)
+      .subscribe((digitalObjects: InfDigitalObject[]) => {
+        const editState: ISourceDetailState = {
+          edit: digitalObjects[0],
+          view: digitalObjects[0],
+        }
+        // update the sources list
+        this.search();
+        // open the new source
+        this.open(editState);
+        // close the create
+        this.stopCreate()
+      }))
+  }
 
-    this.subs.push(this.digitObjApi.replaceOrCreate(dObj).subscribe((digitalObject: InfDigitalObject) => {
-      const editState: ISourceDetailState = {
-        edit: digitalObject,
-        view: digitalObject,
+  /**
+   * called when user changes version of a digital object
+   */
+  changeVersion(version: IVersion) {
+
+    // update the epr
+    this.subs.push(this.eprApi.updateEprAttributes(
+      this.ngRedux.getState().activeProject.pk_project,
+      version.pkEntity,
+      {
+        fk_entity_version: version.entityVersion,
+        fk_entity_version_concat: version.pkEntityVersionConcat
       }
-      // update the sources list
-      this.search();
-      // open the new source
-      this.open(editState);
-      // close the create
-      this.stopCreate()
-    }))
+    ).subscribe((updatedEpr) => {
+
+      // remove previous version
+      this.sourceUpdated(undefined);
+
+      // get the version
+      this.subs.push(this.digitObjApi.findProjectVersion(this.ngRedux.getState().activeProject.pk_project, version.pkEntity)
+        .subscribe((digiObjs: InfDigitalObject[]) => {
+          const editState: ISourceDetailState = {
+            view: digiObjs[0]
+          }
+
+          // open the new version
+          this.sourceUpdated(digiObjs[0]);
+
+          // update the sources list
+          this.search();
+        }))
+
+
+    })
+    )
+
   }
 
 }

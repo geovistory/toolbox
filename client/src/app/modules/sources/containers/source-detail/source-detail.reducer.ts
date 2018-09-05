@@ -13,30 +13,30 @@ export const sourceDetailReducer =
     (lastState: ISourceDetailState = INITIAL_STATE, action: SourceDetailAction): ISourceDetailState => {
 
         switch (action.type) {
+
             case SourceDetailActions.SOURCE_DETAIL_STATE_UPDATED:
                 lastState = action.payload
                 break;
-        }
 
-        switch (action.type) {
-            case SourceDetailActions.SOURCE_DETAIL_START_EDIT:
+
+            case SourceDetailActions.SOURCE_DETAIL_EDIT_STARTED:
+                const edit = clone(lastState.view);
+                // update the latest Id for editing
+                edit.js_quill_data.latestId = action.meta.latestId;
+
                 lastState = {
                     ...lastState,
-                    edit: clone(lastState.view),
+                    edit: edit,
                 }
                 break;
-        }
 
 
-        switch (action.type) {
             case SourceDetailActions.SOURCE_DETAIL_CANCEL_EDIT:
                 lastState = omit(['edit'], {
                     ...lastState,
                 })
                 break;
-        }
 
-        switch (action.type) {
             case SourceDetailActions.SOURCE_DETAIL_ON_QUILL_CHANGE:
                 lastState = {
                     ...lastState,
@@ -46,19 +46,14 @@ export const sourceDetailReducer =
                     }
                 }
                 break;
-        }
 
-
-        switch (action.type) {
             case SourceDetailActions.SOURCE_DETAIL_SHOW_ANNOTATIONS:
                 lastState = {
                     ...lastState,
                     annotationPanel: action.payload.annotationPanel
                 }
                 break;
-        }
 
-        switch (action.type) {
             case SourceDetailActions.SOURCE_DETAIL_START_CREATE_ANNOTATION:
                 lastState = {
                     annotate: clone(lastState.view),
@@ -73,25 +68,19 @@ export const sourceDetailReducer =
                     }
                 }
                 break;
-        }
 
-        switch (action.type) {
             case SourceDetailActions.SOURCE_DETAIL_STOP_CREATE_ANNOTATION:
                 lastState = omit(['annotate'], {
                     ...lastState,
                 })
                 break;
-        }
 
-        switch (action.type) {
             case SourceDetailActions.SOURCE_DETAIL_HIDE_ANNOTATIONS:
                 lastState = omit(['annotationPanel'], {
                     ...lastState,
                 })
                 break;
-        }
 
-        switch (action.type) {
             case SourceDetailActions.SOURCE_DETAIL_SELECTED_DELTA_CHANGE:
                 lastState = {
                     ...lastState,
@@ -107,7 +96,15 @@ export const sourceDetailReducer =
                     }
                 }
                 break;
+
+            case SourceDetailActions.SOURCE_DETAIL_VERSION_LIST_LOADED:
+                lastState = {
+                    ...lastState,
+                    versionList: action.payload.versionList
+                }
+                break;
         }
+
 
 
         return lastState;

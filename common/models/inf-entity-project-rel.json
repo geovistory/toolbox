@@ -54,5 +54,47 @@
   "validations": [],
   "relations": {},
   "acls": [],
-  "methods": {}
+  "methods": {
+    "updateEprAttributes": {
+      "accepts": [
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Project id",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "pk_entity",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "eprAttributes",
+          "type": "InfEntityProjectRel",
+          "required": true,
+          "description": "Instance of InfEntityProjectRel (fk_project and fk_entity will be ignored)",
+          "http": {
+            "source": "body"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfEntityProjectRel",
+        "root": true
+      },
+      "description": "Updates the InfEntityProjectRel found by projectId and pkEntity.",
+      "http": {
+        "path": "/updateEprAttributes",
+        "verb": "put"
+      }
+    }
+  }
 }

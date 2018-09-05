@@ -1,29 +1,172 @@
 'use strict';
 
-module.exports = function(InfDigitalObject) {
+module.exports = function (InfDigitalObject) {
 
-  InfDigitalObject.findOrCreateDigitObj = function(projectId, data, ctx) {
+  /**
+   * Remote Method for saving a digital object.
+   * - If new, creates digitObj and relation to provided projectId
+   * - Else updates digitObj and timestamp of relation to provided projectId
+   * 
+   * @param {*} projectId 
+   * @param {*} data 
+   * @param {*} ctx 
+   */
+  InfDigitalObject.saveWithEpr = function (data, projectId, ctx) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
       js_quill_data: data.js_quill_data,
-      notes: data.notes,
-      fk_class: data.fk_class
+      notes: data.notes
     };
 
-    return InfDigitalObject.findOrCreatePeItOrTeEnt(InfDigitalObject, projectId, dataObject)
+    const InfEntityProjectRel = InfDigitalObject.app.models.InfEntityProjectRel;
+
+    const find = function (pk_entity_version_concat) {
+      //find the entity and include the epr
+      return InfDigitalObject.findOne({
+        where: {
+          pk_entity_version_concat: pk_entity_version_concat
+        },
+        include: {
+          relation: "entity_version_project_rels",
+          scope: {
+            where: {
+              fk_project: projectId
+            }
+          }
+        }
+      }).then((res) => {
+        return [res];
+      })
+        .catch(err => err);
+    }
+
+
+    // Create the digitObj version
+    return InfDigitalObject.create(dataObject)
+      .catch((err) => { return err; })
+      .then((createdEntity) => {
+
+        // find the new digitObj
+        return InfDigitalObject.findById(createdEntity.pk_entity_version_concat)
+          .catch((err) => { return err; })
+          .then((resultingEntity) => {
+
+            // check if there is an existing epr
+            return InfEntityProjectRel.findOne({
+              where: {
+                fk_entity: resultingEntity.pk_entity,
+                fk_project: projectId
+              }
+            }).catch((err) => { return err; })
+              .then(existingEpr => {
+
+                if (existingEpr) {
+                  // update existing epr 
+                  return existingEpr.updateAttributes({
+                    fk_entity_version: resultingEntity.entity_version,
+                    fk_entity_version_concat: resultingEntity.pk_entity_version_concat
+                  })
+                    .catch((err) => { return err; })
+                    .then(resultingEpr => {
+
+                      // return digitObj with epr
+                      return find(resultingEntity.pk_entity_version_concat);
+                    });
+                }
+                else {
+
+                  // create a new epr 
+                  return new InfEntityProjectRel({
+                    fk_entity: resultingEntity.pk_entity,
+                    fk_entity_version: resultingEntity.entity_version,
+                    fk_entity_version_concat: resultingEntity.pk_entity_version_concat,
+                    fk_project: projectId,
+                    is_in_project: true,
+                  }).save()
+                    .catch((err) => { return err; })
+                    .then(resultingEpr => {
+
+                      // return digitObj with epr
+                      return find(resultingEntity.pk_entity_version_concat);
+                    });
+                }
+
+              })
+          })
+      })
 
   }
 
+  InfDigitalObject.findProjectVersion = function (projectId, pkEntity, cb) {
+    const innerJoinThisProject = {
+      "$relation": {
+        "name": "entity_version_project_rels",
+        "joinType": "inner join",
+        "where": [
+          "fk_project", "=", projectId,
+          "and", "is_in_project", "=", "true"
+        ]
+      }
+    };
+    const filter = {
+      "include": {
+        "entity_version_project_rels": innerJoinThisProject
+      },
+      "orderBy": [{
+        "pk_entity": "desc"
+      }]
+    }
+    if (pkEntity) {
+      filter.where = ["pk_entity", "=", pkEntity]
+    }
+
+    return InfDigitalObject.findComplex(filter, cb);
+
+
+  }
+
+  /**
+   * Returns all version with given pkEntity
+   * @param {*} pkEntity 
+   * @param {*} cb 
+   */
+  InfDigitalObject.getVersions = function (pkEntity, cb) {
+
+    const filter = {
+      where: ["pk_entity", "=", pkEntity],
+      order: [{ "entity_version": "desc" }]
+    }
+
+    return InfDigitalObject.findComplex(filter, cb);
+
+  }
 
    /**
-    * nestedObjectOfProject - get a rich object of the entityAssociation with its
-    * domain and range entity
-   *
-   * @param  {number} pkProject primary key of project
-   * @param  {number} pkEntity  pk_entity of the entityAssociation
+   * Returns latest version with given pkEntity
+   * @param {*} pkEntity 
+   * @param {*} cb 
    */
-  InfDigitalObject.nestedObjectOfProject = function(projectId, pkEntity, cb) {
+  InfDigitalObject.getLatestVersion = function (pkEntity, cb) {
+
+    const filter = {
+      where: ["pk_entity", "=", pkEntity],
+      order: [{ "entity_version": "desc" }],
+      limit: 1
+    }
+
+    return InfDigitalObject.findComplex(filter, cb);
+
+  }
+
+  /**
+   * nestedObjectOfProject - get a rich object of the entityAssociation with its
+   * domain and range entity
+  *
+  * @param  {number} pkProject primary key of project
+  * @param  {number} pkEntity  pk_entity of the entityAssociation
+  */
+  InfDigitalObject.nestedObjectOfProject = function (projectId, pkEntity, cb) {
 
     const innerJoinThisProject = {
       "$relation": {

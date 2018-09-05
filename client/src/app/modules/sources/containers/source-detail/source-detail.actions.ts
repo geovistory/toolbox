@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ISourceDetailState, ISourceSearchHitState } from '../../sources.models';
+import { ISourceDetailState, ISourceSearchHitState, IVersion } from '../../sources.models';
 import { IAnnotationPanelState } from '../../../annotation';
 import * as Delta from 'quill-delta/lib/delta';
 import { QuillDoc } from 'app/modules/quill';
@@ -17,16 +17,20 @@ export type SourceDetailAction = FluxStandardAction<Payload, any>;
 export class SourceDetailActions {
   static readonly SOURCE_DETAIL_STATE_UPDATED = 'SOURCE_DETAIL_STATE_UPDATED';
   static readonly SOURCE_DETAIL_START_EDIT = 'SOURCE_DETAIL_START_EDIT';
+  static readonly SOURCE_DETAIL_EDIT_STARTED = 'SOURCE_DETAIL_EDIT_STARTED';
   static readonly SOURCE_DETAIL_CANCEL_EDIT = 'SOURCE_DETAIL_CANCEL_EDIT';
   static readonly SOURCE_DETAIL_ON_QUILL_CHANGE = 'SOURCE_DETAIL_ON_QUILL_CHANGE';
 
   static readonly SOURCE_DETAIL_SHOW_ANNOTATIONS = 'SOURCE_DETAIL_SHOW_ANNOTATIONS';
   static readonly SOURCE_DETAIL_HIDE_ANNOTATIONS = 'SOURCE_DETAIL_HIDE_ANNOTATIONS';
-  
+
   static readonly SOURCE_DETAIL_START_CREATE_ANNOTATION = 'SOURCE_DETAIL_START_CREATE_ANNOTATION';
   static readonly SOURCE_DETAIL_STOP_CREATE_ANNOTATION = 'SOURCE_DETAIL_STOP_CREATE_ANNOTATION';
   static readonly SOURCE_DETAIL_SELECTED_DELTA_CHANGE = 'SOURCE_DETAIL_SELECTED_DELTA_CHANGE';
-  
+
+  static readonly SOURCE_DETAIL_START_LOADING_VERSION_LIST = 'SOURCE_DETAIL_START_LOADING_VERSION_LIST';
+  static readonly SOURCE_DETAIL_VERSION_LIST_LOADED = 'SOURCE_DETAIL_VERSION_LIST_LOADED';
+
   @dispatch()
 
   stateUpdated = (payload: ISourceDetailState): SourceDetailAction => ({
@@ -38,6 +42,12 @@ export class SourceDetailActions {
   startEdit = (): SourceDetailAction => ({
     type: SourceDetailActions.SOURCE_DETAIL_START_EDIT,
     meta: null,
+    payload: null
+  })
+
+  editStarted = (latestId: number): SourceDetailAction => ({
+    type: SourceDetailActions.SOURCE_DETAIL_EDIT_STARTED,
+    meta: { latestId },
     payload: null
   })
 
@@ -88,13 +98,28 @@ export class SourceDetailActions {
     type: SourceDetailActions.SOURCE_DETAIL_SELECTED_DELTA_CHANGE,
     meta: null,
     payload: {
-      annotationPanel:{
-        edit:{
-          chunk:{
+      annotationPanel: {
+        edit: {
+          chunk: {
             quillDelta
           }
         }
       }
     }
   })
+
+  startLoadingVersionList = (): SourceDetailAction => ({
+    type: SourceDetailActions.SOURCE_DETAIL_START_LOADING_VERSION_LIST,
+    meta: null,
+    payload: null
+  })
+
+  versionListLoaded = (versionList: IVersion[]): SourceDetailAction => ({
+    type: SourceDetailActions.SOURCE_DETAIL_VERSION_LIST_LOADED,
+    meta: null,
+    payload: {
+      versionList
+    }
+  })
+
 }

@@ -37,14 +37,6 @@
       "type": "string",
       "generated": true,
       "hidden": true
-    },
-    "is_latest_version": {
-      "type": "boolean",
-      "generated": true
-    },
-    "is_community_favorite": {
-      "type": "boolean",
-      "generated": true
     }
   },
   "validations": [],

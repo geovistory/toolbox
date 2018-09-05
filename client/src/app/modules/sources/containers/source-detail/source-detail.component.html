@@ -10,7 +10,14 @@
     <h2>
       {{( (view$ | async)?.notes ? (view$ | async)?.notes : (edit$ | async)?.notes ? (edit$ | async)?.notes : (annotate$ | async)?.notes
       ? (annotate$ | async)?.notes : '' ) }}
+
+
       <small class="text-muted">Source</small>
+
+      <!-- Version Poicker -->
+      <gv-version-picker class="d-inline-block align-middle ml-3" *ngIf="!((edit$ | async) || (annotate$ | async))" [versionList]="(versionList$ | async)"
+        [selectedVersion]="(view$ | async)?.entity_version" (versionChange)="versionChange($event)"></gv-version-picker>
+
     </h2>
   </div>
   <div>
@@ -41,7 +48,7 @@
   <div class="gv-flex-grow-1 d-flex flex-column">
 
     <!-- View -->
-    <div class="gv-flex-grow-1 d-flex flex-row" *ngIf="!((edit$ | async) || (annotate$ | async))">
+    <div class="gv-flex-grow-1 d-flex flex-row" *ngIf="!((edit$ | async) || (annotate$ | async)) && (view$ | async)">
       <gv-quill-edit *ngIf="!(annotationPanel$ | async)" class="gv-flex-grow-1 d-flex flex-column" [quillDoc]="(view$ | async).js_quill_data"
         [readOnly]="true"></gv-quill-edit>
 

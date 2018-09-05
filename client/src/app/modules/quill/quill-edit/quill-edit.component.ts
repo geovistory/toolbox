@@ -43,10 +43,10 @@ export class QuillEditComponent implements OnInit {
 
   Quill;
 
-  // Next node inerted will get id = latestId + 1 
+  // Next node inerted will get id = latestId + 1
   latestId: number;
 
-  // The jsQuill-Delta object 
+  // The jsQuill-Delta object
   contents: Delta;
 
   html: string;

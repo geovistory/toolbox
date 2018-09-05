@@ -23,6 +23,7 @@ export interface ISourceListState {
  */
 export interface ISourceSearchHitState {
     label: string,
+    version: number,
     id: number
 }
 
@@ -34,5 +35,11 @@ export interface ISourceDetailState {
     edit?: InfDigitalObject;
     annotate?: InfDigitalObject;
     annotationPanel?: IAnnotationPanelState;
+    versionList?: IVersion[];
 }
 
+export interface IVersion {
+    entityVersion: number; // entity_version
+    pkEntityVersionConcat: string; // pk_entity_version_concat
+    pkEntity: number; // pk_entity
+}

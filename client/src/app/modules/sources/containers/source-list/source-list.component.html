@@ -63,7 +63,7 @@
 -->
 
 <div *ngIf="(edit$ | async)" class="gv-flex-grow-1 d-flex flex-column">
-  <gv-source-detail (close)="close()" (onSave)="save($event)" [path]="editPath" class="gv-flex-grow-1 d-flex flex-column"></gv-source-detail>
+  <gv-source-detail (close)="close()" (onSave)="save($event)" (versionChanged)="changeVersion($event)" [path]="editPath" class="gv-flex-grow-1 d-flex flex-column"></gv-source-detail>
 </div>
 
 <!-- ********************** Remove Source *************************** 

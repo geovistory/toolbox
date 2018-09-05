@@ -7,11 +7,13 @@ import { QuillDoc } from 'app/modules/quill';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import * as Delta from 'quill-delta/lib/delta';
 import { indexBy } from 'ramda';
-import { Observable, Subscription } from 'rxjs';
-import { ISourceDetailState } from '../..';
+import { Observable, Subscription, Subject } from 'rxjs';
+import { ISourceDetailState, IVersion } from '../..';
 import { mentionedEntityKey } from '../../../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 import { SourceDetailActions } from './source-detail.actions';
 import { sourceDetailReducer } from './source-detail.reducer';
+import { RootEpics } from 'app/core/store/epics';
+import { SourceDetailApiEpics } from './source-detail.epics';
 
 /**
  * A Container to show and edit the details of a source
@@ -52,7 +54,7 @@ import { sourceDetailReducer } from './source-detail.reducer';
  *   passing path to store 'annotationPanel' via Input
  *
  */
-@AutoUnsubscribe()
+@AutoUnsubscribe({ blackList: ['destroy$'] })
 @WithSubStore({
   basePathMethodName: 'getBasePath',
   localReducer: sourceDetailReducer
@@ -73,21 +75,26 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
 
   @Output() close: EventEmitter<void> = new EventEmitter();
   @Output() onSave: EventEmitter<InfDigitalObject> = new EventEmitter();
+  @Output() versionChanged: EventEmitter<IVersion> = new EventEmitter();
 
   @select() label$: Observable<boolean>;
-  @select() view$: Observable<boolean>;
+  @select() view$: Observable<InfDigitalObject>;
   @select() edit$: Observable<InfDigitalObject>;
   @select(['annotationPanel', 'edit', 'selectingSegment']) selectingSegment$: Observable<InfDigitalObject>;
   @select() annotate$: Observable<InfDigitalObject>;
   @select() annotationPanel$: Observable<IAnnotationPanelState>;
+  @select() versionList$: Observable<IVersion[]>;
 
   annotationPanelPath: string[];
   annotatedNodes;
   annotationPanel: IAnnotationPanelState;
   digitalObject: InfDigitalObject; // emitted on save
   subs: Subscription[] = []
+  destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
+    protected rootEpics: RootEpics,
+    private epics: SourceDetailApiEpics,
     private actions: SourceDetailActions,
     private digtObjApi: InfDigitalObjectApi,
     private ngRedux: NgRedux<IAppState>
@@ -96,9 +103,12 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
   getBasePath() { return this.path }
 
   ngOnInit() {
-    // TODO init annotations
+
+    this.rootEpics.addEpic(this.epics.createEpics(this));
 
     this.initAnnotations();
+
+    this.initVersions();
 
     this.annotationPanelPath = [...this.path, 'annotationPanel'];
 
@@ -114,16 +124,26 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
 
   }
   ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
     this.subs.forEach(sub => sub.unsubscribe())
   }
 
 
   /**
    * Start Edit Digital Object
-   * - dispatches action that sets 'editDigitalObject' true
+   * - searches for the latest id of the latest version
    */
   @dispatch() startEdit() {
     return this.actions.startEdit()
+  }
+
+  /**
+   * Start Edit Digital Object
+   * - dispatches action that sets 'editDigitalObject' true
+   */
+  @dispatch() editStarted(latestId: number) {
+    return this.actions.editStarted(latestId)
   }
 
   /**
@@ -197,6 +217,20 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
     return this.actions.onQuillDocChange(quillDoc)
   }
 
+  /**
+   * called on init. triggers epic to load version list.
+   */
+  @dispatch() initVersions() {
+    return this.actions.startLoadingVersionList();
+  }
+
+  /**
+ * called on init. triggers epic to load version list.
+ */
+  @dispatch() versionListLoaded(versionList: IVersion[]) {
+    return this.actions.versionListLoaded(versionList);
+  }
+
   initAnnotations() {
     const s = this.ngRedux.getState();
     const pkProject = s.activeProject.pk_project;
@@ -252,5 +286,12 @@ export class SourceDetailComponent implements OnInit, OnDestroy {
 
         }))
     }
+  }
+
+  /**
+   * called upon changing of version by user
+   */
+  versionChange(entitVersion) {
+    this.versionChanged.emit(entitVersion)
   }
 }
