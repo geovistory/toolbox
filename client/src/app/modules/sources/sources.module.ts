@@ -15,6 +15,8 @@ import { SourceDetailActions } from './containers/source-detail/source-detail.ac
 import { AnnotationPanelActions } from '../annotation/containers/annotation-panel/annotation-panel.actions';
 import { AnnotationCtrlActions } from '../annotation/containers/annotation-ctrl/annotation-ctrl.actions';
 import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
+import { SourceDetailApiEpics } from './containers/source-detail/source-detail.epics';
+import { VersionPickerComponent } from './components/version-picker/version-picker.component';
 
 @NgModule({
   imports: [
@@ -25,9 +27,10 @@ import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-e
     AnnotationModule,
     QuillModule,
   ],
-  providers:[
+  providers: [
     SourceListActions,
     SourceDetailActions,
+    SourceDetailApiEpics,
     AnnotationPanelActions,
     AnnotationCtrlActions,
     MentionedEntityCtrlActions
@@ -37,6 +40,7 @@ import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-e
     SourceCreateFormComponent,
     SourceListComponent,
     SourceDetailComponent,
+    VersionPickerComponent,
   ]
 })
 export class SourcesModule { }

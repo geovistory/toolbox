@@ -116,9 +116,11 @@ export class TimelineComponent extends TimeLineApiActions implements OnInit, OnC
 
   }
 
-  ngOnChanges() {
-    this.data = this.data ? this.data : { rows: [] };
-    this.initTimeline()
+  ngOnChanges(simpleChanges) {
+    if (simpleChanges['data']) {
+      this.data = this.data ? this.data : { rows: [] };
+      this.initTimeline()
+    }
   }
 
 

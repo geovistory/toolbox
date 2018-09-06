@@ -95,7 +95,7 @@ module.exports = function (InfEntity) {
   /**
    * Finds or creates an InfPersistentItem or InfTemporalEntity.
    * 
-   * The data object is relevant for finding or creating an entity. 
+   * The pk_entity is relevant for finding or creating an entity. 
    * - Provide no pk_entity to create a new record.
    * - Provide a pk_entity to find a record. If no record is found, an error is thrown. 
    * 

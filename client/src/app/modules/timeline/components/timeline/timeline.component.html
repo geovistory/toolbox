@@ -20,7 +20,7 @@
 
           <!-- xAxis fixed top-->
           <g class="x-axis-julian" [xAxisVisual]="timeline.xAxis"></g>
-          <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGreg" mask="url(#maskHeaderAxis)"></g>
+          <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGreg"></g>
 
           <!-- Rectangle at top left to cover label -->
           <svg:rect class="cover-rect" [attr.width]="timeline.xAxis.marginLeft-5" [attr.height]="_options.headerHeight" [attr.transform]="'translate(5,0)'"></svg:rect>
@@ -66,8 +66,8 @@
           (onDragEnd)="onDragEnd()">
 
           <!-- xAxis ticks on rows-->
-          <g class="x-axis-julian" [xAxisVisual]="timeline.xAxisTicks"></g>
           <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGregTicks"></g>
+          <g class="x-axis-julian" [xAxisVisual]="timeline.xAxisTicks"></g>
 
           <!-- line separating labels from existence time -->
           <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft" [attr.y2]="20"

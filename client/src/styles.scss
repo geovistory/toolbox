@@ -102,6 +102,10 @@ $gv-color-selected: #00ffff;
     font-size: $font-size-sm;
 }
 
+.font-normal {
+    font-size: $font-size-base;
+}
+
 .gv-highlight {
     color: theme-color("success");
     font-weight: 600;
