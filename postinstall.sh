@@ -30,29 +30,18 @@ then
   echo 'staging_db_url='$staging_db_url
   echo 'review_db_url='$review_db_url
 
+
   echo ''
   echo '             ================ Step 2 ================'
-  echo 'reset the database called '$DATABASE_URL' of app '$HEROKU_APP_NAME' (if exists)'
-  echo ''
+  echo 'dumping staging and use it to restore review over the pipe using this cmds:'
+  echo 'pg_dump -Fc $GEOV_STAG_DATABASE_URL > dumpfile'
+  pg_dump  -Fc $GEOV_STAG_DATABASE_URL > dumpfile;
 
-  heroku pg:reset --app $HEROKU_APP_NAME --confirm
+  echo 'pg_restore --no-owner  --clean -d $DATABASE_URL dumpfile;'
+  pg_restore --no-owner  --clean -d $DATABASE_URL dumpfile;
 
-  # delete (if exists) the database called like $DATABASE_URL
-  # (e.g. 'de8ucdfdgv0slb')
-
-  echo ''
-  echo '             ================ Step 3 ================'
-  echo 'dumping staging and use it to restore review over the pipe using this cmd:'
-  echo 'pg_dump -h host1 dbname | psql -h host2 dbname'
-
-  pg_dump $staging_db_url | psql $review_db_url -v ON_ERROR_STOP=on
-
-  if [ $? -eq 0 ]; then
-    echo Success! The review database is restored from staging
-  else
-    echo SQL command failed
-    exit 1
-  fi
+  echo 'rm -f dumpfile'
+  rm -f dumpfile
 
   fi
 
