@@ -1,6 +1,7 @@
 {
   "name": "geovistory",
   "scripts": {
+    "posto": "bash postdeploy.sh"
   },
   "env": {
     "DB_ENV": "review",
