@@ -7,7 +7,7 @@ echo ''
 # if $DB_ENV = review and the recreation process is not skipped
 
 # set skipDump to true if you want to skip the recreation process
-skipDump=false
+skipDump=true
 echo 'skipDump is: '$skipDump
 
 if [ $DB_ENV = 'review' -a $skipDump = false ]
@@ -33,7 +33,7 @@ then
 
   echo ''
   echo '             ================ Step 2 ================'
-  echo 'dumping staging and use it to restore review over the pipe using this cmds:'
+  echo 'dumping staging and use it to restore review using this cmds:'
   echo 'pg_dump -Fc $GEOV_STAG_DATABASE_URL > dumpfile'
   pg_dump  -Fc $GEOV_STAG_DATABASE_URL > dumpfile;
 
