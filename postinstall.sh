@@ -63,7 +63,7 @@ echo ''
 echo ''
 echo '===================== Build angular app ========================='
 cd ./client
-# npm install && ng build --prod --verbose
+npm install && ng build --prod --verbose
 echo ''
 echo ''
 
