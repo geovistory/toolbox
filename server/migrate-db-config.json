@@ -19,14 +19,18 @@
   },
   "staging": {
     "driver": "pg",
-    "ENV": "DATABASE_URL",
+    "url": {
+      "ENV": "DATABASE_URL"
+    },
     "addIfNotExists": {
       "ssl": true
     }
   },
   "production": {
     "driver": "pg",
-    "ENV": "DATABASE_URL",
+    "url": {
+      "ENV": "DATABASE_URL"
+    },
     "addIfNotExists": {
       "ssl": true
     }

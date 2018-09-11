@@ -6,11 +6,8 @@ echo ''
 
 # if $DB_ENV = review and the recreation process is not skipped
 
-# set skipDump to true if you want to skip the recreation process
-skipDump=true
-echo 'skipDump is: '$skipDump
 
-if [ $DB_ENV = 'review' -a $skipDump = false ]
+if [ $DB_ENV = 'review' ]
 then
   echo '================ Recreate database for review app ================'
   echo ''
