@@ -11,9 +11,6 @@
     "ENV": "DATABASE_URL",
     "addIfNotExists": {
       "ssl": true
-    },
-    "overwrite": {
-      "native": true
     }
   },
   "staging": {
@@ -21,9 +18,6 @@
     "ENV": "DATABASE_URL",
     "addIfNotExists": {
       "ssl": true
-    },
-    "overwrite": {
-      "native": true
     }
   },
   "production": {
@@ -31,9 +25,6 @@
     "ENV": "DATABASE_URL",
     "addIfNotExists": {
       "ssl": true
-    },
-    "overwrite": {
-      "native": true
     }
   }
 }
