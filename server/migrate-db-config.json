@@ -10,7 +10,9 @@
   },
   "review": {
     "driver": "pg",
-    "ENV": "DATABASE_URL",
+    "url": {
+      "ENV": "DATABASE_URL"
+    },
     "addIfNotExists": {
       "sslmode": "require"
     },
