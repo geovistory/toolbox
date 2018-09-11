@@ -10,7 +10,7 @@
   },
   "review": {
     "driver": "pg",
-    "ENV": "GEOV_STAG_DATABASE_URL",
+    "ENV": "DATABASE_URL",
     "addIfNotExists": {
       "sslmode": "require"
     },
