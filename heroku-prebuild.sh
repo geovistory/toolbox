@@ -31,10 +31,10 @@ then
   echo ''
   echo '             ================ Step 2 ================'
   echo 'dumping staging and use it to restore review using this cmds:'
-  echo 'pg_dump -Fc $GEOV_STAG_DATABASE_URL > dumpfile'
+  echo 'time pg_dump -Fc $GEOV_STAG_DATABASE_URL > dumpfile'
   time pg_dump  -Fc $GEOV_STAG_DATABASE_URL > dumpfile;
 
-  echo 'pg_restore --no-owner  --clean -d $DATABASE_URL dumpfile;'
+  echo 'time pg_restore --no-owner  --clean -d $DATABASE_URL dumpfile;'
   time pg_restore --no-owner  --clean -d $DATABASE_URL dumpfile;
 
   echo 'rm -f dumpfile'
