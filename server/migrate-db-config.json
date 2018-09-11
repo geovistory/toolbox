@@ -18,7 +18,7 @@
   },
   "staging": {
     "driver": "pg",
-    "ENV": "GEOV_STAG_DATABASE_URL",
+    "ENV": "DATABASE_URL",
     "addIfNotExists": {
       "ssl": true
     },
@@ -28,7 +28,7 @@
   },
   "production": {
     "driver": "pg",
-    "ENV": "GEOV_PROD_DATABASE_URL",
+    "ENV": "DATABASE_URL",
     "addIfNotExists": {
       "ssl": true
     },
@@ -36,5 +36,4 @@
       "native": true
     }
   }
-
 }
