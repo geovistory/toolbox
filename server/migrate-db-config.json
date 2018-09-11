@@ -14,10 +14,7 @@
       "ENV": "DATABASE_URL"
     },
     "addIfNotExists": {
-      "sslmode": "require"
-    },
-    "overwrite": {
-      "native": true
+      "ssl": true
     }
   },
   "staging": {
