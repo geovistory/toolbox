@@ -203,8 +203,16 @@ exports.up = function (db, callback) {
     (151,'Begin of end'       , 'label.pl'),
     (72, 'At some time within', 'label.pl'),
     (152,'Begin of begin'     , 'label.pl'),
-    (153,'End of end'         , 'label.pl')
-  
+    (153,'End of end'         , 'label.pl'),
+
+
+    ------------------ Appellation for language ---------------------
+
+    (1112, 'Language', 'label.sg'),
+    (1112, 'Languages', 'label.pl'),
+    (1112, 'Name with this language', 'label_inversed.sg'),
+    (1112, 'Names with this language', 'label_inversed.pl')
+ 
   ;`;
   console.log(sql);
 

@@ -4,19 +4,7 @@
   },
   "env": {
     "DB_ENV": "review",
-    "GEOV_REV_DB_USER": {
-      "required": true
-    },
-    "GEOV_REV_DB_PASSWORD": {
-      "required": true
-    },
-    "GEOV_REV_DB_HOST": {
-      "required": true
-    },
-    "GEOV_REV_DB_PORT": {
-      "required": true
-    },
-    "GEOV_REV_DB_SSL": {
+    "GEOV_STAG_DATABASE_URL": {
       "required": true
     },
     "HEROKU_APP_NAME": {
@@ -26,7 +14,12 @@
   "formation": {
   },
   "addons": [
-
+    {
+      "plan": "heroku-postgresql:hobby-basic",
+      "options": {
+        "version": "10"
+      }
+    }
   ],
   "buildpacks": [
     {

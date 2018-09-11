@@ -1,5 +1,7 @@
 {
-  "defaultEnv": {"ENV": "DB_ENV"},
+  "defaultEnv": {
+    "ENV": "DB_ENV"
+  },
   "development": {
     "driver": "pg",
     "url": {
@@ -8,24 +10,29 @@
   },
   "review": {
     "driver": "pg",
-    "user": {"ENV": "GEOV_REV_DB_USER"},
-    "password": {"ENV": "GEOV_REV_DB_PASSWORD"},
-    "host": {"ENV": "GEOV_REV_DB_HOST"},
-    "port": {"ENV": "GEOV_REV_DB_PORT"},
-    "database": {"ENV": "HEROKU_APP_NAME"},
-    "ssl": {"ENV": "GEOV_REV_DB_SSL"}
+    "url": {
+      "ENV": "DATABASE_URL"
+    },
+    "addIfNotExists": {
+      "ssl": true
+    }
   },
   "staging": {
     "driver": "pg",
     "url": {
-      "ENV": "GEOV_STAG_DATABASE_URL"
+      "ENV": "DATABASE_URL"
+    },
+    "addIfNotExists": {
+      "ssl": true
     }
   },
   "production": {
     "driver": "pg",
     "url": {
-      "ENV": "GEOV_PROD_DATABASE_URL"
+      "ENV": "DATABASE_URL"
+    },
+    "addIfNotExists": {
+      "ssl": true
     }
   }
-
 }

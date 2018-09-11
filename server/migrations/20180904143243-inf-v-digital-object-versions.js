@@ -88,12 +88,12 @@ exports.down = function (db, callback) {
   const sql = `
   -- remove entity_version column on table information.digital_object
   -------------------------------------------------------------------
-  DROP VIEW IF EXISTS information.v_digital_object_version;
+  DROP VIEW IF EXISTS information.v_digital_object_version;
 
   
   -- remove triggers for entity_version key
   -------------------------------------------------------------------
-  DROP TRIGGER IF EXISTS on_insert ON information.v_digital_object_version;
+  DROP TRIGGER IF EXISTS on_insert ON information.v_digital_object_version;
   DROP FUNCTION information.v_digital_object_version_insert();
 
   `
