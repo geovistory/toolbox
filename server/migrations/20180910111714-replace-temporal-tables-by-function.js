@@ -44,9 +44,7 @@ const tablesWithVersioningTrigger = [
   'information.chunk',
   'information.digital_object',
   'information.place',
-  'information.time_primitive',
-  'information.controlled_vocabulary',
-  'information.label',
+  'information.time_primitive'
 ]
 
 
