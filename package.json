@@ -8,7 +8,8 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "postinstall": "bash postinstall.sh",
+    "heroku-prebuild": "bash heroku-prebuild.sh",
+    "heroku-postbuild": "bash heroku-postbuild.sh",
     "start": "node .",
     "posttest": "npm run lint && nsp check",
     "build:sdk": "./node_modules/.bin/lb-sdk server/server client/src/app/core/sdk -d ng2web -i enabled",
