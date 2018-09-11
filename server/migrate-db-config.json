@@ -1,5 +1,7 @@
 {
-  "defaultEnv": {"ENV": "DB_ENV"},
+  "defaultEnv": {
+    "ENV": "DB_ENV"
+  },
   "development": {
     "driver": "pg",
     "url": {
@@ -10,7 +12,10 @@
     "driver": "pg",
     "ENV": "GEOV_STAG_DATABASE_URL",
     "addIfNotExists": {
-      "ssl": true
+      "sslmode": "require"
+    },
+    "overwrite": {
+      "native": true
     }
   },
   "staging": {
