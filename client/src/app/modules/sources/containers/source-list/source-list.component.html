@@ -4,47 +4,46 @@
  *      show a SourceSearchHitComponent for each entry in 'list' with open and remove buttons
  *      passing SourceSearchHitState via Input
 -->
-<div *ngIf="listVisible">
+<div *ngIf="listVisible" class="gv-flex-fh">
 
-  <div class="gv-edit-panel-header">
-
-    <section class="row">
-      <div class="col-md-8">
-        <h2>
-          <i class="gv-icon-source text-info"></i> Sources
-        </h2>
+  <!-- Header -->
+  <section class="m-3 mt-5 row">
+    <div class="col-md-8">
+      <h2>
+        <i class="gv-icon-source text-info"></i> Sources
+      </h2>
+    </div>
+    <div class="col-md-4">
+      <div class="btn-group float-right mt-2" role="group">
+        <button class="btn btn-link" (click)="startCreate()">
+          <i class="fa fa-plus"></i> Add a source
+        </button>
       </div>
-      <div class="col-md-4">
-        <div class="btn-group float-right mt-2" role="group">
+    </div>
+  </section>
 
-          <button class="btn btn-link" (click)="startCreate()">
-            <i class="fa fa-plus"></i> Add source
-          </button>
-        </div>
-      </div>
-    </section>
-  </div>
+  <!-- Search input -->
+  <form class="m-3" (ngSubmit)="searchStringChange()">
+    <div class="input-group">
+      <input type="text" name="searchString" class="form-control" aria-describedby="search" autocomplete="off"
+        placeholder="Search …" [(ngModel)]="searchString">
+      <span class="input-group-append">
+        <button class="btn btn-primary" type="submit">
+          <i class="fa fa-search"></i>
+        </button>
+      </span>
+    </div>
+  </form>
 
-  <div class="gv-edit-panel-body mt-5">
-
-    <div class="mb-5 d-flex justify-content-center" *ngFor="let entry of (list$|async) | keys">
-
-      <gv-source-search-hit [sourceSearchHit]="entry.value" class="gv-flex-grow-1"> </gv-source-search-hit>
-
-      <button class="btn btn-sm btn-primary" (click)="openSearchHit(entry.value)">Open</button>
+  <!-- Search results -->
+  <div class="gv-flex-fh m-3">
+    <div class="d-flex justify-content-center" *ngFor="let entry of (list$|async) | keys">
+      <gv-source-search-hit [sourceSearchHit]="entry.value" class="gv-flex-grow-1" (open)="openSearchHit(entry.value)">
+      </gv-source-search-hit>
       <button class="btn btn-sm btn-link" (click)="startRemove(entry.value)">Remove</button>
     </div>
-
-
-    <!-- <ul>
-      <li>
-        <a routerLink="../source/1" queryParamsHandling="merge">Source 1</a>
-      </li>
-      <li>
-        <a routerLink="../source/2" queryParamsHandling="merge">Source 2</a>
-      </li>
-    </ul> -->
   </div>
+
 
 </div>
 
@@ -63,7 +62,8 @@
 -->
 
 <div *ngIf="(edit$ | async)" class="gv-flex-grow-1 d-flex flex-column">
-  <gv-source-detail (close)="close()" (onSave)="save($event)" (versionChanged)="changeVersion($event)" [path]="editPath" class="gv-flex-grow-1 d-flex flex-column"></gv-source-detail>
+  <gv-source-detail (close)="close()" (onSave)="save($event)" (versionChanged)="changeVersion($event)" [path]="editPath"
+    class="gv-flex-grow-1 d-flex flex-column"></gv-source-detail>
 </div>
 
 <!-- ********************** Remove Source *************************** 

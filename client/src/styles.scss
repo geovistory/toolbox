@@ -111,6 +111,10 @@ $gv-color-selected: #00ffff;
     font-weight: 600;
 }
 
+.gv-scroll-y-auto {
+    overflow-y: auto;
+}
+
 .dropdown-toggle::after {
     display: none;
 }
@@ -160,6 +164,19 @@ $gv-color-selected: #00ffff;
 
 .gv-flex-shrink-0 {
     flex-shrink: 0;
+}
+
+// full height
+.gv-fh {
+    @extend .flex-column;
+    @extend .gv-flex-grow-1;
+    flex-basis: 0;
+}
+
+// full height and display flex
+.gv-flex-fh {
+    @extend .gv-fh;
+    @extend .d-flex;
 }
 
 .gv-search-hits-count {
@@ -302,6 +319,13 @@ gv-property {
 
 .ng-touched.ng-valid {
     @extend .is-valid;
+}
+
+// Pagination
+ngb-pagination {
+    .pagination {
+        margin: 0
+    }
 }
 
 /***************************

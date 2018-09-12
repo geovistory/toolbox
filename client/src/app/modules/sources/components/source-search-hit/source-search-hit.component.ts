@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ISourceSearchHitState } from '../..';
 
 
@@ -14,7 +14,9 @@ import { ISourceSearchHitState } from '../..';
 export class SourceSearchHitComponent implements OnInit {
 
   @Input() sourceSearchHit: ISourceSearchHitState;
-   
+
+  @Output() open = new EventEmitter<void>();
+
   constructor() { }
 
   ngOnInit() {
