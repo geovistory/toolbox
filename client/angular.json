@@ -27,6 +27,7 @@
             ],
             "styles": [
               "src/styles.scss",
+              "geovistory-font/dist/Geovistory.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/quill/dist/quill.snow.css",
               "node_modules/ng2-dnd/bundles/style.css",
@@ -85,6 +86,7 @@
             ],
             "styles": [
               "src/styles.scss",
+              "geovistory-font/dist/Geovistory.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/quill/dist/quill.snow.css",
               "node_modules/ng2-dnd/bundles/style.css",
@@ -160,6 +162,7 @@
             ],
             "styles": [
               "src/styles.scss",
+              "geovistory-font/dist/Geovistory.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/quill/dist/quill.snow.css"
             ],

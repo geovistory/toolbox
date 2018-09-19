@@ -48,7 +48,7 @@
 				border: 1px solid transparent;
 				.gv-icon {
 					height: 9rem;
-					font-size: 7.1rem;
+					font-size: 8rem;
 				}
 				h4 {
 					font-size: 1.25rem;
@@ -105,6 +105,7 @@
 			}
 			.gv-icon-circles {
 				color: theme-color("secondary");
+				font-size: 1.5rem;
 			}
 		}
 		#sources {
@@ -144,7 +145,8 @@
 			}
 			.gv-icon-circles {
 				color: theme-color("primary");
-				font-size: 1.75rem;
+				font-size: 2.5rem;
+				margin-top: -0.4rem;
 			}
 		}
 		#ku-to-vs.gv-active,

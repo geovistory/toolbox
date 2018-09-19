@@ -1,0 +1,42 @@
+@font-face {
+    font-family: "Geovistory";
+    src: url("./Geovistory.eot?a540d7c6830690df71203c13d6d1c76e?#iefix") format("embedded-opentype"),
+url("./Geovistory.woff2?a540d7c6830690df71203c13d6d1c76e") format("woff2"),
+url("./Geovistory.woff?a540d7c6830690df71203c13d6d1c76e") format("woff"),
+url("./Geovistory.ttf?a540d7c6830690df71203c13d6d1c76e") format("truetype"),
+url("./Geovistory.svg?a540d7c6830690df71203c13d6d1c76e#Geovistory") format("svg");
+}
+
+.gv-icon {
+    line-height: 1;
+}
+
+.gv-icon[class^="gv-icon-"]:before, .gv-icon[class*=" gv-icon-"]:before {
+    font-family: Geovistory !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.gv-icon-circles:before {
+    content: "\f101";
+}
+.gv-icon-entity:before {
+    content: "\f102";
+}
+.gv-icon-information-simple:before {
+    content: "\f103";
+}
+.gv-icon-information:before {
+    content: "\f104";
+}
+.gv-icon-presentation:before {
+    content: "\f105";
+}
+.gv-icon-source:before {
+    content: "\f106";
+}
