@@ -1,3 +1,33 @@
-<p>
-  {{sourceSearchHit.label}} <small class="text-muted">v{{sourceSearchHit.version}}</small>
-</p>
+<div class="gv-search-hit">
+
+  <div class="gv-search-hit-header">
+    <a href class="gv-passive-link" (click)="open.emit()">
+      {{sourceSearchHit.label}} <small class="text-muted">v{{sourceSearchHit.version}}</small>
+    </a>
+  </div>
+
+  <div class="d-flex">
+    <div class="gv-flex-grow-1">
+
+      <div class="gv-search-hit-body">
+        <span class="gv-search-hit-property">
+          <span class="text-muted">Bibliographic Reference:</span> Leu, Hans Jacob: Allgemeines helvetisches,
+          eydgenössisches, oder schweitzerisches Lexicon. Theil A, Bd. 1, Zürich 1747.
+        </span>
+      </div>
+
+      <div class="gv-search-hit-body">
+        <span class="gv-search-hit-property">
+          <span class="text-muted">Category:</span> Book
+        </span>
+        <span class="gv-search-hit-property">
+          <span class="text-muted">Section:</span> 68
+        </span>
+        <span class="gv-search-hit-property">
+          <span class="text-muted">Tags:</span> Leu, Sonntag
+        </span>
+      </div>
+
+    </div>
+  </div>
+</div>

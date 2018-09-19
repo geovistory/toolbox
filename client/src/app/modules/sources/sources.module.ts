@@ -17,6 +17,7 @@ import { AnnotationCtrlActions } from '../annotation/containers/annotation-ctrl/
 import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 import { SourceDetailApiEpics } from './containers/source-detail/source-detail.epics';
 import { VersionPickerComponent } from './components/version-picker/version-picker.component';
+import { PassiveLinkModule } from 'app/shared';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { VersionPickerComponent } from './components/version-picker/version-pick
     KeysModule,
     AnnotationModule,
     QuillModule,
+    PassiveLinkModule
   ],
   providers: [
     SourceListActions,
