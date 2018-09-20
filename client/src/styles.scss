@@ -42,6 +42,7 @@ $font-size-xs: .68rem;
 @import "src/assets/scss/components/_version_modal";
 // Entity Add Modal
 @import "src/assets/scss/components/_appellation_label_editor";
+
 /**
 * Generic stuff
 */
@@ -54,6 +55,7 @@ body {
     min-width: 63rem;
     margin-top: 2rem;
 }
+
 
 button {
     cursor: pointer;
@@ -87,6 +89,25 @@ $value in $grays {
     .border-gray-#{$color} {
         border-color: $value !important;
     }
+}
+
+
+/**
+* Headings
+*/
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-weight: $font-weight-light;
+  color: $gray-700;
+}
+
+h4, h5, 
+ .h4, .h5{
+  color: $gray-800;
+}
+
+h6, .h6 {
+    color: $gray-700
 }
 
 // Custom Variables

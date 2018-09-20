@@ -1,0 +1,24 @@
+<gv-navbar>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
+    <li class="breadcrumb-item"><a routerLink="../../../">Your Projects</a></li>
+    <li class="breadcrumb-item"><a routerLink="../../">{{projectLabel}}</a></li>
+    <li class="breadcrumb-item">Project Profile</li>
+  </ol>
+</gv-navbar>
+<gv-project-settings>
+  <h2>Project Profile</h2>
+
+  <div>
+    <strong>Name</strong>
+    {{projectLabel}}
+  </div>
+  <div>
+    <strong>Description</strong>
+    {{project?.description}}
+  </div>
+  <div>
+    <strong>Default Language</strong>
+    {{project?.default_language_id}}
+  </div>
+</gv-project-settings>

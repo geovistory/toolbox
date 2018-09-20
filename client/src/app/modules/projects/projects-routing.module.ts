@@ -69,26 +69,20 @@ const routes: Routes = [
       },
       {
         path: 'settings',
-        component: ProjectSettingsComponent,
-        children: [
-          {
-            path: '',
-            redirectTo: 'profile',
-            pathMatch: 'full'
-          },
-          {
-            path: 'profile',
-            component: ProjectSettingsProfileComponent
-          },
-          {
-            path: 'collaborators',
-            component: ProjectSettingsCollaboratorsComponent
-          },
-          {
-            path: 'data',
-            component: ProjectSettingsDataComponent
-          }
-        ]
+        redirectTo: 'settings/profile',
+        pathMatch: 'full'
+      },
+      {
+        path: 'settings/profile',
+        component: ProjectSettingsProfileComponent
+      },
+      {
+        path: 'settings/collaborators',
+        component: ProjectSettingsCollaboratorsComponent
+      },
+      {
+        path: 'settings/data',
+        component: ProjectSettingsDataComponent
       }
     ]
   },

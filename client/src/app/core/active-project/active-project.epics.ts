@@ -3,14 +3,15 @@ import { FluxStandardAction } from 'flux-standard-action';
 import { sort } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
-import { combineLatest, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { combineLatest, Observable, of, pipe } from 'rxjs';
+import { switchMap, map, catchError, tap, startWith, mergeMap, mapTo } from 'rxjs/operators';
 import { propSetKeyFromFk } from '../../modules/information/information.helpers';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, ProjectApi } from '../sdk';
+import { ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, ProjectApi, Project } from '../sdk';
 import { U } from '../util/util';
-import { ActiveProjectActions } from './active-project.action';
+import { ActiveProjectActions, ActiveProjectAction } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 
 
 
@@ -20,20 +21,72 @@ export class ActiveProjectEpics {
     private uiContextApi: ComUiContextApi,
     private projectApi: ProjectApi,
     private actions: ActiveProjectActions,
+    private notificationActions: NotificationsAPIActions,
     private loadingBarActions: LoadingBarActions
   ) { }
 
   public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
     return combineEpics(
-      this.createLoadClassListEpic()
+      this.createLoadProjectEpic(),
+      this.createLoadClassListEpic(),
+      this.createLoadProjectUpdatedEpic()
     );
+  }
+
+  /**
+   * This epic listenes to an action that wants to load tha active project (by id)
+   * It loads the project info and
+   * - on loaded dispaches an action that reduces the project into the store
+   * - on fail dispaches an action that shows an error notification
+   */
+  private createLoadProjectEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
+    return (action$, store) => action$.pipe(
+
+      ofType(ActiveProjectActions.LOAD_PROJECT),
+      switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+            /**
+           * Emit the global action that activates the loading bar
+           */
+        globalStore.next(this.loadingBarActions.startLoading());
+
+        this.projectApi.find({
+          where: {
+            'pk_project': action.meta.pk_project
+          },
+          include: ['labels', 'default_language']
+        })
+          .subscribe(
+            data => {
+              globalStore.next(this.actions.activeProjectUpdated(data[0]))
+            },
+            error => {
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: { title: error }
+              }))
+            })
+      }))
+
+    )
+  }
+
+  /**
+  * This epic listenes to an action that is dispached when loading projcect succeeded
+  *
+  * It dispaches an action that completes the loading bar
+  */
+  private createLoadProjectUpdatedEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
+    return (action$, store) => action$.pipe(
+      ofType(ActiveProjectActions.ACTIVE_PROJECT_UPDATED),
+      mapTo(this.loadingBarActions.completeLoading())
+    )
   }
 
   private createLoadClassListEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
     return (action$, store) => action$.pipe(
 
       ofType(ActiveProjectActions.PROJECT_LOAD_CRM),
-      switchMap((action: FluxStandardAction<any, { pk_project: number }>) => new Observable<Action>((globalStore) => {
+      switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
         globalStore.next(this.loadingBarActions.startLoading());
 
 

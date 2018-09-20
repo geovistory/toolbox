@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { InfDigitalObjectApi, LoadingBarAction, InfDigitalObject } from 'app/core';
+import { InfDigitalObject, InfDigitalObjectApi, LoadingBarAction } from 'app/core';
 import { startsWith } from 'ramda';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
-import { switchMap, takeUntil, first } from 'rxjs/operators';
+import { first, switchMap, takeUntil } from 'rxjs/operators';
+import { IVersion } from '../../sources.models';
 import { SourceDetailAction, SourceDetailActions } from './source-detail.actions';
 import { SourceDetailComponent } from './source-detail.component';
-import { IVersion } from '../../sources.models';
 
 
 const ofSubstoreLevel = (path: string[]) => (action): boolean => {
@@ -24,8 +24,7 @@ const ofSubstoreLevel = (path: string[]) => (action): boolean => {
 @Injectable()
 export class SourceDetailApiEpics {
   constructor(
-    private digiObjApi: InfDigitalObjectApi,
-    private actions: SourceDetailActions
+    private digiObjApi: InfDigitalObjectApi
   ) { }
 
   public createEpics(c: SourceDetailComponent) {

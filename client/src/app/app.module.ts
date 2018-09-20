@@ -22,6 +22,7 @@ import { ProjectsModule } from './modules/projects/projects.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
 import { AngularCesiumModule } from './modules/gv-angular-cesium/angular-cesium-fork';
+import { NotificationsModule } from './core/notifications/notifications.module';
 
 registerLocaleData(localeDeCh);
 
@@ -41,6 +42,7 @@ registerLocaleData(localeDeCh);
     SlimLoadingBarModule.forRoot(),
     AngularCesiumModule.forRoot(),
     DndModule.forRoot(),
+    NotificationsModule,
     LoadingBarModule,
     BrowserModule,
     BrowserAnimationsModule,

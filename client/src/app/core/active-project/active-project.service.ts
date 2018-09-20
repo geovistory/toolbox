@@ -10,6 +10,7 @@ import { ProjectsActions } from '../../modules/projects/api/projects.actions';
 import { IProject } from '../../modules/projects/projects.model';
 import { ActiveProjectActions } from './active-project.action';
 import { DfhClass } from '../sdk';
+import { IAppState } from 'app/core';
 
 @Injectable()
 export class ActiveProjectService {
@@ -18,7 +19,7 @@ export class ActiveProjectService {
 
   constructor(
     private projectApi: ProjectApi,
-    private ngRedux: NgRedux<IProject>,
+    private ngRedux: NgRedux<IAppState>,
     private actions: ActiveProjectActions
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
@@ -36,9 +37,9 @@ export class ActiveProjectService {
   private getProject(id: number): void {
     this.projectApi.find({
       where: {
-        "pk_project": id
+        'pk_project': id
       },
-      include: ["labels", "default_language"]
+      include: ['labels', 'default_language']
     }).subscribe((projects: Project[]) => {
       this.project = projects[0];
       this.changeProjectEventEmitter.emit(this.project);
@@ -57,11 +58,23 @@ export class ActiveProjectService {
   setActiveProject(id): void {
     if (this.project && this.project.pk_project == id) {
       this.changeProjectEventEmitter.emit(this.project);
-    }
-    else {
+    } else {
       this.getProject(id);
       this.ngRedux.dispatch(this.actions.activeProjectLoadCrm(id))
     }
   }
 
+  /**
+   * Initialize the project in state, if the activeProject is not yet
+   * in state or if the pk_project of the activeProject in state
+   * is not the one provided
+   *
+   * @param id pk_project
+   */
+  initProject(id) {
+    const state = this.ngRedux.getState();
+    if (!state.activeProject || state.activeProject.pk_project != id) {
+      this.ngRedux.dispatch(this.actions.loadProject(id))
+    }
+  }
 }

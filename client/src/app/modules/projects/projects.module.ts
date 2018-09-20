@@ -17,6 +17,9 @@ import { ProjectsRoutingModule } from './projects-routing.module';
 import { NavbarModule, ProxyRouteModule } from 'app/shared';
 import { ProjectsActions } from './api/projects.actions';
 import { Information2Module } from '../information/information.module';
+import { ProjectSettingsDataAPIEpics } from './components/project-settings-data/api/project-settings-data.epics';
+import { ProjectSettingsDataAPIActions } from './components/project-settings-data/api/project-settings-data.actions';
+import { ClassItemComponent } from './components/class-item/class-item.component';
 
 @NgModule({
   imports: [
@@ -37,10 +40,13 @@ import { Information2Module } from '../information/information.module';
     ProjectSettingsComponent,
     ProjectSettingsCollaboratorsComponent,
     ProjectSettingsDataComponent,
-    ProjectSettingsProfileComponent
+    ProjectSettingsProfileComponent,
+    ClassItemComponent
   ],
   providers: [
-    ProjectsActions
+    ProjectsActions,
+    ProjectSettingsDataAPIEpics,
+    ProjectSettingsDataAPIActions
   ]
 })
 export class ProjectsModule { }

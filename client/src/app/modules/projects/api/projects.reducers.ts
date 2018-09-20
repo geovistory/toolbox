@@ -1,6 +1,6 @@
-import { IProjectList } from "../projects.model";
-import { ProjectsAction, ProjectsActions } from "./projects.actions";
-import { Project } from "app/core";
+import { IProjectList } from '../projects.model';
+import { ProjectsAction, ProjectsActions } from './projects.actions';
+import { Project } from 'app/core';
 
 const INITIAL_STATE: IProjectList = {
   records: []
@@ -9,7 +9,7 @@ const INITIAL_STATE: IProjectList = {
 const projectListReducer = (lastState: IProjectList = INITIAL_STATE, action: ProjectsAction): IProjectList => {
   switch (action.type) {
     case ProjectsActions.LOAD_PROJECTS_SUCCEEDED: return {
-      ...lastState, records: action.payload.map((record: Project) => { return { record: record } })
+      ...lastState, records: action.payload.map((record: Project) => ({ record: record }))
     };
   }
 

@@ -7,24 +7,36 @@ import { ProjectDetail, ProjectCrm } from './active-project.models';
 
 interface MetaData {
     pk_project: number
- };
+};
 type Payload = ProjectDetail;
 export type ActiveProjectAction = FluxStandardAction<Payload, MetaData>;
 
 
 @Injectable()
 export class ActiveProjectActions {
+    static LOAD_PROJECT = 'ActiveProject::LOAD_PROJECT';
+    static LOAD_PROJECT_FAILED = 'ActiveProject::LOAD_PROJECT_FAILED';
+    static ACTIVE_PROJECT_UPDATED = 'ActiveProject::ACTIVE_PROJECT_UPDATED';
 
-    static PROJECT_LOAD_CRM = 'PROJECT_LOAD_CRM';
-    static PROJECT_CRM_LOADED = 'PROJECT_CRM_LOADED';
-    static ACTIVE_PROJECT_UPDATED = 'ACTIVE_PROJECT_UPDATED';
+
+    static PROJECT_LOAD_CRM = 'ActiveProject::PROJECT_LOAD_CRM';
+    static PROJECT_CRM_LOADED = 'ActiveProject::PROJECT_CRM_LOADED';
 
 
+    loadProject(pk_project: number): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.LOAD_PROJECT,
+            payload: null,
+            meta: {
+                pk_project
+            }
+        }
+    }
 
     activeProjectLoadCrm(pk_project: number): ActiveProjectAction {
         return {
             type: ActiveProjectActions.PROJECT_LOAD_CRM,
-            payload:null,
+            payload: null,
             meta: {
                 pk_project
             },
