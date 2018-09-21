@@ -18,7 +18,7 @@ import { AccountActions } from '../../../modules/account/api/actions';
   providers: [
     AccountActions
   ],
-  exports:[
+  exports: [
     NavbarComponent
   ]
 })

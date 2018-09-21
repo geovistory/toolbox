@@ -2,10 +2,11 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ProjectSettingsDataI } from './project-settings-data.models';
+import { DfhClass } from 'app/core';
 
 type Payload = ProjectSettingsDataI;
 interface MetaData {
-  itemsArray?: any[]
+  itemsArray?: DfhClass[]
 };
 export type ProjectSettingsDataAPIAction = FluxStandardAction<Payload, MetaData>;
 

@@ -1,0 +1,9 @@
+div.collapsed {
+    flex: 1;
+    min-width: 0;
+    .truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
