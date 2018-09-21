@@ -64,12 +64,12 @@
       "foreignKey": "dfh_has_domain",
       "primaryKey": "dfh_pk_class"
     },
-    "ui_context_configs":{
+    "ui_context_configs": {
       "type": "hasMany",
       "model": "ComUiContextConfig",
       "foreignKey": "fk_class_for_property_set"
     },
-    "property_sets":{
+    "property_sets": {
       "type": "hasMany",
       "model": "ComPropertySet",
       "foreignKey": "fk_class_for_property_set",
@@ -120,7 +120,9 @@
       ],
       "returns": {
         "arg": "data",
-        "type": ["DfhClass"],
+        "type": [
+          "DfhClass"
+        ],
         "root": true
       },
       "description": "Get all classes that are selected by the profile of the specified primary-key.",
@@ -143,7 +145,9 @@
       ],
       "returns": {
         "arg": "data",
-        "type": ["DfhClass"],
+        "type": [
+          "DfhClass"
+        ],
         "root": true
       },
       "description": "Get all classes of persistent items that are selected and, if provided, filtered by the profile of the specified primary-key.",
@@ -171,7 +175,8 @@
           "http": {
             "source": "query"
           }
-        },  {
+        },
+        {
           "arg": "pk_project",
           "type": "number",
           "required": false,
@@ -183,7 +188,9 @@
       ],
       "returns": {
         "arg": "data",
-        "type": ["DfhClass"],
+        "type": [
+          "DfhClass"
+        ],
         "root": true
       },
       "description": "Get ingoing and outgoing properties and ui elements of class",

@@ -20,9 +20,13 @@ exports.up = function(db, callback) {
   (
     pk_entity integer primary key,
     fk_project integer references commons.project (pk_project),
-    fk_entity integer references data_for_history.entity (pk_entity)
+    fk_entity integer references data_for_history.entity (pk_entity),
+    is_in_project boolean
   )
   INHERITS (data_for_history.entity);
+
+  COMMENT ON TABLE data_for_history.proj_rel IS 'This table relates any child table of the data_for_history.entity to a project.';
+  COMMENT ON COLUMN data_for_history.proj_rel.is_in_project IS 'If true, the entity is (added / activated / visible) in the project, if false it is not in the project';
 
   CREATE TRIGGER creation_tmsp
       BEFORE INSERT

@@ -42,16 +42,16 @@
   },
   "routes:after": {
     "./middleware/cartodb-basemaps-proxy": {
-      "enabled": true,
       "paths": [
         "/cartodb-basemaps-proxy"
-      ]
+      ],
+      "enabled": true
     },
     "./middleware/aster-proxy": {
-      "enabled": true,
       "paths": [
         "/aster-proxy"
-      ]
+      ],
+      "enabled": true
     }
   },
   "files": {

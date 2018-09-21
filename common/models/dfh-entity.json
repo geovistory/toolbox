@@ -32,7 +32,14 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "proj_rels": {
+      "type": "hasMany",
+      "model": "DfhProjRel",
+      "primaryKey": "pk_entity",
+      "foreignKey": "fk_entity"
+    }
+  },
   "acls": [],
   "methods": {}
 }

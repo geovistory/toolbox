@@ -151,5 +151,9 @@
   "ComPropertySet": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "DfhProjRel": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }

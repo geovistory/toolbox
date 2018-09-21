@@ -9,6 +9,12 @@
       "table": "ui_context"
     }
   },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
   "properties": {
     "pk_entity": {
       "type": "number",
@@ -29,12 +35,6 @@
       "model": "ComUiContextConfig",
       "foreignKey": "fk_ui_context",
       "primaryKey": "pk_entity"
-    }
-  },
-  "mixins": {
-    "SetupRemoteMethods": {
-      "ignoreACL": false,
-      "disableAllExcept": []
     }
   },
   "acls": [

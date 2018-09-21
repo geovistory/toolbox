@@ -7,8 +7,8 @@
   },
   "properties": {
     "pk_entity": {
-      "id": true,
       "type": "number",
+      "id": true,
       "generated": true
     },
     "notes": {

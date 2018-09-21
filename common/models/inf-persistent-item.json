@@ -31,8 +31,8 @@
     "dfh_class": {
       "type": "belongsTo",
       "model": "DfhClass",
-      "primaryKey": "dfh_pk_class",
-      "foreignKey": "fk_class"
+      "foreignKey": "fk_class",
+      "primaryKey": "dfh_pk_class"
     }
   },
   "acls": [
@@ -55,6 +55,38 @@
     }
   ],
   "methods": {
+    "nestedObjectOfProject": {
+      "accepts": [
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Project id",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the persistent item (pk_entity)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Get e nested object of all information about the persistent item of the project.",
+      "http": {
+        "path": "/nested-object-of-project",
+        "verb": "get"
+      }
+    },
     "changePeItProjectRelation": {
       "accepts": [
         {
@@ -140,38 +172,6 @@
       "http": {
         "path": "/findOrCreate",
         "verb": "post"
-      }
-    },
-    "nestedObjectOfProject": {
-      "accepts": [
-        {
-          "arg": "projectId",
-          "type": "number",
-          "required": true,
-          "description": "Project id",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "pkEntity",
-          "type": "number",
-          "required": true,
-          "description": "Primary Key of the persistent item (pk_entity)",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": "InfPersistentItem",
-        "root": true
-      },
-      "description": "Get e nested object of all information about the persistent item of the project.",
-      "http": {
-        "path": "/nested-object-of-project",
-        "verb": "get"
       }
     },
     "nestedObjectOfRepo": {

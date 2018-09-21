@@ -133,7 +133,9 @@
       ],
       "returns": {
         "arg": "data",
-        "type": ["DfhProperty"],
+        "type": [
+          "DfhProperty"
+        ],
         "root": true
       },
       "description": "Get all properties that are enabled and not removed from project, with labels, text_properties, domain_class, range_class.",

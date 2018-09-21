@@ -1,0 +1,25 @@
+{
+  "name": "DfhProjRel",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "fk_entity": {
+      "type": "number",
+      "required": true
+    },
+    "fk_project": {
+      "type": "number",
+      "required": true
+    },
+    "is_in_project": {
+      "type": "boolean"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
