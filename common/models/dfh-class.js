@@ -12,6 +12,12 @@ module.exports = function (DfhClass) {
     443 // Built work Type
   ]
 
+  /**
+   * the pk of the technical profile
+   * used to exclude classes of that profile
+   */
+  const technicalProfilePk = 5;
+
   DfhClass.selectedPeItClassesOfProfile = function (dfh_pk_profile, cb) {
 
     const filter = {
@@ -221,6 +227,7 @@ module.exports = function (DfhClass) {
    *
    * This list excludes
    * - Inferred classes
+   * - Classes in the technical profile
    * 
    * Those relations are eager loaded for each class
    * - Text properties: used for displaying some class description
@@ -231,6 +238,7 @@ module.exports = function (DfhClass) {
    * 
    */
   DfhClass.projectSettingsClassList = function (pk_project, cb) {
+
 
     const filter = {
       /** 
@@ -259,7 +267,8 @@ module.exports = function (DfhClass) {
             "name": "class_profile_view",
             "joinType": "inner join",
             "where": [
-              "dfh_profile_association_type", "=", "selected",
+              "dfh_profile_association_type", "=", "selected", "and",
+              "dfh_fk_profile", "!=", technicalProfilePk
             ],
             "orderBy": [{
               "pk_entity": "asc"

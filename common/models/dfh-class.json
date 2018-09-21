@@ -205,7 +205,7 @@
         {
           "arg": "pk_project",
           "type": "number",
-          "required": false,
+          "required": true,
           "description": "The pk_project for whicht the list of classes is loaded.",
           "http": {
             "source": "query"

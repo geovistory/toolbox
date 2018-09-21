@@ -10,7 +10,7 @@ import { ProjectSettingsDataAPIActions } from './project-settings-data.actions';
 @Injectable()
 export class ProjectSettingsDataAPIEpics {
   constructor(
-    private classApi: DfhClassApi, // <- change the api
+    private classApi: DfhClassApi,
     private actions: ProjectSettingsDataAPIActions,
     private loadingBarActions: LoadingBarActions
   ) { }
@@ -38,7 +38,7 @@ export class ProjectSettingsDataAPIEpics {
           /**
            * Do some api call
            */
-          this.classApi.selectedClassesOfProfile(null) // <- change api call here
+          this.classApi.projectSettingsClassList(c.project.pk_project)
             /**
              * Subscribe to the api call
              */

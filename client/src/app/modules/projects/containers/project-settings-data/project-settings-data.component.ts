@@ -8,7 +8,7 @@ import { ProjectSettingsData, ClassItemI, DataUnitType } from './api/project-set
 import { ProjectSettingsDataAPIEpics } from './api/project-settings-data.epics';
 import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
 import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';
-import { map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { map, first, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { HighlightPipe } from 'app/shared/pipes/highlight/highlight.pipe';
 
 @WithSubStore({
@@ -73,6 +73,12 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     super();
     this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
     this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
+
+    // load the class list as soon as the pk_project is available
+    this.ngRedux.select<ProjectDetail>(['activeProject', 'pk_project']).takeUntil(this.destroy$).subscribe(pk => {
+      if (pk) this.load();
+    })
+
   }
 
   getBasePath = () => this.basePath;
@@ -82,8 +88,6 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
     this.initFilter();
-
-    this.load();
 
   }
 
@@ -108,25 +112,29 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     };
 
     combineLatest(this.debouncedText$, this.items$, this.dataUnitType$).subscribe((d) => {
-      const text = d[0];
-      const items = d[1].sort(sortFn);
-      const dataUnitType = d[2];
+      const text = d[0], items = d[1], dataUnitType = d[2];
 
-      this.filteredItems$.next(
-        (text === '' && dataUnitType === undefined) ? items :
-          items.filter(item => (
-            // filter for search term
-            item.scopeNote.toLowerCase().indexOf(text.toLowerCase()) > -1
-            // filter for dataUnitType
-            && (dataUnitType === undefined || item.dataUnitType === dataUnitType)
-          ))
-            // highlighting
-            .map((item) => ({
-              ...item,
-              title: this.highilghtPipe.transform(item.title, text),
-              scopeNote: this.highilghtPipe.transform(item.scopeNote, text)
-            }))
-      )
+      if (items && items.length) {
+
+        this.filteredItems$.next(
+          (text === '' && dataUnitType === undefined) ? items.sort(sortFn) :
+            items.filter(item => (
+              // filter for search term
+              item.scopeNote.toLowerCase().indexOf(text.toLowerCase()) > -1
+              // filter for dataUnitType
+              && (dataUnitType === undefined || item.dataUnitType === dataUnitType)
+            ))
+              // highlighting
+              .map((item) => ({
+                ...item,
+                title: this.highilghtPipe.transform(item.title, text),
+                scopeNote: this.highilghtPipe.transform(item.scopeNote, text)
+              }))
+              .sort(sortFn)
+        )
+      }
+
+
     })
 
   }
