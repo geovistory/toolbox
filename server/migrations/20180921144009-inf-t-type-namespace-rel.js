@@ -16,44 +16,43 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db, callback) {
   const sql = `
-  CREATE TABLE information.namespace
+  CREATE TABLE information.type_namespace_rel
   (
     pk_entity integer primary key,
-    fk_root_namespace integer references information.namespace (pk_entity),
-    fk_project integer references commons.project (pk_project),
-    standard_label varchar(500),
-    CONSTRAINT information_namespace_pk_entity_unique UNIQUE (pk_entity)
+    fk_persistent_item integer references information.persistent_item (pk_entity),
+    fk_namespace integer references information.namespace (pk_entity),
+    CONSTRAINT information_type_namespace_rel_pk_entity_unique UNIQUE (pk_entity)
   )
   INHERITS (information.entity);
 
-  COMMENT ON TABLE information.namespace IS 'This table stores namespaces of controlled vocabularies.';
-  COMMENT ON COLUMN information.namespace.fk_root_namespace IS 'References the root namespace. If null, the namespace is a root namespace';
+  COMMENT ON TABLE information.type_namespace_rel IS 'This table stores relation between instances of E55 Type and Namespaces.';
+  COMMENT ON COLUMN information.type_namespace_rel.fk_persistent_item IS 'References the pk_entity of the persistent_item table.';
 
   CREATE TRIGGER creation_tmsp
       BEFORE INSERT
-      ON information.namespace
+      ON information.type_namespace_rel
       FOR EACH ROW
       EXECUTE PROCEDURE commons.tmsp_creation();
 
   CREATE TRIGGER last_modification_tmsp
   BEFORE INSERT OR UPDATE
-      ON information.namespace
+      ON information.type_namespace_rel
       FOR EACH ROW
       EXECUTE PROCEDURE commons.tmsp_last_modification();
 
   CREATE TRIGGER insert_schema_table_name BEFORE INSERT
-    ON information.namespace FOR EACH ROW
+    ON information.type_namespace_rel FOR EACH ROW
     EXECUTE PROCEDURE commons.insert_schema_table_name();
 
 
   -- versioning
 
-  CREATE TABLE information.namespace_vt (LIKE information.namespace);
+  CREATE TABLE information.type_namespace_rel_vt (LIKE information.type_namespace_rel);
 
   CREATE TRIGGER versioning_trigger
-  BEFORE INSERT OR UPDATE OR DELETE ON information.namespace
+  BEFORE INSERT OR UPDATE OR DELETE ON information.type_namespace_rel
   FOR EACH ROW EXECUTE PROCEDURE versioning(
-  'sys_period', 'information.namespace_vt', true
+  'sys_period', 'information.type_namespace_rel_vt', true
   );
 
   `
@@ -63,8 +62,8 @@ exports.up = function(db, callback) {
 
 exports.down = function(db, callback) {
   const sql = `
-  DROP TABLE information.namespace CASCADE;
-  DROP TABLE information.namespace_vt;
+  DROP TABLE information.type_namespace_rel CASCADE;
+  DROP TABLE information.type_namespace_rel_vt;
   `
   db.runSql(sql, callback)
 };

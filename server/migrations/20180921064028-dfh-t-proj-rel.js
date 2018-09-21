@@ -20,8 +20,9 @@ exports.up = function(db, callback) {
   (
     pk_entity integer primary key,
     fk_project integer references commons.project (pk_project),
-    fk_entity integer,
+    fk_entity integer references data_for_history.class (pk_entity),
     is_in_project boolean,
+    CONSTRAINT data_for_history_proj_rel_pk_entity UNIQUE (pk_entity),
     CONSTRAINT proj_rel_unique UNIQUE (fk_entity, fk_project)
   )
   INHERITS (data_for_history.entity);

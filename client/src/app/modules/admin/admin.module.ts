@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { ClassUiContextComponent } from './components/class-ui-context/class-ui-context.component';
 import { ClassUiContextAPIActions } from './components/class-ui-context/api/class-ui-context.actions';
 import { ClassUiContextAPIEpics } from './components/class-ui-context/api/class-ui-context.epics';
+import { NamespaceListComponent } from './components/namespace-list/namespace-list.component';
 
 @NgModule({
   imports: [
@@ -36,6 +37,6 @@ import { ClassUiContextAPIEpics } from './components/class-ui-context/api/class-
     ClassUiContextAPIActions,
     ClassUiContextAPIEpics
   ],
-  declarations: [MainComponent, ClassComponent, ClassListComponent, ClassUiContextComponent]
+  declarations: [MainComponent, ClassComponent, ClassListComponent, ClassUiContextComponent, NamespaceListComponent]
 })
 export class AdminModule { }

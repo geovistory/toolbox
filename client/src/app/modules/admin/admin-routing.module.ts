@@ -4,6 +4,7 @@ import { MainComponent } from "./components/main/main.component";
 import { ClassListComponent } from "./components/class-list/class-list.component";
 import { ClassComponent } from "./components/class/class.component";
 import { ClassUiContextComponent } from "./components/class-ui-context/class-ui-context.component";
+import { NamespaceListComponent } from "./components/namespace-list/namespace-list.component";
 
 
 const routes: Routes = [
@@ -24,6 +25,10 @@ const routes: Routes = [
             component: ClassUiContextComponent,
           }
         ]
+      },
+      {
+        path: 'namespaces',
+        component: NamespaceListComponent
       }
     ]
   }
