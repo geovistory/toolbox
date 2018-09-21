@@ -3,9 +3,24 @@
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
-    "validateUpsert": true
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "data_for_history",
+      "table": "proj_rel"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
   },
   "properties": {
+    "pk_entity": {
+      "type": "number",
+      "id": true,
+      "required": true
+    },
     "fk_entity": {
       "type": "number",
       "required": true
@@ -20,6 +35,23 @@
   },
   "validations": [],
   "relations": {},
-  "acls": [],
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "create",
+        "patchAttributes",
+        "findById"
+      ]
+    }
+  ],
   "methods": {}
 }
