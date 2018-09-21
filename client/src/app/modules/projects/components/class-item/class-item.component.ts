@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ClassItemI } from '../../containers/project-settings-data/api/project-settings-data.models';
 
 @Component({
@@ -9,5 +9,11 @@ import { ClassItemI } from '../../containers/project-settings-data/api/project-s
 export class ClassItemComponent {
 
   @Input() cla: ClassItemI;
-  // @Input() highlightTerm: string;
+  @Output() enable = new EventEmitter<void>();
+  @Output() disable = new EventEmitter<void>();
+  @Output() configure = new EventEmitter<void>();
+
+  get enabled(): boolean {
+    return !this.cla.projRel ? false : this.cla.projRel.is_in_project;
+  }
 }

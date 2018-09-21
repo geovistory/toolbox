@@ -19,7 +19,7 @@
     "pk_entity": {
       "type": "number",
       "id": true,
-      "required": true
+      "generated": true
     },
     "fk_entity": {
       "type": "number",

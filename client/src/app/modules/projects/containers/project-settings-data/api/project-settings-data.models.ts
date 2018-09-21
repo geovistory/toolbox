@@ -1,18 +1,24 @@
+import { DfhProjRel } from 'app/core/sdk/models/DfhProjRel';
+import { DfhClassProfileView } from '../../../../../core';
+
 export type DataUnitType = 'teEnt' | 'peIt';
 
 export interface ClassItemI {
+    pkEntity: number;
     pkClass: string;
     title: string;
     profileLabels: string;
     profilePks: number[];
-    enabled: boolean;
+    projRel: DfhProjRel;
     dataUnitType: DataUnitType;
     scopeNote: string;
+    changingProjRel: boolean;
 }
 
 // Interface of this slice of store
 export interface ProjectSettingsDataI {
     items?: ClassItemI[];
+    profiles?: DfhClassProfileView[];
     loading?: boolean;
     error?: any;
 }
@@ -20,6 +26,7 @@ export interface ProjectSettingsDataI {
 // Class of this slice of store
 export class ProjectSettingsData implements ProjectSettingsDataI {
     items?: ClassItemI[];
+    profiles?: DfhClassProfileView[];
     loading?: boolean;
     error?: any;
 

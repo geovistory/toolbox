@@ -42,10 +42,10 @@
       </div>
       <div class="col">
         <div ngbDropdown class="d-block">
-          <button class="btn btn-outline-secondary btn-block" ngbDropdownToggle [innerHtml]="selectedType.label"></button>
+          <button class="btn btn-outline-secondary btn-block" ngbDropdownToggle [innerHtml]="selectedProfile.label"></button>
           <div ngbDropdownMenu>
-            <button class="dropdown-item" *ngFor="let type of typeOptions" (click)="dataUnitTypeChange(type)"
-              [innerHtml]="type.label"></button>
+            <button class="dropdown-item" *ngFor="let profile of profileOptions" (click)="dataUnitProfileChange(profile)"
+              [innerHtml]="profile.label"></button>
           </div>
         </div>
 
@@ -69,7 +69,8 @@
 
   <!-- Results -->
   <div class="gv-flex-fh mt-3 gv-scroll-y-auto" *ngIf="!loading">
-    <gv-class-item class="mb-3" *ngFor="let item of (filteredItems$ | async)" [cla]="item"></gv-class-item>
+    <gv-class-item class="mb-3" *ngFor="let item of (filteredItems$ | async)" [cla]="item" (enable)="enableClass(item)"
+      (disable)="disableClass(item)"></gv-class-item>
   </div>
 
 </gv-project-settings>

@@ -2,7 +2,7 @@ import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { SubstoreComponent } from 'app/core/models/substore-component';
 import { Subject, Observable, combineLatest, BehaviorSubject } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, ProjectDetail } from 'app/core';
+import { IAppState, ProjectDetail, DfhClassProfileView } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { ProjectSettingsData, ClassItemI, DataUnitType } from './api/project-settings-data.models';
 import { ProjectSettingsDataAPIEpics } from './api/project-settings-data.epics';
@@ -10,6 +10,7 @@ import { projectSettingsDataReducer } from './api/project-settings-data.reducer'
 import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';
 import { map, first, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { HighlightPipe } from 'app/shared/pipes/highlight/highlight.pipe';
+import { DfhProjRel } from '../../../../core/sdk/models/DfhProjRel';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -52,7 +53,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   selectedType: { value: any, label: string } = this.typeOptions[0];
   dataUnitType$ = new BehaviorSubject<DataUnitType>(undefined);
 
-  // Enabled Filter
+  // Status Filter
   statusOptions = [
     { value: undefined, label: 'All' },
     { value: true, label: 'Enabled Classes' },
@@ -60,6 +61,15 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   ]
   selectedStatus: { value: any, label: string } = this.statusOptions[0];
   status$ = new BehaviorSubject<boolean>(undefined);
+
+
+  // Profile Filter
+  profileOptions = [
+    { value: undefined, label: 'All' }
+  ]
+  selectedProfile: { value: any, label: string } = this.profileOptions[0];
+  profile$ = new BehaviorSubject<number>(undefined);
+
 
   project: ProjectDetail;
   projectLabel: string;
@@ -74,10 +84,6 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
     this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
 
-    // load the class list as soon as the pk_project is available
-    this.ngRedux.select<ProjectDetail>(['activeProject', 'pk_project']).takeUntil(this.destroy$).subscribe(pk => {
-      if (pk) this.load();
-    })
 
   }
 
@@ -87,11 +93,27 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     this.localStore = this.ngRedux.configureSubStore(this.basePath, projectSettingsDataReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
+    // load the class list as soon as the pk_project is available
+    this.ngRedux.select<ProjectDetail>(['activeProject', 'pk_project']).takeUntil(this.destroy$).subscribe(pk => {
+      if (pk) this.load();
+    })
+
+    // load the profile Options as soon as the profiles are available
+    this.ngRedux.select<DfhClassProfileView[]>(['activeProject', 'dataSettings', 'profiles']).takeUntil(this.destroy$).subscribe(profiles => {
+      if (profiles) {
+        this.profileOptions = [...this.profileOptions, ...profiles.map((p) => ({
+          value: p.dfh_fk_profile,
+          label: p.dfh_profile_label
+        }))]
+      }
+    })
+
     this.initFilter();
 
   }
 
   ngOnDestroy() {
+    this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
@@ -111,26 +133,30 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
       return 0;
     };
 
-    combineLatest(this.debouncedText$, this.items$, this.dataUnitType$).subscribe((d) => {
-      const text = d[0], items = d[1], dataUnitType = d[2];
+    combineLatest(this.debouncedText$, this.items$, this.dataUnitType$, this.status$, this.profile$).subscribe((d) => {
+      const text = d[0], items = d[1], dataUnitType = d[2], status = d[3], profile = d[4];
 
       if (items && items.length) {
 
         this.filteredItems$.next(
-          (text === '' && dataUnitType === undefined) ? items.sort(sortFn) :
+          (text === '' && dataUnitType === undefined && status === undefined && profile === undefined) ? items.sort(sortFn) :
             items.filter(item => (
               // filter for search term
-              item.scopeNote.toLowerCase().indexOf(text.toLowerCase()) > -1
+              (text === '' || item.scopeNote.toLowerCase().indexOf(text.toLowerCase()) > -1)
               // filter for dataUnitType
               && (dataUnitType === undefined || item.dataUnitType === dataUnitType)
+              // filter for status
+              && (status === undefined || status === (!item.projRel ? false : item.projRel.is_in_project))
+              // filter for profiles
+              && (profile === undefined || item.profilePks.indexOf(profile) > -1)
             ))
+              .sort(sortFn)
               // highlighting
               .map((item) => ({
                 ...item,
                 title: this.highilghtPipe.transform(item.title, text),
                 scopeNote: this.highilghtPipe.transform(item.scopeNote, text)
               }))
-              .sort(sortFn)
         )
       }
 
@@ -162,4 +188,39 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     this.status$.next(status.value)
   }
 
+  /**
+   * Called when user changes the profile filter
+   */
+  dataUnitProfileChange(profile) {
+    this.selectedProfile = profile;
+    this.profile$.next(profile.value)
+  }
+
+  /**
+   * Called when user enables class
+   */
+  enableClass(classItem: ClassItemI) {
+    const projRel = new DfhProjRel({
+      pk_entity: !classItem.projRel ? undefined : classItem.projRel.pk_entity,
+      fk_entity: classItem.pkEntity,
+      fk_project: this.project.pk_project,
+      is_in_project: true
+    })
+
+    this.changeClassProjRel(projRel);
+  }
+
+  /**
+   * Called when user disables class
+   */
+  disableClass(classItem: ClassItemI) {
+    const projRel = new DfhProjRel({
+      pk_entity: classItem.projRel.pk_entity,
+      fk_entity: classItem.pkEntity,
+      fk_project: this.project.pk_project,
+      is_in_project: false
+    })
+
+    this.changeClassProjRel(projRel);
+  }
 }
