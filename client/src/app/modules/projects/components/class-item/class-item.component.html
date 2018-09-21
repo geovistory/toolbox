@@ -28,7 +28,7 @@
 
     <!-- Buttons -->
     <div *ngIf="!cla.changingProjRel" class="d-flex w-100 mt-2 justify-content-end">
-      <button *ngIf="enabled" class="btn btn-sm btn-primary mr-2" (click)="configure.emit()">Configure...</button>
+      <button *ngIf="enabled" class="btn btn-sm btn-primary mr-2" (click)="customize.emit()">Customize...</button>
       <button *ngIf="!enabled" class="btn btn-sm btn-outline-secondary " (click)="enable.emit()">Enable</button>
       <button *ngIf="enabled" class="btn btn-sm btn-outline-secondary" (click)="disable.emit()">Disable</button>
     </div>

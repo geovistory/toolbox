@@ -3,12 +3,14 @@
     <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
     <li class="breadcrumb-item"><a routerLink="../../../">Your Projects</a></li>
     <li class="breadcrumb-item"><a routerLink="../../">{{projectLabel}}</a></li>
-    <li class="breadcrumb-item">Project Profile</li>
+    <li class="breadcrumb-item">Settings</li>
+    <li class="breadcrumb-item">Profile</li>
   </ol>
 </gv-navbar>
-<gv-project-settings>
-  <h2>Project Profile</h2>
 
+<gv-side-nav [projectLabel]="projectLabel" [levelsBelowSettings]="1">
+  <h2>Project Profile</h2>
+  
   <div>
     <strong>Name</strong>
     {{projectLabel}}
@@ -21,4 +23,4 @@
     <strong>Default Language</strong>
     {{project?.default_language_id}}
   </div>
-</gv-project-settings>
+</gv-side-nav>

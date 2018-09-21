@@ -23,6 +23,10 @@ import { ClassItemComponent } from './components/class-item/class-item.component
 import { KeysModule } from 'app/shared/pipes/keys.module';
 import { ReadMoreModule } from 'app/shared/components/read-more/read-more.module';
 import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
+import { ClassSettingsComponent } from './containers/class-settings/class-settings.component';
+import { ClassSettingsAPIActions } from './containers/class-settings/api/class-settings.actions';
+import { ClassSettingsAPIEpics } from './containers/class-settings/api/class-settings.epics';
+import { SideNavComponent } from './components/side-nav/side-nav.component';
 
 @NgModule({
   imports: [
@@ -47,12 +51,16 @@ import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
     ProjectSettingsCollaboratorsComponent,
     ProjectSettingsDataComponent,
     ProjectSettingsProfileComponent,
-    ClassItemComponent
+    ClassItemComponent,
+    ClassSettingsComponent,
+    SideNavComponent
   ],
   providers: [
     ProjectsActions,
     ProjectSettingsDataAPIEpics,
-    ProjectSettingsDataAPIActions
+    ProjectSettingsDataAPIActions,
+    ClassSettingsAPIActions,
+    ClassSettingsAPIEpics
   ]
 })
 export class ProjectsModule { }

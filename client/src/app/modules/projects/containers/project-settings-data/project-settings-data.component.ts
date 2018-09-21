@@ -11,6 +11,7 @@ import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actio
 import { map, first, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { HighlightPipe } from 'app/shared/pipes/highlight/highlight.pipe';
 import { DfhProjRel } from '../../../../core/sdk/models/DfhProjRel';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -78,7 +79,9 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     protected rootEpics: RootEpics,
     private epics: ProjectSettingsDataAPIEpics,
     protected ngRedux: NgRedux<IAppState>,
-    private highilghtPipe: HighlightPipe
+    private highilghtPipe: HighlightPipe,
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     super();
     this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
@@ -142,7 +145,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
           (text === '' && dataUnitType === undefined && status === undefined && profile === undefined) ? items.sort(sortFn) :
             items.filter(item => (
               // filter for search term
-              (text === '' || item.scopeNote.toLowerCase().indexOf(text.toLowerCase()) > -1)
+              (text === '' || item.scopeNote.toLowerCase().indexOf(text.toLowerCase()) > -1)
               // filter for dataUnitType
               && (dataUnitType === undefined || item.dataUnitType === dataUnitType)
               // filter for status
@@ -222,5 +225,12 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     })
 
     this.changeClassProjRel(projRel);
+  }
+
+  /**
+   * Called when user clicks on customize
+   */
+  customizeClass(classItem: ClassItemI) {
+    this.router.navigate([classItem.pkClass], { relativeTo: this.route })
   }
 }

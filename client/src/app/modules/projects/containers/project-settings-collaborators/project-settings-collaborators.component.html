@@ -3,9 +3,10 @@
         <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
         <li class="breadcrumb-item"><a routerLink="../../../">Your Projects</a></li>
         <li class="breadcrumb-item"><a routerLink="../../">{{projectLabel}}</a></li>
+        <li class="breadcrumb-item">Settings</li>
         <li class="breadcrumb-item">Collaborators</li>
     </ol>
 </gv-navbar>
-<gv-project-settings>
+<gv-side-nav [projectLabel]="projectLabel" [levelsBelowSettings]="1">
     <h2>Collaborators</h2>
-</gv-project-settings>
+</gv-side-nav>

@@ -10,6 +10,8 @@ import { ProjectListComponent } from './containers/project-list/project-list.com
 import { ProjectSettingsCollaboratorsComponent } from './containers/project-settings-collaborators/project-settings-collaborators.component';
 import { ProjectSettingsDataComponent } from './containers/project-settings-data/project-settings-data.component';
 import { ProjectSettingsProfileComponent } from './containers/project-settings-profile/project-settings-profile.component';
+import { ClassSettingsComponent } from './containers/class-settings/class-settings.component';
+import { ProjectSettingsComponent } from './containers/project-settings/project-settings.component';
 
 export function getInformation2Module() { return Information2Module };
 
@@ -45,7 +47,7 @@ const routes: Routes = [
               {
                 path: '',
                 loadChildren: '../information/information.module#Information2Module'
-                // line above instead of loadChildren: InformationModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116         
+                // line above instead of loadChildren: InformationModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116
               }
             ]
           },
@@ -64,21 +66,31 @@ const routes: Routes = [
       },
       {
         path: 'settings',
-        redirectTo: 'settings/profile',
-        pathMatch: 'full'
+        component: ProjectSettingsComponent,
+        children: [
+          {
+            path: '',
+            redirectTo: 'profile',
+            pathMatch: 'full',
+          },
+          {
+            path: 'profile',
+            component: ProjectSettingsProfileComponent
+          },
+          {
+            path: 'collaborators',
+            component: ProjectSettingsCollaboratorsComponent
+          },
+          {
+            path: 'classes',
+            component: ProjectSettingsDataComponent
+          },
+          {
+            path: 'classes/:id',
+            component: ClassSettingsComponent
+          }
+        ]
       },
-      {
-        path: 'settings/profile',
-        component: ProjectSettingsProfileComponent
-      },
-      {
-        path: 'settings/collaborators',
-        component: ProjectSettingsCollaboratorsComponent
-      },
-      {
-        path: 'settings/data',
-        component: ProjectSettingsDataComponent
-      }
     ]
   },
 ];

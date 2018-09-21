@@ -1,0 +1,55 @@
+<gv-navbar>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
+    <li class="breadcrumb-item"><a routerLink="../../../../">Your Projects</a></li>
+    <li class="breadcrumb-item"><a routerLink="../../../">{{projectLabel}}</a></li>
+    <li class="breadcrumb-item">Settings</li>
+    <li class="breadcrumb-item"><a routerLink="../">Classes</a></li>
+    <li class="breadcrumb-item">{{classLabel}}</li>
+
+  </ol>
+</gv-navbar>
+<gv-side-nav [projectLabel]="projectLabel" [levelsBelowSettings]="2">
+
+  <h1>
+    Class {{classLabel}}
+  </h1>
+
+  <h3 class="mt-4">
+    Controlled Vocabulary and Types
+  </h3>
+
+  <p>
+    A controlled vocabulary is a collection of types. For example: “Village” can be seen as a type of Geographical
+    Place. Customize which types of Geographical Places you can use in your project. Do so customizing your controlled
+    vocabulary [or by enabling a well-established controlled vocabulary provided by Geovistory].
+  </p>
+
+  <h6 class="mt-4">
+      Enabled controlled vocabulary
+  </h6>
+
+  <div class="card border-success">
+    <div class="card-body d-flex justify-content-between">
+      <div>
+        Custom vocabulary of project: {{projectLabel}}
+      </div>
+      <button class="btn btn-sm btn-primary">Customize...</button>
+    </div>
+  </div>
+
+  <h6 class="mt-4">
+      Disabled controlled vocabularies
+  </h6>
+
+  <div class="card">
+    <div class="card-body d-flex justify-content-between">
+      <div>
+        Custom vocabulary of project {{projectLabel}} <span class="text-info">well-established</span>
+      </div>
+      <button class="btn btn-sm btn-link">See details...</button>
+      <button class="btn btn-sm btn-link">Enable...</button>
+    </div>
+  </div>
+
+</gv-side-nav>

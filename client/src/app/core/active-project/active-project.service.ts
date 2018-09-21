@@ -1,16 +1,12 @@
-import { Injectable, EventEmitter } from '@angular/core';
-
-import { Project } from '../sdk/models/Project';
-import { LoopBackAuth } from '../sdk/services/core/auth.service';
-import { ProjectApi } from '../sdk/services/custom/Project';
+import { NgRedux } from '@angular-redux/store';
+import { EventEmitter, Injectable } from '@angular/core';
+import { IAppState } from 'app/core';
 import { environment } from '../../../environments/environment';
 import { LoopBackConfig } from '../sdk/lb.config';
-import { NgRedux } from '@angular-redux/store';
-import { ProjectsActions } from '../../modules/projects/api/projects.actions';
-import { IProject } from '../../modules/projects/projects.model';
+import { Project } from '../sdk/models/Project';
+import { ProjectApi } from '../sdk/services/custom/Project';
 import { ActiveProjectActions } from './active-project.action';
-import { DfhClass } from '../sdk';
-import { IAppState } from 'app/core';
+
 
 @Injectable()
 export class ActiveProjectService {
