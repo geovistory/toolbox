@@ -2,7 +2,7 @@ import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { SubstoreComponent } from 'app/core/models/substore-component';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState } from 'app/core';
+import { IAppState, DfhClass, ProjectDetail } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { Types } from './api/types.models';
 import { TypesAPIEpics } from './api/types.epics';
@@ -18,7 +18,7 @@ import { typesReducer } from './api/types.reducer';
   templateUrl: './types.component.html',
   styleUrls: ['./types.component.css']
 })
-export class TypesComponent  extends  TypesAPIActions  implements OnInit, OnDestroy, SubstoreComponent {
+export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy, SubstoreComponent {
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
@@ -27,18 +27,39 @@ export class TypesComponent  extends  TypesAPIActions  implements OnInit, OnDest
   localStore: ObservableStore<Types>;
 
   // path to the substore
-  @Input() basePath: string[];
-  
+  basePath: ['activeProject', 'classSettings', 'types'];
+
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
+
+  //  class
+  class: DfhClass;
+  classLabel: string;
+
+  // type class
+  typeClass: DfhClass;
+  typeClassLabel: string;
+
+  // active project
+  project: ProjectDetail;
+  projectLabel: string;
+
 
   constructor(
     protected rootEpics: RootEpics,
     private epics: TypesAPIEpics,
     protected ngRedux: NgRedux<IAppState>
   ) {
-    super()
-   }
+    super();
+
+    this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
+    this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
+    this.ngRedux.select<DfhClass>(['activeProject', 'classSettings', 'class']).takeUntil(this.destroy$).subscribe(c => {
+      this.class = c;
+      this.classLabel = c.dfh_standard_label;
+    })
+
+  }
 
   getBasePath = () => this.basePath;
 

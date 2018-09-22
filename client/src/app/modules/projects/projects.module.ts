@@ -28,6 +28,8 @@ import { ClassSettingsAPIActions } from './containers/class-settings/api/class-s
 import { ClassSettingsAPIEpics } from './containers/class-settings/api/class-settings.epics';
 import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { TypesComponent } from './containers/types/types.component';
+import { TypesAPIActions } from './containers/types/api/types.actions';
+import { TypesAPIEpics } from './containers/types/api/types.epics';
 
 @NgModule({
   imports: [
@@ -62,7 +64,9 @@ import { TypesComponent } from './containers/types/types.component';
     ProjectSettingsDataAPIEpics,
     ProjectSettingsDataAPIActions,
     ClassSettingsAPIActions,
-    ClassSettingsAPIEpics
+    ClassSettingsAPIEpics,
+    TypesAPIActions,
+    TypesAPIEpics
   ]
 })
 export class ProjectsModule { }

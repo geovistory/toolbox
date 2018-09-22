@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions } from 'app/core';
+import { LoadingBarActions, InfPersistentItemApi } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -10,7 +10,7 @@ import { TypesAPIActions, TypesAPIAction } from './types.actions';
 @Injectable()
 export class TypesAPIEpics {
   constructor(
-    private modelApi: any, // <- change the api
+    private peItApi: InfPersistentItemApi,
     private actions: TypesAPIActions,
     private loadingBarActions: LoadingBarActions
   ) { }
@@ -38,7 +38,7 @@ export class TypesAPIEpics {
           /**
            * Do some api call
            */
-          this.modelApi.selectedClassesOfProfile(null) // <- change api call here
+          this.peItApi.find(null) // <- change api call here
             /**
              * Subscribe to the api call
              */

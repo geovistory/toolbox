@@ -12,6 +12,7 @@ import { ProjectSettingsDataComponent } from './containers/project-settings-data
 import { ProjectSettingsProfileComponent } from './containers/project-settings-profile/project-settings-profile.component';
 import { ClassSettingsComponent } from './containers/class-settings/class-settings.component';
 import { ProjectSettingsComponent } from './containers/project-settings/project-settings.component';
+import { TypesComponent } from './containers/types/types.component';
 
 export function getInformation2Module() { return Information2Module };
 
@@ -88,6 +89,10 @@ const routes: Routes = [
           {
             path: 'classes/:id',
             component: ClassSettingsComponent
+          },
+          {
+            path: 'classes/:id/types',
+            component: TypesComponent
           }
         ]
       },
