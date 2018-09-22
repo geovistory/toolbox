@@ -159,5 +159,9 @@
   "InfNamespace": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "InfTypeNamespaceRel": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }
