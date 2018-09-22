@@ -2,9 +2,9 @@
 
 const Promise = require('bluebird');
 
-module.exports = function(InfPersistentItem) {
+module.exports = function (InfPersistentItem) {
 
-  InfPersistentItem.changePeItProjectRelation = function(projectId, isInProject, data, ctx) {
+  InfPersistentItem.changePeItProjectRelation = function (projectId, isInProject, data, ctx) {
     let requestedPeIt;
 
     if (ctx) {
@@ -17,7 +17,7 @@ module.exports = function(InfPersistentItem) {
       .then(resultingEpr => {
 
         // attatch the new epr to the peIt
-        if(requestedPeIt.entity_version_project_rels && resultingEpr){
+        if (requestedPeIt.entity_version_project_rels && resultingEpr) {
           requestedPeIt.entity_version_project_rels = [resultingEpr];
         }
 
@@ -32,10 +32,10 @@ module.exports = function(InfPersistentItem) {
           // returned together with all nested items
           return Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
 
-              // add role to project
-              return InfRole.changeRoleProjectRelation(projectId, isInProject, role);
+            // add role to project
+            return InfRole.changeRoleProjectRelation(projectId, isInProject, role);
 
-            })
+          })
             .then((roles) => {
 
               requestedPeIt.pi_roles = [];
@@ -64,7 +64,7 @@ module.exports = function(InfPersistentItem) {
   }
 
 
-  InfPersistentItem.findOrCreatePeIt = function(projectId, data, ctx) {
+  InfPersistentItem.findOrCreatePeIt = function (projectId, data, ctx) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
@@ -95,11 +95,11 @@ module.exports = function(InfPersistentItem) {
           // return the promise that the PeIt will be
           // returned together with all nested items
           return Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
-              // use the pk_entity from the created peIt to set the fk_entity of the role
-              role.fk_entity = resultingPeIt.pk_entity;
-              // find or create the teEnt and the role pointing to the teEnt
-              return InfRole.findOrCreateInfRole(projectId, role);
-            })
+            // use the pk_entity from the created peIt to set the fk_entity of the role
+            role.fk_entity = resultingPeIt.pk_entity;
+            // find or create the teEnt and the role pointing to the teEnt
+            return InfRole.findOrCreateInfRole(projectId, role);
+          })
             .then((roles) => {
 
               //attach the roles to peit.pi_roles
@@ -130,7 +130,7 @@ module.exports = function(InfPersistentItem) {
   }
 
 
-  InfPersistentItem.searchInProject = function(projectId, searchString, limit, page, cb) {
+  InfPersistentItem.searchInProject = function (projectId, searchString, limit, page, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -277,7 +277,7 @@ module.exports = function(InfPersistentItem) {
   };
 
 
-  InfPersistentItem.afterRemote('searchInProject', function(ctx, resultObjects, next) {
+  InfPersistentItem.afterRemote('searchInProject', function (ctx, resultObjects, next) {
 
     var totalCount = 0;
     if (resultObjects.length > 0) {
@@ -310,7 +310,7 @@ module.exports = function(InfPersistentItem) {
   })
 
 
-  InfPersistentItem.searchInRepo = function(searchString, limit, page, cb) {
+  InfPersistentItem.searchInRepo = function (searchString, limit, page, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -429,7 +429,7 @@ module.exports = function(InfPersistentItem) {
   };
 
 
-  InfPersistentItem.afterRemote('searchInRepo', function(ctx, resultObjects, next) {
+  InfPersistentItem.afterRemote('searchInRepo', function (ctx, resultObjects, next) {
 
     var totalCount = 0;
     if (resultObjects.length > 0) {
@@ -468,7 +468,7 @@ module.exports = function(InfPersistentItem) {
    * @param  {number} pkProject primary key of project
    * @param  {number} pkEntity  pk_entity of the persistent item
    */
-  InfPersistentItem.nestedObjectOfProject = function(projectId, pkEntity, cb) {
+  InfPersistentItem.nestedObjectOfProject = function (projectId, pkEntity, cb) {
 
     const innerJoinThisProject = {
       "$relation": {
@@ -567,7 +567,7 @@ module.exports = function(InfPersistentItem) {
   }
 
 
-  InfPersistentItem.nestedObjectOfRepo = function(pkEntity, cb) {
+  InfPersistentItem.nestedObjectOfRepo = function (pkEntity, cb) {
 
     const filter = {
       /** Select persistent item by pk_entity … */
@@ -658,5 +658,87 @@ module.exports = function(InfPersistentItem) {
   }
 
 
+
+  /**
+   * Query instances of E55 Type 
+   * 
+   * Where 
+   *	- types are related to the given namespace  
+   *	- types are in given project
+   *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class) 
+   *
+   * Eager loading
+   *  - TODO: The entity_associations of property "has broader term" used for hierarchy
+   *  - TODO: The labels of given language
+   * 
+   * @param pk_namespace
+   * @param pk_project
+   * @param pk_typed_class
+   */
+  InfPersistentItem.typesOfNamespaceClassAndProject = function (pk_namespace, pk_project, pk_typed_class, cb) {
+
+    const innerJoinThisProject = {
+      "$relation": {
+        "name": "entity_version_project_rels",
+        "joinType": "inner join",
+        "where": [
+          "fk_project", "=", pk_project,
+          "and", "is_in_project", "=", "true"
+        ]
+      }
+    };
+
+    const filter = {
+      "orderBy": [{
+        "pk_entity": "asc"
+      }],
+      "include": {
+        "type_namespace_rels": {
+          // select: false,
+          "$relation": {
+            "name": "type_namespace_rels",
+            "joinType": "inner join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }],
+            "namespace": {
+              // select: false,
+              "$relation": {
+                "name": "type_namespace_rels",
+                "joinType": "inner join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }],
+                where: ["pk_entity", "=", pk_namespace]
+              }
+            }
+          }
+        },
+        "entity_version_project_rels": innerJoinThisProject,
+        "dfh_class": {
+          // select: false,
+          "$relation": {
+            "name": "dfh_class",
+            "joinType": "inner join",
+            "orderBy": [
+              {
+                "pk_entity": "asc"
+              }
+            ],
+            "ingoing_properties": {
+              // select: false,
+              "$relation": {
+                "name": "ingoing_properties",
+                "joinType": "inner join",
+                where: ["dfh_fk_property_of_origin", "=", pk_typed_class]
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return InfPersistentItem.findComplex(filter, cb);
+  }
 
 };

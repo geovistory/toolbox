@@ -31,7 +31,14 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "namespace": {
+      "type": "belongsTo",
+      "model": "InfNamespace",
+      "foreignKey": "fk_namespace",
+      "primaryKey": "pk_entity"
+    }
+  },
   "acls": [],
   "methods": {}
 }
