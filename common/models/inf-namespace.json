@@ -1,0 +1,49 @@
+{
+  "name": "InfNamespace",
+  "base": "InfEntity",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "namespace"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "fk_root_namespace": {
+      "type": "number"
+    },
+    "fk_project": {
+      "type": "number",
+      "required": true
+    },
+    "standard_label": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find"
+      ]
+    }
+  ],
+  "methods": {}
+}

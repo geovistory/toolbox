@@ -2,10 +2,11 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { NamespaceListI } from './namespace-list.models';
+import { InfNamespace } from 'app/core/sdk/models/InfNamespace';
 
 type Payload = NamespaceListI;
 interface MetaData {
-  itemsArray?: any[]
+  namespaces?: InfNamespace[]
 };
 export type NamespaceListAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -15,6 +16,8 @@ export class NamespaceListAPIActions {
   static readonly LOAD_STARTED = 'NamespaceList::LOAD_STARTED';
   static readonly LOAD_SUCCEEDED = 'NamespaceList::LOAD_SUCCEEDED';
   static readonly LOAD_FAILED = 'NamespaceList::LOAD_FAILED';
+
+  static readonly DESTROY = 'NamespaceList::DESTROY';
 
   @dispatch()
   load = (): NamespaceListAPIAction => ({
@@ -29,12 +32,10 @@ export class NamespaceListAPIActions {
     payload: null,
   })
 
-  loadSucceeded = (itemsArray: any[]): NamespaceListAPIAction => ({
+  loadSucceeded = (namespaces: InfNamespace[]): NamespaceListAPIAction => ({
     type: NamespaceListAPIActions.LOAD_SUCCEEDED,
-    meta: {
-      itemsArray
-    },
-    payload: null
+    meta: null,
+    payload: { namespaces }
   })
 
   loadFailed = (error): NamespaceListAPIAction => ({
@@ -47,10 +48,10 @@ export class NamespaceListAPIActions {
   /*********************************************************************
   *  Method to distroy the slice of store
   *********************************************************************/
- @dispatch()
- destroy = (): ProjectSettingsDataAPIAction => ({
-   type: ProjectSettingsDataAPIActions.DESTROY,
-   meta: null,
-   payload: null
- })
+  @dispatch()
+  destroy = (): NamespaceListAPIAction => ({
+    type: NamespaceListAPIActions.DESTROY,
+    meta: null,
+    payload: null
+  })
 }

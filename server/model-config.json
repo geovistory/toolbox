@@ -155,5 +155,9 @@
   "DfhProjRel": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "InfNamespace": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }

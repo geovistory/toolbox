@@ -18,6 +18,8 @@ import { ClassUiContextComponent } from './components/class-ui-context/class-ui-
 import { ClassUiContextAPIActions } from './components/class-ui-context/api/class-ui-context.actions';
 import { ClassUiContextAPIEpics } from './components/class-ui-context/api/class-ui-context.epics';
 import { NamespaceListComponent } from './components/namespace-list/namespace-list.component';
+import { NamespaceListAPIActions } from './components/namespace-list/api/namespace-list.actions';
+import { NamespaceListAPIEpics } from './components/namespace-list/api/namespace-list.epics';
 
 @NgModule({
   imports: [
@@ -35,7 +37,9 @@ import { NamespaceListComponent } from './components/namespace-list/namespace-li
     ClassAPIActions,
     ClassAPIEpics,
     ClassUiContextAPIActions,
-    ClassUiContextAPIEpics
+    ClassUiContextAPIEpics,
+    NamespaceListAPIActions,
+    NamespaceListAPIEpics
   ],
   declarations: [MainComponent, ClassComponent, ClassListComponent, ClassUiContextComponent, NamespaceListComponent]
 })

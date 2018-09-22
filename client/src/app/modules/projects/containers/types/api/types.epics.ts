@@ -1,33 +1,32 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfNamespace } from 'app/core';
+import { LoadingBarActions } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
-import { NamespaceListComponent } from '../namespace-list.component';
-import { NamespaceListAPIActions, NamespaceListAPIAction } from './namespace-list.actions';
-import { InfNamespaceApi } from 'app/core/sdk/services/custom/InfNamespace';
+import { TypesComponent } from '../types.component';
+import { TypesAPIActions, TypesAPIAction } from './types.actions';
 
 @Injectable()
-export class NamespaceListAPIEpics {
+export class TypesAPIEpics {
   constructor(
-    private namespaceApi: InfNamespaceApi, // <- change the api
-    private actions: NamespaceListAPIActions,
+    private modelApi: any, // <- change the api
+    private actions: TypesAPIActions,
     private loadingBarActions: LoadingBarActions
   ) { }
 
-  public createEpics(c: NamespaceListComponent): Epic {
-    return combineEpics(this.createLoadNamespaceListEpic(c));
+  public createEpics(c: TypesComponent): Epic {
+    return combineEpics(this.createLoadTypesEpic(c));
   }
 
-  private createLoadNamespaceListEpic(c: NamespaceListComponent): Epic {
+  private createLoadTypesEpic(c: TypesComponent): Epic {
     return (action$, store) => {
       return action$.pipe(
         /**
          * Filter the actions that triggers this epic
          */
-        ofType(NamespaceListAPIActions.LOAD),
-        switchMap((action: NamespaceListAPIAction) => new Observable<FluxStandardAction<any>>((globalStore) => {
+        ofType(TypesAPIActions.LOAD),
+        switchMap((action: TypesAPIAction) => new Observable<FluxStandardAction<any>>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
            */
@@ -39,11 +38,11 @@ export class NamespaceListAPIEpics {
           /**
            * Do some api call
            */
-          this.namespaceApi.find() // <- change api call here
+          this.modelApi.selectedClassesOfProfile(null) // <- change api call here
             /**
              * Subscribe to the api call
              */
-            .subscribe((data: InfNamespace[]) => {
+            .subscribe((data) => {
               /**
                * Emit the global action that completes the loading bar
                */

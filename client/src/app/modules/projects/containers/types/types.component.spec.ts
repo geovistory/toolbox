@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NamespaceListComponent } from './namespace-list.component';
+import { TypesComponent } from './types.component';
 
-describe('NamespaceListComponent', () => {
-  let component: NamespaceListComponent;
-  let fixture: ComponentFixture<NamespaceListComponent>;
+describe('TypesComponent', () => {
+  let component: TypesComponent;
+  let fixture: ComponentFixture<TypesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NamespaceListComponent ]
+      declarations: [ TypesComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NamespaceListComponent);
+    fixture = TestBed.createComponent(TypesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

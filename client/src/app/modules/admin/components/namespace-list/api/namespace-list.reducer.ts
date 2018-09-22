@@ -13,23 +13,17 @@ export function namespaceListReducer(state: NamespaceList = INITIAL_STATE, a: Ac
     case NamespaceListAPIActions.LOAD_STARTED:
       return {
         ...state,
-        items: {},
-        loading: true,
-        error: null,
+        namespaces: []
       };
     case NamespaceListAPIActions.LOAD_SUCCEEDED:
       return {
         ...state,
-        items: indexBy(prop('pk_entity'), action.meta.itemsArray), // <- change index prop
-        loading: false,
-        error: null,
+        namespaces: action.payload.namespaces
       };
     case NamespaceListAPIActions.LOAD_FAILED:
       return {
         ...state,
-        items: {},
-        loading: false,
-        error: action.error,
+        namespaces: []
       };
 
 
@@ -37,7 +31,7 @@ export function namespaceListReducer(state: NamespaceList = INITIAL_STATE, a: Ac
     * Reducers called on destroy of component
     *****************************************************/
     case NamespaceListAPIActions.DESTROY:
-    return undefined;
+      return undefined;
   }
 
   return state;

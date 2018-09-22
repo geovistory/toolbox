@@ -11,18 +11,18 @@ import { ElasticInputModule } from 'angular2-elastic-input';
 import { ActiveProjectEpics } from 'app/core/active-project/active-project.epics';
 import { DndModule } from 'ng2-dnd';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ActiveAccountService, ActiveProjectService, AuthGuard, EntityEditorService, SDKBrowserModule } from './core';
 import { LoadingBarModule } from './core/loading-bar/loading-bar.module';
+import { NotificationsModule } from './core/notifications/notifications.module';
 import { StoreModule } from './core/store/module';
 import { AdminModule } from './modules/admin/admin.module';
+import { AngularCesiumModule } from './modules/gv-angular-cesium/angular-cesium-fork';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
-import { AngularCesiumModule } from './modules/gv-angular-cesium/angular-cesium-fork';
-import { NotificationsModule } from './core/notifications/notifications.module';
+
 
 registerLocaleData(localeDeCh);
 
@@ -31,7 +31,7 @@ registerLocaleData(localeDeCh);
 @NgModule({
   declarations: [
     AppComponent
-  ],
+    ],
   imports: [
     NgReduxRouterModule,
     NgReduxModule,

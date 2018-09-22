@@ -1,15 +1,13 @@
+import { InfNamespace } from 'app/core/sdk/models/InfNamespace';
+
 // Interface of this slice of store
 export interface NamespaceListI {
-    items?: {};
-    loading?: boolean;
-    error?: any;
+    namespaces?: InfNamespace[];
 }
 
 // Class of this slice of store
 export class NamespaceList implements NamespaceListI {
-    items?: {};
-    loading?: boolean;
-    error?: any;
+    namespaces?: InfNamespace[];
 
     constructor(data?: NamespaceListI) {
         Object.assign(this, data);

@@ -4,49 +4,47 @@ import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
 import { IAppState } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { NamespaceList } from './api/namespace-list.models';
-import { NamespaceListAPIEpics } from './api/namespace-list.epics';
-import { NamespaceListAPIActions } from './api/namespace-list.actions';
-import { namespaceListReducer } from './api/namespace-list.reducer';
-import { InfNamespace } from '../../../../core/sdk/models/InfNamespace';
+import { Types } from './api/types.models';
+import { TypesAPIEpics } from './api/types.epics';
+import { TypesAPIActions } from './api/types.actions';
+import { typesReducer } from './api/types.reducer';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
-  localReducer: namespaceListReducer
+  localReducer: typesReducer
 })
 @Component({
-  selector: 'gv-namespace-list',
-  templateUrl: './namespace-list.component.html',
-  styleUrls: ['./namespace-list.component.css']
+  selector: 'gv-types',
+  templateUrl: './types.component.html',
+  styleUrls: ['./types.component.css']
 })
-export class NamespaceListComponent extends NamespaceListAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+export class TypesComponent  extends  TypesAPIActions  implements OnInit, OnDestroy, SubstoreComponent {
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
   // local store of this component
-  localStore: ObservableStore<NamespaceList>;
+  localStore: ObservableStore<Types>;
 
   // path to the substore
-  basePath = ['admin', 'namespacesList'];
-
+  @Input() basePath: string[];
+  
   // select observables of substore properties
-  @select() namespaces$: Observable<InfNamespace[]>;
+  @select() loading$: Observable<boolean>;
 
   constructor(
     protected rootEpics: RootEpics,
-    private epics: NamespaceListAPIEpics,
+    private epics: TypesAPIEpics,
     protected ngRedux: NgRedux<IAppState>
   ) {
     super()
-  }
+   }
 
   getBasePath = () => this.basePath;
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, namespaceListReducer);
+    this.localStore = this.ngRedux.configureSubStore(this.basePath, typesReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
-    this.load()
   }
 
   ngOnDestroy() {

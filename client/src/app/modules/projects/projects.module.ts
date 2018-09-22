@@ -27,6 +27,7 @@ import { ClassSettingsComponent } from './containers/class-settings/class-settin
 import { ClassSettingsAPIActions } from './containers/class-settings/api/class-settings.actions';
 import { ClassSettingsAPIEpics } from './containers/class-settings/api/class-settings.epics';
 import { SideNavComponent } from './components/side-nav/side-nav.component';
+import { TypesComponent } from './containers/types/types.component';
 
 @NgModule({
   imports: [
@@ -53,7 +54,8 @@ import { SideNavComponent } from './components/side-nav/side-nav.component';
     ProjectSettingsProfileComponent,
     ClassItemComponent,
     ClassSettingsComponent,
-    SideNavComponent
+    SideNavComponent,
+    TypesComponent
   ],
   providers: [
     ProjectsActions,
