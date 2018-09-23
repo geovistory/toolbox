@@ -1,0 +1,26 @@
+<h3 class="mt-4">
+  Add a type
+</h3>
+
+<form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
+  <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !label.valid }">
+    <label for="label">Name</label>
+    <gv-appellation-ctrl autofocus type="text" class="form-control" name="label" [(ngModel)]="model.label" #label="ngModel"
+      required></gv-appellation-ctrl>
+    <div *ngIf="f.submitted && !label.valid" class="help-block form-text text-danger">Name is required</div>
+    <div *ngFor="let message of errorMessages?.label" class="help-block form-text text-danger">{{message}}</div>
+  </div>
+
+  <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !description.valid }">
+    <label for="description">Description</label>
+    <input type="text" class="form-control" name="description" [(ngModel)]="model.description" #description="ngModel"
+      required />
+    <div *ngIf="f.submitted && !description.valid" class="help-block form-text text-danger">Name is required</div>
+    <div *ngFor="let message of errorMessages?.description" class="help-block form-text text-danger">{{message}}</div>
+  </div>
+
+  <div class="form-group">
+    <button class="btn btn-primary mr-2" type="submit" [disabled]="(f.pristine)">Create</button>
+    <button class="btn btn-outline-secondary" (click)="cancel.emit()">Cancel</button>
+  </div>
+</form>

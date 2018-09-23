@@ -18,7 +18,7 @@ export function typesReducer(state: Types = INITIAL_STATE, a: Action): Types {
     case TypesAPIActions.LOAD_SUCCEEDED:
       return {
         ...state,
-        items: indexBy(prop('pk_entity'), action.meta.itemsArray)
+        items: indexBy(prop('pk_entity'), action.meta.types)
       };
     case TypesAPIActions.LOAD_FAILED:
       return {
@@ -28,10 +28,25 @@ export function typesReducer(state: Types = INITIAL_STATE, a: Action): Types {
 
 
     /*****************************************************
+      * Reducers to manage the add form
+      *****************************************************/
+    case TypesAPIActions.OPEN_ADD_FORM:
+      return {
+        ...state,
+        add: true
+      };
+
+    case TypesAPIActions.CLOSE_ADD_FORM:
+      return {
+        ...state,
+        add: false
+      };
+
+    /*****************************************************
     * Reducers called on destroy of component
     *****************************************************/
     case TypesAPIActions.DESTROY:
-    return undefined;
+      return undefined;
   }
 
   return state;

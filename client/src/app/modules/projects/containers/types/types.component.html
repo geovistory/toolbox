@@ -11,19 +11,29 @@
   </ol>
 </gv-navbar>
 <gv-side-nav [projectLabel]="projectLabel" [levelsBelowSettings]="3">
-
   <h1>
     {{classLabel}} Types
   </h1>
+  
+  <!-- List or Tree of Types -->
+  <div *ngIf="listVisible">
 
-  <h3 class="mt-4">
-    [Custom] Controlled Vocabulary 
-  </h3>
+    <h3 class="mt-4">
+      <span>[Custom] Controlled Vocabulary</span> <button class="btn btn-link" (click)="openAddForm()"><i class="fa fa-plus"></i></button>
+    </h3>
 
- 
-  <ul>
-    <li>Type 1</li>
-    <li>Type 2</li>
-  </ul>
+
+    <ul>
+      <li *ngFor="let type of (items$ | async) | keys">{{type?.value?.notes}}</li>
+    </ul>
+  </div>
+
+  <!-- Add new type -->
+  <gv-type-add-form *ngIf="(add$ | async)" (cancel)="closeAddForm()"></gv-type-add-form>
+
+  <!-- Edit existing Type -->
+
+
+  <!-- Remove Type from Project -->
 
 </gv-side-nav>

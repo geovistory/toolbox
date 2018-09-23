@@ -113,4 +113,10 @@ export class DfhConfig {
   static PK_SYSTEM_TYPE_TEMPORAL_ENTITY = 9;
   static PK_SYSTEM_TYPE_PERSISTENT_ITEM = 8;
 
+
+  /**
+   * Namespaces
+   */
+  static NAMESPACE_GEOVISTORY_ONGOING = 80442;
+
 }

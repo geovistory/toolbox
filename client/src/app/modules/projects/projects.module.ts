@@ -30,6 +30,9 @@ import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { TypesComponent } from './containers/types/types.component';
 import { TypesAPIActions } from './containers/types/api/types.actions';
 import { TypesAPIEpics } from './containers/types/api/types.epics';
+import { TypeAddFormComponent } from './containers/type-add-form/type-add-form.component';
+import { TypeAddFormAPIActions } from './containers/type-add-form/api/type-add-form.actions';
+import { TypeAddFormAPIEpics } from './containers/type-add-form/api/type-add-form.epics';
 
 @NgModule({
   imports: [
@@ -57,7 +60,8 @@ import { TypesAPIEpics } from './containers/types/api/types.epics';
     ClassItemComponent,
     ClassSettingsComponent,
     SideNavComponent,
-    TypesComponent
+    TypesComponent,
+    TypeAddFormComponent
   ],
   providers: [
     ProjectsActions,
@@ -66,7 +70,9 @@ import { TypesAPIEpics } from './containers/types/api/types.epics';
     ClassSettingsAPIActions,
     ClassSettingsAPIEpics,
     TypesAPIActions,
-    TypesAPIEpics
+    TypesAPIEpics,
+    TypeAddFormAPIActions,
+    TypeAddFormAPIEpics
   ]
 })
 export class ProjectsModule { }

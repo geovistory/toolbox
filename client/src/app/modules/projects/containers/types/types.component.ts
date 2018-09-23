@@ -1,13 +1,14 @@
 import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { SubstoreComponent } from 'app/core/models/substore-component';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, DfhClass, ProjectDetail } from 'app/core';
+import { IAppState, DfhClass, ProjectDetail, InfPersistentItem } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { Types } from './api/types.models';
 import { TypesAPIEpics } from './api/types.epics';
 import { TypesAPIActions } from './api/types.actions';
 import { typesReducer } from './api/types.reducer';
+import { DfhConfig } from '../../../information/shared/dfh-config';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -27,12 +28,13 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   localStore: ObservableStore<Types>;
 
   // path to the substore
-  basePath: ['activeProject', 'classSettings', 'types'];
+  basePath = ['activeProject', 'classSettings', 'types'];
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
 
   //  class
+  class$: Observable<DfhClass>;
   class: DfhClass;
   classLabel: string;
 
@@ -41,8 +43,19 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   typeClassLabel: string;
 
   // active project
+  projec$: Observable<ProjectDetail>;
+  projecPk$: Observable<number>;
   project: ProjectDetail;
   projectLabel: string;
+
+  // types
+  @select() items$: Observable<{ [key: string]: InfPersistentItem }>;
+
+  // if true, the list / tree of types is visible
+  listVisible: boolean;
+
+  // flag indicatig if add form is visible
+  @select() add$: Observable<boolean>;
 
 
   constructor(
@@ -52,13 +65,15 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   ) {
     super();
 
-    this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
+    this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p);
+    this.projecPk$ = this.ngRedux.select<number>(['activeProject', 'pk_project']);
+    this.class$ = this.ngRedux.select<DfhClass>(['activeProject', 'classSettings', 'dfhClass'])
     this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
-    this.ngRedux.select<DfhClass>(['activeProject', 'classSettings', 'class']).takeUntil(this.destroy$).subscribe(c => {
-      this.class = c;
-      this.classLabel = c.dfh_standard_label;
-    })
 
+    combineLatest(this.add$).takeUntil(this.destroy$).subscribe(d => {
+      const add = d[0];
+      this.listVisible = (add ? false : true);
+    })
   }
 
   getBasePath = () => this.basePath;
@@ -66,6 +81,14 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, typesReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
+    combineLatest(this.class$, this.projecPk$).takeUntil(this.destroy$).subscribe(d => {
+      const c = d[0], p = d[1];
+      if (c && p && !this.class) {
+        this.class = c;
+        this.classLabel = c.dfh_standard_label;
+        this.load(DfhConfig.NAMESPACE_GEOVISTORY_ONGOING, p, c.dfh_pk_class)
+      }
+    })
   }
 
   ngOnDestroy() {

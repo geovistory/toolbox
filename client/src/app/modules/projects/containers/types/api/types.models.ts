@@ -1,15 +1,15 @@
+import { PeItDetail } from 'app/core';
+
 // Interface of this slice of store
 export interface TypesI {
     items?: {};
-    loading?: boolean;
-    error?: any;
+    add?: boolean;
 }
 
 // Class of this slice of store
 export class Types implements TypesI {
     items?: {};
-    loading?: boolean;
-    error?: any;
+    add?: boolean;
 
     constructor(data?: TypesI) {
         Object.assign(this, data);

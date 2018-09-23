@@ -7,8 +7,9 @@ import { RootEpics } from 'app/core/store/epics';
 import { ClassSettings } from './api/class-settings.models';
 import { ClassSettingsAPIEpics } from './api/class-settings.epics';
 import { classSettingsReducer } from './api/class-settings.reducer';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { ClassSettingsAPIActions } from './api/class-settings.actions';
+import { filter, takeUntil, map } from 'rxjs/operators';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -41,22 +42,39 @@ export class ClassSettingsComponent extends ClassSettingsAPIActions implements O
   project: ProjectDetail;
   projectLabel: string;
 
+  // child route active
+  childRouteActive = false;
+
   constructor(
     protected rootEpics: RootEpics,
     private epics: ClassSettingsAPIEpics,
     protected ngRedux: NgRedux<IAppState>,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private router: Router
+
   ) {
     super();
 
     this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
     this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
+
+    // observe the activated route and update childRouteActive flag
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map(() => this.activatedRoute),
+        takeUntil(this.destroy$)
+      ).subscribe((route) => {
+        this.childRouteActive = (route.firstChild ? true : false);
+      })
   }
 
   getBasePath = () => this.basePath;
 
   ngOnInit() {
     const id = this.activatedRoute.snapshot.params['id'];
+
+
     this.localStore = this.ngRedux.configureSubStore(this.basePath, classSettingsReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
     this.load(id);

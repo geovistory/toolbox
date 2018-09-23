@@ -38,7 +38,7 @@ export class TypesAPIEpics {
           /**
            * Do some api call
            */
-          this.peItApi.find(null) // <- change api call here
+          this.peItApi.typesOfNamespaceClassAndProject(action.meta.pkNamespace, action.meta.pkProject, action.meta.pkTypedClass)
             /**
              * Subscribe to the api call
              */

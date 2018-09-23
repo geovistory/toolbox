@@ -88,11 +88,13 @@ const routes: Routes = [
           },
           {
             path: 'classes/:id',
-            component: ClassSettingsComponent
-          },
-          {
-            path: 'classes/:id/types',
-            component: TypesComponent
+            component: ClassSettingsComponent,
+            children: [
+              {
+                path: 'types',
+                component: TypesComponent
+              }
+            ]
           }
         ]
       },

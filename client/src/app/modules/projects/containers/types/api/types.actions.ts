@@ -2,10 +2,14 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { TypesI } from './types.models';
+import { InfPersistentItem } from 'app/core';
 
 type Payload = TypesI;
 interface MetaData {
-  itemsArray?: any[]
+  pkNamespace?: number,
+  pkProject?: number,
+  pkTypedClass?: number,
+  types?: InfPersistentItem[]
 };
 export type TypesAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -16,12 +20,19 @@ export class TypesAPIActions {
   static readonly LOAD_SUCCEEDED = 'Types::LOAD_SUCCEEDED';
   static readonly LOAD_FAILED = 'Types::LOAD_FAILED';
 
+  static readonly OPEN_ADD_FORM = 'Types::OPEN_ADD_FORM';
+  static readonly CLOSE_ADD_FORM = 'Types::CLOSE_ADD_FORM';
+
   static readonly DESTROY = 'Types::DESTROY';
 
   @dispatch()
-  load = (): TypesAPIAction => ({
+  load = (pkNamespace: number, pkProject: number, pkTypedClass: number): TypesAPIAction => ({
     type: TypesAPIActions.LOAD,
-    meta: null,
+    meta: {
+      pkNamespace,
+      pkProject,
+      pkTypedClass
+    },
     payload: null,
   });
 
@@ -31,11 +42,9 @@ export class TypesAPIActions {
     payload: null,
   })
 
-  loadSucceeded = (itemsArray: any[]): TypesAPIAction => ({
+  loadSucceeded = (types: InfPersistentItem[]): TypesAPIAction => ({
     type: TypesAPIActions.LOAD_SUCCEEDED,
-    meta: {
-      itemsArray
-    },
+    meta: { types },
     payload: null
   })
 
@@ -47,12 +56,30 @@ export class TypesAPIActions {
   })
 
   /*********************************************************************
+ *  Methods related to the add form
+ *********************************************************************/
+  @dispatch()
+  openAddForm = (): TypesAPIAction => ({
+    type: TypesAPIActions.OPEN_ADD_FORM,
+    meta: null,
+    payload: null
+  })
+
+  @dispatch()
+  closeAddForm = (): TypesAPIAction => ({
+    type: TypesAPIActions.CLOSE_ADD_FORM,
+    meta: null,
+    payload: null
+  })
+
+
+  /*********************************************************************
   *  Method to distroy the slice of store
   *********************************************************************/
- @dispatch()
- destroy = (): TypesAPIAction => ({
-   type: TypesAPIActions.DESTROY,
-   meta: null,
-   payload: null
- })
+  @dispatch()
+  destroy = (): TypesAPIAction => ({
+    type: TypesAPIActions.DESTROY,
+    meta: null,
+    payload: null
+  })
 }
