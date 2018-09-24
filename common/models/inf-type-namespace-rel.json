@@ -12,7 +12,7 @@
   "mixins": {
     "SetupRemoteMethods": {
       "ignoreACL": false,
-      "disableAllExcept": []
+      "disableAllExcept": ["findComplex"]
     }
   },
   "properties": {

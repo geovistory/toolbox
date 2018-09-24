@@ -21,6 +21,9 @@ export class QuillEditComponent implements OnInit {
   // If true, the editor is not content editable, but it emits a Delta with selected nodes
   @Input() creatingAnnotation: boolean;
 
+  // Editor Config object. If none provided, it will use a default.
+  @Input() editorConfig: any;
+
   @Input() annotationsVisible: boolean;
   @Input() set annotatedNodes(arr: [string, number][]) {
     this._annotatedNodes = new Map(arr);
@@ -38,7 +41,7 @@ export class QuillEditComponent implements OnInit {
   // the selected Delta, when creating an annotation
   private selectedDelta: Delta;
 
-  // the editor
+  // the editor object 
   quillEditor: any;
 
   Quill;
@@ -83,12 +86,12 @@ export class QuillEditComponent implements OnInit {
     // reset nodeSubs
     this.nodeSubs = new Map<string, Subscription[]>();
 
-    let editorConfig: any = {
+    let editorConfig: any = this.editorConfig ? this.editorConfig : {
       theme: 'snow',
       modules: {
         toolbar: this.toolbar.nativeElement
       }
-    }
+    };
 
     if (this.creatingAnnotation || this.readOnly) {
       editorConfig = {

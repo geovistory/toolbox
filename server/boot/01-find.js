@@ -12,12 +12,14 @@ var include = [
   "InfDigitalObject",
   "InfPlace",
   "DfhClass",
+  "InfNamespace",
+  "InfTypeNamespaceRel",
   "DfhClassProfileView",
   "DfhProperty",
   "DfhPropertyProfileView",
   "ComUiContext",
   "ComUiContextConfig",
-  "ComPropertySet"
+  "ComPropertySet",
 ];
 
 module.exports = function (app) {

@@ -116,6 +116,7 @@ import { PolygonsEditorLayerComponent } from './containers/polygons-editor-layer
 import { TeEntAPIEpics } from './data-unit/te-ent/te-ent.epics';
 import { PeItApiEpics } from './data-unit/pe-it/api/pe-it.epics';
 import { GvAngularCesiumModule } from '../gv-angular-cesium/angular-cesium.module';
+import { AppellationCtrl2Component } from './value/appellation-ctrl2/appellation-ctrl2.component';
 
 @NgModule({
   imports: [
@@ -224,6 +225,7 @@ import { GvAngularCesiumModule } from '../gv-angular-cesium/angular-cesium.modul
     LeafPeItLabelComponent,
     AddInfoTeEntComponent,
     AddInfoPeItComponent,
+    AppellationCtrl2Component,
 
 
 
@@ -312,6 +314,7 @@ import { GvAngularCesiumModule } from '../gv-angular-cesium/angular-cesium.modul
 
     // Value
     AppellationCtrlComponent,
+    AppellationCtrl2Component,
     AppellationViewComponent,
     LanguageCtrlComponent,
     LanguageViewComponent,

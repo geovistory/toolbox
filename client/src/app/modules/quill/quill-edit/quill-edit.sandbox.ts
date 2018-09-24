@@ -237,7 +237,6 @@ export default sandboxOf(QuillEditComponent, {
                     </strong>
                     <gv-quill-view [contents]="selectedDelta" [formatItalic]="true"></gv-quill-view>
 
-                    
                     <strong>
                     Selected Delta:
                     </strong>
@@ -246,6 +245,51 @@ export default sandboxOf(QuillEditComponent, {
                     </pre>
                 </div>
 
+            </div>
+        </div>
+        `
+    })
+    .add('Quill-Edit | New text Custom Config ', {
+        context: {
+            quillDoc: {
+                latestId: 7,
+                contents: {}
+            },
+            editorConfig: {
+                theme: 'bubble',
+                toolbar: []
+            }
+        },
+        template: `
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <gv-quill-edit [quillDoc]="quillDoc" [editorConfig]="editorConfig"
+                    (quillDocChange)="quillDoc=$event" (htmlChange)="html=$event"></gv-quill-edit>
+                </div>
+                <div class="col-6 font-sm" style="height:500px;">
+                    <strong>
+                    Latest Token Id: {{quillDoc.latestId}}
+                    </strong>
+                    <br>
+
+                    <strong>
+                    HTML:
+                    </strong>
+                    <br>
+                    <pre>
+                    {{html}}
+                    </pre>
+
+
+                    <strong>
+                    JSON:
+                    </strong>
+
+                    <pre>
+                    {{quillDoc | json:2}}
+                    </pre>
+                </div>
             </div>
         </div>
         `

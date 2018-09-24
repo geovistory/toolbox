@@ -48,8 +48,8 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   // Data unit type Filter
   typeOptions = [
     { value: undefined, label: 'All' },
-    { value: 'teEnt', label: '<i class="gv-icon gv-icon-entity"></i> Entity Classes' },
-    { value: 'peIt', label: '<i class="fa fa-star-o"></i> Phenomenon Classes' }
+    { value: 'peIt', label: '<i class="gv-icon gv-icon-entity"></i> Entity Classes' },
+    { value: 'teEnt', label: '<i class="fa fa-star-o"></i> Phenomenon Classes' }
   ]
   selectedType: { value: any, label: string } = this.typeOptions[0];
   dataUnitType$ = new BehaviorSubject<DataUnitType>(undefined);

@@ -1,5 +1,5 @@
-import { ComPropertySet, ComUiContextInterface, ProjectInterface } from 'app/core/sdk';
 import { RoleSetList } from 'app/core/models';
+import { ComPropertySetInterface, ComUiContextInterface, ProjectInterface } from 'app/core/sdk';
 
 
 export interface ProjectDetail extends ProjectInterface {
@@ -35,6 +35,6 @@ export interface UiElement {
     roleSetKey?: string,
     propSetKey?: string,
     fk_property_set?: number,
-    property_set?: ComPropertySet
+    property_set?: ComPropertySetInterface
     ord_num: number
 }

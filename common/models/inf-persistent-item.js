@@ -1,6 +1,8 @@
 'use strict';
 
 const Promise = require('bluebird');
+const infConfig = require('../config/infConfig');
+
 
 module.exports = function (InfPersistentItem) {
 
@@ -677,10 +679,22 @@ module.exports = function (InfPersistentItem) {
    */
   InfPersistentItem.typesOfNamespaceClassAndProject = function (pk_namespace, pk_project, pk_typed_class, cb) {
 
+    // get the pk_property of the property leading from the typed class to the type class
+    // E.g. get the pk_property of "has geographical place type – histP8" for the pk_class of "histC8 Geographical Place"
+    const pkProperty = infConfig.PK_CLASS_PK_HAS_TYPE_MAP[pk_typed_class] ? infConfig.PK_CLASS_PK_HAS_TYPE_MAP[pk_typed_class] : -1;
+
     const innerJoinThisProject = {
       "$relation": {
         "name": "entity_version_project_rels",
         "joinType": "inner join",
+        "select": {
+          include: [
+            "pk_entity_version_project_rel",
+            "pk_entity",
+            "fk_project",
+            "fk_entity",
+          ]
+        },
         "where": [
           "fk_project", "=", pk_project,
           "and", "is_in_project", "=", "true"
@@ -694,44 +708,44 @@ module.exports = function (InfPersistentItem) {
       }],
       "include": {
         "type_namespace_rels": {
-          // select: false,
           "$relation": {
+            select: false,
             "name": "type_namespace_rels",
             "joinType": "inner join",
             "orderBy": [{
               "pk_entity": "asc"
-            }],
-            "namespace": {
-              // select: false,
-              "$relation": {
-                "name": "type_namespace_rels",
-                "joinType": "inner join",
-                "orderBy": [{
-                  "pk_entity": "asc"
-                }],
-                where: ["pk_entity", "=", pk_namespace]
-              }
+            }]
+          },
+          "namespace": {
+            "$relation": {
+              select: false,
+              "name": "namespace",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }],
+              where: ["pk_entity", "=", pk_namespace]
             }
           }
         },
         "entity_version_project_rels": innerJoinThisProject,
         "dfh_class": {
-          // select: false,
           "$relation": {
+            select: false,
             "name": "dfh_class",
             "joinType": "inner join",
             "orderBy": [
               {
                 "pk_entity": "asc"
               }
-            ],
-            "ingoing_properties": {
-              // select: false,
-              "$relation": {
-                "name": "ingoing_properties",
-                "joinType": "inner join",
-                where: ["dfh_fk_property_of_origin", "=", pk_typed_class]
-              }
+            ]
+          },
+          "ingoing_properties": {
+            "$relation": {
+              select: false,
+              "name": "ingoing_properties",
+              "joinType": "inner join",
+              where: ["dfh_pk_property", "=", pkProperty]
             }
           }
         }
