@@ -28,6 +28,12 @@
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     },
+    "text_properties": {
+      "type": "hasMany",
+      "model": "InfTextProperty",
+      "foreignKey": "fk_concerned_entity",
+      "primaryKey": "pk_entity"
+    },
     "dfh_class": {
       "type": "belongsTo",
       "model": "DfhClass",

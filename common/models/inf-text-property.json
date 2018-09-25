@@ -25,7 +25,32 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "persistent_item": {
+      "type": "belongsTo",
+      "model": "InfPersistentItem",
+      "foreignKey": "fk_concerned_entity",
+      "primaryKey": "pk_entity"
+    },
+    "temporal_entity": {
+      "type": "belongsTo",
+      "model": "InfTemporalEntity",
+      "foreignKey": "fk_concerned_entity",
+      "primaryKey": "pk_entity"
+    },
+    "language": {
+      "type": "belongsTo",
+      "model": "InfLanguage",
+      "foreignKey": "fk_language",
+      "primaryKey": "pk_entity"
+    },
+    "system_type": {
+      "type": "belongsTo",
+      "model": "ComSystemType",
+      "foreignKey": "fk_system_type",
+      "primaryKey": "pk_entity"
+    }
+  },
   "acls": [],
   "methods": {}
 }
