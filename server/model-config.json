@@ -167,5 +167,9 @@
   "InfTextProperty": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "ComSystemType": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }

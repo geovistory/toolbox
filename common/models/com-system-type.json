@@ -1,0 +1,13 @@
+{
+  "name": "ComSystemType",
+  "base": "ComEntity",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
