@@ -2,8 +2,8 @@
 import { Token } from '../appellation-token/appellation-token';
 
 export interface AppellationLabelInterface {
-  "latestTokenId": number, // the id of the latest created token. increments by 1, starting by 0.
-  "tokens": Token[] // Array of Tokens
+  'latestTokenId': number, // the id of the latest created token. increments by 1, starting by 0.
+  'tokens': Token[] // Array of Tokens
 }
 
 export interface UpdateTokenStringRequest {
@@ -23,8 +23,8 @@ export interface InsertTokenRequest {
 }
 
 export class AppellationLabel implements AppellationLabelInterface {
-  "latestTokenId": number;
-  "tokens": Token[] = [];
+  'latestTokenId': number;
+  'tokens': Token[] = [];
 
   // get jsonString (){
   //   return JSON.stringify(this);
@@ -107,7 +107,7 @@ export class AppellationLabel implements AppellationLabelInterface {
 
 
   getString() {
-    let string: string = "";
+    let string: string = '';
     for (let key in this.tokens) {
       string += this.tokens[key].string;
     }

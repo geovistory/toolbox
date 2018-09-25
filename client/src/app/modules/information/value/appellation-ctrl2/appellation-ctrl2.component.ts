@@ -1,19 +1,32 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { ControlValueAccessor } from '@angular/forms';
+import { Component, OnInit, OnDestroy, Output, EventEmitter, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InfAppellation, InfRole } from 'app/core';
 import { Subject } from 'rxjs';
-import { AppellationLabel } from '../../shared/appellation-label';
+import { AppellationLabel, AppellationLabelInterface } from '../../shared/appellation-label';
+import { QuillDoc } from '../../../quill';
+import { Token } from '../../shared/appellation-token';
+import { pick } from 'ramda';
+import { QuillService } from '../../../quill/quill.service';
 
 @Component({
   selector: 'gv-appellation-ctrl2',
   templateUrl: './appellation-ctrl2.component.html',
-  styleUrls: ['./appellation-ctrl2.component.scss']
+  styleUrls: ['./appellation-ctrl2.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => AppellationCtrl2Component),
+      multi: true
+    }
+  ],
 })
 export class AppellationCtrl2Component implements OnDestroy, ControlValueAccessor {
 
   appellation: InfAppellation;
 
   appellationLabel: AppellationLabel = new AppellationLabel();
+
+  quillDoc: QuillDoc;
 
   @Output() touched = new EventEmitter<void>();
 
@@ -22,7 +35,9 @@ export class AppellationCtrl2Component implements OnDestroy, ControlValueAccesso
 
   destroy$ = new Subject<boolean>();
 
-  constructor() { }
+  onChangeRegistered = false;
+
+  constructor(private quillService: QuillService) { }
 
 
   ngOnDestroy() {
@@ -32,14 +47,66 @@ export class AppellationCtrl2Component implements OnDestroy, ControlValueAccesso
 
 
   // this will be called as soon as the form control is registered by parents
-  subscribeToQuillChanges() {
-    // send the appe the parent form
+  quillDocChange(qd: QuillDoc) {
+
+    if (qd && qd.contents && qd.contents.ops.length > 1 && this.onChangeRegistered && this.role) {
+
+      // build the role
+      const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role) as InfRole);
+
+      // build a appe with the appellation_label given by the formControl
+      role.appellation = new InfAppellation({
+        ...this.appellation,
+        appellation_label: this.quillDeltaToAppellationLabel(qd)
+      });
+
+      // send the appe the parent form
+      this.onChange(role)
+    } else {
+      this.onChange(null)
+    }
+  }
+
+  // converts Appellation Label to Quill Delta
+  appellationLabelToQuillDelta(appeLabel: AppellationLabel): QuillDoc {
+    const q: QuillDoc = { latestId: 1, contents: { ops: [] } };
+
+    // we increase the id, since quill can't handle 0 attribute value
+    // see: https://github.com/quilljs/parchment/issues/62
+    q.latestId = appeLabel.latestTokenId ? (appeLabel.latestTokenId + 1) : 1;
+
+    q.contents.ops = this.appellationLabel.tokens.map(token => {
+      return {
+        insert: token.string,
+        attributes: {
+          // we increase the id, since quill can't handle 0 attribute value
+          node: (token.id + 1)
+        }
+      }
+    })
+
+    return q;
   }
 
   // converts quill Delta to Appellation Label
-  quillDeltaToAppellationLabel() {
-
+  quillDeltaToAppellationLabel(qd: QuillDoc): AppellationLabelInterface {
+    const a: AppellationLabelInterface = {
+      // we decrease the id, since we increased it for quill, that can't handle 0 attribute value
+      latestTokenId: (qd.latestId - 1),
+      tokens: qd.contents.ops.map(op => {
+        // this if statement will remove the newline
+        if ((op.attributes || {}).node) {
+          return {
+            id: (op.attributes.node - 1),
+            string: op.insert,
+            isSeparator: this.quillService.hasSeparator(op.insert)
+          } as Token
+        }
+      }).filter(op => (op))
+    }
+    return a;
   }
+
 
   /****************************************
    *  ControlValueAccessor implementation *
@@ -57,6 +124,7 @@ export class AppellationCtrl2Component implements OnDestroy, ControlValueAccesso
 
     this.appellationLabel = new AppellationLabel(this.appellation.appellation_label);
 
+    this.quillDoc = this.appellationLabelToQuillDelta(this.appellationLabel);
   }
 
 
@@ -67,7 +135,7 @@ export class AppellationCtrl2Component implements OnDestroy, ControlValueAccesso
   registerOnChange(fn: any): void {
     this.onChange = fn;
 
-    this.subscribeToQuillChanges();
+    this.onChangeRegistered = true;
 
   }
 

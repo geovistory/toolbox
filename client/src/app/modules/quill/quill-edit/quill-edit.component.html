@@ -1,4 +1,4 @@
-<div #toolbar>
+<div #toolbar class="gv-toolbar" [hidden]="!showDefaultToolbar">
 
     <span [hidden]="creatingAnnotation || readOnly">
         <span className="ql-format-group">
@@ -33,5 +33,5 @@
         <i class="fa fa-hashtag"></i>
     </button>
 </div>
-<div #editor [gvDomChange] (domChange)="onDomChange($event)" [ngClass]="{'gv-show-token-ids': showTokenIds}">
+<div #editor class="gv-editor" [gvDomChange] (domChange)="onDomChange($event)" [ngClass]="{'gv-show-token-ids': showTokenIds}">
 </div>

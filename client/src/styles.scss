@@ -9,7 +9,6 @@
 
 @import "src/assets/scss/bootstrap";
 $font-size-xs: .68rem;
-
 /**
 * Components
 * Styles for one angular component or multiple angular components with
@@ -42,7 +41,6 @@ $font-size-xs: .68rem;
 @import "src/assets/scss/components/_version_modal";
 // Entity Add Modal
 @import "src/assets/scss/components/_appellation_label_editor";
-
 /**
 * Generic stuff
 */
@@ -55,7 +53,6 @@ body {
     min-width: 63rem;
     margin-top: 2rem;
 }
-
 
 button {
     cursor: pointer;
@@ -91,22 +88,35 @@ $value in $grays {
     }
 }
 
-
 /**
 * Headings
 */
-h1, h2, h3, h4, h5, h6,
-.h1, .h2, .h3, .h4, .h5, .h6 {
-  font-weight: $font-weight-light;
-  color: $gray-700;
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    font-weight: $font-weight-light;
+    color: $gray-700;
 }
 
-h4, h5, 
- .h4, .h5{
-  color: $gray-800;
+h4,
+h5,
+.h4,
+.h5 {
+    color: $gray-800;
 }
 
-h6, .h6 {
+h6,
+.h6 {
     color: $gray-700
 }
 
@@ -465,6 +475,24 @@ gv-quill-edit {
     }
     .ql-editor {
         @extend .gv-flex-grow-1;
+    }
+}
+
+gv-quill-edit.gv-hide-toolbar {
+    .ql-toolbar,
+    .ql-tooltip {
+        display: none;
+    }
+}
+
+gv-quill-edit.gv-quill-input-like {
+    @extend gv-quill-edit.gv-hide-toolbar;
+    .gv-editor {
+        height: auto;
+    }
+    .ql-editor {
+        overflow-y: visible;
+        @extend .form-control;
     }
 }
 

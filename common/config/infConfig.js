@@ -5,7 +5,7 @@
  * It can be used by the server and by the client application.
  * 
  */
-const infConfig = {
+const InfConfig = {
 
     /**
      * This parameter maps the primary keys of classes
@@ -20,4 +20,4 @@ const infConfig = {
     }
 
 }
-module.exports = infConfig;
+module.exports = InfConfig;

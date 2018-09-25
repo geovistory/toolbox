@@ -10,6 +10,7 @@ import { classSettingsReducer } from './api/class-settings.reducer';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { ClassSettingsAPIActions } from './api/class-settings.actions';
 import { filter, takeUntil, map } from 'rxjs/operators';
+import * as  InfConfig from '../../../../../../../common/config/InfConfig';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -44,6 +45,9 @@ export class ClassSettingsComponent extends ClassSettingsAPIActions implements O
 
   // child route active
   childRouteActive = false;
+
+  // if true, for this class we give the possibility to add types
+  hasTypes = false;
 
   constructor(
     protected rootEpics: RootEpics,
@@ -80,8 +84,21 @@ export class ClassSettingsComponent extends ClassSettingsAPIActions implements O
     this.load(id);
 
     this.dfhClass$.takeUntil(this.destroy$).subscribe(c => {
-      if (c) this.classLabel = c.dfh_standard_label
+      if (c) {
+        this.classLabel = c.dfh_standard_label;
+        this.initHasTypes(c.dfh_pk_class);
+      }
     })
+  }
+
+  /**
+   * Checks if the current class can have types and inits the
+   * peopert hasTypes. Sets true if yes, false if no.
+   *
+   * @param pkClass Primary key of the current class
+   */
+  initHasTypes(pkClass: number): void {
+    this.hasTypes = InfConfig.PK_CLASS_PK_HAS_TYPE_MAP[pkClass] ? true : false;
   }
 
   ngOnDestroy() {

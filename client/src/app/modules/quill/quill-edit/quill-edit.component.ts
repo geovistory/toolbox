@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, Input, ChangeDetectorRef, ViewChild, ElementRef, OnInit, EventEmitter, Output, OnChanges, AfterContentInit, Renderer2 } from '@angular/core';
+import { Component, AfterViewInit, Input, ChangeDetectorRef, ViewChild, ElementRef, OnInit, EventEmitter, Output, OnChanges, AfterContentInit, Renderer2, HostBinding } from '@angular/core';
 import { QuillService } from '../quill.service';
 import * as Delta from 'quill-delta/lib/delta';
 import { QuillNodeHandler } from '../quill-node-handler';
@@ -13,7 +13,10 @@ import { QuillDoc } from '..';
 export class QuillEditComponent implements OnInit {
 
   // the Data containing a standard jsQuill-Delta object and a latestId
-  @Input() quillDoc: QuillDoc;
+  @Input() quillDoc = {
+    latestId: 0,
+    contents: {}
+  };
 
   // If true, the editor is not content editable
   @Input() readOnly: boolean;
@@ -29,9 +32,10 @@ export class QuillEditComponent implements OnInit {
     this._annotatedNodes = new Map(arr);
   }
 
-  @Output() quillDocChange: EventEmitter<QuillDoc> = new EventEmitter()
-  @Output() htmlChange: EventEmitter<string> = new EventEmitter()
-  @Output() selectedDeltaChange: EventEmitter<Delta> = new EventEmitter()
+  @Output() quillDocChange = new EventEmitter<QuillDoc>()
+  @Output() blur = new EventEmitter<void>()
+  @Output() htmlChange = new EventEmitter<string>()
+  @Output() selectedDeltaChange = new EventEmitter<Delta>()
 
   private _annotatedNodes: Map<string, number>; // string: id of node, number intensity of highlight
 
@@ -41,7 +45,7 @@ export class QuillEditComponent implements OnInit {
   // the selected Delta, when creating an annotation
   private selectedDelta: Delta;
 
-  // the editor object 
+  // the editor object
   quillEditor: any;
 
   Quill;
@@ -58,8 +62,13 @@ export class QuillEditComponent implements OnInit {
 
   showTokenIds = false;
 
+  // if false, the toolbar defined in html will be hidden
+  showDefaultToolbar = true;
+
   @ViewChild('editor') editorElem: ElementRef;
   @ViewChild('toolbar') toolbar: ElementRef;
+
+  @HostBinding('class.gv-quill-input-like') @Input() inputLike = false;
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -86,21 +95,56 @@ export class QuillEditComponent implements OnInit {
     // reset nodeSubs
     this.nodeSubs = new Map<string, Subscription[]>();
 
-    let editorConfig: any = this.editorConfig ? this.editorConfig : {
+    // set default editor config
+    const defaultEditorConfig = {
       theme: 'snow',
       modules: {
         toolbar: this.toolbar.nativeElement
       }
-    };
+    }
+
+    // assign editorConfig default value, if none provided
+    this.editorConfig = this.editorConfig ? this.editorConfig : defaultEditorConfig;
+
+    // hide the toolbar defined in html, if not needed
+    if (defaultEditorConfig.modules.toolbar !== ((this.editorConfig || {}).modules || {}).toolbar) {
+      this.showDefaultToolbar = false;
+    }
 
     if (this.creatingAnnotation || this.readOnly) {
-      editorConfig = {
-        ...editorConfig,
+      this.editorConfig = {
+        ...this.editorConfig,
         readOnly: true
       }
     }
 
-    this.quillEditor = new this.Quill(this.editorElem.nativeElement, editorConfig);
+    // add bubble style and override default keybindings for tab and enter
+    if (this.inputLike) {
+      this.editorConfig.theme = 'bubble';
+      this.editorConfig.formats = ['node']; // no formats are possible
+      this.editorConfig['modules'] = {
+        ...this.editorConfig['modules'],
+        keyboard: {
+          bindings: {
+            tab: {
+              key: 9, // Tab Key
+              handler: function () {
+              }
+            },
+            enter: {
+              key: 13, // Enter Key
+              handler: function () {
+              }
+            }
+          }
+        }
+      }
+    }
+
+    this.quillEditor = new this.Quill(this.editorElem.nativeElement, this.editorConfig);
+
+    // register on blur handling
+    this.registerOnBlur(this.editorElem)
 
     // register for text changes
     this.quillEditor.on('text-change', (delta, oldDelta, source) => {
@@ -136,13 +180,14 @@ export class QuillEditComponent implements OnInit {
 
     // if the user changed the content
     if (source == 'user') {
-      console.log("A user action triggered this change.");
+      console.log('A user action triggered this change.');
 
       const nodenizeResult = this.quillService.nodenizeContentChange(delta, oldDelta, this.latestId);
 
       this.latestId = nodenizeResult.latestId;
 
       this.quillEditor.updateContents(nodenizeResult.delta)
+
 
       this.updateComponent()
 
@@ -179,22 +224,21 @@ export class QuillEditComponent implements OnInit {
   }
 
 
-
   /**
    * called when QuillJs adds some nodes, i.e. when user edits the text
-   * @param  
+   * @param
    */
   onDomChange($event: MutationRecord): void {
     // if added nodes
     if ($event.addedNodes.length) {
-      var node = $event.addedNodes[0] as any;
+      const node = $event.addedNodes[0] as any;
       if (node.attributes && node.attributes.quillnode) {
 
         const id = node.attributes.quillnode.value;
 
         const annotatedEntitiesCount = this._annotatedNodes ? this._annotatedNodes.get(id) : 0;
 
-        // 
+        //
         const qnh = new QuillNodeHandler(this.renderer, node, annotatedEntitiesCount, this.annotationsVisible, this.creatingAnnotation)
 
         // subscribe for events of nodehandler
@@ -214,7 +258,7 @@ export class QuillEditComponent implements OnInit {
 
     // if removed nodes
     if ($event.removedNodes.length) {
-      var node = $event.removedNodes[0] as any;
+      const node = $event.removedNodes[0] as any;
       if (node.attributes && node.attributes.quillnode) {
         const id = node.attributes.quillnode.value;
 
@@ -226,13 +270,24 @@ export class QuillEditComponent implements OnInit {
     }
   }
 
+  // registers the on blur method
+  registerOnBlur(editorElement: ElementRef) {
+    editorElement.nativeElement.firstChild.onblur = () => {
+      this.onBlur();
+    }
+  }
+
+  onBlur() {
+    this.blur.emit()
+  }
+
 
   changeAnnotatedDelta(qnh: QuillNodeHandler) {
     const isSelected = qnh.isSelected;
     const nodeId = qnh.nodeId;
 
     // change the is selected boolean
-    let item = this.nodeSelctionMap.get(nodeId)
+    const item = this.nodeSelctionMap.get(nodeId)
     item.isSelected = isSelected;
 
     // create new and empty selectedDelta
@@ -250,10 +305,10 @@ export class QuillEditComponent implements OnInit {
           previousItem.isSelected === false
         ) {
           this.selectedDelta.ops.push({
-            "attributes": {
-              "node": "_dots_"
+            'attributes': {
+              'node': '_dots_'
             },
-            "insert": " … "
+            'insert': ' … '
           })
         }
 

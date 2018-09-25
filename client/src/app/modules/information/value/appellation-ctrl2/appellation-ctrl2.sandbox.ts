@@ -23,9 +23,9 @@ export default sandboxOf(AppellationCtrl2Component, {
         },
         template: `
         <div class="d-flex justify-content-center mt-5">
-            <div style="width:430px;height:400px" class="d-flex">
-                <form #f="ngForm">
-                    <gv-appellation-ctrl2 class="form-control" name="appe2" [(ngModel)]="model.appe2" #appe2="ngModel" required></gv-appellation-ctrl2>
+            <div style="width:430px;height:400px" class="d-flex mr-4">
+                <form #f="ngForm" class="gv-flex-grow-1">
+                    <gv-appellation-ctrl2 name="appe2" [(ngModel)]="model.appe2" #appe2="ngModel" required></gv-appellation-ctrl2>
                 </form>
             </div>
             <div>
@@ -59,10 +59,9 @@ export default sandboxOf(AppellationCtrl2Component, {
         },
         template: `
         <div class="d-flex justify-content-center mt-5">
-            <div style="width:430px;height:400px" class="d-flex">
-                <form #f="ngForm">
-                    <gv-appellation-ctrl2 class="form-control" name="appe2" [(ngModel)]="model.appe2" #appe2="ngModel" required>
-                    </gv-appellation-ctrl2>
+            <div style="width:430px;height:400px" class="d-flex mr-4">
+                <form #f="ngForm" class="gv-flex-grow-1">
+                <gv-appellation-ctrl2 name="appe2" [(ngModel)]="model.appe2" #appe2="ngModel" required></gv-appellation-ctrl2>
                 </form>
             </div>
             <div>

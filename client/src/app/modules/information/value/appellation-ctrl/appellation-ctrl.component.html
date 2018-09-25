@@ -1,3 +1,2 @@
-<form [formGroup]="formGroup" class="d-flex flex-row">
-  <gv-appellation-label-editor *ngIf="appeCtrl" formControlName="appellationLabel" (touched)="markAsTouched()"></gv-appellation-label-editor>
-</form>
+<gv-quill-edit *ngIf="quillDoc" [quillDoc]="quillDoc" [inputLike]="true" [editorConfig]="editorConfig"
+                    (quillDocChange)="quillDocChange($event)" (htmlChange)="html=$event" (blur)="markAsTouched()"></gv-quill-edit>

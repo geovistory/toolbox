@@ -1,7 +1,7 @@
 'use strict';
 
 const Promise = require('bluebird');
-const infConfig = require('../config/infConfig');
+const InfConfig = require('../config/InfConfig');
 
 
 module.exports = function (InfPersistentItem) {
@@ -681,7 +681,7 @@ module.exports = function (InfPersistentItem) {
 
     // get the pk_property of the property leading from the typed class to the type class
     // E.g. get the pk_property of "has geographical place type – histP8" for the pk_class of "histC8 Geographical Place"
-    const pkProperty = infConfig.PK_CLASS_PK_HAS_TYPE_MAP[pk_typed_class] ? infConfig.PK_CLASS_PK_HAS_TYPE_MAP[pk_typed_class] : -1;
+    const pkProperty = InfConfig.PK_CLASS_PK_HAS_TYPE_MAP[pk_typed_class] ? InfConfig.PK_CLASS_PK_HAS_TYPE_MAP[pk_typed_class] : -1;
 
     const innerJoinThisProject = {
       "$relation": {

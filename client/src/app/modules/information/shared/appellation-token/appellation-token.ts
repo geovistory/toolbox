@@ -1,4 +1,3 @@
-import { AppellationLabelTokenComponent } from "../../value/appellation-ctrl/appellation-label-token/appellation-label-token.component";
 
 export interface TokenInterface {
   "id"?: number,
@@ -7,7 +6,6 @@ export interface TokenInterface {
   "isSeparator"?: boolean,
   typeId?: number,
   "type"?: any,
-  "appellationLabelTokenComponent"?: AppellationLabelTokenComponent
 }
 
 export class Token implements TokenInterface {
@@ -16,8 +14,7 @@ export class Token implements TokenInterface {
   autofocus?: boolean;
   isSeparator?: boolean;
   typeId?: number;
-  appellationLabelTokenComponent?: AppellationLabelTokenComponent;
-  type?:Object;
+  type?: Object;
 
   constructor(
     data?: TokenInterface
@@ -25,7 +22,7 @@ export class Token implements TokenInterface {
     Object.assign(this, data);
   }
 
-  toJSON(){
+  toJSON() {
     return {
       id: this.id,
       string: this.string,
@@ -38,8 +35,8 @@ export class Token implements TokenInterface {
 
 
 export class AppellationTokenInput {
-  token:Token;
+  token: Token;
   index: number;
-  event:any;
+  event: any;
 }
 

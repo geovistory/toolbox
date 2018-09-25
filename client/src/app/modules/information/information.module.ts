@@ -95,12 +95,7 @@ import { RoleService } from './shared/role.service';
 import { StateCreatorService } from './shared/state-creator.service';
 import { TeEntService } from './shared/te-ent.service';
 import { AppellationCtrlComponent } from './value/appellation-ctrl/appellation-ctrl.component';
-import {
-  AppellationLabelEditorComponent,
-} from './value/appellation-ctrl/appellation-label-editor/appellation-label-editor.component';
-import {
-  AppellationLabelTokenComponent,
-} from './value/appellation-ctrl/appellation-label-token/appellation-label-token.component';
+
 import { AppellationViewComponent } from './value/appellation-view/appellation-view.component';
 import { LanguageCtrlComponent } from './value/language-ctrl/language-ctrl.component';
 import { LanguageViewComponent } from './value/language-view/language-view.component';
@@ -117,6 +112,7 @@ import { TeEntAPIEpics } from './data-unit/te-ent/te-ent.epics';
 import { PeItApiEpics } from './data-unit/pe-it/api/pe-it.epics';
 import { GvAngularCesiumModule } from '../gv-angular-cesium/angular-cesium.module';
 import { AppellationCtrl2Component } from './value/appellation-ctrl2/appellation-ctrl2.component';
+import { QuillModule } from '../quill';
 
 @NgModule({
   imports: [
@@ -124,7 +120,7 @@ import { AppellationCtrl2Component } from './value/appellation-ctrl2/appellation
     FormsModule,
     ReactiveFormsModule,
     GvAngularCesiumModule,
-    
+
     NgReduxFormModule,
     SlimLoadingBarModule,
     NgbModule,
@@ -142,7 +138,8 @@ import { AppellationCtrl2Component } from './value/appellation-ctrl2/appellation
     TimelineModule,
     KeysModule,
     HighlightModule,
-    DndModule
+    DndModule,
+    QuillModule
 
   ],
   declarations: [
@@ -204,8 +201,6 @@ import { AppellationCtrl2Component } from './value/appellation-ctrl2/appellation
     // Value
     AppellationCtrlComponent,
     AppellationViewComponent,
-    AppellationLabelEditorComponent,
-    AppellationLabelTokenComponent,
     LanguageCtrlComponent,
     LanguageViewComponent,
     LeafPeItCtrlComponent,
