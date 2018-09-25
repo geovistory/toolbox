@@ -60,8 +60,6 @@ registerLocaleData(localeDeCh);
   providers: [
     EntityEditorService,
     ActiveAccountService,
-    ActiveProjectService,
-    ActiveProjectEpics,
     AuthGuard,
     { provide: LOCALE_ID, useValue: 'de-CH' }
   ],

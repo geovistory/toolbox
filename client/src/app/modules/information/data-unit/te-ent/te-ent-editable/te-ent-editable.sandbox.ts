@@ -22,6 +22,7 @@ export default sandboxOf(TeEntEditableComponent, {
             },
             parentPath: ['_162156'],
             initState: {
+                fkClass: 21,
                 activeProject: {
                     pk_project: 57
                 },

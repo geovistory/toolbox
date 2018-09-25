@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AppellationCtrl2Component } from './appellation-ctrl2.component';
+import { AppeLangCreateCtrlComponent } from './appe-lang-create-ctrl.component';
 
-describe('AppellationCtrl2Component', () => {
-  let component: AppellationCtrl2Component;
-  let fixture: ComponentFixture<AppellationCtrl2Component>;
+describe('AppeLangCreateCtrlComponent', () => {
+  let component: AppeLangCreateCtrlComponent;
+  let fixture: ComponentFixture<AppeLangCreateCtrlComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AppellationCtrl2Component ]
+      declarations: [ AppeLangCreateCtrlComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AppellationCtrl2Component);
+    fixture = TestBed.createComponent(AppeLangCreateCtrlComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

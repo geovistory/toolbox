@@ -111,8 +111,10 @@ import { PolygonsEditorLayerComponent } from './containers/polygons-editor-layer
 import { TeEntAPIEpics } from './data-unit/te-ent/te-ent.epics';
 import { PeItApiEpics } from './data-unit/pe-it/api/pe-it.epics';
 import { GvAngularCesiumModule } from '../gv-angular-cesium/angular-cesium.module';
-import { AppellationCtrl2Component } from './value/appellation-ctrl2/appellation-ctrl2.component';
 import { QuillModule } from '../quill';
+import { AppeLangCreateCtrlComponent } from './appe-lang/appe-lang-create-ctrl/appe-lang-create-ctrl.component';
+import { AppeLangCreateCtrlAPIActions } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.actions';
+import { AppeLangCreateCtrlAPIEpics } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.epics';
 
 @NgModule({
   imports: [
@@ -176,6 +178,9 @@ import { QuillModule } from '../quill';
     ExistenceTimeEditableComponent,
     ExistenceTimeAddCtrlComponent,
 
+    // Appe Lang
+    AppeLangCreateCtrlComponent,
+
     // Role Set
     PeItRoleSetAddCtrlComponent,
     PeItRoleSetCreateCtrlComponent,
@@ -220,7 +225,6 @@ import { QuillModule } from '../quill';
     LeafPeItLabelComponent,
     AddInfoTeEntComponent,
     AddInfoPeItComponent,
-    AppellationCtrl2Component,
 
 
 
@@ -230,7 +234,7 @@ import { QuillModule } from '../quill';
     // Add Modal
     EntityAddModalService,
 
-    // Information (root) 
+    // Information (root)
     InformationActions,
 
     // Data Unit
@@ -241,6 +245,10 @@ import { QuillModule } from '../quill';
 
     // Existence Time
     ExistenceTimeActions,
+
+    // Appe Lang
+    AppeLangCreateCtrlAPIActions,
+    AppeLangCreateCtrlAPIEpics,
 
     // Role Set
     RoleSetActions,
@@ -288,6 +296,7 @@ import { QuillModule } from '../quill';
     // Existence Time
     ExistenceTimeEditableComponent,
     ExistenceTimeAddCtrlComponent,
+    AppeLangCreateCtrlComponent,
 
     // Role Set
     PeItRoleSetAddCtrlComponent,
@@ -309,7 +318,6 @@ import { QuillModule } from '../quill';
 
     // Value
     AppellationCtrlComponent,
-    AppellationCtrl2Component,
     AppellationViewComponent,
     LanguageCtrlComponent,
     LanguageViewComponent,

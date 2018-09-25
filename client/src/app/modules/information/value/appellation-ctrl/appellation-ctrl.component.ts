@@ -37,7 +37,12 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
 
   onChangeRegistered = false;
 
+  editorConfig = {
+    placeholder: 'Start typing...'
+  }
+
   constructor(private quillService: QuillService) { }
+
 
 
   ngOnDestroy() {

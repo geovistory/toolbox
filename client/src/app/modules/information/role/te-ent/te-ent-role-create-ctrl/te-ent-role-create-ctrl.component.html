@@ -2,7 +2,7 @@
 
   <form [formGroup]="formGroup" *ngIf="formGroup && roleState && formControlName" class="align-self-center gv-flex-grow-1">
 
-    <gv-appellation-ctrl *ngIf="roleState._appe" class="gv-flex-grow-1" [formControlName]="formControlName" (touched)="markAsTouched()"></gv-appellation-ctrl>
+    <gv-appellation-ctrl *ngIf="roleState._appe" class="gv-flex-grow-1 form-control p-0" [formControlName]="formControlName" (touched)="markAsTouched()"></gv-appellation-ctrl>
 
     <gv-language-ctrl *ngIf="roleState._lang" class="gv-flex-grow-1" [formControlName]="formControlName" (touched)="markAsTouched()"></gv-language-ctrl>
 

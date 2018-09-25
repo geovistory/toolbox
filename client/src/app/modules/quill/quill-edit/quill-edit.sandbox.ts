@@ -296,7 +296,7 @@ export default sandboxOf(QuillEditComponent, {
         <div class="container">
             <div class="row">
                 <div class="col-6">
-                    <gv-quill-edit [inputLike]="true" [quillDoc]="quillDoc" [editorConfig]="editorConfig"
+                    <gv-quill-edit [inputLike]="true" [quillDoc]="quillDoc" [editorConfig]="editorConfig" class="gv-outer-form-control"
                     (quillDocChange)="quillDoc=$event" (htmlChange)="html=$event" (blur)="(blurCount = blurCount + 1)"></gv-quill-edit>
                     <p>Some normal input element with .form-control:</p>
                     <input class="form-control" type="text" />

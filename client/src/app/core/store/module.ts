@@ -1,31 +1,32 @@
-import { NgModule } from '@angular/core';
-
+import { provideReduxForms } from '@angular-redux/form';
+import { NgReduxRouter, NgReduxRouterModule } from '@angular-redux/router';
 // Angular-redux ecosystem stuff.
 // @angular-redux/form and @angular-redux/router are optional
 // extensions that sync form and route location state between
 // our store and Angular.
-import { NgReduxModule, NgRedux, DevToolsExtension } from '@angular-redux/store';
-import { NgReduxRouterModule, NgReduxRouter } from '@angular-redux/router';
-import { provideReduxForms } from '@angular-redux/form';
-
-// Redux ecosystem stuff.
-import { createLogger } from 'redux-logger';
-import dynamicMiddlewares from 'redux-dynamic-middlewares'
+import { DevToolsExtension, NgRedux, NgReduxModule } from '@angular-redux/store';
+import { NgModule } from '@angular/core';
+import dynamicMiddlewares from 'redux-dynamic-middlewares';
 import { createEpicMiddleware } from 'redux-observable';
-
+import { ActiveProjectModule } from '../active-project/active-project.module';
+import { RootEpics } from './epics';
+import { INITIAL_STATE } from './initial-state';
 // The top-level reducers and epics that make up our app's logic.
 import { IAppState } from './model';
 import { rootReducer } from './reducers';
-import { INITIAL_STATE } from './initial-state';
-import { ActiveProjectActions } from '../active-project/active-project.action';
-import { RootEpics } from './epics';
+
+
+
 
 
 @NgModule({
-    imports: [NgReduxModule, NgReduxRouterModule],
+    imports: [
+        NgReduxModule,
+        NgReduxRouterModule,
+        ActiveProjectModule
+    ],
     providers: [
         NgReduxRouter,
-        ActiveProjectActions,
         RootEpics
     ]
 })

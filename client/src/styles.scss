@@ -485,14 +485,28 @@ gv-quill-edit.gv-hide-toolbar {
     }
 }
 
+// Outer form control is for nesting form controls
+// Assign this class to the wrapper form-control.
+.gv-outer-form-control {
+    @extend .form-control;
+    padding: 0;
+    overflow-y: visible;
+
+    .form-control{
+        border: 0;
+        height: $input-height-inner;
+    }
+}
+
 gv-quill-edit.gv-quill-input-like {
     @extend gv-quill-edit.gv-hide-toolbar;
     .gv-editor {
         height: auto;
     }
     .ql-editor {
-        overflow-y: visible;
         @extend .form-control;
+        border: 0;
+        height: $input-height-inner;
     }
 }
 
