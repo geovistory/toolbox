@@ -163,5 +163,9 @@
   "InfTypeNamespaceRel": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "InfTextProperty": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }
