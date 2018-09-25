@@ -21,7 +21,7 @@ export default sandboxOf(AppeLangCreateCtrlComponent, {
         template: `
             <div class="d-flex justify-content-center mt-5">
                 <div style="width:430px;height:400px" class="d-flex mr-4">
-                    <form #f="ngForm">
+                    <form #f="ngForm" class="gv-flex-grow-1">
                         <gv-appe-lang-create-ctrl name="roles" [(ngModel)]="model.roles" #roles="ngModel" required>
                         </gv-appe-lang-create-ctrl>
                     </form>

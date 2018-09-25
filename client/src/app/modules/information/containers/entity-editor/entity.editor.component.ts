@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore } from '@angular-redux/store';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ActiveProjectService, EntityEditorService, IAppState, Project } from 'app/core';
+import { ActiveProjectService, EntityEditorService, IAppState, Project, ProjectDetail } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest } from 'rxjs';
 import { InformationActions } from '../../information.actions';
@@ -48,10 +48,6 @@ export class EntityEditorComponent implements OnInit, OnDestroy {
 
   ) {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, informationReducer);
-
-    // trigger the activation of the project
-    this.activeProjectService.setActiveProject(this.activatedRoute.snapshot.parent.params['id']);
-
   }
 
   /**
@@ -79,13 +75,14 @@ export class EntityEditorComponent implements OnInit, OnDestroy {
   initEditor() {
 
     combineLatest(
-      this.ngRedux.select<Project>('activeProject'),
+      this.ngRedux.select<ProjectDetail>('activeProject'),
       this.activatedRoute.params
     ).subscribe(result => {
       const project = result[0]
       const params = result[1]
       if (
-        project && params && params['id'] &&
+        project && project.crm
+        && params && params['id'] &&
         (
           this.pkProject != project.pk_project ||
           params['id'] && this.pkEntity != params['id']

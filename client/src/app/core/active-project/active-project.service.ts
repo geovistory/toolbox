@@ -21,43 +21,6 @@ export class ActiveProjectService {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
 
-    this.changeProjectEventEmitter.subscribe(project => {
-      this.ngRedux.dispatch(this.actions.activeProjectUpdated(project))
-    })
-  }
-
-  onProjectChange(): EventEmitter<Project> {
-    return this.changeProjectEventEmitter;
-  }
-
-  private getProject(id: number): void {
-    this.projectApi.find({
-      where: {
-        'pk_project': id
-      },
-      include: ['labels', 'default_language']
-    }).subscribe((projects: Project[]) => {
-      this.project = projects[0];
-      this.changeProjectEventEmitter.emit(this.project);
-    });
-  }
-
-
-
-  /**
-   * setActiveProject - set the active project by providing the
-   * project's id. This id can be a number or a string, e.g. 134 or "134"
-   *
-   * @param  {number or string} id    Project Id
-   *
-   */
-  setActiveProject(id): void {
-    if (this.project && this.project.pk_project == id) {
-      this.changeProjectEventEmitter.emit(this.project);
-    } else {
-      this.getProject(id);
-      this.ngRedux.dispatch(this.actions.activeProjectLoadCrm(id))
-    }
   }
 
   /**
@@ -73,4 +36,18 @@ export class ActiveProjectService {
       this.ngRedux.dispatch(this.actions.loadProject(id))
     }
   }
+
+  /**
+   * Initialize the project crm
+   *
+   * @param id pk_project
+   */
+  initProjectCrm(id) {
+    const state = this.ngRedux.getState();
+    if (!state.activeProject || state.activeProject.pk_project != id || !state.activeProject.crm) {
+      this.ngRedux.dispatch(this.actions.activeProjectLoadCrm(id))
+    }
+  }
+
+
 }

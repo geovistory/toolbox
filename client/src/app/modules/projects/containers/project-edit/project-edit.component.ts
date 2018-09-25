@@ -3,7 +3,8 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { Subscription } from 'rxjs';
-import { ActiveProjectService, Project } from 'app/core';
+import { ActiveProjectService, Project, IAppState, ProjectDetail } from 'app/core';
+import { NgRedux } from '@angular-redux/store';
 
 
 @Component({
@@ -16,17 +17,18 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
   sourcesState: string;
   queryParams;
   projectId: number;
-  project: Project;
+  project: ProjectDetail;
 
   queryParamsSubsciption: Subscription;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private activeProjectService: ActiveProjectService,
+    private ngRedux: NgRedux<IAppState>,
     private router: Router,
     private location: Location
   ) {
-    this.activeProjectService.onProjectChange().subscribe((project: Project) => {
+    this.ngRedux.select<ProjectDetail>('activeProject').subscribe((project) => {
       this.project = project;
     })
     this.queryParamsSubsciption = activatedRoute.queryParams.subscribe(queryParams => {
@@ -34,13 +36,13 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
       this.informationState = queryParams['i']; // gets url part ?i='s100'
       this.sourcesState = queryParams['s']; // gets url part ?i='s100'
 
-      //if information state is s100, set sources state to s0
+      // if information state is s100, set sources state to s0
       if (this.informationState === 's100') this.informationGoToState100();
 
-      //if sources state is s100, set information state  to s0
+      // if sources state is s100, set information state  to s0
       if (this.sourcesState === 's100') this.sourcesGoToState100();
 
-      //if there is some error, set information state to s50
+      // if there is some error, set information state to s50
       if (this.sourcesState === undefined) this.sourcesGoToState50();
 
 
@@ -50,7 +52,9 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.activeProjectService.setActiveProject(this.projectId)
+    this.activeProjectService.initProject(this.projectId)
+    // trigger the activation of the project
+    this.activeProjectService.initProjectCrm(this.projectId);
   }
 
   ngOnDestroy() {
@@ -88,7 +92,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
     const currentParams: Params = Object.assign({}, this.activatedRoute.snapshot.queryParams);
 
     // Generate the URL:
-    let url = this.router.createUrlTree([], { queryParams: Object.assign(currentParams, newParams) }).toString();
+    const url = this.router.createUrlTree([], { queryParams: Object.assign(currentParams, newParams) }).toString();
 
     // Change the URL without navigate:
     this.location.go(url);

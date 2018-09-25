@@ -3,12 +3,12 @@
 </h3>
 
 <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
-  <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !label.valid }">
+  <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !appeLang.valid }">
     <label for="label">Name*</label>
-    <gv-appellation-ctrl autofocus class="form-control p-0" type="text" name="label" [(ngModel)]="model.label" #label="ngModel"
-      required></gv-appellation-ctrl>
-    <div *ngIf="f.submitted && !label.valid" class="help-block form-text text-danger">Name is required</div>
-    <div *ngFor="let message of errorMessages?.label" class="help-block form-text text-danger">{{message}}</div>
+    <gv-appe-lang-create-ctrl autofocus class="" type="text" name="appeLang" [(ngModel)]="model.appeLang" #appeLang="ngModel"
+      required></gv-appe-lang-create-ctrl>
+    <div *ngIf="f.submitted && !appeLang.valid" class="help-block form-text text-danger">Name is required</div>
+    <div *ngFor="let message of errorMessages?.appeLang" class="help-block form-text text-danger">{{message}}</div>
   </div>
 
   <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !description.valid }">

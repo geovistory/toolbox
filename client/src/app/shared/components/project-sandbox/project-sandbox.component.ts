@@ -28,6 +28,6 @@ export class ProjectSandboxComponent implements OnInit {
 
 
   setProject(){
-    this.activeProjectService.setActiveProject(this.pkProject);
+    this.activeProjectService.initProject(this.pkProject);
   }
 }

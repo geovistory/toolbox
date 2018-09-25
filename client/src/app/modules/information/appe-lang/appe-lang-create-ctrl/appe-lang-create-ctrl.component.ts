@@ -8,7 +8,7 @@ import { AppeLangCreateCtrl } from './api/appe-lang-create-ctrl.models';
 import { AppeLangCreateCtrlAPIEpics } from './api/appe-lang-create-ctrl.epics';
 import { AppeLangCreateCtrlAPIActions } from './api/appe-lang-create-ctrl.actions';
 import { appeLangCreateCtrlReducer } from './api/appe-lang-create-ctrl.reducer';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgForm } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, NgForm, FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { DfhConfig } from '../../shared/dfh-config';
 
 @WithSubStore({
@@ -41,15 +41,11 @@ export class AppeLangCreateCtrlComponent extends AppeLangCreateCtrlAPIActions im
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
 
-  model: {
-    // Language Role
-    lang: InfRole,
-    // Appellation Role
-    appe: InfRole
-  };
+  appeCtrl = new FormControl(null, [Validators.required])
+  langCtrl = new FormControl(null, [Validators.required])
 
   // Form
-  @ViewChild('form') ngForm: NgForm;
+  formGroup: FormGroup;
 
   // Emits when form is touched
   @Output() touched = new EventEmitter<void>();
@@ -59,27 +55,15 @@ export class AppeLangCreateCtrlComponent extends AppeLangCreateCtrlAPIActions im
   constructor(
     protected rootEpics: RootEpics,
     private epics: AppeLangCreateCtrlAPIEpics,
-    protected ngRedux: NgRedux<IAppState>
+    protected ngRedux: NgRedux<IAppState>,
+    fb: FormBuilder
   ) {
     super()
-    this.model = {
-      lang: new InfRole({
-        fk_entity: undefined,
-        fk_property: DfhConfig.PROPERTY_PK_R61_USED_LANGUAGE,
-        fk_temporal_entity: undefined,
-        language: new InfLanguage({
-          fk_class: 54,
-          lang_type: 'living',
-          scope: 'individual',
-          iso6392b: 'ger',
-          iso6392t: 'deu',
-          iso6391: 'de ',
-          notes: 'German',
-          pk_entity: 18605
-        })
-      }),
-      appe: undefined
-    }
+
+    this.formGroup = fb.group({
+      'appeCtrl': this.appeCtrl,
+      'langCtrl': this.langCtrl
+    })
   }
 
   getBasePath = () => this.basePath;
@@ -96,15 +80,15 @@ export class AppeLangCreateCtrlComponent extends AppeLangCreateCtrlAPIActions im
   }
 
   subscribeToFormChanges() {
-    this.ngForm.form.valueChanges.subscribe(vals => {
-      if (this.ngForm.form.valid && vals.appe && vals.lang) {
+    this.formGroup.valueChanges.subscribe(vals => {
+      if (this.formGroup.valid && vals.appeCtrl && vals.langCtrl) {
 
         const a = new InfRole({
           fk_property: DfhConfig.PROPERTY_PK_R64_USED_NAME,
           fk_entity: undefined,
           fk_temporal_entity: undefined,
           appellation: {
-            ...vals.appe.appellation,
+            ...vals.appeCtrl.appellation,
             fk_class: DfhConfig.CLASS_PK_APPELLATION
           }
         });
@@ -113,7 +97,7 @@ export class AppeLangCreateCtrlComponent extends AppeLangCreateCtrlAPIActions im
           fk_property: DfhConfig.PROPERTY_PK_R61_USED_LANGUAGE,
           fk_entity: undefined,
           fk_temporal_entity: undefined,
-          language: vals.lang.language
+          language: vals.langCtrl.language
         })
 
         this.roles = [l, a]
@@ -142,8 +126,8 @@ export class AppeLangCreateCtrlComponent extends AppeLangCreateCtrlAPIActions im
    */
   writeValue(roles: InfRole[]): void {
     if (roles) {
-      // this.model.lang = roles.find(role => role.fk_property === DfhConfig.PROPERTY_PK_R61_USED_LANGUAGE);
-      // this.model.appe = roles.find(role => role.fk_property === DfhConfig.PROPERTY_PK_R64_USED_NAME);
+      this.langCtrl.setValue(roles.find(role => role.fk_property === DfhConfig.PROPERTY_PK_R61_USED_LANGUAGE));
+      this.appeCtrl.setValue(roles.find(role => role.fk_property === DfhConfig.PROPERTY_PK_R64_USED_NAME));
     }
   }
 

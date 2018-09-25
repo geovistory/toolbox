@@ -1,12 +1,10 @@
-<form #form="ngForm">
+<form [formGroup]="formGroup">
   <div class="form-row">
     <div class="col gv-lang">
-      <label>Lang</label>
-      <gv-language-ctrl class="gv-outer-form-control p-0" name="lang" [(ngModel)]="model.lang" #lang="ngModel" required></gv-language-ctrl>
+      <gv-language-ctrl class="gv-outer-form-control p-0"  [formControlName]="'langCtrl'"></gv-language-ctrl>
     </div>
     <div class="col">
-      <label>Name</label>
-      <gv-appellation-ctrl class="form-control p-0" name="appe" [(ngModel)]="model.appe" #appe="ngModel" required></gv-appellation-ctrl>
+      <gv-appellation-ctrl class="form-control p-0" [formControlName]="'appeCtrl'"></gv-appellation-ctrl>
     </div>
   </div>
 </form>

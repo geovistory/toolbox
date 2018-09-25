@@ -44,16 +44,36 @@ export class ActiveProjectEpics {
 
       ofType(ActiveProjectActions.LOAD_PROJECT),
       switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-            /**
-           * Emit the global action that activates the loading bar
-           */
+        /**
+       * Emit the global action that activates the loading bar
+       */
         globalStore.next(this.loadingBarActions.startLoading());
 
-        this.projectApi.find({
-          where: {
-            'pk_project': action.meta.pk_project
-          },
-          include: ['labels', 'default_language']
+        this.projectApi.findComplex({
+          'where': ['pk_project', '=', action.meta.pk_project],
+          'include': {
+            'labels': {
+              '$relation': {
+                'name': 'labels',
+                'joinType': 'inner join',
+                'orderBy': [{ 'pk_label': 'asc' }]
+              }
+            },
+            'default_language': {
+              '$relation': {
+                'name': 'default_language',
+                'joinType': 'inner join',
+                'orderBy': [{ 'pk_language': 'asc' }]
+              },
+              'inf_language': {
+                '$relation': {
+                  'name': 'inf_language',
+                  'joinType': 'inner join',
+                  'orderBy': [{ 'pk_language': 'asc' }]
+                }
+              }
+            }
+          }
         })
           .subscribe(
             data => {

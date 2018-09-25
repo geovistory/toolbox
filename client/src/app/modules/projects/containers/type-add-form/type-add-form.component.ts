@@ -2,12 +2,13 @@ import { Component, OnDestroy, Input, OnInit, Output, EventEmitter } from '@angu
 import { SubstoreComponent } from 'app/core/models/substore-component';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState } from 'app/core';
+import { IAppState, InfRole, InfLanguage } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { TypeAddForm } from './api/type-add-form.models';
 import { TypeAddFormAPIEpics } from './api/type-add-form.epics';
 import { TypeAddFormAPIActions } from './api/type-add-form.actions';
 import { typeAddFormReducer } from './api/type-add-form.reducer';
+import { DfhConfig } from '../../../information/shared/dfh-config';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -27,7 +28,7 @@ export class TypeAddFormComponent extends TypeAddFormAPIActions implements OnIni
   localStore: ObservableStore<TypeAddForm>;
 
   // path to the substore
-  @Input() basePath: string[];
+  @Input() basePath = ['activeProject', 'classSettings', 'types', 'add'];
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
@@ -37,7 +38,7 @@ export class TypeAddFormComponent extends TypeAddFormAPIActions implements OnIni
 
   // Model of the form
   model: {
-    label?: string,
+    appeLang?: InfRole[],
     description?: string
   } = {};
 
@@ -49,6 +50,17 @@ export class TypeAddFormComponent extends TypeAddFormAPIActions implements OnIni
     protected ngRedux: NgRedux<IAppState>
   ) {
     super()
+    ngRedux.select<InfLanguage>(['activeProject', 'default_language', 'inf_language']).takeUntil(this.destroy$)
+      .subscribe(l => {
+
+        // assign the projects default language
+        this.model.appeLang = [new InfRole({
+          fk_entity: undefined,
+          fk_property: DfhConfig.PROPERTY_PK_R61_USED_LANGUAGE,
+          fk_temporal_entity: undefined,
+          language: new InfLanguage(l)
+        })]
+      })
   }
 
   getBasePath = () => this.basePath;

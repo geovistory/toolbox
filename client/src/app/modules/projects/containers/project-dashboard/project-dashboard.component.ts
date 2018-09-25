@@ -48,7 +48,6 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.activeProjectService.setActiveProject(this.id);
     this.startLoading();
 
     this.persistentItemVersionApi.searchInProject(this.id, '', 1, 1)
