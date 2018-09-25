@@ -76,4 +76,9 @@ export class TypeAddFormComponent extends TypeAddFormAPIActions implements OnIni
     this.destroy$.unsubscribe();
   }
 
+  onSubmit(){
+    // prepare InfPersistentItem
+    
+  }
+
 }
