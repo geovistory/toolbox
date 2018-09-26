@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService, IAppState } from 'app/core';
+import { NgRedux } from '@angular-redux/store';
 
 @Component({
   selector: 'gv-project-sandbox',
@@ -13,21 +14,22 @@ export class ProjectSandboxComponent implements OnInit {
   @Output() projectReady: EventEmitter<void> = new EventEmitter()
 
   constructor(
-    private activeProjectService:ActiveProjectService
+    private activeProjectService: ActiveProjectService,
+    ngRedux: NgRedux<IAppState>
   ) {
 
-    this.activeProjectService.onProjectChange().subscribe(success=>{
+    ngRedux.select(['activeProject']).subscribe(success => {
       this.projectReady.emit();
     })
 
-   }
+  }
 
   ngOnInit() {
-    if(this.pkProject) this.setProject();
+    if (this.pkProject) this.setProject();
   }
 
 
-  setProject(){
+  setProject() {
     this.activeProjectService.initProject(this.pkProject);
   }
 }

@@ -1,0 +1,21 @@
+<h2>
+    SystemTypes
+  </h2>
+  <p>
+    All SystemTypes.
+  </p>
+  
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">pk_entity</th>
+        <th scope="col">notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of (systemtypes$ | async)">
+        <td>{{item.pk_entity}}</td>
+        <td>{{item.notes}}</td>
+      </tr>
+    </tbody>
+  </table>

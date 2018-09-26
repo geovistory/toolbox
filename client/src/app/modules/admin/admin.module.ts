@@ -20,6 +20,9 @@ import { ClassUiContextAPIEpics } from './components/class-ui-context/api/class-
 import { NamespaceListComponent } from './components/namespace-list/namespace-list.component';
 import { NamespaceListAPIActions } from './components/namespace-list/api/namespace-list.actions';
 import { NamespaceListAPIEpics } from './components/namespace-list/api/namespace-list.epics';
+import { SystemTypeListAPIActions } from './components/system-type-list/api/system-type-list.actions';
+import { SystemTypeListAPIEpics } from './components/system-type-list/api/system-type-list.epics';
+import { SystemTypeListComponent } from './components/system-type-list/system-type-list.component';
 
 @NgModule({
   imports: [
@@ -31,7 +34,7 @@ import { NamespaceListAPIEpics } from './components/namespace-list/api/namespace
     DndModule,
     FormsModule
   ],
-  providers:[
+  providers: [
     ClassListAPIActions,
     ClassListAPIEpics,
     ClassAPIActions,
@@ -39,8 +42,17 @@ import { NamespaceListAPIEpics } from './components/namespace-list/api/namespace
     ClassUiContextAPIActions,
     ClassUiContextAPIEpics,
     NamespaceListAPIActions,
-    NamespaceListAPIEpics
+    NamespaceListAPIEpics,
+    SystemTypeListAPIActions,
+    SystemTypeListAPIEpics
   ],
-  declarations: [MainComponent, ClassComponent, ClassListComponent, ClassUiContextComponent, NamespaceListComponent]
+  declarations: [
+    MainComponent,
+    ClassComponent,
+    ClassListComponent,
+    ClassUiContextComponent,
+    NamespaceListComponent,
+    SystemTypeListComponent
+  ]
 })
 export class AdminModule { }

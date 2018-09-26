@@ -1,6 +1,6 @@
 {
   "name": "ComTextProperty",
-  "base": "PersistedModel",
+  "base": "ComEntity",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
@@ -30,9 +30,6 @@
     "fk_language": {
       "type": "number",
       "required": true
-    },
-    "notes": {
-      "type": "string"
     }
   },
   "validations": [],

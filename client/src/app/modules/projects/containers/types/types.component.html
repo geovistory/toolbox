@@ -24,12 +24,14 @@
 
 
     <ul>
-      <li *ngFor="let type of (items$ | async) | keys">{{type?.value?.notes}}</li>
+      <li *ngFor="let type of (items$ | async) | keys">{{getLabel(type.value)}}</li>
     </ul>
   </div>
 
+  <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div>
+
   <!-- Add new type -->
-  <gv-type-add-form *ngIf="(add$ | async)" (cancel)="closeAddForm()"></gv-type-add-form>
+  <gv-type-add-form *ngIf="(add$ | async)" (cancel)="closeAddForm()" (create)="createType($event)"></gv-type-add-form>
 
   <!-- Edit existing Type -->
 

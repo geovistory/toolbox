@@ -95,7 +95,7 @@ export class AppeLangCreateCtrlComponent extends AppeLangCreateCtrlAPIActions im
 
         const l = new InfRole({
           fk_property: DfhConfig.PROPERTY_PK_R61_USED_LANGUAGE,
-          fk_entity: undefined,
+          fk_entity: vals.langCtrl.language.pk_entity,
           fk_temporal_entity: undefined,
           language: vals.langCtrl.language
         })

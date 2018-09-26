@@ -41,15 +41,16 @@ exports.up = function (db, callback) {
 
   -- fk concerned entity
   ALTER TABLE information.text_property RENAME COLUMN fk_entity TO fk_concerned_entity;
-  ALTER TABLE information.text_property_vt RENAME COLUMN fk_entity TO fk_concerned_entity;
-  ALTER TABLE information.text_property ADD CONSTRAINT text_property_fk_concerned_entity_constraint FOREIGN KEY (fk_concerned_entity) REFERENCES information.entity (pk_entity);
-  
+  ALTER TABLE information.text_property_vt RENAME COLUMN fk_entity TO fk_concerned_entity;  
 
   -- not null constraints
   ALTER TABLE information.text_property ALTER COLUMN fk_system_type SET NOT NULL;
   ALTER TABLE information.text_property ALTER COLUMN fk_language SET NOT NULL;
   ALTER TABLE information.text_property ALTER COLUMN fk_concerned_entity SET NOT NULL;
   ALTER TABLE information.text_property ALTER COLUMN text_property_quill_doc SET NOT NULL;
+
+  -- unique identity contraint
+  ALTER TABLE information.text_property ADD CONSTRAINT text_property_identity_unique UNIQUE (fk_system_type,fk_language,fk_concerned_entity,text_property_quill_doc);
 
   `
   db.runSql(sql, callback)

@@ -97,6 +97,7 @@
       "property": [
         "find",
         "findById",
+        "findComplex",
         "__get__labels",
         "__get__text_properties",
         "selectedClassesOfProfile",

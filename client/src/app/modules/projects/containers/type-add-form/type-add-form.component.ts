@@ -1,14 +1,16 @@
-import { Component, OnDestroy, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnDestroy, Input, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { SubstoreComponent } from 'app/core/models/substore-component';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, InfRole, InfLanguage } from 'app/core';
+import { IAppState, InfRole, InfLanguage, ComConfig, InfPersistentItem, InfTemporalEntity } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { TypeAddForm } from './api/type-add-form.models';
 import { TypeAddFormAPIEpics } from './api/type-add-form.epics';
 import { TypeAddFormAPIActions } from './api/type-add-form.actions';
 import { typeAddFormReducer } from './api/type-add-form.reducer';
 import { DfhConfig } from '../../../information/shared/dfh-config';
+import { InfTextProperty } from '../../../../core/sdk/models/InfTextProperty';
+import { NgForm } from '@angular/forms';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -36,10 +38,14 @@ export class TypeAddFormComponent extends TypeAddFormAPIActions implements OnIni
   // Emitted when user clicks cancel
   @Output() cancel = new EventEmitter<void>();
 
+  @Output() create = new EventEmitter<InfPersistentItem>();
+
+  @ViewChild('f') ngForm: NgForm;
+
   // Model of the form
   model: {
     appeLang?: InfRole[],
-    description?: string
+    textProperty?: InfTextProperty
   } = {};
 
 
@@ -60,6 +66,14 @@ export class TypeAddFormComponent extends TypeAddFormAPIActions implements OnIni
           fk_temporal_entity: undefined,
           language: new InfLanguage(l)
         })]
+        this.model.textProperty = new InfTextProperty({
+          fk_concerned_entity: undefined,
+          text_property_quill_doc: undefined,
+          fk_system_type: ComConfig.PK_SYSTEM_TYPE__TEXT_PROPERY__DEFINITION,
+          fk_language: 19703,
+          language: new InfLanguage(l),
+        })
+
       })
   }
 
@@ -76,9 +90,30 @@ export class TypeAddFormComponent extends TypeAddFormAPIActions implements OnIni
     this.destroy$.unsubscribe();
   }
 
-  onSubmit(){
+  onSubmit() {
     // prepare InfPersistentItem
-    
+    console.log(this.ngForm.value)
+
+    const fk_class = this.ngRedux.getState().activeProject.classSettings.types.class.dfh_pk_class;
+
+    const peIt = new InfPersistentItem({
+      fk_class,
+      pi_roles: [
+        new InfRole({
+          fk_entity: undefined,
+          fk_temporal_entity: undefined,
+          fk_property: DfhConfig.PROPERTY_PK_R64_USED_NAME,
+          temporal_entity: new InfTemporalEntity({
+            fk_class: DfhConfig.CLASS_PK_APPELLATION_USE,
+            te_roles: this.model.appeLang
+          })
+        })
+      ],
+      text_properties: [this.model.textProperty]
+    })
+
+    this.create.emit(peIt);
+
   }
 
 }

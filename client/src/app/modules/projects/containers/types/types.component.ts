@@ -30,9 +30,6 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   // path to the substore
   basePath = ['activeProject', 'classSettings', 'types'];
 
-  // select observables of substore properties
-  @select() loading$: Observable<boolean>;
-
   //  class
   class$: Observable<DfhClass>;
   class: DfhClass;
@@ -57,11 +54,15 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   // flag indicatig if add form is visible
   @select() add$: Observable<boolean>;
 
+  // flag indicatig if loaing info is visible
+  @select() loading$: Observable<boolean>;
+
+
 
   constructor(
     protected rootEpics: RootEpics,
     private epics: TypesAPIEpics,
-    protected ngRedux: NgRedux<IAppState>
+    public ngRedux: NgRedux<IAppState>
   ) {
     super();
 
@@ -70,9 +71,9 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
     this.class$ = this.ngRedux.select<DfhClass>(['activeProject', 'classSettings', 'dfhClass'])
     this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
 
-    combineLatest(this.add$).takeUntil(this.destroy$).subscribe(d => {
-      const add = d[0];
-      this.listVisible = (add ? false : true);
+    combineLatest(this.add$, this.loading$).takeUntil(this.destroy$).subscribe(d => {
+      const add = d[0], loading = d[1];
+      this.listVisible = ((add || loading) ? false : true);
     })
   }
 
@@ -95,6 +96,18 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
     this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+  }
+
+  /**
+   * called when user creates a new type
+   */
+  createType(type: InfPersistentItem) {
+    this.create(type);
+  }
+
+
+  getLabel(peIt: InfPersistentItem) {
+    return peIt.pi_roles.map((r) => r.fk_)
   }
 
 }

@@ -115,6 +115,7 @@ import { QuillModule } from '../quill';
 import { AppeLangCreateCtrlComponent } from './appe-lang/appe-lang-create-ctrl/appe-lang-create-ctrl.component';
 import { AppeLangCreateCtrlAPIActions } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.actions';
 import { AppeLangCreateCtrlAPIEpics } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.epics';
+import { TextPropertyComponent } from './components/text-property/text-property.component';
 
 @NgModule({
   imports: [
@@ -225,6 +226,7 @@ import { AppeLangCreateCtrlAPIEpics } from './appe-lang/appe-lang-create-ctrl/ap
     LeafPeItLabelComponent,
     AddInfoTeEntComponent,
     AddInfoPeItComponent,
+    TextPropertyComponent,
 
 
 
@@ -328,7 +330,8 @@ import { AppeLangCreateCtrlAPIEpics } from './appe-lang/appe-lang-create-ctrl/ap
     PlaceCtrlComponent,
     PlaceViewComponent,
 
-
+    // Reusable
+    TextPropertyComponent
 
   ],
   entryComponents: [

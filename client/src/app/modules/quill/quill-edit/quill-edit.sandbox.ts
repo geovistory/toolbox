@@ -284,7 +284,7 @@ export default sandboxOf(QuillEditComponent, {
         </div>
         `
     })
-    .add('Quill-Edit | New text Custom Config ', {
+    .add('Quill-Edit | Input-Like ', {
         context: {
             blurCount: 0,
             quillDoc: {
@@ -332,5 +332,51 @@ export default sandboxOf(QuillEditComponent, {
         </div>
         `
     })
+    .add('Quill-Edit | Textarea-Like ', {
+        context: {
+            blurCount: 0,
+            quillDoc: { }
+        },
+        template: `
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <gv-quill-edit [textareaLike]="true" [editorConfig]="editorConfig" class="gv-outer-form-control"
+                    (quillDocChange)="quillDoc=$event" (htmlChange)="html=$event" (blur)="(blurCount = blurCount + 1)"></gv-quill-edit>
+                    <p>Some normal textarea element with .form-control:</p>
+                    <textarea class="form-control" type="text"></textarea>
+                </div>
+                <div class="col-6 font-sm" style="height:500px;">
+                    <strong>
+                    Latest Token Id: {{quillDoc.latestId}}
+                    </strong>
+                    <br>
+
+                    <strong>
+                    HTML:
+                    </strong>
+                    <br>
+                    <pre>
+                    {{html}}
+                    </pre>
+
+                    <strong>
+                    Blur Count: {{blurCount}}
+                    </strong>
+                    <br>
+
+                    <strong>
+                    JSON:
+                    </strong>
+
+                    <pre>
+                    {{quillDoc | json:2}}
+                    </pre>
+                </div>
+            </div>
+        </div>
+        `
+    })
+
 
 

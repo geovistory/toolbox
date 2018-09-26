@@ -1,0 +1,15 @@
+<form [formGroup]="formGroup">
+  <div class="form-row">
+    <div class="col">
+      <gv-quill-edit [textareaLike]="true" [quillDoc]="quillDoc" class="gv-outer-form-control" [ngClass]="{
+        'ng-touched': quillTouched, 
+        'ng-valid': quillValid,
+        'ng-invalid': !quillValid
+      }"
+        (quillDocChange)="quillDocChange($event)" (htmlChange)="html=$event" (blur)="onQuillBlur()"></gv-quill-edit>
+    </div>
+    <div class="col gv-lang">
+      <gv-language-search-typeahead [formControlName]="'langCtrl'" (touched)="markAsTouched()"></gv-language-search-typeahead>
+    </div>
+  </div>
+</form>

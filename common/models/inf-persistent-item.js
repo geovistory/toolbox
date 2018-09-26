@@ -86,8 +86,14 @@ module.exports = function (InfPersistentItem) {
       .then((resultingPeIts) => {
         // pick first item of array
         const resultingPeIt = resultingPeIts[0];
+        const res = resultingPeIt.toJSON();
 
-        // if there are roles…
+        // Array of Promises
+        const promiseArray = []
+
+        /******************************************
+         * pi-roles
+         ******************************************/
         if (requestedPeIt.pi_roles) {
 
           // prepare parameters
@@ -96,34 +102,73 @@ module.exports = function (InfPersistentItem) {
           //… filter roles that are truthy (not null), iterate over them,
           // return the promise that the PeIt will be
           // returned together with all nested items
-          return Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
+          const promise = Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
             // use the pk_entity from the created peIt to set the fk_entity of the role
             role.fk_entity = resultingPeIt.pk_entity;
             // find or create the teEnt and the role pointing to the teEnt
             return InfRole.findOrCreateInfRole(projectId, role);
-          })
-            .then((roles) => {
-
-              //attach the roles to peit.pi_roles
-              const res = resultingPeIt.toJSON();
-              res.pi_roles = [];
-              for (var i = 0; i < roles.length; i++) {
-                const role = roles[i];
-                if (role && role[0]) {
-                  res.pi_roles.push(role[0]);
-                }
+          }).then((roles) => {
+            //attach the roles to peit.pi_roles
+            res.pi_roles = [];
+            for (var i = 0; i < roles.length; i++) {
+              const role = roles[i];
+              if (role && role[0]) {
+                res.pi_roles.push(role[0]);
               }
+            }
+            return true;
 
-              return [res];
+          }).catch((err) => {
+            return err;
+          })
 
-            })
-            .catch((err) => {
-              return err;
-            })
+          // add promise for pi_roles
+          promiseArray.push(promise)
 
-        } else {
-          return resultingPeIts;
         }
+        
+        /******************************************
+         * text_properties
+         ******************************************/
+        if (requestedPeIt.text_properties) {
+
+          // prepare parameters
+          const InfTextProperty = InfPersistentItem.app.models.InfTextProperty;
+
+          //… filter items that are truthy (not null), iterate over them,
+          // return the promise that the PeIt will be
+          // returned together with all nested items
+          const promise = Promise.map(requestedPeIt.text_properties.filter(item => (item)), (item) => {
+            // use the pk_entity from the created peIt to set the fk_concerned_entity of the item
+            item.fk_concerned_entity = resultingPeIt.pk_entity;
+            // find or create the item
+            return InfTextProperty.findOrCreateInfTextProperty(projectId, item);
+          }).then((items) => {
+            //attach the items to peit.text_properties
+            res.text_properties = [];
+            for (var i = 0; i < items.length; i++) {
+              const item = items[i];
+              if (item && item[0]) {
+                res.text_properties.push(item[0]);
+              }
+            }
+            return true;
+
+          }).catch((err) => {
+            return err;
+          })
+
+          // add promise for text properties
+          promiseArray.push(promise)
+
+        }
+
+
+        if (promiseArray.length === 0) return resultingPeIts;
+        else return Promise.map(promiseArray, (promise) => promise).then(() => {
+          return [res]
+        });
+
       })
       .catch((err) => {
 

@@ -16,4 +16,5 @@ export class ComConfig {
     static readonly PK_PROPERTY_SET_EXISTENCE_TIME = 48;
 
 
-} 
+    static readonly PK_SYSTEM_TYPE__TEXT_PROPERY__DEFINITION = 162;
+}  

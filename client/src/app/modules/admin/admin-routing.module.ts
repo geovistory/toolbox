@@ -1,10 +1,11 @@
-import { Routes, RouterModule } from "@angular/router";
-import { NgModule } from "@angular/core";
-import { MainComponent } from "./components/main/main.component";
-import { ClassListComponent } from "./components/class-list/class-list.component";
-import { ClassComponent } from "./components/class/class.component";
-import { ClassUiContextComponent } from "./components/class-ui-context/class-ui-context.component";
-import { NamespaceListComponent } from "./components/namespace-list/namespace-list.component";
+import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { MainComponent } from './components/main/main.component';
+import { ClassListComponent } from './components/class-list/class-list.component';
+import { ClassComponent } from './components/class/class.component';
+import { ClassUiContextComponent } from './components/class-ui-context/class-ui-context.component';
+import { NamespaceListComponent } from './components/namespace-list/namespace-list.component';
+import { SystemTypeListComponent } from './components/system-type-list/system-type-list.component';
 
 
 const routes: Routes = [
@@ -29,6 +30,10 @@ const routes: Routes = [
       {
         path: 'namespaces',
         component: NamespaceListComponent
+      },
+      {
+        path: 'system-types',
+        component: SystemTypeListComponent
       }
     ]
   }

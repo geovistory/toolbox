@@ -1,10 +1,10 @@
 <form [formGroup]="formGroup">
   <div class="form-row">
-    <div class="col gv-lang">
-      <gv-language-ctrl class="gv-outer-form-control p-0"  [formControlName]="'langCtrl'"></gv-language-ctrl>
-    </div>
     <div class="col">
       <gv-appellation-ctrl class="form-control p-0" [formControlName]="'appeCtrl'"></gv-appellation-ctrl>
+    </div>
+    <div class="col gv-lang">
+      <gv-language-ctrl class="gv-outer-form-control p-0" [formControlName]="'langCtrl'"></gv-language-ctrl>
     </div>
   </div>
 </form>

@@ -1,10 +1,7 @@
 <div #toolbar class="gv-toolbar" [hidden]="!showDefaultToolbar">
 
     <span [hidden]="creatingAnnotation || readOnly">
-        <span className="ql-format-group">
-            <!-- Add buttons as you would before -->
-            <button class="ql-bold"></button>
-            <button class="ql-italic"></button>
+        <span class="ql-formats">
             <!-- Add font size dropdown -->
             <select class="ql-size">
                 <option value="small"></option>
@@ -13,10 +10,13 @@
                 <option value="large"></option>
                 <option value="huge"></option>
             </select>
-
+            <!-- Add buttons as you would before -->
+            <button class="ql-bold"></button>
+            <button class="ql-italic"></button>
+            <button class="ql-underline"></button>
         </span>
 
-        <span className="ql-format-group">
+        <span class="ql-formats">
             <select class="ql-header">
                 <!-- Note a missing, thus falsy value, is used to reset to default -->
                 <option selected></option>
