@@ -1,5 +1,4 @@
-import { PeItDetail, DfhClass, InfNamespace } from 'app/core';
-import { VocabularyItem } from '../../class-settings/api/class-settings.models';
+import { DfhClass, InfNamespace } from 'app/core';
 
 // Interface of this slice of store
 export interface TypesI {
