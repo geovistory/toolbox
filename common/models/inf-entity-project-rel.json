@@ -1,6 +1,6 @@
 {
   "name": "InfEntityProjectRel",
-  "base": "PersistedModel",
+  "base": "AbstractEntity",
   "idInjection": false,
   "options": {
     "validateUpsert": true,

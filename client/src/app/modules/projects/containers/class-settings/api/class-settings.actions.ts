@@ -1,13 +1,15 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ClassSettingsI } from './class-settings.models';
-import { DfhClass } from 'app/core';
+import { ClassSettingsI, VocabularyItem } from './class-settings.models';
+import { DfhClass, InfNamespace } from 'app/core';
 
 type Payload = ClassSettingsI;
 interface MetaData {
   dfhPkClass?: number;
   dfhClass?: DfhClass;
+  namespaces?: InfNamespace[]
+  vocabulary?: VocabularyItem;
 };
 export type ClassSettingsAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -18,6 +20,11 @@ export class ClassSettingsAPIActions {
   static readonly LOAD_SUCCEEDED = 'ClassSettings::LOAD_SUCCEEDED';
   static readonly LOAD_FAILED = 'ClassSettings::LOAD_FAILED';
 
+  static readonly DESTROY = 'ClassSettings::DESTROY';
+
+  /**************************************************
+   * Actions to manage initial loading
+   **************************************************/
   @dispatch()
   load = (dfhPkClass): ClassSettingsAPIAction => ({
     type: ClassSettingsAPIActions.LOAD,
@@ -31,9 +38,9 @@ export class ClassSettingsAPIActions {
     payload: null,
   })
 
-  loadSucceeded = (dfhClass: DfhClass): ClassSettingsAPIAction => ({
+  loadSucceeded = (dfhClass: DfhClass, namespaces: InfNamespace[]): ClassSettingsAPIAction => ({
     type: ClassSettingsAPIActions.LOAD_SUCCEEDED,
-    meta: { dfhClass },
+    meta: { dfhClass, namespaces },
     payload: null
   })
 
@@ -42,5 +49,20 @@ export class ClassSettingsAPIActions {
     meta: null,
     payload: null,
     error,
+  })
+
+  /**************************************************
+   * Actions to manage vocabularies
+   **************************************************/
+
+
+  /*********************************************************************
+  *  Method to distroy the slice of store
+  *********************************************************************/
+  @dispatch()
+  destroy = (): ClassSettingsAPIAction => ({
+    type: ClassSettingsAPIActions.DESTROY,
+    meta: null,
+    payload: null
   })
 }

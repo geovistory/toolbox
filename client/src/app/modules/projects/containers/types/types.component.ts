@@ -2,7 +2,7 @@ import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { SubstoreComponent } from 'app/core/models/substore-component';
 import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, DfhClass, ProjectDetail, InfPersistentItem } from 'app/core';
+import { IAppState, DfhClass, ProjectDetail, InfPersistentItem, InfNamespace } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { Types } from './api/types.models';
 import { TypesAPIEpics } from './api/types.epics';
@@ -10,6 +10,8 @@ import { TypesAPIActions } from './api/types.actions';
 import { typesReducer } from './api/types.reducer';
 import { DfhConfig } from '../../../information/shared/dfh-config';
 import { AppellationLabel } from '../../../information/shared/appellation-label';
+import { VocabularyItem } from '../class-settings/api/class-settings.models';
+import { ActivatedRoute } from '@angular/router';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -46,8 +48,12 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   project: ProjectDetail;
   projectLabel: string;
 
+  // active namespace
+  pkNamespace: number;
+
   // types
   @select() items$: Observable<{ [key: string]: InfPersistentItem }>;
+  @select() namespace$: Observable<InfNamespace>;
 
   // if true, the list / tree of types is visible
   listVisible: boolean;
@@ -63,9 +69,11 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   constructor(
     protected rootEpics: RootEpics,
     private epics: TypesAPIEpics,
-    public ngRedux: NgRedux<IAppState>
+    public ngRedux: NgRedux<IAppState>,
+    public activatedRoute: ActivatedRoute
   ) {
     super();
+    this.pkNamespace = this.activatedRoute.snapshot.params['pk_namespace'];
 
     this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p);
     this.projecPk$ = this.ngRedux.select<number>(['activeProject', 'pk_project']);
@@ -88,7 +96,7 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
       if (c && p && !this.class) {
         this.class = c;
         this.classLabel = c.dfh_standard_label;
-        this.load(DfhConfig.NAMESPACE_GEOVISTORY_ONGOING, p, c.dfh_pk_class)
+        this.load(this.pkNamespace, p, c.dfh_pk_class)
       }
     })
   }
@@ -112,7 +120,7 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
     return !peIt.pi_roles ? '' :
       peIt.pi_roles
         .filter(r => r.temporal_entity.fk_class === DfhConfig.CLASS_PK_APPELLATION_USE)
-        .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
+        .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
           .map(r => {
             return new AppellationLabel(r.appellation.appellation_label).getString()
           })[0])[0]

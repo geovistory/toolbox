@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfPersistentItemApi, DfhClassApi, InfPersistentItem } from 'app/core';
+import { LoadingBarActions, InfPersistentItemApi, DfhClassApi, InfPersistentItem, InfNamespaceApi, InfNamespace } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable, combineLatest } from 'rxjs';
@@ -7,14 +7,18 @@ import { switchMap, takeUntil } from 'rxjs/operators';
 import { TypesComponent } from '../types.component';
 import { TypesAPIActions, TypesAPIAction } from './types.actions';
 import * as InfConfig from '../../../../../../../../common/config/InfConfig';
+import { NotificationsAPIActions } from '../../../../../core/notifications/components/api/notifications.actions';
+import { Action } from 'redux';
 
 @Injectable()
 export class TypesAPIEpics {
   constructor(
     private peItApi: InfPersistentItemApi,
     private classApi: DfhClassApi,
+    private namespaceApi: InfNamespaceApi,
     private actions: TypesAPIActions,
-    private loadingBarActions: LoadingBarActions
+    private loadingBarActions: LoadingBarActions,
+    private notificationActions: NotificationsAPIActions
   ) { }
 
   public createEpics(c: TypesComponent): Epic {
@@ -43,8 +47,8 @@ export class TypesAPIEpics {
           /**
            * Prepare some api calls
            */
-          const queryTypes: Observable<InfPersistentItem[]> = this.peItApi.typesOfNamespaceClassAndProject(action.meta.pkNamespace, action.meta.pkProject, action.meta.pkTypedClass);
-          const queryClass = this.classApi.findComplex({
+          const types$: Observable<InfPersistentItem[]> = this.peItApi.typesOfNamespaceClassAndProject(action.meta.pkNamespace, action.meta.pkProject, action.meta.pkTypedClass);
+          const classes$ = this.classApi.findComplex({
             include: {
               ingoing_properties: {
                 $relation: {
@@ -57,12 +61,13 @@ export class TypesAPIEpics {
               }
             }
           });
+          const namespace$: Observable<InfNamespace> = this.namespaceApi.findById(action.meta.pkNamespace);
           /**
            * Subscribe to the api call
            */
-          combineLatest(queryClass, queryTypes)
+          combineLatest(classes$, types$, namespace$)
             .subscribe((data) => {
-              const classes = data[0], peits = data[1];
+              const classes = data[0], peits = data[1], namespace = data[2];
               /**
                * Emit the global action that completes the loading bar
                */
@@ -70,7 +75,7 @@ export class TypesAPIEpics {
               /**
                * Emit the local action on loading succeeded
                */
-              c.localStore.dispatch(this.actions.loadSucceeded(classes[0], peits));
+              c.localStore.dispatch(this.actions.loadSucceeded(classes[0], peits, namespace));
 
             }, error => {
               /**
@@ -96,7 +101,7 @@ export class TypesAPIEpics {
          * Filter the actions that triggers this epic
          */
         ofType(TypesAPIActions.CREATE),
-        switchMap((action: TypesAPIAction) => new Observable<FluxStandardAction<any>>((globalStore) => {
+        switchMap((action: TypesAPIAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
            */
@@ -111,7 +116,7 @@ export class TypesAPIEpics {
            */
           this.peItApi.findOrCreateType(
             c.ngRedux.getState().activeProject.pk_project,
-            InfConfig.PK_NAMESPACE__GEOVISTORY_ONGOING, // TODO: Dynamic loading of current namespace
+            c.localStore.getState().namespace.pk_entity,
             action.meta.type)
             .subscribe((data) => {
               /**
@@ -127,8 +132,13 @@ export class TypesAPIEpics {
               /**
                * Emit the global action that shows some loading error message
                */
-              // globalStore.next(this.loadingBarActions.completeLoading());
-              /**
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));              /**
               * Emit the local action on loading failed
               */
               c.localStore.dispatch(this.actions.createFailed({ status: '' + error.status }))

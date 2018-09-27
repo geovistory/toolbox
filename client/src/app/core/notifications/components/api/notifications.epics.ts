@@ -33,11 +33,15 @@ export class NotificationsAPIEpics {
         }),
         ofType(NotificationsAPIActions.ADD_TOAST),
         switchMap((action) => new Observable<FluxStandardAction<any>>((observer) => {
-
           /**
            * Add Toast
            */
           const a = action as NotificationsAPIAction;
+          if (!a.payload.options.title && !a.payload.options.msg) {
+            if (a.payload.type === 'error') {
+              a.payload.options.title = 'Oops, something went wrong!'
+            }
+          }
           this.toastyService[a.payload.type](a.payload.options);
 
         })),

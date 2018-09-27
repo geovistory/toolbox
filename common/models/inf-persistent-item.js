@@ -176,37 +176,41 @@ module.exports = function (InfPersistentItem) {
 
   }
 
+  /** 
+   * Check if authorized to create type
+   * - pk_namespace must be of "Geovistory Ongoing"
+   * - or pk_project must be in fk_project of namespace  
+   */
+  InfPersistentItem.beforeRemote('findOrCreateType', function (context, obj, next) {
+    const pk_project = context.req.query.pk_project;
+    const pk_namespace = context.req.query.pk_namespace;
+    const errorMsg = 'You\'re not authorized to perform this action.';
+    // let pass if namespace is "Geovistory Ongoing"
+    if (pk_namespace === InfConfig.PK_NAMESPACE__GEOVISTORY_ONGOING) {
+      next()
+    }
+
+    return InfPersistentItem.app.models.InfNamespace.findById(pk_namespace)
+      .then((nmsp) => {
+        // let pass if namespace belongs to project
+        if (nmsp && nmsp.fk_project == pk_project) {
+          next();
+        }
+        else return Promise.reject(new Error(errorMsg));;
+      })
+      .catch(() => {
+        return Promise.reject(new Error(errorMsg))
+      })
+
+  });
+
   /**
    * Remote method to create instances of E55 types.
    * 
    * Adds a type_namespace_rel between peIt and namespace
    * 
-   * TODO: ACL che 
    */
   InfPersistentItem.findOrCreateType = function (pk_project, pk_namespace, data, ctx) {
-
-    /** 
-     * Check if authorized
-     * - pk_namespace must be of "Geovistory Ongoing"
-     * TODO: - or pk_project must be in fk_project of namespace  
-     */
-    if (pk_namespace !== InfConfig.PK_NAMESPACE__GEOVISTORY_ONGOING) {
-      return new Error('Authorization needed')
-    }
-
-    const dataObject = {
-      pk_entity: data.pk_entity,
-      notes: data.notes,
-      fk_class: data.fk_class
-    };
-
-    let requestedPeIt;
-
-    if (ctx) {
-      requestedPeIt = ctx.req.body;
-    } else {
-      requestedPeIt = data;
-    }
 
     // Add type_namespace_rel
     return InfPersistentItem.findOrCreatePeIt(pk_project, data, ctx)

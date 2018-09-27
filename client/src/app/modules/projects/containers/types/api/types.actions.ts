@@ -2,7 +2,7 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { TypesI } from './types.models';
-import { InfPersistentItem, DfhClass } from 'app/core';
+import { InfPersistentItem, DfhClass, InfNamespace } from 'app/core';
 
 type Payload = TypesI;
 interface MetaData {
@@ -11,7 +11,8 @@ interface MetaData {
   pkTypedClass?: number,
   types?: InfPersistentItem[],
   typeClass?: DfhClass,
-  type?: InfPersistentItem
+  type?: InfPersistentItem,
+  namespace?: InfNamespace
 };
 export type TypesAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -50,9 +51,9 @@ export class TypesAPIActions {
     payload: null,
   })
 
-  loadSucceeded = (typeClass: DfhClass, types: InfPersistentItem[]): TypesAPIAction => ({
+  loadSucceeded = (typeClass: DfhClass, types: InfPersistentItem[], namespace: InfNamespace): TypesAPIAction => ({
     type: TypesAPIActions.LOAD_SUCCEEDED,
-    meta: { typeClass, types },
+    meta: { typeClass, types, namespace },
     payload: null
   })
 

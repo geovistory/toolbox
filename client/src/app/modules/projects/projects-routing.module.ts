@@ -91,7 +91,7 @@ const routes: Routes = [
             component: ClassSettingsComponent,
             children: [
               {
-                path: 'types',
+                path: 'types/:pk_namespace',
                 component: TypesComponent
               }
             ]

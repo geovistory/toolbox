@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, DfhClassApi, DfhClass } from 'app/core';
+import { LoadingBarActions, DfhClassApi, DfhClass, InfNamespaceApi } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable';
-import { Observable } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { Observable, combineLatest } from 'rxjs';
+import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ClassSettingsComponent } from '../class-settings.component';
 import { ClassSettingsAPIActions, ClassSettingsAPIAction } from './class-settings.actions';
 
@@ -11,12 +11,15 @@ import { ClassSettingsAPIActions, ClassSettingsAPIAction } from './class-setting
 export class ClassSettingsAPIEpics {
   constructor(
     private classApi: DfhClassApi,
+    private namespaceApi: InfNamespaceApi,
     private actions: ClassSettingsAPIActions,
     private loadingBarActions: LoadingBarActions
   ) { }
 
   public createEpics(c: ClassSettingsComponent): Epic {
-    return combineEpics(this.createLoadClassSettingsEpic(c));
+    return combineEpics(
+      this.createLoadClassSettingsEpic(c)
+    )
   }
 
   private createLoadClassSettingsEpic(c: ClassSettingsComponent): Epic {
@@ -36,35 +39,39 @@ export class ClassSettingsAPIEpics {
            */
           c.localStore.dispatch(this.actions.loadStarted());
           /**
-           * Do some api call
+           * Do some api calls
            */
-          this.classApi.findById(action.meta.dfhPkClass) // <- change api call here
-            /**
-             * Subscribe to the api call
-             */
-            .subscribe((data: DfhClass) => {
-              /**
-               * Emit the global action that completes the loading bar
-               */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              /**
-               * Emit the local action on loading succeeded
-               */
-              c.localStore.dispatch(this.actions.loadSucceeded(data));
+          const cla$: Observable<DfhClass> = this.classApi.findById(action.meta.dfhPkClass)
+          const nmsp$ = this.namespaceApi.findWhereProjectOrHasTypes(action.meta.dfhPkClass, c.project.pk_project);
 
-            }, error => {
-              /**
-               * Emit the global action that shows some loading error message
-               */
-              // globalStore.next(this.loadingBarActions.completeLoading());
-              /**
-              * Emit the local action on loading failed
-              */
-              c.localStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
-            })
+          /**
+           * Subscribe to the api calls
+           */
+          combineLatest(cla$, nmsp$).subscribe((data) => {
+            const cla = data[0], nmsp = data[1];
+            /**
+             * Emit the global action that completes the loading bar
+             */
+            globalStore.next(this.loadingBarActions.completeLoading());
+            /**
+             * Emit the local action on loading succeeded
+             */
+            c.localStore.dispatch(this.actions.loadSucceeded(cla, nmsp));
+
+          }, error => {
+            /**
+             * Emit the global action that shows some loading error message
+             */
+            // globalStore.next(this.loadingBarActions.completeLoading());
+            /**
+            * Emit the local action on loading failed
+            */
+            c.localStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
+          })
         })),
         takeUntil(c.destroy$)
       )
     }
   }
+
 }

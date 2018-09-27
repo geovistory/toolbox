@@ -451,7 +451,7 @@ export class U {
 
             else {
                 console.warn('labelFromRoleDetail: This kind of RoleDetail does not produce labels');
-                
+
             }
         }
         else {
@@ -1046,5 +1046,19 @@ export class U {
         const dayNumber = Math.floor(julianSeconds / secondsOfFullDay);
         const secondsOfDay = julianSeconds % secondsOfFullDay;
         return new Cesium.JulianDate(dayNumber, secondsOfDay)
+    }
+
+    /**
+     * Returns true if the given object has a
+     * entity_version_project_rels[0].is_in_project === true
+     * Else returns false;
+     */
+    static entityIsInProject = (entity: any): boolean => {
+        if (
+            entity && entity.entity_version_project_rels && 
+            entity.entity_version_project_rels[0] &&
+            entity.entity_version_project_rels[0].is_in_project
+        ) return true;
+        else return false;
     }
 }

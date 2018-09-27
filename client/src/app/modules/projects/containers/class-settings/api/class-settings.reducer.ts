@@ -9,22 +9,41 @@ export function classSettingsReducer(state: ClassSettings = INITIAL_STATE, a: Ac
 
   const action = a as ClassSettingsAPIAction;
 
+  /**************************************************
+   * Reducers to manage initial loading
+   **************************************************/
   switch (action.type) {
     case ClassSettingsAPIActions.LOAD_STARTED:
-      return {
+      state = {
         ...state,
-        dfhClass: undefined
+        dfhClass: undefined,
+        namespaces: undefined
       };
+      break;
     case ClassSettingsAPIActions.LOAD_SUCCEEDED:
-      return {
+      state = {
         ...state,
-        dfhClass: action.meta.dfhClass
+        dfhClass: action.meta.dfhClass,
+        namespaces: action.meta.namespaces
       };
+      break;
     case ClassSettingsAPIActions.LOAD_FAILED:
-      return {
+      state = {
         ...state,
-        dfhClass: undefined
+        dfhClass: undefined,
+        namespaces: undefined
       };
+      break;
+
+    /**************************************************
+     * Reducers to manage vocabularies
+     **************************************************/
+
+    /*****************************************************
+    * Reducers called on destroy of component
+    *****************************************************/
+    case ClassSettingsAPIActions.DESTROY:
+      return undefined;
   }
 
   return state;

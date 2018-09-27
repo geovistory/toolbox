@@ -1,12 +1,15 @@
-import { PeItDetail, DfhClass } from 'app/core';
+import { PeItDetail, DfhClass, InfNamespace } from 'app/core';
+import { VocabularyItem } from '../../class-settings/api/class-settings.models';
 
 // Interface of this slice of store
 export interface TypesI {
     items?: {};
     add?: boolean;
+    edit?: boolean;
     class?: DfhClass;
     loading?: boolean;
     error?: any;
+    namespace?: InfNamespace;
 }
 
 // Class of this slice of store
@@ -16,6 +19,7 @@ export class Types implements TypesI {
     loading?: boolean;
     class?: DfhClass;
     error?: any;
+    namespace?: InfNamespace;
 
     constructor(data?: TypesI) {
         Object.assign(this, data);

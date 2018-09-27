@@ -13,7 +13,9 @@ export function typesReducer(state: Types = INITIAL_STATE, a: Action): Types {
     case TypesAPIActions.LOAD_STARTED:
       state = {
         ...state,
-        items: {}
+        items: {},
+        class: undefined,
+        namespace: undefined
       };
       break;
 
@@ -21,13 +23,16 @@ export function typesReducer(state: Types = INITIAL_STATE, a: Action): Types {
       state = {
         ...state,
         items: indexBy(prop('pk_entity'), action.meta.types),
-        class: action.meta.typeClass
+        class: action.meta.typeClass,
+        namespace: action.meta.namespace
       };
       break;
     case TypesAPIActions.LOAD_FAILED:
       state = {
         ...state,
-        items: {}
+        items: {},
+        class: undefined,
+        namespace: undefined
       };
       break;
 
