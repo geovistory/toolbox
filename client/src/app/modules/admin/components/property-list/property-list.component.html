@@ -1,0 +1,58 @@
+<h2>
+  Propertys
+</h2>
+<p>
+  All Properties.
+</p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">dfh_has_domain</th>
+      <th scope="col">dfh_standard_label</th>
+      <th scope="col">dfh_has_range</th>
+      <th scope="col">gui label sg</th>
+      <th scope="col">gui label pl</th>
+      <th scope="col">gui label sg inv</th>
+      <th scope="col">gui label pl inv</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of (propertys$ | async)">
+      <td>
+        <a href routerLink="../classes/{{item.dfh_has_domain}}">{{item?.domain_class?.dfh_identifier_in_namespace}}
+          {{item?.domain_class?.dfh_standard_label}}</a>
+        <small class="text-muted ml-2">{{item.dfh_has_domain}}</small>
+      </td>
+      <td>
+        {{item.dfh_identifier_in_namespace}} {{item.dfh_standard_label}}
+        <small class="text-muted">{{item.dfh_pk_property}}</small>
+      </td>
+      <td>
+        <a href routerLink="../classes/{{item.dfh_has_range}}">{{item?.range_class?.dfh_identifier_in_namespace}}
+          {{item?.range_class?.dfh_standard_label}}</a>
+        <small class="text-muted ml-2">{{item.dfh_has_range}}</small>
+      </td>
+      <td>
+        <span *ngFor="let label of item.label_sg">
+          {{label.dfh_label}}
+        </span>
+      </td>
+      <td>
+        <span *ngFor="let label of item.label_pl">
+          {{label.dfh_label}}
+        </span>
+      </td>
+      <td>
+        <span *ngFor="let label of item.label_inversed_sg">
+          {{label.dfh_label}}
+        </span>
+      </td>
+      <td>
+        <span *ngFor="let label of item.label_inversed_pl">
+          {{label.dfh_label}}
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</table>

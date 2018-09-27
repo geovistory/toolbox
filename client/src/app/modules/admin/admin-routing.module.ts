@@ -6,6 +6,7 @@ import { ClassComponent } from './components/class/class.component';
 import { ClassUiContextComponent } from './components/class-ui-context/class-ui-context.component';
 import { NamespaceListComponent } from './components/namespace-list/namespace-list.component';
 import { SystemTypeListComponent } from './components/system-type-list/system-type-list.component';
+import { PropertyListComponent } from './components/property-list/property-list.component';
 
 
 const routes: Routes = [
@@ -28,13 +29,17 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'properties',
+        component: PropertyListComponent
+      },
+      {
         path: 'namespaces',
         component: NamespaceListComponent
       },
       {
         path: 'system-types',
         component: SystemTypeListComponent
-      }
+      },
     ]
   }
 ];

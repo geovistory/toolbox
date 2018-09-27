@@ -23,6 +23,9 @@ import { NamespaceListAPIEpics } from './components/namespace-list/api/namespace
 import { SystemTypeListAPIActions } from './components/system-type-list/api/system-type-list.actions';
 import { SystemTypeListAPIEpics } from './components/system-type-list/api/system-type-list.epics';
 import { SystemTypeListComponent } from './components/system-type-list/system-type-list.component';
+import { PropertyListAPIActions } from './components/property-list/api/property-list.actions';
+import { PropertyListAPIEpics } from './components/property-list/api/property-list.epics';
+import { PropertyListComponent } from './components/property-list/property-list.component';
 
 @NgModule({
   imports: [
@@ -44,11 +47,14 @@ import { SystemTypeListComponent } from './components/system-type-list/system-ty
     NamespaceListAPIActions,
     NamespaceListAPIEpics,
     SystemTypeListAPIActions,
-    SystemTypeListAPIEpics
+    SystemTypeListAPIEpics,
+    PropertyListAPIActions,
+    PropertyListAPIEpics
   ],
   declarations: [
     MainComponent,
     ClassComponent,
+    PropertyListComponent,
     ClassListComponent,
     ClassUiContextComponent,
     NamespaceListComponent,

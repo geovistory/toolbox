@@ -1,0 +1,57 @@
+import { dispatch } from '@angular-redux/store';
+import { Injectable } from '@angular/core';
+import { FluxStandardAction } from 'flux-standard-action';
+import { PropertyListI } from './property-list.models';
+import { DfhProperty } from 'app/core/sdk/models/DfhProperty';
+
+type Payload = PropertyListI;
+interface MetaData {
+  propertys?: DfhProperty[]
+};
+export type PropertyListAPIAction = FluxStandardAction<Payload, MetaData>;
+
+@Injectable()
+export class PropertyListAPIActions {
+  static readonly LOAD = 'PropertyList::LOAD';
+  static readonly LOAD_STARTED = 'PropertyList::LOAD_STARTED';
+  static readonly LOAD_SUCCEEDED = 'PropertyList::LOAD_SUCCEEDED';
+  static readonly LOAD_FAILED = 'PropertyList::LOAD_FAILED';
+
+  static readonly DESTROY = 'PropertyList::DESTROY';
+
+  @dispatch()
+  load = (): PropertyListAPIAction => ({
+    type: PropertyListAPIActions.LOAD,
+    meta: null,
+    payload: null,
+  });
+
+  loadStarted = (): PropertyListAPIAction => ({
+    type: PropertyListAPIActions.LOAD_STARTED,
+    meta: null,
+    payload: null,
+  })
+
+  loadSucceeded = (propertys: DfhProperty[]): PropertyListAPIAction => ({
+    type: PropertyListAPIActions.LOAD_SUCCEEDED,
+    meta: null,
+    payload: { propertys }
+  })
+
+  loadFailed = (error): PropertyListAPIAction => ({
+    type: PropertyListAPIActions.LOAD_FAILED,
+    meta: null,
+    payload: null,
+    error,
+  })
+
+  /*********************************************************************
+  *  Method to distroy the slice of store
+  *********************************************************************/
+  @dispatch()
+  destroy = (): PropertyListAPIAction => ({
+    type: PropertyListAPIActions.DESTROY,
+    meta: null,
+    payload: null
+  })
+}
