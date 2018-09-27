@@ -53,7 +53,18 @@
   },
   "validations": [],
   "relations": {},
-  "acls": [],
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "updateEprAttributes",
+        "patchAttributes",
+        "patchOrCreate"
+      ]
+    }
+  ],
   "methods": {
     "updateEprAttributes": {
       "accepts": [
