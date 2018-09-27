@@ -63,7 +63,8 @@
         "nestedObjectOfProject",
         "nestedObjectOfRepo",
         "changePeItProjectRelation",
-        "typesOfNamespaceClassAndProject"
+        "typesOfNamespaceClassAndProject",
+        "findOrCreateType"
       ]
     }
   ],
@@ -184,6 +185,54 @@
       "description": "Find or create a InfPersistentItem.",
       "http": {
         "path": "/findOrCreate",
+        "verb": "post"
+      }
+    },
+    "findOrCreateType": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_namespace",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": "InfPersistentItem",
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Find or create a InfPersistentItem.",
+      "http": {
+        "path": "/find-or-create-type",
         "verb": "post"
       }
     },

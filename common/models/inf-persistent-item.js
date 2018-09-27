@@ -126,7 +126,7 @@ module.exports = function (InfPersistentItem) {
           promiseArray.push(promise)
 
         }
-        
+
         /******************************************
          * text_properties
          ******************************************/
@@ -176,6 +176,57 @@ module.exports = function (InfPersistentItem) {
 
   }
 
+  /**
+   * Remote method to create instances of E55 types.
+   * 
+   * Adds a type_namespace_rel between peIt and namespace
+   * 
+   * TODO: ACL che 
+   */
+  InfPersistentItem.findOrCreateType = function (pk_project, pk_namespace, data, ctx) {
+
+    /** 
+     * Check if authorized
+     * - pk_namespace must be of "Geovistory Ongoing"
+     * TODO: - or pk_project must be in fk_project of namespace  
+     */
+    if (pk_namespace !== InfConfig.PK_NAMESPACE__GEOVISTORY_ONGOING) {
+      return new Error('Authorization needed')
+    }
+
+    const dataObject = {
+      pk_entity: data.pk_entity,
+      notes: data.notes,
+      fk_class: data.fk_class
+    };
+
+    let requestedPeIt;
+
+    if (ctx) {
+      requestedPeIt = ctx.req.body;
+    } else {
+      requestedPeIt = data;
+    }
+
+    // Add type_namespace_rel
+    return InfPersistentItem.findOrCreatePeIt(pk_project, data, ctx)
+      .then(resultingPeIts => {
+        const res = resultingPeIts[0]
+
+        const InfTypeNamespaceRel = InfPersistentItem.app.models.InfTypeNamespaceRel;
+        const x = new InfTypeNamespaceRel({
+          fk_persistent_item: res.pk_entity,
+          fk_namespace: pk_namespace
+        })
+
+        // create it in DB
+        return x.save().then(tyNaRel => {
+          return [res]
+        });
+
+      })
+
+  }
 
   InfPersistentItem.searchInProject = function (projectId, searchString, limit, page, cb) {
 
@@ -716,7 +767,7 @@ module.exports = function (InfPersistentItem) {
    *
    * Eager loading
    *  - TODO: The entity_associations of property "has broader term" used for hierarchy
-   *  - TODO: The labels of given language
+   *  - TODO: The appellations of given language
    * 
    * @param pk_namespace
    * @param pk_project
@@ -791,6 +842,54 @@ module.exports = function (InfPersistentItem) {
               "name": "ingoing_properties",
               "joinType": "inner join",
               where: ["dfh_pk_property", "=", pkProperty]
+            }
+          }
+        },
+        "pi_roles": {
+          "$relation": {
+            "name": "pi_roles",
+            "joinType": "left join"
+          },
+          "entity_version_project_rels": innerJoinThisProject,
+          "temporal_entity": {
+            "$relation": {
+              "name": "temporal_entity",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+            "entity_version_project_rels": innerJoinThisProject,
+            "te_roles": {
+              "$relation": {
+                "name": "te_roles",
+                "joinType": "inner join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              },
+              "entity_version_project_rels": innerJoinThisProject,
+              "appellation": {
+                "$relation": {
+                  "name": "appellation",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                },
+                // "entity_version_project_rels": innerJoinThisProject
+              },
+              "language": {
+                "$relation": {
+                  "name": "language",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
+                // ,
+                // "entity_version_project_rels": innerJoinThisProject
+              }
             }
           }
         }

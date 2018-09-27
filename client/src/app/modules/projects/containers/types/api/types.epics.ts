@@ -109,7 +109,10 @@ export class TypesAPIEpics {
           /**
            * Subscribe to the api call
            */
-          this.peItApi.findOrCreatePeIt(c.ngRedux.getState().activeProject.pk_project, action.meta.type)
+          this.peItApi.findOrCreateType(
+            c.ngRedux.getState().activeProject.pk_project,
+            InfConfig.PK_NAMESPACE__GEOVISTORY_ONGOING, // TODO: Dynamic loading of current namespace
+            action.meta.type)
             .subscribe((data) => {
               /**
                * Emit the global action that completes the loading bar

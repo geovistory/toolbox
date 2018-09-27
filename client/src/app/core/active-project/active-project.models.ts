@@ -5,7 +5,7 @@ import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/a
 
 export interface ProjectDetail extends ProjectInterface {
     crm?: ProjectCrm,
-    classSettings: ClassSettingsI
+    classSettings?: ClassSettingsI
 }
 
 export interface ProjectCrm {

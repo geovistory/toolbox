@@ -17,7 +17,13 @@ const InfConfig = {
     PK_CLASS_PK_HAS_TYPE_MAP: {
         363: 1110, // Geographical Place
         441: 1190, // Built Work
-    }
+    },
+
+
+    /**
+     * Primary Key of Namespace "Geovistory Ongoing"
+     */
+    PK_NAMESPACE__GEOVISTORY_ONGOING: 80442
 
 }
 module.exports = InfConfig;

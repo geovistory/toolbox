@@ -24,7 +24,7 @@
 
 
     <ul>
-      <li *ngFor="let type of (items$ | async) | keys">{{getLabel(type.value)}}</li>
+      <li *ngFor="let type of (items$ | async) | keys">{{getLabel(type.value) | json}}</li>
     </ul>
   </div>
 

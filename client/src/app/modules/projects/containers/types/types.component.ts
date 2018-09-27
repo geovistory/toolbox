@@ -9,6 +9,7 @@ import { TypesAPIEpics } from './api/types.epics';
 import { TypesAPIActions } from './api/types.actions';
 import { typesReducer } from './api/types.reducer';
 import { DfhConfig } from '../../../information/shared/dfh-config';
+import { AppellationLabel } from '../../../information/shared/appellation-label';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -107,7 +108,15 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
 
 
   getLabel(peIt: InfPersistentItem) {
-    return peIt.pi_roles.map((r) => r.fk_)
+
+    return !peIt.pi_roles ? '' :
+      peIt.pi_roles
+        .filter(r => r.temporal_entity.fk_class === DfhConfig.CLASS_PK_APPELLATION_USE)
+        .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
+          .map(r => {
+            return new AppellationLabel(r.appellation.appellation_label).getString()
+          })[0])[0]
+
   }
 
 }
