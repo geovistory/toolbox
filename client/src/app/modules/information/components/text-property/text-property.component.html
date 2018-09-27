@@ -6,7 +6,7 @@
         'ng-valid': quillValid,
         'ng-invalid': !quillValid
       }"
-        (quillDocChange)="quillDocChange($event)" (htmlChange)="html=$event" (blur)="onQuillBlur()"></gv-quill-edit>
+        (quillDocChange)="quillDocChange($event)" (blur)="onQuillBlur()"></gv-quill-edit>
     </div>
     <div class="col gv-lang">
       <gv-language-search-typeahead [formControlName]="'langCtrl'" (touched)="markAsTouched()"></gv-language-search-typeahead>

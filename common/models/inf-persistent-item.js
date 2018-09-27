@@ -1,7 +1,7 @@
 'use strict';
 
 const Promise = require('bluebird');
-const InfConfig = require('../config/InfConfig');
+const Config = require('../config/Config');
 
 
 module.exports = function (InfPersistentItem) {
@@ -186,7 +186,7 @@ module.exports = function (InfPersistentItem) {
     const pk_namespace = context.req.query.pk_namespace;
     const errorMsg = 'You\'re not authorized to perform this action.';
     // let pass if namespace is "Geovistory Ongoing"
-    if (pk_namespace === InfConfig.PK_NAMESPACE__GEOVISTORY_ONGOING) {
+    if (pk_namespace === Config.PK_NAMESPACE__GEOVISTORY_ONGOING) {
       next()
     }
 
@@ -781,7 +781,7 @@ module.exports = function (InfPersistentItem) {
 
     // get the pk_property of the property leading from the typed class to the type class
     // E.g. get the pk_property of "has geographical place type – histP8" for the pk_class of "histC8 Geographical Place"
-    const pkProperty = InfConfig.PK_CLASS_PK_HAS_TYPE_MAP[pk_typed_class] ? InfConfig.PK_CLASS_PK_HAS_TYPE_MAP[pk_typed_class] : -1;
+    const pkProperty = Config.PK_CLASS_PK_HAS_TYPE_MAP[pk_typed_class] ? Config.PK_CLASS_PK_HAS_TYPE_MAP[pk_typed_class] : -1;
 
     const innerJoinThisProject = {
       "$relation": {

@@ -5,7 +5,7 @@
  * It can be used by the server and by the client application.
  * 
  */
-const InfConfig = {
+const Config = {
 
     /**
      * This parameter maps the primary keys of classes
@@ -26,4 +26,4 @@ const InfConfig = {
     PK_NAMESPACE__GEOVISTORY_ONGOING: 80442
 
 }
-module.exports = InfConfig;
+module.exports = Config;

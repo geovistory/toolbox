@@ -64,12 +64,12 @@
   </form>
 
   <!-- Results Count -->
-  <div class="text-muted pl-3 mt-2">
+  <div class="text-muted pl-3 mt-2" [hidden]="(loading$ | async)">
     {{(filteredItems$ | async)?.length}} Results
   </div>
 
   <!-- Results -->
-  <div class="gv-flex-fh mt-3 gv-scroll-y-auto" *ngIf="!loading">
+  <div class="gv-flex-fh mt-3 gv-scroll-y-auto" [hidden]="(loading$ | async)">
     <gv-class-item class="mb-3" *ngFor="let item of (filteredItems$ | async)" [cla]="item" (enable)="enableClass(item)"
       (disable)="disableClass(item)" (customize)="customizeClass(item)"></gv-class-item>
   </div>

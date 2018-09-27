@@ -10,7 +10,7 @@ import { classSettingsReducer } from './api/class-settings.reducer';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { ClassSettingsAPIActions } from './api/class-settings.actions';
 import { filter, takeUntil, map, first } from 'rxjs/operators';
-import * as  InfConfig from '../../../../../../../common/config/InfConfig';
+import * as  Config from '../../../../../../../common/config/Config';
 
 
 @WithSubStore({
@@ -108,7 +108,7 @@ export class ClassSettingsComponent extends ClassSettingsAPIActions implements O
    * @param pkClass Primary key of the current class
    */
   initHasTypes(pkClass: number): void {
-    this.hasTypes = InfConfig.PK_CLASS_PK_HAS_TYPE_MAP[pkClass] ? true : false;
+    this.hasTypes = Config.PK_CLASS_PK_HAS_TYPE_MAP[pkClass] ? true : false;
     if (this.hasTypes) {
       this.initNamespaces();
     }
@@ -128,7 +128,7 @@ export class ClassSettingsComponent extends ClassSettingsAPIActions implements O
           label: namespaceInProject.standard_label
         };
       } else {
-        const geovistoryOngoing: InfNamespace = nmsps.find((nmsp) => nmsp.pk_entity === InfConfig.PK_NAMESPACE__GEOVISTORY_ONGOING);
+        const geovistoryOngoing: InfNamespace = nmsps.find((nmsp) => nmsp.pk_entity === Config.PK_NAMESPACE__GEOVISTORY_ONGOING);
         this.enabledVocabulary = {
           pk_entity: geovistoryOngoing.pk_entity,
           label: 'Custom Vocabulary of project: ' + this.projectLabel
@@ -157,7 +157,7 @@ export class ClassSettingsComponent extends ClassSettingsAPIActions implements O
    * or namespace is Geovistory Ongoing
    */
   authorizedForCustomization(vocab: VocabularyItem) {
-    if (vocab.pk_entity === InfConfig.PK_NAMESPACE__GEOVISTORY_ONGOING) return true;
+    if (vocab.pk_entity === Config.PK_NAMESPACE__GEOVISTORY_ONGOING) return true;
 
     const fk_project = this.localStore.getState().namespaces.find((nsp) => nsp.pk_entity === vocab.pk_entity).fk_project;
     return this.ngRedux.getState().activeProject.pk_project === fk_project;

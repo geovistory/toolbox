@@ -8,16 +8,13 @@
     <gv-appe-lang-create-ctrl autofocus type="text" name="appeLang" [(ngModel)]="model.appeLang" #appeLang="ngModel"
       required></gv-appe-lang-create-ctrl>
     <div *ngIf="f.submitted && !appeLang.valid" class="help-block form-text text-danger">Name is required</div>
-    <div *ngFor="let message of errorMessages?.appeLang" class="help-block form-text text-danger">{{message}}</div>
   </div>
 
   <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !textProperty.valid }">
     <label for="textProperty">Description*</label>
     <gv-text-property type="text" name="textProperty" [(ngModel)]="model.textProperty" #textProperty="ngModel"
     required></gv-text-property>
-
     <div *ngIf="f.submitted && !textProperty.valid" class="help-block form-text text-danger">Description is required</div>
-    <div *ngFor="let message of errorMessages?.textProperty" class="help-block form-text text-danger">{{message}}</div>
   </div>
 
   <div class="form-group">

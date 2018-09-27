@@ -1,5 +1,5 @@
 'use strict';
-const InfConfig = require('../config/InfConfig');
+const Config = require('../config/Config');
 
 module.exports = function (InfNamespace) {
 
@@ -41,11 +41,11 @@ module.exports = function (InfNamespace) {
         `
 
         // Get Property Pk
-        // TODO: Replace use of InfConfig.PK_CLASS_PK_HAS_TYPE_MAP as soon as we 
+        // TODO: Replace use of Config.PK_CLASS_PK_HAS_TYPE_MAP as soon as we 
         // have the association of class and type class in data
-        const pk_property = InfConfig.PK_CLASS_PK_HAS_TYPE_MAP[pk_class] || -1;
+        const pk_property = Config.PK_CLASS_PK_HAS_TYPE_MAP[pk_class] || -1;
 
-        const pk_geovistory_ongoing = InfConfig.PK_NAMESPACE__GEOVISTORY_ONGOING;
+        const pk_geovistory_ongoing = Config.PK_NAMESPACE__GEOVISTORY_ONGOING;
 
         const params = [pk_property, pk_project, pk_geovistory_ongoing];
 

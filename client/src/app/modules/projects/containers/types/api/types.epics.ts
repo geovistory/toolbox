@@ -6,7 +6,7 @@ import { Observable, combineLatest } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { TypesComponent } from '../types.component';
 import { TypesAPIActions, TypesAPIAction } from './types.actions';
-import * as InfConfig from '../../../../../../../../common/config/InfConfig';
+import * as Config from '../../../../../../../../common/config/Config';
 import { NotificationsAPIActions } from '../../../../../core/notifications/components/api/notifications.actions';
 import { Action } from 'redux';
 
@@ -55,8 +55,8 @@ export class TypesAPIEpics {
                   name: 'ingoing_properties',
                   select: false,
                   joinType: 'inner join',
-                  // TODO: Replace this use of InfConfig as soon as we have generic way to find type class of class
-                  where: ['dfh_pk_property', '=', InfConfig.PK_CLASS_PK_HAS_TYPE_MAP[action.meta.pkTypedClass]]
+                  // TODO: Replace this use of Config as soon as we have generic way to find type class of class
+                  where: ['dfh_pk_property', '=', Config.PK_CLASS_PK_HAS_TYPE_MAP[action.meta.pkTypedClass]]
                 }
               }
             }
