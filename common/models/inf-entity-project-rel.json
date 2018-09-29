@@ -59,6 +59,7 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
+        "find",
         "updateEprAttributes",
         "patchAttributes",
         "patchOrCreate"

@@ -24,7 +24,8 @@ export class TypesAPIEpics {
   public createEpics(c: TypesComponent): Epic {
     return combineEpics(
       this.createLoadTypesEpic(c),
-      this.createCreateTypeEpic(c)
+      this.createCreateTypeEpic(c),
+      this.createOpenEditFormEpic(c)
     );
   }
 
@@ -47,7 +48,7 @@ export class TypesAPIEpics {
           /**
            * Prepare some api calls
            */
-          const types$: Observable<InfPersistentItem[]> = this.peItApi.typesOfNamespaceClassAndProject(action.meta.pkNamespace, action.meta.pkProject, action.meta.pkTypedClass);
+          const types$: Observable<InfPersistentItem[]> = this.peItApi.typesOfNamespaceClassAndProject(action.meta.pkNamespace, action.meta.pkProject, action.meta.pkTypedClass, null);
           const classes$ = this.classApi.findComplex({
             include: {
               ingoing_properties: {
@@ -138,7 +139,8 @@ export class TypesAPIEpics {
                 options: {
                   title: error.message
                 }
-              }));              /**
+              }));
+              /**
               * Emit the local action on loading failed
               */
               c.localStore.dispatch(this.actions.createFailed({ status: '' + error.status }))
@@ -148,5 +150,61 @@ export class TypesAPIEpics {
       )
     }
   }
+
+  private createOpenEditFormEpic(c: TypesComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(TypesAPIActions.OPEN_EDIT_FORM),
+        switchMap((action: TypesAPIAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Emit the local action that sets the loading flag to true
+           */
+          c.localStore.dispatch(this.actions.loadStarted());
+          /**
+           * Prepare some api calls
+           */
+          const type$: Observable<InfPersistentItem[]> = this.peItApi.typeNested(c.pkNamespace, c.project.pk_project, action.meta.type.pk_entity);
+          /**
+           * Subscribe to the api call
+           */
+          type$.subscribe((data) => {
+            /**
+             * Emit the global action that completes the loading bar
+             */
+            globalStore.next(this.loadingBarActions.completeLoading());
+            /**
+             * Emit the local action on loading succeeded
+             */
+            c.localStore.dispatch(this.actions.openEditFormSucceeded(data[0]));
+
+          }, error => {
+            /**
+            * Emit the global action that shows some loading error message
+            */
+            globalStore.next(this.loadingBarActions.completeLoading());
+            globalStore.next(this.notificationActions.addToast({
+              type: 'error',
+              options: {
+                title: error.message
+              }
+            }));
+            /**
+            * Emit the local action on loading failed
+            */
+            c.localStore.dispatch(this.actions.openEditFormFailed({ status: '' + error.status }))
+          })
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
 
 }

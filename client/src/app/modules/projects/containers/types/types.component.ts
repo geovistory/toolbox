@@ -35,7 +35,7 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
 
   //  class
   class$: Observable<DfhClass>;
-  class: DfhClass;
+  cla: DfhClass;
   classLabel: string;
 
   // type class
@@ -60,6 +60,9 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
 
   // flag indicatig if add form is visible
   @select() add$: Observable<boolean>;
+
+  // object containing data for edit form. If truthy, edit form is visible.
+  @select() edit$: Observable<InfPersistentItem>;
 
   // flag indicatig if loaing info is visible
   @select() loading$: Observable<boolean>;
@@ -93,8 +96,8 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
     this.rootEpics.addEpic(this.epics.createEpics(this));
     combineLatest(this.class$, this.projecPk$).takeUntil(this.destroy$).subscribe(d => {
       const c = d[0], p = d[1];
-      if (c && p && !this.class) {
-        this.class = c;
+      if (c && p && !this.cla) {
+        this.cla = c;
         this.classLabel = c.dfh_standard_label;
         this.load(this.pkNamespace, p, c.dfh_pk_class)
       }
@@ -113,7 +116,6 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   createType(type: InfPersistentItem) {
     this.create(type);
   }
-
 
   getLabel(peIt: InfPersistentItem) {
 

@@ -34,6 +34,8 @@ import { TypeAddFormComponent } from './containers/type-add-form/type-add-form.c
 import { TypeAddFormAPIActions } from './containers/type-add-form/api/type-add-form.actions';
 import { TypeAddFormAPIEpics } from './containers/type-add-form/api/type-add-form.epics';
 import { TypeEditFormComponent } from './containers/type-edit-form/type-edit-form.component';
+import { TypeEditFormAPIActions } from './containers/type-edit-form/api/type-edit-form.actions';
+import { TypeEditFormAPIEpics } from './containers/type-edit-form/api/type-edit-form.epics';
 
 @NgModule({
   imports: [
@@ -75,7 +77,9 @@ import { TypeEditFormComponent } from './containers/type-edit-form/type-edit-for
     TypesAPIActions,
     TypesAPIEpics,
     TypeAddFormAPIActions,
-    TypeAddFormAPIEpics
+    TypeAddFormAPIEpics,
+    TypeEditFormAPIActions,
+    TypeEditFormAPIEpics
   ]
 })
 export class ProjectsModule { }

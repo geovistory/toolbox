@@ -31,6 +31,17 @@ export class TypesAPIActions {
   static readonly CREATE_SUCCEEDED = 'Types::CREATE_SUCCEEDED';
   static readonly CREATE_FAILED = 'Types::CREATE_FAILED';
 
+  static readonly OPEN_EDIT_FORM = 'Types::OPEN_EDIT_FORM';
+  static readonly OPEN_EDIT_FORM_SUCCEEDED = 'Types::OPEN_EDIT_FORM_SUCCEEDED';
+  static readonly OPEN_EDIT_FORM_FAILED = 'Types::OPEN_EDIT_FORM_FAILED';
+
+  static readonly CLOSE_EDIT_FORM = 'Types::CLOSE_EDIT_FORM';
+
+  static readonly EDIT = 'Types::EDIT';
+  static readonly EDIT_STARTED = 'Types::EDIT_STARTED';
+  static readonly EDIT_SUCCEEDED = 'Types::EDIT_SUCCEEDED';
+  static readonly EDIT_FAILED = 'Types::EDIT_FAILED';
+
 
   static readonly DESTROY = 'Types::DESTROY';
 
@@ -107,6 +118,38 @@ export class TypesAPIActions {
     error,
   })
 
+
+  /*********************************************************************
+   *  Methods related to the edit form
+   *********************************************************************/
+
+
+  @dispatch()
+  openEditForm = (type: InfPersistentItem): TypesAPIAction => ({
+    type: TypesAPIActions.OPEN_EDIT_FORM,
+    meta: { type },
+    payload: null
+  })
+
+  openEditFormSucceeded = (type: InfPersistentItem): TypesAPIAction => ({
+    type: TypesAPIActions.OPEN_EDIT_FORM_SUCCEEDED,
+    meta: { type },
+    payload: null
+  })
+
+  openEditFormFailed = (error): TypesAPIAction => ({
+    type: TypesAPIActions.OPEN_EDIT_FORM_FAILED,
+    meta: null,
+    payload: null,
+    error
+  })
+
+
+  edit = (type: InfPersistentItem): TypesAPIAction => ({
+    type: TypesAPIActions.EDIT,
+    meta: { type },
+    payload: null
+  })
 
 
   /*********************************************************************

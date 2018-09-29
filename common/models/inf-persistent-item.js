@@ -186,7 +186,7 @@ module.exports = function (InfPersistentItem) {
     const pk_namespace = context.req.query.pk_namespace;
     const errorMsg = 'You\'re not authorized to perform this action.';
     // let pass if namespace is "Geovistory Ongoing"
-    if (pk_namespace === Config.PK_NAMESPACE__GEOVISTORY_ONGOING) {
+    if (pk_namespace == Config.PK_NAMESPACE__GEOVISTORY_ONGOING) {
       next()
     }
 
@@ -770,8 +770,8 @@ module.exports = function (InfPersistentItem) {
    *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class) 
    *
    * Eager loading
+   *  - The appellations of given language
    *  - TODO: The entity_associations of property "has broader term" used for hierarchy
-   *  - TODO: The appellations of given language
    * 
    * @param pk_namespace
    * @param pk_project
@@ -900,6 +900,137 @@ module.exports = function (InfPersistentItem) {
       }
     }
 
+    return InfPersistentItem.findComplex(filter, cb);
+  }
+
+
+
+  /**
+   * Query instances of E55 Type 
+   * 
+   * Where 
+   *	- types are related to the given namespace  
+   *	- types are in given project
+   *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class) 
+   *  - optional: the type has the pk_entity. This is for querying a specific type.
+   *
+   * Eager loading
+   *  - The appellations of given language
+   *  - TODO: The entity_associations of property "has broader term" used for hierarchy
+   * 
+   * @param pk_namespace
+   * @param pk_project
+   * @param pk_typed_class
+   */
+  InfPersistentItem.typeNested = function (pk_namespace, pk_project, pk_entity, cb) {
+
+    const innerJoinThisProject = {
+      "$relation": {
+        "name": "entity_version_project_rels",
+        "joinType": "inner join",
+        "select": {
+          include: [
+            "pk_entity_version_project_rel",
+            "pk_entity",
+            "fk_project",
+            "fk_entity",
+          ]
+        },
+        "where": [
+          "fk_project", "=", pk_project,
+          "and", "is_in_project", "=", "true"
+        ]
+      }
+    };
+
+    const filter = {
+      "orderBy": [{
+        "pk_entity": "asc"
+      }],
+      "include": {
+        "type_namespace_rels": {
+          "$relation": {
+            select: false,
+            "name": "type_namespace_rels",
+            "joinType": "inner join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          },
+          "namespace": {
+            "$relation": {
+              select: false,
+              "name": "namespace",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }],
+              where: ["pk_entity", "=", pk_namespace]
+            }
+          }
+        },
+        "entity_version_project_rels": innerJoinThisProject,
+        "text_properties": {
+          "$relation": {
+            "name": "text_properties",
+            "joinType": "left join"
+          }
+        },
+        "pi_roles": {
+          "$relation": {
+            "name": "pi_roles",
+            "joinType": "left join"
+          },
+          "entity_version_project_rels": innerJoinThisProject,
+          "temporal_entity": {
+            "$relation": {
+              "name": "temporal_entity",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+            "entity_version_project_rels": innerJoinThisProject,
+            "te_roles": {
+              "$relation": {
+                "name": "te_roles",
+                "joinType": "inner join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              },
+              "entity_version_project_rels": innerJoinThisProject,
+              "appellation": {
+                "$relation": {
+                  "name": "appellation",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                },
+                // "entity_version_project_rels": innerJoinThisProject
+              },
+              "language": {
+                "$relation": {
+                  "name": "language",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
+                // ,
+                // "entity_version_project_rels": innerJoinThisProject
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if(pk_entity){
+      filter.where = ["pk_entity", "=", pk_entity];
+    }
+    
     return InfPersistentItem.findComplex(filter, cb);
   }
 

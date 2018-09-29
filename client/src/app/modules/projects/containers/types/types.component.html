@@ -29,7 +29,7 @@
         <div class="d-flex border-bottom">
           <span class="gv-flex-grow-1">{{getLabel(type.value)}} </span>
           <!-- <a href class="gv-passive-link mr-2"><i class="fa fa-plus"></i></a> -->
-          <a href class="gv-passive-link mr-2"><i class="fa fa-edit"></i></a>
+          <a href class="gv-passive-link mr-2" (click)=openEditForm(type.value)><i class="fa fa-edit"></i></a>
           <a href class="gv-passive-link"><i class="fa fa-trash"></i></a>
         </div>
       </li>
@@ -42,6 +42,7 @@
   <gv-type-add-form *ngIf="(add$ | async)" (cancel)="closeAddForm()" (create)="createType($event)"></gv-type-add-form>
 
   <!-- Edit existing Type -->
+  <gv-type-edit-form *ngIf="(edit$ | async)" (cancel)="closeEditForm()" (create)="editType($event)" [basePath]="['activeProject','classSettings','types', 'edit']"></gv-type-edit-form>
 
 
   <!-- Remove Type from Project -->

@@ -64,6 +64,7 @@
         "nestedObjectOfRepo",
         "changePeItProjectRelation",
         "typesOfNamespaceClassAndProject",
+        "typeNested",
         "findOrCreateType"
       ]
     }
@@ -388,6 +389,47 @@
       "description": "Find types of given namespace, class and project.",
       "http": {
         "path": "/types-of-namespace-class-and-project",
+        "verb": "get"
+      }
+    },
+    "typeNested": {
+      "accepts": [
+        {
+          "arg": "pk_namespace",
+          "type": "string",
+          "required": true,
+          "description": "Primary Key of Namespace",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_entity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the type. Provide this if you want to query one specific type.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "persistent_items",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Find types of given namespace, class and project.",
+      "http": {
+        "path": "/type-nested",
         "verb": "get"
       }
     }

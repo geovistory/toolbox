@@ -81,6 +81,58 @@ export function typesReducer(state: Types = INITIAL_STATE, a: Action): Types {
       };
       break;
 
+
+    /*****************************************************
+    * Reducers to manage the edit form
+    *****************************************************/
+    case TypesAPIActions.OPEN_EDIT_FORM:
+      state = {
+        ...state,
+        edit: true
+      };
+      break;
+
+    case TypesAPIActions.OPEN_EDIT_FORM_SUCCEEDED:
+      state = {
+        ...state,
+        edit: { peIt: action.meta.type },
+      };
+      break;
+
+    case TypesAPIActions.CLOSE_ADD_FORM:
+      state = {
+        ...state,
+        add: false
+      };
+      break;
+
+    case TypesAPIActions.CREATE_STARTED:
+      state = {
+        ...state,
+        add: false,
+        loading: true
+      };
+      break;
+
+    case TypesAPIActions.CREATE_SUCCEEDED:
+      state = {
+        ...state,
+        loading: false,
+        items: {
+          ...state.items,
+          [action.meta.type.pk_entity]: action.meta.type
+        }
+      };
+      break;
+
+    case TypesAPIActions.CREATE_FAILED:
+      state = {
+        ...state,
+        loading: false,
+        error: action.error
+      };
+      break;
+
     /*****************************************************
     * Reducers called on destroy of component
     *****************************************************/
