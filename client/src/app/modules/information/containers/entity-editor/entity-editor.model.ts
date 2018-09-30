@@ -1,4 +1,4 @@
-import { PeItDetail } from 'app/core/models';
+import { PeItDetail } from 'app/core/state/models';
 
 export interface IEntityEditorWrapper {
         peItState?: PeItDetail

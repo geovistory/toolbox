@@ -1,4 +1,4 @@
-import { RoleSetList } from 'app/core/models';
+import { RoleSetList } from 'app/core/state/models';
 import { ComPropertySetInterface, ComUiContextInterface, ProjectInterface } from 'app/core/sdk';
 import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/api/class-settings.models';
 

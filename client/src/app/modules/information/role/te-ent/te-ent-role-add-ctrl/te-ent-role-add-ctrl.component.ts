@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } fro
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { InfEntityProjectRel, InfRole } from 'app/core';
 import { RoleBase } from '../../role.base';
-import { RoleDetail } from 'app/core/models';
+import { RoleDetail } from 'app/core/state/models';
 import { RoleAddCtrlBase } from '../../role-add-ctrl.base';
 
 

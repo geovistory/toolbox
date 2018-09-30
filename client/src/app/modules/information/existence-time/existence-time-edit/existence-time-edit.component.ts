@@ -5,7 +5,7 @@ import { IAppState, InfEntityProjectRel, InfRole, InfTimePrimitive, U, Validatio
 import { dropLast, union } from 'ramda';
 import { Observable, Subscription } from 'rxjs';
 import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
-import { ExistenceTimeEdit, ExTimeHelpMode, ExTimeModalMode, RoleSet, RoleSetList, TeEntDetail } from 'app/core/models';
+import { ExistenceTimeEdit, ExTimeHelpMode, ExTimeModalMode, RoleSet, RoleSetList, TeEntDetail } from 'app/core/state/models';
 import { DfhConfig } from '../../shared/dfh-config';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { ExistenceTimeActions } from '../existence-time.actions';
@@ -225,7 +225,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
     const state = this.ngRedux.getState();
 
     // find the outgoing roleSet to add
-    const roleSetTemplate: RoleSet = new RoleSet(state.activeProject.crm.roleSets[U.roleSetKeyFromParams(fkProperty, true)]);
+    const roleSetTemplate: RoleSet = new RoleSet(state.activeProject.crm.roleSets[RoleSet.roleSetKeyFromParams(fkProperty, true)]);
 
     const role = new InfRole();
     role.time_primitive = new InfTimePrimitive();
@@ -260,12 +260,12 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
 
     // update the state
     this.stateCreator.initializeRoleSet([role], roleSetTemplate).subscribe(roleSet => {
-      this.localStore.dispatch(this.roleSetAdded({ [U.roleSetKey(roleSet)]: roleSet }))
+      this.localStore.dispatch(this.roleSetAdded({ [RoleSet.roleSetKey(roleSet)]: roleSet }))
     })
 
     // add a form control
     this.formGroup.addControl(
-      U.roleSetKey(roleSetTemplate), new FormControl(
+      RoleSet.roleSetKey(roleSetTemplate), new FormControl(
         [role],
         [
           Validators.required

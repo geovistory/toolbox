@@ -1,5 +1,5 @@
 import { Component, OnDestroy, Input, OnInit } from '@angular/core';
-import { SubstoreComponent } from 'app/core/models/substore-component';
+import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { Subject } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux } from '@angular-redux/store';
 import { IAppState } from 'app/core';

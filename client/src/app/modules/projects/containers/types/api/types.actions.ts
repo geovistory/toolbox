@@ -2,7 +2,7 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { TypesI } from './types.models';
-import { InfPersistentItem, DfhClass, InfNamespace } from 'app/core';
+import { InfPersistentItem, DfhClass, InfNamespace, PeItDetail } from 'app/core';
 
 type Payload = TypesI;
 interface MetaData {
@@ -12,6 +12,7 @@ interface MetaData {
   types?: InfPersistentItem[],
   typeClass?: DfhClass,
   type?: InfPersistentItem,
+  peItDetail?: PeItDetail,
   namespace?: InfNamespace
 };
 export type TypesAPIAction = FluxStandardAction<Payload, MetaData>;
@@ -131,9 +132,9 @@ export class TypesAPIActions {
     payload: null
   })
 
-  openEditFormSucceeded = (type: InfPersistentItem): TypesAPIAction => ({
+  openEditFormSucceeded = (peItDetail: PeItDetail): TypesAPIAction => ({
     type: TypesAPIActions.OPEN_EDIT_FORM_SUCCEEDED,
-    meta: { type },
+    meta: { peItDetail },
     payload: null
   })
 

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, Input, OnInit } from '@angular/core';
-import { SubstoreComponent } from 'app/core/models/substore-component';
+import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
 import { IAppState, InfPersistentItem, PeItDetail } from 'app/core';
@@ -10,6 +10,7 @@ import { TypeEditFormAPIActions } from './api/type-edit-form.actions';
 import { typeEditFormReducer } from './api/type-edit-form.reducer';
 import { first, takeUntil } from 'rxjs/operators';
 import { StateCreatorService } from '../../../information/shared/state-creator.service';
+import { PeItDetailService } from '../../../../core/state/services/custom/pe-it-detail';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -32,7 +33,7 @@ export class TypeEditFormComponent extends TypeEditFormAPIActions implements OnI
   @Input() basePath: string[];
 
   // select observables of substore properties
-  @select() peIt$: Observable<InfPersistentItem>;
+  @select() peItDetail$: Observable<InfPersistentItem>;
 
   // the state object of the child components
   peItDetail: PeItDetail;
@@ -40,7 +41,8 @@ export class TypeEditFormComponent extends TypeEditFormAPIActions implements OnI
   constructor(
     protected rootEpics: RootEpics,
     private epics: TypeEditFormAPIEpics,
-    protected ngRedux: NgRedux<IAppState>
+    protected ngRedux: NgRedux<IAppState>,
+    private peItDetailService: PeItDetailService
   ) {
     super()
   }
@@ -51,7 +53,7 @@ export class TypeEditFormComponent extends TypeEditFormAPIActions implements OnI
     this.localStore = this.ngRedux.configureSubStore(this.basePath, typeEditFormReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
     this.peIt$.pipe(first(p => !(!p)), takeUntil(this.destroy$)).subscribe(peIt => {
-      this.peItDetail = PeItDetail.from(peIt, this.ngRedux.getState().activeProject.crm)
+      this.peItDetail = this.peItDetailService.createState({}, peIt, this.ngRedux.getState().activeProject.crm)
     })
   }
 

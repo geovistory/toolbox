@@ -95,7 +95,9 @@ export function typesReducer(state: Types = INITIAL_STATE, a: Action): Types {
     case TypesAPIActions.OPEN_EDIT_FORM_SUCCEEDED:
       state = {
         ...state,
-        edit: { peIt: action.meta.type },
+        edit: {
+          peItDetail: action.meta.peItDetail
+        },
       };
       break;
 

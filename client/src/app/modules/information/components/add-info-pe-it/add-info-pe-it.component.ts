@@ -5,8 +5,7 @@ import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
-import {  similarRoleSet } from '../../information.helpers';
-import { AddOption, DataUnitChildList, RoleSetList } from 'app/core/models';
+import { AddOption, DataUnitChildList, RoleSetList, RoleSet } from 'app/core/state/models';
 
 interface PeItAddOption extends AddOption {
   label: string; // concatenation of all strings, used for search
@@ -55,15 +54,15 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
         if (
           children && el.fk_property
           // && !children[el.roleSetKey]
-          && !similarRoleSet(this.classConfig.roleSets[el.roleSetKey], this.excludeRoleSet)
+          && !RoleSet.similarRoleSet(this.classConfig.roleSets[el.roleSetKey], this.excludeRoleSet)
         ) {
 
-          const level1RoleSet = this.classConfig.roleSets[U.roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
+          const level1RoleSet = this.classConfig.roleSets[RoleSet.roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
           const level1propLabel = level1RoleSet.label.default;
           const cla = crm.classes[level1RoleSet.targetClassPk];
           const classLabel = cla.label;
           const level2propsLabels = U.obj2Arr(cla.roleSets).map(rs => {
-            if (!similarRoleSet(level1RoleSet, rs)) return rs.label.default
+            if (!RoleSet.similarRoleSet(level1RoleSet, rs)) return rs.label.default
           }).filter(l => l);
 
           const option: PeItAddOption = {

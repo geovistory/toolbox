@@ -5,7 +5,7 @@ import { InfPersistentItem } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable } from 'rxjs';
 
-import { PeItDetail } from 'app/core/models';
+import { PeItDetail } from 'app/core/state/models';
 import { DataUnitBase } from '../data-unit.base';
 import { PeItActions } from './pe-it.actions';
 import { peItReducer } from './pe-it.reducer';

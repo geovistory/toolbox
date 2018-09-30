@@ -1,4 +1,6 @@
 <p>
   type-edit-form works!
 </p>
-{{(peIt$ |async) | json}}
+{{(peItDetail$ |async) | json}}
+
+<gv-pe-it-editable class="gv-flex-grow-1  d-flex flex-column" [basePath]="basePath.concat('_peIt_editable')"></gv-pe-it-editable>

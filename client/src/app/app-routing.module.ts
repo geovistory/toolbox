@@ -15,12 +15,11 @@ const indexRoute: Route = {
   pathMatch: 'full'
 };
 
-const fallbackRoute: Route =
-  {
-    path: '**',
-    redirectTo: '/home',
-    pathMatch: 'full'
-  };
+const fallbackRoute: Route = {
+  path: '**',
+  redirectTo: '/home',
+  pathMatch: 'full'
+};
 
 const routes: Routes = [
   {

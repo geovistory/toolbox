@@ -5,7 +5,7 @@ import { IAppState, InfEntityProjectRel, InfRole, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable, Subscription } from 'rxjs';
 
-import { RoleDetailList, RoleSet, RoleSetForm, RoleDetail, RoleSetLabel } from 'app/core/models';
+import { RoleDetailList, RoleSet, RoleSetForm, RoleDetail, RoleSetLabel } from 'app/core/state/models';
 import { roleSetReducer } from './role-set.reducer';
 import { RoleSetActions } from './role-set.actions';
 

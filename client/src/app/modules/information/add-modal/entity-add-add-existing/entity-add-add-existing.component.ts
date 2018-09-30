@@ -5,7 +5,7 @@ import { IAppState } from 'app/core';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { Observable } from 'rxjs';
 
-import { PeItDetail } from 'app/core/models';
+import { PeItDetail } from 'app/core/state/models';
 import { informationReducer } from '../../information.reducer';
 import { EntityAddModalService, EntityAddModalState } from '../../shared/entity-add-modal.service';
 import { StateCreatorService } from '../../shared/state-creator.service';

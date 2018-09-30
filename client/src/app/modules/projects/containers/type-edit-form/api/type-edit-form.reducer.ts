@@ -13,20 +13,17 @@ export function typeEditFormReducer(state: TypeEditForm = INITIAL_STATE, a: Acti
     case TypeEditFormAPIActions.LOAD_STARTED:
       state = {
         ...state,
-        items: {}
       };
       break;
     case TypeEditFormAPIActions.LOAD_SUCCEEDED:
       state = {
         ...state,
-        items: indexBy(prop('pk_entity'), action.meta.itemsArray)
       };
       break;
 
     case TypeEditFormAPIActions.LOAD_FAILED:
       state = {
         ...state,
-        items: {}
       };
       break;
 

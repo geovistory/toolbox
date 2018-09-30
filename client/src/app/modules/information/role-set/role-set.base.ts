@@ -18,7 +18,7 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares';
 import { Subscription, Observable, combineLatest, Subject } from 'rxjs';
 
-import { CollapsedExpanded, RoleDetail, RoleDetailList, RoleSet, RoleSetForm, RoleSetLabel } from 'app/core/models';
+import { CollapsedExpanded, RoleDetail, RoleDetailList, RoleSet, RoleSetForm, RoleSetLabel } from 'app/core/state/models';
 import { RoleActions } from '../role/role.actions';
 import { roleReducer } from '../role/role.reducers';
 import { ClassService } from '../shared/class.service';

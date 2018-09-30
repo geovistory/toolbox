@@ -5,14 +5,15 @@ import { Observable, Subscription } from 'rxjs';
 
 import { IAppState, InfRole, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
 import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
-import { ExistenceTimeDetail, ExTimeModalMode, RoleSetList, TeEntDetail } from 'app/core/models';
+import { ExistenceTimeDetail, ExTimeModalMode, RoleSetList, TeEntDetail } from 'app/core/state/models';
 import { slideInOut } from '../../shared/animations';
 import { ExistenceTimeModalComponent } from '../existence-time-modal/existence-time-modal.component';
 import { ExistenceTimeActions } from '../existence-time.actions';
 import { existenceTimeReducer } from '../existence-time.reducer';
 import { dropLast } from 'ramda';
-import { StateCreatorService, StateSettings } from '../../shared/state-creator.service';
+import { StateCreatorService } from '../../shared/state-creator.service';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { StateSettings } from 'app/core/state/services/core/state-settings';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -35,7 +36,6 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
   @Input() basePath: string[]
-  getBasePath = () => this.basePath;
 
   @Input() mode: 'editable' | 'create';
 
@@ -52,7 +52,7 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
   _children: RoleSetList;
 
   // true, if there is no termporal information
-  isEmpty: boolean = true;
+  isEmpty = true;
 
   subs: Subscription[] = [];
 
@@ -65,6 +65,8 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
   ) {
 
   }
+
+  getBasePath = () => this.basePath;
 
   ngOnInit() {
 
@@ -80,15 +82,13 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
     this.subs.push(this.localStore.select<ExistenceTimeDetail>('').subscribe(d => {
       if (d) {
         this._children = d._children;
-      }
-      else this._children = undefined;
+      } else this._children = undefined;
 
 
       // if there is temporal information, set isEmpty to false
       if (this._children && Object.keys(this._children).length > 0) {
         this.isEmpty = false;
-      }
-      else {
+      } else {
         this.isEmpty = true;
       }
 
@@ -101,16 +101,14 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
       // if only "at some time within" is given, open in "one-date" mode
       if (Object.keys(this._children).length === 1 && this._children._72_outgoing) {
         mode = 'one-date';
-      }
-      // else if only "begin" and "end" is given, open in "begin-end" mode
-      else if (
+      } else if (
+        // else if only "begin" and "end" is given, open in "begin-end" mode
         Object.keys(this._children).length === 2 &&
         this._children._150_outgoing &&
         this._children._151_outgoing
       ) {
         mode = 'begin-end';
-      }
-      else {
+      } else {
         mode = "advanced";
       }
 

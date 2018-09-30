@@ -1,5 +1,5 @@
 import { DfhClass, DfhLabel, DfhProperty, InfRole, InfPersistentItem, InfTemporalEntity, InfEntityProjectRel, DfhPropertyInterface, InfRoleInterface, DfhClassInterface } from "app/core";
-import { PeItDetail, RoleDetail, RoleSet, PeItDetailI, RoleDetailI, DataUnitChildList } from "app/core/models";
+import { PeItDetail, RoleDetail, RoleSet, PeItDetailI, RoleDetailI, DataUnitChildList } from "app/core/state/models";
 import { DfhConfig } from "../../../shared/dfh-config";
 
 export const mockPerson: PeItDetailI = {

@@ -3,7 +3,7 @@ import { Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, U, UiContext, UiElement } from 'app/core';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { AddOption, DataUnitLabel, ExistenceTimeDetail, PeItDetail, RoleSet, RoleSetI, RoleSetList, SelectPropStateType, TeEntDetail, RoleSetForm } from 'app/core/models';
+import { AddOption, DataUnitLabel, ExistenceTimeDetail, PeItDetail, RoleSet, RoleSetI, RoleSetList, SelectPropStateType, TeEntDetail, RoleSetForm } from 'app/core/state/models';
 import { StateCreatorService } from '../shared/state-creator.service';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
@@ -159,7 +159,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
     // add a form conrtol
     this.formGroup.addControl(
-      U.roleSetKey(newRoleSet), new FormControl(
+      RoleSet.roleSetKey(newRoleSet), new FormControl(
         newRoleSet.roles,
         [
           Validators.required

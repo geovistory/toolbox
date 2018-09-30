@@ -1,11 +1,10 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core';
-import { Observable, Subscription, Subject, merge } from 'rxjs';
-import { UiElement, ClassConfig, U } from 'app/core';
-import { RoleSetList, AddOption, DataUnitChildList } from 'app/core/models';
-import {  similarRoleSet } from '../../information.helpers';
-import { propSetMap } from '../../data-unit/data-unit.base';
-import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { ClassConfig, U, UiElement } from 'app/core';
+import { AddOption, DataUnitChildList, RoleSetList, RoleSet } from 'app/core/state/models';
+import { merge, Observable, Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { propSetMap } from '../../data-unit/data-unit.base';
 
 @Component({
   selector: 'gv-add-info-te-ent',
@@ -39,9 +38,9 @@ export class AddInfoTeEntComponent implements OnInit, OnDestroy {
       this.addOptions = this.uiElements.map(el => {
         if (
           children && el.fk_property && !children[el.roleSetKey] &&
-          !similarRoleSet(this.classConfig.roleSets[el.roleSetKey], this.excludeRoleSet)
+          !RoleSet.similarRoleSet(this.classConfig.roleSets[el.roleSetKey], this.excludeRoleSet)
         ) {
-          const roleSet = this.classConfig.roleSets[U.roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
+          const roleSet = this.classConfig.roleSets[RoleSet.roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
           return {
             label: roleSet.label.default,
             uiElement: el,

@@ -5,7 +5,7 @@ import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
-import { TeEntDetail } from 'app/core/models';
+import { TeEntDetail } from 'app/core/state/models';
 import { TeEntActions } from './te-ent.actions';
 
 const isSiblingComponent = (path: string[]) => (action): boolean => {

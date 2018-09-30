@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { InfPersistentItemApi, InfPersistentItem, IAppState } from 'app/core';
 
-import { PeItDetail } from 'app/core/models';
+import { PeItDetail } from 'app/core/state/models';
 import { NgForm } from '@angular/forms';
 import { NgRedux } from '../../../../../../../node_modules/@angular-redux/store';
 

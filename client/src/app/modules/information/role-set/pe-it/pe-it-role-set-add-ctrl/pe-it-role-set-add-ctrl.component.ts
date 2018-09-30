@@ -3,7 +3,7 @@ import { Component, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IAppState, InfEntityProjectRelApi, InfRoleApi } from 'app/core';
 
-import { RoleDetail } from 'app/core/models';
+import { RoleDetail } from 'app/core/state/models';
 import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';

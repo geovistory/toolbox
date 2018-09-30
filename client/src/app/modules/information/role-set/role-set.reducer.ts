@@ -1,10 +1,9 @@
 
-import { Action } from 'redux';
-import { RoleSetAction, RoleSetActions, roleStateKey } from './role-set.actions';
-import { RoleSet, RoleDetailList, RoleDetail } from 'app/core/models';
-import { indexBy, prop, omit, sort } from 'ramda';
 import { InfEntityProjectRel, U } from 'app/core';
-import { sortRoleDetailsByOrdNum, sortRoleDetailListByOrdNum } from '../information.helpers';
+import { RoleDetailList, RoleSet } from 'app/core/state/models';
+import { indexBy, omit, prop } from 'ramda';
+import { sortRoleDetailListByOrdNum } from '../information.helpers';
+import { RoleSetAction, RoleSetActions } from './role-set.actions';
 
 const INITIAL_STATE = new RoleSet({
 

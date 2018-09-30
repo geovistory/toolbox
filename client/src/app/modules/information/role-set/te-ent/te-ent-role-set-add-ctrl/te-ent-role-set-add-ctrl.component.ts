@@ -4,7 +4,7 @@ import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IAppState, InfEntityProjectRelApi, InfRoleApi, InfTemporalEntityApi } from 'app/core';
 import { Observable } from 'rxjs';
 
-import { RoleDetail, RoleSet, TeEntDetail } from 'app/core/models';
+import { RoleDetail, RoleSet, TeEntDetail } from 'app/core/state/models';
 import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';

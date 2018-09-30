@@ -1,15 +1,15 @@
-import { InfPersistentItem } from "../../../../../core";
+import { PeItDetail } from 'app/core';
 
 // Interface of this slice of store
 export interface TypeEditFormI {
-    peIt?: InfPersistentItem;
+    peItDetail?: PeItDetail;
     loading?: boolean;
     error?: any;
 }
 
 // Class of this slice of store
 export class TypeEditForm implements TypeEditFormI {
-    peIt?: InfPersistentItem;
+    peItDetail?: PeItDetail;
     loading?: boolean;
     error?: any;
 

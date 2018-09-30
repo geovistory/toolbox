@@ -1,5 +1,5 @@
 import { Component, OnDestroy, Input, OnInit, forwardRef, ViewChild, Output, EventEmitter } from '@angular/core';
-import { SubstoreComponent } from 'app/core/models/substore-component';
+import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
 import { IAppState, InfRole, InfRoleInterface, InfLanguage, InfAppellation } from 'app/core';

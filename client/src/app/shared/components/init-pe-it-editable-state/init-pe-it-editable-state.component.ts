@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import {  Information } from 'app/modules/information/information.models';
-import { StateCreatorService, StateSettings } from 'app/modules/information/shared/state-creator.service';
+import { StateCreatorService } from 'app/modules/information/shared/state-creator.service';
 import { NgRedux, ObservableStore } from '@angular-redux/store';
-import { IAppState, PeItDetail } from 'app/core';
+import { IAppState, PeItDetail, StateSettings } from 'app/core';
 import { Action } from 'redux';
 
 const PE_IT_EDITABLE_INITIALIZED = 'PE_IT_EDITABLE_INITIALIZED'

@@ -1,42 +1,19 @@
+import { ExistenceTime } from 'app/core/existence-time/existence-time';
+import { AppeDetail, DataUnitChild, DataUnitChildLabel, DataUnitChildList, DataUnitLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, RoleSet, RoleSetLabel, RoleSetList, TeEntDetail } from 'app/core/state/models';
 import { indexBy, omit } from 'ramda';
 import { AcEntity, AcNotification, ActionType } from '../../modules/gv-angular-cesium/angular-cesium-fork';
-import {
-    AppeDetail,
-    DataUnitChild,
-    DataUnitChildLabel,
-    DataUnitChildList,
-    DataUnitLabel,
-    ExistenceTimeDetail,
-    LangDetail,
-    PeItDetail,
-    RoleDetail,
-    RoleLabel,
-    RoleSet,
-    RoleSetLabel,
-    RoleSetList,
-    TeEntDetail
-} from 'app/core/models';
 import { AppellationLabel } from '../../modules/information/shared/appellation-label';
 import { DfhConfig } from '../../modules/information/shared/dfh-config';
-import { ClassConfig, ProjectCrm } from '../active-project/active-project.models';
+import { ClassConfig, ProjectCrm } from 'app/core/active-project/active-project.models';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
-import { ComPropertySet, ComUiContextConfig, DfhClass, InfEntityProjectRel, InfTimePrimitive, InfRole, InfTemporalEntity, InfPersistentItem, DfhProperty } from '../sdk';
-import { ExistenceTime } from 'app/core/existence-time/existence-time';
+import { ComPropertySet, ComUiContextConfig, DfhClass, DfhProperty, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive } from '../sdk';
 
 /**
  * Utilities class for static functions
  */
 
 export class U {
-
-    static roleSetKey(roleSet: RoleSet) {
-        return U.roleSetKeyFromParams(roleSet.property.dfh_pk_property, roleSet.isOutgoing)
-    }
-
-    static roleSetKeyFromParams(fkProp: number, isOutgoing: boolean) {
-        return '_' + fkProp + '_' + (isOutgoing ? 'outgoing' : 'ingoing')
-    }
 
     static obj2Arr<T>(obj: { [key: string]: T }): T[] {
         const arr = [];
@@ -243,7 +220,7 @@ export class U {
      * @param outgoingProperties
      */
     static roleSetsFromProperties(ingoingProperties: DfhProperty[], outgoingProperties: DfhProperty[]): RoleSetList {
-        return indexBy(U.roleSetKey, [
+        return indexBy(RoleSet.roleSetKey, [
             ...U.infProperties2RoleSets(false, ingoingProperties),
             ...U.infProperties2RoleSets(true, outgoingProperties)
         ])
@@ -498,12 +475,12 @@ export class U {
 
         if (e && e._children) {
             const c = e._children;
-            const bOb = c[U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_BEGIN, true)];
-            const eOb = c[U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_BEGIN, true)];
-            const bOe = c[U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_END, true)];
-            const eOe = c[U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_END, true)];
-            const at = c[U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_AT_SOME_TIME_WITHIN, true)];
-            const ong = c[U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_ONGOING_THROUGHOUT, true)];
+            const bOb = c[RoleSet.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_BEGIN, true)];
+            const eOb = c[RoleSet.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_BEGIN, true)];
+            const bOe = c[RoleSet.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_END, true)];
+            const eOe = c[RoleSet.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_END, true)];
+            const at = c[RoleSet.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_AT_SOME_TIME_WITHIN, true)];
+            const ong = c[RoleSet.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_ONGOING_THROUGHOUT, true)];
 
             // Get earliest date
             const earliestArr = [bOb, eOb, at, ong, bOe, eOe].filter(rs => (rs))
@@ -612,7 +589,7 @@ export class U {
             if (!presence._children) return null;
 
             // return false if no RoleSet leading to a Place
-            const placeSet = presence._children[U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
+            const placeSet = presence._children[RoleSet.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
             if (!placeSet || placeSet.type != 'RoleSet') return null;
 
             // return false if no Place in first RoleDetail
@@ -861,7 +838,7 @@ export class U {
 
                                     // return false if no RoleSet leading to a Place
                                     const placeSet = presence._children[
-                                        U.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
+                                        RoleSet.roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
                                     if (!placeSet || placeSet.type != 'RoleSet') return null;
 
                                     // return false if no Place in first RoleDetail

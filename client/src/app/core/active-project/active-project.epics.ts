@@ -12,6 +12,7 @@ import { U } from '../util/util';
 import { ActiveProjectActions, ActiveProjectAction } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { RoleSet } from 'app/core/state/models';
 
 
 
@@ -200,7 +201,7 @@ export class ActiveProjectEpics {
         ord_num: uiConf.ord_num,
         fk_property: uiConf.fk_property,
         property_is_outgoing: uiConf.property_is_outgoing,
-        roleSetKey: uiConf.fk_property ? U.roleSetKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
+        roleSetKey: uiConf.fk_property ? RoleSet.roleSetKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
         fk_property_set: uiConf.fk_property_set,
         property_set: uiConf.fk_property_set ? uiConf.property_set : undefined,
         propSetKey: uiConf.fk_property_set ? propSetKeyFromFk(uiConf.fk_property_set) : undefined
