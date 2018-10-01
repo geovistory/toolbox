@@ -23,7 +23,7 @@ const Config = {
     /**
      * Primary Key of Namespace "Geovistory Ongoing"
      */
-    PK_NAMESPACE__GEOVISTORY_ONGOING: 80442
+    PK_NAMESPACE__GEOVISTORY_ONGOING: 80409
 
 }
 module.exports = Config;

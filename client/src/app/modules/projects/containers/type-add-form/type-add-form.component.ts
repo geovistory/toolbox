@@ -2,7 +2,7 @@ import { Component, OnDestroy, Input, OnInit, Output, EventEmitter, ViewChild } 
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, InfRole, InfLanguage, ComConfig, InfPersistentItem, InfTemporalEntity } from 'app/core';
+import { IAppState, InfRole, InfLanguage, ComConfig, InfPersistentItem, InfTemporalEntity, U } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { TypeAddForm } from './api/type-add-form.models';
 import { TypeAddFormAPIEpics } from './api/type-add-form.epics';
@@ -95,6 +95,7 @@ export class TypeAddFormComponent extends TypeAddFormAPIActions implements OnIni
     console.log(this.ngForm.value)
 
     const fk_class = this.ngRedux.getState().activeProject.classSettings.types.class.dfh_pk_class;
+    const fk_property = U.obj2Arr(this.ngRedux.getState().activeProject.crm.classes[fk_class].roleSets).find(rs => rs.targetClassPk == DfhConfig.CLASS_PK_APPELLATION_USE).property.dfh_pk_property;
 
     const peIt = new InfPersistentItem({
       fk_class,
@@ -102,7 +103,7 @@ export class TypeAddFormComponent extends TypeAddFormAPIActions implements OnIni
         new InfRole({
           fk_entity: undefined,
           fk_temporal_entity: undefined,
-          fk_property: DfhConfig.PROPERTY_PK_GEO_PLACE_TYPE_TO_APPE,
+          fk_property,
           temporal_entity: new InfTemporalEntity({
             fk_class: DfhConfig.CLASS_PK_APPELLATION_USE,
             te_roles: this.model.appeLang
