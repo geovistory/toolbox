@@ -11,4 +11,5 @@ export class AppeDetail implements AppeDetailI {
     constructor(data?: AppeDetailI) {
         Object.assign(this, data);
     }
+
 }

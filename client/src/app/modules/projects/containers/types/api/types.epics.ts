@@ -9,7 +9,7 @@ import { TypesAPIActions, TypesAPIAction } from './types.actions';
 import * as Config from '../../../../../../../../common/config/Config';
 import { NotificationsAPIActions } from '../../../../../core/notifications/components/api/notifications.actions';
 import { Action } from 'redux';
-import { PeItDetailService } from 'app/core/state/services/custom/pe-it-detail';
+import { createPeItDetail } from 'app/core/state/services/state-creator';
 
 @Injectable()
 export class TypesAPIEpics {
@@ -19,8 +19,7 @@ export class TypesAPIEpics {
     private namespaceApi: InfNamespaceApi,
     private actions: TypesAPIActions,
     private loadingBarActions: LoadingBarActions,
-    private notificationActions: NotificationsAPIActions,
-    private peItDetailService: PeItDetailService
+    private notificationActions: NotificationsAPIActions
   ) { }
 
   public createEpics(c: TypesComponent): Epic {
@@ -178,7 +177,7 @@ export class TypesAPIEpics {
            */
           type$.subscribe((data) => {
 
-            const peItDetail = this.peItDetailService.createState({}, data[0], c.ngRedux.getState().activeProject.crm)
+            const peItDetail = createPeItDetail({}, data[0], c.ngRedux.getState().activeProject.crm)
 
             /**
              * Emit the global action that completes the loading bar

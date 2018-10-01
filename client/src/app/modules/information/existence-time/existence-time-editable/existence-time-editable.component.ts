@@ -13,7 +13,7 @@ import { existenceTimeReducer } from '../existence-time.reducer';
 import { dropLast } from 'ramda';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { StateSettings } from 'app/core/state/services/core/state-settings';
+import { StateSettings } from 'app/core/state/services/state-creator';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

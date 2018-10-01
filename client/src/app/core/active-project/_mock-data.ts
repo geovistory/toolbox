@@ -1,4 +1,5 @@
-import { ProjectCrm } from '..';
+import { ProjectCrm } from "./active-project.models";
+import { ComConfig } from "app/core/config/com-config";
 
 export const crm: ProjectCrm = {
     classes: {
@@ -8,7 +9,7 @@ export const crm: ProjectCrm = {
         dfh_identifier_in_namespace: 'E21',
         dfh_pk_class: 21,
         uiContexts: {
-          '103': {
+         [ComConfig.PK_UI_CONTEXT_EDITABLE]: {
             label: 'Editable',
             uiElements: [
               {
@@ -62,7 +63,7 @@ export const crm: ProjectCrm = {
               }
             ]
           },
-          '104': {
+          [ComConfig.PK_UI_CONTEXT_CREATE]: {
             label: 'Create',
             uiElements: [
               {
@@ -634,14 +635,14 @@ export const crm: ProjectCrm = {
         dfh_identifier_in_namespace: 'E66',
         dfh_pk_class: 60,
         uiContexts: {
-          '103': {
+          [ComConfig.PK_UI_CONTEXT_EDITABLE]: {
             label: 'Editable',
             uiElements: [
               {
                 ord_num: 0,
                 fk_property: null,
                 property_is_outgoing: null,
-                fk_property_set: 224,
+                fk_property_set: [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME],
                 property_set: {
                   pk_entity: 224,
                   description: 'Existence Time or Time Span of a Temporal Entity',
@@ -665,14 +666,14 @@ export const crm: ProjectCrm = {
               }
             ]
           },
-          '104': {
+          [ComConfig.PK_UI_CONTEXT_CREATE]: {
             label: 'Create',
             uiElements: [
               {
                 ord_num: 0,
                 fk_property: null,
                 property_is_outgoing: null,
-                fk_property_set: 224,
+                fk_property_set: [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME],
                 property_set: {
                   pk_entity: 224,
                   description: 'Existence Time or Time Span of a Temporal Entity',
@@ -762,7 +763,7 @@ export const crm: ProjectCrm = {
         dfh_identifier_in_namespace: 'E67',
         dfh_pk_class: 61,
         uiContexts: {
-          '103': {
+          [ComConfig.PK_UI_CONTEXT_EDITABLE]: {
             label: 'Editable',
             uiElements: [
               {
@@ -776,7 +777,7 @@ export const crm: ProjectCrm = {
                 ord_num: 1,
                 fk_property: null,
                 property_is_outgoing: null,
-                fk_property_set: 224,
+                fk_property_set: [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME],
                 property_set: {
                   pk_entity: 224,
                   description: 'Existence Time or Time Span of a Temporal Entity',
@@ -814,14 +815,14 @@ export const crm: ProjectCrm = {
               }
             ]
           },
-          '104': {
+          [ComConfig.PK_UI_CONTEXT_CREATE]: {
             label: 'Create',
             uiElements: [
               {
                 ord_num: 0,
                 fk_property: null,
                 property_is_outgoing: null,
-                fk_property_set: 224,
+                fk_property_set: [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME],
                 property_set: {
                   pk_entity: 224,
                   description: 'Existence Time or Time Span of a Temporal Entity',
@@ -1073,14 +1074,14 @@ export const crm: ProjectCrm = {
         dfh_identifier_in_namespace: 'E69',
         dfh_pk_class: 63,
         uiContexts: {
-          '103': {
+          [ComConfig.PK_UI_CONTEXT_EDITABLE]: {
             label: 'Editable',
             uiElements: [
               {
                 ord_num: 0,
                 fk_property: null,
                 property_is_outgoing: null,
-                fk_property_set: 224,
+                fk_property_set: [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME],
                 property_set: {
                   pk_entity: 224,
                   description: 'Existence Time or Time Span of a Temporal Entity',
@@ -1104,7 +1105,7 @@ export const crm: ProjectCrm = {
               }
             ]
           },
-          '104': {
+          [ComConfig.PK_UI_CONTEXT_CREATE]: {
             label: 'Create',
             uiElements: []
           }
@@ -1188,7 +1189,7 @@ export const crm: ProjectCrm = {
         dfh_identifier_in_namespace: 'E74',
         dfh_pk_class: 68,
         uiContexts: {
-          '103': {
+          [ComConfig.PK_UI_CONTEXT_EDITABLE]: {
             label: 'Editable',
             uiElements: [
               {
@@ -1249,7 +1250,7 @@ export const crm: ProjectCrm = {
               }
             ]
           },
-          '104': {
+          [ComConfig.PK_UI_CONTEXT_CREATE]: {
             label: 'Create',
             uiElements: [
               {
@@ -1616,11 +1617,11 @@ export const crm: ProjectCrm = {
         dfh_identifier_in_namespace: 'E85',
         dfh_pk_class: 78,
         uiContexts: {
-          '103': {
+          [ComConfig.PK_UI_CONTEXT_EDITABLE]: {
             label: 'Editable',
             uiElements: []
           },
-          '104': {
+          [ComConfig.PK_UI_CONTEXT_CREATE]: {
             label: 'Create',
             uiElements: []
           }
@@ -1706,11 +1707,11 @@ export const crm: ProjectCrm = {
         dfh_identifier_in_namespace: 'E86',
         dfh_pk_class: 79,
         uiContexts: {
-          '103': {
+          [ComConfig.PK_UI_CONTEXT_EDITABLE]: {
             label: 'Editable',
             uiElements: []
           },
-          '104': {
+          [ComConfig.PK_UI_CONTEXT_CREATE]: {
             label: 'Create',
             uiElements: []
           }
@@ -1877,11 +1878,11 @@ export const crm: ProjectCrm = {
         dfh_identifier_in_namespace: 'histC2',
         dfh_pk_class: 212,
         uiContexts: {
-          '103': {
+          [ComConfig.PK_UI_CONTEXT_EDITABLE]: {
             label: 'Editable',
             uiElements: []
           },
-          '104': {
+          [ComConfig.PK_UI_CONTEXT_CREATE]: {
             label: 'Create',
             uiElements: []
           }
@@ -2015,7 +2016,7 @@ export const crm: ProjectCrm = {
         dfh_identifier_in_namespace: 'histC8',
         dfh_pk_class: 363,
         uiContexts: {
-          '103': {
+          [ComConfig.PK_UI_CONTEXT_EDITABLE]: {
             label: 'Editable',
             uiElements: [
               {
@@ -2229,7 +2230,7 @@ export const crm: ProjectCrm = {
         dfh_identifier_in_namespace: 'histC10',
         dfh_pk_class: 365,
         uiContexts: {
-          '103': {
+          [ComConfig.PK_UI_CONTEXT_EDITABLE]: {
             label: 'Editable',
             uiElements: [
               {
@@ -2250,7 +2251,7 @@ export const crm: ProjectCrm = {
                 ord_num: 2,
                 fk_property: null,
                 property_is_outgoing: null,
-                fk_property_set: 224,
+                fk_property_set: [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME],
                 property_set: {
                   pk_entity: 224,
                   description: 'Existence Time or Time Span of a Temporal Entity',
@@ -2260,7 +2261,7 @@ export const crm: ProjectCrm = {
               }
             ]
           },
-          '104': {
+          [ComConfig.PK_UI_CONTEXT_CREATE]: {
             label: 'Create',
             uiElements: [
               {
@@ -2552,7 +2553,7 @@ export const crm: ProjectCrm = {
         dfh_identifier_in_namespace: 'histC11',
         dfh_pk_class: 441,
         uiContexts: {
-          '103': {
+          [ComConfig.PK_UI_CONTEXT_EDITABLE]: {
             label: 'Editable',
             uiElements: [
               {
@@ -2585,7 +2586,7 @@ export const crm: ProjectCrm = {
               }
             ]
           },
-          '104': {
+          [ComConfig.PK_UI_CONTEXT_CREATE]: {
             label: 'Create',
             uiElements: [
               {
@@ -2757,11 +2758,11 @@ export const crm: ProjectCrm = {
         dfh_identifier_in_namespace: 'histC12',
         dfh_pk_class: 442,
         uiContexts: {
-          '103': {
+          [ComConfig.PK_UI_CONTEXT_EDITABLE]: {
             label: 'Editable',
             uiElements: []
           },
-          '104': {
+          [ComConfig.PK_UI_CONTEXT_CREATE]: {
             label: 'Create',
             uiElements: []
           }

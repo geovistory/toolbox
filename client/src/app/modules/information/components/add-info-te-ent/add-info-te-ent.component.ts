@@ -5,6 +5,7 @@ import { AddOption, DataUnitChildList, RoleSetList, RoleSet } from 'app/core/sta
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { propSetMap } from '../../data-unit/data-unit.base';
+import { similarRoleSet, roleSetKeyFromParams } from 'app/core/state/services/state-creator';
 
 @Component({
   selector: 'gv-add-info-te-ent',
@@ -38,9 +39,9 @@ export class AddInfoTeEntComponent implements OnInit, OnDestroy {
       this.addOptions = this.uiElements.map(el => {
         if (
           children && el.fk_property && !children[el.roleSetKey] &&
-          !RoleSet.similarRoleSet(this.classConfig.roleSets[el.roleSetKey], this.excludeRoleSet)
+          !similarRoleSet(this.classConfig.roleSets[el.roleSetKey], this.excludeRoleSet)
         ) {
-          const roleSet = this.classConfig.roleSets[RoleSet.roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
+          const roleSet = this.classConfig.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
           return {
             label: roleSet.label.default,
             uiElement: el,

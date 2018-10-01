@@ -27,7 +27,9 @@ export class DfhConfig {
   static PROPERTY_PK_PERSON_TO_APPE = 1192;
   static PROPERTY_PK_GROUP_TO_APPE = 1193;
   static PROPERTY_PK_GEO_PLACE_TO_APPE = 1194;
+  static PROPERTY_PK_GEO_PLACE_TYPE_TO_APPE = 100001;
   static PROPERTY_PK_BUILT_WORK_TO_APPE = 1195;
+
 
   // dfh_pk_property used to connect an appellation use with a language
   static PROPERTY_PK_R61_USED_LANGUAGE = 1112;

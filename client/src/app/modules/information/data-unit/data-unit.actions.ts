@@ -4,6 +4,7 @@ import { U, UiContext } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy } from 'ramda';
 import { DataUnitLabel, RoleSet, DataUnitI } from 'app/core/state/models';
+import { roleSetKey } from 'app/core/state/services/state-creator';
 
 
 
@@ -84,7 +85,7 @@ export class DataUnitActions {
       uiContext
     },
     payload: {
-      _children: indexBy(RoleSet.roleSetKey, [roleSet]),
+      _children: indexBy(roleSetKey, [roleSet]),
       selectPropState: 'init'
     }
   })

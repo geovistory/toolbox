@@ -7,6 +7,7 @@ import { AddOption, DataUnitLabel, ExistenceTimeDetail, PeItDetail, RoleSet, Rol
 import { StateCreatorService } from '../shared/state-creator.service';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
+import { roleSetKey } from 'app/core/state/services/state-creator';
 
 
 // maps pk_property_set to key in ngRedux store
@@ -159,7 +160,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
     // add a form conrtol
     this.formGroup.addControl(
-      RoleSet.roleSetKey(newRoleSet), new FormControl(
+      roleSetKey(newRoleSet), new FormControl(
         newRoleSet.roles,
         [
           Validators.required

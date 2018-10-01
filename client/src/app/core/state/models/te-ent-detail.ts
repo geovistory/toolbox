@@ -19,7 +19,6 @@ export interface TeEntDetailI extends DataUnitI {
 
 }
 
-
 export class TeEntDetail extends DataUnit implements TeEntDetailI {
 
     // record
@@ -30,7 +29,6 @@ export class TeEntDetail extends DataUnit implements TeEntDetailI {
 
     // true if timefilter (cursor of timeline) is inside Timespan of TeEnt
     timespanActivated?: boolean;
-
 
     constructor(data?: TeEntDetailI) {
         super()

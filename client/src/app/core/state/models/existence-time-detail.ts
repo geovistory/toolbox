@@ -3,6 +3,7 @@ import { ExistenceTimeEdit } from './existence-time-edit';
 import { RoleSet } from './role-set';
 import { RoleSetList } from './role-set-list';
 import { CollapsedExpanded, DataUnitChildType } from './types';
+;
 
 export interface ExistenceTimeDetailI {
     readonly type?: DataUnitChildType;

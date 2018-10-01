@@ -3,7 +3,7 @@ import { Component, forwardRef, Input } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { IAppState, InfEntityProjectRelApi, InfRole, InfRoleApi, InfTemporalEntityApi } from 'app/core';
 import { RoleDetail, RoleSet, TeEntDetail } from 'app/core/state/models';
-import { StateSettings } from 'app/core/state/services/core/state-settings';
+import { StateSettings } from 'app/core/state/services/state-creator';
 import { Observable } from 'rxjs';
 import { RootEpics } from '../../../../../core/store/epics';
 import { RoleActions } from '../../../role/role.actions';

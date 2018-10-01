@@ -1,3 +1,5 @@
+export { StaticImplements } from './decorators/static-implements';
+
 export { InitPeItEditableStateModule } from './components/init-pe-it-editable-state/init-pe-it-editable-state.module';
 
 export { DomChangeModule } from './directives/dom-change/dom-change.module';
@@ -10,5 +12,4 @@ export { LanguageSearchTypeaheadModule } from './components/language-search-type
 
 export { ControlMessagesModule } from './components/control-messages/control-messages.module';
 
-export { PassiveLinkModule } from "./directives/passive-link/passive-link.module";
-
+export { PassiveLinkModule } from './directives/passive-link/passive-link.module';

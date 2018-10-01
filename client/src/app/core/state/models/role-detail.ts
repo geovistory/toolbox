@@ -64,7 +64,6 @@ export interface RoleDetailI {
 
 }
 
-
 export class RoleDetail implements RoleDetailI {
 
     _teEnt?: TeEntDetail;
@@ -83,8 +82,6 @@ export class RoleDetail implements RoleDetailI {
     isCircular?: boolean;
     changingDisplayRole?: boolean;
     isReadyToCreate?: boolean;
-
-    static roleDetailKey(roleDetail: RoleDetail) { return '_' + roleDetail.role.pk_entity };
 
     constructor(data?: RoleDetailI) {
         Object.assign(this, data);

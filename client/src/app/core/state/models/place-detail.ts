@@ -4,7 +4,6 @@ export interface PlaceDetailI {
     place?: InfPlace
 }
 
-
 export class PlaceDetail implements PlaceDetailI {
 
     place?: InfPlace;

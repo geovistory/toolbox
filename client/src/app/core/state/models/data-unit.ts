@@ -2,7 +2,7 @@ import { DfhClass, InfPersistentItem } from 'app/core/sdk';
 import { DataUnitChildList } from './data-unit-child-list';
 import { DataUnitLabel } from './data-unit-label';
 import { RoleSet } from './role-set';
-import { CollapsedExpanded, DataUnitChild, SelectPropStateType } from './types';
+import { CollapsedExpanded, SelectPropStateType } from './types';
 
 /*******************************
  * Data Unit Base Interface
@@ -47,23 +47,9 @@ export class DataUnit implements DataUnitI {
     propertyToAdd?: RoleSet; // role set that is currently chosen in order to add a role of this kind
 
 
-
-    static dataUnitChildKey(child: DataUnitChild) {
-
-        switch (child.type) {
-            case 'RoleSet':
-                return RoleSet.roleSetKey(child as RoleSet);
-
-            case 'ExistenceTimeDetail':
-                return '_existenceTime';
-
-            default:
-                break;
-        }
-    }
-
     constructor(data?: DataUnitI) {
         Object.assign(this, data);
     }
 
 }
+

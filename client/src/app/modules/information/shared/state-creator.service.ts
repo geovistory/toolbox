@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ComConfig, IAppState, InfAppellation, InfEntityProjectRel, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTimePrimitive, U } from 'app/core';
-import { AppeDetail, DataUnit, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleDetailList, RoleSet, StateSettings, TeEntDetail, TimePrimitveDetail } from 'app/core/state/models';
+import { AppeDetail, DataUnit, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleDetailList, RoleSet,  TeEntDetail, TimePrimitveDetail } from 'app/core/state/models';
 import { clone, groupBy, indexBy, prop } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { AppellationLabel } from './appellation-label/appellation-label';
@@ -9,6 +9,8 @@ import { ClassService } from './class.service';
 import { DfhConfig } from './dfh-config';
 import { PeItService } from './pe-it.service';
 import { RoleSetService } from './role-set.service';
+import { StateSettings } from 'app/core/state/services/state-creator';
+import { roleSetKeyFromParams, similarRoleSet, roleSetKey, sortRoleDetailsByOrdNum, roleDetailKey, dataUnitChildKey } from 'app/core/state/services/state-creator';
 
 
 
@@ -121,7 +123,7 @@ export class StateCreatorService {
             const roleSetDef = classConfig.roleSets[el.roleSetKey];
 
             // exclude the circular RoleSets
-            if (!RoleSet.similarRoleSet(roleSetDef, settings.parentRoleSet)) {
+            if (!similarRoleSet(roleSetDef, settings.parentRoleSet)) {
 
               // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
               const options = new RoleSet({ toggle: 'expanded' })
@@ -186,7 +188,7 @@ export class StateCreatorService {
     if (!children$.length) return new BehaviorSubject(undefined)
 
     combineLatest(children$).subscribe((children: DataUnitChild[]) => {
-      subject.next(indexBy(DataUnit.dataUnitChildKey, children.filter(c => (c))));
+      subject.next(indexBy(dataUnitChildKey, children.filter(c => (c))));
     })
 
     return subject;
@@ -253,9 +255,9 @@ export class StateCreatorService {
 
     combineLatest(roleDetailArray$).subscribe(roleDetailArr => {
 
-      const sortedByOrdNum = RoleSet.sortRoleDetailsByOrdNum(roleDetailArr);
+      const sortedByOrdNum = sortRoleDetailsByOrdNum(roleDetailArr);
 
-      const roleDetails: RoleDetailList = indexBy(RoleDetail.roleDetailKey, sortedByOrdNum)
+      const roleDetails: RoleDetailList = indexBy(roleDetailKey, sortedByOrdNum)
       subject.next(roleDetails);
     })
 
@@ -297,7 +299,7 @@ export class StateCreatorService {
       // add the parent role pk of the roleDetail to the peEnt
       settings.parentRolePk = role.pk_entity;
       settings.parentRoleSet = this.ngRedux.getState().activeProject.crm
-        .roleSets[RoleSet.roleSetKeyFromParams(role.fk_property, options.isOutgoing)];
+        .roleSets[roleSetKeyFromParams(role.fk_property, options.isOutgoing)];
 
       // if we are in create mode we need the fk_class
       if (settings.isCreateMode) {
@@ -458,7 +460,7 @@ export class StateCreatorService {
     else {
       combineLatest(children$).subscribe(children => {
 
-        ext._children = indexBy(RoleSet.roleSetKey, children)
+        ext._children = indexBy(roleSetKey, children)
 
         subject.next(ext);
       })

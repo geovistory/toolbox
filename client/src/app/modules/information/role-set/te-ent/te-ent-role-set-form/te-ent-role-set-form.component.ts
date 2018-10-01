@@ -12,7 +12,7 @@ import { TeEntDetail, RoleDetail } from 'app/core/state/models';
 import { timer ,  Observable, combineLatest } from 'rxjs';
 import { StateCreatorService } from '../../../shared/state-creator.service';
 import { ClassService } from '../../../shared/class.service';
-import { StateSettings } from 'app/core/state/services/core/state-settings';
+import { StateSettings } from 'app/core/state/services/state-creator';
 
 
 @AutoUnsubscribe()

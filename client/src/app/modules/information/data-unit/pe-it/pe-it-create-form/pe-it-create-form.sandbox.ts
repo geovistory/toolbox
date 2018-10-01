@@ -5,7 +5,7 @@ import { PeItCreateFormComponent } from './pe-it-create-form.component';
 import { mockPerson } from './sandbox.mock';
 import { Information2Module } from '../../../information.module';
 import { InitPeItEditableStateModule } from '../../../../../shared';
-import { StateSettings } from 'app/core';
+import { StateSettings } from 'app/core/state/services/state-creator';
 
 
 export default sandboxOf(PeItCreateFormComponent, {

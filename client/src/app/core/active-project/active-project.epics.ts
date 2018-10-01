@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { roleSetKeyFromParams } from 'app/core/state/services/state-creator';
 import { FluxStandardAction } from 'flux-standard-action';
 import { sort } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
-import { combineLatest, Observable, of, pipe } from 'rxjs';
-import { switchMap, map, catchError, tap, startWith, mergeMap, mapTo } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { mapTo, switchMap } from 'rxjs/operators';
 import { propSetKeyFromFk } from '../../modules/information/information.helpers';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, ProjectApi, Project } from '../sdk';
+import { ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, ProjectApi } from '../sdk';
 import { U } from '../util/util';
-import { ActiveProjectActions, ActiveProjectAction } from './active-project.action';
+import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
-import { RoleSet } from 'app/core/state/models';
 
 
 
@@ -201,7 +201,7 @@ export class ActiveProjectEpics {
         ord_num: uiConf.ord_num,
         fk_property: uiConf.fk_property,
         property_is_outgoing: uiConf.property_is_outgoing,
-        roleSetKey: uiConf.fk_property ? RoleSet.roleSetKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
+        roleSetKey: uiConf.fk_property ? roleSetKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
         fk_property_set: uiConf.fk_property_set,
         property_set: uiConf.fk_property_set ? uiConf.property_set : undefined,
         propSetKey: uiConf.fk_property_set ? propSetKeyFromFk(uiConf.fk_property_set) : undefined

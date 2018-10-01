@@ -1,16 +1,13 @@
-import { Component, OnDestroy, Input, OnInit } from '@angular/core';
-import { SubstoreComponent } from 'app/core/state/models/substore-component';
-import { Subject, Observable } from 'rxjs';
-import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { IAppState, InfPersistentItem, PeItDetail } from 'app/core';
+import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { RootEpics } from 'app/core/store/epics';
-import { TypeEditForm } from './api/type-edit-form.models';
-import { TypeEditFormAPIEpics } from './api/type-edit-form.epics';
+import { Observable, Subject } from 'rxjs';
 import { TypeEditFormAPIActions } from './api/type-edit-form.actions';
+import { TypeEditFormAPIEpics } from './api/type-edit-form.epics';
+import { TypeEditForm } from './api/type-edit-form.models';
 import { typeEditFormReducer } from './api/type-edit-form.reducer';
-import { first, takeUntil } from 'rxjs/operators';
-import { StateCreatorService } from '../../../information/shared/state-creator.service';
-import { PeItDetailService } from '../../../../core/state/services/custom/pe-it-detail';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -41,8 +38,7 @@ export class TypeEditFormComponent extends TypeEditFormAPIActions implements OnI
   constructor(
     protected rootEpics: RootEpics,
     private epics: TypeEditFormAPIEpics,
-    protected ngRedux: NgRedux<IAppState>,
-    private peItDetailService: PeItDetailService
+    protected ngRedux: NgRedux<IAppState>
   ) {
     super()
   }
@@ -52,9 +48,9 @@ export class TypeEditFormComponent extends TypeEditFormAPIActions implements OnI
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, typeEditFormReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
-    this.peIt$.pipe(first(p => !(!p)), takeUntil(this.destroy$)).subscribe(peIt => {
-      this.peItDetail = this.peItDetailService.createState({}, peIt, this.ngRedux.getState().activeProject.crm)
-    })
+    // this.peIt$.pipe(first(p => !(!p)), takeUntil(this.destroy$)).subscribe(peIt => {
+    //   this.peItDetail = this.peItDetailService.createState({}, peIt, this.ngRedux.getState().activeProject.crm)
+    // })
   }
 
   ngOnDestroy() {

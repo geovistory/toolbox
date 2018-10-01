@@ -83,9 +83,9 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
     this.class$ = this.ngRedux.select<DfhClass>(['activeProject', 'classSettings', 'dfhClass'])
     this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
 
-    combineLatest(this.add$, this.loading$).takeUntil(this.destroy$).subscribe(d => {
-      const add = d[0], loading = d[1];
-      this.listVisible = ((add || loading) ? false : true);
+    // if one of the observables returns truthy, list is not visible
+    combineLatest(this.loading$, this.add$, this.edit$).takeUntil(this.destroy$).subscribe(d => {
+      this.listVisible = !d.find(item => !!(item));
     })
   }
 
@@ -125,7 +125,7 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
         .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
           .map(r => {
             return new AppellationLabel(r.appellation.appellation_label).getString()
-          })[0])[0]
+          })[0]).join(', ')
 
   }
 

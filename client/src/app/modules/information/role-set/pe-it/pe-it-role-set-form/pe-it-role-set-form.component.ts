@@ -11,7 +11,7 @@ import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetFormBase } from '../../role-set-form.base';
 import { RoleSetActions } from '../../role-set.actions';
 import { roleSetReducer } from '../../role-set.reducer';
-import { StateSettings } from 'app/core/state/services/core/state-settings';
+import { StateSettings } from 'app/core/state/services/state-creator';
 
 @AutoUnsubscribe()
 @WithSubStore({

@@ -17,7 +17,7 @@ import { RoleSetBase } from '../../role-set.base';
 import { RoleSetApiEpics } from '../../role-set.epics';
 import { roleSetReducer } from '../../role-set.reducer';
 import { RootEpics } from 'app/core/store/epics';
-import { StateSettings } from 'app/core/state/services/core/state-settings';
+import { StateSettings } from 'app/core/state/services/state-creator';
 
 @AutoUnsubscribe({
   blackList: ['destroy$']

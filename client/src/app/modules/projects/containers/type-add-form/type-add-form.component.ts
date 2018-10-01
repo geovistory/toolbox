@@ -102,7 +102,7 @@ export class TypeAddFormComponent extends TypeAddFormAPIActions implements OnIni
         new InfRole({
           fk_entity: undefined,
           fk_temporal_entity: undefined,
-          fk_property: DfhConfig.PROPERTY_PK_R64_USED_NAME,
+          fk_property: DfhConfig.PROPERTY_PK_GEO_PLACE_TYPE_TO_APPE,
           temporal_entity: new InfTemporalEntity({
             fk_class: DfhConfig.CLASS_PK_APPELLATION_USE,
             te_roles: this.model.appeLang

@@ -57,13 +57,18 @@ module.exports = function (DfhClass) {
   }
 
 
+  /** 
+   * Query classes 
+   * where:
+   * - they are are selected (and thus not inferred)
+   * 
+   * include:
+   * - text_properties
+   */
   DfhClass.selectedClassesOfProfile = function (dfh_pk_profile, cb) {
 
     const filter = {
-      /** 
-       * Select persistent items by pk_entity
-       */
-      "where": ["dfh_pk_class", "NOT IN", blackList],
+      // "where": ["dfh_pk_class", "NOT IN", blackList],
       "orderBy": [{
         "pk_entity": "asc"
       }],

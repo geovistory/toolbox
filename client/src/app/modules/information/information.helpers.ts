@@ -1,6 +1,7 @@
 import { ComConfig, DataUnitChild, DataUnitChildList, InfRole, InfTimePrimitive, RoleDetail, RoleDetailList, RoleSet, U, UiContext } from 'app/core';
 import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
 import { indexBy } from 'ramda';
+import { roleDetailKey, sortRoleDetailsByOrdNum } from 'app/core/state/services/state-creator';
 
 
 export function propSetKeyFromFk(fkPropSet: number) {
@@ -98,6 +99,6 @@ export function sortChildrenByUiContext(_children: DataUnitChildList, uiContext:
  */
 export function sortRoleDetailListByOrdNum(roleDetailArray: RoleDetailList): RoleDetailList {
 
-    return indexBy(RoleDetail.roleDetailKey, RoleSet.sortRoleDetailsByOrdNum(U.obj2Arr(roleDetailArray)))
+    return indexBy(roleDetailKey, sortRoleDetailsByOrdNum(U.obj2Arr(roleDetailArray)))
 
 }

@@ -1,6 +1,5 @@
 <p>
   type-edit-form works!
 </p>
-{{(peItDetail$ |async) | json}}
 
-<gv-pe-it-editable class="gv-flex-grow-1  d-flex flex-column" [basePath]="basePath.concat('_peIt_editable')"></gv-pe-it-editable>
+<gv-pe-it-editable *ngIf="(peItDetail$ |async)" class="gv-flex-grow-1  d-flex flex-column" [basePath]="basePath.concat('peItDetail')"></gv-pe-it-editable>
