@@ -103,7 +103,7 @@ export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: P
                     r = rolesByFkProp[el.fk_property];
 
                     // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
-                    const options = new RoleSet({ toggle: 'collapsed' })
+                    const options = new RoleSet({ toggle: 'expanded' })
                     const roleSetDef = classConfig.roleSets[el.roleSetKey];
                     if (r && r.length > 0) {
                         children.push(createRoleSet(Object.assign({}, roleSetDef, options), r, crm, settings));
@@ -164,7 +164,6 @@ export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity
 
     return new TeEntDetail({
         selectPropState: 'init',
-        toggle: 'collapsed',
         teEnt: teEnt,
         fkClass: teEnt.fk_class,
         _children: createDataUnitChildren(teEnt.fk_class, teEnt.te_roles, crm, settings)

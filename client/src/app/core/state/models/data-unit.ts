@@ -43,7 +43,7 @@ export class DataUnit implements DataUnitI {
     showAddAPropertyButton?= true;
 
     label?: DataUnitLabel;
-    toggle?: CollapsedExpanded;
+    toggle? = 'collapsed' as CollapsedExpanded;
     ingoingRoleSets?: RoleSet[];
     outgoingRoleSets?: RoleSet[];
     selectPropState?: SelectPropStateType; // state of child components for adding or creating properties
