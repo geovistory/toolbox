@@ -1,0 +1,17 @@
+{
+  "name": "ComSystemType",
+  "base": "ComEntity",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "commons",
+      "table": "system_type"
+    }
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

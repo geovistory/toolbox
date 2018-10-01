@@ -1,5 +1,5 @@
 import { DfhClassInterface, ComPropertySet, ComUiContextConfig } from '../../core';
-import { RoleSet } from 'app/core/models';
+import { RoleSet } from 'app/core/state/models';
 
 
 

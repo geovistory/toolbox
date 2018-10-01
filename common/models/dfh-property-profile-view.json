@@ -17,8 +17,8 @@
   },
   "properties": {
     "pk_entity": {
-      "id": true,
       "type": "number",
+      "id": true,
       "generated": true
     },
     "is_enabled_in_profile": {
@@ -32,9 +32,7 @@
     }
   },
   "validations": [],
-  "relations": {
-
-  },
+  "relations": {},
   "acls": [
     {
       "principalType": "ROLE",
@@ -51,5 +49,6 @@
       ]
     }
   ],
-  "methods": {}
+  "methods": {
+  }
 }

@@ -1,4 +1,4 @@
-import { ExistenceTimeEdit } from "app/core/models";
+import { ExistenceTimeEdit } from "app/core/state/models";
 import { ExTimeEditActions, ExTimeEditAction } from "./existence-time-edit.actions";
 
 export const existenceTimeEditReducer =

@@ -44,7 +44,14 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "inf_language": {
+      "type": "hasOne",
+      "model": "InfLanguage",
+      "foreignKey": "pk_language",
+      "primaryKey": "pk_language"
+    }
+  },
   "acls": [
     {
       "accessType": "*",

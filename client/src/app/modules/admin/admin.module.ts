@@ -17,6 +17,15 @@ import { FormsModule } from '@angular/forms';
 import { ClassUiContextComponent } from './components/class-ui-context/class-ui-context.component';
 import { ClassUiContextAPIActions } from './components/class-ui-context/api/class-ui-context.actions';
 import { ClassUiContextAPIEpics } from './components/class-ui-context/api/class-ui-context.epics';
+import { NamespaceListComponent } from './components/namespace-list/namespace-list.component';
+import { NamespaceListAPIActions } from './components/namespace-list/api/namespace-list.actions';
+import { NamespaceListAPIEpics } from './components/namespace-list/api/namespace-list.epics';
+import { SystemTypeListAPIActions } from './components/system-type-list/api/system-type-list.actions';
+import { SystemTypeListAPIEpics } from './components/system-type-list/api/system-type-list.epics';
+import { SystemTypeListComponent } from './components/system-type-list/system-type-list.component';
+import { PropertyListAPIActions } from './components/property-list/api/property-list.actions';
+import { PropertyListAPIEpics } from './components/property-list/api/property-list.epics';
+import { PropertyListComponent } from './components/property-list/property-list.component';
 
 @NgModule({
   imports: [
@@ -28,14 +37,28 @@ import { ClassUiContextAPIEpics } from './components/class-ui-context/api/class-
     DndModule,
     FormsModule
   ],
-  providers:[
+  providers: [
     ClassListAPIActions,
     ClassListAPIEpics,
     ClassAPIActions,
     ClassAPIEpics,
     ClassUiContextAPIActions,
-    ClassUiContextAPIEpics
+    ClassUiContextAPIEpics,
+    NamespaceListAPIActions,
+    NamespaceListAPIEpics,
+    SystemTypeListAPIActions,
+    SystemTypeListAPIEpics,
+    PropertyListAPIActions,
+    PropertyListAPIEpics
   ],
-  declarations: [MainComponent, ClassComponent, ClassListComponent, ClassUiContextComponent]
+  declarations: [
+    MainComponent,
+    ClassComponent,
+    PropertyListComponent,
+    ClassListComponent,
+    ClassUiContextComponent,
+    NamespaceListComponent,
+    SystemTypeListComponent
+  ]
 })
 export class AdminModule { }

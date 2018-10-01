@@ -1,0 +1,71 @@
+{
+  "name": "InfNamespace",
+  "base": "InfEntity",
+  "options": {
+    "postgresql": {
+      "schema": "information",
+      "table": "namespace"
+    }
+  },
+  "properties": {
+    "fk_root_namespace": {
+      "type": "number"
+    },
+    "fk_project": {
+      "type": "number",
+      "required": true
+    },
+    "standard_label": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find",
+        "findWhereProjectOrHasTypes"
+      ]
+    }
+  ],
+  "methods": {
+    "findWhereProjectOrHasTypes":{
+      "description":"Find Namespaces that have at least one type instance that is used to type the given class or where the Namespace belongs to the given project. Root Namespaces are excluded. Geovistory Ongoing is allways included.",
+      "accepts": [
+        {
+          "arg": "pk_class",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the typed class (e.g. of Group for Group Types)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the the current project",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "InfNamespace"
+        ],
+        "root": true
+      },
+      "http": {
+        "path": "/find-where-project-or-has-types",
+        "verb": "get"
+      } }
+  }
+}

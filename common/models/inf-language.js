@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports = function(InfLanguage) {
+module.exports = function (InfLanguage) {
 
-  InfLanguage.findOrCreateLang = function(projectId, data) {
+  InfLanguage.findOrCreateLang = function (projectId, data) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
@@ -21,21 +21,36 @@ module.exports = function(InfLanguage) {
   }
 
 
-  InfLanguage.queryByString = function(searchstring, cb) {
-    var sql_stmt = `
-    select pk_entity, pk_language, fk_class, lang_type, "scope",iso6392b, iso6392t, iso6391, notes
-    from (
-      SELECT
-      pk_entity, pk_language, fk_class, lang_type, "scope",iso6392b, iso6392t, iso6391, notes,
-      ts_rank(to_tsvector('english', notes),
-      to_tsquery($1), 1) AS score
-      FROM information."language"
-    ) s
-    WHERE score > 0
-    ORDER BY score DESC`
+  InfLanguage.queryByString = function (searchstring, cb) {
+    let sql_stmt;
+    let params = [];
 
-    var params = [];
-    params.push(searchstring + ':*');
+    if (!searchstring) {
+      sql_stmt = `
+        select pk_entity, pk_language, fk_class, lang_type, "scope",iso6392b, iso6392t, iso6391, notes
+        FROM information."language"
+        WHERE iso6391 IN ('de','en','fr','it','es')
+        ORDER BY notes ASC;
+        `
+    } else {
+
+      sql_stmt = `
+      select pk_entity, pk_language, fk_class, lang_type, "scope",iso6392b, iso6392t, iso6391, notes
+      from (
+        SELECT
+        pk_entity, pk_language, fk_class, lang_type, "scope",iso6392b, iso6392t, iso6391, notes,
+        ts_rank(to_tsvector('english', notes),
+        to_tsquery($1), 1) AS score
+        FROM information."language"
+        ) s
+        WHERE score > 0
+        ORDER BY score DESC
+        LIMIT 6;
+        `;
+
+        params.push(searchstring + ':*');
+    }
+
 
     const connector = InfLanguage.dataSource.connector;
 

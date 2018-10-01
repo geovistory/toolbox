@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import {  Information } from 'app/modules/information/information.models';
-import { StateCreatorService, StateSettings } from 'app/modules/information/shared/state-creator.service';
+import { StateCreatorService } from 'app/modules/information/shared/state-creator.service';
 import { NgRedux, ObservableStore } from '@angular-redux/store';
 import { IAppState, PeItDetail } from 'app/core';
 import { Action } from 'redux';
+import { StateSettings } from 'app/core/state/services/state-creator';
+import { Information } from 'app/modules/information/containers/information/api/information.models';
 
 const PE_IT_EDITABLE_INITIALIZED = 'PE_IT_EDITABLE_INITIALIZED'
 const PE_IT_ADD_FORM_INITIALIZED = 'PE_IT_ADD_FORM_INITIALIZED'
@@ -80,20 +81,20 @@ export class InitPeItEditableStateComponent implements OnInit, OnDestroy {
         this.stateCreated.emit(peItDetail);
       })
 
-    }
-    else {
+    } else {
       this.stateCreator.initializePeItState(this.pkEntity, this.pkProject, this.settings).subscribe(peItDetail => {
 
-        if (this.settings.isAddMode)
+        if (this.settings.isAddMode) {
           this.localStore.dispatch({
             type: PE_IT_ADD_FORM_INITIALIZED,
             payload: peItDetail
           })
-        else
+        } else {
           this.localStore.dispatch({
             type: PE_IT_EDITABLE_INITIALIZED,
             payload: peItDetail
           })
+        }
 
         this.stateCreated.emit(peItDetail);
       })

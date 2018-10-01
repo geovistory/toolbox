@@ -28,11 +28,23 @@
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     },
+    "text_properties": {
+      "type": "hasMany",
+      "model": "InfTextProperty",
+      "foreignKey": "fk_concerned_entity",
+      "primaryKey": "pk_entity"
+    },
     "dfh_class": {
       "type": "belongsTo",
       "model": "DfhClass",
-      "primaryKey": "dfh_pk_class",
-      "foreignKey": "fk_class"
+      "foreignKey": "fk_class",
+      "primaryKey": "dfh_pk_class"
+    },
+    "type_namespace_rels": {
+      "type": "hasMany",
+      "model": "InfTypeNamespaceRel",
+      "foreignKey": "fk_persistent_item",
+      "primaryKey": "pk_entity"
     }
   },
   "acls": [
@@ -50,11 +62,46 @@
         "withPhenomenaInProject",
         "nestedObjectOfProject",
         "nestedObjectOfRepo",
-        "changePeItProjectRelation"
+        "changePeItProjectRelation",
+        "typesOfNamespaceClassAndProject",
+        "typeNested",
+        "findOrCreateType"
       ]
     }
   ],
   "methods": {
+    "nestedObjectOfProject": {
+      "accepts": [
+        {
+          "arg": "projectId",
+          "type": "number",
+          "required": true,
+          "description": "Project id",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the persistent item (pk_entity)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Get e nested object of all information about the persistent item of the project.",
+      "http": {
+        "path": "/nested-object-of-project",
+        "verb": "get"
+      }
+    },
     "changePeItProjectRelation": {
       "accepts": [
         {
@@ -142,24 +189,40 @@
         "verb": "post"
       }
     },
-    "nestedObjectOfProject": {
+    "findOrCreateType": {
       "accepts": [
         {
-          "arg": "projectId",
+          "arg": "pk_project",
           "type": "number",
           "required": true,
-          "description": "Project id",
+          "description": "Id of the project",
           "http": {
             "source": "query"
           }
         },
         {
-          "arg": "pkEntity",
+          "arg": "pk_namespace",
           "type": "number",
           "required": true,
-          "description": "Primary Key of the persistent item (pk_entity)",
+          "description": "Id of the project",
           "http": {
             "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": "InfPersistentItem",
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
           }
         }
       ],
@@ -168,10 +231,10 @@
         "type": "InfPersistentItem",
         "root": true
       },
-      "description": "Get e nested object of all information about the persistent item of the project.",
+      "description": "Find or create a InfPersistentItem.",
       "http": {
-        "path": "/nested-object-of-project",
-        "verb": "get"
+        "path": "/find-or-create-type",
+        "verb": "post"
       }
     },
     "nestedObjectOfRepo": {
@@ -285,6 +348,88 @@
       "description": "Find persistent items of a project.",
       "http": {
         "path": "/search-in-repo",
+        "verb": "get"
+      }
+    },
+    "typesOfNamespaceClassAndProject": {
+      "accepts": [
+        {
+          "arg": "pk_namespace",
+          "type": "string",
+          "required": true,
+          "description": "Primary Key of Namespace",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_typed_class",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Typed Class (e.g. pk of Geographical Place to get Geographical Place Types)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "persistent_items",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Find types of given namespace, class and project.",
+      "http": {
+        "path": "/types-of-namespace-class-and-project",
+        "verb": "get"
+      }
+    },
+    "typeNested": {
+      "accepts": [
+        {
+          "arg": "pk_namespace",
+          "type": "string",
+          "required": true,
+          "description": "Primary Key of Namespace",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_entity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the type. Provide this if you want to query one specific type.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "persistent_items",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Find types of given namespace, class and project.",
+      "http": {
+        "path": "/type-nested",
         "verb": "get"
       }
     }

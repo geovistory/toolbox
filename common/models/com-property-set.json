@@ -9,6 +9,12 @@
       "table": "property_set"
     }
   },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
   "properties": {
     "pk_entity": {
       "type": "number",
@@ -35,12 +41,6 @@
       "foreignKey": "fk_property_set",
       "through": "ComUiContextConfig",
       "keyThrough": "fk_class_for_property_set"
-    }
-  },
-  "mixins": {
-    "SetupRemoteMethods": {
-      "ignoreACL": false,
-      "disableAllExcept": []
     }
   },
   "acls": [

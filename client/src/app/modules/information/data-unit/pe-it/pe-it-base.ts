@@ -1,4 +1,4 @@
-import { NgRedux } from '@angular-redux/store';
+import { NgRedux, select } from '@angular-redux/store';
 import { IAppState } from 'app/core';
 import { PeItActions } from './pe-it.actions';
 import { FormBuilder } from '@angular/forms';
@@ -7,10 +7,13 @@ import { DataUnitBase } from '../data-unit.base';
 import { PeItApiEpics } from './api/pe-it.epics';
 import { RootEpics } from 'app/core/store/epics';
 import { Input } from '@angular/core';
+import { Observable } from 'rxjs';
 
 export abstract class PeItBase extends DataUnitBase {
 
     @Input() basePath: string[];
+    @select() showPropertiesHeader$: Observable<boolean>;
+    @select() showHeader$: Observable<boolean>;
 
     // array of pks of loading leaf-pe-its
     pksOfloadingLeafPeIts: number[] = [];

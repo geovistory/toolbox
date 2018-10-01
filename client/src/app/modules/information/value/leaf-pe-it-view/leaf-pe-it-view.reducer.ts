@@ -1,6 +1,6 @@
 import { clone } from 'ramda';
 
-import { PeItDetail } from 'app/core/models';
+import { PeItDetail } from 'app/core/state/models';
 import { LeafPeItAction, LeafPeItActions } from './leaf-pe-it-view.actions';
 
 const INITIAL_STATE: PeItDetail = {

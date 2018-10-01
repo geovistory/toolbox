@@ -2,7 +2,7 @@ import { sandboxOf } from 'angular-playground';
 import { DfhClass, DfhProperty, InfRole } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
-import { RoleDetail, RoleSet, ExistenceTimeDetail } from 'app/core/models';
+import { RoleDetail, RoleSet, ExistenceTimeDetail } from 'app/core/state/models';
 import { Information2Module } from '../../../information.module';
 import { TeEntEditableComponent } from './te-ent-editable.component';
 import { DfhConfig } from '../../../shared/dfh-config';
@@ -22,6 +22,7 @@ export default sandboxOf(TeEntEditableComponent, {
             },
             parentPath: ['_162156'],
             initState: {
+                fkClass: 21,
                 activeProject: {
                     pk_project: 57
                 },

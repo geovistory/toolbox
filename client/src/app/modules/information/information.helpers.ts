@@ -1,20 +1,7 @@
-import { InfRole, InfTimePrimitive, UiContext, U, ComConfig, DataUnitChild, RoleSet, RoleDetail, DataUnitChildList, RoleDetailList, RoleSetI } from 'app/core';
+import { ComConfig, DataUnitChild, DataUnitChildList, InfRole, InfTimePrimitive, RoleDetail, RoleDetailList, RoleSet, U, UiContext } from 'app/core';
 import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
-import { indexBy, sort } from 'ramda'
-
-export function dataUnitChildKey(child: DataUnitChild) {
-
-    switch (child.type) {
-        case 'RoleSet':
-            return U.roleSetKey(child as RoleSet);
-
-        case 'ExistenceTimeDetail':
-            return '_existenceTime';
-
-        default:
-            break;
-    }
-}
+import { indexBy } from 'ramda';
+import { roleDetailKey, sortRoleDetailsByOrdNum } from 'app/core/state/services/state-creator';
 
 
 export function propSetKeyFromFk(fkPropSet: number) {
@@ -27,10 +14,6 @@ export function propSetKeyFromFk(fkPropSet: number) {
     }
 
 }
-
-
-export function roleDetailKey(roleDetail: RoleDetail) { return '_' + roleDetail.role.pk_entity };
-
 
 export function getCalendarFromRole(role: InfRole): CalendarType {
     if (!role) return null;
@@ -105,28 +88,6 @@ export function sortChildrenByUiContext(_children: DataUnitChildList, uiContext:
 
 
 
-/**
- * returns a copy of the given RoleDetail[], where the items are sorted
- * according to the ord_num in the epr.
- *
- * @param roleDetailArray a RoleDetail[]
- * @returns a sorted copy of RoleDetail[]
- */
-export function sortRoleDetailsByOrdNum(roleDetailArray: RoleDetail[]): RoleDetail[] {
-
-    const diff = (rdA: RoleDetail, rdB: RoleDetail) => {
-
-        const a = rdA.role.entity_version_project_rels ? rdA.role.entity_version_project_rels[0].ord_num : undefined;
-        const b = rdB.role.entity_version_project_rels ? rdB.role.entity_version_project_rels[0].ord_num : undefined;
-
-        if (a === undefined || b === undefined) return 0;
-
-        return a - b;
-    }
-
-    return sort(diff, roleDetailArray);
-}
-
 
 
 /**
@@ -140,29 +101,4 @@ export function sortRoleDetailListByOrdNum(roleDetailArray: RoleDetailList): Rol
 
     return indexBy(roleDetailKey, sortRoleDetailsByOrdNum(U.obj2Arr(roleDetailArray)))
 
-}
-
-
-/**
- * Checks if RoleSet a is of the same property or property-of-origin as RoleSet b.
- * This is useful to check if a RoleSet is circular in a tree of RoleSets and DataUnits
- *
- * @param a RoleSet you want to test if it is circular
- * @param b RoleSet to compare with (typically the parent RoleSet in the tree)
- */
-export function similarRoleSet(a: RoleSetI, b: RoleSetI): boolean {
-    if (!a || !b) return false;
-
-    if (
-        (
-            a.property.dfh_pk_property === b.property.dfh_pk_property ||
-            (
-                a.property.dfh_fk_property_of_origin &&
-                a.property.dfh_fk_property_of_origin === b.property.dfh_fk_property_of_origin
-            )
-        )
-        && a.isOutgoing != b.isOutgoing
-    ) return true;
-
-    else return false;
 }

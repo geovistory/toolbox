@@ -1,6 +1,6 @@
 {
   "name": "InfEntityProjectRel",
-  "base": "PersistedModel",
+  "base": "AbstractEntity",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
@@ -53,7 +53,19 @@
   },
   "validations": [],
   "relations": {},
-  "acls": [],
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find",
+        "updateEprAttributes",
+        "patchAttributes",
+        "patchOrCreate"
+      ]
+    }
+  ],
   "methods": {
     "updateEprAttributes": {
       "accepts": [

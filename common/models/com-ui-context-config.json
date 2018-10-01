@@ -9,6 +9,12 @@
       "table": "ui_context_config"
     }
   },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
   "properties": {
     "pk_entity": {
       "type": "number",
@@ -66,12 +72,6 @@
       "primaryKey": "pk_project"
     }
   },
-  "mixins": {
-    "SetupRemoteMethods": {
-      "ignoreACL": false,
-      "disableAllExcept": []
-    }
-  },
   "acls": [
     {
       "principalType": "ROLE",
@@ -84,7 +84,8 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "find", "patchOrCreate"
+        "find",
+        "patchOrCreate"
       ]
     }
   ],

@@ -1,12 +1,12 @@
 import { sandboxOf } from 'angular-playground';
-import { Project, ProjectDetail } from 'app/core';
+import { Project } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
 import { Information2Module } from '../../../information.module';
 import { PeItAddFormComponent } from './pe-it-add-form.component';
 import { InitPeItEditableStateModule } from 'app/shared';
-import { StateSettings } from '../../../shared/state-creator.service';
 import { crm } from '../../../information.sandbox.mock';
+import { StateSettings } from 'app/core/state/services/state-creator';
 
 export default sandboxOf(PeItAddFormComponent, {
   imports: [

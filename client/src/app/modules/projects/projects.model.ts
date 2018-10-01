@@ -1,4 +1,4 @@
-import { Project } from "app/core";
+import { Project } from 'app/core';
 
 export interface IProject {
     record: Project

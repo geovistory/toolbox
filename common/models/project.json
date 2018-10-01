@@ -43,6 +43,7 @@
     "default_language": {
       "type": "belongsTo",
       "model": "Language",
+      "primaryKey": "pk_language",
       "foreignKey": "fk_language"
     },
     "labels": {

@@ -4,7 +4,7 @@ import { InfEntityProjectRelApi, InfRoleApi, IAppState, InfTemporalEntityApi } f
 import { NgRedux } from '@angular-redux/store';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetService } from '../../../shared/role-set.service';
-import { RoleDetail } from 'app/core/models';
+import { RoleDetail } from 'app/core/state/models';
 import { RoleActions } from '../../../role/role.actions';
 import { StateCreatorService } from '../../../shared/state-creator.service';
 import { ClassService } from '../../../shared/class.service';

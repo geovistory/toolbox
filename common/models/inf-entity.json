@@ -1,14 +1,10 @@
 {
   "name": "InfEntity",
-  "base": "PersistedModel",
-  "idInjection": true,
-  "options": {
-    "validateUpsert": true
-  },
+  "base": "AbstractEntity",
   "properties": {
     "pk_entity": {
-      "id": true,
       "type": "number",
+      "id": true,
       "generated": true
     },
     "notes": {
@@ -31,7 +27,6 @@
       "hidden": true
     }
   },
-  "validations": [],
   "relations": {
     "entity_version_project_rels": {
       "type": "hasMany",
@@ -39,7 +34,5 @@
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     }
-  },
-  "acls": [],
-  "methods": {}
+  }
 }

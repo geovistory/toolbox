@@ -15,7 +15,7 @@ import {
 import { peItReducer } from '../../data-unit/pe-it/pe-it.reducer';
 import { TeEntActions } from '../../data-unit/te-ent/te-ent.actions';
 import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
-import { PeItDetail } from 'app/core/models';
+import { PeItDetail } from 'app/core/state/models';
 
 
 @WithSubStore({

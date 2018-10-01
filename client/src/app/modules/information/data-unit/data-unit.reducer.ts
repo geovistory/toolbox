@@ -1,7 +1,7 @@
 
 import { Action } from 'redux';
 import { DataUnitAction, DataUnitActions } from './data-unit.actions';
-import { DataUnit } from 'app/core/models';
+import { DataUnit } from 'app/core/state/models';
 import { omit } from 'ramda'
 import { Meta } from '../../../../../node_modules/@angular/platform-browser';
 import { sortChildrenByUiContext } from '../information.helpers';

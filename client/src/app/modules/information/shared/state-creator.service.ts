@@ -1,24 +1,18 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ComConfig, IAppState, InfAppellation, InfEntityProjectRel, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTimePrimitive, U } from 'app/core';
-import { AppeDetail, DataUnit, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleDetailList, RoleSet, RoleSetI, TeEntDetail, TimePrimitveDetail } from 'app/core/models';
+import { AppeDetail, DataUnit, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleDetailList, RoleSet,  TeEntDetail, TimePrimitveDetail } from 'app/core/state/models';
 import { clone, groupBy, indexBy, prop } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
-import { dataUnitChildKey, roleDetailKey, similarRoleSet, sortRoleDetailsByOrdNum } from '../information.helpers';
 import { AppellationLabel } from './appellation-label/appellation-label';
 import { ClassService } from './class.service';
 import { DfhConfig } from './dfh-config';
 import { PeItService } from './pe-it.service';
 import { RoleSetService } from './role-set.service';
+import { StateSettings } from 'app/core/state/services/state-creator';
+import { roleSetKeyFromParams, similarRoleSet, roleSetKey, sortRoleDetailsByOrdNum, roleDetailKey, dataUnitChildKey } from 'app/core/state/services/state-creator';
 
 
-
-export interface StateSettings {
-  parentRolePk?: number;
-  parentRoleSet?: RoleSetI;
-  isCreateMode?: boolean;
-  isAddMode?: boolean;
-}
 
 
 @Injectable()
@@ -45,7 +39,6 @@ export class StateCreatorService {
           fk_class: fkClass
         } as InfPersistentItem,
         selectPropState: 'init',
-        // label: U.labelFromDataUnitChildList(dataUnitChildList)
       }
 
       subject.next(peItDetail);
@@ -306,7 +299,7 @@ export class StateCreatorService {
       // add the parent role pk of the roleDetail to the peEnt
       settings.parentRolePk = role.pk_entity;
       settings.parentRoleSet = this.ngRedux.getState().activeProject.crm
-        .roleSets[U.roleSetKeyFromParams(role.fk_property, options.isOutgoing)];
+        .roleSets[roleSetKeyFromParams(role.fk_property, options.isOutgoing)];
 
       // if we are in create mode we need the fk_class
       if (settings.isCreateMode) {
@@ -423,35 +416,6 @@ export class StateCreatorService {
   }
 
 
-  initializeTeEntState(teEnt: InfTemporalEntity, settings: StateSettings = {}): Subject<TeEntDetail> {
-    const subject = new ReplaySubject();
-
-    if (!teEnt) return new BehaviorSubject(undefined)
-
-    // Get children
-    this.initDataUnitChildList(teEnt.fk_class, teEnt.te_roles, settings).subscribe(_children => {
-
-      // those only pollute the state. retrieve them from roleSets
-      if (!settings.isAddMode) delete teEnt.te_roles;
-
-      const teEntState: TeEntDetail = {
-        selectPropState: 'init',
-        toggle: 'collapsed',
-        teEnt: teEnt,
-        fkClass: teEnt.fk_class,
-        _children,
-        // label: U.labelFromDataUnitChildList(_children)
-        // label: StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(_children)
-      }
-
-      subject.next(teEntState);
-
-    })
-
-    return subject;
-  }
-
-
   initializeExistenceTimeState(
     roles: InfRole[],
     options: ExistenceTimeDetail = new ExistenceTimeDetail(),
@@ -496,7 +460,7 @@ export class StateCreatorService {
     else {
       combineLatest(children$).subscribe(children => {
 
-        ext._children = indexBy(U.roleSetKey, children)
+        ext._children = indexBy(roleSetKey, children)
 
         subject.next(ext);
       })
@@ -504,6 +468,33 @@ export class StateCreatorService {
     return subject;
   }
 
+  initializeTeEntState(teEnt: InfTemporalEntity, settings: StateSettings = {}): Subject<TeEntDetail> {
+    const subject = new ReplaySubject();
+
+    if (!teEnt) return new BehaviorSubject(undefined)
+
+    // Get children
+    this.initDataUnitChildList(teEnt.fk_class, teEnt.te_roles, settings).subscribe(_children => {
+
+      // those only pollute the state. retrieve them from roleSets
+      if (!settings.isAddMode) delete teEnt.te_roles;
+
+      const teEntState: TeEntDetail = {
+        selectPropState: 'init',
+        toggle: 'collapsed',
+        teEnt: teEnt,
+        fkClass: teEnt.fk_class,
+        _children,
+        // label: U.labelFromDataUnitChildList(_children)
+        // label: StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(_children)
+      }
+
+      subject.next(teEntState);
+
+    })
+
+    return subject;
+  }
 
 
 

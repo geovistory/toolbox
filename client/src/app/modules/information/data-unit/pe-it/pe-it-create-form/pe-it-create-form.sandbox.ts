@@ -4,8 +4,8 @@ import { InitStateModule } from 'app/shared/components/init-state/init-state.mod
 import { PeItCreateFormComponent } from './pe-it-create-form.component';
 import { mockPerson } from './sandbox.mock';
 import { Information2Module } from '../../../information.module';
-import { StateSettings } from '../../../shared/state-creator.service';
 import { InitPeItEditableStateModule } from '../../../../../shared';
+import { StateSettings } from 'app/core/state/services/state-creator';
 
 
 export default sandboxOf(PeItCreateFormComponent, {
@@ -51,8 +51,8 @@ export default sandboxOf(PeItCreateFormComponent, {
     </div>  
         `
   })
-  
-  
+
+
   .add('Generate Create State | 21 Person by Api Call  ', {
     context: {
       f: {},

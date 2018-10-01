@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { U, UiContext } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy } from 'ramda';
-import { DataUnitLabel, RoleSet, DataUnitI } from 'app/core/models';
+import { DataUnitLabel, RoleSet, DataUnitI } from 'app/core/state/models';
+import { roleSetKey } from 'app/core/state/services/state-creator';
 
 
 
@@ -84,7 +85,7 @@ export class DataUnitActions {
       uiContext
     },
     payload: {
-      _children: indexBy(U.roleSetKey, [roleSet]),
+      _children: indexBy(roleSetKey, [roleSet]),
       selectPropState: 'init'
     }
   })

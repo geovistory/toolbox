@@ -14,18 +14,14 @@ export default sandboxOf(AppellationCtrlComponent, {
 })
     .add('Appellation Ctrl | New ', {
         context: {
-            model: {
-                appe2: {
-                    fk_property: 99
-                } as InfRole
-            },
+            model: {},
             parentPath: ''
         },
         template: `
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex">
                 <form #f="ngForm">
-                    <gv-appellation-ctrl class="form-control" name="appe2" [(ngModel)]="model.appe2" #appe2="ngModel" required></gv-appellation-ctrl>
+                    <gv-appellation-ctrl class="form-control p-0" name="appe2" [(ngModel)]="model.appe2" #appe2="ngModel" required></gv-appellation-ctrl>
                 </form>                               
             </div>
             <div>
@@ -61,7 +57,7 @@ export default sandboxOf(AppellationCtrlComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex">
                 <form #f="ngForm">
-                    <gv-appellation-ctrl class="form-control" name="appe2" [(ngModel)]="model.appe2" #appe2="ngModel" required>
+                    <gv-appellation-ctrl class="form-control p-0" name="appe2" [(ngModel)]="model.appe2" #appe2="ngModel" required>
                     </gv-appellation-ctrl>
                 </form>
             </div>

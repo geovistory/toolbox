@@ -6,7 +6,7 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { dropLast } from 'ramda';
 import { Observable, ReplaySubject, Subscription } from 'rxjs';
 
-import { DataUnitChildList, DataUnitLabel, PeItDetail } from 'app/core/models';
+import { DataUnitChildList, DataUnitLabel, PeItDetail } from 'app/core/state/models';
 import { StateCreatorService } from '../../shared/state-creator.service';
 import { LeafPeItViewModalComponent } from './leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
 import { LeafPeItActions } from './leaf-pe-it-view.actions';

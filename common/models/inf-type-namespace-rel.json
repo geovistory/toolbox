@@ -1,0 +1,44 @@
+{
+  "name": "InfTypeNamespaceRel",
+  "base": "InfEntity",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "type_namespace_rel"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": ["findComplex"]
+    }
+  },
+  "properties": {
+    "pk_entity": {
+      "type": "number",
+      "id": true,
+      "generated": true
+    },
+    "fk_persistent_item": {
+      "type": "number",
+      "required": true
+    },
+    "fk_namespace": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "namespace": {
+      "type": "belongsTo",
+      "model": "InfNamespace",
+      "foreignKey": "fk_namespace",
+      "primaryKey": "pk_entity"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

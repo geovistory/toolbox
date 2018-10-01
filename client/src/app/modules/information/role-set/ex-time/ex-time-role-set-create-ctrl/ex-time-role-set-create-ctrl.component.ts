@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { IAppState, InfRole } from 'app/core';
-import { RoleDetailList, RoleSet, RoleSetLabel } from 'app/core/models';
+import { RoleDetailList, RoleSet, RoleSetLabel } from 'app/core/state/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable, Subscription } from 'rxjs';
 import { roleSetReducer } from '../../role-set.reducer';

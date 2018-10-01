@@ -1,0 +1,175 @@
+<gv-navbar>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
+    <li class="breadcrumb-item"><a routerLink="/projects">Your Projects</a></li>
+    <li class="breadcrumb-item">{{project?.labels[0].label}}</li>
+  </ol>
+</gv-navbar>
+
+<div id="project-dashboard" class="container">
+  <div class="row">
+    <div class="col">
+      <h2>Project {{project?.labels[0].label}} <a class="btn btn-link pull-right" routerLink="settings">Project settings</a></h2>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col text-center">
+      <button id="stopTourBtn" type="button" name="stopTour" class="btn btn-link" (click)="stopTour()" *ngIf="activeSlideId">Stop the Tour</button>
+      <div class="" *ngIf="!activeSlideId">
+        <button type="button" name="startTour" class="btn btn-link" (click)="activateStep('step1')">Need Help? Start a Tour</button>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5 justify-content-center">
+    <div id="flow" class="d-flex">
+      <div id="sources" class="gv-icon-box" [ngClass]="{'gv-active': steps.step1}">
+        <button class="gv-upper-part gv-upper-part-info" [routerLink]="['edit', { outlets: { sources: ['search'], information: ['search'] } }]" [queryParams]="{s:'s100'}">
+          <div class="gv-icon gv-icon-source"></div>
+          <h4>Sources</h4>
+        </button>
+        <div class="gv-lower-part" (click)="activateStep('step1')" *ngIf="activeSlideId">
+          <div class="d-flex justify-content-center">
+            <span class="gv-vertical-line"></span>
+          </div>
+          <div class="d-flex justify-content-center">
+            <span class="gv-icon gv-icon-circles"></span>
+          </div>
+        </div>
+      </div>
+      <div id="s-to-ku" class="gv-arrow-box" [ngClass]="{'gv-active': steps.step2}">
+        <div class="gv-upper-part">
+          <div class="gv-icon fa fa-long-arrow-right" *ngIf="activeSlideId"></div>
+        </div>
+        <div class="gv-lower-part" (click)="activateStep('step2')"  *ngIf="activeSlideId">
+          <div class="d-flex justify-content-center">
+            <span class="gv-vertical-line"></span>
+          </div>
+          <div class="d-flex justify-content-center">
+            <span class="gv-icon gv-icon-circles"></span>
+          </div>
+        </div>
+      </div>
+      <div id="knowledge-units" class="gv-icon-box" [ngClass]="{'gv-active': steps.step3}">
+        <div class="gv-upper-part gv-upper-part-primary" [routerLink]="['edit', { outlets: { information: ['search'], sources: ['search']} }]" [queryParams]="{i:'s100'}">
+          <div class="gv-icon gv-icon-information"></div>
+          <h4>{{dataUnitsCount}} {{dataUnitsCount === 1 ? 'Data Unit' : 'Data Units'}}</h4>
+        </div>
+        <div class="gv-lower-part" (click)="activateStep('step3')"  *ngIf="activeSlideId">
+          <div class="d-flex justify-content-center">
+            <span class="gv-vertical-line"></span>
+          </div>
+          <div class="d-flex justify-content-center">
+            <span class="gv-icon gv-icon-circles"></span>
+          </div>
+        </div>
+      </div>
+      <div id="ku-to-vs" class="gv-arrow-box gv-active" [ngClass]="{'gv-active': steps.step4}">
+        <div class="gv-upper-part">
+          <div class="gv-icon fa fa-long-arrow-right" *ngIf="activeSlideId"></div>
+        </div>
+        <div class="gv-lower-part" (click)="activateStep('step4')"  *ngIf="activeSlideId">
+          <div class="d-flex justify-content-center">
+            <span class="gv-vertical-line"></span>
+          </div>
+          <div class="d-flex justify-content-center">
+            <span class="gv-icon gv-icon-circles"></span>
+          </div>
+        </div>
+      </div>
+      <div id="presentation" class="gv-icon-box" [ngClass]="{'gv-active': steps.step5}">
+        <div class="gv-upper-part gv-upper-part-success">
+          <div class="gv-icon gv-icon-presentation"></div>
+          <h4>Visualizations and Stories</h4>
+        </div>
+        <div class="gv-lower-part" (click)="activateStep('step5')"  *ngIf="activeSlideId" >
+          <div class="d-flex justify-content-center">
+            <span class="gv-vertical-line"></span>
+          </div>
+          <div class="d-flex justify-content-center">
+            <span class="gv-icon gv-icon-circles"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="d-flex">
+      <ngb-carousel *ngIf="activeSlideId" [interval]="false" [wrap]="false" [activeId]="activeSlideId" (slide)="onSlide($event)" id="carousel">
+        <ng-template ngbSlide id="step1">
+          <div class="carousel-content">
+            <h3>
+              Sources
+            </h3>
+            <h3>
+              <small class="text-muted">
+                Gather your primary material here.
+              </small>
+            </h3>
+            <p>
+              Sources may be Texts, Tables, Images or Websites. Create new sources or browse for existing ones. Click on the icon above to start.
+            </p>
+          </div>
+        </ng-template>
+        <ng-template ngbSlide id="step2">
+          <div class="carousel-content">
+            <h3>
+              Interpretation
+            </h3>
+            <h3>
+              <small class="text-muted">
+                Sources provide evidence for information units
+              </small>
+            </h3>
+            <p>
+              Hier ein Text daüber, wie durch Quelleninterpretation und die historisch-kritische Methode aus Quellen ein Abbild der Wirkllichkeit werden kann.
+            </p>
+          </div>
+        </ng-template>
+        <ng-template ngbSlide id="step3">
+          <div class="carousel-content">
+            <h3>
+              Information Units
+            </h3>
+            <h3>
+              <small class="text-muted">
+                Represent the historical reality
+              </small>
+            </h3>
+            <p>
+              Information Units sind ein Überbegriff für Entities und das Wissen über diese, genannt Phänomene…
+            </p>
+          </div>
+        </ng-template>
+        <ng-template ngbSlide id="step4">
+          <div class="carousel-content">
+            <h3>
+              Analysis
+            </h3>
+            <h3>
+              <small class="text-muted">
+                Information units provide data for visualizations and stories
+              </small>
+            </h3>
+            <p>Hier ein Text darüber, wie durch Datenanalyse neues Wissen generiert, und in Form von Visualisuerungen und Stories vermittelt werden kann.</p>
+          </div>
+        </ng-template>
+        <ng-template ngbSlide id="step5">
+          <div class="carousel-content">
+            <h3>
+              Visualizations and Stories
+            </h3>
+            <h3>
+              <small class="text-muted">
+                Gain and publish new knowledge by creating visualizations and stories.
+              </small>
+            </h3>
+            <p>
+              Hier ein Text über Visualization und Stories.
+            </p>
+          </div>
+        </ng-template>
+      </ngb-carousel>
+    </div>
+  </div>
+
+</div>

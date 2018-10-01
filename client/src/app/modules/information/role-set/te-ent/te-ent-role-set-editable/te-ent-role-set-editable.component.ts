@@ -6,17 +6,18 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { dropLast } from 'ramda';
 import { Observable } from 'rxjs';
 
-import { RoleDetail, RoleDetailList, RoleSet, TeEntDetail } from 'app/core/models';
+import { RoleDetail, RoleDetailList, RoleSet, TeEntDetail } from 'app/core/state/models';
 import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
-import { StateCreatorService, StateSettings } from '../../../shared/state-creator.service';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetBase } from '../../role-set.base';
 import { RoleSetApiEpics } from '../../role-set.epics';
 import { roleSetReducer } from '../../role-set.reducer';
 import { RootEpics } from 'app/core/store/epics';
+import { StateSettings } from 'app/core/state/services/state-creator';
 
 @AutoUnsubscribe({
   blackList: ['destroy$']

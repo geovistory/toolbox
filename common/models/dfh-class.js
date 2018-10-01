@@ -12,6 +12,12 @@ module.exports = function (DfhClass) {
     443 // Built work Type
   ]
 
+  /**
+   * the pk of the technical profile
+   * used to exclude classes of that profile
+   */
+  const technicalProfilePk = 5;
+
   DfhClass.selectedPeItClassesOfProfile = function (dfh_pk_profile, cb) {
 
     const filter = {
@@ -51,13 +57,18 @@ module.exports = function (DfhClass) {
   }
 
 
+  /** 
+   * Query classes 
+   * where:
+   * - they are are selected (and thus not inferred)
+   * 
+   * include:
+   * - text_properties
+   */
   DfhClass.selectedClassesOfProfile = function (dfh_pk_profile, cb) {
 
     const filter = {
-      /** 
-       * Select persistent items by pk_entity
-       */
-      "where": ["dfh_pk_class", "NOT IN", blackList],
+      // "where": ["dfh_pk_class", "NOT IN", blackList],
       "orderBy": [{
         "pk_entity": "asc"
       }],
@@ -212,5 +223,90 @@ module.exports = function (DfhClass) {
     return DfhClass.findComplex(filter, cb);
 
   }
+
+  /**
+   * Get a list of classes for the poject-settings > data-settings page.
+   * 
+   * This list includes
+   * - All classes that a user (project admin) can disable / enable
+   *
+   * This list excludes
+   * - Inferred classes
+   * - Classes in the technical profile
+   * 
+   * Those relations are eager loaded for each class
+   * - Text properties: used for displaying some class description
+   * - Class profile view: used to distinguish teEnt from PeIt and to show profile names
+   * - Proj rel: used to see if enabled or disabled for project
+   * 
+   * @param pk_project the pk of the project
+   * 
+   */
+  DfhClass.projectSettingsClassList = function (pk_project, cb) {
+
+
+    const filter = {
+      /** 
+       * Select persistent items by pk_entity
+       */
+      select: {
+        include: [
+          "pk_entity",
+          "dfh_pk_class",
+          "dfh_standard_label"
+        ]
+      },
+      "orderBy": [{
+        "pk_entity": "asc"
+      }],
+      "include": {
+        "class_profile_view": {
+          "$relation": {
+            select: {
+              include: [
+                "dfh_fk_system_type",
+                "dfh_fk_profile",
+                "dfh_profile_label"
+              ]
+            },
+            "name": "class_profile_view",
+            "joinType": "inner join",
+            "where": [
+              "dfh_profile_association_type", "=", "selected", "and",
+              "dfh_fk_profile", "!=", technicalProfilePk
+            ],
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          }
+        },
+        "text_properties": {
+          "$relation": {
+            select: {
+              include: [
+                "dfh_language_iso_code",
+                "dfh_text_property"
+              ]
+            },
+            "name": "text_properties",
+            "joinType": "left join"
+          }
+        },
+        "proj_rels": {
+          "$relation": {
+            "name": "proj_rels",
+            "where": [
+              "fk_project", "=", pk_project,
+            ],
+            "joinType": "left join"
+          }
+        }
+      }
+    }
+
+    return DfhClass.findComplex(filter, cb)
+
+  }
+
 
 };

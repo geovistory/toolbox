@@ -151,5 +151,25 @@
   "ComPropertySet": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "DfhProjRel": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "InfNamespace": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "InfTypeNamespaceRel": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "InfTextProperty": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "ComSystemType": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }

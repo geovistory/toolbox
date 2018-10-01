@@ -1,0 +1,5 @@
+<div [class.collapsed]="isCollapsed">
+    <div class="truncate"><ng-content></ng-content></div>
+    <a href class="gv-passive-link" *ngIf="!isCollapsed" (click)="isCollapsed =! isCollapsed">Read less</a>
+    <a href class="gv-passive-link" *ngIf="isCollapsed" (click)="isCollapsed =! isCollapsed">Read more</a>
+</div>

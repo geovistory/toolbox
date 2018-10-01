@@ -2,7 +2,7 @@ import { sandboxOf } from 'angular-playground';
 import { DfhProperty, InfRole } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
-import { RoleDetail, RoleSet } from 'app/core/models';
+import { RoleDetail, RoleSet } from 'app/core/state/models';
 import { Information2Module } from '../../../information.module';
 import { TeEntRoleSetCreateCtrlComponent } from './te-ent-role-set-create-ctrl.component';
 

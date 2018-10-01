@@ -59,19 +59,21 @@ export class QuillService {
     // if user did insert something
     if (this.isInsert(delta)) {
       let id = latestId * 1;
-      const ops: any[] = [];
+      let newOps: any[] = [];
       let precedingToken: PrecedingToken;
       let nextToken: NextToken;
 
-      // init ops
+      // init newOps and oldOps
       if (this.beginsWithRetain(delta)) {
-        // ad first op to new ops and remove the first item of ops
-        ops.push(delta.ops.shift());
+        // ad first op to new newOps and remove the first item of oldOps
+        newOps.push(delta.ops.shift());
 
+      } else if (this.endsWithRetain(delta)) {
+        newOps = this.initOpsThatEndWithRetains(delta)
       }
 
       // init precedingToken
-      precedingToken = this.initPrecedingToken(oldDelta, ops);
+      precedingToken = this.initPrecedingToken(oldDelta, newOps);
 
       const addRetainOp = () => {
         // init nextToken
@@ -81,7 +83,7 @@ export class QuillService {
         if ((precedingToken.type === nextToken.type && precedingToken.type === 'regChar')) {
 
           // add the chars to the precedingToken
-          ops.push({
+          newOps.push({
             retain: nextToken.length,
             attributes: { node: precedingToken.id }
           })
@@ -90,7 +92,7 @@ export class QuillService {
           // increase id
           id = id + 1;
 
-          ops.push({
+          newOps.push({
             retain: nextToken.length,
             attributes: { node: id }
           })
@@ -108,7 +110,7 @@ export class QuillService {
       // start nodenization
       addRetainOp();
 
-      newDelta.ops = ops;
+      newDelta.ops = newOps;
       latestId = id;
     }
 
@@ -130,7 +132,8 @@ export class QuillService {
     const slicedDelta = oldDelta.slice((retain - 1), retain);
     const precedingChar = slicedDelta.ops[0].insert;
     const precedingType = this.hasSeparator(precedingChar) ? 'sepChar' : 'regChar';
-    const precedingId = slicedDelta.ops[0].attributes.node;
+    // if insert is a '\n' there is no id available and no id needed
+    const precedingId = (slicedDelta.ops[0].attributes || {}).node;
 
     return {
       id: precedingId,
@@ -204,8 +207,66 @@ export class QuillService {
     );
   }
 
+  /**
+   * returns true, if first op has retain
+   * @param d 
+   */
   beginsWithRetain(d: Delta): boolean {
     return d.ops[0].hasOwnProperty('retain') ? true : false;
+  }
+
+  /**
+   * returns, if the first is not retain, the end is a retain
+   */
+  endsWithRetain(d: Delta): boolean {
+
+    if (
+      !d.ops[0].hasOwnProperty('retain') // first is not retain
+      && d.ops[d.ops.length - 1].hasOwnProperty('retain') // last is retain
+    ) {
+      return true;
+    }
+
+    return false;
+
+  }
+
+  /**
+   * removes retains from given delta and returns one retain eith the sum of retains
+   *
+   * This method is needed due to unexpected behavior of quill when
+   * pasting the same formated content at the beginning of the document.
+   * Quill then mixes up the order of retain and insert statements.
+   *
+   * @param d
+   * @param ops
+   */
+  initOpsThatEndWithRetains(d: Delta): any[] {
+    let retainSum = 0;
+
+    for (let index = (d.ops.length - 1); index >= 0; index--) {
+      const op = d.ops[index];
+      if (op.hasOwnProperty('retain')) {
+        // Create sum of all retains
+        retainSum = (retainSum + op.retain);
+        // remove the item from d
+        d.ops.splice(index, 1);
+      }
+    }
+
+    // d.ops.forEach((op, index, ops) => {
+    //   // If op is retain
+    //   if (op.hasOwnProperty('retain')) {
+    //     // Create sum of all retains
+    //     retainSum = (retainSum + op.retain);
+    //     // remove the item from d
+    //     ops.splice(index, 1);
+    //   }
+    // });
+
+    return [{
+      retain: retainSum
+    }];
   }
 
   /**

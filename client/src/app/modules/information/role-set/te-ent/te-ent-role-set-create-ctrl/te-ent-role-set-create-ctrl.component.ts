@@ -2,19 +2,19 @@ import { NgRedux } from '@angular-redux/store';
 import { Component, forwardRef, Input } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { IAppState, InfEntityProjectRelApi, InfRole, InfRoleApi, InfTemporalEntityApi } from 'app/core';
+import { RoleDetail, RoleSet, TeEntDetail } from 'app/core/state/models';
+import { StateSettings } from 'app/core/state/services/state-creator';
 import { Observable } from 'rxjs';
-
-import { RoleDetail, RoleSet, TeEntDetail } from 'app/core/models';
+import { RootEpics } from '../../../../../core/store/epics';
 import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
-import { StateCreatorService, StateSettings } from '../../../shared/state-creator.service';
-import { RoleSetAddCtrlBase } from '../../role-set-add-ctrl.base';
-import { RoleSetActions } from '../../role-set.actions';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetCreateCtrlBase } from '../../role-set-create-ctrl.base';
+import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetApiEpics } from '../../role-set.epics';
-import { RootEpics } from '../../../../../core/store/epics';
+
 
 @Component({
   selector: 'gv-te-ent-role-set-create-ctrl',

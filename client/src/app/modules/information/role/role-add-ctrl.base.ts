@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { InfEntityProjectRel, InfRole } from 'app/core';
 
-import { RoleDetail } from 'app/core/models';
+import { RoleDetail } from 'app/core/state/models';
 import { RoleBase } from './role.base';
 import { ChangeDetectorRef } from '@angular/core';
 

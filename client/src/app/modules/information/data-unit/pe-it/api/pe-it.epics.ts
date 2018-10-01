@@ -6,7 +6,7 @@ import { startsWith } from 'ramda';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { PeItDetail } from 'app/core/models';
+import { PeItDetail } from 'app/core/state/models';
 import { PeItActions } from '../pe-it.actions';
 import { LeafPeItActions, LeafPeItAction } from '../../../value/leaf-pe-it-view/leaf-pe-it-view.actions';
 import { PeItBase } from '../pe-it-base';

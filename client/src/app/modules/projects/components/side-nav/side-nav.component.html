@@ -1,0 +1,30 @@
+<div class="container">
+  <div class="row">
+    <div class="col-3">
+      <div class="card">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <h4>
+              Settings of the Project <br>
+              {{projectLabel}}
+            </h4>
+          </li>
+
+          <li class="list-group-item gv-pointer" routerLink="{{routePrefix}}profile" routerLinkActive="active">
+            Project Profile
+          </li>
+
+          <li class="list-group-item gv-pointer" routerLink="{{routePrefix}}classes" routerLinkActive="active">
+            Data Settings
+          </li>
+          <li class="list-group-item gv-pointer" routerLink="{{routePrefix}}collaborators" routerLinkActive="active">
+            Collaborators
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-9">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

@@ -1,21 +1,23 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { InformationComponent } from './containers/information/information.component';
 
-import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
-import { EntityEditorComponent } from './containers/entity-editor/entity.editor.component';
 
 
 const routes: Routes = [
   {
     path: 'search',
-    component: ProjectEntitiesComponent,
+    component: InformationComponent,
     data: {
       reduxPath: ['information']
     }
   },
   {
-    path: 'entity/:id',
-    component: EntityEditorComponent
+    path: 'entity/:pkEntity',
+    component: InformationComponent,
+    data: {
+      reduxPath: ['information']
+    }
   },
 ];
 

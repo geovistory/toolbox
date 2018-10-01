@@ -23,6 +23,9 @@
       "type": "number",
       "generated": true
     },
+    "pk_language": {
+      "type": "string"
+    },
     "lang_type": {
       "type": "string"
     },

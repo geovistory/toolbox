@@ -1,115 +1,116 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, OnDestroy, Output } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { InfAppellation, InfAppellationApi, InfRole } from 'app/core';
-import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Component, OnInit, OnDestroy, Output, EventEmitter, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { InfAppellation, InfRole } from 'app/core';
+import { Subject } from 'rxjs';
+import { AppellationLabel, AppellationLabelInterface } from '../../shared/appellation-label';
+import { QuillDoc } from '../../../quill';
+import { Token } from '../../shared/appellation-token';
 import { pick } from 'ramda';
-import { Subscription } from 'rxjs';
+import { QuillService } from '../../../quill/quill.service';
 
-import { AppellationLabel } from '../../shared/appellation-label';
-
-@AutoUnsubscribe()
 @Component({
   selector: 'gv-appellation-ctrl',
   templateUrl: './appellation-ctrl.component.html',
   styleUrls: ['./appellation-ctrl.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => AppellationCtrlComponent),
       multi: true
     }
-  ]
+  ],
 })
 export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor {
 
-
   appellation: InfAppellation;
-
-
-  /**
-  * Outputs
-  */
-  @Output() cancelEdit: EventEmitter<void> = new EventEmitter();
-
-  @Output() touched: EventEmitter<void> = new EventEmitter();
-
-
-  /**
-  * Properties
-  */
 
   appellationLabel: AppellationLabel = new AppellationLabel();
 
-  appellationLabelInEdit: AppellationLabel;
+  quillDoc: QuillDoc;
 
-  subs: Subscription[] = [];
-
-  formGroup: FormGroup;
-
-  appeCtrl: FormControl;
+  @Output() touched = new EventEmitter<void>();
 
   // parent role, needed to create a proper role value to emit onChange of the form
   role: InfRole;
 
-  constructor(
-    private fb: FormBuilder,
-    private appellationApi: InfAppellationApi,
-    private slimLoadingBarService: SlimLoadingBarService,
-  ) {
-    // create the formGroup used to create/edit an appellation
-    this.formGroup = this.fb.group({})
+  destroy$ = new Subject<boolean>();
 
-    this.initFormCtrls();
+  onChangeRegistered = false;
 
+  editorConfig = {
+    placeholder: 'Start typing...'
   }
 
-  initFormCtrls() {
-    // create the form control
-    this.appeCtrl = new FormControl(this.appellationLabel, [Validators.required]);
+  constructor(private quillService: QuillService) { }
 
-    this.formGroup.addControl('appellationLabel', this.appeCtrl)
-  }
 
-  subscribeFormChanges() {
-
-    // subscribe to form changes here
-    this.subs.push(this.formGroup.valueChanges.subscribe(val => {
-      if (this.formGroup.valid && this.role) {
-
-        // build the role
-        const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role) as InfRole);
-
-        // build a appe with the appellation_label given by the formControl
-        role.appellation = new InfAppellation({
-          ...this.appellation
-        });
-
-        if (this.formGroup.get('appellationLabel')) {
-
-          role.appellation.appellation_label = this.formGroup.get('appellationLabel').value
-
-        }
-
-        // send the appe the parent form
-        this.onChange(role)
-      } else {
-        this.onChange(null)
-      }
-    }))
-
-  }
 
   ngOnDestroy() {
-    this.subs.forEach(sub => sub.unsubscribe())
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
 
-  onCancel() {
-    this.cancelEdit.emit()
+  // this will be called as soon as the form control is registered by parents
+  quillDocChange(qd: QuillDoc) {
+
+    if (qd && qd.contents && qd.contents.ops.length > 1 && this.onChangeRegistered && this.role) {
+
+      // build the role
+      const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role) as InfRole);
+
+      // build a appe with the appellation_label given by the formControl
+      role.appellation = new InfAppellation({
+        ...this.appellation,
+        appellation_label: this.quillDeltaToAppellationLabel(qd)
+      });
+
+      // send the appe the parent form
+      this.onChange(role)
+    } else {
+      this.onChange(null)
+    }
   }
 
+  // converts Appellation Label to Quill Delta
+  appellationLabelToQuillDelta(appeLabel: AppellationLabel): QuillDoc {
+    const q: QuillDoc = { latestId: 1, contents: { ops: [] } };
+
+    // we increase the id, since quill can't handle 0 attribute value
+    // see: https://github.com/quilljs/parchment/issues/62
+    q.latestId = appeLabel.latestTokenId ? (appeLabel.latestTokenId + 1) : 1;
+
+    q.contents.ops = this.appellationLabel.tokens.map(token => {
+      return {
+        insert: token.string,
+        attributes: {
+          // we increase the id, since quill can't handle 0 attribute value
+          node: (token.id + 1)
+        }
+      }
+    })
+
+    return q;
+  }
+
+  // converts quill Delta to Appellation Label
+  quillDeltaToAppellationLabel(qd: QuillDoc): AppellationLabelInterface {
+    const a: AppellationLabelInterface = {
+      // we decrease the id, since we increased it for quill, that can't handle 0 attribute value
+      latestTokenId: (qd.latestId - 1),
+      tokens: qd.contents.ops.map(op => {
+        // this if statement will remove the newline
+        if ((op.attributes || {}).node) {
+          return {
+            id: (op.attributes.node - 1),
+            string: op.insert,
+            isSeparator: this.quillService.hasSeparator(op.insert)
+          } as Token
+        }
+      }).filter(op => (op))
+    }
+    return a;
+  }
 
 
   /****************************************
@@ -128,7 +129,7 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
 
     this.appellationLabel = new AppellationLabel(this.appellation.appellation_label);
 
-    this.appeCtrl.setValue(this.appellationLabel)
+    this.quillDoc = this.appellationLabelToQuillDelta(this.appellationLabel);
   }
 
 
@@ -139,7 +140,7 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
   registerOnChange(fn: any): void {
     this.onChange = fn;
 
-    this.subscribeFormChanges();
+    this.onChangeRegistered = true;
 
   }
 
@@ -171,26 +172,5 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
     this.touched.emit()
   }
 
-  /**
-  * Loading Bar Logic
-  */
-
-  startLoading() {
-    this.slimLoadingBarService.progress = 20;
-    this.slimLoadingBarService.start(() => {
-    });
-  }
-
-  stopLoading() {
-    this.slimLoadingBarService.stop();
-  }
-
-  completeLoading() {
-    this.slimLoadingBarService.complete();
-  }
-
-  resetLoading() {
-    this.slimLoadingBarService.reset();
-  }
 
 }

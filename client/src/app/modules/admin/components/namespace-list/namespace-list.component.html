@@ -1,0 +1,25 @@
+<h2>
+    Namespaces
+  </h2>
+  <p>
+    All Namespaces.
+  </p>
+  
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">pk_entity</th>
+        <th scope="col">standard_label</th>
+        <th scope="col">fk_root_namespace</th>
+        <th scope="col">fk_project</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of (namespaces$ | async)">
+        <td>{{item.pk_entity}}</td>
+        <td>{{item.standard_label}}</td>
+        <td>{{item.fk_root_namespace}}</td>
+        <td>{{item.fk_project}}</td>
+      </tr>
+    </tbody>
+  </table>

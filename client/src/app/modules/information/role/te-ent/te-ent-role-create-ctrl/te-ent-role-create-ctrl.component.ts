@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Component, forwardRef } from '@angular/core';
 import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { RoleDetail } from 'app/core/models';
+import { RoleDetail } from 'app/core/state/models';
 import { RoleBase } from '../../role.base';
 
 @Component({

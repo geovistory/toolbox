@@ -64,12 +64,12 @@
       "foreignKey": "dfh_has_domain",
       "primaryKey": "dfh_pk_class"
     },
-    "ui_context_configs":{
+    "ui_context_configs": {
       "type": "hasMany",
       "model": "ComUiContextConfig",
       "foreignKey": "fk_class_for_property_set"
     },
-    "property_sets":{
+    "property_sets": {
       "type": "hasMany",
       "model": "ComPropertySet",
       "foreignKey": "fk_class_for_property_set",
@@ -97,11 +97,13 @@
       "property": [
         "find",
         "findById",
+        "findComplex",
         "__get__labels",
         "__get__text_properties",
         "selectedClassesOfProfile",
         "selectedPeItClassesOfProfile",
-        "propertiesAndUiElements"
+        "propertiesAndUiElements",
+        "projectSettingsClassList"
       ]
     }
   ],
@@ -120,7 +122,9 @@
       ],
       "returns": {
         "arg": "data",
-        "type": ["DfhClass"],
+        "type": [
+          "DfhClass"
+        ],
         "root": true
       },
       "description": "Get all classes that are selected by the profile of the specified primary-key.",
@@ -143,7 +147,9 @@
       ],
       "returns": {
         "arg": "data",
-        "type": ["DfhClass"],
+        "type": [
+          "DfhClass"
+        ],
         "root": true
       },
       "description": "Get all classes of persistent items that are selected and, if provided, filtered by the profile of the specified primary-key.",
@@ -171,7 +177,8 @@
           "http": {
             "source": "query"
           }
-        },  {
+        },
+        {
           "arg": "pk_project",
           "type": "number",
           "required": false,
@@ -183,12 +190,39 @@
       ],
       "returns": {
         "arg": "data",
-        "type": ["DfhClass"],
+        "type": [
+          "DfhClass"
+        ],
         "root": true
       },
       "description": "Get ingoing and outgoing properties and ui elements of class",
       "http": {
         "path": "/properties-and-ui-elements",
+        "verb": "get"
+      }
+    },
+    "projectSettingsClassList": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "The pk_project for whicht the list of classes is loaded.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "DfhClass"
+        ],
+        "root": true
+      },
+      "description": "Get a list of classes with info about the status they have int the project (used for the poject-settings > data-settings page).",
+      "http": {
+        "path": "/project-settings-class-list",
         "verb": "get"
       }
     }

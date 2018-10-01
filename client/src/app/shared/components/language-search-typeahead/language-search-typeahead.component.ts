@@ -1,8 +1,8 @@
 import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InfLanguage, InfLanguageApi } from 'app/core';
-import { Observable, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, tap, switchMap, catchError } from 'rxjs/operators';
+import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, tap, switchMap, catchError, mergeMap, merge } from 'rxjs/operators';
 
 
 @Component({
@@ -33,22 +33,20 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
 
   @Output() touched: EventEmitter<void> = new EventEmitter();
 
+  searchTerm$ = new Subject<string>();
 
   formGroup: FormGroup;
+
+  formControl: FormControl;
 
   constructor(
     private fb: FormBuilder,
     private languageApi: InfLanguageApi
   ) {
-
-  }
-
-  ngOnInit() {
-
     function validateLanguage(c: FormControl) {
 
       // if no lang or just a string
-      if (!c.value ||  typeof c.value === 'string') {
+      if (!c.value || typeof c.value === 'string') {
 
         // return error
         return {
@@ -56,22 +54,27 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
             valid: false
           }
         }
-      }
-      // else there is no error
-      else {
+      } else {
+        // else there is no error
         return null;
       }
 
     }
 
-    const formControl = new FormControl(
+    this.formControl = new FormControl(
       this.language,
       [
         validateLanguage
       ]);
 
+
+
+  }
+
+  ngOnInit() {
+
     this.formGroup = this.fb.group({
-      language: formControl
+      language: this.formControl
     })
 
     this.formGroup.valueChanges.subscribe(val => {
@@ -83,27 +86,33 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
         this.onChange(null)
       }
     })
+
+
   }
 
 
   search = (text$: Observable<string>) =>
+    text$.pipe(
+      merge(this.searchTerm$),
+      debounceTime(200),
+      distinctUntilChanged(),
+      tap(() => this.searching = true),
+      switchMap(term =>
+        this.languageApi.queryByString(term).pipe(
+          tap(() => this.searchFailed = false),
+          catchError(() => {
+            this.searchFailed = true;
+            return of([]);
+          }))
+      ),
+      tap(() => this.searching = false)
+    );
 
-  text$.pipe(
-    debounceTime(300),
-    distinctUntilChanged(),
-    tap(() => this.searching = true),
-    switchMap(term =>
-      this.languageApi.queryByString(term).pipe(
-        tap(() => this.searchFailed = false),
-        catchError(() => {
-          this.searchFailed = true;
-          return of([]);
-        }))
-    ),
-    tap(() => this.searching = false)
-  );
 
 
+  focus() {
+    this.searchTerm$.next('');
+  }
 
   formatter = (x) => x.notes;
 
@@ -117,7 +126,7 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
    */
   writeValue(language: InfLanguage): void {
 
-    this.language = language
+    this.formControl.setValue(language)
 
   }
 

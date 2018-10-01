@@ -1,10 +1,12 @@
 'use strict';
 
 const Promise = require('bluebird');
+const Config = require('../config/Config');
 
-module.exports = function(InfPersistentItem) {
 
-  InfPersistentItem.changePeItProjectRelation = function(projectId, isInProject, data, ctx) {
+module.exports = function (InfPersistentItem) {
+
+  InfPersistentItem.changePeItProjectRelation = function (projectId, isInProject, data, ctx) {
     let requestedPeIt;
 
     if (ctx) {
@@ -17,7 +19,7 @@ module.exports = function(InfPersistentItem) {
       .then(resultingEpr => {
 
         // attatch the new epr to the peIt
-        if(requestedPeIt.entity_version_project_rels && resultingEpr){
+        if (requestedPeIt.entity_version_project_rels && resultingEpr) {
           requestedPeIt.entity_version_project_rels = [resultingEpr];
         }
 
@@ -32,10 +34,10 @@ module.exports = function(InfPersistentItem) {
           // returned together with all nested items
           return Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
 
-              // add role to project
-              return InfRole.changeRoleProjectRelation(projectId, isInProject, role);
+            // add role to project
+            return InfRole.changeRoleProjectRelation(projectId, isInProject, role);
 
-            })
+          })
             .then((roles) => {
 
               requestedPeIt.pi_roles = [];
@@ -64,7 +66,7 @@ module.exports = function(InfPersistentItem) {
   }
 
 
-  InfPersistentItem.findOrCreatePeIt = function(projectId, data, ctx) {
+  InfPersistentItem.findOrCreatePeIt = function (projectId, data, ctx) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
@@ -84,8 +86,14 @@ module.exports = function(InfPersistentItem) {
       .then((resultingPeIts) => {
         // pick first item of array
         const resultingPeIt = resultingPeIts[0];
+        const res = resultingPeIt.toJSON();
 
-        // if there are roles…
+        // Array of Promises
+        const promiseArray = []
+
+        /******************************************
+         * pi-roles
+         ******************************************/
         if (requestedPeIt.pi_roles) {
 
           // prepare parameters
@@ -94,34 +102,73 @@ module.exports = function(InfPersistentItem) {
           //… filter roles that are truthy (not null), iterate over them,
           // return the promise that the PeIt will be
           // returned together with all nested items
-          return Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
-              // use the pk_entity from the created peIt to set the fk_entity of the role
-              role.fk_entity = resultingPeIt.pk_entity;
-              // find or create the teEnt and the role pointing to the teEnt
-              return InfRole.findOrCreateInfRole(projectId, role);
-            })
-            .then((roles) => {
-
-              //attach the roles to peit.pi_roles
-              const res = resultingPeIt.toJSON();
-              res.pi_roles = [];
-              for (var i = 0; i < roles.length; i++) {
-                const role = roles[i];
-                if (role && role[0]) {
-                  res.pi_roles.push(role[0]);
-                }
+          const promise = Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
+            // use the pk_entity from the created peIt to set the fk_entity of the role
+            role.fk_entity = resultingPeIt.pk_entity;
+            // find or create the teEnt and the role pointing to the teEnt
+            return InfRole.findOrCreateInfRole(projectId, role);
+          }).then((roles) => {
+            //attach the roles to peit.pi_roles
+            res.pi_roles = [];
+            for (var i = 0; i < roles.length; i++) {
+              const role = roles[i];
+              if (role && role[0]) {
+                res.pi_roles.push(role[0]);
               }
+            }
+            return true;
 
-              return [res];
+          }).catch((err) => {
+            return err;
+          })
 
-            })
-            .catch((err) => {
-              return err;
-            })
+          // add promise for pi_roles
+          promiseArray.push(promise)
 
-        } else {
-          return resultingPeIts;
         }
+
+        /******************************************
+         * text_properties
+         ******************************************/
+        if (requestedPeIt.text_properties) {
+
+          // prepare parameters
+          const InfTextProperty = InfPersistentItem.app.models.InfTextProperty;
+
+          //… filter items that are truthy (not null), iterate over them,
+          // return the promise that the PeIt will be
+          // returned together with all nested items
+          const promise = Promise.map(requestedPeIt.text_properties.filter(item => (item)), (item) => {
+            // use the pk_entity from the created peIt to set the fk_concerned_entity of the item
+            item.fk_concerned_entity = resultingPeIt.pk_entity;
+            // find or create the item
+            return InfTextProperty.findOrCreateInfTextProperty(projectId, item);
+          }).then((items) => {
+            //attach the items to peit.text_properties
+            res.text_properties = [];
+            for (var i = 0; i < items.length; i++) {
+              const item = items[i];
+              if (item && item[0]) {
+                res.text_properties.push(item[0]);
+              }
+            }
+            return true;
+
+          }).catch((err) => {
+            return err;
+          })
+
+          // add promise for text properties
+          promiseArray.push(promise)
+
+        }
+
+
+        if (promiseArray.length === 0) return resultingPeIts;
+        else return Promise.map(promiseArray, (promise) => promise).then(() => {
+          return [res]
+        });
+
       })
       .catch((err) => {
 
@@ -129,8 +176,63 @@ module.exports = function(InfPersistentItem) {
 
   }
 
+  /** 
+   * Check if authorized to create type
+   * - pk_namespace must be of "Geovistory Ongoing"
+   * - or pk_project must be in fk_project of namespace  
+   */
+  InfPersistentItem.beforeRemote('findOrCreateType', function (context, obj, next) {
+    const pk_project = context.req.query.pk_project;
+    const pk_namespace = context.req.query.pk_namespace;
+    const errorMsg = 'You\'re not authorized to perform this action.';
+    // let pass if namespace is "Geovistory Ongoing"
+    if (pk_namespace == Config.PK_NAMESPACE__GEOVISTORY_ONGOING) {
+      next()
+    }
 
-  InfPersistentItem.searchInProject = function(projectId, searchString, limit, page, cb) {
+    return InfPersistentItem.app.models.InfNamespace.findById(pk_namespace)
+      .then((nmsp) => {
+        // let pass if namespace belongs to project
+        if (nmsp && nmsp.fk_project == pk_project) {
+          next();
+        }
+        else return Promise.reject(new Error(errorMsg));;
+      })
+      .catch(() => {
+        return Promise.reject(new Error(errorMsg))
+      })
+
+  });
+
+  /**
+   * Remote method to create instances of E55 types.
+   * 
+   * Adds a type_namespace_rel between peIt and namespace
+   * 
+   */
+  InfPersistentItem.findOrCreateType = function (pk_project, pk_namespace, data, ctx) {
+
+    // Add type_namespace_rel
+    return InfPersistentItem.findOrCreatePeIt(pk_project, data, ctx)
+      .then(resultingPeIts => {
+        const res = resultingPeIts[0]
+
+        const InfTypeNamespaceRel = InfPersistentItem.app.models.InfTypeNamespaceRel;
+        const x = new InfTypeNamespaceRel({
+          fk_persistent_item: res.pk_entity,
+          fk_namespace: pk_namespace
+        })
+
+        // create it in DB
+        return x.save().then(tyNaRel => {
+          return [res]
+        });
+
+      })
+
+  }
+
+  InfPersistentItem.searchInProject = function (projectId, searchString, limit, page, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -277,7 +379,7 @@ module.exports = function(InfPersistentItem) {
   };
 
 
-  InfPersistentItem.afterRemote('searchInProject', function(ctx, resultObjects, next) {
+  InfPersistentItem.afterRemote('searchInProject', function (ctx, resultObjects, next) {
 
     var totalCount = 0;
     if (resultObjects.length > 0) {
@@ -310,7 +412,7 @@ module.exports = function(InfPersistentItem) {
   })
 
 
-  InfPersistentItem.searchInRepo = function(searchString, limit, page, cb) {
+  InfPersistentItem.searchInRepo = function (searchString, limit, page, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -429,7 +531,7 @@ module.exports = function(InfPersistentItem) {
   };
 
 
-  InfPersistentItem.afterRemote('searchInRepo', function(ctx, resultObjects, next) {
+  InfPersistentItem.afterRemote('searchInRepo', function (ctx, resultObjects, next) {
 
     var totalCount = 0;
     if (resultObjects.length > 0) {
@@ -468,7 +570,7 @@ module.exports = function(InfPersistentItem) {
    * @param  {number} pkProject primary key of project
    * @param  {number} pkEntity  pk_entity of the persistent item
    */
-  InfPersistentItem.nestedObjectOfProject = function(projectId, pkEntity, cb) {
+  InfPersistentItem.nestedObjectOfProject = function (projectId, pkEntity, cb) {
 
     const innerJoinThisProject = {
       "$relation": {
@@ -567,7 +669,7 @@ module.exports = function(InfPersistentItem) {
   }
 
 
-  InfPersistentItem.nestedObjectOfRepo = function(pkEntity, cb) {
+  InfPersistentItem.nestedObjectOfRepo = function (pkEntity, cb) {
 
     const filter = {
       /** Select persistent item by pk_entity … */
@@ -658,5 +760,278 @@ module.exports = function(InfPersistentItem) {
   }
 
 
+
+  /**
+   * Query instances of E55 Type 
+   * 
+   * Where 
+   *	- types are related to the given namespace  
+   *	- types are in given project
+   *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class) 
+   *
+   * Eager loading
+   *  - The appellations of given language
+   *  - TODO: The entity_associations of property "has broader term" used for hierarchy
+   * 
+   * @param pk_namespace
+   * @param pk_project
+   * @param pk_typed_class
+   */
+  InfPersistentItem.typesOfNamespaceClassAndProject = function (pk_namespace, pk_project, pk_typed_class, cb) {
+
+    // get the pk_property of the property leading from the typed class to the type class
+    // E.g. get the pk_property of "has geographical place type – histP8" for the pk_class of "histC8 Geographical Place"
+    const pkProperty = Config.PK_CLASS_PK_HAS_TYPE_MAP[pk_typed_class] ? Config.PK_CLASS_PK_HAS_TYPE_MAP[pk_typed_class] : -1;
+
+    const innerJoinThisProject = {
+      "$relation": {
+        "name": "entity_version_project_rels",
+        "joinType": "inner join",
+        "select": {
+          include: [
+            "pk_entity_version_project_rel",
+            "pk_entity",
+            "fk_project",
+            "fk_entity",
+          ]
+        },
+        "where": [
+          "fk_project", "=", pk_project,
+          "and", "is_in_project", "=", "true"
+        ]
+      }
+    };
+
+    const filter = {
+      "orderBy": [{
+        "pk_entity": "asc"
+      }],
+      "include": {
+        "type_namespace_rels": {
+          "$relation": {
+            select: false,
+            "name": "type_namespace_rels",
+            "joinType": "inner join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          },
+          "namespace": {
+            "$relation": {
+              select: false,
+              "name": "namespace",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }],
+              where: ["pk_entity", "=", pk_namespace]
+            }
+          }
+        },
+        "entity_version_project_rels": innerJoinThisProject,
+        "dfh_class": {
+          "$relation": {
+            select: false,
+            "name": "dfh_class",
+            "joinType": "inner join",
+            "orderBy": [
+              {
+                "pk_entity": "asc"
+              }
+            ]
+          },
+          "ingoing_properties": {
+            "$relation": {
+              select: false,
+              "name": "ingoing_properties",
+              "joinType": "inner join",
+              where: ["dfh_pk_property", "=", pkProperty]
+            }
+          }
+        },
+        "pi_roles": {
+          "$relation": {
+            "name": "pi_roles",
+            "joinType": "left join"
+          },
+          "entity_version_project_rels": innerJoinThisProject,
+          "temporal_entity": {
+            "$relation": {
+              "name": "temporal_entity",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+            "entity_version_project_rels": innerJoinThisProject,
+            "te_roles": {
+              "$relation": {
+                "name": "te_roles",
+                "joinType": "inner join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              },
+              "entity_version_project_rels": innerJoinThisProject,
+              "appellation": {
+                "$relation": {
+                  "name": "appellation",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                },
+                // "entity_version_project_rels": innerJoinThisProject
+              },
+              "language": {
+                "$relation": {
+                  "name": "language",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
+                // ,
+                // "entity_version_project_rels": innerJoinThisProject
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return InfPersistentItem.findComplex(filter, cb);
+  }
+
+
+
+  /**
+   * Query instances of E55 Type 
+   * 
+   * Where 
+   *	- types are related to the given namespace  
+   *	- types are in given project
+   *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class) 
+   *  - optional: the type has the pk_entity. This is for querying a specific type.
+   *
+   * Eager loading
+   *  - The appellations of given language
+   *  - TODO: The entity_associations of property "has broader term" used for hierarchy
+   * 
+   * @param pk_namespace
+   * @param pk_project
+   * @param pk_typed_class
+   */
+  InfPersistentItem.typeNested = function (pk_namespace, pk_project, pk_entity, cb) {
+
+    const innerJoinThisProject = {
+      "$relation": {
+        "name": "entity_version_project_rels",
+        "joinType": "inner join",
+        "select": {
+          include: [
+            "pk_entity_version_project_rel",
+            "pk_entity",
+            "fk_project",
+            "fk_entity",
+          ]
+        },
+        "where": [
+          "fk_project", "=", pk_project,
+          "and", "is_in_project", "=", "true"
+        ]
+      }
+    };
+
+    const filter = {
+      "orderBy": [{
+        "pk_entity": "asc"
+      }],
+      "include": {
+        "type_namespace_rels": {
+          "$relation": {
+            select: false,
+            "name": "type_namespace_rels",
+            "joinType": "inner join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          },
+          "namespace": {
+            "$relation": {
+              select: false,
+              "name": "namespace",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }],
+              where: ["pk_entity", "=", pk_namespace]
+            }
+          }
+        },
+        "entity_version_project_rels": innerJoinThisProject,
+        "text_properties": {
+          "$relation": {
+            "name": "text_properties",
+            "joinType": "left join"
+          }
+        },
+        "pi_roles": {
+          "$relation": {
+            "name": "pi_roles",
+            "joinType": "left join"
+          },
+          "entity_version_project_rels": innerJoinThisProject,
+          "temporal_entity": {
+            "$relation": {
+              "name": "temporal_entity",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+            "entity_version_project_rels": innerJoinThisProject,
+            "te_roles": {
+              "$relation": {
+                "name": "te_roles",
+                "joinType": "inner join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              },
+              "entity_version_project_rels": innerJoinThisProject,
+              "appellation": {
+                "$relation": {
+                  "name": "appellation",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                },
+                // "entity_version_project_rels": innerJoinThisProject
+              },
+              "language": {
+                "$relation": {
+                  "name": "language",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
+                // ,
+                // "entity_version_project_rels": innerJoinThisProject
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if(pk_entity){
+      filter.where = ["pk_entity", "=", pk_entity];
+    }
+    
+    return InfPersistentItem.findComplex(filter, cb);
+  }
 
 };

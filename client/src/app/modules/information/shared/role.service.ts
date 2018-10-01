@@ -2,7 +2,7 @@ import { Injectable, forwardRef, Inject } from '@angular/core';
 import { InfRole, DfhProperty } from 'app/core';
 import { groupBy, prop } from 'ramda';
 import { BehaviorSubject } from 'rxjs';
-import { RoleSet } from 'app/core/models';
+import { RoleSet } from 'app/core/state/models';
 
 interface Label {
   sg: string;

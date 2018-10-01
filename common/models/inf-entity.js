@@ -209,7 +209,7 @@ module.exports = function (InfEntity) {
 
 
   /**
-   * Finds or creates an entiy role or an object by value
+   * Finds or creates an entity role or an object by value
    * 
    * Those Models use this method:
    * InfChunk, InfEntityAssociation

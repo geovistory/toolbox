@@ -14,20 +14,20 @@ import { StateCreatorService } from '../../../shared/state-creator.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PeItAddFormComponent extends PeItFormBase {
-  
+
   peIt: InfPersistentItem; // ngForm model
-  
+
   @ViewChild('f') form: NgForm;
-  
-  @Input() addBtn:boolean;
-  @Input() cancelBtn:boolean;
-  
+
+  @Input() addBtn: boolean;
+  @Input() cancelBtn: boolean;
+
   @Output() formChange: EventEmitter<NgForm> = new EventEmitter();
   @Output() added: EventEmitter<InfPersistentItem> = new EventEmitter();
   @Output() cancel: EventEmitter<void> = new EventEmitter();
-  
+
   formCtrlName = 'persistent_item';
-  
+
   uiContext: UiContext;
 
   constructor(
@@ -69,7 +69,7 @@ export class PeItAddFormComponent extends PeItFormBase {
       this.ngRedux.getState().activeProject.pk_project,
       true,
       this.form.value.peIt
-    ).subscribe((resultingPeIt:InfPersistentItem) =>{
+    ).subscribe((resultingPeIt: InfPersistentItem) => {
       this.added.emit(resultingPeIt)
     })
 

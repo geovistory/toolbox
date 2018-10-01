@@ -30,8 +30,10 @@
               "src/styles.scss",
               "geovistory-font/dist/Geovistory.css",
               "node_modules/font-awesome/css/font-awesome.css",
+              "node_modules/quill/dist/quill.bubble.css",
               "node_modules/quill/dist/quill.snow.css",
               "node_modules/ng2-dnd/bundles/style.css",
+              "node_modules/ng2-toasty/style-bootstrap.css",
               "node_modules/cesium/Build/Cesium/Widgets/widgets.css"
             ],
             "scripts": [
@@ -89,8 +91,10 @@
               "src/styles.scss",
               "geovistory-font/dist/Geovistory.css",
               "node_modules/font-awesome/css/font-awesome.css",
+              "node_modules/quill/dist/quill.bubble.css",
               "node_modules/quill/dist/quill.snow.css",
               "node_modules/ng2-dnd/bundles/style.css",
+              "node_modules/ng2-toasty/style-bootstrap.css",
               "node_modules/cesium/Build/Cesium/Widgets/widgets.css"
             ],
             "assets": [
@@ -165,7 +169,8 @@
               "src/styles.scss",
               "geovistory-font/dist/Geovistory.css",
               "node_modules/font-awesome/css/font-awesome.css",
-              "node_modules/quill/dist/quill.snow.css"
+              "node_modules/quill/dist/quill.snow.css",
+              "node_modules/quill/dist/quill.bubble.css"
             ],
             "scripts": [
               "node_modules/cesium/Build/Cesium/Cesium.js"
@@ -221,7 +226,8 @@
             "styles": [
               "src/styles.scss",
               "node_modules/font-awesome/css/font-awesome.css",
-              "node_modules/quill/dist/quill.snow.css"
+              "node_modules/quill/dist/quill.snow.css",
+              "node_modules/quill/dist/quill.bubble.css"
             ],
             "assets": [
               "src/assets",

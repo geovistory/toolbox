@@ -2,15 +2,16 @@ import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IAppState, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
-import { RoleDetail, TeEntDetail } from 'app/core/models';
+import { RoleDetail, TeEntDetail } from 'app/core/state/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest, timer } from 'rxjs';
 import { teEntReducer } from '../../../data-unit/te-ent/te-ent.reducer';
 import { ClassService } from '../../../shared/class.service';
-import { StateCreatorService, StateSettings } from '../../../shared/state-creator.service';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetFormBase } from '../../role-set-form.base';
 import { RoleSetActions } from '../../role-set.actions';
 import { roleSetReducer } from '../../role-set.reducer';
+import { StateSettings } from 'app/core/state/services/state-creator';
 
 
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
-import { RoleDetail, RoleDetailList, CollapsedExpanded, RoleSet } from 'app/core/models';
+import { RoleDetail, RoleDetailList, CollapsedExpanded, RoleSet } from 'app/core/state/models';
 import { DfhProperty, InfEntityProjectRel } from 'app/core';
 
 

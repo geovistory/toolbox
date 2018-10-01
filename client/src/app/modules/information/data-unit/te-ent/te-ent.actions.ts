@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { InfTemporalEntity } from 'app/core';
-import { TeEntDetail, CollapsedExpanded, ExistenceTimeDetail, TeEntAccentuation } from 'app/core/models';
+import { TeEntDetail, CollapsedExpanded, ExistenceTimeDetail, TeEntAccentuation } from 'app/core/state/models';
 import { DataUnitActions } from '../data-unit.actions';
 
 
