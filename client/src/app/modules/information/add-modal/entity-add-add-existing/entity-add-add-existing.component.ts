@@ -1,16 +1,16 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { IAppState } from 'app/core';
+import { PeItDetail } from 'app/core/state/models';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { Observable } from 'rxjs';
-
-import { PeItDetail } from 'app/core/state/models';
-import { informationReducer } from '../../information.reducer';
+import { InformationAPIActions } from '../../containers/information/api/information.actions';
+import { informationReducer } from '../../containers/information/api/information.reducer';
 import { EntityAddModalService, EntityAddModalState } from '../../shared/entity-add-modal.service';
 import { StateCreatorService } from '../../shared/state-creator.service';
-import { InformationActions } from '../../information.actions';
-import { Information } from '../../information.models';
+import { Information } from '../../containers/information/api/information.models';
+
 
 
 @WithSubStore({
@@ -22,10 +22,9 @@ import { Information } from '../../information.models';
   templateUrl: './entity-add-add-existing.component.html',
   styleUrls: ['./entity-add-add-existing.component.scss']
 })
-export class EntityAddAddExistingComponent implements OnInit {
+export class EntityAddAddExistingComponent implements OnInit, OnDestroy {
 
   readonly basePath = ['information']
-  getBasePath = () => this.basePath
   localStore: ObservableStore<Information>;
 
 
@@ -39,12 +38,14 @@ export class EntityAddAddExistingComponent implements OnInit {
     private modalService: EntityAddModalService,
     private slimLoadingBarService: SlimLoadingBarService,
     private ngRedux: NgRedux<IAppState>,
-    private actions: InformationActions,
+    private actions: InformationAPIActions,
     private stateCreator: StateCreatorService
   ) {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, informationReducer);
 
   }
+
+  getBasePath = () => this.basePath
 
   ngOnInit() {
     this.pkEntity = this.modalService.pkEntity;

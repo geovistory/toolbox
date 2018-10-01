@@ -7,7 +7,7 @@ import { switchMap, takeUntil } from 'rxjs/operators';
 import { TypesComponent } from '../types.component';
 import { TypesAPIActions, TypesAPIAction } from './types.actions';
 import * as Config from '../../../../../../../../common/config/Config';
-import { NotificationsAPIActions } from '../../../../../core/notifications/components/api/notifications.actions';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { Action } from 'redux';
 import { createPeItDetail } from 'app/core/state/services/state-creator';
 
@@ -36,7 +36,7 @@ export class TypesAPIEpics {
         /**
          * Filter the actions that triggers this epic
          */
-        ofType(TypesAPIActions.LOAD),
+        ofType(TypesAPIActions.LOAD, TypesAPIActions.CLOSE_EDIT_FORM),
         switchMap((action: TypesAPIAction) => new Observable<FluxStandardAction<any>>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
@@ -49,7 +49,7 @@ export class TypesAPIEpics {
           /**
            * Prepare some api calls
            */
-          const types$: Observable<InfPersistentItem[]> = this.peItApi.typesOfNamespaceClassAndProject(action.meta.pkNamespace, action.meta.pkProject, action.meta.pkTypedClass, null);
+          const types$: Observable<InfPersistentItem[]> = this.peItApi.typesOfNamespaceClassAndProject(c.pkNamespace, c.project.pk_project, c.cla.dfh_pk_class, null);
           const classes$ = this.classApi.findComplex({
             include: {
               ingoing_properties: {
@@ -58,12 +58,12 @@ export class TypesAPIEpics {
                   select: false,
                   joinType: 'inner join',
                   // TODO: Replace this use of Config as soon as we have generic way to find type class of class
-                  where: ['dfh_pk_property', '=', Config.PK_CLASS_PK_HAS_TYPE_MAP[action.meta.pkTypedClass]]
+                  where: ['dfh_pk_property', '=', Config.PK_CLASS_PK_HAS_TYPE_MAP[c.cla.dfh_pk_class]]
                 }
               }
             }
           });
-          const namespace$: Observable<InfNamespace> = this.namespaceApi.findById(action.meta.pkNamespace);
+          const namespace$: Observable<InfNamespace> = this.namespaceApi.findById(c.pkNamespace);
           /**
            * Subscribe to the api call
            */
@@ -164,10 +164,7 @@ export class TypesAPIEpics {
            * Emit the global action that activates the loading bar
            */
           globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Emit the local action that sets the loading flag to true
-           */
-          c.localStore.dispatch(this.actions.loadStarted());
+
           /**
            * Prepare some api calls
            */
@@ -177,7 +174,12 @@ export class TypesAPIEpics {
            */
           type$.subscribe((data) => {
 
-            const peItDetail = createPeItDetail({}, data[0], c.ngRedux.getState().activeProject.crm)
+            const peItDetail = createPeItDetail({
+              showHeader: false,
+              showRightPanel: false,
+              showPropertiesHeader: false,
+              showAddAPropertyButton: false
+            }, data[0], c.ngRedux.getState().activeProject.crm)
 
             /**
              * Emit the global action that completes the loading bar

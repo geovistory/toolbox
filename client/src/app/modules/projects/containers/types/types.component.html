@@ -11,19 +11,18 @@
   </ol>
 </gv-navbar>
 <gv-side-nav [projectLabel]="projectLabel" [levelsBelowSettings]="4">
+
   <h1>
     {{classLabel}} Types
   </h1>
 
   <!-- List or Tree of Types -->
   <div *ngIf="listVisible">
-
     <h3 class="my-4 d-flex">
-      <span class="gv-flex-grow-1">{{(namespace$ | async)?.standard_label}}</span>
-      <button class="btn btn-link pr-0" (click)="openAddForm()"><i class="fa fa-plus"></i> add a type</button>
+      <span class="gv-flex-grow-1">{{namespaceLabel}}</span>
+      <button class="btn btn-link pr-0" (click)="openAddForm()" *ngIf="listVisible"><i class="fa fa-plus"></i> add a
+        type</button>
     </h3>
-
-
     <ul>
       <li *ngFor="let type of (items$ | async) | keys">
         <div class="d-flex border-bottom">
@@ -42,7 +41,7 @@
   <gv-type-add-form *ngIf="(add$ | async)" (cancel)="closeAddForm()" (create)="createType($event)"></gv-type-add-form>
 
   <!-- Edit existing Type -->
-  <gv-type-edit-form *ngIf="(edit$ | async)" (cancel)="closeEditForm()" (create)="editType($event)" [basePath]="['activeProject','classSettings','types', 'edit']"></gv-type-edit-form>
+  <gv-type-edit-form *ngIf="(edit$ | async)" (close)="closeEditForm()" [basePath]="['activeProject','classSettings','types', 'edit']"></gv-type-edit-form>
 
 
   <!-- Remove Type from Project -->

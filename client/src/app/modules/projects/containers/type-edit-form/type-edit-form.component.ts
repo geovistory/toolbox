@@ -1,5 +1,5 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { IAppState, InfPersistentItem, PeItDetail } from 'app/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { RootEpics } from 'app/core/store/epics';
@@ -35,6 +35,9 @@ export class TypeEditFormComponent extends TypeEditFormAPIActions implements OnI
   // the state object of the child components
   peItDetail: PeItDetail;
 
+  // Emitted when user clicks close
+  @Output() close = new EventEmitter<void>();
+
   constructor(
     protected rootEpics: RootEpics,
     private epics: TypeEditFormAPIEpics,
@@ -48,9 +51,6 @@ export class TypeEditFormComponent extends TypeEditFormAPIActions implements OnI
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, typeEditFormReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
-    // this.peIt$.pipe(first(p => !(!p)), takeUntil(this.destroy$)).subscribe(peIt => {
-    //   this.peItDetail = this.peItDetailService.createState({}, peIt, this.ngRedux.getState().activeProject.crm)
-    // })
   }
 
   ngOnDestroy() {

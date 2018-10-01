@@ -19,6 +19,8 @@ export interface DataUnitI {
     parentPeIt?: InfPersistentItem,
 
     /** gui */
+    showAddAPropertyButton?: boolean; // the button to add a new RoleSet or PropertySet (e.g. Add the section for Names)
+
     label?: DataUnitLabel;
     toggle?: CollapsedExpanded;
     ingoingRoleSets?: RoleSet[];
@@ -27,7 +29,6 @@ export interface DataUnitI {
     propertyToAdd?: RoleSet; // role set that is currently chosen in order to add a role of this kind
 
 }
-
 
 export class DataUnit implements DataUnitI {
     _children?: DataUnitChildList;
@@ -39,6 +40,8 @@ export class DataUnit implements DataUnitI {
     parentPeIt?: InfPersistentItem;
 
     /** gui */
+    showAddAPropertyButton?= true;
+
     label?: DataUnitLabel;
     toggle?: CollapsedExpanded;
     ingoingRoleSets?: RoleSet[];

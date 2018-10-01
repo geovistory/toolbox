@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { Information } from '../../information.models';
+import { Information } from '../../containers/information/api/information.models';
 
 
 // replace ProjectEntities with name of component

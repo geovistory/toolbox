@@ -6,9 +6,6 @@ import { InfPersistentItem, DfhClass, InfNamespace, PeItDetail } from 'app/core'
 
 type Payload = TypesI;
 interface MetaData {
-  pkNamespace?: number,
-  pkProject?: number,
-  pkTypedClass?: number,
   types?: InfPersistentItem[],
   typeClass?: DfhClass,
   type?: InfPersistentItem,
@@ -47,13 +44,9 @@ export class TypesAPIActions {
   static readonly DESTROY = 'Types::DESTROY';
 
   @dispatch()
-  load = (pkNamespace: number, pkProject: number, pkTypedClass: number): TypesAPIAction => ({
+  load = (): TypesAPIAction => ({
     type: TypesAPIActions.LOAD,
-    meta: {
-      pkNamespace,
-      pkProject,
-      pkTypedClass
-    },
+    meta: null,
     payload: null,
   });
 
@@ -145,6 +138,13 @@ export class TypesAPIActions {
     error
   })
 
+  @dispatch()
+  closeEditForm = (error): TypesAPIAction => ({
+    type: TypesAPIActions.CLOSE_EDIT_FORM,
+    meta: null,
+    payload: null,
+    error
+  })
 
   edit = (type: InfPersistentItem): TypesAPIAction => ({
     type: TypesAPIActions.EDIT,

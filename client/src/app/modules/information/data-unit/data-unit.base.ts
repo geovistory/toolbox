@@ -43,6 +43,9 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   @select() propertyToAdd$: Observable<RoleSet>; // Poperty that is currently chosen in order to add a role of this kind
   @select() _children$: Observable<RoleSetList>;
 
+  @select() showRightPanel$: Observable<boolean>;
+  @select() showAddAPropertyButton$: Observable<boolean>;
+
   comConfig = ComConfig;
   classConfig: ClassConfig;
 

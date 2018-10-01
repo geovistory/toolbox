@@ -1,11 +1,16 @@
-import { PeItSearchHit, PeItDetail } from "app/core";
+import { PeItSearchHit, PeItDetail, InfPersistentItem } from 'app/core';
+
+export interface SearchResponse { data: InfPersistentItem[], totalCount: number };
+
 
 /**
  * Root state for Information Module
  */
 export interface InformationI {
     // search results
-    _peIt_list?: { [key: string]: PeItSearchHit },
+    _peIt_list?: PeItSearchHit[],
+    collectionSize?: number;
+    loading?: boolean;
 
     // the peIt to remove (are you sure?)
     _peIt_remove?: PeItSearchHit,
@@ -25,7 +30,9 @@ export interface InformationI {
 export class Information implements InformationI {
 
     // search results
-    _peIt_list?: { [key: string]: PeItSearchHit };
+    _peIt_list?: PeItSearchHit[];
+    collectionSize?: number;
+    loading?: boolean;
 
     // the peIt to remove (are you sure?)
     _peIt_remove?: PeItSearchHit;

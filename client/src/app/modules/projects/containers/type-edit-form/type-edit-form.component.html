@@ -1,5 +1,11 @@
-<p>
-  type-edit-form works!
-</p>
+
+<h3 class="mt-4">
+  Edit Type
+</h3>
+
 
 <gv-pe-it-editable *ngIf="(peItDetail$ |async)" class="gv-flex-grow-1  d-flex flex-column" [basePath]="basePath.concat('peItDetail')"></gv-pe-it-editable>
+
+
+
+<button class="btn btn-outline-secondary mt-3" (click)="close.emit()">Back to list of types</button>

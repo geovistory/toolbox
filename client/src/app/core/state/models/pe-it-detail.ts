@@ -10,6 +10,10 @@ export interface PeItDetailI extends DataUnitI {
     form?: any;
 
     /** display data */
+    showRightPanel?: boolean;
+    showPropertiesHeader?: boolean;
+    showHeader?: boolean;
+
     ontoInfoVisible?: boolean;
     communityStatsVisible?: boolean;
     loading?: boolean; // for leaf pe it view
@@ -27,9 +31,22 @@ export class PeItDetail extends DataUnit implements PeItDetailI {
 
     form?: any;
 
-    /** display data */
-    ontoInfoVisible?: boolean;
-    communityStatsVisible?: boolean;
+    /**
+     * Display settings with defaults.
+     * To customize the default values, provide the value in the data of the constructor
+     */
+
+    // the panel with map, timeline ect.
+    showRightPanel?= true;
+
+    // the bar to above the properties
+    showPropertiesHeader?= true;
+
+    // the header with name of peIt
+    showHeader?= true;
+
+    ontoInfoVisible?= false;
+    communityStatsVisible?= false;
     loading?: boolean; // for leaf pe it view
     leafPeItLoading?: boolean;
     _leaf_peIt_modal?: PeItDetail // for leaf pe it view modal

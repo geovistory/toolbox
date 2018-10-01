@@ -1,5 +1,5 @@
 import { ProjectEntitiesAction } from './project-entities.actions';
-import { Information } from '../../information.models';
+import { Information } from '../../containers/information/api/information.models';
 
 const INITIAL_STATE: Information = new Information();
 

@@ -568,6 +568,12 @@ gv-source-list {
     @extend .flex-column;
 }
 
+gv-information {
+    @extend .d-flex;
+    @extend .gv-flex-grow-1;
+    @extend .flex-column;
+}
+
 gv-pe-it-role-set-editable,
     {
     min-width: 360px;

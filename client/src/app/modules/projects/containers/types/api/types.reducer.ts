@@ -15,7 +15,7 @@ export function typesReducer(state: Types = INITIAL_STATE, a: Action): Types {
         ...state,
         items: {},
         class: undefined,
-        namespace: undefined
+        // namespace: undefined
       };
       break;
 
@@ -101,10 +101,10 @@ export function typesReducer(state: Types = INITIAL_STATE, a: Action): Types {
       };
       break;
 
-    case TypesAPIActions.CLOSE_ADD_FORM:
+    case TypesAPIActions.CLOSE_EDIT_FORM:
       state = {
         ...state,
-        add: false
+        edit: false
       };
       break;
 

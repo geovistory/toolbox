@@ -12,6 +12,8 @@ import { DfhConfig } from '../../../information/shared/dfh-config';
 import { AppellationLabel } from '../../../information/shared/appellation-label';
 import { VocabularyItem } from '../class-settings/api/class-settings.models';
 import { ActivatedRoute } from '@angular/router';
+import * as  Config from '../../../../../../../common/config/Config';
+import { first } from 'rxjs/operators';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -50,6 +52,7 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
 
   // active namespace
   pkNamespace: number;
+  namespaceLabel: string;
 
   // types
   @select() items$: Observable<{ [key: string]: InfPersistentItem }>;
@@ -83,6 +86,14 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
     this.class$ = this.ngRedux.select<DfhClass>(['activeProject', 'classSettings', 'dfhClass'])
     this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
 
+    this.namespace$.pipe(first(n => !!n)).subscribe((n) => {
+      if (n.pk_entity === Config.PK_NAMESPACE__GEOVISTORY_ONGOING) {
+        this.namespaceLabel = 'All Types of your project'
+      } else {
+        this.namespaceLabel = n.standard_label
+      }
+    })
+
     // if one of the observables returns truthy, list is not visible
     combineLatest(this.loading$, this.add$, this.edit$).takeUntil(this.destroy$).subscribe(d => {
       this.listVisible = !d.find(item => !!(item));
@@ -99,7 +110,7 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
       if (c && p && !this.cla) {
         this.cla = c;
         this.classLabel = c.dfh_standard_label;
-        this.load(this.pkNamespace, p, c.dfh_pk_class)
+        this.load()
       }
     })
   }

@@ -642,7 +642,7 @@ export const crm: ProjectCrm = {
                 ord_num: 0,
                 fk_property: null,
                 property_is_outgoing: null,
-                fk_property_set: [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME],
+                fk_property_set: ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME,
                 property_set: {
                   pk_entity: 224,
                   description: 'Existence Time or Time Span of a Temporal Entity',
@@ -673,7 +673,7 @@ export const crm: ProjectCrm = {
                 ord_num: 0,
                 fk_property: null,
                 property_is_outgoing: null,
-                fk_property_set: [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME],
+                fk_property_set: ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME,
                 property_set: {
                   pk_entity: 224,
                   description: 'Existence Time or Time Span of a Temporal Entity',
@@ -777,7 +777,7 @@ export const crm: ProjectCrm = {
                 ord_num: 1,
                 fk_property: null,
                 property_is_outgoing: null,
-                fk_property_set: [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME],
+                fk_property_set: ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME,
                 property_set: {
                   pk_entity: 224,
                   description: 'Existence Time or Time Span of a Temporal Entity',
@@ -822,7 +822,7 @@ export const crm: ProjectCrm = {
                 ord_num: 0,
                 fk_property: null,
                 property_is_outgoing: null,
-                fk_property_set: [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME],
+                fk_property_set: ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME,
                 property_set: {
                   pk_entity: 224,
                   description: 'Existence Time or Time Span of a Temporal Entity',
@@ -1081,7 +1081,7 @@ export const crm: ProjectCrm = {
                 ord_num: 0,
                 fk_property: null,
                 property_is_outgoing: null,
-                fk_property_set: [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME],
+                fk_property_set: ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME,
                 property_set: {
                   pk_entity: 224,
                   description: 'Existence Time or Time Span of a Temporal Entity',
@@ -2251,7 +2251,7 @@ export const crm: ProjectCrm = {
                 ord_num: 2,
                 fk_property: null,
                 property_is_outgoing: null,
-                fk_property_set: [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME],
+                fk_property_set: ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME,
                 property_set: {
                   pk_entity: 224,
                   description: 'Existence Time or Time Span of a Temporal Entity',
