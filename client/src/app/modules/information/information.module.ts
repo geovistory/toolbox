@@ -29,7 +29,6 @@ import { EntitySearchHitComponent } from './components/entity-search-hit/entity-
 import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it-label.component';
 import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.component';
 import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timeline.component';
-import { ProjectEntitiesComponent } from './components/project-entities/project-entities.component';
 import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.component';
 import { TextPropertyComponent } from './components/text-property/text-property.component';
 import { InformationAPIActions } from './containers/information/api/information.actions';
@@ -131,7 +130,6 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
 
   ],
   declarations: [
-    ProjectEntitiesComponent,
     EntitySearchHitComponent,
     PeItTimelineComponent,
 
