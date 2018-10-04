@@ -1,0 +1,14 @@
+<span *ngIf="!(loading$|async)">
+    <span *ngIf="(items$ | async) != {}">
+        <gv-dfh-label-edit *ngFor="let item of (items$ | async) | keys; trackBy:getKey;" [basePath]="basePath.concat('items').concat(item.key)"
+            (delete)="delete($event)"></gv-dfh-label-edit>
+    </span>
+    
+    <gv-dfh-label-create *ngIf="(creating$ | async)" (create)="onCreate($event)" (cancel)="stopCreate()" [dfhFkProperty]="dfhFkProperty" [dfhFkClass]="dfhFkClass"
+        [infFkLanguage]="(infFkLanguage$|async)" [comFkSystemType]="(comFkSystemType$|async)"></gv-dfh-label-create>
+    
+    <button class="btn btn-sm btn-link text-muted" *ngIf="!((items$ | async) | keys).length && !(creating$ | async)"
+        (click)="startCreate()"><i class="fa fa-plus"></i></button>
+</span>
+
+<span *ngIf="(loading$|async)" class="fa fa-pulse fa-spinner"></span>

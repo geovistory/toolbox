@@ -1,11 +1,10 @@
 <h2>
-  Propertys
+  Properties
 </h2>
 <p>
-  All Properties.
+  All Properties. (Gui labels are in english)
 </p>
-
-<table class="table table-striped">
+<table class="table table-striped gv-table-scroll-y border-bottom border-secondary">
   <thead>
     <tr>
       <th scope="col">dfh_has_domain</th>
@@ -18,40 +17,32 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let item of (propertys$ | async)">
+    <tr *ngFor="let item of (items$ | async) | keys; trackBy:getKey;">
       <td>
-        <a href routerLink="../classes/{{item.dfh_has_domain}}">{{item?.domain_class?.dfh_identifier_in_namespace}}
-          {{item?.domain_class?.dfh_standard_label}}</a>
-        <small class="text-muted ml-2">{{item.dfh_has_domain}}</small>
+        <a href routerLink="../classes/{{item.value.dfh_has_domain}}">{{item?.value?.domain_class?.dfh_identifier_in_namespace}}
+          {{item?.value?.domain_class?.dfh_standard_label}}</a>
+        <small class="text-muted ml-2">{{item.value.dfh_has_domain}}</small>
       </td>
       <td>
-        {{item.dfh_identifier_in_namespace}} {{item.dfh_standard_label}}
-        <small class="text-muted">{{item.dfh_pk_property}}</small>
+        {{item.value.dfh_identifier_in_namespace}} {{item.value.dfh_standard_label}}
+        <small class="text-muted">{{item.value.dfh_pk_property}}</small>
       </td>
       <td>
-        <a href routerLink="../classes/{{item.dfh_has_range}}">{{item?.range_class?.dfh_identifier_in_namespace}}
-          {{item?.range_class?.dfh_standard_label}}</a>
-        <small class="text-muted ml-2">{{item.dfh_has_range}}</small>
+        <a href routerLink="../classes/{{item.value.dfh_has_range}}">{{item?.value?.range_class?.dfh_identifier_in_namespace}}
+          {{item?.value?.range_class?.dfh_standard_label}}</a>
+        <small class="text-muted ml-2">{{item.value.dfh_has_range}}</small>
       </td>
       <td>
-        <span *ngFor="let label of item.label_sg">
-          {{label.dfh_label}}
-        </span>
+          <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', item.key, 'label_sg']" [dfhFkProperty]="item.value.dfh_pk_property"></gv-dfh-label-list-edit>
       </td>
       <td>
-        <span *ngFor="let label of item.label_pl">
-          {{label.dfh_label}}
-        </span>
+          <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', item.key, 'label_pl']" [dfhFkProperty]="item.value.dfh_pk_property"></gv-dfh-label-list-edit>
       </td>
       <td>
-        <span *ngFor="let label of item.label_inversed_sg">
-          {{label.dfh_label}}
-        </span>
+          <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', item.key, 'label_inversed_sg']" [dfhFkProperty]="item.value.dfh_pk_property"></gv-dfh-label-list-edit>
       </td>
       <td>
-        <span *ngFor="let label of item.label_inversed_pl">
-          {{label.dfh_label}}
-        </span>
+          <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', item.key, 'label_inversed_pl']" [dfhFkProperty]="item.value.dfh_pk_property"></gv-dfh-label-list-edit>
       </td>
     </tr>
   </tbody>

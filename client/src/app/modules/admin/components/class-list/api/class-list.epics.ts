@@ -8,6 +8,8 @@ import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { ClassList } from '../../../admin.models';
 import { ClassListAPIActions } from './class-list.actions';
+import { createDfhLabelListEdit } from '../../dfh-label-list-edit/dfh-label-list-edit.component';
+import * as Config from '../../../../../../../../common/config/Config'
 
 @Injectable()
 export class ClassListAPIEpics {
@@ -36,7 +38,13 @@ export class ClassListAPIEpics {
           this.classApi.selectedClassesOfProfile(null)
             .subscribe((data: DfhClass[]) => {
               globalStore.next(this.loadingBarActions.completeLoading());
-              subStore.dispatch(this.actions.loadSucceeded(data));
+
+              const classes = data.map(cla => ({
+                ...cla,
+                labels: createDfhLabelListEdit(cla.labels,  Config.CLASS_LABEL, 18889)
+              }))
+
+              subStore.dispatch(this.actions.loadSucceeded(classes));
             }, error => {
               subStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
             })

@@ -14,8 +14,25 @@ import { INITIAL_STATE } from './initial-state';
 // The top-level reducers and epics that make up our app's logic.
 import { IAppState } from './model';
 import { rootReducer } from './reducers';
+import { equals } from 'ramda'
 
-
+/**
+ * Function to use in combination with rxjs/operator .filter()
+ * in order to get only actions dispached with a fractalkey
+ * equal to the provided path.
+ *
+ * example:
+ * pipe(
+ *    filter(action => ofSubstore(c.basePath)(action)),
+ *    ofType('Foo')
+ * )
+ * @param path
+ */
+export const ofSubstore = (path: string[]) => (action): boolean => {
+    const actionPath = JSON.parse(action['@angular-redux::fractalkey']);
+    const bool = equals(actionPath, path);
+    return bool;
+}
 
 
 

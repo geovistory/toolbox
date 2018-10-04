@@ -1,4 +1,4 @@
-import { InfRole, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfTimePrimitive, InfTemporalEntity, InfEntityProjectRel } from 'app/core/sdk';
+import { InfRole, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfTimePrimitive, InfTemporalEntity, InfEntityProjectRel, DfhLabel } from 'app/core/sdk';
 import { ProjectCrm } from 'app/core/active-project';
 import { DataUnitChildList, RoleSetI, AppeDetail, DataUnitChild, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleSet, TeEntDetail, TimePrimitveDetail } from '../models';
 import { clone, groupBy, prop, indexBy, sort, omit } from 'ramda';
@@ -539,6 +539,8 @@ export function roleSetKey(roleSet: RoleSet) {
 export function roleSetKeyFromParams(fkProp: number, isOutgoing: boolean) {
     return '_' + fkProp + '_' + (isOutgoing ? 'outgoing' : 'ingoing')
 }
+
+export const pkEntityKey = (label: DfhLabel) => ('_' + label.pk_entity);
 
 
 

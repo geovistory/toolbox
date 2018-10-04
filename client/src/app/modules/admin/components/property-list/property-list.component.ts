@@ -28,10 +28,17 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
   localStore: ObservableStore<PropertyList>;
 
   // path to the substore
-  basePath = ['admin', 'propertysList'];
+  basePath = ['admin', 'propertiesList'];
 
   // select observables of substore properties
-  @select() propertys$: Observable<DfhProperty[]>;
+  @select() items$: Observable<{ [key: string]: DfhProperty }>;
+
+  // Since we're observing an array of items, we need to set up a 'trackBy'
+  // parameter so Angular doesn't tear down and rebuild the list's DOM every
+  // time there's an update.
+  getKey(_, item) {
+    return item.key;
+  }
 
   constructor(
     protected rootEpics: RootEpics,

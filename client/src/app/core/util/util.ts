@@ -9,6 +9,7 @@ import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
 import { ComPropertySet, ComUiContextConfig, DfhClass, DfhProperty, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive } from '../sdk';
 import { roleSetKeyFromParams, roleSetKey } from 'app/core/state/services/state-creator';
+import * as Config from '../../../../../common/config/Config';
 
 /**
  * Utilities class for static functions
@@ -302,11 +303,11 @@ export class U {
 
             // TODO return an object containing label.pl and label.sg
             if (property.labels.length) {
-                if (property.labels.find(l => l.notes === 'label.sg')) {
-                    sg = property.labels.find(l => l.notes === 'label.sg').dfh_label;
+                if (property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_SG)) {
+                    sg = property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_SG).dfh_label;
                 }
-                if (property.labels.find(l => l.notes === 'label.pl')) {
-                    pl = property.labels.find(l => l.notes === 'label.pl').dfh_label;
+                if (property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_PL)) {
+                    pl = property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_PL).dfh_label;
                 }
             }
 
@@ -328,11 +329,11 @@ export class U {
 
             // TODO return an object containing inversed_label.pl and inversed_label.sg
             if (property.labels.length) {
-                if (property.labels.find(l => l.notes === 'label_inversed.sg')) {
-                    sg = property.labels.find(l => l.notes === 'label_inversed.sg').dfh_label;
+                if (property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_INVERSED_SG)) {
+                    sg = property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_INVERSED_SG).dfh_label;
                 }
-                if (property.labels.find(l => l.notes === 'label_inversed.pl')) {
-                    pl = property.labels.find(l => l.notes === 'label_inversed.pl').dfh_label;
+                if (property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_INVERSED_PL)) {
+                    pl = property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_INVERSED_PL).dfh_label;
                 }
             }
 

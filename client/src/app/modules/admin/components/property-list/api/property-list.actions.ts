@@ -6,7 +6,7 @@ import { DfhProperty } from 'app/core/sdk/models/DfhProperty';
 
 type Payload = PropertyListI;
 interface MetaData {
-  propertys?: DfhProperty[]
+  properties?: DfhProperty[]
 };
 export type PropertyListAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -32,10 +32,10 @@ export class PropertyListAPIActions {
     payload: null,
   })
 
-  loadSucceeded = (propertys: DfhProperty[]): PropertyListAPIAction => ({
+  loadSucceeded = (properties: DfhProperty[]): PropertyListAPIAction => ({
     type: PropertyListAPIActions.LOAD_SUCCEEDED,
-    meta: null,
-    payload: { propertys }
+    meta: {properties},
+    payload: null
   })
 
   loadFailed = (error): PropertyListAPIAction => ({
