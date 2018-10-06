@@ -121,7 +121,7 @@ export default sandboxOf(AnnotationPanelComponent, {
 
     <div class="d-flex justify-content-center mt-5">
       <div style="width:430px;height:400px" class="d-flex">
-        <gv-annotation-panel class="d-flex flex-column gv-flex-grow-1" [path]="path"></gv-annotation-panel>
+        <gv-annotation-panel class="d-flex flex-column gv-grow-1" [path]="path"></gv-annotation-panel>
       </div>
     </div>
         `
@@ -154,7 +154,7 @@ export default sandboxOf(AnnotationPanelComponent, {
 
     <div class="d-flex justify-content-center mt-5">
       <div style="width:430px;height:500px" class="d-flex">
-        <gv-annotation-panel class="gv-flex-grow-1" [path]="path"></gv-annotation-panel>
+        <gv-annotation-panel class="gv-grow-1" [path]="path"></gv-annotation-panel>
 
       </div>
     </div>
@@ -182,7 +182,7 @@ export default sandboxOf(AnnotationPanelComponent, {
 
     <div class="d-flex justify-content-center mt-5">
       <div style="width:430px;height:500px" class="d-flex">
-        <gv-annotation-panel class="gv-flex-grow-1" [path]="path"></gv-annotation-panel>
+        <gv-annotation-panel class="gv-grow-1" [path]="path"></gv-annotation-panel>
       </div>
     </div>
     `
@@ -221,7 +221,7 @@ export default sandboxOf(AnnotationPanelComponent, {
 
     <div class="d-flex justify-content-center mt-5">
       <div style="width:430px;height:500px" class="d-flex">
-        <gv-annotation-panel class="gv-flex-grow-1" [path]="path"></gv-annotation-panel>
+        <gv-annotation-panel class="gv-grow-1" [path]="path"></gv-annotation-panel>
       </div>
     </div>
     `
@@ -264,7 +264,7 @@ export default sandboxOf(AnnotationPanelComponent, {
 
     <div class="d-flex justify-content-center mt-5">
       <div style="width:430px;height:500px" class="d-flex">
-        <gv-annotation-panel class="gv-flex-grow-1" [path]="path"></gv-annotation-panel>
+        <gv-annotation-panel class="gv-grow-1" [path]="path"></gv-annotation-panel>
 
       </div>
     </div>

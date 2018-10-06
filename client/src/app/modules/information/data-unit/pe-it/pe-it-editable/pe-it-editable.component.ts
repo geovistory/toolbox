@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, Input, AfterViewInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ComConfig, IAppState, UiContext } from 'app/core';
+import { ComConfig, IAppState, UiContext, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable } from 'rxjs';
 
@@ -55,6 +55,9 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
    */
   peItState: PeItDetail;
 
+  // if this variable is set, only that child is shown, all other elements are hidden
+  isolatedChild: string;
+
   initStore(): void {
     this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), peItReducer);
   }
@@ -86,7 +89,8 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
    */
   initPeItSubscriptions() {
     this.subs.push(this.localStore.select<PeItDetail>('').subscribe(d => {
-      this.peItState = d
+      this.peItState = d;
+      this.isolatedChild = U.extractDataUnitChildKeyOfEditingTeEnt(d._children);
     }))
 
     // /**

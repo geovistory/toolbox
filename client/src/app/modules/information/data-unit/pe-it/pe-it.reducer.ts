@@ -49,6 +49,22 @@ export const peItReducer = (lastState: PeItDetail = INITIAL_STATE, action: PeItA
         leafPeItLoading: action.payload.leafPeItLoading,
       }
       break;
+
+
+    case PeItActions.SHOW_RIGHT_PANEL:
+      lastState = {
+        ...lastState,
+        showRightPanel: true,
+      }
+      break;
+
+
+    case PeItActions.HIDE_RIGHT_PANEL:
+      lastState = {
+        ...lastState,
+        showRightPanel: false,
+      }
+      break;
   }
 
   return lastState;

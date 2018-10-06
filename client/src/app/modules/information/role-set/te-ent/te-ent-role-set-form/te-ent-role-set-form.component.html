@@ -1,7 +1,7 @@
 <!-- Step 1: Form for adding existing roles -->
 <form [formGroup]="addForm" (ngSubmit)="addRoles()" *ngIf="(_role_set_form$ | async)?._role_add_list">
     <div class="card-body border-top d-flex">
-      <h5 class="gv-flex-grow-1 align-self-center m-0">
+      <h5 class="gv-grow-1 align-self-center m-0">
         {{(label$ | async)?.pl}} found in other projects
       </h5>
     </div>
@@ -31,7 +31,7 @@
   <form [formGroup]="createForm" (ngSubmit)="createRoles()" *ngIf="(_role_set_form$ | async)?._role_create_list">
   
     <div class="card-body border-top d-flex">
-      <h5 class="gv-flex-grow-1 align-self-center m-0">
+      <h5 class="gv-grow-1 align-self-center m-0">
         Add a new {{(label$ | async)?.sg}}
       </h5>
     </div>

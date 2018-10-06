@@ -1,5 +1,5 @@
 import { ExistenceTime } from 'app/core/existence-time/existence-time';
-import { AppeDetail, DataUnitChild, DataUnitChildLabel, DataUnitChildList, DataUnitLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, RoleSet, RoleSetLabel, RoleSetList, TeEntDetail } from 'app/core/state/models';
+import { AppeDetail, DataUnitChild, DataUnitChildLabel, DataUnitChildList, DataUnitLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, RoleSet, RoleSetLabel, RoleSetList, TeEntDetail, RoleDetailList } from 'app/core/state/models';
 import { indexBy, omit } from 'ramda';
 import { AcEntity, AcNotification, ActionType } from '../../modules/gv-angular-cesium/angular-cesium-fork';
 import { AppellationLabel } from '../../modules/information/shared/appellation-label';
@@ -7,9 +7,22 @@ import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { ClassConfig, ProjectCrm } from 'app/core/active-project/active-project.models';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
-import { ComPropertySet, ComUiContextConfig, DfhClass, DfhProperty, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive } from '../sdk';
-import { roleSetKeyFromParams, roleSetKey } from 'app/core/state/services/state-creator';
+import { ComPropertySet, ComUiContextConfig, DfhClass, DfhProperty, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, InfEntityProjectRelInterface } from '../sdk';
+import { roleSetKeyFromParams, roleSetKey, dataUnitChildKey, roleDetailKey } from 'app/core/state/services/state-creator';
 import * as Config from '../../../../../common/config/Config';
+
+export interface LabelGeneratorSettings {
+    // maximum number of data unit children that are taken into account for the label generator
+    // e.g.: for a AppeForLanguage it will take only label and language, when you put it to 2
+    dataUnitChildrenMax?: number;
+
+    // maximum number of roles per roleSet taken into account for the label generator
+    rolesMax?: number;
+
+    // path of that element in the store. useful to attatch leaf-pe-it-view
+    path: string[];
+}
+
 
 /**
  * Utilities class for static functions
@@ -351,16 +364,31 @@ export class U {
 
 
     /**
- * Converts a DfhClass to a ClassConfig
- * @param dfhC
- */
+     * Converts a DfhClass to a ClassConfig
+     * @param dfhC
+     */
     static classConfigFromDfhClass(dfhC: DfhClass): ClassConfig {
+
+        // extract class label. prefer eager loaded label over standard label.
+        const extractClassLabel = (c: DfhClass): string => {
+            if (c.labels && c.labels.length) return c.labels[0].dfh_label;
+            else return c.dfh_standard_label
+        }
+
+        const extractSubclassOf = (c: DfhClass): 'peIt' | 'teEnt' | undefined => {
+            const systype = (!c.class_profile_view ? null :
+                !c.class_profile_view[0] ? null :
+                    !c.class_profile_view[0].dfh_fk_system_type ? null :
+                        c.class_profile_view[0].dfh_fk_system_type);
+
+            if (systype === DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM) return 'peIt';
+            if (systype === DfhConfig.PK_SYSTEM_TYPE_TEMPORAL_ENTITY) return 'teEnt';
+            else return undefined;
+        }
+
         const cConf: ClassConfig = {
-            dfh_fk_system_type: (!dfhC.class_profile_view ? null :
-                !dfhC.class_profile_view[0] ? null :
-                    !dfhC.class_profile_view[0].dfh_fk_system_type ? null :
-                        dfhC.class_profile_view[0].dfh_fk_system_type),
-            label: dfhC.dfh_standard_label,
+            subclassOf: extractSubclassOf(dfhC),
+            label: extractClassLabel(dfhC),
             dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,
             dfh_pk_class: dfhC.dfh_pk_class,
             uiContexts: {}
@@ -372,34 +400,45 @@ export class U {
         return cConf;
     }
 
+    /**************************************************************************
+     * Label Generator Functions
+     **************************************************************************/
 
-    static labelFromDataUnitChildList(r: DataUnitChildList): DataUnitLabel {
-        // get the first 3 data UnitsChildren's labels
+    static labelFromDataUnitChildList(r: DataUnitChildList, settings: LabelGeneratorSettings): DataUnitLabel {
+        const max = !settings ? undefined : settings.dataUnitChildrenMax;
         const duChildren = U.obj2Arr(r);
 
+        // create array with max amount of labels
+        const spliced = max ? duChildren.slice(0, max) : duChildren;
+
         return {
-            parts: duChildren.slice(0, 2).map(c => U.labelFromDataUnitChild(c)),
+            path: settings.path,
+            parts: spliced.map(c => U.labelFromDataUnitChild(c, { ...settings, path: [...settings.path, dataUnitChildKey(c)] })),
             hasMore: (duChildren.length > 2)
         }
     }
 
 
-    static labelFromDataUnitChild(c: DataUnitChild): DataUnitChildLabel {
-        if (c && c.type == 'RoleSet') return U.labelFromRoleSet(c as RoleSet);
-        else if (c && c.type == 'ExistenceTimeDetail') return U.labelFromExTime(c as ExistenceTimeDetail);
+    static labelFromDataUnitChild(c: DataUnitChild, settings: LabelGeneratorSettings): DataUnitChildLabel {
+        if (c && c.type == 'RoleSet') return U.labelFromRoleSet(c as RoleSet, settings);
+        else if (c && c.type == 'ExistenceTimeDetail') return U.labelFromExTime(c as ExistenceTimeDetail, settings);
 
         else return null;
     }
 
 
-    static labelFromRoleSet(r: RoleSet): DataUnitChildLabel {
-        const duChildLabel = new DataUnitChildLabel();
+    static labelFromRoleSet(r: RoleSet, settings: LabelGeneratorSettings): DataUnitChildLabel {
+        const max = !settings ? undefined : settings.rolesMax;
 
         const roleDetails = U.obj2Arr(r._role_list);
+        const duChildLabel = new DataUnitChildLabel({ path: settings.path });
 
-        duChildLabel.roleLabel = U.labelFromRoleDetail(roleDetails[0]);
+        // create array with max amount of labels
+        const spliced = max ? roleDetails.splice(0, max) : roleDetails;
 
-        if (roleDetails.length > 1) duChildLabel.suffix = '(+' + (roleDetails.length - 1) + ')';
+        duChildLabel.roleLabels = spliced.map(det => U.labelFromRoleDetail(det, { ...settings, path: [...settings.path, '_role_list', roleDetailKey(det)] }));
+
+        if (roleDetails.length > 1) duChildLabel.suffix = '(+' + (roleDetails.length - max) + ')';
 
         duChildLabel.introducer = r.label.default;
 
@@ -408,32 +447,33 @@ export class U {
 
 
 
-    static labelFromRoleDetail(r: RoleDetail): RoleLabel {
+    static labelFromRoleDetail(r: RoleDetail, settings: LabelGeneratorSettings): RoleLabel {
+        const path = settings.path;
         if (r) {
-
             if (r._teEnt) {
                 if (r._teEnt._children) {
                     return {
+                        path,
                         type: 'te-ent',
-                        string: U.labelFromDataUnitChildList(r._teEnt._children).parts[0].roleLabel.string
+                        string: U.labelFromDataUnitChildList(r._teEnt._children, settings).parts[0].roleLabels[0].string
                     };
                 } else {
                     return {
+                        path,
                         type: 'te-ent',
                         string: ''
                     }
                 }
-            } else if (r._appe) return { type: 'appe', string: U.labelFromAppeDetail(r._appe) };
-            else if (r._lang) return { type: 'lang', string: U.labelFromLangDetail(r._lang) };
-            else if (r._place) return { type: 'place', string: 'Point on Map' };
-            else if (r._leaf_peIt) return { type: 'leaf-pe-it', string: U.labelFromLeafPeIt(r._leaf_peIt) };
+            } else if (r._appe) return { path, type: 'appe', string: U.labelFromAppeDetail(r._appe) };
+            else if (r._lang) return { path, type: 'lang', string: U.labelFromLangDetail(r._lang) };
+            else if (r._place) return { path, type: 'place', string: 'Point on Map' };
+            else if (r._leaf_peIt) return { path, type: 'leaf-pe-it', string: U.labelFromLeafPeIt(r._leaf_peIt, { dataUnitChildrenMax: 1, rolesMax: 1, path: [...path, '_leaf_peIt'] }) };
 
             else {
                 console.warn('labelFromRoleDetail: This kind of RoleDetail does not produce labels');
 
             }
-        }
-        else {
+        } else {
             return new RoleLabel();
         }
 
@@ -447,7 +487,7 @@ export class U {
     }
 
     static labelFromLangDetail(l: LangDetail): string {
-        if (l && l.language) return l.language.iso6391;
+        if (l && l.language) return l.language.notes;
 
         else return null;
     }
@@ -458,22 +498,22 @@ export class U {
         else return null;
     }
 
-    static labelFromLeafPeIt(l: PeItDetail): string {
+    static labelFromLeafPeIt(l: PeItDetail, settings: LabelGeneratorSettings): string {
         if (l._children) {
 
-            const p = U.labelFromDataUnitChildList(l._children)
+            const p = U.labelFromDataUnitChildList(l._children, {...settings, path: [...settings.path, '_children']})
 
-            if (p && p.parts && p.parts[0] && p.parts[0].roleLabel) {
-                return p.parts[0].roleLabel.string;
+            if (p && p.parts && p.parts[0] && p.parts[0].roleLabels && p.parts[0].roleLabels[0]) {
+                return p.parts[0].roleLabels[0].string;
             }
         } else return null;
     }
 
 
 
-    static labelFromExTime(e: ExistenceTimeDetail): DataUnitChildLabel {
+    static labelFromExTime(e: ExistenceTimeDetail, settings: LabelGeneratorSettings): DataUnitChildLabel {
         let earliest: TimePrimitive, latest: TimePrimitive;
-        let eRoleDetail, lRoleDetail;
+        let eRoleDetail: RoleDetail, lRoleDetail;
 
         if (e && e._children) {
             const c = e._children;
@@ -513,11 +553,13 @@ export class U {
         if (!earliest && !latest) return null;
 
         return new DataUnitChildLabel({
+            path: settings.path,
             introducer: 'When',
-            roleLabel: {
+            roleLabels: [{
+                path: undefined,
                 type: 'ex-time',
                 exTimeLabel: { earliest, latest }
-            }
+            }]
         })
 
     }
@@ -1038,5 +1080,43 @@ export class U {
             entity.entity_version_project_rels[0].is_in_project
         ) return true;
         else return false;
+    }
+
+    /**
+     * Figures out if any of the roleDetails of the given RoleDetailList
+     * has a temporal entity that is in editing mode. If so:
+     * 
+     * @returns the key that roleDetail has in the given List.
+     */
+    static extractRoleDetailKeyOfEditingTeEnt(roleDetailList: RoleDetailList): string {
+        let key: string;
+        U.obj2KeyValueArr(roleDetailList).some((item) => {
+            if (item.value._teEnt && item.value._teEnt.editing) {
+                key = item.key;
+                return true;
+            }
+        });
+        return key;
+
+    }
+
+
+    /**
+     * Figures out if any of the DataUnitChildren contains a teEnt that is in editing mode.
+     * If so:
+     * @returns the key of that DataUnitChild
+     */
+    static extractDataUnitChildKeyOfEditingTeEnt(children: DataUnitChildList): string {
+        let key: string;
+        U.obj2KeyValueArr(children).some((child) => {
+            if (child.value.type === 'RoleSet') {
+                const roleSet: RoleSet = child.value;
+                if (U.extractRoleDetailKeyOfEditingTeEnt(roleSet._role_list)) {
+                    key = child.key;
+                    return true;
+                }
+            }
+        })
+        return key;
     }
 }

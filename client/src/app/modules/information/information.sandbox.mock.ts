@@ -3,7 +3,7 @@ import { ProjectCrm } from 'app/core';
 export const crm: ProjectCrm = {
   classes: {
     '21': {
-      dfh_fk_system_type: 8,
+      subclassOf: 'peIt',
       label: 'Person',
       dfh_identifier_in_namespace: 'E21',
       dfh_pk_class: 21,
@@ -404,7 +404,6 @@ export const crm: ProjectCrm = {
       }
     },
     '50': {
-      dfh_fk_system_type: null,
       label: 'Time-Span',
       dfh_identifier_in_namespace: 'E52',
       dfh_pk_class: 50,
@@ -629,7 +628,7 @@ export const crm: ProjectCrm = {
       }
     },
     '60': {
-      dfh_fk_system_type: 9,
+      subclassOf: 'teEnt',
       label: 'Formation',
       dfh_identifier_in_namespace: 'E66',
       dfh_pk_class: 60,
@@ -757,7 +756,7 @@ export const crm: ProjectCrm = {
       }
     },
     '61': {
-      dfh_fk_system_type: 9,
+      subclassOf: 'teEnt',
       label: 'Birth',
       dfh_identifier_in_namespace: 'E67',
       dfh_pk_class: 61,
@@ -1068,7 +1067,7 @@ export const crm: ProjectCrm = {
       }
     },
     '63': {
-      dfh_fk_system_type: 9,
+      subclassOf: 'teEnt',
       label: 'Death',
       dfh_identifier_in_namespace: 'E69',
       dfh_pk_class: 63,
@@ -1183,7 +1182,7 @@ export const crm: ProjectCrm = {
       }
     },
     '68': {
-      dfh_fk_system_type: 8,
+      subclassOf: 'peIt',
       label: 'Group',
       dfh_identifier_in_namespace: 'E74',
       dfh_pk_class: 68,
@@ -1604,14 +1603,14 @@ export const crm: ProjectCrm = {
       }
     },
     '75': {
-      dfh_fk_system_type: 8,
+      subclassOf: 'peIt',
       label: 'Actor Appellation',
       dfh_identifier_in_namespace: 'E82',
       dfh_pk_class: 75,
       uiContexts: {}
     },
     '78': {
-      dfh_fk_system_type: 9,
+      subclassOf: 'teEnt',
       label: 'Joining',
       dfh_identifier_in_namespace: 'E85',
       dfh_pk_class: 78,
@@ -1701,7 +1700,7 @@ export const crm: ProjectCrm = {
       }
     },
     '79': {
-      dfh_fk_system_type: 9,
+      subclassOf: 'teEnt',
       label: 'Leaving',
       dfh_identifier_in_namespace: 'E86',
       dfh_pk_class: 79,
@@ -1791,7 +1790,6 @@ export const crm: ProjectCrm = {
       }
     },
     '84': {
-      dfh_fk_system_type: null,
       label: 'Presence',
       dfh_identifier_in_namespace: 'E93',
       dfh_pk_class: 84,
@@ -1872,7 +1870,7 @@ export const crm: ProjectCrm = {
       }
     },
     '212': {
-      dfh_fk_system_type: 9,
+      subclassOf: 'teEnt',
       label: 'Time-related geographical localisation',
       dfh_identifier_in_namespace: 'histC2',
       dfh_pk_class: 212,
@@ -2010,7 +2008,7 @@ export const crm: ProjectCrm = {
       }
     },
     '363': {
-      dfh_fk_system_type: 8,
+      subclassOf: 'peIt',
       label: 'Geographical Place',
       dfh_identifier_in_namespace: 'histC8',
       dfh_pk_class: 363,
@@ -2217,14 +2215,14 @@ export const crm: ProjectCrm = {
       }
     },
     '364': {
-      dfh_fk_system_type: 8,
+      subclassOf: 'peIt',
       label: 'Geographical place type',
       dfh_identifier_in_namespace: 'histC9',
       dfh_pk_class: 364,
       uiContexts: {}
     },
     '365': {
-      dfh_fk_system_type: 9,
+      subclassOf: 'teEnt',
       label: 'Appellation for language',
       dfh_identifier_in_namespace: 'histC10',
       dfh_pk_class: 365,
@@ -2547,7 +2545,7 @@ export const crm: ProjectCrm = {
       }
     },
     '441': {
-      dfh_fk_system_type: 8,
+      subclassOf: 'peIt',
       label: 'Built work',
       dfh_identifier_in_namespace: 'histC11',
       dfh_pk_class: 441,
@@ -2752,7 +2750,7 @@ export const crm: ProjectCrm = {
       }
     },
     '442': {
-      dfh_fk_system_type: 9,
+      subclassOf: 'teEnt',
       label: 'Membership',
       dfh_identifier_in_namespace: 'histC12',
       dfh_pk_class: 442,
@@ -2818,7 +2816,7 @@ export const crm: ProjectCrm = {
       }
     },
     '443': {
-      dfh_fk_system_type: 8,
+      subclassOf: 'peIt',
       label: 'Built work type',
       dfh_identifier_in_namespace: 'histC13',
       dfh_pk_class: 443,

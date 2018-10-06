@@ -1,47 +1,60 @@
-<!-- <span class="mr-3">{{classConfig?.label}}</span> -->
+<div class="main d-flex" [ngClass]="{
+  'flex-column gv-card-spacer-b gv-card-spacer-l btn-r btn-t': toggle === 'expanded', 
+'gv-p-list-group-item gv-pointer': toggle === 'collapsed'}"
+  (click)="click()">
 
-<span *ngFor="let p of label.parts; let i = index">
+  <!-- Role Labels -->
+  <div class="gv-grow-1" (click)="clickPart($event)" *ngFor="let p of label?.parts; let i = index" [ngClass]="{
+    'order-2 mt-3': toggle === 'expanded', 
+    'pr-3': toggle === 'collapsed'}">
+    <div class="text-muted font-xs">
+      {{p?.introducer}}
+    </div>
+    <div *ngFor="let label of p?.roleLabels">
+      <div *ngIf="label.type !== 'ex-time' && label.type !== 'leaf-pe-it'">
+        {{label?.string}}
+      </div>
+      <div *ngIf="label.type === 'ex-time'">
+        {{getExTLabel(label?.exTimeLabel)}}
+      </div>
+      <div *ngIf="label.type === 'leaf-pe-it' && label.path">
+        <gv-leaf-pe-it-view [basePath]="label.path.concat('_leaf_peIt')"></gv-leaf-pe-it-view>
+      </div>
+    </div>
+  </div>
 
-  <span class="text-muted mx-1" *ngIf="i > 0">&#x2022;</span>
+  <div class="d-flex" [ngClass]="{
+    'font-xs text-muted flex-column justify-content-between': toggle === 'collapsed', 
+    'order-1 font-lg text-gray-400 btn-r btn-t': toggle === 'expanded' }">
 
-  <span *ngIf="p && p.roleLabel.type === 'appe'">
-    <!-- <span class="text-muted">{{p?.introducer}}:</span> -->
-    {{p?.roleLabel?.string}}
-  </span>
+    <!-- Class info -->
+    <div (click)="clickPart($event)" [ngClass]="{ 'gv-grow-1 gv-pointer  d-flex  justify-content-start': toggle === 'expanded' }">
+      <div class="align-self-center">
+        <i [ngClass]="{
+              'fa fa-star': classConfig.subclassOf === 'teEnt',
+              'gv-icon gv-icon-entity': classConfig.subclassOf === 'peIt',
+              'text-primary': toggle === 'collapsed', 
+              'text-gray-400': toggle === 'expanded'
+            }"></i>
 
-  <span *ngIf="p && p.roleLabel.type === 'lang'">
-    <span class="text-muted">{{p?.introducer}}:</span>
-    {{p?.roleLabel?.string}}
-  </span>
+        {{classConfig?.label}}
+      </div>
+    </div>
 
+    <div class="text-right" *ngIf="label?.hasMore && toggle === 'collapsed'">
+      More…
+    </div>
 
-  <span *ngIf="p && p.roleLabel.type === 'place'">
-    <span class="text-muted">{{p?.introducer}}:</span>
-    {{p?.roleLabel?.string}}
-  </span>
+    <!-- Buttons -->
+    <div *ngIf="toggle === 'expanded'">
+      <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-link-gray">
+          <i class="fa fa-compress" (click)="clickPart($event)"></i>
+        </button>
+        <ng-content select="[buttons]"></ng-content>
+      </div>
+    </div>
 
-  <span *ngIf="p && p.roleLabel.type === 'ex-time'">
-    <span class="text-muted">{{p?.introducer}}:</span>
-    {{getExTLabel(p?.roleLabel?.exTimeLabel)}}
-  </span>
+  </div>
 
-  <span *ngIf="p && p.roleLabel.type === 'te-ent'">
-    <span class="text-muted">{{p?.introducer}}:</span>
-    {{p?.roleLabel?.string}}
-  </span>
-
-  <span *ngIf="p && p.roleLabel.type === 'leaf-pe-it'">
-    <span class="text-muted">{{p?.introducer}}:</span>
-    {{p?.roleLabel.string}}
-  </span>
-
-
-</span>
-
-<span *ngIf="label?.hasMore"><span class="text-muted mx-1">&#x2022;</span> …</span>
-
-
-<!-- <br>
-<span style="font-size: 10pt">
-  {{label | json}}
-</span> -->
+</div>

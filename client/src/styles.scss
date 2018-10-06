@@ -88,6 +88,78 @@ $value in $grays {
     }
 }
 
+// generate btn-outline-gray-* classes
+@each $color,
+$value in $grays {
+    .btn-outline-gray-#{$color} {
+        @include button-outline-variant($value);
+    }
+}
+
+// generate text-gray-* classes
+@each $color,
+$value in $grays {
+    @include text-emphasis-variant(".text-gray-#{$color}", $value);
+}
+
+/**
+* card-body padding minus button padding 
+*/
+
+// btn
+.btn-r {
+    padding-right: ($card-spacer-x - $btn-padding-x);
+}
+
+.btn-l {
+    padding-left: ($card-spacer-x - $btn-padding-x);
+}
+
+.btn-x {
+    padding-right: ($card-spacer-x - $btn-padding-x);
+    padding-left: ($card-spacer-x - $btn-padding-x);
+}
+
+.btn-t {
+    padding-top: ($card-spacer-y - $btn-padding-y);
+}
+
+.btn-b {
+    padding-bottom: ($card-spacer-y - $btn-padding-y);
+}
+
+.btn-y {
+    padding-left: ($card-spacer-y - $btn-padding-y);
+    padding-right: ($card-spacer-y - $btn-padding-y);
+}
+
+/**
+* Button link gray
+*/
+
+// Make a button look and behave like a link
+.btn-link-gray {
+    font-weight: $font-weight-normal;
+    color: $gray-500;
+    background-color: transparent;
+    @include hover {
+        color: $gray-800;
+        background-color: transparent;
+        border-color: transparent;
+    }
+    &:focus,
+    &.focus {
+        text-decoration: $link-hover-decoration;
+        border-color: transparent;
+        box-shadow: none;
+    }
+    &:disabled,
+    &.disabled {
+        color: $gray-300;
+        pointer-events: none;
+    } // No need for an active state here
+}
+
 /**
 * Headings
 */
@@ -124,17 +196,29 @@ h6,
 $gv-color-highlighted: #ffce00;
 $gv-color-selected: #00ffff;
 // Custom Stuff
+.font-normal {
+    font-size: $font-size-base;
+}
+
+.font-lg {
+    font-size: $font-size-lg;
+}
+
 .font-sm {
     font-size: $font-size-sm;
 }
 
-.font-normal {
-    font-size: $font-size-base;
+.font-xs {
+    font-size: ($font-size-base * .68);
 }
 
 .gv-highlight {
     color: theme-color("success");
     font-weight: 600;
+}
+
+.gv-bg-selected {
+    background-color: #b9f5ff;
 }
 
 .gv-scroll-y-auto {
@@ -146,7 +230,8 @@ $gv-color-selected: #00ffff;
     @extend .gv-scroll-y-auto;
     tr {
         @extend .d-flex;
-        td, th {
+        td,
+        th {
             flex-basis: 100%
         }
     }
@@ -190,15 +275,15 @@ $gv-color-selected: #00ffff;
     cursor: pointer;
 }
 
-.gv-flex-grow-1 {
+.gv-grow-1 {
     flex-grow: 1;
 }
 
-.gv-flex-grow-2 {
+.gv-grow-2 {
     flex-grow: 2;
 }
 
-.gv-flex-grow-5 {
+.gv-grow-5 {
     flex-grow: 5;
 }
 
@@ -209,7 +294,7 @@ $gv-color-selected: #00ffff;
 // full height
 .gv-fh {
     @extend .flex-column;
-    @extend .gv-flex-grow-1;
+    @extend .gv-grow-1;
     flex-basis: 0;
 }
 
@@ -268,12 +353,22 @@ gv-property {
     display: block;
 }
 
+.gv-card-spacer-l {
+    padding-left: $card-spacer-x;
+}
+.gv-card-spacer-r {
+    padding-right: $card-spacer-x;
+}
+.gv-card-spacer-b {
+    padding-bottom: $card-spacer-x;
+}
+.gv-card-spacer-t {
+    padding-top: $card-spacer-x;
+}
 .gv-card-spacer-y {
     padding-top: $card-spacer-y;
     padding-bottom: $card-spacer-y;
 }
-
-;
 .gv-card-spacer-x {
     padding-left: $card-spacer-x;
     padding-right: $card-spacer-x;
@@ -376,6 +471,14 @@ ngb-pagination {
     .pagination {
         margin: 0
     }
+}
+
+/***************************
+* TeEnt
+****************************/
+
+.gv-p-list-group-item {
+    padding: 0.75rem 1.25rem;
 }
 
 /***************************
@@ -495,10 +598,10 @@ gv-quill-edit {
     .ql-container.ql-snow {
         @extend .d-flex;
         @extend .flex-column;
-        @extend .gv-flex-grow-1;
+        @extend .gv-grow-1;
     }
     .ql-editor {
-        @extend .gv-flex-grow-1;
+        @extend .gv-grow-1;
     }
 }
 
@@ -586,13 +689,13 @@ gv-quill-edit.gv-quill-textarea-like {
 
 gv-source-list {
     @extend .d-flex;
-    @extend .gv-flex-grow-1;
+    @extend .gv-grow-1;
     @extend .flex-column;
 }
 
 gv-information {
     @extend .d-flex;
-    @extend .gv-flex-grow-1;
+    @extend .gv-grow-1;
     @extend .flex-column;
 }
 

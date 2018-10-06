@@ -14,7 +14,7 @@ export function classListReducer(state: ClassList = INITIAL_STATE, a: Action): C
 
   const action = a as ClassListAPIAction;
 
-  
+
   switch (action.type) {
     case ClassListAPIActions.LOAD_STARTED:
       return {
@@ -26,7 +26,7 @@ export function classListReducer(state: ClassList = INITIAL_STATE, a: Action): C
     case ClassListAPIActions.LOAD_SUCCEEDED:
       return {
         ...state,
-        items: indexBy(prop('dfh_pk_class'), action.payload),
+        items: indexBy(prop('dfh_pk_class'), action.meta.itemsArray),
         loading: false,
         error: null,
       };

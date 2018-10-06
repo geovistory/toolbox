@@ -19,14 +19,14 @@
   <!-- List or Tree of Types -->
   <div *ngIf="listVisible">
     <h3 class="my-4 d-flex">
-      <span class="gv-flex-grow-1">{{namespaceLabel}}</span>
+      <span class="gv-grow-1">{{namespaceLabel}}</span>
       <button class="btn btn-link pr-0" (click)="openAddForm()" *ngIf="listVisible"><i class="fa fa-plus"></i> add a
         type</button>
     </h3>
     <ul>
       <li *ngFor="let type of (items$ | async) | keys">
         <div class="d-flex border-bottom">
-          <span class="gv-flex-grow-1">{{getLabel(type.value)}} </span>
+          <span class="gv-grow-1">{{getLabel(type.value)}} </span>
           <!-- <a href class="gv-passive-link mr-2"><i class="fa fa-plus"></i></a> -->
           <a href class="gv-passive-link mr-2" (click)=openEditForm(type.value)><i class="fa fa-edit"></i></a>
           <a href class="gv-passive-link"><i class="fa fa-trash"></i></a>

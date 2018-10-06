@@ -1,22 +1,22 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy, forwardRef, ChangeDetectorRef } from '@angular/core';
+import { NgRedux, WithSubStore } from '@angular-redux/store';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-import { DfhClass, InfRole, IAppState, ClassConfig } from 'app/core';
+import { ClassConfig, IAppState, InfRole } from 'app/core';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { pick } from 'ramda';
 import { Subscription } from 'rxjs';
-
 import { EntityAddModalComponent } from '../../add-modal/entity-add-modal/entity-add-modal.component';
 import { EntityAddModalService } from '../../shared/entity-add-modal.service';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { WithSubStore, NgRedux } from '@angular-redux/store';
-import { leafPeItReducer } from '../leaf-pe-it-view/leaf-pe-it-view.reducer';
-import { LeafPeItActions } from '../leaf-pe-it-view/leaf-pe-it-view.actions';
+import { LeafPeItViewAPIActions } from '../leaf-pe-it-view/api/leaf-pe-it-view.actions';
+import { leafPeItViewReducer } from '../leaf-pe-it-view/api/leaf-pe-it-view.reducer';
+
 
 
 @AutoUnsubscribe()
 @WithSubStore({
   basePathMethodName: 'getBasePath',
-  localReducer: leafPeItReducer
+  localReducer: leafPeItViewReducer
 })
 @Component({
   selector: 'gv-leaf-pe-it-ctrl',
@@ -31,7 +31,7 @@ import { LeafPeItActions } from '../leaf-pe-it-view/leaf-pe-it-view.actions';
     }
   ]
 })
-export class LeafPeItCtrlComponent extends LeafPeItActions implements OnInit, OnDestroy, ControlValueAccessor {
+export class LeafPeItCtrlComponent extends LeafPeItViewAPIActions implements OnInit, OnDestroy, ControlValueAccessor {
 
   role: InfRole;
 
@@ -79,7 +79,7 @@ export class LeafPeItCtrlComponent extends LeafPeItActions implements OnInit, On
 
     this.pkEntity = undefined;
     this.onChange(null)
-    this.leafPeItStateRemoved()
+    this.remove()
     this.ref.detectChanges()
 
   }

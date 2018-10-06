@@ -1,26 +1,57 @@
-<!-- Title / Standard Appellations of PeIt -->
+<!-- Header -->
 <div class="mb-3 gv-flex-shrink-0" *ngIf="(showHeader$ | async)">
-  <gv-pe-it-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
+  <gv-editor-header>
+    <gv-pe-it-label labels [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
+    <div type>
+      Type
+    </div>
+    <gv-class-info classInfo [classConfig]="classConfig" iconPrimary="true"></gv-class-info>
+    <div settings>
+      <div class="btn-group" ngbDropdown placement="bottom-right" [autoClose]="'inside'">
+        <button class="btn btn-link btn-lg" ngbDropdownToggle>
+          <i class="fa fa-cogs"></i>
+        </button>
+        <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+          <button class="dropdown-item" (click)="showCommunityStats()" *ngIf="!(communityStatsVisible$|async)">
+            Show Community Statistics
+          </button>
+          <button class="dropdown-item" (click)="hideCommunityStats()" *ngIf="(communityStatsVisible$|async)">
+            Hide Community Statistics
+          </button>
+          <button class="dropdown-item" (click)="showOntoInfo()" *ngIf="!(ontoInfoVisible$|async)">Show Ontology Info</button>
+          <button class="dropdown-item" (click)="hideOntoInfo()" *ngIf="(ontoInfoVisible$|async)">Hide Ontology Info</button>
+
+        </div>
+      </div>
+    </div>
+  </gv-editor-header>
+
+
 </div>
 
 <!-- Tools to edit PeIt  -->
 
-<div class="d-flex flex-row gv-flex-grow-1" style="flex-basis:100%">
-  <div class="d-flex flex-column gv-flex-grow-1" style="flex-basis:35%;">
+<div class="d-flex flex-row gv-grow-1 px-3 pb-1" style="flex-basis:100%">
+  <div class="d-flex flex-column gv-grow-1" style="flex-basis:35%;">
 
-    <div class="gv-footer mb-3">
+    <!-- Properties Header -->
+    <span *ngIf="(showPropertiesHeader$ | async)">
 
-      <!-- Properties Header -->
-      <span *ngIf="(showPropertiesHeader$ | async)">
-        <ng-container *ngTemplateOutlet="propertiesHeader"></ng-container>
-      </span>
+      <div class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline">
+        <div class="gv-grow-1">
+          <!-- <i class="fa fa-lightbulb-o"></i> -->
+          Properties
+        </div>
+        <!-- Step 1 for adding a new property -->
+        <button class="btn btn-link" (click)="startSelectProperty()" *ngIf="(selectPropState$ | async) === 'init' && (showAddAPropertyButton$ | async) && !isolatedChild">
+          <i class="fa fa-plus"></i> Add a property ...
+        </button>
+      </div>
 
-      <!-- Step 1 for adding a new property -->
+    </span>
 
-      <button class="btn btn-outline-secondary btn-block" (click)="startSelectProperty()" 
-      *ngIf="(selectPropState$ | async) === 'init' && (showAddAPropertyButton$ | async)">
-        <i class="fa fa-plus"></i> Add a property ...
-      </button>
+    <!-- Add a property UI -->
+    <div class="mt-3" *ngIf="(!isolatedChild)">
 
       <!-- Step 2 for adding new Property section -->
 
@@ -28,7 +59,7 @@
 
         <div class="card-header bt-1">
           <div class="d-flex">
-            <div class="gv-h4 text-white gv-flex-grow-1 align-self-center">
+            <div class="gv-h4 text-white gv-grow-1 align-self-center">
               What do you want to add?
             </div>
             <button type="button" name="button" class="btn btn-link text-white align-self-center btn-sm" (click)="stopSelectProperty()">
@@ -44,20 +75,26 @@
         (cancel)="stopSelectProperty()"></gv-add-info-pe-it>
     </div>
 
-
-    <div class="gv-body gv-flex-grow-1" style="overflow-y:auto">
+    <!-- Normal mode -->
+    <div class="gv-body gv-grow-1 mt-3" style="overflow-y:auto" *ngIf="!isolatedChild">
       <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
         <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-pe-it-role-set-editable>
       </div>
     </div>
 
+
+    <!-- Isolation mode -->
+    <div class="gv-body gv-grow-1" style="overflow-y:auto" *ngIf="isolatedChild">
+      <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="isolatedChild"></gv-pe-it-role-set-editable>
+    </div>
+
   </div>
 
   <div class="d-flex ml-3" style="flex-basis:65%; overflow:hidden" *ngIf="(showRightPanel$ | async)">
-    <div class="d-flex flex-column gv-flex-grow-1" style="overflow:hidden">
+    <div class="d-flex flex-column gv-grow-1" style="overflow:hidden">
 
-      <div class="d-flex gv-flex-grow-1 mb-3">
-        <gv-map [path]="basePath" class="gv-flex-grow-1 d-flex flex-column"></gv-map>
+      <div class="d-flex gv-grow-1 mb-3">
+        <gv-map [path]="basePath" class="gv-grow-1 d-flex flex-column"></gv-map>
       </div>
 
       <gv-pe-it-timeline [path]="basePath"></gv-pe-it-timeline>
@@ -65,35 +102,3 @@
     </div>
   </div>
 </div>
-
-
-
-<!-- ************************** NG TEMPLATES ****************************** -->
-
-<ng-template #propertiesHeader>
-  <div class="btn-group gv-flex-shrink-0 d-flex mb-3" role="group" aria-label="Basic example">
-    <div class="gv-flex-grow-1 bg-gray-700 text-white rounded-left gv-card-spacer-x align-self-stretch d-flex">
-      <div class="align-self-center">
-        <i class="fa fa-lightbulb-o"></i> Properties
-      </div>
-    </div>
-    <div class="btn-group" ngbDropdown placement="bottom-right">
-      <button class="btn btn-gray-700" ngbDropdownToggle>
-        <i class="fa fa-ellipsis-v"></i>
-      </button>
-      <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
-        <button class="dropdown-item" (click)="showCommunityStats()" *ngIf="!(communityStatsVisible$|async)">Show
-          Community
-          Statistics
-        </button>
-        <button class="dropdown-item" (click)="hideCommunityStats()" *ngIf="(communityStatsVisible$|async)">Hide
-          Community
-          Statistics
-        </button>
-        <button class="dropdown-item" (click)="showOntoInfo()" *ngIf="!(ontoInfoVisible$|async)">Show Ontology Info</button>
-        <button class="dropdown-item" (click)="hideOntoInfo()" *ngIf="(ontoInfoVisible$|async)">Hide Ontology Info</button>
-
-      </div>
-    </div>
-  </div>
-</ng-template>

@@ -38,7 +38,7 @@
   <!-- Search results -->
   <div class="gv-flex-fh m-3">
     <div class="d-flex justify-content-center" *ngFor="let entry of (list$|async) | keys">
-      <gv-source-search-hit [sourceSearchHit]="entry.value" class="gv-flex-grow-1" (open)="openSearchHit(entry.value)">
+      <gv-source-search-hit [sourceSearchHit]="entry.value" class="gv-grow-1" (open)="openSearchHit(entry.value)">
       </gv-source-search-hit>
       <button class="btn btn-sm btn-link" (click)="startRemove(entry.value)">Remove</button>
     </div>
@@ -61,9 +61,9 @@
  *   listening to onChange Output to update the 'list'
 -->
 
-<div *ngIf="(edit$ | async)" class="gv-flex-grow-1 d-flex flex-column">
+<div *ngIf="(edit$ | async)" class="gv-grow-1 d-flex flex-column">
   <gv-source-detail (close)="close()" (onSave)="save($event)" (versionChanged)="changeVersion($event)" [path]="editPath"
-    class="gv-flex-grow-1 d-flex flex-column"></gv-source-detail>
+    class="gv-grow-1 d-flex flex-column"></gv-source-detail>
 </div>
 
 <!-- ********************** Remove Source *************************** 

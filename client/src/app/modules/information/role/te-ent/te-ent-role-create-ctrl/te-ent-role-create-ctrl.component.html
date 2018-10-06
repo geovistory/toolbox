@@ -1,10 +1,10 @@
-<div class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
+<div class="gv-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
 
-  <form [formGroup]="formGroup" *ngIf="formGroup && roleState && formControlName" class="align-self-center gv-flex-grow-1">
+  <form [formGroup]="formGroup" *ngIf="formGroup && roleState && formControlName" class="align-self-center gv-grow-1">
 
-    <gv-appellation-ctrl *ngIf="roleState._appe" class="gv-flex-grow-1 form-control p-0" [formControlName]="formControlName" (touched)="markAsTouched()"></gv-appellation-ctrl>
+    <gv-appellation-ctrl *ngIf="roleState._appe" class="gv-grow-1 form-control p-0" [formControlName]="formControlName" (touched)="markAsTouched()"></gv-appellation-ctrl>
 
-    <gv-language-ctrl *ngIf="roleState._lang" class="gv-flex-grow-1" [formControlName]="formControlName" (touched)="markAsTouched()"></gv-language-ctrl>
+    <gv-language-ctrl *ngIf="roleState._lang" class="gv-grow-1" [formControlName]="formControlName" (touched)="markAsTouched()"></gv-language-ctrl>
 
     <gv-leaf-pe-it-view *ngIf="(isCircular$|async) && roleState.role.fk_entity" [pkEntity]="roleState.role.fk_entity" [basePath]="(basePath.concat('_leaf_peIt'))"
       [isCircular]="true"></gv-leaf-pe-it-view>

@@ -182,6 +182,16 @@ module.exports = function (Project) {
         include: ["dfh_pk_class", "dfh_identifier_in_namespace", "dfh_standard_label"]
       },
       "include": {
+        labels: {
+          "$relation": {
+            "name": "labels",
+            "joinType": "left join",
+            select: { include: ["dfh_label", "inf_fk_language", "pk_entity", "com_fk_system_type"] },
+            "where": [
+              "com_fk_system_type", "IN", [Config.CLASS_LABEL]
+            ]
+          }
+        },
         "class_profile_view": {
           "$relation": {
             "name": "class_profile_view",

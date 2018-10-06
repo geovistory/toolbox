@@ -13,22 +13,20 @@ export class LeafPeItLabelComponent implements OnChanges {
 
   @Input() children: DataUnitChildList;
   @Input() classConfig: ClassConfig
-  @Input() labelInEdit:string;
-  
+  @Input() labelInEdit: string;
+
   label: DataUnitLabel;
 
   constructor(private datePipe: DatePipe) { }
 
   ngOnChanges() {
-    this.label = U.labelFromDataUnitChildList(this.children)
+    this.label = U.labelFromDataUnitChildList(this.children, { path: [] })
   }
 
   getExTLabel(d: ExTimeLabel) {
-    let parts = [];
-    if (d.earliest)
-      parts.push(this.getTpLabel(d.earliest, 'duration'));
-    if (d.latest)
-    parts.push(this.getTpLabel(d.latest, 'duration'));
+    const parts = [];
+    if (d.earliest) parts.push(this.getTpLabel(d.earliest, 'duration'));
+    if (d.latest) parts.push(this.getTpLabel(d.latest, 'duration'));
 
     return parts.join(' – ');
   }
@@ -37,17 +35,17 @@ export class LeafPeItLabelComponent implements OnChanges {
 
     const tp = new TimePrimitive(p)
 
-    let dt = tp.getDateTime();
+    const dt = tp.getDateTime();
 
     switch (show) {
 
-      case "duration":
+      case 'duration':
         return this.datePipe.transform(dt.getDate(), tp.getShortesDateFormatString());
 
-      case "firstSecond":
+      case 'firstSecond':
         return this.datePipe.transform(dt.getDate(), tp.getDateFormatString('1 second'));
 
-      case "lastSecond":
+      case 'lastSecond':
         dt.toLastSecondOf(tp.duration);
         return this.datePipe.transform(dt.getDate(), tp.getDateFormatString('1 second'));
 

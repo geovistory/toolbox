@@ -1,15 +1,21 @@
 import { RoleLabel } from './role-label';
 
 export interface DataUnitChildLabelI {
+    // path of that data unit child in store
+    path?: string[];
+
     introducer?: string;
-    roleLabel?: RoleLabel;
+    roleLabels?: RoleLabel[];
     prefix?: string;
     suffix?: string;
 }
 
 export class DataUnitChildLabel {
+    // path of that data unit child in store
+    path?: string[];
+
     introducer: string;
-    roleLabel: RoleLabel;
+    roleLabels: RoleLabel[];
     prefix: string;
     suffix: string;
 

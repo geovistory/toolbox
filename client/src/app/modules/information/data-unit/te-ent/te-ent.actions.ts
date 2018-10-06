@@ -29,7 +29,9 @@ export class TeEntActions extends DataUnitActions {
 
   static readonly TE_ENT_SET_TIMESPAN_ACTIVATED = 'TE_ENT_SET_TIMESPAN_ACTIVATED';
 
-  
+  static readonly START_EDITING = 'TeEntActions::START_EDITING';
+  static readonly STOP_EDITING = 'TeEntActions::STOP_EDITING';
+
 
   @dispatch() setToggle = (toggle: CollapsedExpanded): TeEntAction => ({
     type: TeEntActions.SET_TOGGLE,
@@ -45,7 +47,7 @@ export class TeEntActions extends DataUnitActions {
     payload: null
   })
 
-  @dispatch() setAccentuation = (accentuation:TeEntAccentuation): TeEntAction => ({
+  @dispatch() setAccentuation = (accentuation: TeEntAccentuation): TeEntAction => ({
     type: TeEntActions.TE_ENT_SET_ACCENTUATION,
     meta: {
       accentuation
@@ -58,6 +60,18 @@ export class TeEntActions extends DataUnitActions {
     meta: {
       timespanActivated
     },
+    payload: null
+  })
+
+  @dispatch() startEditing = (): TeEntAction => ({
+    type: TeEntActions.START_EDITING,
+    meta: null,
+    payload: null
+  })
+
+  @dispatch() stopEditing = (): TeEntAction => ({
+    type: TeEntActions.STOP_EDITING,
+    meta: null,
     payload: null
   })
 

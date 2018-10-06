@@ -35,7 +35,7 @@ export default sandboxOf(PeItEditableComponent, {
 
         <gv-init-state [initState]="state"></gv-init-state>
 
-        <gv-pe-it-editable class="gv-flex-grow-1" [basePath]="basePath"></gv-pe-it-editable>
+        <gv-pe-it-editable class="gv-grow-1" [basePath]="basePath"></gv-pe-it-editable>
 
       </div>
     </div>

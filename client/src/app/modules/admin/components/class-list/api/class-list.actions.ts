@@ -5,7 +5,9 @@ import { DfhClass } from 'app/core';
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = DfhClass[];
-interface MetaData { };
+interface MetaData {
+  itemsArray?: any[]
+};
 export type ClassListAPIAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
@@ -28,10 +30,10 @@ export class ClassListAPIActions {
     payload: null,
   })
 
-  loadSucceeded = (payload: Payload): ClassListAPIAction => ({
+  loadSucceeded = (itemsArray: any[]): ClassListAPIAction => ({
     type: ClassListAPIActions.LOAD_SUCCEEDED,
-    meta: null,
-    payload,
+    meta: { itemsArray },
+    payload: null,
   })
 
   loadFailed = (error): ClassListAPIAction => ({

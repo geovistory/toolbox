@@ -6,10 +6,10 @@ import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
+import * as Config from '../../../../../../../../common/config/Config';
 import { ClassList } from '../../../admin.models';
-import { ClassListAPIActions } from './class-list.actions';
 import { createDfhLabelListEdit } from '../../dfh-label-list-edit/dfh-label-list-edit.component';
-import * as Config from '../../../../../../../../common/config/Config'
+import { ClassListAPIActions } from './class-list.actions';
 
 @Injectable()
 export class ClassListAPIEpics {

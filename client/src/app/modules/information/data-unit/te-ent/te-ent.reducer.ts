@@ -41,6 +41,20 @@ export const teEntReducer = (lastState: TeEntDetail = INITIAL_STATE, action: TeE
         timespanActivated: action.meta.timespanActivated
       };
       break;
+
+    case TeEntActions.START_EDITING:
+      lastState = {
+        ...lastState,
+        editing: true
+      };
+      break;
+
+    case TeEntActions.STOP_EDITING:
+      lastState = {
+        ...lastState,
+        editing: false
+      };
+      break;
   }
 
   return lastState;

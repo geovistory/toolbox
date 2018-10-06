@@ -1,11 +1,11 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { DfhProperty, IAppState, InfEntityProjectRelApi, InfPersistentItem, InfRoleApi, Project } from 'app/core';
+import { DfhProperty, IAppState, InfEntityProjectRelApi, InfPersistentItem, InfRoleApi, Project, U } from 'app/core';
 
 import { Observable } from 'rxjs';
 
-import { PeItDetail, RoleDetail } from 'app/core/state/models';
+import { PeItDetail, RoleDetail, RoleDetailList } from 'app/core/state/models';
 import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
@@ -53,6 +53,9 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
   fkProject: number
   parentPeItState: PeItDetail;
 
+  // if a roleDetailKey is set, all other elements are hidden
+  isolateRoleDetail: string;
+
   constructor(
     protected rootEpics: RootEpics,
     protected epics: RoleSetApiEpics,
@@ -68,6 +71,7 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
     protected fb: FormBuilder,
   ) {
     super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+
   }
 
 
@@ -120,6 +124,13 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
     this.subs.push(this.ngRedux.select<PeItDetail>(this.parentPath).subscribe(d => this.parentPeItState = d))
     this.subs.push(this.ngRedux.select<Project>('activeProject').subscribe(p => this.fkProject = p.pk_project))
 
+    // observe if a teEnt is in edit mode
+    this.subs.push(this._role_list$.subscribe(roleDetails => {
+
+      // extract the roleDetail key of the roleDetail that contains a teEnt in editing = true
+      this.isolateRoleDetail = U.extractRoleDetailKeyOfEditingTeEnt(roleDetails);
+
+    }))
 
 
   }
@@ -127,7 +138,7 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
 
   /**
   * Called when user click on Add a [*]
-  * 
+  *
   * Searches alternative roles.
   * If no alternative roles used by at least one project found, continue creating new role directly.
   */

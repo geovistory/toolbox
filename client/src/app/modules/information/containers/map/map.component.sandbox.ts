@@ -22,8 +22,8 @@ export default sandboxOf(MapComponent, {
     },
     template: `
       <div class="d-flex flex-row">
-        <div class="d-flex flex-column gv-flex-grow-1">
-          <div class="gv-flex-grow-1">
+        <div class="d-flex flex-column gv-grow-1">
+          <div class="gv-grow-1">
               <gv-map></gv-map>
           </div>        
         </div>

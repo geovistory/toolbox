@@ -67,7 +67,7 @@
 <div *ngIf="(_peIt_editable$ | async)" class="gv-flex-fh">
 
   <div class="d-flex gv-flex-shrink-0">
-    <ol class="breadcrumb bg-transparent mb-0">
+    <ol class="breadcrumb bg-transparent mb-0 py-2">
       <li class="breadcrumb-item">
         <a href class="gv-passive-link" routerLink="../../search" queryParamsHandling="merge">
           <i class="gv-icon gv-icon-information-simple text-primary"></i> Data Units
@@ -77,7 +77,7 @@
   </div>
 
   <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
-  <div *ngIf="!(loading$ | async)" class="gv-flex-fh px-3 pb-3">
+  <div *ngIf="!(loading$ | async)" class="gv-flex-fh">
     <gv-pe-it-editable class="gv-flex-fh" [basePath]="basePath.concat('_peIt_editable')"></gv-pe-it-editable>
   </div>
 </div>

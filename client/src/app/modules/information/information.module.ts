@@ -98,6 +98,10 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
+import { LeafPeItViewAPIActions } from './value/leaf-pe-it-view/api/leaf-pe-it-view.actions';
+import { LeafPeItViewAPIEpics } from './value/leaf-pe-it-view/api/leaf-pe-it-view.epics';
+import { EditorHeaderComponent } from './components/editor-header/editor-header.component';
+import { ClassInfoComponent } from './components/class-info/class-info.component';
 
 
 
@@ -210,6 +214,8 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     AddInfoPeItComponent,
     TextPropertyComponent,
     InformationComponent,
+    EditorHeaderComponent,
+    ClassInfoComponent,
 
 
 
@@ -245,6 +251,8 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
 
     // Value
     AppellationService,
+    LeafPeItViewAPIActions,
+    LeafPeItViewAPIEpics,
 
     // Shared
     StateCreatorService,
@@ -315,7 +323,8 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     PlaceViewComponent,
 
     // Reusable
-    TextPropertyComponent
+    TextPropertyComponent,
+    TeEntLabelComponent
 
   ],
   entryComponents: [

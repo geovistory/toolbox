@@ -29,11 +29,11 @@
 
     <!-- Step 2 for adding new Property section -->
 
-    <div class="d-flex flex-column gv-flex-grow-1 bg-light border-top border-gray" *ngIf="(selectPropState$ | async) === 'selectProp'">
+    <div class="d-flex flex-column gv-grow-1 bg-light border-top border-gray" *ngIf="(selectPropState$ | async) === 'selectProp'">
 
       <div class="card-header bt-1">
         <div class="d-flex">
-          <div class="gv-flex-grow-1 align-self-center">
+          <div class="gv-grow-1 align-self-center">
             What do you want to add?
           </div>
           <button type="button" name="button" class="btn btn-link align-self-center btn-sm" (click)="stopSelectProperty()">
@@ -55,7 +55,7 @@
 <ng-template #header>
   <div class="card-header gv-name-header d-flex flex-row">
     <ng-content select="[headerLeft]"></ng-content>
-    <div class="gv-flex-grow-1">
+    <div class="gv-grow-1">
       <span *ngIf="labelInEdit">{{labelInEdit}}</span>
       <span *ngIf="label && !labelInEdit">{{label}}</span>
       <span *ngIf="!label && !labelInEdit">{{classConfig.label}}</span>
