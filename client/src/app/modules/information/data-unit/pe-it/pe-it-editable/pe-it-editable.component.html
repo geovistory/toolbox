@@ -7,7 +7,7 @@
     </div>
     <gv-class-info classInfo [classConfig]="classConfig" iconPrimary="true"></gv-class-info>
     <div settings>
-      <div class="btn-group" ngbDropdown placement="bottom-right" [autoClose]="'inside'">
+      <div class="btn-group" ngbDropdown placement="bottom-right" [autoClose]="'outside'">
         <button class="btn btn-link btn-lg" ngbDropdownToggle>
           <i class="fa fa-cogs"></i>
         </button>
@@ -20,6 +20,8 @@
           </button>
           <button class="dropdown-item" (click)="showOntoInfo()" *ngIf="!(ontoInfoVisible$|async)">Show Ontology Info</button>
           <button class="dropdown-item" (click)="hideOntoInfo()" *ngIf="(ontoInfoVisible$|async)">Hide Ontology Info</button>
+          <button class="dropdown-item" (click)="showRightPanel()" *ngIf="!(showRightPanel$|async)">Show Map & Timeline</button>
+          <button class="dropdown-item" (click)="hideRightPanel()" *ngIf="(showRightPanel$|async)">Hide Map & Timeline</button>
 
         </div>
       </div>
@@ -32,7 +34,7 @@
 <!-- Tools to edit PeIt  -->
 
 <div class="d-flex flex-row gv-grow-1 px-3 pb-1" style="flex-basis:100%">
-  <div class="d-flex flex-column gv-grow-1" style="flex-basis:35%;">
+  <div class="d-flex flex-column gv-grow-1" style="flex-basis:45%;">
 
     <!-- Properties Header -->
     <span *ngIf="(showPropertiesHeader$ | async)">
@@ -43,8 +45,8 @@
           Properties
         </div>
         <!-- Step 1 for adding a new property -->
-        <button class="btn btn-link" (click)="startSelectProperty()" *ngIf="(selectPropState$ | async) === 'init' && (showAddAPropertyButton$ | async) && !isolatedChild">
-          <i class="fa fa-plus"></i> Add a property ...
+        <button class="btn btn-sm btn-link" (click)="startSelectProperty()" *ngIf="(selectPropState$ | async) === 'init' && (showAddAPropertyButton$ | async) && !isolatedChild">
+          <i class="fa fa-plus"></i> Add a property
         </button>
       </div>
 
@@ -90,7 +92,7 @@
 
   </div>
 
-  <div class="d-flex ml-3" style="flex-basis:65%; overflow:hidden" *ngIf="(showRightPanel$ | async)">
+  <div class="d-flex ml-3" style="flex-basis:55%; overflow:hidden" *ngIf="(showRightPanel$ | async)">
     <div class="d-flex flex-column gv-grow-1" style="overflow:hidden">
 
       <div class="d-flex gv-grow-1 mb-3">

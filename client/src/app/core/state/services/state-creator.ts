@@ -111,7 +111,7 @@ export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: P
                 } else if (el.fk_property_set == ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
 
                     // if this ui-element is a Existence-Time PropSet
-                    const options = new ExistenceTimeDetail({ toggle: 'collapsed' });
+                    const options = new ExistenceTimeDetail({ toggle: 'expanded' });
                     children.push(createExistenceTimeDetail(options, roles, crm, settings));
                 }
 
@@ -238,10 +238,7 @@ export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: I
     const rolesByFkProp = groupBy(prop('fk_property'), roles) as { [index: number]: InfRole[] };
     const rsts = clone(crm.classes[DfhConfig.ClASS_PK_TIME_SPAN].roleSets);
     const children: RoleSet[] = [];
-    const ext = new ExistenceTimeDetail({
-        roles: [],
-        toggle: options.toggle ? options.toggle : 'collapsed'
-    })
+    const ext = new ExistenceTimeDetail()
 
 
     if (settings.isCreateMode) return ext;
@@ -275,8 +272,8 @@ export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: I
 
 
     return new ExistenceTimeDetail({
-        ...options,
-        ...ext
+        ...ext,
+        ...options
     });
 }
 

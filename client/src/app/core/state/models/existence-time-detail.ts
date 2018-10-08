@@ -25,11 +25,11 @@ export class ExistenceTimeDetail implements ExistenceTimeDetailI {
 
     readonly type: DataUnitChildType = 'ExistenceTimeDetail';
 
-    _children: RoleSetList;
-    roles: InfRole[];
-    toggle: CollapsedExpanded;
-    outgoingRoleSets: RoleSet[];
-    _existenceTime_edit: ExistenceTimeEdit;
+    _children?: RoleSetList;
+    roles? = [];
+    toggle? = 'expanded' as CollapsedExpanded;
+    outgoingRoleSets?: RoleSet[];
+    _existenceTime_edit?: ExistenceTimeEdit;
 
     constructor(data?: ExistenceTimeDetailI) {
         Object.assign(this, data);

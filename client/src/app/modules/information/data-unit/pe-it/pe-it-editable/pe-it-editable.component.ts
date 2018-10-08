@@ -147,4 +147,18 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
     this.localStore.dispatch(this.actions.ontoInfoVisibilityToggled(false))
   }
 
+  /**
+  * Show right panel
+  */
+  showRightPanel() {
+    this.localStore.dispatch(this.actions.showRightPanel())
+  }
+
+
+  /**
+  * Hide right panel
+  */
+  hideRightPanel() {
+    this.localStore.dispatch(this.actions.hideRightPanel())
+  }
 }

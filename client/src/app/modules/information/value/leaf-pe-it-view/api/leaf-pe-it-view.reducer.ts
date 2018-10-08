@@ -20,7 +20,10 @@ export function leafPeItViewReducer(state: LeafPeItView = INITIAL_STATE, a: Acti
       state = {
         ...state,
         ...action.meta.peItDetail,
-        _leaf_peIt_modal: clone(action.meta.peItDetail),
+        _leaf_peIt_modal: clone({
+          ...action.meta.peItDetail,
+          showRightPanel: false
+        }),
         loading: false,
       };
       break;

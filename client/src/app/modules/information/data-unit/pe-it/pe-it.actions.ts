@@ -76,7 +76,7 @@ export class PeItActions extends DataUnitActions {
   })
 
   hideRightPanel = (): PeItAction => ({
-    type: PeItActions.SHOW_RIGHT_PANEL,
+    type: PeItActions.HIDE_RIGHT_PANEL,
     meta: null,
     payload: null
   })

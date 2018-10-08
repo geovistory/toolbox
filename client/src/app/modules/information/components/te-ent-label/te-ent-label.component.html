@@ -1,12 +1,6 @@
-<div class="main d-flex" [ngClass]="{
-  'flex-column gv-card-spacer-b gv-card-spacer-l btn-r btn-t': toggle === 'expanded', 
-'gv-p-list-group-item gv-pointer': toggle === 'collapsed'}"
-  (click)="click()">
-
+<div *ngIf="toggle === 'collapsed'" class="main d-flex gv-p-list-group-item gv-pointer" (click)="toggleClicked()">
   <!-- Role Labels -->
-  <div class="gv-grow-1" (click)="clickPart($event)" *ngFor="let p of label?.parts; let i = index" [ngClass]="{
-    'order-2 mt-3': toggle === 'expanded', 
-    'pr-3': toggle === 'collapsed'}">
+  <div class="gv-grow-1 pr-3" *ngFor="let p of label?.parts; let i = index">
     <div class="text-muted font-xs">
       {{p?.introducer}}
     </div>
@@ -23,38 +17,70 @@
     </div>
   </div>
 
-  <div class="d-flex" [ngClass]="{
-    'font-xs text-muted flex-column justify-content-between': toggle === 'collapsed', 
-    'order-1 font-lg text-gray-400 btn-r btn-t': toggle === 'expanded' }">
+  <div class="d-flex font-xs text-muted flex-column justify-content-between">
 
     <!-- Class info -->
-    <div (click)="clickPart($event)" [ngClass]="{ 'gv-grow-1 gv-pointer  d-flex  justify-content-start': toggle === 'expanded' }">
+    <div>
       <div class="align-self-center">
-        <i [ngClass]="{
+        <i class="text-primary" [ngClass]="{
               'fa fa-star': classConfig.subclassOf === 'teEnt',
-              'gv-icon gv-icon-entity': classConfig.subclassOf === 'peIt',
-              'text-primary': toggle === 'collapsed', 
-              'text-gray-400': toggle === 'expanded'
+              'gv-icon gv-icon-entity': classConfig.subclassOf === 'peIt'
             }"></i>
+        {{classConfig?.label}}
+      </div>
+    </div>
+
+    <div class="text-right" *ngIf="label?.hasMore">
+      More…
+    </div>
+  </div>
+
+</div>
+
+
+<div *ngIf="toggle === 'expanded'" class="main d-flex flex-column gv-card-spacer-b gv-card-spacer-l btn-r btn-t">
+
+  <!-- Header -->
+  <div class="d-flex font-lg text-gray-400 btn-r btn-t">
+
+    <!-- Class info -->
+    <div class="gv-grow-1 gv-pointer  d-flex  justify-content-start'" (click)="toggleClicked()">
+      <div class="align-self-center">
+        <i class="text-gray-400" [ngClass]="{
+                'fa fa-star': classConfig.subclassOf === 'teEnt',
+                'gv-icon gv-icon-entity': classConfig.subclassOf === 'peIt'
+              }"></i>
 
         {{classConfig?.label}}
       </div>
     </div>
 
-    <div class="text-right" *ngIf="label?.hasMore && toggle === 'collapsed'">
-      More…
+    <!-- Buttons -->
+    <div class="btn-group" role="group" aria-label="Basic example">
+      <ng-content select="[buttons]"></ng-content>
+      <button type="button" class="btn btn-link-gray" title="Minimize"  (click)="toggleClicked()">
+        <i class="fa fa-compress"></i>
+      </button>
     </div>
 
-    <!-- Buttons -->
-    <div *ngIf="toggle === 'expanded'">
-      <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-link-gray">
-          <i class="fa fa-compress" (click)="clickPart($event)"></i>
-        </button>
-        <ng-content select="[buttons]"></ng-content>
+  </div>
+
+  <!-- Role Labels -->
+  <div class="gv-grow-1 mt-3" *ngFor="let p of label?.parts; let i = index" (click)="toggleClicked()">
+    <div class="text-muted font-xs">
+      {{p?.introducer}}
+    </div>
+    <div *ngFor="let label of p?.roleLabels">
+      <div *ngIf="label.type !== 'ex-time' && label.type !== 'leaf-pe-it'">
+        {{label?.string}}
+      </div>
+      <div *ngIf="label.type === 'ex-time'">
+        {{getExTLabel(label?.exTimeLabel)}}
+      </div>
+      <div *ngIf="label.type === 'leaf-pe-it' && label.path">
+        <gv-leaf-pe-it-view [basePath]="label.path.concat('_leaf_peIt')"></gv-leaf-pe-it-view>
       </div>
     </div>
-
   </div>
 
 </div>

@@ -79,16 +79,8 @@ export class TeEntLabelComponent implements OnChanges {
     }
   }
 
-  // called when user clicks anywhere
-  click() {
-    if (this.toggle === 'collapsed') this.onToggle.emit()
-  }
-
-  // called when user clicks on the heading, in expanded state
-  clickPart(event: MouseEvent) {
-    if (this.toggle === 'expanded') {
-      event.stopPropagation();
-      this.onToggle.emit()
-    }
+  // called when user clicks to toggle
+  toggleClicked() {
+    this.onToggle.emit()
   }
 }
