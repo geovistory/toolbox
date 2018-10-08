@@ -20,6 +20,7 @@ export interface ClassConfig {
     dfh_identifier_in_namespace: string;
     dfh_pk_class: number;
     subclassOf?: 'peIt' | 'teEnt' ; // to distinguish TeEnts from PeIts
+    isInProject?: boolean; // reflects the enabled / disabled state from data settings of the project
     roleSets?: RoleSetList;
     uiContexts?: {
         [pk: number]: UiContext

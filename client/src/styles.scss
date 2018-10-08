@@ -102,6 +102,14 @@ $value in $grays {
     @include text-emphasis-variant(".text-gray-#{$color}", $value);
 }
 
+// generate .border-right* classes
+@each $color, $value in $theme-colors {
+    .border-right-#{$color} {
+        border-right-color: $value !important;
+    };
+}
+
+
 /**
 * card-body padding minus button padding 
 */

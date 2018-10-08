@@ -24,6 +24,9 @@
     "is_enabled_in_profile": {
       "type": "boolean"
     },
+    "dfh_profile_label": {
+      "type": "string"
+    },
     "removed_from_api": {
       "type": "boolean"
     },

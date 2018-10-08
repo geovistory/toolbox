@@ -139,9 +139,9 @@ module.exports = function (Project) {
       "$relation": {
         "name": "property_profile_view",
         "joinType": "inner join",
-        "where": [
-          "removed_from_api", "=", "false"
-        ],
+        // "where": [
+        //   "removed_from_api", "=", "false"
+        // ],
         select: false
       }
     };

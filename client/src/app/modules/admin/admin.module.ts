@@ -34,6 +34,7 @@ import { DfhLabelListEditAPIActions } from './components/dfh-label-list-edit/api
 import { DfhLabelListEditAPIEpics } from './components/dfh-label-list-edit/api/dfh-label-list-edit.epics';
 import { DfhLabelCreateComponent } from './components/dfh-label-create/dfh-label-create.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
+import { UiElementWidgetComponent } from './components/ui-element-widget/ui-element-widget.component';
 
 @NgModule({
   imports: [
@@ -75,7 +76,8 @@ import { LandingPageComponent } from './components/landing-page/landing-page.com
     DfhLabelEditComponent,
     DfhLabelListEditComponent,
     DfhLabelCreateComponent,
-    LandingPageComponent
+    LandingPageComponent,
+    UiElementWidgetComponent
   ]
 })
 export class AdminModule { }

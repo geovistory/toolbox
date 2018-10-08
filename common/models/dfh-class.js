@@ -140,10 +140,12 @@ module.exports = function (DfhClass) {
       "$relation": {
         "name": "property_profile_view",
         "joinType": "inner join",
-        "where": [
-          "removed_from_api", "=", "false"
-        ],
-        select: false
+        // "where": [
+        //   "removed_from_api", "=", "false"
+        // ],
+        select: {
+          include: ["removed_from_api", "dfh_profile_label"]
+        }
       }
     };
 

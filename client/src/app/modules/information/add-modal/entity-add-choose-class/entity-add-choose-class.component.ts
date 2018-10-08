@@ -16,15 +16,15 @@ export class EntityAddChooseClassComponent implements OnInit {
 
   constructor(
     private modalService: EntityAddModalService,
-    private classApi: DfhClassApi 
+    private classApi: DfhClassApi
   ) {
   }
 
   ngOnInit() {
 
     const profileId = 4; // Geovistory Basic Profile
-    
-    this.classApi.selectedPeItClassesOfProfile(profileId).subscribe((classes:DfhClass[]) => {
+
+    this.classApi.selectedPeItClassesOfProfile(profileId).subscribe((classes: DfhClass[]) => {
       this.classes = classes;
     });
 

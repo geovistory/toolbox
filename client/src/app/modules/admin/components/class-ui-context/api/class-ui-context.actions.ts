@@ -37,7 +37,7 @@ export class ClassUiContextAPIActions {
     payload: null,
   })
 
-  @dispatch() loadSucceeded = (payload: Payload, pkUiContext:number): ClassUiContextAPIAction => ({
+  @dispatch() loadSucceeded = (payload: Payload, pkUiContext: number): ClassUiContextAPIAction => ({
     type: ClassUiContextAPIActions.LOAD_SUCCEEDED,
     meta: {
       pkUiContext

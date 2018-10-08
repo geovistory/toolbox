@@ -13,8 +13,8 @@ const INITIAL_STATE: ClassUiContext = {
 };
 
 const createContainers = (dfhClass: DfhClass, pkUiContext: number): { containerDisabled: Container, containerEnabled: Container } => {
-  let enabledWidgets: Widget[] = [];
-  let disabledWidgets: Widget[] = [];
+  const enabledWidgets: Widget[] = [];
+  const disabledWidgets: Widget[] = [];
 
   const addWidgetForRoleSet = (property: DfhProperty, isOutgoing: boolean) => {
 
@@ -34,29 +34,28 @@ const createContainers = (dfhClass: DfhClass, pkUiContext: number): { containerD
 
     const metaInfo = property.dfh_pk_property + '–' + (isOutgoing ? 'outgoing' : 'ingoing');
 
-    // if ordNum set, it is enabled
     if (ordNum !== null) {
-      enabledWidgets.push(new Widget(roleSet.label.default, metaInfo, roleSet, null, uiContextConf))
-    }
-
-    // if ordNum falsy, it is disabled
-    else {
-      disabledWidgets.push(new Widget(roleSet.label.default, metaInfo, roleSet, null, uiContextConf))
+      // if ordNum set, it is enabled
+      enabledWidgets.push(new Widget(roleSet.label.default, metaInfo, roleSet, null, uiContextConf, property.property_profile_view))
+    } else {
+      // if ordNum falsy, it is disabled
+      disabledWidgets.push(new Widget(roleSet.label.default, metaInfo, roleSet, null, uiContextConf, property.property_profile_view))
     }
   }
 
-  // add widget for each ingoing property 
-  if (dfhClass.ingoing_properties)
+  // add widget for each ingoing property
+  if (dfhClass.ingoing_properties) {
     dfhClass.ingoing_properties.forEach((property: DfhProperty) => {
       addWidgetForRoleSet(property, false);
     })
+  }
 
-  // add widget for each outgoing property 
-  if (dfhClass.outgoing_properties)
+  // add widget for each outgoing property
+  if (dfhClass.outgoing_properties) {
     dfhClass.outgoing_properties.forEach((property: DfhProperty) => {
       addWidgetForRoleSet(property, true);
     })
-
+  }
 
   // add widget for each ui-element in ui_class_config (custom elements that are not RoleSets / Properties)
   if (dfhClass.ui_context_configs) {
@@ -68,14 +67,12 @@ const createContainers = (dfhClass: DfhClass, pkUiContext: number): { containerD
 
         const propSet = uiContextConf.property_set;
 
-        // if ordNum set, it is enabled
         if (ordNum !== null) {
-          enabledWidgets.push(new Widget(propSet.label, 'custom property set', null, propSet, uiContextConf))
-        }
-
-        // if ordNum falsy, it is disabled
-        else {
-          disabledWidgets.push(new Widget(propSet.label, 'custom property set', null, propSet, uiContextConf))
+          // if ordNum set, it is enabled
+          enabledWidgets.push(new Widget(propSet.label, 'custom property set', null, propSet, uiContextConf, []))
+        } else {
+          // if ordNum falsy, it is disabled
+          disabledWidgets.push(new Widget(propSet.label, 'custom property set', null, propSet, uiContextConf, []))
         }
       }
 
@@ -84,7 +81,7 @@ const createContainers = (dfhClass: DfhClass, pkUiContext: number): { containerD
   }
 
   // sort function
-  var diff = (a: Widget, b: Widget) => { return a.uiContextConfig.ord_num - b.uiContextConfig.ord_num; };
+  const diff = (a: Widget, b: Widget) => a.uiContextConfig.ord_num - b.uiContextConfig.ord_num;
 
   return {
     containerEnabled: new Container('Enabled in UI context', sort(diff, enabledWidgets)),

@@ -12,15 +12,10 @@
         </div>
         <div class="card-body">
           <ul class="list-group">
-            <li *ngFor="let widget of containerEnabled?.widgets; let x = index" class="list-group-item" dnd-sortable [sortableIndex]="x"
-              [dragEnabled]="!(loading$ | async)" [dragData]="widget" (onDropSuccess)="droppedInEnabled($event)">
 
-              <small class="text-muted">
-                {{widget.metaInfo}} | pk_ui_context_conf:{{widget?.uiContextConfig?.pk_entity}} | ord_num: {{widget?.uiContextConfig?.ord_num}}
-              </small>
-              <div>{{widget.name}}</div>
+              <gv-ui-element-widget  *ngFor="let widget of containerEnabled?.widgets; let x = index" class="list-group-item" dnd-sortable
+              [sortableIndex]="x" [dragEnabled]="!(loading$ | async)" [dragData]="widget" (onDropSuccess)="droppedInEnabled($event)" [widget]="widget"></gv-ui-element-widget>
 
-            </li>
           </ul>
         </div>
       </div>
@@ -35,19 +30,12 @@
         </div>
         <div class="card-body">
           <ul class="list-group">
-            <li *ngFor="let widget of containerDisabled?.widgets; let x = index" class="list-group-item" dnd-sortable [sortableIndex]="x"
-              [dragEnabled]="!(loading$ | async)" [dragData]="widget" (onDropSuccess)="droppedInDisabled($event)">
-              <small class="text-muted">
-                {{widget.metaInfo}} | pk_ui_context_conf:{{widget?.uiContextConfig?.pk_entity}} | ord_num: {{widget?.uiContextConfig?.ord_num}}
-              </small>
-              <div>{{widget.name}}</div>
-            </li>
+              <gv-ui-element-widget *ngFor="let widget of containerDisabled?.widgets; let x = index" class="list-group-item" dnd-sortable
+              [sortableIndex]="x" [dragEnabled]="!(loading$ | async)" [dragData]="widget" (onDropSuccess)="droppedInDisabled($event)" [widget]="widget"></gv-ui-element-widget>
           </ul>
         </div>
       </div>
     </div>
-
   </div>
-
 
 </div>
