@@ -1,15 +1,12 @@
-import { ObservableStore } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { InfEntityProjectRel, InfEntityProjectRelApi, LoadingBarAction, LoadingBarActions } from 'app/core';
-import { FluxStandardAction } from 'flux-standard-action';
+import { InfEntityProjectRelApi, LoadingBarAction } from 'app/core';
 import { startsWith } from 'ramda';
 import { combineEpics, Epic, ofType } from 'redux-observable';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { PeItDetail } from 'app/core/state/models';
-import { PeItActions } from '../pe-it.actions';
-import { LeafPeItActions, LeafPeItAction } from '../../../value/leaf-pe-it-view/leaf-pe-it-view.actions';
 import { PeItBase } from '../pe-it-base';
+import { PeItActions } from '../pe-it.actions';
+import { LeafPeItViewAPIActions, LeafPeItViewAPIAction } from '../../../value/leaf-pe-it-view/api/leaf-pe-it-view.actions';
 
 
 const ofSubstoreLevel = (path: string[]) => (action): boolean => {
@@ -40,16 +37,16 @@ export class PeItApiEpics {
 
     /**
      * Epic that observes loading start of child leaf-pe-its
-     * It memorizes the pk_entity of each LEAF_PE_IT_START_LOADING
+     * It memorizes the pk_entity of each LOAD
      *
      * @param p PeItBase Component instance
      */
     private memorizeLoadingStartOfLeafPeIts(p: PeItBase): Epic {
         return (action$, store) => {
             return action$.pipe(
-                ofType(LeafPeItActions.LEAF_PE_IT_START_LOADING),
+                ofType(LeafPeItViewAPIActions.LOAD),
                 filter(action => ofSubstoreLevel(p.basePath)(action)),
-                switchMap((action: LeafPeItAction) => new Observable<LoadingBarAction>((globalStore) => {
+                switchMap((action: LeafPeItViewAPIAction) => new Observable<LoadingBarAction>((globalStore) => {
                     p.pksOfloadingLeafPeIts.push(action.meta.pkEntity)
 
                     if (p.pksOfloadingLeafPeIts.length > 0) {
@@ -63,17 +60,17 @@ export class PeItApiEpics {
 
     /**
      * Epic that observes loading completion of child leaf-pe-its
-     * It memorizes the pk_entity of each LEAF_PE_IT_START_LOADING
+     * It memorizes the pk_entity of each LOAD_SUCCEEDED
      *
      * @param p PeItBase Component instance
      */
     private memorizeLoadingCompletionOfLeafPeIts(p: PeItBase): Epic {
         return (action$, store) => {
             return action$.pipe(
-                ofType(LeafPeItActions.LEAF_PE_IT_STATE_ADDED),
+                ofType(LeafPeItViewAPIActions.LOAD_SUCCEEDED),
                 filter(action => ofSubstoreLevel(p.basePath)(action)),
-                switchMap((action: LeafPeItAction) => new Observable<LoadingBarAction>((globalStore) => {
-                    const index = p.pksOfloadingLeafPeIts.indexOf(action.payload.pkEntity)
+                switchMap((action: LeafPeItViewAPIAction) => new Observable<LoadingBarAction>((globalStore) => {
+                    const index = p.pksOfloadingLeafPeIts.indexOf(action.meta.peItDetail.pkEntity)
                     p.pksOfloadingLeafPeIts.splice(index, 1)
 
                     if (p.pksOfloadingLeafPeIts.length === 0) {

@@ -13,7 +13,7 @@ import { KeysModule } from '../../shared/pipes/keys.module';
 import { ClassAPIEpics } from './components/class/api/class.epics';
 import { ClassAPIActions } from './components/class/api/class.actions';
 import { DndModule } from 'ng2-dnd';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClassUiContextComponent } from './components/class-ui-context/class-ui-context.component';
 import { ClassUiContextAPIActions } from './components/class-ui-context/api/class-ui-context.actions';
 import { ClassUiContextAPIEpics } from './components/class-ui-context/api/class-ui-context.epics';
@@ -26,6 +26,14 @@ import { SystemTypeListComponent } from './components/system-type-list/system-ty
 import { PropertyListAPIActions } from './components/property-list/api/property-list.actions';
 import { PropertyListAPIEpics } from './components/property-list/api/property-list.epics';
 import { PropertyListComponent } from './components/property-list/property-list.component';
+import { DfhLabelEditComponent } from './components/dfh-label-edit/dfh-label-edit.component';
+import { DfhLabelEditAPIActions } from './components/dfh-label-edit/api/dfh-label-edit.actions';
+import { DfhLabelEditAPIEpics } from './components/dfh-label-edit/api/dfh-label-edit.epics';
+import { DfhLabelListEditComponent } from './components/dfh-label-list-edit/dfh-label-list-edit.component';
+import { DfhLabelListEditAPIActions } from './components/dfh-label-list-edit/api/dfh-label-list-edit.actions';
+import { DfhLabelListEditAPIEpics } from './components/dfh-label-list-edit/api/dfh-label-list-edit.epics';
+import { DfhLabelCreateComponent } from './components/dfh-label-create/dfh-label-create.component';
+import { LandingPageComponent } from './components/landing-page/landing-page.component';
 
 @NgModule({
   imports: [
@@ -35,7 +43,8 @@ import { PropertyListComponent } from './components/property-list/property-list.
     SlimLoadingBarModule,
     KeysModule,
     DndModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     ClassListAPIActions,
@@ -49,7 +58,11 @@ import { PropertyListComponent } from './components/property-list/property-list.
     SystemTypeListAPIActions,
     SystemTypeListAPIEpics,
     PropertyListAPIActions,
-    PropertyListAPIEpics
+    PropertyListAPIEpics,
+    DfhLabelEditAPIActions,
+    DfhLabelEditAPIEpics,
+    DfhLabelListEditAPIActions,
+    DfhLabelListEditAPIEpics
   ],
   declarations: [
     MainComponent,
@@ -58,7 +71,11 @@ import { PropertyListComponent } from './components/property-list/property-list.
     ClassListComponent,
     ClassUiContextComponent,
     NamespaceListComponent,
-    SystemTypeListComponent
+    SystemTypeListComponent,
+    DfhLabelEditComponent,
+    DfhLabelListEditComponent,
+    DfhLabelCreateComponent,
+    LandingPageComponent
   ]
 })
 export class AdminModule { }

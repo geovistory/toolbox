@@ -42,7 +42,17 @@
       "primaryKey": "pk_entity"
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "findOrCreateInfTemporalEntity",
+        "changeTeEntProjectRelation"
+      ]
+    }
+  ],
   "methods": {
     "findOrCreateInfTemporalEntity": {
       "accepts": [

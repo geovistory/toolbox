@@ -1,22 +1,24 @@
-import { NgRedux, select, WithSubStore } from '@angular-redux/store';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-import { ClassConfig, IAppState, InfPersistentItem, InfRole } from 'app/core';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { dropLast } from 'ramda';
-import { Observable, ReplaySubject, Subscription } from 'rxjs';
-
-import { DataUnitChildList, DataUnitLabel, PeItDetail } from 'app/core/state/models';
-import { StateCreatorService } from '../../shared/state-creator.service';
-import { LeafPeItViewModalComponent } from './leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
-import { LeafPeItActions } from './leaf-pe-it-view.actions';
-import { leafPeItReducer } from './leaf-pe-it-view.reducer';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { ClassConfig, IAppState, InfPersistentItem, InfRole, ProjectDetail } from 'app/core';
+import { DataUnitChildList, DataUnitLabel, PeItDetail, SubstoreComponent } from 'app/core/state/models';
+import { RootEpics } from 'app/core/store/epics';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { combineLatest, Observable, ReplaySubject, Subject, Subscription } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
+import { StateCreatorService } from '../../shared/state-creator.service';
+import { LeafPeItViewAPIActions } from './api/leaf-pe-it-view.actions';
+import { LeafPeItViewAPIEpics } from './api/leaf-pe-it-view.epics';
+import { LeafPeItView } from './api/leaf-pe-it-view.models';
+import { leafPeItViewReducer } from './api/leaf-pe-it-view.reducer';
+import { LeafPeItViewModalComponent } from './leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
 
-@AutoUnsubscribe()
+
 @WithSubStore({
   basePathMethodName: 'getBasePath',
-  localReducer: leafPeItReducer
+  localReducer: leafPeItViewReducer
 })
 @Component({
   selector: 'gv-leaf-pe-it-view',
@@ -31,19 +33,29 @@ import { ActivatedRoute, Router } from '@angular/router';
   //   }
   // ]
 })
-export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, OnDestroy {
+export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnInit, OnDestroy, SubstoreComponent {
 
-  @Input() pkEntity: number;
-  @Input() isCircular: boolean;
+  // emits true on destroy of this component
+  destroy$ = new Subject<boolean>();
+
+  // local store of this component
+  localStore: ObservableStore<LeafPeItView>;
+
+  // path to the substore
   @Input() basePath: string[];
 
+  // select observables of substore properties
+  @select() _children$: Observable<DataUnitChildList>;
+  @select() pkEntity$: Observable<number>;
+  @select() peIt$: Observable<InfPersistentItem>;
+  @select() loading$: Observable<boolean>;
+
+  project$: Observable<ProjectDetail>;
+
+  @Input() pkEntity: number; // TODO: remove this input, it is not used anymore since the info is in state
+  @Input() isCircular: boolean;
 
   peItState: PeItDetail;
-
-  /**
-  * Outputs
-  */
-  @Output() touched: EventEmitter<void> = new EventEmitter();
 
   leafPeItStateInitialized: boolean;
   leafPeItLoading$: ReplaySubject<boolean>;
@@ -61,19 +73,17 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
 
   pkProject: number;
 
-  subs: Subscription[] = [];
-
   // parent role, needed to create a proper role value to emit onChange of the form
   role: InfRole;
 
-  @select() peIt$: Observable<InfPersistentItem>;
-  @select() _children$: Observable<DataUnitChildList>;
-  @select() loading$: Observable<boolean>;
+
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private ngRedux: NgRedux<IAppState>,
+    protected rootEpics: RootEpics,
+    private epics: LeafPeItViewAPIEpics,
+    public ngRedux: NgRedux<IAppState>,
     private modalService: NgbModal,
     protected stateCreator: StateCreatorService
 
@@ -85,47 +95,62 @@ export class LeafPeItViewComponent extends LeafPeItActions implements OnInit, On
   getBasePath = () => this.basePath;
 
   ngOnInit() {
+    this.localStore = this.ngRedux.configureSubStore(this.basePath, leafPeItViewReducer);
+    this.rootEpics.addEpic(this.epics.createEpics(this));
 
-
-    this.peItState = this.ngRedux.configureSubStore(this.basePath, leafPeItReducer).getState();
+    this.peItState = this.localStore.getState();
 
     if (this.peItState && this.peItState.fkClass) {
       this.classConfig = this.ngRedux.getState().activeProject.crm.classes[this.peItState.fkClass];
     }
-    if (!this.peItState || !this.peItState.peIt) {
-      this.initPeItState();
-    }
+
+    this.project$ = this.ngRedux.select<ProjectDetail>('activeProject');
+
+    // load leaf peit detail if pkE and project are there and if not loading and no _children
+    combineLatest(this.pkEntity$, this.project$).pipe(
+      filter((d) => {
+        const pkE = d[0], p = d[1], state = this.localStore.getState();
+        if (pkE && (p && p.pk_project && p.crm) && !state._children && !state.loading) return true;
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe((d) => {
+      const pkE = d[0], p = d[1];
+      this.load(pkE, p);
+    })
+
 
   }
 
-  /**
-   * Initializes the peIt preview
-   */
-  initPeItState() {
-    this.leafPeItLoading$ = new ReplaySubject<boolean>();
-    this.leafPeItLoading$.next(true);
-    this.leafPeItStartLoading(this.pkEntity);
+  // /**
+  //  * Initializes the peIt preview
+  //  */
+  // initPeItState() {
+  //   this.leafPeItLoading$ = new ReplaySubject<boolean>();
+  //   this.leafPeItLoading$.next(true);
+  //   this.leafPeItStartLoading(this.peItState.pkEntity);
 
-    const pkProject = this.ngRedux.getState().activeProject.pk_project;
-    this.subs.push(
-      this.stateCreator.initializePeItState(this.pkEntity, pkProject).subscribe(peItState => {
+  //   const pkProject = this.ngRedux.getState().activeProject.pk_project;
+  //   this.subs.push(
+  //     this.stateCreator.initializePeItState(this.peItState.pkEntity, pkProject).subscribe(peItState => {
 
-        this.peItState = peItState;
+  //       this.peItState = peItState;
 
-        if (peItState && peItState.fkClass && !this.classConfig) {
-          this.classConfig = this.ngRedux.getState().activeProject.crm.classes[peItState.fkClass];
-        }
+  //       if (peItState && peItState.fkClass && !this.classConfig) {
+  //         this.classConfig = this.ngRedux.getState().activeProject.crm.classes[peItState.fkClass];
+  //       }
 
-        this.leafPeItStateAdded(peItState)
-        this.leafPeItLoading$.next(false);
-      }));
+  //       this.leafPeItStateAdded(peItState)
+  //       this.leafPeItLoading$.next(false);
+  //     }));
 
-  }
+  // }
 
 
 
   ngOnDestroy() {
-    this.subs.forEach(sub => sub.unsubscribe())
+    // this.destroy();
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
 

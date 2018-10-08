@@ -29,7 +29,7 @@
     "@angular/platform-browser-dynamic": "6.1.0",
     "@angular/platform-server": "6.1.0",
     "@angular/router": "6.1.0",
-    "@ng-bootstrap/ng-bootstrap": "^1.0.0",
+    "@ng-bootstrap/ng-bootstrap": "^3.3.0",
     "@redux-utilities/reduce-reducers": "^0.1.5",
     "@types/geodesy": "^1.1.2",
     "angular2-elastic-input": "^1.4.2",

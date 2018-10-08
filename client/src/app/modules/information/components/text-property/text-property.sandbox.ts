@@ -22,7 +22,7 @@ export default sandboxOf(TextPropertyComponent, {
         template: `
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">
-                <form #f="ngForm" class="gv-flex-grow-1">
+                <form #f="ngForm" class="gv-grow-1">
                     <gv-text-property name="textProperty" [(ngModel)]="model.textProperty" #textProperty="ngModel" required></gv-text-property>
                 </form>
             </div>
@@ -91,7 +91,7 @@ export default sandboxOf(TextPropertyComponent, {
         template: `
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">
-                <form #f="ngForm" class="gv-flex-grow-1">
+                <form #f="ngForm" class="gv-grow-1">
                     <gv-text-property name="textProperty" [(ngModel)]="model.textProperty" #textProperty="ngModel" required></gv-text-property>
                 </form>
             </div>

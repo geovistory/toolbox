@@ -39,6 +39,7 @@ export class TeEntEditableComponent extends DataUnitBase {
   @select() _existenceTime$: Observable<ExistenceTimeDetail>;
   @select() _existenceTime_edit$: Observable<ExistenceTimeDetail>;
   @select() accentuation$: Observable<TeEntAccentuation>;
+  @select() editing$: Observable<boolean>;
 
   /**
   * Paths to other slices of the store
@@ -185,4 +186,11 @@ export class TeEntEditableComponent extends DataUnitBase {
     }
   }
 
+  startEditing() {
+    this.localStore.dispatch(this.actions.startEditing())
+  }
+
+  stopEditing() {
+    this.localStore.dispatch(this.actions.stopEditing())
+  }
 }

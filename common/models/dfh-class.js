@@ -1,5 +1,7 @@
 'use strict';
 
+const Config = require('../config/Config');
+
 module.exports = function (DfhClass) {
 
   /**
@@ -68,7 +70,6 @@ module.exports = function (DfhClass) {
   DfhClass.selectedClassesOfProfile = function (dfh_pk_profile, cb) {
 
     const filter = {
-      // "where": ["dfh_pk_class", "NOT IN", blackList],
       "orderBy": [{
         "pk_entity": "asc"
       }],
@@ -91,6 +92,16 @@ module.exports = function (DfhClass) {
           "$relation": {
             "name": "text_properties",
             "joinType": "left join"
+          }
+        },
+        labels: {
+          "$relation": {
+            "name": "labels",
+            "joinType": "left join",
+            select: { include: ["dfh_label", "inf_fk_language", "pk_entity", "com_fk_system_type"] },
+            "where": [
+              "com_fk_system_type", "IN", [Config.CLASS_LABEL]
+            ]
           }
         }
       }
@@ -141,10 +152,15 @@ module.exports = function (DfhClass) {
       "$relation": {
         "name": "labels",
         "joinType": "left join",
-        select: { include: ["dfh_label", "notes"] },
+        select: { include: ["dfh_label", "com_fk_system_type"] },
         "where": [
-          "notes", "IN", ['label.sg', 'label.pl', 'label_inversed.sg', 'label_inversed.pl']
-        ],
+          "com_fk_system_type", "IN", [
+            Config.PROPERTY_LABEL_SG,
+            Config.PROPERTY_LABEL_PL,
+            Config.PROPERTY_LABEL_INVERSED_SG,
+            Config.PROPERTY_LABEL_INVERSED_PL
+          ]
+        ]
       }
     };
 

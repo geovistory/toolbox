@@ -121,7 +121,7 @@ export default sandboxOf(SourceListComponent, {
     },
     template: `
     <div class="container-fluid d-flex flex-column" style="height:600px">
-      <gv-source-list [path]="path" [initState]="initState" class="gv-flex-grow-1 d-flex flex-column"></gv-source-list>
+      <gv-source-list [path]="path" [initState]="initState" class="gv-grow-1 d-flex flex-column"></gv-source-list>
     </div>
    `
   })
@@ -147,7 +147,7 @@ export default sandboxOf(SourceListComponent, {
     },
     template: `
     <div class="container-fluid d-flex flex-column" style="height:600px">
-      <gv-source-list [path]="path" [initState]="initState" class="gv-flex-grow-1 d-flex flex-column"></gv-source-list>
+      <gv-source-list [path]="path" [initState]="initState" class="gv-grow-1 d-flex flex-column"></gv-source-list>
     </div>
    `
   })
@@ -172,7 +172,7 @@ export default sandboxOf(SourceListComponent, {
     },
     template: `
     <div class="container-fluid d-flex flex-column" style="height:600px">
-      <gv-source-list [path]="path" [initState]="initState" class="gv-flex-grow-1 d-flex flex-column"></gv-source-list>
+      <gv-source-list [path]="path" [initState]="initState" class="gv-grow-1 d-flex flex-column"></gv-source-list>
     </div>
    `
   })

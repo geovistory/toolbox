@@ -3,7 +3,7 @@
     <div class="d-flex flex-wrap">
       <span [innerHTML]="r.level1propLabel | highlight: term"></span>
       <span class="mx-1">–</span>
-      <span [innerHTML]="r.classLabel | highlight: term"  class="gv-flex-grow-1"></span>
+      <span [innerHTML]="r.classLabel | highlight: term"  class="gv-grow-1"></span>
       <span class="text-success font-sm ml-3" *ngIf="r.added">already added</span>
     </div>
     <div class="d-flex flex-wrap ml-3 text-muted">

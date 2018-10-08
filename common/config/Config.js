@@ -1,6 +1,6 @@
 /**
  * This config file contains parameters that refence to keys used in
- * the database schema information.
+ * the database.
  * 
  * It can be used by the server and by the client application.
  * 
@@ -23,7 +23,18 @@ const Config = {
     /**
      * Primary Key of Namespace "Geovistory Ongoing"
      */
-    PK_NAMESPACE__GEOVISTORY_ONGOING: 80409
+    PK_NAMESPACE__GEOVISTORY_ONGOING: 80409,
+
+    /**
+     * System Types (commons.system_type)
+     */
+    PROPERTY_LABEL_SG: 184,
+    PROPERTY_LABEL_PL: 185,
+    PROPERTY_LABEL_INVERSED_SG: 186,
+    PROPERTY_LABEL_INVERSED_PL: 187,
+
+    CLASS_LABEL: 188
+
 
 }
 module.exports = Config;

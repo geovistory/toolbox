@@ -14,6 +14,7 @@ export abstract class PeItBase extends DataUnitBase {
     @Input() basePath: string[];
     @select() showPropertiesHeader$: Observable<boolean>;
     @select() showHeader$: Observable<boolean>;
+    @select() showRightPanel$: Observable<boolean>;
 
     // array of pks of loading leaf-pe-its
     pksOfloadingLeafPeIts: number[] = [];

@@ -1,24 +1,19 @@
-<div class="mb-3" (mouseenter)="enableDrag()" (touchstart)="enableDrag()">
+<div class="mb-3" (mouseenter)="enableDrag()" (touchstart)="enableDrag()" *ngIf="!isolateRoleDetail">
 
   <ng-container *ngTemplateOutlet="header"></ng-container>
 
   <div [@slideInOut]="(toggle$|async)">
+
     <!-- The roles that are added -->
-    <div dnd-sortable-container [sortableData]="roleDetails" [dropZones]="['dropZone-'+index]" [hidden]="(_role_set_form$ | async)">
+    <div dnd-sortable-container [sortableData]="roleDetails" [dropZones]="['dropZone-'+index]" [hidden]="(_role_set_form$ | async)"
+      class="list-group">
       <div *ngFor="let entry of roleDetails; trackBy:getKey; let i = index" dnd-sortable [sortableIndex]="i" [dragData]="entry"
-        (onDragEnd)="onDrag($event)" [dragEnabled]="(dragEnabled$|async)">
+        (onDragEnd)="onDrag($event)" [dragEnabled]="(dragEnabled$|async)" class="list-group-item p-0">
 
         <gv-pe-it-role-editable [parentPath]="basePath" intermediatePathSegment="_role_list" [index]="entry.key">
-
-          <div headerRight ngbDropdown placement="bottom-right" class="gv-name-dropdown">
-            <button class="btn btn-link" ngbDropdownToggle>
-              <i class="fa fa-ellipsis-v"></i>
-            </button>
-            <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
-              <button class="dropdown-item" (click)="removeFromProject(entry.key)">Remove from project </button>
-            </div>
-          </div>
-
+          <button headerRight class="btn btn-link-gray" (click)="removeFromProject(entry.key)" title="Remove from project">
+            <i class="fa fa-trash"></i>
+          </button>
         </gv-pe-it-role-editable>
 
       </div>
@@ -47,19 +42,21 @@
   </div>
 </div>
 
+<gv-pe-it-role-editable *ngIf="isolateRoleDetail" [parentPath]="basePath" intermediatePathSegment="_role_list" [index]="isolateRoleDetail"></gv-pe-it-role-editable>
+
 
 <!-- ************************** NG TEMPLATES ****************************** -->
 
 <ng-template #header>
-  <div class="d-flex flex-row">
-    <div class="gv-pointer bg-transparent d-flex py-2 align-items-center gv-flex-grow-1" (click)="toggleCardBody()">
-      <div class="gv-flex-grow-1">
+  <div class="d-flex flex-row align-items-baseline">
+    <h5 class="gv-pointer bg-transparent d-flex py-2 align-items-center gv-grow-1" (click)="toggleCardBody()">
+      <div class="gv-grow-1">
         <i class="fa fa-caret-right fa-fw" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
         <span *ngIf="roles && roles.length">{{roles.length}}</span>
         {{(label$ | async)?.default}}
       </div>
-    </div>
-    <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+    </h5>
+    <div class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
       <div class="align-self-center">
         <a class="badge badge-success" href="http://ontologies.dataforhistory.org/property/{{(property$|async)?.dfh_pk_property}}"
           target="_blank">
@@ -67,8 +64,8 @@
         </a>
       </div>
     </div>
-    <div *ngIf="addButtonVisible" class="btn btn-link" (click)="startAddingRole()">
-        <i class="fa fa-plus"></i>
+    <div *ngIf="addButtonVisible" class="btn btn-sm btn-link-gray" (click)="startAddingRole()">
+      <i class="fa fa-plus"></i> Add a {{(label$ | async)?.sg}}
     </div>
     <button class="btn btn-light bg-transparent" (click)="removeRoleSet()" *ngIf="removeRoleSetBtnVisible">
       <i class="fa fa-close"></i>

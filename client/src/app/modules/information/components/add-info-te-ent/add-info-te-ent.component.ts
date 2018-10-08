@@ -20,6 +20,7 @@ export class AddInfoTeEntComponent implements OnInit, OnDestroy {
   @Input() addedChildren$: Observable<DataUnitChildList>;
 
   @Output() addOptionSelected = new EventEmitter<any>();
+  @Output() cancel = new EventEmitter<any>();
 
   @ViewChild('instance') instance: NgbTypeahead;
   focus$ = new Subject<string>();

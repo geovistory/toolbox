@@ -1,74 +1,92 @@
-<div class="card gv-name" [ngClass]="{
-  'gv-border-selected': ((accentuation$ | async) === 'selected'),
-  'gv-border-highlighted': ((accentuation$ | async) === 'highlighted')
-}" (mouseenter)="mouseenter()" (mouseleave)="mouseleave()">
+<!-- ************************** PREVIEW ****************************** -->
+<div *ngIf="!(editing$ | async)" [ngClass]="{
+    'gv-bg-selected': ((accentuation$ | async) === 'selected'),
+    'bg-light': ((accentuation$ | async) === 'highlighted' && (toggle$|async) === 'collapsed')
+  }"
+  (mouseenter)="mouseenter()" (mouseleave)="mouseleave()">
 
-  <div class="card-header gv-name-header d-flex flex-row">
+  <div class="d-flex flex-row">
     <ng-content select="[headerLeft]"></ng-content>
-    <div class="gv-flex-grow-1 d-flex" (click)="toggleCardBody()">
-      <div>
-        <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
-      </div>
-      <div class="gv-flex-grow-1 gv-pointer">
-        <span *ngIf="labelInEdit">{{labelInEdit}}</span>
-        <gv-te-ent-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-te-ent-label>
-      </div>
-    </div>
+
+    <gv-te-ent-label class="gv-grow-1" [toggle]="(toggle$|async)" [children]="(_children$ | async)" [classConfig]="classConfig"
+      [childrenPath]="basePath.concat('_children')" (onToggle)="toggleCardBody()">
+
+      <ng-content buttons select="[headerRight]"> </ng-content>
+      <button buttons type="button" class="btn btn-link-gray" [attr.title]="'Edit this ' + classConfig?.label">
+        <i class="fa fa-pencil" (click)="startEditing()"></i>
+      </button>
+
+
+    </gv-te-ent-label>
+
     <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
       <div class="align-self-center">
-        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{classConfig.dfh_pk_class}}" target="_blank">
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{classConfig.dfh_pk_class}}"
+          target="_blank">
           {{classConfig.dfh_identifier_in_namespace}}
         </a>
       </div>
     </div>
-    <ng-content select="[headerRight]"></ng-content>
+
   </div>
   <ng-content select="[belowHeader]"></ng-content>
-
-  <div [@slideInOut]="(toggle$|async)">
-
-    <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
-      <span [ngSwitch]="item.key">
-
-        <gv-existence-time-editable *ngSwitchCase="'_existenceTime'" mode="editable" [basePath]="basePath.concat('_children').concat(item.key)"
-          (onRemovePropSet)="removePropSet(item.key)"></gv-existence-time-editable>
-
-        <gv-te-ent-role-set-editable *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath" [index]="item.key"
-          (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-te-ent-role-set-editable>
-
-      </span>
-    </div>
+</div>
 
 
-    <div class="gv-footer border-top border-white">
+<!-- ************************** EDITING ****************************** -->
+<div *ngIf="(editing$ | async)">
+  <button class="btn btn-link mt-2 mb-3" (click)="stopEditing()">
+    <i class="fa fa-chevron-left"></i> All properties
+  </button>
+  <!-- <div class="mb-3 d-flex align-items-center justify-content-between">
+    <h4 class="m-0">
+      Edit
+    </h4>
+  </div> -->
+
+  <div class="card">
+
+    <div class="card-body d-flex align-items-center justify-content-between btn-r btn-t pb-0">
+
+      <!-- Class info  -->
+
+      <div class="font-lg text-gray-400">
+        Edit
+        <i [ngClass]="{'fa fa-star': classConfig.subclassOf === 'teEnt', 'gv-icon gv-icon-entity': classConfig.subclassOf === 'peIt'}"></i>
+        {{classConfig?.label}}
+      </div>
 
       <!-- Step 1 for adding a new property -->
 
-      <button class="btn btn-light btn-sm btn-block text-secondary rounded-top-0" (click)="startSelectProperty()" *ngIf="(selectPropState$ | async) === 'init'">
-        <i class="fa fa-plus"></i> Add a property ...
+      <button class="btn btn-link" (click)="startSelectProperty()" [ngClass]="{'invisible': (selectPropState$ | async) !== 'init'}">
+        <i class="fa fa-plus"></i> Add a property
       </button>
 
-      <!-- Step 2 for adding new Property section -->
+    </div>
 
-      <div class="d-flex flex-column gv-flex-grow-1 bg-light border-top border-gray" *ngIf="(selectPropState$ | async) === 'selectProp'">
+    <!-- Step 2 for adding new Property section -->
 
-        <div class="card-header bt-1">
-          <div class="d-flex">
-            <div class="gv-flex-grow-1 align-self-center">
-              What do you want to add?
-            </div>
-            <button type="button" name="button" class="btn btn-link align-self-center btn-sm" (click)="stopSelectProperty()">
-              <i class="fa fa-close"></i>
-            </button>
-          </div>
-        </div>
+    <div *ngIf="(selectPropState$ | async) === 'selectProp'">
+      <gv-add-info-te-ent [uiElements]="uiElementsForAddInfo" [classConfig]="classConfig" [addedChildren$]="_children$"
+        (addOptionSelected)="addOptionSelected($event)" [excludeRoleSet]="(parentRoleSet$ | async)" (cancel)="stopSelectProperty()"></gv-add-info-te-ent>
+    </div>
 
-        <gv-add-info-te-ent [uiElements]="uiElementsForAddInfo" [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)"
-          [excludeRoleSet]="(parentRoleSet$ | async)"></gv-add-info-te-ent>
+    <div class="card-body bg-transparent">
 
+
+
+      <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
+        <span [ngSwitch]="item.key">
+
+          <gv-existence-time-editable *ngSwitchCase="'_existenceTime'" mode="editable" [basePath]="basePath.concat('_children').concat(item.key)"
+            (onRemovePropSet)="removePropSet(item.key)"></gv-existence-time-editable>
+
+          <gv-te-ent-role-set-editable *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath"
+            [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-te-ent-role-set-editable>
+
+        </span>
       </div>
+
     </div>
   </div>
 </div>
-
-<!-- ************************** NG TEMPLATES ****************************** -->

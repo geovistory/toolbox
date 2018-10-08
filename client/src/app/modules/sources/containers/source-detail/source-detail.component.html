@@ -1,7 +1,7 @@
 <!-- Breadcrumbs -->
 <div class="d-flex gv-flex-shrink-0">
 
-  <ol class="breadcrumb bg-transparent mb-0">
+  <ol class="breadcrumb bg-transparent mb-0 py-2">
     <li class="breadcrumb-item">
       <a href class="gv-passive-link" (click)="close.emit()">
         <i class="gv-icon gv-icon-source text-info"></i> Sources
@@ -17,7 +17,7 @@
 
 <!-- Header -->
 <div class="d-flex mx-3 gv-flex-shrink-0">
-  <div class="gv-flex-grow-1">
+  <div class="gv-grow-1">
     <h2>
       {{( (view$ | async)?.notes ? (view$ | async)?.notes : (edit$ | async)?.notes ? (edit$ | async)?.notes :
       (annotate$ | async)?.notes
@@ -57,32 +57,32 @@
 </div>
 
 <!-- Text Editor -->
-<div class="p-3 gv-flex-grow-1 d-flex flex-row">
-  <div class="gv-flex-grow-1 d-flex flex-column">
+<div class="p-3 gv-grow-1 d-flex flex-row">
+  <div class="gv-grow-1 d-flex flex-column">
 
     <!-- View -->
-    <div class="gv-flex-grow-1 d-flex flex-row" *ngIf="!((edit$ | async) || (annotate$ | async)) && (view$ | async)">
-      <gv-quill-edit *ngIf="!(annotationPanel$ | async)" class="gv-flex-grow-1 d-flex flex-column" [quillDoc]="(view$ | async).js_quill_data"
+    <div class="gv-grow-1 d-flex flex-row" *ngIf="!((edit$ | async) || (annotate$ | async)) && (view$ | async)">
+      <gv-quill-edit *ngIf="!(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(view$ | async).js_quill_data"
         [readOnly]="true"></gv-quill-edit>
 
-      <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-flex-grow-1 d-flex flex-column" [quillDoc]="(view$ | async).js_quill_data"
+      <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(view$ | async).js_quill_data"
         [readOnly]="true" [annotationsVisible]="true" [annotatedNodes]="annotatedNodes" (selectedDeltaChange)="onSelectedDeltaChange($event)"></gv-quill-edit>
 
     </div>
 
     <!-- Edit -->
-    <div class="gv-flex-grow-1 d-flex flex-column" *ngIf="(edit$ | async)">
-      <gv-quill-edit *ngIf="!(annotationPanel$ | async)" class="gv-flex-grow-1 d-flex flex-column" [quillDoc]="(edit$ | async).js_quill_data"
+    <div class="gv-grow-1 d-flex flex-column" *ngIf="(edit$ | async)">
+      <gv-quill-edit *ngIf="!(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(edit$ | async).js_quill_data"
         [readOnly]="false" (quillDocChange)="onQuillDocChange($event)"></gv-quill-edit>
 
-      <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-flex-grow-1 d-flex flex-column" [quillDoc]="(edit$ | async).js_quill_data"
+      <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(edit$ | async).js_quill_data"
         [annotationsVisible]="true" [annotatedNodes]="annotatedNodes" (quillDocChange)="onQuillDocChange($event)"></gv-quill-edit>
 
     </div>
 
     <!-- Annotate -->
-    <div class="gv-flex-grow-1 d-flex flex-column" *ngIf="(annotate$ | async)">
-      <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-flex-grow-1 d-flex flex-column" [quillDoc]="(annotate$ | async).js_quill_data"
+    <div class="gv-grow-1 d-flex flex-column" *ngIf="(annotate$ | async)">
+      <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(annotate$ | async).js_quill_data"
         [creatingAnnotation]="true" (selectedDeltaChange)="onSelectedDeltaChange($event)"></gv-quill-edit>
     </div>
 
@@ -90,7 +90,7 @@
   </div>
 
   <div class="ml-3 d-flex " *ngIf="(annotationPanel$ | async) ">
-    <gv-annotation-panel class="d-flex flex-column gv-flex-grow-1 " [path]="annotationPanelPath"></gv-annotation-panel>
+    <gv-annotation-panel class="d-flex flex-column gv-grow-1 " [path]="annotationPanelPath"></gv-annotation-panel>
   </div>
 
 
@@ -99,7 +99,7 @@
 <!-- 
     <gv-quill-edit  
   
-  class="gv-flex-grow-1 d-flex flex-column " [contents]="(digitalObject$ | async)?.contents " [latestId]="(digitalObject$
+  class="gv-grow-1 d-flex flex-column " [contents]="(digitalObject$ | async)?.contents " [latestId]="(digitalObject$
         | async)?.latestId "
     [readOnly]="true " [annotationsVisible]="!(showAnnotations$ | async) " [annotatedNodes]="annotatedNodes "
     (selectedDeltaChange)="onSelectedDeltaChange($event) "></gv-quill-edit>

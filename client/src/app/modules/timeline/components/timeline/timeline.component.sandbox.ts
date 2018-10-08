@@ -34,7 +34,7 @@ export default sandboxOf(TimelineComponent, {
 
     <div class="d-flex">
 
-      <div class="d-flex flex-column mt-5 gv-flex-grow-1" style="overflow:hidden">
+      <div class="d-flex flex-column mt-5 gv-grow-1" style="overflow:hidden">
 
         <div class="p-3 border"> some flex item </div>
 

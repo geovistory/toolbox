@@ -14,15 +14,19 @@ export type PeItAction = FluxStandardAction<Payload, MetaData>;
 @Injectable()
 export class PeItActions extends DataUnitActions {
 
-  static readonly PE_IT_STATE_UPDATED = 'PE_IT_STATE_UPDATED';
+  static readonly PE_IT_STATE_UPDATED = 'PeItActions::PE_IT_STATE_UPDATED';
 
-  static readonly PE_IT_LABEL_UPDATED = 'PE_IT_LABEL_UPDATED';
+  static readonly PE_IT_LABEL_UPDATED = 'PeItActions::PE_IT_LABEL_UPDATED';
 
-  static readonly COMMUNITY_STATS_VISIBILITY_TOGGLED = 'COMMUNITY_STATS_VISIBILITY_TOGGLED';
+  static readonly COMMUNITY_STATS_VISIBILITY_TOGGLED = 'PeItActions::COMMUNITY_STATS_VISIBILITY_TOGGLED';
 
-  static readonly ONTO_INFO_VISIBILITY_TOGGLED = 'ONTO_INFO_VISIBILITY_TOGGLED';
+  static readonly ONTO_INFO_VISIBILITY_TOGGLED = 'PeItActions::ONTO_INFO_VISIBILITY_TOGGLED';
 
-  static readonly SET_LEAF_PE_IT_LOADING = 'SET_LEAF_PE_IT_LOADING';
+  static readonly SHOW_RIGHT_PANEL = 'PeItActions::SHOW_RIGHT_PANEL';
+  static readonly HIDE_RIGHT_PANEL = 'PeItActions::HIDE_RIGHT_PANEL';
+
+
+  static readonly SET_LEAF_PE_IT_LOADING = 'PeItActions::SET_LEAF_PE_IT_LOADING';
 
 
   @dispatch()
@@ -65,4 +69,15 @@ export class PeItActions extends DataUnitActions {
     }
   })
 
+  showRightPanel = (): PeItAction => ({
+    type: PeItActions.SHOW_RIGHT_PANEL,
+    meta: null,
+    payload: null
+  })
+
+  hideRightPanel = (): PeItAction => ({
+    type: PeItActions.HIDE_RIGHT_PANEL,
+    meta: null,
+    payload: null
+  })
 }

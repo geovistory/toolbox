@@ -16,9 +16,13 @@
     }
   },
   "properties": {
-    "dfh_pk_label": {
+    "pk_entity": {
       "type": "number",
       "id": true,
+      "generated": true
+    },
+    "dfh_pk_label": {
+      "type": "number",
       "generated": true
     },
     "dfh_label": {
@@ -50,14 +54,19 @@
       "type": "number"
     },
     "dfh_fk_profile": {
-      "type": "number",
-      "required": true
+      "type": "number"
     },
     "dfh_creation_time": {
       "type": "date"
     },
     "dfh_modification_time": {
       "type": "date"
+    },
+    "com_fk_system_type": {
+      "type": "number"
+    },
+    "inf_fk_language": {
+      "type": "number"
     }
   },
   "validations": [],
@@ -75,7 +84,10 @@
       "permission": "ALLOW",
       "property": [
         "find",
-        "findById"
+        "findById",
+        "patchAttributes",
+        "create",
+        "deleteById"
       ]
     }
   ],

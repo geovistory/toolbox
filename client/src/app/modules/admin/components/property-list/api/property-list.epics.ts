@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, DfhProperty } from 'app/core';
+import { LoadingBarActions } from 'app/core';
+import { DfhPropertyApi } from 'app/core/sdk/services/custom/DfhProperty';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
+import * as Config from '../../../../../../../../common/config/Config';
+import { createDfhLabelListEdit } from '../../dfh-label-list-edit/dfh-label-list-edit.component';
 import { PropertyListComponent } from '../property-list.component';
-import { PropertyListAPIActions, PropertyListAPIAction } from './property-list.actions';
-import { DfhPropertyApi } from 'app/core/sdk/services/custom/DfhProperty';
+import { PropertyListAPIAction, PropertyListAPIActions } from './property-list.actions';
 
 @Injectable()
 export class PropertyListAPIEpics {
@@ -47,7 +49,7 @@ export class PropertyListAPIEpics {
                   name: 'labels',
                   joinType: 'left join',
                   orderBy: [{ notes: 'asc' }],
-                  where: ['notes', '=', 'label.sg']
+                  where: ['com_fk_system_type', '=', Config.PROPERTY_LABEL_SG]
 
                 }
               },
@@ -56,7 +58,7 @@ export class PropertyListAPIEpics {
                   name: 'labels',
                   joinType: 'left join',
                   orderBy: [{ notes: 'asc' }],
-                  where: ['notes', '=', 'label.pl']
+                  where: ['com_fk_system_type', '=', Config.PROPERTY_LABEL_PL]
 
                 }
               },
@@ -65,7 +67,7 @@ export class PropertyListAPIEpics {
                   name: 'labels',
                   joinType: 'left join',
                   orderBy: [{ notes: 'asc' }],
-                  where: ['notes', '=', 'label_inversed.sg']
+                  where: ['com_fk_system_type', '=', Config.PROPERTY_LABEL_INVERSED_SG]
 
                 }
               },
@@ -74,7 +76,7 @@ export class PropertyListAPIEpics {
                   name: 'labels',
                   joinType: 'left join',
                   orderBy: [{ notes: 'asc' }],
-                  where: ['notes', '=', 'label_inversed.pl']
+                  where: ['com_fk_system_type', '=', Config.PROPERTY_LABEL_INVERSED_PL]
                 }
               },
               // text_properties: {
@@ -103,15 +105,24 @@ export class PropertyListAPIEpics {
             /**
              * Subscribe to the api call
              */
-            .subscribe((data: DfhProperty[]) => {
+            .subscribe((data: any[]) => {
+
+
               /**
                * Emit the global action that completes the loading bar
                */
               globalStore.next(this.loadingBarActions.completeLoading());
+              const props = data.map(prop => ({
+                ...prop,
+                label_sg: createDfhLabelListEdit(prop.label_sg, Config.PROPERTY_LABEL_SG, 18889),
+                label_pl: createDfhLabelListEdit(prop.label_pl, Config.PROPERTY_LABEL_PL, 18889),
+                label_inversed_sg: createDfhLabelListEdit(prop.label_inversed_sg, Config.PROPERTY_LABEL_INVERSED_SG, 18889),
+                label_inversed_pl: createDfhLabelListEdit(prop.label_inversed_pl, Config.PROPERTY_LABEL_INVERSED_PL, 18889)
+              }))
               /**
                * Emit the local action on loading succeeded
                */
-              c.localStore.dispatch(this.actions.loadSucceeded(data));
+              c.localStore.dispatch(this.actions.loadSucceeded(props));
 
             }, error => {
               /**

@@ -1,7 +1,7 @@
 <gv-pe-it-label [children]="(_children$ | async)" [classConfig]="classConfig"></gv-pe-it-label>
 
 
-<div class="d-flex flex-column gv-flex-grow-1 mt-5" >
+<div class="d-flex flex-column gv-grow-1 mt-5" >
 
   <form #f="ngForm" (ngSubmit)="submit()">
     <gv-pe-it-add-ctrl [basePath]="basePath" name="peIt" [(ngModel)]="peIt" #val="ngModel" required></gv-pe-it-add-ctrl>

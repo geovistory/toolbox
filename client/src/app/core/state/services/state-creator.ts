@@ -1,4 +1,4 @@
-import { InfRole, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfTimePrimitive, InfTemporalEntity, InfEntityProjectRel } from 'app/core/sdk';
+import { InfRole, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfTimePrimitive, InfTemporalEntity, InfEntityProjectRel, DfhLabel } from 'app/core/sdk';
 import { ProjectCrm } from 'app/core/active-project';
 import { DataUnitChildList, RoleSetI, AppeDetail, DataUnitChild, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleSet, TeEntDetail, TimePrimitveDetail } from '../models';
 import { clone, groupBy, prop, indexBy, sort, omit } from 'ramda';
@@ -111,7 +111,7 @@ export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: P
                 } else if (el.fk_property_set == ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
 
                     // if this ui-element is a Existence-Time PropSet
-                    const options = new ExistenceTimeDetail({ toggle: 'collapsed' });
+                    const options = new ExistenceTimeDetail({ toggle: 'expanded' });
                     children.push(createExistenceTimeDetail(options, roles, crm, settings));
                 }
 
@@ -238,10 +238,7 @@ export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: I
     const rolesByFkProp = groupBy(prop('fk_property'), roles) as { [index: number]: InfRole[] };
     const rsts = clone(crm.classes[DfhConfig.ClASS_PK_TIME_SPAN].roleSets);
     const children: RoleSet[] = [];
-    const ext = new ExistenceTimeDetail({
-        roles: [],
-        toggle: options.toggle ? options.toggle : 'collapsed'
-    })
+    const ext = new ExistenceTimeDetail()
 
 
     if (settings.isCreateMode) return ext;
@@ -275,8 +272,8 @@ export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: I
 
 
     return new ExistenceTimeDetail({
-        ...options,
-        ...ext
+        ...ext,
+        ...options
     });
 }
 
@@ -317,8 +314,7 @@ export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: I
     /** If role leads to TeEnt or Presence */
     if ((
         targetClassConfig
-        && (targetClassConfig.dfh_fk_system_type == DfhConfig.PK_SYSTEM_TYPE_TEMPORAL_ENTITY
-            || targetClassConfig.dfh_pk_class == DfhConfig.CLASS_PK_PRESENCE)
+        && (targetClassConfig.subclassOf === 'teEnt' || targetClassConfig.dfh_pk_class == DfhConfig.CLASS_PK_PRESENCE)
     ) || role.temporal_entity && role.temporal_entity.pk_entity
     ) {
         // add the parent role pk of the roleDetail to the peEnt
@@ -416,7 +412,10 @@ export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: I
             roleDetail.isCircular = true;
         }
 
-        roleDetail._leaf_peIt = createPeItDetail({}, { fk_class: options.targetClassPk } as InfPersistentItem, crm, settings);
+        roleDetail._leaf_peIt = createPeItDetail({}, {
+            fk_class: options.targetClassPk,
+            pk_entity: roleDetail.role ? roleDetail.role.fk_entity : undefined
+        } as InfPersistentItem, crm, settings);
 
     }
 
@@ -539,6 +538,8 @@ export function roleSetKey(roleSet: RoleSet) {
 export function roleSetKeyFromParams(fkProp: number, isOutgoing: boolean) {
     return '_' + fkProp + '_' + (isOutgoing ? 'outgoing' : 'ingoing')
 }
+
+export const pkEntityKey = (label: DfhLabel) => ('_' + label.pk_entity);
 
 
 

@@ -1,25 +1,25 @@
-<div class="gv-flex-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
+<div class="gv-grow-1 gv-card-spacer-x gv-card-spacer-y align-self-stretch d-flex">
 
   <ng-content select="[headerLeft]"></ng-content>
 
 
 
-  <form [formGroup]="formGroup" *ngIf="formGroup && roleState" class="align-self-center gv-flex-grow-1">
+  <form [formGroup]="formGroup" *ngIf="formGroup && roleState" class="align-self-center gv-grow-1">
 
     <div class="d-flex">
       <input class="mr-2 align-self-center" type="checkbox" [formControlName]="'is_in_project'" *ngIf="!(isCircular$|async)">
 
-      <div class="gv-flex-grow-1">
+      <div class="gv-grow-1">
 
 
         <gv-leaf-pe-it-view *ngIf="roleState._leaf_peIt" [pkEntity]="roleState.role.fk_entity" [basePath]="(basePath.concat('_leaf_peIt'))" [isCircular]="(isCircular$|async)"></gv-leaf-pe-it-view>
 
-        <gv-appellation-view *ngIf="roleState._appe" class="gv-flex-grow-1" [appellation]="roleState._appe.appellation"></gv-appellation-view>
+        <gv-appellation-view *ngIf="roleState._appe" class="gv-grow-1" [appellation]="roleState._appe.appellation"></gv-appellation-view>
 
-        <gv-language-view *ngIf="roleState._lang" class="gv-flex-grow-1" [language]="roleState._lang.language"></gv-language-view>
+        <gv-language-view *ngIf="roleState._lang" class="gv-grow-1" [language]="roleState._lang.language"></gv-language-view>
 
         <!-- 
-        <gv-time-primitive *ngIf="roleState.timePrimitiveState" class="gv-flex-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
+        <gv-time-primitive *ngIf="roleState.timePrimitiveState" class="gv-grow-1" [parentPath]="basePath" [formControlName]="formControlName"
           (touched)="markAsTouched()"></gv-time-primitive>
         -->
 

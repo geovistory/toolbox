@@ -1,5 +1,7 @@
 'use strict';
 
+const Config = require('../config/Config');
+
 module.exports = function (Project) {
 
   // Project.validatesUniquenessOf('name', {message: 'Project name already exists'});
@@ -149,10 +151,15 @@ module.exports = function (Project) {
       "$relation": {
         "name": "labels",
         "joinType": "left join",
-        select: { include: ["dfh_label", "notes"] },
+        select: { include: ["dfh_label", "com_fk_system_type"] },
         "where": [
-          "notes", "IN", ['label.sg', 'label.pl', 'label_inversed.sg', 'label_inversed.pl']
-        ],
+          "com_fk_system_type", "IN", [
+            Config.PROPERTY_LABEL_SG,
+            Config.PROPERTY_LABEL_PL,
+            Config.PROPERTY_LABEL_INVERSED_SG,
+            Config.PROPERTY_LABEL_INVERSED_PL
+          ]
+        ]
       }
     };
 
@@ -175,6 +182,16 @@ module.exports = function (Project) {
         include: ["dfh_pk_class", "dfh_identifier_in_namespace", "dfh_standard_label"]
       },
       "include": {
+        labels: {
+          "$relation": {
+            "name": "labels",
+            "joinType": "left join",
+            select: { include: ["dfh_label", "inf_fk_language", "pk_entity", "com_fk_system_type"] },
+            "where": [
+              "com_fk_system_type", "IN", [Config.CLASS_LABEL]
+            ]
+          }
+        },
         "class_profile_view": {
           "$relation": {
             "name": "class_profile_view",

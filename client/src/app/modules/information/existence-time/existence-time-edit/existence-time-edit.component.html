@@ -3,7 +3,7 @@
     <i class="fa fa-caret-right fa-rotate-90"></i>
     When
   </button>
-  <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+  <div class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
     <div class="align-self-center">
       <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/50" target="_blank">
         E52
@@ -206,8 +206,8 @@
 <ng-template #header let-key="key" let-label="label">
 
   <div class="d-flex ">
-    <div class="gv-flex-grow-1 gv-card-spacer-x">{{label}}</div>
-    <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+    <div class="gv-grow-1 gv-card-spacer-x">{{label}}</div>
+    <div class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
       <div class="align-self-center">
         <a class="badge badge-success" href="http://ontologies.dataforhistory.org/property/{{(property$|async).dfh_pk_property}}"
           target="_blank">

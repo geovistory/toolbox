@@ -1,13 +1,14 @@
-<div *ngIf="!hasOnlyCircularRole" (mouseenter)="enableDrag()"  (mouseleave)="disableDrag()"  (touchstart)="enableDrag()">
+<div class="mb-3" *ngIf="!hasOnlyCircularRole" (mouseenter)="enableDrag()" (mouseleave)="disableDrag()" (touchstart)="enableDrag()">
 
   <ng-container *ngTemplateOutlet="header"></ng-container>
 
   <div [@slideInOut]="(toggle$|async)">
     <!-- The roles in project -->
-    <div dnd-sortable-container [sortableData]="roleDetails" [dropZones]="['dropZone-'+index]">
+    <div dnd-sortable-container [sortableData]="roleDetails" [dropZones]="['dropZone-'+index]" class="list-group">
       <div *ngFor="let entry of roleDetails; trackBy:getKey; let i = index" dnd-sortable [sortableIndex]="i" [dragData]="entry"
-        (onDragEnd)="onDrag($event)" [dragEnabled]="(dragEnabled$|async)">
-        <gv-te-ent-role-editable [parentPath]="basePath" [index]="entry.key" (stopEditing)="stopEditing(entry.key)" (startUpdating)="startUpdatingRole(entry.key, $event)">
+        (onDragEnd)="onDrag($event)" [dragEnabled]="(dragEnabled$|async)" class="list-group-item p-0">
+        <gv-te-ent-role-editable [parentPath]="basePath" [index]="entry.key" (stopEditing)="stopEditing(entry.key)"
+          (startUpdating)="startUpdatingRole(entry.key, $event)">
           <div headerRight class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
 
             <button class="btn btn-link" ngbDropdownToggle>
@@ -61,13 +62,15 @@
 <!-- ************************** NG TEMPLATES ****************************** -->
 
 <ng-template #header let-hideAddButton="hideAddButton">
-  <div class="btn-group d-flex flex-row gv-h5">
-    <button class="btn btn-light btn-sm btn-block text-left rounded-0" (click)="toggleCardBody()">
-      <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
-      <span *ngIf="(roles$ | async) && (roles$ | async).length">{{(roles$ | async)?.length}}</span>
-      {{(label$ | async)?.default}}
-    </button>
-    <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+  <div class="btn-group d-flex flex-row">
+    <h5 class="gv-pointer bg-transparent d-flex py-2 align-items-center gv-grow-1" (click)="toggleCardBody()">
+      <div class="gv-grow-1">
+        <i class="fa fa-caret-right fa-fw" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
+        <span *ngIf="(roles$ | async) && (roles$ | async).length">{{(roles$ | async)?.length}}</span>
+        {{(label$ | async)?.default}}
+      </div>
+    </h5>
+    <div class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
       <div class="align-self-center">
         <a class="badge badge-success" href="http://ontologies.dataforhistory.org/property/{{(property$|async).dfh_pk_property}}"
           target="_blank">
@@ -75,7 +78,7 @@
         </a>
       </div>
     </div>
-    <div class="btn btn-link btn-sm" (click)="startAddingRole()" *ngIf="addButtonVisible && !hideAddButton">
+    <div class="btn btn-link-gray btn-sm" (click)="startAddingRole()" *ngIf="addButtonVisible && !hideAddButton">
       <i class="fa fa-plus"></i>
     </div>
   </div>

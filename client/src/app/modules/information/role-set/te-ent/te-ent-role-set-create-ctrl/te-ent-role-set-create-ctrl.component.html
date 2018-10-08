@@ -15,7 +15,7 @@
   
   <div *ngFor="let entry of (_role_list$ | async) | keys; trackBy:getKey" class="d-flex">
 
-    <gv-te-ent-role-create-ctrl class="gv-flex-grow-1 align-self-center" *ngIf="formGroup.get(entry.key)" [parentPath]="basePath"
+    <gv-te-ent-role-create-ctrl class="gv-grow-1 align-self-center" *ngIf="formGroup.get(entry.key)" [parentPath]="basePath"
       [index]="entry.key" intermediatePathSegment="_role_list" [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role-create-ctrl>
 
     <button type="button" class="btn btn-sm btn-link align-self-center" (click)="cancelCreateRole(entry.key)" *ngIf="!entry.value.isCircular">
@@ -32,10 +32,10 @@
 <ng-template #header let-hideAddButton="hideAddButton">
   <div class="btn-group d-flex flex-row gv-h5">
 
-    <div class="gv-flex-grow-1 gv-btn-spacer-sm">
+    <div class="gv-grow-1 gv-btn-spacer-sm">
       {{(label$ | async)?.default}}
     </div>
-    <div class="gv-flex-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+    <div class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
       <div class="align-self-center">
         <a class="badge badge-success" href="http://ontologies.dataforhistory.org/property/{{(property$|async).dfh_pk_property}}" target="_blank">
           {{(property$|async).dfh_identifier_in_namespace}}

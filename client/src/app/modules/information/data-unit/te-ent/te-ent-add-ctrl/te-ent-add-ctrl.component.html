@@ -35,7 +35,7 @@
 <ng-template #header>
   <div class="card-header gv-name-header d-flex flex-row">
     <ng-content select="[headerLeft]"></ng-content>
-    <div class="gv-flex-grow-1 gv-pointer" (click)="toggleCardBody()">
+    <div class="gv-grow-1 gv-pointer" (click)="toggleCardBody()">
       <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
       <span *ngIf="labelInEdit">{{labelInEdit}}</span>
       <gv-te-ent-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-te-ent-label>

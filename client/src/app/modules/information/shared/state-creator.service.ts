@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ComConfig, IAppState, InfAppellation, InfEntityProjectRel, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTimePrimitive, U } from 'app/core';
-import { AppeDetail, DataUnit, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleDetailList, RoleSet,  TeEntDetail, TimePrimitveDetail } from 'app/core/state/models';
+import { AppeDetail, DataUnit, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleDetailList, RoleSet, TeEntDetail, TimePrimitveDetail } from 'app/core/state/models';
 import { clone, groupBy, indexBy, prop } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { AppellationLabel } from './appellation-label/appellation-label';
@@ -289,8 +289,7 @@ export class StateCreatorService {
     if (
       (
         targetClassConfig && (
-          targetClassConfig.dfh_fk_system_type == DfhConfig.PK_SYSTEM_TYPE_TEMPORAL_ENTITY
-          || targetClassConfig.dfh_pk_class == DfhConfig.CLASS_PK_PRESENCE
+          targetClassConfig.subclassOf === 'teEnt' || targetClassConfig.dfh_pk_class == DfhConfig.CLASS_PK_PRESENCE
 
         )
       )
