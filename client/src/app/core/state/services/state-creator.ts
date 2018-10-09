@@ -42,13 +42,7 @@ export function createPeItDetail(options: PeItDetail, peIt: InfPersistentItem, c
     return new PeItDetail({
         ...options,
         _children: createDataUnitChildren(peIt.fk_class, peIt.pi_roles, crm, settings),
-        _type: createTypeDetail(
-            {},
-            !peIt.domain_entity_associations ? undefined : !peIt.domain_entity_associations.length ? undefined :
-                peIt.domain_entity_associations.find(assoc => assoc.fk_property === Config.PK_CLASS_PK_HAS_TYPE_MAP[peIt.fk_class]),
-            crm,
-            settings
-        ),
+        _type: createDataUnitTypeDetail({}, peIt, crm, settings),
         pkEntity: peIt.pk_entity,
         fkClass: peIt.fk_class,
         peIt: peItCleaned,
@@ -76,8 +70,36 @@ export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity
     });
 }
 
+
 /**
-* Creates a createTypeDetail from provided input data
+* Creates a createTypeDetail from provided dataUnit data
+*
+* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+* @param dbData nested object as it is delivered from REST api with roles etc.
+* @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
+* @param settings setting object that is passed through the chain of from() methods of the different state classes
+*/
+export function createDataUnitTypeDetail(options: TypeDetail, dataUnit: InfTemporalEntity | InfPersistentItem, crm: ProjectCrm, settings: StateSettings): TypeDetail {
+
+    // if for instances of this class we do not want types, return
+    if (!dataUnit.fk_class || !Config.PK_CLASS_PK_HAS_TYPE_MAP[dataUnit.fk_class]) return;
+
+    return createTypeDetail(
+        {
+            _typeCtrl: {
+                pkTypedClass: dataUnit.fk_class
+            },
+            fkDomainEntity: dataUnit.pk_entity
+        },
+        !dataUnit.domain_entity_associations ? undefined : !dataUnit.domain_entity_associations.length ? undefined :
+            dataUnit.domain_entity_associations.find(assoc => assoc.fk_property === Config.PK_CLASS_PK_HAS_TYPE_MAP[dataUnit.fk_class]),
+        crm,
+        settings
+    )
+}
+
+/**
+* Creates a createTypeDetail from provided entityAssociation data
 *
 * @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
 * @param dbData nested object as it is delivered from REST api with roles etc.
@@ -86,11 +108,10 @@ export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity
 */
 export function createTypeDetail(options: TypeDetail, assoc: InfEntityAssociation, crm: ProjectCrm, settings: StateSettings): TypeDetail {
 
-    if (!assoc) return;
-
-    const roles = assoc.range_pe_it.pi_roles;
+    const roles = !assoc ? undefined : !assoc.range_pe_it ? undefined : assoc.range_pe_it.pi_roles;
 
     return new TypeDetail({
+        ...options,
         entityAssociation: assoc,
         label: !roles ? '' : roles.filter(r => r.temporal_entity.fk_class === DfhConfig.CLASS_PK_APPELLATION_USE)
             .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))

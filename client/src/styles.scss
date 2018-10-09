@@ -103,12 +103,13 @@ $value in $grays {
 }
 
 // generate .border-right* classes
-@each $color, $value in $theme-colors {
+@each $color,
+$value in $theme-colors {
     .border-right-#{$color} {
         border-right-color: $value !important;
-    };
+    }
+    ;
 }
-
 
 /**
 * card-body padding minus button padding 
@@ -248,10 +249,9 @@ $gv-color-selected: #00ffff;
     }
 }
 
-.dropdown-toggle::after {
-    display: none;
-}
-
+// .dropdown-toggle::after {
+//     display: none;
+// }
 .rounded-bottom-0 {
     border-bottom-right-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
@@ -364,19 +364,24 @@ gv-property {
 .gv-card-spacer-l {
     padding-left: $card-spacer-x;
 }
+
 .gv-card-spacer-r {
     padding-right: $card-spacer-x;
 }
+
 .gv-card-spacer-b {
     padding-bottom: $card-spacer-x;
 }
+
 .gv-card-spacer-t {
     padding-top: $card-spacer-x;
 }
+
 .gv-card-spacer-y {
     padding-top: $card-spacer-y;
     padding-bottom: $card-spacer-y;
 }
+
 .gv-card-spacer-x {
     padding-left: $card-spacer-x;
     padding-right: $card-spacer-x;
@@ -487,6 +492,18 @@ ngb-pagination {
 
 .gv-p-list-group-item {
     padding: 0.75rem 1.25rem;
+}
+
+/***************************
+* Dropdown Treeview
+****************************/
+
+.gv-outer-form-control {
+    ngx-dropdown-treeview {
+        button.dropdown-toggle {
+            border: 0
+        }
+    }
 }
 
 /***************************

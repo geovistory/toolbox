@@ -69,9 +69,11 @@
         "nestedObjectOfProject",
         "nestedObjectOfRepo",
         "changePeItProjectRelation",
+        "typesOfClassAndProject",
         "typesOfNamespaceClassAndProject",
-        "typeNested",
-        "findOrCreateType"
+        "typesOfNamespaceNested",
+        "findOrCreateType",
+        "typeNested"
       ]
     }
   ],
@@ -398,7 +400,39 @@
         "verb": "get"
       }
     },
-    "typeNested": {
+    "typesOfClassAndProject": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_typed_class",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Typed Class (e.g. pk of Geographical Place to get Geographical Place Types)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "persistent_items",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Find types of typed class and project. E.g. get the types for the class 'histC8 Geographical Place' (pk_typed_class=363) used in project (pk_project=123)",
+      "http": {
+        "path": "/types-of-class-and-project",
+        "verb": "get"
+      }
+    },
+    "typesOfNamespaceNested": {
       "accepts": [
         {
           "arg": "pk_namespace",
@@ -434,6 +468,38 @@
         "root": true
       },
       "description": "Find types of given namespace, class and project.",
+      "http": {
+        "path": "/types-of-namespace-nested",
+        "verb": "get"
+      }
+    },
+    "typeNested": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_entity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the type. Provide this if you want to query one specific type.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "persistent_items",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Find one type by pk_entity with appellations and text properties.",
       "http": {
         "path": "/type-nested",
         "verb": "get"

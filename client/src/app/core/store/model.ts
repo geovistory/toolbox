@@ -14,5 +14,6 @@ export interface IAppState {
     activeProject?: ProjectDetail
     routes?: any,
     information?: Information,
-    sources?: ISourceListState
+    sources?: ISourceListState,
+    sandboxState?: any
 }

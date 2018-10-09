@@ -974,7 +974,7 @@ module.exports = function (InfPersistentItem) {
    * @param pk_project
    * @param pk_typed_class
    */
-  InfPersistentItem.typeNested = function (pk_namespace, pk_project, pk_entity, cb) {
+  InfPersistentItem.typesOfNamespaceNested = function (pk_namespace, pk_project, pk_entity, cb) {
 
     const innerJoinThisProject = {
       "$relation": {
@@ -1084,4 +1084,153 @@ module.exports = function (InfPersistentItem) {
     return InfPersistentItem.findComplex(filter, cb);
   }
 
+
+
+  /**
+   * Query instance of E55 Type 
+   * 
+   * Where 
+   *	- types are in given project
+   *  - the type has the pk_entity.
+   *
+   * Eager loading
+   *  - The appellations of given language
+   *  - TODO: The entity_associations of property "has broader term" used for hierarchy
+   * 
+   * @param pk_project
+   * @param pk_entity
+   */
+  InfPersistentItem.typeNested = function (pk_project, pk_entity, cb) {
+
+    const innerJoinThisProject = {
+      "$relation": {
+        "name": "entity_version_project_rels",
+        "joinType": "inner join",
+        "select": {
+          include: [
+            "pk_entity_version_project_rel",
+            "pk_entity",
+            "fk_project",
+            "fk_entity",
+          ]
+        },
+        "where": [
+          "fk_project", "=", pk_project,
+          "and", "is_in_project", "=", "true"
+        ]
+      }
+    };
+    
+    const filter = {
+      where: ["pk_entity", "=", pk_entity],
+      "orderBy": [{
+        "pk_entity": "asc"
+      }],
+      "include": {
+        "entity_version_project_rels": innerJoinThisProject,
+        "text_properties": {
+          "$relation": {
+            "name": "text_properties",
+            "joinType": "left join"
+          }
+        },
+        "pi_roles": {
+          "$relation": {
+            "name": "pi_roles",
+            "joinType": "left join"
+          },
+          "entity_version_project_rels": innerJoinThisProject,
+          "temporal_entity": {
+            "$relation": {
+              "name": "temporal_entity",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+            "entity_version_project_rels": innerJoinThisProject,
+            "te_roles": {
+              "$relation": {
+                "name": "te_roles",
+                "joinType": "inner join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              },
+              "entity_version_project_rels": innerJoinThisProject,
+              "appellation": {
+                "$relation": {
+                  "name": "appellation",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                },
+              },
+              "language": {
+                "$relation": {
+                  "name": "language",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+
+    return InfPersistentItem.findComplex(filter, cb);
+  }
+
+  /**
+   * Query instances of E55 Type 
+   * 
+   * Where 
+   *	- types are in given project
+   *	- types are related to the namespace enabled by given project or the namespace geovistory ongoing
+   *    TODO: There is the need of a namespace_proj_rel table that says: This project has enabled this namespace for this class 
+   *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class) 
+   *
+   * Eager loading
+   *  - The appellations of given language
+   *  - TODO: The entity_associations of property "has broader term" used for hierarchy
+   * 
+   * @param pk_namespace
+   * @param pk_project
+   * @param pk_typed_class
+   */
+  InfPersistentItem.typesOfClassAndProject = function (pk_project, pk_typed_class, cb) {
+
+    // TODO: use namespace_proj_rel instead of entity_version_project_rels
+    const innerJoinThisProject = {
+      "$relation": {
+        "name": "entity_version_project_rels",
+        "joinType": "inner join",
+        "where": [
+          "fk_project", "=", pk_project,
+          "and", "is_in_project", "=", "true"
+        ]
+      }
+    };
+
+    // Find activated namespace
+    InfPersistentItem.app.models.InfNamespace.findComplex({
+      "include": {
+        "entity_version_project_rels": innerJoinThisProject
+      }
+    },
+      // Find types
+      (error, namespace) => {
+
+        // assign geovistory ongoing or, if available, the activated namespace
+        const pk_namespace = !namespace.length ? Config.PK_NAMESPACE__GEOVISTORY_ONGOING : namespace.pk_entity;
+
+        InfPersistentItem.typesOfNamespaceClassAndProject(pk_namespace, pk_project, pk_typed_class, cb);
+      }
+    );
+  }
 };

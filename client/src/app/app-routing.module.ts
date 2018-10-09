@@ -37,7 +37,7 @@ const routes: Routes = [
       {
         path: 'projects',
         loadChildren: './modules/projects/projects.module#ProjectsModule',
-        // line above instead of loadChildren: getProjectModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116 
+        // line above instead of loadChildren: getProjectModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116
         canActivate: [AuthGuard]
       },
       {

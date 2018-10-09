@@ -77,6 +77,12 @@
       "model": "InfEntityProjectRel",
       "foreignKey": "fk_project",
       "primaryKey": "pk_project"
+    },
+    "namespaces": {
+      "type": "hasMany",
+      "model": "InfNamespace",
+      "foreignKey": "fk_project",
+      "primaryKey": "pk_project"
     }
   },
   "acls": [

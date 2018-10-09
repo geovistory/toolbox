@@ -1,0 +1,13 @@
+<span [hidden]="(loading$ | async)">
+  <ng-template #itemTemplate let-item="item" let-onCollapseExpand="onCollapseExpand" let-onCheckedChange="onCheckedChange">
+    <div class="form-inline row-item">
+      <i *ngIf="item.children" (click)="onCollapseExpand()" aria-hidden="true" class="fa" [class.fa-caret-right]="item.collapsed"
+        [class.fa-caret-down]="!item.collapsed"></i>
+      <label class="form-check-label gv-pointer" (click)="select(item)">{{ item.text }}</label>
+    </div>
+  </ng-template>
+  
+  <ngx-dropdown-treeview [items]="(items$ | async)" [config]="config"  [itemTemplate]="itemTemplate"></ngx-dropdown-treeview>
+</span>  
+
+<div *ngIf="(loading$ | async)" class="mx-4 gv-btn-spacer"><i class="fa fa-pulse fa-spinner"></i></div>

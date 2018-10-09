@@ -102,9 +102,13 @@ import { LeafPeItViewAPIActions } from './value/leaf-pe-it-view/api/leaf-pe-it-v
 import { LeafPeItViewAPIEpics } from './value/leaf-pe-it-view/api/leaf-pe-it-view.epics';
 import { EditorHeaderComponent } from './components/editor-header/editor-header.component';
 import { ClassInfoComponent } from './components/class-info/class-info.component';
-import { TypeComponent } from './type/type.component';
-import { TypeAPIActions } from './type/api/type.actions';
-import { TypeAPIEpics } from './type/api/type.epics';
+import { TypeEditableComponent } from './type/type-editable/type-editable.component';
+import { TypeEditableAPIActions } from './type/type-editable/api/type-editable.actions';
+import { TypeEditableAPIEpics } from './type/type-editable/api/type-editable.epics';
+import { TypeCtrlComponent } from './type/type-ctrl/type-ctrl.component';
+import { TypeCtrlAPIActions } from './type/type-ctrl/api/type-ctrl.actions';
+import { TypeCtrlAPIEpics } from './type/type-ctrl/api/type-ctrl.epics';
+import { TreeviewModule } from 'ngx-treeview';
 
 
 
@@ -133,7 +137,8 @@ import { TypeAPIEpics } from './type/api/type.epics';
     KeysModule,
     HighlightModule,
     DndModule,
-    QuillModule
+    QuillModule,
+    TreeviewModule
 
   ],
   declarations: [
@@ -210,7 +215,7 @@ import { TypeAPIEpics } from './type/api/type.epics';
     ExistenceTimeHelpComponent,
 
     // Type
-    TypeComponent,
+    TypeEditableComponent,
 
     // Reusable
     TeEntLabelComponent,
@@ -222,6 +227,7 @@ import { TypeAPIEpics } from './type/api/type.epics';
     InformationComponent,
     EditorHeaderComponent,
     ClassInfoComponent,
+    TypeCtrlComponent,
 
 
 
@@ -261,8 +267,10 @@ import { TypeAPIEpics } from './type/api/type.epics';
     LeafPeItViewAPIEpics,
 
     // Type
-    TypeAPIActions,
-    TypeAPIEpics,
+    TypeEditableAPIActions,
+    TypeEditableAPIEpics,
+    TypeCtrlAPIActions,
+    TypeCtrlAPIEpics,
 
     // Shared
     StateCreatorService,
@@ -331,6 +339,9 @@ import { TypeAPIEpics } from './type/api/type.epics';
     TimePrimitiveViewComponent,
     PlaceCtrlComponent,
     PlaceViewComponent,
+
+    // Type
+    TypeCtrlComponent,
 
     // Reusable
     TextPropertyComponent,

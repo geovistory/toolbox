@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TypeComponent } from './type.component';
+import { TypeEditableComponent } from './type-editable.component';
 
-describe('TypeComponent', () => {
-  let component: TypeComponent;
-  let fixture: ComponentFixture<TypeComponent>;
+describe('TypeEditableComponent', () => {
+  let component: TypeEditableComponent;
+  let fixture: ComponentFixture<TypeEditableComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TypeComponent ]
+      declarations: [ TypeEditableComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TypeComponent);
+    fixture = TestBed.createComponent(TypeEditableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

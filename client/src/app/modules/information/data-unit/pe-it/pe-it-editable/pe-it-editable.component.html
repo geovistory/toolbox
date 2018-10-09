@@ -2,7 +2,7 @@
 <div class="mb-3 gv-flex-shrink-0" *ngIf="(showHeader$ | async)">
   <gv-editor-header>
     <gv-pe-it-label labels [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
-    <div type>
+    <div type *ngIf="(_type$ | async)">
       <gv-type [basePath]="basePath.concat('_type')"></gv-type>
     </div>
     <gv-class-info classInfo [classConfig]="classConfig" iconPrimary="true"></gv-class-info>

@@ -1,6 +1,6 @@
 import { indexBy, prop } from 'ramda';
 import { Action } from 'redux';
-import { TypeAPIAction, TypeAPIActions } from './type.actions';
+import { TypeAPIAction, TypeEditableAPIActions } from './type-editable.actions';
 import { TypeDetail } from 'app/core/state/models/type-detail';
 
 const INITIAL_STATE = new TypeDetail();
@@ -10,35 +10,53 @@ export function typeReducer(state: TypeDetail = INITIAL_STATE, a: Action): TypeD
   const action = a as TypeAPIAction;
 
   switch (action.type) {
-    case TypeAPIActions.LOAD:
+    case TypeEditableAPIActions.CHANGE_TYPE:
       state = {
         ...state,
-        // items: {}
-      };
-      break;
-    case TypeAPIActions.LOAD_SUCCEEDED:
-      state = {
-        ...state,
-        // items: indexBy(prop('pk_entity'), action.meta.itemsArray)
-      };
-      break;
-
-    case TypeAPIActions.LOAD_FAILED:
-      state = {
-        ...state,
+        loading: true,
+        editing: false
         // items: {}
       };
       break;
 
+    case TypeEditableAPIActions.CHANGE_TYPE_SUCCEEDED:
+      state = {
+        ...state,
+        entityAssociation: action.meta.entityAssociation
+      };
+      break;
 
-    case TypeAPIActions.START_EDIT:
+    case TypeEditableAPIActions.CHANGE_TYPE_FAILED:
+      state = {
+        ...state,
+        loading: false
+      };
+      break;
+
+    case TypeEditableAPIActions.LOAD_SUCCEEDED:
+      state = {
+       ...state,
+       entityAssociation: action.payload.entityAssociation,
+       label: action.payload.label
+      };
+      break;
+
+    case TypeEditableAPIActions.LOAD_FAILED:
+      state = {
+        ...state,
+        loading: false
+      };
+      break;
+
+
+    case TypeEditableAPIActions.START_EDIT:
       state = {
         ...state,
         editing: true
       };
       break;
 
-    case TypeAPIActions.STOP_EDIT:
+    case TypeEditableAPIActions.STOP_EDIT:
       state = {
         ...state,
         editing: false
@@ -49,7 +67,7 @@ export function typeReducer(state: TypeDetail = INITIAL_STATE, a: Action): TypeD
     /*****************************************************
     * Reducers called on destroy of component
     *****************************************************/
-    case TypeAPIActions.DESTROY:
+    case TypeEditableAPIActions.DESTROY:
       state = undefined;
       break;
 

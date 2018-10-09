@@ -200,6 +200,21 @@ export class U {
 
     }
 
+    /**
+     * Return a string for given peIt.
+     * Usefull for display of Types.
+     */
+    static stringForPeIt(peIt: InfPersistentItem): string {
+
+        return !peIt.pi_roles ? '' :
+            peIt.pi_roles
+                .filter(r => r.temporal_entity.fk_class === DfhConfig.CLASS_PK_APPELLATION_USE)
+                .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
+                    .map(r => {
+                        return new AppellationLabel(r.appellation.appellation_label).getString()
+                    })[0]).join(', ')
+
+    }
 
 
     /**
@@ -501,7 +516,7 @@ export class U {
     static labelFromLeafPeIt(l: PeItDetail, settings: LabelGeneratorSettings): string {
         if (l._children) {
 
-            const p = U.labelFromDataUnitChildList(l._children, {...settings, path: [...settings.path, '_children']})
+            const p = U.labelFromDataUnitChildList(l._children, { ...settings, path: [...settings.path, '_children'] })
 
             if (p && p.parts && p.parts[0] && p.parts[0].roleLabels && p.parts[0].roleLabels[0]) {
                 return p.parts[0].roleLabels[0].string;

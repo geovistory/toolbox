@@ -1,14 +1,15 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { InitStateComponent } from './init-state.component';
-import { NgReduxModule } from '@angular-redux/store';
 import { NgReduxFormModule } from '@angular-redux/form';
+import { NgReduxModule } from '@angular-redux/store';
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { InitStateComponent } from './init-state.component';
 
 @NgModule({
   imports: [
     CommonModule,
     NgReduxModule,
-
+    RouterModule
   ],
   declarations: [
     InitStateComponent
