@@ -3,6 +3,7 @@ import { DataUnitChildList } from './data-unit-child-list';
 import { DataUnitLabel } from './data-unit-label';
 import { RoleSet } from './role-set';
 import { CollapsedExpanded, SelectPropStateType } from './types';
+import { TypeDetail } from './type-detail';
 
 /*******************************
  * Data Unit Base Interface
@@ -11,6 +12,8 @@ import { CollapsedExpanded, SelectPropStateType } from './types';
 export interface DataUnitI {
 
     _children?: DataUnitChildList;
+
+    _type?: TypeDetail;
 
     pkEntity?: number,
     fkClass?: number;
@@ -31,7 +34,10 @@ export interface DataUnitI {
 }
 
 export class DataUnit implements DataUnitI {
+
     _children?: DataUnitChildList;
+
+    _type?: TypeDetail;
 
     pkEntity?: number;
     fkClass?: number;

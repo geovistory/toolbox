@@ -591,9 +591,67 @@ module.exports = function (InfPersistentItem) {
           "$relation": {
             "name": "dfh_class",
             "joinType": "inner join",
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
+            "orderBy": [{ "pk_entity": "asc" }]
+          }
+        },
+        domain_entity_associations: {
+          $relation: {
+            name: "domain_entity_associations",
+            joinType: "left join",
+            "orderBy": [{ "pk_entity": "asc" }]
+          },
+          "entity_version_project_rels": innerJoinThisProject,
+          range_pe_it: {
+            $relation: {
+              name: "range_pe_it",
+              joinType: "inner join",
+              "orderBy": [{ "pk_entity": "asc" }]
+            },
+            "pi_roles": {
+              "$relation": {
+                "name": "pi_roles",
+                "joinType": "left join"
+              },
+              "entity_version_project_rels": innerJoinThisProject,
+              "temporal_entity": {
+                "$relation": {
+                  "name": "temporal_entity",
+                  "joinType": "inner join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                },
+                "entity_version_project_rels": innerJoinThisProject,
+                "te_roles": {
+                  "$relation": {
+                    "name": "te_roles",
+                    "joinType": "inner join",
+                    "orderBy": [{
+                      "pk_entity": "asc"
+                    }]
+                  },
+                  "entity_version_project_rels": innerJoinThisProject,
+                  "appellation": {
+                    "$relation": {
+                      "name": "appellation",
+                      "joinType": "left join",
+                      "orderBy": [{
+                        "pk_entity": "asc"
+                      }]
+                    },
+                  },
+                  "language": {
+                    "$relation": {
+                      "name": "language",
+                      "joinType": "left join",
+                      "orderBy": [{
+                        "pk_entity": "asc"
+                      }]
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "pi_roles": {
@@ -682,9 +740,7 @@ module.exports = function (InfPersistentItem) {
           "$relation": {
             "name": "dfh_class",
             "joinType": "inner join",
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
+            "orderBy": [{ "pk_entity": "asc" }]
           }
         },
         /** include all roles … */
@@ -692,9 +748,7 @@ module.exports = function (InfPersistentItem) {
           "$relation": {
             "name": "pi_roles",
             "joinType": "left join",
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
+            "orderBy": [{ "pk_entity": "asc" }]
           },
 
           /** include the temporal_entity of the role */
@@ -812,9 +866,7 @@ module.exports = function (InfPersistentItem) {
             select: false,
             "name": "type_namespace_rels",
             "joinType": "inner join",
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
+            "orderBy": [{ "pk_entity": "asc" }]
           },
           "namespace": {
             "$relation": {
@@ -953,9 +1005,7 @@ module.exports = function (InfPersistentItem) {
             select: false,
             "name": "type_namespace_rels",
             "joinType": "inner join",
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
+            "orderBy": [{ "pk_entity": "asc" }]
           },
           "namespace": {
             "$relation": {
@@ -1027,10 +1077,10 @@ module.exports = function (InfPersistentItem) {
       }
     }
 
-    if(pk_entity){
+    if (pk_entity) {
       filter.where = ["pk_entity", "=", pk_entity];
     }
-    
+
     return InfPersistentItem.findComplex(filter, cb);
   }
 

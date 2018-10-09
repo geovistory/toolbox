@@ -31,13 +31,13 @@
   },
   "validations": [],
   "relations": {
-    "chunk": {
+    "domain_pe_it": {
       "type": "belongsTo",
-      "model": "InfChunk",
+      "model": "InfPersistentItem",
       "foreignKey": "fk_domain_entity",
       "primaryKey": "pk_entity"
     },
-    "persistent_item": {
+    "range_pe_it": {
       "type": "belongsTo",
       "model": "InfPersistentItem",
       "foreignKey": "fk_range_entity",

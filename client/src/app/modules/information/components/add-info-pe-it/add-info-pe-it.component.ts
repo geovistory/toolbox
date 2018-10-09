@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { ClassConfig, IAppState, U, UiElement } from 'app/core';
+import { ClassConfig, IAppState, U, UiElement, ComConfig } from 'app/core';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 
@@ -62,8 +62,13 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
           const level1propLabel = level1RoleSet.label.default;
           const cla = crm.classes[level1RoleSet.targetClassPk];
           const classLabel = cla.label;
-          const level2propsLabels = U.obj2Arr(cla.roleSets).map(rs => {
-            if (!similarRoleSet(level1RoleSet, rs)) return rs.label.default
+          const level2propsLabels = cla.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE].uiElements.map(uiEle => {
+            if (uiEle.roleSetKey) {
+              const rs = crm.roleSets[uiEle.roleSetKey];
+              if (!similarRoleSet(level1RoleSet, rs)) return rs.label.default
+            } else if (uiEle.propSetKey) {
+              return uiEle.property_set.label;
+            }
           }).filter(l => l);
 
           const option: PeItAddOption = {
@@ -89,8 +94,8 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
 
 
   /**
- * Typeahead.
- */
+  * Typeahead.
+  */
 
 
   search = (text$: Observable<string>) => {

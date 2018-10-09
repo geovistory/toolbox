@@ -102,6 +102,9 @@ import { LeafPeItViewAPIActions } from './value/leaf-pe-it-view/api/leaf-pe-it-v
 import { LeafPeItViewAPIEpics } from './value/leaf-pe-it-view/api/leaf-pe-it-view.epics';
 import { EditorHeaderComponent } from './components/editor-header/editor-header.component';
 import { ClassInfoComponent } from './components/class-info/class-info.component';
+import { TypeComponent } from './type/type.component';
+import { TypeAPIActions } from './type/api/type.actions';
+import { TypeAPIEpics } from './type/api/type.epics';
 
 
 
@@ -206,6 +209,9 @@ import { ClassInfoComponent } from './components/class-info/class-info.component
     PlaceViewComponent,
     ExistenceTimeHelpComponent,
 
+    // Type
+    TypeComponent,
+
     // Reusable
     TeEntLabelComponent,
     PeItLabelComponent,
@@ -253,6 +259,10 @@ import { ClassInfoComponent } from './components/class-info/class-info.component
     AppellationService,
     LeafPeItViewAPIActions,
     LeafPeItViewAPIEpics,
+
+    // Type
+    TypeAPIActions,
+    TypeAPIEpics,
 
     // Shared
     StateCreatorService,
