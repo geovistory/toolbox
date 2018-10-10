@@ -2,7 +2,7 @@ import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, DfhClass, ProjectDetail, InfPersistentItem, InfNamespace } from 'app/core';
+import { IAppState, DfhClass, ProjectDetail, InfPersistentItem, InfNamespace, U } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { Types } from './api/types.models';
 import { TypesAPIEpics } from './api/types.epics';
@@ -128,16 +128,6 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
     this.create(type);
   }
 
-  getLabel(peIt: InfPersistentItem) {
-
-    return !peIt.pi_roles ? '' :
-      peIt.pi_roles
-        .filter(r => r.temporal_entity.fk_class === DfhConfig.CLASS_PK_APPELLATION_USE)
-        .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
-          .map(r => {
-            return new AppellationLabel(r.appellation.appellation_label).getString()
-          })[0]).join(', ')
-
-  }
+  getLabel = (peIt: InfPersistentItem) => U.stringForPeIt(peIt);
 
 }

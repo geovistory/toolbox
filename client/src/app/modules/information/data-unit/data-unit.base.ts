@@ -3,11 +3,12 @@ import { Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, U, UiContext, UiElement } from 'app/core';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { AddOption, DataUnitLabel, ExistenceTimeDetail, PeItDetail, RoleSet, RoleSetI, RoleSetList, SelectPropStateType, TeEntDetail, RoleSetForm } from 'app/core/state/models';
+import { AddOption, DataUnitLabel, ExistenceTimeDetail, PeItDetail, RoleSet, RoleSetI, RoleSetList, SelectPropStateType, TeEntDetail, RoleSetForm, DataUnitChildList } from 'app/core/state/models';
 import { StateCreatorService } from '../shared/state-creator.service';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
 import { roleSetKey } from 'app/core/state/services/state-creator';
+import { TypeDetail } from 'app/core/state/models/type-detail';
 
 
 // maps pk_property_set to key in ngRedux store
@@ -34,14 +35,14 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   @select() dfhClass$: Observable<DfhClass>;
   @select() label$: Observable<string>;
   @select() pkEntity$: Observable<number>
-  // @select() roles$: Observable<InfRole[]>
   @select() outgoingProperties$: Observable<DfhProperty[]>
   @select() ingoingProperties$: Observable<DfhProperty[]>
   @select() ingoingRoleSets$?: RoleSet[];
   @select() outgoingRoleSets$?: RoleSet[];
   @select() parentPeIt$: Observable<InfPersistentItem>;
   @select() propertyToAdd$: Observable<RoleSet>; // Poperty that is currently chosen in order to add a role of this kind
-  @select() _children$: Observable<RoleSetList>;
+  @select() _children$: Observable<DataUnitChildList>;
+  @select() _type$: Observable<TypeDetail>
 
   @select() showRightPanel$: Observable<boolean>;
   @select() showAddAPropertyButton$: Observable<boolean>;

@@ -1,10 +1,13 @@
-import { InfRole, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfTimePrimitive, InfTemporalEntity, InfEntityProjectRel, DfhLabel } from 'app/core/sdk';
+import { InfRole, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfTimePrimitive, InfTemporalEntity, InfEntityProjectRel, DfhLabel, InfEntityAssociation } from 'app/core/sdk';
 import { ProjectCrm } from 'app/core/active-project';
 import { DataUnitChildList, RoleSetI, AppeDetail, DataUnitChild, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleSet, TeEntDetail, TimePrimitveDetail } from '../models';
 import { clone, groupBy, prop, indexBy, sort, omit } from 'ramda';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { ComConfig } from 'app/core/config/com-config';
 import { U } from 'app/core/util/util';
+import { TypeDetail } from '../models/type-detail';
+import * as Config from '../../../../../../common/config/Config'
+import { AppellationLabel } from 'app/modules/information/shared/appellation-label';
 
 /***************************************************
 * General Interfaces
@@ -21,6 +24,102 @@ export interface StateSettings {
 * Data Unit create functions
 ***************************************************/
 
+/**
+* Creates a PeItDetail from provided input data
+*
+* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+* @param dbData nested object as it is delivered from REST api with roles etc.
+* @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
+* @param settings setting object that is passed through the chain of from() methods of the different state classes
+*/
+export function createPeItDetail(options: PeItDetail, peIt: InfPersistentItem, crm: ProjectCrm, settings: StateSettings = {}): PeItDetail {
+
+    // those only pollute the state unless we are in add mode.
+    // if (!settings.isAddMode) delete peIt.pi_roles;
+
+    const peItCleaned = omit(['pi_roles'], peIt);
+
+    return new PeItDetail({
+        ...options,
+        _children: createDataUnitChildren(peIt.fk_class, peIt.pi_roles, crm, settings),
+        _type: createDataUnitTypeDetail({}, peIt, crm, settings),
+        pkEntity: peIt.pk_entity,
+        fkClass: peIt.fk_class,
+        peIt: peItCleaned,
+        selectPropState: 'init',
+    })
+}
+
+/**
+* Creates a createTeEntDetail from provided input data
+*
+* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+* @param dbData nested object as it is delivered from REST api with roles etc.
+* @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
+* @param settings setting object that is passed through the chain of from() methods of the different state classes
+*/
+export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity, crm: ProjectCrm, settings: StateSettings): TeEntDetail {
+
+    if (!teEnt) return;
+
+    return new TeEntDetail({
+        selectPropState: 'init',
+        teEnt: teEnt,
+        fkClass: teEnt.fk_class,
+        _children: createDataUnitChildren(teEnt.fk_class, teEnt.te_roles, crm, settings)
+    });
+}
+
+
+/**
+* Creates a createTypeDetail from provided dataUnit data
+*
+* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+* @param dbData nested object as it is delivered from REST api with roles etc.
+* @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
+* @param settings setting object that is passed through the chain of from() methods of the different state classes
+*/
+export function createDataUnitTypeDetail(options: TypeDetail, dataUnit: InfTemporalEntity | InfPersistentItem, crm: ProjectCrm, settings: StateSettings): TypeDetail {
+
+    // if for instances of this class we do not want types, return
+    if (!dataUnit.fk_class || !Config.PK_CLASS_PK_HAS_TYPE_MAP[dataUnit.fk_class]) return;
+
+    return createTypeDetail(
+        {
+            _typeCtrl: {
+                pkTypedClass: dataUnit.fk_class
+            },
+            fkDomainEntity: dataUnit.pk_entity
+        },
+        !dataUnit.domain_entity_associations ? undefined : !dataUnit.domain_entity_associations.length ? undefined :
+            dataUnit.domain_entity_associations.find(assoc => assoc.fk_property === Config.PK_CLASS_PK_HAS_TYPE_MAP[dataUnit.fk_class]),
+        crm,
+        settings
+    )
+}
+
+/**
+* Creates a createTypeDetail from provided entityAssociation data
+*
+* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+* @param dbData nested object as it is delivered from REST api with roles etc.
+* @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
+* @param settings setting object that is passed through the chain of from() methods of the different state classes
+*/
+export function createTypeDetail(options: TypeDetail, assoc: InfEntityAssociation, crm: ProjectCrm, settings: StateSettings): TypeDetail {
+
+    const roles = !assoc ? undefined : !assoc.range_pe_it ? undefined : assoc.range_pe_it.pi_roles;
+
+    return new TypeDetail({
+        ...options,
+        entityAssociation: assoc,
+        label: !roles ? '' : roles.filter(r => r.temporal_entity.fk_class === DfhConfig.CLASS_PK_APPELLATION_USE)
+            .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
+                .map(r => {
+                    return new AppellationLabel(r.appellation.appellation_label).getString()
+                })[0]).join(', ')
+    });
+}
 
 /**
  * Creates a DataUnitChildList from provided input data
@@ -123,51 +222,6 @@ export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: P
     if (!children.length) return;
 
     return indexBy(dataUnitChildKey, children.filter(c => (c)));
-}
-
-/**
-* Creates a PeItDetail from provided input data
-*
-* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
-* @param dbData nested object as it is delivered from REST api with roles etc.
-* @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
-* @param settings setting object that is passed through the chain of from() methods of the different state classes
-*/
-export function createPeItDetail(options: PeItDetail, peIt: InfPersistentItem, crm: ProjectCrm, settings: StateSettings = {}): PeItDetail {
-
-    // those only pollute the state unless we are in add mode.
-    // if (!settings.isAddMode) delete peIt.pi_roles;
-
-    const peItCleaned = omit(['pi_roles'], peIt);
-
-    return new PeItDetail({
-        ...options,
-        _children: createDataUnitChildren(peIt.fk_class, peIt.pi_roles, crm, settings),
-        pkEntity: peIt.pk_entity,
-        fkClass: peIt.fk_class,
-        peIt: peItCleaned,
-        selectPropState: 'init',
-    })
-}
-
-/**
-* Creates a createTeEntDetail from provided input data
-*
-* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
-* @param dbData nested object as it is delivered from REST api with roles etc.
-* @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
-* @param settings setting object that is passed through the chain of from() methods of the different state classes
-*/
-export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity, crm: ProjectCrm, settings: StateSettings): TeEntDetail {
-
-    if (!teEnt) return;
-
-    return new TeEntDetail({
-        selectPropState: 'init',
-        teEnt: teEnt,
-        fkClass: teEnt.fk_class,
-        _children: createDataUnitChildren(teEnt.fk_class, teEnt.te_roles, crm, settings)
-    });
 }
 
 

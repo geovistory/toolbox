@@ -15,32 +15,33 @@ import { ControlMessagesModule, PassiveLinkModule } from 'app/shared';
 import { ProjectSandboxModule } from 'app/shared/components/project-sandbox/project-sandbox.module';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { TreeviewModule } from 'ngx-treeview';
 
 PlaygroundModule
   .configure({
-      selector: 'gv-root',
-      overlay: false,
-      modules: [
-        RouterModule.forRoot([]),
-        SDKBrowserModule.forRoot(),
-        NgbModule.forRoot(),
-        ElasticInputModule.forRoot(),
-        SlimLoadingBarModule.forRoot(),
-        AngularCesiumModule.forRoot(),
-        NotificationsModule,
-        StoreModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        ControlMessagesModule,
-        PassiveLinkModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ProjectSandboxModule,
-        NgxJsonViewerModule,
-        LoadingBarModule
-      ]
+    selector: 'gv-root',
+    overlay: false,
+    modules: [
+      SDKBrowserModule.forRoot(),
+      NgbModule.forRoot(),
+      ElasticInputModule.forRoot(),
+      SlimLoadingBarModule.forRoot(),
+      AngularCesiumModule.forRoot(),
+      TreeviewModule.forRoot(),
+      NotificationsModule,
+      StoreModule,
+      BrowserModule,
+      BrowserAnimationsModule,
+      ControlMessagesModule,
+      PassiveLinkModule,
+      FormsModule,
+      ReactiveFormsModule,
+      ProjectSandboxModule,
+      NgxJsonViewerModule,
+      LoadingBarModule
+    ]
   });
 
-  Cesium.buildModuleUrl.setBaseUrl('/assets/cesium/'); // If youre using Cesium version >= 1.42.0 add this line
+Cesium.buildModuleUrl.setBaseUrl('/assets/cesium/'); // If youre using Cesium version >= 1.42.0 add this line
 
 platformBrowserDynamic().bootstrapModule(PlaygroundModule);

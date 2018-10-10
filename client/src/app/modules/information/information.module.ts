@@ -102,6 +102,13 @@ import { LeafPeItViewAPIActions } from './value/leaf-pe-it-view/api/leaf-pe-it-v
 import { LeafPeItViewAPIEpics } from './value/leaf-pe-it-view/api/leaf-pe-it-view.epics';
 import { EditorHeaderComponent } from './components/editor-header/editor-header.component';
 import { ClassInfoComponent } from './components/class-info/class-info.component';
+import { TypeEditableComponent } from './type/type-editable/type-editable.component';
+import { TypeEditableAPIActions } from './type/type-editable/api/type-editable.actions';
+import { TypeEditableAPIEpics } from './type/type-editable/api/type-editable.epics';
+import { TypeCtrlComponent } from './type/type-ctrl/type-ctrl.component';
+import { TypeCtrlAPIActions } from './type/type-ctrl/api/type-ctrl.actions';
+import { TypeCtrlAPIEpics } from './type/type-ctrl/api/type-ctrl.epics';
+import { TreeviewModule } from 'ngx-treeview';
 
 
 
@@ -130,7 +137,8 @@ import { ClassInfoComponent } from './components/class-info/class-info.component
     KeysModule,
     HighlightModule,
     DndModule,
-    QuillModule
+    QuillModule,
+    TreeviewModule
 
   ],
   declarations: [
@@ -206,6 +214,9 @@ import { ClassInfoComponent } from './components/class-info/class-info.component
     PlaceViewComponent,
     ExistenceTimeHelpComponent,
 
+    // Type
+    TypeEditableComponent,
+
     // Reusable
     TeEntLabelComponent,
     PeItLabelComponent,
@@ -216,6 +227,7 @@ import { ClassInfoComponent } from './components/class-info/class-info.component
     InformationComponent,
     EditorHeaderComponent,
     ClassInfoComponent,
+    TypeCtrlComponent,
 
 
 
@@ -253,6 +265,12 @@ import { ClassInfoComponent } from './components/class-info/class-info.component
     AppellationService,
     LeafPeItViewAPIActions,
     LeafPeItViewAPIEpics,
+
+    // Type
+    TypeEditableAPIActions,
+    TypeEditableAPIEpics,
+    TypeCtrlAPIActions,
+    TypeCtrlAPIEpics,
 
     // Shared
     StateCreatorService,
@@ -321,6 +339,9 @@ import { ClassInfoComponent } from './components/class-info/class-info.component
     TimePrimitiveViewComponent,
     PlaceCtrlComponent,
     PlaceViewComponent,
+
+    // Type
+    TypeCtrlComponent,
 
     // Reusable
     TextPropertyComponent,

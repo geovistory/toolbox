@@ -1,0 +1,8 @@
+<div *ngIf="!(editing$ | async)">
+  Type: {{label$ | async}} <button class="btn btn-sm btn-link-gray" (click)="startEdit()"><i class="fa fa-pencil"></i></button>
+</div>
+
+<form [formGroup]="formGroup" class="form-inline" *ngIf="(editing$ | async)">
+  <gv-type-ctrl formControlName="eaCtrl" [basePath]="basePath.concat('_typeCtrl')" [openOnInit]="true"> </gv-type-ctrl> 
+  <button type="submit" class="btn btn-outline-secondary ml-2" (click)="stopEdit()">Cancel</button>
+</form>

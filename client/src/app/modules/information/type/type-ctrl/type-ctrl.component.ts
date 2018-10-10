@@ -1,0 +1,218 @@
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { IAppState, InfEntityAssociation, SubstoreComponent, U } from 'app/core';
+import { RootEpics } from 'app/core/store/epics';
+import { DropdownTreeviewComponent, TreeviewItem, TreeviewI18n, TreeviewConfig } from 'ngx-treeview';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
+import { TypeCtrlAPIActions } from './api/type-ctrl.actions';
+import { TypeCtrlAPIEpics } from './api/type-ctrl.epics';
+import { TypeCtrl, TypeOptions } from './api/type-ctrl.models';
+import { typeCtrlReducer } from './api/type-ctrl.reducer';
+import { DropdownTreeviewSelectI18n } from './dropdown-treeview-select-i18n';
+import * as Config from '../../../../../../../common/config/Config'
+
+@WithSubStore({
+  basePathMethodName: 'getBasePath',
+  localReducer: typeCtrlReducer
+})
+@Component({
+  selector: 'gv-type-ctrl',
+  templateUrl: './type-ctrl.component.html',
+  styleUrls: ['./type-ctrl.component.css'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => TypeCtrlComponent),
+      multi: true
+    },
+    { provide: TreeviewI18n, useClass: DropdownTreeviewSelectI18n }
+
+  ]
+})
+export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnDestroy, SubstoreComponent, ControlValueAccessor {
+
+  // emits true on destroy of this component
+  destroy$ = new Subject<boolean>();
+
+  // local store of this component
+  localStore: ObservableStore<TypeCtrl>;
+
+  // path to the substore
+  @Input() basePath: string[];
+  @Input() openOnInit = false;
+
+  // select observables of substore properties
+  @select() loading$: Observable<boolean>;
+  @select() pkTypedClass$: Observable<number>;
+  @select() items$: Observable<TypeOptions>;
+
+  // mark control as touched
+  @Output() touched = new EventEmitter<void>();
+
+  @ViewChild(DropdownTreeviewComponent) dropdownTreeviewComponent: DropdownTreeviewComponent;
+  private dropdownTreeviewSelectI18n: DropdownTreeviewSelectI18n;
+
+  // the value of the control;
+  entityAssociation: InfEntityAssociation;
+
+  // the selected type option
+  selectedTypeOption: TreeviewItem;
+
+  config: TreeviewConfig;
+
+  registered = false;
+
+  constructor(
+    protected rootEpics: RootEpics,
+    private epics: TypeCtrlAPIEpics,
+    protected ngRedux: NgRedux<IAppState>,
+    public i18n: TreeviewI18n
+  ) {
+    super()
+
+    this.config = TreeviewConfig.create({
+      hasAllCheckBox: false,
+      hasCollapseExpand: false,
+      hasFilter: true,
+      maxHeight: 500
+    });
+    this.dropdownTreeviewSelectI18n = i18n as DropdownTreeviewSelectI18n;
+
+  }
+
+  getBasePath = () => this.basePath;
+
+  ngOnInit() {
+    this.localStore = this.ngRedux.configureSubStore(this.basePath, typeCtrlReducer);
+    this.rootEpics.addEpic(this.epics.createEpics(this));
+
+    combineLatest(this.ngRedux.select(['activeProject', 'pk_project']), this.pkTypedClass$).pipe(
+      first(d => !!(d[0] && d[1])),
+      takeUntil(this.destroy$)
+    ).subscribe(d => {
+
+      // load the available types
+      this.load(d[0], d[1])
+    })
+
+    // Listen for closing the treeview
+    this.dropdownTreeviewComponent.dropdownDirective.openChange.subscribe(val => {
+      if (!val) this.markAsTouched()
+    })
+
+    // open on init, if configured so
+    if (this.openOnInit) {
+      setTimeout(() => {
+        this.dropdownTreeviewComponent.dropdownDirective.open()
+      }, 0);
+    }
+  }
+
+  ngOnDestroy() {
+    this.destroy();
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
+
+
+  // select(type: TypeOption) {
+  //   this.selectedTypeOption = type;
+
+  //   this.onChange(new InfEntityAssociation({
+  //     fk_domain_entity: undefined,
+  //     fk_property: Config.PK_CLASS_PK_HAS_TYPE_MAP[this.localStore.getState().pkTypedClass],
+  //     fk_range_entity: type.pk_entity
+  //   }))
+  // }
+
+
+  select(item: TreeviewItem) {
+    if (item.children === undefined) {
+      this.selectItem(item);
+    }
+  }
+
+  private selectItem(item: TreeviewItem) {
+    this.dropdownTreeviewComponent.dropdownDirective.close();
+    if (this.dropdownTreeviewSelectI18n.selectedItem !== item) {
+      this.dropdownTreeviewSelectI18n.selectedItem = item;
+
+      this.emitOnChange();
+    }
+  }
+
+
+  emitOnChange() {
+    if (this.dropdownTreeviewSelectI18n.selectedItem && this.localStore.getState()) {
+      this.onChange(new InfEntityAssociation({
+        fk_domain_entity: undefined,
+        fk_property: Config.PK_CLASS_PK_HAS_TYPE_MAP[this.localStore.getState().pkTypedClass],
+        fk_range_entity: this.dropdownTreeviewSelectI18n.selectedItem.value
+      }))
+    } else {
+      this.onChange(null)
+    }
+  }
+
+  /****************************************
+ *  ControlValueAccessor implementation *
+ ****************************************/
+
+  /**
+   * Allows Angular to update the model.
+   * Update the model and changes needed for the view here.
+   */
+  writeValue(assoc: InfEntityAssociation): void {
+
+    if (assoc && assoc.domain_pe_it) {
+      this.selectItem(new TreeviewItem({
+        value: assoc.domain_pe_it.pk_entity,
+        text: U.stringForPeIt(assoc.domain_pe_it)
+      }))
+    }
+
+    if (this.registered) this.emitOnChange();
+
+  }
+
+
+  /**
+   * Allows Angular to register a function to call when the model changes.
+   * Save the function as a property to call later here.
+   */
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+    this.registered = true;
+  }
+
+  /**
+   * gets replaced by angular on registerOnChange
+   * This function helps to type the onChange function for the use in this class.
+   */
+  onChange = (assov: InfEntityAssociation | null) => {
+    console.error('called before registerOnChange')
+  };
+
+  /**
+   * Allows Angular to register a function to call when the input has been touched.
+   * Save the function as a property to call later here.
+   */
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  /**
+   * gets replaced by angular on registerOnTouched
+   * Call this function when the form has been touched.
+   */
+  onTouched = () => {
+  };
+
+  markAsTouched() {
+    this.onTouched()
+    this.touched.emit()
+  }
+
+}

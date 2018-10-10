@@ -53,40 +53,6 @@ module.exports = function (InfEntityAssociation) {
 
 
 
-
-    // if (requestedEa.temporal_entity && Object.keys(requestedEa.temporal_entity).length > 0) {
-
-    //   //create the temporal_entity first
-    //   const InfTemporalEntity = InfEntityAssociation.app.models.InfTemporalEntity;
-    //   return InfTemporalEntity.findOrCreateInfTemporalEntity(projectId, requestedEa.temporal_entity)
-    //     .then((resultingTeEnts) => {
-
-    //       const resultingTeEnt = resultingTeEnts[0];
-
-    //       // … prepare the Ea to create
-    //       dataObject.fk_temporal_entity = resultingTeEnt.pk_entity;
-
-    //       // call the api to find or create the ea that points to the teEnt
-    //       return InfEntityAssociation.findOrCreateObjectOrEa(InfEntityAssociation, projectId, dataObject, requestedEa)
-    //         .then((eas) => {
-
-    //           let res = eas[0].toJSON()
-    //           res.temporal_entity = resultingTeEnt;
-
-    //           return [res];
-
-    //         })
-    //         .catch((err) => {
-    //           return err;
-    //         })
-
-    //     })
-    //     .catch((err) => {
-    //       return err;
-    //     })
-
-    // }
-
     else {
 
       return InfEntityAssociation.findOrCreateByValue(InfEntityAssociation, projectId, dataObject, requestedEa)

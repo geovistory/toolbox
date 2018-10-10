@@ -1,0 +1,144 @@
+import { Injectable } from '@angular/core';
+import { LoadingBarActions, InfEntityAssociationApi, InfEntityAssociation, InfPersistentItemApi, InfPersistentItem } from 'app/core';
+import { Action } from 'redux';
+import { combineEpics, Epic, ofType } from 'redux-observable';
+import { Observable, combineLatest } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { TypeEditableComponent } from '../type-editable.component';
+import { TypeEditableAPIActions, TypeAPIAction } from './type-editable.actions';
+import { createTypeDetail } from 'app/core/state/services/state-creator';
+
+@Injectable()
+export class TypeEditableAPIEpics {
+  constructor(
+    private entAssocApi: InfEntityAssociationApi,
+    private peItApi: InfPersistentItemApi,
+    private actions: TypeEditableAPIActions,
+    private loadingBarActions: LoadingBarActions,
+    private notificationActions: NotificationsAPIActions
+  ) { }
+
+  public createEpics(c: TypeEditableComponent): Epic {
+    return combineEpics(
+      this.createChangeTypeEpic(c),
+      this.createLoadTypeEpic(c)
+    );
+  }
+
+  private createChangeTypeEpic(c: TypeEditableComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(TypeEditableAPIActions.CHANGE_TYPE),
+        switchMap((action: TypeAPIAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Do some api call
+           */
+
+          combineLatest(action.meta.entityAssociations.map((assoc) => this.entAssocApi
+            .findOrCreateInfEntityAssociation(action.meta.pkProject, assoc)))
+            .subscribe((data: InfEntityAssociation[][]) => {
+              let newAssoc: InfEntityAssociation;
+              data.some((aa) => aa.some((a) => {
+                if (a.entity_version_project_rels && a.entity_version_project_rels.length && a.entity_version_project_rels[0].is_in_project) {
+                  newAssoc = a;
+                  return true;
+                }
+              }))
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              /**
+               * Emit the local action on loading succeeded
+               */
+              c.localStore.dispatch(this.actions.changeTypeSucceeded(newAssoc));
+
+            }, error => {
+              /**
+        * Emit the global action that shows some loading error message
+        */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              c.localStore.dispatch(this.actions.changeTypeFailed({ status: '' + error.status }))
+            })
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
+
+
+  private createLoadTypeEpic(c: TypeEditableComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(TypeEditableAPIActions.CHANGE_TYPE_SUCCEEDED),
+        switchMap((action: TypeAPIAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Do some api call
+           */
+
+          this.peItApi.typeNested(c.ngRedux.getState().activeProject.pk_project, action.meta.entityAssociation.fk_range_entity)
+            .subscribe((data: InfPersistentItem[]) => {
+
+              const typeDetail = createTypeDetail(
+                {},
+                { ...action.meta.entityAssociation, range_pe_it: data[0] },
+                c.ngRedux.getState().activeProject.crm,
+                {}
+              )
+
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              /**
+               * Emit the local action on loading succeeded
+               */
+              c.localStore.dispatch(this.actions.loadSucceeded(typeDetail));
+
+            }, error => {
+              /**
+        * Emit the global action that shows some loading error message
+        */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              c.localStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
+            })
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+}

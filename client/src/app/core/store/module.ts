@@ -39,11 +39,11 @@ export const ofSubstore = (path: string[]) => (action): boolean => {
 @NgModule({
     imports: [
         NgReduxModule,
-        NgReduxRouterModule,
+        // NgReduxRouterModule.forRoot(),
         ActiveProjectModule
     ],
     providers: [
-        NgReduxRouter,
+        // NgReduxRouter,
         RootEpics
     ]
 })
@@ -51,7 +51,7 @@ export class StoreModule {
     constructor(
         public ngRedux: NgRedux<IAppState>,
         devTools: DevToolsExtension,
-        ngReduxRouter: NgReduxRouter,
+        // ngReduxRouter: NgReduxRouter,
         rootEpics: RootEpics
     ) {
 
@@ -81,10 +81,10 @@ export class StoreModule {
         epicMiddleware.run(rootEpics.getRootEpic());
 
 
-        // Enable syncing of Angular router state with our Redux store.
-        if (ngReduxRouter) {
-            ngReduxRouter.initialize();
-        }
+        // // Enable syncing of Angular router state with our Redux store.
+        // if (ngReduxRouter) {
+        //     ngReduxRouter.initialize();
+        // }
 
         // Enable syncing of Angular form state with our Redux store.
         provideReduxForms(ngRedux);

@@ -168,7 +168,7 @@ export class TypesAPIEpics {
           /**
            * Prepare some api calls
            */
-          const type$: Observable<InfPersistentItem[]> = this.peItApi.typeNested(c.pkNamespace, c.project.pk_project, action.meta.type.pk_entity);
+          const type$: Observable<InfPersistentItem[]> = this.peItApi.typesOfNamespaceNested(c.pkNamespace, c.project.pk_project, action.meta.type.pk_entity);
           /**
            * Subscribe to the api call
            */

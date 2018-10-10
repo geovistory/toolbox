@@ -35,6 +35,12 @@
       "foreignKey": "fk_temporal_entity",
       "primaryKey": "pk_entity"
     },
+    "domain_entity_associations": {
+      "type": "hasMany",
+      "model": "InfEntityAssociation",
+      "foreignKey": "fk_domain_entity",
+      "primaryKey": "pk_entity"
+    },
     "text_properties": {
       "type": "hasMany",
       "model": "InfTextProperty",
