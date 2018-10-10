@@ -79,12 +79,12 @@ export class EntityAddSearchExistingComponent implements OnInit, OnChanges {
     this.startLoading();
     this.persistentItems = [];
     this.errorMessages = {};
-    this.persistentItemApi.searchInRepo(this.searchString, this.limit, this.page)
+    this.persistentItemApi.searchInRepo(this.searchString, this.limit, this.page, this.modalService.selectedClass.dfh_pk_class)
       .subscribe(
         (response) => {
           this.completeLoading();
           this.persistentItems = response.data;
-          this.collectionSize = parseInt(response.totalCount);
+          this.collectionSize = parseInt(response.totalCount, 10);
         },
         error => {
           this.resetLoading();

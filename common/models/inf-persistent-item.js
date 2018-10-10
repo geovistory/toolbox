@@ -412,7 +412,7 @@ module.exports = function (InfPersistentItem) {
   })
 
 
-  InfPersistentItem.searchInRepo = function (searchString, limit, page, cb) {
+  InfPersistentItem.searchInRepo = function (searchString, limit, page, fk_class, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -439,6 +439,12 @@ module.exports = function (InfPersistentItem) {
       limit,
       offset
     ];
+
+    var where='';
+    if (fk_class) {
+      params.push(fk_class);
+      where = ' AND pi.fk_class = $4';
+    }
 
     var sql_stmt = `
     Select
@@ -517,11 +523,12 @@ module.exports = function (InfPersistentItem) {
       GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, appellations.projects
       ORDER BY pi.tmsp_last_modification DESC
     ) AS pi, to_tsquery($1) q
-    WHERE document @@ q
+    WHERE document @@ q ${where}
     ORDER BY ts_rank(document, q) DESC
     LIMIT $2
     OFFSET $3
     `;
+
 
 
     const connector = InfPersistentItem.dataSource.connector;
@@ -1120,7 +1127,7 @@ module.exports = function (InfPersistentItem) {
         ]
       }
     };
-    
+
     const filter = {
       where: ["pk_entity", "=", pk_entity],
       "orderBy": [{

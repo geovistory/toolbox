@@ -346,7 +346,16 @@
           "http": {
             "source": "query"
           }
-        }
+        },
+        {
+          "arg": "pk_class",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the Class you want to filter for. E.g. 363 for Geographical Place.",
+          "http": {
+            "source": "query"
+          }
+        }        
       ],
       "returns": {
         "arg": "data",
