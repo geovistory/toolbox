@@ -1105,7 +1105,7 @@ export class U {
     /**
      * Figures out if any of the roleDetails of the given RoleDetailList
      * has a temporal entity that is in editing mode. If so:
-     * 
+     *
      * @returns the key that roleDetail has in the given List.
      */
     static extractRoleDetailKeyOfEditingTeEnt(roleDetailList: RoleDetailList): string {
@@ -1130,7 +1130,7 @@ export class U {
         let key: string;
         U.obj2KeyValueArr(children).some((child) => {
             if (child.value.type === 'RoleSet') {
-                const roleSet: RoleSet = child.value;
+                const roleSet = child.value as RoleSet;
 
                 if (roleSet._role_set_form) {
 

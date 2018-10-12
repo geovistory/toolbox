@@ -29,9 +29,11 @@ export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValue
 
 
     basePath: string[];
-
     @select() teEnt$: Observable<InfTemporalEntity>
     @select() toggle$: Observable<boolean>
+
+    ontoInfoVisible$: Observable<boolean>
+    communityStatsVisible$: Observable<boolean>
 
     localStore: ObservableStore<TeEntDetail>;
 
@@ -67,7 +69,7 @@ export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValue
     init() {
 
         this.basePath = this.getBaseForConfigSubStore();
-
+    
         this.onInitTeEntBaseChild()
     }
 
