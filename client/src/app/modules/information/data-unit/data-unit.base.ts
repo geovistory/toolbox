@@ -1,14 +1,16 @@
 import { NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, U, UiContext, UiElement } from 'app/core';
-import { Observable, Subject, Subscription } from 'rxjs';
-import { AddOption, DataUnitLabel, ExistenceTimeDetail, PeItDetail, RoleSet, RoleSetI, RoleSetList, SelectPropStateType, TeEntDetail, RoleSetForm, DataUnitChildList } from 'app/core/state/models';
+import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, U, UiContext, UiElement, InfRole } from 'app/core';
+import { Observable, Subject, Subscription, throwError } from 'rxjs';
+import { AddOption, DataUnitLabel, ExistenceTimeDetail, PeItDetail, RoleSet, RoleSetI, RoleSetList, SelectPropStateType, TeEntDetail, RoleSetForm, DataUnitChildList, SubstoreComponent } from 'app/core/state/models';
 import { StateCreatorService } from '../shared/state-creator.service';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
-import { roleSetKey } from 'app/core/state/services/state-creator';
+import { roleSetKey, createRoleSet, StateSettings } from 'app/core/state/services/state-creator';
 import { TypeDetail } from 'app/core/state/models/type-detail';
+import { RootEpics } from 'app/core/store/epics';
+import { DataUnitAPIEpics } from './data-unit.epics';
 
 
 // maps pk_property_set to key in ngRedux store
@@ -17,14 +19,14 @@ export const propSetMap = {
 }
 
 
-export abstract class DataUnitBase implements OnInit, OnDestroy {
-  subs: Subscription[] = []
+export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreComponent {
+  // subs: Subscription[] = []
   destroy$: Subject<boolean> = new Subject<boolean>();
 
   formGroup: FormGroup;
 
   @Input() parentPath: string[];
-
+  basePath?: string[];
 
 
   abstract localStore: ObservableStore<TeEntDetail | PeItDetail>;
@@ -70,7 +72,9 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   constructor(
     protected ngRedux: NgRedux<IAppState>,
     protected fb: FormBuilder,
-    protected stateCreator: StateCreatorService
+    protected stateCreator: StateCreatorService,
+    protected rootEpics: RootEpics,
+    protected dataUnitEpics: DataUnitAPIEpics
   ) {
     this.formGroup = this.fb.group({})
   }
@@ -89,7 +93,6 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
-    this.subs.forEach(sub => sub.unsubscribe())
 
     this.destroy()
 
@@ -97,12 +100,11 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    // Init dataUnitEpics
+    this.rootEpics.addEpic(this.dataUnitEpics.createEpics(this));
+
     // Initialize the store by one of the derived classes
     this.initStore()
-
-
-    // Initialize the children in this class
-    // this.initChildren() SINGLE_INIT
 
     // Initializes subscriptions
     this.initSubscriptions()
@@ -110,23 +112,20 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
     // Initialize the rest in the derived class
     this.init()
 
-    // // Calls this generic action that can be listened to in any reducer
-    // this.localStore.dispatch(this.actions.dataUnitInit())
-
   }
 
 
   initSubscriptions() {
-    this.subs.push(this._children$.subscribe(rs => {
+    this._children$.takeUntil(this.destroy$).subscribe(rs => {
       this.roleSets = rs;
-    }))
+    })
 
-    this.subs.push(this.fkClass$.subscribe(fkClass => {
+    this.fkClass$.takeUntil(this.destroy$).subscribe(fkClass => {
       if (fkClass) {
         this.classConfig = this.ngRedux.getState().activeProject.crm.classes[fkClass];
         this.uiElementsForAddInfo = this.classConfig.uiContexts[this.comConfig.PK_UI_CONTEXT_EDITABLE].uiElements;
       }
-    }))
+    })
   }
 
 
@@ -148,19 +147,14 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
 
   /**
-* called, when user selected a the kind of property to add
-*/
-  addRoleSet(propertyToAdd: RoleSetI) {
+  * called, when user selected a the kind of property to add
+  */
+  addRoleSet(propertyToAdd: RoleSet, roles: InfRole[]) {
 
-    // add a role set
-    const newRoleSet = new RoleSet({
-      ...propertyToAdd,
-      toggle: 'expanded',
-      roles: [],
-      rolesNotInProjectLoading: true,
-      roleStatesInOtherProjectsVisible: false,
-      _role_set_form: new RoleSetForm()
-    })
+
+    const crm = this.ngRedux.getState().activeProject.crm;
+    const newRoleSet = createRoleSet(new RoleSet(propertyToAdd), roles, crm, {});
+
 
     // add a form conrtol
     this.formGroup.addControl(
@@ -243,42 +237,6 @@ export abstract class DataUnitBase implements OnInit, OnDestroy {
 
     /** remove the formControl from form */
     this.formGroup.removeControl(keyInState)
-  }
-
-
-
-  addOptionSelected($event) {
-    const o: AddOption = $event.item;
-
-    // if this option is already added
-    if (o.added) {
-
-      this.stopSelectProperty();
-
-    } else {
-
-      if (o.uiElement.roleSetKey) {
-
-        // if this is a role set
-
-        this.addRoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey])
-
-      } else if (o.uiElement.fk_property_set) {
-
-        // if this is a prop set
-
-        if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
-
-          this.stateCreator.initializeExistenceTimeState([], new ExistenceTimeDetail({ toggle: 'expanded' }), { isCreateMode: true }).subscribe(val => {
-            this.addPropSet('_existenceTime', val)
-          })
-
-        }
-
-      }
-
-    }
-
   }
 
 }

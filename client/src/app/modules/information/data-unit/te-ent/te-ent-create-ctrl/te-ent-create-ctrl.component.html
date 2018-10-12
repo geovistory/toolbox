@@ -1,76 +1,29 @@
-<div class="card gv-name">
-  <ng-container *ngTemplateOutlet="header"></ng-container>
+<div class="card">
 
-  <form [formGroup]="formGroup" *ngIf="formGroup">
+  <!-- Header allowing to add -->
+  <gv-te-ent-header [ontoInfoVisible$]="ontoInfoVisible$" [classConfig]="classConfig" [selectPropState$]="selectPropState$"
+    (startSelectProperty)="startSelectProperty()"></gv-te-ent-header>
+
+  <!-- What do you want to add? -->
+  <gv-add-info-te-ent *ngIf="(selectPropState$ | async) === 'selectProp'" [uiElements]="uiElementsForAddInfo"
+    [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)"
+    [excludeRoleSet]="(parentRoleSet$ | async)" (cancel)="stopSelectProperty()"></gv-add-info-te-ent>
+
+  <!-- The form itself -->
+  <form class="card-body" [formGroup]="formGroup" *ngIf="formGroup">
 
     <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
-        <span [ngSwitch]="item.key">
-  
-          <gv-existence-time-editable *ngSwitchCase="'_existenceTime'" [basePath]="basePath.concat('_children').concat(item.key)"
-            (onRemovePropSet)="removePropSet(item.key)" mode="create" [formControlName]="item.key" (touched)="markAsTouched()"></gv-existence-time-editable>
-  
-          <gv-te-ent-role-set-create-ctrl *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath" [index]="item.key"
-            (onRemoveRoleSet)="removeRoleSet(item.key)" [formControlName]="item.key" (touched)="markAsTouched()"></gv-te-ent-role-set-create-ctrl>
-  
-        </span>
-      </div>
-  
+      <span [ngSwitch]="item.key">
+
+        <gv-existence-time-editable *ngSwitchCase="'_existenceTime'" [basePath]="basePath.concat('_children').concat(item.key)"
+          (onRemovePropSet)="removePropSet(item.key)" mode="create" [formControlName]="item.key" (touched)="markAsTouched()"></gv-existence-time-editable>
+
+        <gv-te-ent-role-set-create-ctrl *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath"
+          [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)" [formControlName]="item.key" (touched)="markAsTouched()"></gv-te-ent-role-set-create-ctrl>
+
+      </span>
+    </div>
+
   </form>
 
-  <ng-container *ngTemplateOutlet="dating"></ng-container>
-
-  <div class="gv-footer border-top border-white">
-
-    <!-- Step 1 for adding a new property -->
-
-    <button class="btn btn-light btn-sm btn-block text-secondary rounded-top-0" (click)="startSelectProperty()" *ngIf="(selectPropState$ | async) === 'init'">
-      <i class="fa fa-plus"></i> Add a property ...
-    </button>
-
-    <!-- Step 2 for adding new Property section -->
-
-    <div class="d-flex flex-column gv-grow-1 bg-light border-top border-gray" *ngIf="(selectPropState$ | async) === 'selectProp'">
-
-      <div class="card-header bt-1">
-        <div class="d-flex">
-          <div class="gv-grow-1 align-self-center">
-            What do you want to add?
-          </div>
-          <button type="button" name="button" class="btn btn-link align-self-center btn-sm" (click)="stopSelectProperty()">
-            <i class="fa fa-close"></i>
-          </button>
-        </div>
-      </div>
-
-      <gv-add-info-te-ent [uiElements]="uiElementsForAddInfo" [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)" [excludeRoleSet]="(parentRoleSet$ | async)"></gv-add-info-te-ent>
-
-    </div>
-  </div>
-
 </div>
-
-
-<!-- ************************** NG TEMPLATES ****************************** -->
-
-<ng-template #header>
-  <div class="card-header gv-name-header d-flex flex-row">
-    <ng-content select="[headerLeft]"></ng-content>
-    <div class="gv-grow-1">
-      <span *ngIf="labelInEdit">{{labelInEdit}}</span>
-      <span *ngIf="label && !labelInEdit">{{label}}</span>
-      <span *ngIf="!label && !labelInEdit">{{classConfig.label}}</span>
-    </div>
-    <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
-      <div class="align-self-center">
-        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{classConfig.dfh_pk_class}}" target="_blank">
-          {{classConfig.dfh_identifier_in_namespace}}
-        </a>
-      </div>
-    </div>
-    <ng-content select="[headerRight]"></ng-content>
-  </div>
-</ng-template>
-
-<ng-template #dating>
-  <!-- <gv-te-ent-existence-time [parentPath]="basePath"></gv-te-ent-existence-time> -->
-</ng-template>

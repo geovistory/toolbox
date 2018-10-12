@@ -7,7 +7,7 @@
 
 <div class="d-flex">
 
-  <div class="gv-grow-1 pr-3">
+  <div class="gv-grow-1 pr-2">
     <div class="text-muted font-xs">
       key
     </div>
@@ -16,7 +16,17 @@
     </div>
   </div>
 
-  <div class="gv-grow-1 pr-3">
+  <div class="gv-grow-1 pr-2">
+    <div class="text-muted font-xs">
+      target
+    </div>
+    <div class="font-sm">
+      {{widget?.roleSet?.targetClassPk}}
+      <!-- <a *ngIf="widget?.roleSet?.targetClassPk" href [routerLink]="['../../../', widget.roleSet.targetClassPk]">{{widget?.roleSet?.targetClassPk}}</a> -->
+    </div>
+  </div>
+
+  <div class="gv-grow-1 pr-2">
     <div class="text-muted font-xs">
       pk_ui_context_conf
     </div>
@@ -26,7 +36,7 @@
   </div>
 
 
-  <div class="gv-grow-1 pr-3">
+  <div class="gv-grow-1 pr-2">
     <div class="text-muted font-xs">
       ord_num
     </div>

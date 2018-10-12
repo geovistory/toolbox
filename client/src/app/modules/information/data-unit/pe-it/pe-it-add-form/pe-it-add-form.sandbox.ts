@@ -5,8 +5,8 @@ import { InitStateModule } from 'app/shared/components/init-state/init-state.mod
 import { Information2Module } from '../../../information.module';
 import { PeItAddFormComponent } from './pe-it-add-form.component';
 import { InitPeItEditableStateModule } from 'app/shared';
-import { crm } from '../../../information.sandbox.mock';
 import { StateSettings } from 'app/core/state/services/state-creator';
+import { crm } from 'app/core/active-project/_mock-data';
 
 export default sandboxOf(PeItAddFormComponent, {
   imports: [
@@ -21,34 +21,36 @@ export default sandboxOf(PeItAddFormComponent, {
       f: {},
       cancelled: undefined,
       added: undefined,
-      basePath: ['_peIt_add_form'],
-      pkProject: -1, // use a pk of a project that has the pkEntity not yet added 
-      pkEntity: 34239,
-      settings:{
-        isAddMode:true
+      basePath: ['sandboxState', '_peIt_add_form'],
+      pkProject: 8, // use a pk of a project that has the pkEntity not yet added
+      pkEntity: 25893,
+      settings: {
+        isAddMode: true
       } as StateSettings,
-      state: {
-        activeProject: {
-          pk_project: -1, // use same pkProject
-          crm: crm
-        } ,
+      activeProject: {
+        pk_project: 8, // use same pkProject
+        crm
+      },
+      sandboxState: {
         _peIt_add_form: undefined
-      }
+      },
+      stateCreated: false
+
     },
     template: `
-    <gv-init-state [initState]="state">    
-        <gv-init-pe-it-editable-state [pkProject]="pkProject" [pkEntity]="pkEntity" [settings]="settings" (stateCreated)="state._peIt_add_form = $event"
+    <gv-init-state [activeProject]="activeProject" [sandboxState]="sandboxState">
+      <gv-init-pe-it-editable-state [pkProject]="pkProject" [pkEntity]="pkEntity" [settings]="settings" (stateCreated)="stateCreated = true"
       ></gv-init-pe-it-editable-state>
     </gv-init-state>
 
 
     <div class="container">
-      <div class="row" *ngIf="state._peIt_add_form">
+      <div class="row" *ngIf="stateCreated">
         <div style="width:430px;height:700px" class="col-6">
 
 
-          <gv-pe-it-add-form [basePath]="basePath" (formChange)="f = $event" 
-          (added)="added = $event" addBtn="true" cancelBtn="true" 
+          <gv-pe-it-add-form [basePath]="basePath" (formChange)="f = $event"
+          (added)="added = $event" addBtn="true" cancelBtn="true"
           (cancel)="cancelled = true" ></gv-pe-it-add-form>
 
         </div>
@@ -64,12 +66,10 @@ export default sandboxOf(PeItAddFormComponent, {
 
             <p>Form.value </p>
             <ngx-json-viewer [json]="f.value" [expanded]="false"></ngx-json-viewer>
-            
+
         </div>
       </div>
     </div>
-
-   
     `
   })
   .add('PeIt add form | no buttons', {
@@ -111,7 +111,7 @@ export default sandboxOf(PeItAddFormComponent, {
         <pre>
             {{f.value | json}}
         </pre>
-        
+
     </div>
     </div>
     `

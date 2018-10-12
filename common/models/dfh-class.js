@@ -226,6 +226,13 @@ module.exports = function (DfhClass) {
               name: "property_set",
               joinType: "left join",
               "orderBy": [{ "pk_entity": "asc" }]
+            },
+            "property_set_property_rel": {
+              $relation: {
+                name: "property_set_property_rel",
+                joinType: "left join",
+                "orderBy": [{ "pk_entity": "asc" }]
+              }
             }
           }
         },

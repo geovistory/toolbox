@@ -8,6 +8,7 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { RoleSet } from 'app/core/state/models';
 import { RoleSetActions } from './role-set.actions';
+import { RoleSetBase } from './role-set.base';
 
 
 const ofSubstore = (path: string[]) => (action): boolean => {
@@ -24,15 +25,19 @@ export class RoleSetApiEpics {
         private loadingBarActions: LoadingBarActions
     ) { }
 
-    public createEpics(subStore: ObservableStore<RoleSet>, path: string[], until$: Subject<boolean>) {
-        return combineEpics(this.createUpdateOrderEpic(subStore, path, until$));
+    public createEpics(c: RoleSetBase) {
+        return combineEpics(
+            this.createUpdateOrderEpic(c),
+            this.listenToRoleListLength(c),
+            // this.listenToStopCreateNewRole(c)
+        );
     }
 
-    private createUpdateOrderEpic(subStore: ObservableStore<RoleSet>, path: string[], until$: Subject<boolean>): Epic {
+    private createUpdateOrderEpic(c: RoleSetBase): Epic {
         return (action$, store) => {
             return action$.pipe(
                 ofType(RoleSetActions.ROLE_SET_UPDATE_ORDER),
-                filter(action => ofSubstore(path)(action)),
+                filter(action => ofSubstore(c.basePath)(action)),
                 switchMap((action: FluxStandardAction<any, any>) => new Observable<LoadingBarAction>((globalStore) => {
                     globalStore.next(this.loadingBarActions.startLoading());
                     // subStore.dispatch(this.actions.loadStarted());
@@ -43,15 +48,54 @@ export class RoleSetApiEpics {
                         .subscribe((data: InfEntityProjectRel[]) => {
                             globalStore.next(this.loadingBarActions.completeLoading());
 
-                            subStore.dispatch(this.actions.updateOrderSucceeded(data));
+                            c.localStore.dispatch(this.actions.updateOrderSucceeded(data));
                         }, error => {
-                            // subStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
+                            // c.localStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
                         })
                 })),
-                takeUntil(until$)
+                takeUntil(c.destroy$)
             )
         }
     }
 
+    private listenToRoleListLength(c: RoleSetBase): Epic {
+        return (action$, store) => {
+            return action$.pipe(
+                ofType(
+                    RoleSetActions.REMOVE_ROLE_FROM_ROLE_LIST,
+                    RoleSetActions.ROLE_REMOVED_FROM_PROJECT,
+                    RoleSetActions.STOP_CREATE_NEW_ROLE
+                ),
+                filter(action => ofSubstore(c.basePath)(action)),
+                switchMap((action: FluxStandardAction<any, any>) => new Observable<LoadingBarAction>((globalStore) => {
+                    const state = c.localStore.getState();
+                    if (!state._role_list ||  Object.keys(state._role_list).length === 0) {
+                        c.localStore.dispatch(this.actions.removeRoleSet());
+                    }
+
+                })),
+                takeUntil(c.destroy$)
+            )
+        }
+    }
+
+    // private listenToStopCreateNewRole(c: RoleSetBase): Epic {
+    //     return (action$, store) => {
+    //         return action$.pipe(
+    //             ofType(RoleSetActions.STOP_CREATE_NEW_ROLE),
+    //             filter(action => ofSubstore(c.basePath)(action)),
+    //             switchMap((action: FluxStandardAction<any, any>) => new Observable<LoadingBarAction>((globalStore) => {
+    //                 const state = c.localStore.getState();
+    //                 // if the only roleDetail is _undefined, remove the roleSet
+    //                 if (state._role_list && Object.keys(state._role_list).length === 1 && state._role_list._undefined
+    //                 ) {
+    //                     c.localStore.dispatch(this.actions.removeRoleSet());
+    //                 }
+
+    //             })),
+    //             takeUntil(c.destroy$)
+    //         )
+    //     }
+    // }
 
 }

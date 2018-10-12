@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { IAppState, InfPersistentItem, InfPersistentItemApi, InfRole, InfRoleApi, InfTemporalEntity } from 'app/core';
-import { PeItDetail, RoleDetail } from 'app/core/state/models';
+import { PeItDetail, RoleDetail, RoleSet } from 'app/core/state/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest, timer } from 'rxjs';
 import { peItReducer } from '../../../data-unit/pe-it/pe-it.reducer';
@@ -11,7 +11,7 @@ import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetFormBase } from '../../role-set-form.base';
 import { RoleSetActions } from '../../role-set.actions';
 import { roleSetReducer } from '../../role-set.reducer';
-import { StateSettings } from 'app/core/state/services/state-creator';
+import { StateSettings, createRoleDetail, createRoleSet } from 'app/core/state/services/state-creator';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -182,9 +182,8 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
         })
 
         // update the state
-        this.subs.push(this.stateCreator.initializeRoleDetails(roles, { isOutgoing: s.isOutgoing }).subscribe(roleStates => {
-          this.localStore.dispatch(this.actions.rolesCreated(roleStates))
-        }))
+        const roleSet = createRoleSet(new RoleSet(this.localStore.getState()), roles, this.ngRedux.getState().activeProject.crm, {})
+        this.localStore.dispatch(this.actions.rolesCreated(roleSet._role_list))
 
       }))
     }
@@ -209,8 +208,9 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
       // call api
       this.subs.push(this.peItApi.changePeItProjectRelation(this.ngRedux.getState().activeProject.pk_project, true, p).subscribe(peIts => {
         const rolesInProj: InfRole[] = peIts[0].pi_roles.filter((r: InfRole) => {
-          if (r.entity_version_project_rels && r.entity_version_project_rels[0] && r.entity_version_project_rels[0].is_in_project)
+          if (r.entity_version_project_rels && r.entity_version_project_rels[0] && r.entity_version_project_rels[0].is_in_project) {
             return r
+          }
         });
 
         // update the form group
@@ -219,9 +219,8 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
         })
 
         // update the state
-        this.subs.push(this.stateCreator.initializeRoleDetails(rolesInProj, { isOutgoing: s.isOutgoing }).subscribe(roleStates => {
-          this.localStore.dispatch(this.actions.rolesCreated(roleStates))
-        }))
+        const roleSet = createRoleSet(new RoleSet(this.localStore.getState()), rolesInProj, this.ngRedux.getState().activeProject.crm, {})
+        this.localStore.dispatch(this.actions.rolesCreated(roleSet._role_list))
 
       }))
     }

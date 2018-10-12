@@ -32,20 +32,20 @@ export default sandboxOf(PeItCreateCtrlComponent, {
                         <gv-pe-it-create-ctrl [basePath]="basePath"
                             name="val" [(ngModel)]="model.val" #val="ngModel" required>
                         </gv-pe-it-create-ctrl>
-                    </form>                               
+                    </form>
                 </div>
                 <div>
                     <p>Form.valid: {{f.valid | json}}</p>
-        
+
                     <p>Form.touched: {{f.touched | json}}</p>
-        
+
                     <p>Form.dirty: {{f.dirty | json}}</p>
-        
+
                     <p>Form.value </p>
                     <pre>
                         {{f.value | json}}
                     </pre>
-        
+
                 </div>
             </div>
         `

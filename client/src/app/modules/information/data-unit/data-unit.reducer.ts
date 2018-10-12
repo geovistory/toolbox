@@ -53,7 +53,7 @@ export const dataUnitReducer =
         break;
 
       case DataUnitActions.ROLE_SET_REMOVED:
-        let newRoleSets = Object.assign({}, lastState._children);
+        const newRoleSets = Object.assign({}, lastState._children);
         delete newRoleSets[action.meta.key];
 
         lastState = {

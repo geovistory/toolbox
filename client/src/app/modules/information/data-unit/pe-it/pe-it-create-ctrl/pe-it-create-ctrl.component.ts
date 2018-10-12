@@ -1,14 +1,16 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
-import { FormBuilder, FormControl, Validators, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { WithSubStore, NgRedux } from '@angular-redux/store';
-import { PeItActions } from '../pe-it.actions';
+import { NgRedux, WithSubStore } from '@angular-redux/store';
+import { Component, forwardRef } from '@angular/core';
+import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { InfPersistentItem, InfTemporalEntity, U, UiContext } from 'app/core';
-import { PeItCtrlBase } from '../pe-it-ctrl.base';
-import { peItReducer } from '../pe-it.reducer';
 import { StateCreatorService } from '../../../shared/state-creator.service';
+import { PeItCtrlBase } from '../pe-it-ctrl.base';
+import { PeItActions } from '../pe-it.actions';
+import { peItReducer } from '../pe-it.reducer';
+import { RootEpics } from 'app/core/store/epics';
+import { DataUnitAPIEpics } from '../../data-unit.epics';
 
 @WithSubStore({
-  basePathMethodName:'getBasePath',
+  basePathMethodName: 'getBasePath',
   localReducer: peItReducer
 })
 @Component({
@@ -34,16 +36,18 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
     protected ngRedux: NgRedux<any>,
     protected actions: PeItActions,
     protected fb: FormBuilder,
-    protected stateCreator: StateCreatorService
+    protected stateCreator: StateCreatorService,
+    protected rootEpics: RootEpics,
+    protected dataUnitEpics: DataUnitAPIEpics
   ) {
-    super(ngRedux, actions, fb, stateCreator)
+    super(ngRedux, actions, fb, stateCreator, rootEpics, dataUnitEpics)
   }
 
 
   initFormCtrls(): void {
     // add controls for each roleSet of _children
-    this.subs.push(this._children$.subscribe(roleSetList => {
-      U.obj2KeyValueArr(roleSetList).forEach(item=>{      
+    this._children$.takeUntil(this.destroy$).subscribe(roleSetList => {
+      U.obj2KeyValueArr(roleSetList).forEach(item => {
         this.formGroup.addControl(item.key, new FormControl(
           item.value.roles,
           [
@@ -51,18 +55,7 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
           ]
         ))
       })
-
-      // Object.keys(roleSetList).forEach((key) => {
-      //   if (roleSetList[key]) {
-      //     this.formGroup.addControl(key, new FormControl(
-      //       roleSetList[key].roles,
-      //       [
-      //         Validators.required
-      //       ]
-      //     ))
-      //   }
-      // })
-    }))
+    })
 
   }
 
@@ -70,37 +63,35 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
 
 
   subscribeFormChanges(): void {
-    
+
     const s = this.localStore.getState();
 
-    this.subs.push(
-      this.formGroup.valueChanges.subscribe(val => {
+    this.formGroup.valueChanges.takeUntil(this.destroy$).subscribe(val => {
 
-        // build a peIt with all pi_roles given by the form's controls 
-        let peIt = new InfPersistentItem();
+      // build a peIt with all pi_roles given by the form's controls
+      const peIt = new InfPersistentItem();
 
-        peIt.pi_roles = [];
-        Object.keys(this.formGroup.controls).forEach(key => {
-          if (this.formGroup.get(key)) {
-            peIt.pi_roles = [...peIt.pi_roles, ...this.formGroup.get(key).value]
-          }
-        })
-
-        peIt.fk_class = s.fkClass;
-
-        // try to retrieve a appellation label
-        const displayAppeUse: InfTemporalEntity = U.getDisplayAppeLabelOfPeIt(peIt)
-        this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(displayAppeUse);
-
-        if (this.formGroup.valid) {
-          // send the peIt the parent form
-          this.onChange(peIt)
-        }
-        else {
-          this.onChange(null)
+      peIt.pi_roles = [];
+      Object.keys(this.formGroup.controls).forEach(key => {
+        if (this.formGroup.get(key)) {
+          peIt.pi_roles = [...peIt.pi_roles, ...this.formGroup.get(key).value]
         }
       })
-    )
+
+      peIt.fk_class = s.fkClass;
+
+      // try to retrieve a appellation label
+      const displayAppeUse: InfTemporalEntity = U.getDisplayAppeLabelOfPeIt(peIt)
+      this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(displayAppeUse);
+
+      if (this.formGroup.valid) {
+        // send the peIt the parent form
+        this.onChange(peIt)
+      } else {
+        this.onChange(null)
+      }
+    })
+
 
   }
 

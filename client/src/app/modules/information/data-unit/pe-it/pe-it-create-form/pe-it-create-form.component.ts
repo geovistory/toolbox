@@ -2,11 +2,13 @@ import { NgRedux, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, NgForm } from '@angular/forms';
 import { InfTemporalEntity, U, UiContext } from 'app/core';
-
+import { StateCreatorService } from '../../../shared/state-creator.service';
 import { PeItFormBase } from '../pe-it-form.base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
-import { StateCreatorService } from '../../../shared/state-creator.service';
+import { RootEpics } from 'app/core/store/epics';
+import { DataUnitAPIEpics } from '../../data-unit.epics';
+
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -21,8 +23,8 @@ export class PeItCreateFormComponent extends PeItFormBase {
 
   @ViewChild('f') form: NgForm;
 
-  @Input() createBtn:boolean;
-  @Input() cancelBtn:boolean;
+  @Input() createBtn: boolean;
+  @Input() cancelBtn: boolean;
   @Output() formChange: EventEmitter<NgForm> = new EventEmitter();
 
   formCtrlName = 'persistent_item';
@@ -33,9 +35,11 @@ export class PeItCreateFormComponent extends PeItFormBase {
     protected ngRedux: NgRedux<any>,
     protected actions: PeItActions,
     protected fb: FormBuilder,
-    protected stateCreator: StateCreatorService
+    protected stateCreator: StateCreatorService,
+    protected rootEpics: RootEpics,
+    protected dataUnitEpics: DataUnitAPIEpics
   ) {
-    super(ngRedux, actions, fb, stateCreator)
+    super(ngRedux, actions, fb, stateCreator, rootEpics, dataUnitEpics)
 
     this.subscribeFormChanges();
 
@@ -43,18 +47,17 @@ export class PeItCreateFormComponent extends PeItFormBase {
 
   onInitPeItBaseChild(): void {
 
-    this.subs.push(
-      this.form.valueChanges.subscribe(val => {
-        const displayAppeUse: InfTemporalEntity = U.getFirstAppeTeEntOfPeIt(val.peIt)
-        this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(displayAppeUse);
-        this.formChange.emit(this.form)
-      })
-    )
+    this.form.valueChanges.takeUntil(this.destroy$).subscribe(val => {
+      const displayAppeUse: InfTemporalEntity = U.getFirstAppeTeEntOfPeIt(val.peIt)
+      this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(displayAppeUse);
+      this.formChange.emit(this.form)
+    })
+
 
   }
 
 
-  submit(){
+  submit() {
     console.log(this.form.value)
   }
 
@@ -66,6 +69,6 @@ export class PeItCreateFormComponent extends PeItFormBase {
   initFormCtrls(): void { }
 
   onChange(controlValue: any): void {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 }

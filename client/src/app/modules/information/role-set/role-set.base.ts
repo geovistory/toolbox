@@ -30,6 +30,7 @@ import { RoleSetActions, roleStateKey } from './role-set.actions';
 import { RoleSetApiEpics } from './role-set.epics';
 import { roleSetReducer } from './role-set.reducer';
 import { RootEpics } from '../../../core/store/epics';
+import { takeUntil } from 'rxjs/operators';
 
 
 @AutoUnsubscribe({
@@ -110,6 +111,9 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
     hasOnlyCircularRole: boolean;
 
+    // if true, user is dragging a role to change the order
+    userIsDragging = false;
+
     /**
      * Outputs
      */
@@ -183,19 +187,19 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
         this.formValPath = [...this.basePath, 'formGroup'];
 
 
-        this.subs.push(this._role_list$.subscribe(d => {
+        this._role_list$.takeUntil(this.destroy$).subscribe(d => {
             this._role_list = d;
 
-            this.roleDetails = U.obj2KeyValueArr(d);
+            if (!this.userIsDragging) this.roleDetails = U.obj2KeyValueArr(d);
 
             // const r = U.obj2Arr(d);
             // if (r.length == 1 && r[0].isCircular === true) this.hasOnlyCircularRole = true;
             // else this.hasOnlyCircularRole = false;
 
-        }))
+        })
 
 
-        this.rootEpics.addEpic(this.epics.createEpics(this.localStore, this.basePath, this.destroy$));
+        this.rootEpics.addEpic(this.epics.createEpics(this));
 
         // Subscribe to the activeProject, to get the pk_project needed for api call
         this.subs.push(this.ngRedux.select<Project>('activeProject').subscribe(d => this.project = d));
@@ -453,12 +457,16 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     }
 
 
-
+    onDragStart() {
+        this.userIsDragging = true;
+    }
 
     /**
    * called when a RoleDetail is dragged
    */
     onDrag($event: { key: string, value: RoleDetail }) {
+
+        this.userIsDragging = false;
 
         const changedEprs: InfEntityProjectRel[] = []
 
@@ -480,6 +488,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
         }
 
         if (changedEprs.length) this.localStore.dispatch(this.actions.updateOrder(changedEprs));
+
 
     }
 

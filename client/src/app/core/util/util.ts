@@ -1,5 +1,5 @@
 import { ExistenceTime } from 'app/core/existence-time/existence-time';
-import { AppeDetail, DataUnitChild, DataUnitChildLabel, DataUnitChildList, DataUnitLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, RoleSet, RoleSetLabel, RoleSetList, TeEntDetail, RoleDetailList } from 'app/core/state/models';
+import { AppeDetail, DataUnitChild, DataUnitChildLabel, DataUnitChildList, DataUnitLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, RoleSet, RoleSetLabel, RoleSetList, TeEntDetail, RoleDetailList, PlaceDetail } from 'app/core/state/models';
 import { indexBy, omit } from 'ramda';
 import { AcEntity, AcNotification, ActionType } from '../../modules/gv-angular-cesium/angular-cesium-fork';
 import { AppellationLabel } from '../../modules/information/shared/appellation-label';
@@ -466,22 +466,21 @@ export class U {
         const path = settings.path;
         if (r) {
             if (r._teEnt) {
+                let string = '';
                 if (r._teEnt._children) {
-                    return {
-                        path,
-                        type: 'te-ent',
-                        string: U.labelFromDataUnitChildList(r._teEnt._children, settings).parts[0].roleLabels[0].string
-                    };
-                } else {
-                    return {
-                        path,
-                        type: 'te-ent',
-                        string: ''
+                    const label = U.labelFromDataUnitChildList(r._teEnt._children, settings);
+                    if (label && label.parts && label.parts[0] && label.parts[0].roleLabels && label.parts[0].roleLabels[0] && label.parts[0].roleLabels[0].string) {
+                        string = label.parts[0].roleLabels[0].string;
                     }
+                }
+                return {
+                    path,
+                    type: 'te-ent',
+                    string
                 }
             } else if (r._appe) return { path, type: 'appe', string: U.labelFromAppeDetail(r._appe) };
             else if (r._lang) return { path, type: 'lang', string: U.labelFromLangDetail(r._lang) };
-            else if (r._place) return { path, type: 'place', string: 'Point on Map' };
+            else if (r._place) return { path, type: 'place', string: U.labelFromPlaceDetail(r._place) };
             else if (r._leaf_peIt) return { path, type: 'leaf-pe-it', string: U.labelFromLeafPeIt(r._leaf_peIt, { dataUnitChildrenMax: 1, rolesMax: 1, path: [...path, '_leaf_peIt'] }) };
 
             else {
@@ -503,6 +502,12 @@ export class U {
 
     static labelFromLangDetail(l: LangDetail): string {
         if (l && l.language) return l.language.notes;
+
+        else return null;
+    }
+
+    static labelFromPlaceDetail(p: PlaceDetail): string {
+        if (p && p.place) return 'WGS84: ' + p.place.lat + '°, ' + p.place.long + '°';
 
         else return null;
     }
@@ -794,7 +799,7 @@ export class U {
 
 
         // get rolesets to teEnts without presences
-        const keys = Object.keys(peItDetail._children);
+        const keys = (!peItDetail || !peItDetail._children) ? [] : Object.keys(peItDetail._children);
         const roleSets = {};
         keys.forEach(key => {
             const child: DataUnitChild = peItDetail._children[key];
@@ -1100,7 +1105,7 @@ export class U {
     /**
      * Figures out if any of the roleDetails of the given RoleDetailList
      * has a temporal entity that is in editing mode. If so:
-     * 
+     *
      * @returns the key that roleDetail has in the given List.
      */
     static extractRoleDetailKeyOfEditingTeEnt(roleDetailList: RoleDetailList): string {
@@ -1116,17 +1121,27 @@ export class U {
     }
 
 
+
     /**
-     * Figures out if any of the DataUnitChildren contains a teEnt that is in editing mode.
-     * If so:
+     * Returns the key of the data unit children that should be isolated in view
      * @returns the key of that DataUnitChild
      */
-    static extractDataUnitChildKeyOfEditingTeEnt(children: DataUnitChildList): string {
+    static extractDataUnitChildKeyForIsolation(children: DataUnitChildList): string {
         let key: string;
         U.obj2KeyValueArr(children).some((child) => {
             if (child.value.type === 'RoleSet') {
-                const roleSet: RoleSet = child.value;
-                if (U.extractRoleDetailKeyOfEditingTeEnt(roleSet._role_list)) {
+                const roleSet = child.value as RoleSet;
+
+                if (roleSet._role_set_form) {
+
+                    // if a role set has a role set form (to add or create a new form)
+
+                    key = child.key
+
+                } else if (U.extractRoleDetailKeyOfEditingTeEnt(roleSet._role_list)) {
+
+                    // if a teEnt is editing
+
                     key = child.key;
                     return true;
                 }

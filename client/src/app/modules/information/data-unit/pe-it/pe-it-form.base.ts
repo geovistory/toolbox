@@ -1,21 +1,21 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { OnInit, Input } from '@angular/core';
+import { Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { InfPersistentItem } from 'app/core';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Observable } from 'rxjs';
-
 import { PeItDetail } from 'app/core/state/models';
+import { Observable } from 'rxjs';
+import { StateCreatorService } from '../../shared/state-creator.service';
 import { DataUnitBase } from '../data-unit.base';
 import { PeItActions } from './pe-it.actions';
 import { peItReducer } from './pe-it.reducer';
-import { StateCreatorService } from '../../shared/state-creator.service';
+import { RootEpics } from 'app/core/store/epics';
+import { DataUnitAPIEpics } from '../data-unit.epics';
+
 
 /**
  * hooks in on the level of
  * PeItDetail
  */
-@AutoUnsubscribe()
 @WithSubStore({
     localReducer: peItReducer,
     basePathMethodName: 'getBasePath'
@@ -35,9 +35,11 @@ export abstract class PeItFormBase extends DataUnitBase implements OnInit {
         protected ngRedux: NgRedux<any>,
         protected actions: PeItActions,
         protected fb: FormBuilder,
-        protected stateCreator: StateCreatorService
+        protected stateCreator: StateCreatorService,
+        protected rootEpics: RootEpics,
+        protected dataUnitEpics: DataUnitAPIEpics
     ) {
-        super(ngRedux, fb, stateCreator);
+        super(ngRedux, fb, stateCreator, rootEpics, dataUnitEpics);
     }
 
     getBasePath = (): string[] => this.basePath;
@@ -53,9 +55,9 @@ export abstract class PeItFormBase extends DataUnitBase implements OnInit {
     initStore() {
 
         this.localStore = this.ngRedux.configureSubStore(this.basePath, peItReducer);
-        this.subs.push(this.localStore.select<PeItDetail>('').subscribe(d => {
+        this.localStore.select<PeItDetail>('').takeUntil(this.destroy$).subscribe(d => {
             this.peItState = d
-        }))
+        })
     }
 
 

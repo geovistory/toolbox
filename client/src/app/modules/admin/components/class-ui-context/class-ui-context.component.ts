@@ -43,6 +43,7 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
 
   pkUiContext: number;
   pkClass: number;
+  description: string;
 
   subs: Subscription[] = []
 
@@ -62,8 +63,10 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
 
 
     this.pkClass = this.activatedRoute.snapshot.parent.params['pk_class'];
+    
     this.subs.push(this.activatedRoute.params.subscribe(params => {
       this.pkUiContext = params['pk_ui_context'];
+
 
       this.until$.next(true)
       this.until$.unsubscribe();

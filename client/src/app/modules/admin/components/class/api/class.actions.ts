@@ -18,7 +18,7 @@ export class ClassAPIActions {
   static readonly LOAD_SUCCEEDED = 'LOAD_SUCCEEDED';
   static readonly LOAD_FAILED = 'LOAD_FAILED';
 
-  @dispatch() loadClassDetails = (pkClass: number, pkUiContext:number): ClassAPIAction => ({
+  @dispatch() loadClassDetails = (pkClass: number, pkUiContext: number): ClassAPIAction => ({
     type: ClassAPIActions.LOAD_CLASS_DETAILS,
     meta: { pkClass, pkUiContext },
     payload: null,

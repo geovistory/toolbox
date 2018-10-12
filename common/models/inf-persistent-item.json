@@ -73,7 +73,8 @@
         "typesOfNamespaceClassAndProject",
         "typesOfNamespaceNested",
         "findOrCreateType",
-        "typeNested"
+        "typeNested",
+        "addToProject"
       ]
     }
   ],
@@ -346,6 +347,15 @@
           "http": {
             "source": "query"
           }
+        },
+        {
+          "arg": "pk_class",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the Class you want to filter for. E.g. 363 for Geographical Place.",
+          "http": {
+            "source": "query"
+          }
         }
       ],
       "returns": {
@@ -503,6 +513,38 @@
       "http": {
         "path": "/type-nested",
         "verb": "get"
+      }
+    },
+    "addToProject": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_entity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the persistent item to add.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "persistent_items",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Add a persistent item with its related elements to a project.",
+      "http": {
+        "path": "/add-to-project",
+        "verb": "post"
       }
     }
   }

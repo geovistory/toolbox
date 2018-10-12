@@ -5,7 +5,7 @@ import { ComConfig, UiContext } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable, Subject } from 'rxjs';
 
-import { ExistenceTimeDetail, RoleDetail, RoleSet, TeEntDetail, TeEntAccentuation } from 'app/core/state/models';
+import { ExistenceTimeDetail, RoleDetail, RoleSet, TeEntDetail, TeEntAccentuation, AddOption, RoleSetForm, CollapsedExpanded } from 'app/core/state/models';
 import { slideInOut } from '../../../shared/animations';
 import { StateCreatorService } from '../../../shared/state-creator.service';
 import { DataUnitBase } from '../../data-unit.base';
@@ -13,10 +13,9 @@ import { TeEntActions } from '../te-ent.actions';
 import { TeEntAPIEpics } from '../te-ent.epics';
 import { teEntReducer } from '../te-ent.reducer';
 import { RootEpics } from '../../../../../core/store/epics';
+import { DataUnitAPIEpics } from '../../data-unit.epics';
 
-@AutoUnsubscribe({
-  blackList: ['destroy$']
-})
+
 @WithSubStore({
   localReducer: teEntReducer,
   basePathMethodName: 'getBasePath'
@@ -65,14 +64,15 @@ export class TeEntEditableComponent extends DataUnitBase {
   previousAccentuation: TeEntAccentuation;
 
   constructor(
-    private rootEpics: RootEpics,
-    private epics: TeEntAPIEpics,
+    protected rootEpics: RootEpics,
+    protected dataUnitEpics: DataUnitAPIEpics,
+    protected epics: TeEntAPIEpics,
     protected ngRedux: NgRedux<any>,
     protected actions: TeEntActions,
     protected fb: FormBuilder,
     protected stateCreator: StateCreatorService
   ) {
-    super(ngRedux, fb, stateCreator);
+    super(ngRedux, fb, stateCreator, rootEpics, dataUnitEpics);
   }
 
   getBasePath = () => [...this.parentPath, '_teEnt']
@@ -134,27 +134,60 @@ export class TeEntEditableComponent extends DataUnitBase {
    */
   initTeEntSubscriptions() {
 
-    this.ngRedux.select<RoleDetail>(this.parentPath).subscribe(d => this.parentRoleState = d)
+    this.ngRedux.select<RoleDetail>(this.parentPath).takeUntil(this.destroy$).subscribe(d => this.parentRoleState = d)
 
-    this.subs.push(this.localStore.select<TeEntDetail>('').subscribe(d => {
+    this.localStore.select<TeEntDetail>('').takeUntil(this.destroy$).subscribe(d => {
       this.teEnState = d
-    }))
-
-
-    // /**
-    // * gets the Appellation is for given teEnt roleSets that is for display in this project
-    // */
-    // this.subs.push(this.localStore.select<RoleSetList>(['_children']).subscribe((_children) => {
-    //   this.label = U.labelFromDataUnitChildList(_children);
-    //   const oldLabel = (this.teEnState && this.teEnState.label) ? this.teEnState.label : undefined;
-
-    //   // update store
-    //   if (this.teEnState && oldLabel !== this.label)
-    //     this.localStore.dispatch(this.actions.roleSetsListDisplayLabelUpdated(this.label))
-
-    // }))
+    })
 
   }
+
+
+  addOptionSelected($event) {
+
+    const o: AddOption = $event.item;
+
+    // if this option is already added
+    if (o.added) {
+
+      this.stopSelectProperty();
+
+    } else {
+
+      if (o.uiElement.roleSetKey) {
+
+        // if this is a role set
+
+        // prepare the RoleSet
+
+        const newRoleSet = {
+          ...new RoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey]),
+          toggle: 'expanded' as CollapsedExpanded,
+          rolesNotInProjectLoading: true,
+          roleStatesInOtherProjectsVisible: false,
+          _role_set_form: new RoleSetForm()
+        }
+
+        this.addRoleSet(newRoleSet, undefined)
+
+      } else if (o.uiElement.fk_property_set) {
+
+        // if this is a prop set
+
+        if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
+
+          this.stateCreator.initializeExistenceTimeState([], new ExistenceTimeDetail({ toggle: 'expanded' }), { isCreateMode: true }).subscribe(val => {
+            this.addPropSet('_existenceTime', val)
+          })
+
+        }
+
+      }
+
+    }
+
+  }
+
 
 
   /**

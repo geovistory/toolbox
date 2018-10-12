@@ -305,7 +305,7 @@ module.exports = function (InfPersistentItem) {
     te_ent_in_project AS (
       SELECT te_ent.pk_entity, te_ent.fk_class
       FROM information.v_temporal_entity as te_ent
-      INNER JOIN epr_of_project as epr on epr.fk_entity = te_ent.pk_entity
+      --INNER JOIN epr_of_project as epr on epr.fk_entity = te_ent.pk_entity
     ),
     pe_it_in_projet AS (
       SELECT pi.pk_entity, pi.fk_class, pi.tmsp_last_modification
@@ -319,7 +319,7 @@ module.exports = function (InfPersistentItem) {
     appellation_labels,
     ts_headline(appellation_string, q),
     appellation_string,
-    projects
+    projects_array as projects
     FROM
     (
       SELECT
@@ -334,8 +334,8 @@ module.exports = function (InfPersistentItem) {
         )
       ) as appellation_labels,
       string_agg(appellations.appellation_string, ' • ') AS appellation_string,
-      appellations.projects,
-      setweight(to_tsvector(string_agg(appellations.appellation_string, ' • ')), 'A') as document
+      setweight(to_tsvector(string_agg(appellations.appellation_string, ' • ')), 'A') as document,
+	    projects.projects_array
       FROM pe_it_in_projet AS pi
       INNER JOIN
       (
@@ -343,7 +343,6 @@ module.exports = function (InfPersistentItem) {
         appe_in_project.pk_entity as pk_appellation,
         appe_in_project.appellation_string,
         appe_in_project.appellation_label as appellation_label,
-        jsonb_agg(DISTINCT r63_in_project.fk_project) as projects,
         count(CASE WHEN r63_in_project.is_in_project THEN 1 END) as r63_is_in_project_count,
         count(CASE WHEN r63_in_project.is_standard_in_project THEN 1 END) as r63_is_standard_in_project_count,
         r63.fk_entity as pk_named_entity,
@@ -361,7 +360,9 @@ module.exports = function (InfPersistentItem) {
         ORDER BY r63_in_project.ord_num ASC
       ) AS appellations
       ON appellations.pk_named_entity = pi.pk_entity
-      GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, appellations.projects
+      INNER JOIN (SELECT fk_entity, jsonb_agg(fk_project) as projects_array from information.entity_version_project_rel GROUP BY fk_entity) AS projects
+      ON projects.fk_entity = pi.pk_entity
+      GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, projects.fk_entity, projects.projects_array
       ORDER BY pi.tmsp_last_modification DESC
     ) AS pi, to_tsquery($1) q
     ` +
@@ -412,7 +413,7 @@ module.exports = function (InfPersistentItem) {
   })
 
 
-  InfPersistentItem.searchInRepo = function (searchString, limit, page, cb) {
+  InfPersistentItem.searchInRepo = function (searchString, limit, page, fk_class, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -440,6 +441,12 @@ module.exports = function (InfPersistentItem) {
       offset
     ];
 
+    var where = '';
+    if (fk_class) {
+      params.push(fk_class);
+      where = ' AND pi.fk_class = $4';
+    }
+
     var sql_stmt = `
     Select
     count(pi.pk_entity) OVER() AS total_count,
@@ -463,7 +470,7 @@ module.exports = function (InfPersistentItem) {
         )
       ) as appellation_labels,
       string_agg(appellations.appellation_string, ' • ') AS appellation_string,
-      appellations.projects,
+	    projects_array as projects,
       setweight(to_tsvector(string_agg(appellations.appellation_string, ' • ')), 'A') as document
       FROM information.v_persistent_item AS pi
       INNER JOIN
@@ -514,14 +521,17 @@ module.exports = function (InfPersistentItem) {
         GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity
       ) AS appellations
       ON appellations.pk_named_entity = pi.pk_entity
-      GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, appellations.projects
+    	INNER JOIN (SELECT fk_entity, jsonb_agg(fk_project) as projects_array from information.entity_version_project_rel GROUP BY fk_entity) AS projects
+	    ON projects.fk_entity = pi.pk_entity
+      GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, projects.fk_entity, projects.projects_array
       ORDER BY pi.tmsp_last_modification DESC
     ) AS pi, to_tsquery($1) q
-    WHERE document @@ q
+    WHERE document @@ q ${where}
     ORDER BY ts_rank(document, q) DESC
     LIMIT $2
     OFFSET $3
     `;
+
 
 
     const connector = InfPersistentItem.dataSource.connector;
@@ -621,7 +631,7 @@ module.exports = function (InfPersistentItem) {
                     "pk_entity": "asc"
                   }]
                 },
-                "entity_version_project_rels": innerJoinThisProject,
+                // "entity_version_project_rels": innerJoinThisProject,
                 "te_roles": {
                   "$relation": {
                     "name": "te_roles",
@@ -668,7 +678,7 @@ module.exports = function (InfPersistentItem) {
                 "pk_entity": "asc"
               }]
             },
-            "entity_version_project_rels": innerJoinThisProject,
+            // "entity_version_project_rels": innerJoinThisProject,
             "te_roles": {
               "$relation": {
                 "name": "te_roles",
@@ -685,8 +695,7 @@ module.exports = function (InfPersistentItem) {
                   "orderBy": [{
                     "pk_entity": "asc"
                   }]
-                },
-                // "entity_version_project_rels": innerJoinThisProject
+                }
               },
               "language": {
                 "$relation": {
@@ -696,8 +705,6 @@ module.exports = function (InfPersistentItem) {
                     "pk_entity": "asc"
                   }]
                 }
-                // ,
-                // "entity_version_project_rels": innerJoinThisProject
               },
               "time_primitive": {
                 "$relation": {
@@ -1120,7 +1127,7 @@ module.exports = function (InfPersistentItem) {
         ]
       }
     };
-    
+
     const filter = {
       where: ["pk_entity", "=", pk_entity],
       "orderBy": [{
@@ -1232,5 +1239,140 @@ module.exports = function (InfPersistentItem) {
         InfPersistentItem.typesOfNamespaceClassAndProject(pk_namespace, pk_project, pk_typed_class, cb);
       }
     );
+  }
+
+
+
+  /**
+   * Add a persistent item to project 
+   * 
+   * See this page for details
+   * https://kleiolab.atlassian.net/wiki/spaces/GEOV/pages/693764097/Add+DataUnits+to+Project
+   * 
+   * @param pk_namespace
+   * @param pk_project
+   * @param pk_typed_class
+   */
+  InfPersistentItem.addToProject = function (pk_project, pk_entity, cb) {
+    const params = [pk_entity, pk_project]
+
+    const sql_stmt = `
+          -- Relate given persistent item to given project --
+      ----------------------------------------------------
+
+      -- Find "auto-add-properties" for all classes 
+      -- TODO: Add a filter for properties enabled by given project
+      WITH pe_it AS (
+        select pk_entity, fk_class from information.persistent_item where pk_entity = $1
+      ),
+      auto_add_properties AS (
+        -- select the fk_class and the properties that are auto add because of a ui_context_config
+        select p.dfh_has_domain as fk_class, p.dfh_pk_property, p.dfh_range_instances_max_quantifier as max_quantifier
+        from data_for_history.property as p
+        inner join commons.ui_context_config as ctxt on p.dfh_pk_property = ctxt.fk_property
+        Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = true
+        UNION
+        select p.dfh_has_range as fk_class, p.dfh_pk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
+        from data_for_history.property as p
+        inner join commons.ui_context_config as ctxt on p.dfh_pk_property = ctxt.fk_property
+        Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = false
+        UNION
+        -- select the fk_class and the properties that are auto add because of a property set
+          select ctxt.fk_class_for_property_set, psprel.fk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
+        from data_for_history.property as p
+        inner join commons.property_set_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
+        inner join commons.ui_context_config as ctxt on psprel.fk_property_set = ctxt.fk_property_set
+        Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = false
+        UNION
+          select ctxt.fk_class_for_property_set, psprel.fk_property, p.dfh_range_instances_max_quantifier as max_quantifier
+        from data_for_history.property as p
+        inner join commons.property_set_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
+        inner join commons.ui_context_config as ctxt on psprel.fk_property_set = ctxt.fk_property_set
+        Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = true
+      ),
+      -- Find all roles related to the given persistent item pk_entity 
+      -- that are of an auto-add property
+      pe_it_roles AS (
+        select r.pk_entity, r.fk_temporal_entity, r.fk_property, r.fk_entity, addp.max_quantifier, r.community_favorite_calendar as calendar
+        from information.v_role as r
+        inner join pe_it on r.fk_entity = pe_it.pk_entity
+        inner join auto_add_properties as addp on (
+          addp.dfh_pk_property = r.fk_property AND addp.fk_class = pe_it.fk_class 
+        )
+        -- take only the max quantity of rows for that property, exclude repo-alternatives
+        WHERE r.rank_for_pe_it <= r.domain_max_quantifier OR r.domain_max_quantifier = -1  OR r.domain_max_quantifier IS NULL
+      ),
+      -- Find all roles related to temporal entities mached by pe_it_roles
+      -- that are of an auto-add property
+      te_ent_roles AS (
+        select r.pk_entity, r.fk_temporal_entity, r.fk_property, r.fk_entity, addp.max_quantifier, r.community_favorite_calendar as calendar
+        from information.v_role as r
+        inner join pe_it_roles as pi_r on pi_r.fk_temporal_entity = r.fk_temporal_entity
+        inner join information.temporal_entity as te on te.pk_entity = pi_r.fk_temporal_entity
+        inner join auto_add_properties as addp on (addp.dfh_pk_property = r.fk_property AND addp.fk_class = te.fk_class)
+        -- take only the max quantity of rows for that property, exclude repo-alternatives
+        WHERE r.rank_for_te_ent <= r.range_max_quantifier OR r.range_max_quantifier = -1 OR r.range_max_quantifier IS NULL
+      ),
+      -- find all entity associations that involve the pe_it
+      -- that are of an auto-add property
+      pe_it_entity_associations AS (
+        -- where pe_it is domain
+        select ea.pk_entity, ea.fk_domain_entity, ea.fk_property, ea.fk_range_entity, addp.max_quantifier
+        from information.v_entity_association as ea
+        inner join pe_it on ea.fk_domain_entity = pe_it.pk_entity
+        inner join auto_add_properties as addp on (addp.dfh_pk_property = ea.fk_property AND addp.fk_class = pe_it.fk_class)		
+        -- take only the max allowed rows
+        WHERE ea.rank_for_domain <= ea.range_max_quantifier OR ea.range_max_quantifier = -1 OR ea.range_max_quantifier IS NULL
+        
+        UNION
+        
+        -- where pe_it is range
+        select ea.pk_entity, ea.fk_domain_entity, ea.fk_property, ea.fk_range_entity, addp.max_quantifier
+        from information.v_entity_association as ea
+        inner join pe_it on ea.fk_range_entity = pe_it.pk_entity
+        inner join auto_add_properties as addp on (addp.dfh_pk_property = ea.fk_property AND addp.fk_class = pe_it.fk_class)		
+        -- take only the max allowed rows
+        WHERE ea.rank_for_range <= ea.domain_max_quantifier OR ea.domain_max_quantifier = -1  OR ea.domain_max_quantifier IS NULL
+      ),
+      -- TODO: find all entity associations that involve the te_ents (for types or mentionings of te_ents!)
+
+      -- get a list of all pk_entities of repo version
+      pk_entities_of_repo AS (
+        select pk_entity, null::calendar_type as calendar from pe_it
+        UNION
+        select pk_entity, null::calendar_type as calendar from pe_it_entity_associations
+        UNION
+        select pk_entity, calendar from pe_it_roles 
+        UNION 
+        select pk_entity, calendar from te_ent_roles
+      ),
+      -- get a list of all pk_entities that the project manually removed
+      pk_entities_excluded_by_project AS (
+        SELECT fk_entity as pk_entity
+        FROM information.v_entity_version_project_rel as epr 
+        where epr.is_in_project = false and epr.fk_project = 12
+      ),
+      -- get final list of pk_entities to add to project
+      pk_entities_to_add AS (
+        select pk_entity, calendar from pk_entities_of_repo
+        EXCEPT
+        select pk_entity, null::calendar_type from pk_entities_excluded_by_project
+      )
+      --select * from pk_entities_to_add;
+
+      insert into information.v_entity_version_project_rel (fk_project, is_in_project, fk_entity, calendar)
+      SELECT $2, true, pk_entity, calendar
+      from pk_entities_to_add;
+    `
+
+    const connector = InfPersistentItem.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      if (err) cb(err, resultObjects);
+
+      InfPersistentItem.nestedObjectOfProject(pk_project, pk_entity, (err, result) => {
+        cb(err, result)
+      })
+
+    });
   }
 };

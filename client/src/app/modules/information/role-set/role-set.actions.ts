@@ -20,58 +20,58 @@ export type RoleSetAction = FluxStandardAction<Payload, MetaData>;
 @Injectable()
 export class RoleSetActions {
 
-  static readonly PROPERTY_LOADED = 'PROPERTY_LOADED';
+  static readonly PROPERTY_LOADED = 'RoleSet::PROPERTY_LOADED';
 
 
   // TODO INIT ACTIONS
-  static readonly ROLES_SORTED_BY_POPULARITY = 'ROLES_SORTED_BY_POPULARITY';
+  static readonly ROLES_SORTED_BY_POPULARITY = 'RoleSet::ROLES_SORTED_BY_POPULARITY';
 
 
 
   // change standard label
-  static readonly DISPLAY_ROLE_FOR_DOMAIN_UPDATED = 'DISPLAY_ROLE_FOR_DOMAIN_UPDATED';
+  static readonly DISPLAY_ROLE_FOR_DOMAIN_UPDATED = 'RoleSet::DISPLAY_ROLE_FOR_DOMAIN_UPDATED';
 
-  static readonly START_ADDING_ROLE = 'START_ADDING_ROLE';
-  static readonly ALTERNATIVE_ROLES_LOADED = 'ALTERNATIVE_ROLES_LOADED';
+  static readonly START_ADDING_ROLE = 'RoleSet::START_ADDING_ROLE';
+  static readonly ALTERNATIVE_ROLES_LOADED = 'RoleSet::ALTERNATIVE_ROLES_LOADED';
 
-  static readonly START_CREATE_NEW_ROLE = 'START_CREATE_NEW_ROLE';
-  static readonly STOP_CREATE_NEW_ROLE = 'STOP_CREATE_NEW_ROLE'; // removes all roleStatesToCreate
-  static readonly ROLE_CREATION_CANCELLED = 'ROLE_CREATION_CANCELLED'; // removes one roleStateToCreate
+  static readonly START_CREATE_NEW_ROLE = 'RoleSet::START_CREATE_NEW_ROLE';
+  static readonly STOP_CREATE_NEW_ROLE = 'RoleSet::STOP_CREATE_NEW_ROLE'; // removes all roleStatesToCreate
+  static readonly ROLE_CREATION_CANCELLED = 'RoleSet::ROLE_CREATION_CANCELLED'; // removes one roleStateToCreate
 
-  static readonly ROLES_CREATED = 'ROLES_CREATED';
-  static readonly ROLE_REMOVED_FROM_PROJECT = 'ROLE_REMOVED_FROM_PROJECT';
+  static readonly ROLES_CREATED = 'RoleSet::ROLES_CREATED';
+  static readonly ROLE_REMOVED_FROM_PROJECT = 'RoleSet::ROLE_REMOVED_FROM_PROJECT';
 
-  static readonly START_EDITING_ROLE = 'START_EDITING_ROLE';
-  static readonly STOP_EDITING_ROLE = 'STOP_EDITING_ROLE';
-  static readonly UPDATE_ROLE = 'UPDATE_ROLE';
+  static readonly START_EDITING_ROLE = 'RoleSet::START_EDITING_ROLE';
+  static readonly STOP_EDITING_ROLE = 'RoleSet::STOP_EDITING_ROLE';
+  static readonly UPDATE_ROLE = 'RoleSet::UPDATE_ROLE';
 
-  static readonly ROLE_READY_TO_CREATE = 'ROLE_READY_TO_CREATE';
-  static readonly ROLE_NOT_READY_TO_CREATE = 'ROLE_NOT_READY_TO_CREATE';
-  static readonly ENTITIES_TO_CREATE_PERSISTED = 'ENTITIES_TO_CREATE_PERSISTED';
+  static readonly ROLE_READY_TO_CREATE = 'RoleSet::ROLE_READY_TO_CREATE';
+  static readonly ROLE_NOT_READY_TO_CREATE = 'RoleSet::ROLE_NOT_READY_TO_CREATE';
+  static readonly ENTITIES_TO_CREATE_PERSISTED = 'RoleSet::ENTITIES_TO_CREATE_PERSISTED';
 
-  static readonly ADDED_SELECTED_ROLES_TO_PROJECT = 'ADDED_SELECTED_ROLES_TO_PROJECT';
+  static readonly ADDED_SELECTED_ROLES_TO_PROJECT = 'RoleSet::ADDED_SELECTED_ROLES_TO_PROJECT';
 
-  static readonly CANCEL_SELECT_ROLES = 'CANCEL_SELECT_ROLES'; // Maybe not a role set action but a role set list action!
-  static readonly PROPERTY_SECTION_REMOVED = 'PROPERTY_SECTION_REMOVED';  // Maybe not a role set action but a role set list action!
+  static readonly CANCEL_SELECT_ROLES = 'RoleSet::CANCEL_SELECT_ROLES'; // Maybe not a role set action but a role set list action!
+  static readonly PROPERTY_SECTION_REMOVED = 'RoleSet::PROPERTY_SECTION_REMOVED';  // Maybe not a role set action but a role set list action!
 
-  static readonly SET_TOGGLE = 'SET_TOGGLE';
+  static readonly SET_TOGGLE = 'RoleSet::SET_TOGGLE';
 
-  static readonly TOGGLE = 'TOGGLE';
+  static readonly TOGGLE = 'RoleSet::TOGGLE';
 
-  static readonly ROLE_SET_REMOVED = 'ROLE_SET_REMOVED';
+  static readonly REMOVE_ROLE_SET = 'RoleSet::REMOVE_ROLE_SET';
 
-  static readonly DISPLAY_ROLE_CHANGED = 'DISPLAY_ROLE_CHANGED';
+  static readonly DISPLAY_ROLE_CHANGED = 'RoleSet::DISPLAY_ROLE_CHANGED';
 
-  static readonly ADD_ROLE_TO_ROLE_LIST = 'ADD_ROLE_TO_ROLE_LIST';
+  static readonly ADD_ROLE_TO_ROLE_LIST = 'RoleSet::ADD_ROLE_TO_ROLE_LIST';
 
-  static readonly REMOVE_ROLE_FROM_ROLE_LIST = 'REMOVE_ROLE_FROM_ROLE_LIST';
+  static readonly REMOVE_ROLE_FROM_ROLE_LIST = 'RoleSet::REMOVE_ROLE_FROM_ROLE_LIST';
 
-  static readonly ROLE_SET_UPDATE_ORDER = 'ROLE_SET_UPDATE_ORDER';
-  static readonly ROLE_SET_UPDATE_ORDER_SUCCEEDED = 'ROLE_SET_UPDATE_ORDER_SUCCEEDED';
-  static readonly ROLE_SET_UPDATE_ORDER_FAILED = 'ROLE_SET_UPDATE_ORDER_FAILED';
+  static readonly ROLE_SET_UPDATE_ORDER = 'RoleSet::ROLE_SET_UPDATE_ORDER';
+  static readonly ROLE_SET_UPDATE_ORDER_SUCCEEDED = 'RoleSet::ROLE_SET_UPDATE_ORDER_SUCCEEDED';
+  static readonly ROLE_SET_UPDATE_ORDER_FAILED = 'RoleSet::ROLE_SET_UPDATE_ORDER_FAILED';
 
-  static readonly ROLE_SET_ENABLE_DRAG = 'ROLE_SET_ENABLE_DRAG';
-  static readonly ROLE_SET_DISABLE_DRAG = 'ROLE_SET_DISABLE_DRAG';
+  static readonly ROLE_SET_ENABLE_DRAG = 'RoleSet::ROLE_SET_ENABLE_DRAG';
+  static readonly ROLE_SET_DISABLE_DRAG = 'RoleSet::ROLE_SET_DISABLE_DRAG';
 
 
   @dispatch()
@@ -104,7 +104,7 @@ export class RoleSetActions {
 * called, when user selected a the kind of property to add
 */
   removeRoleSet = (): RoleSetAction => ({
-    type: RoleSetActions.ROLE_SET_REMOVED,
+    type: RoleSetActions.REMOVE_ROLE_SET,
     meta: null,
     payload: null
   })
@@ -168,7 +168,7 @@ export class RoleSetActions {
   /**
    * Removes the current RoleDetail from the Store. Called upon successfully removing a role
    */
-  roleRemovedFromProject = (key: string, roleDetail:RoleDetail): RoleSetAction => ({
+  roleRemovedFromProject = (key: string, roleDetail: RoleDetail): RoleSetAction => ({
     type: RoleSetActions.ROLE_REMOVED_FROM_PROJECT,
     meta: { key, roleDetail },
     payload: null

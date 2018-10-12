@@ -8,6 +8,7 @@ import { PeItApiEpics } from './api/pe-it.epics';
 import { RootEpics } from 'app/core/store/epics';
 import { Input } from '@angular/core';
 import { Observable } from 'rxjs';
+import { DataUnitAPIEpics } from '../data-unit.epics';
 
 export abstract class PeItBase extends DataUnitBase {
 
@@ -21,13 +22,14 @@ export abstract class PeItBase extends DataUnitBase {
 
     constructor(
         protected rootEpics: RootEpics,
+        protected dataUnitEpics: DataUnitAPIEpics,
         protected epics: PeItApiEpics,
         protected ngRedux: NgRedux<IAppState>,
         protected actions: PeItActions,
         protected fb: FormBuilder,
         protected stateCreator: StateCreatorService
     ) {
-        super(ngRedux, fb, stateCreator);
+        super(ngRedux, fb, stateCreator, rootEpics, dataUnitEpics);
     }
 
     getBasePath = () => this.basePath;

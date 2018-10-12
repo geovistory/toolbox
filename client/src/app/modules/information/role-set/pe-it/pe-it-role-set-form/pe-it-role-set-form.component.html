@@ -1,9 +1,9 @@
 <!-- Step 1: Form for adding existing roles -->
 <form [formGroup]="addForm" (ngSubmit)="addRoles()" *ngIf="(_role_set_form$ | async)?._role_add_list">
   <div class="card-body text-white d-flex">
-    <h5 class="gv-grow-1 align-self-center m-0">
+    <h4 class="gv-grow-1 align-self-center m-0">
       {{(label$ | async)?.pl}} found in other projects
-    </h5>
+    </h4>
   </div>
   <div class="card-body">
     Select and add a {{(label$ | async)?.sg}} from the list below, <br>
@@ -19,8 +19,8 @@
 
 
   <div class="card-body">
-    <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Add selected</button>
-    <button type="submit" class="btn btn-primary" (click)="startCreateNewRole()">Create new</button>
+    <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary mr-2">Add selected</button>
+    <button type="submit" class="btn btn-primary mr-2" (click)="startCreateNewRole()">Create new</button>
     <button type="button" class="btn btn-link" (click)="cancelCreateRoles()">Cancel</button>
   </div>
 
@@ -31,9 +31,9 @@
 <form [formGroup]="createForm" (ngSubmit)="createRoles()" *ngIf="(_role_set_form$ | async)?._role_create_list">
 
   <div class="card-body text-white d-flex">
-    <h5 class="gv-grow-1 align-self-center m-0">
+    <h4 class="gv-grow-1 align-self-center m-0">
       Add a new {{(label$ | async)?.sg}}
-    </h5>
+    </h4>
   </div>
 
   <div class="card-body">

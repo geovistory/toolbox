@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, HostBinding } from '@angular/core';
 import { ClassConfig } from 'app/core';
 
 @Component({
@@ -6,8 +6,9 @@ import { ClassConfig } from 'app/core';
   templateUrl: './class-info.component.html',
   styleUrls: ['./class-info.component.scss']
 })
-export class ClassInfoComponent  {
+export class ClassInfoComponent {
 
+  @HostBinding('class.d-inline-block') get a() { return true };
 
   @Input() classConfig: ClassConfig;
   @Input() iconPrimary;

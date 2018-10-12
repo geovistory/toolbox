@@ -171,5 +171,9 @@
   "ComSystemType": {
     "dataSource": "postgres1",
     "public": true
+  },
+  "ComPropertySetPropertyRel": {
+    "dataSource": "postgres1",
+    "public": true
   }
 }

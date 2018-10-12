@@ -11,15 +11,15 @@ import { NgRedux } from '@angular-redux/store';
 })
 export class EntitySearchHitComponent implements OnInit {
 
-  @Input() persistentItem:any;
+  @Input() persistentItem: any;
 
-  @Input() selectingMentionedEntities:boolean;
+  @Input() selectingMentionedEntities: boolean;
 
 
   /**
    * True if this is about selecting a pe-it as range of a role
    */
-  @Input() selectRoleRange:boolean;
+  @Input() selectRoleRange: boolean;
 
   /**
   * flag to indicate if this search hit is in the context of a project-wide
@@ -28,7 +28,7 @@ export class EntitySearchHitComponent implements OnInit {
   *   true = repository-wide
   *   default = false
   */
-  @Input() repositorySearch:boolean;
+  @Input() repositorySearch: boolean;
 
   @Output() onAdd: EventEmitter<number> = new EventEmitter();
   @Output() onOpen: EventEmitter<number> = new EventEmitter();
@@ -41,13 +41,13 @@ export class EntitySearchHitComponent implements OnInit {
 
   headlineItems: Array<string> = [];
 
-  get projectsCount():number {
+  get projectsCount(): number {
     return this.persistentItem.projects.length
   }
 
-  get isInProject():boolean {
+  get isInProject(): boolean {
     const projectId = this.ngRedux.getState().activeProject.pk_project;
-    if(this.persistentItem.projects.indexOf(projectId) !== -1){
+    if (this.persistentItem.projects.indexOf(projectId) !== -1) {
       return true;
     }
     return false;
@@ -59,18 +59,18 @@ export class EntitySearchHitComponent implements OnInit {
 
   ngOnInit() {
 
-    if(this.persistentItem.ts_headline){
+    if (this.persistentItem.ts_headline) {
       this.headlineItems = this.persistentItem.ts_headline.split(' • ');
     }
 
     this.repositorySearch = this.repositorySearch === undefined ? false : this.repositorySearch;
 
     /** Set the standardAppellationLabel */
-    if(this.repositorySearch){
+    if (this.repositorySearch) {
       let highestCount = 0;
       let pk_standard_label;
       this.persistentItem.appellation_labels.forEach(label => {
-        if(label.r63_is_standard_in_project_count > highestCount){
+        if (label.r63_is_standard_in_project_count > highestCount) {
           highestCount = label.r63_is_standard_in_project_count;
           this.standardAppellationLabel = new AppellationLabel(
             label.appellation_label
@@ -82,44 +82,44 @@ export class EntitySearchHitComponent implements OnInit {
 
       /** Set the moreAppellationLabels */
       this.persistentItem.appellation_labels.forEach(label => {
-        if(pk_standard_label !== label.pk_entity){
+        if (pk_standard_label !== label.pk_entity) {
           this.moreAppellationLabels
-          .push(new AppellationLabel(label.appellation_label))
+            .push(new AppellationLabel(label.appellation_label))
         }
       });
 
     }
     else {
       this.persistentItem.appellation_labels.forEach(label => {
-        if(label.r63_is_standard_in_project != true){
+        if (label.r63_is_standard_in_project != true) {
           this.moreAppellationLabels.push(new AppellationLabel(label.appellation_label))
         }
-        else if(label.r63_is_standard_in_project == true){
+        else if (label.r63_is_standard_in_project == true) {
           this.standardAppellationLabel = new AppellationLabel(label.appellation_label)
         }
       });
 
       // If there is no standard appellation label defined, take the first one
-      if(!this.standardAppellationLabel){
+      if (!this.standardAppellationLabel) {
         this.standardAppellationLabel = this.moreAppellationLabels[0];
       }
     }
 
   }
 
-  add(){
+  add() {
     this.onAdd.emit(this.persistentItem.pk_entity)
   }
 
-  open(){
+  open() {
     this.onOpen.emit(this.persistentItem.pk_entity)
   }
 
-  select(){
+  select() {
     this.onSelect.emit(this.persistentItem.pk_entity)
   }
 
-  selectAsMentioned(){
+  selectAsMentioned() {
     const mentionedEntity = {
       label: this.standardAppellationLabel.getString(),
       pkEntity: this.persistentItem.pk_entity
@@ -128,11 +128,11 @@ export class EntitySearchHitComponent implements OnInit {
   }
 
 
-  linkClicked(){
-    if(this.isInProject){
+  linkClicked() {
+    if (this.isInProject) {
       this.open();
     }
-    else{
+    else {
       this.add();
     }
   }

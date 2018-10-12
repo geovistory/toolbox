@@ -35,9 +35,9 @@ export const roleSetReducer =
         };
         break;
 
-      case RoleSetActions.ROLE_SET_REMOVED:
-        lastState = undefined
-        break;
+      // case RoleSetActions.ROLE_SET_REMOVED:
+      //   lastState = undefined
+      //   break;
 
       case RoleSetActions.START_ADDING_ROLE:
         lastState = {
@@ -184,7 +184,7 @@ export const roleSetReducer =
               }
             }
           })
-          return newVal;
+          return {...list, ...newVal};
         }
 
 

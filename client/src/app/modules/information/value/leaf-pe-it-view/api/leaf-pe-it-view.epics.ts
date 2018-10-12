@@ -45,16 +45,25 @@ export class LeafPeItViewAPIEpics {
              * Subscribe to the api call
              */
             .subscribe((data) => {
-              const peItDetail: PeItDetail = createPeItDetail({}, data, action.meta.projectDetail.crm)
-              /**
-               * Emit the global action that completes the loading bar
-               */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              /**
-               * Emit the local action on loading succeeded
-               */
-              c.localStore.dispatch(this.actions.loadSucceeded(peItDetail));
-
+              if (data) {
+                const peItDetail: PeItDetail = createPeItDetail({}, data, action.meta.projectDetail.crm)
+                /**
+                 * Emit the global action that completes the loading bar
+                 */
+                globalStore.next(this.loadingBarActions.completeLoading());
+                /**
+                 * Emit the local action on loading succeeded
+                 */
+                c.localStore.dispatch(this.actions.loadSucceeded(peItDetail));
+              } else {
+                globalStore.next(this.loadingBarActions.completeLoading());
+                globalStore.next(this.notificationActions.addToast({
+                  type: 'error',
+                  options: {
+                    title: 'Failed loading related item ' + action.meta.pkEntity
+                  }
+                }));
+              }
             }, error => {
               /**
         * Emit the global action that shows some loading error message

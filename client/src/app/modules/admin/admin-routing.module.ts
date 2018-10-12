@@ -29,7 +29,7 @@ const routes: Routes = [
         children: [
           {
             path: 'ui-context/:pk_ui_context',
-            component: ClassUiContextComponent,
+            component: ClassUiContextComponent
           }
         ]
       },
