@@ -1,11 +1,13 @@
 import { NgRedux } from '@angular-redux/store';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Output, ViewChild, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, NgForm } from '@angular/forms';
-import { InfTemporalEntity, U, InfPersistentItemApi, InfPersistentItem, UiContext } from 'app/core';
-
+import { InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, U, UiContext } from 'app/core';
+import { StateCreatorService } from '../../../shared/state-creator.service';
 import { PeItFormBase } from '../pe-it-form.base';
 import { PeItActions } from '../pe-it.actions';
-import { StateCreatorService } from '../../../shared/state-creator.service';
+import { RootEpics } from 'app/core/store/epics';
+import { DataUnitAPIEpics } from '../../data-unit.epics';
+
 
 @Component({
   selector: 'gv-pe-it-add-form',
@@ -36,9 +38,11 @@ export class PeItAddFormComponent extends PeItFormBase {
     protected fb: FormBuilder,
     protected ref: ChangeDetectorRef,
     protected peItApi: InfPersistentItemApi,
-    protected stateCreator: StateCreatorService
+    protected stateCreator: StateCreatorService,
+    protected rootEpics: RootEpics,
+    protected dataUnitEpics: DataUnitAPIEpics
   ) {
-    super(ngRedux, actions, fb, stateCreator)
+    super(ngRedux, actions, fb, stateCreator, rootEpics, dataUnitEpics)
     console.log('PeItAddFormComponent')
 
   }
@@ -47,8 +51,7 @@ export class PeItAddFormComponent extends PeItFormBase {
 
     this.peIt = this.peItState.peIt
 
-    this.subs.push(
-      this.form.valueChanges.subscribe(val => {
+      this.form.valueChanges.takeUntil(this.destroy$).subscribe(val => {
         const displayAppeUse: InfTemporalEntity = U.getFirstAppeTeEntOfPeIt(val.peIt)
         this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(displayAppeUse);
 
@@ -56,8 +59,6 @@ export class PeItAddFormComponent extends PeItFormBase {
         this.ref.detectChanges()
 
       })
-    )
-
 
 
   }
@@ -81,6 +82,6 @@ export class PeItAddFormComponent extends PeItFormBase {
   initFormCtrls(): void { }
 
   onChange(controlValue: any): void {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 }

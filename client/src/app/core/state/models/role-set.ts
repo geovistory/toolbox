@@ -54,7 +54,7 @@ export class RoleSet implements RoleSetI {
     label?: RoleSetLabel;
     property?: DfhPropertyInterface;
     isOutgoing?: boolean;
-    toggle?: CollapsedExpanded;
+    toggle = 'expanded' as CollapsedExpanded;
     targetClassPk?: number;
     targetMinQuantity?: number;
     targetMaxQuantity?: number;

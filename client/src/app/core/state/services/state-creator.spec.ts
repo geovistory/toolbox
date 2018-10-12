@@ -1,7 +1,8 @@
-import { createRoleDetail, createRoleSet, createPlaceDetail, createTimePrimitveDetail, createAppeDetail, createLangDetail, createDataUnitChildren } from './state-creator';
+import { createRoleDetail, createRoleSet, createPlaceDetail, createTimePrimitveDetail, createAppeDetail, createLangDetail, createDataUnitChildren, createPeItDetail } from './state-creator';
 import { roleWithPlace, place, roleWithLanguage, language, roleWithAppellation, appellation, roleWithTimePrimitive, time_primitive, role, roleWithTemporalEntity, temporal_entity, property, temporalEntityBirth } from './_mock-data';
 import { crm } from 'app/core/active-project/_mock-data';
 import { RoleSet, ExistenceTimeDetail, DataUnitChildList } from 'app/core/state/models';
+import { InfPersistentItem } from 'app/core/sdk';
 
 
 describe('StateCreator', () => {
@@ -11,6 +12,14 @@ describe('StateCreator', () => {
 
     });
 
+    /***************************************************
+     * createPeIt specs
+     ***************************************************/
+    it('#createPeIt should create a PeItDetail for creating a new person', () => {
+        expect(((createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { isCreateMode: true }))
+        ._children._1192_ingoing as RoleSet)._role_list['_undefined']._teEnt._children)
+        .toBeTruthy()
+    });
 
     /***************************************************
      * createDataUnitChildren specs

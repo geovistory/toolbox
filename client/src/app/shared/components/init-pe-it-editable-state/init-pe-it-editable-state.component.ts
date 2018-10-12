@@ -1,42 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { StateCreatorService } from 'app/modules/information/shared/state-creator.service';
 import { NgRedux, ObservableStore } from '@angular-redux/store';
-import { IAppState, PeItDetail } from 'app/core';
+import { IAppState, PeItDetail, InfPersistentItem } from 'app/core';
 import { Action } from 'redux';
-import { StateSettings } from 'app/core/state/services/state-creator';
+import { StateSettings, createPeItDetail } from 'app/core/state/services/state-creator';
 import { Information } from 'app/modules/information/containers/information/api/information.models';
-
-const PE_IT_EDITABLE_INITIALIZED = 'PE_IT_EDITABLE_INITIALIZED'
-const PE_IT_ADD_FORM_INITIALIZED = 'PE_IT_ADD_FORM_INITIALIZED'
-const PE_IT_CREATE_FORM_INITIALIZED = 'PE_IT_CREATE_FORM_INITIALIZED'
-
-const reducer = (state: Information = {}, a: Action): Information => {
-
-  const action = a as any;
-
-  switch (action.type) {
-    case PE_IT_ADD_FORM_INITIALIZED:
-      state = {
-        _peIt_add_form: action.payload
-      };
-      break;
-
-    case PE_IT_EDITABLE_INITIALIZED:
-      state = {
-        _peIt_editable: action.payload
-      };
-      break;
-
-    case PE_IT_CREATE_FORM_INITIALIZED:
-      state = {
-        _peIt_create_form: action.payload
-      };
-      break;
-  }
-
-
-  return state;
-};
+import { PeItService } from 'app/modules/information/shared/pe-it.service';
+import { sandboxStateReducer, INIT_SANDBOX_STATE } from 'app/core/store/reducers';
 
 
 @Component({
@@ -60,39 +30,50 @@ export class InitPeItEditableStateComponent implements OnInit, OnDestroy {
   @Output() stateCreated: EventEmitter<PeItDetail> = new EventEmitter();
 
   localStore: ObservableStore<Information>;
-  basePath: ['information', '']
+  basePath: ['sandboxState']
 
   constructor(
-    private stateCreator: StateCreatorService,
+    private peItService: PeItService,
     private ngRedux: NgRedux<IAppState>
   ) { }
 
   ngOnInit() {
 
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, reducer)
+    this.localStore = this.ngRedux.configureSubStore(['sandboxState'], sandboxStateReducer)
+
 
     if (this.settings.isCreateMode) {
-      this.stateCreator.initializePeItToCreate(this.fkClass, 'Max').subscribe(peItDetail => {
-        this.localStore.dispatch({
-          type: PE_IT_CREATE_FORM_INITIALIZED,
-          payload: peItDetail
-        })
 
-        this.stateCreated.emit(peItDetail);
+      const peItDetail = createPeItDetail({}, new InfPersistentItem({ fk_class: this.fkClass }), this.ngRedux.getState().activeProject.crm, this.settings);
+
+      this.localStore.dispatch({
+        type: INIT_SANDBOX_STATE,
+        payload: {
+          _peIt_create_form: peItDetail
+        }
       })
 
+      this.stateCreated.emit(peItDetail);
+
     } else {
-      this.stateCreator.initializePeItState(this.pkEntity, this.pkProject, this.settings).subscribe(peItDetail => {
+
+      this.peItService.getNestedObject(this.pkEntity, this.pkProject).subscribe(infPeIt => {
+
+        const peItDetail = createPeItDetail({}, infPeIt, this.ngRedux.getState().activeProject.crm, this.settings);
 
         if (this.settings.isAddMode) {
           this.localStore.dispatch({
-            type: PE_IT_ADD_FORM_INITIALIZED,
-            payload: peItDetail
+            type: INIT_SANDBOX_STATE,
+            payload: {
+              _peIt_add_form: peItDetail
+            }
           })
         } else {
           this.localStore.dispatch({
-            type: PE_IT_EDITABLE_INITIALIZED,
-            payload: peItDetail
+            type: INIT_SANDBOX_STATE,
+            payload: {
+              _peIt_editable: peItDetail
+            }
           })
         }
 

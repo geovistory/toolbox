@@ -1,36 +1,9 @@
-<div class="card bg-secondary text-white mb-3">
+<gv-role-set-header [property$]="property$" [label$]="label$" (removeRoleSet)="removeRoleSet()" [ontoInfoVisible$]="ontoInfoVisible$"
+  [removeRoleSetBtnVisible]="removeRoleSetBtnVisible"></gv-role-set-header>
 
-  <ng-container *ngTemplateOutlet="header"></ng-container>
-  <div [@slideInOut]="(toggle$|async)">
-    <div class="card-body">
-      <form [formGroup]="formGroup" *ngIf="formGroup">
-
-        <div *ngFor="let entry of (_role_list$ | async) | keys; trackBy:getKey">
-          <gv-pe-it-role-create-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="_role_list"
-            [formControlName]="entry.key" (touched)="markAsTouched()"></gv-pe-it-role-create-ctrl>
-        </div>
-      </form>
-    </div>
+<form [formGroup]="formGroup" *ngIf="formGroup">
+  <div *ngFor="let entry of (_role_list$ | async) | keys; trackBy:getKey">
+    <gv-pe-it-role-create-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key"
+      intermediatePathSegment="_role_list" [formControlName]="entry.key" (touched)="markAsTouched()"></gv-pe-it-role-create-ctrl>
   </div>
-
-</div>
-
-<!-- ************************** NG TEMPLATES ****************************** -->
-
-<ng-template #header>
-  <div class="btn-group d-flex flex-row">
-    <div class="gv-grow-1 gv-btn-spacer">
-      {{(label$ | async)?.default}}
-    </div>
-    <div class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
-      <div class="align-self-center">
-        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/property/{{(property$|async)?.dfh_pk_property}}" target="_blank">
-          {{(property$|async)?.dfh_identifier_in_namespace}}
-        </a>
-      </div>
-    </div>
-    <button class="btn btn-secondary rounded-bottom-0" (click)="removeRoleSet()" *ngIf="removeRoleSetBtnVisible">
-      <i class="fa fa-close"></i>
-    </button>
-  </div>
-</ng-template>
+</form>

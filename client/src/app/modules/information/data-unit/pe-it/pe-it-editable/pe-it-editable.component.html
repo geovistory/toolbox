@@ -45,7 +45,7 @@
           Properties
         </div>
         <!-- Step 1 for adding a new property -->
-        <button class="btn btn-sm btn-link" (click)="startSelectProperty()" *ngIf="(selectPropState$ | async) === 'init' && (showAddAPropertyButton$ | async) && !isolatedChild">
+        <button class="btn btn-sm btn-link" (click)="startSelectProperty()" *ngIf="(selectPropState$ | async) === 'init' && (showAddAPropertyButton$ | async)" [ngClass]="{'invisible' : isolatedChild}">
           <i class="fa fa-plus"></i> Add a property
         </button>
       </div>

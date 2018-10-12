@@ -1,24 +1,20 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { ChangeDetectionStrategy, Component, Input, AfterViewInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ComConfig, IAppState, UiContext, U } from 'app/core';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { ComConfig, IAppState, U, UiContext } from 'app/core';
+import { PeItDetail, AddOption, RoleSet, CollapsedExpanded, RoleSetForm, ExistenceTimeDetail } from 'app/core/state/models';
+import { RootEpics } from 'app/core/store/epics';
 import { Observable } from 'rxjs';
-
-import { PeItDetail } from 'app/core/state/models';
 import { slideInOut } from '../../../shared/animations';
 import { StateCreatorService } from '../../../shared/state-creator.service';
-import { DataUnitBase } from '../../data-unit.base';
+import { DataUnitAPIEpics } from '../../data-unit.epics';
+import { PeItApiEpics } from '../api/pe-it.epics';
+import { PeItBase } from '../pe-it-base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
-import { PeItBase } from '../pe-it-base';
-import { RootEpics } from 'app/core/store/epics';
-import { PeItApiEpics } from '../api/pe-it.epics';
 
 
-@AutoUnsubscribe({
-  blackList: ['destroy$']
-})
+
 @WithSubStore({
   localReducer: peItReducer,
   basePathMethodName: 'getBasePath'
@@ -68,9 +64,10 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
     protected ngRedux: NgRedux<IAppState>,
     protected actions: PeItActions,
     protected fb: FormBuilder,
-    protected stateCreator: StateCreatorService
+    protected stateCreator: StateCreatorService,
+    protected dataUnitEpics: DataUnitAPIEpics
   ) {
-    super(rootEpics, epics, ngRedux, actions, fb, stateCreator);
+    super(rootEpics, dataUnitEpics, epics, ngRedux, actions, fb, stateCreator);
     console.log('PeItEditableComponent')
   }
 
@@ -88,29 +85,61 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
    * subscribe all here, so it is only subscribed once on init and not multiple times on user interactions
    */
   initPeItSubscriptions() {
-    this.subs.push(this.localStore.select<PeItDetail>('').subscribe(d => {
+    this.localStore.select<PeItDetail>('').takeUntil(this.destroy$).subscribe(d => {
       this.peItState = d;
-      this.isolatedChild = U.extractDataUnitChildKeyOfEditingTeEnt(d._children);
-    }))
-
-    // /**
-    // * gets the Appellation is for given peIt roleSets that is for display in this project
-    // */
-    // this.subs.push(this.localStore.select<RoleSetList>(['_children']).subscribe((_children) => {
-    //   this.label = U.labelFromDataUnitChildList(_children);
-    //   const oldLabel = (this.peItState && this.peItState.label) ? this.peItState.label : undefined;
-
-    //   // update store
-    //   if (this.peItState && oldLabel !== this.label)
-    //     this.localStore.dispatch(this.actions.roleSetsListDisplayLabelUpdated(this.label))
-
-    // }))
+      this.isolatedChild = U.extractDataUnitChildKeyForIsolation(d._children);
+    })
   }
 
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.afterViewInit = true;
     }, 2000)
+  }
+
+  addOptionSelected($event) {
+
+    const o: AddOption = $event.item;
+
+    // if this option is already added
+    if (o.added) {
+
+      this.stopSelectProperty();
+
+    } else {
+
+      if (o.uiElement.roleSetKey) {
+
+        // if this is a role set
+
+        // prepare the RoleSet
+
+        const newRoleSet = {
+          ...new RoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey]),
+          toggle: 'expanded' as CollapsedExpanded,
+          rolesNotInProjectLoading: true,
+          roleStatesInOtherProjectsVisible: false,
+          _role_set_form: new RoleSetForm()
+        }
+
+        this.addRoleSet(newRoleSet, undefined)
+
+      } else if (o.uiElement.fk_property_set) {
+
+        // if this is a prop set
+
+        if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
+
+          this.stateCreator.initializeExistenceTimeState([], new ExistenceTimeDetail({ toggle: 'expanded' }), { isCreateMode: true }).subscribe(val => {
+            this.addPropSet('_existenceTime', val)
+          })
+
+        }
+
+      }
+
+    }
+
   }
 
 

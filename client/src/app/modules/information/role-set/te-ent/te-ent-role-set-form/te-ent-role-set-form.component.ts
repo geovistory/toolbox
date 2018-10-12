@@ -8,11 +8,11 @@ import { roleSetReducer } from '../../role-set.reducer';
 import { IAppState, InfRoleApi, InfRole, InfTemporalEntity, InfTemporalEntityApi, InfEntityProjectRel } from 'app/core';
 import { RoleSetActions } from '../../role-set.actions';
 import { teEntReducer } from '../../../data-unit/te-ent/te-ent.reducer';
-import { TeEntDetail, RoleDetail } from 'app/core/state/models';
-import { timer ,  Observable, combineLatest } from 'rxjs';
+import { TeEntDetail, RoleDetail, RoleSet } from 'app/core/state/models';
+import { timer, Observable, combineLatest } from 'rxjs';
 import { StateCreatorService } from '../../../shared/state-creator.service';
 import { ClassService } from '../../../shared/class.service';
-import { StateSettings } from 'app/core/state/services/state-creator';
+import { StateSettings, createRoleSet } from 'app/core/state/services/state-creator';
 
 
 @AutoUnsubscribe()
@@ -156,10 +156,10 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
           this.createForm.removeControl(key)
         })
 
+
         // update the state
-        this.subs.push(this.stateCreator.initializeRoleDetails(roles, { isOutgoing: s.isOutgoing }).subscribe(roleStates => {
-          this.localStore.dispatch(this.actions.rolesCreated(roleStates))
-        }))
+        const roleSet = createRoleSet(new RoleSet(this.localStore.getState()), roles, this.ngRedux.getState().activeProject.crm, {})
+        this.localStore.dispatch(this.actions.rolesCreated(roleSet._role_list))
 
       }))
     }
@@ -190,11 +190,9 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
           this.addForm.removeControl(key)
         })
 
-
         // update the state
-        this.subs.push(this.stateCreator.initializeRoleDetails(roles, { isOutgoing: s.isOutgoing }).subscribe(roleStates => {
-          this.localStore.dispatch(this.actions.rolesCreated(roleStates))
-        }))
+        const roleSet = createRoleSet(new RoleSet(this.localStore.getState()), roles, this.ngRedux.getState().activeProject.crm, {})
+        this.localStore.dispatch(this.actions.rolesCreated(roleSet._role_list))
 
       }))
     }

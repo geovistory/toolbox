@@ -1,5 +1,5 @@
 import { DevToolsExtension, NgRedux, ObservableStore } from '@angular-redux/store';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
 import { ActiveProjectActions } from 'app/core/active-project';
 import { INIT_SANDBOX_STATE, sandboxStateReducer } from 'app/core/store/reducers';
 import { FluxStandardAction } from 'flux-standard-action';
@@ -11,7 +11,7 @@ import { FluxStandardAction } from 'flux-standard-action';
   templateUrl: './init-state.component.html',
   styleUrls: ['./init-state.component.scss']
 })
-export class InitStateComponent implements OnInit {
+export class InitStateComponent implements OnInit, AfterViewInit {
 
   static readonly INIT_STATE = 'InitState::INIT_STATE';
 
@@ -40,8 +40,8 @@ export class InitStateComponent implements OnInit {
      */
     if (this.activeProject) {
       this.ngRedux.dispatch({
-       type: ActiveProjectActions.ACTIVE_PROJECT_UPDATED,
-       payload: this.activeProject
+        type: ActiveProjectActions.ACTIVE_PROJECT_UPDATED,
+        payload: this.activeProject
       })
     }
 
@@ -56,6 +56,12 @@ export class InitStateComponent implements OnInit {
     } as FluxStandardAction<any>)
 
 
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.initialized = true;
+    }, 100);
   }
 
 }

@@ -3,11 +3,12 @@ import { PeItDetail, RoleDetail, RoleSet, PeItDetailI, RoleDetailI, DataUnitChil
 import { DfhConfig } from "../../../shared/dfh-config";
 
 export const mockPerson: PeItDetailI = {
+    fkClass: 21,
     peIt: {
-        fk_class: 1
+        fk_class: 21
     } as InfPersistentItem,
     dfhClass: {
-        dfh_pk_class: 1,
+        dfh_pk_class: 21,
         dfh_standard_label: 'Person'
     } as DfhClass,
     ingoingRoleSets: [],
@@ -39,10 +40,11 @@ export const mockPerson: PeItDetailI = {
                         }]
                     } as InfRole,
                     _teEnt: {
+                        fkClass: 365,
                         dfhClass: {
-                            dfh_pk_class: 3,
-                            dfh_identifier_in_namespace: "F52",
-                            dfh_standard_label: "Name Use Activity",
+                            dfh_pk_class: 365,
+                            dfh_identifier_in_namespace: "histC10",
+                            dfh_standard_label: "Appellation for language ",
                         } as DfhClass,
                         _children: {
                             _role_set_1: new  RoleSet({
@@ -52,10 +54,10 @@ export const mockPerson: PeItDetailI = {
                                     pl: 'Detailed Names'
                                 },
                                 property: {
-                                    "dfh_pk_property": 2,
+                                    "dfh_pk_property": DfhConfig.PROPERTY_PK_R64_USED_NAME,
                                     "dfh_identifier_in_namespace": "R64",
-                                    "dfh_has_domain": 3,
-                                    "dfh_has_range": 2,
+                                    "dfh_has_domain": 365,
+                                    "dfh_has_range": DfhConfig.CLASS_PK_APPELLATION,
                                     "dfh_standard_label": "Used Name",
                                     "dfh_domain_instances_min_quantifier": 0,
                                     "dfh_domain_instances_max_quantifier": -1,

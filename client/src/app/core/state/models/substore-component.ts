@@ -8,4 +8,5 @@ import { ObservableStore } from '@angular-redux/store';
 export interface SubstoreComponent {
     destroy$: Subject<boolean>;
     localStore: ObservableStore<any>;
+    basePath?;
 }

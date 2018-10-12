@@ -1,10 +1,12 @@
-import { Component, OnInit, forwardRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormControl, Validators, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { WithSubStore, NgRedux } from '@angular-redux/store';
-import { PeItActions } from '../pe-it.actions';
-import { InfPersistentItem, InfTemporalEntity, U, InfEntityProjectRel, UiContext, ComConfig } from 'app/core';
-import { PeItCtrlBase } from '../pe-it-ctrl.base';
+import { NgRedux } from '@angular-redux/store';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
+import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
+import { ComConfig, InfEntityProjectRel, InfPersistentItem, InfTemporalEntity, U, UiContext } from 'app/core';
 import { StateCreatorService } from '../../../shared/state-creator.service';
+import { PeItCtrlBase } from '../pe-it-ctrl.base';
+import { PeItActions } from '../pe-it.actions';
+import { RootEpics } from 'app/core/store/epics';
+import { DataUnitAPIEpics } from '../../data-unit.epics';
 
 @Component({
   selector: 'gv-pe-it-add-ctrl',
@@ -34,9 +36,11 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
     protected actions: PeItActions,
     protected fb: FormBuilder,
     protected ref: ChangeDetectorRef,
-    protected stateCreator: StateCreatorService
+    protected stateCreator: StateCreatorService,
+    protected rootEpics: RootEpics,
+    protected dataUnitEpics: DataUnitAPIEpics
   ) {
-    super(ngRedux, actions, fb, stateCreator)
+    super(ngRedux, actions, fb, stateCreator, rootEpics, dataUnitEpics)
     console.log('PeItAddCtrlComponent')
 
   }
@@ -56,7 +60,7 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
       const roleSetList = this.localStore.getState()._children;
 
       // this.subs.push(this._children$.subscribe(roleSetList => {
-      if (roleSetList)
+      if (roleSetList) {
         Object.keys(roleSetList).forEach((key) => {
           if (roleSetList[key]) {
 
@@ -64,6 +68,7 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
           }
 
         })
+      }
 
       this.ctrlsInitialized = true;
     }
@@ -74,17 +79,16 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
 
   subscribeFormChanges(): void {
 
-    this.subs.push(this.formGroup.valueChanges.subscribe(val => {
+    this.formGroup.valueChanges.takeUntil(this.destroy$).subscribe(formVal => {
 
-      // build a peIt with all pi_roles given by the form's controls 
-      let peIt = new InfPersistentItem(this.peItState.peIt);
+      // build a peIt with all pi_roles given by the form's controls
+      const peIt = new InfPersistentItem(this.peItState.peIt);
 
       peIt.pi_roles = [];
       Object.keys(this.formGroup.controls).forEach(key => {
         if (this.formGroup.get(key)) {
           const val = this.formGroup.get(key).value;
-          if (val)
-            peIt.pi_roles = [...peIt.pi_roles, ...val]
+          if (val) peIt.pi_roles = [...peIt.pi_roles, ...val]
 
         }
       })
@@ -104,11 +108,10 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
       if (this.formGroup.valid) {
         // send the peIt the parent form
         this.onChange(peIt)
-      }
-      else {
+      } else {
         this.onChange(null)
       }
-    }))
+    })
 
   }
 
@@ -119,12 +122,13 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
       // add values to controls for each roleSet of _children
       const roleSetList = this.localStore.getState()._children;
 
-      if (roleSetList)
+      if (roleSetList) {
         Object.keys(roleSetList).forEach((key) => {
           if (roleSetList[key]) {
             this.formGroup.get(key).setValue(roleSetList[key].roles)
           }
         })
+      }
     }
   }
 
@@ -141,8 +145,7 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
   writeValue(peIt: InfPersistentItem): void {
     this.peIt = peIt ? peIt : new InfPersistentItem();
 
-    if (this.ctrlsInitialized)
-      this.initFormCtrlValues()
+    if (this.ctrlsInitialized) this.initFormCtrlValues()
   }
 
   registerOnChange(fn: any): void {

@@ -38,7 +38,7 @@
     <div class="gv-grow-1 gv-pointer" (click)="toggleCardBody()">
       <i class="fa fa-caret-right" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
       <span *ngIf="labelInEdit">{{labelInEdit}}</span>
-      <gv-te-ent-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-te-ent-label>
+      <gv-te-ent-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit" [childrenPath]="basePath.concat('_children$')"></gv-te-ent-label>
     </div>
     <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
       <div class="align-self-center">

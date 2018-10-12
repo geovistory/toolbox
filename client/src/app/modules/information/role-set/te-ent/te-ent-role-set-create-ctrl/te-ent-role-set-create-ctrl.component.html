@@ -1,49 +1,31 @@
-<ng-container *ngTemplateOutlet="header"></ng-container>
+<div class="mb-3">
+  <gv-role-set-header [property$]="property$" [label$]="label$" (startAddingRole)="startCreateRole()"
+    [ontoInfoVisible$]="ontoInfoVisible$" [removeRoleSetBtnVisible]="removeRoleSetBtnVisible"></gv-role-set-header>
 
-<!-- If no roles in Project, show a big add button -->
-<div class="card-body" *ngIf="!((_role_list$ | async) | keys).length && addButtonVisible">
-  <button class="btn btn-outline-primary" (click)="startCreateRole()">
-    Add a {{(label$ | async)?.sg}}
-  </button>
-  <button class="btn btn-link pull-right" (click)="removeRoleSet()">
-    Cancel
-  </button>
-</div>
-
-
-<form [formGroup]="formGroup" *ngIf="formGroup">
-  
-  <div *ngFor="let entry of (_role_list$ | async) | keys; trackBy:getKey" class="d-flex">
-
-    <gv-te-ent-role-create-ctrl class="gv-grow-1 align-self-center" *ngIf="formGroup.get(entry.key)" [parentPath]="basePath"
-      [index]="entry.key" intermediatePathSegment="_role_list" [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role-create-ctrl>
-
-    <button type="button" class="btn btn-sm btn-link align-self-center" (click)="cancelCreateRole(entry.key)" *ngIf="!entry.value.isCircular">
-      <i class="fa fa-trash"></i>
+  <!-- If no roles in Project, show a big add button -->
+  <div *ngIf="!((_role_list$ | async) | keys).length && addButtonVisible">
+    <button class="btn btn-outline-primary" (click)="startCreateRole()">
+      Add a {{(label$ | async)?.sg}}
     </button>
-
+    <button class="btn btn-link pull-right" (click)="removeRoleSet()">
+      Cancel
+    </button>
   </div>
-</form>
 
 
+  <form [formGroup]="formGroup" *ngIf="formGroup">
 
-<!-- ************************** NG TEMPLATES ****************************** -->
+    <div *ngFor="let entry of (_role_list$ | async) | keys; trackBy:getKey" class="d-flex">
 
-<ng-template #header let-hideAddButton="hideAddButton">
-  <div class="btn-group d-flex flex-row gv-h5">
+      <gv-te-ent-role-create-ctrl class="gv-grow-1 align-self-center" *ngIf="formGroup.get(entry.key)" [parentPath]="basePath"
+        [index]="entry.key" intermediatePathSegment="_role_list" [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role-create-ctrl>
 
-    <div class="gv-grow-1 gv-btn-spacer-sm">
-      {{(label$ | async)?.default}}
+        <!-- TODO: Remove button if not a identifiable Role. (Identity Rules) -->
+      <button type="button" class="btn btn-sm btn-link align-self-center" (click)="cancelCreateRole(entry.key)" *ngIf="!entry.value.isCircular">
+        <i class="fa fa-trash"></i> 
+      </button>
+
     </div>
-    <div class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
-      <div class="align-self-center">
-        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/property/{{(property$|async).dfh_pk_property}}" target="_blank">
-          {{(property$|async).dfh_identifier_in_namespace}}
-        </a>
-      </div>
-    </div>
-    <div class="btn btn-link btn-sm" (click)="startCreateRole()" *ngIf="addButtonVisible && !hideAddButton">
-      <i class="fa fa-plus"></i>
-    </div>
-  </div>
-</ng-template>
+  </form>
+
+</div>

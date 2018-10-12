@@ -1,11 +1,13 @@
-import { Component, OnInit, ChangeDetectionStrategy, forwardRef } from '@angular/core';
-import { TeEntCtrlBase } from '../te-ent-ctrl.base';
 import { NgRedux } from '@angular-redux/store';
-import { TeEntActions } from '../te-ent.actions';
-import { FormBuilder, NG_VALUE_ACCESSOR, FormControl, Validators } from '@angular/forms';
-import { InfTemporalEntity, InfRole, U, UiContext, ComConfig } from 'app/core';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
+import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
+import { ComConfig, InfRole, InfTemporalEntity, U, UiContext, AddOption, RoleSet, ExistenceTimeDetail } from 'app/core';
 import { pick } from 'ramda';
 import { StateCreatorService } from '../../../shared/state-creator.service';
+import { TeEntCtrlBase } from '../te-ent-ctrl.base';
+import { TeEntActions } from '../te-ent.actions';
+import { RootEpics } from 'app/core/store/epics';
+import { DataUnitAPIEpics } from '../../data-unit.epics';
 
 @Component({
   selector: 'gv-te-ent-create-ctrl',
@@ -31,9 +33,11 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
     protected ngRedux: NgRedux<any>,
     protected actions: TeEntActions,
     protected fb: FormBuilder,
-    protected stateCreator: StateCreatorService
+    protected stateCreator: StateCreatorService,
+    protected rootEpics: RootEpics,
+    protected dataUnitEpics: DataUnitAPIEpics
   ) {
-    super(ngRedux, actions, fb, stateCreator)
+    super(ngRedux, actions, fb, stateCreator, rootEpics, dataUnitEpics)
   }
 
 
@@ -41,10 +45,11 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
     this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
   }
 
+
   initFormCtrls(): void {
 
     // add controls for each roleSet of _children
-    this.subs.push(this._children$.subscribe(roleSetList => {
+    this._children$.takeUntil(this.destroy$).subscribe(roleSetList => {
       if (roleSetList) {
         Object.keys(roleSetList).forEach((key) => {
           if (roleSetList[key]) {
@@ -59,12 +64,12 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
         })
       }
-    }))
+    })
 
   }
 
   subscribeFormChanges(): void {
-    this.subs.push(this.formGroup.valueChanges.subscribe(val => {
+    this.formGroup.valueChanges.takeUntil(this.destroy$).subscribe(val => {
 
       // build the role
       const role = new InfRole(pick(['fk_entity', 'fk_property'], this.parentRole) as InfRole);
@@ -89,7 +94,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
       } else {
         this.onChange(null)
       }
-    }))
+    })
   }
 
   onChange(role: InfRole): void {
@@ -99,5 +104,53 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
   writeValue(parentRole: InfRole): void {
     this.parentRole = parentRole ? parentRole : new InfRole();
   }
+
+  addOptionSelected($event) {
+
+    const o: AddOption = $event.item;
+
+    // if this option is already added
+    if (o.added) {
+
+      this.stopSelectProperty();
+
+    } else {
+
+      if (o.uiElement.roleSetKey) {
+
+        // if this is a role set
+
+        // prepare the RoleSet
+        const newRoleSet = new RoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey]);
+
+        // prepare the new role
+        const newRole = {
+          fk_property: newRoleSet.property.dfh_pk_property,
+          entity_version_project_rels: [{
+            is_in_project: true
+          }]
+        } as InfRole;
+
+
+        this.addRoleSet(new RoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey]), [newRole])
+
+      } else if (o.uiElement.fk_property_set) {
+
+        // if this is a prop set
+
+        if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
+
+          this.stateCreator.initializeExistenceTimeState([], new ExistenceTimeDetail({ toggle: 'expanded' }), { isCreateMode: true }).subscribe(val => {
+            this.addPropSet('_existenceTime', val)
+          })
+
+        }
+
+      }
+
+    }
+
+  }
+
 
 }

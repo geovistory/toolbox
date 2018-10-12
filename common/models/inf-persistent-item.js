@@ -319,7 +319,7 @@ module.exports = function (InfPersistentItem) {
     appellation_labels,
     ts_headline(appellation_string, q),
     appellation_string,
-    projects
+    projects_array as projects
     FROM
     (
       SELECT
@@ -334,8 +334,8 @@ module.exports = function (InfPersistentItem) {
         )
       ) as appellation_labels,
       string_agg(appellations.appellation_string, ' • ') AS appellation_string,
-      appellations.projects,
-      setweight(to_tsvector(string_agg(appellations.appellation_string, ' • ')), 'A') as document
+      setweight(to_tsvector(string_agg(appellations.appellation_string, ' • ')), 'A') as document,
+	    projects.projects_array
       FROM pe_it_in_projet AS pi
       INNER JOIN
       (
@@ -343,7 +343,6 @@ module.exports = function (InfPersistentItem) {
         appe_in_project.pk_entity as pk_appellation,
         appe_in_project.appellation_string,
         appe_in_project.appellation_label as appellation_label,
-        jsonb_agg(DISTINCT r63_in_project.fk_project) as projects,
         count(CASE WHEN r63_in_project.is_in_project THEN 1 END) as r63_is_in_project_count,
         count(CASE WHEN r63_in_project.is_standard_in_project THEN 1 END) as r63_is_standard_in_project_count,
         r63.fk_entity as pk_named_entity,
@@ -361,7 +360,9 @@ module.exports = function (InfPersistentItem) {
         ORDER BY r63_in_project.ord_num ASC
       ) AS appellations
       ON appellations.pk_named_entity = pi.pk_entity
-      GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, appellations.projects
+      INNER JOIN (SELECT fk_entity, jsonb_agg(fk_project) as projects_array from information.entity_version_project_rel GROUP BY fk_entity) AS projects
+      ON projects.fk_entity = pi.pk_entity
+      GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, projects.fk_entity, projects.projects_array
       ORDER BY pi.tmsp_last_modification DESC
     ) AS pi, to_tsquery($1) q
     ` +
@@ -469,7 +470,7 @@ module.exports = function (InfPersistentItem) {
         )
       ) as appellation_labels,
       string_agg(appellations.appellation_string, ' • ') AS appellation_string,
-      appellations.projects,
+	    projects_array as projects,
       setweight(to_tsvector(string_agg(appellations.appellation_string, ' • ')), 'A') as document
       FROM information.v_persistent_item AS pi
       INNER JOIN
@@ -520,7 +521,9 @@ module.exports = function (InfPersistentItem) {
         GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity
       ) AS appellations
       ON appellations.pk_named_entity = pi.pk_entity
-      GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, appellations.projects
+    	INNER JOIN (SELECT fk_entity, jsonb_agg(fk_project) as projects_array from information.entity_version_project_rel GROUP BY fk_entity) AS projects
+	    ON projects.fk_entity = pi.pk_entity
+      GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, projects.fk_entity, projects.projects_array
       ORDER BY pi.tmsp_last_modification DESC
     ) AS pi, to_tsquery($1) q
     WHERE document @@ q ${where}
@@ -692,8 +695,7 @@ module.exports = function (InfPersistentItem) {
                   "orderBy": [{
                     "pk_entity": "asc"
                   }]
-                },
-                // "entity_version_project_rels": innerJoinThisProject
+                }
               },
               "language": {
                 "$relation": {
@@ -703,8 +705,6 @@ module.exports = function (InfPersistentItem) {
                     "pk_entity": "asc"
                   }]
                 }
-                // ,
-                // "entity_version_project_rels": innerJoinThisProject
               },
               "time_primitive": {
                 "$relation": {

@@ -20,23 +20,23 @@ export class DataUnitActions {
 
   // static readonly FK_CLASS_AND_ROLES_INITIALIZED = 'FK_CLASS_AND_ROLES_INITIALIZED';
 
-  static readonly START_SELECT_PROPERTY = 'START_SELECT_PROPERTY';
+  static readonly START_SELECT_PROPERTY = 'DataUnit::START_SELECT_PROPERTY';
 
-  static readonly STOP_SELECT_PROPERTY = 'STOP_SELECT_PROPERTY';
+  static readonly STOP_SELECT_PROPERTY = 'DataUnit::STOP_SELECT_PROPERTY';
 
-  static readonly PROPERTY_SELECTED = 'PROPERTY_SELECTED';
+  static readonly PROPERTY_SELECTED = 'DataUnit::PROPERTY_SELECTED';
 
-  static readonly ROLE_SET_ADDED = 'ROLE_SET_ADDED';
+  static readonly ROLE_SET_ADDED = 'DataUnit::ROLE_SET_ADDED';
 
-  static readonly ROLE_SET_REMOVED = 'ROLE_SET_REMOVED';
+  static readonly ROLE_SET_REMOVED = 'DataUnit::ROLE_SET_REMOVED';
 
-  static readonly PROP_SET_ADDED = 'PROP_SET_ADDED';
+  static readonly PROP_SET_ADDED = 'DataUnit::PROP_SET_ADDED';
 
-  static readonly PROP_SET_REMOVED = 'PROP_SET_REMOVED';
+  static readonly PROP_SET_REMOVED = 'DataUnit::PROP_SET_REMOVED';
 
-  static readonly ROLE_SET_LIST_DISPLAY_LABEL_UPDATED = 'ROLE_SET_LIST_DISPLAY_LABEL_UPDATED';
+  static readonly ROLE_SET_LIST_DISPLAY_LABEL_UPDATED = 'DataUnit::ROLE_SET_LIST_DISPLAY_LABEL_UPDATED';
 
-  static readonly DATA_UNIT_INIT = 'DATA_UNIT_INIT';
+  static readonly DATA_UNIT_INIT = 'DataUnit::DATA_UNIT_INIT';
 
   @dispatch()
 
@@ -91,7 +91,7 @@ export class DataUnitActions {
   })
 
   /**
-* called, when user selected a the kind of property to add
+* called, when user selected a the kind of property to remove
 */
   removeRoleSet = (key: string): DataUnitAction => ({
     type: DataUnitActions.ROLE_SET_REMOVED,

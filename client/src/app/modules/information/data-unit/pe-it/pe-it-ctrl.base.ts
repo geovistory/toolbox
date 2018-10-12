@@ -2,14 +2,15 @@ import { dispatch, NgRedux, ObservableStore, select, WithSubStore } from '@angul
 import { EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder } from '@angular/forms';
 import { InfPersistentItem } from 'app/core';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Observable } from 'rxjs';
-
 import { PeItDetail } from 'app/core/state/models';
+import { Observable } from 'rxjs';
+import { StateCreatorService } from '../../shared/state-creator.service';
 import { DataUnitBase } from '../data-unit.base';
 import { PeItActions } from './pe-it.actions';
 import { peItReducer } from './pe-it.reducer';
-import { StateCreatorService } from '../../shared/state-creator.service';
+import { RootEpics } from 'app/core/store/epics';
+import { DataUnitAPIEpics } from '../data-unit.epics';
+
 
 
 
@@ -17,11 +18,10 @@ import { StateCreatorService } from '../../shared/state-creator.service';
  * hooks in on the level of
  * PeItDetail
  *
- * Abstract class for components that 
+ * Abstract class for components that
  * - act as a form control for its parent
- * - have a reactive form as child  
+ * - have a reactive form as child
  */
-@AutoUnsubscribe()
 @WithSubStore({
     localReducer: peItReducer,
     basePathMethodName: 'getBasePath'
@@ -31,9 +31,11 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
 
     @Input() basePath: string[];
 
-    // if provided, initialState will be dispatched onInit replacing the lastState of substore 
+    // if provided, initialState will be dispatched onInit replacing the lastState of substore
     @Input() initState: PeItDetail;
     peItState: PeItDetail;
+
+    @Output() touched: EventEmitter<void> = new EventEmitter();
 
     @select() peIt$: Observable<InfPersistentItem>
 
@@ -44,9 +46,11 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
         protected ngRedux: NgRedux<any>,
         protected actions: PeItActions,
         protected fb: FormBuilder,
-        protected stateCreator: StateCreatorService
+        protected stateCreator: StateCreatorService,
+        protected rootEpics: RootEpics,
+        protected dataUnitEpics: DataUnitAPIEpics
     ) {
-        super(ngRedux, fb, stateCreator);
+        super(ngRedux, fb, stateCreator, rootEpics, dataUnitEpics);
         this.initForm()
     }
 
@@ -65,9 +69,9 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
     // gets called by base class onInit
     initStore() {
         this.localStore = this.ngRedux.configureSubStore(this.basePath, peItReducer);
-        this.subs.push(this.localStore.select<PeItDetail>('').subscribe(d => {
+        this.localStore.select<PeItDetail>('').takeUntil(this.destroy$).subscribe(d => {
             this.peItState = d
-        }))
+        })
     }
 
     /**
@@ -88,8 +92,8 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
     }
 
     /**
-     * initializes form contols after the role set component is registered by 
-     * the parent's form, so that when initialization of the form controls 
+     * initializes form contols after the role set component is registered by
+     * the parent's form, so that when initialization of the form controls
      * triggers the subscription of the form's valueChanges, the onChange method
      * was allready registered.
      */
@@ -103,7 +107,7 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
 
     /**
      * gets replaced by angular on registerOnChange
-     * Implement this function helps on a chlid component 
+     * Implement this function helps on a chlid component
      * to type the onChange function for the use in this class.
      */
     abstract onChange(controlValue): void;
@@ -116,7 +120,7 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
 
     /**
      * gets called on setting the value of the form control
-     * @param obj 
+     * @param obj
      */
     abstract writeValue(obj: any): void;
 
@@ -132,7 +136,7 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
         this.onTouched = fn;
     }
     setDisabledState?(isDisabled: boolean): void {
-        throw new Error("Method not implemented.");
+        throw new Error('Method not implemented.');
     }
 
 
@@ -146,5 +150,4 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
         this.touched.emit()
     }
 
-    @Output() touched: EventEmitter<void> = new EventEmitter();
 }

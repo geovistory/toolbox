@@ -35,46 +35,27 @@
 
 <!-- ************************** EDITING ****************************** -->
 <div *ngIf="(editing$ | async)">
-  <button class="btn btn-link mt-2 mb-3" (click)="stopEditing()">
+  <!-- <button class="btn btn-link mt-2 mb-3" (click)="stopEditing()">
     <i class="fa fa-chevron-left"></i> All properties
-  </button>
-  <!-- <div class="mb-3 d-flex align-items-center justify-content-between">
+  </button> -->
+  <div class="my-3 d-flex align-items-center justify-content-between">
     <h4 class="m-0">
-      Edit
+      Edit {{classConfig?.label}}
     </h4>
-  </div> -->
+  </div>
 
   <div class="card">
 
-    <div class="card-body d-flex align-items-center justify-content-between btn-r btn-t pb-0">
-
-      <!-- Class info  -->
-
-      <div class="font-lg text-gray-400">
-        Edit
-        <i [ngClass]="{'fa fa-star': classConfig.subclassOf === 'teEnt', 'gv-icon gv-icon-entity': classConfig.subclassOf === 'peIt'}"></i>
-        {{classConfig?.label}}
-      </div>
-
-      <!-- Step 1 for adding a new property -->
-
-      <button class="btn btn-link" (click)="startSelectProperty()" [ngClass]="{'invisible': (selectPropState$ | async) !== 'init'}">
-        <i class="fa fa-plus"></i> Add a property
-      </button>
-
-    </div>
+    <gv-te-ent-header [ontoInfoVisible$]="ontoInfoVisible$" [classConfig]="classConfig" [selectPropState$]="selectPropState$"
+      (startSelectProperty)="startSelectProperty()"></gv-te-ent-header>
 
     <!-- Step 2 for adding new Property section -->
 
-    <div *ngIf="(selectPropState$ | async) === 'selectProp'">
-      <gv-add-info-te-ent [uiElements]="uiElementsForAddInfo" [classConfig]="classConfig" [addedChildren$]="_children$"
-        (addOptionSelected)="addOptionSelected($event)" [excludeRoleSet]="(parentRoleSet$ | async)" (cancel)="stopSelectProperty()"></gv-add-info-te-ent>
-    </div>
+    <gv-add-info-te-ent *ngIf="(selectPropState$ | async) === 'selectProp'" [uiElements]="uiElementsForAddInfo"
+      [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)"
+      [excludeRoleSet]="(parentRoleSet$ | async)" (cancel)="stopSelectProperty()"></gv-add-info-te-ent>
 
     <div class="card-body bg-transparent">
-
-
-
       <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
         <span [ngSwitch]="item.key">
 
@@ -89,4 +70,8 @@
 
     </div>
   </div>
+
+  <button class="btn btn-secondary mt-3" (click)="stopEditing()">
+    Ok
+  </button>
 </div>

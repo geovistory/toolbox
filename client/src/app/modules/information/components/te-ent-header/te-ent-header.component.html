@@ -1,0 +1,19 @@
+<div class="card-body d-flex align-items-center justify-content-between btn-r btn-t pb-0">
+
+  <!-- Class info  -->
+
+  <div class="font-lg text-gray-400">
+    <gv-class-info [classConfig]="classConfig"></gv-class-info>
+  </div>
+
+  <a *ngIf="(ontoInfoVisible$|async)" class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{classConfig.dfh_pk_class}}" target="_blank">
+    {{classConfig.dfh_identifier_in_namespace}}
+  </a>
+  
+  <!-- Step 1 for adding a new property -->
+
+  <button class="btn btn-link-gray" (click)="startSelectProperty.emit()" [ngClass]="{'invisible': (selectPropState$ | async) !== 'init'}">
+    <i class="fa fa-plus"></i> Add a property
+  </button>
+
+</div>

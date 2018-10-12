@@ -109,6 +109,10 @@ import { TypeCtrlComponent } from './type/type-ctrl/type-ctrl.component';
 import { TypeCtrlAPIActions } from './type/type-ctrl/api/type-ctrl.actions';
 import { TypeCtrlAPIEpics } from './type/type-ctrl/api/type-ctrl.epics';
 import { TreeviewModule } from 'ngx-treeview';
+import { RoleSetHeaderComponent } from './components/role-set-header/role-set-header.component';
+import { TeEntHeaderComponent } from './components/te-ent-header/te-ent-header.component';
+import { DataUnitAPIEpics } from './data-unit/data-unit.epics';
+import { DataUnitActions } from './data-unit/data-unit.actions';
 
 
 
@@ -228,6 +232,8 @@ import { TreeviewModule } from 'ngx-treeview';
     EditorHeaderComponent,
     ClassInfoComponent,
     TypeCtrlComponent,
+    RoleSetHeaderComponent,
+    TeEntHeaderComponent,
 
 
 
@@ -242,6 +248,8 @@ import { TreeviewModule } from 'ngx-treeview';
     InformationAPIEpics,
 
     // Data Unit
+    DataUnitAPIEpics,
+    DataUnitActions,
     PeItActions,
     PeItApiEpics,
     TeEntActions,

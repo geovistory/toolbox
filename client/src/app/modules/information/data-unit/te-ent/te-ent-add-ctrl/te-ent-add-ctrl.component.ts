@@ -8,8 +8,9 @@ import { TeEntActions } from '../te-ent.actions';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { slideInOut } from '../../../shared/animations';
 import { StateCreatorService } from '../../../shared/state-creator.service';
+import { RootEpics } from 'app/core/store/epics';
+import { DataUnitAPIEpics } from '../../data-unit.epics';
 
-@AutoUnsubscribe()
 @Component({
   selector: 'gv-te-ent-add-ctrl',
   templateUrl: './te-ent-add-ctrl.component.html',
@@ -38,9 +39,11 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
     protected actions: TeEntActions,
     protected fb: FormBuilder,
     protected ref: ChangeDetectorRef,
-    protected stateCreator: StateCreatorService
+    protected stateCreator: StateCreatorService,
+    protected rootEpics: RootEpics,
+    protected dataUnitEpics: DataUnitAPIEpics
   ) {
-    super(ngRedux, actions, fb, stateCreator)
+    super(ngRedux, actions, fb, stateCreator, rootEpics, dataUnitEpics)
     console.log('TeEntAddCtrlComponent')
   }
 
@@ -57,7 +60,7 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
       const roleSetList = this.localStore.getState()._children;
 
       // this.subs.push(this._children$.subscribe(roleSetList => {
-      if (roleSetList)
+      if (roleSetList) {
         Object.keys(roleSetList).forEach((key) => {
           if (roleSetList[key]) {
 
@@ -65,6 +68,7 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
           }
 
         })
+      }
 
 
       this.ctrlsInitialized = true;
@@ -73,20 +77,19 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
   }
 
   subscribeFormChanges(): void {
-    this.subs.push(this.formGroup.valueChanges.subscribe(val => {
+    this.formGroup.valueChanges.takeUntil(this.destroy$).subscribe(formVal => {
 
       // build the role
-      let role = new InfRole(this.parentRole);
+      const role = new InfRole(this.parentRole);
 
-      // build a teEnt with all pi_roles given by the form's controls 
+      // build a teEnt with all pi_roles given by the form's controls
       if (this.teEntState) {
         role.temporal_entity = new InfTemporalEntity(this.teEntState.teEnt);
         role.temporal_entity.te_roles = [];
         Object.keys(this.formGroup.controls).forEach(key => {
           if (this.formGroup.get(key)) {
             const val = this.formGroup.get(key).value;
-            if (val)
-              role.temporal_entity.te_roles = [...role.temporal_entity.te_roles, ...val]
+            if (val) role.temporal_entity.te_roles = [...role.temporal_entity.te_roles, ...val]
           }
         })
 
@@ -108,13 +111,12 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
         // send the teEnt the parent form
         this.onChange(role)
 
-      }
-      else {
+      } else {
 
         this.onChange(null);
 
       }
-    }))
+    })
   }
 
 
@@ -125,12 +127,13 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
       // add values to controls for each roleSet of _children
       const roleSetList = this.localStore.getState()._children;
 
-      if (roleSetList)
+      if (roleSetList) {
         Object.keys(roleSetList).forEach((key) => {
           if (roleSetList[key]) {
             this.formGroup.get(key).setValue(roleSetList[key].roles)
           }
         })
+      }
     }
   }
 
@@ -142,8 +145,7 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
   writeValue(parentRole: InfRole): void {
     this.parentRole = parentRole ? parentRole : new InfRole();
 
-    if (this.ctrlsInitialized)
-      this.initFormCtrlValues()
+    if (this.ctrlsInitialized) this.initFormCtrlValues()
   }
 
   registerOnChange(fn: any): void {

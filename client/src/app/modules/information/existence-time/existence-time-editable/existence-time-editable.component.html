@@ -1,6 +1,5 @@
 <div class="btn-group d-flex flex-row">
-    <h5 class="gv-pointer bg-transparent d-flex py-2 align-items-center gv-grow-1" (click)="toggleCardBody()">
-        <i class="fa fa-caret-right fa-fw" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
+    <h5 class="bg-transparent d-flex py-2 align-items-center gv-grow-1">
         When
     </h5>
     <div class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">

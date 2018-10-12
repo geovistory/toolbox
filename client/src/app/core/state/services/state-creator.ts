@@ -242,33 +242,33 @@ export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: P
  */
 export function createRoleSet(options: RoleSet, roles: InfRole[], crm: ProjectCrm, settings: StateSettings): RoleSet {
 
-    if (!roles || !roles.length) return;
     if (!options.property) throw Error('Please provide options.property. This is important to add information about the target class of a RoleSet.');
 
-    const roleDetailTemplate: RoleDetail = {
-        isOutgoing: options.isOutgoing,
-        targetClassPk: options.targetClassPk
+    // prepare _role_list
+    if (roles && roles.length) {
+
+        /**
+         * This is a shortcut method to take only the number of roles, defined by the max quantiy
+         * TODO: change the behavior with addMode to smthng more clever
+         */
+        if (settings.isAddMode && options.targetMaxQuantity > -1) {
+            roles = roles.slice(0, options.targetMaxQuantity)
+        }
+
+        const roleDetailArray = roles.map(role => createRoleDetail({
+            isOutgoing: options.isOutgoing,
+            targetClassPk: options.targetClassPk
+        }, role, crm, settings))
+
+        const sortedByOrdNum = sortRoleDetailsByOrdNum(roleDetailArray);
+
+        options = {
+            ...options,
+            _role_list: indexBy(roleDetailKey, sortedByOrdNum)
+        }
     }
-
-    /**
-     * This is a shortcut method to take only the number of roles, defined by the max quantiy
-     * TODO: change the behavior with addMode to smthng more clever
-     */
-    if (settings.isAddMode && options.targetMaxQuantity > -1) {
-        roles = roles.slice(0, options.targetMaxQuantity)
-    }
-    // let displayRoleForRangePk;
-
-    // /** if there are no eprs, this will be roles from Repo, not from Project */
-    // if (!roles[0].entity_version_project_rels && roles[0].pk_entity) {
-    //     displayRoleForRangePk = RoleSetService.getDisplayRangeFavoriteOfRoles(roles)
-    // }
-
-    const roleDetailArray = roles.map(role => createRoleDetail(roleDetailTemplate, role, crm, settings))
-    const sortedByOrdNum = sortRoleDetailsByOrdNum(roleDetailArray);
 
     return new RoleSet({
-        _role_list: indexBy(roleDetailKey, sortedByOrdNum),
         ...options,
         targetClassPk: options.isOutgoing ? options.property.dfh_has_range : options.property.dfh_has_domain,
     });
