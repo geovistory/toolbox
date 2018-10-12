@@ -112,7 +112,13 @@ export class EntityAddSearchExistingComponent implements OnInit, OnChanges {
 
   add(pkEntity: number) {
     this.modalService.pkEntity = pkEntity;
-    this.modalService.state = 'add-existing'
+    // this.modalService.state = 'add-existing'
+
+    this.modalService.addToProject().subscribe(success => {
+      this.modalService.onOpen.emit(this.modalService.pkEntity);
+      this.completeLoading();
+      this.activeModal.close('Entity Added')
+    })
   }
 
   open(pkEntity: number) {

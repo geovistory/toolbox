@@ -41,6 +41,11 @@
       "foreignKey": "fk_property_set",
       "through": "ComUiContextConfig",
       "keyThrough": "fk_class_for_property_set"
+    },
+    "property_set_property_rel": {
+      "type": "hasMany",
+      "model": "ComPropertySetPropertyRel",
+      "foreignKey": "fk_property_set"
     }
   },
   "acls": [

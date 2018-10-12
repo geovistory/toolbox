@@ -81,13 +81,22 @@ export class EntityAddModalService {
     private persistentItemApi: InfPersistentItemApi
   ) { }
 
-  changePeItProjectRelation() {
-    return this.persistentItemApi.changePeItProjectRelation(
+  // changePeItProjectRelation() {
+  //   return this.persistentItemApi.changePeItProjectRelation(
+  //     this.ngRedux.getState().activeProject.pk_project,
+  //     true,
+  //     this.peItToAdd
+  //   )
+  // }
+
+  addToProject() {
+    return this.persistentItemApi.addToProject(
       this.ngRedux.getState().activeProject.pk_project,
-      true,
-      this.peItToAdd
+      this.pkEntity
     )
   }
+
+
 
   createPeIt() {
     return this.persistentItemApi.findOrCreatePeIt(

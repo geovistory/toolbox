@@ -24,6 +24,7 @@ export class ClassComponent extends ClassAPIActions implements OnInit, OnDestroy
 
   public readonly PK_UI_CONTEXT_EDITABLE = ComConfig.PK_UI_CONTEXT_EDITABLE;
   public readonly PK_UI_CONTEXT_CREATE = ComConfig.PK_UI_CONTEXT_CREATE;
+  public readonly PK_UI_CONTEXT_ADD = ComConfig.PK_UI_CONTEXT_ADD;
 
 
   localStore: ObservableStore<ClassDetail>

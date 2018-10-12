@@ -69,12 +69,12 @@ export class EntityAddModalComponent implements OnInit, OnDestroy {
   }
 
   add() {
-    this.startLoading();
-    this.modalService.changePeItProjectRelation().subscribe(success => {
-      this.modalService.onOpen.emit(this.modalService.pkEntity);
-      this.completeLoading();
-      this.activeModal.close('Entity Added');
-    });
+    // this.startLoading();
+    // this.modalService.changePeItProjectRelation().subscribe(success => {
+    //   this.modalService.onOpen.emit(this.modalService.pkEntity);
+    //   this.completeLoading();
+    //   this.activeModal.close('Entity Added');
+    // });
   }
 
   create() {

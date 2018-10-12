@@ -20,6 +20,7 @@ var include = [
   "ComUiContext",
   "ComUiContextConfig",
   "ComPropertySet",
+  "ComPropertySetPropertyRel",
 ];
 
 module.exports = function (app) {
