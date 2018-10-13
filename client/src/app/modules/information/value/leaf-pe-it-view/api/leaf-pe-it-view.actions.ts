@@ -17,6 +17,8 @@ export class LeafPeItViewAPIActions {
   static readonly LOAD_SUCCEEDED = 'LeafPeItView::LOAD_SUCCEEDED';
   static readonly LOAD_FAILED = 'LeafPeItView::LOAD_FAILED';
 
+  static readonly SET_PK_ENTITY = 'LeafPeItView::SET_PK_ENTITY';
+
   static readonly REMOVE = 'LeafPeItView::REMOVE';
 
   static readonly DESTROY = 'LeafPeItView::DESTROY';
@@ -43,6 +45,12 @@ export class LeafPeItViewAPIActions {
     error,
   })
 
+  @dispatch()
+  setPkEntity = (pkEntity: number): LeafPeItViewAPIAction => ({
+    type: LeafPeItViewAPIActions.SET_PK_ENTITY,
+    meta: { pkEntity },
+    payload: null,
+  });
 
   /**
    * Removes the peItState (used by leaf-pe-it-crtl)

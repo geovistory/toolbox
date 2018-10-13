@@ -7,12 +7,13 @@ CREATE OR REPLACE FUNCTION drop_all ()
    BEGIN
        -- Get all the schemas
         FOR rec IN
-        select distinct schemaname
-         from pg_catalog.pg_tables
+        select schema_name
+        from information_schema.schemata;
+
          -- You can exclude the schema which you don't want to drop by adding another condition here
-         where schemaname not like 'pg_catalog'  
+         where schema_name not like 'pg_catalog'  
            LOOP
-             EXECUTE 'DROP SCHEMA ' || rec.schemaname || ' CASCADE'; 
+             EXECUTE 'DROP SCHEMA ' || rec.schema_name || ' CASCADE'; 
            END LOOP; 
            RETURN; 
    END;

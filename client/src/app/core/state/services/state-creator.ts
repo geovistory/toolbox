@@ -466,10 +466,14 @@ export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: I
             roleDetail.isCircular = true;
         }
 
-        roleDetail._leaf_peIt = createPeItDetail({}, {
-            fk_class: options.targetClassPk,
-            pk_entity: roleDetail.role ? roleDetail.role.fk_entity : undefined
-        } as InfPersistentItem, crm, settings);
+        roleDetail._leaf_peIt =  {
+            fkClass: options.targetClassPk,
+            pkEntity: roleDetail.role ? roleDetail.role.fk_entity : undefined,
+            peIt: {
+                fk_class: options.targetClassPk,
+                pk_entity: roleDetail.role ? roleDetail.role.fk_entity : undefined,
+            } as InfPersistentItem
+        } as PeItDetail;
 
     }
 

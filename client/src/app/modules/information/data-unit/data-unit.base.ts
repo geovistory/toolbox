@@ -149,11 +149,11 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   /**
   * called, when user selected a the kind of property to add
   */
-  addRoleSet(propertyToAdd: RoleSet, roles: InfRole[]) {
+  addRoleSet(propertyToAdd: RoleSet, roles: InfRole[], settings: StateSettings = {}) {
 
 
     const crm = this.ngRedux.getState().activeProject.crm;
-    const newRoleSet = createRoleSet(new RoleSet(propertyToAdd), roles, crm, {});
+    const newRoleSet = createRoleSet(new RoleSet(propertyToAdd), roles, crm, settings);
 
 
     // add a form conrtol

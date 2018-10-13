@@ -112,6 +112,14 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     if (this.pkEntity) this.openEntityEditor(this.pkEntity, this.projectId)
     else this.searchProjectPeIts();
 
+    // listen to route changes
+    this.activatedRoute.params.subscribe(params => {
+      if (params.pkEntity && params.pkEntity != this.pkEntity) {
+        this.pkEntity = params.pkEntity;
+        this.openEntityEditor(this.pkEntity, this.projectId)
+      }
+    })
+
     this.entityAddModalService.onAdd.subscribe(success => {
       this.searchProjectPeIts();
     })
