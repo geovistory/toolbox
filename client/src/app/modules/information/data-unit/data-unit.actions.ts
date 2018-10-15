@@ -3,13 +3,13 @@ import { Injectable } from '@angular/core';
 import { U, UiContext } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy } from 'ramda';
-import { DataUnitLabel, RoleSet, DataUnitI } from 'app/core/state/models';
+import { DataUnitLabel, RoleSet, DataUnit } from 'app/core/state/models';
 import { roleSetKey } from 'app/core/state/services/state-creator';
 
 
 
 // Flux-standard-action gives us stronger typing of our actions.
-type Payload = DataUnitI;
+type Payload = DataUnit;
 interface MetaData { [key: string]: any };
 export type DataUnitAction = FluxStandardAction<Payload, MetaData>;
 

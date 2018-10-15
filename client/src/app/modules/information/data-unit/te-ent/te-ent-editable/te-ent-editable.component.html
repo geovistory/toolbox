@@ -12,7 +12,7 @@
       [childrenPath]="basePath.concat('_children')" (onToggle)="toggleCardBody()">
 
       <ng-content buttons select="[headerRight]"> </ng-content>
-      <button buttons type="button" class="btn btn-link-gray" [attr.title]="'Edit this ' + classConfig?.label">
+      <button buttons type="button" class="btn btn-link-gray" [attr.title]="'Edit this ' + classConfig?.label" *ngIf="!(isViewMode$ | async)">
         <i class="fa fa-pencil" (click)="startEditing()"></i>
       </button>
 
@@ -46,7 +46,7 @@
 
   <div class="card">
 
-    <gv-te-ent-header [ontoInfoVisible$]="ontoInfoVisible$" [classConfig]="classConfig" [selectPropState$]="selectPropState$"
+    <gv-te-ent-header [ontoInfoVisible$]="ontoInfoVisible$" [classConfig]="classConfig" [selectPropState$]="selectPropState$" [addButtonVisible]="!(isViewMode$ | async)"
       (startSelectProperty)="startSelectProperty()"></gv-te-ent-header>
 
     <!-- Step 2 for adding new Property section -->

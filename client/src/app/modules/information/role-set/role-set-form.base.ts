@@ -1,5 +1,5 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { EventEmitter, Input, OnInit, Output, ChangeDetectorRef } from '@angular/core';
+import { EventEmitter, Input, OnInit, Output, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IAppState, InfEntityProjectRel, InfRole, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -14,7 +14,7 @@ import { RoleSetActions } from './role-set.actions';
     basePathMethodName: 'getBasePath',
     localReducer: roleSetReducer
 })
-export abstract class RoleSetFormBase implements OnInit {
+export abstract class RoleSetFormBase implements OnInit, OnDestroy {
 
 
     @Input() parentPath: string[];
@@ -33,15 +33,6 @@ export abstract class RoleSetFormBase implements OnInit {
     _role_add_list: RoleDetailList;
 
 
-    getBasePath = () => [...this.parentPath];
-
-
-    // Since we're observing an array of items, we need to set up a 'trackBy'
-    // parameter so Angular doesn't tear down and rebuild the list's DOM every
-    // time there's an update.
-    getKey(_, item) {
-        return item.key;
-    }
 
     roleSetFormPath: string[];
 
@@ -52,7 +43,7 @@ export abstract class RoleSetFormBase implements OnInit {
 
     localStore: ObservableStore<RoleSet>;
 
-    createFormControlCount: number = 0;
+    createFormControlCount = 0;
 
     constructor(
         protected fb: FormBuilder,
@@ -67,6 +58,16 @@ export abstract class RoleSetFormBase implements OnInit {
 
         // this.initFormSubscription();
 
+    }
+
+    getBasePath = () => [...this.parentPath];
+
+
+    // Since we're observing an array of items, we need to set up a 'trackBy'
+    // parameter so Angular doesn't tear down and rebuild the list's DOM every
+    // time there's an update.
+    getKey(_, item) {
+        return item.key;
     }
 
     ngOnInit() {
@@ -185,7 +186,7 @@ export abstract class RoleSetFormBase implements OnInit {
 
         // add controls for each role to add
         Object.keys(_role_add_list).forEach((key) => {
-            if(_role_add_list[key]){
+            if (_role_add_list[key]) {
                 const roleCtrl = new FormControl(null, [Validators.required]);
                 this.addForm.addControl(key, roleCtrl)
             }
@@ -199,13 +200,13 @@ export abstract class RoleSetFormBase implements OnInit {
 
         // add the control values
         // setTimout is needed in order to make the form ctrls work…
-        setTimeout(()=>{
+        setTimeout(() => {
             Object.keys(_role_add_list).forEach((key) => {
                 const roleDetail = _role_add_list[key]
                 if (roleDetail && roleDetail.role) {
-    
+
                     const role = roleDetail.role;
-    
+
                     // prepare the role for relation with project
                     role.entity_version_project_rels = [
                         role.entity_version_project_rels ?

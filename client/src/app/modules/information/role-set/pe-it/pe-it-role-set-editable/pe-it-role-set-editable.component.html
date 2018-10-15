@@ -14,7 +14,7 @@
           [dragData]="entry" (onDragStart)="onDragStart()" (onDragEnd)="onDrag($event)" [dragEnabled]="(dragEnabled$|async)" class="list-group-item p-0">
 
           <gv-pe-it-role-editable [parentPath]="basePath" intermediatePathSegment="_role_list" [index]="entry.key">
-            <button headerRight class="btn btn-link-gray" (click)="removeFromProject(entry.key)" title="Remove from project">
+            <button headerRight class="btn btn-link-gray" (click)="removeFromProject(entry.key)" title="Remove from project" *ngIf="!(isViewMode$ | async)">
               <i class="fa fa-trash"></i>
             </button>
           </gv-pe-it-role-editable>

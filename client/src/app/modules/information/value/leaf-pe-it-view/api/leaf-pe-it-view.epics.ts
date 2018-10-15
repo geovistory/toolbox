@@ -46,7 +46,7 @@ export class LeafPeItViewAPIEpics {
              */
             .subscribe((data) => {
               if (data) {
-                const peItDetail: PeItDetail = createPeItDetail({}, data, action.meta.projectDetail.crm)
+                const peItDetail: PeItDetail = createPeItDetail({}, data, action.meta.projectDetail.crm, { isViewMode: true })
                 /**
                  * Emit the global action that completes the loading bar
                  */

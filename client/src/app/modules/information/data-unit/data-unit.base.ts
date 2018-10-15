@@ -1,16 +1,16 @@
 import { NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, U, UiContext, UiElement, InfRole } from 'app/core';
-import { Observable, Subject, Subscription, throwError } from 'rxjs';
-import { AddOption, DataUnitLabel, ExistenceTimeDetail, PeItDetail, RoleSet, RoleSetI, RoleSetList, SelectPropStateType, TeEntDetail, RoleSetForm, DataUnitChildList, SubstoreComponent } from 'app/core/state/models';
+import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, InfRole, UiContext, UiElement } from 'app/core';
+import { AddOption, DataUnitChildList, DataUnitLabel, PeItDetail, RoleSet, SelectPropStateType, SubstoreComponent, TeEntDetail } from 'app/core/state/models';
+import { TypeDetail } from 'app/core/state/models/type-detail';
+import { createRoleSet, roleSetKey, StateSettings } from 'app/core/state/services/state-creator';
+import { RootEpics } from 'app/core/store/epics';
+import { Observable, Subject } from 'rxjs';
 import { StateCreatorService } from '../shared/state-creator.service';
+import { DataUnitAPIEpics } from './data-unit.epics';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
-import { roleSetKey, createRoleSet, StateSettings } from 'app/core/state/services/state-creator';
-import { TypeDetail } from 'app/core/state/models/type-detail';
-import { RootEpics } from 'app/core/store/epics';
-import { DataUnitAPIEpics } from './data-unit.epics';
 
 
 // maps pk_property_set to key in ngRedux store
@@ -35,6 +35,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   @select() selectPropState$: Observable<SelectPropStateType>;
   @select() fkClass$: Observable<number>;
   @select() dfhClass$: Observable<DfhClass>;
+  @select() isViewMode$: Observable<boolean>;
   @select() label$: Observable<string>;
   @select() pkEntity$: Observable<number>
   @select() outgoingProperties$: Observable<DfhProperty[]>

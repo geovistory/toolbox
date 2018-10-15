@@ -1,10 +1,10 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { FluxStandardAction } from 'flux-standard-action';
-import { LeafPeItViewI } from './leaf-pe-it-view.models';
 import { PeItDetail, ProjectDetail } from 'app/core';
+import { FluxStandardAction } from 'flux-standard-action';
+import { LeafPeItView } from './leaf-pe-it-view.models';
 
-type Payload = LeafPeItViewI;
+type Payload = LeafPeItView;
 interface MetaData {
   pkEntity?: number, projectDetail?: ProjectDetail,
   peItDetail?: PeItDetail

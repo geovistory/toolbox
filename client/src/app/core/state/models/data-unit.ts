@@ -5,35 +5,7 @@ import { RoleSet } from './role-set';
 import { CollapsedExpanded, SelectPropStateType } from './types';
 import { TypeDetail } from './type-detail';
 
-/*******************************
- * Data Unit Base Interface
- *******************************/
-
-export interface DataUnitI {
-
-    _children?: DataUnitChildList;
-
-    _type?: TypeDetail;
-
-    pkEntity?: number,
-    fkClass?: number;
-    dfhClass?: DfhClass;
-
-    parentPeIt?: InfPersistentItem,
-
-    /** gui */
-    showAddAPropertyButton?: boolean; // the button to add a new RoleSet or PropertySet (e.g. Add the section for Names)
-
-    label?: DataUnitLabel;
-    toggle?: CollapsedExpanded;
-    ingoingRoleSets?: RoleSet[];
-    outgoingRoleSets?: RoleSet[];
-    selectPropState?: SelectPropStateType; // state of child components for adding or creating properties
-    propertyToAdd?: RoleSet; // role set that is currently chosen in order to add a role of this kind
-
-}
-
-export class DataUnit implements DataUnitI {
+export class DataUnit {
 
     _children?: DataUnitChildList;
 
@@ -47,6 +19,7 @@ export class DataUnit implements DataUnitI {
 
     /** gui */
     showAddAPropertyButton?= true;
+    isViewMode? = false;
 
     label?: DataUnitLabel;
     toggle? = 'collapsed' as CollapsedExpanded;
@@ -56,7 +29,7 @@ export class DataUnit implements DataUnitI {
     propertyToAdd?: RoleSet; // role set that is currently chosen in order to add a role of this kind
 
 
-    constructor(data?: DataUnitI) {
+    constructor(data?: DataUnit) {
         Object.assign(this, data);
     }
 

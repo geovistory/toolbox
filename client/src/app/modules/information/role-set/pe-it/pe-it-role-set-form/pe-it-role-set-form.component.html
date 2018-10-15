@@ -12,6 +12,8 @@
 
   <div class="card-body">
     <div *ngFor="let entry of _role_add_list | keys; trackBy:getKey">
+      <input type="checkbox" [formControlName]="entry.key" >
+      
       <gv-pe-it-role-add-ctrl *ngIf="addForm.get(entry.key)" [parentPath]="roleSetFormPath" [index]="entry.key" intermediatePathSegment="_role_add_list"
         [formControlName]="entry.key"></gv-pe-it-role-add-ctrl>
     </div>

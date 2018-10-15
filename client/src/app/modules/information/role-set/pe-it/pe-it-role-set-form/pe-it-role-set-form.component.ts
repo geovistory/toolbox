@@ -71,8 +71,8 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
     this.subs.push(combineLatest([waitAtLeast, apiCall])
       .subscribe((results) => {
 
-        const rolesInOtherProjects = results[1].filter(role => parseInt(role.is_in_project_count) > 0);
-        const rolesInNoProject = results[1].filter(role => parseInt(role.is_in_project_count) == 0);
+        const rolesInOtherProjects = results[1].filter(role => parseInt(role.is_in_project_count, 10) > 0);
+        const rolesInNoProject = results[1].filter(role => parseInt(role.is_in_project_count, 10) == 0);
 
         const inOther$ = this.stateCreator.initializeRoleDetails(rolesInOtherProjects, { isOutgoing: s.isOutgoing })
         const inNo$ = this.stateCreator.initializeRoleDetails(rolesInNoProject, { isOutgoing: s.isOutgoing })
@@ -194,7 +194,7 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
 
     if (this.addForm.valid) {
 
-      // prepare peIt 
+      // prepare peIt
       const p = new InfPersistentItem(this.parentPeItStore.getState().peIt);
       p.pi_roles = [];
 

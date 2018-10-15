@@ -1244,7 +1244,17 @@ module.exports = function (InfPersistentItem) {
 
 
   /**
-   * Add a persistent item to project 
+   * Add a persistent item to project
+   * 
+   * This query will add those things to the project:
+   * - Roles that are enabled for auto-adding (using the admin configuration of that class).
+   * - Entity associationss enabled for auto-adding (using the admin configuration of that class).
+   *   This will add the type for example. If the type is not activated by the project, the association is added but nothing will be displayed in that project.
+   *   Currently, there is no information displayed to the user, concerning the possible 'loss' of type information upon adding it to the project.
+   * 
+   * This query will not add
+   * - The temporal entities (since we can then still decide, which temporal entities will be shown in the result list)
+   * - The value-like items (time-primitive, appellation, language), since they never belong to projects
    * 
    * See this page for details
    * https://kleiolab.atlassian.net/wiki/spaces/GEOV/pages/693764097/Add+DataUnits+to+Project
@@ -1257,14 +1267,14 @@ module.exports = function (InfPersistentItem) {
     const params = [pk_entity, pk_project]
 
     const sql_stmt = `
-          -- Relate given persistent item to given project --
+      -- Relate given persistent item to given project --
       ----------------------------------------------------
 
-      -- Find "auto-add-properties" for all classes 
-      -- TODO: Add a filter for properties enabled by given project
       WITH pe_it AS (
         select pk_entity, fk_class from information.persistent_item where pk_entity = $1
-      ),
+        ),
+      -- Find "auto-add-properties" for all classes 
+      -- TODO: Add a filter for properties enabled by given project
       auto_add_properties AS (
         -- select the fk_class and the properties that are auto add because of a ui_context_config
         select p.dfh_has_domain as fk_class, p.dfh_pk_property, p.dfh_range_instances_max_quantifier as max_quantifier

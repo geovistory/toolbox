@@ -1,30 +1,9 @@
 import { InfPersistentItem } from 'app/core/sdk';
 import { TimeLineSettings } from 'app/modules/timeline/models/timeline';
-import { DataUnit, DataUnitI } from './data-unit';
+import { DataUnit } from './data-unit';
 
-export interface PeItDetailI extends DataUnitI {
 
-    // record
-    peIt?: InfPersistentItem;
-
-    form?: any;
-
-    /** display data */
-    showRightPanel?: boolean;
-    showPropertiesHeader?: boolean;
-    showHeader?: boolean;
-
-    ontoInfoVisible?: boolean;
-    communityStatsVisible?: boolean;
-    loading?: boolean; // for leaf pe it view
-    leafPeItLoading?: boolean;
-    _leaf_peIt_modal?: PeItDetail // for leaf pe it view modal
-
-    /** Timeline */
-    timeLineSettings?: TimeLineSettings;
-}
-
-export class PeItDetail extends DataUnit implements PeItDetailI {
+export class PeItDetail extends DataUnit {
 
     // record
     peIt?: InfPersistentItem;
@@ -54,7 +33,7 @@ export class PeItDetail extends DataUnit implements PeItDetailI {
     /** Timeline */
     timeLineSettings?: TimeLineSettings;
 
-    constructor(data?: PeItDetailI) {
+    constructor(data?: PeItDetail) {
         super();
         Object.assign(this, data);
     }

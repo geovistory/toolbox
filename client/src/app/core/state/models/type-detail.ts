@@ -5,8 +5,9 @@ export class TypeDetail {
 
     entityAssociation?: InfEntityAssociation;
     label?: string;
-    editing? = false;
-    loading? = false;
+    isViewMode?= false;
+    editing?= false;
+    loading?= false;
     fkDomainEntity?: number;
     _typeCtrl?: TypeCtrl;
 
