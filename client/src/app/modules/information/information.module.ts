@@ -113,6 +113,9 @@ import { RoleSetHeaderComponent } from './components/role-set-header/role-set-he
 import { TeEntHeaderComponent } from './components/te-ent-header/te-ent-header.component';
 import { DataUnitAPIEpics } from './data-unit/data-unit.epics';
 import { DataUnitActions } from './data-unit/data-unit.actions';
+import { ClassAndTypeSelectorComponent } from './containers/class-and-type-selector/class-and-type-selector.component';
+import { ClassAndTypeSelectorAPIActions } from './containers/class-and-type-selector/api/class-and-type-selector.actions';
+import { ClassAndTypeSelectorAPIEpics } from './containers/class-and-type-selector/api/class-and-type-selector.epics';
 
 
 
@@ -160,6 +163,9 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     EntityAddCreateNewComponent,
     EntityAddModalComponent,
     EntityAddSearchExistingComponent,
+
+    // Classe and Type select
+    ClassAndTypeSelectorComponent,
 
     // Data Unit > PeIt
     PeItAddCtrlComponent,
@@ -247,6 +253,11 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     InformationAPIActions,
     InformationAPIEpics,
 
+
+    // Classe and Type select
+    ClassAndTypeSelectorAPIActions,
+    ClassAndTypeSelectorAPIEpics,
+
     // Data Unit
     DataUnitAPIEpics,
     DataUnitActions,
@@ -300,6 +311,9 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
 
     // Add Modal
     EntityAddModalComponent,
+
+    // Classe and Type select
+    ClassAndTypeSelectorComponent,
 
     // Data Unit > PeIt
     PeItAddCtrlComponent,

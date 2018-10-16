@@ -14,7 +14,10 @@ import { FluxStandardAction } from 'flux-standard-action';
 export const INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
 export const sandboxStateReducer = (lastState = {}, action: FluxStandardAction<any>) => {
   if (action.type === INIT_SANDBOX_STATE) {
-    lastState = action.payload;
+    lastState = {
+      ...lastState,
+      ...action.payload
+    };
   }
   return lastState;
 };

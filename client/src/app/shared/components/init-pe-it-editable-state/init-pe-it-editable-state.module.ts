@@ -13,13 +13,12 @@ import { NgReduxModule } from '@angular-redux/store';
     CommonModule,
     NgReduxModule
   ],
-  providers:[
+  providers: [
     StateCreatorService,
     ClassService,
     PropertyService,
     PeItService,
-    EprService    
-    
+    EprService
   ],
   declarations: [
     InitPeItEditableStateComponent
