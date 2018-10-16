@@ -78,26 +78,6 @@ export abstract class RoleSetFormBase implements OnInit, OnDestroy {
 
         this.initRoleSetFormBaseChild()
 
-        // this._role_add_list$.subscribe(d => {
-        //     if(d) this.initAddFormCtrls(d);
-        // })
-
-        // this.initFormCtrls();
-
-        // this.subs.push(
-        //     this._role_set_form$.subscribe(d => {
-        //         this._role_set_form = d;
-        //         if (d) {
-        //             this._role_create_list = d._role_create_list;
-        //             this._role_add_list = d._role_add_list;
-        //             this.initFormCtrls();
-        //         }
-
-
-        //     })
-        // )
-
-
     }
 
     abstract initRoleSetFormBaseChild(): void
@@ -135,16 +115,23 @@ export abstract class RoleSetFormBase implements OnInit, OnDestroy {
         }))
     }
 
+    /**
+     * Validates that at least one item must be selected
+     * @param group
+     */
     addFormValidator(group: FormGroup) {
-        const inProj = U.obj2Arr(group.controls).filter(ctrl => {
-            const role: InfRole = ctrl.value;
-            return role && role.entity_version_project_rels &&
-                role.entity_version_project_rels[0] &&
-                role.entity_version_project_rels[0].is_in_project
-        })
+        // const inProj = U.obj2Arr(group.controls).filter(ctrl => {
+        //     const role: InfRole = ctrl.value;
+        //     return role && role.entity_version_project_rels &&
+        //         role.entity_version_project_rels[0] &&
+        //         role.entity_version_project_rels[0].is_in_project
+        // })
+        const inProj = U.obj2Arr(group.controls).filter(ctrl => ctrl.value);
 
-        if (inProj.length < 1) return {
-            oneItemRequired: true
+        if (inProj.length < 1) {
+            return {
+                oneItemRequired: true
+            }
         }
     }
 
@@ -187,7 +174,7 @@ export abstract class RoleSetFormBase implements OnInit, OnDestroy {
         // add controls for each role to add
         Object.keys(_role_add_list).forEach((key) => {
             if (_role_add_list[key]) {
-                const roleCtrl = new FormControl(null, [Validators.required]);
+                const roleCtrl = new FormControl(false, [Validators.required]);
                 this.addForm.addControl(key, roleCtrl)
             }
         })
@@ -205,17 +192,17 @@ export abstract class RoleSetFormBase implements OnInit, OnDestroy {
                 const roleDetail = _role_add_list[key]
                 if (roleDetail && roleDetail.role) {
 
-                    const role = roleDetail.role;
+                    // const role = roleDetail.role;
 
-                    // prepare the role for relation with project
-                    role.entity_version_project_rels = [
-                        role.entity_version_project_rels ?
-                            role.entity_version_project_rels[0] : {
-                                is_in_project: false,
-                                is_standard_in_project: false
-                            } as InfEntityProjectRel
-                    ]
-                    this.addForm.get(key).setValue(role)
+                    // // prepare the role for relation with project
+                    // role.entity_version_project_rels = [
+                    //     role.entity_version_project_rels ?
+                    //         role.entity_version_project_rels[0] : {
+                    //             is_in_project: false,
+                    //             is_standard_in_project: false
+                    //         } as InfEntityProjectRel
+                    // ]
+                    this.addForm.get(key).setValue(false)
                 }
             })
         }, 0)

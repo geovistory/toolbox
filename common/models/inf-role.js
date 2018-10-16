@@ -730,4 +730,95 @@ module.exports = function (InfRole) {
 
     });
   };
+
+
+
+  /**
+    * Add roles to the project
+    * 
+    * This query will not add any related entitie but the given roles
+    * 
+    * @param pk_namespace
+    * @param pk_project
+    * @param pk_typed_class
+    */
+  InfRole.addToProject = function (pk_project, pk_roles, cb) {
+    const params = [parseInt(pk_project)]
+
+    const sql_stmt = `
+      WITH 
+      -- Find the roles
+      roles AS (
+        select pk_entity, community_favorite_calendar as calendar
+        from information.v_role 
+        where pk_entity IN (${pk_roles.map(r => (r * 1))})
+      )
+      -- add the project relations
+      insert into information.v_entity_version_project_rel (fk_project, is_in_project, fk_entity, calendar)
+      SELECT $1, true, pk_entity, calendar
+      from roles;    
+      `
+
+    const connector = InfRole.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      if (err) cb(err, resultObjects);
+      
+      const innerJoinThisProject = {
+        "$relation": {
+          "name": "entity_version_project_rels",
+          "joinType": "inner join",
+          "where": [
+            "fk_project", "=", pk_project,
+            "and", "is_in_project", "=", "true"
+          ]
+        }
+      };
+
+      const filter = {
+        where: ["pk_entity", "IN", pk_roles],
+        include: {
+          "entity_version_project_rels": innerJoinThisProject,           
+          "appellation": {
+            "$relation": {
+              "name": "appellation",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+          },
+          "language": {
+            "$relation": {
+              "name": "language",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
+          },
+          "time_primitive": {
+            "$relation": {
+              "name": "time_primitive",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
+          },
+          "place": {
+            "$relation": {
+              "name": "place",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
+          }
+        }
+      }
+
+      InfRole.findComplex(filter, cb)
+
+    });
+  };
 };

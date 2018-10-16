@@ -10,7 +10,7 @@ import { CollapsedExpanded, DataUnitChildType } from './types';
  *   are not persisted in db: no need to create, add or edit role sets
  *******************************/
 
-export class RoleSet  {
+export class RoleSet {
 
     readonly type?: DataUnitChildType = 'RoleSet';
 
@@ -29,12 +29,13 @@ export class RoleSet  {
     isViewMode?= false;
     dragEnabled?: boolean;
     label?: RoleSetLabel;
-    toggle? = 'expanded' as CollapsedExpanded;
+    toggle?= 'expanded' as CollapsedExpanded;
     rolesNotInProjectLoading?: boolean;
     roleStatesToCreateVisible?: boolean;
     roleStatesInNoProjectVisible?: boolean;
     roleStatesInOtherProjectsVisible?: boolean;
     roleStatesInProjectVisible?: boolean;
+    loading?: boolean;
 
     constructor(data?: RoleSet) {
         Object.assign(this, data);

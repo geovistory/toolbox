@@ -96,7 +96,8 @@
         "alternativesNotInProjectByTeEntPk",
         "changeRoleProjectRelation",
         "nestedObjectsOfProject",
-        "addToProjectWithTeEnt"
+        "addToProjectWithTeEnt",
+        "addToProject"
       ]
     }
   ],
@@ -335,6 +336,38 @@
       "description": "Add roles with their associated temporal entity to the project.",
       "http": {
         "path": "/add-to-project-with-temporal-entity",
+        "verb": "post"
+      }
+    },
+    "addToProject": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_roles",
+          "type": "array",
+          "required": true,
+          "description": "Array of primary keys of roles (array of pk_entity).",
+          "http": {
+            "source": "body"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfRole",
+        "root": true
+      },
+      "description": "Add roles without any related entities to the project.",
+      "http": {
+        "path": "/add-to-project",
         "verb": "post"
       }
     }

@@ -14,7 +14,13 @@ export function roleStateKey(roleState: RoleDetail) { return '_' + roleState.rol
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = RoleSet;
-interface MetaData { [key: string]: any };
+interface MetaData {
+  key?: string;
+  roleDetail?: RoleDetail;
+  eprs?: InfEntityProjectRel[];
+  pk_roles?: number[]; // array of pk_entity of roles
+  roleDetailList?: RoleDetailList;
+};
 export type RoleSetAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
@@ -72,6 +78,17 @@ export class RoleSetActions {
 
   static readonly ROLE_SET_ENABLE_DRAG = 'RoleSet::ROLE_SET_ENABLE_DRAG';
   static readonly ROLE_SET_DISABLE_DRAG = 'RoleSet::ROLE_SET_DISABLE_DRAG';
+
+  // used by pe it role set form
+  static readonly ADD_ROLES_WITH_TE_ENT = 'RoleSet::ADD_ROLES_WITH_TE_ENT';
+  static readonly ADD_ROLES_WITH_TE_ENT_SUCCEEDED = 'RoleSet::ADD_ROLES_WITH_TE_ENT_SUCCEEDED';
+  static readonly ADD_ROLES_WITH_TE_ENT_FAILED = 'RoleSet::ADD_ROLES_WITH_TE_ENT_FAILED';
+
+  // used by te ent role set form
+  // TODO: once there are roles connecting two te ents, we need another api to add those
+  static readonly ADD_ROLES_WITHOUT_TE_ENT = 'RoleSet::ADD_ROLES_WITHOUT_TE_ENT';
+  static readonly ADD_ROLES_WITHOUT_TE_ENT_SUCCEEDED = 'RoleSet::ADD_ROLES_WITHOUT_TE_ENT_SUCCEEDED';
+  static readonly ADD_ROLES_WITHOUT_TE_ENT_FAILED = 'RoleSet::ADD_ROLES_WITHOUT_TE_ENT_FAILED';
 
 
   @dispatch()
@@ -174,20 +191,20 @@ export class RoleSetActions {
     payload: null
   })
 
-  startEditingRole = (key: string, roleState: RoleDetail): RoleSetAction => ({
+  startEditingRole = (key: string, roleDetail: RoleDetail): RoleSetAction => ({
     type: RoleSetActions.START_EDITING_ROLE,
     meta: {
       key,
-      roleState
+      roleDetail
     },
     payload: null
   })
 
-  stopEditingRole = (key: string, roleState: RoleDetail): RoleSetAction => ({
+  stopEditingRole = (key: string, roleDetail: RoleDetail): RoleSetAction => ({
     type: RoleSetActions.STOP_EDITING_ROLE,
     meta: {
       key,
-      roleState
+      roleDetail
     },
     payload: null
   })
@@ -247,6 +264,49 @@ export class RoleSetActions {
 
   disableDrag = (): RoleSetAction => ({
     type: RoleSetActions.ROLE_SET_DISABLE_DRAG,
+    meta: null,
+    payload: null
+  })
+
+
+  /**
+   * Add roles with temproal entities to the role set
+   */
+  addRolesWithTeEnt = (pk_roles: number[]): RoleSetAction => ({
+    type: RoleSetActions.ADD_ROLES_WITH_TE_ENT,
+    meta: { pk_roles },
+    payload: null
+  })
+
+  addRolesWithTeEntSucceeded = (roleDetailList: RoleDetailList): RoleSetAction => ({
+    type: RoleSetActions.ADD_ROLES_WITH_TE_ENT_SUCCEEDED,
+    meta: { roleDetailList },
+    payload: null
+  })
+
+  addRolesWithTeEntFailed = (): RoleSetAction => ({
+    type: RoleSetActions.ADD_ROLES_WITH_TE_ENT_FAILED,
+    meta: null,
+    payload: null
+  })
+
+  /**
+   * Add roles without temproal entities to the role set
+   */
+  addRolesWithoutTeEnt = (pk_roles: number[]): RoleSetAction => ({
+    type: RoleSetActions.ADD_ROLES_WITHOUT_TE_ENT,
+    meta: { pk_roles },
+    payload: null
+  })
+
+  addRolesWithoutTeEntSucceeded = (roleDetailList: RoleDetailList): RoleSetAction => ({
+    type: RoleSetActions.ADD_ROLES_WITHOUT_TE_ENT_SUCCEEDED,
+    meta: { roleDetailList },
+    payload: null
+  })
+
+  addRolesWithoutTeEntFailed = (): RoleSetAction => ({
+    type: RoleSetActions.ADD_ROLES_WITHOUT_TE_ENT_FAILED,
     meta: null,
     payload: null
   })

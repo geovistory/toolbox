@@ -74,25 +74,26 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
         const rolesInOtherProjects = results[1].filter(role => parseInt(role.is_in_project_count, 10) > 0);
         const rolesInNoProject = results[1].filter(role => parseInt(role.is_in_project_count, 10) == 0);
 
-        const inOther$ = this.stateCreator.initializeRoleDetails(rolesInOtherProjects, { isOutgoing: s.isOutgoing })
-        const inNo$ = this.stateCreator.initializeRoleDetails(rolesInNoProject, { isOutgoing: s.isOutgoing })
 
-        combineLatest(inOther$, inNo$).subscribe(results => {
-          const roleStatesInOtherProjects = results[0], roleStatesInNoProjects = results[1]
+        // update the state
+        const roleDetailsInOtherProjects = createRoleSet(
+          new RoleSet(this.localStore.getState()), rolesInOtherProjects, this.ngRedux.getState().activeProject.crm, { isViewMode: true }
+        )._role_list;
+        const roleDetailsInNoProjects = createRoleSet(
+          new RoleSet(this.localStore.getState()), rolesInNoProject, this.ngRedux.getState().activeProject.crm, { isViewMode: true }
+        )._role_list;
+        this.localStore.dispatch(this.actions.alternativeRolesLoaded(
+          roleDetailsInOtherProjects,
+          roleDetailsInNoProjects
+        ))
 
-          this.localStore.dispatch(this.actions.alternativeRolesLoaded(
-            roleStatesInOtherProjects,
-            roleStatesInNoProjects
-          ))
 
+        if (rolesInOtherProjects.length === 0) {
+          this.startCreateNewRole();
+        } else {
+          this.initAddFormCtrls(roleDetailsInOtherProjects)
+        }
 
-          if (rolesInOtherProjects.length === 0) {
-            this.startCreateNewRole();
-          } else {
-            this.initAddFormCtrls(roleStatesInOtherProjects)
-          }
-
-        })
       }))
 
   }
@@ -108,7 +109,7 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
     const s = this.localStore.getState();
     const ps = this.parentPeItStore.getState();
 
-    // pi_role that will be created  
+    // pi_role that will be created
     const roleToCreate = {
 
       // the fk_property is defined by the RoleSet
@@ -119,7 +120,7 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
       temporal_entity: {
         fk_class: s.targetClassPk,
 
-        // circular role, that appears from the beginning on, when user creates new pi_role 
+        // circular role, that appears from the beginning on, when user creates new pi_role
         te_roles: [
           {
             // the fk_property is defined by the RoleSet
@@ -160,7 +161,7 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
 
     if (this.createForm.valid) {
 
-      // prepare peIt 
+      // prepare peIt
       const p = new InfPersistentItem(this.parentPeItStore.getState().peIt);
       p.pi_roles = [];
 
@@ -194,35 +195,17 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
 
     if (this.addForm.valid) {
 
-      // prepare peIt
-      const p = new InfPersistentItem(this.parentPeItStore.getState().peIt);
-      p.pi_roles = [];
-
+      // get pk_entities of roles selected by user
+      const pk_roles = [];
       Object.keys(this.addForm.controls).forEach(key => {
         if (this.addForm.get(key)) {
-          // add roles to create to peIt
-          p.pi_roles.push(this.addForm.get(key).value)
+          // add roles to pk_entity-array
+          pk_roles.push(s._role_set_form._role_add_list[key].role.pk_entity)
         }
       })
 
-      // call api
-      this.subs.push(this.peItApi.changePeItProjectRelation(this.ngRedux.getState().activeProject.pk_project, true, p).subscribe(peIts => {
-        const rolesInProj: InfRole[] = peIts[0].pi_roles.filter((r: InfRole) => {
-          if (r.entity_version_project_rels && r.entity_version_project_rels[0] && r.entity_version_project_rels[0].is_in_project) {
-            return r
-          }
-        });
+      this.localStore.dispatch(this.actions.addRolesWithTeEnt(pk_roles))
 
-        // update the form group
-        Object.keys(this.addForm.controls).forEach(key => {
-          this.addForm.removeControl(key)
-        })
-
-        // update the state
-        const roleSet = createRoleSet(new RoleSet(this.localStore.getState()), rolesInProj, this.ngRedux.getState().activeProject.crm, {})
-        this.localStore.dispatch(this.actions.rolesCreated(roleSet._role_list))
-
-      }))
     }
   }
 

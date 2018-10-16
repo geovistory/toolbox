@@ -6,7 +6,7 @@ import { AppellationLabel } from 'app/modules/information/shared/appellation-lab
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { clone, groupBy, indexBy, omit, prop, sort } from 'ramda';
 import * as Config from '../../../../../../common/config/Config';
-import { AppeDetail, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleSet, TeEntDetail, TimePrimitveDetail } from '../models';
+import { AppeDetail, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleSet, TeEntDetail, TimePrimitveDetail, RoleDetailList } from '../models';
 import { TypeDetail } from '../models/type-detail';
 
 /***************************************************
@@ -283,6 +283,22 @@ export function createRoleSet(options: RoleSet, roles: InfRole[], crm: ProjectCr
         targetClassPk: options.isOutgoing ? options.property.dfh_has_range : options.property.dfh_has_domain,
     });
 
+}
+
+/**
+ * Creates a RoleDetailList from provided input data
+ *
+ * This function is not directly called in the chain of creating a peItDetail or a teEntDetail,
+ * but is is a helper when a roleDetailList has to be extended asynchronusly for example
+ * when adding roles from another project.
+ *
+ * @param options options will bi merged in RoleSet object
+ * @param roles will be converted in a RoleDetailList
+ * @param crm is not used within the RoleSet but it is passed to RoleDetail.createState()
+ * @param settings state settings object. If settings.isAddMode, only one role is taken for the _role_list,
+ */
+export function createRoleDetailList(options: RoleSet, roles: InfRole[], crm: ProjectCrm, settings: StateSettings): RoleDetailList {
+    return createRoleSet(options, roles, crm, settings)._role_list;
 }
 
 /***************************************************

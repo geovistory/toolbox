@@ -58,7 +58,7 @@ export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
     protected epics: RoleSetApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
-    protected ngRedux: NgRedux<IAppState>,
+    public ngRedux: NgRedux<IAppState>,
     protected actions: RoleSetActions,
     protected roleSetService: RoleSetService,
     protected roleStore: NgRedux<RoleDetail>,
