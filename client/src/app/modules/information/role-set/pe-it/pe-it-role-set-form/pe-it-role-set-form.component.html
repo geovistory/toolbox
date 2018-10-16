@@ -10,10 +10,21 @@
     or create a new one.
   </div>
 
-  <div class="card-body">
-    <div *ngFor="let entry of _role_add_list | keys; trackBy:getKey">
-      <gv-pe-it-role-add-ctrl *ngIf="addForm.get(entry.key)" [parentPath]="roleSetFormPath" [index]="entry.key" intermediatePathSegment="_role_add_list"
-        [formControlName]="entry.key"></gv-pe-it-role-add-ctrl>
+  <div class="card-body list-group">
+    <div class="list-group-item p-0 d-flex align-items-stretch" *ngFor="let entry of _role_add_list | keys; trackBy:getKey">
+
+      <!-- <div class="custom-control custom-checkbox ml-3 mr-2 border-right">
+        <input type="checkbox" class="custom-control-input" [formControlName]="entry.key">
+        <label class="custom-control-label">&nbsp;</label>
+      </div> -->
+      <div class="px-3 border-right d-flex align-items-center">
+        <input type="checkbox" [formControlName]="entry.key">
+      </div>
+
+      <gv-pe-it-role-editable class="gv-grow-1" [parentPath]="roleSetFormPath" intermediatePathSegment="_role_add_list"
+        [index]="entry.key">
+      </gv-pe-it-role-editable>
+
     </div>
   </div>
 
@@ -38,8 +49,8 @@
 
   <div class="card-body">
     <div *ngFor="let entry of (_role_set_form$ | async)?._role_create_list | keys; trackBy:getKey">
-      <gv-pe-it-role-create-ctrl *ngIf="createForm.get(entry.key)" [parentPath]="roleSetFormPath" [index]="entry.key" intermediatePathSegment="_role_create_list"
-        [formControlName]="entry.key"></gv-pe-it-role-create-ctrl>
+      <gv-pe-it-role-create-ctrl *ngIf="createForm.get(entry.key)" [parentPath]="roleSetFormPath" [index]="entry.key"
+        intermediatePathSegment="_role_create_list" [formControlName]="entry.key"></gv-pe-it-role-create-ctrl>
     </div>
   </div>
 

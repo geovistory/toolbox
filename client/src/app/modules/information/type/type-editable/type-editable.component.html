@@ -1,5 +1,5 @@
 <div *ngIf="!(editing$ | async)">
-  Type: {{label$ | async}} <button class="btn btn-sm btn-link-gray" (click)="startEdit()"><i class="fa fa-pencil"></i></button>
+  Type: {{label$ | async}} <button *ngIf="!(isViewMode$ | async)" class="btn btn-sm btn-link-gray" (click)="startEdit()"><i class="fa fa-pencil"></i></button>
 </div>
 
 <form [formGroup]="formGroup" class="form-inline" *ngIf="(editing$ | async)">

@@ -12,7 +12,7 @@
   
   <!-- Step 1 for adding a new property -->
 
-  <button class="btn btn-link-gray" (click)="startSelectProperty.emit()" [ngClass]="{'invisible': (selectPropState$ | async) !== 'init'}">
+  <button *ngIf="addButtonVisible" class="btn btn-link-gray" (click)="startSelectProperty.emit()" [ngClass]="{'invisible': (selectPropState$ | async) !== 'init'}">
     <i class="fa fa-plus"></i> Add a property
   </button>
 

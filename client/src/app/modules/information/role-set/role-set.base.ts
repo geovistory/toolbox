@@ -64,9 +64,11 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     @select() isOutgoing$: Observable<boolean>
     @select() parentPeIt$: Observable<InfPersistentItem>
     @select() parentEntityPk$: Observable<number>
+    @select() targetMaxQuantity$: Observable<number>
+
+    @select() isViewMode$: Observable<boolean>
     @select() toggle$: Observable<CollapsedExpanded>
     @select() label$: Observable<RoleSetLabel>
-    @select() targetMaxQuantity$: Observable<number>
     @select() dragEnabled$: Observable<boolean>
 
     @select() rolesNotInProjectLoading$: Observable<boolean>;
@@ -127,7 +129,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
         protected epics: RoleSetApiEpics,
         protected eprApi: InfEntityProjectRelApi,
         protected roleApi: InfRoleApi,
-        protected ngRedux: NgRedux<IAppState>,
+        public ngRedux: NgRedux<IAppState>,
         protected actions: RoleSetActions,
         protected roleSetService: RoleSetService,
         protected roleStore: NgRedux<RoleDetail>,
@@ -208,8 +210,8 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
             this.roleSetState = d
         }));
 
-        this.subs.push(combineLatest(this.toggle$, this._role_set_form$, this._role_list$).subscribe(res => {
-            const toggle = res[0], roleStatesToCreate = res[1], _role_list = res[2];
+        this.subs.push(combineLatest(this.toggle$, this._role_set_form$, this._role_list$, this.isViewMode$).subscribe(res => {
+            const toggle = res[0], roleStatesToCreate = res[1], _role_list = res[2], isViewMode = res[3];
 
             if (this.roleSetState) {
                 // count roles of this roleSet that are in the project or currently being created 
@@ -219,7 +221,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
                 const moreRolesPossible = this.roleSetService.moreRolesPossible(rolesCount, this.roleSetState);
 
                 // assign the add button visibility
-                this.addButtonVisible = (toggle === 'expanded' && moreRolesPossible);
+                this.addButtonVisible = (toggle === 'expanded' && moreRolesPossible && !isViewMode);
 
                 this.removeRoleSetBtnVisible = ((!roleStatesToCreate || roleStatesToCreate == {}) && (!_role_list || _role_list == {}));
             }
@@ -422,18 +424,15 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     */
     removeFromProject(key: string) {
         const roleState = this.roleSetState._role_list[key];
-        if (RoleService.isDisplayRole(roleState.isOutgoing, roleState.isDisplayRoleForDomain, roleState.isDisplayRoleForRange)) {
-            alert('You can\'t remove the standard item. Make another item standard and try again.')
-        } else {
 
-            const roleToRemove = StateToDataService.roleStateToRoleToRelate(roleState)
+        const roleToRemove = StateToDataService.roleStateToRoleToRelate(roleState)
 
-            this.subs.push(this.roleApi.changeRoleProjectRelation(
-                this.project.pk_project, false, roleToRemove
-            ).subscribe(result => {
-                this.localStore.dispatch(this.actions.roleRemovedFromProject(key, roleState))
-            }))
-        }
+        this.subs.push(this.roleApi.changeRoleProjectRelation(
+            this.project.pk_project, false, roleToRemove
+        ).subscribe(result => {
+            this.localStore.dispatch(this.actions.roleRemovedFromProject(key, roleState))
+        }))
+
     }
 
 

@@ -1,22 +1,23 @@
-import { InfRole, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfTimePrimitive, InfTemporalEntity, InfEntityProjectRel, DfhLabel, InfEntityAssociation } from 'app/core/sdk';
 import { ProjectCrm } from 'app/core/active-project';
-import { DataUnitChildList, RoleSetI, AppeDetail, DataUnitChild, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleSet, TeEntDetail, TimePrimitveDetail } from '../models';
-import { clone, groupBy, prop, indexBy, sort, omit } from 'ramda';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { ComConfig } from 'app/core/config/com-config';
+import { DfhLabel, InfAppellation, InfEntityAssociation, InfEntityProjectRel, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTimePrimitive } from 'app/core/sdk';
 import { U } from 'app/core/util/util';
-import { TypeDetail } from '../models/type-detail';
-import * as Config from '../../../../../../common/config/Config'
 import { AppellationLabel } from 'app/modules/information/shared/appellation-label';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { clone, groupBy, indexBy, omit, prop, sort } from 'ramda';
+import * as Config from '../../../../../../common/config/Config';
+import { AppeDetail, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleSet, TeEntDetail, TimePrimitveDetail, RoleDetailList } from '../models';
+import { TypeDetail } from '../models/type-detail';
 
 /***************************************************
 * General Interfaces
 ***************************************************/
 export interface StateSettings {
     parentRolePk?: number;
-    parentRoleSet?: RoleSetI;
+    parentRoleSet?: RoleSet;
     isCreateMode?: boolean;
     isAddMode?: boolean;
+    isViewMode?: boolean; // this helps to hide all editing functionalities from gui
 }
 
 
@@ -39,14 +40,16 @@ export function createPeItDetail(options: PeItDetail, peIt: InfPersistentItem, c
 
     const peItCleaned = omit(['pi_roles'], peIt);
 
+    options = { ...options, isViewMode: settings.isViewMode }
+
     return new PeItDetail({
         ...options,
-        _children: createDataUnitChildren(peIt.fk_class, peIt.pi_roles, crm, settings),
-        _type: createDataUnitTypeDetail({}, peIt, crm, settings),
+        selectPropState: 'init',
+        peIt: peItCleaned,
         pkEntity: peIt.pk_entity,
         fkClass: peIt.fk_class,
-        peIt: peItCleaned,
-        selectPropState: 'init',
+        _children: createDataUnitChildren(peIt.fk_class, peIt.pi_roles, crm, settings),
+        _type: createDataUnitTypeDetail({}, peIt, crm, settings),
     })
 }
 
@@ -62,7 +65,10 @@ export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity
 
     if (!teEnt) return;
 
+    options = { ...options, isViewMode: settings.isViewMode }
+
     return new TeEntDetail({
+        ...options,
         selectPropState: 'init',
         teEnt: teEnt,
         fkClass: teEnt.fk_class,
@@ -109,6 +115,8 @@ export function createDataUnitTypeDetail(options: TypeDetail, dataUnit: InfTempo
 export function createTypeDetail(options: TypeDetail, assoc: InfEntityAssociation, crm: ProjectCrm, settings: StateSettings): TypeDetail {
 
     const roles = !assoc ? undefined : !assoc.range_pe_it ? undefined : assoc.range_pe_it.pi_roles;
+
+    options = { ...options, isViewMode: settings.isViewMode }
 
     return new TypeDetail({
         ...options,
@@ -268,11 +276,29 @@ export function createRoleSet(options: RoleSet, roles: InfRole[], crm: ProjectCr
         }
     }
 
+    options = { ...options, isViewMode: settings.isViewMode }
+
     return new RoleSet({
         ...options,
         targetClassPk: options.isOutgoing ? options.property.dfh_has_range : options.property.dfh_has_domain,
     });
 
+}
+
+/**
+ * Creates a RoleDetailList from provided input data
+ *
+ * This function is not directly called in the chain of creating a peItDetail or a teEntDetail,
+ * but is is a helper when a roleDetailList has to be extended asynchronusly for example
+ * when adding roles from another project.
+ *
+ * @param options options will bi merged in RoleSet object
+ * @param roles will be converted in a RoleDetailList
+ * @param crm is not used within the RoleSet but it is passed to RoleDetail.createState()
+ * @param settings state settings object. If settings.isAddMode, only one role is taken for the _role_list,
+ */
+export function createRoleDetailList(options: RoleSet, roles: InfRole[], crm: ProjectCrm, settings: StateSettings): RoleDetailList {
+    return createRoleSet(options, roles, crm, settings)._role_list;
 }
 
 /***************************************************
@@ -466,10 +492,14 @@ export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: I
             roleDetail.isCircular = true;
         }
 
-        roleDetail._leaf_peIt = createPeItDetail({}, {
-            fk_class: options.targetClassPk,
-            pk_entity: roleDetail.role ? roleDetail.role.fk_entity : undefined
-        } as InfPersistentItem, crm, settings);
+        roleDetail._leaf_peIt = {
+            fkClass: options.targetClassPk,
+            pkEntity: roleDetail.role ? roleDetail.role.fk_entity : undefined,
+            peIt: {
+                fk_class: options.targetClassPk,
+                pk_entity: roleDetail.role ? roleDetail.role.fk_entity : undefined,
+            } as InfPersistentItem
+        } as PeItDetail;
 
     }
 
@@ -608,7 +638,7 @@ export const pkEntityKey = (label: DfhLabel) => ('_' + label.pk_entity);
  * @param a RoleSet you want to test if it is circular
  * @param b RoleSet to compare with (typically the parent RoleSet in the tree)
  */
-export function similarRoleSet(a: RoleSetI, b: RoleSetI): boolean {
+export function similarRoleSet(a: RoleSet, b: RoleSet): boolean {
     if (!a || !b) return false;
 
     if (

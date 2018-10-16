@@ -3,16 +3,16 @@
     'gv-bg-selected': ((accentuation$ | async) === 'selected'),
     'bg-light': ((accentuation$ | async) === 'highlighted' && (toggle$|async) === 'collapsed')
   }"
-  (mouseenter)="mouseenter()" (mouseleave)="mouseleave()">
+  >
+  <!-- (mouseenter)="mouseenter()" (mouseleave)="mouseleave()" -->
 
   <div class="d-flex flex-row">
-    <ng-content select="[headerLeft]"></ng-content>
 
     <gv-te-ent-label class="gv-grow-1" [toggle]="(toggle$|async)" [children]="(_children$ | async)" [classConfig]="classConfig"
       [childrenPath]="basePath.concat('_children')" (onToggle)="toggleCardBody()">
 
       <ng-content buttons select="[headerRight]"> </ng-content>
-      <button buttons type="button" class="btn btn-link-gray" [attr.title]="'Edit this ' + classConfig?.label">
+      <button buttons type="button" class="btn btn-link-gray" [attr.title]="'Edit this ' + classConfig?.label" *ngIf="!(isViewMode$ | async)">
         <i class="fa fa-pencil" (click)="startEditing()"></i>
       </button>
 
@@ -47,7 +47,7 @@
   <div class="card">
 
     <gv-te-ent-header [ontoInfoVisible$]="ontoInfoVisible$" [classConfig]="classConfig" [selectPropState$]="selectPropState$"
-      (startSelectProperty)="startSelectProperty()"></gv-te-ent-header>
+      [addButtonVisible]="!(isViewMode$ | async)" (startSelectProperty)="startSelectProperty()"></gv-te-ent-header>
 
     <!-- Step 2 for adding new Property section -->
 

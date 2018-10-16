@@ -16,6 +16,7 @@ export function leafPeItViewReducer(state: LeafPeItView = INITIAL_STATE, a: Acti
         loading: true
       };
       break;
+
     case LeafPeItViewAPIActions.LOAD_SUCCEEDED:
       state = {
         ...state,
@@ -33,6 +34,13 @@ export function leafPeItViewReducer(state: LeafPeItView = INITIAL_STATE, a: Acti
         ...state,
         loading: false,
         error: 'error'
+      };
+      break;
+
+    case LeafPeItViewAPIActions.SET_PK_ENTITY:
+      state = {
+        ...state,
+        pkEntity: action.meta.pkEntity
       };
       break;
 

@@ -1,11 +1,11 @@
-import { NgRedux, WithSubStore } from '@angular-redux/store';
+import { NgRedux, WithSubStore, select } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { ClassConfig, IAppState, InfRole } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { pick } from 'ramda';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { EntityAddModalComponent } from '../../add-modal/entity-add-modal/entity-add-modal.component';
 import { EntityAddModalService } from '../../shared/entity-add-modal.service';
 import { LeafPeItViewAPIActions } from '../leaf-pe-it-view/api/leaf-pe-it-view.actions';
@@ -42,6 +42,7 @@ export class LeafPeItCtrlComponent extends LeafPeItViewAPIActions implements OnI
    */
   @Input() pkClass: number;
   @Input() basePath: string[];
+  @select() pkEntity$: Observable<number>;
 
   /**
    * Output
@@ -103,6 +104,8 @@ export class LeafPeItCtrlComponent extends LeafPeItViewAPIActions implements OnI
       this.selected.emit(pkEntity);
 
       this.pkEntity = pkEntity;
+      this.setPkEntity(pkEntity);
+
       this.ref.detectChanges()
 
       // build the role

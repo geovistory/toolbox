@@ -1,4 +1,5 @@
 <div *ngIf="toggle === 'collapsed'" class="main d-flex gv-p-list-group-item gv-pointer" (click)="toggleClicked()">
+  
   <!-- Role Labels -->
   <div class="gv-grow-1 pr-3" *ngFor="let p of label?.parts; let i = index">
     <div class="text-muted font-xs">
@@ -58,7 +59,7 @@
     <!-- Buttons -->
     <div class="btn-group" role="group" aria-label="Basic example">
       <ng-content select="[buttons]"></ng-content>
-      <button type="button" class="btn btn-link-gray" title="Minimize"  (click)="toggleClicked()">
+      <button type="button" class="btn btn-link-gray" title="Minimize" (click)="toggleClicked()">
         <i class="fa fa-compress"></i>
       </button>
     </div>

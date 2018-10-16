@@ -82,6 +82,10 @@ export const roleSetReducer =
         break;
 
 
+      /**
+       * Deprecated: This reducer will be replaced by ADD_ROLES_WITH_TE_ENT_SUCCEEDED and
+       * ADD_ROLES_WITHOUT_TE_ENT_SUCCEEDED
+       */
       case RoleSetActions.ROLES_CREATED:
         lastState = {
           ...new RoleSet(omit(['_role_set_form'], lastState)),
@@ -121,7 +125,7 @@ export const roleSetReducer =
           ...lastState,
           _role_list: {
             ...lastState._role_list,
-            [action.meta.key]: action.meta.roleState
+            [action.meta.key]: action.meta.roleDetail
           }
         };
         break;
@@ -131,7 +135,7 @@ export const roleSetReducer =
           ...lastState,
           _role_list: {
             ...lastState._role_list,
-            [action.meta.key]: action.meta.roleState
+            [action.meta.key]: action.meta.roleDetail
           }
         };
         break;
@@ -184,7 +188,7 @@ export const roleSetReducer =
               }
             }
           })
-          return {...list, ...newVal};
+          return { ...list, ...newVal };
         }
 
 
@@ -209,6 +213,69 @@ export const roleSetReducer =
           dragEnabled: false
         };
         break;
+
+      /************************************
+       * Add roles with teir teEnt (pi-roles)
+       ************************************/
+
+      case RoleSetActions.ADD_ROLES_WITH_TE_ENT:
+        lastState = {
+          ...lastState,
+          loading: true
+        };
+        break;
+
+      case RoleSetActions.ADD_ROLES_WITH_TE_ENT_SUCCEEDED:
+        lastState = {
+          ...new RoleSet(omit(['_role_set_form'], lastState)),
+          roleStatesInOtherProjectsVisible: false,
+          loading: false,
+          _role_list: {
+            ...lastState._role_list,
+            ...action.meta.roleDetailList
+          }
+        }
+        break;
+
+      case RoleSetActions.ADD_ROLES_WITH_TE_ENT_FAILED:
+        lastState = {
+          ...lastState,
+          loading: false
+        };
+        break;
+
+      /************************************
+      * Add roles without teEnt (te-roles)
+      *************************************/
+
+      case RoleSetActions.ADD_ROLES_WITHOUT_TE_ENT:
+        lastState = {
+          ...lastState,
+          loading: true
+        };
+        break;
+
+
+      case RoleSetActions.ADD_ROLES_WITHOUT_TE_ENT_SUCCEEDED:
+        lastState = {
+          ...new RoleSet(omit(['_role_set_form'], lastState)),
+          roleStatesInOtherProjectsVisible: false,
+          loading: false,
+          _role_list: {
+            ...lastState._role_list,
+            ...action.meta.roleDetailList
+          }
+        }
+        break;
+
+      case RoleSetActions.ADD_ROLES_WITHOUT_TE_ENT_FAILED:
+        lastState = {
+          ...lastState,
+          loading: false
+        };
+        break;
+
+
 
     }
 

@@ -41,10 +41,9 @@ export class LeafPeItViewModalComponent implements OnInit {
 
   addAndOpen() {
 
-    return this.peItApi.changePeItProjectRelation(
+    return this.peItApi.addToProject(
       this.ngRedux.getState().activeProject.pk_project,
-      true,
-      this.peItToAdd
+      this.peItState.peIt.pk_entity
     ).subscribe(peIts => {
       this.modal.close();
     })

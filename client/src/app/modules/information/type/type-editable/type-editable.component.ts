@@ -32,6 +32,7 @@ export class TypeEditableComponent extends TypeEditableAPIActions implements OnI
 
   // select observables of substore properties
   @select() label$: Observable<string>;
+  @select() isViewMode$: Observable<boolean>;
   @select() editing$: Observable<boolean>;
   @select() entityAssociation$: Observable<InfEntityAssociation>;
   @select() fkDomainEntity$: Observable<number>;

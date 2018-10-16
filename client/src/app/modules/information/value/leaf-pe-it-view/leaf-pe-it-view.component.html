@@ -10,6 +10,6 @@
     <small class="text-muted">{{peItState?.dfhClass?.dfh_standard_label}}</small>
 </a>
 
-<div *ngIf="(leafPeItLoading$ |async)">
+<div *ngIf="(loading$ |async)">
     <i class="fa fa-spinner fa-pulse"></i> Loading
 </div>

@@ -132,7 +132,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
         } as InfRole;
 
 
-        this.addRoleSet(new RoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey]), [newRole])
+        this.addRoleSet(new RoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey]), [newRole], { isCreateMode: true })
 
       } else if (o.uiElement.fk_property_set) {
 

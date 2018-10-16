@@ -1,10 +1,10 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { FluxStandardAction } from 'flux-standard-action';
-import { LeafPeItViewI } from './leaf-pe-it-view.models';
 import { PeItDetail, ProjectDetail } from 'app/core';
+import { FluxStandardAction } from 'flux-standard-action';
+import { LeafPeItView } from './leaf-pe-it-view.models';
 
-type Payload = LeafPeItViewI;
+type Payload = LeafPeItView;
 interface MetaData {
   pkEntity?: number, projectDetail?: ProjectDetail,
   peItDetail?: PeItDetail
@@ -16,6 +16,8 @@ export class LeafPeItViewAPIActions {
   static readonly LOAD = 'LeafPeItView::LOAD';
   static readonly LOAD_SUCCEEDED = 'LeafPeItView::LOAD_SUCCEEDED';
   static readonly LOAD_FAILED = 'LeafPeItView::LOAD_FAILED';
+
+  static readonly SET_PK_ENTITY = 'LeafPeItView::SET_PK_ENTITY';
 
   static readonly REMOVE = 'LeafPeItView::REMOVE';
 
@@ -43,6 +45,12 @@ export class LeafPeItViewAPIActions {
     error,
   })
 
+  @dispatch()
+  setPkEntity = (pkEntity: number): LeafPeItViewAPIAction => ({
+    type: LeafPeItViewAPIActions.SET_PK_ENTITY,
+    meta: { pkEntity },
+    payload: null,
+  });
 
   /**
    * Removes the peItState (used by leaf-pe-it-crtl)

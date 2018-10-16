@@ -46,8 +46,8 @@ module.exports = function (InfRole) {
           } else {
             return [requestedRole];
           }
-        } 
-        
+        }
+
         // else if (requestedRole.place) {
         //   if (requestedRole.place.eprs) {
         //     //add the place to the project
@@ -64,7 +64,7 @@ module.exports = function (InfRole) {
         //     return [requestedRole];
         //   }
         // } 
-        
+
         else if (requestedRole.appellation) {
           if (requestedRole.appellation.entity_version_project_rels) {
 
@@ -267,9 +267,9 @@ module.exports = function (InfRole) {
       const InfLanguage = InfRole.app.models.InfLanguage;
 
       // find the language and the role pointing to it
-      return InfLanguage.find({"where": {"pk_entity": requestedRole.language.pk_entity}})
-       .then((resultingEntities) => {
-        const resultingEntity = resultingEntities[0];
+      return InfLanguage.find({ "where": { "pk_entity": requestedRole.language.pk_entity } })
+        .then((resultingEntities) => {
+          const resultingEntity = resultingEntities[0];
 
           // … prepare the Role to create
           dataObject.fk_entity = resultingEntity.pk_entity;
@@ -300,7 +300,7 @@ module.exports = function (InfRole) {
       // find or create the time_primitive and the role pointing to it
       return InfTimePrimitive.create(requestedRole.time_primitive)
         .then((resultingEntity) => {
-          
+
 
           // … prepare the Role to create 
           dataObject.fk_entity = resultingEntity.pk_entity;
@@ -539,5 +539,286 @@ module.exports = function (InfRole) {
 
     InfRole.findComplex(rolesInProjectFilter, findThem);
 
+  };
+
+
+  InfRole.nestedObjectsOfProject = function (pk_project, pk_roles, cb) {
+
+    const innerJoinThisProject = {
+      "$relation": {
+        "name": "entity_version_project_rels",
+        "joinType": "inner join",
+        "where": [
+          "fk_project", "=", pk_project,
+          "and", "is_in_project", "=", "true"
+        ]
+      }
+    };
+
+    const filter = {
+      "where": ["pk_entity", "IN", pk_roles],
+      include: {
+        "entity_version_project_rels": innerJoinThisProject,
+        "temporal_entity": {
+          "$relation": {
+            "name": "temporal_entity",
+            "joinType": "inner join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          },
+          // "entity_version_project_rels": innerJoinThisProject,
+          "te_roles": {
+            "$relation": {
+              "name": "te_roles",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+            "entity_version_project_rels": innerJoinThisProject,
+            "appellation": {
+              "$relation": {
+                "name": "appellation",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              },
+            },
+            "language": {
+              "$relation": {
+                "name": "language",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            },
+            "time_primitive": {
+              "$relation": {
+                "name": "time_primitive",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            },
+            "place": {
+              "$relation": {
+                "name": "place",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            }
+          }
+        }
+      }
+    }
+
+    InfRole.findComplex(filter, cb);
+
+  };
+
+
+  /**
+     * Add roles with their associated temporal entity to the project
+     * 
+     * This query will add those things to the project:
+     * - Roles that are enabled for auto-adding (using the admin configuration of that class).
+     * 
+     * This query will not add
+     * - The temporal entities (since we can then still decide, which temporal entities will be shown in the result list)
+     * - The value-like items (time-primitive, appellation, language), since they never belong to projects
+     * 
+     * See this page for details
+     * https://kleiolab.atlassian.net/wiki/spaces/GEOV/pages/693764097/Add+DataUnits+to+Project
+     * 
+     * @param pk_namespace
+     * @param pk_project
+     * @param pk_typed_class
+     */
+  InfRole.addToProjectWithTeEnt = function (pk_project, pk_roles, cb) {
+    const params = [parseInt(pk_project)]
+
+    const sql_stmt = `
+    -- Relate given roles with its temporal entities to given project --
+    ----------------------------------------------------
+
+    WITH 
+    -- Find "auto-add-properties" for all classes 
+    -- TODO: Add a filter for properties enabled by given project
+       auto_add_properties AS (
+      -- select the fk_class and the properties that are auto add because of a ui_context_config
+      select p.dfh_has_domain as fk_class, p.dfh_pk_property, p.dfh_range_instances_max_quantifier as max_quantifier
+      from data_for_history.property as p
+      inner join commons.ui_context_config as ctxt on p.dfh_pk_property = ctxt.fk_property
+      Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = true
+      UNION
+      select p.dfh_has_range as fk_class, p.dfh_pk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
+      from data_for_history.property as p
+      inner join commons.ui_context_config as ctxt on p.dfh_pk_property = ctxt.fk_property
+      Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = false
+      UNION
+      -- select the fk_class and the properties that are auto add because of a property set
+      select ctxt.fk_class_for_property_set, psprel.fk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
+      from data_for_history.property as p
+      inner join commons.property_set_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
+      inner join commons.ui_context_config as ctxt on psprel.fk_property_set = ctxt.fk_property_set
+      Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = false
+      UNION
+      select ctxt.fk_class_for_property_set, psprel.fk_property, p.dfh_range_instances_max_quantifier as max_quantifier
+      from data_for_history.property as p
+      inner join commons.property_set_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
+      inner join commons.ui_context_config as ctxt on psprel.fk_property_set = ctxt.fk_property_set
+      Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = true
+    ),
+  -- Find the roles
+    pe_it_roles AS (
+        select pk_entity, fk_temporal_entity
+    from information.v_role 
+    where pk_entity IN (${pk_roles.map(r => (r * 1))})
+    ),
+    -- Find all roles related to temporal entities mached by pe_it_roles
+    -- that are of an auto-add property
+    te_ent_roles AS (
+      select r.pk_entity, r.fk_temporal_entity, r.fk_property, r.fk_entity, addp.max_quantifier, r.community_favorite_calendar as calendar
+      from information.v_role as r
+      inner join pe_it_roles as pi_r on pi_r.fk_temporal_entity = r.fk_temporal_entity
+      inner join information.temporal_entity as te on te.pk_entity = pi_r.fk_temporal_entity
+      inner join auto_add_properties as addp on (addp.dfh_pk_property = r.fk_property AND addp.fk_class = te.fk_class)
+      -- take only the max quantity of rows for that property, exclude repo-alternatives
+      WHERE r.rank_for_te_ent <= r.range_max_quantifier OR r.range_max_quantifier = -1 OR r.range_max_quantifier IS NULL
+    ),
+   
+    -- TODO: find all entity associations that involve the te_ents (for types or mentionings of te_ents!)
+
+    -- get a list of all pk_entities of repo version
+    pk_entities_of_repo AS (
+      select pk_entity, null::calendar_type as calendar from pe_it_roles
+      UNION 
+      select pk_entity, calendar from te_ent_roles
+    ),
+    -- get a list of all pk_entities that the project manually removed
+    pk_entities_excluded_by_project AS (
+      SELECT fk_entity as pk_entity
+      FROM information.v_entity_version_project_rel as epr 
+      where epr.is_in_project = false and epr.fk_project = 12
+    ),
+    -- get final list of pk_entities to add to project
+    pk_entities_to_add AS (
+      select pk_entity, calendar from pk_entities_of_repo
+      EXCEPT
+      select pk_entity, null::calendar_type from pk_entities_excluded_by_project
+    )
+    --  select * from pk_entities_to_add;
+
+    insert into information.v_entity_version_project_rel (fk_project, is_in_project, fk_entity, calendar)
+    SELECT $1, true, pk_entity, calendar
+    from pk_entities_to_add;
+    `
+
+    const connector = InfRole.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      if (err) cb(err, resultObjects);
+
+      InfRole.nestedObjectsOfProject(pk_project, pk_roles, (err, result) => {
+        cb(err, result)
+      })
+
+    });
+  };
+
+
+
+  /**
+    * Add roles to the project
+    * 
+    * This query will not add any related entitie but the given roles
+    * 
+    * @param pk_namespace
+    * @param pk_project
+    * @param pk_typed_class
+    */
+  InfRole.addToProject = function (pk_project, pk_roles, cb) {
+    const params = [parseInt(pk_project)]
+
+    const sql_stmt = `
+      WITH 
+      -- Find the roles
+      roles AS (
+        select pk_entity, community_favorite_calendar as calendar
+        from information.v_role 
+        where pk_entity IN (${pk_roles.map(r => (r * 1))})
+      )
+      -- add the project relations
+      insert into information.v_entity_version_project_rel (fk_project, is_in_project, fk_entity, calendar)
+      SELECT $1, true, pk_entity, calendar
+      from roles;    
+      `
+
+    const connector = InfRole.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      if (err) cb(err, resultObjects);
+      
+      const innerJoinThisProject = {
+        "$relation": {
+          "name": "entity_version_project_rels",
+          "joinType": "inner join",
+          "where": [
+            "fk_project", "=", pk_project,
+            "and", "is_in_project", "=", "true"
+          ]
+        }
+      };
+
+      const filter = {
+        where: ["pk_entity", "IN", pk_roles],
+        include: {
+          "entity_version_project_rels": innerJoinThisProject,           
+          "appellation": {
+            "$relation": {
+              "name": "appellation",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+          },
+          "language": {
+            "$relation": {
+              "name": "language",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
+          },
+          "time_primitive": {
+            "$relation": {
+              "name": "time_primitive",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
+          },
+          "place": {
+            "$relation": {
+              "name": "place",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
+          }
+        }
+      }
+
+      InfRole.findComplex(filter, cb)
+
+    });
   };
 };

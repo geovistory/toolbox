@@ -139,7 +139,7 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
 
       Object.keys(this.createForm.controls).forEach(key => {
         if (this.createForm.get(key)) {
-          let role: InfRole = this.createForm.get(key).value;
+          const role: InfRole = this.createForm.get(key).value;
           role.entity_version_project_rels = [{ is_in_project: true } as InfEntityProjectRel]
           // add roles to create to peIt
           t.te_roles.push(role)
@@ -170,31 +170,17 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
 
     if (this.addForm.valid) {
 
-      // prepare teEnt 
-      const p = new InfTemporalEntity(this.parentTeEntStore.getState().teEnt);
-      p.te_roles = [];
-
+      // get pk_entities of roles selected by user
+      const pk_roles = [];
       Object.keys(this.addForm.controls).forEach(key => {
         if (this.addForm.get(key)) {
-          // add roles to create to teEnt
-          p.te_roles.push(this.addForm.get(key).value)
+          // add roles to pk_entity-array
+          pk_roles.push(s._role_set_form._role_add_list[key].role.pk_entity)
         }
       })
 
-      // call api
-      this.subs.push(this.teEntApi.changeTeEntProjectRelation(this.ngRedux.getState().activeProject.pk_project, true, p).subscribe(teEnt => {
-        const roles: InfRole[] = teEnt[0].te_roles;
+      this.localStore.dispatch(this.actions.addRolesWithoutTeEnt(pk_roles))
 
-        // update the form group
-        Object.keys(this.addForm.controls).forEach(key => {
-          this.addForm.removeControl(key)
-        })
-
-        // update the state
-        const roleSet = createRoleSet(new RoleSet(this.localStore.getState()), roles, this.ngRedux.getState().activeProject.crm, {})
-        this.localStore.dispatch(this.actions.rolesCreated(roleSet._role_list))
-
-      }))
     }
   }
 

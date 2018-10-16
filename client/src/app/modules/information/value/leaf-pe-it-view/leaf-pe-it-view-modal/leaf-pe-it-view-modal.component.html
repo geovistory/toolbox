@@ -13,9 +13,9 @@
 <!-- Todo add gv-pe-it-view -->
   <!-- <gv-pe-it-editable [basePath]="parentPath"></gv-pe-it-editable> -->
 
-  <gv-pe-it-add-form  *ngIf="!isInProject" [basePath]="parentPath.concat('_leaf_peIt_modal')" (formChange)="formChange($event)"></gv-pe-it-add-form>
+  <!-- <gv-pe-it-add-form  *ngIf="!isInProject" [basePath]="parentPath.concat('_leaf_peIt_modal')" (formChange)="formChange($event)"></gv-pe-it-add-form> -->
 
-  <gv-pe-it-editable  *ngIf="isInProject" [basePath]="parentPath.concat('_leaf_peIt_modal')"></gv-pe-it-editable>
+  <gv-pe-it-editable [basePath]="parentPath.concat('_leaf_peIt_modal')"></gv-pe-it-editable>
 
 
 </div>
