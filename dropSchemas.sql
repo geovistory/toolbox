@@ -1,4 +1,5 @@
-SET search_path = _global, pg_catalog;
+
+--SET search_path = _global, pg_catalog;
 
 CREATE OR REPLACE FUNCTION drop_all () 
    RETURNS VOID  AS
@@ -8,7 +9,7 @@ CREATE OR REPLACE FUNCTION drop_all ()
        -- Get all the schemas
         FOR rec IN
         select schema_name
-        from information_schema.schemata;
+        from information_schema.schemata
 
          -- You can exclude the schema which you don't want to drop by adding another condition here
          where schema_name not like 'pg_catalog'  
