@@ -5,7 +5,6 @@
       [addButtonVisible]="addButtonVisible" [toggleButtonVisible]="true" [removeRoleSetBtnVisible]="removeRoleSetBtnVisible"
       [rolesCount]="roles?.length" (toggleCardBody)="toggleCardBody()" (startAddingRole)="startAddingRole()"
       (removeRoleSet)="removeRoleSet()"></gv-role-set-header>
-
     <div [@slideInOut]="(toggle$|async)">
 
       <!-- The roles that are added -->

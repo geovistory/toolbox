@@ -1,5 +1,7 @@
 import { InfDigitalObject } from 'app/core';
 import { IAnnotationPanelState } from 'app/modules/annotation/annotation.models';
+import { ClassAndTypeSelector } from '../information/containers/class-and-type-selector/api/class-and-type-selector.models';
+import { CreateOrAddPeIt } from '../information/containers/create-or-add-pe-it/api/create-or-add-pe-it.models';
 
 
 /**
@@ -11,11 +13,13 @@ export interface ISourceListState {
     // the list of sources (search result)
     list?: { [key: string]: ISourceSearchHitState },
     // if source being created
-    create?: boolean,
+    create?: CreateOrAddPeIt,
     // the source being edited
     edit?: ISourceDetailState,
     // the source being removed
     remove?: ISourceSearchHitState
+    // class and type selector
+    classAndTypeSelector?: ClassAndTypeSelector;
 }
 
 /**

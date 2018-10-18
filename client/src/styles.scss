@@ -111,6 +111,15 @@ $value in $theme-colors {
     ;
 }
 
+// generate .border-left* classes
+@each $color,
+$value in $theme-colors {
+    .border-left-#{$color} {
+        border-left-color: $value !important;
+    }
+    ;
+}
+
 /**
 * card-body padding minus button padding 
 */
@@ -505,6 +514,11 @@ ngb-pagination {
             border: 0
         }
     }
+}
+
+.placement-right .dropdown-menu.show {
+    left: auto;
+    right: 0;
 }
 
 /***************************

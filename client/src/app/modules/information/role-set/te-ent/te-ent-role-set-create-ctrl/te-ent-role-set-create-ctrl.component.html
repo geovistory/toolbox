@@ -20,9 +20,9 @@
       <gv-te-ent-role-create-ctrl class="gv-grow-1 align-self-center" *ngIf="formGroup.get(entry.key)" [parentPath]="basePath"
         [index]="entry.key" intermediatePathSegment="_role_list" [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role-create-ctrl>
 
-        <!-- TODO: Remove button if not a identifiable Role. (Identity Rules) -->
-      <button type="button" class="btn btn-sm btn-link align-self-center" (click)="cancelCreateRole(entry.key)" *ngIf="!entry.value.isCircular">
-        <i class="fa fa-trash"></i> 
+      <!-- No not show button if not a identifiable Role. (Identity Rules) -->
+      <button type="button" class="btn btn-sm btn-link align-self-center" (click)="cancelCreateRole(entry.key)" *ngIf="!entry.value.isCircular && !(property$ | async)?.identity_defining">
+        <i class="fa fa-trash"></i>
       </button>
 
     </div>

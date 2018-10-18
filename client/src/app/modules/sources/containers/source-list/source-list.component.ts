@@ -5,8 +5,9 @@ import { InfDigitalObject, InfDigitalObjectApi, Project, IAppState, InfEntityPro
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { ISourceDetailState, ISourceListState, ISourceSearchHitState, IVersion } from '../..';
-import { SourceListActions } from './source-list.actions';
+import { SourceListAPIActions } from './source-list.actions';
 import { sourceListReducer } from './source-list.reducer';
+import { ClassAndTypePk } from 'app/modules/information/containers/class-and-type-selector/api/class-and-type-selector.models';
 
 /**
  * Container to manage the sources (digital objects): Search, create, show, edit, remove
@@ -67,8 +68,11 @@ export class SourceListComponent implements OnInit, OnDestroy {
 
   subs: Subscription[] = [];
 
+  pkClassesOfAddBtn = [219]
+  pkProject$: Observable<number>;
+
   constructor(
-    private actions: SourceListActions,
+    private actions: SourceListAPIActions,
     activatedRoute: ActivatedRoute,
     private ngRedux: NgRedux<IAppState>,
     private digitObjApi: InfDigitalObjectApi,
@@ -82,6 +86,9 @@ export class SourceListComponent implements OnInit, OnDestroy {
 
     // observe the active project
     this.project$ = ngRedux.select<Project>('activeProject');
+
+    // observe the active pk_project
+    this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']);
 
     // observe and store the remove hit
     this.subs.push(this.remove$.subscribe(r => {
@@ -279,8 +286,8 @@ export class SourceListComponent implements OnInit, OnDestroy {
    * Shows create form
    * - updates store: set 'create' true
    */
-  @dispatch() startCreate() {
-    return this.actions.startCreate()
+  @dispatch() startCreate(classAndTypePk: ClassAndTypePk) {
+    return this.actions.startCreate(classAndTypePk)
   }
 
   /**

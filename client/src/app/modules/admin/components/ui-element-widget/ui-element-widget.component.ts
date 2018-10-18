@@ -14,6 +14,10 @@ export class UiElementWidgetComponent implements OnInit {
     return !!this.widget.profiles.find((p) => p.removed_from_api);
   }
 
+  @HostBinding('class.border-left-success') get identityDefining() {
+    return !this.widget.roleSet ? false : this.widget.roleSet.property.identity_defining;
+  }
+
   constructor() { }
 
   ngOnInit() {

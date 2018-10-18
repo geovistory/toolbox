@@ -196,24 +196,38 @@ export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: P
 
         const rolesByFkProp = groupBy(prop('fk_property'), roles) as { [index: number]: InfRole[] }
 
-        let r: InfRole[];
 
         // for each uiElement in this ui-context
         if (uiContext && uiContext.uiElements) {
             uiContext.uiElements.forEach(el => {
 
+
                 // if this is a element for a RoleSet
                 if (el.roleSetKey) {
+                    let rolesWithinQuantity: InfRole[] = [];
+
                     // enrich RoleSet with roles and child RoleDetails
 
-                    // take existing roles of this property
-                    r = rolesByFkProp[el.fk_property];
-
                     // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
-                    const options = new RoleSet({ toggle: 'expanded' })
-                    const roleSetDef = classConfig.roleSets[el.roleSetKey];
-                    if (r && r.length > 0) {
-                        children.push(createRoleSet(Object.assign({}, roleSetDef, options), r, crm, settings));
+                    const options = new RoleSet({ ...classConfig.roleSets[el.roleSetKey], toggle: 'expanded' })
+
+                    // if existing roles of this property
+                    if (rolesByFkProp[el.fk_property]) {
+                        // takes the number of roles within quantity
+                        rolesWithinQuantity = rolesByFkProp[el.fk_property].filter(role => {
+                            if (options.isOutgoing) {
+                                if (!role.range_max_quantifier || role.range_max_quantifier === -1 || role.rank_for_te_ent <= role.range_max_quantifier) return true
+                            } else {
+                                if (!role.domain_max_quantifier || role.domain_max_quantifier === -1 || role.rank_for_pe_it <= options.targetMaxQuantity) return true
+                            }
+                        })
+
+                        // initializes the hasAlternatives flag of the roleSet
+                        if (rolesByFkProp[el.fk_property].length > rolesWithinQuantity.length) options.hasAlternatives = true;
+                    }
+
+                    if (rolesWithinQuantity && rolesWithinQuantity.length > 0) {
+                        children.push(createRoleSet(options, rolesWithinQuantity, crm, settings));
                     }
                 } else if (el.fk_property_set == ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
 

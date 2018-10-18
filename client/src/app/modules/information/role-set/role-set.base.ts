@@ -65,6 +65,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     @select() parentPeIt$: Observable<InfPersistentItem>
     @select() parentEntityPk$: Observable<number>
     @select() targetMaxQuantity$: Observable<number>
+    @select() hasAlternatives$: Observable<boolean>
 
     @select() isViewMode$: Observable<boolean>
     @select() toggle$: Observable<CollapsedExpanded>

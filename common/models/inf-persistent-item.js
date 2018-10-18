@@ -311,6 +311,9 @@ module.exports = function (InfPersistentItem) {
       SELECT pi.pk_entity, pi.fk_class, pi.tmsp_last_modification
       FROM information.v_persistent_item as pi
       INNER JOIN epr_of_project as epr on epr.fk_entity = pi.pk_entity
+      INNER JOIN  data_for_history.class AS c ON pi.fk_class = c.dfh_pk_class
+      INNER JOIN  data_for_history.proj_rel AS rel ON c.pk_entity = rel.fk_entity
+      WHERE rel.fk_project IN ($4) AND rel.is_in_project = true  
     )
     Select
     count(pi.pk_entity) OVER() AS total_count,
@@ -353,9 +356,9 @@ module.exports = function (InfPersistentItem) {
         INNER JOIN te_ent_in_project AS appe_usage ON appe_usage.pk_entity = r64.fk_temporal_entity
         INNER JOIN roles_in_project AS r63 ON r63.fk_temporal_entity = r64.fk_temporal_entity
         INNER JOIN epr_of_project AS r63_in_project ON r63_in_project.fk_entity = r63.pk_entity
-        WHERE r64.fk_property = 1113 --'R64'
-        AND r63.fk_property IN (1192, 1193, 1194, 1195) --'R63'
-        AND appe_usage.fk_class = 365 --'F52'
+        -- WHERE r64.fk_property = 1113 --'R64'
+        -- AND r63.fk_property IN (1192, 1193, 1194, 1195) --'R63'
+        WHERE appe_usage.fk_class = 365 --'F52'
         GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity, r63_in_project.ord_num
         ORDER BY r63_in_project.ord_num ASC
       ) AS appellations
@@ -430,7 +433,7 @@ module.exports = function (InfPersistentItem) {
 
     var offset = limit * (page - 1);
 
-    var queryString = searchString.trim(' ').split(' ').map(word => {
+    var queryString = searchString.replace(':', ',').replace('(', ',').replace(')', ',').trim(' ').split(' ').map(word => {
       return word + ':*'
     }).join(' & ');
 
@@ -515,9 +518,9 @@ module.exports = function (InfPersistentItem) {
         INNER JOIN information.v_temporal_entity AS appe_usage ON appe_usage.pk_entity = r64.fk_temporal_entity
         INNER JOIN information.v_role AS r63 ON r63.fk_temporal_entity = r64.fk_temporal_entity
         INNER JOIN information.entity_version_project_rel AS r63_in_project ON r63_in_project.fk_entity = r63.pk_entity
-        WHERE r64.fk_property = 1113 --'R64'
-        AND r63.fk_property IN (1192, 1193, 1194, 1195) --'R63'
-        AND appe_usage.fk_class = 365 --'F52'
+        -- WHERE r64.fk_property = 1113 --'R64'
+        -- AND r63.fk_property IN (1192, 1193, 1194, 1195) --'R63'
+        WHERE appe_usage.fk_class = 365 --'F52'
         GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity
       ) AS appellations
       ON appellations.pk_named_entity = pi.pk_entity

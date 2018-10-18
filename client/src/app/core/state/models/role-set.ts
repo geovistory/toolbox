@@ -25,6 +25,8 @@ export class RoleSet {
     targetClass?: DfhClass;
     ordNum?: number;
 
+    hasAlternatives?= false;
+
     // GUI
     isViewMode?= false;
     dragEnabled?: boolean;

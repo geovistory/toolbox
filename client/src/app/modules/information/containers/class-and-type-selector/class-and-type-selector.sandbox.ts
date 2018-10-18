@@ -27,7 +27,7 @@ export default sandboxOf(ClassAndTypeSelectorComponent, {
         <gv-init-state [activeProject]="activeProject"></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px">
-                    <gv-class-and-type-selector [pkClasses]="pkClasses" [pkProject]="pkProject" [basePath]="basePath" (select)="item = $event"></gv-class-and-type-selector>
+                    <gv-class-and-type-selector [pkClasses]="pkClasses" [pkProject]="pkProject" [basePath]="basePath" (select)="item = $event" [buttonText]="'Bitte wählen'" placement="right"></gv-class-and-type-selector>
             </div>
             <div>
                 {{item | json}}

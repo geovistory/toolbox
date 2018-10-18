@@ -392,8 +392,10 @@ module.exports = function (InfRole) {
               "$relation": {
                 "name": "te_roles",
                 "joinType": "left join",
+                // "where": ["rank_for_te_ent", "=", "1"],
+                // "where":s ["rank_for_te_ent", "<=", "range_max_quantifier", "OR", "range_max_quantifier", "=", "-1", "OR", "range_max_quantifier", "IS NULL"],
                 "orderBy": [{
-                  "pk_entity": "asc"
+                  "rank_for_te_ent": "asc"
                 }]
               },
               "language": {

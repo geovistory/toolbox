@@ -35,6 +35,7 @@ import { DfhLabelListEditAPIEpics } from './components/dfh-label-list-edit/api/d
 import { DfhLabelCreateComponent } from './components/dfh-label-create/dfh-label-create.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { UiElementWidgetComponent } from './components/ui-element-widget/ui-element-widget.component';
+import { TableModule } from 'ngx-easy-table';
 
 @NgModule({
   imports: [
@@ -45,7 +46,8 @@ import { UiElementWidgetComponent } from './components/ui-element-widget/ui-elem
     KeysModule,
     DndModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TableModule
   ],
   providers: [
     ClassListAPIActions,

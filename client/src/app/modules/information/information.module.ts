@@ -116,6 +116,12 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
 import { ClassAndTypeSelectorComponent } from './containers/class-and-type-selector/class-and-type-selector.component';
 import { ClassAndTypeSelectorAPIActions } from './containers/class-and-type-selector/api/class-and-type-selector.actions';
 import { ClassAndTypeSelectorAPIEpics } from './containers/class-and-type-selector/api/class-and-type-selector.epics';
+import { CreateOrAddPeItComponent } from './containers/create-or-add-pe-it/create-or-add-pe-it.component';
+import { CreateOrAddPeItAPIActions } from './containers/create-or-add-pe-it/api/create-or-add-pe-it.actions';
+import { CreateOrAddPeItAPIEpics } from './containers/create-or-add-pe-it/api/create-or-add-pe-it.epics';
+import { PeItSearchExistingComponent } from './containers/pe-it-search-existing/pe-it-search-existing.component';
+import { PeItSearchExistingAPIActions } from './containers/pe-it-search-existing/api/pe-it-search-existing.actions';
+import { PeItSearchExistingAPIEpics } from './containers/pe-it-search-existing/api/pe-it-search-existing.epics';
 
 
 
@@ -240,6 +246,8 @@ import { ClassAndTypeSelectorAPIEpics } from './containers/class-and-type-select
     TypeCtrlComponent,
     RoleSetHeaderComponent,
     TeEntHeaderComponent,
+    CreateOrAddPeItComponent,
+    PeItSearchExistingComponent,
 
 
 
@@ -303,6 +311,10 @@ import { ClassAndTypeSelectorAPIEpics } from './containers/class-and-type-select
     ValidationService,
 
     MentionedEntityCtrlActions,
+    CreateOrAddPeItAPIActions,
+    CreateOrAddPeItAPIEpics,
+    PeItSearchExistingAPIActions,
+    PeItSearchExistingAPIEpics
 
 
   ],
@@ -367,7 +379,9 @@ import { ClassAndTypeSelectorAPIEpics } from './containers/class-and-type-select
 
     // Reusable
     TextPropertyComponent,
-    TeEntLabelComponent
+    TeEntLabelComponent,
+    CreateOrAddPeItComponent,
+    PeItSearchExistingComponent
 
   ],
   entryComponents: [

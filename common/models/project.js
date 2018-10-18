@@ -131,7 +131,8 @@ module.exports = function (Project) {
         "dfh_domain_instances_min_quantifier",
         "dfh_domain_instances_max_quantifier",
         "dfh_range_instances_min_quantifier",
-        "dfh_range_instances_max_quantifier"
+        "dfh_range_instances_max_quantifier",
+        "identity_defining"
       ]
     };
 

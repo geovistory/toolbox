@@ -46,20 +46,19 @@
       "type": "number"
     },
     "dfh_domain_instances_min_quantifier": {
-      "type": "number",
-      "required": true
+      "type": "number"
     },
     "dfh_domain_instances_max_quantifier": {
-      "type": "number",
-      "required": true
+      "type": "number"
     },
     "dfh_range_instances_min_quantifier": {
-      "type": "number",
-      "required": true
+      "type": "number"
     },
     "dfh_range_instances_max_quantifier": {
-      "type": "number",
-      "required": true
+      "type": "number"
+    },
+    "identity_defining": {
+      "type": "boolean"
     }
   },
   "validations": [],
@@ -115,7 +114,8 @@
         "findComplex",
         "__get__labels",
         "__get__text_properties",
-        "propertyByDomainClass"
+        "propertyByDomainClass",
+        "patchAttributes"
       ]
     }
   ],

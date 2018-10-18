@@ -8,10 +8,10 @@
     <!-- The roles in project -->
     <div dnd-sortable-container [sortableData]="roleDetails" [dropZones]="['dropZone-'+index]" class="list-group">
       <div *ngFor="let entry of roleDetails; trackBy:getKey; let i = index" dnd-sortable [sortableIndex]="i" [dragData]="entry"
-        (onDragEnd)="onDrag($event)" [dragEnabled]="(dragEnabled$|async)" class="list-group-item p-0">
+        (onDragEnd)="onDrag($event)" [dragEnabled]="(dragEnabled$|async)" class="list-group-item p-0" [ngClass]="{'disabled': (property$ | async)?.identity_defining}">
         <gv-te-ent-role-editable [parentPath]="basePath" [index]="entry.key" (stopEditing)="stopEditing(entry.key)"
           (startUpdating)="startUpdatingRole(entry.key, $event)">
-          <div headerRight class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown">
+          <div headerRight class="btn-group" ngbDropdown placement="bottom-right" class="gv-name-dropdown" *ngIf="!(property$ | async)?.identity_defining">
 
             <button class="btn btn-link no-caret" ngbDropdownToggle>
               <i class="fa fa-ellipsis-v"></i>
@@ -19,7 +19,6 @@
             <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
 
               <!-- <button class="dropdown-item" (click)="startEditing(entry.key)">Edit</button> -->
-
               <button class="dropdown-item" (click)="removeFromProject(entry.key)">Remove</button>
 
             </div>

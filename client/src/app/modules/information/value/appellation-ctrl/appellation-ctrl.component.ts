@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter, forwardRef } from '@angular/core';
+import { Component, EventEmitter, forwardRef, OnDestroy, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InfAppellation, InfRole } from 'app/core';
-import { Subject } from 'rxjs';
-import { AppellationLabel, AppellationLabelInterface } from '../../shared/appellation-label';
-import { QuillDoc } from '../../../quill';
-import { Token } from '../../shared/appellation-token';
 import { pick } from 'ramda';
+import { Subject } from 'rxjs';
+import { QuillDoc } from '../../../quill';
 import { QuillService } from '../../../quill/quill.service';
+import { AppellationLabel, AppellationLabelInterface } from '../../shared/appellation-label';
+import { Token } from '../../shared/appellation-token';
 
 @Component({
   selector: 'gv-appellation-ctrl',
@@ -24,7 +24,6 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
 
   appellation: InfAppellation;
 
-  appellationLabel: AppellationLabel = new AppellationLabel();
 
   quillDoc: QuillDoc;
 
@@ -53,34 +52,36 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
 
   // this will be called as soon as the form control is registered by parents
   quillDocChange(qd: QuillDoc) {
+    this.validateAndEmit(qd);
+  }
 
-    if (qd && qd.contents && qd.contents.ops.length > 1 && this.onChangeRegistered && this.role) {
-
-      // build the role
-      const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role) as InfRole);
-
-      // build a appe with the appellation_label given by the formControl
-      role.appellation = new InfAppellation({
-        ...this.appellation,
-        appellation_label: this.quillDeltaToAppellationLabel(qd)
-      });
-
-      // send the appe the parent form
-      this.onChange(role)
-    } else {
-      this.onChange(null)
+  private validateAndEmit(qd: QuillDoc) {
+    if (this.onChangeRegistered) {
+      if (qd && qd.contents && qd.contents.ops.filter(op => op.insert.length > 0).length > 1 && this.role) {
+        // build the role
+        const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role) as InfRole);
+        // build a appe with the appellation_label given by the formControl
+        role.appellation = new InfAppellation({
+          ...this.appellation,
+          appellation_label: this.quillDeltaToAppellationLabel(qd)
+        });
+        // send the appe the parent form
+        this.onChange(role);
+      } else {
+        this.onChange(null);
+      }
     }
   }
 
   // converts Appellation Label to Quill Delta
   appellationLabelToQuillDelta(appeLabel: AppellationLabel): QuillDoc {
     const q: QuillDoc = { latestId: 1, contents: { ops: [] } };
-
+    const a = new AppellationLabel(appeLabel);
     // we increase the id, since quill can't handle 0 attribute value
     // see: https://github.com/quilljs/parchment/issues/62
-    q.latestId = appeLabel.latestTokenId ? (appeLabel.latestTokenId + 1) : 1;
+    q.latestId = a.latestTokenId ? (appeLabel.latestTokenId + 1) : 1;
 
-    q.contents.ops = this.appellationLabel.tokens.map(token => {
+    q.contents.ops = a.tokens.map(token => {
       return {
         insert: token.string,
         attributes: {
@@ -127,9 +128,9 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
 
     this.appellation = (role && role.appellation) ? role.appellation : new InfAppellation();
 
-    this.appellationLabel = new AppellationLabel(this.appellation.appellation_label);
+    this.quillDoc = this.appellationLabelToQuillDelta(this.appellation.appellation_label);
 
-    this.quillDoc = this.appellationLabelToQuillDelta(this.appellationLabel);
+    this.validateAndEmit(this.quillDoc)
   }
 
 
@@ -141,6 +142,8 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
     this.onChange = fn;
 
     this.onChangeRegistered = true;
+
+    this.validateAndEmit(this.quillDoc)
 
   }
 

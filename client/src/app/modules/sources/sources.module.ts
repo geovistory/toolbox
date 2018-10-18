@@ -10,7 +10,7 @@ import { SourceDetailComponent } from './containers/source-detail/source-detail.
 import { KeysModule } from '../../shared/pipes/keys.module';
 import { QuillModule } from '../quill';
 import { AnnotationModule } from '../annotation';
-import { SourceListActions } from './containers/source-list/source-list.actions';
+import { SourceListAPIActions } from './containers/source-list/source-list.actions';
 import { SourceDetailActions } from './containers/source-detail/source-detail.actions';
 import { AnnotationPanelActions } from '../annotation/containers/annotation-panel/annotation-panel.actions';
 import { AnnotationCtrlActions } from '../annotation/containers/annotation-ctrl/annotation-ctrl.actions';
@@ -18,6 +18,7 @@ import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-e
 import { SourceDetailApiEpics } from './containers/source-detail/source-detail.epics';
 import { VersionPickerComponent } from './components/version-picker/version-picker.component';
 import { PassiveLinkModule } from 'app/shared';
+import { Information2Module } from '../information/information.module';
 
 @NgModule({
   imports: [
@@ -27,10 +28,11 @@ import { PassiveLinkModule } from 'app/shared';
     KeysModule,
     AnnotationModule,
     QuillModule,
-    PassiveLinkModule
+    PassiveLinkModule,
+    Information2Module
   ],
   providers: [
-    SourceListActions,
+    SourceListAPIActions,
     SourceDetailActions,
     SourceDetailApiEpics,
     AnnotationPanelActions,

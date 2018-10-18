@@ -4,7 +4,48 @@
 <p>
   All Properties. (Gui labels are in english)
 </p>
-<table class="table table-striped gv-table-scroll-y border-bottom border-secondary">
+
+<ngx-table [configuration]="configuration" [data]="data" [columns]="columns">
+  <ng-template let-row let-index="index">
+    <td>
+      {{row.dfh_has_domain}}
+    </td>
+    <td>
+      <a href routerLink="../classes/{{row.dfh_has_domain}}"> {{row?.domain_standard_label}}</a>
+    </td>
+    <td>
+      {{row.dfh_pk_property}}
+    </td>
+    <td>
+      {{row.property_standard_label}}
+    </td>
+    <td>
+      {{row.dfh_has_range}}
+    </td>
+    <td>
+      <a href routerLink="../classes/{{row.dfh_has_range}}">{{row?.range_standard_label}}</a>
+    </td>
+    <td>
+      <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', row.key, 'label_sg']" [dfhFkProperty]="row.dfh_pk_property"></gv-dfh-label-list-edit>
+    </td>
+    <td>
+      <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', row.key, 'label_pl']" [dfhFkProperty]="row.dfh_pk_property"></gv-dfh-label-list-edit>
+    </td>
+    <td>
+      <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', row.key, 'label_inversed_sg']"
+        [dfhFkProperty]="row.dfh_pk_property"></gv-dfh-label-list-edit>
+    </td>
+    <td>
+      <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', row.key, 'label_inversed_pl']"
+        [dfhFkProperty]="row.dfh_pk_property"></gv-dfh-label-list-edit>
+    </td>
+    <td [ngClass]="{'bg-success': row.identity_defining}">
+      <button (click)="changeIdentityDefining(row)">change</button> {{row.identity_defining | json}}
+    </td>
+  </ng-template>
+</ngx-table>
+
+<!-- <table class="table table-striped gv-table-scroll-y border-bottom border-secondary">
   <thead>
     <tr>
       <th scope="col">dfh_has_domain</th>
@@ -46,4 +87,4 @@
       </td>
     </tr>
   </tbody>
-</table>
+</table> -->

@@ -3,6 +3,8 @@ import { TreeviewI18nDefault, TreeviewItem, TreeviewSelection } from 'ngx-treevi
 export class ClassAndTypeSelectorI18n extends TreeviewI18nDefault {
     private internalSelectedItem: TreeviewItem;
 
+    public text = 'Select Type';
+
     set selectedItem(value: TreeviewItem) {
         if (value && value.children === undefined) {
             this.internalSelectedItem = value;
@@ -14,6 +16,6 @@ export class ClassAndTypeSelectorI18n extends TreeviewI18nDefault {
     }
 
     getText(selection: TreeviewSelection): string {
-        return 'Select Type';
+        return this.text;
     }
 }

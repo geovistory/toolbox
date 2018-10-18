@@ -3,7 +3,7 @@ import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
 import { IAppState, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { ClassAndTypeSelector } from './api/class-and-type-selector.models';
+import { ClassAndTypeSelector, ClassAndTypePk } from './api/class-and-type-selector.models';
 import { ClassAndTypeSelectorAPIEpics } from './api/class-and-type-selector.epics';
 import { ClassAndTypeSelectorAPIActions } from './api/class-and-type-selector.actions';
 import { classAndTypeSelectorReducer } from './api/class-and-type-selector.reducer';
@@ -39,8 +39,19 @@ export class ClassAndTypeSelectorComponent extends ClassAndTypeSelectorAPIAction
   // project of which types should be loaded
   @Input() pkProject: number;
 
+  // text
+  @Input() buttonText = 'Select';
+
+  // placement
+  @Input() placement: 'right' | 'left' = 'left';
+
+  // has filter
+  @Input() hasFilter = false;
+
+
+
   // On user select class or type
-  @Output() select = new EventEmitter<{ pkClass: number, pkType: number }>();
+  @Output() select = new EventEmitter<ClassAndTypePk>();
 
 
   // select observables of substore properties
@@ -61,13 +72,6 @@ export class ClassAndTypeSelectorComponent extends ClassAndTypeSelectorAPIAction
   ) {
     super();
 
-    this.config = TreeviewConfig.create({
-      hasAllCheckBox: false,
-      hasCollapseExpand: false,
-      hasFilter: true,
-      maxHeight: 500
-    });
-    this.dropdownTreeviewSelectI18n = i18n as ClassAndTypeSelectorI18n;
 
   }
 
@@ -77,6 +81,17 @@ export class ClassAndTypeSelectorComponent extends ClassAndTypeSelectorAPIAction
     this.localStore = this.ngRedux.configureSubStore(this.basePath, classAndTypeSelectorReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
     this.load(this.pkClasses, this.pkProject)
+
+    this.config = TreeviewConfig.create({
+      hasAllCheckBox: false,
+      hasCollapseExpand: false,
+      hasFilter: this.hasFilter,
+      maxHeight: 500
+    });
+
+    this.dropdownTreeviewSelectI18n = this.i18n as ClassAndTypeSelectorI18n;
+
+    this.dropdownTreeviewSelectI18n.text = this.buttonText;
 
   }
 

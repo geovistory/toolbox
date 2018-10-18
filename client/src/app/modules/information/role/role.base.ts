@@ -3,7 +3,7 @@ import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DfhProperty, InfRole, Project, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { ReplaySubject, Subscription ,  Observable } from 'rxjs';
+import { ReplaySubject, Subscription, Observable } from 'rxjs';
 
 import {
   AppeDetail,
@@ -28,13 +28,8 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
   @Input() index: string;
   localStore: ObservableStore<RoleDetail>;
 
-  getBasePath = () => {
-    const segment = this.intermediatePathSegment ? this.intermediatePathSegment : '_role_list';
+  @Output() touched: EventEmitter<void> = new EventEmitter();
 
-    return this.index ?
-      [... this.parentPath, segment, this.index] :
-      null
-  };
 
   basePath: string[]
 
@@ -68,7 +63,7 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
   roleState: RoleDetail;
   parentRoleSetState: RoleSet;
 
-  // names of child states and of the RoleState object with the key of the value within the child state 
+  // names of child states and of the RoleState object with the key of the value within the child state
   childStatesConfig: { [key: string]: { nameInState: string, nameInApi: string } } = {
     '_teEnt': {
       nameInState: 'teEnt',
@@ -98,6 +93,7 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
 
   childStateConfig: { nameInState: string, nameInApi: string };
 
+  formGroup: FormGroup;
   formControlName: string;
   formControl: FormControl;
 
@@ -110,6 +106,14 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
   @Output() onRequestStandard: EventEmitter<{ roleState: RoleDetail, key: string }> = new EventEmitter();
 
   @Output() roleCreated: EventEmitter<RoleDetail> = new EventEmitter();
+
+  getBasePath = () => {
+    const segment = this.intermediatePathSegment ? this.intermediatePathSegment : '_role_list';
+
+    return this.index ?
+      [... this.parentPath, segment, this.index] :
+      null
+  };
 
   constructor(
     protected ngRedux: NgRedux<RoleDetail>,
@@ -141,8 +145,9 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
 
     U.obj2KeyValueArr(this.childStatesConfig).forEach(item => {
       const state = this.localStore.getState();
-      if (state[item.key])
+      if (state[item.key]) {
         this.childStateConfig = item.value;
+      }
     });
 
     this.property$ = this.ngRedux.select<DfhProperty>([...this.parentPath, 'property']);
@@ -199,25 +204,25 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
   }
 
   subscribeFormChanges() {
-    // subscribe to form control changes 
+    // subscribe to form control changes
     this.subs.push(this.formGroup.valueChanges.subscribe((ctrls) => {
 
-      let role: InfRole = ctrls[this.formControlName];
+      const role: InfRole = ctrls[this.formControlName];
 
       // assing the fk_class to the child entity / value
       if (role && this.roleState.targetClassPk) {
-        if (this.childStateConfig.nameInApi !== 'fk_entity')
+        if (this.childStateConfig.nameInApi !== 'fk_entity') {
           role[this.childStateConfig.nameInApi] = {
             ...role[this.childStateConfig.nameInApi],
             fk_class: this.roleState.targetClassPk
           };
+        }
       }
 
       // send the changes to the parent form
       if (this.formGroup.valid) {
         this.onChange(role);
-      }
-      else {
+      } else {
         this.onChange(null)
       }
     }))
@@ -236,7 +241,6 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
   /****************************************
    *  ControlValueAccessor implementation *
    ****************************************/
-  formGroup: FormGroup;
 
   /**
    * Allows Angular to update the model.
@@ -287,8 +291,5 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
     this.onTouched()
     this.touched.emit()
   }
-
-  @Output() touched: EventEmitter<void> = new EventEmitter();
-
 
 }

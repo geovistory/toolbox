@@ -2,23 +2,23 @@ import { Action } from 'redux';
 
 import { omit } from 'ramda';
 import { ISourceListState } from '../../sources.models';
-import { SourceListAction, SourceListActions } from './source-list.actions';
+import { SourceListAPIAction, SourceListAPIActions } from './source-list.actions';
 
 const INITIAL_STATE: ISourceListState = {
 };
 
 
 export const sourceListReducer =
-    (lastState: ISourceListState = INITIAL_STATE, action: SourceListAction): ISourceListState => {
+    (lastState: ISourceListState = INITIAL_STATE, action: SourceListAPIAction): ISourceListState => {
 
         switch (action.type) {
-            case SourceListActions.SOURCE_LIST_STATE_UPDATED:
+            case SourceListAPIActions.STATE_UPDATED:
                 lastState = action.payload
                 break;
         }
 
         switch (action.type) {
-            case SourceListActions.SOURCE_LIST_SEARCH_HITS_UPDATED:
+            case SourceListAPIActions.SEARCH_HITS_UPDATED:
                 lastState = {
                     ...lastState,
                     list: action.payload.list
@@ -28,7 +28,7 @@ export const sourceListReducer =
 
 
         switch (action.type) {
-            case SourceListActions.SOURCE_LIST_OPEN:
+            case SourceListAPIActions.OPEN:
                 lastState = {
                     ...lastState,
                     edit: action.payload.edit
@@ -37,7 +37,7 @@ export const sourceListReducer =
         }
 
         switch (action.type) {
-            case SourceListActions.SOURCE_LIST_START_REMOVE:
+            case SourceListAPIActions.START_REMOVE:
                 lastState = {
                     ...lastState,
                     remove: action.payload.remove
@@ -46,41 +46,43 @@ export const sourceListReducer =
         }
 
         switch (action.type) {
-            case SourceListActions.SOURCE_LIST_CANCEL_REMOVE:
+            case SourceListAPIActions.CANCEL_REMOVE:
                 lastState = omit(['remove'], lastState);
                 break;
         }
 
         switch (action.type) {
-            case SourceListActions.SOURCE_LIST_REMOVED:
+            case SourceListAPIActions.REMOVED:
                 lastState = omit(['remove'], lastState);
                 break;
         }
 
         switch (action.type) {
-            case SourceListActions.SOURCE_LIST_START_CREATE:
+            case SourceListAPIActions.START_CREATE:
                 lastState = {
                     ...lastState,
-                    create: true
+                    create: {
+                        classAndTypePk: action.meta.classAndTypePk
+                    }
                 };
                 break;
         }
 
         switch (action.type) {
-            case SourceListActions.SOURCE_LIST_STOP_CREATE:
+            case SourceListAPIActions.STOP_CREATE:
                 lastState = omit(['create'], lastState);
                 break;
         }
 
         switch (action.type) {
-            case SourceListActions.SOURCE_LIST_CLOSE:
+            case SourceListAPIActions.CLOSE:
                 lastState = omit(['edit'], lastState);
                 break;
         }
 
 
         switch (action.type) {
-            case SourceListActions.SOURCE_LIST_SOURCE_UPDATED:
+            case SourceListAPIActions.SOURCE_UPDATED:
                 lastState = {
                     ...lastState,
                     edit: {

@@ -9,6 +9,10 @@ import { PropertyListAPIEpics } from './api/property-list.epics';
 import { PropertyListAPIActions } from './api/property-list.actions';
 import { propertyListReducer } from './api/property-list.reducer';
 import { DfhProperty } from '../../../../core/sdk/models/DfhProperty';
+import { Config } from 'ngx-easy-table/src/app/ngx-easy-table/model/config';
+import { KeysPipe } from 'app/shared/pipes/keys.pipe';
+import { takeUntil, first } from 'rxjs/operators';
+import { Columns } from 'ngx-easy-table/src/app/ngx-easy-table/model/columns';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -17,7 +21,8 @@ import { DfhProperty } from '../../../../core/sdk/models/DfhProperty';
 @Component({
   selector: 'gv-property-list',
   templateUrl: './property-list.component.html',
-  styleUrls: ['./property-list.component.css']
+  styleUrls: ['./property-list.component.css'],
+  providers: [KeysPipe]
 })
 export class PropertyListComponent extends PropertyListAPIActions implements OnInit, OnDestroy, SubstoreComponent {
 
@@ -33,6 +38,82 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
   // select observables of substore properties
   @select() items$: Observable<{ [key: string]: DfhProperty }>;
 
+
+  configuration: Config = {
+    searchEnabled: true,
+    headerEnabled: true,
+    orderEnabled: true,
+    orderEventOnly: false,
+    globalSearchEnabled: true,
+    paginationEnabled: true,
+    exportEnabled: false,
+    clickEvent: false,
+    selectRow: false,
+    selectCol: false,
+    selectCell: false,
+    rows: 10,
+    additionalActions: false,
+    serverPagination: false,
+    isLoading: false,
+    detailsTemplate: false,
+    groupRows: false,
+    paginationRangeEnabled: true,
+    collapseAllRows: false,
+    checkboxes: false,
+    resizeColumn: true,
+    fixedColumnWidth: false,
+    horizontalScroll: false,
+    draggable: false,
+    logger: false,
+    showDetailsArrow: false,
+    showContextMenu: false,
+    persistState: false,
+    paginationMaxSize: 5,
+    tableLayout: {
+      style: 'normal', // or big or tiny
+      theme: 'normal', // or dark
+      borderless: false,
+      hover: true,
+      striped: true,
+    }
+  };
+
+  columns: Columns[] = [
+    { key: 'dfh_has_domain', title: 'Domain pk' },
+    { key: 'domain_standard_label', title: 'Domain' },
+    { key: 'dfh_pk_property', title: 'Property pk' },
+    { key: 'property_standard_label', title: 'Property' },
+    { key: 'dfh_has_range', title: 'Range pk' },
+    { key: 'range_standard_label', title: 'Range' },
+    { key: 'gui label sg', title: 'gui label sg', searchEnabled: false, orderEnabled: false },
+    { key: 'gui label pl', title: 'gui label pl', searchEnabled: false, orderEnabled: false },
+    { key: 'gui label sg inv', title: 'gui label sg inv', searchEnabled: false, orderEnabled: false },
+    { key: 'gui label pl inv', title: 'gui label pl inv', searchEnabled: false, orderEnabled: false },
+    { key: 'identity_defining', title: 'Identity Defining', searchEnabled: false, orderEnabled: false },
+  ];
+
+  data = [
+    //   {
+    //   phone: '+1 (934) 551-2224',
+    //   age: 20,
+    //   address: { street: 'North street', number: 12 },
+    //   company: 'ZILLANET',
+    //   name: 'Valentine Webb',
+    //   isActive: false,
+    // }, {
+    //   phone: '+1 (948) 460-3627',
+    //   age: 31,
+    //   address: { street: 'South street', number: 12 },
+    //   company: 'KNOWLYSIS',
+    //   name: 'Heidi Duncan',
+    //   isActive: true,
+    // }
+  ];
+
+
+
+
+
   // Since we're observing an array of items, we need to set up a 'trackBy'
   // parameter so Angular doesn't tear down and rebuild the list's DOM every
   // time there's an update.
@@ -43,9 +124,29 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
   constructor(
     protected rootEpics: RootEpics,
     private epics: PropertyListAPIEpics,
-    protected ngRedux: NgRedux<IAppState>
+    protected ngRedux: NgRedux<IAppState>,
+    private keys: KeysPipe
   ) {
     super()
+    this.items$.pipe(
+      first(items => this.keys.transform(items).length > 0),
+      takeUntil(this.destroy$)
+    ).subscribe(items => { this.setTableData(items) });
+  }
+
+
+  setTableData(items: { [key: string]: DfhProperty }) {
+    this.data = this.keys.transform(items).map((item) => {
+      const domainClass = (item.value.domain_class || {} as any);
+      const rangeClass = (item.value.range_class || {} as any);
+      return {
+        ...item.value,
+        domain_standard_label: [domainClass.dfh_identifier_in_namespace, domainClass.dfh_standard_label].join(' '),
+        property_standard_label: [item.value.dfh_identifier_in_namespace, item.value.dfh_standard_label].join(' '),
+        range_standard_label: [rangeClass.dfh_identifier_in_namespace, rangeClass.dfh_standard_label].join(' '),
+        key: item.key
+      }
+    })
   }
 
   getBasePath = () => this.basePath;
@@ -60,6 +161,13 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
     this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+  }
+
+  changeIdentityDefining(row) {
+    this.updateProperty(new DfhProperty({
+      ...row,
+      identity_defining: row.identity_defining ? false : true
+    } as DfhProperty))
   }
 
 }

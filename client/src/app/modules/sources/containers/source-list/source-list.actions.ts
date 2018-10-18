@@ -3,42 +3,46 @@ import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ISourceListState, ISourceDetailState, ISourceSearchHitState } from '../../sources.models';
 import { InfDigitalObject } from '../../../../core';
+import { ClassAndTypePk } from 'app/modules/information/containers/class-and-type-selector/api/class-and-type-selector.models';
 
 // replace SourceList with name of component
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = ISourceListState;
-export type SourceListAction = FluxStandardAction<Payload, any>;
+interface MetaData {
+  classAndTypePk?: ClassAndTypePk
+};
+export type SourceListAPIAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
-export class SourceListActions {
-  static readonly SOURCE_LIST_STATE_UPDATED = 'SOURCE_LIST_STATE_UPDATED';
+export class SourceListAPIActions {
+  static readonly STATE_UPDATED = 'SourceList::STATE_UPDATED';
 
-  static readonly SOURCE_LIST_SEARCH_HITS_UPDATED = 'SOURCE_LIST_SEARCH_HITS_UPDATED';
+  static readonly SEARCH_HITS_UPDATED = 'SourceList::SEARCH_HITS_UPDATED';
 
-  static readonly SOURCE_LIST_OPEN = 'SOURCE_LIST_OPEN';
-  static readonly SOURCE_LIST_CLOSE = 'SOURCE_LIST_CLOSE';
+  static readonly OPEN = 'SourceList::OPEN';
+  static readonly CLOSE = 'SourceList::CLOSE';
 
-  static readonly SOURCE_LIST_START_REMOVE = 'SOURCE_LIST_START_REMOVE';
-  static readonly SOURCE_LIST_CANCEL_REMOVE = 'SOURCE_LIST_CANCEL_REMOVE';
-  static readonly SOURCE_LIST_REMOVED = 'SOURCE_LIST_REMOVED';
+  static readonly START_REMOVE = 'SourceList::START_REMOVE';
+  static readonly CANCEL_REMOVE = 'SourceList::CANCEL_REMOVE';
+  static readonly REMOVED = 'SourceList::REMOVED';
 
-  static readonly SOURCE_LIST_START_CREATE = 'SOURCE_LIST_START_CREATE';
-  static readonly SOURCE_LIST_STOP_CREATE = 'SOURCE_LIST_STOP_CREATE';
-  static readonly SOURCE_LIST_SOURCE_UPDATED = 'SOURCE_LIST_SOURCE_UPDATED';
+  static readonly START_CREATE = 'SourceList::START_CREATE';
+  static readonly STOP_CREATE = 'SourceList::STOP_CREATE';
+  static readonly SOURCE_UPDATED = 'SourceList::SOURCE_UPDATED';
 
 
 
   @dispatch()
 
-  stateUpdated = (payload: ISourceListState): SourceListAction => ({
-    type: SourceListActions.SOURCE_LIST_STATE_UPDATED,
+  stateUpdated = (payload: ISourceListState): SourceListAPIAction => ({
+    type: SourceListAPIActions.STATE_UPDATED,
     meta: null,
     payload
   })
 
-  searchHitsUpdated = (list: { [key: string]: ISourceSearchHitState }): SourceListAction => ({
-    type: SourceListActions.SOURCE_LIST_SEARCH_HITS_UPDATED,
+  searchHitsUpdated = (list: { [key: string]: ISourceSearchHitState }): SourceListAPIAction => ({
+    type: SourceListAPIActions.SEARCH_HITS_UPDATED,
     meta: null,
     payload: {
       list
@@ -46,56 +50,56 @@ export class SourceListActions {
   })
 
 
-  open = (edit: ISourceDetailState): SourceListAction => ({
-    type: SourceListActions.SOURCE_LIST_OPEN,
+  open = (edit: ISourceDetailState): SourceListAPIAction => ({
+    type: SourceListAPIActions.OPEN,
     meta: null,
     payload: {
       edit
     }
   })
 
-  startRemove = (remove: ISourceSearchHitState): SourceListAction => ({
-    type: SourceListActions.SOURCE_LIST_START_REMOVE,
+  startRemove = (remove: ISourceSearchHitState): SourceListAPIAction => ({
+    type: SourceListAPIActions.START_REMOVE,
     meta: null,
     payload: {
       remove
     }
   })
 
-  cancelRemove = (): SourceListAction => ({
-    type: SourceListActions.SOURCE_LIST_CANCEL_REMOVE,
+  cancelRemove = (): SourceListAPIAction => ({
+    type: SourceListAPIActions.CANCEL_REMOVE,
     meta: null,
     payload: null
   })
 
 
-  removed = (): SourceListAction => ({
-    type: SourceListActions.SOURCE_LIST_REMOVED,
+  removed = (): SourceListAPIAction => ({
+    type: SourceListAPIActions.REMOVED,
     meta: null,
     payload: null
   })
 
 
-  startCreate = (): SourceListAction => ({
-    type: SourceListActions.SOURCE_LIST_START_CREATE,
+  startCreate = (classAndTypePk: ClassAndTypePk): SourceListAPIAction => ({
+    type: SourceListAPIActions.START_CREATE,
+    meta: { classAndTypePk },
+    payload: null
+  })
+
+  stopCreate = (): SourceListAPIAction => ({
+    type: SourceListAPIActions.STOP_CREATE,
     meta: null,
     payload: null
   })
 
-  stopCreate = (): SourceListAction => ({
-    type: SourceListActions.SOURCE_LIST_STOP_CREATE,
+  close = (): SourceListAPIAction => ({
+    type: SourceListAPIActions.CLOSE,
     meta: null,
     payload: null
   })
 
-  close = (): SourceListAction => ({
-    type: SourceListActions.SOURCE_LIST_CLOSE,
-    meta: null,
-    payload: null
-  })
-
-  sourceUpdated = (digitObj: InfDigitalObject): SourceListAction => ({
-    type: SourceListActions.SOURCE_LIST_SOURCE_UPDATED,
+  sourceUpdated = (digitObj: InfDigitalObject): SourceListAPIAction => ({
+    type: SourceListAPIActions.SOURCE_UPDATED,
     meta: null,
     payload: {
       edit: {
