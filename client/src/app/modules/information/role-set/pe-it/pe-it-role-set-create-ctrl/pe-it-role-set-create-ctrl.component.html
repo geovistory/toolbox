@@ -1,4 +1,4 @@
-<gv-role-set-header [property$]="property$" [label$]="label$" (removeRoleSet)="removeRoleSet()" 
+<gv-role-set-header [property$]="property$" [label$]="label$" [rolesCount]="((_role_list$ | async) | keys)?.length" (removeRoleSet)="removeRoleSet()" 
   [removeRoleSetBtnVisible]="removeRoleSetBtnVisible"></gv-role-set-header>
 
 <form [formGroup]="formGroup" *ngIf="formGroup">

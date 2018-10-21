@@ -14,6 +14,7 @@ export interface ExistenceTimeDetailI {
     roles?: InfRole[];
 
     // gui
+    pkUiContext?: number;
     toggle?: CollapsedExpanded;
     outgoingRoleSets?: RoleSet[];
 
@@ -25,9 +26,10 @@ export class ExistenceTimeDetail implements ExistenceTimeDetailI {
 
     readonly type: DataUnitChildType = 'ExistenceTimeDetail';
 
+    pkUiContext?: number;
     _children?: RoleSetList;
-    roles? = [];
-    toggle? = 'expanded' as CollapsedExpanded;
+    roles?= [];
+    toggle?= 'expanded' as CollapsedExpanded;
     outgoingRoleSets?: RoleSet[];
     _existenceTime_edit?: ExistenceTimeEdit;
 

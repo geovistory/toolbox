@@ -1,21 +1,21 @@
 <div>
-  <h4>Define UI-Context</h4>
-  <p> Move items between enabled and disabled and define the order of enabled items.</p>
-  
+  <h3>Define App-Context #{{pkUiContext}}</h3>
+  <p class="lead"> Move items between containers to enable or disable the item. Define the order of enabled items by drag&drop.</p>
+
   <div class="row">
 
     <div class="col-sm-6">
-      <p>Enabled in UI context</p>
 
       <div class="card border-success" dnd-sortable-container [sortableData]="containerEnabled?.widgets" [dropZones]="['widget-dropZone']">
         <div class="card-header text-success">
-          {{containerEnabled?.name}}
+          Enabled
         </div>
         <div class="card-body">
           <ul class="list-group">
 
-              <gv-ui-element-widget  *ngFor="let widget of containerEnabled?.widgets; let x = index" class="list-group-item" dnd-sortable
-              [sortableIndex]="x" [dragEnabled]="!(loading$ | async)" [dragData]="widget" (onDropSuccess)="droppedInEnabled($event)" [widget]="widget"></gv-ui-element-widget>
+            <gv-ui-element-widget *ngFor="let widget of containerEnabled?.widgets; let x = index" class="list-group-item"
+              dnd-sortable [sortableIndex]="x" [dragEnabled]="!(loading$ | async)" [dragData]="widget" (onDropSuccess)="droppedInEnabled($event)"
+              [widget]="widget"></gv-ui-element-widget>
 
           </ul>
         </div>
@@ -23,16 +23,16 @@
     </div>
 
     <div class="col-sm-6">
-      <p>Not available in UI context</p>
 
       <div class="card" dnd-sortable-container [sortableData]="containerDisabled?.widgets" [dropZones]="['widget-dropZone']">
         <div class="card-header">
-          {{containerDisabled?.name}}
+          Disabled
         </div>
         <div class="card-body">
           <ul class="list-group">
-              <gv-ui-element-widget *ngFor="let widget of containerDisabled?.widgets; let x = index" class="list-group-item" dnd-sortable
-              [sortableIndex]="x" [dragEnabled]="!(loading$ | async)" [dragData]="widget" (onDropSuccess)="droppedInDisabled($event)" [widget]="widget"></gv-ui-element-widget>
+            <gv-ui-element-widget *ngFor="let widget of containerDisabled?.widgets; let x = index" class="list-group-item"
+              dnd-sortable [sortableIndex]="x" [dragEnabled]="!(loading$ | async)" [dragData]="widget" (onDropSuccess)="droppedInDisabled($event)"
+              [widget]="widget"></gv-ui-element-widget>
           </ul>
         </div>
       </div>

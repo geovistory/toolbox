@@ -1,16 +1,15 @@
 import { NgRedux } from '@angular-redux/store';
-import { FormBuilder, FormControl, Validators, AbstractControl } from '@angular/forms';
-import { IAppState, InfEntityProjectRel, InfEntityProjectRelApi, InfRoleApi, InfRole, U } from 'app/core';
-import { RoleSetActions } from './role-set.actions';
-import { RoleSetService } from '../shared/role-set.service';
+import { AbstractControl, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { IAppState, InfEntityProjectRel, InfEntityProjectRelApi, InfRole, InfRoleApi, U } from 'app/core';
 import { RoleDetail } from 'app/core/state/models';
-import { RoleActions } from '../role/role.actions';
-import { StateCreatorService } from '../shared/state-creator.service';
-import { ClassService } from '../shared/class.service';
-import { RoleSetBase } from './role-set.base';
-import { clone } from 'ramda'
-import { RoleSetApiEpics } from './role-set.epics';
 import { RootEpics } from 'app/core/store/epics';
+import { clone } from 'ramda';
+import { RoleActions } from '../role/role.actions';
+import { ClassService } from '../shared/class.service';
+import { RoleSetService } from '../shared/role-set.service';
+import { RoleSetActions } from './role-set.actions';
+import { RoleSetBase } from './role-set.base';
+import { RoleSetApiEpics } from './role-set.epics';
 
 export abstract class RoleSetCreateCtrlBase extends RoleSetBase {
 
@@ -30,11 +29,10 @@ export abstract class RoleSetCreateCtrlBase extends RoleSetBase {
     protected roleSetService: RoleSetService,
     protected roleStore: NgRedux<RoleDetail>,
     protected roleActions: RoleActions,
-    protected stateCreator: StateCreatorService,
     protected classService: ClassService,
     protected fb: FormBuilder
   ) {
-    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, classService, fb)
   }
 
 

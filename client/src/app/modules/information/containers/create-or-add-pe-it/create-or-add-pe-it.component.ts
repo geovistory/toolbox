@@ -66,12 +66,13 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
     const pkClass = this.localStore.getState().classAndTypePk.pkClass;
+    const pkUiContext = this.localStore.getState().pkUiContext;
 
-    if (!pkClass) {
-      throw Error('please provide a pkClass.');
-    }
+    if (!pkClass) throw Error('please provide a pkClass.');
+    if (!pkUiContext) throw Error('please provide a pkUiContext.');
 
-    this.initCreateForm(pkClass, this.ngRedux.getState().activeProject.crm);
+
+    this.initCreateForm(pkClass, this.ngRedux.getState().activeProject.crm, pkUiContext);
 
     this.classConfig = this.ngRedux.getState().activeProject.crm.classes[pkClass];
 
@@ -90,13 +91,13 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
 
   onAddExisting(pkEntity: number) {
     this.peItApi.addToProject(this.ngRedux.getState().activeProject.pk_project, pkEntity).subscribe(
-      (peIt) => { this.done.emit(peIt) }
+      (peIts) => { this.done.emit(peIts[0]) }
     )
   }
 
   onOpenExisting(pkEntity: number) {
     this.peItApi.nestedObjectOfProject(this.ngRedux.getState().activeProject.pk_project, pkEntity).subscribe(
-      (peIt) => { this.done.emit(peIt) }
+      (peIts) => { this.done.emit(peIts[0]) }
     )
   }
 

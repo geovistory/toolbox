@@ -10,6 +10,7 @@ import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
 import { KeysModule } from 'app/shared/pipes/keys.module';
 import { DndModule } from 'ng2-dnd';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
+import { TreeviewModule } from 'ngx-treeview';
 import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.module';
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
 import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
@@ -25,18 +26,33 @@ import { AppeLangCreateCtrlAPIEpics } from './appe-lang/appe-lang-create-ctrl/ap
 import { AppeLangCreateCtrlComponent } from './appe-lang/appe-lang-create-ctrl/appe-lang-create-ctrl.component';
 import { AddInfoPeItComponent } from './components/add-info-pe-it/add-info-pe-it.component';
 import { AddInfoTeEntComponent } from './components/add-info-te-ent/add-info-te-ent.component';
+import { ClassInfoComponent } from './components/class-info/class-info.component';
+import { EditorHeaderComponent } from './components/editor-header/editor-header.component';
 import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
 import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it-label.component';
 import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.component';
 import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timeline.component';
+import { RoleSetHeaderComponent } from './components/role-set-header/role-set-header.component';
+import { TeEntHeaderComponent } from './components/te-ent-header/te-ent-header.component';
 import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.component';
 import { TextPropertyComponent } from './components/text-property/text-property.component';
+import { ClassAndTypeSelectorAPIActions } from './containers/class-and-type-selector/api/class-and-type-selector.actions';
+import { ClassAndTypeSelectorAPIEpics } from './containers/class-and-type-selector/api/class-and-type-selector.epics';
+import { ClassAndTypeSelectorComponent } from './containers/class-and-type-selector/class-and-type-selector.component';
+import { CreateOrAddPeItAPIActions } from './containers/create-or-add-pe-it/api/create-or-add-pe-it.actions';
+import { CreateOrAddPeItAPIEpics } from './containers/create-or-add-pe-it/api/create-or-add-pe-it.epics';
+import { CreateOrAddPeItComponent } from './containers/create-or-add-pe-it/create-or-add-pe-it.component';
 import { InformationAPIActions } from './containers/information/api/information.actions';
 import { InformationAPIEpics } from './containers/information/api/information.epics';
 import { InformationComponent } from './containers/information/information.component';
 import { MapComponent } from './containers/map/map.component';
 import { PeItLayerComponent } from './containers/pe-it-layer/pe-it-layer.component';
+import { PeItSearchExistingAPIActions } from './containers/pe-it-search-existing/api/pe-it-search-existing.actions';
+import { PeItSearchExistingAPIEpics } from './containers/pe-it-search-existing/api/pe-it-search-existing.epics';
+import { PeItSearchExistingComponent } from './containers/pe-it-search-existing/pe-it-search-existing.component';
 import { PolygonsEditorLayerComponent } from './containers/polygons-editor-layer/polygons-editor-layer.component';
+import { DataUnitActions } from './data-unit/data-unit.actions';
+import { DataUnitAPIEpics } from './data-unit/data-unit.epics';
 import { PeItApiEpics } from './data-unit/pe-it/api/pe-it.epics';
 import { PeItAddCtrlComponent } from './data-unit/pe-it/pe-it-add-ctrl/pe-it-add-ctrl.component';
 import { PeItAddFormComponent } from './data-unit/pe-it/pe-it-add-form/pe-it-add-form.component';
@@ -85,43 +101,26 @@ import { PeItService } from './shared/pe-it.service';
 import { PropertyService } from './shared/property.service';
 import { RoleSetService } from './shared/role-set.service';
 import { RoleService } from './shared/role.service';
-import { StateCreatorService } from './shared/state-creator.service';
 import { TeEntService } from './shared/te-ent.service';
+import { TypeCtrlAPIActions } from './type/type-ctrl/api/type-ctrl.actions';
+import { TypeCtrlAPIEpics } from './type/type-ctrl/api/type-ctrl.epics';
+import { TypeCtrlComponent } from './type/type-ctrl/type-ctrl.component';
+import { TypeEditableAPIActions } from './type/type-editable/api/type-editable.actions';
+import { TypeEditableAPIEpics } from './type/type-editable/api/type-editable.epics';
+import { TypeEditableComponent } from './type/type-editable/type-editable.component';
 import { AppellationCtrlComponent } from './value/appellation-ctrl/appellation-ctrl.component';
 import { AppellationViewComponent } from './value/appellation-view/appellation-view.component';
 import { LanguageCtrlComponent } from './value/language-ctrl/language-ctrl.component';
 import { LanguageViewComponent } from './value/language-view/language-view.component';
 import { LeafPeItCtrlComponent } from './value/leaf-pe-it-ctrl/leaf-pe-it-ctrl.component';
+import { LeafPeItViewAPIActions } from './value/leaf-pe-it-view/api/leaf-pe-it-view.actions';
+import { LeafPeItViewAPIEpics } from './value/leaf-pe-it-view/api/leaf-pe-it-view.epics';
 import { LeafPeItViewModalComponent } from './value/leaf-pe-it-view/leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
 import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.component';
 import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
-import { LeafPeItViewAPIActions } from './value/leaf-pe-it-view/api/leaf-pe-it-view.actions';
-import { LeafPeItViewAPIEpics } from './value/leaf-pe-it-view/api/leaf-pe-it-view.epics';
-import { EditorHeaderComponent } from './components/editor-header/editor-header.component';
-import { ClassInfoComponent } from './components/class-info/class-info.component';
-import { TypeEditableComponent } from './type/type-editable/type-editable.component';
-import { TypeEditableAPIActions } from './type/type-editable/api/type-editable.actions';
-import { TypeEditableAPIEpics } from './type/type-editable/api/type-editable.epics';
-import { TypeCtrlComponent } from './type/type-ctrl/type-ctrl.component';
-import { TypeCtrlAPIActions } from './type/type-ctrl/api/type-ctrl.actions';
-import { TypeCtrlAPIEpics } from './type/type-ctrl/api/type-ctrl.epics';
-import { TreeviewModule } from 'ngx-treeview';
-import { RoleSetHeaderComponent } from './components/role-set-header/role-set-header.component';
-import { TeEntHeaderComponent } from './components/te-ent-header/te-ent-header.component';
-import { DataUnitAPIEpics } from './data-unit/data-unit.epics';
-import { DataUnitActions } from './data-unit/data-unit.actions';
-import { ClassAndTypeSelectorComponent } from './containers/class-and-type-selector/class-and-type-selector.component';
-import { ClassAndTypeSelectorAPIActions } from './containers/class-and-type-selector/api/class-and-type-selector.actions';
-import { ClassAndTypeSelectorAPIEpics } from './containers/class-and-type-selector/api/class-and-type-selector.epics';
-import { CreateOrAddPeItComponent } from './containers/create-or-add-pe-it/create-or-add-pe-it.component';
-import { CreateOrAddPeItAPIActions } from './containers/create-or-add-pe-it/api/create-or-add-pe-it.actions';
-import { CreateOrAddPeItAPIEpics } from './containers/create-or-add-pe-it/api/create-or-add-pe-it.epics';
-import { PeItSearchExistingComponent } from './containers/pe-it-search-existing/pe-it-search-existing.component';
-import { PeItSearchExistingAPIActions } from './containers/pe-it-search-existing/api/pe-it-search-existing.actions';
-import { PeItSearchExistingAPIEpics } from './containers/pe-it-search-existing/api/pe-it-search-existing.epics';
 
 
 
@@ -300,7 +299,6 @@ import { PeItSearchExistingAPIEpics } from './containers/pe-it-search-existing/a
     TypeCtrlAPIEpics,
 
     // Shared
-    StateCreatorService,
     PeItService,
     TeEntService,
     ClassService,

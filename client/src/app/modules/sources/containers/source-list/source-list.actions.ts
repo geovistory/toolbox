@@ -10,7 +10,8 @@ import { ClassAndTypePk } from 'app/modules/information/containers/class-and-typ
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = ISourceListState;
 interface MetaData {
-  classAndTypePk?: ClassAndTypePk
+  classAndTypePk?: ClassAndTypePk;
+  pkUiContext?: number;
 };
 export type SourceListAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -41,7 +42,10 @@ export class SourceListAPIActions {
     payload
   })
 
-  searchHitsUpdated = (list: { [key: string]: ISourceSearchHitState }): SourceListAPIAction => ({
+  /**
+   * Updates the list of search hits in store
+   */
+  @dispatch() searchHitsUpdated = (list: { [key: string]: ISourceSearchHitState }): SourceListAPIAction => ({
     type: SourceListAPIActions.SEARCH_HITS_UPDATED,
     meta: null,
     payload: {
@@ -50,7 +54,12 @@ export class SourceListAPIActions {
   })
 
 
-  open = (edit: ISourceDetailState): SourceListAPIAction => ({
+  /**
+  * Opens a source for viewing and editing
+  * - creates a SourceDetailState
+  * - update store: 'edit'
+  */
+  @dispatch() open = (edit: ISourceDetailState): SourceListAPIAction => ({
     type: SourceListAPIActions.OPEN,
     meta: null,
     payload: {
@@ -58,7 +67,22 @@ export class SourceListAPIActions {
     }
   })
 
-  startRemove = (remove: ISourceSearchHitState): SourceListAPIAction => ({
+  /**
+* Closes a source
+* - update store: delete 'edit'
+*/
+  @dispatch() close = (): SourceListAPIAction => ({
+    type: SourceListAPIActions.CLOSE,
+    meta: null,
+    payload: null
+  })
+
+
+  /**
+   * Leads to the 'are you sure?' question
+   * - update store: set 'remove' = add a clone of entry
+   */
+  @dispatch() startRemove = (remove: ISourceSearchHitState): SourceListAPIAction => ({
     type: SourceListAPIActions.START_REMOVE,
     meta: null,
     payload: {
@@ -66,39 +90,52 @@ export class SourceListAPIActions {
     }
   })
 
-  cancelRemove = (): SourceListAPIAction => ({
+  /**
+  * Back to list
+  * - update store: delete 'remove'
+  */
+  @dispatch() cancelRemove = (): SourceListAPIAction => ({
     type: SourceListAPIActions.CANCEL_REMOVE,
     meta: null,
     payload: null
   })
 
 
-  removed = (): SourceListAPIAction => ({
+  /**
+  * Back to list
+  * - update store: delete 'remove'
+  */
+  @dispatch() removed = (): SourceListAPIAction => ({
     type: SourceListAPIActions.REMOVED,
     meta: null,
     payload: null
   })
 
-
-  startCreate = (classAndTypePk: ClassAndTypePk): SourceListAPIAction => ({
+  /**
+  * Shows create form
+  * - updates store: set 'create' true
+  */
+  @dispatch() startCreate = (classAndTypePk: ClassAndTypePk, pkUiContext: number): SourceListAPIAction => ({
     type: SourceListAPIActions.START_CREATE,
-    meta: { classAndTypePk },
+    meta: { classAndTypePk, pkUiContext },
     payload: null
   })
 
-  stopCreate = (): SourceListAPIAction => ({
+   /**
+   * Hides create form
+   * - updates store: set 'create' false
+   */
+  @dispatch() stopCreate = (): SourceListAPIAction => ({
     type: SourceListAPIActions.STOP_CREATE,
     meta: null,
     payload: null
   })
 
-  close = (): SourceListAPIAction => ({
-    type: SourceListAPIActions.CLOSE,
-    meta: null,
-    payload: null
-  })
 
-  sourceUpdated = (digitObj: InfDigitalObject): SourceListAPIAction => ({
+  /**
+  *  Updates store: updates 'edit', 'view', sets 'edit', 'edit' false
+  */
+  @dispatch() sourceUpdated = (digitObj: InfDigitalObject): SourceListAPIAction => ({
     type: SourceListAPIActions.SOURCE_UPDATED,
     meta: null,
     payload: {

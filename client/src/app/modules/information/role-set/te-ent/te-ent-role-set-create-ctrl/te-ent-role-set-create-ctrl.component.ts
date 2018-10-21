@@ -1,16 +1,15 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, forwardRef, Input } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { IAppState, InfEntityProjectRelApi, InfRole, InfRoleApi, InfTemporalEntityApi } from 'app/core';
+import { IAppState, InfEntityProjectRelApi, InfRole, InfRoleApi } from 'app/core';
 import { RoleDetail, RoleSet, TeEntDetail } from 'app/core/state/models';
-import { StateSettings } from 'app/core/state/services/state-creator';
+import { StateSettings, createRoleDetail } from 'app/core/state/services/state-creator';
 import { Observable } from 'rxjs';
 import { RootEpics } from '../../../../../core/store/epics';
 import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
-import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetCreateCtrlBase } from '../../role-set-create-ctrl.base';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetApiEpics } from '../../role-set.epics';
@@ -63,13 +62,11 @@ export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
     protected roleSetService: RoleSetService,
     protected roleStore: NgRedux<RoleDetail>,
     protected roleActions: RoleActions,
-    protected stateCreator: StateCreatorService,
     protected classService: ClassService,
     protected fb: FormBuilder,
-    teEntApi: InfTemporalEntityApi
 
   ) {
-    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, classService, fb)
   }
 
   initRoleSetCreateCtrlBaseChild() {
@@ -127,24 +124,23 @@ export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
       isOutgoing: this.roleSetState.isOutgoing
     }
     const settings: StateSettings = {
-      isCreateMode: true
+      pkUiContext: this.localStore.getState().pkUiContext
     }
 
-    this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
+    const roleDetailToCreate = createRoleDetail(options, roleToCreate, this.ngRedux.getState().activeProject.crm, settings)
 
-      /** add a form control */
-      const formControlName = 'new_role_' + this.createFormControlCount;
-      this.createFormControlCount++;
-      this.formGroup.addControl(formControlName, new FormControl(
-        roleStateToCreate.role,
-        [
-          Validators.required
-        ]
-      ))
+    /** add a form control */
+    const formControlName = 'new_role_' + this.createFormControlCount;
+    this.createFormControlCount++;
+    this.formGroup.addControl(formControlName, new FormControl(
+      roleDetailToCreate.role,
+      [
+        Validators.required
+      ]
+    ))
 
-      /** update the state */
-      this.localStore.dispatch(this.actions.addRoleToRoleList(formControlName, roleStateToCreate))
-    })
+    /** update the state */
+    this.localStore.dispatch(this.actions.addRoleToRoleList(formControlName, roleDetailToCreate))
 
   }
 

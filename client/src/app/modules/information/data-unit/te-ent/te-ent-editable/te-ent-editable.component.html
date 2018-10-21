@@ -2,8 +2,7 @@
 <div *ngIf="!(editing$ | async)" [ngClass]="{
     'gv-bg-selected': ((accentuation$ | async) === 'selected'),
     'bg-light': ((accentuation$ | async) === 'highlighted' && (toggle$|async) === 'collapsed')
-  }"
-  >
+  }">
   <!-- (mouseenter)="mouseenter()" (mouseleave)="mouseleave()" -->
 
   <div class="d-flex flex-row">
@@ -47,13 +46,12 @@
   <div class="card">
 
     <gv-te-ent-header [ontoInfoVisible$]="ontoInfoVisible$" [classConfig]="classConfig" [selectPropState$]="selectPropState$"
-      [addButtonVisible]="!(isViewMode$ | async)" (startSelectProperty)="startSelectProperty()"></gv-te-ent-header>
+      [addButtonVisible]="!(isViewMode$ | async) && (addOptionsTeEnt$ | async).length > 0 " (startSelectProperty)="startSelectProperty()"></gv-te-ent-header>
 
     <!-- Step 2 for adding new Property section -->
 
-    <gv-add-info-te-ent *ngIf="(selectPropState$ | async) === 'selectProp'" [uiElements]="uiElementsForAddInfo"
-      [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)"
-      [excludeRoleSet]="(parentRoleSet$ | async)" (cancel)="stopSelectProperty()"></gv-add-info-te-ent>
+    <gv-add-info-te-ent *ngIf="(selectPropState$ | async) === 'selectProp'" [addOptions$]="addOptionsTeEnt$"
+      (addOptionSelected)="addOptionSelected($event)" (cancel)="stopSelectProperty()"></gv-add-info-te-ent>
 
     <div class="card-body bg-transparent">
       <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">

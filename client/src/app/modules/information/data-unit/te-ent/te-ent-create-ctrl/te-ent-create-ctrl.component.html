@@ -1,13 +1,12 @@
 <div class="card">
 
   <!-- Header allowing to add a property -->
-  <gv-te-ent-header [ontoInfoVisible$]="ontoInfoVisible$" [classConfig]="classConfig" [selectPropState$]="selectPropState$" [addButtonVisible]="true"
-    (startSelectProperty)="startSelectProperty()"></gv-te-ent-header>
+  <!-- <gv-te-ent-header [ontoInfoVisible$]="ontoInfoVisible$" [classConfig]="classConfig" [selectPropState$]="selectPropState$"
+    [addButtonVisible]="true" (startSelectProperty)="startSelectProperty()"></gv-te-ent-header> -->
 
   <!-- What do you want to add? -->
-  <gv-add-info-te-ent *ngIf="(selectPropState$ | async) === 'selectProp'" [uiElements]="uiElementsForAddInfo"
-    [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)"
-    [excludeRoleSet]="(parentRoleSet$ | async)" (cancel)="stopSelectProperty()"></gv-add-info-te-ent>
+  <gv-add-info-te-ent *ngIf="(selectPropState$ | async) === 'selectProp'" [addOptions$]="addOptionsTeEnt$"
+    (addOptionSelected)="addOptionSelected($event)" (cancel)="stopSelectProperty()"></gv-add-info-te-ent>
 
   <!-- The form itself -->
   <form class="card-body" [formGroup]="formGroup" *ngIf="formGroup">

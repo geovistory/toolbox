@@ -2,7 +2,6 @@ import { NgRedux, WithSubStore } from '@angular-redux/store';
 import { Component, forwardRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { InfPersistentItem, InfTemporalEntity, U, UiContext } from 'app/core';
-import { StateCreatorService } from '../../../shared/state-creator.service';
 import { PeItCtrlBase } from '../pe-it-ctrl.base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
@@ -36,11 +35,10 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
     protected ngRedux: NgRedux<any>,
     protected actions: PeItActions,
     protected fb: FormBuilder,
-    protected stateCreator: StateCreatorService,
     protected rootEpics: RootEpics,
     protected dataUnitEpics: DataUnitAPIEpics
   ) {
-    super(ngRedux, actions, fb, stateCreator, rootEpics, dataUnitEpics)
+    super(ngRedux, actions, fb, rootEpics, dataUnitEpics)
   }
 
 

@@ -3,34 +3,21 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import {
-    DfhProperty,
-    IAppState,
-    InfEntityProjectRel,
-    InfEntityProjectRelApi,
-    InfPersistentItem,
-    InfRole,
-    InfRoleApi,
-    Project,
-    U,
-} from 'app/core';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares';
-import { Subscription, Observable, combineLatest, Subject } from 'rxjs';
-
+import { DfhProperty, IAppState, InfEntityProjectRel, InfEntityProjectRelApi, InfPersistentItem, InfRole, InfRoleApi, Project, U } from 'app/core';
 import { CollapsedExpanded, RoleDetail, RoleDetailList, RoleSet, RoleSetForm, RoleSetLabel } from 'app/core/state/models';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
+import { RootEpics } from '../../../core/store/epics';
 import { RoleActions } from '../role/role.actions';
 import { roleReducer } from '../role/role.reducers';
 import { ClassService } from '../shared/class.service';
 import { RoleSetService } from '../shared/role-set.service';
 import { RoleService } from '../shared/role.service';
-import { StateCreatorService } from '../shared/state-creator.service';
 import { StateToDataService } from '../shared/state-to-data.service';
 import { RoleSetActions, roleStateKey } from './role-set.actions';
 import { RoleSetApiEpics } from './role-set.epics';
 import { roleSetReducer } from './role-set.reducer';
-import { RootEpics } from '../../../core/store/epics';
-import { takeUntil } from 'rxjs/operators';
+
 
 
 @AutoUnsubscribe({
@@ -135,7 +122,6 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
         protected roleSetService: RoleSetService,
         protected roleStore: NgRedux<RoleDetail>,
         protected roleActions: RoleActions,
-        protected stateCreator: StateCreatorService,
         protected classService: ClassService,
         protected fb: FormBuilder
     ) {
@@ -215,7 +201,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
             const toggle = res[0], roleStatesToCreate = res[1], _role_list = res[2], isViewMode = res[3];
 
             if (this.roleSetState) {
-                // count roles of this roleSet that are in the project or currently being created 
+                // count roles of this roleSet that are in the project or currently being created
                 const rolesCount = Object.keys(roleStatesToCreate || {}).length + Object.keys(_role_list || {}).length;
 
                 // check if more roles would be possible in this role set
@@ -301,7 +287,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     }
 
 
-
+    // TODO check if this can be dropped
     /**
     * changeStandardRole - Make another child role the standard role for
     * the active project.
@@ -309,77 +295,77 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     * @param key  the key of the child RoleState in the store tree
     * @return {void}
     */
-    changeStandardRole(input: { roleState: RoleDetail, key: string }) {
+    // changeStandardRole(input: { roleState: RoleDetail, key: string }) {
 
-        const observables = [];
+    //     const observables = [];
 
 
-        // set loadingStdChange flag of the given child Role
-        const inputRoleStore = this.getChildRoleStore(input.key)
+    //     // set loadingStdChange flag of the given child Role
+    //     const inputRoleStore = this.getChildRoleStore(input.key)
 
-        inputRoleStore.dispatch(this.roleActions.changeDisplayRoleLoading(true))
+    //     inputRoleStore.dispatch(this.roleActions.changeDisplayRoleLoading(true))
 
-        // Create observable of api call to make the given role new standard
+    //     // Create observable of api call to make the given role new standard
 
-        observables.push(this.eprApi.patchAttributes(
-            input.roleState.role.entity_version_project_rels[0].pk_entity_version_project_rel,
-            {
-                is_standard_in_project: true
-            }
-        ))
+    //     observables.push(this.eprApi.patchAttributes(
+    //         input.roleState.role.entity_version_project_rels[0].pk_entity_version_project_rel,
+    //         {
+    //             is_standard_in_project: true
+    //         }
+    //     ))
 
-        // Get all Display Roles to disable (should be only one)
+    //     // Get all Display Roles to disable (should be only one)
 
-        const rolesToChange: RoleDetail[] = [];
+    //     const rolesToChange: RoleDetail[] = [];
 
-        Object.keys(this._role_list).forEach(key => {
-            const roleState: RoleDetail = this._role_list[key];
-            const isDisplayRole = RoleService.isDisplayRole(
-                roleState.isOutgoing,
-                roleState.isDisplayRoleForDomain,
-                roleState.isDisplayRoleForRange
-            )
-            if (roleState && isDisplayRole) {
+    //     Object.keys(this._role_list).forEach(key => {
+    //         const roleState: RoleDetail = this._role_list[key];
+    //         const isDisplayRole = RoleService.isDisplayRole(
+    //             roleState.isOutgoing,
+    //             roleState.isDisplayRoleForDomain,
+    //             roleState.isDisplayRoleForRange
+    //         )
+    //         if (roleState && isDisplayRole) {
 
-                // set loadingStdChange flag of the RoleState
-                this.getChildRoleStore(key).dispatch(this.roleActions.changeDisplayRoleLoading(true))
+    //             // set loadingStdChange flag of the RoleState
+    //             this.getChildRoleStore(key).dispatch(this.roleActions.changeDisplayRoleLoading(true))
 
-                // push the RoleState to an array that will be used later
-                rolesToChange.push(roleState);
+    //             // push the RoleState to an array that will be used later
+    //             rolesToChange.push(roleState);
 
-                // Create observable of api call to disable the old standard
-                observables.push(this.eprApi.patchAttributes(
-                    roleState.role.entity_version_project_rels[0].pk_entity_version_project_rel,
-                    {
-                        is_standard_in_project: false
-                    }
-                ))
-            }
-        });
+    //             // Create observable of api call to disable the old standard
+    //             observables.push(this.eprApi.patchAttributes(
+    //                 roleState.role.entity_version_project_rels[0].pk_entity_version_project_rel,
+    //                 {
+    //                     is_standard_in_project: false
+    //                 }
+    //             ))
+    //         }
+    //     });
 
-        this.subs.push(combineLatest(observables)
-            .subscribe(
-                (value) => {
+    //     this.subs.push(combineLatest(observables)
+    //         .subscribe(
+    //             (value) => {
 
-                    // update the epr of the new Std in store
-                    const isDisplayRole = value[0].is_standard_in_project,
-                        isOutgoing = input.roleState.isOutgoing;
-                    inputRoleStore.dispatch(this.roleActions.changeDisplayRoleSucceeded(isDisplayRole, isOutgoing))
+    //                 // update the epr of the new Std in store
+    //                 const isDisplayRole = value[0].is_standard_in_project,
+    //                     isOutgoing = input.roleState.isOutgoing;
+    //                 inputRoleStore.dispatch(this.roleActions.changeDisplayRoleSucceeded(isDisplayRole, isOutgoing))
 
-                    // update the former display role states (should be only one) in store 
-                    for (let i = 0; i < rolesToChange.length; i++) {
-                        const isDisplayRole = RoleService.isDisplayRole(
-                            rolesToChange[i].isOutgoing,
-                            rolesToChange[i].isDisplayRoleForDomain,
-                            rolesToChange[i].isDisplayRoleForRange
-                        )
-                        this.getChildRoleStore(roleStateKey(rolesToChange[i]))
-                            .dispatch(this.roleActions.changeDisplayRoleSucceeded(false, rolesToChange[i].isOutgoing))
-                    }
+    //                 // update the former display role states (should be only one) in store
+    //                 for (let i = 0; i < rolesToChange.length; i++) {
+    //                     const isDisplayRole = RoleService.isDisplayRole(
+    //                         rolesToChange[i].isOutgoing,
+    //                         rolesToChange[i].isDisplayRoleForDomain,
+    //                         rolesToChange[i].isDisplayRoleForRange
+    //                     )
+    //                     this.getChildRoleStore(roleStateKey(rolesToChange[i]))
+    //                         .dispatch(this.roleActions.changeDisplayRoleSucceeded(false, rolesToChange[i].isOutgoing))
+    //                 }
 
-                }))
+    //             }))
 
-    }
+    // }
 
 
     getChildRoleStore(key): ObservableStore<RoleDetail> {
@@ -514,8 +500,8 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
         this.onChange = fn;
 
         /**
-         * initializes form contols after the role set component is registered by 
-         * the parent's form, so that when initialization of the form controls 
+         * initializes form contols after the role set component is registered by
+         * the parent's form, so that when initialization of the form controls
          * triggers the subscription of the form's valueChanges, the onChange method
          * was allready registered.
          */

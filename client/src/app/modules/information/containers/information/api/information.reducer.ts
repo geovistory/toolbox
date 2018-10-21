@@ -56,7 +56,7 @@ export function informationReducer(state: Information = INITIAL_STATE, a: Action
       };
       break;
 
-      case InformationAPIActions.OPEN_ENTITY_EDITOR_FAILED:
+    case InformationAPIActions.OPEN_ENTITY_EDITOR_FAILED:
       state = {
         ...state,
         loading: false,
@@ -68,32 +68,48 @@ export function informationReducer(state: Information = INITIAL_STATE, a: Action
     * Reducers to manage entity add form
     *****************************************************/
 
-    case InformationAPIActions.ENTITY_ADD_EXISTING_INITIALIZED:
+    case InformationAPIActions.START_CREATE:
       state = {
         ...state,
-        _peIt_add_form: action.payload._peIt_add_form
+        _peIt_add: {
+          classAndTypePk: action.meta.classAndTypePk,
+          pkUiContext: action.meta.pkUiContext
+        }
       };
       break;
 
-    case InformationAPIActions.ENTITY_ADD_EXISTING_DESTROYED:
-      state = {
-        ...omit(['_peIt_add_form'], state),
-      }
+    case InformationAPIActions.STOP_CREATE:
+      state = omit(['_peIt_add'], state);
       break;
 
 
-    case InformationAPIActions.PE_IT_CREATE_ADDED:
-      state = {
-        ...state,
-        _peIt_create_form: action.payload._peIt_create_form
-      };
-      break;
 
-    case InformationAPIActions.PE_IT_CREATE_DESTROYED:
-      state = {
-        ...omit(['_peIt_create_form'], state),
-      }
-      break;
+    // case InformationAPIActions.ENTITY_ADD_EXISTING_INITIALIZED:
+    //   state = {
+    //     ...state,
+    //     _peIt_add_form: action.payload._peIt_add_form
+    //   };
+    //   break;
+
+    // case InformationAPIActions.ENTITY_ADD_EXISTING_DESTROYED:
+    //   state = {
+    //     ...omit(['_peIt_add_form'], state),
+    //   }
+    //   break;
+
+
+    // case InformationAPIActions.PE_IT_CREATE_ADDED:
+    //   state = {
+    //     ...state,
+    //     _peIt_create_form: action.payload._peIt_create_form
+    //   };
+    //   break;
+
+    // case InformationAPIActions.PE_IT_CREATE_DESTROYED:
+    //   state = {
+    //     ...omit(['_peIt_create_form'], state),
+    //   }
+    //   break;
 
 
 

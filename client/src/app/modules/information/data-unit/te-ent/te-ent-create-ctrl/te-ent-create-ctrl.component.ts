@@ -3,11 +3,13 @@ import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { ComConfig, InfRole, InfTemporalEntity, U, UiContext, AddOption, RoleSet, ExistenceTimeDetail } from 'app/core';
 import { pick } from 'ramda';
-import { StateCreatorService } from '../../../shared/state-creator.service';
 import { TeEntCtrlBase } from '../te-ent-ctrl.base';
 import { TeEntActions } from '../te-ent.actions';
 import { RootEpics } from 'app/core/store/epics';
 import { DataUnitAPIEpics } from '../../data-unit.epics';
+import { createExistenceTimeDetail } from 'app/core/state/services/state-creator';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { getTeEntAddOptions } from '../te-ent-editable/te-ent-editable.component';
 
 @Component({
   selector: 'gv-te-ent-create-ctrl',
@@ -29,20 +31,23 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
   uiContext: UiContext;
 
+  addOptionsTeEnt$: Observable<AddOption[]>;
+
   constructor(
     protected ngRedux: NgRedux<any>,
     protected actions: TeEntActions,
     protected fb: FormBuilder,
-    protected stateCreator: StateCreatorService,
     protected rootEpics: RootEpics,
     protected dataUnitEpics: DataUnitAPIEpics
   ) {
-    super(ngRedux, actions, fb, stateCreator, rootEpics, dataUnitEpics)
+    super(ngRedux, actions, fb, rootEpics, dataUnitEpics);
+
   }
 
 
   onInitTeEntBaseChild(): void {
-    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
+    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
+    this.addOptionsTeEnt$ = getTeEntAddOptions(this.fkClass$, this.pkUiContext$, this.crm$, new BehaviorSubject({}), this._children$)
   }
 
 
@@ -132,7 +137,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
         } as InfRole;
 
 
-        this.addRoleSet(new RoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey]), [newRole], { isCreateMode: true })
+        this.addRoleSet(new RoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey]), [newRole], { pkUiContext: this.localStore.getState().pkUiContext })
 
       } else if (o.uiElement.fk_property_set) {
 
@@ -140,9 +145,13 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
         if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
 
-          this.stateCreator.initializeExistenceTimeState([], new ExistenceTimeDetail({ toggle: 'expanded' }), { isCreateMode: true }).subscribe(val => {
-            this.addPropSet('_existenceTime', val)
-          })
+          const existenceTimeDetail = createExistenceTimeDetail(
+            new ExistenceTimeDetail({ toggle: 'expanded' }),
+            [],
+            this.ngRedux.getState().activeProject.crm,
+            { pkUiContext: this.localStore.getState().pkUiContext }
+          )
+          this.addPropSet('_existenceTime', existenceTimeDetail)
 
         }
 

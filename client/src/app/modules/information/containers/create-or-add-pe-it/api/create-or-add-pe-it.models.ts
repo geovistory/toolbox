@@ -11,6 +11,7 @@ export class CreateOrAddPeIt implements CreateOrAddPeIt {
     createForm?: PeItDetail;
     searchExisting?: PeItSearchExisting;
     classAndTypePk?: ClassAndTypePk;
+    pkUiContext?: number;
 
     constructor(data?: CreateOrAddPeIt) {
         Object.assign(this, data);

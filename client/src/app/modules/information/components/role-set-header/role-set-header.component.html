@@ -3,15 +3,15 @@
   <h5 *ngIf="toggleButtonVisible" class="gv-pointer bg-transparent d-flex py-2 align-items-center gv-grow-1" (click)="toggleCardBody.emit()">
     <div class="gv-grow-1">
       <i class="fa fa-caret-right fa-fw" [ngClass]="{'fa-rotate-90': ((toggle$|async)==='expanded')}"></i>
-      <span *ngIf="rolesCount">{{rolesCount}}</span>
-      {{(label$ | async)?.default}}
+      <!-- <span *ngIf="rolesCount">{{rolesCount}}</span> -->
+      {{(rolesCount === 1) ? (label$ | async)?.sg : (label$ | async)?.default}}
     </div>
   </h5>
   <!-- without toggling  -->
   <h5 *ngIf="!toggleButtonVisible" class="bg-transparent d-flex py-2 align-items-center gv-grow-1">
     <div class="gv-grow-1">
-      <span *ngIf="rolesCount">{{rolesCount}}</span>
-      {{(label$ | async)?.default}}
+      <!-- <span *ngIf="rolesCount">{{rolesCount}}</span> -->
+      {{(rolesCount === 1) ? (label$ | async)?.sg : (label$ | async)?.default}}
     </div>
   </h5>
   <div *ngIf="(ontoInfoVisible$|async)" class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex">

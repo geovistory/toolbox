@@ -8,10 +8,11 @@ import { Observable } from 'rxjs';
 import { InformationAPIActions } from '../../containers/information/api/information.actions';
 import { informationReducer } from '../../containers/information/api/information.reducer';
 import { EntityAddModalService, EntityAddModalState } from '../../shared/entity-add-modal.service';
-import { StateCreatorService } from '../../shared/state-creator.service';
 import { Information } from '../../containers/information/api/information.models';
 
-
+/**
+ * DEPRECATED COMPONENT
+ */
 
 @WithSubStore({
   localReducer: informationReducer,
@@ -38,8 +39,7 @@ export class EntityAddAddExistingComponent implements OnInit, OnDestroy {
     private modalService: EntityAddModalService,
     private slimLoadingBarService: SlimLoadingBarService,
     private ngRedux: NgRedux<IAppState>,
-    private actions: InformationAPIActions,
-    private stateCreator: StateCreatorService
+    private actions: InformationAPIActions
   ) {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, informationReducer);
 
@@ -52,15 +52,15 @@ export class EntityAddAddExistingComponent implements OnInit, OnDestroy {
     this.modalService.previousState = EntityAddModalState[1];
 
 
-    this.stateCreator.initializePeItState(
-      this.pkEntity,
-      this.ngRedux.getState().activeProject.pk_project,
-      { isAddMode: true }
-    ).subscribe(peItDetail => {
+    // this.stateCreator.initializePeItState(
+    //   this.pkEntity,
+    //   this.ngRedux.getState().activeProject.pk_project,
+    //   { isAddMode: true }
+    // ).subscribe(peItDetail => {
 
-      this.localStore.dispatch(this.actions.entityAddExistingInitialized(peItDetail));
+    //   this.localStore.dispatch(this.actions.entityAddExistingInitialized(peItDetail));
 
-    })
+    // })
 
   }
 

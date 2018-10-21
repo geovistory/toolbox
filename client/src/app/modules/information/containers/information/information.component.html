@@ -8,9 +8,13 @@
     <div class="col-md-4">
       <div class="btn-group float-right mt-2" role="group">
 
-        <button class="btn btn-link btn-md" (click)="openEntityModal()">
+        <gv-class-and-type-selector *ngIf="pkClassesOfAddBtn != undefined" [pkClasses]="pkClassesOfAddBtn" [pkProject]="projectId"
+          [basePath]="basePath.concat('classAndTypeSelector')" (select)="startCreate($event, pkUiContextCreate)"
+          buttonText="+ Add an entity" placement="right" hasFilter="true"></gv-class-and-type-selector>
+
+        <!-- <button class="btn btn-link btn-md" (click)="openEntityModal()">
           <i class="fa fa-plus" aria-hidden="true"></i> Add an entity
-        </button>
+        </button> -->
       </div>
     </div>
   </section>
@@ -80,4 +84,9 @@
   <div *ngIf="!(loading$ | async)" class="gv-flex-fh">
     <gv-pe-it-editable class="gv-flex-fh" [basePath]="basePath.concat('_peIt_editable')"></gv-pe-it-editable>
   </div>
+</div>
+
+<div *ngIf="(_peIt_add$ | async)" class="gv-flex-fh">
+  <gv-create-or-add-pe-it class="gv-flex-fh" [basePath]="basePath.concat('_peIt_add')" (done)="openEntity($event.pk_entity)"
+    (cancel)="stopCreate()"></gv-create-or-add-pe-it>
 </div>

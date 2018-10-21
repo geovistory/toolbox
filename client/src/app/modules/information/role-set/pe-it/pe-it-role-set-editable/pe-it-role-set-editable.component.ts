@@ -10,7 +10,6 @@ import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
-import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetBase } from '../../role-set.base';
 import { RoleSetApiEpics } from '../../role-set.epics';
@@ -66,11 +65,10 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
     protected roleSetService: RoleSetService,
     protected roleStore: NgRedux<RoleDetail>,
     protected roleActions: RoleActions,
-    protected stateCreator: StateCreatorService,
     protected classService: ClassService,
     protected fb: FormBuilder,
   ) {
-    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, classService, fb)
 
   }
 

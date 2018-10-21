@@ -6,7 +6,6 @@ import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetService } from '../../../shared/role-set.service';
 import { RoleDetail } from 'app/core/state/models';
 import { RoleActions } from '../../../role/role.actions';
-import { StateCreatorService } from '../../../shared/state-creator.service';
 import { ClassService } from '../../../shared/class.service';
 import { FormBuilder } from '@angular/forms';
 import { RoleSetApiEpics } from '../../role-set.epics';
@@ -30,12 +29,11 @@ export class ExTimeRoleSetEditableComponent extends RoleSetBase {
     protected roleSetService: RoleSetService,
     protected roleStore: NgRedux<RoleDetail>,
     protected roleActions: RoleActions,
-    protected stateCreator: StateCreatorService,
     protected classService: ClassService,
     protected fb: FormBuilder,
     protected teEntApi: InfTemporalEntityApi
   ) {
-    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, classService, fb)
   }
 
   init(): void {

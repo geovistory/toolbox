@@ -1,16 +1,16 @@
 import { NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, InfRole, UiContext, UiElement } from 'app/core';
+import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, InfRole, UiContext, UiElement, ProjectCrm } from 'app/core';
 import { AddOption, DataUnitChildList, DataUnitLabel, PeItDetail, RoleSet, SelectPropStateType, SubstoreComponent, TeEntDetail } from 'app/core/state/models';
 import { TypeDetail } from 'app/core/state/models/type-detail';
 import { createRoleSet, roleSetKey, StateSettings } from 'app/core/state/services/state-creator';
 import { RootEpics } from 'app/core/store/epics';
-import { Observable, Subject } from 'rxjs';
-import { StateCreatorService } from '../shared/state-creator.service';
+import { Observable, Subject, combineLatest } from 'rxjs';
 import { DataUnitAPIEpics } from './data-unit.epics';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
+import { takeUntil, filter, first } from 'rxjs/operators';
 
 
 // maps pk_property_set to key in ngRedux store
@@ -46,9 +46,12 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   @select() propertyToAdd$: Observable<RoleSet>; // Poperty that is currently chosen in order to add a role of this kind
   @select() _children$: Observable<DataUnitChildList>;
   @select() _type$: Observable<TypeDetail>
+  @select() pkUiContext$: Observable<number>
 
   @select() showRightPanel$: Observable<boolean>;
   @select() showAddAPropertyButton$: Observable<boolean>;
+
+  crm$: Observable<ProjectCrm>;
 
   comConfig = ComConfig;
   classConfig: ClassConfig;
@@ -73,11 +76,11 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   constructor(
     protected ngRedux: NgRedux<IAppState>,
     protected fb: FormBuilder,
-    protected stateCreator: StateCreatorService,
     protected rootEpics: RootEpics,
     protected dataUnitEpics: DataUnitAPIEpics
   ) {
     this.formGroup = this.fb.group({})
+    this.crm$ = ngRedux.select(['activeProject', 'crm'])
   }
 
   abstract initStore(): void; // override this in derived class
@@ -121,12 +124,27 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
       this.roleSets = rs;
     })
 
-    this.fkClass$.takeUntil(this.destroy$).subscribe(fkClass => {
-      if (fkClass) {
-        this.classConfig = this.ngRedux.getState().activeProject.crm.classes[fkClass];
-        this.uiElementsForAddInfo = this.classConfig.uiContexts[this.comConfig.PK_UI_CONTEXT_EDITABLE].uiElements;
-      }
+    // this.fkClass$.takeUntil(this.destroy$).subscribe(fkClass => {
+    //   if (fkClass) {
+    //     // this.classConfig = this.ngRedux.getState().activeProject.crm.classes[fkClass];
+    //     // this.uiElementsForAddInfo = this.classConfig.uiContexts[this.comConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE].uiElements;
+    //   }
+    // })
+
+    // keep uiElementsForAddInfo up to date, of the things to add (add a property)
+    combineLatest(this.fkClass$, this.pkUiContext$, this.crm$).pipe(
+      first((d) => {
+        const b = (d.filter(item => (item === undefined)).length === 0)
+        return b;
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe((d) => {
+      const fkClass = d[0], pkUiContext = d[1], crm = d[2];
+      this.classConfig = crm.classes[fkClass];
+      const uiContexts = this.classConfig.uiContexts[pkUiContext];
+      this.uiElementsForAddInfo = !uiContexts ? [] : uiContexts.uiElements;
     })
+
   }
 
 
@@ -150,8 +168,10 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   /**
   * called, when user selected a the kind of property to add
   */
-  addRoleSet(propertyToAdd: RoleSet, roles: InfRole[], settings: StateSettings = {}) {
+  addRoleSet(propertyToAdd: RoleSet, roles: InfRole[], settings?: StateSettings) {
 
+    // inits settings, adding default values, if not provided differently
+    settings = new StateSettings(settings);
 
     const crm = this.ngRedux.getState().activeProject.crm;
     const newRoleSet = createRoleSet(new RoleSet(propertyToAdd), roles, crm, settings);

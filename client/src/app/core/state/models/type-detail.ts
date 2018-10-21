@@ -5,6 +5,7 @@ export class TypeDetail {
 
     entityAssociation?: InfEntityAssociation;
     label?: string;
+    pkUiContext?: number;
     isViewMode?= false;
     editing?= false;
     loading?= false;

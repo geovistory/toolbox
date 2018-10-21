@@ -12,14 +12,64 @@ import { TypeDetail } from '../models/type-detail';
 /***************************************************
 * General Interfaces
 ***************************************************/
-export interface StateSettings {
+
+export class StateSettings {
     parentRolePk?: number;
     parentRoleSet?: RoleSet;
-    isCreateMode?: boolean;
-    isAddMode?: boolean;
-    isViewMode?: boolean; // this helps to hide all editing functionalities from gui
+
+    // If the provided pkUiContext points to a Create Context, the state creator
+    // produces other states, made for *-create-crl.component.ts
+    //
+    // If the provided pkUiContext points to a edtitable contest, the state creator
+    // produces states, made for *-editable.component.ts.
+    //
+    // By defaut, the state creator acts like it was in the dataunits editable context.
+    pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+
+    // If the provided pkUiContext points to a editable context, 
+    // you can set isViewMode to true to hide all editing functionalities from *-editable.component.ts.
+    isViewMode?: boolean;
+
+    constructor(data?: StateSettings) {
+        Object.assign(this, data);
+    }
 }
 
+/***************************************************
+* helper functions
+***************************************************/
+
+/**
+ * Returns true, if the given UiContext is a create context
+ * @param pkUiContext the pk of the UiContext
+ */
+export function isCreateContext(pkUiContext: number): boolean {
+    return [
+        ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE,
+        ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE,
+        ComConfig.PK_UI_CONTEXT_SOURCES_CREATE
+    ].indexOf(pkUiContext) > -1;
+}
+
+/**
+ * Returns the create context of the given editable context
+ * @param pkUiContext the pk of the UiContext
+ */
+export function getCreateOfEditableContext(pkUiEditableContext: number): number {
+    switch (pkUiEditableContext) {
+        case ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE:
+            return ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
+
+        case ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE:
+            return ComConfig.PK_UI_CONTEXT_SOURCES_CREATE;
+
+        case ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE:
+            return ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE;
+
+        default:
+            break;
+    }
+}
 
 /***************************************************
 * Data Unit create functions
@@ -33,14 +83,17 @@ export interface StateSettings {
 * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
 * @param settings setting object that is passed through the chain of from() methods of the different state classes
 */
-export function createPeItDetail(options: PeItDetail, peIt: InfPersistentItem, crm: ProjectCrm, settings: StateSettings = {}): PeItDetail {
+export function createPeItDetail(options: PeItDetail, peIt: InfPersistentItem, crm: ProjectCrm, settings?: StateSettings): PeItDetail {
+
+    // init settings (adds defaults, if not otherwise provided)
+    settings = new StateSettings(settings);
 
     // those only pollute the state unless we are in add mode.
     // if (!settings.isAddMode) delete peIt.pi_roles;
 
     const peItCleaned = omit(['pi_roles'], peIt);
 
-    options = { ...options, isViewMode: settings.isViewMode }
+    options = { ...options, isViewMode: settings.isViewMode, pkUiContext: settings.pkUiContext }
 
     return new PeItDetail({
         ...options,
@@ -65,7 +118,7 @@ export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity
 
     if (!teEnt) return;
 
-    options = { ...options, isViewMode: settings.isViewMode }
+    options = { ...options, isViewMode: settings.isViewMode, pkUiContext: settings.pkUiContext }
 
     return new TeEntDetail({
         ...options,
@@ -116,7 +169,7 @@ export function createTypeDetail(options: TypeDetail, assoc: InfEntityAssociatio
 
     const roles = !assoc ? undefined : !assoc.range_pe_it ? undefined : assoc.range_pe_it.pi_roles;
 
-    options = { ...options, isViewMode: settings.isViewMode }
+    options = { ...options, isViewMode: settings.isViewMode, pkUiContext: settings.pkUiContext }
 
     return new TypeDetail({
         ...options,
@@ -137,7 +190,11 @@ export function createTypeDetail(options: TypeDetail, assoc: InfEntityAssociatio
  * @param crm
  * @param settings
  */
-export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: ProjectCrm, settings: StateSettings = {}): DataUnitChildList {
+export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: ProjectCrm, settings?: StateSettings): DataUnitChildList {
+
+    // init settings (adds defaults, if not otherwise provided)
+    settings = new StateSettings(settings);
+
 
     const children = [];
 
@@ -152,9 +209,9 @@ export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: P
     // Get class config
     const classConfig = crm.classes[fkClass];
 
+    const uiContext = classConfig.uiContexts[settings.pkUiContext];
 
-    if (settings.isCreateMode) {
-        const uiContext = classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_CREATE];
+    if (isCreateContext(settings.pkUiContext)) {
 
         // add a roleSet for each roleSet in this ui-context
         if (uiContext && uiContext.uiElements) {
@@ -192,10 +249,7 @@ export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: P
     } else if (!roles || !roles.length) return;
     else {
 
-        const uiContext = classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
-
         const rolesByFkProp = groupBy(prop('fk_property'), roles) as { [index: number]: InfRole[] }
-
 
         // for each uiElement in this ui-context
         if (uiContext && uiContext.uiElements) {
@@ -216,9 +270,9 @@ export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: P
                         // takes the number of roles within quantity
                         rolesWithinQuantity = rolesByFkProp[el.fk_property].filter(role => {
                             if (options.isOutgoing) {
-                                if (!role.range_max_quantifier || role.range_max_quantifier === -1 || role.rank_for_te_ent <= role.range_max_quantifier) return true
+                                if (!role.range_max_quantifier || role.range_max_quantifier === -1 || role.rank_for_te_ent <= role.range_max_quantifier) return true
                             } else {
-                                if (!role.domain_max_quantifier || role.domain_max_quantifier === -1 || role.rank_for_pe_it <= options.targetMaxQuantity) return true
+                                if (!role.domain_max_quantifier || role.domain_max_quantifier === -1 || role.rank_for_pe_it <= options.targetMaxQuantity) return true
                             }
                         })
 
@@ -259,7 +313,7 @@ export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: P
  * @param options options will bi merged in RoleSet object
  * @param roles will be converted in _role_list
  * @param crm is not used within the RoleSet but it is passed to RoleDetail.createState()
- * @param settings state settings object. If settings.isAddMode, only one role is taken for the _role_list,
+ * @param settings state settings object.
  * TODO: change the behavior with addMode to smthng more clever
  */
 export function createRoleSet(options: RoleSet, roles: InfRole[], crm: ProjectCrm, settings: StateSettings): RoleSet {
@@ -268,14 +322,6 @@ export function createRoleSet(options: RoleSet, roles: InfRole[], crm: ProjectCr
 
     // prepare _role_list
     if (roles && roles.length) {
-
-        /**
-         * This is a shortcut method to take only the number of roles, defined by the max quantiy
-         * TODO: change the behavior with addMode to smthng more clever
-         */
-        if (settings.isAddMode && options.targetMaxQuantity > -1) {
-            roles = roles.slice(0, options.targetMaxQuantity)
-        }
 
         const roleDetailArray = roles.map(role => createRoleDetail({
             isOutgoing: options.isOutgoing,
@@ -290,7 +336,7 @@ export function createRoleSet(options: RoleSet, roles: InfRole[], crm: ProjectCr
         }
     }
 
-    options = { ...options, isViewMode: settings.isViewMode }
+    options = { ...options, isViewMode: settings.isViewMode, pkUiContext: settings.pkUiContext }
 
     return new RoleSet({
         ...options,
@@ -309,7 +355,7 @@ export function createRoleSet(options: RoleSet, roles: InfRole[], crm: ProjectCr
  * @param options options will bi merged in RoleSet object
  * @param roles will be converted in a RoleDetailList
  * @param crm is not used within the RoleSet but it is passed to RoleDetail.createState()
- * @param settings state settings object. If settings.isAddMode, only one role is taken for the _role_list,
+ * @param settings state settings object.
  */
 export function createRoleDetailList(options: RoleSet, roles: InfRole[], crm: ProjectCrm, settings: StateSettings): RoleDetailList {
     return createRoleSet(options, roles, crm, settings)._role_list;
@@ -335,7 +381,7 @@ export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: I
     const ext = new ExistenceTimeDetail()
 
 
-    if (settings.isCreateMode) return ext;
+    if (isCreateContext(settings.pkUiContext)) return ext;
 
     U.obj2Arr(rsts).forEach((rs: RoleSet) => {
 
@@ -347,11 +393,11 @@ export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: I
              */
             const role = rolesByFkProp[rs.property.dfh_pk_property][0]
 
-            if (settings.isAddMode) {
-                role.entity_version_project_rels = [{
-                    is_in_project: true
-                } as InfEntityProjectRel]
-            }
+            // if (settings.isAddMode) {
+            //     role.entity_version_project_rels = [{
+            //         is_in_project: true
+            //     } as InfEntityProjectRel]
+            // }
 
             ext.roles = [...ext.roles, role]
             children.push(createRoleSet(new RoleSet(rs), [role], crm, settings));
@@ -364,6 +410,7 @@ export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: I
         ext._children = indexBy(roleSetKey, children)
     }
 
+    options = { ...options, pkUiContext: settings.pkUiContext }
 
     return new ExistenceTimeDetail({
         ...ext,
@@ -384,8 +431,10 @@ export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: I
  * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
  * @param settings setting object that is passed through the chain of from() methods of the different state classes
  */
-export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: InfRole, crm: ProjectCrm, settings: StateSettings = {}): RoleDetail {
+export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: InfRole, crm: ProjectCrm, settings?: StateSettings): RoleDetail {
 
+    // init settings (adds defaults, if not otherwise provided)
+    settings = new StateSettings(settings);
 
     if (!role) return undefined;
 
@@ -417,7 +466,7 @@ export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: I
             .roleSets[roleSetKeyFromParams(role.fk_property, options.isOutgoing)];
 
         // if we are in create mode we need the fk_class
-        if (settings.isCreateMode) {
+        if (isCreateContext(settings.pkUiContext)) {
             roleDetail.role.temporal_entity = role.temporal_entity = {
                 ...role.temporal_entity,
                 fk_class: options.targetClassPk
@@ -434,7 +483,7 @@ export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: I
     ) {
 
         // if we are in create mode we need the fk_class
-        if (settings.isCreateMode) {
+        if (isCreateContext(settings.pkUiContext)) {
             roleDetail.role.appellation = {
                 ...role.appellation,
                 fk_class: options.targetClassPk
@@ -451,7 +500,7 @@ export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: I
     ) {
 
         // if we are in create mode we need the fk_class
-        if (settings.isCreateMode) {
+        if (isCreateContext(settings.pkUiContext)) {
             roleDetail.role.language = {
                 ...role.language,
                 fk_class: options.targetClassPk
@@ -468,7 +517,7 @@ export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: I
     ) {
 
         // if we are in create mode we need the fk_class
-        if (settings.isCreateMode) {
+        if (isCreateContext(settings.pkUiContext)) {
             roleDetail.role.place = {
                 ...role.place,
                 fk_class: options.targetClassPk
@@ -484,7 +533,7 @@ export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: I
     ) {
 
         // if we are in create mode we need the fk_class
-        if (settings.isCreateMode) {
+        if (isCreateContext(settings.pkUiContext)) {
             roleDetail.role.time_primitive = {
                 ...role.time_primitive,
                 fk_class: options.targetClassPk
@@ -498,10 +547,10 @@ export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: I
         // check if it is circular
         if (
             // if not creat mode and the pk's of both roles are the same
-            (!settings.isCreateMode && role.pk_entity === settings.parentRolePk) ||
+            (!isCreateContext(settings.pkUiContext) && role.pk_entity === settings.parentRolePk) ||
             // or if we are in create mode and the initialized role has a fk_entity
             // (means this is the circular role added upon start creating a new information)
-            (settings.isCreateMode && role.fk_entity)
+            (isCreateContext(settings.pkUiContext) && role.fk_entity)
         ) {
             roleDetail.isCircular = true;
         }

@@ -2,22 +2,21 @@ import { NgRedux, ObservableStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { IAppState, InfEntityProjectRelApi, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
+import { RoleDetail, RoleDetailList, RoleSet, TeEntDetail } from 'app/core/state/models';
+import { getCreateOfEditableContext, StateSettings, createRoleDetail, createRoleDetailList } from 'app/core/state/services/state-creator';
+import { RootEpics } from 'app/core/store/epics';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { dropLast } from 'ramda';
 import { Observable } from 'rxjs';
-
-import { RoleDetail, RoleDetailList, RoleSet, TeEntDetail } from 'app/core/state/models';
 import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
-import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetActions } from '../../role-set.actions';
 import { RoleSetBase } from '../../role-set.base';
 import { RoleSetApiEpics } from '../../role-set.epics';
 import { roleSetReducer } from '../../role-set.reducer';
-import { RootEpics } from 'app/core/store/epics';
-import { StateSettings } from 'app/core/state/services/state-creator';
+
 
 @AutoUnsubscribe({
   blackList: ['destroy$']
@@ -61,12 +60,11 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
     protected roleSetService: RoleSetService,
     protected roleStore: NgRedux<RoleDetail>,
     protected roleActions: RoleActions,
-    protected stateCreator: StateCreatorService,
     protected classService: ClassService,
     protected fb: FormBuilder,
     protected teEntApi: InfTemporalEntityApi
   ) {
-    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, stateCreator, classService, fb)
+    super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, roleSetService, roleStore, roleActions, classService, fb)
   }
 
   init(): void {
@@ -144,30 +142,32 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
     roleToCreate.fk_temporal_entity = this.parentTeEntState.teEnt.pk_entity;
 
     const options: RoleDetail = { targetClassPk: this.roleSetState.targetClassPk, isOutgoing: this.roleSetState.isOutgoing };
-    const settings: StateSettings = { isCreateMode: true };
-    this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
+    const settings: StateSettings = {
+      pkUiContext: getCreateOfEditableContext(this.localStore.getState().pkUiContext)
+    }
 
-      /** add a form control */
-      const formControlName = 'new_role_' + this.createFormControlCount;
-      this.createFormControlCount++;
-      this.formGroup.addControl(formControlName, new FormControl(
-        roleStateToCreate.role,
-        [
-          Validators.required
-        ]
-      ))
+    const roleDetailToCreate = createRoleDetail(options, roleToCreate, this.ngRedux.getState().activeProject.crm, settings)
 
-      /** update the state */
-      const roleStatesToCreate: RoleDetailList = {};
-      roleStatesToCreate[formControlName] = roleStateToCreate;
-      this.localStore.dispatch(this.actions.startCreateNewRole(roleStatesToCreate))
-    })
+    /** add a form control */
+    const formControlName = 'new_role_' + this.createFormControlCount;
+    this.createFormControlCount++;
+    this.formGroup.addControl(formControlName, new FormControl(
+      roleDetailToCreate.role,
+      [
+        Validators.required
+      ]
+    ))
+
+    /** update the state */
+    const roleStatesToCreate: RoleDetailList = {};
+    roleStatesToCreate[formControlName] = roleDetailToCreate;
+    this.localStore.dispatch(this.actions.startCreateNewRole(roleStatesToCreate))
   }
 
   createRoles() {
     if (this.formGroup.valid) {
 
-      // prepare peIt 
+      // prepare peIt
       const t = new InfTemporalEntity(this.parentTeEntState.teEnt);
       t.te_roles = [];
       Object.keys(this.formGroup.controls).forEach(key => {
@@ -181,11 +181,8 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
       this.subs.push(this.teEntApi.findOrCreateInfTemporalEntity(this.project.pk_project, t).subscribe(teEnts => {
         const roles: InfRole[] = teEnts[0].te_roles;
 
-        this.subs.push(this.stateCreator.initializeRoleDetails(roles, { isOutgoing: this.roleSetState.isOutgoing })
-          .subscribe(roleStates => {
-            // update the state
-            this.localStore.dispatch(this.actions.rolesCreated(roleStates))
-          }))
+        const roleDetailList = createRoleDetailList(this.roleSetState, roles, this.ngRedux.getState().activeProject.crm, { pkUiContext: this.roleSetState.pkUiContext })
+        this.localStore.dispatch(this.actions.rolesCreated(roleDetailList))
 
       }))
 
@@ -198,25 +195,22 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
 
   /**
    * Start editing a RoleDetail
-   * @param key: the key of the RoleDetail in the store 
+   * @param key: the key of the RoleDetail in the store
    */
   startEditing(key) {
     const roleset = this.roleSetState._role_list[key];
-
-    this.subs.push(this.stateCreator.initializeRoleDetail(roleset.role, { isOutgoing: roleset.isOutgoing }).subscribe(roleState => {
-      this.localStore.dispatch(this.actions.startEditingRole(key, roleState))
-    }))
+    const roleDetail = createRoleDetail(roleset, roleset.role, this.ngRedux.getState().activeProject.crm, { pkUiContext: this.roleSetState.pkUiContext })
+    this.localStore.dispatch(this.actions.startEditingRole(key, roleDetail))
   }
 
   /**
   * Start editing a RoleDetail
-  * @param key: the key of the RoleDetail in the store 
+  * @param key: the key of the RoleDetail in the store
   */
   stopEditing(key) {
     const roleset = this.roleSetState._role_list[key];
-    this.subs.push(this.stateCreator.initializeRoleDetail(roleset.role, { isOutgoing: roleset.isOutgoing }).subscribe(roleState => {
-      this.localStore.dispatch(this.actions.stopEditingRole(key, roleState))
-    }))
+    const roleDetail = createRoleDetail(roleset, roleset.role, this.ngRedux.getState().activeProject.crm, { pkUiContext: this.roleSetState.pkUiContext })
+    this.localStore.dispatch(this.actions.stopEditingRole(key, roleDetail))
   }
 
   startUpdatingRole(key, role: InfRole) {
@@ -231,7 +225,7 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
     // ).subscribe(result => {
     //     const newRoles = result[1];
 
-    //     this.subs.push(this.stateCreator.initializeRoleDetails(newRoles,  this.roleSetState.isOutgoing).subscribe(roleStates => {
+    //     this.subs.push(this.stateCreator.initializeRoleDetails(newRoles,  this.roleSetStatetgoing).subscribe(roleStates => {
     //         // update the state
     //         this.localStore.dispatch(this.actions.updateRole(key, roleStates))
     //     }))

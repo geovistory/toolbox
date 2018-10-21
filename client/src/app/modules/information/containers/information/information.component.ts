@@ -1,7 +1,7 @@
 import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, InfPersistentItem, PeItDetail, PeItSearchHit } from 'app/core';
+import { IAppState, SubstoreComponent, InfPersistentItem, PeItDetail, PeItSearchHit, ProjectCrm, U, ComConfig } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { Information } from './api/information.models';
 import { InformationAPIEpics } from './api/information.epics';
@@ -14,6 +14,8 @@ import { EntityAddModalService } from '../../shared/entity-add-modal.service';
 import { MentionedEntityCtrlActions } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 import { mentionedEntityCtrlReducer } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.reducer';
 import { EntityAddModalComponent } from '../../add-modal/entity-add-modal/entity-add-modal.component';
+import { takeUntil, first } from 'rxjs/operators';
+import { CreateOrAddPeIt } from '../create-or-add-pe-it/api/create-or-add-pe-it.models';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -36,6 +38,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   @Input() basePath: string[];
 
   @select() _peIt_editable$: Observable<PeItDetail>;
+  @select() _peIt_add$: Observable<CreateOrAddPeIt>;
   @select() _peIt_list$: Observable<PeItSearchHit[]>;
   @select() loading$: Observable<boolean>;
   @select() collectionSize$: Observable<number>;
@@ -65,6 +68,8 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     size: 'lg'
   }
 
+  pkClassesOfAddBtn;
+  pkUiContextCreate = ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
 
   constructor(
     protected rootEpics: RootEpics,
@@ -87,6 +92,18 @@ export class InformationComponent extends InformationAPIActions implements OnIni
       this.basePath = d.reduxPath;
     })
 
+    // listen to the crm and add extract the classes ready to add.
+    ngRedux.select<ProjectCrm>(['activeProject', 'crm']).pipe(
+      first(d => !!d),
+      takeUntil(this.destroy$)).subscribe(crm => {
+        this.pkClassesOfAddBtn = []
+        for (const key in crm.classes) {
+          if (crm.classes[key] && crm.classes[key].isInProject) {
+            this.pkClassesOfAddBtn.push(crm.classes[key].dfh_pk_class);
+          }
+        }
+      })
+
     // listen to selecting entities for annotation
     this.selectingEntities$ = ngRedux.select<boolean>(['sources', 'edit', 'annotationPanel', 'edit', 'selectingEntities']);
 
@@ -94,7 +111,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
       ngRedux.configureSubStore(['sources', 'edit', 'annotationPanel', 'edit', 'mentionedEntities'], mentionedEntityCtrlReducer)
 
     // if one of the observables returns truthy, list is not visible
-    combineLatest(this._peIt_editable$).takeUntil(this.destroy$).subscribe(d => {
+    combineLatest(this._peIt_editable$, this._peIt_add$).takeUntil(this.destroy$).subscribe(d => {
       this.listVisible = !d.find(item => !!(item));
     })
 
@@ -146,6 +163,8 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     })
     // routerLink="../entity/{{persistentItem.pk_persistent_item}}" queryParamsHandling="merge"
   }
+
+
 
   selectMentionedEntity(entity: MentionedEntity) {
     this.mentionedEntitiesCrtlStore.dispatch(this.mEntitiesActions.addMentionedEntity(entity))

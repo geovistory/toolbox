@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfPersistentItemApi, U, InfPersistentItem } from 'app/core';
+import { InfPersistentItem, InfPersistentItemApi, LoadingBarActions, U } from 'app/core';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { ofSubstore } from 'app/core/store/module';
+import { TreeviewItem, TreeItem } from 'ngx-treeview';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
-import { Observable, combineLatest } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
-import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { combineLatest, Observable } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { ClassAndTypeSelectorComponent } from '../class-and-type-selector.component';
-import { ClassAndTypeSelectorAPIActions, ClassAndTypeSelectorAPIAction } from './class-and-type-selector.actions';
-import { TreeviewItem } from 'ngx-treeview';
+import { ClassAndTypeSelectorAPIAction, ClassAndTypeSelectorAPIActions } from './class-and-type-selector.actions';
 
 @Injectable()
 export class ClassAndTypeSelectorAPIEpics {
@@ -29,6 +30,7 @@ export class ClassAndTypeSelectorAPIEpics {
          * Filter the actions that triggers this epic
          */
         ofType(ClassAndTypeSelectorAPIActions.LOAD),
+        filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: ClassAndTypeSelectorAPIAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
@@ -54,11 +56,32 @@ export class ClassAndTypeSelectorAPIEpics {
                   text: classConfig.label,
                   children: typeArray.map(peIt => (
                     new TreeviewItem({
-                      value:  { pkClass, pkType: peIt.pk_entity },
+                      value: { pkClass, pkType: peIt.pk_entity },
                       text: U.stringForPeIt(peIt)
                     })))
                 })
               });
+
+              const sortItems = (items: TreeviewItem[]): TreeviewItem[] => {
+                items.map((item) => { if (item.children) sortItems(item.children) })
+                return items.sort((a, b) => {
+                  const textA = a.text.toUpperCase(); // ignore upper and lowercase
+                  const textB = b.text.toUpperCase(); // ignore upper and lowercase
+                  if (textA < textB) {
+                    return -1;
+                  }
+                  if (textA > textB) {
+                    return 1;
+                  }
+                  // names are equal
+                  return 0;
+                })
+              }
+
+              sortItems(treeviewItems)
+
+
+
 
 
               /**

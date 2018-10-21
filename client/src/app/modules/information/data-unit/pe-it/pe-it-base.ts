@@ -2,7 +2,6 @@ import { NgRedux, select } from '@angular-redux/store';
 import { IAppState } from 'app/core';
 import { PeItActions } from './pe-it.actions';
 import { FormBuilder } from '@angular/forms';
-import { StateCreatorService } from '../../shared/state-creator.service';
 import { DataUnitBase } from '../data-unit.base';
 import { PeItApiEpics } from './api/pe-it.epics';
 import { RootEpics } from 'app/core/store/epics';
@@ -27,9 +26,8 @@ export abstract class PeItBase extends DataUnitBase {
         protected ngRedux: NgRedux<IAppState>,
         protected actions: PeItActions,
         protected fb: FormBuilder,
-        protected stateCreator: StateCreatorService
     ) {
-        super(ngRedux, fb, stateCreator, rootEpics, dataUnitEpics);
+        super(ngRedux, fb, rootEpics, dataUnitEpics);
     }
 
     getBasePath = () => this.basePath;

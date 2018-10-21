@@ -712,8 +712,8 @@ module.exports = function (InfRole) {
     -- get final list of pk_entities to add to project
     pk_entities_to_add AS (
       select pk_entity, calendar from pk_entities_of_repo
-      EXCEPT
-      select pk_entity, null::calendar_type from pk_entities_excluded_by_project
+    --  EXCEPT
+    --  select pk_entity, null::calendar_type from pk_entities_excluded_by_project
     )
     --  select * from pk_entities_to_add;
 

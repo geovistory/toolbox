@@ -1,20 +1,57 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ComConfig, UiContext } from 'app/core';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Observable, Subject } from 'rxjs';
-
-import { ExistenceTimeDetail, RoleDetail, RoleSet, TeEntDetail, TeEntAccentuation, AddOption, RoleSetForm, CollapsedExpanded } from 'app/core/state/models';
+import { ComConfig, IAppState, UiContext, UiElement, ProjectCrm } from 'app/core';
+import { AddOption, CollapsedExpanded, ExistenceTimeDetail, RoleDetail, RoleSet, RoleSetForm, TeEntAccentuation, TeEntDetail, DataUnitChildList } from 'app/core/state/models';
+import { createExistenceTimeDetail, getCreateOfEditableContext, StateSettings, similarRoleSet, roleSetKeyFromParams } from 'app/core/state/services/state-creator';
+import { Observable, Subject, combineLatest } from 'rxjs';
+import { RootEpics } from '../../../../../core/store/epics';
 import { slideInOut } from '../../../shared/animations';
-import { StateCreatorService } from '../../../shared/state-creator.service';
 import { DataUnitBase } from '../../data-unit.base';
+import { DataUnitAPIEpics } from '../../data-unit.epics';
 import { TeEntActions } from '../te-ent.actions';
 import { TeEntAPIEpics } from '../te-ent.epics';
 import { teEntReducer } from '../te-ent.reducer';
-import { RootEpics } from '../../../../../core/store/epics';
-import { DataUnitAPIEpics } from '../../data-unit.epics';
+import { filter, map } from 'rxjs/operators';
 
+export function getTeEntAddOptions(
+  fkClass$: Observable<number>,
+  pkUiContext$: Observable<number>,
+  crm$: Observable<ProjectCrm>,
+  parentRoleSet$: Observable<RoleSet>,
+  _children$: Observable<DataUnitChildList>
+): Observable<AddOption[]> {
+  return combineLatest(fkClass$, pkUiContext$, crm$, parentRoleSet$, _children$).pipe(
+    // only pass if no undefined value
+    filter((d) => {
+      const b = (d.filter(item => (item === undefined)).length === 0)
+      return b;
+    }),
+    map((d) => {
+      const fkClass = d[0], pkUiContext = d[1], crm = d[2], excludeRoleSet = d[3], children = d[4];
+      const classConfig = crm.classes[fkClass];
+      const uiContexts = classConfig.uiContexts[pkUiContext];
+      const uiElements = !uiContexts ? [] : uiContexts.uiElements;
+      return uiElements.map(el => {
+        if (children && el.fk_property && !children[el.roleSetKey] &&
+          !similarRoleSet(classConfig.roleSets[el.roleSetKey], excludeRoleSet)) {
+          const roleSet = classConfig.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)];
+          return {
+            label: roleSet.label.default,
+            uiElement: el,
+            added: false
+          };
+        } else if (children && el.fk_property_set && !children[el.propSetKey]) {
+          return {
+            label: el.property_set.label,
+            uiElement: el,
+            added: false
+          };
+        }
+      }).filter(o => (o));
+    })
+  )
+}
 
 @WithSubStore({
   localReducer: teEntReducer,
@@ -39,6 +76,8 @@ export class TeEntEditableComponent extends DataUnitBase {
   @select() _existenceTime_edit$: Observable<ExistenceTimeDetail>;
   @select() accentuation$: Observable<TeEntAccentuation>;
   @select() editing$: Observable<boolean>;
+
+  addOptionsTeEnt$: Observable<AddOption[]>;
 
   /**
   * Paths to other slices of the store
@@ -67,12 +106,12 @@ export class TeEntEditableComponent extends DataUnitBase {
     protected rootEpics: RootEpics,
     protected dataUnitEpics: DataUnitAPIEpics,
     protected epics: TeEntAPIEpics,
-    protected ngRedux: NgRedux<any>,
+    protected ngRedux: NgRedux<IAppState>,
     protected actions: TeEntActions,
     protected fb: FormBuilder,
-    protected stateCreator: StateCreatorService
   ) {
-    super(ngRedux, fb, stateCreator, rootEpics, dataUnitEpics);
+    super(ngRedux, fb, rootEpics, dataUnitEpics);
+
   }
 
   getBasePath = () => [...this.parentPath, '_teEnt']
@@ -95,7 +134,7 @@ export class TeEntEditableComponent extends DataUnitBase {
 
     this.initPaths()
 
-    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
+    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
 
     this.initObservablesOutsideLocalStore();
 
@@ -108,8 +147,8 @@ export class TeEntEditableComponent extends DataUnitBase {
   }
 
   /**
-* init paths to different slices of the store
-*/
+   * init paths to different slices of the store
+   */
   initPaths() {
     // transforms e.g.  ['information', 'entityEditor', 'peItState', 'roleSets', '1', '_role_list', '79060']
     // to               ['information', 'entityEditor', 'peItState']
@@ -118,9 +157,9 @@ export class TeEntEditableComponent extends DataUnitBase {
   }
 
   /**
-  * init observables to other slices of the store than the local store
-  * (to select observables from local store, use @select decorator)
-  */
+   * init observables to other slices of the store than the local store
+   * (to select observables from local store, use @select decorator)
+   */
   initObservablesOutsideLocalStore() {
     this.ontoInfoVisible$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'ontoInfoVisible']);
 
@@ -140,6 +179,7 @@ export class TeEntEditableComponent extends DataUnitBase {
       this.teEnState = d
     })
 
+    this.addOptionsTeEnt$ = getTeEntAddOptions(this.fkClass$, this.pkUiContext$, this.crm$, this.parentRoleSet$, this._children$)
   }
 
 
@@ -176,9 +216,12 @@ export class TeEntEditableComponent extends DataUnitBase {
 
         if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
 
-          this.stateCreator.initializeExistenceTimeState([], new ExistenceTimeDetail({ toggle: 'expanded' }), { isCreateMode: true }).subscribe(val => {
-            this.addPropSet('_existenceTime', val)
-          })
+          const settings: StateSettings = {
+            pkUiContext: getCreateOfEditableContext(this.localStore.getState().pkUiContext)
+          }
+
+          const extDetail = createExistenceTimeDetail(new ExistenceTimeDetail({ toggle: 'expanded' }), [], this.ngRedux.getState().activeProject.crm, settings)
+          this.addPropSet('_existenceTime', extDetail)
 
         }
 

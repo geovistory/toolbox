@@ -62,7 +62,7 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
           const level1propLabel = level1RoleSet.label.default;
           const cla = crm.classes[level1RoleSet.targetClassPk];
           const classLabel = cla.label;
-          const level2propsLabels = cla.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE].uiElements.map(uiEle => {
+          const level2propsLabels = cla.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE].uiElements.map(uiEle => {
             if (uiEle.roleSetKey) {
               const rs = crm.roleSets[uiEle.roleSetKey];
               if (!similarRoleSet(level1RoleSet, rs)) return rs.label.default

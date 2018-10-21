@@ -2,7 +2,6 @@ import { NgRedux, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, NgForm } from '@angular/forms';
 import { InfTemporalEntity, U, UiContext } from 'app/core';
-import { StateCreatorService } from '../../../shared/state-creator.service';
 import { PeItFormBase } from '../pe-it-form.base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
@@ -35,11 +34,10 @@ export class PeItCreateFormComponent extends PeItFormBase {
     protected ngRedux: NgRedux<any>,
     protected actions: PeItActions,
     protected fb: FormBuilder,
-    protected stateCreator: StateCreatorService,
     protected rootEpics: RootEpics,
     protected dataUnitEpics: DataUnitAPIEpics
   ) {
-    super(ngRedux, actions, fb, stateCreator, rootEpics, dataUnitEpics)
+    super(ngRedux, actions, fb, rootEpics, dataUnitEpics)
 
     this.subscribeFormChanges();
 

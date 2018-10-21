@@ -1,4 +1,4 @@
--- Adds existence time property set to all te-ents for PK_UI_CONTEXT_EDITABLE 
+-- Adds existence time property set to all te-ents for PK_UI_CONTEXT_DATAUNITS_EDITABLE 
 Insert Into commons.ui_context_config ( fk_ui_context, fk_class_for_property_set, fk_property_set)
     (
     Select Distinct 45, dfh_pk_class, 48 from data_for_history.class as c
@@ -8,7 +8,7 @@ Insert Into commons.ui_context_config ( fk_ui_context, fk_class_for_property_set
           AND ctxt.fk_ui_context != 45
     );
     
--- Adds existence time property set to all te-ents for PK_UI_CONTEXT_CREATE
+-- Adds existence time property set to all te-ents for PK_UI_CONTEXT_DATAUNITS_CREATE
 Insert Into commons.ui_context_config ( fk_ui_context, fk_class_for_property_set, fk_property_set)
     (
     Select Distinct 46, dfh_pk_class, 48 from data_for_history.class as c

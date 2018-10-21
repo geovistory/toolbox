@@ -183,6 +183,15 @@ module.exports = function (Project) {
         include: ["dfh_pk_class", "dfh_identifier_in_namespace", "dfh_standard_label"]
       },
       "include": {
+        proj_rels: {
+          "$relation": {
+            "name": "proj_rels",
+            "joinType": "left join",
+            select: { include: ["is_in_project"] },
+            "orderBy": [{ "pk_entity": "asc" }],
+            where: ['fk_project', '=', pk_project]
+          }
+        },
         labels: {
           "$relation": {
             "name": "labels",

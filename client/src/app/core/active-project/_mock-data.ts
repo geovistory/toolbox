@@ -10,7 +10,7 @@ export const crm: ProjectCrm = {
       dfh_pk_class: 21,
       uiContexts: {
         '45': {
-          label: 'Editable',
+          label: 'DataUnits View and Edit',
           uiElements: [
             {
               ord_num: 0,
@@ -71,7 +71,7 @@ export const crm: ProjectCrm = {
           ]
         },
         '46': {
-          label: 'Create',
+          label: 'DataUnits Create',
           uiElements: [
             {
               ord_num: 0,
@@ -81,11 +81,78 @@ export const crm: ProjectCrm = {
               fk_property_set: null
             }
           ]
+        },
+        '47': {
+          label: 'Add',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1192,
+              property_is_outgoing: false,
+              roleSetKey: '_1192_ingoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 1,
+              fk_property: 88,
+              property_is_outgoing: false,
+              roleSetKey: '_88_ingoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 2,
+              fk_property: 86,
+              property_is_outgoing: false,
+              roleSetKey: '_86_ingoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 3,
+              fk_property: 85,
+              property_is_outgoing: false,
+              roleSetKey: '_85_ingoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 4,
+              fk_property: 84,
+              property_is_outgoing: false,
+              roleSetKey: '_84_ingoing',
+              fk_property_set: null
+            }
+          ]
+        },
+        '229': {
+          label: 'Sources View and Edit',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1192,
+              property_is_outgoing: false,
+              roleSetKey: '_1192_ingoing',
+              fk_property_set: null
+            }
+          ]
+        },
+        '230': {
+          label: 'Sources Create',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1188,
+              property_is_outgoing: false,
+              roleSetKey: '_1188_ingoing',
+              fk_property_set: null
+            }
+          ]
         }
       },
       roleSets: {
         _1192_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1192,
@@ -97,6 +164,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 79,
@@ -117,6 +185,26 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: false,
                 ord_num: 0,
                 fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 215,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1192,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 233,
+                fk_ui_context: 229,
+                fk_project: null,
+                fk_property: 1192,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_property_set: null
               }
             ]
           },
@@ -131,6 +219,9 @@ export const crm: ProjectCrm = {
         },
         _1188_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1188,
@@ -142,6 +233,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 85,
@@ -151,6 +243,16 @@ export const crm: ProjectCrm = {
                 fk_property_set: null,
                 property_is_outgoing: false,
                 ord_num: 4,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 234,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 1188,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 0,
                 fk_class_for_property_set: null
               }
             ]
@@ -166,6 +268,9 @@ export const crm: ProjectCrm = {
         },
         _1196_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1196,
@@ -177,6 +282,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 191,
@@ -201,6 +307,9 @@ export const crm: ProjectCrm = {
         },
         _1180_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1180,
@@ -212,6 +321,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 86,
@@ -236,6 +346,9 @@ export const crm: ProjectCrm = {
         },
         _1198_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1198,
@@ -247,6 +360,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: -1,
@@ -260,6 +374,9 @@ export const crm: ProjectCrm = {
         },
         _84_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 84,
@@ -271,6 +388,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 83,
@@ -280,6 +398,16 @@ export const crm: ProjectCrm = {
                 fk_property_set: null,
                 property_is_outgoing: false,
                 ord_num: 5,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 218,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 84,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 4,
                 fk_class_for_property_set: null
               }
             ]
@@ -293,78 +421,11 @@ export const crm: ProjectCrm = {
             'default': 'Births given as Mother'
           }
         },
-        _85_ingoing: {
-          type: 'RoleSet',
-          isOutgoing: false,
-          property: {
-            dfh_pk_property: 85,
-            dfh_identifier_in_namespace: 'P97',
-            dfh_has_domain: 61,
-            dfh_has_range: 21,
-            dfh_fk_property_of_origin: null,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            ui_context_config: [
-              {
-                pk_entity: 84,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 85,
-                fk_property_set: null,
-                property_is_outgoing: false,
-                ord_num: 6,
-                fk_class_for_property_set: null
-              }
-            ]
-          },
-          targetMaxQuantity: -1,
-          targetMinQuantity: 0,
-          targetClassPk: 61,
-          label: {
-            sg: 'Birth initiated as biological Father',
-            pl: 'Births initiated as biological Father',
-            'default': 'Births initiated as biological Father'
-          }
-        },
-        _86_ingoing: {
-          type: 'RoleSet',
-          isOutgoing: false,
-          property: {
-            dfh_pk_property: 86,
-            dfh_identifier_in_namespace: 'P98',
-            dfh_has_domain: 61,
-            dfh_has_range: 21,
-            dfh_fk_property_of_origin: null,
-            dfh_domain_instances_min_quantifier: 1,
-            dfh_domain_instances_max_quantifier: 1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            ui_context_config: [
-              {
-                pk_entity: 81,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 86,
-                fk_property_set: null,
-                property_is_outgoing: false,
-                ord_num: 1,
-                fk_class_for_property_set: null
-              }
-            ]
-          },
-          targetMaxQuantity: 1,
-          targetMinQuantity: 1,
-          targetClassPk: 61,
-          label: {
-            sg: 'Birth',
-            pl: 'Births',
-            'default': 'Birth'
-          }
-        },
         _88_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 88,
@@ -376,6 +437,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: 1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 82,
@@ -385,6 +447,16 @@ export const crm: ProjectCrm = {
                 fk_property_set: null,
                 property_is_outgoing: false,
                 ord_num: 2,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 217,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 88,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 1,
                 fk_class_for_property_set: null
               }
             ]
@@ -398,8 +470,60 @@ export const crm: ProjectCrm = {
             'default': 'Death'
           }
         },
+        _85_ingoing: {
+          type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 85,
+            dfh_identifier_in_namespace: 'P97',
+            dfh_has_domain: 61,
+            dfh_has_range: 21,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 84,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 85,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 6,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 219,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 85,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 3,
+                fk_class_for_property_set: null
+              }
+            ]
+          },
+          targetMaxQuantity: -1,
+          targetMinQuantity: 0,
+          targetClassPk: 61,
+          label: {
+            sg: 'Birth initiated as biological Father',
+            pl: 'Births initiated as biological Father',
+            'default': 'Births initiated as biological Father'
+          }
+        },
         _140_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 140,
@@ -411,6 +535,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -422,8 +547,60 @@ export const crm: ProjectCrm = {
             'default': '[inv.pl: 140: P152 undefined'
           }
         },
+        _86_ingoing: {
+          type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 86,
+            dfh_identifier_in_namespace: 'P98',
+            dfh_has_domain: 61,
+            dfh_has_range: 21,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: 1,
+            dfh_domain_instances_max_quantifier: 1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: true,
+            ui_context_config: [
+              {
+                pk_entity: 81,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 86,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 1,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 216,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 86,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 2,
+                fk_class_for_property_set: null
+              }
+            ]
+          },
+          targetMaxQuantity: 1,
+          targetMinQuantity: 1,
+          targetClassPk: 61,
+          label: {
+            sg: 'Birth',
+            pl: 'Births',
+            'default': 'Birth'
+          }
+        },
         _140_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 140,
@@ -435,6 +612,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -456,6 +634,9 @@ export const crm: ProjectCrm = {
       roleSets: {
         _4_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 4,
@@ -467,6 +648,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: 1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: 1,
@@ -480,6 +662,9 @@ export const crm: ProjectCrm = {
         },
         _75_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 75,
@@ -491,6 +676,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -504,6 +690,9 @@ export const crm: ProjectCrm = {
         },
         _143_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 143,
@@ -515,6 +704,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -528,6 +718,9 @@ export const crm: ProjectCrm = {
         },
         _145_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 145,
@@ -539,6 +732,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -552,6 +746,9 @@ export const crm: ProjectCrm = {
         },
         _1008_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1008,
@@ -563,6 +760,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -576,6 +774,9 @@ export const crm: ProjectCrm = {
         },
         _1059_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1059,
@@ -587,6 +788,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -600,6 +802,9 @@ export const crm: ProjectCrm = {
         },
         _68_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 68,
@@ -611,6 +816,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -624,6 +830,9 @@ export const crm: ProjectCrm = {
         },
         _69_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 69,
@@ -635,6 +844,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -648,6 +858,9 @@ export const crm: ProjectCrm = {
         },
         _70_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 70,
@@ -659,6 +872,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -672,6 +886,9 @@ export const crm: ProjectCrm = {
         },
         _71_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 71,
@@ -683,6 +900,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -696,6 +914,9 @@ export const crm: ProjectCrm = {
         },
         _72_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 72,
@@ -707,6 +928,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -720,6 +942,9 @@ export const crm: ProjectCrm = {
         },
         _73_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 73,
@@ -731,6 +956,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -744,6 +970,9 @@ export const crm: ProjectCrm = {
         },
         _74_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 74,
@@ -755,6 +984,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -768,6 +998,9 @@ export const crm: ProjectCrm = {
         },
         _75_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 75,
@@ -779,6 +1012,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -792,6 +1026,9 @@ export const crm: ProjectCrm = {
         },
         _150_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 150,
@@ -803,6 +1040,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -816,6 +1054,9 @@ export const crm: ProjectCrm = {
         },
         _151_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 151,
@@ -827,6 +1068,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -840,6 +1082,9 @@ export const crm: ProjectCrm = {
         },
         _152_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 152,
@@ -851,6 +1096,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -864,6 +1110,9 @@ export const crm: ProjectCrm = {
         },
         _153_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 153,
@@ -875,6 +1124,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -895,7 +1145,7 @@ export const crm: ProjectCrm = {
       dfh_pk_class: 60,
       uiContexts: {
         '45': {
-          label: 'Editable',
+          label: 'DataUnits View and Edit',
           uiElements: [
             {
               ord_num: 0,
@@ -926,7 +1176,7 @@ export const crm: ProjectCrm = {
           ]
         },
         '46': {
-          label: 'Create',
+          label: 'DataUnits Create',
           uiElements: [
             {
               ord_num: 0,
@@ -941,11 +1191,18 @@ export const crm: ProjectCrm = {
               propSetKey: '_existenceTime'
             }
           ]
+        },
+        '47': {
+          label: 'Add',
+          uiElements: []
         }
       },
       roleSets: {
         _83_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 83,
@@ -957,6 +1214,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: 1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 87,
@@ -991,6 +1249,9 @@ export const crm: ProjectCrm = {
         },
         _139_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 139,
@@ -1002,6 +1263,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 88,
@@ -1043,7 +1305,7 @@ export const crm: ProjectCrm = {
       dfh_pk_class: 61,
       uiContexts: {
         '45': {
-          label: 'Editable',
+          label: 'DataUnits View and Edit',
           uiElements: [
             {
               ord_num: 0,
@@ -1095,7 +1357,7 @@ export const crm: ProjectCrm = {
           ]
         },
         '46': {
-          label: 'Create',
+          label: 'DataUnits Create',
           uiElements: [
             {
               ord_num: 0,
@@ -1117,11 +1379,66 @@ export const crm: ProjectCrm = {
               fk_property_set: null
             }
           ]
+        },
+        '47': {
+          label: 'Add',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 86,
+              property_is_outgoing: true,
+              roleSetKey: '_86_outgoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 1,
+              fk_property: 1187,
+              property_is_outgoing: true,
+              roleSetKey: '_1187_outgoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 2,
+              fk_property: 1186,
+              property_is_outgoing: true,
+              roleSetKey: '_1186_outgoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 3,
+              fk_property: 85,
+              property_is_outgoing: true,
+              roleSetKey: '_85_outgoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 4,
+              fk_property: 84,
+              property_is_outgoing: true,
+              roleSetKey: '_84_outgoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 5,
+              fk_property: null,
+              property_is_outgoing: null,
+              fk_property_set: 48,
+              property_set: {
+                pk_entity: 48,
+                description: 'Existence Time or Time Span of a Temporal Entity',
+                label: 'When'
+              },
+              propSetKey: '_existenceTime'
+            }
+          ]
         }
       },
       roleSets: {
         _1043_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1043,
@@ -1133,6 +1450,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -1146,6 +1464,9 @@ export const crm: ProjectCrm = {
         },
         _1186_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1186,
@@ -1157,6 +1478,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 76,
@@ -1166,6 +1488,16 @@ export const crm: ProjectCrm = {
                 fk_property_set: null,
                 property_is_outgoing: true,
                 ord_num: 4,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 221,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1186,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 2,
                 fk_class_for_property_set: null
               }
             ]
@@ -1181,6 +1513,9 @@ export const crm: ProjectCrm = {
         },
         _1187_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1187,
@@ -1192,6 +1527,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 77,
@@ -1201,6 +1537,16 @@ export const crm: ProjectCrm = {
                 fk_property_set: null,
                 property_is_outgoing: true,
                 ord_num: 5,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 224,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1187,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 1,
                 fk_class_for_property_set: null
               }
             ]
@@ -1216,6 +1562,9 @@ export const crm: ProjectCrm = {
         },
         _84_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 84,
@@ -1227,6 +1576,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 73,
@@ -1236,6 +1586,16 @@ export const crm: ProjectCrm = {
                 fk_property_set: null,
                 property_is_outgoing: true,
                 ord_num: 2,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 222,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 84,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 4,
                 fk_class_for_property_set: null
               }
             ]
@@ -1251,6 +1611,9 @@ export const crm: ProjectCrm = {
         },
         _85_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 85,
@@ -1262,10 +1625,21 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 75,
                 fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 85,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 3,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 223,
+                fk_ui_context: 47,
                 fk_project: null,
                 fk_property: 85,
                 fk_property_set: null,
@@ -1286,6 +1660,9 @@ export const crm: ProjectCrm = {
         },
         _86_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 86,
@@ -1297,6 +1674,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: 1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: true,
             ui_context_config: [
               {
                 pk_entity: 74,
@@ -1316,6 +1694,16 @@ export const crm: ProjectCrm = {
                 fk_property_set: null,
                 property_is_outgoing: true,
                 ord_num: 1,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 220,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 86,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 0,
                 fk_class_for_property_set: null
               }
             ]
@@ -1338,7 +1726,7 @@ export const crm: ProjectCrm = {
       dfh_pk_class: 63,
       uiContexts: {
         '45': {
-          label: 'Editable',
+          label: 'DataUnits View and Edit',
           uiElements: [
             {
               ord_num: 0,
@@ -1369,10 +1757,41 @@ export const crm: ProjectCrm = {
           ]
         },
         '46': {
-          label: 'Create',
+          label: 'DataUnits Create',
           uiElements: [
             {
               ord_num: 0,
+              fk_property: null,
+              property_is_outgoing: null,
+              fk_property_set: 48,
+              property_set: {
+                pk_entity: 48,
+                description: 'Existence Time or Time Span of a Temporal Entity',
+                label: 'When'
+              },
+              propSetKey: '_existenceTime'
+            }
+          ]
+        },
+        '47': {
+          label: 'Add',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1191,
+              property_is_outgoing: true,
+              roleSetKey: '_1191_outgoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 1,
+              fk_property: 88,
+              property_is_outgoing: true,
+              roleSetKey: '_88_outgoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 2,
               fk_property: null,
               property_is_outgoing: null,
               fk_property_set: 48,
@@ -1389,6 +1808,9 @@ export const crm: ProjectCrm = {
       roleSets: {
         _1044_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1044,
@@ -1400,7 +1822,19 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
-            ui_context_config: []
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 226,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1044,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_property_set: null
+              }
+            ]
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1413,6 +1847,9 @@ export const crm: ProjectCrm = {
         },
         _1191_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1191,
@@ -1424,6 +1861,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 92,
@@ -1433,6 +1871,16 @@ export const crm: ProjectCrm = {
                 fk_property_set: null,
                 property_is_outgoing: true,
                 ord_num: 2,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 225,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1191,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 0,
                 fk_class_for_property_set: null
               }
             ]
@@ -1448,6 +1896,9 @@ export const crm: ProjectCrm = {
         },
         _88_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 88,
@@ -1459,10 +1910,21 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: 1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 91,
                 fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 88,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 1,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 227,
+                fk_ui_context: 47,
                 fk_project: null,
                 fk_property: 88,
                 fk_property_set: null,
@@ -1490,7 +1952,7 @@ export const crm: ProjectCrm = {
       dfh_pk_class: 68,
       uiContexts: {
         '45': {
-          label: 'Editable',
+          label: 'DataUnits View and Edit',
           uiElements: [
             {
               ord_num: 0,
@@ -1551,7 +2013,7 @@ export const crm: ProjectCrm = {
           ]
         },
         '46': {
-          label: 'Create',
+          label: 'DataUnits Create',
           uiElements: [
             {
               ord_num: 0,
@@ -1566,6 +2028,9 @@ export const crm: ProjectCrm = {
       roleSets: {
         _1189_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1189,
@@ -1577,6 +2042,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 98,
@@ -1601,6 +2067,9 @@ export const crm: ProjectCrm = {
         },
         _1197_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1197,
@@ -1612,6 +2081,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 101,
@@ -1636,6 +2106,9 @@ export const crm: ProjectCrm = {
         },
         _1193_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1193,
@@ -1647,6 +2120,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 93,
@@ -1681,6 +2155,9 @@ export const crm: ProjectCrm = {
         },
         _1182_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1182,
@@ -1692,6 +2169,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 102,
@@ -1716,6 +2194,9 @@ export const crm: ProjectCrm = {
         },
         _1199_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1199,
@@ -1727,6 +2208,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 103,
@@ -1751,6 +2233,9 @@ export const crm: ProjectCrm = {
         },
         _83_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 83,
@@ -1762,6 +2247,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: 1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 94,
@@ -1786,6 +2272,9 @@ export const crm: ProjectCrm = {
         },
         _87_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 87,
@@ -1797,6 +2286,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 96,
@@ -1821,6 +2311,9 @@ export const crm: ProjectCrm = {
         },
         _132_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 132,
@@ -1832,6 +2325,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 97,
@@ -1856,6 +2350,9 @@ export const crm: ProjectCrm = {
         },
         _134_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 134,
@@ -1867,6 +2364,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 99,
@@ -1891,6 +2389,9 @@ export const crm: ProjectCrm = {
         },
         _139_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 139,
@@ -1902,6 +2403,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 95,
@@ -1926,6 +2428,9 @@ export const crm: ProjectCrm = {
         },
         _1013_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1013,
@@ -1937,6 +2442,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -1950,6 +2456,9 @@ export const crm: ProjectCrm = {
         },
         _1035_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1035,
@@ -1961,6 +2470,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -1974,6 +2484,9 @@ export const crm: ProjectCrm = {
         },
         _95_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 95,
@@ -1985,6 +2498,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -2007,6 +2521,9 @@ export const crm: ProjectCrm = {
       roleSets: {
         _119_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 119,
@@ -2018,6 +2535,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -2038,7 +2556,7 @@ export const crm: ProjectCrm = {
       dfh_pk_class: 78,
       uiContexts: {
         '45': {
-          label: 'Editable',
+          label: 'DataUnits View and Edit',
           uiElements: [
             {
               ord_num: 0,
@@ -2069,7 +2587,7 @@ export const crm: ProjectCrm = {
           ]
         },
         '46': {
-          label: 'Create',
+          label: 'DataUnits Create',
           uiElements: [
             {
               ord_num: 0,
@@ -2086,11 +2604,18 @@ export const crm: ProjectCrm = {
               fk_property_set: null
             }
           ]
+        },
+        '47': {
+          label: 'Add',
+          uiElements: []
         }
       },
       roleSets: {
         _1196_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1196,
@@ -2102,6 +2627,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 188,
@@ -2136,6 +2662,9 @@ export const crm: ProjectCrm = {
         },
         _1197_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1197,
@@ -2147,6 +2676,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: 1,
@@ -2160,6 +2690,9 @@ export const crm: ProjectCrm = {
         },
         _131_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 131,
@@ -2171,6 +2704,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: 1,
@@ -2184,6 +2718,9 @@ export const crm: ProjectCrm = {
         },
         _132_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 132,
@@ -2195,6 +2732,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 187,
@@ -2236,7 +2774,7 @@ export const crm: ProjectCrm = {
       dfh_pk_class: 79,
       uiContexts: {
         '45': {
-          label: 'Editable',
+          label: 'DataUnits View and Edit',
           uiElements: [
             {
               ord_num: 0,
@@ -2260,7 +2798,7 @@ export const crm: ProjectCrm = {
           ]
         },
         '46': {
-          label: 'Create',
+          label: 'DataUnits Create',
           uiElements: [
             {
               ord_num: 0,
@@ -2282,11 +2820,18 @@ export const crm: ProjectCrm = {
               fk_property_set: null
             }
           ]
+        },
+        '47': {
+          label: 'Add',
+          uiElements: []
         }
       },
       roleSets: {
         _1198_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1198,
@@ -2298,6 +2843,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: 1,
@@ -2311,6 +2857,9 @@ export const crm: ProjectCrm = {
         },
         _1199_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1199,
@@ -2322,6 +2871,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: 1,
@@ -2335,6 +2885,9 @@ export const crm: ProjectCrm = {
         },
         _133_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 133,
@@ -2346,6 +2899,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: 1,
@@ -2359,6 +2913,9 @@ export const crm: ProjectCrm = {
         },
         _134_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 134,
@@ -2370,6 +2927,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 104,
@@ -2410,7 +2968,7 @@ export const crm: ProjectCrm = {
       dfh_pk_class: 84,
       uiContexts: {
         '45': {
-          label: 'Editable',
+          label: 'DataUnits View and Edit',
           uiElements: [
             {
               ord_num: 0,
@@ -2434,7 +2992,7 @@ export const crm: ProjectCrm = {
           ]
         },
         '46': {
-          label: 'Create',
+          label: 'DataUnits Create',
           uiElements: [
             {
               ord_num: 0,
@@ -2461,6 +3019,9 @@ export const crm: ProjectCrm = {
       roleSets: {
         _1181_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1181,
@@ -2472,6 +3033,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 108,
@@ -2496,6 +3058,9 @@ export const crm: ProjectCrm = {
         },
         _1184_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1184,
@@ -2507,6 +3072,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 107,
@@ -2531,6 +3097,9 @@ export const crm: ProjectCrm = {
         },
         _145_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 145,
@@ -2542,6 +3111,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -2555,6 +3125,9 @@ export const crm: ProjectCrm = {
         },
         _148_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 148,
@@ -2566,6 +3139,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: 1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 106,
@@ -2607,7 +3181,7 @@ export const crm: ProjectCrm = {
       dfh_pk_class: 212,
       uiContexts: {
         '45': {
-          label: 'Editable',
+          label: 'DataUnits View and Edit',
           uiElements: [
             {
               ord_num: 0,
@@ -2652,7 +3226,7 @@ export const crm: ProjectCrm = {
           ]
         },
         '46': {
-          label: 'Create',
+          label: 'DataUnits Create',
           uiElements: [
             {
               ord_num: 0,
@@ -2695,35 +3269,18 @@ export const crm: ProjectCrm = {
               fk_property_set: null
             }
           ]
+        },
+        '47': {
+          label: 'Add',
+          uiElements: []
         }
       },
       roleSets: {
-        _1066_outgoing: {
-          type: 'RoleSet',
-          isOutgoing: true,
-          property: {
-            dfh_pk_property: 1066,
-            dfh_identifier_in_namespace: 'histP7',
-            dfh_has_domain: 212,
-            dfh_has_range: 53,
-            dfh_fk_property_of_origin: null,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: 1,
-            dfh_range_instances_min_quantifier: 0,
-            dfh_range_instances_max_quantifier: -1,
-            ui_context_config: []
-          },
-          targetMaxQuantity: -1,
-          targetMinQuantity: 0,
-          targetClassPk: 53,
-          label: {
-            sg: '[sg: 1066: histP7 undefined',
-            pl: '[pl: 1066: histP7 undefined',
-            'default': '[pl: 1066: histP7 undefined'
-          }
-        },
         _1178_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1178,
@@ -2735,6 +3292,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 119,
@@ -2769,6 +3327,9 @@ export const crm: ProjectCrm = {
         },
         _1180_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1180,
@@ -2780,6 +3341,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 115,
@@ -2814,6 +3376,9 @@ export const crm: ProjectCrm = {
         },
         _1182_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1182,
@@ -2825,6 +3390,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 118,
@@ -2859,6 +3425,9 @@ export const crm: ProjectCrm = {
         },
         _1183_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1183,
@@ -2870,6 +3439,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 117,
@@ -2894,6 +3464,9 @@ export const crm: ProjectCrm = {
         },
         _1185_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1185,
@@ -2905,6 +3478,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 116,
@@ -2936,17 +3510,45 @@ export const crm: ProjectCrm = {
             pl: 'Built work located relative to places',
             'default': 'Built work located relative to place'
           }
+        },
+        _1066_outgoing: {
+          type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: true,
+          property: {
+            dfh_pk_property: 1066,
+            dfh_identifier_in_namespace: 'histP7',
+            dfh_has_domain: 212,
+            dfh_has_range: 53,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: 1,
+            dfh_range_instances_min_quantifier: 0,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
+            ui_context_config: []
+          },
+          targetMaxQuantity: 1,
+          targetMinQuantity: 0,
+          targetClassPk: 53,
+          label: {
+            sg: '[sg: 1066: histP7 undefined',
+            pl: '[pl: 1066: histP7 undefined',
+            'default': '[sg: 1066: histP7 undefined'
+          }
         }
       }
     },
     '219': {
       subclassOf: 'peIt',
-      label: 'Manifestation Product Type',
+      label: 'Serially Produced Object',
       dfh_identifier_in_namespace: 'F3',
       dfh_pk_class: 219,
       uiContexts: {
         '45': {
-          label: 'Editable',
+          label: 'DataUnits View and Edit',
           uiElements: [
             {
               ord_num: 0,
@@ -2958,7 +3560,7 @@ export const crm: ProjectCrm = {
           ]
         },
         '46': {
-          label: 'Create',
+          label: 'DataUnits Create',
           uiElements: [
             {
               ord_num: 0,
@@ -2973,6 +3575,9 @@ export const crm: ProjectCrm = {
       roleSets: {
         _982_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 982,
@@ -2984,6 +3589,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 159,
@@ -3008,6 +3614,9 @@ export const crm: ProjectCrm = {
         },
         _971_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 971,
@@ -3019,6 +3628,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 160,
@@ -3043,6 +3653,9 @@ export const crm: ProjectCrm = {
         },
         _979_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 979,
@@ -3054,6 +3667,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 161,
@@ -3078,6 +3692,9 @@ export const crm: ProjectCrm = {
         },
         _1000_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1000,
@@ -3089,6 +3706,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 162,
@@ -3113,6 +3731,9 @@ export const crm: ProjectCrm = {
         },
         _1015_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1015,
@@ -3124,6 +3745,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 163,
@@ -3148,6 +3770,9 @@ export const crm: ProjectCrm = {
         },
         _1022_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1022,
@@ -3159,6 +3784,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 164,
@@ -3183,6 +3809,9 @@ export const crm: ProjectCrm = {
         },
         _1202_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1202,
@@ -3194,6 +3823,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 156,
@@ -3221,83 +3851,16 @@ export const crm: ProjectCrm = {
           targetMinQuantity: 0,
           targetClassPk: 365,
           label: {
-            sg: '[inv.sg: 1202: histP9 undefined',
-            pl: '[inv.pl: 1202: histP9 undefined',
-            'default': '[inv.pl: 1202: histP9 undefined'
-          }
-        },
-        _968_outgoing: {
-          type: 'RoleSet',
-          isOutgoing: true,
-          property: {
-            dfh_pk_property: 968,
-            dfh_identifier_in_namespace: 'CLP2_should_have_type',
-            dfh_has_domain: 219,
-            dfh_has_range: 53,
-            dfh_fk_property_of_origin: null,
-            dfh_domain_instances_min_quantifier: null,
-            dfh_domain_instances_max_quantifier: null,
-            dfh_range_instances_min_quantifier: null,
-            dfh_range_instances_max_quantifier: null,
-            ui_context_config: [
-              {
-                pk_entity: 165,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 968,
-                fk_property_set: null,
-                property_is_outgoing: true,
-                ord_num: null,
-                fk_class_for_property_set: null
-              }
-            ]
-          },
-          targetMaxQuantity: null,
-          targetMinQuantity: null,
-          targetClassPk: 53,
-          label: {
-            sg: '[sg: 968: CLP2_should_have_type undefined',
-            pl: '[pl: 968: CLP2_should_have_type undefined',
-            'default': '[pl: 968: CLP2_should_have_type undefined'
-          }
-        },
-        _969_outgoing: {
-          type: 'RoleSet',
-          isOutgoing: true,
-          property: {
-            dfh_pk_property: 969,
-            dfh_identifier_in_namespace: 'CLP43_should_have_dimension',
-            dfh_has_domain: 219,
-            dfh_has_range: 52,
-            dfh_fk_property_of_origin: null,
-            dfh_domain_instances_min_quantifier: null,
-            dfh_domain_instances_max_quantifier: null,
-            dfh_range_instances_min_quantifier: null,
-            dfh_range_instances_max_quantifier: null,
-            ui_context_config: [
-              {
-                pk_entity: 167,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 969,
-                fk_property_set: null,
-                property_is_outgoing: true,
-                ord_num: null,
-                fk_class_for_property_set: null
-              }
-            ]
-          },
-          targetMaxQuantity: null,
-          targetMinQuantity: null,
-          targetClassPk: 52,
-          label: {
-            sg: '[sg: 969: CLP43_should_have_dimension undefined',
-            pl: '[pl: 969: CLP43_should_have_dimension undefined',
-            'default': '[pl: 969: CLP43_should_have_dimension undefined'
+            sg: 'Bibliographic Reference',
+            pl: 'Bibliographic References',
+            'default': 'Bibliographic References'
           }
         },
         _970_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 970,
@@ -3309,6 +3872,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 166,
@@ -3333,6 +3897,9 @@ export const crm: ProjectCrm = {
         },
         _971_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 971,
@@ -3344,6 +3911,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 168,
@@ -3368,6 +3936,9 @@ export const crm: ProjectCrm = {
         },
         _972_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 972,
@@ -3379,6 +3950,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 169,
@@ -3401,25 +3973,29 @@ export const crm: ProjectCrm = {
             'default': '[pl: 972: CLP57_should_have_number_of_parts undefined'
           }
         },
-        _973_outgoing: {
+        _975_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
-            dfh_pk_property: 973,
-            dfh_identifier_in_namespace: 'CLP104_subject_to',
+            dfh_pk_property: 975,
+            dfh_identifier_in_namespace: 'CLR6_should_carry',
             dfh_has_domain: 219,
-            dfh_has_range: 29,
+            dfh_has_range: 240,
             dfh_fk_property_of_origin: null,
             dfh_domain_instances_min_quantifier: null,
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: [
               {
-                pk_entity: 170,
+                pk_entity: 172,
                 fk_ui_context: 45,
                 fk_project: null,
-                fk_property: 973,
+                fk_property: 975,
                 fk_property_set: null,
                 property_is_outgoing: true,
                 ord_num: null,
@@ -3429,15 +4005,57 @@ export const crm: ProjectCrm = {
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
-          targetClassPk: 29,
+          targetClassPk: 240,
           label: {
-            sg: '[sg: 973: CLP104_subject_to undefined',
-            pl: '[pl: 973: CLP104_subject_to undefined',
-            'default': '[pl: 973: CLP104_subject_to undefined'
+            sg: '[sg: 975: CLR6_should_carry undefined',
+            pl: '[pl: 975: CLR6_should_carry undefined',
+            'default': '[pl: 975: CLR6_should_carry undefined'
+          }
+        },
+        _969_outgoing: {
+          type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: true,
+          property: {
+            dfh_pk_property: 969,
+            dfh_identifier_in_namespace: 'CLP43_should_have_dimension',
+            dfh_has_domain: 219,
+            dfh_has_range: 52,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: null,
+            dfh_domain_instances_max_quantifier: null,
+            dfh_range_instances_min_quantifier: null,
+            dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 167,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 969,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_property_set: null
+              }
+            ]
+          },
+          targetMaxQuantity: null,
+          targetMinQuantity: null,
+          targetClassPk: 52,
+          label: {
+            sg: '[sg: 969: CLP43_should_have_dimension undefined',
+            pl: '[pl: 969: CLP43_should_have_dimension undefined',
+            'default': '[pl: 969: CLP43_should_have_dimension undefined'
           }
         },
         _974_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 974,
@@ -3449,6 +4067,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 171,
@@ -3471,25 +4090,29 @@ export const crm: ProjectCrm = {
             'default': '[pl: 974: CLP105_right_held_by undefined'
           }
         },
-        _975_outgoing: {
+        _973_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
-            dfh_pk_property: 975,
-            dfh_identifier_in_namespace: 'CLR6_should_carry',
+            dfh_pk_property: 973,
+            dfh_identifier_in_namespace: 'CLP104_subject_to',
             dfh_has_domain: 219,
-            dfh_has_range: 240,
+            dfh_has_range: 29,
             dfh_fk_property_of_origin: null,
             dfh_domain_instances_min_quantifier: null,
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: [
               {
-                pk_entity: 172,
+                pk_entity: 170,
                 fk_ui_context: 45,
                 fk_project: null,
-                fk_property: 975,
+                fk_property: 973,
                 fk_property_set: null,
                 property_is_outgoing: true,
                 ord_num: null,
@@ -3499,11 +4122,50 @@ export const crm: ProjectCrm = {
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
-          targetClassPk: 240,
+          targetClassPk: 29,
           label: {
-            sg: '[sg: 975: CLR6_should_carry undefined',
-            pl: '[pl: 975: CLR6_should_carry undefined',
-            'default': '[pl: 975: CLR6_should_carry undefined'
+            sg: '[sg: 973: CLP104_subject_to undefined',
+            pl: '[pl: 973: CLP104_subject_to undefined',
+            'default': '[pl: 973: CLP104_subject_to undefined'
+          }
+        },
+        _968_outgoing: {
+          type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: true,
+          property: {
+            dfh_pk_property: 968,
+            dfh_identifier_in_namespace: 'CLP2_should_have_type',
+            dfh_has_domain: 219,
+            dfh_has_range: 53,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: null,
+            dfh_domain_instances_max_quantifier: null,
+            dfh_range_instances_min_quantifier: null,
+            dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 165,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 968,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_property_set: null
+              }
+            ]
+          },
+          targetMaxQuantity: null,
+          targetMinQuantity: null,
+          targetClassPk: 53,
+          label: {
+            sg: '[sg: 968: CLP2_should_have_type undefined',
+            pl: '[pl: 968: CLP2_should_have_type undefined',
+            'default': '[pl: 968: CLP2_should_have_type undefined'
           }
         }
       }
@@ -3517,6 +4179,9 @@ export const crm: ProjectCrm = {
       roleSets: {
         _982_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 982,
@@ -3528,6 +4193,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -3548,38 +4214,38 @@ export const crm: ProjectCrm = {
       dfh_pk_class: 363,
       uiContexts: {
         '45': {
-          label: 'Editable',
+          label: 'DataUnits View and Edit',
           uiElements: [
             {
-              ord_num: 1,
+              ord_num: 0,
               fk_property: 1194,
               property_is_outgoing: false,
               roleSetKey: '_1194_ingoing',
               fk_property_set: null
             },
             {
-              ord_num: 2,
+              ord_num: 1,
               fk_property: 1181,
               property_is_outgoing: false,
               roleSetKey: '_1181_ingoing',
               fk_property_set: null
             },
             {
-              ord_num: 3,
+              ord_num: 2,
               fk_property: 1178,
               property_is_outgoing: false,
               roleSetKey: '_1178_ingoing',
               fk_property_set: null
             },
             {
-              ord_num: 4,
+              ord_num: 3,
               fk_property: 1191,
               property_is_outgoing: false,
               roleSetKey: '_1191_ingoing',
               fk_property_set: null
             },
             {
-              ord_num: 5,
+              ord_num: 4,
               fk_property: 1186,
               property_is_outgoing: false,
               roleSetKey: '_1186_ingoing',
@@ -3588,13 +4254,46 @@ export const crm: ProjectCrm = {
           ]
         },
         '46': {
-          label: 'Create',
+          label: 'DataUnits Create',
           uiElements: [
             {
               ord_num: 0,
               fk_property: 1194,
               property_is_outgoing: false,
               roleSetKey: '_1194_ingoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 1,
+              fk_property: 1110,
+              property_is_outgoing: true,
+              roleSetKey: '_1110_outgoing',
+              fk_property_set: null
+            }
+          ]
+        },
+        '47': {
+          label: 'Add',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1194,
+              property_is_outgoing: false,
+              roleSetKey: '_1194_ingoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 1,
+              fk_property: 1110,
+              property_is_outgoing: true,
+              roleSetKey: '_1110_outgoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 2,
+              fk_property: 1181,
+              property_is_outgoing: false,
+              roleSetKey: '_1181_ingoing',
               fk_property_set: null
             }
           ]
@@ -3603,6 +4302,9 @@ export const crm: ProjectCrm = {
       roleSets: {
         _1181_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1181,
@@ -3614,10 +4316,21 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 152,
                 fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1181,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 1,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 211,
+                fk_ui_context: 47,
                 fk_project: null,
                 fk_property: 1181,
                 fk_property_set: null,
@@ -3638,6 +4351,9 @@ export const crm: ProjectCrm = {
         },
         _1186_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1186,
@@ -3649,6 +4365,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 125,
@@ -3657,7 +4374,7 @@ export const crm: ProjectCrm = {
                 fk_property: 1186,
                 fk_property_set: null,
                 property_is_outgoing: false,
-                ord_num: 5,
+                ord_num: 4,
                 fk_class_for_property_set: null
               }
             ]
@@ -3673,6 +4390,9 @@ export const crm: ProjectCrm = {
         },
         _1194_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1194,
@@ -3684,6 +4404,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 123,
@@ -3702,7 +4423,17 @@ export const crm: ProjectCrm = {
                 fk_property: 1194,
                 fk_property_set: null,
                 property_is_outgoing: false,
-                ord_num: 1,
+                ord_num: 0,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 210,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1194,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 0,
                 fk_class_for_property_set: null
               }
             ]
@@ -3718,6 +4449,9 @@ export const crm: ProjectCrm = {
         },
         _1191_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1191,
@@ -3729,6 +4463,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 126,
@@ -3737,7 +4472,7 @@ export const crm: ProjectCrm = {
                 fk_property: 1191,
                 fk_property_set: null,
                 property_is_outgoing: false,
-                ord_num: 4,
+                ord_num: 3,
                 fk_class_for_property_set: null
               }
             ]
@@ -3753,6 +4488,9 @@ export const crm: ProjectCrm = {
         },
         _1178_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1178,
@@ -3764,6 +4502,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 127,
@@ -3772,7 +4511,7 @@ export const crm: ProjectCrm = {
                 fk_property: 1178,
                 fk_property_set: null,
                 property_is_outgoing: false,
-                ord_num: 3,
+                ord_num: 2,
                 fk_class_for_property_set: null
               }
             ]
@@ -3788,6 +4527,9 @@ export const crm: ProjectCrm = {
         },
         _1110_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1110,
@@ -3798,27 +4540,38 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_min_quantifier: 0,
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 0,
-            dfh_range_instances_max_quantifier: -1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
-                pk_entity: 193,
-                fk_ui_context: 45,
+                pk_entity: 214,
+                fk_ui_context: 47,
                 fk_project: null,
                 fk_property: 1110,
                 fk_property_set: null,
                 property_is_outgoing: true,
-                ord_num: null,
+                ord_num: 1,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 228,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1110,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 1,
                 fk_class_for_property_set: null
               }
             ]
           },
-          targetMaxQuantity: -1,
+          targetMaxQuantity: 1,
           targetMinQuantity: 0,
           targetClassPk: 364,
           label: {
-            sg: 'Has Type',
-            pl: 'Has Types',
-            'default': 'Has Types'
+            sg: 'has Type',
+            pl: 'has Types',
+            'default': 'has Type'
           }
         }
       }
@@ -3830,7 +4583,7 @@ export const crm: ProjectCrm = {
       dfh_pk_class: 364,
       uiContexts: {
         '45': {
-          label: 'Editable',
+          label: 'DataUnits View and Edit',
           uiElements: [
             {
               ord_num: 0,
@@ -3842,7 +4595,7 @@ export const crm: ProjectCrm = {
           ]
         },
         '46': {
-          label: 'Create',
+          label: 'DataUnits Create',
           uiElements: [
             {
               ord_num: 0,
@@ -3855,43 +4608,11 @@ export const crm: ProjectCrm = {
         }
       },
       roleSets: {
-        _1110_ingoing: {
-          type: 'RoleSet',
-          isOutgoing: false,
-          property: {
-            dfh_pk_property: 1110,
-            dfh_identifier_in_namespace: 'histP8',
-            dfh_has_domain: 363,
-            dfh_has_range: 364,
-            dfh_fk_property_of_origin: null,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 0,
-            dfh_range_instances_max_quantifier: -1,
-            ui_context_config: [
-              {
-                pk_entity: 192,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 1110,
-                fk_property_set: null,
-                property_is_outgoing: false,
-                ord_num: null,
-                fk_class_for_property_set: null
-              }
-            ]
-          },
-          targetMaxQuantity: -1,
-          targetMinQuantity: 0,
-          targetClassPk: 363,
-          label: {
-            sg: 'Is type of Geo-Place',
-            pl: 'Is type of Geo-Places',
-            'default': 'Is type of Geo-Places'
-          }
-        },
         _1200_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1200,
@@ -3903,6 +4624,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 185,
@@ -3934,6 +4656,34 @@ export const crm: ProjectCrm = {
             pl: 'Terms/Labels',
             'default': 'Terms/Labels'
           }
+        },
+        _1110_ingoing: {
+          type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 1110,
+            dfh_identifier_in_namespace: 'histP8',
+            dfh_has_domain: 363,
+            dfh_has_range: 364,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 0,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
+            ui_context_config: []
+          },
+          targetMaxQuantity: -1,
+          targetMinQuantity: 0,
+          targetClassPk: 363,
+          label: {
+            sg: 'is Type of',
+            pl: 'is Type of',
+            'default': 'is Type of'
+          }
         }
       }
     },
@@ -3944,7 +4694,7 @@ export const crm: ProjectCrm = {
       dfh_pk_class: 365,
       uiContexts: {
         '45': {
-          label: 'Editable',
+          label: 'DataUnits View and Edit',
           uiElements: [
             {
               ord_num: 0,
@@ -3975,7 +4725,7 @@ export const crm: ProjectCrm = {
           ]
         },
         '46': {
-          label: 'Create',
+          label: 'DataUnits Create',
           uiElements: [
             {
               ord_num: 0,
@@ -3983,6 +4733,44 @@ export const crm: ProjectCrm = {
               property_is_outgoing: true,
               roleSetKey: '_1113_outgoing',
               fk_property_set: null
+            },
+            {
+              ord_num: 1,
+              fk_property: 1112,
+              property_is_outgoing: true,
+              roleSetKey: '_1112_outgoing',
+              fk_property_set: null
+            }
+          ]
+        },
+        '47': {
+          label: 'Add',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1112,
+              property_is_outgoing: true,
+              roleSetKey: '_1112_outgoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 1,
+              fk_property: 1113,
+              property_is_outgoing: true,
+              roleSetKey: '_1113_outgoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 2,
+              fk_property: null,
+              property_is_outgoing: null,
+              fk_property_set: 48,
+              property_set: {
+                pk_entity: 48,
+                description: 'Existence Time or Time Span of a Temporal Entity',
+                label: 'When'
+              },
+              propSetKey: '_existenceTime'
             }
           ]
         }
@@ -3990,6 +4778,9 @@ export const crm: ProjectCrm = {
       roleSets: {
         _1111_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1111,
@@ -4001,6 +4792,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: null,
@@ -4012,53 +4804,11 @@ export const crm: ProjectCrm = {
             'default': '[pl: 1111: histP9 undefined'
           }
         },
-        _1113_outgoing: {
-          type: 'RoleSet',
-          isOutgoing: true,
-          property: {
-            dfh_pk_property: 1113,
-            dfh_identifier_in_namespace: 'histP11',
-            dfh_has_domain: 365,
-            dfh_has_range: 40,
-            dfh_fk_property_of_origin: null,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: 1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            ui_context_config: [
-              {
-                pk_entity: 128,
-                fk_ui_context: 46,
-                fk_project: null,
-                fk_property: 1113,
-                fk_property_set: null,
-                property_is_outgoing: true,
-                ord_num: 0,
-                fk_class_for_property_set: null
-              },
-              {
-                pk_entity: 134,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 1113,
-                fk_property_set: null,
-                property_is_outgoing: true,
-                ord_num: 0,
-                fk_class_for_property_set: null
-              }
-            ]
-          },
-          targetMaxQuantity: 1,
-          targetMinQuantity: 1,
-          targetClassPk: 40,
-          label: {
-            sg: 'Detailed Name',
-            pl: 'Detailed Names',
-            'default': 'Detailed Name'
-          }
-        },
         _1192_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1192,
@@ -4070,6 +4820,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 130,
@@ -4104,6 +4855,9 @@ export const crm: ProjectCrm = {
         },
         _1193_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1193,
@@ -4115,6 +4869,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 133,
@@ -4149,6 +4904,9 @@ export const crm: ProjectCrm = {
         },
         _1194_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1194,
@@ -4160,6 +4918,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 131,
@@ -4194,6 +4953,9 @@ export const crm: ProjectCrm = {
         },
         _1195_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1195,
@@ -4205,6 +4967,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 132,
@@ -4237,35 +5000,49 @@ export const crm: ProjectCrm = {
             'default': 'Built Work with this Name'
           }
         },
-        _1112_outgoing: {
+        _1113_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
-            dfh_pk_property: 1112,
-            dfh_identifier_in_namespace: 'histP10',
+            dfh_pk_property: 1113,
+            dfh_identifier_in_namespace: 'histP11',
             dfh_has_domain: 365,
-            dfh_has_range: 54,
+            dfh_has_range: 40,
             dfh_fk_property_of_origin: null,
             dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
+            dfh_domain_instances_max_quantifier: 1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: true,
             ui_context_config: [
               {
-                pk_entity: 129,
+                pk_entity: 128,
                 fk_ui_context: 46,
                 fk_project: null,
-                fk_property: 1112,
+                fk_property: 1113,
                 fk_property_set: null,
                 property_is_outgoing: true,
-                ord_num: null,
+                ord_num: 0,
                 fk_class_for_property_set: null
               },
               {
-                pk_entity: 138,
+                pk_entity: 134,
                 fk_ui_context: 45,
                 fk_project: null,
-                fk_property: 1112,
+                fk_property: 1113,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 0,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 212,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1113,
                 fk_property_set: null,
                 property_is_outgoing: true,
                 ord_num: 1,
@@ -4275,15 +5052,18 @@ export const crm: ProjectCrm = {
           },
           targetMaxQuantity: 1,
           targetMinQuantity: 1,
-          targetClassPk: 54,
+          targetClassPk: 40,
           label: {
-            sg: 'Language',
-            pl: 'Languages',
-            'default': 'Language'
+            sg: 'Spelling',
+            pl: 'Spellings',
+            'default': 'Spelling'
           }
         },
         _1200_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1200,
@@ -4295,6 +5075,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: 1,
@@ -4308,6 +5089,9 @@ export const crm: ProjectCrm = {
         },
         _1201_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1201,
@@ -4319,6 +5103,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: 1,
@@ -4332,6 +5117,9 @@ export const crm: ProjectCrm = {
         },
         _1202_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1202,
@@ -4343,6 +5131,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: 1,
@@ -4352,6 +5141,65 @@ export const crm: ProjectCrm = {
             sg: '[sg: 1202: histP9 undefined',
             pl: '[pl: 1202: histP9 undefined',
             'default': '[sg: 1202: histP9 undefined'
+          }
+        },
+        _1112_outgoing: {
+          type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: true,
+          property: {
+            dfh_pk_property: 1112,
+            dfh_identifier_in_namespace: 'histP10',
+            dfh_has_domain: 365,
+            dfh_has_range: 54,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: true,
+            ui_context_config: [
+              {
+                pk_entity: 138,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1112,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 1,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 129,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1112,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 1,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 213,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1112,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 0,
+                fk_class_for_property_set: null
+              }
+            ]
+          },
+          targetMaxQuantity: 1,
+          targetMinQuantity: 1,
+          targetClassPk: 54,
+          label: {
+            sg: 'Language',
+            pl: 'Languages',
+            'default': 'Language'
           }
         }
       }
@@ -4363,7 +5211,7 @@ export const crm: ProjectCrm = {
       dfh_pk_class: 441,
       uiContexts: {
         '45': {
-          label: 'Editable',
+          label: 'DataUnits View and Edit',
           uiElements: [
             {
               ord_num: 0,
@@ -4396,7 +5244,7 @@ export const crm: ProjectCrm = {
           ]
         },
         '46': {
-          label: 'Create',
+          label: 'DataUnits Create',
           uiElements: [
             {
               ord_num: 0,
@@ -4411,6 +5259,9 @@ export const crm: ProjectCrm = {
       roleSets: {
         _1184_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1184,
@@ -4422,6 +5273,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 142,
@@ -4456,6 +5308,9 @@ export const crm: ProjectCrm = {
         },
         _1187_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1187,
@@ -4467,6 +5322,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 147,
@@ -4501,6 +5357,9 @@ export const crm: ProjectCrm = {
         },
         _1195_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1195,
@@ -4512,6 +5371,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 140,
@@ -4546,6 +5406,9 @@ export const crm: ProjectCrm = {
         },
         _1185_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1185,
@@ -4557,6 +5420,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 145,
@@ -4591,6 +5455,9 @@ export const crm: ProjectCrm = {
         },
         _1190_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1190,
@@ -4601,16 +5468,17 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_min_quantifier: 0,
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 0,
-            dfh_range_instances_max_quantifier: -1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: []
           },
-          targetMaxQuantity: -1,
+          targetMaxQuantity: 1,
           targetMinQuantity: 0,
           targetClassPk: 443,
           label: {
             sg: '[sg: 1190: histP17 undefined',
             pl: '[pl: 1190: histP17 undefined',
-            'default': '[pl: 1190: histP17 undefined'
+            'default': '[sg: 1190: histP17 undefined'
           }
         }
       }
@@ -4622,7 +5490,7 @@ export const crm: ProjectCrm = {
       dfh_pk_class: 442,
       uiContexts: {
         '45': {
-          label: 'Editable',
+          label: 'DataUnits View and Edit',
           uiElements: [
             {
               ord_num: 0,
@@ -4653,7 +5521,7 @@ export const crm: ProjectCrm = {
           ]
         },
         '46': {
-          label: 'Create',
+          label: 'DataUnits Create',
           uiElements: [
             {
               ord_num: 0,
@@ -4670,11 +5538,18 @@ export const crm: ProjectCrm = {
               fk_property_set: null
             }
           ]
+        },
+        '47': {
+          label: 'Add',
+          uiElements: []
         }
       },
       roleSets: {
         _1188_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1188,
@@ -4686,6 +5561,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 148,
@@ -4720,6 +5596,9 @@ export const crm: ProjectCrm = {
         },
         _1189_outgoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: true,
           property: {
             dfh_pk_property: 1189,
@@ -4731,6 +5610,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: [
               {
                 pk_entity: 149,
@@ -4774,6 +5654,9 @@ export const crm: ProjectCrm = {
       roleSets: {
         _1190_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1190,
@@ -4784,7 +5667,8 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_min_quantifier: 0,
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 0,
-            dfh_range_instances_max_quantifier: -1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: -1,
@@ -4798,6 +5682,9 @@ export const crm: ProjectCrm = {
         },
         _1201_ingoing: {
           type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
           isOutgoing: false,
           property: {
             dfh_pk_property: 1201,
@@ -4809,6 +5696,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
             ui_context_config: []
           },
           targetMaxQuantity: -1,
@@ -4826,6 +5714,9 @@ export const crm: ProjectCrm = {
   roleSets: {
     _1192_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1192,
@@ -4837,6 +5728,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 79,
@@ -4857,6 +5749,26 @@ export const crm: ProjectCrm = {
             property_is_outgoing: false,
             ord_num: 0,
             fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 215,
+            fk_ui_context: 47,
+            fk_project: null,
+            fk_property: 1192,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 0,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 233,
+            fk_ui_context: 229,
+            fk_project: null,
+            fk_property: 1192,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 0,
+            fk_class_for_property_set: null
           }
         ]
       },
@@ -4871,6 +5783,9 @@ export const crm: ProjectCrm = {
     },
     _1188_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1188,
@@ -4882,6 +5797,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 85,
@@ -4891,6 +5807,16 @@ export const crm: ProjectCrm = {
             fk_property_set: null,
             property_is_outgoing: false,
             ord_num: 4,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 234,
+            fk_ui_context: 230,
+            fk_project: null,
+            fk_property: 1188,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 0,
             fk_class_for_property_set: null
           }
         ]
@@ -4906,6 +5832,9 @@ export const crm: ProjectCrm = {
     },
     _1196_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1196,
@@ -4917,6 +5846,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 191,
@@ -4941,6 +5871,9 @@ export const crm: ProjectCrm = {
     },
     _1180_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1180,
@@ -4952,6 +5885,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 0,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 86,
@@ -4976,6 +5910,9 @@ export const crm: ProjectCrm = {
     },
     _1198_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1198,
@@ -4987,6 +5924,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: -1,
@@ -5000,6 +5938,9 @@ export const crm: ProjectCrm = {
     },
     _84_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 84,
@@ -5011,6 +5952,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 83,
@@ -5020,6 +5962,16 @@ export const crm: ProjectCrm = {
             fk_property_set: null,
             property_is_outgoing: false,
             ord_num: 5,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 218,
+            fk_ui_context: 47,
+            fk_project: null,
+            fk_property: 84,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 4,
             fk_class_for_property_set: null
           }
         ]
@@ -5033,78 +5985,11 @@ export const crm: ProjectCrm = {
         'default': 'Births given as Mother'
       }
     },
-    _85_ingoing: {
-      type: 'RoleSet',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 85,
-        dfh_identifier_in_namespace: 'P97',
-        dfh_has_domain: 61,
-        dfh_has_range: 21,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        ui_context_config: [
-          {
-            pk_entity: 84,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 85,
-            fk_property_set: null,
-            property_is_outgoing: false,
-            ord_num: 6,
-            fk_class_for_property_set: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 61,
-      label: {
-        sg: 'Birth initiated as biological Father',
-        pl: 'Births initiated as biological Father',
-        'default': 'Births initiated as biological Father'
-      }
-    },
-    _86_ingoing: {
-      type: 'RoleSet',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 86,
-        dfh_identifier_in_namespace: 'P98',
-        dfh_has_domain: 61,
-        dfh_has_range: 21,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 1,
-        dfh_domain_instances_max_quantifier: 1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        ui_context_config: [
-          {
-            pk_entity: 81,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 86,
-            fk_property_set: null,
-            property_is_outgoing: false,
-            ord_num: 1,
-            fk_class_for_property_set: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 61,
-      label: {
-        sg: 'Birth',
-        pl: 'Births',
-        'default': 'Birth'
-      }
-    },
     _88_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 88,
@@ -5116,6 +6001,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: 1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 82,
@@ -5125,6 +6011,16 @@ export const crm: ProjectCrm = {
             fk_property_set: null,
             property_is_outgoing: false,
             ord_num: 2,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 217,
+            fk_ui_context: 47,
+            fk_project: null,
+            fk_property: 88,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 1,
             fk_class_for_property_set: null
           }
         ]
@@ -5138,8 +6034,60 @@ export const crm: ProjectCrm = {
         'default': 'Death'
       }
     },
+    _85_ingoing: {
+      type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 85,
+        dfh_identifier_in_namespace: 'P97',
+        dfh_has_domain: 61,
+        dfh_has_range: 21,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
+        ui_context_config: [
+          {
+            pk_entity: 84,
+            fk_ui_context: 45,
+            fk_project: null,
+            fk_property: 85,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 6,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 219,
+            fk_ui_context: 47,
+            fk_project: null,
+            fk_property: 85,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 3,
+            fk_class_for_property_set: null
+          }
+        ]
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 61,
+      label: {
+        sg: 'Birth initiated as biological Father',
+        pl: 'Births initiated as biological Father',
+        'default': 'Births initiated as biological Father'
+      }
+    },
     _140_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 140,
@@ -5151,6 +6099,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5162,8 +6111,60 @@ export const crm: ProjectCrm = {
         'default': '[inv.pl: 140: P152 undefined'
       }
     },
+    _86_ingoing: {
+      type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 86,
+        dfh_identifier_in_namespace: 'P98',
+        dfh_has_domain: 61,
+        dfh_has_range: 21,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: 1,
+        dfh_domain_instances_max_quantifier: 1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: true,
+        ui_context_config: [
+          {
+            pk_entity: 81,
+            fk_ui_context: 45,
+            fk_project: null,
+            fk_property: 86,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 1,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 216,
+            fk_ui_context: 47,
+            fk_project: null,
+            fk_property: 86,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 2,
+            fk_class_for_property_set: null
+          }
+        ]
+      },
+      targetMaxQuantity: 1,
+      targetMinQuantity: 1,
+      targetClassPk: 61,
+      label: {
+        sg: 'Birth',
+        pl: 'Births',
+        'default': 'Birth'
+      }
+    },
     _140_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 140,
@@ -5175,6 +6176,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5188,6 +6190,9 @@ export const crm: ProjectCrm = {
     },
     _4_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 4,
@@ -5199,6 +6204,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: 1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: -1,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: 1,
@@ -5212,6 +6218,9 @@ export const crm: ProjectCrm = {
     },
     _75_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 75,
@@ -5223,6 +6232,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5236,6 +6246,9 @@ export const crm: ProjectCrm = {
     },
     _143_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 143,
@@ -5247,6 +6260,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5260,6 +6274,9 @@ export const crm: ProjectCrm = {
     },
     _145_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 145,
@@ -5271,6 +6288,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5284,6 +6302,9 @@ export const crm: ProjectCrm = {
     },
     _1008_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1008,
@@ -5295,6 +6316,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5308,6 +6330,9 @@ export const crm: ProjectCrm = {
     },
     _1059_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1059,
@@ -5319,6 +6344,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5332,6 +6358,9 @@ export const crm: ProjectCrm = {
     },
     _68_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 68,
@@ -5343,6 +6372,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5356,6 +6386,9 @@ export const crm: ProjectCrm = {
     },
     _69_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 69,
@@ -5367,6 +6400,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5380,6 +6414,9 @@ export const crm: ProjectCrm = {
     },
     _70_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 70,
@@ -5391,6 +6428,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5404,6 +6442,9 @@ export const crm: ProjectCrm = {
     },
     _71_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 71,
@@ -5415,6 +6456,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5428,6 +6470,9 @@ export const crm: ProjectCrm = {
     },
     _72_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 72,
@@ -5439,6 +6484,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5452,6 +6498,9 @@ export const crm: ProjectCrm = {
     },
     _73_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 73,
@@ -5463,6 +6512,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5476,6 +6526,9 @@ export const crm: ProjectCrm = {
     },
     _74_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 74,
@@ -5487,6 +6540,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5500,6 +6554,9 @@ export const crm: ProjectCrm = {
     },
     _75_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 75,
@@ -5511,6 +6568,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5524,6 +6582,9 @@ export const crm: ProjectCrm = {
     },
     _150_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 150,
@@ -5535,6 +6596,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5548,6 +6610,9 @@ export const crm: ProjectCrm = {
     },
     _151_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 151,
@@ -5559,6 +6624,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5572,6 +6638,9 @@ export const crm: ProjectCrm = {
     },
     _152_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 152,
@@ -5583,6 +6652,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5596,6 +6666,9 @@ export const crm: ProjectCrm = {
     },
     _153_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 153,
@@ -5607,6 +6680,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5620,6 +6694,9 @@ export const crm: ProjectCrm = {
     },
     _83_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 83,
@@ -5631,6 +6708,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: 1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 87,
@@ -5665,6 +6743,9 @@ export const crm: ProjectCrm = {
     },
     _139_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 139,
@@ -5676,6 +6757,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: -1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 88,
@@ -5710,6 +6792,9 @@ export const crm: ProjectCrm = {
     },
     _1043_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1043,
@@ -5721,6 +6806,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -5734,6 +6820,9 @@ export const crm: ProjectCrm = {
     },
     _1186_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1186,
@@ -5745,6 +6834,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 76,
@@ -5754,6 +6844,16 @@ export const crm: ProjectCrm = {
             fk_property_set: null,
             property_is_outgoing: true,
             ord_num: 4,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 221,
+            fk_ui_context: 47,
+            fk_project: null,
+            fk_property: 1186,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 2,
             fk_class_for_property_set: null
           }
         ]
@@ -5769,6 +6869,9 @@ export const crm: ProjectCrm = {
     },
     _1187_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1187,
@@ -5780,6 +6883,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 77,
@@ -5789,6 +6893,16 @@ export const crm: ProjectCrm = {
             fk_property_set: null,
             property_is_outgoing: true,
             ord_num: 5,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 224,
+            fk_ui_context: 47,
+            fk_project: null,
+            fk_property: 1187,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 1,
             fk_class_for_property_set: null
           }
         ]
@@ -5804,6 +6918,9 @@ export const crm: ProjectCrm = {
     },
     _84_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 84,
@@ -5815,6 +6932,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 73,
@@ -5824,6 +6942,16 @@ export const crm: ProjectCrm = {
             fk_property_set: null,
             property_is_outgoing: true,
             ord_num: 2,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 222,
+            fk_ui_context: 47,
+            fk_project: null,
+            fk_property: 84,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 4,
             fk_class_for_property_set: null
           }
         ]
@@ -5839,6 +6967,9 @@ export const crm: ProjectCrm = {
     },
     _85_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 85,
@@ -5850,10 +6981,21 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 75,
             fk_ui_context: 45,
+            fk_project: null,
+            fk_property: 85,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 3,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 223,
+            fk_ui_context: 47,
             fk_project: null,
             fk_property: 85,
             fk_property_set: null,
@@ -5874,6 +7016,9 @@ export const crm: ProjectCrm = {
     },
     _86_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 86,
@@ -5885,6 +7030,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: 1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: true,
         ui_context_config: [
           {
             pk_entity: 74,
@@ -5905,6 +7051,16 @@ export const crm: ProjectCrm = {
             property_is_outgoing: true,
             ord_num: 1,
             fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 220,
+            fk_ui_context: 47,
+            fk_project: null,
+            fk_property: 86,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 0,
+            fk_class_for_property_set: null
           }
         ]
       },
@@ -5919,6 +7075,9 @@ export const crm: ProjectCrm = {
     },
     _1044_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1044,
@@ -5930,7 +7089,19 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
-        ui_context_config: []
+        identity_defining: false,
+        ui_context_config: [
+          {
+            pk_entity: 226,
+            fk_ui_context: 47,
+            fk_project: null,
+            fk_property: 1044,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: null,
+            fk_class_for_property_set: null
+          }
+        ]
       },
       targetMaxQuantity: null,
       targetMinQuantity: null,
@@ -5943,6 +7114,9 @@ export const crm: ProjectCrm = {
     },
     _1191_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1191,
@@ -5954,6 +7128,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 92,
@@ -5963,6 +7138,16 @@ export const crm: ProjectCrm = {
             fk_property_set: null,
             property_is_outgoing: true,
             ord_num: 2,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 225,
+            fk_ui_context: 47,
+            fk_project: null,
+            fk_property: 1191,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 0,
             fk_class_for_property_set: null
           }
         ]
@@ -5978,6 +7163,9 @@ export const crm: ProjectCrm = {
     },
     _88_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 88,
@@ -5989,10 +7177,21 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: 1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 91,
             fk_ui_context: 45,
+            fk_project: null,
+            fk_property: 88,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 1,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 227,
+            fk_ui_context: 47,
             fk_project: null,
             fk_property: 88,
             fk_property_set: null,
@@ -6013,6 +7212,9 @@ export const crm: ProjectCrm = {
     },
     _1189_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1189,
@@ -6024,6 +7226,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 98,
@@ -6048,6 +7251,9 @@ export const crm: ProjectCrm = {
     },
     _1197_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1197,
@@ -6059,6 +7265,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 101,
@@ -6083,6 +7290,9 @@ export const crm: ProjectCrm = {
     },
     _1193_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1193,
@@ -6094,6 +7304,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 93,
@@ -6128,6 +7339,9 @@ export const crm: ProjectCrm = {
     },
     _1182_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1182,
@@ -6139,6 +7353,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 0,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 102,
@@ -6163,6 +7378,9 @@ export const crm: ProjectCrm = {
     },
     _1199_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1199,
@@ -6174,6 +7392,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 103,
@@ -6198,6 +7417,9 @@ export const crm: ProjectCrm = {
     },
     _83_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 83,
@@ -6209,6 +7431,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: 1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 94,
@@ -6233,6 +7456,9 @@ export const crm: ProjectCrm = {
     },
     _87_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 87,
@@ -6244,6 +7470,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 0,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 96,
@@ -6268,6 +7495,9 @@ export const crm: ProjectCrm = {
     },
     _132_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 132,
@@ -6279,6 +7509,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 97,
@@ -6303,6 +7534,9 @@ export const crm: ProjectCrm = {
     },
     _134_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 134,
@@ -6314,6 +7548,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 99,
@@ -6338,6 +7573,9 @@ export const crm: ProjectCrm = {
     },
     _139_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 139,
@@ -6349,6 +7587,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: -1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 95,
@@ -6373,6 +7612,9 @@ export const crm: ProjectCrm = {
     },
     _1013_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1013,
@@ -6384,6 +7626,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -6397,6 +7640,9 @@ export const crm: ProjectCrm = {
     },
     _1035_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1035,
@@ -6408,6 +7654,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -6421,6 +7668,9 @@ export const crm: ProjectCrm = {
     },
     _95_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 95,
@@ -6432,6 +7682,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -6445,6 +7696,9 @@ export const crm: ProjectCrm = {
     },
     _119_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 119,
@@ -6456,6 +7710,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -6469,6 +7724,9 @@ export const crm: ProjectCrm = {
     },
     _1196_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1196,
@@ -6480,6 +7738,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 188,
@@ -6514,6 +7773,9 @@ export const crm: ProjectCrm = {
     },
     _1197_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1197,
@@ -6525,6 +7787,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: 1,
@@ -6538,6 +7801,9 @@ export const crm: ProjectCrm = {
     },
     _131_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 131,
@@ -6549,6 +7815,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: 1,
@@ -6562,6 +7829,9 @@ export const crm: ProjectCrm = {
     },
     _132_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 132,
@@ -6573,6 +7843,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 187,
@@ -6607,6 +7878,9 @@ export const crm: ProjectCrm = {
     },
     _1198_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1198,
@@ -6618,6 +7892,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: 1,
@@ -6631,6 +7906,9 @@ export const crm: ProjectCrm = {
     },
     _1199_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1199,
@@ -6642,6 +7920,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: 1,
@@ -6655,6 +7934,9 @@ export const crm: ProjectCrm = {
     },
     _133_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 133,
@@ -6666,6 +7948,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: 1,
@@ -6679,6 +7962,9 @@ export const crm: ProjectCrm = {
     },
     _134_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 134,
@@ -6690,6 +7976,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 104,
@@ -6724,6 +8011,9 @@ export const crm: ProjectCrm = {
     },
     _1181_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1181,
@@ -6735,6 +8025,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 108,
@@ -6759,6 +8050,9 @@ export const crm: ProjectCrm = {
     },
     _1184_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1184,
@@ -6770,6 +8064,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 107,
@@ -6794,6 +8089,9 @@ export const crm: ProjectCrm = {
     },
     _145_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 145,
@@ -6805,6 +8103,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -6818,6 +8117,9 @@ export const crm: ProjectCrm = {
     },
     _148_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 148,
@@ -6829,6 +8131,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: 1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 106,
@@ -6861,32 +8164,11 @@ export const crm: ProjectCrm = {
         'default': 'Geocoordinates'
       }
     },
-    _1066_outgoing: {
-      type: 'RoleSet',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1066,
-        dfh_identifier_in_namespace: 'histP7',
-        dfh_has_domain: 212,
-        dfh_has_range: 53,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: 1,
-        dfh_range_instances_min_quantifier: 0,
-        dfh_range_instances_max_quantifier: -1,
-        ui_context_config: []
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 53,
-      label: {
-        sg: '[sg: 1066: histP7 undefined',
-        pl: '[pl: 1066: histP7 undefined',
-        'default': '[pl: 1066: histP7 undefined'
-      }
-    },
     _1178_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1178,
@@ -6898,6 +8180,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 119,
@@ -6932,6 +8215,9 @@ export const crm: ProjectCrm = {
     },
     _1180_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1180,
@@ -6943,6 +8229,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 0,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 115,
@@ -6977,6 +8264,9 @@ export const crm: ProjectCrm = {
     },
     _1182_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1182,
@@ -6988,6 +8278,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 0,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 118,
@@ -7022,6 +8313,9 @@ export const crm: ProjectCrm = {
     },
     _1183_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1183,
@@ -7033,6 +8327,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 0,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 117,
@@ -7057,6 +8352,9 @@ export const crm: ProjectCrm = {
     },
     _1185_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1185,
@@ -7068,6 +8366,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 116,
@@ -7100,8 +8399,39 @@ export const crm: ProjectCrm = {
         'default': 'Built work located relative to place'
       }
     },
+    _1066_outgoing: {
+      type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 1066,
+        dfh_identifier_in_namespace: 'histP7',
+        dfh_has_domain: 212,
+        dfh_has_range: 53,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: 1,
+        dfh_range_instances_min_quantifier: 0,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
+        ui_context_config: []
+      },
+      targetMaxQuantity: 1,
+      targetMinQuantity: 0,
+      targetClassPk: 53,
+      label: {
+        sg: '[sg: 1066: histP7 undefined',
+        pl: '[pl: 1066: histP7 undefined',
+        'default': '[sg: 1066: histP7 undefined'
+      }
+    },
     _982_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 982,
@@ -7113,6 +8443,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 159,
@@ -7137,6 +8468,9 @@ export const crm: ProjectCrm = {
     },
     _971_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 971,
@@ -7148,6 +8482,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 160,
@@ -7172,6 +8507,9 @@ export const crm: ProjectCrm = {
     },
     _979_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 979,
@@ -7183,6 +8521,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 161,
@@ -7207,6 +8546,9 @@ export const crm: ProjectCrm = {
     },
     _1000_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1000,
@@ -7218,6 +8560,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 162,
@@ -7242,6 +8585,9 @@ export const crm: ProjectCrm = {
     },
     _1015_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1015,
@@ -7253,6 +8599,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 163,
@@ -7277,6 +8624,9 @@ export const crm: ProjectCrm = {
     },
     _1022_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1022,
@@ -7288,6 +8638,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 164,
@@ -7312,6 +8663,9 @@ export const crm: ProjectCrm = {
     },
     _1202_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1202,
@@ -7323,6 +8677,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 156,
@@ -7350,83 +8705,16 @@ export const crm: ProjectCrm = {
       targetMinQuantity: 0,
       targetClassPk: 365,
       label: {
-        sg: '[inv.sg: 1202: histP9 undefined',
-        pl: '[inv.pl: 1202: histP9 undefined',
-        'default': '[inv.pl: 1202: histP9 undefined'
-      }
-    },
-    _968_outgoing: {
-      type: 'RoleSet',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 968,
-        dfh_identifier_in_namespace: 'CLP2_should_have_type',
-        dfh_has_domain: 219,
-        dfh_has_range: 53,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        ui_context_config: [
-          {
-            pk_entity: 165,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 968,
-            fk_property_set: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_property_set: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 53,
-      label: {
-        sg: '[sg: 968: CLP2_should_have_type undefined',
-        pl: '[pl: 968: CLP2_should_have_type undefined',
-        'default': '[pl: 968: CLP2_should_have_type undefined'
-      }
-    },
-    _969_outgoing: {
-      type: 'RoleSet',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 969,
-        dfh_identifier_in_namespace: 'CLP43_should_have_dimension',
-        dfh_has_domain: 219,
-        dfh_has_range: 52,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        ui_context_config: [
-          {
-            pk_entity: 167,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 969,
-            fk_property_set: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_property_set: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 52,
-      label: {
-        sg: '[sg: 969: CLP43_should_have_dimension undefined',
-        pl: '[pl: 969: CLP43_should_have_dimension undefined',
-        'default': '[pl: 969: CLP43_should_have_dimension undefined'
+        sg: 'Bibliographic Reference',
+        pl: 'Bibliographic References',
+        'default': 'Bibliographic References'
       }
     },
     _970_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 970,
@@ -7438,6 +8726,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 166,
@@ -7462,6 +8751,9 @@ export const crm: ProjectCrm = {
     },
     _971_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 971,
@@ -7473,6 +8765,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 168,
@@ -7497,6 +8790,9 @@ export const crm: ProjectCrm = {
     },
     _972_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 972,
@@ -7508,6 +8804,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 169,
@@ -7530,78 +8827,11 @@ export const crm: ProjectCrm = {
         'default': '[pl: 972: CLP57_should_have_number_of_parts undefined'
       }
     },
-    _973_outgoing: {
-      type: 'RoleSet',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 973,
-        dfh_identifier_in_namespace: 'CLP104_subject_to',
-        dfh_has_domain: 219,
-        dfh_has_range: 29,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        ui_context_config: [
-          {
-            pk_entity: 170,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 973,
-            fk_property_set: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_property_set: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 29,
-      label: {
-        sg: '[sg: 973: CLP104_subject_to undefined',
-        pl: '[pl: 973: CLP104_subject_to undefined',
-        'default': '[pl: 973: CLP104_subject_to undefined'
-      }
-    },
-    _974_outgoing: {
-      type: 'RoleSet',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 974,
-        dfh_identifier_in_namespace: 'CLP105_right_held_by',
-        dfh_has_domain: 219,
-        dfh_has_range: 38,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        ui_context_config: [
-          {
-            pk_entity: 171,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 974,
-            fk_property_set: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_property_set: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 38,
-      label: {
-        sg: '[sg: 974: CLP105_right_held_by undefined',
-        pl: '[pl: 974: CLP105_right_held_by undefined',
-        'default': '[pl: 974: CLP105_right_held_by undefined'
-      }
-    },
     _975_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 975,
@@ -7613,6 +8843,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 172,
@@ -7635,8 +8866,167 @@ export const crm: ProjectCrm = {
         'default': '[pl: 975: CLR6_should_carry undefined'
       }
     },
+    _969_outgoing: {
+      type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 969,
+        dfh_identifier_in_namespace: 'CLP43_should_have_dimension',
+        dfh_has_domain: 219,
+        dfh_has_range: 52,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: null,
+        dfh_domain_instances_max_quantifier: null,
+        dfh_range_instances_min_quantifier: null,
+        dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
+        ui_context_config: [
+          {
+            pk_entity: 167,
+            fk_ui_context: 45,
+            fk_project: null,
+            fk_property: 969,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: null,
+            fk_class_for_property_set: null
+          }
+        ]
+      },
+      targetMaxQuantity: null,
+      targetMinQuantity: null,
+      targetClassPk: 52,
+      label: {
+        sg: '[sg: 969: CLP43_should_have_dimension undefined',
+        pl: '[pl: 969: CLP43_should_have_dimension undefined',
+        'default': '[pl: 969: CLP43_should_have_dimension undefined'
+      }
+    },
+    _974_outgoing: {
+      type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 974,
+        dfh_identifier_in_namespace: 'CLP105_right_held_by',
+        dfh_has_domain: 219,
+        dfh_has_range: 38,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: null,
+        dfh_domain_instances_max_quantifier: null,
+        dfh_range_instances_min_quantifier: null,
+        dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
+        ui_context_config: [
+          {
+            pk_entity: 171,
+            fk_ui_context: 45,
+            fk_project: null,
+            fk_property: 974,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: null,
+            fk_class_for_property_set: null
+          }
+        ]
+      },
+      targetMaxQuantity: null,
+      targetMinQuantity: null,
+      targetClassPk: 38,
+      label: {
+        sg: '[sg: 974: CLP105_right_held_by undefined',
+        pl: '[pl: 974: CLP105_right_held_by undefined',
+        'default': '[pl: 974: CLP105_right_held_by undefined'
+      }
+    },
+    _973_outgoing: {
+      type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 973,
+        dfh_identifier_in_namespace: 'CLP104_subject_to',
+        dfh_has_domain: 219,
+        dfh_has_range: 29,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: null,
+        dfh_domain_instances_max_quantifier: null,
+        dfh_range_instances_min_quantifier: null,
+        dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
+        ui_context_config: [
+          {
+            pk_entity: 170,
+            fk_ui_context: 45,
+            fk_project: null,
+            fk_property: 973,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: null,
+            fk_class_for_property_set: null
+          }
+        ]
+      },
+      targetMaxQuantity: null,
+      targetMinQuantity: null,
+      targetClassPk: 29,
+      label: {
+        sg: '[sg: 973: CLP104_subject_to undefined',
+        pl: '[pl: 973: CLP104_subject_to undefined',
+        'default': '[pl: 973: CLP104_subject_to undefined'
+      }
+    },
+    _968_outgoing: {
+      type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 968,
+        dfh_identifier_in_namespace: 'CLP2_should_have_type',
+        dfh_has_domain: 219,
+        dfh_has_range: 53,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: null,
+        dfh_domain_instances_max_quantifier: null,
+        dfh_range_instances_min_quantifier: null,
+        dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
+        ui_context_config: [
+          {
+            pk_entity: 165,
+            fk_ui_context: 45,
+            fk_project: null,
+            fk_property: 968,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: null,
+            fk_class_for_property_set: null
+          }
+        ]
+      },
+      targetMaxQuantity: null,
+      targetMinQuantity: null,
+      targetClassPk: 53,
+      label: {
+        sg: '[sg: 968: CLP2_should_have_type undefined',
+        pl: '[pl: 968: CLP2_should_have_type undefined',
+        'default': '[pl: 968: CLP2_should_have_type undefined'
+      }
+    },
     _982_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 982,
@@ -7648,6 +9038,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -7661,6 +9052,9 @@ export const crm: ProjectCrm = {
     },
     _1181_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1181,
@@ -7672,10 +9066,21 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 152,
             fk_ui_context: 45,
+            fk_project: null,
+            fk_property: 1181,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 1,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 211,
+            fk_ui_context: 47,
             fk_project: null,
             fk_property: 1181,
             fk_property_set: null,
@@ -7696,6 +9101,9 @@ export const crm: ProjectCrm = {
     },
     _1186_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1186,
@@ -7707,6 +9115,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 125,
@@ -7715,7 +9124,7 @@ export const crm: ProjectCrm = {
             fk_property: 1186,
             fk_property_set: null,
             property_is_outgoing: false,
-            ord_num: 5,
+            ord_num: 4,
             fk_class_for_property_set: null
           }
         ]
@@ -7731,6 +9140,9 @@ export const crm: ProjectCrm = {
     },
     _1194_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1194,
@@ -7742,6 +9154,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 123,
@@ -7760,7 +9173,17 @@ export const crm: ProjectCrm = {
             fk_property: 1194,
             fk_property_set: null,
             property_is_outgoing: false,
-            ord_num: 1,
+            ord_num: 0,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 210,
+            fk_ui_context: 47,
+            fk_project: null,
+            fk_property: 1194,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 0,
             fk_class_for_property_set: null
           }
         ]
@@ -7776,6 +9199,9 @@ export const crm: ProjectCrm = {
     },
     _1191_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1191,
@@ -7787,6 +9213,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 126,
@@ -7795,7 +9222,7 @@ export const crm: ProjectCrm = {
             fk_property: 1191,
             fk_property_set: null,
             property_is_outgoing: false,
-            ord_num: 4,
+            ord_num: 3,
             fk_class_for_property_set: null
           }
         ]
@@ -7811,6 +9238,9 @@ export const crm: ProjectCrm = {
     },
     _1178_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1178,
@@ -7822,6 +9252,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 127,
@@ -7830,7 +9261,7 @@ export const crm: ProjectCrm = {
             fk_property: 1178,
             fk_property_set: null,
             property_is_outgoing: false,
-            ord_num: 3,
+            ord_num: 2,
             fk_class_for_property_set: null
           }
         ]
@@ -7846,6 +9277,9 @@ export const crm: ProjectCrm = {
     },
     _1110_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1110,
@@ -7856,66 +9290,45 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_min_quantifier: 0,
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 0,
-        dfh_range_instances_max_quantifier: -1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
-            pk_entity: 193,
-            fk_ui_context: 45,
+            pk_entity: 214,
+            fk_ui_context: 47,
             fk_project: null,
             fk_property: 1110,
             fk_property_set: null,
             property_is_outgoing: true,
-            ord_num: null,
+            ord_num: 1,
             fk_class_for_property_set: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 364,
-      label: {
-        sg: 'Has Type',
-        pl: 'Has Types',
-        'default': 'Has Types'
-      }
-    },
-    _1110_ingoing: {
-      type: 'RoleSet',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1110,
-        dfh_identifier_in_namespace: 'histP8',
-        dfh_has_domain: 363,
-        dfh_has_range: 364,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 0,
-        dfh_range_instances_max_quantifier: -1,
-        ui_context_config: [
+          },
           {
-            pk_entity: 192,
-            fk_ui_context: 45,
+            pk_entity: 228,
+            fk_ui_context: 46,
             fk_project: null,
             fk_property: 1110,
             fk_property_set: null,
-            property_is_outgoing: false,
-            ord_num: null,
+            property_is_outgoing: true,
+            ord_num: 1,
             fk_class_for_property_set: null
           }
         ]
       },
-      targetMaxQuantity: -1,
+      targetMaxQuantity: 1,
       targetMinQuantity: 0,
-      targetClassPk: 363,
+      targetClassPk: 364,
       label: {
-        sg: 'Is type of Geo-Place',
-        pl: 'Is type of Geo-Places',
-        'default': 'Is type of Geo-Places'
+        sg: 'has Type',
+        pl: 'has Types',
+        'default': 'has Type'
       }
     },
     _1200_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1200,
@@ -7927,6 +9340,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 185,
@@ -7959,8 +9373,39 @@ export const crm: ProjectCrm = {
         'default': 'Terms/Labels'
       }
     },
+    _1110_ingoing: {
+      type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1110,
+        dfh_identifier_in_namespace: 'histP8',
+        dfh_has_domain: 363,
+        dfh_has_range: 364,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 0,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
+        ui_context_config: []
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 363,
+      label: {
+        sg: 'is Type of',
+        pl: 'is Type of',
+        'default': 'is Type of'
+      }
+    },
     _1111_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1111,
@@ -7972,6 +9417,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: null,
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: null,
@@ -7983,53 +9429,11 @@ export const crm: ProjectCrm = {
         'default': '[pl: 1111: histP9 undefined'
       }
     },
-    _1113_outgoing: {
-      type: 'RoleSet',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1113,
-        dfh_identifier_in_namespace: 'histP11',
-        dfh_has_domain: 365,
-        dfh_has_range: 40,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: 1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        ui_context_config: [
-          {
-            pk_entity: 128,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1113,
-            fk_property_set: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_property_set: null
-          },
-          {
-            pk_entity: 134,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1113,
-            fk_property_set: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_property_set: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 40,
-      label: {
-        sg: 'Detailed Name',
-        pl: 'Detailed Names',
-        'default': 'Detailed Name'
-      }
-    },
     _1192_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1192,
@@ -8041,6 +9445,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 130,
@@ -8075,6 +9480,9 @@ export const crm: ProjectCrm = {
     },
     _1193_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1193,
@@ -8086,6 +9494,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 133,
@@ -8120,6 +9529,9 @@ export const crm: ProjectCrm = {
     },
     _1194_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1194,
@@ -8131,6 +9543,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 131,
@@ -8165,6 +9578,9 @@ export const crm: ProjectCrm = {
     },
     _1195_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1195,
@@ -8176,6 +9592,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 132,
@@ -8208,35 +9625,49 @@ export const crm: ProjectCrm = {
         'default': 'Built Work with this Name'
       }
     },
-    _1112_outgoing: {
+    _1113_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
-        dfh_pk_property: 1112,
-        dfh_identifier_in_namespace: 'histP10',
+        dfh_pk_property: 1113,
+        dfh_identifier_in_namespace: 'histP11',
         dfh_has_domain: 365,
-        dfh_has_range: 54,
+        dfh_has_range: 40,
         dfh_fk_property_of_origin: null,
         dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
+        dfh_domain_instances_max_quantifier: 1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: true,
         ui_context_config: [
           {
-            pk_entity: 129,
+            pk_entity: 128,
             fk_ui_context: 46,
             fk_project: null,
-            fk_property: 1112,
+            fk_property: 1113,
             fk_property_set: null,
             property_is_outgoing: true,
-            ord_num: null,
+            ord_num: 0,
             fk_class_for_property_set: null
           },
           {
-            pk_entity: 138,
+            pk_entity: 134,
             fk_ui_context: 45,
             fk_project: null,
-            fk_property: 1112,
+            fk_property: 1113,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 0,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 212,
+            fk_ui_context: 47,
+            fk_project: null,
+            fk_property: 1113,
             fk_property_set: null,
             property_is_outgoing: true,
             ord_num: 1,
@@ -8246,15 +9677,18 @@ export const crm: ProjectCrm = {
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 1,
-      targetClassPk: 54,
+      targetClassPk: 40,
       label: {
-        sg: 'Language',
-        pl: 'Languages',
-        'default': 'Language'
+        sg: 'Spelling',
+        pl: 'Spellings',
+        'default': 'Spelling'
       }
     },
     _1200_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1200,
@@ -8266,6 +9700,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: 1,
@@ -8279,6 +9714,9 @@ export const crm: ProjectCrm = {
     },
     _1201_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1201,
@@ -8290,6 +9728,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: 1,
@@ -8303,6 +9742,9 @@ export const crm: ProjectCrm = {
     },
     _1202_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1202,
@@ -8314,6 +9756,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: 1,
@@ -8325,8 +9768,70 @@ export const crm: ProjectCrm = {
         'default': '[sg: 1202: histP9 undefined'
       }
     },
+    _1112_outgoing: {
+      type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 1112,
+        dfh_identifier_in_namespace: 'histP10',
+        dfh_has_domain: 365,
+        dfh_has_range: 54,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: true,
+        ui_context_config: [
+          {
+            pk_entity: 138,
+            fk_ui_context: 45,
+            fk_project: null,
+            fk_property: 1112,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 1,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 129,
+            fk_ui_context: 46,
+            fk_project: null,
+            fk_property: 1112,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 1,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 213,
+            fk_ui_context: 47,
+            fk_project: null,
+            fk_property: 1112,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 0,
+            fk_class_for_property_set: null
+          }
+        ]
+      },
+      targetMaxQuantity: 1,
+      targetMinQuantity: 1,
+      targetClassPk: 54,
+      label: {
+        sg: 'Language',
+        pl: 'Languages',
+        'default': 'Language'
+      }
+    },
     _1184_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1184,
@@ -8338,6 +9843,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 142,
@@ -8372,6 +9878,9 @@ export const crm: ProjectCrm = {
     },
     _1187_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1187,
@@ -8383,6 +9892,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 147,
@@ -8417,6 +9927,9 @@ export const crm: ProjectCrm = {
     },
     _1195_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1195,
@@ -8428,6 +9941,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 140,
@@ -8462,6 +9976,9 @@ export const crm: ProjectCrm = {
     },
     _1185_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1185,
@@ -8473,6 +9990,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 145,
@@ -8507,6 +10025,9 @@ export const crm: ProjectCrm = {
     },
     _1190_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1190,
@@ -8517,20 +10038,24 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_min_quantifier: 0,
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 0,
-        dfh_range_instances_max_quantifier: -1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: []
       },
-      targetMaxQuantity: -1,
+      targetMaxQuantity: 1,
       targetMinQuantity: 0,
       targetClassPk: 443,
       label: {
         sg: '[sg: 1190: histP17 undefined',
         pl: '[pl: 1190: histP17 undefined',
-        'default': '[pl: 1190: histP17 undefined'
+        'default': '[sg: 1190: histP17 undefined'
       }
     },
     _1188_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1188,
@@ -8542,6 +10067,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 148,
@@ -8576,6 +10102,9 @@ export const crm: ProjectCrm = {
     },
     _1189_outgoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: true,
       property: {
         dfh_pk_property: 1189,
@@ -8587,6 +10116,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: [
           {
             pk_entity: 149,
@@ -8621,6 +10151,9 @@ export const crm: ProjectCrm = {
     },
     _1190_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1190,
@@ -8631,7 +10164,8 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_min_quantifier: 0,
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 0,
-        dfh_range_instances_max_quantifier: -1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: -1,
@@ -8645,6 +10179,9 @@ export const crm: ProjectCrm = {
     },
     _1201_ingoing: {
       type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
       isOutgoing: false,
       property: {
         dfh_pk_property: 1201,
@@ -8656,6 +10193,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
         ui_context_config: []
       },
       targetMaxQuantity: -1,

@@ -2,7 +2,6 @@ import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, NgForm } from '@angular/forms';
 import { InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, U, UiContext } from 'app/core';
-import { StateCreatorService } from '../../../shared/state-creator.service';
 import { PeItFormBase } from '../pe-it-form.base';
 import { PeItActions } from '../pe-it.actions';
 import { RootEpics } from 'app/core/store/epics';
@@ -38,11 +37,10 @@ export class PeItAddFormComponent extends PeItFormBase {
     protected fb: FormBuilder,
     protected ref: ChangeDetectorRef,
     protected peItApi: InfPersistentItemApi,
-    protected stateCreator: StateCreatorService,
     protected rootEpics: RootEpics,
     protected dataUnitEpics: DataUnitAPIEpics
   ) {
-    super(ngRedux, actions, fb, stateCreator, rootEpics, dataUnitEpics)
+    super(ngRedux, actions, fb, rootEpics, dataUnitEpics)
     console.log('PeItAddFormComponent')
 
   }

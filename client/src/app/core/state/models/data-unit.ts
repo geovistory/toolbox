@@ -18,11 +18,12 @@ export class DataUnit {
     parentPeIt?: InfPersistentItem;
 
     /** gui */
+    pkUiContext?: number;
     showAddAPropertyButton?= true;
-    isViewMode? = false;
+    isViewMode?= false;
 
     label?: DataUnitLabel;
-    toggle? = 'collapsed' as CollapsedExpanded;
+    toggle?= 'collapsed' as CollapsedExpanded;
     ingoingRoleSets?: RoleSet[];
     outgoingRoleSets?: RoleSet[];
     selectPropState?: SelectPropStateType; // state of child components for adding or creating properties

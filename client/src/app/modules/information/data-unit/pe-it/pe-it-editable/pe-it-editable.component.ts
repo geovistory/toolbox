@@ -6,12 +6,12 @@ import { PeItDetail, AddOption, RoleSet, CollapsedExpanded, RoleSetForm, Existen
 import { RootEpics } from 'app/core/store/epics';
 import { Observable } from 'rxjs';
 import { slideInOut } from '../../../shared/animations';
-import { StateCreatorService } from '../../../shared/state-creator.service';
 import { DataUnitAPIEpics } from '../../data-unit.epics';
 import { PeItApiEpics } from '../api/pe-it.epics';
 import { PeItBase } from '../pe-it-base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
+import { createExistenceTimeDetail } from 'app/core/state/services/state-creator';
 
 
 
@@ -64,16 +64,15 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
     protected ngRedux: NgRedux<IAppState>,
     protected actions: PeItActions,
     protected fb: FormBuilder,
-    protected stateCreator: StateCreatorService,
     protected dataUnitEpics: DataUnitAPIEpics
   ) {
-    super(rootEpics, dataUnitEpics, epics, ngRedux, actions, fb, stateCreator);
+    super(rootEpics, dataUnitEpics, epics, ngRedux, actions, fb);
     console.log('PeItEditableComponent')
   }
 
   initPeItBaseChild() {
 
-    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
+    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
 
     this.initPeItSubscriptions()
 
@@ -130,9 +129,13 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
 
         if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
 
-          this.stateCreator.initializeExistenceTimeState([], new ExistenceTimeDetail({ toggle: 'expanded' }), { isCreateMode: true }).subscribe(val => {
-            this.addPropSet('_existenceTime', val)
-          })
+          const existenceTimeDetail = createExistenceTimeDetail(
+            new ExistenceTimeDetail({ toggle: 'expanded' }),
+            [],
+            this.ngRedux.getState().activeProject.crm,
+            { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE }
+          )
+          this.addPropSet('_existenceTime', existenceTimeDetail)
 
         }
 

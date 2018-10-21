@@ -3,15 +3,14 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@a
 import { FormBuilder } from '@angular/forms';
 import { IAppState, InfPersistentItem, InfPersistentItemApi, InfRole, InfRoleApi, InfTemporalEntity } from 'app/core';
 import { PeItDetail, RoleDetail, RoleSet } from 'app/core/state/models';
+import { createRoleDetail, createRoleDetailList, getCreateOfEditableContext, StateSettings } from 'app/core/state/services/state-creator';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest, timer } from 'rxjs';
 import { peItReducer } from '../../../data-unit/pe-it/pe-it.reducer';
 import { ClassService } from '../../../shared/class.service';
-import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetFormBase } from '../../role-set-form.base';
 import { RoleSetActions } from '../../role-set.actions';
 import { roleSetReducer } from '../../role-set.reducer';
-import { StateSettings, createRoleDetail, createRoleSet } from 'app/core/state/services/state-creator';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -39,7 +38,6 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
     protected ngRedux: NgRedux<IAppState>,
     protected ref: ChangeDetectorRef,
     protected roleApi: InfRoleApi,
-    protected stateCreator: StateCreatorService,
     protected actions: RoleSetActions,
     protected classService: ClassService,
     protected peItApi: InfPersistentItemApi,
@@ -76,12 +74,24 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
 
 
         // update the state
-        const roleDetailsInOtherProjects = createRoleSet(
-          new RoleSet(this.localStore.getState()), rolesInOtherProjects, this.ngRedux.getState().activeProject.crm, { isViewMode: true }
-        )._role_list;
-        const roleDetailsInNoProjects = createRoleSet(
-          new RoleSet(this.localStore.getState()), rolesInNoProject, this.ngRedux.getState().activeProject.crm, { isViewMode: true }
-        )._role_list;
+        const roleDetailsInOtherProjects = createRoleDetailList(
+          new RoleSet(this.localStore.getState()),
+          rolesInOtherProjects,
+          this.ngRedux.getState().activeProject.crm,
+          {
+            isViewMode: true,
+            pkUiContext: this.localStore.getState().pkUiContext
+          }
+        );
+        const roleDetailsInNoProjects = createRoleDetailList(
+          new RoleSet(this.localStore.getState()),
+          rolesInNoProject,
+          this.ngRedux.getState().activeProject.crm,
+          {
+            isViewMode: true,
+            pkUiContext: this.localStore.getState().pkUiContext
+          }
+        );
         this.localStore.dispatch(this.actions.alternativeRolesLoaded(
           roleDetailsInOtherProjects,
           roleDetailsInNoProjects
@@ -143,15 +153,12 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
       }
     }
     const settings: StateSettings = {
-      isCreateMode: true
+      pkUiContext: getCreateOfEditableContext(s.pkUiContext)
     }
 
     // initialize the state
-    this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
-
-      this.initCreateFormCtrls(roleStateToCreate)
-
-    }))
+    const roleStateToCreate = createRoleDetail(options, roleToCreate, this.ngRedux.getState().activeProject.crm, settings)
+    this.initCreateFormCtrls(roleStateToCreate)
 
   }
 
@@ -183,8 +190,8 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
         })
 
         // update the state
-        const roleSet = createRoleSet(new RoleSet(this.localStore.getState()), roles, this.ngRedux.getState().activeProject.crm, {})
-        this.localStore.dispatch(this.actions.rolesCreated(roleSet._role_list))
+        const roleDetailList = createRoleDetailList(new RoleSet(this.localStore.getState()), roles, this.ngRedux.getState().activeProject.crm, { pkUiContext: this.localStore.getState().pkUiContext })
+        this.localStore.dispatch(this.actions.rolesCreated(roleDetailList))
 
       }))
     }

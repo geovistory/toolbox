@@ -7,7 +7,6 @@ import { Subscription, Observable } from 'rxjs';
 import { mockPerson } from '../../data-unit/pe-it/pe-it-create-form/sandbox.mock';
 import { PeItDetail } from 'app/core/state/models';
 import { EntityAddModalService, EntityAddModalState } from '../../shared/entity-add-modal.service';
-import { StateCreatorService } from '../../shared/state-creator.service';
 import { informationReducer } from '../../containers/information/api/information.reducer';
 import { Information } from '../../containers/information/api/information.models';
 import { InformationAPIActions } from '../../containers/information/api/information.actions';
@@ -45,8 +44,7 @@ export class EntityAddCreateNewComponent implements OnInit, OnDestroy {
         private modalService: EntityAddModalService,
         private ngRedux: NgRedux<Information>,
         private actions: InformationAPIActions,
-        private ref: ChangeDetectorRef,
-        private stateCreator: StateCreatorService
+        private ref: ChangeDetectorRef
     ) {
         this.localStore = this.ngRedux.configureSubStore(this.basePath, informationReducer);
 
@@ -62,16 +60,13 @@ export class EntityAddCreateNewComponent implements OnInit, OnDestroy {
 
         this.modalService.addButtonVisible = false;
 
-        // TODO: write a simple stateCreator function that returns something similar to the mockPerson, with the respective sub-property for the appellation
-        // Init the state
-        this.subs.push(this.stateCreator.initializePeItToCreate(this.modalService.selectedClass.dfh_pk_class, this.modalService.searchString).subscribe(peItState => {
+        // // TODO: write a simple stateCreator function that returns something similar to the mockPerson, with the respective sub-property for the appellation
+        // // Init the state
+        // this.subs.push(this.stateCreator.initializePeItToCreate(this.modalService.selectedClass.dfh_pk_class, this.modalService.searchString).subscribe(peItState => {
 
-            this.localStore.dispatch(this.actions.peItCreateFormAdded(peItState));
-            this.initialized = true;
-        }))
-
-
-
+        //     this.localStore.dispatch(this.actions.peItCreateFormAdded(peItState));
+        //     this.initialized = true;
+        // }))
 
     }
 

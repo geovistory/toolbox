@@ -3,6 +3,7 @@ import { roleWithPlace, place, roleWithLanguage, language, roleWithAppellation, 
 import { crm } from 'app/core/active-project/_mock-data';
 import { RoleSet, ExistenceTimeDetail, DataUnitChildList } from 'app/core/state/models';
 import { InfPersistentItem } from 'app/core/sdk';
+import { ComConfig } from 'app/core/config/com-config';
 
 
 describe('StateCreator', () => {
@@ -16,7 +17,7 @@ describe('StateCreator', () => {
      * createPeIt specs
      ***************************************************/
     it('#createPeIt should create a PeItDetail for creating a new person', () => {
-        expect(((createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { isCreateMode: true }))
+        expect(((createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE }))
         ._children._1192_ingoing as RoleSet)._role_list['_undefined']._teEnt._children)
         .toBeTruthy()
     });
@@ -60,7 +61,7 @@ describe('StateCreator', () => {
      ***************************************************/
 
     it('#createRoleSet should return a RoleSet with _role_list of that contains a RoleDetail with the right key', () => {
-        expect(createRoleSet(new RoleSet({ isOutgoing: true, property }), [role], crm, {})._role_list['_1'].isOutgoing).toBe(true)
+        expect(createRoleSet(new RoleSet({ isOutgoing: true, property }), [role], crm, {pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE})._role_list['_1'].isOutgoing).toBe(true)
     });
 
     /***************************************************

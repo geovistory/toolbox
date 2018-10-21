@@ -15,8 +15,9 @@
     </div>
     <div class="col-md-4">
       <div class="btn-group float-right mt-2" role="group">
-        <gv-class-and-type-selector *ngIf="(pkProject$ |async)" [pkClasses]="pkClassesOfAddBtn" [pkProject]="(pkProject$ |async)"
-          [basePath]="path.concat('classAndTypeSelector')" (select)="startCreate($event)" buttonText="Add a source" placement="right"></gv-class-and-type-selector>
+        <gv-class-and-type-selector *ngIf="(pkProject$ |async) && (crm$ | async)" [pkClasses]="pkClassesOfAddBtn"
+          [pkProject]="(pkProject$ |async)" [basePath]="path.concat('classAndTypeSelector')" (select)="startCreate($event, pkUiContextCreate)"
+          buttonText="+ Add a source" placement="right"></gv-class-and-type-selector>
         <!-- <button class="btn btn-link" (click)="startCreate()">
           <i class="fa fa-plus"></i> Add a source
         </button> -->
@@ -53,8 +54,8 @@
  * - If 'create' is truthy, show a form with SourceCreateFormComponent
  *     listening to ok and cancel Outputs 
  -->
-<div *ngIf="(create$ | async)" class="container m-5">
-    <gv-create-or-add-pe-it [basePath]="path.concat('create')" (done)="submitCreate($event)" (cancel)="stopCreate()"></gv-create-or-add-pe-it>
+<div *ngIf="(create$ | async)" class="gv-flex-fh">
+  <gv-create-or-add-pe-it class="gv-flex-fh" [basePath]="path.concat('create')" (done)="submitCreate($event)" (cancel)="stopCreate()"></gv-create-or-add-pe-it>
 </div>
 
 <!-- ********************** Edit Source *************************** 

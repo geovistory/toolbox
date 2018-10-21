@@ -2,6 +2,7 @@ import { InfDigitalObject } from 'app/core';
 import { IAnnotationPanelState } from 'app/modules/annotation/annotation.models';
 import { ClassAndTypeSelector } from '../information/containers/class-and-type-selector/api/class-and-type-selector.models';
 import { CreateOrAddPeIt } from '../information/containers/create-or-add-pe-it/api/create-or-add-pe-it.models';
+import { TypeDetail } from 'app/core/state/models/type-detail';
 
 
 /**
@@ -34,7 +35,41 @@ export interface ISourceSearchHitState {
 /**
  * The state of a source being edited
  */
-export interface ISourceDetailState {
+export class ISourceDetailState {
+
+    _type?: TypeDetail;
+
+    view?: InfDigitalObject;
+    edit?: InfDigitalObject;
+    annotate?: InfDigitalObject;
+    annotationPanel?: IAnnotationPanelState;
+    versionList?: IVersion[];
+
+    constructor(data?: ISourceDetailState) {
+        Object.assign(this, data);
+    }
+
+}
+
+/**
+ * The state of a section list with add button etc.
+ */
+export class SectionListState {
+    items?: SectionListItem
+}
+
+/**
+ * The state of a section list item
+ */
+export class SectionListItem {
+    reference?: string;
+    title?: string;
+    repros?: string[];
+}
+/**
+ * The state of a section being edited
+ */
+export interface SectionDetailState {
     view?: InfDigitalObject;
     edit?: InfDigitalObject;
     annotate?: InfDigitalObject;

@@ -1,7 +1,7 @@
 import { dispatch, NgRedux, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { InfDigitalObject, InfDigitalObjectApi, Project, IAppState, InfEntityProjectRelApi, InfEntityProjectRelInterface } from 'app/core';
+import { InfDigitalObject, InfDigitalObjectApi, Project, IAppState, InfEntityProjectRelApi, InfEntityProjectRelInterface, ComConfig, ProjectCrm } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { ISourceDetailState, ISourceListState, ISourceSearchHitState, IVersion } from '../..';
@@ -45,7 +45,7 @@ import { ClassAndTypePk } from 'app/modules/information/containers/class-and-typ
   templateUrl: './source-list.component.html',
   styleUrls: ['./source-list.component.scss']
 })
-export class SourceListComponent implements OnInit, OnDestroy {
+export class SourceListComponent extends SourceListAPIActions implements OnInit, OnDestroy {
 
 
   // path to the substore
@@ -69,7 +69,9 @@ export class SourceListComponent implements OnInit, OnDestroy {
   subs: Subscription[] = [];
 
   pkClassesOfAddBtn = [219]
+  pkUiContextCreate = ComConfig.PK_UI_CONTEXT_SOURCES_CREATE;
   pkProject$: Observable<number>;
+  crm$: Observable<ProjectCrm>;
 
   constructor(
     private actions: SourceListAPIActions,
@@ -78,7 +80,7 @@ export class SourceListComponent implements OnInit, OnDestroy {
     private digitObjApi: InfDigitalObjectApi,
     private eprApi: InfEntityProjectRelApi
   ) {
-
+    super();
     // if component is activated by ng-router, take base path here
     this.subs.push(activatedRoute.data.subscribe(d => {
       this.path = d.reduxPath;
@@ -89,6 +91,9 @@ export class SourceListComponent implements OnInit, OnDestroy {
 
     // observe the active pk_project
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']);
+
+    // observe the crm
+    this.crm$ = ngRedux.select<ProjectCrm>(['activeProject', 'crm']);
 
     // observe and store the remove hit
     this.subs.push(this.remove$.subscribe(r => {
@@ -160,12 +165,6 @@ export class SourceListComponent implements OnInit, OnDestroy {
     }))
   }
 
-  /**
-   * Updates the list of search hits in store
-   */
-  @dispatch() searchHitsUpdated(list: { [key: string]: ISourceSearchHitState }) {
-    return this.actions.searchHitsUpdated(list);
-  }
 
   openSearchHit(searchHit: ISourceSearchHitState) {
     const pkEntity = searchHit.id;
@@ -182,22 +181,6 @@ export class SourceListComponent implements OnInit, OnDestroy {
 
   }
 
-  /**
-   * Opens a source for viewing and editing
-   * - creates a SourceDetailState
-   * - update store: 'edit'
-   */
-  @dispatch() open(editState: ISourceDetailState) {
-    return this.actions.open(editState)
-  }
-
-  /**
-   * Closes a source
-   * - update store: delete 'edit'
-   */
-  @dispatch() close() {
-    return this.actions.close()
-  }
 
   /**
    * Save the changes made on Digital Object
@@ -220,12 +203,6 @@ export class SourceListComponent implements OnInit, OnDestroy {
 
   }
 
-  /**
-   *  Updates store: updates 'edit', 'view', sets 'edit', 'edit' false
-   */
-  @dispatch() sourceUpdated(digitalObject: InfDigitalObject) {
-    return this.actions.sourceUpdated(digitalObject);
-  }
 
   /**
    * listen to changes of the source being edited and updates 'list'
@@ -235,29 +212,8 @@ export class SourceListComponent implements OnInit, OnDestroy {
     this.search()
   }
 
-  /**
-   * Leads to the 'are you sure?' question
-   * - update store: set 'remove' = add a clone of entry
-   */
-  @dispatch() startRemove(hit: ISourceSearchHitState) {
-    return this.actions.startRemove(hit);
-  }
 
-  /**
-   * Back to list
-   * - update store: delete 'remove'
-   */
-  @dispatch() cancelRemove() {
-    return this.actions.cancelRemove()
-  }
 
-  /**
-   * Back to list
-   * - update store: delete 'remove'
-   */
-  @dispatch() removed() {
-    return this.actions.removed()
-  }
 
   /**
    * Call api to remove the digital object from project, on success
@@ -282,22 +238,6 @@ export class SourceListComponent implements OnInit, OnDestroy {
 
   }
 
-  /**
-   * Shows create form
-   * - updates store: set 'create' true
-   */
-  @dispatch() startCreate(classAndTypePk: ClassAndTypePk) {
-    return this.actions.startCreate(classAndTypePk)
-  }
-
-  /**
-   * Hides create form
-   * - updates store: set 'create' false
-   */
-  @dispatch() stopCreate() {
-    return this.actions.stopCreate()
-
-  }
 
   /**
    * Calls api to persists a new digital object in database, on success

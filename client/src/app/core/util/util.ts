@@ -37,8 +37,7 @@ export class U {
 
         Object.keys(obj).forEach(key => {
             arr.push(obj[key]);
-        })
-
+        });
 
         return arr;
     }
@@ -406,7 +405,13 @@ export class U {
             else return undefined;
         }
 
+        const extractIsInProject = (c: DfhClass): boolean => {
+            return !c.proj_rels ? false :
+                !c.proj_rels[0] ? false : c.proj_rels[0].is_in_project;
+        }
+
         const cConf: ClassConfig = {
+            isInProject: extractIsInProject(dfhC),
             subclassOf: extractSubclassOf(dfhC),
             label: extractClassLabel(dfhC),
             dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,

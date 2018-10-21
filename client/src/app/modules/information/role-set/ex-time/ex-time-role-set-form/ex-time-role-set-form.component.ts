@@ -2,16 +2,15 @@ import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IAppState, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
-import { RoleDetail, TeEntDetail } from 'app/core/state/models';
+import { RoleDetail, TeEntDetail, RoleSet } from 'app/core/state/models';
+import { createRoleDetail, getCreateOfEditableContext, StateSettings, createRoleDetailList } from 'app/core/state/services/state-creator';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest, timer } from 'rxjs';
 import { teEntReducer } from '../../../data-unit/te-ent/te-ent.reducer';
 import { ClassService } from '../../../shared/class.service';
-import { StateCreatorService } from '../../../shared/state-creator.service';
 import { RoleSetFormBase } from '../../role-set-form.base';
 import { RoleSetActions } from '../../role-set.actions';
 import { roleSetReducer } from '../../role-set.reducer';
-import { StateSettings } from 'app/core/state/services/state-creator';
 
 
 
@@ -50,7 +49,6 @@ export class ExTimeRoleSetFormComponent extends RoleSetFormBase implements Contr
     protected fb: FormBuilder,
     protected actions: RoleSetActions,
     protected roleApi: InfRoleApi,
-    protected stateCreator: StateCreatorService,
     protected classService: ClassService,
     private teEntApi: InfTemporalEntityApi
 
@@ -85,28 +83,40 @@ export class ExTimeRoleSetFormComponent extends RoleSetFormBase implements Contr
     this.subs.push(combineLatest([waitAtLeast, apiCall])
       .subscribe((results) => {
 
-        const rolesInOtherProjects = results[1].filter(role => parseInt(role.is_in_project_count) > 0);
-        const rolesInNoProject = results[1].filter(role => parseInt(role.is_in_project_count) == 0);
-
-        const inOther$ = this.stateCreator.initializeRoleDetails(rolesInOtherProjects, { isOutgoing: s.isOutgoing })
-        const inNo$ = this.stateCreator.initializeRoleDetails(rolesInNoProject, { isOutgoing: s.isOutgoing })
-
-        combineLatest(inOther$, inNo$).subscribe(results => {
-          const roleStatesInOtherProjects = results[0], roleStatesInNoProjects = results[1]
-
-          this.localStore.dispatch(this.actions.alternativeRolesLoaded(
-            roleStatesInOtherProjects,
-            roleStatesInNoProjects
-          ))
+        const rolesInOtherProjects = results[1].filter(role => parseInt(role.is_in_project_count, 10) > 0);
+        const rolesInNoProject = results[1].filter(role => parseInt(role.is_in_project_count, 10) == 0);
 
 
-          if (rolesInOtherProjects.length === 0) {
-            this.startCreateNewRole();
-          } else {
-            this.initAddFormCtrls(roleStatesInOtherProjects)
+        // update the state
+        const roleDetailsInOtherProjects = createRoleDetailList(
+          new RoleSet(this.localStore.getState()),
+          rolesInOtherProjects,
+          this.ngRedux.getState().activeProject.crm,
+          {
+            isViewMode: true,
+            pkUiContext: this.localStore.getState().pkUiContext
           }
+        );
+        const roleDetailsInNoProjects = createRoleDetailList(
+          new RoleSet(this.localStore.getState()),
+          rolesInNoProject,
+          this.ngRedux.getState().activeProject.crm,
+          {
+            isViewMode: true,
+            pkUiContext: this.localStore.getState().pkUiContext
+          }
+        );
+        this.localStore.dispatch(this.actions.alternativeRolesLoaded(
+          roleDetailsInOtherProjects,
+          roleDetailsInNoProjects
+        ))
 
-        })
+
+        if (rolesInOtherProjects.length === 0) {
+          this.startCreateNewRole();
+        } else {
+          this.initAddFormCtrls(roleDetailsInOtherProjects)
+        }
       }))
 
   }
@@ -129,12 +139,13 @@ export class ExTimeRoleSetFormComponent extends RoleSetFormBase implements Contr
     } as InfRole;
 
     const options: RoleDetail = { targetClassPk: s.targetClassPk, isOutgoing: s.isOutgoing }
-    const settings: StateSettings = { isCreateMode: true }
+    const settings: StateSettings = {
+      pkUiContext: getCreateOfEditableContext(s.pkUiContext)
+    }
 
     // initialize the state
-    this.subs.push(this.stateCreator.initializeRoleDetail(roleToCreate, options, settings).subscribe(roleStateToCreate => {
-      this.initCreateFormCtrls(roleStateToCreate)
-    }))
+    const roleStateToCreate = createRoleDetail(options, roleToCreate, this.ngRedux.getState().activeProject.crm, settings)
+    this.initCreateFormCtrls(roleStateToCreate)
 
   }
 
@@ -144,7 +155,7 @@ export class ExTimeRoleSetFormComponent extends RoleSetFormBase implements Contr
 
     if (this.createForm.valid) {
 
-      // prepare teEnt 
+      // prepare teEnt
       const t = new InfTemporalEntity(this.parentTeEntStore.getState().teEnt);
       t.te_roles = [];
 
@@ -166,9 +177,8 @@ export class ExTimeRoleSetFormComponent extends RoleSetFormBase implements Contr
         })
 
         // update the state
-        this.subs.push(this.stateCreator.initializeRoleDetails(roles, { isOutgoing: s.isOutgoing }).subscribe(roleStates => {
-          this.localStore.dispatch(this.actions.rolesCreated(roleStates))
-        }))
+        const roleDetailList = createRoleDetailList({ isOutgoing: s.isOutgoing }, roles, this.ngRedux.getState().activeProject.crm, { pkUiContext: s.pkUiContext })
+        this.localStore.dispatch(this.actions.rolesCreated(roleDetailList))
 
       }))
     }
@@ -179,7 +189,7 @@ export class ExTimeRoleSetFormComponent extends RoleSetFormBase implements Contr
 
     if (this.addForm.valid) {
 
-      // prepare teEnt 
+      // prepare teEnt
       const p = new InfTemporalEntity(this.parentTeEntStore.getState().teEnt);
       p.te_roles = [];
 
@@ -201,9 +211,8 @@ export class ExTimeRoleSetFormComponent extends RoleSetFormBase implements Contr
 
 
         // update the state
-        this.subs.push(this.stateCreator.initializeRoleDetails(roles, { isOutgoing: s.isOutgoing }).subscribe(roleStates => {
-          this.localStore.dispatch(this.actions.rolesCreated(roleStates))
-        }))
+        const roleDetailList = createRoleDetailList({ isOutgoing: s.isOutgoing }, roles, this.ngRedux.getState().activeProject.crm, { pkUiContext: s.pkUiContext })
+        this.localStore.dispatch(this.actions.rolesCreated(roleDetailList))
 
       }))
     }

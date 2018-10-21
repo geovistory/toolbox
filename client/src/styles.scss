@@ -58,6 +58,11 @@ button {
     cursor: pointer;
 }
 
+.form-control {
+    @extend .form-control;
+    overflow: hidden;
+}
+
 // generate .bg-gray-* classes
 @each $color,
 $value in $grays {

@@ -28,6 +28,7 @@ export class RoleSet {
     hasAlternatives?= false;
 
     // GUI
+    pkUiContext?: number;
     isViewMode?= false;
     dragEnabled?: boolean;
     label?: RoleSetLabel;

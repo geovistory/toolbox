@@ -1,19 +1,18 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, OnDestroy, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, Subscription } from 'rxjs';
-
 import { IAppState, InfRole, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
-import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
 import { ExistenceTimeDetail, ExTimeModalMode, RoleSetList, TeEntDetail } from 'app/core/state/models';
+import { createExistenceTimeDetail, StateSettings } from 'app/core/state/services/state-creator';
+import { dropLast } from 'ramda';
+import { Observable, Subscription } from 'rxjs';
+import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
 import { slideInOut } from '../../shared/animations';
 import { ExistenceTimeModalComponent } from '../existence-time-modal/existence-time-modal.component';
 import { ExistenceTimeActions } from '../existence-time.actions';
 import { existenceTimeReducer } from '../existence-time.reducer';
-import { dropLast } from 'ramda';
-import { StateCreatorService } from '../../shared/state-creator.service';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { StateSettings } from 'app/core/state/services/state-creator';
+
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -43,6 +42,7 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
   @Output() startEditing: EventEmitter<void> = new EventEmitter();
   @Output() stopEditing: EventEmitter<ExistenceTimeDetail> = new EventEmitter();
   @Output() onRemovePropSet: EventEmitter<void> = new EventEmitter();
+  @Output() touched: EventEmitter<void> = new EventEmitter();
 
   localStore: ObservableStore<ExistenceTimeDetail>
   parentTeEntStore: ObservableStore<TeEntDetail>;
@@ -60,7 +60,6 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
     protected ngRedux: NgRedux<IAppState>,
     protected actions: ExistenceTimeActions,
     private modalService: NgbModal,
-    protected stateCreator: StateCreatorService,
     protected teEntApi: InfTemporalEntityApi
   ) {
 
@@ -109,7 +108,7 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
       ) {
         mode = 'begin-end';
       } else {
-        mode = "advanced";
+        mode = 'advanced';
       }
 
     }
@@ -176,23 +175,32 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
         // concat with the roles that were unchanged
         ...data.unchanged
       ];
+
+      const settings: StateSettings = {
+        pkUiContext: this.localStore.getState().pkUiContext
+      }
+
       // update the state
-      this.stateCreator.initializeExistenceTimeState(roles, new ExistenceTimeDetail({ toggle: 'expanded' })).subscribe(existTimeDetail => {
-        this.localStore.dispatch(this.actions.existenceTimeUpdated(existTimeDetail))
-      });
+      const extDetail = createExistenceTimeDetail(new ExistenceTimeDetail({ toggle: 'expanded' }), roles, this.ngRedux.getState().activeProject.crm, settings)
+      this.localStore.dispatch(this.actions.existenceTimeUpdated(extDetail))
+
     }));
   }
 
   emitCtrlVals(data: { toRemove: InfRole[], toAdd: InfRole[], unchanged: InfRole[] }) {
 
     const settings: StateSettings = {
-      isCreateMode: data.toAdd.length ? false : true
+      pkUiContext: this.localStore.getState().pkUiContext
     }
 
+    // TODO: Verify if this can be dropped
+    // const settings: StateSettings = {
+    //   isCreateMode: data.toAdd.length ? false : true
+    // }
 
-    this.stateCreator.initializeExistenceTimeState(data.toAdd, new ExistenceTimeDetail({ toggle: 'expanded' }), settings).subscribe(existTimeDetail => {
-      this.localStore.dispatch(this.actions.existenceTimeUpdated(existTimeDetail))
-    });
+    const extDetail = createExistenceTimeDetail(new ExistenceTimeDetail({ toggle: 'expanded' }), data.toAdd, this.ngRedux.getState().activeProject.crm, settings)
+    this.localStore.dispatch(this.actions.existenceTimeUpdated(extDetail))
+
     this.markAsTouched();
     this.onChange(data.toAdd)
   }
@@ -242,8 +250,6 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
    */
   onTouched = () => {
   };
-
-  @Output() touched: EventEmitter<void> = new EventEmitter();
 
   markAsTouched() {
     this.onTouched()

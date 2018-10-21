@@ -79,7 +79,7 @@
 
       <!-- Cursor -->
 
-      <g *ngIf="timeline" [cursorVisual]="{
+      <g *ngIf="timeline && _options.cursorPosition" [cursorVisual]="{
         timeline: timeline,
         julianSecond: _options.cursorPosition, 
         bodyHeight: _options.bodyHeight,

@@ -76,7 +76,7 @@ export class RoleSetApiEpics {
                 filter(action => ofSubstore(c.basePath)(action)),
                 switchMap((action: FluxStandardAction<any, any>) => new Observable<LoadingBarAction>((globalStore) => {
                     const state = c.localStore.getState();
-                    if (!state._role_list ||  Object.keys(state._role_list).length === 0) {
+                    if (!state._role_list || Object.keys(state._role_list).length === 0) {
                         c.localStore.dispatch(this.actions.removeRoleSet());
                     }
 
@@ -89,110 +89,120 @@ export class RoleSetApiEpics {
 
     private createAddRolesWithTeEntEpic(c: RoleSetBase): Epic {
         return (action$, store) => {
-          return action$.pipe(
-            /**
-             * Filter the actions that triggers this epic
-             */
-            ofType(RoleSetActions.ADD_ROLES_WITH_TE_ENT),
-            filter(action => ofSubstore(c.basePath)(action)),
-            switchMap((action: RoleSetAction) => new Observable<Action>((globalStore) => {
-              /**
-               * Emit the global action that activates the loading bar
-               */
-              globalStore.next(this.loadingBarActions.startLoading());
-              /**
-               * Do some api call
-               */
-              this.roleApi.addToProjectWithTeEnt(c.ngRedux.getState().activeProject.pk_project, action.meta.pk_roles)
+            return action$.pipe(
                 /**
-                 * Subscribe to the api call
+                 * Filter the actions that triggers this epic
                  */
-                .subscribe((roles: InfRole[]) => {
-                  /**
-                   * Emit the global action that completes the loading bar
-                   */
-                  globalStore.next(this.loadingBarActions.completeLoading());
-                  /**
-                   * Emit the local action on loading succeeded
-                   */
-                  const roleDetailList = createRoleDetailList(new RoleSet(c.localStore.getState()), roles, c.ngRedux.getState().activeProject.crm, {})
-                  c.localStore.dispatch(this.actions.addRolesWithTeEntSucceeded(roleDetailList));
+                ofType(RoleSetActions.ADD_ROLES_WITH_TE_ENT),
+                filter(action => ofSubstore(c.basePath)(action)),
+                switchMap((action: RoleSetAction) => new Observable<Action>((globalStore) => {
+                    /**
+                     * Emit the global action that activates the loading bar
+                     */
+                    globalStore.next(this.loadingBarActions.startLoading());
+                    /**
+                     * Do some api call
+                     */
+                    this.roleApi.addToProjectWithTeEnt(c.ngRedux.getState().activeProject.pk_project, action.meta.pk_roles)
+                        /**
+                         * Subscribe to the api call
+                         */
+                        .subscribe((roles: InfRole[]) => {
+                            /**
+                             * Emit the global action that completes the loading bar
+                             */
+                            globalStore.next(this.loadingBarActions.completeLoading());
+                            /**
+                             * Emit the local action on loading succeeded
+                             */
+                            const roleDetailList = createRoleDetailList(
+                                new RoleSet(c.localStore.getState()),
+                                roles,
+                                c.ngRedux.getState().activeProject.crm,
+                                { pkUiContext: c.localStore.getState().pkUiContext }
+                            )
+                            c.localStore.dispatch(this.actions.addRolesWithTeEntSucceeded(roleDetailList));
 
-                }, error => {
-                  /**
-                  * Emit the global action that shows some loading error message
-                  */
-                  globalStore.next(this.loadingBarActions.completeLoading());
-                  globalStore.next(this.notificationActions.addToast({
-                    type: 'error',
-                    options: {
-                      title: error.message
-                    }
-                  }));
-                  /**
-                  * Emit the local action on loading failed
-                  */
-                  c.localStore.dispatch(this.actions.addRolesWithTeEntFailed())
-                })
-            })),
-            takeUntil(c.destroy$)
-          )
+                        }, error => {
+                            /**
+                            * Emit the global action that shows some loading error message
+                            */
+                            globalStore.next(this.loadingBarActions.completeLoading());
+                            globalStore.next(this.notificationActions.addToast({
+                                type: 'error',
+                                options: {
+                                    title: error.message
+                                }
+                            }));
+                            /**
+                            * Emit the local action on loading failed
+                            */
+                            c.localStore.dispatch(this.actions.addRolesWithTeEntFailed())
+                        })
+                })),
+                takeUntil(c.destroy$)
+            )
         }
-      }
+    }
 
 
 
     private createAddRolesWithoutTeEntEpic(c: RoleSetBase): Epic {
         return (action$, store) => {
-          return action$.pipe(
-            /**
-             * Filter the actions that triggers this epic
-             */
-            ofType(RoleSetActions.ADD_ROLES_WITHOUT_TE_ENT),
-            filter(action => ofSubstore(c.basePath)(action)),
-            switchMap((action: RoleSetAction) => new Observable<Action>((globalStore) => {
-              /**
-               * Emit the global action that activates the loading bar
-               */
-              globalStore.next(this.loadingBarActions.startLoading());
-              /**
-               * Do some api call
-               */
-              this.roleApi.addToProject(c.ngRedux.getState().activeProject.pk_project, action.meta.pk_roles)
+            return action$.pipe(
                 /**
-                 * Subscribe to the api call
+                 * Filter the actions that triggers this epic
                  */
-                .subscribe((roles: InfRole[]) => {
-                  /**
-                   * Emit the global action that completes the loading bar
-                   */
-                  globalStore.next(this.loadingBarActions.completeLoading());
-                  /**
-                   * Emit the local action on loading succeeded
-                   */
-                  const roleDetailList = createRoleDetailList(new RoleSet(c.localStore.getState()), roles, c.ngRedux.getState().activeProject.crm, {})
-                  c.localStore.dispatch(this.actions.addRolesWithTeEntSucceeded(roleDetailList));
+                ofType(RoleSetActions.ADD_ROLES_WITHOUT_TE_ENT),
+                filter(action => ofSubstore(c.basePath)(action)),
+                switchMap((action: RoleSetAction) => new Observable<Action>((globalStore) => {
+                    /**
+                     * Emit the global action that activates the loading bar
+                     */
+                    globalStore.next(this.loadingBarActions.startLoading());
+                    /**
+                     * Do some api call
+                     */
+                    this.roleApi.addToProject(c.ngRedux.getState().activeProject.pk_project, action.meta.pk_roles)
+                        /**
+                         * Subscribe to the api call
+                         */
+                        .subscribe((roles: InfRole[]) => {
+                            /**
+                             * Emit the global action that completes the loading bar
+                             */
+                            globalStore.next(this.loadingBarActions.completeLoading());
+                            /**
+                             * Emit the local action on loading succeeded
+                             */
+                            const roleDetailList = createRoleDetailList(
+                                new RoleSet(c.localStore.getState()),
+                                roles,
+                                c.ngRedux.getState().activeProject.crm,
+                                { pkUiContext: c.localStore.getState().pkUiContext }
+                            )
+                            c.localStore.dispatch(this.actions.addRolesWithTeEntSucceeded(roleDetailList));
 
-                }, error => {
-                  /**
-                  * Emit the global action that shows some loading error message
-                  */
-                  globalStore.next(this.loadingBarActions.completeLoading());
-                  globalStore.next(this.notificationActions.addToast({
-                    type: 'error',
-                    options: {
-                      title: error.message
-                    }
-                  }));
-                  /**
-                  * Emit the local action on loading failed
-                  */
-                  c.localStore.dispatch(this.actions.addRolesWithTeEntFailed())
-                })
-            })),
-            takeUntil(c.destroy$)
-          )
+                        }, error => {
+                            /**
+                            * Emit the global action that shows some loading error message
+                            */
+                            globalStore.next(this.loadingBarActions.completeLoading());
+                            globalStore.next(this.notificationActions.addToast({
+                                type: 'error',
+                                options: {
+                                    title: error.message
+                                }
+                            }));
+                            /**
+                            * Emit the local action on loading failed
+                            */
+                            c.localStore.dispatch(this.actions.addRolesWithTeEntFailed())
+                        })
+                })),
+                takeUntil(c.destroy$)
+            )
         }
-      }
+    }
 
 }

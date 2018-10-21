@@ -1,17 +1,16 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { IAppState, InfEntityProjectRel, InfRole, InfTimePrimitive, U, ValidationService } from 'app/core';
+import { IAppState, InfEntityProjectRel, InfRole, InfTimePrimitive, ValidationService } from 'app/core';
+import { ExistenceTimeEdit, ExTimeHelpMode, ExTimeModalMode, RoleSet, RoleSetList, TeEntDetail } from 'app/core/state/models';
+import { roleSetKey, roleSetKeyFromParams, createRoleSet } from 'app/core/state/services/state-creator';
 import { dropLast, union } from 'ramda';
 import { Observable, Subscription } from 'rxjs';
 import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
-import { ExistenceTimeEdit, ExTimeHelpMode, ExTimeModalMode, RoleSet, RoleSetList, TeEntDetail } from 'app/core/state/models';
 import { DfhConfig } from '../../shared/dfh-config';
-import { StateCreatorService } from '../../shared/state-creator.service';
 import { ExistenceTimeActions } from '../existence-time.actions';
 import { ExTimeEditActions } from './existence-time-edit.actions';
 import { existenceTimeEditReducer } from './existence-time-edit.reducer';
-import { roleSetKeyFromParams, roleSetKey } from 'app/core/state/services/state-creator';
 
 
 @WithSubStore({
@@ -58,7 +57,6 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
   constructor(
     protected ngRedux: NgRedux<IAppState>,
     protected actions: ExistenceTimeActions,
-    protected stateCreator: StateCreatorService,
     protected fb: FormBuilder,
     protected ref: ChangeDetectorRef,
     protected validationService: ValidationService
@@ -239,9 +237,11 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
         if (this.formGroup.get(key) && this.formGroup.get(key).value) {
           const r = this.formGroup.get(key).value[0];
           role.time_primitive = r.time_primitive;
-          role.entity_version_project_rels = [{
-            calendar: r.entity_version_project_rels[0].calendar
-          } as InfEntityProjectRel]
+          if (role.entity_version_project_rels && role.entity_version_project_rels[0]) {
+            role.entity_version_project_rels = [{
+              calendar: r.entity_version_project_rels[0].calendar
+            } as InfEntityProjectRel]
+          }
           role.fk_property = fkProperty;
           break;
         }
@@ -260,9 +260,8 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
     role.fk_property = roleSetTemplate.property.dfh_pk_property
 
     // update the state
-    this.stateCreator.initializeRoleSet([role], roleSetTemplate).subscribe(roleSet => {
-      this.localStore.dispatch(this.roleSetAdded({ [roleSetKey(roleSet)]: roleSet }))
-    })
+    const roleSet = createRoleSet(roleSetTemplate, [role], this.ngRedux.getState().activeProject.crm, { pkUiContext: this.localStore.getState().pkUiContext })
+    this.localStore.dispatch(this.roleSetAdded({ [roleSetKey(roleSet)]: roleSet }))
 
     // add a form control
     this.formGroup.addControl(

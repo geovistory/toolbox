@@ -8,6 +8,7 @@ type Payload = CreateOrAddPeIt;
 interface MetaData {
   pkClass?: number;
   crm?: ProjectCrm;
+  pkUiContext?: number;
   itemsArray?: any[]
 };
 export type CreateOrAddPeItAPIAction = FluxStandardAction<Payload, MetaData>;
@@ -23,9 +24,9 @@ export class CreateOrAddPeItAPIActions {
   static readonly DESTROY = 'CreateOrAddPeIt::DESTROY';
 
   @dispatch()
-  initCreateForm = (pkClass: number, crm: ProjectCrm): CreateOrAddPeItAPIAction => ({
+  initCreateForm = (pkClass: number, crm: ProjectCrm, pkUiContext: number): CreateOrAddPeItAPIAction => ({
     type: CreateOrAddPeItAPIActions.INIT_CREATE_FORM,
-    meta: { pkClass, crm },
+    meta: { pkClass, crm, pkUiContext },
     payload: null,
   });
 

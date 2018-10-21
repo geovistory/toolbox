@@ -3,6 +3,7 @@ import { InitStateModule } from 'app/shared/components/init-state/init-state.mod
 import { Information2Module } from '../../information.module';
 import { CreateOrAddPeItComponent } from './create-or-add-pe-it.component';
 import { CreateOrAddPeIt } from './api/create-or-add-pe-it.models';
+import { ComConfig } from 'app/core';
 
 
 
@@ -18,6 +19,7 @@ export default sandboxOf(CreateOrAddPeItComponent, {
             basePath: ['sandboxState', 'createOrAddPeIt'],
             sandboxState: {
                 createOrAddPeIt: {
+                    pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE,
                     classAndTypePk: {
                         pkClass: 21
                     }

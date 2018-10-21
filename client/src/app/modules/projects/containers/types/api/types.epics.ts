@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfPersistentItemApi, DfhClassApi, InfPersistentItem, InfNamespaceApi, InfNamespace } from 'app/core';
+import { LoadingBarActions, InfPersistentItemApi, DfhClassApi, InfPersistentItem, InfNamespaceApi, InfNamespace, ComConfig } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable, combineLatest } from 'rxjs';
@@ -179,7 +179,9 @@ export class TypesAPIEpics {
               showRightPanel: false,
               showPropertiesHeader: false,
               showAddAPropertyButton: false
-            }, data[0], c.ngRedux.getState().activeProject.crm)
+            }, data[0], c.ngRedux.getState().activeProject.crm, {
+                pkUiContext: ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE
+              })
 
             /**
              * Emit the global action that completes the loading bar
