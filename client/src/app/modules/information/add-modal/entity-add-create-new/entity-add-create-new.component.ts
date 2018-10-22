@@ -74,7 +74,7 @@ export class EntityAddCreateNewComponent implements OnInit, OnDestroy {
         this.ref.detach()
         this.subs.forEach(sub => { sub.unsubscribe() })
 
-        this.localStore.dispatch(this.actions.peItCreateFormDestroyed())
+        // this.localStore.dispatch(this.actions.peItCreateFormDestroyed())
     }
 
     formChange(form: NgForm) {

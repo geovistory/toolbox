@@ -60,7 +60,7 @@ button {
 
 .form-control {
     @extend .form-control;
-    overflow: hidden;
+    // overflow: hidden;
 }
 
 // generate .bg-gray-* classes
@@ -318,7 +318,7 @@ $gv-color-selected: #00ffff;
 .gv-fh {
     @extend .flex-column;
     @extend .gv-grow-1;
-    flex-basis: 0;
+    flex-basis: 0%;
 }
 
 // full height and display flex

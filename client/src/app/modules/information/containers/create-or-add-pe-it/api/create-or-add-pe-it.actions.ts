@@ -2,11 +2,12 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { CreateOrAddPeIt } from './create-or-add-pe-it.models';
-import { ProjectCrm } from 'app/core';
+import { ProjectCrm, InfEntityAssociation } from 'app/core';
 
 type Payload = CreateOrAddPeIt;
 interface MetaData {
   pkClass?: number;
+  domainEntityAssociations?: InfEntityAssociation[];
   crm?: ProjectCrm;
   pkUiContext?: number;
   itemsArray?: any[]
@@ -24,9 +25,9 @@ export class CreateOrAddPeItAPIActions {
   static readonly DESTROY = 'CreateOrAddPeIt::DESTROY';
 
   @dispatch()
-  initCreateForm = (pkClass: number, crm: ProjectCrm, pkUiContext: number): CreateOrAddPeItAPIAction => ({
+  initCreateForm = (pkClass: number, domainEntityAssociations: InfEntityAssociation[], crm: ProjectCrm, pkUiContext: number): CreateOrAddPeItAPIAction => ({
     type: CreateOrAddPeItAPIActions.INIT_CREATE_FORM,
-    meta: { pkClass, crm, pkUiContext },
+    meta: { pkClass, domainEntityAssociations, crm, pkUiContext },
     payload: null,
   });
 

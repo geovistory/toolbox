@@ -168,10 +168,10 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
 
         // update the state
         const roleSet = createRoleSet(
-          new RoleSet(this.localStore.getState()),
+          new RoleSet({ isOutgoing: s.isOutgoing, property: s.property }),
           roles,
           this.ngRedux.getState().activeProject.crm,
-          { pkUiContext: getCreateOfEditableContext(s.pkUiContext) }
+          { pkUiContext: s.pkUiContext }
         )
         this.localStore.dispatch(this.actions.rolesCreated(roleSet._role_list))
 

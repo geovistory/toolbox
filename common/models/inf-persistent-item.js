@@ -162,6 +162,41 @@ module.exports = function (InfPersistentItem) {
           promiseArray.push(promise)
 
         }
+        /******************************************
+         * domain_entity_associations
+         ******************************************/
+        if (requestedPeIt.domain_entity_associations) {
+
+          // prepare parameters
+          const InfEntityAssociation = InfPersistentItem.app.models.InfEntityAssociation;
+
+          //… filter items that are truthy (not null), iterate over them,
+          // return the promise that the PeIt will be
+          // returned together with all nested items
+          const promise = Promise.map(requestedPeIt.domain_entity_associations.filter(item => (item)), (item) => {
+            // use the pk_entity from the created peIt to set the fk_domain_entity of the item
+            item.fk_domain_entity = resultingPeIt.pk_entity;
+            // find or create the item
+            return InfEntityAssociation.findOrCreateInfEntityAssociation(projectId, item);
+          }).then((items) => {
+            //attach the items to peit.domain_entity_associations
+            res.domain_entity_associations = [];
+            for (var i = 0; i < items.length; i++) {
+              const item = items[i];
+              if (item && item[0]) {
+                res.domain_entity_associations.push(item[0]);
+              }
+            }
+            return true;
+
+          }).catch((err) => {
+            return err;
+          })
+
+          // add promise for text properties
+          promiseArray.push(promise)
+
+        }
 
 
         if (promiseArray.length === 0) return resultingPeIts;
@@ -469,7 +504,8 @@ module.exports = function (InfPersistentItem) {
           'pk_entity', pk_appellation,
           'appellation_label', appellation_label,
           'r63_is_in_project_count', r63_is_in_project_count,
-          'r63_is_standard_in_project_count', r63_is_standard_in_project_count
+          'r63_is_standard_in_project_count', r63_is_standard_in_project_count,
+          'rank_for_pe_it', rank_for_pe_it
         )
       ) as appellation_labels,
       string_agg(appellations.appellation_string, ' • ') AS appellation_string,
@@ -485,6 +521,7 @@ module.exports = function (InfPersistentItem) {
         jsonb_agg(DISTINCT r63_in_project.fk_project) as projects,
         count(CASE WHEN r63_in_project.is_in_project THEN 1 END) as r63_is_in_project_count,
         count(CASE WHEN r63_in_project.is_standard_in_project THEN 1 END) as r63_is_standard_in_project_count,
+        r63.rank_for_pe_it,
         r63.fk_entity as pk_named_entity
         FROM
         information.v_role as r64
@@ -521,7 +558,7 @@ module.exports = function (InfPersistentItem) {
         -- WHERE r64.fk_property = 1113 --'R64'
         -- AND r63.fk_property IN (1192, 1193, 1194, 1195) --'R63'
         WHERE appe_usage.fk_class = 365 --'F52'
-        GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity
+        GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity, r63.rank_for_pe_it
       ) AS appellations
       ON appellations.pk_named_entity = pi.pk_entity
     	INNER JOIN (SELECT fk_entity, jsonb_agg(fk_project) as projects_array from information.entity_version_project_rel GROUP BY fk_entity) AS projects

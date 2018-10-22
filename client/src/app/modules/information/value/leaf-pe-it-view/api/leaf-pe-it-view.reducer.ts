@@ -1,4 +1,4 @@
-import { clone } from 'ramda';
+import { clone, omit } from 'ramda';
 import { Action } from 'redux';
 import { LeafPeItViewAPIAction, LeafPeItViewAPIActions } from './leaf-pe-it-view.actions';
 import { LeafPeItView } from './leaf-pe-it-view.models';
@@ -43,6 +43,18 @@ export function leafPeItViewReducer(state: LeafPeItView = INITIAL_STATE, a: Acti
         pkEntity: action.meta.pkEntity
       };
       break;
+
+    case LeafPeItViewAPIActions.OPEN_SELECT_OR_CREATE_MODAL:
+      state = {
+        ...state,
+        selectOrCreate: action.meta.selectOrCreate
+      };
+      break;
+
+    case LeafPeItViewAPIActions.CLOSE_SELECT_OR_CREATE_MODAL:
+      state = omit(['selectOrCreate'], state);
+      break;
+
 
     case LeafPeItViewAPIActions.REMOVE:
       state = {}

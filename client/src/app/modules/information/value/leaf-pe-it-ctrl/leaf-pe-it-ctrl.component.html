@@ -1,4 +1,26 @@
-<button *ngIf="!pkEntity" type="button" name="button" class="btn btn-block btn-primary" (click)="openModal()">Select a {{classConfig?.label}}</button>
+<ng-template #modalContent let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
 
+        <gv-create-or-add-pe-it class="gv-flex-fh" [selectPeItMode]="'true'" [basePath]="basePath.concat('selectOrCreate')" (done)="modal.close($event.pk_entity)"
+            (cancel)="modal.dismiss()"></gv-create-or-add-pe-it>
+
+
+    </div>
+    <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+    </div> -->
+</ng-template>
+
+
+
+<button *ngIf="!pkEntity" type="button" name="button" class="btn btn-block btn-primary" (click)="onOpenModal(modalContent)">
+    Select a {{(classConfig$ | async)?.label}}
+</button>
 
 <gv-leaf-pe-it-view *ngIf="pkEntity" [pkEntity]="pkEntity" [basePath]="basePath" [isCircular]="false"></gv-leaf-pe-it-view>

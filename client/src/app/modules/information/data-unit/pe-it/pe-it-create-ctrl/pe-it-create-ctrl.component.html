@@ -1,6 +1,13 @@
 <form [formGroup]="formGroup" *ngIf="formGroup">
-  <div *ngFor="let entry of (_children$ | async) | keys; trackBy:getKey" >
-      <gv-pe-it-role-set-create-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath"
-       [index]="entry.key" [formControlName]="entry.key" (touched)="markAsTouched()"></gv-pe-it-role-set-create-ctrl>
-    </div>
-  </form>
+
+  <div class="form-group"  *ngIf="formGroup.get('_typeCtrl')">
+    <label class="h5">Type</label>
+    <gv-type-ctrl formControlName="_typeCtrl" [basePath]="basePath.concat('_type').concat('_typeCtrl')">
+    </gv-type-ctrl>
+  </div>
+
+  <div class="form-group" *ngFor="let entry of (_children$ | async) | keys; trackBy:getKey">    
+    <gv-pe-it-role-set-create-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key"
+      [formControlName]="entry.key" (touched)="markAsTouched()"></gv-pe-it-role-set-create-ctrl>
+  </div>
+</form>

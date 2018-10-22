@@ -67,34 +67,36 @@ export class EntitySearchHitComponent implements OnInit {
 
     /** Set the standardAppellationLabel */
     if (this.repositorySearch) {
-      let highestCount = 0;
-      let pk_standard_label;
+      // let highestCount = 0;
+      // let pk_standard_label;
       this.persistentItem.appellation_labels.forEach(label => {
-        if (label.r63_is_standard_in_project_count > highestCount) {
-          highestCount = label.r63_is_standard_in_project_count;
+        if (label.rank_for_pe_it == 1) {
+          // highestCount = label.r63_is_standard_in_project_count;
           this.standardAppellationLabel = new AppellationLabel(
             label.appellation_label
           )
-          pk_standard_label = label.pk_entity;
-        }
-      });
-
-
-      /** Set the moreAppellationLabels */
-      this.persistentItem.appellation_labels.forEach(label => {
-        if (pk_standard_label !== label.pk_entity) {
+          // pk_standard_label = label.pk_entity;
+        } else {
           this.moreAppellationLabels
             .push(new AppellationLabel(label.appellation_label))
         }
+
       });
 
-    }
-    else {
+
+      // /** Set the moreAppellationLabels */
+      // this.persistentItem.appellation_labels.forEach(label => {
+      //   if (pk_standard_label !== label.pk_entity) {
+      //     this.moreAppellationLabels
+      //       .push(new AppellationLabel(label.appellation_label))
+      //   }
+      // });
+
+    } else {
       this.persistentItem.appellation_labels.forEach(label => {
         if (label.r63_is_standard_in_project != true) {
           this.moreAppellationLabels.push(new AppellationLabel(label.appellation_label))
-        }
-        else if (label.r63_is_standard_in_project == true) {
+        } else if (label.r63_is_standard_in_project == true) {
           this.standardAppellationLabel = new AppellationLabel(label.appellation_label)
         }
       });

@@ -8,6 +8,7 @@ import { clone, groupBy, indexBy, omit, prop, sort } from 'ramda';
 import * as Config from '../../../../../../common/config/Config';
 import { AppeDetail, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleSet, TeEntDetail, TimePrimitveDetail, RoleDetailList } from '../models';
 import { TypeDetail } from '../models/type-detail';
+import { TypeCtrl } from 'app/modules/information/type/type-ctrl/api/type-ctrl.models';
 
 /***************************************************
 * General Interfaces
@@ -26,7 +27,7 @@ export class StateSettings {
     // By defaut, the state creator acts like it was in the dataunits editable context.
     pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
 
-    // If the provided pkUiContext points to a editable context, 
+    // If the provided pkUiContext points to a editable context,
     // you can set isViewMode to true to hide all editing functionalities from *-editable.component.ts.
     isViewMode?: boolean;
 
@@ -70,6 +71,7 @@ export function getCreateOfEditableContext(pkUiEditableContext: number): number 
             break;
     }
 }
+
 
 /***************************************************
 * Data Unit create functions
@@ -139,19 +141,27 @@ export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity
 * @param settings setting object that is passed through the chain of from() methods of the different state classes
 */
 export function createDataUnitTypeDetail(options: TypeDetail, dataUnit: InfTemporalEntity | InfPersistentItem, crm: ProjectCrm, settings: StateSettings): TypeDetail {
-
     // if for instances of this class we do not want types, return
     if (!dataUnit.fk_class || !Config.PK_CLASS_PK_HAS_TYPE_MAP[dataUnit.fk_class]) return;
+
+    let typeEntityAssociation: InfEntityAssociation;
+
+    // try to find domain entity association with type information
+    if (dataUnit.domain_entity_associations) {
+        typeEntityAssociation = dataUnit.domain_entity_associations
+            .find(ea => ea.fk_property === Config.PK_CLASS_PK_HAS_TYPE_MAP[dataUnit.fk_class]);
+    }
 
     return createTypeDetail(
         {
             _typeCtrl: {
-                pkTypedClass: dataUnit.fk_class
+                pkTypedClass: dataUnit.fk_class,
+                // If create mode, fetch type here. THis should be passed in by dataUnit
+                entityAssociation: typeEntityAssociation
             },
             fkDomainEntity: dataUnit.pk_entity
         },
-        !dataUnit.domain_entity_associations ? undefined : !dataUnit.domain_entity_associations.length ? undefined :
-            dataUnit.domain_entity_associations.find(assoc => assoc.fk_property === Config.PK_CLASS_PK_HAS_TYPE_MAP[dataUnit.fk_class]),
+        typeEntityAssociation,
         crm,
         settings
     )
@@ -547,7 +557,7 @@ export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: I
         // check if it is circular
         if (
             // if not creat mode and the pk's of both roles are the same
-            (!isCreateContext(settings.pkUiContext) && role.pk_entity === settings.parentRolePk) ||
+            (settings.parentRolePk && !isCreateContext(settings.pkUiContext) && role.pk_entity === settings.parentRolePk) ||
             // or if we are in create mode and the initialized role has a fk_entity
             // (means this is the circular role added upon start creating a new information)
             (isCreateContext(settings.pkUiContext) && role.fk_entity)

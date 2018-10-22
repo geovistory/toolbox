@@ -1,14 +1,16 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ClassConfig, IAppState, InfPersistentItem, PeItDetail, SubstoreComponent, U, InfPersistentItemApi } from 'app/core';
+import { ClassConfig, IAppState, InfPersistentItem, PeItDetail, SubstoreComponent, U, InfPersistentItemApi, InfEntityAssociation } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, combineLatest } from 'rxjs';
 import { CreateOrAddPeItAPIActions } from './api/create-or-add-pe-it.actions';
 import { CreateOrAddPeItAPIEpics } from './api/create-or-add-pe-it.epics';
 import { CreateOrAddPeIt } from './api/create-or-add-pe-it.models';
 import { createOrAddPeItReducer } from './api/create-or-add-pe-it.reducer';
 import { ClassAndTypePk } from '../class-and-type-selector/api/class-and-type-selector.models';
+import * as Config from '../../../../../../../common/config/Config';
+import { takeUntil, first } from 'rxjs/operators';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -29,6 +31,7 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
 
   // path to the substore
   @Input() basePath: string[];
+  @Input() selectPeItMode: boolean;
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
@@ -36,8 +39,9 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
 
   // class of the peIt to add or create
   @select() classAndTypePk$: Observable<ClassAndTypePk>;
+  @select() pkUiContext$: Observable<number>;
 
-  // emits the nested peIt, no matter if created, added or opened!
+  // emits the nested peIt, no matter if created, added, opened or selected!
   @Output() done = new EventEmitter<InfPersistentItem>();
 
   // on cancel
@@ -65,16 +69,34 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
     this.localStore = this.ngRedux.configureSubStore(this.basePath, createOrAddPeItReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    const pkClass = this.localStore.getState().classAndTypePk.pkClass;
-    const pkUiContext = this.localStore.getState().pkUiContext;
 
-    if (!pkClass) throw Error('please provide a pkClass.');
-    if (!pkUiContext) throw Error('please provide a pkUiContext.');
+    combineLatest(this.classAndTypePk$, this.pkUiContext$).pipe(
+      first((d) => d.filter((i) => (!i)).length === 0),
+      takeUntil(this.destroy$)
+    ).subscribe((d) => {
 
+      const pkClass = d[0].pkClass;
+      const pkType = d[0].pkType;
+      const pkUiContext = d[1];
+      const crm = this.ngRedux.getState().activeProject.crm;
+      // if (!pkClass) throw Error('please provide a pkClass.');
+      // if (!pkUiContext) throw Error('please provide a pkUiContext.');
 
-    this.initCreateForm(pkClass, this.ngRedux.getState().activeProject.crm, pkUiContext);
+      this.classConfig = crm.classes[pkClass];
 
-    this.classConfig = this.ngRedux.getState().activeProject.crm.classes[pkClass];
+      // create the entityAssociation for the type
+      const domainEntityAssociations: InfEntityAssociation[] = [];
+      if (pkType) {
+        domainEntityAssociations.push({
+          fk_domain_entity: undefined,
+          fk_property: Config.PK_CLASS_PK_HAS_TYPE_MAP[pkClass],
+          fk_range_entity: pkType
+        } as InfEntityAssociation)
+      }
+
+      this.initCreateForm(pkClass, domainEntityAssociations, crm, pkUiContext);
+    })
+
 
     this.form.valueChanges.takeUntil(this.destroy$).subscribe(val => {
       this.searchString$.next(U.stringForPeIt(val.peIt))

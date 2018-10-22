@@ -3,11 +3,13 @@ import { Injectable } from '@angular/core';
 import { PeItDetail, ProjectDetail } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { LeafPeItView } from './leaf-pe-it-view.models';
+import { CreateOrAddPeIt } from 'app/modules/information/containers/create-or-add-pe-it/api/create-or-add-pe-it.models';
 
 type Payload = LeafPeItView;
 interface MetaData {
   pkEntity?: number, projectDetail?: ProjectDetail,
-  peItDetail?: PeItDetail
+  peItDetail?: PeItDetail;
+  selectOrCreate?: CreateOrAddPeIt
 };
 export type LeafPeItViewAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -18,6 +20,8 @@ export class LeafPeItViewAPIActions {
   static readonly LOAD_FAILED = 'LeafPeItView::LOAD_FAILED';
 
   static readonly SET_PK_ENTITY = 'LeafPeItView::SET_PK_ENTITY';
+  static readonly OPEN_SELECT_OR_CREATE_MODAL = 'LeafPeItView::OPEN_SELECT_OR_CREATE_MODAL';
+  static readonly CLOSE_SELECT_OR_CREATE_MODAL = 'LeafPeItView::CLOSE_SELECT_OR_CREATE_MODAL';
 
   static readonly REMOVE = 'LeafPeItView::REMOVE';
 
@@ -61,6 +65,22 @@ export class LeafPeItViewAPIActions {
     meta: null,
     payload: null
   })
+
+
+  @dispatch()
+  openModal = (selectOrCreate: CreateOrAddPeIt): LeafPeItViewAPIAction => ({
+    type: LeafPeItViewAPIActions.OPEN_SELECT_OR_CREATE_MODAL,
+    meta: { selectOrCreate },
+    payload: null,
+  });
+
+  @dispatch()
+  closeModal = (): LeafPeItViewAPIAction => ({
+    type: LeafPeItViewAPIActions.CLOSE_SELECT_OR_CREATE_MODAL,
+    meta: null,
+    payload: null,
+  });
+
 
   /*********************************************************************
   *  Method to distroy the slice of store

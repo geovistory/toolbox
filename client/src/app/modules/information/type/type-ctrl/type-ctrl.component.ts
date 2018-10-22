@@ -5,7 +5,7 @@ import { IAppState, InfEntityAssociation, SubstoreComponent, U } from 'app/core'
 import { RootEpics } from 'app/core/store/epics';
 import { DropdownTreeviewComponent, TreeviewItem, TreeviewI18n, TreeviewConfig } from 'ngx-treeview';
 import { combineLatest, Observable, Subject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
+import { first, takeUntil, filter, distinctUntilChanged } from 'rxjs/operators';
 import { TypeCtrlAPIActions } from './api/type-ctrl.actions';
 import { TypeCtrlAPIEpics } from './api/type-ctrl.epics';
 import { TypeCtrl, TypeOptions } from './api/type-ctrl.models';
@@ -46,7 +46,7 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
   @select() pkTypedClass$: Observable<number>;
-  @select() items$: Observable<TypeOptions>;
+  @select() items$: Observable<TreeviewItem[]>;
 
   // mark control as touched
   @Output() touched = new EventEmitter<void>();
@@ -54,8 +54,8 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
   @ViewChild(DropdownTreeviewComponent) dropdownTreeviewComponent: DropdownTreeviewComponent;
   private dropdownTreeviewSelectI18n: DropdownTreeviewSelectI18n;
 
-  // the value of the control;
-  entityAssociation: InfEntityAssociation;
+  // the value given by writeValue;
+  entityAssociation$ = new Subject<InfEntityAssociation>();
 
   // the selected type option
   selectedTypeOption: TreeviewItem;
@@ -108,6 +108,23 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
         this.dropdownTreeviewComponent.dropdownDirective.open()
       }, 0);
     }
+
+    // Listen for items to be loaded and the writeValue
+    combineLatest(this.entityAssociation$, this.items$).pipe(
+      filter((d) => (d.filter(item => (!item)).length === 0)),
+      takeUntil(this.destroy$)
+    ).subscribe((d) => {
+      const items = d[1], ea = d[0];
+
+      const selected = items.find((item) => item.value == ea.fk_range_entity)
+
+      if (this.dropdownTreeviewSelectI18n.selectedItem !== selected) {
+        this.dropdownTreeviewSelectI18n.selectedItem = selected;
+        // this.emitOnChange();
+      }
+
+    })
+
   }
 
   ngOnDestroy() {
@@ -166,11 +183,8 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
    */
   writeValue(assoc: InfEntityAssociation): void {
 
-    if (assoc && assoc.domain_pe_it) {
-      this.selectItem(new TreeviewItem({
-        value: assoc.domain_pe_it.pk_entity,
-        text: U.stringForPeIt(assoc.domain_pe_it)
-      }))
+    if (assoc) {
+      this.entityAssociation$.next(assoc);
     }
 
     if (this.registered) this.emitOnChange();

@@ -19,7 +19,7 @@ import { QuillModule } from '../quill';
 import { EntityAddAddExistingComponent } from './add-modal/entity-add-add-existing/entity-add-add-existing.component';
 import { EntityAddChooseClassComponent } from './add-modal/entity-add-choose-class/entity-add-choose-class.component';
 import { EntityAddCreateNewComponent } from './add-modal/entity-add-create-new/entity-add-create-new.component';
-import { EntityAddModalComponent } from './add-modal/entity-add-modal/entity-add-modal.component';
+// import { EntityAddModalComponent } from './add-modal/entity-add-modal/entity-add-modal.component';
 import { EntityAddSearchExistingComponent } from './add-modal/entity-add-search-existing/entity-add-search-existing.component';
 import { AppeLangCreateCtrlAPIActions } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.actions';
 import { AppeLangCreateCtrlAPIEpics } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.epics';
@@ -163,11 +163,11 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     PolygonsEditorLayerComponent,
 
     // Add Modal
-    EntityAddAddExistingComponent,
-    EntityAddChooseClassComponent,
-    EntityAddCreateNewComponent,
-    EntityAddModalComponent,
-    EntityAddSearchExistingComponent,
+    // EntityAddAddExistingComponent,
+    // EntityAddChooseClassComponent,
+    // EntityAddCreateNewComponent,
+    // EntityAddModalComponent,
+    // EntityAddSearchExistingComponent,
 
     // Classe and Type select
     ClassAndTypeSelectorComponent,
@@ -320,7 +320,7 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     // Put all components here, that are used by another module, or in a sandbox
 
     // Add Modal
-    EntityAddModalComponent,
+    // EntityAddModalComponent,
 
     // Classe and Type select
     ClassAndTypeSelectorComponent,
@@ -384,7 +384,7 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
   ],
   entryComponents: [
     LeafPeItViewModalComponent,
-    EntityAddModalComponent,
+    // EntityAddModalComponent,
     ExistenceTimeModalComponent
   ]
 })

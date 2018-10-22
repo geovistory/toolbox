@@ -7,7 +7,7 @@
 
 <!-- Body -->
 <div class="d-flex gv-fh m-3 px-3 gv-scroll-y-auto">
-  <div class="d-flex flex-row gv-grow-1 px-3 pb-1" style="flex-basis:100%">
+  <div class="d-flex flex-row gv-grow-1 pb-1" style="flex-basis:100%">
 
     <div class="gv-grow-1" style="flex-basis:50%;">
       <h4 class="mb-3">Create a new {{classConfig?.label}}</h4>
@@ -28,10 +28,11 @@
 
 
     <div class="ml-5 mt-5 pl-5 gv-grow-1" style="flex-basis:50%;">
-      <!-- <h4 class="mb-3">...or add an existing {{classConfig?.label}}</h4> -->
+      <h4 class="mb-3" *ngIf="!selectPeItMode">...or add an existing {{classConfig?.label}}</h4>
+      <h4 class="mb-3" *ngIf="selectPeItMode">...or select an existing {{classConfig?.label}}</h4>
 
-      <gv-pe-it-search-existing [basePath]="basePath.concat('searchExisting')" [pkClass]="(classAndTypePk$ | async)?.pkClass"
-        [searchString$]="searchString$" (onAddExisting)="onAddExisting($event)" (onOpenExisting)="onOpenExisting($event)"></gv-pe-it-search-existing>
+      <gv-pe-it-search-existing [basePath]="basePath.concat('searchExisting')" [selectPeItMode]="selectPeItMode"
+        [searchString$]="searchString$" (onAddExisting)="onAddExisting($event)" (onOpenExisting)="onOpenExisting($event)" (onSelect)="onOpenExisting($event)"></gv-pe-it-search-existing>
     </div>
 
   </div>

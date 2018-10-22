@@ -70,7 +70,7 @@ export class EntityAddAddExistingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.localStore.dispatch(this.actions.entityAddExistingDestroyed())
+    // this.localStore.dispatch(this.actions.entityAddExistingDestroyed())
   }
 
 

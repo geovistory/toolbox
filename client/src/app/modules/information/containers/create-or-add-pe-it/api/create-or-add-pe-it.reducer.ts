@@ -15,7 +15,13 @@ export function createOrAddPeItReducer(state: CreateOrAddPeIt = INITIAL_STATE, a
     case CreateOrAddPeItAPIActions.INIT_CREATE_FORM:
       state = {
         ...state,
-        createForm: createPeItDetail({}, new InfPersistentItem({ fk_class: action.meta.pkClass }), action.meta.crm, { pkUiContext: action.meta.pkUiContext })
+        createForm: createPeItDetail({}, new InfPersistentItem({
+          fk_class: action.meta.pkClass,
+          domain_entity_associations: action.meta.domainEntityAssociations
+        }), action.meta.crm, { pkUiContext: action.meta.pkUiContext }),
+        searchExisting: {
+          pkClass: action.meta.pkClass
+        }
       };
       break;
 

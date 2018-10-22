@@ -1,5 +1,5 @@
 import { NgRedux, WithSubStore } from '@angular-redux/store';
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { InfPersistentItem, InfTemporalEntity, U, UiContext } from 'app/core';
 import { PeItCtrlBase } from '../pe-it-ctrl.base';
@@ -36,14 +36,21 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
     protected actions: PeItActions,
     protected fb: FormBuilder,
     protected rootEpics: RootEpics,
-    protected dataUnitEpics: DataUnitAPIEpics
+    protected dataUnitEpics: DataUnitAPIEpics,
+    private ref: ChangeDetectorRef
   ) {
     super(ngRedux, actions, fb, rootEpics, dataUnitEpics)
   }
 
 
   initFormCtrls(): void {
-    // add controls for each roleSet of _children
+    // add type control
+    this._type$.takeUntil(this.destroy$).subscribe((typeDetail) => {
+      if (typeDetail && typeDetail._typeCtrl) {
+        this.formGroup.addControl('_typeCtrl', new FormControl(typeDetail._typeCtrl.entityAssociation))
+      }
+    })
+    // add controls for each roleSet of _children    
     this._children$.takeUntil(this.destroy$).subscribe(roleSetList => {
       U.obj2KeyValueArr(roleSetList).forEach(item => {
         this.formGroup.addControl(item.key, new FormControl(
@@ -53,11 +60,11 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
           ]
         ))
       })
+
+      this.ref.detectChanges()
     })
 
   }
-
-
 
 
   subscribeFormChanges(): void {
@@ -70,8 +77,14 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
       const peIt = new InfPersistentItem();
 
       peIt.pi_roles = [];
+      peIt.domain_entity_associations = [];
       Object.keys(this.formGroup.controls).forEach(key => {
-        if (this.formGroup.get(key)) {
+        if (key == '_typeCtrl') {
+          peIt.domain_entity_associations = [
+            ...peIt.domain_entity_associations,
+            ...this.formGroup.get(key).value
+          ]
+        } else if (this.formGroup.get(key)) {
           peIt.pi_roles = [...peIt.pi_roles, ...this.formGroup.get(key).value]
         }
       })

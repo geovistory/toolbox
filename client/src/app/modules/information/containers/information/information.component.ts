@@ -13,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EntityAddModalService } from '../../shared/entity-add-modal.service';
 import { MentionedEntityCtrlActions } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 import { mentionedEntityCtrlReducer } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.reducer';
-import { EntityAddModalComponent } from '../../add-modal/entity-add-modal/entity-add-modal.component';
+// import { EntityAddModalComponent } from '../../add-modal/entity-add-modal/entity-add-modal.component';
 import { takeUntil, first } from 'rxjs/operators';
 import { CreateOrAddPeIt } from '../create-or-add-pe-it/api/create-or-add-pe-it.models';
 
@@ -77,7 +77,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     public ngRedux: NgRedux<IAppState>,
     private activatedRoute: ActivatedRoute,
     private modalService: NgbModal,
-    private entityAddModalService: EntityAddModalService,
+    // private entityAddModalService: EntityAddModalService,
     private router: Router,
     private mEntitiesActions: MentionedEntityCtrlActions
 
@@ -137,25 +137,25 @@ export class InformationComponent extends InformationAPIActions implements OnIni
       }
     })
 
-    this.entityAddModalService.onAdd.subscribe(success => {
-      this.searchProjectPeIts();
-    })
+    // this.entityAddModalService.onAdd.subscribe(success => {
+    //   this.searchProjectPeIts();
+    // })
 
-    this.entityAddModalService.onOpen.subscribe(pkInfPersistentItem => {
-      this.openEntity(pkInfPersistentItem);
-    })
+    // this.entityAddModalService.onOpen.subscribe(pkInfPersistentItem => {
+    //   this.openEntity(pkInfPersistentItem);
+    // })
   }
 
   searchProjectPeIts() {
     this.search(this.projectId, this.searchString, this.limit, this.page)
   }
 
-  openEntityModal() {
-    const modalRef = this.modalService.open(EntityAddModalComponent, this.entityModalOptions);
-    modalRef.componentInstance.projectId = this.projectId;
-    this.entityAddModalService.state = 'choose-class';
+  // openEntityModal() {
+  //   const modalRef = this.modalService.open(EntityAddModalComponent, this.entityModalOptions);
+  //   modalRef.componentInstance.projectId = this.projectId;
+  //   this.entityAddModalService.state = 'choose-class';
 
-  }
+  // }
 
   openEntity(pkInfPersistentItem) {
     this.router.navigate(['../entity', pkInfPersistentItem], {

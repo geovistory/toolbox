@@ -7,7 +7,7 @@ import { PeItSearchExisting } from './api/pe-it-search-existing.models';
 import { PeItSearchExistingAPIEpics } from './api/pe-it-search-existing.epics';
 import { PeItSearchExistingAPIActions } from './api/pe-it-search-existing.actions';
 import { peItSearchExistingReducer } from './api/pe-it-search-existing.reducer';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, takeUntil, filter, first } from 'rxjs/operators';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -29,7 +29,9 @@ export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions im
   // path to the substore
   @Input() basePath: string[];
 
-  @Input() pkClass: number;
+  @Input() selectPeItMode: boolean;
+
+  @select() pkClass$: Observable<number>;
 
   @Input() searchString$: Observable<string>;
 
@@ -47,6 +49,7 @@ export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions im
   @Output() onOpenExisting = new EventEmitter<number>();
 
   // Search
+  pkClass: number;
   searchString = '';
   minSearchStringLength = 2;
 
@@ -74,21 +77,27 @@ export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions im
     this.localStore = this.ngRedux.configureSubStore(this.basePath, peItSearchExistingReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    if (!this.pkClass) throw Error('please provide a pkClass')
+    // if (!this.pkClass) throw Error('please provide a pkClass')
+    this.pkClass$.pipe(
+      first(d => !!d),
+      takeUntil(this.destroy$))
+      .subscribe(pkClass => {
+        this.pkClass = pkClass;
+        this.classConfig = this.ngRedux.getState().activeProject.crm.classes[this.pkClass];
 
-    this.classConfig = this.ngRedux.getState().activeProject.crm.classes[this.pkClass];
-
-    this.searchString$.pipe(
-      debounceTime(400)
-    ).subscribe(newValue => {
-      this.searchString = newValue;
-      if (newValue.length >= this.minSearchStringLength) {
-        this.page = 1;
-        this.search(this.searchString, this.limit, this.page, this.pkClass);
-      } else {
-        this.searchFailed();
-      }
-    });
+        this.searchString$.pipe(
+          debounceTime(400),
+          takeUntil(this.destroy$)
+        ).subscribe(newValue => {
+          this.searchString = newValue;
+          if (newValue.length >= this.minSearchStringLength) {
+            this.page = 1;
+            this.search(this.searchString, this.limit, this.page, this.pkClass);
+          } else {
+            this.searchFailed();
+          }
+        });
+      })
 
     // set hitsFound true, once there are some hits
     this.persistentItems$.takeUntil(this.destroy$).subscribe((i) => {
