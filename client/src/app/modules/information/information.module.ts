@@ -16,11 +16,6 @@ import { DimensionChangeModule } from '../../shared/directives/dimension-change/
 import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 import { GvAngularCesiumModule } from '../gv-angular-cesium/angular-cesium.module';
 import { QuillModule } from '../quill';
-import { EntityAddAddExistingComponent } from './add-modal/entity-add-add-existing/entity-add-add-existing.component';
-import { EntityAddChooseClassComponent } from './add-modal/entity-add-choose-class/entity-add-choose-class.component';
-import { EntityAddCreateNewComponent } from './add-modal/entity-add-create-new/entity-add-create-new.component';
-// import { EntityAddModalComponent } from './add-modal/entity-add-modal/entity-add-modal.component';
-import { EntityAddSearchExistingComponent } from './add-modal/entity-add-search-existing/entity-add-search-existing.component';
 import { AppeLangCreateCtrlAPIActions } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.actions';
 import { AppeLangCreateCtrlAPIEpics } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.epics';
 import { AppeLangCreateCtrlComponent } from './appe-lang/appe-lang-create-ctrl/appe-lang-create-ctrl.component';
@@ -45,6 +40,9 @@ import { CreateOrAddPeItComponent } from './containers/create-or-add-pe-it/creat
 import { InformationAPIActions } from './containers/information/api/information.actions';
 import { InformationAPIEpics } from './containers/information/api/information.epics';
 import { InformationComponent } from './containers/information/information.component';
+import { ListAPIActions } from './containers/list/api/list.actions';
+import { ListAPIEpics } from './containers/list/api/list.epics';
+import { ListComponent } from './containers/list/list.component';
 import { MapComponent } from './containers/map/map.component';
 import { PeItLayerComponent } from './containers/pe-it-layer/pe-it-layer.component';
 import { PeItSearchExistingAPIActions } from './containers/pe-it-search-existing/api/pe-it-search-existing.actions';
@@ -121,6 +119,22 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
+import { SectionListComponent } from './containers/section-list/section-list.component';
+import { SectionListAPIActions } from './containers/section-list/api/section-list.actions';
+import { SectionListAPIEpics } from './containers/section-list/api/section-list.epics';
+import { CreateOrAddEntityAssociationComponent } from './containers/create-or-add-entity-association/create-or-add-entity-association.component';
+import { EntityAssociationCreateCtrlComponent } from './entity-association/entity-association-create-ctrl/entity-association-create-ctrl.component';
+import { EntityAssociationAPIActions } from './entity-association/api/entity-association.actions';
+import { EntityAssociationAPIEpics } from './entity-association/api/entity-association.epics';
+import { EntityAssociationCreateOrAddComponent } from './entity-association/entity-association-create-or-add/entity-association-create-or-add.component';
+import { EntityAssociationExistingListComponent } from './entity-association/entity-association-existing-list/entity-association-existing-list.component';
+import { ReprosComponent } from './containers/repros/repros.component';
+import { ReprosAPIActions } from './containers/repros/api/repros.actions';
+import { ReprosAPIEpics } from './containers/repros/api/repros.epics';
+import { TextEditorComponent } from './containers/text-editor/text-editor.component';
+import { TextEditorAPIActions } from './containers/text-editor/api/text-editor.actions';
+import { TextEditorAPIEpics } from './containers/text-editor/api/text-editor.epics';
+
 
 
 
@@ -157,10 +171,13 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     EntitySearchHitComponent,
     PeItTimelineComponent,
 
-    // PeIt Map
+    // PeIt specific user interfaces
     MapComponent,
     PeItLayerComponent,
     PolygonsEditorLayerComponent,
+    SectionListComponent,
+    ReprosComponent,
+    TextEditorComponent,
 
     // Add Modal
     // EntityAddAddExistingComponent,
@@ -213,6 +230,9 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     TeEntRoleCreateCtrlComponent,
     TeEntRoleEditableComponent,
 
+    // EntityAssociation
+    EntityAssociationCreateCtrlComponent,
+
     // Value
     AppellationCtrlComponent,
     AppellationViewComponent,
@@ -247,6 +267,11 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     TeEntHeaderComponent,
     CreateOrAddPeItComponent,
     PeItSearchExistingComponent,
+    ListComponent,
+    CreateOrAddEntityAssociationComponent,
+    EntityAssociationCreateCtrlComponent,
+    EntityAssociationCreateOrAddComponent,
+    EntityAssociationExistingListComponent,
 
 
 
@@ -260,18 +285,31 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     InformationAPIActions,
     InformationAPIEpics,
 
+    // List
+    ListAPIActions,
+    ListAPIEpics,
 
     // Classe and Type select
     ClassAndTypeSelectorAPIActions,
     ClassAndTypeSelectorAPIEpics,
 
     // Data Unit
+    ListAPIEpics,
+    ListAPIActions,
     DataUnitAPIEpics,
     DataUnitActions,
     PeItActions,
     PeItApiEpics,
     TeEntActions,
     TeEntAPIEpics,
+
+    // PeIt specific user interfaces
+    SectionListAPIActions,
+    SectionListAPIEpics,
+    ReprosAPIActions,
+    ReprosAPIEpics,
+    TextEditorAPIActions,
+    TextEditorAPIEpics,
 
     // Existence Time
     ExistenceTimeActions,
@@ -286,6 +324,10 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
 
     // Role
     RoleActions,
+
+    // Entity Association
+    EntityAssociationAPIEpics,
+    EntityAssociationAPIActions,
 
     // Value
     AppellationService,
@@ -315,6 +357,7 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     PeItSearchExistingAPIEpics
 
 
+
   ],
   exports: [
     // Put all components here, that are used by another module, or in a sandbox
@@ -331,6 +374,11 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     PeItEditableComponent,
     PeItAddFormComponent,
     PeItCreateFormComponent,
+    TextEditorComponent,
+
+    // PeIt specific user interfaces
+    SectionListComponent,
+    ReprosComponent,
 
     // Data Unit > TeEnt
     TeEntAddCtrlComponent,
@@ -360,6 +408,9 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     TeEntRoleCreateCtrlComponent,
     TeEntRoleEditableComponent,
 
+    // Entity Association
+    EntityAssociationCreateCtrlComponent,
+
     // Value
     AppellationCtrlComponent,
     AppellationViewComponent,
@@ -373,18 +424,22 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     PlaceViewComponent,
 
     // Type
+    TypeEditableComponent,
     TypeCtrlComponent,
 
     // Reusable
     TextPropertyComponent,
     TeEntLabelComponent,
     CreateOrAddPeItComponent,
-    PeItSearchExistingComponent
-
+    PeItSearchExistingComponent,
+    ListComponent,
+    TeEntLabelComponent,
+    PeItLabelComponent,
+    ClassInfoComponent,
+    EditorHeaderComponent
   ],
   entryComponents: [
     LeafPeItViewModalComponent,
-    // EntityAddModalComponent,
     ExistenceTimeModalComponent
   ]
 })

@@ -9,6 +9,8 @@ import * as Config from '../../../../../../common/config/Config';
 import { AppeDetail, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleSet, TeEntDetail, TimePrimitveDetail, RoleDetailList } from '../models';
 import { TypeDetail } from '../models/type-detail';
 import { TypeCtrl } from 'app/modules/information/type/type-ctrl/api/type-ctrl.models';
+import { EntityAssociationDetail } from '../models/entity-association-detail';
+import { EntityAssociationList } from '../models/entity-association-list';
 
 /***************************************************
 * General Interfaces
@@ -579,6 +581,71 @@ export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: I
     return new RoleDetail(roleDetail);
 }
 
+
+
+/***************************************************
+* Entity Association State create functions
+***************************************************/
+
+/**
+ * Creates a EntityAssociationDetail from provided input data
+ *
+ * @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+ * @param dbData nested object as it is delivered from REST api with entity-association etc.
+ * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
+ * @param settings setting object that is passed through the chain of from() methods of the different state classes
+ */
+export function createEntityAssociationDetail(options: EntityAssociationDetail = new EntityAssociationDetail(), ea: InfEntityAssociation, crm: ProjectCrm, settings?: StateSettings): EntityAssociationDetail {
+
+    if (!ea) return undefined;
+
+    // init settings (adds defaults, if not otherwise provided)
+    settings = new StateSettings(settings);
+
+    if (isCreateContext(settings.pkUiContext)) {
+        options.propertyConfig = crm.roleSets[roleSetKeyFromParams(ea.fk_property, options.isOutgoing)];
+        options.targetClassConfig = crm.classes[options.propertyConfig.targetClassPk];
+        if (options.targetClassConfig.subclassOf = 'peIt') {
+            options._peIt = createPeItDetail(
+                {},
+                new InfPersistentItem({ fk_class: options.targetClassConfig.dfh_pk_class }),
+                crm,
+                settings
+            )
+        }
+    }
+    if (ea.domain_pe_it) {
+        options = {
+            ...options,
+            _peIt: createPeItDetail(
+                {},
+                ea.domain_pe_it,
+                crm,
+                settings
+            )
+        }
+    }
+
+    return new EntityAssociationDetail({
+        entityAssociation: new InfEntityAssociation(ea),
+        ...options
+    })
+
+}
+
+/**
+ * Creates a EntityAssociationList from provided input data
+ *
+ *
+ * @param options options will bi merged in RoleSet object
+ * @param roles will be converted in a EntityAssociationList
+ * @param crm is not used within the RoleSet but it is passed to EntityAssociation.createState()
+ * @param settings state settings object.
+ */
+export function createEntityAssociationList(options: RoleSet, eas: InfEntityAssociation[], crm: ProjectCrm, settings?: StateSettings): EntityAssociationList {
+    settings = new StateSettings(settings);
+    return indexBy((eaDetail) => ('' + eaDetail.entityAssociation.pk_entity), eas.map(ea => createEntityAssociationDetail(options, ea, crm, settings)))
+}
 
 /***************************************************
 * Value Detail create functions

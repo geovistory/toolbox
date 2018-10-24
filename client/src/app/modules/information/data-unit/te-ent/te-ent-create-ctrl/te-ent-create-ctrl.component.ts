@@ -46,7 +46,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
 
   onInitTeEntBaseChild(): void {
-    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
+    // this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
     this.addOptionsTeEnt$ = getTeEntAddOptions(this.fkClass$, this.pkUiContext$, this.crm$, new BehaviorSubject({}), this._children$)
   }
 

@@ -1,4 +1,4 @@
-<div *ngIf="listVisible" class="gv-flex-fh">
+<div [ngClass]="{'gv-flex-fh': listVisible}" [hidden]="!listVisible">
   <!-- Header -->
   <section class="m-3 mt-5 row gv-flex-shrink-0">
     <div class="col-md-8">
@@ -8,7 +8,7 @@
     <div class="col-md-4">
       <div class="btn-group float-right mt-2" role="group">
 
-        <gv-class-and-type-selector *ngIf="pkClassesOfAddBtn != undefined" [pkClasses]="pkClassesOfAddBtn" [pkProject]="projectId"
+        <gv-class-and-type-selector *ngIf="pkClassesInProject != undefined" [pkClasses]="pkClassesInProject" [pkProject]="projectId"
           [basePath]="basePath.concat('classAndTypeSelector')" (select)="startCreate($event, pkUiContextCreate)"
           buttonText="+ Add an entity" placement="right" hasFilter="true"></gv-class-and-type-selector>
 
@@ -18,55 +18,14 @@
       </div>
     </div>
   </section>
-
-  <!-- Search input -->
-  <form class="mx-3 mt-3 mb-2" (ngSubmit)="searchStringChange()">
-    <div class="input-group">
-      <input type="text" name="searchString" class="form-control" aria-describedby="search" autocomplete="off"
-        placeholder="Search …" [(ngModel)]="searchString">
-      <span class="input-group-append">
-        <button class="btn btn-primary" type="submit">
-          <i class="fa fa-search"></i>
-        </button>
-      </span>
-    </div>
-  </form>
-
-  <!-- Search filter tabs -->
-  <!-- <ul class="nav gv-search-filter">
-            <li class="nav-item">
-              <button class="btn btn-sm btn-link nav-link">[All]</button>
-            </li>
-            <li class="nav-item">
-              <button class="btn btn-sm btn-link nav-link active">Entities</button>
-            </li>
-            <li class="nav-item">
-              <button class="btn btn-sm btn-link nav-link">[Phenomena]</button>
-            </li>
-          </ul> -->
-
-  <!-- Results count -->
-  <div class="mx-3 mb-3 px-3 text-muted font-sm" *ngIf="!(loading$ | async)">
-    <span *ngIf="collectionSize > limit">
-      {{hitsFrom}}-{{hitsTo}} of
-    </span>
-    {{collectionSize | number}} {{(collectionSize == 1 ? 'result' : 'results')}}
-  </div>
-
-  <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
-
-  <!-- Results -->
-  <div class="d-flex gv-fh m-3 px-3 gv-scroll-y-auto" *ngIf="!(loading$ | async)">
-    <gv-entity-search-hit *ngFor="let hit of (_peIt_list$ | async)" [persistentItem]="hit" [selectingMentionedEntities]="(selectingEntities$ | async)"
-      (onSelectAsMentioned)="selectMentionedEntity($event)" (onOpen)=openEntity($event)></gv-entity-search-hit>
-  </div>
-
-  <!-- Pagination -->
-  <div class="m-3" *ngIf="!(loading$ | async)">
-    <ngb-pagination class="mb-0" *ngIf="collectionSize > limit" [maxSize]="5" [collectionSize]="collectionSize"
-      [(page)]="page" [pageSize]="limit" (pageChange)="pageChange()" aria-label="Default pagination"></ngb-pagination>
-  </div>
+  <gv-list class="gv-flex-fh" [basePath]="basePath.concat('_peIt_list')" (onOpen)="openEntity($event)"></gv-list>
 </div>
+
+<div *ngIf="(_peIt_add$ | async)" class="gv-flex-fh">
+  <gv-create-or-add-pe-it class="gv-flex-fh" [basePath]="basePath.concat('_peIt_add')" (done)="openEntity($event.pk_entity)"
+    (cancel)="stopCreate()"></gv-create-or-add-pe-it>
+</div>
+
 
 <div *ngIf="(_peIt_editable$ | async)" class="gv-flex-fh">
 
@@ -84,9 +43,4 @@
   <div *ngIf="!(loading$ | async)" class="gv-flex-fh">
     <gv-pe-it-editable class="gv-flex-fh" [basePath]="basePath.concat('_peIt_editable')"></gv-pe-it-editable>
   </div>
-</div>
-
-<div *ngIf="(_peIt_add$ | async)" class="gv-flex-fh">
-  <gv-create-or-add-pe-it class="gv-flex-fh" [basePath]="basePath.concat('_peIt_add')" (done)="openEntity($event.pk_entity)"
-    (cancel)="stopCreate()"></gv-create-or-add-pe-it>
 </div>

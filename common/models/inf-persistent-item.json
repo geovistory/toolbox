@@ -290,6 +290,15 @@
           }
         },
         {
+          "arg": "pkClasses",
+          "type": "array",
+          "required": false,
+          "description": "Classes for which the search will be performed.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
           "arg": "limit",
           "type": "number",
           "required": false,

@@ -267,7 +267,7 @@ module.exports = function (InfPersistentItem) {
 
   }
 
-  InfPersistentItem.searchInProject = function (projectId, searchString, limit, page, cb) {
+  InfPersistentItem.searchInProject = function (projectId, searchString, pkClasses, limit, page, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -297,11 +297,13 @@ module.exports = function (InfPersistentItem) {
       queryString,
       limit,
       offset,
-      projectId
+      projectId,
+      ...pkClasses
     ];
 
-    var sql_stmt = `
+    const pkClassParamNrs = pkClasses.map((c, i) => '$' + (i + 5)).join(', ');
 
+    var sql_stmt = `
     WITH
     epr_of_project AS (
       SELECT fk_project, fk_entity, is_in_project, is_standard_in_project, ord_num
@@ -346,9 +348,7 @@ module.exports = function (InfPersistentItem) {
       SELECT pi.pk_entity, pi.fk_class, pi.tmsp_last_modification
       FROM information.v_persistent_item as pi
       INNER JOIN epr_of_project as epr on epr.fk_entity = pi.pk_entity
-      INNER JOIN  data_for_history.class AS c ON pi.fk_class = c.dfh_pk_class
-      INNER JOIN  data_for_history.proj_rel AS rel ON c.pk_entity = rel.fk_entity
-      WHERE rel.fk_project IN ($4) AND rel.is_in_project = true  
+      WHERE pi.fk_class IN (${pkClassParamNrs})
     )
     Select
     count(pi.pk_entity) OVER() AS total_count,

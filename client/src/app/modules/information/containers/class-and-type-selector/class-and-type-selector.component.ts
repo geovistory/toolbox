@@ -106,10 +106,10 @@ export class ClassAndTypeSelectorComponent extends ClassAndTypeSelectorAPIAction
 
   onSelectClick(item: TreeviewItem) {
     this.dropdownTreeviewComponent.dropdownDirective.close();
-    if (this.selectedItem !== item) {
+    // if (this.selectedItem !== item) {
       this.selectedItem = item;
       this.select.emit({ pkClass: item.value.pkClass, pkType: item.value.pkType });
-    }
+    // }
   }
 
 }

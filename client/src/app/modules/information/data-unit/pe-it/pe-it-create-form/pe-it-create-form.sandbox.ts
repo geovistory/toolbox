@@ -6,7 +6,7 @@ import { mockPerson } from './sandbox.mock';
 import { Information2Module } from '../../../information.module';
 import { InitPeItEditableStateModule } from '../../../../../shared';
 import { StateSettings, createPeItDetail } from 'app/core/state/services/state-creator';
-import { ProjectDetail, InfPersistentItem } from 'app/core';
+import { ProjectDetail, InfPersistentItem, ComConfig } from 'app/core';
 import { crm } from 'app/core/active-project/_mock-data';
 
 
@@ -26,7 +26,7 @@ export default sandboxOf(PeItCreateFormComponent, {
         crm
       } as ProjectDetail,
       sandboxState: {
-        _peIt_create_form: createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { isCreateMode: true })
+        _peIt_create_form: createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE })
       },
       basePath: ['sandboxState', '_peIt_create_form']
     },

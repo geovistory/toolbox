@@ -4,6 +4,9 @@ import { InitStateModule } from 'app/shared/components/init-state/init-state.mod
 import { Information2Module } from '../../../information.module';
 import { mockPerson } from '../pe-it-create-form/sandbox.mock';
 import { PeItCreateCtrlComponent } from './pe-it-create-ctrl.component';
+import { createPeItDetail } from 'app/core/state/services/state-creator';
+import { InfPersistentItem, ComConfig } from 'app/core';
+import { crm } from 'app/core/active-project';
 
 
 
@@ -18,13 +21,13 @@ export default sandboxOf(PeItCreateCtrlComponent, {
         context: {
             model: {
             },
-            basePath: ['_peIt_create_form'],
-            initState: {
-                _peIt_create_form: mockPerson
+            basePath: ['sandboxState', 'peItDetail'],
+            sandboxState: {
+                peItDetail: createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE })
             }
         },
         template: `
-            <gv-init-state [initState]="initState"></gv-init-state>
+            <gv-init-state [projectFromApi]="12" [sandboxState]="sandboxState"></gv-init-state>
 
             <div class="d-flex justify-content-center mt-5">
                 <div style="width:430px;height:400px" class="d-flex">

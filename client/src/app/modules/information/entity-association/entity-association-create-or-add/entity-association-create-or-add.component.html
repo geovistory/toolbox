@@ -1,0 +1,39 @@
+<!-- Header -->
+<section class="m-3 mt-5 row gv-flex-shrink-0">
+    <div class="col">
+      <h2>Add a {{(targetClassConfig$ | async)?.label}}</h2>
+    </div>
+  </section>
+  
+  <!-- Body -->
+  <div class="d-flex gv-fh m-3 px-3 gv-scroll-y-auto">
+    <div class="d-flex flex-row gv-grow-1 pb-1" style="flex-basis:100%">
+  
+      <div class="gv-grow-1" style="flex-basis:50%;">
+        <h4 class="mb-3">Create a new {{(targetClassConfig$ | async)?.label}}</h4>
+  
+        <form #f="ngForm" (ngSubmit)="submitCreateForm()">
+          <gv-entity-association-create-ctrl [basePath]="basePath" name="ea"
+            [(ngModel)]="ea" #val="ngModel" required></gv-entity-association-create-ctrl>
+          <button class="btn btn-primary mt-3 mr-2" type="submit" [disabled]="f.invalid && f.submitted">
+            Create {{(targetClassConfig$ | async)?.label}}
+          </button>
+  
+          <button class="btn btn-secondary mt-3" type="button" (click)="cancel.emit()">
+            Cancel
+          </button>
+        </form>
+  
+      </div>
+  
+  
+      <div class="ml-5 mt-5 pl-5 gv-grow-1" style="flex-basis:50%;">
+        <h4 class="mb-3" *ngIf="!selectPeItMode">...or add an existing {{(targetClassConfig$ | async)?.label}}</h4>
+        <h4 class="mb-3" *ngIf="selectPeItMode">...or select an existing {{(targetClassConfig$ | async)?.label}}</h4>
+  
+        <!-- <gv-pe-it-search-existing [basePath]="basePath.concat('searchExisting')" [selectPeItMode]="selectPeItMode"
+          [searchString$]="searchString$" (onAddExisting)="onAddExisting($event)" (onOpenExisting)="onOpenExisting($event)" (onSelect)="onOpenExisting($event)"></gv-pe-it-search-existing> -->
+      </div>
+  
+    </div>
+  </div>

@@ -134,7 +134,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
     // keep uiElementsForAddInfo up to date, of the things to add (add a property)
     combineLatest(this.fkClass$, this.pkUiContext$, this.crm$).pipe(
       first((d) => {
-        const b = (d.filter(item => (item === undefined)).length === 0)
+        const b = (d.filter(item => (item === undefined || item === null )).length === 0)
         return b;
       }),
       takeUntil(this.destroy$)

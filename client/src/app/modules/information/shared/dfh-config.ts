@@ -35,7 +35,10 @@ export class DfhConfig {
   // dfh_pk_property used to connect an appellation use with an appellation
   static PROPERTY_PK_R64_USED_NAME = 1113;
 
-  // dfh_pk_property used to connect a chunk as domain use with a persitent item or temporal entity as range 
+  // dfh_pk_property F2 Expression -> R41 has rep manifestation product type ->	F3 Manifestation Product Type
+  static PROPERTY_PK_R41_HAS_REP_MANIFESTATION_PRODUCT_TYPE = 1015;
+
+  // dfh_pk_property used to connect a chunk as domain use with a persitent item or temporal entity as range
   static PROPERTY_PK_MENTIONES = 4;
 
   static PROPERTY_PK_AT_SOME_TIME_WITHIN = 72;
@@ -103,7 +106,9 @@ export class DfhConfig {
 
   static CLASS_PK_PRESENCE = 84;
 
+  static CLASS_PK_EXPRESSION = 218;
 
+  static CLASS_PKS_SOURCE_PE_IT = [219];
 
 
   /**

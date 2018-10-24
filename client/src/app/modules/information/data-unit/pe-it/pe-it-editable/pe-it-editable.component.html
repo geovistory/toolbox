@@ -33,19 +33,21 @@
 
 <!-- Tools to edit PeIt  -->
 
-<div class="d-flex flex-row gv-grow-1 px-3 pb-1" style="flex-basis:100%">
+<div [ngClass]="{'d-flex flex-row gv-grow-1 px-3 pb-1': !(sectionList$ | async)?.create}" style="flex-basis:100%"
+  [hidden]="(sectionList$ | async)?.create">
   <div class="d-flex flex-column gv-grow-1" style="flex-basis:45%;">
 
     <!-- Properties Header -->
     <span *ngIf="(showPropertiesHeader$ | async)">
 
-      <div class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline">
-        <div class="gv-grow-1">
+      <div class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline mb-3">
+        <div class="gv-grow-1 gv-btn-spacer-sm">
           <!-- <i class="fa fa-lightbulb-o"></i> -->
           Properties
         </div>
         <!-- Step 1 for adding a new property -->
-        <button class="btn btn-sm btn-link" (click)="startSelectProperty()" *ngIf="!(isViewMode$ | async) && (selectPropState$ | async) === 'init' && (showAddAPropertyButton$ | async)" [ngClass]="{'invisible' : isolatedChild}">
+        <button class="btn btn-sm btn-link" (click)="startSelectProperty()" *ngIf="!(isViewMode$ | async) && (selectPropState$ | async) === 'init' && (showAddAPropertyButton$ | async)"
+          [ngClass]="{'invisible' : isolatedChild}">
           <i class="fa fa-plus"></i> Add a property
         </button>
       </div>
@@ -53,54 +55,81 @@
     </span>
 
     <!-- Add a property UI -->
-    <div class="mt-3" *ngIf="(!isolatedChild)">
+    <div *ngIf="(!isolatedChild)">
 
       <!-- Step 2 for adding new Property section -->
-
-      <!-- <div class="card gv-naming bg-gray-700" *ngIf="(selectPropState$ | async) === 'selectProp'">
-
-        <div class="card-header bt-1">
-          <div class="d-flex">
-            <div class="gv-h4 text-white gv-grow-1 align-self-center">
-              What do you want to add?
-            </div>
-            <button type="button" name="button" class="btn btn-link text-white align-self-center btn-sm" (click)="stopSelectProperty()">
-              <i class="fa fa-close"></i>
-            </button>
-          </div>
-        </div>
-
-        
-      </div> -->
       <gv-add-info-pe-it *ngIf="(selectPropState$ | async) === 'selectProp'" [uiElements]="uiElementsForAddInfo"
         [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)"
         (cancel)="stopSelectProperty()"></gv-add-info-pe-it>
     </div>
 
+    <!-- Isolation mode -->
+    <div class="gv-grow-1" style="overflow-y:auto" *ngIf="isolatedChild">
+      <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="isolatedChild"></gv-pe-it-role-set-editable>
+    </div>
+
     <!-- Normal mode -->
-    <div class="gv-body gv-grow-1 mt-3" style="overflow-y:auto" *ngIf="!isolatedChild">
+    <div class="gv-grow-1" style="overflow-y:auto" *ngIf="!isolatedChild">
       <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
         <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-pe-it-role-set-editable>
       </div>
+
+      <div class="gv-flex-fh" *ngIf="(showSectionList$ | async)">
+        <gv-section-list [basePath]="basePath.concat('sectionList')"></gv-section-list>
+      </div>
+
+      <div class="gv-flex-fh" *ngIf="(showRepros$ | async)">
+        <gv-repros [basePath]="basePath.concat('repros')"></gv-repros>
+      </div>
+
     </div>
 
-
-    <!-- Isolation mode -->
-    <div class="gv-body gv-grow-1" style="overflow-y:auto" *ngIf="isolatedChild">
-      <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="isolatedChild"></gv-pe-it-role-set-editable>
-    </div>
 
   </div>
 
   <div class="d-flex ml-3" style="flex-basis:55%; overflow:hidden" *ngIf="(showRightPanel$ | async)">
     <div class="d-flex flex-column gv-grow-1" style="overflow:hidden">
 
-      <div class="d-flex gv-grow-1 mb-3">
+      <div class="gv-flex-fh" *ngIf="(showMentionedEntities$ | async)">
+        <div class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline">
+          <div class="gv-grow-1">
+            <!-- <i class="fa fa-lightbulb-o"></i> -->
+            Mentioned Entities
+          </div>
+          <!-- Step 1 for adding a new property -->
+          <button class="btn btn-sm btn-link">
+            <i class="fa fa-plus"></i> Add
+          </button>
+        </div>
+      </div>
+
+      <div class="gv-flex-fh" *ngIf="(showAssertions$ | async)">
+        <div class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline">
+          <div class="gv-grow-1">
+            <!-- <i class="fa fa-lightbulb-o"></i> -->
+            Assertions using this source
+          </div>
+          <!-- Step 1 for adding a new property -->
+          <button class="btn btn-sm btn-link">
+            <i class="fa fa-plus"></i> Add
+          </button>
+        </div>
+      </div>
+
+      <div class="d-flex gv-grow-1 mb-3" *ngIf="(showMap$ | async)">
         <gv-map [path]="basePath" class="gv-grow-1 d-flex flex-column"></gv-map>
       </div>
 
-      <gv-pe-it-timeline [path]="basePath"></gv-pe-it-timeline>
+      <gv-pe-it-timeline [path]="basePath" *ngIf="(showTimeline$ | async)"></gv-pe-it-timeline>
 
     </div>
   </div>
+</div>
+
+<!-- ********************** Isolated Create Section ***************************
+     * - If 'create' is truthy, show a form with SourceCreateFormComponent
+     *     listening to ok and cancel Outputs 
+     -->
+<div [hidden]="!(sectionList$ | async)?.create" [ngClass]="{'gv-flex-fh': (sectionList$ | async)?.create}">
+  <gv-section-list [basePath]="basePath.concat('sectionList')"></gv-section-list>
 </div>

@@ -2,9 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
-import { Project, ProjectApi, ActiveProjectService, InfPersistentItemApi, IAppState, ProjectDetail } from 'app/core';
+import { Project, ProjectApi, ActiveProjectService, InfPersistentItemApi, IAppState, ProjectDetail, ProjectCrm } from 'app/core';
 import { NgRedux } from '@angular-redux/store';
 import { Subject } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 
 @Component({
   selector: 'gv-project-dashboard',
@@ -20,6 +22,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
 
   // Statistics
   dataUnitsCount: number;
+  sourcesCount: number;
 
   // Tour logic
   activeSlideId: string;
@@ -41,6 +44,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
     this.id = activatedRoute.snapshot.parent.params['id'];
 
     this.activeProjectService.initProject(this.id);
+    this.activeProjectService.initProjectCrm(this.id);
 
     this.ngRedux.select<ProjectDetail>('activeProject')
       .takeUntil(this.destroy$).subscribe(p => this.project = p)
@@ -50,16 +54,41 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.startLoading();
 
-    this.persistentItemVersionApi.searchInProject(this.id, '', 1, 1)
-      .subscribe(
-        (response) => {
-          this.dataUnitsCount = parseInt(response.totalCount, 10);
-          this.completeLoading();
-        },
-        error => {
-          this.resetLoading()
+    // listen to the crm and add extract the classes ready to add.
+    this.ngRedux.select<ProjectCrm>(['activeProject', 'crm']).pipe(
+      first(d => !!d),
+      takeUntil(this.destroy$)).subscribe(crm => {
+        const pkClassesInProject = [];
+        for (const key in crm.classes) {
+          if (crm.classes[key] && crm.classes[key].isInProject) {
+            pkClassesInProject.push(crm.classes[key].dfh_pk_class);
+          }
         }
-      );
+
+        this.persistentItemVersionApi.searchInProject(this.id, '', pkClassesInProject, 1, 1)
+          .subscribe(
+            (response) => {
+              this.dataUnitsCount = parseInt(response.totalCount, 10);
+              this.completeLoading();
+            },
+            error => {
+              this.resetLoading()
+            }
+          );
+
+
+        this.persistentItemVersionApi.searchInProject(this.id, '', DfhConfig.CLASS_PKS_SOURCE_PE_IT, 1, 1)
+          .subscribe(
+            (response) => {
+              this.sourcesCount = parseInt(response.totalCount, 10);
+              this.completeLoading();
+            },
+            error => {
+              this.resetLoading()
+            }
+          );
+      })
+
 
   }
 

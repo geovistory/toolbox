@@ -1,9 +1,9 @@
 import { ProjectCrm } from './active-project.models';
-import { ComConfig } from 'app/core/config/com-config';
 
 export const crm: ProjectCrm = {
   classes: {
     '21': {
+      isInProject: true,
       subclassOf: 'peIt',
       label: 'Person',
       dfh_identifier_in_namespace: 'E21',
@@ -627,6 +627,7 @@ export const crm: ProjectCrm = {
       }
     },
     '50': {
+      isInProject: false,
       label: 'Time-Span',
       dfh_identifier_in_namespace: 'E52',
       dfh_pk_class: 50,
@@ -1139,6 +1140,7 @@ export const crm: ProjectCrm = {
       }
     },
     '60': {
+      isInProject: false,
       subclassOf: 'teEnt',
       label: 'Formation',
       dfh_identifier_in_namespace: 'E66',
@@ -1299,6 +1301,7 @@ export const crm: ProjectCrm = {
       }
     },
     '61': {
+      isInProject: false,
       subclassOf: 'teEnt',
       label: 'Birth',
       dfh_identifier_in_namespace: 'E67',
@@ -1720,6 +1723,7 @@ export const crm: ProjectCrm = {
       }
     },
     '63': {
+      isInProject: false,
       subclassOf: 'teEnt',
       label: 'Death',
       dfh_identifier_in_namespace: 'E69',
@@ -1946,6 +1950,7 @@ export const crm: ProjectCrm = {
       }
     },
     '68': {
+      isInProject: true,
       subclassOf: 'peIt',
       label: 'Group',
       dfh_identifier_in_namespace: 'E74',
@@ -2513,6 +2518,7 @@ export const crm: ProjectCrm = {
       }
     },
     '75': {
+      isInProject: false,
       subclassOf: 'peIt',
       label: 'Actor Appellation',
       dfh_identifier_in_namespace: 'E82',
@@ -2550,6 +2556,7 @@ export const crm: ProjectCrm = {
       }
     },
     '78': {
+      isInProject: false,
       subclassOf: 'teEnt',
       label: 'Joining',
       dfh_identifier_in_namespace: 'E85',
@@ -2768,6 +2775,7 @@ export const crm: ProjectCrm = {
       }
     },
     '79': {
+      isInProject: false,
       subclassOf: 'teEnt',
       label: 'Leaving',
       dfh_identifier_in_namespace: 'E86',
@@ -2963,6 +2971,7 @@ export const crm: ProjectCrm = {
       }
     },
     '84': {
+      isInProject: false,
       label: 'Presence',
       dfh_identifier_in_namespace: 'E93',
       dfh_pk_class: 84,
@@ -3175,6 +3184,7 @@ export const crm: ProjectCrm = {
       }
     },
     '212': {
+      isInProject: false,
       subclassOf: 'teEnt',
       label: 'Localisation',
       dfh_identifier_in_namespace: 'histC2',
@@ -3541,7 +3551,170 @@ export const crm: ProjectCrm = {
         }
       }
     },
+    '218': {
+      isInProject: false,
+      subclassOf: 'peIt',
+      label: 'Section',
+      dfh_identifier_in_namespace: 'F2',
+      dfh_pk_class: 218,
+      uiContexts: {
+        '229': {
+          label: 'Sources View and Edit',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 100005,
+              property_is_outgoing: false,
+              roleSetKey: '_100005_ingoing',
+              fk_property_set: null
+            }
+          ]
+        },
+        '230': {
+          label: 'Sources Create',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 100005,
+              property_is_outgoing: false,
+              roleSetKey: '_100005_ingoing',
+              fk_property_set: null
+            }
+          ]
+        }
+      },
+      roleSets: {
+        _100005_ingoing: {
+          type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 100005,
+            dfh_identifier_in_namespace: 'histP9',
+            dfh_has_domain: 365,
+            dfh_has_range: 218,
+            dfh_fk_property_of_origin: 1111,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 260,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 100005,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 262,
+                fk_ui_context: 229,
+                fk_project: null,
+                fk_property: 100005,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_property_set: null
+              }
+            ]
+          },
+          targetMaxQuantity: -1,
+          targetMinQuantity: 0,
+          targetClassPk: 365,
+          label: {
+            sg: 'Title',
+            pl: 'Titles',
+            'default': 'Titles'
+          }
+        },
+        _979_outgoing: {
+          type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: true,
+          property: {
+            dfh_pk_property: 979,
+            dfh_identifier_in_namespace: 'R4',
+            dfh_has_domain: 218,
+            dfh_has_range: 219,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: null,
+            dfh_domain_instances_max_quantifier: null,
+            dfh_range_instances_min_quantifier: null,
+            dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 259,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 979,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_property_set: null
+              }
+            ]
+          },
+          targetMaxQuantity: null,
+          targetMinQuantity: null,
+          targetClassPk: 219,
+          label: {
+            sg: '[sg: 979: R4 undefined',
+            pl: '[pl: 979: R4 undefined',
+            'default': '[pl: 979: R4 undefined'
+          }
+        },
+        _1015_outgoing: {
+          type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: true,
+          property: {
+            dfh_pk_property: 1015,
+            dfh_identifier_in_namespace: 'R41',
+            dfh_has_domain: 218,
+            dfh_has_range: 219,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: null,
+            dfh_domain_instances_max_quantifier: null,
+            dfh_range_instances_min_quantifier: null,
+            dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 261,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 1015,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_property_set: null
+              }
+            ]
+          },
+          targetMaxQuantity: null,
+          targetMinQuantity: null,
+          targetClassPk: 219,
+          label: {
+            sg: '[sg: 1015: R41 undefined',
+            pl: '[pl: 1015: R41 undefined',
+            'default': '[pl: 1015: R41 undefined'
+          }
+        }
+      }
+    },
     '219': {
+      isInProject: true,
       subclassOf: 'peIt',
       label: 'Serially Produced Object',
       dfh_identifier_in_namespace: 'F3',
@@ -3561,6 +3734,30 @@ export const crm: ProjectCrm = {
         },
         '46': {
           label: 'DataUnits Create',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1202,
+              property_is_outgoing: false,
+              roleSetKey: '_1202_ingoing',
+              fk_property_set: null
+            }
+          ]
+        },
+        '229': {
+          label: 'Sources View and Edit',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1202,
+              property_is_outgoing: false,
+              roleSetKey: '_1202_ingoing',
+              fk_property_set: null
+            }
+          ]
+        },
+        '230': {
+          label: 'Sources Create',
           uiElements: [
             {
               ord_num: 0,
@@ -3844,6 +4041,26 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: false,
                 ord_num: 0,
                 fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 235,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 1202,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 258,
+                fk_ui_context: 229,
+                fk_project: null,
+                fk_property: 1202,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_property_set: null
               }
             ]
           },
@@ -3854,6 +4071,34 @@ export const crm: ProjectCrm = {
             sg: 'Bibliographic Reference',
             pl: 'Bibliographic References',
             'default': 'Bibliographic References'
+          }
+        },
+        _100003_ingoing: {
+          type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 100003,
+            dfh_identifier_in_namespace: 'tempP1',
+            dfh_has_domain: 100002,
+            dfh_has_range: 219,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: null,
+            dfh_domain_instances_max_quantifier: null,
+            dfh_range_instances_min_quantifier: null,
+            dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
+            ui_context_config: []
+          },
+          targetMaxQuantity: null,
+          targetMinQuantity: null,
+          targetClassPk: 100002,
+          label: {
+            sg: '[inv.sg: 100003: tempP1 undefined',
+            pl: '[inv.pl: 100003: tempP1 undefined',
+            'default': '[inv.pl: 100003: tempP1 undefined'
           }
         },
         _970_outgoing: {
@@ -4171,6 +4416,7 @@ export const crm: ProjectCrm = {
       }
     },
     '221': {
+      isInProject: false,
       subclassOf: 'peIt',
       label: 'Item',
       dfh_identifier_in_namespace: 'F5',
@@ -4208,6 +4454,7 @@ export const crm: ProjectCrm = {
       }
     },
     '363': {
+      isInProject: true,
       subclassOf: 'peIt',
       label: 'Geographical Place',
       dfh_identifier_in_namespace: 'histC8',
@@ -4261,13 +4508,6 @@ export const crm: ProjectCrm = {
               fk_property: 1194,
               property_is_outgoing: false,
               roleSetKey: '_1194_ingoing',
-              fk_property_set: null
-            },
-            {
-              ord_num: 1,
-              fk_property: 1110,
-              property_is_outgoing: true,
-              roleSetKey: '_1110_outgoing',
               fk_property_set: null
             }
           ]
@@ -4337,6 +4577,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: false,
                 ord_num: 2,
                 fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 252,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1181,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_property_set: null
               }
             ]
           },
@@ -4375,6 +4625,16 @@ export const crm: ProjectCrm = {
                 fk_property_set: null,
                 property_is_outgoing: false,
                 ord_num: 4,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 253,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1186,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: null,
                 fk_class_for_property_set: null
               }
             ]
@@ -4474,6 +4734,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: false,
                 ord_num: 3,
                 fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 254,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1191,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_property_set: null
               }
             ]
           },
@@ -4512,6 +4782,16 @@ export const crm: ProjectCrm = {
                 fk_property_set: null,
                 property_is_outgoing: false,
                 ord_num: 2,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 255,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1178,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: null,
                 fk_class_for_property_set: null
               }
             ]
@@ -4560,7 +4840,7 @@ export const crm: ProjectCrm = {
                 fk_property: 1110,
                 fk_property_set: null,
                 property_is_outgoing: true,
-                ord_num: 1,
+                ord_num: null,
                 fk_class_for_property_set: null
               }
             ]
@@ -4577,6 +4857,7 @@ export const crm: ProjectCrm = {
       }
     },
     '364': {
+      isInProject: false,
       subclassOf: 'peIt',
       label: 'Geographical place type',
       dfh_identifier_in_namespace: 'histC9',
@@ -4688,6 +4969,7 @@ export const crm: ProjectCrm = {
       }
     },
     '365': {
+      isInProject: false,
       subclassOf: 'teEnt',
       label: 'Naming',
       dfh_identifier_in_namespace: 'histC10',
@@ -4773,6 +5055,82 @@ export const crm: ProjectCrm = {
               propSetKey: '_existenceTime'
             }
           ]
+        },
+        '229': {
+          label: 'Sources View and Edit',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1113,
+              property_is_outgoing: true,
+              roleSetKey: '_1113_outgoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 1,
+              fk_property: 1112,
+              property_is_outgoing: true,
+              roleSetKey: '_1112_outgoing',
+              fk_property_set: null
+            }
+          ]
+        },
+        '230': {
+          label: 'Sources Create',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1113,
+              property_is_outgoing: true,
+              roleSetKey: '_1113_outgoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 1,
+              fk_property: 1112,
+              property_is_outgoing: true,
+              roleSetKey: '_1112_outgoing',
+              fk_property_set: null
+            }
+          ]
+        },
+        '231': {
+          label: 'Data Settings > Types View and Edit',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1113,
+              property_is_outgoing: true,
+              roleSetKey: '_1113_outgoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 1,
+              fk_property: 1112,
+              property_is_outgoing: true,
+              roleSetKey: '_1112_outgoing',
+              fk_property_set: null
+            }
+          ]
+        },
+        '232': {
+          label: 'Data Settings > Types Create',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1113,
+              property_is_outgoing: true,
+              roleSetKey: '_1113_outgoing',
+              fk_property_set: null
+            },
+            {
+              ord_num: 1,
+              fk_property: 1112,
+              property_is_outgoing: true,
+              roleSetKey: '_1112_outgoing',
+              fk_property_set: null
+            }
+          ]
         }
       },
       roleSets: {
@@ -4793,7 +5151,18 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            ui_context_config: [
+              {
+                pk_entity: 242,
+                fk_ui_context: 232,
+                fk_project: null,
+                fk_property: 1111,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_property_set: null
+              }
+            ]
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -4835,6 +5204,16 @@ export const crm: ProjectCrm = {
               {
                 pk_entity: 135,
                 fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1192,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 243,
+                fk_ui_context: 232,
                 fk_project: null,
                 fk_property: 1192,
                 fk_property_set: null,
@@ -4890,6 +5269,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: true,
                 ord_num: null,
                 fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 244,
+                fk_ui_context: 232,
+                fk_project: null,
+                fk_property: 1193,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_property_set: null
               }
             ]
           },
@@ -4939,6 +5328,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: true,
                 ord_num: null,
                 fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 249,
+                fk_ui_context: 232,
+                fk_project: null,
+                fk_property: 1194,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_property_set: null
               }
             ]
           },
@@ -4982,6 +5381,16 @@ export const crm: ProjectCrm = {
               {
                 pk_entity: 139,
                 fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1195,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 248,
+                fk_ui_context: 232,
                 fk_project: null,
                 fk_property: 1195,
                 fk_property_set: null,
@@ -5039,6 +5448,16 @@ export const crm: ProjectCrm = {
                 fk_class_for_property_set: null
               },
               {
+                pk_entity: 245,
+                fk_ui_context: 232,
+                fk_project: null,
+                fk_property: 1113,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 0,
+                fk_class_for_property_set: null
+              },
+              {
                 pk_entity: 212,
                 fk_ui_context: 47,
                 fk_project: null,
@@ -5046,6 +5465,36 @@ export const crm: ProjectCrm = {
                 fk_property_set: null,
                 property_is_outgoing: true,
                 ord_num: 1,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 240,
+                fk_ui_context: 231,
+                fk_project: null,
+                fk_property: 1113,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 0,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 236,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 1113,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 0,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 257,
+                fk_ui_context: 229,
+                fk_project: null,
+                fk_property: 1113,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 0,
                 fk_class_for_property_set: null
               }
             ]
@@ -5076,7 +5525,18 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: []
+            ui_context_config: [
+              {
+                pk_entity: 246,
+                fk_ui_context: 232,
+                fk_project: null,
+                fk_property: 1200,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_property_set: null
+              }
+            ]
           },
           targetMaxQuantity: 1,
           targetMinQuantity: 1,
@@ -5104,7 +5564,18 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: []
+            ui_context_config: [
+              {
+                pk_entity: 250,
+                fk_ui_context: 232,
+                fk_project: null,
+                fk_property: 1201,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_property_set: null
+              }
+            ]
           },
           targetMaxQuantity: 1,
           targetMinQuantity: 1,
@@ -5132,7 +5603,18 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: []
+            ui_context_config: [
+              {
+                pk_entity: 251,
+                fk_ui_context: 232,
+                fk_project: null,
+                fk_property: 1202,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_property_set: null
+              }
+            ]
           },
           targetMaxQuantity: 1,
           targetMinQuantity: 1,
@@ -5190,6 +5672,46 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: true,
                 ord_num: 0,
                 fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 247,
+                fk_ui_context: 232,
+                fk_project: null,
+                fk_property: 1112,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 1,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 241,
+                fk_ui_context: 231,
+                fk_project: null,
+                fk_property: 1112,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 1,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 237,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 1112,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 1,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 256,
+                fk_ui_context: 229,
+                fk_project: null,
+                fk_property: 1112,
+                fk_property_set: null,
+                property_is_outgoing: true,
+                ord_num: 1,
+                fk_class_for_property_set: null
               }
             ]
           },
@@ -5201,10 +5723,39 @@ export const crm: ProjectCrm = {
             pl: 'Languages',
             'default': 'Language'
           }
+        },
+        _100005_outgoing: {
+          type: 'RoleSet',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: true,
+          property: {
+            dfh_pk_property: 100005,
+            dfh_identifier_in_namespace: 'histP9',
+            dfh_has_domain: 365,
+            dfh_has_range: 218,
+            dfh_fk_property_of_origin: 1111,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
+            ui_context_config: []
+          },
+          targetMaxQuantity: 1,
+          targetMinQuantity: 1,
+          targetClassPk: 218,
+          label: {
+            sg: '[sg: 100005: histP9 undefined',
+            pl: '[pl: 100005: histP9 undefined',
+            'default': '[sg: 100005: histP9 undefined'
+          }
         }
       }
     },
     '441': {
+      isInProject: true,
       subclassOf: 'peIt',
       label: 'Built work',
       dfh_identifier_in_namespace: 'histC11',
@@ -5484,6 +6035,7 @@ export const crm: ProjectCrm = {
       }
     },
     '442': {
+      isInProject: false,
       subclassOf: 'teEnt',
       label: 'Membership',
       dfh_identifier_in_namespace: 'histC12',
@@ -5646,11 +6198,37 @@ export const crm: ProjectCrm = {
       }
     },
     '443': {
+      isInProject: false,
       subclassOf: 'peIt',
       label: 'Built work type',
       dfh_identifier_in_namespace: 'histC13',
       dfh_pk_class: 443,
-      uiContexts: {},
+      uiContexts: {
+        '231': {
+          label: 'Data Settings > Types View and Edit',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1201,
+              property_is_outgoing: false,
+              roleSetKey: '_1201_ingoing',
+              fk_property_set: null
+            }
+          ]
+        },
+        '232': {
+          label: 'Data Settings > Types Create',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1201,
+              property_is_outgoing: false,
+              roleSetKey: '_1201_ingoing',
+              fk_property_set: null
+            }
+          ]
+        }
+      },
       roleSets: {
         _1190_ingoing: {
           type: 'RoleSet',
@@ -5697,7 +6275,28 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: []
+            ui_context_config: [
+              {
+                pk_entity: 238,
+                fk_ui_context: 232,
+                fk_project: null,
+                fk_property: 1201,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_property_set: null
+              },
+              {
+                pk_entity: 239,
+                fk_ui_context: 231,
+                fk_project: null,
+                fk_property: 1201,
+                fk_property_set: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_property_set: null
+              }
+            ]
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -8427,6 +9026,133 @@ export const crm: ProjectCrm = {
         'default': '[sg: 1066: histP7 undefined'
       }
     },
+    _100005_ingoing: {
+      type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 100005,
+        dfh_identifier_in_namespace: 'histP9',
+        dfh_has_domain: 365,
+        dfh_has_range: 218,
+        dfh_fk_property_of_origin: 1111,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
+        ui_context_config: [
+          {
+            pk_entity: 260,
+            fk_ui_context: 230,
+            fk_project: null,
+            fk_property: 100005,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 0,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 262,
+            fk_ui_context: 229,
+            fk_project: null,
+            fk_property: 100005,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 0,
+            fk_class_for_property_set: null
+          }
+        ]
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 365,
+      label: {
+        sg: 'Title',
+        pl: 'Titles',
+        'default': 'Titles'
+      }
+    },
+    _979_outgoing: {
+      type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 979,
+        dfh_identifier_in_namespace: 'R4',
+        dfh_has_domain: 218,
+        dfh_has_range: 219,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: null,
+        dfh_domain_instances_max_quantifier: null,
+        dfh_range_instances_min_quantifier: null,
+        dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
+        ui_context_config: [
+          {
+            pk_entity: 259,
+            fk_ui_context: 230,
+            fk_project: null,
+            fk_property: 979,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: null,
+            fk_class_for_property_set: null
+          }
+        ]
+      },
+      targetMaxQuantity: null,
+      targetMinQuantity: null,
+      targetClassPk: 219,
+      label: {
+        sg: '[sg: 979: R4 undefined',
+        pl: '[pl: 979: R4 undefined',
+        'default': '[pl: 979: R4 undefined'
+      }
+    },
+    _1015_outgoing: {
+      type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 1015,
+        dfh_identifier_in_namespace: 'R41',
+        dfh_has_domain: 218,
+        dfh_has_range: 219,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: null,
+        dfh_domain_instances_max_quantifier: null,
+        dfh_range_instances_min_quantifier: null,
+        dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
+        ui_context_config: [
+          {
+            pk_entity: 261,
+            fk_ui_context: 230,
+            fk_project: null,
+            fk_property: 1015,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: null,
+            fk_class_for_property_set: null
+          }
+        ]
+      },
+      targetMaxQuantity: null,
+      targetMinQuantity: null,
+      targetClassPk: 219,
+      label: {
+        sg: '[sg: 1015: R41 undefined',
+        pl: '[pl: 1015: R41 undefined',
+        'default': '[pl: 1015: R41 undefined'
+      }
+    },
     _982_ingoing: {
       type: 'RoleSet',
       hasAlternatives: false,
@@ -8698,6 +9424,26 @@ export const crm: ProjectCrm = {
             property_is_outgoing: false,
             ord_num: 0,
             fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 235,
+            fk_ui_context: 230,
+            fk_project: null,
+            fk_property: 1202,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 0,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 258,
+            fk_ui_context: 229,
+            fk_project: null,
+            fk_property: 1202,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 0,
+            fk_class_for_property_set: null
           }
         ]
       },
@@ -8708,6 +9454,34 @@ export const crm: ProjectCrm = {
         sg: 'Bibliographic Reference',
         pl: 'Bibliographic References',
         'default': 'Bibliographic References'
+      }
+    },
+    _100003_ingoing: {
+      type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 100003,
+        dfh_identifier_in_namespace: 'tempP1',
+        dfh_has_domain: 100002,
+        dfh_has_range: 219,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: null,
+        dfh_domain_instances_max_quantifier: null,
+        dfh_range_instances_min_quantifier: null,
+        dfh_range_instances_max_quantifier: null,
+        identity_defining: false,
+        ui_context_config: []
+      },
+      targetMaxQuantity: null,
+      targetMinQuantity: null,
+      targetClassPk: 100002,
+      label: {
+        sg: '[inv.sg: 100003: tempP1 undefined',
+        pl: '[inv.pl: 100003: tempP1 undefined',
+        'default': '[inv.pl: 100003: tempP1 undefined'
       }
     },
     _970_outgoing: {
@@ -9087,6 +9861,16 @@ export const crm: ProjectCrm = {
             property_is_outgoing: false,
             ord_num: 2,
             fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 252,
+            fk_ui_context: 46,
+            fk_project: null,
+            fk_property: 1181,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: null,
+            fk_class_for_property_set: null
           }
         ]
       },
@@ -9125,6 +9909,16 @@ export const crm: ProjectCrm = {
             fk_property_set: null,
             property_is_outgoing: false,
             ord_num: 4,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 253,
+            fk_ui_context: 46,
+            fk_project: null,
+            fk_property: 1186,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: null,
             fk_class_for_property_set: null
           }
         ]
@@ -9224,6 +10018,16 @@ export const crm: ProjectCrm = {
             property_is_outgoing: false,
             ord_num: 3,
             fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 254,
+            fk_ui_context: 46,
+            fk_project: null,
+            fk_property: 1191,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: null,
+            fk_class_for_property_set: null
           }
         ]
       },
@@ -9262,6 +10066,16 @@ export const crm: ProjectCrm = {
             fk_property_set: null,
             property_is_outgoing: false,
             ord_num: 2,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 255,
+            fk_ui_context: 46,
+            fk_project: null,
+            fk_property: 1178,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: null,
             fk_class_for_property_set: null
           }
         ]
@@ -9310,7 +10124,7 @@ export const crm: ProjectCrm = {
             fk_property: 1110,
             fk_property_set: null,
             property_is_outgoing: true,
-            ord_num: 1,
+            ord_num: null,
             fk_class_for_property_set: null
           }
         ]
@@ -9418,7 +10232,18 @@ export const crm: ProjectCrm = {
         dfh_range_instances_min_quantifier: null,
         dfh_range_instances_max_quantifier: null,
         identity_defining: false,
-        ui_context_config: []
+        ui_context_config: [
+          {
+            pk_entity: 242,
+            fk_ui_context: 232,
+            fk_project: null,
+            fk_property: 1111,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: null,
+            fk_class_for_property_set: null
+          }
+        ]
       },
       targetMaxQuantity: null,
       targetMinQuantity: null,
@@ -9460,6 +10285,16 @@ export const crm: ProjectCrm = {
           {
             pk_entity: 135,
             fk_ui_context: 45,
+            fk_project: null,
+            fk_property: 1192,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: null,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 243,
+            fk_ui_context: 232,
             fk_project: null,
             fk_property: 1192,
             fk_property_set: null,
@@ -9515,6 +10350,16 @@ export const crm: ProjectCrm = {
             property_is_outgoing: true,
             ord_num: null,
             fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 244,
+            fk_ui_context: 232,
+            fk_project: null,
+            fk_property: 1193,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: null,
+            fk_class_for_property_set: null
           }
         ]
       },
@@ -9564,6 +10409,16 @@ export const crm: ProjectCrm = {
             property_is_outgoing: true,
             ord_num: null,
             fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 249,
+            fk_ui_context: 232,
+            fk_project: null,
+            fk_property: 1194,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: null,
+            fk_class_for_property_set: null
           }
         ]
       },
@@ -9607,6 +10462,16 @@ export const crm: ProjectCrm = {
           {
             pk_entity: 139,
             fk_ui_context: 45,
+            fk_project: null,
+            fk_property: 1195,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: null,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 248,
+            fk_ui_context: 232,
             fk_project: null,
             fk_property: 1195,
             fk_property_set: null,
@@ -9664,6 +10529,16 @@ export const crm: ProjectCrm = {
             fk_class_for_property_set: null
           },
           {
+            pk_entity: 245,
+            fk_ui_context: 232,
+            fk_project: null,
+            fk_property: 1113,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 0,
+            fk_class_for_property_set: null
+          },
+          {
             pk_entity: 212,
             fk_ui_context: 47,
             fk_project: null,
@@ -9671,6 +10546,36 @@ export const crm: ProjectCrm = {
             fk_property_set: null,
             property_is_outgoing: true,
             ord_num: 1,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 240,
+            fk_ui_context: 231,
+            fk_project: null,
+            fk_property: 1113,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 0,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 236,
+            fk_ui_context: 230,
+            fk_project: null,
+            fk_property: 1113,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 0,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 257,
+            fk_ui_context: 229,
+            fk_project: null,
+            fk_property: 1113,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 0,
             fk_class_for_property_set: null
           }
         ]
@@ -9701,7 +10606,18 @@ export const crm: ProjectCrm = {
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
         identity_defining: false,
-        ui_context_config: []
+        ui_context_config: [
+          {
+            pk_entity: 246,
+            fk_ui_context: 232,
+            fk_project: null,
+            fk_property: 1200,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: null,
+            fk_class_for_property_set: null
+          }
+        ]
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 1,
@@ -9729,7 +10645,18 @@ export const crm: ProjectCrm = {
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
         identity_defining: false,
-        ui_context_config: []
+        ui_context_config: [
+          {
+            pk_entity: 250,
+            fk_ui_context: 232,
+            fk_project: null,
+            fk_property: 1201,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: null,
+            fk_class_for_property_set: null
+          }
+        ]
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 1,
@@ -9757,7 +10684,18 @@ export const crm: ProjectCrm = {
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
         identity_defining: false,
-        ui_context_config: []
+        ui_context_config: [
+          {
+            pk_entity: 251,
+            fk_ui_context: 232,
+            fk_project: null,
+            fk_property: 1202,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: null,
+            fk_class_for_property_set: null
+          }
+        ]
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 1,
@@ -9815,6 +10753,46 @@ export const crm: ProjectCrm = {
             property_is_outgoing: true,
             ord_num: 0,
             fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 247,
+            fk_ui_context: 232,
+            fk_project: null,
+            fk_property: 1112,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 1,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 241,
+            fk_ui_context: 231,
+            fk_project: null,
+            fk_property: 1112,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 1,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 237,
+            fk_ui_context: 230,
+            fk_project: null,
+            fk_property: 1112,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 1,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 256,
+            fk_ui_context: 229,
+            fk_project: null,
+            fk_property: 1112,
+            fk_property_set: null,
+            property_is_outgoing: true,
+            ord_num: 1,
+            fk_class_for_property_set: null
           }
         ]
       },
@@ -9825,6 +10803,34 @@ export const crm: ProjectCrm = {
         sg: 'Language',
         pl: 'Languages',
         'default': 'Language'
+      }
+    },
+    _100005_outgoing: {
+      type: 'RoleSet',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 100005,
+        dfh_identifier_in_namespace: 'histP9',
+        dfh_has_domain: 365,
+        dfh_has_range: 218,
+        dfh_fk_property_of_origin: 1111,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false,
+        ui_context_config: []
+      },
+      targetMaxQuantity: 1,
+      targetMinQuantity: 1,
+      targetClassPk: 218,
+      label: {
+        sg: '[sg: 100005: histP9 undefined',
+        pl: '[pl: 100005: histP9 undefined',
+        'default': '[sg: 100005: histP9 undefined'
       }
     },
     _1184_ingoing: {
@@ -10194,7 +11200,28 @@ export const crm: ProjectCrm = {
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
         identity_defining: false,
-        ui_context_config: []
+        ui_context_config: [
+          {
+            pk_entity: 238,
+            fk_ui_context: 232,
+            fk_project: null,
+            fk_property: 1201,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 0,
+            fk_class_for_property_set: null
+          },
+          {
+            pk_entity: 239,
+            fk_ui_context: 231,
+            fk_project: null,
+            fk_property: 1201,
+            fk_property_set: null,
+            property_is_outgoing: false,
+            ord_num: 0,
+            fk_class_for_property_set: null
+          }
+        ]
       },
       targetMaxQuantity: -1,
       targetMinQuantity: 0,
@@ -10207,3 +11234,4 @@ export const crm: ProjectCrm = {
     }
   }
 }
+

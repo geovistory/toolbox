@@ -1,24 +1,28 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SourcesRoutingModule } from './sources-routing.module';
-
-import { SourceSearchHitComponent } from './components/source-search-hit/source-search-hit.component';
-import { SourceCreateFormComponent } from './components/source-create-form/source-create-form.component';
-import { SourceListComponent } from './containers/source-list/source-list.component';
-import { SourceDetailComponent } from './containers/source-detail/source-detail.component';
-import { KeysModule } from '../../shared/pipes/keys.module';
-import { QuillModule } from '../quill';
-import { AnnotationModule } from '../annotation';
-import { SourceListAPIActions } from './containers/source-list/source-list.actions';
-import { SourceDetailActions } from './containers/source-detail/source-detail.actions';
-import { AnnotationPanelActions } from '../annotation/containers/annotation-panel/annotation-panel.actions';
-import { AnnotationCtrlActions } from '../annotation/containers/annotation-ctrl/annotation-ctrl.actions';
-import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
-import { SourceDetailApiEpics } from './containers/source-detail/source-detail.epics';
-import { VersionPickerComponent } from './components/version-picker/version-picker.component';
 import { PassiveLinkModule } from 'app/shared';
+import { KeysModule } from '../../shared/pipes/keys.module';
+import { AnnotationModule } from '../annotation';
+import { AnnotationCtrlActions } from '../annotation/containers/annotation-ctrl/annotation-ctrl.actions';
+import { AnnotationPanelActions } from '../annotation/containers/annotation-panel/annotation-panel.actions';
+import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 import { Information2Module } from '../information/information.module';
+import { QuillModule } from '../quill';
+import { SourceCreateFormComponent } from './components/source-create-form/source-create-form.component';
+import { SourceSearchHitComponent } from './components/source-search-hit/source-search-hit.component';
+import { VersionPickerComponent } from './components/version-picker/version-picker.component';
+import { SectionDetailAPIActions } from './containers/section-detail/api/section-detail.actions';
+import { SectionDetailAPIEpics } from './containers/section-detail/api/section-detail.epics';
+import { SectionDetailComponent } from './containers/section-detail/section-detail.component';
+
+import { SourceListAPIActions } from './containers/source-list/api/source-list.actions';
+import { SourceListAPIEpics } from './containers/source-list/api/source-list.epics';
+import { SourceListComponent } from './containers/source-list/source-list.component';
+import { SourcesRoutingModule } from './sources-routing.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
+
 
 @NgModule({
   imports: [
@@ -29,22 +33,26 @@ import { Information2Module } from '../information/information.module';
     AnnotationModule,
     QuillModule,
     PassiveLinkModule,
-    Information2Module
+    Information2Module,
+    NgbModule
   ],
   providers: [
     SourceListAPIActions,
-    SourceDetailActions,
-    SourceDetailApiEpics,
     AnnotationPanelActions,
     AnnotationCtrlActions,
-    MentionedEntityCtrlActions
+    MentionedEntityCtrlActions,
+    SourceListAPIEpics,
+    SourceListAPIActions,
+
+    SectionDetailAPIActions,
+    SectionDetailAPIEpics
   ],
   declarations: [
     SourceSearchHitComponent,
     SourceCreateFormComponent,
     SourceListComponent,
-    SourceDetailComponent,
     VersionPickerComponent,
+    SectionDetailComponent,
   ]
 })
 export class SourcesModule { }

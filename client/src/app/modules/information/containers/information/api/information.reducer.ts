@@ -9,31 +9,17 @@ export function informationReducer(state: Information = INITIAL_STATE, a: Action
 
   const action = a as InformationAPIAction;
 
-  /*****************************************************
-  * Reducers to manage searching of data units
-  *****************************************************/
   switch (action.type) {
-    case InformationAPIActions.SEARCH_STARTED:
-      state = {
-        ...state,
-        _peIt_list: [],
-        loading: true
-      };
-      break;
-    case InformationAPIActions.SEARCH_SUCCEEDED:
-      state = {
-        ...state,
-        _peIt_list: action.meta.searchResponse.data,
-        collectionSize: action.meta.searchResponse.totalCount,
-        loading: false
-      };
-      break;
 
-    case InformationAPIActions.SEARCH_FAILED:
+    /*****************************************************
+    * Reducers to manage the list
+    *****************************************************/
+    case InformationAPIActions.INITIALIZE_LIST:
       state = {
         ...state,
-        _peIt_list: [],
-        loading: false
+        _peIt_list: {
+          pkAllowedClasses: action.meta.pkClasses
+        }
       };
       break;
 

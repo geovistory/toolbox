@@ -1,0 +1,19 @@
+<div *ngIf="!(create$ |async)" class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline">
+  <div class="gv-grow-1">
+    Sections and Reproductions
+  </div>
+  <!-- Step 1 for adding a new property -->
+  <gv-class-and-type-selector *ngIf="(pkProject$ |async) && (crm$ | async)" [pkClasses]="pkClassesOfAddBtn" [pkProject]="(pkProject$ |async)"
+    [basePath]="basePath.concat('classAndTypeSelector')" (select)="onAdd($event, pkUiContextCreate)" buttonText="+ Add"
+    placement="right"></gv-class-and-type-selector>
+
+</div>
+
+<div *ngIf="!(create$ |async)">
+  <div *ngFor="let item of (items$|async) | keys;" (click)="openSection(item.value?._peIt?.pkEntity)">
+    <gv-pe-it-label [children]="item.value?._peIt?._children" [classConfig]="(getClassConfig(item.value?._peIt?.fkClass) | async)"></gv-pe-it-label>
+  </div>
+</div>
+
+<gv-entity-association-create-or-add *ngIf="(create$ |async)" class="gv-flex-fh" [basePath]="basePath.concat('create')"
+  (done)="openSection($event.fk_domain_entity)" (cancel)="stopCreate()"></gv-entity-association-create-or-add>

@@ -1,41 +1,20 @@
-import { dispatch, NgRedux, select, WithSubStore } from '@angular-redux/store';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { InfDigitalObject, InfDigitalObjectApi, Project, IAppState, InfEntityProjectRelApi, InfEntityProjectRelInterface, ComConfig, ProjectCrm } from 'app/core';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Observable, Subscription, combineLatest } from 'rxjs';
-import { ISourceDetailState, ISourceListState, ISourceSearchHitState, IVersion } from '../..';
-import { SourceListAPIActions } from './source-list.actions';
-import { sourceListReducer } from './source-list.reducer';
-import { ClassAndTypePk } from 'app/modules/information/containers/class-and-type-selector/api/class-and-type-selector.models';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ComConfig, IAppState, PeItDetail, Project, ProjectCrm, SubstoreComponent } from 'app/core';
+import { RootEpics } from 'app/core/store/epics';
+import { CreateOrAddPeIt } from 'app/modules/information/containers/create-or-add-pe-it/api/create-or-add-pe-it.models';
+import { List } from 'app/modules/information/containers/list/api/list.models';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
+import { ISourceSearchHitState } from '../..';
+import { SourceListAPIActions } from './api/source-list.actions';
+import { SourceListAPIEpics } from './api/source-list.epics';
+import { SourceList } from './api/source-list.models';
+import { sourceListReducer } from './api/source-list.reducer';
 
-/**
- * Container to manage the sources (digital objects): Search, create, show, edit, remove
- * - interacts with store on the level of ISourcesState
- * - interacts with api
- *   - search for sources and update 'list' var of substore
- *
- *
- * Template
- * - If nor 'create' nor 'edit' nor 'remove' vars of substore are truthy,
- *      show a create source button
- *      show a SourceSearchHitComponent for each entry in 'list' with open and remove buttons
- *      passing SourceSearchHitState via Input
- *
- * - If 'create' is truthy, show a form with SourceCreateFormComponent
- *   listening to submit and cancel Outputs
- *
- * - If 'edit' is truthy, show a SourceDetailComponent
- *   passing store path to 'edit' via Input
- *   listening to onChange Output to update the 'list'
- *
- * - If 'remove' is truthy, show a SourceSearchHitComponent with 'are you sure', cancel and remove buttons
- *   passing store path to 'remove' via Input
- *
- * Note: there must never be more than one of 'create', 'edit' and 'remove' vars of substore truthy at the same time
- *
-*/
-@AutoUnsubscribe()
+
 @WithSubStore({
   basePathMethodName: 'getBasePath',
   localReducer: sourceListReducer
@@ -45,19 +24,23 @@ import { ClassAndTypePk } from 'app/modules/information/containers/class-and-typ
   templateUrl: './source-list.component.html',
   styleUrls: ['./source-list.component.scss']
 })
-export class SourceListComponent extends SourceListAPIActions implements OnInit, OnDestroy {
+export class SourceListComponent extends SourceListAPIActions implements OnInit, OnDestroy, SubstoreComponent {
 
+  // emits true on destroy of this component
+  destroy$ = new Subject<boolean>();
+
+  // local store of this component
+  localStore: ObservableStore<SourceList>;
 
   // path to the substore
-  @Input() path: string[] | string;
+  @Input() basePath = ['sources'];
 
-  // if provided, initialState will be dispatched onInit replacing the lastState of substore
-  @Input() initState: ISourceListState;
-
-  @select() edit$: Observable<ISourceDetailState>;
+  @select() list$: Observable<List>;
+  @select() edit$: Observable<PeItDetail>;
   @select() remove$: Observable<ISourceSearchHitState>;
   @select() create$: Observable<boolean>;
-  @select() list$: Observable<{ [key: string]: ISourceSearchHitState }>;
+  @select() editSection$: Observable<PeItDetail>;
+
   project$: Observable<Project>;
 
   listVisible: boolean;
@@ -66,25 +49,22 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
 
   hitToRemove: ISourceSearchHitState;
 
-  subs: Subscription[] = [];
-
-  pkClassesOfAddBtn = [219]
+  pkClassesOfAddBtn = DfhConfig.CLASS_PKS_SOURCE_PE_IT;
   pkUiContextCreate = ComConfig.PK_UI_CONTEXT_SOURCES_CREATE;
   pkProject$: Observable<number>;
   crm$: Observable<ProjectCrm>;
+  params$: Observable<Params>;
 
   constructor(
-    private actions: SourceListAPIActions,
-    activatedRoute: ActivatedRoute,
-    private ngRedux: NgRedux<IAppState>,
-    private digitObjApi: InfDigitalObjectApi,
-    private eprApi: InfEntityProjectRelApi
+    protected rootEpics: RootEpics,
+    private epics: SourceListAPIEpics,
+    private activatedRoute: ActivatedRoute,
+    public ngRedux: NgRedux<IAppState>,
+    private router: Router
   ) {
     super();
-    // if component is activated by ng-router, take base path here
-    this.subs.push(activatedRoute.data.subscribe(d => {
-      this.path = d.reduxPath;
-    }))
+
+    this.params$ = activatedRoute.params;
 
     // observe the active project
     this.project$ = ngRedux.select<Project>('activeProject');
@@ -96,90 +76,86 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
     this.crm$ = ngRedux.select<ProjectCrm>(['activeProject', 'crm']);
 
     // observe and store the remove hit
-    this.subs.push(this.remove$.subscribe(r => {
+    this.remove$.takeUntil(this.destroy$).subscribe(r => {
       this.hitToRemove = r;
-    }))
+    })
 
-    this.subs.push(combineLatest(this.create$, this.edit$, this.remove$).subscribe(d => {
-      if (d[0] || d[1] || d[2]) this.listVisible = false;
+    combineLatest(
+      this.create$,
+      this.edit$,
+      this.remove$,
+      this.editSection$
+    ).takeUntil(this.destroy$).subscribe(d => {
+      if (d.filter(i => !!i).length > 0) this.listVisible = false;
       else this.listVisible = true;
-    }))
+    })
 
   }
 
-  getBasePath() { return this.path }
+  getBasePath() { return this.basePath }
 
   ngOnInit() {
-    // initial state is useful for sandboxing the component
-    if (this.initState) this.updateState(this.initState)
+    this.localStore = this.ngRedux.configureSubStore(this.basePath, sourceListReducer);
+    this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    this.editPath = this.path === '' ? ['edit'] :
-      typeof this.path === 'string' ? [...[this.path], 'edit'] :
-        [...this.path, 'edit'];
+    combineLatest(this.params$, this.pkProject$, this.crm$).pipe(
+      filter((d) => (d.filter((i) => !i).length === 0)),
+      takeUntil(this.destroy$)
+    ).subscribe((d) => {
+      const params = d[0], pkProject = d[1], crm = d[2];
+      if (params.pkEntity && params.pkSection) {
+        // Init the section edit
+        this.loadSectionDetails(params.pkSection, pkProject, crm)
 
-    // Init the sources list
-    this.search();
+      } else if (params.pkEntity) {
+        // Init the source edit
+        this.loadSourceDetails(params.pkEntity, pkProject, crm)
+      } else {
+
+        // Init the sources list
+        this.initializeList(this.pkClassesOfAddBtn);
+      }
+    })
 
   }
+
 
   ngOnDestroy() {
-    this.subs.forEach(sub => sub.unsubscribe);
-  }
-
-  /**
-   * Updates the state of substore
-   */
-  @dispatch() updateState(payload: ISourceListState) {
-    return this.actions.stateUpdated(payload)
+    this.destroy();
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
 
-  /**
-   * Querys the database for sources filtered by 'filter' and on success
-   * - update store: 'list'
-   */
-  search() {
-    // GEOV-186
-    // TODO apply make a better filter with searchstring, limit, offset, and search only for sources in project
-    this.subs.push(this.project$.subscribe(p => {
-      if (p) {
-
-        this.subs.push(this.digitObjApi.findProjectVersion(this.ngRedux.getState().activeProject.pk_project, null)
-          .subscribe((res: InfDigitalObject[]) => {
-            const list: { [key: string]: ISourceSearchHitState } = {}
-
-            let i = 0;
-            res.forEach(digitObj => {
-              list['_source_' + i] = {
-                id: digitObj.pk_entity,
-                version: digitObj.entity_version,
-                label: digitObj.notes
-              } as ISourceSearchHitState;
-              ++i;
-            })
-
-            this.searchHitsUpdated(list)
-
-          }))
-      }
-    }))
+  openEntity(pkInfPersistentItem) {
+    this.router.navigate(['../', pkInfPersistentItem], {
+      relativeTo: this.activatedRoute, queryParamsHandling: 'merge'
+    })
   }
 
+  // /**
+  //  * Updates the state of substore
+  //  */
+  // @dispatch() updateState(payload: ISourceListState) {
+  //   return this.actions.stateUpdated(payload)
+  // }
 
-  openSearchHit(searchHit: ISourceSearchHitState) {
-    const pkEntity = searchHit.id;
 
-    // GEOV-186
-    // TODO query db for source related to project
-    this.subs.push(this.digitObjApi.findProjectVersion(this.ngRedux.getState().activeProject.pk_project, pkEntity)
-      .subscribe((digiObjs: InfDigitalObject[]) => {
-        const editState: ISourceDetailState = {
-          view: digiObjs[0]
-        }
-        this.open(editState);
-      }))
 
-  }
+  // openSearchHit(searchHit: ISourceSearchHitState) {
+  //   const pkEntity = searchHit.id;
+
+  //   // GEOV-186
+  //   // TODO query db for source related to project
+  //   this.digitObjApi.findProjectVersion(this.ngRedux.getState().activeProject.pk_project, pkEntity).takeUntil(this.destroy$)
+  //     .subscribe((digiObjs: InfDigitalObject[]) => {
+  //       const editState: ISourceDetailState = {
+  //         view: digiObjs[0]
+  //       }
+  //       this.open(editState);
+  //     })
+
+  // }
 
 
   /**
@@ -188,20 +164,20 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
    *    - updates store: updates 'edit', 'view', sets 'edit', 'edit' false
    *    - emits onChange Output
    */
-  save(digitalObject: InfDigitalObject) {
+  // save(digitalObject: InfDigitalObject) {
 
-    // TODO make saving with epr and versioning
+  //   // TODO make saving with epr and versioning
 
-    // GEOV-186
-    this.digitObjApi.saveWithEpr(digitalObject, this.ngRedux.getState().activeProject.pk_project)
-      .subscribe((result: InfDigitalObject[]) => {
-        // update the edit.view state and remove the edit.edit state
-        this.sourceUpdated(result[0]);
-        // update the sources list
-        this.search();
-      })
+  //   // GEOV-186
+  //   this.digitObjApi.saveWithEpr(digitalObject, this.ngRedux.getState().activeProject.pk_project)
+  //     .subscribe((result: InfDigitalObject[]) => {
+  //       // update the edit.view state and remove the edit.edit state
+  //       this.sourceUpdated(result[0]);
+  //       // update the sources list
+  //       // this.search();
+  //     })
 
-  }
+  // }
 
 
   /**
@@ -209,7 +185,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
    * in order to apply the changes to the list
    */
   onSourceChange() {
-    this.search()
+    // this.search()
   }
 
 
@@ -220,23 +196,23 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
    * - update store: delete 'remove'
    * - getList()
    */
-  remove() {
-
-    this.subs.push(
-      this.eprApi.updateEprAttributes(
-        this.ngRedux.getState().activeProject.pk_project,
-        this.hitToRemove.id,
-        { is_in_project: false } as InfEntityProjectRelInterface
-      ).subscribe((deleted) => {
-        // delete the remove state
-        this.removed();
-        // update the sources list
-        this.search();
-      })
-    )
+  // remove() {
 
 
-  }
+  //   this.eprApi.updateEprAttributes(
+  //     this.ngRedux.getState().activeProject.pk_project,
+  //     this.hitToRemove.id,
+  //     { is_in_project: false } as InfEntityProjectRelInterface
+  //   ).takeUntil(this.destroy$).subscribe((deleted) => {
+  //     // delete the remove state
+  //     this.removed();
+  //     // update the sources list
+  //     // this.search();
+  //   })
+
+
+
+  // }
 
 
   /**
@@ -244,60 +220,60 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
    * Create SourceDetailState
    * - update store: set edit: new SourceDetailState
    */
-  submitCreate(dObj: InfDigitalObject) {
+  // submitCreate(dObj: InfDigitalObject) {
 
-    // save digital object with epr and versioning
-    this.subs.push(this.digitObjApi.saveWithEpr(dObj, this.ngRedux.getState().activeProject.pk_project)
-      .subscribe((digitalObjects: InfDigitalObject[]) => {
-        const editState: ISourceDetailState = {
-          edit: digitalObjects[0],
-          view: digitalObjects[0],
-        }
-        // update the sources list
-        this.search();
-        // open the new source
-        this.open(editState);
-        // close the create
-        this.stopCreate()
-      }))
-  }
+  //   // save digital object with epr and versioning
+  //   this.digitObjApi.saveWithEpr(dObj, this.ngRedux.getState().activeProject.pk_project)
+  //     .takeUntil(this.destroy$).subscribe((digitalObjects: InfDigitalObject[]) => {
+  //       const editState: ISourceDetailState = {
+  //         edit: digitalObjects[0],
+  //         view: digitalObjects[0],
+  //       }
+  //       // update the sources list
+  //       // this.search();
+  //       // open the new source
+  //       this.open(editState);
+  //       // close the create
+  //       this.stopCreate()
+  //     })
+  // }
 
   /**
    * called when user changes version of a digital object
    */
-  changeVersion(version: IVersion) {
+  // changeVersion(version: IVersion) {
 
-    // update the epr
-    this.subs.push(this.eprApi.updateEprAttributes(
-      this.ngRedux.getState().activeProject.pk_project,
-      version.pkEntity,
-      {
-        fk_entity_version: version.entityVersion,
-        fk_entity_version_concat: version.pkEntityVersionConcat
-      }
-    ).subscribe((updatedEpr) => {
+  //   // update the epr
+  //   this.eprApi.updateEprAttributes(
+  //     this.ngRedux.getState().activeProject.pk_project,
+  //     version.pkEntity,
+  //     {
+  //       fk_entity_version: version.entityVersion,
+  //       fk_entity_version_concat: version.pkEntityVersionConcat
+  //     }
+  //   ).takeUntil(this.destroy$).subscribe((updatedEpr) => {
 
-      // remove previous version
-      this.sourceUpdated(undefined);
+  //     // remove previous version
+  //     this.sourceUpdated(undefined);
 
-      // get the version
-      this.subs.push(this.digitObjApi.findProjectVersion(this.ngRedux.getState().activeProject.pk_project, version.pkEntity)
-        .subscribe((digiObjs: InfDigitalObject[]) => {
-          const editState: ISourceDetailState = {
-            view: digiObjs[0]
-          }
+  //     // get the version
+  //     this.digitObjApi.findProjectVersion(this.ngRedux.getState().activeProject.pk_project, version.pkEntity)
+  //       .takeUntil(this.destroy$).subscribe((digiObjs: InfDigitalObject[]) => {
+  //         const editState: ISourceDetailState = {
+  //           view: digiObjs[0]
+  //         }
 
-          // open the new version
-          this.sourceUpdated(digiObjs[0]);
+  //         // open the new version
+  //         this.sourceUpdated(digiObjs[0]);
 
-          // update the sources list
-          this.search();
-        }))
+  //         // update the sources list
+  //         // this.search();
+  //       })
 
 
-    })
-    )
+  //   })
 
-  }
+
+  // }
 
 }

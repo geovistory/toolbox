@@ -2,7 +2,7 @@ import { InfPersistentItem } from 'app/core';
 
 // Class of this slice of store
 export class PeItSearchExisting implements PeItSearchExisting {
-    pkClass?:number;
+    pkClass?: number;
     persistentItems?: InfPersistentItem[];
     collectionSize?: number;
     loading?: boolean;

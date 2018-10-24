@@ -42,6 +42,12 @@
       "model": "InfPersistentItem",
       "foreignKey": "fk_range_entity",
       "primaryKey": "pk_entity"
+    },
+    "chunk": {
+      "type": "belongsTo",
+      "model": "InfChunk",
+      "foreignKey": "fk_domain_entity",
+      "primaryKey": "pk_entity"
     }
   },
   "acls": [
@@ -105,10 +111,10 @@
     "nestedObjectOfProject": {
       "accepts": [
         {
-          "arg": "projectId",
+          "arg": "pkProject",
           "type": "number",
           "required": true,
-          "description": "Project id",
+          "description": "Primary Key of the Project",
           "http": {
             "source": "query"
           }
@@ -116,8 +122,35 @@
         {
           "arg": "pkEntity",
           "type": "number",
-          "required": true,
+          "required": false,
           "description": "Primary Key of the entity association (pk_entity)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkRangeEntity",
+          "type": "number",
+          "required": false,
+          "description": "Foreign Key of the entity association pointing to the range entity (fk_range_entity)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkDomainEntity",
+          "type": "number",
+          "required": false,
+          "description": "Foreign Key of the entity association pointing to the domain entity (fk_domain_entity)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkProperty",
+          "type": "number",
+          "required": false,
+          "description": "Foreign Key of the entity association pointing to the property (fk_property)",
           "http": {
             "source": "query"
           }
@@ -128,7 +161,7 @@
         "type": "InfEntityAssociation",
         "root": true
       },
-      "description": "Get e nested object of all information about the entity association of the project.",
+      "description": "Get e nested object of all information about the found entity associations of the project.",
       "http": {
         "path": "/nested-object-of-project",
         "verb": "get"

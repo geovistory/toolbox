@@ -17,22 +17,17 @@ import { ISourceListState } from '../..';
 import { textBüchel } from '../../../quill/quill-edit/quill-edit.sandbox.mock';
 import { SourceCreateFormComponent } from '../../components/source-create-form/source-create-form.component';
 import { SourceSearchHitComponent } from '../../components/source-search-hit/source-search-hit.component';
-import { SourceDetailActions } from '../source-detail/source-detail.actions';
-import { SourceDetailComponent } from '../source-detail/source-detail.component';
-import { SourceListAPIActions } from './source-list.actions';
+
 import { SourceListComponent } from './source-list.component';
-import { SourceSanboxStoreModule } from './source-list.sandbox.store';
 
 export default sandboxOf(SourceListComponent, {
   imports: [
     RouterModule.forRoot([]),
-    SourceSanboxStoreModule,
     QuillModule,
   ],
   declarations: [
     KeysPipe,
     SourceSearchHitComponent,
-    SourceDetailComponent,
     SourceCreateFormComponent,
     AnnotationPanelComponent,
     AnnotationViewComponent,
@@ -45,8 +40,6 @@ export default sandboxOf(SourceListComponent, {
   ],
   providers: [
     KeysPipe,
-    SourceListAPIActions,
-    SourceDetailActions,
     AnnotationPanelActions,
     AnnotationCtrlActions,
     MentionedEntityCtrlActions
