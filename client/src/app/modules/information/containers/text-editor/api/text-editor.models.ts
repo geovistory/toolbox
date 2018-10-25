@@ -1,12 +1,17 @@
-import { InfDigitalObject } from 'app/core';
-import { IVersion } from 'app/modules/sources';
+import { InfDigitalObject, InfEntityAssociation } from 'app/core';
+import { IVersion } from 'app/modules/information/components/version-picker/version-picker.component';
+import { QuillDoc } from 'app/modules/quill';
 
 // Class of this slice of store
 export class TextEditor implements TextEditor {
 
-    view?: InfDigitalObject;
-    edit?: InfDigitalObject;
-    annotate?: InfDigitalObject;
+
+    entityAssociation?: InfEntityAssociation;
+    digitalObject?: InfDigitalObject;
+    quillDoc?: QuillDoc;
+    view?: boolean;
+    edit?: boolean;
+    annotate?: boolean;
     versionList?: IVersion[];
 
     loading?: boolean;

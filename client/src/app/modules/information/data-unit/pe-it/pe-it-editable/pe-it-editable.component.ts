@@ -146,51 +146,21 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
   }
 
 
+
+
   /**
-  * Show ui with community statistics like
-  * - is in project count
-  * - is standard in project count
+  * Methods to toggle visibility of ui elements
   */
-  showCommunityStats() {
-    this.localStore.dispatch(this.actions.communityStatsVisibilityToggled(true))
+
+  toggleCommunityStats() {
+    this.localStore.dispatch(this.actions.toggleCommunityStats())
   }
 
-  /**
-  * Hide ui with community statistics like
-  * - is in project count
-  * - is standard in project count
-  */
-  hideCommunityStats() {
-    this.localStore.dispatch(this.actions.communityStatsVisibilityToggled(false))
+  toggleOntoInfo() {
+    this.localStore.dispatch(this.actions.toggleOntoInfo())
   }
 
-
-  /**
-  * Show CRM Info in UI
-  */
-  showOntoInfo() {
-    this.localStore.dispatch(this.actions.ontoInfoVisibilityToggled(true))
-  }
-
-  /**
-  * Hide CRM Info in UI
-  */
-  hideOntoInfo() {
-    this.localStore.dispatch(this.actions.ontoInfoVisibilityToggled(false))
-  }
-
-  /**
-  * Show right panel
-  */
-  showRightPanel() {
-    this.localStore.dispatch(this.actions.showRightPanel())
-  }
-
-
-  /**
-  * Hide right panel
-  */
-  hideRightPanel() {
-    this.localStore.dispatch(this.actions.hideRightPanel())
+  toggleRightPanel() {
+    this.localStore.dispatch(this.actions.toggleRightPanel())
   }
 }

@@ -17,13 +17,11 @@ export class PeItActions extends DataUnitActions {
 
   static readonly PE_IT_LABEL_UPDATED = 'PeItActions::PE_IT_LABEL_UPDATED';
 
-  static readonly COMMUNITY_STATS_VISIBILITY_TOGGLED = 'PeItActions::COMMUNITY_STATS_VISIBILITY_TOGGLED';
+  static readonly TOGGLE_COMMUNITY_STATS = 'PeItActions::TOGGLE_COMMUNITY_STATS';
 
-  static readonly ONTO_INFO_VISIBILITY_TOGGLED = 'PeItActions::ONTO_INFO_VISIBILITY_TOGGLED';
+  static readonly TOGGLE_ONTO_INFO = 'PeItActions::TOGGLE_ONTO_INFO';
 
-  static readonly SHOW_RIGHT_PANEL = 'PeItActions::SHOW_RIGHT_PANEL';
-  static readonly HIDE_RIGHT_PANEL = 'PeItActions::HIDE_RIGHT_PANEL';
-
+  static readonly TOGGLE_RIGHT_PANEL = 'PeItActions::TOGGLE_RIGHT_PANEL';
 
   static readonly SET_LEAF_PE_IT_LOADING = 'PeItActions::SET_LEAF_PE_IT_LOADING';
 
@@ -34,22 +32,6 @@ export class PeItActions extends DataUnitActions {
     type: PeItActions.PE_IT_STATE_UPDATED,
     meta: null,
     payload
-  })
-
-  communityStatsVisibilityToggled = (communityStatsVisible: boolean): PeItAction => ({
-    type: PeItActions.COMMUNITY_STATS_VISIBILITY_TOGGLED,
-    meta: null,
-    payload: {
-      communityStatsVisible
-    }
-  })
-
-  ontoInfoVisibilityToggled = (ontoInfoVisible: boolean): PeItAction => ({
-    type: PeItActions.ONTO_INFO_VISIBILITY_TOGGLED,
-    meta: null,
-    payload: {
-      ontoInfoVisible
-    }
   })
 
   peItLabelUpdated = (label: DataUnitLabel): PeItAction => ({
@@ -68,15 +50,27 @@ export class PeItActions extends DataUnitActions {
     }
   })
 
-  showRightPanel = (): PeItAction => ({
-    type: PeItActions.SHOW_RIGHT_PANEL,
+  /**********************************************
+   * Methods to toggle visibility of ui elements
+   **********************************************/
+  toggleRightPanel = (): PeItAction => ({
+    type: PeItActions.TOGGLE_RIGHT_PANEL,
     meta: null,
     payload: null
   })
 
-  hideRightPanel = (): PeItAction => ({
-    type: PeItActions.HIDE_RIGHT_PANEL,
+
+  toggleCommunityStats = (): PeItAction => ({
+    type: PeItActions.TOGGLE_COMMUNITY_STATS,
     meta: null,
     payload: null
   })
+
+  toggleOntoInfo = (): PeItAction => ({
+    type: PeItActions.TOGGLE_ONTO_INFO,
+    meta: null,
+    payload: null
+  })
+
+
 }

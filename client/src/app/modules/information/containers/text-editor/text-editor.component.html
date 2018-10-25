@@ -1,3 +1,45 @@
-<p>
-  text-editor works!
-</p>
+<div class="gv-flex-shrink-0 d-flex border-bottom border-secondary align-items-baseline">
+  <div>
+    Text
+  </div>
+
+  <!-- Version Picker -->
+  <gv-version-picker class="d-inline-block align-middle ml-3" *ngIf="!((edit$ | async) || (annotate$ | async))"
+    [versionList]="(versionList$ | async)" [selectedVersion]="(view$ | async)?.entity_version" (versionChange)="versionChange($event)"></gv-version-picker>
+
+  <button (click)="onSave()">Save</button>
+
+  <div class="btn-group ml-auto" ngbDropdown placement="bottom-right" [autoClose]="'outside'">
+    <button class="btn btn-sm btn-link btn-lg no-caret" ngbDropdownToggle>
+      <i class="fa fa-cogs"></i>
+    </button>
+    <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+      <div class="dropdown-header">
+        Highlight
+      </div>
+      <button class="dropdown-item" (click)="toggleHighlightedTeEnts()">
+        <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (highlightMentionedPeIts$|async)}"></i> Annotated
+        Entities
+      </button>
+      <button class="dropdown-item" (click)="toggleHighlightedTeEnts()">
+        <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (highlightMentionedTeEnts$|async)}"></i> Annotated
+        Events & Phenomena
+      </button>
+      <button class="dropdown-item disabled">
+        <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (highlightAssertions$|async)}"></i> Annotated Assertions
+        (Coming
+        soon)
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit -->
+<div class="gv-flex-fh" *ngIf="(edit$ | async)">
+  <gv-quill-edit *ngIf="!(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(quillDoc$ | async)"
+    [readOnly]="false" (quillDocChange)="quillDocChange($event)"></gv-quill-edit>
+  <!-- 
+    <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(edit$ | async).js_quill_data"
+      [annotationsVisible]="true" [annotatedNodes]="annotatedNodes" (quillDocChange)="onQuillDocChange($event)"></gv-quill-edit> -->
+
+</div>

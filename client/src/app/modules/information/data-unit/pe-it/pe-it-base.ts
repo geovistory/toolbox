@@ -22,6 +22,7 @@ export abstract class PeItBase extends DataUnitBase {
     @select() showAssertions$: Observable<boolean>;
     @select() showSectionList$: Observable<boolean>;
     @select() showRepros$: Observable<boolean>;
+    @select() showProperties$: Observable<boolean>;
     @select() sectionList$: Observable<SectionList>;
 
     // array of pks of loading leaf-pe-its

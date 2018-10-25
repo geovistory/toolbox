@@ -1,5 +1,5 @@
 <div class="font-normal">
-  <button *ngIf="!selectVisible" type="button" class="btn btn-sm btn-light mr-2" (click)="selectVisible=true">
+  <button *ngIf="!selectVisible" type="button" class="btn btn-sm btn-link-gray mr-2" (click)="selectVisible=true">
     v{{selectedVersion}} 
     <span *ngIf="versionList && (selectedVersion < versionList[0].entityVersion)" class="text-danger">(old version)</span>
   </button>

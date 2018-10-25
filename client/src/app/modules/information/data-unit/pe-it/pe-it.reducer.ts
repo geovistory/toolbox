@@ -22,19 +22,7 @@ export const peItReducer = (lastState: PeItDetail = INITIAL_STATE, action: PeItA
       break;
 
 
-    case PeItActions.ONTO_INFO_VISIBILITY_TOGGLED:
-      lastState = {
-        ...lastState,
-        ontoInfoVisible: action.payload.ontoInfoVisible,
-      }
-      break;
 
-    case PeItActions.COMMUNITY_STATS_VISIBILITY_TOGGLED:
-      lastState = {
-        ...lastState,
-        communityStatsVisible: action.payload.communityStatsVisible,
-      }
-      break;
 
     case PeItActions.PE_IT_LABEL_UPDATED:
       lastState = {
@@ -50,21 +38,31 @@ export const peItReducer = (lastState: PeItDetail = INITIAL_STATE, action: PeItA
       }
       break;
 
+    /************************************************
+     * Reducerst to toggle visibility of ui elements
+     ************************************************/
 
-    case PeItActions.SHOW_RIGHT_PANEL:
+    case PeItActions.TOGGLE_RIGHT_PANEL:
       lastState = {
         ...lastState,
-        showRightPanel: true,
+        showRightPanel: !lastState.showRightPanel
       }
       break;
 
-
-    case PeItActions.HIDE_RIGHT_PANEL:
+    case PeItActions.TOGGLE_ONTO_INFO:
       lastState = {
         ...lastState,
-        showRightPanel: false,
+        ontoInfoVisible: !lastState.ontoInfoVisible,
       }
       break;
+
+    case PeItActions.TOGGLE_COMMUNITY_STATS:
+      lastState = {
+        ...lastState,
+        communityStatsVisible: !lastState.communityStatsVisible,
+      }
+      break;
+
   }
 
   return lastState;

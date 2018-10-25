@@ -78,8 +78,4 @@ export interface SectionDetailState {
     versionList?: IVersion[];
 }
 
-export interface IVersion {
-    entityVersion: number; // entity_version
-    pkEntityVersionConcat: string; // pk_entity_version_concat
-    pkEntity: number; // pk_entity
-}
+

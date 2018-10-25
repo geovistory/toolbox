@@ -134,6 +134,7 @@ import { ReprosAPIEpics } from './containers/repros/api/repros.epics';
 import { TextEditorComponent } from './containers/text-editor/text-editor.component';
 import { TextEditorAPIActions } from './containers/text-editor/api/text-editor.actions';
 import { TextEditorAPIEpics } from './containers/text-editor/api/text-editor.epics';
+import { VersionPickerComponent } from './components/version-picker/version-picker.component';
 
 
 
@@ -178,6 +179,7 @@ import { TextEditorAPIEpics } from './containers/text-editor/api/text-editor.epi
     SectionListComponent,
     ReprosComponent,
     TextEditorComponent,
+    VersionPickerComponent,
 
     // Add Modal
     // EntityAddAddExistingComponent,
@@ -375,6 +377,7 @@ import { TextEditorAPIEpics } from './containers/text-editor/api/text-editor.epi
     PeItAddFormComponent,
     PeItCreateFormComponent,
     TextEditorComponent,
+    VersionPickerComponent,
 
     // PeIt specific user interfaces
     SectionListComponent,

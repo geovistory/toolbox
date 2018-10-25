@@ -48,6 +48,12 @@
       "model": "InfChunk",
       "foreignKey": "fk_domain_entity",
       "primaryKey": "pk_entity"
+    },
+    "digital_object": {
+      "type": "belongsTo",
+      "model": "InfDigitalObject",
+      "foreignKey": "fk_domain_entity",
+      "primaryKey": "pk_entity"
     }
   },
   "acls": [

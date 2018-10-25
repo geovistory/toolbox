@@ -41,6 +41,10 @@ export class DfhConfig {
   // dfh_pk_property used to connect a chunk as domain use with a persitent item or temporal entity as range
   static PROPERTY_PK_MENTIONES = 4;
 
+  static PROPERTY_PK_IS_REPRODUCTION_OF_SECTION = 777;
+
+
+
   static PROPERTY_PK_AT_SOME_TIME_WITHIN = 72;
   static PROPERTY_PK_ONGOING_THROUGHOUT = 71;
   static PROPERTY_PK_BEGIN_OF_BEGIN = 152;

@@ -110,6 +110,16 @@ module.exports = function (InfEntityAssociation) {
             }]
           },
         },
+        "digital_object": {
+          "$relation": {
+            "name": "digital_object",
+            "joinType": "left join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          },
+          "entity_version_project_rels": innerJoinThisProject
+        },
         "domain_pe_it": {
           "$relation": {
             "name": "domain_pe_it",

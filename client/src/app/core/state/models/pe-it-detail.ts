@@ -41,8 +41,12 @@ export class PeItDetail extends DataUnit {
     // the bar to above the properties
     showPropertiesHeader?= true;
 
+    // the properties with information about the peIt
+    showProperties?= true;
+
     // the header with name of peIt
     showHeader?= true;
+
 
     ontoInfoVisible?= false;
     communityStatsVisible?= false;

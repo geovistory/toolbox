@@ -1,5 +1,10 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { IVersion } from '../..';
+
+export interface IVersion {
+  entityVersion: number; // entity_version
+  pkEntityVersionConcat: string; // pk_entity_version_concat
+  pkEntity: number; // pk_entity
+}
 
 @Component({
   selector: 'gv-version-picker',

@@ -26,31 +26,5 @@
 
 <!-- Text Repro -->
 <div class="gv-flex-fh mt-2" *ngIf="(showText$|async)">
-  <div class="gv-flex-shrink-0 d-flex border-bottom border-secondary align-items-baseline">
-    <div class="gv-grow-1">
-      Text
-    </div>
-    <div class="btn-group" ngbDropdown placement="bottom-right" [autoClose]="'outside'">
-      <button class="btn btn-sm btn-link btn-lg no-caret" ngbDropdownToggle>
-        <i class="fa fa-cogs"></i>
-      </button>
-      <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
-        <div class="dropdown-header">
-          Highlight
-        </div>
-        <button class="dropdown-item" (click)="toggleHighlightedTeEnts()">
-          <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showText$|async)}"></i> Annotated Entities
-        </button>
-        <button class="dropdown-item" (click)="toggleHighlightedTeEnts()">
-          <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showText$|async)}"></i> Annotated Events & Phenomena
-        </button>
-        <button class="dropdown-item disabled">
-          <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showText$|async)}"></i> Annotated Assertions (Coming
-          soon)
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <gv-text-editor class="gv-flex-fh"></gv-text-editor>
+  <gv-text-editor class="gv-flex-fh" [basePath]="basePath.concat('textEditor')"></gv-text-editor>
 </div>
