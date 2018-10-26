@@ -70,7 +70,7 @@
       "property": [
         "find",
         "findOrCreateInfEntityAssociation",
-        "nestedObjectOfProject"
+        "nestedObject"
       ]
     }
   ],
@@ -114,13 +114,22 @@
         "verb": "post"
       }
     },
-    "nestedObjectOfProject": {
+    "nestedObject": {
       "accepts": [
+        {
+          "arg": "ofProject",
+          "type": "boolean",
+          "required": true,
+          "description": "if true, finds project version. if false, finds repo version.",
+          "http": {
+            "source": "query"
+          }
+        },
         {
           "arg": "pkProject",
           "type": "number",
-          "required": true,
-          "description": "Primary Key of the Project",
+          "required": false,
+          "description": "Primary Key of the Project. If provided and ofProject=false, makes a left join with project",
           "http": {
             "source": "query"
           }
@@ -167,9 +176,9 @@
         "type": "InfEntityAssociation",
         "root": true
       },
-      "description": "Get e nested object of all information about the found entity associations of the project.",
+      "description": "Get e nested object of all information about the found entity associations.",
       "http": {
-        "path": "/nested-object-of-project",
+        "path": "/nested-object",
         "verb": "get"
       }
     }

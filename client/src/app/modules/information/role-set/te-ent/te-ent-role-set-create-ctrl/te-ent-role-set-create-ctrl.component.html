@@ -1,6 +1,6 @@
 <div class="mb-3">
   <gv-role-set-header [property$]="property$" [label$]="label$" (startAddingRole)="startCreateRole()"
-    [ontoInfoVisible$]="ontoInfoVisible$" [removeRoleSetBtnVisible]="removeRoleSetBtnVisible"></gv-role-set-header>
+    [showOntoInfo$]="showOntoInfo$" [removeRoleSetBtnVisible]="removeRoleSetBtnVisible"></gv-role-set-header>
 
   <!-- If no roles in Project, show a big add button -->
   <div *ngIf="!((_role_list$ | async) | keys).length && addButtonVisible">

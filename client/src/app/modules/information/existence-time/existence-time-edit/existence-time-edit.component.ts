@@ -37,7 +37,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
 
   _children: RoleSetList;
   @select() _children$: Observable<RoleSetList>;
-  @select() ontoInfoVisible$: Observable<boolean>;
+  @select() showOntoInfo$: Observable<boolean>;
   @select() helpMode$: Observable<ExTimeHelpMode>
   @select() mode$: Observable<ExTimeModalMode>
 

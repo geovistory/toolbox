@@ -48,14 +48,21 @@ export class SourceListAPIEpics {
              */
             .subscribe((data) => {
               const peItDetail = createPeItDetail({
-                showRightPanel: true,
-                showMap: false,
-                showTimeline: false,
+
                 showMentionedEntities: true,
+                showMentionedEntitiesToggle: true,
+
                 showAssertions: true,
+                showAssertionsToggle: true,
+
+                showSectionList: true,
+                showSectionListToggle: true,
+
+                showProperties: true,
+                showPropertiesToggle: true,
+
                 showPropertiesHeader: true,
                 showAddAPropertyButton: false,
-                showSectionList: true
               }, data, action.meta.crm,
                 { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE })
               /**
@@ -107,15 +114,21 @@ export class SourceListAPIEpics {
              */
             .subscribe((data) => {
               const peItDetail = createPeItDetail({
-                showRightPanel: false,
-                showMentionedEntities: true,
-                showAssertions: true,
-                showPropertiesHeader: true,
-                showRepros: true,
-                showMap: false,
-                showTimeline: false,
+
+                showProperties: false,
+                showPropertiesToggle: true,
                 showAddAPropertyButton: false,
-                showSectionList: false
+
+                showRepros: true,
+                showReprosToggle: true,
+
+                showMentionedEntities: true,
+                showMentionedEntitiesToggle: true,
+
+                showAssertions: true,
+                showAssertionsToggle: true,
+
+
               }, data, action.meta.crm,
                 { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE })
               /**

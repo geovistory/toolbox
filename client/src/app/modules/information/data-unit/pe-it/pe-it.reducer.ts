@@ -39,29 +39,17 @@ export const peItReducer = (lastState: PeItDetail = INITIAL_STATE, action: PeItA
       break;
 
     /************************************************
-     * Reducerst to toggle visibility of ui elements
+     * Reducer to toggle booleans.
+     * Useful to toggle visibiility of ui elements
      ************************************************/
 
-    case PeItActions.TOGGLE_RIGHT_PANEL:
+    case PeItActions.TOGGLE_BOOLEAN:
       lastState = {
         ...lastState,
-        showRightPanel: !lastState.showRightPanel
+        [action.meta.keyToToggle]: !lastState[action.meta.keyToToggle]
       }
       break;
 
-    case PeItActions.TOGGLE_ONTO_INFO:
-      lastState = {
-        ...lastState,
-        ontoInfoVisible: !lastState.ontoInfoVisible,
-      }
-      break;
-
-    case PeItActions.TOGGLE_COMMUNITY_STATS:
-      lastState = {
-        ...lastState,
-        communityStatsVisible: !lastState.communityStatsVisible,
-      }
-      break;
 
   }
 

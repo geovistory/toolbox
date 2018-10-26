@@ -44,7 +44,14 @@ export class InformationAPIEpics {
              * Subscribe to the api call
              */
             .subscribe((data) => {
-              const peItDetail = createPeItDetail({}, data, c.ngRedux.getState().activeProject.crm)
+              const peItDetail = createPeItDetail({
+                showProperties: true,
+                showPropertiesToggle: true,
+                showMap: true,
+                showMapToggle: true,
+                showTimeline: true,
+                showTimelineToggle: true
+              }, data, c.ngRedux.getState().activeProject.crm)
               /**
                * Emit the global action that completes the loading bar
                */

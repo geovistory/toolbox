@@ -176,7 +176,7 @@ export class TypesAPIEpics {
 
             const peItDetail = createPeItDetail({
               showHeader: false,
-              showRightPanel: false,
+              showProperties: true,
               showPropertiesHeader: false,
               showAddAPropertyButton: false
             }, data[0], c.ngRedux.getState().activeProject.crm, {

@@ -40,7 +40,7 @@
       <span *ngIf="labelInEdit">{{labelInEdit}}</span>
       <gv-te-ent-label [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit" [childrenPath]="basePath.concat('_children$')"></gv-te-ent-label>
     </div>
-    <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+    <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(showOntoInfo$|async)">
       <div class="align-self-center">
         <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{(dfhClass$|async)?.dfh_pk_class}}" target="_blank">
           {{(dfhClass$|async)?.dfh_identifier_in_namespace}}

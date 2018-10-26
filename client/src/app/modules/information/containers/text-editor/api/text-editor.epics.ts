@@ -1,20 +1,22 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfEntityAssociationApi, InfEntityAssociation, InfDigitalObject, InfDigitalObjectApi } from 'app/core';
+import { InfDigitalObject, InfDigitalObjectApi, InfEntityAssociation, InfEntityAssociationApi, InfEntityProjectRelApi, LoadingBarActions } from 'app/core';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { ofSubstore } from 'app/core/store/module';
+import { IVersion } from 'app/modules/information/components/version-picker/version-picker.component';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { TextEditorComponent } from '../text-editor.component';
-import { TextEditorAPIActions, TextEditorAPIAction } from './text-editor.actions';
-import { ofSubstore } from 'app/core/store/module';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { TextEditorAPIAction, TextEditorAPIActions } from './text-editor.actions';
 
 @Injectable()
 export class TextEditorAPIEpics {
   constructor(
     private eaApi: InfEntityAssociationApi,
     private digitObjApi: InfDigitalObjectApi,
+    private eprApi: InfEntityProjectRelApi,
     private actions: TextEditorAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions
@@ -24,7 +26,9 @@ export class TextEditorAPIEpics {
     return combineEpics(
       this.createLoadTextEditorEpic(c),
       this.createSaveTextEditorEpic(c),
-      this.createRelateToSectionEpic(c)
+      this.createRelateToSectionEpic(c),
+      this.createGetVersionListEpic(c),
+      this.createChangeVersionEpic(c),
     );
   }
 
@@ -44,7 +48,7 @@ export class TextEditorAPIEpics {
           /**
            * Do some api call
            */
-          this.eaApi.nestedObjectOfProject(action.meta.pkProject, null, action.meta.fkRangeEntity, null, DfhConfig.PROPERTY_PK_IS_REPRODUCTION_OF_SECTION) // <- change api call here
+          this.eaApi.nestedObject(true, action.meta.pkProject, null, action.meta.fkRangeEntity, null, DfhConfig.PROPERTY_PK_IS_REPRODUCTION_OF_SECTION)
             /**
              * Subscribe to the api call
              */
@@ -204,4 +208,144 @@ export class TextEditorAPIEpics {
       )
     }
   }
+
+  private createGetVersionListEpic(c: TextEditorComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(TextEditorAPIActions.LOAD_SUCCEEDED, TextEditorAPIActions.SAVE_SUCCEEDED),
+        filter(action => ofSubstore(c.basePath)(action)),
+        // Let it pass, only if there is a digital object yet
+        filter(() => ('pk_entity' in c.localStore.getState().digitalObject)),
+        switchMap((action: TextEditorAPIAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          c.localStore.dispatch(this.actions.loadVersionList())
+
+          /**
+           * Do some api call
+           */
+          this.digitObjApi.getVersions(c.localStore.getState().digitalObject.pk_entity)
+            /**
+             * Subscribe to the api call
+             */
+            .subscribe((digitObjects: InfDigitalObject[]) => {
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+
+              // map versions to IVersion[]
+              const versionList = digitObjects.map(item => {
+                return {
+                  entityVersion: item.entity_version,
+                  pkEntityVersionConcat: item.pk_entity_version_concat,
+                  pkEntity: item.pk_entity
+                } as IVersion
+              })
+              /**
+               * Emit the local action on loading succeeded
+               */
+              c.localStore.dispatch(this.actions.loadVersionListSucceeded(versionList));
+
+            }, error => {
+              /**
+        * Emit the global action that shows some loading error message
+        */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              c.localStore.dispatch(this.actions.loadVersionListFailed({ status: '' + error.status }))
+            })
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
+
+  private createChangeVersionEpic(c: TextEditorComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(TextEditorAPIActions.CHANGE_VERSION),
+        filter(action => ofSubstore(c.basePath)(action)),
+        switchMap((action: TextEditorAPIAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+
+          const version = action.meta.version;
+
+          /**
+           * Do some api call
+           */
+          this.eprApi.updateEprAttributes(
+            c.ngRedux.getState().activeProject.pk_project,
+            version.pkEntity,
+            {
+              fk_entity_version: version.entityVersion,
+              fk_entity_version_concat: version.pkEntityVersionConcat
+            }
+          )
+            /**
+             * Subscribe to the api call
+             */
+            .subscribe((digitObjects: InfDigitalObject[]) => {
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+
+              /**
+               * Emit the local action on loading succeeded
+               */
+              c.localStore.dispatch(this.actions.changeVersionSucceeded());
+              const s = c.localStore.getState()
+
+              /**
+              * Trigger the loading of the version
+              */
+              c.localStore.dispatch(this.actions.load(
+                c.ngRedux.getState().activeProject.pk_project,
+                s.entityAssociation.fk_range_entity,
+                s.entityAssociation.fk_property
+              ));
+
+            }, error => {
+              /**
+        * Emit the global action that shows some loading error message
+        */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              c.localStore.dispatch(this.actions.changeVersionFailed({ status: '' + error.status }))
+            })
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
 }
+

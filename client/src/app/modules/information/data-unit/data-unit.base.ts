@@ -48,7 +48,6 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   @select() _type$: Observable<TypeDetail>
   @select() pkUiContext$: Observable<number>
 
-  @select() showRightPanel$: Observable<boolean>;
   @select() showAddAPropertyButton$: Observable<boolean>;
 
   crm$: Observable<ProjectCrm>;

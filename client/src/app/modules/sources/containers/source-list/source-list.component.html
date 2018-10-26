@@ -59,8 +59,7 @@
   </div>
 
 
-  <gv-pe-it-editable [hidden]="(createSection$ | async)" (close)="close()" (onSave)="save($event)" (versionChanged)="changeVersion($event)"
-    [basePath]="basePath.concat('edit')" [ngClass]="{'gv-grow-1 d-flex flex-column' : !(createSection$ | async)}"></gv-pe-it-editable>
+  <gv-pe-it-editable [hidden]="(createSection$ | async)" [basePath]="basePath.concat('edit')" [ngClass]="{'gv-grow-1 d-flex flex-column' : !(createSection$ | async)}"></gv-pe-it-editable>
 
 
 </div>

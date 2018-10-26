@@ -10,7 +10,7 @@ export class RoleSetHeaderComponent implements OnInit {
   @Input() property$;
   @Input() label$;
   @Input() toggle$;
-  @Input() ontoInfoVisible$;
+  @Input() showOntoInfo$;
   @Input() addButtonVisible;
   @Input() removeRoleSetBtnVisible;
   @Input() toggleButtonVisible;

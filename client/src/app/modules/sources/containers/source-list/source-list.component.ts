@@ -141,45 +141,6 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
   // }
 
 
-
-  // openSearchHit(searchHit: ISourceSearchHitState) {
-  //   const pkEntity = searchHit.id;
-
-  //   // GEOV-186
-  //   // TODO query db for source related to project
-  //   this.digitObjApi.findProjectVersion(this.ngRedux.getState().activeProject.pk_project, pkEntity).takeUntil(this.destroy$)
-  //     .subscribe((digiObjs: InfDigitalObject[]) => {
-  //       const editState: ISourceDetailState = {
-  //         view: digiObjs[0]
-  //       }
-  //       this.open(editState);
-  //     })
-
-  // }
-
-
-  /**
-   * Save the changes made on Digital Object
-   * - calls api to persist the changes in db and on success
-   *    - updates store: updates 'edit', 'view', sets 'edit', 'edit' false
-   *    - emits onChange Output
-   */
-  // save(digitalObject: InfDigitalObject) {
-
-  //   // TODO make saving with epr and versioning
-
-  //   // GEOV-186
-  //   this.digitObjApi.saveWithEpr(digitalObject, this.ngRedux.getState().activeProject.pk_project)
-  //     .subscribe((result: InfDigitalObject[]) => {
-  //       // update the edit.view state and remove the edit.edit state
-  //       this.sourceUpdated(result[0]);
-  //       // update the sources list
-  //       // this.search();
-  //     })
-
-  // }
-
-
   /**
    * listen to changes of the source being edited and updates 'list'
    * in order to apply the changes to the list

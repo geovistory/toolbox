@@ -39,7 +39,7 @@ export class SectionListAPIEpics {
           /**
            * Do some api call
            */
-          this.eaApi.nestedObjectOfProject(action.meta.pkProject, null, action.meta.fkRangeEntity, null, action.meta.fkProperty)
+          this.eaApi.nestedObject(true, action.meta.pkProject, null, action.meta.fkRangeEntity, null, action.meta.fkProperty)
             /**
              * Subscribe to the api call
              */

@@ -1,9 +1,9 @@
-import { Component, AfterViewInit, Input, ChangeDetectorRef, ViewChild, ElementRef, OnInit, EventEmitter, Output, OnChanges, AfterContentInit, Renderer2, HostBinding, SimpleChanges } from '@angular/core';
-import { QuillService } from '../quill.service';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
 import * as Delta from 'quill-delta/lib/delta';
-import { QuillNodeHandler } from '../quill-node-handler';
 import { Subscription } from 'rxjs';
 import { QuillDoc } from '..';
+import { QuillNodeHandler } from '../quill-node-handler';
+import { QuillService } from '../quill.service';
 
 @Component({
   selector: 'gv-quill-edit',
@@ -25,6 +25,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
   @Input() editorConfig: any;
 
   @Input() annotationsVisible: boolean;
+
   @Input() set annotatedNodes(arr: [string, number][]) {
     this._annotatedNodes = new Map(arr);
   }
@@ -95,11 +96,27 @@ export class QuillEditComponent implements OnInit, OnChanges {
       quillDocChange && !quillDocChange.firstChange &&
       this.quillDocIsDifferent(quillDocChange.currentValue)
     ) {
-      this.initQuillDoc();
       this.validateInputs();
+      this.initQuillDoc();
       this.initNodeSubscriptions();
       this.initContents();
     }
+
+    // Listen to changes of the input readOnly
+    const readOnly = changes['readOnly'];
+    if (readOnly && !readOnly.firstChange) {
+      if (readOnly.currentValue) this.quillEditor.disable()
+      else this.quillEditor.enable()
+    }
+
+    // Listen to changes of the input creatingAnnotation
+    const creatingAnnotation = changes['creatingAnnotation'];
+    if (creatingAnnotation && !creatingAnnotation.firstChange) {
+      if (creatingAnnotation.currentValue) this.quillEditor.disable()
+      else this.quillEditor.enable()
+      this.initContents();
+    }
+
   }
 
   ngOnInit() {
@@ -117,19 +134,27 @@ export class QuillEditComponent implements OnInit, OnChanges {
     this.initNodeSubscriptions();
 
     // init the editor
-    this.quillEditor = new this.Quill(this.editorElem.nativeElement, this.editorConfig);
+    this.initEditor();
 
     // register on blur handling
-    this.registerOnBlur(this.editorElem)
+    this.registerOnBlur()
 
     // register for text changes
-    this.quillEditor.on('text-change', (delta, oldDelta, source) => {
-      this.contentChanged(delta, oldDelta, source);
-    });
+    this.registerOnTextChange();
 
     // init contents
     this.initContents();
 
+  }
+
+  private registerOnTextChange() {
+    this.quillEditor.on('text-change', (delta, oldDelta, source) => {
+      this.contentChanged(delta, oldDelta, source);
+    });
+  }
+
+  private initEditor() {
+    this.quillEditor = new this.Quill(this.editorElem.nativeElement, this.editorConfig);
   }
 
   private initNodeSubscriptions() {
@@ -162,13 +187,13 @@ export class QuillEditComponent implements OnInit, OnChanges {
     };
     // initialize default config
     this.editorConfig = this.editorConfig ? this.editorConfig : defaultEditorConfig;
+
     // initialize config for readonly
-    if (this.creatingAnnotation || this.readOnly) {
-      this.editorConfig = {
-        ...this.editorConfig,
-        readOnly: true
-      };
-    }
+    this.editorConfig = {
+      ...this.editorConfig,
+      readOnly: (this.creatingAnnotation || this.readOnly) ? true : false
+    };
+
     // initialize config for look and feel of conventional input element
     if (this.inputLike) {
       this.initInputLike();
@@ -187,7 +212,8 @@ export class QuillEditComponent implements OnInit, OnChanges {
   }
 
   private initQuillDoc() {
-    this.quillDoc = this.quillDoc ? this.quillDoc : { latestId: 0, contents: {} };
+    this.quillDoc = (this.quillDoc && 'latestId' in this.quillDoc && 'contents' in this.quillDoc) ?
+      this.quillDoc : { latestId: 0, contents: {} };
     this.latestId = this.quillDoc.latestId;
     this.contents = this.quillDoc.contents;
   }
@@ -387,8 +413,8 @@ export class QuillEditComponent implements OnInit, OnChanges {
   }
 
   // registers the on blur method
-  registerOnBlur(editorElement: ElementRef) {
-    editorElement.nativeElement.firstChild.onblur = () => {
+  registerOnBlur() {
+    this.editorElem.nativeElement.firstChild.onblur = () => {
       this.onBlur();
     }
   }

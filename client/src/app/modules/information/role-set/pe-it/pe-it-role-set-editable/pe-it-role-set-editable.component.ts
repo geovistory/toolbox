@@ -42,8 +42,8 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
    * Other store Observables
    */
 
-  ontoInfoVisible$: Observable<boolean>
-  communityStatsVisible$: Observable<boolean>
+  showOntoInfo$: Observable<boolean>
+  showCommunityStats$: Observable<boolean>
 
 
   // needed on this. scope for user interactions where we can't add subcriptions on each click
@@ -109,7 +109,7 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
    * (to select observables from local store, use @select decorator)
    */
   initObservablesOutsideLocalStore() {
-    this.ontoInfoVisible$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'ontoInfoVisible']);
+    this.showOntoInfo$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'showOntoInfo']);
   }
 
   /**

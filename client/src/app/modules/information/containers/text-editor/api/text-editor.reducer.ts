@@ -14,21 +14,15 @@ export function textEditorReducer(state: TextEditor = INITIAL_STATE, a: Action):
     case TextEditorAPIActions.LOAD:
       state = {
         ...state,
-        edit: false,
-        annotate: false,
-        view: false,
         loading: true
       };
       break;
     case TextEditorAPIActions.LOAD_SUCCEEDED:
       state = {
         ...state,
-        quillDoc: (!action.meta.entityAssociation || !action.meta.entityAssociation.digital_object ) ? {} as InfDigitalObject : action.meta.entityAssociation.digital_object.js_quill_data,
+        quillDoc: (!action.meta.entityAssociation || !action.meta.entityAssociation.digital_object) ? {} as InfDigitalObject : action.meta.entityAssociation.digital_object.js_quill_data,
         digitalObject: !action.meta.entityAssociation ? {} as InfDigitalObject : action.meta.entityAssociation.digital_object,
         entityAssociation: action.meta.entityAssociation,
-        edit: true,
-        annotate: false,
-        view: false,
         loading: false
       };
       break;
@@ -36,10 +30,7 @@ export function textEditorReducer(state: TextEditor = INITIAL_STATE, a: Action):
     case TextEditorAPIActions.LOAD_FAILED:
       state = {
         ...state,
-        quillDoc: undefined,
-        edit: false,
-        annotate: false,
-        view: false
+        quillDoc: undefined
       };
       break;
 
@@ -73,7 +64,7 @@ export function textEditorReducer(state: TextEditor = INITIAL_STATE, a: Action):
       };
       break;
 
-      case TextEditorAPIActions.CREATE_ENTITY_ASSOCIATION:
+    case TextEditorAPIActions.CREATE_ENTITY_ASSOCIATION:
       state = {
         ...state,
         loading: true
@@ -81,7 +72,7 @@ export function textEditorReducer(state: TextEditor = INITIAL_STATE, a: Action):
       break;
 
 
-      case TextEditorAPIActions.CREATE_ENTITY_ASSOCIATION_SUCCEEDED:
+    case TextEditorAPIActions.CREATE_ENTITY_ASSOCIATION_SUCCEEDED:
       state = {
         ...state,
         entityAssociation: action.meta.entityAssociation,
@@ -89,7 +80,7 @@ export function textEditorReducer(state: TextEditor = INITIAL_STATE, a: Action):
       };
       break;
 
-      case TextEditorAPIActions.CREATE_ENTITY_ASSOCIATION_FAILED:
+    case TextEditorAPIActions.CREATE_ENTITY_ASSOCIATION_FAILED:
       state = {
         ...state,
         loading: false
@@ -97,13 +88,69 @@ export function textEditorReducer(state: TextEditor = INITIAL_STATE, a: Action):
       break;
 
 
-    /*****************************************************
-    * Reducers called when user edits the text
-    *****************************************************/
-    case TextEditorAPIActions.QUILL_DOC_CHANGE:
+    /*********************************************************************
+    *  Method to load version list
+    *********************************************************************/
+
+    case TextEditorAPIActions.LOAD_VERSION_LIST:
       state = {
         ...state,
-        quillDoc: clone(action.meta.quillDoc)
+        loading: true
+      };
+      break;
+
+
+    case TextEditorAPIActions.LOAD_VERSION_LIST_SUCCEEDED:
+      state = {
+        ...state,
+        versionList: action.meta.versionList,
+        loading: false
+      };
+      break;
+
+    case TextEditorAPIActions.LOAD_VERSION_LIST_FAILED:
+      state = {
+        ...state,
+        loading: false,
+        error: action.error
+      };
+      break;
+
+
+    /*********************************************************************
+    *  Method to change version
+    *********************************************************************/
+
+    case TextEditorAPIActions.CHANGE_VERSION:
+      state = {
+        ...state,
+        loading: true
+      };
+      break;
+
+
+    case TextEditorAPIActions.CHANGE_VERSION_SUCCEEDED:
+      state = {
+        ...state,
+        loading: false
+      };
+      break;
+
+    case TextEditorAPIActions.CHANGE_VERSION_FAILED:
+      state = {
+        ...state,
+        loading: false,
+        error: action.error
+      };
+      break;
+
+    /*****************************************************
+    * Reducers to switch the mode of the editor
+    *****************************************************/
+    case TextEditorAPIActions.SET_READONLY:
+      state = {
+        ...state,
+        ...action.payload
       }
       break;
 

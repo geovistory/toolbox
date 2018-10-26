@@ -17,20 +17,35 @@ export class PeItDetail extends DataUnit {
      * To customize the default values, provide the value in the data of the constructor
      */
 
-    // the panel with map, timeline ect.
-    showRightPanel?= true;
+    /** Other Visibility */
 
-    // show the map (only visible if showRightPanel = true)
-    showMap?= true;
+    // the bar to above the properties
+    showPropertiesHeader?= true;
 
-    // show the timeline (only visible if showRightPanel = true)
-    showTimeline?= true;
+    // the header with name of peIt
+    showHeader?= true;
 
-    // show the mentioned entities of a source (only visible if showRightPanel = true)
+
+    /** Right Panel Visibility */
+
+    // show the map
+    showMap?= false;
+
+    // show the timeline
+    showTimeline?= false;
+
+    // show the mentioned entities of a source
     showMentionedEntities?= false;
 
-    // show the assertions using the entity (only visible if showRightPanel = true)
+    // show the assertions using the entity
     showAssertions?= false;
+
+
+
+    /** Left Panel Visibility */
+
+    // the properties with information about the peIt
+    showProperties?= false;
 
     // show the sectionList of a source
     showSectionList?= false;
@@ -38,18 +53,41 @@ export class PeItDetail extends DataUnit {
     // show the reproductions of a section
     showRepros?= false;
 
-    // the bar to above the properties
-    showPropertiesHeader?= true;
 
-    // the properties with information about the peIt
-    showProperties?= true;
+    /** Info Visibility */
 
-    // the header with name of peIt
-    showHeader?= true;
+    showOntoInfo?= false;
+
+    showCommunityStats?= false;
 
 
-    ontoInfoVisible?= false;
-    communityStatsVisible?= false;
+    /** Toggle Buttons Visibility (left panel) */
+
+    // the button to toggle showProperties
+    showPropertiesToggle?= false;
+
+    // the button to toggle showSectionList
+    showSectionListToggle?= false;
+
+    // the button to toggle showRepros
+    showReprosToggle?= false;
+
+
+    /** Toggle Buttons Visibility (right panel) */
+
+    // the button to toggle showMap
+    showMapToggle?= false;
+
+    // the button to toggle showTimeline
+    showTimelineToggle?= false;
+
+    // the button to toggle showMentionedEntities
+    showMentionedEntitiesToggle?= false;
+
+    // the button to toggle showAssertions
+    showAssertionsToggle?= false;
+
+
     loading?: boolean; // for leaf pe it view
     leafPeItLoading?: boolean;
     _leaf_peIt_modal?: PeItDetail; // for leaf pe it view modal

@@ -2,19 +2,24 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { EntityAssociationDetail } from 'app/core/state/models/entity-association-detail';
+import { ProjectCrm, RoleSet } from 'app/core';
+import { EntityAssociationList } from 'app/core/state/models/entity-association-list';
 
 type Payload = EntityAssociationDetail;
 interface MetaData {
+  pkProject?: number
+  crm?: ProjectCrm;
   fkRangeEntity?: number
   fkDomainEntity?: number
   fkProperty?: number
-  existingList?: EntityAssociationDetail[];
+  existingList?: EntityAssociationList;
+  roleSet?: RoleSet;
 };
 export type EntityAssociationAPIAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
 export class EntityAssociationAPIActions {
- 
+
   static readonly LOAD_EXISTING_LIST = 'EntityAssociation::LOAD_EXISTING_LIST';
   static readonly LOAD_EXISTING_LIST_SUCCEEDED = 'EntityAssociation::LOAD_EXISTING_LIST_SUCCEEDED';
   static readonly LOAD_EXISTING_LIST_FAILED = 'EntityAssociation::LOAD_EXISTING_LIST_FAILED';
@@ -22,13 +27,13 @@ export class EntityAssociationAPIActions {
   static readonly DESTROY = 'EntityAssociation::DESTROY';
 
   @dispatch()
-  load = (fkRangeEntity: number, fkDomainEntity: number, fkProperty: number): EntityAssociationAPIAction => ({
+  load = (pkProject: number, fkRangeEntity: number, fkDomainEntity: number, fkProperty: number, crm: ProjectCrm, roleSet: RoleSet): EntityAssociationAPIAction => ({
     type: EntityAssociationAPIActions.LOAD_EXISTING_LIST,
-    meta: { fkRangeEntity, fkDomainEntity, fkProperty },
+    meta: { pkProject, fkRangeEntity, fkDomainEntity, fkProperty, crm, roleSet },
     payload: null,
   });
 
-  loadSucceeded = (existingList: any[]): EntityAssociationAPIAction => ({
+  loadSucceeded = (existingList: EntityAssociationList): EntityAssociationAPIAction => ({
     type: EntityAssociationAPIActions.LOAD_EXISTING_LIST_SUCCEEDED,
     meta: {
       existingList

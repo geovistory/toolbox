@@ -39,8 +39,8 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
    */
   // Primary key of the peIt
   @select() pkEntity$: Observable<number>;
-  @select() ontoInfoVisible$: Observable<boolean>
-  @select() communityStatsVisible$: Observable<boolean>
+  @select() showOntoInfo$: Observable<boolean>
+  @select() showCommunityStats$: Observable<boolean>
 
   uiContext: UiContext;
 
@@ -146,21 +146,12 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
   }
 
 
-
-
   /**
-  * Methods to toggle visibility of ui elements
+  * Method to toggle booleans of state.
+  * Useful to toggle visibility of ui elements.
   */
-
-  toggleCommunityStats() {
-    this.localStore.dispatch(this.actions.toggleCommunityStats())
+  toggle(keyToToggle: string) {
+    this.localStore.dispatch(this.actions.toggleBoolean(keyToToggle))
   }
 
-  toggleOntoInfo() {
-    this.localStore.dispatch(this.actions.toggleOntoInfo())
-  }
-
-  toggleRightPanel() {
-    this.localStore.dispatch(this.actions.toggleRightPanel())
-  }
 }

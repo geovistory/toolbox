@@ -4,6 +4,7 @@ import { ClassAndTypeSelector } from '../information/containers/class-and-type-s
 import { CreateOrAddPeIt } from '../information/containers/create-or-add-pe-it/api/create-or-add-pe-it.models';
 import { TypeDetail } from 'app/core/state/models/type-detail';
 import { List } from '../information/containers/list/api/list.models';
+import { IVersion } from '../information/components/version-picker/version-picker.component';
 
 
 /**

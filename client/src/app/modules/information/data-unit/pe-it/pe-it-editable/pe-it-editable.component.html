@@ -13,23 +13,61 @@
         </button>
         <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
 
-          <div class="dropdown-header">View</div>
+          <!-- Left Column Toggles -->
 
-          <button class="dropdown-item" (click)="toggleCommunityStats()">
-            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (communityStatsVisible$|async)}"></i>
+          <div class="dropdown-header">View (left column)</div>
+
+          <button class="dropdown-item" (click)="toggle('showProperties')" *ngIf="(showPropertiesToggle$|async)">
+            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showProperties$|async)}"></i>
+            Properties
+          </button>
+
+          <button class="dropdown-item" (click)="toggle('showSectionList')" *ngIf="(showSectionListToggle$|async)">
+            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showSectionList$|async)}"></i>
+            Sections and Reproductions
+          </button>
+
+          <button class="dropdown-item" (click)="toggle('showRepros')" *ngIf="(showReprosToggle$|async)">
+            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showRepros$|async)}"></i>
+            Reproductions
+          </button>
+
+          <!-- Rigth Column Toggles -->
+
+          <div class="dropdown-header">View (right column)</div>
+
+          <button class="dropdown-item" (click)="toggle('showMap')" *ngIf="(showMapToggle$|async)">
+            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showMap$|async)}"></i>
+            Map
+          </button>
+
+          <button class="dropdown-item" (click)="toggle('showTimeline')" *ngIf="(showTimelineToggle$|async)">
+            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showTimeline$|async)}"></i>
+            Timeline
+          </button>
+
+          <button class="dropdown-item" (click)="toggle('showMentionedEntities')" *ngIf="(showMentionedEntitiesToggle$|async)">
+            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showMentionedEntities$|async)}"></i>
+            Mentioned Entities
+          </button>
+
+          <button class="dropdown-item" (click)="toggle('showAssertions')" *ngIf="(showAssertionsToggle$|async)">
+            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showAssertions$|async)}"></i>
+            Assertions
+          </button>
+          <!-- Info Toggles -->
+
+          <div class="dropdown-header">Info</div>
+
+          <button class="dropdown-item" (click)="toggle('showOntoInfo')">
+            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showOntoInfo$|async)}"></i>
+            Ontology Info
+          </button>
+
+          <!-- <button class="dropdown-item" (click)="toggleCommunityStats()">
+            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showCommunityStats$|async)}"></i>
             Community Statistics
-          </button>
-
-          <button class="dropdown-item" (click)="toggleOntoInfo()">
-            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (ontoInfoVisible$|async)}"></i>
-            Show Ontology Info
-          </button>
-
-          <button class="dropdown-item" (click)="toggleRightPanel()">
-            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showRightPanel$|async)}"></i>
-            Right Panel
-          </button>
-
+          </button> -->
         </div>
       </div>
     </div>
@@ -39,12 +77,11 @@
 </div>
 
 <!-- Tools to edit PeIt  -->
-
 <div [ngClass]="{'d-flex flex-row gv-grow-1 px-3 pb-1': !(sectionList$ | async)?.create}" style="flex-basis:100%"
   [hidden]="(sectionList$ | async)?.create">
 
   <!-- Left Panel -->
-  <div class="d-flex flex-column gv-grow-1" style="flex-basis:45%; overflow-y: auto;">
+  <div class="d-flex flex-column gv-grow-1" style="flex-basis:45%; overflow-y: auto;" *ngIf="(showLeftPanel$ | async)">
 
     <span *ngIf="(showProperties$ | async)">
       <!-- Properties Header -->
@@ -93,14 +130,14 @@
 
     <!-- Repros. Reproductions of a section -->
     <div class="gv-flex-fh" *ngIf="(showRepros$ | async) && !isolatedChild">
-      <gv-repros [basePath]="basePath.concat('repros')"></gv-repros>
+      <gv-repros class="gv-flex-fh" [basePath]="basePath.concat('repros')"></gv-repros>
     </div>
 
   </div>
 
   <!-- Right Panel -->
-
-  <div class="d-flex ml-3" style="flex-basis:55%; overflow:hidden" *ngIf="(showRightPanel$ | async)">
+  <div class="d-flex gv-grow-1" [ngClass]="{'ml-3':(showLeftPanel$ | async)}" style="flex-basis:55%; overflow:hidden"
+    *ngIf="(showRightPanel$ | async)">
     <div class="d-flex flex-column gv-grow-1" style="overflow:hidden">
 
       <div class="gv-flex-fh" *ngIf="(showMentionedEntities$ | async)">

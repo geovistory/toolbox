@@ -1,6 +1,6 @@
 <div class="mb-3" *ngIf="!hasOnlyCircularRole" (mouseenter)="enableDrag()" (mouseleave)="disableDrag()" (touchstart)="enableDrag()">
 
-  <gv-role-set-header [property$]="property$" [label$]="label$" [ontoInfoVisible$]="ontoInfoVisible$" [toggle$]="toggle$"
+  <gv-role-set-header [property$]="property$" [label$]="label$" [showOntoInfo$]="showOntoInfo$" [toggle$]="toggle$"
     [rolesCount]="(roles$ | async)?.length" [removeRoleSetBtnVisible]="removeRoleSetBtnVisible" (startAddingRole)="startAddingRole()"
     (toggleCardBody)="toggleCardBody()"></gv-role-set-header>
 

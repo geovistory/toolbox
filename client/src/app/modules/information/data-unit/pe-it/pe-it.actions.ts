@@ -7,7 +7,9 @@ import { DataUnitActions } from '../data-unit.actions';
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = PeItDetail;
-interface MetaData { };
+interface MetaData {
+  keyToToggle: string
+};
 export type PeItAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
@@ -17,11 +19,7 @@ export class PeItActions extends DataUnitActions {
 
   static readonly PE_IT_LABEL_UPDATED = 'PeItActions::PE_IT_LABEL_UPDATED';
 
-  static readonly TOGGLE_COMMUNITY_STATS = 'PeItActions::TOGGLE_COMMUNITY_STATS';
-
-  static readonly TOGGLE_ONTO_INFO = 'PeItActions::TOGGLE_ONTO_INFO';
-
-  static readonly TOGGLE_RIGHT_PANEL = 'PeItActions::TOGGLE_RIGHT_PANEL';
+  static readonly TOGGLE_BOOLEAN = 'PeItActions::TOGGLE_BOOLEAN';
 
   static readonly SET_LEAF_PE_IT_LOADING = 'PeItActions::SET_LEAF_PE_IT_LOADING';
 
@@ -51,24 +49,16 @@ export class PeItActions extends DataUnitActions {
   })
 
   /**********************************************
-   * Methods to toggle visibility of ui elements
+   * Method to toggle visibility of ui elements
    **********************************************/
-  toggleRightPanel = (): PeItAction => ({
-    type: PeItActions.TOGGLE_RIGHT_PANEL,
-    meta: null,
-    payload: null
-  })
 
-
-  toggleCommunityStats = (): PeItAction => ({
-    type: PeItActions.TOGGLE_COMMUNITY_STATS,
-    meta: null,
-    payload: null
-  })
-
-  toggleOntoInfo = (): PeItAction => ({
-    type: PeItActions.TOGGLE_ONTO_INFO,
-    meta: null,
+  /**
+   * Toggle booleans
+   * @param keyToToggle key of the property to toggle. E.g. 'showRightPanel' or 'showProperties'
+   */
+  toggleBoolean = (keyToToggle: string): PeItAction => ({
+    type: PeItActions.TOGGLE_BOOLEAN,
+    meta: { keyToToggle },
     payload: null
   })
 

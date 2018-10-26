@@ -18,7 +18,7 @@
 
     </gv-te-ent-label>
 
-    <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+    <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(showOntoInfo$|async)">
       <div class="align-self-center">
         <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{classConfig.dfh_pk_class}}"
           target="_blank">
@@ -45,7 +45,7 @@
 
   <div class="card">
 
-    <gv-te-ent-header [ontoInfoVisible$]="ontoInfoVisible$" [classConfig]="classConfig" [selectPropState$]="selectPropState$"
+    <gv-te-ent-header [showOntoInfo$]="showOntoInfo$" [classConfig]="classConfig" [selectPropState$]="selectPropState$"
       [addButtonVisible]="!(isViewMode$ | async) && (addOptionsTeEnt$ | async).length > 0 " (startSelectProperty)="startSelectProperty()"></gv-te-ent-header>
 
     <!-- Step 2 for adding new Property section -->

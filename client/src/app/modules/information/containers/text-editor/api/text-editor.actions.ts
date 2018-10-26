@@ -4,6 +4,7 @@ import { InfEntityAssociation, InfDigitalObject } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { TextEditor } from './text-editor.models';
 import { QuillDoc } from 'app/modules/quill';
+import { IVersion } from 'app/modules/information/components/version-picker/version-picker.component';
 
 type Payload = TextEditor;
 interface MetaData {
@@ -14,6 +15,8 @@ interface MetaData {
   pkProject?: number;
   fkRangeEntity?: number;
   fkProperty?: number;
+  versionList?: IVersion[];
+  version?: IVersion;
 };
 export type TextEditorAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -30,6 +33,16 @@ export class TextEditorAPIActions {
   static readonly CREATE_ENTITY_ASSOCIATION = 'TextEditor::CREATE_ENTITY_ASSOCIATION';
   static readonly CREATE_ENTITY_ASSOCIATION_SUCCEEDED = 'TextEditor::CREATE_ENTITY_ASSOCIATION_SUCCEEDED';
   static readonly CREATE_ENTITY_ASSOCIATION_FAILED = 'TextEditor::CREATE_ENTITY_ASSOCIATION_FAILED';
+
+  static readonly LOAD_VERSION_LIST = 'TextEditor::LOAD_VERSION_LIST';
+  static readonly LOAD_VERSION_LIST_SUCCEEDED = 'TextEditor::LOAD_VERSION_LIST_SUCCEEDED';
+  static readonly LOAD_VERSION_LIST_FAILED = 'TextEditor::LOAD_VERSION_LIST_FAILED';
+
+  static readonly CHANGE_VERSION = 'TextEditor::CHANGE_VERSION';
+  static readonly CHANGE_VERSION_SUCCEEDED = 'TextEditor::CHANGE_VERSION_SUCCEEDED';
+  static readonly CHANGE_VERSION_FAILED = 'TextEditor::CHANGE_VERSION_FAILED';
+
+  static readonly SET_READONLY = 'TextEditor::SET_READONLY';
 
 
   // static readonly QUILL_DOC_CHANGE = 'TextEditor::QUILL_DOC_CHANGE';
@@ -92,10 +105,10 @@ export class TextEditorAPIActions {
     payload: null
   })
 
-  createEntityAssociationSucceeded = (digitalObject: InfDigitalObject): TextEditorAPIAction => ({
+  createEntityAssociationSucceeded = (entityAssociation: InfEntityAssociation): TextEditorAPIAction => ({
     type: TextEditorAPIActions.CREATE_ENTITY_ASSOCIATION_SUCCEEDED,
     meta: {
-      digitalObject
+      entityAssociation
     },
     payload: null
   })
@@ -105,6 +118,65 @@ export class TextEditorAPIActions {
     meta: null,
     payload: null,
     error,
+  })
+
+
+
+  /*********************************************************************
+  *  Method to load version list
+  *********************************************************************/
+  loadVersionList = (): TextEditorAPIAction => ({
+    type: TextEditorAPIActions.LOAD_VERSION_LIST,
+    meta: null,
+    payload: null,
+  });
+
+  loadVersionListSucceeded = (versionList: IVersion[]): TextEditorAPIAction => ({
+    type: TextEditorAPIActions.LOAD_VERSION_LIST_SUCCEEDED,
+    meta: {
+      versionList
+    },
+    payload: null
+  })
+
+  loadVersionListFailed = (error): TextEditorAPIAction => ({
+    type: TextEditorAPIActions.LOAD_VERSION_LIST_FAILED,
+    meta: null,
+    payload: null,
+    error,
+  })
+
+
+  /*********************************************************************
+  *  Method to change version
+  *********************************************************************/
+  @dispatch() changeVersion = (version: IVersion): TextEditorAPIAction => ({
+    type: TextEditorAPIActions.CHANGE_VERSION,
+    meta: { version },
+    payload: null,
+  });
+
+  changeVersionSucceeded = (): TextEditorAPIAction => ({
+    type: TextEditorAPIActions.CHANGE_VERSION_SUCCEEDED,
+    meta: null,
+    payload: null
+  })
+
+  changeVersionFailed = (error): TextEditorAPIAction => ({
+    type: TextEditorAPIActions.CHANGE_VERSION_FAILED,
+    meta: null,
+    payload: null,
+    error,
+  })
+
+  /*********************************************************************
+  *  Method to cancel edit
+  *********************************************************************/
+
+  @dispatch() setReadOnly = (readOnly: boolean): TextEditorAPIAction => ({
+    type: TextEditorAPIActions.SET_READONLY,
+    meta: null,
+    payload: { readOnly }
   })
 
   /*********************************************************************

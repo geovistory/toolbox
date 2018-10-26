@@ -47,7 +47,7 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
   localStore: ObservableStore<ExistenceTimeDetail>
   parentTeEntStore: ObservableStore<TeEntDetail>;
 
-  ontoInfoVisible$: Observable<boolean>
+  showOntoInfo$: Observable<boolean>
   @select() toggle$: Observable<boolean>
   _children: RoleSetList;
 
@@ -76,7 +76,7 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
 
     const parentPeItPath = dropLast(7, this.basePath);
 
-    this.ontoInfoVisible$ = this.ngRedux.select<boolean>([...parentPeItPath, 'ontoInfoVisible']);
+    this.showOntoInfo$ = this.ngRedux.select<boolean>([...parentPeItPath, 'showOntoInfo']);
 
     this.subs.push(this.localStore.select<ExistenceTimeDetail>('').subscribe(d => {
       if (d) {

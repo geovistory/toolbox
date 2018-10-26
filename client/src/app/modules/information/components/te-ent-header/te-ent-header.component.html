@@ -6,7 +6,7 @@
     <gv-class-info [classConfig]="classConfig"></gv-class-info>
   </div>
 
-  <a *ngIf="(ontoInfoVisible$|async)" class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{classConfig.dfh_pk_class}}" target="_blank">
+  <a *ngIf="(showOntoInfo$|async)" class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{classConfig.dfh_pk_class}}" target="_blank">
     {{classConfig.dfh_identifier_in_namespace}}
   </a>
   

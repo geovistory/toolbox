@@ -29,6 +29,8 @@ import { equals } from 'ramda'
  * @param path
  */
 export const ofSubstore = (path: string[]) => (action): boolean => {
+    if (!('@angular-redux::fractalkey' in action)) return false;
+
     const actionPath = JSON.parse(action['@angular-redux::fractalkey']);
     const bool = equals(actionPath, path);
     return bool;

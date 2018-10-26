@@ -42,6 +42,9 @@ export class ClassAndTypeSelectorComponent extends ClassAndTypeSelectorAPIAction
   // text
   @Input() buttonText = 'Select';
 
+  // text
+  @Input() buttonClass = 'btn-link no-caret mr-0';
+
   // placement
   @Input() placement: 'right' | 'left' = 'left';
 
@@ -107,8 +110,8 @@ export class ClassAndTypeSelectorComponent extends ClassAndTypeSelectorAPIAction
   onSelectClick(item: TreeviewItem) {
     this.dropdownTreeviewComponent.dropdownDirective.close();
     // if (this.selectedItem !== item) {
-      this.selectedItem = item;
-      this.select.emit({ pkClass: item.value.pkClass, pkType: item.value.pkType });
+    this.selectedItem = item;
+    this.select.emit({ pkClass: item.value.pkClass, pkType: item.value.pkType });
     // }
   }
 

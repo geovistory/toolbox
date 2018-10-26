@@ -30,8 +30,8 @@ export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValue
     @select() teEnt$: Observable<InfTemporalEntity>
     @select() toggle$: Observable<boolean>
 
-    ontoInfoVisible$: Observable<boolean>
-    communityStatsVisible$: Observable<boolean>
+    showOntoInfo$: Observable<boolean>
+    showCommunityStats$: Observable<boolean>
 
     localStore: ObservableStore<TeEntDetail>;
 

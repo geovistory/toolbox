@@ -9,9 +9,9 @@ export class TextEditor implements TextEditor {
     entityAssociation?: InfEntityAssociation;
     digitalObject?: InfDigitalObject;
     quillDoc?: QuillDoc;
-    view?: boolean;
-    edit?: boolean;
-    annotate?: boolean;
+    readOnly?: boolean;
+    creatingAnnotation?: boolean;
+
     versionList?: IVersion[];
 
     loading?: boolean;

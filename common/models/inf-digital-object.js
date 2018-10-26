@@ -134,6 +134,9 @@ module.exports = function (InfDigitalObject) {
   InfDigitalObject.getVersions = function (pkEntity, cb) {
 
     const filter = {
+      select: {
+        include: ["entity_version", "pk_entity_version_concat", "pk_entity"]
+      },
       where: ["pk_entity", "=", pkEntity],
       order: [{ "entity_version": "desc" }]
     }
@@ -142,11 +145,11 @@ module.exports = function (InfDigitalObject) {
 
   }
 
-   /**
-   * Returns latest version with given pkEntity
-   * @param {*} pkEntity 
-   * @param {*} cb 
-   */
+  /**
+  * Returns latest version with given pkEntity
+  * @param {*} pkEntity 
+  * @param {*} cb 
+  */
   InfDigitalObject.getLatestVersion = function (pkEntity, cb) {
 
     const filter = {

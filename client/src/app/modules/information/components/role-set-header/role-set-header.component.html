@@ -14,7 +14,7 @@
       {{(rolesCount === 1) ? (label$ | async)?.sg : (label$ | async)?.default}}
     </div>
   </h5>
-  <div *ngIf="(ontoInfoVisible$|async)" class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex">
+  <div *ngIf="(showOntoInfo$|async)" class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex">
     <div class="align-self-center">
       <a class="badge badge-success" href="http://ontologies.dataforhistory.org/property/{{(property$|async)?.dfh_pk_property}}"
         target="_blank">

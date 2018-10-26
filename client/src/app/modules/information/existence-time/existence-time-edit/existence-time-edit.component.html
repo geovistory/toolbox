@@ -190,7 +190,7 @@
 
   <div class="d-flex ">
     <div class="gv-grow-1">{{label}}</div>
-    <div class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+    <div class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(showOntoInfo$|async)">
       <div class="align-self-center">
         <a class="badge badge-success" href="http://ontologies.dataforhistory.org/property/{{(property$|async).dfh_pk_property}}"
           target="_blank">

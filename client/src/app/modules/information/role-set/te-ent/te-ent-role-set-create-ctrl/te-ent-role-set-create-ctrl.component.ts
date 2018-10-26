@@ -44,8 +44,8 @@ export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
   /**
    * Other Store Observables
    */
-  ontoInfoVisible$: Observable<boolean>
-  communityStatsVisible$: Observable<boolean>
+  showOntoInfo$: Observable<boolean>
+  showCommunityStats$: Observable<boolean>
 
   roleSetState: RoleSet;
   parentTeEntState: TeEntDetail;
@@ -101,7 +101,7 @@ export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
    * (to select observables from local store, use @select decorator)
    */
   initObservablesOutsideLocalStore() {
-    this.ontoInfoVisible$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'ontoInfoVisible']);
+    this.showOntoInfo$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'showOntoInfo']);
   }
 
   /**

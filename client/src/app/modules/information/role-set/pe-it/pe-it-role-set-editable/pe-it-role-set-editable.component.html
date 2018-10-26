@@ -1,7 +1,7 @@
 <div class="mb-3" (mouseenter)="enableDrag()" (touchstart)="enableDrag()" *ngIf="!isolateRoleDetail">
 
   <span [hidden]="(_role_set_form$ | async)">
-    <gv-role-set-header [property$]="property$" [label$]="label$" [toggle$]="toggle$" [ontoInfoVisible$]="ontoInfoVisible$"
+    <gv-role-set-header [property$]="property$" [label$]="label$" [toggle$]="toggle$" [showOntoInfo$]="showOntoInfo$"
       [addButtonVisible]="addButtonVisible" [toggleButtonVisible]="true" [removeRoleSetBtnVisible]="removeRoleSetBtnVisible"
       [rolesCount]="roles?.length" (toggleCardBody)="toggleCardBody()" (startAddingRole)="startAddingRole()"
       (removeRoleSet)="removeRoleSet()"></gv-role-set-header>

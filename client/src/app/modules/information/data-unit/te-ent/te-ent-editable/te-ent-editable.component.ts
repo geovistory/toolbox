@@ -87,8 +87,8 @@ export class TeEntEditableComponent extends DataUnitBase {
   /**
    * Other Store Observables
    */
-  ontoInfoVisible$: Observable<boolean>
-  communityStatsVisible$: Observable<boolean>
+  showOntoInfo$: Observable<boolean>
+  showCommunityStats$: Observable<boolean>
   parentRoleSet$: Observable<RoleSet>
 
   /**
@@ -161,7 +161,7 @@ export class TeEntEditableComponent extends DataUnitBase {
    * (to select observables from local store, use @select decorator)
    */
   initObservablesOutsideLocalStore() {
-    this.ontoInfoVisible$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'ontoInfoVisible']);
+    this.showOntoInfo$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'showOntoInfo']);
 
     this.parentRoleSet$ = this.ngRedux.select<RoleSet>(this.parentPath.slice(0, (this.parentPath.length - 2)));
 

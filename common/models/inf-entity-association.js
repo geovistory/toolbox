@@ -70,16 +70,16 @@ module.exports = function (InfEntityAssociation) {
   * @param  {number} pkProject primary key of project
   * @param  {number} pkEntity  pk_entity of the entityAssociation
   */
-  InfEntityAssociation.nestedObjectOfProject = function (pkProject, pkEntity, pkRangeEntity, pkDomainEntity, pkProperty, cb) {
+  InfEntityAssociation.nestedObject = function (ofProject, pkProject, pkEntity, pkRangeEntity, pkDomainEntity, pkProperty, cb) {
 
     if (!pkEntity && !pkRangeEntity && !pkDomainEntity) {
       return cb('please provide at least a pkEntity, pkRangeEntity or pkDomainEntity');
     }
 
-    const innerJoinThisProject = {
+    const joinThisProject = {
       "$relation": {
         "name": "entity_version_project_rels",
-        "joinType": "inner join",
+        "joinType": (ofProject ? "inner join" : "left join"),
         "where": [
           "fk_project", "=", pkProject,
           "and", "is_in_project", "=", "true"
@@ -100,7 +100,7 @@ module.exports = function (InfEntityAssociation) {
     const filter = {
       "where": where,
       "include": {
-        "entity_version_project_rels": innerJoinThisProject,
+        "entity_version_project_rels": joinThisProject,
         "chunk": {
           "$relation": {
             "name": "chunk",
@@ -118,7 +118,7 @@ module.exports = function (InfEntityAssociation) {
               "pk_entity": "asc"
             }]
           },
-          "entity_version_project_rels": innerJoinThisProject
+          "entity_version_project_rels": joinThisProject
         },
         "domain_pe_it": {
           "$relation": {
@@ -133,7 +133,7 @@ module.exports = function (InfEntityAssociation) {
               "name": "pi_roles",
               "joinType": "left join"
             },
-            "entity_version_project_rels": innerJoinThisProject,
+            "entity_version_project_rels": joinThisProject,
             "temporal_entity": {
               "$relation": {
                 "name": "temporal_entity",
@@ -142,7 +142,7 @@ module.exports = function (InfEntityAssociation) {
                   "pk_entity": "asc"
                 }]
               },
-              // "entity_version_project_rels": innerJoinThisProject,
+              // "entity_version_project_rels": joinThisProject,
               "te_roles": {
                 "$relation": {
                   "name": "te_roles",
@@ -151,7 +151,7 @@ module.exports = function (InfEntityAssociation) {
                     "pk_entity": "asc"
                   }]
                 },
-                "entity_version_project_rels": innerJoinThisProject,
+                "entity_version_project_rels": joinThisProject,
                 "appellation": {
                   "$relation": {
                     "name": "appellation",

@@ -44,7 +44,7 @@ export class EntityAssociationExistingListComponent extends EntityAssociationAPI
 
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, entityAssociationReducer);
-    this.rootEpics.addEpic(this.epics.createEpics(this));
+    // this.rootEpics.addEpic(this.epics.createEpics(this));
   }
 
   ngOnDestroy() {
