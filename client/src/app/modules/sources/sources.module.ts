@@ -11,9 +11,6 @@ import { Information2Module } from '../information/information.module';
 import { QuillModule } from '../quill';
 import { SourceCreateFormComponent } from './components/source-create-form/source-create-form.component';
 import { SourceSearchHitComponent } from './components/source-search-hit/source-search-hit.component';
-import { SectionDetailAPIActions } from './containers/section-detail/api/section-detail.actions';
-import { SectionDetailAPIEpics } from './containers/section-detail/api/section-detail.epics';
-import { SectionDetailComponent } from './containers/section-detail/section-detail.component';
 
 import { SourceListAPIActions } from './containers/source-list/api/source-list.actions';
 import { SourceListAPIEpics } from './containers/source-list/api/source-list.epics';
@@ -42,15 +39,11 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     MentionedEntityCtrlActions,
     SourceListAPIEpics,
     SourceListAPIActions,
-
-    SectionDetailAPIActions,
-    SectionDetailAPIEpics
   ],
   declarations: [
     SourceSearchHitComponent,
     SourceCreateFormComponent,
     SourceListComponent,
-    SectionDetailComponent,
   ]
 })
 export class SourcesModule { }

@@ -1,6 +1,7 @@
-import { InfEntityAssociation, DfhClass } from 'app/core/sdk';
-import { PeItDetail } from './pe-it-detail';
 import { ClassConfig } from 'app/core/active-project';
+import { InfEntityAssociation } from 'app/core/sdk';
+import { EntityAssociationList } from './entity-association-list';
+import { PeItDetail } from './pe-it-detail';
 import { RoleSet } from './role-set';
 
 
@@ -17,7 +18,7 @@ export class EntityAssociationDetail {
     targetClassConfig?: ClassConfig;
 
     // list of alternatives or existing associations from other projects
-    existingList?: EntityAssociationDetail[];
+    existingList?: EntityAssociationList;
 
     // giu
     loading?: boolean;

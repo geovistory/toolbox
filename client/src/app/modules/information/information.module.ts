@@ -122,7 +122,6 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
 import { SectionListComponent } from './containers/section-list/section-list.component';
 import { SectionListAPIActions } from './containers/section-list/api/section-list.actions';
 import { SectionListAPIEpics } from './containers/section-list/api/section-list.epics';
-import { CreateOrAddEntityAssociationComponent } from './containers/create-or-add-entity-association/create-or-add-entity-association.component';
 import { EntityAssociationCreateCtrlComponent } from './entity-association/entity-association-create-ctrl/entity-association-create-ctrl.component';
 import { EntityAssociationAPIActions } from './entity-association/api/entity-association.actions';
 import { EntityAssociationAPIEpics } from './entity-association/api/entity-association.epics';
@@ -270,7 +269,6 @@ import { VersionPickerComponent } from './components/version-picker/version-pick
     CreateOrAddPeItComponent,
     PeItSearchExistingComponent,
     ListComponent,
-    CreateOrAddEntityAssociationComponent,
     EntityAssociationCreateCtrlComponent,
     EntityAssociationCreateOrAddComponent,
     EntityAssociationExistingListComponent,

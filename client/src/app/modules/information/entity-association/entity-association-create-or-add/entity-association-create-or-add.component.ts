@@ -46,9 +46,12 @@ export class EntityAssociationCreateOrAddComponent extends EntityAssociationAPIA
 
   @ViewChild('f') form: NgForm;
 
+  ea; // model of ngForm control
+
   getKey(_, item) {
     return item.key;
   }
+
 
   constructor(
     protected rootEpics: RootEpics,

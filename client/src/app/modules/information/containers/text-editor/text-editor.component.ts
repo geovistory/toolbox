@@ -41,6 +41,11 @@ export class TextEditorComponent extends TextEditorAPIActions implements OnInit,
   @select() readOnly$: Observable<boolean>;
   @select() creatingAnnotation$: Observable<boolean>;
 
+  @select() highlightMentionedPeIts$: Observable<boolean>;
+  @select() highlightMentionedTeEnts$: Observable<boolean>;
+  @select() highlightAssertions$: Observable<boolean>;
+
+
   parentPeIt$: Observable<PeItDetail>;
   pkProject$: Observable<number>;
 

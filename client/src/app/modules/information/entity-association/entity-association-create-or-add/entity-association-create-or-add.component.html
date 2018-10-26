@@ -27,8 +27,7 @@
 
 
     <div class="ml-5 mt-5 pl-5 gv-grow-1" style="flex-basis:50%;">
-      <h4 class="mb-3" *ngIf="!selectPeItMode">...or add an existing {{(targetClassConfig$ | async)?.label}}</h4>
-      <h4 class="mb-3" *ngIf="selectPeItMode">...or select an existing {{(targetClassConfig$ | async)?.label}}</h4>
+      <h4 class="mb-3">...or add an existing {{(targetClassConfig$ | async)?.label}}</h4>
       <div *ngFor="let item of (existingList$ | async) | keys; trackBy:getKey;">
         <gv-leaf-pe-it-view *ngIf="item.value._peIt" [basePath]="basePath.concat('existingList').concat(item.key).concat('_peIt')"></gv-leaf-pe-it-view>
       </div>

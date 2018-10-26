@@ -13,7 +13,7 @@ export function entityAssociationReducer(state: EntityAssociationDetail = INITIA
       state = {
         ...state,
         loading: true,
-        existingList: []
+        existingList: {}
       };
       break;
     case EntityAssociationAPIActions.LOAD_EXISTING_LIST_SUCCEEDED:
@@ -28,7 +28,7 @@ export function entityAssociationReducer(state: EntityAssociationDetail = INITIA
       state = {
         ...state,
         loading: false,
-        existingList: []
+        existingList: {}
       };
       break;
 

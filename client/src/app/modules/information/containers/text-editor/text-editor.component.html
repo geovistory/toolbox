@@ -35,11 +35,11 @@
       <div class="dropdown-header">
         Highlight
       </div>
-      <button class="dropdown-item" (click)="toggleHighlightedTeEnts()">
+      <button class="dropdown-item">
         <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (highlightMentionedPeIts$|async)}"></i> Annotated
         Entities
       </button>
-      <button class="dropdown-item" (click)="toggleHighlightedTeEnts()">
+      <button class="dropdown-item">
         <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (highlightMentionedTeEnts$|async)}"></i> Annotated
         Events & Phenomena
       </button>
@@ -54,7 +54,7 @@
 
 <!-- Editor -->
 <div class="gv-flex-fh mt-2">
-  <gv-quill-edit *ngIf="!(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="editedQuillDoc"
+  <gv-quill-edit class="gv-grow-1 d-flex flex-column" [quillDoc]="editedQuillDoc"
     [readOnly]="(readOnly$ | async)" [creatingAnnotation]="false" (quillDocChange)="quillDocChange($event)"></gv-quill-edit>
 
 </div>
