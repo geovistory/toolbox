@@ -50,7 +50,6 @@ export const peItReducer = (lastState: PeItDetail = INITIAL_STATE, action: PeItA
       }
       break;
 
-
   }
 
   return lastState;

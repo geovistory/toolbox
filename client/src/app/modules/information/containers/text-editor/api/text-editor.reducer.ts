@@ -23,6 +23,7 @@ export function textEditorReducer(state: TextEditor = INITIAL_STATE, a: Action):
         quillDoc: (!action.meta.entityAssociation || !action.meta.entityAssociation.digital_object) ? {} as InfDigitalObject : action.meta.entityAssociation.digital_object.js_quill_data,
         digitalObject: !action.meta.entityAssociation ? {} as InfDigitalObject : action.meta.entityAssociation.digital_object,
         entityAssociation: action.meta.entityAssociation,
+        readOnly: action.meta.entityAssociation ? true : false,
         loading: false
       };
       break;
@@ -51,6 +52,7 @@ export function textEditorReducer(state: TextEditor = INITIAL_STATE, a: Action):
         ...state,
         quillDoc: action.meta.digitalObject.js_quill_data,
         digitalObject: action.meta.digitalObject,
+        readOnly: true,
         loading: false
       };
       break;

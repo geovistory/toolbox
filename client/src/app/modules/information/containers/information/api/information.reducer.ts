@@ -69,6 +69,30 @@ export function informationReducer(state: Information = INITIAL_STATE, a: Action
       break;
 
 
+    /************************************************
+       * Reducers to remove PeIt from project
+       ************************************************/
+
+    case InformationAPIActions.REMOVE_PE_IT:
+      state = {
+        ...state,
+        loading: true
+      }
+      break;
+
+
+    case InformationAPIActions.REMOVE_PE_IT_SUCCEEDED:
+      state = omit(['_peIt_editable'], state)
+      break;
+
+
+    case InformationAPIActions.REMOVE_PE_IT_FAILED:
+      state = {
+        ...state,
+        loading: false
+      }
+      break;
+
 
     // case InformationAPIActions.ENTITY_ADD_EXISTING_INITIALIZED:
     //   state = {

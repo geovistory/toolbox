@@ -1,19 +1,23 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, ComConfig } from 'app/core';
+import { ComConfig, LoadingBarActions, InfEntityProjectRelApi, InfEntityProjectRel, InfEntityAssociationApi, InfEntityAssociation } from 'app/core';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { createPeItDetail } from 'app/core/state/services/state-creator';
+import { ofDirectChildSubstore } from 'app/modules/information/containers/information/api/information.epics';
+import { PeItActions } from 'app/modules/information/data-unit/pe-it/pe-it.actions';
+import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { SourceListComponent } from '../source-list.component';
-import { SourceListAPIActions, SourceListAPIAction } from './source-list.actions';
-import { ofSubstore } from 'app/core/store/module';
-import { PeItService } from 'app/modules/information/shared/pe-it.service';
-import { createPeItDetail } from 'app/core/state/services/state-creator';
+import { SourceListAPIAction, SourceListAPIActions } from './source-list.actions';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 
 @Injectable()
 export class SourceListAPIEpics {
   constructor(
+    private eprApi: InfEntityProjectRelApi,
+    private eaApi: InfEntityAssociationApi,
     private peItService: PeItService, // <- change the api
     private actions: SourceListAPIActions,
     private loadingBarActions: LoadingBarActions,
@@ -23,7 +27,9 @@ export class SourceListAPIEpics {
   public createEpics(c: SourceListComponent): Epic {
     return combineEpics(
       this.createLoadSourceDetailsEpic(c),
-      this.createLoadSectionDetailsEpic(c)
+      this.createLoadSectionDetailsEpic(c),
+      this.createRemoveSourceEpic(c),
+      this.createRemoveSectionEpic(c)
     );
   }
 
@@ -122,10 +128,10 @@ export class SourceListAPIEpics {
                 showRepros: true,
                 showReprosToggle: true,
 
-                showMentionedEntities: true,
+                showMentionedEntities: false,
                 showMentionedEntitiesToggle: true,
 
-                showAssertions: true,
+                showAssertions: false,
                 showAssertionsToggle: true,
 
 
@@ -154,6 +160,145 @@ export class SourceListAPIEpics {
               c.localStore.dispatch(this.actions.loadSectionDetailsFailed());
 
             })
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
+
+  /**
+   * Epic to remove a peIt from project
+   */
+  private createRemoveSourceEpic(c: SourceListComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(SourceListAPIActions.REMOVE_SOURCE),
+        switchMap((action: SourceListAPIAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Do some api call
+           */
+          this.eprApi.updateEprAttributes(action.meta.pkProject, action.meta.pkEntity, {
+            is_in_project: false
+          } as InfEntityProjectRel)
+            /**
+             * Subscribe to the api call
+             */
+            .subscribe((data) => {
+
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              /**
+               * Emit the local action on loading succeeded
+               */
+              c.localStore.dispatch(this.actions.removeSourceSucceded());
+              c.openSearchList()
+
+            }, error => {
+              /**
+              * Emit the global action that shows some loading error message
+              */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              c.localStore.dispatch(this.actions.removeSourceFailed(error.message));
+
+            })
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
+  /**
+   * Epic to remove a peIt from project
+   */
+  private createRemoveSectionEpic(c: SourceListComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(SourceListAPIActions.REMOVE_SECTION),
+        switchMap((action: SourceListAPIAction) => new Observable<Action>((globalStore) => {
+
+          const onErr = (error) => {
+            /**
+            * Emit the global action that shows some loading error message
+            */
+            globalStore.next(this.loadingBarActions.completeLoading());
+            globalStore.next(this.notificationActions.addToast({
+              type: 'error',
+              options: {
+                title: error.message
+              }
+            }));
+            c.localStore.dispatch(this.actions.removeSectionFailed(error.message));
+          }
+
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+
+
+          // Find entityAssociation
+          this.eaApi.findComplex({
+            where: [
+              'fk_domain_entity', '=', c.activatedRoute.snapshot.params.pkSection, 'AND',
+              'fk_range_entity', '=', c.activatedRoute.snapshot.params.pkEntity, 'AND',
+              'fk_property', '=', DfhConfig.PROPERTY_PK_R41_HAS_REP_MANIFESTATION_PRODUCT_TYPE
+            ]
+          }).subscribe(
+            (eas: InfEntityAssociation[]) => {
+
+              const ea = eas[0];
+
+              combineLatest(
+                // remove section (peIt)
+                this.eprApi.updateEprAttributes(action.meta.pkProject, action.meta.pkEntity, {
+                  is_in_project: false
+                } as InfEntityProjectRel),
+                // remove entity association
+                this.eprApi.updateEprAttributes(action.meta.pkProject, ea.pk_entity, {
+                  is_in_project: false
+                } as InfEntityProjectRel)
+              ).subscribe(
+                (data) => {
+
+                  /**
+                   * Emit the global action that completes the loading bar
+                   */
+                  globalStore.next(this.loadingBarActions.completeLoading());
+                  /**
+                   * Emit the local action on loading succeeded
+                   */
+                  c.localStore.dispatch(this.actions.removeSectionSucceded());
+
+                  c.router.navigate(['../../'], {
+                    relativeTo: c.activatedRoute, queryParamsHandling: 'merge'
+                  })
+                },
+                err => onErr(err)
+              )
+
+            }, err => onErr(err)
+          )
+
+
         })),
         takeUntil(c.destroy$)
       )

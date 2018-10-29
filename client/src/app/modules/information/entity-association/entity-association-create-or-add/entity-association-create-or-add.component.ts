@@ -1,14 +1,14 @@
 import { Component, OnDestroy, Input, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, InfPersistentItem, InfEntityAssociation, ClassConfig, InfEntityAssociationApi, ProjectCrm, RoleSet } from 'app/core';
+import { IAppState, SubstoreComponent, InfPersistentItem, InfEntityAssociation, ClassConfig, InfEntityAssociationApi, ProjectCrm, RoleSet, InfPersistentItemApi, InfEntityProjectRelApi, InfEntityProjectRel, U } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { entityAssociationReducer } from '../api/entity-association.reducer';
 import { EntityAssociationAPIActions } from '../api/entity-association.actions';
 import { EntityAssociationAPIEpics } from '../api/entity-association.epics';
 import { EntityAssociationDetail } from 'app/core/state/models/entity-association-detail';
 import { NgForm } from '@angular/forms';
-import { filter, takeUntil, first } from 'rxjs/operators';
+import { filter, takeUntil, first, map } from 'rxjs/operators';
 import { EntityAssociationList } from 'app/core/state/models/entity-association-list';
 
 
@@ -37,6 +37,7 @@ export class EntityAssociationCreateOrAddComponent extends EntityAssociationAPIA
   @select() propertyConfig$: Observable<RoleSet>;
   @select() entityAssociation$: Observable<InfEntityAssociation>;
   @select() existingList$: Observable<EntityAssociationList>;
+  existingNotInProject$: Observable<EntityAssociationList>;
 
   // emits the nested peIt, no matter if created, added, opened or selected!
   @Output() done = new EventEmitter<InfEntityAssociation>();
@@ -57,7 +58,10 @@ export class EntityAssociationCreateOrAddComponent extends EntityAssociationAPIA
     protected rootEpics: RootEpics,
     private epics: EntityAssociationAPIEpics,
     public ngRedux: NgRedux<IAppState>,
-    private eaApi: InfEntityAssociationApi
+    private eaApi: InfEntityAssociationApi,
+    private peItApi: InfPersistentItemApi,
+    private eprApi: InfEntityProjectRelApi
+
   ) {
     super()
   }
@@ -85,6 +89,17 @@ export class EntityAssociationCreateOrAddComponent extends EntityAssociationAPIA
         propertyConfig
       )
     })
+
+    this.existingNotInProject$ = this.existingList$.pipe(map((ead) => {
+      const o = {}
+      for (const key in ead) {
+        if (ead.hasOwnProperty(key)) {
+          const ea = ead[key];
+          if (!this.inProject(ea)) o[key] = ea;
+        }
+      }
+      return o;
+    }));
   }
 
   ngOnDestroy() {
@@ -99,10 +114,33 @@ export class EntityAssociationCreateOrAddComponent extends EntityAssociationAPIA
     )
   }
 
+  onAdd(eaD: EntityAssociationDetail) {
+    const pkEntity = eaD.isOutgoing ? eaD.entityAssociation.fk_range_entity : eaD.entityAssociation.fk_domain_entity;
+    this.peItApi.addToProject(this.ngRedux.getState().activeProject.pk_project, pkEntity).subscribe(
+      (peIts) => {
+
+        this.eprApi.updateEprAttributes(this.ngRedux.getState().activeProject.pk_project, eaD.entityAssociation.pk_entity, {
+          is_in_project: true
+        } as InfEntityProjectRel).subscribe(
+          (ea) => { this.done.emit(eaD.entityAssociation) }
+        )
+      }
+    )
+  }
+
+  onOpen = (ead: EntityAssociationDetail) => this.done.emit(ead.entityAssociation);
+
   submitCreateForm() {
     if (this.form.form.valid) {
       this.onCreateNew(this.form.form.value.ea)
     }
+  }
+
+  inProject(eaD: EntityAssociationDetail) {
+    return !eaD.entityAssociation ? false :
+      !eaD.entityAssociation.entity_version_project_rels ? false :
+        !eaD.entityAssociation.entity_version_project_rels[0] ? false :
+          eaD.entityAssociation.entity_version_project_rels[0].is_in_project;
   }
 
 

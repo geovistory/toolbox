@@ -13,37 +13,37 @@ const INITIAL_STATE = new DataUnit({
 
 
 export const dataUnitReducer =
-  (lastState: DataUnit = INITIAL_STATE, action: DataUnitAction): DataUnit => {
+  (state: DataUnit = INITIAL_STATE, action: DataUnitAction): DataUnit => {
 
     switch (action.type) {
 
       case DataUnitActions.ROLE_SET_LIST_DISPLAY_LABEL_UPDATED:
-        lastState = {
-          ...lastState,
+        state = {
+          ...state,
           label: action.payload.label
         }
         break;
 
       case DataUnitActions.START_SELECT_PROPERTY:
-        lastState = {
-          ...lastState,
+        state = {
+          ...state,
           selectPropState: action.payload.selectPropState
         }
         break;
 
       case DataUnitActions.STOP_SELECT_PROPERTY:
-        lastState = {
-          ...lastState,
+        state = {
+          ...state,
           selectPropState: action.payload.selectPropState
         }
         break;
 
       case DataUnitActions.ROLE_SET_ADDED:
-        lastState = {
-          ...lastState,
+        state = {
+          ...state,
           _children: sortChildrenByUiContext(
             {
-              ...lastState._children,
+              ...state._children,
               ...action.payload._children
             },
             action.meta.uiContext
@@ -53,38 +53,46 @@ export const dataUnitReducer =
         break;
 
       case DataUnitActions.ROLE_SET_REMOVED:
-        const newRoleSets = Object.assign({}, lastState._children);
+        const newRoleSets = Object.assign({}, state._children);
         delete newRoleSets[action.meta.key];
 
-        lastState = {
-          ...lastState,
+        state = {
+          ...state,
           _children: newRoleSets
         }
         break;
 
       case DataUnitActions.PROP_SET_REMOVED:
-        lastState = {
-          ...lastState,
-          _children: omit([action.meta.stateKey], lastState._children)
+        state = {
+          ...state,
+          _children: omit([action.meta.stateKey], state._children)
         }
         break;
 
       case DataUnitActions.PROP_SET_ADDED:
-        lastState = {
-          ...lastState,
+        state = {
+          ...state,
           selectPropState: action.payload.selectPropState,
           _children: sortChildrenByUiContext(
             {
-              ...lastState._children,
+              ...state._children,
               [action.meta.key]: action.meta.val
             },
             action.meta.uiContext
           )
         }
         break;
+
+
+      case DataUnitActions.TOGGLE_REMOVE_VERIFICATION:
+        state = {
+          ...state,
+          showRemoveVerification: !state.showRemoveVerification
+        }
+        break;
     }
 
 
-    return lastState;
+    return state;
   };
 

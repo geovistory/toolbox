@@ -29,6 +29,7 @@ export class DataUnit {
     selectPropState?: SelectPropStateType; // state of child components for adding or creating properties
     propertyToAdd?: RoleSet; // role set that is currently chosen in order to add a role of this kind
 
+    showRemoveVerification?: boolean;
 
     constructor(data?: DataUnit) {
         Object.assign(this, data);

@@ -45,7 +45,7 @@
  *   listening to onChange Output to update the 'list'
 -->
 
-<div *ngIf="(edit$ | async)" class="gv-grow-1 d-flex flex-column">
+<div *ngIf="(edit$ | async)" class="gv-flex-fh">
 
   <!-- Breadcrumbs -->
   <div class="d-flex gv-flex-shrink-0">
@@ -59,7 +59,8 @@
   </div>
 
 
-  <gv-pe-it-editable [hidden]="(createSection$ | async)" [basePath]="basePath.concat('edit')" [ngClass]="{'gv-grow-1 d-flex flex-column' : !(createSection$ | async)}"></gv-pe-it-editable>
+  <gv-pe-it-editable [hidden]="(createSection$ | async)" [basePath]="basePath.concat('edit')" [ngClass]="{'gv-flex-fh' : !(createSection$ | async)}"
+  (remove)="onRemoveSource($event)"></gv-pe-it-editable>
 
 
 </div>
@@ -68,7 +69,7 @@
  * - If 'remove' is truthy, show a SourceSearchHitComponent with 'are you sure', cancel and remove buttons
  *   passing store path to 'remove' via Input 
 -->
-<div *ngIf="(remove$ | async)" class="d-flex justify-content-center mt-5">
+<!-- <div *ngIf="(remove$ | async)" class="d-flex justify-content-center mt-5">
   <div>
     <div class="my-3">
       <h5> Remove Source </h5>
@@ -78,7 +79,7 @@
     <button class="btn btn-outline-danger" (click)="remove()">Remove</button>
     <button class="btn btn-outline-secondary" (click)="cancelRemove()">Cancel</button>
   </div>
-</div>
+</div> -->
 
 
 
@@ -89,7 +90,7 @@
  *   listening to onChange Output to update the 'list'
 -->
 
-<div *ngIf="(editSection$ | async)" class="gv-grow-1 d-flex flex-column">
+<div *ngIf="(editSection$ | async)" class="gv-flex-fh">
 
   <!-- Breadcrumbs -->
   <div class="d-flex gv-flex-shrink-0">
@@ -108,7 +109,8 @@
   </div>
 
 
-  <gv-pe-it-editable [basePath]="basePath.concat('editSection')" class="gv-grow-1 d-flex flex-column"></gv-pe-it-editable>
+  <gv-pe-it-editable [basePath]="basePath.concat('editSection')" class="gv-flex-fh"
+  (remove)="onRemoveSection($event)"></gv-pe-it-editable>
 
 
 </div>

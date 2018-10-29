@@ -58,9 +58,9 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
   constructor(
     protected rootEpics: RootEpics,
     private epics: SourceListAPIEpics,
-    private activatedRoute: ActivatedRoute,
+    public activatedRoute: ActivatedRoute,
     public ngRedux: NgRedux<IAppState>,
-    private router: Router
+    public router: Router
   ) {
     super();
 
@@ -133,6 +133,16 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
     })
   }
 
+  openSearchList() {
+    this.router.navigate(['../search'], {
+      relativeTo: this.activatedRoute, queryParamsHandling: 'merge'
+    })
+  }
+
+
+  onRemoveSource = (pkEntity: number) => this.removeSource(pkEntity, this.ngRedux.getState().activeProject.pk_project)
+  onRemoveSection = (pkEntity: number) => this.removeSection(pkEntity, this.ngRedux.getState().activeProject.pk_project)
+
   // /**
   //  * Updates the state of substore
   //  */
@@ -148,6 +158,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
   onSourceChange() {
     // this.search()
   }
+
 
 
 

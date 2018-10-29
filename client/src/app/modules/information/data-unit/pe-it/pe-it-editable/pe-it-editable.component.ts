@@ -1,17 +1,19 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { AfterViewInit, ChangeDetectionStrategy, Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, IAppState, U, UiContext } from 'app/core';
-import { PeItDetail, AddOption, RoleSet, CollapsedExpanded, RoleSetForm, ExistenceTimeDetail } from 'app/core/state/models';
+import { AddOption, CollapsedExpanded, ExistenceTimeDetail, PeItDetail, RoleSet, RoleSetForm, SubstoreComponent } from 'app/core/state/models';
+import { createExistenceTimeDetail } from 'app/core/state/services/state-creator';
 import { RootEpics } from 'app/core/store/epics';
-import { Observable } from 'rxjs';
+import { SectionList } from 'app/modules/information/containers/section-list/api/section-list.models';
+import { combineLatest, Observable } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { slideInOut } from '../../../shared/animations';
+import { DataUnitBase } from '../../data-unit.base';
 import { DataUnitAPIEpics } from '../../data-unit.epics';
 import { PeItApiEpics } from '../api/pe-it.epics';
-import { PeItBase } from '../pe-it-base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
-import { createExistenceTimeDetail } from 'app/core/state/services/state-creator';
 
 
 
@@ -27,20 +29,58 @@ import { createExistenceTimeDetail } from 'app/core/state/services/state-creator
   changeDetection: ChangeDetectionStrategy.OnPush,
 
 })
-export class PeItEditableComponent extends PeItBase implements AfterViewInit {
+export class PeItEditableComponent extends DataUnitBase implements AfterViewInit, SubstoreComponent {
 
-  afterViewInit = false;
+  @Input() basePath: string[];
 
+  @Output() remove = new EventEmitter<number>();
+
+  // afterViewInit = false;
 
   localStore: ObservableStore<PeItDetail>;
 
   /**
    * Local Store Observables
    */
-  // Primary key of the peIt
+
+
   @select() pkEntity$: Observable<number>;
+  @select() sectionList$: Observable<SectionList>;
+
+  // Visibility of generic elements
+  @select() showHeader$: Observable<boolean>;
+  @select() showPropertiesHeader$: Observable<boolean>;
   @select() showOntoInfo$: Observable<boolean>
   @select() showCommunityStats$: Observable<boolean>
+
+  // Left Panel Sections
+  @select() showProperties$: Observable<boolean>;
+  @select() showSectionList$: Observable<boolean>;
+  @select() showRepros$: Observable<boolean>;
+
+  // Right Panel Sections
+  @select() showMap$: Observable<boolean>;
+  @select() showTimeline$: Observable<boolean>;
+  @select() showAssertions$: Observable<boolean>;
+  @select() showMentionedEntities$: Observable<boolean>;
+
+  // Toggle Buttons (left panel)
+  @select() showPropertiesToggle$: Observable<boolean>;
+  @select() showSectionListToggle$: Observable<boolean>;
+  @select() showReprosToggle$: Observable<boolean>;
+
+  // Toggle Buttons (right panel)
+  @select() showMapToggle$: Observable<boolean>;
+  @select() showTimelineToggle$: Observable<boolean>;
+  @select() showMentionedEntitiesToggle$: Observable<boolean>;
+  @select() showAssertionsToggle$: Observable<boolean>;
+
+  // Visibility of container elements, set by function below
+  showRightPanel$: Observable<boolean>;
+  showLeftPanel$: Observable<boolean>;
+
+  // array of pks of loading leaf-pe-its
+  pksOfloadingLeafPeIts: number[] = [];
 
   uiContext: UiContext;
 
@@ -66,13 +106,44 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
     protected fb: FormBuilder,
     protected dataUnitEpics: DataUnitAPIEpics
   ) {
-    super(rootEpics, dataUnitEpics, epics, ngRedux, actions, fb);
+    super(ngRedux, fb, rootEpics, dataUnitEpics);
     console.log('PeItEditableComponent')
   }
 
-  initPeItBaseChild() {
+  getBasePath = () => this.basePath;
+
+
+  init() {
+    this.basePath = this.getBasePath();
+
+    /**
+     * Keeps track of all sections in the right panel.
+     * If at least one is visible, show the right panel,
+     * else hide it.
+     */
+    this.showLeftPanel$ = combineLatest(
+      this.showProperties$,
+      this.showSectionList$,
+      this.showRepros$
+    ).pipe(map((bools) => ((bools.filter((bool) => (bool === true)).length > 0))));
+
+
+    /**
+     * Keeps track of all sections in the right panel.
+     * If at least one is visible, show the right panel,
+     * else hide it.
+     */
+    this.showRightPanel$ = combineLatest(
+      this.showMap$,
+      this.showTimeline$,
+      this.showAssertions$,
+      this.showMentionedEntities$
+    ).pipe(map((bools) => ((bools.filter((bool) => (bool === true)).length > 0))));
+
 
     this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
+
+    this.rootEpics.addEpic(this.epics.createEpics(this));
 
     this.initPeItSubscriptions()
 
@@ -84,16 +155,18 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
    * subscribe all here, so it is only subscribed once on init and not multiple times on user interactions
    */
   initPeItSubscriptions() {
-    this.localStore.select<PeItDetail>('').takeUntil(this.destroy$).subscribe(d => {
-      this.peItState = d;
-      this.isolatedChild = U.extractDataUnitChildKeyForIsolation(d._children);
-    })
+    this.localStore.select<PeItDetail>('').pipe(
+      filter(d => (!!d)),
+      takeUntil(this.destroy$)).subscribe(d => {
+        this.peItState = d;
+        this.isolatedChild = U.extractDataUnitChildKeyForIsolation(d._children);
+      })
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.afterViewInit = true;
-    }, 2000)
+    // setTimeout(() => {
+    //   this.afterViewInit = true;
+    // }, 2000)
   }
 
   addOptionSelected($event) {
@@ -153,5 +226,7 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
   toggle(keyToToggle: string) {
     this.localStore.dispatch(this.actions.toggleBoolean(keyToToggle))
   }
+
+  onRemove = () => this.remove.emit(this.peItState.pkEntity)
 
 }

@@ -134,6 +134,7 @@ import { TextEditorComponent } from './containers/text-editor/text-editor.compon
 import { TextEditorAPIActions } from './containers/text-editor/api/text-editor.actions';
 import { TextEditorAPIEpics } from './containers/text-editor/api/text-editor.epics';
 import { VersionPickerComponent } from './components/version-picker/version-picker.component';
+import { PeItStrModule } from 'app/shared/pipes/pe-it-str/pe-it-str.module';
 
 
 
@@ -161,6 +162,7 @@ import { VersionPickerComponent } from './components/version-picker/version-pick
     DimensionChangeModule,
     TimelineModule,
     KeysModule,
+    PeItStrModule,
     HighlightModule,
     DndModule,
     QuillModule,

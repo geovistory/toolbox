@@ -55,8 +55,8 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     protected rootEpics: RootEpics,
     private epics: InformationAPIEpics,
     public ngRedux: NgRedux<IAppState>,
-    private activatedRoute: ActivatedRoute,
-    private router: Router
+    public activatedRoute: ActivatedRoute,
+    public router: Router
   ) {
     super()
 
@@ -113,7 +113,12 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     this.router.navigate(['../entity', pkInfPersistentItem], {
       relativeTo: this.activatedRoute, queryParamsHandling: 'merge'
     })
-    // routerLink="../entity/{{persistentItem.pk_persistent_item}}" queryParamsHandling="merge"
+  }
+
+  openSearchList() {
+    this.router.navigate(['../../search'], {
+      relativeTo: this.activatedRoute, queryParamsHandling: 'merge'
+    })
   }
 
   ngOnDestroy() {
@@ -121,5 +126,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
+
+  onRemovePeIt = (pkEntity: number) => this.removePeIt(pkEntity, this.ngRedux.getState().activeProject.pk_project)
 
 }

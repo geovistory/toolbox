@@ -12,7 +12,7 @@
 <div *ngIf="!(create$ |async)">
   <div *ngFor="let item of (items$|async) | keys;">
     <button class="btn btn-link" (click)="openSection(item.value?._peIt?.pkEntity)">
-      <gv-pe-it-label [children]="item.value?._peIt?._children" [classConfig]="(getClassConfig(item.value?._peIt?.fkClass) | async)"></gv-pe-it-label>
+      {{item.value?._peIt | peItStr}}
     </button>
   </div>
 </div>

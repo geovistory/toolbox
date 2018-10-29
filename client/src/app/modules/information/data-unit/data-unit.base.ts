@@ -49,6 +49,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   @select() pkUiContext$: Observable<number>
 
   @select() showAddAPropertyButton$: Observable<boolean>;
+  @select() showRemoveVerification$: Observable<boolean>;
 
   crm$: Observable<ProjectCrm>;
 
@@ -258,5 +259,8 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
     /** remove the formControl from form */
     this.formGroup.removeControl(keyInState)
   }
+
+
+  toggleRemoveVerification = () => this.localStore.dispatch(this.actions.toggleRemoveVerification())
 
 }

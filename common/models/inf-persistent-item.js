@@ -398,7 +398,7 @@ module.exports = function (InfPersistentItem) {
         ORDER BY r63_in_project.ord_num ASC
       ) AS appellations
       ON appellations.pk_named_entity = pi.pk_entity
-      INNER JOIN (SELECT fk_entity, jsonb_agg(fk_project) as projects_array from information.entity_version_project_rel GROUP BY fk_entity) AS projects
+      INNER JOIN (SELECT fk_entity, jsonb_agg(fk_project) as projects_array from epr_of_project GROUP BY fk_entity) AS projects
       ON projects.fk_entity = pi.pk_entity
       GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, projects.fk_entity, projects.projects_array
       ORDER BY pi.tmsp_last_modification DESC
@@ -561,7 +561,11 @@ module.exports = function (InfPersistentItem) {
         GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity, r63.rank_for_pe_it
       ) AS appellations
       ON appellations.pk_named_entity = pi.pk_entity
-    	INNER JOIN (SELECT fk_entity, jsonb_agg(fk_project) as projects_array from information.entity_version_project_rel GROUP BY fk_entity) AS projects
+    	INNER JOIN (
+        SELECT fk_entity, jsonb_agg(fk_project) as projects_array 
+        from information.entity_version_project_rel 
+        WHERE is_in_project = true
+        GROUP BY fk_entity) AS projects
 	    ON projects.fk_entity = pi.pk_entity
       GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, projects.fk_entity, projects.projects_array
       ORDER BY pi.tmsp_last_modification DESC
@@ -1395,24 +1399,25 @@ module.exports = function (InfPersistentItem) {
         select pk_entity, calendar from pe_it_roles 
         UNION 
         select pk_entity, calendar from te_ent_roles
-      ),
-      -- get a list of all pk_entities that the project manually removed
-      pk_entities_excluded_by_project AS (
-        SELECT fk_entity as pk_entity
-        FROM information.v_entity_version_project_rel as epr 
-        where epr.is_in_project = false and epr.fk_project = 12
-      ),
-      -- get final list of pk_entities to add to project
-      pk_entities_to_add AS (
-        select pk_entity, calendar from pk_entities_of_repo
-        EXCEPT
-        select pk_entity, null::calendar_type from pk_entities_excluded_by_project
       )
-      --select * from pk_entities_to_add;
+      --,
+      ---- get a list of all pk_entities that the project manually removed
+      --pk_entities_excluded_by_project AS (
+      --  SELECT fk_entity as pk_entity
+      --  FROM information.v_entity_version_project_rel as epr 
+      --  where epr.is_in_project = false and epr.fk_project = $2
+      --),
+      ---- get final list of pk_entities to add to project
+      --pk_entities_to_add AS (
+      --  select pk_entity, calendar from pk_entities_of_repo
+      --  EXCEPT
+      --  select pk_entity, null::calendar_type from pk_entities_excluded_by_project
+      --)
+      ----select * from pk_entities_to_add;
 
       insert into information.v_entity_version_project_rel (fk_project, is_in_project, fk_entity, calendar)
       SELECT $2, true, pk_entity, calendar
-      from pk_entities_to_add;
+      from pk_entities_of_repo;
     `
 
     const connector = InfPersistentItem.dataSource.connector;

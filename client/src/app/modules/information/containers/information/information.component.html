@@ -41,6 +41,6 @@
 
   <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
   <div *ngIf="!(loading$ | async)" class="gv-flex-fh">
-    <gv-pe-it-editable class="gv-flex-fh" [basePath]="basePath.concat('_peIt_editable')"></gv-pe-it-editable>
+    <gv-pe-it-editable class="gv-flex-fh" [basePath]="basePath.concat('_peIt_editable')" (remove)="onRemovePeIt($event)"></gv-pe-it-editable>
   </div>
 </div>

@@ -1,185 +1,212 @@
-<!-- Header -->
-<div class="mb-3 gv-flex-shrink-0" *ngIf="(showHeader$ | async)">
-  <gv-editor-header>
-    <gv-pe-it-label labels [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
-    <div type *ngIf="(_type$ | async)">
-      <gv-type [basePath]="basePath.concat('_type')"></gv-type>
-    </div>
-    <gv-class-info classInfo [classConfig]="classConfig" iconPrimary="true"></gv-class-info>
-    <div settings>
-      <div class="btn-group" ngbDropdown placement="bottom-right" [autoClose]="'outside'">
-        <button class="btn btn-link btn-lg no-caret" ngbDropdownToggle>
-          <i class="fa fa-cogs"></i>
-        </button>
-        <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
-
-          <!-- Left Column Toggles -->
-
-          <div class="dropdown-header">View (left column)</div>
-
-          <button class="dropdown-item" (click)="toggle('showProperties')" *ngIf="(showPropertiesToggle$|async)">
-            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showProperties$|async)}"></i>
-            Properties
+<div [ngClass]="{'gv-flex-fh':!(showRemoveVerification$ | async)}" [hidden]="(showRemoveVerification$ | async)">
+  <!-- Header -->
+  <div class="mb-3 gv-flex-shrink-0" *ngIf="(showHeader$ | async)">
+    <gv-editor-header>
+      <gv-pe-it-label labels [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
+      <div type *ngIf="(_type$ | async)">
+        <gv-type [basePath]="basePath.concat('_type')"></gv-type>
+      </div>
+      <gv-class-info classInfo [classConfig]="classConfig" iconPrimary="true"></gv-class-info>
+      <div settings>
+        <div class="btn-group" ngbDropdown placement="bottom-right" [autoClose]="'outside'">
+          <button class="btn btn-link btn-lg no-caret" ngbDropdownToggle>
+            <i class="fa fa-cogs"></i>
           </button>
+          <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
 
-          <button class="dropdown-item" (click)="toggle('showSectionList')" *ngIf="(showSectionListToggle$|async)">
-            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showSectionList$|async)}"></i>
-            Sections and Reproductions
-          </button>
+            <!-- Left Column Toggles -->
 
-          <button class="dropdown-item" (click)="toggle('showRepros')" *ngIf="(showReprosToggle$|async)">
-            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showRepros$|async)}"></i>
-            Reproductions
-          </button>
+            <div class="dropdown-header">View (left column)</div>
 
-          <!-- Rigth Column Toggles -->
+            <button class="dropdown-item" (click)="toggle('showProperties')" *ngIf="(showPropertiesToggle$|async)">
+              <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showProperties$|async)}"></i>
+              Properties
+            </button>
 
-          <div class="dropdown-header">View (right column)</div>
+            <button class="dropdown-item" (click)="toggle('showSectionList')" *ngIf="(showSectionListToggle$|async)">
+              <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showSectionList$|async)}"></i>
+              Sections and Reproductions
+            </button>
 
-          <button class="dropdown-item" (click)="toggle('showMap')" *ngIf="(showMapToggle$|async)">
-            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showMap$|async)}"></i>
-            Map
-          </button>
+            <button class="dropdown-item" (click)="toggle('showRepros')" *ngIf="(showReprosToggle$|async)">
+              <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showRepros$|async)}"></i>
+              Reproductions
+            </button>
 
-          <button class="dropdown-item" (click)="toggle('showTimeline')" *ngIf="(showTimelineToggle$|async)">
-            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showTimeline$|async)}"></i>
-            Timeline
-          </button>
+            <!-- Rigth Column Toggles -->
 
-          <button class="dropdown-item" (click)="toggle('showMentionedEntities')" *ngIf="(showMentionedEntitiesToggle$|async)">
-            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showMentionedEntities$|async)}"></i>
-            Mentioned Entities
-          </button>
+            <div class="dropdown-header">View (right column)</div>
 
-          <button class="dropdown-item" (click)="toggle('showAssertions')" *ngIf="(showAssertionsToggle$|async)">
-            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showAssertions$|async)}"></i>
-            Assertions
-          </button>
-          <!-- Info Toggles -->
+            <button class="dropdown-item" (click)="toggle('showMap')" *ngIf="(showMapToggle$|async)">
+              <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showMap$|async)}"></i>
+              Map
+            </button>
 
-          <div class="dropdown-header">Info</div>
+            <button class="dropdown-item" (click)="toggle('showTimeline')" *ngIf="(showTimelineToggle$|async)">
+              <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showTimeline$|async)}"></i>
+              Timeline
+            </button>
 
-          <button class="dropdown-item" (click)="toggle('showOntoInfo')">
-            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showOntoInfo$|async)}"></i>
-            Ontology Info
-          </button>
+            <button class="dropdown-item" (click)="toggle('showMentionedEntities')" *ngIf="(showMentionedEntitiesToggle$|async)">
+              <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showMentionedEntities$|async)}"></i>
+              Mentioned Entities
+            </button>
 
-          <!-- <button class="dropdown-item" (click)="toggleCommunityStats()">
-            <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showCommunityStats$|async)}"></i>
-            Community Statistics
-          </button> -->
+            <button class="dropdown-item" (click)="toggle('showAssertions')" *ngIf="(showAssertionsToggle$|async)">
+              <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showAssertions$|async)}"></i>
+              Assertions
+            </button>
+            <!-- Info Toggles -->
+
+            <div class="dropdown-header">Info</div>
+
+            <button class="dropdown-item" (click)="toggle('showOntoInfo')">
+              <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showOntoInfo$|async)}"></i>
+              Ontology Info
+            </button>
+
+            <!-- Remove Button -->
+
+            <div class="dropdown-divider" *ngIf="!(isViewMode$ | async)"></div>
+            <div class="dropdown-header" *ngIf="!(isViewMode$ | async)">Danger Zone</div>
+
+            <button class="dropdown-item text-danger" (click)="toggleRemoveVerification()" *ngIf="!(isViewMode$ | async)">
+              <i class="fa fa-trash"></i>
+              Remove
+            </button>
+            <!-- <button class="dropdown-item" (click)="toggleCommunityStats()">
+              <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showCommunityStats$|async)}"></i>
+              Community Statistics
+            </button> -->
+          </div>
         </div>
       </div>
-    </div>
-  </gv-editor-header>
+    </gv-editor-header>
 
 
-</div>
+  </div>
 
-<!-- Tools to edit PeIt  -->
-<div [ngClass]="{'d-flex flex-row gv-grow-1 px-3 pb-1': !(sectionList$ | async)?.create}" style="flex-basis:100%"
-  [hidden]="(sectionList$ | async)?.create">
+  <!-- Tools to edit PeIt  -->
+  <div [ngClass]="{'d-flex flex-row gv-grow-1 px-3 pb-1': !(sectionList$ | async)?.create}" style="flex-basis:100%"
+    [hidden]="(sectionList$ | async)?.create">
 
-  <!-- Left Panel -->
-  <div class="d-flex flex-column gv-grow-1" style="flex-basis:45%; overflow-y: auto;" *ngIf="(showLeftPanel$ | async)">
+    <!-- Left Panel -->
+    <div class="d-flex flex-column gv-grow-1" style="flex-basis:45%; overflow-y: auto;" *ngIf="(showLeftPanel$ | async)">
 
-    <span *ngIf="(showProperties$ | async)">
-      <!-- Properties Header -->
-      <span *ngIf="(showPropertiesHeader$ | async)">
+      <span *ngIf="(showProperties$ | async)">
+        <!-- Properties Header -->
+        <span *ngIf="(showPropertiesHeader$ | async)">
 
-        <div class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline mb-3">
-          <div class="gv-grow-1 gv-btn-spacer-sm">
-            <!-- <i class="fa fa-lightbulb-o"></i> -->
-            Properties
+          <div class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline mb-3">
+            <div class="gv-grow-1 gv-btn-spacer-sm">
+              <!-- <i class="fa fa-lightbulb-o"></i> -->
+              Properties
+            </div>
+            <!-- Step 1 for adding a new property -->
+            <button class="btn btn-sm btn-link" (click)="startSelectProperty()" *ngIf="!(isViewMode$ | async) && (selectPropState$ | async) === 'init' && (showAddAPropertyButton$ | async)"
+              [ngClass]="{'invisible' : isolatedChild}">
+              <i class="fa fa-plus"></i> Add a property
+            </button>
           </div>
-          <!-- Step 1 for adding a new property -->
-          <button class="btn btn-sm btn-link" (click)="startSelectProperty()" *ngIf="!(isViewMode$ | async) && (selectPropState$ | async) === 'init' && (showAddAPropertyButton$ | async)"
-            [ngClass]="{'invisible' : isolatedChild}">
-            <i class="fa fa-plus"></i> Add a property
-          </button>
+
+        </span>
+
+        <!-- Add a property UI -->
+        <div *ngIf="(!isolatedChild)">
+          <!-- Step 2 for adding new Property section -->
+          <gv-add-info-pe-it *ngIf="(selectPropState$ | async) === 'selectProp'" [uiElements]="uiElementsForAddInfo"
+            [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)"
+            (cancel)="stopSelectProperty()"></gv-add-info-pe-it>
+        </div>
+
+        <!-- Isolated Property -->
+        <div *ngIf="isolatedChild">
+          <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="isolatedChild"></gv-pe-it-role-set-editable>
+        </div>
+
+        <!-- List of Properties -->
+        <div *ngIf="!isolatedChild">
+          <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
+            <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-pe-it-role-set-editable>
+          </div>
         </div>
 
       </span>
 
-      <!-- Add a property UI -->
-      <div *ngIf="(!isolatedChild)">
-        <!-- Step 2 for adding new Property section -->
-        <gv-add-info-pe-it *ngIf="(selectPropState$ | async) === 'selectProp'" [uiElements]="uiElementsForAddInfo"
-          [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)"
-          (cancel)="stopSelectProperty()"></gv-add-info-pe-it>
+      <!-- Section List. Sections of a source -->
+      <div class="gv-flex-fh" *ngIf="(showSectionList$ | async) && !isolatedChild">
+        <gv-section-list [basePath]="basePath.concat('sectionList')"></gv-section-list>
       </div>
 
-      <!-- Isolated Property -->
-      <div *ngIf="isolatedChild">
-        <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="isolatedChild"></gv-pe-it-role-set-editable>
+      <!-- Repros. Reproductions of a section -->
+      <div class="gv-flex-fh" *ngIf="(showRepros$ | async) && !isolatedChild">
+        <gv-repros class="gv-flex-fh" [basePath]="basePath.concat('repros')"></gv-repros>
       </div>
 
-      <!-- List of Properties -->
-      <div *ngIf="!isolatedChild">
-        <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
-          <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-pe-it-role-set-editable>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="d-flex gv-grow-1" [ngClass]="{'ml-3':(showLeftPanel$ | async)}" style="flex-basis:55%; overflow:hidden"
+      *ngIf="(showRightPanel$ | async)">
+      <div class="d-flex flex-column gv-grow-1" style="overflow:hidden">
+
+        <div class="gv-flex-fh" *ngIf="(showMentionedEntities$ | async)">
+          <div class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline">
+            <div class="gv-grow-1">
+              <!-- <i class="fa fa-lightbulb-o"></i> -->
+              Mentioned Entities
+            </div>
+            <!-- Step 1 for adding a new property -->
+            <button class="btn btn-sm btn-link">
+              <i class="fa fa-plus"></i> Add
+            </button>
+          </div>
         </div>
+
+        <div class="gv-flex-fh" *ngIf="(showAssertions$ | async)">
+          <div class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline">
+            <div class="gv-grow-1">
+              <!-- <i class="fa fa-lightbulb-o"></i> -->
+              Assertions using this source
+            </div>
+            <!-- Step 1 for adding a new property -->
+            <button class="btn btn-sm btn-link">
+              <i class="fa fa-plus"></i> Add
+            </button>
+          </div>
+        </div>
+
+        <div class="d-flex gv-grow-1 mb-3" *ngIf="(showMap$ | async)">
+          <gv-map [path]="basePath" class="gv-grow-1 d-flex flex-column"></gv-map>
+        </div>
+
+        <gv-pe-it-timeline [path]="basePath" *ngIf="(showTimeline$ | async)"></gv-pe-it-timeline>
+
       </div>
-
-    </span>
-
-    <!-- Section List. Sections of a source -->
-    <div class="gv-flex-fh" *ngIf="(showSectionList$ | async) && !isolatedChild">
-      <gv-section-list [basePath]="basePath.concat('sectionList')"></gv-section-list>
     </div>
-
-    <!-- Repros. Reproductions of a section -->
-    <div class="gv-flex-fh" *ngIf="(showRepros$ | async) && !isolatedChild">
-      <gv-repros class="gv-flex-fh" [basePath]="basePath.concat('repros')"></gv-repros>
-    </div>
-
   </div>
 
-  <!-- Right Panel -->
-  <div class="d-flex gv-grow-1" [ngClass]="{'ml-3':(showLeftPanel$ | async)}" style="flex-basis:55%; overflow:hidden"
-    *ngIf="(showRightPanel$ | async)">
-    <div class="d-flex flex-column gv-grow-1" style="overflow:hidden">
-
-      <div class="gv-flex-fh" *ngIf="(showMentionedEntities$ | async)">
-        <div class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline">
-          <div class="gv-grow-1">
-            <!-- <i class="fa fa-lightbulb-o"></i> -->
-            Mentioned Entities
-          </div>
-          <!-- Step 1 for adding a new property -->
-          <button class="btn btn-sm btn-link">
-            <i class="fa fa-plus"></i> Add
-          </button>
-        </div>
-      </div>
-
-      <div class="gv-flex-fh" *ngIf="(showAssertions$ | async)">
-        <div class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline">
-          <div class="gv-grow-1">
-            <!-- <i class="fa fa-lightbulb-o"></i> -->
-            Assertions using this source
-          </div>
-          <!-- Step 1 for adding a new property -->
-          <button class="btn btn-sm btn-link">
-            <i class="fa fa-plus"></i> Add
-          </button>
-        </div>
-      </div>
-
-      <div class="d-flex gv-grow-1 mb-3" *ngIf="(showMap$ | async)">
-        <gv-map [path]="basePath" class="gv-grow-1 d-flex flex-column"></gv-map>
-      </div>
-
-      <gv-pe-it-timeline [path]="basePath" *ngIf="(showTimeline$ | async)"></gv-pe-it-timeline>
-
-    </div>
+  <!-- ********************** Isolated Create Section ***************************
+       * - If 'create' is truthy, show a form with SourceCreateFormComponent
+       *     listening to ok and cancel Outputs 
+       -->
+  <div [hidden]="!(sectionList$ | async)?.create" [ngClass]="{'gv-flex-fh': (sectionList$ | async)?.create}">
+    <gv-section-list [basePath]="basePath.concat('sectionList')"></gv-section-list>
   </div>
 </div>
 
-<!-- ********************** Isolated Create Section ***************************
-     * - If 'create' is truthy, show a form with SourceCreateFormComponent
-     *     listening to ok and cancel Outputs 
-     -->
-<div [hidden]="!(sectionList$ | async)?.create" [ngClass]="{'gv-flex-fh': (sectionList$ | async)?.create}">
-  <gv-section-list [basePath]="basePath.concat('sectionList')"></gv-section-list>
+<div class="d-flex flex-row justify-content-center" *ngIf="(showRemoveVerification$ | async)">
+  <div>
+    <div class="my-3">
+      <h2 >
+        Remove <gv-pe-it-label class="d-inline-block mr-1" labels [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
+      </h2>
+
+      <gv-class-info class="mb-5" classInfo [classConfig]="classConfig" iconPrimary="true"></gv-class-info>
+
+      <p> Are you sure?</p>
+    </div>
+    <button class="btn btn-outline-danger" (click)="onRemove()">Remove</button>
+    <button class="btn btn-outline-secondary ml-2" (click)="toggleRemoveVerification()">Cancel</button>
+  </div>
 </div>

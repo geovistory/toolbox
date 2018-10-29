@@ -8,7 +8,9 @@ import { DataUnitActions } from '../data-unit.actions';
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = PeItDetail;
 interface MetaData {
-  keyToToggle: string
+  keyToToggle?: string;
+  pkEntity?: number;
+  pkProject?: number;
 };
 export type PeItAction = FluxStandardAction<Payload, MetaData>;
 
@@ -61,6 +63,7 @@ export class PeItActions extends DataUnitActions {
     meta: { keyToToggle },
     payload: null
   })
+
 
 
 }

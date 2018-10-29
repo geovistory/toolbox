@@ -38,6 +38,8 @@ export class DataUnitActions {
 
   static readonly DATA_UNIT_INIT = 'DataUnit::DATA_UNIT_INIT';
 
+  static readonly TOGGLE_REMOVE_VERIFICATION = 'DataUnit::TOGGLE_REMOVE_VERIFICATION';
+
   @dispatch()
 
 
@@ -126,6 +128,15 @@ export class DataUnitActions {
   */
   dataUnitInit = (): DataUnitAction => ({
     type: DataUnitActions.DATA_UNIT_INIT,
+    meta: null,
+    payload: null
+  })
+
+  /**
+  * called on click on remove a data unit and on click on cancel removing a data unit
+  */
+  toggleRemoveVerification = (): DataUnitAction => ({
+    type: DataUnitActions.TOGGLE_REMOVE_VERIFICATION,
     meta: null,
     payload: null
   })

@@ -5,15 +5,15 @@ import { omit } from 'ramda';
 
 const INITIAL_STATE = new SourceList();
 
-export function sourceListReducer(lastState: SourceList = INITIAL_STATE, a: Action): SourceList {
+export function sourceListReducer(state: SourceList = INITIAL_STATE, a: Action): SourceList {
 
   const action = a as SourceListAPIAction;
 
   switch (action.type) {
 
     case SourceListAPIActions.INITIALIZE_LIST:
-      lastState = {
-        ...lastState,
+      state = {
+        ...state,
         list: {
           pkAllowedClasses: action.meta.pkAllowedClasses
         }
@@ -25,23 +25,23 @@ export function sourceListReducer(lastState: SourceList = INITIAL_STATE, a: Acti
      **************************************/
 
     case SourceListAPIActions.LOAD_SOURCE_DETAILS:
-      lastState = {
-        ...lastState,
+      state = {
+        ...state,
         edit: undefined,
         loading: true
       }
       break;
     case SourceListAPIActions.LOAD_SOURCE_DETAILS_SUCCEEDED:
-      lastState = {
-        ...lastState,
+      state = {
+        ...state,
         edit: action.meta.sourceDetail,
         loading: false
       }
       break;
 
     case SourceListAPIActions.LOAD_SOURCE_DETAILS_FAILED:
-      lastState = {
-        ...lastState,
+      state = {
+        ...state,
         loading: false
       }
       break;
@@ -51,23 +51,23 @@ export function sourceListReducer(lastState: SourceList = INITIAL_STATE, a: Acti
      * Reducers for loading section details
      **************************************/
     case SourceListAPIActions.LOAD_SECTION_DETAILS:
-      lastState = {
-        ...lastState,
+      state = {
+        ...state,
         editSection: undefined,
         loading: true
       }
       break;
     case SourceListAPIActions.LOAD_SECTION_DETAILS_SUCCEEDED:
-      lastState = {
-        ...lastState,
+      state = {
+        ...state,
         editSection: action.meta.sectionDetail,
         loading: false
       }
       break;
 
     case SourceListAPIActions.LOAD_SECTION_DETAILS_FAILED:
-      lastState = {
-        ...lastState,
+      state = {
+        ...state,
         loading: false
       }
       break;
@@ -79,8 +79,8 @@ export function sourceListReducer(lastState: SourceList = INITIAL_STATE, a: Acti
     **************************************/
 
     case SourceListAPIActions.START_CREATE:
-      lastState = {
-        ...lastState,
+      state = {
+        ...state,
         create: {
           classAndTypePk: action.meta.classAndTypePk,
           pkUiContext: action.meta.pkUiContext
@@ -89,17 +89,43 @@ export function sourceListReducer(lastState: SourceList = INITIAL_STATE, a: Acti
       break;
 
     case SourceListAPIActions.STOP_CREATE:
-      lastState = omit(['create'], lastState);
+      state = omit(['create'], state);
       break;
 
 
+    /************************************************
+ * Reducers to remove PeIt from project
+ ************************************************/
+
+    case SourceListAPIActions.REMOVE_SOURCE:
+      state = {
+        ...state,
+        loading: true
+      }
+      break;
+
+
+    case SourceListAPIActions.REMOVE_SOURCE_SUCCEEDED:
+      state = omit(['edit'], state)
+      break;
+
+
+    case SourceListAPIActions.REMOVE_SOURCE_FAILED:
+      state = {
+        ...state,
+        loading: false
+      }
+      break;
+
+
+
     // case SourceListAPIActions.STOP_CREATE_SECTION:
-    //   lastState = {
-    //     ...lastState,
+    //   state = {
+    //     ...state,
     //     edit: {
-    //       ...lastState.edit,
+    //       ...state.edit,
     //       sectionList: {
-    //         ...omit(['create'], lastState.edit.sectionList)
+    //         ...omit(['create'], state.edit.sectionList)
     //       }
     //     }
     //   };
@@ -107,41 +133,41 @@ export function sourceListReducer(lastState: SourceList = INITIAL_STATE, a: Acti
 
 
     // case SourceListAPIActions.CLOSE:
-    //   lastState = omit(['edit'], lastState);
+    //   state = omit(['edit'], state);
     //   break;
 
 
     // case SourceListAPIActions.STATE_UPDATED:
-    //   lastState = action.payload
+    //   state = action.payload
     //   break;
     // case SourceListAPIActions.OPEN:
-    //   lastState = {
-    //     ...lastState,
+    //   state = {
+    //     ...state,
     //     edit: action.payload.edit
     //   }
     //   break;
 
     // case SourceListAPIActions.START_REMOVE:
-    //   lastState = {
-    //     ...lastState,
+    //   state = {
+    //     ...state,
     //     remove: action.payload.remove
     //   }
     //   break;
 
     // case SourceListAPIActions.CANCEL_REMOVE:
-    //   lastState = omit(['remove'], lastState);
+    //   state = omit(['remove'], state);
     //   break;
 
     // case SourceListAPIActions.REMOVED:
-    //   lastState = omit(['remove'], lastState);
+    //   state = omit(['remove'], state);
     //   break;
 
 
     // case SourceListAPIActions.SOURCE_UPDATED:
-    //   lastState = {
-    //     ...lastState,
+    //   state = {
+    //     ...state,
     //     edit: {
-    //       ...omit(['edit'], lastState.edit),
+    //       ...omit(['edit'], state.edit),
     //       view: action.payload.edit.view,
     //     }
     //   };
@@ -153,11 +179,11 @@ export function sourceListReducer(lastState: SourceList = INITIAL_STATE, a: Acti
     * Reducers called on destroy of component
     *****************************************************/
     case SourceListAPIActions.DESTROY:
-      lastState = {};
+      state = {};
       break;
 
   }
 
-  return lastState;
+  return state;
 };
 

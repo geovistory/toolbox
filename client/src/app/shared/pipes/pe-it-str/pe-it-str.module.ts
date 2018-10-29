@@ -1,17 +1,18 @@
+
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { PeItStrPipe } from './pe-it-str.pipe';
 
-import { KeysPipe } from './keys.pipe';
 
 @NgModule({
   imports: [
     CommonModule
   ],
   declarations: [
-    KeysPipe,
+    PeItStrPipe,
   ],
   exports: [
-    KeysPipe
+    PeItStrPipe
   ]
 })
-export class KeysModule { }
+export class PeItStrModule { }

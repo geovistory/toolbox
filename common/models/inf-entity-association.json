@@ -69,6 +69,7 @@
       "permission": "ALLOW",
       "property": [
         "find",
+        "findComplex",
         "findOrCreateInfEntityAssociation",
         "nestedObject"
       ]

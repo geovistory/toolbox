@@ -34,6 +34,15 @@ export class SourceListAPIActions {
   static readonly LOAD_SECTION_DETAILS_FAILED = 'SourceList::LOAD_SECTION_DETAILS_FAILED';
   static readonly LOAD_SECTION_DETAILS_SUCCEEDED = 'SourceList::LOAD_SECTION_DETAILS_SUCCEEDED';
 
+  static readonly REMOVE_SOURCE = 'SourceList::REMOVE_SOURCE';
+  static readonly REMOVE_SOURCE_SUCCEEDED = 'SourceList::REMOVE_SOURCE_SUCCEEDED';
+  static readonly REMOVE_SOURCE_FAILED = 'SourceList::REMOVE_SOURCE_FAILED';
+
+
+  static readonly REMOVE_SECTION = 'SourceList::REMOVE_SECTION';
+  static readonly REMOVE_SECTION_SUCCEEDED = 'SourceList::REMOVE_SECTION_SUCCEEDED';
+  static readonly REMOVE_SECTION_FAILED = 'SourceList::REMOVE_SECTION_FAILED';
+
   static readonly CLOSE = 'SourceList::CLOSE';
 
   static readonly START_REMOVE = 'SourceList::START_REMOVE';
@@ -129,6 +138,53 @@ export class SourceListAPIActions {
     type: SourceListAPIActions.STOP_CREATE_SECTION,
     meta: null,
     payload: null
+  })
+
+
+  /**********************************************
+ * Method remove Source from Project
+ **********************************************/
+
+  @dispatch() removeSource = (pkEntity: number, pkProject: number): SourceListAPIAction => ({
+    type: SourceListAPIActions.REMOVE_SOURCE,
+    meta: { pkEntity, pkProject },
+    payload: null
+  })
+
+  removeSourceSucceded = (): SourceListAPIAction => ({
+    type: SourceListAPIActions.REMOVE_SOURCE_SUCCEEDED,
+    meta: null,
+    payload: null
+  })
+
+  removeSourceFailed = (error): SourceListAPIAction => ({
+    type: SourceListAPIActions.REMOVE_SOURCE_FAILED,
+    meta: null,
+    payload: null,
+    error
+  })
+
+  /**********************************************
+* Method remove Section from Project
+**********************************************/
+
+  @dispatch() removeSection = (pkEntity: number, pkProject: number): SourceListAPIAction => ({
+    type: SourceListAPIActions.REMOVE_SECTION,
+    meta: { pkEntity, pkProject },
+    payload: null
+  })
+
+  removeSectionSucceded = (): SourceListAPIAction => ({
+    type: SourceListAPIActions.REMOVE_SECTION_SUCCEEDED,
+    meta: null,
+    payload: null
+  })
+
+  removeSectionFailed = (error): SourceListAPIAction => ({
+    type: SourceListAPIActions.REMOVE_SECTION_FAILED,
+    meta: null,
+    payload: null,
+    error
   })
 
   // @dispatch()  stateUpdated = (payload: ISourceListState): SourceListAPIAction => ({

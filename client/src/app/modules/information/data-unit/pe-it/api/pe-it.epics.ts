@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
-import { InfEntityProjectRelApi, LoadingBarAction } from 'app/core';
+import { InfEntityProjectRelApi, LoadingBarAction, LoadingBarActions, SubstoreComponent, InfEntityProjectRel } from 'app/core';
 import { startsWith } from 'ramda';
+import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { PeItBase } from '../pe-it-base';
-import { PeItActions } from '../pe-it.actions';
-import { LeafPeItViewAPIActions, LeafPeItViewAPIAction } from '../../../value/leaf-pe-it-view/api/leaf-pe-it-view.actions';
+import { LeafPeItViewAPIAction, LeafPeItViewAPIActions } from '../../../value/leaf-pe-it-view/api/leaf-pe-it-view.actions';
+import { PeItEditableComponent } from '../pe-it-editable/pe-it-editable.component';
+import { PeItActions, PeItAction } from '../pe-it.actions';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 
 
 const ofSubstoreLevel = (path: string[]) => (action): boolean => {
@@ -24,11 +26,12 @@ const ofSubstoreLevel = (path: string[]) => (action): boolean => {
 @Injectable()
 export class PeItApiEpics {
     constructor(
-        private eprApi: InfEntityProjectRelApi,
-        private actions: PeItActions
+        private actions: PeItActions,
+        private loadingBarActions: LoadingBarActions,
+        private notificationActions: NotificationsAPIActions
     ) { }
 
-    public createEpics(peItBase: PeItBase) {
+    public createEpics(peItBase: PeItEditableComponent) {
         return combineEpics(
             this.memorizeLoadingStartOfLeafPeIts(peItBase),
             this.memorizeLoadingCompletionOfLeafPeIts(peItBase)
@@ -39,9 +42,9 @@ export class PeItApiEpics {
      * Epic that observes loading start of child leaf-pe-its
      * It memorizes the pk_entity of each LOAD
      *
-     * @param p PeItBase Component instance
+     * @param p PeItEditableComponent Component instance
      */
-    private memorizeLoadingStartOfLeafPeIts(p: PeItBase): Epic {
+    private memorizeLoadingStartOfLeafPeIts(p: PeItEditableComponent): Epic {
         return (action$, store) => {
             return action$.pipe(
                 ofType(LeafPeItViewAPIActions.LOAD),
@@ -62,9 +65,9 @@ export class PeItApiEpics {
      * Epic that observes loading completion of child leaf-pe-its
      * It memorizes the pk_entity of each LOAD_SUCCEEDED
      *
-     * @param p PeItBase Component instance
+     * @param p PeItEditableComponent Component instance
      */
-    private memorizeLoadingCompletionOfLeafPeIts(p: PeItBase): Epic {
+    private memorizeLoadingCompletionOfLeafPeIts(p: PeItEditableComponent): Epic {
         return (action$, store) => {
             return action$.pipe(
                 ofType(LeafPeItViewAPIActions.LOAD_SUCCEEDED),
@@ -82,6 +85,5 @@ export class PeItApiEpics {
         }
     }
 
-
-
+   
 }
