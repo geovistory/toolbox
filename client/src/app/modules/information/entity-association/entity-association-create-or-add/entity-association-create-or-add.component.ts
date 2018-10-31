@@ -119,9 +119,14 @@ export class EntityAssociationCreateOrAddComponent extends EntityAssociationAPIA
     this.peItApi.addToProject(this.ngRedux.getState().activeProject.pk_project, pkEntity).subscribe(
       (peIts) => {
 
-        this.eprApi.updateEprAttributes(this.ngRedux.getState().activeProject.pk_project, eaD.entityAssociation.pk_entity, {
-          is_in_project: true
-        } as InfEntityProjectRel).subscribe(
+        this.eaApi.findOrCreateInfEntityAssociation(this.ngRedux.getState().activeProject.pk_project, {
+          fk_domain_entity: eaD.entityAssociation.fk_domain_entity,
+          fk_range_entity: eaD.entityAssociation.fk_range_entity,
+          fk_property: eaD.entityAssociation.fk_property,
+          entity_version_project_rels: [{
+            is_in_project: true
+          }]
+        } as InfEntityAssociation).subscribe(
           (ea) => { this.done.emit(eaD.entityAssociation) }
         )
       }

@@ -1,21 +1,26 @@
 <div>
   <h3>Define App-Context #{{pkUiContext}}</h3>
-  <p class="lead"> Move items between containers to enable or disable the item. Define the order of enabled items by drag&drop.</p>
+  <p class="lead"> Move items between containers to enable or disable the item. Define the order of enabled items by
+    drag&drop.</p>
 
   <div class="row">
 
     <div class="col-sm-6">
 
       <div class="card border-success" dnd-sortable-container [sortableData]="containerEnabled?.widgets" [dropZones]="['widget-dropZone']">
-        <div class="card-header text-success">
-          Enabled
+        <div class="card-header text-success d-flex align-items-baseline">
+          Enabled Properties and Fields
+
+          <button class="btn btn-sm btn-link ml-auto" (click)="enabledWidgetsExpanded = !enabledWidgetsExpanded"><i
+              class="fa" [ngClass]="{'fa-compress': enabledWidgetsExpanded, 'fa-expand': !enabledWidgetsExpanded}"></i></button>
+
         </div>
         <div class="card-body">
           <ul class="list-group">
 
             <gv-ui-element-widget *ngFor="let widget of containerEnabled?.widgets; let x = index" class="list-group-item"
-              dnd-sortable [sortableIndex]="x" [dragEnabled]="!(loading$ | async)" [dragData]="widget" (onDropSuccess)="droppedInEnabled($event)"
-              [widget]="widget"></gv-ui-element-widget>
+              [isExpanded]="enabledWidgetsExpanded" dnd-sortable [sortableIndex]="x" [dragEnabled]="!(loading$ | async)"
+              [dragData]="widget" (onDropSuccess)="droppedInEnabled($event)" [widget]="widget"></gv-ui-element-widget>
 
           </ul>
         </div>
@@ -23,16 +28,36 @@
     </div>
 
     <div class="col-sm-6">
+      <div class="card mb-2" dnd-sortable-container [sortableData]="containerDisabledFields?.widgets" [dropZones]="['widget-dropZone']">
+        <div class="card-header d-flex align-items-baseline">
+          Disabled Class Fields
 
-      <div class="card" dnd-sortable-container [sortableData]="containerDisabled?.widgets" [dropZones]="['widget-dropZone']">
-        <div class="card-header">
-          Disabled
+          <button class="btn btn-sm btn-link ml-auto" (click)="disabledFieldsExpanded = !disabledFieldsExpanded"><i
+              class="fa" [ngClass]="{'fa-compress': disabledFieldsExpanded, 'fa-expand': !disabledFieldsExpanded}"></i></button>
+
         </div>
         <div class="card-body">
           <ul class="list-group">
-            <gv-ui-element-widget *ngFor="let widget of containerDisabled?.widgets; let x = index" class="list-group-item"
-              dnd-sortable [sortableIndex]="x" [dragEnabled]="!(loading$ | async)" [dragData]="widget" (onDropSuccess)="droppedInDisabled($event)"
-              [widget]="widget"></gv-ui-element-widget>
+            <gv-ui-element-widget *ngFor="let widget of containerDisabledFields?.widgets; let x = index" class="list-group-item"
+              [isExpanded]="disabledFieldsExpanded" dnd-sortable [sortableIndex]="x" [dragEnabled]="!(loading$ | async)"
+              [dragData]="widget" (onDropSuccess)="droppedInDisabled()" [widget]="widget"></gv-ui-element-widget>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" dnd-sortable-container [sortableData]="containerDisabledProperties?.widgets" [dropZones]="['widget-dropZone']">
+        <div class="card-header d-flex align-items-baseline">
+          Disabled Properties
+
+          <button class="btn btn-sm btn-link ml-auto" (click)="disabledPropertiesExpanded = !disabledPropertiesExpanded"><i
+              class="fa" [ngClass]="{'fa-compress': disabledPropertiesExpanded, 'fa-expand': !disabledPropertiesExpanded}"></i></button>
+
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            <gv-ui-element-widget *ngFor="let widget of containerDisabledProperties?.widgets; let x = index" class="list-group-item"
+              [isExpanded]="disabledPropertiesExpanded" dnd-sortable [sortableIndex]="x" [dragEnabled]="!(loading$ | async)"
+              [dragData]="widget" (onDropSuccess)="droppedInDisabled()" [widget]="widget"></gv-ui-element-widget>
           </ul>
         </div>
       </div>

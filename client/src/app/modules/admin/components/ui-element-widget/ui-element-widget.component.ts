@@ -9,6 +9,8 @@ import { Widget } from '../../admin.models';
 export class UiElementWidgetComponent implements OnInit {
 
   @Input() widget: Widget;
+  @Input() isExpanded = false;
+
 
   @HostBinding('class.border-right-danger') get removedFromApi() {
     return !!this.widget.profiles.find((p) => p.removed_from_api);

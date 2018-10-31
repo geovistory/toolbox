@@ -23,10 +23,11 @@ export interface ClassDetail {
 
 export interface ClassUiContext {
     class?: DfhClassInterface;
-    containerDisabled?: Container;
+    containerDisabledProperties?: Container;
+    containerDisabledFields?: Container;
     containerEnabled?: Container;
-    loading: boolean;
-    error: any;
+    loading?: boolean;
+    error?: any;
 }
 
 export class Container {

@@ -8,6 +8,7 @@ import { NamespaceListComponent } from './components/namespace-list/namespace-li
 import { SystemTypeListComponent } from './components/system-type-list/system-type-list.component';
 import { PropertyListComponent } from './components/property-list/property-list.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
+import { ClassFieldListComponent } from './components/class-field-list/class-field-list.component';
 
 
 const routes: Routes = [
@@ -36,6 +37,10 @@ const routes: Routes = [
       {
         path: 'properties',
         component: PropertyListComponent
+      },
+      {
+        path: 'class-fields',
+        component: ClassFieldListComponent
       },
       {
         path: 'namespaces',

@@ -46,6 +46,11 @@
       "type": "hasMany",
       "model": "ComPropertySetPropertyRel",
       "foreignKey": "fk_property_set"
+    },
+    "labels": {
+      "type": "hasMany",
+      "model": "ComLabel",
+      "foreignKey": "fk_entity"
     }
   },
   "acls": [
@@ -60,7 +65,8 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "find"
+        "find",
+        "findComplex"
       ]
     }
   ],

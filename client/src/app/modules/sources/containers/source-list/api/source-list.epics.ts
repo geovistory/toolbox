@@ -1,17 +1,15 @@
 import { Injectable } from '@angular/core';
-import { ComConfig, LoadingBarActions, InfEntityProjectRelApi, InfEntityProjectRel, InfEntityAssociationApi, InfEntityAssociation } from 'app/core';
+import { ComConfig, InfEntityAssociation, InfEntityAssociationApi, InfEntityProjectRel, InfEntityProjectRelApi, LoadingBarActions } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { createPeItDetail } from 'app/core/state/services/state-creator';
-import { ofDirectChildSubstore } from 'app/modules/information/containers/information/api/information.epics';
-import { PeItActions } from 'app/modules/information/data-unit/pe-it/pe-it.actions';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
-import { Observable, combineLatest } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { SourceListComponent } from '../source-list.component';
 import { SourceListAPIAction, SourceListAPIActions } from './source-list.actions';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 
 @Injectable()
 export class SourceListAPIEpics {

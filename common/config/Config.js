@@ -17,6 +17,7 @@ const Config = {
     PK_CLASS_PK_HAS_TYPE_MAP: {
         363: 1110, // Geographical Place
         441: 1190, // Built Work
+        219: 100098, // Manifestation Product Type
     },
 
 

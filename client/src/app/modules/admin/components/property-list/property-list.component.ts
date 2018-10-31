@@ -38,8 +38,7 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
   // select observables of substore properties
   @select() items$: Observable<{ [key: string]: DfhProperty }>;
 
-
-  configuration: Config = {
+  tableConfiguration: Config = {
     searchEnabled: true,
     headerEnabled: true,
     orderEnabled: true,
@@ -92,34 +91,7 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
     { key: 'identity_defining', title: 'Identity Defining', searchEnabled: false, orderEnabled: false },
   ];
 
-  data = [
-    //   {
-    //   phone: '+1 (934) 551-2224',
-    //   age: 20,
-    //   address: { street: 'North street', number: 12 },
-    //   company: 'ZILLANET',
-    //   name: 'Valentine Webb',
-    //   isActive: false,
-    // }, {
-    //   phone: '+1 (948) 460-3627',
-    //   age: 31,
-    //   address: { street: 'South street', number: 12 },
-    //   company: 'KNOWLYSIS',
-    //   name: 'Heidi Duncan',
-    //   isActive: true,
-    // }
-  ];
-
-
-
-
-
-  // Since we're observing an array of items, we need to set up a 'trackBy'
-  // parameter so Angular doesn't tear down and rebuild the list's DOM every
-  // time there's an update.
-  getKey(_, item) {
-    return item.key;
-  }
+  data = [];
 
   constructor(
     protected rootEpics: RootEpics,

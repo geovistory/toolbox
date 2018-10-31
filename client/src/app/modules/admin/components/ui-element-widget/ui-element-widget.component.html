@@ -1,11 +1,18 @@
-<div class="font-lg d-flex justify-content-between align-items-baseline mb-2">
-  <div>{{widget.name}} <small class="text-success" *ngIf="widget?.roleSet?.property?.identity_defining">Identity defining!</small></div>
-  <div *ngIf="widget.roleSet" class="font-sm"><a target="_blank" [attr.href]="'http://ontologies.dataforhistory.org/property/' + widget.roleSet?.property?.dfh_pk_property">
-      <i class="fa fa-external-link"></i> OntoMe
-    </a></div>
+<div class="d-flex align-items-baseline mb-2">
+  <div>{{widget.name}} <small class="text-success" *ngIf="widget?.roleSet?.property?.identity_defining">Identity
+      defining!</small></div>
+  <div class="d-flex align-items-baseline ml-auto">
+    <div *ngIf="widget.roleSet" class="font-sm "><a target="_blank" [attr.href]="'http://ontologies.dataforhistory.org/property/' + widget.roleSet?.property?.dfh_pk_property">
+        <i class="fa fa-external-link"></i> OntoMe
+      </a>
+    </div>
+
+    <button class="btn btn-sm btn-link" (click)="isExpanded = !isExpanded"><i class="fa" [ngClass]="{'fa-compress': isExpanded, 'fa-expand': !isExpanded}"></i></button>
+
+  </div>
 </div>
 
-<div class="d-flex">
+<div class="d-flex" *ngIf="isExpanded">
 
   <div class="gv-grow-1 pr-2">
     <div class="text-muted font-xs">

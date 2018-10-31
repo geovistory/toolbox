@@ -1,6 +1,6 @@
 {
   "name": "ComLabel",
-  "base": "PersistedModel",
+  "base": "ComEntity",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
@@ -10,11 +10,6 @@
     }
   },
   "properties": {
-    "pk_label": {
-      "type": "number",
-      "id": true,
-      "generated": true
-    },
     "label": {
       "type": "string",
       "required": true
@@ -26,9 +21,6 @@
     "fk_language": {
       "type": "number",
       "required": true
-    },
-    "notes": {
-      "type": "string"
     }
   },
   "validations": [],

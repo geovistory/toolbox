@@ -36,6 +36,9 @@ import { DfhLabelCreateComponent } from './components/dfh-label-create/dfh-label
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { UiElementWidgetComponent } from './components/ui-element-widget/ui-element-widget.component';
 import { TableModule } from 'ngx-easy-table';
+import { ClassFieldListComponent } from './components/class-field-list/class-field-list.component';
+import { ClassFieldListAPIActions } from './components/class-field-list/api/class-field-list.actions';
+import { ClassFieldListAPIEpics } from './components/class-field-list/api/class-field-list.epics';
 
 @NgModule({
   imports: [
@@ -65,7 +68,9 @@ import { TableModule } from 'ngx-easy-table';
     DfhLabelEditAPIActions,
     DfhLabelEditAPIEpics,
     DfhLabelListEditAPIActions,
-    DfhLabelListEditAPIEpics
+    DfhLabelListEditAPIEpics,
+    ClassFieldListAPIActions,
+    ClassFieldListAPIEpics
   ],
   declarations: [
     MainComponent,
@@ -79,7 +84,8 @@ import { TableModule } from 'ngx-easy-table';
     DfhLabelListEditComponent,
     DfhLabelCreateComponent,
     LandingPageComponent,
-    UiElementWidgetComponent
+    UiElementWidgetComponent,
+    ClassFieldListComponent
   ]
 })
 export class AdminModule { }

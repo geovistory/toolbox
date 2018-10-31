@@ -7,7 +7,7 @@ import { pathOr } from 'ramda';
 import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares';
 import { Observable, Subscription, Subject } from 'rxjs';
 
-import { ClassDetail, Container } from '../../admin.models';
+import { ClassDetail, Container, ClassUiContext } from '../../admin.models';
 import { ClassUiContextAPIActions } from './api/class-ui-context.actions';
 import { ClassUiContextAPIEpics } from './api/class-ui-context.epics';
 import { classUiContextReducer } from './api/class-ui-context.reducer';
@@ -31,12 +31,15 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
   public readonly PK_UI_CONTEXT_DATAUNITS_CREATE = ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
 
 
-  localStore: ObservableStore<ClassDetail>
+  localStore: ObservableStore<ClassUiContext>
 
-  @select() class$: Observable<any>;
+  // @select() class$: Observable<any>;
   @select() loading$: Observable<any>;
-  @select() containerDisabled$: Observable<Container>;
-  containerDisabled: Container;
+
+  @select() containerDisabledProperties$: Observable<Container>;
+  containerDisabledProperties: Container;
+  @select() containerDisabledFields$: Observable<Container>;
+  containerDisabledFields: Container;
   @select() containerEnabled$: Observable<Container>;
   containerEnabled: Container;
   // disabledContainer$: Observable<Container>;
@@ -50,6 +53,10 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
   // emits when subscriptions to epic should be stopped
   until$: Subject<boolean> = new Subject<boolean>();
 
+  enabledWidgetsExpanded = false;
+  disabledPropertiesExpanded = false;
+  disabledFieldsExpanded = false;
+
   constructor(
     private rootEpics: RootEpics,
     private epics: ClassUiContextAPIEpics,
@@ -60,10 +67,8 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
 
     this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), classUiContextReducer)
 
-
-
     this.pkClass = this.activatedRoute.snapshot.parent.params['pk_class'];
-    
+
     this.subs.push(this.activatedRoute.params.subscribe(params => {
       this.pkUiContext = params['pk_ui_context'];
 
@@ -77,7 +82,8 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
       this.loadClassUiContext()
     }))
 
-    this.subs.push(this.containerDisabled$.subscribe(d => this.containerDisabled = d));
+    this.subs.push(this.containerDisabledFields$.subscribe(d => this.containerDisabledFields = d));
+    this.subs.push(this.containerDisabledProperties$.subscribe(d => this.containerDisabledProperties = d));
     this.subs.push(this.containerEnabled$.subscribe(d => this.containerEnabled = d));
 
   }
@@ -100,22 +106,23 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
   /**
    * called when a item is dropped or moved in disabled container
    */
-  droppedInDisabled($event: any) {
-    if ($event) {
-      const widgets = this.containerDisabled.widgets;
+  droppedInDisabled() {
+    const widgets = [...this.containerDisabledFields.widgets, ...this.containerDisabledProperties.widgets];
 
-      // check, if item still has a ord_num
-      for (let i = 0; i < widgets.length; i++) {
-        const widget = widgets[i];
+    this.checkAndUpdateEnabled()
 
-        const uiContextConfig = widget.uiContextConfig;
+    // check, if item still has a ord_num
+    for (let i = 0; i < widgets.length; i++) {
+      const widget = widgets[i];
 
-        if (uiContextConfig && uiContextConfig.ord_num !== null) {
-          uiContextConfig.ord_num = null;
-          this.updateUiContextConfig([uiContextConfig]);
-        }
+      const uiContextConfig = widget.uiContextConfig;
+
+      if (uiContextConfig && uiContextConfig.ord_num !== null) {
+        uiContextConfig.ord_num = null;
+        this.updateUiContextConfig([uiContextConfig]);
       }
     }
+
   }
 
   /**
@@ -123,32 +130,48 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
  */
   droppedInEnabled($event: any) {
     if ($event) {
-      const widgets = this.containerEnabled.widgets;
-
-      const uiPropConfs: ComUiContextConfig[] = []
-
-      // check, if ui_context_config needs update
-      for (let i = 0; i < widgets.length; i++) {
-
-        const widget = widgets[i];
-
-
-        // if the ord_num is wrong
-        if (widget.uiContextConfig.ord_num != i) {
-
-          const newPropConf: ComUiContextConfig = {
-            ...widget.uiContextConfig,
-            ord_num: i,
-            // fk_project: null
-          }
-
-          uiPropConfs.push(newPropConf)
-        }
-      }
-
-      if (uiPropConfs.length) this.updateUiContextConfig(uiPropConfs);
-
+      this.checkAndUpdateEnabled()
     }
   }
 
+  checkAndUpdateEnabled() {
+    const widgets = this.containerEnabled.widgets;
+
+    const uiPropConfs: ComUiContextConfig[] = []
+
+    // check, if ui_context_config needs update
+    for (let i = 0; i < widgets.length; i++) {
+
+      const widget = widgets[i];
+
+
+      // if there is no uiContextConfig yet
+      if (!widget.uiContextConfig && widget.propSet.pk_entity) {
+        const newPropConf: ComUiContextConfig = {
+          pk_entity: undefined,
+          fk_project: undefined,
+          fk_property: undefined,
+          property_is_outgoing: undefined,
+          fk_ui_context: this.pkUiContext,
+          fk_class_for_property_set: this.pkClass,
+          fk_property_set: widget.propSet.pk_entity,
+          ord_num: i
+        }
+
+        uiPropConfs.push(newPropConf)
+
+      } else if (widget.uiContextConfig.ord_num != i) {
+
+        const newPropConf: ComUiContextConfig = {
+          ...widget.uiContextConfig,
+          ord_num: i,
+          // fk_project: null
+        }
+
+        uiPropConfs.push(newPropConf)
+      }
+    }
+
+    if (uiPropConfs.length) this.updateUiContextConfig(uiPropConfs);
+  }
 }

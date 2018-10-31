@@ -218,7 +218,7 @@ export class TextEditorAPIEpics {
         ofType(TextEditorAPIActions.LOAD_SUCCEEDED, TextEditorAPIActions.SAVE_SUCCEEDED),
         filter(action => ofSubstore(c.basePath)(action)),
         // Let it pass, only if there is a digital object yet
-        filter(() => ('pk_entity' in c.localStore.getState().digitalObject)),
+        filter(() => ('pk_entity' in (c.localStore.getState().digitalObject || {}))),
         switchMap((action: TextEditorAPIAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
