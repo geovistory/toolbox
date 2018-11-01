@@ -1,6 +1,6 @@
 import { ObservableStore } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ComUiContextConfig, DfhClass, LoadingBarAction, LoadingBarActions, DfhProperty, U, ComPropertySetApi, ComPropertySet } from 'app/core';
+import { ComUiContextConfig, DfhClass, LoadingBarAction, LoadingBarActions, DfhProperty, U, ComClassFieldApi, ComClassField } from 'app/core';
 import { DfhClassApi } from 'app/core/sdk/services/custom/DfhClass';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable, Subject } from 'rxjs';
@@ -15,7 +15,7 @@ import { sort } from 'ramda';
 export class ClassUiContextAPIEpics {
   constructor(
     private classApi: DfhClassApi,
-    private fieldsApi: ComPropertySetApi,
+    private fieldsApi: ComClassFieldApi,
     private uiPropConfigApi: ComUiContextConfigApi,
     private actions: ClassUiContextAPIActions,
     private loadingBarActions: LoadingBarActions
@@ -43,7 +43,7 @@ export class ClassUiContextAPIEpics {
           this.classApi.propertiesAndUiElements(pkClass, pkUiContext, null)
         )
           .subscribe((d) => {
-            const classes: DfhClass[] = d[1], fields: ComPropertySet[] = d[0];
+            const classes: DfhClass[] = d[1], fields: ComClassField[] = d[0];
             globalStore.next(this.loadingBarActions.completeLoading());
 
             const r = this.createContainers(classes[0], fields, pkUiContext)
@@ -82,7 +82,7 @@ export class ClassUiContextAPIEpics {
     )
   }
 
-  private createContainers = (dfhClass: DfhClass, fields: ComPropertySet[], pkUiContext: number): ClassUiContext => {
+  private createContainers = (dfhClass: DfhClass, fields: ComClassField[], pkUiContext: number): ClassUiContext => {
     const enabledWidgets: Widget[] = [];
     const disabledProperties: Widget[] = [];
     const disabledFields: Widget[] = [];
@@ -133,11 +133,11 @@ export class ClassUiContextAPIEpics {
     if (dfhClass.ui_context_configs) {
       dfhClass.ui_context_configs.forEach((uiContextConf) => {
 
-        if (uiContextConf.fk_property_set) {
+        if (uiContextConf.fk_class_field) {
 
           const ordNum = uiContextConf.ord_num;
 
-          const propSet = uiContextConf.property_set;
+          const propSet = uiContextConf.class_field;
 
           pkFieldsWithClassRelation.push(propSet.pk_entity)
 

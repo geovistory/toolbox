@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
-import { DataUnitLabel, RoleLabel, ExTimeLabel, DataUnitChildList } from 'app/core/state/models';
+import {  ClassInstanceLabel, RoleLabel, ExTimeLabel, FieldList } from 'app/core/state/models';
 import { DatePipe } from '@angular/common';
 import { TimePrimitive, ClassConfig, U } from 'app/core';
 
@@ -11,16 +11,16 @@ import { TimePrimitive, ClassConfig, U } from 'app/core';
 })
 export class LeafPeItLabelComponent implements OnChanges {
 
-  @Input() children: DataUnitChildList;
+  @Input() children: FieldList;
   @Input() classConfig: ClassConfig
   @Input() labelInEdit: string;
 
-  label: DataUnitLabel;
+  label:  ClassInstanceLabel;
 
   constructor(private datePipe: DatePipe) { }
 
   ngOnChanges() {
-    this.label = U.labelFromDataUnitChildList(this.children, { path: [] })
+    this.label = U.labelFromFieldList(this.children, { path: [] })
   }
 
   getExTLabel(d: ExTimeLabel) {

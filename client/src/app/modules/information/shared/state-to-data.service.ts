@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
-import { InfRole, InfEntityProjectRel, InfTemporalEntity, InfPersistentItem, U, TimePrimitive, ExistenceTime } from 'app/core';
-import { RoleSetService } from './role-set.service';
+import { ExistenceTime, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, U } from 'app/core';
+import { FieldList, ExistenceTimeDetail, PeItDetail, RoleDetail, RoleDetailList, RoleSet, TeEntDetail } from 'app/core/state/models';
 import { DfhConfig } from './dfh-config';
-import { AppellationLabel } from './appellation-label/appellation-label';
-import { PeItDetail, RoleDetailList, RoleSetList, RoleSet, RoleDetail, TeEntDetail, ExistenceTimeDetail, DataUnitChildList, DataUnitChild } from 'app/core/state/models';
+import { Field } from 'app/core/state/models/field';
 
 @Injectable()
 export class StateToDataService {
 
-  constructor() { }
 
   private static getOwnEpr(entity): InfEntityProjectRel {
     return !entity.entity_version_project_rels ? {} :
@@ -17,8 +15,8 @@ export class StateToDataService {
   }
 
   private static createEpr(entity, eprOptions): InfEntityProjectRel {
-    let ownEpr = StateToDataService.getOwnEpr(entity);
-    let overridesOwnEpr = new InfEntityProjectRel;
+    const ownEpr = StateToDataService.getOwnEpr(entity);
+    const overridesOwnEpr = new InfEntityProjectRel;
     overridesOwnEpr.fk_entity_version_concat = entity.pk_entity_version_concat;
     overridesOwnEpr.is_in_project = undefined;
 
@@ -32,10 +30,10 @@ export class StateToDataService {
    * api in order to change the project relation to the peIt (and potentially to its children)
    */
   static peItStateToPeItToRelate(peItDetail: PeItDetail, eprOptions?: InfEntityProjectRel): InfPersistentItem {
-    let peIt = new InfPersistentItem(peItDetail.peIt);
+    const peIt = new InfPersistentItem(peItDetail.peIt);
     peIt.entity_version_project_rels = [StateToDataService.createEpr(peIt, eprOptions)]
 
-    peIt.pi_roles = StateToDataService.roleSetsToRolesToRelate(peItDetail._children, eprOptions)
+    peIt.pi_roles = StateToDataService.roleSetsToRolesToRelate(peItDetail._fields, eprOptions)
 
     return peIt;
   }
@@ -46,15 +44,14 @@ export class StateToDataService {
    * api in order to chante the project relation to the role (and potentially to its children)
    */
   static roleStateToRoleToRelate(roleState: RoleDetail, eprOptions?: InfEntityProjectRel): InfRole {
-    let role = new InfRole(roleState.role);
+    const role = new InfRole(roleState.role);
     role.entity_version_project_rels = [StateToDataService.createEpr(role, eprOptions)]
 
-    /** If the role leads to a peIt or an object, this means that only the role needs to be removed from project */
     if (!roleState._teEnt) {
+      /** If the role leads to a peIt or an object, this means that only the role needs to be removed from project */
       return role;
-    }
-    /** If the role leads to a temporal entity, this means that the temporal entity and its roles need to be removed from project */
-    else if (roleState._teEnt) {
+    } else if (roleState._teEnt) {
+      /** If the role leads to a temporal entity, this means that the temporal entity and its roles need to be removed from project */
       role.temporal_entity = StateToDataService.teEntToTeEntToRelate(roleState._teEnt, eprOptions)
       return role;
     }
@@ -63,45 +60,46 @@ export class StateToDataService {
   /**
    * Transforms a given TeEntState object to an object that can be passed to the
    * api in order to chante the project relation to the teEnt (and potentially to its children)
-   * 
-   * @param teEntState 
+   *
+   * @param teEntState
    */
   static teEntToTeEntToRelate(teEntState: TeEntDetail, eprOptions?: InfEntityProjectRel): InfTemporalEntity {
-    let teEnt = new InfTemporalEntity(teEntState.teEnt);
+    const teEnt = new InfTemporalEntity(teEntState.teEnt);
     teEnt.entity_version_project_rels = [StateToDataService.createEpr(teEnt, eprOptions)]
 
 
-    teEnt.te_roles = StateToDataService.roleSetsToRolesToRelate(teEntState._children, eprOptions);
+    teEnt.te_roles = StateToDataService.roleSetsToRolesToRelate(teEntState._fields, eprOptions);
 
     return teEnt;
   }
 
-  static roleSetsToRolesToRelate(children: DataUnitChildList, eprOptions?: InfEntityProjectRel): InfRole[] {
+  static roleSetsToRolesToRelate(children: FieldList, eprOptions?: InfEntityProjectRel): InfRole[] {
 
-    let roles: InfRole[] = [];
+    const roles: InfRole[] = [];
 
     /** for each RoleSet */
     for (const i in children) {
       if (children.hasOwnProperty(i)) {
-        const child: DataUnitChild = children[i];
+        const child: Field = children[i];
 
         if (child.type == 'RoleSet') {
-          let roleDetailList: RoleDetailList = (child as RoleSet)._role_list;
+          const roleDetailList: RoleDetailList = (child as RoleSet)._role_list;
 
           /** for each RoleState */
           for (const j in roleDetailList) {
             if (roleDetailList.hasOwnProperty(j)) {
               const roleState: RoleDetail = roleDetailList[j]
-              if (!roleState.isCircular)
+              if (!roleState.isCircular) {
                 roles.push(StateToDataService.roleStateToRoleToRelate(roleState, eprOptions));
+              }
             }
           }
-        }
-        else if (child.type == 'ExistenceTimeDetail') {
-          U.obj2Arr((child as ExistenceTimeDetail)._children).forEach((roleSet) => {
+        } else if (child.type == 'ExistenceTimeDetail') {
+          U.obj2Arr((child as ExistenceTimeDetail)._fields).forEach((roleSet) => {
             U.obj2Arr(roleSet._role_list).forEach((roleDetail: RoleDetail) => {
-              if (!roleDetail.isCircular)
+              if (!roleDetail.isCircular) {
                 roles.push(StateToDataService.roleStateToRoleToRelate(roleDetail, eprOptions));
+              }
             });
           })
         }
@@ -115,30 +113,28 @@ export class StateToDataService {
   /**
    * Transforms a given ExistenceTimeState object to an object that can be passed to the
    * api in order to chante the project relation roles (and potentially to its children)
-   * 
-   * @param teEntState 
+   *
+   * @param teEntState
    */
   static existenceTimeToRolesToRelate(teEntState: ExistenceTimeDetail, eprOptions?: InfEntityProjectRel): InfRole[] {
-    if (teEntState)
-      return StateToDataService.roleSetsToRolesToRelate(teEntState._children as DataUnitChildList, eprOptions);
-    else
-      return []
+    if (teEntState) return StateToDataService.roleSetsToRolesToRelate(teEntState._fields as FieldList, eprOptions);
+    else return []
   }
 
   /**
    * Convert ExistenceTimeDetail to ExistenceTime
-   * @param existTimeDetail 
+   * @param existTimeDetail
    */
   static existenceTimeStateToExistenceTime(existTimeDetail: ExistenceTimeDetail): ExistenceTime {
     if (!existTimeDetail) return null;
 
-    let et = new ExistenceTime();
+    const et = new ExistenceTime();
 
     const conf = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY;
 
-    if (existTimeDetail._children)
-      U.obj2Arr(existTimeDetail._children).map((set: RoleSet) => {
-        if (set._role_list)
+    if (existTimeDetail._fields) {
+      U.obj2Arr(existTimeDetail._fields).map((set: RoleSet) => {
+        if (set._role_list) {
           U.obj2Arr(set._role_list).map((sta: RoleDetail) => {
             const pkProp = sta.role.fk_property;
             const existTimeKey = conf[pkProp];
@@ -146,15 +142,18 @@ export class StateToDataService {
               et[existTimeKey] = U.InfTpAndInfRole2Tp(sta.role.time_primitive, sta.role)
             }
           })
+        }
       })
-
+    }
     return et;
   }
 
+  constructor() { }
+
   // /**
   //  * Extracts Appellation Label string from the given TeEnt-RoleSets
-  //  * 
-  //  * @param teEntRoleSets 
+  //  *
+  //  * @param teEntRoleSets
   //  * @returns appellation label as pure string
   //  */
   // static getDisplayAppeLabelOfTeEntRoleSets(teEntRoleSets: RoleSetList): string {
@@ -185,10 +184,10 @@ export class StateToDataService {
 
   // /**
   //  * Extracts Appellation Label string from the given PeIt-RoleSets
-  //  * @param teEntRoleSets 
+  //  * @param teEntRoleSets
   //  * @returns appellation label as pure string
   //  */
-  // static getDisplayAppeLabelOfPeItRoleSets(peItRoleSets: DataUnitChildList): string {
+  // static getDisplayAppeLabelOfPeItRoleSets(peItRoleSets: FieldList): string {
   //   if (!peItRoleSets) return null
 
   //   // get ingoing roles pointing to appellation usage (R63)
@@ -209,8 +208,8 @@ export class StateToDataService {
   //       if (roleStates.hasOwnProperty(key)) {
   //         const r: RoleDetail = roleStates[key];
   //         if ((!r.isOutgoing && r.isDisplayRoleForRange) || (r.isOutgoing && r.isDisplayRoleForDomain)) {
-  //           if (r._teEnt && r._teEnt._children) {
-  //             // var label = StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(r._teEnt._children);
+  //           if (r._teEnt && r._teEnt._fields) {
+  //             // var label = StateToDataService.getDisplayAppeLabelOfTeEntRoleSets(r._teEnt._fields);
   //             return 'label to do';
   //           }
   //         }

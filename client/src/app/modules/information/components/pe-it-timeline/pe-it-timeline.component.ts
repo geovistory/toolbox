@@ -40,7 +40,7 @@ export class PeItTimelineComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     // subscribe to RoleSets and create TimeLineData
-    this.ngRedux.select<RoleSetList>([...this.path, '_children'])
+    this.ngRedux.select<RoleSetList>([...this.path, '_fields'])
       .takeUntil(this.destroy$)
       .subscribe(roleSets => {
         const timeLineData = {
@@ -50,22 +50,22 @@ export class PeItTimelineComponent implements OnInit, OnDestroy {
         U.obj2KeyValueArr(roleSets).forEach(roleSetMap => {
           const set = roleSetMap.value;
           const setLabel = set.label.default;
-          const roleSetPath = [...this.path, '_children', roleSetMap.key]
+          const roleSetPath = [...this.path, '_fields', roleSetMap.key]
 
           U.obj2KeyValueArr(set._role_list).forEach(roleDetailMap => {
             const roleDetail = roleDetailMap.value;
             const roleDetailPath = [...roleSetPath, '_role_list', roleDetailMap.key];
 
-            if (roleDetail._teEnt && roleDetail._teEnt._children && roleDetail._teEnt._children._existenceTime) {
+            if (roleDetail._teEnt && roleDetail._teEnt._fields && roleDetail._teEnt._fields._existenceTime) {
               const teD = roleDetail._teEnt;
               const teEntPath = [...roleDetailPath, '_teEnt'];
 
-              // const label = U.labelFromDataUnitChildList(teD._children).toString();
+              // const label = U.labelFromFieldList(teD._fields).toString();
 
               // create a TimeLineRow for each TeEntState
               timeLineData.rows.push({
                 existenceTime: StateToDataService
-                  .existenceTimeStateToExistenceTime(teD._children._existenceTime as ExistenceTimeDetail),
+                  .existenceTimeStateToExistenceTime(teD._fields._existenceTime as ExistenceTimeDetail),
                 label: setLabel,
                 accentuation: teD.accentuation,
                 storeConnector: { path: teEntPath }

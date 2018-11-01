@@ -47,14 +47,14 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
   onInitTeEntBaseChild(): void {
     // this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
-    this.addOptionsTeEnt$ = getTeEntAddOptions(this.fkClass$, this.pkUiContext$, this.crm$, new BehaviorSubject({}), this._children$)
+    this.addOptionsTeEnt$ = getTeEntAddOptions(this.fkClass$, this.pkUiContext$, this.crm$, new BehaviorSubject({}), this._fields$)
   }
 
 
   initFormCtrls(): void {
 
-    // add controls for each roleSet of _children
-    this._children$.takeUntil(this.destroy$).subscribe(roleSetList => {
+    // add controls for each roleSet of _fields
+    this._fields$.takeUntil(this.destroy$).subscribe(roleSetList => {
       if (roleSetList) {
         Object.keys(roleSetList).forEach((key) => {
           if (roleSetList[key]) {
@@ -139,11 +139,11 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
         this.addRoleSet(new RoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey]), [newRole], { pkUiContext: this.localStore.getState().pkUiContext })
 
-      } else if (o.uiElement.fk_property_set) {
+      } else if (o.uiElement.fk_class_field) {
 
         // if this is a prop set
 
-        if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
+        if (o.uiElement.fk_class_field === ComConfig.PK_CLASS_FIELD_WHEN) {
 
           const existenceTimeDetail = createExistenceTimeDetail(
             new ExistenceTimeDetail({ toggle: 'expanded' }),

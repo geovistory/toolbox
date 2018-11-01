@@ -135,6 +135,7 @@ import { TextEditorAPIActions } from './containers/text-editor/api/text-editor.a
 import { TextEditorAPIEpics } from './containers/text-editor/api/text-editor.epics';
 import { VersionPickerComponent } from './components/version-picker/version-picker.component';
 import { PeItStrModule } from 'app/shared/pipes/pe-it-str/pe-it-str.module';
+import { TextPropertyFieldComponent } from './containers/text-property-field/text-property-field.component';
 
 
 
@@ -274,6 +275,7 @@ import { PeItStrModule } from 'app/shared/pipes/pe-it-str/pe-it-str.module';
     EntityAssociationCreateCtrlComponent,
     EntityAssociationCreateOrAddComponent,
     EntityAssociationExistingListComponent,
+    TextPropertyFieldComponent,
 
 
 

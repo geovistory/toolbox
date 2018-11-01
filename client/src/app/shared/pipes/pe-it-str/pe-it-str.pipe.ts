@@ -7,7 +7,7 @@ import { PeItDetail, U } from 'app/core';
 export class PeItStrPipe implements PipeTransform {
 
   transform(peItDetail: PeItDetail): string {
-    const l = U.labelFromDataUnitChildList(peItDetail._children, { path: [] });
+    const l = U.labelFromFieldList(peItDetail._fields, { path: [] });
     return !l.parts ? '' :
       !l.parts[0] ? '' :
         !l.parts[0].roleLabels ? '' :

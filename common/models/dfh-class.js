@@ -222,15 +222,15 @@ module.exports = function (DfhClass) {
             "joinType": "left join",
             where: ["fk_ui_context", '=', pk_ui_context]
           },
-          property_set: {
+          class_field: {
             $relation: {
-              name: "property_set",
+              name: "class_field",
               joinType: "left join",
               "orderBy": [{ "pk_entity": "asc" }]
             },
-            "property_set_property_rel": {
+            "class_field_property_rel": {
               $relation: {
-                name: "property_set_property_rel",
+                name: "class_field_property_rel",
                 joinType: "left join",
                 "orderBy": [{ "pk_entity": "asc" }]
               }

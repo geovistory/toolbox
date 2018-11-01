@@ -1,5 +1,5 @@
 import { RoleSetList } from 'app/core/state/models';
-import { ComPropertySetInterface, ComUiContextInterface, ProjectInterface } from 'app/core/sdk';
+import { ComClassFieldInterface, ComUiContextInterface, ProjectInterface } from 'app/core/sdk';
 import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/api/class-settings.models';
 
 
@@ -37,7 +37,7 @@ export interface UiElement {
     property_is_outgoing?: boolean,
     roleSetKey?: string,
     propSetKey?: string,
-    fk_property_set?: number,
-    property_set?: ComPropertySetInterface
+    fk_class_field?: number,
+    class_field?: ComClassFieldInterface
     ord_num: number
 }

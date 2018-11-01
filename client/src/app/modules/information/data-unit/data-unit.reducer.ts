@@ -41,10 +41,10 @@ export const dataUnitReducer =
       case DataUnitActions.ROLE_SET_ADDED:
         state = {
           ...state,
-          _children: sortChildrenByUiContext(
+          _fields: sortChildrenByUiContext(
             {
-              ...state._children,
-              ...action.payload._children
+              ...state._fields,
+              ...action.payload._fields
             },
             action.meta.uiContext
           ),
@@ -53,19 +53,19 @@ export const dataUnitReducer =
         break;
 
       case DataUnitActions.ROLE_SET_REMOVED:
-        const newRoleSets = Object.assign({}, state._children);
+        const newRoleSets = Object.assign({}, state._fields);
         delete newRoleSets[action.meta.key];
 
         state = {
           ...state,
-          _children: newRoleSets
+          _fields: newRoleSets
         }
         break;
 
       case DataUnitActions.PROP_SET_REMOVED:
         state = {
           ...state,
-          _children: omit([action.meta.stateKey], state._children)
+          _fields: omit([action.meta.stateKey], state._fields)
         }
         break;
 
@@ -73,9 +73,9 @@ export const dataUnitReducer =
         state = {
           ...state,
           selectPropState: action.payload.selectPropState,
-          _children: sortChildrenByUiContext(
+          _fields: sortChildrenByUiContext(
             {
-              ...state._children,
+              ...state._fields,
               [action.meta.key]: action.meta.val
             },
             action.meta.uiContext

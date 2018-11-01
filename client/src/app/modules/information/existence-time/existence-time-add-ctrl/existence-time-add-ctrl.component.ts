@@ -31,7 +31,7 @@ export class ExistenceTimeAddCtrlComponent implements OnInit, OnDestroy, Control
   getBasePath = () => this.basePath;
 
   localStore: ObservableStore<ExistenceTimeDetail>
-  _children: RoleSetList;
+  _fields: RoleSetList;
 
   
   subs: Subscription[] = [];
@@ -43,7 +43,7 @@ export class ExistenceTimeAddCtrlComponent implements OnInit, OnDestroy, Control
 
     this.subs.push(this.localStore.select<ExistenceTimeDetail>('').subscribe(d => {
       if (d) {
-        this._children = d._children;
+        this._fields = d._fields;
       }
     }))
   }

@@ -244,9 +244,9 @@ module.exports = function (Project) {
             "name": "ui_context_configs",
             "joinType": "left join"
           },
-          property_set: {
+          class_field: {
             $relation: {
-              name: "property_set",
+              name: "class_field",
               joinType: "left join",
               "orderBy": [{ "pk_entity": "asc" }]
             }

@@ -153,8 +153,8 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
           fk_property: undefined,
           property_is_outgoing: undefined,
           fk_ui_context: this.pkUiContext,
-          fk_class_for_property_set: this.pkClass,
-          fk_property_set: widget.propSet.pk_entity,
+          fk_class_for_class_field: this.pkClass,
+          fk_class_field: widget.propSet.pk_entity,
           ord_num: i
         }
 

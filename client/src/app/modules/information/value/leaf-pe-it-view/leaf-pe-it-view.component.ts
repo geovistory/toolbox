@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@a
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { ClassConfig, IAppState, InfPersistentItem, InfRole, ProjectDetail } from 'app/core';
-import { DataUnitChildList, DataUnitLabel, PeItDetail, SubstoreComponent } from 'app/core/state/models';
+import { FieldList,  ClassInstanceLabel, PeItDetail, SubstoreComponent } from 'app/core/state/models';
 import { RootEpics } from 'app/core/store/epics';
 import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -43,7 +43,7 @@ export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnI
   @Input() basePath: string[];
 
   // select observables of substore properties
-  @select() _children$: Observable<DataUnitChildList>;
+  @select() _fields$: Observable<FieldList>;
   @select() pkEntity$: Observable<number>;
   @select() peIt$: Observable<InfPersistentItem>;
   @select() loading$: Observable<boolean>;
@@ -63,7 +63,7 @@ export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnI
   /**
   * Properties
   */
-  label: DataUnitLabel;
+  label:  ClassInstanceLabel;
 
   isInProject: boolean;
 
@@ -105,11 +105,11 @@ export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnI
 
     this.project$ = this.ngRedux.select<ProjectDetail>('activeProject');
 
-    // load leaf peit detail if pkE and project are there and if not loading and no _children
+    // load leaf peit detail if pkE and project are there and if not loading and no _fields
     combineLatest(this.pkEntity$, this.project$).pipe(
       filter((d) => {
         const pkE = d[0], p = d[1], state = this.localStore.getState();
-        if (pkE && (p && p.pk_project && p.crm) && !state._children && !state.loading) return true;
+        if (pkE && (p && p.pk_project && p.crm) && !state._fields && !state.loading) return true;
       }),
       takeUntil(this.destroy$)
     ).subscribe((d) => {

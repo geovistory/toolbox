@@ -59,9 +59,9 @@
     <!-- At some time within -->
     <div class="border-bottom border-top" *ngIf="(mode$ | async) !== 'begin-end'">
 
-      <button class="btn btn-link" type="button" *ngIf="!((_children$ | async)?._72_outgoing)" (click)="addRoleSet(72, ['_152_outgoing', '_153_outgoing'], ['_152_outgoing', '_153_outgoing'])">+ At some time within</button>
+      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._72_outgoing)" (click)="addRoleSet(72, ['_152_outgoing', '_153_outgoing'], ['_152_outgoing', '_153_outgoing'])">+ At some time within</button>
 
-      <div class="modal-body" *ngIf="((_children$ | async)?._72_outgoing) && formGroup.get('_72_outgoing')">
+      <div class="modal-body" *ngIf="((_fields$ | async)?._72_outgoing) && formGroup.get('_72_outgoing')">
 
         <span *ngIf="(mode$ | async) !== 'one-date'">
           <ng-container *ngTemplateOutlet="header; context:{key:'_72_outgoing', label: 'At some time within'}"></ng-container>
@@ -81,9 +81,9 @@
     <!-- Begin of Begin -->
     <div class="border-bottom pl-3" *ngIf="(mode$ | async) === 'advanced'">
 
-      <button class="btn btn-link" type="button" *ngIf="!((_children$ | async)?._152_outgoing)" (click)="addRoleSet(152, ['_72_outgoing', '_153_outgoing'], ['_72_outgoing'])">+ Earliest possible begin</button>
+      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._152_outgoing)" (click)="addRoleSet(152, ['_72_outgoing', '_153_outgoing'], ['_72_outgoing'])">+ Earliest possible begin</button>
 
-      <div class="modal-body" *ngIf="((_children$ | async)?._152_outgoing) && formGroup.get('_152_outgoing')">
+      <div class="modal-body" *ngIf="((_fields$ | async)?._152_outgoing) && formGroup.get('_152_outgoing')">
 
         <ng-container *ngTemplateOutlet="header; context:{key:'_152_outgoing', label: 'Earliest possible begin'}"></ng-container>
 
@@ -100,9 +100,9 @@
     <!-- End of End -->
     <div class="border-bottom pl-3" *ngIf="(mode$ | async) === 'advanced'">
 
-      <button class="btn btn-link" type="button" *ngIf="!((_children$ | async)?._153_outgoing)" (click)="addRoleSet(153, ['_72_outgoing', '_152_outgoing'], ['_72_outgoing'])">+ Latest possible end</button>
+      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._153_outgoing)" (click)="addRoleSet(153, ['_72_outgoing', '_152_outgoing'], ['_72_outgoing'])">+ Latest possible end</button>
 
-      <div class="modal-body" *ngIf="((_children$ | async)?._153_outgoing) && formGroup.get('_153_outgoing')">
+      <div class="modal-body" *ngIf="((_fields$ | async)?._153_outgoing) && formGroup.get('_153_outgoing')">
 
         <ng-container *ngTemplateOutlet="header; context:{key:'_153_outgoing', label: 'Latest possible end'}"></ng-container>
 
@@ -118,9 +118,9 @@
     <!-- Ongoing throughout -->
     <div class="border-bottom border-top mt-5" *ngIf="(mode$ | async) === 'advanced'">
 
-      <button class="btn btn-link" type="button" *ngIf="!((_children$ | async)?._71_outgoing)" (click)="addRoleSet(71, ['_150_outgoing', '_151_outgoing'], ['_150_outgoing', '_151_outgoing'])">+ Ongoing throughout</button>
+      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._71_outgoing)" (click)="addRoleSet(71, ['_150_outgoing', '_151_outgoing'], ['_150_outgoing', '_151_outgoing'])">+ Ongoing throughout</button>
 
-      <div class="modal-body" *ngIf="((_children$ | async)?._71_outgoing) && formGroup.get('_71_outgoing')">
+      <div class="modal-body" *ngIf="((_fields$ | async)?._71_outgoing) && formGroup.get('_71_outgoing')">
 
         <ng-container *ngTemplateOutlet="header; context:{key:'_71_outgoing', label: 'Ongoing throughout'}"></ng-container>
 
@@ -136,9 +136,9 @@
     <!-- End of begin -->
     <div class="border-bottom pl-3" *ngIf="(mode$ | async) !== 'one-date'">
 
-      <button class="btn btn-link" type="button" *ngIf="!((_children$ | async)?._150_outgoing)" (click)="addRoleSet(150, ['_71_outgoing', '_151_outgoing'], ['_71_outgoing'])">+ Begin</button>
+      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._150_outgoing)" (click)="addRoleSet(150, ['_71_outgoing', '_151_outgoing'], ['_71_outgoing'])">+ Begin</button>
 
-      <div class="modal-body" *ngIf="((_children$ | async)?._150_outgoing) && formGroup.get('_150_outgoing')">
+      <div class="modal-body" *ngIf="((_fields$ | async)?._150_outgoing) && formGroup.get('_150_outgoing')">
 
         <ng-container *ngTemplateOutlet="header; context:{key:'_150_outgoing', label: 'Begin'}"></ng-container>
 
@@ -155,9 +155,9 @@
     <!-- Begin of end -->
     <div class="border-bottom pl-3" *ngIf="(mode$ | async) !== 'one-date'">
 
-      <button class="btn btn-link" type="button" *ngIf="!((_children$ | async)?._151_outgoing)" (click)="addRoleSet(151, ['_71_outgoing', '_150_outgoing'], ['_71_outgoing'])">+ End</button>
+      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._151_outgoing)" (click)="addRoleSet(151, ['_71_outgoing', '_150_outgoing'], ['_71_outgoing'])">+ End</button>
 
-      <div class="modal-body" *ngIf="((_children$ | async)?._151_outgoing) && formGroup.get('_151_outgoing')">
+      <div class="modal-body" *ngIf="((_fields$ | async)?._151_outgoing) && formGroup.get('_151_outgoing')">
 
         <ng-container *ngTemplateOutlet="header; context:{key:'_151_outgoing', label: 'End'}"></ng-container>
 

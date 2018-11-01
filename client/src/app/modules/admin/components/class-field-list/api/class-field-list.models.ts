@@ -1,8 +1,8 @@
-import { ComPropertySet } from 'app/core';
+import { ComClassField } from 'app/core';
 
 // Class of this slice of store
 export class ClassFieldList implements ClassFieldList {
-    items?:  { [key: string]: ComPropertySet};
+    items?:  { [key: string]: ComClassField};
     loading?: boolean;
     error?: any;
 

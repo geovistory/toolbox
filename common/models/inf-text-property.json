@@ -54,10 +54,10 @@
       "foreignKey": "fk_language",
       "primaryKey": "pk_entity"
     },
-    "system_type": {
+    "class_field": {
       "type": "belongsTo",
-      "model": "ComSystemType",
-      "foreignKey": "fk_system_type",
+      "model": "ComClassField",
+      "foreignKey": "fk_class_field",
       "primaryKey": "pk_entity"
     }
   },

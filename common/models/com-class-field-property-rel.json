@@ -1,12 +1,12 @@
 {
-    "name": "ComPropertySetPropertyRel",
+    "name": "ComClassFieldPropertyRel",
     "base": "PersistedModel",
     "idInjection": false,
     "options": {
         "validateUpsert": true,
         "postgresql": {
             "schema": "commons",
-            "table": "property_set_property_rel"
+            "table": "class_field_property_rel"
         }
     },
     "mixins": {
@@ -21,7 +21,7 @@
             "id": true,
             "generated": true
         },
-        "fk_property_set": {
+        "fk_class_field": {
             "type": "number"
         },
         "fk_property": {
@@ -36,10 +36,10 @@
     },
     "validations": [],
     "relations": {
-        "property_set": {
+        "class_field": {
             "type": "belongsTo",
-            "model": "ComPropertySet",
-            "foreignKey": "fk_property_set"
+            "model": "ComClassField",
+            "foreignKey": "fk_class_field"
         },
         "property": {
             "type": "belongsTo",

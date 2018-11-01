@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, IAppState, UiContext, UiElement, ProjectCrm } from 'app/core';
-import { AddOption, CollapsedExpanded, ExistenceTimeDetail, RoleDetail, RoleSet, RoleSetForm, TeEntAccentuation, TeEntDetail, DataUnitChildList } from 'app/core/state/models';
+import { AddOption, CollapsedExpanded, ExistenceTimeDetail, RoleDetail, RoleSet, RoleSetForm, TeEntAccentuation, TeEntDetail, FieldList } from 'app/core/state/models';
 import { createExistenceTimeDetail, getCreateOfEditableContext, StateSettings, similarRoleSet, roleSetKeyFromParams } from 'app/core/state/services/state-creator';
 import { Observable, Subject, combineLatest } from 'rxjs';
 import { RootEpics } from '../../../../../core/store/epics';
@@ -19,9 +19,9 @@ export function getTeEntAddOptions(
   pkUiContext$: Observable<number>,
   crm$: Observable<ProjectCrm>,
   parentRoleSet$: Observable<RoleSet>,
-  _children$: Observable<DataUnitChildList>
+  _fields$: Observable<FieldList>
 ): Observable<AddOption[]> {
-  return combineLatest(fkClass$, pkUiContext$, crm$, parentRoleSet$, _children$).pipe(
+  return combineLatest(fkClass$, pkUiContext$, crm$, parentRoleSet$, _fields$).pipe(
     // only pass if no undefined value
     filter((d) => {
       const b = (d.filter(item => (item === undefined)).length === 0)
@@ -41,9 +41,9 @@ export function getTeEntAddOptions(
             uiElement: el,
             added: false
           };
-        } else if (children && el.fk_property_set && !children[el.propSetKey]) {
+        } else if (children && el.fk_class_field && !children[el.propSetKey]) {
           return {
-            label: el.property_set.label,
+            label: el.class_field.label,
             uiElement: el,
             added: false
           };
@@ -179,7 +179,7 @@ export class TeEntEditableComponent extends DataUnitBase {
       this.teEnState = d
     })
 
-    this.addOptionsTeEnt$ = getTeEntAddOptions(this.fkClass$, this.pkUiContext$, this.crm$, this.parentRoleSet$, this._children$)
+    this.addOptionsTeEnt$ = getTeEntAddOptions(this.fkClass$, this.pkUiContext$, this.crm$, this.parentRoleSet$, this._fields$)
   }
 
 
@@ -210,11 +210,11 @@ export class TeEntEditableComponent extends DataUnitBase {
 
         this.addRoleSet(newRoleSet, undefined)
 
-      } else if (o.uiElement.fk_property_set) {
+      } else if (o.uiElement.fk_class_field) {
 
         // if this is a prop set
 
-        if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
+        if (o.uiElement.fk_class_field === ComConfig.PK_CLASS_FIELD_WHEN) {
 
           const settings: StateSettings = {
             pkUiContext: getCreateOfEditableContext(this.localStore.getState().pkUiContext)

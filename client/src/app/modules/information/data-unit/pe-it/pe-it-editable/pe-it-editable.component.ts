@@ -159,7 +159,7 @@ export class PeItEditableComponent extends DataUnitBase implements AfterViewInit
       filter(d => (!!d)),
       takeUntil(this.destroy$)).subscribe(d => {
         this.peItState = d;
-        this.isolatedChild = U.extractDataUnitChildKeyForIsolation(d._children);
+        this.isolatedChild = U.extractFieldKeyForIsolation(d._fields);
       })
   }
 
@@ -196,11 +196,11 @@ export class PeItEditableComponent extends DataUnitBase implements AfterViewInit
 
         this.addRoleSet(newRoleSet, undefined)
 
-      } else if (o.uiElement.fk_property_set) {
+      } else if (o.uiElement.fk_class_field) {
 
         // if this is a prop set
 
-        if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
+        if (o.uiElement.fk_class_field === ComConfig.PK_CLASS_FIELD_WHEN) {
 
           const existenceTimeDetail = createExistenceTimeDetail(
             new ExistenceTimeDetail({ toggle: 'expanded' }),

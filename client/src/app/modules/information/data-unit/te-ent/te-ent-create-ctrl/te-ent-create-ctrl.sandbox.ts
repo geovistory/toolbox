@@ -28,7 +28,7 @@ export default sandboxOf(TeEntCreateCtrlComponent, {
                             dfh_identifier_in_namespace: "F52",
                             dfh_standard_label: "Name Use Activity",
                         } as DfhClass,
-                        _children: {
+                        _fields: {
                             _role_set_1: new RoleSet({
                                 label: {
                                     default: 'Detailed Name',

@@ -148,7 +148,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "ComPropertySet": {
+  "ComClassField": {
     "dataSource": "postgres1",
     "public": true
   },
@@ -172,7 +172,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "ComPropertySetPropertyRel": {
+  "ComClassFieldPropertyRel": {
     "dataSource": "postgres1",
     "public": true
   }

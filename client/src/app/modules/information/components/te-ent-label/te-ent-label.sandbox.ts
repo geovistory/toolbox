@@ -16,21 +16,21 @@ const classConfigAppellationForLanguage = {
                     fk_property: 1113,
                     property_is_outgoing: true,
                     roleSetKey: '_1113_outgoing',
-                    fk_property_set: null
+                    fk_class_field: null
                 },
                 {
                     ord_num: 1,
                     fk_property: 1112,
                     property_is_outgoing: true,
                     roleSetKey: '_1112_outgoing',
-                    fk_property_set: null
+                    fk_class_field: null
                 },
                 {
                     ord_num: 2,
                     fk_property: null,
                     property_is_outgoing: null,
-                    fk_property_set: 48,
-                    property_set: {
+                    fk_class_field: 48,
+                    class_field: {
                         pk_entity: 48,
                         description: 'Existence Time or Time Span of a Temporal Entity',
                         label: 'When'
@@ -47,7 +47,7 @@ const classConfigAppellationForLanguage = {
                     fk_property: 1113,
                     property_is_outgoing: true,
                     roleSetKey: '_1113_outgoing',
-                    fk_property_set: null
+                    fk_class_field: null
                 }
             ]
         }
@@ -72,20 +72,20 @@ const classConfigAppellationForLanguage = {
                         fk_ui_context: 46,
                         fk_project: null,
                         fk_property: 1113,
-                        fk_property_set: null,
+                        fk_class_field: null,
                         property_is_outgoing: true,
                         ord_num: 0,
-                        fk_class_for_property_set: null
+                        fk_class_for_class_field: null
                     },
                     {
                         pk_entity: 134,
                         fk_ui_context: 45,
                         fk_project: null,
                         fk_property: 1113,
-                        fk_property_set: null,
+                        fk_class_field: null,
                         property_is_outgoing: true,
                         ord_num: 0,
-                        fk_class_for_property_set: null
+                        fk_class_for_class_field: null
                     }
                 ]
             },
@@ -117,20 +117,20 @@ const classConfigAppellationForLanguage = {
                         fk_ui_context: 46,
                         fk_project: null,
                         fk_property: 1192,
-                        fk_property_set: null,
+                        fk_class_field: null,
                         property_is_outgoing: true,
                         ord_num: null,
-                        fk_class_for_property_set: null
+                        fk_class_for_class_field: null
                     },
                     {
                         pk_entity: 135,
                         fk_ui_context: 45,
                         fk_project: null,
                         fk_property: 1192,
-                        fk_property_set: null,
+                        fk_class_field: null,
                         property_is_outgoing: true,
                         ord_num: null,
-                        fk_class_for_property_set: null
+                        fk_class_for_class_field: null
                     }
                 ]
             },
@@ -162,20 +162,20 @@ const classConfigAppellationForLanguage = {
                         fk_ui_context: 46,
                         fk_project: null,
                         fk_property: 1193,
-                        fk_property_set: null,
+                        fk_class_field: null,
                         property_is_outgoing: true,
                         ord_num: null,
-                        fk_class_for_property_set: null
+                        fk_class_for_class_field: null
                     },
                     {
                         pk_entity: 136,
                         fk_ui_context: 45,
                         fk_project: null,
                         fk_property: 1193,
-                        fk_property_set: null,
+                        fk_class_field: null,
                         property_is_outgoing: true,
                         ord_num: null,
-                        fk_class_for_property_set: null
+                        fk_class_for_class_field: null
                     }
                 ]
             },
@@ -207,20 +207,20 @@ const classConfigAppellationForLanguage = {
                         fk_ui_context: 46,
                         fk_project: null,
                         fk_property: 1194,
-                        fk_property_set: null,
+                        fk_class_field: null,
                         property_is_outgoing: true,
                         ord_num: null,
-                        fk_class_for_property_set: null
+                        fk_class_for_class_field: null
                     },
                     {
                         pk_entity: 137,
                         fk_ui_context: 45,
                         fk_project: null,
                         fk_property: 1194,
-                        fk_property_set: null,
+                        fk_class_field: null,
                         property_is_outgoing: true,
                         ord_num: null,
-                        fk_class_for_property_set: null
+                        fk_class_for_class_field: null
                     }
                 ]
             },
@@ -252,20 +252,20 @@ const classConfigAppellationForLanguage = {
                         fk_ui_context: 46,
                         fk_project: null,
                         fk_property: 1195,
-                        fk_property_set: null,
+                        fk_class_field: null,
                         property_is_outgoing: true,
                         ord_num: null,
-                        fk_class_for_property_set: null
+                        fk_class_for_class_field: null
                     },
                     {
                         pk_entity: 139,
                         fk_ui_context: 45,
                         fk_project: null,
                         fk_property: 1195,
-                        fk_property_set: null,
+                        fk_class_field: null,
                         property_is_outgoing: true,
                         ord_num: null,
-                        fk_class_for_property_set: null
+                        fk_class_for_class_field: null
                     }
                 ]
             },
@@ -297,20 +297,20 @@ const classConfigAppellationForLanguage = {
                         fk_ui_context: 46,
                         fk_project: null,
                         fk_property: 1112,
-                        fk_property_set: null,
+                        fk_class_field: null,
                         property_is_outgoing: true,
                         ord_num: null,
-                        fk_class_for_property_set: null
+                        fk_class_for_class_field: null
                     },
                     {
                         pk_entity: 138,
                         fk_ui_context: 45,
                         fk_project: null,
                         fk_property: 1112,
-                        fk_property_set: null,
+                        fk_class_field: null,
                         property_is_outgoing: true,
                         ord_num: 1,
-                        fk_class_for_property_set: null
+                        fk_class_for_class_field: null
                     }
                 ]
             },
@@ -399,7 +399,7 @@ const classConfigAppellationForLanguage = {
 }
 
 
-const _childrenOfAppellationForLanguage = {
+const _fieldsOfAppellationForLanguage = {
     _1113_outgoing: {
         type: 'RoleSet',
         _role_list: {
@@ -595,20 +595,20 @@ const _childrenOfAppellationForLanguage = {
                     fk_ui_context: 46,
                     fk_project: null,
                     fk_property: 1113,
-                    fk_property_set: null,
+                    fk_class_field: null,
                     property_is_outgoing: true,
                     ord_num: 0,
-                    fk_class_for_property_set: null
+                    fk_class_for_class_field: null
                 },
                 {
                     pk_entity: 134,
                     fk_ui_context: 45,
                     fk_project: null,
                     fk_property: 1113,
-                    fk_property_set: null,
+                    fk_class_field: null,
                     property_is_outgoing: true,
                     ord_num: 0,
-                    fk_class_for_property_set: null
+                    fk_class_for_class_field: null
                 }
             ]
         },
@@ -703,20 +703,20 @@ const _childrenOfAppellationForLanguage = {
                     fk_ui_context: 46,
                     fk_project: null,
                     fk_property: 1112,
-                    fk_property_set: null,
+                    fk_class_field: null,
                     property_is_outgoing: true,
                     ord_num: null,
-                    fk_class_for_property_set: null
+                    fk_class_for_class_field: null
                 },
                 {
                     pk_entity: 138,
                     fk_ui_context: 45,
                     fk_project: null,
                     fk_property: 1112,
-                    fk_property_set: null,
+                    fk_class_field: null,
                     property_is_outgoing: true,
                     ord_num: 1,
-                    fk_class_for_property_set: null
+                    fk_class_for_class_field: null
                 }
             ]
         },
@@ -804,7 +804,7 @@ const _childrenOfAppellationForLanguage = {
                 place: {}
             }
         ],
-        _children: {
+        _fields: {
             _150_outgoing: {
                 type: 'RoleSet',
                 _role_list: {
@@ -969,7 +969,7 @@ export default sandboxOf(TeEntLabelComponent, {
     .add('TeEntLabel | Naming collapsed', {
         context: {
             classConfigAppellationForLanguage,
-            _childrenOfAppellationForLanguage,
+            _fieldsOfAppellationForLanguage,
             toggle: 'expanded'
         },
         template: `
@@ -978,7 +978,7 @@ export default sandboxOf(TeEntLabelComponent, {
 
                     <div class="d-flex border border-success">
                         <gv-te-ent-label class="gv-grow-1"
-                        [children]="_childrenOfAppellationForLanguage"
+                        [children]="_fieldsOfAppellationForLanguage"
                         [classConfig]="classConfigAppellationForLanguage"
                         [toggle]="toggle"
                         (onToggle)="(toggle === 'expanded' ? toggle = 'collapsed' : toggle = 'expanded')"
@@ -989,9 +989,9 @@ export default sandboxOf(TeEntLabelComponent, {
                 </div>
 
                 <div class="col" style="height:700px; overflow:scroll">
-                    <p>_children</p>
+                    <p>_fields</p>
                     <pre>
-                        {{_childrenOfAppellationForLanguage | json}}
+                        {{_fieldsOfAppellationForLanguage | json}}
                     </pre>
 
                 </div>

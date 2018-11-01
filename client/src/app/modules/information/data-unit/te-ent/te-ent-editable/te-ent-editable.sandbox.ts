@@ -86,7 +86,7 @@ export default sandboxOf(TeEntEditableComponent, {
                             "roles": [
                             ],
                             "toggle": "collapsed",
-                            _children: {
+                            _fields: {
                                 _152_ingoing: {
                                     isOutgoing: false,
                                     property: {
@@ -439,7 +439,7 @@ export default sandboxOf(TeEntEditableComponent, {
                             "sys_period": "[\"2018-06-12 16:17:27.562493+00\",)",
                             "text_properties": []
                         },
-                        "_children": {
+                        "_fields": {
                             "_1_outgoing": {
                                 "isOutgoing": true,
                                 "property": {

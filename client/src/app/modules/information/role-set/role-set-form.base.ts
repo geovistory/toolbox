@@ -5,7 +5,7 @@ import { IAppState, InfEntityProjectRel, InfRole, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable, Subscription } from 'rxjs';
 
-import { RoleDetailList, RoleSet, RoleSetForm, RoleDetail, RoleSetLabel } from 'app/core/state/models';
+import { RoleDetailList, RoleSet, RoleSetForm, RoleDetail, FieldLabel } from 'app/core/state/models';
 import { roleSetReducer } from './role-set.reducer';
 import { RoleSetActions } from './role-set.actions';
 
@@ -26,7 +26,7 @@ export abstract class RoleSetFormBase implements OnInit, OnDestroy {
     @Output() onCreateRoles: EventEmitter<InfRole[]> = new EventEmitter()
 
     @select() _role_set_form$: Observable<RoleSetForm>
-    @select() label$: Observable<RoleSetLabel>
+    @select() label$: Observable<FieldLabel>
 
     _role_set_form: RoleSetForm;
     _role_create_list: RoleDetailList = {};

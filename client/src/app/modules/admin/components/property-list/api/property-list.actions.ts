@@ -1,10 +1,10 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { PropertyListI } from './property-list.models';
+import { PropertyList } from './property-list.models';
 import { DfhProperty } from 'app/core/sdk/models/DfhProperty';
 
-type Payload = PropertyListI;
+type Payload = PropertyList;
 interface MetaData {
   properties?: DfhProperty[],
   property?: DfhProperty;

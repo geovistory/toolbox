@@ -28,10 +28,13 @@ export class ComConfig {
 
 
     /***********************
-     * Property Sets
+     * Class Fields
     ************************/
 
-    static readonly PK_PROPERTY_SET_EXISTENCE_TIME = 48;
+    static readonly PK_CLASS_FIELD_WHEN = 48;
+    static readonly PK_CLASS_FIELD_SHORT_TITLE = 334;
+    static readonly PK_CLASS_FIELD_EXACT_REFERENCE = 335;
+    static readonly PK_CLASS_FIELD_ENTITY_DEFINITION = 336;
 
 
     /***********************

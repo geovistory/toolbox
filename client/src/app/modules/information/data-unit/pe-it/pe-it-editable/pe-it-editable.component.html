@@ -2,7 +2,7 @@
   <!-- Header -->
   <div class="mb-3 gv-flex-shrink-0" *ngIf="(showHeader$ | async)">
     <gv-editor-header>
-      <gv-pe-it-label labels [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
+      <gv-pe-it-label labels [children]="(_fields$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
       <div type *ngIf="(_type$ | async)">
         <gv-type [basePath]="basePath.concat('_type')"></gv-type>
       </div>
@@ -115,7 +115,7 @@
         <div *ngIf="(!isolatedChild)">
           <!-- Step 2 for adding new Property section -->
           <gv-add-info-pe-it *ngIf="(selectPropState$ | async) === 'selectProp'" [uiElements]="uiElementsForAddInfo"
-            [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)"
+            [classConfig]="classConfig" [addedChildren$]="_fields$" (addOptionSelected)="addOptionSelected($event)"
             (cancel)="stopSelectProperty()"></gv-add-info-pe-it>
         </div>
 
@@ -126,7 +126,7 @@
 
         <!-- List of Properties -->
         <div *ngIf="!isolatedChild">
-          <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
+          <div *ngFor="let item of (_fields$ | async) | keys; trackBy:getKey">
             <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-pe-it-role-set-editable>
           </div>
         </div>
@@ -199,7 +199,7 @@
   <div>
     <div class="my-3">
       <h2 >
-        Remove <gv-pe-it-label class="d-inline-block mr-1" labels [children]="(_children$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
+        Remove <gv-pe-it-label class="d-inline-block mr-1" labels [children]="(_fields$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
       </h2>
 
       <gv-class-info class="mb-5" classInfo [classConfig]="classConfig" iconPrimary="true"></gv-class-info>

@@ -4,7 +4,7 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DfhProperty, IAppState, InfEntityProjectRel, InfEntityProjectRelApi, InfPersistentItem, InfRole, InfRoleApi, Project, U } from 'app/core';
-import { CollapsedExpanded, RoleDetail, RoleDetailList, RoleSet, RoleSetForm, RoleSetLabel } from 'app/core/state/models';
+import { CollapsedExpanded, RoleDetail, RoleDetailList, RoleSet, RoleSetForm, FieldLabel } from 'app/core/state/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
 import { RootEpics } from '../../../core/store/epics';
@@ -56,7 +56,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
     @select() isViewMode$: Observable<boolean>
     @select() toggle$: Observable<CollapsedExpanded>
-    @select() label$: Observable<RoleSetLabel>
+    @select() label$: Observable<FieldLabel>
     @select() dragEnabled$: Observable<boolean>
 
     @select() rolesNotInProjectLoading$: Observable<boolean>;
@@ -275,7 +275,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     }
 
     getBasePath = () => this.index ?
-        [...this.parentPath, '_children', this.index] :
+        [...this.parentPath, '_fields', this.index] :
         null;
 
 

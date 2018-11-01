@@ -23,7 +23,7 @@ export default sandboxOf(TeEntRoleSetCreateCtrlComponent, {
             index: '_role_set_1',
             initState: {
                 _teEnt: {
-                    _children: {
+                    _fields: {
                         _role_set_1:  new RoleSet({
                             label: {
                                 default: 'Detailed Name',
@@ -90,7 +90,7 @@ export default sandboxOf(TeEntRoleSetCreateCtrlComponent, {
             index: '_role_set_1',
             initState: {
                 _teEnt: {
-                    _children: {
+                    _fields: {
                         _role_set_1:  new RoleSet({
                             label: {
                                 default: 'Language',

@@ -33,7 +33,7 @@
       "type": "number",
       "required": false
     },
-    "fk_property_set": {
+    "fk_class_field": {
       "type": "number",
       "required": false
     },
@@ -59,10 +59,10 @@
       "foreignKey": "fk_property",
       "primaryKey": "dfh_pk_property"
     },
-    "property_set": {
+    "class_field": {
       "type": "belongsTo",
-      "model": "ComPropertySet",
-      "foreignKey": "fk_property_set",
+      "model": "ComClassField",
+      "foreignKey": "fk_class_field",
       "primaryKey": "pk_entity"
     },
     "project": {

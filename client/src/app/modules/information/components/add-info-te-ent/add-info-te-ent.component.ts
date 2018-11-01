@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { ClassConfig, U, UiElement } from 'app/core';
-import { AddOption, DataUnitChildList, RoleSetList, RoleSet } from 'app/core/state/models';
+import { AddOption, FieldList, RoleSetList, RoleSet } from 'app/core/state/models';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { propSetMap } from '../../data-unit/data-unit.base';
@@ -17,7 +17,7 @@ export class AddInfoTeEntComponent implements OnInit, OnDestroy {
   // @Input() uiElements: UiElement[];
   // @Input() classConfig: ClassConfig;
   // @Input() excludeRoleSet: RoleSetList;
-  // @Input() addedChildren$: Observable<DataUnitChildList>;
+  // @Input() addedChildren$: Observable<FieldList>;
 
   @Output() addOptionSelected = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<any>();

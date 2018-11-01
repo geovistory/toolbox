@@ -1,13 +1,13 @@
 import { DfhClass, InfPersistentItem } from 'app/core/sdk';
-import { DataUnitChildList } from './data-unit-child-list';
-import { DataUnitLabel } from './data-unit-label';
+import { ClassInstanceLabel } from './class-instance-label';
+import { FieldList } from './field-list';
 import { RoleSet } from './role-set';
-import { CollapsedExpanded, SelectPropStateType } from './types';
 import { TypeDetail } from './type-detail';
+import { CollapsedExpanded, SelectPropStateType } from './types';
 
 export class DataUnit {
 
-    _children?: DataUnitChildList;
+    _fields?: FieldList;
 
     _type?: TypeDetail;
 
@@ -22,7 +22,7 @@ export class DataUnit {
     showAddAPropertyButton?= true;
     isViewMode?= false;
 
-    label?: DataUnitLabel;
+    label?:  ClassInstanceLabel;
     toggle?= 'collapsed' as CollapsedExpanded;
     ingoingRoleSets?: RoleSet[];
     outgoingRoleSets?: RoleSet[];

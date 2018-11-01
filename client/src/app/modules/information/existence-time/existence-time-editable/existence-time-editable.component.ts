@@ -49,7 +49,7 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
 
   showOntoInfo$: Observable<boolean>
   @select() toggle$: Observable<boolean>
-  _children: RoleSetList;
+  _fields: RoleSetList;
 
   // true, if there is no termporal information
   isEmpty = true;
@@ -80,12 +80,12 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
 
     this.subs.push(this.localStore.select<ExistenceTimeDetail>('').subscribe(d => {
       if (d) {
-        this._children = d._children;
-      } else this._children = undefined;
+        this._fields = d._fields;
+      } else this._fields = undefined;
 
 
       // if there is temporal information, set isEmpty to false
-      if (this._children && Object.keys(this._children).length > 0) {
+      if (this._fields && Object.keys(this._fields).length > 0) {
         this.isEmpty = false;
       } else {
         this.isEmpty = true;
@@ -98,13 +98,13 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
 
     if (!mode) {
       // if only "at some time within" is given, open in "one-date" mode
-      if (Object.keys(this._children).length === 1 && this._children._72_outgoing) {
+      if (Object.keys(this._fields).length === 1 && this._fields._72_outgoing) {
         mode = 'one-date';
       } else if (
         // else if only "begin" and "end" is given, open in "begin-end" mode
-        Object.keys(this._children).length === 2 &&
-        this._children._150_outgoing &&
-        this._children._151_outgoing
+        Object.keys(this._fields).length === 2 &&
+        this._fields._150_outgoing &&
+        this._fields._151_outgoing
       ) {
         mode = 'begin-end';
       } else {

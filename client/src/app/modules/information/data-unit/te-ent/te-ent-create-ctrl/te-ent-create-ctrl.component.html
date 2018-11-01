@@ -11,10 +11,10 @@
   <!-- The form itself -->
   <form class="card-body" [formGroup]="formGroup" *ngIf="formGroup">
 
-    <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
+    <div *ngFor="let item of (_fields$ | async) | keys; trackBy:getKey">
       <span [ngSwitch]="item.key">
 
-        <gv-existence-time-editable *ngSwitchCase="'_existenceTime'" [basePath]="basePath.concat('_children').concat(item.key)"
+        <gv-existence-time-editable *ngSwitchCase="'_existenceTime'" [basePath]="basePath.concat('_fields').concat(item.key)"
           (onRemovePropSet)="removePropSet(item.key)" mode="create" [formControlName]="item.key" (touched)="markAsTouched()"></gv-existence-time-editable>
 
         <gv-te-ent-role-set-create-ctrl *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath"

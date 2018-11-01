@@ -19,9 +19,9 @@ module.exports = function (ComUiContext) {
                             orderBy: [{ pk_entity: "asc" }],
                         }
                     },
-                    property_set: {
+                    class_field: {
                         $relation: {
-                            name: "property_set",
+                            name: "class_field",
                             joinType: "left join",
                             orderBy: [{ pk_entity: "asc" }]
                         }

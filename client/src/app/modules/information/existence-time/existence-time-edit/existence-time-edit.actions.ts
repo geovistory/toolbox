@@ -1,7 +1,7 @@
-import { ExistenceTimeEdit, RoleSetList, ExTimeHelpMode } from "app/core/state/models";
-import { FluxStandardAction } from "flux-standard-action";
-import { Injectable } from "@angular/core";
-import { dispatch } from "@angular-redux/store";
+import { ExistenceTimeEdit, RoleSetList, ExTimeHelpMode } from 'app/core/state/models';
+import { FluxStandardAction } from 'flux-standard-action';
+import { Injectable } from '@angular/core';
+import { dispatch } from '@angular-redux/store';
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = ExistenceTimeEdit;
@@ -34,11 +34,11 @@ export class ExTimeEditActions {
     })
 
 
-    @dispatch() roleSetAdded = (_children: RoleSetList): ExTimeEditAction => ({
+    @dispatch() roleSetAdded = (_fields: RoleSetList): ExTimeEditAction => ({
         type: ExTimeEditActions.EX_TIME_ROLESET_ADDED,
         meta: null,
         payload: new ExistenceTimeEdit({
-            _children
+            _fields
         })
     })
 

@@ -1332,16 +1332,16 @@ module.exports = function (InfPersistentItem) {
         Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = false
         UNION
         -- select the fk_class and the properties that are auto add because of a property set
-          select ctxt.fk_class_for_property_set, psprel.fk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
+          select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
         from data_for_history.property as p
-        inner join commons.property_set_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-        inner join commons.ui_context_config as ctxt on psprel.fk_property_set = ctxt.fk_property_set
+        inner join commons.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
+        inner join commons.ui_context_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
         Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = false
         UNION
-          select ctxt.fk_class_for_property_set, psprel.fk_property, p.dfh_range_instances_max_quantifier as max_quantifier
+          select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_range_instances_max_quantifier as max_quantifier
         from data_for_history.property as p
-        inner join commons.property_set_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-        inner join commons.ui_context_config as ctxt on psprel.fk_property_set = ctxt.fk_property_set
+        inner join commons.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
+        inner join commons.ui_context_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
         Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = true
       ),
       -- Find all roles related to the given persistent item pk_entity 

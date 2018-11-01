@@ -1,16 +1,18 @@
 import { ProjectCrm } from 'app/core/active-project';
 import { ComConfig } from 'app/core/config/com-config';
-import { DfhLabel, InfAppellation, InfEntityAssociation, InfEntityProjectRel, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTimePrimitive } from 'app/core/sdk';
+import { InfAppellation, InfEntityAssociation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive } from 'app/core/sdk';
 import { U } from 'app/core/util/util';
 import { AppellationLabel } from 'app/modules/information/shared/appellation-label';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { clone, groupBy, indexBy, omit, prop, sort } from 'ramda';
 import * as Config from '../../../../../../common/config/Config';
-import { AppeDetail, DataUnitChild, DataUnitChildList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleSet, TeEntDetail, TimePrimitveDetail, RoleDetailList } from '../models';
-import { TypeDetail } from '../models/type-detail';
-import { TypeCtrl } from 'app/modules/information/type/type-ctrl/api/type-ctrl.models';
+import { AppeDetail, FieldList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleDetailList, RoleSet, TeEntDetail, TimePrimitveDetail } from '../models';
 import { EntityAssociationDetail } from '../models/entity-association-detail';
 import { EntityAssociationList } from '../models/entity-association-list';
+import { TextPropertyDetail } from '../models/text-property-detail';
+import { TextPropertyField } from '../models/text-property-field';
+import { TypeDetail } from '../models/type-detail';
+import { Field } from '../models/field';
 
 /***************************************************
 * General Interfaces
@@ -82,10 +84,10 @@ export function getCreateOfEditableContext(pkUiEditableContext: number): number 
 /**
 * Creates a PeItDetail from provided input data
 *
-* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of create...() methods.
 * @param dbData nested object as it is delivered from REST api with roles etc.
 * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
-* @param settings setting object that is passed through the chain of from() methods of the different state classes
+* @param settings setting object that is passed through the chain of create...() methods of the different state classes
 */
 export function createPeItDetail(options: PeItDetail, peIt: InfPersistentItem, crm: ProjectCrm, settings?: StateSettings): PeItDetail {
 
@@ -105,7 +107,7 @@ export function createPeItDetail(options: PeItDetail, peIt: InfPersistentItem, c
         peIt: peItCleaned,
         pkEntity: peIt.pk_entity,
         fkClass: peIt.fk_class,
-        _children: createDataUnitChildren(peIt.fk_class, peIt.pi_roles, crm, settings),
+        _fields: createFieldList(peIt.fk_class, peIt.pi_roles, peIt.text_properties, crm, settings),
         _type: createDataUnitTypeDetail({}, peIt, crm, settings),
     })
 }
@@ -113,10 +115,10 @@ export function createPeItDetail(options: PeItDetail, peIt: InfPersistentItem, c
 /**
 * Creates a createTeEntDetail from provided input data
 *
-* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of create...() methods.
 * @param dbData nested object as it is delivered from REST api with roles etc.
 * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
-* @param settings setting object that is passed through the chain of from() methods of the different state classes
+* @param settings setting object that is passed through the chain of create...() methods of the different state classes
 */
 export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity, crm: ProjectCrm, settings: StateSettings): TeEntDetail {
 
@@ -129,7 +131,7 @@ export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity
         selectPropState: 'init',
         teEnt: teEnt,
         fkClass: teEnt.fk_class,
-        _children: createDataUnitChildren(teEnt.fk_class, teEnt.te_roles, crm, settings)
+        _fields: createFieldList(teEnt.fk_class, teEnt.te_roles, teEnt.text_properties, crm, settings)
     });
 }
 
@@ -137,10 +139,10 @@ export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity
 /**
 * Creates a createTypeDetail from provided dataUnit data
 *
-* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of create...() methods.
 * @param dbData nested object as it is delivered from REST api with roles etc.
 * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
-* @param settings setting object that is passed through the chain of from() methods of the different state classes
+* @param settings setting object that is passed through the chain of create...() methods of the different state classes
 */
 export function createDataUnitTypeDetail(options: TypeDetail, dataUnit: InfTemporalEntity | InfPersistentItem, crm: ProjectCrm, settings: StateSettings): TypeDetail {
     // if for instances of this class we do not want types, return
@@ -172,10 +174,10 @@ export function createDataUnitTypeDetail(options: TypeDetail, dataUnit: InfTempo
 /**
 * Creates a createTypeDetail from provided entityAssociation data
 *
-* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of create...() methods.
 * @param dbData nested object as it is delivered from REST api with roles etc.
 * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
-* @param settings setting object that is passed through the chain of from() methods of the different state classes
+* @param settings setting object that is passed through the chain of create...() methods of the different state classes
 */
 export function createTypeDetail(options: TypeDetail, assoc: InfEntityAssociation, crm: ProjectCrm, settings: StateSettings): TypeDetail {
 
@@ -195,20 +197,21 @@ export function createTypeDetail(options: TypeDetail, assoc: InfEntityAssociatio
 }
 
 /**
- * Creates a DataUnitChildList from provided input data
+ * Creates a FieldList from provided input data
  *
  * @param fkClass
  * @param roles
+ * @param textProperties
  * @param crm
  * @param settings
  */
-export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: ProjectCrm, settings?: StateSettings): DataUnitChildList {
+export function createFieldList(fkClass: number, roles: InfRole[], textProperties: InfTextProperty[], crm: ProjectCrm, settings?: StateSettings): FieldList {
 
     // init settings (adds defaults, if not otherwise provided)
     settings = new StateSettings(settings);
 
 
-    const children = [];
+    const fields = [];
 
     // /** exclude the circular role */
     if (roles) {
@@ -222,6 +225,30 @@ export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: P
     const classConfig = crm.classes[fkClass];
 
     const uiContext = classConfig.uiContexts[settings.pkUiContext];
+
+    const createClassField = (fkClassField: number, rls: InfRole[], textProps: InfTextProperty[]) => {
+        switch (fkClassField) {
+            case ComConfig.PK_CLASS_FIELD_WHEN:
+                // if this ui-element is a Existence-Time PropSet
+                const options = new ExistenceTimeDetail({ toggle: 'expanded' });
+                fields.push(createExistenceTimeDetail(options, rls, crm, settings));
+
+
+                break;
+
+            case ComConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
+            case ComConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
+            case ComConfig.PK_CLASS_FIELD_SHORT_TITLE:
+
+                fields.push(createTextPropertyField({ fkClassField }, textProps.filter((txtProp) => txtProp.fk_class_field == fkClassField), crm, settings));
+
+                break;
+
+
+            default:
+                break;
+        }
+    }
 
     if (isCreateContext(settings.pkUiContext)) {
 
@@ -248,13 +275,10 @@ export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: P
                         } as InfRole;
 
                         const roleSet = createRoleSet(Object.assign({}, roleSetDef, options), [newRole], crm, settings);
-                        children.push(roleSet);
+                        fields.push(roleSet);
                     }
-                } else if (el.fk_property_set == ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
-
-                    // if this ui-element is a Existence-Time PropSet
-                    const options = new ExistenceTimeDetail({ toggle: 'expanded' });
-                    children.push(createExistenceTimeDetail(options, [], crm, settings));
+                } else if (el.fk_class_field) {
+                    createClassField(el.fk_class_field, [], [])
                 }
             });
         }
@@ -272,7 +296,7 @@ export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: P
                 if (el.roleSetKey) {
                     let rolesWithinQuantity: InfRole[] = [];
 
-                    // enrich RoleSet with roles and child RoleDetails
+                    // enrich RoleSet with roles and RoleDetails
 
                     // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
                     const options = new RoleSet({ ...classConfig.roleSets[el.roleSetKey], toggle: 'expanded' })
@@ -293,13 +317,10 @@ export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: P
                     }
 
                     if (rolesWithinQuantity && rolesWithinQuantity.length > 0) {
-                        children.push(createRoleSet(options, rolesWithinQuantity, crm, settings));
+                        fields.push(createRoleSet(options, rolesWithinQuantity, crm, settings));
                     }
-                } else if (el.fk_property_set == ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
-
-                    // if this ui-element is a Existence-Time PropSet
-                    const options = new ExistenceTimeDetail({ toggle: 'expanded' });
-                    children.push(createExistenceTimeDetail(options, roles, crm, settings));
+                } else if (el.fk_class_field) {
+                    createClassField(el.fk_class_field, roles, textProperties)
                 }
 
             });
@@ -307,9 +328,9 @@ export function createDataUnitChildren(fkClass: number, roles: InfRole[], crm: P
 
     }
 
-    if (!children.length) return;
+    if (!fields.length) return;
 
-    return indexBy(dataUnitChildKey, children.filter(c => (c)));
+    return indexBy(fieldKey, fields.filter(c => (c)));
 }
 
 
@@ -374,22 +395,22 @@ export function createRoleDetailList(options: RoleSet, roles: InfRole[], crm: Pr
 }
 
 /***************************************************
-* Custom Ui Elements (Property Set) create functions
+* Class Field create functions
 ***************************************************/
 
 /**
 * Creates a ExistenceTimeDetail from provided input data
 *
-* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of create...() methods.
 * @param roles nested object as it is delivered from REST api with roles etc.
 * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
-* @param settings setting object that is passed through the chain of from() methods of the different state classes
+* @param settings setting object that is passed through the chain of create...() methods of the different state classes
 */
 export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: InfRole[], crm: ProjectCrm, settings: StateSettings): ExistenceTimeDetail {
 
     const rolesByFkProp = groupBy(prop('fk_property'), roles) as { [index: number]: InfRole[] };
     const rsts = clone(crm.classes[DfhConfig.ClASS_PK_TIME_SPAN].roleSets);
-    const children: RoleSet[] = [];
+    const fields: RoleSet[] = [];
     const ext = new ExistenceTimeDetail()
 
 
@@ -412,14 +433,14 @@ export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: I
             // }
 
             ext.roles = [...ext.roles, role]
-            children.push(createRoleSet(new RoleSet(rs), [role], crm, settings));
+            fields.push(createRoleSet(new RoleSet(rs), [role], crm, settings));
         }
 
     })
 
-    if (!children.length) return null;
+    if (!fields.length) return null;
     else {
-        ext._children = indexBy(roleSetKey, children)
+        ext._fields = indexBy(roleSetKey, fields)
     }
 
     options = { ...options, pkUiContext: settings.pkUiContext }
@@ -431,6 +452,79 @@ export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: I
 }
 
 
+/**
+ * Creates a TextPropertyField from provided input data
+ *
+ * @param options data object to pass data to the created state model instance. it won't be passed further down the chain of create...() methods.
+ * @param textProperties textProperties as delivered from REST api from nested object etc.
+ * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
+ * @param settings setting object that is passed through the chain of create...() methods of the different state classes
+ */
+export function createTextPropertyField(options: TextPropertyField, textProperties: InfTextProperty[], crm: ProjectCrm, settings: StateSettings): TextPropertyField {
+    const txtPropList = new TextPropertyField();
+
+    const txtPropDetailOptions = new TextPropertyDetail({ fkClassField: options.fkClassField });
+
+    if (isCreateContext(settings.pkUiContext)) {
+        txtPropList.textPropertyDetailList = {
+            _create: createTextPropertyDetail(
+                txtPropDetailOptions,
+                {} as InfTextProperty,
+                crm,
+                settings
+            )
+        }
+    } else {
+        txtPropList.textPropertyDetailList = indexBy(textPropertyDetailKey,
+            textProperties.map((infTextProp) => createTextPropertyDetail(
+                txtPropDetailOptions,
+                infTextProp,
+                crm,
+                settings
+            ))
+        )
+    }
+
+    return new TextPropertyField({
+        ...txtPropList,
+        ...options
+    });
+}
+
+
+/**
+ * Creates a TextPropertyDetail from provided input data
+ *
+ * @param options data object to pass data to the created state model instance. it won't be passed further down the chain of create...() methods.
+ * @param textProperty textProperty as delivered from REST api from nested object etc.
+ * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
+ * @param settings setting object that is passed through the chain of create...() methods of the different state classes
+ */
+export function createTextPropertyDetail(options: TextPropertyDetail, textProperty: InfTextProperty, crm: ProjectCrm, settings: StateSettings): TextPropertyDetail {
+    const txtPropDetail = new TextPropertyDetail();
+
+    switch (options.fkClassField) {
+        case ComConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
+            txtPropDetail.textareaLike = true;
+            txtPropDetail.inputLike = false;
+            break;
+
+        case ComConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
+        case ComConfig.PK_CLASS_FIELD_SHORT_TITLE:
+            txtPropDetail.textareaLike = false;
+            txtPropDetail.inputLike = true;
+            break;
+
+        default:
+            break;
+    }
+
+    return new TextPropertyDetail({
+        ...txtPropDetail,
+        ...options
+    });
+}
+
 /***************************************************
 * Role State create functions
 ***************************************************/
@@ -438,10 +532,10 @@ export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: I
 /**
  * Creates a RoleDetail from provided input data
  *
- * @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+ * @param options data object to pass data to the created state model instance. it won't be passed further down the chain of create...() methods.
  * @param dbData nested object as it is delivered from REST api with roles etc.
  * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
- * @param settings setting object that is passed through the chain of from() methods of the different state classes
+ * @param settings setting object that is passed through the chain of create...() methods of the different state classes
  */
 export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: InfRole, crm: ProjectCrm, settings?: StateSettings): RoleDetail {
 
@@ -590,10 +684,10 @@ export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: I
 /**
  * Creates a EntityAssociationDetail from provided input data
  *
- * @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+ * @param options data object to pass data to the created state model instance. it won't be passed further down the chain of create...() methods.
  * @param dbData nested object as it is delivered from REST api with entity-association etc.
  * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
- * @param settings setting object that is passed through the chain of from() methods of the different state classes
+ * @param settings setting object that is passed through the chain of create...() methods of the different state classes
  */
 export function createEntityAssociationDetail(options: EntityAssociationDetail = new EntityAssociationDetail(), ea: InfEntityAssociation, crm: ProjectCrm, settings?: StateSettings): EntityAssociationDetail {
 
@@ -654,10 +748,10 @@ export function createEntityAssociationList(options: RoleSet, eas: InfEntityAsso
 /**
  * Creates a AppeDetail from provided input data
  *
- * @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+ * @param options data object to pass data to the created state model instance. it won't be passed further down the chain of create...() methods.
  * @param dbData nested object as it is delivered from REST api with roles etc.
  * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
- * @param settings setting object that is passed through the chain of from() methods of the different state classes
+ * @param settings setting object that is passed through the chain of create...() methods of the different state classes
  */
 export function createAppeDetail(options: AppeDetail, dbData: InfAppellation, crm: ProjectCrm, settings: StateSettings): AppeDetail {
     return new AppeDetail({
@@ -669,10 +763,10 @@ export function createAppeDetail(options: AppeDetail, dbData: InfAppellation, cr
 /**
 * Creates a LangDetail from provided input data
 *
-* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of create...() methods.
 * @param dbData nested object as it is delivered from REST api with roles etc.
 * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
-* @param settings setting object that is passed through the chain of from() methods of the different state classes
+* @param settings setting object that is passed through the chain of create...() methods of the different state classes
 */
 export function createLangDetail(options: LangDetail, language: InfLanguage, crm: ProjectCrm, settings: StateSettings): LangDetail {
     return new LangDetail({
@@ -685,10 +779,10 @@ export function createLangDetail(options: LangDetail, language: InfLanguage, crm
 /**
 * Creates a PlaceDetail from provided input data
 *
-* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of create...() methods.
 * @param dbData nested object as it is delivered from REST api with roles etc.
 * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
-* @param settings setting object that is passed through the chain of from() methods of the different state classes
+* @param settings setting object that is passed through the chain of create...() methods of the different state classes
 */
 export function createPlaceDetail(options: PlaceDetail, dbData: InfPlace, crm: ProjectCrm, settings: StateSettings): PlaceDetail {
     return new PlaceDetail({ ...options, place: dbData });
@@ -697,10 +791,10 @@ export function createPlaceDetail(options: PlaceDetail, dbData: InfPlace, crm: P
 /**
 * Creates a TimePrimitveDetail from provided input data
 *
-* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of from() methods.
+* @param options data object to pass data to the created state model instance. it won't be passed further down the chain of create...() methods.
 * @param dbData nested object as it is delivered from REST api with roles etc.
 * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
-* @param settings setting object that is passed through the chain of from() methods of the different state classes
+* @param settings setting object that is passed through the chain of create...() methods of the different state classes
 */
 export function createTimePrimitveDetail(options: TimePrimitveDetail, dbData: InfTimePrimitive, crm: ProjectCrm, settings: StateSettings): TimePrimitveDetail {
     return new TimePrimitveDetail({ ...options, timePrimitive: dbData });
@@ -713,22 +807,25 @@ export function createTimePrimitveDetail(options: TimePrimitveDetail, dbData: In
 ***************************************************/
 
 /**
- * Retuns a key for given DataUnitChild usefull to create list object
+ * Retuns a key for given Field usefull to create list object
  * with this structure:
  * {
- *      [key]: DataUnitChild
+ *      [key]: Field
  * }
  *
- * @param child
+ * @param field
  */
-export function dataUnitChildKey(child: DataUnitChild): string {
+export function fieldKey(field: Field): string {
 
-    switch (child.type) {
+    switch (field.type) {
         case 'RoleSet':
-            return roleSetKey(child as RoleSet);
+            return roleSetKey(field as RoleSet);
 
         case 'ExistenceTimeDetail':
             return '_existenceTime';
+
+        case 'TextPropertyField':
+            return '_field_' + (field as TextPropertyDetail).fkClassField;
 
         default:
             break;
@@ -747,6 +844,9 @@ export function dataUnitChildKey(child: DataUnitChild): string {
 export function roleDetailKey(roleDetail: RoleDetail) { return '_' + roleDetail.role.pk_entity };
 
 
+export function textPropertyDetailKey(txtPropDetail: TextPropertyDetail) { return '_' + txtPropDetail.textProperty.pk_entity };
+
+
 /**
  * Retuns a key for given RoleSet usefull to create list object
  * with this structure:
@@ -763,7 +863,9 @@ export function roleSetKeyFromParams(fkProp: number, isOutgoing: boolean) {
     return '_' + fkProp + '_' + (isOutgoing ? 'outgoing' : 'ingoing')
 }
 
-export const pkEntityKey = (label: DfhLabel) => ('_' + label.pk_entity);
+
+
+export const pkEntityKey = (entity) => ('_' + entity.pk_entity);
 
 
 

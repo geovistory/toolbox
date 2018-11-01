@@ -22,7 +22,7 @@ export default sandboxOf(PeItRoleSetCreateCtrlComponent, {
             index: '_role_set_1',
             initState: {
                 _peIt: {
-                    _children: {
+                    _fields: {
                         _role_set_1: {
                             label: {
                                 default: 'Names',
@@ -48,7 +48,7 @@ export default sandboxOf(PeItRoleSetCreateCtrlComponent, {
                                             dfh_identifier_in_namespace: "F52",
                                             dfh_standard_label: "Name Use Activity",
                                         } as DfhClass,
-                                        _children: {
+                                        _fields: {
                                             _role_set_1: new RoleSet({
                                                 label: {
                                                     default: 'Detailed Name',

@@ -1,5 +1,5 @@
 import { ExistenceTime } from 'app/core/existence-time/existence-time';
-import { AppeDetail, DataUnitChild, DataUnitChildLabel, DataUnitChildList, DataUnitLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, RoleSet, RoleSetLabel, RoleSetList, TeEntDetail, RoleDetailList, PlaceDetail } from 'app/core/state/models';
+import { AppeDetail,  ClassInstanceFieldLabel, FieldList,  ClassInstanceLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, RoleSet, FieldLabel, RoleSetList, TeEntDetail, RoleDetailList, PlaceDetail } from 'app/core/state/models';
 import { indexBy, omit } from 'ramda';
 import { AcEntity, AcNotification, ActionType } from '../../modules/gv-angular-cesium/angular-cesium-fork';
 import { AppellationLabel } from '../../modules/information/shared/appellation-label';
@@ -7,14 +7,15 @@ import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { ClassConfig, ProjectCrm } from 'app/core/active-project/active-project.models';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
-import { ComPropertySet, ComUiContextConfig, DfhClass, DfhProperty, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, InfEntityProjectRelInterface } from '../sdk';
-import { roleSetKeyFromParams, roleSetKey, dataUnitChildKey, roleDetailKey } from 'app/core/state/services/state-creator';
+import { ComClassField, ComUiContextConfig, DfhClass, DfhProperty, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, InfEntityProjectRelInterface } from '../sdk';
+import { roleSetKeyFromParams, roleSetKey, fieldKey, roleDetailKey } from 'app/core/state/services/state-creator';
 import * as Config from '../../../../../common/config/Config';
+import { Field } from '../state/models/field';
 
 export interface LabelGeneratorSettings {
     // maximum number of data unit children that are taken into account for the label generator
     // e.g.: for a AppeForLanguage it will take only label and language, when you put it to 2
-    dataUnitChildrenMax?: number;
+    fieldsMax?: number;
 
     // maximum number of roles per roleSet taken into account for the label generator
     rolesMax?: number;
@@ -288,11 +289,11 @@ export class U {
     }
 
     /**
-    * Gets ord_num of ComPropertySet or null, if not available
+    * Gets ord_num of ComClassField or null, if not available
     *
     * @param propSet
     */
-    static ordNumFromPropSet(propSet: ComPropertySet): number | null {
+    static ordNumFromPropSet(propSet: ComClassField): number | null {
 
         const config = U.uiContextConfigFromPropSet(propSet);
 
@@ -305,7 +306,7 @@ export class U {
      * gets ui_context_config of PropSet or null, if not available
      * @param propSet
      */
-    static uiContextConfigFromPropSet(propSet: ComPropertySet): ComUiContextConfig | null {
+    static uiContextConfigFromPropSet(propSet: ComClassField): ComUiContextConfig | null {
 
         if (!propSet.ui_context_configs) return null;
 
@@ -321,11 +322,11 @@ export class U {
      * @param property
      * @param isOutgoing
      */
-    static createLabelObject(property: DfhProperty, isOutgoing: boolean): RoleSetLabel {
+    static createLabelObject(property: DfhProperty, isOutgoing: boolean): FieldLabel {
         let sg = 'n.N.'
         let pl = 'n.N.'
 
-        let labelObj: RoleSetLabel;
+        let labelObj: FieldLabel;
         if (isOutgoing) {
 
             if (property) {
@@ -429,8 +430,8 @@ export class U {
      * Label Generator Functions
      **************************************************************************/
 
-    static labelFromDataUnitChildList(r: DataUnitChildList, settings: LabelGeneratorSettings): DataUnitLabel {
-        const max = !settings ? undefined : settings.dataUnitChildrenMax;
+    static labelFromFieldList(r: FieldList, settings: LabelGeneratorSettings):  ClassInstanceLabel {
+        const max = !settings ? undefined : settings.fieldsMax;
         const duChildren = U.obj2Arr(r);
 
         // create array with max amount of labels
@@ -438,13 +439,13 @@ export class U {
 
         return {
             path: settings.path,
-            parts: spliced.map(c => U.labelFromDataUnitChild(c, { ...settings, path: [...settings.path, dataUnitChildKey(c)] })),
+            parts: spliced.map(c => U.labelFromField(c, { ...settings, path: [...settings.path, fieldKey(c)] })),
             hasMore: (duChildren.length > 2)
         }
     }
 
 
-    static labelFromDataUnitChild(c: DataUnitChild, settings: LabelGeneratorSettings): DataUnitChildLabel {
+    static labelFromField(c: Field, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
         if (c && c.type == 'RoleSet') return U.labelFromRoleSet(c as RoleSet, settings);
         else if (c && c.type == 'ExistenceTimeDetail') return U.labelFromExTime(c as ExistenceTimeDetail, settings);
 
@@ -452,11 +453,11 @@ export class U {
     }
 
 
-    static labelFromRoleSet(r: RoleSet, settings: LabelGeneratorSettings): DataUnitChildLabel {
+    static labelFromRoleSet(r: RoleSet, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
         const max = !settings ? undefined : settings.rolesMax;
 
         const roleDetails = U.obj2Arr(r._role_list);
-        const duChildLabel = new DataUnitChildLabel({ path: settings.path });
+        const duChildLabel = new ClassInstanceFieldLabel({ path: settings.path });
 
         // create array with max amount of labels
         const spliced = max ? roleDetails.splice(0, max) : roleDetails;
@@ -477,8 +478,8 @@ export class U {
         if (r) {
             if (r._teEnt) {
                 let string = '';
-                if (r._teEnt._children) {
-                    const label = U.labelFromDataUnitChildList(r._teEnt._children, settings);
+                if (r._teEnt._fields) {
+                    const label = U.labelFromFieldList(r._teEnt._fields, settings);
                     if (label && label.parts && label.parts[0] && label.parts[0].roleLabels && label.parts[0].roleLabels[0] && label.parts[0].roleLabels[0].string) {
                         string = label.parts[0].roleLabels[0].string;
                     }
@@ -491,7 +492,7 @@ export class U {
             } else if (r._appe) return { path, type: 'appe', string: U.labelFromAppeDetail(r._appe) };
             else if (r._lang) return { path, type: 'lang', string: U.labelFromLangDetail(r._lang) };
             else if (r._place) return { path, type: 'place', string: U.labelFromPlaceDetail(r._place) };
-            else if (r._leaf_peIt) return { path, type: 'leaf-pe-it', string: U.labelFromLeafPeIt(r._leaf_peIt, { dataUnitChildrenMax: 1, rolesMax: 1, path: [...path, '_leaf_peIt'] }) };
+            else if (r._leaf_peIt) return { path, type: 'leaf-pe-it', string: U.labelFromLeafPeIt(r._leaf_peIt, { fieldsMax: 1, rolesMax: 1, path: [...path, '_leaf_peIt'] }) };
 
             else {
                 console.warn('labelFromRoleDetail: This kind of RoleDetail does not produce labels');
@@ -529,9 +530,9 @@ export class U {
     }
 
     static labelFromLeafPeIt(l: PeItDetail, settings: LabelGeneratorSettings): string {
-        if (l._children) {
+        if (l._fields) {
 
-            const p = U.labelFromDataUnitChildList(l._children, { ...settings, path: [...settings.path, '_children'] })
+            const p = U.labelFromFieldList(l._fields, { ...settings, path: [...settings.path, '_fields'] })
 
             if (p && p.parts && p.parts[0] && p.parts[0].roleLabels && p.parts[0].roleLabels[0]) {
                 return p.parts[0].roleLabels[0].string;
@@ -541,12 +542,12 @@ export class U {
 
 
 
-    static labelFromExTime(e: ExistenceTimeDetail, settings: LabelGeneratorSettings): DataUnitChildLabel {
+    static labelFromExTime(e: ExistenceTimeDetail, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
         let earliest: TimePrimitive, latest: TimePrimitive;
         let eRoleDetail: RoleDetail, lRoleDetail;
 
-        if (e && e._children) {
-            const c = e._children;
+        if (e && e._fields) {
+            const c = e._fields;
             const bOb = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_BEGIN, true)];
             const eOb = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_BEGIN, true)];
             const bOe = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_END, true)];
@@ -582,7 +583,7 @@ export class U {
 
         if (!earliest && !latest) return null;
 
-        return new DataUnitChildLabel({
+        return new ClassInstanceFieldLabel({
             path: settings.path,
             introducer: 'When',
             roleLabels: [{
@@ -660,10 +661,10 @@ export class U {
             if (presence.fkClass != DfhConfig.CLASS_PK_PRESENCE) return null;
 
             // return false if no DateUnitChildren
-            if (!presence._children) return null;
+            if (!presence._fields) return null;
 
             // return false if no RoleSet leading to a Place
-            const placeSet = presence._children[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
+            const placeSet = presence._fields[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
             if (!placeSet || placeSet.type != 'RoleSet') return null;
 
             // return false if no Place in first RoleDetail
@@ -679,7 +680,7 @@ export class U {
             let colorRgba: any[] = colorInactive;
 
             // get the Existence Time of that TeEnt
-            const exTime = U.ExTimeFromExTimeDetail(presence._children['_existenceTime'] as ExistenceTimeDetail);
+            const exTime = U.ExTimeFromExTimeDetail(presence._fields['_existenceTime'] as ExistenceTimeDetail);
             if (exTime) {
 
                 const minMax = exTime.getMinMaxTimePrimitive();
@@ -782,8 +783,8 @@ export class U {
 
     static presencesFromPeIt(peItDetail: PeItDetail, path: string[]): { path: string[], teEntDetail: TeEntDetail }[] {
 
-        const roleSetMap = U.obj2KeyValueArr(peItDetail._children).find((res) => {
-            const child: DataUnitChild = res.value;
+        const roleSetMap = U.obj2KeyValueArr(peItDetail._fields).find((res) => {
+            const child: Field = res.value;
             if (child.type == 'RoleSet') {
                 if ((child as RoleSet).targetClassPk == DfhConfig.CLASS_PK_PRESENCE) return true;
             }
@@ -793,7 +794,7 @@ export class U {
         if (!roleSetMap) return [];
 
         const roleSet = roleSetMap.value as RoleSet;
-        const roleSetPath = [...path, '_children', roleSetMap.key]
+        const roleSetPath = [...path, '_fields', roleSetMap.key]
 
 
         return U.obj2KeyValueArr(roleSet._role_list).map(roleDetailMap => ({
@@ -809,10 +810,10 @@ export class U {
 
 
         // get rolesets to teEnts without presences
-        const keys = (!peItDetail || !peItDetail._children) ? [] : Object.keys(peItDetail._children);
+        const keys = (!peItDetail || !peItDetail._fields) ? [] : Object.keys(peItDetail._fields);
         const roleSets = {};
         keys.forEach(key => {
-            const child: DataUnitChild = peItDetail._children[key];
+            const child: Field = peItDetail._fields[key];
             if (child.type == 'RoleSet') {
                 if ((child as RoleSet).targetClassPk !== DfhConfig.CLASS_PK_PRESENCE) {
                     roleSets[key] = child as RoleSet;
@@ -824,7 +825,7 @@ export class U {
         // for each roleSet get the roleSet and make the path
         U.obj2KeyValueArr(roleSets).map(res => {
             const roleSet = res.value as RoleSet;
-            const roleSetPath = [...path, '_children', res.key]
+            const roleSetPath = [...path, '_fields', res.key]
 
             // get the teEnt of roleDetails with path
             U.obj2KeyValueArr(roleSet._role_list).forEach(roleDetailMap => {
@@ -866,7 +867,7 @@ export class U {
 
 
             // get leaf peIts...
-            U.obj2Arr(teEntDetail._children).forEach(duChild => {
+            U.obj2Arr(teEntDetail._fields).forEach(duChild => {
                 if (duChild.type === 'RoleSet') {
                     const rs = duChild as RoleSet;
 
@@ -908,10 +909,10 @@ export class U {
                                     if (presence.fkClass != DfhConfig.CLASS_PK_PRESENCE) return null;
 
                                     // return false if no DateUnitChildren
-                                    if (!presence._children) return null;
+                                    if (!presence._fields) return null;
 
                                     // return false if no RoleSet leading to a Place
-                                    const placeSet = presence._children[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
+                                    const placeSet = presence._fields[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
                                     if (!placeSet || placeSet.type != 'RoleSet') return null;
 
                                     // return false if no Place in first RoleDetail
@@ -927,11 +928,11 @@ export class U {
                                     let colorRgba: any[] = colorInactive;
 
                                     // get the Existence Time of initial TeEnt not the Presence
-                                    const exTime = U.ExTimeFromExTimeDetail(teEntDetail._children['_existenceTime'] as ExistenceTimeDetail);
+                                    const exTime = U.ExTimeFromExTimeDetail(teEntDetail._fields['_existenceTime'] as ExistenceTimeDetail);
 
                                     // TODO: compare the exTime from initial teEnt with exTime of the presence and figure out which presence
                                     // is best for displaying the teEnt on the map
-                                    // const exTime = U.ExTimeFromExTimeDetail(presence._children['_existenceTime'] as ExistenceTimeDetail);
+                                    // const exTime = U.ExTimeFromExTimeDetail(presence._fields['_existenceTime'] as ExistenceTimeDetail);
 
                                     // exTime of initial TeEnt not Presence!
                                     if (exTime) {
@@ -1080,7 +1081,7 @@ export class U {
 
         const e = new ExistenceTime();
 
-        U.obj2Arr(exTimeDetail._children).forEach(rs => {
+        U.obj2Arr(exTimeDetail._fields).forEach(rs => {
             const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[rs.property.dfh_pk_property]
             if (key) e[key] = U.infRole2TimePrimitive(U.obj2Arr(rs._role_list)[0].role);
         })
@@ -1134,9 +1135,9 @@ export class U {
 
     /**
      * Returns the key of the data unit children that should be isolated in view
-     * @returns the key of that DataUnitChild
+     * @returns the key of that Field
      */
-    static extractDataUnitChildKeyForIsolation(children: DataUnitChildList): string {
+    static extractFieldKeyForIsolation(children: FieldList): string {
         let key: string;
         U.obj2KeyValueArr(children).some((child) => {
             if (child.value.type === 'RoleSet') {

@@ -1,5 +1,5 @@
 import { DfhClass, DfhLabel, DfhProperty, InfRole, InfPersistentItem, InfTemporalEntity, InfEntityProjectRel, DfhPropertyInterface, InfRoleInterface, DfhClassInterface } from "app/core";
-import { PeItDetail, RoleDetail, RoleSet, DataUnitChildList } from "app/core/state/models";
+import { PeItDetail, RoleDetail, RoleSet, FieldList } from "app/core/state/models";
 import { DfhConfig } from "../../../shared/dfh-config";
 
 export const mockPerson: PeItDetail = {
@@ -13,7 +13,7 @@ export const mockPerson: PeItDetail = {
     } as DfhClass,
     ingoingRoleSets: [],
     outgoingRoleSets: [],
-    _children: {
+    _fields: {
         _role_set_1: new  RoleSet({
             label: {
                 default: 'Names',
@@ -46,7 +46,7 @@ export const mockPerson: PeItDetail = {
                             dfh_identifier_in_namespace: "histC10",
                             dfh_standard_label: "Appellation for language ",
                         } as DfhClass,
-                        _children: {
+                        _fields: {
                             _role_set_1: new  RoleSet({
                                 label: {
                                     default: 'Detailed Name',
@@ -77,7 +77,7 @@ export const mockPerson: PeItDetail = {
                                     } as RoleDetail
                                 }
                             })
-                        } as DataUnitChildList
+                        } as FieldList
                     }
                 } as RoleDetail
             }
@@ -142,7 +142,7 @@ export const generatedMockPerson = {
             }
         ]
     },
-    "_children": {
+    "_fields": {
         "_1194_ingoing": {
             "isOutgoing": false,
             "property": {
@@ -245,7 +245,7 @@ export const generatedMockPerson = {
                                 }
                             ]
                         },
-                        "_children": {
+                        "_fields": {
                             "_1113_outgoing": {
                                 "isOutgoing": true,
                                 "property": {

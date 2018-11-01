@@ -1,6 +1,6 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { DataUnitLabel, PeItDetail } from 'app/core/state/models';
+import {  ClassInstanceLabel, PeItDetail } from 'app/core/state/models';
 import { FluxStandardAction } from 'flux-standard-action';
 import { DataUnitActions } from '../data-unit.actions';
 
@@ -34,7 +34,7 @@ export class PeItActions extends DataUnitActions {
     payload
   })
 
-  peItLabelUpdated = (label: DataUnitLabel): PeItAction => ({
+  peItLabelUpdated = (label:  ClassInstanceLabel): PeItAction => ({
     type: PeItActions.PE_IT_LABEL_UPDATED,
     meta: null,
     payload: {

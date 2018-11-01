@@ -39,15 +39,15 @@
     <div class="list-group-item pr-0 d-flex" *ngIf="!isEmpty">
         <div class="gv-grow-1">
             <!-- At some time within -->
-            <div class="d-flex align-items-center" *ngIf="(_children?._72_outgoing)">
-                <div *ngIf="(_children | keys).length > 1">At some time within:</div>
+            <div class="d-flex align-items-center" *ngIf="(_fields?._72_outgoing)">
+                <div *ngIf="(_fields | keys).length > 1">At some time within:</div>
 
                 <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_72_outgoing'"></gv-ex-time-role-set-editable>
 
             </div>
 
             <!-- Begin of begin -->
-            <div class="d-flex align-items-center" *ngIf="(_children?._152_outgoing)">
+            <div class="d-flex align-items-center" *ngIf="(_fields?._152_outgoing)">
                 <div>Earliest possible begin:</div>
 
                 <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_152_outgoing'"></gv-ex-time-role-set-editable>
@@ -55,7 +55,7 @@
             </div>
 
             <!-- End of end -->
-            <div class="d-flex align-items-center" *ngIf="(_children?._153_outgoing)">
+            <div class="d-flex align-items-center" *ngIf="(_fields?._153_outgoing)">
                 <div>Latest possible end:</div>
 
                 <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_153_outgoing'"></gv-ex-time-role-set-editable>
@@ -63,7 +63,7 @@
             </div>
 
             <!-- Ongoing throughout -->
-            <div class="d-flex align-items-center" *ngIf="(_children?._71_outgoing)">
+            <div class="d-flex align-items-center" *ngIf="(_fields?._71_outgoing)">
                 <div>Ongoing throughout:</div>
 
                 <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_71_outgoing'"></gv-ex-time-role-set-editable>
@@ -71,7 +71,7 @@
             </div>
 
             <!-- End of begin -->
-            <div class="d-flex align-items-center" *ngIf="(_children?._150_outgoing)">
+            <div class="d-flex align-items-center" *ngIf="(_fields?._150_outgoing)">
 
                 <div>Begin:</div>
 
@@ -81,7 +81,7 @@
 
 
             <!-- Begin of end -->
-            <div class="d-flex align-items-center" *ngIf="(_children?._151_outgoing)">
+            <div class="d-flex align-items-center" *ngIf="(_fields?._151_outgoing)">
 
                 <div>End:</div>
 

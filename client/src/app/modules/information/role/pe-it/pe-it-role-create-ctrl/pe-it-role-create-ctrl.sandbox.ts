@@ -49,7 +49,7 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
                                     "fk_class": 365
                                 },
                                 "fkClass": 365,
-                                "_children": {
+                                "_fields": {
                                     "_1113_outgoing": {
                                         "isOutgoing": true,
                                         "property": {
@@ -68,7 +68,7 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
                                                     "fk_ui_context": 104,
                                                     "fk_project": null,
                                                     "fk_property": 1113,
-                                                    "fk_property_set": null,
+                                                    "fk_class_field": null,
                                                     "property_is_outgoing": true,
                                                     "ord_num": 0
                                                 },
@@ -77,7 +77,7 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
                                                     "fk_ui_context": 103,
                                                     "fk_project": null,
                                                     "fk_property": 1113,
-                                                    "fk_property_set": null,
+                                                    "fk_class_field": null,
                                                     "property_is_outgoing": true,
                                                     "ord_num": 0
                                                 }

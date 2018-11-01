@@ -1,8 +1,9 @@
 import { DfhClass, DfhPropertyInterface, InfRole } from 'app/core/sdk';
 import { RoleDetailList } from './role-detail-list';
 import { RoleSetForm } from './role-set-form';
-import { RoleSetLabel } from './role-set-label';
-import { CollapsedExpanded, DataUnitChildType } from './types';
+import { FieldLabel } from './field-label';
+import { CollapsedExpanded, FieldType } from './types';
+import { Field } from './field';
 
 /*******************************
  * RoleSet
@@ -10,9 +11,9 @@ import { CollapsedExpanded, DataUnitChildType } from './types';
  *   are not persisted in db: no need to create, add or edit role sets
  *******************************/
 
-export class RoleSet {
+export class RoleSet extends Field {
 
-    readonly type?: DataUnitChildType = 'RoleSet';
+    readonly type? = 'RoleSet';
 
     _role_list?: RoleDetailList;
     _role_set_form?: RoleSetForm;
@@ -31,7 +32,7 @@ export class RoleSet {
     pkUiContext?: number;
     isViewMode?= false;
     dragEnabled?: boolean;
-    label?: RoleSetLabel;
+    label?: FieldLabel;
     toggle?= 'expanded' as CollapsedExpanded;
     rolesNotInProjectLoading?: boolean;
     roleStatesToCreateVisible?: boolean;
@@ -41,6 +42,7 @@ export class RoleSet {
     loading?: boolean;
 
     constructor(data?: RoleSet) {
+        super()
         Object.assign(this, data);
     }
 

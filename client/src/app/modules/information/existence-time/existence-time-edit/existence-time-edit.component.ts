@@ -35,8 +35,8 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
   @Output() submitted: EventEmitter<{ toAdd: InfRole[], toRemove: InfRole[], unchanged: InfRole[] }> = new EventEmitter();
 
 
-  _children: RoleSetList;
-  @select() _children$: Observable<RoleSetList>;
+  _fields: RoleSetList;
+  @select() _fields$: Observable<RoleSetList>;
   @select() showOntoInfo$: Observable<boolean>;
   @select() helpMode$: Observable<ExTimeHelpMode>
   @select() mode$: Observable<ExTimeModalMode>
@@ -80,7 +80,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
 
     this.subs.push(this.localStore.select<ExistenceTimeEdit>('').subscribe(d => {
       if (d) {
-        this._children = d._children;
+        this._fields = d._fields;
       }
     }))
   }
@@ -89,17 +89,17 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
   initShortCuts(state: ExistenceTimeEdit) {
 
     // If init in one-date mode and the roleSet for "At some time within" is not yet there
-    if (state.mode === 'one-date' && (state._children === undefined || state._children._72_outgoing === undefined)) {
+    if (state.mode === 'one-date' && (state._fields === undefined || state._fields._72_outgoing === undefined)) {
       this.addRoleSet(72)
     }
 
     // If init in begin-end mode and the roleSet for "Begin" is not yet there
-    if (state.mode === 'begin-end' && (state._children === undefined || state._children._150_outgoing === undefined)) {
+    if (state.mode === 'begin-end' && (state._fields === undefined || state._fields._150_outgoing === undefined)) {
       this.addRoleSet(150)
     }
 
     // If init in begin-end mode and the roleSet for "End" is not yet there
-    if (state.mode === 'begin-end' && (state._children === undefined || state._children._151_outgoing === undefined)) {
+    if (state.mode === 'begin-end' && (state._fields === undefined || state._fields._151_outgoing === undefined)) {
       this.addRoleSet(151)
     }
   }
@@ -185,7 +185,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
 */
   initFormCtrls() {
 
-    const rs = this.localStore.getState()._children;
+    const rs = this.localStore.getState()._fields;
 
     // iterate over roleSets of the existence time state
     if (rs) {
@@ -251,7 +251,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
     // if this roleSet should replace a roleSet
     if (replace) {
       replace.forEach(key => {
-        if (key && this._children && this._children[key]) {
+        if (key && this._fields && this._fields[key]) {
           this.removeRoleSet(key);
         }
       })

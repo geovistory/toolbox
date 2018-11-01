@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { U, UiContext } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy } from 'ramda';
-import { DataUnitLabel, RoleSet, DataUnit } from 'app/core/state/models';
+import {  ClassInstanceLabel, RoleSet, DataUnit } from 'app/core/state/models';
 import { roleSetKey } from 'app/core/state/services/state-creator';
 
 
@@ -43,7 +43,7 @@ export class DataUnitActions {
   @dispatch()
 
 
-  roleSetsListDisplayLabelUpdated = (label: DataUnitLabel): DataUnitAction => ({
+  roleSetsListDisplayLabelUpdated = (label:  ClassInstanceLabel): DataUnitAction => ({
     type: DataUnitActions.ROLE_SET_LIST_DISPLAY_LABEL_UPDATED,
     meta: null,
     payload: {
@@ -79,7 +79,7 @@ export class DataUnitActions {
   * called, when user selected a the kind of property to add
   *
   * @param: roleSet to add
-  * @param: uiContext of the class, used sort the _children
+  * @param: uiContext of the class, used sort the _fields
   */
   addRoleSet = (roleSet: RoleSet, uiContext: UiContext): DataUnitAction => ({
     type: DataUnitActions.ROLE_SET_ADDED,
@@ -87,7 +87,7 @@ export class DataUnitActions {
       uiContext
     },
     payload: {
-      _children: indexBy(roleSetKey, [roleSet]),
+      _fields: indexBy(roleSetKey, [roleSet]),
       selectPropState: 'init'
     }
   })

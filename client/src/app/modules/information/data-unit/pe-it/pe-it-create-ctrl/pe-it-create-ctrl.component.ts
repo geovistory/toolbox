@@ -50,8 +50,8 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
         this.formGroup.addControl('_typeCtrl', new FormControl(typeDetail._typeCtrl.entityAssociation))
       }
     })
-    // add controls for each roleSet of _children
-    this._children$.takeUntil(this.destroy$).subscribe(roleSetList => {
+    // add controls for each roleSet of _fields
+    this._fields$.takeUntil(this.destroy$).subscribe(roleSetList => {
       U.obj2KeyValueArr(roleSetList).forEach(item => {
         this.formGroup.addControl(item.key, new FormControl(
           item.value.roles,

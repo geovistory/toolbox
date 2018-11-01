@@ -1,7 +1,7 @@
-import { createRoleDetail, createRoleSet, createPlaceDetail, createTimePrimitveDetail, createAppeDetail, createLangDetail, createDataUnitChildren, createPeItDetail, createEntityAssociationDetail } from './state-creator';
+import { createRoleDetail, createRoleSet, createPlaceDetail, createTimePrimitveDetail, createAppeDetail, createLangDetail, createFieldList, createPeItDetail, createEntityAssociationDetail } from './state-creator';
 import { roleWithPlace, place, roleWithLanguage, language, roleWithAppellation, appellation, roleWithTimePrimitive, time_primitive, role, roleWithTemporalEntity, temporal_entity, property, temporalEntityBirth } from './_mock-data';
 import { crm } from 'app/core/active-project/_mock-data';
-import { RoleSet, ExistenceTimeDetail, DataUnitChildList } from 'app/core/state/models';
+import { RoleSet, ExistenceTimeDetail, FieldList } from 'app/core/state/models';
 import { InfPersistentItem, InfEntityAssociation } from 'app/core/sdk';
 import { ComConfig } from 'app/core/config/com-config';
 
@@ -18,15 +18,15 @@ describe('StateCreator', () => {
      ***************************************************/
     it('#createPeIt should create a PeItDetail for creating a new person', () => {
         expect(((createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE }))
-            ._children._1192_ingoing as RoleSet)._role_list['_undefined']._teEnt._children)
+            ._fields._1192_ingoing as RoleSet)._role_list['_undefined']._teEnt._fields)
             .toBeTruthy()
     });
 
     /***************************************************
-     * createDataUnitChildren specs
+     * createFieldList specs
      ***************************************************/
-    it('#createDataUnitChildren should create a DataUnitChildList with an ExistenceTimeDetail', () => {
-        expect((createDataUnitChildren(temporalEntityBirth.fk_class, [roleWithTimePrimitive], crm, undefined)._existenceTime as ExistenceTimeDetail)._children._72_outgoing._role_list._1.role).toEqual(roleWithTimePrimitive)
+    it('#createFieldList should create a FieldList with an ExistenceTimeDetail', () => {
+        expect((createFieldList(temporalEntityBirth.fk_class, [roleWithTimePrimitive], [], crm, undefined)._existenceTime as ExistenceTimeDetail)._fields._72_outgoing._role_list._1.role).toEqual(roleWithTimePrimitive)
     });
     /***************************************************
      * createRoleDetail specs
@@ -102,7 +102,7 @@ describe('StateCreator', () => {
             } as InfEntityAssociation,
             crm,
             { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_CREATE }
-        ))._peIt._children._100005_ingoing as RoleSet)._role_list['_undefined']._teEnt._children).toBeTruthy()
+        ))._peIt._fields._100005_ingoing as RoleSet)._role_list['_undefined']._teEnt._fields).toBeTruthy()
     });
 
 

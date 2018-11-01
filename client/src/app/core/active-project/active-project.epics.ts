@@ -57,7 +57,7 @@ export class ActiveProjectEpics {
               '$relation': {
                 'name': 'labels',
                 'joinType': 'inner join',
-                'orderBy': [{ 'pk_label': 'asc' }]
+                'orderBy': [{ 'pk_entity': 'asc' }]
               }
             },
             'default_language': {
@@ -142,10 +142,10 @@ export class ActiveProjectEpics {
                     // retrieve the classConfig
                     const cConf = crm.classes[uiConf.property_is_outgoing ? uiConf.property.dfh_has_domain : uiConf.property.dfh_has_range];
                     this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
-                  } else if (uiConf.fk_property_set) {
+                  } else if (uiConf.fk_class_field) {
                     // add propSet configs to crm
                     // retrieve the classConfig
-                    const cConf = crm.classes[uiConf.fk_class_for_property_set];
+                    const cConf = crm.classes[uiConf.fk_class_for_class_field];
                     this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
                   }
 
@@ -202,9 +202,9 @@ export class ActiveProjectEpics {
         fk_property: uiConf.fk_property,
         property_is_outgoing: uiConf.property_is_outgoing,
         roleSetKey: uiConf.fk_property ? roleSetKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
-        fk_property_set: uiConf.fk_property_set,
-        property_set: uiConf.fk_property_set ? uiConf.property_set : undefined,
-        propSetKey: uiConf.fk_property_set ? propSetKeyFromFk(uiConf.fk_property_set) : undefined
+        fk_class_field: uiConf.fk_class_field,
+        class_field: uiConf.fk_class_field ? uiConf.class_field : undefined,
+        propSetKey: uiConf.fk_class_field ? propSetKeyFromFk(uiConf.fk_class_field) : undefined
       })
 
       // sort the array of uiElements by the ordNum

@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, InfRole, UiContext, UiElement, ProjectCrm } from 'app/core';
-import { AddOption, DataUnitChildList, DataUnitLabel, PeItDetail, RoleSet, SelectPropStateType, SubstoreComponent, TeEntDetail } from 'app/core/state/models';
+import { AddOption, FieldList,  ClassInstanceLabel, PeItDetail, RoleSet, SelectPropStateType, SubstoreComponent, TeEntDetail } from 'app/core/state/models';
 import { TypeDetail } from 'app/core/state/models/type-detail';
 import { createRoleSet, roleSetKey, StateSettings } from 'app/core/state/services/state-creator';
 import { RootEpics } from 'app/core/store/epics';
@@ -13,9 +13,9 @@ import { TeEntActions } from './te-ent/te-ent.actions';
 import { takeUntil, filter, first } from 'rxjs/operators';
 
 
-// maps pk_property_set to key in ngRedux store
+// maps pk_class_field to key in ngRedux store
 export const propSetMap = {
-  [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME]: '_existenceTime'
+  [ComConfig.PK_CLASS_FIELD_WHEN]: '_existenceTime'
 }
 
 
@@ -44,7 +44,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   @select() outgoingRoleSets$?: RoleSet[];
   @select() parentPeIt$: Observable<InfPersistentItem>;
   @select() propertyToAdd$: Observable<RoleSet>; // Poperty that is currently chosen in order to add a role of this kind
-  @select() _children$: Observable<DataUnitChildList>;
+  @select() _fields$: Observable<FieldList>;
   @select() _type$: Observable<TypeDetail>
   @select() pkUiContext$: Observable<number>
 
@@ -64,7 +64,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   /**
    * Properties
    */
-  label: DataUnitLabel;
+  label:  ClassInstanceLabel;
   labelInEdit: string;
 
   selectedAddOption: AddOption;
@@ -120,7 +120,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
 
 
   initSubscriptions() {
-    this._children$.takeUntil(this.destroy$).subscribe(rs => {
+    this._fields$.takeUntil(this.destroy$).subscribe(rs => {
       this.roleSets = rs;
     })
 

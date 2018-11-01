@@ -80,13 +80,13 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
         */
   initPaths() {
     // transforms e.g.
-    // ['information', '_peIt_editable', '_children', '_1_ingoing', '_role_list', '_88899', '_teEnt'] to
+    // ['information', '_peIt_editable', '_fields', '_1_ingoing', '_role_list', '_88899', '_teEnt'] to
     // ['information', '_peIt_editable']
     this.parentPeItStatePath = this.parentPath.slice(0, (this.parentPath.length - 5));
 
     // transforms e.g.
-    // ['information', '_peIt_editable', '_children', '_1_ingoing', '_role_list', '_88899', '_teEnt'] to
-    // ['information', '_peIt_editable', '_children', '_1_ingoing', ]
+    // ['information', '_peIt_editable', '_fields', '_1_ingoing', '_role_list', '_88899', '_teEnt'] to
+    // ['information', '_peIt_editable', '_fields', '_1_ingoing', ]
     this.parentRoleDetailPath = this.parentPath.slice(0, (this.parentPath.length - 3));
 
     this.peItRoleSetStore = this.ngRedux.configureSubStore(dropLast(3, this.parentPath), roleSetReducer)

@@ -19,14 +19,14 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
         context: {
             model: {
             },
-            basePath: ['_teEnt', '_children', '_existenceTime'],
+            basePath: ['_teEnt', '_fields', '_existenceTime'],
             initState: {
                 activeProject: {
                     pk_project: 57,
                     crm: crm
                 },
                 "_teEnt": {
-                    _children: {
+                    _fields: {
                         "_existenceTime": { //  <- Existence Time
                             "roles": [
                             ],
@@ -98,20 +98,20 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
         context: {
             model: {
             },
-            basePath: ['_teEnt', '_children', '_existenceTime'],
+            basePath: ['_teEnt', '_fields', '_existenceTime'],
             initState: {
                 activeProject: {
                     pk_project: 57,
                     crm: crm
                 },
                 "_teEnt": {
-                    _children: {
+                    _fields: {
 
                         "_existenceTime": { //  <- Existence Time
                             "roles": [
                             ],
                             "toggle": "expanded",
-                            _children: {
+                            _fields: {
                                 '_152_outgoing': {
                                     _role_list: {
                                         _undefined: {
@@ -226,7 +226,7 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
                         "roles": [
                         ],
                         "toggle": "expanded",
-                        _children: {
+                        _fields: {
                             '_150_outgoing': {
                                 _role_list: {
                                     _undefined: {
@@ -657,7 +657,7 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
                         "roles": [
                         ],
                         "toggle": "expanded",
-                        _children: {
+                        _fields: {
 
                             '_72_outgoing': {
                                 _role_list: {

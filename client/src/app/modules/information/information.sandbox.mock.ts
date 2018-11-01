@@ -16,49 +16,49 @@ export const crm: ProjectCrm = {
               fk_property: 1192,
               property_is_outgoing: false,
               roleSetKey: '_1192_ingoing',
-              fk_property_set: null,
+              fk_class_field: null,
             },
             {
               ord_num: 1,
               fk_property: 86,
               property_is_outgoing: false,
               roleSetKey: '_86_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 88,
               property_is_outgoing: false,
               roleSetKey: '_88_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 3,
               fk_property: 1188,
               property_is_outgoing: false,
               roleSetKey: '_1188_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 4,
               fk_property: 84,
               property_is_outgoing: false,
               roleSetKey: '_84_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 5,
               fk_property: 85,
               property_is_outgoing: false,
               roleSetKey: '_85_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 6,
               fk_property: 1180,
               property_is_outgoing: false,
               roleSetKey: '_1180_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             }
           ]
         },
@@ -70,7 +70,7 @@ export const crm: ProjectCrm = {
               fk_property: 1192,
               property_is_outgoing: false,
               roleSetKey: '_1192_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             }
           ]
         }
@@ -95,10 +95,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 84,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 4,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -130,10 +130,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 85,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 5,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -165,10 +165,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 88,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 2,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -200,20 +200,20 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1192,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 0,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               },
               {
                 pk_entity: 270,
                 fk_ui_context: 104,
                 fk_project: null,
                 fk_property: 1192,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 0,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -245,10 +245,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1188,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 3,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -280,10 +280,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 86,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 1,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -315,10 +315,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1196,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: null,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -350,10 +350,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1180,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 6,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -385,10 +385,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1198,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: null,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -640,8 +640,8 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: null,
               property_is_outgoing: null,
-              fk_property_set: 224,
-              property_set: {
+              fk_class_field: 224,
+              class_field: {
                 pk_entity: 224,
                 description: 'Existence Time or Time Span of a Temporal Entity',
                 label: 'When'
@@ -653,14 +653,14 @@ export const crm: ProjectCrm = {
               fk_property: 83,
               property_is_outgoing: true,
               roleSetKey: '_83_outgoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 139,
               property_is_outgoing: true,
               roleSetKey: '_139_outgoing',
-              fk_property_set: null
+              fk_class_field: null
             }
           ]
         },
@@ -671,8 +671,8 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: null,
               property_is_outgoing: null,
-              fk_property_set: 224,
-              property_set: {
+              fk_class_field: 224,
+              class_field: {
                 pk_entity: 224,
                 description: 'Existence Time or Time Span of a Temporal Entity',
                 label: 'When'
@@ -702,10 +702,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 83,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: 1,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -737,10 +737,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 139,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: 2,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -769,14 +769,14 @@ export const crm: ProjectCrm = {
               fk_property: 86,
               property_is_outgoing: true,
               roleSetKey: '_86_outgoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: null,
               property_is_outgoing: null,
-              fk_property_set: 224,
-              property_set: {
+              fk_class_field: 224,
+              class_field: {
                 pk_entity: 224,
                 description: 'Existence Time or Time Span of a Temporal Entity',
                 label: 'When'
@@ -788,28 +788,28 @@ export const crm: ProjectCrm = {
               fk_property: 84,
               property_is_outgoing: true,
               roleSetKey: '_84_outgoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 3,
               fk_property: 85,
               property_is_outgoing: true,
               roleSetKey: '_85_outgoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 4,
               fk_property: 1186,
               property_is_outgoing: true,
               roleSetKey: '_1186_outgoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 5,
               fk_property: 1187,
               property_is_outgoing: true,
               roleSetKey: '_1187_outgoing',
-              fk_property_set: null
+              fk_class_field: null
             }
           ]
         },
@@ -820,8 +820,8 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: null,
               property_is_outgoing: null,
-              fk_property_set: 224,
-              property_set: {
+              fk_class_field: 224,
+              class_field: {
                 pk_entity: 224,
                 description: 'Existence Time or Time Span of a Temporal Entity',
                 label: 'When'
@@ -833,7 +833,7 @@ export const crm: ProjectCrm = {
               fk_property: 86,
               property_is_outgoing: true,
               roleSetKey: '_86_outgoing',
-              fk_property_set: null
+              fk_class_field: null
             }
           ]
         }
@@ -858,20 +858,20 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 104,
                 fk_project: null,
                 fk_property: 84,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               },
               {
                 pk_entity: 254,
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 84,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: 2,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -903,20 +903,20 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 104,
                 fk_project: null,
                 fk_property: 85,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               },
               {
                 pk_entity: 256,
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 85,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: 3,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -948,20 +948,20 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 104,
                 fk_project: null,
                 fk_property: 86,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: 1,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               },
               {
                 pk_entity: 255,
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 86,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: 0,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -993,20 +993,20 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 104,
                 fk_project: null,
                 fk_property: 1186,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               },
               {
                 pk_entity: 257,
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1186,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: 4,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -1038,20 +1038,20 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 104,
                 fk_project: null,
                 fk_property: 1187,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               },
               {
                 pk_entity: 258,
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1187,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: 5,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -1079,8 +1079,8 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: null,
               property_is_outgoing: null,
-              fk_property_set: 224,
-              property_set: {
+              fk_class_field: 224,
+              class_field: {
                 pk_entity: 224,
                 description: 'Existence Time or Time Span of a Temporal Entity',
                 label: 'When'
@@ -1092,14 +1092,14 @@ export const crm: ProjectCrm = {
               fk_property: 88,
               property_is_outgoing: true,
               roleSetKey: '_88_outgoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 1191,
               property_is_outgoing: true,
               roleSetKey: '_1191_outgoing',
-              fk_property_set: null
+              fk_class_field: null
             }
           ]
         },
@@ -1128,10 +1128,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 88,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: 1,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -1163,10 +1163,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1191,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: 2,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -1195,56 +1195,56 @@ export const crm: ProjectCrm = {
               fk_property: 1193,
               property_is_outgoing: false,
               roleSetKey: '_1193_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 83,
               property_is_outgoing: false,
               roleSetKey: '_83_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 87,
               property_is_outgoing: false,
               roleSetKey: '_87_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 3,
               fk_property: 1182,
               property_is_outgoing: false,
               roleSetKey: '_1182_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 4,
               fk_property: 1189,
               property_is_outgoing: false,
               roleSetKey: '_1189_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 5,
               fk_property: 132,
               property_is_outgoing: false,
               roleSetKey: '_132_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 6,
               fk_property: 134,
               property_is_outgoing: false,
               roleSetKey: '_134_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 7,
               fk_property: 139,
               property_is_outgoing: false,
               roleSetKey: '_139_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             }
           ]
         },
@@ -1256,7 +1256,7 @@ export const crm: ProjectCrm = {
               fk_property: 1193,
               property_is_outgoing: false,
               roleSetKey: '_1193_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             }
           ]
         }
@@ -1281,10 +1281,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 83,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 1,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -1316,10 +1316,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 87,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 2,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -1351,10 +1351,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 132,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 5,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -1386,10 +1386,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 134,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 6,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -1421,10 +1421,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1189,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 4,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -1480,10 +1480,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 139,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 7,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -1515,20 +1515,20 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1193,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 0,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               },
               {
                 pk_entity: 291,
                 fk_ui_context: 104,
                 fk_project: null,
                 fk_property: 1193,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 0,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -1560,10 +1560,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1182,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 3,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -2021,28 +2021,28 @@ export const crm: ProjectCrm = {
               fk_property: 1194,
               property_is_outgoing: false,
               roleSetKey: '_1194_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1178,
               property_is_outgoing: false,
               roleSetKey: '_1178_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 1186,
               property_is_outgoing: false,
               roleSetKey: '_1186_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 3,
               fk_property: 1191,
               property_is_outgoing: false,
               roleSetKey: '_1191_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             }
           ]
         }
@@ -2091,10 +2091,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1186,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 2,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -2126,10 +2126,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1194,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 0,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -2161,10 +2161,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1191,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 3,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -2196,10 +2196,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1178,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 1,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -2235,21 +2235,21 @@ export const crm: ProjectCrm = {
               fk_property: 1113,
               property_is_outgoing: true,
               roleSetKey: '_1113_outgoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1112,
               property_is_outgoing: true,
               roleSetKey: '_1112_outgoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: null,
               property_is_outgoing: null,
-              fk_property_set: 224,
-              property_set: {
+              fk_class_field: 224,
+              class_field: {
                 pk_entity: 224,
                 description: 'Existence Time or Time Span of a Temporal Entity',
                 label: 'When'
@@ -2266,7 +2266,7 @@ export const crm: ProjectCrm = {
               fk_property: 1113,
               property_is_outgoing: true,
               roleSetKey: '_1113_outgoing',
-              fk_property_set: null
+              fk_class_field: null
             }
           ]
         }
@@ -2291,20 +2291,20 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1113,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: 0,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               },
               {
                 pk_entity: 277,
                 fk_ui_context: 104,
                 fk_project: null,
                 fk_property: 1113,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: 0,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -2336,20 +2336,20 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 104,
                 fk_project: null,
                 fk_property: 1192,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               },
               {
                 pk_entity: 272,
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1192,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -2381,20 +2381,20 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1112,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: 1,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               },
               {
                 pk_entity: 279,
                 fk_ui_context: 104,
                 fk_project: null,
                 fk_property: 1112,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -2426,20 +2426,20 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 104,
                 fk_project: null,
                 fk_property: 1193,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               },
               {
                 pk_entity: 275,
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1193,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -2471,20 +2471,20 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1194,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               },
               {
                 pk_entity: 282,
                 fk_ui_context: 104,
                 fk_project: null,
                 fk_property: 1194,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -2516,20 +2516,20 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1195,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               },
               {
                 pk_entity: 281,
                 fk_ui_context: 104,
                 fk_project: null,
                 fk_property: 1195,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -2558,28 +2558,28 @@ export const crm: ProjectCrm = {
               fk_property: 1195,
               property_is_outgoing: false,
               roleSetKey: '_1195_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1184,
               property_is_outgoing: false,
               roleSetKey: '_1184_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 1187,
               property_is_outgoing: false,
               roleSetKey: '_1187_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             },
             {
               ord_num: 3,
               fk_property: 1185,
               property_is_outgoing: false,
               roleSetKey: '_1185_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             }
           ]
         },
@@ -2591,7 +2591,7 @@ export const crm: ProjectCrm = {
               fk_property: 1195,
               property_is_outgoing: false,
               roleSetKey: '_1195_ingoing',
-              fk_property_set: null
+              fk_class_field: null
             }
           ]
         }
@@ -2616,10 +2616,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1184,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 1,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -2651,10 +2651,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1187,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 2,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -2686,20 +2686,20 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1195,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 0,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               },
               {
                 pk_entity: 296,
                 fk_ui_context: 104,
                 fk_project: null,
                 fk_property: 1195,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 0,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -2731,10 +2731,10 @@ export const crm: ProjectCrm = {
                 fk_ui_context: 103,
                 fk_project: null,
                 fk_property: 1185,
-                fk_property_set: null,
+                fk_class_field: null,
                 property_is_outgoing: false,
                 ord_num: 3,
-                fk_class_for_property_set: null
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -2843,10 +2843,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 84,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 4,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -2878,10 +2878,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 85,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 5,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -2913,10 +2913,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 88,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 2,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -2948,20 +2948,20 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1192,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 0,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           },
           {
             pk_entity: 270,
             fk_ui_context: 104,
             fk_project: null,
             fk_property: 1192,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 0,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -2993,10 +2993,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1188,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 3,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3028,10 +3028,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 86,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 1,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3063,10 +3063,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1196,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: null,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3098,10 +3098,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1180,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 6,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3133,10 +3133,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1198,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: null,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3384,10 +3384,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 83,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: 1,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3419,10 +3419,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 139,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: 2,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3454,20 +3454,20 @@ export const crm: ProjectCrm = {
             fk_ui_context: 104,
             fk_project: null,
             fk_property: 84,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: null,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           },
           {
             pk_entity: 254,
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 84,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: 2,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3499,20 +3499,20 @@ export const crm: ProjectCrm = {
             fk_ui_context: 104,
             fk_project: null,
             fk_property: 85,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: null,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           },
           {
             pk_entity: 256,
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 85,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: 3,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3544,20 +3544,20 @@ export const crm: ProjectCrm = {
             fk_ui_context: 104,
             fk_project: null,
             fk_property: 86,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: 1,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           },
           {
             pk_entity: 255,
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 86,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: 0,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3589,20 +3589,20 @@ export const crm: ProjectCrm = {
             fk_ui_context: 104,
             fk_project: null,
             fk_property: 1186,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: null,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           },
           {
             pk_entity: 257,
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1186,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: 4,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3634,20 +3634,20 @@ export const crm: ProjectCrm = {
             fk_ui_context: 104,
             fk_project: null,
             fk_property: 1187,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: null,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           },
           {
             pk_entity: 258,
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1187,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: 5,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3679,10 +3679,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 88,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: 1,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3714,10 +3714,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1191,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: 2,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3749,10 +3749,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 83,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 1,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3784,10 +3784,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 87,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 2,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3819,10 +3819,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 132,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 5,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3854,10 +3854,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 134,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 6,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3889,10 +3889,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1189,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 4,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3948,10 +3948,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 139,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 7,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -3983,20 +3983,20 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1193,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 0,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           },
           {
             pk_entity: 291,
             fk_ui_context: 104,
             fk_project: null,
             fk_property: 1193,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 0,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -4028,10 +4028,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1182,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 3,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -4447,10 +4447,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1186,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 2,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -4482,10 +4482,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1194,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 0,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -4517,10 +4517,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1191,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 3,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -4552,10 +4552,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1178,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 1,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -4587,20 +4587,20 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1113,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: 0,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           },
           {
             pk_entity: 277,
             fk_ui_context: 104,
             fk_project: null,
             fk_property: 1113,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: 0,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -4632,20 +4632,20 @@ export const crm: ProjectCrm = {
             fk_ui_context: 104,
             fk_project: null,
             fk_property: 1192,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: null,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           },
           {
             pk_entity: 272,
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1192,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: null,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -4677,20 +4677,20 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1112,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: 1,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           },
           {
             pk_entity: 279,
             fk_ui_context: 104,
             fk_project: null,
             fk_property: 1112,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: null,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -4722,20 +4722,20 @@ export const crm: ProjectCrm = {
             fk_ui_context: 104,
             fk_project: null,
             fk_property: 1193,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: null,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           },
           {
             pk_entity: 275,
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1193,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: null,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -4767,20 +4767,20 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1194,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: null,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           },
           {
             pk_entity: 282,
             fk_ui_context: 104,
             fk_project: null,
             fk_property: 1194,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: null,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -4812,20 +4812,20 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1195,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: null,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           },
           {
             pk_entity: 281,
             fk_ui_context: 104,
             fk_project: null,
             fk_property: 1195,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: true,
             ord_num: null,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -4857,10 +4857,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1184,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 1,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -4892,10 +4892,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1187,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 2,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -4927,20 +4927,20 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1195,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 0,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           },
           {
             pk_entity: 296,
             fk_ui_context: 104,
             fk_project: null,
             fk_property: 1195,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 0,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },
@@ -4972,10 +4972,10 @@ export const crm: ProjectCrm = {
             fk_ui_context: 103,
             fk_project: null,
             fk_property: 1185,
-            fk_property_set: null,
+            fk_class_field: null,
             property_is_outgoing: false,
             ord_num: 3,
-            fk_class_for_property_set: null
+            fk_class_for_class_field: null
           }
         ]
       },

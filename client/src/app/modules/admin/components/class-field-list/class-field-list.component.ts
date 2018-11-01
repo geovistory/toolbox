@@ -1,7 +1,7 @@
 import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, ComPropertySet } from 'app/core';
+import { IAppState, SubstoreComponent, ComClassField } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { ClassFieldList } from './api/class-field-list.models';
 import { ClassFieldListAPIEpics } from './api/class-field-list.epics';
@@ -33,7 +33,7 @@ export class ClassFieldListComponent extends ClassFieldListAPIActions implements
   basePath = ['admin', 'classFieldList'];
 
   // select observables of substore properties
-  @select() items$: Observable<{ [key: string]: ComPropertySet }>;
+  @select() items$: Observable<{ [key: string]: ComClassField }>;
 
   tableConfiguration: Config = {
     searchEnabled: true,
@@ -110,11 +110,11 @@ export class ClassFieldListComponent extends ClassFieldListAPIActions implements
     this.destroy$.unsubscribe();
   }
 
-  setTableData(items: { [key: string]: ComPropertySet }) {
+  setTableData(items: { [key: string]: ComClassField }) {
     this.data = this.keys.transform(items).map((item) => {
       return {
         ...item.value,
-        properties: !item.value.property_set_property_rel ? '' : item.value.property_set_property_rel.map((prel) => (prel.property.dfh_identifier_in_namespace)).join(', '),
+        properties: !item.value.class_field_property_rel ? '' : item.value.class_field_property_rel.map((prel) => (prel.property.dfh_identifier_in_namespace)).join(', '),
         key: item.key
       }
     })

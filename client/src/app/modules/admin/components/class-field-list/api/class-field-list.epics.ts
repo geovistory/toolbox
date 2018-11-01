@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, ComPropertySetApi } from 'app/core';
+import { LoadingBarActions, ComClassFieldApi } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -12,7 +12,7 @@ import { ofSubstore } from 'app/core/store/module';
 @Injectable()
 export class ClassFieldListAPIEpics {
   constructor(
-    private classFieldApi: ComPropertySetApi, // <- change the api
+    private classFieldApi: ComClassFieldApi, // <- change the api
     private actions: ClassFieldListAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions
@@ -47,9 +47,9 @@ export class ClassFieldListAPIEpics {
                   orderBy: [{ pk_entity: 'DESC' }],
                 }
               },
-              property_set_property_rel: {
+              class_field_property_rel: {
                 $relation: {
-                  name: 'property_set_property_rel',
+                  name: 'class_field_property_rel',
                   joinType: 'left join',
                   orderBy: [{ pk_entity: 'DESC' }],
                 },
