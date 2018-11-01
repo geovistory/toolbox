@@ -226,29 +226,6 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
 
     const uiContext = classConfig.uiContexts[settings.pkUiContext];
 
-    const createClassField = (fkClassField: number, rls: InfRole[], textProps: InfTextProperty[]) => {
-        switch (fkClassField) {
-            case ComConfig.PK_CLASS_FIELD_WHEN:
-                // if this ui-element is a Existence-Time PropSet
-                const options = new ExistenceTimeDetail({ toggle: 'expanded' });
-                fields.push(createExistenceTimeDetail(options, rls, crm, settings));
-
-
-                break;
-
-            case ComConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
-            case ComConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
-            case ComConfig.PK_CLASS_FIELD_SHORT_TITLE:
-
-                fields.push(createTextPropertyField({ fkClassField }, textProps.filter((txtProp) => txtProp.fk_class_field == fkClassField), crm, settings));
-
-                break;
-
-
-            default:
-                break;
-        }
-    }
 
     if (isCreateContext(settings.pkUiContext)) {
 
@@ -278,7 +255,7 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
                         fields.push(propertyField);
                     }
                 } else if (el.fk_class_field) {
-                    createClassField(el.fk_class_field, [], [])
+                    fields.push(createClassField(el.fk_class_field, [], [], crm, settings))
                 }
             });
         }
@@ -320,7 +297,7 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
                         fields.push(createPropertyField(options, rolesWithinQuantity, crm, settings));
                     }
                 } else if (el.fk_class_field) {
-                    createClassField(el.fk_class_field, roles, textProperties)
+                    fields.push(createClassField(el.fk_class_field, roles, textProperties, crm, settings))
                 }
 
             });
@@ -334,9 +311,35 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
 }
 
 
+/***************************************************
+* Field create functions
+***************************************************/
+
+
+/**
+ * Creates a Field from provided input data
+ *
+ * TODO: merge rls and text props to some "value" property
+ */
+export function createClassField(fkClassField: number, rls: InfRole[], textProps: InfTextProperty[], crm: ProjectCrm, settings: StateSettings): Field {
+    switch (fkClassField) {
+        case ComConfig.PK_CLASS_FIELD_WHEN:
+            // if this ui-element is a Existence-Time PropSet
+            const options = new ExistenceTimeDetail({ toggle: 'expanded' });
+            return createExistenceTimeDetail(options, rls, crm, settings);
+
+        case ComConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
+        case ComConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
+        case ComConfig.PK_CLASS_FIELD_SHORT_TITLE:
+            return createTextPropertyField({ fkClassField }, textProps.filter((txtProp) => txtProp.fk_class_field == fkClassField), crm, settings);
+
+        default:
+            break;
+    }
+}
 
 /***************************************************
-* Role Set create functions
+* Property Field create functions
 ***************************************************/
 
 

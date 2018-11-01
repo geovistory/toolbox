@@ -1,5 +1,5 @@
 import { ExistenceTime } from 'app/core/existence-time/existence-time';
-import { AppeDetail,  ClassInstanceFieldLabel, FieldList,  ClassInstanceLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, PropertyField, FieldLabel, PropertyFieldList, TeEntDetail, RoleDetailList, PlaceDetail } from 'app/core/state/models';
+import { AppeDetail, ClassInstanceFieldLabel, FieldList, ClassInstanceLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, PropertyField, FieldLabel, PropertyFieldList, TeEntDetail, RoleDetailList, PlaceDetail } from 'app/core/state/models';
 import { indexBy, omit } from 'ramda';
 import { AcEntity, AcNotification, ActionType } from '../../modules/gv-angular-cesium/angular-cesium-fork';
 import { AppellationLabel } from '../../modules/information/shared/appellation-label';
@@ -11,6 +11,8 @@ import { ComClassField, ComUiContextConfig, DfhClass, DfhProperty, InfEntityProj
 import { propertyFieldKeyFromParams, propertyFieldKey, fieldKey, roleDetailKey } from 'app/core/state/services/state-creator';
 import * as Config from '../../../../../common/config/Config';
 import { Field } from '../state/models/field';
+import { ComConfig } from '../config/com-config';
+import { TextPropertyField } from '../state/models/text-property-field';
 
 export interface LabelGeneratorSettings {
     // maximum number of data unit children that are taken into account for the label generator
@@ -221,6 +223,39 @@ export class U {
 
     }
 
+    /**
+      * Convert array of ComClassField to an array of Fields
+      *
+      */
+    static comCLassFields2Fields(classFields: ComClassField[]): Field[] {
+        if (!classFields) return [];
+
+        return classFields.map(comClassfield => {
+
+            const label = {
+                default: comClassfield.label,
+                sg: comClassfield.label,
+                pl: comClassfield.label
+            }
+            const fkClassField = comClassfield.pk_entity;
+
+
+            switch (comClassfield.pk_entity) {
+                case ComConfig.PK_CLASS_FIELD_WHEN:
+
+                    return new ExistenceTimeDetail({ fkClassField, label })
+
+                case ComConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
+                case ComConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
+                case ComConfig.PK_CLASS_FIELD_SHORT_TITLE:
+
+                    return new TextPropertyField({ fkClassField, label })
+
+                default:
+                    break;
+            }
+        });
+    }
 
     /**
     * Convert array of Property to an array of PropertyField
@@ -430,7 +465,7 @@ export class U {
      * Label Generator Functions
      **************************************************************************/
 
-    static labelFromFieldList(r: FieldList, settings: LabelGeneratorSettings):  ClassInstanceLabel {
+    static labelFromFieldList(r: FieldList, settings: LabelGeneratorSettings): ClassInstanceLabel {
         const max = !settings ? undefined : settings.fieldsMax;
         const duChildren = U.obj2Arr(r);
 

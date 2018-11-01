@@ -115,7 +115,8 @@
         "__get__labels",
         "__get__text_properties",
         "propertyByDomainClass",
-        "patchAttributes"
+        "patchAttributes",
+        "propertyFieldInfo"
       ]
     }
   ],
@@ -142,6 +143,31 @@
       "description": "Get all properties that are enabled and not removed from project, with labels, text_properties, domain_class, range_class.",
       "http": {
         "path": "/selected-pe-it-classes-of-profile",
+        "verb": "get"
+      }
+    },
+    "propertyFieldInfo": {
+      "accepts": [
+        {
+          "arg": "isOutgoing",
+          "type": "boolean",
+          "required": true,
+          "description": "",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "DfhProperty"
+        ],
+        "root": true
+      },
+      "description": "Get all properties that used as a field by the app, including the labels.",
+      "http": {
+        "path": "/property-field-info",
         "verb": "get"
       }
     }

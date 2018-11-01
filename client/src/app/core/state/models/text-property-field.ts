@@ -6,8 +6,6 @@ export class TextPropertyField extends Field {
 
     readonly type? = 'TextPropertyField';
 
-    fkClassField?: number;
-
     textPropertyDetailList?: TextPropertyDetailList;
 
     constructor(data?: TextPropertyField) {

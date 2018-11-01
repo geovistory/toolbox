@@ -1,4 +1,4 @@
-import { PropertyFieldList } from 'app/core/state/models';
+import { PropertyFieldList, FieldList } from 'app/core/state/models';
 import { ComClassFieldInterface, ComUiContextInterface, ProjectInterface } from 'app/core/sdk';
 import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/api/class-settings.models';
 
@@ -10,7 +10,9 @@ export interface ProjectDetail extends ProjectInterface {
 
 export interface ProjectCrm {
     classes?: ClassConfigList;
-    propertyFields?: PropertyFieldList;
+    propertyFields?: PropertyFieldList; // TODO: delete and use fieldList instead
+    fieldList?: FieldList;
+
 }
 
 export interface ClassConfigList { [dfh_pk_class: number]: ClassConfig };
