@@ -7,7 +7,7 @@ import { indexBy } from 'ramda';
 export function propSetKeyFromFk(fkPropSet: number) {
     switch (fkPropSet) {
         case ComConfig.PK_CLASS_FIELD_WHEN:
-            return '_existenceTime';
+            return '_field_48';
 
         default:
             return undefined

@@ -13,6 +13,7 @@ import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiCo
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
+import { Field } from '../state/models/field';
 
 
 
@@ -129,16 +130,10 @@ export class ActiveProjectEpics {
 
             const crm: ProjectCrm = {
               classes: {},
-              propertyFields: {},
               fieldList: {}
             }
             classes.forEach((cla: DfhClass) => {
               crm.classes[cla.dfh_pk_class] = U.classConfigFromDfhClass(cla);
-
-              // add propertyFields
-              U.obj2KeyValueArr(crm.classes[cla.dfh_pk_class].propertyFields).forEach(propField => {
-                crm.propertyFields[propField.key] = propField.value;
-              })
 
               // create fieldList
               crm.fieldList = {
@@ -223,7 +218,7 @@ export class ActiveProjectEpics {
         propertyFieldKey: uiConf.fk_property ? propertyFieldKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
         fk_class_field: uiConf.fk_class_field,
         class_field: uiConf.fk_class_field ? uiConf.class_field : undefined,
-        propSetKey: uiConf.fk_class_field ? propSetKeyFromFk(uiConf.fk_class_field) : undefined
+        propSetKey: uiConf.fk_class_field ? ('_field_' + uiConf.fk_class_field) : undefined
       })
 
       // sort the array of uiElements by the ordNum

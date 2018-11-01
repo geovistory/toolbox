@@ -64,7 +64,7 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
           const classLabel = cla.label;
           const level2propsLabels = cla.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE].uiElements.map(uiEle => {
             if (uiEle.propertyFieldKey) {
-              const rs = crm.propertyFields[uiEle.propertyFieldKey];
+              const rs = crm.fieldList[uiEle.propertyFieldKey] as PropertyField;
               if (!similarPropertyField(level1PropertyField, rs)) return rs.label.default
             } else if (uiEle.propSetKey) {
               return uiEle.class_field.label;

@@ -10,9 +10,7 @@ export interface ProjectDetail extends ProjectInterface {
 
 export interface ProjectCrm {
     classes?: ClassConfigList;
-    propertyFields?: PropertyFieldList; // TODO: delete and use fieldList instead
     fieldList?: FieldList;
-
 }
 
 export interface ClassConfigList { [dfh_pk_class: number]: ClassConfig };
@@ -37,7 +35,7 @@ export interface UiContext extends ComUiContextInterface {
 export interface UiElement {
     fk_property?: number,
     property_is_outgoing?: boolean,
-    propertyFieldKey?: string,
+    propertyFieldKey?: string, // TODO: merge the propertyFieldKey and propSetKey to fieldKey
     propSetKey?: string,
     fk_class_field?: number,
     class_field?: ComClassFieldInterface

@@ -19,7 +19,7 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
         context: {
             model: {
             },
-            basePath: ['_teEnt', '_fields', '_existenceTime'],
+            basePath: ['_teEnt', '_fields', '_field_48'],
             initState: {
                 activeProject: {
                     pk_project: 57,
@@ -27,7 +27,7 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
                 },
                 "_teEnt": {
                     _fields: {
-                        "_existenceTime": { //  <- Existence Time
+                        "_field_48": { //  <- Existence Time
                             "roles": [
                             ],
                             "toggle": "expanded",
@@ -98,7 +98,7 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
         context: {
             model: {
             },
-            basePath: ['_teEnt', '_fields', '_existenceTime'],
+            basePath: ['_teEnt', '_fields', '_field_48'],
             initState: {
                 activeProject: {
                     pk_project: 57,
@@ -107,7 +107,7 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
                 "_teEnt": {
                     _fields: {
 
-                        "_existenceTime": { //  <- Existence Time
+                        "_field_48": { //  <- Existence Time
                             "roles": [
                             ],
                             "toggle": "expanded",
@@ -216,13 +216,13 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
         context: {
             model: {
             },
-            basePath: ['_teEnt', '_existenceTime'],
+            basePath: ['_teEnt', '_field_48'],
             initState: {
                 activeProject: {
                     pk_project: 57
                 },
                 "_teEnt": {
-                    "_existenceTime": { //  <- Existence Time
+                    "_field_48": { //  <- Existence Time
                         "roles": [
                         ],
                         "toggle": "expanded",
@@ -647,13 +647,13 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
         context: {
             model: {
             },
-            basePath: ['_teEnt', '_existenceTime'],
+            basePath: ['_teEnt', '_field_48'],
             initState: {
                 activeProject: {
                     pk_project: 57
                 },
                 "_teEnt": {
-                    "_existenceTime": { //  <- Existence Time
+                    "_field_48": { //  <- Existence Time
                         "roles": [
                         ],
                         "toggle": "expanded",

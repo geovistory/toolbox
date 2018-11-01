@@ -26,7 +26,7 @@ describe('StateCreator', () => {
      * createFieldList specs
      ***************************************************/
     it('#createFieldList should create a FieldList with an ExistenceTimeDetail', () => {
-        expect((createFieldList(temporalEntityBirth.fk_class, [roleWithTimePrimitive], [], crm, undefined)._existenceTime as ExistenceTimeDetail)._fields._72_outgoing._role_list._1.role).toEqual(roleWithTimePrimitive)
+        expect((createFieldList(temporalEntityBirth.fk_class, [roleWithTimePrimitive], [], crm, undefined)._field_48 as ExistenceTimeDetail)._fields._72_outgoing._role_list._1.role).toEqual(roleWithTimePrimitive)
     });
     /***************************************************
      * createRoleDetail specs

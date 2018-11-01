@@ -82,7 +82,7 @@ export default sandboxOf(TeEntEditableComponent, {
                     "isDisplayRoleForDomain": null,
                     "isDisplayRoleForRange": true,
                     "_teEnt": {
-                        "_existenceTime": { //  <- Existence Time
+                        "_field_48": { //  <- Existence Time
                             "roles": [
                             ],
                             "toggle": "collapsed",

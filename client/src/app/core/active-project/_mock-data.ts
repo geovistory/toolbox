@@ -79,6 +79,17 @@ export const crm: ProjectCrm = {
               property_is_outgoing: false,
               propertyFieldKey: '_1192_ingoing',
               fk_class_field: null
+            },
+            {
+              ord_num: 1,
+              fk_property: null,
+              property_is_outgoing: null,
+              fk_class_field: 336,
+              class_field: {
+                pk_entity: 336,
+                description: 'Entity Definition. Given that in many cases appellations are not sufficient for an unambiguous identification of resources, these text properties provide definitions in text form.',
+                label: 'Entity Definition'
+              }
             }
           ]
         },
@@ -148,6 +159,379 @@ export const crm: ProjectCrm = {
         }
       },
       propertyFields: {
+        _1188_ingoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 1188,
+            dfh_identifier_in_namespace: 'histP15',
+            dfh_has_domain: 442,
+            dfh_has_range: 21,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 85,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1188,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 4,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 234,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 1188,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 351,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1188,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: -1,
+          targetMinQuantity: 0,
+          targetClassPk: 442,
+          label: {
+            sg: 'Is member of',
+            pl: 'Is member of',
+            'default': 'Is member of'
+          }
+        },
+        _1196_ingoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 1196,
+            dfh_identifier_in_namespace: 'P143',
+            dfh_has_domain: 78,
+            dfh_has_range: 21,
+            dfh_fk_property_of_origin: 131,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 191,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1196,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 7,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 354,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1196,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: -1,
+          targetMinQuantity: 0,
+          targetClassPk: 78,
+          label: {
+            sg: 'Joining',
+            pl: 'Joinings',
+            'default': 'Joinings'
+          }
+        },
+        _1180_ingoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 1180,
+            dfh_identifier_in_namespace: 'histP12',
+            dfh_has_domain: 212,
+            dfh_has_range: 21,
+            dfh_fk_property_of_origin: 1177,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 0,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 86,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1180,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 3,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 353,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1180,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: -1,
+          targetMinQuantity: 0,
+          targetClassPk: 212,
+          label: {
+            sg: 'Localisation',
+            pl: 'Localisations',
+            'default': 'Localisations'
+          }
+        },
+        _1198_ingoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 1198,
+            dfh_identifier_in_namespace: 'P143',
+            dfh_has_domain: 79,
+            dfh_has_range: 21,
+            dfh_fk_property_of_origin: 133,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 352,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1198,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: -1,
+          targetMinQuantity: 0,
+          targetClassPk: 79,
+          label: {
+            sg: '[inv.sg: 1198: P143 undefined',
+            pl: '[inv.pl: 1198: P143 undefined',
+            'default': '[inv.pl: 1198: P143 undefined'
+          }
+        },
+        _84_ingoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 84,
+            dfh_identifier_in_namespace: 'P96',
+            dfh_has_domain: 61,
+            dfh_has_range: 21,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 83,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 84,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 5,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 218,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 84,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 4,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 355,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 84,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: -1,
+          targetMinQuantity: 0,
+          targetClassPk: 61,
+          label: {
+            sg: 'Bith given as Mother',
+            pl: 'Births given as Mother',
+            'default': 'Births given as Mother'
+          }
+        },
+        _88_ingoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 88,
+            dfh_identifier_in_namespace: 'P100',
+            dfh_has_domain: 63,
+            dfh_has_range: 21,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: 1,
+            dfh_domain_instances_max_quantifier: 1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 82,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 88,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 2,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 217,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 88,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 1,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 356,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 88,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: 1,
+          targetMinQuantity: 1,
+          targetClassPk: 63,
+          label: {
+            sg: 'Death',
+            pl: 'Deaths',
+            'default': 'Death'
+          }
+        },
+        _85_ingoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 85,
+            dfh_identifier_in_namespace: 'P97',
+            dfh_has_domain: 61,
+            dfh_has_range: 21,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 84,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 85,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 6,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 219,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 85,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 3,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 358,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 85,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: -1,
+          targetMinQuantity: 0,
+          targetClassPk: 61,
+          label: {
+            sg: 'Birth initiated as biological Father',
+            pl: 'Births initiated as biological Father',
+            'default': 'Births initiated as biological Father'
+          }
+        },
         _1192_ingoing: {
           type: 'PropertyField',
           hasAlternatives: false,
@@ -164,7 +548,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
+            identity_defining: true,
             ui_context_config: [
               {
                 pk_entity: 79,
@@ -217,308 +601,6 @@ export const crm: ProjectCrm = {
             'default': 'Names'
           }
         },
-        _1188_ingoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: false,
-          property: {
-            dfh_pk_property: 1188,
-            dfh_identifier_in_namespace: 'histP15',
-            dfh_has_domain: 442,
-            dfh_has_range: 21,
-            dfh_fk_property_of_origin: null,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
-            ui_context_config: [
-              {
-                pk_entity: 85,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 1188,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 4,
-                fk_class_for_class_field: null
-              },
-              {
-                pk_entity: 234,
-                fk_ui_context: 230,
-                fk_project: null,
-                fk_property: 1188,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 0,
-                fk_class_for_class_field: null
-              }
-            ]
-          },
-          targetMaxQuantity: -1,
-          targetMinQuantity: 0,
-          targetClassPk: 442,
-          label: {
-            sg: 'Is member of',
-            pl: 'Is member of',
-            'default': 'Is member of'
-          }
-        },
-        _1196_ingoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: false,
-          property: {
-            dfh_pk_property: 1196,
-            dfh_identifier_in_namespace: 'P143',
-            dfh_has_domain: 78,
-            dfh_has_range: 21,
-            dfh_fk_property_of_origin: 131,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
-            ui_context_config: [
-              {
-                pk_entity: 191,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 1196,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 7,
-                fk_class_for_class_field: null
-              }
-            ]
-          },
-          targetMaxQuantity: -1,
-          targetMinQuantity: 0,
-          targetClassPk: 78,
-          label: {
-            sg: 'Joining',
-            pl: 'Joinings',
-            'default': 'Joinings'
-          }
-        },
-        _1180_ingoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: false,
-          property: {
-            dfh_pk_property: 1180,
-            dfh_identifier_in_namespace: 'histP12',
-            dfh_has_domain: 212,
-            dfh_has_range: 21,
-            dfh_fk_property_of_origin: 1177,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 0,
-            dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
-            ui_context_config: [
-              {
-                pk_entity: 86,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 1180,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 3,
-                fk_class_for_class_field: null
-              }
-            ]
-          },
-          targetMaxQuantity: -1,
-          targetMinQuantity: 0,
-          targetClassPk: 212,
-          label: {
-            sg: 'Localisation',
-            pl: 'Localisations',
-            'default': 'Localisations'
-          }
-        },
-        _1198_ingoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: false,
-          property: {
-            dfh_pk_property: 1198,
-            dfh_identifier_in_namespace: 'P143',
-            dfh_has_domain: 79,
-            dfh_has_range: 21,
-            dfh_fk_property_of_origin: 133,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
-            ui_context_config: []
-          },
-          targetMaxQuantity: -1,
-          targetMinQuantity: 0,
-          targetClassPk: 79,
-          label: {
-            sg: '[inv.sg: 1198: P143 undefined',
-            pl: '[inv.pl: 1198: P143 undefined',
-            'default': '[inv.pl: 1198: P143 undefined'
-          }
-        },
-        _84_ingoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: false,
-          property: {
-            dfh_pk_property: 84,
-            dfh_identifier_in_namespace: 'P96',
-            dfh_has_domain: 61,
-            dfh_has_range: 21,
-            dfh_fk_property_of_origin: null,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
-            ui_context_config: [
-              {
-                pk_entity: 83,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 84,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 5,
-                fk_class_for_class_field: null
-              },
-              {
-                pk_entity: 218,
-                fk_ui_context: 47,
-                fk_project: null,
-                fk_property: 84,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 4,
-                fk_class_for_class_field: null
-              }
-            ]
-          },
-          targetMaxQuantity: -1,
-          targetMinQuantity: 0,
-          targetClassPk: 61,
-          label: {
-            sg: 'Bith given as Mother',
-            pl: 'Births given as Mother',
-            'default': 'Births given as Mother'
-          }
-        },
-        _88_ingoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: false,
-          property: {
-            dfh_pk_property: 88,
-            dfh_identifier_in_namespace: 'P100',
-            dfh_has_domain: 63,
-            dfh_has_range: 21,
-            dfh_fk_property_of_origin: null,
-            dfh_domain_instances_min_quantifier: 1,
-            dfh_domain_instances_max_quantifier: 1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
-            ui_context_config: [
-              {
-                pk_entity: 82,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 88,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 2,
-                fk_class_for_class_field: null
-              },
-              {
-                pk_entity: 217,
-                fk_ui_context: 47,
-                fk_project: null,
-                fk_property: 88,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 1,
-                fk_class_for_class_field: null
-              }
-            ]
-          },
-          targetMaxQuantity: 1,
-          targetMinQuantity: 1,
-          targetClassPk: 63,
-          label: {
-            sg: 'Death',
-            pl: 'Deaths',
-            'default': 'Death'
-          }
-        },
-        _85_ingoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: false,
-          property: {
-            dfh_pk_property: 85,
-            dfh_identifier_in_namespace: 'P97',
-            dfh_has_domain: 61,
-            dfh_has_range: 21,
-            dfh_fk_property_of_origin: null,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
-            ui_context_config: [
-              {
-                pk_entity: 84,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 85,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 6,
-                fk_class_for_class_field: null
-              },
-              {
-                pk_entity: 219,
-                fk_ui_context: 47,
-                fk_project: null,
-                fk_property: 85,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 3,
-                fk_class_for_class_field: null
-              }
-            ]
-          },
-          targetMaxQuantity: -1,
-          targetMinQuantity: 0,
-          targetClassPk: 61,
-          label: {
-            sg: 'Birth initiated as biological Father',
-            pl: 'Births initiated as biological Father',
-            'default': 'Births initiated as biological Father'
-          }
-        },
         _140_ingoing: {
           type: 'PropertyField',
           hasAlternatives: false,
@@ -536,7 +618,18 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            ui_context_config: [
+              {
+                pk_entity: 357,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 140,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -584,6 +677,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: false,
                 ord_num: 2,
                 fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 350,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 86,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -613,7 +716,18 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            ui_context_config: [
+              {
+                pk_entity: 359,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 140,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1454,7 +1568,18 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            ui_context_config: [
+              {
+                pk_entity: 309,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1043,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1484,16 +1609,6 @@ export const crm: ProjectCrm = {
             identity_defining: false,
             ui_context_config: [
               {
-                pk_entity: 76,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 1186,
-                fk_class_field: null,
-                property_is_outgoing: true,
-                ord_num: 4,
-                fk_class_for_class_field: null
-              },
-              {
                 pk_entity: 221,
                 fk_ui_context: 47,
                 fk_project: null,
@@ -1501,6 +1616,16 @@ export const crm: ProjectCrm = {
                 fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: 2,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 76,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1186,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: 4,
                 fk_class_for_class_field: null
               }
             ]
@@ -1631,8 +1756,8 @@ export const crm: ProjectCrm = {
             identity_defining: false,
             ui_context_config: [
               {
-                pk_entity: 75,
-                fk_ui_context: 45,
+                pk_entity: 223,
+                fk_ui_context: 47,
                 fk_project: null,
                 fk_property: 85,
                 fk_class_field: null,
@@ -1641,8 +1766,8 @@ export const crm: ProjectCrm = {
                 fk_class_for_class_field: null
               },
               {
-                pk_entity: 223,
-                fk_ui_context: 47,
+                pk_entity: 75,
+                fk_ui_context: 45,
                 fk_project: null,
                 fk_property: 85,
                 fk_class_field: null,
@@ -1950,7 +2075,7 @@ export const crm: ProjectCrm = {
       }
     },
     '68': {
-      isInProject: true,
+      isInProject: false,
       subclassOf: 'peIt',
       label: 'Group',
       dfh_identifier_in_namespace: 'E74',
@@ -2019,6 +2144,18 @@ export const crm: ProjectCrm = {
         },
         '46': {
           label: 'DataUnits Create',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1193,
+              property_is_outgoing: false,
+              propertyFieldKey: '_1193_ingoing',
+              fk_class_field: null
+            }
+          ]
+        },
+        '47': {
+          label: 'Add',
           uiElements: [
             {
               ord_num: 0,
@@ -2107,55 +2244,6 @@ export const crm: ProjectCrm = {
             sg: '[inv.sg: 1197: P143 undefined',
             pl: '[inv.pl: 1197: P143 undefined',
             'default': '[inv.pl: 1197: P143 undefined'
-          }
-        },
-        _1193_ingoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: false,
-          property: {
-            dfh_pk_property: 1193,
-            dfh_identifier_in_namespace: 'histP9',
-            dfh_has_domain: 365,
-            dfh_has_range: 68,
-            dfh_fk_property_of_origin: 1111,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
-            ui_context_config: [
-              {
-                pk_entity: 93,
-                fk_ui_context: 46,
-                fk_project: null,
-                fk_property: 1193,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 0,
-                fk_class_for_class_field: null
-              },
-              {
-                pk_entity: 100,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 1193,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 0,
-                fk_class_for_class_field: null
-              }
-            ]
-          },
-          targetMaxQuantity: -1,
-          targetMinQuantity: 0,
-          targetClassPk: 365,
-          label: {
-            sg: 'Name',
-            pl: 'Names',
-            'default': 'Names'
           }
         },
         _1182_ingoing: {
@@ -2431,6 +2519,65 @@ export const crm: ProjectCrm = {
             'default': 'Participated in Formation'
           }
         },
+        _1193_ingoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 1193,
+            dfh_identifier_in_namespace: 'histP9',
+            dfh_has_domain: 365,
+            dfh_has_range: 68,
+            dfh_fk_property_of_origin: 1111,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: true,
+            ui_context_config: [
+              {
+                pk_entity: 93,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1193,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 100,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1193,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 265,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1193,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: -1,
+          targetMinQuantity: 0,
+          targetClassPk: 365,
+          label: {
+            sg: 'Name',
+            pl: 'Names',
+            'default': 'Names'
+          }
+        },
         _1013_ingoing: {
           type: 'PropertyField',
           hasAlternatives: false,
@@ -2637,8 +2784,8 @@ export const crm: ProjectCrm = {
             identity_defining: false,
             ui_context_config: [
               {
-                pk_entity: 188,
-                fk_ui_context: 45,
+                pk_entity: 190,
+                fk_ui_context: 46,
                 fk_project: null,
                 fk_property: 1196,
                 fk_class_field: null,
@@ -2647,8 +2794,8 @@ export const crm: ProjectCrm = {
                 fk_class_for_class_field: null
               },
               {
-                pk_entity: 190,
-                fk_ui_context: 46,
+                pk_entity: 188,
+                fk_ui_context: 45,
                 fk_project: null,
                 fk_property: 1196,
                 fk_class_field: null,
@@ -2684,7 +2831,28 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: []
+            ui_context_config: [
+              {
+                pk_entity: 287,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1197,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 289,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1197,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
           },
           targetMaxQuantity: 1,
           targetMinQuantity: 1,
@@ -2712,7 +2880,28 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: []
+            ui_context_config: [
+              {
+                pk_entity: 288,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 131,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 290,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 131,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
           },
           targetMaxQuantity: 1,
           targetMinQuantity: 1,
@@ -2742,8 +2931,8 @@ export const crm: ProjectCrm = {
             identity_defining: false,
             ui_context_config: [
               {
-                pk_entity: 187,
-                fk_ui_context: 45,
+                pk_entity: 189,
+                fk_ui_context: 46,
                 fk_project: null,
                 fk_property: 132,
                 fk_class_field: null,
@@ -2752,8 +2941,8 @@ export const crm: ProjectCrm = {
                 fk_class_for_class_field: null
               },
               {
-                pk_entity: 189,
-                fk_ui_context: 46,
+                pk_entity: 187,
+                fk_ui_context: 45,
                 fk_project: null,
                 fk_property: 132,
                 fk_class_field: null,
@@ -3558,6 +3747,30 @@ export const crm: ProjectCrm = {
       dfh_identifier_in_namespace: 'F2',
       dfh_pk_class: 218,
       uiContexts: {
+        '45': {
+          label: 'DataUnits View and Edit',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 100005,
+              property_is_outgoing: false,
+              propertyFieldKey: '_100005_ingoing',
+              fk_class_field: null
+            }
+          ]
+        },
+        '47': {
+          label: 'Add',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 100005,
+              property_is_outgoing: false,
+              propertyFieldKey: '_100005_ingoing',
+              fk_class_field: null
+            }
+          ]
+        },
         '229': {
           label: 'Sources View and Edit',
           uiElements: [
@@ -3600,7 +3813,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
+            identity_defining: true,
             ui_context_config: [
               {
                 pk_entity: 260,
@@ -3615,6 +3828,26 @@ export const crm: ProjectCrm = {
               {
                 pk_entity: 262,
                 fk_ui_context: 229,
+                fk_project: null,
+                fk_property: 100005,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 264,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 100005,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 266,
+                fk_ui_context: 47,
                 fk_project: null,
                 fk_property: 100005,
                 fk_class_field: null,
@@ -3744,6 +3977,18 @@ export const crm: ProjectCrm = {
             }
           ]
         },
+        '47': {
+          label: 'Add',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1202,
+              property_is_outgoing: false,
+              propertyFieldKey: '_1202_ingoing',
+              fk_class_field: null
+            }
+          ]
+        },
         '229': {
           label: 'Sources View and Edit',
           uiElements: [
@@ -3797,6 +4042,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: false,
                 ord_num: null,
                 fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 294,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 982,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -3830,6 +4085,16 @@ export const crm: ProjectCrm = {
               {
                 pk_entity: 160,
                 fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 971,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 297,
+                fk_ui_context: 230,
                 fk_project: null,
                 fk_property: 971,
                 fk_class_field: null,
@@ -3875,6 +4140,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: false,
                 ord_num: null,
                 fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 293,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 979,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -3908,6 +4183,16 @@ export const crm: ProjectCrm = {
               {
                 pk_entity: 162,
                 fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1000,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 296,
+                fk_ui_context: 230,
                 fk_project: null,
                 fk_property: 1000,
                 fk_class_field: null,
@@ -3953,6 +4238,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: false,
                 ord_num: null,
                 fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 295,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 1015,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -3992,6 +4287,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: false,
                 ord_num: null,
                 fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 298,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 1022,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -4002,6 +4307,55 @@ export const crm: ProjectCrm = {
             sg: '[inv.sg: 1022: R49 undefined',
             pl: '[inv.pl: 1022: R49 undefined',
             'default': '[inv.pl: 1022: R49 undefined'
+          }
+        },
+        _100003_ingoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 100003,
+            dfh_identifier_in_namespace: 'tempP1',
+            dfh_has_domain: 100002,
+            dfh_has_range: 219,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: null,
+            dfh_domain_instances_max_quantifier: null,
+            dfh_range_instances_min_quantifier: null,
+            dfh_range_instances_max_quantifier: null,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 285,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 100003,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 299,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 100003,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: null,
+          targetMinQuantity: null,
+          targetClassPk: 100002,
+          label: {
+            sg: '[inv.sg: 100003: tempP1 undefined',
+            pl: '[inv.pl: 100003: tempP1 undefined',
+            'default': '[inv.pl: 100003: tempP1 undefined'
           }
         },
         _1202_ingoing: {
@@ -4020,7 +4374,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
+            identity_defining: true,
             ui_context_config: [
               {
                 pk_entity: 156,
@@ -4061,6 +4415,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: false,
                 ord_num: 0,
                 fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 263,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1202,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -4071,34 +4435,6 @@ export const crm: ProjectCrm = {
             sg: 'Bibliographic Reference',
             pl: 'Bibliographic References',
             'default': 'Bibliographic References'
-          }
-        },
-        _100003_ingoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: false,
-          property: {
-            dfh_pk_property: 100003,
-            dfh_identifier_in_namespace: 'tempP1',
-            dfh_has_domain: 100002,
-            dfh_has_range: 219,
-            dfh_fk_property_of_origin: null,
-            dfh_domain_instances_min_quantifier: null,
-            dfh_domain_instances_max_quantifier: null,
-            dfh_range_instances_min_quantifier: null,
-            dfh_range_instances_max_quantifier: null,
-            identity_defining: false,
-            ui_context_config: []
-          },
-          targetMaxQuantity: null,
-          targetMinQuantity: null,
-          targetClassPk: 100002,
-          label: {
-            sg: '[inv.sg: 100003: tempP1 undefined',
-            pl: '[inv.pl: 100003: tempP1 undefined',
-            'default': '[inv.pl: 100003: tempP1 undefined'
           }
         },
         _970_outgoing: {
@@ -4122,6 +4458,16 @@ export const crm: ProjectCrm = {
               {
                 pk_entity: 166,
                 fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 970,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 300,
+                fk_ui_context: 230,
                 fk_project: null,
                 fk_property: 970,
                 fk_class_field: null,
@@ -4167,6 +4513,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: true,
                 ord_num: null,
                 fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 301,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 971,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -4200,6 +4556,16 @@ export const crm: ProjectCrm = {
               {
                 pk_entity: 169,
                 fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 972,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 302,
+                fk_ui_context: 230,
                 fk_project: null,
                 fk_property: 972,
                 fk_class_field: null,
@@ -4245,6 +4611,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: true,
                 ord_num: null,
                 fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 303,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 975,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -4278,6 +4654,16 @@ export const crm: ProjectCrm = {
               {
                 pk_entity: 167,
                 fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 969,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 305,
+                fk_ui_context: 230,
                 fk_project: null,
                 fk_property: 969,
                 fk_class_field: null,
@@ -4323,6 +4709,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: true,
                 ord_num: null,
                 fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 304,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 974,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -4356,6 +4752,16 @@ export const crm: ProjectCrm = {
               {
                 pk_entity: 170,
                 fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 973,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 306,
+                fk_ui_context: 230,
                 fk_project: null,
                 fk_property: 973,
                 fk_class_field: null,
@@ -4401,6 +4807,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: true,
                 ord_num: null,
                 fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 307,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 968,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -4411,6 +4827,55 @@ export const crm: ProjectCrm = {
             sg: '[sg: 968: CLP2_should_have_type undefined',
             pl: '[pl: 968: CLP2_should_have_type undefined',
             'default': '[pl: 968: CLP2_should_have_type undefined'
+          }
+        },
+        _100098_outgoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: true,
+          property: {
+            dfh_pk_property: 100098,
+            dfh_identifier_in_namespace: 'histP8',
+            dfh_has_domain: 219,
+            dfh_has_range: 100099,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 0,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 286,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 100098,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 308,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 100098,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: 1,
+          targetMinQuantity: 0,
+          targetClassPk: 100099,
+          label: {
+            sg: '[sg: 100098: histP8 undefined',
+            pl: '[pl: 100098: histP8 undefined',
+            'default': '[sg: 100098: histP8 undefined'
           }
         }
       }
@@ -4636,6 +5101,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: false,
                 ord_num: null,
                 fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 273,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1186,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -4646,65 +5121,6 @@ export const crm: ProjectCrm = {
             sg: 'Birth that happened here',
             pl: 'Births that happened here',
             'default': 'Births that happened here'
-          }
-        },
-        _1194_ingoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: false,
-          property: {
-            dfh_pk_property: 1194,
-            dfh_identifier_in_namespace: 'histP9',
-            dfh_has_domain: 365,
-            dfh_has_range: 363,
-            dfh_fk_property_of_origin: 1111,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
-            ui_context_config: [
-              {
-                pk_entity: 123,
-                fk_ui_context: 46,
-                fk_project: null,
-                fk_property: 1194,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 0,
-                fk_class_for_class_field: null
-              },
-              {
-                pk_entity: 124,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 1194,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 0,
-                fk_class_for_class_field: null
-              },
-              {
-                pk_entity: 210,
-                fk_ui_context: 47,
-                fk_project: null,
-                fk_property: 1194,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 0,
-                fk_class_for_class_field: null
-              }
-            ]
-          },
-          targetMaxQuantity: -1,
-          targetMinQuantity: 0,
-          targetClassPk: 365,
-          label: {
-            sg: 'Name',
-            pl: 'Names',
-            'default': 'Names'
           }
         },
         _1191_ingoing: {
@@ -4738,6 +5154,16 @@ export const crm: ProjectCrm = {
               {
                 pk_entity: 254,
                 fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1191,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 275,
+                fk_ui_context: 47,
                 fk_project: null,
                 fk_property: 1191,
                 fk_class_field: null,
@@ -4793,6 +5219,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: false,
                 ord_num: null,
                 fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 274,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1178,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -4803,6 +5239,65 @@ export const crm: ProjectCrm = {
             sg: 'Entities located here',
             pl: 'Entities located here',
             'default': 'Entities located here'
+          }
+        },
+        _1194_ingoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 1194,
+            dfh_identifier_in_namespace: 'histP9',
+            dfh_has_domain: 365,
+            dfh_has_range: 363,
+            dfh_fk_property_of_origin: 1111,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: true,
+            ui_context_config: [
+              {
+                pk_entity: 123,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1194,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 124,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1194,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 210,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1194,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: -1,
+          targetMinQuantity: 0,
+          targetClassPk: 365,
+          label: {
+            sg: 'Name',
+            pl: 'Names',
+            'default': 'Names'
           }
         },
         _1110_outgoing: {
@@ -4886,58 +5381,45 @@ export const crm: ProjectCrm = {
               fk_class_field: null
             }
           ]
+        },
+        '47': {
+          label: 'Add',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1200,
+              property_is_outgoing: false,
+              propertyFieldKey: '_1200_ingoing',
+              fk_class_field: null
+            }
+          ]
+        },
+        '231': {
+          label: 'Data Settings > Types View and Edit',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1200,
+              property_is_outgoing: false,
+              propertyFieldKey: '_1200_ingoing',
+              fk_class_field: null
+            }
+          ]
+        },
+        '232': {
+          label: 'Data Settings > Types Create',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1200,
+              property_is_outgoing: false,
+              propertyFieldKey: '_1200_ingoing',
+              fk_class_field: null
+            }
+          ]
         }
       },
       propertyFields: {
-        _1200_ingoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: false,
-          property: {
-            dfh_pk_property: 1200,
-            dfh_identifier_in_namespace: 'histP9',
-            dfh_has_domain: 365,
-            dfh_has_range: 364,
-            dfh_fk_property_of_origin: 1111,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
-            ui_context_config: [
-              {
-                pk_entity: 185,
-                fk_ui_context: 46,
-                fk_project: null,
-                fk_property: 1200,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 0,
-                fk_class_for_class_field: null
-              },
-              {
-                pk_entity: 186,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 1200,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 0,
-                fk_class_for_class_field: null
-              }
-            ]
-          },
-          targetMaxQuantity: -1,
-          targetMinQuantity: 0,
-          targetClassPk: 365,
-          label: {
-            sg: 'Term/Label',
-            pl: 'Terms/Labels',
-            'default': 'Terms/Labels'
-          }
-        },
         _1110_ingoing: {
           type: 'PropertyField',
           hasAlternatives: false,
@@ -4964,6 +5446,85 @@ export const crm: ProjectCrm = {
             sg: 'is Type of',
             pl: 'is Type of',
             'default': 'is Type of'
+          }
+        },
+        _1200_ingoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 1200,
+            dfh_identifier_in_namespace: 'histP9',
+            dfh_has_domain: 365,
+            dfh_has_range: 364,
+            dfh_fk_property_of_origin: 1111,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: true,
+            ui_context_config: [
+              {
+                pk_entity: 185,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1200,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 186,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1200,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 267,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1200,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 282,
+                fk_ui_context: 231,
+                fk_project: null,
+                fk_property: 1200,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 283,
+                fk_ui_context: 232,
+                fk_project: null,
+                fk_property: 1200,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: -1,
+          targetMinQuantity: 0,
+          targetClassPk: 365,
+          label: {
+            sg: 'Term/Label',
+            pl: 'Terms/Labels',
+            'default': 'Terms/Labels'
           }
         }
       }
@@ -5134,6 +5695,65 @@ export const crm: ProjectCrm = {
         }
       },
       propertyFields: {
+        _1195_outgoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: true,
+          property: {
+            dfh_pk_property: 1195,
+            dfh_identifier_in_namespace: 'histP9',
+            dfh_has_domain: 365,
+            dfh_has_range: 441,
+            dfh_fk_property_of_origin: 1111,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: true,
+            ui_context_config: [
+              {
+                pk_entity: 132,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1195,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 139,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1195,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 248,
+                fk_ui_context: 232,
+                fk_project: null,
+                fk_property: 1195,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: 1,
+          targetMinQuantity: 1,
+          targetClassPk: 441,
+          label: {
+            sg: 'Built Work with this Name',
+            pl: 'Built Works with this Name',
+            'default': 'Built Work with this Name'
+          }
+        },
         _1111_outgoing: {
           type: 'PropertyField',
           hasAlternatives: false,
@@ -5150,7 +5770,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: null,
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
-            identity_defining: false,
+            identity_defining: true,
             ui_context_config: [
               {
                 pk_entity: 242,
@@ -5173,65 +5793,6 @@ export const crm: ProjectCrm = {
             'default': '[pl: 1111: histP9 undefined'
           }
         },
-        _1192_outgoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: true,
-          property: {
-            dfh_pk_property: 1192,
-            dfh_identifier_in_namespace: 'histP9',
-            dfh_has_domain: 365,
-            dfh_has_range: 21,
-            dfh_fk_property_of_origin: 1111,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
-            ui_context_config: [
-              {
-                pk_entity: 130,
-                fk_ui_context: 46,
-                fk_project: null,
-                fk_property: 1192,
-                fk_class_field: null,
-                property_is_outgoing: true,
-                ord_num: null,
-                fk_class_for_class_field: null
-              },
-              {
-                pk_entity: 135,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 1192,
-                fk_class_field: null,
-                property_is_outgoing: true,
-                ord_num: null,
-                fk_class_for_class_field: null
-              },
-              {
-                pk_entity: 243,
-                fk_ui_context: 232,
-                fk_project: null,
-                fk_property: 1192,
-                fk_class_field: null,
-                property_is_outgoing: true,
-                ord_num: null,
-                fk_class_for_class_field: null
-              }
-            ]
-          },
-          targetMaxQuantity: 1,
-          targetMinQuantity: 1,
-          targetClassPk: 21,
-          label: {
-            sg: 'Person with this Name',
-            pl: 'Persons with this Name',
-            'default': 'Person with this Name'
-          }
-        },
         _1193_outgoing: {
           type: 'PropertyField',
           hasAlternatives: false,
@@ -5248,7 +5809,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
+            identity_defining: true,
             ui_context_config: [
               {
                 pk_entity: 133,
@@ -5307,7 +5868,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
+            identity_defining: true,
             ui_context_config: [
               {
                 pk_entity: 131,
@@ -5350,49 +5911,49 @@ export const crm: ProjectCrm = {
             'default': 'Geo-Place with this Name'
           }
         },
-        _1195_outgoing: {
+        _1192_outgoing: {
           type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
           isOutgoing: true,
           property: {
-            dfh_pk_property: 1195,
+            dfh_pk_property: 1192,
             dfh_identifier_in_namespace: 'histP9',
             dfh_has_domain: 365,
-            dfh_has_range: 441,
+            dfh_has_range: 21,
             dfh_fk_property_of_origin: 1111,
             dfh_domain_instances_min_quantifier: 0,
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
+            identity_defining: true,
             ui_context_config: [
               {
-                pk_entity: 132,
+                pk_entity: 130,
                 fk_ui_context: 46,
                 fk_project: null,
-                fk_property: 1195,
+                fk_property: 1192,
                 fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
                 fk_class_for_class_field: null
               },
               {
-                pk_entity: 139,
+                pk_entity: 135,
                 fk_ui_context: 45,
                 fk_project: null,
-                fk_property: 1195,
+                fk_property: 1192,
                 fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
                 fk_class_for_class_field: null
               },
               {
-                pk_entity: 248,
+                pk_entity: 243,
                 fk_ui_context: 232,
                 fk_project: null,
-                fk_property: 1195,
+                fk_property: 1192,
                 fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: null,
@@ -5402,11 +5963,11 @@ export const crm: ProjectCrm = {
           },
           targetMaxQuantity: 1,
           targetMinQuantity: 1,
-          targetClassPk: 441,
+          targetClassPk: 21,
           label: {
-            sg: 'Built Work with this Name',
-            pl: 'Built Works with this Name',
-            'default': 'Built Work with this Name'
+            sg: 'Person with this Name',
+            pl: 'Persons with this Name',
+            'default': 'Person with this Name'
           }
         },
         _1113_outgoing: {
@@ -5508,123 +6069,6 @@ export const crm: ProjectCrm = {
             'default': 'Spelling'
           }
         },
-        _1200_outgoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: true,
-          property: {
-            dfh_pk_property: 1200,
-            dfh_identifier_in_namespace: 'histP9',
-            dfh_has_domain: 365,
-            dfh_has_range: 364,
-            dfh_fk_property_of_origin: 1111,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
-            ui_context_config: [
-              {
-                pk_entity: 246,
-                fk_ui_context: 232,
-                fk_project: null,
-                fk_property: 1200,
-                fk_class_field: null,
-                property_is_outgoing: true,
-                ord_num: null,
-                fk_class_for_class_field: null
-              }
-            ]
-          },
-          targetMaxQuantity: 1,
-          targetMinQuantity: 1,
-          targetClassPk: 364,
-          label: {
-            sg: '[sg: 1200: histP9 undefined',
-            pl: '[pl: 1200: histP9 undefined',
-            'default': '[sg: 1200: histP9 undefined'
-          }
-        },
-        _1201_outgoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: true,
-          property: {
-            dfh_pk_property: 1201,
-            dfh_identifier_in_namespace: 'histP9',
-            dfh_has_domain: 365,
-            dfh_has_range: 443,
-            dfh_fk_property_of_origin: 1111,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
-            ui_context_config: [
-              {
-                pk_entity: 250,
-                fk_ui_context: 232,
-                fk_project: null,
-                fk_property: 1201,
-                fk_class_field: null,
-                property_is_outgoing: true,
-                ord_num: null,
-                fk_class_for_class_field: null
-              }
-            ]
-          },
-          targetMaxQuantity: 1,
-          targetMinQuantity: 1,
-          targetClassPk: 443,
-          label: {
-            sg: '[sg: 1201: histP9 undefined',
-            pl: '[pl: 1201: histP9 undefined',
-            'default': '[sg: 1201: histP9 undefined'
-          }
-        },
-        _1202_outgoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: true,
-          property: {
-            dfh_pk_property: 1202,
-            dfh_identifier_in_namespace: 'histP9',
-            dfh_has_domain: 365,
-            dfh_has_range: 219,
-            dfh_fk_property_of_origin: 1111,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
-            ui_context_config: [
-              {
-                pk_entity: 251,
-                fk_ui_context: 232,
-                fk_project: null,
-                fk_property: 1202,
-                fk_class_field: null,
-                property_is_outgoing: true,
-                ord_num: null,
-                fk_class_for_class_field: null
-              }
-            ]
-          },
-          targetMaxQuantity: 1,
-          targetMinQuantity: 1,
-          targetClassPk: 219,
-          label: {
-            sg: '[sg: 1202: histP9 undefined',
-            pl: '[pl: 1202: histP9 undefined',
-            'default': '[sg: 1202: histP9 undefined'
-          }
-        },
         _1112_outgoing: {
           type: 'PropertyField',
           hasAlternatives: false,
@@ -5724,6 +6168,112 @@ export const crm: ProjectCrm = {
             'default': 'Language'
           }
         },
+        _100070_outgoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: true,
+          property: {
+            dfh_pk_property: 100070,
+            dfh_identifier_in_namespace: 'histP9',
+            dfh_has_domain: 365,
+            dfh_has_range: 100099,
+            dfh_fk_property_of_origin: 1111,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: true,
+            ui_context_config: []
+          },
+          targetMaxQuantity: 1,
+          targetMinQuantity: 1,
+          targetClassPk: 100099,
+          label: {
+            sg: 'Name / Term',
+            pl: '[pl: 100070: histP9 undefined',
+            'default': 'Name / Term'
+          }
+        },
+        _1200_outgoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: true,
+          property: {
+            dfh_pk_property: 1200,
+            dfh_identifier_in_namespace: 'histP9',
+            dfh_has_domain: 365,
+            dfh_has_range: 364,
+            dfh_fk_property_of_origin: 1111,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: true,
+            ui_context_config: [
+              {
+                pk_entity: 246,
+                fk_ui_context: 232,
+                fk_project: null,
+                fk_property: 1200,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: 1,
+          targetMinQuantity: 1,
+          targetClassPk: 364,
+          label: {
+            sg: '[sg: 1200: histP9 undefined',
+            pl: '[pl: 1200: histP9 undefined',
+            'default': '[sg: 1200: histP9 undefined'
+          }
+        },
+        _1201_outgoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: true,
+          property: {
+            dfh_pk_property: 1201,
+            dfh_identifier_in_namespace: 'histP9',
+            dfh_has_domain: 365,
+            dfh_has_range: 443,
+            dfh_fk_property_of_origin: 1111,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: true,
+            ui_context_config: [
+              {
+                pk_entity: 250,
+                fk_ui_context: 232,
+                fk_project: null,
+                fk_property: 1201,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: 1,
+          targetMinQuantity: 1,
+          targetClassPk: 443,
+          label: {
+            sg: '[sg: 1201: histP9 undefined',
+            pl: '[pl: 1201: histP9 undefined',
+            'default': '[sg: 1201: histP9 undefined'
+          }
+        },
         _100005_outgoing: {
           type: 'PropertyField',
           hasAlternatives: false,
@@ -5740,7 +6290,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
+            identity_defining: true,
             ui_context_config: []
           },
           targetMaxQuantity: 1,
@@ -5751,11 +6301,50 @@ export const crm: ProjectCrm = {
             pl: '[pl: 100005: histP9 undefined',
             'default': '[sg: 100005: histP9 undefined'
           }
+        },
+        _1202_outgoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: true,
+          property: {
+            dfh_pk_property: 1202,
+            dfh_identifier_in_namespace: 'histP9',
+            dfh_has_domain: 365,
+            dfh_has_range: 219,
+            dfh_fk_property_of_origin: 1111,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: true,
+            ui_context_config: [
+              {
+                pk_entity: 251,
+                fk_ui_context: 232,
+                fk_project: null,
+                fk_property: 1202,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: 1,
+          targetMinQuantity: 1,
+          targetClassPk: 219,
+          label: {
+            sg: '[sg: 1202: histP9 undefined',
+            pl: '[pl: 1202: histP9 undefined',
+            'default': '[sg: 1202: histP9 undefined'
+          }
         }
       }
     },
     '441': {
-      isInProject: true,
+      isInProject: false,
       subclassOf: 'peIt',
       label: 'Built work',
       dfh_identifier_in_namespace: 'histC11',
@@ -5805,6 +6394,25 @@ export const crm: ProjectCrm = {
               fk_class_field: null
             }
           ]
+        },
+        '47': {
+          label: 'Add',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1195,
+              property_is_outgoing: false,
+              propertyFieldKey: '_1195_ingoing',
+              fk_class_field: null
+            },
+            {
+              ord_num: 1,
+              fk_property: 1184,
+              property_is_outgoing: false,
+              propertyFieldKey: '_1184_ingoing',
+              fk_class_field: null
+            }
+          ]
         }
       },
       propertyFields: {
@@ -5839,6 +6447,16 @@ export const crm: ProjectCrm = {
               {
                 pk_entity: 146,
                 fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1184,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 1,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 269,
+                fk_ui_context: 47,
                 fk_project: null,
                 fk_property: 1184,
                 fk_class_field: null,
@@ -5906,55 +6524,6 @@ export const crm: ProjectCrm = {
             'default': 'Is place of births'
           }
         },
-        _1195_ingoing: {
-          type: 'PropertyField',
-          hasAlternatives: false,
-          isViewMode: false,
-          toggle: 'expanded',
-          isOutgoing: false,
-          property: {
-            dfh_pk_property: 1195,
-            dfh_identifier_in_namespace: 'histP9',
-            dfh_has_domain: 365,
-            dfh_has_range: 441,
-            dfh_fk_property_of_origin: 1111,
-            dfh_domain_instances_min_quantifier: 0,
-            dfh_domain_instances_max_quantifier: -1,
-            dfh_range_instances_min_quantifier: 1,
-            dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
-            ui_context_config: [
-              {
-                pk_entity: 140,
-                fk_ui_context: 46,
-                fk_project: null,
-                fk_property: 1195,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 0,
-                fk_class_for_class_field: null
-              },
-              {
-                pk_entity: 144,
-                fk_ui_context: 45,
-                fk_project: null,
-                fk_property: 1195,
-                fk_class_field: null,
-                property_is_outgoing: false,
-                ord_num: 0,
-                fk_class_for_class_field: null
-              }
-            ]
-          },
-          targetMaxQuantity: -1,
-          targetMinQuantity: 0,
-          targetClassPk: 365,
-          label: {
-            sg: 'Name/Address',
-            pl: 'Names/Addresses',
-            'default': 'Names/Addresses'
-          }
-        },
         _1185_ingoing: {
           type: 'PropertyField',
           hasAlternatives: false,
@@ -6002,6 +6571,65 @@ export const crm: ProjectCrm = {
             sg: 'Was built at place',
             pl: 'Was built at places',
             'default': 'Was built at places'
+          }
+        },
+        _1195_ingoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 1195,
+            dfh_identifier_in_namespace: 'histP9',
+            dfh_has_domain: 365,
+            dfh_has_range: 441,
+            dfh_fk_property_of_origin: 1111,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: true,
+            ui_context_config: [
+              {
+                pk_entity: 140,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 1195,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 144,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 1195,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 268,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1195,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: -1,
+          targetMinQuantity: 0,
+          targetClassPk: 365,
+          label: {
+            sg: 'Name/Address',
+            pl: 'Names/Addresses',
+            'default': 'Names/Addresses'
           }
         },
         _1190_outgoing: {
@@ -6093,7 +6721,34 @@ export const crm: ProjectCrm = {
         },
         '47': {
           label: 'Add',
-          uiElements: []
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1188,
+              property_is_outgoing: true,
+              propertyFieldKey: '_1188_outgoing',
+              fk_class_field: null
+            },
+            {
+              ord_num: 1,
+              fk_property: 1189,
+              property_is_outgoing: true,
+              propertyFieldKey: '_1189_outgoing',
+              fk_class_field: null
+            },
+            {
+              ord_num: 2,
+              fk_property: null,
+              property_is_outgoing: null,
+              fk_class_field: 48,
+              class_field: {
+                pk_entity: 48,
+                description: 'Existence Time or Time Span of a Temporal Entity',
+                label: 'When'
+              },
+              propSetKey: '_existenceTime'
+            }
+          ]
         }
       },
       propertyFields: {
@@ -6133,6 +6788,16 @@ export const crm: ProjectCrm = {
                 fk_class_field: null,
                 property_is_outgoing: true,
                 ord_num: 1,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 270,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1188,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: 0,
                 fk_class_for_class_field: null
               }
             ]
@@ -6183,6 +6848,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: true,
                 ord_num: 0,
                 fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 271,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1189,
+                fk_class_field: null,
+                property_is_outgoing: true,
+                ord_num: 1,
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -6204,6 +6879,18 @@ export const crm: ProjectCrm = {
       dfh_identifier_in_namespace: 'histC13',
       dfh_pk_class: 443,
       uiContexts: {
+        '47': {
+          label: 'Add',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 1201,
+              property_is_outgoing: false,
+              propertyFieldKey: '_1201_ingoing',
+              fk_class_field: null
+            }
+          ]
+        },
         '231': {
           label: 'Data Settings > Types View and Edit',
           uiElements: [
@@ -6274,7 +6961,7 @@ export const crm: ProjectCrm = {
             dfh_domain_instances_max_quantifier: -1,
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
-            identity_defining: false,
+            identity_defining: true,
             ui_context_config: [
               {
                 pk_entity: 238,
@@ -6295,6 +6982,16 @@ export const crm: ProjectCrm = {
                 property_is_outgoing: false,
                 ord_num: 0,
                 fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 272,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 1201,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
               }
             ]
           },
@@ -6308,231 +7005,254 @@ export const crm: ProjectCrm = {
           }
         }
       }
+    },
+    '100099': {
+      isInProject: false,
+      label: 'Serially Produced Object Type',
+      dfh_identifier_in_namespace: 'tempC3',
+      dfh_pk_class: 100099,
+      uiContexts: {
+        '45': {
+          label: 'DataUnits View and Edit',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 100070,
+              property_is_outgoing: false,
+              propertyFieldKey: '_100070_ingoing',
+              fk_class_field: null
+            }
+          ]
+        },
+        '46': {
+          label: 'DataUnits Create',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 100070,
+              property_is_outgoing: false,
+              propertyFieldKey: '_100070_ingoing',
+              fk_class_field: null
+            }
+          ]
+        },
+        '47': {
+          label: 'Add',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 100070,
+              property_is_outgoing: false,
+              propertyFieldKey: '_100070_ingoing',
+              fk_class_field: null
+            }
+          ]
+        },
+        '230': {
+          label: 'Sources Create',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 100070,
+              property_is_outgoing: false,
+              propertyFieldKey: '_100070_ingoing',
+              fk_class_field: null
+            }
+          ]
+        },
+        '231': {
+          label: 'Data Settings > Types View and Edit',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 100070,
+              property_is_outgoing: false,
+              propertyFieldKey: '_100070_ingoing',
+              fk_class_field: null
+            }
+          ]
+        },
+        '232': {
+          label: 'Data Settings > Types Create',
+          uiElements: [
+            {
+              ord_num: 0,
+              fk_property: 100070,
+              property_is_outgoing: false,
+              propertyFieldKey: '_100070_ingoing',
+              fk_class_field: null
+            }
+          ]
+        }
+      },
+      propertyFields: {
+        _100098_ingoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 100098,
+            dfh_identifier_in_namespace: 'histP8',
+            dfh_has_domain: 219,
+            dfh_has_range: 100099,
+            dfh_fk_property_of_origin: null,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 0,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: false,
+            ui_context_config: [
+              {
+                pk_entity: 348,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 100098,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 349,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 100098,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: null,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: -1,
+          targetMinQuantity: 0,
+          targetClassPk: 219,
+          label: {
+            sg: '[inv.sg: 100098: histP8 undefined',
+            pl: '[inv.pl: 100098: histP8 undefined',
+            'default': '[inv.pl: 100098: histP8 undefined'
+          }
+        },
+        _100070_ingoing: {
+          type: 'PropertyField',
+          hasAlternatives: false,
+          isViewMode: false,
+          toggle: 'expanded',
+          isOutgoing: false,
+          property: {
+            dfh_pk_property: 100070,
+            dfh_identifier_in_namespace: 'histP9',
+            dfh_has_domain: 365,
+            dfh_has_range: 100099,
+            dfh_fk_property_of_origin: 1111,
+            dfh_domain_instances_min_quantifier: 0,
+            dfh_domain_instances_max_quantifier: -1,
+            dfh_range_instances_min_quantifier: 1,
+            dfh_range_instances_max_quantifier: 1,
+            identity_defining: true,
+            ui_context_config: [
+              {
+                pk_entity: 276,
+                fk_ui_context: 46,
+                fk_project: null,
+                fk_property: 100070,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 277,
+                fk_ui_context: 47,
+                fk_project: null,
+                fk_property: 100070,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 278,
+                fk_ui_context: 45,
+                fk_project: null,
+                fk_property: 100070,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 279,
+                fk_ui_context: 231,
+                fk_project: null,
+                fk_property: 100070,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 280,
+                fk_ui_context: 230,
+                fk_project: null,
+                fk_property: 100070,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              },
+              {
+                pk_entity: 281,
+                fk_ui_context: 232,
+                fk_project: null,
+                fk_property: 100070,
+                fk_class_field: null,
+                property_is_outgoing: false,
+                ord_num: 0,
+                fk_class_for_class_field: null
+              }
+            ]
+          },
+          targetMaxQuantity: -1,
+          targetMinQuantity: 0,
+          targetClassPk: 365,
+          label: {
+            sg: 'Name / Term',
+            pl: 'Names / Terms',
+            'default': 'Names / Terms'
+          }
+        }
+      }
     }
   },
-  propertyFields: {
-    _1192_ingoing: {
+  fieldList: {
+    _83_ingoing: {
       type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
       isOutgoing: false,
       property: {
-        dfh_pk_property: 1192,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 21,
-        dfh_fk_property_of_origin: 1111,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 79,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1192,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 80,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1192,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 215,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 1192,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 233,
-            fk_ui_context: 229,
-            fk_project: null,
-            fk_property: 1192,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 365,
-      label: {
-        sg: 'Name',
-        pl: 'Names',
-        'default': 'Names'
-      }
-    },
-    _1188_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1188,
-        dfh_identifier_in_namespace: 'histP15',
-        dfh_has_domain: 442,
-        dfh_has_range: 21,
+        dfh_pk_property: 83,
+        dfh_identifier_in_namespace: 'P95',
+        dfh_has_domain: 60,
+        dfh_has_range: 68,
         dfh_fk_property_of_origin: null,
         dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
+        dfh_domain_instances_max_quantifier: 1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 85,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1188,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 4,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 234,
-            fk_ui_context: 230,
-            fk_project: null,
-            fk_property: 1188,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
-      targetMaxQuantity: -1,
+      targetMaxQuantity: 1,
       targetMinQuantity: 0,
-      targetClassPk: 442,
+      targetClassPk: 60,
       label: {
-        sg: 'Is member of',
-        pl: 'Is member of',
-        'default': 'Is member of'
-      }
-    },
-    _1196_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1196,
-        dfh_identifier_in_namespace: 'P143',
-        dfh_has_domain: 78,
-        dfh_has_range: 21,
-        dfh_fk_property_of_origin: 131,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 191,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1196,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 7,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 78,
-      label: {
-        sg: 'Joining',
-        pl: 'Joinings',
-        'default': 'Joinings'
-      }
-    },
-    _1180_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1180,
-        dfh_identifier_in_namespace: 'histP12',
-        dfh_has_domain: 212,
-        dfh_has_range: 21,
-        dfh_fk_property_of_origin: 1177,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 0,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 86,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1180,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 3,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 212,
-      label: {
-        sg: 'Localisation',
-        pl: 'Localisations',
-        'default': 'Localisations'
-      }
-    },
-    _1198_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1198,
-        dfh_identifier_in_namespace: 'P143',
-        dfh_has_domain: 79,
-        dfh_has_range: 21,
-        dfh_fk_property_of_origin: 133,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 79,
-      label: {
-        sg: '[inv.sg: 1198: P143 undefined',
-        pl: '[inv.pl: 1198: P143 undefined',
-        'default': '[inv.pl: 1198: P143 undefined'
+        sg: 'Start (Formation / Foundation)',
+        pl: 'Start (Formations / Foundations)',
+        'default': 'Start (Formation / Foundation)'
       }
     },
     _84_ingoing: {
@@ -6551,29 +7271,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 83,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 84,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 5,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 218,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 84,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 4,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: -1,
       targetMinQuantity: 0,
@@ -6582,55 +7280,6 @@ export const crm: ProjectCrm = {
         sg: 'Bith given as Mother',
         pl: 'Births given as Mother',
         'default': 'Births given as Mother'
-      }
-    },
-    _88_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 88,
-        dfh_identifier_in_namespace: 'P100',
-        dfh_has_domain: 63,
-        dfh_has_range: 21,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 1,
-        dfh_domain_instances_max_quantifier: 1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 82,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 88,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 2,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 217,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 88,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 63,
-      label: {
-        sg: 'Death',
-        pl: 'Deaths',
-        'default': 'Death'
       }
     },
     _85_ingoing: {
@@ -6649,29 +7298,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 84,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 85,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 6,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 219,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 85,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 3,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: -1,
       targetMinQuantity: 0,
@@ -6680,34 +7307,6 @@ export const crm: ProjectCrm = {
         sg: 'Birth initiated as biological Father',
         pl: 'Births initiated as biological Father',
         'default': 'Births initiated as biological Father'
-      }
-    },
-    _140_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 140,
-        dfh_identifier_in_namespace: 'P152',
-        dfh_has_domain: 21,
-        dfh_has_range: 21,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 21,
-      label: {
-        sg: '[inv.sg: 140: P152 undefined',
-        pl: '[inv.pl: 140: P152 undefined',
-        'default': '[inv.pl: 140: P152 undefined'
       }
     },
     _86_ingoing: {
@@ -6726,29 +7325,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: 1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: true,
-        ui_context_config: [
-          {
-            pk_entity: 81,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 86,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 216,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 86,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 2,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: true
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 1,
@@ -6757,1300 +7334,6 @@ export const crm: ProjectCrm = {
         sg: 'Birth',
         pl: 'Births',
         'default': 'Birth'
-      }
-    },
-    _140_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 140,
-        dfh_identifier_in_namespace: 'P152',
-        dfh_has_domain: 21,
-        dfh_has_range: 21,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 21,
-      label: {
-        sg: '[sg: 140: P152 undefined',
-        pl: '[pl: 140: P152 undefined',
-        'default': '[pl: 140: P152 undefined'
-      }
-    },
-    _4_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 4,
-        dfh_identifier_in_namespace: 'P4',
-        dfh_has_domain: 2,
-        dfh_has_range: 50,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 1,
-        dfh_domain_instances_max_quantifier: 1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: -1,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 2,
-      label: {
-        sg: '[inv.sg: 4: P4 undefined',
-        pl: '[inv.pl: 4: P4 undefined',
-        'default': '[inv.sg: 4: P4 undefined'
-      }
-    },
-    _75_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 75,
-        dfh_identifier_in_namespace: 'P86',
-        dfh_has_domain: 50,
-        dfh_has_range: 50,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 50,
-      label: {
-        sg: '[inv.sg: 75: P86 undefined',
-        pl: '[inv.pl: 75: P86 undefined',
-        'default': '[inv.pl: 75: P86 undefined'
-      }
-    },
-    _143_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 143,
-        dfh_identifier_in_namespace: 'P160',
-        dfh_has_domain: 83,
-        dfh_has_range: 50,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 83,
-      label: {
-        sg: '[inv.sg: 143: P160 undefined',
-        pl: '[inv.pl: 143: P160 undefined',
-        'default': '[inv.pl: 143: P160 undefined'
-      }
-    },
-    _145_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 145,
-        dfh_identifier_in_namespace: 'P164',
-        dfh_has_domain: 84,
-        dfh_has_range: 50,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 84,
-      label: {
-        sg: '[inv.sg: 145: P164 undefined',
-        pl: '[inv.pl: 145: P164 undefined',
-        'default': '[inv.pl: 145: P164 undefined'
-      }
-    },
-    _1008_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1008,
-        dfh_identifier_in_namespace: 'R34',
-        dfh_has_domain: 250,
-        dfh_has_range: 50,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 250,
-      label: {
-        sg: '[inv.sg: 1008: R34 undefined',
-        pl: '[inv.pl: 1008: R34 undefined',
-        'default': '[inv.pl: 1008: R34 undefined'
-      }
-    },
-    _1059_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1059,
-        dfh_identifier_in_namespace: 'Q13',
-        dfh_has_domain: 352,
-        dfh_has_range: 50,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 352,
-      label: {
-        sg: '[inv.sg: 1059: Q13 undefined',
-        pl: '[inv.pl: 1059: Q13 undefined',
-        'default': '[inv.pl: 1059: Q13 undefined'
-      }
-    },
-    _68_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 68,
-        dfh_identifier_in_namespace: 'P78',
-        dfh_has_domain: 50,
-        dfh_has_range: 47,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 47,
-      label: {
-        sg: '[sg: 68: P78 undefined',
-        pl: '[pl: 68: P78 undefined',
-        'default': '[pl: 68: P78 undefined'
-      }
-    },
-    _69_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 69,
-        dfh_identifier_in_namespace: 'P79',
-        dfh_has_domain: 50,
-        dfh_has_range: 339,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 339,
-      label: {
-        sg: '[sg: 69: P79 undefined',
-        pl: '[pl: 69: P79 undefined',
-        'default': '[pl: 69: P79 undefined'
-      }
-    },
-    _70_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 70,
-        dfh_identifier_in_namespace: 'P80',
-        dfh_has_domain: 50,
-        dfh_has_range: 339,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 339,
-      label: {
-        sg: '[sg: 70: P80 undefined',
-        pl: '[pl: 70: P80 undefined',
-        'default': '[pl: 70: P80 undefined'
-      }
-    },
-    _71_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 71,
-        dfh_identifier_in_namespace: 'P81',
-        dfh_has_domain: 50,
-        dfh_has_range: 335,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 335,
-      label: {
-        sg: '[sg: 71: P81 undefined',
-        pl: 'Ongoing throughout',
-        'default': 'Ongoing throughout'
-      }
-    },
-    _72_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 72,
-        dfh_identifier_in_namespace: 'P82',
-        dfh_has_domain: 50,
-        dfh_has_range: 335,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 335,
-      label: {
-        sg: '[sg: 72: P82 undefined',
-        pl: 'At some time within',
-        'default': 'At some time within'
-      }
-    },
-    _73_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 73,
-        dfh_identifier_in_namespace: 'P83',
-        dfh_has_domain: 50,
-        dfh_has_range: 52,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 52,
-      label: {
-        sg: '[sg: 73: P83 undefined',
-        pl: '[pl: 73: P83 undefined',
-        'default': '[pl: 73: P83 undefined'
-      }
-    },
-    _74_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 74,
-        dfh_identifier_in_namespace: 'P84',
-        dfh_has_domain: 50,
-        dfh_has_range: 52,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 52,
-      label: {
-        sg: '[sg: 74: P84 undefined',
-        pl: '[pl: 74: P84 undefined',
-        'default': '[pl: 74: P84 undefined'
-      }
-    },
-    _75_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 75,
-        dfh_identifier_in_namespace: 'P86',
-        dfh_has_domain: 50,
-        dfh_has_range: 50,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 50,
-      label: {
-        sg: '[sg: 75: P86 undefined',
-        pl: '[pl: 75: P86 undefined',
-        'default': '[pl: 75: P86 undefined'
-      }
-    },
-    _150_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 150,
-        dfh_identifier_in_namespace: 'P81a',
-        dfh_has_domain: 50,
-        dfh_has_range: 335,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 335,
-      label: {
-        sg: '[sg: 150: P81a undefined',
-        pl: 'End of begin',
-        'default': 'End of begin'
-      }
-    },
-    _151_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 151,
-        dfh_identifier_in_namespace: 'P81b',
-        dfh_has_domain: 50,
-        dfh_has_range: 335,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 335,
-      label: {
-        sg: '[sg: 151: P81b undefined',
-        pl: 'Begin of end',
-        'default': 'Begin of end'
-      }
-    },
-    _152_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 152,
-        dfh_identifier_in_namespace: 'P82a',
-        dfh_has_domain: 50,
-        dfh_has_range: 335,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 335,
-      label: {
-        sg: '[sg: 152: P82a undefined',
-        pl: 'Begin of begin',
-        'default': 'Begin of begin'
-      }
-    },
-    _153_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 153,
-        dfh_identifier_in_namespace: 'P82b',
-        dfh_has_domain: 50,
-        dfh_has_range: 335,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 335,
-      label: {
-        sg: '[sg: 153: P82b undefined',
-        pl: 'End of end',
-        'default': 'End of end'
-      }
-    },
-    _83_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 83,
-        dfh_identifier_in_namespace: 'P95',
-        dfh_has_domain: 60,
-        dfh_has_range: 68,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: 1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 87,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 83,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 89,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 83,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 68,
-      label: {
-        sg: 'Formed Group (Organization)',
-        pl: 'Formed Groups (Organizations)',
-        'default': 'Formed Group (Organization)'
-      }
-    },
-    _139_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 139,
-        dfh_identifier_in_namespace: 'P151',
-        dfh_has_domain: 60,
-        dfh_has_range: 68,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: -1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 88,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 139,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 2,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 90,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 139,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 1,
-      targetClassPk: 68,
-      label: {
-        sg: 'Formed from Group (Organization)',
-        pl: 'Formed from Groups (Organization)',
-        'default': 'Formed from Groups (Organization)'
-      }
-    },
-    _1043_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1043,
-        dfh_identifier_in_namespace: 'histP5',
-        dfh_has_domain: 340,
-        dfh_has_range: 61,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 340,
-      label: {
-        sg: '[inv.sg: 1043: histP5 undefined',
-        pl: '[inv.pl: 1043: histP5 undefined',
-        'default': '[inv.pl: 1043: histP5 undefined'
-      }
-    },
-    _1186_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1186,
-        dfh_identifier_in_namespace: 'P8',
-        dfh_has_domain: 61,
-        dfh_has_range: 363,
-        dfh_fk_property_of_origin: 7,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 76,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1186,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 4,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 221,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 1186,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 2,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 363,
-      label: {
-        sg: 'Place of birth',
-        pl: 'Places of birth',
-        'default': 'Place of birth'
-      }
-    },
-    _1187_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1187,
-        dfh_identifier_in_namespace: 'P8',
-        dfh_has_domain: 61,
-        dfh_has_range: 441,
-        dfh_fk_property_of_origin: 7,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 77,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1187,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 5,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 224,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 1187,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 441,
-      label: {
-        sg: 'Born in this building',
-        pl: 'Born in this building',
-        'default': 'Born in this building'
-      }
-    },
-    _84_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 84,
-        dfh_identifier_in_namespace: 'P96',
-        dfh_has_domain: 61,
-        dfh_has_range: 21,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 73,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 84,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 2,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 222,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 84,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 4,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 21,
-      label: {
-        sg: 'Mother',
-        pl: 'Mothers',
-        'default': 'Mother'
-      }
-    },
-    _85_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 85,
-        dfh_identifier_in_namespace: 'P97',
-        dfh_has_domain: 61,
-        dfh_has_range: 21,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 75,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 85,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 3,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 223,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 85,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 3,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 21,
-      label: {
-        sg: 'Father',
-        pl: 'Fathers',
-        'default': 'Father'
-      }
-    },
-    _86_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 86,
-        dfh_identifier_in_namespace: 'P98',
-        dfh_has_domain: 61,
-        dfh_has_range: 21,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 1,
-        dfh_domain_instances_max_quantifier: 1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: true,
-        ui_context_config: [
-          {
-            pk_entity: 74,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 86,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 78,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 86,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 220,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 86,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 21,
-      label: {
-        sg: 'Born child',
-        pl: 'Born children',
-        'default': 'Born child'
-      }
-    },
-    _1044_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1044,
-        dfh_identifier_in_namespace: 'histP6',
-        dfh_has_domain: 340,
-        dfh_has_range: 63,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 226,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 1044,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 340,
-      label: {
-        sg: '[inv.sg: 1044: histP6 undefined',
-        pl: '[inv.pl: 1044: histP6 undefined',
-        'default': '[inv.pl: 1044: histP6 undefined'
-      }
-    },
-    _1191_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1191,
-        dfh_identifier_in_namespace: 'P8',
-        dfh_has_domain: 63,
-        dfh_has_range: 363,
-        dfh_fk_property_of_origin: 7,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 92,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1191,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 2,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 225,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 1191,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 363,
-      label: {
-        sg: 'Place of death',
-        pl: 'Places of death',
-        'default': 'Place of death'
-      }
-    },
-    _88_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 88,
-        dfh_identifier_in_namespace: 'P100',
-        dfh_has_domain: 63,
-        dfh_has_range: 21,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 1,
-        dfh_domain_instances_max_quantifier: 1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 91,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 88,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 227,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 88,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 21,
-      label: {
-        sg: 'Person that died',
-        pl: 'Persons that died',
-        'default': 'Person that died'
-      }
-    },
-    _1189_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1189,
-        dfh_identifier_in_namespace: 'histP16',
-        dfh_has_domain: 442,
-        dfh_has_range: 68,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 98,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1189,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 4,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 442,
-      label: {
-        sg: 'Member',
-        pl: 'Members',
-        'default': 'Members'
-      }
-    },
-    _1197_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1197,
-        dfh_identifier_in_namespace: 'P143',
-        dfh_has_domain: 78,
-        dfh_has_range: 68,
-        dfh_fk_property_of_origin: 131,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 101,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1197,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 78,
-      label: {
-        sg: '[inv.sg: 1197: P143 undefined',
-        pl: '[inv.pl: 1197: P143 undefined',
-        'default': '[inv.pl: 1197: P143 undefined'
-      }
-    },
-    _1193_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1193,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 68,
-        dfh_fk_property_of_origin: 1111,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 93,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1193,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 100,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1193,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 365,
-      label: {
-        sg: 'Name',
-        pl: 'Names',
-        'default': 'Names'
-      }
-    },
-    _1182_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1182,
-        dfh_identifier_in_namespace: 'histP12',
-        dfh_has_domain: 212,
-        dfh_has_range: 68,
-        dfh_fk_property_of_origin: 1177,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 0,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 102,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1182,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 3,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 212,
-      label: {
-        sg: 'Localization (time related)',
-        pl: 'Localization (time related)',
-        'default': 'Localization (time related)'
-      }
-    },
-    _1199_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1199,
-        dfh_identifier_in_namespace: 'P143',
-        dfh_has_domain: 79,
-        dfh_has_range: 68,
-        dfh_fk_property_of_origin: 133,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 103,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1199,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 79,
-      label: {
-        sg: '[inv.sg: 1199: P143 undefined',
-        pl: '[inv.pl: 1199: P143 undefined',
-        'default': '[inv.pl: 1199: P143 undefined'
-      }
-    },
-    _83_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 83,
-        dfh_identifier_in_namespace: 'P95',
-        dfh_has_domain: 60,
-        dfh_has_range: 68,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: 1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 94,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 83,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 0,
-      targetClassPk: 60,
-      label: {
-        sg: 'Start (Formation / Foundation)',
-        pl: 'Start (Formations / Foundations)',
-        'default': 'Start (Formation / Foundation)'
       }
     },
     _87_ingoing: {
@@ -8069,19 +7352,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 0,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 96,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 87,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 2,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: -1,
       targetMinQuantity: 1,
@@ -8090,6 +7361,33 @@ export const crm: ProjectCrm = {
         sg: 'End (Dissolution)',
         pl: 'End (Dissolution)',
         'default': 'End (Dissolution)'
+      }
+    },
+    _88_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 88,
+        dfh_identifier_in_namespace: 'P100',
+        dfh_has_domain: 63,
+        dfh_has_range: 21,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: 1,
+        dfh_domain_instances_max_quantifier: 1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
+      },
+      targetMaxQuantity: 1,
+      targetMinQuantity: 1,
+      targetClassPk: 63,
+      label: {
+        sg: 'Death',
+        pl: 'Deaths',
+        'default': 'Death'
       }
     },
     _132_ingoing: {
@@ -8108,19 +7406,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 97,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 132,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 5,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: -1,
       targetMinQuantity: 0,
@@ -8147,19 +7433,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 99,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 134,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 6,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: -1,
       targetMinQuantity: 0,
@@ -8186,19 +7460,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: -1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 95,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 139,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 7,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: -1,
       targetMinQuantity: 0,
@@ -8209,124 +7471,417 @@ export const crm: ProjectCrm = {
         'default': 'Participated in Formation'
       }
     },
-    _1013_ingoing: {
+    _1178_ingoing: {
       type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
       isOutgoing: false,
       property: {
-        dfh_pk_property: 1013,
-        dfh_identifier_in_namespace: 'R39',
-        dfh_has_domain: 251,
+        dfh_pk_property: 1178,
+        dfh_identifier_in_namespace: 'histP13',
+        dfh_has_domain: 212,
+        dfh_has_range: 363,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 212,
+      label: {
+        sg: 'Entities located here',
+        pl: 'Entities located here',
+        'default': 'Entities located here'
+      }
+    },
+    _1180_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1180,
+        dfh_identifier_in_namespace: 'histP12',
+        dfh_has_domain: 212,
+        dfh_has_range: 21,
+        dfh_fk_property_of_origin: 1177,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 0,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 212,
+      label: {
+        sg: 'Localisation',
+        pl: 'Localisations',
+        'default': 'Localisations'
+      }
+    },
+    _1181_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1181,
+        dfh_identifier_in_namespace: 'P166',
+        dfh_has_domain: 84,
+        dfh_has_range: 363,
+        dfh_fk_property_of_origin: 147,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 84,
+      label: {
+        sg: 'Geolocalization (time related)',
+        pl: 'Geolocalizations (time related)',
+        'default': 'Geolocalizations (time related)'
+      }
+    },
+    _1182_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1182,
+        dfh_identifier_in_namespace: 'histP12',
+        dfh_has_domain: 212,
+        dfh_has_range: 68,
+        dfh_fk_property_of_origin: 1177,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 0,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 212,
+      label: {
+        sg: 'Localization (time related)',
+        pl: 'Localization (time related)',
+        'default': 'Localization (time related)'
+      }
+    },
+    _1184_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1184,
+        dfh_identifier_in_namespace: 'P166',
+        dfh_has_domain: 84,
+        dfh_has_range: 441,
+        dfh_fk_property_of_origin: 147,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 84,
+      label: {
+        sg: 'Geolocalization (time related)',
+        pl: 'Geolocalizations (time related)',
+        'default': 'Geolocalizations (time related)'
+      }
+    },
+    _1185_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1185,
+        dfh_identifier_in_namespace: 'histP12',
+        dfh_has_domain: 212,
+        dfh_has_range: 441,
+        dfh_fk_property_of_origin: 1177,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 212,
+      label: {
+        sg: 'Was built at place',
+        pl: 'Was built at places',
+        'default': 'Was built at places'
+      }
+    },
+    _1186_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1186,
+        dfh_identifier_in_namespace: 'P8',
+        dfh_has_domain: 61,
+        dfh_has_range: 363,
+        dfh_fk_property_of_origin: 7,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 61,
+      label: {
+        sg: 'Birth that happened here',
+        pl: 'Births that happened here',
+        'default': 'Births that happened here'
+      }
+    },
+    _1187_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1187,
+        dfh_identifier_in_namespace: 'P8',
+        dfh_has_domain: 61,
+        dfh_has_range: 441,
+        dfh_fk_property_of_origin: 7,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 61,
+      label: {
+        sg: 'Is place of birth',
+        pl: 'Is place of births',
+        'default': 'Is place of births'
+      }
+    },
+    _1188_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1188,
+        dfh_identifier_in_namespace: 'histP15',
+        dfh_has_domain: 442,
+        dfh_has_range: 21,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 442,
+      label: {
+        sg: 'Is member of',
+        pl: 'Is member of',
+        'default': 'Is member of'
+      }
+    },
+    _1189_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1189,
+        dfh_identifier_in_namespace: 'histP16',
+        dfh_has_domain: 442,
         dfh_has_range: 68,
         dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
       },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 251,
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 442,
       label: {
-        sg: '[inv.sg: 1013: R39 undefined',
-        pl: '[inv.pl: 1013: R39 undefined',
-        'default': '[inv.pl: 1013: R39 undefined'
+        sg: 'Member',
+        pl: 'Members',
+        'default': 'Members'
       }
     },
-    _1035_ingoing: {
+    _1191_ingoing: {
       type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
       isOutgoing: false,
       property: {
-        dfh_pk_property: 1035,
-        dfh_identifier_in_namespace: 'R62',
-        dfh_has_domain: 262,
+        dfh_pk_property: 1191,
+        dfh_identifier_in_namespace: 'P8',
+        dfh_has_domain: 63,
+        dfh_has_range: 363,
+        dfh_fk_property_of_origin: 7,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 63,
+      label: {
+        sg: 'Is place of death',
+        pl: 'Is place of death',
+        'default': 'Is place of death'
+      }
+    },
+    _1192_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1192,
+        dfh_identifier_in_namespace: 'histP9',
+        dfh_has_domain: 365,
+        dfh_has_range: 21,
+        dfh_fk_property_of_origin: 1111,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: true
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 365,
+      label: {
+        sg: 'Name',
+        pl: 'Names',
+        'default': 'Names'
+      }
+    },
+    _1193_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1193,
+        dfh_identifier_in_namespace: 'histP9',
+        dfh_has_domain: 365,
         dfh_has_range: 68,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
+        dfh_fk_property_of_origin: 1111,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: true
       },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 262,
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 365,
       label: {
-        sg: '[inv.sg: 1035: R62 undefined',
-        pl: '[inv.pl: 1035: R62 undefined',
-        'default': '[inv.pl: 1035: R62 undefined'
+        sg: 'Name',
+        pl: 'Names',
+        'default': 'Names'
       }
     },
-    _95_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 95,
-        dfh_identifier_in_namespace: 'P107',
-        dfh_has_domain: 68,
-        dfh_has_range: 38,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 38,
-      label: {
-        sg: '[sg: 95: P107 undefined',
-        pl: '[pl: 95: P107 undefined',
-        'default': '[pl: 95: P107 undefined'
-      }
-    },
-    _119_ingoing: {
+    _1194_ingoing: {
       type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
       isOutgoing: false,
       property: {
-        dfh_pk_property: 119,
-        dfh_identifier_in_namespace: 'P131',
-        dfh_has_domain: 38,
-        dfh_has_range: 75,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
+        dfh_pk_property: 1194,
+        dfh_identifier_in_namespace: 'histP9',
+        dfh_has_domain: 365,
+        dfh_has_range: 363,
+        dfh_fk_property_of_origin: 1111,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: true
       },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 38,
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 365,
       label: {
-        sg: '[inv.sg: 119: P131 undefined',
-        pl: '[inv.pl: 119: P131 undefined',
-        'default': '[inv.pl: 119: P131 undefined'
+        sg: 'Name',
+        pl: 'Names',
+        'default': 'Names'
       }
     },
-    _1196_outgoing: {
+    _1195_ingoing: {
       type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
-      isOutgoing: true,
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1195,
+        dfh_identifier_in_namespace: 'histP9',
+        dfh_has_domain: 365,
+        dfh_has_range: 441,
+        dfh_fk_property_of_origin: 1111,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: true
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 365,
+      label: {
+        sg: 'Name/Address',
+        pl: 'Names/Addresses',
+        'default': 'Names/Addresses'
+      }
+    },
+    _1196_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
       property: {
         dfh_pk_property: 1196,
         dfh_identifier_in_namespace: 'P143',
@@ -8337,93 +7892,285 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 188,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1196,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 190,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1196,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 21,
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 78,
       label: {
-        sg: 'Person',
-        pl: 'Persons',
-        'default': 'Person'
+        sg: 'Joining',
+        pl: 'Joinings',
+        'default': 'Joinings'
       }
     },
-    _1197_outgoing: {
+    _1200_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1200,
+        dfh_identifier_in_namespace: 'histP9',
+        dfh_has_domain: 365,
+        dfh_has_range: 364,
+        dfh_fk_property_of_origin: 1111,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: true
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 365,
+      label: {
+        sg: 'Term/Label',
+        pl: 'Terms/Labels',
+        'default': 'Terms/Labels'
+      }
+    },
+    _1201_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1201,
+        dfh_identifier_in_namespace: 'histP9',
+        dfh_has_domain: 365,
+        dfh_has_range: 443,
+        dfh_fk_property_of_origin: 1111,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: true
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 365,
+      label: {
+        sg: 'Term/Label',
+        pl: 'Terms/Labels',
+        'default': 'Terms/Labels'
+      }
+    },
+    _1202_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 1202,
+        dfh_identifier_in_namespace: 'histP9',
+        dfh_has_domain: 365,
+        dfh_has_range: 219,
+        dfh_fk_property_of_origin: 1111,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: true
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 365,
+      label: {
+        sg: 'Bibliographic Reference',
+        pl: 'Bibliographic References',
+        'default': 'Bibliographic References'
+      }
+    },
+    _100005_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 100005,
+        dfh_identifier_in_namespace: 'histP9',
+        dfh_has_domain: 365,
+        dfh_has_range: 218,
+        dfh_fk_property_of_origin: 1111,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: true
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 365,
+      label: {
+        sg: 'Title',
+        pl: 'Titles',
+        'default': 'Titles'
+      }
+    },
+    _100070_ingoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: false,
+      property: {
+        dfh_pk_property: 100070,
+        dfh_identifier_in_namespace: 'histP9',
+        dfh_has_domain: 365,
+        dfh_has_range: 100099,
+        dfh_fk_property_of_origin: 1111,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: true
+      },
+      targetMaxQuantity: -1,
+      targetMinQuantity: 0,
+      targetClassPk: 365,
+      label: {
+        sg: 'Name / Term',
+        pl: 'Names / Terms',
+        'default': 'Names / Terms'
+      }
+    },
+    _83_outgoing: {
       type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
       isOutgoing: true,
       property: {
-        dfh_pk_property: 1197,
-        dfh_identifier_in_namespace: 'P143',
-        dfh_has_domain: 78,
+        dfh_pk_property: 83,
+        dfh_identifier_in_namespace: 'P95',
+        dfh_has_domain: 60,
         dfh_has_range: 68,
-        dfh_fk_property_of_origin: 131,
+        dfh_fk_property_of_origin: null,
         dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
+        dfh_domain_instances_max_quantifier: 1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: []
+        identity_defining: false
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 1,
       targetClassPk: 68,
       label: {
-        sg: '[sg: 1197: P143 undefined',
-        pl: '[pl: 1197: P143 undefined',
-        'default': '[sg: 1197: P143 undefined'
+        sg: 'Formed Group (Organization)',
+        pl: 'Formed Groups (Organizations)',
+        'default': 'Formed Group (Organization)'
       }
     },
-    _131_outgoing: {
+    _84_outgoing: {
       type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
       isOutgoing: true,
       property: {
-        dfh_pk_property: 131,
-        dfh_identifier_in_namespace: 'P143',
-        dfh_has_domain: 78,
-        dfh_has_range: 38,
+        dfh_pk_property: 84,
+        dfh_identifier_in_namespace: 'P96',
+        dfh_has_domain: 61,
+        dfh_has_range: 21,
         dfh_fk_property_of_origin: null,
         dfh_domain_instances_min_quantifier: 0,
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: []
+        identity_defining: false
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 1,
-      targetClassPk: 38,
+      targetClassPk: 21,
       label: {
-        sg: '[sg: 131: P143 undefined',
-        pl: '[pl: 131: P143 undefined',
-        'default': '[sg: 131: P143 undefined'
+        sg: 'Mother',
+        pl: 'Mothers',
+        'default': 'Mother'
+      }
+    },
+    _85_outgoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 85,
+        dfh_identifier_in_namespace: 'P97',
+        dfh_has_domain: 61,
+        dfh_has_range: 21,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
+      },
+      targetMaxQuantity: 1,
+      targetMinQuantity: 1,
+      targetClassPk: 21,
+      label: {
+        sg: 'Father',
+        pl: 'Fathers',
+        'default': 'Father'
+      }
+    },
+    _86_outgoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 86,
+        dfh_identifier_in_namespace: 'P98',
+        dfh_has_domain: 61,
+        dfh_has_range: 21,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: 1,
+        dfh_domain_instances_max_quantifier: 1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: true
+      },
+      targetMaxQuantity: 1,
+      targetMinQuantity: 1,
+      targetClassPk: 21,
+      label: {
+        sg: 'Born child',
+        pl: 'Born children',
+        'default': 'Born child'
+      }
+    },
+    _88_outgoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 88,
+        dfh_identifier_in_namespace: 'P100',
+        dfh_has_domain: 63,
+        dfh_has_range: 21,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: 1,
+        dfh_domain_instances_max_quantifier: 1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
+      },
+      targetMaxQuantity: 1,
+      targetMinQuantity: 1,
+      targetClassPk: 21,
+      label: {
+        sg: 'Person that died',
+        pl: 'Persons that died',
+        'default': 'Person that died'
       }
     },
     _132_outgoing: {
@@ -8442,29 +8189,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 187,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 132,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 189,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 132,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 1,
@@ -8473,90 +8198,6 @@ export const crm: ProjectCrm = {
         sg: 'Joined Group',
         pl: 'Joined Groups',
         'default': 'Joined Group'
-      }
-    },
-    _1198_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1198,
-        dfh_identifier_in_namespace: 'P143',
-        dfh_has_domain: 79,
-        dfh_has_range: 21,
-        dfh_fk_property_of_origin: 133,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 21,
-      label: {
-        sg: '[sg: 1198: P143 undefined',
-        pl: '[pl: 1198: P143 undefined',
-        'default': '[sg: 1198: P143 undefined'
-      }
-    },
-    _1199_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1199,
-        dfh_identifier_in_namespace: 'P143',
-        dfh_has_domain: 79,
-        dfh_has_range: 68,
-        dfh_fk_property_of_origin: 133,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 68,
-      label: {
-        sg: '[sg: 1199: P143 undefined',
-        pl: '[pl: 1199: P143 undefined',
-        'default': '[sg: 1199: P143 undefined'
-      }
-    },
-    _133_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 133,
-        dfh_identifier_in_namespace: 'P145',
-        dfh_has_domain: 79,
-        dfh_has_range: 38,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 38,
-      label: {
-        sg: '[sg: 133: P145 undefined',
-        pl: '[pl: 133: P145 undefined',
-        'default': '[sg: 133: P145 undefined'
       }
     },
     _134_outgoing: {
@@ -8575,29 +8216,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 104,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 134,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 105,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 134,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 1,
@@ -8608,110 +8227,31 @@ export const crm: ProjectCrm = {
         'default': 'Was left'
       }
     },
-    _1181_outgoing: {
+    _139_outgoing: {
       type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
       isOutgoing: true,
       property: {
-        dfh_pk_property: 1181,
-        dfh_identifier_in_namespace: 'P166',
-        dfh_has_domain: 84,
-        dfh_has_range: 363,
-        dfh_fk_property_of_origin: 147,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 108,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1181,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 363,
-      label: {
-        sg: 'Place',
-        pl: 'Places',
-        'default': 'Place'
-      }
-    },
-    _1184_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1184,
-        dfh_identifier_in_namespace: 'P166',
-        dfh_has_domain: 84,
-        dfh_has_range: 441,
-        dfh_fk_property_of_origin: 147,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 107,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1184,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 441,
-      label: {
-        sg: 'Place',
-        pl: 'Places',
-        'default': 'Place'
-      }
-    },
-    _145_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 145,
-        dfh_identifier_in_namespace: 'P164',
-        dfh_has_domain: 84,
-        dfh_has_range: 50,
+        dfh_pk_property: 139,
+        dfh_identifier_in_namespace: 'P151',
+        dfh_has_domain: 60,
+        dfh_has_range: 68,
         dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: -1,
+        identity_defining: false
       },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 50,
+      targetMaxQuantity: -1,
+      targetMinQuantity: 1,
+      targetClassPk: 68,
       label: {
-        sg: '[sg: 145: P164 undefined',
-        pl: '[pl: 145: P164 undefined',
-        'default': '[pl: 145: P164 undefined'
+        sg: 'Formed from Group (Organization)',
+        pl: 'Formed from Groups (Organization)',
+        'default': 'Formed from Groups (Organization)'
       }
     },
     _148_outgoing: {
@@ -8730,29 +8270,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: 1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 106,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 148,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 109,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 148,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 1,
@@ -8761,6 +8279,87 @@ export const crm: ProjectCrm = {
         sg: 'Geocoordinates',
         pl: 'Geocoordinates',
         'default': 'Geocoordinates'
+      }
+    },
+    _1110_outgoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 1110,
+        dfh_identifier_in_namespace: 'histP8',
+        dfh_has_domain: 363,
+        dfh_has_range: 364,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 0,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
+      },
+      targetMaxQuantity: 1,
+      targetMinQuantity: 0,
+      targetClassPk: 364,
+      label: {
+        sg: 'has Type',
+        pl: 'has Types',
+        'default': 'has Type'
+      }
+    },
+    _1112_outgoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 1112,
+        dfh_identifier_in_namespace: 'histP10',
+        dfh_has_domain: 365,
+        dfh_has_range: 54,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: true
+      },
+      targetMaxQuantity: 1,
+      targetMinQuantity: 1,
+      targetClassPk: 54,
+      label: {
+        sg: 'Language',
+        pl: 'Languages',
+        'default': 'Language'
+      }
+    },
+    _1113_outgoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 1113,
+        dfh_identifier_in_namespace: 'histP11',
+        dfh_has_domain: 365,
+        dfh_has_range: 40,
+        dfh_fk_property_of_origin: null,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: 1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: true
+      },
+      targetMaxQuantity: 1,
+      targetMinQuantity: 1,
+      targetClassPk: 40,
+      label: {
+        sg: 'Spelling',
+        pl: 'Spellings',
+        'default': 'Spelling'
       }
     },
     _1178_outgoing: {
@@ -8779,29 +8378,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 119,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1178,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 114,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1178,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 1,
@@ -8828,29 +8405,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 0,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 115,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1180,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 2,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 120,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1180,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 2,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 0,
@@ -8877,29 +8432,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 0,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 118,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1182,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 4,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 121,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1182,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 4,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 0,
@@ -8908,45 +8441,6 @@ export const crm: ProjectCrm = {
         sg: 'Is location of',
         pl: 'Is location of',
         'default': 'Is location of'
-      }
-    },
-    _1183_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1183,
-        dfh_identifier_in_namespace: 'histP14',
-        dfh_has_domain: 212,
-        dfh_has_range: 52,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 0,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 117,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1183,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 0,
-      targetClassPk: 52,
-      label: {
-        sg: '[sg: 1183: histP14 undefined',
-        pl: '[pl: 1183: histP14 undefined',
-        'default': '[sg: 1183: histP14 undefined'
       }
     },
     _1185_outgoing: {
@@ -8965,29 +8459,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 116,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1185,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 3,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 122,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1185,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 3,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 1,
@@ -8998,897 +8470,12 @@ export const crm: ProjectCrm = {
         'default': 'Built work located relative to place'
       }
     },
-    _1066_outgoing: {
+    _1186_outgoing: {
       type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
       isOutgoing: true,
-      property: {
-        dfh_pk_property: 1066,
-        dfh_identifier_in_namespace: 'histP7',
-        dfh_has_domain: 212,
-        dfh_has_range: 53,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: 1,
-        dfh_range_instances_min_quantifier: 0,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 0,
-      targetClassPk: 53,
-      label: {
-        sg: '[sg: 1066: histP7 undefined',
-        pl: '[pl: 1066: histP7 undefined',
-        'default': '[sg: 1066: histP7 undefined'
-      }
-    },
-    _100005_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 100005,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 218,
-        dfh_fk_property_of_origin: 1111,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 260,
-            fk_ui_context: 230,
-            fk_project: null,
-            fk_property: 100005,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 262,
-            fk_ui_context: 229,
-            fk_project: null,
-            fk_property: 100005,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 365,
-      label: {
-        sg: 'Title',
-        pl: 'Titles',
-        'default': 'Titles'
-      }
-    },
-    _979_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 979,
-        dfh_identifier_in_namespace: 'R4',
-        dfh_has_domain: 218,
-        dfh_has_range: 219,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 259,
-            fk_ui_context: 230,
-            fk_project: null,
-            fk_property: 979,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 219,
-      label: {
-        sg: '[sg: 979: R4 undefined',
-        pl: '[pl: 979: R4 undefined',
-        'default': '[pl: 979: R4 undefined'
-      }
-    },
-    _1015_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1015,
-        dfh_identifier_in_namespace: 'R41',
-        dfh_has_domain: 218,
-        dfh_has_range: 219,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 261,
-            fk_ui_context: 230,
-            fk_project: null,
-            fk_property: 1015,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 219,
-      label: {
-        sg: '[sg: 1015: R41 undefined',
-        pl: '[pl: 1015: R41 undefined',
-        'default': '[pl: 1015: R41 undefined'
-      }
-    },
-    _982_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 982,
-        dfh_identifier_in_namespace: 'R7',
-        dfh_has_domain: 221,
-        dfh_has_range: 219,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 159,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 982,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 221,
-      label: {
-        sg: '[inv.sg: 982: R7 undefined',
-        pl: '[inv.pl: 982: R7 undefined',
-        'default': '[inv.pl: 982: R7 undefined'
-      }
-    },
-    _971_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 971,
-        dfh_identifier_in_namespace: 'CLP46_should_be_composed_of',
-        dfh_has_domain: 219,
-        dfh_has_range: 219,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 160,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 971,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 219,
-      label: {
-        sg: '[inv.sg: 971: CLP46_should_be_composed_of undefined',
-        pl: '[inv.pl: 971: CLP46_should_be_composed_of undefined',
-        'default': '[inv.pl: 971: CLP46_should_be_composed_of undefined'
-      }
-    },
-    _979_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 979,
-        dfh_identifier_in_namespace: 'R4',
-        dfh_has_domain: 218,
-        dfh_has_range: 219,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 161,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 979,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 218,
-      label: {
-        sg: '[inv.sg: 979: R4 undefined',
-        pl: '[inv.pl: 979: R4 undefined',
-        'default': '[inv.pl: 979: R4 undefined'
-      }
-    },
-    _1000_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1000,
-        dfh_identifier_in_namespace: 'R26',
-        dfh_has_domain: 248,
-        dfh_has_range: 219,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 162,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1000,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 248,
-      label: {
-        sg: '[inv.sg: 1000: R26 undefined',
-        pl: '[inv.pl: 1000: R26 undefined',
-        'default': '[inv.pl: 1000: R26 undefined'
-      }
-    },
-    _1015_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1015,
-        dfh_identifier_in_namespace: 'R41',
-        dfh_has_domain: 218,
-        dfh_has_range: 219,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 163,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1015,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 218,
-      label: {
-        sg: '[inv.sg: 1015: R41 undefined',
-        pl: '[inv.pl: 1015: R41 undefined',
-        'default': '[inv.pl: 1015: R41 undefined'
-      }
-    },
-    _1022_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1022,
-        dfh_identifier_in_namespace: 'R49',
-        dfh_has_domain: 256,
-        dfh_has_range: 219,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 164,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1022,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 256,
-      label: {
-        sg: '[inv.sg: 1022: R49 undefined',
-        pl: '[inv.pl: 1022: R49 undefined',
-        'default': '[inv.pl: 1022: R49 undefined'
-      }
-    },
-    _1202_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1202,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 219,
-        dfh_fk_property_of_origin: 1111,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 156,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1202,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 157,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1202,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 235,
-            fk_ui_context: 230,
-            fk_project: null,
-            fk_property: 1202,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 258,
-            fk_ui_context: 229,
-            fk_project: null,
-            fk_property: 1202,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 365,
-      label: {
-        sg: 'Bibliographic Reference',
-        pl: 'Bibliographic References',
-        'default': 'Bibliographic References'
-      }
-    },
-    _100003_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 100003,
-        dfh_identifier_in_namespace: 'tempP1',
-        dfh_has_domain: 100002,
-        dfh_has_range: 219,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 100002,
-      label: {
-        sg: '[inv.sg: 100003: tempP1 undefined',
-        pl: '[inv.pl: 100003: tempP1 undefined',
-        'default': '[inv.pl: 100003: tempP1 undefined'
-      }
-    },
-    _970_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 970,
-        dfh_identifier_in_namespace: 'CLP45_should_consist_of',
-        dfh_has_domain: 219,
-        dfh_has_range: 55,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 166,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 970,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 55,
-      label: {
-        sg: '[sg: 970: CLP45_should_consist_of undefined',
-        pl: '[pl: 970: CLP45_should_consist_of undefined',
-        'default': '[pl: 970: CLP45_should_consist_of undefined'
-      }
-    },
-    _971_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 971,
-        dfh_identifier_in_namespace: 'CLP46_should_be_composed_of',
-        dfh_has_domain: 219,
-        dfh_has_range: 219,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 168,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 971,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 219,
-      label: {
-        sg: '[sg: 971: CLP46_should_be_composed_of undefined',
-        pl: '[pl: 971: CLP46_should_be_composed_of undefined',
-        'default': '[pl: 971: CLP46_should_be_composed_of undefined'
-      }
-    },
-    _972_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 972,
-        dfh_identifier_in_namespace: 'CLP57_should_have_number_of_parts',
-        dfh_has_domain: 219,
-        dfh_has_range: null,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 169,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 972,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: null,
-      label: {
-        sg: '[sg: 972: CLP57_should_have_number_of_parts undefined',
-        pl: '[pl: 972: CLP57_should_have_number_of_parts undefined',
-        'default': '[pl: 972: CLP57_should_have_number_of_parts undefined'
-      }
-    },
-    _975_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 975,
-        dfh_identifier_in_namespace: 'CLR6_should_carry',
-        dfh_has_domain: 219,
-        dfh_has_range: 240,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 172,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 975,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 240,
-      label: {
-        sg: '[sg: 975: CLR6_should_carry undefined',
-        pl: '[pl: 975: CLR6_should_carry undefined',
-        'default': '[pl: 975: CLR6_should_carry undefined'
-      }
-    },
-    _969_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 969,
-        dfh_identifier_in_namespace: 'CLP43_should_have_dimension',
-        dfh_has_domain: 219,
-        dfh_has_range: 52,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 167,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 969,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 52,
-      label: {
-        sg: '[sg: 969: CLP43_should_have_dimension undefined',
-        pl: '[pl: 969: CLP43_should_have_dimension undefined',
-        'default': '[pl: 969: CLP43_should_have_dimension undefined'
-      }
-    },
-    _974_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 974,
-        dfh_identifier_in_namespace: 'CLP105_right_held_by',
-        dfh_has_domain: 219,
-        dfh_has_range: 38,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 171,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 974,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 38,
-      label: {
-        sg: '[sg: 974: CLP105_right_held_by undefined',
-        pl: '[pl: 974: CLP105_right_held_by undefined',
-        'default': '[pl: 974: CLP105_right_held_by undefined'
-      }
-    },
-    _973_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 973,
-        dfh_identifier_in_namespace: 'CLP104_subject_to',
-        dfh_has_domain: 219,
-        dfh_has_range: 29,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 170,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 973,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 29,
-      label: {
-        sg: '[sg: 973: CLP104_subject_to undefined',
-        pl: '[pl: 973: CLP104_subject_to undefined',
-        'default': '[pl: 973: CLP104_subject_to undefined'
-      }
-    },
-    _968_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 968,
-        dfh_identifier_in_namespace: 'CLP2_should_have_type',
-        dfh_has_domain: 219,
-        dfh_has_range: 53,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 165,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 968,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 53,
-      label: {
-        sg: '[sg: 968: CLP2_should_have_type undefined',
-        pl: '[pl: 968: CLP2_should_have_type undefined',
-        'default': '[pl: 968: CLP2_should_have_type undefined'
-      }
-    },
-    _982_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 982,
-        dfh_identifier_in_namespace: 'R7',
-        dfh_has_domain: 221,
-        dfh_has_range: 219,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 219,
-      label: {
-        sg: '[sg: 982: R7 undefined',
-        pl: '[pl: 982: R7 undefined',
-        'default': '[pl: 982: R7 undefined'
-      }
-    },
-    _1181_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1181,
-        dfh_identifier_in_namespace: 'P166',
-        dfh_has_domain: 84,
-        dfh_has_range: 363,
-        dfh_fk_property_of_origin: 147,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 152,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1181,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 211,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 1181,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 2,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 252,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1181,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 84,
-      label: {
-        sg: 'Geolocalization (time related)',
-        pl: 'Geolocalizations (time related)',
-        'default': 'Geolocalizations (time related)'
-      }
-    },
-    _1186_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
       property: {
         dfh_pk_property: 1186,
         dfh_identifier_in_namespace: 'P8',
@@ -9899,995 +8486,23 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 125,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1186,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 4,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 253,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1186,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 61,
-      label: {
-        sg: 'Birth that happened here',
-        pl: 'Births that happened here',
-        'default': 'Births that happened here'
-      }
-    },
-    _1194_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1194,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 363,
-        dfh_fk_property_of_origin: 1111,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 123,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1194,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 124,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1194,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 210,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 1194,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 365,
-      label: {
-        sg: 'Name',
-        pl: 'Names',
-        'default': 'Names'
-      }
-    },
-    _1191_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1191,
-        dfh_identifier_in_namespace: 'P8',
-        dfh_has_domain: 63,
-        dfh_has_range: 363,
-        dfh_fk_property_of_origin: 7,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 126,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1191,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 3,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 254,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1191,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 63,
-      label: {
-        sg: 'Is place of death',
-        pl: 'Is place of death',
-        'default': 'Is place of death'
-      }
-    },
-    _1178_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1178,
-        dfh_identifier_in_namespace: 'histP13',
-        dfh_has_domain: 212,
-        dfh_has_range: 363,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 127,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1178,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 2,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 255,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1178,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 212,
-      label: {
-        sg: 'Entities located here',
-        pl: 'Entities located here',
-        'default': 'Entities located here'
-      }
-    },
-    _1110_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1110,
-        dfh_identifier_in_namespace: 'histP8',
-        dfh_has_domain: 363,
-        dfh_has_range: 364,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 0,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 214,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 1110,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 228,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1110,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 0,
-      targetClassPk: 364,
-      label: {
-        sg: 'has Type',
-        pl: 'has Types',
-        'default': 'has Type'
-      }
-    },
-    _1200_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1200,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 364,
-        dfh_fk_property_of_origin: 1111,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 185,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1200,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 186,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1200,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 365,
-      label: {
-        sg: 'Term/Label',
-        pl: 'Terms/Labels',
-        'default': 'Terms/Labels'
-      }
-    },
-    _1110_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1110,
-        dfh_identifier_in_namespace: 'histP8',
-        dfh_has_domain: 363,
-        dfh_has_range: 364,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 0,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 363,
-      label: {
-        sg: 'is Type of',
-        pl: 'is Type of',
-        'default': 'is Type of'
-      }
-    },
-    _1111_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1111,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 1,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: null,
-        dfh_domain_instances_max_quantifier: null,
-        dfh_range_instances_min_quantifier: null,
-        dfh_range_instances_max_quantifier: null,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 242,
-            fk_ui_context: 232,
-            fk_project: null,
-            fk_property: 1111,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: null,
-      targetMinQuantity: null,
-      targetClassPk: 1,
-      label: {
-        sg: '[sg: 1111: histP9 undefined',
-        pl: '[pl: 1111: histP9 undefined',
-        'default': '[pl: 1111: histP9 undefined'
-      }
-    },
-    _1192_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1192,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 21,
-        dfh_fk_property_of_origin: 1111,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 130,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1192,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 135,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1192,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 243,
-            fk_ui_context: 232,
-            fk_project: null,
-            fk_property: 1192,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 21,
-      label: {
-        sg: 'Person with this Name',
-        pl: 'Persons with this Name',
-        'default': 'Person with this Name'
-      }
-    },
-    _1193_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1193,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 68,
-        dfh_fk_property_of_origin: 1111,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 133,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1193,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 136,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1193,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 244,
-            fk_ui_context: 232,
-            fk_project: null,
-            fk_property: 1193,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 68,
-      label: {
-        sg: 'Group with this Name',
-        pl: 'Groups with this Name',
-        'default': 'Group with this Name'
-      }
-    },
-    _1194_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1194,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 363,
-        dfh_fk_property_of_origin: 1111,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 131,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1194,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 137,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1194,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 249,
-            fk_ui_context: 232,
-            fk_project: null,
-            fk_property: 1194,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 1,
       targetClassPk: 363,
       label: {
-        sg: 'Geo-Place with this Name',
-        pl: 'Geo-Places with this Name',
-        'default': 'Geo-Place with this Name'
+        sg: 'Place of birth',
+        pl: 'Places of birth',
+        'default': 'Place of birth'
       }
     },
-    _1195_outgoing: {
+    _1187_outgoing: {
       type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
       isOutgoing: true,
-      property: {
-        dfh_pk_property: 1195,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 441,
-        dfh_fk_property_of_origin: 1111,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 132,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1195,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 139,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1195,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 248,
-            fk_ui_context: 232,
-            fk_project: null,
-            fk_property: 1195,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 441,
-      label: {
-        sg: 'Built Work with this Name',
-        pl: 'Built Works with this Name',
-        'default': 'Built Work with this Name'
-      }
-    },
-    _1113_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1113,
-        dfh_identifier_in_namespace: 'histP11',
-        dfh_has_domain: 365,
-        dfh_has_range: 40,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: 1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: true,
-        ui_context_config: [
-          {
-            pk_entity: 128,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1113,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 134,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1113,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 245,
-            fk_ui_context: 232,
-            fk_project: null,
-            fk_property: 1113,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 212,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 1113,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 240,
-            fk_ui_context: 231,
-            fk_project: null,
-            fk_property: 1113,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 236,
-            fk_ui_context: 230,
-            fk_project: null,
-            fk_property: 1113,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 257,
-            fk_ui_context: 229,
-            fk_project: null,
-            fk_property: 1113,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 40,
-      label: {
-        sg: 'Spelling',
-        pl: 'Spellings',
-        'default': 'Spelling'
-      }
-    },
-    _1200_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1200,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 364,
-        dfh_fk_property_of_origin: 1111,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 246,
-            fk_ui_context: 232,
-            fk_project: null,
-            fk_property: 1200,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 364,
-      label: {
-        sg: '[sg: 1200: histP9 undefined',
-        pl: '[pl: 1200: histP9 undefined',
-        'default': '[sg: 1200: histP9 undefined'
-      }
-    },
-    _1201_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1201,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 443,
-        dfh_fk_property_of_origin: 1111,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 250,
-            fk_ui_context: 232,
-            fk_project: null,
-            fk_property: 1201,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 443,
-      label: {
-        sg: '[sg: 1201: histP9 undefined',
-        pl: '[pl: 1201: histP9 undefined',
-        'default': '[sg: 1201: histP9 undefined'
-      }
-    },
-    _1202_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1202,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 219,
-        dfh_fk_property_of_origin: 1111,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 251,
-            fk_ui_context: 232,
-            fk_project: null,
-            fk_property: 1202,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 219,
-      label: {
-        sg: '[sg: 1202: histP9 undefined',
-        pl: '[pl: 1202: histP9 undefined',
-        'default': '[sg: 1202: histP9 undefined'
-      }
-    },
-    _1112_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1112,
-        dfh_identifier_in_namespace: 'histP10',
-        dfh_has_domain: 365,
-        dfh_has_range: 54,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: true,
-        ui_context_config: [
-          {
-            pk_entity: 138,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1112,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 129,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1112,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 213,
-            fk_ui_context: 47,
-            fk_project: null,
-            fk_property: 1112,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 247,
-            fk_ui_context: 232,
-            fk_project: null,
-            fk_property: 1112,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 241,
-            fk_ui_context: 231,
-            fk_project: null,
-            fk_property: 1112,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 237,
-            fk_ui_context: 230,
-            fk_project: null,
-            fk_property: 1112,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 256,
-            fk_ui_context: 229,
-            fk_project: null,
-            fk_property: 1112,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 54,
-      label: {
-        sg: 'Language',
-        pl: 'Languages',
-        'default': 'Language'
-      }
-    },
-    _100005_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 100005,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 218,
-        dfh_fk_property_of_origin: 1111,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: 1,
-      targetMinQuantity: 1,
-      targetClassPk: 218,
-      label: {
-        sg: '[sg: 100005: histP9 undefined',
-        pl: '[pl: 100005: histP9 undefined',
-        'default': '[sg: 100005: histP9 undefined'
-      }
-    },
-    _1184_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1184,
-        dfh_identifier_in_namespace: 'P166',
-        dfh_has_domain: 84,
-        dfh_has_range: 441,
-        dfh_fk_property_of_origin: 147,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 142,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1184,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 146,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1184,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 84,
-      label: {
-        sg: 'Geolocalization (time related)',
-        pl: 'Geolocalizations (time related)',
-        'default': 'Geolocalizations (time related)'
-      }
-    },
-    _1187_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
       property: {
         dfh_pk_property: 1187,
         dfh_identifier_in_namespace: 'P8',
@@ -10898,163 +8513,15 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 147,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1187,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 3,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 141,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1187,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 61,
-      label: {
-        sg: 'Is place of birth',
-        pl: 'Is place of births',
-        'default': 'Is place of births'
-      }
-    },
-    _1195_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1195,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 441,
-        dfh_fk_property_of_origin: 1111,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 140,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1195,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 144,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1195,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 365,
-      label: {
-        sg: 'Name/Address',
-        pl: 'Names/Addresses',
-        'default': 'Names/Addresses'
-      }
-    },
-    _1185_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1185,
-        dfh_identifier_in_namespace: 'histP12',
-        dfh_has_domain: 212,
-        dfh_has_range: 441,
-        dfh_fk_property_of_origin: 1177,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 1,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 145,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1185,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 2,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 143,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1185,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: null,
-            fk_class_for_class_field: null
-          }
-        ]
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 212,
-      label: {
-        sg: 'Was built at place',
-        pl: 'Was built at places',
-        'default': 'Was built at places'
-      }
-    },
-    _1190_outgoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: true,
-      property: {
-        dfh_pk_property: 1190,
-        dfh_identifier_in_namespace: 'histP17',
-        dfh_has_domain: 441,
-        dfh_has_range: 443,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 0,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: []
+        identity_defining: false
       },
       targetMaxQuantity: 1,
-      targetMinQuantity: 0,
-      targetClassPk: 443,
+      targetMinQuantity: 1,
+      targetClassPk: 441,
       label: {
-        sg: '[sg: 1190: histP17 undefined',
-        pl: '[pl: 1190: histP17 undefined',
-        'default': '[sg: 1190: histP17 undefined'
+        sg: 'Born in this building',
+        pl: 'Born in this building',
+        'default': 'Born in this building'
       }
     },
     _1188_outgoing: {
@@ -11073,29 +8540,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 148,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1188,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 151,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1188,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 1,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 1,
@@ -11122,29 +8567,7 @@ export const crm: ProjectCrm = {
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 149,
-            fk_ui_context: 46,
-            fk_project: null,
-            fk_property: 1189,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 150,
-            fk_ui_context: 45,
-            fk_project: null,
-            fk_property: 1189,
-            fk_class_field: null,
-            property_is_outgoing: true,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
       targetMaxQuantity: 1,
       targetMinQuantity: 1,
@@ -11155,83 +8578,97 @@ export const crm: ProjectCrm = {
         'default': 'Group (Organization)'
       }
     },
-    _1190_ingoing: {
+    _1191_outgoing: {
       type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
-      isOutgoing: false,
+      isOutgoing: true,
       property: {
-        dfh_pk_property: 1190,
-        dfh_identifier_in_namespace: 'histP17',
-        dfh_has_domain: 441,
-        dfh_has_range: 443,
-        dfh_fk_property_of_origin: null,
-        dfh_domain_instances_min_quantifier: 0,
-        dfh_domain_instances_max_quantifier: -1,
-        dfh_range_instances_min_quantifier: 0,
-        dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: []
-      },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 441,
-      label: {
-        sg: '[inv.sg: 1190: histP17 undefined',
-        pl: '[inv.pl: 1190: histP17 undefined',
-        'default': '[inv.pl: 1190: histP17 undefined'
-      }
-    },
-    _1201_ingoing: {
-      type: 'PropertyField',
-      hasAlternatives: false,
-      isViewMode: false,
-      toggle: 'expanded',
-      isOutgoing: false,
-      property: {
-        dfh_pk_property: 1201,
-        dfh_identifier_in_namespace: 'histP9',
-        dfh_has_domain: 365,
-        dfh_has_range: 443,
-        dfh_fk_property_of_origin: 1111,
+        dfh_pk_property: 1191,
+        dfh_identifier_in_namespace: 'P8',
+        dfh_has_domain: 63,
+        dfh_has_range: 363,
+        dfh_fk_property_of_origin: 7,
         dfh_domain_instances_min_quantifier: 0,
         dfh_domain_instances_max_quantifier: -1,
         dfh_range_instances_min_quantifier: 1,
         dfh_range_instances_max_quantifier: 1,
-        identity_defining: false,
-        ui_context_config: [
-          {
-            pk_entity: 238,
-            fk_ui_context: 232,
-            fk_project: null,
-            fk_property: 1201,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          },
-          {
-            pk_entity: 239,
-            fk_ui_context: 231,
-            fk_project: null,
-            fk_property: 1201,
-            fk_class_field: null,
-            property_is_outgoing: false,
-            ord_num: 0,
-            fk_class_for_class_field: null
-          }
-        ]
+        identity_defining: false
       },
-      targetMaxQuantity: -1,
-      targetMinQuantity: 0,
-      targetClassPk: 365,
+      targetMaxQuantity: 1,
+      targetMinQuantity: 1,
+      targetClassPk: 363,
       label: {
-        sg: 'Term/Label',
-        pl: 'Terms/Labels',
-        'default': 'Terms/Labels'
+        sg: 'Place of death',
+        pl: 'Places of death',
+        'default': 'Place of death'
+      }
+    },
+    _1196_outgoing: {
+      type: 'PropertyField',
+      hasAlternatives: false,
+      isViewMode: false,
+      toggle: 'expanded',
+      isOutgoing: true,
+      property: {
+        dfh_pk_property: 1196,
+        dfh_identifier_in_namespace: 'P143',
+        dfh_has_domain: 78,
+        dfh_has_range: 21,
+        dfh_fk_property_of_origin: 131,
+        dfh_domain_instances_min_quantifier: 0,
+        dfh_domain_instances_max_quantifier: -1,
+        dfh_range_instances_min_quantifier: 1,
+        dfh_range_instances_max_quantifier: 1,
+        identity_defining: false
+      },
+      targetMaxQuantity: 1,
+      targetMinQuantity: 1,
+      targetClassPk: 21,
+      label: {
+        sg: 'Person',
+        pl: 'Persons',
+        'default': 'Person'
+      }
+    },
+    _existenceTime: {
+      type: 'ExistenceTimeDetail',
+      roles: [],
+      toggle: 'expanded',
+      fkClassField: 48,
+      label: {
+        'default': 'When',
+        sg: 'When',
+        pl: 'When'
+      }
+    },
+    _field_334: {
+      type: 'TextPropertyField',
+      fkClassField: 334,
+      label: {
+        'default': 'Short Title',
+        sg: 'Short Title',
+        pl: 'Short Title'
+      }
+    },
+    _field_335: {
+      type: 'TextPropertyField',
+      fkClassField: 335,
+      label: {
+        'default': 'Exact Reference',
+        sg: 'Exact Reference',
+        pl: 'Exact Reference'
+      }
+    },
+    _field_336: {
+      type: 'TextPropertyField',
+      fkClassField: 336,
+      label: {
+        'default': 'Entity Definition',
+        sg: 'Entity Definition',
+        pl: 'Entity Definition'
       }
     }
   }
 }
-

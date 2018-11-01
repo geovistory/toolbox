@@ -20,7 +20,7 @@ export class PeItLabelComponent implements OnChanges {
   constructor(private datePipe: DatePipe) { }
 
   ngOnChanges() {
-    this.label = U.labelFromFieldList(this.children, { path: [] })
+    this.label = U.labelFromFieldList(this.children, { path: [], fieldsMax: 1, rolesMax: 1 })
   }
 
   getExTLabel(d: ExTimeLabel) {

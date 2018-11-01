@@ -14,7 +14,7 @@ export default sandboxOf(PeItPropertyFieldAddCtrlComponent, {
   ],
   declareComponent: false
 })
-  .add('PeIt Role Set Add Ctrl | Appe ', {
+  .add('PeIt Property Field Add Ctrl | Appe ', {
     context: {
       model: {
         "roles": []

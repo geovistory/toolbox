@@ -14,7 +14,7 @@ export default sandboxOf(TeEntPropertyFieldAddCtrlComponent, {
     ],
     declareComponent: false
 })
-    .add('TeEnt Role Set Add Ctrl | Appe ', {
+    .add('TeEnt Property Field Add Ctrl | Appe ', {
         context: {
             model: {
                 "roles": [
@@ -241,7 +241,7 @@ export default sandboxOf(TeEntPropertyFieldAddCtrlComponent, {
         `
     })
 
-    .add('TeEnt Role Set Add Ctrl | Test ', {
+    .add('TeEnt Property Field Add Ctrl | Test ', {
         context: {
             model: {
                 "roles": [

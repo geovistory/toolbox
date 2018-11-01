@@ -72,8 +72,8 @@ export class TeEntEditableComponent extends DataUnitBase {
   localStore: ObservableStore<TeEntDetail>;
 
   @select() toggle$: Observable<boolean>
-  @select() _existenceTime$: Observable<ExistenceTimeDetail>;
-  @select() _existenceTime_edit$: Observable<ExistenceTimeDetail>;
+  @select() _field_48$: Observable<ExistenceTimeDetail>; // TODO check if needed
+  @select() _existenceTime_edit$: Observable<ExistenceTimeDetail>; // TODO check if needed
   @select() accentuation$: Observable<TeEntAccentuation>;
   @select() editing$: Observable<boolean>;
 
@@ -213,7 +213,7 @@ export class TeEntEditableComponent extends DataUnitBase {
       } else if (o.uiElement.fk_class_field) {
 
         // if this is a prop set
-
+        // TODO make this generic for all class fields
         if (o.uiElement.fk_class_field === ComConfig.PK_CLASS_FIELD_WHEN) {
 
           const settings: StateSettings = {
@@ -221,7 +221,7 @@ export class TeEntEditableComponent extends DataUnitBase {
           }
 
           const extDetail = createExistenceTimeDetail(new ExistenceTimeDetail({ toggle: 'expanded' }), [], this.ngRedux.getState().activeProject.crm, settings)
-          this.addPropSet('_existenceTime', extDetail)
+          this.addPropSet('_field_48', extDetail)
 
         }
 

@@ -5,10 +5,10 @@
     <form [formGroup]="formGroup" *ngIf="formGroup">
 
       <div *ngFor="let item of (_fields$ | async) | keys; trackBy:getKey">
-        <span [ngSwitch]="item.key">
+        <span [ngSwitch]="item.value.type">
 
-          <gv-existence-time-add-ctrl *ngSwitchCase="'_existenceTime'" mode="add" [basePath]="basePath.concat('_fields').concat(item.key)"
-            [formControlName]="'_existenceTime'" (touched)="markAsTouched()"></gv-existence-time-add-ctrl>
+          <gv-existence-time-add-ctrl *ngSwitchCase="'ExistenceTime'" mode="add" [basePath]="basePath.concat('_fields').concat(item.key)"
+            [formControlName]="'item.key'" (touched)="markAsTouched()"></gv-existence-time-add-ctrl>
 
           <gv-te-ent-property-field-add-ctrl *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath" [index]="item.key"
             [formControlName]="item.key" (touched)="markAsTouched()"></gv-te-ent-property-field-add-ctrl>

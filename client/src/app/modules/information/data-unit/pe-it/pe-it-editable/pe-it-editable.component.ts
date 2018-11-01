@@ -208,7 +208,7 @@ export class PeItEditableComponent extends DataUnitBase implements AfterViewInit
             this.ngRedux.getState().activeProject.crm,
             { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE }
           )
-          this.addPropSet('_existenceTime', existenceTimeDetail)
+          this.addPropSet('_field_48', existenceTimeDetail)
 
         }
 

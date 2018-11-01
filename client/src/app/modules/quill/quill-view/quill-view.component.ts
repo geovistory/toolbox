@@ -38,14 +38,16 @@ export class QuillViewComponent implements OnChanges {
 
     if (this.formatItalic) {
       const d = new Delta();
-      if (this.contents && this.contents.ops)
+      if (this.contents && this.contents.ops) {
         this.contents.ops.forEach(op => {
-          if (op.attributes && op.attributes.node)
+          if (op.attributes && op.attributes.node) {
             op.attributes = {
               node: op.attributes.node,
               italic: true
             }
+          }
         });
+      }
     }
 
     // set the initial contents

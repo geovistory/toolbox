@@ -136,6 +136,8 @@ import { TextEditorAPIEpics } from './containers/text-editor/api/text-editor.epi
 import { VersionPickerComponent } from './components/version-picker/version-picker.component';
 import { PeItStrModule } from 'app/shared/pipes/pe-it-str/pe-it-str.module';
 import { TextPropertyFieldComponent } from './containers/text-property-field/text-property-field.component';
+import { TextPropertyFieldAPIActions } from './containers/text-property-field/api/text-property-field.actions';
+import { TextPropertyFieldAPIEpics } from './containers/text-property-field/api/text-property-field.epics';
 
 
 
@@ -212,7 +214,7 @@ import { TextPropertyFieldComponent } from './containers/text-property-field/tex
     // Appe Lang
     AppeLangCreateCtrlComponent,
 
-    // Role Set
+    // Property Field
     PeItPropertyFieldAddCtrlComponent,
     PeItPropertyFieldCreateCtrlComponent,
     PeItPropertyFieldEditableComponent,
@@ -322,9 +324,11 @@ import { TextPropertyFieldComponent } from './containers/text-property-field/tex
     AppeLangCreateCtrlAPIActions,
     AppeLangCreateCtrlAPIEpics,
 
-    // Role Set
+    // Fields
     PropertyFieldActions,
     PropertyFieldApiEpics,
+    TextPropertyFieldAPIActions,
+    TextPropertyFieldAPIEpics,
 
     // Role
     RoleActions,
@@ -395,7 +399,7 @@ import { TextPropertyFieldComponent } from './containers/text-property-field/tex
     ExistenceTimeAddCtrlComponent,
     AppeLangCreateCtrlComponent,
 
-    // Role Set
+    // Property Field
     PeItPropertyFieldAddCtrlComponent,
     PeItPropertyFieldCreateCtrlComponent,
     PeItPropertyFieldEditableComponent,

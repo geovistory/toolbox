@@ -95,8 +95,9 @@ module.exports = function (DfhProperty) {
                 "joinType": "inner join",
                 select: false,
                 "where": [
-                    "property_is_outgoing", "=", JSON.stringify(isOutgoing), "AND",
-                    "ord_num", "IS NOT NULL"
+                    "property_is_outgoing", "=", JSON.stringify(isOutgoing)
+                    // , "AND",
+                    // "ord_num", "IS NOT NULL"
                 ],
             }
 

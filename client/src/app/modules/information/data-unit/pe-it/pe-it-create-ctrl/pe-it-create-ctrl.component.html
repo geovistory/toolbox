@@ -9,7 +9,9 @@
   <div class="form-group" *ngFor="let item of (_fields$ | async) | keys; trackBy:getKey">
 
     <span *ngIf="item.value.type === 'TextPropertyField'">
-      <gv-text-property *ngIf="formGroup.get(item.key)" [formControlName]="item.key" (touched)="markAsTouched()"></gv-text-property>
+      <gv-text-property-field [basePath]="basePath.concat('_fields').concat(item.key)" *ngIf="formGroup.get(item.key)" [formControlName]="item.key" (touched)="markAsTouched()">
+
+      </gv-text-property-field>
     </span>
 
     <span *ngIf="item.value.type === 'PropertyField'">

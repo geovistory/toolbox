@@ -1,3 +1,71 @@
-<p>
-  text-property-field works!
-</p>
+<gv-property-field-header *ngIf="(showFieldHeader$ | async)" [label$]="label$" [toggle$]="toggle$" [addButtonVisible]="(addButtonVisible$ | async)"
+  [toggleButtonVisible]="true" [removePropertyFieldBtnVisible]="removePropertyFieldBtnVisible" (toggleCardBody)="toggle()"
+  (startAddingRole)="openCreateOrAddForm()" (removePropertyField)="removePropertyField()"></gv-property-field-header>
+
+<form class="card-body" [formGroup]="formGroup" *ngIf="(isCreateContext$ | async)">
+
+  <gv-text-property *ngFor="let item of (textPropertyDetailList$ | async) | keys; trackBy:getKey;" [formControlName]="item.key"
+    (touched)="markAsTouched()"></gv-text-property>
+
+</form>
+
+
+<span *ngIf="!(isCreateContext$ | async)">
+
+
+  <div *ngIf="!(createOrAdd$ | async)" [@slideInOut]="(toggle$|async)">
+
+    <div class="list-group-item d-flex" *ngFor="let item of (textPropertyDetailList$ | async) | keys; trackBy:getKey;">
+
+      <gv-quill-view [contents]=item.value.textProperty.text_property_quill_doc.contents></gv-quill-view>
+      <gv-language-view class="ml-auto pl-3" [language]="item.value.textProperty.language"></gv-language-view>
+    </div>
+
+  </div>
+
+
+
+  <div *ngIf="(createOrAdd$ | async)">
+
+    <!-- Header -->
+    <section class="m-3 mt-5 row gv-flex-shrink-0">
+      <div class="col">
+        <h2>Add a {{(label$ | async)?.sg}}</h2>
+      </div>
+    </section>
+
+    <!-- Body -->
+    <div class="d-flex gv-fh m-3 px-3 gv-scroll-y-auto">
+      <div class="d-flex flex-row gv-grow-1 pb-1" style="flex-basis:100%">
+
+        <div class="gv-grow-1" style="flex-basis:50%;">
+          <h4 class="mb-3">Create a new {{(label$ | async)?.sg}}</h4>
+
+          <form [formGroup]="formGroup" (ngSubmit)="submitCreateForm()">
+
+            <gv-text-property [formControlName]="'createNew'"></gv-text-property>
+
+            <button class="btn btn-primary mt-3 mr-2" type="submit" [disabled]="formGroup.invalid && submitted">
+              Create {{(label$ | async)?.sg}}
+            </button>
+
+            <button class="btn btn-secondary mt-3" type="button" (click)="closeCreateOrAddForm()">
+              Cancel
+            </button>
+          </form>
+
+        </div>
+
+
+        <div class="ml-5 mt-5 pl-5 gv-grow-1" style="flex-basis:50%;">
+          <h4 class="mb-3" *ngIf="!selectPeItMode">...or add an existing {{(label$ | async)?.sg}}</h4>
+
+          list
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+</span>

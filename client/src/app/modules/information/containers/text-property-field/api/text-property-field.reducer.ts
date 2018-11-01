@@ -1,7 +1,8 @@
-import { indexBy, prop } from 'ramda';
+import { indexBy, prop, omit } from 'ramda';
 import { Action } from 'redux';
-import { TextPropertyField } from './text-property-field.models';
 import { TextPropertyFieldAPIAction, TextPropertyFieldAPIActions } from './text-property-field.actions';
+import { TextPropertyField } from 'app/core/state/models/text-property-field';
+import { textPropertyDetailKey } from 'app/core/state/services/state-creator';
 
 const INITIAL_STATE = new TextPropertyField();
 
@@ -13,24 +14,63 @@ export function textPropertyListReducer(state: TextPropertyField = INITIAL_STATE
     case TextPropertyFieldAPIActions.LOAD:
       state = {
         ...state,
-        items: {}
       };
       break;
     case TextPropertyFieldAPIActions.LOAD_SUCCEEDED:
       state = {
         ...state,
-        items: indexBy(prop('pk_entity'), action.meta.itemsArray)
       };
       break;
 
     case TextPropertyFieldAPIActions.LOAD_FAILED:
       state = {
         ...state,
-        items: {}
       };
       break;
 
 
+    case TextPropertyFieldAPIActions.CREATE:
+      state = {
+        ...state,
+        loading: true
+      };
+      break;
+    case TextPropertyFieldAPIActions.CREATE_SUCCEEDED:
+      state = {
+        ...state,
+        loading: false,
+        createOrAdd: undefined,
+        textPropertyDetailList: {
+          [textPropertyDetailKey(action.meta.txtPropDetail)]: action.meta.txtPropDetail,
+          ...state.textPropertyDetailList
+        }
+      };
+      break;
+
+    case TextPropertyFieldAPIActions.CREATE_FAILED:
+      state = {
+        ...state,
+      };
+      break;
+
+    case TextPropertyFieldAPIActions.TOGGLE:
+      state = {
+        ...state,
+        toggle: state.toggle === 'expanded' ? 'collapsed' : 'expanded'
+      };
+      break;
+
+
+    case TextPropertyFieldAPIActions.OPEN_CREATE_OR_ADD_FORM:
+      state = {
+        ...state,
+        createOrAdd: {}
+      };
+      break;
+
+    case TextPropertyFieldAPIActions.CLOSE_CREATE_OR_ADD_FORM:
+      state = omit(['createOrAdd'], state);
+      break;
 
     /*****************************************************
     * Reducers called on destroy of component

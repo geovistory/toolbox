@@ -237,7 +237,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                     },
                     fkClass: 61,
                     _fields: {
-                      _existenceTime: {
+                      _field_48: {
                         type: 'ExistenceTimeDetail',
                         roles: [
                           {
@@ -679,7 +679,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                               }
                                             }
                                           },
-                                          _existenceTime: {
+                                          _field_48: {
                                             type: 'ExistenceTimeDetail',
                                             roles: [
                                               {

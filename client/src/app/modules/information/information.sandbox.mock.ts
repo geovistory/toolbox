@@ -646,7 +646,7 @@ export const crm: ProjectCrm = {
                 description: 'Existence Time or Time Span of a Temporal Entity',
                 label: 'When'
               },
-              propSetKey: '_existenceTime'
+              propSetKey: '_field_48'
             },
             {
               ord_num: 1,
@@ -677,7 +677,7 @@ export const crm: ProjectCrm = {
                 description: 'Existence Time or Time Span of a Temporal Entity',
                 label: 'When'
               },
-              propSetKey: '_existenceTime'
+              propSetKey: '_field_48'
             }
           ]
         }
@@ -781,7 +781,7 @@ export const crm: ProjectCrm = {
                 description: 'Existence Time or Time Span of a Temporal Entity',
                 label: 'When'
               },
-              propSetKey: '_existenceTime'
+              propSetKey: '_field_48'
             },
             {
               ord_num: 2,
@@ -826,7 +826,7 @@ export const crm: ProjectCrm = {
                 description: 'Existence Time or Time Span of a Temporal Entity',
                 label: 'When'
               },
-              propSetKey: '_existenceTime'
+              propSetKey: '_field_48'
             },
             {
               ord_num: 1,
@@ -1085,7 +1085,7 @@ export const crm: ProjectCrm = {
                 description: 'Existence Time or Time Span of a Temporal Entity',
                 label: 'When'
               },
-              propSetKey: '_existenceTime'
+              propSetKey: '_field_48'
             },
             {
               ord_num: 1,
@@ -2254,7 +2254,7 @@ export const crm: ProjectCrm = {
                 description: 'Existence Time or Time Span of a Temporal Entity',
                 label: 'When'
               },
-              propSetKey: '_existenceTime'
+              propSetKey: '_field_48'
             }
           ]
         },

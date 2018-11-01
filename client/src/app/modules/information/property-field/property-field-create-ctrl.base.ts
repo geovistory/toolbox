@@ -42,7 +42,7 @@ export abstract class PropertyFieldCreateCtrlBase extends PropertyFieldBase {
   initFormCtrls() {
 
 
-    // add controls for each child propertyField
+    // add controls for each child roleDetail
     if (this.propertyFieldState && this.propertyFieldState._role_list) {
 
       // Find  handle the communities display range favorite
@@ -50,10 +50,10 @@ export abstract class PropertyFieldCreateCtrlBase extends PropertyFieldBase {
 
       Object.keys(this.propertyFieldState._role_list).forEach((key) => {
         if (this.propertyFieldState._role_list[key]) {
-          let role = this.propertyFieldState._role_list[key].role;
+          const role = this.propertyFieldState._role_list[key].role;
 
           if (this.propertyFieldState._role_list[key].isCircular !== true) {
-            // if this role is most used to create the display label of range 
+            // if this role is most used to create the display label of range
             const is_standard_in_project = (role.pk_entity == favoriteDisplayForRangePk);
 
             const epr = role.entity_version_project_rels ?
@@ -70,7 +70,7 @@ export abstract class PropertyFieldCreateCtrlBase extends PropertyFieldBase {
 
           /**
            * subscribe to each form control (role) in order to
-           * manage dependencies between the roles of the PropertyField 
+           * manage dependencies between the roles of the PropertyField
            */
           roleCtrl.valueChanges.subscribe((ctrlVal: InfRole) => {
             // if is display role, disable other display roles
@@ -97,7 +97,7 @@ export abstract class PropertyFieldCreateCtrlBase extends PropertyFieldBase {
       if (this.formGroup.valid) {
 
         // build a array of InfRole
-        let roles: InfRole[] = [];
+        const roles: InfRole[] = [];
         Object.keys(this.formGroup.controls).forEach(key => {
           if (this.formGroup.get(key)) {
             roles.push(this.formGroup.get(key).value)
@@ -106,8 +106,7 @@ export abstract class PropertyFieldCreateCtrlBase extends PropertyFieldBase {
 
         // send the peIt the parent form
         this.onChange(roles)
-      }
-      else {
+      } else {
         this.onChange(null)
       }
     }))
@@ -118,7 +117,7 @@ export abstract class PropertyFieldCreateCtrlBase extends PropertyFieldBase {
       if (item.key != ctrlKey) {
         // disable is_standard_in_project
         const ctrl: AbstractControl = item.value;
-        let role: InfRole = clone(ctrl.value);
+        const role: InfRole = clone(ctrl.value);
 
         role.entity_version_project_rels[0] = {
           ...role.entity_version_project_rels[0],

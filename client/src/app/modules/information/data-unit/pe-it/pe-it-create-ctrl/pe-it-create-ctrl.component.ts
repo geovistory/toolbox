@@ -1,7 +1,7 @@
 import { NgRedux, WithSubStore } from '@angular-redux/store';
 import { Component, forwardRef, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { InfPersistentItem, InfTemporalEntity, U, UiContext } from 'app/core';
+import { InfPersistentItem, InfTemporalEntity, U, UiContext, ComConfig, IAppState } from 'app/core';
 import { PeItCtrlBase } from '../pe-it-ctrl.base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
@@ -32,7 +32,7 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
   uiContext: UiContext;
 
   constructor(
-    protected ngRedux: NgRedux<any>,
+    protected ngRedux: NgRedux<IAppState>,
     protected actions: PeItActions,
     protected fb: FormBuilder,
     protected rootEpics: RootEpics,
@@ -77,15 +77,25 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
       const peIt = new InfPersistentItem();
 
       peIt.pi_roles = [];
+      peIt.text_properties = [];
       peIt.domain_entity_associations = [];
       Object.keys(this.formGroup.controls).forEach(key => {
+
+        const field = this.ngRedux.getState().activeProject.crm.fieldList[key];
+
         if (key == '_typeCtrl') {
           peIt.domain_entity_associations = [
             ...peIt.domain_entity_associations,
             ...this.formGroup.get(key).value
           ]
-        } else if (this.formGroup.get(key)) {
+        } else if (field.type === 'TextPropertyField') {
+
+          peIt.text_properties = [...peIt.text_properties, ...this.formGroup.get(key).value]
+
+        } else if (field.type === 'PropertyField') {
+
           peIt.pi_roles = [...peIt.pi_roles, ...this.formGroup.get(key).value]
+
         }
       })
 

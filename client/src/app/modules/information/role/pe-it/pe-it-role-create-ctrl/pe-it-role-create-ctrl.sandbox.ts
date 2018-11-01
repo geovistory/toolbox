@@ -125,7 +125,7 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
                                             }
                                         }
                                     },
-                                    "_existenceTime": {
+                                    "_field_48": {
                                         "type": "ExistenceTimeDetail",
                                         "roles": [],
                                         "toggle": "expanded"

@@ -119,15 +119,20 @@
             (cancel)="stopSelectProperty()"></gv-add-info-pe-it>
         </div>
 
-        <!-- Isolated Property -->
+        <!-- Isolated Field -->
         <div *ngIf="isolatedChild">
           <gv-pe-it-property-field-editable [parentPath]="basePath" [index]="isolatedChild"></gv-pe-it-property-field-editable>
         </div>
 
-        <!-- List of Properties -->
+        <!-- List of Fields -->
         <div *ngIf="!isolatedChild">
           <div *ngFor="let item of (_fields$ | async) | keys; trackBy:getKey">
-            <gv-pe-it-property-field-editable [parentPath]="basePath" [index]="item.key" (onRemovePropertyField)="removePropertyField(item.key)"></gv-pe-it-property-field-editable>
+
+            <gv-text-property-field *ngIf="item.value.type === 'TextPropertyField'" [basePath]="basePath.concat('_fields').concat(item.key)"></gv-text-property-field>
+
+            <gv-pe-it-property-field-editable *ngIf="item.value.type === 'PropertyField'" [parentPath]="basePath"
+              [index]="item.key" (onRemovePropertyField)="removePropertyField(item.key)"></gv-pe-it-property-field-editable>
+
           </div>
         </div>
 
@@ -198,8 +203,9 @@
 <div class="d-flex flex-row justify-content-center" *ngIf="(showRemoveVerification$ | async)">
   <div>
     <div class="my-3">
-      <h2 >
-        Remove <gv-pe-it-label class="d-inline-block mr-1" labels [children]="(_fields$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
+      <h2>
+        Remove <gv-pe-it-label class="d-inline-block mr-1" labels [children]="(_fields$ | async)" [classConfig]="classConfig"
+          [labelInEdit]="labelInEdit"></gv-pe-it-label>
       </h2>
 
       <gv-class-info class="mb-5" classInfo [classConfig]="classConfig" iconPrimary="true"></gv-class-info>

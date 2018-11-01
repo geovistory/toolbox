@@ -770,6 +770,23 @@ module.exports = function (InfPersistentItem) {
               }
             }
           }
+        },
+        text_properties: {
+          "$relation": {
+            "name": "text_properties",
+            "joinType": "left join",
+            "orderBy": [{ "pk_entity": "asc" }]
+          },
+          entity_version_project_rels: innerJoinThisProject,
+          "language": {
+            "$relation": {
+              "name": "language",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
+          }
         }
       }
     }

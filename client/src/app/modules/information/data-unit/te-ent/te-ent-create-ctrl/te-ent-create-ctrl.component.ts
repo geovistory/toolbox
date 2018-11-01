@@ -142,7 +142,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
       } else if (o.uiElement.fk_class_field) {
 
         // if this is a prop set
-
+        // TODO Make this generic for all class fields
         if (o.uiElement.fk_class_field === ComConfig.PK_CLASS_FIELD_WHEN) {
 
           const existenceTimeDetail = createExistenceTimeDetail(
@@ -151,7 +151,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
             this.ngRedux.getState().activeProject.crm,
             { pkUiContext: this.localStore.getState().pkUiContext }
           )
-          this.addPropSet('_existenceTime', existenceTimeDetail)
+          this.addPropSet('_field_48', existenceTimeDetail)
 
         }
 

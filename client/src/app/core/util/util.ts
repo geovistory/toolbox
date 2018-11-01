@@ -370,7 +370,7 @@ export class U {
             }
 
             // TODO return an object containing label.pl and label.sg
-            if (property.labels.length) {
+            if (property.labels && property.labels.length) {
                 if (property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_SG)) {
                     sg = property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_SG).dfh_label;
                 }
@@ -396,7 +396,7 @@ export class U {
 
 
             // TODO return an object containing inversed_label.pl and inversed_label.sg
-            if (property.labels.length) {
+            if (property.labels && property.labels.length) {
                 if (property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_INVERSED_SG)) {
                     sg = property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_INVERSED_SG).dfh_label;
                 }
@@ -483,6 +483,7 @@ export class U {
     static labelFromField(c: Field, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
         if (c && c.type == 'PropertyField') return U.labelFromPropertyField(c as PropertyField, settings);
         else if (c && c.type == 'ExistenceTimeDetail') return U.labelFromExTime(c as ExistenceTimeDetail, settings);
+        else if (c && c.type == 'TextPropertyField') return U.labelFromTextPropertyField(c as TextPropertyField, settings);
 
         else return null;
     }
@@ -575,7 +576,19 @@ export class U {
         } else return null;
     }
 
-
+    static labelFromTextPropertyField(txtPropField: TextPropertyField, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
+        return new ClassInstanceFieldLabel({
+            path: settings.path,
+            introducer: '',
+            roleLabels: [{
+                path: undefined,
+                type: 'txt-prop',
+                string: U.obj2Arr(txtPropField.textPropertyDetailList).slice(0, settings.rolesMax).map(tD => (
+                    tD.textProperty.text_property_quill_doc.contents.ops.map(op => op.insert).join('')
+                )).join(', ')
+            }]
+        })
+    }
 
     static labelFromExTime(e: ExistenceTimeDetail, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
         let earliest: TimePrimitive, latest: TimePrimitive;
@@ -715,7 +728,7 @@ export class U {
             let colorRgba: any[] = colorInactive;
 
             // get the Existence Time of that TeEnt
-            const exTime = U.ExTimeFromExTimeDetail(presence._fields['_existenceTime'] as ExistenceTimeDetail);
+            const exTime = U.ExTimeFromExTimeDetail(presence._fields['_field_48'] as ExistenceTimeDetail);
             if (exTime) {
 
                 const minMax = exTime.getMinMaxTimePrimitive();
@@ -963,11 +976,11 @@ export class U {
                                     let colorRgba: any[] = colorInactive;
 
                                     // get the Existence Time of initial TeEnt not the Presence
-                                    const exTime = U.ExTimeFromExTimeDetail(teEntDetail._fields['_existenceTime'] as ExistenceTimeDetail);
+                                    const exTime = U.ExTimeFromExTimeDetail(teEntDetail._fields['_field_48'] as ExistenceTimeDetail);
 
                                     // TODO: compare the exTime from initial teEnt with exTime of the presence and figure out which presence
                                     // is best for displaying the teEnt on the map
-                                    // const exTime = U.ExTimeFromExTimeDetail(presence._fields['_existenceTime'] as ExistenceTimeDetail);
+                                    // const exTime = U.ExTimeFromExTimeDetail(presence._fields['_field_48'] as ExistenceTimeDetail);
 
                                     // exTime of initial TeEnt not Presence!
                                     if (exTime) {

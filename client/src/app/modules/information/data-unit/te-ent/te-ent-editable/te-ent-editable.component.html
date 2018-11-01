@@ -55,9 +55,9 @@
 
     <div class="card-body bg-transparent">
       <div *ngFor="let item of (_fields$ | async) | keys; trackBy:getKey">
-        <span [ngSwitch]="item.key">
+        <span [ngSwitch]="item.value.type">
 
-          <gv-existence-time-editable *ngSwitchCase="'_existenceTime'" mode="editable" [basePath]="basePath.concat('_fields').concat(item.key)"
+          <gv-existence-time-editable *ngSwitchCase="'ExistenceTime'" mode="editable" [basePath]="basePath.concat('_fields').concat(item.key)"
             (onRemovePropSet)="removePropSet(item.key)"></gv-existence-time-editable>
 
           <gv-te-ent-property-field-editable *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath"

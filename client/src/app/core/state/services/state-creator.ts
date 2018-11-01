@@ -13,6 +13,7 @@ import { TextPropertyDetail } from '../models/text-property-detail';
 import { TextPropertyField } from '../models/text-property-field';
 import { TypeDetail } from '../models/type-detail';
 import { Field } from '../models/field';
+import { ofType } from 'redux-observable';
 
 /***************************************************
 * General Interfaces
@@ -237,7 +238,7 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
                 if (
                     el.propertyFieldKey
                 ) {
-                    const propertyFieldDef = classConfig.propertyFields[el.propertyFieldKey];
+                    const propertyFieldDef = crm.fieldList[el.propertyFieldKey] as PropertyField;
 
                     // exclude the circular PropertyFields
                     if (!similarPropertyField(propertyFieldDef, settings.parentPropertyField)) {
@@ -255,7 +256,7 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
                         fields.push(propertyField);
                     }
                 } else if (el.fk_class_field) {
-                    fields.push(createClassField(el.fk_class_field, [], [], crm, settings))
+                    fields.push(createClassField(el.propSetKey, [], [], crm, settings))
                 }
             });
         }
@@ -276,7 +277,7 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
                     // enrich PropertyField with roles and RoleDetails
 
                     // Generate propertyFields (like e.g. the names-section, the birth-section or the detailed-name secition)
-                    const options = new PropertyField({ ...classConfig.propertyFields[el.propertyFieldKey], toggle: 'expanded' })
+                    const options = new PropertyField({ ...crm.fieldList[el.propertyFieldKey] as PropertyField, toggle: 'expanded' })
 
                     // if existing roles of this property
                     if (rolesByFkProp[el.fk_property]) {
@@ -297,7 +298,7 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
                         fields.push(createPropertyField(options, rolesWithinQuantity, crm, settings));
                     }
                 } else if (el.fk_class_field) {
-                    fields.push(createClassField(el.fk_class_field, roles, textProperties, crm, settings))
+                    fields.push(createClassField(el.propSetKey, roles, textProperties, crm, settings))
                 }
 
             });
@@ -321,17 +322,26 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
  *
  * TODO: merge rls and text props to some "value" property
  */
-export function createClassField(fkClassField: number, rls: InfRole[], textProps: InfTextProperty[], crm: ProjectCrm, settings: StateSettings): Field {
-    switch (fkClassField) {
-        case ComConfig.PK_CLASS_FIELD_WHEN:
-            // if this ui-element is a Existence-Time PropSet
-            const options = new ExistenceTimeDetail({ toggle: 'expanded' });
-            return createExistenceTimeDetail(options, rls, crm, settings);
+export function createClassField(fieldKey: string, rls: InfRole[], textProps: InfTextProperty[], crm: ProjectCrm, settings: StateSettings): Field {
 
-        case ComConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
-        case ComConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
-        case ComConfig.PK_CLASS_FIELD_SHORT_TITLE:
-            return createTextPropertyField({ fkClassField }, textProps.filter((txtProp) => txtProp.fk_class_field == fkClassField), crm, settings);
+    switch (crm.fieldList[fieldKey].type) {
+        case 'ExistenceTimeDetail':
+            return createExistenceTimeDetail(new ExistenceTimeDetail({
+                toggle: 'expanded',
+                pkUiContext: settings.pkUiContext
+
+            }), rls, crm, settings);
+
+        case 'TextPropertyField':
+            const fkClassField = crm.fieldList[fieldKey].fkClassField;
+            return createTextPropertyField(
+                new TextPropertyField({
+                    fkClassField,
+                    pkUiContext: settings.pkUiContext
+                }),
+                !textProps ? [] : textProps.filter((txtProp) => txtProp.fk_class_field == fkClassField
+                ), crm, settings
+            );
 
         default:
             break;
@@ -479,12 +489,19 @@ export function createTextPropertyField(options: TextPropertyField, textProperti
         }
     } else {
         txtPropList.textPropertyDetailList = indexBy(textPropertyDetailKey,
-            textProperties.map((infTextProp) => createTextPropertyDetail(
-                txtPropDetailOptions,
-                infTextProp,
-                crm,
-                settings
-            ))
+            textProperties.map((infTextProp) => {
+
+                if (typeof infTextProp.text_property_quill_doc === 'string') {
+                    infTextProp.text_property_quill_doc = JSON.parse(infTextProp.text_property_quill_doc)
+                }
+
+                return createTextPropertyDetail(
+                    txtPropDetailOptions,
+                    infTextProp,
+                    crm,
+                    settings
+                )
+            })
         )
     }
 
@@ -503,8 +520,8 @@ export function createTextPropertyField(options: TextPropertyField, textProperti
  * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
  * @param settings setting object that is passed through the chain of create...() methods of the different state classes
  */
-export function createTextPropertyDetail(options: TextPropertyDetail, textProperty: InfTextProperty, crm: ProjectCrm, settings: StateSettings): TextPropertyDetail {
-    const txtPropDetail = new TextPropertyDetail();
+export function createTextPropertyDetail(options: TextPropertyDetail, textProperty: InfTextProperty, crm?: ProjectCrm, settings?: StateSettings): TextPropertyDetail {
+    const txtPropDetail = new TextPropertyDetail({ textProperty });
 
     switch (options.fkClassField) {
         case ComConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
@@ -572,7 +589,7 @@ export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: I
         // add the parent role pk of the roleDetail to the peEnt
         settings.parentRolePk = role.pk_entity;
         settings.parentPropertyField = crm
-            .propertyFields[propertyFieldKeyFromParams(role.fk_property, options.isOutgoing)];
+            .fieldList[propertyFieldKeyFromParams(role.fk_property, options.isOutgoing)] as PropertyField;
 
         // if we are in create mode we need the fk_class
         if (isCreateContext(settings.pkUiContext)) {
@@ -700,7 +717,7 @@ export function createEntityAssociationDetail(options: EntityAssociationDetail =
     settings = new StateSettings(settings);
 
     if (isCreateContext(settings.pkUiContext)) {
-        options.propertyConfig = crm.propertyFields[propertyFieldKeyFromParams(ea.fk_property, options.isOutgoing)];
+        options.propertyConfig = crm.fieldList[propertyFieldKeyFromParams(ea.fk_property, options.isOutgoing)] as PropertyField;
         options.targetClassConfig = crm.classes[options.propertyConfig.targetClassPk];
         if (options.targetClassConfig.subclassOf = 'peIt') {
             options._peIt = createPeItDetail(
@@ -825,8 +842,6 @@ export function fieldKey(field: Field): string {
             return propertyFieldKey(field as PropertyField);
 
         case 'ExistenceTimeDetail':
-            return '_existenceTime';
-
         case 'TextPropertyField':
             return '_field_' + (field as TextPropertyDetail).fkClassField;
 

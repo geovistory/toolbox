@@ -17,7 +17,7 @@
     }
   },
   "properties": {
-    "fk_system_type": {
+    "fk_class_field": {
       "type": "number",
       "required": true
     },
@@ -74,12 +74,12 @@
       "permission": "ALLOW",
       "property": [
         "find",
-        "findOrCreateTextProperty"
+        "findOrCreateInfTextProperty"
       ]
     }
   ],
   "methods": {
-    "findOrCreateTextProperty": {
+    "findOrCreateInfTextProperty": {
       "accepts": [
         {
           "arg": "projectId",

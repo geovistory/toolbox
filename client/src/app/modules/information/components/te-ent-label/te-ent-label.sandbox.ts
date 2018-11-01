@@ -35,7 +35,7 @@ const classConfigAppellationForLanguage = {
                         description: 'Existence Time or Time Span of a Temporal Entity',
                         label: 'When'
                     },
-                    propSetKey: '_existenceTime'
+                    propSetKey: '_field_48'
                 }
             ]
         },
@@ -731,7 +731,7 @@ const _fieldsOfAppellationForLanguage = {
         toggle: 'expanded',
         dragEnabled: false
     },
-    _existenceTime: {
+    _field_48: {
         type: 'ExistenceTimeDetail',
         toggle: 'expanded',
         roles: [

@@ -333,7 +333,7 @@ export const generatedMockPerson = {
                                 }
                             }
                         },
-                        "_existenceTime": {
+                        "_field_48": {
                             "roles": [
                                 {
                                     "entity_version_project_rels": [

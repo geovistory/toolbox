@@ -15,7 +15,7 @@ import { takeUntil, filter, first } from 'rxjs/operators';
 
 // maps pk_class_field to key in ngRedux store
 export const propSetMap = {
-  [ComConfig.PK_CLASS_FIELD_WHEN]: '_existenceTime'
+  [ComConfig.PK_CLASS_FIELD_WHEN]: '_field_48'
 }
 
 
