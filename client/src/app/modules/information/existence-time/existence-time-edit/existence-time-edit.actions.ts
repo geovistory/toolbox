@@ -1,4 +1,4 @@
-import { ExistenceTimeEdit, RoleSetList, ExTimeHelpMode } from 'app/core/state/models';
+import { ExistenceTimeEdit, PropertyFieldList, ExTimeHelpMode } from 'app/core/state/models';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
@@ -34,7 +34,7 @@ export class ExTimeEditActions {
     })
 
 
-    @dispatch() roleSetAdded = (_fields: RoleSetList): ExTimeEditAction => ({
+    @dispatch() roleSetAdded = (_fields: PropertyFieldList): ExTimeEditAction => ({
         type: ExTimeEditActions.EX_TIME_ROLESET_ADDED,
         meta: null,
         payload: new ExistenceTimeEdit({

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ExistenceTime, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, U } from 'app/core';
-import { FieldList, ExistenceTimeDetail, PeItDetail, RoleDetail, RoleDetailList, RoleSet, TeEntDetail } from 'app/core/state/models';
+import { FieldList, ExistenceTimeDetail, PeItDetail, RoleDetail, RoleDetailList, PropertyField, TeEntDetail } from 'app/core/state/models';
 import { DfhConfig } from './dfh-config';
 import { Field } from 'app/core/state/models/field';
 
@@ -83,7 +83,7 @@ export class StateToDataService {
         const child: Field = children[i];
 
         if (child.type == 'RoleSet') {
-          const roleDetailList: RoleDetailList = (child as RoleSet)._role_list;
+          const roleDetailList: RoleDetailList = (child as PropertyField)._role_list;
 
           /** for each RoleState */
           for (const j in roleDetailList) {
@@ -133,7 +133,7 @@ export class StateToDataService {
     const conf = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY;
 
     if (existTimeDetail._fields) {
-      U.obj2Arr(existTimeDetail._fields).map((set: RoleSet) => {
+      U.obj2Arr(existTimeDetail._fields).map((set: PropertyField) => {
         if (set._role_list) {
           U.obj2Arr(set._role_list).map((sta: RoleDetail) => {
             const pkProp = sta.role.fk_property;

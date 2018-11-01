@@ -2,7 +2,7 @@ import { Injectable, forwardRef, Inject } from '@angular/core';
 import { InfRole, DfhProperty } from 'app/core';
 import { groupBy, prop } from 'ramda';
 import { BehaviorSubject } from 'rxjs';
-import { RoleSet } from 'app/core/state/models';
+import { PropertyField } from 'app/core/state/models';
 
 interface Label {
   sg: string;
@@ -72,21 +72,21 @@ export class RoleService {
    * Adds roles to given role sets and assigns generic options for all RoleSets
    * 
    * @param {InfRole[]} roles array of roles a PeIti
-   * @param {RoleSet[]} ingoingRoleSets array of ingoing properties (depending on context)
-   * @param {RoleSet[]} outgoingRoleSets array of outgoing properties (depending on context)
-   * @param {RoleSet} options any other option that should be apllied to all of the roleSets
-   * @return {RoleSet[]} Array of RoleSet, the model of the Gui-Element for RoleSets
+   * @param {PropertyField[]} ingoingRoleSets array of ingoing properties (depending on context)
+   * @param {PropertyField[]} outgoingRoleSets array of outgoing properties (depending on context)
+   * @param {PropertyField} options any other option that should be apllied to all of the roleSets
+   * @return {PropertyField[]} Array of RoleSet, the model of the Gui-Element for RoleSets
    */
-  addRolesToRoleSets(roles: InfRole[], ingoingRoleSets: RoleSet[], outgoingRoleSets: RoleSet[], options = new RoleSet()): RoleSet[] {
+  addRolesToRoleSets(roles: InfRole[], ingoingRoleSets: PropertyField[], outgoingRoleSets: PropertyField[], options = new PropertyField()): PropertyField[] {
 
     // declare array that will be returned
-    const roleSets: RoleSet[] = [];
+    const roleSets: PropertyField[] = [];
 
     const rolesByFkProp = groupBy(prop('fk_property'), roles)
 
     // enrich role sets with roles
     ingoingRoleSets.forEach(rs => {
-      const roleSet: RoleSet = Object.assign(rs, options, {
+      const roleSet: PropertyField = Object.assign(rs, options, {
         roles: rolesByFkProp[rs.property.dfh_pk_property]
       })
       if (roleSet.roles && roleSet.roles.length)
@@ -95,7 +95,7 @@ export class RoleService {
 
     // enrich role sets with roles
     outgoingRoleSets.forEach(rs => {
-      const roleSet: RoleSet = Object.assign(rs, options, {
+      const roleSet: PropertyField = Object.assign(rs, options, {
         roles: rolesByFkProp[rs.property.dfh_pk_property]
       })
       if (roleSet.roles && roleSet.roles.length)

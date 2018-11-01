@@ -2,15 +2,15 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { IAppState, InfRole } from 'app/core';
-import { RoleDetailList, RoleSet, FieldLabel } from 'app/core/state/models';
+import { RoleDetailList, PropertyField, FieldLabel } from 'app/core/state/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable, Subscription } from 'rxjs';
-import { roleSetReducer } from '../../role-set.reducer';
+import { propertyFieldReducer } from '../../role-set.reducer';
 
 @AutoUnsubscribe()
 @WithSubStore({
   basePathMethodName: 'getBasePath',
-  localReducer: roleSetReducer
+  localReducer: propertyFieldReducer
 })
 @Component({
   selector: 'gv-ex-time-role-set-create-ctrl',
@@ -37,7 +37,7 @@ export class ExTimeRoleSetCreateCtrlComponent implements OnInit, OnDestroy, Cont
     [...this.parentPath, '_fields', this.index] :
     null;
   basePath: string[];
-  localStore: ObservableStore<RoleSet>;
+  localStore: ObservableStore<PropertyField>;
 
 
   // Since we're observing an array of items, we need to set up a 'trackBy'
@@ -73,7 +73,7 @@ export class ExTimeRoleSetCreateCtrlComponent implements OnInit, OnDestroy, Cont
   }
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), roleSetReducer);
+    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), propertyFieldReducer);
     this.basePath = this.getBasePath();
 
     this.initForm()

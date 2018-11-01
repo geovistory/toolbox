@@ -5,16 +5,16 @@ import { IAppState, InfEntityProjectRel, InfRole, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable, Subscription } from 'rxjs';
 
-import { RoleDetailList, RoleSet, RoleSetForm, RoleDetail, FieldLabel } from 'app/core/state/models';
-import { roleSetReducer } from './role-set.reducer';
-import { RoleSetActions } from './role-set.actions';
+import { RoleDetailList, PropertyField, PropertyFieldForm, RoleDetail, FieldLabel } from 'app/core/state/models';
+import { propertyFieldReducer } from './role-set.reducer';
+import { PropertyFieldActions } from './role-set.actions';
 
 @AutoUnsubscribe()
 @WithSubStore({
     basePathMethodName: 'getBasePath',
-    localReducer: roleSetReducer
+    localReducer: propertyFieldReducer
 })
-export abstract class RoleSetFormBase implements OnInit, OnDestroy {
+export abstract class PropertyFieldFormBase implements OnInit, OnDestroy {
 
 
     @Input() parentPath: string[];
@@ -25,10 +25,10 @@ export abstract class RoleSetFormBase implements OnInit, OnDestroy {
     @Output() onStartCreateNewRole: EventEmitter<void> = new EventEmitter()
     @Output() onCreateRoles: EventEmitter<InfRole[]> = new EventEmitter()
 
-    @select() _role_set_form$: Observable<RoleSetForm>
+    @select() _role_set_form$: Observable<PropertyFieldForm>
     @select() label$: Observable<FieldLabel>
 
-    _role_set_form: RoleSetForm;
+    _role_set_form: PropertyFieldForm;
     _role_create_list: RoleDetailList = {};
     _role_add_list: RoleDetailList;
 
@@ -41,7 +41,7 @@ export abstract class RoleSetFormBase implements OnInit, OnDestroy {
     createForm: FormGroup; // createForm to create roles
     addForm: FormGroup; // addForm to add existing roles
 
-    localStore: ObservableStore<RoleSet>;
+    localStore: ObservableStore<PropertyField>;
 
     createFormControlCount = 0;
 
@@ -49,7 +49,7 @@ export abstract class RoleSetFormBase implements OnInit, OnDestroy {
         protected fb: FormBuilder,
         protected ngRedux: NgRedux<IAppState>,
         protected ref: ChangeDetectorRef,
-        protected actions: RoleSetActions,
+        protected actions: PropertyFieldActions,
 
     ) {
 
@@ -72,7 +72,7 @@ export abstract class RoleSetFormBase implements OnInit, OnDestroy {
 
     ngOnInit() {
 
-        this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), roleSetReducer)
+        this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), propertyFieldReducer)
 
         this.roleSetFormPath = [...this.parentPath, '_role_set_form'];
 

@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, IAppState, U, UiContext } from 'app/core';
-import { AddOption, CollapsedExpanded, ExistenceTimeDetail, PeItDetail, RoleSet, RoleSetForm, SubstoreComponent } from 'app/core/state/models';
+import { AddOption, CollapsedExpanded, ExistenceTimeDetail, PeItDetail, PropertyField, PropertyFieldForm, SubstoreComponent } from 'app/core/state/models';
 import { createExistenceTimeDetail } from 'app/core/state/services/state-creator';
 import { RootEpics } from 'app/core/store/epics';
 import { SectionList } from 'app/modules/information/containers/section-list/api/section-list.models';
@@ -187,11 +187,11 @@ export class PeItEditableComponent extends DataUnitBase implements AfterViewInit
         // prepare the RoleSet
 
         const newRoleSet = {
-          ...new RoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey]),
+          ...new PropertyField(this.classConfig.roleSets[o.uiElement.roleSetKey]),
           toggle: 'expanded' as CollapsedExpanded,
           rolesNotInProjectLoading: true,
           roleStatesInOtherProjectsVisible: false,
-          _role_set_form: new RoleSetForm()
+          _role_set_form: new PropertyFieldForm()
         }
 
         this.addRoleSet(newRoleSet, undefined)

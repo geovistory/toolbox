@@ -5,7 +5,7 @@ import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
-import { AddOption, FieldList, RoleSetList, RoleSet } from 'app/core/state/models';
+import { AddOption, FieldList, PropertyFieldList, PropertyField } from 'app/core/state/models';
 import { roleSetKeyFromParams, similarRoleSet } from 'app/core/state/services/state-creator';
 
 interface PeItAddOption extends AddOption {
@@ -25,7 +25,7 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
 
   @Input() uiElements: UiElement[];
   @Input() classConfig: ClassConfig;
-  @Input() excludeRoleSet: RoleSetList;
+  @Input() excludeRoleSet: PropertyFieldList;
   @Input() addedChildren$: Observable<FieldList>;
 
   @Output() addOptionSelected = new EventEmitter<any>();

@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 
 import { existenceTimeReducer } from '../existence-time.reducer';
 import { InfRole, IAppState } from 'app/core';
-import { ExistenceTimeDetail, RoleSetList } from 'app/core/state/models';
+import { ExistenceTimeDetail, PropertyFieldList } from 'app/core/state/models';
 
 
 @WithSubStore({
@@ -31,7 +31,7 @@ export class ExistenceTimeAddCtrlComponent implements OnInit, OnDestroy, Control
   getBasePath = () => this.basePath;
 
   localStore: ObservableStore<ExistenceTimeDetail>
-  _fields: RoleSetList;
+  _fields: PropertyFieldList;
 
   
   subs: Subscription[] = [];

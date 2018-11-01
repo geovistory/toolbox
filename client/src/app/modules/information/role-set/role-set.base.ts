@@ -4,7 +4,7 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DfhProperty, IAppState, InfEntityProjectRel, InfEntityProjectRelApi, InfPersistentItem, InfRole, InfRoleApi, Project, U } from 'app/core';
-import { CollapsedExpanded, RoleDetail, RoleDetailList, RoleSet, RoleSetForm, FieldLabel } from 'app/core/state/models';
+import { CollapsedExpanded, FieldLabel, PropertyField, PropertyFieldForm, RoleDetail, RoleDetailList } from 'app/core/state/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
 import { RootEpics } from '../../../core/store/epics';
@@ -12,11 +12,10 @@ import { RoleActions } from '../role/role.actions';
 import { roleReducer } from '../role/role.reducers';
 import { ClassService } from '../shared/class.service';
 import { RoleSetService } from '../shared/role-set.service';
-import { RoleService } from '../shared/role.service';
 import { StateToDataService } from '../shared/state-to-data.service';
-import { RoleSetActions, roleStateKey } from './role-set.actions';
-import { RoleSetApiEpics } from './role-set.epics';
-import { roleSetReducer } from './role-set.reducer';
+import { PropertyFieldActions } from './role-set.actions';
+import { PropertyFieldApiEpics } from './role-set.epics';
+import { propertyFieldReducer } from './role-set.reducer';
 
 
 
@@ -25,16 +24,16 @@ import { roleSetReducer } from './role-set.reducer';
 })
 @WithSubStore({
     basePathMethodName: 'getBasePath',
-    localReducer: roleSetReducer
+    localReducer: propertyFieldReducer
 })
-export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAccessor {
+export abstract class PropertyFieldBase implements OnInit, OnDestroy, ControlValueAccessor {
 
     @Input() parentPath: string[];
 
     @Input() index: string;
 
     basePath: string[];
-    localStore: ObservableStore<RoleSet>;
+    localStore: ObservableStore<PropertyField>;
 
     destroy$: Subject<boolean> = new Subject<boolean>();
 
@@ -62,7 +61,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     @select() rolesNotInProjectLoading$: Observable<boolean>;
 
     @select() _role_list$: Observable<RoleDetailList>
-    @select() _role_set_form$: Observable<RoleSetForm>
+    @select() _role_set_form$: Observable<PropertyFieldForm>
 
     // Roles that are added to the project
     @select() _role_listVisible$: Observable<boolean>
@@ -83,7 +82,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
     _role_list: RoleDetailList
     project: Project;
-    roleSetState: RoleSet;
+    roleSetState: PropertyField;
 
     roleDetails: { key: string, value: RoleDetail }[];
 
@@ -114,11 +113,11 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
 
     constructor(
         protected rootEpics: RootEpics,
-        protected epics: RoleSetApiEpics,
+        protected epics: PropertyFieldApiEpics,
         protected eprApi: InfEntityProjectRelApi,
         protected roleApi: InfRoleApi,
         public ngRedux: NgRedux<IAppState>,
-        protected actions: RoleSetActions,
+        protected actions: PropertyFieldActions,
         protected roleSetService: RoleSetService,
         protected roleStore: NgRedux<RoleDetail>,
         protected roleActions: RoleActions,
@@ -169,7 +168,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
     * Methods
     */
     ngOnInit() {
-        this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), roleSetReducer);
+        this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), propertyFieldReducer);
         this.basePath = this.getBasePath();
 
         /** prepare the formGroup connection path for @ng-redux/forms */
@@ -193,7 +192,7 @@ export abstract class RoleSetBase implements OnInit, OnDestroy, ControlValueAcce
         // Subscribe to the activeProject, to get the pk_project needed for api call
         this.subs.push(this.ngRedux.select<Project>('activeProject').subscribe(d => this.project = d));
 
-        this.subs.push(this.localStore.select<RoleSet>('').subscribe(d => {
+        this.subs.push(this.localStore.select<PropertyField>('').subscribe(d => {
             this.roleSetState = d
         }));
 

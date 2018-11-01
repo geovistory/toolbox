@@ -1,20 +1,6 @@
 import { RoleDetailList } from './role-detail-list';
 
-/*******************************
- * RoleSetForm Interface
- *******************************/
-
-export interface RoleSetFormI {
-    _role_create_list?: RoleDetailList;
-
-    _role_add_list?: RoleDetailList;
-
-    _role_add_in_no_project_list?: RoleDetailList;
-}
-
-
-
-export class RoleSetForm implements RoleSetFormI {
+export class PropertyFieldForm {
 
     _role_create_list?: RoleDetailList;
 
@@ -22,7 +8,7 @@ export class RoleSetForm implements RoleSetFormI {
 
     _role_add_in_no_project_list?: RoleDetailList;
 
-    constructor(data?: RoleSetFormI) {
+    constructor(data?: PropertyFieldForm) {
         Object.assign(this, data);
     }
 }

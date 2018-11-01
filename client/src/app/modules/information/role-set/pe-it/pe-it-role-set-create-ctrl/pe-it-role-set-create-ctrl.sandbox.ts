@@ -2,13 +2,13 @@ import { sandboxOf } from 'angular-playground';
 import { DfhClass, DfhProperty, InfRole } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
-import { RoleDetail, RoleSet } from 'app/core/state/models';
+import { RoleDetail, PropertyField } from 'app/core/state/models';
 import { Information2Module } from '../../../information.module';
-import { PeItRoleSetCreateCtrlComponent } from './pe-it-role-set-create-ctrl.component';
+import { PeItPropertyFieldCreateCtrlComponent } from './pe-it-role-set-create-ctrl.component';
 
 
 
-export default sandboxOf(PeItRoleSetCreateCtrlComponent, {
+export default sandboxOf(PeItPropertyFieldCreateCtrlComponent, {
     imports: [
         InitStateModule,
         Information2Module
@@ -49,7 +49,7 @@ export default sandboxOf(PeItRoleSetCreateCtrlComponent, {
                                             dfh_standard_label: "Name Use Activity",
                                         } as DfhClass,
                                         _fields: {
-                                            _role_set_1: new RoleSet({
+                                            _role_set_1: new PropertyField({
                                                 label: {
                                                     default: 'Detailed Name',
                                                     sg: 'Detailed Name',

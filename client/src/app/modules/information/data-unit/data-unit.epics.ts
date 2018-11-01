@@ -6,7 +6,7 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil, filter } from 'rxjs/operators';
 import { DataUnitActions } from './data-unit.actions';
-import { RoleSetActions, RoleSetAction } from '../role-set/role-set.actions';
+import { PropertyFieldActions, PropertyFieldAction } from '../role-set/role-set.actions';
 import { startsWith } from 'ramda';
 import { DataUnitBase } from './data-unit.base';
 
@@ -47,9 +47,9 @@ export class DataUnitAPIEpics {
                 /**
                  * Filter the actions that triggers this epic
                  */
-                ofType(RoleSetActions.REMOVE_ROLE_SET),
+                ofType(PropertyFieldActions.REMOVE_ROLE_SET),
                 filter(action => ofDirectChild(c.basePath)(action)),
-                switchMap((action: RoleSetAction) => new Observable<Action>((globalStore) => {
+                switchMap((action: PropertyFieldAction) => new Observable<Action>((globalStore) => {
 
                     const actionPath = JSON.parse(action['@angular-redux::fractalkey']);
                     const key = actionPath[actionPath.length - 1];

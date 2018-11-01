@@ -1,9 +1,9 @@
 import { DfhClass, DfhPropertyInterface, InfRole } from 'app/core/sdk';
-import { RoleDetailList } from './role-detail-list';
-import { RoleSetForm } from './role-set-form';
-import { FieldLabel } from './field-label';
-import { CollapsedExpanded, FieldType } from './types';
 import { Field } from './field';
+import { FieldLabel } from './field-label';
+import { RoleDetailList } from './role-detail-list';
+import { PropertyFieldForm } from './role-set-form';
+import { CollapsedExpanded } from './types';
 
 /*******************************
  * RoleSet
@@ -11,12 +11,12 @@ import { Field } from './field';
  *   are not persisted in db: no need to create, add or edit role sets
  *******************************/
 
-export class RoleSet extends Field {
+export class PropertyField extends Field {
 
     readonly type? = 'RoleSet';
 
     _role_list?: RoleDetailList;
-    _role_set_form?: RoleSetForm;
+    _role_set_form?: PropertyFieldForm;
     roles?: InfRole[];
     property?: DfhPropertyInterface;
     isOutgoing?: boolean;
@@ -41,7 +41,7 @@ export class RoleSet extends Field {
     roleStatesInProjectVisible?: boolean;
     loading?: boolean;
 
-    constructor(data?: RoleSet) {
+    constructor(data?: PropertyField) {
         super()
         Object.assign(this, data);
     }

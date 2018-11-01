@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TeEntRoleSetEditableComponent } from './te-ent-role-set-editable.component';
+import { TeEntPropertyFieldEditableComponent } from './te-ent-role-set-editable.component';
 
 describe('TeEntRoleSetEditableComponent', () => {
-  let component: TeEntRoleSetEditableComponent;
-  let fixture: ComponentFixture<TeEntRoleSetEditableComponent>;
+  let component: TeEntPropertyFieldEditableComponent;
+  let fixture: ComponentFixture<TeEntPropertyFieldEditableComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TeEntRoleSetEditableComponent ]
+      declarations: [ TeEntPropertyFieldEditableComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TeEntRoleSetEditableComponent);
+    fixture = TestBed.createComponent(TeEntPropertyFieldEditableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -4,7 +4,7 @@ import { HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { indexBy, groupBy, prop } from 'ramda';
 import { BehaviorSubject ,  Observable } from 'rxjs';
 import { RoleService } from './role.service';
-import { RoleDetailList, RoleDetail, RoleSet } from 'app/core/state/models';
+import { RoleDetailList, RoleDetail, PropertyField } from 'app/core/state/models';
 
 
 @Injectable()
@@ -26,7 +26,7 @@ export class RoleSetService {
   }
 
 
-  static getRoleStatesContainerForState(roleSet: RoleSet): RoleDetailList {
+  static getRoleStatesContainerForState(roleSet: PropertyField): RoleDetailList {
 
     return roleSet._role_list;
 
@@ -79,7 +79,7 @@ export class RoleSetService {
    * @param  roleSet roleSetState
    * @return  true, if more roles are possible
    */
-  moreRolesPossible(quantityOfRoles: number, roleSet: RoleSet): boolean {
+  moreRolesPossible(quantityOfRoles: number, roleSet: PropertyField): boolean {
     let max, min;
 
     if (roleSet.isOutgoing) {

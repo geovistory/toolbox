@@ -8,9 +8,9 @@ import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
-import { RoleSetAddCtrlBase } from '../../role-set-add-ctrl.base';
-import { RoleSetActions } from '../../role-set.actions';
-import { RoleSetApiEpics } from '../../role-set.epics';
+import { PropertyFieldAddCtrlBase } from '../../role-set-add-ctrl.base';
+import { PropertyFieldActions } from '../../role-set.actions';
+import { PropertyFieldApiEpics } from '../../role-set.epics';
 
 
 @Component({
@@ -24,13 +24,13 @@ import { RoleSetApiEpics } from '../../role-set.epics';
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => PeItRoleSetAddCtrlComponent),
+      useExisting: forwardRef(() => PeItPropertyFieldAddCtrlComponent),
       multi: true
     }
   ]
 })
 
-export class PeItRoleSetAddCtrlComponent extends RoleSetAddCtrlBase {
+export class PeItPropertyFieldAddCtrlComponent extends PropertyFieldAddCtrlBase {
   initRoleSetAddCtrlBaseChild(): void {
   }
 
@@ -38,11 +38,11 @@ export class PeItRoleSetAddCtrlComponent extends RoleSetAddCtrlBase {
 
   constructor(
     protected rootEpics: RootEpics,
-    protected epics: RoleSetApiEpics,
+    protected epics: PropertyFieldApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
     public ngRedux: NgRedux<IAppState>,
-    protected actions: RoleSetActions,
+    protected actions: PropertyFieldActions,
     protected roleSetService: RoleSetService,
     protected roleStore: NgRedux<RoleDetail>,
     protected roleActions: RoleActions,

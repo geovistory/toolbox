@@ -1,7 +1,7 @@
 import { Component, OnDestroy, Input, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, InfPersistentItem, InfEntityAssociation, ClassConfig, InfEntityAssociationApi, ProjectCrm, RoleSet, InfPersistentItemApi, InfEntityProjectRelApi, InfEntityProjectRel, U } from 'app/core';
+import { IAppState, SubstoreComponent, InfPersistentItem, InfEntityAssociation, ClassConfig, InfEntityAssociationApi, ProjectCrm, PropertyField, InfPersistentItemApi, InfEntityProjectRelApi, InfEntityProjectRel, U } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { entityAssociationReducer } from '../api/entity-association.reducer';
 import { EntityAssociationAPIActions } from '../api/entity-association.actions';
@@ -34,7 +34,7 @@ export class EntityAssociationCreateOrAddComponent extends EntityAssociationAPIA
 
   // select observables of substore properties
   @select() targetClassConfig$: Observable<ClassConfig>;
-  @select() propertyConfig$: Observable<RoleSet>;
+  @select() propertyConfig$: Observable<PropertyField>;
   @select() entityAssociation$: Observable<InfEntityAssociation>;
   @select() existingList$: Observable<EntityAssociationList>;
   existingNotInProject$: Observable<EntityAssociationList>;

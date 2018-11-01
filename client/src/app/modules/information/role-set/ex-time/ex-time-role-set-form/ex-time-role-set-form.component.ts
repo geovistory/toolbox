@@ -2,22 +2,22 @@ import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IAppState, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
-import { RoleDetail, TeEntDetail, RoleSet } from 'app/core/state/models';
+import { RoleDetail, TeEntDetail, PropertyField } from 'app/core/state/models';
 import { createRoleDetail, getCreateOfEditableContext, StateSettings, createRoleDetailList } from 'app/core/state/services/state-creator';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest, timer } from 'rxjs';
 import { teEntReducer } from '../../../data-unit/te-ent/te-ent.reducer';
 import { ClassService } from '../../../shared/class.service';
-import { RoleSetFormBase } from '../../role-set-form.base';
-import { RoleSetActions } from '../../role-set.actions';
-import { roleSetReducer } from '../../role-set.reducer';
+import { PropertyFieldFormBase } from '../../role-set-form.base';
+import { PropertyFieldActions } from '../../role-set.actions';
+import { propertyFieldReducer } from '../../role-set.reducer';
 
 
 
 @AutoUnsubscribe()
 @WithSubStore({
   basePathMethodName: 'getBasePath',
-  localReducer: roleSetReducer
+  localReducer: propertyFieldReducer
 })
 @Component({
   selector: 'gv-ex-time-role-set-form',
@@ -31,7 +31,7 @@ import { roleSetReducer } from '../../role-set.reducer';
     }
   ]
 })
-export class ExTimeRoleSetFormComponent extends RoleSetFormBase implements ControlValueAccessor {
+export class ExTimeRoleSetFormComponent extends PropertyFieldFormBase implements ControlValueAccessor {
 
 
   @Input() parentTeEntPath: string[];
@@ -47,7 +47,7 @@ export class ExTimeRoleSetFormComponent extends RoleSetFormBase implements Contr
     protected ngRedux: NgRedux<IAppState>,
     protected ref: ChangeDetectorRef,
     protected fb: FormBuilder,
-    protected actions: RoleSetActions,
+    protected actions: PropertyFieldActions,
     protected roleApi: InfRoleApi,
     protected classService: ClassService,
     private teEntApi: InfTemporalEntityApi
@@ -89,7 +89,7 @@ export class ExTimeRoleSetFormComponent extends RoleSetFormBase implements Contr
 
         // update the state
         const roleDetailsInOtherProjects = createRoleDetailList(
-          new RoleSet(this.localStore.getState()),
+          new PropertyField(this.localStore.getState()),
           rolesInOtherProjects,
           this.ngRedux.getState().activeProject.crm,
           {
@@ -98,7 +98,7 @@ export class ExTimeRoleSetFormComponent extends RoleSetFormBase implements Contr
           }
         );
         const roleDetailsInNoProjects = createRoleDetailList(
-          new RoleSet(this.localStore.getState()),
+          new PropertyField(this.localStore.getState()),
           rolesInNoProject,
           this.ngRedux.getState().activeProject.crm,
           {

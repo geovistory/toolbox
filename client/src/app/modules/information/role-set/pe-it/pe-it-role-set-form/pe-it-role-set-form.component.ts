@@ -2,20 +2,20 @@ import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { IAppState, InfPersistentItem, InfPersistentItemApi, InfRole, InfRoleApi, InfTemporalEntity } from 'app/core';
-import { PeItDetail, RoleDetail, RoleSet } from 'app/core/state/models';
+import { PeItDetail, RoleDetail, PropertyField } from 'app/core/state/models';
 import { createRoleDetail, createRoleDetailList, getCreateOfEditableContext, StateSettings } from 'app/core/state/services/state-creator';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest, timer } from 'rxjs';
 import { peItReducer } from '../../../data-unit/pe-it/pe-it.reducer';
 import { ClassService } from '../../../shared/class.service';
-import { RoleSetFormBase } from '../../role-set-form.base';
-import { RoleSetActions } from '../../role-set.actions';
-import { roleSetReducer } from '../../role-set.reducer';
+import { PropertyFieldFormBase } from '../../role-set-form.base';
+import { PropertyFieldActions } from '../../role-set.actions';
+import { propertyFieldReducer } from '../../role-set.reducer';
 
 @AutoUnsubscribe()
 @WithSubStore({
   basePathMethodName: 'getBasePath',
-  localReducer: roleSetReducer
+  localReducer: propertyFieldReducer
 })
 @Component({
   selector: 'gv-pe-it-role-set-form',
@@ -23,7 +23,7 @@ import { roleSetReducer } from '../../role-set.reducer';
   styleUrls: ['./pe-it-role-set-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PeItRoleSetFormComponent extends RoleSetFormBase {
+export class PeItPropertyFieldFormComponent extends PropertyFieldFormBase {
 
 
   @Input() parentPeItPath: string[];
@@ -38,7 +38,7 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
     protected ngRedux: NgRedux<IAppState>,
     protected ref: ChangeDetectorRef,
     protected roleApi: InfRoleApi,
-    protected actions: RoleSetActions,
+    protected actions: PropertyFieldActions,
     protected classService: ClassService,
     protected peItApi: InfPersistentItemApi,
   ) {
@@ -75,7 +75,7 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
 
         // update the state
         const roleDetailsInOtherProjects = createRoleDetailList(
-          new RoleSet(this.localStore.getState()),
+          new PropertyField(this.localStore.getState()),
           rolesInOtherProjects,
           this.ngRedux.getState().activeProject.crm,
           {
@@ -84,7 +84,7 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
           }
         );
         const roleDetailsInNoProjects = createRoleDetailList(
-          new RoleSet(this.localStore.getState()),
+          new PropertyField(this.localStore.getState()),
           rolesInNoProject,
           this.ngRedux.getState().activeProject.crm,
           {
@@ -190,7 +190,7 @@ export class PeItRoleSetFormComponent extends RoleSetFormBase {
         })
 
         // update the state
-        const roleDetailList = createRoleDetailList(new RoleSet(this.localStore.getState()), roles, this.ngRedux.getState().activeProject.crm, { pkUiContext: this.localStore.getState().pkUiContext })
+        const roleDetailList = createRoleDetailList(new PropertyField(this.localStore.getState()), roles, this.ngRedux.getState().activeProject.crm, { pkUiContext: this.localStore.getState().pkUiContext })
         this.localStore.dispatch(this.actions.rolesCreated(roleDetailList))
 
       }))

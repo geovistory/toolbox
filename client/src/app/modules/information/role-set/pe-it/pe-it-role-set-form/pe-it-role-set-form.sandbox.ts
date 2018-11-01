@@ -3,11 +3,11 @@ import { InitPeItEditableStateModule } from 'app/shared';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
 import { Information2Module } from '../../../information.module';
-import { PeItRoleSetFormComponent } from './pe-it-role-set-form.component';
+import { PeItPropertyFieldFormComponent } from './pe-it-role-set-form.component';
 
 
 
-export default sandboxOf(PeItRoleSetFormComponent, {
+export default sandboxOf(PeItPropertyFieldFormComponent, {
     imports: [
         InitStateModule,
         InitPeItEditableStateModule,

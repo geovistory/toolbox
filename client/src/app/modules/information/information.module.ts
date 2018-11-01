@@ -74,16 +74,16 @@ import { ExTimeRoleSetAddCtrlComponent } from './role-set/ex-time/ex-time-role-s
 import { ExTimeRoleSetCreateCtrlComponent } from './role-set/ex-time/ex-time-role-set-create-ctrl/ex-time-role-set-create-ctrl.component';
 import { ExTimeRoleSetEditableComponent } from './role-set/ex-time/ex-time-role-set-editable/ex-time-role-set-editable.component';
 import { ExTimeRoleSetFormComponent } from './role-set/ex-time/ex-time-role-set-form/ex-time-role-set-form.component';
-import { PeItRoleSetAddCtrlComponent } from './role-set/pe-it/pe-it-role-set-add-ctrl/pe-it-role-set-add-ctrl.component';
-import { PeItRoleSetCreateCtrlComponent } from './role-set/pe-it/pe-it-role-set-create-ctrl/pe-it-role-set-create-ctrl.component';
-import { PeItRoleSetEditableComponent } from './role-set/pe-it/pe-it-role-set-editable/pe-it-role-set-editable.component';
-import { PeItRoleSetFormComponent } from './role-set/pe-it/pe-it-role-set-form/pe-it-role-set-form.component';
-import { RoleSetActions } from './role-set/role-set.actions';
-import { RoleSetApiEpics } from './role-set/role-set.epics';
-import { TeEntRoleSetAddCtrlComponent } from './role-set/te-ent/te-ent-role-set-add-ctrl/te-ent-role-set-add-ctrl.component';
-import { TeEntRoleSetCreateCtrlComponent } from './role-set/te-ent/te-ent-role-set-create-ctrl/te-ent-role-set-create-ctrl.component';
-import { TeEntRoleSetEditableComponent } from './role-set/te-ent/te-ent-role-set-editable/te-ent-role-set-editable.component';
-import { TeEntRoleSetFormComponent } from './role-set/te-ent/te-ent-role-set-form/te-ent-role-set-form.component';
+import { PeItPropertyFieldAddCtrlComponent } from './role-set/pe-it/pe-it-role-set-add-ctrl/pe-it-role-set-add-ctrl.component';
+import { PeItPropertyFieldCreateCtrlComponent } from './role-set/pe-it/pe-it-role-set-create-ctrl/pe-it-role-set-create-ctrl.component';
+import { PeItPropertyFieldEditableComponent } from './role-set/pe-it/pe-it-role-set-editable/pe-it-role-set-editable.component';
+import { PeItPropertyFieldFormComponent } from './role-set/pe-it/pe-it-role-set-form/pe-it-role-set-form.component';
+import { PropertyFieldActions } from './role-set/role-set.actions';
+import { PropertyFieldApiEpics } from './role-set/role-set.epics';
+import { TeEntPropertyFieldAddCtrlComponent } from './role-set/te-ent/te-ent-role-set-add-ctrl/te-ent-role-set-add-ctrl.component';
+import { TeEntPropertyFieldCreateCtrlComponent } from './role-set/te-ent/te-ent-role-set-create-ctrl/te-ent-role-set-create-ctrl.component';
+import { TeEntPropertyFieldEditableComponent } from './role-set/te-ent/te-ent-role-set-editable/te-ent-role-set-editable.component';
+import { TeEntPropertyFieldFormComponent } from './role-set/te-ent/te-ent-role-set-form/te-ent-role-set-form.component';
 import { PeItRoleAddCtrlComponent } from './role/pe-it/pe-it-role-add-ctrl/pe-it-role-add-ctrl.component';
 import { PeItRoleCreateCtrlComponent } from './role/pe-it/pe-it-role-create-ctrl/pe-it-role-create-ctrl.component';
 import { PeItRoleEditableComponent } from './role/pe-it/pe-it-role-editable/pe-it-role-editable.component';
@@ -213,14 +213,14 @@ import { TextPropertyFieldComponent } from './containers/text-property-field/tex
     AppeLangCreateCtrlComponent,
 
     // Role Set
-    PeItRoleSetAddCtrlComponent,
-    PeItRoleSetCreateCtrlComponent,
-    PeItRoleSetEditableComponent,
-    PeItRoleSetFormComponent,
-    TeEntRoleSetAddCtrlComponent,
-    TeEntRoleSetCreateCtrlComponent,
-    TeEntRoleSetEditableComponent,
-    TeEntRoleSetFormComponent,
+    PeItPropertyFieldAddCtrlComponent,
+    PeItPropertyFieldCreateCtrlComponent,
+    PeItPropertyFieldEditableComponent,
+    PeItPropertyFieldFormComponent,
+    TeEntPropertyFieldAddCtrlComponent,
+    TeEntPropertyFieldCreateCtrlComponent,
+    TeEntPropertyFieldEditableComponent,
+    TeEntPropertyFieldFormComponent,
     ExTimeRoleSetFormComponent,
     ExTimeRoleSetAddCtrlComponent,
     ExTimeRoleSetCreateCtrlComponent,
@@ -323,8 +323,8 @@ import { TextPropertyFieldComponent } from './containers/text-property-field/tex
     AppeLangCreateCtrlAPIEpics,
 
     // Role Set
-    RoleSetActions,
-    RoleSetApiEpics,
+    PropertyFieldActions,
+    PropertyFieldApiEpics,
 
     // Role
     RoleActions,
@@ -396,14 +396,14 @@ import { TextPropertyFieldComponent } from './containers/text-property-field/tex
     AppeLangCreateCtrlComponent,
 
     // Role Set
-    PeItRoleSetAddCtrlComponent,
-    PeItRoleSetCreateCtrlComponent,
-    PeItRoleSetEditableComponent,
-    PeItRoleSetFormComponent,
-    TeEntRoleSetAddCtrlComponent,
-    TeEntRoleSetCreateCtrlComponent,
-    TeEntRoleSetEditableComponent,
-    TeEntRoleSetFormComponent,
+    PeItPropertyFieldAddCtrlComponent,
+    PeItPropertyFieldCreateCtrlComponent,
+    PeItPropertyFieldEditableComponent,
+    PeItPropertyFieldFormComponent,
+    TeEntPropertyFieldAddCtrlComponent,
+    TeEntPropertyFieldCreateCtrlComponent,
+    TeEntPropertyFieldEditableComponent,
+    TeEntPropertyFieldFormComponent,
 
     // Role
     PeItRoleAddCtrlComponent,

@@ -12,7 +12,7 @@ import { Subject } from 'rxjs';
 import { TimeLineData, TimeLineRow, TimeLineSettings } from '../../../timeline/models/timeline';
 import { TeEntActions } from '../../data-unit/te-ent/te-ent.actions';
 import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
-import { ExistenceTimeDetail, RoleSetList, TeEntAccentuation } from 'app/core/state/models';
+import { ExistenceTimeDetail, PropertyFieldList, TeEntAccentuation } from 'app/core/state/models';
 import { StateToDataService } from '../../shared/state-to-data.service';
 
 @Component({
@@ -32,7 +32,7 @@ export class PeItTimelineComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>()
 
   constructor(
-    private ngRedux: NgRedux<RoleSetList>,
+    private ngRedux: NgRedux<PropertyFieldList>,
     private teEntActions: TeEntActions
   ) {
   }
@@ -40,7 +40,7 @@ export class PeItTimelineComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     // subscribe to RoleSets and create TimeLineData
-    this.ngRedux.select<RoleSetList>([...this.path, '_fields'])
+    this.ngRedux.select<PropertyFieldList>([...this.path, '_fields'])
       .takeUntil(this.destroy$)
       .subscribe(roleSets => {
         const timeLineData = {

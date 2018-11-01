@@ -1,5 +1,5 @@
 import { ExistenceTime } from 'app/core/existence-time/existence-time';
-import { AppeDetail,  ClassInstanceFieldLabel, FieldList,  ClassInstanceLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, RoleSet, FieldLabel, RoleSetList, TeEntDetail, RoleDetailList, PlaceDetail } from 'app/core/state/models';
+import { AppeDetail,  ClassInstanceFieldLabel, FieldList,  ClassInstanceLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, PropertyField, FieldLabel, PropertyFieldList, TeEntDetail, RoleDetailList, PlaceDetail } from 'app/core/state/models';
 import { indexBy, omit } from 'ramda';
 import { AcEntity, AcNotification, ActionType } from '../../modules/gv-angular-cesium/angular-cesium-fork';
 import { AppellationLabel } from '../../modules/information/shared/appellation-label';
@@ -227,15 +227,15 @@ export class U {
     *
     * @param {boolean} isOutgoing direction: true=outgoing, false=ingoing
     * @param {DfhProperty[]} properties array of properties to Convert
-    * @return {RoleSet[]} array of RoleSet
+    * @return {PropertyField[]} array of RoleSet
     */
-    static infProperties2RoleSets(isOutgoing: boolean, properties: DfhProperty[]): RoleSet[] {
+    static infProperties2RoleSets(isOutgoing: boolean, properties: DfhProperty[]): PropertyField[] {
         if (!properties) return [];
 
 
 
         return properties.map(property => {
-            const res = new RoleSet({
+            const res = new PropertyField({
                 isOutgoing: isOutgoing,
                 property: omit(['labels', 'domain_class', 'range_class'], property),
                 targetMaxQuantity: isOutgoing ? property.dfh_range_instances_max_quantifier : property.dfh_domain_instances_max_quantifier,
@@ -254,7 +254,7 @@ export class U {
      * @param ingoingProperties
      * @param outgoingProperties
      */
-    static roleSetsFromProperties(ingoingProperties: DfhProperty[], outgoingProperties: DfhProperty[]): RoleSetList {
+    static roleSetsFromProperties(ingoingProperties: DfhProperty[], outgoingProperties: DfhProperty[]): PropertyFieldList {
         return indexBy(roleSetKey, [
             ...U.infProperties2RoleSets(false, ingoingProperties),
             ...U.infProperties2RoleSets(true, outgoingProperties)
@@ -266,7 +266,7 @@ export class U {
      *
      * @param roleSet
      */
-    static ordNumFromRoleSet(roleSet: RoleSet): number | null {
+    static ordNumFromRoleSet(roleSet: PropertyField): number | null {
 
         if (!U.uiContextConfigFromRoleSet(roleSet)) return null;
 
@@ -278,7 +278,7 @@ export class U {
      * gets ui_context_config of RoleSet or null, if not available
      * @param roleSet
      */
-    static uiContextConfigFromRoleSet(roleSet: RoleSet): ComUiContextConfig | null {
+    static uiContextConfigFromRoleSet(roleSet: PropertyField): ComUiContextConfig | null {
         if (!roleSet) return null;
 
         if (!roleSet.property) return null;
@@ -446,14 +446,14 @@ export class U {
 
 
     static labelFromField(c: Field, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
-        if (c && c.type == 'RoleSet') return U.labelFromRoleSet(c as RoleSet, settings);
+        if (c && c.type == 'RoleSet') return U.labelFromRoleSet(c as PropertyField, settings);
         else if (c && c.type == 'ExistenceTimeDetail') return U.labelFromExTime(c as ExistenceTimeDetail, settings);
 
         else return null;
     }
 
 
-    static labelFromRoleSet(r: RoleSet, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
+    static labelFromRoleSet(r: PropertyField, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
         const max = !settings ? undefined : settings.rolesMax;
 
         const roleDetails = U.obj2Arr(r._role_list);
@@ -664,7 +664,7 @@ export class U {
             if (!presence._fields) return null;
 
             // return false if no RoleSet leading to a Place
-            const placeSet = presence._fields[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
+            const placeSet = presence._fields[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as PropertyField;
             if (!placeSet || placeSet.type != 'RoleSet') return null;
 
             // return false if no Place in first RoleDetail
@@ -786,14 +786,14 @@ export class U {
         const roleSetMap = U.obj2KeyValueArr(peItDetail._fields).find((res) => {
             const child: Field = res.value;
             if (child.type == 'RoleSet') {
-                if ((child as RoleSet).targetClassPk == DfhConfig.CLASS_PK_PRESENCE) return true;
+                if ((child as PropertyField).targetClassPk == DfhConfig.CLASS_PK_PRESENCE) return true;
             }
             return false
         });
 
         if (!roleSetMap) return [];
 
-        const roleSet = roleSetMap.value as RoleSet;
+        const roleSet = roleSetMap.value as PropertyField;
         const roleSetPath = [...path, '_fields', roleSetMap.key]
 
 
@@ -815,8 +815,8 @@ export class U {
         keys.forEach(key => {
             const child: Field = peItDetail._fields[key];
             if (child.type == 'RoleSet') {
-                if ((child as RoleSet).targetClassPk !== DfhConfig.CLASS_PK_PRESENCE) {
-                    roleSets[key] = child as RoleSet;
+                if ((child as PropertyField).targetClassPk !== DfhConfig.CLASS_PK_PRESENCE) {
+                    roleSets[key] = child as PropertyField;
                 };
             }
         })
@@ -824,7 +824,7 @@ export class U {
 
         // for each roleSet get the roleSet and make the path
         U.obj2KeyValueArr(roleSets).map(res => {
-            const roleSet = res.value as RoleSet;
+            const roleSet = res.value as PropertyField;
             const roleSetPath = [...path, '_fields', res.key]
 
             // get the teEnt of roleDetails with path
@@ -869,7 +869,7 @@ export class U {
             // get leaf peIts...
             U.obj2Arr(teEntDetail._fields).forEach(duChild => {
                 if (duChild.type === 'RoleSet') {
-                    const rs = duChild as RoleSet;
+                    const rs = duChild as PropertyField;
 
                     // of class geographical place or built work
                     if (
@@ -912,7 +912,7 @@ export class U {
                                     if (!presence._fields) return null;
 
                                     // return false if no RoleSet leading to a Place
-                                    const placeSet = presence._fields[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
+                                    const placeSet = presence._fields[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as PropertyField;
                                     if (!placeSet || placeSet.type != 'RoleSet') return null;
 
                                     // return false if no Place in first RoleDetail
@@ -1141,7 +1141,7 @@ export class U {
         let key: string;
         U.obj2KeyValueArr(children).some((child) => {
             if (child.value.type === 'RoleSet') {
-                const roleSet = child.value as RoleSet;
+                const roleSet = child.value as PropertyField;
 
                 if (roleSet._role_set_form) {
 

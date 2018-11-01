@@ -1,7 +1,7 @@
 import { createRoleDetail, createRoleSet, createPlaceDetail, createTimePrimitveDetail, createAppeDetail, createLangDetail, createFieldList, createPeItDetail, createEntityAssociationDetail } from './state-creator';
 import { roleWithPlace, place, roleWithLanguage, language, roleWithAppellation, appellation, roleWithTimePrimitive, time_primitive, role, roleWithTemporalEntity, temporal_entity, property, temporalEntityBirth } from './_mock-data';
 import { crm } from 'app/core/active-project/_mock-data';
-import { RoleSet, ExistenceTimeDetail, FieldList } from 'app/core/state/models';
+import { PropertyField, ExistenceTimeDetail, FieldList } from 'app/core/state/models';
 import { InfPersistentItem, InfEntityAssociation } from 'app/core/sdk';
 import { ComConfig } from 'app/core/config/com-config';
 
@@ -18,7 +18,7 @@ describe('StateCreator', () => {
      ***************************************************/
     it('#createPeIt should create a PeItDetail for creating a new person', () => {
         expect(((createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE }))
-            ._fields._1192_ingoing as RoleSet)._role_list['_undefined']._teEnt._fields)
+            ._fields._1192_ingoing as PropertyField)._role_list['_undefined']._teEnt._fields)
             .toBeTruthy()
     });
 
@@ -61,7 +61,7 @@ describe('StateCreator', () => {
      ***************************************************/
 
     it('#createRoleSet should return a RoleSet with _role_list of that contains a RoleDetail with the right key', () => {
-        expect(createRoleSet(new RoleSet({ isOutgoing: true, property }), [role], crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE })._role_list['_1'].isOutgoing).toBe(true)
+        expect(createRoleSet(new PropertyField({ isOutgoing: true, property }), [role], crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE })._role_list['_1'].isOutgoing).toBe(true)
     });
 
     /***************************************************
@@ -102,7 +102,7 @@ describe('StateCreator', () => {
             } as InfEntityAssociation,
             crm,
             { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_CREATE }
-        ))._peIt._fields._100005_ingoing as RoleSet)._role_list['_undefined']._teEnt._fields).toBeTruthy()
+        ))._peIt._fields._100005_ingoing as PropertyField)._role_list['_undefined']._teEnt._fields).toBeTruthy()
     });
 
 

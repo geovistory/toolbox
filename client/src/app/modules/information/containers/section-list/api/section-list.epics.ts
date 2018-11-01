@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfEntityAssociationApi, ComConfig, RoleSet } from 'app/core';
+import { LoadingBarActions, InfEntityAssociationApi, ComConfig, PropertyField } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -49,7 +49,7 @@ export class SectionListAPIEpics {
                */
               globalStore.next(this.loadingBarActions.completeLoading());
 
-              const eaList = createEntityAssociationList(new RoleSet(), data, action.meta.crm, {pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE})
+              const eaList = createEntityAssociationList(new PropertyField(), data, action.meta.crm, {pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE})
 
               /**
                * Emit the local action on loading succeeded

@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IAppState, InfEntityProjectRel, InfRole, InfTimePrimitive, ValidationService } from 'app/core';
-import { ExistenceTimeEdit, ExTimeHelpMode, ExTimeModalMode, RoleSet, RoleSetList, TeEntDetail } from 'app/core/state/models';
+import { ExistenceTimeEdit, ExTimeHelpMode, ExTimeModalMode, PropertyField, PropertyFieldList, TeEntDetail } from 'app/core/state/models';
 import { roleSetKey, roleSetKeyFromParams, createRoleSet } from 'app/core/state/services/state-creator';
 import { dropLast, union } from 'ramda';
 import { Observable, Subscription } from 'rxjs';
@@ -35,8 +35,8 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
   @Output() submitted: EventEmitter<{ toAdd: InfRole[], toRemove: InfRole[], unchanged: InfRole[] }> = new EventEmitter();
 
 
-  _fields: RoleSetList;
-  @select() _fields$: Observable<RoleSetList>;
+  _fields: PropertyFieldList;
+  @select() _fields$: Observable<PropertyFieldList>;
   @select() showOntoInfo$: Observable<boolean>;
   @select() helpMode$: Observable<ExTimeHelpMode>
   @select() mode$: Observable<ExTimeModalMode>
@@ -224,7 +224,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
     const state = this.ngRedux.getState();
 
     // find the outgoing roleSet to add
-    const roleSetTemplate: RoleSet = new RoleSet(state.activeProject.crm.roleSets[roleSetKeyFromParams(fkProperty, true)]);
+    const roleSetTemplate: PropertyField = new PropertyField(state.activeProject.crm.roleSets[roleSetKeyFromParams(fkProperty, true)]);
 
     const role = new InfRole();
     role.time_primitive = new InfTimePrimitive();

@@ -10,9 +10,9 @@ import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
-import { RoleSetActions } from '../../role-set.actions';
-import { RoleSetBase } from '../../role-set.base';
-import { RoleSetApiEpics } from '../../role-set.epics';
+import { PropertyFieldActions } from '../../role-set.actions';
+import { PropertyFieldBase } from '../../role-set.base';
+import { PropertyFieldApiEpics } from '../../role-set.epics';
 import { RootEpics } from 'app/core/store/epics';
 
 
@@ -25,7 +25,7 @@ import { RootEpics } from 'app/core/store/epics';
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PeItRoleSetEditableComponent extends RoleSetBase {
+export class PeItPropertyFieldEditableComponent extends PropertyFieldBase {
 
   /**
   * Paths to other slices of the store
@@ -57,11 +57,11 @@ export class PeItRoleSetEditableComponent extends RoleSetBase {
 
   constructor(
     protected rootEpics: RootEpics,
-    protected epics: RoleSetApiEpics,
+    protected epics: PropertyFieldApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
     public ngRedux: NgRedux<IAppState>,
-    protected actions: RoleSetActions,
+    protected actions: PropertyFieldActions,
     protected roleSetService: RoleSetService,
     protected roleStore: NgRedux<RoleDetail>,
     protected roleActions: RoleActions,

@@ -2,7 +2,7 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { EntityAssociationDetail } from 'app/core/state/models/entity-association-detail';
-import { ProjectCrm, RoleSet } from 'app/core';
+import { ProjectCrm, PropertyField } from 'app/core';
 import { EntityAssociationList } from 'app/core/state/models/entity-association-list';
 
 type Payload = EntityAssociationDetail;
@@ -13,7 +13,7 @@ interface MetaData {
   fkDomainEntity?: number
   fkProperty?: number
   existingList?: EntityAssociationList;
-  roleSet?: RoleSet;
+  roleSet?: PropertyField;
 };
 export type EntityAssociationAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -27,7 +27,7 @@ export class EntityAssociationAPIActions {
   static readonly DESTROY = 'EntityAssociation::DESTROY';
 
   @dispatch()
-  load = (pkProject: number, fkRangeEntity: number, fkDomainEntity: number, fkProperty: number, crm: ProjectCrm, roleSet: RoleSet): EntityAssociationAPIAction => ({
+  load = (pkProject: number, fkRangeEntity: number, fkDomainEntity: number, fkProperty: number, crm: ProjectCrm, roleSet: PropertyField): EntityAssociationAPIAction => ({
     type: EntityAssociationAPIActions.LOAD_EXISTING_LIST,
     meta: { pkProject, fkRangeEntity, fkDomainEntity, fkProperty, crm, roleSet },
     payload: null,

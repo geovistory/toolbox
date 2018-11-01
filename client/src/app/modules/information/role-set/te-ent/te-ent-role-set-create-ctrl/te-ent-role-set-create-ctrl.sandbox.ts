@@ -2,13 +2,13 @@ import { sandboxOf } from 'angular-playground';
 import { DfhProperty, InfRole } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
-import { RoleDetail, RoleSet } from 'app/core/state/models';
+import { RoleDetail, PropertyField } from 'app/core/state/models';
 import { Information2Module } from '../../../information.module';
-import { TeEntRoleSetCreateCtrlComponent } from './te-ent-role-set-create-ctrl.component';
+import { TeEntPropertyFieldCreateCtrlComponent } from './te-ent-role-set-create-ctrl.component';
 
 
 
-export default sandboxOf(TeEntRoleSetCreateCtrlComponent, {
+export default sandboxOf(TeEntPropertyFieldCreateCtrlComponent, {
     imports: [
         InitStateModule,
         Information2Module
@@ -24,7 +24,7 @@ export default sandboxOf(TeEntRoleSetCreateCtrlComponent, {
             initState: {
                 _teEnt: {
                     _fields: {
-                        _role_set_1:  new RoleSet({
+                        _role_set_1:  new PropertyField({
                             label: {
                                 default: 'Detailed Name',
                                 sg: 'Detailed Name',
@@ -91,7 +91,7 @@ export default sandboxOf(TeEntRoleSetCreateCtrlComponent, {
             initState: {
                 _teEnt: {
                     _fields: {
-                        _role_set_1:  new RoleSet({
+                        _role_set_1:  new PropertyField({
                             label: {
                                 default: 'Language',
                                 sg: 'Language',

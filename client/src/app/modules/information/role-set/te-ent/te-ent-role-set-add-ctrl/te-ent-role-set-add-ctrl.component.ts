@@ -2,16 +2,16 @@ import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, forwardRef, Input } from '@angular/core';
 import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IAppState, InfEntityProjectRelApi, InfRoleApi, InfTemporalEntityApi } from 'app/core';
-import { RoleDetail, RoleSet, TeEntDetail } from 'app/core/state/models';
+import { RoleDetail, PropertyField, TeEntDetail } from 'app/core/state/models';
 import { RootEpics } from 'app/core/store/epics';
 import { Observable } from 'rxjs';
 import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
-import { RoleSetAddCtrlBase } from '../../role-set-add-ctrl.base';
-import { RoleSetActions } from '../../role-set.actions';
-import { RoleSetApiEpics } from '../../role-set.epics';
+import { PropertyFieldAddCtrlBase } from '../../role-set-add-ctrl.base';
+import { PropertyFieldActions } from '../../role-set.actions';
+import { PropertyFieldApiEpics } from '../../role-set.epics';
 
 
 
@@ -26,12 +26,12 @@ import { RoleSetApiEpics } from '../../role-set.epics';
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => TeEntRoleSetAddCtrlComponent),
+            useExisting: forwardRef(() => TeEntPropertyFieldAddCtrlComponent),
             multi: true
         }
     ]
 })
-export class TeEntRoleSetAddCtrlComponent extends RoleSetAddCtrlBase {
+export class TeEntPropertyFieldAddCtrlComponent extends PropertyFieldAddCtrlBase {
 
 
     /**
@@ -48,18 +48,18 @@ export class TeEntRoleSetAddCtrlComponent extends RoleSetAddCtrlBase {
     showOntoInfo$: Observable<boolean>
     showCommunityStats$: Observable<boolean>
 
-    roleSetState: RoleSet;
+    roleSetState: PropertyField;
     parentTeEntState: TeEntDetail;
     parentRoleDetail: RoleDetail;
 
 
     constructor(
         protected rootEpics: RootEpics,
-        protected epics: RoleSetApiEpics,
+        protected epics: PropertyFieldApiEpics,
         protected eprApi: InfEntityProjectRelApi,
         protected roleApi: InfRoleApi,
         public ngRedux: NgRedux<IAppState>,
-        protected actions: RoleSetActions,
+        protected actions: PropertyFieldActions,
         protected roleSetService: RoleSetService,
         protected roleStore: NgRedux<RoleDetail>,
         protected roleActions: RoleActions,

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
-import { RoleDetail, RoleDetailList, CollapsedExpanded, RoleSet } from 'app/core/state/models';
+import { RoleDetail, RoleDetailList, CollapsedExpanded, PropertyField } from 'app/core/state/models';
 import { DfhProperty, InfEntityProjectRel } from 'app/core';
 
 
@@ -13,7 +13,7 @@ export function roleStateKey(roleState: RoleDetail) { return '_' + roleState.rol
 // replace PiRoleSet with name of component
 
 // Flux-standard-action gives us stronger typing of our actions.
-type Payload = RoleSet;
+type Payload = PropertyField;
 interface MetaData {
   key?: string;
   roleDetail?: RoleDetail;
@@ -21,10 +21,10 @@ interface MetaData {
   pk_roles?: number[]; // array of pk_entity of roles
   roleDetailList?: RoleDetailList;
 };
-export type RoleSetAction = FluxStandardAction<Payload, MetaData>;
+export type PropertyFieldAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
-export class RoleSetActions {
+export class PropertyFieldActions {
 
   static readonly PROPERTY_LOADED = 'RoleSet::PROPERTY_LOADED';
 
@@ -93,17 +93,17 @@ export class RoleSetActions {
 
   @dispatch()
 
-  propertyLoaded = (property: DfhProperty): RoleSetAction => ({
-    type: RoleSetActions.PROPERTY_LOADED,
+  propertyLoaded = (property: DfhProperty): PropertyFieldAction => ({
+    type: PropertyFieldActions.PROPERTY_LOADED,
     meta: null,
-    payload: new RoleSet({
+    payload: new PropertyField({
       property
     })
   })
 
 
   setToggle = (toggle: CollapsedExpanded) => ({
-    type: RoleSetActions.SET_TOGGLE,
+    type: PropertyFieldActions.SET_TOGGLE,
     meta: null,
     payload: {
       toggle
@@ -112,7 +112,7 @@ export class RoleSetActions {
 
 
   toggle = () => ({
-    type: RoleSetActions.TOGGLE,
+    type: PropertyFieldActions.TOGGLE,
     meta: null,
     payload: null
   })
@@ -120,23 +120,23 @@ export class RoleSetActions {
   /**
 * called, when user selected a the kind of property to add
 */
-  removeRoleSet = (): RoleSetAction => ({
-    type: RoleSetActions.REMOVE_ROLE_SET,
+  removeRoleSet = (): PropertyFieldAction => ({
+    type: PropertyFieldActions.REMOVE_ROLE_SET,
     meta: null,
     payload: null
   })
 
 
-  startAddingRole = (): RoleSetAction => ({
-    type: RoleSetActions.START_ADDING_ROLE,
+  startAddingRole = (): PropertyFieldAction => ({
+    type: PropertyFieldActions.START_ADDING_ROLE,
     meta: null,
     payload: null
   })
 
-  alternativeRolesLoaded = (_role_add_list: RoleDetailList, _role_add_in_no_project_list: RoleDetailList): RoleSetAction => ({
-    type: RoleSetActions.ALTERNATIVE_ROLES_LOADED,
+  alternativeRolesLoaded = (_role_add_list: RoleDetailList, _role_add_in_no_project_list: RoleDetailList): PropertyFieldAction => ({
+    type: PropertyFieldActions.ALTERNATIVE_ROLES_LOADED,
     meta: null,
-    payload: new RoleSet({
+    payload: new PropertyField({
       _role_set_form: {
         _role_add_list,
         _role_add_in_no_project_list
@@ -144,10 +144,10 @@ export class RoleSetActions {
     })
   })
 
-  startCreateNewRole = (_role_create_list: RoleDetailList): RoleSetAction => ({
-    type: RoleSetActions.START_CREATE_NEW_ROLE,
+  startCreateNewRole = (_role_create_list: RoleDetailList): PropertyFieldAction => ({
+    type: PropertyFieldActions.START_CREATE_NEW_ROLE,
     meta: null,
-    payload: new RoleSet({
+    payload: new PropertyField({
       _role_set_form: {
         _role_create_list,
 
@@ -156,17 +156,17 @@ export class RoleSetActions {
   })
 
 
-  stopCreateNewRole = (): RoleSetAction => ({
-    type: RoleSetActions.STOP_CREATE_NEW_ROLE,
+  stopCreateNewRole = (): PropertyFieldAction => ({
+    type: PropertyFieldActions.STOP_CREATE_NEW_ROLE,
     meta: null,
     payload: null
   })
 
 
-  roleCreationCancelled = (_role_create_list: RoleDetailList): RoleSetAction => ({
-    type: RoleSetActions.ROLE_CREATION_CANCELLED,
+  roleCreationCancelled = (_role_create_list: RoleDetailList): PropertyFieldAction => ({
+    type: PropertyFieldActions.ROLE_CREATION_CANCELLED,
     meta: null,
-    payload: new RoleSet({
+    payload: new PropertyField({
       _role_set_form: {
         _role_create_list
       }
@@ -174,10 +174,10 @@ export class RoleSetActions {
   })
 
 
-  rolesCreated = (_role_list: RoleDetailList): RoleSetAction => ({
-    type: RoleSetActions.ROLES_CREATED,
+  rolesCreated = (_role_list: RoleDetailList): PropertyFieldAction => ({
+    type: PropertyFieldActions.ROLES_CREATED,
     meta: null,
-    payload: new RoleSet({
+    payload: new PropertyField({
       _role_list
     })
   })
@@ -185,14 +185,14 @@ export class RoleSetActions {
   /**
    * Removes the current RoleDetail from the Store. Called upon successfully removing a role
    */
-  roleRemovedFromProject = (key: string, roleDetail: RoleDetail): RoleSetAction => ({
-    type: RoleSetActions.ROLE_REMOVED_FROM_PROJECT,
+  roleRemovedFromProject = (key: string, roleDetail: RoleDetail): PropertyFieldAction => ({
+    type: PropertyFieldActions.ROLE_REMOVED_FROM_PROJECT,
     meta: { key, roleDetail },
     payload: null
   })
 
-  startEditingRole = (key: string, roleDetail: RoleDetail): RoleSetAction => ({
-    type: RoleSetActions.START_EDITING_ROLE,
+  startEditingRole = (key: string, roleDetail: RoleDetail): PropertyFieldAction => ({
+    type: PropertyFieldActions.START_EDITING_ROLE,
     meta: {
       key,
       roleDetail
@@ -200,8 +200,8 @@ export class RoleSetActions {
     payload: null
   })
 
-  stopEditingRole = (key: string, roleDetail: RoleDetail): RoleSetAction => ({
-    type: RoleSetActions.STOP_EDITING_ROLE,
+  stopEditingRole = (key: string, roleDetail: RoleDetail): PropertyFieldAction => ({
+    type: PropertyFieldActions.STOP_EDITING_ROLE,
     meta: {
       key,
       roleDetail
@@ -209,19 +209,19 @@ export class RoleSetActions {
     payload: null
   })
 
-  updateRole = (key: string, _role_list: RoleDetailList): RoleSetAction => ({
-    type: RoleSetActions.UPDATE_ROLE,
+  updateRole = (key: string, _role_list: RoleDetailList): PropertyFieldAction => ({
+    type: PropertyFieldActions.UPDATE_ROLE,
     meta: {
       key
     },
-    payload: new RoleSet({
+    payload: new PropertyField({
       _role_list
     })
   })
 
 
-  addRoleToRoleList = (key: string, roleDetail: RoleDetail): RoleSetAction => ({
-    type: RoleSetActions.ADD_ROLE_TO_ROLE_LIST,
+  addRoleToRoleList = (key: string, roleDetail: RoleDetail): PropertyFieldAction => ({
+    type: PropertyFieldActions.ADD_ROLE_TO_ROLE_LIST,
     meta: {
       key,
       roleDetail
@@ -229,8 +229,8 @@ export class RoleSetActions {
     payload: null
   })
 
-  removeRoleFromRoleList = (key: string): RoleSetAction => ({
-    type: RoleSetActions.REMOVE_ROLE_FROM_ROLE_LIST,
+  removeRoleFromRoleList = (key: string): PropertyFieldAction => ({
+    type: PropertyFieldActions.REMOVE_ROLE_FROM_ROLE_LIST,
     meta: {
       key
     },
@@ -238,8 +238,8 @@ export class RoleSetActions {
   })
 
 
-  updateOrder = (eprs: InfEntityProjectRel[]): RoleSetAction => ({
-    type: RoleSetActions.ROLE_SET_UPDATE_ORDER,
+  updateOrder = (eprs: InfEntityProjectRel[]): PropertyFieldAction => ({
+    type: PropertyFieldActions.ROLE_SET_UPDATE_ORDER,
     meta: {
       eprs
     },
@@ -247,8 +247,8 @@ export class RoleSetActions {
   })
 
 
-  updateOrderSucceeded = (eprs: InfEntityProjectRel[]): RoleSetAction => ({
-    type: RoleSetActions.ROLE_SET_UPDATE_ORDER_SUCCEEDED,
+  updateOrderSucceeded = (eprs: InfEntityProjectRel[]): PropertyFieldAction => ({
+    type: PropertyFieldActions.ROLE_SET_UPDATE_ORDER_SUCCEEDED,
     meta: {
       eprs
     },
@@ -256,14 +256,14 @@ export class RoleSetActions {
   })
 
 
-  enableDrag = (): RoleSetAction => ({
-    type: RoleSetActions.ROLE_SET_ENABLE_DRAG,
+  enableDrag = (): PropertyFieldAction => ({
+    type: PropertyFieldActions.ROLE_SET_ENABLE_DRAG,
     meta: null,
     payload: null
   })
 
-  disableDrag = (): RoleSetAction => ({
-    type: RoleSetActions.ROLE_SET_DISABLE_DRAG,
+  disableDrag = (): PropertyFieldAction => ({
+    type: PropertyFieldActions.ROLE_SET_DISABLE_DRAG,
     meta: null,
     payload: null
   })
@@ -272,20 +272,20 @@ export class RoleSetActions {
   /**
    * Add roles with temproal entities to the role set
    */
-  addRolesWithTeEnt = (pk_roles: number[]): RoleSetAction => ({
-    type: RoleSetActions.ADD_ROLES_WITH_TE_ENT,
+  addRolesWithTeEnt = (pk_roles: number[]): PropertyFieldAction => ({
+    type: PropertyFieldActions.ADD_ROLES_WITH_TE_ENT,
     meta: { pk_roles },
     payload: null
   })
 
-  addRolesWithTeEntSucceeded = (roleDetailList: RoleDetailList): RoleSetAction => ({
-    type: RoleSetActions.ADD_ROLES_WITH_TE_ENT_SUCCEEDED,
+  addRolesWithTeEntSucceeded = (roleDetailList: RoleDetailList): PropertyFieldAction => ({
+    type: PropertyFieldActions.ADD_ROLES_WITH_TE_ENT_SUCCEEDED,
     meta: { roleDetailList },
     payload: null
   })
 
-  addRolesWithTeEntFailed = (): RoleSetAction => ({
-    type: RoleSetActions.ADD_ROLES_WITH_TE_ENT_FAILED,
+  addRolesWithTeEntFailed = (): PropertyFieldAction => ({
+    type: PropertyFieldActions.ADD_ROLES_WITH_TE_ENT_FAILED,
     meta: null,
     payload: null
   })
@@ -293,20 +293,20 @@ export class RoleSetActions {
   /**
    * Add roles without temproal entities to the role set
    */
-  addRolesWithoutTeEnt = (pk_roles: number[]): RoleSetAction => ({
-    type: RoleSetActions.ADD_ROLES_WITHOUT_TE_ENT,
+  addRolesWithoutTeEnt = (pk_roles: number[]): PropertyFieldAction => ({
+    type: PropertyFieldActions.ADD_ROLES_WITHOUT_TE_ENT,
     meta: { pk_roles },
     payload: null
   })
 
-  addRolesWithoutTeEntSucceeded = (roleDetailList: RoleDetailList): RoleSetAction => ({
-    type: RoleSetActions.ADD_ROLES_WITHOUT_TE_ENT_SUCCEEDED,
+  addRolesWithoutTeEntSucceeded = (roleDetailList: RoleDetailList): PropertyFieldAction => ({
+    type: PropertyFieldActions.ADD_ROLES_WITHOUT_TE_ENT_SUCCEEDED,
     meta: { roleDetailList },
     payload: null
   })
 
-  addRolesWithoutTeEntFailed = (): RoleSetAction => ({
-    type: RoleSetActions.ADD_ROLES_WITHOUT_TE_ENT_FAILED,
+  addRolesWithoutTeEntFailed = (): PropertyFieldAction => ({
+    type: PropertyFieldActions.ADD_ROLES_WITHOUT_TE_ENT_FAILED,
     meta: null,
     payload: null
   })

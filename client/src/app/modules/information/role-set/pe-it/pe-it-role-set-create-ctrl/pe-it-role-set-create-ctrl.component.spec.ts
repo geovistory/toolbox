@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PeItRoleSetCreateCtrlComponent } from './pe-it-role-set-create-ctrl.component';
+import { PeItPropertyFieldCreateCtrlComponent } from './pe-it-role-set-create-ctrl.component';
 
 describe('PeItRoleSetCreateCtrlComponent', () => {
-  let component: PeItRoleSetCreateCtrlComponent;
-  let fixture: ComponentFixture<PeItRoleSetCreateCtrlComponent>;
+  let component: PeItPropertyFieldCreateCtrlComponent;
+  let fixture: ComponentFixture<PeItPropertyFieldCreateCtrlComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PeItRoleSetCreateCtrlComponent ]
+      declarations: [ PeItPropertyFieldCreateCtrlComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PeItRoleSetCreateCtrlComponent);
+    fixture = TestBed.createComponent(PeItPropertyFieldCreateCtrlComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

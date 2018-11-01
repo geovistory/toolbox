@@ -8,9 +8,9 @@ import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
-import { RoleSetActions } from '../../role-set.actions';
-import { RoleSetBase } from '../../role-set.base';
-import { RoleSetApiEpics } from '../../role-set.epics';
+import { PropertyFieldActions } from '../../role-set.actions';
+import { PropertyFieldBase } from '../../role-set.base';
+import { PropertyFieldApiEpics } from '../../role-set.epics';
 
 @Component({
   selector: 'gv-pe-it-role-set-create-ctrl',
@@ -22,23 +22,23 @@ import { RoleSetApiEpics } from '../../role-set.epics';
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => PeItRoleSetCreateCtrlComponent),
+      useExisting: forwardRef(() => PeItPropertyFieldCreateCtrlComponent),
       multi: true
     }
   ]
 })
-export class PeItRoleSetCreateCtrlComponent extends RoleSetBase  {
+export class PeItPropertyFieldCreateCtrlComponent extends PropertyFieldBase  {
 
   init(): void {
   }
 
   constructor(
     protected rootEpics: RootEpics,
-    protected epics: RoleSetApiEpics,
+    protected epics: PropertyFieldApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
     public ngRedux: NgRedux<IAppState>,
-    protected actions: RoleSetActions,
+    protected actions: PropertyFieldActions,
     protected roleSetService: RoleSetService,
     protected roleStore: NgRedux<RoleDetail>,
     protected roleActions: RoleActions,

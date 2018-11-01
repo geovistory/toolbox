@@ -2,29 +2,29 @@ import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { IAppState, InfEntityProjectRel, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
-import { RoleDetail, RoleSet, TeEntDetail } from 'app/core/state/models';
+import { RoleDetail, PropertyField, TeEntDetail } from 'app/core/state/models';
 import { createRoleDetail, createRoleSet, getCreateOfEditableContext, StateSettings, createRoleDetailList } from 'app/core/state/services/state-creator';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest, timer } from 'rxjs';
 import { teEntReducer } from '../../../data-unit/te-ent/te-ent.reducer';
 import { ClassService } from '../../../shared/class.service';
-import { RoleSetFormBase } from '../../role-set-form.base';
-import { RoleSetActions } from '../../role-set.actions';
-import { roleSetReducer } from '../../role-set.reducer';
+import { PropertyFieldFormBase } from '../../role-set-form.base';
+import { PropertyFieldActions } from '../../role-set.actions';
+import { propertyFieldReducer } from '../../role-set.reducer';
 
 
 
 @AutoUnsubscribe()
 @WithSubStore({
   basePathMethodName: 'getBasePath',
-  localReducer: roleSetReducer
+  localReducer: propertyFieldReducer
 })
 @Component({
   selector: 'gv-te-ent-role-set-form',
   templateUrl: './te-ent-role-set-form.component.html',
   styleUrls: ['./te-ent-role-set-form.component.scss']
 })
-export class TeEntRoleSetFormComponent extends RoleSetFormBase {
+export class TeEntPropertyFieldFormComponent extends PropertyFieldFormBase {
 
 
   @Input() parentTeEntPath: string[];
@@ -35,7 +35,7 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
     protected ngRedux: NgRedux<IAppState>,
     protected ref: ChangeDetectorRef,
     protected fb: FormBuilder,
-    protected actions: RoleSetActions,
+    protected actions: PropertyFieldActions,
     protected roleApi: InfRoleApi,
     protected classService: ClassService,
     private teEntApi: InfTemporalEntityApi
@@ -77,7 +77,7 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
 
         // update the state
         const roleDetailsInOtherProjects = createRoleDetailList(
-          new RoleSet(this.localStore.getState()),
+          new PropertyField(this.localStore.getState()),
           rolesInOtherProjects,
           this.ngRedux.getState().activeProject.crm,
           {
@@ -86,7 +86,7 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
           }
         );
         const roleDetailsInNoProjects = createRoleDetailList(
-          new RoleSet(this.localStore.getState()),
+          new PropertyField(this.localStore.getState()),
           rolesInNoProject,
           this.ngRedux.getState().activeProject.crm,
           {
@@ -168,7 +168,7 @@ export class TeEntRoleSetFormComponent extends RoleSetFormBase {
 
         // update the state
         const roleSet = createRoleSet(
-          new RoleSet({ isOutgoing: s.isOutgoing, property: s.property }),
+          new PropertyField({ isOutgoing: s.isOutgoing, property: s.property }),
           roles,
           this.ngRedux.getState().activeProject.crm,
           { pkUiContext: s.pkUiContext }

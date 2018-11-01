@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, InfRole, UiContext, UiElement, ProjectCrm } from 'app/core';
-import { AddOption, FieldList,  ClassInstanceLabel, PeItDetail, RoleSet, SelectPropStateType, SubstoreComponent, TeEntDetail } from 'app/core/state/models';
+import { AddOption, FieldList,  ClassInstanceLabel, PeItDetail, PropertyField, SelectPropStateType, SubstoreComponent, TeEntDetail } from 'app/core/state/models';
 import { TypeDetail } from 'app/core/state/models/type-detail';
 import { createRoleSet, roleSetKey, StateSettings } from 'app/core/state/services/state-creator';
 import { RootEpics } from 'app/core/store/epics';
@@ -40,10 +40,10 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   @select() pkEntity$: Observable<number>
   @select() outgoingProperties$: Observable<DfhProperty[]>
   @select() ingoingProperties$: Observable<DfhProperty[]>
-  @select() ingoingRoleSets$?: RoleSet[];
-  @select() outgoingRoleSets$?: RoleSet[];
+  @select() ingoingRoleSets$?: PropertyField[];
+  @select() outgoingRoleSets$?: PropertyField[];
   @select() parentPeIt$: Observable<InfPersistentItem>;
-  @select() propertyToAdd$: Observable<RoleSet>; // Poperty that is currently chosen in order to add a role of this kind
+  @select() propertyToAdd$: Observable<PropertyField>; // Poperty that is currently chosen in order to add a role of this kind
   @select() _fields$: Observable<FieldList>;
   @select() _type$: Observable<TypeDetail>
   @select() pkUiContext$: Observable<number>
@@ -168,13 +168,13 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   /**
   * called, when user selected a the kind of property to add
   */
-  addRoleSet(propertyToAdd: RoleSet, roles: InfRole[], settings?: StateSettings) {
+  addRoleSet(propertyToAdd: PropertyField, roles: InfRole[], settings?: StateSettings) {
 
     // inits settings, adding default values, if not provided differently
     settings = new StateSettings(settings);
 
     const crm = this.ngRedux.getState().activeProject.crm;
-    const newRoleSet = createRoleSet(new RoleSet(propertyToAdd), roles, crm, settings);
+    const newRoleSet = createRoleSet(new PropertyField(propertyToAdd), roles, crm, settings);
 
 
     // add a form conrtol

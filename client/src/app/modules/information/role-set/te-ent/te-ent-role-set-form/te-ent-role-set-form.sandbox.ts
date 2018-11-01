@@ -2,11 +2,11 @@ import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
 import { Information2Module } from '../../../information.module';
-import { TeEntRoleSetFormComponent } from './te-ent-role-set-form.component';
+import { TeEntPropertyFieldFormComponent } from './te-ent-role-set-form.component';
 
 
 
-export default sandboxOf(TeEntRoleSetFormComponent, {
+export default sandboxOf(TeEntPropertyFieldFormComponent, {
     imports: [
         InitStateModule,
         Information2Module

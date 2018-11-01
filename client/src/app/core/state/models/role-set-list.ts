@@ -1,11 +1,10 @@
-import { RoleSet } from './role-set';
+import { PropertyField } from './role-set';
 
-export interface RoleSetListI { [key: string]: RoleSet }
 
-export class RoleSetList implements RoleSetListI {
-    [key: string]: RoleSet;
+export class PropertyFieldList  {
+    [key: string]: PropertyField;
 
-    constructor(data?: RoleSetListI) {
+    constructor(data?: PropertyFieldList) {
         Object.assign(this, data);
     }
 }

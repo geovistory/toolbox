@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { ClassConfig, U, UiElement } from 'app/core';
-import { AddOption, FieldList, RoleSetList, RoleSet } from 'app/core/state/models';
+import { AddOption, FieldList, PropertyFieldList, PropertyField } from 'app/core/state/models';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { propSetMap } from '../../data-unit/data-unit.base';

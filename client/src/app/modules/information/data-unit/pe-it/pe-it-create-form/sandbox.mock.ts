@@ -1,5 +1,5 @@
 import { DfhClass, DfhLabel, DfhProperty, InfRole, InfPersistentItem, InfTemporalEntity, InfEntityProjectRel, DfhPropertyInterface, InfRoleInterface, DfhClassInterface } from "app/core";
-import { PeItDetail, RoleDetail, RoleSet, FieldList } from "app/core/state/models";
+import { PeItDetail, RoleDetail, PropertyField, FieldList } from "app/core/state/models";
 import { DfhConfig } from "../../../shared/dfh-config";
 
 export const mockPerson: PeItDetail = {
@@ -14,7 +14,7 @@ export const mockPerson: PeItDetail = {
     ingoingRoleSets: [],
     outgoingRoleSets: [],
     _fields: {
-        _role_set_1: new  RoleSet({
+        _role_set_1: new  PropertyField({
             label: {
                 default: 'Names',
                 sg: 'Name',
@@ -47,7 +47,7 @@ export const mockPerson: PeItDetail = {
                             dfh_standard_label: "Appellation for language ",
                         } as DfhClass,
                         _fields: {
-                            _role_set_1: new  RoleSet({
+                            _role_set_1: new  PropertyField({
                                 label: {
                                     default: 'Detailed Name',
                                     sg: 'Detailed Name',

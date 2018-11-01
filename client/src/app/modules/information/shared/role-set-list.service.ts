@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject ,  Observable } from 'rxjs';
 
-import { RoleSet } from 'app/core/state/models';
+import { PropertyField } from 'app/core/state/models';
 import { ClassService } from './class.service';
 import { PropertyService } from './property.service';
 import { RoleService } from './role.service';
@@ -17,8 +17,8 @@ export class RoleSetListService {
   ) { }
 
   //TODO Remove this in favor to initFieldList
-  initChildren(fkClass$, roles$, state$): BehaviorSubject<{ roleSetsWithRoles: RoleSet[], ingoingRoleSets: RoleSet[], outgoingRoleSets: RoleSet[] }> {
-    const subject: BehaviorSubject<{ roleSetsWithRoles: RoleSet[], ingoingRoleSets: RoleSet[], outgoingRoleSets: RoleSet[] }> = new BehaviorSubject(null)
+  initChildren(fkClass$, roles$, state$): BehaviorSubject<{ roleSetsWithRoles: PropertyField[], ingoingRoleSets: PropertyField[], outgoingRoleSets: PropertyField[] }> {
+    const subject: BehaviorSubject<{ roleSetsWithRoles: PropertyField[], ingoingRoleSets: PropertyField[], outgoingRoleSets: PropertyField[] }> = new BehaviorSubject(null)
 
     fkClass$.subscribe(fkClass => {
       if (fkClass)
@@ -39,7 +39,7 @@ export class RoleSetListService {
           const outgoingRoleSets = U.infProperties2RoleSets(true, outgoingProperties)
 
           // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
-          const options = new RoleSet({ toggle: 'collapsed' })
+          const options = new PropertyField({ toggle: 'collapsed' })
           const roleSetsWithRoles = this.roleService.addRolesToRoleSets(roles, ingoingRoleSets, outgoingRoleSets, options)
 
           subject.next({ roleSetsWithRoles, ingoingRoleSets, outgoingRoleSets });

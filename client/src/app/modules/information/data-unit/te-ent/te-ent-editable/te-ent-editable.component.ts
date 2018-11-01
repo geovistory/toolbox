@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, IAppState, UiContext, UiElement, ProjectCrm } from 'app/core';
-import { AddOption, CollapsedExpanded, ExistenceTimeDetail, RoleDetail, RoleSet, RoleSetForm, TeEntAccentuation, TeEntDetail, FieldList } from 'app/core/state/models';
+import { AddOption, CollapsedExpanded, ExistenceTimeDetail, RoleDetail, PropertyField, PropertyFieldForm, TeEntAccentuation, TeEntDetail, FieldList } from 'app/core/state/models';
 import { createExistenceTimeDetail, getCreateOfEditableContext, StateSettings, similarRoleSet, roleSetKeyFromParams } from 'app/core/state/services/state-creator';
 import { Observable, Subject, combineLatest } from 'rxjs';
 import { RootEpics } from '../../../../../core/store/epics';
@@ -18,7 +18,7 @@ export function getTeEntAddOptions(
   fkClass$: Observable<number>,
   pkUiContext$: Observable<number>,
   crm$: Observable<ProjectCrm>,
-  parentRoleSet$: Observable<RoleSet>,
+  parentRoleSet$: Observable<PropertyField>,
   _fields$: Observable<FieldList>
 ): Observable<AddOption[]> {
   return combineLatest(fkClass$, pkUiContext$, crm$, parentRoleSet$, _fields$).pipe(
@@ -89,7 +89,7 @@ export class TeEntEditableComponent extends DataUnitBase {
    */
   showOntoInfo$: Observable<boolean>
   showCommunityStats$: Observable<boolean>
-  parentRoleSet$: Observable<RoleSet>
+  parentRoleSet$: Observable<PropertyField>
 
   /**
    * Class properties that filled by a store observable
@@ -163,7 +163,7 @@ export class TeEntEditableComponent extends DataUnitBase {
   initObservablesOutsideLocalStore() {
     this.showOntoInfo$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'showOntoInfo']);
 
-    this.parentRoleSet$ = this.ngRedux.select<RoleSet>(this.parentPath.slice(0, (this.parentPath.length - 2)));
+    this.parentRoleSet$ = this.ngRedux.select<PropertyField>(this.parentPath.slice(0, (this.parentPath.length - 2)));
 
   }
 
@@ -201,11 +201,11 @@ export class TeEntEditableComponent extends DataUnitBase {
         // prepare the RoleSet
 
         const newRoleSet = {
-          ...new RoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey]),
+          ...new PropertyField(this.classConfig.roleSets[o.uiElement.roleSetKey]),
           toggle: 'expanded' as CollapsedExpanded,
           rolesNotInProjectLoading: true,
           roleStatesInOtherProjectsVisible: false,
-          _role_set_form: new RoleSetForm()
+          _role_set_form: new PropertyFieldForm()
         }
 
         this.addRoleSet(newRoleSet, undefined)

@@ -2,12 +2,12 @@ import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
 import { Information2Module } from '../../../information.module';
-import { TeEntRoleSetAddCtrlComponent } from './te-ent-role-set-add-ctrl.component';
+import { TeEntPropertyFieldAddCtrlComponent } from './te-ent-role-set-add-ctrl.component';
 
 
 
 
-export default sandboxOf(TeEntRoleSetAddCtrlComponent, {
+export default sandboxOf(TeEntPropertyFieldAddCtrlComponent, {
     imports: [
         InitStateModule,
         Information2Module

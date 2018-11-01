@@ -1,34 +1,34 @@
 
 import { InfEntityProjectRel, U } from 'app/core';
-import { RoleDetailList, RoleSet } from 'app/core/state/models';
+import { RoleDetailList, PropertyField } from 'app/core/state/models';
 import { indexBy, omit, prop } from 'ramda';
 import { sortRoleDetailListByOrdNum } from '../information.helpers';
-import { RoleSetAction, RoleSetActions } from './role-set.actions';
+import { PropertyFieldAction, PropertyFieldActions } from './role-set.actions';
 
-const INITIAL_STATE = new RoleSet({
+const INITIAL_STATE = new PropertyField({
 
 });
 
 
-export const roleSetReducer =
-  (lastState: RoleSet = INITIAL_STATE, action: RoleSetAction): RoleSet => {
+export const propertyFieldReducer =
+  (lastState: PropertyField = INITIAL_STATE, action: PropertyFieldAction): PropertyField => {
 
     switch (action.type) {
-      case RoleSetActions.PROPERTY_LOADED:
+      case PropertyFieldActions.PROPERTY_LOADED:
         lastState = {
           ...lastState,
           property: action.payload.property
         };
         break;
 
-      case RoleSetActions.SET_TOGGLE:
+      case PropertyFieldActions.SET_TOGGLE:
         lastState = {
           ...lastState,
           toggle: action.payload.toggle
         };
         break;
 
-      case RoleSetActions.TOGGLE:
+      case PropertyFieldActions.TOGGLE:
         lastState = {
           ...lastState,
           toggle: lastState.toggle === 'expanded' ? 'collapsed' : 'expanded'
@@ -39,7 +39,7 @@ export const roleSetReducer =
       //   lastState = undefined
       //   break;
 
-      case RoleSetActions.START_ADDING_ROLE:
+      case PropertyFieldActions.START_ADDING_ROLE:
         lastState = {
           ...lastState,
           _role_set_form: {},
@@ -48,7 +48,7 @@ export const roleSetReducer =
         break;
 
 
-      case RoleSetActions.ALTERNATIVE_ROLES_LOADED:
+      case PropertyFieldActions.ALTERNATIVE_ROLES_LOADED:
         lastState = {
           ...lastState,
           rolesNotInProjectLoading: false,
@@ -61,7 +61,7 @@ export const roleSetReducer =
         }
         break;
 
-      case RoleSetActions.START_CREATE_NEW_ROLE:
+      case PropertyFieldActions.START_CREATE_NEW_ROLE:
         lastState = {
           ...lastState,
           rolesNotInProjectLoading: false,
@@ -74,9 +74,9 @@ export const roleSetReducer =
         }
         break;
 
-      case RoleSetActions.STOP_CREATE_NEW_ROLE:
+      case PropertyFieldActions.STOP_CREATE_NEW_ROLE:
         lastState = {
-          ...new RoleSet(omit(['_role_set_form'], lastState)),
+          ...new PropertyField(omit(['_role_set_form'], lastState)),
           roleStatesInOtherProjectsVisible: false,
         }
         break;
@@ -86,9 +86,9 @@ export const roleSetReducer =
        * Deprecated: This reducer will be replaced by ADD_ROLES_WITH_TE_ENT_SUCCEEDED and
        * ADD_ROLES_WITHOUT_TE_ENT_SUCCEEDED
        */
-      case RoleSetActions.ROLES_CREATED:
+      case PropertyFieldActions.ROLES_CREATED:
         lastState = {
-          ...new RoleSet(omit(['_role_set_form'], lastState)),
+          ...new PropertyField(omit(['_role_set_form'], lastState)),
           roleStatesInOtherProjectsVisible: false,
           _role_list: {
             ...lastState._role_list,
@@ -97,7 +97,7 @@ export const roleSetReducer =
         }
         break;
 
-      case RoleSetActions.ROLE_CREATION_CANCELLED:
+      case PropertyFieldActions.ROLE_CREATION_CANCELLED:
         lastState = {
           roleStatesInOtherProjectsVisible: false,
           ...lastState,
@@ -109,7 +109,7 @@ export const roleSetReducer =
         break;
 
 
-      case RoleSetActions.ROLE_REMOVED_FROM_PROJECT:
+      case PropertyFieldActions.ROLE_REMOVED_FROM_PROJECT:
 
         lastState = {
           ...lastState,
@@ -120,7 +120,7 @@ export const roleSetReducer =
 
 
 
-      case RoleSetActions.START_EDITING_ROLE:
+      case PropertyFieldActions.START_EDITING_ROLE:
         lastState = {
           ...lastState,
           _role_list: {
@@ -130,7 +130,7 @@ export const roleSetReducer =
         };
         break;
 
-      case RoleSetActions.STOP_EDITING_ROLE:
+      case PropertyFieldActions.STOP_EDITING_ROLE:
         lastState = {
           ...lastState,
           _role_list: {
@@ -140,7 +140,7 @@ export const roleSetReducer =
         };
         break;
 
-      case RoleSetActions.UPDATE_ROLE:
+      case PropertyFieldActions.UPDATE_ROLE:
         lastState = {
           ...lastState,
           _role_list: {
@@ -150,7 +150,7 @@ export const roleSetReducer =
         };
         break;
 
-      case RoleSetActions.ADD_ROLE_TO_ROLE_LIST:
+      case PropertyFieldActions.ADD_ROLE_TO_ROLE_LIST:
         lastState = {
           ...lastState,
           _role_list: {
@@ -160,7 +160,7 @@ export const roleSetReducer =
         };
         break;
 
-      case RoleSetActions.REMOVE_ROLE_FROM_ROLE_LIST:
+      case PropertyFieldActions.REMOVE_ROLE_FROM_ROLE_LIST:
         lastState = {
           ...lastState,
           _role_list: {
@@ -169,7 +169,7 @@ export const roleSetReducer =
         };
         break;
 
-      case RoleSetActions.ROLE_SET_UPDATE_ORDER_SUCCEEDED:
+      case PropertyFieldActions.ROLE_SET_UPDATE_ORDER_SUCCEEDED:
         // update the eprs of of the roles in _role_list
         const updateEprs = (list: RoleDetailList, eprs: InfEntityProjectRel[]): RoleDetailList => {
           const newVal: RoleDetailList = {}
@@ -200,14 +200,14 @@ export const roleSetReducer =
 
         break;
 
-      case RoleSetActions.ROLE_SET_ENABLE_DRAG:
+      case PropertyFieldActions.ROLE_SET_ENABLE_DRAG:
         lastState = {
           ...lastState,
           dragEnabled: true
         };
         break;
 
-      case RoleSetActions.ROLE_SET_DISABLE_DRAG:
+      case PropertyFieldActions.ROLE_SET_DISABLE_DRAG:
         lastState = {
           ...lastState,
           dragEnabled: false
@@ -218,16 +218,16 @@ export const roleSetReducer =
        * Add roles with teir teEnt (pi-roles)
        ************************************/
 
-      case RoleSetActions.ADD_ROLES_WITH_TE_ENT:
+      case PropertyFieldActions.ADD_ROLES_WITH_TE_ENT:
         lastState = {
           ...lastState,
           loading: true
         };
         break;
 
-      case RoleSetActions.ADD_ROLES_WITH_TE_ENT_SUCCEEDED:
+      case PropertyFieldActions.ADD_ROLES_WITH_TE_ENT_SUCCEEDED:
         lastState = {
-          ...new RoleSet(omit(['_role_set_form'], lastState)),
+          ...new PropertyField(omit(['_role_set_form'], lastState)),
           roleStatesInOtherProjectsVisible: false,
           loading: false,
           _role_list: {
@@ -237,7 +237,7 @@ export const roleSetReducer =
         }
         break;
 
-      case RoleSetActions.ADD_ROLES_WITH_TE_ENT_FAILED:
+      case PropertyFieldActions.ADD_ROLES_WITH_TE_ENT_FAILED:
         lastState = {
           ...lastState,
           loading: false
@@ -248,7 +248,7 @@ export const roleSetReducer =
       * Add roles without teEnt (te-roles)
       *************************************/
 
-      case RoleSetActions.ADD_ROLES_WITHOUT_TE_ENT:
+      case PropertyFieldActions.ADD_ROLES_WITHOUT_TE_ENT:
         lastState = {
           ...lastState,
           loading: true
@@ -256,9 +256,9 @@ export const roleSetReducer =
         break;
 
 
-      case RoleSetActions.ADD_ROLES_WITHOUT_TE_ENT_SUCCEEDED:
+      case PropertyFieldActions.ADD_ROLES_WITHOUT_TE_ENT_SUCCEEDED:
         lastState = {
-          ...new RoleSet(omit(['_role_set_form'], lastState)),
+          ...new PropertyField(omit(['_role_set_form'], lastState)),
           roleStatesInOtherProjectsVisible: false,
           loading: false,
           _role_list: {
@@ -268,7 +268,7 @@ export const roleSetReducer =
         }
         break;
 
-      case RoleSetActions.ADD_ROLES_WITHOUT_TE_ENT_FAILED:
+      case PropertyFieldActions.ADD_ROLES_WITHOUT_TE_ENT_FAILED:
         lastState = {
           ...lastState,
           loading: false

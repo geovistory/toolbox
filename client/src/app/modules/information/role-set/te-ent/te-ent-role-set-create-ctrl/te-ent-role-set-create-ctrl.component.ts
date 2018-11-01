@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Component, forwardRef, Input } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { IAppState, InfEntityProjectRelApi, InfRole, InfRoleApi } from 'app/core';
-import { RoleDetail, RoleSet, TeEntDetail } from 'app/core/state/models';
+import { RoleDetail, PropertyField, TeEntDetail } from 'app/core/state/models';
 import { StateSettings, createRoleDetail } from 'app/core/state/services/state-creator';
 import { Observable } from 'rxjs';
 import { RootEpics } from '../../../../../core/store/epics';
@@ -10,9 +10,9 @@ import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
-import { RoleSetCreateCtrlBase } from '../../role-set-create-ctrl.base';
-import { RoleSetActions } from '../../role-set.actions';
-import { RoleSetApiEpics } from '../../role-set.epics';
+import { PropertyFieldCreateCtrlBase } from '../../role-set-create-ctrl.base';
+import { PropertyFieldActions } from '../../role-set.actions';
+import { PropertyFieldApiEpics } from '../../role-set.epics';
 
 
 @Component({
@@ -25,12 +25,12 @@ import { RoleSetApiEpics } from '../../role-set.epics';
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => TeEntRoleSetCreateCtrlComponent),
+      useExisting: forwardRef(() => TeEntPropertyFieldCreateCtrlComponent),
       multi: true
     }
   ]
 })
-export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
+export class TeEntPropertyFieldCreateCtrlComponent extends PropertyFieldCreateCtrlBase {
 
 
   /**
@@ -47,18 +47,18 @@ export class TeEntRoleSetCreateCtrlComponent extends RoleSetCreateCtrlBase {
   showOntoInfo$: Observable<boolean>
   showCommunityStats$: Observable<boolean>
 
-  roleSetState: RoleSet;
+  roleSetState: PropertyField;
   parentTeEntState: TeEntDetail;
   parentRoleDetail: RoleDetail;
 
 
   constructor(
     protected rootEpics: RootEpics,
-    protected epics: RoleSetApiEpics,
+    protected epics: PropertyFieldApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
     public ngRedux: NgRedux<IAppState>,
-    protected actions: RoleSetActions,
+    protected actions: PropertyFieldActions,
     protected roleSetService: RoleSetService,
     protected roleStore: NgRedux<RoleDetail>,
     protected roleActions: RoleActions,

@@ -2,7 +2,7 @@ import { sandboxOf } from 'angular-playground';
 import { InfRole, Project, ProjectDetail } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
-import { RoleDetail, RoleSet } from 'app/core/state/models';
+import { RoleDetail, PropertyField } from 'app/core/state/models';
 import { Information2Module } from '../../../information.module';
 import { TeEntRoleCreateCtrlComponent } from './te-ent-role-create-ctrl.component';
 import { DfhConfig } from '../../../shared/dfh-config';
@@ -24,7 +24,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             parentPath: ['sandboxState', '_role_set_1'],
             index: '_role_1',
             sandboxState: {
-                _role_set_1: new RoleSet({
+                _role_set_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -108,7 +108,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             parentPath: ['sandboxState', '_role_set_1'],
             index: '_role_1',
             sandboxState: {
-                _role_set_1: new RoleSet({
+                _role_set_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -160,7 +160,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             parentPath: ['sandboxState', '_role_set_1'],
             index: '_role_1',
             sandboxState: {
-                _role_set_1: new RoleSet({
+                _role_set_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -212,7 +212,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             parentPath: ['sandboxState', '_role_set_1'],
             index: '_role_1',
             sandboxState: {
-                _role_set_1: new RoleSet({
+                _role_set_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -279,7 +279,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                     crm: crm,
                     pk_project: 12
                 },
-                _role_set_1: new RoleSet({
+                _role_set_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             targetClassPk: 21,
@@ -336,7 +336,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: new RoleSet({
+                _role_set_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             targetClassPk: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
@@ -393,7 +393,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: new RoleSet({
+                _role_set_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             targetClassPk: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
@@ -461,7 +461,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: new RoleSet({
+                _role_set_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             targetClassPk: 333,

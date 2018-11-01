@@ -1,10 +1,8 @@
-import { InfRole } from 'app/core/sdk';
 import { ExistenceTimeEdit } from './existence-time-edit';
-import { RoleSet } from './role-set';
-import { RoleSetList } from './role-set-list';
-import { CollapsedExpanded, FieldType } from './types';
 import { Field } from './field';
-
+import { PropertyField } from './role-set';
+import { PropertyFieldList } from './role-set-list';
+import { CollapsedExpanded } from './types';
 
 
 
@@ -12,7 +10,7 @@ export class ExistenceTimeDetail extends Field {
 
     readonly type? = 'ExistenceTimeDetail';
 
-    _fields?: RoleSetList;
+    _fields?: PropertyFieldList;
 
     // records
     roles?= [];
@@ -20,7 +18,7 @@ export class ExistenceTimeDetail extends Field {
     // gui
     pkUiContext?: number;
     toggle?= 'expanded' as CollapsedExpanded;
-    outgoingRoleSets?: RoleSet[];
+    outgoingRoleSets?: PropertyField[];
 
     // for edit (form that controls consistency between different time-roles)
     _existenceTime_edit?: ExistenceTimeEdit;

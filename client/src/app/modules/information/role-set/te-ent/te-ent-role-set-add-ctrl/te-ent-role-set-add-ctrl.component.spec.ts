@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TeEntRoleSetAddCtrlComponent } from './te-ent-role-set-add-ctrl.component';
+import { TeEntPropertyFieldAddCtrlComponent } from './te-ent-role-set-add-ctrl.component';
 
 describe('TeEntRoleSetAddCtrlComponent', () => {
-  let component: TeEntRoleSetAddCtrlComponent;
-  let fixture: ComponentFixture<TeEntRoleSetAddCtrlComponent>;
+  let component: TeEntPropertyFieldAddCtrlComponent;
+  let fixture: ComponentFixture<TeEntPropertyFieldAddCtrlComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TeEntRoleSetAddCtrlComponent ]
+      declarations: [ TeEntPropertyFieldAddCtrlComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TeEntRoleSetAddCtrlComponent);
+    fixture = TestBed.createComponent(TeEntPropertyFieldAddCtrlComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

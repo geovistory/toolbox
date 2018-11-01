@@ -2,7 +2,7 @@ import { ClassConfig } from 'app/core/active-project';
 import { InfEntityAssociation } from 'app/core/sdk';
 import { EntityAssociationList } from './entity-association-list';
 import { PeItDetail } from './pe-it-detail';
-import { RoleSet } from './role-set';
+import { PropertyField } from './role-set';
 
 
 export class EntityAssociationDetail {
@@ -14,7 +14,7 @@ export class EntityAssociationDetail {
 
     isOutgoing?: boolean;
 
-    propertyConfig?: RoleSet;
+    propertyConfig?: PropertyField;
     targetClassConfig?: ClassConfig;
 
     // list of alternatives or existing associations from other projects

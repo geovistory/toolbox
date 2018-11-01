@@ -6,9 +6,9 @@ import { equals } from 'ramda';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { RoleSet } from 'app/core/state/models';
-import { RoleSetActions, RoleSetAction } from './role-set.actions';
-import { RoleSetBase } from './role-set.base';
+import { PropertyField } from 'app/core/state/models';
+import { PropertyFieldActions, PropertyFieldAction } from './role-set.actions';
+import { PropertyFieldBase } from './role-set.base';
 import { Action } from 'redux';
 import { createRoleDetailList } from 'app/core/state/services/state-creator';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
@@ -21,16 +21,16 @@ const ofSubstore = (path: string[]) => (action): boolean => {
 }
 
 @Injectable()
-export class RoleSetApiEpics {
+export class PropertyFieldApiEpics {
     constructor(
         private eprApi: InfEntityProjectRelApi,
         private roleApi: InfRoleApi,
-        private actions: RoleSetActions,
+        private actions: PropertyFieldActions,
         private loadingBarActions: LoadingBarActions,
         private notificationActions: NotificationsAPIActions
     ) { }
 
-    public createEpics(c: RoleSetBase) {
+    public createEpics(c: PropertyFieldBase) {
         return combineEpics(
             this.createUpdateOrderEpic(c),
             this.listenToRoleListLength(c),
@@ -40,10 +40,10 @@ export class RoleSetApiEpics {
         );
     }
 
-    private createUpdateOrderEpic(c: RoleSetBase): Epic {
+    private createUpdateOrderEpic(c: PropertyFieldBase): Epic {
         return (action$, store) => {
             return action$.pipe(
-                ofType(RoleSetActions.ROLE_SET_UPDATE_ORDER),
+                ofType(PropertyFieldActions.ROLE_SET_UPDATE_ORDER),
                 filter(action => ofSubstore(c.basePath)(action)),
                 switchMap((action: FluxStandardAction<any, any>) => new Observable<LoadingBarAction>((globalStore) => {
                     globalStore.next(this.loadingBarActions.startLoading());
@@ -65,13 +65,13 @@ export class RoleSetApiEpics {
         }
     }
 
-    private listenToRoleListLength(c: RoleSetBase): Epic {
+    private listenToRoleListLength(c: PropertyFieldBase): Epic {
         return (action$, store) => {
             return action$.pipe(
                 ofType(
-                    RoleSetActions.REMOVE_ROLE_FROM_ROLE_LIST,
-                    RoleSetActions.ROLE_REMOVED_FROM_PROJECT,
-                    RoleSetActions.STOP_CREATE_NEW_ROLE
+                    PropertyFieldActions.REMOVE_ROLE_FROM_ROLE_LIST,
+                    PropertyFieldActions.ROLE_REMOVED_FROM_PROJECT,
+                    PropertyFieldActions.STOP_CREATE_NEW_ROLE
                 ),
                 filter(action => ofSubstore(c.basePath)(action)),
                 switchMap((action: FluxStandardAction<any, any>) => new Observable<LoadingBarAction>((globalStore) => {
@@ -87,15 +87,15 @@ export class RoleSetApiEpics {
     }
 
 
-    private createAddRolesWithTeEntEpic(c: RoleSetBase): Epic {
+    private createAddRolesWithTeEntEpic(c: PropertyFieldBase): Epic {
         return (action$, store) => {
             return action$.pipe(
                 /**
                  * Filter the actions that triggers this epic
                  */
-                ofType(RoleSetActions.ADD_ROLES_WITH_TE_ENT),
+                ofType(PropertyFieldActions.ADD_ROLES_WITH_TE_ENT),
                 filter(action => ofSubstore(c.basePath)(action)),
-                switchMap((action: RoleSetAction) => new Observable<Action>((globalStore) => {
+                switchMap((action: PropertyFieldAction) => new Observable<Action>((globalStore) => {
                     /**
                      * Emit the global action that activates the loading bar
                      */
@@ -116,7 +116,7 @@ export class RoleSetApiEpics {
                              * Emit the local action on loading succeeded
                              */
                             const roleDetailList = createRoleDetailList(
-                                new RoleSet(c.localStore.getState()),
+                                new PropertyField(c.localStore.getState()),
                                 roles,
                                 c.ngRedux.getState().activeProject.crm,
                                 { pkUiContext: c.localStore.getState().pkUiContext }
@@ -147,15 +147,15 @@ export class RoleSetApiEpics {
 
 
 
-    private createAddRolesWithoutTeEntEpic(c: RoleSetBase): Epic {
+    private createAddRolesWithoutTeEntEpic(c: PropertyFieldBase): Epic {
         return (action$, store) => {
             return action$.pipe(
                 /**
                  * Filter the actions that triggers this epic
                  */
-                ofType(RoleSetActions.ADD_ROLES_WITHOUT_TE_ENT),
+                ofType(PropertyFieldActions.ADD_ROLES_WITHOUT_TE_ENT),
                 filter(action => ofSubstore(c.basePath)(action)),
-                switchMap((action: RoleSetAction) => new Observable<Action>((globalStore) => {
+                switchMap((action: PropertyFieldAction) => new Observable<Action>((globalStore) => {
                     /**
                      * Emit the global action that activates the loading bar
                      */
@@ -176,7 +176,7 @@ export class RoleSetApiEpics {
                              * Emit the local action on loading succeeded
                              */
                             const roleDetailList = createRoleDetailList(
-                                new RoleSet(c.localStore.getState()),
+                                new PropertyField(c.localStore.getState()),
                                 roles,
                                 c.ngRedux.getState().activeProject.crm,
                                 { pkUiContext: c.localStore.getState().pkUiContext }

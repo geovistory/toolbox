@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { U, UiContext } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy } from 'ramda';
-import {  ClassInstanceLabel, RoleSet, DataUnit } from 'app/core/state/models';
+import {  ClassInstanceLabel, PropertyField, DataUnit } from 'app/core/state/models';
 import { roleSetKey } from 'app/core/state/services/state-creator';
 
 
@@ -81,7 +81,7 @@ export class DataUnitActions {
   * @param: roleSet to add
   * @param: uiContext of the class, used sort the _fields
   */
-  addRoleSet = (roleSet: RoleSet, uiContext: UiContext): DataUnitAction => ({
+  addRoleSet = (roleSet: PropertyField, uiContext: UiContext): DataUnitAction => ({
     type: DataUnitActions.ROLE_SET_ADDED,
     meta: {
       uiContext

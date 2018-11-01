@@ -6,7 +6,7 @@ import { AppellationLabel } from 'app/modules/information/shared/appellation-lab
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { clone, groupBy, indexBy, omit, prop, sort } from 'ramda';
 import * as Config from '../../../../../../common/config/Config';
-import { AppeDetail, FieldList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleDetailList, RoleSet, TeEntDetail, TimePrimitveDetail } from '../models';
+import { AppeDetail, FieldList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleDetailList, PropertyField, TeEntDetail, TimePrimitveDetail } from '../models';
 import { EntityAssociationDetail } from '../models/entity-association-detail';
 import { EntityAssociationList } from '../models/entity-association-list';
 import { TextPropertyDetail } from '../models/text-property-detail';
@@ -20,7 +20,7 @@ import { Field } from '../models/field';
 
 export class StateSettings {
     parentRolePk?: number;
-    parentRoleSet?: RoleSet;
+    parentRoleSet?: PropertyField;
 
     // If the provided pkUiContext points to a Create Context, the state creator
     // produces other states, made for *-create-crl.component.ts
@@ -266,7 +266,7 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
                     if (!similarRoleSet(roleSetDef, settings.parentRoleSet)) {
 
                         // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
-                        const options = new RoleSet({ toggle: 'expanded' })
+                        const options = new PropertyField({ toggle: 'expanded' })
                         const newRole = {
                             fk_property: el.fk_property,
                             entity_version_project_rels: [{
@@ -299,7 +299,7 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
                     // enrich RoleSet with roles and RoleDetails
 
                     // Generate roleSets (like e.g. the names-section, the birth-section or the detailed-name secition)
-                    const options = new RoleSet({ ...classConfig.roleSets[el.roleSetKey], toggle: 'expanded' })
+                    const options = new PropertyField({ ...classConfig.roleSets[el.roleSetKey], toggle: 'expanded' })
 
                     // if existing roles of this property
                     if (rolesByFkProp[el.fk_property]) {
@@ -349,7 +349,7 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
  * @param settings state settings object.
  * TODO: change the behavior with addMode to smthng more clever
  */
-export function createRoleSet(options: RoleSet, roles: InfRole[], crm: ProjectCrm, settings: StateSettings): RoleSet {
+export function createRoleSet(options: PropertyField, roles: InfRole[], crm: ProjectCrm, settings: StateSettings): PropertyField {
 
     if (!options.property) throw Error('Please provide options.property. This is important to add information about the target class of a RoleSet.');
 
@@ -371,7 +371,7 @@ export function createRoleSet(options: RoleSet, roles: InfRole[], crm: ProjectCr
 
     options = { ...options, isViewMode: settings.isViewMode, pkUiContext: settings.pkUiContext }
 
-    return new RoleSet({
+    return new PropertyField({
         ...options,
         targetClassPk: options.isOutgoing ? options.property.dfh_has_range : options.property.dfh_has_domain,
     });
@@ -390,7 +390,7 @@ export function createRoleSet(options: RoleSet, roles: InfRole[], crm: ProjectCr
  * @param crm is not used within the RoleSet but it is passed to RoleDetail.createState()
  * @param settings state settings object.
  */
-export function createRoleDetailList(options: RoleSet, roles: InfRole[], crm: ProjectCrm, settings: StateSettings): RoleDetailList {
+export function createRoleDetailList(options: PropertyField, roles: InfRole[], crm: ProjectCrm, settings: StateSettings): RoleDetailList {
     return createRoleSet(options, roles, crm, settings)._role_list;
 }
 
@@ -410,13 +410,13 @@ export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: I
 
     const rolesByFkProp = groupBy(prop('fk_property'), roles) as { [index: number]: InfRole[] };
     const rsts = clone(crm.classes[DfhConfig.ClASS_PK_TIME_SPAN].roleSets);
-    const fields: RoleSet[] = [];
+    const fields: PropertyField[] = [];
     const ext = new ExistenceTimeDetail()
 
 
     if (isCreateContext(settings.pkUiContext)) return ext;
 
-    U.obj2Arr(rsts).forEach((rs: RoleSet) => {
+    U.obj2Arr(rsts).forEach((rs: PropertyField) => {
 
 
         if (rolesByFkProp[rs.property.dfh_pk_property]) {
@@ -433,7 +433,7 @@ export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: I
             // }
 
             ext.roles = [...ext.roles, role]
-            fields.push(createRoleSet(new RoleSet(rs), [role], crm, settings));
+            fields.push(createRoleSet(new PropertyField(rs), [role], crm, settings));
         }
 
     })
@@ -736,7 +736,7 @@ export function createEntityAssociationDetail(options: EntityAssociationDetail =
  * @param crm is not used within the RoleSet but it is passed to EntityAssociation.createState()
  * @param settings state settings object.
  */
-export function createEntityAssociationList(options: RoleSet, eas: InfEntityAssociation[], crm: ProjectCrm, settings?: StateSettings): EntityAssociationList {
+export function createEntityAssociationList(options: PropertyField, eas: InfEntityAssociation[], crm: ProjectCrm, settings?: StateSettings): EntityAssociationList {
     settings = new StateSettings(settings);
     return indexBy((eaDetail) => ('' + eaDetail.entityAssociation.pk_entity), eas.map(ea => createEntityAssociationDetail(options, ea, crm, settings)))
 }
@@ -819,7 +819,7 @@ export function fieldKey(field: Field): string {
 
     switch (field.type) {
         case 'RoleSet':
-            return roleSetKey(field as RoleSet);
+            return roleSetKey(field as PropertyField);
 
         case 'ExistenceTimeDetail':
             return '_existenceTime';
@@ -856,7 +856,7 @@ export function textPropertyDetailKey(txtPropDetail: TextPropertyDetail) { retur
  *
  * @param roleSet
  */
-export function roleSetKey(roleSet: RoleSet) {
+export function roleSetKey(roleSet: PropertyField) {
     return roleSetKeyFromParams(roleSet.property.dfh_pk_property, roleSet.isOutgoing)
 }
 export function roleSetKeyFromParams(fkProp: number, isOutgoing: boolean) {
@@ -880,7 +880,7 @@ export const pkEntityKey = (entity) => ('_' + entity.pk_entity);
  * @param a RoleSet you want to test if it is circular
  * @param b RoleSet to compare with (typically the parent RoleSet in the tree)
  */
-export function similarRoleSet(a: RoleSet, b: RoleSet): boolean {
+export function similarRoleSet(a: PropertyField, b: PropertyField): boolean {
     if (!a || !b) return false;
 
     if (

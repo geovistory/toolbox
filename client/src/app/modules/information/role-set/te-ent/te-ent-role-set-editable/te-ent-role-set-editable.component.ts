@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { IAppState, InfEntityProjectRelApi, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
-import { RoleDetail, RoleDetailList, RoleSet, TeEntDetail } from 'app/core/state/models';
+import { RoleDetail, RoleDetailList, PropertyField, TeEntDetail } from 'app/core/state/models';
 import { getCreateOfEditableContext, StateSettings, createRoleDetail, createRoleDetailList } from 'app/core/state/services/state-creator';
 import { RootEpics } from 'app/core/store/epics';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -12,10 +12,10 @@ import { RoleActions } from '../../../role/role.actions';
 import { slideInOut } from '../../../shared/animations';
 import { ClassService } from '../../../shared/class.service';
 import { RoleSetService } from '../../../shared/role-set.service';
-import { RoleSetActions } from '../../role-set.actions';
-import { RoleSetBase } from '../../role-set.base';
-import { RoleSetApiEpics } from '../../role-set.epics';
-import { roleSetReducer } from '../../role-set.reducer';
+import { PropertyFieldActions } from '../../role-set.actions';
+import { PropertyFieldBase } from '../../role-set.base';
+import { PropertyFieldApiEpics } from '../../role-set.epics';
+import { propertyFieldReducer } from '../../role-set.reducer';
 
 
 @AutoUnsubscribe({
@@ -28,14 +28,14 @@ import { roleSetReducer } from '../../role-set.reducer';
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TeEntRoleSetEditableComponent extends RoleSetBase {
+export class TeEntPropertyFieldEditableComponent extends PropertyFieldBase {
 
   /**
     * Paths to other slices of the store
     */
   @Input() parentTeEntStatePath: string[];
   parentPeItStatePath: string[];
-  peItRoleSetStore: ObservableStore<RoleSet>;
+  peItRoleSetStore: ObservableStore<PropertyField>;
 
   parentRoleDetailPath: string[]
 
@@ -45,18 +45,18 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
   showOntoInfo$: Observable<boolean>
   showCommunityStats$: Observable<boolean>
 
-  roleSetState: RoleSet;
+  roleSetState: PropertyField;
   parentTeEntState: TeEntDetail;
   parentRoleDetail: RoleDetail;
 
 
   constructor(
     protected rootEpics: RootEpics,
-    protected epics: RoleSetApiEpics,
+    protected epics: PropertyFieldApiEpics,
     protected eprApi: InfEntityProjectRelApi,
     protected roleApi: InfRoleApi,
     public ngRedux: NgRedux<IAppState>,
-    protected actions: RoleSetActions,
+    protected actions: PropertyFieldActions,
     protected roleSetService: RoleSetService,
     protected roleStore: NgRedux<RoleDetail>,
     protected roleActions: RoleActions,
@@ -89,7 +89,7 @@ export class TeEntRoleSetEditableComponent extends RoleSetBase {
     // ['information', '_peIt_editable', '_fields', '_1_ingoing', ]
     this.parentRoleDetailPath = this.parentPath.slice(0, (this.parentPath.length - 3));
 
-    this.peItRoleSetStore = this.ngRedux.configureSubStore(dropLast(3, this.parentPath), roleSetReducer)
+    this.peItRoleSetStore = this.ngRedux.configureSubStore(dropLast(3, this.parentPath), propertyFieldReducer)
 
   }
 

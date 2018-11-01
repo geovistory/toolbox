@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { ComConfig, InfRole, InfTemporalEntity, U, UiContext, AddOption, RoleSet, ExistenceTimeDetail } from 'app/core';
+import { ComConfig, InfRole, InfTemporalEntity, U, UiContext, AddOption, PropertyField, ExistenceTimeDetail } from 'app/core';
 import { pick } from 'ramda';
 import { TeEntCtrlBase } from '../te-ent-ctrl.base';
 import { TeEntActions } from '../te-ent.actions';
@@ -126,7 +126,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
         // if this is a role set
 
         // prepare the RoleSet
-        const newRoleSet = new RoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey]);
+        const newRoleSet = new PropertyField(this.classConfig.roleSets[o.uiElement.roleSetKey]);
 
         // prepare the new role
         const newRole = {
@@ -137,7 +137,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
         } as InfRole;
 
 
-        this.addRoleSet(new RoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey]), [newRole], { pkUiContext: this.localStore.getState().pkUiContext })
+        this.addRoleSet(new PropertyField(this.classConfig.roleSets[o.uiElement.roleSetKey]), [newRole], { pkUiContext: this.localStore.getState().pkUiContext })
 
       } else if (o.uiElement.fk_class_field) {
 
