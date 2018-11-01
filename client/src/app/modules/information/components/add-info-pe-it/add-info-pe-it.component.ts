@@ -6,7 +6,7 @@ import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators'
 
 import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
 import { AddOption, FieldList, PropertyFieldList, PropertyField } from 'app/core/state/models';
-import { roleSetKeyFromParams, similarRoleSet } from 'app/core/state/services/state-creator';
+import { propertyFieldKeyFromParams, similarPropertyField } from 'app/core/state/services/state-creator';
 
 interface PeItAddOption extends AddOption {
   label: string; // concatenation of all strings, used for search
@@ -25,7 +25,7 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
 
   @Input() uiElements: UiElement[];
   @Input() classConfig: ClassConfig;
-  @Input() excludeRoleSet: PropertyFieldList;
+  @Input() excludePropertyField: PropertyFieldList;
   @Input() addedChildren$: Observable<FieldList>;
 
   @Output() addOptionSelected = new EventEmitter<any>();
@@ -54,18 +54,18 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
       this.addOptions = this.uiElements.map(el => {
         if (
           children && el.fk_property
-          // && !children[el.roleSetKey]
-          && !similarRoleSet(this.classConfig.roleSets[el.roleSetKey], this.excludeRoleSet)
+          // && !children[el.propertyFieldKey]
+          && !similarPropertyField(this.classConfig.propertyFields[el.propertyFieldKey], this.excludePropertyField)
         ) {
 
-          const level1RoleSet = this.classConfig.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
-          const level1propLabel = level1RoleSet.label.default;
-          const cla = crm.classes[level1RoleSet.targetClassPk];
+          const level1PropertyField = this.classConfig.propertyFields[propertyFieldKeyFromParams(el.fk_property, el.property_is_outgoing)]
+          const level1propLabel = level1PropertyField.label.default;
+          const cla = crm.classes[level1PropertyField.targetClassPk];
           const classLabel = cla.label;
           const level2propsLabels = cla.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE].uiElements.map(uiEle => {
-            if (uiEle.roleSetKey) {
-              const rs = crm.roleSets[uiEle.roleSetKey];
-              if (!similarRoleSet(level1RoleSet, rs)) return rs.label.default
+            if (uiEle.propertyFieldKey) {
+              const rs = crm.propertyFields[uiEle.propertyFieldKey];
+              if (!similarPropertyField(level1PropertyField, rs)) return rs.label.default
             } else if (uiEle.propSetKey) {
               return uiEle.class_field.label;
             }
@@ -76,7 +76,7 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
             level1propLabel,
             classLabel,
             level2propsLabels,
-            added: children[el.roleSetKey] ? true : false,
+            added: children[el.propertyFieldKey] ? true : false,
             uiElement: el
           }
 

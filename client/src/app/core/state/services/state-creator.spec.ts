@@ -1,4 +1,4 @@
-import { createRoleDetail, createRoleSet, createPlaceDetail, createTimePrimitveDetail, createAppeDetail, createLangDetail, createFieldList, createPeItDetail, createEntityAssociationDetail } from './state-creator';
+import { createRoleDetail, createPropertyField, createPlaceDetail, createTimePrimitveDetail, createAppeDetail, createLangDetail, createFieldList, createPeItDetail, createEntityAssociationDetail } from './state-creator';
 import { roleWithPlace, place, roleWithLanguage, language, roleWithAppellation, appellation, roleWithTimePrimitive, time_primitive, role, roleWithTemporalEntity, temporal_entity, property, temporalEntityBirth } from './_mock-data';
 import { crm } from 'app/core/active-project/_mock-data';
 import { PropertyField, ExistenceTimeDetail, FieldList } from 'app/core/state/models';
@@ -57,11 +57,11 @@ describe('StateCreator', () => {
     });
 
     /***************************************************
-     * createRoleSet specs
+     * createPropertyField specs
      ***************************************************/
 
-    it('#createRoleSet should return a RoleSet with _role_list of that contains a RoleDetail with the right key', () => {
-        expect(createRoleSet(new PropertyField({ isOutgoing: true, property }), [role], crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE })._role_list['_1'].isOutgoing).toBe(true)
+    it('#createPropertyField should return a PropertyField with _role_list of that contains a RoleDetail with the right key', () => {
+        expect(createPropertyField(new PropertyField({ isOutgoing: true, property }), [role], crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE })._role_list['_1'].isOutgoing).toBe(true)
     });
 
     /***************************************************

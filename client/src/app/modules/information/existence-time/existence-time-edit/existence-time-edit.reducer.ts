@@ -30,12 +30,12 @@ export const existenceTimeEditReducer =
                 break;
 
             case ExTimeEditActions.EX_TIME_ROLESET_REMOVED:
-                let newRoleSets = Object.assign({}, lastState._fields);
-                delete newRoleSets[action.meta.key];
+                let newPropertyFields = Object.assign({}, lastState._fields);
+                delete newPropertyFields[action.meta.key];
 
                 lastState = {
                     ...lastState,
-                    _fields: newRoleSets
+                    _fields: newPropertyFields
                 }
                 break;
         }

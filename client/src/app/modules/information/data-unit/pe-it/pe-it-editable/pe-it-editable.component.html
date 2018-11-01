@@ -121,13 +121,13 @@
 
         <!-- Isolated Property -->
         <div *ngIf="isolatedChild">
-          <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="isolatedChild"></gv-pe-it-role-set-editable>
+          <gv-pe-it-property-field-editable [parentPath]="basePath" [index]="isolatedChild"></gv-pe-it-property-field-editable>
         </div>
 
         <!-- List of Properties -->
         <div *ngIf="!isolatedChild">
           <div *ngFor="let item of (_fields$ | async) | keys; trackBy:getKey">
-            <gv-pe-it-role-set-editable [parentPath]="basePath" [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-pe-it-role-set-editable>
+            <gv-pe-it-property-field-editable [parentPath]="basePath" [index]="item.key" (onRemovePropertyField)="removePropertyField(item.key)"></gv-pe-it-property-field-editable>
           </div>
         </div>
 

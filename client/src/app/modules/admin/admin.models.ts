@@ -36,7 +36,7 @@ export class Container {
 
 export class Widget {
     constructor(
-        public name: string, public metaInfo: string, public roleSet: PropertyField,
+        public name: string, public metaInfo: string, public propertyField: PropertyField,
         public propSet: ComClassField, public uiContextConfig: ComUiContextConfig,
         public profiles: DfhPropertyProfileView[]
     ) { }

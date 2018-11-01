@@ -34,7 +34,7 @@ export class ExTimeEditActions {
     })
 
 
-    @dispatch() roleSetAdded = (_fields: PropertyFieldList): ExTimeEditAction => ({
+    @dispatch() propertyFieldAdded = (_fields: PropertyFieldList): ExTimeEditAction => ({
         type: ExTimeEditActions.EX_TIME_ROLESET_ADDED,
         meta: null,
         payload: new ExistenceTimeEdit({
@@ -42,7 +42,7 @@ export class ExTimeEditActions {
         })
     })
 
-    @dispatch() roleSetRemoved = (key: string): ExTimeEditAction => ({
+    @dispatch() propertyFieldRemoved = (key: string): ExTimeEditAction => ({
         type: ExTimeEditActions.EX_TIME_ROLESET_REMOVED,
         meta: { key },
         payload: null

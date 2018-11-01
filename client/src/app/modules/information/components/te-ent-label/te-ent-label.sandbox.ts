@@ -15,14 +15,14 @@ const classConfigAppellationForLanguage = {
                     ord_num: 0,
                     fk_property: 1113,
                     property_is_outgoing: true,
-                    roleSetKey: '_1113_outgoing',
+                    propertyFieldKey: '_1113_outgoing',
                     fk_class_field: null
                 },
                 {
                     ord_num: 1,
                     fk_property: 1112,
                     property_is_outgoing: true,
-                    roleSetKey: '_1112_outgoing',
+                    propertyFieldKey: '_1112_outgoing',
                     fk_class_field: null
                 },
                 {
@@ -46,15 +46,15 @@ const classConfigAppellationForLanguage = {
                     ord_num: 0,
                     fk_property: 1113,
                     property_is_outgoing: true,
-                    roleSetKey: '_1113_outgoing',
+                    propertyFieldKey: '_1113_outgoing',
                     fk_class_field: null
                 }
             ]
         }
     },
-    roleSets: {
+    propertyFields: {
         _1113_outgoing: {
-            type: 'RoleSet',
+            type: 'PropertyField',
             isOutgoing: true,
             property: {
                 dfh_pk_property: 1113,
@@ -99,7 +99,7 @@ const classConfigAppellationForLanguage = {
             }
         },
         _1192_outgoing: {
-            type: 'RoleSet',
+            type: 'PropertyField',
             isOutgoing: true,
             property: {
                 dfh_pk_property: 1192,
@@ -144,7 +144,7 @@ const classConfigAppellationForLanguage = {
             }
         },
         _1193_outgoing: {
-            type: 'RoleSet',
+            type: 'PropertyField',
             isOutgoing: true,
             property: {
                 dfh_pk_property: 1193,
@@ -189,7 +189,7 @@ const classConfigAppellationForLanguage = {
             }
         },
         _1194_outgoing: {
-            type: 'RoleSet',
+            type: 'PropertyField',
             isOutgoing: true,
             property: {
                 dfh_pk_property: 1194,
@@ -234,7 +234,7 @@ const classConfigAppellationForLanguage = {
             }
         },
         _1195_outgoing: {
-            type: 'RoleSet',
+            type: 'PropertyField',
             isOutgoing: true,
             property: {
                 dfh_pk_property: 1195,
@@ -279,7 +279,7 @@ const classConfigAppellationForLanguage = {
             }
         },
         _1112_outgoing: {
-            type: 'RoleSet',
+            type: 'PropertyField',
             isOutgoing: true,
             property: {
                 dfh_pk_property: 1112,
@@ -324,7 +324,7 @@ const classConfigAppellationForLanguage = {
             }
         },
         _1200_outgoing: {
-            type: 'RoleSet',
+            type: 'PropertyField',
             isOutgoing: true,
             property: {
                 dfh_pk_property: 1200,
@@ -348,7 +348,7 @@ const classConfigAppellationForLanguage = {
             }
         },
         _1201_outgoing: {
-            type: 'RoleSet',
+            type: 'PropertyField',
             isOutgoing: true,
             property: {
                 dfh_pk_property: 1201,
@@ -372,7 +372,7 @@ const classConfigAppellationForLanguage = {
             }
         },
         _1202_outgoing: {
-            type: 'RoleSet',
+            type: 'PropertyField',
             isOutgoing: true,
             property: {
                 dfh_pk_property: 1202,
@@ -401,7 +401,7 @@ const classConfigAppellationForLanguage = {
 
 const _fieldsOfAppellationForLanguage = {
     _1113_outgoing: {
-        type: 'RoleSet',
+        type: 'PropertyField',
         _role_list: {
             _40843: {
                 role: {
@@ -624,7 +624,7 @@ const _fieldsOfAppellationForLanguage = {
         dragEnabled: false
     },
     _1112_outgoing: {
-        type: 'RoleSet',
+        type: 'PropertyField',
         _role_list: {
             _45098: {
                 role: {
@@ -806,7 +806,7 @@ const _fieldsOfAppellationForLanguage = {
         ],
         _fields: {
             _150_outgoing: {
-                type: 'RoleSet',
+                type: 'PropertyField',
                 _role_list: {
                     _80493: {
                         role: {
@@ -881,7 +881,7 @@ const _fieldsOfAppellationForLanguage = {
                 }
             },
             _151_outgoing: {
-                type: 'RoleSet',
+                type: 'PropertyField',
                 _role_list: {
                     _80494: {
                         role: {

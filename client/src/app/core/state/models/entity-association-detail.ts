@@ -2,7 +2,7 @@ import { ClassConfig } from 'app/core/active-project';
 import { InfEntityAssociation } from 'app/core/sdk';
 import { EntityAssociationList } from './entity-association-list';
 import { PeItDetail } from './pe-it-detail';
-import { PropertyField } from './role-set';
+import { PropertyField } from './property-field';
 
 
 export class EntityAssociationDetail {

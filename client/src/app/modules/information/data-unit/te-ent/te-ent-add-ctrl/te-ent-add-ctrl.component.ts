@@ -53,13 +53,13 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
   initFormCtrls(): void {
     if (this.localStore.getState()) {
 
-      // add controls for each roleSet of _fields
-      const roleSetList = this.localStore.getState()._fields;
+      // add controls for each propertyField of _fields
+      const propertyFieldList = this.localStore.getState()._fields;
 
-      // this.subs.push(this._fields$.subscribe(roleSetList => {
-      if (roleSetList) {
-        Object.keys(roleSetList).forEach((key) => {
-          if (roleSetList[key]) {
+      // this.subs.push(this._fields$.subscribe(propertyFieldList => {
+      if (propertyFieldList) {
+        Object.keys(propertyFieldList).forEach((key) => {
+          if (propertyFieldList[key]) {
 
             this.formGroup.addControl(key, new FormControl(null, [Validators.required]))
           }
@@ -121,13 +121,13 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
   initFormCtrlValues() {
     if (this.localStore.getState()) {
 
-      // add values to controls for each roleSet of _fields
-      const roleSetList = this.localStore.getState()._fields;
+      // add values to controls for each propertyField of _fields
+      const propertyFieldList = this.localStore.getState()._fields;
 
-      if (roleSetList) {
-        Object.keys(roleSetList).forEach((key) => {
-          if (roleSetList[key]) {
-            this.formGroup.get(key).setValue(roleSetList[key].roles)
+      if (propertyFieldList) {
+        Object.keys(propertyFieldList).forEach((key) => {
+          if (propertyFieldList[key]) {
+            this.formGroup.get(key).setValue(propertyFieldList[key].roles)
           }
         })
       }

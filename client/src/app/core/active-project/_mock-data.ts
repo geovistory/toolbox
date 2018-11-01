@@ -16,56 +16,56 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1192,
               property_is_outgoing: false,
-              roleSetKey: '_1192_ingoing',
+              propertyFieldKey: '_1192_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 86,
               property_is_outgoing: false,
-              roleSetKey: '_86_ingoing',
+              propertyFieldKey: '_86_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 88,
               property_is_outgoing: false,
-              roleSetKey: '_88_ingoing',
+              propertyFieldKey: '_88_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 3,
               fk_property: 1180,
               property_is_outgoing: false,
-              roleSetKey: '_1180_ingoing',
+              propertyFieldKey: '_1180_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 4,
               fk_property: 1188,
               property_is_outgoing: false,
-              roleSetKey: '_1188_ingoing',
+              propertyFieldKey: '_1188_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 5,
               fk_property: 84,
               property_is_outgoing: false,
-              roleSetKey: '_84_ingoing',
+              propertyFieldKey: '_84_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 6,
               fk_property: 85,
               property_is_outgoing: false,
-              roleSetKey: '_85_ingoing',
+              propertyFieldKey: '_85_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 7,
               fk_property: 1196,
               property_is_outgoing: false,
-              roleSetKey: '_1196_ingoing',
+              propertyFieldKey: '_1196_ingoing',
               fk_class_field: null
             }
           ]
@@ -77,7 +77,7 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1192,
               property_is_outgoing: false,
-              roleSetKey: '_1192_ingoing',
+              propertyFieldKey: '_1192_ingoing',
               fk_class_field: null
             }
           ]
@@ -89,35 +89,35 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1192,
               property_is_outgoing: false,
-              roleSetKey: '_1192_ingoing',
+              propertyFieldKey: '_1192_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 88,
               property_is_outgoing: false,
-              roleSetKey: '_88_ingoing',
+              propertyFieldKey: '_88_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 86,
               property_is_outgoing: false,
-              roleSetKey: '_86_ingoing',
+              propertyFieldKey: '_86_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 3,
               fk_property: 85,
               property_is_outgoing: false,
-              roleSetKey: '_85_ingoing',
+              propertyFieldKey: '_85_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 4,
               fk_property: 84,
               property_is_outgoing: false,
-              roleSetKey: '_84_ingoing',
+              propertyFieldKey: '_84_ingoing',
               fk_class_field: null
             }
           ]
@@ -129,7 +129,7 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1192,
               property_is_outgoing: false,
-              roleSetKey: '_1192_ingoing',
+              propertyFieldKey: '_1192_ingoing',
               fk_class_field: null
             }
           ]
@@ -141,15 +141,15 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1188,
               property_is_outgoing: false,
-              roleSetKey: '_1188_ingoing',
+              propertyFieldKey: '_1188_ingoing',
               fk_class_field: null
             }
           ]
         }
       },
-      roleSets: {
+      propertyFields: {
         _1192_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -218,7 +218,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1188_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -267,7 +267,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1196_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -306,7 +306,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1180_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -345,7 +345,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1198_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -373,7 +373,7 @@ export const crm: ProjectCrm = {
           }
         },
         _84_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -422,7 +422,7 @@ export const crm: ProjectCrm = {
           }
         },
         _88_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -471,7 +471,7 @@ export const crm: ProjectCrm = {
           }
         },
         _85_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -520,7 +520,7 @@ export const crm: ProjectCrm = {
           }
         },
         _140_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -548,7 +548,7 @@ export const crm: ProjectCrm = {
           }
         },
         _86_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -597,7 +597,7 @@ export const crm: ProjectCrm = {
           }
         },
         _140_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -632,9 +632,9 @@ export const crm: ProjectCrm = {
       dfh_identifier_in_namespace: 'E52',
       dfh_pk_class: 50,
       uiContexts: {},
-      roleSets: {
+      propertyFields: {
         _4_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -662,7 +662,7 @@ export const crm: ProjectCrm = {
           }
         },
         _75_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -690,7 +690,7 @@ export const crm: ProjectCrm = {
           }
         },
         _143_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -718,7 +718,7 @@ export const crm: ProjectCrm = {
           }
         },
         _145_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -746,7 +746,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1008_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -774,7 +774,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1059_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -802,7 +802,7 @@ export const crm: ProjectCrm = {
           }
         },
         _68_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -830,7 +830,7 @@ export const crm: ProjectCrm = {
           }
         },
         _69_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -858,7 +858,7 @@ export const crm: ProjectCrm = {
           }
         },
         _70_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -886,7 +886,7 @@ export const crm: ProjectCrm = {
           }
         },
         _71_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -914,7 +914,7 @@ export const crm: ProjectCrm = {
           }
         },
         _72_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -942,7 +942,7 @@ export const crm: ProjectCrm = {
           }
         },
         _73_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -970,7 +970,7 @@ export const crm: ProjectCrm = {
           }
         },
         _74_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -998,7 +998,7 @@ export const crm: ProjectCrm = {
           }
         },
         _75_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1026,7 +1026,7 @@ export const crm: ProjectCrm = {
           }
         },
         _150_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1054,7 +1054,7 @@ export const crm: ProjectCrm = {
           }
         },
         _151_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1082,7 +1082,7 @@ export const crm: ProjectCrm = {
           }
         },
         _152_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1110,7 +1110,7 @@ export const crm: ProjectCrm = {
           }
         },
         _153_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1165,14 +1165,14 @@ export const crm: ProjectCrm = {
               ord_num: 1,
               fk_property: 83,
               property_is_outgoing: true,
-              roleSetKey: '_83_outgoing',
+              propertyFieldKey: '_83_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 139,
               property_is_outgoing: true,
-              roleSetKey: '_139_outgoing',
+              propertyFieldKey: '_139_outgoing',
               fk_class_field: null
             }
           ]
@@ -1199,9 +1199,9 @@ export const crm: ProjectCrm = {
           uiElements: []
         }
       },
-      roleSets: {
+      propertyFields: {
         _83_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1250,7 +1250,7 @@ export const crm: ProjectCrm = {
           }
         },
         _139_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1326,35 +1326,35 @@ export const crm: ProjectCrm = {
               ord_num: 1,
               fk_property: 86,
               property_is_outgoing: true,
-              roleSetKey: '_86_outgoing',
+              propertyFieldKey: '_86_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 84,
               property_is_outgoing: true,
-              roleSetKey: '_84_outgoing',
+              propertyFieldKey: '_84_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 3,
               fk_property: 85,
               property_is_outgoing: true,
-              roleSetKey: '_85_outgoing',
+              propertyFieldKey: '_85_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 4,
               fk_property: 1186,
               property_is_outgoing: true,
-              roleSetKey: '_1186_outgoing',
+              propertyFieldKey: '_1186_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 5,
               fk_property: 1187,
               property_is_outgoing: true,
-              roleSetKey: '_1187_outgoing',
+              propertyFieldKey: '_1187_outgoing',
               fk_class_field: null
             }
           ]
@@ -1378,7 +1378,7 @@ export const crm: ProjectCrm = {
               ord_num: 1,
               fk_property: 86,
               property_is_outgoing: true,
-              roleSetKey: '_86_outgoing',
+              propertyFieldKey: '_86_outgoing',
               fk_class_field: null
             }
           ]
@@ -1390,35 +1390,35 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 86,
               property_is_outgoing: true,
-              roleSetKey: '_86_outgoing',
+              propertyFieldKey: '_86_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1187,
               property_is_outgoing: true,
-              roleSetKey: '_1187_outgoing',
+              propertyFieldKey: '_1187_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 1186,
               property_is_outgoing: true,
-              roleSetKey: '_1186_outgoing',
+              propertyFieldKey: '_1186_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 3,
               fk_property: 85,
               property_is_outgoing: true,
-              roleSetKey: '_85_outgoing',
+              propertyFieldKey: '_85_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 4,
               fk_property: 84,
               property_is_outgoing: true,
-              roleSetKey: '_84_outgoing',
+              propertyFieldKey: '_84_outgoing',
               fk_class_field: null
             },
             {
@@ -1436,9 +1436,9 @@ export const crm: ProjectCrm = {
           ]
         }
       },
-      roleSets: {
+      propertyFields: {
         _1043_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1466,7 +1466,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1186_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1515,7 +1515,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1187_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1564,7 +1564,7 @@ export const crm: ProjectCrm = {
           }
         },
         _84_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1613,7 +1613,7 @@ export const crm: ProjectCrm = {
           }
         },
         _85_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1662,7 +1662,7 @@ export const crm: ProjectCrm = {
           }
         },
         _86_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1748,14 +1748,14 @@ export const crm: ProjectCrm = {
               ord_num: 1,
               fk_property: 88,
               property_is_outgoing: true,
-              roleSetKey: '_88_outgoing',
+              propertyFieldKey: '_88_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 1191,
               property_is_outgoing: true,
-              roleSetKey: '_1191_outgoing',
+              propertyFieldKey: '_1191_outgoing',
               fk_class_field: null
             }
           ]
@@ -1784,14 +1784,14 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1191,
               property_is_outgoing: true,
-              roleSetKey: '_1191_outgoing',
+              propertyFieldKey: '_1191_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 88,
               property_is_outgoing: true,
-              roleSetKey: '_88_outgoing',
+              propertyFieldKey: '_88_outgoing',
               fk_class_field: null
             },
             {
@@ -1809,9 +1809,9 @@ export const crm: ProjectCrm = {
           ]
         }
       },
-      roleSets: {
+      propertyFields: {
         _1044_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1850,7 +1850,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1191_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1899,7 +1899,7 @@ export const crm: ProjectCrm = {
           }
         },
         _88_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -1963,56 +1963,56 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1193,
               property_is_outgoing: false,
-              roleSetKey: '_1193_ingoing',
+              propertyFieldKey: '_1193_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 83,
               property_is_outgoing: false,
-              roleSetKey: '_83_ingoing',
+              propertyFieldKey: '_83_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 87,
               property_is_outgoing: false,
-              roleSetKey: '_87_ingoing',
+              propertyFieldKey: '_87_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 3,
               fk_property: 1182,
               property_is_outgoing: false,
-              roleSetKey: '_1182_ingoing',
+              propertyFieldKey: '_1182_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 4,
               fk_property: 1189,
               property_is_outgoing: false,
-              roleSetKey: '_1189_ingoing',
+              propertyFieldKey: '_1189_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 5,
               fk_property: 132,
               property_is_outgoing: false,
-              roleSetKey: '_132_ingoing',
+              propertyFieldKey: '_132_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 6,
               fk_property: 134,
               property_is_outgoing: false,
-              roleSetKey: '_134_ingoing',
+              propertyFieldKey: '_134_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 7,
               fk_property: 139,
               property_is_outgoing: false,
-              roleSetKey: '_139_ingoing',
+              propertyFieldKey: '_139_ingoing',
               fk_class_field: null
             }
           ]
@@ -2024,15 +2024,15 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1193,
               property_is_outgoing: false,
-              roleSetKey: '_1193_ingoing',
+              propertyFieldKey: '_1193_ingoing',
               fk_class_field: null
             }
           ]
         }
       },
-      roleSets: {
+      propertyFields: {
         _1189_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2071,7 +2071,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1197_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2110,7 +2110,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1193_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2159,7 +2159,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1182_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2198,7 +2198,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1199_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2237,7 +2237,7 @@ export const crm: ProjectCrm = {
           }
         },
         _83_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2276,7 +2276,7 @@ export const crm: ProjectCrm = {
           }
         },
         _87_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2315,7 +2315,7 @@ export const crm: ProjectCrm = {
           }
         },
         _132_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2354,7 +2354,7 @@ export const crm: ProjectCrm = {
           }
         },
         _134_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2393,7 +2393,7 @@ export const crm: ProjectCrm = {
           }
         },
         _139_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2432,7 +2432,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1013_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2460,7 +2460,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1035_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2488,7 +2488,7 @@ export const crm: ProjectCrm = {
           }
         },
         _95_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2524,9 +2524,9 @@ export const crm: ProjectCrm = {
       dfh_identifier_in_namespace: 'E82',
       dfh_pk_class: 75,
       uiContexts: {},
-      roleSets: {
+      propertyFields: {
         _119_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2569,14 +2569,14 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 132,
               property_is_outgoing: true,
-              roleSetKey: '_132_outgoing',
+              propertyFieldKey: '_132_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1196,
               property_is_outgoing: true,
-              roleSetKey: '_1196_outgoing',
+              propertyFieldKey: '_1196_outgoing',
               fk_class_field: null
             },
             {
@@ -2600,14 +2600,14 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 132,
               property_is_outgoing: true,
-              roleSetKey: '_132_outgoing',
+              propertyFieldKey: '_132_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1196,
               property_is_outgoing: true,
-              roleSetKey: '_1196_outgoing',
+              propertyFieldKey: '_1196_outgoing',
               fk_class_field: null
             }
           ]
@@ -2617,9 +2617,9 @@ export const crm: ProjectCrm = {
           uiElements: []
         }
       },
-      roleSets: {
+      propertyFields: {
         _1196_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2668,7 +2668,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1197_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2696,7 +2696,7 @@ export const crm: ProjectCrm = {
           }
         },
         _131_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2724,7 +2724,7 @@ export const crm: ProjectCrm = {
           }
         },
         _132_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2800,7 +2800,7 @@ export const crm: ProjectCrm = {
               ord_num: 1,
               fk_property: 134,
               property_is_outgoing: true,
-              roleSetKey: '_134_outgoing',
+              propertyFieldKey: '_134_outgoing',
               fk_class_field: null
             }
           ]
@@ -2824,7 +2824,7 @@ export const crm: ProjectCrm = {
               ord_num: 1,
               fk_property: 134,
               property_is_outgoing: true,
-              roleSetKey: '_134_outgoing',
+              propertyFieldKey: '_134_outgoing',
               fk_class_field: null
             }
           ]
@@ -2834,9 +2834,9 @@ export const crm: ProjectCrm = {
           uiElements: []
         }
       },
-      roleSets: {
+      propertyFields: {
         _1198_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2864,7 +2864,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1199_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2892,7 +2892,7 @@ export const crm: ProjectCrm = {
           }
         },
         _133_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2920,7 +2920,7 @@ export const crm: ProjectCrm = {
           }
         },
         _134_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -2983,7 +2983,7 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 148,
               property_is_outgoing: true,
-              roleSetKey: '_148_outgoing',
+              propertyFieldKey: '_148_outgoing',
               fk_class_field: null
             },
             {
@@ -3007,7 +3007,7 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 148,
               property_is_outgoing: true,
-              roleSetKey: '_148_outgoing',
+              propertyFieldKey: '_148_outgoing',
               fk_class_field: null
             },
             {
@@ -3025,9 +3025,9 @@ export const crm: ProjectCrm = {
           ]
         }
       },
-      roleSets: {
+      propertyFields: {
         _1181_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3066,7 +3066,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1184_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3105,7 +3105,7 @@ export const crm: ProjectCrm = {
           }
         },
         _145_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3133,7 +3133,7 @@ export const crm: ProjectCrm = {
           }
         },
         _148_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3209,28 +3209,28 @@ export const crm: ProjectCrm = {
               ord_num: 1,
               fk_property: 1178,
               property_is_outgoing: true,
-              roleSetKey: '_1178_outgoing',
+              propertyFieldKey: '_1178_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 1180,
               property_is_outgoing: true,
-              roleSetKey: '_1180_outgoing',
+              propertyFieldKey: '_1180_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 3,
               fk_property: 1185,
               property_is_outgoing: true,
-              roleSetKey: '_1185_outgoing',
+              propertyFieldKey: '_1185_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 4,
               fk_property: 1182,
               property_is_outgoing: true,
-              roleSetKey: '_1182_outgoing',
+              propertyFieldKey: '_1182_outgoing',
               fk_class_field: null
             }
           ]
@@ -3242,7 +3242,7 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1178,
               property_is_outgoing: true,
-              roleSetKey: '_1178_outgoing',
+              propertyFieldKey: '_1178_outgoing',
               fk_class_field: null
             },
             {
@@ -3261,21 +3261,21 @@ export const crm: ProjectCrm = {
               ord_num: 2,
               fk_property: 1180,
               property_is_outgoing: true,
-              roleSetKey: '_1180_outgoing',
+              propertyFieldKey: '_1180_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 3,
               fk_property: 1185,
               property_is_outgoing: true,
-              roleSetKey: '_1185_outgoing',
+              propertyFieldKey: '_1185_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 4,
               fk_property: 1182,
               property_is_outgoing: true,
-              roleSetKey: '_1182_outgoing',
+              propertyFieldKey: '_1182_outgoing',
               fk_class_field: null
             }
           ]
@@ -3285,9 +3285,9 @@ export const crm: ProjectCrm = {
           uiElements: []
         }
       },
-      roleSets: {
+      propertyFields: {
         _1178_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3336,7 +3336,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1180_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3385,7 +3385,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1182_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3434,7 +3434,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1183_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3473,7 +3473,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1185_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3522,7 +3522,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1066_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3565,7 +3565,7 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 100005,
               property_is_outgoing: false,
-              roleSetKey: '_100005_ingoing',
+              propertyFieldKey: '_100005_ingoing',
               fk_class_field: null
             }
           ]
@@ -3577,15 +3577,15 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 100005,
               property_is_outgoing: false,
-              roleSetKey: '_100005_ingoing',
+              propertyFieldKey: '_100005_ingoing',
               fk_class_field: null
             }
           ]
         }
       },
-      roleSets: {
+      propertyFields: {
         _100005_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3634,7 +3634,7 @@ export const crm: ProjectCrm = {
           }
         },
         _979_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3673,7 +3673,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1015_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3727,7 +3727,7 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1202,
               property_is_outgoing: false,
-              roleSetKey: '_1202_ingoing',
+              propertyFieldKey: '_1202_ingoing',
               fk_class_field: null
             }
           ]
@@ -3739,7 +3739,7 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1202,
               property_is_outgoing: false,
-              roleSetKey: '_1202_ingoing',
+              propertyFieldKey: '_1202_ingoing',
               fk_class_field: null
             }
           ]
@@ -3751,7 +3751,7 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1202,
               property_is_outgoing: false,
-              roleSetKey: '_1202_ingoing',
+              propertyFieldKey: '_1202_ingoing',
               fk_class_field: null
             }
           ]
@@ -3763,15 +3763,15 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1202,
               property_is_outgoing: false,
-              roleSetKey: '_1202_ingoing',
+              propertyFieldKey: '_1202_ingoing',
               fk_class_field: null
             }
           ]
         }
       },
-      roleSets: {
+      propertyFields: {
         _982_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3810,7 +3810,7 @@ export const crm: ProjectCrm = {
           }
         },
         _971_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3849,7 +3849,7 @@ export const crm: ProjectCrm = {
           }
         },
         _979_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3888,7 +3888,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1000_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3927,7 +3927,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1015_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -3966,7 +3966,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1022_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4005,7 +4005,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1202_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4074,7 +4074,7 @@ export const crm: ProjectCrm = {
           }
         },
         _100003_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4102,7 +4102,7 @@ export const crm: ProjectCrm = {
           }
         },
         _970_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4141,7 +4141,7 @@ export const crm: ProjectCrm = {
           }
         },
         _971_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4180,7 +4180,7 @@ export const crm: ProjectCrm = {
           }
         },
         _972_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4219,7 +4219,7 @@ export const crm: ProjectCrm = {
           }
         },
         _975_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4258,7 +4258,7 @@ export const crm: ProjectCrm = {
           }
         },
         _969_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4297,7 +4297,7 @@ export const crm: ProjectCrm = {
           }
         },
         _974_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4336,7 +4336,7 @@ export const crm: ProjectCrm = {
           }
         },
         _973_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4375,7 +4375,7 @@ export const crm: ProjectCrm = {
           }
         },
         _968_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4422,9 +4422,9 @@ export const crm: ProjectCrm = {
       dfh_identifier_in_namespace: 'F5',
       dfh_pk_class: 221,
       uiContexts: {},
-      roleSets: {
+      propertyFields: {
         _982_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4467,35 +4467,35 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1194,
               property_is_outgoing: false,
-              roleSetKey: '_1194_ingoing',
+              propertyFieldKey: '_1194_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1181,
               property_is_outgoing: false,
-              roleSetKey: '_1181_ingoing',
+              propertyFieldKey: '_1181_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 1178,
               property_is_outgoing: false,
-              roleSetKey: '_1178_ingoing',
+              propertyFieldKey: '_1178_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 3,
               fk_property: 1191,
               property_is_outgoing: false,
-              roleSetKey: '_1191_ingoing',
+              propertyFieldKey: '_1191_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 4,
               fk_property: 1186,
               property_is_outgoing: false,
-              roleSetKey: '_1186_ingoing',
+              propertyFieldKey: '_1186_ingoing',
               fk_class_field: null
             }
           ]
@@ -4507,7 +4507,7 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1194,
               property_is_outgoing: false,
-              roleSetKey: '_1194_ingoing',
+              propertyFieldKey: '_1194_ingoing',
               fk_class_field: null
             }
           ]
@@ -4519,29 +4519,29 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1194,
               property_is_outgoing: false,
-              roleSetKey: '_1194_ingoing',
+              propertyFieldKey: '_1194_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1110,
               property_is_outgoing: true,
-              roleSetKey: '_1110_outgoing',
+              propertyFieldKey: '_1110_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 1181,
               property_is_outgoing: false,
-              roleSetKey: '_1181_ingoing',
+              propertyFieldKey: '_1181_ingoing',
               fk_class_field: null
             }
           ]
         }
       },
-      roleSets: {
+      propertyFields: {
         _1181_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4600,7 +4600,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1186_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4649,7 +4649,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1194_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4708,7 +4708,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1191_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4757,7 +4757,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1178_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4806,7 +4806,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1110_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4870,7 +4870,7 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1200,
               property_is_outgoing: false,
-              roleSetKey: '_1200_ingoing',
+              propertyFieldKey: '_1200_ingoing',
               fk_class_field: null
             }
           ]
@@ -4882,15 +4882,15 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1200,
               property_is_outgoing: false,
-              roleSetKey: '_1200_ingoing',
+              propertyFieldKey: '_1200_ingoing',
               fk_class_field: null
             }
           ]
         }
       },
-      roleSets: {
+      propertyFields: {
         _1200_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4939,7 +4939,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1110_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -4982,14 +4982,14 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1113,
               property_is_outgoing: true,
-              roleSetKey: '_1113_outgoing',
+              propertyFieldKey: '_1113_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1112,
               property_is_outgoing: true,
-              roleSetKey: '_1112_outgoing',
+              propertyFieldKey: '_1112_outgoing',
               fk_class_field: null
             },
             {
@@ -5013,14 +5013,14 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1113,
               property_is_outgoing: true,
-              roleSetKey: '_1113_outgoing',
+              propertyFieldKey: '_1113_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1112,
               property_is_outgoing: true,
-              roleSetKey: '_1112_outgoing',
+              propertyFieldKey: '_1112_outgoing',
               fk_class_field: null
             }
           ]
@@ -5032,14 +5032,14 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1112,
               property_is_outgoing: true,
-              roleSetKey: '_1112_outgoing',
+              propertyFieldKey: '_1112_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1113,
               property_is_outgoing: true,
-              roleSetKey: '_1113_outgoing',
+              propertyFieldKey: '_1113_outgoing',
               fk_class_field: null
             },
             {
@@ -5063,14 +5063,14 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1113,
               property_is_outgoing: true,
-              roleSetKey: '_1113_outgoing',
+              propertyFieldKey: '_1113_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1112,
               property_is_outgoing: true,
-              roleSetKey: '_1112_outgoing',
+              propertyFieldKey: '_1112_outgoing',
               fk_class_field: null
             }
           ]
@@ -5082,14 +5082,14 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1113,
               property_is_outgoing: true,
-              roleSetKey: '_1113_outgoing',
+              propertyFieldKey: '_1113_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1112,
               property_is_outgoing: true,
-              roleSetKey: '_1112_outgoing',
+              propertyFieldKey: '_1112_outgoing',
               fk_class_field: null
             }
           ]
@@ -5101,14 +5101,14 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1113,
               property_is_outgoing: true,
-              roleSetKey: '_1113_outgoing',
+              propertyFieldKey: '_1113_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1112,
               property_is_outgoing: true,
-              roleSetKey: '_1112_outgoing',
+              propertyFieldKey: '_1112_outgoing',
               fk_class_field: null
             }
           ]
@@ -5120,22 +5120,22 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1113,
               property_is_outgoing: true,
-              roleSetKey: '_1113_outgoing',
+              propertyFieldKey: '_1113_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1112,
               property_is_outgoing: true,
-              roleSetKey: '_1112_outgoing',
+              propertyFieldKey: '_1112_outgoing',
               fk_class_field: null
             }
           ]
         }
       },
-      roleSets: {
+      propertyFields: {
         _1111_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -5174,7 +5174,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1192_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -5233,7 +5233,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1193_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -5292,7 +5292,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1194_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -5351,7 +5351,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1195_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -5410,7 +5410,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1113_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -5509,7 +5509,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1200_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -5548,7 +5548,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1201_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -5587,7 +5587,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1202_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -5626,7 +5626,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1112_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -5725,7 +5725,7 @@ export const crm: ProjectCrm = {
           }
         },
         _100005_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -5768,28 +5768,28 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1195,
               property_is_outgoing: false,
-              roleSetKey: '_1195_ingoing',
+              propertyFieldKey: '_1195_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1184,
               property_is_outgoing: false,
-              roleSetKey: '_1184_ingoing',
+              propertyFieldKey: '_1184_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 2,
               fk_property: 1185,
               property_is_outgoing: false,
-              roleSetKey: '_1185_ingoing',
+              propertyFieldKey: '_1185_ingoing',
               fk_class_field: null
             },
             {
               ord_num: 3,
               fk_property: 1187,
               property_is_outgoing: false,
-              roleSetKey: '_1187_ingoing',
+              propertyFieldKey: '_1187_ingoing',
               fk_class_field: null
             }
           ]
@@ -5801,15 +5801,15 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1195,
               property_is_outgoing: false,
-              roleSetKey: '_1195_ingoing',
+              propertyFieldKey: '_1195_ingoing',
               fk_class_field: null
             }
           ]
         }
       },
-      roleSets: {
+      propertyFields: {
         _1184_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -5858,7 +5858,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1187_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -5907,7 +5907,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1195_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -5956,7 +5956,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1185_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -6005,7 +6005,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1190_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -6048,14 +6048,14 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1189,
               property_is_outgoing: true,
-              roleSetKey: '_1189_outgoing',
+              propertyFieldKey: '_1189_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1188,
               property_is_outgoing: true,
-              roleSetKey: '_1188_outgoing',
+              propertyFieldKey: '_1188_outgoing',
               fk_class_field: null
             },
             {
@@ -6079,14 +6079,14 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1189,
               property_is_outgoing: true,
-              roleSetKey: '_1189_outgoing',
+              propertyFieldKey: '_1189_outgoing',
               fk_class_field: null
             },
             {
               ord_num: 1,
               fk_property: 1188,
               property_is_outgoing: true,
-              roleSetKey: '_1188_outgoing',
+              propertyFieldKey: '_1188_outgoing',
               fk_class_field: null
             }
           ]
@@ -6096,9 +6096,9 @@ export const crm: ProjectCrm = {
           uiElements: []
         }
       },
-      roleSets: {
+      propertyFields: {
         _1188_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -6147,7 +6147,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1189_outgoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -6211,7 +6211,7 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1201,
               property_is_outgoing: false,
-              roleSetKey: '_1201_ingoing',
+              propertyFieldKey: '_1201_ingoing',
               fk_class_field: null
             }
           ]
@@ -6223,15 +6223,15 @@ export const crm: ProjectCrm = {
               ord_num: 0,
               fk_property: 1201,
               property_is_outgoing: false,
-              roleSetKey: '_1201_ingoing',
+              propertyFieldKey: '_1201_ingoing',
               fk_class_field: null
             }
           ]
         }
       },
-      roleSets: {
+      propertyFields: {
         _1190_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -6259,7 +6259,7 @@ export const crm: ProjectCrm = {
           }
         },
         _1201_ingoing: {
-          type: 'RoleSet',
+          type: 'PropertyField',
           hasAlternatives: false,
           isViewMode: false,
           toggle: 'expanded',
@@ -6310,9 +6310,9 @@ export const crm: ProjectCrm = {
       }
     }
   },
-  roleSets: {
+  propertyFields: {
     _1192_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6381,7 +6381,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1188_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6430,7 +6430,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1196_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6469,7 +6469,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1180_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6508,7 +6508,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1198_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6536,7 +6536,7 @@ export const crm: ProjectCrm = {
       }
     },
     _84_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6585,7 +6585,7 @@ export const crm: ProjectCrm = {
       }
     },
     _88_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6634,7 +6634,7 @@ export const crm: ProjectCrm = {
       }
     },
     _85_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6683,7 +6683,7 @@ export const crm: ProjectCrm = {
       }
     },
     _140_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6711,7 +6711,7 @@ export const crm: ProjectCrm = {
       }
     },
     _86_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6760,7 +6760,7 @@ export const crm: ProjectCrm = {
       }
     },
     _140_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6788,7 +6788,7 @@ export const crm: ProjectCrm = {
       }
     },
     _4_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6816,7 +6816,7 @@ export const crm: ProjectCrm = {
       }
     },
     _75_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6844,7 +6844,7 @@ export const crm: ProjectCrm = {
       }
     },
     _143_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6872,7 +6872,7 @@ export const crm: ProjectCrm = {
       }
     },
     _145_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6900,7 +6900,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1008_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6928,7 +6928,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1059_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6956,7 +6956,7 @@ export const crm: ProjectCrm = {
       }
     },
     _68_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -6984,7 +6984,7 @@ export const crm: ProjectCrm = {
       }
     },
     _69_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7012,7 +7012,7 @@ export const crm: ProjectCrm = {
       }
     },
     _70_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7040,7 +7040,7 @@ export const crm: ProjectCrm = {
       }
     },
     _71_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7068,7 +7068,7 @@ export const crm: ProjectCrm = {
       }
     },
     _72_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7096,7 +7096,7 @@ export const crm: ProjectCrm = {
       }
     },
     _73_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7124,7 +7124,7 @@ export const crm: ProjectCrm = {
       }
     },
     _74_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7152,7 +7152,7 @@ export const crm: ProjectCrm = {
       }
     },
     _75_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7180,7 +7180,7 @@ export const crm: ProjectCrm = {
       }
     },
     _150_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7208,7 +7208,7 @@ export const crm: ProjectCrm = {
       }
     },
     _151_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7236,7 +7236,7 @@ export const crm: ProjectCrm = {
       }
     },
     _152_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7264,7 +7264,7 @@ export const crm: ProjectCrm = {
       }
     },
     _153_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7292,7 +7292,7 @@ export const crm: ProjectCrm = {
       }
     },
     _83_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7341,7 +7341,7 @@ export const crm: ProjectCrm = {
       }
     },
     _139_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7390,7 +7390,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1043_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7418,7 +7418,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1186_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7467,7 +7467,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1187_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7516,7 +7516,7 @@ export const crm: ProjectCrm = {
       }
     },
     _84_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7565,7 +7565,7 @@ export const crm: ProjectCrm = {
       }
     },
     _85_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7614,7 +7614,7 @@ export const crm: ProjectCrm = {
       }
     },
     _86_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7673,7 +7673,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1044_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7712,7 +7712,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1191_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7761,7 +7761,7 @@ export const crm: ProjectCrm = {
       }
     },
     _88_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7810,7 +7810,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1189_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7849,7 +7849,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1197_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7888,7 +7888,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1193_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7937,7 +7937,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1182_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -7976,7 +7976,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1199_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8015,7 +8015,7 @@ export const crm: ProjectCrm = {
       }
     },
     _83_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8054,7 +8054,7 @@ export const crm: ProjectCrm = {
       }
     },
     _87_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8093,7 +8093,7 @@ export const crm: ProjectCrm = {
       }
     },
     _132_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8132,7 +8132,7 @@ export const crm: ProjectCrm = {
       }
     },
     _134_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8171,7 +8171,7 @@ export const crm: ProjectCrm = {
       }
     },
     _139_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8210,7 +8210,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1013_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8238,7 +8238,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1035_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8266,7 +8266,7 @@ export const crm: ProjectCrm = {
       }
     },
     _95_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8294,7 +8294,7 @@ export const crm: ProjectCrm = {
       }
     },
     _119_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8322,7 +8322,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1196_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8371,7 +8371,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1197_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8399,7 +8399,7 @@ export const crm: ProjectCrm = {
       }
     },
     _131_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8427,7 +8427,7 @@ export const crm: ProjectCrm = {
       }
     },
     _132_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8476,7 +8476,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1198_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8504,7 +8504,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1199_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8532,7 +8532,7 @@ export const crm: ProjectCrm = {
       }
     },
     _133_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8560,7 +8560,7 @@ export const crm: ProjectCrm = {
       }
     },
     _134_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8609,7 +8609,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1181_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8648,7 +8648,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1184_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8687,7 +8687,7 @@ export const crm: ProjectCrm = {
       }
     },
     _145_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8715,7 +8715,7 @@ export const crm: ProjectCrm = {
       }
     },
     _148_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8764,7 +8764,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1178_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8813,7 +8813,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1180_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8862,7 +8862,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1182_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8911,7 +8911,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1183_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8950,7 +8950,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1185_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -8999,7 +8999,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1066_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9027,7 +9027,7 @@ export const crm: ProjectCrm = {
       }
     },
     _100005_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9076,7 +9076,7 @@ export const crm: ProjectCrm = {
       }
     },
     _979_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9115,7 +9115,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1015_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9154,7 +9154,7 @@ export const crm: ProjectCrm = {
       }
     },
     _982_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9193,7 +9193,7 @@ export const crm: ProjectCrm = {
       }
     },
     _971_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9232,7 +9232,7 @@ export const crm: ProjectCrm = {
       }
     },
     _979_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9271,7 +9271,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1000_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9310,7 +9310,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1015_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9349,7 +9349,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1022_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9388,7 +9388,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1202_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9457,7 +9457,7 @@ export const crm: ProjectCrm = {
       }
     },
     _100003_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9485,7 +9485,7 @@ export const crm: ProjectCrm = {
       }
     },
     _970_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9524,7 +9524,7 @@ export const crm: ProjectCrm = {
       }
     },
     _971_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9563,7 +9563,7 @@ export const crm: ProjectCrm = {
       }
     },
     _972_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9602,7 +9602,7 @@ export const crm: ProjectCrm = {
       }
     },
     _975_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9641,7 +9641,7 @@ export const crm: ProjectCrm = {
       }
     },
     _969_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9680,7 +9680,7 @@ export const crm: ProjectCrm = {
       }
     },
     _974_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9719,7 +9719,7 @@ export const crm: ProjectCrm = {
       }
     },
     _973_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9758,7 +9758,7 @@ export const crm: ProjectCrm = {
       }
     },
     _968_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9797,7 +9797,7 @@ export const crm: ProjectCrm = {
       }
     },
     _982_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9825,7 +9825,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1181_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9884,7 +9884,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1186_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9933,7 +9933,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1194_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -9992,7 +9992,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1191_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10041,7 +10041,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1178_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10090,7 +10090,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1110_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10139,7 +10139,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1200_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10188,7 +10188,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1110_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10216,7 +10216,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1111_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10255,7 +10255,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1192_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10314,7 +10314,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1193_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10373,7 +10373,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1194_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10432,7 +10432,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1195_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10491,7 +10491,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1113_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10590,7 +10590,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1200_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10629,7 +10629,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1201_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10668,7 +10668,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1202_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10707,7 +10707,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1112_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10806,7 +10806,7 @@ export const crm: ProjectCrm = {
       }
     },
     _100005_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10834,7 +10834,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1184_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10883,7 +10883,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1187_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10932,7 +10932,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1195_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -10981,7 +10981,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1185_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -11030,7 +11030,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1190_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -11058,7 +11058,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1188_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -11107,7 +11107,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1189_outgoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -11156,7 +11156,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1190_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',
@@ -11184,7 +11184,7 @@ export const crm: ProjectCrm = {
       }
     },
     _1201_ingoing: {
-      type: 'RoleSet',
+      type: 'PropertyField',
       hasAlternatives: false,
       isViewMode: false,
       toggle: 'expanded',

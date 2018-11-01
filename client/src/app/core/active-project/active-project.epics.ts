@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
-import { roleSetKeyFromParams } from 'app/core/state/services/state-creator';
+import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { FluxStandardAction } from 'flux-standard-action';
 import { sort } from 'ramda';
 import { Action } from 'redux';
@@ -120,14 +120,14 @@ export class ActiveProjectEpics {
 
             const crm: ProjectCrm = {
               classes: {},
-              roleSets: {}
+              propertyFields: {}
             }
             classes.forEach((cla: DfhClass) => {
               crm.classes[cla.dfh_pk_class] = U.classConfigFromDfhClass(cla);
 
-              // add roleSets
-              U.obj2KeyValueArr(crm.classes[cla.dfh_pk_class].roleSets).forEach(rs => {
-                crm.roleSets[rs.key] = rs.value;
+              // add propertyFields
+              U.obj2KeyValueArr(crm.classes[cla.dfh_pk_class].propertyFields).forEach(rs => {
+                crm.propertyFields[rs.key] = rs.value;
               })
             })
 
@@ -137,7 +137,7 @@ export class ActiveProjectEpics {
               if (uiCtxt.ui_context_config) {
                 uiCtxt.ui_context_config.forEach(uiConf => {
 
-                  // add roleSet configs to crm
+                  // add propertyField configs to crm
                   if (uiConf.fk_property) {
                     // retrieve the classConfig
                     const cConf = crm.classes[uiConf.property_is_outgoing ? uiConf.property.dfh_has_domain : uiConf.property.dfh_has_range];
@@ -201,7 +201,7 @@ export class ActiveProjectEpics {
         ord_num: uiConf.ord_num,
         fk_property: uiConf.fk_property,
         property_is_outgoing: uiConf.property_is_outgoing,
-        roleSetKey: uiConf.fk_property ? roleSetKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
+        propertyFieldKey: uiConf.fk_property ? propertyFieldKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
         fk_class_field: uiConf.fk_class_field,
         class_field: uiConf.fk_class_field ? uiConf.class_field : undefined,
         propSetKey: uiConf.fk_class_field ? propSetKeyFromFk(uiConf.fk_class_field) : undefined

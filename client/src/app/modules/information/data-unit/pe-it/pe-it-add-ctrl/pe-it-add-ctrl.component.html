@@ -6,7 +6,7 @@
       - but make only those children selectable / addable, that are enabled 
    -->
   <div *ngFor="let item of (_fields$ | async) | keys; trackBy:getKey">
-      <gv-pe-it-role-set-add-ctrl *ngIf="formGroup.get(item.key)" [parentPath]="basePath" [index]="item.key" [formControlName]="item.key"
-        (touched)="markAsTouched()"></gv-pe-it-role-set-add-ctrl>
+      <gv-pe-it-property-field-add-ctrl *ngIf="formGroup.get(item.key)" [parentPath]="basePath" [index]="item.key" [formControlName]="item.key"
+        (touched)="markAsTouched()"></gv-pe-it-property-field-add-ctrl>
   </div>
 </form>

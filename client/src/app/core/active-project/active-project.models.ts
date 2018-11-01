@@ -10,7 +10,7 @@ export interface ProjectDetail extends ProjectInterface {
 
 export interface ProjectCrm {
     classes?: ClassConfigList;
-    roleSets?: PropertyFieldList;
+    propertyFields?: PropertyFieldList;
 }
 
 export interface ClassConfigList { [dfh_pk_class: number]: ClassConfig };
@@ -21,7 +21,7 @@ export interface ClassConfig {
     dfh_pk_class: number;
     subclassOf?: 'peIt' | 'teEnt' ; // to distinguish TeEnts from PeIts
     isInProject?: boolean; // reflects the enabled / disabled state from data settings of the project
-    roleSets?: PropertyFieldList;
+    propertyFields?: PropertyFieldList;
     uiContexts?: {
         [pk: number]: UiContext
     }
@@ -35,7 +35,7 @@ export interface UiContext extends ComUiContextInterface {
 export interface UiElement {
     fk_property?: number,
     property_is_outgoing?: boolean,
-    roleSetKey?: string,
+    propertyFieldKey?: string,
     propSetKey?: string,
     fk_class_field?: number,
     class_field?: ComClassFieldInterface

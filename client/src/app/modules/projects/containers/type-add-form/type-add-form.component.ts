@@ -95,7 +95,7 @@ export class TypeAddFormComponent extends TypeAddFormAPIActions implements OnIni
     console.log(this.ngForm.value)
 
     const fk_class = this.ngRedux.getState().activeProject.classSettings.types.class.dfh_pk_class;
-    const fk_property = U.obj2Arr(this.ngRedux.getState().activeProject.crm.classes[fk_class].roleSets).find(rs => rs.targetClassPk == DfhConfig.CLASS_PK_APPELLATION_USE).property.dfh_pk_property;
+    const fk_property = U.obj2Arr(this.ngRedux.getState().activeProject.crm.classes[fk_class].propertyFields).find(rs => rs.targetClassPk == DfhConfig.CLASS_PK_APPELLATION_USE).property.dfh_pk_property;
 
     const peIt = new InfPersistentItem({
       fk_class,

@@ -59,7 +59,7 @@
     <!-- At some time within -->
     <div class="border-bottom border-top" *ngIf="(mode$ | async) !== 'begin-end'">
 
-      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._72_outgoing)" (click)="addRoleSet(72, ['_152_outgoing', '_153_outgoing'], ['_152_outgoing', '_153_outgoing'])">+ At some time within</button>
+      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._72_outgoing)" (click)="addPropertyField(72, ['_152_outgoing', '_153_outgoing'], ['_152_outgoing', '_153_outgoing'])">+ At some time within</button>
 
       <div class="modal-body" *ngIf="((_fields$ | async)?._72_outgoing) && formGroup.get('_72_outgoing')">
 
@@ -67,8 +67,8 @@
           <ng-container *ngTemplateOutlet="header; context:{key:'_72_outgoing', label: 'At some time within'}"></ng-container>
         </span>
 
-        <gv-ex-time-role-set-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_72_outgoing"
-          [index]="'_72_outgoing'"></gv-ex-time-role-set-create-ctrl>
+        <gv-ex-time-property-field-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_72_outgoing"
+          [index]="'_72_outgoing'"></gv-ex-time-property-field-create-ctrl>
 
         <gv-control-messages class="d-flex ml-2" [control]="formGroup?.get('_72_outgoing')"></gv-control-messages>
       </div>
@@ -81,14 +81,14 @@
     <!-- Begin of Begin -->
     <div class="border-bottom pl-3" *ngIf="(mode$ | async) === 'advanced'">
 
-      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._152_outgoing)" (click)="addRoleSet(152, ['_72_outgoing', '_153_outgoing'], ['_72_outgoing'])">+ Earliest possible begin</button>
+      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._152_outgoing)" (click)="addPropertyField(152, ['_72_outgoing', '_153_outgoing'], ['_72_outgoing'])">+ Earliest possible begin</button>
 
       <div class="modal-body" *ngIf="((_fields$ | async)?._152_outgoing) && formGroup.get('_152_outgoing')">
 
         <ng-container *ngTemplateOutlet="header; context:{key:'_152_outgoing', label: 'Earliest possible begin'}"></ng-container>
 
-        <gv-ex-time-role-set-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_152_outgoing"
-          [index]="'_152_outgoing'"></gv-ex-time-role-set-create-ctrl>
+        <gv-ex-time-property-field-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_152_outgoing"
+          [index]="'_152_outgoing'"></gv-ex-time-property-field-create-ctrl>
 
         <gv-control-messages class="d-flex ml-2" [control]="formGroup?.get('_152_outgoing')"></gv-control-messages>
 
@@ -100,14 +100,14 @@
     <!-- End of End -->
     <div class="border-bottom pl-3" *ngIf="(mode$ | async) === 'advanced'">
 
-      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._153_outgoing)" (click)="addRoleSet(153, ['_72_outgoing', '_152_outgoing'], ['_72_outgoing'])">+ Latest possible end</button>
+      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._153_outgoing)" (click)="addPropertyField(153, ['_72_outgoing', '_152_outgoing'], ['_72_outgoing'])">+ Latest possible end</button>
 
       <div class="modal-body" *ngIf="((_fields$ | async)?._153_outgoing) && formGroup.get('_153_outgoing')">
 
         <ng-container *ngTemplateOutlet="header; context:{key:'_153_outgoing', label: 'Latest possible end'}"></ng-container>
 
-        <gv-ex-time-role-set-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_153_outgoing"
-          [index]="'_153_outgoing'"></gv-ex-time-role-set-create-ctrl>
+        <gv-ex-time-property-field-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_153_outgoing"
+          [index]="'_153_outgoing'"></gv-ex-time-property-field-create-ctrl>
 
         <gv-control-messages class="d-flex ml-2" [control]="formGroup?.get('_153_outgoing')"></gv-control-messages>
 
@@ -118,14 +118,14 @@
     <!-- Ongoing throughout -->
     <div class="border-bottom border-top mt-5" *ngIf="(mode$ | async) === 'advanced'">
 
-      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._71_outgoing)" (click)="addRoleSet(71, ['_150_outgoing', '_151_outgoing'], ['_150_outgoing', '_151_outgoing'])">+ Ongoing throughout</button>
+      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._71_outgoing)" (click)="addPropertyField(71, ['_150_outgoing', '_151_outgoing'], ['_150_outgoing', '_151_outgoing'])">+ Ongoing throughout</button>
 
       <div class="modal-body" *ngIf="((_fields$ | async)?._71_outgoing) && formGroup.get('_71_outgoing')">
 
         <ng-container *ngTemplateOutlet="header; context:{key:'_71_outgoing', label: 'Ongoing throughout'}"></ng-container>
 
-        <gv-ex-time-role-set-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_71_outgoing"
-          [index]="'_71_outgoing'"></gv-ex-time-role-set-create-ctrl>
+        <gv-ex-time-property-field-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_71_outgoing"
+          [index]="'_71_outgoing'"></gv-ex-time-property-field-create-ctrl>
 
         <gv-control-messages class="d-flex ml-2" [control]="formGroup?.get('_71_outgoing')"></gv-control-messages>
 
@@ -136,14 +136,14 @@
     <!-- End of begin -->
     <div class="border-bottom pl-3" *ngIf="(mode$ | async) !== 'one-date'">
 
-      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._150_outgoing)" (click)="addRoleSet(150, ['_71_outgoing', '_151_outgoing'], ['_71_outgoing'])">+ Begin</button>
+      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._150_outgoing)" (click)="addPropertyField(150, ['_71_outgoing', '_151_outgoing'], ['_71_outgoing'])">+ Begin</button>
 
       <div class="modal-body" *ngIf="((_fields$ | async)?._150_outgoing) && formGroup.get('_150_outgoing')">
 
         <ng-container *ngTemplateOutlet="header; context:{key:'_150_outgoing', label: 'Begin'}"></ng-container>
 
-        <gv-ex-time-role-set-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_150_outgoing"
-          [index]="'_150_outgoing'"></gv-ex-time-role-set-create-ctrl>
+        <gv-ex-time-property-field-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_150_outgoing"
+          [index]="'_150_outgoing'"></gv-ex-time-property-field-create-ctrl>
 
         <gv-control-messages class="d-flex ml-2" [control]="formGroup?.get('_150_outgoing')"></gv-control-messages>
 
@@ -155,14 +155,14 @@
     <!-- Begin of end -->
     <div class="border-bottom pl-3" *ngIf="(mode$ | async) !== 'one-date'">
 
-      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._151_outgoing)" (click)="addRoleSet(151, ['_71_outgoing', '_150_outgoing'], ['_71_outgoing'])">+ End</button>
+      <button class="btn btn-link" type="button" *ngIf="!((_fields$ | async)?._151_outgoing)" (click)="addPropertyField(151, ['_71_outgoing', '_150_outgoing'], ['_71_outgoing'])">+ End</button>
 
       <div class="modal-body" *ngIf="((_fields$ | async)?._151_outgoing) && formGroup.get('_151_outgoing')">
 
         <ng-container *ngTemplateOutlet="header; context:{key:'_151_outgoing', label: 'End'}"></ng-container>
 
-        <gv-ex-time-role-set-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_151_outgoing"
-          [index]="'_151_outgoing'"></gv-ex-time-role-set-create-ctrl>
+        <gv-ex-time-property-field-create-ctrl [parentPath]="basePath" [parentTeEntStatePath]="parentTeEntPath" formControlName="_151_outgoing"
+          [index]="'_151_outgoing'"></gv-ex-time-property-field-create-ctrl>
 
         <gv-control-messages class="d-flex ml-2" [control]="formGroup?.get('_151_outgoing')"></gv-control-messages>
 
@@ -199,7 +199,7 @@
       </div>
     </div>
 
-    <button type="button" class="btn btn-sm btn-link align-self-center" (click)="removeRoleSet(key)" title="Remove">
+    <button type="button" class="btn btn-sm btn-link align-self-center" (click)="removePropertyField(key)" title="Remove">
       <i class="fa fa-trash"></i>
     </button>
   </div>

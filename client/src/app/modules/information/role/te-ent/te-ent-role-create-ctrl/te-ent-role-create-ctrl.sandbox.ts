@@ -21,10 +21,10 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
     .add('TeEnt Role Create Ctrl | Appe filled ', {
         context: {
             model: {},
-            parentPath: ['sandboxState', '_role_set_1'],
+            parentPath: ['sandboxState', '_property_field_1'],
             index: '_role_1',
             sandboxState: {
-                _role_set_1: new PropertyField({
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -105,10 +105,10 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                     fk_property: 99
                 }
             },
-            parentPath: ['sandboxState', '_role_set_1'],
+            parentPath: ['sandboxState', '_property_field_1'],
             index: '_role_1',
             sandboxState: {
-                _role_set_1: new PropertyField({
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -157,10 +157,10 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                     fk_property: 99
                 }
             },
-            parentPath: ['sandboxState', '_role_set_1'],
+            parentPath: ['sandboxState', '_property_field_1'],
             index: '_role_1',
             sandboxState: {
-                _role_set_1: new PropertyField({
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -209,10 +209,10 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                     fk_property: 99
                 }
             },
-            parentPath: ['sandboxState', '_role_set_1'],
+            parentPath: ['sandboxState', '_property_field_1'],
             index: '_role_1',
             sandboxState: {
-                _role_set_1: new PropertyField({
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -272,14 +272,14 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                     fk_property: 99
                 }
             },
-            parentPath: ['_role_set_1'],
+            parentPath: ['_property_field_1'],
             index: '_role_1',
             initState: {
                 activeProject: {
                     crm: crm,
                     pk_project: 12
                 },
-                _role_set_1: new PropertyField({
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             targetClassPk: 21,
@@ -330,13 +330,13 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                     fk_property: DfhConfig.existenceTimeToFk.p82a
                 }
             },
-            parentPath: ['_role_set_1'],
+            parentPath: ['_property_field_1'],
             index: '_role_1',
             initState: {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: new PropertyField({
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             targetClassPk: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
@@ -387,13 +387,13 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                     fk_property: DfhConfig.existenceTimeToFk.p82a
                 }
             },
-            parentPath: ['_role_set_1'],
+            parentPath: ['_property_field_1'],
             index: '_role_1',
             initState: {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: new PropertyField({
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             targetClassPk: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
@@ -455,13 +455,13 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                     fk_property: 999
                 }
             },
-            parentPath: ['_role_set_1'],
+            parentPath: ['_property_field_1'],
             index: '_role_1',
             initState: {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: new PropertyField({
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             targetClassPk: 333,

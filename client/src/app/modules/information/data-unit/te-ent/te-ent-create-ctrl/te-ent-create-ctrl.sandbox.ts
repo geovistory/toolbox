@@ -29,7 +29,7 @@ export default sandboxOf(TeEntCreateCtrlComponent, {
                             dfh_standard_label: "Name Use Activity",
                         } as DfhClass,
                         _fields: {
-                            _role_set_1: new PropertyField({
+                            _property_field_1: new PropertyField({
                                 label: {
                                     default: 'Detailed Name',
                                     sg: 'Detailed Name',

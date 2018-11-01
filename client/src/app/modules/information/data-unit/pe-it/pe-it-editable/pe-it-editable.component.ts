@@ -180,21 +180,21 @@ export class PeItEditableComponent extends DataUnitBase implements AfterViewInit
 
     } else {
 
-      if (o.uiElement.roleSetKey) {
+      if (o.uiElement.propertyFieldKey) {
 
         // if this is a role set
 
-        // prepare the RoleSet
+        // prepare the PropertyField
 
-        const newRoleSet = {
-          ...new PropertyField(this.classConfig.roleSets[o.uiElement.roleSetKey]),
+        const newPropertyField = {
+          ...new PropertyField(this.classConfig.propertyFields[o.uiElement.propertyFieldKey]),
           toggle: 'expanded' as CollapsedExpanded,
           rolesNotInProjectLoading: true,
           roleStatesInOtherProjectsVisible: false,
-          _role_set_form: new PropertyFieldForm()
+          _property_field_form: new PropertyFieldForm()
         }
 
-        this.addRoleSet(newRoleSet, undefined)
+        this.addPropertyField(newPropertyField, undefined)
 
       } else if (o.uiElement.fk_class_field) {
 

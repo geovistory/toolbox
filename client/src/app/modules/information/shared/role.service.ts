@@ -69,40 +69,40 @@ export class RoleService {
 
 
   /**
-   * Adds roles to given role sets and assigns generic options for all RoleSets
+   * Adds roles to given role sets and assigns generic options for all PropertyFields
    * 
    * @param {InfRole[]} roles array of roles a PeIti
-   * @param {PropertyField[]} ingoingRoleSets array of ingoing properties (depending on context)
-   * @param {PropertyField[]} outgoingRoleSets array of outgoing properties (depending on context)
-   * @param {PropertyField} options any other option that should be apllied to all of the roleSets
-   * @return {PropertyField[]} Array of RoleSet, the model of the Gui-Element for RoleSets
+   * @param {PropertyField[]} ingoingPropertyFields array of ingoing properties (depending on context)
+   * @param {PropertyField[]} outgoingPropertyFields array of outgoing properties (depending on context)
+   * @param {PropertyField} options any other option that should be apllied to all of the propertyFields
+   * @return {PropertyField[]} Array of PropertyField, the model of the Gui-Element for PropertyFields
    */
-  addRolesToRoleSets(roles: InfRole[], ingoingRoleSets: PropertyField[], outgoingRoleSets: PropertyField[], options = new PropertyField()): PropertyField[] {
+  addRolesToPropertyFields(roles: InfRole[], ingoingPropertyFields: PropertyField[], outgoingPropertyFields: PropertyField[], options = new PropertyField()): PropertyField[] {
 
     // declare array that will be returned
-    const roleSets: PropertyField[] = [];
+    const propertyFields: PropertyField[] = [];
 
     const rolesByFkProp = groupBy(prop('fk_property'), roles)
 
     // enrich role sets with roles
-    ingoingRoleSets.forEach(rs => {
-      const roleSet: PropertyField = Object.assign(rs, options, {
+    ingoingPropertyFields.forEach(rs => {
+      const propertyField: PropertyField = Object.assign(rs, options, {
         roles: rolesByFkProp[rs.property.dfh_pk_property]
       })
-      if (roleSet.roles && roleSet.roles.length)
-        roleSets.push(roleSet);
+      if (propertyField.roles && propertyField.roles.length)
+        propertyFields.push(propertyField);
     })
 
     // enrich role sets with roles
-    outgoingRoleSets.forEach(rs => {
-      const roleSet: PropertyField = Object.assign(rs, options, {
+    outgoingPropertyFields.forEach(rs => {
+      const propertyField: PropertyField = Object.assign(rs, options, {
         roles: rolesByFkProp[rs.property.dfh_pk_property]
       })
-      if (roleSet.roles && roleSet.roles.length)
-        roleSets.push(roleSet);
+      if (propertyField.roles && propertyField.roles.length)
+        propertyFields.push(propertyField);
     })
 
-    return roleSets;
+    return propertyFields;
   }
 
 

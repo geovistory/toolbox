@@ -27,7 +27,7 @@ import { EntitySearchHitComponent } from './components/entity-search-hit/entity-
 import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it-label.component';
 import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.component';
 import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timeline.component';
-import { RoleSetHeaderComponent } from './components/role-set-header/role-set-header.component';
+import { PropertyFieldHeaderComponent } from './components/property-field-header/property-field-header.component';
 import { TeEntHeaderComponent } from './components/te-ent-header/te-ent-header.component';
 import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.component';
 import { TextPropertyComponent } from './components/text-property/text-property.component';
@@ -70,20 +70,20 @@ import { ExistenceTimeHelpComponent } from './existence-time/existence-time-help
 import { ExistenceTimeModalComponent } from './existence-time/existence-time-modal/existence-time-modal.component';
 import { ExistenceTimeActions } from './existence-time/existence-time.actions';
 import { InformationRoutingModule } from './information-routing.module';
-import { ExTimeRoleSetAddCtrlComponent } from './role-set/ex-time/ex-time-role-set-add-ctrl/ex-time-role-set-add-ctrl.component';
-import { ExTimeRoleSetCreateCtrlComponent } from './role-set/ex-time/ex-time-role-set-create-ctrl/ex-time-role-set-create-ctrl.component';
-import { ExTimeRoleSetEditableComponent } from './role-set/ex-time/ex-time-role-set-editable/ex-time-role-set-editable.component';
-import { ExTimeRoleSetFormComponent } from './role-set/ex-time/ex-time-role-set-form/ex-time-role-set-form.component';
-import { PeItPropertyFieldAddCtrlComponent } from './role-set/pe-it/pe-it-role-set-add-ctrl/pe-it-role-set-add-ctrl.component';
-import { PeItPropertyFieldCreateCtrlComponent } from './role-set/pe-it/pe-it-role-set-create-ctrl/pe-it-role-set-create-ctrl.component';
-import { PeItPropertyFieldEditableComponent } from './role-set/pe-it/pe-it-role-set-editable/pe-it-role-set-editable.component';
-import { PeItPropertyFieldFormComponent } from './role-set/pe-it/pe-it-role-set-form/pe-it-role-set-form.component';
-import { PropertyFieldActions } from './role-set/role-set.actions';
-import { PropertyFieldApiEpics } from './role-set/role-set.epics';
-import { TeEntPropertyFieldAddCtrlComponent } from './role-set/te-ent/te-ent-role-set-add-ctrl/te-ent-role-set-add-ctrl.component';
-import { TeEntPropertyFieldCreateCtrlComponent } from './role-set/te-ent/te-ent-role-set-create-ctrl/te-ent-role-set-create-ctrl.component';
-import { TeEntPropertyFieldEditableComponent } from './role-set/te-ent/te-ent-role-set-editable/te-ent-role-set-editable.component';
-import { TeEntPropertyFieldFormComponent } from './role-set/te-ent/te-ent-role-set-form/te-ent-role-set-form.component';
+import { ExTimePropertyFieldAddCtrlComponent } from './property-field/ex-time/ex-time-property-field-add-ctrl/ex-time-property-field-add-ctrl.component';
+import { ExTimePropertyFieldCreateCtrlComponent } from './property-field/ex-time/ex-time-property-field-create-ctrl/ex-time-property-field-create-ctrl.component';
+import { ExTimePropertyFieldEditableComponent } from './property-field/ex-time/ex-time-property-field-editable/ex-time-property-field-editable.component';
+import { ExTimePropertyFieldFormComponent } from './property-field/ex-time/ex-time-property-field-form/ex-time-property-field-form.component';
+import { PeItPropertyFieldAddCtrlComponent } from './property-field/pe-it/pe-it-property-field-add-ctrl/pe-it-property-field-add-ctrl.component';
+import { PeItPropertyFieldCreateCtrlComponent } from './property-field/pe-it/pe-it-property-field-create-ctrl/pe-it-property-field-create-ctrl.component';
+import { PeItPropertyFieldEditableComponent } from './property-field/pe-it/pe-it-property-field-editable/pe-it-property-field-editable.component';
+import { PeItPropertyFieldFormComponent } from './property-field/pe-it/pe-it-property-field-form/pe-it-property-field-form.component';
+import { PropertyFieldActions } from './property-field/property-field.actions';
+import { PropertyFieldApiEpics } from './property-field/property-field.epics';
+import { TeEntPropertyFieldAddCtrlComponent } from './property-field/te-ent/te-ent-property-field-add-ctrl/te-ent-property-field-add-ctrl.component';
+import { TeEntPropertyFieldCreateCtrlComponent } from './property-field/te-ent/te-ent-property-field-create-ctrl/te-ent-property-field-create-ctrl.component';
+import { TeEntPropertyFieldEditableComponent } from './property-field/te-ent/te-ent-property-field-editable/te-ent-property-field-editable.component';
+import { TeEntPropertyFieldFormComponent } from './property-field/te-ent/te-ent-property-field-form/te-ent-property-field-form.component';
 import { PeItRoleAddCtrlComponent } from './role/pe-it/pe-it-role-add-ctrl/pe-it-role-add-ctrl.component';
 import { PeItRoleCreateCtrlComponent } from './role/pe-it/pe-it-role-create-ctrl/pe-it-role-create-ctrl.component';
 import { PeItRoleEditableComponent } from './role/pe-it/pe-it-role-editable/pe-it-role-editable.component';
@@ -97,7 +97,7 @@ import { EntityAddModalService } from './shared/entity-add-modal.service';
 import { EprService } from './shared/epr.service';
 import { PeItService } from './shared/pe-it.service';
 import { PropertyService } from './shared/property.service';
-import { RoleSetService } from './shared/role-set.service';
+import { PropertyFieldService } from './shared/property-field.service';
 import { RoleService } from './shared/role.service';
 import { TeEntService } from './shared/te-ent.service';
 import { TypeCtrlAPIActions } from './type/type-ctrl/api/type-ctrl.actions';
@@ -221,9 +221,9 @@ import { TextPropertyFieldComponent } from './containers/text-property-field/tex
     TeEntPropertyFieldCreateCtrlComponent,
     TeEntPropertyFieldEditableComponent,
     TeEntPropertyFieldFormComponent,
-    ExTimeRoleSetFormComponent,
-    ExTimeRoleSetAddCtrlComponent,
-    ExTimeRoleSetCreateCtrlComponent,
+    ExTimePropertyFieldFormComponent,
+    ExTimePropertyFieldAddCtrlComponent,
+    ExTimePropertyFieldCreateCtrlComponent,
     ExistenceTimeModalComponent,
 
     // Role
@@ -248,7 +248,7 @@ import { TextPropertyFieldComponent } from './containers/text-property-field/tex
     ExistenceTimeEditComponent,
     TimePrimitiveCtrlComponent,
     TimePrimitiveViewComponent,
-    ExTimeRoleSetEditableComponent,
+    ExTimePropertyFieldEditableComponent,
     PlaceCtrlComponent,
     PlaceViewComponent,
     ExistenceTimeHelpComponent,
@@ -267,7 +267,7 @@ import { TextPropertyFieldComponent } from './containers/text-property-field/tex
     EditorHeaderComponent,
     ClassInfoComponent,
     TypeCtrlComponent,
-    RoleSetHeaderComponent,
+    PropertyFieldHeaderComponent,
     TeEntHeaderComponent,
     CreateOrAddPeItComponent,
     PeItSearchExistingComponent,
@@ -351,7 +351,7 @@ import { TextPropertyFieldComponent } from './containers/text-property-field/tex
     PropertyService,
     RoleService,
     EprService,
-    RoleSetService,
+    PropertyFieldService,
     ValidationService,
 
     MentionedEntityCtrlActions,

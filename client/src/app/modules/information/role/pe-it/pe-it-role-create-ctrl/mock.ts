@@ -29,8 +29,8 @@ export const roleCreateMock = {
             "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
             "text_properties": []
         },
-        "ingoingRoleSets": [],
-        "outgoingRoleSets": [
+        "ingoingPropertyFields": [],
+        "outgoingPropertyFields": [
             {
                 "isOutgoing": true,
                 "property": {

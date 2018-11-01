@@ -13,7 +13,7 @@ interface MetaData {
   fkDomainEntity?: number
   fkProperty?: number
   existingList?: EntityAssociationList;
-  roleSet?: PropertyField;
+  propertyField?: PropertyField;
 };
 export type EntityAssociationAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -27,9 +27,9 @@ export class EntityAssociationAPIActions {
   static readonly DESTROY = 'EntityAssociation::DESTROY';
 
   @dispatch()
-  load = (pkProject: number, fkRangeEntity: number, fkDomainEntity: number, fkProperty: number, crm: ProjectCrm, roleSet: PropertyField): EntityAssociationAPIAction => ({
+  load = (pkProject: number, fkRangeEntity: number, fkDomainEntity: number, fkProperty: number, crm: ProjectCrm, propertyField: PropertyField): EntityAssociationAPIAction => ({
     type: EntityAssociationAPIActions.LOAD_EXISTING_LIST,
-    meta: { pkProject, fkRangeEntity, fkDomainEntity, fkProperty, crm, roleSet },
+    meta: { pkProject, fkRangeEntity, fkDomainEntity, fkProperty, crm, propertyField },
     payload: null,
   });
 

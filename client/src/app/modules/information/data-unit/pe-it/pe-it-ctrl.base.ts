@@ -85,7 +85,7 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
      * Inits the formGroup used in template.
      */
     initForm() {
-        //   create the formGroup used to create/edit the roleSet's InfRole[]
+        //   create the formGroup used to create/edit the propertyField's InfRole[]
         this.formGroup = this.fb.group({});
     }
 

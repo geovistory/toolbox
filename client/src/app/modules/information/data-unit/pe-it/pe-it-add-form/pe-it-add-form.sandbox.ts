@@ -456,8 +456,8 @@ export default sandboxOf(PeItAddFormComponent, {
                         }
                       }
                     },
-                    "ingoingRoleSets": [],
-                    "outgoingRoleSets": [
+                    "ingoingPropertyFields": [],
+                    "outgoingPropertyFields": [
                       {
                         "isOutgoing": true,
                         "property": {

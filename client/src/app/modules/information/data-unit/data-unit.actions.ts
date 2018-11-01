@@ -4,7 +4,7 @@ import { U, UiContext } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy } from 'ramda';
 import {  ClassInstanceLabel, PropertyField, DataUnit } from 'app/core/state/models';
-import { roleSetKey } from 'app/core/state/services/state-creator';
+import { propertyFieldKey } from 'app/core/state/services/state-creator';
 
 
 
@@ -43,7 +43,7 @@ export class DataUnitActions {
   @dispatch()
 
 
-  roleSetsListDisplayLabelUpdated = (label:  ClassInstanceLabel): DataUnitAction => ({
+  propertyFieldsListDisplayLabelUpdated = (label:  ClassInstanceLabel): DataUnitAction => ({
     type: DataUnitActions.ROLE_SET_LIST_DISPLAY_LABEL_UPDATED,
     meta: null,
     payload: {
@@ -78,16 +78,16 @@ export class DataUnitActions {
   /**
   * called, when user selected a the kind of property to add
   *
-  * @param: roleSet to add
+  * @param: propertyField to add
   * @param: uiContext of the class, used sort the _fields
   */
-  addRoleSet = (roleSet: PropertyField, uiContext: UiContext): DataUnitAction => ({
+  addPropertyField = (propertyField: PropertyField, uiContext: UiContext): DataUnitAction => ({
     type: DataUnitActions.ROLE_SET_ADDED,
     meta: {
       uiContext
     },
     payload: {
-      _fields: indexBy(roleSetKey, [roleSet]),
+      _fields: indexBy(propertyFieldKey, [propertyField]),
       selectPropState: 'init'
     }
   })
@@ -95,7 +95,7 @@ export class DataUnitActions {
   /**
 * called, when user selected a the kind of property to remove
 */
-  removeRoleSet = (key: string): DataUnitAction => ({
+  removePropertyField = (key: string): DataUnitAction => ({
     type: DataUnitActions.ROLE_SET_REMOVED,
     meta: { key },
     payload: null

@@ -17,8 +17,8 @@
         <gv-existence-time-editable *ngSwitchCase="'_existenceTime'" [basePath]="basePath.concat('_fields').concat(item.key)"
           (onRemovePropSet)="removePropSet(item.key)" mode="create" [formControlName]="item.key" (touched)="markAsTouched()"></gv-existence-time-editable>
 
-        <gv-te-ent-role-set-create-ctrl *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath"
-          [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)" [formControlName]="item.key" (touched)="markAsTouched()"></gv-te-ent-role-set-create-ctrl>
+        <gv-te-ent-property-field-create-ctrl *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath"
+          [index]="item.key" (onRemovePropertyField)="removePropertyField(item.key)" [formControlName]="item.key" (touched)="markAsTouched()"></gv-te-ent-property-field-create-ctrl>
 
       </span>
     </div>

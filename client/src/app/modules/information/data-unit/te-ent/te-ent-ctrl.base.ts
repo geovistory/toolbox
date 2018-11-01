@@ -86,7 +86,7 @@ export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValue
      * Inits the formGroup used in template.
      */
     initForm() {
-        //   create the formGroup used to create/edit the roleSet's InfRole[]
+        //   create the formGroup used to create/edit the propertyField's InfRole[]
         this.formGroup = this.fb.group({});
     }
 

@@ -61,7 +61,7 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
   activeProject: Project;
 
   roleState: RoleDetail;
-  parentRoleSetState: PropertyField;
+  parentPropertyFieldState: PropertyField;
 
   // names of child states and of the RoleState object with the key of the value within the child state
   childStatesConfig: { [key: string]: { nameInState: string, nameInApi: string } } = {
@@ -154,7 +154,7 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
     this.roleState$ = this.localStore.select<RoleDetail>('');
     this.activeProject$ = this.ngRedux.select<Project>('activeProject');
 
-    this.subs.push(this.ngRedux.select<PropertyField>([...this.parentPath]).subscribe(d => this.parentRoleSetState = d));
+    this.subs.push(this.ngRedux.select<PropertyField>([...this.parentPath]).subscribe(d => this.parentPropertyFieldState = d));
     this.subs.push(this.activeProject$.subscribe(d => this.activeProject = d));
     this.subs.push(this.roleState$.subscribe(d => {
       this.roleState = d

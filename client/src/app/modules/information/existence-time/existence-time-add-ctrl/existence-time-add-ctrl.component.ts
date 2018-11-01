@@ -28,15 +28,18 @@ export class ExistenceTimeAddCtrlComponent implements OnInit, OnDestroy, Control
 
 
   @Input() basePath: string[]
-  getBasePath = () => this.basePath;
 
+  @Output() touched: EventEmitter<void> = new EventEmitter();
+  
   localStore: ObservableStore<ExistenceTimeDetail>
   _fields: PropertyFieldList;
 
-  
+
   subs: Subscription[] = [];
 
   constructor(protected ngRedux: NgRedux<IAppState>) { }
+
+  getBasePath = () => this.basePath;
 
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, existenceTimeReducer);
@@ -97,7 +100,6 @@ export class ExistenceTimeAddCtrlComponent implements OnInit, OnDestroy, Control
   onTouched = () => {
   };
 
-  @Output() touched: EventEmitter<void> = new EventEmitter();
 
   markAsTouched() {
     this.onTouched()

@@ -39,22 +39,22 @@ export class PeItTimelineComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    // subscribe to RoleSets and create TimeLineData
+    // subscribe to PropertyFields and create TimeLineData
     this.ngRedux.select<PropertyFieldList>([...this.path, '_fields'])
       .takeUntil(this.destroy$)
-      .subscribe(roleSets => {
+      .subscribe(propertyFields => {
         const timeLineData = {
           rows: []
         }
 
-        U.obj2KeyValueArr(roleSets).forEach(roleSetMap => {
-          const set = roleSetMap.value;
+        U.obj2KeyValueArr(propertyFields).forEach(propertyFieldMap => {
+          const set = propertyFieldMap.value;
           const setLabel = set.label.default;
-          const roleSetPath = [...this.path, '_fields', roleSetMap.key]
+          const propertyFieldPath = [...this.path, '_fields', propertyFieldMap.key]
 
           U.obj2KeyValueArr(set._role_list).forEach(roleDetailMap => {
             const roleDetail = roleDetailMap.value;
-            const roleDetailPath = [...roleSetPath, '_role_list', roleDetailMap.key];
+            const roleDetailPath = [...propertyFieldPath, '_role_list', roleDetailMap.key];
 
             if (roleDetail._teEnt && roleDetail._teEnt._fields && roleDetail._teEnt._fields._existenceTime) {
               const teD = roleDetail._teEnt;

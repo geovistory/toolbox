@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, IAppState, UiContext, UiElement, ProjectCrm } from 'app/core';
 import { AddOption, CollapsedExpanded, ExistenceTimeDetail, RoleDetail, PropertyField, PropertyFieldForm, TeEntAccentuation, TeEntDetail, FieldList } from 'app/core/state/models';
-import { createExistenceTimeDetail, getCreateOfEditableContext, StateSettings, similarRoleSet, roleSetKeyFromParams } from 'app/core/state/services/state-creator';
+import { createExistenceTimeDetail, getCreateOfEditableContext, StateSettings, similarPropertyField, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { Observable, Subject, combineLatest } from 'rxjs';
 import { RootEpics } from '../../../../../core/store/epics';
 import { slideInOut } from '../../../shared/animations';
@@ -18,26 +18,26 @@ export function getTeEntAddOptions(
   fkClass$: Observable<number>,
   pkUiContext$: Observable<number>,
   crm$: Observable<ProjectCrm>,
-  parentRoleSet$: Observable<PropertyField>,
+  parentPropertyField$: Observable<PropertyField>,
   _fields$: Observable<FieldList>
 ): Observable<AddOption[]> {
-  return combineLatest(fkClass$, pkUiContext$, crm$, parentRoleSet$, _fields$).pipe(
+  return combineLatest(fkClass$, pkUiContext$, crm$, parentPropertyField$, _fields$).pipe(
     // only pass if no undefined value
     filter((d) => {
       const b = (d.filter(item => (item === undefined)).length === 0)
       return b;
     }),
     map((d) => {
-      const fkClass = d[0], pkUiContext = d[1], crm = d[2], excludeRoleSet = d[3], children = d[4];
+      const fkClass = d[0], pkUiContext = d[1], crm = d[2], excludePropertyField = d[3], children = d[4];
       const classConfig = crm.classes[fkClass];
       const uiContexts = classConfig.uiContexts[pkUiContext];
       const uiElements = !uiContexts ? [] : uiContexts.uiElements;
       return uiElements.map(el => {
-        if (children && el.fk_property && !children[el.roleSetKey] &&
-          !similarRoleSet(classConfig.roleSets[el.roleSetKey], excludeRoleSet)) {
-          const roleSet = classConfig.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)];
+        if (children && el.fk_property && !children[el.propertyFieldKey] &&
+          !similarPropertyField(classConfig.propertyFields[el.propertyFieldKey], excludePropertyField)) {
+          const propertyField = classConfig.propertyFields[propertyFieldKeyFromParams(el.fk_property, el.property_is_outgoing)];
           return {
-            label: roleSet.label.default,
+            label: propertyField.label.default,
             uiElement: el,
             added: false
           };
@@ -89,7 +89,7 @@ export class TeEntEditableComponent extends DataUnitBase {
    */
   showOntoInfo$: Observable<boolean>
   showCommunityStats$: Observable<boolean>
-  parentRoleSet$: Observable<PropertyField>
+  parentPropertyField$: Observable<PropertyField>
 
   /**
    * Class properties that filled by a store observable
@@ -150,7 +150,7 @@ export class TeEntEditableComponent extends DataUnitBase {
    * init paths to different slices of the store
    */
   initPaths() {
-    // transforms e.g.  ['information', 'entityEditor', 'peItState', 'roleSets', '1', '_role_list', '79060']
+    // transforms e.g.  ['information', 'entityEditor', 'peItState', 'propertyFields', '1', '_role_list', '79060']
     // to               ['information', 'entityEditor', 'peItState']
     this.parentPeItStatePath = this.parentPath.slice(0, (this.parentPath.length - 4));
 
@@ -163,7 +163,7 @@ export class TeEntEditableComponent extends DataUnitBase {
   initObservablesOutsideLocalStore() {
     this.showOntoInfo$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'showOntoInfo']);
 
-    this.parentRoleSet$ = this.ngRedux.select<PropertyField>(this.parentPath.slice(0, (this.parentPath.length - 2)));
+    this.parentPropertyField$ = this.ngRedux.select<PropertyField>(this.parentPath.slice(0, (this.parentPath.length - 2)));
 
   }
 
@@ -179,7 +179,7 @@ export class TeEntEditableComponent extends DataUnitBase {
       this.teEnState = d
     })
 
-    this.addOptionsTeEnt$ = getTeEntAddOptions(this.fkClass$, this.pkUiContext$, this.crm$, this.parentRoleSet$, this._fields$)
+    this.addOptionsTeEnt$ = getTeEntAddOptions(this.fkClass$, this.pkUiContext$, this.crm$, this.parentPropertyField$, this._fields$)
   }
 
 
@@ -194,21 +194,21 @@ export class TeEntEditableComponent extends DataUnitBase {
 
     } else {
 
-      if (o.uiElement.roleSetKey) {
+      if (o.uiElement.propertyFieldKey) {
 
         // if this is a role set
 
-        // prepare the RoleSet
+        // prepare the PropertyField
 
-        const newRoleSet = {
-          ...new PropertyField(this.classConfig.roleSets[o.uiElement.roleSetKey]),
+        const newPropertyField = {
+          ...new PropertyField(this.classConfig.propertyFields[o.uiElement.propertyFieldKey]),
           toggle: 'expanded' as CollapsedExpanded,
           rolesNotInProjectLoading: true,
           roleStatesInOtherProjectsVisible: false,
-          _role_set_form: new PropertyFieldForm()
+          _property_field_form: new PropertyFieldForm()
         }
 
-        this.addRoleSet(newRoleSet, undefined)
+        this.addPropertyField(newPropertyField, undefined)
 
       } else if (o.uiElement.fk_class_field) {
 

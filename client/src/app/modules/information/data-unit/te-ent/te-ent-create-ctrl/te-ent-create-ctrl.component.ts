@@ -53,14 +53,14 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
   initFormCtrls(): void {
 
-    // add controls for each roleSet of _fields
-    this._fields$.takeUntil(this.destroy$).subscribe(roleSetList => {
-      if (roleSetList) {
-        Object.keys(roleSetList).forEach((key) => {
-          if (roleSetList[key]) {
+    // add controls for each propertyField of _fields
+    this._fields$.takeUntil(this.destroy$).subscribe(propertyFieldList => {
+      if (propertyFieldList) {
+        Object.keys(propertyFieldList).forEach((key) => {
+          if (propertyFieldList[key]) {
 
             this.formGroup.addControl(key, new FormControl(
-              roleSetList[key].roles,
+              propertyFieldList[key].roles,
               [
                 Validators.required
               ]
@@ -121,23 +121,23 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
     } else {
 
-      if (o.uiElement.roleSetKey) {
+      if (o.uiElement.propertyFieldKey) {
 
         // if this is a role set
 
-        // prepare the RoleSet
-        const newRoleSet = new PropertyField(this.classConfig.roleSets[o.uiElement.roleSetKey]);
+        // prepare the PropertyField
+        const newPropertyField = new PropertyField(this.classConfig.propertyFields[o.uiElement.propertyFieldKey]);
 
         // prepare the new role
         const newRole = {
-          fk_property: newRoleSet.property.dfh_pk_property,
+          fk_property: newPropertyField.property.dfh_pk_property,
           entity_version_project_rels: [{
             is_in_project: true
           }]
         } as InfRole;
 
 
-        this.addRoleSet(new PropertyField(this.classConfig.roleSets[o.uiElement.roleSetKey]), [newRole], { pkUiContext: this.localStore.getState().pkUiContext })
+        this.addPropertyField(new PropertyField(this.classConfig.propertyFields[o.uiElement.propertyFieldKey]), [newRole], { pkUiContext: this.localStore.getState().pkUiContext })
 
       } else if (o.uiElement.fk_class_field) {
 

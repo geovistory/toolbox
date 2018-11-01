@@ -3,7 +3,7 @@ import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, E
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IAppState, InfEntityProjectRel, InfRole, InfTimePrimitive, ValidationService } from 'app/core';
 import { ExistenceTimeEdit, ExTimeHelpMode, ExTimeModalMode, PropertyField, PropertyFieldList, TeEntDetail } from 'app/core/state/models';
-import { roleSetKey, roleSetKeyFromParams, createRoleSet } from 'app/core/state/services/state-creator';
+import { propertyFieldKey, propertyFieldKeyFromParams, createPropertyField } from 'app/core/state/services/state-creator';
 import { dropLast, union } from 'ramda';
 import { Observable, Subscription } from 'rxjs';
 import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
@@ -88,19 +88,19 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
 
   initShortCuts(state: ExistenceTimeEdit) {
 
-    // If init in one-date mode and the roleSet for "At some time within" is not yet there
+    // If init in one-date mode and the propertyField for "At some time within" is not yet there
     if (state.mode === 'one-date' && (state._fields === undefined || state._fields._72_outgoing === undefined)) {
-      this.addRoleSet(72)
+      this.addPropertyField(72)
     }
 
-    // If init in begin-end mode and the roleSet for "Begin" is not yet there
+    // If init in begin-end mode and the propertyField for "Begin" is not yet there
     if (state.mode === 'begin-end' && (state._fields === undefined || state._fields._150_outgoing === undefined)) {
-      this.addRoleSet(150)
+      this.addPropertyField(150)
     }
 
-    // If init in begin-end mode and the roleSet for "End" is not yet there
+    // If init in begin-end mode and the propertyField for "End" is not yet there
     if (state.mode === 'begin-end' && (state._fields === undefined || state._fields._151_outgoing === undefined)) {
-      this.addRoleSet(151)
+      this.addPropertyField(151)
     }
   }
 
@@ -187,7 +187,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
 
     const rs = this.localStore.getState()._fields;
 
-    // iterate over roleSets of the existence time state
+    // iterate over propertyFields of the existence time state
     if (rs) {
       Object.keys(rs).forEach(key => {
         if (rs[key]) {
@@ -215,22 +215,22 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
 
   /**
    *
-   * @param fkProperty fk_property of the roleSet to add
-   * @param inheritFrom key of the RoleSet in RoleSetList of which the role should be inherited
-   * @param replace array of keys of roleSets that should be removed, when this is added
+   * @param fkProperty fk_property of the propertyField to add
+   * @param inheritFrom key of the PropertyField in PropertyFieldList of which the role should be inherited
+   * @param replace array of keys of propertyFields that should be removed, when this is added
    */
-  addRoleSet(fkProperty: number, inheritFrom?: string[], replace?: string[]) {
+  addPropertyField(fkProperty: number, inheritFrom?: string[], replace?: string[]) {
 
     const state = this.ngRedux.getState();
 
-    // find the outgoing roleSet to add
-    const roleSetTemplate: PropertyField = new PropertyField(state.activeProject.crm.roleSets[roleSetKeyFromParams(fkProperty, true)]);
+    // find the outgoing propertyField to add
+    const propertyFieldTemplate: PropertyField = new PropertyField(state.activeProject.crm.propertyFields[propertyFieldKeyFromParams(fkProperty, true)]);
 
     const role = new InfRole();
     role.time_primitive = new InfTimePrimitive();
     role.time_primitive.fk_class = DfhConfig.CLASS_PK_TIME_PRIMITIVE;
 
-    // if this roleSet should inherit the time primitive from another roleSet
+    // if this propertyField should inherit the time primitive from another propertyField
     if (inheritFrom) {
       for (let i = 0; i < inheritFrom.length; i++) {
         const key = inheritFrom[i];
@@ -248,24 +248,24 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
       }
     }
 
-    // if this roleSet should replace a roleSet
+    // if this propertyField should replace a propertyField
     if (replace) {
       replace.forEach(key => {
         if (key && this._fields && this._fields[key]) {
-          this.removeRoleSet(key);
+          this.removePropertyField(key);
         }
       })
     }
 
-    role.fk_property = roleSetTemplate.property.dfh_pk_property
+    role.fk_property = propertyFieldTemplate.property.dfh_pk_property
 
     // update the state
-    const roleSet = createRoleSet(roleSetTemplate, [role], this.ngRedux.getState().activeProject.crm, { pkUiContext: this.localStore.getState().pkUiContext })
-    this.localStore.dispatch(this.roleSetAdded({ [roleSetKey(roleSet)]: roleSet }))
+    const propertyField = createPropertyField(propertyFieldTemplate, [role], this.ngRedux.getState().activeProject.crm, { pkUiContext: this.localStore.getState().pkUiContext })
+    this.localStore.dispatch(this.propertyFieldAdded({ [propertyFieldKey(propertyField)]: propertyField }))
 
     // add a form control
     this.formGroup.addControl(
-      roleSetKey(roleSetTemplate), new FormControl(
+      propertyFieldKey(propertyFieldTemplate), new FormControl(
         [role],
         [
           Validators.required
@@ -282,10 +282,10 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
   /**
   * called, when user removes a property leading to TimePrimitive
   */
-  removeRoleSet(key: string) {
+  removePropertyField(key: string) {
 
     // update the state
-    this.localStore.dispatch(this.roleSetRemoved(key))
+    this.localStore.dispatch(this.propertyFieldRemoved(key))
 
     // remove the form control
     setTimeout(() => {

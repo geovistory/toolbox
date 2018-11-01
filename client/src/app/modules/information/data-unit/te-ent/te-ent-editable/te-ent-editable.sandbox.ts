@@ -159,7 +159,7 @@ export default sandboxOf(TeEntEditableComponent, {
                                     roleStatesInOtherProjectsVisible: true,
                                 }
                             },
-                            "ingoingRoleSets": [
+                            "ingoingPropertyFields": [
                                 {
                                     "isOutgoing": false,
                                     "property": {
@@ -786,8 +786,8 @@ export default sandboxOf(TeEntEditableComponent, {
                                 }
                             }
                         },
-                        "ingoingRoleSets": [],
-                        "outgoingRoleSets": [
+                        "ingoingPropertyFields": [],
+                        "outgoingPropertyFields": [
                             {
                                 "isOutgoing": true,
                                 "property": {

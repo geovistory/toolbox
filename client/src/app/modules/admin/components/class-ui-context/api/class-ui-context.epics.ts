@@ -87,11 +87,11 @@ export class ClassUiContextAPIEpics {
     const disabledProperties: Widget[] = [];
     const disabledFields: Widget[] = [];
 
-    const addWidgetForRoleSet = (property: DfhProperty, isOutgoing: boolean) => {
+    const addWidgetForPropertyField = (property: DfhProperty, isOutgoing: boolean) => {
 
-      const roleSet = U.infProperties2RoleSets(isOutgoing, [property])[0];
+      const propertyField = U.infProperties2PropertyFields(isOutgoing, [property])[0];
 
-      let uiContextConf = U.uiContextConfigFromRoleSet(roleSet);
+      let uiContextConf = U.uiContextConfigFromPropertyField(propertyField);
 
       if (!uiContextConf) {
         uiContextConf = {
@@ -101,34 +101,34 @@ export class ClassUiContextAPIEpics {
         } as ComUiContextConfig;
       }
 
-      const ordNum = U.ordNumFromRoleSet(roleSet)
+      const ordNum = U.ordNumFromPropertyField(propertyField)
 
       const metaInfo = property.dfh_pk_property + '–' + (isOutgoing ? 'outgoing' : 'ingoing');
 
       if (ordNum !== null) {
         // if ordNum set, it is enabled
-        enabledWidgets.push(new Widget(roleSet.label.default, metaInfo, roleSet, null, uiContextConf, property.property_profile_view))
+        enabledWidgets.push(new Widget(propertyField.label.default, metaInfo, propertyField, null, uiContextConf, property.property_profile_view))
       } else {
         // if ordNum falsy, it is disabled
-        disabledProperties.push(new Widget(roleSet.label.default, metaInfo, roleSet, null, uiContextConf, property.property_profile_view))
+        disabledProperties.push(new Widget(propertyField.label.default, metaInfo, propertyField, null, uiContextConf, property.property_profile_view))
       }
     }
 
     // add widget for each ingoing property
     if (dfhClass.ingoing_properties) {
       dfhClass.ingoing_properties.forEach((property: DfhProperty) => {
-        addWidgetForRoleSet(property, false);
+        addWidgetForPropertyField(property, false);
       })
     }
 
     // add widget for each outgoing property
     if (dfhClass.outgoing_properties) {
       dfhClass.outgoing_properties.forEach((property: DfhProperty) => {
-        addWidgetForRoleSet(property, true);
+        addWidgetForPropertyField(property, true);
       })
     }
 
-    // add widget for each class_field in ui_context_config (custom elements that are not RoleSets / Properties)
+    // add widget for each class_field in ui_context_config (custom elements that are not PropertyFields / Properties)
     const pkFieldsWithClassRelation = []
     if (dfhClass.ui_context_configs) {
       dfhClass.ui_context_configs.forEach((uiContextConf) => {

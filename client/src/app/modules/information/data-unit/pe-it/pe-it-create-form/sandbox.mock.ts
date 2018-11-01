@@ -11,10 +11,10 @@ export const mockPerson: PeItDetail = {
         dfh_pk_class: 21,
         dfh_standard_label: 'Person'
     } as DfhClass,
-    ingoingRoleSets: [],
-    outgoingRoleSets: [],
+    ingoingPropertyFields: [],
+    outgoingPropertyFields: [],
     _fields: {
-        _role_set_1: new  PropertyField({
+        _property_field_1: new  PropertyField({
             label: {
                 default: 'Names',
                 sg: 'Name',
@@ -47,7 +47,7 @@ export const mockPerson: PeItDetail = {
                             dfh_standard_label: "Appellation for language ",
                         } as DfhClass,
                         _fields: {
-                            _role_set_1: new  PropertyField({
+                            _property_field_1: new  PropertyField({
                                 label: {
                                     default: 'Detailed Name',
                                     sg: 'Detailed Name',
@@ -358,7 +358,7 @@ export const generatedMockPerson = {
                                 }  as InfRole
                             ],
                             "toggle": "collapsed",
-                            "outgoingRoleSets": [
+                            "outgoingPropertyFields": [
                                 {
                                     "isOutgoing": true,
                                     "property": {
@@ -751,8 +751,8 @@ export const generatedMockPerson = {
                                 }
                             ]
                         },
-                        "ingoingRoleSets": [],
-                        "outgoingRoleSets": [
+                        "ingoingPropertyFields": [],
+                        "outgoingPropertyFields": [
                             {
                                 "isOutgoing": true,
                                 "property": {
@@ -1047,7 +1047,7 @@ export const generatedMockPerson = {
             }
         }
     },
-    "ingoingRoleSets": [
+    "ingoingPropertyFields": [
         {
             "isOutgoing": false,
             "property": {
@@ -1254,7 +1254,7 @@ export const generatedMockPerson = {
             }
         }
     ],
-    "outgoingRoleSets": [
+    "outgoingPropertyFields": [
         {
             "isOutgoing": true,
             "property": {

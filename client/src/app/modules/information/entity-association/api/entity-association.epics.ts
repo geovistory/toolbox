@@ -44,7 +44,7 @@ export class EntityAssociationAPIEpics {
              */
             .subscribe((data: InfEntityAssociation[]) => {
 
-              const eaList = createEntityAssociationList(action.meta.roleSet, data, action.meta.crm)
+              const eaList = createEntityAssociationList(action.meta.propertyField, data, action.meta.crm)
 
               /**
                * Emit the global action that completes the loading bar

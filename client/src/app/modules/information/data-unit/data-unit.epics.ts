@@ -6,7 +6,7 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil, filter } from 'rxjs/operators';
 import { DataUnitActions } from './data-unit.actions';
-import { PropertyFieldActions, PropertyFieldAction } from '../role-set/role-set.actions';
+import { PropertyFieldActions, PropertyFieldAction } from '../property-field/property-field.actions';
 import { startsWith } from 'ramda';
 import { DataUnitBase } from './data-unit.base';
 
@@ -53,7 +53,7 @@ export class DataUnitAPIEpics {
 
                     const actionPath = JSON.parse(action['@angular-redux::fractalkey']);
                     const key = actionPath[actionPath.length - 1];
-                    c.localStore.dispatch(this.actions.removeRoleSet(key))
+                    c.localStore.dispatch(this.actions.removePropertyField(key))
                     // const a = c.localStore.getState()._fields
                 })),
                 takeUntil(c.destroy$)

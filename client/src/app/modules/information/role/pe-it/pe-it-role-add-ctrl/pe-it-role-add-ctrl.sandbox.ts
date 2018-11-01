@@ -305,8 +305,8 @@ export default sandboxOf(PeItRoleAddCtrlComponent, {
                     }
                   }
                 },
-                "ingoingRoleSets": [],
-                "outgoingRoleSets": [
+                "ingoingPropertyFields": [],
+                "outgoingPropertyFields": [
                   {
                     "isOutgoing": true,
                     "property": {

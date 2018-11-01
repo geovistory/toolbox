@@ -266,7 +266,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                         toggle: 'collapsed',
                         _fields: {
                           _72_outgoing: {
-                            type: 'RoleSet',
+                            type: 'PropertyField',
                             isOutgoing: true,
                             property: {
                               dfh_pk_property: 72,
@@ -380,7 +380,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                           pl: 'Fathers',
                           'default': 'Father'
                         },
-                        type: 'RoleSet',
+                        type: 'PropertyField',
                         toggle: 'collapsed',
                         _role_list: {
                           _34176: {
@@ -456,7 +456,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                     pl: 'Names',
                                     'default': 'Names'
                                   },
-                                  type: 'RoleSet',
+                                  type: 'PropertyField',
                                   toggle: 'collapsed',
                                   _role_list: {
                                     _34130: {
@@ -582,7 +582,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                               pl: 'Detailed Names',
                                               'default': 'Detailed Name'
                                             },
-                                            type: 'RoleSet',
+                                            type: 'PropertyField',
                                             toggle: 'collapsed',
                                             _role_list: {
                                               _34127: {
@@ -721,7 +721,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                             toggle: 'collapsed',
                                             _fields: {
                                               _72_outgoing: {
-                                                type: 'RoleSet',
+                                                type: 'PropertyField',
                                                 isOutgoing: true,
                                                 property: {
                                                   dfh_pk_property: 72,

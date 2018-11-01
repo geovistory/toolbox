@@ -288,8 +288,8 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                 }
                                             }
                                         },
-                                        "ingoingRoleSets": [],
-                                        "outgoingRoleSets": [
+                                        "ingoingPropertyFields": [],
+                                        "outgoingPropertyFields": [
                                             {
                                                 "isOutgoing": true,
                                                 "property": {
@@ -944,8 +944,8 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                 }
                                             }
                                         },
-                                        "ingoingRoleSets": [],
-                                        "outgoingRoleSets": [
+                                        "ingoingPropertyFields": [],
+                                        "outgoingPropertyFields": [
                                             {
                                                 "isOutgoing": true,
                                                 "property": {
@@ -1468,8 +1468,8 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                 }
                                             }
                                         },
-                                        "ingoingRoleSets": [],
-                                        "outgoingRoleSets": [
+                                        "ingoingPropertyFields": [],
+                                        "outgoingPropertyFields": [
                                             {
                                                 "isOutgoing": true,
                                                 "property": {
@@ -1969,8 +1969,8 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                 }
                                             }
                                         },
-                                        "ingoingRoleSets": [],
-                                        "outgoingRoleSets": [
+                                        "ingoingPropertyFields": [],
+                                        "outgoingPropertyFields": [
                                             {
                                                 "isOutgoing": true,
                                                 "property": {
@@ -2343,8 +2343,8 @@ export default sandboxOf(PeItAddCtrlComponent, {
                                                 }
                                             }
                                         },
-                                        "ingoingRoleSets": [],
-                                        "outgoingRoleSets": [
+                                        "ingoingPropertyFields": [],
+                                        "outgoingPropertyFields": [
                                             {
                                                 "isOutgoing": true,
                                                 "property": {
@@ -2471,7 +2471,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                             }
                         }
                     },
-                    "ingoingRoleSets": [
+                    "ingoingPropertyFields": [
                         {
                             "isOutgoing": false,
                             "property": {
@@ -2633,7 +2633,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
                             }
                         }
                     ],
-                    "outgoingRoleSets": [],
+                    "outgoingPropertyFields": [],
                     "label": "Felix Ackermann"
                 }
 

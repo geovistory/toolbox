@@ -77,7 +77,7 @@ export function sortChildrenByUiContext(_fields: FieldList, uiContext: UiContext
 
     // create an array with the data unit child keys in the right order
     uiContext.uiElements.forEach(el => {
-        const key = el.roleSetKey ? el.roleSetKey : el.propSetKey ? el.propSetKey : null;
+        const key = el.propertyFieldKey ? el.propertyFieldKey : el.propSetKey ? el.propSetKey : null;
         if (key && _fields[key]) {
             res[key] = _fields[key];
         }

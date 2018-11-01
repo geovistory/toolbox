@@ -22,13 +22,13 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
         context: {
             model: {
             },
-            parentPath: ['_role_set_1'],
+            parentPath: ['_property_field_1'],
             index: 'new_role_0',
             initState: {
                 activeProject: {
                     crm: crm
                 },
-                '_role_set_1': {
+                '_property_field_1': {
                     _role_list: {
                         "new_role_0": {
                             "role": {
@@ -89,7 +89,7 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
                                             "pl": "Detailed Names",
                                             "default": "Detailed Name"
                                         },
-                                        "type": "RoleSet",
+                                        "type": "PropertyField",
                                         "toggle": "expanded",
                                         "_role_list": {
                                             "_undefined": {
@@ -168,13 +168,13 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
         context: {
             model: {
             },
-            parentPath: ['_role_set_1'],
+            parentPath: ['_property_field_1'],
             index: '_role_detail_1',
             initState: {
                 activeProject: {
                     pk_project: 52
                 } as Project,
-                '_role_set_1': {
+                '_property_field_1': {
                     _role_list: {
                         _role_detail_1: roleCreateMock
                     }

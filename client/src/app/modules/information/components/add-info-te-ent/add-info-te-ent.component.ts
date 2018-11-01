@@ -5,7 +5,7 @@ import { AddOption, FieldList, PropertyFieldList, PropertyField } from 'app/core
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { propSetMap } from '../../data-unit/data-unit.base';
-import { similarRoleSet, roleSetKeyFromParams } from 'app/core/state/services/state-creator';
+import { similarPropertyField, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 
 @Component({
   selector: 'gv-add-info-te-ent',
@@ -16,7 +16,7 @@ export class AddInfoTeEntComponent implements OnInit, OnDestroy {
 
   // @Input() uiElements: UiElement[];
   // @Input() classConfig: ClassConfig;
-  // @Input() excludeRoleSet: RoleSetList;
+  // @Input() excludePropertyField: PropertyFieldList;
   // @Input() addedChildren$: Observable<FieldList>;
 
   @Output() addOptionSelected = new EventEmitter<any>();

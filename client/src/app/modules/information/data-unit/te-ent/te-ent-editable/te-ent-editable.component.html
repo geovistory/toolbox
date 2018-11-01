@@ -60,8 +60,8 @@
           <gv-existence-time-editable *ngSwitchCase="'_existenceTime'" mode="editable" [basePath]="basePath.concat('_fields').concat(item.key)"
             (onRemovePropSet)="removePropSet(item.key)"></gv-existence-time-editable>
 
-          <gv-te-ent-role-set-editable *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath"
-            [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-te-ent-role-set-editable>
+          <gv-te-ent-property-field-editable *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath"
+            [index]="item.key" (onRemovePropertyField)="removePropertyField(item.key)"></gv-te-ent-property-field-editable>
 
         </span>
       </div>

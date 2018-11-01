@@ -1,9 +1,0 @@
-<gv-role-set-header [property$]="property$" [label$]="label$" [rolesCount]="((_role_list$ | async) | keys)?.length" (removeRoleSet)="removeRoleSet()" 
-  [removeRoleSetBtnVisible]="removeRoleSetBtnVisible"></gv-role-set-header>
-
-<form [formGroup]="formGroup" *ngIf="formGroup">
-  <div *ngFor="let entry of (_role_list$ | async) | keys; trackBy:getKey">
-    <gv-pe-it-role-create-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key"
-      intermediatePathSegment="_role_list" [formControlName]="entry.key" (touched)="markAsTouched()"></gv-pe-it-role-create-ctrl>
-  </div>
-</form>

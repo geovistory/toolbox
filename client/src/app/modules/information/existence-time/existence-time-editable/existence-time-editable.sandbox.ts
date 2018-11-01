@@ -366,7 +366,7 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
                                 }
                             }
                         },
-                        "outgoingRoleSets": [
+                        "outgoingPropertyFields": [
                             {
                                 "isOutgoing": true,
                                 "property": {
@@ -729,7 +729,7 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
                                 }
                             }
                         },
-                        "outgoingRoleSets": [
+                        "outgoingPropertyFields": [
                             {
                                 "isOutgoing": true,
                                 "property": {
