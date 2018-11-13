@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } 
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { ClassConfig, IAppState, U, UiElement, ComConfig } from 'app/core';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 
 import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
 import { AddOption, FieldList, PropertyFieldList, PropertyField } from 'app/core/state/models';
@@ -23,6 +23,9 @@ interface PeItAddOption extends AddOption {
 })
 export class AddInfoPeItComponent implements OnInit, OnDestroy {
 
+  // emits true on destroy of this component
+  destroy$ = new Subject<boolean>();
+
   @Input() uiElements: UiElement[];
   @Input() classConfig: ClassConfig;
   @Input() excludePropertyField: PropertyFieldList;
@@ -39,7 +42,6 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
   typeaheadWitdh: number;
   addOptions: PeItAddOption[];
 
-  subs: Subscription[] = [];
 
   constructor(
     private ngRedux: NgRedux<IAppState>
@@ -49,9 +51,13 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
 
     const crm = this.ngRedux.getState().activeProject.crm;
 
-    this.subs.push(this.addedChildren$.subscribe(children => {
+    this.addedChildren$.pipe(
+      filter(d => !!d), // make sure children is not falsy
+      takeUntil(this.destroy$)
+    ).subscribe(children => {
 
       this.addOptions = this.uiElements.map(el => {
+
         if (
           children && el.fk_property
           // && !children[el.propertyFieldKey]
@@ -83,13 +89,14 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
           return option;
         }
       }).filter(o => (o))
-    }))
+    })
 
   }
 
 
   ngOnDestroy() {
-    this.subs.forEach(sub => sub.unsubscribe())
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
 
