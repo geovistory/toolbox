@@ -14,7 +14,7 @@
 
       <form #f="ngForm" (ngSubmit)="submitCreateForm()">
         <gv-pe-it-create-ctrl *ngIf="(createForm$ | async)" [basePath]="basePath.concat('createForm')" name="peIt"
-          [(ngModel)]="peIt" #val="ngModel" required></gv-pe-it-create-ctrl>
+          [(ngModel)]="peIt" #val="ngModel" required (onValueChange)="onValueChange($event)" ></gv-pe-it-create-ctrl>
         <button class="btn btn-primary mt-3 mr-2" type="submit" [disabled]="f.invalid && f.submitted">
           Create {{classConfig?.label}}
         </button>

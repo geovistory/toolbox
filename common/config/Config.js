@@ -34,7 +34,12 @@ const Config = {
     PROPERTY_LABEL_INVERSED_SG: 182,
     PROPERTY_LABEL_INVERSED_PL: 183,
 
-    CLASS_LABEL: 184
+    CLASS_LABEL: 184,
+
+    /**
+    * Primary Key of Namespace "Geovistory Ongoing"
+    */
+    PK_PROJECT_OF_TEMPLATE_PROJECT: 16,
 
 
 }

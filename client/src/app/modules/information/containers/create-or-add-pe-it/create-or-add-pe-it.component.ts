@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ClassConfig, IAppState, InfPersistentItem, PeItDetail, SubstoreComponent, U, InfPersistentItemApi, InfEntityAssociation } from 'app/core';
+import { ClassConfig, IAppState, InfPersistentItem, PeItDetail, SubstoreComponent, U, InfPersistentItemApi, InfEntityAssociation, InfTypeNamespaceRel } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { Observable, Subject, combineLatest } from 'rxjs';
 import { CreateOrAddPeItAPIActions } from './api/create-or-add-pe-it.actions';
@@ -11,6 +11,7 @@ import { createOrAddPeItReducer } from './api/create-or-add-pe-it.reducer';
 import { ClassAndTypePk } from '../class-and-type-selector/api/class-and-type-selector.models';
 import * as Config from '../../../../../../../common/config/Config';
 import { takeUntil, first } from 'rxjs/operators';
+import { PeItCreateCtrlComponent } from '../../data-unit/pe-it/pe-it-create-ctrl/pe-it-create-ctrl.component';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -40,6 +41,7 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
   // class of the peIt to add or create
   @select() classAndTypePk$: Observable<ClassAndTypePk>;
   @select() pkUiContext$: Observable<number>;
+  @select() pkNamespace$: Observable<number>;
 
   // emits the nested peIt, no matter if created, added, opened or selected!
   @Output() done = new EventEmitter<InfPersistentItem>();
@@ -51,6 +53,7 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
   searchString$ = new Subject<string>();
 
   classConfig: ClassConfig;
+
 
   @ViewChild('f') form: NgForm;
 
@@ -70,14 +73,18 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
 
-    combineLatest(this.classAndTypePk$, this.pkUiContext$).pipe(
-      first((d) => d.filter((i) => (!i)).length === 0),
+    combineLatest(this.classAndTypePk$, this.pkUiContext$, this.pkNamespace$).pipe(
+      first((d) => {
+        // make sure that classAndTypePk, pkUiContext are set. pkNamespace is optional.
+        return ((d[0] && d[1]) ? true : false)
+      }),
       takeUntil(this.destroy$)
     ).subscribe((d) => {
 
       const pkClass = d[0].pkClass;
       const pkType = d[0].pkType;
       const pkUiContext = d[1];
+      const pkNamespace = d[2];
       const crm = this.ngRedux.getState().activeProject.crm;
       // if (!pkClass) throw Error('please provide a pkClass.');
       // if (!pkUiContext) throw Error('please provide a pkUiContext.');
@@ -94,15 +101,27 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
         } as InfEntityAssociation)
       }
 
-      this.initCreateForm(pkClass, domainEntityAssociations, crm, pkUiContext);
+      const typeNamespaceRels: InfTypeNamespaceRel[] = [];
+      if (pkNamespace) {
+        typeNamespaceRels.push({
+          fk_namespace: pkNamespace
+        } as InfTypeNamespaceRel)
+      }
+
+      this.initCreateForm(pkClass, domainEntityAssociations, typeNamespaceRels, crm, pkUiContext);
+
     })
 
+  }
 
-    this.form.valueChanges.takeUntil(this.destroy$).subscribe(val => {
-      this.searchString$.next(U.stringForPeIt(val.peIt))
-    })
-
-
+  /**
+   * gets called by create peIt control, also when the form is not valid.
+   * May contain invalid peIt, that allows to retrieve some string
+   * to search for existing peIts
+   * @param peIt
+   */
+  onValueChange(peIt: InfPersistentItem) {
+    this.searchString$.next(U.stringForPeIt(peIt))
   }
 
   ngOnDestroy() {

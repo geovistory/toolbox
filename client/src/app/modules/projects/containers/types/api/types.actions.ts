@@ -1,16 +1,18 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
+import { DfhClass, InfNamespace, InfPersistentItem, PeItDetail } from 'app/core';
+import { CreateOrAddPeIt } from 'app/modules/information/containers/create-or-add-pe-it/api/create-or-add-pe-it.models';
 import { FluxStandardAction } from 'flux-standard-action';
-import { TypesI } from './types.models';
-import { InfPersistentItem, DfhClass, InfNamespace, PeItDetail } from 'app/core';
+import { Types } from './types.models';
 
-type Payload = TypesI;
+type Payload = Types;
 interface MetaData {
   types?: InfPersistentItem[],
   typeClass?: DfhClass,
   type?: InfPersistentItem,
   peItDetail?: PeItDetail,
-  namespace?: InfNamespace
+  namespace?: InfNamespace;
+  create?: CreateOrAddPeIt;
 };
 export type TypesAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -73,9 +75,9 @@ export class TypesAPIActions {
  *  Methods related to the add form
  *********************************************************************/
   @dispatch()
-  openAddForm = (): TypesAPIAction => ({
+  openAddForm = (create: CreateOrAddPeIt): TypesAPIAction => ({
     type: TypesAPIActions.OPEN_ADD_FORM,
-    meta: null,
+    meta: { create },
     payload: null
   })
 
@@ -86,32 +88,13 @@ export class TypesAPIActions {
     payload: null
   })
 
+
   @dispatch()
-  create = (type: InfPersistentItem): TypesAPIAction => ({
-    type: TypesAPIActions.CREATE,
-    meta: { type },
-    payload: null
-  })
-
-  createStarted = (): TypesAPIAction => ({
-    type: TypesAPIActions.CREATE_STARTED,
-    meta: null,
-    payload: null,
-  })
-
   createSucceeded = (type: InfPersistentItem): TypesAPIAction => ({
     type: TypesAPIActions.CREATE_SUCCEEDED,
     meta: { type },
     payload: null
   })
-
-  createFailed = (error): TypesAPIAction => ({
-    type: TypesAPIActions.CREATE_FAILED,
-    meta: null,
-    payload: null,
-    error,
-  })
-
 
   /*********************************************************************
    *  Methods related to the edit form

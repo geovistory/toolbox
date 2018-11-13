@@ -2823,7 +2823,7 @@ export const crm: ProjectCrm = {
       uiContexts: {}
     }
   },
-  propertyFields: {
+  fieldList: {
     _84_ingoing: {
       type: 'PropertyField',
       isOutgoing: false,

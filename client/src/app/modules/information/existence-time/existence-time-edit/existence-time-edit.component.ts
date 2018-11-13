@@ -224,7 +224,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
     const state = this.ngRedux.getState();
 
     // find the outgoing propertyField to add
-    const propertyFieldTemplate: PropertyField = new PropertyField(state.activeProject.crm.propertyFields[propertyFieldKeyFromParams(fkProperty, true)]);
+    const propertyFieldTemplate: PropertyField = new PropertyField(state.activeProject.crm.fieldList[propertyFieldKeyFromParams(fkProperty, true)] as PropertyField);
 
     const role = new InfRole();
     role.time_primitive = new InfTimePrimitive();

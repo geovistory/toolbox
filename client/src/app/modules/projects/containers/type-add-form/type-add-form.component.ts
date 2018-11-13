@@ -69,7 +69,7 @@ export class TypeAddFormComponent extends TypeAddFormAPIActions implements OnIni
         this.model.textProperty = new InfTextProperty({
           fk_concerned_entity: undefined,
           text_property_quill_doc: undefined,
-          fk_system_type: ComConfig.PK_SYSTEM_TYPE__TEXT_PROPERY__DEFINITION,
+          fk_class_field: ComConfig.PK_SYSTEM_TYPE__TEXT_PROPERY__DEFINITION,
           fk_language: 19703,
           language: new InfLanguage(l),
         })

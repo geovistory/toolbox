@@ -360,8 +360,17 @@
         {
           "arg": "pk_class",
           "type": "number",
-          "required": false,
+          "required": true,
           "description": "Primary Key of the Class you want to filter for. E.g. 363 for Geographical Place.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkNamespace",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the Namespace you want to filter an Instanace of E55 Type, for e.g. 364 for Geographical place type in Geovistory Ongoing Namespace.",
           "http": {
             "source": "query"
           }

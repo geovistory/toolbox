@@ -12,6 +12,7 @@ export class CreateOrAddPeIt implements CreateOrAddPeIt {
     searchExisting?: PeItSearchExisting;
     classAndTypePk?: ClassAndTypePk;
     pkUiContext?: number;
+    pkNamespace?: number; // this is used for creating E55 Types
 
     constructor(data?: CreateOrAddPeIt) {
         Object.assign(this, data);

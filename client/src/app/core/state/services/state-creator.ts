@@ -6,14 +6,13 @@ import { AppellationLabel } from 'app/modules/information/shared/appellation-lab
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { clone, groupBy, indexBy, omit, prop, sort } from 'ramda';
 import * as Config from '../../../../../../common/config/Config';
-import { AppeDetail, FieldList, ExistenceTimeDetail, LangDetail, PeItDetail, PlaceDetail, RoleDetail, RoleDetailList, PropertyField, TeEntDetail, TimePrimitveDetail } from '../models';
+import { AppeDetail, ExistenceTimeDetail, FieldList, LangDetail, PeItDetail, PlaceDetail, PropertyField, RoleDetail, RoleDetailList, TeEntDetail, TimePrimitveDetail } from '../models';
 import { EntityAssociationDetail } from '../models/entity-association-detail';
 import { EntityAssociationList } from '../models/entity-association-list';
+import { Field } from '../models/field';
 import { TextPropertyDetail } from '../models/text-property-detail';
 import { TextPropertyField } from '../models/text-property-field';
 import { TypeDetail } from '../models/type-detail';
-import { Field } from '../models/field';
-import { ofType } from 'redux-observable';
 
 /***************************************************
 * General Interfaces

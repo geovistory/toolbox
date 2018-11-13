@@ -211,6 +211,7 @@ export class U {
         return (!peIt || !peIt.pi_roles) ? '' :
             peIt.pi_roles
                 .filter(r => (
+                    r &&
                     r.temporal_entity &&
                     r.temporal_entity.fk_class === DfhConfig.CLASS_PK_APPELLATION_USE &&
                     r.temporal_entity.te_roles &&

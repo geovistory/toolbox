@@ -119,7 +119,7 @@ export class TextPropertyFieldComponent extends TextPropertyFieldAPIActions impl
   }
 
   ngOnDestroy() {
-    this.destroy();
+    // this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
@@ -132,7 +132,7 @@ export class TextPropertyFieldComponent extends TextPropertyFieldAPIActions impl
     this.submitted = true;
     if (this.formGroup.valid) {
       const infTextProperty = new InfTextProperty({
-        fk_concerned_entity: this.pkConcernedEntity;
+        fk_concerned_entity: this.pkConcernedEntity,
         ...this.formGroup.value.createNew,
         fk_class_field: this.localStore.getState().fkClassField
       })

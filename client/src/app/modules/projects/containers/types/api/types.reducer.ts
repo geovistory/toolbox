@@ -43,29 +43,30 @@ export function typesReducer(state: Types = INITIAL_STATE, a: Action): Types {
     case TypesAPIActions.OPEN_ADD_FORM:
       state = {
         ...state,
-        add: true
+        add: action.meta.create
       };
       break;
 
     case TypesAPIActions.CLOSE_ADD_FORM:
       state = {
         ...state,
-        add: false
+        add: undefined
       };
       break;
 
-    case TypesAPIActions.CREATE_STARTED:
-      state = {
-        ...state,
-        add: false,
-        loading: true
-      };
-      break;
+    // case TypesAPIActions.CREATE_STARTED:
+    //   state = {
+    //     ...state,
+    //     add: undefined,
+    //     loading: true
+    //   };
+    //   break;
 
     case TypesAPIActions.CREATE_SUCCEEDED:
       state = {
         ...state,
         loading: false,
+        add: undefined,
         items: {
           ...state.items,
           [action.meta.type.pk_entity]: action.meta.type
@@ -73,13 +74,13 @@ export function typesReducer(state: Types = INITIAL_STATE, a: Action): Types {
       };
       break;
 
-    case TypesAPIActions.CREATE_FAILED:
-      state = {
-        ...state,
-        loading: false,
-        error: action.error
-      };
-      break;
+    // case TypesAPIActions.CREATE_FAILED:
+    //   state = {
+    //     ...state,
+    //     loading: false,
+    //     error: action.error
+    //   };
+    //   break;
 
 
     /*****************************************************
@@ -111,7 +112,7 @@ export function typesReducer(state: Types = INITIAL_STATE, a: Action): Types {
     case TypesAPIActions.CREATE_STARTED:
       state = {
         ...state,
-        add: false,
+        add: undefined,
         loading: true
       };
       break;

@@ -1,10 +1,10 @@
 import { DfhClass, InfNamespace } from 'app/core';
-import { TypesI } from '../../types/api/types.models';
+import { Types } from '../../types/api/types.models';
 
 // Interface of this slice of store
 export interface ClassSettingsI {
     dfhClass?: DfhClass;
-    types?: TypesI;
+    types?: Types;
     namespaces?: InfNamespace[];
 
 }
@@ -12,7 +12,7 @@ export interface ClassSettingsI {
 // Class of this slice of store
 export class ClassSettings implements ClassSettingsI {
     dfhClass?: DfhClass;
-    types?: TypesI;
+    types?: Types;
     namespaces?: InfNamespace[];
 
     constructor(data?: ClassSettingsI) {

@@ -61,6 +61,19 @@ export function textPropertyListReducer(state: TextPropertyField = INITIAL_STATE
       break;
 
 
+    case TextPropertyFieldAPIActions.TOGGLE_TEXT_PROP_DETAIL:
+      state = {
+        ...state,
+        textPropertyDetailList: {
+          ...state.textPropertyDetailList,
+          [action.meta.key]: {
+            ...state.textPropertyDetailList[action.meta.key],
+            toggle: state.textPropertyDetailList[action.meta.key].toggle === 'expanded' ? 'collapsed' : 'expanded'
+          }
+        }
+      };
+      break;
+
     case TextPropertyFieldAPIActions.OPEN_CREATE_OR_ADD_FORM:
       state = {
         ...state,
@@ -72,12 +85,12 @@ export function textPropertyListReducer(state: TextPropertyField = INITIAL_STATE
       state = omit(['createOrAdd'], state);
       break;
 
-    /*****************************************************
-    * Reducers called on destroy of component
-    *****************************************************/
-    case TextPropertyFieldAPIActions.DESTROY:
-      state = undefined;
-      break;
+    // /*****************************************************
+    // * Reducers called on destroy of component
+    // *****************************************************/
+    // case TextPropertyFieldAPIActions.DESTROY:
+    //   state = undefined;
+    //   break;
 
   }
 

@@ -1,28 +1,19 @@
 import { DfhClass, InfNamespace, InfPersistentItem } from 'app/core';
 import { TypeEditFormI } from '../../type-edit-form/api/type-edit-form.models';
+import { CreateOrAddPeIt } from 'app/modules/information/containers/create-or-add-pe-it/api/create-or-add-pe-it.models';
 
-// Interface of this slice of store
-export interface TypesI {
-    items?: {};
-    add?: boolean;
-    edit?: boolean | TypeEditFormI;
-    class?: DfhClass;
-    loading?: boolean;
-    error?: any;
-    namespace?: InfNamespace;
-}
 
 // Class of this slice of store
-export class Types implements TypesI {
+export class Types  {
     items?: {};
-    add?: boolean;
+    add?: CreateOrAddPeIt;
     edit?: boolean | TypeEditFormI;
     loading?: boolean;
     class?: DfhClass;
     error?: any;
     namespace?: InfNamespace;
 
-    constructor(data?: TypesI) {
+    constructor(data?: Types) {
         Object.assign(this, data);
     }
 }

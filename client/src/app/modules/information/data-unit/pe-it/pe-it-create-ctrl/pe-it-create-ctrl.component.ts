@@ -1,5 +1,5 @@
 import { NgRedux, WithSubStore } from '@angular-redux/store';
-import { Component, forwardRef, ChangeDetectorRef } from '@angular/core';
+import { Component, forwardRef, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { InfPersistentItem, InfTemporalEntity, U, UiContext, ComConfig, IAppState } from 'app/core';
 import { PeItCtrlBase } from '../pe-it-ctrl.base';
@@ -30,6 +30,10 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
   peIt: InfPersistentItem;
 
   uiContext: UiContext;
+
+  // Emits peIt also when the form is not valid.
+  // useful e.g. for parent component to retrieve some string and search for existing peIts
+  @Output() onValueChange = new EventEmitter<InfPersistentItem>();
 
   constructor(
     protected ngRedux: NgRedux<IAppState>,
@@ -79,6 +83,12 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
       peIt.pi_roles = [];
       peIt.text_properties = [];
       peIt.domain_entity_associations = [];
+
+      // TODO: create a NamespaceField for explicitly showing the namespace as a field in GUI
+      if (s.peIt.type_namespace_rels) {
+        peIt.type_namespace_rels = s.peIt.type_namespace_rels;
+      }
+
       Object.keys(this.formGroup.controls).forEach(key => {
 
         const field = this.ngRedux.getState().activeProject.crm.fieldList[key];
@@ -104,6 +114,9 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
       // try to retrieve a appellation label
       const displayAppeUse: InfTemporalEntity = U.getDisplayAppeLabelOfPeIt(peIt)
       this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(displayAppeUse);
+
+      // emit the peIt, also if not valid
+      this.onValueChange.emit(peIt);
 
       if (this.formGroup.valid) {
         // send the peIt the parent form

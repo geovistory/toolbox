@@ -162,6 +162,7 @@ module.exports = function (InfPersistentItem) {
           promiseArray.push(promise)
 
         }
+
         /******************************************
          * domain_entity_associations
          ******************************************/
@@ -198,6 +199,42 @@ module.exports = function (InfPersistentItem) {
 
         }
 
+        /******************************************
+         * type_namespace_rels
+         ******************************************/
+        if (requestedPeIt.type_namespace_rels) {
+
+          // prepare parameters
+          const InfTypeNamespaceRel = InfPersistentItem.app.models.InfTypeNamespaceRel;
+
+          //… filter items that are truthy (not null), iterate over them,
+          // return the promise that the PeIt will be
+          // returned together with all nested items
+          const promise = Promise.map(requestedPeIt.type_namespace_rels.filter(item => (item)), (item) => {
+            // use the pk_entity from the created peIt to set the fk_persistent_item of the item
+            item.fk_persistent_item = resultingPeIt.pk_entity;
+            // find or create the item
+            return InfTypeNamespaceRel.findOrCreateInfTypeNamespaceRel(projectId, item);
+          }).then((items) => {
+            //attach the items to peit.type_namespace_rels
+            res.type_namespace_rels = [];
+            for (var i = 0; i < items.length; i++) {
+              const item = items[i];
+              if (item && item[0]) {
+                res.type_namespace_rels.push(item[0]);
+              }
+            }
+            return true;
+
+          }).catch((err) => {
+            return err;
+          })
+
+          // add promise
+          promiseArray.push(promise)
+
+        }
+
 
         if (promiseArray.length === 0) return resultingPeIts;
         else return Promise.map(promiseArray, (promise) => promise).then(() => {
@@ -212,7 +249,7 @@ module.exports = function (InfPersistentItem) {
   }
 
   /** 
-   * Check if authorized to create type
+   * Check if authorized to relate type with namespace
    * - pk_namespace must be of "Geovistory Ongoing"
    * - or pk_project must be in fk_project of namespace  
    */
@@ -451,7 +488,7 @@ module.exports = function (InfPersistentItem) {
   })
 
 
-  InfPersistentItem.searchInRepo = function (searchString, limit, page, fk_class, cb) {
+  InfPersistentItem.searchInRepo = function (searchString, limit, page, fk_class, fk_namespace, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -485,6 +522,18 @@ module.exports = function (InfPersistentItem) {
       where = ' AND pi.fk_class = $4';
     }
 
+    let innerJoinNamespace = '';
+    if (fk_namespace) {
+      params.push(fk_namespace);
+      innerJoinNamespace = `
+      INNER JOIN (
+        SELECT fk_persistent_item
+        FROM information.type_namespace_rel
+        WHERE fk_namespace = $`+ params.length + `
+      ) AS namsepace_rel ON namsepace_rel.fk_persistent_item = pi.pk_entity
+      `;
+    }
+
     var sql_stmt = `
     Select
     count(pi.pk_entity) OVER() AS total_count,
@@ -512,6 +561,7 @@ module.exports = function (InfPersistentItem) {
 	    projects_array as projects,
       setweight(to_tsvector(string_agg(appellations.appellation_string, ' • ')), 'A') as document
       FROM information.v_persistent_item AS pi
+      ${innerJoinNamespace}
       INNER JOIN
       (
         SELECT DISTINCT
@@ -722,7 +772,7 @@ module.exports = function (InfPersistentItem) {
                 "pk_entity": "asc"
               }]
             },
-            // "entity_version_project_rels": innerJoinThisProject,
+            "entity_version_project_rels": innerJoinThisProject,
             "te_roles": {
               "$relation": {
                 "name": "te_roles",
@@ -1373,6 +1423,12 @@ module.exports = function (InfPersistentItem) {
         -- take only the max quantity of rows for that property, exclude repo-alternatives
         WHERE r.rank_for_pe_it <= r.domain_max_quantifier OR r.domain_max_quantifier = -1  OR r.domain_max_quantifier IS NULL
       ),
+      -- Find all temporal entities related to pe_it_roles
+      -- that are of an auto-add property
+      te_ents AS (
+        select fk_temporal_entity as pk_entity
+        from pe_it_roles
+      ),
       -- Find all roles related to temporal entities mached by pe_it_roles
       -- that are of an auto-add property
       te_ent_roles AS (
@@ -1415,6 +1471,8 @@ module.exports = function (InfPersistentItem) {
         UNION
         select pk_entity, calendar from pe_it_roles 
         UNION 
+        select pk_entity, null::calendar_type as calendar from te_ents
+        UNION
         select pk_entity, calendar from te_ent_roles
       )
       --,

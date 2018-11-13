@@ -36,7 +36,7 @@ export class PeItSearchExistingAPIEpics {
           /**
            * Do some api call
            */
-          this.peItApi.searchInRepo(action.meta.searchString, action.meta.limit, action.meta.page, action.meta.pkClass)
+          this.peItApi.searchInRepo(action.meta.searchString, action.meta.limit, action.meta.page, action.meta.pkClass, action.meta.pkNamespace)
             /**
                * Subscribe to the api call
                */

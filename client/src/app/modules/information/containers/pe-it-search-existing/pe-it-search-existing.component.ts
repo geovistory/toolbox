@@ -1,5 +1,5 @@
 import { Component, OnDestroy, Input, OnInit, EventEmitter, Output } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
 import { IAppState, SubstoreComponent, InfPersistentItem, ClassConfig } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
@@ -32,6 +32,7 @@ export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions im
   @Input() selectPeItMode: boolean;
 
   @select() pkClass$: Observable<number>;
+  @select() pkNamespace$: Observable<number>;
 
   @Input() searchString$: Observable<string>;
 
@@ -52,6 +53,7 @@ export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions im
   pkClass: number;
   searchString = '';
   minSearchStringLength = 2;
+  pkNamespace: number;
 
   // Pagination
   collectionSize: number; // number of search results
@@ -78,11 +80,12 @@ export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions im
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
     // if (!this.pkClass) throw Error('please provide a pkClass')
-    this.pkClass$.pipe(
-      first(d => !!d),
+    combineLatest(this.pkClass$, this.pkNamespace$).pipe(
+      first(d => !!d[0]), // make sure pkClass is there. pkNamespace is optional.
       takeUntil(this.destroy$))
-      .subscribe(pkClass => {
-        this.pkClass = pkClass;
+      .subscribe(d => {
+        this.pkClass = d[0];
+        this.pkNamespace = d[1] ? d[1] : null;
         this.classConfig = this.ngRedux.getState().activeProject.crm.classes[this.pkClass];
 
         this.searchString$.pipe(
@@ -92,7 +95,7 @@ export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions im
           this.searchString = newValue;
           if (newValue.length >= this.minSearchStringLength) {
             this.page = 1;
-            this.search(this.searchString, this.limit, this.page, this.pkClass);
+            this.search(this.searchString, this.limit, this.page, this.pkClass, this.pkNamespace);
           } else {
             this.searchFailed();
           }
@@ -112,7 +115,7 @@ export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions im
   }
 
   pageChange() {
-    this.search(this.searchString, this.limit, this.page, this.pkClass);
+    this.search(this.searchString, this.limit, this.page, this.pkClass, this.pkNamespace);
   }
 
   hitsFrom() {

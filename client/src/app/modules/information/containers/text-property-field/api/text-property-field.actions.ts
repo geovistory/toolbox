@@ -9,7 +9,8 @@ type Payload = TextPropertyField;
 interface MetaData {
   infTextProperty?: InfTextProperty;
   txtPropDetail?: TextPropertyDetail;
-  itemsArray?: any[]
+  itemsArray?: any[];
+  key?: string;
 };
 export type TextPropertyFieldAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -28,6 +29,9 @@ export class TextPropertyFieldAPIActions {
   static readonly LOAD = 'TextPropertyField::LOAD';
   static readonly LOAD_SUCCEEDED = 'TextPropertyField::LOAD_SUCCEEDED';
   static readonly LOAD_FAILED = 'TextPropertyField::LOAD_FAILED';
+
+  static readonly TOGGLE_TEXT_PROP_DETAIL = 'TextPropertyField::TOGGLE_TEXT_PROP_DETAIL';
+
 
   static readonly DESTROY = 'TextPropertyField::DESTROY';
 
@@ -80,6 +84,12 @@ export class TextPropertyFieldAPIActions {
   @dispatch() toggle = (): TextPropertyFieldAPIAction => ({
     type: TextPropertyFieldAPIActions.TOGGLE,
     meta: null,
+    payload: null,
+  })
+
+  @dispatch() toggleTextPropertyDetail = (key: string): TextPropertyFieldAPIAction => ({
+    type: TextPropertyFieldAPIActions.TOGGLE_TEXT_PROP_DETAIL,
+    meta: { key },
     payload: null,
   })
 

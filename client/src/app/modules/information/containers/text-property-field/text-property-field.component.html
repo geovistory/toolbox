@@ -15,10 +15,44 @@
 
   <div *ngIf="!(createOrAdd$ | async)" [@slideInOut]="(toggle$|async)">
 
-    <div class="list-group-item d-flex" *ngFor="let item of (textPropertyDetailList$ | async) | keys; trackBy:getKey;">
+    <div class="d-flex list-group-item p-0" [ngClass]="{'flex-column': item.value.toggle === 'expanded'}" *ngFor="let item of (textPropertyDetailList$ | async) | keys; trackBy:getKey;">
 
-      <gv-quill-view [contents]=item.value.textProperty.text_property_quill_doc.contents></gv-quill-view>
-      <gv-language-view class="ml-auto pl-3" [language]="item.value.textProperty.language"></gv-language-view>
+      <div *ngIf="item.value.toggle === 'expanded'" class="main d-flex flex-column gv-card-spacer-b gv-card-spacer-l btn-r btn-t">
+
+        <!-- Header -->
+        <div class="d-flex font-lg text-gray-400 btn-r btn-t">
+
+          <!-- Class info -->
+          <div class="gv-grow-1 gv-pointer  d-flex  justify-content-start'">
+            <div class="align-self-center">
+              {{(label$ | async)?.sg}}
+              (<gv-language-view class="d-inline-block" [language]="item.value.textProperty.language"></gv-language-view>)
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-link-gray" title="Remove">
+              <i class="fa fa-trash"></i>
+            </button>
+            <button type="button" class="btn btn-link-gray" title="Minimize" (click)="toggleTextPropertyDetail(item.key)">
+              <i class="fa fa-compress"></i>
+            </button>
+          </div>
+
+        </div>
+
+        <div class="gv-grow-1 mt-3">
+          <gv-quill-view [contents]=item.value.textProperty.text_property_quill_doc.contents></gv-quill-view>
+        </div>
+
+      </div>
+
+      <div class="gv-card-spacer-x gv-card-spacer-y gv-grow-1" *ngIf="item.value.toggle === 'collapsed'" (click)="toggleTextPropertyDetail(item.key)">
+        <gv-quill-view [contents]=item.value.textProperty.text_property_quill_doc.contents></gv-quill-view>
+      </div>
+
+
     </div>
 
   </div>
