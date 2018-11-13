@@ -141,8 +141,8 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
     ).subscribe((d) => {
       const fkClass = d[0], pkUiContext = d[1], crm = d[2];
       this.classConfig = crm.classes[fkClass];
-      const uiContexts = this.classConfig.uiContexts[pkUiContext];
-      this.uiElementsForAddInfo = !uiContexts ? [] : uiContexts.uiElements;
+      this.uiContext = this.classConfig.uiContexts[pkUiContext];
+      this.uiElementsForAddInfo = !this.uiContext ? [] : this.uiContext.uiElements;
     })
 
   }

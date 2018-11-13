@@ -66,7 +66,7 @@ export class SourceListAPIEpics {
                 showPropertiesToggle: true,
 
                 showPropertiesHeader: true,
-                showAddAPropertyButton: false,
+                // showAddAPropertyButton: false,
               }, data, action.meta.crm,
                 { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE })
               /**

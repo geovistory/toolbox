@@ -1205,6 +1205,11 @@ export class U {
                     key = child.key;
                     return true;
                 }
+            } else if (child.value.type === 'TextPropertyField') {
+                const textPropField = child.value as TextPropertyField;
+                if (textPropField.createOrAdd) {
+                    key = child.key;
+                }
             }
         })
         return key;

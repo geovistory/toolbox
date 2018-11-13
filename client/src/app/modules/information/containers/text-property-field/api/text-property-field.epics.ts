@@ -20,7 +20,10 @@ export class TextPropertyFieldAPIEpics {
   ) { }
 
   public createEpics(c: TextPropertyFieldComponent): Epic {
-    return combineEpics(this.createCreateTextPropertyFieldEpic(c));
+    return combineEpics(
+      this.createCreateTextPropertyFieldEpic(c),
+      this.listenToTextPropertyDetailListLength(c)
+    );
   }
 
   private createCreateTextPropertyFieldEpic(c: TextPropertyFieldComponent): Epic {
@@ -79,4 +82,25 @@ export class TextPropertyFieldAPIEpics {
       )
     }
   }
+
+
+  private listenToTextPropertyDetailListLength(c: TextPropertyFieldComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        ofType(
+          TextPropertyFieldAPIActions.CLOSE_CREATE_OR_ADD_FORM
+        ),
+        filter(action => ofSubstore(c.basePath)(action)),
+        switchMap((action: TextPropertyFieldAPIAction) => new Observable<Action>((globalStore) => {
+          const state = c.localStore.getState();
+          if (!state.textPropertyDetailList || Object.keys(state.textPropertyDetailList).length === 0) {
+            c.localStore.dispatch(this.actions.removeField());
+          }
+
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
 }

@@ -32,6 +32,7 @@ export class TextPropertyFieldAPIActions {
 
   static readonly TOGGLE_TEXT_PROP_DETAIL = 'TextPropertyField::TOGGLE_TEXT_PROP_DETAIL';
 
+  static readonly REMOVE_FIELD = 'TextPropertyField::REMOVE_FIELD';
 
   static readonly DESTROY = 'TextPropertyField::DESTROY';
 
@@ -105,6 +106,15 @@ export class TextPropertyFieldAPIActions {
     payload: null,
   })
 
+
+  /*********************************************************************
+  *  Method to remove the class field (reduced by parent)
+  *********************************************************************/
+  removeField = (): TextPropertyFieldAPIAction => ({
+    type: TextPropertyFieldAPIActions.REMOVE_FIELD,
+    meta: null,
+    payload: null,
+  })
 
   /*********************************************************************
   *  Method to distroy the slice of store

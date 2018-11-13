@@ -52,15 +52,32 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
     const crm = this.ngRedux.getState().activeProject.crm;
 
     this.addedChildren$.pipe(
-      filter(d => !!d), // make sure children is not falsy
+      filter(d => (!!d)), // make sure children is not falsy
       takeUntil(this.destroy$)
     ).subscribe(children => {
 
       this.addOptions = this.uiElements.map(el => {
-
         if (
-          children && el.fk_property
-          // && !children[el.propertyFieldKey]
+          el.fk_class_field
+          && !children[el.propSetKey]
+          ) {
+
+          const level1propLabel = el.class_field.label;
+          const level2propsLabels = [el.class_field.description];
+
+          const option: PeItAddOption = {
+            label: [level1propLabel, ...level2propsLabels].join(''),
+            level1propLabel,
+            classLabel: '',
+            level2propsLabels,
+            added: children[el.propertyFieldKey] ? true : false,
+            uiElement: el
+          }
+
+          return option;
+        } else if (
+          el.fk_property
+          && !children[el.propertyFieldKey]
           && !similarPropertyField(this.classConfig.propertyFields[el.propertyFieldKey], this.excludePropertyField)
         ) {
 

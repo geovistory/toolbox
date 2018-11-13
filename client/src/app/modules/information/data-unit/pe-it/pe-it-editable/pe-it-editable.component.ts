@@ -3,7 +3,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input,
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, IAppState, U, UiContext } from 'app/core';
 import { AddOption, CollapsedExpanded, ExistenceTimeDetail, PeItDetail, PropertyField, PropertyFieldForm, SubstoreComponent } from 'app/core/state/models';
-import { createExistenceTimeDetail } from 'app/core/state/services/state-creator';
+import { createExistenceTimeDetail, createClassField } from 'app/core/state/services/state-creator';
 import { RootEpics } from 'app/core/store/epics';
 import { SectionList } from 'app/modules/information/containers/section-list/api/section-list.models';
 import { combineLatest, Observable } from 'rxjs';
@@ -14,6 +14,7 @@ import { DataUnitAPIEpics } from '../../data-unit.epics';
 import { PeItApiEpics } from '../api/pe-it.epics';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
+import { TextPropertyField } from 'app/core/state/models/text-property-field';
 
 
 
@@ -141,7 +142,7 @@ export class PeItEditableComponent extends DataUnitBase implements AfterViewInit
     ).pipe(map((bools) => ((bools.filter((bool) => (bool === true)).length > 0))));
 
 
-    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
+    // this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
 
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
@@ -198,19 +199,27 @@ export class PeItEditableComponent extends DataUnitBase implements AfterViewInit
 
       } else if (o.uiElement.fk_class_field) {
 
-        // if this is a prop set
+        const crm = this.ngRedux.getState().activeProject.crm;
+        const fieldKey = o.uiElement.propSetKey;
+        let field;
 
-        if (o.uiElement.fk_class_field === ComConfig.PK_CLASS_FIELD_WHEN) {
+        switch (crm.fieldList[fieldKey].type) {
 
-          const existenceTimeDetail = createExistenceTimeDetail(
-            new ExistenceTimeDetail({ toggle: 'expanded' }),
-            [],
-            this.ngRedux.getState().activeProject.crm,
-            { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE }
-          )
-          this.addPropSet('_field_48', existenceTimeDetail)
+          case 'TextPropertyField':
 
+            const fkClassField = crm.fieldList[fieldKey].fkClassField;
+            field = new TextPropertyField({
+              textPropertyDetailList: {},
+              fkClassField,
+              pkUiContext: this.uiContext.pk_entity,
+              createOrAdd: {}
+            })
+
+            break;
         }
+
+        // if this is a class field
+        this.addPropSet(o.uiElement.propSetKey, field)
 
       }
 

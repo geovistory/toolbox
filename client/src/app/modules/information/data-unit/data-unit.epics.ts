@@ -9,6 +9,7 @@ import { DataUnitActions } from './data-unit.actions';
 import { PropertyFieldActions, PropertyFieldAction } from '../property-field/property-field.actions';
 import { startsWith } from 'ramda';
 import { DataUnitBase } from './data-unit.base';
+import { TextPropertyFieldAPIActions } from '../containers/text-property-field/api/text-property-field.actions';
 
 /**
  * Cheks if the action comes from a direct child (from _fields) and not
@@ -47,7 +48,10 @@ export class DataUnitAPIEpics {
                 /**
                  * Filter the actions that triggers this epic
                  */
-                ofType(PropertyFieldActions.REMOVE_ROLE_SET),
+                ofType(
+                    PropertyFieldActions.REMOVE_ROLE_SET,
+                    TextPropertyFieldAPIActions.REMOVE_FIELD
+                ),
                 filter(action => ofDirectChild(c.basePath)(action)),
                 switchMap((action: PropertyFieldAction) => new Observable<Action>((globalStore) => {
 

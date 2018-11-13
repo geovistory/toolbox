@@ -332,14 +332,23 @@ export function createClassField(fieldKey: string, rls: InfRole[], textProps: In
             }), rls, crm, settings);
 
         case 'TextPropertyField':
+
             const fkClassField = crm.fieldList[fieldKey].fkClassField;
+
+            // get array of textProps of that field
+            const t = !textProps ? [] : textProps.filter((txtProp) => txtProp.fk_class_field == fkClassField)
+
+            // if no textProps and not create mode, return
+            if (t.length === 0 && !isCreateContext(settings.pkUiContext)) return;
+
             return createTextPropertyField(
                 new TextPropertyField({
                     fkClassField,
                     pkUiContext: settings.pkUiContext
                 }),
-                !textProps ? [] : textProps.filter((txtProp) => txtProp.fk_class_field == fkClassField
-                ), crm, settings
+                t,
+                crm,
+                settings
             );
 
         default:

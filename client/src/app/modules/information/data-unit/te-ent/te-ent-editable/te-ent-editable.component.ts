@@ -134,7 +134,7 @@ export class TeEntEditableComponent extends DataUnitBase {
 
     this.initPaths()
 
-    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
+    // this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
 
     this.initObservablesOutsideLocalStore();
 

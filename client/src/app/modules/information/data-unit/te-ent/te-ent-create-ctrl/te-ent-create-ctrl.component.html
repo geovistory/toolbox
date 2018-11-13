@@ -12,15 +12,14 @@
   <form class="card-body" [formGroup]="formGroup" *ngIf="formGroup">
 
     <div *ngFor="let item of (_fields$ | async) | keys; trackBy:getKey">
-      <span [ngSwitch]="item.value.type">
 
-        <gv-existence-time-editable *ngSwitchCase="'ExistenceTime'" [basePath]="basePath.concat('_fields').concat(item.key)"
-          (onRemovePropSet)="removePropSet(item.key)" mode="create" [formControlName]="item.key" (touched)="markAsTouched()"></gv-existence-time-editable>
+      <gv-existence-time-editable *ngIf="item.value.type === 'ExistenceTimeDetail'" [basePath]="basePath.concat('_fields').concat(item.key)"
+        (onRemovePropSet)="removePropSet(item.key)" mode="create" [formControlName]="item.key" (touched)="markAsTouched()"></gv-existence-time-editable>
 
-        <gv-te-ent-property-field-create-ctrl *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath"
-          [index]="item.key" (onRemovePropertyField)="removePropertyField(item.key)" [formControlName]="item.key" (touched)="markAsTouched()"></gv-te-ent-property-field-create-ctrl>
+      <gv-te-ent-property-field-create-ctrl *ngIf="item.value.type === 'PropertyField'" [parentPath]="basePath"
+        [parentTeEntStatePath]="basePath" [index]="item.key" (onRemovePropertyField)="removePropertyField(item.key)"
+        [formControlName]="item.key" (touched)="markAsTouched()"></gv-te-ent-property-field-create-ctrl>
 
-      </span>
     </div>
 
   </form>

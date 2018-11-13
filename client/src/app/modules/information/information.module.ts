@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationService } from 'app/core';
 import { TimelineModule } from 'app/modules/timeline/timeline.module';
-import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from 'app/shared';
+import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule, FilterByKeyModule } from 'app/shared';
 import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
 import { KeysModule } from 'app/shared/pipes/keys.module';
 import { DndModule } from 'ng2-dnd';
@@ -165,6 +165,7 @@ import { TextPropertyFieldAPIEpics } from './containers/text-property-field/api/
     DimensionChangeModule,
     TimelineModule,
     KeysModule,
+    FilterByKeyModule,
     PeItStrModule,
     HighlightModule,
     DndModule,
