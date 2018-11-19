@@ -1,5 +1,5 @@
 <div class="d-flex align-items-baseline mb-2">
-  <div>{{widget.name}} <small class="text-success" *ngIf="widget?.propertyField?.property?.identity_defining">Identity
+  <div>{{widget.name}} <small class="text-success" *ngIf="identityDefining">Identity
       defining!</small></div>
   <div class="d-flex align-items-baseline ml-auto">
     <div *ngIf="widget.propertyField" class="font-sm "><a target="_blank" [attr.href]="'http://ontologies.dataforhistory.org/property/' + widget.propertyField?.property?.dfh_pk_property">

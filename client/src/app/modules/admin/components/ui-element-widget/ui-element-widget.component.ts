@@ -17,7 +17,7 @@ export class UiElementWidgetComponent implements OnInit {
   }
 
   @HostBinding('class.border-left-success') get identityDefining() {
-    return !this.widget.propertyField ? false : this.widget.propertyField.property.identity_defining;
+    return !this.widget.propertyField ? false : (this.widget.propertyField.property.identity_defining && this.widget.propertyField.isOutgoing);
   }
 
   constructor() { }
