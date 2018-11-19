@@ -138,6 +138,8 @@ import { PeItStrModule } from 'app/shared/pipes/pe-it-str/pe-it-str.module';
 import { TextPropertyFieldComponent } from './containers/text-property-field/text-property-field.component';
 import { TextPropertyFieldAPIActions } from './containers/text-property-field/api/text-property-field.actions';
 import { TextPropertyFieldAPIEpics } from './containers/text-property-field/api/text-property-field.epics';
+import { MentioningListComponent } from './containers/mentioning-list/mentioning-list.component';
+import { MentioningCreateCtrlComponent } from './components/mentioning-create-ctrl/mentioning-create-ctrl.component';
 
 
 
@@ -279,6 +281,8 @@ import { TextPropertyFieldAPIEpics } from './containers/text-property-field/api/
     EntityAssociationCreateOrAddComponent,
     EntityAssociationExistingListComponent,
     TextPropertyFieldComponent,
+    MentioningListComponent,
+    MentioningCreateCtrlComponent,
 
 
 
@@ -446,7 +450,9 @@ import { TextPropertyFieldAPIEpics } from './containers/text-property-field/api/
     TeEntLabelComponent,
     PeItLabelComponent,
     ClassInfoComponent,
-    EditorHeaderComponent
+    EditorHeaderComponent,
+    MentioningCreateCtrlComponent,
+
   ],
   entryComponents: [
     LeafPeItViewModalComponent,

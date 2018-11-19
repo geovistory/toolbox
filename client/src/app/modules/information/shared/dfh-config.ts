@@ -112,6 +112,11 @@ export class DfhConfig {
 
   static CLASS_PK_EXPRESSION = 218;
 
+  static CLASS_PK_MANIFESTATION_PRODUCT_TYPE = 219;
+  static CLASS_PK_MANIFESTATION_SINGLETON = 220;
+  static CLASS_PK_ITEM = 221;
+  static CLASS_PK_SPOT = 99999;
+  
   static CLASS_PKS_SOURCE_PE_IT = [219];
 
 

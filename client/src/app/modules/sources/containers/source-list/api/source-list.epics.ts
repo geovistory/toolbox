@@ -121,7 +121,7 @@ export class SourceListAPIEpics {
 
                 showProperties: false,
                 showPropertiesToggle: true,
-                showAddAPropertyButton: false,
+                // showAddAPropertyButton: false,
 
                 showRepros: true,
                 showReprosToggle: true,

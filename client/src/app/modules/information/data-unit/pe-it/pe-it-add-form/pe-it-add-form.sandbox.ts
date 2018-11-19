@@ -25,7 +25,8 @@ export default sandboxOf(PeItAddFormComponent, {
       pkProject: 8, // use a pk of a project that has the pkEntity not yet added
       pkEntity: 25893,
       settings: {
-        isAddMode: true
+        pkUiContext: 1,
+        isViewMode: true
       } as StateSettings,
       activeProject: {
         pk_project: 8, // use same pkProject
