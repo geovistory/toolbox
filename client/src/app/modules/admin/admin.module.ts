@@ -39,6 +39,7 @@ import { TableModule } from 'ngx-easy-table';
 import { ClassFieldListComponent } from './components/class-field-list/class-field-list.component';
 import { ClassFieldListAPIActions } from './components/class-field-list/api/class-field-list.actions';
 import { ClassFieldListAPIEpics } from './components/class-field-list/api/class-field-list.epics';
+import { ClassMainComponent } from './components/class-main/class-main.component';
 
 @NgModule({
   imports: [
@@ -85,7 +86,8 @@ import { ClassFieldListAPIEpics } from './components/class-field-list/api/class-
     DfhLabelCreateComponent,
     LandingPageComponent,
     UiElementWidgetComponent,
-    ClassFieldListComponent
+    ClassFieldListComponent,
+    ClassMainComponent
   ]
 })
 export class AdminModule { }

@@ -26,6 +26,18 @@
       <a href routerLink="../classes/{{row.dfh_has_range}}">{{row?.range_standard_label}}</a>
     </td>
     <td>
+      {{row.dfh_domain_instances_max_quantifier}}
+    </td>
+    <td>
+      {{row.dfh_domain_instances_min_quantifier}}
+    </td>
+    <td>
+      {{row.dfh_range_instances_max_quantifier}}
+    </td>
+    <td>
+      {{row.dfh_range_instances_min_quantifier}}
+    </td>
+    <td>
       <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', row.key, 'label_sg']" [dfhFkProperty]="row.dfh_pk_property"></gv-dfh-label-list-edit>
     </td>
     <td>

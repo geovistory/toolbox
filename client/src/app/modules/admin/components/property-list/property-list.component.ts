@@ -84,6 +84,10 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
     { key: 'property_standard_label', title: 'Property' },
     { key: 'dfh_has_range', title: 'Range pk' },
     { key: 'range_standard_label', title: 'Range' },
+    { key: 'dfh_domain_instances_max_quantifier', title: 'dmax' },
+    { key: 'dfh_domain_instances_min_quantifier', title: 'dmin' },
+    { key: 'dfh_range_instances_max_quantifier', title: 'rmax' },
+    { key: 'dfh_range_instances_min_quantifier', title: 'rmin' },
     { key: 'gui label sg', title: 'gui label sg', searchEnabled: false, orderEnabled: false },
     { key: 'gui label pl', title: 'gui label pl', searchEnabled: false, orderEnabled: false },
     { key: 'gui label sg inv', title: 'gui label sg inv', searchEnabled: false, orderEnabled: false },
@@ -106,6 +110,11 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
     ).subscribe(items => { this.setTableData(items) });
   }
 
+  quantifierToText(q): string {
+    if (q == -1) return 'n';
+    else if (q == undefined) return 'NULL';
+    else return q;
+  }
 
   setTableData(items: { [key: string]: DfhProperty }) {
     this.data = this.keys.transform(items).map((item) => {
@@ -113,6 +122,10 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
       const rangeClass = (item.value.range_class || {} as any);
       return {
         ...item.value,
+        dfh_domain_instances_max_quantifier: this.quantifierToText(item.value.dfh_domain_instances_max_quantifier),
+        dfh_domain_instances_min_quantifier: this.quantifierToText(item.value.dfh_domain_instances_min_quantifier),
+        dfh_range_instances_max_quantifier: this.quantifierToText(item.value.dfh_range_instances_max_quantifier),
+        dfh_range_instances_min_quantifier: this.quantifierToText(item.value.dfh_range_instances_min_quantifier),
         domain_standard_label: [domainClass.dfh_identifier_in_namespace, domainClass.dfh_standard_label].join(' '),
         property_standard_label: [item.value.dfh_identifier_in_namespace, item.value.dfh_standard_label].join(' '),
         range_standard_label: [rangeClass.dfh_identifier_in_namespace, rangeClass.dfh_standard_label].join(' '),

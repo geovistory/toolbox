@@ -9,6 +9,7 @@ import { SystemTypeListComponent } from './components/system-type-list/system-ty
 import { PropertyListComponent } from './components/property-list/property-list.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { ClassFieldListComponent } from './components/class-field-list/class-field-list.component';
+import { ClassMainComponent } from './components/class-main/class-main.component';
 
 
 const routes: Routes = [
@@ -28,6 +29,10 @@ const routes: Routes = [
         path: 'classes/:pk_class',
         component: ClassComponent,
         children: [
+          {
+            path: '',
+            component: ClassMainComponent
+          },
           {
             path: 'ui-context/:pk_ui_context',
             component: ClassUiContextComponent

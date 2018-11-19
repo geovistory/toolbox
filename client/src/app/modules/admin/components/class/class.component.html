@@ -1,5 +1,4 @@
-<h1 class="mb-5">{{(class$|async)?.dfh_standard_label}} <small class="text-muted">Class Configuration for different
-        App-Contexts </small></h1>
+<h1 class="mb-5">Configure {{(class$|async)?.dfh_standard_label}}-Class</h1>
 
 <div class="row">
     <div class="col-3">
@@ -9,94 +8,36 @@
                 <a href="https://kleiolab.atlassian.net/wiki/spaces/GEOV/pages/796491781/Define+Properties+and+Fields+of+a+Class" target="_blank">Help?</a>
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item lead">Toolbox-wide</li>
+                <li class="list-group-item list-group-item-secondary">Toolbox-wide</li>
                 <li class="list-group-item gv-pointer" routerLink="ui-context/{{PK_UI_CONTEXT_ADD}}" routerLinkActive="active">
-                    <strong>Add functionality</strong>
-                    <div class="font-sm">
-                        Define which properties are takeen into account when a instance of
-                        {{(class$|async)?.dfh_standard_label}} is added to a project. This
-                        settings are Toolbox-wide (independent of the UI-Context), since they are relevant for the
-                        backend only and no
-                        screen is shown to the user, when adding a class instance.
-                    </div>
+                    Add functionality
                 </li>
-                <li class="list-group-item lead">Within "DataUnits"</li>
+                <li class="list-group-item list-group-item-secondary">Within "DataUnits"</li>
                 <li class="list-group-item gv-pointer" routerLink="ui-context/{{PK_UI_CONTEXT_DATAUNITS_EDITABLE}}"
                     routerLinkActive="active">
-                    <strong>View and Edit screens</strong>
-                    <div class="font-sm">
-                        Define the subset and order of properties displayed... <br>
-                        <ol>
-                            <li>
-                                ...when a user looks at an instance of {{(class$|async)?.dfh_standard_label}} (roles of
-                                disabled properties are excluded). (->View)
-                            </li>
-                            <li>
-                                ...when a user looks at an instance of {{(class$|async)?.dfh_standard_label}} and opens
-                                the "add a propery" dropdown. (->Edit)
-                            </li>
-                        </ol>
-                    </div>
+                    View and Edit screens
                 </li>
                 <li class="list-group-item gv-pointer" routerLink="ui-context/{{PK_UI_CONTEXT_DATAUNITS_CREATE}}"
                     routerLinkActive="active">
-                    <strong>Create screen</strong>
-                    <div class="font-sm">
-                        Define the order and subsets of form-fields, displayed when a user creates a new instance of
-                        {{(class$|async)?.dfh_standard_label}} (after clicking on "add an entity").
-                    </div>
+                    Create screen
                 </li>
-                <li class="list-group-item lead">Within "Sources"</li>
+                <li class="list-group-item list-group-item-secondary">Within "Sources"</li>
                 <li class="list-group-item gv-pointer" routerLink="ui-context/{{PK_UI_CONTEXT_SOURCES_EDITABLE}}"
                     routerLinkActive="active">
-                    <strong>View and Edit screens</strong>
-                    <div class="font-sm">
-                        Define the subset and order of properties displayed... <br>
-                        <ol>
-                            <li>
-                                ...when a user looks at an instance of {{(class$|async)?.dfh_standard_label}} (roles of
-                                disabled properties are excluded). (->View)
-                            </li>
-                            <li>
-                                ...when a user looks at an instance of {{(class$|async)?.dfh_standard_label}} and opens
-                                the "add a propery" dropdown. (->Edit)
-                            </li>
-                        </ol>
-                    </div>
+                    View and Edit screens
                 </li>
                 <li class="list-group-item gv-pointer" routerLink="ui-context/{{PK_UI_CONTEXT_SOURCES_CREATE}}"
                     routerLinkActive="active">
-                    <strong>Create screen</strong>
-                    <div class="font-sm">
-                        Define the order and subsets of form-fields, displayed when a user creates a new instance of
-                        {{(class$|async)?.dfh_standard_label}} (after clicking on "add an entity").
-                    </div>
+                    Create screen
                 </li>
-                <li class="list-group-item lead">Within "Data Settings > Types"</li>
+                <li class="list-group-item list-group-item-secondary">Within "Data Settings > Types"</li>
                 <li class="list-group-item gv-pointer" routerLink="ui-context/{{PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE}}"
                     routerLinkActive="active">
-                    <strong>View and Edit screens</strong>
-                    <div class="font-sm">
-                        Define the subset and order of properties displayed... <br>
-                        <ol>
-                            <li>
-                                ...when a user looks at an instance of {{(class$|async)?.dfh_standard_label}} (roles of
-                                disabled properties are excluded). (->View)
-                            </li>
-                            <li>
-                                ...when a user looks at an instance of {{(class$|async)?.dfh_standard_label}} and opens
-                                the "add a propery" dropdown. (->Edit)
-                            </li>
-                        </ol>
-                    </div>
+                    View and Edit screens
                 </li>
                 <li class="list-group-item gv-pointer" routerLink="ui-context/{{PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE}}"
                     routerLinkActive="active">
-                    <strong>Create screen</strong>
-                    <div class="font-sm">
-                        Define the order and subsets of form-fields, displayed when a user creates a new instance of
-                        {{(class$|async)?.dfh_standard_label}} (after clicking on "add an entity").
-                    </div>
+                    Create screen
                 </li>
             </ul>
         </div>
