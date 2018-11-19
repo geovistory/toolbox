@@ -181,7 +181,7 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
 
   changeIdentityDefining(row) {
     this.updateProperty(new DfhProperty({
-      ...row,
+      dfh_pk_property: row.dfh_pk_property,
       identity_defining: row.identity_defining ? false : true
     } as DfhProperty))
   }
