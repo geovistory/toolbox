@@ -19,12 +19,12 @@ export class ComConfig {
     static readonly PK_UI_CONTEXT_DATAUNITS_CREATE = 46;
 
     // Sources context
-    static readonly PK_UI_CONTEXT_SOURCES_EDITABLE = 229;
-    static readonly PK_UI_CONTEXT_SOURCES_CREATE = 230;
+    static readonly PK_UI_CONTEXT_SOURCES_EDITABLE = 210;
+    static readonly PK_UI_CONTEXT_SOURCES_CREATE = 211;
 
     // Data Settings > Types context
-    static readonly PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE = 231;
-    static readonly PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE = 232;
+    static readonly PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE = 212;
+    static readonly PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE = 213;
 
 
     /***********************
