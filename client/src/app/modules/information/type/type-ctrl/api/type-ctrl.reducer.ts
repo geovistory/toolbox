@@ -38,9 +38,9 @@ export function typeCtrlReducer(state: TypeCtrl = INITIAL_STATE, a: Action): Typ
     * Reducers called on destroy of component
     *****************************************************/
     case TypeCtrlAPIActions.DESTROY:
-      state = {
-        pkTypedClass: state.pkTypedClass
-      };
+      // state = {
+      //   pkTypedClass: state.pkTypedClass
+      // };
       break;
 
   }

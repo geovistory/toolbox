@@ -30,6 +30,18 @@ export function propertyListReducer(state: PropertyList = INITIAL_STATE, a: Acti
         items: {}
       };
 
+    case PropertyListAPIActions.UPDATE_PROPERTY_SUCCEEDED:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          [propertyKey(action.meta.property)]: {
+            ...state.items[propertyKey(action.meta.property)],
+            ...action.meta.property
+          }
+        }
+      };
+
 
     /*****************************************************
     * Reducers called on destroy of component

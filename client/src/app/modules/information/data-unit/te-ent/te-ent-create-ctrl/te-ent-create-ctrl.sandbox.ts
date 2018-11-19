@@ -2,7 +2,7 @@ import { sandboxOf } from 'angular-playground';
 import { DfhClass, DfhProperty, InfRole } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
-import { RoleDetail, RoleSet } from 'app/core/state/models';
+import { RoleDetail, PropertyField } from 'app/core/state/models';
 import { Information2Module } from '../../../information.module';
 import { TeEntCreateCtrlComponent } from './te-ent-create-ctrl.component';
 
@@ -28,8 +28,8 @@ export default sandboxOf(TeEntCreateCtrlComponent, {
                             dfh_identifier_in_namespace: "F52",
                             dfh_standard_label: "Name Use Activity",
                         } as DfhClass,
-                        _children: {
-                            _role_set_1: new RoleSet({
+                        _fields: {
+                            _property_field_1: new PropertyField({
                                 label: {
                                     default: 'Detailed Name',
                                     sg: 'Detailed Name',

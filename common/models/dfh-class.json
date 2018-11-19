@@ -67,14 +67,14 @@
     "ui_context_configs": {
       "type": "hasMany",
       "model": "ComUiContextConfig",
-      "foreignKey": "fk_class_for_property_set"
+      "foreignKey": "fk_class_for_class_field"
     },
-    "property_sets": {
+    "class_fields": {
       "type": "hasMany",
-      "model": "ComPropertySet",
-      "foreignKey": "fk_class_for_property_set",
+      "model": "ComClassField",
+      "foreignKey": "fk_class_for_class_field",
       "through": "ComUiContextConfig",
-      "keyThrough": "fk_property_set"
+      "keyThrough": "fk_class_field"
     },
     "persistent_items": {
       "type": "hasMany",

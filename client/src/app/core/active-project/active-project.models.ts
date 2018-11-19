@@ -1,5 +1,5 @@
-import { RoleSetList } from 'app/core/state/models';
-import { ComPropertySetInterface, ComUiContextInterface, ProjectInterface } from 'app/core/sdk';
+import { PropertyFieldList, FieldList } from 'app/core/state/models';
+import { ComClassFieldInterface, ComUiContextInterface, ProjectInterface } from 'app/core/sdk';
 import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/api/class-settings.models';
 
 
@@ -10,7 +10,7 @@ export interface ProjectDetail extends ProjectInterface {
 
 export interface ProjectCrm {
     classes?: ClassConfigList;
-    roleSets?: RoleSetList;
+    fieldList?: FieldList;
 }
 
 export interface ClassConfigList { [dfh_pk_class: number]: ClassConfig };
@@ -21,7 +21,7 @@ export interface ClassConfig {
     dfh_pk_class: number;
     subclassOf?: 'peIt' | 'teEnt' ; // to distinguish TeEnts from PeIts
     isInProject?: boolean; // reflects the enabled / disabled state from data settings of the project
-    roleSets?: RoleSetList;
+    propertyFields?: PropertyFieldList;
     uiContexts?: {
         [pk: number]: UiContext
     }
@@ -35,9 +35,9 @@ export interface UiContext extends ComUiContextInterface {
 export interface UiElement {
     fk_property?: number,
     property_is_outgoing?: boolean,
-    roleSetKey?: string,
+    propertyFieldKey?: string, // TODO: merge the propertyFieldKey and propSetKey to fieldKey
     propSetKey?: string,
-    fk_property_set?: number,
-    property_set?: ComPropertySetInterface
+    fk_class_field?: number,
+    class_field?: ComClassFieldInterface
     ord_num: number
 }

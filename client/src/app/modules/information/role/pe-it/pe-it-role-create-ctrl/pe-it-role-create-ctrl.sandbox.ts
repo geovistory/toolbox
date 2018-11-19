@@ -2,7 +2,7 @@ import { sandboxOf } from 'angular-playground';
 import { DfhClass, DfhProperty, InfRole, Project } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
-import { RoleDetail, RoleSet } from 'app/core/state/models';
+import { RoleDetail, PropertyField } from 'app/core/state/models';
 import { Information2Module } from '../../../information.module';
 import { roleCreateMock } from './mock';
 import { PeItRoleCreateCtrlComponent } from './pe-it-role-create-ctrl.component';
@@ -22,13 +22,13 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
         context: {
             model: {
             },
-            parentPath: ['_role_set_1'],
+            parentPath: ['_property_field_1'],
             index: 'new_role_0',
             initState: {
                 activeProject: {
                     crm: crm
                 },
-                '_role_set_1': {
+                '_property_field_1': {
                     _role_list: {
                         "new_role_0": {
                             "role": {
@@ -49,7 +49,7 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
                                     "fk_class": 365
                                 },
                                 "fkClass": 365,
-                                "_children": {
+                                "_fields": {
                                     "_1113_outgoing": {
                                         "isOutgoing": true,
                                         "property": {
@@ -68,7 +68,7 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
                                                     "fk_ui_context": 104,
                                                     "fk_project": null,
                                                     "fk_property": 1113,
-                                                    "fk_property_set": null,
+                                                    "fk_class_field": null,
                                                     "property_is_outgoing": true,
                                                     "ord_num": 0
                                                 },
@@ -77,7 +77,7 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
                                                     "fk_ui_context": 103,
                                                     "fk_project": null,
                                                     "fk_property": 1113,
-                                                    "fk_property_set": null,
+                                                    "fk_class_field": null,
                                                     "property_is_outgoing": true,
                                                     "ord_num": 0
                                                 }
@@ -89,7 +89,7 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
                                             "pl": "Detailed Names",
                                             "default": "Detailed Name"
                                         },
-                                        "type": "RoleSet",
+                                        "type": "PropertyField",
                                         "toggle": "expanded",
                                         "_role_list": {
                                             "_undefined": {
@@ -125,7 +125,7 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
                                             }
                                         }
                                     },
-                                    "_existenceTime": {
+                                    "_field_48": {
                                         "type": "ExistenceTimeDetail",
                                         "roles": [],
                                         "toggle": "expanded"
@@ -168,13 +168,13 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
         context: {
             model: {
             },
-            parentPath: ['_role_set_1'],
+            parentPath: ['_property_field_1'],
             index: '_role_detail_1',
             initState: {
                 activeProject: {
                     pk_project: 52
                 } as Project,
-                '_role_set_1': {
+                '_property_field_1': {
                     _role_list: {
                         _role_detail_1: roleCreateMock
                     }

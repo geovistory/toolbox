@@ -2,16 +2,14 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder } from '@angular/forms';
 import { InfTemporalEntity } from 'app/core';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Observable } from 'rxjs';
-
 import { TeEntDetail } from 'app/core/state/models';
+import { RootEpics } from 'app/core/store/epics';
+import { Observable } from 'rxjs';
 import { DataUnitBase } from '../data-unit.base';
+import { DataUnitAPIEpics } from '../data-unit.epics';
 import { TeEntActions } from './te-ent.actions';
 import { teEntReducer } from './te-ent.reducer';
-import { StateCreatorService } from '../../shared/state-creator.service';
-import { RootEpics } from 'app/core/store/epics';
-import { DataUnitAPIEpics } from '../data-unit.epics';
+
 
 /**
  * hooks in on the level of
@@ -32,8 +30,8 @@ export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValue
     @select() teEnt$: Observable<InfTemporalEntity>
     @select() toggle$: Observable<boolean>
 
-    ontoInfoVisible$: Observable<boolean>
-    communityStatsVisible$: Observable<boolean>
+    showOntoInfo$: Observable<boolean>
+    showCommunityStats$: Observable<boolean>
 
     localStore: ObservableStore<TeEntDetail>;
 
@@ -47,11 +45,10 @@ export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValue
         protected ngRedux: NgRedux<any>,
         protected actions: TeEntActions,
         protected fb: FormBuilder,
-        protected stateCreator: StateCreatorService,
         protected rootEpics: RootEpics,
         protected dataUnitEpics: DataUnitAPIEpics
     ) {
-        super(ngRedux, fb, stateCreator, rootEpics, dataUnitEpics);
+        super(ngRedux, fb, rootEpics, dataUnitEpics);
         this.initForm()
     }
 
@@ -89,7 +86,7 @@ export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValue
      * Inits the formGroup used in template.
      */
     initForm() {
-        //   create the formGroup used to create/edit the roleSet's InfRole[]
+        //   create the formGroup used to create/edit the propertyField's InfRole[]
         this.formGroup = this.fb.group({});
     }
 

@@ -163,6 +163,78 @@ module.exports = function (InfPersistentItem) {
 
         }
 
+        /******************************************
+         * domain_entity_associations
+         ******************************************/
+        if (requestedPeIt.domain_entity_associations) {
+
+          // prepare parameters
+          const InfEntityAssociation = InfPersistentItem.app.models.InfEntityAssociation;
+
+          //… filter items that are truthy (not null), iterate over them,
+          // return the promise that the PeIt will be
+          // returned together with all nested items
+          const promise = Promise.map(requestedPeIt.domain_entity_associations.filter(item => (item)), (item) => {
+            // use the pk_entity from the created peIt to set the fk_domain_entity of the item
+            item.fk_domain_entity = resultingPeIt.pk_entity;
+            // find or create the item
+            return InfEntityAssociation.findOrCreateInfEntityAssociation(projectId, item);
+          }).then((items) => {
+            //attach the items to peit.domain_entity_associations
+            res.domain_entity_associations = [];
+            for (var i = 0; i < items.length; i++) {
+              const item = items[i];
+              if (item && item[0]) {
+                res.domain_entity_associations.push(item[0]);
+              }
+            }
+            return true;
+
+          }).catch((err) => {
+            return err;
+          })
+
+          // add promise for text properties
+          promiseArray.push(promise)
+
+        }
+
+        /******************************************
+         * type_namespace_rels
+         ******************************************/
+        if (requestedPeIt.type_namespace_rels) {
+
+          // prepare parameters
+          const InfTypeNamespaceRel = InfPersistentItem.app.models.InfTypeNamespaceRel;
+
+          //… filter items that are truthy (not null), iterate over them,
+          // return the promise that the PeIt will be
+          // returned together with all nested items
+          const promise = Promise.map(requestedPeIt.type_namespace_rels.filter(item => (item)), (item) => {
+            // use the pk_entity from the created peIt to set the fk_persistent_item of the item
+            item.fk_persistent_item = resultingPeIt.pk_entity;
+            // find or create the item
+            return InfTypeNamespaceRel.findOrCreateInfTypeNamespaceRel(projectId, item);
+          }).then((items) => {
+            //attach the items to peit.type_namespace_rels
+            res.type_namespace_rels = [];
+            for (var i = 0; i < items.length; i++) {
+              const item = items[i];
+              if (item && item[0]) {
+                res.type_namespace_rels.push(item[0]);
+              }
+            }
+            return true;
+
+          }).catch((err) => {
+            return err;
+          })
+
+          // add promise
+          promiseArray.push(promise)
+
+        }
+
 
         if (promiseArray.length === 0) return resultingPeIts;
         else return Promise.map(promiseArray, (promise) => promise).then(() => {
@@ -177,7 +249,7 @@ module.exports = function (InfPersistentItem) {
   }
 
   /** 
-   * Check if authorized to create type
+   * Check if authorized to relate type with namespace
    * - pk_namespace must be of "Geovistory Ongoing"
    * - or pk_project must be in fk_project of namespace  
    */
@@ -232,7 +304,7 @@ module.exports = function (InfPersistentItem) {
 
   }
 
-  InfPersistentItem.searchInProject = function (projectId, searchString, limit, page, cb) {
+  InfPersistentItem.searchInProject = function (projectId, searchString, pkClasses, limit, page, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -262,11 +334,13 @@ module.exports = function (InfPersistentItem) {
       queryString,
       limit,
       offset,
-      projectId
+      projectId,
+      ...pkClasses
     ];
 
-    var sql_stmt = `
+    const pkClassParamNrs = pkClasses.map((c, i) => '$' + (i + 5)).join(', ');
 
+    var sql_stmt = `
     WITH
     epr_of_project AS (
       SELECT fk_project, fk_entity, is_in_project, is_standard_in_project, ord_num
@@ -311,6 +385,7 @@ module.exports = function (InfPersistentItem) {
       SELECT pi.pk_entity, pi.fk_class, pi.tmsp_last_modification
       FROM information.v_persistent_item as pi
       INNER JOIN epr_of_project as epr on epr.fk_entity = pi.pk_entity
+      WHERE pi.fk_class IN (${pkClassParamNrs})
     )
     Select
     count(pi.pk_entity) OVER() AS total_count,
@@ -353,14 +428,14 @@ module.exports = function (InfPersistentItem) {
         INNER JOIN te_ent_in_project AS appe_usage ON appe_usage.pk_entity = r64.fk_temporal_entity
         INNER JOIN roles_in_project AS r63 ON r63.fk_temporal_entity = r64.fk_temporal_entity
         INNER JOIN epr_of_project AS r63_in_project ON r63_in_project.fk_entity = r63.pk_entity
-        WHERE r64.fk_property = 1113 --'R64'
-        AND r63.fk_property IN (1192, 1193, 1194, 1195) --'R63'
-        AND appe_usage.fk_class = 365 --'F52'
+        -- WHERE r64.fk_property = 1113 --'R64'
+        -- AND r63.fk_property IN (1192, 1193, 1194, 1195) --'R63'
+        WHERE appe_usage.fk_class = 365 --'F52'
         GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity, r63_in_project.ord_num
         ORDER BY r63_in_project.ord_num ASC
       ) AS appellations
       ON appellations.pk_named_entity = pi.pk_entity
-      INNER JOIN (SELECT fk_entity, jsonb_agg(fk_project) as projects_array from information.entity_version_project_rel GROUP BY fk_entity) AS projects
+      INNER JOIN (SELECT fk_entity, jsonb_agg(fk_project) as projects_array from epr_of_project GROUP BY fk_entity) AS projects
       ON projects.fk_entity = pi.pk_entity
       GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, projects.fk_entity, projects.projects_array
       ORDER BY pi.tmsp_last_modification DESC
@@ -413,7 +488,7 @@ module.exports = function (InfPersistentItem) {
   })
 
 
-  InfPersistentItem.searchInRepo = function (searchString, limit, page, fk_class, cb) {
+  InfPersistentItem.searchInRepo = function (searchString, limit, page, fk_class, fk_namespace, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -430,7 +505,7 @@ module.exports = function (InfPersistentItem) {
 
     var offset = limit * (page - 1);
 
-    var queryString = searchString.trim(' ').split(' ').map(word => {
+    var queryString = searchString.replace(':', ',').replace('(', ',').replace(')', ',').trim(' ').split(' ').map(word => {
       return word + ':*'
     }).join(' & ');
 
@@ -445,6 +520,18 @@ module.exports = function (InfPersistentItem) {
     if (fk_class) {
       params.push(fk_class);
       where = ' AND pi.fk_class = $4';
+    }
+
+    let innerJoinNamespace = '';
+    if (fk_namespace) {
+      params.push(fk_namespace);
+      innerJoinNamespace = `
+      INNER JOIN (
+        SELECT fk_persistent_item
+        FROM information.type_namespace_rel
+        WHERE fk_namespace = $`+ params.length + `
+      ) AS namsepace_rel ON namsepace_rel.fk_persistent_item = pi.pk_entity
+      `;
     }
 
     var sql_stmt = `
@@ -466,13 +553,15 @@ module.exports = function (InfPersistentItem) {
           'pk_entity', pk_appellation,
           'appellation_label', appellation_label,
           'r63_is_in_project_count', r63_is_in_project_count,
-          'r63_is_standard_in_project_count', r63_is_standard_in_project_count
+          'r63_is_standard_in_project_count', r63_is_standard_in_project_count,
+          'rank_for_pe_it', rank_for_pe_it
         )
       ) as appellation_labels,
       string_agg(appellations.appellation_string, ' • ') AS appellation_string,
 	    projects_array as projects,
       setweight(to_tsvector(string_agg(appellations.appellation_string, ' • ')), 'A') as document
       FROM information.v_persistent_item AS pi
+      ${innerJoinNamespace}
       INNER JOIN
       (
         SELECT DISTINCT
@@ -482,6 +571,7 @@ module.exports = function (InfPersistentItem) {
         jsonb_agg(DISTINCT r63_in_project.fk_project) as projects,
         count(CASE WHEN r63_in_project.is_in_project THEN 1 END) as r63_is_in_project_count,
         count(CASE WHEN r63_in_project.is_standard_in_project THEN 1 END) as r63_is_standard_in_project_count,
+        r63.rank_for_pe_it,
         r63.fk_entity as pk_named_entity
         FROM
         information.v_role as r64
@@ -515,13 +605,17 @@ module.exports = function (InfPersistentItem) {
         INNER JOIN information.v_temporal_entity AS appe_usage ON appe_usage.pk_entity = r64.fk_temporal_entity
         INNER JOIN information.v_role AS r63 ON r63.fk_temporal_entity = r64.fk_temporal_entity
         INNER JOIN information.entity_version_project_rel AS r63_in_project ON r63_in_project.fk_entity = r63.pk_entity
-        WHERE r64.fk_property = 1113 --'R64'
-        AND r63.fk_property IN (1192, 1193, 1194, 1195) --'R63'
-        AND appe_usage.fk_class = 365 --'F52'
-        GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity
+        -- WHERE r64.fk_property = 1113 --'R64'
+        -- AND r63.fk_property IN (1192, 1193, 1194, 1195) --'R63'
+        WHERE appe_usage.fk_class = 365 --'F52'
+        GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity, r63.rank_for_pe_it
       ) AS appellations
       ON appellations.pk_named_entity = pi.pk_entity
-    	INNER JOIN (SELECT fk_entity, jsonb_agg(fk_project) as projects_array from information.entity_version_project_rel GROUP BY fk_entity) AS projects
+    	INNER JOIN (
+        SELECT fk_entity, jsonb_agg(fk_project) as projects_array 
+        from information.entity_version_project_rel 
+        WHERE is_in_project = true
+        GROUP BY fk_entity) AS projects
 	    ON projects.fk_entity = pi.pk_entity
       GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, projects.fk_entity, projects.projects_array
       ORDER BY pi.tmsp_last_modification DESC
@@ -678,7 +772,7 @@ module.exports = function (InfPersistentItem) {
                 "pk_entity": "asc"
               }]
             },
-            // "entity_version_project_rels": innerJoinThisProject,
+            "entity_version_project_rels": innerJoinThisProject,
             "te_roles": {
               "$relation": {
                 "name": "te_roles",
@@ -724,6 +818,23 @@ module.exports = function (InfPersistentItem) {
                   }]
                 }
               }
+            }
+          }
+        },
+        text_properties: {
+          "$relation": {
+            "name": "text_properties",
+            "joinType": "left join",
+            "orderBy": [{ "pk_entity": "asc" }]
+          },
+          entity_version_project_rels: innerJoinThisProject,
+          "language": {
+            "$relation": {
+              "name": "language",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
             }
           }
         }
@@ -1288,16 +1399,16 @@ module.exports = function (InfPersistentItem) {
         Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = false
         UNION
         -- select the fk_class and the properties that are auto add because of a property set
-          select ctxt.fk_class_for_property_set, psprel.fk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
+          select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
         from data_for_history.property as p
-        inner join commons.property_set_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-        inner join commons.ui_context_config as ctxt on psprel.fk_property_set = ctxt.fk_property_set
+        inner join commons.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
+        inner join commons.ui_context_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
         Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = false
         UNION
-          select ctxt.fk_class_for_property_set, psprel.fk_property, p.dfh_range_instances_max_quantifier as max_quantifier
+          select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_range_instances_max_quantifier as max_quantifier
         from data_for_history.property as p
-        inner join commons.property_set_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-        inner join commons.ui_context_config as ctxt on psprel.fk_property_set = ctxt.fk_property_set
+        inner join commons.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
+        inner join commons.ui_context_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
         Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = true
       ),
       -- Find all roles related to the given persistent item pk_entity 
@@ -1311,6 +1422,12 @@ module.exports = function (InfPersistentItem) {
         )
         -- take only the max quantity of rows for that property, exclude repo-alternatives
         WHERE r.rank_for_pe_it <= r.domain_max_quantifier OR r.domain_max_quantifier = -1  OR r.domain_max_quantifier IS NULL
+      ),
+      -- Find all temporal entities related to pe_it_roles
+      -- that are of an auto-add property
+      te_ents AS (
+        select fk_temporal_entity as pk_entity
+        from pe_it_roles
       ),
       -- Find all roles related to temporal entities mached by pe_it_roles
       -- that are of an auto-add property
@@ -1354,25 +1471,28 @@ module.exports = function (InfPersistentItem) {
         UNION
         select pk_entity, calendar from pe_it_roles 
         UNION 
+        select pk_entity, null::calendar_type as calendar from te_ents
+        UNION
         select pk_entity, calendar from te_ent_roles
-      ),
-      -- get a list of all pk_entities that the project manually removed
-      pk_entities_excluded_by_project AS (
-        SELECT fk_entity as pk_entity
-        FROM information.v_entity_version_project_rel as epr 
-        where epr.is_in_project = false and epr.fk_project = 12
-      ),
-      -- get final list of pk_entities to add to project
-      pk_entities_to_add AS (
-        select pk_entity, calendar from pk_entities_of_repo
-        EXCEPT
-        select pk_entity, null::calendar_type from pk_entities_excluded_by_project
       )
-      --select * from pk_entities_to_add;
+      --,
+      ---- get a list of all pk_entities that the project manually removed
+      --pk_entities_excluded_by_project AS (
+      --  SELECT fk_entity as pk_entity
+      --  FROM information.v_entity_version_project_rel as epr 
+      --  where epr.is_in_project = false and epr.fk_project = $2
+      --),
+      ---- get final list of pk_entities to add to project
+      --pk_entities_to_add AS (
+      --  select pk_entity, calendar from pk_entities_of_repo
+      --  EXCEPT
+      --  select pk_entity, null::calendar_type from pk_entities_excluded_by_project
+      --)
+      ----select * from pk_entities_to_add;
 
       insert into information.v_entity_version_project_rel (fk_project, is_in_project, fk_entity, calendar)
       SELECT $2, true, pk_entity, calendar
-      from pk_entities_to_add;
+      from pk_entities_of_repo;
     `
 
     const connector = InfPersistentItem.dataSource.connector;

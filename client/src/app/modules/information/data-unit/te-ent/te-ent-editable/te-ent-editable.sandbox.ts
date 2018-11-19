@@ -2,7 +2,7 @@ import { sandboxOf } from 'angular-playground';
 import { DfhClass, DfhProperty, InfRole } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
-import { RoleDetail, RoleSet, ExistenceTimeDetail } from 'app/core/state/models';
+import { RoleDetail, PropertyField, ExistenceTimeDetail } from 'app/core/state/models';
 import { Information2Module } from '../../../information.module';
 import { TeEntEditableComponent } from './te-ent-editable.component';
 import { DfhConfig } from '../../../shared/dfh-config';
@@ -82,11 +82,11 @@ export default sandboxOf(TeEntEditableComponent, {
                     "isDisplayRoleForDomain": null,
                     "isDisplayRoleForRange": true,
                     "_teEnt": {
-                        "_existenceTime": { //  <- Existence Time
+                        "_field_48": { //  <- Existence Time
                             "roles": [
                             ],
                             "toggle": "collapsed",
-                            _children: {
+                            _fields: {
                                 _152_ingoing: {
                                     isOutgoing: false,
                                     property: {
@@ -159,7 +159,7 @@ export default sandboxOf(TeEntEditableComponent, {
                                     roleStatesInOtherProjectsVisible: true,
                                 }
                             },
-                            "ingoingRoleSets": [
+                            "ingoingPropertyFields": [
                                 {
                                     "isOutgoing": false,
                                     "property": {
@@ -439,7 +439,7 @@ export default sandboxOf(TeEntEditableComponent, {
                             "sys_period": "[\"2018-06-12 16:17:27.562493+00\",)",
                             "text_properties": []
                         },
-                        "_children": {
+                        "_fields": {
                             "_1_outgoing": {
                                 "isOutgoing": true,
                                 "property": {
@@ -786,8 +786,8 @@ export default sandboxOf(TeEntEditableComponent, {
                                 }
                             }
                         },
-                        "ingoingRoleSets": [],
-                        "outgoingRoleSets": [
+                        "ingoingPropertyFields": [],
+                        "outgoingPropertyFields": [
                             {
                                 "isOutgoing": true,
                                 "property": {

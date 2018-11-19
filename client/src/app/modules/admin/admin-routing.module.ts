@@ -8,6 +8,8 @@ import { NamespaceListComponent } from './components/namespace-list/namespace-li
 import { SystemTypeListComponent } from './components/system-type-list/system-type-list.component';
 import { PropertyListComponent } from './components/property-list/property-list.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
+import { ClassFieldListComponent } from './components/class-field-list/class-field-list.component';
+import { ClassMainComponent } from './components/class-main/class-main.component';
 
 
 const routes: Routes = [
@@ -28,6 +30,10 @@ const routes: Routes = [
         component: ClassComponent,
         children: [
           {
+            path: '',
+            component: ClassMainComponent
+          },
+          {
             path: 'ui-context/:pk_ui_context',
             component: ClassUiContextComponent
           }
@@ -36,6 +42,10 @@ const routes: Routes = [
       {
         path: 'properties',
         component: PropertyListComponent
+      },
+      {
+        path: 'class-fields',
+        component: ClassFieldListComponent
       },
       {
         path: 'namespaces',

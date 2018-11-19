@@ -1,13 +1,13 @@
 import { DfhClass, InfPersistentItem } from 'app/core/sdk';
-import { DataUnitChildList } from './data-unit-child-list';
-import { DataUnitLabel } from './data-unit-label';
-import { RoleSet } from './role-set';
-import { CollapsedExpanded, SelectPropStateType } from './types';
+import { ClassInstanceLabel } from './class-instance-label';
+import { FieldList } from './field-list';
+import { PropertyField } from './property-field';
 import { TypeDetail } from './type-detail';
+import { CollapsedExpanded, SelectPropStateType } from './types';
 
 export class DataUnit {
 
-    _children?: DataUnitChildList;
+    _fields?: FieldList;
 
     _type?: TypeDetail;
 
@@ -18,16 +18,18 @@ export class DataUnit {
     parentPeIt?: InfPersistentItem;
 
     /** gui */
+    pkUiContext?: number;
     showAddAPropertyButton?= true;
-    isViewMode? = false;
+    isViewMode?= false;
 
-    label?: DataUnitLabel;
-    toggle? = 'collapsed' as CollapsedExpanded;
-    ingoingRoleSets?: RoleSet[];
-    outgoingRoleSets?: RoleSet[];
+    label?:  ClassInstanceLabel;
+    toggle?= 'collapsed' as CollapsedExpanded;
+    ingoingPropertyFields?: PropertyField[];
+    outgoingPropertyFields?: PropertyField[];
     selectPropState?: SelectPropStateType; // state of child components for adding or creating properties
-    propertyToAdd?: RoleSet; // role set that is currently chosen in order to add a role of this kind
+    propertyToAdd?: PropertyField; // role set that is currently chosen in order to add a role of this kind
 
+    showRemoveVerification?: boolean;
 
     constructor(data?: DataUnit) {
         Object.assign(this, data);

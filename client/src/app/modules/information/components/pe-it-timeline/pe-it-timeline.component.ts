@@ -7,12 +7,12 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { U } from 'app/core';
+import { ExistenceTimeDetail, FieldList, TeEntAccentuation, PropertyField } from 'app/core/state/models';
 import { equals } from 'ramda';
 import { Subject } from 'rxjs';
-import { TimeLineData, TimeLineRow, TimeLineSettings } from '../../../timeline/models/timeline';
+import { TimeLineData, TimeLineRow } from '../../../timeline/models/timeline';
 import { TeEntActions } from '../../data-unit/te-ent/te-ent.actions';
 import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
-import { ExistenceTimeDetail, RoleSetList, TeEntAccentuation } from 'app/core/state/models';
 import { StateToDataService } from '../../shared/state-to-data.service';
 
 @Component({
@@ -32,46 +32,48 @@ export class PeItTimelineComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>()
 
   constructor(
-    private ngRedux: NgRedux<RoleSetList>,
+    private ngRedux: NgRedux<FieldList>,
     private teEntActions: TeEntActions
   ) {
   }
 
   ngOnInit() {
 
-    // subscribe to RoleSets and create TimeLineData
-    this.ngRedux.select<RoleSetList>([...this.path, '_children'])
+    // subscribe to PropertyFields and create TimeLineData
+    this.ngRedux.select<FieldList>([...this.path, '_fields'])
       .takeUntil(this.destroy$)
-      .subscribe(roleSets => {
+      .subscribe(fields => {
         const timeLineData = {
           rows: []
         }
 
-        U.obj2KeyValueArr(roleSets).forEach(roleSetMap => {
-          const set = roleSetMap.value;
-          const setLabel = set.label.default;
-          const roleSetPath = [...this.path, '_children', roleSetMap.key]
+        U.obj2KeyValueArr(fields).forEach(propertyFieldMap => {
+          if (propertyFieldMap.value.type === 'PropertyField') {
+            const field = propertyFieldMap.value as PropertyField;
+            const setLabel = field.label.default;
+            const propertyFieldPath = [...this.path, '_fields', propertyFieldMap.key]
 
-          U.obj2KeyValueArr(set._role_list).forEach(roleDetailMap => {
-            const roleDetail = roleDetailMap.value;
-            const roleDetailPath = [...roleSetPath, '_role_list', roleDetailMap.key];
+            U.obj2KeyValueArr(field._role_list).forEach(roleDetailMap => {
+              const roleDetail = roleDetailMap.value;
+              const roleDetailPath = [...propertyFieldPath, '_role_list', roleDetailMap.key];
 
-            if (roleDetail._teEnt && roleDetail._teEnt._children && roleDetail._teEnt._children._existenceTime) {
-              const teD = roleDetail._teEnt;
-              const teEntPath = [...roleDetailPath, '_teEnt'];
+              if (roleDetail._teEnt && roleDetail._teEnt._fields && roleDetail._teEnt._fields._field_48) {
+                const teD = roleDetail._teEnt;
+                const teEntPath = [...roleDetailPath, '_teEnt'];
 
-              // const label = U.labelFromDataUnitChildList(teD._children).toString();
+                // const label = U.labelFromFieldList(teD._fields).toString();
 
-              // create a TimeLineRow for each TeEntState
-              timeLineData.rows.push({
-                existenceTime: StateToDataService
-                  .existenceTimeStateToExistenceTime(teD._children._existenceTime as ExistenceTimeDetail),
-                label: setLabel,
-                accentuation: teD.accentuation,
-                storeConnector: { path: teEntPath }
-              })
-            }
-          })
+                // create a TimeLineRow for each TeEntState
+                timeLineData.rows.push({
+                  existenceTime: StateToDataService
+                    .existenceTimeStateToExistenceTime(teD._fields._field_48 as ExistenceTimeDetail),
+                  label: setLabel,
+                  accentuation: teD.accentuation,
+                  storeConnector: { path: teEntPath }
+                })
+              }
+            })
+          }
         })
 
         if (!equals(this.timeLineData, timeLineData)) {

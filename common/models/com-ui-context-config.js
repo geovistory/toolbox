@@ -1,5 +1,5 @@
 'use strict';
 
-module.exports = function(ComPropertySetClassRel) {
+module.exports = function(ComUiContextConfig) {
 
 };

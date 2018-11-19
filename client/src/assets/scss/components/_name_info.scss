@@ -1,9 +1,9 @@
 
 // Card representing one Name or one Additional Info
 gv-name,
-gv-role-set-list,
+gv-property-field-list,
 .gv-name,
-.gv-role-set-list {
+.gv-property-field-list {
   display: block;
   margin-bottom: $card-spacer-y ;
   color: $gray-900;
@@ -136,7 +136,7 @@ gv-role-set-list,
   }
 }
 gv-name:last-of-type,
-gv-role-set-list:last-of-type{
+gv-property-field-list:last-of-type{
   margin-bottom: 0;
 }
 

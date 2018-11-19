@@ -1,15 +1,13 @@
 import { NgRedux } from '@angular-redux/store';
-import { ChangeDetectionStrategy, Component, forwardRef, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { InfRole, InfTemporalEntity, U, InfEntityProjectRel, UiContext, ComConfig } from 'app/core';
-
+import { ComConfig, InfEntityProjectRel, InfRole, InfTemporalEntity, U, UiContext } from 'app/core';
+import { RootEpics } from 'app/core/store/epics';
+import { slideInOut } from '../../../shared/animations';
+import { DataUnitAPIEpics } from '../../data-unit.epics';
 import { TeEntCtrlBase } from '../te-ent-ctrl.base';
 import { TeEntActions } from '../te-ent.actions';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { slideInOut } from '../../../shared/animations';
-import { StateCreatorService } from '../../../shared/state-creator.service';
-import { RootEpics } from 'app/core/store/epics';
-import { DataUnitAPIEpics } from '../../data-unit.epics';
+
 
 @Component({
   selector: 'gv-te-ent-add-ctrl',
@@ -39,16 +37,15 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
     protected actions: TeEntActions,
     protected fb: FormBuilder,
     protected ref: ChangeDetectorRef,
-    protected stateCreator: StateCreatorService,
     protected rootEpics: RootEpics,
     protected dataUnitEpics: DataUnitAPIEpics
   ) {
-    super(ngRedux, actions, fb, stateCreator, rootEpics, dataUnitEpics)
+    super(ngRedux, actions, fb, rootEpics, dataUnitEpics)
     console.log('TeEntAddCtrlComponent')
   }
 
   onInitTeEntBaseChild(): void {
-    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
+    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
 
     this.initFormCtrls()
   }
@@ -56,13 +53,13 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
   initFormCtrls(): void {
     if (this.localStore.getState()) {
 
-      // add controls for each roleSet of _children
-      const roleSetList = this.localStore.getState()._children;
+      // add controls for each propertyField of _fields
+      const propertyFieldList = this.localStore.getState()._fields;
 
-      // this.subs.push(this._children$.subscribe(roleSetList => {
-      if (roleSetList) {
-        Object.keys(roleSetList).forEach((key) => {
-          if (roleSetList[key]) {
+      // this.subs.push(this._fields$.subscribe(propertyFieldList => {
+      if (propertyFieldList) {
+        Object.keys(propertyFieldList).forEach((key) => {
+          if (propertyFieldList[key]) {
 
             this.formGroup.addControl(key, new FormControl(null, [Validators.required]))
           }
@@ -124,13 +121,13 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
   initFormCtrlValues() {
     if (this.localStore.getState()) {
 
-      // add values to controls for each roleSet of _children
-      const roleSetList = this.localStore.getState()._children;
+      // add values to controls for each propertyField of _fields
+      const propertyFieldList = this.localStore.getState()._fields;
 
-      if (roleSetList) {
-        Object.keys(roleSetList).forEach((key) => {
-          if (roleSetList[key]) {
-            this.formGroup.get(key).setValue(roleSetList[key].roles)
+      if (propertyFieldList) {
+        Object.keys(propertyFieldList).forEach((key) => {
+          if (propertyFieldList[key]) {
+            this.formGroup.get(key).setValue(propertyFieldList[key].roles)
           }
         })
       }

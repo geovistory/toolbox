@@ -1,16 +1,16 @@
 // Card containing a list of Names or Additional Infos
 .card.gv-naming,
-.card.gv-role-set-list {
+.card.gv-property-field-list {
   background-color: theme-color("secondary");
   // width: 316px;
 
   .card-header.gv-naming,
-  .card-header.gv-role-set-list, {
+  .card-header.gv-property-field-list, {
     color: $white;
     background-color: inherit;
     border-bottom: none;
     .gv-naming-dropdown,
-    .gv-role-set-list-dropdown {
+    .gv-property-field-list-dropdown {
       margin: (-$card-spacer-y) (-$card-spacer-x);
       .dropdown-toggle{
         height: 1.9rem;
@@ -23,16 +23,16 @@
       }
     }
   }
-  .card-body.gv-role-set-list,
+  .card-body.gv-property-field-list,
   .card-body.gv-naming {
   }
-  .card-footer.gv-role-set-list,
+  .card-footer.gv-property-field-list,
   .card-footer.gv-naming,{
     color: $white;
     background-color: inherit;
     // border-top: none;
   }
-  .card-footer.gv-role-set-list,
+  .card-footer.gv-property-field-list,
   .card-footer.gv-naming {
     padding: 0;
     .btn {

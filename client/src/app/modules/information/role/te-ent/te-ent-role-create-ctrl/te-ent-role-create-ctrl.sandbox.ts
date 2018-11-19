@@ -2,7 +2,7 @@ import { sandboxOf } from 'angular-playground';
 import { InfRole, Project, ProjectDetail } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
-import { RoleDetail, RoleSet } from 'app/core/state/models';
+import { RoleDetail, PropertyField } from 'app/core/state/models';
 import { Information2Module } from '../../../information.module';
 import { TeEntRoleCreateCtrlComponent } from './te-ent-role-create-ctrl.component';
 import { DfhConfig } from '../../../shared/dfh-config';
@@ -21,10 +21,10 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
     .add('TeEnt Role Create Ctrl | Appe filled ', {
         context: {
             model: {},
-            parentPath: ['_role_set_1'],
+            parentPath: ['sandboxState', '_property_field_1'],
             index: '_role_1',
-            initState: {
-                _role_set_1: new RoleSet({
+            sandboxState: {
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -71,7 +71,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
 
         },
         template: `
-            <gv-init-state [initState]="initState"></gv-init-state>
+            <gv-init-state [sandboxState]="sandboxState"></gv-init-state>
 
             <div class="d-flex justify-content-center mt-5">
                 <div style="width:430px;height:400px" class="d-flex">
@@ -105,10 +105,10 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                     fk_property: 99
                 }
             },
-            parentPath: ['_role_set_1'],
+            parentPath: ['sandboxState', '_property_field_1'],
             index: '_role_1',
-            initState: {
-                _role_set_1: new RoleSet({
+            sandboxState: {
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -124,7 +124,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
 
         },
         template: `
-            <gv-init-state [initState]="initState"></gv-init-state>
+            <gv-init-state [sandboxState]="sandboxState"></gv-init-state>
 
             <div class="d-flex justify-content-center mt-5">
                 <div style="width:430px;height:400px" class="d-flex">
@@ -150,7 +150,121 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             </div>
         `
     })
+    .add('TeEnt Role Create Ctrl | Lang empty ', {
+        context: {
+            model: {
+                role: {
+                    fk_property: 99
+                }
+            },
+            parentPath: ['sandboxState', '_property_field_1'],
+            index: '_role_1',
+            sandboxState: {
+                _property_field_1: new PropertyField({
+                    _role_list: {
+                        _role_1: {
+                            role: {
+                                fk_property: 99
+                            } as InfRole,
+                            _lang: {
+                            },
+                            targetClassPk: 1234
+                        } as RoleDetail
+                    }
+                })
+            }
 
+        },
+        template: `
+            <gv-init-state [sandboxState]="sandboxState"></gv-init-state>
+
+            <div class="d-flex justify-content-center mt-5">
+                <div style="width:430px;height:400px" class="d-flex">
+                    <form #f="ngForm">
+                        <gv-te-ent-role-create-ctrl [parentPath]="parentPath" [index]="index"
+                            name="role" [(ngModel)]="model.role" #role="ngModel" required>
+                        </gv-te-ent-role-create-ctrl>
+                    </form>                               
+                </div>
+                <div>
+                    <p>Form.valid: {{f.valid | json}}</p>
+        
+                    <p>Form.touched: {{f.touched | json}}</p>
+        
+                    <p>Form.dirty: {{f.dirty | json}}</p>
+        
+                    <p>Form.value </p>
+                    <pre>
+                        {{f.value | json}}
+                    </pre>
+        
+                </div>
+            </div>
+        `
+    })
+    .add('TeEnt Role Create Ctrl | Lang filled ', {
+        context: {
+            model: {
+                role: {
+                    fk_property: 99
+                }
+            },
+            parentPath: ['sandboxState', '_property_field_1'],
+            index: '_role_1',
+            sandboxState: {
+                _property_field_1: new PropertyField({
+                    _role_list: {
+                        _role_1: {
+                            role: {
+                                fk_property: 99,
+                                language: {
+                                    fk_class: 54,
+                                    pk_language: 'eng',
+                                    lang_type: 'living',
+                                    scope: 'individual',
+                                    iso6392b: 'eng',
+                                    iso6392t: 'eng',
+                                    iso6391: 'en ',
+                                    notes: 'English',
+                                    pk_entity: 18889
+                                }
+                            } as InfRole,
+                            _lang: {
+                            },
+                            targetClassPk: 1234
+                        } as RoleDetail
+                    }
+                })
+            }
+
+        },
+        template: `
+            <gv-init-state [sandboxState]="sandboxState"></gv-init-state>
+
+            <div class="d-flex justify-content-center mt-5">
+                <div style="width:430px;height:400px" class="d-flex">
+                    <form #f="ngForm">
+                        <gv-te-ent-role-create-ctrl [parentPath]="parentPath" [index]="index"
+                            name="role" [(ngModel)]="model.role" #role="ngModel" required>
+                        </gv-te-ent-role-create-ctrl>
+                    </form>                               
+                </div>
+                <div>
+                    <p>Form.valid: {{f.valid | json}}</p>
+        
+                    <p>Form.touched: {{f.touched | json}}</p>
+        
+                    <p>Form.dirty: {{f.dirty | json}}</p>
+        
+                    <p>Form.value </p>
+                    <pre>
+                        {{f.value | json}}
+                    </pre>
+        
+                </div>
+            </div>
+        `
+    })
     .add('TeEnt Role Create Ctrl | Leaf PeIt ', {
         context: {
             model: {
@@ -158,14 +272,14 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                     fk_property: 99
                 }
             },
-            parentPath: ['_role_set_1'],
+            parentPath: ['_property_field_1'],
             index: '_role_1',
             initState: {
                 activeProject: {
                     crm: crm,
                     pk_project: 12
                 },
-                _role_set_1: new RoleSet({
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             targetClassPk: 21,
@@ -216,13 +330,13 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                     fk_property: DfhConfig.existenceTimeToFk.p82a
                 }
             },
-            parentPath: ['_role_set_1'],
+            parentPath: ['_property_field_1'],
             index: '_role_1',
             initState: {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: new RoleSet({
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             targetClassPk: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
@@ -273,13 +387,13 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                     fk_property: DfhConfig.existenceTimeToFk.p82a
                 }
             },
-            parentPath: ['_role_set_1'],
+            parentPath: ['_property_field_1'],
             index: '_role_1',
             initState: {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: new RoleSet({
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             targetClassPk: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
@@ -341,13 +455,13 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                     fk_property: 999
                 }
             },
-            parentPath: ['_role_set_1'],
+            parentPath: ['_property_field_1'],
             index: '_role_1',
             initState: {
                 activeProject: {
                     pk_project: 50
                 } as Project,
-                _role_set_1: new RoleSet({
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             targetClassPk: 333,

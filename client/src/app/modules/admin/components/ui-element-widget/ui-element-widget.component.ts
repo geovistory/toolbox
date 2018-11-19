@@ -9,9 +9,15 @@ import { Widget } from '../../admin.models';
 export class UiElementWidgetComponent implements OnInit {
 
   @Input() widget: Widget;
+  @Input() isExpanded = false;
+
 
   @HostBinding('class.border-right-danger') get removedFromApi() {
     return !!this.widget.profiles.find((p) => p.removed_from_api);
+  }
+
+  @HostBinding('class.border-left-success') get identityDefining() {
+    return !this.widget.propertyField ? false : this.widget.propertyField.property.identity_defining;
   }
 
   constructor() { }

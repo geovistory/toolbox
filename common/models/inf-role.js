@@ -392,8 +392,10 @@ module.exports = function (InfRole) {
               "$relation": {
                 "name": "te_roles",
                 "joinType": "left join",
+                // "where": ["rank_for_te_ent", "=", "1"],
+                // "where":s ["rank_for_te_ent", "<=", "range_max_quantifier", "OR", "range_max_quantifier", "=", "-1", "OR", "range_max_quantifier", "IS NULL"],
                 "orderBy": [{
-                  "pk_entity": "asc"
+                  "rank_for_te_ent": "asc"
                 }]
               },
               "language": {
@@ -663,16 +665,16 @@ module.exports = function (InfRole) {
       Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = false
       UNION
       -- select the fk_class and the properties that are auto add because of a property set
-      select ctxt.fk_class_for_property_set, psprel.fk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
+      select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
       from data_for_history.property as p
-      inner join commons.property_set_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-      inner join commons.ui_context_config as ctxt on psprel.fk_property_set = ctxt.fk_property_set
+      inner join commons.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
+      inner join commons.ui_context_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
       Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = false
       UNION
-      select ctxt.fk_class_for_property_set, psprel.fk_property, p.dfh_range_instances_max_quantifier as max_quantifier
+      select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_range_instances_max_quantifier as max_quantifier
       from data_for_history.property as p
-      inner join commons.property_set_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-      inner join commons.ui_context_config as ctxt on psprel.fk_property_set = ctxt.fk_property_set
+      inner join commons.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
+      inner join commons.ui_context_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
       Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = true
     ),
   -- Find the roles
@@ -710,8 +712,8 @@ module.exports = function (InfRole) {
     -- get final list of pk_entities to add to project
     pk_entities_to_add AS (
       select pk_entity, calendar from pk_entities_of_repo
-      EXCEPT
-      select pk_entity, null::calendar_type from pk_entities_excluded_by_project
+    --  EXCEPT
+    --  select pk_entity, null::calendar_type from pk_entities_excluded_by_project
     )
     --  select * from pk_entities_to_add;
 

@@ -19,15 +19,15 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
         context: {
             model: {
             },
-            basePath: ['_teEnt', '_children', '_existenceTime'],
+            basePath: ['_teEnt', '_fields', '_field_48'],
             initState: {
                 activeProject: {
                     pk_project: 57,
                     crm: crm
                 },
                 "_teEnt": {
-                    _children: {
-                        "_existenceTime": { //  <- Existence Time
+                    _fields: {
+                        "_field_48": { //  <- Existence Time
                             "roles": [
                             ],
                             "toggle": "expanded",
@@ -98,20 +98,20 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
         context: {
             model: {
             },
-            basePath: ['_teEnt', '_children', '_existenceTime'],
+            basePath: ['_teEnt', '_fields', '_field_48'],
             initState: {
                 activeProject: {
                     pk_project: 57,
                     crm: crm
                 },
                 "_teEnt": {
-                    _children: {
+                    _fields: {
 
-                        "_existenceTime": { //  <- Existence Time
+                        "_field_48": { //  <- Existence Time
                             "roles": [
                             ],
                             "toggle": "expanded",
-                            _children: {
+                            _fields: {
                                 '_152_outgoing': {
                                     _role_list: {
                                         _undefined: {
@@ -216,17 +216,17 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
         context: {
             model: {
             },
-            basePath: ['_teEnt', '_existenceTime'],
+            basePath: ['_teEnt', '_field_48'],
             initState: {
                 activeProject: {
                     pk_project: 57
                 },
                 "_teEnt": {
-                    "_existenceTime": { //  <- Existence Time
+                    "_field_48": { //  <- Existence Time
                         "roles": [
                         ],
                         "toggle": "expanded",
-                        _children: {
+                        _fields: {
                             '_150_outgoing': {
                                 _role_list: {
                                     _undefined: {
@@ -366,7 +366,7 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
                                 }
                             }
                         },
-                        "outgoingRoleSets": [
+                        "outgoingPropertyFields": [
                             {
                                 "isOutgoing": true,
                                 "property": {
@@ -647,17 +647,17 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
         context: {
             model: {
             },
-            basePath: ['_teEnt', '_existenceTime'],
+            basePath: ['_teEnt', '_field_48'],
             initState: {
                 activeProject: {
                     pk_project: 57
                 },
                 "_teEnt": {
-                    "_existenceTime": { //  <- Existence Time
+                    "_field_48": { //  <- Existence Time
                         "roles": [
                         ],
                         "toggle": "expanded",
-                        _children: {
+                        _fields: {
 
                             '_72_outgoing': {
                                 _role_list: {
@@ -729,7 +729,7 @@ export default sandboxOf(ExistenceTimeEditableComponent, {
                                 }
                             }
                         },
-                        "outgoingRoleSets": [
+                        "outgoingPropertyFields": [
                             {
                                 "isOutgoing": true,
                                 "property": {

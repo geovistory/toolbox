@@ -7,7 +7,7 @@ import * as Delta from 'quill-delta/lib/delta';
 export interface IAnnotationPanelState {
     view?: { [key: string]: AnnotationState };
     edit?: AnnotationCtrlState;
-    remove?: AnnotationState;    
+    remove?: AnnotationState;
 }
 
 /**
@@ -45,13 +45,13 @@ export interface AnnotationCtrlState {
 // TODO Replace IChunk with InfChunk!
 
 export interface IChunk {
-    quillDelta?: Delta; //TODO -> jsQuill's AbstractDelta Type
+    quillDelta?: Delta; // TODO -> jsQuill's AbstractDelta Type
     fkDigitalObject?: number;  // reference to source 
     pkEntity?: number
 }
 
 export class Chunk {
-    quillDelta: object; //TODO -> jsQuill's AbstractDelta Type
+    quillDelta: Delta; // TODO -> jsQuill's AbstractDelta Type
     fkDigitalObject: number;  // reference to source 
     pkEntity: number
 

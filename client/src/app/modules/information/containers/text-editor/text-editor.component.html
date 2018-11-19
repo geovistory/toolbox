@@ -1,0 +1,60 @@
+<div class="gv-flex-shrink-0 d-flex border-bottom border-secondary align-items-baseline">
+  <div class="mr-1">
+    Text
+  </div>
+
+  <!-- Version Picker -->
+  <gv-version-picker class="d-inline-block" *ngIf="(readOnly$|async)" [versionList]="(versionList$ | async)"
+    [selectedVersion]="(digitalObject$ | async)?.entity_version" (versionChange)="onVersionChange($event)"></gv-version-picker>
+
+
+  <button class="btn btn-link btn-sm ml-auto" (click)="onStartEdit()" *ngIf="(readOnly$|async)">
+    <i class="fa fa-edit" aria-hidden="true"></i> Edit
+  </button>
+  <button class="btn btn-link-gray btn-sm  ml-auto" (click)="onCancel()" *ngIf="!(readOnly$|async)">
+    Cancel
+  </button>
+  <button class="btn btn-link btn-sm ml-2" (click)="onSave()" *ngIf="!(readOnly$|async)">
+    <i class="fa fa-save" aria-hidden="true"></i> Save
+  </button>
+  <!-- <button class="btn btn-sm btn-link" (click)="showAnnotations()">
+    <i class="fa fa-quote-left" aria-hidden="true"></i> Show Annotations
+  </button>
+  <button class="btn btn-sm btn-link" (click)="hideAnnotations()">
+    <i class="fa fa-quote-left" aria-hidden="true"></i> Hide Annotations
+  </button>
+  <button class="btn btn-sm btn-link" (click)="startCreateAnnotation()">
+    <i class="fa fa-plus" aria-hidden="true"></i> Create Annotation
+  </button> -->
+
+  <div class="btn-group ml-2" ngbDropdown placement="bottom-right" [autoClose]="'outside'">
+    <button class="btn btn-sm btn-link btn-lg no-caret" ngbDropdownToggle>
+      <i class="fa fa-cogs"></i>
+    </button>
+    <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+      <div class="dropdown-header">
+        Highlight
+      </div>
+      <button class="dropdown-item">
+        <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (highlightMentionedPeIts$|async)}"></i> Annotated
+        Entities
+      </button>
+      <button class="dropdown-item">
+        <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (highlightMentionedTeEnts$|async)}"></i> Annotated
+        Events & Phenomena
+      </button>
+      <button class="dropdown-item disabled">
+        <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (highlightAssertions$|async)}"></i> Annotated Assertions
+        (Coming
+        soon)
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Editor -->
+<div class="gv-flex-fh mt-2">
+  <gv-quill-edit class="gv-grow-1 d-flex flex-column" [quillDoc]="editedQuillDoc"
+    [readOnly]="(readOnly$ | async)" [creatingAnnotation]="false" (quillDocChange)="quillDocChange($event)"></gv-quill-edit>
+
+</div>

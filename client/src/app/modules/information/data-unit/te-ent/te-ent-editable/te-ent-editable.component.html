@@ -2,14 +2,13 @@
 <div *ngIf="!(editing$ | async)" [ngClass]="{
     'gv-bg-selected': ((accentuation$ | async) === 'selected'),
     'bg-light': ((accentuation$ | async) === 'highlighted' && (toggle$|async) === 'collapsed')
-  }"
-  >
+  }">
   <!-- (mouseenter)="mouseenter()" (mouseleave)="mouseleave()" -->
 
   <div class="d-flex flex-row">
 
-    <gv-te-ent-label class="gv-grow-1" [toggle]="(toggle$|async)" [children]="(_children$ | async)" [classConfig]="classConfig"
-      [childrenPath]="basePath.concat('_children')" (onToggle)="toggleCardBody()">
+    <gv-te-ent-label class="gv-grow-1" [toggle]="(toggle$|async)" [children]="(_fields$ | async)" [classConfig]="classConfig"
+      [childrenPath]="basePath.concat('_fields')" (onToggle)="toggleCardBody()">
 
       <ng-content buttons select="[headerRight]"> </ng-content>
       <button buttons type="button" class="btn btn-link-gray" [attr.title]="'Edit this ' + classConfig?.label" *ngIf="!(isViewMode$ | async)">
@@ -19,7 +18,7 @@
 
     </gv-te-ent-label>
 
-    <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+    <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(showOntoInfo$|async)">
       <div class="align-self-center">
         <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{classConfig.dfh_pk_class}}"
           target="_blank">
@@ -46,26 +45,23 @@
 
   <div class="card">
 
-    <gv-te-ent-header [ontoInfoVisible$]="ontoInfoVisible$" [classConfig]="classConfig" [selectPropState$]="selectPropState$"
-      [addButtonVisible]="!(isViewMode$ | async)" (startSelectProperty)="startSelectProperty()"></gv-te-ent-header>
+    <gv-te-ent-header [showOntoInfo$]="showOntoInfo$" [classConfig]="classConfig" [selectPropState$]="selectPropState$"
+      [addButtonVisible]="!(isViewMode$ | async) && (addOptionsTeEnt$ | async).length > 0 " (startSelectProperty)="startSelectProperty()"></gv-te-ent-header>
 
     <!-- Step 2 for adding new Property section -->
 
-    <gv-add-info-te-ent *ngIf="(selectPropState$ | async) === 'selectProp'" [uiElements]="uiElementsForAddInfo"
-      [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)"
-      [excludeRoleSet]="(parentRoleSet$ | async)" (cancel)="stopSelectProperty()"></gv-add-info-te-ent>
+    <gv-add-info-te-ent *ngIf="(selectPropState$ | async) === 'selectProp'" [addOptions$]="addOptionsTeEnt$"
+      (addOptionSelected)="addOptionSelected($event)" (cancel)="stopSelectProperty()"></gv-add-info-te-ent>
 
     <div class="card-body bg-transparent">
-      <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
-        <span [ngSwitch]="item.key">
+      <div *ngFor="let item of (_fields$ | async) | keys; trackBy:getKey">
 
-          <gv-existence-time-editable *ngSwitchCase="'_existenceTime'" mode="editable" [basePath]="basePath.concat('_children').concat(item.key)"
+          <gv-existence-time-editable *ngIf="item.value.type === 'ExistenceTimeDetail'" mode="editable" [basePath]="basePath.concat('_fields').concat(item.key)"
             (onRemovePropSet)="removePropSet(item.key)"></gv-existence-time-editable>
 
-          <gv-te-ent-role-set-editable *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath"
-            [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)"></gv-te-ent-role-set-editable>
+          <gv-te-ent-property-field-editable *ngIf="item.value.type === 'PropertyField'" [parentPath]="basePath" [parentTeEntStatePath]="basePath"
+            [index]="item.key" (onRemovePropertyField)="removePropertyField(item.key)"></gv-te-ent-property-field-editable>
 
-        </span>
       </div>
 
     </div>

@@ -1,27 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-
-import {Observable} from 'rxjs';
-
-
-
-
-
-
-
-
-
-import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
-import { Language, AccountApi, ProjectApi, LanguageApi, LoopBackAuth, LoopBackConfig } from 'app/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AccountApi, Language, LanguageApi, LoopBackAuth, LoopBackConfig, ProjectApi } from 'app/core';
 import { environment } from 'environments/environment';
-
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+import { Observable } from 'rxjs';
 
 
 export class ProjectLabelDescription {
-  "label": String;
-  "language": Language;
-  "text_property": String;
-  test:any; //TODO REMOVE
+  'label': String;
+  'language': Language;
+  'text_property': String;
+  test: any; // TODO REMOVE
 };
 
 @Component({
@@ -30,11 +19,11 @@ export class ProjectLabelDescription {
   styleUrls: ['./project-create.component.scss']
 })
 export class ProjectCreateComponent implements OnInit {
-  createBtnDisabled: boolean = false;
+  createBtnDisabled = false;
   errorMessages: any;
   model: ProjectLabelDescription = new ProjectLabelDescription();
 
-  //Language search
+  // Language search
   public languageSearch: any;
   searching = false;
   searchFailed = false;
@@ -54,24 +43,23 @@ export class ProjectCreateComponent implements OnInit {
 
   }
 
-  ngOnInit(){
+  ngOnInit() {
     this.startLoading();
-    const userLang = navigator.language.split("-")[0].split("_")[0];
-    this.languageApi.find({"where":{"iso6391":userLang}})
-    .subscribe(
-      (data:any) => {
-        this.completeLoading();
+    const userLang = navigator.language.split('-')[0].split('_')[0];
+    this.languageApi.find({ 'where': { 'iso6391': userLang } })
+      .subscribe(
+        (data: any) => {
+          this.completeLoading();
 
-        try {
-          this.model.language = data[0];
+          try {
+            this.model.language = data[0];
+          } catch (e) {
+            // TODO error handling
+          }
+        },
+        error => {
         }
-        catch (e) {
-          //TODO error handling
-        }
-      },
-      error => {
-      }
-    );
+      );
   }
 
 
@@ -85,40 +73,40 @@ export class ProjectCreateComponent implements OnInit {
       this.authService.getCurrentUserId(),
       this.model.language.pk_language,
       this.model.label,
-      this.model.text_property
+      (this.model.text_property ? this.model.text_property : null)
     )
-    // this.accountApi.createProjects(this.authService.getCurrentUserId(), this.model)
-    .subscribe(
-    data => {
-      this.completeLoading();
-      this.createBtnDisabled = false;
-      this.router.navigate(['../'], {relativeTo: this.activatedRoute})
-    },
-    error => {
-      this.resetLoading();
+      // this.accountApi.createProjects(this.authService.getCurrentUserId(), this.model)
+      .subscribe(
+        data => {
+          this.completeLoading();
+          this.createBtnDisabled = false;
+          this.router.navigate(['../'], { relativeTo: this.activatedRoute })
+        },
+        error => {
+          this.resetLoading();
 
-      // TODO: Alert
-      this.errorMessages = error.error.details.messages;
-      this.createBtnDisabled = false;
-    }
-  );
-}
+          // TODO: Alert
+          this.errorMessages = error.error.details.messages;
+          this.createBtnDisabled = false;
+        }
+      );
+  }
 
 
-search = (text$: Observable<string>) =>
-text$
-.debounceTime(300)
-.distinctUntilChanged()
-.do(() => this.searching = true)
-.switchMap(term =>
-  this.languageApi.queryByString(term)
-  .do(() => this.searchFailed = false)
-  .catch(() => {
-    this.searchFailed = true;
-    return Observable.of([]);
-  }))
-  .do(() => this.searching = false)
-  .merge(this.hideSearchingWhenUnsubscribed);
+  search = (text$: Observable<string>) =>
+    text$
+      .debounceTime(300)
+      .distinctUntilChanged()
+      .do(() => this.searching = true)
+      .switchMap(term =>
+        this.languageApi.queryByString(term)
+          .do(() => this.searchFailed = false)
+          .catch(() => {
+            this.searchFailed = true;
+            return Observable.of([]);
+          }))
+      .do(() => this.searching = false)
+      .merge(this.hideSearchingWhenUnsubscribed);
 
   formatter = (x) => x.notes;
 

@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 
 import { existenceTimeReducer } from '../existence-time.reducer';
 import { InfRole, IAppState } from 'app/core';
-import { ExistenceTimeDetail, RoleSetList } from 'app/core/state/models';
+import { ExistenceTimeDetail, PropertyFieldList } from 'app/core/state/models';
 
 
 @WithSubStore({
@@ -28,22 +28,25 @@ export class ExistenceTimeAddCtrlComponent implements OnInit, OnDestroy, Control
 
 
   @Input() basePath: string[]
-  getBasePath = () => this.basePath;
 
-  localStore: ObservableStore<ExistenceTimeDetail>
-  _children: RoleSetList;
-
+  @Output() touched: EventEmitter<void> = new EventEmitter();
   
+  localStore: ObservableStore<ExistenceTimeDetail>
+  _fields: PropertyFieldList;
+
+
   subs: Subscription[] = [];
 
   constructor(protected ngRedux: NgRedux<IAppState>) { }
+
+  getBasePath = () => this.basePath;
 
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, existenceTimeReducer);
 
     this.subs.push(this.localStore.select<ExistenceTimeDetail>('').subscribe(d => {
       if (d) {
-        this._children = d._children;
+        this._fields = d._fields;
       }
     }))
   }
@@ -97,7 +100,6 @@ export class ExistenceTimeAddCtrlComponent implements OnInit, OnDestroy, Control
   onTouched = () => {
   };
 
-  @Output() touched: EventEmitter<void> = new EventEmitter();
 
   markAsTouched() {
     this.onTouched()

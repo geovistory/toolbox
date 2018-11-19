@@ -1,13 +1,13 @@
-import { ComConfig, DataUnitChild, DataUnitChildList, InfRole, InfTimePrimitive, RoleDetail, RoleDetailList, RoleSet, U, UiContext } from 'app/core';
+import { ComConfig, FieldList, InfRole, InfTimePrimitive, RoleDetailList, U, UiContext } from 'app/core';
 import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
-import { indexBy } from 'ramda';
 import { roleDetailKey, sortRoleDetailsByOrdNum } from 'app/core/state/services/state-creator';
+import { indexBy } from 'ramda';
 
 
 export function propSetKeyFromFk(fkPropSet: number) {
     switch (fkPropSet) {
-        case ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME:
-            return '_existenceTime';
+        case ComConfig.PK_CLASS_FIELD_WHEN:
+            return '_field_48';
 
         default:
             return undefined
@@ -60,26 +60,26 @@ export function infRole2TimePrimitive(r: InfRole): TimePrimitive {
 }
 
 /**
- * Returns a copy of the given _children object, where the items are sorted and filtered
+ * Returns a copy of the given _fields object, where the items are sorted and filtered
  * according to the given uiContext.
  *
  * The order is defined in uiContext.uiElements.
- * If the key of an item in _children is not present in the given uiContext,
- * it will be omitted inthe returned DataUnitChildList
+ * If the key of an item in _fields is not present in the given uiContext,
+ * it will be omitted inthe returned FieldList
  *
- * @param _children a DataUnitChildList
+ * @param _fields a FieldList
  * @param uiContext a uiContext definition object.
  */
-export function sortChildrenByUiContext(_children: DataUnitChildList, uiContext: UiContext): DataUnitChildList {
-    if (!_children || !uiContext) return {};
+export function sortChildrenByUiContext(_fields: FieldList, uiContext: UiContext): FieldList {
+    if (!_fields || !uiContext) return {};
 
-    const res: DataUnitChildList = {}
+    const res: FieldList = {}
 
     // create an array with the data unit child keys in the right order
     uiContext.uiElements.forEach(el => {
-        const key = el.roleSetKey ? el.roleSetKey : el.propSetKey ? el.propSetKey : null;
-        if (key && _children[key]) {
-            res[key] = _children[key];
+        const key = el.propertyFieldKey ? el.propertyFieldKey : el.propSetKey ? el.propSetKey : null;
+        if (key && _fields[key]) {
+            res[key] = _fields[key];
         }
     })
 

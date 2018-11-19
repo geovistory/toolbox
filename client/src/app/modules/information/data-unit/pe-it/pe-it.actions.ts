@@ -1,13 +1,17 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { DataUnitLabel, PeItDetail } from 'app/core/state/models';
+import {  ClassInstanceLabel, PeItDetail } from 'app/core/state/models';
 import { FluxStandardAction } from 'flux-standard-action';
 import { DataUnitActions } from '../data-unit.actions';
 
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = PeItDetail;
-interface MetaData { };
+interface MetaData {
+  keyToToggle?: string;
+  pkEntity?: number;
+  pkProject?: number;
+};
 export type PeItAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
@@ -17,13 +21,7 @@ export class PeItActions extends DataUnitActions {
 
   static readonly PE_IT_LABEL_UPDATED = 'PeItActions::PE_IT_LABEL_UPDATED';
 
-  static readonly COMMUNITY_STATS_VISIBILITY_TOGGLED = 'PeItActions::COMMUNITY_STATS_VISIBILITY_TOGGLED';
-
-  static readonly ONTO_INFO_VISIBILITY_TOGGLED = 'PeItActions::ONTO_INFO_VISIBILITY_TOGGLED';
-
-  static readonly SHOW_RIGHT_PANEL = 'PeItActions::SHOW_RIGHT_PANEL';
-  static readonly HIDE_RIGHT_PANEL = 'PeItActions::HIDE_RIGHT_PANEL';
-
+  static readonly TOGGLE_BOOLEAN = 'PeItActions::TOGGLE_BOOLEAN';
 
   static readonly SET_LEAF_PE_IT_LOADING = 'PeItActions::SET_LEAF_PE_IT_LOADING';
 
@@ -36,23 +34,7 @@ export class PeItActions extends DataUnitActions {
     payload
   })
 
-  communityStatsVisibilityToggled = (communityStatsVisible: boolean): PeItAction => ({
-    type: PeItActions.COMMUNITY_STATS_VISIBILITY_TOGGLED,
-    meta: null,
-    payload: {
-      communityStatsVisible
-    }
-  })
-
-  ontoInfoVisibilityToggled = (ontoInfoVisible: boolean): PeItAction => ({
-    type: PeItActions.ONTO_INFO_VISIBILITY_TOGGLED,
-    meta: null,
-    payload: {
-      ontoInfoVisible
-    }
-  })
-
-  peItLabelUpdated = (label: DataUnitLabel): PeItAction => ({
+  peItLabelUpdated = (label:  ClassInstanceLabel): PeItAction => ({
     type: PeItActions.PE_IT_LABEL_UPDATED,
     meta: null,
     payload: {
@@ -68,15 +50,20 @@ export class PeItActions extends DataUnitActions {
     }
   })
 
-  showRightPanel = (): PeItAction => ({
-    type: PeItActions.SHOW_RIGHT_PANEL,
-    meta: null,
+  /**********************************************
+   * Method to toggle visibility of ui elements
+   **********************************************/
+
+  /**
+   * Toggle booleans
+   * @param keyToToggle key of the property to toggle. E.g. 'showRightPanel' or 'showProperties'
+   */
+  toggleBoolean = (keyToToggle: string): PeItAction => ({
+    type: PeItActions.TOGGLE_BOOLEAN,
+    meta: { keyToToggle },
     payload: null
   })
 
-  hideRightPanel = (): PeItAction => ({
-    type: PeItActions.HIDE_RIGHT_PANEL,
-    meta: null,
-    payload: null
-  })
+
+
 }

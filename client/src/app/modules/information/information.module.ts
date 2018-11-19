@@ -5,38 +5,52 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationService } from 'app/core';
 import { TimelineModule } from 'app/modules/timeline/timeline.module';
-import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from 'app/shared';
+import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule, FilterByKeyModule } from 'app/shared';
 import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
 import { KeysModule } from 'app/shared/pipes/keys.module';
 import { DndModule } from 'ng2-dnd';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
+import { TreeviewModule } from 'ngx-treeview';
 import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.module';
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
 import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 import { GvAngularCesiumModule } from '../gv-angular-cesium/angular-cesium.module';
 import { QuillModule } from '../quill';
-import { EntityAddAddExistingComponent } from './add-modal/entity-add-add-existing/entity-add-add-existing.component';
-import { EntityAddChooseClassComponent } from './add-modal/entity-add-choose-class/entity-add-choose-class.component';
-import { EntityAddCreateNewComponent } from './add-modal/entity-add-create-new/entity-add-create-new.component';
-import { EntityAddModalComponent } from './add-modal/entity-add-modal/entity-add-modal.component';
-import { EntityAddSearchExistingComponent } from './add-modal/entity-add-search-existing/entity-add-search-existing.component';
 import { AppeLangCreateCtrlAPIActions } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.actions';
 import { AppeLangCreateCtrlAPIEpics } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.epics';
 import { AppeLangCreateCtrlComponent } from './appe-lang/appe-lang-create-ctrl/appe-lang-create-ctrl.component';
 import { AddInfoPeItComponent } from './components/add-info-pe-it/add-info-pe-it.component';
 import { AddInfoTeEntComponent } from './components/add-info-te-ent/add-info-te-ent.component';
+import { ClassInfoComponent } from './components/class-info/class-info.component';
+import { EditorHeaderComponent } from './components/editor-header/editor-header.component';
 import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
 import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it-label.component';
 import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.component';
 import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timeline.component';
+import { PropertyFieldHeaderComponent } from './components/property-field-header/property-field-header.component';
+import { TeEntHeaderComponent } from './components/te-ent-header/te-ent-header.component';
 import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.component';
 import { TextPropertyComponent } from './components/text-property/text-property.component';
+import { ClassAndTypeSelectorAPIActions } from './containers/class-and-type-selector/api/class-and-type-selector.actions';
+import { ClassAndTypeSelectorAPIEpics } from './containers/class-and-type-selector/api/class-and-type-selector.epics';
+import { ClassAndTypeSelectorComponent } from './containers/class-and-type-selector/class-and-type-selector.component';
+import { CreateOrAddPeItAPIActions } from './containers/create-or-add-pe-it/api/create-or-add-pe-it.actions';
+import { CreateOrAddPeItAPIEpics } from './containers/create-or-add-pe-it/api/create-or-add-pe-it.epics';
+import { CreateOrAddPeItComponent } from './containers/create-or-add-pe-it/create-or-add-pe-it.component';
 import { InformationAPIActions } from './containers/information/api/information.actions';
 import { InformationAPIEpics } from './containers/information/api/information.epics';
 import { InformationComponent } from './containers/information/information.component';
+import { ListAPIActions } from './containers/list/api/list.actions';
+import { ListAPIEpics } from './containers/list/api/list.epics';
+import { ListComponent } from './containers/list/list.component';
 import { MapComponent } from './containers/map/map.component';
 import { PeItLayerComponent } from './containers/pe-it-layer/pe-it-layer.component';
+import { PeItSearchExistingAPIActions } from './containers/pe-it-search-existing/api/pe-it-search-existing.actions';
+import { PeItSearchExistingAPIEpics } from './containers/pe-it-search-existing/api/pe-it-search-existing.epics';
+import { PeItSearchExistingComponent } from './containers/pe-it-search-existing/pe-it-search-existing.component';
 import { PolygonsEditorLayerComponent } from './containers/polygons-editor-layer/polygons-editor-layer.component';
+import { DataUnitActions } from './data-unit/data-unit.actions';
+import { DataUnitAPIEpics } from './data-unit/data-unit.epics';
 import { PeItApiEpics } from './data-unit/pe-it/api/pe-it.epics';
 import { PeItAddCtrlComponent } from './data-unit/pe-it/pe-it-add-ctrl/pe-it-add-ctrl.component';
 import { PeItAddFormComponent } from './data-unit/pe-it/pe-it-add-form/pe-it-add-form.component';
@@ -56,20 +70,20 @@ import { ExistenceTimeHelpComponent } from './existence-time/existence-time-help
 import { ExistenceTimeModalComponent } from './existence-time/existence-time-modal/existence-time-modal.component';
 import { ExistenceTimeActions } from './existence-time/existence-time.actions';
 import { InformationRoutingModule } from './information-routing.module';
-import { ExTimeRoleSetAddCtrlComponent } from './role-set/ex-time/ex-time-role-set-add-ctrl/ex-time-role-set-add-ctrl.component';
-import { ExTimeRoleSetCreateCtrlComponent } from './role-set/ex-time/ex-time-role-set-create-ctrl/ex-time-role-set-create-ctrl.component';
-import { ExTimeRoleSetEditableComponent } from './role-set/ex-time/ex-time-role-set-editable/ex-time-role-set-editable.component';
-import { ExTimeRoleSetFormComponent } from './role-set/ex-time/ex-time-role-set-form/ex-time-role-set-form.component';
-import { PeItRoleSetAddCtrlComponent } from './role-set/pe-it/pe-it-role-set-add-ctrl/pe-it-role-set-add-ctrl.component';
-import { PeItRoleSetCreateCtrlComponent } from './role-set/pe-it/pe-it-role-set-create-ctrl/pe-it-role-set-create-ctrl.component';
-import { PeItRoleSetEditableComponent } from './role-set/pe-it/pe-it-role-set-editable/pe-it-role-set-editable.component';
-import { PeItRoleSetFormComponent } from './role-set/pe-it/pe-it-role-set-form/pe-it-role-set-form.component';
-import { RoleSetActions } from './role-set/role-set.actions';
-import { RoleSetApiEpics } from './role-set/role-set.epics';
-import { TeEntRoleSetAddCtrlComponent } from './role-set/te-ent/te-ent-role-set-add-ctrl/te-ent-role-set-add-ctrl.component';
-import { TeEntRoleSetCreateCtrlComponent } from './role-set/te-ent/te-ent-role-set-create-ctrl/te-ent-role-set-create-ctrl.component';
-import { TeEntRoleSetEditableComponent } from './role-set/te-ent/te-ent-role-set-editable/te-ent-role-set-editable.component';
-import { TeEntRoleSetFormComponent } from './role-set/te-ent/te-ent-role-set-form/te-ent-role-set-form.component';
+import { ExTimePropertyFieldAddCtrlComponent } from './property-field/ex-time/ex-time-property-field-add-ctrl/ex-time-property-field-add-ctrl.component';
+import { ExTimePropertyFieldCreateCtrlComponent } from './property-field/ex-time/ex-time-property-field-create-ctrl/ex-time-property-field-create-ctrl.component';
+import { ExTimePropertyFieldEditableComponent } from './property-field/ex-time/ex-time-property-field-editable/ex-time-property-field-editable.component';
+import { ExTimePropertyFieldFormComponent } from './property-field/ex-time/ex-time-property-field-form/ex-time-property-field-form.component';
+import { PeItPropertyFieldAddCtrlComponent } from './property-field/pe-it/pe-it-property-field-add-ctrl/pe-it-property-field-add-ctrl.component';
+import { PeItPropertyFieldCreateCtrlComponent } from './property-field/pe-it/pe-it-property-field-create-ctrl/pe-it-property-field-create-ctrl.component';
+import { PeItPropertyFieldEditableComponent } from './property-field/pe-it/pe-it-property-field-editable/pe-it-property-field-editable.component';
+import { PeItPropertyFieldFormComponent } from './property-field/pe-it/pe-it-property-field-form/pe-it-property-field-form.component';
+import { PropertyFieldActions } from './property-field/property-field.actions';
+import { PropertyFieldApiEpics } from './property-field/property-field.epics';
+import { TeEntPropertyFieldAddCtrlComponent } from './property-field/te-ent/te-ent-property-field-add-ctrl/te-ent-property-field-add-ctrl.component';
+import { TeEntPropertyFieldCreateCtrlComponent } from './property-field/te-ent/te-ent-property-field-create-ctrl/te-ent-property-field-create-ctrl.component';
+import { TeEntPropertyFieldEditableComponent } from './property-field/te-ent/te-ent-property-field-editable/te-ent-property-field-editable.component';
+import { TeEntPropertyFieldFormComponent } from './property-field/te-ent/te-ent-property-field-form/te-ent-property-field-form.component';
 import { PeItRoleAddCtrlComponent } from './role/pe-it/pe-it-role-add-ctrl/pe-it-role-add-ctrl.component';
 import { PeItRoleCreateCtrlComponent } from './role/pe-it/pe-it-role-create-ctrl/pe-it-role-create-ctrl.component';
 import { PeItRoleEditableComponent } from './role/pe-it/pe-it-role-editable/pe-it-role-editable.component';
@@ -83,36 +97,50 @@ import { EntityAddModalService } from './shared/entity-add-modal.service';
 import { EprService } from './shared/epr.service';
 import { PeItService } from './shared/pe-it.service';
 import { PropertyService } from './shared/property.service';
-import { RoleSetService } from './shared/role-set.service';
+import { PropertyFieldService } from './shared/property-field.service';
 import { RoleService } from './shared/role.service';
-import { StateCreatorService } from './shared/state-creator.service';
 import { TeEntService } from './shared/te-ent.service';
+import { TypeCtrlAPIActions } from './type/type-ctrl/api/type-ctrl.actions';
+import { TypeCtrlAPIEpics } from './type/type-ctrl/api/type-ctrl.epics';
+import { TypeCtrlComponent } from './type/type-ctrl/type-ctrl.component';
+import { TypeEditableAPIActions } from './type/type-editable/api/type-editable.actions';
+import { TypeEditableAPIEpics } from './type/type-editable/api/type-editable.epics';
+import { TypeEditableComponent } from './type/type-editable/type-editable.component';
 import { AppellationCtrlComponent } from './value/appellation-ctrl/appellation-ctrl.component';
 import { AppellationViewComponent } from './value/appellation-view/appellation-view.component';
 import { LanguageCtrlComponent } from './value/language-ctrl/language-ctrl.component';
 import { LanguageViewComponent } from './value/language-view/language-view.component';
 import { LeafPeItCtrlComponent } from './value/leaf-pe-it-ctrl/leaf-pe-it-ctrl.component';
+import { LeafPeItViewAPIActions } from './value/leaf-pe-it-view/api/leaf-pe-it-view.actions';
+import { LeafPeItViewAPIEpics } from './value/leaf-pe-it-view/api/leaf-pe-it-view.epics';
 import { LeafPeItViewModalComponent } from './value/leaf-pe-it-view/leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
 import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.component';
 import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
-import { LeafPeItViewAPIActions } from './value/leaf-pe-it-view/api/leaf-pe-it-view.actions';
-import { LeafPeItViewAPIEpics } from './value/leaf-pe-it-view/api/leaf-pe-it-view.epics';
-import { EditorHeaderComponent } from './components/editor-header/editor-header.component';
-import { ClassInfoComponent } from './components/class-info/class-info.component';
-import { TypeEditableComponent } from './type/type-editable/type-editable.component';
-import { TypeEditableAPIActions } from './type/type-editable/api/type-editable.actions';
-import { TypeEditableAPIEpics } from './type/type-editable/api/type-editable.epics';
-import { TypeCtrlComponent } from './type/type-ctrl/type-ctrl.component';
-import { TypeCtrlAPIActions } from './type/type-ctrl/api/type-ctrl.actions';
-import { TypeCtrlAPIEpics } from './type/type-ctrl/api/type-ctrl.epics';
-import { TreeviewModule } from 'ngx-treeview';
-import { RoleSetHeaderComponent } from './components/role-set-header/role-set-header.component';
-import { TeEntHeaderComponent } from './components/te-ent-header/te-ent-header.component';
-import { DataUnitAPIEpics } from './data-unit/data-unit.epics';
-import { DataUnitActions } from './data-unit/data-unit.actions';
+import { SectionListComponent } from './containers/section-list/section-list.component';
+import { SectionListAPIActions } from './containers/section-list/api/section-list.actions';
+import { SectionListAPIEpics } from './containers/section-list/api/section-list.epics';
+import { EntityAssociationCreateCtrlComponent } from './entity-association/entity-association-create-ctrl/entity-association-create-ctrl.component';
+import { EntityAssociationAPIActions } from './entity-association/api/entity-association.actions';
+import { EntityAssociationAPIEpics } from './entity-association/api/entity-association.epics';
+import { EntityAssociationCreateOrAddComponent } from './entity-association/entity-association-create-or-add/entity-association-create-or-add.component';
+import { EntityAssociationExistingListComponent } from './entity-association/entity-association-existing-list/entity-association-existing-list.component';
+import { ReprosComponent } from './containers/repros/repros.component';
+import { ReprosAPIActions } from './containers/repros/api/repros.actions';
+import { ReprosAPIEpics } from './containers/repros/api/repros.epics';
+import { TextEditorComponent } from './containers/text-editor/text-editor.component';
+import { TextEditorAPIActions } from './containers/text-editor/api/text-editor.actions';
+import { TextEditorAPIEpics } from './containers/text-editor/api/text-editor.epics';
+import { VersionPickerComponent } from './components/version-picker/version-picker.component';
+import { PeItStrModule } from 'app/shared/pipes/pe-it-str/pe-it-str.module';
+import { TextPropertyFieldComponent } from './containers/text-property-field/text-property-field.component';
+import { TextPropertyFieldAPIActions } from './containers/text-property-field/api/text-property-field.actions';
+import { TextPropertyFieldAPIEpics } from './containers/text-property-field/api/text-property-field.epics';
+import { MentioningListComponent } from './containers/mentioning-list/mentioning-list.component';
+import { MentioningCreateCtrlComponent } from './components/mentioning-create-ctrl/mentioning-create-ctrl.component';
+
 
 
 
@@ -139,6 +167,8 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     DimensionChangeModule,
     TimelineModule,
     KeysModule,
+    FilterByKeyModule,
+    PeItStrModule,
     HighlightModule,
     DndModule,
     QuillModule,
@@ -149,17 +179,24 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     EntitySearchHitComponent,
     PeItTimelineComponent,
 
-    // PeIt Map
+    // PeIt specific user interfaces
     MapComponent,
     PeItLayerComponent,
     PolygonsEditorLayerComponent,
+    SectionListComponent,
+    ReprosComponent,
+    TextEditorComponent,
+    VersionPickerComponent,
 
     // Add Modal
-    EntityAddAddExistingComponent,
-    EntityAddChooseClassComponent,
-    EntityAddCreateNewComponent,
-    EntityAddModalComponent,
-    EntityAddSearchExistingComponent,
+    // EntityAddAddExistingComponent,
+    // EntityAddChooseClassComponent,
+    // EntityAddCreateNewComponent,
+    // EntityAddModalComponent,
+    // EntityAddSearchExistingComponent,
+
+    // Classe and Type select
+    ClassAndTypeSelectorComponent,
 
     // Data Unit > PeIt
     PeItAddCtrlComponent,
@@ -180,18 +217,18 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     // Appe Lang
     AppeLangCreateCtrlComponent,
 
-    // Role Set
-    PeItRoleSetAddCtrlComponent,
-    PeItRoleSetCreateCtrlComponent,
-    PeItRoleSetEditableComponent,
-    PeItRoleSetFormComponent,
-    TeEntRoleSetAddCtrlComponent,
-    TeEntRoleSetCreateCtrlComponent,
-    TeEntRoleSetEditableComponent,
-    TeEntRoleSetFormComponent,
-    ExTimeRoleSetFormComponent,
-    ExTimeRoleSetAddCtrlComponent,
-    ExTimeRoleSetCreateCtrlComponent,
+    // Property Field
+    PeItPropertyFieldAddCtrlComponent,
+    PeItPropertyFieldCreateCtrlComponent,
+    PeItPropertyFieldEditableComponent,
+    PeItPropertyFieldFormComponent,
+    TeEntPropertyFieldAddCtrlComponent,
+    TeEntPropertyFieldCreateCtrlComponent,
+    TeEntPropertyFieldEditableComponent,
+    TeEntPropertyFieldFormComponent,
+    ExTimePropertyFieldFormComponent,
+    ExTimePropertyFieldAddCtrlComponent,
+    ExTimePropertyFieldCreateCtrlComponent,
     ExistenceTimeModalComponent,
 
     // Role
@@ -201,6 +238,9 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     TeEntRoleAddCtrlComponent,
     TeEntRoleCreateCtrlComponent,
     TeEntRoleEditableComponent,
+
+    // EntityAssociation
+    EntityAssociationCreateCtrlComponent,
 
     // Value
     AppellationCtrlComponent,
@@ -213,7 +253,7 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     ExistenceTimeEditComponent,
     TimePrimitiveCtrlComponent,
     TimePrimitiveViewComponent,
-    ExTimeRoleSetEditableComponent,
+    ExTimePropertyFieldEditableComponent,
     PlaceCtrlComponent,
     PlaceViewComponent,
     ExistenceTimeHelpComponent,
@@ -232,8 +272,17 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     EditorHeaderComponent,
     ClassInfoComponent,
     TypeCtrlComponent,
-    RoleSetHeaderComponent,
+    PropertyFieldHeaderComponent,
     TeEntHeaderComponent,
+    CreateOrAddPeItComponent,
+    PeItSearchExistingComponent,
+    ListComponent,
+    EntityAssociationCreateCtrlComponent,
+    EntityAssociationCreateOrAddComponent,
+    EntityAssociationExistingListComponent,
+    TextPropertyFieldComponent,
+    MentioningListComponent,
+    MentioningCreateCtrlComponent,
 
 
 
@@ -247,13 +296,31 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     InformationAPIActions,
     InformationAPIEpics,
 
+    // List
+    ListAPIActions,
+    ListAPIEpics,
+
+    // Classe and Type select
+    ClassAndTypeSelectorAPIActions,
+    ClassAndTypeSelectorAPIEpics,
+
     // Data Unit
+    ListAPIEpics,
+    ListAPIActions,
     DataUnitAPIEpics,
     DataUnitActions,
     PeItActions,
     PeItApiEpics,
     TeEntActions,
     TeEntAPIEpics,
+
+    // PeIt specific user interfaces
+    SectionListAPIActions,
+    SectionListAPIEpics,
+    ReprosAPIActions,
+    ReprosAPIEpics,
+    TextEditorAPIActions,
+    TextEditorAPIEpics,
 
     // Existence Time
     ExistenceTimeActions,
@@ -262,12 +329,18 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     AppeLangCreateCtrlAPIActions,
     AppeLangCreateCtrlAPIEpics,
 
-    // Role Set
-    RoleSetActions,
-    RoleSetApiEpics,
+    // Fields
+    PropertyFieldActions,
+    PropertyFieldApiEpics,
+    TextPropertyFieldAPIActions,
+    TextPropertyFieldAPIEpics,
 
     // Role
     RoleActions,
+
+    // Entity Association
+    EntityAssociationAPIEpics,
+    EntityAssociationAPIActions,
 
     // Value
     AppellationService,
@@ -281,17 +354,21 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     TypeCtrlAPIEpics,
 
     // Shared
-    StateCreatorService,
     PeItService,
     TeEntService,
     ClassService,
     PropertyService,
     RoleService,
     EprService,
-    RoleSetService,
+    PropertyFieldService,
     ValidationService,
 
     MentionedEntityCtrlActions,
+    CreateOrAddPeItAPIActions,
+    CreateOrAddPeItAPIEpics,
+    PeItSearchExistingAPIActions,
+    PeItSearchExistingAPIEpics
+
 
 
   ],
@@ -299,7 +376,10 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     // Put all components here, that are used by another module, or in a sandbox
 
     // Add Modal
-    EntityAddModalComponent,
+    // EntityAddModalComponent,
+
+    // Classe and Type select
+    ClassAndTypeSelectorComponent,
 
     // Data Unit > PeIt
     PeItAddCtrlComponent,
@@ -307,6 +387,12 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     PeItEditableComponent,
     PeItAddFormComponent,
     PeItCreateFormComponent,
+    TextEditorComponent,
+    VersionPickerComponent,
+
+    // PeIt specific user interfaces
+    SectionListComponent,
+    ReprosComponent,
 
     // Data Unit > TeEnt
     TeEntAddCtrlComponent,
@@ -318,15 +404,15 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     ExistenceTimeAddCtrlComponent,
     AppeLangCreateCtrlComponent,
 
-    // Role Set
-    PeItRoleSetAddCtrlComponent,
-    PeItRoleSetCreateCtrlComponent,
-    PeItRoleSetEditableComponent,
-    PeItRoleSetFormComponent,
-    TeEntRoleSetAddCtrlComponent,
-    TeEntRoleSetCreateCtrlComponent,
-    TeEntRoleSetEditableComponent,
-    TeEntRoleSetFormComponent,
+    // Property Field
+    PeItPropertyFieldAddCtrlComponent,
+    PeItPropertyFieldCreateCtrlComponent,
+    PeItPropertyFieldEditableComponent,
+    PeItPropertyFieldFormComponent,
+    TeEntPropertyFieldAddCtrlComponent,
+    TeEntPropertyFieldCreateCtrlComponent,
+    TeEntPropertyFieldEditableComponent,
+    TeEntPropertyFieldFormComponent,
 
     // Role
     PeItRoleAddCtrlComponent,
@@ -335,6 +421,9 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     TeEntRoleAddCtrlComponent,
     TeEntRoleCreateCtrlComponent,
     TeEntRoleEditableComponent,
+
+    // Entity Association
+    EntityAssociationCreateCtrlComponent,
 
     // Value
     AppellationCtrlComponent,
@@ -349,16 +438,24 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
     PlaceViewComponent,
 
     // Type
+    TypeEditableComponent,
     TypeCtrlComponent,
 
     // Reusable
     TextPropertyComponent,
-    TeEntLabelComponent
+    TeEntLabelComponent,
+    CreateOrAddPeItComponent,
+    PeItSearchExistingComponent,
+    ListComponent,
+    TeEntLabelComponent,
+    PeItLabelComponent,
+    ClassInfoComponent,
+    EditorHeaderComponent,
+    MentioningCreateCtrlComponent,
 
   ],
   entryComponents: [
     LeafPeItViewModalComponent,
-    EntityAddModalComponent,
     ExistenceTimeModalComponent
   ]
 })

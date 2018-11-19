@@ -25,7 +25,8 @@ export default sandboxOf(PeItAddFormComponent, {
       pkProject: 8, // use a pk of a project that has the pkEntity not yet added
       pkEntity: 25893,
       settings: {
-        isAddMode: true
+        pkUiContext: 1,
+        isViewMode: true
       } as StateSettings,
       activeProject: {
         pk_project: 8, // use same pkProject
@@ -176,7 +177,7 @@ export default sandboxOf(PeItAddFormComponent, {
             "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
             "text_properties": []
           },
-          "_children": {
+          "_fields": {
             "_1_ingoing": {
               "isOutgoing": false,
               "property": {
@@ -311,7 +312,7 @@ export default sandboxOf(PeItAddFormComponent, {
                       "sys_period": "[\"2018-06-04 10:18:05.637764+00\",)",
                       "text_properties": []
                     },
-                    "_children": {
+                    "_fields": {
                       "_2_outgoing": {
                         "isOutgoing": true,
                         "property": {
@@ -456,8 +457,8 @@ export default sandboxOf(PeItAddFormComponent, {
                         }
                       }
                     },
-                    "ingoingRoleSets": [],
-                    "outgoingRoleSets": [
+                    "ingoingPropertyFields": [],
+                    "outgoingPropertyFields": [
                       {
                         "isOutgoing": true,
                         "property": {

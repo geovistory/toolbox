@@ -15,28 +15,28 @@ module.exports = function (InfEntityAssociation) {
     let requestedEa = ctx ? ctx.req.body : ea;
 
 
-   
 
-    // if the ea points to a persistent item
-    if (requestedEa.persistent_item && Object.keys(requestedEa.persistent_item).length > 0) {
+
+    // if the ea has a persistent item as the domain 
+    if (requestedEa.domain_pe_it && Object.keys(requestedEa.domain_pe_it).length > 0) {
 
       // prepare parameters
       const InfPersistentItem = InfEntityAssociation.app.models.InfPersistentItem;
 
       // find or create the peIt and the ea pointing to it
-      return InfPersistentItem.findOrCreatePeIt(projectId, requestedEa.persistent_item)
+      return InfPersistentItem.findOrCreatePeIt(projectId, requestedEa.domain_pe_it)
         .then((resultingPeIts) => {
 
           const resultingPeIt = resultingPeIts[0];
 
           // … prepare the Ea to create
-          dataObject.fk_range_entity = resultingPeIt.pk_entity;
+          dataObject.fk_domain_entity = resultingPeIt.pk_entity;
 
           return InfEntityAssociation.findOrCreateByValue(InfEntityAssociation, projectId, dataObject, requestedEa)
             .then((resultingEas) => {
 
-              let res = resultingEa[0].toJSON();
-              res.persistent_item = resultingPeIt.toJSON();
+              let res = resultingEas[0].toJSON();
+              res.domain_pe_it = resultingPeIt;
 
               return [res];
 
@@ -63,38 +63,134 @@ module.exports = function (InfEntityAssociation) {
 
 
 
-   /**
-    * nestedObjectOfProject - get a rich object of the entityAssociation with its
-    * domain and range entity
-   *
-   * @param  {number} pkProject primary key of project
-   * @param  {number} pkEntity  pk_entity of the entityAssociation
-   */
-  InfEntityAssociation.nestedObjectOfProject = function(projectId, pkEntity, cb) {
+  /**
+   * nestedObjectOfProject - get a rich object of the entityAssociation with its
+   * domain and range entity
+  *
+  * @param  {number} pkProject primary key of project
+  * @param  {number} pkEntity  pk_entity of the entityAssociation
+  */
+  InfEntityAssociation.nestedObject = function (ofProject, pkProject, pkEntity, pkRangeEntity, pkDomainEntity, pkProperty, cb) {
 
-    const innerJoinThisProject = {
+    if (!pkEntity && !pkRangeEntity && !pkDomainEntity) {
+      return cb('please provide at least a pkEntity, pkRangeEntity or pkDomainEntity');
+    }
+
+    const joinThisProject = {
       "$relation": {
-        "name": "eprs",
-        "joinType": "inner join",
+        "name": "entity_version_project_rels",
+        "joinType": (ofProject ? "inner join" : "left join"),
         "where": [
-          "fk_project", "=", projectId,
+          "fk_project", "=", pkProject,
           "and", "is_in_project", "=", "true"
         ]
       }
     };
 
+    const w = { pk_entity: pkEntity, fk_range_entity: pkRangeEntity, fk_domain_entity: pkDomainEntity, fk_property: pkProperty }
+    let where = [];
+    Object.keys(w).filter((key) => (!!w[key])).map((key, index, ar) => {
+      let part = [key, '=', w[key]];
+      if (index !== 0) part = ['AND', ...part];
+      return part;
+    }).forEach(part => {
+      where = [...where, ...part]
+    });
+
     const filter = {
-      "where": ["pk_entity", "=", pkEntity],
+      "where": where,
       "include": {
-        "eprs": innerJoinThisProject,
+        "entity_version_project_rels": joinThisProject,
         "chunk": {
           "$relation": {
             "name": "chunk",
-            "joinType": "inner join",
+            "joinType": "left join",
             "orderBy": [{
               "pk_entity": "asc"
             }]
           },
+        },
+        "digital_object": {
+          "$relation": {
+            "name": "digital_object",
+            "joinType": "left join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          },
+          "entity_version_project_rels": joinThisProject
+        },
+        "domain_pe_it": {
+          "$relation": {
+            "name": "domain_pe_it",
+            "joinType": "left join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          },
+          "pi_roles": {
+            "$relation": {
+              "name": "pi_roles",
+              "joinType": "left join"
+            },
+            "entity_version_project_rels": joinThisProject,
+            "temporal_entity": {
+              "$relation": {
+                "name": "temporal_entity",
+                "joinType": "inner join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              },
+              // "entity_version_project_rels": joinThisProject,
+              "te_roles": {
+                "$relation": {
+                  "name": "te_roles",
+                  "joinType": "inner join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                },
+                "entity_version_project_rels": joinThisProject,
+                "appellation": {
+                  "$relation": {
+                    "name": "appellation",
+                    "joinType": "left join",
+                    "orderBy": [{
+                      "pk_entity": "asc"
+                    }]
+                  }
+                },
+                "language": {
+                  "$relation": {
+                    "name": "language",
+                    "joinType": "left join",
+                    "orderBy": [{
+                      "pk_entity": "asc"
+                    }]
+                  }
+                },
+                "time_primitive": {
+                  "$relation": {
+                    "name": "time_primitive",
+                    "joinType": "left join",
+                    "orderBy": [{
+                      "pk_entity": "asc"
+                    }]
+                  }
+                },
+                "place": {
+                  "$relation": {
+                    "name": "place",
+                    "joinType": "left join",
+                    "orderBy": [{
+                      "pk_entity": "asc"
+                    }]
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }

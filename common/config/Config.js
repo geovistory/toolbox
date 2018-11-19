@@ -17,6 +17,11 @@ const Config = {
     PK_CLASS_PK_HAS_TYPE_MAP: {
         363: 1110, // Geographical Place
         441: 1190, // Built Work
+        220: 1205, // Manifestation Singleton Type
+        219: 1206, // Manifestation Product Type
+        218: 1214, // Expression Type
+        68: 1204, // Group Type,
+        212: 1066, // Geographical Localisation Type
     },
 
 
@@ -33,7 +38,12 @@ const Config = {
     PROPERTY_LABEL_INVERSED_SG: 182,
     PROPERTY_LABEL_INVERSED_PL: 183,
 
-    CLASS_LABEL: 184
+    CLASS_LABEL: 184,
+
+    /**
+    * Primary Key of Namespace "Geovistory Ongoing"
+    */
+    PK_PROJECT_OF_TEMPLATE_PROJECT: 16,
 
 
 }

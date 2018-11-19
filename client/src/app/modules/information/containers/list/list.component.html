@@ -1,0 +1,47 @@
+<!-- Search input -->
+<form class="mx-3 mt-3 mb-2" (ngSubmit)="searchStringChange()">
+  <div class="input-group">
+    <input type="text" name="searchString" class="form-control" aria-describedby="search" autocomplete="off"
+      placeholder="Search …" [(ngModel)]="searchString">
+    <span class="input-group-append">
+      <button class="btn btn-primary" type="submit">
+        <i class="fa fa-search"></i>
+      </button>
+    </span>
+  </div>
+</form>
+
+<!-- Search filter tabs -->
+<!-- <ul class="nav gv-search-filter">
+                <li class="nav-item">
+                  <button class="btn btn-sm btn-link nav-link">[All]</button>
+                </li>
+                <li class="nav-item">
+                  <button class="btn btn-sm btn-link nav-link active">Entities</button>
+                </li>
+                <li class="nav-item">
+                  <button class="btn btn-sm btn-link nav-link">[Phenomena]</button>
+                </li>
+              </ul> -->
+
+<!-- Results count -->
+<div class="mx-3 mb-3 px-3 text-muted font-sm" *ngIf="!(loading$ | async)">
+  <span *ngIf="collectionSize > limit">
+    {{hitsFrom}}-{{hitsTo}} of
+  </span>
+  {{collectionSize | number}} {{(collectionSize == 1 ? 'result' : 'results')}}
+</div>
+
+<!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
+
+<!-- Results -->
+<div class="d-flex gv-fh m-3 px-3 gv-scroll-y-auto" *ngIf="!(loading$ | async)">
+  <gv-entity-search-hit *ngFor="let hit of (items$ | async)" [persistentItem]="hit" [selectingMentionedEntities]="(selectingEntities$ | async)"
+    (onSelectAsMentioned)="selectMentionedEntity($event)" (onOpen)=onOpen.emit($event)></gv-entity-search-hit>
+</div>
+
+<!-- Pagination -->
+<div class="m-3" *ngIf="!(loading$ | async)">
+  <ngb-pagination class="mb-0" *ngIf="collectionSize > limit" [maxSize]="5" [collectionSize]="collectionSize" [(page)]="page"
+    [pageSize]="limit" (pageChange)="pageChange()" aria-label="Default pagination"></ngb-pagination>
+</div>

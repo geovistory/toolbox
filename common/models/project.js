@@ -27,10 +27,19 @@ module.exports = function (Project) {
     var params = [
       accountId,
       pkLanguage,
-      label
+      label,
+      Config.PK_PROJECT_OF_TEMPLATE_PROJECT
     ];
 
-    console.log(params);
+    let insertTextProperty = '';
+    if (textProperty) {
+      params.push(textProperty);
+      insertTextProperty = `
+      , insert_text_property AS (
+        INSERT INTO commons.text_property (text_property, text_property_xml, fk_entity, fk_system_type, fk_language, notes)
+        SELECT  $`+ params.length + `, null, pk_entity, 1, 'fra', 'Sample note' FROM insert_project
+      )`;
+    }
 
     let sql_stmt = `
     WITH insert_project AS (
@@ -45,36 +54,37 @@ module.exports = function (Project) {
       SELECT $3, pk_entity, 1, $2 FROM insert_project
       ON CONFLICT DO NOTHING
     )
+    ${insertTextProperty},
+    add_information_from_template_project AS (
+      INSERT INTO information.entity_version_project_rel (fk_project, fk_entity, fk_entity_version, fk_entity_version_concat, is_in_project, is_standard_in_project, calendar, ord_num, entity_version)
+      SELECT 
+        (SELECT pk_project FROM insert_project) as fk_project,
+        fk_entity,
+        fk_entity_version,
+        fk_entity_version_concat,
+        is_in_project,
+        is_standard_in_project,
+        calendar,
+        ord_num, 
+        entity_version
+      FROM information.entity_version_project_rel
+      WHERE fk_project = $4        
+      ON CONFLICT DO NOTHING
+    ),
+    add_data_for_history_from_template_project AS (
+      INSERT INTO data_for_history.proj_rel (fk_project, fk_entity, is_in_project)
+      SELECT 
+        (SELECT pk_project FROM insert_project) as fk_project,
+        fk_entity,
+        is_in_project
+      FROM data_for_history.proj_rel
+      WHERE fk_project = $4
+      ON CONFLICT DO NOTHING
+    )
     INSERT INTO public.account_project_rel (fk_project, account_id, role)
     SELECT pk_project, $1, 'owner' FROM insert_project
     `;
 
-    if (textProperty) {
-
-      params.push(textProperty);
-
-      sql_stmt = `
-      WITH insert_project AS (
-        INSERT INTO commons.project (fk_language)
-        VALUES
-        ($2)
-        ON CONFLICT DO NOTHING
-        RETURNING pk_entity, pk_project
-      ),
-      insert_label AS (
-        INSERT INTO commons.label (label, fk_entity, fk_system_type, fk_language)
-        SELECT $3, pk_entity, 1, $2 FROM insert_project
-        ON CONFLICT DO NOTHING
-      ),
-      insert_text_property AS (
-        INSERT INTO commons.text_property (text_property, text_property_xml, fk_entity, fk_system_type, fk_language, notes)
-        SELECT  $4, null, pk_entity, 1, 'fra', 'Sample note' FROM insert_project
-      )
-      INSERT INTO public.account_project_rel (fk_project, account_id, role)
-      SELECT pk_project, $1, 'owner' FROM insert_project
-      `;
-
-    }
 
     const connector = Project.dataSource.connector;
     connector.execute(sql_stmt, params, (err, result) => {
@@ -131,7 +141,8 @@ module.exports = function (Project) {
         "dfh_domain_instances_min_quantifier",
         "dfh_domain_instances_max_quantifier",
         "dfh_range_instances_min_quantifier",
-        "dfh_range_instances_max_quantifier"
+        "dfh_range_instances_max_quantifier",
+        "identity_defining"
       ]
     };
 
@@ -182,6 +193,15 @@ module.exports = function (Project) {
         include: ["dfh_pk_class", "dfh_identifier_in_namespace", "dfh_standard_label"]
       },
       "include": {
+        proj_rels: {
+          "$relation": {
+            "name": "proj_rels",
+            "joinType": "left join",
+            select: { include: ["is_in_project"] },
+            "orderBy": [{ "pk_entity": "asc" }],
+            where: ['fk_project', '=', pk_project]
+          }
+        },
         labels: {
           "$relation": {
             "name": "labels",
@@ -234,9 +254,9 @@ module.exports = function (Project) {
             "name": "ui_context_configs",
             "joinType": "left join"
           },
-          property_set: {
+          class_field: {
             $relation: {
-              name: "property_set",
+              name: "class_field",
               joinType: "left join",
               "orderBy": [{ "pk_entity": "asc" }]
             }

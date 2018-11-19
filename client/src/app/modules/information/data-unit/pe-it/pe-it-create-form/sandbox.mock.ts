@@ -1,5 +1,5 @@
 import { DfhClass, DfhLabel, DfhProperty, InfRole, InfPersistentItem, InfTemporalEntity, InfEntityProjectRel, DfhPropertyInterface, InfRoleInterface, DfhClassInterface } from "app/core";
-import { PeItDetail, RoleDetail, RoleSet, DataUnitChildList } from "app/core/state/models";
+import { PeItDetail, RoleDetail, PropertyField, FieldList } from "app/core/state/models";
 import { DfhConfig } from "../../../shared/dfh-config";
 
 export const mockPerson: PeItDetail = {
@@ -11,10 +11,10 @@ export const mockPerson: PeItDetail = {
         dfh_pk_class: 21,
         dfh_standard_label: 'Person'
     } as DfhClass,
-    ingoingRoleSets: [],
-    outgoingRoleSets: [],
-    _children: {
-        _role_set_1: new  RoleSet({
+    ingoingPropertyFields: [],
+    outgoingPropertyFields: [],
+    _fields: {
+        _property_field_1: new  PropertyField({
             label: {
                 default: 'Names',
                 sg: 'Name',
@@ -46,8 +46,8 @@ export const mockPerson: PeItDetail = {
                             dfh_identifier_in_namespace: "histC10",
                             dfh_standard_label: "Appellation for language ",
                         } as DfhClass,
-                        _children: {
-                            _role_set_1: new  RoleSet({
+                        _fields: {
+                            _property_field_1: new  PropertyField({
                                 label: {
                                     default: 'Detailed Name',
                                     sg: 'Detailed Name',
@@ -77,7 +77,7 @@ export const mockPerson: PeItDetail = {
                                     } as RoleDetail
                                 }
                             })
-                        } as DataUnitChildList
+                        } as FieldList
                     }
                 } as RoleDetail
             }
@@ -142,7 +142,7 @@ export const generatedMockPerson = {
             }
         ]
     },
-    "_children": {
+    "_fields": {
         "_1194_ingoing": {
             "isOutgoing": false,
             "property": {
@@ -245,7 +245,7 @@ export const generatedMockPerson = {
                                 }
                             ]
                         },
-                        "_children": {
+                        "_fields": {
                             "_1113_outgoing": {
                                 "isOutgoing": true,
                                 "property": {
@@ -333,7 +333,7 @@ export const generatedMockPerson = {
                                 }
                             }
                         },
-                        "_existenceTime": {
+                        "_field_48": {
                             "roles": [
                                 {
                                     "entity_version_project_rels": [
@@ -358,7 +358,7 @@ export const generatedMockPerson = {
                                 }  as InfRole
                             ],
                             "toggle": "collapsed",
-                            "outgoingRoleSets": [
+                            "outgoingPropertyFields": [
                                 {
                                     "isOutgoing": true,
                                     "property": {
@@ -751,8 +751,8 @@ export const generatedMockPerson = {
                                 }
                             ]
                         },
-                        "ingoingRoleSets": [],
-                        "outgoingRoleSets": [
+                        "ingoingPropertyFields": [],
+                        "outgoingPropertyFields": [
                             {
                                 "isOutgoing": true,
                                 "property": {
@@ -1047,7 +1047,7 @@ export const generatedMockPerson = {
             }
         }
     },
-    "ingoingRoleSets": [
+    "ingoingPropertyFields": [
         {
             "isOutgoing": false,
             "property": {
@@ -1254,7 +1254,7 @@ export const generatedMockPerson = {
             }
         }
     ],
-    "outgoingRoleSets": [
+    "outgoingPropertyFields": [
         {
             "isOutgoing": true,
             "property": {

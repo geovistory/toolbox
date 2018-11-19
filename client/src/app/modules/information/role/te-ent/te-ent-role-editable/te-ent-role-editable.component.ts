@@ -1,14 +1,13 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { RoleBase } from '../../role.base';
-import { NgRedux, WithSubStore, select } from '@angular-redux/store';
+import { NgRedux, select, WithSubStore } from '@angular-redux/store';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { RoleDetail, CollapsedExpanded, PeItDetail } from 'app/core/state/models';
-import { roleReducer } from '../../role.reducers';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { ReplaySubject, Observable, Subject } from 'rxjs';
 import { InfRole } from 'app/core';
+import { CollapsedExpanded, PeItDetail, RoleDetail } from 'app/core/state/models';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Observable, ReplaySubject } from 'rxjs';
 import { RoleActions } from '../../role.actions';
-import { StateCreatorService } from '../../../shared/state-creator.service';
+import { RoleBase } from '../../role.base';
+import { roleReducer } from '../../role.reducers';
 
 @AutoUnsubscribe()
 @WithSubStore({
@@ -48,7 +47,6 @@ export class TeEntRoleEditableComponent extends RoleBase {
     protected ngRedux: NgRedux<RoleDetail>,
     protected fb: FormBuilder,
     protected actions: RoleActions,
-    protected stateCreator: StateCreatorService
   ) {
     super(ngRedux, fb)
     this.leafPeItLoading$ = new ReplaySubject<boolean>();

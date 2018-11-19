@@ -1,8 +1,9 @@
-import { createRoleDetail, createRoleSet, createPlaceDetail, createTimePrimitveDetail, createAppeDetail, createLangDetail, createDataUnitChildren, createPeItDetail } from './state-creator';
+import { createRoleDetail, createPropertyField, createPlaceDetail, createTimePrimitveDetail, createAppeDetail, createLangDetail, createFieldList, createPeItDetail, createEntityAssociationDetail } from './state-creator';
 import { roleWithPlace, place, roleWithLanguage, language, roleWithAppellation, appellation, roleWithTimePrimitive, time_primitive, role, roleWithTemporalEntity, temporal_entity, property, temporalEntityBirth } from './_mock-data';
 import { crm } from 'app/core/active-project/_mock-data';
-import { RoleSet, ExistenceTimeDetail, DataUnitChildList } from 'app/core/state/models';
-import { InfPersistentItem } from 'app/core/sdk';
+import { PropertyField, ExistenceTimeDetail, FieldList } from 'app/core/state/models';
+import { InfPersistentItem, InfEntityAssociation } from 'app/core/sdk';
+import { ComConfig } from 'app/core/config/com-config';
 
 
 describe('StateCreator', () => {
@@ -16,16 +17,16 @@ describe('StateCreator', () => {
      * createPeIt specs
      ***************************************************/
     it('#createPeIt should create a PeItDetail for creating a new person', () => {
-        expect(((createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { isCreateMode: true }))
-        ._children._1192_ingoing as RoleSet)._role_list['_undefined']._teEnt._children)
-        .toBeTruthy()
+        expect(((createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE }))
+            ._fields._1192_ingoing as PropertyField)._role_list['_undefined']._teEnt._fields)
+            .toBeTruthy()
     });
 
     /***************************************************
-     * createDataUnitChildren specs
+     * createFieldList specs
      ***************************************************/
-    it('#createDataUnitChildren should create a DataUnitChildList with an ExistenceTimeDetail', () => {
-        expect((createDataUnitChildren(temporalEntityBirth.fk_class, [roleWithTimePrimitive], crm, undefined)._existenceTime as ExistenceTimeDetail)._children._72_outgoing._role_list._1.role).toEqual(roleWithTimePrimitive)
+    it('#createFieldList should create a FieldList with an ExistenceTimeDetail', () => {
+        expect((createFieldList(temporalEntityBirth.fk_class, [roleWithTimePrimitive], [], crm, undefined)._field_48 as ExistenceTimeDetail)._fields._72_outgoing._role_list._1.role).toEqual(roleWithTimePrimitive)
     });
     /***************************************************
      * createRoleDetail specs
@@ -56,11 +57,11 @@ describe('StateCreator', () => {
     });
 
     /***************************************************
-     * createRoleSet specs
+     * createPropertyField specs
      ***************************************************/
 
-    it('#createRoleSet should return a RoleSet with _role_list of that contains a RoleDetail with the right key', () => {
-        expect(createRoleSet(new RoleSet({ isOutgoing: true, property }), [role], crm, {})._role_list['_1'].isOutgoing).toBe(true)
+    it('#createPropertyField should return a PropertyField with _role_list of that contains a RoleDetail with the right key', () => {
+        expect(createPropertyField(new PropertyField({ isOutgoing: true, property }), [role], crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE })._role_list['_1'].isOutgoing).toBe(true)
     });
 
     /***************************************************
@@ -81,6 +82,27 @@ describe('StateCreator', () => {
 
     it('#createLangDetail should return an object containg given language', () => {
         expect(createLangDetail(undefined, language, undefined, undefined).language).toBe(language)
+    });
+
+    /***************************************************
+     * create specs
+     ***************************************************/
+    it('#createEntityAssociation should create a entityAssociationDetail for creating a new section of a source', () => {
+        expect(((createEntityAssociationDetail(
+            { isOutgoing: false },
+            {
+                fk_property: 1015,
+                fk_range_entity: 99,
+                // domain_pe_it: {
+                //     domain_entity_associations: [
+                //         { TODO: add a predefined peIt type for the create form
+                //         }
+                //     ]
+                // }
+            } as InfEntityAssociation,
+            crm,
+            { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_CREATE }
+        ))._peIt._fields._100005_ingoing as PropertyField)._role_list['_undefined']._teEnt._fields).toBeTruthy()
     });
 
 

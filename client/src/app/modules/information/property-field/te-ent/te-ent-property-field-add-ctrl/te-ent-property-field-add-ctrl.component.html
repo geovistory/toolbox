@@ -1,0 +1,42 @@
+<ng-container *ngTemplateOutlet="header"></ng-container>
+
+
+<!-- If no roles in Project, show a big add button -->
+<div class="card-body" *ngIf="!((_role_list$ | async) | keys).length && addButtonVisible">
+  <button class="btn btn-outline-primary" (click)="startAddingRole()">
+    Add a {{(label$ | async)?.sg}}
+  </button>
+  <button class="btn btn-link pull-right" (click)="removePropertyField()">
+    cancel
+  </button>
+</div>
+
+<form [formGroup]="formGroup" *ngIf="formGroup">  
+  <div *ngFor="let entry of (_role_list$ | async) | keys; trackBy:getKey">
+    <gv-te-ent-role-add-ctrl *ngIf="formGroup.get(entry.key)" [parentPath]="basePath" [index]="entry.key" intermediatePathSegment="_role_list"
+      [formControlName]="entry.key" (touched)="markAsTouched()"></gv-te-ent-role-add-ctrl>
+  </div>
+</form>
+
+
+
+<!-- ************************** NG TEMPLATES ****************************** -->
+
+<ng-template #header let-hideAddButton="hideAddButton">
+  <div class="btn-group d-flex flex-row gv-h5">
+
+    <div class="gv-btn-spacer-sm">
+      {{(label$ | async)?.default}}
+    </div>
+    <div class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(showOntoInfo$|async)">
+      <div class="align-self-center">
+        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/property/{{(property$|async).dfh_pk_property}}" target="_blank">
+          {{(property$|async).dfh_identifier_in_namespace}}
+        </a>
+      </div>
+    </div>
+    <div class="btn btn-link btn-sm" (click)="startAddingRole()" *ngIf="addButtonVisible && !hideAddButton">
+      <i class="fa fa-plus"></i>
+    </div>
+  </div>
+</ng-template>

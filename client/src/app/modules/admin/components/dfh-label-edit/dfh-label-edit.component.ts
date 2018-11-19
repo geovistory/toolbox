@@ -61,7 +61,7 @@ export class DfhLabelEditComponent extends DfhLabelEditAPIActions implements OnI
   }
 
   ngOnDestroy() {
-    this.destroy();
+    // this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }

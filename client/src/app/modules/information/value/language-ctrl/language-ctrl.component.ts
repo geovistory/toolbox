@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, OnDestroy, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { InfLanguage, InfRole } from 'app/core';
+import { InfLanguage, InfRole, IAppState } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { pick } from 'ramda';
 import { Subscription } from 'rxjs';
+import { NgRedux } from '@angular-redux/store';
 
 
 @AutoUnsubscribe()
@@ -11,7 +12,7 @@ import { Subscription } from 'rxjs';
   selector: 'gv-language-ctrl',
   templateUrl: './language-ctrl.component.html',
   styleUrls: ['./language-ctrl.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -40,6 +41,7 @@ export class LanguageCtrlComponent implements OnDestroy, ControlValueAccessor {
 
   constructor(
     private fb: FormBuilder,
+    private ngRedux: NgRedux<IAppState>
   ) {
 
     // create the form control
@@ -54,26 +56,36 @@ export class LanguageCtrlComponent implements OnDestroy, ControlValueAccessor {
   subscribeFormChanges() {
     // subscribe to form changes here
     this.subs.push(this.formGroup.valueChanges.subscribe(val => {
-      if (this.formGroup.valid) {
-
-        // build the role
-        const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role) as InfRole);
-        role.language = new InfLanguage(this.formGroup.get('language').value);
-
-        // send the role to the parent form
-        this.onChange(role)
-      } else {
-        this.onChange(null)
-      }
+      this.validateAndEmit();
     }))
   }
 
+
+  private validateAndEmit() {
+    if (this.formGroup.valid) {
+      // build the role
+      const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role) as InfRole);
+      role.language = new InfLanguage(this.formGroup.get('language').value);
+      // send the role to the parent form
+      this.onChange(role);
+    } else {
+      this.onChange(null);
+    }
+  }
 
   ngOnDestroy() {
     this.subs.forEach(sub => sub.unsubscribe());
   }
 
 
+  tryToFindDefaultLang() {
+    const s = this.ngRedux.getState();
+    return !s ? null :
+      !s.activeProject ? null :
+        !s.activeProject.default_language ? null :
+          !s.activeProject.default_language.inf_language ? null :
+            s.activeProject.default_language.inf_language
+  }
 
   /****************************************
    *  ControlValueAccessor implementation *
@@ -86,7 +98,7 @@ export class LanguageCtrlComponent implements OnDestroy, ControlValueAccessor {
   writeValue(role: InfRole): void {
     this.role = role ? role : new InfRole();
 
-    const lang = (role && role.language) ? role.language : null;
+    const lang = (role && role.language && role.language.pk_entity) ? role.language : this.tryToFindDefaultLang();
 
     this.languageCtrl.setValue(lang, { onlySelf: true, emitEvent: false })
 
@@ -102,6 +114,8 @@ export class LanguageCtrlComponent implements OnDestroy, ControlValueAccessor {
     this.onChange = fn;
 
     this.subscribeFormChanges();
+
+    this.validateAndEmit()
 
   }
 

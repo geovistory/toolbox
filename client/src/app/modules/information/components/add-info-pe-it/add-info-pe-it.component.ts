@@ -2,11 +2,11 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } 
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { ClassConfig, IAppState, U, UiElement, ComConfig } from 'app/core';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 
 import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
-import { AddOption, DataUnitChildList, RoleSetList, RoleSet } from 'app/core/state/models';
-import { roleSetKeyFromParams, similarRoleSet } from 'app/core/state/services/state-creator';
+import { AddOption, FieldList, PropertyFieldList, PropertyField } from 'app/core/state/models';
+import { propertyFieldKeyFromParams, similarPropertyField } from 'app/core/state/services/state-creator';
 
 interface PeItAddOption extends AddOption {
   label: string; // concatenation of all strings, used for search
@@ -23,10 +23,13 @@ interface PeItAddOption extends AddOption {
 })
 export class AddInfoPeItComponent implements OnInit, OnDestroy {
 
+  // emits true on destroy of this component
+  destroy$ = new Subject<boolean>();
+
   @Input() uiElements: UiElement[];
   @Input() classConfig: ClassConfig;
-  @Input() excludeRoleSet: RoleSetList;
-  @Input() addedChildren$: Observable<DataUnitChildList>;
+  @Input() excludePropertyField: PropertyFieldList;
+  @Input() addedChildren$: Observable<FieldList>;
 
   @Output() addOptionSelected = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
@@ -39,7 +42,6 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
   typeaheadWitdh: number;
   addOptions: PeItAddOption[];
 
-  subs: Subscription[] = [];
 
   constructor(
     private ngRedux: NgRedux<IAppState>
@@ -49,25 +51,46 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
 
     const crm = this.ngRedux.getState().activeProject.crm;
 
-    this.subs.push(this.addedChildren$.subscribe(children => {
+    this.addedChildren$.pipe(
+      filter(d => (!!d)), // make sure children is not falsy
+      takeUntil(this.destroy$)
+    ).subscribe(children => {
 
       this.addOptions = this.uiElements.map(el => {
         if (
-          children && el.fk_property
-          // && !children[el.roleSetKey]
-          && !similarRoleSet(this.classConfig.roleSets[el.roleSetKey], this.excludeRoleSet)
+          el.fk_class_field
+          && !children[el.propSetKey]
+          ) {
+
+          const level1propLabel = el.class_field.label;
+          const level2propsLabels = [el.class_field.description];
+
+          const option: PeItAddOption = {
+            label: [level1propLabel, ...level2propsLabels].join(''),
+            level1propLabel,
+            classLabel: '',
+            level2propsLabels,
+            added: children[el.propertyFieldKey] ? true : false,
+            uiElement: el
+          }
+
+          return option;
+        } else if (
+          el.fk_property
+          && !children[el.propertyFieldKey]
+          && !similarPropertyField(this.classConfig.propertyFields[el.propertyFieldKey], this.excludePropertyField)
         ) {
 
-          const level1RoleSet = this.classConfig.roleSets[roleSetKeyFromParams(el.fk_property, el.property_is_outgoing)]
-          const level1propLabel = level1RoleSet.label.default;
-          const cla = crm.classes[level1RoleSet.targetClassPk];
+          const level1PropertyField = this.classConfig.propertyFields[propertyFieldKeyFromParams(el.fk_property, el.property_is_outgoing)]
+          const level1propLabel = level1PropertyField.label.default;
+          const cla = crm.classes[level1PropertyField.targetClassPk];
           const classLabel = cla.label;
-          const level2propsLabels = cla.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE].uiElements.map(uiEle => {
-            if (uiEle.roleSetKey) {
-              const rs = crm.roleSets[uiEle.roleSetKey];
-              if (!similarRoleSet(level1RoleSet, rs)) return rs.label.default
+          const level2propsLabels = cla.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE].uiElements.map(uiEle => {
+            if (uiEle.propertyFieldKey) {
+              const rs = crm.fieldList[uiEle.propertyFieldKey] as PropertyField;
+              if (!similarPropertyField(level1PropertyField, rs)) return rs.label.default
             } else if (uiEle.propSetKey) {
-              return uiEle.property_set.label;
+              return uiEle.class_field.label;
             }
           }).filter(l => l);
 
@@ -76,20 +99,21 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
             level1propLabel,
             classLabel,
             level2propsLabels,
-            added: children[el.roleSetKey] ? true : false,
+            added: children[el.propertyFieldKey] ? true : false,
             uiElement: el
           }
 
           return option;
         }
       }).filter(o => (o))
-    }))
+    })
 
   }
 
 
   ngOnDestroy() {
-    this.subs.forEach(sub => sub.unsubscribe())
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
 

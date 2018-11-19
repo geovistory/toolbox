@@ -1,27 +1,25 @@
 <div class="card">
 
-  <!-- Header allowing to add -->
-  <gv-te-ent-header [ontoInfoVisible$]="ontoInfoVisible$" [classConfig]="classConfig" [selectPropState$]="selectPropState$" [addButtonVisible]="true"
-    (startSelectProperty)="startSelectProperty()"></gv-te-ent-header>
+  <!-- Header allowing to add a property -->
+  <!-- <gv-te-ent-header [showOntoInfo$]="showOntoInfo$" [classConfig]="classConfig" [selectPropState$]="selectPropState$"
+    [addButtonVisible]="true" (startSelectProperty)="startSelectProperty()"></gv-te-ent-header> -->
 
   <!-- What do you want to add? -->
-  <gv-add-info-te-ent *ngIf="(selectPropState$ | async) === 'selectProp'" [uiElements]="uiElementsForAddInfo"
-    [classConfig]="classConfig" [addedChildren$]="_children$" (addOptionSelected)="addOptionSelected($event)"
-    [excludeRoleSet]="(parentRoleSet$ | async)" (cancel)="stopSelectProperty()"></gv-add-info-te-ent>
+  <gv-add-info-te-ent *ngIf="(selectPropState$ | async) === 'selectProp'" [addOptions$]="addOptionsTeEnt$"
+    (addOptionSelected)="addOptionSelected($event)" (cancel)="stopSelectProperty()"></gv-add-info-te-ent>
 
   <!-- The form itself -->
   <form class="card-body" [formGroup]="formGroup" *ngIf="formGroup">
 
-    <div *ngFor="let item of (_children$ | async) | keys; trackBy:getKey">
-      <span [ngSwitch]="item.key">
+    <div *ngFor="let item of (_fields$ | async) | keys; trackBy:getKey">
 
-        <gv-existence-time-editable *ngSwitchCase="'_existenceTime'" [basePath]="basePath.concat('_children').concat(item.key)"
-          (onRemovePropSet)="removePropSet(item.key)" mode="create" [formControlName]="item.key" (touched)="markAsTouched()"></gv-existence-time-editable>
+      <gv-existence-time-editable *ngIf="item.value.type === 'ExistenceTimeDetail'" [basePath]="basePath.concat('_fields').concat(item.key)"
+        (onRemovePropSet)="removePropSet(item.key)" mode="create" [formControlName]="item.key" (touched)="markAsTouched()"></gv-existence-time-editable>
 
-        <gv-te-ent-role-set-create-ctrl *ngSwitchDefault [parentPath]="basePath" [parentTeEntStatePath]="basePath"
-          [index]="item.key" (onRemoveRoleSet)="removeRoleSet(item.key)" [formControlName]="item.key" (touched)="markAsTouched()"></gv-te-ent-role-set-create-ctrl>
+      <gv-te-ent-property-field-create-ctrl *ngIf="item.value.type === 'PropertyField'" [parentPath]="basePath"
+        [parentTeEntStatePath]="basePath" [index]="item.key" (onRemovePropertyField)="removePropertyField(item.key)"
+        [formControlName]="item.key" (touched)="markAsTouched()"></gv-te-ent-property-field-create-ctrl>
 
-      </span>
     </div>
 
   </form>

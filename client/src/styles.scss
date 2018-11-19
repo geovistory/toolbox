@@ -58,6 +58,11 @@ button {
     cursor: pointer;
 }
 
+.form-control {
+    @extend .form-control;
+    // overflow: hidden;
+}
+
 // generate .bg-gray-* classes
 @each $color,
 $value in $grays {
@@ -107,6 +112,15 @@ $value in $grays {
 $value in $theme-colors {
     .border-right-#{$color} {
         border-right-color: $value !important;
+    }
+    ;
+}
+
+// generate .border-left* classes
+@each $color,
+$value in $theme-colors {
+    .border-left-#{$color} {
+        border-left-color: $value !important;
     }
     ;
 }
@@ -304,7 +318,7 @@ $gv-color-selected: #00ffff;
 .gv-fh {
     @extend .flex-column;
     @extend .gv-grow-1;
-    flex-basis: 0;
+    flex-basis: 0%;
 }
 
 // full height and display flex
@@ -505,6 +519,11 @@ ngb-pagination {
             border: 0
         }
     }
+}
+
+.placement-right .dropdown-menu.show {
+    left: auto;
+    right: 0;
 }
 
 /***************************
@@ -725,7 +744,7 @@ gv-information {
     @extend .flex-column;
 }
 
-gv-pe-it-role-set-editable,
+gv-pe-it-property-field-editable,
     {
     min-width: 360px;
     display: block;

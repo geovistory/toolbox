@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, PeItDetail } from 'app/core';
+import { LoadingBarActions, PeItDetail, ComConfig } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -8,7 +8,7 @@ import { NotificationsAPIActions } from 'app/core/notifications/components/api/n
 import { LeafPeItViewComponent } from '../leaf-pe-it-view.component';
 import { LeafPeItViewAPIActions, LeafPeItViewAPIAction } from './leaf-pe-it-view.actions';
 import { PeItService } from '../../../shared/pe-it.service';
-import { createPeItDetail } from '../../../../../core/state/services/state-creator';
+import { createPeItDetail, StateSettings } from '../../../../../core/state/services/state-creator';
 import { ofSubstore } from 'app/core/store/module';
 
 @Injectable()
@@ -46,7 +46,12 @@ export class LeafPeItViewAPIEpics {
              */
             .subscribe((data) => {
               if (data) {
-                const peItDetail: PeItDetail = createPeItDetail({}, data, action.meta.projectDetail.crm, { isViewMode: true })
+                const peItDetail: PeItDetail = createPeItDetail(
+                  {},
+                  data,
+                  action.meta.projectDetail.crm,
+                  { isViewMode: true, pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE }
+                )
                 /**
                  * Emit the global action that completes the loading bar
                  */

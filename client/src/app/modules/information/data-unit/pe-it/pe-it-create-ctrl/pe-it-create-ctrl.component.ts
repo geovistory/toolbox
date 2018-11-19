@@ -1,8 +1,7 @@
 import { NgRedux, WithSubStore } from '@angular-redux/store';
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { InfPersistentItem, InfTemporalEntity, U, UiContext } from 'app/core';
-import { StateCreatorService } from '../../../shared/state-creator.service';
+import { InfPersistentItem, InfTemporalEntity, U, UiContext, ComConfig, IAppState } from 'app/core';
 import { PeItCtrlBase } from '../pe-it-ctrl.base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
@@ -32,22 +31,32 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
 
   uiContext: UiContext;
 
+  // Emits peIt also when the form is not valid.
+  // useful e.g. for parent component to retrieve some string and search for existing peIts
+  @Output() onValueChange = new EventEmitter<InfPersistentItem>();
+
   constructor(
-    protected ngRedux: NgRedux<any>,
+    protected ngRedux: NgRedux<IAppState>,
     protected actions: PeItActions,
     protected fb: FormBuilder,
-    protected stateCreator: StateCreatorService,
     protected rootEpics: RootEpics,
-    protected dataUnitEpics: DataUnitAPIEpics
+    protected dataUnitEpics: DataUnitAPIEpics,
+    private ref: ChangeDetectorRef
   ) {
-    super(ngRedux, actions, fb, stateCreator, rootEpics, dataUnitEpics)
+    super(ngRedux, actions, fb, rootEpics, dataUnitEpics)
   }
 
 
   initFormCtrls(): void {
-    // add controls for each roleSet of _children
-    this._children$.takeUntil(this.destroy$).subscribe(roleSetList => {
-      U.obj2KeyValueArr(roleSetList).forEach(item => {
+    // add type control
+    this._type$.takeUntil(this.destroy$).subscribe((typeDetail) => {
+      if (typeDetail && typeDetail._typeCtrl) {
+        this.formGroup.addControl('_typeCtrl', new FormControl(typeDetail._typeCtrl.entityAssociation))
+      }
+    })
+    // add controls for each propertyField of _fields
+    this._fields$.takeUntil(this.destroy$).subscribe(propertyFieldList => {
+      U.obj2KeyValueArr(propertyFieldList).forEach(item => {
         this.formGroup.addControl(item.key, new FormControl(
           item.value.roles,
           [
@@ -55,11 +64,11 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
           ]
         ))
       })
+
+      this.ref.detectChanges()
     })
 
   }
-
-
 
 
   subscribeFormChanges(): void {
@@ -72,9 +81,31 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
       const peIt = new InfPersistentItem();
 
       peIt.pi_roles = [];
+      peIt.text_properties = [];
+      peIt.domain_entity_associations = [];
+
+      // TODO: create a NamespaceField for explicitly showing the namespace as a field in GUI
+      if (s.peIt.type_namespace_rels) {
+        peIt.type_namespace_rels = s.peIt.type_namespace_rels;
+      }
+
       Object.keys(this.formGroup.controls).forEach(key => {
-        if (this.formGroup.get(key)) {
+
+        const field = this.ngRedux.getState().activeProject.crm.fieldList[key];
+
+        if (key == '_typeCtrl') {
+          peIt.domain_entity_associations = [
+            ...peIt.domain_entity_associations,
+            ...this.formGroup.get(key).value
+          ]
+        } else if (field.type === 'TextPropertyField') {
+
+          peIt.text_properties = [...peIt.text_properties, ...this.formGroup.get(key).value]
+
+        } else if (field.type === 'PropertyField') {
+
           peIt.pi_roles = [...peIt.pi_roles, ...this.formGroup.get(key).value]
+
         }
       })
 
@@ -83,6 +114,9 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
       // try to retrieve a appellation label
       const displayAppeUse: InfTemporalEntity = U.getDisplayAppeLabelOfPeIt(peIt)
       this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(displayAppeUse);
+
+      // emit the peIt, also if not valid
+      this.onValueChange.emit(peIt);
 
       if (this.formGroup.valid) {
         // send the peIt the parent form

@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { ClassConfig, TimePrimitive, U } from 'app/core';
-import { CollapsedExpanded, DataUnitChildList, DataUnitLabel, ExTimeLabel } from 'app/core/state/models';
+import { CollapsedExpanded, FieldList,  ClassInstanceLabel, ExTimeLabel } from 'app/core/state/models';
 
 @Component({
   selector: 'gv-te-ent-label',
@@ -13,13 +13,13 @@ export class TeEntLabelComponent implements OnChanges {
 
   @Output() onToggle = new EventEmitter<void>();
 
-  @Input() children: DataUnitChildList;
+  @Input() children: FieldList;
   @Input() childrenPath: string[];
   @Input() classConfig: ClassConfig
   @Input() toggle: CollapsedExpanded;
   @Input() labelInEdit: string;
 
-  label: DataUnitLabel;
+  label:  ClassInstanceLabel;
 
   constructor(private datePipe: DatePipe) { }
 
@@ -29,14 +29,14 @@ export class TeEntLabelComponent implements OnChanges {
     if (this.toggle === 'expanded') {
 
       // create full version label with all children
-      this.label = U.labelFromDataUnitChildList(this.children, { path: this.childrenPath })
+      this.label = U.labelFromFieldList(this.children, { path: this.childrenPath })
 
     } else if (this.toggle === 'collapsed') {
 
       // create reduced label
-      this.label = U.labelFromDataUnitChildList(this.children, {
+      this.label = U.labelFromFieldList(this.children, {
         path: this.childrenPath,
-        dataUnitChildrenMax: 2,
+        fieldsMax: 2,
         rolesMax: 1
       })
 

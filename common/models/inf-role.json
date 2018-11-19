@@ -36,6 +36,18 @@
     },
     "community_favorite_calendar": {
       "type": "string"
+    },
+    "rank_for_te_ent": {
+      "type": "number"
+    },
+    "range_max_quantifier": {
+      "type": "number"
+    },
+    "rank_for_pe_it": {
+      "type": "number"
+    },
+    "domain_max_quantifier": {
+      "type": "number"
     }
   },
   "validations": [],

@@ -39,6 +39,8 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
 
   formControl: FormControl;
 
+  onChangeRegistered = false;
+
   constructor(
     private fb: FormBuilder,
     private languageApi: InfLanguageApi
@@ -78,13 +80,7 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
     })
 
     this.formGroup.valueChanges.subscribe(val => {
-      if (this.formGroup.valid) {
-        this.languageChange.emit(new InfLanguage(val.language));
-        this.onChange(new InfLanguage(val.language))
-      } else {
-        this.languageChange.emit();
-        this.onChange(null)
-      }
+      this.validateAndEmit();
     })
 
 
@@ -110,6 +106,18 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
 
 
 
+  private validateAndEmit() {
+    if (this.onChangeRegistered) {
+      if (this.formGroup.valid) {
+        this.languageChange.emit(new InfLanguage(this.formGroup.value.language));
+        this.onChange(new InfLanguage(this.formGroup.value.language));
+      } else {
+        this.languageChange.emit();
+        this.onChange(null);
+      }
+    }
+  }
+
   focus() {
     this.searchTerm$.next('');
   }
@@ -128,6 +136,7 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
 
     this.formControl.setValue(language)
 
+    this.validateAndEmit()
   }
 
   /**
@@ -136,6 +145,10 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
    */
   registerOnChange(fn: any): void {
     this.onChange = fn;
+
+    this.onChangeRegistered = true;
+
+    this.validateAndEmit()
   }
 
   /**
@@ -143,6 +156,7 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
    * This function helps to type the onChange function for the use in this class.
    */
   onChange = (language: InfLanguage | null) => {
+    console.error('called before registerOnChange')
   };
 
   /**

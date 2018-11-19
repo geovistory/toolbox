@@ -1,21 +1,21 @@
 import { NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, InfRole, UiContext, UiElement } from 'app/core';
-import { AddOption, DataUnitChildList, DataUnitLabel, PeItDetail, RoleSet, SelectPropStateType, SubstoreComponent, TeEntDetail } from 'app/core/state/models';
+import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, InfRole, UiContext, UiElement, ProjectCrm } from 'app/core';
+import { AddOption, FieldList,  ClassInstanceLabel, PeItDetail, PropertyField, SelectPropStateType, SubstoreComponent, TeEntDetail } from 'app/core/state/models';
 import { TypeDetail } from 'app/core/state/models/type-detail';
-import { createRoleSet, roleSetKey, StateSettings } from 'app/core/state/services/state-creator';
+import { createPropertyField, propertyFieldKey, StateSettings } from 'app/core/state/services/state-creator';
 import { RootEpics } from 'app/core/store/epics';
-import { Observable, Subject } from 'rxjs';
-import { StateCreatorService } from '../shared/state-creator.service';
+import { Observable, Subject, combineLatest } from 'rxjs';
 import { DataUnitAPIEpics } from './data-unit.epics';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
+import { takeUntil, filter, first } from 'rxjs/operators';
 
 
-// maps pk_property_set to key in ngRedux store
+// maps pk_class_field to key in ngRedux store
 export const propSetMap = {
-  [ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME]: '_existenceTime'
+  [ComConfig.PK_CLASS_FIELD_WHEN]: '_field_48'
 }
 
 
@@ -40,15 +40,18 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   @select() pkEntity$: Observable<number>
   @select() outgoingProperties$: Observable<DfhProperty[]>
   @select() ingoingProperties$: Observable<DfhProperty[]>
-  @select() ingoingRoleSets$?: RoleSet[];
-  @select() outgoingRoleSets$?: RoleSet[];
+  @select() ingoingPropertyFields$?: PropertyField[];
+  @select() outgoingPropertyFields$?: PropertyField[];
   @select() parentPeIt$: Observable<InfPersistentItem>;
-  @select() propertyToAdd$: Observable<RoleSet>; // Poperty that is currently chosen in order to add a role of this kind
-  @select() _children$: Observable<DataUnitChildList>;
+  @select() propertyToAdd$: Observable<PropertyField>; // Poperty that is currently chosen in order to add a role of this kind
+  @select() _fields$: Observable<FieldList>;
   @select() _type$: Observable<TypeDetail>
+  @select() pkUiContext$: Observable<number>
 
-  @select() showRightPanel$: Observable<boolean>;
   @select() showAddAPropertyButton$: Observable<boolean>;
+  @select() showRemoveVerification$: Observable<boolean>;
+
+  crm$: Observable<ProjectCrm>;
 
   comConfig = ComConfig;
   classConfig: ClassConfig;
@@ -56,12 +59,12 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   /**
    * class properties filled by observables
    */
-  roleSets: {}
+  propertyFields: {}
 
   /**
    * Properties
    */
-  label: DataUnitLabel;
+  label:  ClassInstanceLabel;
   labelInEdit: string;
 
   selectedAddOption: AddOption;
@@ -73,11 +76,11 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   constructor(
     protected ngRedux: NgRedux<IAppState>,
     protected fb: FormBuilder,
-    protected stateCreator: StateCreatorService,
     protected rootEpics: RootEpics,
     protected dataUnitEpics: DataUnitAPIEpics
   ) {
     this.formGroup = this.fb.group({})
+    this.crm$ = ngRedux.select(['activeProject', 'crm'])
   }
 
   abstract initStore(): void; // override this in derived class
@@ -117,16 +120,31 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
 
 
   initSubscriptions() {
-    this._children$.takeUntil(this.destroy$).subscribe(rs => {
-      this.roleSets = rs;
+    this._fields$.takeUntil(this.destroy$).subscribe(rs => {
+      this.propertyFields = rs;
     })
 
-    this.fkClass$.takeUntil(this.destroy$).subscribe(fkClass => {
-      if (fkClass) {
-        this.classConfig = this.ngRedux.getState().activeProject.crm.classes[fkClass];
-        this.uiElementsForAddInfo = this.classConfig.uiContexts[this.comConfig.PK_UI_CONTEXT_EDITABLE].uiElements;
-      }
+    // this.fkClass$.takeUntil(this.destroy$).subscribe(fkClass => {
+    //   if (fkClass) {
+    //     // this.classConfig = this.ngRedux.getState().activeProject.crm.classes[fkClass];
+    //     // this.uiElementsForAddInfo = this.classConfig.uiContexts[this.comConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE].uiElements;
+    //   }
+    // })
+
+    // keep uiElementsForAddInfo up to date, of the things to add (add a property)
+    combineLatest(this.fkClass$, this.pkUiContext$, this.crm$).pipe(
+      first((d) => {
+        const b = (d.filter(item => (item === undefined || item === null )).length === 0)
+        return b;
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe((d) => {
+      const fkClass = d[0], pkUiContext = d[1], crm = d[2];
+      this.classConfig = crm.classes[fkClass];
+      this.uiContext = this.classConfig.uiContexts[pkUiContext];
+      this.uiElementsForAddInfo = !this.uiContext ? [] : this.uiContext.uiElements;
     })
+
   }
 
 
@@ -150,24 +168,26 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   /**
   * called, when user selected a the kind of property to add
   */
-  addRoleSet(propertyToAdd: RoleSet, roles: InfRole[], settings: StateSettings = {}) {
+  addPropertyField(propertyToAdd: PropertyField, roles: InfRole[], settings?: StateSettings) {
 
+    // inits settings, adding default values, if not provided differently
+    settings = new StateSettings(settings);
 
     const crm = this.ngRedux.getState().activeProject.crm;
-    const newRoleSet = createRoleSet(new RoleSet(propertyToAdd), roles, crm, settings);
+    const newPropertyField = createPropertyField(new PropertyField(propertyToAdd), roles, crm, settings);
 
 
     // add a form conrtol
     this.formGroup.addControl(
-      roleSetKey(newRoleSet), new FormControl(
-        newRoleSet.roles,
+      propertyFieldKey(newPropertyField), new FormControl(
+        newPropertyField.roles,
         [
           Validators.required
         ]
       )
     )
 
-    this.localStore.dispatch(this.actions.addRoleSet(newRoleSet, this.uiContext))
+    this.localStore.dispatch(this.actions.addPropertyField(newPropertyField, this.uiContext))
 
   }
 
@@ -175,8 +195,8 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
    * DEPRECATED: use addOptionAdded instead
   * Method to find out if a property section is already added
   */
-  roleSetAdded(roleSetKey: string): boolean {
-    if (this.roleSets && this.roleSets[roleSetKey]) return true;
+  propertyFieldAdded(propertyFieldKey: string): boolean {
+    if (this.propertyFields && this.propertyFields[propertyFieldKey]) return true;
     else return false
   }
 
@@ -185,8 +205,8 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   // */
   // addOptionAdded(o: AddOption): boolean {
 
-  //   if (this.roleSets && this.roleSets[o.uiElement.roleSetKey]) return true;
-  //   if (this.roleSets && ) return true;
+  //   if (this.propertyFields && this.propertyFields[o.uiElement.propertyFieldKey]) return true;
+  //   if (this.propertyFields && ) return true;
   //   else return false
   // }
 
@@ -194,26 +214,26 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
 
 
   /**
-  * Called when the user closes an empty roleSet
+  * Called when the user closes an empty propertyField
   */
-  removeRoleSet(key: string) {
+  removePropertyField(key: string) {
 
-    /** remove the roleSet from state */
-    this.localStore.dispatch(this.actions.removeRoleSet(key));
+    /** remove the propertyField from state */
+    this.localStore.dispatch(this.actions.removePropertyField(key));
 
     /** remove the formControl from form */
     this.formGroup.removeControl(key)
   }
 
   /**
-  * Called when the user closes an empty roleSet
+  * Called when the user closes an empty propertyField
   *
   * @param keyInState: the key in the state
   * @param val: the state object to add to the state
   */
   addPropSet(keyInState: string, val: any) {
 
-    /** remove the roleSet from state */
+    /** remove the propertyField from state */
     this.localStore.dispatch(this.actions.addPropSet(keyInState, val, this.uiContext));
 
     // add a form conrtol
@@ -229,15 +249,18 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
 
 
   /**
-  * Called when the user closes an empty roleSet
+  * Called when the user closes an empty propertyField
   */
   removePropSet(keyInState: string) {
 
-    /** remove the roleSet from state */
+    /** remove the propertyField from state */
     this.localStore.dispatch(this.actions.removePropSet(keyInState));
 
     /** remove the formControl from form */
     this.formGroup.removeControl(keyInState)
   }
+
+
+  toggleRemoveVerification = () => this.localStore.dispatch(this.actions.toggleRemoveVerification())
 
 }

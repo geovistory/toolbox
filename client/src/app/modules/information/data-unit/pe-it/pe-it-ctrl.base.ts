@@ -4,7 +4,6 @@ import { ControlValueAccessor, FormBuilder } from '@angular/forms';
 import { InfPersistentItem } from 'app/core';
 import { PeItDetail } from 'app/core/state/models';
 import { Observable } from 'rxjs';
-import { StateCreatorService } from '../../shared/state-creator.service';
 import { DataUnitBase } from '../data-unit.base';
 import { PeItActions } from './pe-it.actions';
 import { peItReducer } from './pe-it.reducer';
@@ -46,11 +45,10 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
         protected ngRedux: NgRedux<any>,
         protected actions: PeItActions,
         protected fb: FormBuilder,
-        protected stateCreator: StateCreatorService,
         protected rootEpics: RootEpics,
         protected dataUnitEpics: DataUnitAPIEpics
     ) {
-        super(ngRedux, fb, stateCreator, rootEpics, dataUnitEpics);
+        super(ngRedux, fb, rootEpics, dataUnitEpics);
         this.initForm()
     }
 
@@ -87,7 +85,7 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
      * Inits the formGroup used in template.
      */
     initForm() {
-        //   create the formGroup used to create/edit the roleSet's InfRole[]
+        //   create the formGroup used to create/edit the propertyField's InfRole[]
         this.formGroup = this.fb.group({});
     }
 

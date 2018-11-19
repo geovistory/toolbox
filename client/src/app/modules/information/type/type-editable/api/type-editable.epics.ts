@@ -108,7 +108,7 @@ export class TypeEditableAPIEpics {
                 {},
                 { ...action.meta.entityAssociation, range_pe_it: data[0] },
                 c.ngRedux.getState().activeProject.crm,
-                {}
+                { pkUiContext: c.localStore.getState().pkUiContext }
               )
 
               /**

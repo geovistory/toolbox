@@ -1,37 +1,30 @@
-import { InfRole } from 'app/core/sdk';
 import { ExistenceTimeEdit } from './existence-time-edit';
-import { RoleSet } from './role-set';
-import { RoleSetList } from './role-set-list';
-import { CollapsedExpanded, DataUnitChildType } from './types';
-;
+import { Field } from './field';
+import { PropertyField } from './property-field';
+import { PropertyFieldList } from './property-field-list';
+import { CollapsedExpanded } from './types';
 
-export interface ExistenceTimeDetailI {
-    readonly type?: DataUnitChildType;
 
-    _children?: RoleSetList;
+
+export class ExistenceTimeDetail extends Field {
+
+    readonly type? = 'ExistenceTimeDetail';
+
+    _fields?: PropertyFieldList;
 
     // records
-    roles?: InfRole[];
+    roles?= [];
 
     // gui
-    toggle?: CollapsedExpanded;
-    outgoingRoleSets?: RoleSet[];
+    pkUiContext?: number;
+    toggle?= 'expanded' as CollapsedExpanded;
+    outgoingPropertyFields?: PropertyField[];
 
     // for edit (form that controls consistency between different time-roles)
     _existenceTime_edit?: ExistenceTimeEdit;
-}
 
-export class ExistenceTimeDetail implements ExistenceTimeDetailI {
-
-    readonly type: DataUnitChildType = 'ExistenceTimeDetail';
-
-    _children?: RoleSetList;
-    roles? = [];
-    toggle? = 'expanded' as CollapsedExpanded;
-    outgoingRoleSets?: RoleSet[];
-    _existenceTime_edit?: ExistenceTimeEdit;
-
-    constructor(data?: ExistenceTimeDetailI) {
+    constructor(data?: ExistenceTimeDetail) {
+        super()
         Object.assign(this, data);
     }
 

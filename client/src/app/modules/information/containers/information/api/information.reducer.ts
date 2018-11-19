@@ -9,31 +9,17 @@ export function informationReducer(state: Information = INITIAL_STATE, a: Action
 
   const action = a as InformationAPIAction;
 
-  /*****************************************************
-  * Reducers to manage searching of data units
-  *****************************************************/
   switch (action.type) {
-    case InformationAPIActions.SEARCH_STARTED:
-      state = {
-        ...state,
-        _peIt_list: [],
-        loading: true
-      };
-      break;
-    case InformationAPIActions.SEARCH_SUCCEEDED:
-      state = {
-        ...state,
-        _peIt_list: action.meta.searchResponse.data,
-        collectionSize: action.meta.searchResponse.totalCount,
-        loading: false
-      };
-      break;
 
-    case InformationAPIActions.SEARCH_FAILED:
+    /*****************************************************
+    * Reducers to manage the list
+    *****************************************************/
+    case InformationAPIActions.INITIALIZE_LIST:
       state = {
         ...state,
-        _peIt_list: [],
-        loading: false
+        _peIt_list: {
+          pkAllowedClasses: action.meta.pkClasses
+        }
       };
       break;
 
@@ -56,7 +42,7 @@ export function informationReducer(state: Information = INITIAL_STATE, a: Action
       };
       break;
 
-      case InformationAPIActions.OPEN_ENTITY_EDITOR_FAILED:
+    case InformationAPIActions.OPEN_ENTITY_EDITOR_FAILED:
       state = {
         ...state,
         loading: false,
@@ -68,32 +54,72 @@ export function informationReducer(state: Information = INITIAL_STATE, a: Action
     * Reducers to manage entity add form
     *****************************************************/
 
-    case InformationAPIActions.ENTITY_ADD_EXISTING_INITIALIZED:
+    case InformationAPIActions.START_CREATE:
       state = {
         ...state,
-        _peIt_add_form: action.payload._peIt_add_form
+        _peIt_add: {
+          classAndTypePk: action.meta.classAndTypePk,
+          pkUiContext: action.meta.pkUiContext
+        }
       };
       break;
 
-    case InformationAPIActions.ENTITY_ADD_EXISTING_DESTROYED:
+    case InformationAPIActions.STOP_CREATE:
+      state = omit(['_peIt_add'], state);
+      break;
+
+
+    /************************************************
+       * Reducers to remove PeIt from project
+       ************************************************/
+
+    case InformationAPIActions.REMOVE_PE_IT:
       state = {
-        ...omit(['_peIt_add_form'], state),
+        ...state,
+        loading: true
       }
       break;
 
 
-    case InformationAPIActions.PE_IT_CREATE_ADDED:
-      state = {
-        ...state,
-        _peIt_create_form: action.payload._peIt_create_form
-      };
+    case InformationAPIActions.REMOVE_PE_IT_SUCCEEDED:
+      state = omit(['_peIt_editable'], state)
       break;
 
-    case InformationAPIActions.PE_IT_CREATE_DESTROYED:
+
+    case InformationAPIActions.REMOVE_PE_IT_FAILED:
       state = {
-        ...omit(['_peIt_create_form'], state),
+        ...state,
+        loading: false
       }
       break;
+
+
+    // case InformationAPIActions.ENTITY_ADD_EXISTING_INITIALIZED:
+    //   state = {
+    //     ...state,
+    //     _peIt_add_form: action.payload._peIt_add_form
+    //   };
+    //   break;
+
+    // case InformationAPIActions.ENTITY_ADD_EXISTING_DESTROYED:
+    //   state = {
+    //     ...omit(['_peIt_add_form'], state),
+    //   }
+    //   break;
+
+
+    // case InformationAPIActions.PE_IT_CREATE_ADDED:
+    //   state = {
+    //     ...state,
+    //     _peIt_create_form: action.payload._peIt_create_form
+    //   };
+    //   break;
+
+    // case InformationAPIActions.PE_IT_CREATE_DESTROYED:
+    //   state = {
+    //     ...omit(['_peIt_create_form'], state),
+    //   }
+    //   break;
 
 
 

@@ -1,5 +1,5 @@
-import { DfhClassInterface, ComPropertySet, ComUiContextConfig, DfhPropertyProfileView } from '../../core';
-import { RoleSet } from 'app/core/state/models';
+import { DfhClassInterface, ComClassField, ComUiContextConfig, DfhPropertyProfileView } from '../../core';
+import { PropertyField } from 'app/core/state/models';
 
 
 
@@ -23,10 +23,11 @@ export interface ClassDetail {
 
 export interface ClassUiContext {
     class?: DfhClassInterface;
-    containerDisabled?: Container;
+    containerDisabledProperties?: Container;
+    containerDisabledFields?: Container;
     containerEnabled?: Container;
-    loading: boolean;
-    error: any;
+    loading?: boolean;
+    error?: any;
 }
 
 export class Container {
@@ -35,8 +36,8 @@ export class Container {
 
 export class Widget {
     constructor(
-        public name: string, public metaInfo: string, public roleSet: RoleSet,
-        public propSet: ComPropertySet, public uiContextConfig: ComUiContextConfig,
+        public name: string, public metaInfo: string, public propertyField: PropertyField,
+        public propSet: ComClassField, public uiContextConfig: ComUiContextConfig,
         public profiles: DfhPropertyProfileView[]
     ) { }
 }

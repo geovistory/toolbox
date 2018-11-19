@@ -2,7 +2,7 @@ import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, DfhClass, ProjectDetail, InfPersistentItem, InfNamespace, U } from 'app/core';
+import { IAppState, DfhClass, ProjectDetail, InfPersistentItem, InfNamespace, U, ComConfig } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { Types } from './api/types.models';
 import { TypesAPIEpics } from './api/types.epics';
@@ -40,10 +40,6 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   cla: DfhClass;
   classLabel: string;
 
-  // type class
-  typeClass: DfhClass;
-  typeClassLabel: string;
-
   // active project
   projec$: Observable<ProjectDetail>;
   projecPk$: Observable<number>;
@@ -79,7 +75,7 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
     public activatedRoute: ActivatedRoute
   ) {
     super();
-    this.pkNamespace = this.activatedRoute.snapshot.params['pk_namespace'];
+    this.pkNamespace = parseInt(this.activatedRoute.snapshot.params['pk_namespace'], 10);
 
     this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p);
     this.projecPk$ = this.ngRedux.select<number>(['activeProject', 'pk_project']);
@@ -124,10 +120,20 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   /**
    * called when user creates a new type
    */
-  createType(type: InfPersistentItem) {
-    this.create(type);
+  added(type: InfPersistentItem) {
+    this.createSucceeded(type);
   }
 
   getLabel = (peIt: InfPersistentItem) => U.stringForPeIt(peIt);
 
+  addOrCreate() {
+    this.openAddForm({
+      classAndTypePk: {
+        pkClass: this.localStore.getState().class.dfh_pk_class,
+        pkType: undefined
+      },
+      pkUiContext: ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE,
+      pkNamespace: this.pkNamespace
+    })
+  }
 }

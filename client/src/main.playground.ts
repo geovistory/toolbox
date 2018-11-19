@@ -16,6 +16,7 @@ import { ProjectSandboxModule } from 'app/shared/components/project-sandbox/proj
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { TreeviewModule } from 'ngx-treeview';
+import { DndModule } from 'ng2-dnd';
 
 PlaygroundModule
   .configure({
@@ -28,6 +29,7 @@ PlaygroundModule
       SlimLoadingBarModule.forRoot(),
       AngularCesiumModule.forRoot(),
       TreeviewModule.forRoot(),
+      DndModule.forRoot(),
       NotificationsModule,
       StoreModule,
       BrowserModule,

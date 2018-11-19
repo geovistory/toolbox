@@ -1,8 +1,9 @@
-import { Component, OnInit, forwardRef, EventEmitter, Output } from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
-import { QuillDoc } from '../../../quill';
+import { Component, EventEmitter, forwardRef, OnInit, Output } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { InfTextProperty } from '../../../../core/sdk/models/InfTextProperty';
-import { InfLanguage } from '../../../../core';
+import { QuillDoc } from '../../../quill';
+import { NgRedux } from '@angular-redux/store';
+import { IAppState } from 'app/core';
 
 @Component({
   selector: 'gv-text-property',
@@ -39,7 +40,10 @@ export class TextPropertyComponent implements OnInit, ControlValueAccessor {
   // used to store values that have no crtl, like fk_system_type
   textProperty: InfTextProperty;
 
-  constructor(fb: FormBuilder) {
+  constructor(
+    private ngRedux: NgRedux<IAppState>,
+    fb: FormBuilder
+  ) {
     this.formGroup = fb.group({ langCtrl: this.langCtrl })
   }
 
@@ -85,7 +89,14 @@ export class TextPropertyComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-
+  tryToFindDefaultLang() {
+    const s = this.ngRedux.getState();
+    return !s ? null :
+      !s.activeProject ? null :
+        !s.activeProject.default_language ? null :
+          !s.activeProject.default_language.inf_language ? null :
+            s.activeProject.default_language.inf_language
+  }
 
   /****************************************
    *  ControlValueAccessor implementation *
@@ -107,6 +118,12 @@ export class TextPropertyComponent implements OnInit, ControlValueAccessor {
       }
       this.validateAndEmit();
     }
+
+    if (!textProperty || !textProperty.language) {
+      this.langCtrl.setValue(this.tryToFindDefaultLang());
+
+    }
+
   }
 
 

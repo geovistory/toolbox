@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
-import { roleSetKeyFromParams } from 'app/core/state/services/state-creator';
+import { fieldKey, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { FluxStandardAction } from 'flux-standard-action';
-import { sort } from 'ramda';
+import { indexBy, sort } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
 import { mapTo, switchMap } from 'rxjs/operators';
 import { propSetKeyFromFk } from '../../modules/information/information.helpers';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, ProjectApi } from '../sdk';
+import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, ProjectApi } from '../sdk';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
+import { Field } from '../state/models/field';
 
 
 
@@ -21,6 +22,8 @@ export class ActiveProjectEpics {
   constructor(
     private uiContextApi: ComUiContextApi,
     private projectApi: ProjectApi,
+    private dfhPropertyApi: DfhPropertyApi,
+    private comClassFieldApi: ComClassFieldApi,
     private actions: ActiveProjectActions,
     private notificationActions: NotificationsAPIActions,
     private loadingBarActions: LoadingBarActions
@@ -57,7 +60,7 @@ export class ActiveProjectEpics {
               '$relation': {
                 'name': 'labels',
                 'joinType': 'inner join',
-                'orderBy': [{ 'pk_label': 'asc' }]
+                'orderBy': [{ 'pk_entity': 'asc' }]
               }
             },
             'default_language': {
@@ -113,22 +116,33 @@ export class ActiveProjectEpics {
 
         combineLatest(
           this.projectApi.getReferenceModel(action.meta.pk_project),
-          this.uiContextApi.uiConfig(null, action.meta.pk_project)
+          this.uiContextApi.uiConfig(null, action.meta.pk_project),
+          this.dfhPropertyApi.propertyFieldInfo(true),
+          this.dfhPropertyApi.propertyFieldInfo(false),
+          this.comClassFieldApi.find()
         )
-          .subscribe((res) => {
-            const classes: DfhClass[] = res[0];
+          .subscribe(res => {
+            const classes: DfhClass[] = res[0],
+              outgoingProperties: DfhProperty[] = res[2],
+              ingoingProperties: DfhProperty[] = res[3],
+              classFields = res[4] as ComClassField[];
+
 
             const crm: ProjectCrm = {
               classes: {},
-              roleSets: {}
+              fieldList: {}
             }
             classes.forEach((cla: DfhClass) => {
               crm.classes[cla.dfh_pk_class] = U.classConfigFromDfhClass(cla);
 
-              // add roleSets
-              U.obj2KeyValueArr(crm.classes[cla.dfh_pk_class].roleSets).forEach(rs => {
-                crm.roleSets[rs.key] = rs.value;
-              })
+              // create fieldList
+              crm.fieldList = {
+                ...indexBy(fieldKey, [
+                  ...U.infProperties2PropertyFields(false, ingoingProperties),
+                  ...U.infProperties2PropertyFields(true, outgoingProperties),
+                  ...U.comCLassFields2Fields(classFields)
+                ])
+              }
             })
 
             const uiContexts: ComUiContext[] = res[1];
@@ -137,15 +151,15 @@ export class ActiveProjectEpics {
               if (uiCtxt.ui_context_config) {
                 uiCtxt.ui_context_config.forEach(uiConf => {
 
-                  // add roleSet configs to crm
+                  // add propertyField configs to crm
                   if (uiConf.fk_property) {
                     // retrieve the classConfig
                     const cConf = crm.classes[uiConf.property_is_outgoing ? uiConf.property.dfh_has_domain : uiConf.property.dfh_has_range];
                     this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
-                  } else if (uiConf.fk_property_set) {
+                  } else if (uiConf.fk_class_field) {
                     // add propSet configs to crm
                     // retrieve the classConfig
-                    const cConf = crm.classes[uiConf.fk_class_for_property_set];
+                    const cConf = crm.classes[uiConf.fk_class_for_class_field];
                     this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
                   }
 
@@ -201,10 +215,10 @@ export class ActiveProjectEpics {
         ord_num: uiConf.ord_num,
         fk_property: uiConf.fk_property,
         property_is_outgoing: uiConf.property_is_outgoing,
-        roleSetKey: uiConf.fk_property ? roleSetKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
-        fk_property_set: uiConf.fk_property_set,
-        property_set: uiConf.fk_property_set ? uiConf.property_set : undefined,
-        propSetKey: uiConf.fk_property_set ? propSetKeyFromFk(uiConf.fk_property_set) : undefined
+        propertyFieldKey: uiConf.fk_property ? propertyFieldKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
+        fk_class_field: uiConf.fk_class_field,
+        class_field: uiConf.fk_class_field ? uiConf.class_field : undefined,
+        propSetKey: uiConf.fk_class_field ? ('_field_' + uiConf.fk_class_field) : undefined
       })
 
       // sort the array of uiElements by the ordNum

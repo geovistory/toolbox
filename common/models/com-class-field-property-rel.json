@@ -1,0 +1,67 @@
+{
+    "name": "ComClassFieldPropertyRel",
+    "base": "PersistedModel",
+    "idInjection": false,
+    "options": {
+        "validateUpsert": true,
+        "postgresql": {
+            "schema": "commons",
+            "table": "class_field_property_rel"
+        }
+    },
+    "mixins": {
+        "SetupRemoteMethods": {
+            "ignoreACL": false,
+            "disableAllExcept": []
+        }
+    },
+    "properties": {
+        "pk_entity": {
+            "type": "number",
+            "id": true,
+            "generated": true
+        },
+        "fk_class_field": {
+            "type": "number"
+        },
+        "fk_property": {
+            "type": "number"
+        },
+        "property_is_outgoing": {
+            "type": "boolean"
+        },
+        "ord_num": {
+            "type": "number"
+        }
+    },
+    "validations": [],
+    "relations": {
+        "class_field": {
+            "type": "belongsTo",
+            "model": "ComClassField",
+            "foreignKey": "fk_class_field"
+        },
+        "property": {
+            "type": "belongsTo",
+            "model": "DfhProperty",
+            "foreignKey": "fk_property"
+        }
+    },
+    "acls": [
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "DENY",
+            "property": "*"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW",
+            "property": [
+                "find"
+            ]
+        }
+    ],
+    "methods": {}
+}

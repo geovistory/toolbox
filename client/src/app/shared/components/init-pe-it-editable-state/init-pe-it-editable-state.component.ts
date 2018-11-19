@@ -1,12 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { StateCreatorService } from 'app/modules/information/shared/state-creator.service';
 import { NgRedux, ObservableStore } from '@angular-redux/store';
-import { IAppState, PeItDetail, InfPersistentItem } from 'app/core';
-import { Action } from 'redux';
-import { StateSettings, createPeItDetail } from 'app/core/state/services/state-creator';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { IAppState, InfPersistentItem, PeItDetail } from 'app/core';
+import { createPeItDetail, isCreateContext, StateSettings } from 'app/core/state/services/state-creator';
+import { INIT_SANDBOX_STATE, sandboxStateReducer } from 'app/core/store/reducers';
 import { Information } from 'app/modules/information/containers/information/api/information.models';
 import { PeItService } from 'app/modules/information/shared/pe-it.service';
-import { sandboxStateReducer, INIT_SANDBOX_STATE } from 'app/core/store/reducers';
 
 
 @Component({
@@ -42,7 +40,7 @@ export class InitPeItEditableStateComponent implements OnInit, OnDestroy {
     this.localStore = this.ngRedux.configureSubStore(['sandboxState'], sandboxStateReducer)
 
 
-    if (this.settings.isCreateMode) {
+    if (isCreateContext(this.settings.pkUiContext)) {
 
       const peItDetail = createPeItDetail({}, new InfPersistentItem({ fk_class: this.fkClass }), this.ngRedux.getState().activeProject.crm, this.settings);
 
@@ -61,21 +59,12 @@ export class InitPeItEditableStateComponent implements OnInit, OnDestroy {
 
         const peItDetail = createPeItDetail({}, infPeIt, this.ngRedux.getState().activeProject.crm, this.settings);
 
-        if (this.settings.isAddMode) {
-          this.localStore.dispatch({
-            type: INIT_SANDBOX_STATE,
-            payload: {
-              _peIt_add_form: peItDetail
-            }
-          })
-        } else {
-          this.localStore.dispatch({
-            type: INIT_SANDBOX_STATE,
-            payload: {
-              _peIt_editable: peItDetail
-            }
-          })
-        }
+        this.localStore.dispatch({
+          type: INIT_SANDBOX_STATE,
+          payload: {
+            _peIt_editable: peItDetail
+          }
+        })
 
         this.stateCreated.emit(peItDetail);
       })

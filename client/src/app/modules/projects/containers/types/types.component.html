@@ -20,7 +20,7 @@
   <div *ngIf="listVisible">
     <h3 class="my-4 d-flex">
       <span class="gv-grow-1">{{namespaceLabel}}</span>
-      <button class="btn btn-link pr-0" (click)="openAddForm()" *ngIf="listVisible"><i class="fa fa-plus"></i> add a
+      <button class="btn btn-link pr-0" (click)="addOrCreate()" *ngIf="listVisible"><i class="fa fa-plus"></i> add a
         type</button>
     </h3>
     <ul>
@@ -38,7 +38,10 @@
   <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div>
 
   <!-- Add new type -->
-  <gv-type-add-form *ngIf="(add$ | async)" (cancel)="closeAddForm()" (create)="createType($event)"></gv-type-add-form>
+  <!-- <gv-type-add-form *ngIf="(add$ | async)" (cancel)="closeAddForm()" (create)="createType($event)"></gv-type-add-form> -->
+  <gv-create-or-add-pe-it *ngIf="(add$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('add')" (done)="added($event)"
+    (cancel)="closeAddForm()"></gv-create-or-add-pe-it>
+
 
   <!-- Edit existing Type -->
   <gv-type-edit-form *ngIf="(edit$ | async)" (close)="closeEditForm()" [basePath]="['activeProject','classSettings','types', 'edit']"></gv-type-edit-form>

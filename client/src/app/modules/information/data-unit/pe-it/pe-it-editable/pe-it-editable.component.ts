@@ -1,17 +1,20 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { AfterViewInit, ChangeDetectionStrategy, Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, IAppState, U, UiContext } from 'app/core';
-import { PeItDetail, AddOption, RoleSet, CollapsedExpanded, RoleSetForm, ExistenceTimeDetail } from 'app/core/state/models';
+import { AddOption, CollapsedExpanded, ExistenceTimeDetail, PeItDetail, PropertyField, PropertyFieldForm, SubstoreComponent } from 'app/core/state/models';
+import { createExistenceTimeDetail, createClassField } from 'app/core/state/services/state-creator';
 import { RootEpics } from 'app/core/store/epics';
-import { Observable } from 'rxjs';
+import { SectionList } from 'app/modules/information/containers/section-list/api/section-list.models';
+import { combineLatest, Observable } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { slideInOut } from '../../../shared/animations';
-import { StateCreatorService } from '../../../shared/state-creator.service';
+import { DataUnitBase } from '../../data-unit.base';
 import { DataUnitAPIEpics } from '../../data-unit.epics';
 import { PeItApiEpics } from '../api/pe-it.epics';
-import { PeItBase } from '../pe-it-base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
+import { TextPropertyField } from 'app/core/state/models/text-property-field';
 
 
 
@@ -27,20 +30,58 @@ import { peItReducer } from '../pe-it.reducer';
   changeDetection: ChangeDetectionStrategy.OnPush,
 
 })
-export class PeItEditableComponent extends PeItBase implements AfterViewInit {
+export class PeItEditableComponent extends DataUnitBase implements AfterViewInit, SubstoreComponent {
 
-  afterViewInit = false;
+  @Input() basePath: string[];
 
+  @Output() remove = new EventEmitter<number>();
+
+  // afterViewInit = false;
 
   localStore: ObservableStore<PeItDetail>;
 
   /**
    * Local Store Observables
    */
-  // Primary key of the peIt
+
+
   @select() pkEntity$: Observable<number>;
-  @select() ontoInfoVisible$: Observable<boolean>
-  @select() communityStatsVisible$: Observable<boolean>
+  @select() sectionList$: Observable<SectionList>;
+
+  // Visibility of generic elements
+  @select() showHeader$: Observable<boolean>;
+  @select() showPropertiesHeader$: Observable<boolean>;
+  @select() showOntoInfo$: Observable<boolean>
+  @select() showCommunityStats$: Observable<boolean>
+
+  // Left Panel Sections
+  @select() showProperties$: Observable<boolean>;
+  @select() showSectionList$: Observable<boolean>;
+  @select() showRepros$: Observable<boolean>;
+
+  // Right Panel Sections
+  @select() showMap$: Observable<boolean>;
+  @select() showTimeline$: Observable<boolean>;
+  @select() showAssertions$: Observable<boolean>;
+  @select() showMentionedEntities$: Observable<boolean>;
+
+  // Toggle Buttons (left panel)
+  @select() showPropertiesToggle$: Observable<boolean>;
+  @select() showSectionListToggle$: Observable<boolean>;
+  @select() showReprosToggle$: Observable<boolean>;
+
+  // Toggle Buttons (right panel)
+  @select() showMapToggle$: Observable<boolean>;
+  @select() showTimelineToggle$: Observable<boolean>;
+  @select() showMentionedEntitiesToggle$: Observable<boolean>;
+  @select() showAssertionsToggle$: Observable<boolean>;
+
+  // Visibility of container elements, set by function below
+  showRightPanel$: Observable<boolean>;
+  showLeftPanel$: Observable<boolean>;
+
+  // array of pks of loading leaf-pe-its
+  pksOfloadingLeafPeIts: number[] = [];
 
   uiContext: UiContext;
 
@@ -64,16 +105,46 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
     protected ngRedux: NgRedux<IAppState>,
     protected actions: PeItActions,
     protected fb: FormBuilder,
-    protected stateCreator: StateCreatorService,
     protected dataUnitEpics: DataUnitAPIEpics
   ) {
-    super(rootEpics, dataUnitEpics, epics, ngRedux, actions, fb, stateCreator);
+    super(ngRedux, fb, rootEpics, dataUnitEpics);
     console.log('PeItEditableComponent')
   }
 
-  initPeItBaseChild() {
+  getBasePath = () => this.basePath;
 
-    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_EDITABLE];
+
+  init() {
+    this.basePath = this.getBasePath();
+
+    /**
+     * Keeps track of all sections in the right panel.
+     * If at least one is visible, show the right panel,
+     * else hide it.
+     */
+    this.showLeftPanel$ = combineLatest(
+      this.showProperties$,
+      this.showSectionList$,
+      this.showRepros$
+    ).pipe(map((bools) => ((bools.filter((bool) => (bool === true)).length > 0))));
+
+
+    /**
+     * Keeps track of all sections in the right panel.
+     * If at least one is visible, show the right panel,
+     * else hide it.
+     */
+    this.showRightPanel$ = combineLatest(
+      this.showMap$,
+      this.showTimeline$,
+      this.showAssertions$,
+      this.showMentionedEntities$
+    ).pipe(map((bools) => ((bools.filter((bool) => (bool === true)).length > 0))));
+
+
+    // this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
+
+    this.rootEpics.addEpic(this.epics.createEpics(this));
 
     this.initPeItSubscriptions()
 
@@ -85,16 +156,18 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
    * subscribe all here, so it is only subscribed once on init and not multiple times on user interactions
    */
   initPeItSubscriptions() {
-    this.localStore.select<PeItDetail>('').takeUntil(this.destroy$).subscribe(d => {
-      this.peItState = d;
-      this.isolatedChild = U.extractDataUnitChildKeyForIsolation(d._children);
-    })
+    this.localStore.select<PeItDetail>('').pipe(
+      filter(d => (!!d)),
+      takeUntil(this.destroy$)).subscribe(d => {
+        this.peItState = d;
+        this.isolatedChild = U.extractFieldKeyForIsolation(d._fields);
+      })
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.afterViewInit = true;
-    }, 2000)
+    // setTimeout(() => {
+    //   this.afterViewInit = true;
+    // }, 2000)
   }
 
   addOptionSelected($event) {
@@ -108,33 +181,45 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
 
     } else {
 
-      if (o.uiElement.roleSetKey) {
+      if (o.uiElement.propertyFieldKey) {
 
         // if this is a role set
 
-        // prepare the RoleSet
+        // prepare the PropertyField
 
-        const newRoleSet = {
-          ...new RoleSet(this.classConfig.roleSets[o.uiElement.roleSetKey]),
+        const newPropertyField = {
+          ...new PropertyField(this.classConfig.propertyFields[o.uiElement.propertyFieldKey]),
           toggle: 'expanded' as CollapsedExpanded,
           rolesNotInProjectLoading: true,
           roleStatesInOtherProjectsVisible: false,
-          _role_set_form: new RoleSetForm()
+          _property_field_form: new PropertyFieldForm()
         }
 
-        this.addRoleSet(newRoleSet, undefined)
+        this.addPropertyField(newPropertyField, undefined)
 
-      } else if (o.uiElement.fk_property_set) {
+      } else if (o.uiElement.fk_class_field) {
 
-        // if this is a prop set
+        const crm = this.ngRedux.getState().activeProject.crm;
+        const fieldKey = o.uiElement.propSetKey;
+        let field;
 
-        if (o.uiElement.fk_property_set === ComConfig.PK_PROPERTY_SET_EXISTENCE_TIME) {
+        switch (crm.fieldList[fieldKey].type) {
 
-          this.stateCreator.initializeExistenceTimeState([], new ExistenceTimeDetail({ toggle: 'expanded' }), { isCreateMode: true }).subscribe(val => {
-            this.addPropSet('_existenceTime', val)
-          })
+          case 'TextPropertyField':
 
+            const fkClassField = crm.fieldList[fieldKey].fkClassField;
+            field = new TextPropertyField({
+              textPropertyDetailList: {},
+              fkClassField,
+              pkUiContext: this.uiContext.pk_entity,
+              createOrAdd: {}
+            })
+
+            break;
         }
+
+        // if this is a class field
+        this.addPropSet(o.uiElement.propSetKey, field)
 
       }
 
@@ -144,50 +229,13 @@ export class PeItEditableComponent extends PeItBase implements AfterViewInit {
 
 
   /**
-  * Show ui with community statistics like
-  * - is in project count
-  * - is standard in project count
+  * Method to toggle booleans of state.
+  * Useful to toggle visibility of ui elements.
   */
-  showCommunityStats() {
-    this.localStore.dispatch(this.actions.communityStatsVisibilityToggled(true))
+  toggle(keyToToggle: string) {
+    this.localStore.dispatch(this.actions.toggleBoolean(keyToToggle))
   }
 
-  /**
-  * Hide ui with community statistics like
-  * - is in project count
-  * - is standard in project count
-  */
-  hideCommunityStats() {
-    this.localStore.dispatch(this.actions.communityStatsVisibilityToggled(false))
-  }
+  onRemove = () => this.remove.emit(this.peItState.pkEntity)
 
-
-  /**
-  * Show CRM Info in UI
-  */
-  showOntoInfo() {
-    this.localStore.dispatch(this.actions.ontoInfoVisibilityToggled(true))
-  }
-
-  /**
-  * Hide CRM Info in UI
-  */
-  hideOntoInfo() {
-    this.localStore.dispatch(this.actions.ontoInfoVisibilityToggled(false))
-  }
-
-  /**
-  * Show right panel
-  */
-  showRightPanel() {
-    this.localStore.dispatch(this.actions.showRightPanel())
-  }
-
-
-  /**
-  * Hide right panel
-  */
-  hideRightPanel() {
-    this.localStore.dispatch(this.actions.hideRightPanel())
-  }
 }

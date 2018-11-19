@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { DfhClass, ComUiContextConfig } from 'app/core';
+import { Container } from 'app/modules/admin/admin.models';
 
 // Flux-standard-action gives us stronger typing of our actions.
 type Payload = DfhClass;
@@ -9,6 +10,9 @@ interface MetaData {
   pkClass?: number;
   pkUiContext?: number;
   uiPropConfigs?: ComUiContextConfig[];
+  containerEnabled?: Container;
+  containerDisabledProperties?: Container;
+  containerDisabledFields?: Container;
 };
 export type ClassUiContextAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -37,15 +41,19 @@ export class ClassUiContextAPIActions {
     payload: null,
   })
 
-  @dispatch() loadSucceeded = (payload: Payload, pkUiContext: number): ClassUiContextAPIAction => ({
-    type: ClassUiContextAPIActions.LOAD_SUCCEEDED,
-    meta: {
-      pkUiContext
-    },
-    payload,
-  })
+  loadSucceeded = (containerEnabled: Container,
+    containerDisabledProperties: Container,
+    containerDisabledFields: Container): ClassUiContextAPIAction => ({
+      type: ClassUiContextAPIActions.LOAD_SUCCEEDED,
+      meta: {
+        containerEnabled,
+        containerDisabledProperties,
+        containerDisabledFields
+      },
+      payload: null
+    })
 
-  @dispatch() loadFailed = (error): ClassUiContextAPIAction => ({
+  loadFailed = (error): ClassUiContextAPIAction => ({
     type: ClassUiContextAPIActions.LOAD_FAILED,
     meta: null,
     payload: null,

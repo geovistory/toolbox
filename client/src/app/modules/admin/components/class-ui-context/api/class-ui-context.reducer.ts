@@ -1,4 +1,4 @@
-import { DfhClass, DfhProperty, U, ComConfig, ComPropertySet, ComUiContextConfig } from 'app/core';
+import { DfhClass, DfhProperty, U, ComConfig, ComClassField, ComUiContextConfig } from 'app/core';
 import { omit, pick, sort } from 'ramda';
 import { Action } from 'redux';
 
@@ -12,82 +12,6 @@ const INITIAL_STATE: ClassUiContext = {
   error: null,
 };
 
-const createContainers = (dfhClass: DfhClass, pkUiContext: number): { containerDisabled: Container, containerEnabled: Container } => {
-  const enabledWidgets: Widget[] = [];
-  const disabledWidgets: Widget[] = [];
-
-  const addWidgetForRoleSet = (property: DfhProperty, isOutgoing: boolean) => {
-
-    const roleSet = U.infProperties2RoleSets(isOutgoing, [property])[0];
-
-    let uiContextConf = U.uiContextConfigFromRoleSet(roleSet);
-
-    if (!uiContextConf) {
-      uiContextConf = {
-        fk_property: property.dfh_pk_property,
-        property_is_outgoing: isOutgoing,
-        fk_ui_context: pkUiContext
-      } as ComUiContextConfig;
-    }
-
-    const ordNum = U.ordNumFromRoleSet(roleSet)
-
-    const metaInfo = property.dfh_pk_property + '–' + (isOutgoing ? 'outgoing' : 'ingoing');
-
-    if (ordNum !== null) {
-      // if ordNum set, it is enabled
-      enabledWidgets.push(new Widget(roleSet.label.default, metaInfo, roleSet, null, uiContextConf, property.property_profile_view))
-    } else {
-      // if ordNum falsy, it is disabled
-      disabledWidgets.push(new Widget(roleSet.label.default, metaInfo, roleSet, null, uiContextConf, property.property_profile_view))
-    }
-  }
-
-  // add widget for each ingoing property
-  if (dfhClass.ingoing_properties) {
-    dfhClass.ingoing_properties.forEach((property: DfhProperty) => {
-      addWidgetForRoleSet(property, false);
-    })
-  }
-
-  // add widget for each outgoing property
-  if (dfhClass.outgoing_properties) {
-    dfhClass.outgoing_properties.forEach((property: DfhProperty) => {
-      addWidgetForRoleSet(property, true);
-    })
-  }
-
-  // add widget for each ui-element in ui_class_config (custom elements that are not RoleSets / Properties)
-  if (dfhClass.ui_context_configs) {
-    dfhClass.ui_context_configs.forEach((uiContextConf) => {
-
-      if (uiContextConf.fk_property_set) {
-
-        const ordNum = uiContextConf.ord_num;
-
-        const propSet = uiContextConf.property_set;
-
-        if (ordNum !== null) {
-          // if ordNum set, it is enabled
-          enabledWidgets.push(new Widget(propSet.label, 'custom property set', null, propSet, uiContextConf, []))
-        } else {
-          // if ordNum falsy, it is disabled
-          disabledWidgets.push(new Widget(propSet.label, 'custom property set', null, propSet, uiContextConf, []))
-        }
-      }
-
-    })
-
-  }
-
-  // sort function
-  const diff = (a: Widget, b: Widget) => a.uiContextConfig.ord_num - b.uiContextConfig.ord_num;
-
-  return {
-    containerEnabled: new Container('Enabled in UI context', sort(diff, enabledWidgets)),
-    containerDisabled: new Container('Disabled in UI context', disabledWidgets),
-  };;
-}
 
 export function classUiContextReducer(state: ClassUiContext = INITIAL_STATE, a: Action): ClassUiContext {
 
@@ -105,8 +29,10 @@ export function classUiContextReducer(state: ClassUiContext = INITIAL_STATE, a: 
     case ClassUiContextAPIActions.LOAD_SUCCEEDED:
       return {
         ...state,
-        class: pick(['dfh_standard_label'], action.payload),
-        ...createContainers(action.payload, action.meta.pkUiContext),
+        // class: pick(['dfh_standard_label'], action.payload),
+        containerEnabled: action.meta.containerEnabled,
+        containerDisabledFields: action.meta.containerDisabledFields,
+        containerDisabledProperties: action.meta.containerDisabledProperties,
         loading: false,
         error: null,
       };

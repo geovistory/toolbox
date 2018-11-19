@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfPersistentItemApi, DfhClassApi, InfPersistentItem, InfNamespaceApi, InfNamespace } from 'app/core';
+import { LoadingBarActions, InfPersistentItemApi, DfhClassApi, InfPersistentItem, InfNamespaceApi, InfNamespace, ComConfig } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable, combineLatest } from 'rxjs';
@@ -25,7 +25,7 @@ export class TypesAPIEpics {
   public createEpics(c: TypesComponent): Epic {
     return combineEpics(
       this.createLoadTypesEpic(c),
-      this.createCreateTypeEpic(c),
+      // this.createCreateTypeEpic(c),
       this.createOpenEditFormEpic(c)
     );
   }
@@ -96,61 +96,61 @@ export class TypesAPIEpics {
   }
 
 
-  private createCreateTypeEpic(c: TypesComponent): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(TypesAPIActions.CREATE),
-        switchMap((action: TypesAPIAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Emit the local action that sets the loading flag to true
-           */
-          c.localStore.dispatch(this.actions.createStarted());
+  // private createCreateTypeEpic(c: TypesComponent): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(TypesAPIActions.CREATE),
+  //       switchMap((action: TypesAPIAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
+  //         /**
+  //          * Emit the local action that sets the loading flag to true
+  //          */
+  //         c.localStore.dispatch(this.actions.createStarted());
 
-          /**
-           * Subscribe to the api call
-           */
-          this.peItApi.findOrCreateType(
-            c.ngRedux.getState().activeProject.pk_project,
-            c.localStore.getState().namespace.pk_entity,
-            action.meta.type)
-            .subscribe((data) => {
-              /**
-               * Emit the global action that completes the loading bar
-               */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              /**
-               * Emit the local action on loading succeeded
-               */
-              c.localStore.dispatch(this.actions.createSucceeded(data[0]));
+  //         /**
+  //          * Subscribe to the api call
+  //          */
+  //         this.peItApi.findOrCreateType(
+  //           c.ngRedux.getState().activeProject.pk_project,
+  //           c.localStore.getState().namespace.pk_entity,
+  //           action.meta.type)
+  //           .subscribe((data) => {
+  //             /**
+  //              * Emit the global action that completes the loading bar
+  //              */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             c.localStore.dispatch(this.actions.createSucceeded(data[0]));
 
-            }, error => {
-              /**
-               * Emit the global action that shows some loading error message
-               */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-              * Emit the local action on loading failed
-              */
-              c.localStore.dispatch(this.actions.createFailed({ status: '' + error.status }))
-            })
-        })),
-        takeUntil(c.destroy$)
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //              * Emit the global action that shows some loading error message
+  //              */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             /**
+  //             * Emit the local action on loading failed
+  //             */
+  //             c.localStore.dispatch(this.actions.createFailed({ status: '' + error.status }))
+  //           })
+  //       })),
+  //       takeUntil(c.destroy$)
+  //     )
+  //   }
+  // }
 
   private createOpenEditFormEpic(c: TypesComponent): Epic {
     return (action$, store) => {
@@ -176,10 +176,12 @@ export class TypesAPIEpics {
 
             const peItDetail = createPeItDetail({
               showHeader: false,
-              showRightPanel: false,
+              showProperties: true,
               showPropertiesHeader: false,
               showAddAPropertyButton: false
-            }, data[0], c.ngRedux.getState().activeProject.crm)
+            }, data[0], c.ngRedux.getState().activeProject.crm, {
+                pkUiContext: ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE
+              })
 
             /**
              * Emit the global action that completes the loading bar

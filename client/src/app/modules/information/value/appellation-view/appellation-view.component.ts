@@ -1,7 +1,8 @@
 
-import { Component, OnInit, Output, Input, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter, ChangeDetectionStrategy, OnChanges } from '@angular/core';
 import { InfAppellation } from 'app/core';
 import { AppellationService } from '../../shared/appellation.service';
+import { AppellationLabel } from '../../shared/appellation-label';
 
 
 @Component({
@@ -10,11 +11,13 @@ import { AppellationService } from '../../shared/appellation.service';
   styleUrls: ['./appellation-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppellationViewComponent implements OnInit {
+export class AppellationViewComponent implements OnInit, OnChanges {
 
   @Input() appellation: InfAppellation;
 
   @Output() readyToAdd: EventEmitter<InfAppellation> = new EventEmitter();
+
+  label: string;
 
   constructor(
     public appellationService: AppellationService
@@ -24,4 +27,7 @@ export class AppellationViewComponent implements OnInit {
     this.readyToAdd.emit(this.appellation);
   }
 
+  ngOnChanges() {
+    this.label = new AppellationLabel(this.appellation.appellation_label).getString();
+  }
 }

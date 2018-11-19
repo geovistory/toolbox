@@ -1,5 +1,5 @@
 import { ExistenceTime } from 'app/core/existence-time/existence-time';
-import { AppeDetail, DataUnitChild, DataUnitChildLabel, DataUnitChildList, DataUnitLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, RoleSet, RoleSetLabel, RoleSetList, TeEntDetail, RoleDetailList, PlaceDetail } from 'app/core/state/models';
+import { AppeDetail, ClassInstanceFieldLabel, FieldList, ClassInstanceLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, PropertyField, FieldLabel, PropertyFieldList, TeEntDetail, RoleDetailList, PlaceDetail } from 'app/core/state/models';
 import { indexBy, omit } from 'ramda';
 import { AcEntity, AcNotification, ActionType } from '../../modules/gv-angular-cesium/angular-cesium-fork';
 import { AppellationLabel } from '../../modules/information/shared/appellation-label';
@@ -7,16 +7,19 @@ import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { ClassConfig, ProjectCrm } from 'app/core/active-project/active-project.models';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
-import { ComPropertySet, ComUiContextConfig, DfhClass, DfhProperty, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, InfEntityProjectRelInterface } from '../sdk';
-import { roleSetKeyFromParams, roleSetKey, dataUnitChildKey, roleDetailKey } from 'app/core/state/services/state-creator';
+import { ComClassField, ComUiContextConfig, DfhClass, DfhProperty, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, InfEntityProjectRelInterface } from '../sdk';
+import { propertyFieldKeyFromParams, propertyFieldKey, fieldKey, roleDetailKey } from 'app/core/state/services/state-creator';
 import * as Config from '../../../../../common/config/Config';
+import { Field } from '../state/models/field';
+import { ComConfig } from '../config/com-config';
+import { TextPropertyField } from '../state/models/text-property-field';
 
 export interface LabelGeneratorSettings {
     // maximum number of data unit children that are taken into account for the label generator
     // e.g.: for a AppeForLanguage it will take only label and language, when you put it to 2
-    dataUnitChildrenMax?: number;
+    fieldsMax?: number;
 
-    // maximum number of roles per roleSet taken into account for the label generator
+    // maximum number of roles per propertyField taken into account for the label generator
     rolesMax?: number;
 
     // path of that element in the store. useful to attatch leaf-pe-it-view
@@ -37,8 +40,7 @@ export class U {
 
         Object.keys(obj).forEach(key => {
             arr.push(obj[key]);
-        })
-
+        });
 
         return arr;
     }
@@ -206,9 +208,15 @@ export class U {
      */
     static stringForPeIt(peIt: InfPersistentItem): string {
 
-        return !peIt.pi_roles ? '' :
+        return (!peIt || !peIt.pi_roles) ? '' :
             peIt.pi_roles
-                .filter(r => r.temporal_entity.fk_class === DfhConfig.CLASS_PK_APPELLATION_USE)
+                .filter(r => (
+                    r &&
+                    r.temporal_entity &&
+                    r.temporal_entity.fk_class === DfhConfig.CLASS_PK_APPELLATION_USE &&
+                    r.temporal_entity.te_roles &&
+                    r.temporal_entity.te_roles.length
+                ))
                 .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
                     .map(r => {
                         return new AppellationLabel(r.appellation.appellation_label).getString()
@@ -216,21 +224,54 @@ export class U {
 
     }
 
+    /**
+      * Convert array of ComClassField to an array of Fields
+      *
+      */
+    static comCLassFields2Fields(classFields: ComClassField[]): Field[] {
+        if (!classFields) return [];
+
+        return classFields.map(comClassfield => {
+
+            const label = {
+                default: comClassfield.label,
+                sg: comClassfield.label,
+                pl: comClassfield.label
+            }
+            const fkClassField = comClassfield.pk_entity;
+
+
+            switch (comClassfield.pk_entity) {
+                case ComConfig.PK_CLASS_FIELD_WHEN:
+
+                    return new ExistenceTimeDetail({ fkClassField, label })
+
+                case ComConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
+                case ComConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
+                case ComConfig.PK_CLASS_FIELD_SHORT_TITLE:
+
+                    return new TextPropertyField({ fkClassField, label })
+
+                default:
+                    break;
+            }
+        });
+    }
 
     /**
-    * Convert array of Property to an array of RoleSet
+    * Convert array of Property to an array of PropertyField
     *
     * @param {boolean} isOutgoing direction: true=outgoing, false=ingoing
     * @param {DfhProperty[]} properties array of properties to Convert
-    * @return {RoleSet[]} array of RoleSet
+    * @return {PropertyField[]} array of PropertyField
     */
-    static infProperties2RoleSets(isOutgoing: boolean, properties: DfhProperty[]): RoleSet[] {
+    static infProperties2PropertyFields(isOutgoing: boolean, properties: DfhProperty[]): PropertyField[] {
         if (!properties) return [];
 
 
 
         return properties.map(property => {
-            const res = new RoleSet({
+            const res = new PropertyField({
                 isOutgoing: isOutgoing,
                 property: omit(['labels', 'domain_class', 'range_class'], property),
                 targetMaxQuantity: isOutgoing ? property.dfh_range_instances_max_quantifier : property.dfh_domain_instances_max_quantifier,
@@ -245,50 +286,50 @@ export class U {
     }
 
     /**
-     * Converts array of ingoing Property and array of outgoing Property to RoleSetList
+     * Converts array of ingoing Property and array of outgoing Property to PropertyFieldList
      * @param ingoingProperties
      * @param outgoingProperties
      */
-    static roleSetsFromProperties(ingoingProperties: DfhProperty[], outgoingProperties: DfhProperty[]): RoleSetList {
-        return indexBy(roleSetKey, [
-            ...U.infProperties2RoleSets(false, ingoingProperties),
-            ...U.infProperties2RoleSets(true, outgoingProperties)
+    static propertyFieldsFromProperties(ingoingProperties: DfhProperty[], outgoingProperties: DfhProperty[]): PropertyFieldList {
+        return indexBy(propertyFieldKey, [
+            ...U.infProperties2PropertyFields(false, ingoingProperties),
+            ...U.infProperties2PropertyFields(true, outgoingProperties)
         ])
     };
 
     /**
-     * Gets ord_num of RoleSet or null, if not available
+     * Gets ord_num of PropertyField or null, if not available
      *
-     * @param roleSet
+     * @param propertyField
      */
-    static ordNumFromRoleSet(roleSet: RoleSet): number | null {
+    static ordNumFromPropertyField(propertyField: PropertyField): number | null {
 
-        if (!U.uiContextConfigFromRoleSet(roleSet)) return null;
+        if (!U.uiContextConfigFromPropertyField(propertyField)) return null;
 
-        return U.uiContextConfigFromRoleSet(roleSet).ord_num;
+        return U.uiContextConfigFromPropertyField(propertyField).ord_num;
     }
 
 
     /**
-     * gets ui_context_config of RoleSet or null, if not available
-     * @param roleSet
+     * gets ui_context_config of PropertyField or null, if not available
+     * @param propertyField
      */
-    static uiContextConfigFromRoleSet(roleSet: RoleSet): ComUiContextConfig | null {
-        if (!roleSet) return null;
+    static uiContextConfigFromPropertyField(propertyField: PropertyField): ComUiContextConfig | null {
+        if (!propertyField) return null;
 
-        if (!roleSet.property) return null;
+        if (!propertyField.property) return null;
 
-        if (!roleSet.property.ui_context_config || !roleSet.property.ui_context_config[0]) return null;
+        if (!propertyField.property.ui_context_config || !propertyField.property.ui_context_config[0]) return null;
 
-        return roleSet.property.ui_context_config[0];
+        return propertyField.property.ui_context_config[0];
     }
 
     /**
-    * Gets ord_num of ComPropertySet or null, if not available
+    * Gets ord_num of ComClassField or null, if not available
     *
     * @param propSet
     */
-    static ordNumFromPropSet(propSet: ComPropertySet): number | null {
+    static ordNumFromPropSet(propSet: ComClassField): number | null {
 
         const config = U.uiContextConfigFromPropSet(propSet);
 
@@ -301,7 +342,7 @@ export class U {
      * gets ui_context_config of PropSet or null, if not available
      * @param propSet
      */
-    static uiContextConfigFromPropSet(propSet: ComPropertySet): ComUiContextConfig | null {
+    static uiContextConfigFromPropSet(propSet: ComClassField): ComUiContextConfig | null {
 
         if (!propSet.ui_context_configs) return null;
 
@@ -317,11 +358,11 @@ export class U {
      * @param property
      * @param isOutgoing
      */
-    static createLabelObject(property: DfhProperty, isOutgoing: boolean): RoleSetLabel {
+    static createLabelObject(property: DfhProperty, isOutgoing: boolean): FieldLabel {
         let sg = 'n.N.'
         let pl = 'n.N.'
 
-        let labelObj: RoleSetLabel;
+        let labelObj: FieldLabel;
         if (isOutgoing) {
 
             if (property) {
@@ -330,7 +371,7 @@ export class U {
             }
 
             // TODO return an object containing label.pl and label.sg
-            if (property.labels.length) {
+            if (property.labels && property.labels.length) {
                 if (property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_SG)) {
                     sg = property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_SG).dfh_label;
                 }
@@ -356,7 +397,7 @@ export class U {
 
 
             // TODO return an object containing inversed_label.pl and inversed_label.sg
-            if (property.labels.length) {
+            if (property.labels && property.labels.length) {
                 if (property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_INVERSED_SG)) {
                     sg = property.labels.find(l => l.com_fk_system_type === Config.PROPERTY_LABEL_INVERSED_SG).dfh_label;
                 }
@@ -401,7 +442,13 @@ export class U {
             else return undefined;
         }
 
+        const extractIsInProject = (c: DfhClass): boolean => {
+            return !c.proj_rels ? false :
+                !c.proj_rels[0] ? false : c.proj_rels[0].is_in_project;
+        }
+
         const cConf: ClassConfig = {
+            isInProject: extractIsInProject(dfhC),
             subclassOf: extractSubclassOf(dfhC),
             label: extractClassLabel(dfhC),
             dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,
@@ -410,7 +457,7 @@ export class U {
         };
 
         if (dfhC.ingoing_properties || dfhC.outgoing_properties) {
-            cConf.roleSets = U.roleSetsFromProperties(dfhC.ingoing_properties, dfhC.outgoing_properties)
+            cConf.propertyFields = U.propertyFieldsFromProperties(dfhC.ingoing_properties, dfhC.outgoing_properties)
         }
         return cConf;
     }
@@ -419,8 +466,8 @@ export class U {
      * Label Generator Functions
      **************************************************************************/
 
-    static labelFromDataUnitChildList(r: DataUnitChildList, settings: LabelGeneratorSettings): DataUnitLabel {
-        const max = !settings ? undefined : settings.dataUnitChildrenMax;
+    static labelFromFieldList(r: FieldList, settings: LabelGeneratorSettings): ClassInstanceLabel {
+        const max = !settings ? undefined : settings.fieldsMax;
         const duChildren = U.obj2Arr(r);
 
         // create array with max amount of labels
@@ -428,25 +475,26 @@ export class U {
 
         return {
             path: settings.path,
-            parts: spliced.map(c => U.labelFromDataUnitChild(c, { ...settings, path: [...settings.path, dataUnitChildKey(c)] })),
+            parts: spliced.map(c => U.labelFromField(c, { ...settings, path: [...settings.path, fieldKey(c)] })),
             hasMore: (duChildren.length > 2)
         }
     }
 
 
-    static labelFromDataUnitChild(c: DataUnitChild, settings: LabelGeneratorSettings): DataUnitChildLabel {
-        if (c && c.type == 'RoleSet') return U.labelFromRoleSet(c as RoleSet, settings);
+    static labelFromField(c: Field, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
+        if (c && c.type == 'PropertyField') return U.labelFromPropertyField(c as PropertyField, settings);
         else if (c && c.type == 'ExistenceTimeDetail') return U.labelFromExTime(c as ExistenceTimeDetail, settings);
+        else if (c && c.type == 'TextPropertyField') return U.labelFromTextPropertyField(c as TextPropertyField, settings);
 
         else return null;
     }
 
 
-    static labelFromRoleSet(r: RoleSet, settings: LabelGeneratorSettings): DataUnitChildLabel {
+    static labelFromPropertyField(r: PropertyField, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
         const max = !settings ? undefined : settings.rolesMax;
 
         const roleDetails = U.obj2Arr(r._role_list);
-        const duChildLabel = new DataUnitChildLabel({ path: settings.path });
+        const duChildLabel = new ClassInstanceFieldLabel({ path: settings.path });
 
         // create array with max amount of labels
         const spliced = max ? roleDetails.splice(0, max) : roleDetails;
@@ -467,8 +515,8 @@ export class U {
         if (r) {
             if (r._teEnt) {
                 let string = '';
-                if (r._teEnt._children) {
-                    const label = U.labelFromDataUnitChildList(r._teEnt._children, settings);
+                if (r._teEnt._fields) {
+                    const label = U.labelFromFieldList(r._teEnt._fields, settings);
                     if (label && label.parts && label.parts[0] && label.parts[0].roleLabels && label.parts[0].roleLabels[0] && label.parts[0].roleLabels[0].string) {
                         string = label.parts[0].roleLabels[0].string;
                     }
@@ -481,7 +529,7 @@ export class U {
             } else if (r._appe) return { path, type: 'appe', string: U.labelFromAppeDetail(r._appe) };
             else if (r._lang) return { path, type: 'lang', string: U.labelFromLangDetail(r._lang) };
             else if (r._place) return { path, type: 'place', string: U.labelFromPlaceDetail(r._place) };
-            else if (r._leaf_peIt) return { path, type: 'leaf-pe-it', string: U.labelFromLeafPeIt(r._leaf_peIt, { dataUnitChildrenMax: 1, rolesMax: 1, path: [...path, '_leaf_peIt'] }) };
+            else if (r._leaf_peIt) return { path, type: 'leaf-pe-it', string: U.labelFromLeafPeIt(r._leaf_peIt, { fieldsMax: 1, rolesMax: 1, path: [...path, '_leaf_peIt'] }) };
 
             else {
                 console.warn('labelFromRoleDetail: This kind of RoleDetail does not produce labels');
@@ -519,9 +567,9 @@ export class U {
     }
 
     static labelFromLeafPeIt(l: PeItDetail, settings: LabelGeneratorSettings): string {
-        if (l._children) {
+        if (l._fields) {
 
-            const p = U.labelFromDataUnitChildList(l._children, { ...settings, path: [...settings.path, '_children'] })
+            const p = U.labelFromFieldList(l._fields, { ...settings, path: [...settings.path, '_fields'] })
 
             if (p && p.parts && p.parts[0] && p.parts[0].roleLabels && p.parts[0].roleLabels[0]) {
                 return p.parts[0].roleLabels[0].string;
@@ -529,20 +577,32 @@ export class U {
         } else return null;
     }
 
+    static labelFromTextPropertyField(txtPropField: TextPropertyField, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
+        return new ClassInstanceFieldLabel({
+            path: settings.path,
+            introducer: '',
+            roleLabels: [{
+                path: undefined,
+                type: 'txt-prop',
+                string: U.obj2Arr(txtPropField.textPropertyDetailList).slice(0, settings.rolesMax).map(tD => (
+                    tD.textProperty.text_property_quill_doc.contents.ops.map(op => op.insert).join('')
+                )).join(', ')
+            }]
+        })
+    }
 
-
-    static labelFromExTime(e: ExistenceTimeDetail, settings: LabelGeneratorSettings): DataUnitChildLabel {
+    static labelFromExTime(e: ExistenceTimeDetail, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
         let earliest: TimePrimitive, latest: TimePrimitive;
         let eRoleDetail: RoleDetail, lRoleDetail;
 
-        if (e && e._children) {
-            const c = e._children;
-            const bOb = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_BEGIN, true)];
-            const eOb = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_BEGIN, true)];
-            const bOe = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_END, true)];
-            const eOe = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_END, true)];
-            const at = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_AT_SOME_TIME_WITHIN, true)];
-            const ong = c[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_ONGOING_THROUGHOUT, true)];
+        if (e && e._fields) {
+            const c = e._fields;
+            const bOb = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_BEGIN, true)];
+            const eOb = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_BEGIN, true)];
+            const bOe = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_END, true)];
+            const eOe = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_END, true)];
+            const at = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_AT_SOME_TIME_WITHIN, true)];
+            const ong = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_ONGOING_THROUGHOUT, true)];
 
             // Get earliest date
             const earliestArr = [bOb, eOb, at, ong, bOe, eOe].filter(rs => (rs))
@@ -572,7 +632,7 @@ export class U {
 
         if (!earliest && !latest) return null;
 
-        return new DataUnitChildLabel({
+        return new ClassInstanceFieldLabel({
             path: settings.path,
             introducer: 'When',
             roleLabels: [{
@@ -650,11 +710,11 @@ export class U {
             if (presence.fkClass != DfhConfig.CLASS_PK_PRESENCE) return null;
 
             // return false if no DateUnitChildren
-            if (!presence._children) return null;
+            if (!presence._fields) return null;
 
-            // return false if no RoleSet leading to a Place
-            const placeSet = presence._children[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
-            if (!placeSet || placeSet.type != 'RoleSet') return null;
+            // return false if no PropertyField leading to a Place
+            const placeSet = presence._fields[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as PropertyField;
+            if (!placeSet || placeSet.type != 'PropertyField') return null;
 
             // return false if no Place in first RoleDetail
             const placeRoleDetail = U.obj2Arr(placeSet._role_list)[0];
@@ -669,7 +729,7 @@ export class U {
             let colorRgba: any[] = colorInactive;
 
             // get the Existence Time of that TeEnt
-            const exTime = U.ExTimeFromExTimeDetail(presence._children['_existenceTime'] as ExistenceTimeDetail);
+            const exTime = U.ExTimeFromExTimeDetail(presence._fields['_field_48'] as ExistenceTimeDetail);
             if (exTime) {
 
                 const minMax = exTime.getMinMaxTimePrimitive();
@@ -772,22 +832,22 @@ export class U {
 
     static presencesFromPeIt(peItDetail: PeItDetail, path: string[]): { path: string[], teEntDetail: TeEntDetail }[] {
 
-        const roleSetMap = U.obj2KeyValueArr(peItDetail._children).find((res) => {
-            const child: DataUnitChild = res.value;
-            if (child.type == 'RoleSet') {
-                if ((child as RoleSet).targetClassPk == DfhConfig.CLASS_PK_PRESENCE) return true;
+        const propertyFieldMap = U.obj2KeyValueArr(peItDetail._fields).find((res) => {
+            const child: Field = res.value;
+            if (child.type == 'PropertyField') {
+                if ((child as PropertyField).targetClassPk == DfhConfig.CLASS_PK_PRESENCE) return true;
             }
             return false
         });
 
-        if (!roleSetMap) return [];
+        if (!propertyFieldMap) return [];
 
-        const roleSet = roleSetMap.value as RoleSet;
-        const roleSetPath = [...path, '_children', roleSetMap.key]
+        const propertyField = propertyFieldMap.value as PropertyField;
+        const propertyFieldPath = [...path, '_fields', propertyFieldMap.key]
 
 
-        return U.obj2KeyValueArr(roleSet._role_list).map(roleDetailMap => ({
-            path: [...roleSetPath, '_role_list', roleDetailMap.key, '_teEnt'],
+        return U.obj2KeyValueArr(propertyField._role_list).map(roleDetailMap => ({
+            path: [...propertyFieldPath, '_role_list', roleDetailMap.key, '_teEnt'],
             teEntDetail: roleDetailMap.value._teEnt
         }))
     }
@@ -798,29 +858,29 @@ export class U {
         const result: { path: string[], teEntDetail: TeEntDetail }[] = []
 
 
-        // get rolesets to teEnts without presences
-        const keys = (!peItDetail || !peItDetail._children) ? [] : Object.keys(peItDetail._children);
-        const roleSets = {};
+        // get propertyFields to teEnts without presences
+        const keys = (!peItDetail || !peItDetail._fields) ? [] : Object.keys(peItDetail._fields);
+        const propertyFields = {};
         keys.forEach(key => {
-            const child: DataUnitChild = peItDetail._children[key];
-            if (child.type == 'RoleSet') {
-                if ((child as RoleSet).targetClassPk !== DfhConfig.CLASS_PK_PRESENCE) {
-                    roleSets[key] = child as RoleSet;
+            const child: Field = peItDetail._fields[key];
+            if (child.type == 'PropertyField') {
+                if ((child as PropertyField).targetClassPk !== DfhConfig.CLASS_PK_PRESENCE) {
+                    propertyFields[key] = child as PropertyField;
                 };
             }
         })
 
 
-        // for each roleSet get the roleSet and make the path
-        U.obj2KeyValueArr(roleSets).map(res => {
-            const roleSet = res.value as RoleSet;
-            const roleSetPath = [...path, '_children', res.key]
+        // for each propertyField get the propertyField and make the path
+        U.obj2KeyValueArr(propertyFields).map(res => {
+            const propertyField = res.value as PropertyField;
+            const propertyFieldPath = [...path, '_fields', res.key]
 
             // get the teEnt of roleDetails with path
-            U.obj2KeyValueArr(roleSet._role_list).forEach(roleDetailMap => {
+            U.obj2KeyValueArr(propertyField._role_list).forEach(roleDetailMap => {
 
                 const teEntWithPath = {
-                    path: [...roleSetPath, '_role_list', roleDetailMap.key, '_teEnt'],
+                    path: [...propertyFieldPath, '_role_list', roleDetailMap.key, '_teEnt'],
                     teEntDetail: roleDetailMap.value._teEnt
                 }
 
@@ -856,9 +916,9 @@ export class U {
 
 
             // get leaf peIts...
-            U.obj2Arr(teEntDetail._children).forEach(duChild => {
-                if (duChild.type === 'RoleSet') {
-                    const rs = duChild as RoleSet;
+            U.obj2Arr(teEntDetail._fields).forEach(duChild => {
+                if (duChild.type === 'PropertyField') {
+                    const rs = duChild as PropertyField;
 
                     // of class geographical place or built work
                     if (
@@ -898,11 +958,11 @@ export class U {
                                     if (presence.fkClass != DfhConfig.CLASS_PK_PRESENCE) return null;
 
                                     // return false if no DateUnitChildren
-                                    if (!presence._children) return null;
+                                    if (!presence._fields) return null;
 
-                                    // return false if no RoleSet leading to a Place
-                                    const placeSet = presence._children[roleSetKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as RoleSet;
-                                    if (!placeSet || placeSet.type != 'RoleSet') return null;
+                                    // return false if no PropertyField leading to a Place
+                                    const placeSet = presence._fields[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as PropertyField;
+                                    if (!placeSet || placeSet.type != 'PropertyField') return null;
 
                                     // return false if no Place in first RoleDetail
                                     const placeRoleDetail = U.obj2Arr(placeSet._role_list)[0];
@@ -917,11 +977,11 @@ export class U {
                                     let colorRgba: any[] = colorInactive;
 
                                     // get the Existence Time of initial TeEnt not the Presence
-                                    const exTime = U.ExTimeFromExTimeDetail(teEntDetail._children['_existenceTime'] as ExistenceTimeDetail);
+                                    const exTime = U.ExTimeFromExTimeDetail(teEntDetail._fields['_field_48'] as ExistenceTimeDetail);
 
                                     // TODO: compare the exTime from initial teEnt with exTime of the presence and figure out which presence
                                     // is best for displaying the teEnt on the map
-                                    // const exTime = U.ExTimeFromExTimeDetail(presence._children['_existenceTime'] as ExistenceTimeDetail);
+                                    // const exTime = U.ExTimeFromExTimeDetail(presence._fields['_field_48'] as ExistenceTimeDetail);
 
                                     // exTime of initial TeEnt not Presence!
                                     if (exTime) {
@@ -1070,7 +1130,7 @@ export class U {
 
         const e = new ExistenceTime();
 
-        U.obj2Arr(exTimeDetail._children).forEach(rs => {
+        U.obj2Arr(exTimeDetail._fields).forEach(rs => {
             const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[rs.property.dfh_pk_property]
             if (key) e[key] = U.infRole2TimePrimitive(U.obj2Arr(rs._role_list)[0].role);
         })
@@ -1124,26 +1184,31 @@ export class U {
 
     /**
      * Returns the key of the data unit children that should be isolated in view
-     * @returns the key of that DataUnitChild
+     * @returns the key of that Field
      */
-    static extractDataUnitChildKeyForIsolation(children: DataUnitChildList): string {
+    static extractFieldKeyForIsolation(children: FieldList): string {
         let key: string;
         U.obj2KeyValueArr(children).some((child) => {
-            if (child.value.type === 'RoleSet') {
-                const roleSet = child.value as RoleSet;
+            if (child.value.type === 'PropertyField') {
+                const propertyField = child.value as PropertyField;
 
-                if (roleSet._role_set_form) {
+                if (propertyField._property_field_form) {
 
                     // if a role set has a role set form (to add or create a new form)
 
                     key = child.key
 
-                } else if (U.extractRoleDetailKeyOfEditingTeEnt(roleSet._role_list)) {
+                } else if (U.extractRoleDetailKeyOfEditingTeEnt(propertyField._role_list)) {
 
                     // if a teEnt is editing
 
                     key = child.key;
                     return true;
+                }
+            } else if (child.value.type === 'TextPropertyField') {
+                const textPropField = child.value as TextPropertyField;
+                if (textPropField.createOrAdd) {
+                    key = child.key;
                 }
             }
         })

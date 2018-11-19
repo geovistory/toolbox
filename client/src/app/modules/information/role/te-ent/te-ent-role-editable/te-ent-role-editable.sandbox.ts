@@ -2,7 +2,7 @@ import { sandboxOf } from 'angular-playground';
 import { DfhClass, InfRole } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
-import { RoleDetail, RoleSet } from 'app/core/state/models';
+import { RoleDetail, PropertyField } from 'app/core/state/models';
 import { Information2Module } from '../../../information.module';
 import { TeEntRoleEditableComponent } from './te-ent-role-editable.component';
 
@@ -18,10 +18,10 @@ export default sandboxOf(TeEntRoleEditableComponent, {
 })
     .add('TeEnt Role Editable | TimePrimitive Filled ', {
         context: {
-            parentPath: ['_role_set_1'],
+            parentPath: ['_property_field_1'],
             index: '_role_1',
             initState: {
-                _role_set_1: new RoleSet({
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             role: {
@@ -67,10 +67,10 @@ export default sandboxOf(TeEntRoleEditableComponent, {
 
     .add('TeEnt Role Editable | Place ', {
         context: {
-            parentPath: ['_role_set_1'],
+            parentPath: ['_property_field_1'],
             index: '_role_1',
             initState: {
-                _role_set_1: new RoleSet({
+                _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
                             role: {

@@ -1,15 +1,14 @@
-import { NgRedux, ObservableStore, select, WithSubStore, select$ } from '@angular-redux/store';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IAppState, U, ComConfig } from 'app/core';
-import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares';
+import { ActivatedRoute } from '@angular/router';
+import { ComConfig, IAppState } from 'app/core';
 import { Observable, Subject } from 'rxjs';
-
-import { ClassDetail, Container, Widget } from '../../admin.models';
+import { RootEpics } from '../../../../core/store/epics';
+import { ClassDetail, Container } from '../../admin.models';
 import { ClassAPIActions } from './api/class.actions';
 import { ClassAPIEpics } from './api/class.epics';
 import { classReducer } from './api/class.reducer';
-import { ActivatedRoute } from '@angular/router';
-import { RootEpics } from '../../../../core/store/epics';
+
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -22,9 +21,14 @@ import { RootEpics } from '../../../../core/store/epics';
 })
 export class ClassComponent extends ClassAPIActions implements OnInit, OnDestroy {
 
-  public readonly PK_UI_CONTEXT_EDITABLE = ComConfig.PK_UI_CONTEXT_EDITABLE;
-  public readonly PK_UI_CONTEXT_CREATE = ComConfig.PK_UI_CONTEXT_CREATE;
   public readonly PK_UI_CONTEXT_ADD = ComConfig.PK_UI_CONTEXT_ADD;
+  public readonly PK_UI_CONTEXT_DATAUNITS_EDITABLE = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+  public readonly PK_UI_CONTEXT_DATAUNITS_CREATE = ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
+
+  public readonly PK_UI_CONTEXT_SOURCES_EDITABLE = ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE;
+  public readonly PK_UI_CONTEXT_SOURCES_CREATE = ComConfig.PK_UI_CONTEXT_SOURCES_CREATE;
+  public readonly PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE = ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE;
+  public readonly PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE = ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE;
 
 
   localStore: ObservableStore<ClassDetail>
@@ -50,7 +54,7 @@ export class ClassComponent extends ClassAPIActions implements OnInit, OnDestroy
     this.rootEpics.addEpic(this.epics.createEpic(this.localStore, this.until$))
 
     const pkClass = this.activatedRoute.snapshot.params['pk_class'];
-    this.loadClassDetails(pkClass, ComConfig.PK_UI_CONTEXT_EDITABLE)
+    this.loadClassDetails(pkClass, ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE)
   }
 
   getBasePath = () => ['admin', 'classDetail'];

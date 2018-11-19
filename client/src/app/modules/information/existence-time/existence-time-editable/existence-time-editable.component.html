@@ -2,7 +2,7 @@
     <h5 class="bg-transparent d-flex py-2 align-items-center gv-grow-1">
         When
     </h5>
-    <div class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(ontoInfoVisible$|async)">
+    <div class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex" *ngIf="(showOntoInfo$|async)">
         <div class="align-self-center">
             <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/50" target="_blank">
                 E52
@@ -36,56 +36,56 @@
     </div>
 
     <!-- Hase some value -->
-    <div class="pl-2 py-2 d-flex" *ngIf="!isEmpty">
+    <div class="list-group-item pr-0 d-flex" *ngIf="!isEmpty">
         <div class="gv-grow-1">
             <!-- At some time within -->
-            <div class="d-flex align-items-center" *ngIf="(_children?._72_outgoing)">
-                <div *ngIf="(_children | keys).length > 1">At some time within:</div>
+            <div class="d-flex align-items-center" *ngIf="(_fields?._72_outgoing)">
+                <div *ngIf="(_fields | keys).length > 1">At some time within:</div>
 
-                <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_72_outgoing'"></gv-ex-time-role-set-editable>
+                <gv-ex-time-property-field-editable [parentPath]="basePath" [index]="'_72_outgoing'"></gv-ex-time-property-field-editable>
 
             </div>
 
             <!-- Begin of begin -->
-            <div class="d-flex align-items-center" *ngIf="(_children?._152_outgoing)">
+            <div class="d-flex align-items-center" *ngIf="(_fields?._152_outgoing)">
                 <div>Earliest possible begin:</div>
 
-                <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_152_outgoing'"></gv-ex-time-role-set-editable>
+                <gv-ex-time-property-field-editable [parentPath]="basePath" [index]="'_152_outgoing'"></gv-ex-time-property-field-editable>
 
             </div>
 
             <!-- End of end -->
-            <div class="d-flex align-items-center" *ngIf="(_children?._153_outgoing)">
+            <div class="d-flex align-items-center" *ngIf="(_fields?._153_outgoing)">
                 <div>Latest possible end:</div>
 
-                <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_153_outgoing'"></gv-ex-time-role-set-editable>
+                <gv-ex-time-property-field-editable [parentPath]="basePath" [index]="'_153_outgoing'"></gv-ex-time-property-field-editable>
 
             </div>
 
             <!-- Ongoing throughout -->
-            <div class="d-flex align-items-center" *ngIf="(_children?._71_outgoing)">
+            <div class="d-flex align-items-center" *ngIf="(_fields?._71_outgoing)">
                 <div>Ongoing throughout:</div>
 
-                <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_71_outgoing'"></gv-ex-time-role-set-editable>
+                <gv-ex-time-property-field-editable [parentPath]="basePath" [index]="'_71_outgoing'"></gv-ex-time-property-field-editable>
 
             </div>
 
             <!-- End of begin -->
-            <div class="d-flex align-items-center" *ngIf="(_children?._150_outgoing)">
+            <div class="d-flex align-items-center" *ngIf="(_fields?._150_outgoing)">
 
                 <div>Begin:</div>
 
-                <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_150_outgoing'"></gv-ex-time-role-set-editable>
+                <gv-ex-time-property-field-editable [parentPath]="basePath" [index]="'_150_outgoing'"></gv-ex-time-property-field-editable>
 
             </div>
 
 
             <!-- Begin of end -->
-            <div class="d-flex align-items-center" *ngIf="(_children?._151_outgoing)">
+            <div class="d-flex align-items-center" *ngIf="(_fields?._151_outgoing)">
 
                 <div>End:</div>
 
-                <gv-ex-time-role-set-editable [parentPath]="basePath" [index]="'_151_outgoing'"></gv-ex-time-role-set-editable>
+                <gv-ex-time-property-field-editable [parentPath]="basePath" [index]="'_151_outgoing'"></gv-ex-time-property-field-editable>
 
             </div>
 

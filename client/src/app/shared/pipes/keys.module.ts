@@ -8,7 +8,7 @@ import { KeysPipe } from './keys.pipe';
     CommonModule
   ],
   declarations: [
-    KeysPipe
+    KeysPipe,
   ],
   exports: [
     KeysPipe

@@ -71,7 +71,7 @@ export class DfhLabelListEditComponent extends DfhLabelListEditAPIActions implem
   }
 
   ngOnDestroy() {
-    this.destroy();
+    // this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }

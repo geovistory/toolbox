@@ -4,7 +4,7 @@
  *      show a SourceSearchHitComponent for each entry in 'list' with open and remove buttons
  *      passing SourceSearchHitState via Input
 -->
-<div *ngIf="listVisible" class="gv-flex-fh">
+<div [hidden]="!listVisible" [ngClass]="{'gv-flex-fh': listVisible}">
 
   <!-- Header -->
   <section class="m-3 mt-5 row">
@@ -15,34 +15,17 @@
     </div>
     <div class="col-md-4">
       <div class="btn-group float-right mt-2" role="group">
-        <button class="btn btn-link" (click)="startCreate()">
+        <gv-class-and-type-selector *ngIf="(pkProject$ |async) && (crm$ | async)" [pkClasses]="pkClassesOfAddBtn"
+          [pkProject]="(pkProject$ |async)" [basePath]="basePath.concat('classAndTypeSelector')" (select)="startCreate($event, pkUiContextCreate)"
+          buttonText="+ Add a source" placement="right"></gv-class-and-type-selector>
+        <!-- <button class="btn btn-link" (click)="startCreate()">
           <i class="fa fa-plus"></i> Add a source
-        </button>
+        </button> -->
       </div>
     </div>
   </section>
 
-  <!-- Search input -->
-  <form class="m-3" (ngSubmit)="searchStringChange()">
-    <div class="input-group">
-      <input type="text" name="searchString" class="form-control" aria-describedby="search" autocomplete="off"
-        placeholder="Search …" [(ngModel)]="searchString">
-      <span class="input-group-append">
-        <button class="btn btn-primary" type="submit">
-          <i class="fa fa-search"></i>
-        </button>
-      </span>
-    </div>
-  </form>
-
-  <!-- Search results -->
-  <div class="gv-flex-fh m-3">
-    <div class="d-flex justify-content-center" *ngFor="let entry of (list$|async) | keys">
-      <gv-source-search-hit [sourceSearchHit]="entry.value" class="gv-grow-1" (open)="openSearchHit(entry.value)">
-      </gv-source-search-hit>
-      <button class="btn btn-sm btn-link" (click)="startRemove(entry.value)">Remove</button>
-    </div>
-  </div>
+  <gv-list *ngIf="(list$ | async)" [basePath]="basePath.concat('list')" (onOpen)="openEntity($event)"></gv-list>
 
 
 </div>
@@ -51,8 +34,9 @@
  * - If 'create' is truthy, show a form with SourceCreateFormComponent
  *     listening to ok and cancel Outputs 
  -->
-<div *ngIf="(create$ | async)" class="d-flex justify-content-center mt-5">
-  <gv-source-create-form (cancel)="stopCreate()" (ok)="submitCreate($event)" [projectPk]="(project$ | async)?.pk_project"></gv-source-create-form>
+<div *ngIf="(create$ | async)" class="gv-flex-fh">
+  <gv-create-or-add-pe-it class="gv-flex-fh" [basePath]="basePath.concat('create')" (done)="openEntity($event.pk_entity)"
+    (cancel)="stopCreate()"></gv-create-or-add-pe-it>
 </div>
 
 <!-- ********************** Edit Source *************************** 
@@ -61,16 +45,31 @@
  *   listening to onChange Output to update the 'list'
 -->
 
-<div *ngIf="(edit$ | async)" class="gv-grow-1 d-flex flex-column">
-  <gv-source-detail (close)="close()" (onSave)="save($event)" (versionChanged)="changeVersion($event)" [path]="editPath"
-    class="gv-grow-1 d-flex flex-column"></gv-source-detail>
+<div *ngIf="(edit$ | async)" class="gv-flex-fh">
+
+  <!-- Breadcrumbs -->
+  <div class="d-flex gv-flex-shrink-0">
+    <ol class="breadcrumb bg-transparent mb-0 py-2">
+      <li class="breadcrumb-item">
+        <a href class="gv-passive-link" routerLink="../search" queryParamsHandling="merge">
+          <i class="gv-icon gv-icon-source text-primary"></i> Sources
+        </a>
+      </li>
+    </ol>
+  </div>
+
+
+  <gv-pe-it-editable [hidden]="(createSection$ | async)" [basePath]="basePath.concat('edit')" [ngClass]="{'gv-flex-fh' : !(createSection$ | async)}"
+  (remove)="onRemoveSource($event)"></gv-pe-it-editable>
+
+
 </div>
 
 <!-- ********************** Remove Source *************************** 
  * - If 'remove' is truthy, show a SourceSearchHitComponent with 'are you sure', cancel and remove buttons
  *   passing store path to 'remove' via Input 
 -->
-<div *ngIf="(remove$ | async)" class="d-flex justify-content-center mt-5">
+<!-- <div *ngIf="(remove$ | async)" class="d-flex justify-content-center mt-5">
   <div>
     <div class="my-3">
       <h5> Remove Source </h5>
@@ -80,4 +79,38 @@
     <button class="btn btn-outline-danger" (click)="remove()">Remove</button>
     <button class="btn btn-outline-secondary" (click)="cancelRemove()">Cancel</button>
   </div>
+</div> -->
+
+
+
+
+<!-- ********************** Edit Section *************************** 
+ * - If 'edit' is truthy, show a SourceDetailComponent 
+ *   passing store path to 'edit' via Input
+ *   listening to onChange Output to update the 'list'
+-->
+
+<div *ngIf="(editSection$ | async)" class="gv-flex-fh">
+
+  <!-- Breadcrumbs -->
+  <div class="d-flex gv-flex-shrink-0">
+    <ol class="breadcrumb bg-transparent mb-0 py-2">
+      <li class="breadcrumb-item">
+        <a href class="gv-passive-link" routerLink="../../../search" queryParamsHandling="merge">
+          <i class="gv-icon gv-icon-source text-primary"></i> Sources
+        </a>
+      </li>
+      <li class="breadcrumb-item">
+        <a href class="gv-passive-link" routerLink="../../" queryParamsHandling="merge">
+          Source
+        </a>
+      </li>
+    </ol>
+  </div>
+
+
+  <gv-pe-it-editable [basePath]="basePath.concat('editSection')" class="gv-flex-fh"
+  (remove)="onRemoveSection($event)"></gv-pe-it-editable>
+
+
 </div>

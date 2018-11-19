@@ -9,7 +9,7 @@ export class TeEntHeaderComponent implements OnInit {
 
   @Input() classConfig;
   @Input() selectPropState$;
-  @Input() ontoInfoVisible$;
+  @Input() showOntoInfo$;
   @Input() addButtonVisible;
   @Output() startSelectProperty = new EventEmitter<void>();
 

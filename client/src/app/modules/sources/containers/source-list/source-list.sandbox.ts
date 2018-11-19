@@ -1,39 +1,33 @@
-import { sandboxOf } from "angular-playground";
-import { SourceListComponent } from "./source-list.component";
-import { SourceSanboxStoreModule } from "./source-list.sandbox.store";
-import { SourceListActions } from "./source-list.actions";
-import { ISourceListState } from "../..";
-import { SourceCreateFormComponent } from "../../components/source-create-form/source-create-form.component";
-import { SourceSearchHitComponent } from "../../components/source-search-hit/source-search-hit.component";
-import { SourceDetailComponent } from "../source-detail/source-detail.component";
-import { KeysPipe } from "app/shared/pipes/keys.pipe";
-import { InfDigitalObject, InfEntityAssociation } from "app/core";
-import { textBüchel } from "../../../quill/quill-edit/quill-edit.sandbox.mock";
-import { QuillModule } from "app/modules/quill";
-import { SourceDetailActions } from '../source-detail/source-detail.actions';
-import { Chunk, IAnnotationPanelState } from 'app/modules/annotation';
+import { RouterModule } from '@angular/router';
+import { sandboxOf } from 'angular-playground';
+import { InfDigitalObject } from 'app/core';
 import { AnnotationViewComponent } from 'app/modules/annotation/components/annotation-view/annotation-view.component';
-import { AnnotationCtrlComponent } from 'app/modules/annotation/containers/annotation-ctrl/annotation-ctrl.component';
-import { MentionedEntitiesCtrlComponent } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.component';
 import { ChunkViewComponent } from 'app/modules/annotation/components/chunk-view/chunk-view.component';
 import { MentionedEntitiesViewComponent } from 'app/modules/annotation/components/mentioned-entities-view/mentioned-entities-view.component';
 import { MentionedEntityViewComponent } from 'app/modules/annotation/components/mentioned-entity-view/mentioned-entity-view.component';
-import { AnnotationPanelActions } from 'app/modules/annotation/containers/annotation-panel/annotation-panel.actions';
 import { AnnotationCtrlActions } from 'app/modules/annotation/containers/annotation-ctrl/annotation-ctrl.actions';
-import { MentionedEntityCtrlActions } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
+import { AnnotationCtrlComponent } from 'app/modules/annotation/containers/annotation-ctrl/annotation-ctrl.component';
+import { AnnotationPanelActions } from 'app/modules/annotation/containers/annotation-panel/annotation-panel.actions';
 import { AnnotationPanelComponent } from 'app/modules/annotation/containers/annotation-panel/annotation-panel.component';
-import { RouterModule } from '@angular/router';
+import { MentionedEntityCtrlActions } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
+import { MentionedEntitiesCtrlComponent } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.component';
+import { QuillModule } from 'app/modules/quill';
+import { KeysPipe } from 'app/shared/pipes/keys.pipe';
+import { ISourceListState } from '../..';
+import { textBüchel } from '../../../quill/quill-edit/quill-edit.sandbox.mock';
+import { SourceCreateFormComponent } from '../../components/source-create-form/source-create-form.component';
+import { SourceSearchHitComponent } from '../../components/source-search-hit/source-search-hit.component';
+
+import { SourceListComponent } from './source-list.component';
 
 export default sandboxOf(SourceListComponent, {
   imports: [
     RouterModule.forRoot([]),
-    SourceSanboxStoreModule,
     QuillModule,
   ],
   declarations: [
     KeysPipe,
     SourceSearchHitComponent,
-    SourceDetailComponent,
     SourceCreateFormComponent,
     AnnotationPanelComponent,
     AnnotationViewComponent,
@@ -46,8 +40,6 @@ export default sandboxOf(SourceListComponent, {
   ],
   providers: [
     KeysPipe,
-    SourceListActions,
-    SourceDetailActions,
     AnnotationPanelActions,
     AnnotationCtrlActions,
     MentionedEntityCtrlActions

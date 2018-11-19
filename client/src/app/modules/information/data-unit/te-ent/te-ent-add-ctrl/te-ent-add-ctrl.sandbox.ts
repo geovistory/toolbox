@@ -236,8 +236,8 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                       ]
                     },
                     fkClass: 61,
-                    _children: {
-                      _existenceTime: {
+                    _fields: {
+                      _field_48: {
                         type: 'ExistenceTimeDetail',
                         roles: [
                           {
@@ -264,9 +264,9 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                           }
                         ],
                         toggle: 'collapsed',
-                        _children: {
+                        _fields: {
                           _72_outgoing: {
-                            type: 'RoleSet',
+                            type: 'PropertyField',
                             isOutgoing: true,
                             property: {
                               dfh_pk_property: 72,
@@ -284,7 +284,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                   fk_ui_context: 103,
                                   fk_project: null,
                                   fk_property: 72,
-                                  fk_property_set: null,
+                                  fk_class_field: null,
                                   property_is_outgoing: true,
                                   ord_num: 1
                                 },
@@ -293,7 +293,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                   fk_ui_context: 104,
                                   fk_project: null,
                                   fk_property: 72,
-                                  fk_property_set: null,
+                                  fk_class_field: null,
                                   property_is_outgoing: true,
                                   ord_num: 1
                                 }
@@ -366,7 +366,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                               fk_ui_context: 103,
                               fk_project: null,
                               fk_property: 85,
-                              fk_property_set: null,
+                              fk_class_field: null,
                               property_is_outgoing: true,
                               ord_num: 3
                             }
@@ -380,7 +380,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                           pl: 'Fathers',
                           'default': 'Father'
                         },
-                        type: 'RoleSet',
+                        type: 'PropertyField',
                         toggle: 'collapsed',
                         _role_list: {
                           _34176: {
@@ -414,7 +414,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                             _leaf_peIt: {
                               fkClass: 21,
                               loading: true,
-                              _children: {
+                              _fields: {
                                 _1192_ingoing: {
                                   isOutgoing: false,
                                   property: {
@@ -433,7 +433,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                         fk_ui_context: 103,
                                         fk_project: null,
                                         fk_property: 1192,
-                                        fk_property_set: null,
+                                        fk_class_field: null,
                                         property_is_outgoing: false,
                                         ord_num: 0
                                       },
@@ -442,7 +442,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                         fk_ui_context: 104,
                                         fk_project: null,
                                         fk_property: 1192,
-                                        fk_property_set: null,
+                                        fk_class_field: null,
                                         property_is_outgoing: false,
                                         ord_num: 0
                                       }
@@ -456,7 +456,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                     pl: 'Names',
                                     'default': 'Names'
                                   },
-                                  type: 'RoleSet',
+                                  type: 'PropertyField',
                                   toggle: 'collapsed',
                                   _role_list: {
                                     _34130: {
@@ -540,7 +540,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                           ]
                                         },
                                         fkClass: 365,
-                                        _children: {
+                                        _fields: {
                                           _1113_outgoing: {
                                             isOutgoing: true,
                                             property: {
@@ -559,7 +559,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                                   fk_ui_context: 103,
                                                   fk_project: null,
                                                   fk_property: 1113,
-                                                  fk_property_set: null,
+                                                  fk_class_field: null,
                                                   property_is_outgoing: true,
                                                   ord_num: 0
                                                 },
@@ -568,7 +568,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                                   fk_ui_context: 104,
                                                   fk_project: null,
                                                   fk_property: 1113,
-                                                  fk_property_set: null,
+                                                  fk_class_field: null,
                                                   property_is_outgoing: true,
                                                   ord_num: 0
                                                 }
@@ -582,7 +582,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                               pl: 'Detailed Names',
                                               'default': 'Detailed Name'
                                             },
-                                            type: 'RoleSet',
+                                            type: 'PropertyField',
                                             toggle: 'collapsed',
                                             _role_list: {
                                               _34127: {
@@ -679,7 +679,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                               }
                                             }
                                           },
-                                          _existenceTime: {
+                                          _field_48: {
                                             type: 'ExistenceTimeDetail',
                                             roles: [
                                               {
@@ -719,9 +719,9 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                               }
                                             ],
                                             toggle: 'collapsed',
-                                            _children: {
+                                            _fields: {
                                               _72_outgoing: {
-                                                type: 'RoleSet',
+                                                type: 'PropertyField',
                                                 isOutgoing: true,
                                                 property: {
                                                   dfh_pk_property: 72,
@@ -739,7 +739,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                                       fk_ui_context: 103,
                                                       fk_project: null,
                                                       fk_property: 72,
-                                                      fk_property_set: null,
+                                                      fk_class_field: null,
                                                       property_is_outgoing: true,
                                                       ord_num: 1
                                                     },
@@ -748,7 +748,7 @@ export default sandboxOf(TeEntAddCtrlComponent, {
                                                       fk_ui_context: 104,
                                                       fk_project: null,
                                                       fk_property: 72,
-                                                      fk_property_set: null,
+                                                      fk_class_field: null,
                                                       property_is_outgoing: true,
                                                       ord_num: 1
                                                     }

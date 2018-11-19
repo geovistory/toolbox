@@ -25,15 +25,15 @@ import { Information2Module } from '../information/information.module';
     Information2Module
   ],
   declarations: [
-    AnnotationPanelComponent, 
-    AnnotationCtrlComponent, 
+    AnnotationPanelComponent,
+    AnnotationCtrlComponent,
     MentionedEntitiesCtrlComponent,
-    AnnotationViewComponent, 
+    AnnotationViewComponent,
     ChunkViewComponent,
     MentionedEntitiesViewComponent,
-    MentionedEntityViewComponent,        
+    MentionedEntityViewComponent,
   ],
-  providers: [  
+  providers: [
   ],
   exports: [
     AnnotationPanelComponent,
