@@ -23,7 +23,7 @@ export class ClassUiContextAPIEpics {
 
   public createEpics(subStore: ObservableStore<ClassUiContext>, pkClass: number, pkUiContext: number, until$: Subject<boolean>) {
     return combineEpics(
-      this.createLoadClassEpic(subStore, pkClass, pkUiContext, until$), 
+      this.createLoadClassEpic(subStore, pkClass, pkUiContext, until$),
       this.createupdateUiContextConfigEpic(subStore, pkClass, pkUiContext, until$),
     );
   }

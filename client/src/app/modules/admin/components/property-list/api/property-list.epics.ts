@@ -106,6 +106,15 @@ export class PropertyListAPIEpics {
                   joinType: 'left join',
                   orderBy: [{ pk_entity: 'asc' }]
                 }
+              },
+              property_profile_view: {
+                $relation: {
+                  name: 'property_profile_view',
+                  joinType: 'inner join',
+                  select: {
+                    include: ['removed_from_api', 'dfh_profile_label']
+                  }
+                }
               }
             }
           })

@@ -5,98 +5,74 @@
   All Properties. (Gui labels are in english)
 </p>
 
-<ngx-table [configuration]="tableConfiguration" [data]="data" [columns]="columns">
+<div class="form-inline">
+  <div *ngFor="let col of columnsCopy" class="custom-control custom-checkbox" (click)="toggle(col.key)">
+    <input type="checkbox" class="custom-control-input" [checked]="checked.has(col.key)">
+    <label class="custom-control-label mr-3">
+      {{col.title}}
+    </label>
+  </div>
+</div>
+
+<ngx-table [configuration]="tableConfiguration" [data]="data" [columns]="columns" [summaryTemplate]="summaryTemplateRef">
   <ng-template let-row let-index="index">
-    <td>
+    <td *ngIf="checked.has('dfh_has_domain')">
       {{row.dfh_has_domain}}
     </td>
-    <td>
+    <td *ngIf="checked.has('domain_standard_label')">
       <a href routerLink="../classes/{{row.dfh_has_domain}}"> {{row?.domain_standard_label}}</a>
     </td>
-    <td>
+    <td *ngIf="checked.has('dfh_pk_property')">
       {{row.dfh_pk_property}}
     </td>
-    <td>
+    <td *ngIf="checked.has('property_standard_label')">
       {{row.property_standard_label}}
     </td>
-    <td>
+    <td *ngIf="checked.has('dfh_has_range')">
       {{row.dfh_has_range}}
     </td>
-    <td>
+    <td *ngIf="checked.has('range_standard_label')">
       <a href routerLink="../classes/{{row.dfh_has_range}}">{{row?.range_standard_label}}</a>
     </td>
-    <td>
+    <td *ngIf="checked.has('dfh_domain_instances_max_quantifier')">
       {{row.dfh_domain_instances_max_quantifier}}
     </td>
-    <td>
+    <td *ngIf="checked.has('dfh_domain_instances_min_quantifier')">
       {{row.dfh_domain_instances_min_quantifier}}
     </td>
-    <td>
+    <td *ngIf="checked.has('dfh_range_instances_max_quantifier')">
       {{row.dfh_range_instances_max_quantifier}}
     </td>
-    <td>
+    <td *ngIf="checked.has('dfh_range_instances_min_quantifier')">
       {{row.dfh_range_instances_min_quantifier}}
     </td>
-    <td>
+    <td *ngIf="checked.has('gui_label_sg')">
       <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', row.key, 'label_sg']" [dfhFkProperty]="row.dfh_pk_property"></gv-dfh-label-list-edit>
     </td>
-    <td>
+    <td *ngIf="checked.has('gui_label_pl')">
       <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', row.key, 'label_pl']" [dfhFkProperty]="row.dfh_pk_property"></gv-dfh-label-list-edit>
     </td>
-    <td>
+    <td *ngIf="checked.has('gui_label_sg_inv')">
       <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', row.key, 'label_inversed_sg']"
         [dfhFkProperty]="row.dfh_pk_property"></gv-dfh-label-list-edit>
     </td>
-    <td>
+    <td *ngIf="checked.has('gui_label_pl_inv')">
       <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', row.key, 'label_inversed_pl']"
         [dfhFkProperty]="row.dfh_pk_property"></gv-dfh-label-list-edit>
     </td>
-    <td [ngClass]="{'bg-success': row.identity_defining}">
+    <td *ngIf="checked.has('identity_defining')" [ngClass]="{'bg-success': row.identity_defining}">
       <button (click)="changeIdentityDefining(row)">change</button> {{row.identity_defining | json}}
+    </td>
+    <td *ngIf="checked.has('profiles')">
+      {{row.profiles}}
+    </td>
+    <td *ngIf="checked.has('removed_from_profiles')">
+      {{row.removed_from_profiles}}
     </td>
   </ng-template>
 </ngx-table>
-
-<!-- <table class="table table-striped gv-table-scroll-y border-bottom border-secondary">
-  <thead>
-    <tr>
-      <th scope="col">dfh_has_domain</th>
-      <th scope="col">dfh_standard_label</th>
-      <th scope="col">dfh_has_range</th>
-      <th scope="col">gui label sg</th>
-      <th scope="col">gui label pl</th>
-      <th scope="col">gui label sg inv</th>
-      <th scope="col">gui label pl inv</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let item of (items$ | async) | keys; trackBy:getKey;">
-      <td>
-        <a href routerLink="../classes/{{item.value.dfh_has_domain}}">{{item?.value?.domain_class?.dfh_identifier_in_namespace}}
-          {{item?.value?.domain_class?.dfh_standard_label}}</a>
-        <small class="text-muted ml-2">{{item.value.dfh_has_domain}}</small>
-      </td>
-      <td>
-        {{item.value.dfh_identifier_in_namespace}} {{item.value.dfh_standard_label}}
-        <small class="text-muted">{{item.value.dfh_pk_property}}</small>
-      </td>
-      <td>
-        <a href routerLink="../classes/{{item.value.dfh_has_range}}">{{item?.value?.range_class?.dfh_identifier_in_namespace}}
-          {{item?.value?.range_class?.dfh_standard_label}}</a>
-        <small class="text-muted ml-2">{{item.value.dfh_has_range}}</small>
-      </td>
-      <td>
-          <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', item.key, 'label_sg']" [dfhFkProperty]="item.value.dfh_pk_property"></gv-dfh-label-list-edit>
-      </td>
-      <td>
-          <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', item.key, 'label_pl']" [dfhFkProperty]="item.value.dfh_pk_property"></gv-dfh-label-list-edit>
-      </td>
-      <td>
-          <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', item.key, 'label_inversed_sg']" [dfhFkProperty]="item.value.dfh_pk_property"></gv-dfh-label-list-edit>
-      </td>
-      <td>
-          <gv-dfh-label-list-edit [basePath]="['admin','propertiesList','items', item.key, 'label_inversed_pl']" [dfhFkProperty]="item.value.dfh_pk_property"></gv-dfh-label-list-edit>
-      </td>
-    </tr>
-  </tbody>
-</table> -->
+<ng-template #summaryTemplateRef let-total="total">
+  <th>
+    Total items: {{ total }}
+  </th>
+</ng-template>

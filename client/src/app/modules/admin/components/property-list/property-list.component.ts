@@ -38,6 +38,7 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
   // select observables of substore properties
   @select() items$: Observable<{ [key: string]: DfhProperty }>;
 
+
   tableConfiguration: Config = {
     searchEnabled: true,
     headerEnabled: true,
@@ -88,12 +89,36 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
     { key: 'dfh_domain_instances_min_quantifier', title: 'dmin' },
     { key: 'dfh_range_instances_max_quantifier', title: 'rmax' },
     { key: 'dfh_range_instances_min_quantifier', title: 'rmin' },
-    { key: 'gui label sg', title: 'gui label sg', searchEnabled: false, orderEnabled: false },
-    { key: 'gui label pl', title: 'gui label pl', searchEnabled: false, orderEnabled: false },
-    { key: 'gui label sg inv', title: 'gui label sg inv', searchEnabled: false, orderEnabled: false },
-    { key: 'gui label pl inv', title: 'gui label pl inv', searchEnabled: false, orderEnabled: false },
+    { key: 'gui_label_sg', title: 'gui label sg', searchEnabled: false, orderEnabled: false },
+    { key: 'gui_label_pl', title: 'gui label pl', searchEnabled: false, orderEnabled: false },
+    { key: 'gui_label_sg_inv', title: 'gui label sg inv', searchEnabled: false, orderEnabled: false },
+    { key: 'gui_label_pl_inv', title: 'gui label pl inv', searchEnabled: false, orderEnabled: false },
     { key: 'identity_defining', title: 'Identity Defining', searchEnabled: false, orderEnabled: false },
+    { key: 'profiles', title: 'Profiles' },
+    { key: 'removed_from_profiles', title: 'Removed from profiles' },
   ];
+  columnsCopy;
+
+  checked = new Set([
+    // 'dfh_has_domain',
+    'domain_standard_label',
+    // 'dfh_pk_property',
+    'property_standard_label',
+    // 'dfh_has_range',
+    'range_standard_label',
+    // 'dfh_domain_instances_max_quantifier',
+    // 'dfh_domain_instances_min_quantifier',
+    // 'dfh_range_instances_max_quantifier',
+    // 'dfh_range_instances_min_quantifier',
+    // 'gui_label_sg',
+    // 'gui_label_pl',
+    // 'gui_label_sg_inv',
+    // 'gui_label_pl_inv',
+    // 'identity_defining',
+    // 'profiles',
+    // 'removed_from_profiles',
+  ]);
+
 
   data = [];
 
@@ -108,6 +133,10 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
       first(items => this.keys.transform(items).length > 0),
       takeUntil(this.destroy$)
     ).subscribe(items => { this.setTableData(items) });
+
+    this.columnsCopy = this.columns;
+    this.columns = this.columnsCopy.filter((column) => this.checked.has(column.key));
+
   }
 
   quantifierToText(q): string {
@@ -129,7 +158,9 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
         domain_standard_label: [domainClass.dfh_identifier_in_namespace, domainClass.dfh_standard_label].join(' '),
         property_standard_label: [item.value.dfh_identifier_in_namespace, item.value.dfh_standard_label].join(' '),
         range_standard_label: [rangeClass.dfh_identifier_in_namespace, rangeClass.dfh_standard_label].join(' '),
-        key: item.key
+        key: item.key,
+        profiles: item.value.property_profile_view.filter(p => p.removed_from_api === false).map(p => p.dfh_profile_label).join('; '),
+        removed_from_profiles: item.value.property_profile_view.filter(p => p.removed_from_api).map(p => p.dfh_profile_label).join('; ')
       }
     })
   }
@@ -155,4 +186,8 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
     } as DfhProperty))
   }
 
+  toggle(name: string): void {
+    this.checked.has(name) ? this.checked.delete(name) : this.checked.add(name);
+    this.columns = this.columnsCopy.filter((column) => this.checked.has(column.key));
+  }
 }
