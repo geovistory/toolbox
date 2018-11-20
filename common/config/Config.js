@@ -17,11 +17,11 @@ const Config = {
     PK_CLASS_PK_HAS_TYPE_MAP: {
         363: 1110, // Geographical Place
         441: 1190, // Built Work
-        220: 1205, // Manifestation Singleton Type
+        220: 1205, // Manifestation Singleton
         219: 1206, // Manifestation Product Type
-        218: 1214, // Expression Type
-        68: 1204, // Group Type,
-        212: 1066, // Geographical Localisation Type
+        218: 1214, // Expression
+        68: 1204, // Group
+        212: 1066, // Geographical Localisation
     },
 
 

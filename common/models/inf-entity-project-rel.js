@@ -44,10 +44,35 @@ module.exports = function (InfEntityProjectRel) {
                     const error = new Error("No InfEntityProjectRel found for given project and entity");
                     error.status = 404;
                     return error;
-                    
+
                 }
 
             })
 
+    }
+
+
+        /**
+         * Internal function to create the $relation property of
+         * a filter object for findComplex() to join the entity_version_project_rels.
+         * 
+         * Usage: add the returned object to the entity_version_project_rels property of
+         * any information.entity derivate, e.g.
+         * {
+         *  ...
+         *  entity_version_project_rels: InfEntityProjectRel.getJoinObject(true, 12)
+         * } 
+         */
+    InfEntityProjectRel.getJoinObject = function (ofProject, pkProject) {
+        return {
+            "$relation": {
+                "name": "entity_version_project_rels",
+                "joinType": (ofProject ? "inner join" : "left join"),
+                "where": [
+                    "fk_project", "=", pkProject,
+                    "and", "is_in_project", "=", "true"
+                ]
+            }
+        };
     }
 };

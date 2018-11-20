@@ -724,33 +724,32 @@ export function createEntityAssociationDetail(options: EntityAssociationDetail =
     // init settings (adds defaults, if not otherwise provided)
     settings = new StateSettings(settings);
 
+    let peItTemplate = new InfPersistentItem();
+
     if (isCreateContext(settings.pkUiContext)) {
         options.propertyConfig = crm.fieldList[propertyFieldKeyFromParams(ea.fk_property, options.isOutgoing)] as PropertyField;
         options.targetClassConfig = crm.classes[options.propertyConfig.targetClassPk];
         if (options.targetClassConfig.subclassOf = 'peIt') {
-            options._peIt = createPeItDetail(
-                {},
-                new InfPersistentItem({ fk_class: options.targetClassConfig.dfh_pk_class }),
-                crm,
-                settings
-            )
+            peItTemplate.fk_class = options.targetClassConfig.dfh_pk_class;
         }
     }
+
     if (ea.domain_pe_it) {
-        options = {
-            ...options,
-            _peIt: createPeItDetail(
-                {},
-                ea.domain_pe_it,
-                crm,
-                settings
-            )
+        peItTemplate = {
+            ...peItTemplate,
+            ...ea.domain_pe_it
         }
     }
 
     return new EntityAssociationDetail({
         entityAssociation: new InfEntityAssociation(ea),
-        ...options
+        ...options,
+        _peIt: createPeItDetail(
+            {},
+            peItTemplate,
+            crm,
+            settings
+        )
     })
 
 }

@@ -1,10 +1,10 @@
 
 export class DfhConfig {
 
-  // fk_class of time primitives 
+  // fk_class of time primitives
   static timePrimitiveClass = 335;
 
-  // Properties of ExistenceTime mapped to dfh_pk_property  
+  // Properties of ExistenceTime mapped to dfh_pk_property
   static existenceTimeToFk = {
     'p82': 72,
     'p81': 71,
@@ -42,8 +42,6 @@ export class DfhConfig {
   static PROPERTY_PK_MENTIONES = 4;
 
   static PROPERTY_PK_IS_REPRODUCTION_OF_SECTION = 777;
-
-
 
   static PROPERTY_PK_AT_SOME_TIME_WITHIN = 72;
   static PROPERTY_PK_ONGOING_THROUGHOUT = 71;
@@ -116,7 +114,7 @@ export class DfhConfig {
   static CLASS_PK_MANIFESTATION_SINGLETON = 220;
   static CLASS_PK_ITEM = 221;
   static CLASS_PK_SPOT = 99999;
-  
+
   static CLASS_PKS_SOURCE_PE_IT = [219];
 
 

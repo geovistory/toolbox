@@ -76,16 +76,7 @@ module.exports = function (InfEntityAssociation) {
       return cb('please provide at least a pkEntity, pkRangeEntity or pkDomainEntity');
     }
 
-    const joinThisProject = {
-      "$relation": {
-        "name": "entity_version_project_rels",
-        "joinType": (ofProject ? "inner join" : "left join"),
-        "where": [
-          "fk_project", "=", pkProject,
-          "and", "is_in_project", "=", "true"
-        ]
-      }
-    };
+    const joinThisProject = InfEntityAssociation.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
 
     const w = { pk_entity: pkEntity, fk_range_entity: pkRangeEntity, fk_domain_entity: pkDomainEntity, fk_property: pkProperty }
     let where = [];
@@ -128,69 +119,7 @@ module.exports = function (InfEntityAssociation) {
               "pk_entity": "asc"
             }]
           },
-          "pi_roles": {
-            "$relation": {
-              "name": "pi_roles",
-              "joinType": "left join"
-            },
-            "entity_version_project_rels": joinThisProject,
-            "temporal_entity": {
-              "$relation": {
-                "name": "temporal_entity",
-                "joinType": "inner join",
-                "orderBy": [{
-                  "pk_entity": "asc"
-                }]
-              },
-              // "entity_version_project_rels": joinThisProject,
-              "te_roles": {
-                "$relation": {
-                  "name": "te_roles",
-                  "joinType": "inner join",
-                  "orderBy": [{
-                    "pk_entity": "asc"
-                  }]
-                },
-                "entity_version_project_rels": joinThisProject,
-                "appellation": {
-                  "$relation": {
-                    "name": "appellation",
-                    "joinType": "left join",
-                    "orderBy": [{
-                      "pk_entity": "asc"
-                    }]
-                  }
-                },
-                "language": {
-                  "$relation": {
-                    "name": "language",
-                    "joinType": "left join",
-                    "orderBy": [{
-                      "pk_entity": "asc"
-                    }]
-                  }
-                },
-                "time_primitive": {
-                  "$relation": {
-                    "name": "time_primitive",
-                    "joinType": "left join",
-                    "orderBy": [{
-                      "pk_entity": "asc"
-                    }]
-                  }
-                },
-                "place": {
-                  "$relation": {
-                    "name": "place",
-                    "joinType": "left join",
-                    "orderBy": [{
-                      "pk_entity": "asc"
-                    }]
-                  }
-                }
-              }
-            }
-          }
+          ...InfEntityAssociation.app.models.InfPersistentItem.getIncludeObject(ofProject, pkProject)
         }
       }
     }

@@ -12,7 +12,7 @@
 <div *ngIf="!(create$ |async)">
   <div *ngFor="let item of (items$|async) | keys;">
     <button class="btn btn-link" (click)="openSection(item.value?._peIt?.pkEntity)">
-      {{item.value?._peIt | peItStr}}
+    a  {{item.value?._peIt | peItStr}}
     </button>
   </div>
 </div>

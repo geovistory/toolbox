@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, SubstoreComponent, InfEntityAssociationApi, InfEntityAssociation } from 'app/core';
+import { InfEntityAssociation, InfEntityAssociationApi, LoadingBarActions, SubstoreComponent } from 'app/core';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { createEntityAssociationList } from 'app/core/state/services/state-creator';
+import { ofSubstore } from 'app/core/store/module';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
-import { EntityAssociationAPIActions, EntityAssociationAPIAction } from './entity-association.actions';
-import { ofSubstore } from 'app/core/store/module';
-import { createEntityAssociationList, createEntityAssociationDetail } from 'app/core/state/services/state-creator';
+import { EntityAssociationAPIAction, EntityAssociationAPIActions } from './entity-association.actions';
 
 @Injectable()
 export class EntityAssociationAPIEpics {

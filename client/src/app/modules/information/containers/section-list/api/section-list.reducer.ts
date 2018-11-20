@@ -14,20 +14,23 @@ export function sectionListReducer(state: SectionList = INITIAL_STATE, a: Action
     case SectionListAPIActions.LOAD:
       state = {
         ...state,
-        items: {}
+        items: {},
+        loading: true
       };
       break;
     case SectionListAPIActions.LOAD_SUCCEEDED:
       state = {
         ...state,
-        items: action.meta.items
+        items: action.meta.items,
+        loading: false
       };
       break;
 
     case SectionListAPIActions.LOAD_FAILED:
       state = {
         ...state,
-        items: {}
+        items: {},
+        loading: false
       };
       break;
 

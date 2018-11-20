@@ -1,7 +1,7 @@
 import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, ProjectCrm, ComConfig, InfEntityAssociation, PeItDetail, U, ClassConfig } from 'app/core';
+import { IAppState, SubstoreComponent, ProjectCrm, ComConfig, InfEntityAssociation, PeItDetail, U, ClassConfig, InfPersistentItem } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { SectionList } from './api/section-list.models';
 import { SectionListAPIEpics } from './api/section-list.epics';
@@ -15,6 +15,7 @@ import { dropLast } from 'ramda';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil, first } from 'rxjs/operators';
 import { EntityAssociationList } from 'app/core/state/models/entity-association-list';
+import * as Config from '../../../../../../../common/config/Config';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -68,8 +69,13 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
     this.pkProject$ = this.ngRedux.select(['activeProject', 'pk_project']);
     this.crm$ = this.ngRedux.select(['activeProject', 'crm']);
     this.parentPeItDetail$ = this.ngRedux.select(dropLast(1, this.basePath));
-    combineLatest(this.pkProject$, this.parentPeItDetail$, this.crm$)
-      .pipe(first((d) => (d.filter(i => !i).length === 0)), takeUntil(this.destroy$)).subscribe((d) => {
+    combineLatest(this.pkProject$, this.parentPeItDetail$, this.crm$, this.loading$)
+      .pipe(
+        first((d) => (
+          !!d[0] && !!d[1] && !!d[2] && d[3] === undefined
+        )),
+        takeUntil(this.destroy$)
+      ).subscribe((d) => {
         const pkProject = d[0], parentPeItDetail = d[1], crm = d[2];
         this.pkRangeEntity = parentPeItDetail.pkEntity || parentPeItDetail.peIt.pk_entity;
         this.load(pkProject, this.pkRangeEntity, DfhConfig.PROPERTY_PK_R41_HAS_REP_MANIFESTATION_PRODUCT_TYPE, crm)
@@ -83,12 +89,22 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
   }
 
   onAdd(d: ClassAndTypePk) {
+
+    // Type of the domain entity
+    const domain_pe_it = {
+      domain_entity_associations: [{
+        fk_property: Config.PK_CLASS_PK_HAS_TYPE_MAP[d.pkClass],
+        fk_range_entity: d.pkType
+      }]
+    } as InfPersistentItem;
+
     this.startCreate(
       createEntityAssociationDetail(
         { isOutgoing: false },
         {
           fk_property: DfhConfig.PROPERTY_PK_R41_HAS_REP_MANIFESTATION_PRODUCT_TYPE,
-          fk_range_entity: this.pkRangeEntity
+          fk_range_entity: this.pkRangeEntity,
+          domain_pe_it
         } as InfEntityAssociation,
         this.ngRedux.getState().activeProject.crm,
         { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_CREATE }

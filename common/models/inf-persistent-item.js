@@ -676,169 +676,9 @@ module.exports = function (InfPersistentItem) {
    */
   InfPersistentItem.nestedObjectOfProject = function (projectId, pkEntity, cb) {
 
-    const innerJoinThisProject = {
-      "$relation": {
-        "name": "entity_version_project_rels",
-        "joinType": "inner join",
-        "where": [
-          "fk_project", "=", projectId,
-          "and", "is_in_project", "=", "true"
-        ]
-      }
-    };
-
     const filter = {
       "where": ["pk_entity", "=", pkEntity],
-      "include": {
-        "entity_version_project_rels": innerJoinThisProject,
-        "dfh_class": {
-          "$relation": {
-            "name": "dfh_class",
-            "joinType": "inner join",
-            "orderBy": [{ "pk_entity": "asc" }]
-          }
-        },
-        domain_entity_associations: {
-          $relation: {
-            name: "domain_entity_associations",
-            joinType: "left join",
-            "orderBy": [{ "pk_entity": "asc" }]
-          },
-          "entity_version_project_rels": innerJoinThisProject,
-          range_pe_it: {
-            $relation: {
-              name: "range_pe_it",
-              joinType: "inner join",
-              "orderBy": [{ "pk_entity": "asc" }]
-            },
-            "pi_roles": {
-              "$relation": {
-                "name": "pi_roles",
-                "joinType": "left join"
-              },
-              "entity_version_project_rels": innerJoinThisProject,
-              "temporal_entity": {
-                "$relation": {
-                  "name": "temporal_entity",
-                  "joinType": "inner join",
-                  "orderBy": [{
-                    "pk_entity": "asc"
-                  }]
-                },
-                // "entity_version_project_rels": innerJoinThisProject,
-                "te_roles": {
-                  "$relation": {
-                    "name": "te_roles",
-                    "joinType": "inner join",
-                    "orderBy": [{
-                      "pk_entity": "asc"
-                    }]
-                  },
-                  "entity_version_project_rels": innerJoinThisProject,
-                  "appellation": {
-                    "$relation": {
-                      "name": "appellation",
-                      "joinType": "left join",
-                      "orderBy": [{
-                        "pk_entity": "asc"
-                      }]
-                    },
-                  },
-                  "language": {
-                    "$relation": {
-                      "name": "language",
-                      "joinType": "left join",
-                      "orderBy": [{
-                        "pk_entity": "asc"
-                      }]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "pi_roles": {
-          "$relation": {
-            "name": "pi_roles",
-            "joinType": "left join"
-          },
-          "entity_version_project_rels": innerJoinThisProject,
-          "temporal_entity": {
-            "$relation": {
-              "name": "temporal_entity",
-              "joinType": "inner join",
-              "orderBy": [{
-                "pk_entity": "asc"
-              }]
-            },
-            "entity_version_project_rels": innerJoinThisProject,
-            "te_roles": {
-              "$relation": {
-                "name": "te_roles",
-                "joinType": "inner join",
-                "orderBy": [{
-                  "pk_entity": "asc"
-                }]
-              },
-              "entity_version_project_rels": innerJoinThisProject,
-              "appellation": {
-                "$relation": {
-                  "name": "appellation",
-                  "joinType": "left join",
-                  "orderBy": [{
-                    "pk_entity": "asc"
-                  }]
-                }
-              },
-              "language": {
-                "$relation": {
-                  "name": "language",
-                  "joinType": "left join",
-                  "orderBy": [{
-                    "pk_entity": "asc"
-                  }]
-                }
-              },
-              "time_primitive": {
-                "$relation": {
-                  "name": "time_primitive",
-                  "joinType": "left join",
-                  "orderBy": [{
-                    "pk_entity": "asc"
-                  }]
-                }
-              },
-              "place": {
-                "$relation": {
-                  "name": "place",
-                  "joinType": "left join",
-                  "orderBy": [{
-                    "pk_entity": "asc"
-                  }]
-                }
-              }
-            }
-          }
-        },
-        text_properties: {
-          "$relation": {
-            "name": "text_properties",
-            "joinType": "left join",
-            "orderBy": [{ "pk_entity": "asc" }]
-          },
-          entity_version_project_rels: innerJoinThisProject,
-          "language": {
-            "$relation": {
-              "name": "language",
-              "joinType": "left join",
-              "orderBy": [{
-                "pk_entity": "asc"
-              }]
-            }
-          }
-        }
-      }
+      "include": InfPersistentItem.getIncludeObject(true, projectId)
     }
 
     return InfPersistentItem.findComplex(filter, cb);
@@ -929,6 +769,177 @@ module.exports = function (InfPersistentItem) {
     }
 
     return InfPersistentItem.findComplex(filter, cb);
+  }
+
+
+  /**
+   * Internal function to create the include property of 
+   * a filter object for findComplex()
+   * 
+   * Usage: add the returned object to the include property of a persistent item relation
+   * of findComplex() filter, e.g.:
+   * {
+   *    ...
+   *    include: InfPersistentItem.getIncludeObject(true, 123)
+   * }
+   * 
+   * @param ofProject {boolean}
+   * @param project {number}
+   * @returns include object of findComplex filter
+   */
+  InfPersistentItem.getIncludeObject = function (ofProject, pkProject) {
+    const joinThisProject = InfPersistentItem.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+
+    return {
+      "entity_version_project_rels": joinThisProject,
+      "dfh_class": {
+        "$relation": {
+          "name": "dfh_class",
+          "joinType": "inner join",
+          "orderBy": [{ "pk_entity": "asc" }]
+        }
+      },
+      domain_entity_associations: {
+        $relation: {
+          name: "domain_entity_associations",
+          joinType: "left join",
+          "orderBy": [{ "pk_entity": "asc" }]
+        },
+        "entity_version_project_rels": joinThisProject,
+        range_pe_it: {
+          $relation: {
+            name: "range_pe_it",
+            joinType: "inner join",
+            "orderBy": [{ "pk_entity": "asc" }]
+          },
+          "pi_roles": {
+            "$relation": {
+              "name": "pi_roles",
+              "joinType": "left join"
+            },
+            "entity_version_project_rels": joinThisProject,
+            "temporal_entity": {
+              "$relation": {
+                "name": "temporal_entity",
+                "joinType": "inner join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              },
+              "entity_version_project_rels": joinThisProject,
+              "te_roles": {
+                "$relation": {
+                  "name": "te_roles",
+                  "joinType": "inner join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                },
+                "entity_version_project_rels": joinThisProject,
+                "appellation": {
+                  "$relation": {
+                    "name": "appellation",
+                    "joinType": "left join",
+                    "orderBy": [{
+                      "pk_entity": "asc"
+                    }]
+                  },
+                },
+                "language": {
+                  "$relation": {
+                    "name": "language",
+                    "joinType": "left join",
+                    "orderBy": [{
+                      "pk_entity": "asc"
+                    }]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "pi_roles": {
+        "$relation": {
+          "name": "pi_roles",
+          "joinType": "left join"
+        },
+        "entity_version_project_rels": joinThisProject,
+        "temporal_entity": {
+          "$relation": {
+            "name": "temporal_entity",
+            "joinType": "inner join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          },
+          "entity_version_project_rels": joinThisProject,
+          "te_roles": {
+            "$relation": {
+              "name": "te_roles",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+            "entity_version_project_rels": joinThisProject,
+            "appellation": {
+              "$relation": {
+                "name": "appellation",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            },
+            "language": {
+              "$relation": {
+                "name": "language",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            },
+            "time_primitive": {
+              "$relation": {
+                "name": "time_primitive",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            },
+            "place": {
+              "$relation": {
+                "name": "place",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            }
+          }
+        }
+      },
+      text_properties: {
+        "$relation": {
+          "name": "text_properties",
+          "joinType": "left join",
+          "orderBy": [{ "pk_entity": "asc" }]
+        },
+        entity_version_project_rels: joinThisProject,
+        "language": {
+          "$relation": {
+            "name": "language",
+            "joinType": "left join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          }
+        }
+      }
+    }
   }
 
 
