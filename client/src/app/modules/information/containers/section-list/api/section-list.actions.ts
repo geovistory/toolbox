@@ -5,15 +5,16 @@ import { SectionList } from './section-list.models';
 import { ClassAndTypePk } from '../../class-and-type-selector/api/class-and-type-selector.models';
 import { EntityAssociationDetail } from 'app/core/state/models/entity-association-detail';
 import { EntityAssociationList } from 'app/core/state/models/entity-association-list';
-import { ProjectCrm } from 'app/core';
+import { ProjectCrm, DataUnitPreviewList } from 'app/core';
 
 type Payload = SectionList;
 interface MetaData {
-  items?: EntityAssociationList;
+  pkSections?: number[];
   entityAssociationDetail?: EntityAssociationDetail;
   pkUiContext?: number;
   pkProject?: number;
   fkRangeEntity?: number;
+  fkDomainEntity?: number;
   fkProperty?: number;
   crm?: ProjectCrm;
 };
@@ -32,16 +33,16 @@ export class SectionListAPIActions {
   static readonly DESTROY = 'SectionList::DESTROY';
 
   @dispatch()
-  load = (pkProject: number, fkRangeEntity: number, fkProperty: number, crm: ProjectCrm): SectionListAPIAction => ({
+  load = (pkProject: number, fkDomainEntity: number, fkProperty: number, fkRangeEntity: number): SectionListAPIAction => ({
     type: SectionListAPIActions.LOAD,
-    meta: { pkProject, fkRangeEntity, fkProperty, crm },
+    meta: { pkProject, fkRangeEntity, fkProperty, fkDomainEntity },
     payload: null,
   });
 
-  loadSucceeded = (items: EntityAssociationList): SectionListAPIAction => ({
+  loadSucceeded = (pkSections: number[]): SectionListAPIAction => ({
     type: SectionListAPIActions.LOAD_SUCCEEDED,
     meta: {
-      items
+      pkSections
     },
     payload: null
   })

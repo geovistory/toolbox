@@ -6,7 +6,7 @@
     "validateUpsert": true,
     "postgresql": {
       "schema": "information",
-      "table": "entity_version_project_rel"
+      "table": "v_entity_version_project_rel"
     }
   },
   "properties": {

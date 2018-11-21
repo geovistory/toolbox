@@ -3,12 +3,13 @@ import { LoadingBarActions, InfPersistentItemApi, InfPersistentItem, U } from 'a
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil, filter } from 'rxjs/operators';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { TypeCtrlComponent } from '../type-ctrl.component';
 import { TypeCtrlAPIActions, TypeCtrlAPIAction } from './type-ctrl.actions';
 import { TypeOptions } from './type-ctrl.models';
 import { TreeviewItem } from 'ngx-treeview';
+import { ofSubstore } from 'app/core/store/module';
 
 @Injectable()
 export class TypeCtrlAPIEpics {
@@ -30,6 +31,7 @@ export class TypeCtrlAPIEpics {
          * Filter the actions that triggers this epic
          */
         ofType(TypeCtrlAPIActions.LOAD),
+        filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: TypeCtrlAPIAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar

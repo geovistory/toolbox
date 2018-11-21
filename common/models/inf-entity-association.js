@@ -51,6 +51,41 @@ module.exports = function (InfEntityAssociation) {
 
     }
 
+    // if the ea has a persistent item as the range 
+    if (requestedEa.range_pe_it && Object.keys(requestedEa.range_pe_it).length > 0) {
+
+      // prepare parameters
+      const InfPersistentItem = InfEntityAssociation.app.models.InfPersistentItem;
+
+      // find or create the peIt and the ea pointing to it
+      return InfPersistentItem.findOrCreatePeIt(projectId, requestedEa.range_pe_it)
+        .then((resultingPeIts) => {
+
+          const resultingPeIt = resultingPeIts[0];
+
+          // … prepare the Ea to create
+          dataObject.fk_range_entity = resultingPeIt.pk_entity;
+
+          return InfEntityAssociation.findOrCreateByValue(InfEntityAssociation, projectId, dataObject, requestedEa)
+            .then((resultingEas) => {
+
+              let res = resultingEas[0].toJSON();
+              res.range_pe_it = resultingPeIt;
+
+              return [res];
+
+            })
+            .catch((err) => {
+              return err;
+            })
+        })
+        .catch((err) => {
+          return err;
+        })
+
+    }
+
+
 
 
     else {
@@ -127,6 +162,45 @@ module.exports = function (InfEntityAssociation) {
     return InfEntityAssociation.findComplex(filter, cb);
   }
 
+
+  /**
+  * Find entityAssociation by one of the params
+  * 
+  * @param  {number} pkProject primary key of project
+  * @param  {number} pkEntity  pk_entity of the entityAssociation
+  */
+  InfEntityAssociation.queryByParams = function (ofProject, pkProject, pkEntity, pkRangeEntity, pkDomainEntity, pkProperty, cb) {
+
+    if (!pkEntity && !pkRangeEntity && !pkDomainEntity) {
+      return cb('please provide at least a pkEntity, pkRangeEntity or pkDomainEntity');
+    }
+
+
+
+    const w = { pk_entity: pkEntity, fk_range_entity: pkRangeEntity, fk_domain_entity: pkDomainEntity, fk_property: pkProperty }
+    let where = [];
+    Object.keys(w).filter((key) => (!!w[key])).map((key, index, ar) => {
+      let part = [key, '=', w[key]];
+      if (index !== 0) part = ['AND', ...part];
+      return part;
+    }).forEach(part => {
+      where = [...where, ...part]
+    });
+
+    const filter = {
+      "where": where
+    }
+
+    if (pkProject) {
+      const joinThisProject = InfEntityAssociation.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+      joinThisProject.$relation['select'] = false;
+      filter['include'] = {
+        "entity_version_project_rels": joinThisProject
+      }
+    }
+
+    return InfEntityAssociation.findComplex(filter, cb);
+  }
 
 
 };

@@ -10,12 +10,24 @@
 </div>
 
 <div *ngIf="!(create$ |async)">
-  <div *ngFor="let item of (items$|async) | keys;">
-    <button class="btn btn-link" (click)="openSection(item.value?._peIt?.pkEntity)">
-    a  {{item.value?._peIt | peItStr}}
-    </button>
-  </div>
+
+  <ngx-table [configuration]="tableConfiguration" [data]="data" [columns]="columns">
+    <ng-template let-row let-index="index">
+      <td>
+        {{row?.type_label}}
+      </td>
+      <td>
+        {{row?.entity_label}}
+      </td>
+      <td>
+        <button class="btn btn-link" (click)="openSection(row.pk_entity)">
+          Open
+        </button>
+      </td>
+    </ng-template>
+  </ngx-table>
+
 </div>
 
 <gv-entity-association-create-or-add *ngIf="(create$ |async)" class="gv-flex-fh" [basePath]="basePath.concat('create')"
-  (done)="openSection($event.fk_domain_entity)" (cancel)="stopCreate()"></gv-entity-association-create-or-add>
+  (done)="openSectionFromEntityAssociation($event)" (cancel)="stopCreate()"></gv-entity-association-create-or-add>

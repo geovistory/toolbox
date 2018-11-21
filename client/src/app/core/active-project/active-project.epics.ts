@@ -6,20 +6,20 @@ import { indexBy, sort } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
-import { mapTo, switchMap } from 'rxjs/operators';
-import { propSetKeyFromFk } from '../../modules/information/information.helpers';
+import { mapTo, switchMap, takeUntil, mergeMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, ProjectApi } from '../sdk';
+import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, ProjectApi, InfPersistentItemApi } from '../sdk';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { Field } from '../state/models/field';
+import { DataUnitPreview } from '../state/models';
 
 
 
 @Injectable()
 export class ActiveProjectEpics {
   constructor(
+    private peItApi: InfPersistentItemApi,
     private uiContextApi: ComUiContextApi,
     private projectApi: ProjectApi,
     private dfhPropertyApi: DfhPropertyApi,
@@ -33,7 +33,8 @@ export class ActiveProjectEpics {
     return combineEpics(
       this.createLoadProjectEpic(),
       this.createLoadClassListEpic(),
-      this.createLoadProjectUpdatedEpic()
+      this.createLoadProjectUpdatedEpic(),
+      this.createLoadDataUnitPreviewEpic()
     );
   }
 
@@ -182,8 +183,6 @@ export class ActiveProjectEpics {
     )
   }
 
-
-
   private addUiConfToClassConfig(cConf: ClassConfig, uiCtxt: ComUiContext, uiConf: ComUiContextConfig) {
 
     if (!cConf || !uiCtxt || !uiConf) return;
@@ -223,6 +222,57 @@ export class ActiveProjectEpics {
 
       // sort the array of uiElements by the ordNum
       cUiCtxt.uiElements = sort(ordNum, cUiCtxt.uiElements)
+    }
+  }
+
+  private createLoadDataUnitPreviewEpic(): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(ActiveProjectActions.LOAD_DATA_UNIT_PREVIEW),
+        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Do some api call
+           */
+          this.peItApi.preview(action.meta.pk_project, action.meta.pk_entity, action.meta.pk_ui_context)
+            /**
+           * Subscribe to the api call
+           */
+            .subscribe((data: DataUnitPreview[]) => {
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+
+              /**
+               * Emit the local action on loading succeeded
+               */
+              globalStore.next(this.actions.loadDataUnitPreviewSucceeded(data[0]));
+
+            }, error => {
+              /**
+              * Emit the global action that shows some loading error message
+              */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              globalStore.next(this.actions.loadDataUnitPreviewFailed({ status: '' + error.status }))
+            })
+        }))
+      )
     }
   }
 }

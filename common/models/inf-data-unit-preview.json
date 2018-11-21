@@ -1,0 +1,23 @@
+{
+  "name": "InfDataUnitPreview",
+  "properties": {
+    "pk_entity": {
+      "type": "number"
+    },
+    "fk_project": {
+      "type": "number"
+    },
+    "fk_class": {
+      "type": "number"
+    },
+    "entity_label": {
+      "type": "string"
+    },
+    "entity_type": {
+      "type": "string"
+    },
+    "type_label": {
+      "type": "string"
+    }
+  }
+}

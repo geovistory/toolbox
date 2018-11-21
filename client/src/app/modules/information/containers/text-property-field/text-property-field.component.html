@@ -32,7 +32,7 @@
 
           <!-- Buttons -->
           <div class="btn-group" role="group">
-            <button type="button" class="btn btn-link-gray" title="Remove">
+            <button type="button" class="btn btn-link-gray" title="Remove" (click)="remove(item.value.textProperty.pk_entity, item.key)">
               <i class="fa fa-trash"></i>
             </button>
             <button type="button" class="btn btn-link-gray" title="Minimize" (click)="toggleTextPropertyDetail(item.key)">

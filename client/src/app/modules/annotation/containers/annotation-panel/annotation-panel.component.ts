@@ -137,7 +137,7 @@ export class AnnotationPanelComponent implements OnInit, OnDestroy {
       entity_associations: U.obj2Arr(val.mentionedEntities).map((me: MentionedEntity) => {
         return {
           fk_range_entity: me.pkEntity,
-          fk_property: DfhConfig.PROPERTY_PK_MENTIONES
+          // fk_property: DfhConfig.PROPERTY_PK_MENTIONES
         } as InfEntityAssociation
       })
     } as InfChunk

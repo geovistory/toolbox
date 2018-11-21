@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ComConfig, InfEntityAssociation, InfEntityAssociationApi, InfEntityProjectRel, InfEntityProjectRelApi, LoadingBarActions } from 'app/core';
+import { ComConfig, InfEntityAssociation, InfEntityAssociationApi, InfEntityProjectRel, InfEntityProjectRelApi, LoadingBarActions, ActiveAccountService } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { createPeItDetail } from 'app/core/state/services/state-creator';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
@@ -252,15 +252,30 @@ export class SourceListAPIEpics {
            */
           globalStore.next(this.loadingBarActions.startLoading());
 
+          const fkParentClass = c.ngRedux.getState().activeProject.dataUnitPreviews[c.activatedRoute.snapshot.params.pkEntity].fk_class;
+          let fkDomain = null;
+          let fkRange = null;
+          let fkProperty = null;
+          switch (fkParentClass) {
+
+            case DfhConfig.CLASS_PK_MANIFESTATION_PRODUCT_TYPE:
+              fkDomain = c.activatedRoute.snapshot.params.pkSection;
+              fkProperty = DfhConfig.PROPERTY_PK_R4_CARRIERS_PROVIDED_BY;
+              fkRange = c.activatedRoute.snapshot.params.pkEntity;
+              break;
+
+            case DfhConfig.CLASS_PK_MANIFESTATION_SINGLETON:
+              fkDomain = c.activatedRoute.snapshot.params.pkEntity;
+              fkProperty = DfhConfig.PROPERTY_PK_R42_IS_REP_MANIFESTATION_SINGLETON_FOR;
+              fkRange = c.activatedRoute.snapshot.params.pkSection;
+              break;
+
+            default: console.warn('this class is not yet supportet')
+              break;
+          }
 
           // Find entityAssociation
-          this.eaApi.findComplex({
-            where: [
-              'fk_domain_entity', '=', c.activatedRoute.snapshot.params.pkSection, 'AND',
-              'fk_range_entity', '=', c.activatedRoute.snapshot.params.pkEntity, 'AND',
-              'fk_property', '=', DfhConfig.PROPERTY_PK_R41_HAS_REP_MANIFESTATION_PRODUCT_TYPE
-            ]
-          }).subscribe(
+          this.eaApi.queryByParams(false, null, null, fkRange, fkDomain, fkProperty).subscribe(
             (eas: InfEntityAssociation[]) => {
 
               const ea = eas[0];

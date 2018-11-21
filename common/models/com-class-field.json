@@ -26,6 +26,12 @@
     },
     "label": {
       "type": "string"
+    },
+    "fk_system_type_ng_component": {
+      "type": "number"
+    },
+    "used_table": {
+      "type": "string"
     }
   },
   "validations": [],

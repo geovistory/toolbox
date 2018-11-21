@@ -73,19 +73,25 @@ export class MentioningCreateCtrlComponent implements OnInit, OnDestroy, Control
     this.destroy$.unsubscribe();
   }
 
-
-
-  // triggered when bar changes
-  barChange(d: CtrlModel) {
-    this.validateAndEmit()
-  }
-
   // validates and emits onChange
   validateAndEmit() {
 
     // If foo valid
-    if ('valid') {
-      this.onChange(null)
+    if (
+      this.mentionedEntity
+      && (
+        this.sourceEntity ||
+        this.sectionEntity ||
+        this.chunkEntity
+      )
+    ) {
+      const rangeEntity = this.chunkEntity || this.sectionEntity || this.sourceEntity;
+      const ea = new InfEntityAssociation({
+        fk_domain_entity: this.mentionedEntity.pk_entity,
+        fk_range_entity: rangeEntity.pk_entity,
+        fk_property: DfhConfig.PROPERTY_PK_IS_MENTIONED_IN
+      })
+      this.onChange(ea)
     } else {
       this.onChange(null)
     }
@@ -93,18 +99,35 @@ export class MentioningCreateCtrlComponent implements OnInit, OnDestroy, Control
 
   onDropMentionedEntity(entity) {
     this.mentionedEntity = entity;
+    this.validateAndEmit()
   }
 
   onDropSourceEntity(entity: DataUnitPreview) {
-    if (this.isSourceOrSection(entity.fkClass)) {
+    if (this.isSourceOrSection(entity.fk_class)) {
       this.sourceEntity = entity;
-    } else if (entity.fkClass === 218) {
+    } else if (entity.fk_class === 218) {
       this.sectionEntity = entity;
     }
+    this.validateAndEmit()
+  }
+
+  resetMentionedEntity() {
+    this.mentionedEntity = undefined;
+    this.validateAndEmit()
+  }
+
+  resetSourceEntity() {
+    this.sourceEntity = undefined;
+    this.validateAndEmit()
+  }
+
+  resetSectionEntity() {
+    this.sectionEntity = undefined;
+    this.validateAndEmit()
   }
 
   allowDropSource() {
-    return (entity) => this.isSourceOrSection(entity.fkClass);
+    return (entity: DataUnitPreview) => this.isSourceOrSection(entity.fk_class);
   }
 
   /**

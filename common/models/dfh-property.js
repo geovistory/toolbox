@@ -92,7 +92,7 @@ module.exports = function (DfhProperty) {
         const ui_context_config = {
             "$relation": {
                 "name": "ui_context_config",
-                "joinType": "inner join",
+                "joinType": "left join",
                 select: false,
                 "where": [
                     "property_is_outgoing", "=", JSON.stringify(isOutgoing)

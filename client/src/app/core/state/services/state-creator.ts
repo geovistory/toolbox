@@ -259,10 +259,11 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
                 }
             });
         }
-    } else if (!roles || !roles.length) return;
-    else {
-
-        const rolesByFkProp = groupBy(prop('fk_property'), roles) as { [index: number]: InfRole[] }
+    } else {
+        let rolesByFkProp = {};
+        if (roles && roles.length) {
+            rolesByFkProp = groupBy(prop('fk_property'), roles) as { [index: number]: InfRole[] }
+        }
 
         // for each uiElement in this ui-context
         if (uiContext && uiContext.uiElements) {
@@ -738,6 +739,13 @@ export function createEntityAssociationDetail(options: EntityAssociationDetail =
         peItTemplate = {
             ...peItTemplate,
             ...ea.domain_pe_it
+        }
+    }
+
+    if (ea.range_pe_it) {
+        peItTemplate = {
+            ...peItTemplate,
+            ...ea.range_pe_it
         }
     }
 

@@ -78,7 +78,9 @@ export class ClassFieldListComponent extends ClassFieldListAPIActions implements
     { key: 'pk_entity', title: 'pk_entity' },
     { key: 'label', title: 'Standard label' },
     { key: 'description', title: 'Standard description' },
-    { key: 'properties', title: 'Stands for Properties' }
+    { key: 'fk_system_type_ng_component', title: 'Used Angular Component (System Type)' },
+    { key: 'used_table', title: 'Used Table' },
+    { key: 'properties', title: 'Stands for Properties' },
   ];
 
   data = [];

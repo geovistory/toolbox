@@ -16,24 +16,28 @@ export default sandboxOf(MentioningCreateCtrlComponent, {
         context: {
             model: {},
             leu: {
-                fkClass: 21,
-                label: 'Johan Jakon Leu',
-                pkEntity: 21
+                fk_class: 21,
+                entity_label: 'Johan Jakon Leu',
+                type_label: 'Person',
+                pk_entity: 21
             } as DataUnitPreview,
             band1: {
-                fkClass: 220,
-                label: 'Helvetisches Lexikon Band 1',
-                pkEntity: 22
+                fk_class: 220,
+                entity_label: 'Helvetisches Lexikon Band 1',
+                type_label: 'Book',
+                pk_entity: 22
             } as DataUnitPreview,
             sectionXI: {
-                fkClass: 218,
-                label: 'Page XI',
-                pkEntity: 22
+                fk_class: 218,
+                entity_label: 'XI',
+                type_label: 'Page',
+                pk_entity: 23
             } as DataUnitPreview,
             sourceEntity: {
-                fkClass: 219,
-                label: 'Helvetisches Lexikon',
-                pkEntity: 12345
+                fk_class: 219,
+                entity_label: 'Helvetisches Lexikon',
+                type_label: 'Lexikon',
+                pk_entity: 12345
             } as DataUnitPreview,
             parentPath: ''
         },
@@ -49,19 +53,19 @@ export default sandboxOf(MentioningCreateCtrlComponent, {
                 <div class="card" dnd-draggable [dragEnabled]="true" [dragData]="leu">
                     <div class="card-body">
                         <div>Drag DataUnit</div>
-                        {{leu.label}}
+                        {{leu.entity_label}}
                     </div>
                 </div>
                 <div class="card" dnd-draggable [dragEnabled]="true" [dragData]="band1">
                     <div class="card-body">
                         <div>Drag Source</div>
-                        {{band1.label}}
+                        {{band1.entity_label}}
                     </div>
                 </div>
                 <div class="card" dnd-draggable [dragEnabled]="true" [dragData]="sectionXI">
                     <div class="card-body">
                         <div>Drag Section</div>
-                        {{sectionXI.label}}
+                        {{sectionXI.entity_label}}
                     </div>
                 </div>
                 <hr/>

@@ -1,9 +1,8 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ComConfig, IAppState, PeItDetail, Project, ProjectCrm, SubstoreComponent } from 'app/core';
+import { ActiveProjectService, ComConfig, IAppState, PeItDetail, Project, ProjectCrm, SubstoreComponent, DataUnitPreview } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { CreateOrAddPeIt } from 'app/modules/information/containers/create-or-add-pe-it/api/create-or-add-pe-it.models';
 import { List } from 'app/modules/information/containers/list/api/list.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { combineLatest, Observable, Subject } from 'rxjs';
@@ -41,6 +40,9 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
   @select() create$: Observable<boolean>;
   @select() editSection$: Observable<PeItDetail>;
 
+  // used for breadcumbs when section is opened
+  sourcePreview$: Observable<DataUnitPreview>;
+
   project$: Observable<Project>;
 
   listVisible: boolean;
@@ -60,7 +62,8 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
     private epics: SourceListAPIEpics,
     public activatedRoute: ActivatedRoute,
     public ngRedux: NgRedux<IAppState>,
-    public router: Router
+    public router: Router,
+    private activeProjectService: ActiveProjectService
   ) {
     super();
 
@@ -106,6 +109,10 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
       if (params.pkEntity && params.pkSection) {
         // Init the section edit
         this.loadSectionDetails(params.pkSection, pkProject, crm)
+
+        // load the dataUnitPreview for the source for its display in breadcrumbs
+        this.activeProjectService.loadDataUnitPreview(params.pkEntity)
+        this.sourcePreview$ = this.ngRedux.select(['activeProject', 'dataUnitPreviews', params.pkEntity])
 
       } else if (params.pkEntity) {
         // Init the source edit

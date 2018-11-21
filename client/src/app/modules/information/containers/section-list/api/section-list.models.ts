@@ -3,7 +3,7 @@ import { EntityAssociationList } from 'app/core/state/models/entity-association-
 
 // Class of this slice of store
 export class SectionList implements SectionList {
-    items?: EntityAssociationList;
+    pkSections?: number[];
     loading?: boolean;
     error?: any;
 

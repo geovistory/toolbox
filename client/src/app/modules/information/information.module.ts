@@ -140,6 +140,7 @@ import { TextPropertyFieldAPIActions } from './containers/text-property-field/ap
 import { TextPropertyFieldAPIEpics } from './containers/text-property-field/api/text-property-field.epics';
 import { MentioningListComponent } from './containers/mentioning-list/mentioning-list.component';
 import { MentioningCreateCtrlComponent } from './components/mentioning-create-ctrl/mentioning-create-ctrl.component';
+import { TableModule } from 'ngx-easy-table';
 
 
 
@@ -172,7 +173,8 @@ import { MentioningCreateCtrlComponent } from './components/mentioning-create-ct
     HighlightModule,
     DndModule,
     QuillModule,
-    TreeviewModule
+    TreeviewModule,
+    TableModule
 
   ],
   declarations: [

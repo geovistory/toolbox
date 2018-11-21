@@ -3,11 +3,12 @@ import { LoadingBarActions, InfEntityAssociationApi, InfEntityAssociation, InfPe
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable, combineLatest } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil, filter } from 'rxjs/operators';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { TypeEditableComponent } from '../type-editable.component';
 import { TypeEditableAPIActions, TypeAPIAction } from './type-editable.actions';
 import { createTypeDetail } from 'app/core/state/services/state-creator';
+import { ofSubstore } from 'app/core/store/module';
 
 @Injectable()
 export class TypeEditableAPIEpics {
@@ -33,6 +34,7 @@ export class TypeEditableAPIEpics {
          * Filter the actions that triggers this epic
          */
         ofType(TypeEditableAPIActions.CHANGE_TYPE),
+        filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: TypeAPIAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
@@ -92,6 +94,7 @@ export class TypeEditableAPIEpics {
          * Filter the actions that triggers this epic
          */
         ofType(TypeEditableAPIActions.CHANGE_TYPE_SUCCEEDED),
+        filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: TypeAPIAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
