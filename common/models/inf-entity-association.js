@@ -51,6 +51,41 @@ module.exports = function (InfEntityAssociation) {
 
     }
 
+    // if the ea has a persistent item as the range 
+    if (requestedEa.range_pe_it && Object.keys(requestedEa.range_pe_it).length > 0) {
+
+      // prepare parameters
+      const InfPersistentItem = InfEntityAssociation.app.models.InfPersistentItem;
+
+      // find or create the peIt and the ea pointing to it
+      return InfPersistentItem.findOrCreatePeIt(projectId, requestedEa.range_pe_it)
+        .then((resultingPeIts) => {
+
+          const resultingPeIt = resultingPeIts[0];
+
+          // … prepare the Ea to create
+          dataObject.fk_range_entity = resultingPeIt.pk_entity;
+
+          return InfEntityAssociation.findOrCreateByValue(InfEntityAssociation, projectId, dataObject, requestedEa)
+            .then((resultingEas) => {
+
+              let res = resultingEas[0].toJSON();
+              res.range_pe_it = resultingPeIt;
+
+              return [res];
+
+            })
+            .catch((err) => {
+              return err;
+            })
+        })
+        .catch((err) => {
+          return err;
+        })
+
+    }
+
+
 
 
     else {

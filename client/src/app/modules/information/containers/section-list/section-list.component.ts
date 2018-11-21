@@ -49,10 +49,12 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
   pkProject$: Observable<number>
   crm$: Observable<ProjectCrm>
   parentPeItDetail$: Observable<PeItDetail>;
+  parentFkClass: number;
 
   pkClassesOfAddBtn = [DfhConfig.CLASS_PK_EXPRESSION]
   pkUiContextCreate = ComConfig.PK_UI_CONTEXT_SOURCES_CREATE;
   pkRangeEntity: number;
+  pkDomainEntity: number;
 
   dataUnitPreviews$: Observable<DataUnitPreviewList>;
   listData$: Observable<DataUnitPreview[]>;
@@ -126,6 +128,10 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
     this.parentPeItDetail$ = this.ngRedux.select(dropLast(1, this.basePath));
     this.dataUnitPreviews$ = this.ngRedux.select(['activeProject', 'dataUnitPreviews']);
 
+    this.parentPeItDetail$.pipe(filter(d => (!!d && !!d.fkClass)), takeUntil(this.destroy$)).subscribe(parentPeItDetail => {
+      this.parentFkClass = parentPeItDetail.fkClass;
+    })
+
     if (this.loadListOnInit) {
       this.loadList()
     }
@@ -141,12 +147,19 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
         takeUntil(this.destroy$)
       ).subscribe((d) => {
         const pkProject = d[0], parentPeItDetail = d[1], crm = d[2];
-        this.pkRangeEntity = parentPeItDetail.pkEntity || parentPeItDetail.peIt.pk_entity;
-        this.load(pkProject, this.pkRangeEntity, DfhConfig.PROPERTY_PK_R41_HAS_REP_MANIFESTATION_PRODUCT_TYPE, crm)
-      })
+        this.parentFkClass = parentPeItDetail.fkClass;
 
-    this.pkSections$.pipe(takeUntil(this.destroy$)).subscribe(pks => {
-    })
+        // if parent is a Manifestation Singleton
+        if (this.isManifestationSingleton()) {
+          this.pkDomainEntity = parentPeItDetail.pkEntity || parentPeItDetail.peIt.pk_entity;
+          this.load(pkProject, this.pkDomainEntity, DfhConfig.PROPERTY_PK_R42_IS_REP_MANIFESTATION_SINGLETON_FOR, null)
+
+          // if parent is a Manifestation Product Type
+        } else if (this.isManifestationProductType()) {
+          this.pkRangeEntity = parentPeItDetail.pkEntity || parentPeItDetail.peIt.pk_entity;
+          this.load(pkProject, null, DfhConfig.PROPERTY_PK_R4_CARRIERS_PROVIDED_BY, this.pkRangeEntity)
+        }
+      })
 
     this.listData$ = this.pkSections$.pipe(filter(pks => pks !== undefined), mergeMap(pks => {
       // update the dataUnitPreview
@@ -168,26 +181,48 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
 
   onAdd(d: ClassAndTypePk) {
 
-    // Type of the domain entity
-    const domain_pe_it = {
+    // Type of the new entity
+    const newPeIt = {
       domain_entity_associations: [{
         fk_property: Config.PK_CLASS_PK_HAS_TYPE_MAP[d.pkClass],
         fk_range_entity: d.pkType
       }]
     } as InfPersistentItem;
 
+    let newEntityAssociaction;
+
+    if (this.isOutgoing()) {
+      newEntityAssociaction = {
+        pk_entity: undefined,
+        fk_domain_entity: this.pkDomainEntity,
+        fk_property: DfhConfig.PROPERTY_PK_R42_IS_REP_MANIFESTATION_SINGLETON_FOR,
+        fk_range_entity: undefined,
+        range_pe_it: newPeIt
+      } as InfEntityAssociation
+    } else if (this.isOutgoing() === false) {
+      newEntityAssociaction = {
+        pk_entity: undefined,
+        fk_domain_entity: undefined,
+        domain_pe_it: newPeIt,
+        fk_property: DfhConfig.PROPERTY_PK_R4_CARRIERS_PROVIDED_BY,
+        fk_range_entity: this.pkRangeEntity
+      } as InfEntityAssociation
+    } else {
+      throw Error('Oops, parent class must be F3 or F4.')
+    }
+
     this.startCreate(
       createEntityAssociationDetail(
-        { isOutgoing: false },
-        {
-          fk_property: DfhConfig.PROPERTY_PK_R41_HAS_REP_MANIFESTATION_PRODUCT_TYPE,
-          fk_range_entity: this.pkRangeEntity,
-          domain_pe_it
-        } as InfEntityAssociation,
+        { isOutgoing: this.isOutgoing() },
+        newEntityAssociaction,
         this.ngRedux.getState().activeProject.crm,
         { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_CREATE }
       )
     )
+  }
+
+  openSectionFromEntityAssociation(ea: InfEntityAssociation) {
+    this.openSection((this.isOutgoing() ? ea.fk_range_entity : ea.fk_domain_entity))
   }
 
   openSection(pkEntity: number) {
@@ -195,7 +230,24 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
       relativeTo: this.activatedRoute, queryParamsHandling: 'merge'
     })
   }
+
   getClassConfig(fkClass: number): Observable<ClassConfig> {
     return this.crm$.map((crm) => (crm.classes[fkClass]))
+  }
+
+  isManifestationSingleton() {
+    if (!this.parentFkClass) return undefined;
+    return (this.parentFkClass === DfhConfig.CLASS_PK_MANIFESTATION_SINGLETON)
+  }
+
+  isManifestationProductType() {
+    if (!this.parentFkClass) return undefined;
+    return (this.parentFkClass === DfhConfig.CLASS_PK_MANIFESTATION_PRODUCT_TYPE)
+  }
+
+  isOutgoing() {
+    if (this.isManifestationSingleton()) return true;
+    if (this.isManifestationProductType()) return false;
+    return undefined;
   }
 }

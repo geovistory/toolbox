@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfEntityAssociationApi, ComConfig, PropertyField, InfEntityAssociation } from 'app/core';
+import { InfEntityAssociation, InfEntityAssociationApi, LoadingBarActions } from 'app/core';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { ofSubstore } from 'app/core/store/module';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { SectionListComponent } from '../section-list.component';
-import { SectionListAPIActions, SectionListAPIAction } from './section-list.actions';
-import { ofSubstore } from 'app/core/store/module';
-import { createEntityAssociationList } from 'app/core/state/services/state-creator';
+import { SectionListAPIAction, SectionListAPIActions } from './section-list.actions';
 
 @Injectable()
 export class SectionListAPIEpics {
@@ -39,7 +38,7 @@ export class SectionListAPIEpics {
           /**
            * Do some api call
            */
-          this.eaApi.queryByParams(true, action.meta.pkProject, null, action.meta.fkRangeEntity, null, action.meta.fkProperty)
+          this.eaApi.queryByParams(true, action.meta.pkProject, null, action.meta.fkRangeEntity, action.meta.fkDomainEntity, action.meta.fkProperty)
             /**
              * Subscribe to the api call
              */
@@ -50,8 +49,8 @@ export class SectionListAPIEpics {
               globalStore.next(this.loadingBarActions.completeLoading());
 
               // const eaList = createEntityAssociationList(new PropertyField(), data, action.meta.crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE })
-
-              const pkSections = data.map(ea => ea.fk_domain_entity)
+              const relevantProperty = c.isManifestationProductType() ? 'fk_domain_entity' : 'fk_range_entity';
+              const pkSections = data.map(ea => (ea[relevantProperty]))
 
               /**
                * Emit the local action on loading succeeded

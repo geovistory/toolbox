@@ -742,6 +742,13 @@ export function createEntityAssociationDetail(options: EntityAssociationDetail =
         }
     }
 
+    if (ea.range_pe_it) {
+        peItTemplate = {
+            ...peItTemplate,
+            ...ea.range_pe_it
+        }
+    }
+
     return new EntityAssociationDetail({
         entityAssociation: new InfEntityAssociation(ea),
         ...options,

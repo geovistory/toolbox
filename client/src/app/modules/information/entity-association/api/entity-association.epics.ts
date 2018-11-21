@@ -38,7 +38,7 @@ export class EntityAssociationAPIEpics {
           /**
            * Do some api call
            */
-          this.eaApi.nestedObject(false, action.meta.pkProject, null, action.meta.fkRangeEntity, action.meta.fkDomainEntity, action.meta.fkProperty) // <- change api call here
+          this.eaApi.nestedObject(false, action.meta.pkProject, null, action.meta.fkRangeEntity, action.meta.fkDomainEntity, action.meta.fkProperty)
             /**
              * Subscribe to the api call
              */

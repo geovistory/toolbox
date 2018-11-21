@@ -30,4 +30,4 @@
 </div>
 
 <gv-entity-association-create-or-add *ngIf="(create$ |async)" class="gv-flex-fh" [basePath]="basePath.concat('create')"
-  (done)="openSection($event.fk_domain_entity)" (cancel)="stopCreate()"></gv-entity-association-create-or-add>
+  (done)="openSectionFromEntityAssociation($event)" (cancel)="stopCreate()"></gv-entity-association-create-or-add>

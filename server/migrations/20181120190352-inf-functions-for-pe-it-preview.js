@@ -94,7 +94,7 @@ exports.up = function (db, callback) {
       -- get the roles of the persistent item that are available in the ordered list of fields for the pe-it class
       INNER JOIN ordered_pe_it_fields as pi_fields on pi_fields.fk_class = pe_it.fk_class
       INNER JOIN role as pi_role on pi_role.fk_entity = pe_it.pk_entity AND pi_role.fk_property = pi_fields.fk_property
-      ORDER BY field_order
+      ORDER BY role_order
     ),
     ordered_pe_it_text_properties AS (
       select
@@ -109,7 +109,7 @@ exports.up = function (db, callback) {
       -- get the roles of the persistent item that are available in the ordered list of fields for the pe-it class
       INNER JOIN ordered_pe_it_fields as pi_fields on pi_fields.fk_class = pe_it.fk_class
       INNER JOIN text_property_string as pi_txt on pi_txt.fk_concerned_entity = pe_it.pk_entity AND pi_fields.used_table = 'information.text_property'
-      ORDER BY field_order
+      ORDER BY txt_order
     ),
     temporal_entity as (
       SELECT teen.pk_entity, teen.fk_class
