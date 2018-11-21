@@ -175,8 +175,7 @@ module.exports = function (InfEntityAssociation) {
       return cb('please provide at least a pkEntity, pkRangeEntity or pkDomainEntity');
     }
 
-    const joinThisProject = InfEntityAssociation.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
-    joinThisProject.$relation['select'] = false;
+
 
     const w = { pk_entity: pkEntity, fk_range_entity: pkRangeEntity, fk_domain_entity: pkDomainEntity, fk_property: pkProperty }
     let where = [];
@@ -188,10 +187,14 @@ module.exports = function (InfEntityAssociation) {
       where = [...where, ...part]
     });
 
-
     const filter = {
-      "where": where,
-      "include": {
+      "where": where
+    }
+
+    if (pkProject) {
+      const joinThisProject = InfEntityAssociation.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+      joinThisProject.$relation['select'] = false;
+      filter['include'] = {
         "entity_version_project_rels": joinThisProject
       }
     }
