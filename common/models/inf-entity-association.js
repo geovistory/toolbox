@@ -128,5 +128,41 @@ module.exports = function (InfEntityAssociation) {
   }
 
 
+  /**
+  * Find entityAssociation by one of the params
+  * 
+  * @param  {number} pkProject primary key of project
+  * @param  {number} pkEntity  pk_entity of the entityAssociation
+  */
+  InfEntityAssociation.queryByParams = function (ofProject, pkProject, pkEntity, pkRangeEntity, pkDomainEntity, pkProperty, cb) {
+
+    if (!pkEntity && !pkRangeEntity && !pkDomainEntity) {
+      return cb('please provide at least a pkEntity, pkRangeEntity or pkDomainEntity');
+    }
+
+    const joinThisProject = InfEntityAssociation.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+    joinThisProject.$relation['select'] = false;
+
+    const w = { pk_entity: pkEntity, fk_range_entity: pkRangeEntity, fk_domain_entity: pkDomainEntity, fk_property: pkProperty }
+    let where = [];
+    Object.keys(w).filter((key) => (!!w[key])).map((key, index, ar) => {
+      let part = [key, '=', w[key]];
+      if (index !== 0) part = ['AND', ...part];
+      return part;
+    }).forEach(part => {
+      where = [...where, ...part]
+    });
+
+
+    const filter = {
+      "where": where,
+      "include": {
+        "entity_version_project_rels": joinThisProject
+      }
+    }
+
+    return InfEntityAssociation.findComplex(filter, cb);
+  }
+
 
 };

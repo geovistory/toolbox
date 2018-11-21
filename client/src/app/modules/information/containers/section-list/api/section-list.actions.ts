@@ -5,11 +5,11 @@ import { SectionList } from './section-list.models';
 import { ClassAndTypePk } from '../../class-and-type-selector/api/class-and-type-selector.models';
 import { EntityAssociationDetail } from 'app/core/state/models/entity-association-detail';
 import { EntityAssociationList } from 'app/core/state/models/entity-association-list';
-import { ProjectCrm } from 'app/core';
+import { ProjectCrm, DataUnitPreviewList } from 'app/core';
 
 type Payload = SectionList;
 interface MetaData {
-  items?: EntityAssociationList;
+  pkSections?: number[];
   entityAssociationDetail?: EntityAssociationDetail;
   pkUiContext?: number;
   pkProject?: number;
@@ -38,10 +38,10 @@ export class SectionListAPIActions {
     payload: null,
   });
 
-  loadSucceeded = (items: EntityAssociationList): SectionListAPIAction => ({
+  loadSucceeded = (pkSections: number[]): SectionListAPIAction => ({
     type: SectionListAPIActions.LOAD_SUCCEEDED,
     meta: {
-      items
+      pkSections
     },
     payload: null
   })

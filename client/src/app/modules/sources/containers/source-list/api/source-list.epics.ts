@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ComConfig, InfEntityAssociation, InfEntityAssociationApi, InfEntityProjectRel, InfEntityProjectRelApi, LoadingBarActions } from 'app/core';
+import { ComConfig, InfEntityAssociation, InfEntityAssociationApi, InfEntityProjectRel, InfEntityProjectRelApi, LoadingBarActions, ActiveAccountService } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { createPeItDetail } from 'app/core/state/services/state-creator';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';

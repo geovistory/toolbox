@@ -11,6 +11,7 @@ interface MetaData {
   txtPropDetail?: TextPropertyDetail;
   itemsArray?: any[];
   key?: string;
+  pkEntity?: number;
 };
 export type TextPropertyFieldAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -29,6 +30,10 @@ export class TextPropertyFieldAPIActions {
   static readonly LOAD = 'TextPropertyField::LOAD';
   static readonly LOAD_SUCCEEDED = 'TextPropertyField::LOAD_SUCCEEDED';
   static readonly LOAD_FAILED = 'TextPropertyField::LOAD_FAILED';
+
+  static readonly REMOVE_FROM_PROJECT = 'TextPropertyField::REMOVE_FROM_PROJECT';
+  static readonly REMOVE_FROM_PROJECT_SUCCEEDED = 'TextPropertyField::REMOVE_FROM_PROJECT_SUCCEEDED';
+  static readonly REMOVE_FROM_PROJECT_FAILED = 'TextPropertyField::REMOVE_FROM_PROJECT_FAILED';
 
   static readonly TOGGLE_TEXT_PROP_DETAIL = 'TextPropertyField::TOGGLE_TEXT_PROP_DETAIL';
 
@@ -80,6 +85,31 @@ export class TextPropertyFieldAPIActions {
   })
 
 
+  /*********************************************************************
+  *  Method to remove the text property from project
+  *********************************************************************/
+
+  @dispatch() remove = (pkEntity: number, key: string): TextPropertyFieldAPIAction => ({
+    type: TextPropertyFieldAPIActions.REMOVE_FROM_PROJECT,
+    meta: { pkEntity, key },
+    payload: null,
+  });
+
+  removeSucceeded = (key: string): TextPropertyFieldAPIAction => ({
+    type: TextPropertyFieldAPIActions.REMOVE_FROM_PROJECT_SUCCEEDED,
+    meta: {
+      key
+    },
+    payload: null
+  })
+
+  removeFailed = (error): TextPropertyFieldAPIAction => ({
+    type: TextPropertyFieldAPIActions.REMOVE_FROM_PROJECT_FAILED,
+    meta: null,
+    payload: null,
+    error,
+  })
+
 
 
   @dispatch() toggle = (): TextPropertyFieldAPIAction => ({
@@ -105,6 +135,8 @@ export class TextPropertyFieldAPIActions {
     meta: null,
     payload: null,
   })
+
+
 
 
   /*********************************************************************

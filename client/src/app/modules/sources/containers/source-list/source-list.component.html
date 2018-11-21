@@ -102,7 +102,7 @@
       </li>
       <li class="breadcrumb-item">
         <a href class="gv-passive-link" routerLink="../../" queryParamsHandling="merge">
-          Source
+          {{(sourcePreview$ | async)?.type_label}} {{(sourcePreview$ | async)?.entity_label}} 
         </a>
       </li>
     </ol>

@@ -272,15 +272,13 @@ module.exports = function (InfEntity) {
     }
 
     // Find or create an entity with this values
-    return Model.findOrCreate(filter, dataObject)
+    return Model.create(dataObject)
       .catch((err) => {
         return err;
       })
-      .then((result) => {
+      .then((resultingEntity) => {
 
-        console.log(result);
-
-        let resultingEntity = result[0];
+        // let resultingEntity = result[0];
 
         // Search for eprs to given project
         return resultingEntity.entity_version_project_rels({

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfTextPropertyApi } from 'app/core';
+import { LoadingBarActions, InfTextPropertyApi, InfEntityProjectRelApi, InfEntityProjectRel } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -13,6 +13,7 @@ import { createTextPropertyField, createTextPropertyDetail } from 'app/core/stat
 @Injectable()
 export class TextPropertyFieldAPIEpics {
   constructor(
+    private eprApi: InfEntityProjectRelApi,
     private textPropertyApi: InfTextPropertyApi,
     private actions: TextPropertyFieldAPIActions,
     private loadingBarActions: LoadingBarActions,
@@ -22,7 +23,8 @@ export class TextPropertyFieldAPIEpics {
   public createEpics(c: TextPropertyFieldComponent): Epic {
     return combineEpics(
       this.createCreateTextPropertyFieldEpic(c),
-      this.listenToTextPropertyDetailListLength(c)
+      this.listenToTextPropertyDetailListLength(c),
+      this.createRemoveFromProjectEpic(c)
     );
   }
 
@@ -103,4 +105,56 @@ export class TextPropertyFieldAPIEpics {
     }
   }
 
+  private createRemoveFromProjectEpic(c: TextPropertyFieldComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        ofType(
+          TextPropertyFieldAPIActions.REMOVE_FROM_PROJECT
+        ),
+        filter(action => ofSubstore(c.basePath)(action)),
+        switchMap((action: TextPropertyFieldAPIAction) => new Observable<Action>((globalStore) => {
+         /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Do some api call
+           */
+          this.eprApi.updateEprAttributes(c.ngRedux.getState().activeProject.pk_project, action.meta.pkEntity, {
+            is_in_project: false
+          } as InfEntityProjectRel)
+            /**
+             * Subscribe to the api call
+             */
+            .subscribe((data) => {
+
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              /**
+               * Emit the local action on loading succeeded
+               */
+              c.localStore.dispatch(this.actions.removeSucceeded(action.meta.key));
+
+            }, error => {
+              /**
+              * Emit the global action that shows some loading error message
+              */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              c.localStore.dispatch(this.actions.removeFailed(error.message));
+
+            })
+
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
 }

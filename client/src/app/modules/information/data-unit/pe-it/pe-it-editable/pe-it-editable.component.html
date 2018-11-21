@@ -2,6 +2,7 @@
   <!-- Header -->
   <div class="mb-3 gv-flex-shrink-0" *ngIf="(showHeader$ | async)">
     <gv-editor-header>
+      <span typeLabel>{{(_type$ | async)?.label}}</span>
       <gv-pe-it-label labels [children]="(_fields$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
       <div type *ngIf="(_type$ | async)">
         <gv-type [basePath]="basePath.concat('_type')"></gv-type>
@@ -133,7 +134,7 @@
 
       <!-- Section List. Sections of a source -->
       <div class="gv-flex-fh" *ngIf="(showSectionList$ | async) && !isolatedChild">
-        <gv-section-list [basePath]="basePath.concat('sectionList')"></gv-section-list>
+        <gv-section-list [basePath]="basePath.concat('sectionList')" [loadListOnInit]="true"></gv-section-list>
       </div>
 
       <!-- Repros. Reproductions of a section -->
@@ -188,8 +189,8 @@
        * - If 'create' is truthy, show a form with SourceCreateFormComponent
        *     listening to ok and cancel Outputs 
        -->
-  <div [hidden]="!(sectionList$ | async)?.create" [ngClass]="{'gv-flex-fh': (sectionList$ | async)?.create}">
-    <gv-section-list [basePath]="basePath.concat('sectionList')"></gv-section-list>
+  <div *ngIf="(showSectionList$ | async)" [hidden]="!(sectionList$ | async)?.create" [ngClass]="{'gv-flex-fh': (sectionList$ | async)?.create}">
+    <gv-section-list [basePath]="basePath.concat('sectionList')" [loadListOnInit]="false"></gv-section-list>
   </div>
 </div>
 

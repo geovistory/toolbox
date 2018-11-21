@@ -1,43 +1,52 @@
-<!-- Mentioned Entity -->
-<div *ngIf="mentionedEntity">
-  {{mentionedEntity?.label}}
-  <button *ngIf="!mentionedEntityFixed" (click)="mentionedEntity=undefined">x</button>
-</div>
-<!-- Drop zone for mentioned entity -->
-<div class="card" dnd-droppable *ngIf="!mentionedEntity" (onDropSuccess)="onDropMentionedEntity($event.dragData)">
+<div class="card text-white bg-info">
   <div class="card-body">
-    Drop DataUnit here!
+
+    <!-- Mentioned Entity -->
+    <div *ngIf="mentionedEntity">
+      {{mentionedEntity?.entity_label}}
+      <button class="btn btn-link-white" *ngIf="!mentionedEntityFixed" (click)="resetMentionedEntity()">
+        <i class="fa fa-pencil"></i>
+      </button>
+    </div>
+    <!-- Drop zone for mentioned entity -->
+    <div class="gv-drop-zone" dnd-droppable *ngIf="!mentionedEntity" (onDropSuccess)="onDropMentionedEntity($event.dragData)">
+      Drop DataUnit here!
+    </div>
+
+
+    <div class="font-italic text-center py-2">
+      is mentioned in
+    </div>
+
+    <!-- Source -->
+    <div *ngIf="sourceEntity">
+      {{sourceEntity?.entity_label}}
+      <button class="btn btn-link-white" *ngIf="!sourceEntityFixed" (click)="resetSourceEntity()">
+        <i class="fa fa-pencil"></i>
+      </button>
+    </div>
+
+    <!-- Section -->
+    <div *ngIf="sectionEntity">
+      Section: {{sectionEntity?.entity_label}}
+      <button class="btn btn-link-white" *ngIf="!sectionEntityFixed" (click)="resetSectionEntity()">
+        <i class="fa fa-pencil"></i>
+      </button>
+    </div>
+
+    <!-- Drop zone for source or section -->
+    <div class="gv-drop-zone" dnd-droppable *ngIf="!sourceEntity && !sectionEntity" (onDropSuccess)="onDropSourceEntity($event.dragData)"
+      [allowDrop]="allowDropSource()">
+      Drop a Source or Section here!
+    </div>
+
+
+    <!-- Chunk -->
+    <div *ngIf="chunkEntity">
+      Annotated text: {{chunkEntity?.entity_label}}
+    </div>
+
+    <!-- Edit ui for chunk -->
+
   </div>
 </div>
-
-
-<div>
-  is mentioned in
-</div>
-
-<!-- Source -->
-<div *ngIf="sourceEntity">
-  {{sourceEntity?.label}}
-  <button *ngIf="!sourceEntityFixed" (click)="sourceEntity=undefined">x</button>
-</div>
-
-<!-- Section -->
-<div *ngIf="sectionEntity">
-  Section: {{sectionEntity?.label}}
-  <button *ngIf="!sectionEntityFixed" (click)="sectionEntity=undefined">x</button>
-</div>
-
-<!-- Drop zone for source or section -->
-<div class="card" dnd-droppable *ngIf="!sourceEntity && !sectionEntity" (onDropSuccess)="onDropSourceEntity($event.dragData)" [allowDrop]="allowDropSource()">
-  <div class="card-body">
-    Drop a Source or Section here!
-  </div>
-</div>
-
-
-<!-- Chunk -->
-<div *ngIf="chunkEntity">
-  Annotated text: {{chunkEntity?.label}}
-</div>
-
-<!-- Edit ui for chunk -->

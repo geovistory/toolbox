@@ -52,15 +52,16 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
     const crm = this.ngRedux.getState().activeProject.crm;
 
     this.addedChildren$.pipe(
-      filter(d => (!!d)), // make sure children is not falsy
+      // filter(d => (!!d)), // make sure fields is not falsy
       takeUntil(this.destroy$)
-    ).subscribe(children => {
+    ).subscribe(fieldList => {
+      const fields = fieldList || {};
 
       this.addOptions = this.uiElements.map(el => {
         if (
           el.fk_class_field
-          && !children[el.propSetKey]
-          ) {
+          && !fields[el.propSetKey]
+        ) {
 
           const level1propLabel = el.class_field.label;
           const level2propsLabels = [el.class_field.description];
@@ -70,14 +71,14 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
             level1propLabel,
             classLabel: '',
             level2propsLabels,
-            added: children[el.propertyFieldKey] ? true : false,
+            added: fields[el.propertyFieldKey] ? true : false,
             uiElement: el
           }
 
           return option;
         } else if (
           el.fk_property
-          && !children[el.propertyFieldKey]
+          && !fields[el.propertyFieldKey]
           && !similarPropertyField(this.classConfig.propertyFields[el.propertyFieldKey], this.excludePropertyField)
         ) {
 
@@ -99,7 +100,7 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
             level1propLabel,
             classLabel,
             level2propsLabels,
-            added: children[el.propertyFieldKey] ? true : false,
+            added: fields[el.propertyFieldKey] ? true : false,
             uiElement: el
           }
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfEntityAssociationApi, ComConfig, PropertyField } from 'app/core';
+import { LoadingBarActions, InfEntityAssociationApi, ComConfig, PropertyField, InfEntityAssociation } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -39,22 +39,24 @@ export class SectionListAPIEpics {
           /**
            * Do some api call
            */
-          this.eaApi.nestedObject(true, action.meta.pkProject, null, action.meta.fkRangeEntity, null, action.meta.fkProperty)
+          this.eaApi.queryByParams(true, action.meta.pkProject, null, action.meta.fkRangeEntity, null, action.meta.fkProperty)
             /**
              * Subscribe to the api call
              */
-            .subscribe((data) => {
+            .subscribe((data: InfEntityAssociation[]) => {
               /**
                * Emit the global action that completes the loading bar
                */
               globalStore.next(this.loadingBarActions.completeLoading());
 
-              const eaList = createEntityAssociationList(new PropertyField(), data, action.meta.crm, {pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE})
+              // const eaList = createEntityAssociationList(new PropertyField(), data, action.meta.crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE })
+
+              const pkSections = data.map(ea => ea.fk_domain_entity)
 
               /**
                * Emit the local action on loading succeeded
                */
-              c.localStore.dispatch(this.actions.loadSucceeded(eaList));
+              c.localStore.dispatch(this.actions.loadSucceeded(pkSections));
 
             }, error => {
               /**

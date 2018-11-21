@@ -38,8 +38,8 @@ export class DfhConfig {
   // dfh_pk_property F2 Expression -> R41 has rep manifestation product type ->	F3 Manifestation Product Type
   static PROPERTY_PK_R41_HAS_REP_MANIFESTATION_PRODUCT_TYPE = 1015;
 
-  // dfh_pk_property used to connect a chunk as domain use with a persitent item or temporal entity as range
-  static PROPERTY_PK_MENTIONES = 4;
+  // dfh_pk_property used to connect a a persitent item or temporal entity as domain with source, section or chunk as range
+  static PROPERTY_PK_IS_MENTIONED_IN = 778899;
 
   static PROPERTY_PK_IS_REPRODUCTION_OF_SECTION = 777;
 

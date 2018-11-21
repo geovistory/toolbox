@@ -11,6 +11,11 @@ export function textPropertyListReducer(state: TextPropertyField = INITIAL_STATE
   const action = a as TextPropertyFieldAPIAction;
 
   switch (action.type) {
+
+    /***************************************************
+     * Reducers to load
+     * TODO: Check if needed
+     */
     case TextPropertyFieldAPIActions.LOAD:
       state = {
         ...state,
@@ -27,6 +32,34 @@ export function textPropertyListReducer(state: TextPropertyField = INITIAL_STATE
         ...state,
       };
       break;
+
+    /***************************************************
+     * Reducers to remove text property from project
+     ****************************************************/
+
+    case TextPropertyFieldAPIActions.REMOVE_FROM_PROJECT:
+      state = {
+        ...state,
+        loading: true
+      }
+      break;
+
+
+    case TextPropertyFieldAPIActions.REMOVE_FROM_PROJECT_SUCCEEDED:
+      state = {
+        ...state,
+        textPropertyDetailList: omit([action.meta.key], state.textPropertyDetailList)
+      }
+      break;
+
+
+    case TextPropertyFieldAPIActions.REMOVE_FROM_PROJECT_FAILED:
+      state = {
+        ...state,
+        loading: false
+      }
+      break;
+
 
 
     case TextPropertyFieldAPIActions.CREATE:

@@ -259,10 +259,11 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
                 }
             });
         }
-    } else if (!roles || !roles.length) return;
-    else {
-
-        const rolesByFkProp = groupBy(prop('fk_property'), roles) as { [index: number]: InfRole[] }
+    } else {
+        let rolesByFkProp = {};
+        if (roles && roles.length) {
+            rolesByFkProp = groupBy(prop('fk_property'), roles) as { [index: number]: InfRole[] }
+        }
 
         // for each uiElement in this ui-context
         if (uiContext && uiContext.uiElements) {

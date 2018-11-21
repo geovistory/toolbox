@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { EventEmitter, Injectable } from '@angular/core';
-import { IAppState } from 'app/core';
+import { IAppState, ComConfig } from 'app/core';
 import { environment } from '../../../environments/environment';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { Project } from '../sdk/models/Project';
@@ -49,5 +49,10 @@ export class ActiveProjectService {
     }
   }
 
+  loadDataUnitPreview(pkEntity: number) {
+    const state = this.ngRedux.getState();
+    const pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+    this.ngRedux.dispatch(this.actions.loadDataUnitPreview(state.activeProject.pk_project, pkEntity, pkUiContext))
+  }
 
 }

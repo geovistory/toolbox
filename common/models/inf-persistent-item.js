@@ -1516,4 +1516,14 @@ module.exports = function (InfPersistentItem) {
 
     });
   }
+
+
+  InfPersistentItem.preview = function(pk_project, pk_entity, pk_ui_context, cb){
+    const sql_stmt = 'select * from information.queryPeItPreview($1,$2,$3)';
+    const params = [pk_project, pk_entity, pk_ui_context];
+    const connector = InfPersistentItem.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      cb(err, resultObjects);
+    });
+  }
 };

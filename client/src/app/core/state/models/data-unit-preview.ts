@@ -1,12 +1,14 @@
-import { ExTimeLabel } from './ex-time-label';
-
-
+export interface DataUnitPreviewList { [pk_entity: number]: DataUnitPreview };
 
 export class DataUnitPreview {
 
-    fkClass: number;
-    pkEntity: number;
-    label: string;
+    pk_entity: number;
+    fk_class: number;
+    fk_project: number;
+    entity_label: string;
+    class_label: string;
+    type_label: string;
+    entity_type: string;
 
     constructor(data?: DataUnitPreview) {
         Object.assign(this, data);

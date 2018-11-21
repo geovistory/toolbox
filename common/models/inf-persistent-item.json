@@ -74,7 +74,8 @@
         "typesOfNamespaceNested",
         "findOrCreateType",
         "typeNested",
-        "addToProject"
+        "addToProject",
+        "preview"
       ]
     }
   ],
@@ -563,6 +564,47 @@
       "http": {
         "path": "/add-to-project",
         "verb": "post"
+      }
+    },
+    "preview": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_entity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the persistent item.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_ui_context",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the ui context.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "persistent_items",
+        "type": "InfDataUnitPreview",
+        "root": true
+      },
+      "description": "Get the preview of a persistent according to project and ui context.",
+      "http": {
+        "path": "/preview",
+        "verb": "get"
       }
     }
   }

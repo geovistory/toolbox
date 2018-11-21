@@ -134,7 +134,8 @@ export class TextPropertyFieldComponent extends TextPropertyFieldAPIActions impl
       const infTextProperty = new InfTextProperty({
         fk_concerned_entity: this.pkConcernedEntity,
         ...this.formGroup.value.createNew,
-        fk_class_field: this.localStore.getState().fkClassField
+        fk_class_field: this.localStore.getState().fkClassField,
+        entity_version_project_rels: [{ is_in_project: true }]
       })
       console.log(JSON.stringify(infTextProperty))
       this.create(infTextProperty);

@@ -14,14 +14,14 @@ export function sectionListReducer(state: SectionList = INITIAL_STATE, a: Action
     case SectionListAPIActions.LOAD:
       state = {
         ...state,
-        items: {},
+        pkSections: [],
         loading: true
       };
       break;
     case SectionListAPIActions.LOAD_SUCCEEDED:
       state = {
         ...state,
-        items: action.meta.items,
+        pkSections: action.meta.pkSections,
         loading: false
       };
       break;
@@ -29,7 +29,7 @@ export function sectionListReducer(state: SectionList = INITIAL_STATE, a: Action
     case SectionListAPIActions.LOAD_FAILED:
       state = {
         ...state,
-        items: {},
+        pkSections: [],
         loading: false
       };
       break;

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, ProjectCrm, ComConfig, InfEntityAssociation, PeItDetail, U, ClassConfig, InfPersistentItem } from 'app/core';
+import { IAppState, SubstoreComponent, ProjectCrm, ComConfig, InfEntityAssociation, PeItDetail, U, ClassConfig, InfPersistentItem, ActiveProjectService, DataUnitPreview, DataUnitPreviewList } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { SectionList } from './api/section-list.models';
 import { SectionListAPIEpics } from './api/section-list.epics';
@@ -13,9 +13,10 @@ import { ClassAndTypePk } from '../class-and-type-selector/api/class-and-type-se
 import { createEntityAssociationDetail } from 'app/core/state/services/state-creator';
 import { dropLast } from 'ramda';
 import { ActivatedRoute, Router } from '@angular/router';
-import { takeUntil, first } from 'rxjs/operators';
+import { takeUntil, first, map, mergeMap, filter } from 'rxjs/operators';
 import { EntityAssociationList } from 'app/core/state/models/entity-association-list';
 import * as Config from '../../../../../../../common/config/Config';
+import { Columns } from 'ngx-easy-table/src/app/ngx-easy-table';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -37,10 +38,13 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
   // path to the substore
   @Input() basePath: string[];
 
+  // flag to say if the component should init the list via Ajax request or not.
+  @Input() loadListOnInit: boolean;
+
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
   @select() create$: Observable<CreateOrAddPeIt>;
-  @select() items$: Observable<EntityAssociationList>;
+  @select() pkSections$: Observable<number[]>;
 
   pkProject$: Observable<number>
   crm$: Observable<ProjectCrm>
@@ -50,12 +54,63 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
   pkUiContextCreate = ComConfig.PK_UI_CONTEXT_SOURCES_CREATE;
   pkRangeEntity: number;
 
+  dataUnitPreviews$: Observable<DataUnitPreviewList>;
+  listData$: Observable<DataUnitPreview[]>;
+
+  tableConfiguration: Config = {
+    searchEnabled: true,
+    headerEnabled: true,
+    orderEnabled: true,
+    orderEventOnly: false,
+    globalSearchEnabled: false,
+    paginationEnabled: true,
+    exportEnabled: false,
+    clickEvent: false,
+    selectRow: false,
+    selectCol: false,
+    selectCell: false,
+    rows: 10,
+    additionalActions: false,
+    serverPagination: false,
+    isLoading: false,
+    detailsTemplate: false,
+    groupRows: false,
+    paginationRangeEnabled: true,
+    collapseAllRows: false,
+    checkboxes: false,
+    resizeColumn: false,
+    fixedColumnWidth: false,
+    horizontalScroll: false,
+    draggable: false,
+    logger: false,
+    showDetailsArrow: false,
+    showContextMenu: false,
+    persistState: false,
+    paginationMaxSize: 5,
+    tableLayout: {
+      style: 'tiny', // or big or normal
+      theme: 'normal', // or dark
+      borderless: false,
+      hover: true,
+      striped: true,
+    }
+  };
+
+  columns: Columns[] = [
+    { key: 'type_label', title: 'Type' },
+    { key: 'entity_label', orderBy: 'asc', title: 'Reference' },
+    { key: '', title: '', orderEnabled: false, searchEnabled: false },
+  ];
+
+  data = [];
+
   constructor(
     protected rootEpics: RootEpics,
     private epics: SectionListAPIEpics,
     private activatedRoute: ActivatedRoute,
     public ngRedux: NgRedux<IAppState>,
-    private router: Router
+    private router: Router,
+    private projectService: ActiveProjectService
   ) {
     super()
 
@@ -69,10 +124,19 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
     this.pkProject$ = this.ngRedux.select(['activeProject', 'pk_project']);
     this.crm$ = this.ngRedux.select(['activeProject', 'crm']);
     this.parentPeItDetail$ = this.ngRedux.select(dropLast(1, this.basePath));
-    combineLatest(this.pkProject$, this.parentPeItDetail$, this.crm$, this.loading$)
+    this.dataUnitPreviews$ = this.ngRedux.select(['activeProject', 'dataUnitPreviews']);
+
+    if (this.loadListOnInit) {
+      this.loadList()
+    }
+
+  }
+
+  loadList() {
+    combineLatest(this.pkProject$, this.parentPeItDetail$, this.crm$)
       .pipe(
         first((d) => (
-          !!d[0] && !!d[1] && !!d[2] && d[3] === undefined
+          !!d[0] && (!!d[1] && d[1].pkEntity) && !!d[2]
         )),
         takeUntil(this.destroy$)
       ).subscribe((d) => {
@@ -80,6 +144,20 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
         this.pkRangeEntity = parentPeItDetail.pkEntity || parentPeItDetail.peIt.pk_entity;
         this.load(pkProject, this.pkRangeEntity, DfhConfig.PROPERTY_PK_R41_HAS_REP_MANIFESTATION_PRODUCT_TYPE, crm)
       })
+
+    this.pkSections$.pipe(takeUntil(this.destroy$)).subscribe(pks => {
+    })
+
+    this.listData$ = this.pkSections$.pipe(filter(pks => pks !== undefined), mergeMap(pks => {
+      // update the dataUnitPreview
+      pks.forEach(pk => { this.projectService.loadDataUnitPreview(pk); });
+
+      // create the observable of dataPreviewArray
+      return combineLatest(pks.map(pk => this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', pk])));
+
+    }))
+
+    this.listData$.takeUntil(this.destroy$).subscribe(d => this.data = d);
   }
 
   ngOnDestroy() {
