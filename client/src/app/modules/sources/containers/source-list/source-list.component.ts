@@ -108,7 +108,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
       const params = d[0], pkProject = d[1], crm = d[2];
       if (params.pkEntity && params.pkSection) {
         // Init the section edit
-        this.loadSectionDetails(params.pkSection, pkProject, crm)
+        this.loadSectionDetails(params.pkEntity, params.pkSection, pkProject, crm)
 
         // load the dataUnitPreview for the source for its display in breadcrumbs
         this.activeProjectService.loadDataUnitPreview(params.pkEntity)

@@ -67,6 +67,12 @@ export class SourceListAPIEpics {
 
                 showPropertiesHeader: true,
                 // showAddAPropertyButton: false,
+
+                mentionedEntities: {
+                  mentioningListType: 'ofSource',
+                  sourceEntityPk: action.meta.pkEntity
+                }
+
               }, data, action.meta.crm,
                 { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE })
               /**
@@ -126,12 +132,17 @@ export class SourceListAPIEpics {
                 showRepros: true,
                 showReprosToggle: true,
 
-                showMentionedEntities: false,
+                showMentionedEntities: true, // TODO change to false
                 showMentionedEntitiesToggle: true,
 
                 showAssertions: false,
                 showAssertionsToggle: true,
 
+                mentionedEntities: {
+                  mentioningListType: 'ofSection',
+                  sourceEntityPk: action.meta.pkSource,
+                  sectionEntityPk: action.meta.pkEntity
+                }
 
               }, data, action.meta.crm,
                 { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE })

@@ -28,7 +28,6 @@ export class ActiveProjectActions {
     static LOAD_DATA_UNIT_PREVIEW_SUCCEEDED = 'ActiveProject::LOAD_DATA_UNIT_PREVIEW_SUCCEEDED';
     static LOAD_DATA_UNIT_PREVIEW_FAILED = 'ActiveProject::LOAD_DATA_UNIT_PREVIEW_FAILED';
 
-
     loadProject(pk_project: number): ActiveProjectAction {
         return {
             type: ActiveProjectActions.LOAD_PROJECT,
@@ -99,6 +98,5 @@ export class ActiveProjectActions {
             error
         }
     }
-
 
 }

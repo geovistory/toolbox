@@ -1,5 +1,7 @@
 'use strict';
 
+const Config = require('../config/Config');
+
 module.exports = function (InfEntityAssociation) {
 
   InfEntityAssociation.findOrCreateInfEntityAssociation = function (projectId, ea, ctx) {
@@ -202,5 +204,91 @@ module.exports = function (InfEntityAssociation) {
     return InfEntityAssociation.findComplex(filter, cb);
   }
 
+  /**
+  * Find mentionings of a section (F2 Expression)
+  * 
+  * @param  {number} pkProject primary key of project
+  * @param  {number} pkEntity  pk_entity of the entityAssociation
+  */
+  InfEntityAssociation.mentioningsOfSection = function (ofProject, pkProject, pkEntity, cb) {
 
-};
+    const params = [
+      ofProject, 
+      pkProject, 
+      pkEntity
+    ]
+    const sql_stmt = `
+    WITH 
+    entity_associations_of_project AS (
+      SELECT ea.* 
+      FROM  information.entity_association as ea
+      INNER JOIN information.entity_version_project_rel as epr on ea.pk_entity = epr.fk_entity
+      WHERE epr.fk_project = $2 AND is_in_project = $1
+    ),
+    mentioned_in_associations AS (
+      SELECT ea.* 
+      from entity_associations_of_project as ea
+      INNER JOIN data_for_history.property as p on ea.fk_property = p.dfh_pk_property
+      WHERE p.dfh_fk_property_of_origin = 1218
+    ),
+    mentionings_of_chunks_of_expression AS (
+      SELECT 
+        chunk.pk_entity as fk_chunk,
+        chunk.js_quill_data,
+        mentioned_in.pk_entity, 
+        mentioned_in.fk_domain_entity, 
+        mentioned_in.fk_property, 
+        mentioned_in.fk_range_entity
+      FROM mentioned_in_associations as mentioned_in
+      inner join entity_associations_of_project as repro_of on mentioned_in.fk_range_entity = repro_of.fk_domain_entity
+      inner join information.chunk as chunk on repro_of.fk_range_entity = chunk.fk_digital_object
+      AND repro_of.fk_property = 1216 
+      AND repro_of.fk_range_entity = $3 -- F2 Expression
+    ),
+    mentionings_of_expression AS (
+      SELECT pk_entity, fk_domain_entity, fk_property, fk_range_entity 
+      FROM mentioned_in_associations
+      WHERE fk_range_entity = $3 -- F2 Expression
+    ),
+    source_of_expression AS (
+      SELECT fk_range_entity as fk_source_entity  -- F3 Manifestation Product Type
+      FROM entity_associations_of_project
+      WHERE fk_property = 979  -- F2 Carriers provided by
+      AND fk_domain_entity = $3 -- F2 Expression
+      UNION
+      SELECT fk_domain_entity as pk_source_entity  -- F4 Manifestation Singleton
+      FROM entity_associations_of_project
+      WHERE fk_property = 1016  -- R42 is representative manifestation singleton for
+      AND fk_range_entity = $3 -- F2 Expression
+    )
+    SELECT
+      pk_entity,
+      fk_domain_entity,
+      fk_property,
+      fk_range_entity,
+      fk_range_entity as fk_expression_entity,
+      (SELECT fk_source_entity from source_of_expression),
+      null as fk_chunk,
+      null as js_quill_data
+      FROM mentionings_of_expression
+    UNION
+    SELECT 
+      pk_entity,
+      fk_domain_entity,
+      fk_property,
+      fk_range_entity,
+      fk_range_entity as fk_expression_entity,
+      (SELECT fk_source_entity from source_of_expression),
+      fk_chunk,
+      js_quill_data
+	  FROM mentionings_of_chunks_of_expression;
+  `
+
+
+    const connector = InfEntityAssociation.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      cb(err, resultObjects);
+    });
+
+  };
+}

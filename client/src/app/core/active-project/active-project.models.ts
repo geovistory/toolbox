@@ -8,6 +8,9 @@ export interface ProjectDetail extends ProjectInterface {
     classSettings?: ClassSettingsI
     // data unit previews
     dataUnitPreviews?: DataUnitPreviewList;
+
+    // when true, the user can select data units as mentioned entities
+    selectingMentionedEntities?: boolean;
 }
 
 export interface ProjectCrm {

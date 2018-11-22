@@ -49,10 +49,19 @@ export class ActiveProjectService {
     }
   }
 
-  loadDataUnitPreview(pkEntity: number) {
+  /**
+   * Loads a data unit preview, if it is not yet available in state or if
+   * forceReload is true;
+   *
+   * @param pkEntity
+   * @param forceReload
+   */
+  loadDataUnitPreview(pkEntity: number, forceReload?: boolean) {
     const state = this.ngRedux.getState();
-    const pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
-    this.ngRedux.dispatch(this.actions.loadDataUnitPreview(state.activeProject.pk_project, pkEntity, pkUiContext))
+    if (!(((state || {}).activeProject || {}).dataUnitPreviews || {})[pkEntity] && !forceReload) {
+      const pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+      this.ngRedux.dispatch(this.actions.loadDataUnitPreview(state.activeProject.pk_project, pkEntity, pkUiContext))
+    }
   }
 
 }

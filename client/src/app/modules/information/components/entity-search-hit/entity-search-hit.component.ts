@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ActiveProjectService, IAppState } from 'app/core';
+import { NgRedux } from '@angular-redux/store';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { DataUnitPreview, IAppState } from 'app/core';
 import { MentionedEntity } from 'app/modules/annotation';
 import { AppellationLabel } from '../../shared/appellation-label';
-import { NgRedux } from '@angular-redux/store';
 
 @Component({
   selector: 'gv-entity-search-hit',
@@ -133,8 +133,7 @@ export class EntitySearchHitComponent implements OnInit {
   linkClicked() {
     if (this.isInProject) {
       this.open();
-    }
-    else {
+    } else {
       this.add();
     }
   }

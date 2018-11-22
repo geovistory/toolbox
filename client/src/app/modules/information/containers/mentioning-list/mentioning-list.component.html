@@ -1,3 +1,52 @@
-<p>
-  mentioning-list works!
-</p>
+<div class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline">
+  <div class="gv-grow-1">
+    <!-- <i class="fa fa-lightbulb-o"></i> -->
+    Mentioned Entities
+  </div>
+  <!-- Step 1 for adding a new property -->
+  <button class="btn btn-sm btn-link" (click)="startCreate()">
+    <i class="fa fa-plus"></i> Add
+  </button>
+</div>
+
+
+<!-- List -->
+
+<div *ngIf="!(create$ |async)">
+
+  <ngx-table [configuration]="tableConfiguration" [data]="data" [columns]="columns">
+    <ng-template let-row let-index="index">
+      <td>
+        {{row?.mentionedEntityString}}
+      </td>
+      <td>
+        {{row?.sourceEntityString}}
+      </td>
+      <td>
+        {{row?.sectionEntityString}}
+      </td>
+    </ng-template>
+  </ngx-table>
+
+</div>
+
+<!-- Create -->
+
+<div *ngIf="(create$ |async)">
+
+  <form [formGroup]="formGroup" class="gv-grow-1 mt-3">
+
+    <gv-mentioning-create-ctrl formControlName="mentioningCreateCtrl" [sourceEntity]="(sourceEntity$|async)"
+      [sectionEntity]="(sectionEntity$|async)"></gv-mentioning-create-ctrl>
+
+    <button class="btn btn-primary mt-3 mr-2" type="submit" [disabled]="formGroup.invalid" (click)="submit()">
+      Create
+    </button>
+
+    <button class="btn btn-secondary mt-3" type="button" (click)="stopCreate()">
+      Cancel
+    </button>
+
+  </form>
+
+</div>

@@ -1,4 +1,4 @@
-<div class="gv-search-hit">
+<div class="gv-search-hit" dnd-draggable [dragEnabled]="true" [dragData]="persistentItem.preview">
   <div class="gv-search-hit-header">
     <div class="d-flex">
       <div class="gv-grow-1">
@@ -34,11 +34,12 @@
       <button type="button" name="button" (click)="add()" class="btn btn-primary btn-sm" *ngIf="!isInProject">Add ...</button>
     </div>
     <div *ngIf="repositorySearch && selectRoleRange">
-        <button type="button" name="button" (click)="open()" class="btn btn-primary btn-sm" *ngIf="isInProject">Select</button>
-        <button type="button" name="button" (click)="add()" class="btn btn-primary btn-sm" *ngIf="!isInProject">Select</button>
-         </div>
+      <button type="button" name="button" (click)="open()" class="btn btn-primary btn-sm" *ngIf="isInProject">Select</button>
+      <button type="button" name="button" (click)="add()" class="btn btn-primary btn-sm" *ngIf="!isInProject">Select</button>
+    </div>
     <div *ngIf="selectingMentionedEntities">
-      <button type="button" name="button" (click)="selectAsMentioned()" class="btn btn-success btn-sm">Select as mentioned</button>
+      <button type="button" name="button" (click)="selectAsMentioned()" class="btn btn-success btn-sm">Select as
+        mentioned</button>
     </div>
   </div>
 </div>

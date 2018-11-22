@@ -141,6 +141,8 @@ import { TextPropertyFieldAPIEpics } from './containers/text-property-field/api/
 import { MentioningListComponent } from './containers/mentioning-list/mentioning-list.component';
 import { MentioningCreateCtrlComponent } from './components/mentioning-create-ctrl/mentioning-create-ctrl.component';
 import { TableModule } from 'ngx-easy-table';
+import { MentioningListAPIActions } from './containers/mentioning-list/api/mentioning-list.actions';
+import { MentioningListAPIEpics } from './containers/mentioning-list/api/mentioning-list.epics';
 
 
 
@@ -366,6 +368,8 @@ import { TableModule } from 'ngx-easy-table';
     ValidationService,
 
     MentionedEntityCtrlActions,
+    MentioningListAPIActions,
+    MentioningListAPIEpics,
     CreateOrAddPeItAPIActions,
     CreateOrAddPeItAPIEpics,
     PeItSearchExistingAPIActions,

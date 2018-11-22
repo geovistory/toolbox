@@ -161,7 +161,9 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
         }
       })
 
+    // Listen to the entity pks of the sections
     this.listData$ = this.pkSections$.pipe(filter(pks => pks !== undefined), mergeMap(pks => {
+
       // update the dataUnitPreview
       pks.forEach(pk => { this.projectService.loadDataUnitPreview(pk); });
 

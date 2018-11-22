@@ -72,7 +72,8 @@
         "findComplex",
         "findOrCreateInfEntityAssociation",
         "nestedObject",
-        "queryByParams"
+        "queryByParams",
+        "mentioningsOfSection"
       ]
     }
   ],
@@ -249,6 +250,115 @@
       "description": "Find entity associations by params.",
       "http": {
         "path": "/find-by-params",
+        "verb": "get"
+      }
+    },
+    "nestedObject": {
+      "accepts": [
+        {
+          "arg": "ofProject",
+          "type": "boolean",
+          "required": true,
+          "description": "if true, finds project version. if false, finds repo version.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the Project. If provided and ofProject=false, makes a left join with project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the entity association (pk_entity)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkRangeEntity",
+          "type": "number",
+          "required": false,
+          "description": "Foreign Key of the entity association pointing to the range entity (fk_range_entity)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkDomainEntity",
+          "type": "number",
+          "required": false,
+          "description": "Foreign Key of the entity association pointing to the domain entity (fk_domain_entity)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkProperty",
+          "type": "number",
+          "required": false,
+          "description": "Foreign Key of the entity association pointing to the property (fk_property)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfEntityAssociation",
+        "root": true
+      },
+      "description": "Get e nested object of all information about the found entity associations.",
+      "http": {
+        "path": "/nested-object",
+        "verb": "get"
+      }
+    },
+    "mentioningsOfSection": {
+      "accepts": [
+        {
+          "arg": "ofProject",
+          "type": "boolean",
+          "required": true,
+          "description": "if true, finds project version. if false, finds repo version.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the Project. If provided and ofProject=false, makes a left join with project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the entity association (pk_entity)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "InfEntityAssociation",
+        "type": "array",
+        "root": true
+      },
+      "description": "Find mentionings of section (F2 Expression).",
+      "http": {
+        "path": "/mentionings-of-section",
         "verb": "get"
       }
     }
