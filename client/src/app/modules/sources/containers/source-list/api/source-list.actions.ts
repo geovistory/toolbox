@@ -8,6 +8,7 @@ import { ProjectCrm, PeItDetail } from 'app/core';
 type Payload = SourceList;
 interface MetaData {
   pkEntity?: number;
+  pkSource?: number;
   pkProject?: number;
   crm?: ProjectCrm;
 
@@ -91,9 +92,9 @@ export class SourceListAPIActions {
   })
 
 
-  @dispatch() loadSectionDetails = (pkEntity: number, pkProject: number, crm: ProjectCrm): SourceListAPIAction => ({
+  @dispatch() loadSectionDetails = (pkSource: number, pkEntity: number, pkProject: number, crm: ProjectCrm): SourceListAPIAction => ({
     type: SourceListAPIActions.LOAD_SECTION_DETAILS,
-    meta: { pkEntity, pkProject, crm },
+    meta: { pkSource, pkEntity, pkProject, crm },
     payload: null
   })
 

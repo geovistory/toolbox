@@ -1,7 +1,7 @@
-import { Component, EventEmitter, forwardRef, OnInit, OnDestroy, Output, Input } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { NgRedux } from '@angular-redux/store';
-import { IAppState, InfEntityAssociation, DataUnitPreview, InfChunk, ComConfig } from 'app/core';
+import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { DataUnitPreview, IAppState, InfChunk, InfEntityAssociation, ProjectCrm, U } from 'app/core';
 import { Subject } from 'rxjs';
 import { DfhConfig } from '../../shared/dfh-config';
 
@@ -86,15 +86,40 @@ export class MentioningCreateCtrlComponent implements OnInit, OnDestroy, Control
       )
     ) {
       const rangeEntity = this.chunkEntity || this.sectionEntity || this.sourceEntity;
+      const rangeClass = this.chunkEntity ? DfhConfig.CLASS_PK_CHUNK : (this.sectionEntity || this.sourceEntity).fk_class;
       const ea = new InfEntityAssociation({
         fk_domain_entity: this.mentionedEntity.pk_entity,
         fk_range_entity: rangeEntity.pk_entity,
-        fk_property: DfhConfig.PROPERTY_PK_IS_MENTIONED_IN
+        fk_property: this.getFkProperty(this.mentionedEntity.fk_class, rangeClass)
       })
       this.onChange(ea)
     } else {
       this.onChange(null)
     }
+  }
+
+
+  getFkProperty(domainClass, rangeClass): number {
+    const classes = this.ngRedux.getState().activeProject.crm.classes;
+
+    for (const pkClass in classes) {
+      if (classes.hasOwnProperty(pkClass)) {
+        const klass = classes[pkClass];
+
+        for (const key in klass.propertyFields) {
+          if (klass.propertyFields.hasOwnProperty(key)) {
+            const property = klass.propertyFields[key].property;
+            if (
+              property.dfh_has_domain == domainClass &&
+              property.dfh_has_range == rangeClass &&
+              property.dfh_fk_property_of_origin === DfhConfig.PROPERTY_OF_ORIGIN_PK_IS_MENTIONED_IN
+            ) return property.dfh_pk_property;
+          }
+        }
+      }
+    }
+
+
   }
 
   onDropMentionedEntity(entity) {

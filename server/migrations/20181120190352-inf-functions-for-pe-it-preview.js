@@ -192,7 +192,7 @@ exports.up = function (db, callback) {
       from data_for_history.class as c
       inner join string as s on s.fk_class = c.dfh_pk_class
       inner join data_for_history.class_profile_view as cpv on c.dfh_pk_class = cpv.dfh_fk_class
-      left join data_for_history.label as l on l.dfh_fk_class = c.dfh_pk_class
+      left join data_for_history.label as l on l.dfh_fk_class = c.dfh_pk_class AND l.com_fk_system_type = 184
       LIMIT 1
     ),
     final_select as (

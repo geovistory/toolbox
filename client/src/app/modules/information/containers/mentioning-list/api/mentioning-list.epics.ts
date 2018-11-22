@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions } from 'app/core';
+import { LoadingBarActions, InfEntityAssociationApi } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -8,6 +8,7 @@ import { NotificationsAPIActions } from 'app/core/notifications/components/api/n
 import { MentioningListComponent } from '../mentioning-list.component';
 import { MentioningListAPIActions, MentioningListAPIAction } from './mentioning-list.actions';
 import { ofSubstore } from 'app/core/store/module';
+import { Mentioning } from './mentioning-list.models';
 
 @Injectable()
 export class MentioningListAPIEpics {
@@ -15,20 +16,23 @@ export class MentioningListAPIEpics {
     // private modelApi: any, // <- change the api
     private actions: MentioningListAPIActions,
     private loadingBarActions: LoadingBarActions,
+    private eaApi: InfEntityAssociationApi,
     private notificationActions: NotificationsAPIActions
   ) { }
 
   public createEpics(c: MentioningListComponent): Epic {
-    return combineEpics(this.createLoadMentioningListEpic(c));
+    return combineEpics(
+      this.createLoadMentioningListEpic(c),
+      this.createCreateEpic(c),
+    );
   }
-
-  private createLoadMentioningListEpic(c: MentioningListComponent): Epic {
+  private createCreateEpic(c: MentioningListComponent): Epic {
     return (action$, store) => {
       return action$.pipe(
         /**
          * Filter the actions that triggers this epic
          */
-        ofType(MentioningListAPIActions.LOAD),
+        ofType(MentioningListAPIActions.CREATE),
         filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: MentioningListAPIAction) => new Observable<Action>((globalStore) => {
           /**
@@ -38,36 +42,98 @@ export class MentioningListAPIEpics {
           /**
            * Do some api call
            */
-          // this.modelApi.selectedClassesOfProfile(null) // <- change api call here
-          //   /**
-          //    * Subscribe to the api call
-          //    */
-          //   .subscribe((data) => {
-          //     /**
-          //      * Emit the global action that completes the loading bar
-          //      */
-          //     globalStore.next(this.loadingBarActions.completeLoading());
-          //     /**
-          //      * Emit the local action on loading succeeded
-          //      */
-          //     c.localStore.dispatch(this.actions.loadSucceeded(data));
+          this.eaApi.findOrCreateInfEntityAssociation(c.ngRedux.getState().activeProject.pk_project, action.meta.ea)
+            /**
+             * Subscribe to the api call
+             */
+            .subscribe((data) => {
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              /**
+               * Emit the local action on loading succeeded
+               */
+              c.localStore.dispatch(this.actions.createSucceeded(data[0]));
 
-          //   }, error => {
-          //         /**
-          //   * Emit the global action that shows some loading error message
-          //   */
-          //  globalStore.next(this.loadingBarActions.completeLoading());
-          //  globalStore.next(this.notificationActions.addToast({
-          //    type: 'error',
-          //    options: {
-          //      title: error.message
-          //    }
-          //  }));         
-          //    /**
-          //     * Emit the local action on loading failed
-          //     */
-          //     c.localStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
-          //   })
+            }, error => {
+              /**
+              * Emit the global action that shows some loading error message
+              */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              c.localStore.dispatch(this.actions.createFailed({ status: '' + error.status }))
+            })
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
+  private createLoadMentioningListEpic(c: MentioningListComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(
+          MentioningListAPIActions.LOAD,
+          MentioningListAPIActions.CREATE_SUCCEEDED
+        ),
+        filter(action => ofSubstore(c.basePath)(action)),
+        switchMap((action: MentioningListAPIAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Do some api call
+           */
+          const s = c.localStore.getState();
+          const pkProject = c.ngRedux.getState().activeProject.pk_project;
+          const type = s.mentioningListType;
+          (
+            type === 'ofSection' ? this.eaApi.mentioningsOfSection(true, pkProject, s.sectionEntityPk) :
+              type === 'ofSource' ? this.eaApi.mentioningsOfSection(true, pkProject, s.sourceEntityPk) : // TODO create custom api
+                type === 'ofEntity' ? this.eaApi.mentioningsOfSection(true, pkProject, s.mentionedEntityPk) : null // TODO create custom api
+          )
+            /**
+             * Subscribe to the api call
+             */
+            .subscribe((data: Mentioning[]) => {
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              /**
+               * Emit the local action on loading succeeded
+               */
+              c.localStore.dispatch(this.actions.loadSucceeded(data));
+
+            }, error => {
+              /**
+            * Emit the global action that shows some loading error message
+            */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              c.localStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
+            })
         })),
         takeUntil(c.destroy$)
       )

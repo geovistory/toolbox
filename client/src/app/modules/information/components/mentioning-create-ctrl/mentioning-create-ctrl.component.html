@@ -3,7 +3,7 @@
 
     <!-- Mentioned Entity -->
     <div *ngIf="mentionedEntity">
-      {{mentionedEntity?.entity_label}}
+      {{(mentionedEntity?.type_label || mentionedEntity?.class_label)}} {{mentionedEntity?.entity_label}}
       <button class="btn btn-link-white" *ngIf="!mentionedEntityFixed" (click)="resetMentionedEntity()">
         <i class="fa fa-pencil"></i>
       </button>
@@ -20,7 +20,7 @@
 
     <!-- Source -->
     <div *ngIf="sourceEntity">
-      {{sourceEntity?.entity_label}}
+      {{(sourceEntity?.type_label || sourceEntity?.class_label)}}  {{sourceEntity?.entity_label}}
       <button class="btn btn-link-white" *ngIf="!sourceEntityFixed" (click)="resetSourceEntity()">
         <i class="fa fa-pencil"></i>
       </button>
@@ -28,7 +28,7 @@
 
     <!-- Section -->
     <div *ngIf="sectionEntity">
-      Section: {{sectionEntity?.entity_label}}
+      {{(sectionEntity?.type_label || sectionEntity?.class_label)}}  {{sectionEntity?.entity_label}}
       <button class="btn btn-link-white" *ngIf="!sectionEntityFixed" (click)="resetSectionEntity()">
         <i class="fa fa-pencil"></i>
       </button>

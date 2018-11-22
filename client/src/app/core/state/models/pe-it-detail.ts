@@ -3,6 +3,7 @@ import { TimeLineSettings } from 'app/modules/timeline/models/timeline';
 import { DataUnit } from './data-unit';
 import { SectionList } from 'app/modules/information/containers/section-list/api/section-list.models';
 import { Repros } from 'app/modules/information/containers/repros/api/repros.models';
+import { MentioningList } from 'app/modules/information/containers/mentioning-list/api/mentioning-list.models';
 
 
 export class PeItDetail extends DataUnit {
@@ -97,6 +98,9 @@ export class PeItDetail extends DataUnit {
 
     // reproductions of a section
     repros?: Repros;
+
+    // mentioned entities
+    mentionedEntities?: MentioningList;
 
     /** Timeline */
     timeLineSettings?: TimeLineSettings;

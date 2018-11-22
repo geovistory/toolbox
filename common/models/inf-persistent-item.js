@@ -334,11 +334,11 @@ module.exports = function (InfPersistentItem) {
       queryString,
       limit,
       offset,
-      projectId,
-      ...pkClasses
+      projectId
     ];
 
-    const pkClassParamNrs = pkClasses.map((c, i) => '$' + (i + 5)).join(', ');
+    const pkClassParamNrs = pkClasses.map((c, i) => '$' + (i + params.length + 1)).join(', ');
+    params = [...params, ...pkClasses]
 
     var sql_stmt = `
     WITH
@@ -394,7 +394,8 @@ module.exports = function (InfPersistentItem) {
     appellation_labels,
     ts_headline(appellation_string, q),
     appellation_string,
-    projects_array as projects
+    projects_array as projects,
+    row_to_json(information.queryPeItPreview($4,pi.pk_entity,45)) as preview
     FROM
     (
       SELECT
@@ -1518,7 +1519,7 @@ module.exports = function (InfPersistentItem) {
   }
 
 
-  InfPersistentItem.preview = function(pk_project, pk_entity, pk_ui_context, cb){
+  InfPersistentItem.preview = function (pk_project, pk_entity, pk_ui_context, cb) {
     const sql_stmt = 'select * from information.queryPeItPreview($1,$2,$3)';
     const params = [pk_project, pk_entity, pk_ui_context];
     const connector = InfPersistentItem.dataSource.connector;

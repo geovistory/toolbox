@@ -150,16 +150,7 @@
       <div class="d-flex flex-column gv-grow-1" style="overflow:hidden">
 
         <div class="gv-flex-fh" *ngIf="(showMentionedEntities$ | async)">
-          <div class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline">
-            <div class="gv-grow-1">
-              <!-- <i class="fa fa-lightbulb-o"></i> -->
-              Mentioned Entities
-            </div>
-            <!-- Step 1 for adding a new property -->
-            <button class="btn btn-sm btn-link">
-              <i class="fa fa-plus"></i> Add
-            </button>
-          </div>
+          <gv-mentioning-list [basePath]="basePath.concat('mentionedEntities')"></gv-mentioning-list>
         </div>
 
         <div class="gv-flex-fh" *ngIf="(showAssertions$ | async)">
