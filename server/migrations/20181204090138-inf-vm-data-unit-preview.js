@@ -1,0 +1,453 @@
+'use strict';
+
+var dbm;
+var type;
+var seed;
+
+/**
+  * We receive the dbmigrate dependency from dbmigrate initially.
+  * This enables us to not have to rely on NODE_PATH.
+  */
+exports.setup = function (options, seedLink) {
+  dbm = options.dbmigrate;
+  type = dbm.dataType;
+  seed = seedLink;
+};
+
+exports.up = function (db, callback) {
+  const sql = `
+    ------------------------------------------------------------------------------------------------------------
+    -- VIEW that gets a class preview (with label)
+    ------------------------------------------------------------------------------------------------------------
+
+    CREATE OR REPLACE VIEW information.v_class_preview AS
+    SELECT DISTINCT ON (dfh_pk_class)
+            CASE
+                WHEN l.dfh_label IS NOT NULL THEN l.dfh_label::character varying
+                ELSE cpv.dfh_class_standard_label
+            END AS class_label,
+            CASE
+                WHEN cpv.dfh_fk_system_type = 9 THEN 'teEn'::text
+                WHEN cpv.dfh_fk_system_type = 8 THEN 'peIt'::text
+                ELSE NULL::text
+            END AS entity_type,
+        c.dfh_pk_class
+      FROM data_for_history.class c
+        JOIN data_for_history.class_profile_view cpv ON c.dfh_pk_class = cpv.dfh_fk_class
+        LEFT JOIN data_for_history.label l ON l.dfh_fk_class = c.dfh_pk_class AND l.com_fk_system_type = 184
+      ORDER BY dfh_pk_class, l.dfh_label; -- This will prefer custom labels over dfh_class_standard_label in distinct clause
+
+
+
+
+
+    ------------------------------------------------------------------------------------------------------------
+    -- VIEW that gets all the labels/strings per teEn in the repo version
+    ------------------------------------------------------------------------------------------------------------
+
+    CREATE OR REPLACE VIEW information.v_te_en_strings_per_field_repo AS 
+      SELECT 
+      teen.pk_entity,
+      teen.fk_class,
+      teen_field.fk_property,
+      teen_field.field_order,
+      r.fk_entity,
+      r.rank_for_te_ent as rank,
+      CASE 
+        WHEN field_order=0 THEN COALESCE(appe.string, lang.notes) 
+        ELSE null
+      END	 as string_0,
+      CASE 
+        WHEN field_order=1 THEN COALESCE(appe.string, lang.notes) 
+        ELSE null
+      END as string_1,
+      COALESCE(appe.string, lang.notes) as all_strings
+
+      -- teen
+      from information.v_temporal_entity as teen
+
+      -- field
+      INNER JOIN information.v_ordered_fields_per_class teen_field on teen_field.fk_class = teen.fk_class
+
+      -- role
+      LEFT JOIN information.v_role as r
+        on teen_field.fk_property = r.fk_property
+        and teen.pk_entity = r.fk_temporal_entity
+    
+      -----------------------------------------------------------
+      -- get the strings of all tables connected to teen via role-fk_entity
+
+      --   appellation
+      LEFT JOIN information.v_appellation as appe
+        ON r.fk_entity = appe.pk_entity
+      --   language
+      LEFT JOIN information.v_language as lang
+        ON r.fk_entity = lang.pk_entity
+      --   time_primitive
+      --   place
+      --   persistent_item
+      --   temporal_entity
+      -----------------------------------------------------------
+
+
+      -----------------------------------------------------------
+      -- get the tables connected directly to teen
+      --   text_property
+      -----------------------------------------------------------
+      WHERE (	r.range_max_quantifier = -1 OR r.rank_for_te_ent <=	r.range_max_quantifier )
+      AND r.is_in_project_count > 0
+      ORDER BY field_order, rank_for_te_ent;
+
+
+
+
+
+
+      ------------------------------------------------------------------------------------------------------------
+      -- VIEW that gets all the labels/strings per teEn and project
+      ------------------------------------------------------------------------------------------------------------
+
+      CREATE VIEW information.v_te_en_strings_per_field_and_project AS 
+      SELECT 
+      epr.fk_project,
+      teen.pk_entity,
+      teen.fk_class,
+      teen_field.fk_property,
+      teen_field.field_order,
+      r.fk_entity,
+      epr2.ord_num,
+      CASE 
+        WHEN field_order=0 THEN COALESCE(appe.string, lang.notes) 
+        ELSE null
+      END	 as string_0,
+      CASE 
+        WHEN field_order=1 THEN COALESCE(appe.string, lang.notes) 
+        ELSE null
+      END as string_1,
+      COALESCE(appe.string, lang.notes) as all_strings
+
+      -- teen
+      from information.v_temporal_entity as teen
+      INNER JOIN  information.entity_version_project_rel as epr on epr.fk_entity = teen.pk_entity AND epr.is_in_project = true
+
+      -- field
+      INNER JOIN information.v_ordered_fields_per_class teen_field on teen_field.fk_class = teen.fk_class
+
+      -- role
+      LEFT JOIN information.v_role as r
+        on teen_field.fk_property = r.fk_property
+        and teen.pk_entity = r.fk_temporal_entity
+        LEFT JOIN information.entity_version_project_rel as epr2 
+          on epr2.fk_entity = r.pk_entity 
+          and epr2.fk_project = epr.fk_project
+          and epr2.is_in_project = true
+
+      -----------------------------------------------------------
+      -- get the strings of all tables connected to teen via role-fk_entity
+
+      --   appellation
+      LEFT JOIN information.v_appellation as appe
+        ON r.fk_entity = appe.pk_entity
+      --   language
+      LEFT JOIN information.v_language as lang
+        ON r.fk_entity = lang.pk_entity
+      --   time_primitive
+      --   place
+      --   persistent_item
+      --   temporal_entity
+      -----------------------------------------------------------
+
+
+      -----------------------------------------------------------
+      -- get the tables connected directly to teen
+      --   text_property
+      -----------------------------------------------------------
+      ORDER BY field_order;
+
+
+
+      ------------------------------------------------------------------------------------------------------------
+      -- VIEW that unions TeEn project and repo version
+      ------------------------------------------------------------------------------------------------------------
+        
+      CREATE OR REPLACE VIEW information.v_te_en_preview as
+      WITH teen_with_label as ( 
+      select 
+      fk_project,
+      pk_entity,
+      fk_class,
+      string_agg(string_0, ' ') as entity_label,
+      string_agg(string_1, ' ') as entity_label_2,
+      string_agg(all_strings, ', ' ORDER BY field_order) || '.' as full_text
+      from  information.v_te_en_strings_per_field_and_project
+      Group By fk_project, pk_entity, fk_class
+      UNION 
+      select 
+      null as fk_project,
+      pk_entity,
+      fk_class,
+      string_agg(string_0, ' ') as entity_label,
+      string_agg(string_1, ' ') as entity_label_2,
+      string_agg(all_strings, ', ' ORDER BY field_order) || '.' as full_text
+      from  information.v_te_en_strings_per_field_repo
+      Group By pk_entity, fk_class
+      )
+      SELECT DISTINCT
+      teen_with_label.fk_project,
+      pk_entity,
+      fk_class,
+      entity_label,
+      full_text
+      FROM teen_with_label;
+
+
+
+
+
+      ------------------------------------------------------------------------------------------------------------
+      -- VIEW that gets all the labels/strings per peIt in the repo version
+      ------------------------------------------------------------------------------------------------------------
+     
+      CREATE OR REPLACE VIEW information.v_pe_it_strings_per_field_repo AS 
+      WITH pi_role as (
+        SELECT * 
+        FROM information.v_role as r
+        WHERE ( r.domain_max_quantifier = -1 OR	r.rank_for_pe_it <= r.domain_max_quantifier)
+        AND r.is_in_project_count > 0 
+      )
+      SELECT DISTINCT
+        peit.pk_entity,
+        peit.fk_class,
+        peit_field.fk_property,
+        peit_field.field_order,
+        r.fk_entity,
+        r.fk_temporal_entity,
+        ROW_NUMBER () OVER (
+         PARTITION BY peit.pk_entity
+         ORDER BY field_order, r.rank_for_pe_it 
+         ) as rank,
+        r.range_max_quantifier,
+        CASE 
+          WHEN field_order=0 THEN COALESCE(teen_preview.entity_label, txt_prop.string )-- add text_property here 
+          ELSE null
+        END	as entity_label,
+        COALESCE(teen_preview.full_text) as all_strings
+      
+        -- peit
+        from information.v_persistent_item as peit
+      
+        -- field
+        INNER JOIN information.v_ordered_fields_per_class peit_field on peit_field.fk_class = peit.fk_class
+      
+        -- role
+        LEFT JOIN pi_role as r
+          on peit_field.fk_property = r.fk_property
+          and peit.pk_entity = r.fk_entity
+      
+        -----------------------------------------------------------
+        -- get the strings of the teen connected to peit via role
+        
+        --   temporal_entity
+        LEFT JOIN information.v_te_en_preview as teen_preview
+          ON r.fk_temporal_entity = teen_preview.pk_entity
+          AND teen_preview.fk_project IS NULL
+        -----------------------------------------------------------
+      
+      
+        -----------------------------------------------------------
+        -- get the tables connected directly to peit
+        --   text_property
+        -----------------------------------------------------------
+        LEFT JOIN  
+         information.v_text_property txt_prop ON txt_prop.fk_concerned_entity = peit.pk_entity 
+         
+        
+        --WHERE peit.pk_entity = 80526
+        ORDER BY pk_entity, field_order;
+
+
+        ------------------------------------------------------------------------------------------------------------
+        -- VIEW that gets all the labels/strings per PeIt and project
+        ------------------------------------------------------------------------------------------------------------
+         
+        CREATE OR REPLACE VIEW information.v_pe_it_strings_per_field_and_project AS
+        SELECT DISTINCT epr.fk_project,
+            peit.pk_entity,
+            peit.fk_class,
+            peit_field.fk_property,
+            peit_field.field_order,
+            r.fk_entity,
+            r.fk_temporal_entity,
+            epr2.ord_num,
+          ROW_NUMBER () OVER (
+          PARTITION BY peit.pk_entity, epr.fk_project
+          ORDER BY field_order, epr2.ord_num
+          ) as rank,
+          CASE
+            WHEN peit_field.field_order = 0 THEN COALESCE(teen_preview.entity_label, txt_prop.string)
+            ELSE NULL::text
+          END AS entity_label,
+            COALESCE(teen_preview.full_text, txt_prop.string) AS all_strings
+          -- peit
+            FROM information.v_persistent_item peit
+            JOIN information.entity_version_project_rel epr ON epr.fk_entity = peit.pk_entity
+          
+          -- field
+            JOIN information.v_ordered_fields_per_class peit_field ON peit_field.fk_class = peit.fk_class
+          -- role
+            LEFT JOIN information.v_role r ON peit_field.fk_property = r.fk_property AND peit.pk_entity = r.fk_entity
+            LEFT JOIN information.entity_version_project_rel epr2 ON epr2.fk_entity = r.pk_entity AND epr2.fk_project = epr.fk_project
+          
+          -----------------------------------------------------------
+          -- get the strings of the teen connected to peit via role
+          --   temporal_entity
+            LEFT JOIN information.v_te_en_preview teen_preview ON r.fk_temporal_entity = teen_preview.pk_entity AND teen_preview.fk_project = epr.fk_project
+          -----------------------------------------------------------
+
+
+          -----------------------------------------------------------
+          -- get the tables connected directly to peit
+          --   text_property
+          LEFT JOIN (
+            SELECT * FROM information.v_text_property  as t
+            LEFT JOIN information.entity_version_project_rel epr3 ON epr3.fk_entity = t.pk_entity 
+          ) as txt_prop 
+          ON txt_prop.fk_concerned_entity = peit.pk_entity 
+          AND txt_prop.fk_project = epr.fk_project
+          AND txt_prop.fk_class_field = peit_field.fk_class_field
+          -----------------------------------------------------------
+          ORDER BY fk_project, field_order, ord_num;
+
+
+
+          ------------------------------------------------------------------------------------------------------------
+          -- VIEW that unions PeIt project and repo version
+          ------------------------------------------------------------------------------------------------------------
+    
+          CREATE OR REPLACE VIEW information.v_pe_it_preview as
+          WITH peit_with_label as ( 
+            SELECT
+            fk_project,
+            pk_entity,
+            fk_class,
+            array_to_string((array_agg(entity_label order by rank))[1:1], '; ') as entity_label,
+            string_agg(all_strings, ' ') as full_text
+            from information.v_pe_it_strings_per_field_and_project as strings
+            WHERE (entity_label is not null OR strings.all_strings is not null)
+            Group By fk_project, pk_entity, fk_class
+            
+            UNION
+            
+            SELECT
+            null::integer as fk_project,
+            pk_entity,
+            fk_class,
+            array_to_string((array_agg(entity_label order by rank))[1:1], '; ') as entity_label,
+            string_agg(all_strings, ' ') as full_text
+            from information.v_pe_it_strings_per_field_repo as strings
+            WHERE (entity_label is not null OR strings.all_strings is not null)
+            Group By fk_project, pk_entity, fk_class
+          )
+          SELECT DISTINCT
+          peit_with_label.fk_project,
+          pk_entity,
+          fk_class,
+          entity_label,
+          full_text
+          FROM peit_with_label
+          ORDER BY fk_project;
+
+
+
+
+          ------------------------------------------------------------------------------------------------------------
+          -- MATERIALIZED VIEW for data_unit preview
+          ------------------------------------------------------------------------------------------------------------
+
+          CREATE MATERIALIZED VIEW information.vm_data_unit_preview as
+          WITH type_info_per_project AS (
+                  select distinct ea.fk_domain_entity, type_preview.fk_project, type_preview.entity_label as type_label
+                  from information.entity_association as ea
+                  inner join information.entity_version_project_rel as epr on ea.pk_entity = epr.fk_entity AND epr.is_in_project = true
+                  inner join data_for_history.property as p on ea.fk_property = p.dfh_pk_property
+              inner join information.v_pe_it_preview as type_preview on ea.fk_range_entity = type_preview.pk_entity and epr.fk_project = type_preview.fk_project
+                  where p.dfh_pk_property IN (1110,1190,1205,1206,1214,1204,1066)
+          ),
+          type_info_per_repo AS (
+                  select distinct ea.fk_domain_entity, type_preview.entity_label as type_label,  ea.rank_for_domain
+                  from information.v_entity_association as ea
+                  inner join data_for_history.property as p on ea.fk_property = p.dfh_pk_property
+              inner join information.v_pe_it_preview as type_preview on ea.fk_range_entity = type_preview.pk_entity
+                  where p.dfh_pk_property IN (1110,1190,1205,1206,1214,1204,1066) AND   ea.rank_for_domain = 1
+          ),
+          data_unit as (
+            select 
+            fk_project,
+            pk_entity,
+            fk_class,
+            entity_label,
+            full_text
+            from information.v_pe_it_preview 
+            UNION
+            select
+            fk_project,
+            pk_entity,
+            fk_class,
+            entity_label,
+            full_text
+            from information.v_te_en_preview 
+          )
+          select 
+            data_unit.fk_project,
+            data_unit.pk_entity,
+            data_unit.fk_class,
+            data_unit.entity_label,
+            class_info.class_label,
+            class_info.entity_type,
+            COALESCE(type_info_per_project.type_label, type_info_per_repo.type_label),
+            data_unit.full_text
+          from data_unit
+          LEFT JOIN type_info_per_project 
+            on type_info_per_project.fk_domain_entity = data_unit.pk_entity 
+            and data_unit.fk_project = type_info_per_project.fk_project
+          LEFT JOIN type_info_per_repo
+            on type_info_per_repo.fk_domain_entity = data_unit.pk_entity 
+            and data_unit.fk_project is null
+
+          INNER JOIN information.v_class_preview as class_info on class_info.dfh_pk_class = data_unit.fk_class;
+
+          CREATE UNIQUE INDEX vm_data_unit_preview_unique
+            ON information.vm_data_unit_preview (pk_entity, fk_project);
+  `
+  db.runSql(sql, callback)
+
+};
+
+exports.down = function (db, callback) {
+  const sql = `
+    DROP MATERIALIZED VIEW IF EXISTS information.vm_data_unit_preview CASCADE;
+
+    DROP VIEW IF EXISTS information.v_pe_it_preview CASCADE;
+
+    DROP VIEW IF EXISTS information.v_te_en_preview CASCADE;
+
+    DROP VIEW IF EXISTS information.v_pe_it_strings_per_field_and_project CASCADE;
+
+    DROP VIEW IF EXISTS information.v_pe_it_strings_per_field_repo CASCADE;
+
+    DROP VIEW IF EXISTS information.v_te_en_strings_per_field_and_project CASCADE;
+
+    DROP VIEW IF EXISTS information.v_te_en_strings_per_field_repo CASCADE;
+
+    DROP VIEW IF EXISTS information.v_class_preview;
+  `
+  db.runSql(sql, callback)
+};
+
+
+exports._meta = {
+  "version": 1
+};
+
+
+

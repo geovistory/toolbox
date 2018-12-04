@@ -12,7 +12,7 @@
       <div class="gv-grow-1">
 
 
-        <gv-leaf-pe-it-view *ngIf="roleState._leaf_peIt" [pkEntity]="roleState.role.fk_entity" [basePath]="(basePath.concat('_leaf_peIt'))" [isCircular]="(isCircular$|async)"></gv-leaf-pe-it-view>
+        <gv-leaf-pe-it-view *ngIf="roleState._leaf_peIt" [basePath]="(basePath.concat('_leaf_peIt'))" [isCircular]="(isCircular$|async)"></gv-leaf-pe-it-view>
 
         <gv-appellation-view *ngIf="roleState._appe" class="gv-grow-1" [appellation]="roleState._appe.appellation"></gv-appellation-view>
 

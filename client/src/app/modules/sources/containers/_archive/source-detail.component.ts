@@ -249,7 +249,7 @@
 //           const delta = JSON.parse(chunk.js_quill_data);
 
 //           delta.ops.forEach(op => {
-//             if (op.attributes && op.attributes.node && !(op.attributes.node == '_dots_')) {
+//             if (op.attributes && op.attributes.node && !(op.attributes.node == '_')) {
 //               const count = nodes.get(op.attributes.node) ? nodes.get(op.attributes.node) : 0;
 //               nodes.set(op.attributes.node, (count + 1))
 //             }

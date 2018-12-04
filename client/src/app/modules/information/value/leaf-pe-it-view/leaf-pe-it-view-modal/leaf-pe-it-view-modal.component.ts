@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { InfPersistentItemApi, InfPersistentItem, IAppState } from 'app/core';
 
 import { PeItDetail } from 'app/core/state/models';
 import { NgForm } from '@angular/forms';
 import { NgRedux } from '../../../../../../../node_modules/@angular-redux/store';
-
+import { Observable, Subject } from 'rxjs';
 
 
 @Component({
@@ -13,11 +13,17 @@ import { NgRedux } from '../../../../../../../node_modules/@angular-redux/store'
   templateUrl: './leaf-pe-it-view-modal.component.html',
   styleUrls: ['./leaf-pe-it-view-modal.component.scss']
 })
-export class LeafPeItViewModalComponent implements OnInit {
+export class LeafPeItViewModalComponent implements OnInit, OnDestroy {
 
-  @Input() parentPath: string[];
-  @Input() isInProject: boolean;
-  @Input() peItState: PeItDetail;
+  // emits true on destroy of this component
+  destroy$ = new Subject<boolean>();
+
+  @Input() pkEntity: number;
+  isInProject: boolean;
+  peItModal$: Observable<PeItDetail>;
+  peItState: PeItDetail;
+
+  loading$: Observable<boolean>
 
   addButtonDisabled: boolean;
   peItToAdd: InfPersistentItem;
@@ -30,9 +36,20 @@ export class LeafPeItViewModalComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.peItModal$ = this.ngRedux.select(['activeProject', 'peItModals', this.pkEntity]);
+    this.loading$ = this.ngRedux.select(['activeProject', 'peItModals', this.pkEntity, 'loading']);
 
+    this.peItModal$.takeUntil(this.destroy$).subscribe(p => {
+      this.peItState = p;
+      if (
+        this.peItState && this.peItState.peIt &&
+        this.peItState.peIt.entity_version_project_rels &&
+        this.peItState.peIt.entity_version_project_rels.length
+      ) {
+        this.isInProject = true;
+      } else this.isInProject = false;
+    })
   }
-
 
   formChange(form: NgForm) {
     this.addButtonDisabled = form.invalid;
@@ -53,6 +70,12 @@ export class LeafPeItViewModalComponent implements OnInit {
 
   open() {
     this.modal.close()
+  }
+
+  ngOnDestroy() {
+    // this.destroy();
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
 

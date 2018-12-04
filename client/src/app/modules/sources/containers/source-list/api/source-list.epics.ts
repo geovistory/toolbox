@@ -56,8 +56,8 @@ export class SourceListAPIEpics {
                 showMentionedEntities: true,
                 showMentionedEntitiesToggle: true,
 
-                showAssertions: true,
-                showAssertionsToggle: true,
+                showAssertions: false,
+                showAssertionsToggle: false,
 
                 showSectionList: true,
                 showSectionListToggle: true,
@@ -136,7 +136,7 @@ export class SourceListAPIEpics {
                 showMentionedEntitiesToggle: true,
 
                 showAssertions: false,
-                showAssertionsToggle: true,
+                showAssertionsToggle: false,
 
                 mentionedEntities: {
                   mentioningListType: 'ofSection',

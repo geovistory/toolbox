@@ -11,9 +11,11 @@ import { MentioningListAPIEpics } from './api/mentioning-list.epics';
 import { MentioningList, MentioningListType, Mentioning } from './api/mentioning-list.models';
 import { mentioningListReducer } from './api/mentioning-list.reducer';
 import { Config, Columns } from 'ngx-easy-table/src/app/ngx-easy-table';
+import { QuillDeltaToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 
 // this is not for state, only for the table view
 export interface MentioningRow extends Mentioning {
+  pk_entity: number;
 
   sourceEntity: DataUnitPreview;
   sectionEntity: DataUnitPreview;
@@ -26,6 +28,9 @@ export interface MentioningRow extends Mentioning {
   chunkEntityString: string;
   mentionedEntityString: string;
 
+  isFocusedInText: boolean;
+  isFocusedInTable: boolean;
+
 }
 
 
@@ -36,7 +41,8 @@ export interface MentioningRow extends Mentioning {
 @Component({
   selector: 'gv-mentioning-list',
   templateUrl: './mentioning-list.component.html',
-  styleUrls: ['./mentioning-list.component.css']
+  styleUrls: ['./mentioning-list.component.css'],
+  providers: [QuillDeltaToStrPipe]
 })
 export class MentioningListComponent extends MentioningListAPIActions implements OnInit, OnDestroy, SubstoreComponent {
 
@@ -59,8 +65,8 @@ export class MentioningListComponent extends MentioningListAPIActions implements
   @select() sourceEntityPk$: Observable<number>;
   @select() sectionEntityPk$: Observable<number>;
   @select() chunkEntityPk$: Observable<number>;
-  @select() mentionedEntityPk$: Observable<number>;
 
+  @select() mentionedEntityPk$: Observable<number>;
 
   sourceEntity$: Observable<DataUnitPreview>;
   sectionEntity$: Observable<DataUnitPreview>;
@@ -78,7 +84,7 @@ export class MentioningListComponent extends MentioningListAPIActions implements
     orderEnabled: true,
     orderEventOnly: false,
     globalSearchEnabled: false,
-    paginationEnabled: true,
+    paginationEnabled: false,
     exportEnabled: false,
     clickEvent: false,
     selectRow: false,
@@ -111,11 +117,8 @@ export class MentioningListComponent extends MentioningListAPIActions implements
     }
   };
 
-  columns: Columns[] = [
-    { key: 'mentionedEntityString', title: 'Mentioned Entity' },
-    { key: 'sourceEntityString', title: 'Source' },
-    { key: 'sectionEntityString', title: 'Section' }
-  ];
+  columns: Columns[];
+  checkedCols = new Map<string, Columns>();
 
   data: MentioningRow[] = [];
 
@@ -125,7 +128,8 @@ export class MentioningListComponent extends MentioningListAPIActions implements
     private epics: MentioningListAPIEpics,
     public ngRedux: NgRedux<IAppState>,
     private projectService: ActiveProjectService,
-    fb: FormBuilder
+    fb: FormBuilder,
+    private quillDeltaToStr: QuillDeltaToStrPipe
   ) {
     super()
     this.mentioningCreateCtrl = new FormControl(null, [Validators.required])
@@ -138,11 +142,38 @@ export class MentioningListComponent extends MentioningListAPIActions implements
     this.localStore = this.ngRedux.configureSubStore(this.basePath, mentioningListReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    this.formGroup.valueChanges.takeUntil(this.destroy$).subscribe(vals => {
+    this.mentioningListType$.pipe(first(), takeUntil(this.destroy$)).subscribe(type => {
+      switch (type) {
+        case 'ofSource':
+          this.columns = [
+            { key: 'mentionedEntityString', title: 'Mentioned Entity', width: '50%' },
+            { key: 'sectionEntityString', title: 'Section', width: '20%' },
+            { key: 'chunkEntityString', title: 'Annotated Text', width: '30%' },
+          ];
+          break;
 
+        case 'ofSection':
+          this.columns = [
+            { key: 'mentionedEntityString', title: 'Mentioned Entity', width: '60%' },
+            { key: 'chunkEntityString', title: 'Annotated Text', width: '40%' },
+          ];
+          break;
+
+        case 'ofEntity':
+          this.columns = [
+            { key: 'sourceEntityString', title: 'Source', width: '50%' },
+            { key: 'sectionEntityString', title: 'Section', width: '20%' },
+            { key: 'chunkEntityString', title: 'Annotated Text', width: '30%' },
+          ];
+          break;
+
+        default:
+          break;
+      }
+
+      this.columns.forEach(c => { this.checkedCols.set(c.key, c) })
     })
 
-    // this.parentDataUnit$ = this.ngRedux.select([...dropLast(1, this.basePath), 'pkEntity']);
 
     // create the dataUnitPreview Observable
     this.sourceEntity$ = this.sourceEntityPk$.pipe(
@@ -155,6 +186,9 @@ export class MentioningListComponent extends MentioningListAPIActions implements
       filter(pk => !!pk),
       mergeMap(pk => this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', pk]))
     )
+
+    // create the InfChunk Observable
+    this.chunkEntity$ = this.ngRedux.select<InfChunk>(['activeProject', 'selectedChunk'])
 
     // create the dataUnitPreview Observable
     this.mentionedEntity$ = this.mentionedEntityPk$.pipe(
@@ -180,12 +214,13 @@ export class MentioningListComponent extends MentioningListAPIActions implements
       ms.forEach(m => {
         if (m.fk_expression_entity) this.projectService.loadDataUnitPreview(m.fk_expression_entity);
         if (m.fk_source_entity) this.projectService.loadDataUnitPreview(m.fk_source_entity);
+        if (m.fk_chunk) this.projectService.loadChunk(m.fk_chunk);
         this.projectService.loadDataUnitPreview(m.fk_domain_entity);
       });
 
       const createString = (p: DataUnitPreview): string => {
         if (!p) return '';
-        return [p.type_label, p.entity_label].join(' ');
+        return [(p.type_label ? p.type_label : p.class_label), p.entity_label].join(' ');
       }
 
       // create the observable of MentioningRow[]
@@ -193,24 +228,29 @@ export class MentioningListComponent extends MentioningListAPIActions implements
         return combineLatest(
           this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', m.fk_expression_entity]),
           this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', m.fk_source_entity]),
-          this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', m.fk_domain_entity])
-        ).map(d => ({
-          chunkEntity: null,
-          chunkEntityString: null,
-          sectionEntity: d[0],
-          sectionEntityString: createString(d[0]),
-          sourceEntity: d[1],
-          sourceEntityString: createString(d[1]),
-          mentionedEntity: d[2],
-          mentionedEntityString: createString(d[2]),
-        } as MentioningRow))
+          this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', m.fk_domain_entity]),
+          this.ngRedux.select<InfChunk>(['activeProject', 'chunks', m.fk_chunk]),
+          this.ngRedux.select<number[]>(['activeProject', 'mentioningsFocusedInText']),
+          this.ngRedux.select<number[]>(['activeProject', 'mentioningsFocusedInTable'])
+        )
+          .map(d => ({
+            pk_entity: m.pk_entity,
+            sectionEntity: d[0],
+            sectionEntityString: createString(d[0]),
+            sourceEntity: d[1],
+            sourceEntityString: createString(d[1]),
+            mentionedEntity: d[2],
+            mentionedEntityString: createString(d[2]),
+            chunkEntity: d[3],
+            chunkEntityString: (!d[3] || !d[3].js_quill_data) ? '' : this.quillDeltaToStr.transform(d[3].js_quill_data),
+            isFocusedInText: (!d[4] ? false : (d[4].indexOf(m.pk_entity) > -1)),
+            isFocusedInTable: (!d[5] ? false : (d[5].indexOf(m.pk_entity) > -1))
+          } as MentioningRow))
       }));
 
     }))
 
     this.listData$.takeUntil(this.destroy$).subscribe(d => this.data = d);
-
-
 
   }
 
@@ -221,9 +261,15 @@ export class MentioningListComponent extends MentioningListAPIActions implements
   }
 
   ngOnDestroy() {
-    this.destroy();
+    // this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+  }
+
+  onRowClicked(row: MentioningRow) {
+    this.projectService.mentioningsFocusedInText([]);
+    if (row.isFocusedInTable) this.projectService.mentioningsFocusedInTable([])
+    else this.projectService.mentioningsFocusedInTable([row.pk_entity])
   }
 
 }

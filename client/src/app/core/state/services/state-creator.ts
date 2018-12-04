@@ -327,6 +327,7 @@ export function createClassField(fieldKey: string, rls: InfRole[], textProps: In
     switch (crm.fieldList[fieldKey].type) {
         case 'ExistenceTimeDetail':
             return createExistenceTimeDetail(new ExistenceTimeDetail({
+                fkClassField: crm.fieldList[fieldKey].fkClassField,
                 toggle: 'expanded',
                 pkUiContext: settings.pkUiContext
 

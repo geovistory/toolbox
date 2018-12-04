@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { InfEntityAssociation, InfDigitalObject } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { TextEditor } from './text-editor.models';
-import { QuillDoc } from 'app/modules/quill';
+import { QuillDoc, Delta } from 'app/modules/quill';
 import { IVersion } from 'app/modules/information/components/version-picker/version-picker.component';
 
 type Payload = TextEditor;
@@ -43,6 +43,8 @@ export class TextEditorAPIActions {
   static readonly CHANGE_VERSION_FAILED = 'TextEditor::CHANGE_VERSION_FAILED';
 
   static readonly SET_READONLY = 'TextEditor::SET_READONLY';
+  static readonly SET_SELECTED_DELTA = 'TextEditor::SET_SELECTED_DELTA';
+  static readonly SET_ANNOTATIONS_VISIBLE = 'TextEditor::SET_ANNOTATIONS_VISIBLE';
 
 
   // static readonly QUILL_DOC_CHANGE = 'TextEditor::QUILL_DOC_CHANGE';
@@ -170,13 +172,25 @@ export class TextEditorAPIActions {
   })
 
   /*********************************************************************
-  *  Method to cancel edit
+  *  Boolean methods
   *********************************************************************/
 
   @dispatch() setReadOnly = (readOnly: boolean): TextEditorAPIAction => ({
     type: TextEditorAPIActions.SET_READONLY,
     meta: null,
     payload: { readOnly }
+  })
+
+  @dispatch() selectDelta = (selectedDelta: Delta): TextEditorAPIAction => ({
+    type: TextEditorAPIActions.SET_SELECTED_DELTA,
+    meta: null,
+    payload: { selectedDelta }
+  })
+
+  @dispatch() setAnnotationsVisible = (annotationsVisible: boolean): TextEditorAPIAction => ({
+    type: TextEditorAPIActions.SET_ANNOTATIONS_VISIBLE,
+    meta: null,
+    payload: { annotationsVisible }
   })
 
   /*********************************************************************

@@ -8,19 +8,23 @@
   </button>
 </div>
 
-<div class="modal-body">
+<div *ngIf="(loading$ |async)" class="modal-body">
+  <i class="fa fa-spinner fa-pulse"></i> Loading
+</div>
 
-<!-- Todo add gv-pe-it-view -->
+<div *ngIf="!(loading$ |async)" class="modal-body">
+
+  <!-- Todo add gv-pe-it-view -->
   <!-- <gv-pe-it-editable [basePath]="parentPath"></gv-pe-it-editable> -->
 
   <!-- <gv-pe-it-add-form  *ngIf="!isInProject" [basePath]="parentPath.concat('_leaf_peIt_modal')" (formChange)="formChange($event)"></gv-pe-it-add-form> -->
 
-  <gv-pe-it-editable [basePath]="parentPath.concat('_leaf_peIt_modal')"></gv-pe-it-editable>
+  <gv-pe-it-editable [basePath]="['activeProject', 'peItModals', pkEntity]"></gv-pe-it-editable>
 
 
 </div>
 
-<div class="modal-footer d-flex flex-column align-items-stretch">
+<div *ngIf="!(loading$ |async)" class="modal-footer d-flex flex-column align-items-stretch">
   <p *ngIf="!isInProject">
     This unit is not yet added to your Project. Do you want to add it to your Project?
   </p>

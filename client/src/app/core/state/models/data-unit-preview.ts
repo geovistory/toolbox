@@ -10,6 +10,8 @@ export class DataUnitPreview {
     type_label: string;
     entity_type: string;
 
+    loading?: boolean;
+
     constructor(data?: DataUnitPreview) {
         Object.assign(this, data);
     }

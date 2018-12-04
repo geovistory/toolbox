@@ -27,7 +27,7 @@
   },
   "validations": [],
   "relations": {
-    "chunk": {
+    "digital_object": {
       "type": "belongsTo",
       "model": "InfDigitalObject",
       "foreignKey": "fk_digital_object",

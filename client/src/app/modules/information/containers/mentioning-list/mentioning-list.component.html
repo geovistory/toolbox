@@ -1,8 +1,15 @@
-<div class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline">
-  <div class="gv-grow-1">
-    <!-- <i class="fa fa-lightbulb-o"></i> -->
-    Mentioned Entities
+<div class="gv-tile-header">
+
+  <div *ngIf="(mentioningListType$|async) === 'ofSource' || (mentioningListType$|async) === 'ofSection'" class="gv-grow-1">
+    <!-- <i class="fa fa-fw gv-icon gv-icon-information-simple"></i> -->
+    <span>Mentioned Entities</span>
   </div>
+
+  <div *ngIf="(mentioningListType$|async) === 'ofEntity'" class="gv-grow-1">
+    <!-- <i class="fa fa-fw gv-icon gv-icon-source"></i> -->
+    <span>Sources & Annotations</span>
+  </div>
+
   <!-- Step 1 for adding a new property -->
   <button class="btn btn-sm btn-link" (click)="startCreate()">
     <i class="fa fa-plus"></i> Add
@@ -12,18 +19,28 @@
 
 <!-- List -->
 
-<div *ngIf="!(create$ |async)">
-
-  <ngx-table [configuration]="tableConfiguration" [data]="data" [columns]="columns">
+<div class="gv-flex-fh" *ngIf="!(create$ |async)">
+  <ngx-table class="sticky-header" [configuration]="tableConfiguration" [data]="data" [columns]="columns">
     <ng-template let-row let-index="index">
-      <td>
-        {{row?.mentionedEntityString}}
+      <td *ngIf="checkedCols.has('mentionedEntityString')" [ngClass]="{'gv-bg-highlight': row.isFocusedInText, 'gv-bg-highlight-2': row.isFocusedInTable}"
+        [ngStyle]="{'flex-basis': checkedCols.get('mentionedEntityString').width}" (click)="onRowClicked(row)">
+        <gv-leaf-pe-it-view *ngIf="row.mentionedEntity?.pk_entity" [pkEntity]="row.mentionedEntity.pk_entity"></gv-leaf-pe-it-view>
       </td>
-      <td>
-        {{row?.sourceEntityString}}
+
+      <td *ngIf="checkedCols.has('sourceEntityString')" [ngClass]="{'gv-bg-highlight': row.isFocusedInText, 'gv-bg-highlight-2': row.isFocusedInTable}"
+        [ngStyle]="{'flex-basis': checkedCols.get('sourceEntityString').width}" (click)="onRowClicked(row)">
+        <gv-leaf-pe-it-view *ngIf="row.sourceEntity?.pk_entity" [pkEntity]="row.sourceEntity.pk_entity" [openIn]="'source'"></gv-leaf-pe-it-view>
       </td>
-      <td>
-        {{row?.sectionEntityString}}
+
+      <td *ngIf="checkedCols.has('sectionEntityString')" [ngClass]="{'gv-bg-highlight': row.isFocusedInText, 'gv-bg-highlight-2': row.isFocusedInTable}"
+        [ngStyle]="{'flex-basis': checkedCols.get('sectionEntityString').width}" (click)="onRowClicked(row)">
+        <gv-leaf-pe-it-view *ngIf="row.sourceEntity?.pk_entity && row.sectionEntity?.pk_entity" [pkEntity]="row.sectionEntity.pk_entity"
+          [sectionParentPk]="row.sourceEntity.pk_entity" [openIn]="'section'"></gv-leaf-pe-it-view>
+      </td>
+
+      <td *ngIf="checkedCols.has('chunkEntityString')" [ngClass]="{'gv-bg-highlight': row.isFocusedInText, 'gv-bg-highlight-2': row.isFocusedInTable}"
+        [ngStyle]="{'flex-basis': checkedCols.get('chunkEntityString').width}" (click)="onRowClicked(row)">
+        <i>"{{row.chunkEntityString}}"</i>
       </td>
     </ng-template>
   </ngx-table>
@@ -32,12 +49,12 @@
 
 <!-- Create -->
 
-<div *ngIf="(create$ |async)">
+<div class="gv-flex-fh" *ngIf="(create$ |async)">
 
   <form [formGroup]="formGroup" class="gv-grow-1 mt-3">
 
-    <gv-mentioning-create-ctrl formControlName="mentioningCreateCtrl" [sourceEntity]="(sourceEntity$|async)"
-      [sectionEntity]="(sectionEntity$|async)"></gv-mentioning-create-ctrl>
+    <gv-mentioning-create-ctrl formControlName="mentioningCreateCtrl" [mentionedEntity]="(mentionedEntity$|async)"
+      [sourceEntity]="(sourceEntity$|async)" [sectionEntity]="(sectionEntity$|async)" [chunkEntity]="(chunkEntity$|async)"></gv-mentioning-create-ctrl>
 
     <button class="btn btn-primary mt-3 mr-2" type="submit" [disabled]="formGroup.invalid" (click)="submit()">
       Create

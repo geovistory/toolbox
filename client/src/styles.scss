@@ -534,6 +534,51 @@ ngb-pagination {
 }
 
 /***************************
+* Granularities from big to small
+*   1. Panel (left, right)
+*   2. Tile (properties, mentioned entities, …)
+*   3. Field (short title, birth, when …)
+****************************/
+
+/***************************
+* Tile Header
+****************************/
+
+.gv-tile {
+    @extend .gv-flex-fh;
+}
+
+.gv-tile-header {
+    @extend .gv-flex-shrink-0;
+    @extend .d-flex;
+    @extend .border-bottom; // @extend .border-top;
+    @extend .border-primary;
+    @extend .align-items-baseline;
+    @extend .mb-0; // background-color: theme-color-level('secondary', -9); // like list-group-item-secondary
+    padding-left: $btn-padding-y-sm;
+    height: calc((#{$btn-border-width} * 2) + (#{$font-size-sm} * #{$btn-line-height-sm}) + (#{$btn-padding-y-sm} * 2) + 1px)
+}
+
+.gv-field {
+    @extend .my-2;
+}
+
+.gv-field-header-label {
+    font-size: $font-size-sm;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: $secondary;
+    margin-bottom: .5rem;
+}
+
+// .gv-field {
+//     /* nested field level 2 */
+//     .gv-field .gv-field-header-label {
+//         font-size: $font-size-xs
+//     }
+// }
+
+/***************************
 * TeEnt
 ****************************/
 
@@ -835,4 +880,143 @@ gv-map {
     font-size: $font-size-lg;
     border: 3px dashed #dcdede95;
     border-radius: $btn-border-radius-lg;
+}
+
+/***************************
+ * Highlighting
+ ***************************/
+
+.gv-bg-highlight {
+    background-color: hsla(271, 68%, 80%, 0.5)
+}
+
+.gv-bg-highlight-2 {
+    background-color: hsla(271, 68%, 80%, 0.9)
+}
+
+/**************************
+* Ngx easy table vertical scroll 
+**************************/
+
+ngx-table.sticky-header {
+    @extend .gv-flex-fh;
+    .ngx-container {
+        @extend .gv-flex-fh;
+    }
+    .ngx-table {
+        @extend .gv-flex-fh;
+    }
+    thead {
+        display: table;
+        th {
+            font-weight: 400;
+        }
+    }
+    tbody {
+        @extend .gv-flex-fh;
+        overflow-y: auto;
+        tr {
+            display: flex;
+            flex-shrink: 0;
+            td {
+                flex-grow: 1;
+                flex-shrink: 0;
+            }
+        }
+    }
+}
+
+/**************************
+* Switch / Toggle Button
+**************************/
+
+.switch {
+    /* Box around the slider */
+    .box {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+        @extend .mr-1;
+    }
+    /* Hide default HTML checkbox */
+    .box input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    /* The slider */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: $gray-300;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+    input:checked+.slider {
+        background-color: $primary;
+    }
+    input:focus+.slider {
+        box-shadow: 0 0 1px $primary;
+    }
+    input:checked+.slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+    .slider.round:before {
+        border-radius: 50%;
+    }
+}
+
+/* Sizes */
+
+$switch-sm-box-border: 2px;
+$switch-sm-box-heigth: calc(#{$input-height-inner-sm} + #{$input-height-border} - (#{$input-padding-y-sm} *2));
+$slider-diameter: calc(#{$switch-sm-box-heigth} - (#{$switch-sm-box-border} *2));
+$slide-distance: calc(#{$slider-diameter} * .5); // Adjust the hight/width ratio
+$switch-sm-box-width: calc((#{$switch-sm-box-border} * 2) + calc(#{$slider-diameter} + #{$slide-distance}));
+// $switch-sm-box-width: calc(#{$switch-sm-box-heigth} * 2);
+.switch.switch-sm {
+    @extend .form-control-sm;
+    margin-bottom: 0;
+    cursor: pointer;
+    .box {
+        height: $switch-sm-box-heigth;
+        width: $switch-sm-box-width;
+    }
+    .slider:before {
+        height: $slider-diameter;
+        width: $slider-diameter;
+        left: $switch-sm-box-border;
+        bottom: $switch-sm-box-border;
+    }
+    input:checked+.slider:before {
+        -webkit-transform: translateX($slide-distance);
+        -ms-transform: translateX($slide-distance);
+        transform: translateX($slide-distance);
+    }
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
 }

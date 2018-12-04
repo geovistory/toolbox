@@ -1,5 +1,5 @@
 <!-- Header -->
-<div class="gv-flex-shrink-0 d-flex border-bottom border-primary align-items-baseline">
+<div class="gv-tile-header">
   <div class="gv-grow-1">
     Reproductions
   </div>
@@ -26,5 +26,5 @@
 
 <!-- Text Repro -->
 <div class="gv-flex-fh mt-2" *ngIf="(showText$|async)">
-  <gv-text-editor class="gv-flex-fh" [basePath]="basePath.concat('textEditor')"></gv-text-editor>
+  <gv-text-editor class="gv-flex-fh" [basePath]="basePath.concat('textEditor')" (annotate)="annotate.emit()"></gv-text-editor>
 </div>

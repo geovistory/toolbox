@@ -15,8 +15,8 @@
 </gv-navbar>
 <div id="edit" class="gv-edit container-fluid">
   <div class="row">
-    <gv-project-edit-panel id="sources" (goToState0Start)="sourcesGoToState0()" (goToState50Start)="sourcesGoToState50()"
-      [stateInput]="sourcesState">
+    <gv-project-edit-panel id="sources" (goToState0Start)="updateUrlQueryParams({'s':'off'})" (goToState50Start)="updateUrlQueryParams({'s':'on'})"
+      [stateInput]="(sourcesState$ | async)">
 
       <div closeBtn>
         <button type="button" name="button" class="btn btn-link text-info" title="Minimize">
@@ -34,8 +34,8 @@
 
     </gv-project-edit-panel>
 
-    <gv-project-edit-panel id="information" (goToState0Start)="informationGoToState0()" (goToState50Start)="informationGoToState50()"
-      [stateInput]="informationState">
+    <gv-project-edit-panel id="information" (goToState0Start)="updateUrlQueryParams({'i':'off'})" (goToState50Start)="updateUrlQueryParams({'i':'on'})"
+      [stateInput]="(informationState$ | async)">
 
       <div closeBtn>
         <button type="button" name="button" class="btn btn-link" title="Minimize">

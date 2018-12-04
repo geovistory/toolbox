@@ -3,7 +3,7 @@
     <div class="d-flex">
       <div class="gv-grow-1">
         <a href class="gv-passive-link" (click)="linkClicked()">
-          {{standardAppellationLabel?.getString()}}
+          <gv-data-unit-preview [preview]="persistentItem.preview"></gv-data-unit-preview>
         </a>
       </div>
       <div class="d-flex">

@@ -87,6 +87,40 @@ module.exports = function (InfEntityAssociation) {
 
     }
 
+    // if the ea has a chunk as the range 
+    if (requestedEa.range_chunk && Object.keys(requestedEa.range_chunk).length > 0) {
+
+      // prepare parameters
+      const InfChunk = InfEntityAssociation.app.models.InfChunk;
+
+      // find or create the peIt and the ea pointing to it
+      return InfChunk.findOrCreateChunk(projectId, requestedEa.range_chunk)
+        .then((resultingObjects) => {
+
+          const resultingObject = resultingObjects[0];
+
+          // … prepare the Ea to create
+          dataObject.fk_range_entity = resultingObject.pk_entity;
+
+          return InfEntityAssociation.findOrCreateByValue(InfEntityAssociation, projectId, dataObject, requestedEa)
+            .then((resultingEas) => {
+
+              let res = resultingEas[0].toJSON();
+              res.range_chunk = resultingObject;
+
+              return [res];
+
+            })
+            .catch((err) => {
+              return err;
+            })
+        })
+        .catch((err) => {
+          return err;
+        })
+
+    }
+
 
 
 
@@ -129,9 +163,9 @@ module.exports = function (InfEntityAssociation) {
       "where": where,
       "include": {
         "entity_version_project_rels": joinThisProject,
-        "chunk": {
+        "range_chunk": {
           "$relation": {
-            "name": "chunk",
+            "name": "range_chunk",
             "joinType": "left join",
             "orderBy": [{
               "pk_entity": "asc"
@@ -213,8 +247,8 @@ module.exports = function (InfEntityAssociation) {
   InfEntityAssociation.mentioningsOfSection = function (ofProject, pkProject, pkEntity, cb) {
 
     const params = [
-      ofProject, 
-      pkProject, 
+      ofProject,
+      pkProject,
       pkEntity
     ]
     const sql_stmt = `
@@ -283,6 +317,114 @@ module.exports = function (InfEntityAssociation) {
       js_quill_data
 	  FROM mentionings_of_chunks_of_expression;
   `
+
+
+    const connector = InfEntityAssociation.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      cb(err, resultObjects);
+    });
+
+  };
+
+
+
+
+  /**
+  * Find mentionings of oa project and filter by domain or range of 'geovP2 – is mentioned in'.
+  * 
+  * Returns also context information: 
+  * - if the range is a F2 Expression (section), the pk_entity of the parent source (F3/F4) is delivered (fk_source_entity)
+  * - if the range is a geovC2 Chunk or geovC3 Spot.
+  * 
+  * @param  {number} pkProject primary key of project
+  * @param  {number} pkRangeEntity  the source/expression/chunk/spot that mentiones the entity
+  */
+  InfEntityAssociation.mentionings = function (ofProject, pkProject, pkRangeEntity, pkDomainEntity, pkSource, pkExpression, pkChunk, cb) {
+
+    const params = [
+      ofProject,
+      pkProject
+    ]
+
+    const w = { fk_range_entity: pkRangeEntity, fk_domain_entity: pkDomainEntity, fk_source_entity: pkSource, fk_expression_entity: pkExpression, fk_chunk: pkChunk }
+    let where = '';
+    Object.keys(w).filter((key) => (!!w[key])).map((key, index, ar) => {
+      params.push(w[key])
+      if (index === 0) where = 'WHERE ' + key + ' = $' + params.length;
+      else where = where + 'AND ' + key + ' = $' + params.length;
+    })
+
+    const sql_stmt = `
+    WITH 
+    entity_associations_of_project AS (
+      SELECT ea.* 
+      FROM  information.entity_association as ea
+      INNER JOIN information.entity_version_project_rel as epr on ea.pk_entity = epr.fk_entity
+      WHERE epr.fk_project = $2 AND is_in_project = $1
+      ),
+    is_mentioned_in_association AS (
+      SELECT ea.* 
+      from entity_associations_of_project as ea
+      INNER JOIN data_for_history.property as p on ea.fk_property = p.dfh_pk_property
+      WHERE p.dfh_fk_property_of_origin = 1218
+    ),
+    source_of_expression AS (
+      SELECT 
+      fk_range_entity as fk_source_entity, -- F3 Manifestation Product Type
+      fk_domain_entity as fk_expression_entity  
+      FROM entity_associations_of_project
+      WHERE fk_property = 979  -- F2 Carriers provided by
+      UNION
+      SELECT 
+      fk_domain_entity as fk_source_entity,  -- F4 Manifestation Singleton
+      fk_range_entity as fk_expression_entity  
+      FROM entity_associations_of_project
+      WHERE fk_property = 1016  -- R42 is representative manifestation singleton for
+    ),
+    source_and_expression_of_digital_object AS (
+      SELECT 
+        repro_of.fk_domain_entity as fk_digital_object,
+      repro_of.fk_range_entity as fk_expression_entity,
+      source_of_expression.fk_source_entity
+      FROM entity_associations_of_project as repro_of
+      inner join source_of_expression on source_of_expression.fk_expression_entity = repro_of.fk_range_entity
+      WHERE repro_of.fk_property = 1216 
+    ),
+    joins as (
+      SELECT
+        ea.pk_entity,
+        ea.fk_domain_entity,
+        ea.fk_property,
+        ea.fk_range_entity,
+        
+      -- get the fk source entity 
+      COALESCE(
+        source_and_expression_of_digital_object.fk_source_entity, -- if range is a chunk 
+        source_of_expression.fk_source_entity, -- if given range is a expression, get corresponding associated fk source entity 
+        ea.fk_range_entity -- else, the given range is a source (F3/4/5)
+      ) as fk_source_entity,
+      
+      -- get the fk section entity
+      COALESCE(
+        source_and_expression_of_digital_object.fk_expression_entity, -- if range is a chunk 
+        source_of_expression.fk_expression_entity 
+      )as fk_expression_entity,
+      
+      -- get the chunk data
+        chunk.pk_entity as fk_chunk,
+        chunk.js_quill_data,
+      chunk.fk_digital_object
+        
+      FROM is_mentioned_in_association as ea
+      LEFT JOIN source_of_expression on ea.fk_range_entity = source_of_expression.fk_expression_entity
+      LEFT JOIN information.chunk as chunk on chunk.pk_entity = ea.fk_range_entity
+      LEFT JOIN source_and_expression_of_digital_object on chunk.fk_digital_object = source_and_expression_of_digital_object.fk_digital_object
+      )
+
+
+      SELECT * FROM joins
+      ${where}
+      `
 
 
     const connector = InfEntityAssociation.dataSource.connector;

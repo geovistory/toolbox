@@ -1,6 +1,6 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import {  ClassInstanceLabel, PeItDetail } from 'app/core/state/models';
+import { ClassInstanceLabel, PeItDetail } from 'app/core/state/models';
 import { FluxStandardAction } from 'flux-standard-action';
 import { DataUnitActions } from '../data-unit.actions';
 
@@ -25,6 +25,7 @@ export class PeItActions extends DataUnitActions {
 
   static readonly SET_LEAF_PE_IT_LOADING = 'PeItActions::SET_LEAF_PE_IT_LOADING';
 
+  static readonly START_CREATE_MENTIONING = 'PeItActions::START_CREATE_MENTIONING';
 
   @dispatch()
 
@@ -34,7 +35,7 @@ export class PeItActions extends DataUnitActions {
     payload
   })
 
-  peItLabelUpdated = (label:  ClassInstanceLabel): PeItAction => ({
+  peItLabelUpdated = (label: ClassInstanceLabel): PeItAction => ({
     type: PeItActions.PE_IT_LABEL_UPDATED,
     meta: null,
     payload: {
@@ -63,6 +64,17 @@ export class PeItActions extends DataUnitActions {
     meta: { keyToToggle },
     payload: null
   })
+
+
+  /**********************************************
+   * Method to start create a new mentioning
+   **********************************************/
+  startCreateMentioning = (): PeItAction => ({
+    type: PeItActions.START_CREATE_MENTIONING,
+    meta: null,
+    payload: null
+  })
+
 
 
 

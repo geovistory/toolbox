@@ -1,4 +1,4 @@
-<div class="btn-group d-flex flex-row">
+<!-- <div class="btn-group d-flex flex-row">
     <h5 class="bg-transparent d-flex py-2 align-items-center gv-grow-1">
         When
     </h5>
@@ -9,13 +9,17 @@
             </a>
         </div>
     </div>
-</div>
+</div> -->
+
+<gv-field-header [property$]="property$" [label$]="label$" [showOntoInfo$]="showOntoInfo$" [toggle$]="toggle$"
+[removePropertyFieldBtnVisible]="false" [addButtonVisible]="false"
+(toggleCardBody)="toggleCardBody()"></gv-field-header>
 
 
 <div [@slideInOut]="(toggle$|async)">
 
     <!-- Empty existence time -->
-    <div class="pl-2 d-flex" *ngIf="isEmpty">
+    <div class="d-flex" *ngIf="isEmpty">
 
 
         <div class="btn-toolbar mb-2 gv-grow-1" role="toolbar" aria-label="Toolbar with button groups">

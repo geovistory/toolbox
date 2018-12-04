@@ -1,4 +1,5 @@
 import { QuillDoc } from 'app/modules/quill';
+import { InfChunk } from 'app/core';
 
 export interface Mentioning {
     pk_entity?: number // pk of the entity association
@@ -23,6 +24,7 @@ export class MentioningList implements MentioningList {
     loading?: boolean;
     error?: any;
 
+
     mentioningListType?: MentioningListType;
 
     create?: boolean;
@@ -33,13 +35,13 @@ export class MentioningList implements MentioningList {
      * 1. Add a Mentioned Entity to a source-like thing:
      *
      * 1.1. For associating a SOURCE (F3/F4) to entity provide
-     *      - sourceEntity
+     *      - sourceEntityPk
      * 1.2. For associating a SECTION (F2) to entity provide
-     *      - sourceEntity
-     *      - sectionEntity
+     *      - sourceEntityPk
+     *      - sectionEntityPk
      * 1.3. For associating a CHUNK (GeovC?) to entity provide
-     *      - sourceEntity
-     *      - sectionEntity
+     *      - sourceEntityPk
+     *      - sectionEntityPk
      *      - chunkEntity
      *
      * 2. Add a source-like thing to a Entity provide
@@ -47,8 +49,8 @@ export class MentioningList implements MentioningList {
      */
     sourceEntityPk?: number;
     sectionEntityPk?: number;
-    chunkEntityPk?: number;
     mentionedEntityPk?: number;
+    chunkEntity?: InfChunk;
 
     constructor(data?: MentioningList) {
         Object.assign(this, data);

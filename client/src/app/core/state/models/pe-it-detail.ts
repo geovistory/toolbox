@@ -5,6 +5,7 @@ import { SectionList } from 'app/modules/information/containers/section-list/api
 import { Repros } from 'app/modules/information/containers/repros/api/repros.models';
 import { MentioningList } from 'app/modules/information/containers/mentioning-list/api/mentioning-list.models';
 
+export interface PeItDetailList { [pk_entity: number]: PeItDetail };
 
 export class PeItDetail extends DataUnit {
 
@@ -41,7 +42,8 @@ export class PeItDetail extends DataUnit {
     // show the assertions using the entity
     showAssertions?= false;
 
-
+    // show the sources of a peIt
+    showSources?= false;
 
     /** Left Panel Visibility */
 
@@ -88,6 +90,9 @@ export class PeItDetail extends DataUnit {
     // the button to toggle showAssertions
     showAssertionsToggle?= false;
 
+    // the button to toggle showSources
+    showSourcesToggle?= false;
+
 
     loading?: boolean; // for leaf pe it view
     leafPeItLoading?: boolean;
@@ -101,6 +106,9 @@ export class PeItDetail extends DataUnit {
 
     // mentioned entities
     mentionedEntities?: MentioningList;
+
+    // sources that are associated to the peIt through a mentioning
+    sources?: MentioningList;
 
     /** Timeline */
     timeLineSettings?: TimeLineSettings;

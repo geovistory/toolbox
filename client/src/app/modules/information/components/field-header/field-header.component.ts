@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 
 @Component({
-  selector: 'gv-property-field-header',
-  templateUrl: './property-field-header.component.html',
-  styleUrls: ['./property-field-header.component.scss']
+  selector: 'gv-field-header',
+  templateUrl: './field-header.component.html',
+  styleUrls: ['./field-header.component.scss']
 })
-export class PropertyFieldHeaderComponent implements OnInit {
+export class FieldHeaderComponent implements OnInit {
 
   @Input() property$;
   @Input() label$;
