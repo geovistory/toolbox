@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DataUnitPreview, IAppState } from 'app/core';
 import { MentionedEntity } from 'app/modules/annotation';
 import { AppellationLabel } from '../../shared/appellation-label';
+import { DataUnitSearchHit } from '../../containers/information/api/information.models';
 
 @Component({
   selector: 'gv-entity-search-hit',
@@ -11,10 +12,7 @@ import { AppellationLabel } from '../../shared/appellation-label';
 })
 export class EntitySearchHitComponent implements OnInit {
 
-  @Input() persistentItem: any;
-
-  @Input() selectingMentionedEntities: boolean;
-
+  @Input() dataUnitSearchHit: DataUnitSearchHit;
 
   /**
    * True if this is about selecting a pe-it as range of a role
@@ -40,18 +38,15 @@ export class EntitySearchHitComponent implements OnInit {
   moreAppellationLabels: Array<AppellationLabel> = [];
 
   headlineItems: Array<string> = [];
+  isInProject: boolean;
 
   get projectsCount(): number {
-    return this.persistentItem.projects.length
+    return 99
   }
 
-  get isInProject(): boolean {
-    const projectId = this.ngRedux.getState().activeProject.pk_project;
-    if (this.persistentItem.projects.indexOf(projectId) !== -1) {
-      return true;
-    }
-    return false;
-  }
+  dataUnitPreview: DataUnitPreview;
+
+
 
   constructor(
     private ngRedux: NgRedux<IAppState>
@@ -59,74 +54,35 @@ export class EntitySearchHitComponent implements OnInit {
 
   ngOnInit() {
 
-    if (this.persistentItem.ts_headline) {
-      this.headlineItems = this.persistentItem.ts_headline.split(' • ');
-    }
-
-    this.repositorySearch = this.repositorySearch === undefined ? false : this.repositorySearch;
-
-    /** Set the standardAppellationLabel */
-    if (this.repositorySearch) {
-      // let highestCount = 0;
-      // let pk_standard_label;
-      this.persistentItem.appellation_labels.forEach(label => {
-        if (label.rank_for_pe_it == 1) {
-          // highestCount = label.r63_is_standard_in_project_count;
-          this.standardAppellationLabel = new AppellationLabel(
-            label.appellation_label
-          )
-          // pk_standard_label = label.pk_entity;
-        } else {
-          this.moreAppellationLabels
-            .push(new AppellationLabel(label.appellation_label))
-        }
-
-      });
-
-
-      // /** Set the moreAppellationLabels */
-      // this.persistentItem.appellation_labels.forEach(label => {
-      //   if (pk_standard_label !== label.pk_entity) {
-      //     this.moreAppellationLabels
-      //       .push(new AppellationLabel(label.appellation_label))
-      //   }
-      // });
-
+    if (this.dataUnitSearchHit.fk_project) {
+      this.isInProject = true;
+      this.repositorySearch = false;
     } else {
-      this.persistentItem.appellation_labels.forEach(label => {
-        if (label.r63_is_standard_in_project != true) {
-          this.moreAppellationLabels.push(new AppellationLabel(label.appellation_label))
-        } else if (label.r63_is_standard_in_project == true) {
-          this.standardAppellationLabel = new AppellationLabel(label.appellation_label)
-        }
-      });
-
-      // If there is no standard appellation label defined, take the first one
-      if (!this.standardAppellationLabel) {
-        this.standardAppellationLabel = this.moreAppellationLabels[0];
-      }
+      this.repositorySearch = true;
+      this.isInProject = false;
     }
 
+    this.dataUnitPreview = {
+      pk_entity: this.dataUnitSearchHit.pk_entity,
+      fk_project: this.dataUnitSearchHit.fk_project,
+      fk_class: this.dataUnitSearchHit.fk_class,
+      entity_label: this.dataUnitSearchHit.entity_label,
+      entity_type: this.dataUnitSearchHit.entity_type,
+      class_label: this.dataUnitSearchHit.class_label,
+      type_label: this.dataUnitSearchHit.type_label,
+    }
   }
 
   add() {
-    this.onAdd.emit(this.persistentItem.pk_entity)
+    this.onAdd.emit(this.dataUnitSearchHit.pk_entity)
   }
 
   open() {
-    this.onOpen.emit(this.persistentItem.pk_entity)
+    this.onOpen.emit(this.dataUnitSearchHit.pk_entity)
   }
 
   select() {
-    this.onSelect.emit(this.persistentItem.pk_entity)
-  }
-
-  selectAsMentioned() {
-    const mentionedEntity = {
-      label: this.standardAppellationLabel.getString(),
-      pkEntity: this.persistentItem.pk_entity
-    } as MentionedEntity
-    this.onSelectAsMentioned.emit(mentionedEntity)
+    this.onSelect.emit(this.dataUnitSearchHit.pk_entity)
   }
 
 

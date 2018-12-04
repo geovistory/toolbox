@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfPersistentItemApi } from 'app/core';
+import { LoadingBarActions, InfPersistentItemApi, InfDataUnitPreviewApi } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -13,10 +13,9 @@ import { SearchResponse } from '../../information/api/information.models';
 @Injectable()
 export class ListAPIEpics {
   constructor(
-    private peItApi: InfPersistentItemApi,
+    private duApi: InfDataUnitPreviewApi,
     private actions: ListAPIActions,
-    private loadingBarActions: LoadingBarActions,
-    private notificationActions: NotificationsAPIActions
+    private loadingBarActions: LoadingBarActions
   ) { }
 
   public createEpics(c: ListComponent): Epic {
@@ -43,7 +42,7 @@ export class ListAPIEpics {
           /**
            * Do some api call
            */
-          this.peItApi.searchInProject(action.meta.pkProject, action.meta.searchString, action.meta.pkClasses, action.meta.limit, action.meta.page)
+          this.duApi.search(action.meta.pkProject, action.meta.searchString, action.meta.pkClasses, action.meta.limit, action.meta.page)
             /**
              * Subscribe to the api call
              */

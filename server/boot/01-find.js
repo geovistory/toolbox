@@ -14,6 +14,7 @@ var include = [
   "DfhClass",
   "InfNamespace",
   "InfTypeNamespaceRel",
+  "InfDataUnitPreview",
   "DfhClassProfileView",
   "DfhProperty",
   "DfhPropertyProfileView",

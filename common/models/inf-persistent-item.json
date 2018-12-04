@@ -62,8 +62,6 @@
         "find",
         "findComplex",
         "findById",
-        "searchInProject",
-        "searchInRepo",
         "findOrCreatePeIt",
         "withPhenomenaInProject",
         "nestedObjectOfProject",

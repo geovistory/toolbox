@@ -1,11 +1,16 @@
-import { PeItSearchHit, PeItDetail, InfPersistentItem } from 'app/core';
+import { PeItSearchHit, PeItDetail, InfPersistentItem, DataUnitPreview } from 'app/core';
 import { CreateOrAddPeIt } from '../../create-or-add-pe-it/api/create-or-add-pe-it.models';
 import { ClassAndTypeSelector } from '../../class-and-type-selector/api/class-and-type-selector.models';
 import { List } from '../../list/api/list.models';
 
-export interface SearchResponse { data: InfPersistentItem[], totalCount: number };
+export interface DataUnitSearchHit extends DataUnitPreview {
+    full_text_headline?: string;
+    class_label_headline?: string;
+    entity_label_headline?: string;
+    type_label_headline?: string;
+}
 
-
+export interface SearchResponse { data: DataUnitSearchHit[], totalCount: number };
 
 
 export class Information {

@@ -1,29 +1,28 @@
+import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
-import { fieldKey, propertyFieldKeyFromParams, createPeItDetail } from 'app/core/state/services/state-creator';
+import { createPeItDetail, fieldKey, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
+import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy, sort } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
-import { mapTo, switchMap, takeUntil, mergeMap } from 'rxjs/operators';
+import { mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, ProjectApi, InfPersistentItemApi, InfChunkApi, InfChunk } from '../sdk';
+import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfDataUnitPreviewApi, ProjectApi } from '../sdk';
+import { DataUnitPreview, PeItDetail } from '../state/models';
+import { IAppState } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { DataUnitPreview, PeItDetail } from '../state/models';
-import { NgRedux } from '@angular-redux/store';
-import { IAppState } from '../store/model';
-import { PeItService } from 'app/modules/information/shared/pe-it.service';
-import { ComConfig } from '..';
 
 
 
 @Injectable()
 export class ActiveProjectEpics {
   constructor(
-    private peItApi: InfPersistentItemApi,
+    private duApi: InfDataUnitPreviewApi,
     private peItService: PeItService,
     private chunkApi: InfChunkApi,
     private uiContextApi: ComUiContextApi,
@@ -250,7 +249,9 @@ export class ActiveProjectEpics {
           /**
            * Do some api call
            */
-          this.peItApi.preview(action.meta.pk_project, action.meta.pk_entity, action.meta.pk_ui_context)
+          this.duApi.findComplex({
+            where: ['fk_project', '=', action.meta.pk_project, 'AND', 'pk_entity', '=', action.meta.pk_entity]
+          })
             /**
            * Subscribe to the api call
            */

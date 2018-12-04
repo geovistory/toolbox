@@ -16,7 +16,7 @@
           <div class="col">
             <div class="gv-search-hits">
               <gv-entity-search-hit *ngFor="let hit of (persistentItems$ | async)" [repositorySearch]="true" [selectRoleRange]="selectPeItMode"
-                [persistentItem]="hit" (onAdd)="onAdd($event)" (onOpen)="onOpen($event)"></gv-entity-search-hit>
+                [dataUnitSearchHit]="hit" (onAdd)="onAdd($event)" (onOpen)="onOpen($event)"></gv-entity-search-hit>
             </div>
           </div>
         </div>

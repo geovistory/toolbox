@@ -366,7 +366,7 @@ exports.up = function (db, callback) {
 
           CREATE MATERIALIZED VIEW information.vm_data_unit_preview as
           WITH type_info_per_project AS (
-                  select distinct ea.fk_domain_entity, type_preview.fk_project, type_preview.entity_label as type_label
+                  select distinct ea.fk_domain_entity, type_preview.fk_project, type_preview.entity_label as type_label, type_preview.pk_entity as pk_type
                   from information.entity_association as ea
                   inner join information.entity_version_project_rel as epr on ea.pk_entity = epr.fk_entity AND epr.is_in_project = true
                   inner join data_for_history.property as p on ea.fk_property = p.dfh_pk_property
@@ -374,7 +374,7 @@ exports.up = function (db, callback) {
                   where p.dfh_pk_property IN (1110,1190,1205,1206,1214,1204,1066)
           ),
           type_info_per_repo AS (
-                  select distinct ea.fk_domain_entity, type_preview.entity_label as type_label,  ea.rank_for_domain
+                  select distinct ea.fk_domain_entity, type_preview.entity_label as type_label, ea.rank_for_domain, type_preview.pk_entity as pk_type
                   from information.v_entity_association as ea
                   inner join data_for_history.property as p on ea.fk_property = p.dfh_pk_property
               inner join information.v_pe_it_preview as type_preview on ea.fk_range_entity = type_preview.pk_entity
@@ -404,8 +404,13 @@ exports.up = function (db, callback) {
             data_unit.entity_label,
             class_info.class_label,
             class_info.entity_type,
-            COALESCE(type_info_per_project.type_label, type_info_per_repo.type_label),
-            data_unit.full_text
+            COALESCE(type_info_per_project.type_label, type_info_per_repo.type_label) as type_label,
+            COALESCE(type_info_per_project.pk_type, type_info_per_repo.pk_type) as pk_type,
+            data_unit.full_text as full_text,
+            setweight(to_tsvector(coalesce(data_unit.entity_label,'')), 'A') || 
+            setweight(to_tsvector(coalesce(type_info_per_project.type_label, type_info_per_repo.type_label, class_info.class_label, '')), 'B') || 
+            setweight(to_tsvector(coalesce(data_unit.full_text,'')), 'C')     
+                   as ts_vector
           from data_unit
           LEFT JOIN type_info_per_project 
             on type_info_per_project.fk_domain_entity = data_unit.pk_entity 
@@ -418,6 +423,58 @@ exports.up = function (db, callback) {
 
           CREATE UNIQUE INDEX vm_data_unit_preview_unique
             ON information.vm_data_unit_preview (pk_entity, fk_project);
+
+
+        ------------------------------------------------------------------------------------------------------------
+        -- TABLE that stores the latest refresh date of information.vm_data_unit_preview 
+        ------------------------------------------------------------------------------------------------------------
+          CREATE TABLE commons.vm_refresh_date (
+            information_vm_data_unit_preview timestamp with time zone
+          );
+
+        ------------------------------------------------------------------------------------------------------------
+        -- FUNCTION that refreshes information.vm_data_unit_preview, if the latest modification of 
+        -- information.entity_version_project_rel is newer than the latest refresh stored in commons.vm_refresh_date
+        ------------------------------------------------------------------------------------------------------------
+          CREATE OR REPLACE FUNCTION information.refresh_vm_data_unit_preview()
+          RETURNS boolean
+          LANGUAGE plpgsql
+          AS $$
+          DECLARE
+            refresh_needed boolean;
+            refreshed boolean;
+          BEGIN
+            
+          select into refresh_needed (
+              (
+            select information_vm_data_unit_preview from commons.vm_refresh_date
+            order by information_vm_data_unit_preview desc
+            limit 1
+              )
+              <
+              (
+            select tmsp_last_modification from information.entity_version_project_rel
+            order by tmsp_last_modification desc
+            limit 1
+              )
+          );
+          
+        IF (refresh_needed = true OR refresh_needed IS NULL) THEN 
+            REFRESH MATERIALIZED VIEW CONCURRENTLY information.vm_data_unit_preview;
+          
+            INSERT INTO commons.vm_refresh_date (information_vm_data_unit_preview)
+            VALUES (now());
+                
+            refreshed = true;
+          ELSE 		  
+              refreshed = false;
+          END IF;
+                
+          RETURN refreshed;
+          END $$;
+		  
+
+
   `
   db.runSql(sql, callback)
 
@@ -425,6 +482,10 @@ exports.up = function (db, callback) {
 
 exports.down = function (db, callback) {
   const sql = `
+    DROP FUNCTION information.refresh_vm_data_unit_preview();
+
+    DROP TABLE commons.vm_refresh_date;
+
     DROP MATERIALIZED VIEW IF EXISTS information.vm_data_unit_preview CASCADE;
 
     DROP VIEW IF EXISTS information.v_pe_it_preview CASCADE;
