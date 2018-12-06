@@ -5,7 +5,7 @@
  */
 
 import { NgRedux } from '@angular-redux/store';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { U } from 'app/core';
 import { ExistenceTimeDetail, FieldList, TeEntAccentuation, PropertyField } from 'app/core/state/models';
 import { equals } from 'ramda';
@@ -24,6 +24,8 @@ export class PeItTimelineComponent implements OnInit, OnDestroy {
 
 
   @Input() path: string[];
+
+  @Output() close = new EventEmitter<void>();
 
   timeLineData: TimeLineData;
 

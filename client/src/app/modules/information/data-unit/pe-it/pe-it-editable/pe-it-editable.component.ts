@@ -246,7 +246,6 @@ export class PeItEditableComponent extends DataUnitBase implements AfterViewInit
       this.toggle('showMentionedEntities');
     }
     this.localStore.dispatch(this.actions.startCreateMentioning())
-
   }
 
 }
