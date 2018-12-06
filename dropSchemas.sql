@@ -12,7 +12,7 @@ CREATE OR REPLACE FUNCTION drop_all ()
         from information_schema.schemata
 
          -- You can exclude the schema which you don't want to drop by adding another condition here
-         where schema_name not like 'information_schema'  
+         where schema_name not like any (array['information_schema', 'pg_catalog'])  
            LOOP
              EXECUTE 'DROP SCHEMA ' || rec.schema_name || ' CASCADE'; 
            END LOOP; 
