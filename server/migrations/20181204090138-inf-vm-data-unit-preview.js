@@ -38,7 +38,33 @@ exports.up = function (db, callback) {
       ORDER BY dfh_pk_class, l.dfh_label; -- This will prefer custom labels over dfh_class_standard_label in distinct clause
 
 
+------------------------------------------------------------------------------------------------------------
+-- VIEW that gets ordered fields per class (useful to join data related to class instances in right order)
+------------------------------------------------------------------------------------------------------------
 
+      CREATE OR REPLACE VIEW information.v_ordered_fields_per_class AS
+      SELECT c.pk_entity,
+         c.ord_num AS field_order,
+             CASE
+                 WHEN c.property_is_outgoing = true THEN p.dfh_has_domain
+                 WHEN c.property_is_outgoing = false THEN p.dfh_has_range
+                 ELSE c.fk_class_for_class_field
+             END AS fk_class,
+         c.fk_property,
+         c.property_is_outgoing,
+         c.fk_class_field,
+         f.used_table
+        FROM commons.ui_context_config c
+          LEFT JOIN data_for_history.property p ON p.dfh_pk_property = c.fk_property
+          LEFT JOIN commons.class_field f ON f.pk_entity = c.fk_class_field
+       WHERE c.fk_ui_context = 45
+       ORDER BY (
+             CASE
+                 WHEN c.property_is_outgoing = true THEN p.dfh_has_domain
+                 WHEN c.property_is_outgoing = false THEN p.dfh_has_range
+                 ELSE c.fk_class_for_class_field
+             END), c.ord_num;
+     
 
 
 ------------------------------------------------------------------------------------------------------------
@@ -685,6 +711,8 @@ exports.down = function (db, callback) {
     DROP VIEW IF EXISTS information.v_te_en_strings_per_field_and_project CASCADE;
 
     DROP VIEW IF EXISTS information.v_te_en_strings_per_field_repo CASCADE;
+
+    DROP VIEW IF EXISTS information.v_ordered_fields_per_class CASCADE;
 
     DROP VIEW IF EXISTS information.v_class_preview;
   `
