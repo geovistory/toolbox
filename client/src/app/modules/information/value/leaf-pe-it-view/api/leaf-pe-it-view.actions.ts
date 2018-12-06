@@ -7,7 +7,7 @@ import { CreateOrAddPeIt } from 'app/modules/information/containers/create-or-ad
 
 type Payload = LeafPeItView;
 interface MetaData {
-  pkEntity?: number, projectDetail?: ProjectDetail,
+  pkEntity?: number,
   peItDetail?: PeItDetail;
   selectOrCreate?: CreateOrAddPeIt
 };
@@ -28,9 +28,9 @@ export class LeafPeItViewAPIActions {
   static readonly DESTROY = 'LeafPeItView::DESTROY';
 
   @dispatch()
-  load = (pkEntity: number, projectDetail: ProjectDetail): LeafPeItViewAPIAction => ({
+  load = (pkEntity: number): LeafPeItViewAPIAction => ({
     type: LeafPeItViewAPIActions.LOAD,
-    meta: { pkEntity, projectDetail },
+    meta: { pkEntity },
     payload: null,
   });
 

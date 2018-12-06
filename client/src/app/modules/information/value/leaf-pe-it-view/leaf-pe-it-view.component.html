@@ -1,15 +1,11 @@
 <div *ngIf="isCircular && ! (leafPeItLoading$ |async)">
-    <gv-leaf-pe-it-label [children]="(_fields$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-leaf-pe-it-label>
-
-    
-    <small class="text-muted">{{peItState?.dfhClass?.dfh_standard_label}} (self)</small>
+    <gv-data-unit-preview [preview]="(preview$ | async)"></gv-data-unit-preview>
+    <small class="text-muted">(self)</small>
 </div>
 <a *ngIf="!isCircular" href="" class="gv-passive-link" (click)=open()>
-    <gv-leaf-pe-it-label [children]="(_fields$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-leaf-pe-it-label>
-
-    <small class="text-muted">{{peItState?.dfhClass?.dfh_standard_label}}</small>
+    <gv-data-unit-preview [preview]="(preview$ | async)"></gv-data-unit-preview>
 </a>
 
-<div *ngIf="(loading$ |async)">
+<div *ngIf="(!preview$ |async)">
     <i class="fa fa-spinner fa-pulse"></i> Loading
 </div>

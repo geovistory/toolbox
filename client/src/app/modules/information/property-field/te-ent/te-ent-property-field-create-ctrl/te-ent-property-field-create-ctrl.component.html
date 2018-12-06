@@ -1,6 +1,6 @@
 <div class="mb-3">
-  <gv-property-field-header [property$]="property$" [label$]="label$" (startAddingRole)="startCreateRole()"
-    [showOntoInfo$]="showOntoInfo$" [removePropertyFieldBtnVisible]="removePropertyFieldBtnVisible"></gv-property-field-header>
+  <gv-field-header [property$]="property$" [label$]="label$" (startAddingRole)="startCreateRole()"
+    [showOntoInfo$]="showOntoInfo$" [removePropertyFieldBtnVisible]="removePropertyFieldBtnVisible"></gv-field-header>
 
   <!-- If no roles in Project, show a big add button -->
   <div *ngIf="!((_role_list$ | async) | keys).length && addButtonVisible">

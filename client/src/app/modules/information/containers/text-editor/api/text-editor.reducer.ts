@@ -10,6 +10,9 @@ export function textEditorReducer(state: TextEditor = INITIAL_STATE, a: Action):
 
   const action = a as TextEditorAPIAction;
 
+    /*****************************************************
+    * Reducers to manage initial loading
+    *****************************************************/
   switch (action.type) {
     case TextEditorAPIActions.LOAD:
       state = {
@@ -24,6 +27,7 @@ export function textEditorReducer(state: TextEditor = INITIAL_STATE, a: Action):
         digitalObject: !action.meta.entityAssociation ? {} as InfDigitalObject : action.meta.entityAssociation.digital_object,
         entityAssociation: action.meta.entityAssociation,
         readOnly: action.meta.entityAssociation ? true : false,
+        annotationsVisible: true,
         loading: false
       };
       break;
@@ -147,9 +151,23 @@ export function textEditorReducer(state: TextEditor = INITIAL_STATE, a: Action):
       break;
 
     /*****************************************************
-    * Reducers to switch the mode of the editor
+    * Reducers to switch booleans
     *****************************************************/
     case TextEditorAPIActions.SET_READONLY:
+      state = {
+        ...state,
+        ...action.payload
+      }
+      break;
+
+    case TextEditorAPIActions.SET_SELECTED_DELTA:
+      state = {
+        ...state,
+        ...action.payload
+      }
+      break;
+
+    case TextEditorAPIActions.SET_ANNOTATIONS_VISIBLE:
       state = {
         ...state,
         ...action.payload

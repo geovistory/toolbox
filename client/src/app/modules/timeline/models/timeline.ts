@@ -1,5 +1,5 @@
 import { EventEmitter } from '@angular/core';
-import { ExistenceTime } from 'app/core';
+import { TimeSpan } from 'app/core';
 
 import { TimelineOptions } from '../components/timeline/timeline.component';
 import { XAxisDefinition } from './x-axis-definition';
@@ -23,7 +23,7 @@ export interface TimeLineData {
 
 export interface TimeLineRow {
     label: string;
-    existenceTime: ExistenceTime;
+    existenceTime: TimeSpan;
     accentuation: Accentuation;
     storeConnector?: {
         path: string[];
@@ -54,7 +54,7 @@ export class Timeline {
         const timePrimitives = []
 
         rows.forEach((row: TimeLineRow) => {
-            const ext: ExistenceTime = row.existenceTime;
+            const ext: TimeSpan = row.existenceTime;
             const minMaxOfExTime = ext.getMinMaxTimePrimitive();
 
             if (minMaxOfExTime) {
@@ -64,7 +64,7 @@ export class Timeline {
         })
 
         if (timePrimitives.length > 0) {
-            const minMax = ExistenceTime.getMinMaxTimePrimitveOfArray(timePrimitives);
+            const minMax = TimeSpan.getMinMaxTimePrimitveOfArray(timePrimitives);
             const firstSec = minMax.min.getJulianSecond();
             const lastSec = minMax.max.getLastSecond();
 

@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfPersistentItemApi } from 'app/core';
+import { InfDataUnitPreviewApi, LoadingBarActions } from 'app/core';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
-import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { PeItSearchExistingComponent } from '../pe-it-search-existing.component';
-import { PeItSearchExistingAPIActions, PeItSearchExistingAPIAction } from './pe-it-search-existing.actions';
+import { PeItSearchExistingAPIAction, PeItSearchExistingAPIActions } from './pe-it-search-existing.actions';
 
 @Injectable()
 export class PeItSearchExistingAPIEpics {
   constructor(
-    private peItApi: InfPersistentItemApi,
+    private duApi: InfDataUnitPreviewApi,
     private actions: PeItSearchExistingAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions
@@ -36,7 +36,7 @@ export class PeItSearchExistingAPIEpics {
           /**
            * Do some api call
            */
-          this.peItApi.searchInRepo(action.meta.searchString, action.meta.limit, action.meta.page, action.meta.pkClass, action.meta.pkNamespace)
+          this.duApi.search(null, action.meta.searchString, [action.meta.pkClass], action.meta.limit, action.meta.page)
             /**
                * Subscribe to the api call
                */

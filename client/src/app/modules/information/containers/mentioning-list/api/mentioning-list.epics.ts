@@ -101,9 +101,9 @@ export class MentioningListAPIEpics {
           const pkProject = c.ngRedux.getState().activeProject.pk_project;
           const type = s.mentioningListType;
           (
-            type === 'ofSection' ? this.eaApi.mentioningsOfSection(true, pkProject, s.sectionEntityPk) :
-              type === 'ofSource' ? this.eaApi.mentioningsOfSection(true, pkProject, s.sourceEntityPk) : // TODO create custom api
-                type === 'ofEntity' ? this.eaApi.mentioningsOfSection(true, pkProject, s.mentionedEntityPk) : null // TODO create custom api
+            type === 'ofSection' ? this.eaApi.mentionings(true, pkProject, null, null, null, s.sectionEntityPk, null) :
+              type === 'ofSource' ? this.eaApi.mentionings(true, pkProject, null, null, s.sourceEntityPk, null, null) : // TODO create custom api
+                type === 'ofEntity' ? this.eaApi.mentionings(true, pkProject, null, s.mentionedEntityPk, null, null, null) : null // TODO create custom api
           )
             /**
              * Subscribe to the api call

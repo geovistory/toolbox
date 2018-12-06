@@ -1,12 +1,23 @@
 <div gvDimensionChange (onDimensionsChange)="onDimensionsChange($event)">
-  <div class="timeline-container border border-dark rounded d-flex">
+  <div class="btn-group btn-group-sm position-absolute" role="group" aria-label="timeline controls">
+    <button class="btn" (click)="zoomOut()">
+      <i class="fa fa-search-minus"></i>
+    </button>
+    <button class="btn" (click)="zoomIn()">
+      <i class="fa fa-search-plus"></i>
+    </button>
+    <button class="btn" (click)="zoomToExtent()">
+      <i class="fa fa-arrows-alt"></i>
+    </button>
+  </div>
+  <div class="timeline-container d-flex">
     <svg [attr.width]="_options.width" [attr.height]="_options.height">
 
       <!-- Header timeline -->
 
 
-      <g class="header" #header [attr.width]="_options.width" [attr.height]="_options.headerHeight" [rangeEmitterOnMouseDown]="h"
-        (onRangeChange)="changeCursorPosition($event)">
+      <g class="header" #header [attr.width]="_options.width" [attr.height]="_options.headerHeight"
+        [rangeEmitterOnMouseDown]="h" (onRangeChange)="changeCursorPosition($event)">
         <!-- <svg:defs>
           <mask id="maskHeaderAxis">
             <rect [attr.x]="timeline.xAxis.marginLeft" y="1" [attr.width]="100" [attr.height]="_options.headerHeight" fill="white" />
@@ -14,7 +25,8 @@
         </svg:defs> -->
 
         <!-- rect to catch mousedown events -->
-        <svg:rect [attr.width]="_options.width" [attr.height]="_options.headerHeight" opacity="0" [rangeEmitterOnMouseDown]="h" (onRangeChange)="changeCursorPosition($event)"></svg:rect>
+        <svg:rect [attr.width]="_options.width" [attr.height]="_options.headerHeight" opacity="0"
+          [rangeEmitterOnMouseDown]="h" (onRangeChange)="changeCursorPosition($event)"></svg:rect>
 
         <g *ngIf="timeline">
 
@@ -23,11 +35,12 @@
           <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGreg"></g>
 
           <!-- Rectangle at top left to cover label -->
-          <svg:rect class="cover-rect" [attr.width]="timeline.xAxis.marginLeft-5" [attr.height]="_options.headerHeight" [attr.transform]="'translate(5,0)'"></svg:rect>
+          <svg:rect class="cover-rect" [attr.width]="timeline.xAxis.marginLeft-5" [attr.height]="_options.headerHeight"
+            [attr.transform]="'translate(5,0)'"></svg:rect>
 
           <!-- line separating left from rigth area -->
-          <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft" [attr.y2]="_options.headerHeight"
-          />
+          <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft"
+            [attr.y2]="_options.headerHeight" />
 
         </g>
       </g>
@@ -37,8 +50,8 @@
       <g class="rows" [attr.transform]="'translate(0, '+ _options.headerHeight +')'" [ngStyle]="{'height': _options.bodyHeight +'px'}"
         style="overflow-y:auto;overflow-x: hidden;" *ngIf="timeline.data.rows.length > 0">
 
-        <svg [attr.width]="_options.width" [attr.height]="(timeline.data.rows.length * timeline.options.rowHeight)" draggableXAxis
-          (onDrag)="onDrag($event)" (onDragStart)="onDragStart()" (onDragEnd)="onDragEnd()">
+        <svg [attr.width]="_options.width" [attr.height]="(timeline.data.rows.length * timeline.options.rowHeight)"
+          draggableXAxis (onDrag)="onDrag($event)" (onDragStart)="onDragStart()" (onDragEnd)="onDragEnd()">
 
           <!-- rows -->
           <g class="row" *ngFor="let row of timeline.data.rows; let i = index" [attr.transform]="'translate(0,' + (timeline.options.rowHeight * i) + ')'"
@@ -50,8 +63,8 @@
           <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGregTicks"></g>
 
           <!-- line separating labels from existence time -->
-          <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft" [attr.y2]="timeline.options.bodyHeight"
-          />
+          <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft"
+            [attr.y2]="timeline.options.bodyHeight" />
 
 
         </svg>
@@ -70,10 +83,11 @@
           <g class="x-axis-julian" [xAxisVisual]="timeline.xAxisTicks"></g>
 
           <!-- line separating labels from existence time -->
-          <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft" [attr.y2]="20"
-          />
+          <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft"
+            [attr.y2]="20" />
 
-          <svg:text class="no-data-text" [attr.transform]="'translate('+ (timeline.xAxis.marginLeft + 5) +', 13)'">No temporal information available</svg:text>
+          <svg:text class="no-data-text" [attr.transform]="'translate('+ (timeline.xAxis.marginLeft + 5) +', 13)'">No
+            temporal information available</svg:text>
         </svg>
       </g>
 
@@ -84,28 +98,14 @@
         julianSecond: _options.cursorPosition, 
         bodyHeight: _options.bodyHeight,
         headerHeight:  _options.headerHeight
-      }" [rangeEmitterOnMouseDown]="h" (onRangeChange)="changeCursorPosition($event)"></g>
+      }"
+        [rangeEmitterOnMouseDown]="h" (onRangeChange)="changeCursorPosition($event)"></g>
 
     </svg>
 
   </div>
 
 
-  <div class="btn-group d-flex mt-3" role="group" aria-label="timeline controls">
-    <div class="gv-grow-1 bg-gray-700 text-white rounded-left gv-card-spacer-x align-self-stretch d-flex">
-      <div class="align-self-center">
-        <i class="fa fa-calendar"></i> Timeline
-      </div>
-    </div>
-    <button class="btn btn-gray-700" (click)="zoomOut()">
-      <i class="fa fa-search-minus"></i>
-    </button>
-    <button class="btn btn-gray-700" (click)="zoomIn()">
-      <i class="fa fa-search-plus"></i>
-    </button>
-    <button class="btn btn-gray-700" (click)="zoomToExtent()">
-      <i class="fa fa-arrows-alt"></i>
-    </button>
-  </div>
+
 
 </div>

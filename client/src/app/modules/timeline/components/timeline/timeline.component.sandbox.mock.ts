@@ -1,4 +1,4 @@
-import { TimePrimitive, ExistenceTime } from "app/core";
+import { TimePrimitive, TimeSpan } from "app/core";
 import { TimeLineData } from "../../models/timeline";
 
 /**
@@ -10,7 +10,7 @@ export const timeLineData: TimeLineData = {
         {
             accentuation: 'none',
             label: 'Name: Johannes Jacob Meier Langer Name',
-            existenceTime: new ExistenceTime({
+            existenceTime: new TimeSpan({
                 p82a: new TimePrimitive({
                     julianDay: 2394000,
                     duration: '1 year',
@@ -36,7 +36,7 @@ export const timeLineData: TimeLineData = {
         {
             accentuation: 'none',
             label: 'Name: Hans Meier',
-            existenceTime: new ExistenceTime({
+            existenceTime: new TimeSpan({
                 p81a: new TimePrimitive({
                     julianDay: 2395632,
                     duration: '1 day',
@@ -52,7 +52,7 @@ export const timeLineData: TimeLineData = {
         {
             accentuation: 'none',
             label: 'Erwerb: Titel',
-            existenceTime: new ExistenceTime({
+            existenceTime: new TimeSpan({
                 p81a: new TimePrimitive({
                     julianDay: 2395642,
                     duration: '1 day',
@@ -148,7 +148,7 @@ export const personPeIts = [
                         }
                     ],
                     label: 'Name: Johannes Jacob Meier Langer Name',
-                    existenceTime: new ExistenceTime({
+                    existenceTime: new TimeSpan({
                         p82a: new TimePrimitive({
                             julianDay: 2394000,
                             duration: '1 year',
@@ -226,7 +226,7 @@ export const personPeIts = [
                         }
                     ],
                     label: 'Name: Hans Meier',
-                    existenceTime: new ExistenceTime({
+                    existenceTime: new TimeSpan({
                         p81a: new TimePrimitive({
                             julianDay: 2395632,
                             duration: '1 day',
@@ -294,7 +294,7 @@ export const personPeIts = [
                         }
                     ],
                     label: 'Erwerb: Titel',
-                    existenceTime: new ExistenceTime({
+                    existenceTime: new TimeSpan({
                         p81a: new TimePrimitive({
                             julianDay: 2395642,
                             duration: '1 day',
@@ -362,7 +362,7 @@ export const personPeIts = [
                         }
                     ],
                     label: 'Erwerb: Titel',
-                    existenceTime: new ExistenceTime({
+                    existenceTime: new TimeSpan({
                         p81a: new TimePrimitive({
                             julianDay: 2395642,
                             duration: '1 day',
@@ -430,7 +430,7 @@ export const personPeIts = [
                         }
                     ],
                     label: 'Erwerb: Titel',
-                    existenceTime: new ExistenceTime({
+                    existenceTime: new TimeSpan({
                         p81a: new TimePrimitive({
                             julianDay: 2395642,
                             duration: '1 day',
@@ -498,7 +498,7 @@ export const personPeIts = [
                         }
                     ],
                     label: 'Erwerb: Titel',
-                    existenceTime: new ExistenceTime({
+                    existenceTime: new TimeSpan({
                         p81a: new TimePrimitive({
                             julianDay: 2395642,
                             duration: '1 day',
@@ -566,7 +566,7 @@ export const personPeIts = [
                         }
                     ],
                     label: 'Erwerb: Titel',
-                    existenceTime: new ExistenceTime({
+                    existenceTime: new TimeSpan({
                         p81a: new TimePrimitive({
                             julianDay: 2395642,
                             duration: '1 day',
@@ -634,7 +634,7 @@ export const personPeIts = [
                         }
                     ],
                     label: 'Erwerb: Titel',
-                    existenceTime: new ExistenceTime({
+                    existenceTime: new TimeSpan({
                         p81a: new TimePrimitive({
                             julianDay: 2395642,
                             duration: '1 day',
@@ -702,7 +702,7 @@ export const personPeIts = [
                         }
                     ],
                     label: 'Erwerb: Titel',
-                    existenceTime: new ExistenceTime({
+                    existenceTime: new TimeSpan({
                         p81a: new TimePrimitive({
                             julianDay: 2395642,
                             duration: '1 day',

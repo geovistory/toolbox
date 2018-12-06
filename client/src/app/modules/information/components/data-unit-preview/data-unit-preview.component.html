@@ -1,0 +1,17 @@
+<div dnd-draggable [dragEnabled]="dragEnabled" [dragData]="preview" class="d-flex">
+
+  <span class="icon fa align-self-center gv-icon-preview" [ngClass]="{
+    'fa fa-star-o': preview?.entity_type === 'teEn',
+    'gv-icon gv-icon-entity' : preview?.entity_type === 'peIt'
+  }"></span>
+  <div class="wrap gv-grow-1">
+    <div class="label">
+      {{preview?.entity_label}}
+    </div>
+    <div class="type font-xs text-muted">{{(preview?.type_label) ? preview?.type_label : preview?.class_label}}
+      <span *ngIf="preview.time_span">&nbsp;•&nbsp;{{preview.time_span | timeSpan}}</span></div>
+  </div>
+
+
+  <ng-content></ng-content>
+</div>

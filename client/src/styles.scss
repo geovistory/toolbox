@@ -474,6 +474,10 @@ gv-property {
     border-color: $gv-color-highlighted !important;
 }
 
+.gv-shadow-outer-1 {
+    box-shadow: 0 0 0 1px rgba(89, 105, 129, .1), 0 1px 3px 0 rgba(89, 105, 129, .1), 0 1px 2px 0 rgba(0, 0, 0, .05);
+}
+
 // Navbar (main)
 #nav {
     .breadcrumb {
@@ -533,6 +537,81 @@ ngb-pagination {
     }
 }
 
+.gv-icon-preview,
+.gv-icon-preview.fa {
+    margin-right: 0.48rem;
+    font-size: 1.8rem;
+    color: #9d7ab3;
+}
+
+/***************************
+* Granularities from big to small
+*   0. Canvas (editor body below header)
+*   1. Panel (left, right)
+*   2. Tile (properties, mentioned entities, …)
+*   3. Field (short title, birth, when …)
+****************************/
+
+/***************************
+* Tile Header
+****************************/
+
+.gv-canvas {
+    background-color: $gray-200;
+    @extend .px-2;
+    @extend .pb-2;
+}
+
+.gv-panel {
+    @extend .gv-flex-fh;
+}
+
+.gv-tile {
+    background-color: $gray-100;
+    @extend .gv-flex-fh; // @extend .border;
+    // @extend .border-primary;
+    @extend .mt-2;
+    @extend .gv-shadow-outer-1;
+}
+
+.gv-tile-header,
+gv-tile-header {
+    @extend .gv-flex-shrink-0;
+    @extend .d-flex; // @extend .border-bottom; // @extend .border-top;
+    // @extend .border-primary;
+    //    background-color: hsla(162, 73%, 79%, 1);
+    background-color: lighten($teal, 30%);
+    @extend .align-items-baseline;
+    @extend .mb-0; // background-color: theme-color-level('secondary', -9); // like list-group-item-secondary
+    @extend .pl-2;
+    @extend .font-sm; // padding-left: $btn-padding-y-sm;
+    height: calc((#{$btn-border-width} * 2) + (#{$font-size-sm} * #{$btn-line-height-sm}) + (#{$btn-padding-y-sm} * 2) + 1px)
+}
+
+.gv-tile-body {
+    @extend .gv-flex-fh;
+    @extend .p-2;
+    overflow-y: auto;
+}
+
+.gv-field {
+    @extend .my-2;
+}
+
+.gv-field-header-label {
+    font-size: $font-size-sm;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: $secondary;
+    margin-bottom: .5rem;
+}
+
+// .gv-field {
+//     /* nested field level 2 */
+//     .gv-field .gv-field-header-label {
+//         font-size: $font-size-xs
+//     }
+// }
 /***************************
 * TeEnt
 ****************************/
@@ -563,10 +642,113 @@ ngb-pagination {
  ***************************/
 
 gv-timeline {
+    $bg-timeline: $gray-100;
+    $font-color: $dark;
+    .timeline-container {
+        background-color: $bg-timeline;
+        @extend .border-top;
+        @extend .border-bottom;
+        @extend .border-secondary;
+    }
+    path.domain {
+        stroke: none // no outer line around xAxis
+    }
+    .header {
+        .tick>line {
+            stroke: none;
+        }
+        .tick>text {
+            font-size: $font-size-xs;
+            fill: $font-color
+        }
+    }
+    .rows {
+        border-top: 1px solid theme-color(dark);
+        .tick>text {
+            fill: none;
+        }
+        .x-axis-julian {
+            .tick>line {
+                stroke: $gray-400; // stroke-dasharray: 7;
+            }
+        }
+        .x-axis-gregorian {
+            .tick>line {
+                stroke: $gray-400; // stroke-dasharray: 7;
+            }
+        }
+    }
+    .row {
+        font-size: $font-size-xs;
+    }
+    .row:nth-child(odd) .row-bg {
+        fill: $gray-200; //opacity: 0.2;
+    }
+    .row:nth-child(even) .row-bg {
+        fill: $white;
+        opacity: 0.2;
+    }
+    .row .row-bg.selected {
+        fill: #ffffff;
+        opacity: 0.6;
+    }
+    .row .row-bg.highlighted {
+        fill: #ffffff;
+        opacity: 0.4;
+    }
+    .row-label-bg {
+        fill: $bg-timeline
+    }
+    text.row-label {
+        fill: $font-color;
+    }
+    .gv-open-path {
+        stroke: darken(theme-color("info"), 20%);
+        fill: none;
+    }
+    .gv-closed-path {
+        stroke: none;
+        fill-opacity: .8;
+    }
+    .gv-closed-path.gv-inner,
+    .gv-rectangle.gv-inner {
+        fill: lighten(theme-color("info"), 20%);
+    }
+    .gv-closed-path.gv-outer,
+    .gv-rectangle.gv-outer {
+        fill: lighten(theme-color("info"), 50%);
+    }
+    .separator-line {
+        stroke: theme-color("dark");
+    }
+    .cover-rect {
+        fill: $bg-timeline;
+    }
+    .no-data-text {
+        fill: theme-color("secondary");
+        font-size: $font-size-sm;
+    }
+    .cursor-handle {
+        fill: theme-color("primary");
+        stroke: $white; // fill-opacity: .8;
+    }
+    .cursor-line {
+        stroke: theme-color("primary");
+        stroke-width: 2;
+    }
+    .btn {
+        @extend .btn-link-gray;
+    }
+}
+
+gv-timeline.gv-timeline-dark {
     $bg-timeline: $gray-600;
     $font-color: $white;
     .timeline-container {
         background-color: $bg-timeline;
+        @extend .border;
+        @extend .border-dark;
+        @extend .rounded;
     }
     path.domain {
         stroke: none // no outer line around xAxis
@@ -654,6 +836,9 @@ gv-timeline {
     .cursor-line {
         stroke: theme-color("primary");
         stroke-width: 2;
+    }
+    .btn {
+        @extend .btn-gray-700;
     }
 }
 
@@ -835,4 +1020,149 @@ gv-map {
     font-size: $font-size-lg;
     border: 3px dashed #dcdede95;
     border-radius: $btn-border-radius-lg;
+}
+
+/***************************
+ * Highlighting
+ ***************************/
+
+.gv-bg-highlight {
+    background-color: hsla(271, 68%, 80%, 0.5)
+}
+
+.gv-bg-highlight-2 {
+    background-color: hsla(271, 68%, 80%, 0.9)
+}
+
+/**************************
+* Ngx easy table vertical scroll 
+**************************/
+
+ngx-table.light-header {
+    th {
+        font-weight: 400;
+    }
+}
+
+ngx-table.sticky-header {
+    @extend .gv-flex-fh;
+    .ngx-container {
+        @extend .gv-flex-fh;
+    }
+    .ngx-table {
+        @extend .gv-flex-fh;
+    }
+    thead {
+        display: table;
+        th {
+            font-weight: 400;
+        }
+    }
+    tbody {
+        @extend .gv-flex-fh;
+        overflow-y: auto;
+        tr {
+            display: flex;
+            flex-shrink: 0;
+            td {
+                flex-grow: 1;
+                flex-shrink: 0;
+            }
+        }
+    }
+}
+
+/**************************
+* Switch / Toggle Button
+**************************/
+
+.switch {
+    /* Box around the slider */
+    .box {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+        @extend .mr-1;
+    }
+    /* Hide default HTML checkbox */
+    .box input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    /* The slider */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: $gray-300;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+    input:checked+.slider {
+        background-color: $primary;
+    }
+    input:focus+.slider {
+        box-shadow: 0 0 1px $primary;
+    }
+    input:checked+.slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+    .slider.round:before {
+        border-radius: 50%;
+    }
+}
+
+/* Sizes */
+
+$switch-sm-box-border: 2px;
+$switch-sm-box-heigth: calc(#{$input-height-inner-sm} + #{$input-height-border} - (#{$input-padding-y-sm} *2));
+$slider-diameter: calc(#{$switch-sm-box-heigth} - (#{$switch-sm-box-border} *2));
+$slide-distance: calc(#{$slider-diameter} * .5); // Adjust the hight/width ratio
+$switch-sm-box-width: calc((#{$switch-sm-box-border} * 2) + calc(#{$slider-diameter} + #{$slide-distance}));
+// $switch-sm-box-width: calc(#{$switch-sm-box-heigth} * 2);
+.switch.switch-sm {
+    @extend .form-control-sm;
+    margin-bottom: 0;
+    cursor: pointer;
+    .box {
+        height: $switch-sm-box-heigth;
+        width: $switch-sm-box-width;
+    }
+    .slider:before {
+        height: $slider-diameter;
+        width: $slider-diameter;
+        left: $switch-sm-box-border;
+        bottom: $switch-sm-box-border;
+    }
+    input:checked+.slider:before {
+        -webkit-transform: translateX($slide-distance);
+        -ms-transform: translateX($slide-distance);
+        transform: translateX($slide-distance);
+    }
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
 }

@@ -1,9 +1,9 @@
-<div class="gv-search-hit" dnd-draggable [dragEnabled]="true" [dragData]="persistentItem.preview">
+<div class="gv-search-hit" dnd-draggable [dragEnabled]="true" [dragData]="dataUnitPreview">
   <div class="gv-search-hit-header">
     <div class="d-flex">
       <div class="gv-grow-1">
         <a href class="gv-passive-link" (click)="linkClicked()">
-          {{standardAppellationLabel?.getString()}}
+          <gv-data-unit-preview [preview]="dataUnitPreview"></gv-data-unit-preview>
         </a>
       </div>
       <div class="d-flex">
@@ -24,8 +24,7 @@
         <span class="gv-search-hit-property">[TODO Death 1624, Bern]</span>
       </div> -->
       <div class="gv-search-hit-body text-muted">
-        <i class="gv-search-hit-property" *ngFor="let item of headlineItems">
-          <span [innerHtml]="item"></span>
+        <i class="gv-search-hit-property" [innerHtml]="dataUnitSearchHit.full_text_headline">
         </i>
       </div>
     </div>
@@ -36,10 +35,6 @@
     <div *ngIf="repositorySearch && selectRoleRange">
       <button type="button" name="button" (click)="open()" class="btn btn-primary btn-sm" *ngIf="isInProject">Select</button>
       <button type="button" name="button" (click)="add()" class="btn btn-primary btn-sm" *ngIf="!isInProject">Select</button>
-    </div>
-    <div *ngIf="selectingMentionedEntities">
-      <button type="button" name="button" (click)="selectAsMentioned()" class="btn btn-success btn-sm">Select as
-        mentioned</button>
     </div>
   </div>
 </div>

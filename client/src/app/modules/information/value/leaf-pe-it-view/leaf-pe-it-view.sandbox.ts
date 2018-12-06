@@ -36,7 +36,7 @@ export default sandboxOf(LeafPeItViewComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex">
 
-             <gv-leaf-pe-it-view [basePath]="basePath" [pkEntity]="pkEntity" [isCircular]="false"></gv-leaf-pe-it-view>      
+             <gv-leaf-pe-it-view [basePath]="basePath" [isCircular]="false"></gv-leaf-pe-it-view>      
 
             </div>
         </div>`
@@ -60,7 +60,7 @@ export default sandboxOf(LeafPeItViewComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex">
 
-             <gv-leaf-pe-it-view [basePath]="basePath" [pkEntity]="pkEntity" [isCircular]="true"></gv-leaf-pe-it-view>      
+             <gv-leaf-pe-it-view [basePath]="basePath"  [isCircular]="true"></gv-leaf-pe-it-view>      
 
             </div>
         </div>`

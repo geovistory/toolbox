@@ -8,8 +8,9 @@
         <i class="fa fa-pencil"></i>
       </button>
     </div>
+
     <!-- Drop zone for mentioned entity -->
-    <div class="gv-drop-zone" dnd-droppable *ngIf="!mentionedEntity" (onDropSuccess)="onDropMentionedEntity($event.dragData)">
+    <div class="gv-drop-zone" [allowDrop]="allowDropMentionedEntity()" dnd-droppable *ngIf="!mentionedEntity" (onDropSuccess)="onDropMentionedEntity($event.dragData)">
       Drop DataUnit here!
     </div>
 
@@ -43,7 +44,7 @@
 
     <!-- Chunk -->
     <div *ngIf="chunkEntity">
-      Annotated text: {{chunkEntity?.entity_label}}
+      <span>Annotated text:</span> « {{chunkEntity?.js_quill_data | quillDeltaToStr}} »
     </div>
 
     <!-- Edit ui for chunk -->

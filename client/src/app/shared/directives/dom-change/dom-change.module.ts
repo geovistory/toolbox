@@ -10,7 +10,7 @@ import { DomChangeDirective } from './dom-change.directive';
     DomChangeDirective
   ],
   exports: [
-    DomChangeDirective    
+    DomChangeDirective
   ]
 })
 export class DomChangeModule { }

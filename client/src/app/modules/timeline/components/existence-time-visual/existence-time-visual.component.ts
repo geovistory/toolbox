@@ -1,7 +1,7 @@
 import { Component, DoCheck, Input } from '@angular/core';
 
 import { Timeline } from '../../models/timeline';
-import { ExistenceTime } from 'app/core';
+import { TimeSpan } from 'app/core';
 
 @Component({
   selector: '[existenceTimeVisual]',
@@ -16,7 +16,7 @@ export class ExistenceTimeVisualComponent implements DoCheck {
 
   outer: { start: number, end: number };
 
-  @Input('existenceTimeVisual') existenceTimeOnXAxis: { existenceTime: ExistenceTime, timeline: Timeline };
+  @Input('existenceTimeVisual') existenceTimeOnXAxis: { existenceTime: TimeSpan, timeline: Timeline };
 
   constructor() { }
 

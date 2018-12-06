@@ -64,6 +64,7 @@ export class PeItEditableComponent extends DataUnitBase implements AfterViewInit
   @select() showTimeline$: Observable<boolean>;
   @select() showAssertions$: Observable<boolean>;
   @select() showMentionedEntities$: Observable<boolean>;
+  @select() showSources$: Observable<boolean>;
 
   // Toggle Buttons (left panel)
   @select() showPropertiesToggle$: Observable<boolean>;
@@ -75,6 +76,7 @@ export class PeItEditableComponent extends DataUnitBase implements AfterViewInit
   @select() showTimelineToggle$: Observable<boolean>;
   @select() showMentionedEntitiesToggle$: Observable<boolean>;
   @select() showAssertionsToggle$: Observable<boolean>;
+  @select() showSourcesToggle$: Observable<boolean>;
 
   // Visibility of container elements, set by function below
   showRightPanel$: Observable<boolean>;
@@ -138,7 +140,8 @@ export class PeItEditableComponent extends DataUnitBase implements AfterViewInit
       this.showMap$,
       this.showTimeline$,
       this.showAssertions$,
-      this.showMentionedEntities$
+      this.showMentionedEntities$,
+      this.showSources$
     ).pipe(map((bools) => ((bools.filter((bool) => (bool === true)).length > 0))));
 
 
@@ -237,5 +240,12 @@ export class PeItEditableComponent extends DataUnitBase implements AfterViewInit
   }
 
   onRemove = () => this.remove.emit(this.peItState.pkEntity)
+
+  onAnnotate() {
+    if (this.localStore.getState().showMentionedEntities === false) {
+      this.toggle('showMentionedEntities');
+    }
+    this.localStore.dispatch(this.actions.startCreateMentioning())
+  }
 
 }

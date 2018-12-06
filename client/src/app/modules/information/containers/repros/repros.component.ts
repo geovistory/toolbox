@@ -1,4 +1,4 @@
-import { Component, OnDestroy, Input, OnInit } from '@angular/core';
+import { Component, OnDestroy, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
 import { IAppState, SubstoreComponent } from 'app/core';
@@ -27,6 +27,9 @@ export class ReprosComponent extends ReprosAPIActions implements OnInit, OnDestr
 
   // path to the substore
   @Input() basePath: string[];
+
+  @Output() annotate = new EventEmitter<void>();
+  @Output() close = new EventEmitter<void>();
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;

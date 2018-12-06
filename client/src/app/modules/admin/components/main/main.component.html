@@ -5,7 +5,7 @@
       data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-  
+
     <div [ngbCollapse]="isNavbarCollapsed" class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <a class="nav-link" routerLink="/admin/classes" routerLinkActive="active">Classes</a>
@@ -14,13 +14,16 @@
         <a class="nav-link" routerLink="/admin/namespaces" routerLinkActive="active">Namespaces</a>
         <a class="nav-link" routerLink="/admin/system-types" routerLinkActive="active">System Types</a>
       </ul>
+      <ul class="navbar-nav">
+        <a class="nav-link" routerLink="/" routerLinkActive="active">Geovistory Home</a>
+      </ul>
     </div>
-  
+
   </nav>
-  
-  
+
+
   <ng2-slim-loading-bar color="inherit"></ng2-slim-loading-bar>
-  
+
   <div class="container-fluid mt-3 gv-flex-fh gv-flex-fh-second-child">
     <router-outlet></router-outlet>
   </div>

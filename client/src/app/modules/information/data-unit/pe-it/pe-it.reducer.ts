@@ -10,30 +10,30 @@ const INITIAL_STATE: PeItDetail = {
   pkEntity: undefined,
 };
 
-export const peItReducer = (lastState: PeItDetail = INITIAL_STATE, action: PeItAction) => {
+export const peItReducer = (state: PeItDetail = INITIAL_STATE, action: PeItAction) => {
 
   // Extend this reducer by dataUnitReducer
-  lastState = dataUnitReducer(lastState, action)
+  state = dataUnitReducer(state, action)
 
   switch (action.type) {
 
     case PeItActions.PE_IT_STATE_UPDATED:
-      lastState = action.payload
+      state = action.payload
       break;
 
 
 
 
     case PeItActions.PE_IT_LABEL_UPDATED:
-      lastState = {
-        ...lastState,
+      state = {
+        ...state,
         label: action.payload.label,
       }
       break;
 
     case PeItActions.SET_LEAF_PE_IT_LOADING:
-      lastState = {
-        ...lastState,
+      state = {
+        ...state,
         leafPeItLoading: action.payload.leafPeItLoading,
       }
       break;
@@ -44,14 +44,27 @@ export const peItReducer = (lastState: PeItDetail = INITIAL_STATE, action: PeItA
      ************************************************/
 
     case PeItActions.TOGGLE_BOOLEAN:
-      lastState = {
-        ...lastState,
-        [action.meta.keyToToggle]: !lastState[action.meta.keyToToggle]
+      state = {
+        ...state,
+        [action.meta.keyToToggle]: !state[action.meta.keyToToggle]
+      }
+      break;
+
+    /************************************************
+    * Reducer to start create a new mentioning
+    ************************************************/
+    case PeItActions.START_CREATE_MENTIONING:
+      state = {
+        ...state,
+        mentionedEntities: {
+          ...state.mentionedEntities,
+          create: true
+        }
       }
       break;
 
   }
 
-  return lastState;
+  return state;
 };
 

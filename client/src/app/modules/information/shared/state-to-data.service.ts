@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ExistenceTime, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, U } from 'app/core';
+import { TimeSpan, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, U } from 'app/core';
 import { FieldList, ExistenceTimeDetail, PeItDetail, RoleDetail, RoleDetailList, PropertyField, TeEntDetail } from 'app/core/state/models';
 import { DfhConfig } from './dfh-config';
 import { Field } from 'app/core/state/models/field';
@@ -125,10 +125,10 @@ export class StateToDataService {
    * Convert ExistenceTimeDetail to ExistenceTime
    * @param existTimeDetail
    */
-  static existenceTimeStateToExistenceTime(existTimeDetail: ExistenceTimeDetail): ExistenceTime {
+  static existenceTimeStateToExistenceTime(existTimeDetail: ExistenceTimeDetail): TimeSpan {
     if (!existTimeDetail) return null;
 
-    const et = new ExistenceTime();
+    const et = new TimeSpan();
 
     const conf = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY;
 

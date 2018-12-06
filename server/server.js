@@ -15,6 +15,21 @@ app.start = function() {
       var explorerPath = app.get('loopback-component-explorer').mountPath;
       console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
     }
+
+    // continuously refreshing the materialized view, if nedded
+    const connector = app.dataSources.postgres1.connector;
+    const refreshMaterializedView = () => {
+      setTimeout(()=>{
+        const sql_stmt = 'SELECT information.refresh_vm_data_unit_preview();';
+        const params = [];
+        connector.execute(sql_stmt, params, (err, resultObjects) => {
+          refreshMaterializedView()
+          console.log('Refreshed vm_data_unit_preview: ', resultObjects[0].refresh_vm_data_unit_preview)
+        });    
+      }, 1000)
+    }
+    refreshMaterializedView()
+   
   });
   return server;
 };

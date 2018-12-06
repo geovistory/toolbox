@@ -1,7 +1,12 @@
-import { Renderer2, EventEmitter } from "@angular/core";
+import { Renderer2, EventEmitter } from '@angular/core';
+import { Observable, Subject, combineLatest } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { intersection } from 'ramda';
 
 
 export class QuillNodeHandler {
+
+    destroy$ = new Subject<boolean>();
 
     onClick: EventEmitter<QuillNodeHandler> = new EventEmitter();
     onMouseEnter: EventEmitter<QuillNodeHandler> = new EventEmitter();
@@ -15,45 +20,46 @@ export class QuillNodeHandler {
     constructor(
         private renderer: Renderer2,
         private node: any,
-        public readonly annotatedEntitiesCount: number,
-        public readonly annotationsVisible: boolean,
+        public readonly annotatedEntities$: Observable<number[]>, // pk_entities (of mentionings or assertions)
+        public readonly annotationsVisible$: Observable<boolean>,
+        public readonly entitiesToHighlight$: Observable<number[]>, // array of pk_entities (of mentionings or assertions) that are to be highlighted in the text
         public readonly creatingAnnotation: boolean
     ) {
 
         this.nodeId = node.attributes.quillnode.value;
 
-        this.addClasses()
+        combineLatest(annotatedEntities$, annotationsVisible$, entitiesToHighlight$).pipe(takeUntil(this.destroy$)).subscribe(d => {
+
+            const annotatedEntities = d[0], annotationsVisible = d[1], entitiesToHighlight = d[2];
+
+            if (entitiesToHighlight && annotatedEntities && intersection(annotatedEntities, entitiesToHighlight).length) {
+                // if an annotated entity is to highlight
+
+                this.renderer.addClass(this.node, 'gv-bg-highlight-2');
+                this.renderer.removeClass(this.node, 'gv-bg-highlight');
+
+            } else if (annotationsVisible && annotatedEntities && annotatedEntities.length ) {
+                // if annotations are visible and there is at least one annotation
+                this.renderer.addClass(this.node, 'gv-bg-highlight');
+                this.renderer.removeClass(this.node, 'gv-bg-highlight-2');
+            } else {
+
+                this.renderer.removeClass(this.node, 'gv-bg-highlight');
+                this.renderer.removeClass(this.node, 'gv-bg-highlight-2');
+            }
+
+        })
 
         this.addListeners()
 
-
-
     }
 
-    private addClasses() {
-
-        // make a 
-        if (this.creatingAnnotation)
-            this.setCreateAnnotationClass()
-
-        // highlight mentioned entities
-        else if (this.annotationsVisible)
-            this.setAnnotatedEntitiesClass()
-
+    public destroy() {
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe();
     }
 
-    /**
-     * calculates the backgound-color according to the mentionedEntitiesCount
-     */
-    private setAnnotatedEntitiesClass(): void {
 
-
-        if (this.annotatedEntitiesCount > 0) {
-            // add a background style
-            this.renderer.addClass(this.node, 'bg-success');
-        }
-
-    }
 
     /**
      * calculates the backgound-color according to the mentionedEntitiesCount
@@ -64,15 +70,14 @@ export class QuillNodeHandler {
         if (this.isSelected) {
             // this.renderer.removeClass(this.node, 'bg-light');
             this.renderer.addClass(this.node, 'bg-success');
-        }
-        else {
+        } else {
             this.renderer.removeClass(this.node, 'bg-success');
             // this.renderer.addClass(this.node, 'bg-light');
         }
 
     }
 
-    private invertIsSelected(){
+    private invertIsSelected() {
         this.isSelected = !this.isSelected;
 
         this.setCreateAnnotationClass()
@@ -105,7 +110,7 @@ export class QuillNodeHandler {
             this.renderer.listen(this.node, 'mousedown', (event) => {
 
                 this.invertIsSelected();
-                
+
             })
 
             // add mouseenter listener

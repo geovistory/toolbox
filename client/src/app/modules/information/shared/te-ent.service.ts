@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter, Inject, forwardRef } from '@angular/core';
 import { Observable ,  BehaviorSubject } from 'rxjs';
 
-import { InfTemporalEntity, InfRole, DfhProperty, InfTemporalEntityApi, TimePrimitive, InfTimePrimitive, InfEntityProjectRel, InfAppellation, ExistenceTime } from 'app/core';
+import { InfTemporalEntity, InfRole, DfhProperty, InfTemporalEntityApi, TimePrimitive, InfTimePrimitive, InfEntityProjectRel, InfAppellation, TimeSpan } from 'app/core';
 import { DfhConfig } from './dfh-config';
 import { PropertyService } from './property.service';
 import { ClassService } from './class.service';
@@ -184,10 +184,10 @@ export class TeEntService {
    * Builds an ExistenceTime Instance from the given teEnt
    * @param teEnt the temporalEntity coming from the DB
    */
-  buildExistenceTime(teEnt: InfTemporalEntity): EventEmitter<ExistenceTime> {
-    const emitter: EventEmitter<ExistenceTime> = new EventEmitter();
+  buildExistenceTime(teEnt: InfTemporalEntity): EventEmitter<TimeSpan> {
+    const emitter: EventEmitter<TimeSpan> = new EventEmitter();
 
-    let existenceTime = new ExistenceTime()
+    let existenceTime = new TimeSpan()
 
     // switch keys and vals
     let keyByPk = {};

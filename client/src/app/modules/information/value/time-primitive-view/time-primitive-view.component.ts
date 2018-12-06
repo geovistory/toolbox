@@ -17,8 +17,8 @@ export class TimePrimitiveViewComponent implements OnInit {
   'duration' // shows duration of DateTime
   | 'firstSecond'  // shows first second of DateTime
   | 'lastSecond'; // show last second DateTime
-  
-  
+
+
   calendar: CalendarType;
   timePrimitive: TimePrimitive;
 
@@ -33,19 +33,19 @@ export class TimePrimitiveViewComponent implements OnInit {
 
   get displayLabel(): string {
 
-    let tp = new TimePrimitive(this.timePrimitive)
+    const tp = new TimePrimitive(this.timePrimitive)
 
-    let dt = tp.getDateTime();
+    const dt = tp.getDateTime();
 
     switch (this.show) {
 
-      case "duration":
+      case 'duration':
         return this.datePipe.transform(dt.getDate(), tp.getShortesDateFormatString());
 
-      case "firstSecond":
+      case 'firstSecond':
         return this.datePipe.transform(dt.getDate(), tp.getDateFormatString('1 second'));
 
-      case "lastSecond":
+      case 'lastSecond':
         dt.toLastSecondOf(this.timePrimitive.duration);
         return this.datePipe.transform(dt.getDate(), tp.getDateFormatString('1 second'));
 

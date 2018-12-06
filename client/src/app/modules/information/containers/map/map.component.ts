@@ -1,5 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
-import { AfterViewInit, Component, Input, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, ViewChild, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
 import { IAppState, LoopBackConfig, U } from 'app/core';
 import { Subject } from 'rxjs';
 import { AcMapComponent, MapLayerProviderOptions, ViewerConfiguration } from '../../../gv-angular-cesium/angular-cesium-fork';
@@ -15,6 +15,8 @@ import { PeItLayerComponent } from '../pe-it-layer/pe-it-layer.component';
 export class MapComponent implements AfterViewInit, OnDestroy {
 
   @Input() path: string[];
+
+  @Output() close = new EventEmitter<void>();
 
   @ViewChild(PeItLayerComponent) peItLayer: PeItLayerComponent;
   @ViewChild(AcMapComponent) acMap: AcMapComponent;

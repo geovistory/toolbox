@@ -1,6 +1,6 @@
 export { ComConfig } from './config/com-config';
 export { LoadingBarAction, LoadingBarActions } from './loading-bar/api/loading-bar.actions';
-export { ExistenceTime } from './existence-time/existence-time';
+export { TimeSpan } from './time-span/time-span';
 export { ValidationService } from './validation/validation.service';
 export { EntityEditorService } from './entity-editor/entity-editor.service';
 export { ActiveAccountService } from './active-account/active-account.service';

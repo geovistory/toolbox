@@ -13,26 +13,30 @@ export function leafPeItViewReducer(state: LeafPeItView = INITIAL_STATE, a: Acti
     case LeafPeItViewAPIActions.LOAD:
       state = {
         ...state,
-        loading: true
+        _leaf_peIt_modal: {
+          loading: true
+        }
       };
       break;
 
     case LeafPeItViewAPIActions.LOAD_SUCCEEDED:
       state = {
         ...state,
-        ...action.meta.peItDetail,
         _leaf_peIt_modal: clone({
           ...action.meta.peItDetail,
-          showRightPanel: false
-        }),
-        loading: false,
+          showRightPanel: false,
+          loading: false
+        })
       };
       break;
 
     case LeafPeItViewAPIActions.LOAD_FAILED:
       state = {
         ...state,
-        loading: false,
+        _leaf_peIt_modal: {
+          ...state._leaf_peIt_modal,
+          loading: false,
+        },
         error: 'error'
       };
       break;

@@ -1,32 +1,38 @@
+import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
-import { fieldKey, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
+import { createPeItDetail, fieldKey, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
+import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy, sort } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
-import { mapTo, switchMap, takeUntil, mergeMap } from 'rxjs/operators';
+import { mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, ProjectApi, InfPersistentItemApi } from '../sdk';
+import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfDataUnitPreviewApi, ProjectApi } from '../sdk';
+import { DataUnitPreview, PeItDetail } from '../state/models';
+import { IAppState } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { DataUnitPreview } from '../state/models';
 
 
 
 @Injectable()
 export class ActiveProjectEpics {
   constructor(
-    private peItApi: InfPersistentItemApi,
+    private duApi: InfDataUnitPreviewApi,
+    private peItService: PeItService,
+    private chunkApi: InfChunkApi,
     private uiContextApi: ComUiContextApi,
     private projectApi: ProjectApi,
     private dfhPropertyApi: DfhPropertyApi,
     private comClassFieldApi: ComClassFieldApi,
     private actions: ActiveProjectActions,
     private notificationActions: NotificationsAPIActions,
-    private loadingBarActions: LoadingBarActions
+    private loadingBarActions: LoadingBarActions,
+    private ngRedux: NgRedux<IAppState>
   ) { }
 
   public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
@@ -34,7 +40,10 @@ export class ActiveProjectEpics {
       this.createLoadProjectEpic(),
       this.createLoadClassListEpic(),
       this.createLoadProjectUpdatedEpic(),
-      this.createLoadDataUnitPreviewEpic()
+      this.createLoadDataUnitPreviewEpic(),
+      this.createLoadDataUnitDetailForModalEpic(),
+      this.createLoadChunkEpic(),
+
     );
   }
 
@@ -240,7 +249,9 @@ export class ActiveProjectEpics {
           /**
            * Do some api call
            */
-          this.peItApi.preview(action.meta.pk_project, action.meta.pk_entity, action.meta.pk_ui_context)
+          this.duApi.findComplex({
+            where: ['fk_project', '=', action.meta.pk_project, 'AND', 'pk_entity', '=', action.meta.pk_entity]
+          })
             /**
            * Subscribe to the api call
            */
@@ -270,6 +281,130 @@ export class ActiveProjectEpics {
                * Emit the local action on loading failed
                */
               globalStore.next(this.actions.loadDataUnitPreviewFailed({ status: '' + error.status }))
+            })
+        }))
+      )
+    }
+  }
+
+  private createLoadDataUnitDetailForModalEpic(): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(ActiveProjectActions.LOAD_DATA_UNIT_DETAIL_FOR_MODAL),
+        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+
+          const p = this.ngRedux.getState().activeProject;
+
+          /**
+           * TODO: change this to something generic for PeIt and TeEn
+           */
+          this.peItService.getNestedObject(action.meta.pk_entity, action.meta.pk_project)
+            /**
+           * Subscribe to the api call
+           */
+            .subscribe((data) => {
+              if (data) {
+                const peItDetail: PeItDetail = createPeItDetail(
+                  {
+                    showProperties: true,
+                    showMapToggle: true
+                  },
+                  data,
+                  p.crm,
+                  { isViewMode: true, pkUiContext: action.meta.pk_ui_context }
+                )
+                /**
+                 * Emit the global action that completes the loading bar
+                 */
+                globalStore.next(this.loadingBarActions.completeLoading());
+                /**
+                 * Emit the local action on loading succeeded
+                 */
+                globalStore.next(this.actions.loadPeItDetailsForModalSucceeded(peItDetail));
+              } else {
+                globalStore.next(this.loadingBarActions.completeLoading());
+                globalStore.next(this.notificationActions.addToast({
+                  type: 'error',
+                  options: {
+                    title: 'Failed loading related item ' + action.meta.pk_entity
+                  }
+                }));
+              }
+
+            }, error => {
+              /**
+              * Emit the global action that shows some loading error message
+              */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              globalStore.next(this.actions.loadDataUnitDetailsForModalFailed({ status: '' + error.status }))
+            })
+        }))
+      )
+    }
+  }
+
+
+  private createLoadChunkEpic(): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(ActiveProjectActions.LOAD_CHUNK),
+        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Do some api call
+           */
+          this.chunkApi.findById(action.meta.pk_entity)
+            /**
+           * Subscribe to the api call
+           */
+            .subscribe((data: InfChunk) => {
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+
+              /**
+               * Emit the local action on loading succeeded
+               */
+              globalStore.next(this.actions.loadChunkSucceeded(data));
+
+            }, error => {
+              /**
+              * Emit the global action that shows some loading error message
+              */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              globalStore.next(this.actions.loadChunkFailed({ status: '' + error.status }))
             })
         }))
       )

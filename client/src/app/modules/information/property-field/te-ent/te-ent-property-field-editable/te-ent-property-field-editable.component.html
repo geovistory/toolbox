@@ -1,8 +1,8 @@
 <div class="mb-3" *ngIf="!hasOnlyCircularRole" (mouseenter)="enableDrag()" (mouseleave)="disableDrag()" (touchstart)="enableDrag()">
 
-  <gv-property-field-header [property$]="property$" [label$]="label$" [showOntoInfo$]="showOntoInfo$" [toggle$]="toggle$"
+  <gv-field-header [property$]="property$" [label$]="label$" [showOntoInfo$]="showOntoInfo$" [toggle$]="toggle$"
     [rolesCount]="(roles$ | async)?.length" [removePropertyFieldBtnVisible]="removePropertyFieldBtnVisible" (startAddingRole)="startAddingRole()"
-    (toggleCardBody)="toggleCardBody()"></gv-property-field-header>
+    (toggleCardBody)="toggleCardBody()"></gv-field-header>
 
   <div [@slideInOut]="(toggle$|async)">
     <!-- The roles in project -->

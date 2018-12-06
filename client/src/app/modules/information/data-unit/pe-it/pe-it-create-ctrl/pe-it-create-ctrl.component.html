@@ -1,7 +1,7 @@
 <form [formGroup]="formGroup" *ngIf="formGroup">
 
   <div class="form-group" *ngIf="formGroup.get('_typeCtrl')">
-    <label class="h5">Type</label>
+    <label class="gv-field-header-label">Type</label>
     <gv-type-ctrl formControlName="_typeCtrl" [basePath]="basePath.concat('_type').concat('_typeCtrl')">
     </gv-type-ctrl>
   </div>

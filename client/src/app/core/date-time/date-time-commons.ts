@@ -103,17 +103,17 @@ export class DateTimeCommons {
     month = (month === undefined || month === null) ? 1 : month;
 
     // month corrections (note that january has index 0)
-    var monthCorrenctions = [-1, 0, -2, -1, -1, 0, 0, 1, +2, +2, +3, +3];
+    let monthCorrenctions = [-1, 0, -2, -1, -1, 0, 0, 1, +2, +2, +3, +3];
 
     // leap year correction
-    var lc = 0;
+    let lc = 0;
 
     if (isLeap && month > 2) {
       lc = 1;
     }
 
     // month correction
-    var mc = monthCorrenctions[month - 1];
+    let mc = monthCorrenctions[month - 1];
 
     return day + (30 * (month - 1)) + (lc + mc);
   }
@@ -131,23 +131,23 @@ export class DateTimeCommons {
   calcDateByRunningDay(runningDay: number, isLeap: boolean): { day: number, month: number } {
 
     // month corrections (note that january has index 0)
-    var monthCorrenctions = [-1, 0, -2, -1, -1, 0, 0, 1, +2, +2, +3, +3];
+    let monthCorrenctions = [-1, 0, -2, -1, -1, 0, 0, 1, +2, +2, +3, +3];
 
     // resulting month
-    var month = Math.floor((runningDay + 1) / 30) + 1;
+    let month = Math.floor((runningDay + 1) / 30) + 1;
 
     // month correction
-    var mc = monthCorrenctions[month - 1];
+    let mc = monthCorrenctions[month - 1];
 
     // leap year correction
-    var lc = 0;
+    let lc = 0;
 
     if (isLeap && month > 2) {
       lc = 1;
     }
 
     // resulting day
-    var day = runningDay - 30 * (month - 1) - (lc + mc);
+    const day = runningDay - 30 * (month - 1) - (lc + mc);
 
     // check if month and day still valid
     if (month > 12 || day < 1) {
@@ -166,10 +166,10 @@ export class DateTimeCommons {
       }
 
       // month correction
-      var mc = monthCorrenctions[month - 1];
+      const mc = monthCorrenctions[month - 1];
 
       // resulting day
-      var day = runningDay - 30 * (month - 1) - (lc + mc);
+      const day = runningDay - 30 * (month - 1) - (lc + mc);
 
     }
 
@@ -185,13 +185,13 @@ export class DateTimeCommons {
   }
 
   getGranularity(): Granularity {
-    let duration: Granularity = undefined;
-    if (this.year) { duration = "1 year" }
-    if (this.month) { duration = "1 month" }
-    if (this.day) { duration = "1 day" }
-    if (this.hours) { duration = "1 hour" }
-    if (this.minutes) { duration = "1 minute" }
-    if (this.seconds) { duration = "1 second" }
+    let duration: Granularity;
+    if (this.year) { duration = '1 year' }
+    if (this.month) { duration = '1 month' }
+    if (this.day) { duration = '1 day' }
+    if (this.hours) { duration = '1 hour' }
+    if (this.minutes) { duration = '1 minute' }
+    if (this.seconds) { duration = '1 second' }
     return duration;
   }
 
@@ -225,7 +225,7 @@ export class DateTimeCommons {
     if (this.seconds && !this.hours) return null;
 
     // creat date
-    let date = new Date()
+    const date = new Date()
 
     date.setFullYear(this.year);
 
@@ -243,7 +243,7 @@ export class DateTimeCommons {
   }
 
   pad(number: number, width: number, z: string = '0'): string {
-    var n = number.toString();
+    const n = number.toString();
     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
   }
 

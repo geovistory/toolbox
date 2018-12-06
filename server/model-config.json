@@ -96,10 +96,6 @@
     "dataSource": null,
     "public": false
   },
-  "InfDataUnitPreview": {
-    "dataSource": null,
-    "public": false
-  },
   "DfhClass": {
     "dataSource": "postgres1",
     "public": true
@@ -133,6 +129,10 @@
     "public": true
   },
   "InfPlace": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "InfDataUnitPreview": {
     "dataSource": "postgres1",
     "public": true
   },

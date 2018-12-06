@@ -1,10 +1,10 @@
-<div class="mb-3" (mouseenter)="enableDrag()" (touchstart)="enableDrag()" *ngIf="!isolateRoleDetail">
+<div class="gv-field" (mouseenter)="enableDrag()" (touchstart)="enableDrag()" *ngIf="!isolateRoleDetail">
 
   <span [hidden]="(_property_field_form$ | async)">
-    <gv-property-field-header [property$]="property$" [label$]="label$" [toggle$]="toggle$" [showOntoInfo$]="showOntoInfo$"
+    <gv-field-header [property$]="property$" [label$]="label$" [toggle$]="toggle$" [showOntoInfo$]="showOntoInfo$"
       [addButtonVisible]="addButtonVisible" [toggleButtonVisible]="true" [removePropertyFieldBtnVisible]="removePropertyFieldBtnVisible"
       [rolesCount]="roles?.length" (toggleCardBody)="toggleCardBody()" (startAddingRole)="startAddingRole()"
-      (removePropertyField)="removePropertyField()"></gv-property-field-header>
+      (removePropertyField)="removePropertyField()"></gv-field-header>
     <div [@slideInOut]="(toggle$|async)">
 
       <!-- The roles that are added -->

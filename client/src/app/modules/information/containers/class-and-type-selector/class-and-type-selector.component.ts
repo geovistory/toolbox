@@ -51,11 +51,8 @@ export class ClassAndTypeSelectorComponent extends ClassAndTypeSelectorAPIAction
   // has filter
   @Input() hasFilter = false;
 
-
-
   // On user select class or type
   @Output() select = new EventEmitter<ClassAndTypePk>();
-
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;

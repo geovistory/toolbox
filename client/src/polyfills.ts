@@ -83,3 +83,17 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
  * https://github.com/socketio/socket.io-client/issues/1166
  */
 (window as any).global = window;
+
+
+/**
+ * See:
+ * https://stackoverflow.com/questions/36644438/how-to-convert-a-plain-object-into-an-es6-map
+ * https://stackoverflow.com/questions/43148613/how-to-add-a-custom-polyfill-to-an-angular-cli-project
+ *
+ */
+declare global {
+    interface Object {
+        entries
+    }
+}
+Object.entries = typeof Object.entries === 'function' ? Object.entries : obj => Object.keys(obj).map(k => [k, obj[k]]);

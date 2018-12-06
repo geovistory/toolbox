@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
 import * as Delta from 'quill-delta/lib/delta';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { QuillDoc } from '..';
 import { QuillNodeHandler } from '../quill-node-handler';
 import { QuillService } from '../quill.service';
@@ -24,18 +24,18 @@ export class QuillEditComponent implements OnInit, OnChanges {
   // Editor Config object. If none provided, it will use a default.
   @Input() editorConfig: any;
 
-  @Input() annotationsVisible: boolean;
+  @Input() annotationsVisible$: Observable<boolean>;
 
-  @Input() set annotatedNodes(arr: [string, number][]) {
-    this._annotatedNodes = new Map(arr);
-  }
+  @Input() annotatedNodes$: Observable<{ [nodeId: string]: number[] }>;
+
+  @Input() entitiesToHighlight$: Observable<number[]>
 
   @Output() quillDocChange = new EventEmitter<QuillDoc>()
   @Output() blur = new EventEmitter<void>()
   @Output() htmlChange = new EventEmitter<string>()
   @Output() selectedDeltaChange = new EventEmitter<Delta>()
+  @Output() nodeClick = new EventEmitter<QuillNodeHandler>()
 
-  private _annotatedNodes: Map<string, number>; // string: id of node, number intensity of highlight
 
   // needed for creating annotation: maps nodeid with object containing isSelected-boolean and op (from Delta.ops)
   nodeSelctionMap = new Map<string, { isSelected: boolean, op: any }>();
@@ -56,7 +56,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
   html: string;
 
-  nodeSubs = new Map<string, Subscription[]>(); // string=nodeid, subscriptions on this nodes events
+  nodeSubs = new Map<Node, { nh: QuillNodeHandler, subs: Subscription[] }>(); // the DOM Node, subscriptions on this nodes events
 
   showTokenIds = false;
 
@@ -98,7 +98,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
     ) {
       this.validateInputs();
       this.initQuillDoc();
-      this.initNodeSubscriptions();
+      // this.initNodeSubscriptions();
       this.initContents();
     }
 
@@ -131,7 +131,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
     this.initEditorConfig();
 
     // init node handlers, e.g. to register click event on a node
-    this.initNodeSubscriptions();
+    // this.initNodeSubscriptions();
 
     // init the editor
     this.initEditor();
@@ -142,9 +142,46 @@ export class QuillEditComponent implements OnInit, OnChanges {
     // register for text changes
     this.registerOnTextChange();
 
+    // register for selection changes
+    this.registerOnSelectionChange();
+
     // init contents
     this.initContents();
 
+  }
+
+
+
+  private registerOnSelectionChange() {
+
+    this.quillEditor.on('selection-change', (range, oldRange, source) => {
+      if (range) {
+        if (range.length == 0) {
+          // console.log('User cursor is on', range.index);
+          this.selectedDeltaChange.emit(null);
+        } else {
+          const delta = this.getChunkOfSelectedRange(range);
+          this.selectedDeltaChange.emit(delta);
+        }
+      } else {
+        // console.log('Cursor not in the editor');
+        this.selectedDeltaChange.emit(null);
+
+      }
+    });
+  }
+
+  private getChunkOfSelectedRange(range: any) {
+    const firstBlotOfSelection = this.quillEditor.getLeaf(range.index);
+    const missingFromStart = firstBlotOfSelection[1] === firstBlotOfSelection[0].text.length ? 0 : firstBlotOfSelection[1];
+    const startIndex = range.index - missingFromStart;
+
+    const lastBlotOfSelection = this.quillEditor.getLeaf((range.index + range.length));
+    const missingTillEnd = lastBlotOfSelection[0].text.length - lastBlotOfSelection[1];
+    const offset = range.length + missingTillEnd + missingFromStart;
+
+    const ops = this.quillEditor.getContents(startIndex, offset);
+    return ops;
   }
 
   private registerOnTextChange() {
@@ -157,17 +194,18 @@ export class QuillEditComponent implements OnInit, OnChanges {
     this.quillEditor = new this.Quill(this.editorElem.nativeElement, this.editorConfig);
   }
 
-  private initNodeSubscriptions() {
+  // private initNodeSubscriptions() {
 
-    // unsubscribe from node subscriptions
-    this.nodeSubs.forEach(subs => {
-      subs.forEach((sub: Subscription) => {
-        sub.unsubscribe();
-      });
-    });
-    // reset nodeSubs
-    this.nodeSubs = new Map<string, Subscription[]>();
-  }
+  //   // unsubscribe from node subscriptions
+  //   this.nodeSubs.forEach(node => {
+  //     node.subs.forEach((sub: Subscription) => {
+  //       sub.unsubscribe();
+  //     });
+  //     node.nh.destroy()
+  //   });
+  //   // reset nodeSubs
+  //   this.nodeSubs = new Map<Node, { nh: QuillNodeHandler, subs: Subscription[] }>()
+  // }
 
   private initEditorConfig() {
     // set default editor config
@@ -378,22 +416,27 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
         const id = node.attributes.quillnode.value;
 
-        const annotatedEntitiesCount = this._annotatedNodes ? this._annotatedNodes.get(id) : 0;
+        const annotatedEntities$ = this.annotatedNodes$ ? this.annotatedNodes$.map(nodes => nodes[id]) : Observable.of(null);
 
-        //
-        const qnh = new QuillNodeHandler(this.renderer, node, annotatedEntitiesCount, this.annotationsVisible, this.creatingAnnotation)
+        if (!this.nodeSubs.has(node)) {
 
-        // subscribe for events of nodehandler
-        this.nodeSubs.set(id, [
-          qnh.onClick.subscribe((nh: QuillNodeHandler) => {
-            console.log({ click: nh })
-          }),
-          qnh.onSelectedChange.subscribe((nh: QuillNodeHandler) => {
-            console.log({ onSelectedChange: nh })
-            this.changeAnnotatedDelta(nh);
-          }),
-        ])
+          const qnh = new QuillNodeHandler(this.renderer, node, annotatedEntities$, this.annotationsVisible$, this.entitiesToHighlight$, this.creatingAnnotation)
 
+          // subscribe for events of nodehandler
+          this.nodeSubs.set(node, {
+            nh: qnh,
+            subs: [
+              qnh.onClick.subscribe((nh: QuillNodeHandler) => {
+                this.nodeClick.emit(qnh)
+                console.log({ click: nh })
+              }),
+              qnh.onSelectedChange.subscribe((nh: QuillNodeHandler) => {
+                console.log({ onSelectedChange: nh })
+                this.changeAnnotatedDelta(nh);
+              }),
+            ]
+          })
+        }
 
       }
     }
@@ -404,10 +447,20 @@ export class QuillEditComponent implements OnInit, OnChanges {
       if (node.attributes && node.attributes.quillnode) {
         const id = node.attributes.quillnode.value;
 
-        // unsubscribe
-        this.nodeSubs.get(id).forEach((sub: Subscription) => {
-          sub.unsubscribe()
-        });
+        if (
+          this.nodeSubs.has(node) &&
+          !node.offsetParent // this is a hacky way to find out if the node has really been removed
+        ) {
+          // unsubscribe
+          const nodeSub = this.nodeSubs.get(node);
+          nodeSub.subs.forEach((sub: Subscription) => {
+            sub.unsubscribe()
+          });
+          nodeSub.nh.destroy();
+
+          // delete nodeSub
+          this.nodeSubs.delete(node);
+        }
       }
     }
   }
@@ -438,27 +491,27 @@ export class QuillEditComponent implements OnInit, OnChanges {
     // fill the selectedDelta with the selected items
     // or a ... node if some tokens are omitted
     let previousItem;
-    this.nodeSelctionMap.forEach(item => {
+    this.nodeSelctionMap.forEach(i => {
 
-      if (item.isSelected) {
-        // add dots, if there is a previous item that is not selected
+      if (i.isSelected) {
+        // add dots, if there is a previous i that is not selected
         if (
           this.selectedDelta.ops.length &&
           previousItem.isSelected === false
         ) {
           this.selectedDelta.ops.push({
             'attributes': {
-              'node': '_dots_'
+              'node': '_'
             },
             'insert': ' … '
           })
         }
 
-        this.selectedDelta.ops.push(item.op);
+        this.selectedDelta.ops.push(i.op);
 
       }
 
-      previousItem = item;
+      previousItem = i;
     })
 
     this.selectedDeltaChange.emit(this.selectedDelta)

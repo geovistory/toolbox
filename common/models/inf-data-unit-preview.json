@@ -1,7 +1,22 @@
 {
   "name": "InfDataUnitPreview",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "vm_data_unit_preview"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
   "properties": {
     "pk_entity": {
+      "id": true,
       "type": "number"
     },
     "fk_project": {
@@ -9,6 +24,9 @@
     },
     "fk_class": {
       "type": "number"
+    },
+    "class_label": {
+      "type": "string"
     },
     "entity_label": {
       "type": "string"
@@ -18,6 +36,91 @@
     },
     "type_label": {
       "type": "string"
+    },
+    "pk_type": {
+      "type": "number"
+    },
+    "time_span": {
+      "type": "object"
+    }
+  },
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "findComplex",
+        "search"
+      ]
+    }
+  ],
+  "methods": {
+    "search": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": false,
+          "description": "pkProject, if none provided, searches in repo",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "searchString",
+          "type": "string",
+          "required": false,
+          "description": "Search String",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkClasses",
+          "type": "array",
+          "required": false,
+          "description": "Classes for which the search will be performed.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "limit",
+          "type": "number",
+          "required": false,
+          "description": "Max. number of results per page [default=10; max=200]",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "page",
+          "type": "number",
+          "required": true,
+          "description": "Page of pagination",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "object",
+        "root": true
+      },
+      "description": "Find data unit previews.",
+      "http": {
+        "path": "/search",
+        "verb": "get"
+      }
     }
   }
 }

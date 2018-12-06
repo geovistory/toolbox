@@ -1,5 +1,5 @@
-<gv-property-field-header [property$]="property$" [label$]="label$" [rolesCount]="((_role_list$ | async) | keys)?.length" (removePropertyField)="removePropertyField()" 
-  [removePropertyFieldBtnVisible]="removePropertyFieldBtnVisible"></gv-property-field-header>
+<gv-field-header [property$]="property$" [label$]="label$" [rolesCount]="((_role_list$ | async) | keys)?.length" (removePropertyField)="removePropertyField()" 
+  [removePropertyFieldBtnVisible]="removePropertyFieldBtnVisible"></gv-field-header>
 
 <form [formGroup]="formGroup" *ngIf="formGroup">
   <div *ngFor="let entry of (_role_list$ | async) | keys; trackBy:getKey">

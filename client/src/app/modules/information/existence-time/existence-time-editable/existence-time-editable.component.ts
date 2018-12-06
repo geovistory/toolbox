@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, On
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IAppState, InfRole, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
-import { ExistenceTimeDetail, ExTimeModalMode, PropertyFieldList, TeEntDetail } from 'app/core/state/models';
+import { ExistenceTimeDetail, ExTimeModalMode, PropertyFieldList, TeEntDetail, FieldLabel } from 'app/core/state/models';
 import { createExistenceTimeDetail, StateSettings } from 'app/core/state/services/state-creator';
 import { dropLast } from 'ramda';
 import { Observable, Subscription } from 'rxjs';
@@ -49,6 +49,9 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
 
   showOntoInfo$: Observable<boolean>
   @select() toggle$: Observable<boolean>
+
+  label$: Observable<FieldLabel>
+
   _fields: PropertyFieldList;
 
   // true, if there is no termporal information
@@ -73,6 +76,8 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
 
     this.localStore = this.ngRedux.configureSubStore(this.basePath, existenceTimeReducer);
     this.parentTeEntStore = this.ngRedux.configureSubStore(dropLast(2, this.basePath), teEntReducer)
+
+    this.label$ = this.ngRedux.select(['activeProject', 'crm', 'fieldList', this.basePath[this.basePath.length - 1], 'label'])
 
     const parentPeItPath = dropLast(7, this.basePath);
 

@@ -1,186 +1,186 @@
-import { QuillDoc } from "../quil.models";
+import { QuillDoc } from '../quil.models';
 
 export const textBüchel: QuillDoc = {
     latestId: 60,
     contents:
         {
-            "ops": [
+            'ops': [
                 {
-                    "attributes": {
-                        "node": "20"
+                    'attributes': {
+                        'node': 20
                     },
-                    "insert": "Emmanuel"
+                    'insert': 'Emmanuel'
                 },
                 {
-                    "attributes": {
-                        "node": "21"
+                    'attributes': {
+                        'node': 21
                     },
-                    "insert": " "
+                    'insert': ' '
                 },
                 {
-                    "attributes": {
-                        "node": "24"
+                    'attributes': {
+                        'node': 24
                     },
-                    "insert": "Büchel"
+                    'insert': 'Büchel'
                 },
                 {
-                    "attributes": {
-                        "node": "25"
+                    'attributes': {
+                        'node': 25
                     },
-                    "insert": " "
+                    'insert': ' '
                 },
                 {
-                    "attributes": {
-                        "node": "26"
+                    'attributes': {
+                        'node': 26
                     },
-                    "insert": "war"
+                    'insert': 'war'
                 },
                 {
-                    "attributes": {
-                        "node": "27"
+                    'attributes': {
+                        'node': 27
                     },
-                    "insert": " "
+                    'insert': ' '
                 },
                 {
-                    "attributes": {
-                        "node": "28"
+                    'attributes': {
+                        'node': 28
                     },
-                    "insert": "ein"
+                    'insert': 'ein'
                 },
                 {
-                    "attributes": {
-                        "node": "29"
+                    'attributes': {
+                        'node': 29
                     },
-                    "insert": " "
+                    'insert': ' '
                 },
                 {
-                    "attributes": {
-                        "node": "31"
+                    'attributes': {
+                        'node': 31
                     },
-                    "insert": "Künstler"
+                    'insert': 'Künstler'
                 },
                 {
-                    "attributes": {
-                        "node": "32"
+                    'attributes': {
+                        'node': 32
                     },
-                    "insert": " "
+                    'insert': ' '
                 },
                 {
-                    "attributes": {
-                        "node": "33"
+                    'attributes': {
+                        'node': 33
                     },
-                    "insert": "und"
+                    'insert': 'und'
                 },
                 {
-                    "attributes": {
-                        "node": "34"
+                    'attributes': {
+                        'node': 34
                     },
-                    "insert": " "
+                    'insert': ' '
                 },
                 {
-                    "attributes": {
-                        "node": "36"
+                    'attributes': {
+                        'node': 36
                     },
-                    "insert": "Kartograph"
+                    'insert': 'Kartograph'
                 },
                 {
-                    "attributes": {
-                        "node": "40"
+                    'attributes': {
+                        'node': 40
                     },
-                    "insert": ","
+                    'insert': ','
                 },
                 {
-                    "attributes": {
-                        "node": "41"
+                    'attributes': {
+                        'node': 41
                     },
-                    "insert": " "
+                    'insert': ' '
                 },
                 {
-                    "attributes": {
-                        "node": "42"
+                    'attributes': {
+                        'node': 42
                     },
-                    "insert": "der"
+                    'insert': 'der'
                 },
                 {
-                    "attributes": {
-                        "node": "43"
+                    'attributes': {
+                        'node': 43
                     },
-                    "insert": " "
+                    'insert': ' '
                 },
                 {
-                    "attributes": {
-                        "node": "48"
+                    'attributes': {
+                        'node': 48
                     },
-                    "insert": "in"
+                    'insert': 'in'
                 },
                 {
-                    "attributes": {
-                        "node": "49"
+                    'attributes': {
+                        'node': 49
                     },
-                    "insert": " "
+                    'insert': ' '
                 },
                 {
-                    "attributes": {
-                        "node": "50"
+                    'attributes': {
+                        'node': 50
                     },
-                    "insert": "der"
+                    'insert': 'der'
                 },
                 {
-                    "attributes": {
-                        "node": "51"
+                    'attributes': {
+                        'node': 51
                     },
-                    "insert": " "
+                    'insert': ' '
                 },
                 {
-                    "attributes": {
-                        "node": "53"
+                    'attributes': {
+                        'node': 53
                     },
-                    "insert": "Region"
+                    'insert': 'Region'
                 },
                 {
-                    "attributes": {
-                        "node": "54"
+                    'attributes': {
+                        'node': 54
                     },
-                    "insert": " "
+                    'insert': ' '
                 },
                 {
-                    "attributes": {
-                        "node": "55"
+                    'attributes': {
+                        'node': 55
                     },
-                    "insert": "Basel"
+                    'insert': 'Basel'
                 },
                 {
-                    "attributes": {
-                        "node": "56"
+                    'attributes': {
+                        'node': 56
                     },
-                    "insert": " "
+                    'insert': ' '
                 },
                 {
-                    "attributes": {
-                        "node": "57"
+                    'attributes': {
+                        'node': 57
                     },
-                    "insert": "gewirkt"
+                    'insert': 'gewirkt'
                 },
                 {
-                    "attributes": {
-                        "node": "58"
+                    'attributes': {
+                        'node': 58
                     },
-                    "insert": " "
+                    'insert': ' '
                 },
                 {
-                    "attributes": {
-                        "node": "59"
+                    'attributes': {
+                        'node': 59
                     },
-                    "insert": "hat"
+                    'insert': 'hat'
                 },
                 {
-                    "attributes": {
-                        "node": "60"
+                    'attributes': {
+                        'node': 60
                     },
-                    "insert": "."
+                    'insert': '.'
                 },
                 {
-                    "insert": "\n"
+                    'insert': '\n'
                 }
             ]
         }

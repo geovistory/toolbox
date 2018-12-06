@@ -1,5 +1,6 @@
 import { ActiveProjectActions, ActiveProjectAction } from './active-project.action';
 import { ProjectDetail } from './active-project.models';
+import { DataUnitPreview } from '../state/models';
 
 const INITIAL_STATE: ProjectDetail = null;
 
@@ -23,13 +24,72 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
         /***************************************************
         * Reducers to load DataUnitPreview
         ****************************************************/
-
-        case ActiveProjectActions.LOAD_DATA_UNIT_PREVIEW_SUCCEEDED:
+        case ActiveProjectActions.LOAD_DATA_UNIT_PREVIEW:
             state = {
                 ...state,
                 dataUnitPreviews: {
                     ...state.dataUnitPreviews,
-                    [action.meta.dataUnitPreview.pk_entity]: action.meta.dataUnitPreview
+                    [action.meta.pk_entity]: { loading: true } as DataUnitPreview
+                }
+            };
+            break;
+
+        case ActiveProjectActions.LOAD_DATA_UNIT_PREVIEW_SUCCEEDED:
+            if (action.meta.dataUnitPreview && action.meta.dataUnitPreview.pk_entity) {
+                state = {
+                    ...state,
+                    dataUnitPreviews: {
+                        ...state.dataUnitPreviews,
+                        [action.meta.dataUnitPreview.pk_entity]: action.meta.dataUnitPreview
+                    }
+                };
+            }
+            break;
+
+        case ActiveProjectActions.LOAD_DATA_UNIT_PREVIEW_FAILED:
+            state = {
+                ...state,
+            };
+            break;
+
+        /*****************************************************
+        * Load a Data Unit Details for display in Modals
+        *****************************************************/
+
+        case ActiveProjectActions.LOAD_DATA_UNIT_DETAIL_FOR_MODAL:
+            state = {
+                ...state,
+                peItModals: {
+                    ...state.peItModals,
+                    [action.meta.pk_entity]: {
+                        loading: true
+                    }
+                }
+            };
+            break;
+
+        case ActiveProjectActions.LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED:
+            state = {
+                ...state,
+                peItModals: {
+                    ...state.peItModals,
+                    [action.meta.peItDetail.pkEntity]: action.meta.peItDetail
+                }
+            };
+            break;
+
+        // TODO: add reducer for LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED
+
+        /***************************************************
+        * Reducers to load chunk
+        ****************************************************/
+
+        case ActiveProjectActions.LOAD_CHUNK_SUCCEEDED:
+            state = {
+                ...state,
+                chunks: {
+                    ...state.chunks,
+                    [action.meta.chunk.pk_entity]: action.meta.chunk
                 }
             };
             break;
@@ -40,6 +100,42 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             };
             break;
 
+
+        /***************************************************
+        * Reducers for creating mentionings that have a chunk as range
+        ****************************************************/
+
+        case ActiveProjectActions.UPDATE_SELECTED_CHUNK:
+            state = {
+                ...state,
+                selectedChunk: action.payload.selectedChunk
+            };
+            break;
+
+        case ActiveProjectActions.SET_REFINING_CHUNK:
+            state = {
+                ...state,
+                refiningChunk: action.payload.refiningChunk
+            };
+            break;
+
+
+        /*****************************************************
+        * highlighting mentionings in the gui
+        *****************************************************/
+        case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT:
+            state = {
+                ...state,
+                mentioningsFocusedInText: action.payload.mentioningsFocusedInText
+            };
+            break;
+
+        case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TABLE:
+            state = {
+                ...state,
+                mentioningsFocusedInTable: action.payload.mentioningsFocusedInTable
+            };
+            break;
     }
 
     return state;

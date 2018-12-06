@@ -92,6 +92,9 @@ export class MentioningCreateCtrlComponent implements OnInit, OnDestroy, Control
         fk_range_entity: rangeEntity.pk_entity,
         fk_property: this.getFkProperty(this.mentionedEntity.fk_class, rangeClass)
       })
+      if (this.chunkEntity) {
+        ea.range_chunk = this.chunkEntity;
+      }
       this.onChange(ea)
     } else {
       this.onChange(null)
@@ -153,6 +156,31 @@ export class MentioningCreateCtrlComponent implements OnInit, OnDestroy, Control
 
   allowDropSource() {
     return (entity: DataUnitPreview) => this.isSourceOrSection(entity.fk_class);
+  }
+
+  allowDropMentionedEntity() {
+    return (entity: DataUnitPreview) => {
+      const classes = this.ngRedux.getState().activeProject.crm.classes;
+
+      for (const pkClass in classes) {
+        if (classes.hasOwnProperty(pkClass)) {
+          const klass = classes[pkClass];
+
+          for (const key in klass.propertyFields) {
+            if (klass.propertyFields.hasOwnProperty(key)) {
+              const property = klass.propertyFields[key].property;
+              if (
+                property.dfh_has_domain == entity.fk_class &&
+                property.dfh_fk_property_of_origin === DfhConfig.PROPERTY_OF_ORIGIN_PK_IS_MENTIONED_IN
+              ) return true;
+            }
+          }
+        }
+      }
+
+      return false;
+
+    }
   }
 
   /**

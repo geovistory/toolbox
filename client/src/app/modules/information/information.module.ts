@@ -27,7 +27,7 @@ import { EntitySearchHitComponent } from './components/entity-search-hit/entity-
 import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it-label.component';
 import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.component';
 import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timeline.component';
-import { PropertyFieldHeaderComponent } from './components/property-field-header/property-field-header.component';
+import { FieldHeaderComponent } from './components/field-header/field-header.component';
 import { TeEntHeaderComponent } from './components/te-ent-header/te-ent-header.component';
 import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.component';
 import { TextPropertyComponent } from './components/text-property/text-property.component';
@@ -112,7 +112,6 @@ import { LanguageCtrlComponent } from './value/language-ctrl/language-ctrl.compo
 import { LanguageViewComponent } from './value/language-view/language-view.component';
 import { LeafPeItCtrlComponent } from './value/leaf-pe-it-ctrl/leaf-pe-it-ctrl.component';
 import { LeafPeItViewAPIActions } from './value/leaf-pe-it-view/api/leaf-pe-it-view.actions';
-import { LeafPeItViewAPIEpics } from './value/leaf-pe-it-view/api/leaf-pe-it-view.epics';
 import { LeafPeItViewModalComponent } from './value/leaf-pe-it-view/leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
 import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.component';
 import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
@@ -143,6 +142,11 @@ import { MentioningCreateCtrlComponent } from './components/mentioning-create-ct
 import { TableModule } from 'ngx-easy-table';
 import { MentioningListAPIActions } from './containers/mentioning-list/api/mentioning-list.actions';
 import { MentioningListAPIEpics } from './containers/mentioning-list/api/mentioning-list.epics';
+import { DataUnitPreviewComponent } from './components/data-unit-preview/data-unit-preview.component';
+import { QuillDeltaToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
+import { TimePrimitivePipeModule } from 'app/shared/pipes/time-primitive/time-primitive.module';
+import { TimeSpanPipeModule } from 'app/shared/pipes/time-span/time-span.module';
+import { TileHeaderComponent } from './components/tile-header/tile-header.component';
 
 
 
@@ -176,7 +180,10 @@ import { MentioningListAPIEpics } from './containers/mentioning-list/api/mention
     DndModule,
     QuillModule,
     TreeviewModule,
-    TableModule
+    TableModule,
+    QuillDeltaToStrModule,
+    TimePrimitivePipeModule,
+    TimeSpanPipeModule
 
   ],
   declarations: [
@@ -276,7 +283,7 @@ import { MentioningListAPIEpics } from './containers/mentioning-list/api/mention
     EditorHeaderComponent,
     ClassInfoComponent,
     TypeCtrlComponent,
-    PropertyFieldHeaderComponent,
+    FieldHeaderComponent,
     TeEntHeaderComponent,
     CreateOrAddPeItComponent,
     PeItSearchExistingComponent,
@@ -287,6 +294,8 @@ import { MentioningListAPIEpics } from './containers/mentioning-list/api/mention
     TextPropertyFieldComponent,
     MentioningListComponent,
     MentioningCreateCtrlComponent,
+    DataUnitPreviewComponent,
+    TileHeaderComponent,
 
 
 
@@ -349,7 +358,6 @@ import { MentioningListAPIEpics } from './containers/mentioning-list/api/mention
     // Value
     AppellationService,
     LeafPeItViewAPIActions,
-    LeafPeItViewAPIEpics,
 
     // Type
     TypeEditableAPIActions,

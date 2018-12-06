@@ -1,4 +1,4 @@
-import { Component, OnDestroy, Input, OnInit } from '@angular/core';
+import { Component, OnDestroy, Input, OnInit, EventEmitter, Output } from '@angular/core';
 import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
 import { IAppState, SubstoreComponent, ProjectCrm, ComConfig, InfEntityAssociation, PeItDetail, U, ClassConfig, InfPersistentItem, ActiveProjectService, DataUnitPreview, DataUnitPreviewList } from 'app/core';
@@ -35,6 +35,8 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
   // local store of this component
   localStore: ObservableStore<SectionList>;
 
+  @Output() close = new EventEmitter<void>();
+
   // path to the substore
   @Input() basePath: string[];
 
@@ -65,13 +67,13 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
     orderEnabled: true,
     orderEventOnly: false,
     globalSearchEnabled: false,
-    paginationEnabled: true,
+    paginationEnabled: false,
     exportEnabled: false,
     clickEvent: false,
     selectRow: false,
     selectCol: false,
     selectCell: false,
-    rows: 10,
+    rows: 0,
     additionalActions: false,
     serverPagination: false,
     isLoading: false,
@@ -99,9 +101,10 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
   };
 
   columns: Columns[] = [
-    { key: 'type_label', title: 'Type' },
-    { key: 'entity_label', orderBy: 'asc', title: 'Reference' },
-    { key: '', title: '', orderEnabled: false, searchEnabled: false },
+    { key: '', title: '', orderEnabled: false, searchEnabled: false, width: '10%'  },
+    { key: 'type_label', title: 'Type', width: '35%' },
+    { key: 'entity_label', orderBy: 'asc', title: 'Reference', width: '35%'  },
+    { key: '', title: '', orderEnabled: false, searchEnabled: false, width: '20%'  },
   ];
 
   data = [];
