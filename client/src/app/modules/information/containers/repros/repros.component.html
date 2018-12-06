@@ -1,30 +1,33 @@
 <!-- Header -->
-<div class="gv-tile-header">
-  <div class="gv-grow-1">
-    Reproductions
-  </div>
-  <div class="btn-group" ngbDropdown placement="bottom-right" [autoClose]="'outside'">
-    <button class="btn btn-sm btn-link btn-lg no-caret" ngbDropdownToggle>
-      <i class="fa fa-cogs"></i>
-    </button>
-    <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
-      <div class="dropdown-header">
-        View
+<gv-tile-header (close)="close.emit()">
+  <span title>
+    Digital Reproductions
+  </span>
+  <span buttons>
+    <div class="btn-group" ngbDropdown placement="bottom-right" [autoClose]="'outside'">
+      <button class="btn btn-sm btn-link btn-lg no-caret" ngbDropdownToggle>
+        <i class="fa fa-cogs"></i>
+      </button>
+      <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+        <div class="dropdown-header">
+          View
+        </div>
+        <button class="dropdown-item" (click)="toggleText()">
+          <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showText$|async)}"></i> Text
+        </button>
+        <button class="dropdown-item disabled">
+          <i class="fa fa-fw text-muted"></i> Table (coming soon)
+        </button>
+        <button class="dropdown-item disabled">
+          <i class="fa fa-fw text-muted"></i> Image (coming soon)
+        </button>
       </div>
-      <button class="dropdown-item" (click)="toggleText()">
-        <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showText$|async)}"></i> Text
-      </button>
-      <button class="dropdown-item disabled">
-        <i class="fa fa-fw text-muted"></i> Table (coming soon)
-      </button>
-      <button class="dropdown-item disabled">
-        <i class="fa fa-fw text-muted"></i> Image (coming soon)
-      </button>
     </div>
-  </div>
-</div>
+  </span>
+</gv-tile-header>
+
 
 <!-- Text Repro -->
-<div class="gv-flex-fh mt-2" *ngIf="(showText$|async)">
+<div class="gv-tile-body" *ngIf="(showText$|async)">
   <gv-text-editor class="gv-flex-fh" [basePath]="basePath.concat('textEditor')" (annotate)="annotate.emit()"></gv-text-editor>
 </div>

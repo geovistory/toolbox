@@ -144,6 +144,9 @@ import { MentioningListAPIActions } from './containers/mentioning-list/api/menti
 import { MentioningListAPIEpics } from './containers/mentioning-list/api/mentioning-list.epics';
 import { DataUnitPreviewComponent } from './components/data-unit-preview/data-unit-preview.component';
 import { QuillDeltaToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
+import { TimePrimitivePipeModule } from 'app/shared/pipes/time-primitive/time-primitive.module';
+import { TimeSpanPipeModule } from 'app/shared/pipes/time-span/time-span.module';
+import { TileHeaderComponent } from './components/tile-header/tile-header.component';
 
 
 
@@ -179,6 +182,8 @@ import { QuillDeltaToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill
     TreeviewModule,
     TableModule,
     QuillDeltaToStrModule,
+    TimePrimitivePipeModule,
+    TimeSpanPipeModule
 
   ],
   declarations: [
@@ -290,6 +295,7 @@ import { QuillDeltaToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill
     MentioningListComponent,
     MentioningCreateCtrlComponent,
     DataUnitPreviewComponent,
+    TileHeaderComponent,
 
 
 

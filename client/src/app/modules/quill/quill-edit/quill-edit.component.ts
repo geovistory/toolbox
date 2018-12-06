@@ -416,7 +416,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
         const id = node.attributes.quillnode.value;
 
-        const annotatedEntities$ = this.annotatedNodes$.map(nodes => nodes[id]);
+        const annotatedEntities$ = this.annotatedNodes$ ? this.annotatedNodes$.map(nodes => nodes[id]) : Observable.of(null);
 
         if (!this.nodeSubs.has(node)) {
 

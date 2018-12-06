@@ -51,6 +51,7 @@ module.exports = function (InfDataUnitPreview) {
         entity_type,
         type_label,
         pk_type,
+        time_span,
         ts_headline(full_text, q) as full_text_headline,
         ts_headline(class_label, q) as class_label_headline,
         ts_headline(entity_label, q) as entity_label_headline,

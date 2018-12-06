@@ -241,6 +241,12 @@ export class PeItEditableComponent extends DataUnitBase implements AfterViewInit
 
   onRemove = () => this.remove.emit(this.peItState.pkEntity)
 
-  onAnnotate = () => this.localStore.dispatch(this.actions.startCreateMentioning())
+  onAnnotate() {
+    if (this.localStore.getState().showMentionedEntities === false) {
+      this.toggle('showMentionedEntities');
+    }
+    this.localStore.dispatch(this.actions.startCreateMentioning())
+
+  }
 
 }

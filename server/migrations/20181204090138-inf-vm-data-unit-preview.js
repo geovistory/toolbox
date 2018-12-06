@@ -16,9 +16,9 @@ exports.setup = function (options, seedLink) {
 
 exports.up = function (db, callback) {
   const sql = `
-    ------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
     -- VIEW that gets a class preview (with label)
-    ------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
 
     CREATE OR REPLACE VIEW information.v_class_preview AS
     SELECT DISTINCT ON (dfh_pk_class)
@@ -41,9 +41,10 @@ exports.up = function (db, callback) {
 
 
 
-    ------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
     -- VIEW that gets all the labels/strings per teEn in the repo version
-    ------------------------------------------------------------------------------------------------------------
+    -- Attention: This view gets replaced further below, for some "recursive" join
+------------------------------------------------------------------------------------------------------------
 
     CREATE OR REPLACE VIEW information.v_te_en_strings_per_field_repo AS 
       SELECT 
@@ -97,15 +98,13 @@ exports.up = function (db, callback) {
       WHERE (	r.range_max_quantifier = -1 OR r.rank_for_te_ent <=	r.range_max_quantifier )
       AND r.is_in_project_count > 0
       ORDER BY field_order, rank_for_te_ent;
-
-
-
-
-
-
-      ------------------------------------------------------------------------------------------------------------
+      
+      
+      
+------------------------------------------------------------------------------------------------------------
       -- VIEW that gets all the labels/strings per teEn and project
-      ------------------------------------------------------------------------------------------------------------
+      -- Attention: This view gets replaced further below, for some "recursive" join
+------------------------------------------------------------------------------------------------------------
 
       CREATE VIEW information.v_te_en_strings_per_field_and_project AS 
       SELECT 
@@ -164,49 +163,102 @@ exports.up = function (db, callback) {
       -----------------------------------------------------------
       ORDER BY field_order;
 
+------------------------------------------------------------------------------------------------------------
+      -- VIEW that creates time span objects per TeEn, project and repo version
+------------------------------------------------------------------------------------------------------------
+      CREATE OR REPLACE VIEW information.v_te_en_time_span_per_project_and_repo AS
+      WITH role_with_time_primitive as (
+        SELECT 
+        r.fk_temporal_entity,
+        r.fk_property,
+        epr.fk_project,
+        epr.calendar,
+        tp.julian_day,
+        tp.duration
+        FROM  information.entity_version_project_rel as epr 
+        INNER JOIN information.v_role as r on r.pk_entity = epr.fk_entity
+        INNER JOIN information.v_time_primitive as tp on tp.pk_entity = r.fk_entity
+        WHERE 
+        epr.is_in_project = true
+        
+        UNION
+        
+        SELECT 
+        r.fk_temporal_entity,
+        r.fk_property,
+        null::integer as fk_project,
+        r.community_favorite_calendar,
+        tp.julian_day,
+        tp.duration
+        FROM information.v_role as r
+        INNER JOIN information.v_time_primitive as tp on tp.pk_entity = r.fk_entity
+        AND r.rank_for_te_ent = 1
+            )
+      select
+      fk_project,
+      fk_temporal_entity,
+      jsonb_object_agg(
+        CASE 
+      	WHEN fk_property=71 THEN 'p81'
+        WHEN fk_property=72 THEN 'p82'
+        WHEN fk_property=150 THEN 'p81a'
+        WHEN fk_property=151 THEN 'p81b'
+        WHEN fk_property=152 THEN 'p82a'
+        WHEN fk_property=153 THEN 'p82b'
+        ELSE fk_property::text
+        END
+        
+      , json_build_object('julianDay', julian_day, 'duration', duration,  'calendar', calendar) ) as time_span
+      FROM role_with_time_primitive
+      GROUP BY fk_project, fk_temporal_entity;
+        
 
-
-      ------------------------------------------------------------------------------------------------------------
-      -- VIEW that unions TeEn project and repo version
-      ------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+      -- VIEW that unions TeEn project and repo version and adds time span objects
+------------------------------------------------------------------------------------------------------------
         
       CREATE OR REPLACE VIEW information.v_te_en_preview as
       WITH teen_with_label as ( 
-      select 
-      fk_project,
-      pk_entity,
-      fk_class,
-      string_agg(string_0, ' ') as entity_label,
-      string_agg(string_1, ' ') as entity_label_2,
-      string_agg(all_strings, ', ' ORDER BY field_order) || '.' as full_text
-      from  information.v_te_en_strings_per_field_and_project
-      Group By fk_project, pk_entity, fk_class
-      UNION 
-      select 
-      null as fk_project,
-      pk_entity,
-      fk_class,
-      string_agg(string_0, ' ') as entity_label,
-      string_agg(string_1, ' ') as entity_label_2,
-      string_agg(all_strings, ', ' ORDER BY field_order) || '.' as full_text
-      from  information.v_te_en_strings_per_field_repo
-      Group By pk_entity, fk_class
+        select 
+        teen_strings.fk_project,
+        teen_strings.pk_entity,
+        teen_strings.fk_class,
+        string_agg(string_0, ' ') as entity_label,
+        string_agg(string_1, ' ') as entity_label_2,
+        string_agg(all_strings, ', ' ORDER BY field_order) || '.' as full_text,
+        teen_time_span.time_span
+        from  information.v_te_en_strings_per_field_and_project as teen_strings
+          LEFT JOIN information.v_te_en_time_span_per_project_and_repo as teen_time_span 
+          ON teen_time_span.fk_project = teen_strings.fk_project AND teen_time_span.fk_temporal_entity = pk_entity 
+        Group By teen_strings.fk_project, pk_entity, fk_class, teen_time_span.time_span
+        UNION 
+        select 
+        null as fk_project,
+        teen_strings.pk_entity,
+        teen_strings.fk_class,
+        string_agg(string_0, ' ') as entity_label,
+        string_agg(string_1, ' ') as entity_label_2,
+        string_agg(all_strings, ', ' ORDER BY field_order) || '.' as full_text,
+        teen_time_span.time_span
+        from  information.v_te_en_strings_per_field_repo as teen_strings
+          LEFT JOIN information.v_te_en_time_span_per_project_and_repo as teen_time_span 
+          ON teen_time_span.fk_project IS NULL AND teen_time_span.fk_temporal_entity = pk_entity 
+        Group By pk_entity, fk_class, teen_time_span.time_span
       )
       SELECT DISTINCT
       teen_with_label.fk_project,
       pk_entity,
       fk_class,
       entity_label,
-      full_text
+      full_text,
+      time_span
       FROM teen_with_label;
 
 
 
-
-
-      ------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
       -- VIEW that gets all the labels/strings per peIt in the repo version
-      ------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
      
       CREATE OR REPLACE VIEW information.v_pe_it_strings_per_field_repo AS 
       WITH pi_role as (
@@ -261,14 +313,12 @@ exports.up = function (db, callback) {
         LEFT JOIN  
          information.v_text_property txt_prop ON txt_prop.fk_concerned_entity = peit.pk_entity 
          
-        
-        --WHERE peit.pk_entity = 80526
         ORDER BY pk_entity, field_order;
 
 
-        ------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
         -- VIEW that gets all the labels/strings per PeIt and project
-        ------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
          
         CREATE OR REPLACE VIEW information.v_pe_it_strings_per_field_and_project AS
         SELECT DISTINCT epr.fk_project,
@@ -320,9 +370,9 @@ exports.up = function (db, callback) {
 
 
 
-          ------------------------------------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------------------------------------
           -- VIEW that unions PeIt project and repo version
-          ------------------------------------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------------------------------------
     
           CREATE OR REPLACE VIEW information.v_pe_it_preview as
           WITH peit_with_label as ( 
@@ -360,9 +410,9 @@ exports.up = function (db, callback) {
 
 
 
-          ------------------------------------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------------------------------------
           -- MATERIALIZED VIEW for data_unit preview
-          ------------------------------------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------------------------------------
 
           CREATE MATERIALIZED VIEW information.vm_data_unit_preview as
           WITH type_info_per_project AS (
@@ -386,7 +436,8 @@ exports.up = function (db, callback) {
             pk_entity,
             fk_class,
             entity_label,
-            full_text
+            full_text,
+            null::jsonb as time_span
             from information.v_pe_it_preview 
             UNION
             select
@@ -394,7 +445,8 @@ exports.up = function (db, callback) {
             pk_entity,
             fk_class,
             entity_label,
-            full_text
+            full_text,
+            time_span
             from information.v_te_en_preview 
           )
           select 
@@ -410,7 +462,8 @@ exports.up = function (db, callback) {
             setweight(to_tsvector(coalesce(data_unit.entity_label,'')), 'A') || 
             setweight(to_tsvector(coalesce(type_info_per_project.type_label, type_info_per_repo.type_label, class_info.class_label, '')), 'B') || 
             setweight(to_tsvector(coalesce(data_unit.full_text,'')), 'C')     
-                   as ts_vector
+                   as ts_vector,
+            time_span
           from data_unit
           LEFT JOIN type_info_per_project 
             on type_info_per_project.fk_domain_entity = data_unit.pk_entity 
@@ -425,53 +478,186 @@ exports.up = function (db, callback) {
             ON information.vm_data_unit_preview (pk_entity, fk_project);
 
 
-        ------------------------------------------------------------------------------------------------------------
-        -- TABLE that stores the latest refresh date of information.vm_data_unit_preview 
-        ------------------------------------------------------------------------------------------------------------
-          CREATE TABLE commons.vm_refresh_date (
-            information_vm_data_unit_preview timestamp with time zone
-          );
+  ------------------------------------------------------------------------------------------------------------
+          -- REPLACE VIEW from above, that gets all the labels/strings per teEn and project
+          -- now with a join to the materialized view in order to add peIt labels to the teEn
+  ------------------------------------------------------------------------------------------------------------
 
-        ------------------------------------------------------------------------------------------------------------
-        -- FUNCTION that refreshes information.vm_data_unit_preview, if the latest modification of 
-        -- information.entity_version_project_rel is newer than the latest refresh stored in commons.vm_refresh_date
-        ------------------------------------------------------------------------------------------------------------
-          CREATE OR REPLACE FUNCTION information.refresh_vm_data_unit_preview()
-          RETURNS boolean
-          LANGUAGE plpgsql
-          AS $$
-          DECLARE
-            refresh_needed boolean;
-            refreshed boolean;
-          BEGIN
+          CREATE OR REPLACE VIEW information.v_te_en_strings_per_field_and_project AS 
+          SELECT 
+          epr.fk_project,
+          teen.pk_entity,
+          teen.fk_class,
+          teen_field.fk_property,
+          teen_field.field_order,
+          r.fk_entity,
+          epr2.ord_num,
+          CASE 
+            WHEN field_order=0 THEN COALESCE(appe.string, lang.notes, peit.entity_label) 
+            ELSE null
+          END	 as string_0,
+          CASE 
+            WHEN field_order=1 THEN COALESCE(appe.string, lang.notes, peit.entity_label) 
+            ELSE null
+          END as string_1,
+          COALESCE(appe.string, lang.notes, peit.entity_label) as all_strings
+    
+          -- teen
+          from information.v_temporal_entity as teen
+          INNER JOIN  information.entity_version_project_rel as epr on epr.fk_entity = teen.pk_entity AND epr.is_in_project = true
+    
+          -- field
+          INNER JOIN information.v_ordered_fields_per_class teen_field on teen_field.fk_class = teen.fk_class
+    
+          -- role
+          LEFT JOIN information.v_role as r
+            on teen_field.fk_property = r.fk_property
+            and teen.pk_entity = r.fk_temporal_entity
+            LEFT JOIN information.entity_version_project_rel as epr2 
+              on epr2.fk_entity = r.pk_entity 
+              and epr2.fk_project = epr.fk_project
+              and epr2.is_in_project = true
+    
+          -----------------------------------------------------------
+          -- get the strings of all tables connected to teen via role-fk_entity
+    
+          --   appellation
+          LEFT JOIN information.v_appellation as appe
+            ON r.fk_entity = appe.pk_entity
+          --   language
+          LEFT JOIN information.v_language as lang
+            ON r.fk_entity = lang.pk_entity
+          --   time_primitive
+          --   place
+          --   persistent_item
+          LEFT JOIN information.vm_data_unit_preview as peit
+            ON r.fk_entity = peit.pk_entity AND peit.fk_project = epr.fk_project
+          --   temporal_entity
+          -----------------------------------------------------------
+    
+    
+          -----------------------------------------------------------
+          -- get the tables connected directly to teen
+          --   text_property
+          -----------------------------------------------------------
+          ORDER BY field_order;
+
+
+
+
+
+  ------------------------------------------------------------------------------------------------------------
+          -- REPLACE VIEW from above, that gets all the labels/strings of repo
+          -- now with a join to the materialized view in order to add peIt labels to the teEn
+  ------------------------------------------------------------------------------------------------------------
+
+
+          CREATE OR REPLACE VIEW information.v_te_en_strings_per_field_repo AS 
+          SELECT 
+          teen.pk_entity,
+          teen.fk_class,
+          teen_field.fk_property,
+          teen_field.field_order,
+          r.fk_entity,
+          r.rank_for_te_ent as rank,
+          CASE 
+            WHEN field_order=0 THEN COALESCE(appe.string, lang.notes, peit.entity_label) 
+            ELSE null
+          END	 as string_0,
+          CASE 
+            WHEN field_order=1 THEN COALESCE(appe.string, lang.notes, peit.entity_label) 
+            ELSE null
+          END as string_1,
+          COALESCE(appe.string, lang.notes, peit.entity_label) as all_strings
+    
+          -- teen
+          from information.v_temporal_entity as teen
+    
+          -- field
+          INNER JOIN information.v_ordered_fields_per_class teen_field on teen_field.fk_class = teen.fk_class
+    
+          -- role
+          LEFT JOIN information.v_role as r
+            on teen_field.fk_property = r.fk_property
+            and teen.pk_entity = r.fk_temporal_entity
+        
+          -----------------------------------------------------------
+          -- get the strings of all tables connected to teen via role-fk_entity
+    
+          --   appellation
+          LEFT JOIN information.v_appellation as appe
+            ON r.fk_entity = appe.pk_entity
+          --   language
+          LEFT JOIN information.v_language as lang
+            ON r.fk_entity = lang.pk_entity
+          --   time_primitive
+          --   place
+          --   persistent_item
+        LEFT JOIN information.vm_data_unit_preview as peit
+            ON r.fk_entity = peit.pk_entity AND peit.fk_project IS NULL
+          --   temporal_entity
+          -----------------------------------------------------------
+    
+    
+          -----------------------------------------------------------
+          -- get the tables connected directly to teen
+          --   text_property
+          -----------------------------------------------------------
+          WHERE (	r.range_max_quantifier = -1 OR r.rank_for_te_ent <=	r.range_max_quantifier )
+          AND r.is_in_project_count > 0
+          ORDER BY field_order, rank_for_te_ent;
+
+
+  ------------------------------------------------------------------------------------------------------------
+          -- TABLE that stores the latest refresh date of information.vm_data_unit_preview 
+  ------------------------------------------------------------------------------------------------------------
+            CREATE TABLE commons.vm_refresh_date (
+              information_vm_data_unit_preview timestamp with time zone
+            );
+
+  ------------------------------------------------------------------------------------------------------------
+          -- FUNCTION that refreshes information.vm_data_unit_preview, if the latest modification of 
+          -- information.entity_version_project_rel is newer than the latest refresh stored in commons.vm_refresh_date
+  ------------------------------------------------------------------------------------------------------------
+            CREATE OR REPLACE FUNCTION information.refresh_vm_data_unit_preview()
+            RETURNS boolean
+            LANGUAGE plpgsql
+            AS $$
+            DECLARE
+              refresh_needed boolean;
+              refreshed boolean;
+            BEGIN
+              
+            select into refresh_needed (
+                (
+              select information_vm_data_unit_preview from commons.vm_refresh_date
+              order by information_vm_data_unit_preview desc
+              limit 1
+                )
+                <
+                (
+              select tmsp_last_modification from information.entity_version_project_rel
+              order by tmsp_last_modification desc
+              limit 1
+                )
+            );
             
-          select into refresh_needed (
-              (
-            select information_vm_data_unit_preview from commons.vm_refresh_date
-            order by information_vm_data_unit_preview desc
-            limit 1
-              )
-              <
-              (
-            select tmsp_last_modification from information.entity_version_project_rel
-            order by tmsp_last_modification desc
-            limit 1
-              )
-          );
-          
-        IF (refresh_needed = true OR refresh_needed IS NULL) THEN 
-            REFRESH MATERIALIZED VIEW CONCURRENTLY information.vm_data_unit_preview;
-          
-            INSERT INTO commons.vm_refresh_date (information_vm_data_unit_preview)
-            VALUES (now());
-                
-            refreshed = true;
-          ELSE 		  
-              refreshed = false;
-          END IF;
-                
-          RETURN refreshed;
-          END $$;
+          IF (refresh_needed = true OR refresh_needed IS NULL) THEN 
+              REFRESH MATERIALIZED VIEW CONCURRENTLY information.vm_data_unit_preview;
+            
+              INSERT INTO commons.vm_refresh_date (information_vm_data_unit_preview)
+              VALUES (now());
+                  
+              refreshed = true;
+            ELSE 		  
+                refreshed = false;
+            END IF;
+                  
+            RETURN refreshed;
+            END $$;
+
+
+
 		  
 
 

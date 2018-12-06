@@ -1,4 +1,4 @@
-import { ExistenceTime } from 'app/core/existence-time/existence-time';
+import { TimeSpan } from 'app/core/time-span/time-span';
 import { AppeDetail, ClassInstanceFieldLabel, FieldList, ClassInstanceLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, PropertyField, FieldLabel, PropertyFieldList, TeEntDetail, RoleDetailList, PlaceDetail } from 'app/core/state/models';
 import { indexBy, omit } from 'ramda';
 import { AcEntity, AcNotification, ActionType } from '../../modules/gv-angular-cesium/angular-cesium-fork';
@@ -1124,11 +1124,11 @@ export class U {
     })
 
 
-    static ExTimeFromExTimeDetail = (exTimeDetail: ExistenceTimeDetail): ExistenceTime | null => {
+    static ExTimeFromExTimeDetail = (exTimeDetail: ExistenceTimeDetail): TimeSpan | null => {
 
         if (!exTimeDetail) return null;
 
-        const e = new ExistenceTime();
+        const e = new TimeSpan();
 
         U.obj2Arr(exTimeDetail._fields).forEach(rs => {
             const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[rs.property.dfh_pk_property]

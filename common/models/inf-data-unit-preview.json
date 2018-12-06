@@ -39,6 +39,9 @@
     },
     "pk_type": {
       "type": "number"
+    },
+    "time_span": {
+      "type": "object"
     }
   },
   "relations": {},

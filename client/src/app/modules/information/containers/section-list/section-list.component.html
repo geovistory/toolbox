@@ -1,25 +1,30 @@
-<div *ngIf="!(create$ |async)" class="gv-tile-header">
-  <div class="gv-grow-1">
-    Sections and Reproductions
-  </div>
-  <!-- Step 1 for adding a new property -->
-  <gv-class-and-type-selector *ngIf="(pkProject$ |async) && (crm$ | async)" [pkClasses]="pkClassesOfAddBtn" [pkProject]="(pkProject$ |async)"
-    [basePath]="basePath.concat('classAndTypeSelector')" (select)="onAdd($event, pkUiContextCreate)" buttonText="+ Add"
-    buttonClass="btn-link btn-sm no-caret mr-0" placement="right"></gv-class-and-type-selector>
+<gv-tile-header *ngIf="!(create$ |async)" (close)="close.emit()">
+  <span title>
+    Sections & Digital Reproductions
+  </span>
+  <span buttons>
+    <gv-class-and-type-selector *ngIf="(pkProject$ |async) && (crm$ | async)" [pkClasses]="pkClassesOfAddBtn"
+      [pkProject]="(pkProject$ |async)" [basePath]="basePath.concat('classAndTypeSelector')" (select)="onAdd($event, pkUiContextCreate)"
+      buttonText="+ Add" buttonClass="btn-link btn-sm no-caret mr-0" placement="right"></gv-class-and-type-selector>
+  </span>
+</gv-tile-header>
 
-</div>
+<div class="gv-tile-body" *ngIf="!(create$ |async)">
 
-<div *ngIf="!(create$ |async)">
-
-  <ngx-table [configuration]="tableConfiguration" [data]="data" [columns]="columns">
+  <ngx-table *ngIf="data.length" class="sticky-header" [configuration]="tableConfiguration" [data]="data" [columns]="columns">
     <ng-template let-row let-index="index">
-      <td>
+      <td style="flex-basis: 10%">
+        <div dnd-draggable [dragEnabled]="true" [dragData]="row" class="d-block">
+          <i class="icon gv-icon gv-icon-preview gv-icon-entity align-self-center"></i>
+        </div>
+      </td>
+      <td style="flex-basis: 34%">
         {{row?.type_label}}
       </td>
-      <td>
+      <td style="flex-basis: 34%">
         {{row?.entity_label}}
       </td>
-      <td>
+      <td style="flex-basis: 20%">
         <button class="btn btn-link" (click)="openSection(row.pk_entity)">
           Open
         </button>
@@ -27,7 +32,16 @@
     </ng-template>
   </ngx-table>
 
+  <i class="alert alert-info" *ngIf="!data.length">
+    Here you can:
+    <ul>
+      <li>Add pages (or other types of sections)</li>
+      <li>Transcribe the pages in the form of texts or tables</li>
+      <li>Upload images of</li>
+    </ul>
+  </i>
+
 </div>
 
-<gv-entity-association-create-or-add *ngIf="(create$ |async)" class="gv-flex-fh" [basePath]="basePath.concat('create')"
+<gv-entity-association-create-or-add class="gv-tile-body" *ngIf="(create$ |async)" [basePath]="basePath.concat('create')"
   (done)="openSectionFromEntityAssociation($event)" (cancel)="stopCreate()"></gv-entity-association-create-or-add>

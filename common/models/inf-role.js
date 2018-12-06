@@ -298,6 +298,7 @@ module.exports = function (InfRole) {
       const InfTimePrimitive = InfRole.app.models.InfTimePrimitive;
 
       // find or create the time_primitive and the role pointing to it
+      delete requestedRole.time_primitive.pk_entity
       return InfTimePrimitive.create(requestedRole.time_primitive)
         .then((resultingEntity) => {
 

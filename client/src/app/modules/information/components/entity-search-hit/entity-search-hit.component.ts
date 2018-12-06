@@ -70,6 +70,7 @@ export class EntitySearchHitComponent implements OnInit {
       entity_type: this.dataUnitSearchHit.entity_type,
       class_label: this.dataUnitSearchHit.class_label,
       type_label: this.dataUnitSearchHit.type_label,
+      time_span: this.dataUnitSearchHit.time_span
     }
   }
 

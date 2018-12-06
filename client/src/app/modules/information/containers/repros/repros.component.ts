@@ -29,6 +29,7 @@ export class ReprosComponent extends ReprosAPIActions implements OnInit, OnDestr
   @Input() basePath: string[];
 
   @Output() annotate = new EventEmitter<void>();
+  @Output() close = new EventEmitter<void>();
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
