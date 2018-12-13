@@ -10,7 +10,7 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
 import { mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfDataUnitPreviewApi, ProjectApi } from '../sdk';
+import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfDataUnitPreview, InfDataUnitPreviewApi, ProjectApi, InfPersistentItemApi, InfPersistentItem, InfTemporalEntity, InfTemporalEntityApi } from '../sdk';
 import { DataUnitPreview, PeItDetail } from '../state/models';
 import { IAppState } from '../store/model';
 import { U } from '../util/util';
@@ -24,6 +24,8 @@ export class ActiveProjectEpics {
   constructor(
     private duApi: InfDataUnitPreviewApi,
     private peItService: PeItService,
+    private peItApi: InfPersistentItemApi,
+    private teEnApi: InfTemporalEntityApi,
     private chunkApi: InfChunkApi,
     private uiContextApi: ComUiContextApi,
     private projectApi: ProjectApi,
@@ -38,11 +40,13 @@ export class ActiveProjectEpics {
   public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
     return combineEpics(
       this.createLoadProjectEpic(),
-      this.createLoadClassListEpic(),
+      this.createLoadCrmEpic(),
       this.createLoadProjectUpdatedEpic(),
       this.createLoadDataUnitPreviewEpic(),
       this.createLoadDataUnitDetailForModalEpic(),
       this.createLoadChunkEpic(),
+      this.createLoadPeItGraphEpic(),
+      this.createLoadTeEnGraphEpic()
 
     );
   }
@@ -116,7 +120,7 @@ export class ActiveProjectEpics {
     )
   }
 
-  private createLoadClassListEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
+  private createLoadCrmEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
     return (action$, store) => action$.pipe(
 
       ofType(ActiveProjectActions.PROJECT_LOAD_CRM),
@@ -137,11 +141,17 @@ export class ActiveProjectEpics {
               ingoingProperties: DfhProperty[] = res[3],
               classFields = res[4] as ComClassField[];
 
+            const properties = {
+              ...indexBy((prop: DfhProperty) => prop.dfh_pk_property.toString(), ingoingProperties),
+              ...indexBy((prop: DfhProperty) => prop.dfh_pk_property.toString(), outgoingProperties)
+            }
 
             const crm: ProjectCrm = {
               classes: {},
-              fieldList: {}
+              fieldList: {},
+              properties
             }
+
             classes.forEach((cla: DfhClass) => {
               crm.classes[cla.dfh_pk_class] = U.classConfigFromDfhClass(cla);
 
@@ -255,7 +265,7 @@ export class ActiveProjectEpics {
             /**
            * Subscribe to the api call
            */
-            .subscribe((data: DataUnitPreview[]) => {
+            .subscribe((data: InfDataUnitPreview[]) => {
               /**
                * Emit the global action that completes the loading bar
                */
@@ -264,7 +274,7 @@ export class ActiveProjectEpics {
               /**
                * Emit the local action on loading succeeded
                */
-              globalStore.next(this.actions.loadDataUnitPreviewSucceeded(data[0]));
+              globalStore.next(this.actions.loadDataUnitPreviewSucceeded(data[0] as DataUnitPreview));
 
             }, error => {
               /**
@@ -359,7 +369,6 @@ export class ActiveProjectEpics {
     }
   }
 
-
   private createLoadChunkEpic(): Epic {
     return (action$, store) => {
       return action$.pipe(
@@ -405,6 +414,108 @@ export class ActiveProjectEpics {
                * Emit the local action on loading failed
                */
               globalStore.next(this.actions.loadChunkFailed({ status: '' + error.status }))
+            })
+        }))
+      )
+    }
+  }
+
+  private createLoadPeItGraphEpic(): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(ActiveProjectActions.LOAD_PEIT_GRAPHS),
+        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Do some api call
+           */
+          this.peItApi.graphs(true, action.meta.pk_project, action.meta.pk_entities)
+            /**
+           * Subscribe to the api call
+           */
+            .subscribe((data: InfPersistentItem[]) => {
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+
+              /**
+               * Emit the local action on loading succeeded
+               */
+              globalStore.next(this.actions.loadPeItGraphsSucceeded(data));
+
+            }, error => {
+              /**
+              * Emit the global action that shows some loading error message
+              */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              globalStore.next(this.actions.loadDataUnitPreviewFailed({ status: '' + error.status }))
+            })
+        }))
+      )
+    }
+  }
+
+  private createLoadTeEnGraphEpic(): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(ActiveProjectActions.LOAD_TEEN_GRAPHS),
+        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Do some api call
+           */
+          this.teEnApi.graphs(true, action.meta.pk_project, action.meta.pk_entities)
+            /**
+           * Subscribe to the api call
+           */
+            .subscribe((data: InfTemporalEntity[]) => {
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+
+              /**
+               * Emit the local action on loading succeeded
+               */
+              globalStore.next(this.actions.loadTeEnGraphsSucceeded(data));
+
+            }, error => {
+              /**
+              * Emit the global action that shows some loading error message
+              */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              globalStore.next(this.actions.loadDataUnitPreviewFailed({ status: '' + error.status }))
             })
         }))
       )

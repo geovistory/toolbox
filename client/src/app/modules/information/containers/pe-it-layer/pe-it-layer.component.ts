@@ -1,21 +1,15 @@
 import { NgRedux, select, WithSubStore } from '@angular-redux/store';
-import { Component, Input, OnDestroy, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
-import { IAppState, U } from 'app/core';
-import { Observable, Subject } from 'rxjs';
-import { filter, map } from '../../../../../../node_modules/rxjs/operators';
-import {
-    AcLayerComponent,
-    AcNotification,
-    ActionType,
-    CesiumEvent,
-    MapsManagerService,
-    PickOptions,
-    AcMapComponent
-} from '../../../gv-angular-cesium/angular-cesium-fork';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
+import { ActiveProjectService, fieldList_2_propFields, IAppState, propFields_2_roleDetails, roleDetails_2_geoPeItPks, U, mapConcat, TimeSpan, InfTemporalEntity, DfhClass, ClassConfig } from 'app/core';
+import { ExistenceTimeDetail, FieldList, PeItDetail, TeEntDetail, ClassInstanceLabel, DataUnitPreview } from 'app/core/state/models';
+import { combineLatest, Observable, OperatorFunction, Subject, defer, zip, merge, forkJoin } from 'rxjs';
+import { filter, map, mergeMap, distinctUntilChanged, distinct, share, combineAll, zipAll, tap } from 'rxjs/operators';
+import { AcLayerComponent, AcMapComponent, AcNotification, ActionType, CesiumEvent, PickOptions } from '../../../gv-angular-cesium/angular-cesium-fork';
 import { peItReducer } from '../../data-unit/pe-it/pe-it.reducer';
 import { TeEntActions } from '../../data-unit/te-ent/te-ent.actions';
 import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
-import { PeItDetail } from 'app/core/state/models';
+import { equals } from 'ramda';
+import { DfhConfig } from '../../shared/dfh-config';
 
 
 @WithSubStore({
@@ -27,7 +21,7 @@ import { PeItDetail } from 'app/core/state/models';
     templateUrl: './pe-it-layer.component.html',
     styleUrls: ['./pe-it-layer.component.scss']
 })
-export class PeItLayerComponent implements OnInit, OnDestroy {
+export class PeItLayerComponent implements AfterViewInit, OnDestroy {
 
     @Input() path: string[];
 
@@ -37,12 +31,16 @@ export class PeItLayerComponent implements OnInit, OnDestroy {
 
     @ViewChild(AcLayerComponent) layer: AcLayerComponent;
 
-    @select() leafPeItLoading$: Observable<boolean>;
+    @select() _fields$: Observable<FieldList>;
+    @select() pkEntity$: Observable<number>;
+
+
+    // @select() leafPeItLoading$: Observable<boolean>;
 
 
     czmlPackets$: Observable<AcNotification>;
     show = true;
-    updater = new Subject<AcNotification>();
+    updater$ = new Subject<AcNotification>();
 
     reduxMiddlewares = [];
 
@@ -53,82 +51,33 @@ export class PeItLayerComponent implements OnInit, OnDestroy {
 
     zoomed = false;
 
+    // array of pk_entity of leaf peIts of class Built Work or Geographical Place
+    leafGeoPeItsPks$: Observable<number[]>;
+
+    // array of pk_entity of presences of leaf peIts
+    leafPresencesPks$: Observable<number[]>;
+
+
     constructor(
         public ngRedux: NgRedux<IAppState>,
         private teEntActions: TeEntActions,
-    ) { }
+        private projectService: ActiveProjectService
+    ) {
+        // init stream of czml packets
+        this.initCzmlStream();
+    }
 
     getBasePath = () => this.path;
 
-    ngOnInit(): void {
-
-        // init stream of czml packets
-        this.initCzmlStream();
+    ngAfterViewInit(): void {
 
         // fly to browser geolocation
         this.flyToBrowserGeolocation();
 
-        // wait for loading of leaf-peIts
-        const untilLoaded$ = new Subject<boolean>();
-        this.leafPeItLoading$.takeUntil(untilLoaded$).subscribe(loading => {
-            // as soon as loading is falsy (beacause loading is complete or there was no leaf peIts to load)
-            if (!loading) {
-
-                // unsubscribe
-                untilLoaded$.next(true);
-
-                // initialize the layer
-                this.initLayer();
-            }
-
-        })
-
+        this.initLayer();
 
         this.initEvents()
 
-    }
-
-
-    private initLayer() {
-        const camera = this.acMap.getCameraService().getCamera();
-        camera.setView({ destination: Cesium.Cartesian3.fromDegrees(-117.16, 32.71, 15000.0) });
-        const scene = this.acMap.getCesiumSerivce().getScene();
-
-
-        // update czml-packets upon change of state
-        this.ngRedux.select<PeItDetail>(this.path).takeUntil(this.destroy$).subscribe(peItDetail => {
-            // remove all entities of the layer
-            this.layer.removeAll();
-
-            if (peItDetail) {
-
-                // get all presences
-                const presences = U.presencesFromPeIt(peItDetail, this.path);
-                const processedPrecences = U.czmlPacketsFromPresences(presences);
-
-                // get all other te-ents
-                const teEnts = U.teEntsWithoutPresencesFromPeIt(peItDetail, this.path);
-                const processedTeEnts = U.czmlPacketsFromTeEnts(teEnts, this.ngRedux.getState().activeProject.crm);
-
-                // add all packets
-                processedPrecences.czmlPackets.forEach(czmlPacket => {
-                    const acNotification = U.acNotificationFromPacket(czmlPacket, ActionType.ADD_UPDATE);
-                    this.updater.next(acNotification);
-                });
-
-                processedTeEnts.czmlPackets.forEach(czmlPacket => {
-                    const acNotification = U.acNotificationFromPacket(czmlPacket, ActionType.ADD_UPDATE);
-                    this.updater.next(acNotification);
-                });
-
-                if (!this.zoomed) {
-                    this.zoomed = this.zoomToEntities();
-                }
-
-                // Explicitly render a new frame
-                scene.requestRender();
-            }
-        });
     }
 
     private initCzmlStream() {
@@ -137,12 +86,327 @@ export class PeItLayerComponent implements OnInit, OnDestroy {
                 id: 'document',
                 version: '1.0'
             }, ActionType.ADD_UPDATE)
-        ]).merge(this.updater);
+        ]).merge(this.updater$);
+    }
+
+    private initLayer() {
+        const camera = this.acMap.getCameraService().getCamera();
+        camera.setView({ destination: Cesium.Cartesian3.fromDegrees(-117.16, 32.71, 15000.0) });
+        const scene = this.acMap.getCesiumSerivce().getScene();
+
+        // observable of acNotifications
+        const teEn$ = this._fields$.pipe(
+            fieldList_2_propFields(),
+            propFields_2_roleDetails(),
+            tap(() => {
+                // remove all entities of the layer
+                this.layer.removeAll();
+            }),
+            mergeMap(rDs => rDs.map(rD => rD._teEnt))
+        )
+
+        const inizializedTeEns = new Set();
+
+        teEn$.takeUntil(this.destroy$).subscribe(teEn => {
+            let acNotifications$ = Observable.of([]);
+
+            if (DfhConfig.CLASS_PK_PRESENCE == teEn.fkClass) {
+                acNotifications$ = Observable.of(teEn).pipe(
+                    this.presence_2_acNotifications()
+                )
+            } else {
+
+                acNotifications$ = Observable.of(teEn).pipe(
+                    this.teEntDetail_2_acNotifications()
+                )
+            }
+
+            acNotifications$.takeUntil(this.destroy$).subscribe(nots => {
+
+                nots.forEach(not => this.updater$.next(not))
+
+
+                if (!inizializedTeEns.has(teEn.pkEntity)) {
+                    this.zoomed = this.zoomToEntities();
+                }
+                inizializedTeEns.add(teEn.pkEntity)
+
+                // Explicitly render a new frame
+                scene.requestRender();
+            })
+        })
+    }
+
+
+    presence_2_acNotifications(): OperatorFunction<TeEntDetail, AcNotification[]> {
+
+        return (presenceTeEnDetail$: Observable<TeEntDetail>): Observable<AcNotification[]> => {
+
+
+            const teEnPk$ = presenceTeEnDetail$.pipe(
+                map(teEnDetail => teEnDetail.pkEntity),
+            )
+
+            const teEnTimeSpan$ = presenceTeEnDetail$.pipe(
+                map(teEnDetail => U.timeSpanFromExTimeDetail(teEnDetail._fields['_field_48'] as ExistenceTimeDetail)),
+            )
+
+            // get Presences TeEnGraph (for the geo coordinates and to create TimeSpan)
+            const geoPresences$ = presenceTeEnDetail$.pipe(
+                mergeMap(teEnDetail => this.projectService.loadTeEnGraphs([teEnDetail.pkEntity])), // TeEns: Presences
+            )
+
+            return combineLatest(
+                teEnPk$,
+                teEnTimeSpan$,
+                geoPresences$
+            ).map(([teEnPk, teEnTimeSpan, geoPresences]) => {
+
+
+                if (teEnPk && geoPresences) {
+                    const label = 'Georeference'
+                    return this.createCzml(
+                        teEnPk,
+                        teEnTimeSpan,
+                        geoPresences,
+                        label
+                    ).map(packet => U.acNotificationFromPacket(packet, ActionType.ADD_UPDATE));
+                }
+            })
+
+        }
+    }
+
+
+    teEntDetail_2_acNotifications(): OperatorFunction<TeEntDetail, AcNotification[]> {
+
+        return (teEnDetail$: Observable<TeEntDetail>): Observable<AcNotification[]> => {
+
+
+            const teEnPk$ = teEnDetail$.pipe(
+                map(teEnDetail => teEnDetail.pkEntity),
+            )
+
+            const teEnTimeSpan$ = teEnDetail$.pipe(
+                map(teEnDetail => U.timeSpanFromExTimeDetail(teEnDetail._fields['_field_48'] as ExistenceTimeDetail)),
+            )
+
+            const teEnlabel$ = teEnDetail$.pipe(
+                map(teEnDetail => U.labelFromFieldList(teEnDetail._fields, { fieldsMax: 3, rolesMax: 1, path: [] })),
+            )
+
+            const teEnClassConfig$ = teEnDetail$.pipe(
+                mergeMap(teEn => this.ngRedux.select<ClassConfig>(['activeProject', 'crm', 'classes', teEn.fkClass.toString()])),
+            )
+
+
+            // get Geo PeItGraph (for finding presences) and Geo PeIt Preview (for name of feature on map)
+            const geoPeItPreview$ = teEnDetail$.pipe(
+                map(teEn => {
+                    return teEn._fields
+                }),
+                fieldList_2_propFields(),
+                propFields_2_roleDetails(),
+                roleDetails_2_geoPeItPks(),
+                mergeMap(pks => this.projectService.loadDataUnitPreview(pks[0]))
+            )
+
+
+            // get Presences TeEnGraph (for the geo coordinates and to create TimeSpan)
+
+            const geoPresences$ = teEnDetail$.pipe(
+                map(teEn => teEn._fields),
+                fieldList_2_propFields(),
+                propFields_2_roleDetails(),
+                roleDetails_2_geoPeItPks(),
+                filter(pks => !!pks[0]),
+                mergeMap(pks => this.projectService.loadPeItGraphs(pks)),
+                mapConcat(peIt => peIt.pi_roles),
+                mergeMap(piRoles => this.projectService.filterRolesByPropertyFilter(piRoles, (prop) => prop.dfh_fk_property_of_origin == 147)), // Roles P166 was a presence of
+                mergeMap(piRoles => this.projectService.loadTeEnGraphs(piRoles.map(r => r.fk_temporal_entity))), // TeEns: Presences
+            )
+
+            return combineLatest(
+                teEnPk$,
+                teEnTimeSpan$,
+                teEnlabel$,
+                geoPeItPreview$,
+                geoPresences$,
+                teEnClassConfig$
+            ).map(([teEnPk, teEnTimeSpan, teEnlabel, geoPeItPreview, geoPresences, teEnClassConfig]) => {
+
+
+                if (teEnPk && teEnlabel && geoPeItPreview && geoPresences && teEnClassConfig) {
+                    const label = [geoPeItPreview.entity_label, teEnClassConfig.label].join(' – ');
+                    return this.createCzml(
+                        teEnPk,
+                        teEnTimeSpan,
+                        geoPresences,
+                        label
+                    ).map(packet => U.acNotificationFromPacket(packet, ActionType.ADD_UPDATE));
+                }
+            })
+
+        }
+    }
+
+
+    createCzml(teEnPk: number, teEnTimeSpan: TimeSpan, geoPresences: InfTemporalEntity[], label: string): Object[] {
+        const czmlPackets = [];
+        geoPresences.forEach(presence => {
+            /************** Validate presence **************/
+
+            // validate presence
+            if (presence.fk_class != DfhConfig.CLASS_PK_PRESENCE) return null;
+
+            // return false if no DateUnitChildren
+            if (!presence.te_roles || !presence.te_roles.length) return null;
+
+            // get role to place
+            const placeRole = presence.te_roles.find(r => r.fk_property == DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE)
+
+            // return false if no Place in Role
+            if (!placeRole.place || !placeRole.place.pk_entity) return null;
+
+            /************** Style Values **************/
+
+            // timeSpanActivated === false
+            const colorInactive = [255, 255, 255, 100];
+
+            // timeSpanActivated === true
+            const colorActive = [32, 201, 251, 200];
+
+            // accentuation === 'selected'
+            const outlineColorSelected = [0, 255, 255, 255];
+            const outlineWidthSelected = 3;
+
+            // accentuation === 'highlighted'
+            const outlineColorHighlighted = [255, 206, 0, 255];
+            const outlineWidthHighlighted = 3;
+
+            // accentuation === 'none'
+            const outlineColorDefault = [26, 130, 95, 255]
+            const outlineWidthDefault = 1;
+
+
+            let czmlPacket: any = {}
+
+            // colors used for dynamic color change
+            let colorRgba: any[] = colorInactive;
+
+            // get the TimeSpan of initial TeEnt not the Presence
+            const timeSpan = teEnTimeSpan;
+
+            // TODO: compare the TimeSpan from initial teEnt with TimeSpan of the presence and figure out which presence
+            // is best for displaying the teEnt on the map
+            // const TimeSpan = U.ExTimeFromExTimeDetail(presence._fields['_field_48'] as ExistenceTimeDetail);
+
+            // TimeSpan of initial TeEnt not Presence!
+            if (timeSpan) {
+
+                const minMax = timeSpan.getMinMaxTimePrimitive();
+
+                const min = new Cesium.JulianDate(minMax.min.julianDay, 0, Cesium.TimeStandard.TAI);
+                const max = new Cesium.JulianDate(minMax.max.getDateTime()
+                    .getEndOf(minMax.max.duration).getJulianDay(), 86400, Cesium.TimeStandard.TAI);
+
+                const minStr = Cesium.JulianDate.toIso8601(min);
+                const maxStr = Cesium.JulianDate.toIso8601(max);
+
+                const before = Cesium.JulianDate.addSeconds(min, -1, min);
+                const beforeStr = Cesium.JulianDate.toIso8601(before);
+
+                const after = Cesium.JulianDate.addSeconds(max, 1, max);
+                const afterStr = Cesium.JulianDate.toIso8601(after);
+
+                colorRgba = [
+                    beforeStr, ...colorInactive,
+                    minStr, ...colorActive,
+                    maxStr, ...colorActive,
+                    afterStr, ...colorInactive,
+                ];
+
+            }
+
+            const place = placeRole.place;
+
+            czmlPacket = {
+                ...czmlPacket,
+                id: placeRole.pk_entity + '-' + teEnPk,
+                position: {
+                    cartographicDegrees: [place.long, place.lat, 0]
+                },
+                point: {
+                    color: {
+                        rgba: colorRgba,
+                        forwardExtrapolationType: 'HOLD',
+                        backwardExtrapolationType: 'HOLD'
+                    },
+                    outlineColor: {
+                        rgba: [255, 0, 0, 200]
+                    },
+                    outlineWidth: 3,
+                    pixelSize: 15
+                },
+                label: {
+                    id: 'label of: ' + placeRole.pk_entity,
+                    text: label,
+                    font: '16pt "source sans pro"',
+                    horizontalOrigin: 'LEFT',
+                    fillColor: {
+                        rgba: [20, 20, 20, 255]
+                    },
+                    outlineColor: {
+                        rgba: [255, 255, 255, 230]
+                    },
+                    outlineWidth: 2,
+                    pixelOffset: {
+                        cartesian2: [12.0, -16.0]
+                    },
+                    scaleByDistance: {
+                        nearFarScalar: [1.5e2, 1.0, 8.0e6, 0.6]
+                    },
+                    translucencyByDistance: {
+                        nearFarScalar: [1.5e2, 1.0, 8.0e6, 0.6]
+                    },
+                    // this makes sense if the point also scales
+                    // pixelOffsetScaleByDistance: {
+                    //     nearFarScalar: [1.5e2, 1.0, 8.0e6, 0.6]
+                    // },
+                    style: 'FILL_AND_OUTLINE',
+                },
+                properties: {
+                    pKTemporalEntity: teEnPk
+                }
+            }
+
+            // switch (teEntDetail.accentuation) {
+            //     case 'selected':
+            //         czmlPacket.point.outlineColor.rgba = outlineColorSelected;
+            //         czmlPacket.point.outlineWidth = outlineWidthSelected;
+            //         break;
+
+            //     case 'highlighted':
+            //         czmlPacket.point.outlineColor.rgba = outlineColorHighlighted;
+            //         czmlPacket.point.outlineWidth = outlineWidthHighlighted;
+            //         break;
+
+            //     default:
+            //         czmlPacket.point.outlineColor.rgba = outlineColorDefault;
+            //         czmlPacket.point.outlineWidth = outlineWidthDefault;
+            //         break;
+            // }
+
+            czmlPackets.push(czmlPacket)
+
+        })
+
+        return czmlPackets;
     }
 
     // update or add a czml packet to the layer
     update(packet) {
-        if (packet) this.updater.next(U.acNotificationFromPacket(packet, ActionType.ADD_UPDATE))
+        if (packet) this.updater$.next(U.acNotificationFromPacket(packet, ActionType.ADD_UPDATE))
     }
 
     /**
@@ -155,7 +419,7 @@ export class PeItLayerComponent implements OnInit, OnDestroy {
         if (!dataSource || !dataSource.entities || (dataSource.entities.values.length < 1)) return false;
 
         // if only one entity, set some distance from ground, else 0.0
-        const distance = dataSource.entities.values.length === 1 ?  200000 : 0.0;
+        const distance = dataSource.entities.values.length === 1 ? 200000 : 0.0;
         this.acMap.getCesiumViewer().zoomTo(dataSource, new Cesium.HeadingPitchRange(0.0, -Cesium.Math.PI_OVER_TWO, distance));
 
         // parent map is loading until this one emits

@@ -1,15 +1,26 @@
 <!-- Search input -->
-<form class="mx-3 mt-3 mb-2" (ngSubmit)="searchStringChange()">
-  <div class="input-group">
+<div class="mx-3 mt-3 mb-2" >
+
+  <div class="input-group ">
+
+
+    <div ngbDropdown *ngIf="showTeEnPeItFilter" class="input-group-prepend">
+      <button type="button" class="btn btn-outline-secondary" ngbDropdownToggle [innerHtml]="selectedType.label"></button>
+      <div ngbDropdownMenu>
+        <button class="dropdown-item" *ngFor="let type of typeOptions" (click)="dataUnitTypeChange(type, $event)" [innerHtml]="type.label"></button>
+      </div>
+    </div>
+
     <input type="text" name="searchString" class="form-control" aria-describedby="search" autocomplete="off"
-      placeholder="Search …" [(ngModel)]="searchString">
+      placeholder="Search …" [(ngModel)]="searchString" (keydown)="searchKeydown($event)">
+
     <span class="input-group-append">
-      <button class="btn btn-primary" type="submit">
+      <button class="btn btn-primary" type="button" (click)="searchStringChange()">
         <i class="fa fa-search"></i>
       </button>
     </span>
   </div>
-</form>
+</div>
 
 <!-- Search filter tabs -->
 <!-- <ul class="nav gv-search-filter">
@@ -35,9 +46,9 @@
 <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
 
 <!-- Results -->
-<div class="d-flex gv-fh m-3 px-3 gv-scroll-y-auto" *ngIf="!(loading$ | async)">
-  <gv-entity-search-hit *ngFor="let hit of (items$ | async)" [dataUnitSearchHit]="hit"
-    (onSelectAsMentioned)="selectMentionedEntity($event)" (onOpen)=onOpen.emit($event)></gv-entity-search-hit>
+<div class="d-flex gv-fh mx-3 py-1 px-3 border-light border-top border-bottom gv-scroll-y-auto" *ngIf="!(loading$ | async)">
+  <gv-entity-search-hit *ngFor="let hit of (items$ | async)" [dataUnitSearchHit]="hit" (onSelectAsMentioned)="selectMentionedEntity($event)"
+    (onOpen)=onOpen.emit($event)></gv-entity-search-hit>
 </div>
 
 <!-- Pagination -->

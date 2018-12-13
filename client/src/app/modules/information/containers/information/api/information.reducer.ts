@@ -17,7 +17,7 @@ export function informationReducer(state: Information = INITIAL_STATE, a: Action
     case InformationAPIActions.INITIALIZE_LIST:
       state = {
         ...state,
-        _peIt_list: {
+        items: {
           pkAllowedClasses: action.meta.pkClasses
         }
       };
@@ -38,7 +38,8 @@ export function informationReducer(state: Information = INITIAL_STATE, a: Action
       state = {
         ...state,
         loading: false,
-        _peIt_editable: action.meta.peItDetail
+        _peIt_editable: action.meta.peItDetail,
+        _teEnt_editable: undefined
       };
       break;
 
@@ -49,6 +50,35 @@ export function informationReducer(state: Information = INITIAL_STATE, a: Action
         _peIt_editable: undefined
       };
       break;
+
+    /*****************************************************
+    * Reducers to manage phenomenon editor
+    *****************************************************/
+    case InformationAPIActions.OPEN_PHENOMENON_EDITOR:
+      state = {
+        ...state,
+        loading: true,
+        _teEnt_editable: {}
+      };
+      break;
+
+    case InformationAPIActions.OPEN_PHENOMENON_EDITOR_SUCCEEDED:
+      state = {
+        ...state,
+        loading: false,
+        _teEnt_editable: action.meta.teEntDetail,
+        _peIt_editable: undefined
+      };
+      break;
+
+    case InformationAPIActions.OPEN_PHENOMENON_EDITOR_FAILED:
+      state = {
+        ...state,
+        loading: false,
+        _teEnt_editable: undefined
+      };
+      break;
+
 
     /*****************************************************
     * Reducers to manage entity add form

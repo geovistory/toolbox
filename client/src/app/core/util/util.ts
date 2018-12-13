@@ -529,7 +529,7 @@ export class U {
             } else if (r._appe) return { path, type: 'appe', string: U.labelFromAppeDetail(r._appe) };
             else if (r._lang) return { path, type: 'lang', string: U.labelFromLangDetail(r._lang) };
             else if (r._place) return { path, type: 'place', string: U.labelFromPlaceDetail(r._place) };
-            else if (r._leaf_peIt) return { path, type: 'leaf-pe-it', string: U.labelFromLeafPeIt(r._leaf_peIt, { fieldsMax: 1, rolesMax: 1, path: [...path, '_leaf_peIt'] }) };
+            else if (r._leaf_peIt) return { path, type: 'leaf-pe-it', fkEntity: r.role.fk_entity };
 
             else {
                 console.warn('labelFromRoleDetail: This kind of RoleDetail does not produce labels');
@@ -728,8 +728,8 @@ export class U {
             // colors used for dynamic color change
             let colorRgba: any[] = colorInactive;
 
-            // get the Existence Time of that TeEnt
-            const exTime = U.ExTimeFromExTimeDetail(presence._fields['_field_48'] as ExistenceTimeDetail);
+            // get the TimeSpan of that TeEnt
+            const exTime = U.timeSpanFromExTimeDetail(presence._fields['_field_48'] as ExistenceTimeDetail);
             if (exTime) {
 
                 const minMax = exTime.getMinMaxTimePrimitive();
@@ -976,17 +976,17 @@ export class U {
                                     // colors used for dynamic color change
                                     let colorRgba: any[] = colorInactive;
 
-                                    // get the Existence Time of initial TeEnt not the Presence
-                                    const exTime = U.ExTimeFromExTimeDetail(teEntDetail._fields['_field_48'] as ExistenceTimeDetail);
+                                    // get the TimeSpan of initial TeEnt not the Presence
+                                    const timeSpan = U.timeSpanFromExTimeDetail(teEntDetail._fields['_field_48'] as ExistenceTimeDetail);
 
-                                    // TODO: compare the exTime from initial teEnt with exTime of the presence and figure out which presence
+                                    // TODO: compare the TimeSpan from initial teEnt with TimeSpan of the presence and figure out which presence
                                     // is best for displaying the teEnt on the map
-                                    // const exTime = U.ExTimeFromExTimeDetail(presence._fields['_field_48'] as ExistenceTimeDetail);
+                                    // const TimeSpan = U.ExTimeFromExTimeDetail(presence._fields['_field_48'] as ExistenceTimeDetail);
 
-                                    // exTime of initial TeEnt not Presence!
-                                    if (exTime) {
+                                    // TimeSpan of initial TeEnt not Presence!
+                                    if (timeSpan) {
 
-                                        const minMax = exTime.getMinMaxTimePrimitive();
+                                        const minMax = timeSpan.getMinMaxTimePrimitive();
 
                                         const min = new Cesium.JulianDate(minMax.min.julianDay, 0, Cesium.TimeStandard.TAI);
                                         const max = new Cesium.JulianDate(minMax.max.getDateTime()
@@ -1124,7 +1124,7 @@ export class U {
     })
 
 
-    static ExTimeFromExTimeDetail = (exTimeDetail: ExistenceTimeDetail): TimeSpan | null => {
+    static timeSpanFromExTimeDetail = (exTimeDetail: ExistenceTimeDetail): TimeSpan | null => {
 
         if (!exTimeDetail) return null;
 

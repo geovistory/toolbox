@@ -93,6 +93,15 @@
           }
         },
         {
+          "arg": "entityType",
+          "type": "string",
+          "required": false,
+          "description": "Type of DataUnit: 'teEn' or 'peIt'.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
           "arg": "limit",
           "type": "number",
           "required": false,

@@ -3,10 +3,11 @@ import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { List } from './list.models';
 import { SearchResponse } from '../../information/api/information.models';
+import { DataUnitType } from 'app/core/state/models/data-unit-preview';
 
 type Payload = List;
 interface MetaData {
-  pkProject?: number, searchString?: string, pkClasses?: number[], limit?: number, page?: number,
+  pkProject?: number, searchString?: string, pkClasses?: number[], dataUnitType?: DataUnitType, limit?: number, page?: number,
   searchResponse?: SearchResponse
 };
 export type ListAPIAction = FluxStandardAction<Payload, MetaData>;
@@ -24,9 +25,9 @@ export class ListAPIActions {
   *  Actions to manage search of data units
   *********************************************************************/
   @dispatch()
-  search = (pkProject: number, searchString: string, pkClasses: number[], limit: number, page: number): ListAPIAction => ({
+  search = (pkProject: number, searchString: string, pkClasses: number[], dataUnitType: DataUnitType, limit: number, page: number): ListAPIAction => ({
     type: ListAPIActions.SEARCH,
-    meta: { pkProject, searchString, pkClasses, limit, page },
+    meta: { pkProject, searchString, pkClasses, dataUnitType, limit, page },
     payload: null,
   });
 

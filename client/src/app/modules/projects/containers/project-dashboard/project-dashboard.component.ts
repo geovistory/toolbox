@@ -65,7 +65,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
           }
         }
 
-        this.duApi.search(this.id, '', pkClassesInProject, 1, 1)
+        this.duApi.search(this.id, '', pkClassesInProject, null, 1, 1)
           .subscribe(
             (response) => {
               this.dataUnitsCount = parseInt(response.totalCount, 10);
@@ -77,7 +77,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
           );
 
 
-        this.duApi.search(this.id, '', DfhConfig.CLASS_PKS_SOURCE_PE_IT, 1, 1)
+        this.duApi.search(this.id, '', DfhConfig.CLASS_PKS_SOURCE_PE_IT, null, 1, 1)
           .subscribe(
             (response) => {
               this.sourcesCount = parseInt(response.totalCount, 10);

@@ -1,5 +1,5 @@
 <div *ngIf="toggle === 'collapsed'" class="main d-flex gv-p-list-group-item gv-pointer" (click)="toggleClicked()">
-  
+
   <!-- Role Labels -->
   <div class="gv-grow-1 pr-3" *ngFor="let p of label?.parts; let i = index">
     <div class="text-muted font-xs">
@@ -12,8 +12,8 @@
       <div *ngIf="label.type === 'ex-time'">
         {{getExTLabel(label?.exTimeLabel)}}
       </div>
-      <div *ngIf="label.type === 'leaf-pe-it' && label.path">
-        <gv-leaf-pe-it-view [basePath]="label.path.concat('_leaf_peIt')"></gv-leaf-pe-it-view>
+      <div *ngIf="label.type === 'leaf-pe-it' && label.fkEntity">
+        <gv-leaf-pe-it-view [pkEntity]="label.fkEntity"></gv-leaf-pe-it-view>
       </div>
     </div>
   </div>

@@ -36,7 +36,7 @@ export class PeItSearchExistingAPIEpics {
           /**
            * Do some api call
            */
-          this.duApi.search(null, action.meta.searchString, [action.meta.pkClass], action.meta.limit, action.meta.page)
+          this.duApi.search(null, action.meta.searchString, [action.meta.pkClass], null, action.meta.limit, action.meta.page)
             /**
                * Subscribe to the api call
                */

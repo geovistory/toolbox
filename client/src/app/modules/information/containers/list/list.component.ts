@@ -1,7 +1,7 @@
 import { Component, OnDestroy, Input, OnInit, EventEmitter, Output } from '@angular/core';
 import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, PeItSearchHit } from 'app/core';
+import { IAppState, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { List } from './api/list.models';
 import { ListAPIEpics } from './api/list.epics';
@@ -11,6 +11,7 @@ import { MentionedEntity } from 'app/modules/annotation/annotation.models';
 import { MentionedEntityCtrlActions } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 import { mentionedEntityCtrlReducer } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.reducer';
 import { takeUntil, first } from 'rxjs/operators';
+import { DataUnitSearchHit } from '../information/api/information.models';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -32,16 +33,19 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
   // path to the substore
   @Input() basePath: string[];
 
+  @Input() showTeEnPeItFilter: boolean;
+
+
   // the classes for which this list can search
   @select() pkAllowedClasses$: Observable<number[]>;
   pkAllowedClasses: number[];
 
-  // emits pk_entity of cklick
+  // emits pk_entity of click
   @Output() onOpen = new EventEmitter<number>();
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
-  @select() items$: Observable<PeItSearchHit[]>;
+  @select() items$: Observable<DataUnitSearchHit[]>;
   @select() collectionSize$: Observable<number>;
 
   // Pagination
@@ -56,6 +60,14 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
   selectingEntities$: Observable<boolean>;
   mentionedEntitiesCrtlStore: ObservableStore<{ [key: string]: MentionedEntity }>
   projectId: number;
+
+  // DataUnit type (TeEn/PeIt) Filter
+  typeOptions = [
+    { value: null, label: 'All' },
+    { value: 'peIt', label: '<i class="gv-icon gv-icon-entity"></i> Entities' },
+    { value: 'teEn', label: '<i class="fa fa-star-o"></i> Events & Phenomena' }
+  ]
+  selectedType: { value: any, label: string } = this.typeOptions[1];
 
   constructor(
     protected rootEpics: RootEpics,
@@ -92,7 +104,7 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
         this.projectId = d[0];
         this.pkAllowedClasses = d[1];
         // init the search
-        this.searchProjectPeIts();
+        this.searchProject();
       });
 
     this.collectionSize$.takeUntil(this.destroy$).subscribe(d => { this.collectionSize = d })
@@ -105,9 +117,9 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
     this.destroy$.unsubscribe();
   }
 
-  searchProjectPeIts() {
+  searchProject() {
     if (this.projectId && this.pkAllowedClasses) {
-      this.search(this.projectId, this.searchString, this.pkAllowedClasses, this.limit, this.page)
+      this.search(this.projectId, this.searchString, this.pkAllowedClasses, this.selectedType.value, this.limit, this.page)
     }
   }
 
@@ -124,12 +136,29 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
   }
 
   pageChange() {
-    this.searchProjectPeIts();
+    this.searchProject();
   }
 
   searchStringChange() {
     this.page = 1;
-    this.searchProjectPeIts();
+    this.searchProject();
+  }
+
+  searchKeydown($event) {
+    if ($event.key === 'Enter') {
+      this.searchStringChange()
+    }
+  };
+
+
+  /**
+   * Called when user changes to see only teEn / peIt or all classes
+   */
+  dataUnitTypeChange(type, e) {
+    if (this.selectedType !== type) {
+      this.selectedType = type;
+      this.searchProject();
+    }
   }
 
 }

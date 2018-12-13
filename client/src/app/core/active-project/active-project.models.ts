@@ -1,8 +1,14 @@
 import { PropertyFieldList, FieldList, DataUnitPreviewList, PeItDetailList } from 'app/core/state/models';
-import { ComClassFieldInterface, ComUiContextInterface, ProjectInterface, InfChunk } from 'app/core/sdk';
+import { ComClassFieldInterface, ComUiContextInterface, ProjectInterface, InfChunk, InfPersistentItem, InfTemporalEntity, DfhProperty } from 'app/core/sdk';
 import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/api/class-settings.models';
 
 export interface ChunkList { [pk_entity: number]: InfChunk };
+export interface PeItList { [pk_entity: number]: InfPersistentItem };
+export interface TeEnList { [pk_entity: number]: InfTemporalEntity };
+// export interface PropertyList { [pk_entity: number]: DfhProperty };
+export class PropertyList { [pk_entity: string]: DfhProperty; }
+
+
 
 
 export interface ProjectDetail extends ProjectInterface {
@@ -22,6 +28,12 @@ export interface ProjectDetail extends ProjectInterface {
     // chunk List
     chunks?: ChunkList;
 
+    // InfPersistentItems with roles by pk_entity
+    peItGraphs?: PeItList;
+
+    // InfPersistentItems with roles by pk_entity
+    teEnGraphs?: TeEnList;
+
 
     /******************************************************************
      * Things for Mentionings / Annotations
@@ -29,8 +41,10 @@ export interface ProjectDetail extends ProjectInterface {
 
     // the chunk that is used to create mentionings
     selectedChunk?: InfChunk;
+
     // if true, the text editor behaves so that each node can be clicked to de-/activate
     refiningChunk?: boolean;
+
     // true, when mentioning is being created.
     // TODO: check, if needed
     creatingMentioning?: boolean;
@@ -47,8 +61,8 @@ export interface ProjectDetail extends ProjectInterface {
 
 export interface ProjectCrm {
     classes?: ClassConfigList;
+    properties?: PropertyList
     fieldList?: FieldList;
-
 }
 
 export interface ClassConfigList { [dfh_pk_class: number]: ClassConfig };

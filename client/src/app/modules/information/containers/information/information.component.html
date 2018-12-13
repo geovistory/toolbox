@@ -8,8 +8,8 @@
     <div class="col-md-4">
       <div class="btn-group float-right mt-2" role="group">
 
-        <gv-class-and-type-selector *ngIf="pkClassesInProject != undefined" [pkClasses]="pkClassesInProject" [pkProject]="projectId"
-          [basePath]="basePath.concat('classAndTypeSelector')" (select)="startCreate($event, pkUiContextCreate)"
+        <gv-class-and-type-selector *ngIf="pkClassesInProject != undefined" [pkClasses]="pkClassesInProject"
+          [pkProject]="projectId" [basePath]="basePath.concat('classAndTypeSelector')" (select)="startCreate($event, pkUiContextCreate)"
           buttonText="+ Add an entity" placement="right" hasFilter="true"></gv-class-and-type-selector>
 
         <!-- <button class="btn btn-link btn-md" (click)="openEntityModal()">
@@ -18,7 +18,7 @@
       </div>
     </div>
   </section>
-  <gv-list class="gv-flex-fh" [basePath]="basePath.concat('_peIt_list')" (onOpen)="openEntity($event)"></gv-list>
+  <gv-list class="gv-flex-fh" [showTeEnPeItFilter]="true" [basePath]="basePath.concat('items')" (onOpen)="openEntity($event)"></gv-list>
 </div>
 
 <div *ngIf="(_peIt_add$ | async)" class="gv-flex-fh">
@@ -27,7 +27,7 @@
 </div>
 
 
-<div *ngIf="(_peIt_editable$ | async)" class="gv-flex-fh">
+<div *ngIf="(_peIt_editable$ | async) || (_teEnt_editable$ | async) " class="gv-flex-fh">
 
   <div class="d-flex gv-flex-shrink-0">
     <ol class="breadcrumb bg-transparent mb-0 py-2">
@@ -40,7 +40,10 @@
   </div>
 
   <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
-  <div *ngIf="!(loading$ | async)" class="gv-flex-fh">
-    <gv-pe-it-editable class="gv-flex-fh" [basePath]="basePath.concat('_peIt_editable')" (remove)="onRemovePeIt($event)"></gv-pe-it-editable>
-  </div>
+  <gv-pe-it-editable *ngIf="!(loading$ | async) && (_peIt_editable$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('_peIt_editable')"
+    (remove)="onRemovePeIt($event)"></gv-pe-it-editable>
+
+      <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
+  <gv-te-ent-editable *ngIf="!(loading$ | async) && (_teEnt_editable$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('_teEnt_editable')"></gv-te-ent-editable>
+
 </div>

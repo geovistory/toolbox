@@ -19,7 +19,7 @@
 <div [@slideInOut]="(toggle$|async)">
 
     <!-- Empty existence time -->
-    <div class="d-flex" *ngIf="isEmpty">
+    <div class="d-flex mb-3" *ngIf="isEmpty">
 
 
         <div class="btn-toolbar mb-2 gv-grow-1" role="toolbar" aria-label="Toolbar with button groups">
@@ -40,7 +40,7 @@
     </div>
 
     <!-- Hase some value -->
-    <div class="list-group-item pr-0 d-flex" *ngIf="!isEmpty">
+    <div class="list-group-item p-0 d-flex mb-3" *ngIf="!isEmpty">
         <div class="gv-grow-1">
             <!-- At some time within -->
             <div class="d-flex align-items-center" *ngIf="(_fields?._72_outgoing)">

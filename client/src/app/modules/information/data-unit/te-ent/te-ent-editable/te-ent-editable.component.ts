@@ -1,10 +1,10 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ComConfig, IAppState, UiContext, UiElement, ProjectCrm } from 'app/core';
+import { ComConfig, IAppState, UiContext, UiElement, ProjectCrm, U } from 'app/core';
 import { AddOption, CollapsedExpanded, ExistenceTimeDetail, RoleDetail, PropertyField, PropertyFieldForm, TeEntAccentuation, TeEntDetail, FieldList } from 'app/core/state/models';
 import { createExistenceTimeDetail, getCreateOfEditableContext, StateSettings, similarPropertyField, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
-import { Observable, Subject, combineLatest } from 'rxjs';
+import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { RootEpics } from '../../../../../core/store/epics';
 import { slideInOut } from '../../../shared/animations';
 import { DataUnitBase } from '../../data-unit.base';
@@ -13,6 +13,7 @@ import { TeEntActions } from '../te-ent.actions';
 import { TeEntAPIEpics } from '../te-ent.epics';
 import { teEntReducer } from '../te-ent.reducer';
 import { filter, map } from 'rxjs/operators';
+import { dropLast } from 'ramda';
 
 export function getTeEntAddOptions(
   fkClass$: Observable<number>,
@@ -28,20 +29,38 @@ export function getTeEntAddOptions(
       return b;
     }),
     map((d) => {
-      const fkClass = d[0], pkUiContext = d[1], crm = d[2], excludePropertyField = d[3], children = d[4];
+      const fkClass = d[0], pkUiContext = d[1], crm = d[2], excludePropertyField = d[3], fields = d[4];
+
       const classConfig = crm.classes[fkClass];
       const uiContexts = classConfig.uiContexts[pkUiContext];
       const uiElements = !uiContexts ? [] : uiContexts.uiElements;
+
+      // store the for each propertyField that is an inherited property.
+      const inheritedPropertyFields = new Set();
+      U.obj2Arr(fields)
+        .filter(field => (field.type === 'PropertyField'))
+        .forEach((field) => {
+          const f = field as PropertyField;
+          if (f.property.dfh_fk_property_of_origin) {
+            inheritedPropertyFields.add(f.isOutgoing + '_' + f.property.dfh_fk_property_of_origin)
+          }
+        });
+
+
       return uiElements.map(el => {
-        if (children && el.fk_property && !children[el.propertyFieldKey] &&
-          !similarPropertyField(classConfig.propertyFields[el.propertyFieldKey], excludePropertyField)) {
-          const propertyField = classConfig.propertyFields[propertyFieldKeyFromParams(el.fk_property, el.property_is_outgoing)];
+        if (
+
+          fields && el.fk_property && !fields[el.propertyFieldKey] &&
+          !inheritedPropertyFields.has(el.property_is_outgoing + '_' + (crm.fieldList[el.propertyFieldKey] as PropertyField).property.dfh_fk_property_of_origin) &&
+          !similarPropertyField(classConfig.propertyFields[el.propertyFieldKey], excludePropertyField)
+        ) {
+          const propertyField = crm.fieldList[el.propertyFieldKey];
           return {
             label: propertyField.label.default,
             uiElement: el,
             added: false
           };
-        } else if (children && el.fk_class_field && !children[el.propSetKey]) {
+        } else if (fields && el.fk_class_field && !fields[el.propSetKey]) {
           return {
             label: el.class_field.label,
             uiElement: el,
@@ -66,9 +85,11 @@ export function getTeEntAddOptions(
 })
 export class TeEntEditableComponent extends DataUnitBase {
 
-  @Input() parentPath: string[];
+  @Input() basePath: string[];
+  @Input() asPeItChild: boolean;
 
-  basePath: string[];
+  parentPath: string[];
+
   localStore: ObservableStore<TeEntDetail>;
 
   @select() toggle$: Observable<boolean>
@@ -89,7 +110,7 @@ export class TeEntEditableComponent extends DataUnitBase {
    */
   showOntoInfo$: Observable<boolean>
   showCommunityStats$: Observable<boolean>
-  parentPropertyField$: Observable<PropertyField>
+  parentPropertyField$: Observable<PropertyField> = new BehaviorSubject(null);
 
   /**
    * Class properties that filled by a store observable
@@ -114,16 +135,14 @@ export class TeEntEditableComponent extends DataUnitBase {
 
   }
 
-  getBasePath = () => [...this.parentPath, '_teEnt']
+  getBasePath = () => this.basePath;
 
   /**
    * Methods
    */
   // gets called by base class onInit
   initStore() {
-    this.basePath = this.getBasePath();
-    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), teEntReducer);
-
+    this.localStore = this.ngRedux.configureSubStore(this.basePath, teEntReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this.localStore, this.basePath, this.destroy$))
 
   }
@@ -150,6 +169,7 @@ export class TeEntEditableComponent extends DataUnitBase {
    * init paths to different slices of the store
    */
   initPaths() {
+    this.parentPath = dropLast(1, this.basePath)
     // transforms e.g.  ['information', 'entityEditor', 'peItState', 'propertyFields', '1', '_role_list', '79060']
     // to               ['information', 'entityEditor', 'peItState']
     this.parentPeItStatePath = this.parentPath.slice(0, (this.parentPath.length - 4));
@@ -163,7 +183,7 @@ export class TeEntEditableComponent extends DataUnitBase {
   initObservablesOutsideLocalStore() {
     this.showOntoInfo$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'showOntoInfo']);
 
-    this.parentPropertyField$ = this.ngRedux.select<PropertyField>(this.parentPath.slice(0, (this.parentPath.length - 2)));
+    if (this.asPeItChild) this.parentPropertyField$ = this.ngRedux.select<PropertyField>(this.parentPath.slice(0, (this.parentPath.length - 2)));
 
   }
 

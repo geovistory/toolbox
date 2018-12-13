@@ -2,9 +2,9 @@
     <gv-data-unit-preview [preview]="(preview$ | async)"></gv-data-unit-preview>
     <small class="text-muted">(self)</small>
 </div>
-<a *ngIf="!isCircular" href="" class="gv-passive-link" (click)=open()>
-    <gv-data-unit-preview [preview]="(preview$ | async)"></gv-data-unit-preview>
-</a>
+<gv-data-unit-preview *ngIf="!isCircular" class="gv-pointer" [preview]="(preview$ | async)" (click)=open()></gv-data-unit-preview>
+    <!-- <a *ngIf="!isCircular" href="" class="gv-passive-link" (click)=open()>
+</a> -->
 
 <div *ngIf="(!preview$ |async)">
     <i class="fa fa-spinner fa-pulse"></i> Loading

@@ -38,21 +38,10 @@
 
             <div class="dropdown-header">View (right column)</div>
 
-            <button class="dropdown-item" (click)="toggle('showMap')" *ngIf="(showMapToggle$|async)">
-              <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showMap$|async)}"></i>
-              Map
-            </button>
-
-            <button class="dropdown-item" (click)="toggle('showTimeline')" *ngIf="(showTimelineToggle$|async)">
-              <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showTimeline$|async)}"></i>
-              Timeline
-            </button>
-
             <button class="dropdown-item" (click)="toggle('showMentionedEntities')" *ngIf="(showMentionedEntitiesToggle$|async)">
               <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showMentionedEntities$|async)}"></i>
               Mentioned Data Units
             </button>
-
 
             <button class="dropdown-item" (click)="toggle('showAssertions')" *ngIf="(showAssertionsToggle$|async)">
               <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showAssertions$|async)}"></i>
@@ -61,7 +50,17 @@
 
             <button class="dropdown-item" (click)="toggle('showSources')" *ngIf="(showSourcesToggle$|async)">
               <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showSources$|async)}"></i>
-              Sources
+              Sources & Annotations
+            </button>
+
+            <button class="dropdown-item" (click)="toggle('showMap')" *ngIf="(showMapToggle$|async)">
+              <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showMap$|async)}"></i>
+              Map
+            </button>
+
+            <button class="dropdown-item" (click)="toggle('showTimeline')" *ngIf="(showTimelineToggle$|async)">
+              <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showTimeline$|async)}"></i>
+              Timeline
             </button>
 
             <!-- Info Toggles -->
@@ -153,13 +152,15 @@
     <!-- Right Panel -->
     <div class="gv-panel" [ngClass]="{'ml-2':(showLeftPanel$ | async)}" *ngIf="(showRightPanel$ | async)">
 
-      <gv-mentioning-list class="gv-tile" *ngIf="(showMentionedEntities$ | async)" [basePath]="basePath.concat('mentionedEntities')" (close)="toggle('showMentionedEntities')"></gv-mentioning-list>
+      <gv-mentioning-list class="gv-tile" *ngIf="(showMentionedEntities$ | async)" [basePath]="basePath.concat('mentionedEntities')"
+        (close)="toggle('showMentionedEntities')"></gv-mentioning-list>
 
-      <gv-mentioning-list class="gv-tile" *ngIf="(showSources$ | async)" [basePath]="basePath.concat('sources')" (close)="toggle('showSources')"></gv-mentioning-list>
+      <gv-mentioning-list class="gv-tile" *ngIf="(showSources$ | async)" [basePath]="basePath.concat('sources')"
+        (close)="toggle('showSources')"></gv-mentioning-list>
 
       <gv-map class="gv-tile" *ngIf="(showMap$ | async)" [path]="basePath" (close)="toggle('showMap')"></gv-map>
 
-      <gv-pe-it-timeline class="gv-tile" [path]="basePath" *ngIf="(showTimeline$ | async)"></gv-pe-it-timeline>
+      <gv-pe-it-timeline class="gv-tile" [path]="basePath" *ngIf="(showTimeline$ | async)" (close)="toggle('showTimeline')"></gv-pe-it-timeline>
 
     </div>
   </div>

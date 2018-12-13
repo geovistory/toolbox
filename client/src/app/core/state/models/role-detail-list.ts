@@ -1,12 +1,10 @@
 import { RoleDetail } from './role-detail';
 
-export interface RoleDetailListI { [key: string]: RoleDetail }
 
-
-export class RoleDetailList implements RoleDetailListI {
+export class RoleDetailList  {
     [key: string]: RoleDetail;
 
-    constructor(data?: RoleDetailListI) {
+    constructor(data?: RoleDetailList) {
         Object.assign(this, data);
     }
 }

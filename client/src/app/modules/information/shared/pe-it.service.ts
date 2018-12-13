@@ -26,8 +26,8 @@ export class PeItService {
 
   findLangByIso6392t(iso6392t) {
     return this.languageApi.find({
-      "where": {
-        "iso6392t": iso6392t
+      'where': {
+        'iso6392t': iso6392t
       }
     });
   }
@@ -43,8 +43,7 @@ export class PeItService {
           subject.next(peIts[0]);
 
         });
-      }
-      else {
+      } else {
         this.peItApi.nestedObjectOfRepo(pkEntity).subscribe((peIts: InfPersistentItem[]) => {
 
           subject.next(peIts[0]);

@@ -1,6 +1,8 @@
 import { ActiveProjectActions, ActiveProjectAction } from './active-project.action';
 import { ProjectDetail } from './active-project.models';
 import { DataUnitPreview } from '../state/models';
+import { indexBy } from 'ramda';
+import { InfPersistentItem, InfTemporalEntity } from '../sdk/models';
 
 const INITIAL_STATE: ProjectDetail = null;
 
@@ -94,7 +96,48 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             };
             break;
 
-        case ActiveProjectActions.LOAD_DATA_UNIT_PREVIEW_FAILED:
+        case ActiveProjectActions.LOAD_CHUNK_FAILED:
+            state = {
+                ...state,
+            };
+            break;
+
+        /***************************************************
+        * Reducers to load peIt-Graphs
+        ****************************************************/
+
+        case ActiveProjectActions.LOAD_PEIT_GRAPHS_SUCCEEDED:
+            state = {
+                ...state,
+                peItGraphs: {
+                    ...state.peItGraphs,
+                    ...indexBy(((peIt: InfPersistentItem) => peIt.pk_entity.toString()), action.meta.peItGraphs)
+                }
+            };
+            break;
+
+        case ActiveProjectActions.LOAD_PEIT_GRAPHS_FAILED:
+            state = {
+                ...state,
+            };
+            break;
+
+
+        /***************************************************
+        * Reducers to load teEn-Graphs
+        ****************************************************/
+
+        case ActiveProjectActions.LOAD_TEEN_GRAPHS_SUCCEEDED:
+            state = {
+                ...state,
+                teEnGraphs: {
+                    ...state.teEnGraphs,
+                    ...indexBy(((teEn: InfTemporalEntity) => teEn.pk_entity.toString()), action.meta.teEnGraphs)
+                }
+            };
+            break;
+
+        case ActiveProjectActions.LOAD_TEEN_GRAPHS_FAILED:
             state = {
                 ...state,
             };

@@ -1,73 +1,164 @@
-<!-- ************************** PREVIEW ****************************** -->
-<div *ngIf="!(editing$ | async)" [ngClass]="{
-    'gv-bg-selected': ((accentuation$ | async) === 'selected'),
-    'bg-light': ((accentuation$ | async) === 'highlighted' && (toggle$|async) === 'collapsed')
-  }">
-  <!-- (mouseenter)="mouseenter()" (mouseleave)="mouseleave()" -->
+<span *ngIf="asPeItChild">
 
-  <div class="d-flex flex-row">
+  <!-- ************************** PREVIEW ****************************** -->
+  <div *ngIf="!(editing$ | async)" [ngClass]="{
+      'gv-bg-selected': ((accentuation$ | async) === 'selected'),
+      'bg-light': ((accentuation$ | async) === 'highlighted' && (toggle$|async) === 'collapsed')
+    }">
+    <!-- (mouseenter)="mouseenter()" (mouseleave)="mouseleave()" -->
 
-    <gv-te-ent-label class="gv-grow-1" [toggle]="(toggle$|async)" [children]="(_fields$ | async)" [classConfig]="classConfig"
-      [childrenPath]="basePath.concat('_fields')" (onToggle)="toggleCardBody()">
+    <div class="d-flex flex-row">
 
-      <ng-content buttons select="[headerRight]"> </ng-content>
-      <button buttons type="button" class="btn btn-link-gray" [attr.title]="'Edit this ' + classConfig?.label" *ngIf="!(isViewMode$ | async)">
-        <i class="fa fa-pencil" (click)="startEditing()"></i>
-      </button>
+      <gv-te-ent-label class="gv-grow-1" [toggle]="(toggle$|async)" [children]="(_fields$ | async)" [classConfig]="classConfig"
+        [childrenPath]="basePath.concat('_fields')" (onToggle)="toggleCardBody()">
+
+        <ng-content buttons select="[headerRight]"> </ng-content>
+        <button buttons type="button" class="btn btn-link-gray" [attr.title]="'Edit this ' + classConfig?.label" *ngIf="!(isViewMode$ | async)">
+          <i class="fa fa-pencil" (click)="startEditing()"></i>
+        </button>
 
 
-    </gv-te-ent-label>
+      </gv-te-ent-label>
 
-    <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(showOntoInfo$|async)">
-      <div class="align-self-center">
-        <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{classConfig.dfh_pk_class}}"
-          target="_blank">
-          {{classConfig.dfh_identifier_in_namespace}}
-        </a>
+      <div class="gv-card-spacer-x align-self-stretch d-flex" *ngIf="(showOntoInfo$|async)">
+        <div class="align-self-center">
+          <a class="badge badge-success" href="http://ontologies.dataforhistory.org/class/{{classConfig.dfh_pk_class}}"
+            target="_blank">
+            {{classConfig.dfh_identifier_in_namespace}}
+          </a>
+        </div>
       </div>
+
+    </div>
+    <ng-content select="[belowHeader]"></ng-content>
+  </div>
+
+
+  <!-- ************************** EDITING ****************************** -->
+  <div *ngIf="(editing$ | async)">
+    <!-- <button class="btn btn-link mt-2 mb-3" (click)="stopEditing()">
+      <i class="fa fa-chevron-left"></i> All properties
+    </button> -->
+    <div class="my-3 d-flex align-items-center justify-content-between">
+      <h4 class="m-0">
+        Edit {{classConfig?.label}}
+      </h4>
     </div>
 
-  </div>
-  <ng-content select="[belowHeader]"></ng-content>
-</div>
+    <div class="card">
 
+      <gv-te-ent-header [showOntoInfo$]="showOntoInfo$" [classConfig]="classConfig" [selectPropState$]="selectPropState$"
+        [addButtonVisible]="!(isViewMode$ | async) && (addOptionsTeEnt$ | async).length > 0 " (startSelectProperty)="startSelectProperty()"></gv-te-ent-header>
 
-<!-- ************************** EDITING ****************************** -->
-<div *ngIf="(editing$ | async)">
-  <!-- <button class="btn btn-link mt-2 mb-3" (click)="stopEditing()">
-    <i class="fa fa-chevron-left"></i> All properties
-  </button> -->
-  <div class="my-3 d-flex align-items-center justify-content-between">
-    <h4 class="m-0">
-      Edit {{classConfig?.label}}
-    </h4>
-  </div>
+      <!-- Step 2 for adding new Property section -->
 
-  <div class="card">
+      <gv-add-info-te-ent *ngIf="(selectPropState$ | async) === 'selectProp'" [addOptions$]="addOptionsTeEnt$"
+        (addOptionSelected)="addOptionSelected($event)" (cancel)="stopSelectProperty()"></gv-add-info-te-ent>
 
-    <gv-te-ent-header [showOntoInfo$]="showOntoInfo$" [classConfig]="classConfig" [selectPropState$]="selectPropState$"
-      [addButtonVisible]="!(isViewMode$ | async) && (addOptionsTeEnt$ | async).length > 0 " (startSelectProperty)="startSelectProperty()"></gv-te-ent-header>
-
-    <!-- Step 2 for adding new Property section -->
-
-    <gv-add-info-te-ent *ngIf="(selectPropState$ | async) === 'selectProp'" [addOptions$]="addOptionsTeEnt$"
-      (addOptionSelected)="addOptionSelected($event)" (cancel)="stopSelectProperty()"></gv-add-info-te-ent>
-
-    <div class="card-body bg-transparent">
-      <div *ngFor="let item of (_fields$ | async) | keys; trackBy:getKey">
+      <div class="card-body bg-transparent">
+        <div *ngFor="let item of (_fields$ | async) | keys; trackBy:getKey">
 
           <gv-existence-time-editable *ngIf="item.value.type === 'ExistenceTimeDetail'" mode="editable" [basePath]="basePath.concat('_fields').concat(item.key)"
             (onRemovePropSet)="removePropSet(item.key)"></gv-existence-time-editable>
 
-          <gv-te-ent-property-field-editable *ngIf="item.value.type === 'PropertyField'" [parentPath]="basePath" [parentTeEntStatePath]="basePath"
-            [index]="item.key" (onRemovePropertyField)="removePropertyField(item.key)"></gv-te-ent-property-field-editable>
+          <gv-te-ent-property-field-editable *ngIf="item.value.type === 'PropertyField'" [parentPath]="basePath" [asPeItChild]="true" 
+            [parentTeEntStatePath]="basePath" [index]="item.key" (onRemovePropertyField)="removePropertyField(item.key)"></gv-te-ent-property-field-editable>
+
+        </div>
 
       </div>
+    </div>
+
+    <button class="btn btn-secondary mt-3" (click)="stopEditing()">
+      Ok
+    </button>
+  </div>
+</span>
+
+
+
+
+
+
+
+<!-- Standalone view as Phenomenon editor -->
+<span class="gv-flex-fh" *ngIf="!asPeItChild">
+
+  <!-- Header -->
+  <gv-editor-header>
+
+    <div labels class="d-flex flex-row">
+      <gv-te-ent-label class="gv-grow-1" [toggle]="'collapsed'" [children]="(_fields$ | async)" [classConfig]="classConfig"
+        [childrenPath]="basePath.concat('_fields')">
+      </gv-te-ent-label>
+    </div>
+
+
+    <div type *ngIf="(_type$ | async)">
+      <gv-type [basePath]="basePath.concat('_type')"></gv-type>
+    </div>
+
+    <gv-class-info classInfo [classConfig]="classConfig" iconPrimary="true"></gv-class-info>
+
+    <div settings>
+      <!-- <div class="btn-group" ngbDropdown placement="bottom-right" [autoClose]="'outside'">
+        <button class="btn btn-link btn-lg no-caret" ngbDropdownToggle>
+          <i class="fa fa-cogs"></i>
+        </button>
+        <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
+
+          <div class="dropdown-divider" *ngIf="!(isViewMode$ | async)"></div>
+          <div class="dropdown-header" *ngIf="!(isViewMode$ | async)">Danger Zone</div>
+
+          <button class="dropdown-item text-danger" (click)="toggleRemoveVerification()" *ngIf="!(isViewMode$ | async)">
+            <i class="fa fa-trash"></i>
+            Remove
+          </button>
+
+        </div>
+      </div> -->
+    </div>
+  </gv-editor-header>
+
+  <!-- Body -->
+
+  <div class="gv-canvas d-flex flex-row gv-grow-1">
+    <div class="gv-panel">
+      <div class="gv-tile">
+
+        <gv-tile-header *ngIf="(showPropertiesHeader$ | async)" (close)="toggle('showProperties')">
+          <span title>
+            Properties
+          </span>
+          <span buttons>
+            <button class="btn btn-sm btn-link" (click)="startSelectProperty()" *ngIf="!(isViewMode$ | async) && (selectPropState$ | async) === 'init' && (showAddAPropertyButton$ | async)"
+              [ngClass]="{'invisible' : isolatedChild}">
+              <i class="fa fa-plus"></i> Add
+            </button>
+          </span>
+        </gv-tile-header>
+
+        <!-- Tile Body -->
+        <div class="gv-tile-body">
+
+          <!-- Step 2 for adding new Property section -->
+          <gv-add-info-te-ent *ngIf="(selectPropState$ | async) === 'selectProp'" [addOptions$]="addOptionsTeEnt$"
+            (addOptionSelected)="addOptionSelected($event)" (cancel)="stopSelectProperty()"></gv-add-info-te-ent>
+
+          <div *ngFor="let item of (_fields$ | async) | keys; trackBy:getKey">
+
+            <gv-existence-time-editable *ngIf="item.value.type === 'ExistenceTimeDetail'" mode="editable" [basePath]="basePath.concat('_fields').concat(item.key)"
+              (onRemovePropSet)="removePropSet(item.key)"></gv-existence-time-editable>
+
+            <gv-te-ent-property-field-editable *ngIf="item.value.type === 'PropertyField'" [parentPath]="basePath"
+              [parentTeEntStatePath]="basePath" [index]="item.key" [asPeItChild]="false" (onRemovePropertyField)="removePropertyField(item.key)"></gv-te-ent-property-field-editable>
+
+          </div>
+
+        </div>
+      </div>
+
 
     </div>
   </div>
-
-  <button class="btn btn-secondary mt-3" (click)="stopEditing()">
-    Ok
-  </button>
-</div>
+</span>

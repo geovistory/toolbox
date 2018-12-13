@@ -42,7 +42,7 @@ export class ListAPIEpics {
           /**
            * Do some api call
            */
-          this.duApi.search(action.meta.pkProject, action.meta.searchString, action.meta.pkClasses, action.meta.limit, action.meta.page)
+          this.duApi.search(action.meta.pkProject, action.meta.searchString, action.meta.pkClasses, action.meta.dataUnitType, action.meta.limit, action.meta.page)
             /**
              * Subscribe to the api call
              */

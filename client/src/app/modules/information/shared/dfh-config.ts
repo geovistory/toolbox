@@ -121,6 +121,9 @@ export class DfhConfig {
 
 
   static CLASS_PKS_SOURCE_PE_IT = [219, 220];
+  static CLASS_PKS_GEO_PE_IT = [363, 441];
+
+
 
 
   /**

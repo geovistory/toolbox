@@ -18,8 +18,21 @@ export class DataUnit {
     parentPeIt?: InfPersistentItem;
 
     /** gui */
-    pkUiContext?: number;
+
+    /** Visibility */
+
+    // the bar to above the properties
+    showPropertiesHeader?= true;
+
+    // the header with name of peIt
+    showHeader?= true;
+
+    // the button to add a new property
     showAddAPropertyButton?= true;
+
+
+
+    pkUiContext?: number;
     isViewMode?= false;
 
     label?:  ClassInstanceLabel;

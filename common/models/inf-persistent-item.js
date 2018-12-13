@@ -304,369 +304,7 @@ module.exports = function (InfPersistentItem) {
 
   }
 
-  // InfPersistentItem.searchInProject = function (projectId, searchString, pkClasses, limit, page, cb) {
 
-  //   // Check that limit does not exceed maximum
-  //   if (limit > 200) {
-  //     const err = {
-  //       'name': 'Max limit exceeded',
-  //       'status': 403,
-  //       'message': 'Max limit exceeded. The limit can not be bigger than 200.'
-  //     }
-  //     cb(err);
-  //   }
-
-  //   // set default if undefined
-  //   var limit = limit ? limit : 10;
-
-  //   var offset = limit * (page - 1);
-
-  //   if (searchString) {
-  //     var queryString = searchString.trim(' ').split(' ').map(word => {
-  //       return word + ':*'
-  //     }).join(' & ');
-  //   } else {
-  //     var queryString = '';
-  //   }
-
-
-  //   var params = [
-  //     queryString,
-  //     limit,
-  //     offset,
-  //     projectId
-  //   ];
-
-  //   const pkClassParamNrs = pkClasses.map((c, i) => '$' + (i + params.length + 1)).join(', ');
-  //   params = [...params, ...pkClasses]
-
-  //   var sql_stmt = `
-  //   WITH
-  //   epr_of_project AS (
-  //     SELECT fk_project, fk_entity, is_in_project, is_standard_in_project, ord_num
-  //     FROM information.entity_version_project_rel
-  //     WHERE is_in_project = true AND fk_project IN ($4)
-  //   ),
-  //   appe_in_project AS (
-  //     SELECT DISTINCT
-  //     token.pk_entity,
-  //     token.appellation_label,
-  //     string_agg(token.string, '' ORDER BY row_number) as appellation_string
-  //     FROM
-  //     (
-  //       SELECT
-  //       ROW_NUMBER() OVER() AS row_number,
-  //       tokens.pk_entity,
-  //       tokens.token->>'isSeparator' AS is_separator,
-  //       tokens.token->>'string' AS string,
-  //       tokens.appellation_label
-  //       FROM
-  //       (
-  //         SELECT jsonb_array_elements(appellation_label->'tokens') as token, appe.pk_entity, appellation_label
-  //         FROM information.v_appellation as appe
-  //         -- INNER JOIN epr_of_project as epr on epr.fk_entity_version_concat = appe.pk_entity_version_concat
-  //       ) AS tokens
-  //       -- WHERE tokens.token->>'isSeparator' = 'false'
-  //     ) AS token
-  //     -- add where clause here to search in forenames, last names etc.
-  //     GROUP BY   token.pk_entity, token.appellation_label
-  //   ),
-  //   roles_in_project AS (
-  //     SELECT ro.fk_entity, ro.fk_property, ro.fk_temporal_entity, ro.pk_entity
-  //     FROM information.v_role as ro
-  //     INNER JOIN epr_of_project as epr on epr.fk_entity = ro.pk_entity
-  //   ),
-  //   te_ent_in_project AS (
-  //     SELECT te_ent.pk_entity, te_ent.fk_class
-  //     FROM information.v_temporal_entity as te_ent
-  //     --INNER JOIN epr_of_project as epr on epr.fk_entity = te_ent.pk_entity
-  //   ),
-  //   pe_it_in_projet AS (
-  //     SELECT pi.pk_entity, pi.fk_class, pi.tmsp_last_modification
-  //     FROM information.v_persistent_item as pi
-  //     INNER JOIN epr_of_project as epr on epr.fk_entity = pi.pk_entity
-  //     WHERE pi.fk_class IN (${pkClassParamNrs})
-  //   )
-  //   Select
-  //   count(pi.pk_entity) OVER() AS total_count,
-  //   pi.pk_entity,
-  //   pi.fk_class,
-  //   appellation_labels,
-  //   ts_headline(appellation_string, q),
-  //   appellation_string,
-  //   projects_array as projects,
-  //   row_to_json(information.queryPeItPreview($4,pi.pk_entity,45)) as preview
-  //   FROM
-  //   (
-  //     SELECT
-  //     pi.pk_entity,
-  //     pi.fk_class,
-  //     jsonb_agg(
-  //       json_build_object(
-  //         'pk_entity', pk_appellation,
-  //         'appellation_label', appellation_label,
-  //         'r63_is_in_project_count', r63_is_in_project_count,
-  //         'r63_is_standard_in_project_count', r63_is_standard_in_project_count
-  //       )
-  //     ) as appellation_labels,
-  //     string_agg(appellations.appellation_string, ' • ') AS appellation_string,
-  //     setweight(to_tsvector(string_agg(appellations.appellation_string, ' • ')), 'A') as document,
-	//     projects.projects_array
-  //     FROM pe_it_in_projet AS pi
-  //     INNER JOIN
-  //     (
-  //       SELECT DISTINCT
-  //       appe_in_project.pk_entity as pk_appellation,
-  //       appe_in_project.appellation_string,
-  //       appe_in_project.appellation_label as appellation_label,
-  //       count(CASE WHEN r63_in_project.is_in_project THEN 1 END) as r63_is_in_project_count,
-  //       count(CASE WHEN r63_in_project.is_standard_in_project THEN 1 END) as r63_is_standard_in_project_count,
-  //       r63.fk_entity as pk_named_entity,
-  //       r63_in_project.ord_num
-  //       FROM
-  //       roles_in_project as r64
-  //       INNER JOIN appe_in_project ON appe_in_project.pk_entity = r64.fk_entity
-  //       INNER JOIN te_ent_in_project AS appe_usage ON appe_usage.pk_entity = r64.fk_temporal_entity
-  //       INNER JOIN roles_in_project AS r63 ON r63.fk_temporal_entity = r64.fk_temporal_entity
-  //       INNER JOIN epr_of_project AS r63_in_project ON r63_in_project.fk_entity = r63.pk_entity
-  //       -- WHERE r64.fk_property = 1113 --'R64'
-  //       -- AND r63.fk_property IN (1192, 1193, 1194, 1195) --'R63'
-  //       WHERE appe_usage.fk_class = 365 --'F52'
-  //       GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity, r63_in_project.ord_num
-  //       ORDER BY r63_in_project.ord_num ASC
-  //     ) AS appellations
-  //     ON appellations.pk_named_entity = pi.pk_entity
-  //     INNER JOIN (SELECT fk_entity, jsonb_agg(fk_project) as projects_array from epr_of_project GROUP BY fk_entity) AS projects
-  //     ON projects.fk_entity = pi.pk_entity
-  //     GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, projects.fk_entity, projects.projects_array
-  //     ORDER BY pi.tmsp_last_modification DESC
-  //   ) AS pi, to_tsquery($1) q
-  //   ` +
-  //     (queryString === '' ? '' : 'WHERE  document @@ q') +
-  //     `
-  //   ORDER BY ts_rank(document, q) DESC
-  //   LIMIT $2
-  //   OFFSET $3
-  //   `;
-
-  //   const connector = InfPersistentItem.dataSource.connector;
-  //   connector.execute(sql_stmt, params, (err, resultObjects) => {
-  //     cb(err, resultObjects);
-  //   });
-  // };
-
-
-  // InfPersistentItem.afterRemote('searchInProject', function (ctx, resultObjects, next) {
-
-  //   var totalCount = 0;
-  //   if (resultObjects.length > 0) {
-  //     totalCount = resultObjects[0].total_count;
-  //   }
-
-  //   // remove column total_count from all resultObjects
-  //   var data = [];
-  //   if (resultObjects) {
-  //     data = resultObjects.map(searchHit => {
-  //       delete searchHit.total_count;
-  //       return searchHit;
-  //     })
-  //   }
-
-  //   if (!ctx.res._headerSent) {
-
-  //     ctx.res.set('X-Total-Count', totalCount);
-
-  //     ctx.result = {
-  //       'totalCount': totalCount,
-  //       'data': data
-  //     }
-  //     next();
-
-  //   } else {
-  //     next();
-  //   }
-
-  // })
-
-
-  // InfPersistentItem.searchInRepo = function (searchString, limit, page, fk_class, fk_namespace, cb) {
-
-  //   // Check that limit does not exceed maximum
-  //   if (limit > 200) {
-  //     const err = {
-  //       'name': 'Max limit exceeded',
-  //       'status': 403,
-  //       'message': 'Max limit exceeded. The limit can not be bigger than 200.'
-  //     }
-  //     cb(err);
-  //   }
-
-  //   // set default if undefined
-  //   var limit = limit ? limit : 10;
-
-  //   var offset = limit * (page - 1);
-
-  //   var queryString = searchString.replace(':', ',').replace('(', ',').replace(')', ',').trim(' ').split(' ').map(word => {
-  //     return word + ':*'
-  //   }).join(' & ');
-
-
-  //   var params = [
-  //     queryString,
-  //     limit,
-  //     offset
-  //   ];
-
-  //   var where = '';
-  //   if (fk_class) {
-  //     params.push(fk_class);
-  //     where = ' AND pi.fk_class = $4';
-  //   }
-
-  //   let innerJoinNamespace = '';
-  //   if (fk_namespace) {
-  //     params.push(fk_namespace);
-  //     innerJoinNamespace = `
-  //     INNER JOIN (
-  //       SELECT fk_persistent_item
-  //       FROM information.type_namespace_rel
-  //       WHERE fk_namespace = $`+ params.length + `
-  //     ) AS namsepace_rel ON namsepace_rel.fk_persistent_item = pi.pk_entity
-  //     `;
-  //   }
-
-  //   var sql_stmt = `
-  //   Select
-  //   count(pi.pk_entity) OVER() AS total_count,
-  //   pi.pk_entity,
-  //   pi.fk_class,
-  //   appellation_labels,
-  //   ts_headline(appellation_string, q),
-  //   appellation_string,
-  //   projects
-  //   FROM
-  //   (
-  //     SELECT
-  //     pi.pk_entity,
-  //     pi.fk_class,
-  //     jsonb_agg(
-  //       json_build_object(
-  //         'pk_entity', pk_appellation,
-  //         'appellation_label', appellation_label,
-  //         'r63_is_in_project_count', r63_is_in_project_count,
-  //         'r63_is_standard_in_project_count', r63_is_standard_in_project_count,
-  //         'rank_for_pe_it', rank_for_pe_it
-  //       )
-  //     ) as appellation_labels,
-  //     string_agg(appellations.appellation_string, ' • ') AS appellation_string,
-	//     projects_array as projects,
-  //     setweight(to_tsvector(string_agg(appellations.appellation_string, ' • ')), 'A') as document
-  //     FROM information.v_persistent_item AS pi
-  //     ${innerJoinNamespace}
-  //     INNER JOIN
-  //     (
-  //       SELECT DISTINCT
-  //       appellation.pk_entity as pk_appellation,
-  //       appellation.appellation_string,
-  //       appellation.appellation_label as appellation_label,
-  //       jsonb_agg(DISTINCT r63_in_project.fk_project) as projects,
-  //       count(CASE WHEN r63_in_project.is_in_project THEN 1 END) as r63_is_in_project_count,
-  //       count(CASE WHEN r63_in_project.is_standard_in_project THEN 1 END) as r63_is_standard_in_project_count,
-  //       r63.rank_for_pe_it,
-  //       r63.fk_entity as pk_named_entity
-  //       FROM
-  //       information.v_role as r64
-  //       INNER JOIN
-  //       (
-  //         SELECT DISTINCT
-  //         token.pk_entity,
-  //         token.appellation_label
-  //         ,
-  //         string_agg(token.string, '' ORDER BY row_number) as appellation_string
-  //         FROM
-  //         (
-  //           SELECT
-  //           ROW_NUMBER() OVER() AS row_number,
-  //           tokens.pk_entity,
-  //           tokens.token->>'isSeparator' AS is_separator,
-  //           tokens.token->>'string' AS string,
-  //           tokens.appellation_label
-  //           FROM
-  //           (
-  //             SELECT jsonb_array_elements(appellation_label->'tokens') as token, pk_entity, appellation_label
-  //             FROM information.v_appellation
-  //           ) AS tokens
-  //           -- WHERE tokens.token->>'isSeparator' = 'false'
-  //         ) AS token
-  //         -- add where clause here to search in forenames, last names etc.
-  //         GROUP BY   token.pk_entity, token.appellation_label
-  //       )
-  //       AS appellation
-  //       ON appellation.pk_entity = r64.fk_entity
-  //       INNER JOIN information.v_temporal_entity AS appe_usage ON appe_usage.pk_entity = r64.fk_temporal_entity
-  //       INNER JOIN information.v_role AS r63 ON r63.fk_temporal_entity = r64.fk_temporal_entity
-  //       INNER JOIN information.entity_version_project_rel AS r63_in_project ON r63_in_project.fk_entity = r63.pk_entity
-  //       -- WHERE r64.fk_property = 1113 --'R64'
-  //       -- AND r63.fk_property IN (1192, 1193, 1194, 1195) --'R63'
-  //       WHERE appe_usage.fk_class = 365 --'F52'
-  //       GROUP BY pk_appellation, appellation_string, appellation_label, pk_named_entity, r63.rank_for_pe_it
-  //     ) AS appellations
-  //     ON appellations.pk_named_entity = pi.pk_entity
-  //   	INNER JOIN (
-  //       SELECT fk_entity, jsonb_agg(fk_project) as projects_array 
-  //       from information.entity_version_project_rel 
-  //       WHERE is_in_project = true
-  //       GROUP BY fk_entity) AS projects
-	//     ON projects.fk_entity = pi.pk_entity
-  //     GROUP BY pi.pk_entity, pi.fk_class, pi.tmsp_last_modification, projects.fk_entity, projects.projects_array
-  //     ORDER BY pi.tmsp_last_modification DESC
-  //   ) AS pi, to_tsquery($1) q
-  //   WHERE document @@ q ${where}
-  //   ORDER BY ts_rank(document, q) DESC
-  //   LIMIT $2
-  //   OFFSET $3
-  //   `;
-
-
-
-  //   const connector = InfPersistentItem.dataSource.connector;
-  //   connector.execute(sql_stmt, params, (err, resultObjects) => {
-  //     cb(err, resultObjects);
-  //   });
-  // };
-
-
-  // InfPersistentItem.afterRemote('searchInRepo', function (ctx, resultObjects, next) {
-
-  //   var totalCount = 0;
-  //   if (resultObjects.length > 0) {
-  //     totalCount = resultObjects[0].total_count;
-  //   }
-
-  //   // remove column total_count from all resultObjects
-  //   var data = [];
-  //   if (resultObjects) {
-  //     data = resultObjects.map(searchHit => {
-  //       delete searchHit.total_count;
-  //       return searchHit;
-  //     })
-  //   }
-
-  //   if (!ctx.res._headerSent) {
-
-  //     ctx.res.set('X-Total-Count', totalCount);
-
-  //     ctx.result = {
-  //       'totalCount': totalCount,
-  //       'data': data
-  //     }
-  //     next();
-
-  //   } else {
-  //     next();
-  //   }
-
-  // })
 
   /**
    * nestedObjectOfProject - get a rich object of the PeIt with all its
@@ -773,6 +411,98 @@ module.exports = function (InfPersistentItem) {
   }
 
 
+
+  /**
+   * graphs - get a PeIt with all its roles
+   *
+   * @param  {number} pkProject primary key of project
+   * @param  {number} pkEntity  pk_entity of the persistent item
+   */
+  InfPersistentItem.graphs = function (ofProject, projectId, pkEntities, cb) {
+
+    const filter = {
+      "where": ["pk_entity", "IN", pkEntities],
+      "include": InfPersistentItem.getGraphIncludeObject(ofProject, projectId)
+    }
+
+    return InfPersistentItem.findComplex(filter, cb);
+  }
+
+
+
+  /**
+   * Internal function to create a include object of 
+   * a filter object for findComplex()
+   * 
+   * It includes everything, that is not better requested by itself.
+   * 
+   * It includes relations from the persistent items
+   * - roles
+  //  * - domain_entity_associations
+  //  * - range_entity_associations
+   *
+   * It includes associated values
+   * - text properties
+   *  
+   * It does not include related
+   * - persistent items 
+   * - temporal entities
+   * - classes
+   * ...since those can be requested and cached alone
+   * 
+   * Usage: add the returned object to the include property of a persistent item relation
+   * of findComplex() filter, e.g.:
+   * {
+   *    ...
+   *    include: InfPersistentItem.getIncludeObject(true, 123)
+   * }
+   * 
+   * @param ofProject {boolean}
+   * @param project {number}
+   * @returns include object of findComplex filter
+   */
+  InfPersistentItem.getGraphIncludeObject = function (ofProject, pkProject) {
+    
+    let projectJoin = {};
+    
+    // if a pkProject is provided, create the relation
+    if(pkProject){
+      // get the join object. If ofProject is false, the join will be a left join.
+      projectJoin = {
+        "entity_version_project_rels":InfPersistentItem.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+      }
+    }
+
+    return {
+      ...projectJoin,
+      // domain_entity_associations: {
+      //   $relation: {
+      //     name: "domain_entity_associations",
+      //     joinType: "left join",
+      //     "orderBy": [{ "pk_entity": "asc" }]
+      //   },
+      //   ...projectJoin,
+      // },
+      // range_entity_associations: {
+      //   $relation: {
+      //     name: "range_entity_associations",
+      //     joinType: "left join",
+      //     "orderBy": [{ "pk_entity": "asc" }]
+      //   },
+      //   ...projectJoin,
+      // },
+      "pi_roles": {
+        "$relation": {
+          "name": "pi_roles",
+          "joinType": "left join"
+        },
+        ...projectJoin,
+      }
+    }
+  }
+
+
+
   /**
    * Internal function to create the include property of 
    * a filter object for findComplex()
@@ -789,10 +519,19 @@ module.exports = function (InfPersistentItem) {
    * @returns include object of findComplex filter
    */
   InfPersistentItem.getIncludeObject = function (ofProject, pkProject) {
-    const joinThisProject = InfPersistentItem.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+    
+    let projectJoin = {};
+    
+    // if a pkProject is provided, create the relation
+    if(pkProject){
+      // get the join object. If ofProject is false, the join will be a left join.
+      projectJoin = {
+        "entity_version_project_rels":InfPersistentItem.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+      }
+    }
 
     return {
-      "entity_version_project_rels": joinThisProject,
+      ...projectJoin,
       "dfh_class": {
         "$relation": {
           "name": "dfh_class",
@@ -806,7 +545,7 @@ module.exports = function (InfPersistentItem) {
           joinType: "left join",
           "orderBy": [{ "pk_entity": "asc" }]
         },
-        "entity_version_project_rels": joinThisProject,
+        ...projectJoin,
         range_pe_it: {
           $relation: {
             name: "range_pe_it",
@@ -818,7 +557,7 @@ module.exports = function (InfPersistentItem) {
               "name": "pi_roles",
               "joinType": "left join"
             },
-            "entity_version_project_rels": joinThisProject,
+            ...projectJoin,
             "temporal_entity": {
               "$relation": {
                 "name": "temporal_entity",
@@ -827,7 +566,7 @@ module.exports = function (InfPersistentItem) {
                   "pk_entity": "asc"
                 }]
               },
-              "entity_version_project_rels": joinThisProject,
+              ...projectJoin,
               "te_roles": {
                 "$relation": {
                   "name": "te_roles",
@@ -836,7 +575,7 @@ module.exports = function (InfPersistentItem) {
                     "pk_entity": "asc"
                   }]
                 },
-                "entity_version_project_rels": joinThisProject,
+                ...projectJoin,
                 "appellation": {
                   "$relation": {
                     "name": "appellation",
@@ -865,7 +604,7 @@ module.exports = function (InfPersistentItem) {
           "name": "pi_roles",
           "joinType": "left join"
         },
-        "entity_version_project_rels": joinThisProject,
+        ...projectJoin,
         "temporal_entity": {
           "$relation": {
             "name": "temporal_entity",
@@ -874,7 +613,7 @@ module.exports = function (InfPersistentItem) {
               "pk_entity": "asc"
             }]
           },
-          "entity_version_project_rels": joinThisProject,
+          ...projectJoin,
           "te_roles": {
             "$relation": {
               "name": "te_roles",
@@ -883,7 +622,7 @@ module.exports = function (InfPersistentItem) {
                 "pk_entity": "asc"
               }]
             },
-            "entity_version_project_rels": joinThisProject,
+            ...projectJoin,
             "appellation": {
               "$relation": {
                 "name": "appellation",
@@ -929,7 +668,7 @@ module.exports = function (InfPersistentItem) {
           "joinType": "left join",
           "orderBy": [{ "pk_entity": "asc" }]
         },
-        entity_version_project_rels: joinThisProject,
+        ...projectJoin,
         "language": {
           "$relation": {
             "name": "language",

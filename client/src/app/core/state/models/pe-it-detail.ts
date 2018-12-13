@@ -19,13 +19,6 @@ export class PeItDetail extends DataUnit {
      * To customize the default values, provide the value in the data of the constructor
      */
 
-    /** Other Visibility */
-
-    // the bar to above the properties
-    showPropertiesHeader?= true;
-
-    // the header with name of peIt
-    showHeader?= true;
 
 
     /** Right Panel Visibility */

@@ -1,47 +1,107 @@
 'use strict'
 module.exports = function (InfDataUnitPreview) {
 
-    InfDataUnitPreview.search = function (projectId, searchString, pkClasses, limit, page, cb) {
+  // InfDataUnitPreview.getNestedObject = function (pkProject, pkEntity, cb) {
 
-        // Check that limit does not exceed maximum
-        if (limit > 200) {
-          const err = {
-            'name': 'Max limit exceeded',
-            'status': 403,
-            'message': 'Max limit exceeded. The limit can not be bigger than 200.'
-          }
-          cb(err);
-        }
-    
-        // set default if undefined
-        var limit = limit ? limit : 10;
-    
-        var offset = limit * (page - 1);
-    
-        if (searchString) {
-          var queryString = searchString.trim(' ').split(' ').map(word => {
-            return word + ':*'
-          }).join(' & ');
-        } else {
-          var queryString = '';
-        }
-    
-    
-        var params = [
-          queryString,
-          limit,
-          offset
-        ];
+  //   const InfEntityProjectRel = InfDataUnitPreview.app.models.InfEntityProjectRel;
 
-        if(projectId) params.push(projectId);
+  //   function teEnOrPeIt(pkEntity) {
+  //    return InfDataUnitPreview.findComples({
+  //       "where": ["fk_project", "IS NULL", "AND", "pk_entity", "=", pkEntity]
+  //     }).then(results => {
+  //       if(results[0]){
+  //         return results[0].entity_type;
+  //       }else {
+  //         return new Error('Entity not found');
+  //       }
 
-        let pkClassParamNrs;
-        if(pkClasses && pkClasses.length){
-            pkClassParamNrs = pkClasses.map((c, i) => '$' + (i + params.length + 1)).join(', ');
-            params = [...params, ...pkClasses]
-        }
-    
-        var sql_stmt = `
+  //     }, err => err)
+  //   }
+
+  //   function getObject()
+
+
+  //   if (pkProject) {
+
+  //     // check if in Project
+  //     InfEntityProjectRel.find({
+  //       "where": {
+  //         "and": [
+  //           { "fk_entity": pkEntity },
+  //           { "fk_project": pkProject },
+  //           { "is_in_project": true }]
+  //       }
+  //     }).then(results => {
+  //       const isInProject = results[0]? true : false;
+  //       teEnOrPeIt(pkEntity)
+        
+  //     }, err => {
+
+
+  //     })
+  //   } else {
+
+  //   }
+
+
+  // }
+
+  InfDataUnitPreview.search = function (projectId, searchString, pkClasses, entityType, limit, page, cb) {
+
+    // Check that limit does not exceed maximum
+    if (limit > 200) {
+      const err = {
+        'name': 'Max limit exceeded',
+        'status': 403,
+        'message': 'Max limit exceeded. The limit can not be bigger than 200.'
+      }
+      cb(err);
+    }
+
+    // set default if undefined
+    var limit = limit ? limit : 10;
+
+    var offset = limit * (page - 1);
+
+    if (searchString) {
+      var queryString = searchString.trim(' ').split(' ').map(word => {
+        return word + ':*'
+      }).join(' & ');
+    } else {
+      var queryString = '';
+    }
+
+
+    var params = [
+      queryString,
+      limit,
+      offset
+    ];
+
+    // project filter
+    let whereProject;
+    if (projectId) {
+      params.push(projectId)
+      whereProject = 'AND fk_project = $' + params.length;
+    } else {
+      whereProject = 'AND fk_project IS NULL';
+    };
+
+    // data unit type filter
+    let whereEntityType = '';
+    if (entityType) {
+      params.push(entityType)
+      whereEntityType = 'AND entity_type = $' + params.length;
+    };
+
+    // class filter
+    let pkClassParamNrs;
+    if (pkClasses && pkClasses.length) {
+      pkClassParamNrs = pkClasses.map((c, i) => '$' + (i + params.length + 1)).join(', ');
+      params = [...params, ...pkClasses]
+    }
+
+    var sql_stmt = `
         select 
         fk_project,
         pk_entity,
@@ -60,57 +120,52 @@ module.exports = function (InfDataUnitPreview) {
         from information.vm_data_unit_preview,
         to_tsquery($1) q
         WHERE 1=1
-        ` +
-        (queryString === '' ? '' : 'AND ts_vector @@ q') +
-        `
-        ` +
-        (projectId ? 'AND fk_project = $4' : 'AND fk_project IS NULL') +
-        `
-        ` +
-        ((pkClasses && pkClasses.length) ? `AND fk_class IN (${pkClassParamNrs})` : '') +
-        `
-        --AND entity_type = 'peIt'
+        ` + (queryString === '' ? '' : 'AND ts_vector @@ q') + `
+        ${whereProject}
+        ${whereEntityType}
+        ` + ((pkClasses && pkClasses.length) ? `AND fk_class IN (${pkClassParamNrs})` : '') + `
+
         ORDER BY ts_rank(ts_vector, q) DESC, entity_label
         LIMIT $2
         OFFSET $3;
         `;
-    
-        const connector = InfDataUnitPreview.dataSource.connector;
-        connector.execute(sql_stmt, params, (err, resultObjects) => {
-          cb(err, resultObjects);
-        });
-      };
-    
-    
-      InfDataUnitPreview.afterRemote('search', function (ctx, resultObjects, next) {
-    
-        var totalCount = 0;
-        if (resultObjects.length > 0) {
-          totalCount = resultObjects[0].total_count;
-        }
-    
-        // remove column total_count from all resultObjects
-        var data = [];
-        if (resultObjects) {
-          data = resultObjects.map(searchHit => {
-            delete searchHit.total_count;
-            return searchHit;
-          })
-        }
-    
-        if (!ctx.res._headerSent) {
-    
-          ctx.res.set('X-Total-Count', totalCount);
-    
-          ctx.result = {
-            'totalCount': totalCount,
-            'data': data
-          }
-          next();
-    
-        } else {
-          next();
-        }
-    
+
+    const connector = InfDataUnitPreview.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      cb(err, resultObjects);
+    });
+  };
+
+
+  InfDataUnitPreview.afterRemote('search', function (ctx, resultObjects, next) {
+
+    var totalCount = 0;
+    if (resultObjects.length > 0) {
+      totalCount = resultObjects[0].total_count;
+    }
+
+    // remove column total_count from all resultObjects
+    var data = [];
+    if (resultObjects) {
+      data = resultObjects.map(searchHit => {
+        delete searchHit.total_count;
+        return searchHit;
       })
+    }
+
+    if (!ctx.res._headerSent) {
+
+      ctx.res.set('X-Total-Count', totalCount);
+
+      ctx.result = {
+        'totalCount': totalCount,
+        'data': data
+      }
+      next();
+
+    } else {
+      next();
+    }
+
+  })
 }
