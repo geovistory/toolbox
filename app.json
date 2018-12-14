@@ -1,6 +1,7 @@
 {
   "name": "geovistory",
-  "scripts": {
+  "scripts": {  
+    "postdeploy": "bash heroku-prebuild.sh && bash heroku-postbuild.sh"
   },
   "env": {
     "DB_ENV": "review",
