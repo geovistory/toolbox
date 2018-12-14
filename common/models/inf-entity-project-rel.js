@@ -16,7 +16,7 @@ module.exports = function (InfEntityProjectRel) {
      * @param {*} eprAttributes 
      */
     InfEntityProjectRel.updateEprAttributes = function (projectId, pkEntity, eprAttributes) {
-
+        
         if (eprAttributes['fk_entity']) {
             delete eprAttributes['fk_entity'];
         }

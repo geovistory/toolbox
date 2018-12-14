@@ -14,6 +14,7 @@ import { PropertyFieldActions } from '../../property-field.actions';
 import { PropertyFieldBase } from '../../property-field.base';
 import { PropertyFieldApiEpics } from '../../property-field.epics';
 import { RootEpics } from 'app/core/store/epics';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 
 
@@ -73,10 +74,6 @@ export class PeItPropertyFieldEditableComponent extends PropertyFieldBase {
   }
 
 
-  test() {
-    this.localStore.dispatch({ type: 'TEST' })
-  }
-
   init() {
 
     this.initPaths()
@@ -88,7 +85,6 @@ export class PeItPropertyFieldEditableComponent extends PropertyFieldBase {
     this.initSubsciptions();
 
   }
-
 
   /**
    * init paths to different slices of the store

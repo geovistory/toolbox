@@ -3,6 +3,7 @@ import { NgReduxModule } from '@angular-redux/store';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import localeDeCh from '@angular/common/locales/de-CH';
 import { LOCALE_ID, NgModule } from '@angular/core';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -55,7 +56,7 @@ registerLocaleData(localeDeCh);
     PassiveLinkModule,
     ControlMessagesModule,
     LanguageSearchTypeaheadModule,
-    KeysModule,
+    KeysModule
   ],
   providers: [
     EntityEditorService,
