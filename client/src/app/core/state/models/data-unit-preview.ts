@@ -1,6 +1,7 @@
 import { Granularity } from 'app/core/date-time/date-time-commons';
 import { CalendarType } from 'app/core/date-time/time-primitive';
 
+export type DataUnitType = 'peIt' | 'teEn';
 export interface DataUnitPreviewList { [pk_entity: number]: DataUnitPreview };
 interface TimePrimitiveWithCal {
     duration: Granularity,
@@ -25,7 +26,7 @@ export class DataUnitPreview {
     class_label: string;
     type_label?: string;
     pk_type?: number;
-    entity_type: string;
+    entity_type: DataUnitType;
     time_span?: TimeSpan;
 
     loading?: boolean;

@@ -33,57 +33,57 @@ export class PeItApiEpics {
 
     public createEpics(peItBase: PeItEditableComponent) {
         return combineEpics(
-            this.memorizeLoadingStartOfLeafPeIts(peItBase),
-            this.memorizeLoadingCompletionOfLeafPeIts(peItBase)
+            // this.memorizeLoadingStartOfLeafPeIts(peItBase),
+            // this.memorizeLoadingCompletionOfLeafPeIts(peItBase)
         );
     }
 
-    /**
-     * Epic that observes loading start of child leaf-pe-its
-     * It memorizes the pk_entity of each LOAD
-     *
-     * @param p PeItEditableComponent Component instance
-     */
-    private memorizeLoadingStartOfLeafPeIts(p: PeItEditableComponent): Epic {
-        return (action$, store) => {
-            return action$.pipe(
-                ofType(LeafPeItViewAPIActions.LOAD),
-                filter(action => ofSubstoreLevel(p.basePath)(action)),
-                switchMap((action: LeafPeItViewAPIAction) => new Observable<LoadingBarAction>((globalStore) => {
-                    p.pksOfloadingLeafPeIts.push(action.meta.pkEntity)
+    // /**
+    //  * Epic that observes loading start of child leaf-pe-its
+    //  * It memorizes the pk_entity of each LOAD
+    //  *
+    //  * @param p PeItEditableComponent Component instance
+    //  */
+    // private memorizeLoadingStartOfLeafPeIts(p: PeItEditableComponent): Epic {
+    //     return (action$, store) => {
+    //         return action$.pipe(
+    //             ofType(LeafPeItViewAPIActions.LOAD),
+    //             filter(action => ofSubstoreLevel(p.basePath)(action)),
+    //             switchMap((action: LeafPeItViewAPIAction) => new Observable<LoadingBarAction>((globalStore) => {
+    //                 p.pksOfloadingLeafPeIts.push(action.meta.pkEntity)
 
-                    if (p.pksOfloadingLeafPeIts.length > 0) {
-                        p.localStore.dispatch(this.actions.setLeafPeItLoading(true))
-                    }
-                })),
-                takeUntil(p.destroy$)
-            )
-        }
-    }
+    //                 if (p.pksOfloadingLeafPeIts.length > 0) {
+    //                     p.localStore.dispatch(this.actions.setLeafPeItLoading(true))
+    //                 }
+    //             })),
+    //             takeUntil(p.destroy$)
+    //         )
+    //     }
+    // }
 
-    /**
-     * Epic that observes loading completion of child leaf-pe-its
-     * It memorizes the pk_entity of each LOAD_SUCCEEDED
-     *
-     * @param p PeItEditableComponent Component instance
-     */
-    private memorizeLoadingCompletionOfLeafPeIts(p: PeItEditableComponent): Epic {
-        return (action$, store) => {
-            return action$.pipe(
-                ofType(LeafPeItViewAPIActions.LOAD_SUCCEEDED),
-                filter(action => ofSubstoreLevel(p.basePath)(action)),
-                switchMap((action: LeafPeItViewAPIAction) => new Observable<LoadingBarAction>((globalStore) => {
-                    const index = p.pksOfloadingLeafPeIts.indexOf(action.meta.peItDetail.pkEntity)
-                    p.pksOfloadingLeafPeIts.splice(index, 1)
+    // /**
+    //  * Epic that observes loading completion of child leaf-pe-its
+    //  * It memorizes the pk_entity of each LOAD_SUCCEEDED
+    //  *
+    //  * @param p PeItEditableComponent Component instance
+    //  */
+    // private memorizeLoadingCompletionOfLeafPeIts(p: PeItEditableComponent): Epic {
+    //     return (action$, store) => {
+    //         return action$.pipe(
+    //             ofType(LeafPeItViewAPIActions.LOAD_SUCCEEDED),
+    //             filter(action => ofSubstoreLevel(p.basePath)(action)),
+    //             switchMap((action: LeafPeItViewAPIAction) => new Observable<LoadingBarAction>((globalStore) => {
+    //                 const index = p.pksOfloadingLeafPeIts.indexOf(action.meta.peItDetail.pkEntity)
+    //                 p.pksOfloadingLeafPeIts.splice(index, 1)
 
-                    if (p.pksOfloadingLeafPeIts.length === 0) {
-                        p.localStore.dispatch(this.actions.setLeafPeItLoading(false))
-                    }
-                })),
-                takeUntil(p.destroy$)
-            )
-        }
-    }
+    //                 if (p.pksOfloadingLeafPeIts.length === 0) {
+    //                     p.localStore.dispatch(this.actions.setLeafPeItLoading(false))
+    //                 }
+    //             })),
+    //             takeUntil(p.destroy$)
+    //         )
+    //     }
+    // }
 
-   
+
 }

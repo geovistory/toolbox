@@ -34,6 +34,12 @@
       "foreignKey": "fk_domain_entity",
       "primaryKey": "pk_entity"
     },
+    "range_entity_associations": {
+      "type": "hasMany",
+      "model": "InfEntityAssociation",
+      "foreignKey": "fk_range_entity",
+      "primaryKey": "pk_entity"
+    },
     "text_properties": {
       "type": "hasMany",
       "model": "InfTextProperty",
@@ -66,6 +72,7 @@
         "withPhenomenaInProject",
         "nestedObjectOfProject",
         "nestedObjectOfRepo",
+        "graphs",
         "changePeItProjectRelation",
         "typesOfClassAndProject",
         "typesOfNamespaceClassAndProject",
@@ -78,6 +85,47 @@
     }
   ],
   "methods": {
+    "graphs": {
+      "accepts": [
+        {
+          "arg": "ofProject",
+          "type": "boolean",
+          "required": true,
+          "description": "If true, gets project versoin, if false, gets repo version",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": false,
+          "description": "If provided, joins the project, else not.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntities",
+          "type": "array",
+          "required": true,
+          "description": "Primary Keys of the persistent items (array of pk_entity)",
+          "http": {
+            "source": "body"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Get e nested object of all information about the persistent item with the community favorites.",
+      "http": {
+        "path": "/graphs",
+        "verb": "post"
+      }
+    },
     "nestedObjectOfProject": {
       "accepts": [
         {

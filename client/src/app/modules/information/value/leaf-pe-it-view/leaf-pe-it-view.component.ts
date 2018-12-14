@@ -81,7 +81,7 @@ export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnI
 
   ) {
     super()
-    console.log('LeafPeItViewComponent')
+    // console.log('LeafPeItViewComponent')
   }
 
   getBasePath = () => this.basePath;

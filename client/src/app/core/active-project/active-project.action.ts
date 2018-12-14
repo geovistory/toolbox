@@ -2,19 +2,22 @@ import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ProjectCrm, ProjectDetail } from './active-project.models';
 import { DataUnitPreview, PeItDetail } from '../state/models';
-import { InfChunk } from '../sdk';
+import { InfChunk, InfTemporalEntity, InfPersistentItem } from '../sdk';
 
 
 
 interface MetaData {
     pk_project?: number;
     pk_entity?: number;
+    pk_entities?: number[];
     pk_ui_context?: number;
 
     // return vals for Data Cache
     dataUnitPreview?: DataUnitPreview;
     peItDetail?: PeItDetail;
     chunk?: InfChunk
+    teEnGraphs?: InfTemporalEntity[]
+    peItGraphs?: InfPersistentItem[]
 };
 type Payload = ProjectDetail;
 export type ActiveProjectAction = FluxStandardAction<Payload, MetaData>;
@@ -45,6 +48,14 @@ export class ActiveProjectActions {
     static LOAD_CHUNK = 'ActiveProject::LOAD_CHUNK';
     static LOAD_CHUNK_SUCCEEDED = 'ActiveProject::LOAD_CHUNK_SUCCEEDED';
     static LOAD_CHUNK_FAILED = 'ActiveProject::LOAD_CHUNK_FAILED';
+    // PeIt Graphs
+    static LOAD_PEIT_GRAPHS = 'ActiveProject::LOAD_PEIT_GRAPHS';
+    static LOAD_PEIT_GRAPHS_SUCCEEDED = 'ActiveProject::LOAD_PEIT_GRAPHS_SUCCEEDED';
+    static LOAD_PEIT_GRAPHS_FAILED = 'ActiveProject::LOAD_PEIT_GRAPHS_FAILED';
+    // TeEn Graphs
+    static LOAD_TEEN_GRAPHS = 'ActiveProject::LOAD_TEEN_GRAPHS';
+    static LOAD_TEEN_GRAPHS_SUCCEEDED = 'ActiveProject::LOAD_TEEN_GRAPHS_SUCCEEDED';
+    static LOAD_TEEN_GRAPHS_FAILED = 'ActiveProject::LOAD_TEEN_GRAPHS_FAILED';
 
 
     /********************************************
@@ -194,6 +205,75 @@ export class ActiveProjectActions {
             error
         }
     }
+
+
+    /*****************************************************
+     * Actions to load a TeEnGraphs
+     *****************************************************/
+
+    loadTeEnGraphs(pk_project: number, pk_entities: number[]): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.LOAD_TEEN_GRAPHS,
+            payload: null,
+            meta: {
+                pk_project, pk_entities
+            }
+        }
+    }
+
+    loadTeEnGraphsSucceeded(teEnGraphs: InfTemporalEntity[]): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.LOAD_TEEN_GRAPHS_SUCCEEDED,
+            payload: null,
+            meta: {
+                teEnGraphs
+            },
+        }
+    }
+
+    loadTeEnGraphsFailed(error): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.LOAD_TEEN_GRAPHS_FAILED,
+            payload: null,
+            meta: null,
+            error
+        }
+    }
+
+
+    /*****************************************************
+     * Actions to load a PeItGraphs
+     *****************************************************/
+
+    loadPeItGraphs(pk_project: number, pk_entities: number[]): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.LOAD_PEIT_GRAPHS,
+            payload: null,
+            meta: {
+                pk_project, pk_entities
+            }
+        }
+    }
+
+    loadPeItGraphsSucceeded(peItGraphs: InfPersistentItem[]): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.LOAD_PEIT_GRAPHS_SUCCEEDED,
+            payload: null,
+            meta: {
+                peItGraphs
+            },
+        }
+    }
+
+    loadPeItGraphsFailed(error): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.LOAD_PEIT_GRAPHS_FAILED,
+            payload: null,
+            meta: null,
+            error
+        }
+    }
+
 
     /*****************************************************
     * Actions for creating mentionings that have a chunk as range

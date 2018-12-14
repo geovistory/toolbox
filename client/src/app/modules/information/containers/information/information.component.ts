@@ -1,11 +1,11 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ComConfig, IAppState, InfPersistentItem, PeItDetail, ProjectCrm, SubstoreComponent } from 'app/core';
+import { ComConfig, IAppState, InfPersistentItem, PeItDetail, ProjectCrm, SubstoreComponent, ActiveProjectService, DataUnitPreview, TeEntDetail } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { combineLatest, Observable, Subject } from 'rxjs';
 // import { EntityAddModalComponent } from '../../add-modal/entity-add-modal/entity-add-modal.component';
-import { first, takeUntil } from 'rxjs/operators';
+import { first, takeUntil, filter } from 'rxjs/operators';
 import { CreateOrAddPeIt } from '../create-or-add-pe-it/api/create-or-add-pe-it.models';
 import { InformationAPIActions } from './api/information.actions';
 import { InformationAPIEpics } from './api/information.epics';
@@ -33,8 +33,11 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   @Input() basePath: string[];
 
   @select() _peIt_editable$: Observable<PeItDetail>;
+  @select() _teEnt_editable$: Observable<TeEntDetail>;
   @select() _peIt_add$: Observable<CreateOrAddPeIt>;
   @select() loading$: Observable<boolean>;
+
+  selectedDataUnit$: Observable<DataUnitPreview>;
 
   // Primary key of the Entity to be viewed or edited
   pkEntity: number;
@@ -56,7 +59,8 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     private epics: InformationAPIEpics,
     public ngRedux: NgRedux<IAppState>,
     public activatedRoute: ActivatedRoute,
-    public router: Router
+    public router: Router,
+    private projectService: ActiveProjectService
   ) {
     super()
 
@@ -83,7 +87,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
 
 
     // if one of the observables returns truthy, list is not visible
-    combineLatest(this._peIt_editable$, this._peIt_add$).takeUntil(this.destroy$).subscribe(d => {
+    combineLatest(this._peIt_editable$, this._teEnt_editable$, this._peIt_add$).takeUntil(this.destroy$).subscribe(d => {
       this.listVisible = !d.find(item => !!(item));
     })
 
@@ -95,22 +99,40 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     this.localStore = this.ngRedux.configureSubStore(this.basePath, informationReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    if (this.pkEntity) this.openEntityEditor(this.pkEntity, this.projectId);
+    if (this.pkEntity) this.initSelectedDataUnitPreview()
 
     // listen to route changes
     this.activatedRoute.params.subscribe(params => {
       if (params.pkEntity && params.pkEntity != this.pkEntity) {
         this.pkEntity = params.pkEntity;
-        this.openEntityEditor(this.pkEntity, this.projectId)
+        this.initSelectedDataUnitPreview()
+      }
+    })
+
+
+  }
+
+  initSelectedDataUnitPreview() {
+    this.projectService.loadDataUnitPreview(this.pkEntity);
+
+    this.selectedDataUnit$ = this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', this.pkEntity])
+
+    this.selectedDataUnit$.pipe(
+      filter(du => (du && !du.loading)),
+      takeUntil(this.destroy$)
+    ).subscribe(du => {
+      if (du.entity_type === 'peIt') {
+        this.openEntityEditor(du.pk_entity, this.projectId);
+      } else if (du.entity_type === 'teEn') {
+        this.openPhenomenonEditor(du.pk_entity, this.projectId);
       }
     })
 
   }
 
 
-
-  openEntity(pkInfPersistentItem) {
-    this.router.navigate(['../entity', pkInfPersistentItem], {
+  openEntity(pkEntity) {
+    this.router.navigate(['../entity', pkEntity], {
       relativeTo: this.activatedRoute, queryParamsHandling: 'merge'
     })
   }

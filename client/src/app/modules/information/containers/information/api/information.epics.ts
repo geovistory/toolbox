@@ -6,12 +6,13 @@ import { startsWith } from 'ramda';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { createPeItDetail } from '../../../../../core/state/services/state-creator';
+import { createPeItDetail, createTeEntDetail } from '../../../../../core/state/services/state-creator';
 import { PeItService } from '../../../shared/pe-it.service';
 import { InformationComponent } from '../information.component';
 import { InformationAPIAction, InformationAPIActions } from './information.actions';
 import { Action } from 'redux';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { TeEntService } from 'app/modules/information/shared/te-ent.service';
 
 export const ofDirectChildSubstore = (path: string[]) => (action): boolean => {
   const actionPath = JSON.parse(action['@angular-redux::fractalkey']);
@@ -30,6 +31,7 @@ export class InformationAPIEpics {
   constructor(
     private eprApi: InfEntityProjectRelApi,
     private peItService: PeItService,
+    private teEntService: TeEntService,
     private actions: InformationAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions
@@ -38,6 +40,7 @@ export class InformationAPIEpics {
   public createEpics(c: InformationComponent): Epic {
     return combineEpics(
       this.createLoadEntityEditorEpic(c),
+      this.createLoadPhenomenonEditorEpic(c),
       this.createRemovePeItEpic(c)
     );
   }
@@ -68,9 +71,9 @@ export class InformationAPIEpics {
                 showPropertiesToggle: true,
                 showMap: true,
                 showMapToggle: true,
-                showTimeline: true,
+                showTimeline: false,
                 showTimelineToggle: true,
-                showSources: true,
+                showSources: false,
                 showSourcesToggle: true,
                 sources: {
                   mentioningListType: 'ofEntity',
@@ -95,6 +98,54 @@ export class InformationAPIEpics {
               * Emit the local action on loading failed
               */
               c.localStore.dispatch(this.actions.openEntityEditorFailed({ status: '' + error.status }))
+            })
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
+
+
+  private createLoadPhenomenonEditorEpic(c: InformationComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(InformationAPIActions.OPEN_PHENOMENON_EDITOR),
+        switchMap((action: InformationAPIAction) => new Observable<FluxStandardAction<any>>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Do some api call
+           */
+          this.teEntService.getNestedObject(action.meta.pkEntity, action.meta.pkProject)
+            /**
+             * Subscribe to the api call
+             */
+            .subscribe((data) => {
+              const teEntDetail = createTeEntDetail({}, data, c.ngRedux.getState().activeProject.crm)
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              /**
+               * Emit the local action on loading succeeded
+               */
+              c.localStore.dispatch(this.actions.openPhenomenonEditorSucceeded(teEntDetail));
+
+            }, error => {
+              /**
+               * Emit the global action that shows some loading error message
+               */
+              // globalStore.next(this.loadingBarActions.completeLoading());
+              /**
+              * Emit the local action on loading failed
+              */
+              c.localStore.dispatch(this.actions.openPhenomenonEditorFailed({ status: '' + error.status }))
             })
         })),
         takeUntil(c.destroy$)

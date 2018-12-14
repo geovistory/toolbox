@@ -120,9 +120,12 @@ export function createPeItDetail(options: PeItDetail, peIt: InfPersistentItem, c
 * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
 * @param settings setting object that is passed through the chain of create...() methods of the different state classes
 */
-export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity, crm: ProjectCrm, settings: StateSettings): TeEntDetail {
+export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity, crm: ProjectCrm, settings?: StateSettings): TeEntDetail {
 
     if (!teEnt) return;
+
+    // init settings (adds defaults, if not otherwise provided)
+    settings = new StateSettings(settings);
 
     options = { ...options, isViewMode: settings.isViewMode, pkUiContext: settings.pkUiContext }
 
@@ -130,6 +133,7 @@ export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity
         ...options,
         selectPropState: 'init',
         teEnt: teEnt,
+        pkEntity: teEnt.pk_entity,
         fkClass: teEnt.fk_class,
         _fields: createFieldList(teEnt.fk_class, teEnt.te_roles, teEnt.text_properties, crm, settings)
     });
@@ -279,20 +283,22 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
                     // Generate propertyFields (like e.g. the names-section, the birth-section or the detailed-name secition)
                     const options = new PropertyField({ ...crm.fieldList[el.propertyFieldKey] as PropertyField, toggle: 'expanded' })
 
-                    // if existing roles of this property
-                    if (rolesByFkProp[el.fk_property]) {
-                        // takes the number of roles within quantity
-                        rolesWithinQuantity = rolesByFkProp[el.fk_property].filter(role => {
-                            if (options.isOutgoing) {
-                                if (!role.range_max_quantifier || role.range_max_quantifier === -1 || role.rank_for_te_ent <= role.range_max_quantifier) return true
-                            } else {
-                                if (!role.domain_max_quantifier || role.domain_max_quantifier === -1 || role.rank_for_pe_it <= options.targetMaxQuantity) return true
-                            }
-                        })
+                    rolesWithinQuantity = rolesByFkProp[el.fk_property];
 
-                        // initializes the hasAlternatives flag of the propertyField
-                        if (rolesByFkProp[el.fk_property].length > rolesWithinQuantity.length) options.hasAlternatives = true;
-                    }
+                    // // if existing roles of this property
+                    // if (rolesByFkProp[el.fk_property]) {
+                    //     // takes the number of roles within quantity
+                    //     rolesWithinQuantity = rolesByFkProp[el.fk_property].filter(role => {
+                    //         if (options.isOutgoing) {
+                    //             if (!role.range_max_quantifier || role.range_max_quantifier === -1 || role.rank_for_te_ent <= role.range_max_quantifier) return true
+                    //         } else {
+                    //             if (!role.domain_max_quantifier || role.domain_max_quantifier === -1 || role.rank_for_pe_it <= options.targetMaxQuantity) return true
+                    //         }
+                    //     })
+
+                    //     // initializes the hasAlternatives flag of the propertyField
+                    //     if (rolesByFkProp[el.fk_property].length > rolesWithinQuantity.length) options.hasAlternatives = true;
+                    // }
 
                     if (rolesWithinQuantity && rolesWithinQuantity.length > 0) {
                         fields.push(createPropertyField(options, rolesWithinQuantity, crm, settings));

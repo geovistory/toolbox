@@ -34,6 +34,8 @@ export class TeEntPropertyFieldEditableComponent extends PropertyFieldBase {
     * Paths to other slices of the store
     */
   @Input() parentTeEntStatePath: string[];
+  @Input() asPeItChild: boolean;
+
   parentPeItStatePath: string[];
   peItPropertyFieldStore: ObservableStore<PropertyField>;
 
@@ -235,15 +237,21 @@ export class TeEntPropertyFieldEditableComponent extends PropertyFieldBase {
 
 
   enableDrag() {
-    if (this.peItPropertyFieldStore.getState().dragEnabled) this.peItPropertyFieldStore.dispatch(this.actions.disableDrag())
+    if (this.asPeItChild) {
 
-    if (!this.localStore.getState().dragEnabled) this.localStore.dispatch(this.actions.enableDrag())
+      if (this.peItPropertyFieldStore.getState().dragEnabled) this.peItPropertyFieldStore.dispatch(this.actions.disableDrag())
+
+      if (!this.localStore.getState().dragEnabled) this.localStore.dispatch(this.actions.enableDrag())
+    }
   }
 
   disableDrag() {
-    if (!this.peItPropertyFieldStore.getState().dragEnabled) this.peItPropertyFieldStore.dispatch(this.actions.enableDrag())
+    if (this.asPeItChild) {
 
-    if (this.localStore.getState().dragEnabled) this.localStore.dispatch(this.actions.disableDrag())
+      if (!this.peItPropertyFieldStore.getState().dragEnabled) this.peItPropertyFieldStore.dispatch(this.actions.enableDrag())
+
+      if (this.localStore.getState().dragEnabled) this.localStore.dispatch(this.actions.disableDrag())
+    }
   }
 
 }

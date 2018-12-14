@@ -49,8 +49,6 @@ export class PeItEditableComponent extends DataUnitBase implements AfterViewInit
   @select() sectionList$: Observable<SectionList>;
 
   // Visibility of generic elements
-  @select() showHeader$: Observable<boolean>;
-  @select() showPropertiesHeader$: Observable<boolean>;
   @select() showOntoInfo$: Observable<boolean>
   @select() showCommunityStats$: Observable<boolean>
 

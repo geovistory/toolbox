@@ -45,10 +45,10 @@ export class PropertyFieldApiEpics {
             return action$.pipe(
                 ofType(PropertyFieldActions.ROLE_SET_UPDATE_ORDER),
                 filter(action => ofSubstore(c.basePath)(action)),
-                switchMap((action: FluxStandardAction<any, any>) => new Observable<LoadingBarAction>((globalStore) => {
+                switchMap((action: FluxStandardAction<any, any>) => new Observable<Action>((globalStore) => {
                     globalStore.next(this.loadingBarActions.startLoading());
                     // subStore.dispatch(this.actions.loadStarted());
-
+                    const cacheOldList = c.localStore.getState()._role_list;
                     combineLatest(
                         action.meta.eprs.map(data => this.eprApi.patchOrCreate(data))
                     )
@@ -57,7 +57,15 @@ export class PropertyFieldApiEpics {
 
                             c.localStore.dispatch(this.actions.updateOrderSucceeded(data));
                         }, error => {
-                            // c.localStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
+                            c.localStore.dispatch(this.actions.updateOrderFailed(cacheOldList));
+                            globalStore.next(this.notificationActions.addToast({
+                                type: 'error',
+                                options: {
+                                    title: 'Error while saving.',
+                                    msg: 'Oops, the new order could not be saved.'
+                                }
+                            }));
+
                         })
                 })),
                 takeUntil(c.destroy$)

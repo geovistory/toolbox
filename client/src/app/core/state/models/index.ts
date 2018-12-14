@@ -15,7 +15,6 @@ export * from './field-list';
 export * from './field';
 export * from './lang-detail';
 export * from './pe-it-detail';
-export * from './pe-it-search-hit';
 export * from './place-detail';
 export * from './property-field-form';
 export * from './property-field-list';

@@ -1,4 +1,4 @@
-import { PeItSearchHit, PeItDetail, InfPersistentItem, DataUnitPreview } from 'app/core';
+import { PeItDetail, InfPersistentItem, DataUnitPreview, TeEntDetail } from 'app/core';
 import { CreateOrAddPeIt } from '../../create-or-add-pe-it/api/create-or-add-pe-it.models';
 import { ClassAndTypeSelector } from '../../class-and-type-selector/api/class-and-type-selector.models';
 import { List } from '../../list/api/list.models';
@@ -16,13 +16,16 @@ export interface SearchResponse { data: DataUnitSearchHit[], totalCount: number 
 export class Information {
 
     // search results
-    _peIt_list?: List;
+    items?: List;
 
     // the peIt to remove (are you sure?)
-    _peIt_remove?: PeItSearchHit;
+    _peIt_remove?: DataUnitPreview;
 
     // the peIt in editable detail view
     _peIt_editable?: PeItDetail;
+
+    // the teEn in editable detail view
+    _teEnt_editable?: TeEntDetail;
 
     // the peIt to add or create
     _peIt_add?: CreateOrAddPeIt;

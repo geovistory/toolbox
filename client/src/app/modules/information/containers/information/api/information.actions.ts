@@ -1,6 +1,6 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { PeItDetail } from 'app/core';
+import { PeItDetail, TeEntDetail } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Information, SearchResponse } from './information.models';
 import { ClassAndTypePk } from '../../class-and-type-selector/api/class-and-type-selector.models';
@@ -10,6 +10,7 @@ interface MetaData {
   pkProject?: number,
   pkEntity?: number,
   peItDetail?: PeItDetail,
+  teEntDetail?: TeEntDetail;
   classAndTypePk?: ClassAndTypePk;
   pkUiContext?: number;
   pkClasses?: number[]
@@ -25,6 +26,10 @@ export class InformationAPIActions {
   static readonly OPEN_ENTITY_EDITOR = 'Information::OPEN_ENTITY_EDITOR';
   static readonly OPEN_ENTITY_EDITOR_SUCCEEDED = 'Information::OPEN_ENTITY_EDITOR_SUCCEEDED';
   static readonly OPEN_ENTITY_EDITOR_FAILED = 'Information::OPEN_ENTITY_EDITOR_FAILED';
+
+  static readonly OPEN_PHENOMENON_EDITOR = 'Information::OPEN_PHENOMENON_EDITOR';
+  static readonly OPEN_PHENOMENON_EDITOR_SUCCEEDED = 'Information::OPEN_PHENOMENON_EDITOR_SUCCEEDED';
+  static readonly OPEN_PHENOMENON_EDITOR_FAILED = 'Information::OPEN_PHENOMENON_EDITOR_FAILED';
 
   static readonly DESTROY = 'Information::DESTROY';
 
@@ -64,6 +69,30 @@ export class InformationAPIActions {
 
   openEntityEditorFailed = (error): InformationAPIAction => ({
     type: InformationAPIActions.OPEN_ENTITY_EDITOR_FAILED,
+    meta: null,
+    payload: null,
+    error,
+  })
+
+
+  /*********************************************************************
+*  Actions to manage phenomenon editor
+*********************************************************************/
+
+  @dispatch() openPhenomenonEditor = (pkEntity: number, pkProject: number): InformationAPIAction => ({
+    type: InformationAPIActions.OPEN_PHENOMENON_EDITOR,
+    meta: { pkEntity, pkProject },
+    payload: null,
+  });
+
+  openPhenomenonEditorSucceeded = (teEntDetail: TeEntDetail): InformationAPIAction => ({
+    type: InformationAPIActions.OPEN_PHENOMENON_EDITOR_SUCCEEDED,
+    meta: { teEntDetail },
+    payload: null
+  })
+
+  openPhenomenonEditorFailed = (error): InformationAPIAction => ({
+    type: InformationAPIActions.OPEN_PHENOMENON_EDITOR_FAILED,
     meta: null,
     payload: null,
     error,

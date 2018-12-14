@@ -43,13 +43,13 @@ export class PeItActions extends DataUnitActions {
     }
   })
 
-  setLeafPeItLoading = (leafPeItLoading: boolean): PeItAction => ({
-    type: PeItActions.SET_LEAF_PE_IT_LOADING,
-    meta: null,
-    payload: {
-      leafPeItLoading
-    }
-  })
+  // setLeafPeItLoading = (leafPeItLoading: boolean): PeItAction => ({
+  //   type: PeItActions.SET_LEAF_PE_IT_LOADING,
+  //   meta: null,
+  //   payload: {
+  //     leafPeItLoading
+  //   }
+  // })
 
   /**********************************************
    * Method to toggle visibility of ui elements

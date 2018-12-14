@@ -32,6 +32,11 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   abstract localStore: ObservableStore<TeEntDetail | PeItDetail>;
   protected actions: PeItActions | TeEntActions;
 
+  // Visibility of generic elements
+  @select() showHeader$: Observable<boolean>;
+  @select() showPropertiesHeader$: Observable<boolean>;
+
+
   @select() selectPropState$: Observable<SelectPropStateType>;
   @select() fkClass$: Observable<number>;
   @select() dfhClass$: Observable<DfhClass>;

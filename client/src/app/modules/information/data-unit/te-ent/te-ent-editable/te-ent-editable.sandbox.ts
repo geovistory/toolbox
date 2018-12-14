@@ -20,7 +20,7 @@ export default sandboxOf(TeEntEditableComponent, {
         context: {
             model: {
             },
-            parentPath: ['_162156'],
+            basePath: ['_162156', '_teEnt'],
             initState: {
                 fkClass: 21,
                 activeProject: {
@@ -960,7 +960,7 @@ export default sandboxOf(TeEntEditableComponent, {
             <div class="d-flex justify-content-center mt-5">
                 <div style="width:430px;height:400px" class="d-flex">
     
-                    <gv-te-ent-editable [parentPath]="parentPath">
+                    <gv-te-ent-editable [basePath]="basePath">
                     </gv-te-ent-editable>
                         
                 </div>

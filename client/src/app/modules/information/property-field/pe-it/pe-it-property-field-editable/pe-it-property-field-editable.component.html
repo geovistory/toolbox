@@ -3,23 +3,24 @@
   <span [hidden]="(_property_field_form$ | async)">
     <gv-field-header [property$]="property$" [label$]="label$" [toggle$]="toggle$" [showOntoInfo$]="showOntoInfo$"
       [addButtonVisible]="addButtonVisible" [toggleButtonVisible]="true" [removePropertyFieldBtnVisible]="removePropertyFieldBtnVisible"
-      [rolesCount]="roles?.length" (toggleCardBody)="toggleCardBody()" (startAddingRole)="startAddingRole()"
+       (toggleCardBody)="toggleCardBody()" (startAddingRole)="startAddingRole()"
       (removePropertyField)="removePropertyField()"></gv-field-header>
     <div [@slideInOut]="(toggle$|async)">
 
-      <!-- The roles that are added -->
-      <div dnd-sortable-container [sortableData]="roleDetails" [dropZones]="['dropZone-'+index]" class="list-group">
-        <div *ngFor="let entry of roleDetails; trackBy:getKey; let i = index" dnd-sortable [sortableIndex]="i"
-          [dragData]="entry" (onDragStart)="onDragStart()" (onDragEnd)="onDrag($event)" [dragEnabled]="(dragEnabled$|async)" class="list-group-item p-0">
+      <div cdkDropList class="list-group"  [cdkDropListDisabled]="!(dragEnabled$|async)" (cdkDropListDropped)="onChangeOrder($event)">
+        <div cdkDrag *ngFor="let entry of roleDetails; trackBy:getKey;"  [cdkDragData]="entry" class="list-group-item p-0">
 
           <gv-pe-it-role-editable [parentPath]="basePath" intermediatePathSegment="_role_list" [index]="entry.key">
-            <button headerRight class="btn btn-link-gray" (click)="removeFromProject(entry.key)" title="Remove from project" *ngIf="!(isViewMode$ | async)">
+            <button headerRight class="btn btn-link-gray" (click)="removeFromProject(entry.key)" title="Remove from project"
+              *ngIf="!(isViewMode$ | async)">
               <i class="fa fa-trash"></i>
             </button>
           </gv-pe-it-role-editable>
 
         </div>
       </div>
+
+
 
     </div>
   </span>

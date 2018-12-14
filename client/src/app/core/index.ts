@@ -9,6 +9,7 @@ export { AuthGuard } from './auth/auth-guard.service';
 export { DateTimeCommons, GregorianDateTime, JulianDateTime, TimePrimitive } from './date-time';
 export { IAppState } from './store/model';
 export { U } from './util/util'
+export * from './util/custom-rxjs-operators';
 export * from './sdk';
 export * from './sdk/models';
 export * from './sdk/services';
