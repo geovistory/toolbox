@@ -9,13 +9,13 @@
   </span>
 </gv-tile-header>
 
+<div class="gv-tile-body">
+
 <div class="gv-grow-1 d-flex justify-content-center" *ngIf="isLoading">
   <i class="fa fa-3x fa-pulse fa-spinner text-muted  align-self-center"></i>
 </div>
 
-<div [ngClass]="{ 'd-none': isLoading, 'd-flex': (!isLoading) }" class="gv-tile-body">
-
-  <ac-map class="gv-grow-1 d-flex flex-column">
+  <ac-map [ngClass]="{ 'd-none': isLoading, 'gv-grow-1 d-flex flex-column': (!isLoading) }" >
 
     <ac-map-layer-provider [provider]="urlTemplateProvider" [options]="{
       subdomains: 'abc',
