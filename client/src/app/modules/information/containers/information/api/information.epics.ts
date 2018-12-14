@@ -71,9 +71,9 @@ export class InformationAPIEpics {
                 showPropertiesToggle: true,
                 showMap: true,
                 showMapToggle: true,
-                showTimeline: false,
+                showTimeline: true,
                 showTimelineToggle: true,
-                showSources: false,
+                showSources: true,
                 showSourcesToggle: true,
                 sources: {
                   mentioningListType: 'ofEntity',

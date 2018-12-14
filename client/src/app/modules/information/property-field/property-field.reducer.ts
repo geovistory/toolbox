@@ -4,8 +4,6 @@ import { RoleDetailList, PropertyField } from 'app/core/state/models';
 import { indexBy, omit, prop } from 'ramda';
 import { sortRoleDetailListByOrdNum } from '../information.helpers';
 import { PropertyFieldAction, PropertyFieldActions } from './property-field.actions';
-import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { roleDetailKey } from 'app/core/state/services/state-creator';
 
 const INITIAL_STATE = new PropertyField({
 
@@ -171,19 +169,6 @@ export const propertyFieldReducer =
         };
         break;
 
-      case PropertyFieldActions.ROLE_SET_UPDATE_ORDER:
-
-        const roleDetailArray = U.obj2Arr(lastState._role_list);
-
-        moveItemInArray(roleDetailArray, action.meta.cdkDragDropEvent.currentIndex, action.meta.cdkDragDropEvent.previousIndex)
-
-        lastState = {
-          ...lastState,
-          _role_list: indexBy(roleDetailKey, roleDetailArray)
-        }
-
-        break;
-
       case PropertyFieldActions.ROLE_SET_UPDATE_ORDER_SUCCEEDED:
         // update the eprs of of the roles in _role_list
         const updateEprs = (list: RoleDetailList, eprs: InfEntityProjectRel[]): RoleDetailList => {
@@ -211,15 +196,6 @@ export const propertyFieldReducer =
         lastState = {
           ...lastState,
           _role_list: sortRoleDetailListByOrdNum(updateEprs(lastState._role_list, action.meta.eprs))
-        }
-
-        break;
-
-      case PropertyFieldActions.ROLE_SET_UPDATE_ORDER_FAILED:
-
-        lastState = {
-          ...lastState,
-          _role_list: action.payload._role_list
         }
 
         break;

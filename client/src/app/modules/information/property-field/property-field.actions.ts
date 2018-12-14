@@ -3,7 +3,6 @@ import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { RoleDetail, RoleDetailList, CollapsedExpanded, PropertyField } from 'app/core/state/models';
 import { DfhProperty, InfEntityProjectRel } from 'app/core';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 
 
@@ -21,7 +20,6 @@ interface MetaData {
   eprs?: InfEntityProjectRel[];
   pk_roles?: number[]; // array of pk_entity of roles
   roleDetailList?: RoleDetailList;
-  cdkDragDropEvent?: CdkDragDrop<string[]>;
 };
 export type PropertyFieldAction = FluxStandardAction<Payload, MetaData>;
 
@@ -240,17 +238,15 @@ export class PropertyFieldActions {
   })
 
 
-  // updates the state immediately
-  updateOrder = (eprs: InfEntityProjectRel[], cdkDragDropEvent: CdkDragDrop<string[]>): PropertyFieldAction => ({
+  updateOrder = (eprs: InfEntityProjectRel[]): PropertyFieldAction => ({
     type: PropertyFieldActions.ROLE_SET_UPDATE_ORDER,
     meta: {
-      eprs,
-      cdkDragDropEvent
+      eprs
     },
     payload: null
   })
 
-  // updates the eprs
+
   updateOrderSucceeded = (eprs: InfEntityProjectRel[]): PropertyFieldAction => ({
     type: PropertyFieldActions.ROLE_SET_UPDATE_ORDER_SUCCEEDED,
     meta: {
@@ -258,14 +254,6 @@ export class PropertyFieldActions {
     },
     payload: null
   })
-
-  // reverts the old state
-  updateOrderFailed = (_role_list: RoleDetailList): PropertyFieldAction => ({
-    type: PropertyFieldActions.ROLE_SET_UPDATE_ORDER_FAILED,
-    meta: {},
-    payload: { _role_list }
-  })
-
 
 
   enableDrag = (): PropertyFieldAction => ({

@@ -50,7 +50,7 @@
     </ng-template>
   </ngx-table>
 
-  <i class="alert alert-light" *ngIf="!data.length && (mentioningListType$|async) === 'ofSource'">
+  <i class="alert alert-info" *ngIf="!data.length && (mentioningListType$|async) === 'ofSource'">
     <p>Add links between this Source and Data Units (right side panel).</p>
     <p>By creating such links, you state what Data Units are mentioned in this Source.</p>
     <p>To add links to more specific sections of this source (e.g. a page or even words in a transctiption), use
@@ -58,7 +58,7 @@
 
   </i>
 
-  <i class="alert alert-light" *ngIf="!data.length && (mentioningListType$|async) === 'ofSection'">
+  <i class="alert alert-info" *ngIf="!data.length && (mentioningListType$|async) === 'ofSection'">
     <p>Add links between this Section and Data Units (right side panel).</p>
     <p>By creating such links, you state what Data Units are mentioned in this Section.</p>
 
@@ -75,7 +75,7 @@
       <li>Spots in images.</li>
     </ul>
   </i>
-  <i class="alert alert-light" *ngIf="!data.length && (mentioningListType$|async) === 'ofEntity'">
+  <i class="alert alert-info" *ngIf="!data.length && (mentioningListType$|async) === 'ofEntity'">
     Link this Data Unit with
     <ul>
       <li>Sources (Books, Articles, Manuscripts, etc.), or</li>

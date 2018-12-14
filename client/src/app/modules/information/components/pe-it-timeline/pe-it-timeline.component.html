@@ -13,8 +13,8 @@
     <gv-timeline *ngIf="timeLineData?.rows?.length > 0" [data]="timeLineData" [path]="path.concat('timeLineSettings')"
         (rowMouseEnter)="rowMouseEnter($event)" (rowMouseLeave)="rowMouseLeave($event)" (rowClick)="rowClick($event)"></gv-timeline>
     <div *ngIf="!(timeLineData?.rows?.length > 0)">
-        <div class="alert alert-light font-italic">
+        <i class="alert alert-info">
             No temporal information available.
-        </div>
+        </i>
     </div>
 </div>

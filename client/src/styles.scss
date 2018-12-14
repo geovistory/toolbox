@@ -545,7 +545,7 @@ ngb-pagination {
 }
 
 // data unit previews
-gv-data-unit-preview {
+gv-data-unit-preview {
     display: inline-block;
 }
 
@@ -577,7 +577,6 @@ gv-data-unit-preview {
     // @extend .border-primary;
     @extend .mt-2;
     @extend .gv-shadow-outer-1;
-    @extend .rounded;
 }
 
 .gv-tile-header,
@@ -585,19 +584,13 @@ gv-tile-header {
     @extend .gv-flex-shrink-0;
     @extend .d-flex; // @extend .border-bottom; // @extend .border-top;
     // @extend .border-primary;
-    background-color: $secondary; // background-color: lighten($teal, 30%);
-    color: $white;
+    //    background-color: hsla(162, 73%, 79%, 1);
+    background-color: lighten($teal, 30%);
     @extend .align-items-baseline;
     @extend .mb-0; // background-color: theme-color-level('secondary', -9); // like list-group-item-secondary
     @extend .pl-2;
     @extend .font-sm; // padding-left: $btn-padding-y-sm;
-    height: calc((#{$btn-border-width} * 2) + (#{$font-size-sm} * #{$btn-line-height-sm}) + (#{$btn-padding-y-sm} * 2) + 1px);
-    @extend .rounded-top;
-
-    .btn {
-        @extend .btn-link-white;
-    }
-
+    height: calc((#{$btn-border-width} * 2) + (#{$font-size-sm} * #{$btn-line-height-sm}) + (#{$btn-padding-y-sm} * 2) + 1px)
 }
 
 .gv-tile-body {
@@ -1177,30 +1170,4 @@ $switch-sm-box-width: calc((#{$switch-sm-box-border} * 2) + calc(#{$slider-diame
     .slider.round {
         border-radius: 34px;
     }
-}
-
-/***********************************
-* Drag & Drop
-************************************/
-
-.cdk-drag-preview {
-    box-sizing: border-box;
-    border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
-}
-
-.cdk-drag-placeholder {
-    opacity: 0;
-}
-
-.cdk-drag-animating {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.example-box:last-child {
-    border: none;
-}
-
-.list-group.cdk-drop-list-dragging .list-group-item:not(.cdk-drag-placeholder) {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }

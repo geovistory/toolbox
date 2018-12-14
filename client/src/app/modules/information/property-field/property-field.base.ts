@@ -16,7 +16,6 @@ import { StateToDataService } from '../shared/state-to-data.service';
 import { PropertyFieldActions } from './property-field.actions';
 import { PropertyFieldApiEpics } from './property-field.epics';
 import { propertyFieldReducer } from './property-field.reducer';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 
 
@@ -450,50 +449,31 @@ export abstract class PropertyFieldBase implements OnInit, OnDestroy, ControlVal
     /**
    * called when a RoleDetail is dragged
    */
-    // onDrag($event: { key: string, value: RoleDetail }) {
+    onDrag($event: { key: string, value: RoleDetail }) {
 
-    //     this.userIsDragging = false;
-
-    //     const changedEprs: InfEntityProjectRel[] = []
-
-    //     // check, if needs update
-    //     for (let i = 0; i < this.roleDetails.length; i++) {
-
-    //         const epr = U.eprFromRoleDetail(this.roleDetails[i].value);
-
-    //         // if the ord_num is wrong
-    //         if (epr.ord_num != i) {
-
-
-
-    //             changedEprs.push({
-    //                 ...epr,
-    //                 ord_num: i,
-    //             })
-    //         }
-    //     }
-
-    //     if (changedEprs.length) this.localStore.dispatch(this.actions.updateOrder(changedEprs));
-
-
-    // }
-
-    onChangeOrder(event: CdkDragDrop<string[]>) {
-        moveItemInArray(this.roleDetails, event.previousIndex, event.currentIndex);
+        this.userIsDragging = false;
 
         const changedEprs: InfEntityProjectRel[] = []
 
-        // check, if needs update
+        // check, if ui_context_config needs update
         for (let i = 0; i < this.roleDetails.length; i++) {
 
             const epr = U.eprFromRoleDetail(this.roleDetails[i].value);
+
             // if the ord_num is wrong
             if (epr.ord_num != i) {
-                changedEprs.push({ ...epr, ord_num: i, })
+
+
+
+                changedEprs.push({
+                    ...epr,
+                    ord_num: i,
+                })
             }
         }
 
-        if (changedEprs.length) this.localStore.dispatch(this.actions.updateOrder(changedEprs, event));
+        if (changedEprs.length) this.localStore.dispatch(this.actions.updateOrder(changedEprs));
+
 
     }
 
