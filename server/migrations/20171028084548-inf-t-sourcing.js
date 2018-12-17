@@ -32,8 +32,6 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE information.sourcing
-    OWNER to postgres;
 
 -- Trigger: creation_tmsp
 

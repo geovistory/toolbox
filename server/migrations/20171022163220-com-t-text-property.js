@@ -42,9 +42,6 @@ exports.up = function(db, callback) {
   )
   TABLESPACE pg_default;
 
-  ALTER TABLE commons.text_property
-  OWNER to postgres;
-
   -- Trigger: creation_tmsp
 
   -- DROP TRIGGER creation_tmsp ON commons.text_property;

@@ -28,8 +28,8 @@ exports.up = function(db, callback) {
 
 exports.down = function(db, callback) {
   const sql = `
-  DROP EXTENSION plpgsql;
-  DROP EXTENSION temporal_tables;
+  --DROP EXTENSION IF EXISTS plpgsql;
+  --DROP EXTENSION IF EXISTS temporal_tables;
   `;
 
   db.runSql(sql, callback)

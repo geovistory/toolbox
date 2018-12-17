@@ -34,8 +34,6 @@ exports.up = function(db, callback) {
   )
   TABLESPACE pg_default;
 
-  ALTER TABLE information.language
-  OWNER to postgres;
 
   -- Trigger: creation_tmsp
 

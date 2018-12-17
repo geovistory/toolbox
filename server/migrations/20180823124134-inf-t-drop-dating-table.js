@@ -40,9 +40,6 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE information.dating
-    OWNER to postgres;
-
 -- Trigger: creation_tmsp
 
 -- DROP TRIGGER creation_tmsp ON information.dating;
