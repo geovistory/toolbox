@@ -23,7 +23,7 @@ LIMIT 1;`
 
 client.query(sql, (err, res) => {
 	if (err) {
-		// console.log(err.stack)
+		errorHandler(err.stack)
 		reject(err)
 	} else {
 		const latestMigration = res.rows[0].name;
