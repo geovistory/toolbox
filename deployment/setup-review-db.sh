@@ -9,9 +9,9 @@ echo 'from: '$DB_SOURCE;
 echo 'copy to: '$DB_TARGET;
 
 # echo '============================= DUMP STAGING DB ============================= ';
-# dirPath=`pwd`;
-# echo 'dump to: '$dirPath
-# node dump-staging.js $DB_SOURCE $dirPath;
+dirPath=`pwd`;
+echo 'dump to: '$dirPath
+node dump-staging.js $DB_SOURCE $dirPath;
 
 # echo '============================= EMPTY REVIEW DB ============================= ';
 
@@ -24,14 +24,14 @@ echo 'latest migration of staging: '$latest_migration;
 
 # echo '================= RESTORE REVIEW DB WITH DATA OF STAGING ==================== ';
 
-# node restore-review.js $DB_TARGET $dirPath;
+node restore-review.js $DB_TARGET $dirPath;
 
 # echo '================== MIGRATE REVIEW DB UP TO LATEST STATE =============== ';
 
-# ../node_modules/db-migrate/bin/db-migrate --config ../server/migrate-db-config.json --migrations-dir ../server/migrations up;
+../node_modules/db-migrate/bin/db-migrate --config ../server/migrate-db-config.json --migrations-dir ../server/migrations up;
 
 # echo '============================= DELETE DUMP =============================== ';
 
-# rm -r $dirPath/data_dump;
+rm -r $dirPath/data_dump;
 
 # echo 'done'
