@@ -8,7 +8,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "heroku-prebuild": "cd deployment && bash setup-review-db.sh",
+    "heroku-postbuild": "cd deployment && bash setup-review-db.sh",
     "push": "bash push.sh",
     "start": "node .",
     "posttest": "npm run lint && nsp check",
