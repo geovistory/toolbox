@@ -1,7 +1,7 @@
 
 --SET search_path = _global, pg_catalog;
 
-CREATE OR REPLACE FUNCTION drop_all () 
+CREATE OR REPLACE FUNCTION public.drop_all () 
    RETURNS VOID  AS
    $$
    DECLARE rec RECORD; 
@@ -20,4 +20,4 @@ CREATE OR REPLACE FUNCTION drop_all ()
    END;
    $$ LANGUAGE plpgsql;
 
-select drop_all();
+select public.drop_all();
