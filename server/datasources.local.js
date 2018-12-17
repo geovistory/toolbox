@@ -32,7 +32,7 @@ let config = {
 switch (process.env.DB_ENV) {
 
   case "development":
-  config.postgres1.url = process.env.GEOV_DEV_DATABASE_URL;
+  config.postgres1.url = process.env.DATABASE_URL;
   break;
 
   case "review":

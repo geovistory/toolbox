@@ -2,6 +2,13 @@
   "defaultEnv": {
     "ENV": "DB_ENV"
   },
+  "temp": {
+    "driver": "pg",
+    "url": "postgres://postgres:Guru@Marly@localhost:5432/review1?ssl=true",
+    "addIfNotExists": {
+      "ssl": true
+    }
+  },
   "development": {
     "driver": "pg",
     "url": {

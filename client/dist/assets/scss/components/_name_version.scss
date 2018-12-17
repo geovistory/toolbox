@@ -1,0 +1,12 @@
+// representing a name version
+.gv-property-section-header{
+  line-height: 1.7rem;
+}
+.gv-name-version {
+  .gv-checkbox-wrapper{
+    padding: $card-spacer-y $card-spacer-x;
+  }
+  .gv-name-parts-wrapper{
+    padding: $card-spacer-y $card-spacer-x;
+  }
+}

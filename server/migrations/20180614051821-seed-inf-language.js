@@ -22,34 +22,35 @@ exports.setup = function(options, seedLink) {
  */
 exports.up = function(db, callback) {
 
-  var sql = `INSERT into information.language (pk_language, fk_class, lang_type, scope, iso6392b, iso6392t, iso6391, notes) VALUES `;
+  // var sql = `INSERT into information.language (pk_language, fk_class, lang_type, scope, iso6392b, iso6392t, iso6391, notes) VALUES `;
 
-  var rows = [];
+  // var rows = [];
 
-  const escapeSingleQuotes = function(val){
-    if ((typeof val) === 'string') return "'" + val.split("'").join("''") + "'";
-    else return val;
-  }
+  // const escapeSingleQuotes = function(val){
+  //   if ((typeof val) === 'string') return "'" + val.split("'").join("''") + "'";
+  //   else return val;
+  // }
 
-  for (var i = 0; i < iso6393.length; i++) {
-    const row = '(' +
-    escapeSingleQuotes(iso6393[i].iso6393) + ',' +
-    "54," +
-    escapeSingleQuotes(iso6393[i].type) + ',' +
-    escapeSingleQuotes(iso6393[i].scope) + ',' +
-    escapeSingleQuotes(iso6393[i].iso6392B) + ',' +
-    escapeSingleQuotes(iso6393[i].iso6392T) + ',' +
-    escapeSingleQuotes(iso6393[i].iso6391) + ',' +
-    escapeSingleQuotes(iso6393[i].name) +
-    ')';
-    rows.push(row);
-  }
+  // for (var i = 0; i < iso6393.length; i++) {
+  //   const row = '(' +
+  //   escapeSingleQuotes(iso6393[i].iso6393) + ',' +
+  //   "54," +
+  //   escapeSingleQuotes(iso6393[i].type) + ',' +
+  //   escapeSingleQuotes(iso6393[i].scope) + ',' +
+  //   escapeSingleQuotes(iso6393[i].iso6392B) + ',' +
+  //   escapeSingleQuotes(iso6393[i].iso6392T) + ',' +
+  //   escapeSingleQuotes(iso6393[i].iso6391) + ',' +
+  //   escapeSingleQuotes(iso6393[i].name) +
+  //   ')';
+  //   rows.push(row);
+  // }
 
-  sql = sql + rows.join(',') + ';';
+  // sql = sql + rows.join(',') + ';';
 
-  console.log('run INSERT INTO information.language with ' + iso6393.length + ' languages');
+  // console.log('run INSERT INTO information.language with ' + iso6393.length + ' languages');
 
-  db.runSql(sql, callback);
+  // db.runSql(sql, callback);
+  db.runSql('', callback);
 
 };
 
