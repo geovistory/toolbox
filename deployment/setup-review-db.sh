@@ -2,7 +2,7 @@
 echo '========================================================================= ';
 echo '============================= SETUP REVIEW DB =========================== ';
 
-DB_SOURCE='postgres://qephbxmaqlbbsi:f443e911ee88f21491add8d4ae9ddca4c71e5f81d67e47685bae2d152bf8c6a9@ec2-54-228-251-254.eu-west-1.compute.amazonaws.com:5432/de8ucdfdgv0slb';
+DB_SOURCE=$GEOV_STAG_DATABASE_URL;
 DB_TARGET=$DATABASE_URL;
 
 echo 'copy data'
@@ -33,9 +33,6 @@ echo '================== FIX SEQUENCES OF REVIEW DB ============================
 psql $DB_TARGET -Atq -f reset-sequences.sql -o temp;
 psql $DB_TARGET -f temp;
 rm temp;
-
-
-
 
 echo '================== MIGRATE REVIEW DB UP TO LATEST STATE ================== ';
 
