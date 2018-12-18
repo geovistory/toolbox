@@ -2,17 +2,13 @@
   "defaultEnv": {
     "ENV": "DB_ENV"
   },
-  "temp": {
-    "driver": "pg",
-    "url": "postgres://rcdxgoefuyfrsf:d81c222e416496af1c5b7ae8bd5672ada90ab78fe9efc4a8deee424adcc24a71@ec2-46-51-184-66.eu-west-1.compute.amazonaws.com:5432/d18irrbjj3uaqt",
-    "addIfNotExists": {
-      "ssl": true
-    }
-  },
   "development": {
     "driver": "pg",
     "url": {
-      "ENV": "GEOV_DEV_DATABASE_URL"
+      "ENV": "DATABASE_URL"
+    },
+    "addIfNotExists": {
+      "ssl": true
     }
   },
   "review": {

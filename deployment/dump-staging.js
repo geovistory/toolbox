@@ -37,7 +37,7 @@ function createSqlFile(dirPath, tableName) {
 
 		ws.write(`
 		BEGIN;
-		ALTER TABLE ${tableName} DISABLE TRIGGER ALL;`);
+		ALTER TABLE ${tableName} DISABLE TRIGGER USER;`);
 
 		var isFirstRow = true;
 		queryStream.on('data', function (row) {
@@ -94,7 +94,7 @@ function createSqlFile(dirPath, tableName) {
 		queryStream.on('end', function (result) {
 			ws.write(`;
 
-			ALTER TABLE ${tableName} ENABLE TRIGGER ALL;
+			ALTER TABLE ${tableName} ENABLE TRIGGER USER;
 			COMMIT;
 			`);
 			ws.end();
