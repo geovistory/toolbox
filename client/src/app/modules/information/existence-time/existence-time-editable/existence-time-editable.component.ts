@@ -185,9 +185,14 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
         pkUiContext: this.localStore.getState().pkUiContext
       }
 
-      // update the state
-      const extDetail = createExistenceTimeDetail(new ExistenceTimeDetail({ toggle: 'expanded' }), roles, this.ngRedux.getState().activeProject.crm, settings)
-      this.localStore.dispatch(this.actions.existenceTimeUpdated(extDetail))
+      if (!roles.length) {
+        this.doRemovePropSet()
+      } else {
+
+        // update the state
+        const extDetail = createExistenceTimeDetail(new ExistenceTimeDetail({ toggle: 'expanded' }), roles, this.ngRedux.getState().activeProject.crm, settings)
+        this.localStore.dispatch(this.actions.existenceTimeUpdated(extDetail))
+      }
 
     }));
   }
