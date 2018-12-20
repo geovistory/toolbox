@@ -150,7 +150,7 @@ function readFiles(dirPath) {
 
 							if (i === tableNames.length) {
 								var hrend = process.hrtime(hrstart);
-								console.info('Execution time: %ds %dms', parseInt(hrend[0], hrend[1] / 1000000))
+								console.info('Execution time: %ds %dms', hrend[0], parseInt(hrend[1] / 1000000))
 								process.exit();
 							} else {
 								loopFilesSynchonously();
