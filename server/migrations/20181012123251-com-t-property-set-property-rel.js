@@ -71,14 +71,14 @@ exports.up = function (db, callback) {
     'sys_period', 'commons.property_set_property_rel_vt', true
   );
 
-  Insert into commons.property_set_property_rel ("fk_property_set","fk_property", "property_is_outgoing")
-  VALUES 
-  (48, 71, true),
-  (48, 72, true),
-  (48, 150, true),
-  (48, 151, true),
-  (48, 152, true),
-  (48, 153, true);
+--  Insert into commons.property_set_property_rel ("fk_property_set","fk_property", "property_is_outgoing")
+--  VALUES 
+--  (48, 71, true),
+--  (48, 72, true),
+--  (48, 150, true),
+--  (48, 151, true),
+--  (48, 152, true),
+--  (48, 153, true);
   `
   db.runSql(sql, callback)
 

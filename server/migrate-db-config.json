@@ -5,7 +5,10 @@
   "development": {
     "driver": "pg",
     "url": {
-      "ENV": "GEOV_DEV_DATABASE_URL"
+      "ENV": "DATABASE_URL"
+    },
+    "addIfNotExists": {
+      "ssl": true
     }
   },
   "review": {

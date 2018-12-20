@@ -39,9 +39,6 @@ exports.up = function(db, callback) {
   )
   TABLESPACE pg_default;
 
-  ALTER TABLE commons.system_type
-  OWNER to postgres;
-
   -- Trigger: creation_tmsp
 
   -- DROP TRIGGER creation_tmsp ON commons.system_type;

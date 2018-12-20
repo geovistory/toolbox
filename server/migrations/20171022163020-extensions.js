@@ -16,11 +16,11 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db, callback) {
   const sql = `
-  CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-  COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-  CREATE EXTENSION IF NOT EXISTS temporal_tables WITH SCHEMA public;
-  COMMENT ON EXTENSION temporal_tables IS 'temporal tables';
+  --CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+  --COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+--
+  --CREATE EXTENSION IF NOT EXISTS temporal_tables WITH SCHEMA public;
+  --COMMENT ON EXTENSION temporal_tables IS 'temporal tables';
   `;
 
   db.runSql(sql, callback)
@@ -28,8 +28,8 @@ exports.up = function(db, callback) {
 
 exports.down = function(db, callback) {
   const sql = `
-  DROP EXTENSION plpgsql;
-  DROP EXTENSION temporal_tables;
+  --DROP EXTENSION IF EXISTS plpgsql;
+  --DROP EXTENSION IF EXISTS temporal_tables;
   `;
 
   db.runSql(sql, callback)

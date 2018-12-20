@@ -32,8 +32,6 @@ exports.up = function (db, callback) {
   )
   TABLESPACE pg_default;
 
-  ALTER TABLE information.digital_object
-  OWNER to postgres;
 
   -- Trigger: creation_tmsp
 

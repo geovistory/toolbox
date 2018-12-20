@@ -17,11 +17,11 @@ exports.setup = function (options, seedLink) {
 exports.up = function (db, callback) {
 
   const sql = `
-    DROP EXTENSION postgis_tiger_geocoder;
+    --DROP EXTENSION postgis_tiger_geocoder;
     DROP EXTENSION fuzzystrmatch;
 
-    DROP SCHEMA tiger;
-    DROP SCHEMA tiger_data;
+    --DROP SCHEMA tiger;
+    --DROP SCHEMA tiger_data;
     `
   db.runSql(sql, callback)
 
@@ -31,7 +31,7 @@ exports.down = function (db, callback) {
 
   const sql = `
     CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
-    CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
+    --CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
     `
   db.runSql(sql, callback)
 

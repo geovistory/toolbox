@@ -33,8 +33,6 @@ exports.up = function(db, callback) {
   )
   TABLESPACE pg_default;
 
-  ALTER TABLE information.text_property
-  OWNER to postgres;
 
   -- Trigger: creation_tmsp
 

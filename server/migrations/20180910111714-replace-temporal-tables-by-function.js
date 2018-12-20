@@ -51,6 +51,9 @@ const tablesWithVersioningTrigger = [
 function createTriggersSql() {
 
   return tablesWithVersioningTrigger.map(tablename => `
+  DROP TRIGGER IF EXISTS versioning_trigger
+  ON ${tablename};
+
   CREATE TRIGGER versioning_trigger
   BEFORE INSERT OR DELETE OR UPDATE 
   ON ${tablename}

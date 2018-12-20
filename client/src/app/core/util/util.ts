@@ -471,11 +471,11 @@ export class U {
         const duChildren = U.obj2Arr(r);
 
         // create array with max amount of labels
-        const spliced = max ? duChildren.slice(0, max) : duChildren;
+        const sliced = max ? duChildren.slice(0, max) : duChildren;
 
         return {
             path: settings.path,
-            parts: spliced.map(c => U.labelFromField(c, { ...settings, path: [...settings.path, fieldKey(c)] })),
+            parts: sliced.map(c => U.labelFromField(c, { ...settings, path: [...settings.path, fieldKey(c)] })),
             hasMore: (duChildren.length > 2)
         }
     }

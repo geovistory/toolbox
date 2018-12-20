@@ -1,14 +1,12 @@
 import { NgRedux, select, WithSubStore } from '@angular-redux/store';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
-import { ActiveProjectService, fieldList_2_propFields, IAppState, propFields_2_roleDetails, roleDetails_2_geoPeItPks, U, mapConcat, TimeSpan, InfTemporalEntity, DfhClass, ClassConfig } from 'app/core';
-import { ExistenceTimeDetail, FieldList, PeItDetail, TeEntDetail, ClassInstanceLabel, DataUnitPreview } from 'app/core/state/models';
-import { combineLatest, Observable, OperatorFunction, Subject, defer, zip, merge, forkJoin } from 'rxjs';
-import { filter, map, mergeMap, distinctUntilChanged, distinct, share, combineAll, zipAll, tap } from 'rxjs/operators';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import { ActiveProjectService, ClassConfig, fieldList_2_propFields, IAppState, InfTemporalEntity, mapConcat, propFields_2_roleDetails, roleDetails_2_geoPeItPks, TimeSpan, U } from 'app/core';
+import { ExistenceTimeDetail, FieldList, TeEntDetail } from 'app/core/state/models';
+import { combineLatest, Observable, OperatorFunction, Subject } from 'rxjs';
+import { filter, map, mergeMap, tap } from 'rxjs/operators';
 import { AcLayerComponent, AcMapComponent, AcNotification, ActionType, CesiumEvent, PickOptions } from '../../../gv-angular-cesium/angular-cesium-fork';
 import { peItReducer } from '../../data-unit/pe-it/pe-it.reducer';
 import { TeEntActions } from '../../data-unit/te-ent/te-ent.actions';
-import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
-import { equals } from 'ramda';
 import { DfhConfig } from '../../shared/dfh-config';
 
 
@@ -94,6 +92,9 @@ export class PeItLayerComponent implements AfterViewInit, OnDestroy {
         camera.setView({ destination: Cesium.Cartesian3.fromDegrees(-117.16, 32.71, 15000.0) });
         const scene = this.acMap.getCesiumSerivce().getScene();
 
+        const initLayer$ = new Subject();
+        const killAcSubs$ = initLayer$.merge(this.destroy$);
+
         // observable of acNotifications
         const teEn$ = this._fields$.pipe(
             fieldList_2_propFields(),
@@ -101,12 +102,13 @@ export class PeItLayerComponent implements AfterViewInit, OnDestroy {
             tap(() => {
                 // remove all entities of the layer
                 this.layer.removeAll();
+                initLayer$.next();
             }),
             mergeMap(rDs => rDs.map(rD => rD._teEnt))
         )
 
         const inizializedTeEns = new Set();
-
+        const acSubs = []
         teEn$.takeUntil(this.destroy$).subscribe(teEn => {
             let acNotifications$ = Observable.of([]);
 
@@ -121,7 +123,7 @@ export class PeItLayerComponent implements AfterViewInit, OnDestroy {
                 )
             }
 
-            acNotifications$.takeUntil(this.destroy$).subscribe(nots => {
+            const acSub = acNotifications$.takeUntil(killAcSubs$).subscribe(nots => {
 
                 nots.forEach(not => this.updater$.next(not))
 
@@ -134,6 +136,7 @@ export class PeItLayerComponent implements AfterViewInit, OnDestroy {
                 // Explicitly render a new frame
                 scene.requestRender();
             })
+            acSubs.push(acSub);
         })
     }
 
@@ -208,6 +211,7 @@ export class PeItLayerComponent implements AfterViewInit, OnDestroy {
                 fieldList_2_propFields(),
                 propFields_2_roleDetails(),
                 roleDetails_2_geoPeItPks(),
+                filter(pks => pks.length > 0),
                 mergeMap(pks => this.projectService.loadDataUnitPreview(pks[0]))
             )
 
@@ -479,57 +483,57 @@ export class PeItLayerComponent implements AfterViewInit, OnDestroy {
             map(result => result.cesiumEntities),
             filter(cesiumEntities => cesiumEntities && cesiumEntities.length > 0)
         ).subscribe(cesiumEntities => {
-            const cesiumEntity = cesiumEntities[0];
-            const teEntPath = JSON.parse(cesiumEntity.properties.path.getValue());
-            this.toggleSelection(cesiumEntity, teEntPath);
+            // const cesiumEntity = cesiumEntities[0];
+            // const teEntPath = JSON.parse(cesiumEntity.properties.path.getValue());
+            // this.toggleSelection(cesiumEntity, teEntPath);
         });
 
-        let pathToHighlighted;
+        // const pathToHighlighted;
 
         // on Click
         moveEvent$.pipe(
             map(result => result.cesiumEntities),
         ).subscribe(cesiumEntities => {
-            if (cesiumEntities && cesiumEntities.length > 0) {
+            // if (cesiumEntities && cesiumEntities.length > 0) {
 
-                // mouse entered some entity
-                pathToHighlighted = JSON.parse(cesiumEntities[0].properties.path.getValue());
-                this.mouseEnter(pathToHighlighted);
+            //     // mouse entered some entity
+            //     // pathToHighlighted = JSON.parse(cesiumEntities[0].properties.path.getValue());
+            //     // this.mouseEnter(pathToHighlighted);
 
-            } else if (pathToHighlighted) {
+            // } else if (pathToHighlighted) {
 
-                // mouseout of some entity
-                this.mouseLeave(pathToHighlighted);
-                pathToHighlighted = undefined;
-            }
+            //     // mouseout of some entity
+            //     // this.mouseLeave(pathToHighlighted);
+            //     // pathToHighlighted = undefined;
+            // }
         });
 
 
     }
 
-    toggleSelection(cesiumEntity, teEntPath: string[]) {
-        const teEntStore = this.ngRedux.configureSubStore(teEntPath, teEntReducer);
+    // toggleSelection(cesiumEntity, teEntPath: string[]) {
+    //     const teEntStore = this.ngRedux.configureSubStore(teEntPath, teEntReducer);
 
-        if (teEntStore.getState().accentuation !== 'selected') {
-            teEntStore.dispatch(this.teEntActions.setAccentuation('selected'))
-            this.acMap.getCesiumViewer().selectedEntity = cesiumEntity;
-        } else {
-            teEntStore.dispatch(this.teEntActions.setAccentuation('highlighted'))
-        }
-    }
+    //     if (teEntStore.getState().accentuation !== 'selected') {
+    //         teEntStore.dispatch(this.teEntActions.setAccentuation('selected'))
+    //         this.acMap.getCesiumViewer().selectedEntity = cesiumEntity;
+    //     } else {
+    //         teEntStore.dispatch(this.teEntActions.setAccentuation('highlighted'))
+    //     }
+    // }
 
-    mouseEnter(teEntPath: string[]) {
-        const teEntStore = this.ngRedux.configureSubStore(teEntPath, teEntReducer);
-        if (teEntStore.getState().accentuation !== 'selected') {
-            teEntStore.dispatch(this.teEntActions.setAccentuation('highlighted'))
-        }
-    }
+    // mouseEnter(teEntPath: string[]) {
+    //     const teEntStore = this.ngRedux.configureSubStore(teEntPath, teEntReducer);
+    //     if (teEntStore.getState().accentuation !== 'selected') {
+    //         teEntStore.dispatch(this.teEntActions.setAccentuation('highlighted'))
+    //     }
+    // }
 
-    mouseLeave(teEntPath: string[]) {
-        const teEntStore = this.ngRedux.configureSubStore(teEntPath, teEntReducer);
-        if (teEntStore.getState().accentuation === 'highlighted') {
-            teEntStore.dispatch(this.teEntActions.setAccentuation('none'))
-        }
-    }
+    // mouseLeave(teEntPath: string[]) {
+    //     const teEntStore = this.ngRedux.configureSubStore(teEntPath, teEntReducer);
+    //     if (teEntStore.getState().accentuation === 'highlighted') {
+    //         teEntStore.dispatch(this.teEntActions.setAccentuation('none'))
+    //     }
+    // }
 
 }

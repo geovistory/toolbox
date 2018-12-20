@@ -28,9 +28,6 @@ exports.up = function(db, callback) {
   FROM commons.system_type t1
   LEFT JOIN commons.label t2 ON t2.fk_entity = t1.pk_entity
   LEFT JOIN commons.text_property t3 ON t3.fk_entity = t1.pk_entity;
-
-  ALTER TABLE commons.v_system_type_label_text_property
-  OWNER TO postgres;
   `
   db.runSql(sql, callback)
 

@@ -31,9 +31,6 @@ exports.up = function(db, callback) {
   )
   TABLESPACE pg_default;
 
-  ALTER TABLE information.entity_association
-  OWNER to postgres;
-
   -- Trigger: creation_tmsp
 
   CREATE TRIGGER creation_tmsp

@@ -41,6 +41,12 @@ exports.down = function (db, callback) {
 
     ALTER TABLE commons.class_field
     DROP COLUMN fk_system_type_ng_component;
+
+    ALTER TABLE commons.class_field_vt
+    DROP COLUMN used_table ;
+
+    ALTER TABLE commons.class_field_vt
+    DROP COLUMN fk_system_type_ng_component;
   `
   db.runSql(sql, callback)
 };

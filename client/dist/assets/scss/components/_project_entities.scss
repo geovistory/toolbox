@@ -1,0 +1,35 @@
+gv-project-entities {
+  // max-width: 40rem;
+  $spacing-left: .6rem;
+  .gv-search {
+    input{
+    }
+    ul.gv-search-filter{
+      font-size: $font-size-sm;
+      button {
+        position: relative;
+        padding: 0.2rem 0;
+        margin: 0.3rem $spacing-left .1rem;
+      }
+      button.active:after{
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: theme-color('primary');
+      }
+    }
+  }
+  .gv-search-hits-count{
+    padding-left: $spacing-left;
+  }
+  .gv-search-loading{
+    color: $text-muted;
+    padding-left: $spacing-left;
+  }
+  .gv-search-hits{
+    padding-left: $spacing-left;
+  }
+}

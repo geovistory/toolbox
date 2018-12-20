@@ -1,46 +1,60 @@
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
 import { ClassConfig, TimePrimitive, U } from 'app/core';
-import { CollapsedExpanded, FieldList,  ClassInstanceLabel, ExTimeLabel } from 'app/core/state/models';
+import { CollapsedExpanded, FieldList, ClassInstanceLabel, ExTimeLabel } from 'app/core/state/models';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'gv-te-ent-label',
   templateUrl: './te-ent-label.component.html',
   styleUrls: ['./te-ent-label.component.scss'],
   providers: [DatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TeEntLabelComponent implements OnChanges {
+export class TeEntLabelComponent implements OnInit, OnDestroy {
+
+  destroy$ = new Subject<boolean>();
 
   @Output() onToggle = new EventEmitter<void>();
 
-  @Input() children: FieldList;
+  @Input() fields$: Observable<FieldList>;
   @Input() childrenPath: string[];
   @Input() classConfig: ClassConfig
   @Input() toggle: CollapsedExpanded;
   @Input() labelInEdit: string;
 
-  label:  ClassInstanceLabel;
+  label: ClassInstanceLabel;
 
   constructor(private datePipe: DatePipe) { }
 
-  ngOnChanges() {
+  ngOnInit() {
     if (!this.childrenPath.length) throw Error('you must provide a childrenPath for <gv-te-ent-label>');
 
-    if (this.toggle === 'expanded') {
+    this.fields$.takeUntil(this.destroy$).subscribe(fields => {
 
-      // create full version label with all children
-      this.label = U.labelFromFieldList(this.children, { path: this.childrenPath })
+      console.log('Im here')
 
-    } else if (this.toggle === 'collapsed') {
+      if (this.toggle === 'expanded') {
 
-      // create reduced label
-      this.label = U.labelFromFieldList(this.children, {
-        path: this.childrenPath,
-        fieldsMax: 2,
-        rolesMax: 1
-      })
+        // create full version label with all children
+        this.label = U.labelFromFieldList(fields, { path: this.childrenPath })
 
-    }
+      } else if (this.toggle === 'collapsed') {
+
+        // create reduced label
+        this.label = U.labelFromFieldList(fields, {
+          path: this.childrenPath,
+          fieldsMax: 2,
+          rolesMax: 1
+        })
+
+      }
+    })
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
   getExTLabel(d: ExTimeLabel) {

@@ -30,8 +30,6 @@ exports.up = function(db, callback) {
   )
   TABLESPACE pg_default;
 
-  ALTER TABLE information.persistent_item
-  OWNER to postgres;
 
   -- Trigger: creation_tmsp
 
