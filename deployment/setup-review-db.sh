@@ -20,8 +20,8 @@ then
     node dump-staging.js $DB_SOURCE $dirPath;
 
 
-    echo '================= DROP ALL SCHEMAS OF REVIEW DB ==========================';
-    psql $DB_TARGET -f dropSchemas.sql
+    # echo '================= DROP ALL SCHEMAS OF REVIEW DB ==========================';
+    # psql $DB_TARGET -f dropSchemas.sql
 
 
     echo '================= MIGRATE REVIEW DB UP TO STATE OF STAGING ===============';

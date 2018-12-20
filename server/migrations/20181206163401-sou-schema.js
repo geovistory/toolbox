@@ -16,7 +16,7 @@ exports.setup = function (options, seedLink) {
 
 exports.up = function (db, callback) {
   const sql = `  
-  CREATE SCHEMA sources;
+  CREATE SCHEMA IF NOT EXISTS sources;
 
   ------------------------------------------------------------------------------------------------------------
   -- TABLE entity

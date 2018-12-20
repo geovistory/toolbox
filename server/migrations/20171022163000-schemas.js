@@ -17,13 +17,13 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db, callback) {
 
   const sql = `
-  CREATE SCHEMA commons;
+  CREATE SCHEMA IF NOT EXISTS commons;
 
-  CREATE SCHEMA information;
+  CREATE SCHEMA IF NOT EXISTS information;
 
-  CREATE SCHEMA data_for_history;
+  CREATE SCHEMA IF NOT EXISTS data_for_history;
 
-  CREATE SCHEMA che;
+  CREATE SCHEMA IF NOT EXISTS che;
   `
 
   db.runSql(sql, callback)
