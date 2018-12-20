@@ -20,6 +20,10 @@ then
     node dump-staging.js $DB_SOURCE $dirPath;
 
 
+    echo '================= DROP ALL SCHEMAS OF REVIEW DB ==========================';
+    psql $DB_TARGET -f dropSchemas.sql
+
+
     echo '================= MIGRATE REVIEW DB UP TO STATE OF STAGING ===============';
     latest_migration=`psql $DB_SOURCE -t -c "SELECT name from public.migrations ORDER BY id DESC LIMIT 1"`
     echo 'latest migration of staging: '$latest_migration;
