@@ -20,7 +20,7 @@ exports.up = function(db, callback) {
   VALUES
   ('label of entity')
   `;
-  console.log(sql);
+
 
   db.runSql(sql, callback);
 

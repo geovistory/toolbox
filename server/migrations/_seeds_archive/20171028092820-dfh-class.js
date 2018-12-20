@@ -31,7 +31,7 @@ exports.up = function(db, callback) {
   (51, 'E53', 'Place')  
 
   `;
-  console.log(sql);
+
 
   db.runSql(sql, callback);
 

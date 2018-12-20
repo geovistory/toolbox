@@ -23,7 +23,7 @@ const client = new pg.Client({
 client.connect();
 
 function errorHandler(error) {
-	console.log(error)
+	console.error(error)
 	process.exit();
 }
 
@@ -150,14 +150,14 @@ function readFiles(dirPath) {
 
 							if (i === tableNames.length) {
 								var hrend = process.hrtime(hrstart);
-								console.info('Execution time: %ds %dms', parseInt(hrend[0], hrend[1] / 1000000))
+								console.info('Execution time: %ds %dms', hrend[0], parseInt(hrend[1] / 1000000))
 								process.exit();
 							} else {
 								loopFilesSynchonously();
 							}
 						},
 						error => {
-							errorHandler(`Error on execution of ${filename}: ${err}`)
+							errorHandler(`Error on execution of ${filename}: ${error}`)
 						}
 					)
 				};

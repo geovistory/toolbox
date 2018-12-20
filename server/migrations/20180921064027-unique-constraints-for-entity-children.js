@@ -72,7 +72,7 @@ exports.up = function (db, callback) {
     `
   )).join('');
 
-  console.log(sql);
+
 
   db.runSql(sql, callback)
 };

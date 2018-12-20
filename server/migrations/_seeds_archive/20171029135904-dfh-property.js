@@ -53,7 +53,7 @@ exports.up = function(db, callback) {
   (148, 'P167', 84, 51, 'Was at', 1, 1, 1, 1)
 
   `;
-  console.log(sql);
+
 
   db.runSql(sql, callback);
 
