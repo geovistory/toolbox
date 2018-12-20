@@ -32,7 +32,7 @@ function createSqlFile(dirPath, tableName) {
 		var outfile = dirPath + tableName;
 		var ws = fs.createWriteStream(outfile);
 
-		var query = new QueryStream(`SELECT * FROM ${tableName}`)
+		var query = new QueryStream(`SELECT * FROM ${tableName}`, [], {batchSize: 10000})
 		var queryStream = client.query(query);
 
 		ws.write(`
@@ -120,28 +120,34 @@ ORDER BY table_schema, table_type, table_name
 
 			console.log(`Creating ${result.rows.length} sql files......`);
 			const promises = []
-			result.rows.forEach(function (table, index) {
-				const schemaTableName = table.table_schema + '.' + table.table_name;
 
-				const promise = new Promise(function (resolve, reject) {
+			let i = 0;
 
-					var hrFileStart = process.hrtime()
+			loop = () => {
 
-					createSqlFile(dirPath, schemaTableName).then(success => {
-						var hrFileEnd = process.hrtime(hrFileStart);
-						console.log(`Downloaded #${index + 1} of ${result.rows.length} tables: ${schemaTableName} after %ds %dms`, hrFileEnd[0], hrFileEnd[1] / 1000000)
-						resolve();
-					})
+				const schemaTableName = result.rows[i].table_schema + '.' + result.rows[i].table_name;
+
+				var hrFileStart = process.hrtime()
+
+				createSqlFile(dirPath, schemaTableName).then(success => {
+					var hrFileEnd = process.hrtime(hrFileStart);
+					console.log(`Downloaded #${i + 1} of ${result.rows.length} tables: ${schemaTableName} after %ds %dms`, hrFileEnd[0], parseInt(hrFileEnd[1] / 1000000))
+
+					i++;
+					if (i < result.rows.length) {
+						loop()
+					} else {
+						var hrend = process.hrtime(hrstart);
+						console.info('Execution time: %ds %dms', hrend[0], parseInt(hrend[1] / 1000000))
+						process.exit();
+					}
+
 				})
 
-				promises.push(promise)
-			})
+			}
 
-			Promise.all(promises).then(success => {
-				var hrend = process.hrtime(hrstart);
-				console.info('Execution time: %ds %dms', hrend[0], hrend[1] / 1000000)
-				process.exit();
-			})
+			loop()
+
 		}
 	});
 

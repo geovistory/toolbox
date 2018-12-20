@@ -143,14 +143,14 @@ function readFiles(dirPath) {
 						onSuccess => {
 
 							var hrFileEnd = process.hrtime(hrFileStart);
-							console.log(`Inserted data of #${i + 1} of ${tableNames.length} files: ${filename} after %ds %dms`, hrFileEnd[0], hrFileEnd[1] / 1000000)
+							console.log(`Inserted data of #${i + 1} of ${tableNames.length} files: ${filename} after %ds %dms`, hrFileEnd[0], parseInt(hrFileEnd[1] / 1000000))
 
 							// onSuccess increase index for next filename and call readfile
 							i++;
 
 							if (i === tableNames.length) {
 								var hrend = process.hrtime(hrstart);
-								console.info('Execution time: %ds %dms', hrend[0], hrend[1] / 1000000)
+								console.info('Execution time: %ds %dms', parseInt(hrend[0], hrend[1] / 1000000))
 								process.exit();
 							} else {
 								loopFilesSynchonously();
