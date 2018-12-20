@@ -271,7 +271,7 @@ exports.up = function (db, callback) {
   -- Add triggers  
   ` + createTriggersSql();
 
-  console.log(sql);
+
   db.runSql(sql, callback)
 
 };

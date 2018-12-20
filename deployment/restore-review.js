@@ -23,7 +23,7 @@ const client = new pg.Client({
 client.connect();
 
 function errorHandler(error) {
-	console.log(error)
+	console.error(error)
 	process.exit();
 }
 
@@ -157,7 +157,7 @@ function readFiles(dirPath) {
 							}
 						},
 						error => {
-							errorHandler(`Error on execution of ${filename}: ${err}`)
+							errorHandler(`Error on execution of ${filename}: ${error}`)
 						}
 					)
 				};

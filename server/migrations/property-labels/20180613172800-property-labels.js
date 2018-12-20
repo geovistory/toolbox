@@ -214,7 +214,7 @@ exports.up = function (db, callback) {
     (1112, 'Names with this language', 'label_inversed.pl')
  
   ;`;
-  console.log(sql);
+
 
   db.runSql(sql, callback);
 
