@@ -157,7 +157,7 @@ function readFiles(dirPath) {
 							}
 						},
 						error => {
-							errorHandler(`Error on execution of ${filename}: ${error}`)
+							errorHandler(`Error on inerting of #${i + 1} of ${tableNames.length} files: ${filename}. Error: ${error}`)
 						}
 					)
 				};
