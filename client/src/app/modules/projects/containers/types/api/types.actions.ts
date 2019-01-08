@@ -1,7 +1,7 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DfhClass, InfNamespace, InfPersistentItem, PeItDetail } from 'app/core';
-import { CreateOrAddPeIt } from 'app/modules/information/containers/create-or-add-pe-it/api/create-or-add-pe-it.models';
+import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Types } from './types.models';
 
@@ -12,7 +12,7 @@ interface MetaData {
   type?: InfPersistentItem,
   peItDetail?: PeItDetail,
   namespace?: InfNamespace;
-  create?: CreateOrAddPeIt;
+  create?: CreateOrAddEntity;
 };
 export type TypesAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -75,7 +75,7 @@ export class TypesAPIActions {
  *  Methods related to the add form
  *********************************************************************/
   @dispatch()
-  openAddForm = (create: CreateOrAddPeIt): TypesAPIAction => ({
+  openAddForm = (create: CreateOrAddEntity): TypesAPIAction => ({
     type: TypesAPIActions.OPEN_ADD_FORM,
     meta: { create },
     payload: null

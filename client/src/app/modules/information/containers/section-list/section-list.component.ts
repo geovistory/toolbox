@@ -8,7 +8,7 @@ import { SectionListAPIEpics } from './api/section-list.epics';
 import { SectionListAPIActions } from './api/section-list.actions';
 import { sectionListReducer } from './api/section-list.reducer';
 import { DfhConfig } from '../../shared/dfh-config';
-import { CreateOrAddPeIt } from '../create-or-add-pe-it/api/create-or-add-pe-it.models';
+import { CreateOrAddEntity } from '../create-or-add-entity/api/create-or-add-entity.models';
 import { ClassAndTypePk } from '../class-and-type-selector/api/class-and-type-selector.models';
 import { createEntityAssociationDetail } from 'app/core/state/services/state-creator';
 import { dropLast } from 'ramda';
@@ -45,7 +45,7 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
-  @select() create$: Observable<CreateOrAddPeIt>;
+  @select() create$: Observable<CreateOrAddEntity>;
   @select() pkSections$: Observable<number[]>;
 
   pkProject$: Observable<number>

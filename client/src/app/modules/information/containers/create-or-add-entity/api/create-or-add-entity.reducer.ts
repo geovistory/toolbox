@@ -1,19 +1,19 @@
 import { indexBy, prop } from 'ramda';
 import { Action } from 'redux';
-import { CreateOrAddPeIt } from './create-or-add-pe-it.models';
-import { CreateOrAddPeItAPIAction, CreateOrAddPeItAPIActions } from './create-or-add-pe-it.actions';
+import { CreateOrAddEntity } from './create-or-add-entity.models';
+import { CreateOrAddEntityAPIAction, CreateOrAddEntityAPIActions } from './create-or-add-entity.actions';
 import { createPeItDetail, createTeEntDetail } from 'app/core/state/services/state-creator';
 import { InfPersistentItem, InfTemporalEntity } from 'app/core';
 import { PeItSearchExisting } from '../../pe-it-search-existing/api/pe-it-search-existing.models';
 
-const INITIAL_STATE = new CreateOrAddPeIt();
+const INITIAL_STATE = new CreateOrAddEntity();
 
-export function createOrAddPeItReducer(state: CreateOrAddPeIt = INITIAL_STATE, a: Action): CreateOrAddPeIt {
+export function createOrAddEntityReducer(state: CreateOrAddEntity = INITIAL_STATE, a: Action): CreateOrAddEntity {
 
-  const action = a as CreateOrAddPeItAPIAction;
+  const action = a as CreateOrAddEntityAPIAction;
 
   switch (action.type) {
-    case CreateOrAddPeItAPIActions.INIT_CREATE_FORM:
+    case CreateOrAddEntityAPIActions.INIT_CREATE_FORM:
 
       const template = {
         fk_class: action.meta.pkClass,
@@ -54,20 +54,20 @@ export function createOrAddPeItReducer(state: CreateOrAddPeIt = INITIAL_STATE, a
 
       break;
 
-    case CreateOrAddPeItAPIActions.LOAD:
+    case CreateOrAddEntityAPIActions.LOAD:
       state = {
         ...state,
         items: {}
       };
       break;
-    case CreateOrAddPeItAPIActions.LOAD_SUCCEEDED:
+    case CreateOrAddEntityAPIActions.LOAD_SUCCEEDED:
       state = {
         ...state,
         items: indexBy(prop('pk_entity'), action.meta.itemsArray)
       };
       break;
 
-    case CreateOrAddPeItAPIActions.LOAD_FAILED:
+    case CreateOrAddEntityAPIActions.LOAD_FAILED:
       state = {
         ...state,
         items: {}
@@ -79,7 +79,7 @@ export function createOrAddPeItReducer(state: CreateOrAddPeIt = INITIAL_STATE, a
     /*****************************************************
     * Reducers called on destroy of component
     *****************************************************/
-    case CreateOrAddPeItAPIActions.DESTROY:
+    case CreateOrAddEntityAPIActions.DESTROY:
       state = undefined;
       break;
 

@@ -1,5 +1,5 @@
 import { List } from 'app/modules/information/containers/list/api/list.models';
-import { CreateOrAddPeIt } from 'app/modules/information/containers/create-or-add-pe-it/api/create-or-add-pe-it.models';
+import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
 import { ClassAndTypeSelector } from 'app/modules/information/containers/class-and-type-selector/api/class-and-type-selector.models';
 import { PeItDetail } from 'app/core';
 
@@ -9,7 +9,7 @@ export class SourceList implements SourceList {
     // the list of sources (search result)
     list?: List;
     // if source being created
-    create?: CreateOrAddPeIt;
+    create?: CreateOrAddEntity;
     // the source being edited
     edit?: PeItDetail;
     // the source being removed

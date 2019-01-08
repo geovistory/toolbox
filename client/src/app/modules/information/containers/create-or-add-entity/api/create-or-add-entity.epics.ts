@@ -5,30 +5,30 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
-import { CreateOrAddPeItComponent } from '../create-or-add-pe-it.component';
-import { CreateOrAddPeItAPIActions, CreateOrAddPeItAPIAction } from './create-or-add-pe-it.actions';
+import { CreateOrAddEntityComponent } from '../create-or-add-entity.component';
+import { CreateOrAddEntityAPIActions, CreateOrAddEntityAPIAction } from './create-or-add-entity.actions';
 
 @Injectable()
-export class CreateOrAddPeItAPIEpics {
+export class CreateOrAddEntityAPIEpics {
   constructor(
     // private modelApi: any, // <- change the api
-    private actions: CreateOrAddPeItAPIActions,
+    private actions: CreateOrAddEntityAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions
   ) { }
 
-  public createEpics(c: CreateOrAddPeItComponent): Epic {
-    return combineEpics(this.createLoadCreateOrAddPeItEpic(c));
+  public createEpics(c: CreateOrAddEntityComponent): Epic {
+    return combineEpics(this.createLoadCreateOrAddEntityEpic(c));
   }
 
-  private createLoadCreateOrAddPeItEpic(c: CreateOrAddPeItComponent): Epic {
+  private createLoadCreateOrAddEntityEpic(c: CreateOrAddEntityComponent): Epic {
     return (action$, store) => {
       return action$.pipe(
         /**
          * Filter the actions that triggers this epic
          */
-        ofType(CreateOrAddPeItAPIActions.LOAD),
-        switchMap((action: CreateOrAddPeItAPIAction) => new Observable<Action>((globalStore) => {
+        ofType(CreateOrAddEntityAPIActions.LOAD),
+        switchMap((action: CreateOrAddEntityAPIAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
            */

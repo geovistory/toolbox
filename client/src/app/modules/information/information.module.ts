@@ -44,9 +44,9 @@ import { VersionPickerComponent } from './components/version-picker/version-pick
 import { ClassAndTypeSelectorAPIActions } from './containers/class-and-type-selector/api/class-and-type-selector.actions';
 import { ClassAndTypeSelectorAPIEpics } from './containers/class-and-type-selector/api/class-and-type-selector.epics';
 import { ClassAndTypeSelectorComponent } from './containers/class-and-type-selector/class-and-type-selector.component';
-import { CreateOrAddPeItAPIActions } from './containers/create-or-add-pe-it/api/create-or-add-pe-it.actions';
-import { CreateOrAddPeItAPIEpics } from './containers/create-or-add-pe-it/api/create-or-add-pe-it.epics';
-import { CreateOrAddPeItComponent } from './containers/create-or-add-pe-it/create-or-add-pe-it.component';
+import { CreateOrAddEntityAPIActions } from './containers/create-or-add-entity/api/create-or-add-entity.actions';
+import { CreateOrAddEntityAPIEpics } from './containers/create-or-add-entity/api/create-or-add-entity.epics';
+import { CreateOrAddEntityComponent } from './containers/create-or-add-entity/create-or-add-entity.component';
 import { InformationAPIActions } from './containers/information/api/information.actions';
 import { InformationAPIEpics } from './containers/information/api/information.epics';
 import { InformationComponent } from './containers/information/information.component';
@@ -288,7 +288,7 @@ import { InfTimePrimitivePipeModule } from 'app/shared/pipes/inf-time-primitive/
     TypeCtrlComponent,
     FieldHeaderComponent,
     TeEntHeaderComponent,
-    CreateOrAddPeItComponent,
+    CreateOrAddEntityComponent,
     PeItSearchExistingComponent,
     ListComponent,
     EntityAssociationCreateCtrlComponent,
@@ -381,8 +381,8 @@ import { InfTimePrimitivePipeModule } from 'app/shared/pipes/inf-time-primitive/
     MentionedEntityCtrlActions,
     MentioningListAPIActions,
     MentioningListAPIEpics,
-    CreateOrAddPeItAPIActions,
-    CreateOrAddPeItAPIEpics,
+    CreateOrAddEntityAPIActions,
+    CreateOrAddEntityAPIEpics,
     PeItSearchExistingAPIActions,
     PeItSearchExistingAPIEpics
 
@@ -461,7 +461,7 @@ import { InfTimePrimitivePipeModule } from 'app/shared/pipes/inf-time-primitive/
     // Reusable
     TextPropertyComponent,
     TeEntLabelComponent,
-    CreateOrAddPeItComponent,
+    CreateOrAddEntityComponent,
     PeItSearchExistingComponent,
     ListComponent,
     TeEntLabelComponent,

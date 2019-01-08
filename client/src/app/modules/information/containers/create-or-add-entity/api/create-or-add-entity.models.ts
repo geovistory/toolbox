@@ -3,7 +3,7 @@ import { PeItSearchExisting } from '../../pe-it-search-existing/api/pe-it-search
 import { ClassAndTypePk } from '../../class-and-type-selector/api/class-and-type-selector.models';
 
 // Class of this slice of store
-export class CreateOrAddPeIt implements CreateOrAddPeIt {
+export class CreateOrAddEntity implements CreateOrAddEntity {
     items?: {};
     loading?: boolean;
     error?: any;
@@ -15,7 +15,7 @@ export class CreateOrAddPeIt implements CreateOrAddPeIt {
     pkUiContext?: number;
     pkNamespace?: number; // this is used for creating E55 Types
 
-    constructor(data?: CreateOrAddPeIt) {
+    constructor(data?: CreateOrAddEntity) {
         Object.assign(this, data);
     }
 }
