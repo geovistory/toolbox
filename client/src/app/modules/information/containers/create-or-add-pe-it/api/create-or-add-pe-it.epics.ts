@@ -60,7 +60,7 @@ export class CreateOrAddPeItAPIEpics {
           //    options: {
           //      title: error.message
           //    }
-          //  }));         
+          //  }));
           //    /**
           //     * Emit the local action on loading failed
           //     */

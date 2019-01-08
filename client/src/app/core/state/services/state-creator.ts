@@ -438,14 +438,14 @@ export function createRoleDetailList(options: PropertyField, roles: InfRole[], c
 export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: InfRole[], crm: ProjectCrm, settings: StateSettings): ExistenceTimeDetail {
 
     const rolesByFkProp = groupBy(prop('fk_property'), roles) as { [index: number]: InfRole[] };
-    const rsts = clone(crm.classes[DfhConfig.ClASS_PK_TIME_SPAN].propertyFields);
+    const fieldList = clone(crm.classes[DfhConfig.ClASS_PK_TIME_SPAN].propertyFields);
     const fields: PropertyField[] = [];
-    const ext = new ExistenceTimeDetail()
+    const ext = new ExistenceTimeDetail(options)
 
 
-    if (isCreateContext(settings.pkUiContext)) return ext;
+    // if (isCreateContext(settings.pkUiContext)) return ext;
 
-    U.obj2Arr(rsts).forEach((rs: PropertyField) => {
+    U.obj2Arr(fieldList).forEach((rs: PropertyField) => {
 
 
         if (rolesByFkProp[rs.property.dfh_pk_property]) {
@@ -467,7 +467,7 @@ export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: I
 
     })
 
-    if (!fields.length) return null;
+    if (!fields.length && !isCreateContext(settings.pkUiContext)) return null;
     else {
         ext._fields = indexBy(propertyFieldKey, fields)
     }

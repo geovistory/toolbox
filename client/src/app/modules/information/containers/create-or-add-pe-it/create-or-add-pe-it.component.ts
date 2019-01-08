@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ClassConfig, IAppState, InfPersistentItem, PeItDetail, SubstoreComponent, U, InfPersistentItemApi, InfEntityAssociation, InfTypeNamespaceRel } from 'app/core';
+import { ClassConfig, IAppState, InfPersistentItem, PeItDetail, SubstoreComponent, U, InfPersistentItemApi, InfEntityAssociation, InfTypeNamespaceRel, TeEntDetail, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { Observable, Subject, combineLatest } from 'rxjs';
 import { CreateOrAddPeItAPIActions } from './api/create-or-add-pe-it.actions';
@@ -36,18 +36,22 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
-  @select() createForm$: Observable<PeItDetail>;
+  @select() createPeItForm$: Observable<PeItDetail>;
+  @select() createTeEnForm$: Observable<TeEntDetail>;
 
   // class of the peIt to add or create
   @select() classAndTypePk$: Observable<ClassAndTypePk>;
   @select() pkUiContext$: Observable<number>;
   @select() pkNamespace$: Observable<number>;
 
-  // emits the nested peIt, no matter if created, added, opened or selected!
-  @Output() done = new EventEmitter<InfPersistentItem>();
+  // emits the nested PeIt or TeEn, no matter if created, added, opened or selected!
+  @Output() done = new EventEmitter<InfPersistentItem | InfTemporalEntity>();
 
   // on cancel
   @Output() cancel = new EventEmitter<void>();
+
+  peIt: InfPersistentItem;
+  teEn: InfTemporalEntity;
 
 
   searchString$ = new Subject<string>();
@@ -61,7 +65,8 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
     protected rootEpics: RootEpics,
     private epics: CreateOrAddPeItAPIEpics,
     public ngRedux: NgRedux<IAppState>,
-    private peItApi: InfPersistentItemApi
+    private peItApi: InfPersistentItemApi,
+    private teEnApi: InfTemporalEntityApi
   ) {
     super()
   }
@@ -142,15 +147,19 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
     )
   }
 
-  onCreateNew(peIt: InfPersistentItem) {
-    this.peItApi.findOrCreatePeIt(this.ngRedux.getState().activeProject.pk_project, peIt).subscribe(
-      (peIts) => { this.done.emit(peIts[0]) }
-    )
-  }
-
   submitCreateForm() {
-    if (this.form.form.valid) {
-      this.onCreateNew(this.form.form.value.peIt)
+    // Create PeIt
+    if (this.form.form.valid && this.form.form.value.peIt) {
+      this.peItApi.findOrCreatePeIt(this.ngRedux.getState().activeProject.pk_project, this.form.form.value.peIt).subscribe(
+        (peIts) => { this.done.emit(peIts[0]) }
+      )
+    }
+
+    // Find or create TeEn
+    if (this.form.form.valid && this.form.form.value.teEn) {
+      this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_project, this.form.form.value.teEn.temporal_entity).subscribe(
+        (teEns) => { this.done.emit(teEns[0]) }
+      )
     }
   }
 

@@ -13,10 +13,10 @@
 
     <div *ngFor="let item of (_fields$ | async) | keys; trackBy:getKey">
 
-      <gv-existence-time-editable *ngIf="item.value.type === 'ExistenceTimeDetail'" [basePath]="basePath.concat('_fields').concat(item.key)"
+      <gv-existence-time-editable *ngIf="item.value.type === 'ExistenceTimeDetail' && formGroup?.controls[item.key]" [basePath]="basePath.concat('_fields').concat(item.key)"
         (onRemovePropSet)="removePropSet(item.key)" mode="create" [formControlName]="item.key" (touched)="markAsTouched()"></gv-existence-time-editable>
 
-      <gv-te-ent-property-field-create-ctrl *ngIf="item.value.type === 'PropertyField'" [parentPath]="basePath"
+      <gv-te-ent-property-field-create-ctrl *ngIf="item.value.type === 'PropertyField' && formGroup?.controls[item.key]" [parentPath]="basePath"
         [parentTeEntStatePath]="basePath" [index]="item.key" (onRemovePropertyField)="removePropertyField(item.key)"
         [formControlName]="item.key" (touched)="markAsTouched()"></gv-te-ent-property-field-create-ctrl>
 

@@ -127,7 +127,6 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
   initSubscriptions() {
     this._fields$.takeUntil(this.destroy$).subscribe(fields => {
       this.propertyFields = fields;
-      console.log('Im here 2')
     })
 
     // this.fkClass$.takeUntil(this.destroy$).subscribe(fkClass => {

@@ -32,8 +32,6 @@ export class TeEntLabelComponent implements OnInit, OnDestroy {
 
     this.fields$.takeUntil(this.destroy$).subscribe(fields => {
 
-      console.log('Im here')
-
       if (this.toggle === 'expanded') {
 
         // create full version label with all children

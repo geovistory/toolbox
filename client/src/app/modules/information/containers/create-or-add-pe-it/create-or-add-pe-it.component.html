@@ -13,8 +13,13 @@
       <h4 class="mb-3">Create a new {{classConfig?.label}}</h4>
 
       <form #f="ngForm" (ngSubmit)="submitCreateForm()">
-        <gv-pe-it-create-ctrl *ngIf="(createForm$ | async)" [basePath]="basePath.concat('createForm')" name="peIt"
-          [(ngModel)]="peIt" #val="ngModel" required (onValueChange)="onValueChange($event)" ></gv-pe-it-create-ctrl>
+
+        <gv-pe-it-create-ctrl *ngIf="(createPeItForm$ | async)" [basePath]="basePath.concat('createPeItForm')" name="peIt"
+          [(ngModel)]="peIt" #val="ngModel" required (onValueChange)="onValueChange($event)"></gv-pe-it-create-ctrl>
+
+        <gv-te-ent-create-ctrl *ngIf="(createTeEnForm$ | async)" [basePath]="basePath.concat('createTeEnForm')" name="teEn"
+          [(ngModel)]="teEn" #val="ngModel" required (onValueChange)="onValueChange($event)"></gv-te-ent-create-ctrl>
+
         <button class="btn btn-primary mt-3 mr-2" type="submit" [disabled]="f.invalid && f.submitted">
           Create {{classConfig?.label}}
         </button>
@@ -32,7 +37,8 @@
       <h4 class="mb-3" *ngIf="selectPeItMode">...or select an existing {{classConfig?.label}}</h4>
 
       <gv-pe-it-search-existing [basePath]="basePath.concat('searchExisting')" [selectPeItMode]="selectPeItMode"
-        [searchString$]="searchString$" (onAddExisting)="onAddExisting($event)" (onOpenExisting)="onOpenExisting($event)" (onSelect)="onOpenExisting($event)"></gv-pe-it-search-existing>
+        [searchString$]="searchString$" (onAddExisting)="onAddExisting($event)" (onOpenExisting)="onOpenExisting($event)"
+        (onSelect)="onOpenExisting($event)"></gv-pe-it-search-existing>
     </div>
 
   </div>

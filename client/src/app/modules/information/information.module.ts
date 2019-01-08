@@ -148,6 +148,7 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
+import { InfTimePrimitivePipeModule } from 'app/shared/pipes/inf-time-primitive/inf-time-primitive.module';
 
 
 
@@ -184,6 +185,7 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     TableModule,
     QuillDeltaToStrModule,
     TimePrimitivePipeModule,
+    InfTimePrimitivePipeModule,
     TimeSpanPipeModule,
     DragDropModule
   ],

@@ -1,4 +1,4 @@
-import { PeItDetail } from 'app/core';
+import { PeItDetail, TeEntDetail } from 'app/core';
 import { PeItSearchExisting } from '../../pe-it-search-existing/api/pe-it-search-existing.models';
 import { ClassAndTypePk } from '../../class-and-type-selector/api/class-and-type-selector.models';
 
@@ -8,7 +8,8 @@ export class CreateOrAddPeIt implements CreateOrAddPeIt {
     loading?: boolean;
     error?: any;
 
-    createForm?: PeItDetail;
+    createPeItForm?: PeItDetail;
+    createTeEnForm?: TeEntDetail;
     searchExisting?: PeItSearchExisting;
     classAndTypePk?: ClassAndTypePk;
     pkUiContext?: number;

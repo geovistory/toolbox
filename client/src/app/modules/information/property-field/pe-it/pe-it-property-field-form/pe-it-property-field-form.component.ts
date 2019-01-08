@@ -174,11 +174,28 @@ export class PeItPropertyFieldFormComponent extends PropertyFieldFormBase {
 
       Object.keys(this.createForm.controls).forEach(key => {
         if (this.createForm.get(key)) {
+
+          const role: InfRole = this.createForm.get(key).value;
+
+          // add the circular role from peIt to TeEn also to the TeEn.
+          // This is ensures that all identity defining roles are available when
+          // the TeEn roles are sent to the TeEn Api to Create or Find TeEns.
+          if (role && role.temporal_entity) {
+            role.temporal_entity.te_roles = [
+              ...role.temporal_entity.te_roles,
+              {
+                fk_entity: role.fk_entity,
+                fk_property: role.fk_property,
+              } as InfRole
+            ]
+          }
+
           // add roles to create to peIt
-          p.pi_roles.push(this.createForm.get(key).value)
+          p.pi_roles.push(role)
+
+
         }
       })
-      // console.log(p)
 
       // call api
       this.subs.push(this.peItApi.findOrCreatePeIt(this.ngRedux.getState().activeProject.pk_project, p).subscribe(peIts => {
