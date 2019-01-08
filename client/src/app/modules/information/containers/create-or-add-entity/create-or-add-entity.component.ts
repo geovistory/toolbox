@@ -1,34 +1,33 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ElementRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ClassConfig, IAppState, InfPersistentItem, PeItDetail, SubstoreComponent, U, InfPersistentItemApi, InfEntityAssociation, InfTypeNamespaceRel } from 'app/core';
+import { ClassConfig, IAppState, InfEntityAssociation, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, InfTypeNamespaceRel, PeItDetail, SubstoreComponent, TeEntDetail, U } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { Observable, Subject, combineLatest } from 'rxjs';
-import { CreateOrAddPeItAPIActions } from './api/create-or-add-pe-it.actions';
-import { CreateOrAddPeItAPIEpics } from './api/create-or-add-pe-it.epics';
-import { CreateOrAddPeIt } from './api/create-or-add-pe-it.models';
-import { createOrAddPeItReducer } from './api/create-or-add-pe-it.reducer';
-import { ClassAndTypePk } from '../class-and-type-selector/api/class-and-type-selector.models';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
 import * as Config from '../../../../../../../common/config/Config';
-import { takeUntil, first } from 'rxjs/operators';
-import { PeItCreateCtrlComponent } from '../../data-unit/pe-it/pe-it-create-ctrl/pe-it-create-ctrl.component';
+import { ClassAndTypePk } from '../class-and-type-selector/api/class-and-type-selector.models';
+import { CreateOrAddEntityAPIActions } from './api/create-or-add-entity.actions';
+import { CreateOrAddEntityAPIEpics } from './api/create-or-add-entity.epics';
+import { CreateOrAddEntity } from './api/create-or-add-entity.models';
+import { createOrAddEntityReducer } from './api/create-or-add-entity.reducer';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
-  localReducer: createOrAddPeItReducer
+  localReducer: createOrAddEntityReducer
 })
 @Component({
-  selector: 'gv-create-or-add-pe-it',
-  templateUrl: './create-or-add-pe-it.component.html',
-  styleUrls: ['./create-or-add-pe-it.component.css']
+  selector: 'gv-create-or-add-entity',
+  templateUrl: './create-or-add-entity.component.html',
+  styleUrls: ['./create-or-add-entity.component.css']
 })
-export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions implements OnInit, OnDestroy, SubstoreComponent {
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
   // local store of this component
-  localStore: ObservableStore<CreateOrAddPeIt>;
+  localStore: ObservableStore<CreateOrAddEntity>;
 
   // path to the substore
   @Input() basePath: string[];
@@ -36,18 +35,22 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
-  @select() createForm$: Observable<PeItDetail>;
+  @select() createPeItForm$: Observable<PeItDetail>;
+  @select() createTeEnForm$: Observable<TeEntDetail>;
 
   // class of the peIt to add or create
   @select() classAndTypePk$: Observable<ClassAndTypePk>;
   @select() pkUiContext$: Observable<number>;
   @select() pkNamespace$: Observable<number>;
 
-  // emits the nested peIt, no matter if created, added, opened or selected!
-  @Output() done = new EventEmitter<InfPersistentItem>();
+  // emits the nested PeIt or TeEn, no matter if created, added, opened or selected!
+  @Output() done = new EventEmitter<InfPersistentItem | InfTemporalEntity>();
 
   // on cancel
   @Output() cancel = new EventEmitter<void>();
+
+  peIt: InfPersistentItem;
+  teEn: InfTemporalEntity;
 
 
   searchString$ = new Subject<string>();
@@ -59,9 +62,10 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
 
   constructor(
     protected rootEpics: RootEpics,
-    private epics: CreateOrAddPeItAPIEpics,
+    private epics: CreateOrAddEntityAPIEpics,
     public ngRedux: NgRedux<IAppState>,
-    private peItApi: InfPersistentItemApi
+    private peItApi: InfPersistentItemApi,
+    private teEnApi: InfTemporalEntityApi
   ) {
     super()
   }
@@ -69,7 +73,7 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
   getBasePath = () => this.basePath;
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, createOrAddPeItReducer);
+    this.localStore = this.ngRedux.configureSubStore(this.basePath, createOrAddEntityReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
 
@@ -142,15 +146,19 @@ export class CreateOrAddPeItComponent extends CreateOrAddPeItAPIActions implemen
     )
   }
 
-  onCreateNew(peIt: InfPersistentItem) {
-    this.peItApi.findOrCreatePeIt(this.ngRedux.getState().activeProject.pk_project, peIt).subscribe(
-      (peIts) => { this.done.emit(peIts[0]) }
-    )
-  }
-
   submitCreateForm() {
-    if (this.form.form.valid) {
-      this.onCreateNew(this.form.form.value.peIt)
+    // Create PeIt
+    if (this.form.form.valid && this.form.form.value.peIt) {
+      this.peItApi.findOrCreatePeIt(this.ngRedux.getState().activeProject.pk_project, this.form.form.value.peIt).subscribe(
+        (peIts) => { this.done.emit(peIts[0]) }
+      )
+    }
+
+    // Find or create TeEn
+    if (this.form.form.valid && this.form.form.value.teEn) {
+      this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_project, this.form.form.value.teEn.temporal_entity).subscribe(
+        (teEns) => { this.done.emit(teEns[0]) }
+      )
     }
   }
 

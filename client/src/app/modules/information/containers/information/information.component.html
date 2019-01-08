@@ -22,8 +22,8 @@
 </div>
 
 <div *ngIf="(_peIt_add$ | async)" class="gv-flex-fh">
-  <gv-create-or-add-pe-it class="gv-flex-fh" [basePath]="basePath.concat('_peIt_add')" (done)="openEntity($event.pk_entity)"
-    (cancel)="stopCreate()"></gv-create-or-add-pe-it>
+  <gv-create-or-add-entity class="gv-flex-fh" [basePath]="basePath.concat('_peIt_add')" (done)="openEntity($event.pk_entity)"
+    (cancel)="stopCreate()"></gv-create-or-add-entity>
 </div>
 
 

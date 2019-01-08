@@ -1,5 +1,5 @@
 import { PeItDetail, InfPersistentItem, DataUnitPreview, TeEntDetail } from 'app/core';
-import { CreateOrAddPeIt } from '../../create-or-add-pe-it/api/create-or-add-pe-it.models';
+import { CreateOrAddEntity } from '../../create-or-add-entity/api/create-or-add-entity.models';
 import { ClassAndTypeSelector } from '../../class-and-type-selector/api/class-and-type-selector.models';
 import { List } from '../../list/api/list.models';
 
@@ -28,7 +28,7 @@ export class Information {
     _teEnt_editable?: TeEntDetail;
 
     // the peIt to add or create
-    _peIt_add?: CreateOrAddPeIt;
+    _peIt_add?: CreateOrAddEntity;
 
     // class and type selector
     classAndTypeSelector?: ClassAndTypeSelector;

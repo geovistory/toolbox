@@ -39,8 +39,8 @@
 
   <!-- Add new type -->
   <!-- <gv-type-add-form *ngIf="(add$ | async)" (cancel)="closeAddForm()" (create)="createType($event)"></gv-type-add-form> -->
-  <gv-create-or-add-pe-it *ngIf="(add$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('add')" (done)="added($event)"
-    (cancel)="closeAddForm()"></gv-create-or-add-pe-it>
+  <gv-create-or-add-entity *ngIf="(add$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('add')" (done)="added($event)"
+    (cancel)="closeAddForm()"></gv-create-or-add-entity>
 
 
   <!-- Edit existing Type -->

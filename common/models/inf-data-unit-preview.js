@@ -125,7 +125,7 @@ module.exports = function (InfDataUnitPreview) {
         ${whereEntityType}
         ` + ((pkClasses && pkClasses.length) ? `AND fk_class IN (${pkClassParamNrs})` : '') + `
 
-        ORDER BY ts_rank(ts_vector, q) DESC, entity_label
+        ORDER BY ts_rank(ts_vector, q) DESC, entity_label asc
         LIMIT $2
         OFFSET $3;
         `;

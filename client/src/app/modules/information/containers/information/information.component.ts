@@ -6,7 +6,7 @@ import { RootEpics } from 'app/core/store/epics';
 import { combineLatest, Observable, Subject } from 'rxjs';
 // import { EntityAddModalComponent } from '../../add-modal/entity-add-modal/entity-add-modal.component';
 import { first, takeUntil, filter } from 'rxjs/operators';
-import { CreateOrAddPeIt } from '../create-or-add-pe-it/api/create-or-add-pe-it.models';
+import { CreateOrAddEntity } from '../create-or-add-entity/api/create-or-add-entity.models';
 import { InformationAPIActions } from './api/information.actions';
 import { InformationAPIEpics } from './api/information.epics';
 import { Information } from './api/information.models';
@@ -34,7 +34,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
 
   @select() _peIt_editable$: Observable<PeItDetail>;
   @select() _teEnt_editable$: Observable<TeEntDetail>;
-  @select() _peIt_add$: Observable<CreateOrAddPeIt>;
+  @select() _peIt_add$: Observable<CreateOrAddEntity>;
   @select() loading$: Observable<boolean>;
 
   selectedDataUnit$: Observable<DataUnitPreview>;

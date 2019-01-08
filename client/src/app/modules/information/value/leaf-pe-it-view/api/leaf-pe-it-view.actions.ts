@@ -3,13 +3,13 @@ import { Injectable } from '@angular/core';
 import { PeItDetail, ProjectDetail } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { LeafPeItView } from './leaf-pe-it-view.models';
-import { CreateOrAddPeIt } from 'app/modules/information/containers/create-or-add-pe-it/api/create-or-add-pe-it.models';
+import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
 
 type Payload = LeafPeItView;
 interface MetaData {
   pkEntity?: number,
   peItDetail?: PeItDetail;
-  selectOrCreate?: CreateOrAddPeIt
+  selectOrCreate?: CreateOrAddEntity
 };
 export type LeafPeItViewAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -68,7 +68,7 @@ export class LeafPeItViewAPIActions {
 
 
   @dispatch()
-  openModal = (selectOrCreate: CreateOrAddPeIt): LeafPeItViewAPIAction => ({
+  openModal = (selectOrCreate: CreateOrAddEntity): LeafPeItViewAPIAction => ({
     type: LeafPeItViewAPIActions.OPEN_SELECT_OR_CREATE_MODAL,
     meta: { selectOrCreate },
     payload: null,

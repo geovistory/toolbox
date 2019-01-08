@@ -1,13 +1,13 @@
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { Information2Module } from '../../information.module';
-import { CreateOrAddPeItComponent } from './create-or-add-pe-it.component';
-import { CreateOrAddPeIt } from './api/create-or-add-pe-it.models';
+import { CreateOrAddEntityComponent } from './create-or-add-entity.component';
+import { CreateOrAddEntity } from './api/create-or-add-entity.models';
 import { ComConfig } from 'app/core';
 
 
 
-export default sandboxOf(CreateOrAddPeItComponent, {
+export default sandboxOf(CreateOrAddEntityComponent, {
     declareComponent: false,
     imports: [
         Information2Module,
@@ -16,21 +16,21 @@ export default sandboxOf(CreateOrAddPeItComponent, {
 })
     .add('Create or Add PeIt', {
         context: {
-            basePath: ['sandboxState', 'createOrAddPeIt'],
+            basePath: ['sandboxState', 'createOrAddEntity'],
             sandboxState: {
-                createOrAddPeIt: {
+                createOrAddEntity: {
                     pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE,
                     classAndTypePk: {
                         pkClass: 21
                     }
-                } as CreateOrAddPeIt
+                } as CreateOrAddEntity
             }
         },
         template: `
         <gv-init-state [sandboxState]="sandboxState" [projectFromApi]="8"  (ok)="ok = true">
             <div *ngIf="ok" class="d-flex justify-content-center mt-5">
                 <div style="width:700px;height:400px">
-                        <gv-create-or-add-pe-it [basePath]="basePath" (done)="item = $event" (cancel)="cancelled = 'cancelled'"></gv-create-or-add-pe-it>
+                        <gv-create-or-add-entity [basePath]="basePath" (done)="item = $event" (cancel)="cancelled = 'cancelled'"></gv-create-or-add-entity>
                 </div>
                 <div>
                     {{cancelled}}

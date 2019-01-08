@@ -7,8 +7,8 @@
     </div>
     <div class="modal-body">
 
-        <gv-create-or-add-pe-it class="gv-flex-fh" [selectPeItMode]="'true'" [basePath]="basePath.concat('selectOrCreate')" (done)="modal.close($event.pk_entity)"
-            (cancel)="modal.dismiss()"></gv-create-or-add-pe-it>
+        <gv-create-or-add-entity class="gv-flex-fh" [selectPeItMode]="'true'" [basePath]="basePath.concat('selectOrCreate')" (done)="modal.close($event.pk_entity)"
+            (cancel)="modal.dismiss()"></gv-create-or-add-entity>
 
 
     </div>

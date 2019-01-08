@@ -1,3 +1,3 @@
 <form [formGroup]="formGroup" *ngIf="formGroup && formGroup.get(formControlName)">
-  <gv-te-ent-create-ctrl [parentPath]="basePath" [formControlName]="formControlName" (touched)="markAsTouched()"> </gv-te-ent-create-ctrl>
+  <gv-te-ent-create-ctrl [basePath]="basePath.concat('_teEnt')" [formControlName]="formControlName" (touched)="markAsTouched()"> </gv-te-ent-create-ctrl>
 </form>

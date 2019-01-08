@@ -1,12 +1,12 @@
 import { DfhClass, InfNamespace, InfPersistentItem } from 'app/core';
 import { TypeEditFormI } from '../../type-edit-form/api/type-edit-form.models';
-import { CreateOrAddPeIt } from 'app/modules/information/containers/create-or-add-pe-it/api/create-or-add-pe-it.models';
+import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
 
 
 // Class of this slice of store
 export class Types  {
     items?: {};
-    add?: CreateOrAddPeIt;
+    add?: CreateOrAddEntity;
     edit?: boolean | TypeEditFormI;
     loading?: boolean;
     class?: DfhClass;

@@ -2,9 +2,9 @@
 
 const Promise = require('bluebird');
 
-module.exports = function(InfTemporalEntity) {
+module.exports = function (InfTemporalEntity) {
 
-  InfTemporalEntity.changeTeEntProjectRelation = function(projectId, isInProject, data, ctx) {
+  InfTemporalEntity.changeTeEntProjectRelation = function (projectId, isInProject, data, ctx) {
     let requestedTeEnt;
 
     if (ctx) {
@@ -17,7 +17,7 @@ module.exports = function(InfTemporalEntity) {
       .then(resultingEpr => {
 
         // attatch the new epr to the teEnt
-        if(requestedTeEnt.entity_version_project_rels && resultingEpr){
+        if (requestedTeEnt.entity_version_project_rels && resultingEpr) {
           requestedTeEnt.entity_version_project_rels = [resultingEpr];
         }
 
@@ -32,10 +32,10 @@ module.exports = function(InfTemporalEntity) {
           // returned together with all nested items
           return Promise.map(requestedTeEnt.te_roles.filter(role => (role)), (role) => {
 
-              // add role to project
-              return InfRole.changeRoleProjectRelation(projectId, isInProject, role);
+            // add role to project
+            return InfRole.changeRoleProjectRelation(projectId, isInProject, role);
 
-            })
+          })
             .then((roles) => {
 
               requestedTeEnt.te_roles = [];
@@ -64,7 +64,7 @@ module.exports = function(InfTemporalEntity) {
   }
 
 
-  InfTemporalEntity.findOrCreateInfTemporalEntity = function(projectId, data, ctx) {
+  InfTemporalEntity.findOrCreateInfTemporalEntity = function (projectId, data, ctx) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
@@ -80,52 +80,250 @@ module.exports = function(InfTemporalEntity) {
       requestedTeEnt = data;
     }
 
-    return InfTemporalEntity.findOrCreatePeItOrTeEnt(InfTemporalEntity, projectId, dataObject)
-      .then((resultingTeEnts) => {
 
-        //TODO pick first item of array
-        const resultingTeEnt = resultingTeEnts[0];
+    return InfTemporalEntity.resolveRoleValues(requestedTeEnt.te_roles).then(resolvedRoles => {
 
-        // if there are roles going from the teEnt to a peIt …
-        if (requestedTeEnt.te_roles) {
+      const teEnWithResolvedRoles = {
+        ...requestedTeEnt,
+        te_roles: resolvedRoles
+      }
+      return InfTemporalEntity.findOrCreateTeEnt(projectId, teEnWithResolvedRoles)
+        .then((resultingTeEnts) => {
 
-          // prepare parameters
-          const InfRole = InfTemporalEntity.app.models.InfRole;
+          //TODO pick first item of array
+          const resultingTeEnt = resultingTeEnts[0];
 
-          //… filter roles that are truthy (not null), iterate over them,
-          // return the promise that the teEnt will be
-          // returned together with all nested items
-          return Promise.map(requestedTeEnt.te_roles.filter(role => (role)), (role) => {
+          // if there are roles going out of the teEnt …
+          if (requestedTeEnt.te_roles) {
+
+            // prepare parameters
+            const InfRole = InfTemporalEntity.app.models.InfRole;
+
+            //… filter roles that are truthy (not null), iterate over them,
+            // return the promise that the teEnt will be
+            // returned together with all nested items
+            return Promise.map(requestedTeEnt.te_roles.filter(role => (role)), (role) => {
               // use the pk_entity from the created teEnt to set the fk_temporal_entity of the role
               role.fk_temporal_entity = resultingTeEnt.pk_entity;
 
               // find or create the Entity and the role pointing to the Entity
               return InfRole.findOrCreateInfRole(projectId, role);
             })
-            .then((roles) => {
+              .then((roles) => {
 
-              //attach the roles to resultingTeEnt
-              let res = resultingTeEnt.toJSON();
-              res.te_roles = [];
-              for (var i = 0; i < roles.length; i++) {
-                const role = roles[i];
-                if (role && role[0]) {
-                  res.te_roles.push(role[0]);
+                //attach the roles to resultingTeEnt
+                let res = resultingTeEnt.toJSON();
+                res.te_roles = [];
+                for (var i = 0; i < roles.length; i++) {
+                  const role = roles[i];
+                  if (role && role[0]) {
+                    res.te_roles.push(role[0]);
+                  }
                 }
-              }
 
-              console.log(res)
+                console.log(res)
 
-              return [res];
+                return [res];
 
-            })
-            .catch((err) => {
-              return err;
-            })
-        }
-      });
+              })
+              .catch((err) => {
+                return err;
+              })
+          }
+        });
 
+    })
   }
+
+  InfTemporalEntity.resolveRoleValues = function (te_roles) {
+    return new Promise((resolve, reject) => {
+      if (!te_roles || !te_roles.length) resolve([])
+
+      const te_roles_with_fk_entity = te_roles
+        .filter(role => !!role.fk_entity)
+        .map(role => ({ fk_property: role.fk_property, fk_entity: role.fk_entity }));
+
+      const te_roles_without_fk_entity = te_roles.filter(role => !role.fk_entity);
+
+      Promise.all(
+        te_roles_without_fk_entity.map(role => {
+
+          // Time Primitive
+          if (role.time_primitive && Object.keys(role.time_primitive).length) {
+            const InfTimePrimitive = InfTemporalEntity.app.models.InfTimePrimitive;
+
+            return new Promise((res, rej) => {
+              InfTimePrimitive.create(role.time_primitive)
+                .then(obj => {
+                  res({
+                    fk_property: role.fk_property,
+                    fk_entity: obj.pk_entity
+                  })
+                })
+            })
+          }
+
+          // Language
+          if (role.language && Object.keys(role.language).length) {
+            const InfLanguage = InfTemporalEntity.app.models.InfLanguage;
+
+            return new Promise((res, rej) => {
+              InfLanguage.find({ "where": { "pk_entity": role.language.pk_entity } })
+                .then(objs => {
+                  res({
+                    fk_property: role.fk_property,
+                    fk_entity: objs[0].pk_entity
+                  })
+                })
+            })
+          }
+
+          // Place
+          if (role.place && Object.keys(role.place).length) {
+            const InfPlace = InfTemporalEntity.app.models.InfPlace;
+
+            return new Promise((res, rej) => {
+              InfPlace.findOrCreatePlace(projectId, role.place)
+                .then(obj => {
+                  res({
+                    fk_property: role.fk_property,
+                    fk_entity: obj.pk_entity
+                  })
+                })
+            })
+          }
+
+          // Appellation
+          if (role.appellation && Object.keys(role.appellation).length) {
+            const InfAppellation = InfTemporalEntity.app.models.InfAppellation;
+
+            return new Promise((res, rej) => {
+              InfAppellation.create(role.appellation)
+                .then(obj => {
+                  res({
+                    fk_property: role.fk_property,
+                    fk_entity: obj.pk_entity
+                  })
+                })
+            })
+          }
+
+        })
+      ).then(resolvedRoles => {
+        resolve([...te_roles_with_fk_entity, ...resolvedRoles]);
+      })
+        .catch(error => reject(error))
+
+    })
+  }
+
+  InfTemporalEntity.findOrCreateTeEnt = function (projectId, dataObject) {
+
+    // cleanup data object: remove all undefined properties to avoid creating e.g. pk_entity = undefined 
+    Object.keys(dataObject).forEach(key => {
+      if (dataObject[key] == undefined) {
+        delete dataObject[key]
+      }
+    })
+
+    const InfEntityProjectRel = InfTemporalEntity.app.models.InfEntityProjectRel;
+
+    const filter = {
+      where: dataObject,
+      include: {
+        relation: "entity_version_project_rels",
+        scope: {
+          where: {
+            fk_project: projectId
+          }
+        }
+      }
+    }
+
+    const find = function (pk_entity) {
+      //find the entity and include the epr
+      return InfTemporalEntity.findOne({
+        where: {
+          pk_entity: pk_entity
+        },
+        include: {
+          relation: "entity_version_project_rels",
+          scope: {
+            where: {
+              fk_project: projectId
+            }
+          }
+        }
+      }).then((res) => {
+        return [res];
+      })
+        .catch(err => err);
+    }
+
+
+    // If there is a pk_entity, find the record
+    if (dataObject.pk_entity) {
+      //find the entity and include the epr
+      return InfTemporalEntity.findOne({
+        where: {
+          pk_entity: dataObject.pk_entity
+        },
+        include: {
+          relation: "entity_version_project_rels",
+          scope: {
+            where: {
+              fk_project: projectId
+            }
+          }
+        }
+      }).then((res) => {
+        return [res];
+      }).catch(err => err);
+    }
+
+    // If there is no pk_entity, create the record
+    else {
+      return new Promise((resolve, reject) => {
+
+        const sql_stmt = `SELECT * from information.temporal_entity_find_or_create( $1, $2::jsonb )`
+        const params = [dataObject.fk_class, JSON.stringify(dataObject.te_roles)]
+
+        const connector = InfTemporalEntity.dataSource.connector;
+        connector.execute(sql_stmt, params, (err, resultObjects) => {
+
+          if (err) reject(err);
+          const resultingEntity = resultObjects[0];
+          if (!resultingEntity) reject('Something went wrong with creating TeEn');
+
+          // create the project relation
+
+          let reqEpr = {};
+
+          // create a new epr 
+          var newEpr = new InfEntityProjectRel({
+            "fk_entity": resultingEntity.pk_entity,
+
+            "fk_project": projectId,
+
+            // use the requested value or true
+            "is_in_project": [reqEpr.is_in_project, true].find(item => item !== undefined),
+          })
+
+          // persist epr in DB
+          return newEpr.save().then(resultingEpr => {
+            resolve(find(resultingEpr.fk_entity));
+          });
+
+
+        });
+
+
+      })
+
+    }
+
+
+  };
 
 
   /**
@@ -145,13 +343,13 @@ module.exports = function(InfTemporalEntity) {
     return InfTemporalEntity.findComplex(filter, cb);
   }
 
-    /**
-   * graphs - get a rich object of the TeEn with all its
-   * roles
-   *
-   * @param  {number} pkProject primary key of project
-   * @param  {number} pkEntity  pk_entity of the teEn
-   */
+  /**
+ * graphs - get a rich object of the TeEn with all its
+ * roles
+ *
+ * @param  {number} pkProject primary key of project
+ * @param  {number} pkEntity  pk_entity of the teEn
+ */
   InfTemporalEntity.graphs = function (ofProject, pkProject, pkEntities, cb) {
 
     const filter = {
@@ -180,17 +378,17 @@ module.exports = function(InfTemporalEntity) {
    * @returns include object of findComplex filter
    */
   InfTemporalEntity.getIncludeObject = function (ofProject, pkProject) {
-    
+
     let projectJoin = {};
-    
+
     // if a pkProject is provided, create the relation
-    if(pkProject){
+    if (pkProject) {
       // get the join object. If ofProject is false, the join will be a left join.
       projectJoin = {
-        "entity_version_project_rels":InfTemporalEntity.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+        "entity_version_project_rels": InfTemporalEntity.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
       }
     }
-  
+
 
     return {
       ...projectJoin,

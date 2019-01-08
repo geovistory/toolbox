@@ -19,7 +19,7 @@ export default sandboxOf(TeEntCreateCtrlComponent, {
         context: {
             model: {
             },
-            parentPath: ['_role_detail_1'],
+            basePath: ['_role_detail_1', '_teEnt'],
             initState: {
                 _role_detail_1: {
                     _teEnt: {
@@ -67,7 +67,7 @@ export default sandboxOf(TeEntCreateCtrlComponent, {
             <div class="d-flex justify-content-center mt-5">
                 <div style="width:430px;height:400px" class="d-flex">
                     <form #f="ngForm">
-                        <gv-te-ent-create-ctrl [parentPath]="parentPath"
+                        <gv-te-ent-create-ctrl [basePath]="basePath"
                             name="val" [(ngModel)]="model.val" #val="ngModel" required>
                         </gv-te-ent-create-ctrl>
                     </form>                               

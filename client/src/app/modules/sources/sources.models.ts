@@ -3,7 +3,7 @@ import { TypeDetail } from 'app/core/state/models/type-detail';
 import { IAnnotationPanelState } from 'app/modules/annotation/annotation.models';
 import { IVersion } from '../information/components/version-picker/version-picker.component';
 import { ClassAndTypeSelector } from '../information/containers/class-and-type-selector/api/class-and-type-selector.models';
-import { CreateOrAddPeIt } from '../information/containers/create-or-add-pe-it/api/create-or-add-pe-it.models';
+import { CreateOrAddEntity } from '../information/containers/create-or-add-entity/api/create-or-add-entity.models';
 import { List } from '../information/containers/list/api/list.models';
 
 
@@ -17,7 +17,7 @@ export interface ISourceListState {
     // the list of sources (search result)
     list?: List,
     // if source being created
-    create?: CreateOrAddPeIt,
+    create?: CreateOrAddEntity,
     // the source being edited
     edit?: ISourceDetailState,
     // the source being removed

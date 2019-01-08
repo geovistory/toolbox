@@ -26,7 +26,7 @@ import { teEntReducer } from './te-ent.reducer';
 export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValueAccessor, OnInit {
 
 
-    basePath: string[];
+    @Input() basePath: string[];
     @select() teEnt$: Observable<InfTemporalEntity>
     @select() toggle$: Observable<boolean>
 
@@ -52,28 +52,17 @@ export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValue
         this.initForm()
     }
 
-    // @WithSubStore needs a empty string for root
-    getBasePath = () => {
-        return this.parentPath ? [...this.parentPath, '_teEnt'] : ''
-    }
-
-
-    // ngRedux.configureSubStore needs a empty array for root
-    getBaseForConfigSubStore = () => {
-        return this.parentPath ? [...this.parentPath, '_teEnt'] : []
-    }
+    getBasePath = () => this.basePath;
 
     init() {
 
-        this.basePath = this.getBaseForConfigSubStore();
-    
         this.onInitTeEntBaseChild()
     }
 
 
     // gets called by base class onInit
     initStore() {
-        this.localStore = this.ngRedux.configureSubStore(this.getBaseForConfigSubStore(), teEntReducer);
+        this.localStore = this.ngRedux.configureSubStore(this.basePath, teEntReducer);
         this.localStore.select<TeEntDetail>('').takeUntil(this.destroy$).subscribe(d => {
             this.teEntState = d
         })

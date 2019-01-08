@@ -1,11 +1,11 @@
 import { PeItDetail } from 'app/core';
-import { CreateOrAddPeIt } from 'app/modules/information/containers/create-or-add-pe-it/api/create-or-add-pe-it.models';
+import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
 
 // Class of this slice of store
 export class LeafPeItView extends PeItDetail {
     error?: any;
 
-    selectOrCreate?: CreateOrAddPeIt;
+    selectOrCreate?: CreateOrAddEntity;
 
     constructor(data?: LeafPeItView) {
         super()

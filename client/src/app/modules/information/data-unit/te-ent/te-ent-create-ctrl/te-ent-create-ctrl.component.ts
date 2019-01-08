@@ -1,14 +1,14 @@
 import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { ComConfig, InfRole, InfTemporalEntity, U, UiContext, AddOption, PropertyField, ExistenceTimeDetail } from 'app/core';
+import { ComConfig, InfRole, InfTemporalEntity, U, UiContext, AddOption, PropertyField, ExistenceTimeDetail, FieldLabel, FieldList } from 'app/core';
 import { pick } from 'ramda';
 import { TeEntCtrlBase } from '../te-ent-ctrl.base';
 import { TeEntActions } from '../te-ent.actions';
 import { RootEpics } from 'app/core/store/epics';
 import { DataUnitAPIEpics } from '../../data-unit.epics';
 import { createExistenceTimeDetail } from 'app/core/state/services/state-creator';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { getTeEntAddOptions } from '../te-ent-editable/te-ent-editable.component';
 
 @Component({
@@ -33,6 +33,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
   addOptionsTeEnt$: Observable<AddOption[]>;
 
+
   constructor(
     protected ngRedux: NgRedux<any>,
     protected actions: TeEntActions,
@@ -54,13 +55,14 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
   initFormCtrls(): void {
 
     // add controls for each propertyField of _fields
-    this._fields$.takeUntil(this.destroy$).subscribe(propertyFieldList => {
-      if (propertyFieldList) {
-        Object.keys(propertyFieldList).forEach((key) => {
-          if (propertyFieldList[key]) {
+    this._fields$.takeUntil(this.destroy$).subscribe(fields => {
+
+      if (fields) {
+        Object.keys(fields).forEach((key) => {
+          if (fields[key]) {
 
             this.formGroup.addControl(key, new FormControl(
-              propertyFieldList[key].roles,
+              fields[key].roles,
               [
                 Validators.required
               ]
