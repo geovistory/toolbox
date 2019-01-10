@@ -65,7 +65,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     super()
 
     this.pkEntity = activatedRoute.snapshot.params['pkEntity'];
-    this.projectId = activatedRoute.snapshot.parent.params['id'];
+    this.projectId = activatedRoute.snapshot.parent.params['pkActiveProject'];
 
     // if component is activated by ng-router, take base path here
     activatedRoute.data.subscribe(d => {

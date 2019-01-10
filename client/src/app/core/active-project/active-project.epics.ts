@@ -16,6 +16,7 @@ import { IAppState } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
+import { Socket } from 'ngx-socket-io';
 
 
 
@@ -34,7 +35,8 @@ export class ActiveProjectEpics {
     private actions: ActiveProjectActions,
     private notificationActions: NotificationsAPIActions,
     private loadingBarActions: LoadingBarActions,
-    private ngRedux: NgRedux<IAppState>
+    private ngRedux: NgRedux<IAppState>,
+    private socket: Socket // TODO: check if this is at the right place here
   ) { }
 
   public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
@@ -256,6 +258,7 @@ export class ActiveProjectEpics {
            * Emit the global action that activates the loading bar
            */
           globalStore.next(this.loadingBarActions.startLoading());
+
           /**
            * Do some api call
            */

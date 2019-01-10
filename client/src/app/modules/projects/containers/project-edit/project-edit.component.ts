@@ -58,18 +58,9 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
         if (!s) this.updateUrlQueryParams({ 's': 'off' })
       }
 
-      // // if information state is s100, set sources state to s0
-      // if (this.informationState === 's100') this.informationGoToState100();
-
-      // // if sources state is s100, set information state  to s0
-      // if (this.sourcesState === 's100') this.sourcesGoToState100();
-
-      // // if there is some error, set information state to s50
-      // if (this.sourcesState === undefined) this.sourcesGoToState50();
-
-
     });
-    this.projectId = activatedRoute.snapshot.parent.params['id'];
+
+    this.projectId = activatedRoute.snapshot.parent.params['pkActiveProject'];
 
   }
 

@@ -1,33 +1,56 @@
 import { NgRedux } from '@angular-redux/store';
-import { EventEmitter, Injectable } from '@angular/core';
-import { IAppState, ComConfig, InfChunk, PropertyList, U } from 'app/core';
+import { Injectable } from '@angular/core';
+import { Params, Router, UrlSegment, UrlSegmentGroup } from '@angular/router';
+import { ComConfig, IAppState, InfChunk, ProjectDetail, PropertyList, U } from 'app/core';
+import { without } from 'ramda';
+import { combineLatest, Observable } from 'rxjs';
+import { first, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { Project } from '../sdk/models/Project';
-import { ProjectApi } from '../sdk/services/custom/Project';
-import { ActiveProjectActions } from './active-project.action';
-import { ActivatedRoute, Router, UrlSegmentGroup, UrlSegment, Params } from '@angular/router';
-import { first, map } from 'rxjs/operators';
-import { Observable, combineLatest } from 'rxjs';
-import { InfPersistentItem, InfTemporalEntity, DfhProperty, InfRole } from '../sdk';
+import { DataUnitPreviewSocket } from '../sockets/sockets.module';
 import { DataUnitPreview } from '../state/models';
-import { without } from 'ramda';
+import { ActiveProjectActions } from './active-project.action';
+
 
 
 @Injectable()
 export class ActiveProjectService {
-  private changeProjectEventEmitter = new EventEmitter<Project>();
   project: Project;
 
+  activeProject$: Observable<ProjectDetail>;
+  projectPk$: Observable<number>;
+
   constructor(
-    private projectApi: ProjectApi,
     private ngRedux: NgRedux<IAppState>,
     private actions: ActiveProjectActions,
-    private route: ActivatedRoute,
     private router: Router,
+    private dataUnitPreviewSocket: DataUnitPreviewSocket
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
+
+    this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
+    this.projectPk$ = ngRedux.select<number>(['activeProject', 'pk_project']);
+
+    this.dataUnitPreviewSocket.fromEvent<Object>('preview').subscribe(n => {
+      console.log(n)
+      // dispatch a method to put the DataUnitPreview to the store
+    })
+
+    this.dataUnitPreviewSocket.fromEvent('reconnect').subscribe(disconnect => {
+      // get all DataUnitPreview keys from state and send them to the
+      // server so that they will be streamed. This is important for
+      // when connection was lost.
+      combineLatest(this.projectPk$, this.activeProject$).pipe(first(items => items.filter(item => !item).length === 0))
+        .subscribe(([pkProject, activeProject]) => {
+          this.dataUnitPreviewSocket.emit('addToStrem', {
+            pk_project: pkProject,
+            pks: Object.keys(activeProject.dataUnitPreviews)
+          })
+        })
+    })
 
   }
 
@@ -57,6 +80,7 @@ export class ActiveProjectService {
     }
   }
 
+
   /**
    * Loads a data unit preview, if it is not yet available in state or if
    * forceReload is true;
@@ -66,12 +90,19 @@ export class ActiveProjectService {
    */
   loadDataUnitPreview(pkEntity: number, forceReload?: boolean): Observable<DataUnitPreview> {
     const state = this.ngRedux.getState();
-    if (!(((state || {}).activeProject || {}).dataUnitPreviews || {})[pkEntity] || forceReload) {
-      const pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
-      this.ngRedux.select<number>(['activeProject', 'pk_project']).pipe(first(pkProject => !!pkProject)).subscribe(pkProject => {
-        this.ngRedux.dispatch(this.actions.loadDataUnitPreview(pkProject, pkEntity, pkUiContext))
+    this.projectPk$.pipe(first()).subscribe(pkProject => {
+
+      this.dataUnitPreviewSocket.emit('addToStrem', {
+        pk_project: pkProject,
+        pks: [pkEntity]
       })
-    }
+
+      if (!(((state || {}).activeProject || {}).dataUnitPreviews || {})[pkEntity] || forceReload) {
+        const pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+
+        this.ngRedux.dispatch(this.actions.loadDataUnitPreview(pkProject, pkEntity, pkUiContext))
+      }
+    })
 
     return this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', pkEntity])
       .filter(prev => !prev.loading)

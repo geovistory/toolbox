@@ -1,50 +1,103 @@
 'use strict'
+
+var app = require('../../server/server');
+
 module.exports = function (InfDataUnitPreview) {
 
-  // InfDataUnitPreview.getNestedObject = function (pkProject, pkEntity, cb) {
-
-  //   const InfEntityProjectRel = InfDataUnitPreview.app.models.InfEntityProjectRel;
-
-  //   function teEnOrPeIt(pkEntity) {
-  //    return InfDataUnitPreview.findComples({
-  //       "where": ["fk_project", "IS NULL", "AND", "pk_entity", "=", pkEntity]
-  //     }).then(results => {
-  //       if(results[0]){
-  //         return results[0].entity_type;
-  //       }else {
-  //         return new Error('Entity not found');
-  //       }
-
-  //     }, err => err)
-  //   }
-
-  //   function getObject()
+  const dataUnitPreviews = {
+    '25972': { hello: 'I am DataUnit Preview 25972' },
+    '25973': { hello: 'I am DataUnit Preview 25973' },
+    '25974': { hello: 'I am DataUnit Preview 25974' },
+    '25975': { hello: 'I am DataUnit Preview 25975' },
+  };
 
 
-  //   if (pkProject) {
+  app.on('io-ready', (io) => {
+    io.of('/InfDataUnitPreview').on('connection', (socket) => {
+      console.log('new connection ' + socket.id)
 
-  //     // check if in Project
-  //     InfEntityProjectRel.find({
-  //       "where": {
-  //         "and": [
-  //           { "fk_entity": pkEntity },
-  //           { "fk_project": pkProject },
-  //           { "is_in_project": true }]
-  //       }
-  //     }).then(results => {
-  //       const isInProject = results[0]? true : false;
-  //       teEnOrPeIt(pkEntity)
+      // Connection Cache
+      const cache = {
+        currentProjectPk: undefined, // the gevistory project
+        streamedPks: {} // the dataUnitPreviews streamed
+      }
+
+      // Reset streamedPks Cache
+      const resetStreamedPks = pkEntity => {
+        cache.streamedPks = {};
+      }
+
+      // Manage the room (project) of the socket
+      const safeJoin = newProjectPk => {
+        if (newProjectPk !== cache.currentProjectPk) {
+          socket.leave(cache.currentProjectPk);
+          socket.join(newProjectPk);
+          resetStreamedPks();
+          cache.currentProjectPk = newProjectPk;
+        }
+      };
+
+      // Manage the set of streamed pks
+      const extendStreamedPks = pkEntity => {
+        cache.streamedPks[pkEntity] = true;
+      }
+
+      // Get a dataUnitPreview by pk_projekt and pk_entity and add pks (array of pk_entity) to streamedPks 
+      socket.on('addToStrem', (data) => {
+        let { pk_project, pks } = data;
+
+        if (!pk_project) return console.warn('Please provide a pk_project');
+
+        // verify that the socket is in the right room
+        safeJoin(pk_project);
+
+        if (pks && pks.length) {
+
+          // extend the object of streamed pks
+          pks.forEach(pk => extendStreamedPks(pk))
+
+          console.log('request for DataUnitPreviews ' + JSON.stringify(pks) + ' by project ' + cache.currentProjectPk)
+
+          // TODO: query and emit the dataUnitPreview in DB
+          pks.forEach(pk => socket.emit('preview', dataUnitPreviews[pk]))
+        }
+      });
+
+
+      // Emit DB updates on data_unit_preview to the clients
+      // TODO: Replace this function with the Subscription to the Postgres Listener
+      const dbListener = setInterval(() => {
+        console.log('update from postgres for project ' + cache.currentProjectPk +
+          ' connection ' + socket.id +
+          ' is connected ' + socket.connected +
+          ' streaming ' + JSON.stringify(cache.streamedPks)
+        )
+
+        const pk_entity = '25972'; // TODO delete 
+
+        // check if the changed dataUnitPreview is in object of streamed pks 
+        if (cache.streamedPks[pk_entity]) {
+          socket
+            // .to(cache.currentProjectPk)
+            .emit('preview', {
+              proj: cache.currentProjectPk,
+              du: dataUnitPreviews[pk_entity]
+            });
+        }
+      }, 2000)
+
+
+      // As soon as the connection is closed
+      socket.on('disconnect', () => {
+
+        // Unsubscribe the db listener 
+        dbListener.close()
         
-  //     }, err => {
+      })
+    })
+  })
 
 
-  //     })
-  //   } else {
-
-  //   }
-
-
-  // }
 
   InfDataUnitPreview.search = function (projectId, searchString, pkClasses, entityType, limit, page, cb) {
 

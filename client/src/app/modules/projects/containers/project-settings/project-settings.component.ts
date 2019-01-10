@@ -21,7 +21,7 @@ export class ProjectSettingsComponent implements OnDestroy {
     private activeProjectService: ActiveProjectService,
     activatedRoute: ActivatedRoute,
   ) {
-    const id = activatedRoute.snapshot.parent.params['id'];
+    const id = activatedRoute.snapshot.parent.params['pkActiveProject'];
     this.activeProjectService.initProject(id);
     this.activeProjectService.initProjectCrm(id);
     this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)

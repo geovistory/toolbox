@@ -11,7 +11,6 @@
       "loopback/server/mixins",
       "../common/mixins",
       "./mixins",
-      "../node_modules/@mean-expert/loopback-component-realtime/dist/mixins",
       "../node_modules/loopback-setup-remote-methods-mixin"
     ]
   },

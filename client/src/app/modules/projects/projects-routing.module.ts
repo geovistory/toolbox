@@ -29,12 +29,12 @@ const routes: Routes = [
   },
 
   {
-    path: ':id',
+    path: ':pkActiveProject',
+    component: ProjectDashboardComponent,
     children: [
-      {
-        path: '',
-        component: ProjectDashboardComponent,
-      },
+      // {
+      //   path: '',
+      // },
 
       {
         path: 'edit',

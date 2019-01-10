@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { Project, ProjectApi, ActiveProjectService, InfPersistentItemApi, IAppState, ProjectDetail, ProjectCrm, InfDataUnitPreviewApi } from 'app/core';
 import { NgRedux } from '@angular-redux/store';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 
@@ -34,6 +34,8 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
     'step5': false
   }
 
+  showDashboard$: Observable<boolean>;
+
   constructor(
     activatedRoute: ActivatedRoute,
     private activeProjectService: ActiveProjectService,
@@ -41,7 +43,9 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
     private duApi: InfDataUnitPreviewApi,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
-    this.id = activatedRoute.snapshot.parent.params['id'];
+    this.id = activatedRoute.snapshot.params['pkActiveProject'];
+
+    this.showDashboard$ = activatedRoute.fragment.map(() => (activatedRoute.children.length === 0))
 
     this.activeProjectService.initProject(this.id);
     this.activeProjectService.initProjectCrm(this.id);
