@@ -45,7 +45,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   listVisible = true;
 
   persistentItems: InfPersistentItem[] = [];
-  projectId: number;
+  pkProject$: Observable<number>;
 
   // entityModalOptions: NgbModalOptions = {
   //   size: 'lg'
@@ -65,7 +65,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     super()
 
     this.pkEntity = activatedRoute.snapshot.params['pkEntity'];
-    this.projectId = activatedRoute.snapshot.parent.params['pkActiveProject'];
+    this.pkProject$ = projectService.pkProject$;
 
     // if component is activated by ng-router, take base path here
     activatedRoute.data.subscribe(d => {
@@ -113,18 +113,17 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   }
 
   initSelectedDataUnitPreview() {
-    this.projectService.loadDataUnitPreview(this.pkEntity);
+    this.selectedDataUnit$ = this.projectService.loadDataUnitPreview(this.pkEntity);
 
-    this.selectedDataUnit$ = this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', this.pkEntity])
-
-    this.selectedDataUnit$.pipe(
-      filter(du => (du && !du.loading)),
+    combineLatest(this.selectedDataUnit$, this.pkProject$)
+    .pipe(
+      filter(([du, pkProject]) => (du && !du.loading && !!pkProject)),
       takeUntil(this.destroy$)
-    ).subscribe(du => {
+    ).subscribe(([du, pkProject]) => {
       if (du.entity_type === 'peIt') {
-        this.openEntityEditor(du.pk_entity, this.projectId);
+        this.openEntityEditor(du.pk_entity, pkProject);
       } else if (du.entity_type === 'teEn') {
-        this.openPhenomenonEditor(du.pk_entity, this.projectId);
+        this.openPhenomenonEditor(du.pk_entity, pkProject);
       }
     })
 

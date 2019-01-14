@@ -22,8 +22,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
   informationState$: Observable<ProjectEditPanelState>;
   sourcesState$: Observable<ProjectEditPanelState>;
   queryParams;
-  projectId: number;
-  project: ProjectDetail;
+  projectLabel$: Observable<string>;
 
   // queryParamsSubsciption: Subscription;
 
@@ -34,9 +33,8 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
     private router: Router,
     private location: Location
   ) {
-    this.ngRedux.select<ProjectDetail>('activeProject').subscribe((project) => {
-      this.project = project;
-    })
+
+    this.projectLabel$ = this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']);
 
     this.informationState$ = activatedRoute.queryParams.pipe(
       map(params => this.calculatePanelState('i', params))
@@ -60,8 +58,6 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
 
     });
 
-    this.projectId = activatedRoute.snapshot.parent.params['pkActiveProject'];
-
   }
 
   private calculatePanelState(queryParam: string, params): ProjectEditPanelState {
@@ -74,9 +70,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.activeProjectService.initProject(this.projectId)
-    // trigger the activation of the project
-    this.activeProjectService.initProjectCrm(this.projectId);
+
   }
 
   ngOnDestroy() {
@@ -85,35 +79,9 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
   }
 
 
-  // sourcesGoToState0() {
-  //   // this.informationState = 's100';
-  //   this.updateUrlQueryParams({ i: 's100', s: 's0' });
-  // }
-  // sourcesGoToState50() {
-  //   // this.informationState = 's50';
-  //   this.updateUrlQueryParams({ i: 's50', s: 's50' });
-  // }
-  // sourcesGoToState100() {
-  //   // this.informationState = 's0';
-  //   this.updateUrlQueryParams({ i: 's0', s: 's100' });
-  // }
-  // informationGoToState0() {
-  //   // this.sourcesState = 's100';
-  //   this.updateUrlQueryParams({ i: 's0', s: 's100' });
-  // }
-  // informationGoToState50() {
-  //   // this.sourcesState = 's50';
-  //   this.updateUrlQueryParams({ i: 's50', s: 's50' });
-  // }
-  // informationGoToState100() {
-  //   // this.sourcesState = 's0';
-  //   this.updateUrlQueryParams({ i: 's100', s: 's0' });
-  // }
+ 
   updateUrlQueryParams(newParams) {
-    // Object.assign is used as apparently
-    // you cannot add properties to snapshot query params
-    // const currentParams: Params = Object.assign({}, this.activatedRoute.snapshot.queryParams);
-
+ 
     // Generate the URL:
     let urlTree = this.router.parseUrl(this.router.url);
     urlTree = {

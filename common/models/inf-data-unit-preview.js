@@ -1,16 +1,10 @@
 'use strict'
 
 var app = require('../../server/server');
+var _ = require('lodash');
+
 
 module.exports = function (InfDataUnitPreview) {
-
-  const dataUnitPreviews = {
-    '25972': { hello: 'I am DataUnit Preview 25972' },
-    '25973': { hello: 'I am DataUnit Preview 25973' },
-    '25974': { hello: 'I am DataUnit Preview 25974' },
-    '25975': { hello: 'I am DataUnit Preview 25975' },
-  };
-
 
   app.on('io-ready', (io) => {
     io.of('/InfDataUnitPreview').on('connection', (socket) => {
@@ -58,8 +52,23 @@ module.exports = function (InfDataUnitPreview) {
 
           console.log('request for DataUnitPreviews ' + JSON.stringify(pks) + ' by project ' + cache.currentProjectPk)
 
-          // TODO: query and emit the dataUnitPreview in DB
-          pks.forEach(pk => socket.emit('preview', dataUnitPreviews[pk]))
+          // Query the dataUnitPreview in DB
+          InfDataUnitPreview.findComplex({ where: ['fk_project', '=', pk_project, 'AND', 'pk_entity', 'IN', pks] }, (err, projectItems) => {
+
+            // emit the ones found in Project
+            if(projectItems) projectItems.forEach(item => socket.emit('preview', item))
+
+            // query repo for the ones not (yet) in project
+            const notInProject = _.difference(pks, projectItems.map(item => item.pk_entity))
+            InfDataUnitPreview.findComplex({ where: ['fk_project', 'IS NULL', 'AND', 'pk_entity', 'IN', notInProject] }, (err, repoItems) => {
+
+              // emit the ones found in Repo
+              if (repoItems) repoItems.forEach(item => socket.emit('preview', item))
+
+            })
+
+
+          })
         }
       });
 
@@ -78,21 +87,31 @@ module.exports = function (InfDataUnitPreview) {
         // check if the changed dataUnitPreview is in object of streamed pks 
         if (cache.streamedPks[pk_entity]) {
           socket
-            // .to(cache.currentProjectPk)
+            .to(cache.currentProjectPk)
             .emit('preview', {
               proj: cache.currentProjectPk,
-              du: dataUnitPreviews[pk_entity]
+              du: pk_entity
             });
         }
       }, 2000)
 
+      // As soon as the client closes the project
+      socket.on('leaveProjectRoom', () => {
+
+        // leave the room
+        socket.leave(cache.currentProjectPk)
+
+        // reset cache
+        cache.currentProjectPk = undefined;
+
+      })
 
       // As soon as the connection is closed
       socket.on('disconnect', () => {
 
         // Unsubscribe the db listener 
         dbListener.close()
-        
+
       })
     })
   })

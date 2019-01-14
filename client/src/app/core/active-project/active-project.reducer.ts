@@ -30,7 +30,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             state = {
                 ...state,
                 dataUnitPreviews: {
-                    ...state.dataUnitPreviews,
+                    ...(state || {}).dataUnitPreviews,
                     [action.meta.pk_entity]: { loading: true } as DataUnitPreview
                 }
             };
@@ -178,6 +178,14 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 ...state,
                 mentioningsFocusedInTable: action.payload.mentioningsFocusedInTable
             };
+            break;
+
+
+        /*****************************************************
+         * destroy the active project
+         *****************************************************/
+        case ActiveProjectActions.DESTROY:
+            state = INITIAL_STATE;
             break;
     }
 

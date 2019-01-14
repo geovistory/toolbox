@@ -61,7 +61,7 @@ exports.up = function (db, callback) {
 
 
 ------------------------------------------------------------------------------------------------------------
--- TABLE sources.factoid_class_dataset_rel (including *_vt)                                                      #4
+-- TABLE sources.factoid_class_dataset_rel (including *_vt)                                              #4
 ------------------------------------------------------------------------------------------------------------
 
   CREATE TABLE sources.factoid_class_dataset_rel

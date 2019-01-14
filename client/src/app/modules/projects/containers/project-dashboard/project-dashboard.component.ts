@@ -97,7 +97,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-
+    this.activeProjectService.closeProject()
   }
 
   activateStep(stepId: string) {

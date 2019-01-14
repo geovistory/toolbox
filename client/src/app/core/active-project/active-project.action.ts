@@ -25,12 +25,22 @@ export type ActiveProjectAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
 export class ActiveProjectActions {
+
+    /*******************************************
+     * Load project data (metadata, crm)
+     */
     static LOAD_PROJECT = 'ActiveProject::LOAD_PROJECT';
     static LOAD_PROJECT_FAILED = 'ActiveProject::LOAD_PROJECT_FAILED';
     static ACTIVE_PROJECT_UPDATED = 'ActiveProject::ACTIVE_PROJECT_UPDATED';
 
     static PROJECT_LOAD_CRM = 'ActiveProject::PROJECT_LOAD_CRM';
     static PROJECT_CRM_LOADED = 'ActiveProject::PROJECT_CRM_LOADED';
+
+    /*******************************************
+     * Destroy the active project state (on closing a project)
+     */
+    static DESTROY = 'ActiveProject::DESTROY';
+
 
     /*******************************************
      * Data cache
@@ -100,6 +110,17 @@ export class ActiveProjectActions {
             payload: {
                 crm
             },
+            meta: null,
+        }
+    }
+
+    /*****************************************************
+     * Actions to destroy the state of active project
+     *****************************************************/
+    destroy(): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.DESTROY,
+            payload: null,
             meta: null,
         }
     }

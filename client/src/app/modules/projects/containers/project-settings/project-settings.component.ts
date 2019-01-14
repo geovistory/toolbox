@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { IAppState, ProjectDetail, ActiveProjectService } from 'app/core';
 import { NgRedux } from '@angular-redux/store';
-import { Subject } from 'rxjs';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ActiveProjectService, IAppState, ProjectDetail } from 'app/core';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'gv-project-settings',
@@ -17,13 +17,8 @@ export class ProjectSettingsComponent implements OnDestroy {
   projectLabel: string;
 
   constructor(
-    private ngRedux: NgRedux<IAppState>,
-    private activeProjectService: ActiveProjectService,
-    activatedRoute: ActivatedRoute,
+    private ngRedux: NgRedux<IAppState>
   ) {
-    const id = activatedRoute.snapshot.parent.params['pkActiveProject'];
-    this.activeProjectService.initProject(id);
-    this.activeProjectService.initProjectCrm(id);
     this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
     this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
   }

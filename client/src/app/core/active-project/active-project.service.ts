@@ -19,8 +19,8 @@ import { ActiveProjectActions } from './active-project.action';
 export class ActiveProjectService {
   project: Project;
 
-  activeProject$: Observable<ProjectDetail>;
-  projectPk$: Observable<number>;
+  public activeProject$: Observable<ProjectDetail>;
+  public pkProject$: Observable<number>;
 
   constructor(
     private ngRedux: NgRedux<IAppState>,
@@ -32,18 +32,19 @@ export class ActiveProjectService {
     LoopBackConfig.setApiVersion(environment.apiVersion);
 
     this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
-    this.projectPk$ = ngRedux.select<number>(['activeProject', 'pk_project']);
+    this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']);
 
-    this.dataUnitPreviewSocket.fromEvent<Object>('preview').subscribe(n => {
-      console.log(n)
+    this.dataUnitPreviewSocket.fromEvent<DataUnitPreview>('preview').subscribe(data => {
+      console.log(data)
       // dispatch a method to put the DataUnitPreview to the store
+      this.ngRedux.dispatch(this.actions.loadDataUnitPreviewSucceeded(data))
     })
 
     this.dataUnitPreviewSocket.fromEvent('reconnect').subscribe(disconnect => {
       // get all DataUnitPreview keys from state and send them to the
       // server so that they will be streamed. This is important for
       // when connection was lost.
-      combineLatest(this.projectPk$, this.activeProject$).pipe(first(items => items.filter(item => !item).length === 0))
+      combineLatest(this.pkProject$, this.activeProject$).pipe(first(items => items.filter(item => !item).length === 0))
         .subscribe(([pkProject, activeProject]) => {
           this.dataUnitPreviewSocket.emit('addToStrem', {
             pk_project: pkProject,
@@ -80,6 +81,11 @@ export class ActiveProjectService {
     }
   }
 
+  closeProject() {
+    this.dataUnitPreviewSocket.emit('leaveProjectRoom');
+    this.ngRedux.dispatch(this.actions.destroy())
+  }
+
 
   /**
    * Loads a data unit preview, if it is not yet available in state or if
@@ -90,22 +96,22 @@ export class ActiveProjectService {
    */
   loadDataUnitPreview(pkEntity: number, forceReload?: boolean): Observable<DataUnitPreview> {
     const state = this.ngRedux.getState();
-    this.projectPk$.pipe(first()).subscribe(pkProject => {
 
-      this.dataUnitPreviewSocket.emit('addToStrem', {
-        pk_project: pkProject,
-        pks: [pkEntity]
-      })
+    if (!(((state || {}).activeProject || {}).dataUnitPreviews || {})[pkEntity] || forceReload) {
+      this.pkProject$.pipe(first(pk => !!pk)).subscribe(pkProject => {
 
-      if (!(((state || {}).activeProject || {}).dataUnitPreviews || {})[pkEntity] || forceReload) {
+        this.dataUnitPreviewSocket.emit('addToStrem', {
+          pk_project: pkProject,
+          pks: [pkEntity]
+        })
         const pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
 
         this.ngRedux.dispatch(this.actions.loadDataUnitPreview(pkProject, pkEntity, pkUiContext))
-      }
-    })
+      })
+    }
 
     return this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', pkEntity])
-      .filter(prev => !prev.loading)
+      .filter(prev => (!!prev))
 
   }
 

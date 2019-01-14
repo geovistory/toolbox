@@ -1,5 +1,7 @@
 <div dnd-draggable [dragEnabled]="dragEnabled" [dragData]="preview" class="d-flex">
 
+  <span *ngIf="preview?.loading" class="fa fa-pulse fa-spinner"> </span>
+
   <span class="icon fa align-self-center gv-icon-preview" [ngClass]="{
     'fa fa-star-o': preview?.entity_type === 'teEn',
     'gv-icon gv-icon-entity' : preview?.entity_type === 'peIt'
