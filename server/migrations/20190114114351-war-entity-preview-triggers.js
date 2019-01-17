@@ -20,17 +20,17 @@ exports.up = function (db, callback) {
 
   
   ------------------------------------------------------------------------------------------------------------
-  -- TRIGGER FUNCTION create_entity_preview_full_text_and_ts_vector                        #1
+  -- TRIGGER FUNCTION entity_preview__create_full_text_and_ts_vector                        #1
   ------------------------------------------------------------------------------------------------------------
 
-  CREATE OR REPLACE FUNCTION warehouse.create_entity_preview_full_text_and_ts_vector()
+  CREATE OR REPLACE FUNCTION warehouse.entity_preview__create_full_text_and_ts_vector()
       RETURNS trigger
       LANGUAGE 'plpgsql'
   AS $BODY$
 
     DECLARE
       new_full_text TEXT;
-	  new_ts_vector tsvector;
+	    new_ts_vector tsvector;
     BEGIN
     
     SELECT string_agg into new_full_text from (
@@ -40,7 +40,7 @@ exports.up = function (db, callback) {
           select 1 rank, NEW.own_full_text  as txt
           UNION
           select 2 rank, value as txt 
-          from jsonb_each_text(NEW.full_texts_from_related_entity_previews)
+          from jsonb_each_text(NEW.related_full_texts)
         ) AS all_strings
         WHERE txt != ''
       ) AS rows
@@ -67,10 +67,10 @@ exports.up = function (db, callback) {
   -- TRIGGER before_upsert_full_text                                                                     #2
   ------------------------------------------------------------------------------------------------------------
   CREATE TRIGGER before_upsert_full_text
-    BEFORE UPDATE OR INSERT
+    BEFORE UPDATE OF related_full_texts OR INSERT
     ON warehouse.entity_preview
     FOR EACH ROW
-    EXECUTE PROCEDURE warehouse.create_entity_preview_full_text_and_ts_vector();
+    EXECUTE PROCEDURE warehouse.entity_preview__create_full_text_and_ts_vector();
 	
 
 
@@ -86,8 +86,8 @@ exports.up = function (db, callback) {
       RAISE INFO 'Called TRIGGER FUNCTION update_dependent_entity_previews; pk_entity: % fk_project: %', NEW.pk_entity, NEW.fk_project;
 
       PERFORM 
-      warehouse.fill_dependent_full_texts(NEW.pk_entity, NEW.fk_project),
-      warehouse.fill_dependent_entity_labels(NEW.pk_entity, NEW.fk_project);
+      warehouse.entity_preview__fill_dependent_related_full_texts(NEW.pk_entity, NEW.fk_project),
+      warehouse.entity_preview__fill_dependent_entity_labels(NEW.pk_entity, NEW.fk_project);
     
       RETURN NEW;
     END;
@@ -103,37 +103,43 @@ exports.up = function (db, callback) {
       ON warehouse.entity_preview
       FOR EACH ROW
       EXECUTE PROCEDURE warehouse.update_dependent_entity_previews();
-	
 
 
   ------------------------------------------------------------------------------------------------------------
-  -- TRIGGER FUNCTION update_after_pk_entity_for_entity_label_changed                     					       #5
+  -- TRIGGER FUNCTION update_after_fk_entity_label_changed                     					       #5
   ------------------------------------------------------------------------------------------------------------
-    CREATE OR REPLACE FUNCTION warehouse.update_after_pk_entity_for_entity_label_changed()
+    CREATE OR REPLACE FUNCTION warehouse.update_after_fk_entity_label_changed()
         RETURNS trigger
         LANGUAGE 'plpgsql'
     AS $BODY$
     BEGIN
 
-      RAISE INFO 'Called TRIGGER FUNCTION update_after_pk_entity_for_entity_label_changed; NEW.pk_entity_for_entity_label: %, OLD.pk_entity_for_entity_label: %, fk_project: %', NEW.pk_entity_for_entity_label, OLD.pk_entity_for_entity_label, NEW.fk_project;
+      RAISE INFO 'Called TRIGGER FUNCTION update_after_fk_entity_label_changed; NEW.fk_entity_label: %, OLD.fk_entity_label: %, fk_project: %', NEW.fk_entity_label, OLD.fk_entity_label, NEW.fk_project;
 
-      PERFORM warehouse.fill_dependent_entity_labels(NEW.pk_entity_for_entity_label, NEW.fk_project),
-        warehouse.fill_dependent_full_texts(NEW.pk_entity_for_entity_label, NEW.fk_project);
+      -- update the entity_label by getting the remote entity_label  
+
+      UPDATE warehouse.entity_preview 
+      SET entity_label = remote.entity_label
+      FROM ( 
+        SELECT entity_label
+        FROM warehouse.entity_preview
+        WHERE pk_entity = NEW.fk_entity_label AND fk_project IS NOT DISTINCT FROM NEW.fk_project
+      ) AS remote
+      WHERE pk_entity = NEW.pk_entity AND fk_project IS NOT DISTINCT FROM NEW.fk_project;
 
       RETURN NEW;
     END;
     $BODY$;
 
-    
 
   ------------------------------------------------------------------------------------------------------------
-  -- TRIGGER after_pk_entity_for_entity_label_changed                                                     #6
+  -- TRIGGER after_fk_entity_label_changed                                                     #6
   ------------------------------------------------------------------------------------------------------------
-    CREATE TRIGGER after_pk_entity_for_entity_label_changed
-      AFTER UPDATE OF pk_entity_for_entity_label
+    CREATE TRIGGER after_fk_entity_label_changed
+      AFTER UPDATE OF fk_entity_label
       ON warehouse.entity_preview
       FOR EACH ROW
-      EXECUTE PROCEDURE warehouse.update_after_pk_entity_for_entity_label_changed();
+      EXECUTE PROCEDURE warehouse.update_after_fk_entity_label_changed();
   
 
 
@@ -149,6 +155,9 @@ exports.up = function (db, callback) {
     _fk_project INT;
     _fk_entity INT;
     _fk_temporal_entity INT;
+    _BOOL BOOLEAN;
+    _result JSONB;
+    _new_label TEXT;
     BEGIN
     
     _fk_project = NEW.fk_project;
@@ -169,11 +178,11 @@ exports.up = function (db, callback) {
 
 
       PERFORM
-      warehouse.fill_own_entity_label_of_entity_preview( _fk_entity, _fk_project),
-      warehouse.fill_own_entity_label_of_entity_preview( _fk_entity, NULL),
+      warehouse.entity_preview__fill_own_entity_label( _fk_entity, _fk_project),
+      warehouse.entity_preview__fill_own_entity_label( _fk_entity, NULL),
 
-      warehouse.fill_own_full_text_of_entity_preview(_fk_entity, _fk_project),
-      warehouse.fill_own_full_text_of_entity_preview(_fk_entity, NULL);
+      warehouse.entity_preview__fill_own_full_text(_fk_entity, _fk_project),
+      warehouse.entity_preview__fill_own_full_text(_fk_entity, NULL);
       
       
     ELSIF (SELECT _table_name = 'role') THEN
@@ -186,20 +195,14 @@ exports.up = function (db, callback) {
       FROM information.role r
       WHERE r.pk_entity = NEW.fk_entity;
       
-      RAISE INFO 'update_entity_preview of pk_entity: %, _fk_temporal_entity: %, fk_project: %', _fk_entity, _fk_temporal_entity, _fk_project;
-
-      PERFORM
-      warehouse.fill_own_entity_label_of_entity_preview(_fk_entity, _fk_project),
-      warehouse.fill_own_full_text_of_entity_preview(_fk_entity, _fk_project),
-      warehouse.create_keys_of_full_texts_from_related_entity_previews(_fk_entity, _fk_project),
-      warehouse.create_pk_entity_for_entity_label(_fk_entity, _fk_project),
-
-      warehouse.fill_own_entity_label_of_entity_preview(_fk_temporal_entity, _fk_project),
-      warehouse.fill_own_full_text_of_entity_preview(_fk_temporal_entity, _fk_project),
-      warehouse.create_keys_of_full_texts_from_related_entity_previews(_fk_temporal_entity, _fk_project),
-      warehouse.create_pk_entity_for_entity_label(_fk_temporal_entity, _fk_project);
-
+      RAISE INFO 'update_entity_preview of pk_entity: %, fk_temporal_entity: %, fk_project: %', _fk_entity, _fk_temporal_entity, _fk_project;
       
+
+      PERFORM warehouse.entity_preview__create(_fk_entity, _fk_project);
+      PERFORM warehouse.entity_preview__create(_fk_entity, NULL);
+      PERFORM warehouse.entity_preview__create(_fk_temporal_entity, _fk_project);
+      PERFORM warehouse.entity_preview__create(_fk_entity, NULL);
+
                                 
     END IF;
     
@@ -236,10 +239,10 @@ exports.down = function (db, callback) {
   DROP FUNCTION warehouse.update_entity_preview();
 
   -- 6
-  DROP TRIGGER after_pk_entity_for_entity_label_changed ON warehouse.entity_preview;
+  DROP TRIGGER after_fk_entity_label_changed ON warehouse.entity_preview;
  
   -- 5
-  DROP FUNCTION warehouse.update_after_pk_entity_for_entity_label_changed();
+  DROP FUNCTION warehouse.update_after_fk_entity_label_changed();
 
   -- 4
   DROP TRIGGER after_entity_preview_upsert ON warehouse.entity_preview;
@@ -251,7 +254,7 @@ exports.down = function (db, callback) {
   DROP TRIGGER before_upsert_full_text ON warehouse.entity_preview;
 
   -- 1
-  DROP FUNCTION warehouse.create_entity_preview_full_text_and_ts_vector();
+  DROP FUNCTION warehouse.entity_preview__create_full_text_and_ts_vector();
 
   `
 

@@ -20,9 +20,9 @@ exports.up = function (db, callback) {
 
   
   ------------------------------------------------------------------------------------------------------------
-  -- FUNCTION create_keys_of_full_texts_from_related_entity_previews                                      #1
+  -- FUNCTION entity_preview__create_related_full_texts                                      #1
   ------------------------------------------------------------------------------------------------------------
-  CREATE OR REPLACE FUNCTION warehouse.create_keys_of_full_texts_from_related_entity_previews(
+  CREATE OR REPLACE FUNCTION warehouse.entity_preview__create_related_full_texts(
     param_pk_entity integer,
     param_fk_project integer
   )
@@ -30,8 +30,8 @@ exports.up = function (db, callback) {
   DECLARE 
     object jsonb;
     new_object jsonb;
-    keys integer[];
-    key INTEGER;
+    keys jsonb[];
+    key jsonb;
     needs_update BOOLEAN;
   BEGIN
       needs_update=false;
@@ -40,22 +40,24 @@ exports.up = function (db, callback) {
 
       IF param_fk_project IS NULL THEN
       
-        RAISE INFO 'create_keys_of_full_texts_from_related_entity_previews pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
+        RAISE INFO 'entity_preview__create_related_full_texts pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
         -- get all keys
 
         WITH all_dependencies AS (
-          SELECT e.*
+          SELECT e.*, pre.entity_label
           FROM information.v_role r
           JOIN information.entity e ON e.pk_entity = r.fk_entity AND e.table_name = 'persistent_item'
+          LEFT JOIN warehouse.entity_preview pre ON pre.pk_entity = e.pk_entity AND pre.fk_project IS NULL
           WHERE r.fk_temporal_entity = param_pk_entity AND r.is_in_project_count > 0
           UNION
-          SELECT e.*
+          SELECT e.*, pre.entity_label
           FROM information.v_role r
           JOIN information.entity e ON e.pk_entity = r.fk_temporal_entity AND e.table_name = 'temporal_entity'
+          LEFT JOIN warehouse.entity_preview pre ON pre.pk_entity = e.pk_entity AND pre.fk_project IS NULL
           WHERE r.fk_entity = param_pk_entity AND r.is_in_project_count > 0
         ), 
         agg AS(
-          select 1, array_agg(all_dependencies.pk_entity) pk_entities
+          select 1, array_agg(jsonb_build_object('pk_entity', all_dependencies.pk_entity, 'entity_label', all_dependencies.entity_label)) pk_entities
           FROM all_dependencies
           group by 1
         )
@@ -66,7 +68,7 @@ exports.up = function (db, callback) {
 
         ----- get the existing object
         
-        SELECT full_texts_from_related_entity_previews INTO object FROM warehouse.entity_preview
+        SELECT related_full_texts INTO object FROM warehouse.entity_preview
         WHERE pk_entity = param_pk_entity AND fk_project IS NULL;
         
         RAISE INFO 'object: %', object;
@@ -80,8 +82,8 @@ exports.up = function (db, callback) {
       
               new_object = (SELECT jsonb_set(
                 new_object,
-                array_agg(key::text),
-                COALESCE((select object::jsonb->key::text), '""')::jsonb
+                array_agg((SELECT key->>'pk_entity')),
+                COALESCE((SELECT key->'entity_label'), '""')::jsonb
               ));
 
               RAISE INFO 'new_object: %', new_object;
@@ -93,14 +95,14 @@ exports.up = function (db, callback) {
         PERFORM pk_entity FROM warehouse.entity_preview
         WHERE pk_entity = param_pk_entity AND fk_project IS NULL;
         IF NOT FOUND THEN 
-            INSERT INTO warehouse.entity_preview (pk_entity, fk_project, full_texts_from_related_entity_previews)
+            INSERT INTO warehouse.entity_preview (pk_entity, fk_project, related_full_texts)
             VALUES (param_pk_entity, param_fk_project, new_object);
 
             RAISE INFO 'inserted new_object: %', new_object;
 
         ELSIF (SELECT (new_object @> object AND new_object <@ object) = false) THEN
             UPDATE warehouse.entity_preview 
-            SET full_texts_from_related_entity_previews = new_object
+            SET related_full_texts = new_object
             where pk_entity=param_pk_entity AND fk_project IS NULL;
 
             RAISE INFO 'updated object with new_object: %', new_object;
@@ -113,25 +115,27 @@ exports.up = function (db, callback) {
 
       ELSE
 
-        RAISE INFO 'create_keys_of_full_texts_from_related_entity_previews pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
+        RAISE INFO 'entity_preview__create_related_full_texts pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
 
         -- get all keys
 
         WITH all_dependencies AS (
-          SELECT e.*
+          SELECT e.*, pre.entity_label
           FROM information.role r
-          JOIN information.entity_version_project_rel epr ON r.pk_entity = epr.fk_entity AND epr.is_in_project 
+          JOIN information.entity_version_project_rel epr ON r.pk_entity = epr.fk_entity AND epr.is_in_project = true
           JOIN information.entity e ON e.pk_entity = r.fk_entity AND e.table_name = 'persistent_item'
+          LEFT JOIN warehouse.entity_preview pre ON pre.pk_entity = e.pk_entity AND pre.fk_project = 12
           WHERE r.fk_temporal_entity = param_pk_entity AND epr.fk_project = param_fk_project
           UNION
-          SELECT e.*
+          SELECT e.*, pre.entity_label
           FROM information.role r
-          JOIN information.entity_version_project_rel epr ON r.pk_entity = epr.fk_entity AND epr.is_in_project 
+          JOIN information.entity_version_project_rel epr ON r.pk_entity = epr.fk_entity AND epr.is_in_project =true
           JOIN information.entity e ON e.pk_entity = r.fk_temporal_entity AND e.table_name = 'temporal_entity'
+          LEFT JOIN warehouse.entity_preview pre ON pre.pk_entity = e.pk_entity AND pre.fk_project = 12
           WHERE r.fk_entity = param_pk_entity AND epr.fk_project = param_fk_project
         ), 
         agg AS(
-          select 1, array_agg(all_dependencies.pk_entity) pk_entities
+          select 1, array_agg(jsonb_build_object('pk_entity', all_dependencies.pk_entity, 'entity_label', all_dependencies.entity_label)) pk_entities
           FROM all_dependencies
           group by 1
         )
@@ -142,7 +146,7 @@ exports.up = function (db, callback) {
 
         ----- get the existing object
         
-        SELECT full_texts_from_related_entity_previews INTO object FROM warehouse.entity_preview
+        SELECT related_full_texts INTO object FROM warehouse.entity_preview
         WHERE pk_entity = param_pk_entity AND fk_project = param_fk_project;
         
         RAISE INFO 'object: %', object;
@@ -156,8 +160,8 @@ exports.up = function (db, callback) {
       
               new_object = (SELECT jsonb_set(
                 new_object,
-                array_agg(key::text),
-                COALESCE((select object::jsonb->key::text), '""')::jsonb
+                array_agg((SELECT key->>'pk_entity')),
+                COALESCE((SELECT key->'entity_label'), '""')::jsonb
               ));
 
               RAISE INFO 'new_object: %', new_object;
@@ -169,14 +173,14 @@ exports.up = function (db, callback) {
         PERFORM pk_entity FROM warehouse.entity_preview
         WHERE pk_entity = param_pk_entity AND fk_project = param_fk_project;
         IF NOT FOUND THEN 
-            INSERT INTO warehouse.entity_preview (pk_entity, fk_project, full_texts_from_related_entity_previews)
+            INSERT INTO warehouse.entity_preview (pk_entity, fk_project, related_full_texts)
             VALUES (param_pk_entity, param_fk_project, new_object);
 
             RAISE INFO 'inserted new_object: %', new_object;
 
         ELSIF (SELECT (new_object @> object AND new_object <@ object) = false) THEN
             UPDATE warehouse.entity_preview 
-            SET full_texts_from_related_entity_previews = new_object
+            SET related_full_texts = new_object
             where pk_entity=param_pk_entity AND fk_project=param_fk_project;
 
             RAISE INFO 'updated object with new_object: %', new_object;
@@ -192,27 +196,28 @@ exports.up = function (db, callback) {
 
 
   ------------------------------------------------------------------------------------------------------------
-  -- FUNCTION create_pk_entity_for_entity_label                                      #2
+  -- FUNCTION entity_preview__create_fk_entity_label                                      #2
   ------------------------------------------------------------------------------------------------------------
-  CREATE OR REPLACE FUNCTION warehouse.create_pk_entity_for_entity_label(
+  CREATE OR REPLACE FUNCTION warehouse.entity_preview__create_fk_entity_label(
     param_pk_entity integer,
     param_fk_project integer
   )
-  RETURNS BOOLEAN AS $$
+  RETURNS JSONB AS $$
   DECLARE
-   old_pk_entity INT;
-   new_pk_entity INT;
+   old_fk_entity_label INT;
+   new_fk_entity_label INT;
+   result_info JSONB;
   BEGIN
 
       ---------------------- REPO VERSIONS ----------------------
 
       IF param_fk_project IS NULL THEN
       
- 		RAISE INFO 'create_pk_entity_for_entity_label of pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
+ 		RAISE INFO 'entity_preview__create_fk_entity_label of pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
 
-        -- get the pk_entity_for_entity_label
+        -- get the fk_entity_label
 			
-			SELECT pk INTO new_pk_entity 
+			SELECT pk INTO new_fk_entity_label 
 			FROM 
 			(
 				(
@@ -236,31 +241,31 @@ exports.up = function (db, callback) {
 			ORDER BY rank
 			LIMIT 1;
 
-        RAISE INFO 'new_pk_entity: %', new_pk_entity;
+        RAISE INFO 'new_fk_entity_label: %', new_fk_entity_label;
 		
-        ----- Insert or update column pk_entity_for_entity_label of table entity_preview
+        ----- Insert or update column fk_entity_label of table entity_preview
         
-        SELECT pk_entity_for_entity_label INTO old_pk_entity FROM warehouse.entity_preview
+        SELECT fk_entity_label INTO old_fk_entity_label FROM warehouse.entity_preview
         WHERE pk_entity = param_pk_entity AND fk_project IS NULL;
 		
-		RAISE INFO 'old_pk_entity: %', old_pk_entity;
+		RAISE INFO 'old_fk_entity_label: %', old_fk_entity_label;
 
         IF NOT FOUND THEN 
 		
-            INSERT INTO warehouse.entity_preview (pk_entity, fk_project, pk_entity_for_entity_label)
-            VALUES (param_pk_entity, param_fk_project, new_pk_entity);
+            INSERT INTO warehouse.entity_preview (pk_entity, fk_project, fk_entity_label)
+            VALUES (param_pk_entity, param_fk_project, new_fk_entity_label);
 
-            RAISE INFO 'inserted new_pk_entity: %', new_pk_entity;
+            RAISE INFO 'inserted new_fk_entity_label: %', new_fk_entity_label;
 
-        ELSIF (SELECT (old_pk_entity IS DISTINCT FROM new_pk_entity)) THEN
+        ELSIF (SELECT (old_fk_entity_label IS DISTINCT FROM new_fk_entity_label)) THEN
 			   
             UPDATE warehouse.entity_preview 
-            SET pk_entity_for_entity_label = new_pk_entity
+            SET fk_entity_label = new_fk_entity_label
             where pk_entity=param_pk_entity AND fk_project IS NULL;
 
-            RAISE INFO 'updated object with new_object: %', new_pk_entity;
+            RAISE INFO 'updated object with new_object: %', new_fk_entity_label;
         ELSE
-            RAISE INFO 'no update needed: %', new_pk_entity;
+            RAISE INFO 'no update needed: %', new_fk_entity_label;
         END IF;
 					   
 					   
@@ -268,11 +273,11 @@ exports.up = function (db, callback) {
 
       ELSE
 
-        RAISE INFO 'create_pk_entity_for_entity_label of pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
+        RAISE INFO 'entity_preview__create_fk_entity_label of pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
 
-        -- get the pk_entity_for_entity_label
+        -- get the fk_entity_label
 			
-			SELECT pk INTO new_pk_entity 
+			SELECT pk INTO new_fk_entity_label 
 			FROM 
 			(
 				(
@@ -302,43 +307,132 @@ exports.up = function (db, callback) {
 			ORDER BY ord_num
 			LIMIT 1;
 
-        RAISE INFO 'new_pk_entity: %', new_pk_entity;
+        RAISE INFO 'new_fk_entity_label: %', new_fk_entity_label;
 		
-        ----- Insert or update column pk_entity_for_entity_label of table entity_preview
+        ----- Insert or update column fk_entity_label of table entity_preview
         
-        SELECT pk_entity_for_entity_label INTO old_pk_entity FROM warehouse.entity_preview
+        SELECT fk_entity_label INTO old_fk_entity_label FROM warehouse.entity_preview
         WHERE pk_entity = param_pk_entity AND fk_project = param_fk_project;
 		
-		RAISE INFO 'old_pk_entity: %', old_pk_entity;
+		RAISE INFO 'old_fk_entity_label: %', old_fk_entity_label;
 
         IF NOT FOUND THEN 
 		
-            INSERT INTO warehouse.entity_preview (pk_entity, fk_project, pk_entity_for_entity_label)
-            VALUES (param_pk_entity, param_fk_project, new_pk_entity);
+            INSERT INTO warehouse.entity_preview (pk_entity, fk_project, fk_entity_label)
+            VALUES (param_pk_entity, param_fk_project, new_fk_entity_label);
 
-            RAISE INFO 'inserted new_pk_entity: %', new_pk_entity;
+            RAISE INFO 'inserted new_fk_entity_label: %', new_fk_entity_label;
 
-        ELSIF (SELECT (old_pk_entity IS DISTINCT FROM new_pk_entity)) THEN
+        ELSIF (SELECT (old_fk_entity_label IS DISTINCT FROM new_fk_entity_label)) THEN
 			   
             UPDATE warehouse.entity_preview 
-            SET pk_entity_for_entity_label = new_pk_entity
+            SET fk_entity_label = new_fk_entity_label
             where pk_entity=param_pk_entity AND fk_project=param_fk_project;
 
-            RAISE INFO 'updated object with new_pk_entity: %', new_pk_entity;
+            RAISE INFO 'updated object with new_fk_entity_label: %', new_fk_entity_label;
         ELSE
-            RAISE INFO 'no update needed: %', new_pk_entity;
+            RAISE INFO 'no update needed: %', new_fk_entity_label;
         END IF;
 
       END IF; 
 
-      RETURN true;
+      SELECT jsonb_build_object(
+        'changed', (SELECT (old_fk_entity_label IS DISTINCT FROM new_fk_entity_label)),
+        'old_val', old_fk_entity_label,
+        'new_val', new_fk_entity_label) 
+      INTO result_info;
+
+      RETURN result_info;
   END;
   $$ LANGUAGE plpgsql;
   
+
   ------------------------------------------------------------------------------------------------------------
-  -- FUNCTION fill_own_entity_label_of_entity_preview                      				                #3
+  -- FUNCTION entity_preview__create_fk_type                                      #3
   ------------------------------------------------------------------------------------------------------------
-  CREATE OR REPLACE FUNCTION warehouse.fill_own_entity_label_of_entity_preview(
+  CREATE OR REPLACE FUNCTION warehouse.entity_preview__create_fk_type(
+    param_pk_entity integer,
+    param_fk_project integer
+  )
+  RETURNS JSONB AS $$
+  DECLARE
+    old_fk_type INT;
+    new_fk_type INT;
+    result_info JSONB;
+    has_type_properties INT[] = ARRAY[1110, 1190, 1205, 1206, 1214, 1204, 1066];
+  BEGIN
+
+    RAISE INFO 'entity_preview__create_fk_type of pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
+
+    
+    IF param_fk_project IS NULL THEN
+      ------------------------------------ REPO QUERY ------------------------------------
+      SELECT DISTINCT ea.fk_range_entity INTO new_fk_type 
+      FROM information.v_entity_association ea
+      JOIN information.entity_version_project_rel epr ON ea.pk_entity = epr.fk_entity
+      JOIN data_for_history.property p ON ea.fk_property = p.dfh_pk_property
+      WHERE p.dfh_pk_property = ANY (ARRAY[1110, 1190, 1205, 1206, 1214, 1204, 1066])
+      AND ea.fk_domain_entity = param_pk_entity
+      AND ea.rank_for_domain = 1
+      LIMIT 1;
+    ELSE
+        ---------------------------------- PROJECT QUERY ----------------------------------         
+        SELECT DISTINCT ea.fk_range_entity INTO new_fk_type 
+        FROM information.entity_association ea
+        JOIN information.entity_version_project_rel epr ON ea.pk_entity = epr.fk_entity
+        JOIN data_for_history.property p ON ea.fk_property = p.dfh_pk_property
+        WHERE p.dfh_pk_property = ANY (has_type_properties)
+        AND ea.fk_domain_entity = param_pk_entity
+        AND epr.is_in_project = true
+        AND epr.fk_project = param_fk_project
+        LIMIT 1;
+    END IF; 
+
+    RAISE INFO 'new_fk_type: %', new_fk_type;
+		
+        ----- Insert or update column fk_type of table entity_preview
+        
+        SELECT fk_type INTO old_fk_type FROM warehouse.entity_preview
+        WHERE pk_entity = param_pk_entity AND fk_project IS NOT DISTINCT FROM param_fk_project;
+		
+		RAISE INFO 'old_fk_type: %', old_fk_type;
+
+    IF NOT FOUND THEN 
+
+        INSERT INTO warehouse.entity_preview (pk_entity, fk_project, fk_type)
+        VALUES (param_pk_entity, param_fk_project, new_fk_type);
+
+        RAISE INFO 'inserted new_fk_type: %', new_fk_type;
+
+    ELSIF (SELECT (old_fk_type IS DISTINCT FROM new_fk_type)) THEN
+      
+        UPDATE warehouse.entity_preview 
+        SET fk_type = new_fk_type
+        where pk_entity=param_pk_entity AND fk_project IS NOT DISTINCT FROM param_fk_project;
+
+        RAISE INFO 'updated object with new_fk_type: %', new_fk_type;
+    ELSE
+        RAISE INFO 'no update needed: %', new_fk_type;
+    END IF;
+
+
+    SELECT jsonb_build_object(
+      'changed', (SELECT (old_fk_type IS DISTINCT FROM new_fk_type)),
+      'old_val', old_fk_type,
+      'new_val', new_fk_type) 
+    INTO result_info;
+
+    RETURN result_info;
+
+  END;
+  $$ LANGUAGE plpgsql;
+  
+
+
+  ------------------------------------------------------------------------------------------------------------
+  -- FUNCTION entity_preview__fill_own_entity_label                      				                #4
+  ------------------------------------------------------------------------------------------------------------
+  CREATE OR REPLACE FUNCTION warehouse.entity_preview__fill_own_entity_label(
   param_pk_entity integer,
   param_fk_project integer
   )
@@ -348,223 +442,211 @@ exports.up = function (db, callback) {
   new_own_entity_label TEXT;
   BEGIN
 
-    ---------------------- REPO VERSIONS ----------------------
-
+  
+  
+  -- if this has a fk_entity_label skip the whole function
+  -- because the entity label is provided by that other entity 
+  IF (SELECT (SELECT fk_entity_label 
+    FROM warehouse.entity_preview
+    WHERE pk_entity = param_pk_entity AND fk_project IS NOT DISTINCT FROM param_fk_project
+    ) IS NULL
+    ) THEN
+    
     IF param_fk_project IS NULL THEN
+    
+    ---------------------- REPO VERSIONS ----------------------
+      RAISE INFO 'entity_preview__fill_own_entity_label of pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
 
-    RAISE INFO 'fill_own_entity_label_of_entity_preview of pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
+      -- get the string new_own_entity_label
 
-    -- get the string new_own_entity_label
+        
+        WITH first_field AS (
+          SELECT entity_field.fk_property, entity_field.fk_class_field, entity.pk_entity
+          -- teen or peit
+          from (
+            SELECT t.pk_entity, t.fk_class 
+          FROM information.temporal_entity as t
+          WHERE  t.pk_entity = param_pk_entity
+          UNION 
+          SELECT p.pk_entity, p.fk_class 
+          FROM information.persistent_item as p
+          WHERE p.pk_entity = param_pk_entity
+          ) as entity
+          INNER JOIN  information.entity_version_project_rel as epr on epr.fk_entity = entity.pk_entity 
+          AND epr.is_in_project = true
 
-      
+          -- field
+          INNER JOIN information.v_ordered_fields_per_class entity_field on entity_field.fk_class = entity.fk_class 
+          AND field_order = 0
+        ),
+        string_from_first_role AS (
+
+          SELECT COALESCE(appe.string, lang.notes) as string
+          FROM
+          first_field
+          LEFT JOIN information.v_role as r
+            on first_field.fk_property = r.fk_property
+            and first_field.pk_entity = r.fk_temporal_entity
+            and r.is_in_project_count > 0
+
+            -----------------------------------------------------------
+            -- get the strings directly connected to entity via role-fk_entity (not via intermediate entity/PeIt)
+
+            --   appellation
+            LEFT JOIN information.v_appellation as appe
+            ON r.fk_entity = appe.pk_entity
+            --   language
+            LEFT JOIN information.v_language as lang
+            ON r.fk_entity = lang.pk_entity
+            --   time_primitive
+            --   place
+
+          LIMIT 1
+        ),
+        string_from_first_text_prop AS (
+
+          SELECT txtp.string
+          FROM information.v_text_property as txtp
+          INNER JOIN first_field on first_field.fk_class_field = txtp.fk_class_field 
+            AND txtp.fk_concerned_entity = first_field.pk_entity 
+          INNER JOIN information.entity_version_project_rel as epr ON epr.fk_entity=txtp.pk_entity
+            AND  epr.is_in_project = true
+          ORDER BY epr.ord_num
+          LIMIT 1
+
+        ),				   
+        string AS (
+          SELECT string
+          FROM  string_from_first_role
+          UNION
+          SELECT string
+          FROM string_from_first_text_prop
+        )
+        SELECT string INTO new_own_entity_label FROM string;
+
+
+      ---------------------- PROJECTS VERSIONS ----------------------
+
+      ELSE
+
+      RAISE INFO 'entity_preview__fill_own_entity_label of pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
+
+      -- get the string new_own_entity_label
+
       WITH first_field AS (
-        SELECT entity_field.fk_property, entity_field.fk_class_field, entity.pk_entity
-        -- teen or peit
-        from (
-          SELECT t.pk_entity, t.fk_class 
-        FROM information.temporal_entity as t
-        WHERE  t.pk_entity = param_pk_entity
-        UNION 
-        SELECT p.pk_entity, p.fk_class 
-        FROM information.persistent_item as p
-        WHERE p.pk_entity = param_pk_entity
-        ) as entity
-        INNER JOIN  information.entity_version_project_rel as epr on epr.fk_entity = entity.pk_entity 
-        AND epr.is_in_project = true
+          SELECT entity_field.fk_property, entity_field.fk_class_field, entity.pk_entity
+          -- teen or peit
+          from (
+            SELECT t.pk_entity, t.fk_class 
+          FROM information.temporal_entity as t
+          WHERE  t.pk_entity = param_pk_entity
+          UNION 
+          SELECT p.pk_entity, p.fk_class 
+          FROM information.persistent_item as p
+          WHERE p.pk_entity = param_pk_entity
+          ) as entity
+          INNER JOIN  information.entity_version_project_rel as epr on epr.fk_entity = entity.pk_entity 
+          AND epr.is_in_project = true
 
-        -- field
-        INNER JOIN information.v_ordered_fields_per_class entity_field on entity_field.fk_class = entity.fk_class 
-        AND field_order = 0
-      ),
-      string_from_first_role AS (
+          -- field
+          INNER JOIN information.v_ordered_fields_per_class entity_field on entity_field.fk_class = entity.fk_class 
+          AND field_order = 0
+        ),
+        string_from_first_role AS (
 
-        SELECT COALESCE(appe.string, lang.notes) as string
-        FROM
-        first_field
-        LEFT JOIN information.v_role as r
-          on first_field.fk_property = r.fk_property
-          and first_field.pk_entity = r.fk_temporal_entity
-          and r.is_in_project_count > 0
+          SELECT COALESCE(appe.string, lang.notes) as string
+          FROM
+          first_field
+          LEFT JOIN information.v_role as r
+            on first_field.fk_property = r.fk_property
+            and first_field.pk_entity = r.fk_temporal_entity
+            LEFT JOIN information.entity_version_project_rel as epr2 
+              on epr2.fk_entity = r.pk_entity 
+              and epr2.fk_project = param_fk_project
+              and epr2.is_in_project = true
 
-          -----------------------------------------------------------
-          -- get the strings directly connected to entity via role-fk_entity (not via intermediate entity/PeIt)
+            -----------------------------------------------------------
+            -- get the strings directly connected to entity via role-fk_entity (not via intermediate entity/PeIt)
 
-          --   appellation
-          LEFT JOIN information.v_appellation as appe
-          ON r.fk_entity = appe.pk_entity
-          --   language
-          LEFT JOIN information.v_language as lang
-          ON r.fk_entity = lang.pk_entity
-          --   time_primitive
-          --   place
+            --   appellation
+            LEFT JOIN information.v_appellation as appe
+            ON r.fk_entity = appe.pk_entity
+            --   language
+            LEFT JOIN information.v_language as lang
+            ON r.fk_entity = lang.pk_entity
+            --   time_primitive
+            --   place
 
-        LIMIT 1
-      ),
-      string_from_first_text_prop AS (
+          ORDER BY epr2.ord_num
+          LIMIT 1
+        ), 
+        string_from_first_text_prop AS (
 
-        SELECT txtp.string
-        FROM information.v_text_property as txtp
-        INNER JOIN first_field on first_field.fk_class_field = txtp.fk_class_field 
-          AND txtp.fk_concerned_entity = first_field.pk_entity 
-        INNER JOIN information.entity_version_project_rel as epr ON epr.fk_entity=txtp.pk_entity
-          AND  epr.is_in_project = true
-        ORDER BY epr.ord_num
-        LIMIT 1
+          SELECT txtp.string
+          FROM information.v_text_property as txtp
+          INNER JOIN first_field on first_field.fk_class_field = txtp.fk_class_field 
+            AND txtp.fk_concerned_entity = first_field.pk_entity 
+          INNER JOIN information.entity_version_project_rel as epr ON epr.fk_entity=txtp.pk_entity
+            AND  epr.is_in_project = true AND epr.fk_project = param_fk_project
+          ORDER BY epr.ord_num
+          LIMIT 1
 
-      ),				   
-      string AS (
-        SELECT string
-        FROM  string_from_first_role
-        UNION
-        SELECT string
-        FROM string_from_first_text_prop
-      )
-      SELECT string INTO new_own_entity_label FROM string;
+        ),				   
+        string AS (
+          SELECT string
+          FROM  string_from_first_role
+          UNION
+          SELECT string
+          FROM string_from_first_text_prop
+        )
+        SELECT string INTO new_own_entity_label FROM string;
 
 
-    RAISE INFO 'new_own_entity_label: %', new_own_entity_label;
+        
+        
+      END IF; 
+        
 
-    ----- Insert or update column own_entity_label of table entity_preview
 
-    SELECT entity_label INTO old_own_entity_label FROM warehouse.entity_preview
-    WHERE pk_entity = param_pk_entity AND fk_project IS NULL;
 
-    RAISE INFO 'old_own_entity_label: %', old_own_entity_label;
+      RAISE INFO 'new_own_entity_label: %', new_own_entity_label;
 
-    IF NOT FOUND THEN 
 
-      INSERT INTO warehouse.entity_preview (pk_entity, fk_project, entity_label)
-      VALUES (param_pk_entity, param_fk_project, new_own_entity_label);
+      ----- Insert or update column own_entity_label of table entity_preview
 
-      RAISE INFO 'inserted new_own_entity_label: %', new_own_entity_label;
+      SELECT entity_label INTO old_own_entity_label FROM warehouse.entity_preview
+      WHERE pk_entity = param_pk_entity AND fk_project IS NOT DISTINCT FROM param_fk_project;
 
-    ELSIF (SELECT (old_own_entity_label IS DISTINCT FROM new_own_entity_label)) THEN
+      RAISE INFO 'old_own_entity_label: %', old_own_entity_label;
 
-      UPDATE warehouse.entity_preview 
-      SET entity_label = new_own_entity_label
-      where pk_entity=param_pk_entity AND fk_project IS NULL;
+      IF NOT FOUND THEN 
 
-      RAISE INFO 'updated object with new_own_entity_label: %', new_own_entity_label;
-    ELSE
-      RAISE INFO 'no update needed: %', new_own_entity_label;
+        INSERT INTO warehouse.entity_preview (pk_entity, fk_project, entity_label)
+        VALUES (param_pk_entity, param_fk_project, new_own_entity_label);
+
+        RAISE INFO 'inserted new_own_entity_label: %', new_own_entity_label;
+
+      ELSIF (SELECT (old_own_entity_label IS DISTINCT FROM new_own_entity_label)) THEN
+
+        UPDATE warehouse.entity_preview 
+        SET entity_label = new_own_entity_label
+        where pk_entity=param_pk_entity AND fk_project IS NOT DISTINCT FROM param_fk_project;
+
+        RAISE INFO 'updated object with new_own_entity_label: %', new_own_entity_label;
+      ELSE
+        RAISE INFO 'no update needed: %', new_own_entity_label;
+      END IF;
+
     END IF;
-
-
-    ---------------------- PROJECTS VERSIONS ----------------------
-
-    ELSE
-
-    RAISE INFO 'fill_own_entity_label_of_entity_preview of pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
-
-    -- get the string new_own_entity_label
-
-     WITH first_field AS (
-        SELECT entity_field.fk_property, entity_field.fk_class_field, entity.pk_entity
-        -- teen or peit
-        from (
-          SELECT t.pk_entity, t.fk_class 
-        FROM information.temporal_entity as t
-        WHERE  t.pk_entity = param_pk_entity
-        UNION 
-        SELECT p.pk_entity, p.fk_class 
-        FROM information.persistent_item as p
-        WHERE p.pk_entity = param_pk_entity
-        ) as entity
-        INNER JOIN  information.entity_version_project_rel as epr on epr.fk_entity = entity.pk_entity 
-        AND epr.is_in_project = true
-
-        -- field
-        INNER JOIN information.v_ordered_fields_per_class entity_field on entity_field.fk_class = entity.fk_class 
-        AND field_order = 0
-      ),
-      string_from_first_role AS (
-
-        SELECT COALESCE(appe.string, lang.notes) as string
-        FROM
-        first_field
-        LEFT JOIN information.v_role as r
-          on first_field.fk_property = r.fk_property
-          and first_field.pk_entity = r.fk_temporal_entity
-          LEFT JOIN information.entity_version_project_rel as epr2 
-            on epr2.fk_entity = r.pk_entity 
-            and epr2.fk_project = param_fk_project
-            and epr2.is_in_project = true
-
-          -----------------------------------------------------------
-          -- get the strings directly connected to entity via role-fk_entity (not via intermediate entity/PeIt)
-
-          --   appellation
-          LEFT JOIN information.v_appellation as appe
-          ON r.fk_entity = appe.pk_entity
-          --   language
-          LEFT JOIN information.v_language as lang
-          ON r.fk_entity = lang.pk_entity
-          --   time_primitive
-          --   place
-
-        ORDER BY epr2.ord_num
-        LIMIT 1
-      ), 
-      string_from_first_text_prop AS (
-
-        SELECT txtp.string
-        FROM information.v_text_property as txtp
-        INNER JOIN first_field on first_field.fk_class_field = txtp.fk_class_field 
-          AND txtp.fk_concerned_entity = first_field.pk_entity 
-        INNER JOIN information.entity_version_project_rel as epr ON epr.fk_entity=txtp.pk_entity
-          AND  epr.is_in_project = true AND epr.fk_project = param_fk_project
-        ORDER BY epr.ord_num
-        LIMIT 1
-
-      ),				   
-      string AS (
-        SELECT string
-        FROM  string_from_first_role
-        UNION
-        SELECT string
-        FROM string_from_first_text_prop
-      )
-      SELECT string INTO new_own_entity_label FROM string;
-
-
-    RAISE INFO 'new_own_entity_label: %', new_own_entity_label;
-
-    ----- Insert or update column own_entity_label of table entity_preview
-
-    SELECT entity_label INTO old_own_entity_label FROM warehouse.entity_preview
-    WHERE pk_entity = param_pk_entity AND fk_project = param_fk_project;
-
-    RAISE INFO 'old_own_entity_label: %', old_own_entity_label;
-
-    IF NOT FOUND THEN 
-
-      INSERT INTO warehouse.entity_preview (pk_entity, fk_project, entity_label)
-      VALUES (param_pk_entity, param_fk_project, new_own_entity_label);
-
-      RAISE INFO 'inserted new_own_entity_label: %', new_own_entity_label;
-
-    ELSIF (SELECT (old_own_entity_label IS DISTINCT FROM new_own_entity_label)) THEN
-
-      UPDATE warehouse.entity_preview 
-      SET entity_label = new_own_entity_label
-      where pk_entity=param_pk_entity AND fk_project=param_fk_project;
-
-      RAISE INFO 'updated object with new_own_entity_label: %', new_own_entity_label;
-    ELSE
-      RAISE INFO 'no update needed: %', new_own_entity_label;
-    END IF;
-
-    END IF; 
-
     RETURN true;
   END;
   $$ LANGUAGE plpgsql;
 
 
   ------------------------------------------------------------------------------------------------------------
-  -- FUNCTION fill_own_full_text_of_entity_preview                      				                #4
+  -- FUNCTION entity_preview__fill_own_full_text                      				                #5
   ------------------------------------------------------------------------------------------------------------
-  CREATE OR REPLACE FUNCTION warehouse.fill_own_full_text_of_entity_preview(
+  CREATE OR REPLACE FUNCTION warehouse.entity_preview__fill_own_full_text(
   param_pk_entity integer,
   param_fk_project integer
   )
@@ -578,7 +660,7 @@ exports.up = function (db, callback) {
   
     IF param_fk_project IS NULL THEN
   
-      RAISE INFO 'fill_own_full_text_of_entity_preview of: pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
+      RAISE INFO 'entity_preview__fill_own_full_text of: pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
   
       -- get the string new_own_full_text
   
@@ -675,7 +757,7 @@ exports.up = function (db, callback) {
   
     ELSE
                
-      RAISE INFO 'fill_own_full_text_of_entity_preview of: pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
+      RAISE INFO 'entity_preview__fill_own_full_text of: pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
   
       -- get the string new_own_full_text
   
@@ -779,9 +861,9 @@ exports.up = function (db, callback) {
 
 
   ------------------------------------------------------------------------------------------------------------
-  -- FUNCTION fill_dependent_entity_labels                      				                #5
+  -- FUNCTION entity_preview__fill_dependent_entity_labels                      				                #6
   ------------------------------------------------------------------------------------------------------------
-  CREATE OR REPLACE FUNCTION warehouse.fill_dependent_entity_labels(
+  CREATE OR REPLACE FUNCTION warehouse.entity_preview__fill_dependent_entity_labels(
   param_pk_entity integer,
   param_fk_project integer
   )
@@ -793,7 +875,7 @@ exports.up = function (db, callback) {
   
     ---------------------- REPO & PROJECTS VERSIONS ----------------------
                
-    RAISE INFO 'fill_dependent_entity_labels of pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
+    RAISE INFO 'entity_preview__fill_dependent_entity_labels of pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
   
     -- get new_entity_label
     SELECT entity_label INTO new_entity_label
@@ -806,7 +888,7 @@ exports.up = function (db, callback) {
     -- update all dependent entity_previews with new_entity_label (if DISTINCT)
     UPDATE warehouse.entity_preview
     SET entity_label = new_entity_label
-    WHERE pk_entity_for_entity_label = param_pk_entity
+    WHERE fk_entity_label = param_pk_entity
     AND fk_project IS NOT DISTINCT FROM param_fk_project
     AND entity_label IS DISTINCT FROM new_entity_label;
   
@@ -817,9 +899,9 @@ exports.up = function (db, callback) {
 
 
   ------------------------------------------------------------------------------------------------------------
-  -- FUNCTION fill_dependent_full_texts                      				                                    #6
+  -- FUNCTION entity_preview__fill_dependent_related_full_texts                      				               #7
   ------------------------------------------------------------------------------------------------------------
-  CREATE OR REPLACE FUNCTION warehouse.fill_dependent_full_texts(
+  CREATE OR REPLACE FUNCTION warehouse.entity_preview__fill_dependent_related_full_texts(
   param_pk_entity integer,
   param_fk_project integer
   )
@@ -830,7 +912,7 @@ exports.up = function (db, callback) {
   
     ---------------------- REPO & PROJECTS VERSIONS ----------------------
                
-    RAISE INFO 'fill_dependent_full_texts of pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
+    RAISE INFO 'entity_preview__fill_dependent_related_full_texts of pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
   
     -- get new_own_full_text
     SELECT own_full_text INTO new_own_full_text
@@ -841,17 +923,17 @@ exports.up = function (db, callback) {
     RAISE INFO 'new_own_full_text: %', new_own_full_text;
   
   
-    -- update all full_texts_from_related_entity_previews with new_own_full_text (if DISTINCT)
+    -- update all related_full_texts with new_own_full_text (if DISTINCT)
     UPDATE warehouse.entity_preview
-    SET full_texts_from_related_entity_previews = (	
+    SET related_full_texts = (	
       SELECT jsonb_set(
-        full_texts_from_related_entity_previews,
+        related_full_texts,
          array_agg(param_pk_entity::text),
         to_jsonb(new_own_full_text)
         )
       )												   
-    WHERE full_texts_from_related_entity_previews ? param_pk_entity::text 
-    AND full_texts_from_related_entity_previews->>param_pk_entity::text != new_own_full_text
+    WHERE related_full_texts ? param_pk_entity::text 
+    AND related_full_texts->>param_pk_entity::text != new_own_full_text
     AND fk_project IS NOT DISTINCT FROM param_fk_project;
   
     RETURN true;
@@ -860,10 +942,164 @@ exports.up = function (db, callback) {
 
 
   ------------------------------------------------------------------------------------------------------------
-  -- FUNCTION create_all_entity_previews                                                                  #7
+  -- FUNCTION entity_preview__fill_dependent_class_labels                        				                #8
   ------------------------------------------------------------------------------------------------------------
-  CREATE OR REPLACE FUNCTION warehouse.create_all_entity_previews()
-  RETURNS warehouse.entity_preview AS $$
+  CREATE OR REPLACE FUNCTION warehouse.entity_preview__fill_dependent_class_labels(
+  pk_class integer,
+  param_class_label TEXT default NULL
+  )
+  RETURNS BOOLEAN AS $$
+  DECLARE
+    new_class_label TEXT;
+  BEGIN
+  
+    ---------------------- REPO & PROJECTS VERSIONS ----------------------
+               
+    RAISE INFO 'entity_preview__fill_dependent_class_labels of pk_entity: %', pk_class;
+  
+    -- get new_class_label
+    IF (param_class_label IS NULL) THEN 
+      SELECT class_label INTO new_class_label
+      FROM warehouse.class_preview
+      WHERE dfh_pk_class = pk_class;
+    ELSE
+      new_class_label = param_class_label;
+    END IF; 
+
+    RAISE INFO 'new_class_label: %', new_class_label;
+  
+    -- update all dependent entity_previews with new_class_label (if DISTINCT)
+    UPDATE warehouse.entity_preview
+    SET class_label = new_class_label
+    WHERE fk_class = pk_class
+    AND class_label IS DISTINCT FROM new_class_label;
+  
+    RETURN true;
+  END;
+  $$ LANGUAGE plpgsql;
+
+
+  ------------------------------------------------------------------------------------------------------------
+  -- FUNCTION entity_preview__fill_dependent_type_labels                      				                #9
+  ------------------------------------------------------------------------------------------------------------
+  CREATE OR REPLACE FUNCTION warehouse.entity_preview__fill_dependent_type_labels(
+  param_pk_entity integer,
+  param_fk_project integer
+  )
+  RETURNS BOOLEAN AS $$
+  DECLARE
+  new_type_label TEXT;
+  dependent_type_label TEXT;
+  BEGIN
+  
+    ---------------------- REPO & PROJECTS VERSIONS ----------------------
+               
+    RAISE INFO 'entity_preview__fill_dependent_type_labels of pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
+  
+    -- get new_type_label
+    SELECT entity_label INTO new_type_label
+    FROM warehouse.entity_preview
+    WHERE pk_entity = param_pk_entity
+    AND fk_project IS NOT DISTINCT FROM param_fk_project;
+  
+    RAISE INFO 'new_type_label: %', new_type_label;
+  
+    -- update all dependent entity_previews with new_type_label (if DISTINCT)
+    UPDATE warehouse.entity_preview
+    SET type_label = new_type_label
+    WHERE fk_type = param_pk_entity
+    AND fk_project IS NOT DISTINCT FROM param_fk_project
+    AND type_label IS DISTINCT FROM new_type_label;
+  
+    RETURN true;
+  END;
+  $$ LANGUAGE plpgsql;
+
+
+
+  ------------------------------------------------------------------------------------------------------------
+  -- FUNCTION concat_to_full_text                                                                  #10
+  ------------------------------------------------------------------------------------------------------------
+  CREATE OR REPLACE FUNCTION warehouse.concat_to_full_text(
+    item warehouse.entity_preview
+  )
+  RETURNS TABLE (new_full_text text, new_ts_vector tsvector)
+  AS $BODY$
+  DECLARE
+  new_full_text text;
+  new_ts_vector tsvector;
+  BEGIN
+    
+    SELECT string_agg into new_full_text from (
+      SELECT 1, string_agg(txt, ', ' ORDER BY rank) from (
+        SELECT rank, txt 
+        FROM (
+          select 1 rank, coalesce(item.type_label, item.class_label, '') as txt
+          UNION
+          select 2 rank, item.own_full_text  as txt
+          UNION
+          select 3 rank, value as txt 
+          from jsonb_each_text(item.related_full_texts)
+        ) AS all_strings
+        WHERE txt != ''
+      ) AS items
+      GROUP BY 1
+    ) as x;	   
+    
+    SELECT setweight(to_tsvector(coalesce(item.entity_label, '')), 'A') || 
+        setweight(to_tsvector(coalesce(item.type_label, item.class_label, '')), 'B') || 
+        setweight(to_tsvector(coalesce(new_full_text,'')), 'C')     
+    INTO new_ts_vector;
+          
+                      
+    RETURN QUERY VALUES (new_full_text, new_ts_vector) ;
+  END;
+
+  $BODY$ LANGUAGE plpgsql;
+
+  ------------------------------------------------------------------------------------------------------------
+  -- FUNCTION entity_preview__create                      				                                    #11
+  ------------------------------------------------------------------------------------------------------------
+  CREATE OR REPLACE FUNCTION warehouse.entity_preview__create(
+  param_pk_entity integer,
+  param_fk_project integer
+  )
+  RETURNS BOOLEAN AS $$
+  BEGIN
+    
+    ---------- first create the dependency indexes ----------
+    
+    PERFORM warehouse.entity_preview__create_related_full_texts(param_pk_entity, param_fk_project);
+    
+    PERFORM warehouse.entity_preview__create_fk_entity_label(param_pk_entity, param_fk_project);
+    
+    PERFORM warehouse.entity_preview__create_fk_type(param_pk_entity, param_fk_project);
+
+    ---------- second fill the own entity_label and own_full_text  ----------
+    
+    PERFORM warehouse.entity_preview__fill_own_entity_label(param_pk_entity, param_fk_project);
+    
+    PERFORM warehouse.entity_preview__fill_own_full_text(param_pk_entity, param_fk_project);
+    
+    
+    ---------- third fill the dependencies ----------
+    
+    PERFORM warehouse.entity_preview__fill_dependent_entity_labels(param_pk_entity, param_fk_project);  
+    
+    PERFORM warehouse.entity_preview__fill_dependent_related_full_texts(param_pk_entity, param_fk_project);
+    
+    PERFORM warehouse.entity_preview__fill_dependent_type_labels(param_pk_entity, param_fk_project);
+    
+    RETURN true;
+  END;
+  $$ LANGUAGE plpgsql;
+
+
+  ------------------------------------------------------------------------------------------------------------
+  -- FUNCTION entity_preview__create_all                                                                  #12
+  ------------------------------------------------------------------------------------------------------------
+  CREATE OR REPLACE FUNCTION warehouse.entity_preview__create_all()
+  RETURNS BOOLEAN AS $$
 
   DECLARE 
     item record;
@@ -871,90 +1107,76 @@ exports.up = function (db, callback) {
     t timestamptz;
   BEGIN
 
+  t = clock_timestamp();
+
   -- empty table entity_preview
   DELETE from warehouse.entity_preview;
 
-  -- select all <pk_entity, fk_project> combinations
-  CREATE TEMP TABLE temp_items AS  ( 
+  -- create all <pk_entity, fk_project> combinations
     
-    -- select all TeEn and PeIt per project
-    SELECT DISTINCT e.pk_entity, epr.fk_project
-    FROM information.entity_version_project_rel epr
-    JOIN information.entity e on e.pk_entity = epr.fk_entity
-    WHERE epr.is_in_project = true
-    AND e.table_name IN ('temporal_entity', 'persistent_item')
-    UNION
+  INSERT INTO warehouse.entity_preview  (pk_entity, fk_project, fk_class)
+  -- select all TeEn and PeIt per project
+  SELECT DISTINCT e.pk_entity, epr.fk_project, 
+    CASE WHEN pi.pk_entity IS NOT NULL THEN pi.fk_class ELSE te.fk_class END AS fk_class
+  FROM information.entity_version_project_rel epr
+  JOIN information.entity e on e.pk_entity = epr.fk_entity
+  LEFT JOIN information.persistent_item pi on e.pk_entity = pi.pk_entity
+  LEFT JOIN information.temporal_entity te on e.pk_entity = te.pk_entity
+  WHERE epr.is_in_project = true
+  AND e.table_name IN ('temporal_entity', 'persistent_item')
+  UNION
 
-    -- select all TeEn and PeIt per repo
-    SELECT DISTINCT e.pk_entity, NULL::integer as fk_project
-    FROM information.entity e
-    WHERE e.table_name IN ('temporal_entity', 'persistent_item')
+  -- select all TeEn and PeIt per repo
+  SELECT DISTINCT e.pk_entity, NULL::integer as fk_project,
+    CASE WHEN pi.pk_entity IS NOT NULL THEN pi.fk_class ELSE te.fk_class END AS fk_class
+  FROM information.entity e
+  LEFT JOIN information.persistent_item pi on e.pk_entity = pi.pk_entity
+  LEFT JOIN information.temporal_entity te on e.pk_entity = te.pk_entity
+  WHERE e.table_name IN ('temporal_entity', 'persistent_item')
+
+  ORDER BY pk_entity
+  LIMIT 50; -- TODO: UNCOMMENT !
+
   
-    ORDER BY pk_entity
-    LIMIT 50 -- TODO: UNCOMMENT !
-  );
+  ---------- first create the dependency indexes ----------
+  FOR item IN (SELECT * FROM warehouse.entity_preview)
+  LOOP 
 
-  -- create dependency indexes and own strings
-  
-  -- #1 create_keys_of_full_texts_from_related_entity_previews
-  t = clock_timestamp();
+      PERFORM warehouse.entity_preview__create_related_full_texts(item.pk_entity, item.fk_project);
 
-  FOR item IN (SELECT * FROM temp_items) LOOP 
-    PERFORM warehouse.create_keys_of_full_texts_from_related_entity_previews(item.pk_entity, item.fk_project);
+      PERFORM warehouse.entity_preview__create_fk_entity_label(item.pk_entity, item.fk_project);
+
+      PERFORM warehouse.entity_preview__create_fk_type(item.pk_entity, item.fk_project);
+
   END LOOP;
+
+
+  ---------- second fill the own entity_label and own_full_text  ----------
+  FOR item IN (SELECT * FROM warehouse.entity_preview)
+  LOOP 
   
-  raise notice 'time spent for create_keys_of_full_texts_from_related_entity_previews=%', clock_timestamp() - t;
+      PERFORM warehouse.entity_preview__fill_own_entity_label(item.pk_entity, item.fk_project);
+    
+      PERFORM warehouse.entity_preview__fill_own_full_text(item.pk_entity, item.fk_project);
 
-  -- #2 create_pk_entity_for_entity_label
-  t = clock_timestamp();
-
-  FOR item IN (SELECT * FROM temp_items) LOOP 
-   PERFORM warehouse.create_pk_entity_for_entity_label(item.pk_entity, item.fk_project);
   END LOOP;
+
+
+  ---------- third fill the dependencies ----------
+  FOR item IN (SELECT * FROM warehouse.entity_preview)
+  LOOP 
+    
+      PERFORM warehouse.entity_preview__fill_dependent_entity_labels(item.pk_entity, item.fk_project);  
+      
+      PERFORM warehouse.entity_preview__fill_dependent_related_full_texts(item.pk_entity, item.fk_project);
   
-  raise notice 'time spent for create_pk_entity_for_entity_label=%', clock_timestamp() - t;
-
-
-  -- #3 fill_own_entity_label_of_entity_preview
-  t = clock_timestamp();
-
-  FOR item IN (SELECT * FROM temp_items) LOOP 
-   PERFORM warehouse.fill_own_entity_label_of_entity_preview(item.pk_entity, item.fk_project);
   END LOOP;
-  
-  raise notice 'time spent for fill_own_entity_label_of_entity_preview=%', clock_timestamp() - t;
 
 
-  -- #4 fill_own_full_text_of_entity_preview
-  t = clock_timestamp();
+  raise notice 'time spent for entity_preview__fill_own_full_text=%', clock_timestamp() - t;
 
-  FOR item IN (SELECT * FROM temp_items) LOOP 
-    PERFORM warehouse.fill_own_full_text_of_entity_preview(item.pk_entity, item.fk_project);
-  END LOOP;
-  
-  raise notice 'time spent for fill_own_full_text_of_entity_preview=%', clock_timestamp() - t;
-
-  -- apply strings to dependent previews
-
-  --  FOR item IN (SELECT * FROM temp_items)
-  --  LOOP 
-  --
-  --    -- #5 fill_dependent_entity_labels
-  --    PERFORM warehouse.fill_dependent_entity_labels(item.pk_entity, item.fk_project);
-  --
-  --    -- #6 fill_dependent_full_texts
-  --    PERFORM warehouse.fill_dependent_full_texts(item.pk_entity, item.fk_project);
-  --
-  --  END LOOP;
-
-
-
-  DROP TABLE temp_items;
-
-  -- return the fresh entity_preview table
-  SELECT * INTO results FROM warehouse.entity_preview;
-
-  RETURN results;
+ 
+  RETURN TRUE;
 
   END;
   $$ LANGUAGE plpgsql;
@@ -971,27 +1193,38 @@ exports.up = function (db, callback) {
 exports.down = function (db, callback) {
 
   const sql = `
+  -- 12
+  DROP FUNCTION warehouse.entity_preview__create_all();
+  
+  -- 11
+  DROP FUNCTION warehouse.entity_preview__create(integer, integer);
+
+  -- 9
+  DROP FUNCTION warehouse.entity_preview__fill_dependent_type_labels(integer, integer);
+  
+  -- 8
+  DROP FUNCTION warehouse.entity_preview__fill_dependent_class_labels(integer, text);
   
   -- 7
-  DROP FUNCTION warehouse.create_all_entity_previews();
+  DROP FUNCTION warehouse.entity_preview__fill_dependent_related_full_texts(integer, integer);
 
   -- 6
-  DROP FUNCTION warehouse.fill_dependent_full_texts(integer, integer);
+  DROP FUNCTION warehouse.entity_preview__fill_dependent_entity_labels(integer, integer);
 
   -- 5
-  DROP FUNCTION warehouse.fill_dependent_entity_labels(integer, integer);
+  DROP FUNCTION warehouse.entity_preview__fill_own_full_text(integer, integer);
 
   -- 4
-  DROP FUNCTION warehouse.fill_own_full_text_of_entity_preview(integer, integer);
-
+  DROP FUNCTION warehouse.entity_preview__fill_own_entity_label(integer, integer);
+ 
   -- 3
-  DROP FUNCTION warehouse.fill_own_entity_label_of_entity_preview(integer, integer);
-
+  DROP FUNCTION warehouse.entity_preview__create_fk_type(integer, integer);
+  
   -- 2
-  DROP FUNCTION warehouse.create_pk_entity_for_entity_label(integer, integer);
+  DROP FUNCTION warehouse.entity_preview__create_fk_entity_label(integer, integer);
 
   -- 1
-  DROP FUNCTION warehouse.create_keys_of_full_texts_from_related_entity_previews(integer, integer);
+  DROP FUNCTION warehouse.entity_preview__create_related_full_texts(integer, integer);
 
   `
 

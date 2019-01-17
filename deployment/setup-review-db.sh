@@ -25,9 +25,9 @@ then
 
 
     echo '================= MIGRATE REVIEW DB UP TO STATE OF STAGING ===============';
-    latest_migration=`psql $DB_SOURCE -t -c "SELECT name from public.migrations ORDER BY id DESC LIMIT 1"`
+    latest_migration=`psql $DB_SOURCE -t -c "SELECT trim(leading '/' from name) from public.migrations ORDER BY id DESC LIMIT 1"`
     echo 'latest migration of staging: '$latest_migration;
-    ../node_modules/db-migrate/bin/db-migrate --config ../server/migrate-db-config.json --migrations-dir ../server/migrations up latest_migration;
+    ../node_modules/db-migrate/bin/db-migrate --config ../server/migrate-db-config.json --migrations-dir ../server/migrations up $latest_migration;
 
 
 

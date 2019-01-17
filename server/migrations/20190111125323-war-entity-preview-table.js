@@ -28,7 +28,7 @@ exports.up = function (db, callback) {
     class_label varchar,
     entity_type varchar,
     type_label varchar,
-    pk_type varchar,
+    fk_type INTEGER,
     entity_label varchar,
     full_text varchar, 
     ts_vector tsvector,
@@ -36,8 +36,8 @@ exports.up = function (db, callback) {
 
     -- own_entity_label varchar,
     own_full_text varchar,
-    pk_entity_for_entity_label integer,
-    full_texts_from_related_entity_previews jsonb
+    fk_entity_label integer,
+    related_full_texts jsonb
   );
 
 
