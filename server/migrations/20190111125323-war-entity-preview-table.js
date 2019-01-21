@@ -20,26 +20,28 @@ exports.up = function (db, callback) {
   ------------------------------------------------------------------------------------------------------------
   -- TABLE that stores entity previews                                                                    #1
   ------------------------------------------------------------------------------------------------------------
-  
-  CREATE TABLE warehouse.entity_preview (
-    pk_entity INTEGER,
-    fk_project INTEGER,
-    fk_class INTEGER,
-    class_label varchar,
-    entity_type varchar,
-    type_label varchar,
-    fk_type INTEGER,
-    entity_label varchar,
-    full_text varchar, 
-    ts_vector tsvector,
-    time_span jsonb,
+  CREATE TABLE warehouse.entity_preview AS SELECT * FROM warehouse.v_entity_preview;
+  ALTER TABLE warehouse.entity_preview ADD CONSTRAINT entity_preview_unique UNIQUE (pk_entity, project);
 
-    -- own_entity_label varchar,
-    own_full_text varchar,
-    fk_entity_label integer,
-    related_full_texts jsonb
-  );
-
+ -- CREATE TABLE warehouse.entity_preview (
+ --   pk_entity INTEGER,
+ --   fk_project INTEGER,
+ --   fk_class INTEGER,
+ --   class_label varchar,
+ --   entity_type varchar,
+ --   type_label varchar,
+ --   fk_type INTEGER,
+ --   entity_label varchar,
+ --   full_text varchar, 
+ --   ts_vector tsvector,
+ --   time_span jsonb,
+--
+ --   -- own_entity_label varchar,
+ --   own_full_text varchar,
+ --   fk_entity_label integer,
+ --   related_full_texts jsonb DEFAULT '{}'::jsonb
+ -- );
+--
 
 
   `
@@ -53,7 +55,7 @@ exports.down = function (db, callback) {
   const sql = `
   
   -- 1 
-  DROP TABLE warehouse.entity_preview;
+  DROP TABLE warehouse.entity_preview CASCADE;
 
   `
 

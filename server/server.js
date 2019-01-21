@@ -4,6 +4,7 @@ var loopback = require('loopback');
 var boot = require('loopback-boot');
 
 var app = module.exports = loopback();
+const { Pool, Client } = require('pg')
 
 
 
@@ -42,8 +43,64 @@ app.start = function () {
     // });
 
 
+     /**********************************************************
+     * Setup the queue for warehouse updates 
+     **********************************************************/
+    // Connect to Postgres 
+    const client = new Client({
+      connectionString: app.datasources.postgres1.connector.settings.url,
+    })
+    client.connect()
 
+    const queue = [];
+    let working = false;
+    let skipped=0;
+    let executed=0;
+    const nextFromQue = () => {
 
+      if(!working && queue.length){
+        working = true;
+        const fn = queue.pop();
+        client.query('select ' + fn, (err,res)=>{
+          // console.log('executed', (executed ++))
+          working = false
+          nextFromQue();
+        })
+      }
+
+    }
+
+    const enQueue = (fn) => {
+      if (!queue.includes(fn)) {
+        queue.push(fn);
+        // console.log('enQueued', fn)
+          nextFromQue();
+      }
+      // else{
+      //   console.log('skipped', (skipped ++))
+      // }
+    }
+
+    // Listen for all pg_notify channel messages
+    client.on('notification', function (msg) {
+      let payload = JSON.parse(msg.payload);
+      //console.log(payload.fn)
+      switch (msg.channel) {
+        case 'warehouse_update':
+          enQueue(payload.fn);
+          break;
+        case 'entity_preview_updated':
+          console.log(payload);
+          break;
+        default:
+          break;
+      }
+      //dbEventEmitter.emit(msg.channel, payload);
+    });
+
+    // Designate which channels we are listening on. Add additional channels with multiple lines.
+    client.query('LISTEN warehouse_update');
+    client.query('LISTEN entity_preview_updated');
 
   });
 
@@ -57,11 +114,12 @@ boot(app, __dirname, function (err) {
   if (err) throw err;
 
   // start the server if `$ node server.js`
-  if (require.main === module){
+  if (require.main === module) {
     var server = app.start();
-    
+
     // add socket.io and emit it to be ready
     var io = require('socket.io')(server);
     app.emit('io-ready', io);
+
   }
 });

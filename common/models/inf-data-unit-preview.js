@@ -16,9 +16,14 @@ module.exports = function (InfDataUnitPreview) {
         streamedPks: {} // the dataUnitPreviews streamed
       }
 
-      // Reset streamedPks Cache
+      // Reset the set of streamed pks
       const resetStreamedPks = pkEntity => {
         cache.streamedPks = {};
+      }
+
+      // Extend the set of streamed pks
+      const extendStreamedPks = pkEntity => {
+        cache.streamedPks[pkEntity] = true;
       }
 
       // Manage the room (project) of the socket
@@ -31,10 +36,6 @@ module.exports = function (InfDataUnitPreview) {
         }
       };
 
-      // Manage the set of streamed pks
-      const extendStreamedPks = pkEntity => {
-        cache.streamedPks[pkEntity] = true;
-      }
 
       // Get a dataUnitPreview by pk_projekt and pk_entity and add pks (array of pk_entity) to streamedPks 
       socket.on('addToStrem', (data) => {
@@ -56,7 +57,7 @@ module.exports = function (InfDataUnitPreview) {
           InfDataUnitPreview.findComplex({ where: ['fk_project', '=', pk_project, 'AND', 'pk_entity', 'IN', pks] }, (err, projectItems) => {
 
             // emit the ones found in Project
-            if(projectItems) projectItems.forEach(item => socket.emit('preview', item))
+            if (projectItems) projectItems.forEach(item => socket.emit('preview', item))
 
             // query repo for the ones not (yet) in project
             const notInProject = _.difference(pks, projectItems.map(item => item.pk_entity))
@@ -72,15 +73,14 @@ module.exports = function (InfDataUnitPreview) {
         }
       });
 
-
       // Emit DB updates on data_unit_preview to the clients
       // TODO: Replace this function with the Subscription to the Postgres Listener
       const dbListener = setInterval(() => {
-        console.log('update from postgres for project ' + cache.currentProjectPk +
-          ' connection ' + socket.id +
-          ' is connected ' + socket.connected +
-          ' streaming ' + JSON.stringify(cache.streamedPks)
-        )
+        // console.log('update from postgres for project ' + cache.currentProjectPk +
+        //   ' connection ' + socket.id +
+        //   ' is connected ' + socket.connected +
+        //   ' streaming ' + JSON.stringify(cache.streamedPks)
+        // )
 
         const pk_entity = '25972'; // TODO delete 
 

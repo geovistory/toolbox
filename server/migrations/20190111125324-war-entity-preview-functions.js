@@ -446,11 +446,14 @@ exports.up = function (db, callback) {
   
   -- if this has a fk_entity_label skip the whole function
   -- because the entity label is provided by that other entity 
-  IF (SELECT (SELECT fk_entity_label 
-    FROM warehouse.entity_preview
-    WHERE pk_entity = param_pk_entity AND fk_project IS NOT DISTINCT FROM param_fk_project
-    ) IS NULL
-    ) THEN
+  IF (
+    SELECT (
+      SELECT fk_entity_label 
+      FROM warehouse.entity_preview
+      WHERE pk_entity = param_pk_entity AND fk_project IS NOT DISTINCT FROM param_fk_project
+      LIMIT 1
+      ) IS NULL
+  ) THEN
     
     IF param_fk_project IS NULL THEN
     
@@ -1016,46 +1019,40 @@ exports.up = function (db, callback) {
   $$ LANGUAGE plpgsql;
 
 
-
   ------------------------------------------------------------------------------------------------------------
-  -- FUNCTION concat_to_full_text                                                                  #10
+  -- FUNCTION entity_preview__fill_time_span                   				                #10
   ------------------------------------------------------------------------------------------------------------
-  CREATE OR REPLACE FUNCTION warehouse.concat_to_full_text(
-    item warehouse.entity_preview
+  CREATE OR REPLACE FUNCTION warehouse.entity_preview__fill_time_span(
+  param_pk_entity integer,
+  param_fk_project integer
   )
-  RETURNS TABLE (new_full_text text, new_ts_vector tsvector)
-  AS $BODY$
+  RETURNS BOOLEAN AS $$
   DECLARE
-  new_full_text text;
-  new_ts_vector tsvector;
+  new_time_span jsonb;
   BEGIN
-    
-    SELECT string_agg into new_full_text from (
-      SELECT 1, string_agg(txt, ', ' ORDER BY rank) from (
-        SELECT rank, txt 
-        FROM (
-          select 1 rank, coalesce(item.type_label, item.class_label, '') as txt
-          UNION
-          select 2 rank, item.own_full_text  as txt
-          UNION
-          select 3 rank, value as txt 
-          from jsonb_each_text(item.related_full_texts)
-        ) AS all_strings
-        WHERE txt != ''
-      ) AS items
-      GROUP BY 1
-    ) as x;	   
-    
-    SELECT setweight(to_tsvector(coalesce(item.entity_label, '')), 'A') || 
-        setweight(to_tsvector(coalesce(item.type_label, item.class_label, '')), 'B') || 
-        setweight(to_tsvector(coalesce(new_full_text,'')), 'C')     
-    INTO new_ts_vector;
-          
-                      
-    RETURN QUERY VALUES (new_full_text, new_ts_vector) ;
+  
+    ---------------------- REPO & PROJECTS VERSIONS ----------------------
+               
+    RAISE INFO 'entity_preview__fill_time_span: %, fk_project: %', param_pk_entity, param_fk_project;
+  
+    -- get new_time_span
+	SELECT time_span INTO new_time_span
+	FROM information.v_te_en_time_span_per_project_and_repo
+	WHERE fk_temporal_entity = param_pk_entity 
+	AND fk_project IS NOT DISTINCT FROM param_fk_project;
+  
+    RAISE INFO 'new_time_span: %', new_time_span;
+  
+    -- update this entity_preview with new_time_span
+    UPDATE warehouse.entity_preview
+    SET time_span = new_time_span
+    WHERE pk_entity = param_pk_entity
+    AND fk_project IS NOT DISTINCT FROM param_fk_project;
+  
+    RETURN true;
   END;
+  $$ LANGUAGE plpgsql;
 
-  $BODY$ LANGUAGE plpgsql;
 
   ------------------------------------------------------------------------------------------------------------
   -- FUNCTION entity_preview__create                      				                                    #11
@@ -1098,7 +1095,7 @@ exports.up = function (db, callback) {
   ------------------------------------------------------------------------------------------------------------
   -- FUNCTION entity_preview__create_all                                                                  #12
   ------------------------------------------------------------------------------------------------------------
-  CREATE OR REPLACE FUNCTION warehouse.entity_preview__create_all()
+  CREATE OR REPLACE FUNCTION warehouse.entity_preview__create_all(limit_of_rows INT default 100000000)
   RETURNS BOOLEAN AS $$
 
   DECLARE 
@@ -1114,64 +1111,40 @@ exports.up = function (db, callback) {
 
   -- create all <pk_entity, fk_project> combinations
     
-  INSERT INTO warehouse.entity_preview  (pk_entity, fk_project, fk_class)
-  -- select all TeEn and PeIt per project
-  SELECT DISTINCT e.pk_entity, epr.fk_project, 
-    CASE WHEN pi.pk_entity IS NOT NULL THEN pi.fk_class ELSE te.fk_class END AS fk_class
-  FROM information.entity_version_project_rel epr
-  JOIN information.entity e on e.pk_entity = epr.fk_entity
-  LEFT JOIN information.persistent_item pi on e.pk_entity = pi.pk_entity
-  LEFT JOIN information.temporal_entity te on e.pk_entity = te.pk_entity
-  WHERE epr.is_in_project = true
-  AND e.table_name IN ('temporal_entity', 'persistent_item')
-  UNION
-
-  -- select all TeEn and PeIt per repo
-  SELECT DISTINCT e.pk_entity, NULL::integer as fk_project,
-    CASE WHEN pi.pk_entity IS NOT NULL THEN pi.fk_class ELSE te.fk_class END AS fk_class
-  FROM information.entity e
-  LEFT JOIN information.persistent_item pi on e.pk_entity = pi.pk_entity
-  LEFT JOIN information.temporal_entity te on e.pk_entity = te.pk_entity
-  WHERE e.table_name IN ('temporal_entity', 'persistent_item')
-
-  ORDER BY pk_entity
-  LIMIT 50; -- TODO: UNCOMMENT !
-
-  
-  ---------- first create the dependency indexes ----------
-  FOR item IN (SELECT * FROM warehouse.entity_preview)
-  LOOP 
-
-      PERFORM warehouse.entity_preview__create_related_full_texts(item.pk_entity, item.fk_project);
-
-      PERFORM warehouse.entity_preview__create_fk_entity_label(item.pk_entity, item.fk_project);
-
-      PERFORM warehouse.entity_preview__create_fk_type(item.pk_entity, item.fk_project);
-
-  END LOOP;
-
-
-  ---------- second fill the own entity_label and own_full_text  ----------
-  FOR item IN (SELECT * FROM warehouse.entity_preview)
-  LOOP 
-  
-      PERFORM warehouse.entity_preview__fill_own_entity_label(item.pk_entity, item.fk_project);
-    
-      PERFORM warehouse.entity_preview__fill_own_full_text(item.pk_entity, item.fk_project);
-
-  END LOOP;
-
-
-  ---------- third fill the dependencies ----------
-  FOR item IN (SELECT * FROM warehouse.entity_preview)
-  LOOP 
-    
-      PERFORM warehouse.entity_preview__fill_dependent_entity_labels(item.pk_entity, item.fk_project);  
-      
-      PERFORM warehouse.entity_preview__fill_dependent_related_full_texts(item.pk_entity, item.fk_project);
-  
-  END LOOP;
-
+  INSERT INTO warehouse.entity_preview  (  
+    pk_entity,
+    fk_project,
+    project,
+    fk_class,
+    table_name,
+    class_label,
+    entity_label,
+    time_span,
+    own_full_text,
+    fk_entity_label,
+    fk_type,
+    type_label,
+    related_full_texts,
+    full_text,
+    ts_vector
+    )
+  SELECT   
+    pk_entity,
+    fk_project,
+    project,
+    fk_class,
+    table_name,
+    class_label,
+    entity_label,
+    time_span,
+    own_full_text,
+    fk_entity_label,
+    fk_type,
+    type_label,
+    related_full_texts,
+    full_text,
+    ts_vector
+  FROM  warehouse.v_entity_preview;
 
   raise notice 'time spent for entity_preview__fill_own_full_text=%', clock_timestamp() - t;
 
@@ -1180,9 +1153,6 @@ exports.up = function (db, callback) {
 
   END;
   $$ LANGUAGE plpgsql;
-
-  
-  
 
   `
 
@@ -1194,11 +1164,14 @@ exports.down = function (db, callback) {
 
   const sql = `
   -- 12
-  DROP FUNCTION warehouse.entity_preview__create_all();
+  DROP FUNCTION warehouse.entity_preview__create_all(integer);
   
   -- 11
   DROP FUNCTION warehouse.entity_preview__create(integer, integer);
-
+  
+  -- 10
+  DROP FUNCTION warehouse.entity_preview__fill_time_span(integer, integer);
+ 
   -- 9
   DROP FUNCTION warehouse.entity_preview__fill_dependent_type_labels(integer, integer);
   
