@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ProjectCrm, ProjectDetail } from './active-project.models';
-import { DataUnitPreview, PeItDetail } from '../state/models';
+import { EntityPreview, PeItDetail } from '../state/models';
 import { InfChunk, InfTemporalEntity, InfPersistentItem } from '../sdk';
 
 
@@ -13,7 +13,7 @@ interface MetaData {
     pk_ui_context?: number;
 
     // return vals for Data Cache
-    dataUnitPreview?: DataUnitPreview;
+    entityPreview?: EntityPreview;
     peItDetail?: PeItDetail;
     chunk?: InfChunk
     teEnGraphs?: InfTemporalEntity[]
@@ -46,9 +46,9 @@ export class ActiveProjectActions {
      * Data cache
      */
     // DataUnitPreviews
-    static LOAD_DATA_UNIT_PREVIEW = 'ActiveProject::LOAD_DATA_UNIT_PREVIEW';
-    static LOAD_DATA_UNIT_PREVIEW_SUCCEEDED = 'ActiveProject::LOAD_DATA_UNIT_PREVIEW_SUCCEEDED';
-    static LOAD_DATA_UNIT_PREVIEW_FAILED = 'ActiveProject::LOAD_DATA_UNIT_PREVIEW_FAILED';
+    static LOAD_ENTITY_PREVIEW = 'ActiveProject::LOAD_ENTITY_PREVIEW';
+    static LOAD_ENTITY_PREVIEW_SUCCEEDED = 'ActiveProject::LOAD_ENTITY_PREVIEW_SUCCEEDED';
+    static LOAD_ENTITY_PREVIEW_FAILED = 'ActiveProject::LOAD_ENTITY_PREVIEW_FAILED';
     // DataUnit Details for display in Modals
     static LOAD_DATA_UNIT_DETAIL_FOR_MODAL = 'ActiveProject::LOAD_DATA_UNIT_DETAIL_FOR_MODAL';
     static LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED';
@@ -129,9 +129,9 @@ export class ActiveProjectActions {
      * Actions to load a DataUnitPreview
      *****************************************************/
 
-    loadDataUnitPreview(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
+    loadEntityPreview(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
         return {
-            type: ActiveProjectActions.LOAD_DATA_UNIT_PREVIEW,
+            type: ActiveProjectActions.LOAD_ENTITY_PREVIEW,
             payload: null,
             meta: {
                 pk_project, pk_entity, pk_ui_context
@@ -139,19 +139,19 @@ export class ActiveProjectActions {
         }
     }
 
-    loadDataUnitPreviewSucceeded(dataUnitPreview: DataUnitPreview): ActiveProjectAction {
+    loadEntityPreviewSucceeded(entityPreview: EntityPreview): ActiveProjectAction {
         return {
-            type: ActiveProjectActions.LOAD_DATA_UNIT_PREVIEW_SUCCEEDED,
+            type: ActiveProjectActions.LOAD_ENTITY_PREVIEW_SUCCEEDED,
             payload: null,
             meta: {
-                dataUnitPreview
+                entityPreview
             },
         }
     }
 
-    loadDataUnitPreviewFailed(error): ActiveProjectAction {
+    loadEntityPreviewFailed(error): ActiveProjectAction {
         return {
-            type: ActiveProjectActions.LOAD_DATA_UNIT_PREVIEW_FAILED,
+            type: ActiveProjectActions.LOAD_ENTITY_PREVIEW_FAILED,
             payload: null,
             meta: null,
             error

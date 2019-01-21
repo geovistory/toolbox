@@ -1,7 +1,7 @@
 import { Component, OnDestroy, Input, OnInit, EventEmitter, Output } from '@angular/core';
 import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, ProjectCrm, ComConfig, InfEntityAssociation, PeItDetail, U, ClassConfig, InfPersistentItem, ActiveProjectService, DataUnitPreview, DataUnitPreviewList } from 'app/core';
+import { IAppState, SubstoreComponent, ProjectCrm, ComConfig, InfEntityAssociation, PeItDetail, U, ClassConfig, InfPersistentItem, ActiveProjectService, EntityPreview, EntityPreviewList } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { SectionList } from './api/section-list.models';
 import { SectionListAPIEpics } from './api/section-list.epics';
@@ -58,8 +58,8 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
   pkRangeEntity: number;
   pkDomainEntity: number;
 
-  dataUnitPreviews$: Observable<DataUnitPreviewList>;
-  listData$: Observable<DataUnitPreview[]>;
+  entityPreviews$: Observable<EntityPreviewList>;
+  listData$: Observable<EntityPreview[]>;
 
   tableConfiguration: Config = {
     searchEnabled: true,
@@ -129,7 +129,7 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
     this.pkProject$ = this.ngRedux.select(['activeProject', 'pk_project']);
     this.crm$ = this.ngRedux.select(['activeProject', 'crm']);
     this.parentPeItDetail$ = this.ngRedux.select(dropLast(1, this.basePath));
-    this.dataUnitPreviews$ = this.ngRedux.select(['activeProject', 'dataUnitPreviews']);
+    this.entityPreviews$ = this.ngRedux.select(['activeProject', 'entityPreviews']);
 
     this.parentPeItDetail$.pipe(filter(d => (!!d && !!d.fkClass)), takeUntil(this.destroy$)).subscribe(parentPeItDetail => {
       this.parentFkClass = parentPeItDetail.fkClass;
@@ -167,11 +167,11 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
     // Listen to the entity pks of the sections
     this.listData$ = this.pkSections$.pipe(filter(pks => pks !== undefined), mergeMap(pks => {
 
-      // update the dataUnitPreview
+      // update the entityPreview
       pks.forEach(pk => { this.projectService.loadDataUnitPreview(pk); });
 
       // create the observable of dataPreviewArray
-      return combineLatest(pks.map(pk => this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', pk])));
+      return combineLatest(pks.map(pk => this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', pk])));
 
     }))
 

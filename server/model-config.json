@@ -131,7 +131,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "InfDataUnitPreview": {
+  "WarEntityPreview": {
     "dataSource": "postgres1",
     "public": true
   },

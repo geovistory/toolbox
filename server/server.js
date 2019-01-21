@@ -4,8 +4,8 @@ var loopback = require('loopback');
 var boot = require('loopback-boot');
 
 var app = module.exports = loopback();
-const { Pool, Client } = require('pg')
-
+const { Client } = require('pg')
+const { Subject } = require('rxjs');
 
 
 app.start = function () {
@@ -44,7 +44,7 @@ app.start = function () {
 
 
      /**********************************************************
-     * Setup the queue for warehouse updates 
+     * Setup the queue for warehouse update requests
      **********************************************************/
     // Connect to Postgres 
     const client = new Client({
@@ -81,16 +81,21 @@ app.start = function () {
       // }
     }
 
+    // initialize event streams on loopback models
+    app.models.WarEntityPreview.stream = new Subject();
+
     // Listen for all pg_notify channel messages
     client.on('notification', function (msg) {
       let payload = JSON.parse(msg.payload);
+
       //console.log(payload.fn)
       switch (msg.channel) {
         case 'warehouse_update_request':
           enQueue(payload.fn);
           break;
         case 'entity_preview_updated':
-          console.log(payload);
+          app.models.WarEntityPreview.stream.next(payload);
+          if(payload.entity_type=='peIt') console.log(payload);
           break;
         default:
           break;

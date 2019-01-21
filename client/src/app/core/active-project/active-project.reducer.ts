@@ -1,6 +1,6 @@
 import { ActiveProjectActions, ActiveProjectAction } from './active-project.action';
 import { ProjectDetail } from './active-project.models';
-import { DataUnitPreview } from '../state/models';
+import { EntityPreview } from '../state/models';
 import { indexBy } from 'ramda';
 import { InfPersistentItem, InfTemporalEntity } from '../sdk/models';
 
@@ -26,29 +26,29 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
         /***************************************************
         * Reducers to load DataUnitPreview
         ****************************************************/
-        case ActiveProjectActions.LOAD_DATA_UNIT_PREVIEW:
+        case ActiveProjectActions.LOAD_ENTITY_PREVIEW:
             state = {
                 ...state,
-                dataUnitPreviews: {
-                    ...(state || {}).dataUnitPreviews,
-                    [action.meta.pk_entity]: { loading: true } as DataUnitPreview
+                entityPreviews: {
+                    ...(state || {}).entityPreviews,
+                    [action.meta.pk_entity]: { loading: true } as EntityPreview
                 }
             };
             break;
 
-        case ActiveProjectActions.LOAD_DATA_UNIT_PREVIEW_SUCCEEDED:
-            if (action.meta.dataUnitPreview && action.meta.dataUnitPreview.pk_entity) {
+        case ActiveProjectActions.LOAD_ENTITY_PREVIEW_SUCCEEDED:
+            if (action.meta.entityPreview && action.meta.entityPreview.pk_entity) {
                 state = {
                     ...state,
-                    dataUnitPreviews: {
-                        ...state.dataUnitPreviews,
-                        [action.meta.dataUnitPreview.pk_entity]: action.meta.dataUnitPreview
+                    entityPreviews: {
+                        ...state.entityPreviews,
+                        [action.meta.entityPreview.pk_entity]: action.meta.entityPreview
                     }
                 };
             }
             break;
 
-        case ActiveProjectActions.LOAD_DATA_UNIT_PREVIEW_FAILED:
+        case ActiveProjectActions.LOAD_ENTITY_PREVIEW_FAILED:
             state = {
                 ...state,
             };

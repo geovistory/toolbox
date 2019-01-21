@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { DataUnitPreview, IAppState, InfChunk, InfEntityAssociation, ProjectCrm, U } from 'app/core';
+import { EntityPreview, IAppState, InfChunk, InfEntityAssociation, ProjectCrm, U } from 'app/core';
 import { Subject } from 'rxjs';
 import { DfhConfig } from '../../shared/dfh-config';
 
@@ -29,15 +29,15 @@ export class MentioningCreateCtrlComponent implements OnInit, OnDestroy, Control
   @Output() touched = new EventEmitter<void>();
   // Domain: Mentioned Entity. Provide a value to set this field onInit
 
-  @Input() mentionedEntity: DataUnitPreview;
+  @Input() mentionedEntity: EntityPreview;
   mentionedEntityFixed: boolean;
 
   // Range: F3 / F4 Manifestation. Provide a value to set this field onInit
-  @Input() sourceEntity: DataUnitPreview;
+  @Input() sourceEntity: EntityPreview;
   sourceEntityFixed: boolean;
 
   // Range: E2 Expression. Provide a value to set this field onInit
-  @Input() sectionEntity: DataUnitPreview;
+  @Input() sectionEntity: EntityPreview;
   sectionEntityFixed: boolean;
 
   sourceOrSectionEntityEditing;
@@ -130,7 +130,7 @@ export class MentioningCreateCtrlComponent implements OnInit, OnDestroy, Control
     this.validateAndEmit()
   }
 
-  onDropSourceEntity(entity: DataUnitPreview) {
+  onDropSourceEntity(entity: EntityPreview) {
     if (this.isSourceOrSection(entity.fk_class)) {
       this.sourceEntity = entity;
     } else if (entity.fk_class === 218) {
@@ -155,11 +155,11 @@ export class MentioningCreateCtrlComponent implements OnInit, OnDestroy, Control
   }
 
   allowDropSource() {
-    return (entity: DataUnitPreview) => this.isSourceOrSection(entity.fk_class);
+    return (entity: EntityPreview) => this.isSourceOrSection(entity.fk_class);
   }
 
   allowDropMentionedEntity() {
-    return (entity: DataUnitPreview) => {
+    return (entity: EntityPreview) => {
       const classes = this.ngRedux.getState().activeProject.crm.classes;
 
       for (const pkClass in classes) {

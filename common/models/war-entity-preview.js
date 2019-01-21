@@ -4,16 +4,16 @@ var app = require('../../server/server');
 var _ = require('lodash');
 
 
-module.exports = function (InfDataUnitPreview) {
+module.exports = function (WarEntityPreview) {
 
   app.on('io-ready', (io) => {
-    io.of('/InfDataUnitPreview').on('connection', (socket) => {
+    io.of('/WarEntityPreview').on('connection', (socket) => {
       console.log('new connection ' + socket.id)
 
       // Connection Cache
       const cache = {
         currentProjectPk: undefined, // the gevistory project
-        streamedPks: {} // the dataUnitPreviews streamed
+        streamedPks: {} // the entityPreviews streamed
       }
 
       // Reset the set of streamed pks
@@ -37,7 +37,7 @@ module.exports = function (InfDataUnitPreview) {
       };
 
 
-      // Get a dataUnitPreview by pk_projekt and pk_entity and add pks (array of pk_entity) to streamedPks 
+      // Get a entityPreview by pk_projekt and pk_entity and add pks (array of pk_entity) to streamedPks 
       socket.on('addToStrem', (data) => {
         let { pk_project, pks } = data;
 
@@ -51,49 +51,39 @@ module.exports = function (InfDataUnitPreview) {
           // extend the object of streamed pks
           pks.forEach(pk => extendStreamedPks(pk))
 
-          console.log('request for DataUnitPreviews ' + JSON.stringify(pks) + ' by project ' + cache.currentProjectPk)
+          console.log('request for EntityPreviews ' + JSON.stringify(pks) + ' by project ' + cache.currentProjectPk)
 
-          // Query the dataUnitPreview in DB
-          InfDataUnitPreview.findComplex({ where: ['fk_project', '=', pk_project, 'AND', 'pk_entity', 'IN', pks] }, (err, projectItems) => {
+          // Query the entityPreview in DB
+          WarEntityPreview.findComplex({ where: ['fk_project', '=', pk_project, 'AND', 'pk_entity', 'IN', pks] }, (err, projectItems) => {
+            
+            if(err) return new Error(err);
 
-            // emit the ones found in Project
-            if (projectItems) projectItems.forEach(item => socket.emit('preview', item))
+            if (projectItems) {
 
-            // query repo for the ones not (yet) in project
-            const notInProject = _.difference(pks, projectItems.map(item => item.pk_entity))
-            InfDataUnitPreview.findComplex({ where: ['fk_project', 'IS NULL', 'AND', 'pk_entity', 'IN', notInProject] }, (err, repoItems) => {
+              // emit the ones found in Project
+              projectItems.forEach(item => socket.emit('entityPreview', item))
 
-              // emit the ones found in Repo
-              if (repoItems) repoItems.forEach(item => socket.emit('preview', item))
+              // query repo for the ones not (yet) in project
+              const notInProject = _.difference(pks, projectItems.map(item => item.pk_entity))
+              WarEntityPreview.findComplex({ where: ['fk_project', 'IS NULL', 'AND', 'pk_entity', 'IN', notInProject] }, (err, repoItems) => {
 
-            })
+                // emit the ones found in Repo
+                if (repoItems) repoItems.forEach(item => socket.emit('entityPreview', item))
 
-
+              })
+            }
           })
         }
       });
 
-      // Emit DB updates on data_unit_preview to the clients
-      // TODO: Replace this function with the Subscription to the Postgres Listener
-      const dbListener = setInterval(() => {
-        // console.log('update from postgres for project ' + cache.currentProjectPk +
-        //   ' connection ' + socket.id +
-        //   ' is connected ' + socket.connected +
-        //   ' streaming ' + JSON.stringify(cache.streamedPks)
-        // )
-
-        const pk_entity = '25972'; // TODO delete 
-
-        // check if the changed dataUnitPreview is in object of streamed pks 
-        if (cache.streamedPks[pk_entity]) {
+     const streamSub = WarEntityPreview.stream.subscribe(entityPreview => {
+        // check if the changed entityPreview is in object of streamed pks 
+        if (cache.streamedPks[entityPreview.pk_entity]) {
           socket
             .to(cache.currentProjectPk)
-            .emit('preview', {
-              proj: cache.currentProjectPk,
-              du: pk_entity
-            });
+            .emit('entityPreview', entityPreview);
         }
-      }, 2000)
+      })
 
       // As soon as the client closes the project
       socket.on('leaveProjectRoom', () => {
@@ -110,7 +100,7 @@ module.exports = function (InfDataUnitPreview) {
       socket.on('disconnect', () => {
 
         // Unsubscribe the db listener 
-        dbListener.close()
+        streamSub.unsubscribe()
 
       })
     })
@@ -118,7 +108,7 @@ module.exports = function (InfDataUnitPreview) {
 
 
 
-  InfDataUnitPreview.search = function (projectId, searchString, pkClasses, entityType, limit, page, cb) {
+  WarEntityPreview.search = function (projectId, searchString, pkClasses, entityType, limit, page, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -182,14 +172,14 @@ module.exports = function (InfDataUnitPreview) {
         class_label,
         entity_type,
         type_label,
-        pk_type,
+        fk_type,
         time_span,
         ts_headline(full_text, q) as full_text_headline,
         ts_headline(class_label, q) as class_label_headline,
         ts_headline(entity_label, q) as entity_label_headline,
         ts_headline(type_label, q) as type_label_headline,
         count(pk_entity) OVER() AS total_count
-        from information.vm_data_unit_preview,
+        from warehouse.entity_preview,
         to_tsquery($1) q
         WHERE 1=1
         ` + (queryString === '' ? '' : 'AND ts_vector @@ q') + `
@@ -202,14 +192,14 @@ module.exports = function (InfDataUnitPreview) {
         OFFSET $3;
         `;
 
-    const connector = InfDataUnitPreview.dataSource.connector;
+    const connector = WarEntityPreview.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       cb(err, resultObjects);
     });
   };
 
 
-  InfDataUnitPreview.afterRemote('search', function (ctx, resultObjects, next) {
+  WarEntityPreview.afterRemote('search', function (ctx, resultObjects, next) {
 
     var totalCount = 0;
     if (resultObjects.length > 0) {

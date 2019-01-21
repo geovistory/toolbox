@@ -1,4 +1,4 @@
-import { PropertyFieldList, FieldList, DataUnitPreviewList, PeItDetailList } from 'app/core/state/models';
+import { PropertyFieldList, FieldList, EntityPreviewList, PeItDetailList } from 'app/core/state/models';
 import { ComClassFieldInterface, ComUiContextInterface, ProjectInterface, InfChunk, InfPersistentItem, InfTemporalEntity, DfhProperty } from 'app/core/sdk';
 import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/api/class-settings.models';
 
@@ -20,7 +20,7 @@ export interface ProjectDetail extends ProjectInterface {
      */
 
     // data unit previews
-    dataUnitPreviews?: DataUnitPreviewList;
+    entityPreviews?: EntityPreviewList;
 
     // data unit details for display in modal
     peItModals?: PeItDetailList;

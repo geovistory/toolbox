@@ -1,12 +1,9 @@
-import { concat } from 'ramda';
-import { Observable, OperatorFunction, pipe, interval, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { FieldList, PeItDetail, PropertyField, TeEntDetail, RoleDetail, ExistenceTimeDetail, DataUnitPreview } from '../state/models';
-import { U } from './util';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { AcNotification, ActionType } from 'app/modules/gv-angular-cesium/angular-cesium-fork';
-import { combineAll } from 'rxjs-compat/operator/combineAll';
-import { TimeSpan } from '../time-span/time-span';
+import { concat } from 'ramda';
+import { OperatorFunction, pipe } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { FieldList, PeItDetail, PropertyField, RoleDetail, TeEntDetail } from '../state/models';
+import { U } from './util';
 
 type TeEnOrPeItDetail = TeEntDetail | PeItDetail;
 
@@ -15,7 +12,7 @@ type TeEnOrPeItDetail = TeEntDetail | PeItDetail;
  *****************************************************************************/
 
 /**
- * Returns an Observable that emits a flattened PropertyField[] contained by all items in the 
+ * Returns an Observable that emits a flattened PropertyField[] contained by all items in the
  * Array of TeEntDetail or PeItDetail
  * emitted by the source Observable.
  */

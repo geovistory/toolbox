@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { ActiveProjectService, ClassConfig, IAppState, InfPersistentItem, InfRole } from 'app/core';
-import { ClassInstanceLabel, DataUnitPreview, FieldList, PeItDetail, SubstoreComponent } from 'app/core/state/models';
+import { ClassInstanceLabel, EntityPreview, FieldList, PeItDetail, SubstoreComponent } from 'app/core/state/models';
 import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { LeafPeItViewAPIActions } from './api/leaf-pe-it-view.actions';
@@ -48,7 +48,7 @@ export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnI
   @select() pkEntity$: Observable<number>;
   @select() peIt$: Observable<InfPersistentItem>;
   @select() loading$: Observable<boolean>;
-  preview$: Observable<DataUnitPreview>;
+  preview$: Observable<EntityPreview>;
 
   @Input() isCircular: boolean;
   @Input() pkEntity: number;
@@ -110,7 +110,7 @@ export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnI
     // if pkEntity is provided by input
     this.projectService.loadDataUnitPreview(this.pkEntity);
 
-    this.preview$ = this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', this.pkEntity]);
+    this.preview$ = this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', this.pkEntity]);
 
   }
 

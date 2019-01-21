@@ -9,15 +9,15 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InfDataUnitPreview } from '../../models/InfDataUnitPreview';
+import { WarEntityPreview } from '../../models/WarEntityPreview';
 import { SocketConnection } from '../../sockets/socket.connections';
 
 
 /**
- * Api services for the `InfDataUnitPreview` model.
+ * Api services for the `WarEntityPreview` model.
  */
 @Injectable()
-export class InfDataUnitPreviewApi extends BaseLoopBackApi {
+export class WarEntityPreviewApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -50,13 +50,13 @@ export class InfDataUnitPreviewApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfDataUnitPreview` object.)
+   * This usually means the response is a `WarEntityPreview` object.)
    * </em>
    */
   public search(pkProject: any = {}, searchString: any = {}, pkClasses: any = {}, entityType: any = {}, limit: any = {}, page: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfDataUnitPreviews/search";
+    "/WarEntityPreviews/search";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -85,29 +85,29 @@ export class InfDataUnitPreviewApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfDataUnitPreview` object.)
+   * This usually means the response is a `WarEntityPreview` object.)
    * </em>
    */
-  public findComplex(filter: LoopBackFilter = {}, customHeaders?: Function): Observable<InfDataUnitPreview[]> {
+  public findComplex(filter: LoopBackFilter = {}, customHeaders?: Function): Observable<WarEntityPreview[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfDataUnitPreviews/findComplex";
+    "/WarEntityPreviews/findComplex";
     let _routeParams: any = {};
     let _postBody: any = {
       filter: filter
     };
     let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<InfDataUnitPreview>) =>
-        instances.map((instance: InfDataUnitPreview) => new InfDataUnitPreview(instance))
+    return result.pipe(map((instances: Array<WarEntityPreview>) =>
+        instances.map((instance: WarEntityPreview) => new WarEntityPreview(instance))
     ));
   }
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `InfDataUnitPreview`.
+   * i.e. `WarEntityPreview`.
    */
   public getModelName() {
-    return "InfDataUnitPreview";
+    return "WarEntityPreview";
   }
 }

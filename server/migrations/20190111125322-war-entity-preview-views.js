@@ -443,7 +443,7 @@ exports.up = function (db, callback) {
         t1.fk_project,
         t1.project,
         t1.fk_class,
-        t1.table_name,
+        CASE WHEN (t1.table_name = 'persistent_item') THEN 'peIt' WHEN (t1.table_name = 'temporal_entity') THEN 'teEn' END as entity_type,
         t1.class_label,
         coalesce(t1.entity_label,t2.entity_label) entity_label,
         t1.time_span,

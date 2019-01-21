@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InfDataUnitPreviewApi, LoadingBarActions } from 'app/core';
+import {  LoadingBarActions, WarEntityPreviewApi } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
@@ -11,7 +11,7 @@ import { PeItSearchExistingAPIAction, PeItSearchExistingAPIActions } from './pe-
 @Injectable()
 export class PeItSearchExistingAPIEpics {
   constructor(
-    private duApi: InfDataUnitPreviewApi,
+    private entityPreviewApi: WarEntityPreviewApi,
     private actions: PeItSearchExistingAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions
@@ -36,7 +36,7 @@ export class PeItSearchExistingAPIEpics {
           /**
            * Do some api call
            */
-          this.duApi.search(null, action.meta.searchString, [action.meta.pkClass], null, action.meta.limit, action.meta.page)
+          this.entityPreviewApi.search(null, action.meta.searchString, [action.meta.pkClass], null, action.meta.limit, action.meta.page)
             /**
                * Subscribe to the api call
                */

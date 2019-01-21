@@ -9,8 +9,8 @@ import { environment } from '../../../environments/environment';
 import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { Project } from '../sdk/models/Project';
-import { DataUnitPreviewSocket } from '../sockets/sockets.module';
-import { DataUnitPreview } from '../state/models';
+import { EntityPreviewSocket } from '../sockets/sockets.module';
+import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
 
 
@@ -26,7 +26,7 @@ export class ActiveProjectService {
     private ngRedux: NgRedux<IAppState>,
     private actions: ActiveProjectActions,
     private router: Router,
-    private dataUnitPreviewSocket: DataUnitPreviewSocket
+    private entityPreviewSocket: EntityPreviewSocket
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -34,21 +34,21 @@ export class ActiveProjectService {
     this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']);
 
-    this.dataUnitPreviewSocket.fromEvent<DataUnitPreview>('preview').subscribe(data => {
+    this.entityPreviewSocket.fromEvent<EntityPreview>('entityPreview').subscribe(data => {
       console.log(data)
       // dispatch a method to put the DataUnitPreview to the store
-      this.ngRedux.dispatch(this.actions.loadDataUnitPreviewSucceeded(data))
+      this.ngRedux.dispatch(this.actions.loadEntityPreviewSucceeded(data))
     })
 
-    this.dataUnitPreviewSocket.fromEvent('reconnect').subscribe(disconnect => {
+    this.entityPreviewSocket.fromEvent('reconnect').subscribe(disconnect => {
       // get all DataUnitPreview keys from state and send them to the
       // server so that they will be streamed. This is important for
       // when connection was lost.
       combineLatest(this.pkProject$, this.activeProject$).pipe(first(items => items.filter(item => !item).length === 0))
         .subscribe(([pkProject, activeProject]) => {
-          this.dataUnitPreviewSocket.emit('addToStrem', {
+          this.entityPreviewSocket.emit('addToStrem', {
             pk_project: pkProject,
-            pks: Object.keys(activeProject.dataUnitPreviews)
+            pks: Object.keys(activeProject.entityPreviews)
           })
         })
     })
@@ -82,7 +82,7 @@ export class ActiveProjectService {
   }
 
   closeProject() {
-    this.dataUnitPreviewSocket.emit('leaveProjectRoom');
+    this.entityPreviewSocket.emit('leaveProjectRoom');
     this.ngRedux.dispatch(this.actions.destroy())
   }
 
@@ -94,23 +94,23 @@ export class ActiveProjectService {
    * @param pkEntity
    * @param forceReload
    */
-  loadDataUnitPreview(pkEntity: number, forceReload?: boolean): Observable<DataUnitPreview> {
+  loadDataUnitPreview(pkEntity: number, forceReload?: boolean): Observable<EntityPreview> {
     const state = this.ngRedux.getState();
 
-    if (!(((state || {}).activeProject || {}).dataUnitPreviews || {})[pkEntity] || forceReload) {
+    if (!(((state || {}).activeProject || {}).entityPreviews || {})[pkEntity] || forceReload) {
       this.pkProject$.pipe(first(pk => !!pk)).subscribe(pkProject => {
 
-        this.dataUnitPreviewSocket.emit('addToStrem', {
+        this.entityPreviewSocket.emit('addToStrem', {
           pk_project: pkProject,
           pks: [pkEntity]
         })
         const pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
 
-        this.ngRedux.dispatch(this.actions.loadDataUnitPreview(pkProject, pkEntity, pkUiContext))
+        this.ngRedux.dispatch(this.actions.loadEntityPreview(pkProject, pkEntity, pkUiContext))
       })
     }
 
-    return this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', pkEntity])
+    return this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', pkEntity])
       .filter(prev => (!!prev))
 
   }

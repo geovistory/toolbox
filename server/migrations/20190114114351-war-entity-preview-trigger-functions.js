@@ -298,17 +298,17 @@ exports.up = function (db, callback) {
         LANGUAGE 'plpgsql'
     AS $BODY$
     BEGIN
-      PERFORM pg_notify('entity_preview_updated', json_build_object(
+      PERFORM pg_notify('entity_preview_updated'::text, json_build_object(
         'pk_entity', NEW.pk_entity,
-        'fk_project', NEW.fk_project,
-        'project', NEW.project,
-        'fk_class', NEW.fk_class,
-        'table_name', NEW.table_name,
-        'class_label', NEW.class_label,
-        'entity_label', NEW.entity_label,
-        'time_span', NEW.time_span,
-        'fk_type', NEW.fk_type,
-        'type_label', NEW.type_label
+      'fk_project', NEW.fk_project,
+          'project', NEW.project,
+          'fk_class', NEW.fk_class,
+          'entity_type', NEW.entity_type,
+          'class_label', NEW.class_label,
+          'entity_label', NEW.entity_label,
+          'time_span', NEW.time_span,
+          'fk_type', NEW.fk_type,
+          'type_label', NEW.type_label
       )::text);
     RETURN NEW;
     END;

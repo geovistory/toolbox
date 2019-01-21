@@ -10,20 +10,18 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
 import { mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfDataUnitPreview, InfDataUnitPreviewApi, ProjectApi, InfPersistentItemApi, InfPersistentItem, InfTemporalEntity, InfTemporalEntityApi } from '../sdk';
-import { DataUnitPreview, PeItDetail } from '../state/models';
+import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ProjectApi } from '../sdk';
+import { PeItDetail } from '../state/models';
 import { IAppState } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { Socket } from 'ngx-socket-io';
 
 
 
 @Injectable()
 export class ActiveProjectEpics {
   constructor(
-    private duApi: InfDataUnitPreviewApi,
     private peItService: PeItService,
     private peItApi: InfPersistentItemApi,
     private teEnApi: InfTemporalEntityApi,
@@ -36,7 +34,6 @@ export class ActiveProjectEpics {
     private notificationActions: NotificationsAPIActions,
     private loadingBarActions: LoadingBarActions,
     private ngRedux: NgRedux<IAppState>,
-    private socket: Socket // TODO: check if this is at the right place here
   ) { }
 
   public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
@@ -467,7 +464,7 @@ export class ActiveProjectEpics {
               /**
                * Emit the local action on loading failed
                */
-              globalStore.next(this.actions.loadDataUnitPreviewFailed({ status: '' + error.status }))
+              globalStore.next(this.actions.loadEntityPreviewFailed({ status: '' + error.status }))
             })
         }))
       )
@@ -518,7 +515,7 @@ export class ActiveProjectEpics {
               /**
                * Emit the local action on loading failed
                */
-              globalStore.next(this.actions.loadDataUnitPreviewFailed({ status: '' + error.status }))
+              globalStore.next(this.actions.loadEntityPreviewFailed({ status: '' + error.status }))
             })
         }))
       )

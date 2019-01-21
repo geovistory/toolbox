@@ -95,7 +95,7 @@ exports.up = function (db, callback) {
   -- TRIGGER after_upsert_on_entity_preview                                                               #9
   ------------------------------------------------------------------------------------------------------------
   CREATE TRIGGER after_upsert_on_entity_preview
-  AFTER INSERT OR UPDATE
+  AFTER INSERT OR UPDATE OF entity_label, class_label, time_span, type_label
   ON warehouse.entity_preview
   FOR EACH ROW
   EXECUTE PROCEDURE warehouse.entity_preview__notify_upsert();

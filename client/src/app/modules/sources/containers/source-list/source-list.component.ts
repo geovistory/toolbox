@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ActiveProjectService, ComConfig, IAppState, PeItDetail, Project, ProjectCrm, SubstoreComponent, DataUnitPreview } from 'app/core';
+import { ActiveProjectService, ComConfig, IAppState, PeItDetail, Project, ProjectCrm, SubstoreComponent, EntityPreview } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { List } from 'app/modules/information/containers/list/api/list.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
@@ -41,7 +41,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
   @select() editSection$: Observable<PeItDetail>;
 
   // used for breadcumbs when section is opened
-  sourcePreview$: Observable<DataUnitPreview>;
+  sourcePreview$: Observable<EntityPreview>;
 
   project$: Observable<Project>;
 
@@ -110,9 +110,9 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
         // Init the section edit
         this.loadSectionDetails(params.pkEntity, params.pkSection, pkProject, crm)
 
-        // load the dataUnitPreview for the source for its display in breadcrumbs
+        // load the entityPreview for the source for its display in breadcrumbs
         this.activeProjectService.loadDataUnitPreview(params.pkEntity)
-        this.sourcePreview$ = this.ngRedux.select(['activeProject', 'dataUnitPreviews', params.pkEntity])
+        this.sourcePreview$ = this.ngRedux.select(['activeProject', 'entityPreviews', params.pkEntity])
 
       } else if (params.pkEntity) {
         // Init the source edit

@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ComConfig, IAppState, InfPersistentItem, PeItDetail, ProjectCrm, SubstoreComponent, ActiveProjectService, DataUnitPreview, TeEntDetail } from 'app/core';
+import { ComConfig, IAppState, InfPersistentItem, PeItDetail, ProjectCrm, SubstoreComponent, ActiveProjectService, EntityPreview, TeEntDetail } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { combineLatest, Observable, Subject } from 'rxjs';
 // import { EntityAddModalComponent } from '../../add-modal/entity-add-modal/entity-add-modal.component';
@@ -37,7 +37,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   @select() _peIt_add$: Observable<CreateOrAddEntity>;
   @select() loading$: Observable<boolean>;
 
-  selectedDataUnit$: Observable<DataUnitPreview>;
+  selectedDataUnit$: Observable<EntityPreview>;
 
   // Primary key of the Entity to be viewed or edited
   pkEntity: number;

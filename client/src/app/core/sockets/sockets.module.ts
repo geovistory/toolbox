@@ -3,10 +3,10 @@ import { Socket, SocketIoModule } from 'ngx-socket-io';
 import { environment } from 'environments/environment';
 
 @Injectable()
-export class DataUnitPreviewSocket extends Socket {
+export class EntityPreviewSocket extends Socket {
 
   constructor() {
-    super({ url: environment.baseUrl + '/InfDataUnitPreview' });
+    super({ url: environment.baseUrl + '/WarEntityPreview' });
   }
 
 }
@@ -20,7 +20,7 @@ export class DataUnitPreviewSocket extends Socket {
     SocketIoModule,
     // ...
   ],
-  providers: [DataUnitPreviewSocket],
+  providers: [EntityPreviewSocket],
   bootstrap: [/** AppComponent **/]
 })
 export class SocketsModule { }

@@ -1,7 +1,7 @@
 import { sandboxOf } from 'angular-playground';
 import { Information2Module } from '../../information.module';
 import { MentioningCreateCtrlComponent } from './mentioning-create-ctrl.component';
-import { DataUnitPreview } from 'app/core';
+import { EntityPreview } from 'app/core';
 
 
 
@@ -20,25 +20,25 @@ export default sandboxOf(MentioningCreateCtrlComponent, {
                 entity_label: 'Johan Jakon Leu',
                 type_label: 'Person',
                 pk_entity: 21
-            } as DataUnitPreview,
+            } as EntityPreview,
             band1: {
                 fk_class: 220,
                 entity_label: 'Helvetisches Lexikon Band 1',
                 type_label: 'Book',
                 pk_entity: 22
-            } as DataUnitPreview,
+            } as EntityPreview,
             sectionXI: {
                 fk_class: 218,
                 entity_label: 'XI',
                 type_label: 'Page',
                 pk_entity: 23
-            } as DataUnitPreview,
+            } as EntityPreview,
             sourceEntity: {
                 fk_class: 219,
                 entity_label: 'Helvetisches Lexikon',
                 type_label: 'Lexikon',
                 pk_entity: 12345
-            } as DataUnitPreview,
+            } as EntityPreview,
             parentPath: ''
         },
         template: `
