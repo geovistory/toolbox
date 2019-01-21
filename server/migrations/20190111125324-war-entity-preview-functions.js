@@ -1095,7 +1095,7 @@ exports.up = function (db, callback) {
   ------------------------------------------------------------------------------------------------------------
   -- FUNCTION entity_preview__create_all                                                                  #12
   ------------------------------------------------------------------------------------------------------------
-  CREATE OR REPLACE FUNCTION warehouse.entity_preview__create_all(limit_of_rows INT default 100000000)
+  CREATE OR REPLACE FUNCTION warehouse.entity_preview__create_all()
   RETURNS BOOLEAN AS $$
 
   DECLARE 
@@ -1154,6 +1154,47 @@ exports.up = function (db, callback) {
   END;
   $$ LANGUAGE plpgsql;
 
+
+
+  ------------------------------------------------------------------------------------------------------------
+  -- FUNCTION                                                                   #13
+  ------------------------------------------------------------------------------------------------------------
+  CREATE OR REPLACE FUNCTION warehouse.notify_fn_call(channel TEXT, fn_name TEXT, fn_params TEXT[])
+  RETURNS BOOLEAN AS $$
+  DECLARE 
+    fn_concat TEXT;
+  BEGIN
+
+    fn_concat = fn_name || '(' || array_to_string(fn_params, ',') || ')';
+
+    PERFORM pg_notify(
+      channel, 
+      json_build_object('fn', fn_concat)::text
+    );
+  
+  RETURN TRUE;
+
+  END;
+  $$ LANGUAGE plpgsql;
+  
+
+  ------------------------------------------------------------------------------------------------------------
+  -- FUNCTION needs_update                                                                  #14
+  ------------------------------------------------------------------------------------------------------------
+  CREATE OR REPLACE FUNCTION warehouse.needs_update(fn_name TEXT, fn_params TEXT[])
+  RETURNS BOOLEAN AS $$
+  DECLARE 
+    fn_name_concat TEXT;
+  BEGIN
+
+    fn_name_concat = array_to_string(ARRAY['warehouse.', fn_name],'');
+
+    PERFORM warehouse.notify_fn_call('warehouse_update_request'::text, fn_name_concat, fn_params);
+  
+  RETURN TRUE;
+
+  END;
+  $$ LANGUAGE plpgsql;
   `
 
   db.runSql(sql, callback)
@@ -1163,8 +1204,14 @@ exports.up = function (db, callback) {
 exports.down = function (db, callback) {
 
   const sql = `
+  -- 14
+  DROP FUNCTION warehouse.needs_update(text, text[]);
+  
+  -- 13
+  DROP FUNCTION warehouse.notify_fn_call(text, text, text[]);
+  
   -- 12
-  DROP FUNCTION warehouse.entity_preview__create_all(integer);
+  DROP FUNCTION warehouse.entity_preview__create_all();
   
   -- 11
   DROP FUNCTION warehouse.entity_preview__create(integer, integer);

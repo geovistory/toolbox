@@ -86,7 +86,7 @@ app.start = function () {
       let payload = JSON.parse(msg.payload);
       //console.log(payload.fn)
       switch (msg.channel) {
-        case 'warehouse_update':
+        case 'warehouse_update_request':
           enQueue(payload.fn);
           break;
         case 'entity_preview_updated':
@@ -99,7 +99,7 @@ app.start = function () {
     });
 
     // Designate which channels we are listening on. Add additional channels with multiple lines.
-    client.query('LISTEN warehouse_update');
+    client.query('LISTEN warehouse_update_request');
     client.query('LISTEN entity_preview_updated');
 
   });

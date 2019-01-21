@@ -45,8 +45,6 @@ exports.up = function (db, callback) {
         FROM information.entity e
         WHERE e.pk_entity = NEW.fk_entity;
 
-        --PERFORM pg_notify('epr_changed', row_to_json(NEW)::text);
-
         
         --------------------- text_property ---------------------
         IF (SELECT _table_name = 'text_property') THEN
@@ -82,32 +80,32 @@ exports.up = function (db, callback) {
           PERFORM
 
           -- fill own entity label
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__fill_own_entity_label(' ||  _fk_entity ||','|| _fk_project || ')')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__fill_own_entity_label(' ||  _fk_entity ||', NULL)')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__fill_own_entity_label(' ||  _fk_temporal_entity ||','|| _fk_project || ')')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__fill_own_entity_label(' ||  _fk_temporal_entity ||', NULL)')::text),
+          warehouse.needs_update('entity_preview__fill_own_entity_label'::text, ARRAY[_fk_entity::text, _fk_project::text]),
+          warehouse.needs_update('entity_preview__fill_own_entity_label'::text, ARRAY[_fk_entity::text, NULL::text]),
+          warehouse.needs_update('entity_preview__fill_own_entity_label'::text, ARRAY[_fk_temporal_entity::text, _fk_project::text]),
+          warehouse.needs_update('entity_preview__fill_own_entity_label'::text, ARRAY[_fk_temporal_entity::text, NULL::text]),
           
           -- fill own full text
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__fill_own_full_text(' || _fk_entity ||','|| _fk_project || ')')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__fill_own_full_text(' || _fk_entity ||', NULL)')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__fill_own_full_text(' || _fk_temporal_entity ||','|| _fk_project || ')')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__fill_own_full_text(' || _fk_temporal_entity ||', NULL)')::text),
+          warehouse.needs_update('entity_preview__fill_own_full_text'::text, ARRAY[_fk_entity::text, _fk_project::text]),
+          warehouse.needs_update('entity_preview__fill_own_full_text'::text, ARRAY[_fk_entity::text, NULL::text]),
+          warehouse.needs_update('entity_preview__fill_own_full_text'::text, ARRAY[_fk_temporal_entity::text, _fk_project::text]),
+          warehouse.needs_update('entity_preview__fill_own_full_text'::text, ARRAY[_fk_temporal_entity::text, NULL::text]),
 
           -- fill time span 
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__fill_time_span(' || _fk_temporal_entity ||','|| _fk_project || ')')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__fill_time_span(' || _fk_temporal_entity ||', NULL)')::text),
+          warehouse.needs_update('entity_preview__fill_time_span'::text, ARRAY[_fk_temporal_entity::text, _fk_project::text]),
+          warehouse.needs_update('entity_preview__fill_time_span'::text, ARRAY[_fk_temporal_entity::text, NULL::text]),
 
           -- create fk entity label
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__create_fk_entity_label(' || _fk_entity ||','|| _fk_project || ')')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__create_fk_entity_label(' || _fk_entity ||', NULL)')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__create_fk_entity_label(' || _fk_temporal_entity ||','|| _fk_project || ')')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__create_fk_entity_label(' || _fk_temporal_entity ||', NULL)')::text),
+          warehouse.needs_update('entity_preview__create_fk_entity_label'::text, ARRAY[_fk_entity::text, _fk_project::text]),
+          warehouse.needs_update('entity_preview__create_fk_entity_label'::text, ARRAY[_fk_entity::text, NULL::text]),
+          warehouse.needs_update('entity_preview__create_fk_entity_label'::text, ARRAY[_fk_temporal_entity::text, _fk_project::text]),
+          warehouse.needs_update('entity_preview__create_fk_entity_label'::text, ARRAY[_fk_temporal_entity::text, NULL::text]),
 
           -- create related full texts
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__create_related_full_texts(' || _fk_entity ||','|| _fk_project || ')')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__create_related_full_texts(' || _fk_entity ||', NULL)')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__create_related_full_texts(' || _fk_temporal_entity ||','|| _fk_project || ')')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__create_related_full_texts(' || _fk_temporal_entity ||', NULL)')::text);
+          warehouse.needs_update('entity_preview__create_related_full_texts'::text, ARRAY[_fk_entity::text, _fk_project::text]),
+          warehouse.needs_update('entity_preview__create_related_full_texts'::text, ARRAY[_fk_entity::text, NULL::text]),
+          warehouse.needs_update('entity_preview__create_related_full_texts'::text, ARRAY[_fk_temporal_entity::text, _fk_project::text]),
+          warehouse.needs_update('entity_preview__create_related_full_texts'::text, ARRAY[_fk_temporal_entity::text, NULL::text]);
           
         --------------------- entity_association -----------------
         ELSIF (SELECT _table_name = 'entity_association') THEN
@@ -123,10 +121,10 @@ exports.up = function (db, callback) {
           PERFORM
 
           -- create fk type
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__create_fk_type(' || _fk_domain_entity ||','|| _fk_project ||')')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__create_fk_type(' || _fk_domain_entity ||', NULL)')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__create_fk_type(' || _fk_range_entity ||','|| _fk_project ||')')::text),
-          pg_notify('warehouse_update', json_build_object('fn', 'warehouse.entity_preview__create_fk_type(' || _fk_range_entity ||', NULL)')::text);
+          warehouse.needs_update('entity_preview__create_fk_type'::text, ARRAY[_fk_domain_entity::text, _fk_project::text]),
+          warehouse.needs_update('entity_preview__create_fk_type'::text, ARRAY[_fk_domain_entity::text, NULL::text]),
+          warehouse.needs_update('entity_preview__create_fk_type'::text, ARRAY[_fk_range_entity::text, _fk_project::text]),
+          warehouse.needs_update('entity_preview__create_fk_type'::text, ARRAY[_fk_range_entity::text, NULL::text]);
 
         END IF;
       
@@ -300,7 +298,18 @@ exports.up = function (db, callback) {
         LANGUAGE 'plpgsql'
     AS $BODY$
     BEGIN
-      PERFORM pg_notify('entity_preview_updated', row_to_json( NEW )::text);
+      PERFORM pg_notify('entity_preview_updated', json_build_object(
+        'pk_entity', NEW.pk_entity,
+        'fk_project', NEW.fk_project,
+        'project', NEW.project,
+        'fk_class', NEW.fk_class,
+        'table_name', NEW.table_name,
+        'class_label', NEW.class_label,
+        'entity_label', NEW.entity_label,
+        'time_span', NEW.time_span,
+        'fk_type', NEW.fk_type,
+        'type_label', NEW.type_label
+      )::text);
     RETURN NEW;
     END;
     $BODY$;
