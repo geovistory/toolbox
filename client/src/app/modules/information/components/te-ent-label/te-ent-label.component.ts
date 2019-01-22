@@ -1,8 +1,9 @@
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ClassConfig, TimePrimitive, U } from 'app/core';
-import { CollapsedExpanded, FieldList, ClassInstanceLabel, ExTimeLabel } from 'app/core/state/models';
-import { Observable, Subject } from 'rxjs';
+import { ClassInstanceLabel, CollapsedExpanded, ExTimeLabel, FieldList } from 'app/core/state/models';
+import { Observable, Subject, from, BehaviorSubject, combineLatest } from 'rxjs';
+import { takeUntil, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'gv-te-ent-label',
@@ -11,7 +12,7 @@ import { Observable, Subject } from 'rxjs';
   providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TeEntLabelComponent implements OnInit, OnDestroy {
+export class TeEntLabelComponent implements OnInit, OnChanges, OnDestroy {
 
   destroy$ = new Subject<boolean>();
 
@@ -23,31 +24,45 @@ export class TeEntLabelComponent implements OnInit, OnDestroy {
   @Input() toggle: CollapsedExpanded;
   @Input() labelInEdit: string;
 
+  toggle$ = new Subject<CollapsedExpanded>();
+
   label: ClassInstanceLabel;
 
   constructor(private datePipe: DatePipe) { }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.toggle) {
+      this.toggle$.next(changes.toggle.currentValue)
+    }
+  }
+
   ngOnInit() {
+
     if (!this.childrenPath.length) throw Error('you must provide a childrenPath for <gv-te-ent-label>');
 
-    this.fields$.takeUntil(this.destroy$).subscribe(fields => {
+    combineLatest(this.fields$, this.toggle$).pipe(
+      filter(items => items.filter(item => !!item).length > 0),
+      takeUntil(this.destroy$)
+    ).subscribe(([fields, toggle]) => {
 
-      if (this.toggle === 'expanded') {
+      if (toggle === 'expanded') {
 
         // create full version label with all children
         this.label = U.labelFromFieldList(fields, { path: this.childrenPath })
 
-      } else if (this.toggle === 'collapsed') {
+      } else if (toggle === 'collapsed') {
 
         // create reduced label
         this.label = U.labelFromFieldList(fields, {
           path: this.childrenPath,
-          fieldsMax: 2,
+          fieldsMax: 3,
           rolesMax: 1
         })
 
       }
     })
+
+    this.toggle$.next(this.toggle)
   }
 
   ngOnDestroy() {
