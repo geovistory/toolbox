@@ -202,7 +202,7 @@ export class MentioningListComponent extends MentioningListAPIActions implements
 
     // load previews
     [s.sourceEntityPk, s.sectionEntityPk, s.mentionedEntityPk].filter(i => !!i).forEach(pk => {
-      this.projectService.loadDataUnitPreview(pk);
+      this.projectService.streamEntityPreview(pk);
     })
 
     // init the loading
@@ -213,10 +213,10 @@ export class MentioningListComponent extends MentioningListAPIActions implements
 
       // update the entityPreview
       ms.forEach(m => {
-        if (m.fk_expression_entity) this.projectService.loadDataUnitPreview(m.fk_expression_entity);
-        if (m.fk_source_entity) this.projectService.loadDataUnitPreview(m.fk_source_entity);
+        if (m.fk_expression_entity) this.projectService.streamEntityPreview(m.fk_expression_entity);
+        if (m.fk_source_entity) this.projectService.streamEntityPreview(m.fk_source_entity);
         if (m.fk_chunk) this.projectService.loadChunk(m.fk_chunk);
-        this.projectService.loadDataUnitPreview(m.fk_domain_entity);
+        this.projectService.streamEntityPreview(m.fk_domain_entity);
       });
 
       const createString = (p: EntityPreview): string => {

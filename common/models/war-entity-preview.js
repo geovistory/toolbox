@@ -28,14 +28,27 @@ module.exports = function (WarEntityPreview) {
 
       // Manage the room (project) of the socket
       const safeJoin = newProjectPk => {
+        newProjectPk = newProjectPk.toString()
         if (newProjectPk !== cache.currentProjectPk) {
           socket.leave(cache.currentProjectPk);
+
+          console.log(socket.id + ' left project ' + cache.currentProjectPk)
+
           socket.join(newProjectPk);
+
+          console.log(socket.id + ' joined project ' + newProjectPk)
+
           resetStreamedPks();
           cache.currentProjectPk = newProjectPk;
         }
       };
 
+      // emit entity preview
+      const emitPreview = (entityPreview) => {
+        socket.emit('entityPreview', entityPreview);
+
+        console.log(socket.id + ' emitted entityPreview: ' + entityPreview.pk_entity + ' ' + entityPreview.entity_label + ' for project ' + cache.currentProjectPk)
+      }
 
       // Get a entityPreview by pk_projekt and pk_entity and add pks (array of pk_entity) to streamedPks 
       socket.on('addToStrem', (data) => {
@@ -49,39 +62,44 @@ module.exports = function (WarEntityPreview) {
         if (pks && pks.length) {
 
           // extend the object of streamed pks
+          pks = pks.map(pk => pk.toString());
           pks.forEach(pk => extendStreamedPks(pk))
 
           console.log('request for EntityPreviews ' + JSON.stringify(pks) + ' by project ' + cache.currentProjectPk)
 
           // Query the entityPreview in DB
           WarEntityPreview.findComplex({ where: ['fk_project', '=', pk_project, 'AND', 'pk_entity', 'IN', pks] }, (err, projectItems) => {
-            
-            if(err) return new Error(err);
+
+            if (err) return new Error(err);
 
             if (projectItems) {
 
               // emit the ones found in Project
-              projectItems.forEach(item => socket.emit('entityPreview', item))
+              projectItems.forEach(item => emitPreview(item))
 
               // query repo for the ones not (yet) in project
-              const notInProject = _.difference(pks, projectItems.map(item => item.pk_entity))
-              WarEntityPreview.findComplex({ where: ['fk_project', 'IS NULL', 'AND', 'pk_entity', 'IN', notInProject] }, (err, repoItems) => {
+              const notInProject = _.difference(pks, projectItems.map(item => item.pk_entity.toString()))
+              if (notInProject.length) {
+                WarEntityPreview.findComplex({ where: ['fk_project', 'IS NULL', 'AND', 'pk_entity', 'IN', notInProject] }, (err, repoItems) => {
 
-                // emit the ones found in Repo
-                if (repoItems) repoItems.forEach(item => socket.emit('entityPreview', item))
+                  // emit the ones found in Repo
+                  if (repoItems) repoItems.forEach(item => emitPreview(item))
 
-              })
+                })
+              }
+
             }
           })
         }
       });
 
-     const streamSub = WarEntityPreview.stream.subscribe(entityPreview => {
+      const streamSub = WarEntityPreview.stream.subscribe(entityPreview => {
         // check if the changed entityPreview is in object of streamed pks 
-        if (cache.streamedPks[entityPreview.pk_entity]) {
-          socket
-            .to(cache.currentProjectPk)
-            .emit('entityPreview', entityPreview);
+        if (
+          cache.streamedPks[entityPreview.pk_entity] && 
+          entityPreview.fk_project == cache.currentProjectPk
+          ) {
+          emitPreview(entityPreview)
         }
       })
 
@@ -91,6 +109,8 @@ module.exports = function (WarEntityPreview) {
         // leave the room
         socket.leave(cache.currentProjectPk)
 
+        console.log(socket.id + ' left project ' + cache.currentProjectPk)
+
         // reset cache
         cache.currentProjectPk = undefined;
 
@@ -98,6 +118,7 @@ module.exports = function (WarEntityPreview) {
 
       // As soon as the connection is closed
       socket.on('disconnect', () => {
+        console.log(socket.id + ' disconnected')
 
         // Unsubscribe the db listener 
         streamSub.unsubscribe()

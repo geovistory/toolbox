@@ -19,6 +19,7 @@ exports.up = function (db, callback) {
   const sql = `
 
   
+ 
   ------------------------------------------------------------------------------------------------------------
   -- FUNCTION entity_preview__create_related_full_texts                                      #1
   ------------------------------------------------------------------------------------------------------------
@@ -28,167 +29,64 @@ exports.up = function (db, callback) {
   )
   RETURNS BOOLEAN AS $$
   DECLARE 
-    object jsonb;
-    new_object jsonb;
-    keys jsonb[];
-    key jsonb;
-    needs_update BOOLEAN;
+    new_related_full_texts jsonb;
+    param_project INT;
   BEGIN
-      needs_update=false;
+      RAISE INFO 'entity_preview__create_related_full_texts pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
+	
+		param_project = coalesce(param_fk_project, 0);
+		
+     	---------------------- REPO AND PROJECT VERSIONS ----------------------
+		WITH full_text_dependencies AS (
+			SELECT r.fk_temporal_entity as pk_entity, r.project, r.fk_project, e.pk_entity as pk_related_full_text, pre.own_full_text
+			FROM warehouse.v_roles_per_project_and_repo r
+			JOIN information.entity e ON e.pk_entity = r.fk_entity AND e.table_name = 'persistent_item'
+			LEFT JOIN warehouse.entity_preview pre ON pre.pk_entity = e.pk_entity AND pre.project = r.project
+			WHERE r.fk_temporal_entity = param_pk_entity
+			UNION
+			SELECT r.fk_entity as pk_entity, r.project,  r.fk_project,  e.pk_entity as pk_related_full_text, pre.own_full_text
+			FROM warehouse.v_roles_per_project_and_repo r
+			JOIN information.entity e ON e.pk_entity = r.fk_temporal_entity AND e.table_name = 'temporal_entity'
+			LEFT JOIN warehouse.entity_preview pre ON pre.pk_entity = e.pk_entity AND pre.project = r.project
+			WHERE r.fk_entity = param_pk_entity
+		), 
+		aggregated_related_full_texts AS(
+			select pk_entity, project, fk_project, jsonb_object_agg(full_text_dependencies.pk_related_full_text::text, full_text_dependencies.own_full_text) related_full_texts
+			FROM full_text_dependencies
+			group by pk_entity, project, fk_project
+		)
+        select related_full_texts INTO new_related_full_texts 
+        FROM aggregated_related_full_texts;
 
-      ---------------------- REPO VERSIONS ----------------------
-
-      IF param_fk_project IS NULL THEN
-      
-        RAISE INFO 'entity_preview__create_related_full_texts pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
-        -- get all keys
-
-        WITH all_dependencies AS (
-          SELECT e.*, pre.entity_label
-          FROM information.v_role r
-          JOIN information.entity e ON e.pk_entity = r.fk_entity AND e.table_name = 'persistent_item'
-          LEFT JOIN warehouse.entity_preview pre ON pre.pk_entity = e.pk_entity AND pre.fk_project IS NULL
-          WHERE r.fk_temporal_entity = param_pk_entity AND r.is_in_project_count > 0
-          UNION
-          SELECT e.*, pre.entity_label
-          FROM information.v_role r
-          JOIN information.entity e ON e.pk_entity = r.fk_temporal_entity AND e.table_name = 'temporal_entity'
-          LEFT JOIN warehouse.entity_preview pre ON pre.pk_entity = e.pk_entity AND pre.fk_project IS NULL
-          WHERE r.fk_entity = param_pk_entity AND r.is_in_project_count > 0
-        ), 
-        agg AS(
-          select 1, array_agg(jsonb_build_object('pk_entity', all_dependencies.pk_entity, 'entity_label', all_dependencies.entity_label)) pk_entities
-          FROM all_dependencies
-          group by 1
-        )
-        select pk_entities INTO keys 
-        FROM agg;
-
-        RAISE INFO 'keys: %', keys;
-
-        ----- get the existing object
-        
-        SELECT related_full_texts INTO object FROM warehouse.entity_preview
-        WHERE pk_entity = param_pk_entity AND fk_project IS NULL;
-        
-        RAISE INFO 'object: %', object;
-        
-        new_object = '{}'::jsonb;
-
-        IF (keys IS NOT NULL) THEN
-          FOREACH key IN ARRAY keys
-          LOOP
-              -- RAISE INFO 'key: %', key;
-      
-              new_object = (SELECT jsonb_set(
-                new_object,
-                array_agg((SELECT key->>'pk_entity')),
-                COALESCE((SELECT key->'entity_label'), '""')::jsonb
-              ));
-
-              RAISE INFO 'new_object: %', new_object;
-          END LOOP;        
-        END IF;
-        
-        ----- Insert or update the entity_preview
-        
-        PERFORM pk_entity FROM warehouse.entity_preview
-        WHERE pk_entity = param_pk_entity AND fk_project IS NULL;
-        IF NOT FOUND THEN 
-            INSERT INTO warehouse.entity_preview (pk_entity, fk_project, related_full_texts)
-            VALUES (param_pk_entity, param_fk_project, new_object);
-
-            RAISE INFO 'inserted new_object: %', new_object;
-
-        ELSIF (SELECT (new_object @> object AND new_object <@ object) = false) THEN
-            UPDATE warehouse.entity_preview 
-            SET related_full_texts = new_object
-            where pk_entity=param_pk_entity AND fk_project IS NULL;
-
-            RAISE INFO 'updated object with new_object: %', new_object;
-        ELSE
-            RAISE INFO 'no update needed: %', new_object;
-        END IF;
-
-
-      ---------------------- PROJECTS VERSIONS ----------------------
-
-      ELSE
-
-        RAISE INFO 'entity_preview__create_related_full_texts pk_entity: %, fk_project: %', param_pk_entity, param_fk_project;
-
-        -- get all keys
-
-        WITH all_dependencies AS (
-          SELECT e.*, pre.entity_label
-          FROM information.role r
-          JOIN information.entity_version_project_rel epr ON r.pk_entity = epr.fk_entity AND epr.is_in_project = true
-          JOIN information.entity e ON e.pk_entity = r.fk_entity AND e.table_name = 'persistent_item'
-          LEFT JOIN warehouse.entity_preview pre ON pre.pk_entity = e.pk_entity AND pre.fk_project = 12
-          WHERE r.fk_temporal_entity = param_pk_entity AND epr.fk_project = param_fk_project
-          UNION
-          SELECT e.*, pre.entity_label
-          FROM information.role r
-          JOIN information.entity_version_project_rel epr ON r.pk_entity = epr.fk_entity AND epr.is_in_project =true
-          JOIN information.entity e ON e.pk_entity = r.fk_temporal_entity AND e.table_name = 'temporal_entity'
-          LEFT JOIN warehouse.entity_preview pre ON pre.pk_entity = e.pk_entity AND pre.fk_project = 12
-          WHERE r.fk_entity = param_pk_entity AND epr.fk_project = param_fk_project
-        ), 
-        agg AS(
-          select 1, array_agg(jsonb_build_object('pk_entity', all_dependencies.pk_entity, 'entity_label', all_dependencies.entity_label)) pk_entities
-          FROM all_dependencies
-          group by 1
-        )
-        select pk_entities INTO keys 
-        FROM agg;
-
-        RAISE INFO 'keys: %', keys;
-
-        ----- get the existing object
-        
-        SELECT related_full_texts INTO object FROM warehouse.entity_preview
-        WHERE pk_entity = param_pk_entity AND fk_project = param_fk_project;
-        
-        RAISE INFO 'object: %', object;
-        
-        new_object = '{}'::jsonb;
-
-        IF (keys IS NOT NULL) THEN
-          FOREACH key IN ARRAY keys
-          LOOP
-              -- RAISE INFO 'key: %', key;
-      
-              new_object = (SELECT jsonb_set(
-                new_object,
-                array_agg((SELECT key->>'pk_entity')),
-                COALESCE((SELECT key->'entity_label'), '""')::jsonb
-              ));
-
-              RAISE INFO 'new_object: %', new_object;
-          END LOOP;        
-        END IF;
+        RAISE INFO 'new_related_full_texts: %', new_related_full_texts;
 
         ----- Insert or update the entity_preview
         
-        PERFORM pk_entity FROM warehouse.entity_preview
-        WHERE pk_entity = param_pk_entity AND fk_project = param_fk_project;
+        PERFORM pk_entity 
+        FROM warehouse.entity_preview pre
+        WHERE pre.pk_entity = param_pk_entity 
+        AND pre.fk_project IS NOT DISTINCT FROM  param_fk_project;
+
         IF NOT FOUND THEN 
-            INSERT INTO warehouse.entity_preview (pk_entity, fk_project, related_full_texts)
-            VALUES (param_pk_entity, param_fk_project, new_object);
+            INSERT INTO warehouse.entity_preview (pk_entity, fk_project, project, related_full_texts)
+            VALUES (param_pk_entity, param_fk_project, param_project, new_related_full_texts);
 
-            RAISE INFO 'inserted new_object: %', new_object;
+            RAISE INFO 'inserted new_related_full_texts: %', new_related_full_texts;
 
-        ELSIF (SELECT (new_object @> object AND new_object <@ object) = false) THEN
-            UPDATE warehouse.entity_preview 
-            SET related_full_texts = new_object
-            where pk_entity=param_pk_entity AND fk_project=param_fk_project;
-
-            RAISE INFO 'updated object with new_object: %', new_object;
         ELSE
-            RAISE INFO 'no update needed: %', new_object;
+           
+          UPDATE warehouse.entity_preview pre
+                SET related_full_texts = new_related_full_texts
+                where pre.pk_entity = param_pk_entity 
+          AND pre.fk_project IS NOT DISTINCT FROM  param_fk_project
+          AND (
+            pre.related_full_texts @> new_related_full_texts
+            AND
+            pre.related_full_texts <@ new_related_full_texts
+            )  IS DISTINCT FROM true;
+   
         END IF;
 
-      END IF; 
 
       RETURN true;
   END;
@@ -223,7 +121,10 @@ exports.up = function (db, callback) {
 				(
           SELECT fk_temporal_entity as pk, r.rank_for_pe_it as rank
           FROM information.v_role r
-          JOIN commons.ui_context_config ucc ON ucc.fk_property = r.fk_property AND ucc.ord_num = 0  AND ucc.property_is_outgoing = false
+          JOIN commons.ui_context_config ucc ON ucc.fk_property = r.fk_property 
+            AND ucc.ord_num = 0  
+            AND ucc.property_is_outgoing = false
+            AND ucc.fk_ui_context = 45
           JOIN information.entity e on r.fk_temporal_entity = e.pk_entity AND e.table_name = 'temporal_entity'
           WHERE r.fk_entity = param_pk_entity 
 				  AND r.is_in_project_count > 0
@@ -232,7 +133,10 @@ exports.up = function (db, callback) {
 				(
           SELECT r.fk_entity as pk, r.rank_for_te_ent as rank
           FROM information.v_role r
-          JOIN commons.ui_context_config ucc ON ucc.fk_property = r.fk_property AND ucc.ord_num = 0 AND ucc.property_is_outgoing = true
+          JOIN commons.ui_context_config ucc ON ucc.fk_property = r.fk_property 
+            AND ucc.ord_num = 0 
+            AND ucc.property_is_outgoing = true
+            AND ucc.fk_ui_context = 45
           JOIN information.entity e on r.fk_entity = e.pk_entity AND e.table_name = 'persistent_item'
           WHERE r.fk_temporal_entity = param_pk_entity 
           AND r.is_in_project_count > 0
@@ -284,7 +188,10 @@ exports.up = function (db, callback) {
           SELECT fk_temporal_entity as pk, epr.ord_num
           FROM information.role r
           JOIN information.entity_version_project_rel epr ON epr.fk_entity = r.pk_entity 
-          JOIN commons.ui_context_config ucc ON ucc.fk_property = r.fk_property AND ucc.ord_num = 0  AND ucc.property_is_outgoing = false
+          JOIN commons.ui_context_config ucc ON ucc.fk_property = r.fk_property 
+            AND ucc.ord_num = 0  
+            AND ucc.property_is_outgoing = false
+            AND ucc.fk_ui_context = 45
           JOIN information.entity e on r.fk_temporal_entity = e.pk_entity AND e.table_name = 'temporal_entity'
           WHERE r.fk_entity = param_pk_entity 
           AND epr.fk_project = param_fk_project 
@@ -297,7 +204,10 @@ exports.up = function (db, callback) {
           SELECT r.fk_entity as pk, epr.ord_num
           FROM information.role r
           JOIN information.entity_version_project_rel epr ON epr.fk_entity = r.pk_entity 
-          JOIN commons.ui_context_config ucc ON ucc.fk_property = r.fk_property AND ucc.ord_num = 0 AND ucc.property_is_outgoing = true
+          JOIN commons.ui_context_config ucc ON ucc.fk_property = r.fk_property 
+            AND ucc.ord_num = 0 
+            AND ucc.property_is_outgoing = true
+            AND ucc.fk_ui_context = 45
           JOIN information.entity e on r.fk_entity = e.pk_entity AND e.table_name = 'persistent_item'
           WHERE r.fk_temporal_entity = param_pk_entity 
           AND epr.fk_project = param_fk_project
@@ -932,11 +842,11 @@ exports.up = function (db, callback) {
       SELECT jsonb_set(
         related_full_texts,
          array_agg(param_pk_entity::text),
-        to_jsonb(new_own_full_text)
+         to_jsonb(new_own_full_text)
         )
       )												   
     WHERE related_full_texts ? param_pk_entity::text 
-    AND related_full_texts->>param_pk_entity::text != new_own_full_text
+    AND related_full_texts->>param_pk_entity::text IS DISTINCT FROM new_own_full_text
     AND fk_project IS NOT DISTINCT FROM param_fk_project;
   
     RETURN true;
@@ -1062,8 +972,42 @@ exports.up = function (db, callback) {
   param_fk_project integer
   )
   RETURNS BOOLEAN AS $$
+  DECLARE 
+    e warehouse.v_entities;
+    c warehouse.class_preview;
+    p INT;
   BEGIN
     
+    ---------- upsert the unchagable rows ----------
+
+    p = coalesce(param_fk_project, 0);
+
+    SELECT * INTO e
+    FROM warehouse.v_entities
+    WHERE pk_entity = param_pk_entity
+    AND fk_project IS NOT DISTINCT FROM param_fk_project;
+
+    SELECT * INTO c
+    FROM warehouse.class_preview as cpre
+    WHERE cpre.dfh_pk_class = e.fk_class;
+
+   
+    INSERT INTO warehouse.entity_preview (pk_entity, fk_project, project, fk_class, entity_type, class_label)
+    VALUES (
+      param_pk_entity,
+      param_fk_project,
+      p, -- project
+      e.fk_class,
+      e.entity_type,
+      c.class_label
+    )
+    ON CONFLICT (pk_entity, project) 
+    DO
+      UPDATE
+        SET fk_class = e.fk_class, entity_type = e.entity_type, class_label = c.class_label
+          WHERE entity_preview.pk_entity = param_pk_entity AND entity_preview.project = p;
+
+
     ---------- first create the dependency indexes ----------
     
     PERFORM warehouse.entity_preview__create_related_full_texts(param_pk_entity, param_fk_project);
@@ -1102,6 +1046,7 @@ exports.up = function (db, callback) {
     item record;
     results warehouse.entity_preview;
     t timestamptz;
+    number_of_unfinished INT;
   BEGIN
 
   t = clock_timestamp();
@@ -1109,14 +1054,108 @@ exports.up = function (db, callback) {
   -- empty table entity_preview
   DELETE from warehouse.entity_preview;
 
-  -- create all <pk_entity, fk_project> combinations
-    
+  CREATE TABLE warehouse.temp AS SELECT * FROM warehouse.v_entity_preview;
+
+  WITH previews_non_recursive AS (
+    SELECT * FROM warehouse.temp
+    ),
+    fill_entity_label AS (
+    SELECT 
+    t1.pk_entity,
+    t1.fk_project,
+    t1.project,
+    t1.fk_class,
+    t1.entity_type,
+    t1.class_label,
+    coalesce(t2.entity_label, t1.entity_label) entity_label,
+    t1.time_span,
+    t1.own_full_text,
+    t1.fk_entity_label,
+    t1.fk_type
+    FROM warehouse.previews_non_recursive t1
+    LEFT JOIN warehouse.previews_non_recursive t2
+    ON t1.fk_entity_label = t2.pk_entity
+    AND t1.project = t2.project
+    ),
+    fill_type_label AS (
+    SELECT 
+    t1.*,
+    t2.entity_label type_label
+    FROM fill_entity_label t1
+    LEFT JOIN fill_entity_label t2
+    ON t1.fk_type = t2.pk_entity
+    AND t1.project = t2.project
+    ),
+  full_text_dependencies AS (
+    SELECT r.fk_temporal_entity as pk_entity, r.project, r.fk_project, e.pk_entity as pk_related_full_text, pre.own_full_text
+    FROM warehouse.v_roles_per_project_and_repo r
+    JOIN information.entity e ON e.pk_entity = r.fk_entity AND e.table_name = 'persistent_item'
+    LEFT JOIN previews_non_recursive pre ON pre.pk_entity = e.pk_entity AND pre.project = r.project
+    UNION
+    SELECT r.fk_entity as pk_entity, r.project,  r.fk_project,  e.pk_entity as pk_related_full_text, pre.own_full_text
+    FROM warehouse.v_roles_per_project_and_repo r
+    JOIN information.entity e ON e.pk_entity = r.fk_temporal_entity AND e.table_name = 'temporal_entity'
+    LEFT JOIN previews_non_recursive pre ON pre.pk_entity = e.pk_entity AND pre.project = r.project
+    ), 
+    aggregated_related_full_texts AS(
+    select pk_entity, project, fk_project, jsonb_object_agg(full_text_dependencies.pk_related_full_text::text, full_text_dependencies.own_full_text) related_full_texts
+    FROM full_text_dependencies
+    group by pk_entity, project, fk_project
+    ),
+    related_full_text AS (
+    SELECT t1.*, t2.related_full_texts
+    FROM fill_type_label t1
+    LEFT JOIN aggregated_related_full_texts t2
+     ON t1.pk_entity = t2.pk_entity
+     AND t1.project = t2.project
+    ),
+    add_full_text AS (
+    SELECT 
+      *, 
+      (
+      SELECT array_to_string(ARRAY[
+        --coalesce(f.type_label, f.class_label, ''),
+        f.own_full_text,
+        array_to_string(array_agg(value), ', ')
+      ]::text[] , ', ')
+      FROM jsonb_each_text(f.related_full_texts)	
+      ) as full_text	 
+    FROM related_full_text  f   
+    ),
+    add_ts_vector AS (
+    SELECT 
+      t.*,
+      setweight(to_tsvector(coalesce(t.entity_label, '')), 'A') || 
+      setweight(to_tsvector(coalesce(t.type_label, t.class_label, '')), 'B') || 
+      setweight(to_tsvector(coalesce(t.full_text,'')), 'C') as ts_vector
+    FROM add_full_text t
+    ),
+    updated AS (
+      SELECT * FROM add_ts_vector
+  )
+  UPDATE warehouse.temp 
+  SET entity_label = updated.entity_label
+  FROM updated
+  WHERE temp.pk_entity = updated.pk_entity 
+  AND temp.fk_project IS NOT DISTINCT FROM updated.fk_project;
+        
+  SELECT count(*) INTO number_of_unfinished
+  FROM warehouse.temp a
+  JOIN warehouse.temp b ON a.fk_entity_label = b.pk_entity AND a.entity_label IS DISTINCT FROM b.entity_label 
+  AND a.project = b.project;
+
+  raise notice 'number_of_unfinished entity_previews (if zero, everything fine): %', number_of_unfinished;
+
+  
+  -- empty table entity_preview
+  DELETE from warehouse.entity_preview;
+  
   INSERT INTO warehouse.entity_preview  (  
     pk_entity,
     fk_project,
     project,
     fk_class,
-    table_name,
+    entity_type,
     class_label,
     entity_label,
     time_span,
@@ -1127,13 +1166,13 @@ exports.up = function (db, callback) {
     related_full_texts,
     full_text,
     ts_vector
-    )
+  )
   SELECT   
     pk_entity,
     fk_project,
     project,
     fk_class,
-    table_name,
+    entity_type,
     class_label,
     entity_label,
     time_span,
@@ -1144,7 +1183,9 @@ exports.up = function (db, callback) {
     related_full_texts,
     full_text,
     ts_vector
-  FROM  warehouse.v_entity_preview;
+  FROM  warehouse.temp;
+          
+  DROP TABLE warehouse.temp;
 
   raise notice 'time spent for entity_preview__fill_own_full_text=%', clock_timestamp() - t;
 
@@ -1165,7 +1206,7 @@ exports.up = function (db, callback) {
     fn_concat TEXT;
   BEGIN
 
-    fn_concat = fn_name || '(' || array_to_string(fn_params, ',') || ')';
+    fn_concat = fn_name || '(' || array_to_string(fn_params, ',', 'NULL'::text) || ')';
 
     PERFORM pg_notify(
       channel, 

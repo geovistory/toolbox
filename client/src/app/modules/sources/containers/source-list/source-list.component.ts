@@ -111,7 +111,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
         this.loadSectionDetails(params.pkEntity, params.pkSection, pkProject, crm)
 
         // load the entityPreview for the source for its display in breadcrumbs
-        this.activeProjectService.loadDataUnitPreview(params.pkEntity)
+        this.activeProjectService.streamEntityPreview(params.pkEntity)
         this.sourcePreview$ = this.ngRedux.select(['activeProject', 'entityPreviews', params.pkEntity])
 
       } else if (params.pkEntity) {

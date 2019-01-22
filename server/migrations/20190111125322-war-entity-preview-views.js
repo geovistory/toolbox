@@ -106,7 +106,8 @@ exports.up = function (db, callback) {
       epr.fk_project,
       epr.fk_project project,
       CASE WHEN pi.pk_entity IS NOT NULL THEN pi.fk_class ELSE te.fk_class END AS fk_class,
-      e.table_name
+      e.table_name,
+      CASE WHEN (e.table_name = 'persistent_item') THEN 'peIt' WHEN (e.table_name = 'temporal_entity') THEN 'teEn' END as entity_type
     FROM information.entity_version_project_rel epr
     JOIN information.entity e on e.pk_entity = epr.fk_entity
     LEFT JOIN information.persistent_item pi on e.pk_entity = pi.pk_entity
@@ -120,7 +121,8 @@ exports.up = function (db, callback) {
       NULL::integer as fk_project,
       0,
       CASE WHEN pi.pk_entity IS NOT NULL THEN pi.fk_class ELSE te.fk_class END AS fk_class,
-      e.table_name
+      e.table_name,
+      CASE WHEN (e.table_name = 'persistent_item') THEN 'peIt' WHEN (e.table_name = 'temporal_entity') THEN 'teEn' END as entity_type
     FROM information.entity e
     LEFT JOIN information.persistent_item pi on e.pk_entity = pi.pk_entity
     LEFT JOIN information.temporal_entity te on e.pk_entity = te.pk_entity
@@ -288,7 +290,10 @@ exports.up = function (db, callback) {
           r.rank_for_pe_it
           ) as rank
         FROM warehouse.v_roles_per_project_and_repo r
-        JOIN commons.ui_context_config ucc ON ucc.fk_property = r.fk_property AND ucc.ord_num = 0  AND ucc.property_is_outgoing = false
+        JOIN commons.ui_context_config ucc ON ucc.fk_property = r.fk_property 
+          AND ucc.ord_num = 0  
+          AND ucc.property_is_outgoing = false
+          AND ucc.fk_ui_context = 45
         JOIN information.entity e on r.fk_temporal_entity = e.pk_entity AND e.table_name = 'temporal_entity'
       )
       UNION
@@ -300,7 +305,10 @@ exports.up = function (db, callback) {
           r.rank_for_te_ent
           ) as rank
         FROM warehouse.v_roles_per_project_and_repo r
-        JOIN commons.ui_context_config ucc ON ucc.fk_property = r.fk_property AND ucc.ord_num = 0 AND ucc.property_is_outgoing = true
+        JOIN commons.ui_context_config ucc ON ucc.fk_property = r.fk_property 
+          AND ucc.ord_num = 0 
+          AND ucc.property_is_outgoing = true
+          AND ucc.fk_ui_context = 45
         JOIN information.entity e on r.fk_entity = e.pk_entity AND e.table_name = 'persistent_item'
       )
     ) AS a 
@@ -389,7 +397,7 @@ exports.up = function (db, callback) {
         ON c.dfh_pk_class = entities.fk_class
       ),
       add_own_entity_label AS (
-      -- this only adds an entity label if the label is the entities own label (non recirsive)
+      -- this only adds an entity label if the label is the entities own label (not recursive)
         SELECT a.*, l.entity_label
         FROM add_class_label a
         LEFT JOIN warehouse.v_own_entity_label l
@@ -443,7 +451,7 @@ exports.up = function (db, callback) {
         t1.fk_project,
         t1.project,
         t1.fk_class,
-        CASE WHEN (t1.table_name = 'persistent_item') THEN 'peIt' WHEN (t1.table_name = 'temporal_entity') THEN 'teEn' END as entity_type,
+        t1.entity_type,
         t1.class_label,
         coalesce(t1.entity_label,t2.entity_label) entity_label,
         t1.time_span,

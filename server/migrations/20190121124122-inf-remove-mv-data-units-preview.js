@@ -17,8 +17,7 @@ exports.setup = function (options, seedLink) {
 exports.up = function (db, callback) {
 
   const sql = `
-    DROP FUNCTION information.querypeitpreview(integer, integer, integer);
-    DROP FUNCTION information.querypeitlabel(integer, integer, integer);
+
 
     DROP FUNCTION information.refresh_vm_data_unit_preview();
 
@@ -38,9 +37,8 @@ exports.up = function (db, callback) {
 
     DROP VIEW IF EXISTS information.v_te_en_strings_per_field_repo CASCADE;
 
-    DROP VIEW IF EXISTS information.v_ordered_fields_per_class CASCADE;
-
-    DROP VIEW IF EXISTS information.v_class_preview;
+    DROP FUNCTION information.querypeitpreview(integer, integer, integer);
+    DROP FUNCTION information.querypeitlabel(integer, integer, integer);
   `
 
   db.runSql(sql, callback)
@@ -286,57 +284,6 @@ exports.down = function (db, callback) {
       left join associated_type on associated_type.fk_domain_entity = pe_it_label.pk_entity
   
   $BODY$;
-
-
-  ------------------------------------------------------------------------------------------------------------
-  -- VIEW that gets a class preview (with label)                                                       #1
-------------------------------------------------------------------------------------------------------------
-
-  CREATE OR REPLACE VIEW information.v_class_preview AS
-  SELECT DISTINCT ON (dfh_pk_class)
-          CASE
-              WHEN l.dfh_label IS NOT NULL THEN l.dfh_label::character varying
-              ELSE cpv.dfh_class_standard_label
-          END AS class_label,
-          CASE
-              WHEN cpv.dfh_fk_system_type = 9 THEN 'teEn'::text
-              WHEN cpv.dfh_fk_system_type = 8 THEN 'peIt'::text
-              ELSE NULL::text
-          END AS entity_type,
-      c.dfh_pk_class
-    FROM data_for_history.class c
-      JOIN data_for_history.class_profile_view cpv ON c.dfh_pk_class = cpv.dfh_fk_class
-      LEFT JOIN data_for_history.label l ON l.dfh_fk_class = c.dfh_pk_class AND l.com_fk_system_type = 184
-    ORDER BY dfh_pk_class, l.dfh_label; -- This will prefer custom labels over dfh_class_standard_label in distinct clause
-
-
-------------------------------------------------------------------------------------------------------------
--- VIEW that gets ordered fields per class (useful to join data related to class instances in right order) #2
-------------------------------------------------------------------------------------------------------------
-
-    CREATE OR REPLACE VIEW information.v_ordered_fields_per_class AS
-    SELECT c.pk_entity,
-       c.ord_num AS field_order,
-           CASE
-               WHEN c.property_is_outgoing = true THEN p.dfh_has_domain
-               WHEN c.property_is_outgoing = false THEN p.dfh_has_range
-               ELSE c.fk_class_for_class_field
-           END AS fk_class,
-       c.fk_property,
-       c.property_is_outgoing,
-       c.fk_class_field,
-       f.used_table
-      FROM commons.ui_context_config c
-        LEFT JOIN data_for_history.property p ON p.dfh_pk_property = c.fk_property
-        LEFT JOIN commons.class_field f ON f.pk_entity = c.fk_class_field
-     WHERE c.fk_ui_context = 45
-     ORDER BY (
-           CASE
-               WHEN c.property_is_outgoing = true THEN p.dfh_has_domain
-               WHEN c.property_is_outgoing = false THEN p.dfh_has_range
-               ELSE c.fk_class_for_class_field
-           END), c.ord_num;
-   
 
 
 ------------------------------------------------------------------------------------------------------------

@@ -57,12 +57,12 @@ exports.up = function (db, callback) {
 
           PERFORM
           -- fill own entity label
-          warehouse.entity_preview__fill_own_entity_label( _fk_entity, _fk_project),
-          warehouse.entity_preview__fill_own_entity_label( _fk_entity, NULL),
+          warehouse.needs_update('entity_preview__fill_own_entity_label'::text, ARRAY[_fk_entity::text, _fk_project::text]),
+          warehouse.needs_update('entity_preview__fill_own_entity_label'::text, ARRAY[_fk_entity::text, NULL::text]),
           
           -- fill own full text
-          warehouse.entity_preview__fill_own_full_text(_fk_entity, _fk_project),
-          warehouse.entity_preview__fill_own_full_text(_fk_entity, NULL);
+          warehouse.needs_update('entity_preview__fill_own_full_text'::text, ARRAY[_fk_entity::text, _fk_project::text]),
+          warehouse.needs_update('entity_preview__fill_own_full_text'::text, ARRAY[_fk_entity::text, NULL::text]);
           
           
         --------------------- role -----------------------------
@@ -126,6 +126,25 @@ exports.up = function (db, callback) {
           warehouse.needs_update('entity_preview__create_fk_type'::text, ARRAY[_fk_range_entity::text, _fk_project::text]),
           warehouse.needs_update('entity_preview__create_fk_type'::text, ARRAY[_fk_range_entity::text, NULL::text]);
 
+
+        --------------------- temporal_entity or persistent_item -----------------
+        ELSIF (SELECT _table_name IN ('temporal_entity', 'persistent_item')) THEN
+        
+          RAISE INFO 'updated crm entity with pk_entity: %, fk_project: %', NEW.fk_entity, _fk_project;
+          
+          IF (NEW.is_in_project = true) THEN
+            PERFORM
+            -- create fk type
+            warehouse.needs_update('entity_preview__create'::text, ARRAY[NEW.fk_entity::text, _fk_project::text]),
+            warehouse.needs_update('entity_preview__create'::text, ARRAY[NEW.fk_entity::text, NULL::text]);
+
+          ELSIF (NEW.is_in_project = false) THEN
+
+            DELETE FROM warehouse.entity_preview 
+            WHERE fk_project IS NOT DISTINCT FROM NEW.fk_project 
+            AND pk_entity = NEW.fk_entity;
+
+          END IF;
         END IF;
       
       

@@ -168,7 +168,7 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
     this.listData$ = this.pkSections$.pipe(filter(pks => pks !== undefined), mergeMap(pks => {
 
       // update the entityPreview
-      pks.forEach(pk => { this.projectService.loadDataUnitPreview(pk); });
+      pks.forEach(pk => { this.projectService.streamEntityPreview(pk); });
 
       // create the observable of dataPreviewArray
       return combineLatest(pks.map(pk => this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', pk])));

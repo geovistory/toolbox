@@ -94,7 +94,7 @@ export class ActiveProjectService {
    * @param pkEntity
    * @param forceReload
    */
-  loadDataUnitPreview(pkEntity: number, forceReload?: boolean): Observable<EntityPreview> {
+  streamEntityPreview(pkEntity: number, forceReload?: boolean): Observable<EntityPreview> {
     const state = this.ngRedux.getState();
 
     if (!(((state || {}).activeProject || {}).entityPreviews || {})[pkEntity] || forceReload) {

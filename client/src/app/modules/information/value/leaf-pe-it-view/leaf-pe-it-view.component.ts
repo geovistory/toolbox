@@ -104,11 +104,11 @@ export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnI
       takeUntil(this.destroy$)
     ).subscribe((d) => {
       this.pkEntity = d[0];
-      this.projectService.loadDataUnitPreview(this.pkEntity);
+      this.projectService.streamEntityPreview(this.pkEntity);
     })
 
     // if pkEntity is provided by input
-    this.projectService.loadDataUnitPreview(this.pkEntity);
+    this.projectService.streamEntityPreview(this.pkEntity);
 
     this.preview$ = this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', this.pkEntity]);
 

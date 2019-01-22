@@ -95,7 +95,6 @@ app.start = function () {
           break;
         case 'entity_preview_updated':
           app.models.WarEntityPreview.stream.next(payload);
-          if(payload.entity_type=='peIt') console.log(payload);
           break;
         default:
           break;
