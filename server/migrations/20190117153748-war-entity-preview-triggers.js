@@ -98,6 +98,11 @@ exports.up = function (db, callback) {
   AFTER INSERT OR UPDATE OF entity_label, class_label, time_span, type_label
   ON warehouse.entity_preview
   FOR EACH ROW
+  WHEN (
+    NEW.project IS NOT NULL 
+    AND NEW.fk_class IS NOT NULL 
+    AND NEW.entity_type IS NOT NULL
+    )
   EXECUTE PROCEDURE warehouse.entity_preview__notify_upsert();
 
   `  
