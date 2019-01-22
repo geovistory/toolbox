@@ -38,7 +38,7 @@ export class PeItSearchExistingAPIEpics {
           /**
            * Do some api call
            */
-          this.entityPreviewApi.search(null, action.meta.searchString, [action.meta.pkClass], null, action.meta.limit, action.meta.page)
+          this.entityPreviewApi.searchExisting(action.meta.pkProject, action.meta.searchString, [action.meta.pkClass], null, action.meta.limit, action.meta.page)
             /**
                * Subscribe to the api call
                */

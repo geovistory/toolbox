@@ -6,11 +6,11 @@ import { AppellationLabel } from '../../shared/appellation-label';
 import { EntitySearchHit } from '../../containers/information/api/information.models';
 
 @Component({
-  selector: 'gv-entity-search-hit',
-  templateUrl: './entity-search-hit.component.html',
-  styleUrls: ['./entity-search-hit.component.scss']
+  selector: 'gv-entity-add-existing-hit',
+  templateUrl: './entity-add-existing-hit.component.html',
+  styleUrls: ['./entity-add-existing-hit.component.scss']
 })
-export class EntitySearchHitComponent implements OnInit {
+export class EntityAddExistingHitComponent implements OnInit {
 
   @Input() hit: EntitySearchHit;
 

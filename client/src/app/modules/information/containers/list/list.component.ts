@@ -11,7 +11,7 @@ import { MentionedEntity } from 'app/modules/annotation/annotation.models';
 import { MentionedEntityCtrlActions } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 import { mentionedEntityCtrlReducer } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.reducer';
 import { takeUntil, first } from 'rxjs/operators';
-import { DataUnitSearchHit } from '../information/api/information.models';
+import { EntitySearchHit } from '../information/api/information.models';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -45,7 +45,7 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
-  @select() items$: Observable<DataUnitSearchHit[]>;
+  @select() items$: Observable<EntitySearchHit[]>;
   @select() collectionSize$: Observable<number>;
 
   // Pagination

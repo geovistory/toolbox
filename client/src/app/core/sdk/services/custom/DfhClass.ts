@@ -38,11 +38,11 @@ export class DfhClassApi extends BaseLoopBackApi {
   }
 
   /**
-   * Add a related item by id for class_fields.
+   * Zugehöriges Element nach ID für class_fields hinzufügen.
    *
    * @param {any} id DfhClass id
    *
-   * @param {any} fk Foreign key for class_fields
+   * @param {any} fk Fremdschlüssel für class_fields
    *
    * @param {object} data Request data.
    *
@@ -74,11 +74,11 @@ export class DfhClassApi extends BaseLoopBackApi {
   }
 
   /**
-   * Remove the class_fields relation to an item by id.
+   * class_fields-Beziehung zu einem Element nach ID entfernen.
    *
    * @param {any} id DfhClass id
    *
-   * @param {any} fk Foreign key for class_fields
+   * @param {any} fk Fremdschlüssel für class_fields
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -101,11 +101,11 @@ export class DfhClassApi extends BaseLoopBackApi {
   }
 
   /**
-   * Check the existence of class_fields relation to an item by id.
+   * Vorhandensein von class_fields-Beziehung zu einem Element nach ID prüfen.
    *
    * @param {any} id DfhClass id
    *
-   * @param {any} fk Foreign key for class_fields
+   * @param {any} fk Fremdschlüssel für class_fields
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -131,7 +131,7 @@ export class DfhClassApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries labels of DfhClass.
+   * Abfrage von labels von DfhClass.
    *
    * @param {any} id DfhClass id
    *
@@ -161,7 +161,7 @@ export class DfhClassApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries text_properties of DfhClass.
+   * Abfrage von text_properties von DfhClass.
    *
    * @param {any} id DfhClass id
    *

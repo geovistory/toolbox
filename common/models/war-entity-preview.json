@@ -58,7 +58,8 @@
       "permission": "ALLOW",
       "property": [
         "findComplex",
-        "search"
+        "search",
+        "searchExisting"
       ]
     }
   ],
@@ -130,6 +131,75 @@
         "path": "/search",
         "verb": "get"
       }
+    },
+    "searchExisting": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "pkProject",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "searchString",
+          "type": "string",
+          "required": false,
+          "description": "Search String",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkClasses",
+          "type": "array",
+          "required": false,
+          "description": "Classes for which the search will be performed.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "entityType",
+          "type": "string",
+          "required": false,
+          "description": "Type of DataUnit: 'teEn' or 'peIt'.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "limit",
+          "type": "number",
+          "required": false,
+          "description": "Max. number of results per page [default=10; max=200]",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "page",
+          "type": "number",
+          "required": true,
+          "description": "Page of pagination",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "object",
+        "root": true
+      },
+      "description": "Find data unit previews, while entities in provided project have priority over repo versions.",
+      "http": {
+        "path": "/search-existing",
+        "verb": "get"
+      }
     }
+
   }
 }

@@ -32,11 +32,11 @@ export class AccountApi extends BaseLoopBackApi {
   }
 
   /**
-   * Add a related item by id for projects.
+   * Zugehöriges Element nach ID für projects hinzufügen.
    *
    * @param {any} id Account id
    *
-   * @param {any} fk Foreign key for projects
+   * @param {any} fk Fremdschlüssel für projects
    *
    * @param {object} data Request data.
    *
@@ -68,11 +68,11 @@ export class AccountApi extends BaseLoopBackApi {
   }
 
   /**
-   * Remove the projects relation to an item by id.
+   * projects-Beziehung zu einem Element nach ID entfernen.
    *
    * @param {any} id Account id
    *
-   * @param {any} fk Foreign key for projects
+   * @param {any} fk Fremdschlüssel für projects
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -95,11 +95,11 @@ export class AccountApi extends BaseLoopBackApi {
   }
 
   /**
-   * Check the existence of projects relation to an item by id.
+   * Vorhandensein von projects-Beziehung zu einem Element nach ID prüfen.
    *
    * @param {any} id Account id
    *
-   * @param {any} fk Foreign key for projects
+   * @param {any} fk Fremdschlüssel für projects
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -125,7 +125,7 @@ export class AccountApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in projects of this model.
+   * Erstellt eine neue Instanz in projects von diesem Modell.
    *
    * @param {any} id Account id
    *
@@ -435,7 +435,7 @@ export class AccountApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in projects of this model.
+   * Erstellt eine neue Instanz in projects von diesem Modell.
    *
    * @param {any} id Account id
    *

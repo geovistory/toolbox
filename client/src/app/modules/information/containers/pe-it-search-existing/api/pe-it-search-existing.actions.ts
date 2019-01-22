@@ -6,6 +6,7 @@ import { InfPersistentItem } from 'app/core';
 
 type Payload = PeItSearchExisting;
 interface MetaData {
+  pkProject?: number;
   pkClass?: number;
   searchString?: string;
   pkNamespace?: number;
@@ -25,9 +26,9 @@ export class PeItSearchExistingAPIActions {
   static readonly DESTROY = 'PeItSearchExisting::DESTROY';
 
   @dispatch()
-  search = (searchString: string, limit: number, page: number, pkClass: number, pkNamespace: number): PeItSearchExistingAPIAction => ({
+  search = (pkProject: number, searchString: string, limit: number, page: number, pkClass: number, pkNamespace: number): PeItSearchExistingAPIAction => ({
     type: PeItSearchExistingAPIActions.SEARCH,
-    meta: { searchString, limit, page, pkClass, pkNamespace },
+    meta: { pkProject, searchString, limit, page, pkClass, pkNamespace },
     payload: null,
   });
 
