@@ -4,7 +4,7 @@ import { Params, Router, UrlSegment, UrlSegmentGroup } from '@angular/router';
 import { ComConfig, IAppState, InfChunk, ProjectDetail, PropertyList, U } from 'app/core';
 import { without } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import { first, map, distinctUntilChanged } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
@@ -22,6 +22,10 @@ export class ActiveProjectService {
   public activeProject$: Observable<ProjectDetail>;
   public pkProject$: Observable<number>;
 
+  // emits true if no toolbox panel is opened
+  public dashboardVisible$: Observable<boolean>;
+
+
   constructor(
     private ngRedux: NgRedux<IAppState>,
     private actions: ActiveProjectActions,
@@ -33,6 +37,16 @@ export class ActiveProjectService {
 
     this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']);
+
+    // emits true if no toolbox panel is opened
+    this.dashboardVisible$ = combineLatest(
+      ngRedux.select<ProjectDetail>(['information']),
+      ngRedux.select<ProjectDetail>(['sources'])
+    ).pipe(
+      map(items => items.filter(item => (!!item && Object.keys(item).length > 0)).length === 0),
+      distinctUntilChanged()
+    )
+
 
     this.entityPreviewSocket.fromEvent<EntityPreview>('entityPreview').subscribe(data => {
       console.log(data)

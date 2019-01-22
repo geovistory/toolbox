@@ -30,7 +30,7 @@
     <div id="flow" class="d-flex">
       <div id="sources" class="gv-icon-box" [ngClass]="{'gv-active': steps.step1}">
         <button class="gv-upper-part gv-upper-part-info" [routerLink]="['edit', { outlets: { sources: ['search'], information: ['search'] } }]"
-          [queryParams]="{s:'on'}">
+          [queryParams]="{s:'on',i:'off'}">
           <div class="gv-icon gv-icon-source"></div>
           <h4>{{sourcesCount}} {{sourcesCount === 1 ? 'Source' : 'Sources'}}</h4>
         </button>
@@ -58,7 +58,7 @@
       </div>
       <div id="knowledge-units" class="gv-icon-box" [ngClass]="{'gv-active': steps.step3}">
         <div class="gv-upper-part gv-upper-part-primary" [routerLink]="['edit', { outlets: { information: ['search'], sources: ['search']} }]"
-          [queryParams]="{i:'on'}">
+          [queryParams]="{i:'on',s:'off'}">
           <div class="gv-icon gv-icon-information"></div>
           <h4>{{dataUnitsCount}} {{dataUnitsCount === 1 ? 'Data Unit' : 'Data Units'}}</h4>
         </div>

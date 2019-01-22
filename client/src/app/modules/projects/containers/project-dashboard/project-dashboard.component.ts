@@ -45,7 +45,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
   ) {
     this.id = activatedRoute.snapshot.params['pkActiveProject'];
 
-    this.showDashboard$ = activatedRoute.fragment.map(() => (activatedRoute.children.length === 0))
+    this.showDashboard$ = activeProjectService.dashboardVisible$;
 
     this.activeProjectService.initProject(this.id);
     this.activeProjectService.initProjectCrm(this.id);
