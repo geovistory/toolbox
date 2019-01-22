@@ -681,8 +681,8 @@ module.exports = function (InfRole) {
   -- Find the roles
     pe_it_roles AS (
         select pk_entity, fk_temporal_entity
-    from information.v_role 
-    where pk_entity IN (${pk_roles.map(r => (r * 1))})
+      from information.v_role 
+      where pk_entity IN (${pk_roles.map(r => (r * 1))})
     ),
     -- Find all roles related to temporal entities mached by pe_it_roles
     -- that are of an auto-add property
@@ -701,6 +701,8 @@ module.exports = function (InfRole) {
     -- get a list of all pk_entities of repo version
     pk_entities_of_repo AS (
       select pk_entity, null::calendar_type as calendar from pe_it_roles
+      UNION
+      select fk_temporal_entity, null::calendar_type as calendar from pe_it_roles
       UNION 
       select pk_entity, calendar from te_ent_roles
     ),

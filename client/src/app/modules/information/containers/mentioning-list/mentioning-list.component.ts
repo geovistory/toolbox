@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActiveProjectService, DataUnit, IAppState, SubstoreComponent, DataUnitPreview, InfChunk } from 'app/core';
+import { ActiveProjectService, DataUnit, IAppState, SubstoreComponent, EntityPreview, InfChunk } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { dropLast } from 'ramda';
 import { Observable, Subject, combineLatest } from 'rxjs';
@@ -17,10 +17,10 @@ import { QuillDeltaToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-d
 export interface MentioningRow extends Mentioning {
   pk_entity: number;
 
-  sourceEntity: DataUnitPreview;
-  sectionEntity: DataUnitPreview;
+  sourceEntity: EntityPreview;
+  sectionEntity: EntityPreview;
   chunkEntity: InfChunk;
-  mentionedEntity: DataUnitPreview;
+  mentionedEntity: EntityPreview;
 
   // stings
   sourceEntityString: string;
@@ -69,10 +69,10 @@ export class MentioningListComponent extends MentioningListAPIActions implements
 
   @select() mentionedEntityPk$: Observable<number>;
 
-  sourceEntity$: Observable<DataUnitPreview>;
-  sectionEntity$: Observable<DataUnitPreview>;
+  sourceEntity$: Observable<EntityPreview>;
+  sectionEntity$: Observable<EntityPreview>;
   chunkEntity$: Observable<InfChunk>;
-  mentionedEntity$: Observable<DataUnitPreview>;
+  mentionedEntity$: Observable<EntityPreview>;
 
   formGroup: FormGroup;
   mentioningCreateCtrl;
@@ -176,25 +176,25 @@ export class MentioningListComponent extends MentioningListAPIActions implements
     })
 
 
-    // create the dataUnitPreview Observable
+    // create the entityPreview Observable
     this.sourceEntity$ = this.sourceEntityPk$.pipe(
       filter(pk => !!pk),
-      mergeMap(pk => this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', pk]))
+      mergeMap(pk => this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', pk]))
     )
 
-    // create the dataUnitPreview Observable
+    // create the entityPreview Observable
     this.sectionEntity$ = this.sectionEntityPk$.pipe(
       filter(pk => !!pk),
-      mergeMap(pk => this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', pk]))
+      mergeMap(pk => this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', pk]))
     )
 
     // create the InfChunk Observable
     this.chunkEntity$ = this.ngRedux.select<InfChunk>(['activeProject', 'selectedChunk'])
 
-    // create the dataUnitPreview Observable
+    // create the entityPreview Observable
     this.mentionedEntity$ = this.mentionedEntityPk$.pipe(
       filter(pk => !!pk),
-      mergeMap(pk => this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', pk]))
+      mergeMap(pk => this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', pk]))
     )
 
     // Get the init state
@@ -202,7 +202,7 @@ export class MentioningListComponent extends MentioningListAPIActions implements
 
     // load previews
     [s.sourceEntityPk, s.sectionEntityPk, s.mentionedEntityPk].filter(i => !!i).forEach(pk => {
-      this.projectService.loadDataUnitPreview(pk);
+      this.projectService.streamEntityPreview(pk);
     })
 
     // init the loading
@@ -211,15 +211,15 @@ export class MentioningListComponent extends MentioningListAPIActions implements
     // Listen to the entity pks of the sections
     this.listData$ = this.items$.pipe(filter(ms => ms !== undefined), mergeMap(ms => {
 
-      // update the dataUnitPreview
+      // update the entityPreview
       ms.forEach(m => {
-        if (m.fk_expression_entity) this.projectService.loadDataUnitPreview(m.fk_expression_entity);
-        if (m.fk_source_entity) this.projectService.loadDataUnitPreview(m.fk_source_entity);
+        if (m.fk_expression_entity) this.projectService.streamEntityPreview(m.fk_expression_entity);
+        if (m.fk_source_entity) this.projectService.streamEntityPreview(m.fk_source_entity);
         if (m.fk_chunk) this.projectService.loadChunk(m.fk_chunk);
-        this.projectService.loadDataUnitPreview(m.fk_domain_entity);
+        this.projectService.streamEntityPreview(m.fk_domain_entity);
       });
 
-      const createString = (p: DataUnitPreview): string => {
+      const createString = (p: EntityPreview): string => {
         if (!p) return '';
         return [(p.type_label ? p.type_label : p.class_label), p.entity_label].join(' ');
       }
@@ -227,9 +227,9 @@ export class MentioningListComponent extends MentioningListAPIActions implements
       // create the observable of MentioningRow[]
       return combineLatest(ms.map(m => {
         return combineLatest(
-          this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', m.fk_expression_entity]),
-          this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', m.fk_source_entity]),
-          this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', m.fk_domain_entity]),
+          this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', m.fk_expression_entity]),
+          this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', m.fk_source_entity]),
+          this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', m.fk_domain_entity]),
           this.ngRedux.select<InfChunk>(['activeProject', 'chunks', m.fk_chunk]),
           this.ngRedux.select<number[]>(['activeProject', 'mentioningsFocusedInText']),
           this.ngRedux.select<number[]>(['activeProject', 'mentioningsFocusedInTable'])

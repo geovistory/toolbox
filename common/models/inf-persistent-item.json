@@ -644,7 +644,7 @@
       ],
       "returns": {
         "arg": "persistent_items",
-        "type": "InfDataUnitPreview",
+        "type": "WarEntityPreview",
         "root": true
       },
       "description": "Get the preview of a persistent according to project and ui context.",

@@ -17,7 +17,7 @@ exports.setup = function (options, seedLink) {
 exports.up = function (db, callback) {
   const sql = `
 ------------------------------------------------------------------------------------------------------------
-    -- VIEW that gets a class preview (with label)
+    -- VIEW that gets a class preview (with label)                                                       #1
 ------------------------------------------------------------------------------------------------------------
 
     CREATE OR REPLACE VIEW information.v_class_preview AS
@@ -39,7 +39,7 @@ exports.up = function (db, callback) {
 
 
 ------------------------------------------------------------------------------------------------------------
--- VIEW that gets ordered fields per class (useful to join data related to class instances in right order)
+-- VIEW that gets ordered fields per class (useful to join data related to class instances in right order) #2
 ------------------------------------------------------------------------------------------------------------
 
       CREATE OR REPLACE VIEW information.v_ordered_fields_per_class AS
@@ -68,7 +68,7 @@ exports.up = function (db, callback) {
 
 
 ------------------------------------------------------------------------------------------------------------
-    -- VIEW that gets all the labels/strings per teEn in the repo version
+    -- VIEW that gets all the labels/strings per teEn in the repo version                                #3
     -- Attention: This view gets replaced further below, for some "recursive" join
 ------------------------------------------------------------------------------------------------------------
 
@@ -128,7 +128,7 @@ exports.up = function (db, callback) {
       
       
 ------------------------------------------------------------------------------------------------------------
-      -- VIEW that gets all the labels/strings per teEn and project
+      -- VIEW that gets all the labels/strings per teEn and project                                     #4
       -- Attention: This view gets replaced further below, for some "recursive" join
 ------------------------------------------------------------------------------------------------------------
 
@@ -190,7 +190,7 @@ exports.up = function (db, callback) {
       ORDER BY field_order;
 
 ------------------------------------------------------------------------------------------------------------
-      -- VIEW that creates time span objects per TeEn, project and repo version
+      -- VIEW that creates time span objects per TeEn, project and repo version                          #5
 ------------------------------------------------------------------------------------------------------------
       CREATE OR REPLACE VIEW information.v_te_en_time_span_per_project_and_repo AS
       WITH role_with_time_primitive as (
@@ -240,7 +240,7 @@ exports.up = function (db, callback) {
         
 
 ------------------------------------------------------------------------------------------------------------
-      -- VIEW that unions TeEn project and repo version and adds time span objects
+      -- VIEW that unions TeEn project and repo version and adds time span objects                       #6
 ------------------------------------------------------------------------------------------------------------
         
       CREATE OR REPLACE VIEW information.v_te_en_preview as
@@ -283,7 +283,7 @@ exports.up = function (db, callback) {
 
 
 ------------------------------------------------------------------------------------------------------------
-      -- VIEW that gets all the labels/strings per peIt in the repo version
+      -- VIEW that gets all the labels/strings per peIt in the repo version                              #7
 ------------------------------------------------------------------------------------------------------------
      
       CREATE OR REPLACE VIEW information.v_pe_it_strings_per_field_repo AS 
@@ -343,7 +343,7 @@ exports.up = function (db, callback) {
 
 
 ------------------------------------------------------------------------------------------------------------
-        -- VIEW that gets all the labels/strings per PeIt and project
+        -- VIEW that gets all the labels/strings per PeIt and project                                   #8
 ------------------------------------------------------------------------------------------------------------
          
         CREATE OR REPLACE VIEW information.v_pe_it_strings_per_field_and_project AS
@@ -397,7 +397,7 @@ exports.up = function (db, callback) {
 
 
   ------------------------------------------------------------------------------------------------------------
-          -- VIEW that unions PeIt project and repo version
+          -- VIEW that unions PeIt project and repo version                                               #9
   ------------------------------------------------------------------------------------------------------------
     
           CREATE OR REPLACE VIEW information.v_pe_it_preview as
@@ -437,7 +437,7 @@ exports.up = function (db, callback) {
 
 
   ------------------------------------------------------------------------------------------------------------
-          -- MATERIALIZED VIEW for data_unit preview
+          -- MATERIALIZED VIEW for data_unit preview                                                     #10
   ------------------------------------------------------------------------------------------------------------
 
           CREATE MATERIALIZED VIEW information.vm_data_unit_preview as
@@ -446,14 +446,14 @@ exports.up = function (db, callback) {
                   from information.entity_association as ea
                   inner join information.entity_version_project_rel as epr on ea.pk_entity = epr.fk_entity AND epr.is_in_project = true
                   inner join data_for_history.property as p on ea.fk_property = p.dfh_pk_property
-              inner join information.v_pe_it_preview as type_preview on ea.fk_range_entity = type_preview.pk_entity and epr.fk_project = type_preview.fk_project
+                  inner join information.v_pe_it_preview as type_preview on ea.fk_range_entity = type_preview.pk_entity and epr.fk_project = type_preview.fk_project
                   where p.dfh_pk_property IN (1110,1190,1205,1206,1214,1204,1066)
           ),
           type_info_per_repo AS (
                   select distinct ea.fk_domain_entity, type_preview.entity_label as type_label, ea.rank_for_domain, type_preview.pk_entity as pk_type
                   from information.v_entity_association as ea
                   inner join data_for_history.property as p on ea.fk_property = p.dfh_pk_property
-              inner join information.v_pe_it_preview as type_preview on ea.fk_range_entity = type_preview.pk_entity
+                  inner join information.v_pe_it_preview as type_preview on ea.fk_range_entity = type_preview.pk_entity
                   where p.dfh_pk_property IN (1110,1190,1205,1206,1214,1204,1066) AND   ea.rank_for_domain = 1
           ),
           data_unit as (
@@ -505,7 +505,7 @@ exports.up = function (db, callback) {
 
 
   ------------------------------------------------------------------------------------------------------------
-          -- REPLACE VIEW from above, that gets all the labels/strings per teEn and project
+          -- REPLACE VIEW from above, that gets all the labels/strings per teEn and project               #11
           -- now with a join to the materialized view in order to add peIt labels to the teEn
   ------------------------------------------------------------------------------------------------------------
 
@@ -573,7 +573,7 @@ exports.up = function (db, callback) {
 
 
   ------------------------------------------------------------------------------------------------------------
-          -- REPLACE VIEW from above, that gets all the labels/strings of repo
+          -- REPLACE VIEW from above, that gets all the labels/strings of repo                             #12
           -- now with a join to the materialized view in order to add peIt labels to the teEn
   ------------------------------------------------------------------------------------------------------------
 

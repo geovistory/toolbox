@@ -1,7 +1,7 @@
 /* tslint:disable */
 
 declare var Object: any;
-export interface InfDataUnitPreviewInterface {
+export interface WarEntityPreviewInterface {
   "pk_entity"?: number;
   "fk_project"?: number;
   "fk_class"?: number;
@@ -13,7 +13,7 @@ export interface InfDataUnitPreviewInterface {
   "time_span"?: any;
 }
 
-export class InfDataUnitPreview implements InfDataUnitPreviewInterface {
+export class WarEntityPreview implements WarEntityPreviewInterface {
   "pk_entity": number;
   "fk_project": number;
   "fk_class": number;
@@ -23,24 +23,24 @@ export class InfDataUnitPreview implements InfDataUnitPreviewInterface {
   "type_label": string;
   "pk_type": number;
   "time_span": any;
-  constructor(data?: InfDataUnitPreviewInterface) {
+  constructor(data?: WarEntityPreviewInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `InfDataUnitPreview`.
+   * i.e. `WarEntityPreview`.
    */
   public static getModelName() {
-    return "InfDataUnitPreview";
+    return "WarEntityPreview";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of InfDataUnitPreview for dynamic purposes.
+  * This method creates an instance of WarEntityPreview for dynamic purposes.
   **/
-  public static factory(data: InfDataUnitPreviewInterface): InfDataUnitPreview{
-    return new InfDataUnitPreview(data);
+  public static factory(data: WarEntityPreviewInterface): WarEntityPreview{
+    return new WarEntityPreview(data);
   }
   /**
   * @method getModelDefinition
@@ -51,9 +51,9 @@ export class InfDataUnitPreview implements InfDataUnitPreviewInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'InfDataUnitPreview',
-      plural: 'InfDataUnitPreviews',
-      path: 'InfDataUnitPreviews',
+      name: 'WarEntityPreview',
+      plural: 'WarEntityPreviews',
+      path: 'WarEntityPreviews',
       idName: 'pk_entity',
       properties: {
         "pk_entity": {

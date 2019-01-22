@@ -1,8 +1,8 @@
 import { Granularity } from 'app/core/date-time/date-time-commons';
 import { CalendarType } from 'app/core/date-time/time-primitive';
 
-export type DataUnitType = 'peIt' | 'teEn';
-export interface DataUnitPreviewList { [pk_entity: number]: DataUnitPreview };
+export type EntityType = 'peIt' | 'teEn';
+export interface EntityPreviewList { [pk_entity: number]: EntityPreview };
 interface TimePrimitiveWithCal {
     duration: Granularity,
     julian_day: number,
@@ -17,7 +17,7 @@ export interface TimeSpan {
     153?: TimePrimitiveWithCal,
 }
 
-export class DataUnitPreview {
+export class EntityPreview {
 
     pk_entity: number;
     fk_class: number;
@@ -25,13 +25,13 @@ export class DataUnitPreview {
     entity_label: string;
     class_label: string;
     type_label?: string;
-    pk_type?: number;
-    entity_type: DataUnitType;
+    fk_type?: number;
+    entity_type: EntityType;
     time_span?: TimeSpan;
 
     loading?: boolean;
 
-    constructor(data?: DataUnitPreview) {
+    constructor(data?: EntityPreview) {
         Object.assign(this, data);
     }
 }

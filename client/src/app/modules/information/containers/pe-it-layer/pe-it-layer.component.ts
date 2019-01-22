@@ -212,7 +212,7 @@ export class PeItLayerComponent implements AfterViewInit, OnDestroy {
                 propFields_2_roleDetails(),
                 roleDetails_2_geoPeItPks(),
                 filter(pks => pks.length > 0),
-                mergeMap(pks => this.projectService.loadDataUnitPreview(pks[0]))
+                mergeMap(pks => this.projectService.streamEntityPreview(pks[0]))
             )
 
 

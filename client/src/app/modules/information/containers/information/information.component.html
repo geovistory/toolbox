@@ -8,8 +8,8 @@
     <div class="col-md-4">
       <div class="btn-group float-right mt-2" role="group">
 
-        <gv-class-and-type-selector *ngIf="pkClassesInProject != undefined" [pkClasses]="pkClassesInProject"
-          [pkProject]="projectId" [basePath]="basePath.concat('classAndTypeSelector')" (select)="startCreate($event, pkUiContextCreate)"
+        <gv-class-and-type-selector *ngIf="pkClassesInProject != undefined && (pkProject$ |async)" [pkClasses]="pkClassesInProject"
+          [pkProject]="(pkProject$ |async)" [basePath]="basePath.concat('classAndTypeSelector')" (select)="startCreate($event, pkUiContextCreate)"
           buttonText="+ Add an entity" placement="right" hasFilter="true"></gv-class-and-type-selector>
 
         <!-- <button class="btn btn-link btn-md" (click)="openEntityModal()">
@@ -43,7 +43,7 @@
   <gv-pe-it-editable *ngIf="!(loading$ | async) && (_peIt_editable$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('_peIt_editable')"
     (remove)="onRemovePeIt($event)"></gv-pe-it-editable>
 
-      <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
+  <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
   <gv-te-ent-editable *ngIf="!(loading$ | async) && (_teEnt_editable$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('_teEnt_editable')"></gv-te-ent-editable>
 
 </div>

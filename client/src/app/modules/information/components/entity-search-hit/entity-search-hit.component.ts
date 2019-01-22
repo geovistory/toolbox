@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DataUnitPreview, IAppState } from 'app/core';
+import { EntityPreview, IAppState } from 'app/core';
 import { MentionedEntity } from 'app/modules/annotation';
 import { AppellationLabel } from '../../shared/appellation-label';
 import { DataUnitSearchHit } from '../../containers/information/api/information.models';
@@ -44,7 +44,7 @@ export class EntitySearchHitComponent implements OnInit {
     return 99
   }
 
-  dataUnitPreview: DataUnitPreview;
+  entityPreview: EntityPreview;
 
 
 
@@ -62,7 +62,7 @@ export class EntitySearchHitComponent implements OnInit {
       this.isInProject = false;
     }
 
-    this.dataUnitPreview = {
+    this.entityPreview = {
       pk_entity: this.dataUnitSearchHit.pk_entity,
       fk_project: this.dataUnitSearchHit.fk_project,
       fk_class: this.dataUnitSearchHit.fk_class,

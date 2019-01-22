@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-
-import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
-import { Project, ProjectApi, ActiveProjectService, InfPersistentItemApi, IAppState, ProjectDetail, ProjectCrm, InfDataUnitPreviewApi } from 'app/core';
 import { NgRedux } from '@angular-redux/store';
-import { Subject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ActiveProjectService, IAppState, ProjectCrm, ProjectDetail, WarEntityPreviewApi } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+import { Observable, Subject } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
+
 
 @Component({
   selector: 'gv-project-dashboard',
@@ -34,14 +34,18 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
     'step5': false
   }
 
+  showDashboard$: Observable<boolean>;
+
   constructor(
     activatedRoute: ActivatedRoute,
     private activeProjectService: ActiveProjectService,
     private ngRedux: NgRedux<IAppState>,
-    private duApi: InfDataUnitPreviewApi,
+    private entityPreviewApi: WarEntityPreviewApi,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
-    this.id = activatedRoute.snapshot.parent.params['id'];
+    this.id = activatedRoute.snapshot.params['pkActiveProject'];
+
+    this.showDashboard$ = activeProjectService.dashboardVisible$;
 
     this.activeProjectService.initProject(this.id);
     this.activeProjectService.initProjectCrm(this.id);
@@ -65,7 +69,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
           }
         }
 
-        this.duApi.search(this.id, '', pkClassesInProject, null, 1, 1)
+        this.entityPreviewApi.search(this.id, '', pkClassesInProject, null, 1, 1)
           .subscribe(
             (response) => {
               this.dataUnitsCount = parseInt(response.totalCount, 10);
@@ -77,7 +81,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
           );
 
 
-        this.duApi.search(this.id, '', DfhConfig.CLASS_PKS_SOURCE_PE_IT, null, 1, 1)
+        this.entityPreviewApi.search(this.id, '', DfhConfig.CLASS_PKS_SOURCE_PE_IT, null, 1, 1)
           .subscribe(
             (response) => {
               this.sourcesCount = parseInt(response.totalCount, 10);
@@ -93,7 +97,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-
+    this.activeProjectService.closeProject()
   }
 
   activateStep(stepId: string) {

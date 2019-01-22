@@ -108,7 +108,7 @@ export function createPeItDetail(options: PeItDetail, peIt: InfPersistentItem, c
         pkEntity: peIt.pk_entity,
         fkClass: peIt.fk_class,
         _fields: createFieldList(peIt.fk_class, peIt.pi_roles, peIt.text_properties, crm, settings),
-        _type: createDataUnitTypeDetail({}, peIt, crm, settings),
+        _type: createTypeDetailOfEntity({}, peIt, crm, settings),
     })
 }
 
@@ -148,7 +148,7 @@ export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity
 * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
 * @param settings setting object that is passed through the chain of create...() methods of the different state classes
 */
-export function createDataUnitTypeDetail(options: TypeDetail, dataUnit: InfTemporalEntity | InfPersistentItem, crm: ProjectCrm, settings: StateSettings): TypeDetail {
+export function createTypeDetailOfEntity(options: TypeDetail, dataUnit: InfTemporalEntity | InfPersistentItem, crm: ProjectCrm, settings: StateSettings): TypeDetail {
     // if for instances of this class we do not want types, return
     if (!dataUnit.fk_class || !Config.PK_CLASS_PK_HAS_TYPE_MAP[dataUnit.fk_class]) return;
 

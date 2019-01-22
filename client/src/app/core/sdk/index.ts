@@ -70,7 +70,7 @@ import { InfChunkApi } from './services/custom/InfChunk';
 import { InfEntityAssociationApi } from './services/custom/InfEntityAssociation';
 import { InfDigitalObjectApi } from './services/custom/InfDigitalObject';
 import { InfPlaceApi } from './services/custom/InfPlace';
-import { InfDataUnitPreviewApi } from './services/custom/InfDataUnitPreview';
+import { WarEntityPreviewApi } from './services/custom/WarEntityPreview';
 import { DfhClassProfileViewApi } from './services/custom/DfhClassProfileView';
 import { DfhPropertyProfileViewApi } from './services/custom/DfhPropertyProfileView';
 import { ComUiContextApi } from './services/custom/ComUiContext';
@@ -134,7 +134,7 @@ export class SDKBrowserModule {
         InfEntityAssociationApi,
         InfDigitalObjectApi,
         InfPlaceApi,
-        InfDataUnitPreviewApi,
+        WarEntityPreviewApi,
         DfhClassProfileViewApi,
         DfhPropertyProfileViewApi,
         ComUiContextApi,

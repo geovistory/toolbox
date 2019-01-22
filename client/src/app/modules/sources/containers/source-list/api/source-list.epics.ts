@@ -263,7 +263,7 @@ export class SourceListAPIEpics {
            */
           globalStore.next(this.loadingBarActions.startLoading());
 
-          const fkParentClass = c.ngRedux.getState().activeProject.dataUnitPreviews[c.activatedRoute.snapshot.params.pkEntity].fk_class;
+          const fkParentClass = c.ngRedux.getState().activeProject.entityPreviews[c.activatedRoute.snapshot.params.pkEntity].fk_class;
           let fkDomain = null;
           let fkRange = null;
           let fkProperty = null;

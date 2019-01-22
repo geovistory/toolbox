@@ -1,4 +1,7 @@
-<gv-navbar>
+<router-outlet></router-outlet>
+
+
+<gv-navbar *ngIf="(showDashboard$ |async)">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
     <li class="breadcrumb-item"><a routerLink="/projects">Your Projects</a></li>
@@ -6,24 +9,28 @@
   </ol>
 </gv-navbar>
 
-<div id="project-dashboard" class="container">
+<div *ngIf="(showDashboard$ |async)" id="project-dashboard" class="container">
   <div class="row">
     <div class="col">
-      <h2>Project {{project?.labels[0].label}} <a class="btn btn-link pull-right" routerLink="settings">Project settings</a></h2>
+      <h2>Project {{project?.labels[0].label}} <a class="btn btn-link pull-right" routerLink="settings">Project
+          settings</a></h2>
     </div>
   </div>
   <div class="row justify-content-center">
     <div class="col text-center">
-      <button id="stopTourBtn" type="button" name="stopTour" class="btn btn-link" (click)="stopTour()" *ngIf="activeSlideId">Stop the Tour</button>
+      <button id="stopTourBtn" type="button" name="stopTour" class="btn btn-link" (click)="stopTour()" *ngIf="activeSlideId">Stop
+        the Tour</button>
       <div class="" *ngIf="!activeSlideId">
-        <button type="button" name="startTour" class="btn btn-link" (click)="activateStep('step1')">Need Help? Start a Tour</button>
+        <button type="button" name="startTour" class="btn btn-link" (click)="activateStep('step1')">Need Help? Start a
+          Tour</button>
       </div>
     </div>
   </div>
   <div class="row mt-5 justify-content-center">
     <div id="flow" class="d-flex">
       <div id="sources" class="gv-icon-box" [ngClass]="{'gv-active': steps.step1}">
-        <button class="gv-upper-part gv-upper-part-info" [routerLink]="['edit', { outlets: { sources: ['search'], information: ['search'] } }]" [queryParams]="{s:'on'}">
+        <button class="gv-upper-part gv-upper-part-info" [routerLink]="['edit', { outlets: { sources: ['search'], information: ['search'] } }]"
+          [queryParams]="{s:'on',i:'off'}">
           <div class="gv-icon gv-icon-source"></div>
           <h4>{{sourcesCount}} {{sourcesCount === 1 ? 'Source' : 'Sources'}}</h4>
         </button>
@@ -40,7 +47,7 @@
         <div class="gv-upper-part">
           <div class="gv-icon fa fa-long-arrow-right" *ngIf="activeSlideId"></div>
         </div>
-        <div class="gv-lower-part" (click)="activateStep('step2')"  *ngIf="activeSlideId">
+        <div class="gv-lower-part" (click)="activateStep('step2')" *ngIf="activeSlideId">
           <div class="d-flex justify-content-center">
             <span class="gv-vertical-line"></span>
           </div>
@@ -50,11 +57,12 @@
         </div>
       </div>
       <div id="knowledge-units" class="gv-icon-box" [ngClass]="{'gv-active': steps.step3}">
-        <div class="gv-upper-part gv-upper-part-primary" [routerLink]="['edit', { outlets: { information: ['search'], sources: ['search']} }]" [queryParams]="{i:'on'}">
+        <div class="gv-upper-part gv-upper-part-primary" [routerLink]="['edit', { outlets: { information: ['search'], sources: ['search']} }]"
+          [queryParams]="{i:'on',s:'off'}">
           <div class="gv-icon gv-icon-information"></div>
           <h4>{{dataUnitsCount}} {{dataUnitsCount === 1 ? 'Data Unit' : 'Data Units'}}</h4>
         </div>
-        <div class="gv-lower-part" (click)="activateStep('step3')"  *ngIf="activeSlideId">
+        <div class="gv-lower-part" (click)="activateStep('step3')" *ngIf="activeSlideId">
           <div class="d-flex justify-content-center">
             <span class="gv-vertical-line"></span>
           </div>
@@ -67,7 +75,7 @@
         <div class="gv-upper-part">
           <div class="gv-icon fa fa-long-arrow-right" *ngIf="activeSlideId"></div>
         </div>
-        <div class="gv-lower-part" (click)="activateStep('step4')"  *ngIf="activeSlideId">
+        <div class="gv-lower-part" (click)="activateStep('step4')" *ngIf="activeSlideId">
           <div class="d-flex justify-content-center">
             <span class="gv-vertical-line"></span>
           </div>
@@ -81,7 +89,7 @@
           <div class="gv-icon gv-icon-presentation"></div>
           <h4>Visualizations and Stories</h4>
         </div>
-        <div class="gv-lower-part" (click)="activateStep('step5')"  *ngIf="activeSlideId" >
+        <div class="gv-lower-part" (click)="activateStep('step5')" *ngIf="activeSlideId">
           <div class="d-flex justify-content-center">
             <span class="gv-vertical-line"></span>
           </div>
@@ -94,7 +102,8 @@
   </div>
   <div class="row justify-content-center">
     <div class="d-flex">
-      <ngb-carousel *ngIf="activeSlideId" [interval]="false" [wrap]="false" [activeId]="activeSlideId" (slide)="onSlide($event)" id="carousel">
+      <ngb-carousel *ngIf="activeSlideId" [interval]="false" [wrap]="false" [activeId]="activeSlideId" (slide)="onSlide($event)"
+        id="carousel">
         <ng-template ngbSlide id="step1">
           <div class="carousel-content">
             <h3>
@@ -106,7 +115,8 @@
               </small>
             </h3>
             <p>
-              Sources may be Texts, Tables, Images or Websites. Create new sources or browse for existing ones. Click on the icon above to start.
+              Sources may be Texts, Tables, Images or Websites. Create new sources or browse for existing ones. Click
+              on the icon above to start.
             </p>
           </div>
         </ng-template>
@@ -121,7 +131,8 @@
               </small>
             </h3>
             <p>
-              Hier ein Text daüber, wie durch Quelleninterpretation und die historisch-kritische Methode aus Quellen ein Abbild der Wirkllichkeit werden kann.
+              Hier ein Text daüber, wie durch Quelleninterpretation und die historisch-kritische Methode aus Quellen
+              ein Abbild der Wirkllichkeit werden kann.
             </p>
           </div>
         </ng-template>
@@ -150,7 +161,8 @@
                 Information units provide data for visualizations and stories
               </small>
             </h3>
-            <p>Hier ein Text darüber, wie durch Datenanalyse neues Wissen generiert, und in Form von Visualisuerungen und Stories vermittelt werden kann.</p>
+            <p>Hier ein Text darüber, wie durch Datenanalyse neues Wissen generiert, und in Form von Visualisuerungen
+              und Stories vermittelt werden kann.</p>
           </div>
         </ng-template>
         <ng-template ngbSlide id="step5">

@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
-import { InfDataUnitPreviewApi, LoadingBarActions } from 'app/core';
+import {  LoadingBarActions, WarEntityPreviewApi } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil, filter } from 'rxjs/operators';
 import { PeItSearchExistingComponent } from '../pe-it-search-existing.component';
 import { PeItSearchExistingAPIAction, PeItSearchExistingAPIActions } from './pe-it-search-existing.actions';
+import { ofSubstore } from 'app/core/store/module';
 
 @Injectable()
 export class PeItSearchExistingAPIEpics {
   constructor(
-    private duApi: InfDataUnitPreviewApi,
+    private entityPreviewApi: WarEntityPreviewApi,
     private actions: PeItSearchExistingAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions
@@ -28,6 +29,7 @@ export class PeItSearchExistingAPIEpics {
          * Filter the actions that triggers this epic
          */
         ofType(PeItSearchExistingAPIActions.SEARCH),
+        filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: PeItSearchExistingAPIAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
@@ -36,7 +38,7 @@ export class PeItSearchExistingAPIEpics {
           /**
            * Do some api call
            */
-          this.duApi.search(null, action.meta.searchString, [action.meta.pkClass], null, action.meta.limit, action.meta.page)
+          this.entityPreviewApi.search(null, action.meta.searchString, [action.meta.pkClass], null, action.meta.limit, action.meta.page)
             /**
                * Subscribe to the api call
                */

@@ -22,7 +22,7 @@ import { InfChunk } from '../../models/InfChunk';
 import { InfEntityAssociation } from '../../models/InfEntityAssociation';
 import { InfDigitalObject } from '../../models/InfDigitalObject';
 import { InfPlace } from '../../models/InfPlace';
-import { InfDataUnitPreview } from '../../models/InfDataUnitPreview';
+import { WarEntityPreview } from '../../models/WarEntityPreview';
 import { DfhClassProfileView } from '../../models/DfhClassProfileView';
 import { DfhPropertyProfileView } from '../../models/DfhPropertyProfileView';
 import { ComUiContext } from '../../models/ComUiContext';
@@ -63,7 +63,7 @@ export class SDKModels {
     InfEntityAssociation: InfEntityAssociation,
     InfDigitalObject: InfDigitalObject,
     InfPlace: InfPlace,
-    InfDataUnitPreview: InfDataUnitPreview,
+    WarEntityPreview: WarEntityPreview,
     DfhClassProfileView: DfhClassProfileView,
     DfhPropertyProfileView: DfhPropertyProfileView,
     ComUiContext: ComUiContext,

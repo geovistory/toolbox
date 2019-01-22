@@ -1,11 +1,11 @@
 {
-  "name": "InfDataUnitPreview",
+  "name": "WarEntityPreview",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
     "postgresql": {
-      "schema": "information",
-      "table": "vm_data_unit_preview"
+      "schema": "warehouse",
+      "table": "entity_preview"
     }
   },
   "mixins": {
@@ -37,7 +37,7 @@
     "type_label": {
       "type": "string"
     },
-    "pk_type": {
+    "fk_type": {
       "type": "number"
     },
     "time_span": {

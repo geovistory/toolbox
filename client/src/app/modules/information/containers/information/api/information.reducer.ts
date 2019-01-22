@@ -157,7 +157,7 @@ export function informationReducer(state: Information = INITIAL_STATE, a: Action
     * Reducers called on destroy of component
     *****************************************************/
     case InformationAPIActions.DESTROY:
-      state = null;
+      state = { };
       break;
 
   }

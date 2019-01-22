@@ -21,7 +21,7 @@ export * from './InfChunk';
 export * from './InfEntityAssociation';
 export * from './InfDigitalObject';
 export * from './InfPlace';
-export * from './InfDataUnitPreview';
+export * from './WarEntityPreview';
 export * from './DfhClassProfileView';
 export * from './DfhPropertyProfileView';
 export * from './ComUiContext';

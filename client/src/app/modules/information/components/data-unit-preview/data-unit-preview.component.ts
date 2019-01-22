@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DataUnitPreview } from 'app/core';
+import { EntityPreview } from 'app/core';
 
 @Component({
   selector: 'gv-data-unit-preview',
@@ -8,7 +8,7 @@ import { DataUnitPreview } from 'app/core';
 })
 export class DataUnitPreviewComponent implements OnInit {
 
-  @Input() preview: DataUnitPreview
+  @Input() preview: EntityPreview
   @Input() dragEnabled = true;
 
   constructor() { }

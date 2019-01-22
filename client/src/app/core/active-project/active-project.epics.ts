@@ -10,8 +10,8 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
 import { mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfDataUnitPreview, InfDataUnitPreviewApi, ProjectApi, InfPersistentItemApi, InfPersistentItem, InfTemporalEntity, InfTemporalEntityApi } from '../sdk';
-import { DataUnitPreview, PeItDetail } from '../state/models';
+import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ProjectApi } from '../sdk';
+import { PeItDetail } from '../state/models';
 import { IAppState } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
@@ -22,7 +22,6 @@ import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
 @Injectable()
 export class ActiveProjectEpics {
   constructor(
-    private duApi: InfDataUnitPreviewApi,
     private peItService: PeItService,
     private peItApi: InfPersistentItemApi,
     private teEnApi: InfTemporalEntityApi,
@@ -34,7 +33,7 @@ export class ActiveProjectEpics {
     private actions: ActiveProjectActions,
     private notificationActions: NotificationsAPIActions,
     private loadingBarActions: LoadingBarActions,
-    private ngRedux: NgRedux<IAppState>
+    private ngRedux: NgRedux<IAppState>,
   ) { }
 
   public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
@@ -42,7 +41,7 @@ export class ActiveProjectEpics {
       this.createLoadProjectEpic(),
       this.createLoadCrmEpic(),
       this.createLoadProjectUpdatedEpic(),
-      this.createLoadDataUnitPreviewEpic(),
+      // this.createLoadDataUnitPreviewEpic(),
       this.createLoadDataUnitDetailForModalEpic(),
       this.createLoadChunkEpic(),
       this.createLoadPeItGraphEpic(),
@@ -244,58 +243,59 @@ export class ActiveProjectEpics {
     }
   }
 
-  private createLoadDataUnitPreviewEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.LOAD_DATA_UNIT_PREVIEW),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Do some api call
-           */
-          this.duApi.findComplex({
-            where: ['fk_project', '=', action.meta.pk_project, 'AND', 'pk_entity', '=', action.meta.pk_entity]
-          })
-            /**
-           * Subscribe to the api call
-           */
-            .subscribe((data: InfDataUnitPreview[]) => {
-              /**
-               * Emit the global action that completes the loading bar
-               */
-              globalStore.next(this.loadingBarActions.completeLoading());
+  // private createLoadDataUnitPreviewEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.LOAD_DATA_UNIT_PREVIEW),
+  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
 
-              /**
-               * Emit the local action on loading succeeded
-               */
-              globalStore.next(this.actions.loadDataUnitPreviewSucceeded(data[0] as DataUnitPreview));
+  //         /**
+  //          * Do some api call
+  //          */
+  //         this.duApi.findComplex({
+  //           where: ['fk_project', '=', action.meta.pk_project, 'AND', 'pk_entity', '=', action.meta.pk_entity]
+  //         })
+  //           /**
+  //          * Subscribe to the api call
+  //          */
+  //           .subscribe((data: InfDataUnitPreview[]) => {
+  //             /**
+  //              * Emit the global action that completes the loading bar
+  //              */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
 
-            }, error => {
-              /**
-              * Emit the global action that shows some loading error message
-              */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-               * Emit the local action on loading failed
-               */
-              globalStore.next(this.actions.loadDataUnitPreviewFailed({ status: '' + error.status }))
-            })
-        }))
-      )
-    }
-  }
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             globalStore.next(this.actions.loadDataUnitPreviewSucceeded(data[0] as DataUnitPreview));
+
+  //           }, error => {
+  //             /**
+  //             * Emit the global action that shows some loading error message
+  //             */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             /**
+  //              * Emit the local action on loading failed
+  //              */
+  //             globalStore.next(this.actions.loadDataUnitPreviewFailed({ status: '' + error.status }))
+  //           })
+  //       }))
+  //     )
+  //   }
+  // }
 
   private createLoadDataUnitDetailForModalEpic(): Epic {
     return (action$, store) => {
@@ -464,7 +464,7 @@ export class ActiveProjectEpics {
               /**
                * Emit the local action on loading failed
                */
-              globalStore.next(this.actions.loadDataUnitPreviewFailed({ status: '' + error.status }))
+              globalStore.next(this.actions.loadEntityPreviewFailed({ status: '' + error.status }))
             })
         }))
       )
@@ -515,7 +515,7 @@ export class ActiveProjectEpics {
               /**
                * Emit the local action on loading failed
                */
-              globalStore.next(this.actions.loadDataUnitPreviewFailed({ status: '' + error.status }))
+              globalStore.next(this.actions.loadEntityPreviewFailed({ status: '' + error.status }))
             })
         }))
       )

@@ -5,7 +5,7 @@ import { SectionList } from './section-list.models';
 import { ClassAndTypePk } from '../../class-and-type-selector/api/class-and-type-selector.models';
 import { EntityAssociationDetail } from 'app/core/state/models/entity-association-detail';
 import { EntityAssociationList } from 'app/core/state/models/entity-association-list';
-import { ProjectCrm, DataUnitPreviewList } from 'app/core';
+import { ProjectCrm, EntityPreviewList } from 'app/core';
 
 type Payload = SectionList;
 interface MetaData {

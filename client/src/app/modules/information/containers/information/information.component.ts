@@ -1,9 +1,9 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ComConfig, IAppState, InfPersistentItem, PeItDetail, ProjectCrm, SubstoreComponent, ActiveProjectService, DataUnitPreview, TeEntDetail } from 'app/core';
+import { ComConfig, IAppState, InfPersistentItem, PeItDetail, ProjectCrm, SubstoreComponent, ActiveProjectService, EntityPreview, TeEntDetail } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { combineLatest, Observable, Subject, BehaviorSubject } from 'rxjs';
 // import { EntityAddModalComponent } from '../../add-modal/entity-add-modal/entity-add-modal.component';
 import { first, takeUntil, filter } from 'rxjs/operators';
 import { CreateOrAddEntity } from '../create-or-add-entity/api/create-or-add-entity.models';
@@ -11,6 +11,7 @@ import { InformationAPIActions } from './api/information.actions';
 import { InformationAPIEpics } from './api/information.epics';
 import { Information } from './api/information.models';
 import { informationReducer } from './api/information.reducer';
+import { distinctUntilChanged } from 'rxjs-compat/operator/distinctUntilChanged';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -37,7 +38,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   @select() _peIt_add$: Observable<CreateOrAddEntity>;
   @select() loading$: Observable<boolean>;
 
-  selectedDataUnit$: Observable<DataUnitPreview>;
+  selectedEntity$ = new BehaviorSubject<EntityPreview>(undefined);
 
   // Primary key of the Entity to be viewed or edited
   pkEntity: number;
@@ -45,7 +46,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   listVisible = true;
 
   persistentItems: InfPersistentItem[] = [];
-  projectId: number;
+  pkProject$: Observable<number>;
 
   // entityModalOptions: NgbModalOptions = {
   //   size: 'lg'
@@ -65,7 +66,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     super()
 
     this.pkEntity = activatedRoute.snapshot.params['pkEntity'];
-    this.projectId = activatedRoute.snapshot.parent.params['id'];
+    this.pkProject$ = projectService.pkProject$;
 
     // if component is activated by ng-router, take base path here
     activatedRoute.data.subscribe(d => {
@@ -87,7 +88,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
 
 
     // if one of the observables returns truthy, list is not visible
-    combineLatest(this._peIt_editable$, this._teEnt_editable$, this._peIt_add$).takeUntil(this.destroy$).subscribe(d => {
+    combineLatest(this.selectedEntity$, this._peIt_add$).takeUntil(this.destroy$).subscribe(d => {
       this.listVisible = !d.find(item => !!(item));
     })
 
@@ -113,20 +114,23 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   }
 
   initSelectedDataUnitPreview() {
-    this.projectService.loadDataUnitPreview(this.pkEntity);
-
-    this.selectedDataUnit$ = this.ngRedux.select<DataUnitPreview>(['activeProject', 'dataUnitPreviews', this.pkEntity])
-
-    this.selectedDataUnit$.pipe(
-      filter(du => (du && !du.loading)),
-      takeUntil(this.destroy$)
-    ).subscribe(du => {
-      if (du.entity_type === 'peIt') {
-        this.openEntityEditor(du.pk_entity, this.projectId);
-      } else if (du.entity_type === 'teEn') {
-        this.openPhenomenonEditor(du.pk_entity, this.projectId);
-      }
+    this.projectService.streamEntityPreview(this.pkEntity)
+    .takeUntil(this.destroy$)
+    .subscribe(a => {
+      this.selectedEntity$.next(a);
     })
+
+    combineLatest(this.selectedEntity$, this.pkProject$)
+      .pipe(
+        first(([du, pkProject]) => (du && !du.loading && !!pkProject)),
+        takeUntil(this.destroy$)
+      ).subscribe(([du, pkProject]) => {
+        if (du.entity_type === 'peIt') {
+          this.openEntityEditor(du.pk_entity, pkProject);
+        } else if (du.entity_type === 'teEn') {
+          this.openPhenomenonEditor(du.pk_entity, pkProject);
+        }
+      })
 
   }
 
