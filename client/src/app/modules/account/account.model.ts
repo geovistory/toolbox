@@ -1,7 +1,10 @@
-import { Account } from "app/core";
-import { IProjectList } from "../projects/projects.model";
+import { Account } from 'app/core';
 
-export interface IAccount{
-    record: Account,
-    projects?: IProjectList,
+export interface AccountRole {
+    id: number
+    name: string
+}
+export interface IAccount {
+    account: Account,
+    roles: AccountRole[]
 }

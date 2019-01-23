@@ -57,7 +57,14 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "findComplex",
+        "findComplex"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
         "search",
         "searchExisting"
       ]

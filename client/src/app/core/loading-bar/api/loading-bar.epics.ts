@@ -1,8 +1,3 @@
-
-
-
-
-
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';

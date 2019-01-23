@@ -142,16 +142,64 @@ module.exports = function (Account) {
   });
 
 
-  Account.testEmail = function (accountId, cb) {
-    Account.app.models.Email.send({
-      to: 'jonas.schneider@balcab.ch',
-      from: 'noreply@geovistory.org',
-      subject: 'Test',
-      html: `Hallo`
-    }, function (err) {
-      if (err) return cb('> error sending password reset email');
-      cb(null, '> sending password reset email to:', info.email);
+  Account.getRoles = function (accountId, cb) {
+
+    var sql_stmt = `
+    SELECT role.id, role.name
+    FROM role 
+    JOIN rolemapping ON role.id = rolemapping.roleid
+    WHERE rolemapping.principaltype = 'USER'
+    AND rolemapping.principalid = $1::text
+    `;
+    var params = [accountId];
+    
+    const connector = Account.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      cb(err, resultObjects);
     });
+
+    return cb.promise;
+  }
+
+  Account.withRolesAndProjects = function ( cb) {
+
+    var sql_stmt = `
+    SELECT 
+    account.id, 
+    account.username, 
+    account.email, 
+    account.emailverified, 
+    COALESCE(json_agg(DISTINCT rolemappings.roles) FILTER (WHERE rolemappings.principalid IS NOT NULL), '[]') AS roles,
+    COALESCE(json_agg(DISTINCT project_rels.projects) FILTER (WHERE project_rels.account_id IS NOT NULL), '[]') AS projectrels
+    from account
+    LEFT JOIN LATERAL (
+      SELECT jsonb_build_object('id', role.id, 'name', role.name) roles, rolemapping.principalid 
+      FROM role 
+      JOIN rolemapping ON role.id = rolemapping.roleid
+      WHERE rolemapping.principaltype = 'USER'
+      AND rolemapping.principalid = account.id::text
+    ) AS rolemappings
+    ON rolemappings.principalid = account.id::text
+    LEFT JOIN LATERAL (
+      SELECT apr.account_id ,jsonb_build_object('pk_project', pk_project, 'role', role) projects
+      FROM account_project_rel AS apr
+      JOIN commons.project ON apr.fk_project = project.pk_project
+    ) AS project_rels
+    ON project_rels.account_id = account.id
+    GROUP BY 
+    account.id, 
+    account.username, 
+    account.email, 
+    account.emailverified    
+    `;
+    var params = [];
+    
+    const connector = Account.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      cb(err, resultObjects);
+    });
+
+    return cb.promise;
   }
 
 };

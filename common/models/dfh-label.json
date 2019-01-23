@@ -84,7 +84,14 @@
       "permission": "ALLOW",
       "property": [
         "find",
-        "findById",
+        "findById"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "system_admin",
+      "permission": "ALLOW",
+      "property": [
         "patchAttributes",
         "create",
         "deleteById"

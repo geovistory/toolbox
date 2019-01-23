@@ -15,7 +15,8 @@ export class ListAPIEpics {
   constructor(
     private entityPreviewApi: WarEntityPreviewApi,
     private actions: ListAPIActions,
-    private loadingBarActions: LoadingBarActions
+    private loadingBarActions: LoadingBarActions,
+    private notificationsActions: NotificationsAPIActions
   ) { }
 
   public createEpics(c: ListComponent): Epic {
@@ -60,7 +61,14 @@ export class ListAPIEpics {
               /**
                * Emit the global action that shows some loading error message
                */
-              // globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationsActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+
               /**
               * Emit the local action on loading failed
               */

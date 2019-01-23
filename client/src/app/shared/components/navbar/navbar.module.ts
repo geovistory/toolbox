@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NavbarComponent } from './navbar.component';
 import { RouterModule } from '@angular/router';
-import { AccountActions } from '../../../modules/account/api/actions';
+import { AccountActions } from '../../../modules/account/api/account.actions';
 
 
 @NgModule({

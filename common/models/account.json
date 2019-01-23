@@ -31,12 +31,22 @@
       "property": [
         "listProjects",
         "__create__projects",
-        "testEmail"
+        "getRoles"
+      ]
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "system_admin",
+      "permission": "ALLOW",
+      "property": [
+        "find",
+        "withRolesAndProjects"
       ]
     }
   ],
   "methods": {
-    "testEmail": {
+    "getRoles": {
       "accepts": {
         "arg": "accountId",
         "type": "number",
@@ -46,13 +56,15 @@
         }
       },
       "returns": {
-        "arg": "res",
-        "type": "String",
+        "arg": "roles",
+        "type": [
+          "Role"
+        ],
         "root": true
       },
-      "description": "test email sender",
+      "description": "Get Roles of the Account",
       "http": {
-        "path": "/test-email",
+        "path": "/get-roles",
         "verb": "get"
       }
     },
@@ -75,6 +87,20 @@
       "description": "Get a list of all projects associated with this account.",
       "http": {
         "path": "/list-projects",
+        "verb": "get"
+      }
+    },
+    "withRolesAndProjects": {
+      "returns": {
+        "arg": "accounts",
+        "type": [
+          "Account"
+        ],
+        "root": true
+      },
+      "description": "Get all accounts with their project pks and their roles",
+      "http": {
+        "path": "/with-roles-and-projects",
         "verb": "get"
       }
     }

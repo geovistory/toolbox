@@ -409,11 +409,11 @@ export class AccountApi extends BaseLoopBackApi {
   }
 
   /**
-   * test email sender
+   * Get Roles of the Account
    *
    * @param {number} accountId 
    *
-   * @returns {object} An empty reference that will be
+   * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
    *
@@ -422,10 +422,10 @@ export class AccountApi extends BaseLoopBackApi {
    * This usually means the response is a `Account` object.)
    * </em>
    */
-  public testEmail(accountId: any, customHeaders?: Function): Observable<any> {
+  public getRoles(accountId: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/test-email";
+    "/Accounts/get-roles";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -456,6 +456,29 @@ export class AccountApi extends BaseLoopBackApi {
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof accountId !== 'undefined' && accountId !== null) _urlParams.accountId = accountId;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Get all accounts with their project pks and their roles
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Account` object.)
+   * </em>
+   */
+  public withRolesAndProjects(customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Accounts/with-roles-and-projects";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

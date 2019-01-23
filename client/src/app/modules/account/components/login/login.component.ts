@@ -7,7 +7,7 @@ import { LoopBackConfig } from 'app/core/sdk/lb.config';
 import { ActiveAccountService, AccountApi } from 'app/core';
 import { environment } from 'environments/environment';
 import { NgRedux } from '@angular-redux/store';
-import { AccountActions } from '../../api/actions';
+import { AccountActions } from '../../api/account.actions';
 import { IAccount } from '../../account.model';
 
 
@@ -50,10 +50,10 @@ export class LoginComponent implements OnInit {
         data => {
           this.completeLoading();
           this.activeAccountService.updateAccount();
-          
-          this.ngRedux.dispatch(this.actions.loginSucceeded(data));
 
-          let redirect = this.activeAccountService.redirectUrl ? this.activeAccountService.redirectUrl : this.returnUrl;
+          this.ngRedux.dispatch(this.actions.loginSucceeded(data.user));
+
+          const redirect = this.activeAccountService.redirectUrl ? this.activeAccountService.redirectUrl : this.returnUrl;
           this.router.navigate([redirect]);
         },
         error => {

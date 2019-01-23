@@ -17,8 +17,10 @@ import { AccountProfileComponent } from './pages/account-profile/account-profile
 import { AccountEmailComponent } from './pages/account-email/account-email.component';
 import { AccountPasswordComponent } from './pages/account-password/account-password.component';
 import { AccountRoutingModule } from './account-routing.module';
-import { AccountActions } from './api/actions';
+import { AccountActions } from './api/account.actions';
 import { PassiveLinkModule } from 'app/shared';
+import { AccountEpics } from './api/account.epics';
+import { AccessDeniedComponent } from './components/access-denied/access-denied.component';
 
 @NgModule({
   imports: [
@@ -39,9 +41,11 @@ import { PassiveLinkModule } from 'app/shared';
     AccountProfileComponent,
     AccountEmailComponent,
     AccountPasswordComponent,
+    AccessDeniedComponent,
   ],
   providers: [
-    AccountActions
+    AccountActions,
+    AccountEpics
   ]
 })
 export class AccountModule { }
