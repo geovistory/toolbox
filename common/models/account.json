@@ -28,16 +28,34 @@
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
-      "property": "listProjects"
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": "__create__projects"
+      "property": [
+        "listProjects",
+        "__create__projects",
+        "testEmail"
+      ]
     }
   ],
   "methods": {
+    "testEmail": {
+      "accepts": {
+        "arg": "accountId",
+        "type": "number",
+        "required": true,
+        "http": {
+          "source": "query"
+        }
+      },
+      "returns": {
+        "arg": "res",
+        "type": "String",
+        "root": true
+      },
+      "description": "test email sender",
+      "http": {
+        "path": "/test-email",
+        "verb": "get"
+      }
+    },
     "listProjects": {
       "accepts": {
         "arg": "accountId",

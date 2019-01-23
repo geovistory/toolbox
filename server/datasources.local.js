@@ -18,8 +18,8 @@ let config = {
           "rejectUnauthorized": false
         },
         "auth": {
-          "user": "jonas.schneider@kleiolab.ch",
-          "pass": "loht26-salbt"
+          "user": "info@geovistory.org",
+          "pass": "jagen731!murre"
         }
       }
     ]

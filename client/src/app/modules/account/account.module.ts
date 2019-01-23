@@ -18,6 +18,7 @@ import { AccountEmailComponent } from './pages/account-email/account-email.compo
 import { AccountPasswordComponent } from './pages/account-password/account-password.component';
 import { AccountRoutingModule } from './account-routing.module';
 import { AccountActions } from './api/actions';
+import { PassiveLinkModule } from 'app/shared';
 
 @NgModule({
   imports: [
@@ -25,6 +26,7 @@ import { AccountActions } from './api/actions';
     CommonModule,
     AccountRoutingModule,
     NavbarModule,
+    PassiveLinkModule
   ],
   declarations: [
     RegistrationComponent,
@@ -36,7 +38,7 @@ import { AccountActions } from './api/actions';
     AccountComponent,
     AccountProfileComponent,
     AccountEmailComponent,
-    AccountPasswordComponent
+    AccountPasswordComponent,
   ],
   providers: [
     AccountActions
