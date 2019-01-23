@@ -28,8 +28,8 @@ then
     git add .;
     read -p "Enter git commit message: " msg;
     echo ${msg};
-    git commit -m ${msg};
-    git push;
+    git commit -m "${msg}";
+    #git push;
 else
     echo '======================== ng build --prod Command failed ======================'
 fi
