@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EntityPreview, IAppState } from 'app/core';
 import { MentionedEntity } from 'app/modules/annotation';
 import { AppellationLabel } from '../../shared/appellation-label';
-import { DataUnitSearchHit } from '../../containers/information/api/information.models';
+import { EntitySearchHit } from '../../containers/information/api/information.models';
 
 @Component({
   selector: 'gv-entity-search-hit',
@@ -12,7 +12,7 @@ import { DataUnitSearchHit } from '../../containers/information/api/information.
 })
 export class EntitySearchHitComponent implements OnInit {
 
-  @Input() dataUnitSearchHit: DataUnitSearchHit;
+  @Input() hit: EntitySearchHit;
 
   /**
    * True if this is about selecting a pe-it as range of a role
@@ -40,9 +40,7 @@ export class EntitySearchHitComponent implements OnInit {
   headlineItems: Array<string> = [];
   isInProject: boolean;
 
-  get projectsCount(): number {
-    return 99
-  }
+  projectsCount: number;
 
   entityPreview: EntityPreview;
 
@@ -53,45 +51,47 @@ export class EntitySearchHitComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.projectsCount = this.hit.projects ? this.hit.projects.length : undefined;
 
-    if (this.dataUnitSearchHit.fk_project) {
+    if (this.hit.fk_project) {
       this.isInProject = true;
-      this.repositorySearch = false;
     } else {
       this.repositorySearch = true;
       this.isInProject = false;
     }
 
     this.entityPreview = {
-      pk_entity: this.dataUnitSearchHit.pk_entity,
-      fk_project: this.dataUnitSearchHit.fk_project,
-      fk_class: this.dataUnitSearchHit.fk_class,
-      entity_label: this.dataUnitSearchHit.entity_label,
-      entity_type: this.dataUnitSearchHit.entity_type,
-      class_label: this.dataUnitSearchHit.class_label,
-      type_label: this.dataUnitSearchHit.type_label,
-      time_span: this.dataUnitSearchHit.time_span
+      pk_entity: this.hit.pk_entity,
+      fk_project: this.hit.fk_project,
+      fk_class: this.hit.fk_class,
+      entity_label: this.hit.entity_label,
+      entity_type: this.hit.entity_type,
+      class_label: this.hit.class_label,
+      type_label: this.hit.type_label,
+      time_span: this.hit.time_span
     }
   }
 
   add() {
-    this.onAdd.emit(this.dataUnitSearchHit.pk_entity)
+    this.onAdd.emit(this.hit.pk_entity)
   }
 
   open() {
-    this.onOpen.emit(this.dataUnitSearchHit.pk_entity)
+    this.onOpen.emit(this.hit.pk_entity)
   }
 
   select() {
-    this.onSelect.emit(this.dataUnitSearchHit.pk_entity)
+    this.onSelect.emit(this.hit.pk_entity)
   }
 
 
   linkClicked() {
-    if (this.isInProject) {
-      this.open();
-    } else {
-      this.add();
+    if (!this.repositorySearch) {
+      if (this.isInProject) {
+        this.open();
+      } else {
+        this.add();
+      }
     }
   }
 

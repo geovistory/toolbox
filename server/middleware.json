@@ -33,6 +33,11 @@
   "session": {},
   "auth": {},
   "parse": {},
+  "routes:before": {
+    "./middleware/request-logger": {
+      "enabled": false
+    }
+  },
   "routes": {
     "loopback#rest": {
       "paths": [

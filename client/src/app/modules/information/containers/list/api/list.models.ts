@@ -1,4 +1,4 @@
-import { DataUnitSearchHit } from '../../information/api/information.models';
+import { EntitySearchHit } from '../../information/api/information.models';
 
 // Class of this slice of store
 export class List implements List {
@@ -9,7 +9,7 @@ export class List implements List {
 
     collectionSize?: number;
 
-    items?: DataUnitSearchHit[];
+    items?: EntitySearchHit[];
 
     loading?: boolean;
     error?: any;

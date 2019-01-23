@@ -2,9 +2,9 @@
 
 var path = require('path');
 
-module.exports = function(Account) {
+module.exports = function (Account) {
 
-  Account.listProjects = function(accountId, cb) {
+  Account.listProjects = function (accountId, cb) {
 
     const account = Account.find({
       "where": {
@@ -28,7 +28,7 @@ module.exports = function(Account) {
 
 
   //send verification email after registration
-  Account.afterRemote('create', function(context, account, next) {
+  Account.afterRemote('create', function (context, account, next) {
     console.log('> account.afterRemote create triggered');
 
     /**
@@ -40,7 +40,7 @@ module.exports = function(Account) {
     *
     * @return {type}  redirect url after successful email verification
     */
-    var getRedirectUrl = function(){
+    var getRedirectUrl = function () {
       return context.req.headers.origin + '/email-verified';
     }
 
@@ -49,8 +49,8 @@ module.exports = function(Account) {
     *
     * @return {String} protocol of api server
     */
-    var getProtocol = function(){
-      if(process.env.HEROKU_APP_NAME){
+    var getProtocol = function () {
+      if (process.env.HEROKU_APP_NAME) {
         return 'https';
       }
       return undefined;
@@ -61,8 +61,8 @@ module.exports = function(Account) {
     *
     * @return {String} host of api server
     */
-    var getHost = function(){
-      if(process.env.HEROKU_APP_NAME){
+    var getHost = function () {
+      if (process.env.HEROKU_APP_NAME) {
         return process.env.HEROKU_APP_NAME + '.herokuapp.com';
       }
       return undefined;
@@ -73,8 +73,8 @@ module.exports = function(Account) {
     *
     * @return {String}  port of api server
     */
-    var getPort = function(){
-      if(process.env.HEROKU_APP_NAME){
+    var getPort = function () {
+      if (process.env.HEROKU_APP_NAME) {
         return '443';
       }
       return undefined;
@@ -93,7 +93,7 @@ module.exports = function(Account) {
       account: account
     };
 
-    account.verify(options, function(err, response) {
+    account.verify(options, function (err, response) {
       if (err) {
         Account.deleteById(account.id);
         return next(err);
@@ -111,7 +111,7 @@ module.exports = function(Account) {
   /**
   * Account - Prepare options for resetPassword method
   */
-  Account.beforeRemote('resetPassword', function(ctx, unused, next) {
+  Account.beforeRemote('resetPassword', function (ctx, unused, next) {
 
     // We need headersOrigin for the reset-password-link in the email
     ctx.args.options.headersOrigin = ctx.req.headers.origin;
@@ -128,18 +128,78 @@ module.exports = function(Account) {
     var url = info.options.headersOrigin + '/reset-password';
 
     var html = 'Click <a href="' + url + '?access_token=' +
-    info.accessToken.id + '">here</a> to reset your password';
+      info.accessToken.id + '">here</a> to reset your password';
 
     Account.app.models.Email.send({
       to: info.email,
       from: 'noreply@geovistory.org',
       subject: 'Password reset',
       html: html
-    }, function(err) {
+    }, function (err) {
       if (err) return console.log('> error sending password reset email');
       console.log('> sending password reset email to:', info.email);
     });
   });
 
+
+  Account.getRoles = function (accountId, cb) {
+
+    var sql_stmt = `
+    SELECT role.id, role.name
+    FROM role 
+    JOIN rolemapping ON role.id = rolemapping.roleid
+    WHERE rolemapping.principaltype = 'USER'
+    AND rolemapping.principalid = $1::text
+    `;
+    var params = [accountId];
+    
+    const connector = Account.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      cb(err, resultObjects);
+    });
+
+    return cb.promise;
+  }
+
+  Account.withRolesAndProjects = function ( cb) {
+
+    var sql_stmt = `
+    SELECT 
+    account.id, 
+    account.username, 
+    account.email, 
+    account.emailverified, 
+    COALESCE(json_agg(DISTINCT rolemappings.roles) FILTER (WHERE rolemappings.principalid IS NOT NULL), '[]') AS roles,
+    COALESCE(json_agg(DISTINCT project_rels.projects) FILTER (WHERE project_rels.account_id IS NOT NULL), '[]') AS projectrels
+    from account
+    LEFT JOIN LATERAL (
+      SELECT jsonb_build_object('id', role.id, 'name', role.name) roles, rolemapping.principalid 
+      FROM role 
+      JOIN rolemapping ON role.id = rolemapping.roleid
+      WHERE rolemapping.principaltype = 'USER'
+      AND rolemapping.principalid = account.id::text
+    ) AS rolemappings
+    ON rolemappings.principalid = account.id::text
+    LEFT JOIN LATERAL (
+      SELECT apr.account_id ,jsonb_build_object('pk_project', pk_project, 'role', role) projects
+      FROM account_project_rel AS apr
+      JOIN commons.project ON apr.fk_project = project.pk_project
+    ) AS project_rels
+    ON project_rels.account_id = account.id
+    GROUP BY 
+    account.id, 
+    account.username, 
+    account.email, 
+    account.emailverified    
+    `;
+    var params = [];
+    
+    const connector = Account.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      cb(err, resultObjects);
+    });
+
+    return cb.promise;
+  }
 
 };

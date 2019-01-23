@@ -9,7 +9,7 @@ export interface WarEntityPreviewInterface {
   "entity_label"?: string;
   "entity_type"?: string;
   "type_label"?: string;
-  "pk_type"?: number;
+  "fk_type"?: number;
   "time_span"?: any;
 }
 
@@ -21,7 +21,7 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
   "entity_label": string;
   "entity_type": string;
   "type_label": string;
-  "pk_type": number;
+  "fk_type": number;
   "time_span": any;
   constructor(data?: WarEntityPreviewInterface) {
     Object.assign(this, data);
@@ -84,8 +84,8 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
           name: 'type_label',
           type: 'string'
         },
-        "pk_type": {
-          name: 'pk_type',
+        "fk_type": {
+          name: 'fk_type',
           type: 'number'
         },
         "time_span": {

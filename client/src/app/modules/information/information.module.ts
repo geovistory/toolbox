@@ -149,6 +149,7 @@ import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
 import { InfTimePrimitivePipeModule } from 'app/shared/pipes/inf-time-primitive/inf-time-primitive.module';
+import { EntityAddExistingHitComponent } from './components/entity-add-existing-hit/entity-add-existing-hit.component';
 
 
 
@@ -191,6 +192,7 @@ import { InfTimePrimitivePipeModule } from 'app/shared/pipes/inf-time-primitive/
   ],
   declarations: [
     EntitySearchHitComponent,
+    EntityAddExistingHitComponent,
     PeItTimelineComponent,
 
     // PeIt specific user interfaces

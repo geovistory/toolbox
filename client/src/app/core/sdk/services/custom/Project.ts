@@ -38,11 +38,11 @@ export class ProjectApi extends BaseLoopBackApi {
   }
 
   /**
-   * Add a related item by id for accounts.
+   * Zugehöriges Element nach ID für accounts hinzufügen.
    *
    * @param {any} id Project id
    *
-   * @param {any} fk Foreign key for accounts
+   * @param {any} fk Fremdschlüssel für accounts
    *
    * @param {object} data Request data.
    *
@@ -74,11 +74,11 @@ export class ProjectApi extends BaseLoopBackApi {
   }
 
   /**
-   * Remove the accounts relation to an item by id.
+   * accounts-Beziehung zu einem Element nach ID entfernen.
    *
    * @param {any} id Project id
    *
-   * @param {any} fk Foreign key for accounts
+   * @param {any} fk Fremdschlüssel für accounts
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -101,11 +101,11 @@ export class ProjectApi extends BaseLoopBackApi {
   }
 
   /**
-   * Check the existence of accounts relation to an item by id.
+   * Vorhandensein von accounts-Beziehung zu einem Element nach ID prüfen.
    *
    * @param {any} id Project id
    *
-   * @param {any} fk Foreign key for accounts
+   * @param {any} fk Fremdschlüssel für accounts
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -131,11 +131,11 @@ export class ProjectApi extends BaseLoopBackApi {
   }
 
   /**
-   * Add a related item by id for persistent_item_versions.
+   * Zugehöriges Element nach ID für persistent_item_versions hinzufügen.
    *
    * @param {any} id Project id
    *
-   * @param {any} fk Foreign key for persistent_item_versions
+   * @param {any} fk Fremdschlüssel für persistent_item_versions
    *
    * @param {object} data Request data.
    *
@@ -167,11 +167,11 @@ export class ProjectApi extends BaseLoopBackApi {
   }
 
   /**
-   * Remove the persistent_item_versions relation to an item by id.
+   * persistent_item_versions-Beziehung zu einem Element nach ID entfernen.
    *
    * @param {any} id Project id
    *
-   * @param {any} fk Foreign key for persistent_item_versions
+   * @param {any} fk Fremdschlüssel für persistent_item_versions
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -194,11 +194,11 @@ export class ProjectApi extends BaseLoopBackApi {
   }
 
   /**
-   * Check the existence of persistent_item_versions relation to an item by id.
+   * Vorhandensein von persistent_item_versions-Beziehung zu einem Element nach ID prüfen.
    *
    * @param {any} id Project id
    *
-   * @param {any} fk Foreign key for persistent_item_versions
+   * @param {any} fk Fremdschlüssel für persistent_item_versions
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned

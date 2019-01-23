@@ -1,4 +1,12 @@
 {
+  "routes:before": {
+    "./middleware/request-logger": {
+      "paths": [
+        "${restApiRoot}"
+      ],
+      "enabled": true
+    }
+  },
   "final:after": {
     "strong-error-handler": {
       "params": {

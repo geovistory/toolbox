@@ -1,7 +1,7 @@
 import { Component, OnDestroy, Input, OnInit, EventEmitter, Output } from '@angular/core';
 import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, InfPersistentItem, ClassConfig } from 'app/core';
+import { IAppState, SubstoreComponent, InfPersistentItem, ClassConfig, ActiveProjectService } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { PeItSearchExisting } from './api/pe-it-search-existing.models';
 import { PeItSearchExistingAPIEpics } from './api/pe-it-search-existing.epics';
@@ -50,6 +50,7 @@ export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions im
   @Output() onOpenExisting = new EventEmitter<number>();
 
   // Search
+  pkProject: number;
   pkClass: number;
   searchString = '';
   minSearchStringLength = 2;
@@ -67,7 +68,8 @@ export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions im
   constructor(
     protected rootEpics: RootEpics,
     private epics: PeItSearchExistingAPIEpics,
-    public ngRedux: NgRedux<IAppState>
+    public ngRedux: NgRedux<IAppState>,
+    private projectService: ActiveProjectService
   ) {
     super()
 
@@ -80,12 +82,13 @@ export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions im
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
     // if (!this.pkClass) throw Error('please provide a pkClass')
-    combineLatest(this.pkClass$, this.pkNamespace$).pipe(
-      first(d => !!d[0]), // make sure pkClass is there. pkNamespace is optional.
+    combineLatest(this.pkClass$, this.projectService.pkProject$, this.pkNamespace$).pipe(
+      first(([pkClass, pkProject]) => (!!pkClass && !!pkProject)), // make sure pkClass and pkProject are there. pkNamespace is optional.
       takeUntil(this.destroy$))
-      .subscribe(d => {
-        this.pkClass = d[0];
-        this.pkNamespace = d[1] ? d[1] : null;
+      .subscribe(([pkClass, pkProject, pkNamespace]) => {
+        this.pkClass = pkClass;
+        this.pkProject = pkProject;
+        this.pkNamespace = pkNamespace ? pkNamespace : null;
         this.classConfig = this.ngRedux.getState().activeProject.crm.classes[this.pkClass];
 
         this.searchString$.pipe(
@@ -95,7 +98,7 @@ export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions im
           this.searchString = newValue;
           if (newValue.length >= this.minSearchStringLength) {
             this.page = 1;
-            this.search(this.searchString, this.limit, this.page, this.pkClass, this.pkNamespace);
+            this.search(pkProject, this.searchString, this.limit, this.page, this.pkClass, this.pkNamespace);
           } else {
             this.searchFailed();
           }
@@ -115,7 +118,7 @@ export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions im
   }
 
   pageChange() {
-    this.search(this.searchString, this.limit, this.page, this.pkClass, this.pkNamespace);
+    this.search(this.pkProject, this.searchString, this.limit, this.page, this.pkClass, this.pkNamespace);
   }
 
   hitsFrom() {

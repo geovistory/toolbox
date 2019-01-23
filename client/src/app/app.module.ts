@@ -18,13 +18,15 @@ import { ActiveAccountService, AuthGuard, EntityEditorService, SDKBrowserModule 
 import { LoadingBarModule } from './core/loading-bar/loading-bar.module';
 import { NotificationsModule } from './core/notifications/notifications.module';
 import { StoreModule } from './core/store/module';
-import { AdminModule } from './modules/admin/admin.module';
 import { AngularCesiumModule } from './modules/gv-angular-cesium/angular-cesium-fork';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { environment } from 'environments/environment';
+import { BackofficeModule } from './modules/backoffice/backoffice.module';
+import { AccountModule } from './modules/account/account.module';
+import { SystemAdminGuard } from './core/auth/system-admin-guard.service';
 
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
@@ -59,16 +61,18 @@ registerLocaleData(localeDeCh);
     ReactiveFormsModule,
     AppRoutingModule,
     ProjectsModule,
-    AdminModule,
+    BackofficeModule,
     PassiveLinkModule,
     ControlMessagesModule,
     LanguageSearchTypeaheadModule,
-    KeysModule
+    KeysModule,
+    AccountModule
   ],
   providers: [
     EntityEditorService,
     ActiveAccountService,
     AuthGuard,
+    SystemAdminGuard,
     { provide: LOCALE_ID, useValue: 'de-CH' }
   ],
   entryComponents: [

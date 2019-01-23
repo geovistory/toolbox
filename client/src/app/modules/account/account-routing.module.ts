@@ -11,6 +11,7 @@ import { AccountComponent } from './pages/account/account.component';
 import { AccountPasswordComponent } from './pages/account-password/account-password.component';
 import { AccountEmailComponent } from './pages/account-email/account-email.component';
 import { AccountProfileComponent } from './pages/account-profile/account-profile.component';
+import { AccessDeniedComponent } from './components/access-denied/access-denied.component';
 
 
 const routes: Routes = [
@@ -21,6 +22,10 @@ const routes: Routes = [
   {
     path: 'email-verified',
     component: EmailVerifiedComponent
+  },
+  {
+    path: 'access-denied',
+    component: AccessDeniedComponent
   },
   {
     path: 'login',

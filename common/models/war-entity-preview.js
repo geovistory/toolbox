@@ -96,9 +96,9 @@ module.exports = function (WarEntityPreview) {
       const streamSub = WarEntityPreview.stream.subscribe(entityPreview => {
         // check if the changed entityPreview is in object of streamed pks 
         if (
-          cache.streamedPks[entityPreview.pk_entity] && 
+          cache.streamedPks[entityPreview.pk_entity] &&
           entityPreview.fk_project == cache.currentProjectPk
-          ) {
+        ) {
           emitPreview(entityPreview)
         }
       })
@@ -250,5 +250,171 @@ module.exports = function (WarEntityPreview) {
       next();
     }
 
-  })
+  });
+
+  /**
+   * Search for existing entities. 
+   * If not found for the given project, the repo version is returned
+   */
+  WarEntityPreview.searchExisting = function (projectId, searchString, pkClasses, entityType, limit, page, cb) {
+
+    // Check that limit does not exceed maximum
+    if (limit > 200) {
+      const err = {
+        'name': 'Max limit exceeded',
+        'status': 403,
+        'message': 'Max limit exceeded. The limit can not be bigger than 200.'
+      }
+      cb(err);
+    }
+
+    // set default if undefined
+    var limit = limit ? limit : 10;
+
+    var offset = limit * (page - 1);
+
+    if (searchString) {
+      var queryString = searchString.trim(' ').split(' ').map(word => {
+        return word + ':*'
+      }).join(' & ');
+    } else {
+      var queryString = '';
+    }
+
+
+    var params = [
+      queryString,
+      limit,
+      offset,
+      projectId
+    ];
+
+    // project filter
+    let whereProject;
+
+    // data unit type filter
+    let whereEntityType = '';
+    if (entityType) {
+      params.push(entityType)
+      whereEntityType = 'AND entity_type = $' + params.length;
+    };
+
+    // class filter
+    let pkClassParamNrs;
+    if (pkClasses && pkClasses.length) {
+      pkClassParamNrs = pkClasses.map((c, i) => '$' + (i + params.length + 1)).join(', ');
+      params = [...params, ...pkClasses]
+    }
+
+    var sql_stmt = `
+      WITH q AS ( select 
+        fk_project,
+        project,
+        pk_entity,
+        fk_class,
+        entity_label,
+        class_label,
+        entity_type,
+        type_label,
+        fk_type,
+        time_span,
+        ts_headline(full_text, q) as full_text_headline,
+        ts_headline(class_label, q) as class_label_headline,
+        ts_headline(entity_label, q) as entity_label_headline,
+        ts_headline(type_label, q) as type_label_headline,
+        ROW_NUMBER () OVER (
+            PARTITION BY pk_entity
+            ORDER BY project DESC
+            ) as rank
+        from warehouse.entity_preview, to_tsquery($1) q
+        WHERE 1=1
+        ` + (queryString === '' ? '' : 'AND ts_vector @@ q') + `
+        AND (fk_project = $4 OR fk_project IS NULL)
+        ${whereEntityType}
+        ` + ((pkClasses && pkClasses.length) ? `AND fk_class IN (${pkClassParamNrs})` : '') + `
+        ORDER BY ts_rank(ts_vector, q) DESC, entity_label asc
+      )
+      SELECT 
+        q.fk_project,
+        q.project,
+        q.pk_entity,
+        q.fk_class,
+        q.entity_label,
+        q.class_label,
+        q.entity_type,
+        q.type_label,
+        q.fk_type,
+        q.time_span,
+        q.full_text_headline,
+        q.class_label_headline,
+        q.entity_label_headline,
+        q.type_label_headline, 
+        count(q.pk_entity) OVER() AS total_count, 
+        to_json(array_agg(epr.fk_project)) projects
+      FROM q
+      JOIN (
+        SELECT fk_project, fk_entity
+        FROM information.entity_version_project_rel 
+        WHERE is_in_project = true
+      ) epr ON epr.fk_entity = q.pk_entity
+      WHERE rank = 1
+      GROUP BY 
+        q.fk_project,
+        q.project,
+        q.pk_entity,
+        q.fk_class,
+        q.entity_label,
+        q.class_label,
+        q.entity_type,
+        q.type_label,
+        q.fk_type,
+        q.time_span,
+        q.full_text_headline,
+        q.class_label_headline,
+        q.entity_label_headline,
+        q.type_label_headline
+      LIMIT $2
+      OFFSET $3;
+    `
+
+    const connector = WarEntityPreview.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      cb(err, resultObjects);
+    });
+  };
+
+
+  WarEntityPreview.afterRemote('searchExisting', function (ctx, resultObjects, next) {
+
+    var totalCount = 0;
+    if (resultObjects.length > 0) {
+      totalCount = resultObjects[0].total_count;
+    }
+
+    // remove column total_count from all resultObjects
+    var data = [];
+    if (resultObjects) {
+      data = resultObjects.map(searchHit => {
+        delete searchHit.total_count;
+        return searchHit;
+      })
+    }
+
+    if (!ctx.res._headerSent) {
+
+      ctx.res.set('X-Total-Count', totalCount);
+
+      ctx.result = {
+        'totalCount': totalCount,
+        'data': data
+      }
+      next();
+
+    } else {
+      next();
+    }
+
+  });
+
+
 }

@@ -28,16 +28,46 @@
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
-      "property": "listProjects"
+      "property": [
+        "listProjects",
+        "__create__projects",
+        "getRoles"
+      ]
     },
     {
+      "accessType": "EXECUTE",
       "principalType": "ROLE",
-      "principalId": "$everyone",
+      "principalId": "system_admin",
       "permission": "ALLOW",
-      "property": "__create__projects"
+      "property": [
+        "find",
+        "withRolesAndProjects"
+      ]
     }
   ],
   "methods": {
+    "getRoles": {
+      "accepts": {
+        "arg": "accountId",
+        "type": "number",
+        "required": true,
+        "http": {
+          "source": "query"
+        }
+      },
+      "returns": {
+        "arg": "roles",
+        "type": [
+          "Role"
+        ],
+        "root": true
+      },
+      "description": "Get Roles of the Account",
+      "http": {
+        "path": "/get-roles",
+        "verb": "get"
+      }
+    },
     "listProjects": {
       "accepts": {
         "arg": "accountId",
@@ -57,6 +87,20 @@
       "description": "Get a list of all projects associated with this account.",
       "http": {
         "path": "/list-projects",
+        "verb": "get"
+      }
+    },
+    "withRolesAndProjects": {
+      "returns": {
+        "arg": "accounts",
+        "type": [
+          "Account"
+        ],
+        "root": true
+      },
+      "description": "Get all accounts with their project pks and their roles",
+      "http": {
+        "path": "/with-roles-and-projects",
         "verb": "get"
       }
     }

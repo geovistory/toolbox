@@ -1,0 +1,28 @@
+<h2>
+  Accounts
+</h2>
+<ngx-table [configuration]="tableConfiguration" [data]="data" [columns]="columns">
+  <ng-template let-row let-index="index">
+    <td>
+      {{row.id}}
+    </td>
+    <td>
+      {{row.username}}
+    </td>
+    <td>
+      {{row.email}}
+    </td>
+    <td>
+      {{row.emailverified}}
+    </td>
+    <td>
+      <span *ngFor="let role of row.roles" class="badge badge-info mr-1">{{role.name}}</span>
+    </td>
+    <td>
+      <div *ngFor="let projectrel of row.projectrels" class="badge badge-success mr-1">
+        {{projectrel.pk_project}}: {{projectrel.role}}
+      </div>
+    </td>
+  </ng-template>
+
+</ngx-table>

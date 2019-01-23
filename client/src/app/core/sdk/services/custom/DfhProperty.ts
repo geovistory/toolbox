@@ -36,7 +36,7 @@ export class DfhPropertyApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries labels of DfhProperty.
+   * Abfrage von labels von DfhProperty.
    *
    * @param {any} id DfhProperty id
    *
@@ -66,7 +66,7 @@ export class DfhPropertyApi extends BaseLoopBackApi {
   }
 
   /**
-   * Queries text_properties of DfhProperty.
+   * Abfrage von text_properties von DfhProperty.
    *
    * @param {any} id DfhProperty id
    *

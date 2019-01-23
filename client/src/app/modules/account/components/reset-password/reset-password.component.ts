@@ -18,8 +18,8 @@ import { HttpClient, HttpHeaders } from '../../../../../../node_modules/@angular
 export class ResetPasswordComponent implements OnInit {
 
   model: any = {};
-  loading: boolean = false;
-  confirm: boolean = false; //if true, form is hidden and confirmation shown.
+  loading = false;
+  confirm = false; // if true, form is hidden and confirmation shown.
   returnUrl: string;
   access_token: string;
   errorMessage: string;
@@ -28,7 +28,6 @@ export class ResetPasswordComponent implements OnInit {
     protected http: HttpClient,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler,
     private route: ActivatedRoute,
-    private router: Router,
     private accountApi: AccountApi,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
@@ -42,30 +41,7 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   setPassword(newPassword: string): Observable<any> {
-
-    let headers = new HttpHeaders();
-    headers.append("Authorization", this.access_token)
-    headers.append("Content-Type", "application/x-www-form-urlencoded")
-
-    let method: string = "POST";
-
-    let url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/Accounts/reset-password";
-
-    let urlSearchParams = new URLSearchParams();
-    if (typeof newPassword !== 'undefined' && newPassword !== null) {
-      urlSearchParams.append('newPassword', newPassword);
-    }
-
-    let body: string = urlSearchParams.toString()
-
-
-    return this.http.request(method, url, {
-      body: body,
-      headers: headers
-    })
-      .map((res: any) => (res.text() != "" ? res.json() : {}))
-      .catch((e) => this.errorHandler.handleError(e));
+    return this.accountApi.setPassword(newPassword, (headers) => headers.append('Authorization', this.access_token))
   }
 
 

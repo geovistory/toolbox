@@ -1,29 +1,27 @@
-import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-
-import {LoopBackAuth, ActiveAccountService, Account, AccountApi, LoopBackConfig} from 'app/core';
-
-import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
-
-import { environment } from 'environments/environment';
-import { AccountActions } from 'app/modules/account/api/actions';
-import { IAccount } from 'app/modules/account/account.model';
 import { NgRedux } from '@angular-redux/store';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Account, AccountApi, ActiveAccountService, LoopBackAuth, LoopBackConfig } from 'app/core';
+import { IAccount } from 'app/modules/account/account.model';
+import { AccountActions } from 'app/modules/account/api/account.actions';
+import { environment } from 'environments/environment';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Subscription } from 'rxjs';
+
 
 @AutoUnsubscribe()
 @Component({
   selector: 'gv-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']  
+  styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit, OnDestroy {
-  
-  isNavbarCollapsed:boolean=true;
+
+  isNavbarCollapsed = true;
   account: Account;
-  
-  subscription:Subscription;
-  
+
+  subscription: Subscription;
+
   constructor(
     private activeAccountService: ActiveAccountService,
     private authService: LoopBackAuth,
@@ -35,34 +33,34 @@ export class NavbarComponent implements OnInit, OnDestroy {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
   }
-  
-  ngOnInit(){
+
+  ngOnInit() {
     this.subscription = this.activeAccountService.getAccount().subscribe(account => {
       this.account = account;
       this.ngRedux.dispatch(this.actions.accountUpdated(this.account));
     })
-    this.activeAccountService.updateAccount();    
+    this.activeAccountService.updateAccount();
   }
-  
+
   ngOnDestroy(): void {
   }
-  
-  logout(){
+
+  logout() {
     this.accountApi.logout()
-    .subscribe(
-      data => {
-        this.activeAccountService.updateAccount();
-        this.ngRedux.dispatch(this.actions.accountUpdated(this.authService.getCurrentUserData()));
+      .subscribe(
+        data => {
+          this.activeAccountService.updateAccount();
+          this.ngRedux.dispatch(this.actions.accountUpdated(this.authService.getCurrentUserData()));
 
-        this.router.navigate(['/']);
-      },
-      error => {
-        // TODO: Error handling Alert
-        console.log(error);
+          this.router.navigate(['/']);
+        },
+        error => {
+          // TODO: Error handling Alert
+          console.log(error);
 
-        this.router.navigate(['/']);
+          this.router.navigate(['/']);
 
-      }
-    );
+        }
+      );
   }
 }

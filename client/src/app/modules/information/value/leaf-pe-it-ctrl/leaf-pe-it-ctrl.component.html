@@ -19,8 +19,8 @@
 
 
 
-<button *ngIf="!pkEntity" type="button" name="button" class="btn btn-block btn-primary" (click)="onOpenModal(modalContent)">
-    Select a {{(classConfig$ | async)?.label}}
+<button *ngIf="!pkEntity" type="button" name="button" class="btn btn-primary" (click)="onOpenModal(modalContent)">
+    Add a {{(classConfig$ | async)?.label}}
 </button>
 
 <gv-leaf-pe-it-view *ngIf="pkEntity" [basePath]="basePath" [isCircular]="false"></gv-leaf-pe-it-view>

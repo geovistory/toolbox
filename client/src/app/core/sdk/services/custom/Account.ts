@@ -32,11 +32,11 @@ export class AccountApi extends BaseLoopBackApi {
   }
 
   /**
-   * Add a related item by id for projects.
+   * Zugehöriges Element nach ID für projects hinzufügen.
    *
    * @param {any} id Account id
    *
-   * @param {any} fk Foreign key for projects
+   * @param {any} fk Fremdschlüssel für projects
    *
    * @param {object} data Request data.
    *
@@ -68,11 +68,11 @@ export class AccountApi extends BaseLoopBackApi {
   }
 
   /**
-   * Remove the projects relation to an item by id.
+   * projects-Beziehung zu einem Element nach ID entfernen.
    *
    * @param {any} id Account id
    *
-   * @param {any} fk Foreign key for projects
+   * @param {any} fk Fremdschlüssel für projects
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -95,11 +95,11 @@ export class AccountApi extends BaseLoopBackApi {
   }
 
   /**
-   * Check the existence of projects relation to an item by id.
+   * Vorhandensein von projects-Beziehung zu einem Element nach ID prüfen.
    *
    * @param {any} id Account id
    *
-   * @param {any} fk Foreign key for projects
+   * @param {any} fk Fremdschlüssel für projects
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -125,7 +125,7 @@ export class AccountApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in projects of this model.
+   * Erstellt eine neue Instanz in projects von diesem Modell.
    *
    * @param {any} id Account id
    *
@@ -409,6 +409,32 @@ export class AccountApi extends BaseLoopBackApi {
   }
 
   /**
+   * Get Roles of the Account
+   *
+   * @param {number} accountId 
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Account` object.)
+   * </em>
+   */
+  public getRoles(accountId: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Accounts/get-roles";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof accountId !== 'undefined' && accountId !== null) _urlParams.accountId = accountId;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Get a list of all projects associated with this account.
    *
    * @param {number} accountId 
@@ -435,7 +461,30 @@ export class AccountApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in projects of this model.
+   * Get all accounts with their project pks and their roles
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `Account` object.)
+   * </em>
+   */
+  public withRolesAndProjects(customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/Accounts/with-roles-and-projects";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Erstellt eine neue Instanz in projects von diesem Modell.
    *
    * @param {any} id Account id
    *

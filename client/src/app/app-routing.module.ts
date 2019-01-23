@@ -3,11 +3,12 @@ import { Route, RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from './core';
 import { ProjectsModule } from './modules/projects/projects.module';
-import { AdminModule } from './modules/admin/admin.module';
+import { BackofficeModule } from './modules/backoffice/backoffice.module';
+import { SystemAdminGuard } from './core/auth/system-admin-guard.service';
 
 
 export function getProjectModule() { return ProjectsModule };
-export function getAdminModule() { return AdminModule };
+export function getBackofficeModule() { return BackofficeModule };
 
 const indexRoute: Route = {
   path: '',
@@ -42,7 +43,13 @@ const routes: Routes = [
       },
       {
         path: 'admin',
-        loadChildren: './modules/admin/admin.module#AdminModule',
+        redirectTo: 'backoffice',
+        pathMatch: 'full'
+      },
+      {
+        path: 'backoffice',
+        loadChildren: './modules/backoffice/backoffice.module#BackofficeModule',
+        canActivate: [AuthGuard, SystemAdminGuard]
         // canActivate: [AdminGuard]
       },
       fallbackRoute

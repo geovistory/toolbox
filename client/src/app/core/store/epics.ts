@@ -6,6 +6,7 @@ import { ActiveProjectEpics } from '../active-project/active-project.epics';
 import { LoadingBarEpics } from '../loading-bar/api/loading-bar.epics';
 import { mergeMap } from 'rxjs/operators';
 import { IAppState } from './model';
+import { AccountEpics } from 'app/modules/account/api/account.epics';
 
 
 
@@ -17,12 +18,14 @@ export class RootEpics {
 
     constructor(
         private loadingBarEpics: LoadingBarEpics,
-        private activeProjectEpics: ActiveProjectEpics
+        private activeProjectEpics: ActiveProjectEpics,
+        private accountEpics: AccountEpics
     ) {
 
         this.rootEpicStream$ = new BehaviorSubject(combineEpics(
             this.loadingBarEpics.createEpics(),
-            this.activeProjectEpics.createEpics()
+            this.activeProjectEpics.createEpics(),
+            this.accountEpics.createEpics()
         ));
 
         this.rootEpic = (

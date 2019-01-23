@@ -18,7 +18,7 @@ export class RegistrationComponent {
   loading = false;
   errorMessages: Object;
   account: Account;
-  confirm:boolean = false; //if true, form is hidden and confirmation shown.
+  confirm = false; // if true, form is hidden and confirmation shown.
 
   constructor(
     private accountApi: AccountApi,
@@ -29,46 +29,46 @@ export class RegistrationComponent {
     LoopBackConfig.setApiVersion(environment.apiVersion);
   }
 
-  register(){
+  register() {
     this.startLoading();
 
     this.errorMessages = {};
     this.account = new Account(this.model);
     this.accountApi.create(this.account)
-    .subscribe(
-      data => {
-        this.completeLoading();
-        this.confirm = true;
-      },
-      error => {
-        // TODO: Alert
-        this.errorMessages = error.details.messages;
-        this.resetLoading();
-      });
-    }
-
-    /**
-    * Loading Bar Logic
-    */
-
-    startLoading() {
-      this.loading = true;
-      this.slimLoadingBarService.progress = 20;
-      this.slimLoadingBarService.start(() => {
-      });
-    }
-
-    stopLoading() {
-      this.slimLoadingBarService.stop();
-    }
-
-    completeLoading() {
-      this.loading = false;
-      this.slimLoadingBarService.complete();
-    }
-
-    resetLoading() {
-      this.loading = false;
-      this.slimLoadingBarService.reset();
-    }
+      .subscribe(
+        data => {
+          this.completeLoading();
+          this.confirm = true;
+        },
+        error => {
+          // TODO: Alert
+          this.errorMessages = error.details.messages;
+          this.resetLoading();
+        });
   }
+
+  /**
+  * Loading Bar Logic
+  */
+
+  startLoading() {
+    this.loading = true;
+    this.slimLoadingBarService.progress = 20;
+    this.slimLoadingBarService.start(() => {
+    });
+  }
+
+  stopLoading() {
+    this.slimLoadingBarService.stop();
+  }
+
+  completeLoading() {
+    this.loading = false;
+    this.slimLoadingBarService.complete();
+  }
+
+  resetLoading() {
+    this.loading = false;
+    this.slimLoadingBarService.reset();
+  }
+}
