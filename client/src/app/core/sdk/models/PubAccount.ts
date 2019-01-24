@@ -1,7 +1,4 @@
 /* tslint:disable */
-import {
-  ComProject
-} from '../index';
 
 declare var Object: any;
 export interface PubAccountInterface {
@@ -12,7 +9,7 @@ export interface PubAccountInterface {
   "emailVerified"?: boolean;
   "password"?: string;
   accessTokens?: any[];
-  projects?: ComProject[];
+  projects?: any[];
 }
 
 export class PubAccount implements PubAccountInterface {
@@ -23,7 +20,7 @@ export class PubAccount implements PubAccountInterface {
   "emailVerified": boolean;
   "password": string;
   accessTokens?: any[];
-  projects?: ComProject[];
+  projects?: any[];
   constructor(data?: PubAccountInterface) {
     Object.assign(this, data);
   }
@@ -93,8 +90,8 @@ export class PubAccount implements PubAccountInterface {
         },
         projects: {
           name: 'projects',
-          type: 'ComProject[]',
-          model: 'ComProject',
+          type: 'any[]',
+          model: '',
           relationType: 'hasMany',
           modelThrough: 'PubAccountProjectRel',
           keyThrough: 'fk_project',

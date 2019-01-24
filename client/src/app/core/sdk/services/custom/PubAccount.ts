@@ -11,8 +11,6 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PubAccount } from '../../models/PubAccount';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { PubAccountProjectRel } from '../../models/PubAccountProjectRel';
-import { ComProject } from '../../models/ComProject';
 
 
 /**
@@ -29,132 +27,6 @@ export class PubAccountApi extends BaseLoopBackApi {
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
     super(http,  connection,  models, auth, errorHandler);
-  }
-
-  /**
-   * Zugehöriges Element nach ID für projects hinzufügen.
-   *
-   * @param {any} id PubAccount id
-   *
-   * @param {any} fk Fremdschlüssel für projects
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `PubAccount` object.)
-   * </em>
-   */
-  public linkProjects(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PUT";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/PubAccounts/:id/projects/rel/:fk";
-    let _routeParams: any = {
-      id: id,
-      fk: fk
-    };
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * projects-Beziehung zu einem Element nach ID entfernen.
-   *
-   * @param {any} id PubAccount id
-   *
-   * @param {any} fk Fremdschlüssel für projects
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * This method returns no data.
-   */
-  public unlinkProjects(id: any, fk: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "DELETE";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/PubAccounts/:id/projects/rel/:fk";
-    let _routeParams: any = {
-      id: id,
-      fk: fk
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Vorhandensein von projects-Beziehung zu einem Element nach ID prüfen.
-   *
-   * @param {any} id PubAccount id
-   *
-   * @param {any} fk Fremdschlüssel für projects
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `PubAccount` object.)
-   * </em>
-   */
-  public existsProjects(id: any, fk: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "HEAD";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/PubAccounts/:id/projects/rel/:fk";
-    let _routeParams: any = {
-      id: id,
-      fk: fk
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Erstellt eine neue Instanz in projects von diesem Modell.
-   *
-   * @param {any} id PubAccount id
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `PubAccount` object.)
-   * </em>
-   */
-  public createProjects(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/PubAccounts/:id/projects";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
   }
 
   /**
@@ -478,39 +350,6 @@ export class PubAccountApi extends BaseLoopBackApi {
     "/PubAccounts/with-roles-and-projects";
     let _routeParams: any = {};
     let _postBody: any = {};
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Erstellt eine neue Instanz in projects von diesem Modell.
-   *
-   * @param {any} id PubAccount id
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `PubAccount` object.)
-   * </em>
-   */
-  public createManyProjects(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/PubAccounts/:id/projects";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {
-      data: data
-    };
     let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;

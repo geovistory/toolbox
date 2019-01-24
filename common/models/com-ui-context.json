@@ -46,10 +46,9 @@
     },
     {
       "principalType": "ROLE",
-      "principalId": "$everyone",
+      "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
-        "find",
         "uiConfig"
       ]
     }

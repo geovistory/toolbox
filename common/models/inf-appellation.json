@@ -43,15 +43,6 @@
       "principalId": "$everyone",
       "permission": "DENY",
       "property": "*"
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": [
-        "findById",
-        "create"
-      ]
     }
   ],
   "methods": {}

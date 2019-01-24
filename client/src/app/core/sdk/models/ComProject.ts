@@ -1,8 +1,8 @@
 /* tslint:disable */
 import {
+  ComLabel,
   PubAccount,
   ComLanguage,
-  ComLabel,
   ComTextProperty,
   InfPersistentItem,
   InfEntityProjectRel,
@@ -15,11 +15,11 @@ export interface ComProjectInterface {
   "pk_project"?: number;
   "pk_entity"?: number;
   "fk_language"?: string;
+  labels?: ComLabel[];
   accounts?: PubAccount[];
   default_language?: ComLanguage;
-  labels?: ComLabel[];
   text_properties?: ComTextProperty[];
-  persistent_item_versions?: InfPersistentItem[];
+  persistent_items?: InfPersistentItem[];
   entity_version_project_rels?: InfEntityProjectRel[];
   namespaces?: InfNamespace[];
 }
@@ -29,11 +29,11 @@ export class ComProject implements ComProjectInterface {
   "pk_project": number;
   "pk_entity": number;
   "fk_language": string;
+  labels?: ComLabel[];
   accounts?: PubAccount[];
   default_language?: ComLanguage;
-  labels?: ComLabel[];
   text_properties?: ComTextProperty[];
-  persistent_item_versions?: InfPersistentItem[];
+  persistent_items?: InfPersistentItem[];
   entity_version_project_rels?: InfEntityProjectRel[];
   namespaces?: InfNamespace[];
   constructor(data?: ComProjectInterface) {
@@ -87,6 +87,14 @@ export class ComProject implements ComProjectInterface {
         },
       },
       relations: {
+        labels: {
+          name: 'labels',
+          type: 'ComLabel[]',
+          model: 'ComLabel',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_entity'
+        },
         accounts: {
           name: 'accounts',
           type: 'PubAccount[]',
@@ -105,14 +113,6 @@ export class ComProject implements ComProjectInterface {
                   keyFrom: 'fk_language',
           keyTo: 'pk_language'
         },
-        labels: {
-          name: 'labels',
-          type: 'ComLabel[]',
-          model: 'ComLabel',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
-        },
         text_properties: {
           name: 'text_properties',
           type: 'ComTextProperty[]',
@@ -121,13 +121,13 @@ export class ComProject implements ComProjectInterface {
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
-        persistent_item_versions: {
-          name: 'persistent_item_versions',
+        persistent_items: {
+          name: 'persistent_items',
           type: 'InfPersistentItem[]',
           model: 'InfPersistentItem',
           relationType: 'hasMany',
           modelThrough: 'InfEntityProjectRel',
-          keyThrough: 'fk_entity_version_concat',
+          keyThrough: 'fk_entity',
           keyFrom: 'pk_project',
           keyTo: 'fk_project'
         },

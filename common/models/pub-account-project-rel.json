@@ -20,6 +20,14 @@
       "type": "string",
       "required": true,
       "default": "admin"
+    },
+    "fk_project": {
+      "type": "number",
+      "required": true
+    },
+    "account_id": {
+      "type": "number",
+      "generated": true
     }
   },
   "validations": [],

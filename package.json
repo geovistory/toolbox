@@ -42,7 +42,7 @@
     "loopback-boot": "^2.6.5",
     "loopback-component-explorer": "^4.0.0",
     "loopback-connector-postgresql": "^2.8.0",
-    "loopback-setup-remote-methods-mixin": "^1.0.4",
+    "loopback-setup-remote-methods-mixin": "akeri/loopback-setup-remote-methods-mixin#fix-hasmanythrough",
     "pg": "^7.4.1",
     "pg-query-stream": "^1.1.2",
     "python-shell": "^0.5.0",

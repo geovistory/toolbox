@@ -7,18 +7,18 @@ import {
 declare var Object: any;
 export interface PubAccountProjectRelInterface {
   "role": string;
-  "id"?: number;
+  "fk_project": number;
   "account_id"?: number;
-  "fk_project"?: number;
+  "id"?: number;
   account?: PubAccount;
   project?: ComProject;
 }
 
 export class PubAccountProjectRel implements PubAccountProjectRelInterface {
   "role": string;
-  "id": number;
-  "account_id": number;
   "fk_project": number;
+  "account_id": number;
+  "id": number;
   account?: PubAccount;
   project?: ComProject;
   constructor(data?: PubAccountProjectRelInterface) {
@@ -59,16 +59,16 @@ export class PubAccountProjectRel implements PubAccountProjectRelInterface {
           type: 'string',
           default: 'admin'
         },
-        "id": {
-          name: 'id',
+        "fk_project": {
+          name: 'fk_project',
           type: 'number'
         },
         "account_id": {
           name: 'account_id',
           type: 'number'
         },
-        "fk_project": {
-          name: 'fk_project',
+        "id": {
+          name: 'id',
           type: 'number'
         },
       },

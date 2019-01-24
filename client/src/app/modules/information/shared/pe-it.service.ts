@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { InfAppellation, InfAppellationApi, InfLanguageApi, InfPersistentItem, InfPersistentItemApi, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
+import { InfLanguageApi, InfPersistentItem, InfPersistentItemApi } from 'app/core';
 import { ReplaySubject } from 'rxjs';
-import { ClassService } from './class.service';
 import { EprService } from './epr.service';
 
 
@@ -12,13 +11,8 @@ import { EprService } from './epr.service';
 export class PeItService {
 
   constructor(
-    private persistentItemApi: InfPersistentItemApi,
-    private temporalEntityApi: InfTemporalEntityApi,
-    private appellationApi: InfAppellationApi,
-    private roleApi: InfRoleApi,
     private languageApi: InfLanguageApi,
     private peItApi: InfPersistentItemApi,
-    private classService: ClassService,
     private eprService: EprService,
   ) {
 

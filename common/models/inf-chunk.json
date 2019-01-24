@@ -52,8 +52,7 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "find",
-        "findOrCreateChunk"
+        "findById"
       ]
     }
   ],

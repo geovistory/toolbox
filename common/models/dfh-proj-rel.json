@@ -44,12 +44,11 @@
     },
     {
       "principalType": "ROLE",
-      "principalId": "$everyone",
+      "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
         "create",
-        "patchAttributes",
-        "findById"
+        "patchAttributes"
       ]
     }
   ],

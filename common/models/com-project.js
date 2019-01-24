@@ -119,6 +119,35 @@ module.exports = function (ComProject) {
   // };
 
 
+  ComProject.getBasics = function (pkProject, cb) {
+    ComProject.findComplex({
+      'where': ['pk_project', '=', pkProject],
+      'include': {
+        'labels': {
+          '$relation': {
+            'name': 'labels',
+            'joinType': 'inner join',
+            'orderBy': [{ 'pk_entity': 'asc' }]
+          }
+        },
+        'default_language': {
+          '$relation': {
+            'name': 'default_language',
+            'joinType': 'inner join',
+            'orderBy': [{ 'pk_language': 'asc' }]
+          },
+          'inf_language': {
+            '$relation': {
+              'name': 'inf_language',
+              'joinType': 'inner join',
+              'orderBy': [{ 'pk_language': 'asc' }]
+            }
+          }
+        }
+      }
+    }, cb)
+  }
+
   /**
    * Gets the reference model of the project:
    * - DfhClasses available for project, including
@@ -126,7 +155,7 @@ module.exports = function (ComProject) {
    *        - Boolean that indicates
    *    
    */
-  ComProject.getReferenceModel = function (pk_project, cb) {
+  ComProject.getReferenceModel = function (pkProject, cb) {
 
     // shortcut as long as no epr for classes in use
     const DfhClass = ComProject.app.models.DfhClass;
@@ -199,7 +228,7 @@ module.exports = function (ComProject) {
             "joinType": "left join",
             select: { include: ["is_in_project"] },
             "orderBy": [{ "pk_entity": "asc" }],
-            where: ['fk_project', '=', pk_project]
+            where: ['fk_project', '=', pkProject]
           }
         },
         labels: {

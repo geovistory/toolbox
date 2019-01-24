@@ -1,9 +1,9 @@
 /* tslint:disable */
 import {
-  ComUiContextConfig,
-  DfhClass,
+  ComClassFieldPropertyRel,
   ComLabel,
-  ComClassFieldPropertyRel
+  ComUiContextConfig,
+  DfhClass
 } from '../index';
 
 declare var Object: any;
@@ -13,10 +13,10 @@ export interface ComClassFieldInterface {
   "label"?: string;
   "fk_system_type_ng_component"?: number;
   "used_table"?: string;
+  class_field_property_rel?: ComClassFieldPropertyRel[];
+  labels?: ComLabel[];
   ui_context_configs?: ComUiContextConfig[];
   classes?: DfhClass[];
-  labels?: ComLabel[];
-  class_field_property_rel?: ComClassFieldPropertyRel[];
 }
 
 export class ComClassField implements ComClassFieldInterface {
@@ -25,10 +25,10 @@ export class ComClassField implements ComClassFieldInterface {
   "label": string;
   "fk_system_type_ng_component": number;
   "used_table": string;
+  class_field_property_rel?: ComClassFieldPropertyRel[];
+  labels?: ComLabel[];
   ui_context_configs?: ComUiContextConfig[];
   classes?: DfhClass[];
-  labels?: ComLabel[];
-  class_field_property_rel?: ComClassFieldPropertyRel[];
   constructor(data?: ComClassFieldInterface) {
     Object.assign(this, data);
   }
@@ -84,6 +84,22 @@ export class ComClassField implements ComClassFieldInterface {
         },
       },
       relations: {
+        class_field_property_rel: {
+          name: 'class_field_property_rel',
+          type: 'ComClassFieldPropertyRel[]',
+          model: 'ComClassFieldPropertyRel',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_class_field'
+        },
+        labels: {
+          name: 'labels',
+          type: 'ComLabel[]',
+          model: 'ComLabel',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_entity'
+        },
         ui_context_configs: {
           name: 'ui_context_configs',
           type: 'ComUiContextConfig[]',
@@ -100,22 +116,6 @@ export class ComClassField implements ComClassFieldInterface {
           modelThrough: 'ComUiContextConfig',
           keyThrough: 'fk_class_for_class_field',
           keyFrom: 'pk_entity',
-          keyTo: 'fk_class_field'
-        },
-        labels: {
-          name: 'labels',
-          type: 'ComLabel[]',
-          model: 'ComLabel',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
-        },
-        class_field_property_rel: {
-          name: 'class_field_property_rel',
-          type: 'ComClassFieldPropertyRel[]',
-          model: 'ComClassFieldPropertyRel',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
           keyTo: 'fk_class_field'
         },
       }

@@ -14,7 +14,11 @@ module.exports = function (app) {
 
         // Q: Does the current request provide a PK of the project it wants to access?
         const req = context.remotingContext.req;
-        const pkProject = parseInt(_.get(req, 'query.pkProject')); // TODO add other paths like body.pkProject
+        const pkProject = parseInt(
+            _.get(req, 'query.pkProject') || // search pk_project in query, where arg is called pkProject
+            _.get(req, 'query.pk_project') || // search pk_project in query, where arg is called pk_project 
+            _.get(req, 'body.fk_project') // search pk_project in body, for example when an model object is sent
+            ); 
         if (!pkProject) {
             // A: No. This request does not provice a PK of the project
             return process.nextTick(() => cb(null, false));

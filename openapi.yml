@@ -1,0 +1,4543 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: geovistory
+basePath: /api
+paths:
+  '/ComClassFields/{id}/classes/rel/{fk}':
+    put:
+      tags:
+        - ComClassField
+      summary: Zugehöriges Element nach ID für classes hinzufügen.
+      operationId: ComClassField.prototype.__link__classes
+      parameters:
+        - name: id
+          in: path
+          description: ComClassField id
+          required: true
+          type: string
+          format: JSON
+        - name: fk
+          in: path
+          description: Fremdschlüssel für classes
+          required: true
+          type: string
+          format: JSON
+        - name: data
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/ComUiContextConfig'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/ComUiContextConfig'
+      deprecated: false
+    delete:
+      tags:
+        - ComClassField
+      summary: classes-Beziehung zu einem Element nach ID entfernen.
+      operationId: ComClassField.prototype.__unlink__classes
+      parameters:
+        - name: id
+          in: path
+          description: ComClassField id
+          required: true
+          type: string
+          format: JSON
+        - name: fk
+          in: path
+          description: Fremdschlüssel für classes
+          required: true
+          type: string
+          format: JSON
+      responses:
+        '204':
+          description: Request was successful
+      deprecated: false
+    head:
+      tags:
+        - ComClassField
+      summary: Vorhandensein von classes-Beziehung zu einem Element nach ID prüfen.
+      operationId: ComClassField.prototype.__exists__classes
+      parameters:
+        - name: id
+          in: path
+          description: ComClassField id
+          required: true
+          type: string
+          format: JSON
+        - name: fk
+          in: path
+          description: Fremdschlüssel für classes
+          required: true
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: boolean
+      deprecated: false
+  /ComClassFields:
+    get:
+      tags:
+        - ComClassField
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: ComClassField.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ComClassField'
+      deprecated: false
+  '/PubAccounts/{id}/projects/rel/{fk}':
+    put:
+      tags:
+        - PubAccount
+      summary: Zugehöriges Element nach ID für projects hinzufügen.
+      operationId: PubAccount.prototype.__link__projects
+      parameters:
+        - name: id
+          in: path
+          description: PubAccount id
+          required: true
+          type: string
+          format: JSON
+        - name: fk
+          in: path
+          description: Fremdschlüssel für projects
+          required: true
+          type: string
+          format: JSON
+        - name: data
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/PubAccountProjectRel'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/PubAccountProjectRel'
+      deprecated: false
+    delete:
+      tags:
+        - PubAccount
+      summary: projects-Beziehung zu einem Element nach ID entfernen.
+      operationId: PubAccount.prototype.__unlink__projects
+      parameters:
+        - name: id
+          in: path
+          description: PubAccount id
+          required: true
+          type: string
+          format: JSON
+        - name: fk
+          in: path
+          description: Fremdschlüssel für projects
+          required: true
+          type: string
+          format: JSON
+      responses:
+        '204':
+          description: Request was successful
+      deprecated: false
+    head:
+      tags:
+        - PubAccount
+      summary: Vorhandensein von projects-Beziehung zu einem Element nach ID prüfen.
+      operationId: PubAccount.prototype.__exists__projects
+      parameters:
+        - name: id
+          in: path
+          description: PubAccount id
+          required: true
+          type: string
+          format: JSON
+        - name: fk
+          in: path
+          description: Fremdschlüssel für projects
+          required: true
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: boolean
+      deprecated: false
+  '/PubAccounts/{id}/projects':
+    post:
+      tags:
+        - PubAccount
+      summary: Erstellt eine neue Instanz in projects von diesem Modell.
+      operationId: PubAccount.prototype.__create__projects
+      parameters:
+        - name: id
+          in: path
+          description: PubAccount id
+          required: true
+          type: string
+          format: JSON
+        - name: data
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/ComProject'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/ComProject'
+      deprecated: false
+  /PubAccounts:
+    post:
+      tags:
+        - PubAccount
+      summary: Create a new instance of the model and persist it into the data source.
+      operationId: PubAccount.create
+      parameters:
+        - name: data
+          in: body
+          description: Model instance data
+          required: false
+          schema:
+            description: Model instance data
+            $ref: '#/definitions/PubAccount'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/PubAccount'
+      deprecated: false
+    get:
+      tags:
+        - PubAccount
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: PubAccount.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PubAccount'
+      deprecated: false
+  '/PubAccounts/{id}':
+    get:
+      tags:
+        - PubAccount
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: PubAccount.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/PubAccount'
+      deprecated: false
+    put:
+      tags:
+        - PubAccount
+      summary: >-
+        Replace attributes for a model instance and persist it into the data
+        source.
+      operationId: 'PubAccount.replaceById__put_PubAccounts_{id}'
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: data
+          in: body
+          description: Model instance data
+          required: false
+          schema:
+            description: Model instance data
+            $ref: '#/definitions/PubAccount'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/PubAccount'
+      deprecated: false
+    delete:
+      tags:
+        - PubAccount
+      summary: 'Delete a model instance by {{id}} from the data source.'
+      operationId: PubAccount.deleteById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: object
+      deprecated: false
+    patch:
+      tags:
+        - PubAccount
+      summary: >-
+        Patch attributes for a model instance and persist it into the data
+        source.
+      operationId: PubAccount.prototype.patchAttributes
+      parameters:
+        - name: id
+          in: path
+          description: PubAccount id
+          required: true
+          type: string
+          format: JSON
+        - name: data
+          in: body
+          description: An object of model property name/value pairs
+          required: false
+          schema:
+            description: An object of model property name/value pairs
+            $ref: '#/definitions/PubAccount'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/PubAccount'
+      deprecated: false
+  '/PubAccounts/{id}/replace':
+    post:
+      tags:
+        - PubAccount
+      summary: >-
+        Replace attributes for a model instance and persist it into the data
+        source.
+      operationId: 'PubAccount.replaceById__post_PubAccounts_{id}_replace'
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: data
+          in: body
+          description: Model instance data
+          required: false
+          schema:
+            description: Model instance data
+            $ref: '#/definitions/PubAccount'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/PubAccount'
+      deprecated: false
+  /PubAccounts/login:
+    post:
+      tags:
+        - PubAccount
+      summary: Login a user with username/email and password.
+      operationId: PubAccount.login
+      parameters:
+        - name: credentials
+          in: body
+          required: true
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: >-
+            Related objects to include in the response. See the description of
+            return value for more details.
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            description: >+
+              Der Antworthauptteil enthält Eigenschaften des bei der Anmeldung
+              erstellten AccessToken.
+
+              Abhängig vom Wert des Parameters 'include' kann der Hauptteil
+              zusätzliche Eigenschaften enthalten:
+
+                - user - U+007BUserU+007D - Daten des derzeit angemeldeten Benutzers. (`include=user`)
+
+            type: object
+      deprecated: false
+  /PubAccounts/logout:
+    post:
+      tags:
+        - PubAccount
+      summary: Logout a user with access token.
+      operationId: PubAccount.logout
+      parameters: []
+      responses:
+        '204':
+          description: Request was successful
+      deprecated: false
+  '/PubAccounts/{id}/verify':
+    post:
+      tags:
+        - PubAccount
+      summary: Trigger user's identity verification with configured verifyOptions
+      operationId: PubAccount.prototype.verify
+      parameters:
+        - name: id
+          in: path
+          description: PubAccount id
+          required: true
+          type: string
+          format: JSON
+      responses:
+        '204':
+          description: Request was successful
+      deprecated: false
+  /PubAccounts/confirm:
+    get:
+      tags:
+        - PubAccount
+      summary: Confirm a user registration with identity verification token.
+      operationId: PubAccount.confirm
+      parameters:
+        - name: uid
+          in: query
+          required: true
+          type: string
+        - name: token
+          in: query
+          required: true
+          type: string
+        - name: redirect
+          in: query
+          required: false
+          type: string
+      responses:
+        '204':
+          description: Request was successful
+      deprecated: false
+  /PubAccounts/reset:
+    post:
+      tags:
+        - PubAccount
+      summary: Reset password for a user with email.
+      operationId: PubAccount.resetPassword
+      parameters:
+        - name: options
+          in: body
+          required: true
+          schema:
+            type: object
+      responses:
+        '204':
+          description: Request was successful
+      deprecated: false
+  /PubAccounts/change-password:
+    post:
+      tags:
+        - PubAccount
+      summary: Change a user's password.
+      operationId: PubAccount.changePassword
+      parameters:
+        - name: oldPassword
+          in: formData
+          required: true
+          type: string
+        - name: newPassword
+          in: formData
+          required: true
+          type: string
+      responses:
+        '204':
+          description: Request was successful
+      deprecated: false
+  /PubAccounts/reset-password:
+    post:
+      tags:
+        - PubAccount
+      summary: Reset user's password via a password-reset token.
+      operationId: PubAccount.setPassword
+      parameters:
+        - name: newPassword
+          in: formData
+          required: true
+          type: string
+      responses:
+        '204':
+          description: Request was successful
+      deprecated: false
+  /PubAccounts/get-roles:
+    get:
+      tags:
+        - PubAccount
+      summary: Get Roles of the Account
+      operationId: PubAccount.getRoles
+      parameters:
+        - name: accountId
+          in: query
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Role'
+      deprecated: false
+  /PubAccounts/list-projects:
+    get:
+      tags:
+        - PubAccount
+      summary: Get a list of all projects associated with this account.
+      operationId: PubAccount.listProjects
+      parameters:
+        - name: accountId
+          in: query
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PubAccount'
+      deprecated: false
+  /PubAccounts/with-roles-and-projects:
+    get:
+      tags:
+        - PubAccount
+      summary: Get all accounts with their project pks and their roles
+      operationId: PubAccount.withRolesAndProjects
+      parameters: []
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PubAccount'
+      deprecated: false
+  '/ComProjects/{id}/accounts/rel/{fk}':
+    put:
+      tags:
+        - ComProject
+      summary: Zugehöriges Element nach ID für accounts hinzufügen.
+      operationId: ComProject.prototype.__link__accounts
+      parameters:
+        - name: id
+          in: path
+          description: ComProject id
+          required: true
+          type: string
+          format: JSON
+        - name: fk
+          in: path
+          description: Fremdschlüssel für accounts
+          required: true
+          type: string
+          format: JSON
+        - name: data
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/PubAccountProjectRel'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/PubAccountProjectRel'
+      deprecated: false
+    delete:
+      tags:
+        - ComProject
+      summary: accounts-Beziehung zu einem Element nach ID entfernen.
+      operationId: ComProject.prototype.__unlink__accounts
+      parameters:
+        - name: id
+          in: path
+          description: ComProject id
+          required: true
+          type: string
+          format: JSON
+        - name: fk
+          in: path
+          description: Fremdschlüssel für accounts
+          required: true
+          type: string
+          format: JSON
+      responses:
+        '204':
+          description: Request was successful
+      deprecated: false
+    head:
+      tags:
+        - ComProject
+      summary: Vorhandensein von accounts-Beziehung zu einem Element nach ID prüfen.
+      operationId: ComProject.prototype.__exists__accounts
+      parameters:
+        - name: id
+          in: path
+          description: ComProject id
+          required: true
+          type: string
+          format: JSON
+        - name: fk
+          in: path
+          description: Fremdschlüssel für accounts
+          required: true
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: boolean
+      deprecated: false
+  '/ComProjects/{id}/persistent_item_versions/rel/{fk}':
+    put:
+      tags:
+        - ComProject
+      summary: Zugehöriges Element nach ID für persistent_item_versions hinzufügen.
+      operationId: ComProject.prototype.__link__persistent_item_versions
+      parameters:
+        - name: id
+          in: path
+          description: ComProject id
+          required: true
+          type: string
+          format: JSON
+        - name: fk
+          in: path
+          description: Fremdschlüssel für persistent_item_versions
+          required: true
+          type: string
+          format: JSON
+        - name: data
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/InfEntityProjectRel'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfEntityProjectRel'
+      deprecated: false
+    delete:
+      tags:
+        - ComProject
+      summary: persistent_item_versions-Beziehung zu einem Element nach ID entfernen.
+      operationId: ComProject.prototype.__unlink__persistent_item_versions
+      parameters:
+        - name: id
+          in: path
+          description: ComProject id
+          required: true
+          type: string
+          format: JSON
+        - name: fk
+          in: path
+          description: Fremdschlüssel für persistent_item_versions
+          required: true
+          type: string
+          format: JSON
+      responses:
+        '204':
+          description: Request was successful
+      deprecated: false
+    head:
+      tags:
+        - ComProject
+      summary: >-
+        Vorhandensein von persistent_item_versions-Beziehung zu einem Element
+        nach ID prüfen.
+      operationId: ComProject.prototype.__exists__persistent_item_versions
+      parameters:
+        - name: id
+          in: path
+          description: ComProject id
+          required: true
+          type: string
+          format: JSON
+        - name: fk
+          in: path
+          description: Fremdschlüssel für persistent_item_versions
+          required: true
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: boolean
+      deprecated: false
+  /ComProjects/create-with-label-and-description:
+    post:
+      tags:
+        - ComProject
+      summary: Create a new project with a label and a description.
+      operationId: ComProject.createWithLabelAndDescription
+      parameters:
+        - name: accountId
+          in: query
+          description: Id of account to associate the persistent item with.
+          required: true
+          type: number
+          format: double
+        - name: pkLanguage
+          in: query
+          description: >-
+            Default language of the project, language of the label and the text
+            property.
+          required: true
+          type: string
+        - name: label
+          in: query
+          description: Label of the project.
+          required: true
+          type: string
+        - name: textProperty
+          in: query
+          description: Description of the project.
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              type: boolean
+      deprecated: false
+  /ComProjects/get-basics:
+    get:
+      tags:
+        - ComProject
+      summary: 'Get basic information about the project (language, name)'
+      operationId: ComProject.getBasics
+      parameters:
+        - name: pkProject
+          in: query
+          description: Pk of project
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ComProject'
+      deprecated: false
+  /ComProjects/get-reference-model:
+    post:
+      tags:
+        - ComProject
+      summary: Classes and Properties of this Project
+      operationId: ComProject.getReferenceModel
+      parameters:
+        - name: pkProject
+          in: query
+          description: Pk of project
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              type: object
+      deprecated: false
+  /ComLanguages:
+    get:
+      tags:
+        - ComLanguage
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: ComLanguage.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ComLanguage'
+      deprecated: false
+  /ComLanguages/query-by-string:
+    get:
+      tags:
+        - ComLanguage
+      summary: Perform a ranked search on languages by search string.
+      operationId: ComLanguage.queryByString
+      parameters:
+        - name: queryString
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ComLanguage'
+      deprecated: false
+  /InfAppellations:
+    post:
+      tags:
+        - InfAppellation
+      summary: Create a new instance of the model and persist it into the data source.
+      operationId: InfAppellation.create
+      parameters:
+        - name: data
+          in: body
+          description: Model instance data
+          required: false
+          schema:
+            description: Model instance data
+            $ref: '#/definitions/InfAppellation'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfAppellation'
+      deprecated: false
+  '/InfAppellations/{id}':
+    get:
+      tags:
+        - InfAppellation
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: InfAppellation.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfAppellation'
+      deprecated: false
+  '/InfTemporalEntities/{id}':
+    get:
+      tags:
+        - InfTemporalEntity
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: InfTemporalEntity.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfTemporalEntity'
+      deprecated: false
+  /InfTemporalEntities:
+    get:
+      tags:
+        - InfTemporalEntity
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: InfTemporalEntity.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfTemporalEntity'
+      deprecated: false
+  /InfTemporalEntities/graphs:
+    post:
+      tags:
+        - InfTemporalEntity
+      summary: Get e nested objects of all information about the temporal entities.
+      operationId: InfTemporalEntity.graphs
+      parameters:
+        - name: ofProject
+          in: query
+          description: 'If true, gets project versoin, if false, gets repo version'
+          required: true
+          type: boolean
+        - name: pkProject
+          in: query
+          description: 'If provided, joins the project, else not.'
+          required: false
+          type: number
+          format: double
+        - name: pkEntities
+          in: body
+          description: Primary Keys of the temporal entities (array of pk_entity)
+          required: true
+          schema:
+            description: Primary Keys of the temporal entities (array of pk_entity)
+            type: array
+            items:
+              $ref: '#/definitions/x-any'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfTemporalEntity'
+      deprecated: false
+  /InfTemporalEntities/nested-object:
+    get:
+      tags:
+        - InfTemporalEntity
+      summary: >-
+        Get e nested object of all information about the temporal entity with
+        the community favorites.
+      operationId: InfTemporalEntity.nestedObject
+      parameters:
+        - name: ofProject
+          in: query
+          description: 'If true, gets project versoin, if false, gets repo version'
+          required: true
+          type: boolean
+        - name: pkProject
+          in: query
+          description: 'If provided, joins the project, else not.'
+          required: false
+          type: number
+          format: double
+        - name: pkEntity
+          in: query
+          description: Primary Key of the temporal entity (pk_entity)
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfTemporalEntity'
+      deprecated: false
+  /InfTemporalEntities/findOrCreate:
+    post:
+      tags:
+        - InfTemporalEntity
+      summary: Find or create a temporal entity version.
+      operationId: InfTemporalEntity.findOrCreateInfTemporalEntity
+      parameters:
+        - name: projectId
+          in: query
+          description: Id of the project
+          required: true
+          type: number
+          format: double
+        - name: data
+          in: body
+          description: data
+          required: true
+          schema:
+            description: data
+            $ref: '#/definitions/InfTemporalEntity'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfTemporalEntity'
+      deprecated: false
+  /InfTemporalEntities/change-project-relation:
+    post:
+      tags:
+        - InfTemporalEntity
+      summary: Relate a nested object of a InfTemporalEntity to the project.
+      operationId: InfTemporalEntity.changeTeEntProjectRelation
+      parameters:
+        - name: projectId
+          in: query
+          description: Id of the project
+          required: true
+          type: number
+          format: double
+        - name: isInProject
+          in: query
+          description: Include or exclude from project.
+          required: true
+          type: boolean
+        - name: data
+          in: body
+          description: data
+          required: true
+          schema:
+            description: data
+            $ref: '#/definitions/InfTemporalEntity'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfTemporalEntity'
+      deprecated: false
+  '/InfRoles/{id}':
+    get:
+      tags:
+        - InfRole
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: InfRole.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfRole'
+      deprecated: false
+  /InfRoles:
+    get:
+      tags:
+        - InfRole
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: InfRole.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfRole'
+      deprecated: false
+  /InfRoles/findOrCreate:
+    post:
+      tags:
+        - InfRole
+      summary: Find or create an information role version.
+      operationId: InfRole.findOrCreateInfRole
+      parameters:
+        - name: projectId
+          in: query
+          description: Id of the project
+          required: true
+          type: number
+          format: double
+        - name: data
+          in: body
+          description: data
+          required: true
+          schema:
+            description: data
+            $ref: '#/definitions/InfRole'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfRole'
+      deprecated: false
+  /InfRoles/alternatives-not-in-project-by-entity-pk:
+    get:
+      tags:
+        - InfRole
+      summary: >-
+        Get roles (with children) of given fkProperty and fkEntity from Repo
+        that are not in project of given projectId.
+      operationId: InfRole.alternativesNotInProjectByEntityPk
+      parameters:
+        - name: entityPk
+          in: query
+          description: Key of the persistent item (fk_entity)
+          required: true
+          type: number
+          format: double
+        - name: propertyPk
+          in: query
+          description: Key of the property (fk_property)
+          required: true
+          type: number
+          format: double
+        - name: projectId
+          in: query
+          description: Id of the the current project
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfRole'
+      deprecated: false
+  /InfRoles/alternatives-not-in-project-by-te-ent-pk:
+    get:
+      tags:
+        - InfRole
+      summary: >-
+        Get roles (with children) of given propertyPk and teEntPk from Repo that
+        are not in project of given projectId.
+      operationId: InfRole.alternativesNotInProjectByTeEntPk
+      parameters:
+        - name: teEntPk
+          in: query
+          description: Key of the temporal entity (fk_temporal_entity)
+          required: true
+          type: number
+          format: double
+        - name: propertyPk
+          in: query
+          description: Key of the property (fk_property)
+          required: true
+          type: number
+          format: double
+        - name: projectId
+          in: query
+          description: Id of the the current project
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfRole'
+      deprecated: false
+  /InfRoles/change-project-relation:
+    post:
+      tags:
+        - InfRole
+      summary: Relate a nested object of a InfRole to the project.
+      operationId: InfRole.changeRoleProjectRelation
+      parameters:
+        - name: projectId
+          in: query
+          description: Id of the project
+          required: true
+          type: number
+          format: double
+        - name: isInProject
+          in: query
+          description: Include or exclude from project.
+          required: true
+          type: boolean
+        - name: data
+          in: body
+          description: data
+          required: true
+          schema:
+            description: data
+            $ref: '#/definitions/InfRole'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfRole'
+      deprecated: false
+  /InfRoles/nested-objects-of-project:
+    get:
+      tags:
+        - InfRole
+      summary: Find nested objects of InfRoles of the project.
+      operationId: InfRole.nestedObjectsOfProject
+      parameters:
+        - name: pk_project
+          in: query
+          description: Id of the project
+          required: true
+          type: number
+          format: double
+        - name: pk_roles
+          in: query
+          description: Array of primary keys of roles (array of pk_entity).
+          required: true
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfRole'
+      deprecated: false
+  /InfRoles/add-to-project-with-temporal-entity:
+    post:
+      tags:
+        - InfRole
+      summary: Add roles with their associated temporal entity to the project.
+      operationId: InfRole.addToProjectWithTeEnt
+      parameters:
+        - name: pk_project
+          in: query
+          description: Id of the project
+          required: true
+          type: number
+          format: double
+        - name: pk_roles
+          in: body
+          description: Array of primary keys of roles (array of pk_entity).
+          required: true
+          schema:
+            description: Array of primary keys of roles (array of pk_entity).
+            type: array
+            items:
+              $ref: '#/definitions/x-any'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfRole'
+      deprecated: false
+  /InfRoles/add-to-project:
+    post:
+      tags:
+        - InfRole
+      summary: Add roles without any related entities to the project.
+      operationId: InfRole.addToProject
+      parameters:
+        - name: pk_project
+          in: query
+          description: Id of the project
+          required: true
+          type: number
+          format: double
+        - name: pk_roles
+          in: body
+          description: Array of primary keys of roles (array of pk_entity).
+          required: true
+          schema:
+            description: Array of primary keys of roles (array of pk_entity).
+            type: array
+            items:
+              $ref: '#/definitions/x-any'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfRole'
+      deprecated: false
+  '/InfLanguages/{id}':
+    get:
+      tags:
+        - InfLanguage
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: InfLanguage.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfLanguage'
+      deprecated: false
+  /InfLanguages:
+    get:
+      tags:
+        - InfLanguage
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: InfLanguage.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfLanguage'
+      deprecated: false
+  /InfLanguages/query-by-string:
+    get:
+      tags:
+        - InfLanguage
+      summary: Perform a ranked search on languages by search string.
+      operationId: InfLanguage.queryByString
+      parameters:
+        - name: queryString
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfLanguage'
+      deprecated: false
+  '/InfPersistentItems/{id}':
+    get:
+      tags:
+        - InfPersistentItem
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: InfPersistentItem.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfPersistentItem'
+      deprecated: false
+  /InfPersistentItems:
+    get:
+      tags:
+        - InfPersistentItem
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: InfPersistentItem.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfPersistentItem'
+      deprecated: false
+  /InfPersistentItems/graphs:
+    post:
+      tags:
+        - InfPersistentItem
+      summary: >-
+        Get e nested object of all information about the persistent item with
+        the community favorites.
+      operationId: InfPersistentItem.graphs
+      parameters:
+        - name: ofProject
+          in: query
+          description: 'If true, gets project versoin, if false, gets repo version'
+          required: true
+          type: boolean
+        - name: pkProject
+          in: query
+          description: 'If provided, joins the project, else not.'
+          required: false
+          type: number
+          format: double
+        - name: pkEntities
+          in: body
+          description: Primary Keys of the persistent items (array of pk_entity)
+          required: true
+          schema:
+            description: Primary Keys of the persistent items (array of pk_entity)
+            type: array
+            items:
+              $ref: '#/definitions/x-any'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfPersistentItem'
+      deprecated: false
+  /InfPersistentItems/nested-object-of-project:
+    get:
+      tags:
+        - InfPersistentItem
+      summary: >-
+        Get e nested object of all information about the persistent item of the
+        project.
+      operationId: InfPersistentItem.nestedObjectOfProject
+      parameters:
+        - name: projectId
+          in: query
+          description: Project id
+          required: true
+          type: number
+          format: double
+        - name: pkEntity
+          in: query
+          description: Primary Key of the persistent item (pk_entity)
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfPersistentItem'
+      deprecated: false
+  /InfPersistentItems/change-project-relation:
+    post:
+      tags:
+        - InfPersistentItem
+      summary: Add a nested object of a InfPersistentItem to the project.
+      operationId: InfPersistentItem.changePeItProjectRelation
+      parameters:
+        - name: projectId
+          in: query
+          description: Id of the project
+          required: true
+          type: number
+          format: double
+        - name: isInProject
+          in: query
+          description: Include or exclude from project.
+          required: true
+          type: boolean
+        - name: data
+          in: body
+          description: data
+          required: true
+          schema:
+            description: data
+            $ref: '#/definitions/InfPersistentItem'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfPersistentItem'
+      deprecated: false
+  /InfPersistentItems/findOrCreate:
+    post:
+      tags:
+        - InfPersistentItem
+      summary: Find or create a InfPersistentItem.
+      operationId: InfPersistentItem.findOrCreatePeIt
+      parameters:
+        - name: projectId
+          in: query
+          description: Id of the project
+          required: true
+          type: number
+          format: double
+        - name: data
+          in: body
+          description: data
+          required: true
+          schema:
+            description: data
+            $ref: '#/definitions/InfPersistentItem'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfPersistentItem'
+      deprecated: false
+  /InfPersistentItems/find-or-create-type:
+    post:
+      tags:
+        - InfPersistentItem
+      summary: Find or create a InfPersistentItem.
+      operationId: InfPersistentItem.findOrCreateType
+      parameters:
+        - name: pk_project
+          in: query
+          description: Id of the project
+          required: true
+          type: number
+          format: double
+        - name: pk_namespace
+          in: query
+          description: Id of the project
+          required: true
+          type: number
+          format: double
+        - name: data
+          in: body
+          description: data
+          required: true
+          schema:
+            description: data
+            $ref: '#/definitions/InfPersistentItem'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfPersistentItem'
+      deprecated: false
+  /InfPersistentItems/nested-object-of-repo:
+    get:
+      tags:
+        - InfPersistentItem
+      summary: >-
+        Get e nested object of all information about the persistent item with
+        the community favorites.
+      operationId: InfPersistentItem.nestedObjectOfRepo
+      parameters:
+        - name: pkEntity
+          in: query
+          description: Primary Key of the persistent item (pk_entity)
+          required: false
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfPersistentItem'
+      deprecated: false
+  /InfPersistentItems/types-of-namespace-class-and-project:
+    get:
+      tags:
+        - InfPersistentItem
+      summary: 'Find types of given namespace, class and project.'
+      operationId: InfPersistentItem.typesOfNamespaceClassAndProject
+      parameters:
+        - name: pk_namespace
+          in: query
+          description: Primary Key of Namespace
+          required: true
+          type: string
+        - name: pk_project
+          in: query
+          description: Primary Key of Project
+          required: true
+          type: number
+          format: double
+        - name: pk_typed_class
+          in: query
+          description: >-
+            Primary Key of Typed Class (e.g. pk of Geographical Place to get
+            Geographical Place Types)
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfPersistentItem'
+      deprecated: false
+  /InfPersistentItems/types-of-class-and-project:
+    get:
+      tags:
+        - InfPersistentItem
+      summary: >-
+        Find types of typed class and project. E.g. get the types for the class
+        'histC8 Geographical Place' (pk_typed_class=363) used in project
+        (pk_project=123)
+      operationId: InfPersistentItem.typesOfClassAndProject
+      parameters:
+        - name: pk_project
+          in: query
+          description: Primary Key of Project
+          required: true
+          type: number
+          format: double
+        - name: pk_typed_class
+          in: query
+          description: >-
+            Primary Key of Typed Class (e.g. pk of Geographical Place to get
+            Geographical Place Types)
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfPersistentItem'
+      deprecated: false
+  /InfPersistentItems/types-of-namespace-nested:
+    get:
+      tags:
+        - InfPersistentItem
+      summary: 'Find types of given namespace, class and project.'
+      operationId: InfPersistentItem.typesOfNamespaceNested
+      parameters:
+        - name: pk_namespace
+          in: query
+          description: Primary Key of Namespace
+          required: true
+          type: string
+        - name: pk_project
+          in: query
+          description: Primary Key of Project
+          required: true
+          type: number
+          format: double
+        - name: pk_entity
+          in: query
+          description: >-
+            Primary Key of the type. Provide this if you want to query one
+            specific type.
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfPersistentItem'
+      deprecated: false
+  /InfPersistentItems/type-nested:
+    get:
+      tags:
+        - InfPersistentItem
+      summary: "Find one type by pk_entity\_with appellations and text properties."
+      operationId: InfPersistentItem.typeNested
+      parameters:
+        - name: pk_project
+          in: query
+          description: Primary Key of Project
+          required: true
+          type: number
+          format: double
+        - name: pk_entity
+          in: query
+          description: >-
+            Primary Key of the type. Provide this if you want to query one
+            specific type.
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfPersistentItem'
+      deprecated: false
+  /InfPersistentItems/add-to-project:
+    post:
+      tags:
+        - InfPersistentItem
+      summary: Add a persistent item with its related elements to a project.
+      operationId: InfPersistentItem.addToProject
+      parameters:
+        - name: pk_project
+          in: query
+          description: Primary Key of Project
+          required: true
+          type: number
+          format: double
+        - name: pk_entity
+          in: query
+          description: Primary Key of the persistent item to add.
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfPersistentItem'
+      deprecated: false
+  /InfPersistentItems/preview:
+    get:
+      tags:
+        - InfPersistentItem
+      summary: Get the preview of a persistent according to project and ui context.
+      operationId: InfPersistentItem.preview
+      parameters:
+        - name: pk_project
+          in: query
+          description: Primary Key of Project
+          required: true
+          type: number
+          format: double
+        - name: pk_entity
+          in: query
+          description: Primary Key of the persistent item.
+          required: true
+          type: number
+          format: double
+        - name: pk_ui_context
+          in: query
+          description: Primary Key of the ui context.
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/WarEntityPreview'
+      deprecated: false
+  /InfEntityProjectRels:
+    patch:
+      tags:
+        - InfEntityProjectRel
+      summary: >-
+        Patch an existing model instance or insert a new one into the data
+        source.
+      operationId: InfEntityProjectRel.patchOrCreate
+      parameters:
+        - name: data
+          in: body
+          description: Model instance data
+          required: false
+          schema:
+            description: Model instance data
+            $ref: '#/definitions/InfEntityProjectRel'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfEntityProjectRel'
+      deprecated: false
+    get:
+      tags:
+        - InfEntityProjectRel
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: InfEntityProjectRel.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfEntityProjectRel'
+      deprecated: false
+  '/InfEntityProjectRels/{id}':
+    get:
+      tags:
+        - InfEntityProjectRel
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: InfEntityProjectRel.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfEntityProjectRel'
+      deprecated: false
+    patch:
+      tags:
+        - InfEntityProjectRel
+      summary: >-
+        Patch attributes for a model instance and persist it into the data
+        source.
+      operationId: InfEntityProjectRel.prototype.patchAttributes
+      parameters:
+        - name: id
+          in: path
+          description: InfEntityProjectRel id
+          required: true
+          type: string
+          format: JSON
+        - name: data
+          in: body
+          description: An object of model property name/value pairs
+          required: false
+          schema:
+            description: An object of model property name/value pairs
+            $ref: '#/definitions/InfEntityProjectRel'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfEntityProjectRel'
+      deprecated: false
+  /InfEntityProjectRels/updateEprAttributes:
+    put:
+      tags:
+        - InfEntityProjectRel
+      summary: Updates the InfEntityProjectRel found by projectId and pkEntity.
+      operationId: InfEntityProjectRel.updateEprAttributes
+      parameters:
+        - name: projectId
+          in: query
+          description: Project id
+          required: true
+          type: number
+          format: double
+        - name: pkEntity
+          in: query
+          description: pk_entity
+          required: true
+          type: number
+          format: double
+        - name: eprAttributes
+          in: body
+          description: >-
+            Instance of InfEntityProjectRel (fk_project and fk_entity will be
+            ignored)
+          required: true
+          schema:
+            description: >-
+              Instance of InfEntityProjectRel (fk_project and fk_entity will be
+              ignored)
+            $ref: '#/definitions/InfEntityProjectRel'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfEntityProjectRel'
+      deprecated: false
+  '/DfhClasses/{id}/class_fields/rel/{fk}':
+    put:
+      tags:
+        - DfhClass
+      summary: Zugehöriges Element nach ID für class_fields hinzufügen.
+      operationId: DfhClass.prototype.__link__class_fields
+      parameters:
+        - name: id
+          in: path
+          description: DfhClass id
+          required: true
+          type: string
+          format: JSON
+        - name: fk
+          in: path
+          description: Fremdschlüssel für class_fields
+          required: true
+          type: string
+          format: JSON
+        - name: data
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/ComUiContextConfig'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/ComUiContextConfig'
+      deprecated: false
+    delete:
+      tags:
+        - DfhClass
+      summary: class_fields-Beziehung zu einem Element nach ID entfernen.
+      operationId: DfhClass.prototype.__unlink__class_fields
+      parameters:
+        - name: id
+          in: path
+          description: DfhClass id
+          required: true
+          type: string
+          format: JSON
+        - name: fk
+          in: path
+          description: Fremdschlüssel für class_fields
+          required: true
+          type: string
+          format: JSON
+      responses:
+        '204':
+          description: Request was successful
+      deprecated: false
+    head:
+      tags:
+        - DfhClass
+      summary: >-
+        Vorhandensein von class_fields-Beziehung zu einem Element nach ID
+        prüfen.
+      operationId: DfhClass.prototype.__exists__class_fields
+      parameters:
+        - name: id
+          in: path
+          description: DfhClass id
+          required: true
+          type: string
+          format: JSON
+        - name: fk
+          in: path
+          description: Fremdschlüssel für class_fields
+          required: true
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: boolean
+      deprecated: false
+  '/DfhClasses/{id}/labels':
+    get:
+      tags:
+        - DfhClass
+      summary: Abfrage von labels von DfhClass.
+      operationId: DfhClass.prototype.__get__labels
+      parameters:
+        - name: id
+          in: path
+          description: DfhClass id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhLabel'
+      deprecated: false
+  '/DfhClasses/{id}/text_properties':
+    get:
+      tags:
+        - DfhClass
+      summary: Abfrage von text_properties von DfhClass.
+      operationId: DfhClass.prototype.__get__text_properties
+      parameters:
+        - name: id
+          in: path
+          description: DfhClass id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhTextProperty'
+      deprecated: false
+  '/DfhClasses/{id}':
+    get:
+      tags:
+        - DfhClass
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: DfhClass.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/DfhClass'
+      deprecated: false
+  /DfhClasses:
+    get:
+      tags:
+        - DfhClass
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: DfhClass.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhClass'
+      deprecated: false
+  /DfhClasses/selected-classes-of-profile:
+    get:
+      tags:
+        - DfhClass
+      summary: >-
+        Get all classes that are selected by the profile of the specified
+        primary-key.
+      operationId: DfhClass.selectedClassesOfProfile
+      parameters:
+        - name: dfh_pk_profile
+          in: query
+          description: Profile id
+          required: false
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhClass'
+      deprecated: false
+  /DfhClasses/selected-pe-it-classes-of-profile:
+    get:
+      tags:
+        - DfhClass
+      summary: >-
+        Get all classes of persistent items that are selected and, if provided,
+        filtered by the profile of the specified primary-key.
+      operationId: DfhClass.selectedPeItClassesOfProfile
+      parameters:
+        - name: dfh_pk_profile
+          in: query
+          description: Profile id
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhClass'
+      deprecated: false
+  /DfhClasses/properties-and-ui-elements:
+    get:
+      tags:
+        - DfhClass
+      summary: Get ingoing and outgoing properties and ui elements of class
+      operationId: DfhClass.propertiesAndUiElements
+      parameters:
+        - name: pk_class
+          in: query
+          description: Provide the dfh_pk_class to query one specific class
+          required: true
+          type: number
+          format: double
+        - name: pk_ui_context
+          in: query
+          description: Provide the pk_entity of the ui_context to query
+          required: true
+          type: number
+          format: double
+        - name: pk_project
+          in: query
+          description: >-
+            Provide a pk_project for loading the settings of a project or leaf
+            it blank to query the default settings.
+          required: false
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhClass'
+      deprecated: false
+  /DfhClasses/project-settings-class-list:
+    get:
+      tags:
+        - DfhClass
+      summary: >-
+        Get a list of classes with info about the status they have int the
+        project (used for the poject-settings > data-settings page).
+      operationId: DfhClass.projectSettingsClassList
+      parameters:
+        - name: pk_project
+          in: query
+          description: The pk_project for whicht the list of classes is loaded.
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhClass'
+      deprecated: false
+  '/DfhProperties/{id}/labels':
+    get:
+      tags:
+        - DfhProperty
+      summary: Abfrage von labels von DfhProperty.
+      operationId: DfhProperty.prototype.__get__labels
+      parameters:
+        - name: id
+          in: path
+          description: DfhProperty id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhLabel'
+      deprecated: false
+  '/DfhProperties/{id}/text_properties':
+    get:
+      tags:
+        - DfhProperty
+      summary: Abfrage von text_properties von DfhProperty.
+      operationId: DfhProperty.prototype.__get__text_properties
+      parameters:
+        - name: id
+          in: path
+          description: DfhProperty id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhTextProperty'
+      deprecated: false
+  '/DfhProperties/{id}':
+    get:
+      tags:
+        - DfhProperty
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: DfhProperty.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/DfhProperty'
+      deprecated: false
+    patch:
+      tags:
+        - DfhProperty
+      summary: >-
+        Patch attributes for a model instance and persist it into the data
+        source.
+      operationId: DfhProperty.prototype.patchAttributes
+      parameters:
+        - name: id
+          in: path
+          description: DfhProperty id
+          required: true
+          type: string
+          format: JSON
+        - name: data
+          in: body
+          description: An object of model property name/value pairs
+          required: false
+          schema:
+            description: An object of model property name/value pairs
+            $ref: '#/definitions/DfhProperty'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/DfhProperty'
+      deprecated: false
+  /DfhProperties:
+    get:
+      tags:
+        - DfhProperty
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: DfhProperty.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhProperty'
+      deprecated: false
+  /DfhProperties/selected-pe-it-classes-of-profile:
+    get:
+      tags:
+        - DfhProperty
+      summary: >-
+        Get all properties that are enabled and not removed from project, with
+        labels, text_properties, domain_class, range_class.
+      operationId: DfhProperty.propertyByDomainClass
+      parameters:
+        - name: dfh_pk_property
+          in: query
+          description: dfh_pk_property
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhProperty'
+      deprecated: false
+  /DfhProperties/property-field-info:
+    get:
+      tags:
+        - DfhProperty
+      summary: >-
+        Get all properties that used as a field by the app, including the
+        labels.
+      operationId: DfhProperty.propertyFieldInfo
+      parameters:
+        - name: isOutgoing
+          in: query
+          description: ''
+          required: true
+          type: boolean
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhProperty'
+      deprecated: false
+  /DfhLabels:
+    post:
+      tags:
+        - DfhLabel
+      summary: Create a new instance of the model and persist it into the data source.
+      operationId: DfhLabel.create
+      parameters:
+        - name: data
+          in: body
+          description: Model instance data
+          required: false
+          schema:
+            description: Model instance data
+            $ref: '#/definitions/DfhLabel'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/DfhLabel'
+      deprecated: false
+    get:
+      tags:
+        - DfhLabel
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: DfhLabel.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhLabel'
+      deprecated: false
+  '/DfhLabels/{id}':
+    get:
+      tags:
+        - DfhLabel
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: DfhLabel.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/DfhLabel'
+      deprecated: false
+    delete:
+      tags:
+        - DfhLabel
+      summary: 'Delete a model instance by {{id}} from the data source.'
+      operationId: DfhLabel.deleteById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: object
+      deprecated: false
+    patch:
+      tags:
+        - DfhLabel
+      summary: >-
+        Patch attributes for a model instance and persist it into the data
+        source.
+      operationId: DfhLabel.prototype.patchAttributes
+      parameters:
+        - name: id
+          in: path
+          description: DfhLabel id
+          required: true
+          type: string
+          format: JSON
+        - name: data
+          in: body
+          description: An object of model property name/value pairs
+          required: false
+          schema:
+            description: An object of model property name/value pairs
+            $ref: '#/definitions/DfhLabel'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/DfhLabel'
+      deprecated: false
+  '/DfhTextProperties/{id}':
+    get:
+      tags:
+        - DfhTextProperty
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: DfhTextProperty.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/DfhTextProperty'
+      deprecated: false
+  /DfhTextProperties:
+    get:
+      tags:
+        - DfhTextProperty
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: DfhTextProperty.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhTextProperty'
+      deprecated: false
+  '/InfTimePrimitives/{id}':
+    get:
+      tags:
+        - InfTimePrimitive
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: InfTimePrimitive.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfTimePrimitive'
+      deprecated: false
+  /InfTimePrimitives:
+    get:
+      tags:
+        - InfTimePrimitive
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: InfTimePrimitive.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfTimePrimitive'
+      deprecated: false
+  '/InfChunks/{id}':
+    get:
+      tags:
+        - InfChunk
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: InfChunk.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfChunk'
+      deprecated: false
+  /InfChunks:
+    get:
+      tags:
+        - InfChunk
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: InfChunk.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfChunk'
+      deprecated: false
+  /InfChunks/findOrCreate:
+    post:
+      tags:
+        - InfChunk
+      summary: Find or create a InfChunk and update the project relation if needed.
+      operationId: InfChunk.findOrCreateChunk
+      parameters:
+        - name: projectId
+          in: query
+          description: Id of the project
+          required: true
+          type: number
+          format: double
+        - name: data
+          in: body
+          description: data
+          required: true
+          schema:
+            description: data
+            $ref: '#/definitions/InfChunk'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfChunk'
+      deprecated: false
+  '/InfEntityAssociations/{id}':
+    get:
+      tags:
+        - InfEntityAssociation
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: InfEntityAssociation.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfEntityAssociation'
+      deprecated: false
+  /InfEntityAssociations:
+    get:
+      tags:
+        - InfEntityAssociation
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: InfEntityAssociation.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfEntityAssociation'
+      deprecated: false
+  /InfEntityAssociations/findOrCreate:
+    post:
+      tags:
+        - InfEntityAssociation
+      summary: Find or create an information entity association.
+      operationId: InfEntityAssociation.findOrCreateInfEntityAssociation
+      parameters:
+        - name: projectId
+          in: query
+          description: Id of the project
+          required: true
+          type: number
+          format: double
+        - name: data
+          in: body
+          description: data
+          required: true
+          schema:
+            description: data
+            $ref: '#/definitions/InfEntityAssociation'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfEntityAssociation'
+      deprecated: false
+  /InfEntityAssociations/nested-object:
+    get:
+      tags:
+        - InfEntityAssociation
+      summary: >-
+        Get e nested object of all information about the found entity
+        associations.
+      operationId: InfEntityAssociation.nestedObject
+      parameters:
+        - name: ofProject
+          in: query
+          description: 'if true, finds project version. if false, finds repo version.'
+          required: true
+          type: boolean
+        - name: pkProject
+          in: query
+          description: >-
+            Primary Key of the Project. If provided and ofProject=false, makes a
+            left join with project
+          required: false
+          type: number
+          format: double
+        - name: pkEntity
+          in: query
+          description: Primary Key of the entity association (pk_entity)
+          required: false
+          type: number
+          format: double
+        - name: pkRangeEntity
+          in: query
+          description: >-
+            Foreign Key of the entity association pointing to the range entity
+            (fk_range_entity)
+          required: false
+          type: number
+          format: double
+        - name: pkDomainEntity
+          in: query
+          description: >-
+            Foreign Key of the entity association pointing to the domain entity
+            (fk_domain_entity)
+          required: false
+          type: number
+          format: double
+        - name: pkProperty
+          in: query
+          description: >-
+            Foreign Key of the entity association pointing to the property
+            (fk_property)
+          required: false
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfEntityAssociation'
+      deprecated: false
+  /InfEntityAssociations/find-by-params:
+    get:
+      tags:
+        - InfEntityAssociation
+      summary: Find entity associations by params.
+      operationId: InfEntityAssociation.queryByParams
+      parameters:
+        - name: ofProject
+          in: query
+          description: 'if true, finds project version. if false, finds repo version.'
+          required: true
+          type: boolean
+        - name: pkProject
+          in: query
+          description: >-
+            Primary Key of the Project. If provided and ofProject=false, makes a
+            left join with project
+          required: false
+          type: number
+          format: double
+        - name: pkEntity
+          in: query
+          description: Primary Key of the entity association (pk_entity)
+          required: false
+          type: number
+          format: double
+        - name: pkRangeEntity
+          in: query
+          description: >-
+            Foreign Key of the entity association pointing to the range entity
+            (fk_range_entity)
+          required: false
+          type: number
+          format: double
+        - name: pkDomainEntity
+          in: query
+          description: >-
+            Foreign Key of the entity association pointing to the domain entity
+            (fk_domain_entity)
+          required: false
+          type: number
+          format: double
+        - name: pkProperty
+          in: query
+          description: >-
+            Foreign Key of the entity association pointing to the property
+            (fk_property)
+          required: false
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/x-any'
+      deprecated: false
+  /InfEntityAssociations/mentionings:
+    get:
+      tags:
+        - InfEntityAssociation
+      summary: "Get mentionigs of a project and filter by domain or range of 'geovP2 – is mentioned in'. Returns\_also context information, if the range is a F2 Expression (section), geovC2 Chunk or geovC3 Spot."
+      operationId: InfEntityAssociation.mentionings
+      parameters:
+        - name: ofProject
+          in: query
+          description: 'if true, finds project version. if false, finds repo version.'
+          required: true
+          type: boolean
+        - name: pkProject
+          in: query
+          description: >-
+            Primary Key of the Project. If provided and ofProject=false, makes a
+            left join with project
+          required: true
+          type: number
+          format: double
+        - name: pkRangeEntity
+          in: query
+          description: >-
+            Foreign Key (fk_range_entity) to the source/section/chunk/spot that
+            mentiones (range of 'geovP2 – is mentioned in')
+          required: false
+          type: number
+          format: double
+        - name: pkDomainEntity
+          in: query
+          description: >-
+            Foreign Key (fk_domain_entity) to the mentioned entity (domain of
+            'geovP2 – is mentioned in')
+          required: false
+          type: number
+          format: double
+        - name: pkSource
+          in: query
+          description: Primary Key of the entity association (pk_entity)
+          required: false
+          type: number
+          format: double
+        - name: pkExpression
+          in: query
+          description: Primary Key of the entity association (pk_entity)
+          required: false
+          type: number
+          format: double
+        - name: pkChunk
+          in: query
+          description: Primary Key of the entity association (pk_entity)
+          required: false
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/x-any'
+      deprecated: false
+  /InfEntityAssociations/mentionings-of-section:
+    get:
+      tags:
+        - InfEntityAssociation
+      summary: Find mentionings of section (F2 Expression).
+      operationId: InfEntityAssociation.mentioningsOfSection
+      parameters:
+        - name: ofProject
+          in: query
+          description: 'if true, finds project version. if false, finds repo version.'
+          required: true
+          type: boolean
+        - name: pkProject
+          in: query
+          description: >-
+            Primary Key of the Project. If provided and ofProject=false, makes a
+            left join with project
+          required: true
+          type: number
+          format: double
+        - name: pkEntity
+          in: query
+          description: Primary Key of the entity association (pk_entity)
+          required: false
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/x-any'
+      deprecated: false
+  /InfDigitalObjects/save-with-epr:
+    put:
+      tags:
+        - InfDigitalObject
+      summary: >-
+        Creates or updates the instance of InfDigitalObject and creates or
+        updates its relation to the project of given projectId.
+      operationId: InfDigitalObject.saveWithEpr
+      parameters:
+        - name: data
+          in: body
+          description: Instance of InfDigitalObject
+          required: true
+          schema:
+            description: Instance of InfDigitalObject
+            $ref: '#/definitions/InfDigitalObject'
+        - name: projectId
+          in: query
+          description: Project id
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfDigitalObject'
+      deprecated: false
+  /InfDigitalObjects/find-project-version:
+    get:
+      tags:
+        - InfDigitalObject
+      summary: >-
+        Finds the versions of given projectId. If pkEntity is given, finds
+        version of this one.
+      operationId: InfDigitalObject.findProjectVersion
+      parameters:
+        - name: projectId
+          in: query
+          description: Project id
+          required: true
+          type: number
+          format: double
+        - name: pkEntity
+          in: query
+          description: Primary Key of the digital object (pk_entity)
+          required: false
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfDigitalObject'
+      deprecated: false
+  /InfDigitalObjects/get-versions:
+    get:
+      tags:
+        - InfDigitalObject
+      summary: Finds the versions of given pkEntity.
+      operationId: InfDigitalObject.getVersions
+      parameters:
+        - name: pkEntity
+          in: query
+          description: Primary Key of the digital object (pk_entity)
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfDigitalObject'
+      deprecated: false
+  /InfDigitalObjects/get-latest-version:
+    get:
+      tags:
+        - InfDigitalObject
+      summary: Finds the latest version of given pkEntity.
+      operationId: InfDigitalObject.getLatestVersion
+      parameters:
+        - name: pkEntity
+          in: query
+          description: Primary Key of the digital object (pk_entity)
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfDigitalObject'
+      deprecated: false
+  /InfDigitalObjects/nested-object-of-project:
+    get:
+      tags:
+        - InfDigitalObject
+      summary: >-
+        Get e nested object of all information about the digital object of the
+        project.
+      operationId: InfDigitalObject.nestedObjectOfProject
+      parameters:
+        - name: projectId
+          in: query
+          description: Project id
+          required: true
+          type: number
+          format: double
+        - name: pkEntity
+          in: query
+          description: Primary Key of the digital object (pk_entity)
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfDigitalObject'
+      deprecated: false
+  '/InfPlaces/{id}':
+    get:
+      tags:
+        - InfPlace
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: InfPlace.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfPlace'
+      deprecated: false
+  /InfPlaces:
+    get:
+      tags:
+        - InfPlace
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: InfPlace.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfPlace'
+      deprecated: false
+  /InfPlaces/findOrCreate:
+    post:
+      tags:
+        - InfPlace
+      summary: Find or create a InfPlace and update the project relation if needed.
+      operationId: InfPlace.findOrCreatePlace
+      parameters:
+        - name: projectId
+          in: query
+          description: Id of the project
+          required: true
+          type: number
+          format: double
+        - name: data
+          in: body
+          description: data
+          required: true
+          schema:
+            description: data
+            $ref: '#/definitions/InfPlace'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfPlace'
+      deprecated: false
+  /WarEntityPreviews/search:
+    get:
+      tags:
+        - WarEntityPreview
+      summary: Find data unit previews.
+      operationId: WarEntityPreview.search
+      parameters:
+        - name: pkProject
+          in: query
+          description: 'pkProject, if none provided, searches in repo'
+          required: false
+          type: number
+          format: double
+        - name: searchString
+          in: query
+          description: Search String
+          required: false
+          type: string
+        - name: pkClasses
+          in: query
+          description: Classes for which the search will be performed.
+          required: false
+          type: string
+          format: JSON
+        - name: entityType
+          in: query
+          description: 'Type of DataUnit: ''teEn'' or ''peIt''.'
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: 'Max. number of results per page [default=10; max=200]'
+          required: false
+          type: number
+          format: double
+        - name: page
+          in: query
+          description: Page of pagination
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: object
+      deprecated: false
+  /WarEntityPreviews/search-existing:
+    get:
+      tags:
+        - WarEntityPreview
+      summary: >-
+        Find data unit previews, while entities in provided project have
+        priority over repo versions.
+      operationId: WarEntityPreview.searchExisting
+      parameters:
+        - name: pkProject
+          in: query
+          description: pkProject
+          required: true
+          type: number
+          format: double
+        - name: searchString
+          in: query
+          description: Search String
+          required: false
+          type: string
+        - name: pkClasses
+          in: query
+          description: Classes for which the search will be performed.
+          required: false
+          type: string
+          format: JSON
+        - name: entityType
+          in: query
+          description: 'Type of DataUnit: ''teEn'' or ''peIt''.'
+          required: false
+          type: string
+        - name: limit
+          in: query
+          description: 'Max. number of results per page [default=10; max=200]'
+          required: false
+          type: number
+          format: double
+        - name: page
+          in: query
+          description: Page of pagination
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: object
+      deprecated: false
+  '/DfhClassProfileViews/{id}':
+    get:
+      tags:
+        - DfhClassProfileView
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: DfhClassProfileView.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/DfhClassProfileView'
+      deprecated: false
+  /DfhClassProfileViews:
+    get:
+      tags:
+        - DfhClassProfileView
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: DfhClassProfileView.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhClassProfileView'
+      deprecated: false
+  /DfhPropertyProfileViews:
+    get:
+      tags:
+        - DfhPropertyProfileView
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: DfhPropertyProfileView.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhPropertyProfileView'
+      deprecated: false
+  /ComUiContexts:
+    get:
+      tags:
+        - ComUiContext
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: ComUiContext.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ComUiContext'
+      deprecated: false
+  /ComUiContexts/ui-config:
+    get:
+      tags:
+        - ComUiContext
+      summary: Get the UI Configuration for classes.
+      operationId: ComUiContext.uiConfig
+      parameters:
+        - name: pk_ui_context
+          in: query
+          description: pk_entity of ui_context
+          required: false
+          type: number
+          format: double
+        - name: pk_project
+          in: query
+          description: pk_project of project
+          required: false
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DfhClass'
+      deprecated: false
+  /ComUiContextConfigs:
+    patch:
+      tags:
+        - ComUiContextConfig
+      summary: >-
+        Patch an existing model instance or insert a new one into the data
+        source.
+      operationId: ComUiContextConfig.patchOrCreate
+      parameters:
+        - name: data
+          in: body
+          description: Model instance data
+          required: false
+          schema:
+            description: Model instance data
+            $ref: '#/definitions/ComUiContextConfig'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/ComUiContextConfig'
+      deprecated: false
+    get:
+      tags:
+        - ComUiContextConfig
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: ComUiContextConfig.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ComUiContextConfig'
+      deprecated: false
+  /DfhProjRels:
+    post:
+      tags:
+        - DfhProjRel
+      summary: Create a new instance of the model and persist it into the data source.
+      operationId: DfhProjRel.create
+      parameters:
+        - name: data
+          in: body
+          description: Model instance data
+          required: false
+          schema:
+            description: Model instance data
+            $ref: '#/definitions/DfhProjRel'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/DfhProjRel'
+      deprecated: false
+  '/DfhProjRels/{id}':
+    get:
+      tags:
+        - DfhProjRel
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: DfhProjRel.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/DfhProjRel'
+      deprecated: false
+    patch:
+      tags:
+        - DfhProjRel
+      summary: >-
+        Patch attributes for a model instance and persist it into the data
+        source.
+      operationId: DfhProjRel.prototype.patchAttributes
+      parameters:
+        - name: id
+          in: path
+          description: DfhProjRel id
+          required: true
+          type: string
+          format: JSON
+        - name: data
+          in: body
+          description: An object of model property name/value pairs
+          required: false
+          schema:
+            description: An object of model property name/value pairs
+            $ref: '#/definitions/DfhProjRel'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/DfhProjRel'
+      deprecated: false
+  '/InfNamespaces/{id}':
+    get:
+      tags:
+        - InfNamespace
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: InfNamespace.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfNamespace'
+      deprecated: false
+  /InfNamespaces:
+    get:
+      tags:
+        - InfNamespace
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: InfNamespace.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfNamespace'
+      deprecated: false
+  /InfNamespaces/find-where-project-or-has-types:
+    get:
+      tags:
+        - InfNamespace
+      summary: >-
+        Find Namespaces that have at least one type instance that is used to
+        type the given class or where the Namespace belongs to the given
+        project. Root Namespaces are excluded. Geovistory Ongoing is allways
+        included.
+      operationId: InfNamespace.findWhereProjectOrHasTypes
+      parameters:
+        - name: pk_class
+          in: query
+          description: Primary Key of the typed class (e.g. of Group for Group Types)
+          required: true
+          type: number
+          format: double
+        - name: pk_project
+          in: query
+          description: Primary Key of the the current project
+          required: true
+          type: number
+          format: double
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfNamespace'
+      deprecated: false
+  '/InfTypeNamespaceRels/{id}':
+    get:
+      tags:
+        - InfTypeNamespaceRel
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: InfTypeNamespaceRel.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfTypeNamespaceRel'
+      deprecated: false
+  '/InfTextProperties/{id}':
+    get:
+      tags:
+        - InfTextProperty
+      summary: 'Find a model instance by {{id}} from the data source.'
+      operationId: InfTextProperty.findById
+      parameters:
+        - name: id
+          in: path
+          description: Model id
+          required: true
+          type: string
+          format: JSON
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields and include - must be a JSON-encoded string
+            ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfTextProperty'
+      deprecated: false
+  /InfTextProperties:
+    get:
+      tags:
+        - InfTextProperty
+      summary: Find all instances of the model matched by filter from the data source.
+      operationId: InfTextProperty.find
+      parameters:
+        - name: filter
+          in: query
+          description: >-
+            Filter defining fields, where, include, order, offset, and limit -
+            must be a JSON-encoded string ({"something":"value"})
+          required: false
+          type: string
+          format: JSON
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InfTextProperty'
+      deprecated: false
+  /InfTextProperties/findOrCreate:
+    post:
+      tags:
+        - InfTextProperty
+      summary: >-
+        Find or create a InfTextProperty and update the project relation if
+        needed.
+      operationId: InfTextProperty.findOrCreateInfTextProperty
+      parameters:
+        - name: projectId
+          in: query
+          description: Id of the project
+          required: true
+          type: number
+          format: double
+        - name: data
+          in: body
+          description: data
+          required: true
+          schema:
+            description: data
+            $ref: '#/definitions/InfTextProperty'
+      responses:
+        '200':
+          description: Request was successful
+          schema:
+            $ref: '#/definitions/InfTextProperty'
+      deprecated: false
+tags:
+  - name: ComClassField
+  - name: PubAccount
+  - name: ComProject
+  - name: ComLanguage
+  - name: InfAppellation
+  - name: InfTemporalEntity
+  - name: InfRole
+  - name: InfLanguage
+  - name: InfPersistentItem
+  - name: InfEntityProjectRel
+  - name: DfhClass
+  - name: DfhProperty
+  - name: DfhLabel
+  - name: DfhTextProperty
+  - name: InfTimePrimitive
+  - name: InfChunk
+  - name: InfEntityAssociation
+  - name: InfDigitalObject
+  - name: InfPlace
+  - name: WarEntityPreview
+  - name: DfhClassProfileView
+  - name: DfhPropertyProfileView
+  - name: ComUiContext
+  - name: ComUiContextConfig
+  - name: DfhProjRel
+  - name: InfNamespace
+  - name: InfTypeNamespaceRel
+  - name: InfTextProperty
+consumes:
+  - application/json
+  - application/x-www-form-urlencoded
+  - application/xml
+  - text/xml
+produces:
+  - application/json
+  - application/xml
+  - text/xml
+  - application/javascript
+  - text/javascript
+definitions:
+  x-any:
+    properties: {}
+  ComUiContextConfig:
+    properties:
+      pk_entity:
+        type: number
+        format: double
+      fk_ui_context:
+        type: number
+        format: double
+      fk_project:
+        type: number
+        format: double
+      fk_property:
+        type: number
+        format: double
+      fk_class_field:
+        type: number
+        format: double
+      property_is_outgoing:
+        type: boolean
+      ord_num:
+        type: number
+        format: double
+      fk_class_for_class_field:
+        type: number
+        format: double
+    required:
+      - fk_ui_context
+    additionalProperties: false
+  ComClassField:
+    properties:
+      pk_entity:
+        type: number
+        format: double
+      description:
+        type: string
+      label:
+        type: string
+      fk_system_type_ng_component:
+        type: number
+        format: double
+      used_table:
+        type: string
+    additionalProperties: false
+  PubAccountProjectRel:
+    properties:
+      role:
+        default: admin
+        type: string
+      id:
+        type: number
+        format: double
+      account_id:
+        type: number
+        format: double
+      fk_project:
+        type: number
+        format: double
+    required:
+      - role
+    additionalProperties: false
+  ComProject:
+    properties:
+      notes:
+        type: string
+      pk_project:
+        type: number
+        format: double
+      pk_entity:
+        type: number
+        format: double
+      fk_language:
+        type: string
+    additionalProperties: false
+  PubAccount:
+    properties:
+      id:
+        type: number
+        format: double
+      realm:
+        type: string
+      username:
+        type: string
+      email:
+        type: string
+      emailVerified:
+        type: boolean
+    required:
+      - email
+    additionalProperties: false
+  Role:
+    properties:
+      id:
+        type: number
+        format: double
+      name:
+        type: string
+      description:
+        type: string
+      created:
+        type: string
+        format: date-time
+      modified:
+        type: string
+        format: date-time
+    required:
+      - name
+    additionalProperties: false
+  InfEntityProjectRel:
+    properties:
+      pk_entity_version_project_rel:
+        type: number
+        format: double
+      pk_entity:
+        type: number
+        format: double
+      fk_project:
+        type: number
+        format: double
+      fk_entity:
+        type: number
+        format: double
+      fk_entity_version:
+        type: string
+      fk_entity_version_concat:
+        type: string
+      is_in_project:
+        type: boolean
+      is_standard_in_project:
+        type: boolean
+      calendar:
+        type: string
+      ord_num:
+        type: number
+        format: double
+      tmsp_last_modification:
+        type: string
+    required:
+      - fk_project
+    additionalProperties: false
+  ComLanguage:
+    properties:
+      pk_language:
+        type: string
+      lang_type:
+        type: string
+      scope:
+        type: string
+      iso6392b:
+        type: string
+      iso6392t:
+        type: string
+      iso6391:
+        type: string
+      notes:
+        type: string
+    required:
+      - pk_language
+    additionalProperties: false
+  InfAppellation:
+    properties:
+      appellation_label:
+        $ref: '#/definitions/x-any'
+      fk_class:
+        type: number
+        format: double
+      notes:
+        type: string
+      pk_entity:
+        type: number
+        format: double
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    required:
+      - appellation_label
+      - fk_class
+    additionalProperties: false
+  InfTemporalEntity:
+    properties:
+      fk_class:
+        type: number
+        format: double
+      notes:
+        type: string
+      pk_entity:
+        type: number
+        format: double
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    required:
+      - fk_class
+    additionalProperties: false
+  InfRole:
+    properties:
+      fk_property:
+        type: number
+        format: double
+      fk_entity:
+        type: number
+        format: double
+      fk_temporal_entity:
+        type: number
+        format: double
+      is_in_project_count:
+        type: number
+        format: double
+      is_standard_in_project_count:
+        type: number
+        format: double
+      community_favorite_calendar:
+        type: string
+      rank_for_te_ent:
+        type: number
+        format: double
+      range_max_quantifier:
+        type: number
+        format: double
+      rank_for_pe_it:
+        type: number
+        format: double
+      domain_max_quantifier:
+        type: number
+        format: double
+      pk_entity:
+        type: number
+        format: double
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    required:
+      - fk_property
+      - fk_entity
+      - fk_temporal_entity
+    additionalProperties: false
+  InfLanguage:
+    properties:
+      fk_class:
+        type: number
+        format: double
+      pk_language:
+        type: string
+      lang_type:
+        type: string
+      scope:
+        type: string
+      iso6392b:
+        type: string
+      iso6392t:
+        type: string
+      iso6391:
+        type: string
+      notes:
+        type: string
+      pk_entity:
+        type: number
+        format: double
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    additionalProperties: false
+  InfPersistentItem:
+    properties:
+      fk_class:
+        type: number
+        format: double
+      pk_entity:
+        type: number
+        format: double
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    required:
+      - fk_class
+    additionalProperties: false
+  WarEntityPreview:
+    properties:
+      pk_entity:
+        type: number
+        format: double
+      fk_project:
+        type: number
+        format: double
+      fk_class:
+        type: number
+        format: double
+      class_label:
+        type: string
+      entity_label:
+        type: string
+      entity_type:
+        type: string
+      type_label:
+        type: string
+      fk_type:
+        type: number
+        format: double
+      time_span:
+        type: object
+    required:
+      - pk_entity
+    additionalProperties: false
+  DfhLabel:
+    properties:
+      pk_entity:
+        type: number
+        format: double
+      dfh_pk_label:
+        type: number
+        format: double
+      dfh_label:
+        type: string
+      dfh_language_iso_code:
+        type: string
+      dfh_is_standard_label_for_language:
+        type: boolean
+      dfh_fk_property:
+        type: number
+        format: double
+      dfh_fk_namespace:
+        type: number
+        format: double
+      dfh_fk_class:
+        type: number
+        format: double
+      dfh_fk_project:
+        type: number
+        format: double
+      dfh_fk_class_type:
+        type: number
+        format: double
+      dfh_fk_property_type:
+        type: number
+        format: double
+      dfh_fk_profile:
+        type: number
+        format: double
+      dfh_creation_time:
+        type: string
+        format: date-time
+      dfh_modification_time:
+        type: string
+        format: date-time
+      com_fk_system_type:
+        type: number
+        format: double
+      inf_fk_language:
+        type: number
+        format: double
+      entity_version:
+        type: number
+        format: double
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    required:
+      - dfh_label
+    additionalProperties: false
+  DfhTextProperty:
+    properties:
+      dfh_pk_text_property:
+        type: number
+        format: double
+      dfh_text_property:
+        type: string
+      dfh_language_iso_code:
+        type: string
+      dfh_creation_time:
+        type: string
+        format: date-time
+      dfh_modification_time:
+        type: string
+        format: date-time
+      dfh_fk_property:
+        type: number
+        format: double
+      dfh_fk_namespace:
+        type: number
+        format: double
+      dfh_fk_class:
+        type: number
+        format: double
+      dfh_fk_project:
+        type: number
+        format: double
+      dfh_fk_class_type:
+        type: number
+        format: double
+      dfh_fk_property_type:
+        type: number
+        format: double
+      dfh_fk_system_type:
+        type: number
+        format: double
+      dfh_fk_entity_association:
+        type: number
+        format: double
+      dfh_fk_profile:
+        type: number
+        format: double
+      dfh_fk_is_subclass_of:
+        type: number
+        format: double
+      pk_entity:
+        type: number
+        format: double
+      entity_version:
+        type: number
+        format: double
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    required:
+      - dfh_pk_text_property
+      - dfh_text_property
+    additionalProperties: false
+  DfhClass:
+    properties:
+      dfh_pk_class:
+        type: number
+        format: double
+      dfh_identifier_in_namespace:
+        type: string
+      dfh_standard_label:
+        type: string
+      pk_entity:
+        type: number
+        format: double
+      entity_version:
+        type: number
+        format: double
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    additionalProperties: false
+  DfhProperty:
+    properties:
+      dfh_pk_property:
+        type: number
+        format: double
+      dfh_identifier_in_namespace:
+        type: string
+      dfh_has_domain:
+        type: number
+        format: double
+      dfh_has_range:
+        type: number
+        format: double
+      dfh_creation_time:
+        type: string
+        format: date-time
+      dfh_modification_time:
+        type: string
+        format: date-time
+      dfh_standard_label:
+        type: string
+      dfh_fk_property_of_origin:
+        type: number
+        format: double
+      dfh_domain_instances_min_quantifier:
+        type: number
+        format: double
+      dfh_domain_instances_max_quantifier:
+        type: number
+        format: double
+      dfh_range_instances_min_quantifier:
+        type: number
+        format: double
+      dfh_range_instances_max_quantifier:
+        type: number
+        format: double
+      identity_defining:
+        type: boolean
+      pk_entity:
+        type: number
+        format: double
+      entity_version:
+        type: number
+        format: double
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    required:
+      - dfh_pk_property
+      - dfh_has_domain
+      - dfh_has_range
+    additionalProperties: false
+  InfTimePrimitive:
+    properties:
+      fk_class:
+        type: number
+        format: double
+      julian_day:
+        type: number
+        format: double
+      duration:
+        type: string
+      pk_entity:
+        type: number
+        format: double
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    required:
+      - fk_class
+      - julian_day
+      - duration
+    additionalProperties: false
+  InfChunk:
+    properties:
+      fk_digital_object:
+        type: number
+        format: double
+      js_quill_data:
+        type: object
+      pk_entity:
+        type: number
+        format: double
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    required:
+      - fk_digital_object
+      - js_quill_data
+    additionalProperties: false
+  InfEntityAssociation:
+    properties:
+      fk_property:
+        type: number
+        format: double
+      fk_domain_entity:
+        type: number
+        format: double
+      fk_range_entity:
+        type: number
+        format: double
+      pk_entity:
+        type: number
+        format: double
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    required:
+      - fk_property
+      - fk_domain_entity
+      - fk_range_entity
+    additionalProperties: false
+  InfDigitalObject:
+    properties:
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+      js_quill_data:
+        type: object
+      pk_entity_version_concat:
+        type: string
+      pk_entity:
+        type: number
+        format: double
+      entity_version:
+        type: number
+        format: double
+    required:
+      - js_quill_data
+      - pk_entity_version_concat
+    additionalProperties: false
+  InfPlace:
+    properties:
+      long:
+        type: number
+        format: double
+      lat:
+        type: number
+        format: double
+      fk_class:
+        type: number
+        format: double
+      pk_entity:
+        type: number
+        format: double
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    required:
+      - long
+      - lat
+      - fk_class
+    additionalProperties: false
+  DfhClassProfileView:
+    properties:
+      pk_entity:
+        type: number
+        format: double
+      is_enabled_in_profile:
+        type: boolean
+      removed_from_api:
+        type: boolean
+      dfh_fk_class:
+        type: number
+        format: double
+      dfh_fk_system_type:
+        type: number
+        format: double
+      dfh_type_label:
+        type: string
+      dfh_root_namespace:
+        type: string
+      dfh_profile_association_type:
+        type: string
+      dfh_fk_profile:
+        type: number
+        format: double
+      dfh_profile_label:
+        type: string
+      entity_version:
+        type: number
+        format: double
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    additionalProperties: false
+  DfhPropertyProfileView:
+    properties:
+      pk_entity:
+        type: number
+        format: double
+      is_enabled_in_profile:
+        type: boolean
+      dfh_profile_label:
+        type: string
+      removed_from_api:
+        type: boolean
+      dfh_pk_property:
+        type: number
+        format: double
+      entity_version:
+        type: number
+        format: double
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    additionalProperties: false
+  ComUiContext:
+    properties:
+      pk_entity:
+        type: number
+        format: double
+      description:
+        type: string
+      label:
+        type: string
+    additionalProperties: false
+  DfhProjRel:
+    properties:
+      pk_entity:
+        type: number
+        format: double
+      fk_entity:
+        type: number
+        format: double
+      fk_project:
+        type: number
+        format: double
+      is_in_project:
+        type: boolean
+    required:
+      - fk_entity
+      - fk_project
+    additionalProperties: false
+  InfNamespace:
+    properties:
+      fk_root_namespace:
+        type: number
+        format: double
+      fk_project:
+        type: number
+        format: double
+      standard_label:
+        type: string
+      pk_entity:
+        type: number
+        format: double
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    required:
+      - fk_project
+      - standard_label
+    additionalProperties: false
+  InfTypeNamespaceRel:
+    properties:
+      pk_entity:
+        type: number
+        format: double
+      fk_persistent_item:
+        type: number
+        format: double
+      fk_namespace:
+        type: number
+        format: double
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    required:
+      - fk_persistent_item
+      - fk_namespace
+    additionalProperties: false
+  InfTextProperty:
+    properties:
+      fk_class_field:
+        type: number
+        format: double
+      fk_concerned_entity:
+        type: number
+        format: double
+      fk_language:
+        type: number
+        format: double
+      text_property_quill_doc:
+        type: object
+      pk_entity:
+        type: number
+        format: double
+      notes:
+        type: string
+      tmsp_creation:
+        type: string
+      tmsp_last_modification:
+        type: string
+      sys_period:
+        type: string
+    required:
+      - fk_class_field
+      - fk_concerned_entity
+      - fk_language
+      - text_property_quill_doc
+    additionalProperties: false

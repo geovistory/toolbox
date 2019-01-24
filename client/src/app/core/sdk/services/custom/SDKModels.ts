@@ -1,11 +1,13 @@
 /* tslint:disable */
 import { Injectable } from '@angular/core';
+import { ComClassFieldPropertyRel } from '../../models/ComClassFieldPropertyRel';
+import { ComClassField } from '../../models/ComClassField';
+import { ComLabel } from '../../models/ComLabel';
 import { PubAccount } from '../../models/PubAccount';
 import { Email } from '../../models/Email';
 import { ComProject } from '../../models/ComProject';
 import { PubAccountProjectRel } from '../../models/PubAccountProjectRel';
 import { ComLanguage } from '../../models/ComLanguage';
-import { ComLabel } from '../../models/ComLabel';
 import { ComTextProperty } from '../../models/ComTextProperty';
 import { InfAppellation } from '../../models/InfAppellation';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
@@ -27,13 +29,11 @@ import { DfhClassProfileView } from '../../models/DfhClassProfileView';
 import { DfhPropertyProfileView } from '../../models/DfhPropertyProfileView';
 import { ComUiContext } from '../../models/ComUiContext';
 import { ComUiContextConfig } from '../../models/ComUiContextConfig';
-import { ComClassField } from '../../models/ComClassField';
 import { DfhProjRel } from '../../models/DfhProjRel';
 import { InfNamespace } from '../../models/InfNamespace';
 import { InfTypeNamespaceRel } from '../../models/InfTypeNamespaceRel';
 import { InfTextProperty } from '../../models/InfTextProperty';
 import { ComSystemType } from '../../models/ComSystemType';
-import { ComClassFieldPropertyRel } from '../../models/ComClassFieldPropertyRel';
 
 export interface Models { [name: string]: any }
 
@@ -41,12 +41,14 @@ export interface Models { [name: string]: any }
 export class SDKModels {
 
   private models: Models = {
+    ComClassFieldPropertyRel: ComClassFieldPropertyRel,
+    ComClassField: ComClassField,
+    ComLabel: ComLabel,
     PubAccount: PubAccount,
     Email: Email,
     ComProject: ComProject,
     PubAccountProjectRel: PubAccountProjectRel,
     ComLanguage: ComLanguage,
-    ComLabel: ComLabel,
     ComTextProperty: ComTextProperty,
     InfAppellation: InfAppellation,
     InfTemporalEntity: InfTemporalEntity,
@@ -68,13 +70,11 @@ export class SDKModels {
     DfhPropertyProfileView: DfhPropertyProfileView,
     ComUiContext: ComUiContext,
     ComUiContextConfig: ComUiContextConfig,
-    ComClassField: ComClassField,
     DfhProjRel: DfhProjRel,
     InfNamespace: InfNamespace,
     InfTypeNamespaceRel: InfTypeNamespaceRel,
     InfTextProperty: InfTextProperty,
     ComSystemType: ComSystemType,
-    ComClassFieldPropertyRel: ComClassFieldPropertyRel,
     
   };
 

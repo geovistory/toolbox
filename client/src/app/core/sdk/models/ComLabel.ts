@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
-  ComLanguage,
-  ComProject
+  ComProject,
+  ComLanguage
 } from '../index';
 
 declare var Object: any;
@@ -16,8 +16,8 @@ export interface ComLabelInterface {
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   "fk_entity"?: number;
-  language?: ComLanguage;
   project?: ComProject;
+  language?: ComLanguage;
 }
 
 export class ComLabel implements ComLabelInterface {
@@ -31,8 +31,8 @@ export class ComLabel implements ComLabelInterface {
   "tmsp_last_modification": string;
   "sys_period": string;
   "fk_entity": number;
-  language?: ComLanguage;
   project?: ComProject;
+  language?: ComLanguage;
   constructor(data?: ComLabelInterface) {
     Object.assign(this, data);
   }
@@ -108,14 +108,6 @@ export class ComLabel implements ComLabelInterface {
         },
       },
       relations: {
-        language: {
-          name: 'language',
-          type: 'ComLanguage',
-          model: 'ComLanguage',
-          relationType: 'belongsTo',
-                  keyFrom: 'fk_language',
-          keyTo: 'pk_language'
-        },
         project: {
           name: 'project',
           type: 'ComProject',
@@ -123,6 +115,14 @@ export class ComLabel implements ComLabelInterface {
           relationType: 'belongsTo',
                   keyFrom: 'fk_entity',
           keyTo: 'pk_entity'
+        },
+        language: {
+          name: 'language',
+          type: 'ComLanguage',
+          model: 'ComLanguage',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_language',
+          keyTo: 'pk_language'
         },
       }
     }

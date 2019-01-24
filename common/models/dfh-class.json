@@ -92,18 +92,29 @@
     },
     {
       "principalType": "ROLE",
-      "principalId": "$everyone",
+      "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
         "find",
         "findById",
-        "findComplex",
-        "__get__labels",
-        "__get__text_properties",
-        "selectedClassesOfProfile",
-        "selectedPeItClassesOfProfile",
-        "propertiesAndUiElements",
+        "findComplex"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
         "projectSettingsClassList"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "system_admin",
+      "permission": "ALLOW",
+      "property": [
+        "selectedClassesOfProfile",
+        "propertiesAndUiElements"
       ]
     }
   ],

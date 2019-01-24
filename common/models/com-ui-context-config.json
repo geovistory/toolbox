@@ -81,10 +81,9 @@
     },
     {
       "principalType": "ROLE",
-      "principalId": "$everyone",
+      "principalId": "system_admin",
       "permission": "ALLOW",
       "property": [
-        "find",
         "patchOrCreate"
       ]
     }

@@ -2,8 +2,8 @@
 import {
   ComUiContext,
   DfhProperty,
-  ComProject,
-  ComClassField
+  ComClassField,
+  ComProject
 } from '../index';
 
 declare var Object: any;
@@ -18,8 +18,8 @@ export interface ComUiContextConfigInterface {
   "fk_class_for_class_field"?: number;
   ui_context?: ComUiContext;
   property?: DfhProperty;
-  project?: ComProject;
   class_field?: ComClassField;
+  project?: ComProject;
 }
 
 export class ComUiContextConfig implements ComUiContextConfigInterface {
@@ -33,8 +33,8 @@ export class ComUiContextConfig implements ComUiContextConfigInterface {
   "fk_class_for_class_field": number;
   ui_context?: ComUiContext;
   property?: DfhProperty;
-  project?: ComProject;
   class_field?: ComClassField;
+  project?: ComProject;
   constructor(data?: ComUiContextConfigInterface) {
     Object.assign(this, data);
   }
@@ -118,14 +118,6 @@ export class ComUiContextConfig implements ComUiContextConfigInterface {
                   keyFrom: 'fk_property',
           keyTo: 'dfh_pk_property'
         },
-        project: {
-          name: 'project',
-          type: 'ComProject',
-          model: 'ComProject',
-          relationType: 'belongsTo',
-                  keyFrom: 'fk_project',
-          keyTo: 'pk_project'
-        },
         class_field: {
           name: 'class_field',
           type: 'ComClassField',
@@ -133,6 +125,14 @@ export class ComUiContextConfig implements ComUiContextConfigInterface {
           relationType: 'belongsTo',
                   keyFrom: 'fk_class_field',
           keyTo: 'pk_entity'
+        },
+        project: {
+          name: 'project',
+          type: 'ComProject',
+          model: 'ComProject',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_project',
+          keyTo: 'pk_project'
         },
       }
     }

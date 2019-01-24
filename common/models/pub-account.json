@@ -29,12 +29,17 @@
   },
   "acls": [
     {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
         "listProjects",
-        "__create__projects",
         "getRoles"
       ]
     },

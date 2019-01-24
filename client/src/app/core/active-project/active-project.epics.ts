@@ -66,32 +66,7 @@ export class ActiveProjectEpics {
        */
         globalStore.next(this.loadingBarActions.startLoading());
 
-        this.projectApi.findComplex({
-          'where': ['pk_project', '=', action.meta.pk_project],
-          'include': {
-            'labels': {
-              '$relation': {
-                'name': 'labels',
-                'joinType': 'inner join',
-                'orderBy': [{ 'pk_entity': 'asc' }]
-              }
-            },
-            'default_language': {
-              '$relation': {
-                'name': 'default_language',
-                'joinType': 'inner join',
-                'orderBy': [{ 'pk_language': 'asc' }]
-              },
-              'inf_language': {
-                '$relation': {
-                  'name': 'inf_language',
-                  'joinType': 'inner join',
-                  'orderBy': [{ 'pk_language': 'asc' }]
-                }
-              }
-            }
-          }
-        })
+        this.projectApi.getBasics(action.meta.pk_project)
           .subscribe(
             data => {
               globalStore.next(this.actions.activeProjectUpdated(data[0]))
@@ -99,7 +74,7 @@ export class ActiveProjectEpics {
             error => {
               globalStore.next(this.notificationActions.addToast({
                 type: 'error',
-                options: { title: error }
+                options: { title: error.message }
               }))
             })
       }))

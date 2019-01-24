@@ -1,10 +1,12 @@
 /* tslint:disable */
+export * from './ComClassFieldPropertyRel';
+export * from './ComClassField';
+export * from './ComLabel';
 export * from './PubAccount';
 export * from './Email';
 export * from './ComProject';
 export * from './PubAccountProjectRel';
 export * from './ComLanguage';
-export * from './ComLabel';
 export * from './ComTextProperty';
 export * from './InfAppellation';
 export * from './InfTemporalEntity';
@@ -26,12 +28,10 @@ export * from './DfhClassProfileView';
 export * from './DfhPropertyProfileView';
 export * from './ComUiContext';
 export * from './ComUiContextConfig';
-export * from './ComClassField';
 export * from './DfhProjRel';
 export * from './InfNamespace';
 export * from './InfTypeNamespaceRel';
 export * from './InfTextProperty';
 export * from './ComSystemType';
-export * from './ComClassFieldPropertyRel';
 export * from './SDKModels';
 export * from './logger.service';

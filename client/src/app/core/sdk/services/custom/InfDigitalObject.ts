@@ -176,39 +176,6 @@ export class InfDigitalObjectApi extends BaseLoopBackApi {
   }
 
   /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfDigitalObject` object.)
-   * </em>
-   */
-  public findComplex(filter: LoopBackFilter = {}, customHeaders?: Function): Observable<InfDigitalObject[]> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfDigitalObjects/findComplex";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      filter: filter
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<InfDigitalObject>) =>
-        instances.map((instance: InfDigitalObject) => new InfDigitalObject(instance))
-    ));
-  }
-
-  /**
    * The name of the model represented by this $resource,
    * i.e. `InfDigitalObject`.
    */

@@ -12,10 +12,7 @@
   "mixins": {
     "SetupRemoteMethods": {
       "ignoreACL": false,
-      "disableAllExcept": [
-        "find",
-        "queryByString"
-      ]
+      "disableAllExcept": []
     }
   },
   "properties": {
@@ -62,8 +59,12 @@
     {
       "accessType": "READ",
       "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW"
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": [
+        "find",
+        "queryByString"
+      ]
     }
   ],
   "methods": {
