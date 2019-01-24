@@ -1,5 +1,5 @@
 import { PropertyFieldList, FieldList, EntityPreviewList, PeItDetailList } from 'app/core/state/models';
-import { ComClassFieldInterface, ComUiContextInterface, ProjectInterface, InfChunk, InfPersistentItem, InfTemporalEntity, DfhProperty } from 'app/core/sdk';
+import { ComClassFieldInterface, ComUiContextInterface, ComProjectInterface, InfChunk, InfPersistentItem, InfTemporalEntity, DfhProperty } from 'app/core/sdk';
 import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/api/class-settings.models';
 
 export interface ChunkList { [pk_entity: number]: InfChunk };
@@ -11,7 +11,7 @@ export class PropertyList { [pk_entity: string]: DfhProperty; }
 
 
 
-export interface ProjectDetail extends ProjectInterface {
+export interface ProjectDetail extends ComProjectInterface {
     crm?: ProjectCrm,
     classSettings?: ClassSettingsI
 

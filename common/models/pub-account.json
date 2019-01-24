@@ -1,7 +1,11 @@
 {
-  "name": "Account",
+  "name": "PubAccount",
   "base": "User",
   "idInjection": true,
+  "postgresql": {
+    "schema": "public",
+    "table": "account"
+  },
   "mixins": {
     "SetupRemoteMethods": {
       "ignoreACL": false,
@@ -17,10 +21,10 @@
   "relations": {
     "projects": {
       "type": "hasMany",
-      "model": "Project",
+      "model": "ComProject",
       "foreignKey": "account_id",
       "keyThrough": "fk_project",
-      "through": "ProjectAccountAssociation"
+      "through": "PubAccountProjectRel"
     }
   },
   "acls": [
@@ -80,7 +84,7 @@
       "returns": {
         "arg": "account",
         "type": [
-          "Account"
+          "PubAccount"
         ],
         "root": true
       },
@@ -94,7 +98,7 @@
       "returns": {
         "arg": "accounts",
         "type": [
-          "Account"
+          "PubAccount"
         ],
         "root": true
       },

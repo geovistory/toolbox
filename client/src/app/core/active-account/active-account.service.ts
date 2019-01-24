@@ -1,23 +1,22 @@
+import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-
-import { Subject, Observable } from 'rxjs';
-import { Account } from '../sdk/models/Account';
-import { LoopBackAuth } from '../sdk/services/core/auth.service';
-import { AccountApi } from '../sdk/services/custom/Account';
-import { environment } from '../../../environments/environment';
-import { LoopBackConfig } from '../sdk/lb.config';
 import { AccountRole } from 'app/modules/account/account.model';
 import { AccountActions } from 'app/modules/account/api/account.actions';
-import { NgRedux } from '@angular-redux/store';
+import { Observable, Subject } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
+import { LoopBackConfig } from '../sdk/lb.config';
+import { PubAccount } from '../sdk/models/PubAccount';
+import { LoopBackAuth } from '../sdk/services/core/auth.service';
 import { IAppState } from '../store/model';
-import { map, filter } from 'rxjs/operators';
+
 
 
 @Injectable()
 export class ActiveAccountService {
-  private userObs$ = new Subject<Account>();
+  private userObs$ = new Subject<PubAccount>();
 
-  account: Account;
+  account: PubAccount;
   redirectUrl: string;
 
   constructor(

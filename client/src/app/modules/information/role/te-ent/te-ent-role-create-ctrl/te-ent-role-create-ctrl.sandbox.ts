@@ -1,5 +1,5 @@
 import { sandboxOf } from 'angular-playground';
-import { InfRole, Project, ProjectDetail } from 'app/core';
+import { InfRole, ComProject, ProjectDetail } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
 import { RoleDetail, PropertyField } from 'app/core/state/models';
@@ -335,7 +335,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             initState: {
                 activeProject: {
                     pk_project: 50
-                } as Project,
+                } as ComProject,
                 _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
@@ -392,7 +392,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             initState: {
                 activeProject: {
                     pk_project: 50
-                } as Project,
+                } as ComProject,
                 _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
@@ -460,7 +460,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             initState: {
                 activeProject: {
                     pk_project: 50
-                } as Project,
+                } as ComProject,
                 _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {

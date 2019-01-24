@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ActiveProjectService, ComConfig, IAppState, PeItDetail, Project, ProjectCrm, SubstoreComponent, EntityPreview } from 'app/core';
+import { ActiveProjectService, ComConfig, IAppState, PeItDetail, ComProject, ProjectCrm, SubstoreComponent, EntityPreview } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { List } from 'app/modules/information/containers/list/api/list.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
@@ -43,7 +43,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
   // used for breadcumbs when section is opened
   sourcePreview$: Observable<EntityPreview>;
 
-  project$: Observable<Project>;
+  project$: Observable<ComProject>;
 
   listVisible: boolean;
 
@@ -70,7 +70,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
     this.params$ = activatedRoute.params;
 
     // observe the active project
-    this.project$ = ngRedux.select<Project>('activeProject');
+    this.project$ = ngRedux.select<ComProject>('activeProject');
 
     // observe the active pk_project
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']);

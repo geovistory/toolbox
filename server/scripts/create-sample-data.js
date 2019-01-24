@@ -1,8 +1,8 @@
 module.exports = function(app) {
-  var Account = app.models.Account;
-  var Project = app.models.Project;
+  var PubAccount = app.models.PubAccount;
+  var ComProject = app.models.ComProject;
 
-  Account.create([
+  PubAccount.create([
     {username: 'John', email: 'john@doe.com',   emailVerified: 'true', password: 'opensesame'},
     {username: 'Jane', email: 'jane@doe.com',   emailVerified: 'true', password: 'opensesame'},
     {username: 'Bob', email: 'bob@projects.com',emailVerified: 'true', password: 'opensesame'},
@@ -13,7 +13,7 @@ module.exports = function(app) {
     console.log('Created accounts:', accounts);
   });
 
-  Project.create([
+  ComProject.create([
     {name: 'Sentatoren', description: 'Dieses Projekt behandelt die römischen Senatoren des 3. Jh.'},
     {name: 'Römische Provinzen', description: 'Die römischen Provinzen im Wandel der Zeit.'},
   ], function(err, projects) {

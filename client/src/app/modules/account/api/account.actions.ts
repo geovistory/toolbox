@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { Account } from 'app/core';
-import { AccountRole } from '../account.model';
+import { AccountRole, IAccount } from '../account.model';
+import { PubAccount } from 'app/core';
 
 interface MetaData {
     accountId?: number;
     accountRoles?: AccountRole[];
+    account?: PubAccount;
 };
-export type AccountAction = FluxStandardAction<Account, MetaData>;
+export type AccountAction = FluxStandardAction<IAccount, MetaData>;
 
 
 @Injectable()
@@ -31,11 +32,11 @@ export class AccountActions {
         };
     }
 
-    loginSucceeded(payload: Account): AccountAction {
+    loginSucceeded(account: PubAccount): AccountAction {
         return {
             type: AccountActions.LOGIN_SUCCEEDED,
-            payload,
-            meta: null
+            payload: null,
+            meta: { account }
         };
     }
 
@@ -48,11 +49,11 @@ export class AccountActions {
         };
     }
 
-    accountUpdated(payload: Account): AccountAction {
+    accountUpdated(account: PubAccount): AccountAction {
         return {
             type: AccountActions.ACCOUNT_UPDATED,
-            payload,
-            meta: null
+            payload: null,
+            meta: { account }
         };
     }
 

@@ -1,9 +1,9 @@
 /* tslint:disable */
-export * from './Account';
+export * from './PubAccount';
 export * from './Email';
-export * from './Project';
-export * from './ProjectAccountAssociation';
-export * from './Language';
+export * from './ComProject';
+export * from './PubAccountProjectRel';
+export * from './ComLanguage';
 export * from './ComLabel';
 export * from './ComTextProperty';
 export * from './InfAppellation';

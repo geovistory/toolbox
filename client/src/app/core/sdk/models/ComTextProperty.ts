@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
-  Language,
-  Project
+  ComLanguage,
+  ComProject
 } from '../index';
 
 declare var Object: any;
@@ -17,8 +17,8 @@ export interface ComTextPropertyInterface {
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   "fk_entity"?: number;
-  language?: Language;
-  project?: Project;
+  language?: ComLanguage;
+  project?: ComProject;
 }
 
 export class ComTextProperty implements ComTextPropertyInterface {
@@ -33,8 +33,8 @@ export class ComTextProperty implements ComTextPropertyInterface {
   "tmsp_last_modification": string;
   "sys_period": string;
   "fk_entity": number;
-  language?: Language;
-  project?: Project;
+  language?: ComLanguage;
+  project?: ComProject;
   constructor(data?: ComTextPropertyInterface) {
     Object.assign(this, data);
   }
@@ -116,16 +116,16 @@ export class ComTextProperty implements ComTextPropertyInterface {
       relations: {
         language: {
           name: 'language',
-          type: 'Language',
-          model: 'Language',
+          type: 'ComLanguage',
+          model: 'ComLanguage',
           relationType: 'belongsTo',
                   keyFrom: 'fk_language',
           keyTo: 'pk_language'
         },
         project: {
           name: 'project',
-          type: 'Project',
-          model: 'Project',
+          type: 'ComProject',
+          model: 'ComProject',
           relationType: 'belongsTo',
                   keyFrom: 'fk_entity',
           keyTo: 'pk_entity'

@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports = function(Language) {
+module.exports = function(ComLanguage) {
 
-  Language.queryByString = function(searchstring, cb) {
+  ComLanguage.queryByString = function(searchstring, cb) {
     var sql_stmt = `
     select pk_language, lang_type, "scope",iso6392b, iso6392t, iso6391, notes
     from (
@@ -18,7 +18,7 @@ module.exports = function(Language) {
     var params = [];
     params.push(searchstring + ':*');
 
-    const connector = Language.dataSource.connector;
+    const connector = ComLanguage.dataSource.connector;
 
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       console.log(resultObjects)
@@ -26,8 +26,8 @@ module.exports = function(Language) {
 
       if (resultObjects){
         languages = resultObjects.map(languageRaw => {
-          const languageData = connector.fromRow('Language', languageRaw)
-          return new Language(languageData)
+          const languageData = connector.fromRow('ComLanguage', languageRaw)
+          return new ComLanguage(languageData)
         })
       }
 

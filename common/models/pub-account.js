@@ -2,11 +2,11 @@
 
 var path = require('path');
 
-module.exports = function (Account) {
+module.exports = function (PubAccount) {
 
-  Account.listProjects = function (accountId, cb) {
+  PubAccount.listProjects = function (accountId, cb) {
 
-    const account = Account.find({
+    const account = PubAccount.find({
       "where": {
         "id": accountId
       },
@@ -28,7 +28,7 @@ module.exports = function (Account) {
 
 
   //send verification email after registration
-  Account.afterRemote('create', function (context, account, next) {
+  PubAccount.afterRemote('create', function (context, account, next) {
     console.log('> account.afterRemote create triggered');
 
     /**
@@ -95,7 +95,7 @@ module.exports = function (Account) {
 
     account.verify(options, function (err, response) {
       if (err) {
-        Account.deleteById(account.id);
+        PubAccount.deleteById(account.id);
         return next(err);
       }
 
@@ -109,9 +109,9 @@ module.exports = function (Account) {
 
 
   /**
-  * Account - Prepare options for resetPassword method
+  * PubAccount - Prepare options for resetPassword method
   */
-  Account.beforeRemote('resetPassword', function (ctx, unused, next) {
+  PubAccount.beforeRemote('resetPassword', function (ctx, unused, next) {
 
     // We need headersOrigin for the reset-password-link in the email
     ctx.args.options.headersOrigin = ctx.req.headers.origin;
@@ -121,7 +121,7 @@ module.exports = function (Account) {
   })
 
   // Send an email with reset-password-link
-  Account.on('resetPasswordRequest', function (info) {
+  PubAccount.on('resetPasswordRequest', function (info) {
 
     // takes headersOrigin as base path, so that the reset-password-link
     // works on all servers (ng dev., staging, prod.).
@@ -130,7 +130,7 @@ module.exports = function (Account) {
     var html = 'Click <a href="' + url + '?access_token=' +
       info.accessToken.id + '">here</a> to reset your password';
 
-    Account.app.models.Email.send({
+    PubAccount.app.models.Email.send({
       to: info.email,
       from: 'noreply@geovistory.org',
       subject: 'Password reset',
@@ -142,7 +142,7 @@ module.exports = function (Account) {
   });
 
 
-  Account.getRoles = function (accountId, cb) {
+  PubAccount.getRoles = function (accountId, cb) {
 
     var sql_stmt = `
     SELECT role.id, role.name
@@ -153,7 +153,7 @@ module.exports = function (Account) {
     `;
     var params = [accountId];
     
-    const connector = Account.dataSource.connector;
+    const connector = PubAccount.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       cb(err, resultObjects);
     });
@@ -161,7 +161,7 @@ module.exports = function (Account) {
     return cb.promise;
   }
 
-  Account.withRolesAndProjects = function ( cb) {
+  PubAccount.withRolesAndProjects = function ( cb) {
 
     var sql_stmt = `
     SELECT 
@@ -194,7 +194,7 @@ module.exports = function (Account) {
     `;
     var params = [];
     
-    const connector = Account.dataSource.connector;
+    const connector = PubAccount.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       cb(err, resultObjects);
     });

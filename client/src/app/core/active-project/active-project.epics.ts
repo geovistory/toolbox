@@ -10,7 +10,7 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
 import { mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ProjectApi } from '../sdk';
+import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ComProjectApi } from '../sdk';
 import { PeItDetail } from '../state/models';
 import { IAppState } from '../store/model';
 import { U } from '../util/util';
@@ -27,7 +27,7 @@ export class ActiveProjectEpics {
     private teEnApi: InfTemporalEntityApi,
     private chunkApi: InfChunkApi,
     private uiContextApi: ComUiContextApi,
-    private projectApi: ProjectApi,
+    private projectApi: ComProjectApi,
     private dfhPropertyApi: DfhPropertyApi,
     private comClassFieldApi: ComClassFieldApi,
     private actions: ActiveProjectActions,

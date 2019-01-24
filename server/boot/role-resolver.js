@@ -22,7 +22,7 @@ module.exports = function (app) {
 
         // Q: Is the current logged-in user associated with this Project?
         // Step 1: lookup the requested project
-        app.models.Project.findById(pkProject, function (err, project) {
+        app.models.ComProject.findById(pkProject, function (err, project) {
             // A: The datastore produced an error! Pass error to callback
             if (err) return cb(err);
             // A: There's no project by this ID! Pass error to callback
@@ -30,8 +30,8 @@ module.exports = function (app) {
 
             // Step 2: check if User is part of the Team associated with this Project
             // (using count() because we only want to know if such a record exists)
-            var ProjectAccountAssociation = app.models.ProjectAccountAssociation;
-            ProjectAccountAssociation.count({
+            var PubAccountProjectRel = app.models.PubAccountProjectRel;
+            PubAccountProjectRel.count({
                 account_id: accountId,
                 fk_project: pkProject
             }, function (err, count) {

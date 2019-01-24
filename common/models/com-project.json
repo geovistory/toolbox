@@ -1,5 +1,5 @@
 {
-  "name": "Project",
+  "name": "ComProject",
   "base": "PersistedModel",
   "idInjection": false,
   "options": {
@@ -34,14 +34,14 @@
   "relations": {
     "accounts": {
       "type": "hasMany",
-      "model": "Account",
+      "model": "PubAccount",
       "foreignKey": "fk_project",
       "keyThrough": "account_id",
-      "through": "ProjectAccountAssociation"
+      "through": "PubAccountProjectRel"
     },
     "default_language": {
       "type": "belongsTo",
-      "model": "Language",
+      "model": "ComLanguage",
       "primaryKey": "pk_language",
       "foreignKey": "fk_language"
     },

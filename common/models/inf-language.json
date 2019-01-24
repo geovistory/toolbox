@@ -73,7 +73,7 @@
       "returns": {
         "arg": "languages",
         "type": [
-          "Language"
+          "InfLanguage"
         ],
         "root": true
       },

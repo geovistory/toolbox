@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
-  Account,
-  Language,
+  PubAccount,
+  ComLanguage,
   ComLabel,
   ComTextProperty,
   InfPersistentItem,
@@ -10,13 +10,13 @@ import {
 } from '../index';
 
 declare var Object: any;
-export interface ProjectInterface {
+export interface ComProjectInterface {
   "notes"?: string;
   "pk_project"?: number;
   "pk_entity"?: number;
   "fk_language"?: string;
-  accounts?: Account[];
-  default_language?: Language;
+  accounts?: PubAccount[];
+  default_language?: ComLanguage;
   labels?: ComLabel[];
   text_properties?: ComTextProperty[];
   persistent_item_versions?: InfPersistentItem[];
@@ -24,36 +24,36 @@ export interface ProjectInterface {
   namespaces?: InfNamespace[];
 }
 
-export class Project implements ProjectInterface {
+export class ComProject implements ComProjectInterface {
   "notes": string;
   "pk_project": number;
   "pk_entity": number;
   "fk_language": string;
-  accounts?: Account[];
-  default_language?: Language;
+  accounts?: PubAccount[];
+  default_language?: ComLanguage;
   labels?: ComLabel[];
   text_properties?: ComTextProperty[];
   persistent_item_versions?: InfPersistentItem[];
   entity_version_project_rels?: InfEntityProjectRel[];
   namespaces?: InfNamespace[];
-  constructor(data?: ProjectInterface) {
+  constructor(data?: ComProjectInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Project`.
+   * i.e. `ComProject`.
    */
   public static getModelName() {
-    return "Project";
+    return "ComProject";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of Project for dynamic purposes.
+  * This method creates an instance of ComProject for dynamic purposes.
   **/
-  public static factory(data: ProjectInterface): Project{
-    return new Project(data);
+  public static factory(data: ComProjectInterface): ComProject{
+    return new ComProject(data);
   }
   /**
   * @method getModelDefinition
@@ -64,9 +64,9 @@ export class Project implements ProjectInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'Project',
-      plural: 'Projects',
-      path: 'Projects',
+      name: 'ComProject',
+      plural: 'ComProjects',
+      path: 'ComProjects',
       idName: 'pk_project',
       properties: {
         "notes": {
@@ -89,18 +89,18 @@ export class Project implements ProjectInterface {
       relations: {
         accounts: {
           name: 'accounts',
-          type: 'Account[]',
-          model: 'Account',
+          type: 'PubAccount[]',
+          model: 'PubAccount',
           relationType: 'hasMany',
-          modelThrough: 'ProjectAccountAssociation',
+          modelThrough: 'PubAccountProjectRel',
           keyThrough: 'account_id',
           keyFrom: 'pk_project',
           keyTo: 'fk_project'
         },
         default_language: {
           name: 'default_language',
-          type: 'Language',
-          model: 'Language',
+          type: 'ComLanguage',
+          model: 'ComLanguage',
           relationType: 'belongsTo',
                   keyFrom: 'fk_language',
           keyTo: 'pk_language'

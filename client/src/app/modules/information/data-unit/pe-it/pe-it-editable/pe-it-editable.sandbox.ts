@@ -1,5 +1,5 @@
 import { sandboxOf } from 'angular-playground';
-import { Project } from 'app/core';
+import { ComProject } from 'app/core';
 import { InitPeItEditableStateModule } from 'app/shared';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
@@ -22,7 +22,7 @@ export default sandboxOf(PeItEditableComponent, {
       state: {
         activeProject: {
           pk_project: 57
-        } as Project,
+        } as ComProject,
         _peIt_editable: undefined
       }
     },
@@ -50,7 +50,7 @@ export default sandboxOf(PeItEditableComponent, {
       state: {
         activeProject: {
           pk_project: 57
-        } as Project,
+        } as ComProject,
         _peIt_editable: undefined
       }
     },

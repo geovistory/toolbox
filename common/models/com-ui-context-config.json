@@ -67,7 +67,7 @@
     },
     "project": {
       "type": "belongsTo",
-      "model": "Project",
+      "model": "ComProject",
       "foreignKey": "fk_project",
       "primaryKey": "pk_project"
     }

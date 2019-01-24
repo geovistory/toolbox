@@ -1,5 +1,5 @@
 {
-  "name": "Language",
+  "name": "ComLanguage",
   "base": "PersistedModel",
   "idInjection": false,
   "options": {
@@ -78,7 +78,7 @@
       "returns": {
         "arg": "languages",
         "type": [
-          "Language"
+          "ComLanguage"
         ],
         "root": true
       },

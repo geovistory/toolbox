@@ -6,7 +6,7 @@ var include = [
   "InfAppellation",
   "InfTemporalEntity",
   "InfLanguage",
-  "Project",
+  "ComProject",
   "InfEntityAssociation",
   "InfChunk",
   "InfDigitalObject",

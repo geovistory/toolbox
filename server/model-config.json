@@ -18,7 +18,7 @@
     "dataSource": "postgres1",
     "public": false
   },
-  "Account": {
+  "PubAccount": {
     "dataSource": "postgres1",
     "public": true,
     "options": {
@@ -47,15 +47,15 @@
   "Email": {
     "dataSource": "emailDs"
   },
-  "Project": {
+  "ComProject": {
     "dataSource": "postgres1",
     "public": true
   },
-  "ProjectAccountAssociation": {
+  "PubAccountProjectRel": {
     "dataSource": "postgres1",
     "public": true
   },
-  "Language": {
+  "ComLanguage": {
     "dataSource": "postgres1",
     "public": true
   },

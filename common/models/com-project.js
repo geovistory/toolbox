@@ -2,7 +2,7 @@
 
 const Config = require('../config/Config');
 
-module.exports = function (Project) {
+module.exports = function (ComProject) {
 
   // Project.validatesUniquenessOf('name', {message: 'Project name already exists'});
 
@@ -22,7 +22,7 @@ module.exports = function (Project) {
   * @param  {type} cb        callback
   * @return {void}
   */
-  Project.createWithLabelAndDescription = function (accountId, pkLanguage, label, textProperty, cb) {
+  ComProject.createWithLabelAndDescription = function (accountId, pkLanguage, label, textProperty, cb) {
 
     var params = [
       accountId,
@@ -86,7 +86,7 @@ module.exports = function (Project) {
     `;
 
 
-    const connector = Project.dataSource.connector;
+    const connector = ComProject.dataSource.connector;
     connector.execute(sql_stmt, params, (err, result) => {
       var success = true;
       if (err) {
@@ -126,10 +126,10 @@ module.exports = function (Project) {
    *        - Boolean that indicates
    *    
    */
-  Project.getReferenceModel = function (pk_project, cb) {
+  ComProject.getReferenceModel = function (pk_project, cb) {
 
     // shortcut as long as no epr for classes in use
-    const DfhClass = Project.app.models.DfhClass;
+    const DfhClass = ComProject.app.models.DfhClass;
 
     const propertiesSelect = {
       include: [

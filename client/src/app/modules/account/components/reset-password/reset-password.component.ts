@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AccountApi, ErrorHandler, LoopBackConfig } from 'app/core';
+import { PubAccountApi, ErrorHandler, LoopBackConfig } from 'app/core';
 import { environment } from 'environments/environment';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { Observable } from 'rxjs/Rx';
@@ -28,7 +28,7 @@ export class ResetPasswordComponent implements OnInit {
     protected http: HttpClient,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler,
     private route: ActivatedRoute,
-    private accountApi: AccountApi,
+    private accountApi: PubAccountApi,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);

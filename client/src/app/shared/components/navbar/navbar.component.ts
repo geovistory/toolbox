@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Account, AccountApi, ActiveAccountService, LoopBackAuth, LoopBackConfig } from 'app/core';
+import { ActiveAccountService, LoopBackAuth, LoopBackConfig, PubAccount, PubAccountApi } from 'app/core';
 import { IAccount } from 'app/modules/account/account.model';
 import { AccountActions } from 'app/modules/account/api/account.actions';
 import { environment } from 'environments/environment';
@@ -18,7 +18,7 @@ import { Subscription } from 'rxjs';
 export class NavbarComponent implements OnInit, OnDestroy {
 
   isNavbarCollapsed = true;
-  account: Account;
+  account: PubAccount;
 
   subscription: Subscription;
 
@@ -26,7 +26,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private activeAccountService: ActiveAccountService,
     private authService: LoopBackAuth,
     private router: Router,
-    private accountApi: AccountApi,
+    private accountApi: PubAccountApi,
     private actions: AccountActions,
     private ngRedux: NgRedux<IAccount>
   ) {

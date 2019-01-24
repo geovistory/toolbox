@@ -13,7 +13,7 @@ import { ComUiContextConfig } from '../../models/ComUiContextConfig';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { ComUiContext } from '../../models/ComUiContext';
 import { DfhProperty } from '../../models/DfhProperty';
-import { Project } from '../../models/Project';
+import { ComProject } from '../../models/ComProject';
 import { ComClassField } from '../../models/ComClassField';
 
 

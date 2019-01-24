@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { IAppState, LoadingBarActions, AccountApi } from 'app/core';
+import { IAppState, LoadingBarActions, PubAccountApi } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
@@ -19,7 +19,7 @@ export class AccountEpics {
     private actions: AccountActions,
     private loadingBarActions: LoadingBarActions,
     private ngRedux: NgRedux<IAppState>,
-    private accountApi: AccountApi,
+    private accountApi: PubAccountApi,
     private notificationActions: NotificationsAPIActions,
   ) { }
 

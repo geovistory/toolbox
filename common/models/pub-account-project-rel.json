@@ -1,5 +1,5 @@
 {
-  "name": "ProjectAccountAssociation",
+  "name": "PubAccountProjectRel",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -26,12 +26,12 @@
   "relations": {
     "account": {
       "type": "belongsTo",
-      "model": "Account",
+      "model": "PubAccount",
       "foreignKey": "account_id"
     },
     "project": {
       "type": "belongsTo",
-      "model": "Project",
+      "model": "ComProject",
       "foreignKey": "fk_project"
     }
   },

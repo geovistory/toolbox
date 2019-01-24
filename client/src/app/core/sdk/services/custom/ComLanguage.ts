@@ -9,16 +9,16 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Language } from '../../models/Language';
+import { ComLanguage } from '../../models/ComLanguage';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { InfLanguage } from '../../models/InfLanguage';
 
 
 /**
- * Api services for the `Language` model.
+ * Api services for the `ComLanguage` model.
  */
 @Injectable()
-export class LanguageApi extends BaseLoopBackApi {
+export class ComLanguageApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -41,13 +41,13 @@ export class LanguageApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Language` object.)
+   * This usually means the response is a `ComLanguage` object.)
    * </em>
    */
   public queryByString(queryString: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Languages/query-by-string";
+    "/ComLanguages/query-by-string";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -58,9 +58,9 @@ export class LanguageApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Language`.
+   * i.e. `ComLanguage`.
    */
   public getModelName() {
-    return "Language";
+    return "ComLanguage";
   }
 }

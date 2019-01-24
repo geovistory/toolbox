@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { Subscription, Observable, Subject } from 'rxjs';
-import { ActiveProjectService, Project, IAppState, ProjectDetail } from 'app/core';
+import { ActiveProjectService, ComProject, IAppState, ProjectDetail } from 'app/core';
 import { NgRedux } from '@angular-redux/store';
 import { filter, map } from 'rxjs/operators';
 

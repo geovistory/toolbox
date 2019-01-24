@@ -1,5 +1,5 @@
 import { sandboxOf } from 'angular-playground';
-import { Project } from 'app/core';
+import { ComProject } from 'app/core';
 import { InitPeItEditableStateModule } from 'app/shared';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
@@ -23,7 +23,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
             state: {
                 activeProject: {
                     pk_project: -1 // use same pkProject
-                } as Project,
+                } as ComProject,
                 _peIt_add_form: {
                     "pkEntity": 152852,
                     "selectPropState": "init",
@@ -507,7 +507,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
             state: {
                 activeProject: {
                     pk_project: -1 // use same pkProject
-                } as Project,
+                } as ComProject,
                 "_peIt_add_form": {
                     "pkEntity": 152831,
                     "selectPropState": "init",
@@ -2685,7 +2685,7 @@ export default sandboxOf(PeItAddCtrlComponent, {
             state: {
                 activeProject: {
                     pk_project: -1 // use same pkProject
-                } as Project,
+                } as ComProject,
                 _peIt_add_form: undefined
             }
         },

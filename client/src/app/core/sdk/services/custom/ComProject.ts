@@ -9,11 +9,11 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Project } from '../../models/Project';
+import { ComProject } from '../../models/ComProject';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { ProjectAccountAssociation } from '../../models/ProjectAccountAssociation';
-import { Account } from '../../models/Account';
-import { Language } from '../../models/Language';
+import { PubAccountProjectRel } from '../../models/PubAccountProjectRel';
+import { PubAccount } from '../../models/PubAccount';
+import { ComLanguage } from '../../models/ComLanguage';
 import { ComLabel } from '../../models/ComLabel';
 import { ComTextProperty } from '../../models/ComTextProperty';
 import { InfEntityProjectRel } from '../../models/InfEntityProjectRel';
@@ -22,10 +22,10 @@ import { InfNamespace } from '../../models/InfNamespace';
 
 
 /**
- * Api services for the `Project` model.
+ * Api services for the `ComProject` model.
  */
 @Injectable()
-export class ProjectApi extends BaseLoopBackApi {
+export class ComProjectApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -40,7 +40,7 @@ export class ProjectApi extends BaseLoopBackApi {
   /**
    * Zugehöriges Element nach ID für accounts hinzufügen.
    *
-   * @param {any} id Project id
+   * @param {any} id ComProject id
    *
    * @param {any} fk Fremdschlüssel für accounts
    *
@@ -54,13 +54,13 @@ export class ProjectApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Project` object.)
+   * This usually means the response is a `ComProject` object.)
    * </em>
    */
   public linkAccounts(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Projects/:id/accounts/rel/:fk";
+    "/ComProjects/:id/accounts/rel/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -76,7 +76,7 @@ export class ProjectApi extends BaseLoopBackApi {
   /**
    * accounts-Beziehung zu einem Element nach ID entfernen.
    *
-   * @param {any} id Project id
+   * @param {any} id ComProject id
    *
    * @param {any} fk Fremdschlüssel für accounts
    *
@@ -89,7 +89,7 @@ export class ProjectApi extends BaseLoopBackApi {
   public unlinkAccounts(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Projects/:id/accounts/rel/:fk";
+    "/ComProjects/:id/accounts/rel/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -103,7 +103,7 @@ export class ProjectApi extends BaseLoopBackApi {
   /**
    * Vorhandensein von accounts-Beziehung zu einem Element nach ID prüfen.
    *
-   * @param {any} id Project id
+   * @param {any} id ComProject id
    *
    * @param {any} fk Fremdschlüssel für accounts
    *
@@ -113,13 +113,13 @@ export class ProjectApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Project` object.)
+   * This usually means the response is a `ComProject` object.)
    * </em>
    */
   public existsAccounts(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "HEAD";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Projects/:id/accounts/rel/:fk";
+    "/ComProjects/:id/accounts/rel/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -133,7 +133,7 @@ export class ProjectApi extends BaseLoopBackApi {
   /**
    * Zugehöriges Element nach ID für persistent_item_versions hinzufügen.
    *
-   * @param {any} id Project id
+   * @param {any} id ComProject id
    *
    * @param {any} fk Fremdschlüssel für persistent_item_versions
    *
@@ -147,13 +147,13 @@ export class ProjectApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Project` object.)
+   * This usually means the response is a `ComProject` object.)
    * </em>
    */
   public linkPersistent_item_versions(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Projects/:id/persistent_item_versions/rel/:fk";
+    "/ComProjects/:id/persistent_item_versions/rel/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -169,7 +169,7 @@ export class ProjectApi extends BaseLoopBackApi {
   /**
    * persistent_item_versions-Beziehung zu einem Element nach ID entfernen.
    *
-   * @param {any} id Project id
+   * @param {any} id ComProject id
    *
    * @param {any} fk Fremdschlüssel für persistent_item_versions
    *
@@ -182,7 +182,7 @@ export class ProjectApi extends BaseLoopBackApi {
   public unlinkPersistent_item_versions(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Projects/:id/persistent_item_versions/rel/:fk";
+    "/ComProjects/:id/persistent_item_versions/rel/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -196,7 +196,7 @@ export class ProjectApi extends BaseLoopBackApi {
   /**
    * Vorhandensein von persistent_item_versions-Beziehung zu einem Element nach ID prüfen.
    *
-   * @param {any} id Project id
+   * @param {any} id ComProject id
    *
    * @param {any} fk Fremdschlüssel für persistent_item_versions
    *
@@ -206,13 +206,13 @@ export class ProjectApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Project` object.)
+   * This usually means the response is a `ComProject` object.)
    * </em>
    */
   public existsPersistent_item_versions(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "HEAD";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Projects/:id/persistent_item_versions/rel/:fk";
+    "/ComProjects/:id/persistent_item_versions/rel/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -244,13 +244,13 @@ export class ProjectApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Project` object.)
+   * This usually means the response is a `ComProject` object.)
    * </em>
    */
   public createWithLabelAndDescription(accountId: any, pkLanguage: any, label: any, textProperty: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Projects/create-with-label-and-description";
+    "/ComProjects/create-with-label-and-description";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -277,13 +277,13 @@ export class ProjectApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Project` object.)
+   * This usually means the response is a `ComProject` object.)
    * </em>
    */
   public getReferenceModel(pk_project: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Projects/get-reference-model";
+    "/ComProjects/get-reference-model";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -307,29 +307,29 @@ export class ProjectApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Project` object.)
+   * This usually means the response is a `ComProject` object.)
    * </em>
    */
-  public findComplex(filter: LoopBackFilter = {}, customHeaders?: Function): Observable<Project[]> {
+  public findComplex(filter: LoopBackFilter = {}, customHeaders?: Function): Observable<ComProject[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Projects/findComplex";
+    "/ComProjects/findComplex";
     let _routeParams: any = {};
     let _postBody: any = {
       filter: filter
     };
     let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<Project>) =>
-        instances.map((instance: Project) => new Project(instance))
+    return result.pipe(map((instances: Array<ComProject>) =>
+        instances.map((instance: ComProject) => new ComProject(instance))
     ));
   }
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Project`.
+   * i.e. `ComProject`.
    */
   public getModelName() {
-    return "Project";
+    return "ComProject";
   }
 }

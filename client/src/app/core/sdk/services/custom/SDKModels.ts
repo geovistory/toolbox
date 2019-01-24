@@ -1,10 +1,10 @@
 /* tslint:disable */
 import { Injectable } from '@angular/core';
-import { Account } from '../../models/Account';
+import { PubAccount } from '../../models/PubAccount';
 import { Email } from '../../models/Email';
-import { Project } from '../../models/Project';
-import { ProjectAccountAssociation } from '../../models/ProjectAccountAssociation';
-import { Language } from '../../models/Language';
+import { ComProject } from '../../models/ComProject';
+import { PubAccountProjectRel } from '../../models/PubAccountProjectRel';
+import { ComLanguage } from '../../models/ComLanguage';
 import { ComLabel } from '../../models/ComLabel';
 import { ComTextProperty } from '../../models/ComTextProperty';
 import { InfAppellation } from '../../models/InfAppellation';
@@ -41,11 +41,11 @@ export interface Models { [name: string]: any }
 export class SDKModels {
 
   private models: Models = {
-    Account: Account,
+    PubAccount: PubAccount,
     Email: Email,
-    Project: Project,
-    ProjectAccountAssociation: ProjectAccountAssociation,
-    Language: Language,
+    ComProject: ComProject,
+    PubAccountProjectRel: PubAccountProjectRel,
+    ComLanguage: ComLanguage,
     ComLabel: ComLabel,
     ComTextProperty: ComTextProperty,
     InfAppellation: InfAppellation,

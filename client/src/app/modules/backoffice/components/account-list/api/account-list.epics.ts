@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, AccountApi } from 'app/core';
+import { LoadingBarActions, PubAccountApi } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -12,7 +12,7 @@ import { ofSubstore } from 'app/core/store/module';
 @Injectable()
 export class AccountListAPIEpics {
   constructor(
-    private accountApi: AccountApi,
+    private accountApi: PubAccountApi,
     private actions: AccountListAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions
