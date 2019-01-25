@@ -33,6 +33,10 @@
       "emailVerificationRequired": true
     }
   },
+  "User": {
+    "dataSource": "postgres1",
+    "public": false
+  },
   "AccessToken": {
     "dataSource": "postgres1",
     "public": false
