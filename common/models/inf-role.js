@@ -2,7 +2,7 @@
 
 module.exports = function (InfRole) {
 
-  InfRole.changeRoleProjectRelation = function (projectId, isInProject, role, ctx) {
+  InfRole.changeRoleProjectRelation = function (pkProject, isInProject, role, ctx) {
 
     let requestedRole;
 
@@ -12,7 +12,7 @@ module.exports = function (InfRole) {
       requestedRole = role;
     }
 
-    return InfRole.changeProjectRelation(projectId, isInProject, requestedRole)
+    return InfRole.changeProjectRelation(pkProject, isInProject, requestedRole)
       .then(resultingEpr => {
 
         // attatch the new epr to the Role
@@ -23,7 +23,7 @@ module.exports = function (InfRole) {
         if (requestedRole.temporal_entity) {
           //add the temporal_entity to the project
           const InfTemporalEntity = InfRole.app.models.InfTemporalEntity;
-          return InfTemporalEntity.changeTeEntProjectRelation(projectId, isInProject, requestedRole.temporal_entity)
+          return InfTemporalEntity.changeTeEntProjectRelation(pkProject, isInProject, requestedRole.temporal_entity)
             .then((results) => {
               requestedRole.temporal_entity = results[0];
               return [requestedRole];
@@ -35,7 +35,7 @@ module.exports = function (InfRole) {
           if (requestedRole.persistent_item.entity_version_project_rels) {
             //add the persistent_item to the project
             const InfPersistentItem = InfRole.app.models.InfPersistentItem;
-            return InfPersistentItem.changePeItProjectRelation(projectId, isInProject, requestedRole.persistent_item)
+            return InfPersistentItem.changePeItProjectRelation(pkProject, isInProject, requestedRole.persistent_item)
               .then((results) => {
                 requestedRole.persistent_item = results[0];
                 return [requestedRole];
@@ -70,7 +70,7 @@ module.exports = function (InfRole) {
 
             //add the appellation to the project
             const InfAppellation = InfRole.app.models.InfAppellation;
-            return InfAppellation.changeProjectRelation(projectId, isInProject, requestedRole.appellation)
+            return InfAppellation.changeProjectRelation(pkProject, isInProject, requestedRole.appellation)
               .then((results) => {
                 requestedRole.appellation.entity_version_project_rels = [results];
                 return [requestedRole];
@@ -86,7 +86,7 @@ module.exports = function (InfRole) {
 
             //add the language to the project
             const InfLanguage = InfRole.app.models.InfLanguage;
-            return InfLanguage.changeProjectRelation(projectId, isInProject, requestedRole.language)
+            return InfLanguage.changeProjectRelation(pkProject, isInProject, requestedRole.language)
               .then((results) => {
                 requestedRole.entity_version_project_rels = [results];
                 return [requestedRole];
@@ -332,7 +332,7 @@ module.exports = function (InfRole) {
   }
 
 
-  InfRole.alternativesNotInProjectByEntityPk = function (entityPk, propertyPk, projectId, cb) {
+  InfRole.alternativesNotInProjectByEntityPk = function (entityPk, propertyPk, pkProject, cb) {
 
     const rolesInProjectFilter = {
       /** Select roles with fk_entity and fk_property … */
@@ -349,7 +349,7 @@ module.exports = function (InfRole) {
             "name": "entity_version_project_rels",
             "joinType": "inner join",
             "where": [
-              "fk_project", "=", projectId,
+              "fk_project", "=", pkProject,
               "and", "is_in_project", "=", "true"
             ]
           }
@@ -450,7 +450,7 @@ module.exports = function (InfRole) {
 
 
 
-  InfRole.alternativesNotInProjectByTeEntPk = function (teEntPk, propertyPk, projectId, cb) {
+  InfRole.alternativesNotInProjectByTeEntPk = function (teEntPk, propertyPk, pkProject, cb) {
 
     const rolesInProjectFilter = {
       /** Select roles with fk_temporal_entity and fk_property … */
@@ -467,7 +467,7 @@ module.exports = function (InfRole) {
             "name": "entity_version_project_rels",
             "joinType": "inner join",
             "where": [
-              "fk_project", "=", projectId,
+              "fk_project", "=", pkProject,
               "and", "is_in_project", "=", "true"
             ]
           }

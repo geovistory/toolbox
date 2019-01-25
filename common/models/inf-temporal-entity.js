@@ -4,7 +4,7 @@ const Promise = require('bluebird');
 
 module.exports = function (InfTemporalEntity) {
 
-  InfTemporalEntity.changeTeEntProjectRelation = function (projectId, isInProject, data, ctx) {
+  InfTemporalEntity.changeTeEntProjectRelation = function (pkProject, isInProject, data, ctx) {
     let requestedTeEnt;
 
     if (ctx) {
@@ -13,7 +13,7 @@ module.exports = function (InfTemporalEntity) {
       requestedTeEnt = data;
     }
 
-    return InfTemporalEntity.changeProjectRelation(projectId, isInProject, requestedTeEnt)
+    return InfTemporalEntity.changeProjectRelation(pkProject, isInProject, requestedTeEnt)
       .then(resultingEpr => {
 
         // attatch the new epr to the teEnt
@@ -33,7 +33,7 @@ module.exports = function (InfTemporalEntity) {
           return Promise.map(requestedTeEnt.te_roles.filter(role => (role)), (role) => {
 
             // add role to project
-            return InfRole.changeRoleProjectRelation(projectId, isInProject, role);
+            return InfRole.changeRoleProjectRelation(pkProject, isInProject, role);
 
           })
             .then((roles) => {
@@ -64,7 +64,7 @@ module.exports = function (InfTemporalEntity) {
   }
 
 
-  InfTemporalEntity.findOrCreateInfTemporalEntity = function (projectId, data, ctx) {
+  InfTemporalEntity.findOrCreateInfTemporalEntity = function (pkProject, data, ctx) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
@@ -87,7 +87,7 @@ module.exports = function (InfTemporalEntity) {
         ...requestedTeEnt,
         te_roles: resolvedRoles
       }
-      return InfTemporalEntity.findOrCreateTeEnt(projectId, teEnWithResolvedRoles)
+      return InfTemporalEntity.findOrCreateTeEnt(pkProject, teEnWithResolvedRoles)
         .then((resultingTeEnts) => {
 
           //TODO pick first item of array
@@ -107,7 +107,7 @@ module.exports = function (InfTemporalEntity) {
               role.fk_temporal_entity = resultingTeEnt.pk_entity;
 
               // find or create the Entity and the role pointing to the Entity
-              return InfRole.findOrCreateInfRole(projectId, role);
+              return InfRole.findOrCreateInfRole(pkProject, role);
             })
               .then((roles) => {
 
@@ -327,8 +327,8 @@ module.exports = function (InfTemporalEntity) {
 
 
   /**
-   * nestedObject - get a rich object of the TeEn with all its
-   * roles
+   * internal function to get a rich object of project or repo.
+   * a rich object of the TeEn with all its roles
    *
    * @param  {number} pkProject primary key of project
    * @param  {number} pkEntity  pk_entity of the teEn
@@ -343,13 +343,39 @@ module.exports = function (InfTemporalEntity) {
     return InfTemporalEntity.findComplex(filter, cb);
   }
 
+
   /**
- * graphs - get a rich object of the TeEn with all its
- * roles
- *
- * @param  {number} pkProject primary key of project
- * @param  {number} pkEntity  pk_entity of the teEn
- */
+   * remote method to get a rich object of project.
+   * a rich object of the TeEn with all its roles
+   *
+   * @param  {number} pkProject primary key of project
+   * @param  {number} pkEntity  pk_entity of the teEn
+   */
+  InfTemporalEntity.nestedObjectOfProject = function (pkProject, pkEntity, cb) {
+    const ofProject = true;
+    return InfTemporalEntity.nestedObject(ofProject, pkProject, pkEntity, cb)
+  }
+
+  /**
+   * remote method to get a rich object of project.
+   * a rich object of the TeEn with all its roles
+   *
+   * @param  {number} pkEntity  pk_entity of the teEn
+   */
+  InfTemporalEntity.nestedObjectOfRepo = function (pkEntity, cb) {
+    const ofProject = true;
+    const pkProject = undefined;
+    return InfTemporalEntity.nestedObject(ofProject, pkProject, pkEntity, cb)
+  }
+
+
+  /**
+   * Internal function to get graphs of project or repo.
+   * a rich object of the TeEn with all its roles
+   *
+   * @param  {number} pkProject primary key of project
+   * @param  {number} pkEntity  pk_entity of the teEn
+   */
   InfTemporalEntity.graphs = function (ofProject, pkProject, pkEntities, cb) {
 
     const filter = {
@@ -361,6 +387,29 @@ module.exports = function (InfTemporalEntity) {
   }
 
 
+  /**
+   * Remote method to get graphs of project.
+   * a rich object of the TeEn with all its roles
+   *
+   * @param  {number} pkProject primary key of project
+   * @param  {number} pkEntity  pk_entity of the teEn
+   */
+  InfTemporalEntity.graphsOfProject = function (pkProject, pkEntities, cb) {
+    const ofProject = true;
+    return InfTemporalEntity.graphs(ofProject, pkProject, pkEntities, cb)
+  }
+
+  /**
+   * Remote method to get graphs of repo.
+   * a rich object of the TeEn with all its roles
+   *
+   * @param  {number} pkEntity  pk_entity of the teEn
+   */
+  InfTemporalEntity.graphsOfRepo = function (pkEntities, cb) {
+    const ofProject = false;
+    const pkProject = undefined;
+    return InfTemporalEntity.graphs(ofProject, pkProject, pkEntities, cb)
+  }
 
   /**
    * Internal function to create the include property of 

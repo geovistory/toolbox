@@ -4,7 +4,7 @@ const Config = require('../config/Config');
 
 module.exports = function (InfEntityAssociation) {
 
-  InfEntityAssociation.findOrCreateInfEntityAssociation = function (projectId, ea, ctx) {
+  InfEntityAssociation.findOrCreateInfEntityAssociation = function (pk_project, ea, ctx) {
 
     const dataObject = {
       // pk_entity: ea.pk_entity,
@@ -26,7 +26,7 @@ module.exports = function (InfEntityAssociation) {
       const InfPersistentItem = InfEntityAssociation.app.models.InfPersistentItem;
 
       // find or create the peIt and the ea pointing to it
-      return InfPersistentItem.findOrCreatePeIt(projectId, requestedEa.domain_pe_it)
+      return InfPersistentItem.findOrCreatePeIt(pk_project, requestedEa.domain_pe_it)
         .then((resultingPeIts) => {
 
           const resultingPeIt = resultingPeIts[0];
@@ -34,7 +34,7 @@ module.exports = function (InfEntityAssociation) {
           // … prepare the Ea to create
           dataObject.fk_domain_entity = resultingPeIt.pk_entity;
 
-          return InfEntityAssociation.findOrCreateByValue(InfEntityAssociation, projectId, dataObject, requestedEa)
+          return InfEntityAssociation.findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa)
             .then((resultingEas) => {
 
               let res = resultingEas[0].toJSON();
@@ -60,7 +60,7 @@ module.exports = function (InfEntityAssociation) {
       const InfPersistentItem = InfEntityAssociation.app.models.InfPersistentItem;
 
       // find or create the peIt and the ea pointing to it
-      return InfPersistentItem.findOrCreatePeIt(projectId, requestedEa.range_pe_it)
+      return InfPersistentItem.findOrCreatePeIt(pk_project, requestedEa.range_pe_it)
         .then((resultingPeIts) => {
 
           const resultingPeIt = resultingPeIts[0];
@@ -68,7 +68,7 @@ module.exports = function (InfEntityAssociation) {
           // … prepare the Ea to create
           dataObject.fk_range_entity = resultingPeIt.pk_entity;
 
-          return InfEntityAssociation.findOrCreateByValue(InfEntityAssociation, projectId, dataObject, requestedEa)
+          return InfEntityAssociation.findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa)
             .then((resultingEas) => {
 
               let res = resultingEas[0].toJSON();
@@ -94,7 +94,7 @@ module.exports = function (InfEntityAssociation) {
       const InfChunk = InfEntityAssociation.app.models.InfChunk;
 
       // find or create the peIt and the ea pointing to it
-      return InfChunk.findOrCreateChunk(projectId, requestedEa.range_chunk)
+      return InfChunk.findOrCreateChunk(pk_project, requestedEa.range_chunk)
         .then((resultingObjects) => {
 
           const resultingObject = resultingObjects[0];
@@ -102,7 +102,7 @@ module.exports = function (InfEntityAssociation) {
           // … prepare the Ea to create
           dataObject.fk_range_entity = resultingObject.pk_entity;
 
-          return InfEntityAssociation.findOrCreateByValue(InfEntityAssociation, projectId, dataObject, requestedEa)
+          return InfEntityAssociation.findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa)
             .then((resultingEas) => {
 
               let res = resultingEas[0].toJSON();
@@ -126,7 +126,7 @@ module.exports = function (InfEntityAssociation) {
 
     else {
 
-      return InfEntityAssociation.findOrCreateByValue(InfEntityAssociation, projectId, dataObject, requestedEa)
+      return InfEntityAssociation.findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa)
 
     }
 

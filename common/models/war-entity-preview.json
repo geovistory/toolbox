@@ -54,14 +54,6 @@
     },
     {
       "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": [
-        "findComplex"
-      ]
-    },
-    {
-      "principalType": "ROLE",
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [

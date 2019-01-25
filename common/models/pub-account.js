@@ -4,11 +4,11 @@ var path = require('path');
 
 module.exports = function (PubAccount) {
 
-  PubAccount.listProjects = function (accountId, cb) {
+  PubAccount.listProjects = function (id, cb) {
 
     const account = PubAccount.find({
       "where": {
-        "id": accountId
+        "id": id
       },
       "include": {
         "relation": "projects",
@@ -142,7 +142,7 @@ module.exports = function (PubAccount) {
   });
 
 
-  PubAccount.getRoles = function (accountId, cb) {
+  PubAccount.getRoles = function (id, cb) {
 
     var sql_stmt = `
     SELECT role.id, role.name
@@ -151,7 +151,7 @@ module.exports = function (PubAccount) {
     WHERE rolemapping.principaltype = 'USER'
     AND rolemapping.principalid = $1::text
     `;
-    var params = [accountId];
+    var params = [id];
     
     const connector = PubAccount.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {

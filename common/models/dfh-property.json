@@ -117,7 +117,8 @@
       "principalId": "system_admin",
       "permission": "ALLOW",
       "property": [
-        "findComplex"
+        "findComplex",
+        "patchAttributes"
       ]
     }
   ],

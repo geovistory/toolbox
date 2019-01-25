@@ -12,7 +12,7 @@
   "mixins": {
     "SetupRemoteMethods": {
       "ignoreACL": false,
-      "disableAllExcept": ["findComplex"]
+      "disableAllExcept": []
     }
   },
   "properties": {
@@ -39,6 +39,13 @@
       "primaryKey": "pk_entity"
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    }
+  ],
   "methods": {}
 }

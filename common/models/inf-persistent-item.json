@@ -61,46 +61,44 @@
   },
   "acls": [
     {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "find",
-        "findComplex",
-        "findById",
-        "findOrCreatePeIt",
-        "withPhenomenaInProject",
-        "nestedObjectOfProject",
         "nestedObjectOfRepo",
-        "graphs",
-        "changePeItProjectRelation",
+        "graphsOfRepo"        
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
         "typesOfClassAndProject",
-        "typesOfNamespaceClassAndProject",
         "typesOfNamespaceNested",
-        "findOrCreateType",
+        "typesOfNamespaceClassAndProject",
+        "nestedObjectOfProject",
+        "findOrCreatePeIt",
         "typeNested",
         "addToProject",
-        "preview"
+        "graphsOfProject"
       ]
     }
   ],
   "methods": {
-    "graphs": {
+    "graphsOfProject": {
       "accepts": [
-        {
-          "arg": "ofProject",
-          "type": "boolean",
-          "required": true,
-          "description": "If true, gets project versoin, if false, gets repo version",
-          "http": {
-            "source": "query"
-          }
-        },
         {
           "arg": "pkProject",
           "type": "number",
-          "required": false,
-          "description": "If provided, joins the project, else not.",
+          "required": true,
+          "description": "Pk of the project.",
           "http": {
             "source": "query"
           }
@@ -120,16 +118,39 @@
         "type": "InfPersistentItem",
         "root": true
       },
+      "description": "Get e nested object of all information about the persistent in the project version.",
+      "http": {
+        "path": "/graphs-of-project",
+        "verb": "post"
+      }
+    },
+    "graphsOfRepo": {
+      "accepts": [
+        {
+          "arg": "pkEntities",
+          "type": "array",
+          "required": true,
+          "description": "Primary Keys of the persistent items (array of pk_entity)",
+          "http": {
+            "source": "body"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfPersistentItem",
+        "root": true
+      },
       "description": "Get e nested object of all information about the persistent item with the community favorites.",
       "http": {
-        "path": "/graphs",
+        "path": "/graphs-of-repo",
         "verb": "post"
       }
     },
     "nestedObjectOfProject": {
       "accepts": [
         {
-          "arg": "projectId",
+          "arg": "pkProject",
           "type": "number",
           "required": true,
           "description": "Project id",
@@ -209,7 +230,7 @@
     "findOrCreatePeIt": {
       "accepts": [
         {
-          "arg": "projectId",
+          "arg": "pkProject",
           "type": "number",
           "required": true,
           "description": "Id of the project",

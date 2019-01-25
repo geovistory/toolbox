@@ -15,7 +15,7 @@ module.exports = function (InfEntityProjectRel) {
      * @param {*} pkEntity 
      * @param {*} eprAttributes 
      */
-    InfEntityProjectRel.updateEprAttributes = function (projectId, pkEntity, eprAttributes) {
+    InfEntityProjectRel.updateEprAttributes = function (pkProject, pkEntity, eprAttributes) {
         
         if (eprAttributes['fk_entity']) {
             delete eprAttributes['fk_entity'];
@@ -29,7 +29,7 @@ module.exports = function (InfEntityProjectRel) {
         return InfEntityProjectRel.findOne({
             where: {
                 fk_entity: pkEntity,
-                fk_project: projectId
+                fk_project: pkProject
             }
         }).catch((err) => { return err; })
             .then(existingEpr => {

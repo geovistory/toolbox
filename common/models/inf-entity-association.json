@@ -74,12 +74,16 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "find",
-        "findComplex",
-        "findOrCreateInfEntityAssociation",
         "nestedObject",
-        "queryByParams",
-        "mentioningsOfSection",
+        "queryByParams"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "findOrCreateInfEntityAssociation",
         "mentionings"
       ]
     }
@@ -88,7 +92,7 @@
     "findOrCreateInfEntityAssociation": {
       "accepts": [
         {
-          "arg": "projectId",
+          "arg": "pk_project",
           "type": "number",
           "required": true,
           "description": "Id of the project",

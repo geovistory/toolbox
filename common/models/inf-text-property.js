@@ -2,7 +2,7 @@
 
 module.exports = function (InfTextProperty) {
 
-    InfTextProperty.findOrCreateInfTextProperty = function (projectId, data, ctx) {
+    InfTextProperty.findOrCreateInfTextProperty = function (pkProject, data, ctx) {
 
         const dataObject = {
             text_property_quill_doc: data.text_property_quill_doc,
@@ -13,7 +13,7 @@ module.exports = function (InfTextProperty) {
 
         const requestedObj = ctx ? ctx.req.body : undefined;
 
-        return InfTextProperty.findOrCreateByValue(InfTextProperty, projectId, dataObject, requestedObj).then(
+        return InfTextProperty.findOrCreateByValue(InfTextProperty, pkProject, dataObject, requestedObj).then(
             textProperties => {
                 const txtProp = textProperties[0].toJSON();
                 return InfTextProperty.app.models.InfLanguage.findById(txtProp.fk_language).then(

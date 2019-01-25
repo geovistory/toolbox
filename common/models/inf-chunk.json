@@ -54,6 +54,14 @@
       "property": [
         "findById"
       ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "system_admin",
+      "permission": "ALLOW",
+      "property": [
+        "findOrCreateChunk"
+      ]
     }
   ],
   "methods": {

@@ -24,8 +24,8 @@ then
     echo '========================          Run git push             ======================'
 
     #cd ..;
-    git status;
     git add .;
+    git status;
     read -p "Enter git commit message: " msg;
     echo ${msg};
     git commit -m "${msg}";

@@ -57,12 +57,24 @@
     {
       "principalType": "ROLE",
       "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "find",
-        "updateEprAttributes",
-        "patchAttributes",
-        "patchOrCreate"
+        "find"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "patchOrCreate",
+        "updateEprAttributes"
       ]
     }
   ],
@@ -70,7 +82,7 @@
     "updateEprAttributes": {
       "accepts": [
         {
-          "arg": "projectId",
+          "arg": "pkProject",
           "type": "number",
           "required": true,
           "description": "Project id",
