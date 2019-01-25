@@ -58,14 +58,18 @@
     },
     {
       "principalType": "ROLE",
-      "principalId": "$everyone",
+      "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
-        "findProjectVersion",
-        "getVersions",
-        "getLatestVersion",
-        "saveWithEpr",
-        "nestedObjectOfProject"
+        "getVersions"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "saveWithEpr"
       ]
     }
   ],

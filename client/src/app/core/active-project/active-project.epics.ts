@@ -10,7 +10,7 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
 import { mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ProjectApi } from '../sdk';
+import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ComProjectApi } from '../sdk';
 import { PeItDetail } from '../state/models';
 import { IAppState } from '../store/model';
 import { U } from '../util/util';
@@ -27,7 +27,7 @@ export class ActiveProjectEpics {
     private teEnApi: InfTemporalEntityApi,
     private chunkApi: InfChunkApi,
     private uiContextApi: ComUiContextApi,
-    private projectApi: ProjectApi,
+    private projectApi: ComProjectApi,
     private dfhPropertyApi: DfhPropertyApi,
     private comClassFieldApi: ComClassFieldApi,
     private actions: ActiveProjectActions,
@@ -66,32 +66,7 @@ export class ActiveProjectEpics {
        */
         globalStore.next(this.loadingBarActions.startLoading());
 
-        this.projectApi.findComplex({
-          'where': ['pk_project', '=', action.meta.pk_project],
-          'include': {
-            'labels': {
-              '$relation': {
-                'name': 'labels',
-                'joinType': 'inner join',
-                'orderBy': [{ 'pk_entity': 'asc' }]
-              }
-            },
-            'default_language': {
-              '$relation': {
-                'name': 'default_language',
-                'joinType': 'inner join',
-                'orderBy': [{ 'pk_language': 'asc' }]
-              },
-              'inf_language': {
-                '$relation': {
-                  'name': 'inf_language',
-                  'joinType': 'inner join',
-                  'orderBy': [{ 'pk_language': 'asc' }]
-                }
-              }
-            }
-          }
-        })
+        this.projectApi.getBasics(action.meta.pk_project)
           .subscribe(
             data => {
               globalStore.next(this.actions.activeProjectUpdated(data[0]))
@@ -99,7 +74,7 @@ export class ActiveProjectEpics {
             error => {
               globalStore.next(this.notificationActions.addToast({
                 type: 'error',
-                options: { title: error }
+                options: { title: error.message }
               }))
             })
       }))
@@ -435,7 +410,7 @@ export class ActiveProjectEpics {
           /**
            * Do some api call
            */
-          this.peItApi.graphs(true, action.meta.pk_project, action.meta.pk_entities)
+          this.peItApi.graphsOfProject(action.meta.pk_project, action.meta.pk_entities)
             /**
            * Subscribe to the api call
            */
@@ -486,7 +461,7 @@ export class ActiveProjectEpics {
           /**
            * Do some api call
            */
-          this.teEnApi.graphs(true, action.meta.pk_project, action.meta.pk_entities)
+          this.teEnApi.graphsOfProject(action.meta.pk_project, action.meta.pk_entities)
             /**
            * Subscribe to the api call
            */

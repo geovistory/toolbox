@@ -11,7 +11,7 @@ const accountRootReducer = (lastState: IAccount = INITIAL_STATE, action: Account
     case AccountActions.LOGIN_SUCCEEDED:
       lastState = {
         ...lastState,
-        account: action.payload
+        account: action.meta.account
       };
       break;
 
@@ -19,7 +19,7 @@ const accountRootReducer = (lastState: IAccount = INITIAL_STATE, action: Account
     case AccountActions.ACCOUNT_UPDATED:
       lastState = {
         ...lastState,
-        account: action.payload
+        account: action.meta.account
       };
       break;
 

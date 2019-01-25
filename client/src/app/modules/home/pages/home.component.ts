@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Account, ActiveAccountService } from 'app/core';
+import { ActiveAccountService, PubAccount } from 'app/core';
 
 @Component({
   selector: 'gv-home',
@@ -8,7 +8,7 @@ import { Account, ActiveAccountService } from 'app/core';
 })
 export class HomeComponent implements OnInit {
 
-  account: Account;
+  account: PubAccount;
 
   constructor(
     private activeAccountService: ActiveAccountService,

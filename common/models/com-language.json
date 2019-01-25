@@ -1,5 +1,5 @@
 {
-  "name": "Language",
+  "name": "ComLanguage",
   "base": "PersistedModel",
   "idInjection": false,
   "options": {
@@ -12,10 +12,7 @@
   "mixins": {
     "SetupRemoteMethods": {
       "ignoreACL": false,
-      "disableAllExcept": [
-        "find",
-        "queryByString"
-      ]
+      "disableAllExcept": []
     }
   },
   "properties": {
@@ -62,8 +59,12 @@
     {
       "accessType": "READ",
       "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW"
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": [
+        "find",
+        "queryByString"
+      ]
     }
   ],
   "methods": {
@@ -78,7 +79,7 @@
       "returns": {
         "arg": "languages",
         "type": [
-          "Language"
+          "ComLanguage"
         ],
         "root": true
       },

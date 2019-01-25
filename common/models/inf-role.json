@@ -98,16 +98,12 @@
     },
     {
       "principalType": "ROLE",
-      "principalId": "$everyone",
+      "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "find",
-        "findComplex",
-        "findOrCreateInfRole",
         "alternativesNotInProjectByEntityPk",
         "alternativesNotInProjectByTeEntPk",
         "changeRoleProjectRelation",
-        "nestedObjectsOfProject",
         "addToProjectWithTeEnt",
         "addToProject"
       ]
@@ -174,7 +170,7 @@
           }
         },
         {
-          "arg": "projectId",
+          "arg": "pkProject",
           "type": "number",
           "required": true,
           "description": "Id of the the current project",
@@ -217,7 +213,7 @@
           }
         },
         {
-          "arg": "projectId",
+          "arg": "pkProject",
           "type": "number",
           "required": true,
           "description": "Id of the the current project",
@@ -242,7 +238,7 @@
     "changeRoleProjectRelation": {
       "accepts": [
         {
-          "arg": "projectId",
+          "arg": "pkProject",
           "type": "number",
           "required": true,
           "description": "Id of the project",

@@ -49,43 +49,43 @@ export class PropertyService {
   */
 
 
-  getPropertyByPkProperty(pk): Observable<DfhProperty> {
-    // If there is already an api call with this pk, return that observable
-    // to avoid multiple api calls to the same pk
-    if (this.propByPkRequestCache[pk])
-      return this.propByPkRequestCache[pk];
+  // getPropertyByPkProperty(pk): Observable<DfhProperty> {
+  //   // If there is already an api call with this pk, return that observable
+  //   // to avoid multiple api calls to the same pk
+  //   if (this.propByPkRequestCache[pk])
+  //     return this.propByPkRequestCache[pk];
 
-    // Else create a new observable
-    this.propByPkRequestCache[pk] = new Observable((observer) => {
+  //   // Else create a new observable
+  //   this.propByPkRequestCache[pk] = new Observable((observer) => {
 
-      // If property already exists in cache, return it as observable
-      if (this.propByPkCache[pk]) {
-        observer.next(this.propByPkCache[pk]);
-        observer.complete();
-      }
+  //     // If property already exists in cache, return it as observable
+  //     if (this.propByPkCache[pk]) {
+  //       observer.next(this.propByPkCache[pk]);
+  //       observer.complete();
+  //     }
 
-      // Else make a api call and add the observables to a propByPkRequestCache
-      this.propertyApi.findById(pk, this.filter)
-        .subscribe((property: DfhProperty) => {
+  //     // Else make a api call and add the observables to a propByPkRequestCache
+  //     this.propertyApi.findById(pk, this.filter)
+  //       .subscribe((property: DfhProperty) => {
 
-          // add to cache
-          this.propByPkCache[pk] = property;
+  //         // add to cache
+  //         this.propByPkCache[pk] = property;
 
-          // return data
-          observer.next(property);
+  //         // return data
+  //         observer.next(property);
 
-          // complete observer
-          observer.complete();
+  //         // complete observer
+  //         observer.complete();
 
-          // remove the observable from cache
-          delete this.propByPkRequestCache[pk];
+  //         // remove the observable from cache
+  //         delete this.propByPkRequestCache[pk];
 
-        });
-    })
+  //       });
+  //   })
 
-    // Return the observable
-    return this.propByPkRequestCache[pk];
-  }
+  //   // Return the observable
+  //   return this.propByPkRequestCache[pk];
+  // }
 
   getPropertyByFkDomainClass(fk): Observable<DfhProperty[]> {
     // If there is already an api call with this domain fk, return that observable

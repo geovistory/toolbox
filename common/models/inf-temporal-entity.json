@@ -52,32 +52,38 @@
     {
       "principalType": "ROLE",
       "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "graphsOfRepo",
+        "nestedObjectOfRepo"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
         "findOrCreateInfTemporalEntity",
         "changeTeEntProjectRelation",
-        "nestedObject",
-        "graphs"
+        "nestedObjectOfProject",
+        "graphsOfProject"
       ]
     }
   ],
   "methods": {
-    "graphs": {
+    "graphsOfProject": {
       "accepts": [
-        {
-          "arg": "ofProject",
-          "type": "boolean",
-          "required": true,
-          "description": "If true, gets project versoin, if false, gets repo version",
-          "http": {
-            "source": "query"
-          }
-        },
         {
           "arg": "pkProject",
           "type": "number",
           "required": false,
-          "description": "If provided, joins the project, else not.",
+          "description": "Pk of project.",
           "http": {
             "source": "query"
           }
@@ -99,26 +105,40 @@
       },
       "description": "Get e nested objects of all information about the temporal entities.",
       "http": {
-        "path": "/graphs",
+        "path": "/graphs-of-project",
         "verb": "post"
       }
     },
-    "nestedObject": {
+    "graphsOfRepo": {
       "accepts": [
         {
-          "arg": "ofProject",
-          "type": "boolean",
+          "arg": "pkEntities",
+          "type": "array",
           "required": true,
-          "description": "If true, gets project versoin, if false, gets repo version",
+          "description": "Primary Keys of the temporal entities (array of pk_entity)",
           "http": {
-            "source": "query"
+            "source": "body"
           }
-        },
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfTemporalEntity",
+        "root": true
+      },
+      "description": "Get e nested objects of all information about the temporal entities.",
+      "http": {
+        "path": "/graphs-of-repo",
+        "verb": "post"
+      }
+    },
+    "nestedObjectOfProject": {
+      "accepts": [
         {
           "arg": "pkProject",
           "type": "number",
           "required": false,
-          "description": "If provided, joins the project, else not.",
+          "description": "Pk project",
           "http": {
             "source": "query"
           }
@@ -138,16 +158,39 @@
         "type": "InfTemporalEntity",
         "root": true
       },
-      "description": "Get e nested object of all information about the temporal entity with the community favorites.",
+      "description": "Get e nested object of all information about the temporal entity in project version.",
       "http": {
-        "path": "/nested-object",
+        "path": "/nested-object-of-project",
+        "verb": "get"
+      }
+    },
+    "nestedObjectOfRepo": {
+      "accepts": [
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the temporal entity (pk_entity)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfTemporalEntity",
+        "root": true
+      },
+      "description": "Get e nested object of all information about the temporal entity in the repo version.",
+      "http": {
+        "path": "/nested-object-of-repo",
         "verb": "get"
       }
     },
     "findOrCreateInfTemporalEntity": {
       "accepts": [
         {
-          "arg": "projectId",
+          "arg": "pkProject",
           "type": "number",
           "required": true,
           "description": "Id of the project",
@@ -186,7 +229,7 @@
     "changeTeEntProjectRelation": {
       "accepts": [
         {
-          "arg": "projectId",
+          "arg": "pkProject",
           "type": "number",
           "required": true,
           "description": "Id of the project",

@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ActiveProjectService, ComConfig, IAppState, PeItDetail, Project, ProjectCrm, SubstoreComponent, EntityPreview } from 'app/core';
+import { ActiveProjectService, ComConfig, IAppState, PeItDetail, ComProject, ProjectCrm, SubstoreComponent, EntityPreview } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { List } from 'app/modules/information/containers/list/api/list.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
@@ -43,7 +43,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
   // used for breadcumbs when section is opened
   sourcePreview$: Observable<EntityPreview>;
 
-  project$: Observable<Project>;
+  project$: Observable<ComProject>;
 
   listVisible: boolean;
 
@@ -70,7 +70,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
     this.params$ = activatedRoute.params;
 
     // observe the active project
-    this.project$ = ngRedux.select<Project>('activeProject');
+    this.project$ = ngRedux.select<ComProject>('activeProject');
 
     // observe the active pk_project
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']);
@@ -150,14 +150,6 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
   onRemoveSource = (pkEntity: number) => this.removeSource(pkEntity, this.ngRedux.getState().activeProject.pk_project)
   onRemoveSection = (pkEntity: number) => this.removeSection(pkEntity, this.ngRedux.getState().activeProject.pk_project)
 
-  // /**
-  //  * Updates the state of substore
-  //  */
-  // @dispatch() updateState(payload: ISourceListState) {
-  //   return this.actions.stateUpdated(payload)
-  // }
-
-
   /**
    * listen to changes of the source being edited and updates 'list'
    * in order to apply the changes to the list
@@ -165,94 +157,5 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
   onSourceChange() {
     // this.search()
   }
-
-
-
-
-
-  /**
-   * Call api to remove the digital object from project, on success
-   * - update store: delete 'remove'
-   * - getList()
-   */
-  // remove() {
-
-
-  //   this.eprApi.updateEprAttributes(
-  //     this.ngRedux.getState().activeProject.pk_project,
-  //     this.hitToRemove.id,
-  //     { is_in_project: false } as InfEntityProjectRelInterface
-  //   ).takeUntil(this.destroy$).subscribe((deleted) => {
-  //     // delete the remove state
-  //     this.removed();
-  //     // update the sources list
-  //     // this.search();
-  //   })
-
-
-
-  // }
-
-
-  /**
-   * Calls api to persists a new digital object in database, on success
-   * Create SourceDetailState
-   * - update store: set edit: new SourceDetailState
-   */
-  // submitCreate(dObj: InfDigitalObject) {
-
-  //   // save digital object with epr and versioning
-  //   this.digitObjApi.saveWithEpr(dObj, this.ngRedux.getState().activeProject.pk_project)
-  //     .takeUntil(this.destroy$).subscribe((digitalObjects: InfDigitalObject[]) => {
-  //       const editState: ISourceDetailState = {
-  //         edit: digitalObjects[0],
-  //         view: digitalObjects[0],
-  //       }
-  //       // update the sources list
-  //       // this.search();
-  //       // open the new source
-  //       this.open(editState);
-  //       // close the create
-  //       this.stopCreate()
-  //     })
-  // }
-
-  /**
-   * called when user changes version of a digital object
-   */
-  // changeVersion(version: IVersion) {
-
-  //   // update the epr
-  //   this.eprApi.updateEprAttributes(
-  //     this.ngRedux.getState().activeProject.pk_project,
-  //     version.pkEntity,
-  //     {
-  //       fk_entity_version: version.entityVersion,
-  //       fk_entity_version_concat: version.pkEntityVersionConcat
-  //     }
-  //   ).takeUntil(this.destroy$).subscribe((updatedEpr) => {
-
-  //     // remove previous version
-  //     this.sourceUpdated(undefined);
-
-  //     // get the version
-  //     this.digitObjApi.findProjectVersion(this.ngRedux.getState().activeProject.pk_project, version.pkEntity)
-  //       .takeUntil(this.destroy$).subscribe((digiObjs: InfDigitalObject[]) => {
-  //         const editState: ISourceDetailState = {
-  //           view: digiObjs[0]
-  //         }
-
-  //         // open the new version
-  //         this.sourceUpdated(digiObjs[0]);
-
-  //         // update the sources list
-  //         // this.search();
-  //       })
-
-
-  //   })
-
-
-  // }
 
 }

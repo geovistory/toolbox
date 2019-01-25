@@ -3,7 +3,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { DfhProperty, IAppState, InfEntityProjectRel, InfEntityProjectRelApi, InfPersistentItem, InfRole, InfRoleApi, Project, U } from 'app/core';
+import { DfhProperty, IAppState, InfEntityProjectRel, InfEntityProjectRelApi, InfPersistentItem, InfRole, InfRoleApi, ComProject, U } from 'app/core';
 import { CollapsedExpanded, FieldLabel, PropertyField, PropertyFieldForm, RoleDetail, RoleDetailList } from 'app/core/state/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
@@ -82,7 +82,7 @@ export abstract class PropertyFieldBase implements OnInit, OnDestroy, ControlVal
     */
 
     _role_list: RoleDetailList
-    project: Project;
+    project: ComProject;
     propertyFieldState: PropertyField;
 
     roleDetails: { key: string, value: RoleDetail }[];
@@ -191,7 +191,7 @@ export abstract class PropertyFieldBase implements OnInit, OnDestroy, ControlVal
         this.rootEpics.addEpic(this.epics.createEpics(this));
 
         // Subscribe to the activeProject, to get the pk_project needed for api call
-        this.subs.push(this.ngRedux.select<Project>('activeProject').subscribe(d => this.project = d));
+        this.subs.push(this.ngRedux.select<ComProject>('activeProject').subscribe(d => this.project = d));
 
         this.subs.push(this.localStore.select<PropertyField>('').subscribe(d => {
             this.propertyFieldState = d
@@ -285,87 +285,6 @@ export abstract class PropertyFieldBase implements OnInit, OnDestroy, ControlVal
     removePropertyField() {
         this.onRemovePropertyField.emit()
     }
-
-
-    // TODO check if this can be dropped
-    /**
-    * changeStandardRole - Make another child role the standard role for
-    * the active project.
-    *
-    * @param key  the key of the child RoleState in the store tree
-    * @return {void}
-    */
-    // changeStandardRole(input: { roleState: RoleDetail, key: string }) {
-
-    //     const observables = [];
-
-
-    //     // set loadingStdChange flag of the given child Role
-    //     const inputRoleStore = this.getChildRoleStore(input.key)
-
-    //     inputRoleStore.dispatch(this.roleActions.changeDisplayRoleLoading(true))
-
-    //     // Create observable of api call to make the given role new standard
-
-    //     observables.push(this.eprApi.patchAttributes(
-    //         input.roleState.role.entity_version_project_rels[0].pk_entity_version_project_rel,
-    //         {
-    //             is_standard_in_project: true
-    //         }
-    //     ))
-
-    //     // Get all Display Roles to disable (should be only one)
-
-    //     const rolesToChange: RoleDetail[] = [];
-
-    //     Object.keys(this._role_list).forEach(key => {
-    //         const roleState: RoleDetail = this._role_list[key];
-    //         const isDisplayRole = RoleService.isDisplayRole(
-    //             roleState.isOutgoing,
-    //             roleState.isDisplayRoleForDomain,
-    //             roleState.isDisplayRoleForRange
-    //         )
-    //         if (roleState && isDisplayRole) {
-
-    //             // set loadingStdChange flag of the RoleState
-    //             this.getChildRoleStore(key).dispatch(this.roleActions.changeDisplayRoleLoading(true))
-
-    //             // push the RoleState to an array that will be used later
-    //             rolesToChange.push(roleState);
-
-    //             // Create observable of api call to disable the old standard
-    //             observables.push(this.eprApi.patchAttributes(
-    //                 roleState.role.entity_version_project_rels[0].pk_entity_version_project_rel,
-    //                 {
-    //                     is_standard_in_project: false
-    //                 }
-    //             ))
-    //         }
-    //     });
-
-    //     this.subs.push(combineLatest(observables)
-    //         .subscribe(
-    //             (value) => {
-
-    //                 // update the epr of the new Std in store
-    //                 const isDisplayRole = value[0].is_standard_in_project,
-    //                     isOutgoing = input.roleState.isOutgoing;
-    //                 inputRoleStore.dispatch(this.roleActions.changeDisplayRoleSucceeded(isDisplayRole, isOutgoing))
-
-    //                 // update the former display role states (should be only one) in store
-    //                 for (let i = 0; i < rolesToChange.length; i++) {
-    //                     const isDisplayRole = RoleService.isDisplayRole(
-    //                         rolesToChange[i].isOutgoing,
-    //                         rolesToChange[i].isDisplayRoleForDomain,
-    //                         rolesToChange[i].isDisplayRoleForRange
-    //                     )
-    //                     this.getChildRoleStore(roleStateKey(rolesToChange[i]))
-    //                         .dispatch(this.roleActions.changeDisplayRoleSucceeded(false, rolesToChange[i].isOutgoing))
-    //                 }
-
-    //             }))
-
-    // }
 
 
     getChildRoleStore(key): ObservableStore<RoleDetail> {

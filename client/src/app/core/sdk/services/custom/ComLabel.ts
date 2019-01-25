@@ -11,8 +11,8 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ComLabel } from '../../models/ComLabel';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { Language } from '../../models/Language';
-import { Project } from '../../models/Project';
+import { ComProject } from '../../models/ComProject';
+import { ComLanguage } from '../../models/ComLanguage';
 
 
 /**

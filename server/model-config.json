@@ -14,11 +14,19 @@
       "../node_modules/loopback-setup-remote-methods-mixin"
     ]
   },
-  "User": {
+  "ComClassFieldPropertyRel": {
     "dataSource": "postgres1",
-    "public": false
+    "public": true
   },
-  "Account": {
+  "ComClassField": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "ComLabel": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "PubAccount": {
     "dataSource": "postgres1",
     "public": true,
     "options": {
@@ -47,19 +55,15 @@
   "Email": {
     "dataSource": "emailDs"
   },
-  "Project": {
+  "ComProject": {
     "dataSource": "postgres1",
     "public": true
   },
-  "ProjectAccountAssociation": {
+  "PubAccountProjectRel": {
     "dataSource": "postgres1",
     "public": true
   },
-  "Language": {
-    "dataSource": "postgres1",
-    "public": true
-  },
-  "ComLabel": {
+  "ComLanguage": {
     "dataSource": "postgres1",
     "public": true
   },
@@ -151,10 +155,6 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "ComClassField": {
-    "dataSource": "postgres1",
-    "public": true
-  },
   "DfhProjRel": {
     "dataSource": "postgres1",
     "public": true
@@ -172,10 +172,6 @@
     "public": true
   },
   "ComSystemType": {
-    "dataSource": "postgres1",
-    "public": true
-  },
-  "ComClassFieldPropertyRel": {
     "dataSource": "postgres1",
     "public": true
   }

@@ -1,5 +1,5 @@
 import { sandboxOf } from 'angular-playground';
-import { DfhClass, DfhProperty, InfRole, Project } from 'app/core';
+import { DfhClass, DfhProperty, InfRole, ComProject } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
 import { RoleDetail, PropertyField } from 'app/core/state/models';
@@ -173,7 +173,7 @@ export default sandboxOf(PeItRoleCreateCtrlComponent, {
             initState: {
                 activeProject: {
                     pk_project: 52
-                } as Project,
+                } as ComProject,
                 '_property_field_1': {
                     _role_list: {
                         _role_detail_1: roleCreateMock

@@ -64,37 +64,6 @@ export class InfDigitalObjectApi extends BaseLoopBackApi {
   }
 
   /**
-   * Finds the versions of given projectId. If pkEntity is given, finds version of this one.
-   *
-   * @param {number} projectId Project id
-   *
-   * @param {number} pkEntity Primary Key of the digital object (pk_entity)
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfDigitalObject` object.)
-   * </em>
-   */
-  public findProjectVersion(projectId: any, pkEntity: any = {}, customHeaders?: Function): Observable<InfDigitalObject[]> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfDigitalObjects/find-project-version";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof projectId !== 'undefined' && projectId !== null) _urlParams.projectId = projectId;
-    if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<InfDigitalObject>) =>
-        instances.map((instance: InfDigitalObject) => new InfDigitalObject(instance))
-    ));
-  }
-
-  /**
    * Finds the versions of given pkEntity.
    *
    * @param {number} pkEntity Primary Key of the digital object (pk_entity)
@@ -118,94 +87,6 @@ export class InfDigitalObjectApi extends BaseLoopBackApi {
     if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
-  }
-
-  /**
-   * Finds the latest version of given pkEntity.
-   *
-   * @param {number} pkEntity Primary Key of the digital object (pk_entity)
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfDigitalObject` object.)
-   * </em>
-   */
-  public getLatestVersion(pkEntity: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfDigitalObjects/get-latest-version";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Get e nested object of all information about the digital object of the project.
-   *
-   * @param {number} projectId Project id
-   *
-   * @param {number} pkEntity Primary Key of the digital object (pk_entity)
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfDigitalObject` object.)
-   * </em>
-   */
-  public nestedObjectOfProject(projectId: any, pkEntity: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfDigitalObjects/nested-object-of-project";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof projectId !== 'undefined' && projectId !== null) _urlParams.projectId = projectId;
-    if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfDigitalObject` object.)
-   * </em>
-   */
-  public findComplex(filter: LoopBackFilter = {}, customHeaders?: Function): Observable<InfDigitalObject[]> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfDigitalObjects/findComplex";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      filter: filter
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<InfDigitalObject>) =>
-        instances.map((instance: InfDigitalObject) => new InfDigitalObject(instance))
-    ));
   }
 
   /**

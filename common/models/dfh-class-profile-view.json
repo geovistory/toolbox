@@ -69,12 +69,7 @@
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
-      "property": [
-        "find",
-        "findById",
-        "__get__labels",
-        "__get__text_properties"
-      ]
+      "property": []
     }
   ],
   "methods": {}

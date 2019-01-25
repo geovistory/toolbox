@@ -2,7 +2,7 @@
 
 const Config = require('../config/Config');
 
-module.exports = function (Project) {
+module.exports = function (ComProject) {
 
   // Project.validatesUniquenessOf('name', {message: 'Project name already exists'});
 
@@ -22,7 +22,7 @@ module.exports = function (Project) {
   * @param  {type} cb        callback
   * @return {void}
   */
-  Project.createWithLabelAndDescription = function (accountId, pkLanguage, label, textProperty, cb) {
+  ComProject.createWithLabelAndDescription = function (accountId, pkLanguage, label, textProperty, cb) {
 
     var params = [
       accountId,
@@ -86,7 +86,7 @@ module.exports = function (Project) {
     `;
 
 
-    const connector = Project.dataSource.connector;
+    const connector = ComProject.dataSource.connector;
     connector.execute(sql_stmt, params, (err, result) => {
       var success = true;
       if (err) {
@@ -119,6 +119,35 @@ module.exports = function (Project) {
   // };
 
 
+  ComProject.getBasics = function (pkProject, cb) {
+    ComProject.findComplex({
+      'where': ['pk_project', '=', pkProject],
+      'include': {
+        'labels': {
+          '$relation': {
+            'name': 'labels',
+            'joinType': 'inner join',
+            'orderBy': [{ 'pk_entity': 'asc' }]
+          }
+        },
+        'default_language': {
+          '$relation': {
+            'name': 'default_language',
+            'joinType': 'inner join',
+            'orderBy': [{ 'pk_language': 'asc' }]
+          },
+          'inf_language': {
+            '$relation': {
+              'name': 'inf_language',
+              'joinType': 'inner join',
+              'orderBy': [{ 'pk_language': 'asc' }]
+            }
+          }
+        }
+      }
+    }, cb)
+  }
+
   /**
    * Gets the reference model of the project:
    * - DfhClasses available for project, including
@@ -126,10 +155,10 @@ module.exports = function (Project) {
    *        - Boolean that indicates
    *    
    */
-  Project.getReferenceModel = function (pk_project, cb) {
+  ComProject.getReferenceModel = function (pkProject, cb) {
 
     // shortcut as long as no epr for classes in use
-    const DfhClass = Project.app.models.DfhClass;
+    const DfhClass = ComProject.app.models.DfhClass;
 
     const propertiesSelect = {
       include: [
@@ -199,7 +228,7 @@ module.exports = function (Project) {
             "joinType": "left join",
             select: { include: ["is_in_project"] },
             "orderBy": [{ "pk_entity": "asc" }],
-            where: ['fk_project', '=', pk_project]
+            where: ['fk_project', '=', pkProject]
           }
         },
         labels: {

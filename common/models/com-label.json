@@ -32,16 +32,23 @@
     },
     "language": {
       "type": "belongsTo",
-      "model": "Language",
+      "model": "ComLanguage",
       "foreignKey": "fk_language"
     },
     "project": {
       "type": "belongsTo",
-      "model": "Project",
+      "model": "ComProject",
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    }
+  ],
   "methods": {}
 }

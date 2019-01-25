@@ -36,11 +36,9 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
   }
 
   /**
-   * Get e nested object of all information about the persistent item with the community favorites.
+   * Get e nested object of all information about the persistent in the project version.
    *
-   * @param {boolean} ofProject If true, gets project versoin, if false, gets repo version
-   *
-   * @param {number} pkProject If provided, joins the project, else not.
+   * @param {number} pkProject Pk of the project.
    *
    * @param {object} data Request data.
    *
@@ -55,17 +53,45 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
    * This usually means the response is a `InfPersistentItem` object.)
    * </em>
    */
-  public graphs(ofProject: any, pkProject: any = {}, pkEntities: any, customHeaders?: Function): Observable<any> {
+  public graphsOfProject(pkProject: any, pkEntities: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfPersistentItems/graphs";
+    "/InfPersistentItems/graphs-of-project";
     let _routeParams: any = {};
     let _postBody: any = {
       pkEntities: pkEntities
     };
     let _urlParams: any = {};
-    if (typeof ofProject !== 'undefined' && ofProject !== null) _urlParams.ofProject = ofProject;
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Get e nested object of all information about the persistent item with the community favorites.
+   *
+   * @param {object} data Request data.
+   *
+   *  - `pkEntities` – `{any}` - Primary Keys of the persistent items (array of pk_entity)
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfPersistentItem` object.)
+   * </em>
+   */
+  public graphsOfRepo(pkEntities: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfPersistentItems/graphs-of-repo";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      pkEntities: pkEntities
+    };
+    let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -73,7 +99,7 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
   /**
    * Get e nested object of all information about the persistent item of the project.
    *
-   * @param {number} projectId Project id
+   * @param {number} pkProject Project id
    *
    * @param {number} pkEntity Primary Key of the persistent item (pk_entity)
    *
@@ -86,50 +112,15 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
    * This usually means the response is a `InfPersistentItem` object.)
    * </em>
    */
-  public nestedObjectOfProject(projectId: any, pkEntity: any, customHeaders?: Function): Observable<any> {
+  public nestedObjectOfProject(pkProject: any, pkEntity: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/InfPersistentItems/nested-object-of-project";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof projectId !== 'undefined' && projectId !== null) _urlParams.projectId = projectId;
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Add a nested object of a InfPersistentItem to the project.
-   *
-   * @param {number} projectId Id of the project
-   *
-   * @param {boolean} isInProject Include or exclude from project.
-   *
-   * @param {object} data Request data.
-   *
-   *  - `data` – `{InfPersistentItem}` - data
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfPersistentItem` object.)
-   * </em>
-   */
-  public changePeItProjectRelation(projectId: any, isInProject: any, data: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfPersistentItems/change-project-relation";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    if (typeof projectId !== 'undefined' && projectId !== null) _urlParams.projectId = projectId;
-    if (typeof isInProject !== 'undefined' && isInProject !== null) _urlParams.isInProject = isInProject;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -137,7 +128,7 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
   /**
    * Find or create a InfPersistentItem.
    *
-   * @param {number} projectId Id of the project
+   * @param {number} pkProject Id of the project
    *
    * @param {object} data Request data.
    *
@@ -152,7 +143,7 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
    * This usually means the response is a `InfPersistentItem` object.)
    * </em>
    */
-  public findOrCreatePeIt(projectId: any, data: any, customHeaders?: Function): Observable<InfPersistentItem[]> {
+  public findOrCreatePeIt(pkProject: any, data: any, customHeaders?: Function): Observable<InfPersistentItem[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/InfPersistentItems/findOrCreate";
@@ -161,44 +152,7 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
       data: data
     };
     let _urlParams: any = {};
-    if (typeof projectId !== 'undefined' && projectId !== null) _urlParams.projectId = projectId;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<InfPersistentItem>) =>
-        instances.map((instance: InfPersistentItem) => new InfPersistentItem(instance))
-    ));
-  }
-
-  /**
-   * Find or create a InfPersistentItem.
-   *
-   * @param {number} pk_project Id of the project
-   *
-   * @param {number} pk_namespace Id of the project
-   *
-   * @param {object} data Request data.
-   *
-   *  - `data` – `{InfPersistentItem}` - data
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfPersistentItem` object.)
-   * </em>
-   */
-  public findOrCreateType(pk_project: any, pk_namespace: any, data: any, customHeaders?: Function): Observable<InfPersistentItem[]> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfPersistentItems/find-or-create-type";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
-    if (typeof pk_namespace !== 'undefined' && pk_namespace !== null) _urlParams.pk_namespace = pk_namespace;
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result.pipe(map((instances: Array<InfPersistentItem>) =>
         instances.map((instance: InfPersistentItem) => new InfPersistentItem(instance))
@@ -384,71 +338,6 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
     if (typeof pk_entity !== 'undefined' && pk_entity !== null) _urlParams.pk_entity = pk_entity;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
-  }
-
-  /**
-   * Get the preview of a persistent according to project and ui context.
-   *
-   * @param {number} pk_project Primary Key of Project
-   *
-   * @param {number} pk_entity Primary Key of the persistent item.
-   *
-   * @param {number} pk_ui_context Primary Key of the ui context.
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfPersistentItem` object.)
-   * </em>
-   */
-  public preview(pk_project: any, pk_entity: any, pk_ui_context: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfPersistentItems/preview";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
-    if (typeof pk_entity !== 'undefined' && pk_entity !== null) _urlParams.pk_entity = pk_entity;
-    if (typeof pk_ui_context !== 'undefined' && pk_ui_context !== null) _urlParams.pk_ui_context = pk_ui_context;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfPersistentItem` object.)
-   * </em>
-   */
-  public findComplex(filter: LoopBackFilter = {}, customHeaders?: Function): Observable<InfPersistentItem[]> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfPersistentItems/findComplex";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      filter: filter
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<InfPersistentItem>) =>
-        instances.map((instance: InfPersistentItem) => new InfPersistentItem(instance))
-    ));
   }
 
   /**

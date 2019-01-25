@@ -1,5 +1,5 @@
 {
-  "name": "Project",
+  "name": "ComProject",
   "base": "PersistedModel",
   "idInjection": false,
   "options": {
@@ -34,14 +34,14 @@
   "relations": {
     "accounts": {
       "type": "hasMany",
-      "model": "Account",
+      "model": "PubAccount",
       "foreignKey": "fk_project",
       "keyThrough": "account_id",
-      "through": "ProjectAccountAssociation"
+      "through": "PubAccountProjectRel"
     },
     "default_language": {
       "type": "belongsTo",
-      "model": "Language",
+      "model": "ComLanguage",
       "primaryKey": "pk_language",
       "foreignKey": "fk_language"
     },
@@ -62,13 +62,6 @@
       "model": "InfPersistentItem",
       "foreignKey": "fk_project",
       "keyThrough": "fk_entity",
-      "through": "EntityProjectRel"
-    },
-    "persistent_item_versions": {
-      "type": "hasMany",
-      "model": "InfPersistentItem",
-      "foreignKey": "fk_project",
-      "keyThrough": "fk_entity_version_concat",
       "through": "InfEntityProjectRel"
     },
     "entity_version_project_rels": {
@@ -86,14 +79,25 @@
   },
   "acls": [
     {
+      "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
-        "createWithLabelAndDescription",
-        "find",
-        "addEntity",
-        "findComplex",
+        "createWithLabelAndDescription"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "getBasics",
         "getReferenceModel"
       ]
     }
@@ -151,10 +155,35 @@
         "verb": "post"
       }
     },
+    "getBasics": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of project",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "success",
+        "type": [
+          "ComProject"
+        ],
+        "root": true
+      },
+      "description": "Get basic information about the project (language, name)",
+      "http": {
+        "path": "/get-basics",
+        "verb": "get"
+      }
+    },
     "getReferenceModel": {
       "accepts": [
         {
-          "arg": "pk_project",
+          "arg": "pkProject",
           "type": "number",
           "required": true,
           "description": "Pk of project",

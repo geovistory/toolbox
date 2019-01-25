@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-
-import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
-import { AccountApi, Account, LoopBackConfig } from 'app/core';
+import { LoopBackConfig, PubAccount, PubAccountApi } from 'app/core';
 import { environment } from 'environments/environment';
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+
 
 
 
@@ -17,11 +17,11 @@ export class RegistrationComponent {
   model: any = {};
   loading = false;
   errorMessages: Object;
-  account: Account;
+  account: PubAccount;
   confirm = false; // if true, form is hidden and confirmation shown.
 
   constructor(
-    private accountApi: AccountApi,
+    private accountApi: PubAccountApi,
     private router: Router,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
@@ -33,7 +33,7 @@ export class RegistrationComponent {
     this.startLoading();
 
     this.errorMessages = {};
-    this.account = new Account(this.model);
+    this.account = new PubAccount(this.model);
     this.accountApi.create(this.account)
       .subscribe(
         data => {

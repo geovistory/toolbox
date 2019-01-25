@@ -64,7 +64,7 @@ export class TeEntPropertyFieldEditableComponent extends PropertyFieldBase {
     protected roleActions: RoleActions,
     protected classService: ClassService,
     protected fb: FormBuilder,
-    protected teEntApi: InfTemporalEntityApi
+    protected teEnApi: InfTemporalEntityApi
   ) {
     super(rootEpics, epics, eprApi, roleApi, ngRedux, actions, propertyFieldService, roleStore, roleActions, classService, fb)
   }
@@ -180,7 +180,7 @@ export class TeEntPropertyFieldEditableComponent extends PropertyFieldBase {
       })
 
       // call api
-      this.subs.push(this.teEntApi.findOrCreateInfTemporalEntity(this.project.pk_project, t).subscribe(teEnts => {
+      this.subs.push(this.teEnApi.findOrCreateInfTemporalEntity(this.project.pk_project, t).subscribe(teEnts => {
         const roles: InfRole[] = teEnts[0].te_roles;
 
         const roleDetailList = createRoleDetailList(this.propertyFieldState, roles, this.ngRedux.getState().activeProject.crm, { pkUiContext: this.propertyFieldState.pkUiContext })
@@ -213,26 +213,6 @@ export class TeEntPropertyFieldEditableComponent extends PropertyFieldBase {
     const propertyField = this.propertyFieldState._role_list[key];
     const roleDetail = createRoleDetail(propertyField, propertyField.role, this.ngRedux.getState().activeProject.crm, { pkUiContext: this.propertyFieldState.pkUiContext })
     this.localStore.dispatch(this.actions.stopEditingRole(key, roleDetail))
-  }
-
-  startUpdatingRole(key, role: InfRole) {
-
-    console.error('implement the following lines')
-    // const oldRole = StateToDataService.roleStateToRoleToRelate(this.propertyFieldState._role_list[key]);
-
-    // // call api
-    // this.subs.push(combineLatest(
-    //     this.roleApi.changeRoleProjectRelation(this.project.pk_project, false, oldRole),
-    //     this.roleApi.findOrCreateInfRole(this.project.pk_project, role)
-    // ).subscribe(result => {
-    //     const newRoles = result[1];
-
-    //     this.subs.push(this.stateCreator.initializeRoleDetails(newRoles,  this.propertyFieldStatetgoing).subscribe(roleStates => {
-    //         // update the state
-    //         this.localStore.dispatch(this.actions.updateRole(key, roleStates))
-    //     }))
-    // }))
-
   }
 
 

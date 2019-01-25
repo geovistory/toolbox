@@ -9,17 +9,17 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ProjectAccountAssociation } from '../../models/ProjectAccountAssociation';
+import { PubAccountProjectRel } from '../../models/PubAccountProjectRel';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { Account } from '../../models/Account';
-import { Project } from '../../models/Project';
+import { PubAccount } from '../../models/PubAccount';
+import { ComProject } from '../../models/ComProject';
 
 
 /**
- * Api services for the `ProjectAccountAssociation` model.
+ * Api services for the `PubAccountProjectRel` model.
  */
 @Injectable()
-export class ProjectAccountAssociationApi extends BaseLoopBackApi {
+export class PubAccountProjectRelApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -33,9 +33,9 @@ export class ProjectAccountAssociationApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ProjectAccountAssociation`.
+   * i.e. `PubAccountProjectRel`.
    */
   public getModelName() {
-    return "ProjectAccountAssociation";
+    return "PubAccountProjectRel";
   }
 }

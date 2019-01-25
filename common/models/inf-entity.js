@@ -2,8 +2,6 @@
 
 const Promise = require('bluebird');
 
-const HttpErrors = require('http-errors');
-
 module.exports = function (InfEntity) {
 
 

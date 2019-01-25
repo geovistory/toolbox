@@ -12,10 +12,7 @@
   "mixins": {
     "SetupRemoteMethods": {
       "ignoreACL": false,
-      "disableAllExcept": [
-        "find",
-        "queryByString"
-      ]
+      "disableAllExcept": []
     }
   },
   "properties": {
@@ -55,10 +52,12 @@
       "permission": "DENY"
     },
     {
-      "accessType": "READ",
       "principalType": "ROLE",
       "principalId": "$everyone",
-      "permission": "ALLOW"
+      "permission": "ALLOW",
+      "property": [
+        "queryByString"
+      ]
     }
   ],
   "methods": {
@@ -73,7 +72,7 @@
       "returns": {
         "arg": "languages",
         "type": [
-          "Language"
+          "InfLanguage"
         ],
         "root": true
       },

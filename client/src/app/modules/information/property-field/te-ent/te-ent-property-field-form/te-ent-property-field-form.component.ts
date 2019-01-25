@@ -38,7 +38,7 @@ export class TeEntPropertyFieldFormComponent extends PropertyFieldFormBase {
     protected actions: PropertyFieldActions,
     protected roleApi: InfRoleApi,
     protected classService: ClassService,
-    private teEntApi: InfTemporalEntityApi
+    private teEnApi: InfTemporalEntityApi
 
   ) {
     super(fb, ngRedux, ref, actions)
@@ -156,7 +156,7 @@ export class TeEntPropertyFieldFormComponent extends PropertyFieldFormBase {
       })
 
       // call api
-      this.subs.push(this.teEntApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_project, t).subscribe(teEnts => {
+      this.subs.push(this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_project, t).subscribe(teEnts => {
         const roles: InfRole[] = teEnts[0].te_roles;
 
 

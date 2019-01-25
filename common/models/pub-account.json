@@ -1,7 +1,11 @@
 {
-  "name": "Account",
+  "name": "PubAccount",
   "base": "User",
   "idInjection": true,
+  "postgresql": {
+    "schema": "public",
+    "table": "account"
+  },
   "mixins": {
     "SetupRemoteMethods": {
       "ignoreACL": false,
@@ -17,20 +21,82 @@
   "relations": {
     "projects": {
       "type": "hasMany",
-      "model": "Project",
+      "model": "ComProject",
       "foreignKey": "account_id",
       "keyThrough": "fk_project",
-      "through": "ProjectAccountAssociation"
+      "through": "PubAccountProjectRel"
     }
   },
   "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": [
+        "confirm"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "accessType": "EXECUTE",
+      "property": [
+        "verify"
+      ]
+    },
     {
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
+        "login",
+        "logout",
+        "create"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "accessType": "EXECUTE",
+      "property": [
+        "resetPassword"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "accessType": "EXECUTE",
+      "property": [
+        "changePassword",
+        "setPassword"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "DENY",
+      "property": [
+        "deleteById",
+        "patchAttributes",
+        "replaceById"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW",
+      "property": [
+        "findById",
         "listProjects",
-        "__create__projects",
         "getRoles"
       ]
     },
@@ -40,7 +106,6 @@
       "principalId": "system_admin",
       "permission": "ALLOW",
       "property": [
-        "find",
         "withRolesAndProjects"
       ]
     }
@@ -48,11 +113,11 @@
   "methods": {
     "getRoles": {
       "accepts": {
-        "arg": "accountId",
+        "arg": "id",
         "type": "number",
         "required": true,
         "http": {
-          "source": "query"
+          "source": "path"
         }
       },
       "returns": {
@@ -64,29 +129,29 @@
       },
       "description": "Get Roles of the Account",
       "http": {
-        "path": "/get-roles",
+        "path": "/:id/get-roles",
         "verb": "get"
       }
     },
     "listProjects": {
       "accepts": {
-        "arg": "accountId",
+        "arg": "id",
         "type": "number",
         "required": true,
         "http": {
-          "source": "query"
+          "source": "path"
         }
       },
       "returns": {
         "arg": "account",
         "type": [
-          "Account"
+          "PubAccount"
         ],
         "root": true
       },
       "description": "Get a list of all projects associated with this account.",
       "http": {
-        "path": "/list-projects",
+        "path": "/:id/list-projects",
         "verb": "get"
       }
     },
@@ -94,7 +159,7 @@
       "returns": {
         "arg": "accounts",
         "type": [
-          "Account"
+          "PubAccount"
         ],
         "root": true
       },

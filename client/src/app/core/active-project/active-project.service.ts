@@ -8,7 +8,7 @@ import { first, map, distinctUntilChanged } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
-import { Project } from '../sdk/models/Project';
+import { ComProject } from '../sdk/models/ComProject';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
@@ -17,7 +17,7 @@ import { ActiveProjectActions } from './active-project.action';
 
 @Injectable()
 export class ActiveProjectService {
-  project: Project;
+  project: ComProject;
 
   public activeProject$: Observable<ProjectDetail>;
   public pkProject$: Observable<number>;

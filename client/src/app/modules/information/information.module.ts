@@ -8,6 +8,7 @@ import { ValidationService } from 'app/core';
 import { TimelineModule } from 'app/modules/timeline/timeline.module';
 import { ControlMessagesModule, FilterByKeyModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from 'app/shared';
 import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
+import { InfTimePrimitivePipeModule } from 'app/shared/pipes/inf-time-primitive/inf-time-primitive.module';
 import { KeysModule } from 'app/shared/pipes/keys.module';
 import { PeItStrModule } from 'app/shared/pipes/pe-it-str/pe-it-str.module';
 import { QuillDeltaToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
@@ -30,6 +31,7 @@ import { AddInfoTeEntComponent } from './components/add-info-te-ent/add-info-te-
 import { ClassInfoComponent } from './components/class-info/class-info.component';
 import { DataUnitPreviewComponent } from './components/data-unit-preview/data-unit-preview.component';
 import { EditorHeaderComponent } from './components/editor-header/editor-header.component';
+import { EntityAddExistingHitComponent } from './components/entity-add-existing-hit/entity-add-existing-hit.component';
 import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
 import { FieldHeaderComponent } from './components/field-header/field-header.component';
 import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it-label.component';
@@ -78,7 +80,6 @@ import { DataUnitActions } from './data-unit/data-unit.actions';
 import { DataUnitAPIEpics } from './data-unit/data-unit.epics';
 import { PeItApiEpics } from './data-unit/pe-it/api/pe-it.epics';
 import { PeItAddCtrlComponent } from './data-unit/pe-it/pe-it-add-ctrl/pe-it-add-ctrl.component';
-import { PeItAddFormComponent } from './data-unit/pe-it/pe-it-add-form/pe-it-add-form.component';
 import { PeItCreateCtrlComponent } from './data-unit/pe-it/pe-it-create-ctrl/pe-it-create-ctrl.component';
 import { PeItCreateFormComponent } from './data-unit/pe-it/pe-it-create-form/pe-it-create-form.component';
 import { PeItEditableComponent } from './data-unit/pe-it/pe-it-editable/pe-it-editable.component';
@@ -123,7 +124,6 @@ import { TeEntRoleCreateCtrlComponent } from './role/te-ent/te-ent-role-create-c
 import { TeEntRoleEditableComponent } from './role/te-ent/te-ent-role-editable/te-ent-role-editable.component';
 import { AppellationService } from './shared/appellation.service';
 import { ClassService } from './shared/class.service';
-import { EntityAddModalService } from './shared/entity-add-modal.service';
 import { EprService } from './shared/epr.service';
 import { PeItService } from './shared/pe-it.service';
 import { PropertyFieldService } from './shared/property-field.service';
@@ -148,8 +148,6 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
-import { InfTimePrimitivePipeModule } from 'app/shared/pipes/inf-time-primitive/inf-time-primitive.module';
-import { EntityAddExistingHitComponent } from './components/entity-add-existing-hit/entity-add-existing-hit.component';
 
 
 
@@ -218,7 +216,6 @@ import { EntityAddExistingHitComponent } from './components/entity-add-existing-
     PeItAddCtrlComponent,
     PeItCreateCtrlComponent,
     PeItEditableComponent,
-    PeItAddFormComponent,
     PeItCreateFormComponent,
 
     // Data Unit > TeEnt
@@ -302,13 +299,8 @@ import { EntityAddExistingHitComponent } from './components/entity-add-existing-
     DataUnitPreviewComponent,
     TileHeaderComponent,
 
-
-
   ],
   providers: [
-
-    // Add Modal
-    EntityAddModalService,
 
     // Information (root)
     InformationAPIActions,
@@ -404,7 +396,6 @@ import { EntityAddExistingHitComponent } from './components/entity-add-existing-
     PeItAddCtrlComponent,
     PeItCreateCtrlComponent,
     PeItEditableComponent,
-    PeItAddFormComponent,
     PeItCreateFormComponent,
     TextEditorComponent,
     VersionPickerComponent,

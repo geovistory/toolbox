@@ -6,67 +6,8 @@ const Config = require('../config/Config');
 
 module.exports = function (InfPersistentItem) {
 
-  InfPersistentItem.changePeItProjectRelation = function (projectId, isInProject, data, ctx) {
-    let requestedPeIt;
 
-    if (ctx) {
-      requestedPeIt = ctx.req.body;
-    } else {
-      requestedPeIt = data;
-    }
-
-    return InfPersistentItem.changeProjectRelation(projectId, isInProject, requestedPeIt)
-      .then(resultingEpr => {
-
-        // attatch the new epr to the peIt
-        if (requestedPeIt.entity_version_project_rels && resultingEpr) {
-          requestedPeIt.entity_version_project_rels = [resultingEpr];
-        }
-
-
-        if (requestedPeIt.pi_roles) {
-
-          // prepare parameters
-          const InfRole = InfPersistentItem.app.models.InfRole;
-
-          //… filter roles that are truthy (not null), iterate over them,
-          // return the promise that the PeIt will be
-          // returned together with all nested items
-          return Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
-
-            // add role to project
-            return InfRole.changeRoleProjectRelation(projectId, isInProject, role);
-
-          })
-            .then((roles) => {
-
-              requestedPeIt.pi_roles = [];
-              for (var i = 0; i < roles.length; i++) {
-                const role = roles[i];
-                if (role && role[0]) {
-                  requestedPeIt.pi_roles.push(role[0]);
-                }
-              }
-
-              return [requestedPeIt];
-
-            })
-            .catch((err) => {
-              return err;
-            })
-
-        } else {
-          return [requestedPeIt];
-        }
-      })
-      .catch((err) => {
-        return err;
-      });
-
-  }
-
-
-  InfPersistentItem.findOrCreatePeIt = function (projectId, data, ctx) {
+  InfPersistentItem.findOrCreatePeIt = function (pkProject, data, ctx) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
@@ -82,7 +23,7 @@ module.exports = function (InfPersistentItem) {
       requestedPeIt = data;
     }
 
-    return InfPersistentItem.findOrCreatePeItOrTeEnt(InfPersistentItem, projectId, dataObject)
+    return InfPersistentItem.findOrCreatePeItOrTeEnt(InfPersistentItem, pkProject, dataObject)
       .then((resultingPeIts) => {
         // pick first item of array
         const resultingPeIt = resultingPeIts[0];
@@ -106,7 +47,7 @@ module.exports = function (InfPersistentItem) {
             // use the pk_entity from the created peIt to set the fk_entity of the role
             role.fk_entity = resultingPeIt.pk_entity;
             // find or create the teEnt and the role pointing to the teEnt
-            return InfRole.findOrCreateInfRole(projectId, role);
+            return InfRole.findOrCreateInfRole(pkProject, role);
           }).then((roles) => {
             //attach the roles to peit.pi_roles
             res.pi_roles = [];
@@ -142,7 +83,7 @@ module.exports = function (InfPersistentItem) {
             // use the pk_entity from the created peIt to set the fk_concerned_entity of the item
             item.fk_concerned_entity = resultingPeIt.pk_entity;
             // find or create the item
-            return InfTextProperty.findOrCreateInfTextProperty(projectId, item);
+            return InfTextProperty.findOrCreateInfTextProperty(pkProject, item);
           }).then((items) => {
             //attach the items to peit.text_properties
             res.text_properties = [];
@@ -178,7 +119,7 @@ module.exports = function (InfPersistentItem) {
             // use the pk_entity from the created peIt to set the fk_domain_entity of the item
             item.fk_domain_entity = resultingPeIt.pk_entity;
             // find or create the item
-            return InfEntityAssociation.findOrCreateInfEntityAssociation(projectId, item);
+            return InfEntityAssociation.findOrCreateInfEntityAssociation(pkProject, item);
           }).then((items) => {
             //attach the items to peit.domain_entity_associations
             res.domain_entity_associations = [];
@@ -214,7 +155,7 @@ module.exports = function (InfPersistentItem) {
             // use the pk_entity from the created peIt to set the fk_persistent_item of the item
             item.fk_persistent_item = resultingPeIt.pk_entity;
             // find or create the item
-            return InfTypeNamespaceRel.findOrCreateInfTypeNamespaceRel(projectId, item);
+            return InfTypeNamespaceRel.findOrCreateInfTypeNamespaceRel(pkProject, item);
           }).then((items) => {
             //attach the items to peit.type_namespace_rels
             res.type_namespace_rels = [];
@@ -248,61 +189,61 @@ module.exports = function (InfPersistentItem) {
 
   }
 
-  /** 
-   * Check if authorized to relate type with namespace
-   * - pk_namespace must be of "Geovistory Ongoing"
-   * - or pk_project must be in fk_project of namespace  
-   */
-  InfPersistentItem.beforeRemote('findOrCreateType', function (context, obj, next) {
-    const pk_project = context.req.query.pk_project;
-    const pk_namespace = context.req.query.pk_namespace;
-    const errorMsg = 'You\'re not authorized to perform this action.';
-    // let pass if namespace is "Geovistory Ongoing"
-    if (pk_namespace == Config.PK_NAMESPACE__GEOVISTORY_ONGOING) {
-      next()
-    }
+  // /** 
+  //  * Check if authorized to relate type with namespace
+  //  * - pk_namespace must be of "Geovistory Ongoing"
+  //  * - or pk_project must be in fk_project of namespace  
+  //  */
+  // InfPersistentItem.beforeRemote('findOrCreateType', function (context, obj, next) {
+  //   const pk_project = context.req.query.pk_project;
+  //   const pk_namespace = context.req.query.pk_namespace;
+  //   const errorMsg = 'You\'re not authorized to perform this action.';
+  //   // let pass if namespace is "Geovistory Ongoing"
+  //   if (pk_namespace == Config.PK_NAMESPACE__GEOVISTORY_ONGOING) {
+  //     next()
+  //   }
 
-    return InfPersistentItem.app.models.InfNamespace.findById(pk_namespace)
-      .then((nmsp) => {
-        // let pass if namespace belongs to project
-        if (nmsp && nmsp.fk_project == pk_project) {
-          next();
-        }
-        else return Promise.reject(new Error(errorMsg));;
-      })
-      .catch(() => {
-        return Promise.reject(new Error(errorMsg))
-      })
+  //   return InfPersistentItem.app.models.InfNamespace.findById(pk_namespace)
+  //     .then((nmsp) => {
+  //       // let pass if namespace belongs to project
+  //       if (nmsp && nmsp.fk_project == pk_project) {
+  //         next();
+  //       }
+  //       else return Promise.reject(new Error(errorMsg));;
+  //     })
+  //     .catch(() => {
+  //       return Promise.reject(new Error(errorMsg))
+  //     })
 
-  });
+  // });
 
-  /**
-   * Remote method to create instances of E55 types.
-   * 
-   * Adds a type_namespace_rel between peIt and namespace
-   * 
-   */
-  InfPersistentItem.findOrCreateType = function (pk_project, pk_namespace, data, ctx) {
+  // /**
+  //  * Remote method to create instances of E55 types.
+  //  * 
+  //  * Adds a type_namespace_rel between peIt and namespace
+  //  * 
+  //  */
+  // InfPersistentItem.findOrCreateType = function (pk_project, pk_namespace, data, ctx) {
 
-    // Add type_namespace_rel
-    return InfPersistentItem.findOrCreatePeIt(pk_project, data, ctx)
-      .then(resultingPeIts => {
-        const res = resultingPeIts[0]
+  //   // Add type_namespace_rel
+  //   return InfPersistentItem.findOrCreatePeIt(pk_project, data, ctx)
+  //     .then(resultingPeIts => {
+  //       const res = resultingPeIts[0]
 
-        const InfTypeNamespaceRel = InfPersistentItem.app.models.InfTypeNamespaceRel;
-        const x = new InfTypeNamespaceRel({
-          fk_persistent_item: res.pk_entity,
-          fk_namespace: pk_namespace
-        })
+  //       const InfTypeNamespaceRel = InfPersistentItem.app.models.InfTypeNamespaceRel;
+  //       const x = new InfTypeNamespaceRel({
+  //         fk_persistent_item: res.pk_entity,
+  //         fk_namespace: pk_namespace
+  //       })
 
-        // create it in DB
-        return x.save().then(tyNaRel => {
-          return [res]
-        });
+  //       // create it in DB
+  //       return x.save().then(tyNaRel => {
+  //         return [res]
+  //       });
 
-      })
+  //     })
 
-  }
+  // }
 
 
 
@@ -313,11 +254,11 @@ module.exports = function (InfPersistentItem) {
    * @param  {number} pkProject primary key of project
    * @param  {number} pkEntity  pk_entity of the persistent item
    */
-  InfPersistentItem.nestedObjectOfProject = function (projectId, pkEntity, cb) {
+  InfPersistentItem.nestedObjectOfProject = function (pkProject, pkEntity, cb) {
 
     const filter = {
       "where": ["pk_entity", "=", pkEntity],
-      "include": InfPersistentItem.getIncludeObject(true, projectId)
+      "include": InfPersistentItem.getIncludeObject(true, pkProject)
     }
 
     return InfPersistentItem.findComplex(filter, cb);
@@ -413,6 +354,7 @@ module.exports = function (InfPersistentItem) {
 
 
   /**
+   * Internal function to get graphs of project or repo version
    * graphs - get a PeIt with all its roles
    *
    * @param  {number} pkProject primary key of project
@@ -426,6 +368,30 @@ module.exports = function (InfPersistentItem) {
     }
 
     return InfPersistentItem.findComplex(filter, cb);
+  }
+
+  /**
+   * Remote method to get graphs of project version
+   * graphs - get a PeIt with all its roles
+   *
+   * @param  {number} pkProject primary key of project
+   * @param  {number} pkEntity  pk_entity of the persistent item
+   */
+  InfPersistentItem.graphsOfProject = function (pkProject, pkEntities, cb) {
+    const ofProject = true;
+    return InfPersistentItem.graphs(ofProject, pkProject, pkEntities, cb)
+  }
+
+  /**
+   * Remote method to get graphs of repo version
+   * graphs - get a PeIt with all its roles
+   *
+   * @param  {number} pkEntity  pk_entity of the persistent item
+   */
+  InfPersistentItem.graphsOfRepo = function (pkEntities, cb) {
+    const ofProject = false;
+    const pkProject = undefined;
+    return InfPersistentItem.graphs(ofProject, pkProject, pkEntities, cb)
   }
 
 
@@ -462,14 +428,14 @@ module.exports = function (InfPersistentItem) {
    * @returns include object of findComplex filter
    */
   InfPersistentItem.getGraphIncludeObject = function (ofProject, pkProject) {
-    
+
     let projectJoin = {};
-    
+
     // if a pkProject is provided, create the relation
-    if(pkProject){
+    if (pkProject) {
       // get the join object. If ofProject is false, the join will be a left join.
       projectJoin = {
-        "entity_version_project_rels":InfPersistentItem.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+        "entity_version_project_rels": InfPersistentItem.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
       }
     }
 
@@ -519,14 +485,14 @@ module.exports = function (InfPersistentItem) {
    * @returns include object of findComplex filter
    */
   InfPersistentItem.getIncludeObject = function (ofProject, pkProject) {
-    
+
     let projectJoin = {};
-    
+
     // if a pkProject is provided, create the relation
-    if(pkProject){
+    if (pkProject) {
       // get the join object. If ofProject is false, the join will be a left join.
       projectJoin = {
-        "entity_version_project_rels":InfPersistentItem.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+        "entity_version_project_rels": InfPersistentItem.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
       }
     }
 

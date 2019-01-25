@@ -1,12 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-
-import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
-import { Observable } from 'rxjs';
-import { Project, Account, AccountApi, LoopBackAuth, LoopBackConfig } from 'app/core';
-import { environment } from 'environments/environment';
 import { NgRedux } from '@angular-redux/store';
-import { IProjectList } from '../../projects.model';
+import { Component, OnInit } from '@angular/core';
+import { LoopBackAuth, LoopBackConfig, ComProject, PubAccount, PubAccountApi } from 'app/core';
+import { environment } from 'environments/environment';
+import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { ProjectsActions } from '../../api/projects.actions';
+import { IProjectList } from '../../projects.model';
+
 
 
 @Component({
@@ -16,14 +15,14 @@ import { ProjectsActions } from '../../api/projects.actions';
 })
 export class ProjectListComponent implements OnInit {
 
- 
-  projects: Project[] = [];
+
+  projects: ComProject[] = [];
   loadingComplete = false;
 
 
 
   constructor(
-    private accountApi: AccountApi,
+    private accountApi: PubAccountApi,
     private authService: LoopBackAuth,
     private slimLoadingBarService: SlimLoadingBarService,
     private ngRedux: NgRedux<IProjectList>,
@@ -40,12 +39,12 @@ export class ProjectListComponent implements OnInit {
   getProjects() {
     this.startLoading();
     this.accountApi.listProjects(this.authService.getCurrentUserId()).subscribe(
-      (accounts: Array<Account>) => {
+      (accounts: Array<PubAccount>) => {
 
         this.projects = accounts[0].projects;
 
         this.actions.loadProjectsSucceeded(this.projects)
-        
+
         this.completeLoading();
       });
   }

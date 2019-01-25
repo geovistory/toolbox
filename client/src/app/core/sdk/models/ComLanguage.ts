@@ -4,7 +4,7 @@ import {
 } from '../index';
 
 declare var Object: any;
-export interface LanguageInterface {
+export interface ComLanguageInterface {
   "pk_language": string;
   "lang_type"?: string;
   "scope"?: string;
@@ -15,7 +15,7 @@ export interface LanguageInterface {
   inf_language?: InfLanguage;
 }
 
-export class Language implements LanguageInterface {
+export class ComLanguage implements ComLanguageInterface {
   "pk_language": string;
   "lang_type": string;
   "scope": string;
@@ -24,24 +24,24 @@ export class Language implements LanguageInterface {
   "iso6391": string;
   "notes": string;
   inf_language?: InfLanguage;
-  constructor(data?: LanguageInterface) {
+  constructor(data?: ComLanguageInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Language`.
+   * i.e. `ComLanguage`.
    */
   public static getModelName() {
-    return "Language";
+    return "ComLanguage";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of Language for dynamic purposes.
+  * This method creates an instance of ComLanguage for dynamic purposes.
   **/
-  public static factory(data: LanguageInterface): Language{
-    return new Language(data);
+  public static factory(data: ComLanguageInterface): ComLanguage{
+    return new ComLanguage(data);
   }
   /**
   * @method getModelDefinition
@@ -52,9 +52,9 @@ export class Language implements LanguageInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'Language',
-      plural: 'Languages',
-      path: 'Languages',
+      name: 'ComLanguage',
+      plural: 'ComLanguages',
+      path: 'ComLanguages',
       idName: 'pk_language',
       properties: {
         "pk_language": {

@@ -1,10 +1,7 @@
 /* tslint:disable */
-import {
-  Project
-} from '../index';
 
 declare var Object: any;
-export interface AccountInterface {
+export interface PubAccountInterface {
   "id"?: number;
   "realm"?: string;
   "username"?: string;
@@ -12,10 +9,10 @@ export interface AccountInterface {
   "emailVerified"?: boolean;
   "password"?: string;
   accessTokens?: any[];
-  projects?: Project[];
+  projects?: any[];
 }
 
-export class Account implements AccountInterface {
+export class PubAccount implements PubAccountInterface {
   "id": number;
   "realm": string;
   "username": string;
@@ -23,25 +20,25 @@ export class Account implements AccountInterface {
   "emailVerified": boolean;
   "password": string;
   accessTokens?: any[];
-  projects?: Project[];
-  constructor(data?: AccountInterface) {
+  projects?: any[];
+  constructor(data?: PubAccountInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Account`.
+   * i.e. `PubAccount`.
    */
   public static getModelName() {
-    return "Account";
+    return "PubAccount";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of Account for dynamic purposes.
+  * This method creates an instance of PubAccount for dynamic purposes.
   **/
-  public static factory(data: AccountInterface): Account{
-    return new Account(data);
+  public static factory(data: PubAccountInterface): PubAccount{
+    return new PubAccount(data);
   }
   /**
   * @method getModelDefinition
@@ -52,9 +49,9 @@ export class Account implements AccountInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'Account',
-      plural: 'Accounts',
-      path: 'Accounts',
+      name: 'PubAccount',
+      plural: 'PubAccounts',
+      path: 'PubAccounts',
       idName: 'id',
       properties: {
         "id": {
@@ -93,10 +90,10 @@ export class Account implements AccountInterface {
         },
         projects: {
           name: 'projects',
-          type: 'Project[]',
-          model: 'Project',
+          type: 'any[]',
+          model: '',
           relationType: 'hasMany',
-          modelThrough: 'ProjectAccountAssociation',
+          modelThrough: 'PubAccountProjectRel',
           keyThrough: 'fk_project',
           keyFrom: 'id',
           keyTo: 'account_id'

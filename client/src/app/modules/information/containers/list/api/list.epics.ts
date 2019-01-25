@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfPersistentItemApi, WarEntityPreviewApi } from 'app/core';
+import { LoadingBarActions, WarEntityPreviewApi } from 'app/core';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { ofSubstore } from 'app/core/store/module';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
-import { ListComponent } from '../list.component';
-import { ListAPIActions, ListAPIAction } from './list.actions';
-import { ofSubstore } from 'app/core/store/module';
 import { SearchResponse } from '../../information/api/information.models';
+import { ListComponent } from '../list.component';
+import { ListAPIAction, ListAPIActions } from './list.actions';
 
 @Injectable()
 export class ListAPIEpics {

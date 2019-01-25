@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 
 import { LoopBackConfig } from 'app/core/sdk/lb.config';
-import { ActiveAccountService, AccountApi } from 'app/core';
+import { ActiveAccountService, PubAccountApi } from 'app/core';
 import { environment } from 'environments/environment';
 import { NgRedux } from '@angular-redux/store';
 import { AccountActions } from '../../api/account.actions';
@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
     private activeAccountService: ActiveAccountService,
     private route: ActivatedRoute,
     private router: Router,
-    private accountApi: AccountApi,
+    private accountApi: PubAccountApi,
     private slimLoadingBarService: SlimLoadingBarService,
     private ngRedux: NgRedux<IAccount>,
     private actions: AccountActions

@@ -70,10 +70,9 @@
     },
     {
       "principalType": "ROLE",
-      "principalId": "$everyone",
+      "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "find",
         "findOrCreateInfTextProperty"
       ]
     }
@@ -82,10 +81,10 @@
     "findOrCreateInfTextProperty": {
       "accepts": [
         {
-          "arg": "projectId",
+          "arg": "pkProject",
           "type": "number",
           "required": true,
-          "description": "Id of the project",
+          "description": "Pk of the project",
           "http": {
             "source": "query"
           }

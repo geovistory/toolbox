@@ -9,17 +9,15 @@ import { LoopBackFilter, SDKToken, AccessToken } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Account } from '../../models/Account';
+import { PubAccount } from '../../models/PubAccount';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { ProjectAccountAssociation } from '../../models/ProjectAccountAssociation';
-import { Project } from '../../models/Project';
 
 
 /**
- * Api services for the `Account` model.
+ * Api services for the `PubAccount` model.
  */
 @Injectable()
-export class AccountApi extends BaseLoopBackApi {
+export class PubAccountApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -32,135 +30,9 @@ export class AccountApi extends BaseLoopBackApi {
   }
 
   /**
-   * Zugehöriges Element nach ID für projects hinzufügen.
-   *
-   * @param {any} id Account id
-   *
-   * @param {any} fk Fremdschlüssel für projects
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Account` object.)
-   * </em>
-   */
-  public linkProjects(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PUT";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/:id/projects/rel/:fk";
-    let _routeParams: any = {
-      id: id,
-      fk: fk
-    };
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * projects-Beziehung zu einem Element nach ID entfernen.
-   *
-   * @param {any} id Account id
-   *
-   * @param {any} fk Fremdschlüssel für projects
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * This method returns no data.
-   */
-  public unlinkProjects(id: any, fk: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "DELETE";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/:id/projects/rel/:fk";
-    let _routeParams: any = {
-      id: id,
-      fk: fk
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Vorhandensein von projects-Beziehung zu einem Element nach ID prüfen.
-   *
-   * @param {any} id Account id
-   *
-   * @param {any} fk Fremdschlüssel für projects
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Account` object.)
-   * </em>
-   */
-  public existsProjects(id: any, fk: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "HEAD";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/:id/projects/rel/:fk";
-    let _routeParams: any = {
-      id: id,
-      fk: fk
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Erstellt eine neue Instanz in projects von diesem Modell.
-   *
-   * @param {any} id Account id
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Account` object.)
-   * </em>
-   */
-  public createProjects(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/:id/projects";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
    * Patch attributes for a model instance and persist it into the data source.
    *
-   * @param {any} id Account id
+   * @param {any} id PubAccount id
    *
    * @param {object} data Request data.
    *
@@ -172,13 +44,13 @@ export class AccountApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Account` object.)
+   * This usually means the response is a `PubAccount` object.)
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/:id";
+    "/PubAccounts/:id";
     let _routeParams: any = {
       id: id
     };
@@ -218,7 +90,7 @@ export class AccountApi extends BaseLoopBackApi {
   public login(credentials: any, include: any = 'user', rememberMe: boolean = true, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/login";
+    "/PubAccounts/login";
     let _routeParams: any = {};
     let _postBody: any = {
       credentials: credentials
@@ -256,7 +128,7 @@ export class AccountApi extends BaseLoopBackApi {
   public logout(customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/logout";
+    "/PubAccounts/logout";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -269,7 +141,7 @@ export class AccountApi extends BaseLoopBackApi {
   /**
    * Trigger user's identity verification with configured verifyOptions
    *
-   * @param {any} id Account id
+   * @param {any} id PubAccount id
    *
    * @param {object} data Request data.
    *
@@ -284,7 +156,7 @@ export class AccountApi extends BaseLoopBackApi {
   public verify(id: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/:id/verify";
+    "/PubAccounts/:id/verify";
     let _routeParams: any = {
       id: id
     };
@@ -312,7 +184,7 @@ export class AccountApi extends BaseLoopBackApi {
   public confirm(uid: any, token: any, redirect: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/confirm";
+    "/PubAccounts/confirm";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -339,7 +211,7 @@ export class AccountApi extends BaseLoopBackApi {
   public resetPassword(options: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/reset";
+    "/PubAccounts/reset";
     let _routeParams: any = {};
     let _postBody: any = {
       options: options
@@ -367,7 +239,7 @@ export class AccountApi extends BaseLoopBackApi {
   public changePassword(oldPassword: any, newPassword: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/change-password";
+    "/PubAccounts/change-password";
     let _routeParams: any = {};
     let _postBody: any = {
       data: {
@@ -396,7 +268,7 @@ export class AccountApi extends BaseLoopBackApi {
   public setPassword(newPassword: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/reset-password";
+    "/PubAccounts/reset-password";
     let _routeParams: any = {};
     let _postBody: any = {
       data: {
@@ -411,7 +283,7 @@ export class AccountApi extends BaseLoopBackApi {
   /**
    * Get Roles of the Account
    *
-   * @param {number} accountId 
+   * @param {number} id 
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -419,17 +291,18 @@ export class AccountApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Account` object.)
+   * This usually means the response is a `PubAccount` object.)
    * </em>
    */
-  public getRoles(accountId: any, customHeaders?: Function): Observable<any> {
+  public getRoles(id: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/get-roles";
-    let _routeParams: any = {};
+    "/PubAccounts/:id/get-roles";
+    let _routeParams: any = {
+      id: id
+    };
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof accountId !== 'undefined' && accountId !== null) _urlParams.accountId = accountId;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -437,7 +310,7 @@ export class AccountApi extends BaseLoopBackApi {
   /**
    * Get a list of all projects associated with this account.
    *
-   * @param {number} accountId 
+   * @param {number} id 
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -445,17 +318,18 @@ export class AccountApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Account` object.)
+   * This usually means the response is a `PubAccount` object.)
    * </em>
    */
-  public listProjects(accountId: any, customHeaders?: Function): Observable<any> {
+  public listProjects(id: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/list-projects";
-    let _routeParams: any = {};
+    "/PubAccounts/:id/list-projects";
+    let _routeParams: any = {
+      id: id
+    };
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof accountId !== 'undefined' && accountId !== null) _urlParams.accountId = accountId;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -469,56 +343,23 @@ export class AccountApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Account` object.)
+   * This usually means the response is a `PubAccount` object.)
    * </em>
    */
   public withRolesAndProjects(customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/with-roles-and-projects";
+    "/PubAccounts/with-roles-and-projects";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
-
-  /**
-   * Erstellt eine neue Instanz in projects von diesem Modell.
-   *
-   * @param {any} id Account id
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Account` object.)
-   * </em>
-   */
-  public createManyProjects(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/Accounts/:id/projects";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
   /**
    * @ngdoc method
-   * @name sdk.Account#getCurrent
-   * @methodOf sdk.Account
+   * @name sdk.PubAccount#getCurrent
+   * @methodOf sdk.PubAccount
    *
    * @description
    *
@@ -531,7 +372,7 @@ export class AccountApi extends BaseLoopBackApi {
    */
   public getCurrent(filter: LoopBackFilter = {}): Observable<any> {
     let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() + "/Accounts" + "/:id";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() + "/PubAccounts" + "/:id";
     let id: any = this.auth.getCurrentUserId();
     if (id == null)
     id = '__anonymous__';
@@ -543,8 +384,8 @@ export class AccountApi extends BaseLoopBackApi {
   }
   /**
    * Get data of the currently logged user that was returned by the last
-   * call to {@link sdk.Account#login} or
-   * {@link sdk.Account#getCurrent}. Return null when there
+   * call to {@link sdk.PubAccount#login} or
+   * {@link sdk.PubAccount#getCurrent}. Return null when there
    * is no user logged in or the data of the current user were not fetched
    * yet.
    *
@@ -555,7 +396,7 @@ export class AccountApi extends BaseLoopBackApi {
   }
   /**
    * Get data of the currently logged access tokern that was returned by the last
-   * call to {@link sdk.Account#login}
+   * call to {@link sdk.PubAccount#login}
    *
    * @returns object An AccessToken instance.
    */
@@ -563,7 +404,7 @@ export class AccountApi extends BaseLoopBackApi {
     return this.auth.getToken();
   }
   /**
-   * @name sdk.Account#isAuthenticated
+   * @name sdk.PubAccount#isAuthenticated
    *
    * @returns {boolean} True if the current user is authenticated (logged in).
    */
@@ -572,7 +413,7 @@ export class AccountApi extends BaseLoopBackApi {
   }
 
   /**
-   * @name sdk.Account#getCurrentId
+   * @name sdk.PubAccount#getCurrentId
    *
    * @returns object Id of the currently logged-in user or null.
    */
@@ -582,9 +423,9 @@ export class AccountApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Account`.
+   * i.e. `PubAccount`.
    */
   public getModelName() {
-    return "Account";
+    return "PubAccount";
   }
 }

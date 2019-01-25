@@ -1,8 +1,8 @@
 /* tslint:disable */
 import {
-  Account,
-  Language,
   ComLabel,
+  PubAccount,
+  ComLanguage,
   ComTextProperty,
   InfPersistentItem,
   InfEntityProjectRel,
@@ -10,50 +10,50 @@ import {
 } from '../index';
 
 declare var Object: any;
-export interface ProjectInterface {
+export interface ComProjectInterface {
   "notes"?: string;
   "pk_project"?: number;
   "pk_entity"?: number;
   "fk_language"?: string;
-  accounts?: Account[];
-  default_language?: Language;
   labels?: ComLabel[];
+  accounts?: PubAccount[];
+  default_language?: ComLanguage;
   text_properties?: ComTextProperty[];
-  persistent_item_versions?: InfPersistentItem[];
+  persistent_items?: InfPersistentItem[];
   entity_version_project_rels?: InfEntityProjectRel[];
   namespaces?: InfNamespace[];
 }
 
-export class Project implements ProjectInterface {
+export class ComProject implements ComProjectInterface {
   "notes": string;
   "pk_project": number;
   "pk_entity": number;
   "fk_language": string;
-  accounts?: Account[];
-  default_language?: Language;
   labels?: ComLabel[];
+  accounts?: PubAccount[];
+  default_language?: ComLanguage;
   text_properties?: ComTextProperty[];
-  persistent_item_versions?: InfPersistentItem[];
+  persistent_items?: InfPersistentItem[];
   entity_version_project_rels?: InfEntityProjectRel[];
   namespaces?: InfNamespace[];
-  constructor(data?: ProjectInterface) {
+  constructor(data?: ComProjectInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Project`.
+   * i.e. `ComProject`.
    */
   public static getModelName() {
-    return "Project";
+    return "ComProject";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of Project for dynamic purposes.
+  * This method creates an instance of ComProject for dynamic purposes.
   **/
-  public static factory(data: ProjectInterface): Project{
-    return new Project(data);
+  public static factory(data: ComProjectInterface): ComProject{
+    return new ComProject(data);
   }
   /**
   * @method getModelDefinition
@@ -64,9 +64,9 @@ export class Project implements ProjectInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'Project',
-      plural: 'Projects',
-      path: 'Projects',
+      name: 'ComProject',
+      plural: 'ComProjects',
+      path: 'ComProjects',
       idName: 'pk_project',
       properties: {
         "notes": {
@@ -87,24 +87,6 @@ export class Project implements ProjectInterface {
         },
       },
       relations: {
-        accounts: {
-          name: 'accounts',
-          type: 'Account[]',
-          model: 'Account',
-          relationType: 'hasMany',
-          modelThrough: 'ProjectAccountAssociation',
-          keyThrough: 'account_id',
-          keyFrom: 'pk_project',
-          keyTo: 'fk_project'
-        },
-        default_language: {
-          name: 'default_language',
-          type: 'Language',
-          model: 'Language',
-          relationType: 'belongsTo',
-                  keyFrom: 'fk_language',
-          keyTo: 'pk_language'
-        },
         labels: {
           name: 'labels',
           type: 'ComLabel[]',
@@ -112,6 +94,24 @@ export class Project implements ProjectInterface {
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
+        },
+        accounts: {
+          name: 'accounts',
+          type: 'PubAccount[]',
+          model: 'PubAccount',
+          relationType: 'hasMany',
+          modelThrough: 'PubAccountProjectRel',
+          keyThrough: 'account_id',
+          keyFrom: 'pk_project',
+          keyTo: 'fk_project'
+        },
+        default_language: {
+          name: 'default_language',
+          type: 'ComLanguage',
+          model: 'ComLanguage',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_language',
+          keyTo: 'pk_language'
         },
         text_properties: {
           name: 'text_properties',
@@ -121,13 +121,13 @@ export class Project implements ProjectInterface {
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
-        persistent_item_versions: {
-          name: 'persistent_item_versions',
+        persistent_items: {
+          name: 'persistent_items',
           type: 'InfPersistentItem[]',
           model: 'InfPersistentItem',
           relationType: 'hasMany',
           modelThrough: 'InfEntityProjectRel',
-          keyThrough: 'fk_entity_version_concat',
+          keyThrough: 'fk_entity',
           keyFrom: 'pk_project',
           keyTo: 'fk_project'
         },

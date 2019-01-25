@@ -80,15 +80,6 @@
     },
     {
       "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "ALLOW",
-      "property": [
-        "find",
-        "findById"
-      ]
-    },
-    {
-      "principalType": "ROLE",
       "principalId": "system_admin",
       "permission": "ALLOW",
       "property": [

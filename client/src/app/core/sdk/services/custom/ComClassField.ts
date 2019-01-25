@@ -11,10 +11,10 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ComClassField } from '../../models/ComClassField';
 import { SocketConnection } from '../../sockets/socket.connections';
+import { ComClassFieldPropertyRel } from '../../models/ComClassFieldPropertyRel';
+import { ComLabel } from '../../models/ComLabel';
 import { ComUiContextConfig } from '../../models/ComUiContextConfig';
 import { DfhClass } from '../../models/DfhClass';
-import { ComLabel } from '../../models/ComLabel';
-import { ComClassFieldPropertyRel } from '../../models/ComClassFieldPropertyRel';
 
 
 /**

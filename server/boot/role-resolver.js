@@ -14,7 +14,12 @@ module.exports = function (app) {
 
         // Q: Does the current request provide a PK of the project it wants to access?
         const req = context.remotingContext.req;
-        const pkProject = parseInt(_.get(req, 'query.pkProject')); // TODO add other paths like body.pkProject
+        const pkProject = parseInt(
+            _.get(req, 'query.pkProject') || // search pk_project in query, where arg is called pkProject
+            _.get(req, 'query.pk_project') || // search pk_project in query, where arg is called pk_project 
+            _.get(req, 'body.fk_project') || // search pk_project in body, for example when an model object is sent
+            _.get(req, 'body.entity_version_project_rels[0].fk_project') // searches in the entity_version_project_rel of the sent object
+            ); 
         if (!pkProject) {
             // A: No. This request does not provice a PK of the project
             return process.nextTick(() => cb(null, false));
@@ -22,7 +27,7 @@ module.exports = function (app) {
 
         // Q: Is the current logged-in user associated with this Project?
         // Step 1: lookup the requested project
-        app.models.Project.findById(pkProject, function (err, project) {
+        app.models.ComProject.findById(pkProject, function (err, project) {
             // A: The datastore produced an error! Pass error to callback
             if (err) return cb(err);
             // A: There's no project by this ID! Pass error to callback
@@ -30,8 +35,8 @@ module.exports = function (app) {
 
             // Step 2: check if User is part of the Team associated with this Project
             // (using count() because we only want to know if such a record exists)
-            var ProjectAccountAssociation = app.models.ProjectAccountAssociation;
-            ProjectAccountAssociation.count({
+            var PubAccountProjectRel = app.models.PubAccountProjectRel;
+            PubAccountProjectRel.count({
                 account_id: accountId,
                 fk_project: pkProject
             }, function (err, count) {

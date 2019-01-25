@@ -48,12 +48,14 @@ import { SocketBrowser } from './sockets/socket.browser';
 import { SocketDriver } from './sockets/socket.driver';
 import { SocketConnection } from './sockets/socket.connections';
 import { RealTime } from './services/core/real.time';
-import { AccountApi } from './services/custom/Account';
-import { EmailApi } from './services/custom/Email';
-import { ProjectApi } from './services/custom/Project';
-import { ProjectAccountAssociationApi } from './services/custom/ProjectAccountAssociation';
-import { LanguageApi } from './services/custom/Language';
+import { ComClassFieldPropertyRelApi } from './services/custom/ComClassFieldPropertyRel';
+import { ComClassFieldApi } from './services/custom/ComClassField';
 import { ComLabelApi } from './services/custom/ComLabel';
+import { PubAccountApi } from './services/custom/PubAccount';
+import { EmailApi } from './services/custom/Email';
+import { ComProjectApi } from './services/custom/ComProject';
+import { PubAccountProjectRelApi } from './services/custom/PubAccountProjectRel';
+import { ComLanguageApi } from './services/custom/ComLanguage';
 import { ComTextPropertyApi } from './services/custom/ComTextProperty';
 import { InfAppellationApi } from './services/custom/InfAppellation';
 import { InfTemporalEntityApi } from './services/custom/InfTemporalEntity';
@@ -75,13 +77,11 @@ import { DfhClassProfileViewApi } from './services/custom/DfhClassProfileView';
 import { DfhPropertyProfileViewApi } from './services/custom/DfhPropertyProfileView';
 import { ComUiContextApi } from './services/custom/ComUiContext';
 import { ComUiContextConfigApi } from './services/custom/ComUiContextConfig';
-import { ComClassFieldApi } from './services/custom/ComClassField';
 import { DfhProjRelApi } from './services/custom/DfhProjRel';
 import { InfNamespaceApi } from './services/custom/InfNamespace';
 import { InfTypeNamespaceRelApi } from './services/custom/InfTypeNamespaceRel';
 import { InfTextPropertyApi } from './services/custom/InfTextProperty';
 import { ComSystemTypeApi } from './services/custom/ComSystemType';
-import { ComClassFieldPropertyRelApi } from './services/custom/ComClassFieldPropertyRel';
 /**
 * @module SDKBrowserModule
 * @description
@@ -112,12 +112,14 @@ export class SDKBrowserModule {
         LoggerService,
         SDKModels,
         RealTime,
-        AccountApi,
-        EmailApi,
-        ProjectApi,
-        ProjectAccountAssociationApi,
-        LanguageApi,
+        ComClassFieldPropertyRelApi,
+        ComClassFieldApi,
         ComLabelApi,
+        PubAccountApi,
+        EmailApi,
+        ComProjectApi,
+        PubAccountProjectRelApi,
+        ComLanguageApi,
         ComTextPropertyApi,
         InfAppellationApi,
         InfTemporalEntityApi,
@@ -139,13 +141,11 @@ export class SDKBrowserModule {
         DfhPropertyProfileViewApi,
         ComUiContextApi,
         ComUiContextConfigApi,
-        ComClassFieldApi,
         DfhProjRelApi,
         InfNamespaceApi,
         InfTypeNamespaceRelApi,
         InfTextPropertyApi,
         ComSystemTypeApi,
-        ComClassFieldPropertyRelApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }
