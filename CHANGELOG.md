@@ -4,7 +4,16 @@
 * Backoffice: Add Access Control in frontend (guard and error-page). GEOV-377
 * Backoffice: Added a page that lists all geovistory accounts with their roles and their projects
 * Access Control: Restricted Access to specific REST API Endpoints:
-* * 
+  * Established needed roles
+    * system_admin (static role for KleioLab team members permitted to configure Geovistory using the Backoffice)
+    * project_member (dynamic role, attributed on request by checking if authenticated user is member of the project he wants to access)
+    * $authenticated (built in loopback role for logged in users)
+    * $owner (built in loopback role for users owning a model instance)
+    * $everyone (built in loopback role for everyone, whether logged in or not)
+  * Cleanup of all unused REST API endpoint, leaving a total of 82 endpoints
+  * Separated endpoints with double responsability in order to permit a clean setup of permissions.
+  * Secured all 82 endpoints by restricting access according to the needs (enabled ACL). (Permission level for the endpoints are documented in Geovistory-wiki)
+  
 
 ### Fixes
 * Fix registration and login process (email were not sent). GEOV-99

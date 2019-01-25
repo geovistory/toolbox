@@ -41,18 +41,13 @@ then
     psql $DB_TARGET -f temp;
     rm temp;
 
-    echo '================== MIGRATE REVIEW DB UP TO LATEST STATE ================== ';
-
-    ../node_modules/db-migrate/bin/db-migrate --config ../server/migrate-db-config.json --migrations-dir ../server/migrations up;
-
-
     echo '================================= VACUUM ANALYZE ========================= ';
     psql $DB_SOURCE -c "VACUUM ANALYZE";
 
     echo '============================= DELETE DUMP ================================ ';
 
-   # rm -r $dirPath/data_dump;
+    rm -r $dirPath/data_dump;
 
-    echo '============================= REVIEW DB IS READY ======================== ';
+    echo '======== REVIEW DB IS READY FOR MIGRATING UP IN RELEASE PHASE ============ ';
     echo '========================================================================= ';
 fi
