@@ -36,6 +36,39 @@ export class DfhPropertyApi extends BaseLoopBackApi {
   }
 
   /**
+   * Patch attributes for a model instance and persist it into the data source.
+   *
+   * @param {any} id DfhProperty id
+   *
+   * @param {object} data Request data.
+   *
+   *  - `data` – `{object}` - An object of model property name/value pairs
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `DfhProperty` object.)
+   * </em>
+   */
+  public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "PATCH";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/DfhProperties/:id";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Get all properties that used as a field by the app, including the labels.
    *
    * @param {boolean} isOutgoing 

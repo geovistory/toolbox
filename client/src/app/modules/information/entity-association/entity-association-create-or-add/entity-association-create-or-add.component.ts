@@ -1,15 +1,15 @@
-import { Component, OnDestroy, Input, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
-import { Subject, Observable, combineLatest } from 'rxjs';
-import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, InfPersistentItem, InfEntityAssociation, ClassConfig, InfEntityAssociationApi, ProjectCrm, PropertyField, InfPersistentItemApi, InfEntityProjectRelApi, InfEntityProjectRel, U } from 'app/core';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { ClassConfig, IAppState, InfEntityAssociation, InfEntityAssociationApi, InfPersistentItemApi, ProjectCrm, PropertyField, SubstoreComponent } from 'app/core';
+import { EntityAssociationDetail } from 'app/core/state/models/entity-association-detail';
+import { EntityAssociationList } from 'app/core/state/models/entity-association-list';
 import { RootEpics } from 'app/core/store/epics';
-import { entityAssociationReducer } from '../api/entity-association.reducer';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
 import { EntityAssociationAPIActions } from '../api/entity-association.actions';
 import { EntityAssociationAPIEpics } from '../api/entity-association.epics';
-import { EntityAssociationDetail } from 'app/core/state/models/entity-association-detail';
-import { NgForm } from '@angular/forms';
-import { filter, takeUntil, first, map } from 'rxjs/operators';
-import { EntityAssociationList } from 'app/core/state/models/entity-association-list';
+import { entityAssociationReducer } from '../api/entity-association.reducer';
 
 
 @WithSubStore({
@@ -60,8 +60,6 @@ export class EntityAssociationCreateOrAddComponent extends EntityAssociationAPIA
     public ngRedux: NgRedux<IAppState>,
     private eaApi: InfEntityAssociationApi,
     private peItApi: InfPersistentItemApi,
-    private eprApi: InfEntityProjectRelApi
-
   ) {
     super()
   }

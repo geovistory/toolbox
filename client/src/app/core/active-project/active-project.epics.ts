@@ -410,7 +410,7 @@ export class ActiveProjectEpics {
           /**
            * Do some api call
            */
-          this.peItApi.graphs(true, action.meta.pk_project, action.meta.pk_entities)
+          this.peItApi.graphsOfProject(action.meta.pk_project, action.meta.pk_entities)
             /**
            * Subscribe to the api call
            */
@@ -461,7 +461,7 @@ export class ActiveProjectEpics {
           /**
            * Do some api call
            */
-          this.teEnApi.graphs(true, action.meta.pk_project, action.meta.pk_entities)
+          this.teEnApi.graphsOfProject(action.meta.pk_project, action.meta.pk_entities)
             /**
            * Subscribe to the api call
            */

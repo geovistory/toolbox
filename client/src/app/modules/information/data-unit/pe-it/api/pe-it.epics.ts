@@ -1,14 +1,10 @@
 import { Injectable } from '@angular/core';
-import { InfEntityProjectRelApi, LoadingBarAction, LoadingBarActions, SubstoreComponent, InfEntityProjectRel } from 'app/core';
-import { startsWith } from 'ramda';
-import { Action } from 'redux';
-import { combineEpics, Epic, ofType } from 'redux-observable';
-import { Observable } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { LeafPeItViewAPIAction, LeafPeItViewAPIActions } from '../../../value/leaf-pe-it-view/api/leaf-pe-it-view.actions';
-import { PeItEditableComponent } from '../pe-it-editable/pe-it-editable.component';
-import { PeItActions, PeItAction } from '../pe-it.actions';
+import { LoadingBarActions } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { startsWith } from 'ramda';
+import { combineEpics } from 'redux-observable';
+import { PeItEditableComponent } from '../pe-it-editable/pe-it-editable.component';
+import { PeItActions } from '../pe-it.actions';
 
 
 const ofSubstoreLevel = (path: string[]) => (action): boolean => {

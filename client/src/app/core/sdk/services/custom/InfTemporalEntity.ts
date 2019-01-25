@@ -36,9 +36,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
   /**
    * Get e nested objects of all information about the temporal entities.
    *
-   * @param {boolean} ofProject If true, gets project versoin, if false, gets repo version
-   *
-   * @param {number} pkProject If provided, joins the project, else not.
+   * @param {number} pkProject Pk of project.
    *
    * @param {object} data Request data.
    *
@@ -53,27 +51,53 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
    * This usually means the response is a `InfTemporalEntity` object.)
    * </em>
    */
-  public graphs(ofProject: any, pkProject: any = {}, pkEntities: any, customHeaders?: Function): Observable<any> {
+  public graphsOfProject(pkProject: any = {}, pkEntities: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfTemporalEntities/graphs";
+    "/InfTemporalEntities/graphs-of-project";
     let _routeParams: any = {};
     let _postBody: any = {
       pkEntities: pkEntities
     };
     let _urlParams: any = {};
-    if (typeof ofProject !== 'undefined' && ofProject !== null) _urlParams.ofProject = ofProject;
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
 
   /**
-   * Get e nested object of all information about the temporal entity with the community favorites.
+   * Get e nested objects of all information about the temporal entities.
    *
-   * @param {boolean} ofProject If true, gets project versoin, if false, gets repo version
+   * @param {object} data Request data.
    *
-   * @param {number} pkProject If provided, joins the project, else not.
+   *  - `pkEntities` – `{any}` - Primary Keys of the temporal entities (array of pk_entity)
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfTemporalEntity` object.)
+   * </em>
+   */
+  public graphsOfRepo(pkEntities: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfTemporalEntities/graphs-of-repo";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      pkEntities: pkEntities
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Get e nested object of all information about the temporal entity in project version.
+   *
+   * @param {number} pkProject Pk project
    *
    * @param {number} pkEntity Primary Key of the temporal entity (pk_entity)
    *
@@ -86,15 +110,40 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
    * This usually means the response is a `InfTemporalEntity` object.)
    * </em>
    */
-  public nestedObject(ofProject: any, pkProject: any = {}, pkEntity: any, customHeaders?: Function): Observable<any> {
+  public nestedObjectOfProject(pkProject: any = {}, pkEntity: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfTemporalEntities/nested-object";
+    "/InfTemporalEntities/nested-object-of-project";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof ofProject !== 'undefined' && ofProject !== null) _urlParams.ofProject = ofProject;
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Get e nested object of all information about the temporal entity in the repo version.
+   *
+   * @param {number} pkEntity Primary Key of the temporal entity (pk_entity)
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfTemporalEntity` object.)
+   * </em>
+   */
+  public nestedObjectOfRepo(pkEntity: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfTemporalEntities/nested-object-of-repo";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
     if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
@@ -103,7 +152,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
   /**
    * Find or create a temporal entity version.
    *
-   * @param {number} projectId Id of the project
+   * @param {number} pkProject Id of the project
    *
    * @param {object} data Request data.
    *
@@ -118,7 +167,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
    * This usually means the response is a `InfTemporalEntity` object.)
    * </em>
    */
-  public findOrCreateInfTemporalEntity(projectId: any, data: any, customHeaders?: Function): Observable<InfTemporalEntity[]> {
+  public findOrCreateInfTemporalEntity(pkProject: any, data: any, customHeaders?: Function): Observable<InfTemporalEntity[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/InfTemporalEntities/findOrCreate";
@@ -127,7 +176,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
       data: data
     };
     let _urlParams: any = {};
-    if (typeof projectId !== 'undefined' && projectId !== null) _urlParams.projectId = projectId;
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result.pipe(map((instances: Array<InfTemporalEntity>) =>
         instances.map((instance: InfTemporalEntity) => new InfTemporalEntity(instance))
@@ -137,7 +186,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
   /**
    * Relate a nested object of a InfTemporalEntity to the project.
    *
-   * @param {number} projectId Id of the project
+   * @param {number} pkProject Id of the project
    *
    * @param {boolean} isInProject Include or exclude from project.
    *
@@ -154,7 +203,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
    * This usually means the response is a `InfTemporalEntity` object.)
    * </em>
    */
-  public changeTeEntProjectRelation(projectId: any, isInProject: any, data: any, customHeaders?: Function): Observable<any> {
+  public changeTeEntProjectRelation(pkProject: any, isInProject: any, data: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/InfTemporalEntities/change-project-relation";
@@ -163,7 +212,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
       data: data
     };
     let _urlParams: any = {};
-    if (typeof projectId !== 'undefined' && projectId !== null) _urlParams.projectId = projectId;
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     if (typeof isInProject !== 'undefined' && isInProject !== null) _urlParams.isInProject = isInProject;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;

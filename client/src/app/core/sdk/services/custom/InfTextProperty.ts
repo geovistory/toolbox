@@ -37,7 +37,7 @@ export class InfTextPropertyApi extends BaseLoopBackApi {
   /**
    * Find or create a InfTextProperty and update the project relation if needed.
    *
-   * @param {number} projectId Id of the project
+   * @param {number} pkProject Pk of the project
    *
    * @param {object} data Request data.
    *
@@ -52,7 +52,7 @@ export class InfTextPropertyApi extends BaseLoopBackApi {
    * This usually means the response is a `InfTextProperty` object.)
    * </em>
    */
-  public findOrCreateInfTextProperty(projectId: any, data: any, customHeaders?: Function): Observable<InfTextProperty[]> {
+  public findOrCreateInfTextProperty(pkProject: any, data: any, customHeaders?: Function): Observable<InfTextProperty[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/InfTextProperties/findOrCreate";
@@ -61,7 +61,7 @@ export class InfTextPropertyApi extends BaseLoopBackApi {
       data: data
     };
     let _urlParams: any = {};
-    if (typeof projectId !== 'undefined' && projectId !== null) _urlParams.projectId = projectId;
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result.pipe(map((instances: Array<InfTextProperty>) =>
         instances.map((instance: InfTextProperty) => new InfTextProperty(instance))

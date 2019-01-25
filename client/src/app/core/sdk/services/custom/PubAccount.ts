@@ -283,7 +283,7 @@ export class PubAccountApi extends BaseLoopBackApi {
   /**
    * Get Roles of the Account
    *
-   * @param {number} accountId 
+   * @param {number} id 
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -294,14 +294,15 @@ export class PubAccountApi extends BaseLoopBackApi {
    * This usually means the response is a `PubAccount` object.)
    * </em>
    */
-  public getRoles(accountId: any, customHeaders?: Function): Observable<any> {
+  public getRoles(id: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/PubAccounts/get-roles";
-    let _routeParams: any = {};
+    "/PubAccounts/:id/get-roles";
+    let _routeParams: any = {
+      id: id
+    };
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof accountId !== 'undefined' && accountId !== null) _urlParams.accountId = accountId;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -309,7 +310,7 @@ export class PubAccountApi extends BaseLoopBackApi {
   /**
    * Get a list of all projects associated with this account.
    *
-   * @param {number} accountId 
+   * @param {number} id 
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -320,14 +321,15 @@ export class PubAccountApi extends BaseLoopBackApi {
    * This usually means the response is a `PubAccount` object.)
    * </em>
    */
-  public listProjects(accountId: any, customHeaders?: Function): Observable<any> {
+  public listProjects(id: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/PubAccounts/list-projects";
-    let _routeParams: any = {};
+    "/PubAccounts/:id/list-projects";
+    let _routeParams: any = {
+      id: id
+    };
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof accountId !== 'undefined' && accountId !== null) _urlParams.accountId = accountId;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

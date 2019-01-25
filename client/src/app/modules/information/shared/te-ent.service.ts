@@ -1,12 +1,10 @@
-import { Injectable, EventEmitter, Inject, forwardRef } from '@angular/core';
-import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
-
-import { InfTemporalEntity, InfRole, DfhProperty, InfTemporalEntityApi, TimePrimitive, InfTimePrimitive, InfEntityProjectRel, InfAppellation, TimeSpan } from 'app/core';
+import { EventEmitter, Injectable } from '@angular/core';
+import { DfhProperty, InfRole, InfTemporalEntity, InfTemporalEntityApi, TimePrimitive, TimeSpan } from 'app/core';
+import { Observable, ReplaySubject } from 'rxjs';
 import { DfhConfig } from './dfh-config';
-import { PropertyService } from './property.service';
-import { ClassService } from './class.service';
-import { AppellationLabel } from './appellation-label/appellation-label';
 import { EprService } from './epr.service';
+import { PropertyService } from './property.service';
+
 
 @Injectable()
 export class TeEntService {
@@ -15,7 +13,7 @@ export class TeEntService {
 
   constructor(
     private propertyService: PropertyService,
-    private teEntApi: InfTemporalEntityApi,
+    private teEnApi: InfTemporalEntityApi,
     private eprService: EprService,
   ) { }
 
@@ -26,12 +24,19 @@ export class TeEntService {
 
     this.eprService.checkIfInProject(pkEntity, pkProject).subscribe(isInProject => {
 
-      this.teEntApi.nestedObject(isInProject, pkProject, pkEntity).subscribe((teEnts: InfTemporalEntity[]) => {
+      if (isInProject) {
 
-        subject.next(teEnts[0]);
+        this.teEnApi.nestedObjectOfProject(pkProject, pkEntity).subscribe((teEnts: InfTemporalEntity[]) => {
+          subject.next(teEnts[0]);
+        });
 
-      });
+      } else {
 
+        this.teEnApi.nestedObjectOfRepo(pkEntity).subscribe((teEnts: InfTemporalEntity[]) => {
+          subject.next(teEnts[0]);
+        });
+
+      }
     })
 
     return subject;

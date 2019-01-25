@@ -74,22 +74,20 @@ export class ProjectCreateComponent implements OnInit {
       this.model.language.pk_language,
       this.model.label,
       (this.model.text_property ? this.model.text_property : null)
-    )
-      // this.accountApi.createProjects(this.authService.getCurrentUserId(), this.model)
-      .subscribe(
-        data => {
-          this.completeLoading();
-          this.createBtnDisabled = false;
-          this.router.navigate(['../'], { relativeTo: this.activatedRoute })
-        },
-        error => {
-          this.resetLoading();
+    ).subscribe(
+      data => {
+        this.completeLoading();
+        this.createBtnDisabled = false;
+        this.router.navigate(['../'], { relativeTo: this.activatedRoute })
+      },
+      error => {
+        this.resetLoading();
 
-          // TODO: Alert
-          this.errorMessages = error.error.details.messages;
-          this.createBtnDisabled = false;
-        }
-      );
+        // TODO: Alert
+        this.errorMessages = error.error.details.messages;
+        this.createBtnDisabled = false;
+      }
+    );
   }
 
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {  InfEntityProjectRel, InfEntityProjectRelApi, IAppState } from 'app/core';
+import { InfEntityProjectRel, InfEntityProjectRelApi, IAppState } from 'app/core';
 import { ReplaySubject } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
 
@@ -59,7 +59,6 @@ export class EprService {
 
     if (!pkProject) onDone.next(false);
 
-    let isInProject;
 
     this.eprApi.find({
       'where': {
@@ -70,8 +69,7 @@ export class EprService {
       if (eprs.length > 0) {
 
         onDone.next(true)
-      }
-      else {
+      } else {
         onDone.next(false);
       }
 

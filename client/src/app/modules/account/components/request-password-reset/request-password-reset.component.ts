@@ -14,9 +14,9 @@ import { environment } from 'environments/environment';
 export class RequestPasswordResetComponent {
 
   model: any = {};
-  loading:boolean = false;
+  loading = false;
   errorMessage: string;
-  confirm:boolean = false; //if true, form is hidden and confirmation shown.
+  confirm = false; // if true, form is hidden and confirmation shown.
 
   constructor(
     private accountApi: PubAccountApi,
@@ -26,46 +26,46 @@ export class RequestPasswordResetComponent {
     LoopBackConfig.setApiVersion(environment.apiVersion);
   }
 
-  request(){
+  request() {
     this.startLoading();
 
-    this.errorMessage = "";
+    this.errorMessage = '';
     this.accountApi.resetPassword(this.model)
-    .subscribe(
-      data => {
-        this.completeLoading();
-        this.confirm = true;
+      .subscribe(
+        data => {
+          this.completeLoading();
+          this.confirm = true;
 
-      },
-      error => {
-        // TODO: Alert
-        this.errorMessage = error.message;
-        this.resetLoading();
-      });
-    }
-
-    /**
-    * Loading Bar Logic
-    */
-
-    startLoading() {
-      this.slimLoadingBarService.progress = 20;
-      this.slimLoadingBarService.start(() => {
-      });
-      this.loading = true;
-    }
-
-    stopLoading() {
-      this.slimLoadingBarService.stop();
-    }
-
-    completeLoading() {
-      this.slimLoadingBarService.complete();
-      this.loading = false;
-    }
-
-    resetLoading() {
-      this.slimLoadingBarService.reset();
-      this.loading = false;
-    }
+        },
+        error => {
+          // TODO: Alert
+          this.errorMessage = error.message;
+          this.resetLoading();
+        });
   }
+
+  /**
+  * Loading Bar Logic
+  */
+
+  startLoading() {
+    this.slimLoadingBarService.progress = 20;
+    this.slimLoadingBarService.start(() => {
+    });
+    this.loading = true;
+  }
+
+  stopLoading() {
+    this.slimLoadingBarService.stop();
+  }
+
+  completeLoading() {
+    this.slimLoadingBarService.complete();
+    this.loading = false;
+  }
+
+  resetLoading() {
+    this.slimLoadingBarService.reset();
+    this.loading = false;
+  }
+}

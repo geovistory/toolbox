@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InfLanguageApi, InfPersistentItem, InfPersistentItemApi } from 'app/core';
+import { InfPersistentItem, InfPersistentItemApi } from 'app/core';
 import { ReplaySubject } from 'rxjs';
 import { EprService } from './epr.service';
 
@@ -11,19 +11,10 @@ import { EprService } from './epr.service';
 export class PeItService {
 
   constructor(
-    private languageApi: InfLanguageApi,
     private peItApi: InfPersistentItemApi,
     private eprService: EprService,
   ) {
 
-  }
-
-  findLangByIso6392t(iso6392t) {
-    return this.languageApi.find({
-      'where': {
-        'iso6392t': iso6392t
-      }
-    });
   }
 
   getNestedObject(pkEntity: number, pkProject?: number): ReplaySubject<InfPersistentItem> {

@@ -13,7 +13,7 @@ import { ofSubstore } from 'app/core/store/module';
 @Injectable()
 export class TypeEditableAPIEpics {
   constructor(
-    private entAssocApi: InfEntityAssociationApi,
+    private eaApi: InfEntityAssociationApi,
     private peItApi: InfPersistentItemApi,
     private actions: TypeEditableAPIActions,
     private loadingBarActions: LoadingBarActions,
@@ -44,7 +44,7 @@ export class TypeEditableAPIEpics {
            * Do some api call
            */
 
-          combineLatest(action.meta.entityAssociations.map((assoc) => this.entAssocApi
+          combineLatest(action.meta.entityAssociations.map((assoc) => this.eaApi
             .findOrCreateInfEntityAssociation(action.meta.pkProject, assoc)))
             .subscribe((data: InfEntityAssociation[][]) => {
               let newAssoc: InfEntityAssociation;

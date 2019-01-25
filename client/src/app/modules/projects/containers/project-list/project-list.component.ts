@@ -15,7 +15,7 @@ import { IProjectList } from '../../projects.model';
 })
 export class ProjectListComponent implements OnInit {
 
- 
+
   projects: ComProject[] = [];
   loadingComplete = false;
 
@@ -44,7 +44,7 @@ export class ProjectListComponent implements OnInit {
         this.projects = accounts[0].projects;
 
         this.actions.loadProjectsSucceeded(this.projects)
-        
+
         this.completeLoading();
       });
   }

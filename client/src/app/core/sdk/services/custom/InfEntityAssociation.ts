@@ -36,7 +36,7 @@ export class InfEntityAssociationApi extends BaseLoopBackApi {
   /**
    * Find or create an information entity association.
    *
-   * @param {number} projectId Id of the project
+   * @param {number} pk_project Id of the project
    *
    * @param {object} data Request data.
    *
@@ -51,7 +51,7 @@ export class InfEntityAssociationApi extends BaseLoopBackApi {
    * This usually means the response is a `InfEntityAssociation` object.)
    * </em>
    */
-  public findOrCreateInfEntityAssociation(projectId: any, data: any, customHeaders?: Function): Observable<InfEntityAssociation[]> {
+  public findOrCreateInfEntityAssociation(pk_project: any, data: any, customHeaders?: Function): Observable<InfEntityAssociation[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/InfEntityAssociations/findOrCreate";
@@ -60,7 +60,7 @@ export class InfEntityAssociationApi extends BaseLoopBackApi {
       data: data
     };
     let _urlParams: any = {};
-    if (typeof projectId !== 'undefined' && projectId !== null) _urlParams.projectId = projectId;
+    if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result.pipe(map((instances: Array<InfEntityAssociation>) =>
         instances.map((instance: InfEntityAssociation) => new InfEntityAssociation(instance))
@@ -191,71 +191,6 @@ export class InfEntityAssociationApi extends BaseLoopBackApi {
     if (typeof pkChunk !== 'undefined' && pkChunk !== null) _urlParams.pkChunk = pkChunk;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
-  }
-
-  /**
-   * Find mentionings of section (F2 Expression).
-   *
-   * @param {boolean} ofProject if true, finds project version. if false, finds repo version.
-   *
-   * @param {number} pkProject Primary Key of the Project. If provided and ofProject=false, makes a left join with project
-   *
-   * @param {number} pkEntity Primary Key of the entity association (pk_entity)
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfEntityAssociation` object.)
-   * </em>
-   */
-  public mentioningsOfSection(ofProject: any, pkProject: any, pkEntity: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfEntityAssociations/mentionings-of-section";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof ofProject !== 'undefined' && ofProject !== null) _urlParams.ofProject = ofProject;
-    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
-    if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfEntityAssociation` object.)
-   * </em>
-   */
-  public findComplex(filter: LoopBackFilter = {}, customHeaders?: Function): Observable<InfEntityAssociation[]> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfEntityAssociations/findComplex";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      filter: filter
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<InfEntityAssociation>) =>
-        instances.map((instance: InfEntityAssociation) => new InfEntityAssociation(instance))
-    ));
   }
 
   /**
