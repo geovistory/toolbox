@@ -40,11 +40,11 @@ switch (process.env.DB_ENV) {
   break;
 
   case "staging":
-  config.postgres1.url = process.env.GEOV_STAG_DATABASE_URL;
+  config.postgres1.url = process.env.DATABASE_URL;
   break;
 
   case "production":
-  config.postgres1.url = process.env.GEOV_PROD_DATABASE_URL;
+  config.postgres1.url = process.env.DATABASE_URL;
   break;
 
   default:
