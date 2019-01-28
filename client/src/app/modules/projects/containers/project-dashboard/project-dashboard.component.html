@@ -54,7 +54,7 @@
         </div>
       </div>
       <div id="knowledge-units" class="gv-icon-box" [ngClass]="{'gv-active': steps.step3}">
-        <div class="gv-upper-part gv-upper-part-primary" [routerLink]="['edit', { outlets: { information: ['search'], sources: ['search']} }]"
+        <div class="gv-upper-part gv-upper-part-primary" [routerLink]="['edit', { outlets: { list: ['entities'] } }]"
           [queryParams]="{i:'on',s:'off'}">
           <div class="gv-icon gv-icon-information"></div>
           <h4>{{dataUnitsCount}} {{dataUnitsCount === 1 ? 'Data Unit' : 'Data Units'}}</h4>
