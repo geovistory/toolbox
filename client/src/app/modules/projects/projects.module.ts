@@ -36,6 +36,8 @@ import { TypeAddFormAPIEpics } from './containers/type-add-form/api/type-add-for
 import { TypeEditFormComponent } from './containers/type-edit-form/type-edit-form.component';
 import { TypeEditFormAPIActions } from './containers/type-edit-form/api/type-edit-form.actions';
 import { TypeEditFormAPIEpics } from './containers/type-edit-form/api/type-edit-form.epics';
+import { MatSidenavModule } from '@angular/material';
+import { SourcesModule } from '../sources';
 
 @NgModule({
   imports: [
@@ -49,7 +51,10 @@ import { TypeEditFormAPIEpics } from './containers/type-edit-form/api/type-edit-
     KeysModule,
     ReadMoreModule,
     HighlightModule,
-    PassiveLinkModule
+    PassiveLinkModule,
+    MatSidenavModule,
+    SourcesModule,
+    Information2Module
   ],
   declarations: [
     ProjectCreateComponent,
@@ -66,7 +71,7 @@ import { TypeEditFormAPIEpics } from './containers/type-edit-form/api/type-edit-
     SideNavComponent,
     TypesComponent,
     TypeAddFormComponent,
-    TypeEditFormComponent
+    TypeEditFormComponent,
   ],
   providers: [
     ProjectsActions,

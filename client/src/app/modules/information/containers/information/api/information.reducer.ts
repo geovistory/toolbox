@@ -23,62 +23,6 @@ export function informationReducer(state: Information = INITIAL_STATE, a: Action
       };
       break;
 
-    /*****************************************************
-    * Reducers to manage entity editor
-    *****************************************************/
-    case InformationAPIActions.OPEN_ENTITY_EDITOR:
-      state = {
-        ...state,
-        loading: true,
-        _peIt_editable: {}
-      };
-      break;
-
-    case InformationAPIActions.OPEN_ENTITY_EDITOR_SUCCEEDED:
-      state = {
-        ...state,
-        loading: false,
-        _peIt_editable: action.meta.peItDetail,
-        _teEnt_editable: undefined
-      };
-      break;
-
-    case InformationAPIActions.OPEN_ENTITY_EDITOR_FAILED:
-      state = {
-        ...state,
-        loading: false,
-        _peIt_editable: undefined
-      };
-      break;
-
-    /*****************************************************
-    * Reducers to manage phenomenon editor
-    *****************************************************/
-    case InformationAPIActions.OPEN_PHENOMENON_EDITOR:
-      state = {
-        ...state,
-        loading: true,
-        _teEnt_editable: {}
-      };
-      break;
-
-    case InformationAPIActions.OPEN_PHENOMENON_EDITOR_SUCCEEDED:
-      state = {
-        ...state,
-        loading: false,
-        _teEnt_editable: action.meta.teEntDetail,
-        _peIt_editable: undefined
-      };
-      break;
-
-    case InformationAPIActions.OPEN_PHENOMENON_EDITOR_FAILED:
-      state = {
-        ...state,
-        loading: false,
-        _teEnt_editable: undefined
-      };
-      break;
-
 
     /*****************************************************
     * Reducers to manage entity add form

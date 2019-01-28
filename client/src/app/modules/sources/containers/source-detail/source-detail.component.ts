@@ -1,5 +1,5 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, HostBinding } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ActiveProjectService, ComConfig, IAppState, PeItDetail, ComProject, ProjectCrm, SubstoreComponent, EntityPreview } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
@@ -8,32 +8,34 @@ import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { ISourceSearchHitState } from '../..';
-import { SourceListAPIActions } from './api/source-list.actions';
-import { SourceListAPIEpics } from './api/source-list.epics';
-import { SourceList } from './api/source-list.models';
-import { sourceListReducer } from './api/source-list.reducer';
+import { SourceDetailAPIActions } from './api/source-detail.actions';
+import { SourceDetailAPIEpics } from './api/source-detail.epics';
+import { SourceDetail } from './api/source-detail.models';
+import { sourceDetailReducer } from './api/source-detail.reducer';
 
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
-  localReducer: sourceListReducer
+  localReducer: sourceDetailReducer
 })
 @Component({
-  selector: 'gv-source-list',
-  templateUrl: './source-list.component.html',
-  styleUrls: ['./source-list.component.scss']
+  selector: 'gv-source-detail',
+  templateUrl: './source-detail.component.html',
+  styleUrls: ['./source-detail.component.scss']
 })
-export class SourceListComponent extends SourceListAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+export class SourceDetailComponent extends SourceDetailAPIActions implements OnInit, OnDestroy, SubstoreComponent {
 
-  
+  @HostBinding('class.h-100') h = true;
+  @HostBinding('class.gv-flex-fh') flexFh = true;
+
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
   // local store of this component
-  localStore: ObservableStore<SourceList>;
+  localStore: ObservableStore<SourceDetail>;
 
   // path to the substore
-  @Input() basePath = ['sources'];
+  @Input() basePath: string[];
 
   @select() list$: Observable<List>;
   @select() edit$: Observable<PeItDetail>;
@@ -60,7 +62,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
 
   constructor(
     protected rootEpics: RootEpics,
-    private epics: SourceListAPIEpics,
+    private epics: SourceDetailAPIEpics,
     public activatedRoute: ActivatedRoute,
     public ngRedux: NgRedux<IAppState>,
     public router: Router,
@@ -69,6 +71,11 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
     super();
 
     this.params$ = activatedRoute.params;
+
+    // if component is activated by ng-router, take base path here
+    activatedRoute.data.subscribe(d => {
+      this.basePath = d.reduxPath;
+    })
 
     // observe the active project
     this.project$ = ngRedux.select<ComProject>('activeProject');
@@ -99,7 +106,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
   getBasePath() { return this.basePath }
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, sourceListReducer);
+    this.localStore = this.ngRedux.configureSubStore(this.basePath, sourceDetailReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
     combineLatest(this.params$, this.pkProject$, this.crm$).pipe(
@@ -118,10 +125,6 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
       } else if (params.pkEntity) {
         // Init the source edit
         this.loadSourceDetails(params.pkEntity, pkProject, crm)
-      } else {
-
-        // Init the sources list
-        this.initializeList(this.pkClassesOfAddBtn);
       }
     })
 

@@ -148,6 +148,9 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
+import { EntityDetailComponent } from './containers/entity-detail/entity-detail.component';
+import { EntityDetailAPIEpics } from './containers/entity-detail/api/entity-detail.epics';
+import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-detail.actions';
 
 
 
@@ -189,6 +192,8 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     DragDropModule
   ],
   declarations: [
+    InformationComponent,
+    EntityDetailComponent,
     EntitySearchHitComponent,
     EntityAddExistingHitComponent,
     PeItTimelineComponent,
@@ -281,7 +286,6 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     AddInfoTeEntComponent,
     AddInfoPeItComponent,
     TextPropertyComponent,
-    InformationComponent,
     EditorHeaderComponent,
     ClassInfoComponent,
     TypeCtrlComponent,
@@ -305,6 +309,8 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     // Information (root)
     InformationAPIActions,
     InformationAPIEpics,
+    EntityDetailAPIEpics,
+    EntityDetailAPIActions,
 
     // List
     ListAPIActions,
@@ -378,7 +384,7 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     CreateOrAddEntityAPIActions,
     CreateOrAddEntityAPIEpics,
     PeItSearchExistingAPIActions,
-    PeItSearchExistingAPIEpics
+    PeItSearchExistingAPIEpics,
 
 
 

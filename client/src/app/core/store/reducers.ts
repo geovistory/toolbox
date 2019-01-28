@@ -10,6 +10,8 @@ import { loadingBarReducer } from '../loading-bar/api/loading-bar.reducer';
 import { informationReducer } from 'app/modules/information/containers/information/api/information.reducer';
 import { FluxStandardAction } from 'flux-standard-action';
 import { sourceListReducer } from 'app/modules/sources/containers/source-list/api/source-list.reducer';
+import { entityDetailReducer } from 'app/modules/information/containers/entity-detail/api/entity-detail.reducer';
+import { sourceDetailReducer } from 'app/modules/sources/containers/source-detail/api/source-detail.reducer';
 
 export const INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
 export const sandboxStateReducer = (lastState = {}, action: FluxStandardAction<any>) => {
@@ -33,7 +35,8 @@ export const rootReducer = composeReducers(
     routes: routerReducer,
     information: informationReducer,
     sources: sourceListReducer,
-    sandboxState: sandboxStateReducer
-
+    sandboxState: sandboxStateReducer,
+    entityDetail: entityDetailReducer,
+    sourceDetail: sourceDetailReducer
   })
 )

@@ -23,19 +23,10 @@ export class InformationAPIActions {
 
   static readonly INITIALIZE_LIST = 'Information::INITIALIZE_LIST';
 
-  static readonly OPEN_ENTITY_EDITOR = 'Information::OPEN_ENTITY_EDITOR';
-  static readonly OPEN_ENTITY_EDITOR_SUCCEEDED = 'Information::OPEN_ENTITY_EDITOR_SUCCEEDED';
-  static readonly OPEN_ENTITY_EDITOR_FAILED = 'Information::OPEN_ENTITY_EDITOR_FAILED';
-
-  static readonly OPEN_PHENOMENON_EDITOR = 'Information::OPEN_PHENOMENON_EDITOR';
-  static readonly OPEN_PHENOMENON_EDITOR_SUCCEEDED = 'Information::OPEN_PHENOMENON_EDITOR_SUCCEEDED';
-  static readonly OPEN_PHENOMENON_EDITOR_FAILED = 'Information::OPEN_PHENOMENON_EDITOR_FAILED';
-
   static readonly DESTROY = 'Information::DESTROY';
 
   static readonly START_CREATE = 'Information::START_CREATE';
   static readonly STOP_CREATE = 'Information::STOP_CREATE';
-
 
   static readonly REMOVE_PE_IT = 'Information::REMOVE_PE_IT';
   static readonly REMOVE_PE_IT_SUCCEEDED = 'Information::REMOVE_PE_IT_SUCCEEDED';
@@ -50,54 +41,6 @@ export class InformationAPIActions {
     meta: { pkClasses },
     payload: null,
   });
-
-  /*********************************************************************
-  *  Actions to manage entity editor
-  *********************************************************************/
-
-  @dispatch() openEntityEditor = (pkEntity: number, pkProject: number): InformationAPIAction => ({
-    type: InformationAPIActions.OPEN_ENTITY_EDITOR,
-    meta: { pkEntity, pkProject },
-    payload: null,
-  });
-
-  openEntityEditorSucceeded = (peItDetail: PeItDetail): InformationAPIAction => ({
-    type: InformationAPIActions.OPEN_ENTITY_EDITOR_SUCCEEDED,
-    meta: { peItDetail },
-    payload: null
-  })
-
-  openEntityEditorFailed = (error): InformationAPIAction => ({
-    type: InformationAPIActions.OPEN_ENTITY_EDITOR_FAILED,
-    meta: null,
-    payload: null,
-    error,
-  })
-
-
-  /*********************************************************************
-*  Actions to manage phenomenon editor
-*********************************************************************/
-
-  @dispatch() openPhenomenonEditor = (pkEntity: number, pkProject: number): InformationAPIAction => ({
-    type: InformationAPIActions.OPEN_PHENOMENON_EDITOR,
-    meta: { pkEntity, pkProject },
-    payload: null,
-  });
-
-  openPhenomenonEditorSucceeded = (teEntDetail: TeEntDetail): InformationAPIAction => ({
-    type: InformationAPIActions.OPEN_PHENOMENON_EDITOR_SUCCEEDED,
-    meta: { teEntDetail },
-    payload: null
-  })
-
-  openPhenomenonEditorFailed = (error): InformationAPIAction => ({
-    type: InformationAPIActions.OPEN_PHENOMENON_EDITOR_FAILED,
-    meta: null,
-    payload: null,
-    error,
-  })
-
 
   /***************************************************************
    * Manage the create or add screen

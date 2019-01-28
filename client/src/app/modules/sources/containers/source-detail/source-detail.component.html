@@ -1,0 +1,85 @@
+
+<!-- ********************** Create Source ***************************
+ * - If 'create' is truthy, show a form with SourceCreateFormComponent
+ *     listening to ok and cancel Outputs 
+ -->
+<div *ngIf="(create$ | async)" class="gv-flex-fh">
+  <gv-create-or-add-entity class="gv-flex-fh" [basePath]="basePath.concat('create')" (done)="openEntity($event.pk_entity)"
+    (cancel)="stopCreate()"></gv-create-or-add-entity>
+</div>
+
+<!-- ********************** Edit Source *************************** 
+ * - If 'edit' is truthy, show a SourceDetailComponent 
+ *   passing store path to 'edit' via Input
+ *   listening to onChange Output to update the 'list'
+-->
+
+<div *ngIf="(edit$ | async)" class="gv-flex-fh">
+
+  <!-- Breadcrumbs -->
+  <div class="d-flex gv-flex-shrink-0">
+    <ol class="breadcrumb bg-transparent mb-0 py-2">
+      <li class="breadcrumb-item">
+        <a href class="gv-passive-link" routerLink="../search" queryParamsHandling="merge">
+          <i class="gv-icon gv-icon-source text-primary"></i> Sources
+        </a>
+      </li>
+    </ol>
+  </div>
+
+
+  <gv-pe-it-editable [hidden]="(createSection$ | async)" [basePath]="basePath.concat('edit')" [ngClass]="{'gv-flex-fh' : !(createSection$ | async)}"
+  (remove)="onRemoveSource($event)"></gv-pe-it-editable>
+
+
+</div>
+
+<!-- ********************** Remove Source *************************** 
+ * - If 'remove' is truthy, show a SourceSearchHitComponent with 'are you sure', cancel and remove buttons
+ *   passing store path to 'remove' via Input 
+-->
+<!-- <div *ngIf="(remove$ | async)" class="d-flex justify-content-center mt-5">
+  <div>
+    <div class="my-3">
+      <h5> Remove Source </h5>
+      <p> Are you sure?</p>
+    </div>
+    <gv-source-search-hit [sourceSearchHit]="(remove$|async)"> </gv-source-search-hit>
+    <button class="btn btn-outline-danger" (click)="remove()">Remove</button>
+    <button class="btn btn-outline-secondary" (click)="cancelRemove()">Cancel</button>
+  </div>
+</div> -->
+
+
+
+
+<!-- ********************** Edit Section *************************** 
+ * - If 'edit' is truthy, show a SourceDetailComponent 
+ *   passing store path to 'edit' via Input
+ *   listening to onChange Output to update the 'list'
+-->
+
+<div *ngIf="(editSection$ | async)" class="gv-flex-fh">
+
+  <!-- Breadcrumbs -->
+  <div class="d-flex gv-flex-shrink-0">
+    <ol class="breadcrumb bg-transparent mb-0 py-2">
+      <li class="breadcrumb-item">
+        <a href class="gv-passive-link" routerLink="../../../search" queryParamsHandling="merge">
+          <i class="gv-icon gv-icon-source text-primary"></i> Sources
+        </a>
+      </li>
+      <li class="breadcrumb-item">
+        <a href class="gv-passive-link" routerLink="../../" queryParamsHandling="merge">
+          {{(sourcePreview$ | async)?.type_label}} {{(sourcePreview$ | async)?.entity_label}} 
+        </a>
+      </li>
+    </ol>
+  </div>
+
+
+  <gv-pe-it-editable [basePath]="basePath.concat('editSection')" class="gv-flex-fh"
+  (remove)="onRemoveSection($event)"></gv-pe-it-editable>
+
+
+</div>

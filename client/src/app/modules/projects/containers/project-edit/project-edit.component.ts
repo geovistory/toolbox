@@ -1,99 +1,64 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
-import { Location } from '@angular/common';
-
-import { Subscription, Observable, Subject } from 'rxjs';
-import { ActiveProjectService, ComProject, IAppState, ProjectDetail } from 'app/core';
-import { NgRedux } from '@angular-redux/store';
-import { filter, map } from 'rxjs/operators';
-
-type ProjectEditPanelState = 's0' | 's50' | 's100';
+import { Component, HostBinding } from '@angular/core';
+import { ActiveProjectService, ProjectDetail } from 'app/core';
+import { Router, ActivatedRoute, UrlSegmentGroup, UrlSegment } from '@angular/router';
+import { Observable } from 'rxjs';
+import { first, take } from 'rxjs/operators';
 
 @Component({
   selector: 'gv-project-edit',
   templateUrl: './project-edit.component.html',
   styleUrls: ['./project-edit.component.scss']
 })
-export class ProjectEditComponent implements OnInit, OnDestroy {
+export class ProjectEditComponent {
+  
+  @HostBinding('class.gv-full') full = true;
+  @HostBinding('class.gv-flex-fh') flexFh = true;
 
-  // emits true on destroy of this component
-  destroy$ = new Subject<boolean>();
-
-  informationState$: Observable<ProjectEditPanelState>;
-  sourcesState$: Observable<ProjectEditPanelState>;
-  queryParams;
-  projectLabel$: Observable<string>;
-
-  // queryParamsSubsciption: Subscription;
+  pkProject: number;
+  project$: Observable<ProjectDetail>;
 
   constructor(
-    private activatedRoute: ActivatedRoute,
     private activeProjectService: ActiveProjectService,
-    private ngRedux: NgRedux<IAppState>,
     private router: Router,
-    private location: Location
+    private activatedRoute: ActivatedRoute,
   ) {
+    this.project$ = activeProjectService.activeProject$;
 
-    this.projectLabel$ = this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']);
+    const id = activatedRoute.snapshot.params['pkActiveProject'];
 
-    this.informationState$ = activatedRoute.queryParams.pipe(
-      map(params => this.calculatePanelState('i', params))
-    )
-
-    this.sourcesState$ = activatedRoute.queryParams.pipe(
-      map(params => this.calculatePanelState('s', params))
-    )
-
-    activatedRoute.queryParams.takeUntil(this.destroy$).subscribe(queryParams => {
-
-      const i = queryParams['i']; // gets url part ?i='s100'
-      const s = queryParams['s']; // gets url part ?i='s100'
-      if (this.howManyPanelsAreOn(queryParams) === 0) {
-        this.updateUrlQueryParams({ 'i': 'on', 's': 'on' })
-      } else {
-
-        if (!i) this.updateUrlQueryParams({ 'i': 'off' })
-        if (!s) this.updateUrlQueryParams({ 's': 'off' })
-      }
-
-    });
+    this.activeProjectService.initProject(id);
+    this.activeProjectService.initProjectCrm(id);
 
   }
 
-  private calculatePanelState(queryParam: string, params): ProjectEditPanelState {
-    if (params[queryParam] === 'off') return 's0';
-    if (this.howManyPanelsAreOn(params) >= 2) return 's50';
-    else return 's100';
-  }
-  private howManyPanelsAreOn(params): number {
-    return [params.i, params.s].filter(p => p === 'on').length
-  }
-
-  ngOnInit() {
-
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
-  }
-
-
- 
-  updateUrlQueryParams(newParams) {
- 
-    // Generate the URL:
+  closeList() {
     let urlTree = this.router.parseUrl(this.router.url);
-    urlTree = {
-      ...urlTree,
-      queryParams: {
-        ...urlTree.queryParams,
-        ...newParams
+
+    this.activeProjectService.pkProject$.pipe(
+      first(item => !!item),
+      take(1)
+    ).subscribe(p => {
+      urlTree = {
+        ...urlTree,
+        root: new UrlSegmentGroup(
+          urlTree.root.segments,
+          {
+            primary: new UrlSegmentGroup(
+              [
+                new UrlSegment('projects', {}),
+                new UrlSegment(p.toString(), {}),
+                new UrlSegment('edit', {})
+              ],
+              {
+                detail: urlTree.root.children.primary.children.detail
+              }
+            )
+          }
+        )
       }
-    }
-    // Change the URL:
-    this.router.navigateByUrl(this.router.serializeUrl(urlTree))
-    // this.location.go(url);
+      const newUrl = this.router.serializeUrl(urlTree)
+      this.router.navigateByUrl(newUrl)
+    })
 
   }
 }

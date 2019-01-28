@@ -1,0 +1,20 @@
+<div *ngIf="(_peIt_editable$ | async) || (_teEnt_editable$ | async) " class="gv-flex-fh">
+
+  <div class="d-flex gv-flex-shrink-0">
+    <ol class="breadcrumb bg-transparent mb-0 py-2">
+      <li class="breadcrumb-item">
+        <a href class="gv-passive-link" routerLink="../../search" queryParamsHandling="merge">
+          <i class="gv-icon gv-icon-information-simple text-primary"></i> Data Units
+        </a>
+      </li>
+    </ol>
+  </div>
+
+  <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
+  <gv-pe-it-editable *ngIf="!(loading$ | async) && (_peIt_editable$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('_peIt_editable')"
+    (remove)="onRemovePeIt($event)"></gv-pe-it-editable>
+
+  <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
+  <gv-te-ent-editable *ngIf="!(loading$ | async) && (_teEnt_editable$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('_teEnt_editable')"></gv-te-ent-editable>
+
+</div>

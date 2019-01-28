@@ -13,6 +13,10 @@ import { ProjectSettingsProfileComponent } from './containers/project-settings-p
 import { ClassSettingsComponent } from './containers/class-settings/class-settings.component';
 import { ProjectSettingsComponent } from './containers/project-settings/project-settings.component';
 import { TypesComponent } from './containers/types/types.component';
+import { SourceListComponent } from '../sources/containers/source-list/source-list.component';
+import { InformationComponent } from '../information/containers/information/information.component';
+import { EntityDetailComponent } from '../information/containers/entity-detail/entity-detail.component';
+import { SourceDetailComponent } from '../sources/containers/source-detail/source-detail.component';
 
 export function getInformation2Module() { return Information2Module };
 
@@ -27,79 +31,117 @@ const routes: Routes = [
     path: 'create',
     component: ProjectCreateComponent
   },
-
   {
     path: ':pkActiveProject',
-    component: ProjectDashboardComponent,
+    component: ProjectDashboardComponent
+  },
+  {
+    path: ':pkActiveProject/edit',
+    component: ProjectEditComponent,
     children: [
+      {
+        path: '',
+        outlet: 'list',
+        component: ProxyRouteComponent,
+        children: [
+          {
+            path: 'sources',
+            component: SourceListComponent
+          },
+          {
+            path: 'entities',
+            component: InformationComponent,
+            data: {
+              reduxPath: ['information']
+            }
+          }
+        ],
+      },
+      {
+        path: '',
+        outlet: 'detail',
+        component: ProxyRouteComponent,
+        children: [
+          {
+            path: 'entity/:pkEntity',
+            component: EntityDetailComponent,
+            data: {
+              reduxPath: ['entityDetail']
+            }
+          },
+          {
+            path: 'source/:pkEntity',
+            component: SourceDetailComponent,
+            data: {
+              reduxPath: ['sourceDetail']
+            }
+          }
+        ],
+      },
       // {
-      //   path: '',
+      //   path: 'edit',
+      //   component: ProjectEditComponent,
+      //   children: [
+      //     {
+      //       path: '',
+      //       outlet: 'information',
+      //       component: ProxyRouteComponent,
+      //       children: [
+      //         {
+      //           path: '',
+      //           loadChildren: '../information/information.module#Information2Module'
+      //           // line above instead of loadChildren: InformationModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116
+      //         }
+      //       ]
+      //     },
+      //     {
+      //       path: '',
+      //       outlet: 'sources',
+      //       component: ProxyRouteComponent,
+      //       children: [
+      //         {
+      //           path: '',
+      //           loadChildren: '../sources/sources.module#SourcesModule'
+      //         }
+      //       ]
+      //     }
+      //   ]
       // },
-
-      {
-        path: 'edit',
-        component: ProjectEditComponent,
-        children: [
-          {
-            path: '',
-            outlet: 'information',
-            component: ProxyRouteComponent,
-            children: [
-              {
-                path: '',
-                loadChildren: '../information/information.module#Information2Module'
-                // line above instead of loadChildren: InformationModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116
-              }
-            ]
-          },
-          {
-            path: '',
-            outlet: 'sources',
-            component: ProxyRouteComponent,
-            children: [
-              {
-                path: '',
-                loadChildren: '../sources/sources.module#SourcesModule'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        path: 'settings',
-        component: ProjectSettingsComponent,
-        children: [
-          {
-            path: '',
-            redirectTo: 'profile',
-            pathMatch: 'full',
-          },
-          {
-            path: 'profile',
-            component: ProjectSettingsProfileComponent
-          },
-          {
-            path: 'collaborators',
-            component: ProjectSettingsCollaboratorsComponent
-          },
-          {
-            path: 'classes',
-            component: ProjectSettingsDataComponent
-          },
-          {
-            path: 'classes/:id',
-            component: ClassSettingsComponent,
-            children: [
-              {
-                path: 'types/:pk_namespace',
-                component: TypesComponent
-              }
-            ]
-          }
-        ]
-      },
     ]
   },
+  {
+    path: ':pkActiveProject/settings',
+    component: ProjectSettingsComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'profile',
+        pathMatch: 'full',
+      },
+      {
+        path: 'profile',
+        component: ProjectSettingsProfileComponent
+      },
+      {
+        path: 'collaborators',
+        component: ProjectSettingsCollaboratorsComponent
+      },
+      {
+        path: 'classes',
+        component: ProjectSettingsDataComponent
+      },
+      {
+        path: 'classes/:id',
+        component: ClassSettingsComponent,
+        children: [
+          {
+            path: 'types/:pk_namespace',
+            component: TypesComponent
+          }
+        ]
+      }
+    ]
+  }
 ];
 
 

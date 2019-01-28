@@ -12,7 +12,7 @@
     </div>
 
     <input type="text" name="searchString" class="form-control" aria-describedby="search" autocomplete="off"
-      placeholder="Search …" [(ngModel)]="searchString" (keydown)="searchKeydown($event)">
+      placeholder="Search …" [(ngModel)]="searchString" (keydown)="searchKeydown($event)" autofocus>
 
     <span class="input-group-append">
       <button class="btn btn-primary" type="button" (click)="searchStringChange()">

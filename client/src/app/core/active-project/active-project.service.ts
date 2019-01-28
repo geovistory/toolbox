@@ -259,7 +259,7 @@ export class ActiveProjectService {
    * @param sources the new UrlSegmentGroup for sources
    * @param information the new UrlSegmentGroup for information
    */
-  private createNewUrl(newSources: UrlSegmentGroup | null, newInformation: UrlSegmentGroup | null, newQueryParams: Params): string {
+  private createNewUrl( newList: UrlSegmentGroup | null, newDetail: UrlSegmentGroup | null, newQueryParams: Params): string {
     let urlTree = this.router.parseUrl(this.router.url);
 
     urlTree = {
@@ -275,11 +275,11 @@ export class ActiveProjectService {
             [
               new UrlSegment('projects', {}),
               new UrlSegment(this.ngRedux.getState().activeProject.pk_project.toString(), {}),
-              new UrlSegment('edit', {})
+              new UrlSegment('edit', {}),
             ],
             {
-              information: (newInformation ? newInformation : urlTree.root.children.primary.children.information),
-              sources: (newSources ? newSources : urlTree.root.children.primary.children.sources)// TODO if not available, set it to 'search'
+              list: (newList ? newList : urlTree.root.children.primary.children.list),
+              detail: (newDetail ? newDetail : urlTree.root.children.primary.children.detail)// TODO if not available, set it to 'search'
             }
           )
         }
@@ -303,8 +303,8 @@ export class ActiveProjectService {
   navigateToSource(pk: number) {
 
     const newUrl = this.createNewUrl(
-      new UrlSegmentGroup([new UrlSegment(pk.toString(), {})], {}),
       null,
+      new UrlSegmentGroup([new UrlSegment('source', {}), new UrlSegment(pk.toString(), {})], {}),
       { 's': 'on' }
     )
 

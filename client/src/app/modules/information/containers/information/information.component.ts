@@ -1,17 +1,15 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ComConfig, IAppState, InfPersistentItem, PeItDetail, ProjectCrm, SubstoreComponent, ActiveProjectService, EntityPreview, TeEntDetail } from 'app/core';
+import { ActiveProjectService, ComConfig, EntityPreview, IAppState, InfPersistentItem, PeItDetail, ProjectCrm, SubstoreComponent, TeEntDetail } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { combineLatest, Observable, Subject, BehaviorSubject } from 'rxjs';
-// import { EntityAddModalComponent } from '../../add-modal/entity-add-modal/entity-add-modal.component';
-import { first, takeUntil, filter } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
 import { CreateOrAddEntity } from '../create-or-add-entity/api/create-or-add-entity.models';
 import { InformationAPIActions } from './api/information.actions';
 import { InformationAPIEpics } from './api/information.epics';
 import { Information } from './api/information.models';
 import { informationReducer } from './api/information.reducer';
-import { distinctUntilChanged } from 'rxjs-compat/operator/distinctUntilChanged';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -23,6 +21,9 @@ import { distinctUntilChanged } from 'rxjs-compat/operator/distinctUntilChanged'
   styleUrls: ['./information.component.css']
 })
 export class InformationComponent extends InformationAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+  
+  @HostBinding('class.h-100') h = true;
+  @HostBinding('class.gv-flex-fh') flexFh = true;
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
@@ -33,24 +34,15 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   // path to the substore
   @Input() basePath: string[];
 
-  @select() _peIt_editable$: Observable<PeItDetail>;
-  @select() _teEnt_editable$: Observable<TeEntDetail>;
   @select() _peIt_add$: Observable<CreateOrAddEntity>;
   @select() loading$: Observable<boolean>;
 
   selectedEntity$ = new BehaviorSubject<EntityPreview>(undefined);
 
-  // Primary key of the Entity to be viewed or edited
-  pkEntity: number;
-
-  listVisible = true;
 
   persistentItems: InfPersistentItem[] = [];
   pkProject$: Observable<number>;
 
-  // entityModalOptions: NgbModalOptions = {
-  //   size: 'lg'
-  // }
 
   pkClassesInProject;
   pkUiContextCreate = ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
@@ -65,7 +57,6 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   ) {
     super()
 
-    this.pkEntity = activatedRoute.snapshot.params['pkEntity'];
     this.pkProject$ = projectService.pkProject$;
 
     // if component is activated by ng-router, take base path here
@@ -86,12 +77,6 @@ export class InformationComponent extends InformationAPIActions implements OnIni
         this.initializeList(this.pkClassesInProject)
       })
 
-
-    // if one of the observables returns truthy, list is not visible
-    combineLatest(this.selectedEntity$, this._peIt_add$).takeUntil(this.destroy$).subscribe(d => {
-      this.listVisible = !d.find(item => !!(item));
-    })
-
   }
 
   getBasePath = () => this.basePath;
@@ -100,45 +85,13 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     this.localStore = this.ngRedux.configureSubStore(this.basePath, informationReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    if (this.pkEntity) this.initSelectedDataUnitPreview()
 
-    // listen to route changes
-    this.activatedRoute.params.subscribe(params => {
-      if (params.pkEntity && params.pkEntity != this.pkEntity) {
-        this.pkEntity = params.pkEntity;
-        this.initSelectedDataUnitPreview()
-      }
-    })
-
-
-  }
-
-  initSelectedDataUnitPreview() {
-    this.projectService.streamEntityPreview(this.pkEntity)
-    .takeUntil(this.destroy$)
-    .subscribe(a => {
-      this.selectedEntity$.next(a);
-    })
-
-    combineLatest(this.selectedEntity$, this.pkProject$)
-      .pipe(
-        first(([du, pkProject]) => (du && !du.loading && !!pkProject)),
-        takeUntil(this.destroy$)
-      ).subscribe(([du, pkProject]) => {
-        if (du.entity_type === 'peIt') {
-          this.openEntityEditor(du.pk_entity, pkProject);
-        } else if (du.entity_type === 'teEn') {
-          this.openPhenomenonEditor(du.pk_entity, pkProject);
-        }
-      })
 
   }
 
 
   openEntity(pkEntity) {
-    this.router.navigate(['../entity', pkEntity], {
-      relativeTo: this.activatedRoute, queryParamsHandling: 'merge'
-    })
+    this.projectService.navigateToDataUnit(pkEntity)
   }
 
   openSearchList() {
