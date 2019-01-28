@@ -38,14 +38,6 @@
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "DENY",
-      "property": [
-        "confirm"
-      ]
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "$everyone",
-      "permission": "DENY",
       "accessType": "EXECUTE",
       "property": [
         "verify"
@@ -58,7 +50,8 @@
       "property": [
         "login",
         "logout",
-        "create"
+        "create",
+        "confirm"
       ]
     },
     {
