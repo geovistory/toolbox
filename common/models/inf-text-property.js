@@ -1,4 +1,5 @@
 'use strict';
+const _ = require('lodash')
 
 module.exports = function (InfTextProperty) {
 
@@ -11,9 +12,10 @@ module.exports = function (InfTextProperty) {
             fk_language: data.fk_language
         };
 
-        const requestedObj = ctx ? ctx.req.body : undefined;
+        const requestedObj = (ctx && ctx.req && ctx.req.body) ? ctx.req.body : undefined;
+        const ctxWithoutBody = _.omit(ctx, ['req.body']);
 
-        return InfTextProperty.findOrCreateByValue(InfTextProperty, pkProject, dataObject, requestedObj).then(
+        return InfTextProperty._findOrCreateByValue(InfTextProperty, pkProject, dataObject, requestedObj, ctxWithoutBody).then(
             textProperties => {
                 const txtProp = textProperties[0].toJSON();
                 return InfTextProperty.app.models.InfLanguage.findById(txtProp.fk_language).then(

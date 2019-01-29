@@ -1,19 +1,22 @@
 'use strict';
 
 const Promise = require('bluebird');
+const _ = require('lodash')
 
 module.exports = function (InfTemporalEntity) {
 
   InfTemporalEntity.changeTeEntProjectRelation = function (pkProject, isInProject, data, ctx) {
     let requestedTeEnt;
 
-    if (ctx) {
+    if (ctx && ctx.req && ctx.req.body) {
       requestedTeEnt = ctx.req.body;
     } else {
       requestedTeEnt = data;
     }
 
-    return InfTemporalEntity.changeProjectRelation(pkProject, isInProject, requestedTeEnt)
+    const ctxWithoutBody = _.omit(ctx, ['req.body']);
+
+    return InfTemporalEntity.changeProjectRelation(pkProject, isInProject, requestedTeEnt, ctxWithoutBody)
       .then(resultingEpr => {
 
         // attatch the new epr to the teEnt
@@ -33,7 +36,7 @@ module.exports = function (InfTemporalEntity) {
           return Promise.map(requestedTeEnt.te_roles.filter(role => (role)), (role) => {
 
             // add role to project
-            return InfRole.changeRoleProjectRelation(pkProject, isInProject, role);
+            return InfRole.changeRoleProjectRelation(pkProject, isInProject, role, ctxWithoutBody);
 
           })
             .then((roles) => {
@@ -74,12 +77,13 @@ module.exports = function (InfTemporalEntity) {
 
     let requestedTeEnt;
 
-    if (ctx) {
+    if (ctx && ctx.req && ctx.req.body) {
       requestedTeEnt = ctx.req.body;
     } else {
       requestedTeEnt = data;
     }
 
+    const ctxWithoutBody = _.omit(ctx, ['req.body']);
 
     return InfTemporalEntity.resolveRoleValues(requestedTeEnt.te_roles).then(resolvedRoles => {
 
@@ -87,7 +91,7 @@ module.exports = function (InfTemporalEntity) {
         ...requestedTeEnt,
         te_roles: resolvedRoles
       }
-      return InfTemporalEntity.findOrCreateTeEnt(pkProject, teEnWithResolvedRoles)
+      return InfTemporalEntity._findOrCreateTeEnt(InfTemporalEntity, pkProject, teEnWithResolvedRoles, ctxWithoutBody)
         .then((resultingTeEnts) => {
 
           //TODO pick first item of array
@@ -107,7 +111,7 @@ module.exports = function (InfTemporalEntity) {
               role.fk_temporal_entity = resultingTeEnt.pk_entity;
 
               // find or create the Entity and the role pointing to the Entity
-              return InfRole.findOrCreateInfRole(pkProject, role);
+              return InfRole.findOrCreateInfRole(pkProject, role, ctxWithoutBody);
             })
               .then((roles) => {
 
@@ -183,7 +187,7 @@ module.exports = function (InfTemporalEntity) {
             const InfPlace = InfTemporalEntity.app.models.InfPlace;
 
             return new Promise((res, rej) => {
-              InfPlace.findOrCreatePlace(projectId, role.place)
+              InfPlace.findOrCreatePlace(projectId, role.place, ctxWithoutBody)
                 .then(obj => {
                   res({
                     fk_property: role.fk_property,
@@ -216,114 +220,6 @@ module.exports = function (InfTemporalEntity) {
 
     })
   }
-
-  InfTemporalEntity.findOrCreateTeEnt = function (projectId, dataObject) {
-
-    // cleanup data object: remove all undefined properties to avoid creating e.g. pk_entity = undefined 
-    Object.keys(dataObject).forEach(key => {
-      if (dataObject[key] == undefined) {
-        delete dataObject[key]
-      }
-    })
-
-    const InfEntityProjectRel = InfTemporalEntity.app.models.InfEntityProjectRel;
-
-    const filter = {
-      where: dataObject,
-      include: {
-        relation: "entity_version_project_rels",
-        scope: {
-          where: {
-            fk_project: projectId
-          }
-        }
-      }
-    }
-
-    const find = function (pk_entity) {
-      //find the entity and include the epr
-      return InfTemporalEntity.findOne({
-        where: {
-          pk_entity: pk_entity
-        },
-        include: {
-          relation: "entity_version_project_rels",
-          scope: {
-            where: {
-              fk_project: projectId
-            }
-          }
-        }
-      }).then((res) => {
-        return [res];
-      })
-        .catch(err => err);
-    }
-
-
-    // If there is a pk_entity, find the record
-    if (dataObject.pk_entity) {
-      //find the entity and include the epr
-      return InfTemporalEntity.findOne({
-        where: {
-          pk_entity: dataObject.pk_entity
-        },
-        include: {
-          relation: "entity_version_project_rels",
-          scope: {
-            where: {
-              fk_project: projectId
-            }
-          }
-        }
-      }).then((res) => {
-        return [res];
-      }).catch(err => err);
-    }
-
-    // If there is no pk_entity, create the record
-    else {
-      return new Promise((resolve, reject) => {
-
-        const sql_stmt = `SELECT * from information.temporal_entity_find_or_create( $1, $2::jsonb )`
-        const params = [dataObject.fk_class, JSON.stringify(dataObject.te_roles)]
-
-        const connector = InfTemporalEntity.dataSource.connector;
-        connector.execute(sql_stmt, params, (err, resultObjects) => {
-
-          if (err) reject(err);
-          const resultingEntity = resultObjects[0];
-          if (!resultingEntity) reject('Something went wrong with creating TeEn');
-
-          // create the project relation
-
-          let reqEpr = {};
-
-          // create a new epr 
-          var newEpr = new InfEntityProjectRel({
-            "fk_entity": resultingEntity.pk_entity,
-
-            "fk_project": projectId,
-
-            // use the requested value or true
-            "is_in_project": [reqEpr.is_in_project, true].find(item => item !== undefined),
-          })
-
-          // persist epr in DB
-          return newEpr.save().then(resultingEpr => {
-            resolve(find(resultingEpr.fk_entity));
-          });
-
-
-        });
-
-
-      })
-
-    }
-
-
-  };
 
 
   /**

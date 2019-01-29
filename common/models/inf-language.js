@@ -2,23 +2,23 @@
 
 module.exports = function (InfLanguage) {
 
-  InfLanguage.findOrCreateLang = function (projectId, data) {
+  // InfLanguage.findOrCreateLang = function (projectId, data) {
 
-    const dataObject = {
-      pk_entity: data.pk_entity,
-      pk_language: data.pk_language,
-      fk_class: data.fk_class,
-      lang_type: data.lang_type,
-      scope: data.scope,
-      iso6392b: data.iso6392b,
-      iso6392t: data.iso6392t,
-      iso6391: data.iso6391,
-      notes: data.notes,
-    };
+  //   const dataObject = {
+  //     pk_entity: data.pk_entity,
+  //     pk_language: data.pk_language,
+  //     fk_class: data.fk_class,
+  //     lang_type: data.lang_type,
+  //     scope: data.scope,
+  //     iso6392b: data.iso6392b,
+  //     iso6392t: data.iso6392t,
+  //     iso6391: data.iso6391,
+  //     notes: data.notes,
+  //   };
 
-    return InfLanguage.findOrCreateObjectOrRole(InfLanguage, projectId, dataObject);
+  //   return InfLanguage.findOrCreateObjectOrRole(InfLanguage, projectId, dataObject);
 
-  }
+  // }
 
 
   InfLanguage.queryByString = function (searchstring, cb) {

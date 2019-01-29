@@ -11,13 +11,17 @@ module.exports = function (InfDigitalObject) {
    * @param {*} data 
    * @param {*} ctx 
    */
-  InfDigitalObject.saveWithEpr = function (data, projectId, ctx) {
+  InfDigitalObject.saveWithEpr = function (data, pkProject, ctx) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
       js_quill_data: data.js_quill_data,
       notes: data.notes
     };
+
+
+    if (!ctx.req.accessToken.userId) return Error('Something went wrong with createing a peIt or TeEnt');
+    const accountId = ctx.req.accessToken.userId;
 
     const InfEntityProjectRel = InfDigitalObject.app.models.InfEntityProjectRel;
 
@@ -31,7 +35,7 @@ module.exports = function (InfDigitalObject) {
           relation: "entity_version_project_rels",
           scope: {
             where: {
-              fk_project: projectId
+              fk_project: pkProject
             }
           }
         }
@@ -56,7 +60,7 @@ module.exports = function (InfDigitalObject) {
             return InfEntityProjectRel.findOne({
               where: {
                 fk_entity: resultingEntity.pk_entity,
-                fk_project: projectId
+                fk_project: pkProject
               }
             }).catch((err) => { return err; })
               .then(existingEpr => {
@@ -65,7 +69,8 @@ module.exports = function (InfDigitalObject) {
                   // update existing epr 
                   return existingEpr.updateAttributes({
                     fk_entity_version: resultingEntity.entity_version,
-                    fk_entity_version_concat: resultingEntity.pk_entity_version_concat
+                    fk_entity_version_concat: resultingEntity.pk_entity_version_concat,
+                    fk_last_modifier: accountId
                   })
                     .catch((err) => { return err; })
                     .then(resultingEpr => {
@@ -81,8 +86,10 @@ module.exports = function (InfDigitalObject) {
                     fk_entity: resultingEntity.pk_entity,
                     fk_entity_version: resultingEntity.entity_version,
                     fk_entity_version_concat: resultingEntity.pk_entity_version_concat,
-                    fk_project: projectId,
+                    fk_project: pkProject,
                     is_in_project: true,
+                    fk_last_modifier: accountId,
+                    fk_creator: accountId
                   }).save()
                     .catch((err) => { return err; })
                     .then(resultingEpr => {

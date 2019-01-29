@@ -72,7 +72,7 @@
       "permission": "ALLOW",
       "property": [
         "nestedObjectOfRepo",
-        "graphsOfRepo"        
+        "graphsOfRepo"
       ]
     },
     {
@@ -619,6 +619,13 @@
           "description": "Primary Key of the persistent item to add.",
           "http": {
             "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
           }
         }
       ],
