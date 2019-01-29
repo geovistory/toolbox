@@ -1,12 +1,16 @@
 'use strict';
 
 const Promise = require('bluebird');
+const _ = require('lodash')
 
 module.exports = function (InfEntity) {
 
 
 
-  InfEntity.changeProjectRelation = function (projectId, isInProject, data) {
+  InfEntity.changeProjectRelation = function (projectId, isInProject, data, ctx) {
+    if (!ctx.req.accessToken.userId) return Error('Something went wrong with createing a peIt or TeEnt');
+    const accountId = ctx.req.accessToken.userId;
+
     var res;
     var rej;
     return new Promise(function (resolve, reject) {
@@ -23,7 +27,9 @@ module.exports = function (InfEntity) {
           "fk_entity": data.pk_entity,
           "fk_project": projectId,
           "is_in_project": isInProject,
-          "calendar": null
+          "calendar": null,
+          fk_creator: accountId,
+          fk_last_modifier: accountId
         };
       } else {
 
@@ -37,11 +43,11 @@ module.exports = function (InfEntity) {
         var newEpr = {
           "fk_entity": data.pk_entity,
           "fk_project": projectId,
-
           // use the requested value or the one given by the api call
           "is_in_project": [requestedEpr.is_in_project, isInProject].find(item => item !== undefined),
-
-          "calendar": requestedEpr.calendar || null
+          "calendar": requestedEpr.calendar || null,
+          fk_creator: accountId,
+          fk_last_modifier: accountId
         };
       }
 
@@ -76,8 +82,8 @@ module.exports = function (InfEntity) {
                   rej(err);
                 res(instances);
               };
-
-              resultingEpr.patchAttributes(newEpr, cb);
+              const e = _.omit(newEpr, ['fk_creator']);
+              resultingEpr.patchAttributes(e, cb);
             }
 
           })
@@ -91,7 +97,7 @@ module.exports = function (InfEntity) {
 
 
   /**
-   * Finds or creates an InfPersistentItem or InfTemporalEntity.
+   * Finds or creates an InfPersistentItem.
    * 
    * The pk_entity is relevant for finding or creating an entity. 
    * - Provide no pk_entity to create a new record.
@@ -99,16 +105,19 @@ module.exports = function (InfEntity) {
    * 
    * The requstedObject is relevant for related models.
    * - Provide a entity_version_project_rel[0] to customize the project relation
-   * - Provide pi_roles or te_roles to findOrCreate the roles and its children
+   * - Provide pi_roles to findOrCreate the roles and its children
    * 
-   * Remark: To findOrCreate a role or an object (InfRole; InfTimePrimitive, InfAppellation, ...), use findOrCreateObjectOrRole
+   * Remark: To findOrCreate a role or an object (InfRole; InfTimePrimitive, InfAppellation, ...), use _findOrCreateByValue
    * 
-   * @param {LoopackModel} Model The loopback model InfPersistentItem or InfTemporalEntity.
+   * @param {LoopackModel} Model The loopback model InfPersistentItem.
    * @param {number} projectId the project id
    * @param {any} dataObject the data object containing the values we check for existing entities (pk_entity) or to create (notes)
    * @param {any} requestedObject [optional] plain object. 
    */
-  InfEntity.findOrCreatePeItOrTeEnt = function (Model, projectId, dataObject, requestedObject) {
+  InfEntity._findOrCreatePeIt = function (Model, projectId, dataObject, ctx) {
+
+    if (!ctx.req.accessToken.userId) return Error('Something went wrong with createing a peIt or TeEnt');
+    const accountId = ctx.req.accessToken.userId;
 
     // cleanup data object: remove all undefined properties to avoid creating e.g. pk_entity = undefined 
     Object.keys(dataObject).forEach(key => {
@@ -192,6 +201,8 @@ module.exports = function (InfEntity) {
 
             // use the requested value or true
             "is_in_project": [reqEpr.is_in_project, true].find(item => item !== undefined),
+            fk_creator: accountId,
+            fk_last_modifier: accountId
           })
 
           // persist epr in DB
@@ -205,6 +216,127 @@ module.exports = function (InfEntity) {
 
   };
 
+
+  /**
+   * Finds or creates an InfTemporalEntity.
+   * 
+   * The function first performes two checks to find out if the requested temporal entity already exists: 
+   * 1. in the simplest case, the given dataObject has a pk_entity for which the existing temporal entity is retrieved from db.
+   * 2. in a more complex case, the given dataObject holds an array of roles ('te_roles') for which the function checks,
+   *    if there is an existing temporal entity whose identity defining roles do excactly match the given roles.
+   *    Remark: The given 'te_roles' must have a valid fk_entity, fk_temporal_entity and fk_property in order to be compared 
+   *    to the existing temporal entitites 
+   * 
+   * If none of the above checks retrieves an exsisting temporal entity, a new one is created. 
+   * 
+   * The requstedObject is relevant for related models.
+   * - Provide a entity_version_project_rel[0] to customize the project relation, else a new one is created with default values
+   * - Provide te_roles to findOrCreate the roles and its children
+   * 
+   * Remark: To findOrCreate a role or an object (InfRole; InfTimePrimitive, InfAppellation, ...), use _findOrCreateByValue
+   * 
+   * @param {LoopackModel} Model The loopback model InfTemporalEntity.
+   * @param {number} projectId the project id
+   * @param {any} dataObject the data object containing the values we check for existing entities (pk_entity) or to create (notes)
+   * @param {any} requestedObject [optional] plain object. 
+   */
+  InfEntity._findOrCreateTeEnt = function (Model, projectId, dataObject, ctx) {
+
+    if (!ctx.req.accessToken.userId) return Error('Something went wrong with createing a peIt or TeEnt');
+    const accountId = ctx.req.accessToken.userId;
+
+
+    // cleanup data object: remove all undefined properties to avoid creating e.g. pk_entity = undefined 
+    Object.keys(dataObject).forEach(key => {
+      if (dataObject[key] == undefined) {
+        delete dataObject[key]
+      }
+    })
+
+    const InfTemporalEntity = Model;
+    const InfEntityProjectRel = InfTemporalEntity.app.models.InfEntityProjectRel;
+
+    const find = function (pk_entity) {
+      //find the entity and include the epr
+      return InfTemporalEntity.findOne({
+        where: {
+          pk_entity: pk_entity
+        },
+        include: {
+          relation: "entity_version_project_rels",
+          scope: {
+            where: {
+              fk_project: projectId
+            }
+          }
+        }
+      }).then((res) => {
+        return [res];
+      })
+        .catch(err => err);
+    }
+
+
+    // If there is a pk_entity, find the record
+    if (dataObject.pk_entity) {
+      //find the entity and include the epr
+      return InfTemporalEntity.findOne({
+        where: {
+          pk_entity: dataObject.pk_entity
+        },
+        include: {
+          relation: "entity_version_project_rels",
+          scope: {
+            where: {
+              fk_project: projectId
+            }
+          }
+        }
+      }).then((res) => {
+        return [res];
+      }).catch(err => err);
+    } else {
+      // If there is no pk_entity, find or create the record
+      return new Promise((resolve, reject) => {
+
+        const sql_stmt = `SELECT * from information.temporal_entity_find_or_create( $1, $2::jsonb )`
+        const params = [dataObject.fk_class, JSON.stringify(dataObject.te_roles)]
+
+        const connector = InfTemporalEntity.dataSource.connector;
+        connector.execute(sql_stmt, params, (err, resultObjects) => {
+
+          if (err) reject(err);
+          const resultingEntity = resultObjects[0];
+          if (!resultingEntity) reject('Something went wrong with creating TeEn');
+
+          // create the project relation
+
+          let reqEpr = {};
+
+          // create a new epr 
+          var newEpr = new InfEntityProjectRel({
+            fk_entity: resultingEntity.pk_entity,
+            fk_project: projectId,
+            is_in_project: [reqEpr.is_in_project, true].find(item => item !== undefined), // use the requested value or true
+            fk_creator: accountId,
+            fk_last_modifier: accountId
+          })
+
+          // persist epr in DB
+          return newEpr.save().then(resultingEpr => {
+            resolve(find(resultingEpr.fk_entity));
+          });
+
+
+        });
+
+
+      })
+
+    }
+
+
+  };
 
   /**
    * Finds or creates an entity role or an object by value
@@ -230,7 +362,9 @@ module.exports = function (InfEntity) {
    * @param {any} dataObject the data object containing the values we check for existing entities
    * @param {any} requestedObject [optional] plain object. Provide a epr to customize the project relation    
    */
-  InfEntity.findOrCreateByValue = function (Model, projectId, dataObject, requestedObject) {
+  InfEntity._findOrCreateByValue = function (Model, projectId, dataObject, requestedObject, ctx) {
+    if (!ctx.req.accessToken.userId) return Error('AccessToken.userId missing');
+    const accountId = ctx.req.accessToken.userId;
 
     // make sure no pk_entity is used for findOrReplace below
     delete dataObject.pk_entity;
@@ -308,6 +442,8 @@ module.exports = function (InfEntity) {
 
             // use the requested value, or the existing or undefined
             "calendar": reqEpr.calendar || existingEpr.calendar || undefined,
+            fk_last_modifier: accountId,
+            fk_creator: existingEpr.fk_creator || accountId
           })
 
 
@@ -336,5 +472,7 @@ module.exports = function (InfEntity) {
 
 
   };
+
+
 
 };

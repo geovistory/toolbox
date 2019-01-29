@@ -2,6 +2,7 @@
 
 const Promise = require('bluebird');
 const Config = require('../config/Config');
+const _ = require('lodash')
 
 module.exports = function (InfTypeNamespaceRel) {
 
@@ -14,17 +15,18 @@ module.exports = function (InfTypeNamespaceRel) {
 
         const pk_namespace = data.fk_namespace;
         const errorMsg = 'You\'re not authorized to perform this action.';
+        const ctxWithoutBody = _.omit(ctx, ['req.body']);
 
         // let pass if namespace is "Geovistory Ongoing"
         if (pk_namespace == Config.PK_NAMESPACE__GEOVISTORY_ONGOING) {
-            return InfTypeNamespaceRel.findOrCreateByValue(InfTypeNamespaceRel, projectId, dataObject)
+            return InfTypeNamespaceRel._findOrCreateByValue(InfTypeNamespaceRel, projectId, dataObject, dataObject, ctxWithoutBody)
         }
 
         return InfPersistentItem.app.models.InfNamespace.findById(pk_namespace)
             .then((nmsp) => {
                 // let pass if namespace belongs to project
                 if (nmsp && nmsp.fk_project == projectId) {
-                    return InfTypeNamespaceRel.findOrCreateByValue(InfTypeNamespaceRel, projectId, dataObject)
+                    return InfTypeNamespaceRel._findOrCreateByValue(InfTypeNamespaceRel, projectId, dataObject, dataObject, ctxWithoutBody)
                 }
                 else return Promise.reject(new Error(errorMsg));;
             })

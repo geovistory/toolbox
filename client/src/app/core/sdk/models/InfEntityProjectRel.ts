@@ -13,6 +13,8 @@ export interface InfEntityProjectRelInterface {
   "calendar"?: string;
   "ord_num"?: number;
   "tmsp_last_modification"?: string;
+  "fk_creator"?: number;
+  "fk_last_modifier": number;
 }
 
 export class InfEntityProjectRel implements InfEntityProjectRelInterface {
@@ -27,6 +29,8 @@ export class InfEntityProjectRel implements InfEntityProjectRelInterface {
   "calendar": string;
   "ord_num": number;
   "tmsp_last_modification": string;
+  "fk_creator": number;
+  "fk_last_modifier": number;
   constructor(data?: InfEntityProjectRelInterface) {
     Object.assign(this, data);
   }
@@ -103,6 +107,14 @@ export class InfEntityProjectRel implements InfEntityProjectRelInterface {
         "tmsp_last_modification": {
           name: 'tmsp_last_modification',
           type: 'string'
+        },
+        "fk_creator": {
+          name: 'fk_creator',
+          type: 'number'
+        },
+        "fk_last_modifier": {
+          name: 'fk_last_modifier',
+          type: 'number'
         },
       },
       relations: {

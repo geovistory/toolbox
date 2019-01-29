@@ -34,7 +34,7 @@ export class InfDigitalObjectApi extends BaseLoopBackApi {
   /**
    * Creates or updates the instance of InfDigitalObject and creates or updates its relation to the project of given projectId.
    *
-   * @param {number} projectId Project id
+   * @param {number} pkProject Project id
    *
    * @param {object} data Request data.
    *
@@ -49,7 +49,7 @@ export class InfDigitalObjectApi extends BaseLoopBackApi {
    * This usually means the response is a `InfDigitalObject` object.)
    * </em>
    */
-  public saveWithEpr(data: any, projectId: any, customHeaders?: Function): Observable<any> {
+  public saveWithEpr(data: any, pkProject: any, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/InfDigitalObjects/save-with-epr";
@@ -58,7 +58,7 @@ export class InfDigitalObjectApi extends BaseLoopBackApi {
       data: data
     };
     let _urlParams: any = {};
-    if (typeof projectId !== 'undefined' && projectId !== null) _urlParams.projectId = projectId;
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

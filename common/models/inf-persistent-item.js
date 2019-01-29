@@ -2,7 +2,7 @@
 
 const Promise = require('bluebird');
 const Config = require('../config/Config');
-
+const _ = require('lodash')
 
 module.exports = function (InfPersistentItem) {
 
@@ -17,13 +17,15 @@ module.exports = function (InfPersistentItem) {
 
     let requestedPeIt;
 
-    if (ctx) {
+    if (ctx && ctx.req && ctx.req.body) {
       requestedPeIt = ctx.req.body;
     } else {
       requestedPeIt = data;
     }
 
-    return InfPersistentItem.findOrCreatePeItOrTeEnt(InfPersistentItem, pkProject, dataObject)
+    const ctxWithoutBody = _.omit(ctx, ['req.body']);
+
+    return InfPersistentItem._findOrCreatePeIt(InfPersistentItem, pkProject, dataObject, ctxWithoutBody)
       .then((resultingPeIts) => {
         // pick first item of array
         const resultingPeIt = resultingPeIts[0];
@@ -47,7 +49,7 @@ module.exports = function (InfPersistentItem) {
             // use the pk_entity from the created peIt to set the fk_entity of the role
             role.fk_entity = resultingPeIt.pk_entity;
             // find or create the teEnt and the role pointing to the teEnt
-            return InfRole.findOrCreateInfRole(pkProject, role);
+            return InfRole.findOrCreateInfRole(pkProject, role, ctxWithoutBody);
           }).then((roles) => {
             //attach the roles to peit.pi_roles
             res.pi_roles = [];
@@ -83,7 +85,7 @@ module.exports = function (InfPersistentItem) {
             // use the pk_entity from the created peIt to set the fk_concerned_entity of the item
             item.fk_concerned_entity = resultingPeIt.pk_entity;
             // find or create the item
-            return InfTextProperty.findOrCreateInfTextProperty(pkProject, item);
+            return InfTextProperty.findOrCreateInfTextProperty(pkProject, item, ctxWithoutBody);
           }).then((items) => {
             //attach the items to peit.text_properties
             res.text_properties = [];
@@ -119,7 +121,7 @@ module.exports = function (InfPersistentItem) {
             // use the pk_entity from the created peIt to set the fk_domain_entity of the item
             item.fk_domain_entity = resultingPeIt.pk_entity;
             // find or create the item
-            return InfEntityAssociation.findOrCreateInfEntityAssociation(pkProject, item);
+            return InfEntityAssociation.findOrCreateInfEntityAssociation(pkProject, item, ctxWithoutBody);
           }).then((items) => {
             //attach the items to peit.domain_entity_associations
             res.domain_entity_associations = [];
@@ -155,7 +157,7 @@ module.exports = function (InfPersistentItem) {
             // use the pk_entity from the created peIt to set the fk_persistent_item of the item
             item.fk_persistent_item = resultingPeIt.pk_entity;
             // find or create the item
-            return InfTypeNamespaceRel.findOrCreateInfTypeNamespaceRel(pkProject, item);
+            return InfTypeNamespaceRel.findOrCreateInfTypeNamespaceRel(pkProject, item, ctxWithoutBody);
           }).then((items) => {
             //attach the items to peit.type_namespace_rels
             res.type_namespace_rels = [];
@@ -1091,8 +1093,11 @@ module.exports = function (InfPersistentItem) {
    * @param pk_project
    * @param pk_typed_class
    */
-  InfPersistentItem.addToProject = function (pk_project, pk_entity, cb) {
-    const params = [pk_entity, pk_project]
+  InfPersistentItem.addToProject = function (pk_project, pk_entity, ctx, cb) {
+    if (!ctx.req.accessToken.userId) return Error('AccessToken.userId is missing');
+    const accountId = ctx.req.accessToken.userId;
+    
+    const params = [pk_entity, pk_project, accountId]
 
     const sql_stmt = `
       -- Relate given persistent item to given project --
@@ -1207,8 +1212,8 @@ module.exports = function (InfPersistentItem) {
       --)
       ----select * from pk_entities_to_add;
 
-      insert into information.v_entity_version_project_rel (fk_project, is_in_project, fk_entity, calendar)
-      SELECT $2, true, pk_entity, calendar
+      insert into information.v_entity_version_project_rel (fk_project, is_in_project, fk_entity, calendar, fk_last_modifier)
+      SELECT $2, true, pk_entity, calendar, $3
       from pk_entities_of_repo;
     `
 

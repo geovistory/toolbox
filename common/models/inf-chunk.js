@@ -1,4 +1,5 @@
 'use strict';
+const _ = require('lodash')
 
 const Promise = require('bluebird');
 
@@ -13,13 +14,15 @@ module.exports = function(InfChunk) {
 
     let requestedChunk;
 
-    if (ctx) {
+    if (ctx && ctx.req && ctx.req.body) {
       requestedChunk = ctx.req.body;
     } else {
       requestedChunk = data;
     }
 
-    return InfChunk.findOrCreateByValue(InfChunk, projectId, dataObject)
+    const ctxWithoutBody = _.omit(ctx, ['req.body']);
+
+    return InfChunk._findOrCreateByValue(InfChunk, projectId, dataObject, requestedChunk, ctxWithoutBody)
     .then((resultingChunks) => {
       // pick first item of array
       const resultingChunk = resultingChunks[0];
@@ -37,7 +40,7 @@ module.exports = function(InfChunk) {
             // use the pk_entity from the created peIt to set the fk_entity of the ea
             ea.fk_domain_entity = resultingChunk.pk_entity;
             // find or create the teEnt and the ea pointing to the teEnt
-            return InfEntityAssociation.findOrCreateInfEntityAssociation(projectId, ea);
+            return InfEntityAssociation.findOrCreateInfEntityAssociation(projectId, ea, ctxWithoutBody);
           })
           .then((entity_associations) => {
 

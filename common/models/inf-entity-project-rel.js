@@ -15,8 +15,11 @@ module.exports = function (InfEntityProjectRel) {
      * @param {*} pkEntity 
      * @param {*} eprAttributes 
      */
-    InfEntityProjectRel.updateEprAttributes = function (pkProject, pkEntity, eprAttributes) {
-        
+    InfEntityProjectRel.updateEprAttributes = function (pkProject, pkEntity, eprAttributes, ctx) {
+
+        if (!ctx.req.accessToken.userId) return Error('AccessToken missing');
+        const accountId = ctx.req.accessToken.userId;
+
         if (eprAttributes['fk_entity']) {
             delete eprAttributes['fk_entity'];
         }
@@ -24,6 +27,8 @@ module.exports = function (InfEntityProjectRel) {
         if (eprAttributes['fk_project']) {
             delete eprAttributes['fk_project'];
         }
+
+        eprAttributes.fk_last_modifier = accountId;
 
         // check if there is an existing epr
         return InfEntityProjectRel.findOne({
@@ -37,7 +42,6 @@ module.exports = function (InfEntityProjectRel) {
                 if (existingEpr) {
                     // update existing epr
                     return existingEpr.updateAttributes(eprAttributes);
-
                 }
                 else {
 
@@ -52,17 +56,17 @@ module.exports = function (InfEntityProjectRel) {
     }
 
 
-        /**
-         * Internal function to create the $relation property of
-         * a filter object for findComplex() to join the entity_version_project_rels.
-         * 
-         * Usage: add the returned object to the entity_version_project_rels property of
-         * any information.entity derivate, e.g.
-         * {
-         *  ...
-         *  entity_version_project_rels: InfEntityProjectRel.getJoinObject(true, 12)
-         * } 
-         */
+    /**
+     * Internal function to create the $relation property of
+     * a filter object for findComplex() to join the entity_version_project_rels.
+     * 
+     * Usage: add the returned object to the entity_version_project_rels property of
+     * any information.entity derivate, e.g.
+     * {
+     *  ...
+     *  entity_version_project_rels: InfEntityProjectRel.getJoinObject(true, 12)
+     * } 
+     */
     InfEntityProjectRel.getJoinObject = function (ofProject, pkProject) {
         return {
             "$relation": {
@@ -75,4 +79,14 @@ module.exports = function (InfEntityProjectRel) {
             }
         };
     }
-};
+
+    InfEntityProjectRel.beforeRemote('patchOrCreate', function (ctx, unused, next) {
+
+        if (!ctx.args.options.accessToken.userId) return Error('AccesToken.userId is missing.');
+        ctx.args.data.fk_last_modifier = ctx.args.options.accessToken.userId;
+
+        next()
+    })
+
+
+}

@@ -334,6 +334,13 @@
           "http": {
             "source": "body"
           }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
         }
       ],
       "returns": {
@@ -365,6 +372,13 @@
           "description": "Array of primary keys of roles (array of pk_entity).",
           "http": {
             "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
           }
         }
       ],
