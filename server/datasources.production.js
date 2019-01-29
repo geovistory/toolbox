@@ -32,23 +32,18 @@ let config = {
 switch (process.env.DB_ENV) {
 
   case "development":
-  config.postgres1.url = process.env.GEOV_DEV_DATABASE_URL;
-  break;
-  
+    config.postgres1.url = process.env.DATABASE_URL + '?ssl=true';
+    break;
+
   case "review":
-  config.postgres1.url = process.env.DATABASE_URL;
-  break;
-
   case "staging":
-  config.postgres1.url = process.env.DATABASE_URL;
-  break;
-
   case "production":
-  config.postgres1.url = process.env.DATABASE_URL;
-  break;
+    config.postgres1.url = process.env.DATABASE_URL + '?ssl=true';
+    break;
 
   default:
-  console.log("Sorry, we don't have a config for DB_ENV='" + process.env.DB_ENV + "'.");
+    console.log("Sorry, we don't have a config for DB_ENV='" + process.env.DB_ENV + "'.");
+
 
 }
 
