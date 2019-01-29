@@ -80,4 +80,13 @@ module.exports = function (InfEntityProjectRel) {
         };
     }
 
+    InfEntityProjectRel.beforeRemote('patchOrCreate', function (ctx, unused, next) {
+
+        if (!ctx.args.options.accessToken.userId) return Error('AccesToken.userId is missing.');
+        ctx.args.data.fk_last_modifier = ctx.args.options.accessToken.userId;
+
+        next()
+    })
+
+
 }
