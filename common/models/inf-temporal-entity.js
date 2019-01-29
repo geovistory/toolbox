@@ -125,17 +125,21 @@ module.exports = function (InfTemporalEntity) {
                   }
                 }
 
-                console.log(res)
+                // console.log(res)
 
                 return [res];
 
               })
               .catch((err) => {
+                console.error(err);
                 return err;
               })
           }
         });
 
+    }).catch(err => {
+      console.error(err);
+      return err
     })
   }
 
@@ -187,12 +191,15 @@ module.exports = function (InfTemporalEntity) {
             const InfPlace = InfTemporalEntity.app.models.InfPlace;
 
             return new Promise((res, rej) => {
-              InfPlace.findOrCreatePlace(projectId, role.place, ctxWithoutBody)
+              InfPlace.create(role.place)
                 .then(obj => {
                   res({
                     fk_property: role.fk_property,
                     fk_entity: obj.pk_entity
                   })
+                })
+                .catch(err => {
+                  reject(err)
                 })
             })
           }
