@@ -140,13 +140,34 @@ export class TextEditorComponent extends TextEditorAPIActions implements OnInit,
   }
 
   onAnnotate() {
+    const annotate = () => {
+      this.annotate.emit()
 
-    this.annotate.emit()
+      this.projectService.updateSelectedChunk(new InfChunk({
+        fk_digital_object: this.localStore.getState().digitalObject.pk_entity,
+        js_quill_data: this.localStore.getState().selectedDelta,
+      }))
+    }
 
-    this.projectService.updateSelectedChunk(new InfChunk({
-      fk_digital_object: this.localStore.getState().digitalObject.pk_entity,
-      js_quill_data: this.localStore.getState().selectedDelta,
-    }))
+    // if digitalObject exists
+    if (this.localStore.getState().digitalObject.pk_entity) {
+      // annotate
+      annotate();
+    } else {
+      // else create a digitalObject
+      const readonly = this.localStore.getState().readOnly;
+
+      this.save(this.pkProject, {
+        ...this.localStore.getState().digitalObject,
+        js_quill_data: this.editedQuillDoc
+      })
+      // as soon as it is created, annotate
+      this.digitalObject$.pipe(first(d => !!d.pk_entity), takeUntil(this.destroy$)).subscribe(d => {
+        this.setReadOnly(readonly);
+        annotate();
+      })
+    }
+
   }
 
   toggleAnnotations() {
