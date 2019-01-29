@@ -19,14 +19,14 @@ module.exports = function (InfTypeNamespaceRel) {
 
         // let pass if namespace is "Geovistory Ongoing"
         if (pk_namespace == Config.PK_NAMESPACE__GEOVISTORY_ONGOING) {
-            return InfTypeNamespaceRel._findOrCreateByValue(InfTypeNamespaceRel, projectId, dataObject, ctxWithoutBody)
+            return InfTypeNamespaceRel._findOrCreateByValue(InfTypeNamespaceRel, projectId, dataObject, dataObject, ctxWithoutBody)
         }
 
         return InfPersistentItem.app.models.InfNamespace.findById(pk_namespace)
             .then((nmsp) => {
                 // let pass if namespace belongs to project
                 if (nmsp && nmsp.fk_project == projectId) {
-                    return InfTypeNamespaceRel._findOrCreateByValue(InfTypeNamespaceRel, projectId, dataObject, ctxWithoutBody)
+                    return InfTypeNamespaceRel._findOrCreateByValue(InfTypeNamespaceRel, projectId, dataObject, dataObject, ctxWithoutBody)
                 }
                 else return Promise.reject(new Error(errorMsg));;
             })

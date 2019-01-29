@@ -363,8 +363,7 @@ module.exports = function (InfEntity) {
    * @param {any} requestedObject [optional] plain object. Provide a epr to customize the project relation    
    */
   InfEntity._findOrCreateByValue = function (Model, projectId, dataObject, requestedObject, ctx) {
-
-    if (!ctx.req.accessToken.userId) return Error('Something went wrong with createing a peIt or TeEnt');
+    if (!ctx.req.accessToken.userId) return Error('AccessToken.userId missing');
     const accountId = ctx.req.accessToken.userId;
 
     // make sure no pk_entity is used for findOrReplace below
