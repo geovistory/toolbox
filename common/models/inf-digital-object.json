@@ -86,12 +86,19 @@
           }
         },
         {
-          "arg": "projectId",
+          "arg": "pkProject",
           "type": "number",
           "required": true,
           "description": "Project id",
           "http": {
             "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
           }
         }
       ],

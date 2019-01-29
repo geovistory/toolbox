@@ -1,4 +1,5 @@
 'use strict';
+const _ = require('lodash')
 
 module.exports = function (InfRole) {
 
@@ -6,13 +7,15 @@ module.exports = function (InfRole) {
 
     let requestedRole;
 
-    if (ctx) {
+    if (ctx && ctx.req && ctx.req.body) {
       requestedRole = ctx.req.body;
     } else {
       requestedRole = role;
     }
 
-    return InfRole.changeProjectRelation(pkProject, isInProject, requestedRole)
+    const ctxWithoutBody = _.omit(ctx, ['req.body']);
+
+    return InfRole.changeProjectRelation(pkProject, isInProject, requestedRole, ctxWithoutBody)
       .then(resultingEpr => {
 
         // attatch the new epr to the Role
@@ -23,7 +26,7 @@ module.exports = function (InfRole) {
         if (requestedRole.temporal_entity) {
           //add the temporal_entity to the project
           const InfTemporalEntity = InfRole.app.models.InfTemporalEntity;
-          return InfTemporalEntity.changeTeEntProjectRelation(pkProject, isInProject, requestedRole.temporal_entity)
+          return InfTemporalEntity.changeTeEntProjectRelation(pkProject, isInProject, requestedRole.temporal_entity, ctxWithoutBody)
             .then((results) => {
               requestedRole.temporal_entity = results[0];
               return [requestedRole];
@@ -35,7 +38,7 @@ module.exports = function (InfRole) {
           if (requestedRole.persistent_item.entity_version_project_rels) {
             //add the persistent_item to the project
             const InfPersistentItem = InfRole.app.models.InfPersistentItem;
-            return InfPersistentItem.changePeItProjectRelation(pkProject, isInProject, requestedRole.persistent_item)
+            return InfPersistentItem.changePeItProjectRelation(pkProject, isInProject, requestedRole.persistent_item, ctxWithoutBody)
               .then((results) => {
                 requestedRole.persistent_item = results[0];
                 return [requestedRole];
@@ -70,7 +73,7 @@ module.exports = function (InfRole) {
 
             //add the appellation to the project
             const InfAppellation = InfRole.app.models.InfAppellation;
-            return InfAppellation.changeProjectRelation(pkProject, isInProject, requestedRole.appellation)
+            return InfAppellation.changeProjectRelation(pkProject, isInProject, requestedRole.appellation, ctxWithoutBody)
               .then((results) => {
                 requestedRole.appellation.entity_version_project_rels = [results];
                 return [requestedRole];
@@ -86,7 +89,7 @@ module.exports = function (InfRole) {
 
             //add the language to the project
             const InfLanguage = InfRole.app.models.InfLanguage;
-            return InfLanguage.changeProjectRelation(pkProject, isInProject, requestedRole.language)
+            return InfLanguage.changeProjectRelation(pkProject, isInProject, requestedRole.language, ctxWithoutBody)
               .then((results) => {
                 requestedRole.entity_version_project_rels = [results];
                 return [requestedRole];
@@ -120,14 +123,15 @@ module.exports = function (InfRole) {
       notes: role.notes,
     };
 
-    let requestedRole = ctx ? ctx.req.body : role;
+    let requestedRole = (ctx && ctx.req.body) ? ctx.req.body : role;
 
+    const ctxWithoutBody = _.omit(ctx, ['req.body']);
 
     if (requestedRole.temporal_entity && Object.keys(requestedRole.temporal_entity).length > 0) {
 
       //create the temporal_entity first
       const InfTemporalEntity = InfRole.app.models.InfTemporalEntity;
-      return InfTemporalEntity.findOrCreateInfTemporalEntity(projectId, requestedRole.temporal_entity)
+      return InfTemporalEntity.findOrCreateInfTemporalEntity(projectId, requestedRole.temporal_entity, ctxWithoutBody)
         .then((resultingTeEnts) => {
 
           const resultingTeEnt = resultingTeEnts[0];
@@ -136,7 +140,7 @@ module.exports = function (InfRole) {
           dataObject.fk_temporal_entity = resultingTeEnt.pk_entity;
 
           // call the api to find or create the role that points to the teEnt
-          return InfRole.findOrCreateByValue(InfRole, projectId, dataObject, requestedRole)
+          return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
             .then((roles) => {
 
               let res = roles[0].toJSON()
@@ -163,7 +167,7 @@ module.exports = function (InfRole) {
       const InfPersistentItem = InfRole.app.models.InfPersistentItem;
 
       // find or create the peIt and the role pointing to it
-      return InfPersistentItem.findOrCreatePeIt(projectId, requestedRole.persistent_item)
+      return InfPersistentItem.findOrCreatePeIt(projectId, requestedRole.persistent_item, ctxWithoutBody)
         .then((resultingPeIts) => {
 
           const resultingPeIt = resultingPeIts[0];
@@ -171,7 +175,7 @@ module.exports = function (InfRole) {
           // … prepare the Role to create
           dataObject.fk_entity = resultingPeIt.pk_entity;
 
-          return InfRole.findOrCreateByValue(InfRole, projectId, dataObject, requestedRole)
+          return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
             .then((resultingRoles) => {
 
               let res = resultingRole[0].toJSON();
@@ -199,14 +203,14 @@ module.exports = function (InfRole) {
       const InfPlace = InfRole.app.models.InfPlace;
 
       // find or create the place and the role pointing to it
-      return InfPlace.findOrCreatePlace(projectId, requestedRole.place)
+      return InfPlace.findOrCreatePlace(projectId, requestedRole.place, ctxWithoutBody)
         .then((resultingEntities) => {
           const resultingEntity = resultingEntities[0];
 
           // … prepare the Role to create
           dataObject.fk_entity = resultingEntity.pk_entity;
 
-          return InfRole.findOrCreateByValue(InfRole, projectId, dataObject, requestedRole)
+          return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
             .then((resultingRoles) => {
 
               let res = resultingRoles[0].toJSON();
@@ -240,7 +244,7 @@ module.exports = function (InfRole) {
           // … prepare the Role to create
           dataObject.fk_entity = resultingEntity.pk_entity;
 
-          return InfRole.findOrCreateByValue(InfRole, projectId, dataObject, requestedRole)
+          return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
             .then((resultingRoles) => {
 
               let res = resultingRoles[0].toJSON();
@@ -274,7 +278,7 @@ module.exports = function (InfRole) {
           // … prepare the Role to create
           dataObject.fk_entity = resultingEntity.pk_entity;
 
-          return InfRole.findOrCreateByValue(InfRole, projectId, dataObject, requestedRole)
+          return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
             .then((resultingRoles) => {
 
               let res = resultingRoles[0].toJSON();
@@ -306,7 +310,7 @@ module.exports = function (InfRole) {
           // … prepare the Role to create 
           dataObject.fk_entity = resultingEntity.pk_entity;
 
-          return InfRole.findOrCreateByValue(InfRole, projectId, dataObject, requestedRole)
+          return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
             .then((resultingRoles) => {
 
               let res = resultingRoles[0].toJSON();
@@ -325,7 +329,7 @@ module.exports = function (InfRole) {
     }
     else {
 
-      return InfRole.findOrCreateByValue(InfRole, projectId, dataObject, requestedRole)
+      return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
 
     }
 
@@ -643,8 +647,10 @@ module.exports = function (InfRole) {
      * @param pk_project
      * @param pk_typed_class
      */
-  InfRole.addToProjectWithTeEnt = function (pk_project, pk_roles, cb) {
-    const params = [parseInt(pk_project)]
+  InfRole.addToProjectWithTeEnt = function (pk_project, pk_roles, ctx, cb) {
+    if (!ctx.req.accessToken.userId) return Error('AccessToken.userId is missing');
+    const accountId = ctx.req.accessToken.userId;
+    const params = [parseInt(pk_project), accountId]
 
     const sql_stmt = `
     -- Relate given roles with its temporal entities to given project --
@@ -720,8 +726,8 @@ module.exports = function (InfRole) {
     )
     --  select * from pk_entities_to_add;
 
-    insert into information.v_entity_version_project_rel (fk_project, is_in_project, fk_entity, calendar)
-    SELECT $1, true, pk_entity, calendar
+    insert into information.v_entity_version_project_rel (fk_project, is_in_project, fk_entity, calendar, fk_last_modifier)
+    SELECT $1, true, pk_entity, calendar, $2
     from pk_entities_to_add;
     `
 
@@ -747,8 +753,10 @@ module.exports = function (InfRole) {
     * @param pk_project
     * @param pk_typed_class
     */
-  InfRole.addToProject = function (pk_project, pk_roles, cb) {
-    const params = [parseInt(pk_project)]
+  InfRole.addToProject = function (pk_project, pk_roles, ctx, cb) {
+    if (!ctx.req.accessToken.userId) return Error('AccessToken.userId is missing');
+    const accountId = ctx.req.accessToken.userId;
+    const params = [parseInt(pk_project), accountId]
 
     const sql_stmt = `
       WITH 
@@ -759,8 +767,8 @@ module.exports = function (InfRole) {
         where pk_entity IN (${pk_roles.map(r => (r * 1))})
       )
       -- add the project relations
-      insert into information.v_entity_version_project_rel (fk_project, is_in_project, fk_entity, calendar)
-      SELECT $1, true, pk_entity, calendar
+      insert into information.v_entity_version_project_rel (fk_project, is_in_project, fk_entity, calendar, fk_last_modifier)
+      SELECT $1, true, pk_entity, calendar, $2
       from roles;    
       `
 
