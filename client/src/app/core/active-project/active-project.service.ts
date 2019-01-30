@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { Params, Router, UrlSegment, UrlSegmentGroup } from '@angular/router';
-import { ComConfig, IAppState, InfChunk, ProjectDetail, PropertyList, U } from 'app/core';
+import { ComConfig, IAppState, InfChunk, ProjectDetail, PropertyList, U, Panel } from 'app/core';
 import { without } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
 import { first, map, distinctUntilChanged } from 'rxjs/operators';
@@ -12,6 +12,7 @@ import { ComProject } from '../sdk/models/ComProject';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
+import { ProjectCrm } from './active-project.models';
 
 
 
@@ -21,6 +22,9 @@ export class ActiveProjectService {
 
   public activeProject$: Observable<ProjectDetail>;
   public pkProject$: Observable<number>;
+  public panels$: Observable<Panel[]>
+  public crm$: Observable<ProjectCrm>
+
 
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
@@ -37,6 +41,8 @@ export class ActiveProjectService {
 
     this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']);
+    this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
+    this.crm$ = ngRedux.select<ProjectCrm>(['activeProject', 'crm']);
 
     // emits true if no toolbox panel is opened
     this.dashboardVisible$ = combineLatest(
@@ -259,7 +265,7 @@ export class ActiveProjectService {
    * @param sources the new UrlSegmentGroup for sources
    * @param information the new UrlSegmentGroup for information
    */
-  private createNewUrl( newList: UrlSegmentGroup | null, newDetail: UrlSegmentGroup | null, newQueryParams: Params): string {
+  private createNewUrl(newList: UrlSegmentGroup | null, newDetail: UrlSegmentGroup | null, newQueryParams: Params): string {
     let urlTree = this.router.parseUrl(this.router.url);
 
     urlTree = {
@@ -328,6 +334,16 @@ export class ActiveProjectService {
   }
 
 
+  /************************************************************************************
+  * Layout
+  ************************************************************************************/
 
+  activateTab(panelIndex: number, tabIndex: number) {
+    this.ngRedux.dispatch(this.actions.activateTab(panelIndex, tabIndex))
+  }
+
+  moveTab(previousPanelIndex: number, currentPanelIndex: number, previousTabIndex: number, currentTabIndex: number) {
+    this.ngRedux.dispatch(this.actions.moveTab(previousPanelIndex, currentPanelIndex, previousTabIndex, currentTabIndex))
+  }
 
 }

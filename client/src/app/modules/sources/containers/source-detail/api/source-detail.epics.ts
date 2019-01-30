@@ -7,9 +7,10 @@ import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil, filter } from 'rxjs/operators';
 import { SourceDetailComponent } from '../source-detail.component';
 import { SourceDetailAPIAction, SourceDetailAPIActions } from './source-detail.actions';
+import { ofSubstore } from 'app/core/store/module';
 
 @Injectable()
 export class SourceDetailAPIEpics {
@@ -38,6 +39,7 @@ export class SourceDetailAPIEpics {
          * Filter the actions that triggers this epic
          */
         ofType(SourceDetailAPIActions.LOAD_SOURCE_DETAILS),
+        filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: SourceDetailAPIAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
@@ -110,6 +112,7 @@ export class SourceDetailAPIEpics {
          * Filter the actions that triggers this epic
          */
         ofType(SourceDetailAPIActions.LOAD_SECTION_DETAILS),
+        filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: SourceDetailAPIAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
@@ -186,6 +189,7 @@ export class SourceDetailAPIEpics {
          * Filter the actions that triggers this epic
          */
         ofType(SourceDetailAPIActions.REMOVE_SOURCE),
+        filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: SourceDetailAPIAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
@@ -242,6 +246,7 @@ export class SourceDetailAPIEpics {
          * Filter the actions that triggers this epic
          */
         ofType(SourceDetailAPIActions.REMOVE_SECTION),
+        filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: SourceDetailAPIAction) => new Observable<Action>((globalStore) => {
 
           const onErr = (error) => {

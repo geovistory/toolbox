@@ -1,6 +1,8 @@
 import { PropertyFieldList, FieldList, EntityPreviewList, PeItDetailList } from 'app/core/state/models';
 import { ComClassFieldInterface, ComUiContextInterface, ComProjectInterface, InfChunk, InfPersistentItem, InfTemporalEntity, DfhProperty } from 'app/core/sdk';
 import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/api/class-settings.models';
+import { EntityDetail } from 'app/modules/information/containers/entity-detail/api/entity-detail.models';
+import { SourceDetail } from 'app/modules/sources/containers/source-detail/api/source-detail.models';
 
 export interface ChunkList { [pk_entity: number]: InfChunk };
 export interface PeItList { [pk_entity: number]: InfPersistentItem };
@@ -8,7 +10,17 @@ export interface TeEnList { [pk_entity: number]: InfTemporalEntity };
 // export interface PropertyList { [pk_entity: number]: DfhProperty };
 export class PropertyList { [pk_entity: string]: DfhProperty; }
 
-
+export interface Panel {
+    focus: boolean;
+    tabs: Tab[];
+}
+export interface Tab {
+    active: boolean;
+    component: string;
+    icon: string;
+    pkEntity?: number;
+    path: string[];
+}
 
 
 export interface ProjectDetail extends ComProjectInterface {
@@ -34,6 +46,21 @@ export interface ProjectDetail extends ComProjectInterface {
     // InfPersistentItems with roles by pk_entity
     teEnGraphs?: TeEnList;
 
+
+    /******************************************************************
+     * Layout
+     */
+
+    panels?: Panel[]
+
+    // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
+    entityDetails?: { [uiId: string]: EntityDetail }
+
+    // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
+    sourceDetails?: { [uiId: string]: SourceDetail }
+
+    // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
+    sectionDetails?: { [uiId: string]: SourceDetail }
 
     /******************************************************************
      * Things for Mentionings / Annotations

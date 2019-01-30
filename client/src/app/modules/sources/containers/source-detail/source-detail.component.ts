@@ -36,6 +36,8 @@ export class SourceDetailComponent extends SourceDetailAPIActions implements OnI
 
   // path to the substore
   @Input() basePath: string[];
+  // Primary key of the Entity to be viewed or edited
+  @Input() pkEntity: number;
 
   @select() list$: Observable<List>;
   @select() edit$: Observable<PeItDetail>;
@@ -66,16 +68,11 @@ export class SourceDetailComponent extends SourceDetailAPIActions implements OnI
     public activatedRoute: ActivatedRoute,
     public ngRedux: NgRedux<IAppState>,
     public router: Router,
-    private activeProjectService: ActiveProjectService
+    private p: ActiveProjectService
   ) {
     super();
 
     this.params$ = activatedRoute.params;
-
-    // if component is activated by ng-router, take base path here
-    activatedRoute.data.subscribe(d => {
-      this.basePath = d.reduxPath;
-    })
 
     // observe the active project
     this.project$ = ngRedux.select<ComProject>('activeProject');
@@ -103,30 +100,37 @@ export class SourceDetailComponent extends SourceDetailAPIActions implements OnI
 
   }
 
-  getBasePath() { return this.basePath }
+  getBasePath = () => this.basePath;
 
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, sourceDetailReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    combineLatest(this.params$, this.pkProject$, this.crm$).pipe(
+    combineLatest(this.p.crm$, this.p.pkProject$).pipe(
       filter((d) => (d.filter((i) => !i).length === 0)),
       takeUntil(this.destroy$)
-    ).subscribe((d) => {
-      const params = d[0], pkProject = d[1], crm = d[2];
-      if (params.pkEntity && params.pkSection) {
-        // Init the section edit
-        this.loadSectionDetails(params.pkEntity, params.pkSection, pkProject, crm)
-
-        // load the entityPreview for the source for its display in breadcrumbs
-        this.activeProjectService.streamEntityPreview(params.pkEntity)
-        this.sourcePreview$ = this.ngRedux.select(['activeProject', 'entityPreviews', params.pkEntity])
-
-      } else if (params.pkEntity) {
-        // Init the source edit
-        this.loadSourceDetails(params.pkEntity, pkProject, crm)
-      }
+    ).subscribe(([crm, pkProject]) => {
+      this.loadSourceDetails(this.pkEntity, pkProject, crm);
     })
+
+    // combineLatest(this.params$, this.pkProject$, this.crm$).pipe(
+    //   filter((d) => (d.filter((i) => !i).length === 0)),
+    //   takeUntil(this.destroy$)
+    // ).subscribe((d) => {
+    //   const params = d[0], pkProject = d[1], crm = d[2];
+    //   if (params.pkEntity && params.pkSection) {
+    //     // Init the section edit
+    //     this.loadSectionDetails(params.pkEntity, params.pkSection, pkProject, crm)
+
+    //     // load the entityPreview for the source for its display in breadcrumbs
+    //     this.p.streamEntityPreview(params.pkEntity)
+    //     this.sourcePreview$ = this.ngRedux.select(['activeProject', 'entityPreviews', params.pkEntity])
+
+    //   } else if (params.pkEntity) {
+    //     // Init the source edit
+    //     this.loadSourceDetails(params.pkEntity, pkProject, crm)
+    //   }
+    // })
 
   }
 
@@ -139,7 +143,7 @@ export class SourceDetailComponent extends SourceDetailAPIActions implements OnI
 
 
   openEntity(pkInfPersistentItem) {
-    this.activeProjectService.navigateToSource(pkInfPersistentItem)
+    this.p.navigateToSource(pkInfPersistentItem)
   }
 
   openSearchList() {

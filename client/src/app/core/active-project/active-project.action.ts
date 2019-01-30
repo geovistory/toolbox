@@ -18,6 +18,14 @@ interface MetaData {
     chunk?: InfChunk
     teEnGraphs?: InfTemporalEntity[]
     peItGraphs?: InfPersistentItem[]
+
+    // layout
+    panelIndex?: number;
+    tabIndex?: number;
+    previousPanelIndex?: number
+    currentPanelIndex?: number
+    previousTabIndex?: number
+    currentTabIndex?: number
 };
 type Payload = ProjectDetail;
 export type ActiveProjectAction = FluxStandardAction<Payload, MetaData>;
@@ -25,56 +33,16 @@ export type ActiveProjectAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
 export class ActiveProjectActions {
+    /* tslint:disable:member-ordering */
 
-    /*******************************************
+    /************************************************************************************
      * Load project data (metadata, crm)
-     */
+    ************************************************************************************/
     static LOAD_PROJECT = 'ActiveProject::LOAD_PROJECT';
     static LOAD_PROJECT_FAILED = 'ActiveProject::LOAD_PROJECT_FAILED';
     static ACTIVE_PROJECT_UPDATED = 'ActiveProject::ACTIVE_PROJECT_UPDATED';
-
     static PROJECT_LOAD_CRM = 'ActiveProject::PROJECT_LOAD_CRM';
     static PROJECT_CRM_LOADED = 'ActiveProject::PROJECT_CRM_LOADED';
-
-    /*******************************************
-     * Destroy the active project state (on closing a project)
-     */
-    static DESTROY = 'ActiveProject::DESTROY';
-
-
-    /*******************************************
-     * Data cache
-     */
-    // DataUnitPreviews
-    static LOAD_ENTITY_PREVIEW = 'ActiveProject::LOAD_ENTITY_PREVIEW';
-    static LOAD_ENTITY_PREVIEW_SUCCEEDED = 'ActiveProject::LOAD_ENTITY_PREVIEW_SUCCEEDED';
-    static LOAD_ENTITY_PREVIEW_FAILED = 'ActiveProject::LOAD_ENTITY_PREVIEW_FAILED';
-    // DataUnit Details for display in Modals
-    static LOAD_DATA_UNIT_DETAIL_FOR_MODAL = 'ActiveProject::LOAD_DATA_UNIT_DETAIL_FOR_MODAL';
-    static LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED';
-    static LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED'; // TODO: Implement action/reducer
-    static LOAD_DATA_UNIT_DETAIL_FOR_MODAL_FAILED = 'ActiveProject::LOAD_DATA_UNIT_DETAIL_FOR_MODAL_FAILED';
-    // Chunks
-    static LOAD_CHUNK = 'ActiveProject::LOAD_CHUNK';
-    static LOAD_CHUNK_SUCCEEDED = 'ActiveProject::LOAD_CHUNK_SUCCEEDED';
-    static LOAD_CHUNK_FAILED = 'ActiveProject::LOAD_CHUNK_FAILED';
-    // PeIt Graphs
-    static LOAD_PEIT_GRAPHS = 'ActiveProject::LOAD_PEIT_GRAPHS';
-    static LOAD_PEIT_GRAPHS_SUCCEEDED = 'ActiveProject::LOAD_PEIT_GRAPHS_SUCCEEDED';
-    static LOAD_PEIT_GRAPHS_FAILED = 'ActiveProject::LOAD_PEIT_GRAPHS_FAILED';
-    // TeEn Graphs
-    static LOAD_TEEN_GRAPHS = 'ActiveProject::LOAD_TEEN_GRAPHS';
-    static LOAD_TEEN_GRAPHS_SUCCEEDED = 'ActiveProject::LOAD_TEEN_GRAPHS_SUCCEEDED';
-    static LOAD_TEEN_GRAPHS_FAILED = 'ActiveProject::LOAD_TEEN_GRAPHS_FAILED';
-
-
-    /********************************************
-     *  Things for Mentionings / Annotations
-     */
-    static UPDATE_SELECTED_CHUNK = 'ActiveProject::UPDATE_SELECTED_CHUNK';
-    static SET_REFINING_CHUNK = 'ActiveProject::SET_REFINING_CHUNK';
-    static SET_MENTIONINGS_FOCUSED_IN_TEXT = 'ActiveProject::SET_MENTIONINGS_FOCUSED_IN_TEXT';
-    static SET_MENTIONINGS_FOCUSED_IN_TABLE = 'ActiveProject::SET_MENTIONINGS_FOCUSED_IN_TABLE';
 
     loadProject(pk_project: number): ActiveProjectAction {
         return {
@@ -114,20 +82,45 @@ export class ActiveProjectActions {
         }
     }
 
-    /*****************************************************
-     * Actions to destroy the state of active project
-     *****************************************************/
-    destroy(): ActiveProjectAction {
+
+    /************************************************************************************
+     * Layout
+    ************************************************************************************/
+    static ACTIVATE_TAB = 'ActiveProject::ACTIVATE_TAB';
+
+    activateTab(panelIndex: number, tabIndex: number): ActiveProjectAction {
         return {
-            type: ActiveProjectActions.DESTROY,
+            type: ActiveProjectActions.ACTIVATE_TAB,
             payload: null,
-            meta: null,
+            meta: {
+                panelIndex, tabIndex
+            }
+        }
+    }
+    static MOVE_TAB = 'ActiveProject::MOVE_TAB';
+    moveTab(previousPanelIndex: number, currentPanelIndex: number, previousTabIndex: number, currentTabIndex: number): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.MOVE_TAB,
+            payload: null,
+            meta: {
+                previousPanelIndex, currentPanelIndex, previousTabIndex, currentTabIndex
+            }
         }
     }
 
-    /*****************************************************
-     * Actions to load a DataUnitPreview
-     *****************************************************/
+    static CLOSE_TAB = 'ActiveProject::CLOSE_TAB';
+    static OPEN_TAB = 'ActiveProject::OPEN_TAB';
+
+
+    /************************************************************************************
+    * Data cache
+    ************************************************************************************/
+
+    // DataUnitPreviews
+    static LOAD_ENTITY_PREVIEW = 'ActiveProject::LOAD_ENTITY_PREVIEW';
+    static LOAD_ENTITY_PREVIEW_SUCCEEDED = 'ActiveProject::LOAD_ENTITY_PREVIEW_SUCCEEDED';
+    static LOAD_ENTITY_PREVIEW_FAILED = 'ActiveProject::LOAD_ENTITY_PREVIEW_FAILED';
+
 
     loadEntityPreview(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
         return {
@@ -158,10 +151,11 @@ export class ActiveProjectActions {
         }
     }
 
-
-    /*****************************************************
-     * Load a Data Unit Details for display in Modals
-     *****************************************************/
+    // DataUnit Details for display in Modals
+    static LOAD_DATA_UNIT_DETAIL_FOR_MODAL = 'ActiveProject::LOAD_DATA_UNIT_DETAIL_FOR_MODAL';
+    static LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED';
+    static LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED'; // TODO: Implement action/reducer
+    static LOAD_DATA_UNIT_DETAIL_FOR_MODAL_FAILED = 'ActiveProject::LOAD_DATA_UNIT_DETAIL_FOR_MODAL_FAILED';
 
     loadDataUnitDetailForModal(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
         return {
@@ -193,10 +187,10 @@ export class ActiveProjectActions {
     }
 
 
-
-    /*****************************************************
-     * Actions to load a Chunk
-     *****************************************************/
+    // Chunks
+    static LOAD_CHUNK = 'ActiveProject::LOAD_CHUNK';
+    static LOAD_CHUNK_SUCCEEDED = 'ActiveProject::LOAD_CHUNK_SUCCEEDED';
+    static LOAD_CHUNK_FAILED = 'ActiveProject::LOAD_CHUNK_FAILED';
 
     loadChunk(pk_project: number, pk_entity: number): ActiveProjectAction {
         return {
@@ -227,10 +221,45 @@ export class ActiveProjectActions {
         }
     }
 
+    // PeIt Graphs
+    static LOAD_PEIT_GRAPHS = 'ActiveProject::LOAD_PEIT_GRAPHS';
+    static LOAD_PEIT_GRAPHS_SUCCEEDED = 'ActiveProject::LOAD_PEIT_GRAPHS_SUCCEEDED';
+    static LOAD_PEIT_GRAPHS_FAILED = 'ActiveProject::LOAD_PEIT_GRAPHS_FAILED';
 
-    /*****************************************************
-     * Actions to load a TeEnGraphs
-     *****************************************************/
+
+    loadPeItGraphs(pk_project: number, pk_entities: number[]): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.LOAD_PEIT_GRAPHS,
+            payload: null,
+            meta: {
+                pk_project, pk_entities
+            }
+        }
+    }
+
+    loadPeItGraphsSucceeded(peItGraphs: InfPersistentItem[]): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.LOAD_PEIT_GRAPHS_SUCCEEDED,
+            payload: null,
+            meta: {
+                peItGraphs
+            },
+        }
+    }
+
+    loadPeItGraphsFailed(error): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.LOAD_PEIT_GRAPHS_FAILED,
+            payload: null,
+            meta: null,
+            error
+        }
+    }
+
+    // TeEn Graphs
+    static LOAD_TEEN_GRAPHS = 'ActiveProject::LOAD_TEEN_GRAPHS';
+    static LOAD_TEEN_GRAPHS_SUCCEEDED = 'ActiveProject::LOAD_TEEN_GRAPHS_SUCCEEDED';
+    static LOAD_TEEN_GRAPHS_FAILED = 'ActiveProject::LOAD_TEEN_GRAPHS_FAILED';
 
     loadTeEnGraphs(pk_project: number, pk_entities: number[]): ActiveProjectAction {
         return {
@@ -262,43 +291,14 @@ export class ActiveProjectActions {
     }
 
 
-    /*****************************************************
-     * Actions to load a PeItGraphs
-     *****************************************************/
-
-    loadPeItGraphs(pk_project: number, pk_entities: number[]): ActiveProjectAction {
-        return {
-            type: ActiveProjectActions.LOAD_PEIT_GRAPHS,
-            payload: null,
-            meta: {
-                pk_project, pk_entities
-            }
-        }
-    }
-
-    loadPeItGraphsSucceeded(peItGraphs: InfPersistentItem[]): ActiveProjectAction {
-        return {
-            type: ActiveProjectActions.LOAD_PEIT_GRAPHS_SUCCEEDED,
-            payload: null,
-            meta: {
-                peItGraphs
-            },
-        }
-    }
-
-    loadPeItGraphsFailed(error): ActiveProjectAction {
-        return {
-            type: ActiveProjectActions.LOAD_PEIT_GRAPHS_FAILED,
-            payload: null,
-            meta: null,
-            error
-        }
-    }
 
 
-    /*****************************************************
-    * Actions for creating mentionings that have a chunk as range
-    *****************************************************/
+    /************************************************************************************
+     *  Things for Mentionings / Annotations
+    ************************************************************************************/
+    static UPDATE_SELECTED_CHUNK = 'ActiveProject::UPDATE_SELECTED_CHUNK';
+    static SET_REFINING_CHUNK = 'ActiveProject::SET_REFINING_CHUNK';
+
 
     updateSelectedChunk(selectedChunk: InfChunk): ActiveProjectAction {
         return {
@@ -317,9 +317,12 @@ export class ActiveProjectActions {
     }
 
 
-    /*****************************************************
-    * Action for highlighting mentionings in the gui
-    *****************************************************/
+    /************************************************************************************
+    * Highlighting of mentionings in the gui
+    ************************************************************************************/
+    static SET_MENTIONINGS_FOCUSED_IN_TEXT = 'ActiveProject::SET_MENTIONINGS_FOCUSED_IN_TEXT';
+    static SET_MENTIONINGS_FOCUSED_IN_TABLE = 'ActiveProject::SET_MENTIONINGS_FOCUSED_IN_TABLE';
+
     setMentioningsFocusedInText(mentioningsFocusedInText: number[]): ActiveProjectAction {
         return {
             type: ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT,
@@ -333,6 +336,18 @@ export class ActiveProjectActions {
             type: ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TABLE,
             payload: { mentioningsFocusedInTable },
             meta: null
+        }
+    }
+
+    /************************************************************************************
+     * Destroy the active project state (on closing a project)
+    ************************************************************************************/
+    static DESTROY = 'ActiveProject::DESTROY';
+    destroy(): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.DESTROY,
+            payload: null,
+            meta: null,
         }
     }
 }

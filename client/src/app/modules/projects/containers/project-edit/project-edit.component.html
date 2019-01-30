@@ -2,7 +2,7 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
     <li class="breadcrumb-item"><a routerLink="/projects">Your Projects</a></li>
-    <li class="breadcrumb-item">{{(project$|async)?.labels[0].label}}</li>
+    <li class="breadcrumb-item">{{((p.activeProject$|async)?.labels || [])[0]?.label}}</li>
   </ol>
 </gv-navbar>
 <mat-drawer-container class="gv-flex-fh">
@@ -11,12 +11,13 @@
     <div class="h-100 d-flex flex-column">
 
       <div class="btn-group-vertical rounded-0 d-block">
-        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [routerLink]="[{ outlets: { list: ['sources']} }]" routerLinkActive="active" (click)="list.open()">
-            <div class="fa-2x gv-icon gv-icon-source text-info"></div>
-            <div>Sources</div>
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [routerLink]="[{ outlets: { list: ['sources']} }]"
+          routerLinkActive="active" (click)="list.open()">
+          <div class="fa-2x gv-icon gv-icon-source text-info"></div>
+          <div>Sources</div>
         </button>
-        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [routerLink]="[{ outlets: { list: ['entities']} }]" routerLinkActive="active"
-          (click)="list.open()">
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [routerLink]="[{ outlets: { list: ['entities']} }]"
+          routerLinkActive="active" (click)="list.open()">
           <div class="fa-2x gv-icon gv-icon-information-simple text-primary"></div>
           <div>Entities</div>
         </button>
@@ -24,13 +25,13 @@
           Queries
         </button>
         <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center">
-            Visuals
-          </button>
+          Visuals
+        </button>
 
-          <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center">
-              Stories
-            </button>
-           
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center">
+          Stories
+        </button>
+
       </div>
 
 
@@ -43,15 +44,49 @@
 
   </mat-drawer>
   <mat-drawer-content style="display:flex; flex-direction:column">
-
     <mat-drawer-container style="flex-grow: 1; flex-basis:100%;">
       <mat-drawer class="bg-gray-300" #list mode="side" opened style="width: 300px;">
         <button class="btn btn-link-white position-absolute" style="right: 0;" (click)="list.close(); closeList()"> <i
             class="fa fa-chevron-left"></i> </button>
         <router-outlet name="list"></router-outlet>
       </mat-drawer>
-      <mat-drawer-content class="border-left border-gray-300">
-        <router-outlet name="detail"></router-outlet>
+      <mat-drawer-content class="d-flex" cdkDropListGroup>
+
+        <div *ngFor="let panel of (p.panels$ | async); let i = index; trackBy:trackByFn" class="border-left border-gray-300 gv-grow-1 gv-flex-fh"
+          style="overflow: hidden;">
+
+          <div cdkDropList [cdkDropListData]="i" cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropTab($event)"
+            class="tab-list">
+            <div *ngFor="let tab of panel.tabs; let j=index;" cdkDrag class="tab-box" [ngClass]="{'active': tab.active }"
+              (mousedown)="p.activateTab(i,j)">
+              <div class="left">
+                <i *ngIf="tab.icon =='persistent-entity'" class="gv-icon gv-icon-information-simple text-primary"></i>
+                <i *ngIf="tab.icon =='source'" class="gv-icon gv-icon-source text-info"></i>
+              </div>
+              <div class="center">
+                Ganz vieeeeeeeeel Text {{tab.pkEntity}}
+              </div>
+              <div class="right">
+                <i class="fa fa-close"></i>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <ng-template [cdkPortalOutlet]="selectedPortal"></ng-template>
+
+            <!-- <gv-entity-detail *ngIf="tab.component=='entity-detail'" [pkEntity]="tab.pkEntity" [basePath]="tab.path"></gv-entity-detail>
+            <gv-source-detail *ngIf="tab.component=='source-detail'" [pkEntity]="tab.pkEntity" [basePath]="tab.path"></gv-source-detail> -->
+          </div>
+
+
+        </div>
+
+        <div *ngFor="let tab of (allTabs$ | async); let j=index; trackBy:trackByPath" class="tab-body" [ngClass]="{'active': tab.active }">
+          <!-- <gv-entity-detail *ngIf="tab.component=='entity-detail'" [pkEntity]="tab.pkEntity" [basePath]="tab.path"></gv-entity-detail>
+          <gv-source-detail *ngIf="tab.component=='source-detail'" [pkEntity]="tab.pkEntity" [basePath]="tab.path"></gv-source-detail> -->
+        </div>
+
       </mat-drawer-content>
     </mat-drawer-container>
 

@@ -7,11 +7,12 @@ import { startsWith } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil, filter } from 'rxjs/operators';
 import { createPeItDetail, createTeEntDetail } from '../../../../../core/state/services/state-creator';
 import { PeItService } from '../../../shared/pe-it.service';
 import { EntityDetailComponent } from '../entity-detail.component';
 import { EntityDetailAPIAction, EntityDetailAPIActions } from './entity-detail.actions';
+import { ofSubstore } from 'app/core/store/module';
 
 export const ofDirectChildSubstore = (path: string[]) => (action): boolean => {
   const actionPath = JSON.parse(action['@angular-redux::fractalkey']);
@@ -52,6 +53,7 @@ export class EntityDetailAPIEpics {
          * Filter the actions that triggers this epic
          */
         ofType(EntityDetailAPIActions.OPEN_ENTITY_EDITOR),
+        filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: EntityDetailAPIAction) => new Observable<FluxStandardAction<any>>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
@@ -113,6 +115,7 @@ export class EntityDetailAPIEpics {
          * Filter the actions that triggers this epic
          */
         ofType(EntityDetailAPIActions.OPEN_PHENOMENON_EDITOR),
+        filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: EntityDetailAPIAction) => new Observable<FluxStandardAction<any>>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
@@ -162,6 +165,7 @@ export class EntityDetailAPIEpics {
          * Filter the actions that triggers this epic
          */
         ofType(EntityDetailAPIActions.REMOVE_PE_IT),
+        filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: EntityDetailAPIAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar

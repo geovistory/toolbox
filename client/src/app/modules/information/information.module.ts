@@ -391,6 +391,7 @@ import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-de
   ],
   exports: [
     // Put all components here, that are used by another module, or in a sandbox
+    EntityDetailComponent,
 
     // Add Modal
     // EntityAddModalComponent,

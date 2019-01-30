@@ -23,7 +23,7 @@ import { entityDetailReducer } from './api/entity-detail.reducer';
   styleUrls: ['./entity-detail.component.css']
 })
 export class EntityDetailComponent extends EntityDetailAPIActions implements OnInit, OnDestroy, SubstoreComponent {
-  
+
   @HostBinding('class.h-100') h = true;
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
@@ -35,6 +35,8 @@ export class EntityDetailComponent extends EntityDetailAPIActions implements OnI
 
   // path to the substore
   @Input() basePath: string[];
+  // Primary key of the Entity to be viewed or edited
+  @Input() pkEntity: number;
 
   @select() _peIt_editable$: Observable<PeItDetail>;
   @select() _teEnt_editable$: Observable<TeEntDetail>;
@@ -42,15 +44,6 @@ export class EntityDetailComponent extends EntityDetailAPIActions implements OnI
   @select() loading$: Observable<boolean>;
 
   selectedEntity$ = new BehaviorSubject<EntityPreview>(undefined);
-
-  // Primary key of the Entity to be viewed or edited
-  pkEntity: number;
-
-  pkProject$: Observable<number>;
-
-  // entityModalOptions: NgbModalOptions = {
-  //   size: 'lg'
-  // }
 
   pkClassesInProject;
   pkUiContextCreate = ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
@@ -61,17 +54,9 @@ export class EntityDetailComponent extends EntityDetailAPIActions implements OnI
     public ngRedux: NgRedux<IAppState>,
     public activatedRoute: ActivatedRoute,
     public router: Router,
-    private projectService: ActiveProjectService
+    public p: ActiveProjectService
   ) {
     super()
-
-    this.pkEntity = activatedRoute.snapshot.params['pkEntity'];
-    this.pkProject$ = projectService.pkProject$;
-
-    // if component is activated by ng-router, take base path here
-    activatedRoute.data.subscribe(d => {
-      this.basePath = d.reduxPath;
-    })
 
   }
 
@@ -83,25 +68,16 @@ export class EntityDetailComponent extends EntityDetailAPIActions implements OnI
 
     if (this.pkEntity) this.initSelectedDataUnitPreview()
 
-    // listen to route changes
-    this.activatedRoute.params.subscribe(params => {
-      if (params.pkEntity && params.pkEntity != this.pkEntity) {
-        this.pkEntity = params.pkEntity;
-        this.initSelectedDataUnitPreview()
-      }
-    })
-
-
   }
 
   initSelectedDataUnitPreview() {
-    this.projectService.streamEntityPreview(this.pkEntity)
-    .takeUntil(this.destroy$)
-    .subscribe(a => {
-      this.selectedEntity$.next(a);
-    })
+    this.p.streamEntityPreview(this.pkEntity)
+      .takeUntil(this.destroy$)
+      .subscribe(a => {
+        this.selectedEntity$.next(a);
+      })
 
-    combineLatest(this.selectedEntity$, this.pkProject$)
+    combineLatest(this.selectedEntity$, this.p.pkProject$)
       .pipe(
         first(([du, pkProject]) => (du && !du.loading && !!pkProject)),
         takeUntil(this.destroy$)

@@ -38,6 +38,8 @@ import { TypeEditFormAPIActions } from './containers/type-edit-form/api/type-edi
 import { TypeEditFormAPIEpics } from './containers/type-edit-form/api/type-edit-form.epics';
 import { MatSidenavModule } from '@angular/material';
 import { SourcesModule } from '../sources';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { PortalModule } from '@angular/cdk/portal';
 
 @NgModule({
   imports: [
@@ -53,8 +55,10 @@ import { SourcesModule } from '../sources';
     HighlightModule,
     PassiveLinkModule,
     MatSidenavModule,
+    DragDropModule,
     SourcesModule,
-    Information2Module
+    Information2Module,
+    PortalModule
   ],
   declarations: [
     ProjectCreateComponent,

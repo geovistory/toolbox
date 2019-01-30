@@ -56,57 +56,7 @@ const routes: Routes = [
             }
           }
         ],
-      },
-      {
-        path: '',
-        outlet: 'detail',
-        component: ProxyRouteComponent,
-        children: [
-          {
-            path: 'entity/:pkEntity',
-            component: EntityDetailComponent,
-            data: {
-              reduxPath: ['entityDetail']
-            }
-          },
-          {
-            path: 'source/:pkEntity',
-            component: SourceDetailComponent,
-            data: {
-              reduxPath: ['sourceDetail']
-            }
-          }
-        ],
-      },
-      // {
-      //   path: 'edit',
-      //   component: ProjectEditComponent,
-      //   children: [
-      //     {
-      //       path: '',
-      //       outlet: 'information',
-      //       component: ProxyRouteComponent,
-      //       children: [
-      //         {
-      //           path: '',
-      //           loadChildren: '../information/information.module#Information2Module'
-      //           // line above instead of loadChildren: InformationModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116
-      //         }
-      //       ]
-      //     },
-      //     {
-      //       path: '',
-      //       outlet: 'sources',
-      //       component: ProxyRouteComponent,
-      //       children: [
-      //         {
-      //           path: '',
-      //           loadChildren: '../sources/sources.module#SourcesModule'
-      //         }
-      //       ]
-      //     }
-      //   ]
-      // },
+      }
     ]
   },
   {

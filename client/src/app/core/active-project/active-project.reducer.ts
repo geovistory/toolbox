@@ -3,11 +3,56 @@ import { ProjectDetail } from './active-project.models';
 import { EntityPreview } from '../state/models';
 import { indexBy } from 'ramda';
 import { InfPersistentItem, InfTemporalEntity } from '../sdk/models';
+import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
-const INITIAL_STATE: ProjectDetail = null;
+const INITIAL_STATE: ProjectDetail = {
+    panels: [
+        {
+            focus: true,
+            tabs: [
+                {
+                    active: true,
+                    path: ['activeProject', 'entityDetails', 'a'],
+                    pkEntity: 25503,
+                    component: 'entity-detail',
+                    icon: 'persistent-entity'
+                },
+                {
+                    active: false,
+                    path: ['activeProject', 'sourceDetails', 'x'],
+                    pkEntity: 80637,
+                    component: 'source-detail',
+                    icon: 'source'
+                },
+                {
+                    active: false,
+                    path: ['activeProject', 'sectionDetails', 'x'],
+                    pkEntity: 9,
+                    component: 'section-detail',
+                    icon: 'section'
+                }
+            ]
+        },
+        {
+            focus: false,
+            tabs: [
+                {
+                    active: true,
+                    path: ['activeProject', 'sourceDetails', 'y'],
+                    pkEntity: 3,
+                    component: 'source-detail',
+                    icon: 'source'
+                }
+            ]
+        }
+    ]
+};
 
 const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: ActiveProjectAction): ProjectDetail => {
     switch (action.type) {
+        /************************************************************************************
+         * Load project data (metadata, crm)
+        ************************************************************************************/
         case ActiveProjectActions.ACTIVE_PROJECT_UPDATED:
             state = {
                 ...state,
@@ -22,7 +67,74 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             }
             break;
 
+        /************************************************************************************
+         * Layout
+        ************************************************************************************/
+        case ActiveProjectActions.ACTIVATE_TAB:
+            const pi = action.meta.panelIndex;
+            const ti = action.meta.tabIndex;
+            state = {
+                ...state,
+                panels: Object.assign([...state.panels], {
+                    [pi]: {
+                        ...state.panels[pi],
+                        tabs: [...state.panels[pi].tabs].map((tab, index) => {
+                            tab.active = (index === ti);
+                            return tab;
+                        })
+                    }
+                })
+            }
+            break;
+        case ActiveProjectActions.MOVE_TAB:
+            const ppi = action.meta.previousPanelIndex;
+            const cpi = action.meta.currentPanelIndex;
+            const pti = action.meta.previousTabIndex;
+            const cti = action.meta.currentTabIndex;
 
+            if (ppi === cpi) {
+                const tabs = [...state.panels[cpi].tabs];
+                moveItemInArray(tabs, pti, cti);
+                state = {
+                    ...state,
+                    panels: Object.assign([...state.panels], {
+                        [cpi]: {
+                            ...state.panels[cpi],
+                            tabs
+                        }
+                    })
+                }
+            } else {
+                const pTabs = [...state.panels[ppi].tabs];
+                const cTabs = [...state.panels[cpi].tabs];
+                transferArrayItem(pTabs, cTabs, pti, cti);
+                state = {
+                    ...state,
+                    panels: Object.assign([...state.panels], {
+                        [ppi]: {
+                            ...state.panels[ppi],
+                            tabs: pTabs.map((tab, index) => {
+                                tab.active = (index === (pti < pTabs.length ? pti : (pti - 1)));
+                                return tab;
+                            })
+                        },
+                        [cpi]: {
+                            ...state.panels[cpi],
+                            tabs: cTabs.map((tab, index) => {
+                                tab.active = (index === cti);
+                                return tab;
+                            })
+                        }
+                    })
+                }
+
+            }
+
+            break;
+
+        /************************************************************************************
+        * Data cache
+        ************************************************************************************/
         /***************************************************
         * Reducers to load DataUnitPreview
         ****************************************************/
@@ -30,7 +142,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             state = {
                 ...state,
                 entityPreviews: {
-                    ...(state || {}).entityPreviews,
+                    ...(state || {}).entityPreviews,
                     [action.meta.pk_entity]: { loading: true } as EntityPreview
                 }
             };
@@ -143,10 +255,9 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             };
             break;
 
-
-        /***************************************************
-        * Reducers for creating mentionings that have a chunk as range
-        ****************************************************/
+        /************************************************************************************
+        *  Things for Mentionings / Annotations
+        ************************************************************************************/
 
         case ActiveProjectActions.UPDATE_SELECTED_CHUNK:
             state = {
@@ -163,9 +274,9 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             break;
 
 
-        /*****************************************************
-        * highlighting mentionings in the gui
-        *****************************************************/
+        /************************************************************************************
+        * Highlighting of mentionings in the gui
+        ************************************************************************************/
         case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT:
             state = {
                 ...state,
@@ -181,9 +292,9 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             break;
 
 
-        /*****************************************************
-         * destroy the active project
-         *****************************************************/
+        /************************************************************************************
+         * Destroy the active project state (on closing a project)
+        ************************************************************************************/
         case ActiveProjectActions.DESTROY:
             state = INITIAL_STATE;
             break;
