@@ -24,7 +24,7 @@ export class ActiveProjectService {
   public pkProject$: Observable<number>;
   public panels$: Observable<Panel[]>
   public crm$: Observable<ProjectCrm>
-
+  public focusedPanel$: Observable<boolean>;
 
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
@@ -43,6 +43,8 @@ export class ActiveProjectService {
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']);
     this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
     this.crm$ = ngRedux.select<ProjectCrm>(['activeProject', 'crm']);
+
+    this.focusedPanel$ = ngRedux.select<boolean>(['activeProject', 'focusedPanel']);
 
     // emits true if no toolbox panel is opened
     this.dashboardVisible$ = combineLatest(
@@ -341,9 +343,19 @@ export class ActiveProjectService {
   activateTab(panelIndex: number, tabIndex: number) {
     this.ngRedux.dispatch(this.actions.activateTab(panelIndex, tabIndex))
   }
-
   moveTab(previousPanelIndex: number, currentPanelIndex: number, previousTabIndex: number, currentTabIndex: number) {
     this.ngRedux.dispatch(this.actions.moveTab(previousPanelIndex, currentPanelIndex, previousTabIndex, currentTabIndex))
   }
-
+  closeTab(panelIndex: number, tabIndex: number) {
+    this.ngRedux.dispatch(this.actions.closeTab(panelIndex, tabIndex))
+  }
+  addTab(pkEntity: number, component: string, icon: string, stateSlug: string) {
+    this.ngRedux.dispatch(this.actions.addTab(pkEntity, component, icon, stateSlug))
+  }
+  focusPanel(panelIndex: number) {
+    this.ngRedux.dispatch(this.actions.focusPanel(panelIndex))
+  }
+  splitPanel(previousPanelIndex: number, tabIndex: number, currentPanelIndex: number): ActiveProjectAction {
+    this.ngRedux.dispatch(this.actions.splitPanel(previousPanelIndex, tabIndex, currentPanelIndex))
+  }
 }

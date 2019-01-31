@@ -40,6 +40,7 @@ import { MatSidenavModule } from '@angular/material';
 import { SourcesModule } from '../sources';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PortalModule } from '@angular/cdk/portal';
+import { TabBodyComponent } from './containers/project-edit/project-edit.component';
 
 @NgModule({
   imports: [
@@ -76,6 +77,7 @@ import { PortalModule } from '@angular/cdk/portal';
     TypesComponent,
     TypeAddFormComponent,
     TypeEditFormComponent,
+    TabBodyComponent
   ],
   providers: [
     ProjectsActions,

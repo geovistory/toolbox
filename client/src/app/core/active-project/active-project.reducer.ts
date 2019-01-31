@@ -1,14 +1,18 @@
-import { ActiveProjectActions, ActiveProjectAction } from './active-project.action';
-import { ProjectDetail } from './active-project.models';
-import { EntityPreview } from '../state/models';
+import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { active } from 'd3';
 import { indexBy } from 'ramda';
 import { InfPersistentItem, InfTemporalEntity } from '../sdk/models';
-import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { EntityPreview } from '../state/models';
+import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
+import { ProjectDetail, Panel } from './active-project.models';
 
 const INITIAL_STATE: ProjectDetail = {
+    uiIdSerial: 0,
+    panelSerial: 4,
+    focusedPanel: 1,
     panels: [
         {
-            focus: true,
+            id: 2,
             tabs: [
                 {
                     active: true,
@@ -17,29 +21,15 @@ const INITIAL_STATE: ProjectDetail = {
                     component: 'entity-detail',
                     icon: 'persistent-entity'
                 },
+            ]
+        },
+        {
+            id: 3,
+            tabs: [
                 {
                     active: false,
                     path: ['activeProject', 'sourceDetails', 'x'],
                     pkEntity: 80637,
-                    component: 'source-detail',
-                    icon: 'source'
-                },
-                {
-                    active: false,
-                    path: ['activeProject', 'sectionDetails', 'x'],
-                    pkEntity: 9,
-                    component: 'section-detail',
-                    icon: 'section'
-                }
-            ]
-        },
-        {
-            focus: false,
-            tabs: [
-                {
-                    active: true,
-                    path: ['activeProject', 'sourceDetails', 'y'],
-                    pkEntity: 3,
                     component: 'source-detail',
                     icon: 'source'
                 }
@@ -49,6 +39,7 @@ const INITIAL_STATE: ProjectDetail = {
 };
 
 const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: ActiveProjectAction): ProjectDetail => {
+    let pi, ti, ppi, cpi, pti, cti;
     switch (action.type) {
         /************************************************************************************
          * Load project data (metadata, crm)
@@ -71,8 +62,8 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
          * Layout
         ************************************************************************************/
         case ActiveProjectActions.ACTIVATE_TAB:
-            const pi = action.meta.panelIndex;
-            const ti = action.meta.tabIndex;
+            pi = action.meta.panelIndex;
+            ti = action.meta.tabIndex;
             state = {
                 ...state,
                 panels: Object.assign([...state.panels], {
@@ -87,10 +78,10 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             }
             break;
         case ActiveProjectActions.MOVE_TAB:
-            const ppi = action.meta.previousPanelIndex;
-            const cpi = action.meta.currentPanelIndex;
-            const pti = action.meta.previousTabIndex;
-            const cti = action.meta.currentTabIndex;
+            ppi = action.meta.previousPanelIndex;
+            cpi = action.meta.currentPanelIndex;
+            pti = action.meta.previousTabIndex;
+            cti = action.meta.currentTabIndex;
 
             if (ppi === cpi) {
                 const tabs = [...state.panels[cpi].tabs];
@@ -127,11 +118,98 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                         }
                     })
                 }
-
             }
 
             break;
+        case ActiveProjectActions.ADD_TAB:
+            pi = state.focusedPanel;
+            state = {
+                ...state,
+                panels: Object.assign([...state.panels], {
+                    [pi]: {
+                        ...state.panels[pi],
+                        tabs: [
+                            ...state.panels[pi].tabs.map(t => {
+                                t.active = false;
+                                return t;
+                            }),
+                            {
+                                active: true,
+                                component: action.meta.component,
+                                icon: action.meta.icon,
+                                pkEntity: action.meta.pkEntity,
+                                panelIndex: pi,
+                                path: ['activeProject', action.meta.stateSlug, state.uiIdSerial.toString()]
+                            }
+                        ]
+                    }
+                }),
+                uiIdSerial: (state.uiIdSerial + 1)
+            }
+            break;
+        case ActiveProjectActions.CLOSE_TAB:
+            pi = action.meta.panelIndex;
+            ti = action.meta.tabIndex;
+            state = {
+                ...state,
+                panels: Object.assign([...state.panels], {
+                    [pi]: {
+                        ...state.panels[pi],
+                        tabs: [...state.panels[pi].tabs].filter((tab, index) => index !== ti)
+                    }
+                })
+            }
+            break;
+        case ActiveProjectActions.CLOSE_PANEL:
+            pi = action.meta.panelIndex;
+            const panels = [...state.panels];
+            panels.splice(pi, 1);
+            state = {
+                ...state,
+                panels
+            }
+            break;
 
+        case ActiveProjectActions.FOCUS_PANEL:
+            state = {
+                ...state,
+                focusedPanel: action.meta.panelIndex
+            }
+            break;
+        case ActiveProjectActions.SPLIT_PANEL:
+            ppi = action.meta.previousPanelIndex;
+            ti = action.meta.tabIndex;
+            cpi = action.meta.currentPanelIndex;
+            const moveTab = state.panels[ppi].tabs[ti];
+            // removes tab from old panel
+            state = {
+                ...state,
+                panels: Object.assign([...state.panels], {
+                    [ppi]: {
+                        ...state.panels[ppi],
+                        tabs: [...state.panels[ppi].tabs]
+                            .filter((tab, index) => index !== ti)
+                            .map((tab, index) => {
+                                if (index === 0) tab.active = true;
+                                return tab;
+                            })
+                    }
+                })
+            }
+            // insert a new panel at position of cpi
+            const newPanels = [...state.panels];
+            newPanels.splice(cpi, 0, {
+                id: state.panelSerial,
+                tabs: [moveTab]
+            })
+            state = {
+                ...state,
+                panels: newPanels,
+                // increase panel id sequence
+                panelSerial: state.panelSerial + 1
+            }
+
+            break;
         /************************************************************************************
         * Data cache
         ************************************************************************************/

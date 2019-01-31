@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ProjectCrm, ProjectDetail } from './active-project.models';
+import { ProjectCrm, ProjectDetail, Tab } from './active-project.models';
 import { EntityPreview, PeItDetail } from '../state/models';
 import { InfChunk, InfTemporalEntity, InfPersistentItem } from '../sdk';
 
@@ -26,6 +26,11 @@ interface MetaData {
     currentPanelIndex?: number
     previousTabIndex?: number
     currentTabIndex?: number
+    tab?: Tab;
+    pkEntity?: number
+    component?: string
+    icon?: string
+    stateSlug?: string
 };
 type Payload = ProjectDetail;
 export type ActiveProjectAction = FluxStandardAction<Payload, MetaData>;
@@ -109,8 +114,52 @@ export class ActiveProjectActions {
     }
 
     static CLOSE_TAB = 'ActiveProject::CLOSE_TAB';
-    static OPEN_TAB = 'ActiveProject::OPEN_TAB';
+    closeTab(panelIndex: number, tabIndex: number): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.CLOSE_TAB,
+            payload: null,
+            meta: {
+                panelIndex, tabIndex
+            }
+        }
+    }
 
+    static ADD_TAB = 'ActiveProject::ADD_TAB';
+    addTab(pkEntity: number, component: string, icon: string, stateSlug: string): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.ADD_TAB,
+            payload: null,
+            meta: { pkEntity, component, icon, stateSlug }
+        }
+    }
+
+    static SPLIT_PANEL = 'ActiveProject::SPLIT_PANEL';
+    splitPanel(previousPanelIndex: number, tabIndex: number, currentPanelIndex: number): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.SPLIT_PANEL,
+            payload: null,
+            meta: { previousPanelIndex, tabIndex, currentPanelIndex }
+        }
+    }
+
+    static CLOSE_PANEL = 'ActiveProject::CLOSE_PANEL';
+    closePanel(panelIndex: number): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.CLOSE_PANEL,
+            payload: null,
+            meta: { panelIndex }
+        }
+    }
+
+
+    static FOCUS_PANEL = 'ActiveProject::FOCUS_PANEL';
+    focusPanel(panelIndex: number): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.FOCUS_PANEL,
+            payload: null,
+            meta: { panelIndex }
+        }
+    }
 
     /************************************************************************************
     * Data cache

@@ -1,7 +1,7 @@
 @import "../../../../../styles.scss";
 .tab-list {
     max-width: 100%; // border: solid 1px #ccc;
-    min-height: 30px;
+    min-height: 41px;
     display: flex;
     flex-direction: row;
     background: white;
@@ -10,7 +10,14 @@
     background: $gray-200;
 }
 
+.focus {
+    .tab-box {
+        color: inherit;
+    }
+}
+
 .tab-box {
+    color: $gray-500;
     padding: 10px 10px;
     border-right: solid 1px #ccc;
     background: $gray-200;
@@ -18,14 +25,18 @@
     min-width: 100px;
     display: flex;
     .left {
-        width: 1rem;
-        padding-right: .2rem;
-    }
-    .center {
-        text-overflow: ellipsis;
-        flex-wrap: nowrap;
-        white-space: nowrap;
+        display: flex;
         overflow: hidden;
+        .icon {
+            width: 1rem;
+            padding-right: .2rem;
+        }
+        .label {
+            text-overflow: ellipsis;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            overflow: hidden;
+        }
     }
     .right {
         width: 1rem;
@@ -41,16 +52,55 @@
     background: $white;
 }
 
-.tab-body {
-    visibility: hidden;
-    background: $white;
-    height: 0;
-}
-
-.tab-body.active {
-    visibility: visible;
-    @extend .gv-fh;
-
+.panel-body {
+    @extend .gv-flex-fh;
+    position: relative;
+    
+    .split-panel-drop-zone {
+        $active-color: rgba(122, 237, 255, 0.256);
+        pointer-events: none;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        .split {
+            position: absolute; // border: 1px solid blue;
+            width: 33.33%;
+            height: 100%;
+            &.left {
+                margin-left: 0;
+            }
+            &.center {
+                margin-left: 33.33%;
+            }
+            &.right {
+                margin-left: 66.66%;
+            }
+        }
+        .highlight {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            &.left {
+                margin-left: 0;
+            }
+            &.right {
+                margin-left: 50%;
+            }
+            &.active {
+                background-color: $active-color;
+                z-index: 99999;
+            }
+        }
+        &.active {
+            background-color: $active-color;
+            z-index: 99999;
+        }
+        &.enabled {
+            pointer-events: initial;
+        }
+    }
 }
 
 .cdk-drag-preview {

@@ -16,21 +16,8 @@
 
 <div *ngIf="(edit$ | async)" class="gv-flex-fh">
 
-  <!-- Breadcrumbs -->
-  <div class="d-flex gv-flex-shrink-0">
-    <ol class="breadcrumb bg-transparent mb-0 py-2">
-      <li class="breadcrumb-item">
-        <a href class="gv-passive-link" routerLink="../search" queryParamsHandling="merge">
-          <i class="gv-icon gv-icon-source text-primary"></i> Sources
-        </a>
-      </li>
-    </ol>
-  </div>
-
-
   <gv-pe-it-editable [hidden]="(createSection$ | async)" [basePath]="basePath.concat('edit')" [ngClass]="{'gv-flex-fh' : !(createSection$ | async)}"
   (remove)="onRemoveSource($event)"></gv-pe-it-editable>
-
 
 </div>
 

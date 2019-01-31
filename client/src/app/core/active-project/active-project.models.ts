@@ -11,7 +11,7 @@ export interface TeEnList { [pk_entity: number]: InfTemporalEntity };
 export class PropertyList { [pk_entity: string]: DfhProperty; }
 
 export interface Panel {
-    focus: boolean;
+    id: number;
     tabs: Tab[];
 }
 export interface Tab {
@@ -20,6 +20,7 @@ export interface Tab {
     icon: string;
     pkEntity?: number;
     path: string[];
+    panelIndex?: number;
 }
 
 
@@ -52,6 +53,15 @@ export interface ProjectDetail extends ComProjectInterface {
      */
 
     panels?: Panel[]
+
+    // index of focused Panel
+    focusedPanel?: number;
+
+    // serial number for panels
+    panelSerial?: number;
+
+    // serial number for uiId
+    uiIdSerial?: number;
 
     // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
     entityDetails?: { [uiId: string]: EntityDetail }

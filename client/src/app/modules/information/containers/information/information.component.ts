@@ -21,7 +21,7 @@ import { informationReducer } from './api/information.reducer';
   styleUrls: ['./information.component.css']
 })
 export class InformationComponent extends InformationAPIActions implements OnInit, OnDestroy, SubstoreComponent {
-  
+
   @HostBinding('class.h-100') h = true;
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
@@ -91,7 +91,8 @@ export class InformationComponent extends InformationAPIActions implements OnIni
 
 
   openEntity(pkEntity) {
-    this.projectService.navigateToDataUnit(pkEntity)
+    // TODO figure out what icon to use
+    this.projectService.addTab(pkEntity, 'entity-detail', 'persistent-entity', 'entityDetails');
   }
 
   openSearchList() {

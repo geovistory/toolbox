@@ -1,9 +1,58 @@
-import { Component, HostBinding } from '@angular/core';
-import { ActiveProjectService, ProjectDetail, Panel, Tab } from 'app/core';
-import { Router, ActivatedRoute, UrlSegmentGroup, UrlSegment } from '@angular/router';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { CdkPortal, DomPortalHost } from '@angular/cdk/portal';
+import { ApplicationRef, Component, ComponentFactoryResolver, Directive, HostBinding, Injector, Input, OnChanges, OnDestroy, QueryList, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router, UrlSegment, UrlSegmentGroup } from '@angular/router';
+import { ActiveProjectService, Tab } from 'app/core';
 import { Observable } from 'rxjs';
 import { first, take } from 'rxjs/operators';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+
+
+@Component({
+  selector: 'gv-tab-body',
+  template: `
+    <ng-container *cdkPortal>
+      <ng-content> </ng-content>
+    </ng-container>
+  `,
+})
+export class TabBodyComponent implements OnChanges, OnDestroy {
+  @Input() active: boolean;
+  @Input() panelIndex: number;
+
+  @ViewChild(CdkPortal) portal;
+  private host: DomPortalHost;
+
+  constructor(
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private applicationRef: ApplicationRef,
+    private injector: Injector
+  ) {
+  }
+
+  ngOnChanges(): void {
+    if (this.active) {
+
+      const ele = document.querySelector('#panel_' + this.panelIndex);
+      if (!ele) console.error('no ele')
+      this.host = new DomPortalHost(
+        ele, // TODO: maybe replace this by some angular way of selecting an element
+        this.componentFactoryResolver,
+        this.applicationRef,
+        this.injector
+      );
+      this.host.attach(this.portal);
+    } else if (this.host && this.host.hasAttached) {
+      this.host.detach();
+    }
+
+  }
+
+  ngOnDestroy(): void {
+    if (this.host) this.host.detach();
+  }
+
+}
+
 
 @Component({
   selector: 'gv-project-edit',
@@ -16,6 +65,8 @@ export class ProjectEditComponent {
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
   allTabs$: Observable<Tab[]>;
+  highlightPanel = {};
+  tabDragging = false;
 
   constructor(
     public p: ActiveProjectService,
@@ -27,15 +78,17 @@ export class ProjectEditComponent {
 
     this.p.initProject(id);
     this.p.initProjectCrm(id);
-    
+
     this.allTabs$ = this.p.panels$.map(panels => {
       let allTabs = []
-      panels.forEach(panel => {
-        allTabs = [...allTabs, ...panel.tabs]
+      panels.forEach((panel, index) => {
+        allTabs = [...allTabs, ...panel.tabs.map(tab => {
+          tab.panelIndex = panel.id;
+          return tab
+        })]
       })
       return allTabs
     })
-
   }
 
   trackByFn(index, item) {
@@ -45,6 +98,27 @@ export class ProjectEditComponent {
   trackByPath(index, item: Tab) {
     return item.path.join('');
   }
+
+  setHighlightPanel(i: number, area: string) {
+    this.highlightPanel[i.toString()] = area;
+  }
+  unsetHighlightPanel(i?: number, area?: string) {
+    if (i === undefined && area === undefined) {
+      this.highlightPanel = {}
+    } else if (this.highlightPanel[i.toString()] === area) {
+      delete this.highlightPanel[i.toString()];
+    }
+  }
+
+  tabDragEnded() {
+    this.unsetHighlightPanel()
+    this.tabDragging = false;
+  }
+
+  tabDragStarted() {
+    this.tabDragging = true;
+  }
+
   closeList() {
     let urlTree = this.router.parseUrl(this.router.url);
 
@@ -83,5 +157,10 @@ export class ProjectEditComponent {
       event.container.data,
       event.previousIndex,
       event.currentIndex);
+  }
+
+  splitPanel(newPanelIndex: number, event: CdkDragDrop<any>) {
+    // .data contains the panelIndex
+    this.p.splitPanel(event.item.data.panelIndex, event.item.data.tabIndex, newPanelIndex);
   }
 }
