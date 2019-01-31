@@ -355,7 +355,7 @@ export class ActiveProjectService {
   focusPanel(panelIndex: number) {
     this.ngRedux.dispatch(this.actions.focusPanel(panelIndex))
   }
-  splitPanel(previousPanelIndex: number, tabIndex: number, currentPanelIndex: number): ActiveProjectAction {
+  splitPanel(previousPanelIndex: number, tabIndex: number, currentPanelIndex: number) {
     this.ngRedux.dispatch(this.actions.splitPanel(previousPanelIndex, tabIndex, currentPanelIndex))
   }
 }

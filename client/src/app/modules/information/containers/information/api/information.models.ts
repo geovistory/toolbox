@@ -19,18 +19,6 @@ export class Information {
     // search results
     items?: List;
 
-    // the peIt to remove (are you sure?)
-    _peIt_remove?: EntityPreview;
-
-    // the peIt in editable detail view
-    _peIt_editable?: PeItDetail;
-
-    // the teEn in editable detail view
-    _teEnt_editable?: TeEntDetail;
-
-    // the peIt to add or create
-    _peIt_add?: CreateOrAddEntity;
-
     // class and type selector
     classAndTypeSelector?: ClassAndTypeSelector;
 
