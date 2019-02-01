@@ -18,6 +18,8 @@ interface MetaData {
   classAndTypePk?: ClassAndTypePk;
   pkUiContext?: number;
   pkAllowedClasses?: number[];
+
+  tabTitle?: string
 };
 export type SourceDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -29,20 +31,9 @@ export class SourceDetailAPIActions {
   static readonly LOAD_SOURCE_DETAILS_FAILED = 'SourceDetail::LOAD_SOURCE_DETAILS_FAILED';
   static readonly LOAD_SOURCE_DETAILS_SUCCEEDED = 'SourceDetail::LOAD_SOURCE_DETAILS_SUCCEEDED';
 
-  static readonly LOAD_SECTION_DETAILS = 'SourceDetail::LOAD_SECTION_DETAILS';
-  static readonly LOAD_SECTION_DETAILS_FAILED = 'SourceDetail::LOAD_SECTION_DETAILS_FAILED';
-  static readonly LOAD_SECTION_DETAILS_SUCCEEDED = 'SourceDetail::LOAD_SECTION_DETAILS_SUCCEEDED';
-
   static readonly REMOVE_SOURCE = 'SourceDetail::REMOVE_SOURCE';
   static readonly REMOVE_SOURCE_SUCCEEDED = 'SourceDetail::REMOVE_SOURCE_SUCCEEDED';
   static readonly REMOVE_SOURCE_FAILED = 'SourceDetail::REMOVE_SOURCE_FAILED';
-
-
-  static readonly REMOVE_SECTION = 'SourceDetail::REMOVE_SECTION';
-  static readonly REMOVE_SECTION_SUCCEEDED = 'SourceDetail::REMOVE_SECTION_SUCCEEDED';
-  static readonly REMOVE_SECTION_FAILED = 'SourceDetail::REMOVE_SECTION_FAILED';
-
-  static readonly CLOSE = 'SourceDetail::CLOSE';
 
   static readonly START_REMOVE = 'SourceDetail::START_REMOVE';
   static readonly CANCEL_REMOVE = 'SourceDetail::CANCEL_REMOVE';
@@ -52,11 +43,9 @@ export class SourceDetailAPIActions {
   static readonly STOP_CREATE = 'SourceDetail::STOP_CREATE';
   static readonly SOURCE_UPDATED = 'SourceDetail::SOURCE_UPDATED';
 
-  static readonly STOP_CREATE_SECTION = 'SourceDetail::STOP_CREATE_SECTION';
-
+  static readonly SET_TAB_TITLE = 'EntityDetail::SET_TAB_TITLE';
 
   static readonly DESTROY = 'SourceDetail::DESTROY';
-
 
 
   @dispatch() loadSourceDetails = (pkEntity: number, pkProject: number, crm: ProjectCrm): SourceDetailAPIAction => ({
@@ -79,24 +68,24 @@ export class SourceDetailAPIActions {
   })
 
 
-  @dispatch() loadSectionDetails = (pkSource: number, pkEntity: number, pkProject: number, crm: ProjectCrm): SourceDetailAPIAction => ({
-    type: SourceDetailAPIActions.LOAD_SECTION_DETAILS,
-    meta: { pkSource, pkEntity, pkProject, crm },
-    payload: null
-  })
+  // @dispatch() loadSectionDetails = (pkSource: number, pkEntity: number, pkProject: number, crm: ProjectCrm): SourceDetailAPIAction => ({
+  //   type: SourceDetailAPIActions.LOAD_SECTION_DETAILS,
+  //   meta: { pkSource, pkEntity, pkProject, crm },
+  //   payload: null
+  // })
 
 
-  loadSectionDetailsSucceeded = (sectionDetail: PeItDetail): SourceDetailAPIAction => ({
-    type: SourceDetailAPIActions.LOAD_SECTION_DETAILS_SUCCEEDED,
-    meta: { sectionDetail },
-    payload: null
-  })
+  // loadSectionDetailsSucceeded = (sectionDetail: PeItDetail): SourceDetailAPIAction => ({
+  //   type: SourceDetailAPIActions.LOAD_SECTION_DETAILS_SUCCEEDED,
+  //   meta: { sectionDetail },
+  //   payload: null
+  // })
 
-  loadSectionDetailsFailed = (): SourceDetailAPIAction => ({
-    type: SourceDetailAPIActions.LOAD_SECTION_DETAILS_FAILED,
-    meta: {},
-    payload: null
-  })
+  // loadSectionDetailsFailed = (): SourceDetailAPIAction => ({
+  //   type: SourceDetailAPIActions.LOAD_SECTION_DETAILS_FAILED,
+  //   meta: {},
+  //   payload: null
+  // })
 
   /**
 * Shows create form
@@ -118,15 +107,15 @@ export class SourceDetailAPIActions {
     payload: null
   })
 
-  /**
-  * Hides create section form
-  * - updates store: set 'create' false
-  */
-  @dispatch() stopCreateSection = (): SourceDetailAPIAction => ({
-    type: SourceDetailAPIActions.STOP_CREATE_SECTION,
-    meta: null,
-    payload: null
-  })
+  // /**
+  // * Hides create section form
+  // * - updates store: set 'create' false
+  // */
+  // @dispatch() stopCreateSection = (): SourceDetailAPIAction => ({
+  //   type: SourceDetailAPIActions.STOP_CREATE_SECTION,
+  //   meta: null,
+  //   payload: null
+  // })
 
 
   /**********************************************
@@ -156,24 +145,24 @@ export class SourceDetailAPIActions {
 * Method remove Section from Project
 **********************************************/
 
-  @dispatch() removeSection = (pkEntity: number, pkProject: number): SourceDetailAPIAction => ({
-    type: SourceDetailAPIActions.REMOVE_SECTION,
-    meta: { pkEntity, pkProject },
-    payload: null
-  })
+  // @dispatch() removeSection = (pkEntity: number, pkProject: number): SourceDetailAPIAction => ({
+  //   type: SourceDetailAPIActions.REMOVE_SECTION,
+  //   meta: { pkEntity, pkProject },
+  //   payload: null
+  // })
 
-  removeSectionSucceded = (): SourceDetailAPIAction => ({
-    type: SourceDetailAPIActions.REMOVE_SECTION_SUCCEEDED,
-    meta: null,
-    payload: null
-  })
+  // removeSectionSucceded = (): SourceDetailAPIAction => ({
+  //   type: SourceDetailAPIActions.REMOVE_SECTION_SUCCEEDED,
+  //   meta: null,
+  //   payload: null
+  // })
 
-  removeSectionFailed = (error): SourceDetailAPIAction => ({
-    type: SourceDetailAPIActions.REMOVE_SECTION_FAILED,
-    meta: null,
-    payload: null,
-    error
-  })
+  // removeSectionFailed = (error): SourceDetailAPIAction => ({
+  //   type: SourceDetailAPIActions.REMOVE_SECTION_FAILED,
+  //   meta: null,
+  //   payload: null,
+  //   error
+  // })
 
   // @dispatch()  stateUpdated = (payload: ISourceDetailState): SourceDetailAPIAction => ({
   //   type: SourceDetailAPIActions.STATE_UPDATED,
@@ -254,6 +243,15 @@ export class SourceDetailAPIActions {
   //     }
   //   })
 
+ /*********************************************************************
+  *  Set the tab title
+  *********************************************************************/
+
+ @dispatch() setTabTitle = (tabTitle: string): SourceDetailAPIAction => ({
+  type: SourceDetailAPIActions.SET_TAB_TITLE,
+  meta: { tabTitle },
+  payload: null
+})
 
   /*********************************************************************
   *  Method to distroy the slice of store

@@ -18,6 +18,9 @@ import { SourcesRoutingModule } from './sources-routing.module';
 import { SourceDetailComponent } from './containers/source-detail/source-detail.component';
 import { SourceDetailAPIEpics } from './containers/source-detail/api/source-detail.epics';
 import { SourceDetailAPIActions } from './containers/source-detail/api/source-detail.actions';
+import { SectionDetailComponent } from './containers/section-detail/section-detail.component';
+import { SectionDetailAPIEpics } from './containers/section-detail/api/section-detail.epics';
+import { SectionDetailAPIActions } from './containers/section-detail/api/section-detail.actions';
 
 
 
@@ -43,16 +46,20 @@ import { SourceDetailAPIActions } from './containers/source-detail/api/source-de
     SourceListAPIActions,
     SourceDetailAPIEpics,
     SourceDetailAPIActions,
+    SectionDetailAPIEpics,
+    SectionDetailAPIActions,
   ],
   exports: [
     SourceListComponent,
-    SourceDetailComponent
+    SourceDetailComponent,
+    SectionDetailComponent
   ],
   declarations: [
     SourceSearchHitComponent,
     SourceCreateFormComponent,
     SourceListComponent,
-    SourceDetailComponent
+    SourceDetailComponent,
+    SectionDetailComponent
   ]
 })
 export class SourcesModule { }

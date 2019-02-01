@@ -6,9 +6,9 @@ import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { SearchResponse } from '../../information/api/information.models';
 import { ListComponent } from '../list.component';
 import { ListAPIAction, ListAPIActions } from './list.actions';
+import { SearchResponse } from './list.models';
 
 @Injectable()
 export class ListAPIEpics {

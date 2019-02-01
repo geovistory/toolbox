@@ -77,7 +77,7 @@ export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnI
     // private epics: LeafPeItViewAPIEpics,
     public ngRedux: NgRedux<IAppState>,
     private modalService: NgbModal,
-    private projectService: ActiveProjectService
+    private p: ActiveProjectService
 
   ) {
     super()
@@ -104,11 +104,11 @@ export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnI
       takeUntil(this.destroy$)
     ).subscribe((d) => {
       this.pkEntity = d[0];
-      this.projectService.streamEntityPreview(this.pkEntity);
+      this.p.streamEntityPreview(this.pkEntity);
     })
 
     // if pkEntity is provided by input
-    this.projectService.streamEntityPreview(this.pkEntity);
+    this.p.streamEntityPreview(this.pkEntity);
 
     this.preview$ = this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', this.pkEntity]);
 
@@ -124,15 +124,39 @@ export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnI
   open() {
 
 
-    this.projectService.loadDataUnitDetailForModal(this.pkEntity);
+    this.p.loadDataUnitDetailForModal(this.pkEntity);
 
     const navigate = () => {
       if (this.openIn === 'information') {
-        this.projectService.navigateToDataUnit(this.pkEntity)
+        this.p.addTab({
+          active: true,
+          component: 'entity-detail',
+          icon: 'persistent-entity' ,
+          pathSegment: 'entityDetails',
+          data: {
+            pkEntity: this.pkEntity
+          }
+        });
       } else if (this.openIn === 'source') {
-        this.projectService.navigateToSource(this.pkEntity)
+        this.p.addTab({
+          active: true,
+          component: 'source-detail',
+          icon: 'source',
+          pathSegment: 'sourceDetails',
+          data: {
+            pkEntity: this.pkEntity
+          }
+        });
       } else if (this.openIn === 'section') {
-        this.projectService.navigateToSection(this.sectionParentPk, this.pkEntity)
+        this.p.addTab({
+          active: true,
+          component: 'section-detail',
+          icon: 'section',
+          pathSegment: 'sectionDetails',
+          data: {
+            pkEntity: this.pkEntity
+          }
+        })
       }
     }
 

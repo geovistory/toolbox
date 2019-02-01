@@ -1,8 +1,8 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ComConfig, IAppState, UiContext, UiElement, ProjectCrm, U } from 'app/core';
-import { AddOption, CollapsedExpanded, ExistenceTimeDetail, RoleDetail, PropertyField, PropertyFieldForm, TeEntAccentuation, TeEntDetail, FieldList } from 'app/core/state/models';
+import { AddOption, CollapsedExpanded, ExistenceTimeDetail, RoleDetail, PropertyField, PropertyFieldForm, TeEntAccentuation, TeEntDetail, FieldList, ClassInstanceLabel } from 'app/core/state/models';
 import { createExistenceTimeDetail, getCreateOfEditableContext, StateSettings, similarPropertyField, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { RootEpics } from '../../../../../core/store/epics';
@@ -97,6 +97,7 @@ export class TeEntEditableComponent extends DataUnitBase {
   @select() _existenceTime_edit$: Observable<ExistenceTimeDetail>; // TODO check if needed
   @select() accentuation$: Observable<TeEntAccentuation>;
   @select() editing$: Observable<boolean>;
+  @Output() onLabelChange = new EventEmitter<{ teEn: ClassInstanceLabel, cla: string }>();
 
   addOptionsTeEnt$: Observable<AddOption[]>;
 

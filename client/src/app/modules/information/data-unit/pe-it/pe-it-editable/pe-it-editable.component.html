@@ -3,7 +3,7 @@
   <div class="gv-flex-shrink-0" *ngIf="(showHeader$ | async)">
     <gv-editor-header>
       <span typeLabel *ngIf="(_type$ | async)?.label">{{(_type$ | async)?.label}}:</span>
-      <gv-pe-it-label labels [children]="(_fields$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
+      <gv-pe-it-label labels [children]="(_fields$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit" (onLabelChange)="onLabelChange.emit($event)"></gv-pe-it-label>
       <div type *ngIf="(_type$ | async)">
         <gv-type [basePath]="basePath.concat('_type')"></gv-type>
       </div>

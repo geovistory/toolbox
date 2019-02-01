@@ -1,27 +1,12 @@
-<div class="gv-flex-fh" >
-  <!-- Header -->
-  <section class="m-3 mt-5 row gv-flex-shrink-0">
-    <div class="col-md-8">
-      <h2>
-        <i class="gv-icon gv-icon-information-simple text-primary"></i> Data Units</h2>
-    </div>
-    <div class="col-md-4">
-      <div class="btn-group float-right mt-2" role="group">
+<div class="gv-flex-fh">
 
-        <gv-class-and-type-selector *ngIf="pkClassesInProject != undefined && (pkProject$ |async)" [pkClasses]="pkClassesInProject"
-          [pkProject]="(pkProject$ |async)" [basePath]="basePath.concat('classAndTypeSelector')" (select)="startCreate($event, pkUiContextCreate)"
-          buttonText="+ Add an entity" placement="right" hasFilter="true"></gv-class-and-type-selector>
+  <h3 class="m-3 gv-flex-shrink-0">
+    Your Entities
+  </h3>
 
-        <!-- <button class="btn btn-link btn-md" (click)="openEntityModal()">
-          <i class="fa fa-plus" aria-hidden="true"></i> Add an entity
-        </button> -->
-      </div>
-    </div>
-  </section>
-  <gv-list class="gv-flex-fh" [showTeEnPeItFilter]="true" [basePath]="basePath.concat('items')" (onOpen)="openEntity($event)"></gv-list>
-</div>
-
-<div *ngIf="(_peIt_add$ | async)" class="gv-flex-fh">
-  <gv-create-or-add-entity class="gv-flex-fh" [basePath]="basePath.concat('_peIt_add')" (done)="openEntity($event.pk_entity)"
-    (cancel)="stopCreate()"></gv-create-or-add-entity>
+  <gv-list class="gv-flex-fh" [showTeEnPeItFilter]="true" [basePath]="basePath.concat('items')" (onOpen)="openEntity($event)">
+    <gv-class-and-type-selector addBtn buttonClass="btn-primary no-caret mr-0" class="ml-2" *ngIf="pkClassesInProject != undefined && (p.pkProject$ |async)"
+      [pkClasses]="pkClassesInProject" [pkProject]="(p.pkProject$ |async)" [basePath]="basePath.concat('classAndTypeSelector')"
+      (select)="startCreate($event)" buttonText="+ Add" placement="right" hasFilter="true"></gv-class-and-type-selector>
+  </gv-list>
 </div>

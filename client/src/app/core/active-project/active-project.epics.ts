@@ -48,7 +48,8 @@ export class ActiveProjectEpics {
       this.createLoadTeEnGraphEpic(),
       this.createClosePanelEpic(),
       this.createActivateTabFocusPanelEpic(),
-      this.createMoveTabFocusPanelEpic()
+      this.createMoveTabFocusPanelEpic(),
+      this.createClosePanelFocusPanelEpic()
     );
   }
 
@@ -504,7 +505,7 @@ export class ActiveProjectEpics {
   private createClosePanelEpic(): Epic {
     return (action$, store) => {
       return action$.pipe(
-        ofType(ActiveProjectActions.MOVE_TAB, ActiveProjectActions.SPLIT_PANEL),
+        ofType(ActiveProjectActions.CLOSE_TAB, ActiveProjectActions.MOVE_TAB, ActiveProjectActions.SPLIT_PANEL),
         mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
           this.ngRedux.getState().activeProject.panels.forEach((panel, panelIndex) => {
             if (panel.tabs.length === 0) globalStore.next(this.actions.closePanel(panelIndex));
@@ -534,6 +535,18 @@ export class ActiveProjectEpics {
         mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
           if (this.ngRedux.getState().activeProject.focusedPanel !== action.meta.currentPanelIndex) {
             globalStore.next(this.actions.focusPanel(action.meta.currentPanelIndex));
+          }
+        }))
+      )
+    }
+  }
+  private createClosePanelFocusPanelEpic(): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        ofType(ActiveProjectActions.CLOSE_PANEL),
+        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+          if (this.ngRedux.getState().activeProject.focusedPanel > (this.ngRedux.getState().activeProject.panels.length - 1)) {
+            globalStore.next(this.actions.focusPanel(0));
           }
         }))
       )

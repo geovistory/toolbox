@@ -1,6 +1,6 @@
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { active } from 'd3';
-import { indexBy } from 'ramda';
+import { indexBy, omit } from 'ramda';
 import { InfPersistentItem, InfTemporalEntity } from '../sdk/models';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
@@ -8,34 +8,9 @@ import { ProjectDetail, Panel } from './active-project.models';
 
 const INITIAL_STATE: ProjectDetail = {
     uiIdSerial: 0,
-    panelSerial: 4,
-    focusedPanel: 1,
-    panels: [
-        {
-            id: 2,
-            tabs: [
-                {
-                    active: true,
-                    path: ['activeProject', 'entityDetails', 'a'],
-                    pkEntity: 25503,
-                    component: 'entity-detail',
-                    icon: 'persistent-entity'
-                },
-            ]
-        },
-        {
-            id: 3,
-            tabs: [
-                {
-                    active: false,
-                    path: ['activeProject', 'sourceDetails', 'x'],
-                    pkEntity: 80637,
-                    component: 'source-detail',
-                    icon: 'source'
-                }
-            ]
-        }
-    ]
+    panelSerial: 0,
+    focusedPanel: 0,
+    panels: []
 };
 
 const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: ActiveProjectAction): ProjectDetail => {
@@ -122,6 +97,19 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
 
             break;
         case ActiveProjectActions.ADD_TAB:
+            if (state.panels.length === 0) {
+                state = {
+                    ...state,
+                    panels: [
+                        {
+                            id: state.panelSerial,
+                            tabs: []
+                        }
+                    ],
+                    focusedPanel: 0,
+                    panelSerial: state.panelSerial + 1
+                }
+            }
             pi = state.focusedPanel;
             state = {
                 ...state,
@@ -134,12 +122,9 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                                 return t;
                             }),
                             {
-                                active: true,
-                                component: action.meta.component,
-                                icon: action.meta.icon,
-                                pkEntity: action.meta.pkEntity,
-                                panelIndex: pi,
-                                path: ['activeProject', action.meta.stateSlug, state.uiIdSerial.toString()]
+                                ...omit(['pathSegment'], action.meta.tab),
+                                // panelIndex: pi,
+                                path: ['activeProject', action.meta.tab.pathSegment, state.uiIdSerial.toString()]
                             }
                         ]
                     }
@@ -150,14 +135,34 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
         case ActiveProjectActions.CLOSE_TAB:
             pi = action.meta.panelIndex;
             ti = action.meta.tabIndex;
+            // remove the closing tab
             state = {
                 ...state,
                 panels: Object.assign([...state.panels], {
                     [pi]: {
                         ...state.panels[pi],
-                        tabs: [...state.panels[pi].tabs].filter((tab, index) => index !== ti)
+                        tabs: [...state.panels[pi].tabs]
+                            .filter((tab, index) => index !== ti)
+
                     }
                 })
+            }
+            // activate a sibling tab, if needed and possible
+            if (!state.panels[pi].tabs.find(t => t.active)) {
+                state = {
+                    ...state,
+                    panels: Object.assign([...state.panels], {
+                        [pi]: {
+                            ...state.panels[pi],
+                            tabs: [...state.panels[pi].tabs]
+                                .map((tab, index) => {
+                                    tab.active = (index === (ti < state.panels[pi].tabs.length ? ti : (ti - 1)));
+                                    return tab;
+                                })
+                        }
+                    })
+
+                }
             }
             break;
         case ActiveProjectActions.CLOSE_PANEL:

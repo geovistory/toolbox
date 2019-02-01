@@ -12,7 +12,7 @@ import { ComProject } from '../sdk/models/ComProject';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
-import { ProjectCrm } from './active-project.models';
+import { ProjectCrm, Tab, ClassConfig } from './active-project.models';
 
 
 
@@ -230,6 +230,11 @@ export class ActiveProjectService {
     }
   }
 
+
+  getClassConfig(pkClass): Observable<ClassConfig> {
+    return this.ngRedux.select<ClassConfig>(['activeProject', 'crm', 'classes', pkClass])
+  }
+
   /**
    * Filters a given array of InfRoles by a filter function that applies to DfhProperty
    */
@@ -261,85 +266,11 @@ export class ActiveProjectService {
     this.ngRedux.dispatch(this.actions.setMentioningsFocusedInTable(pks))
   }
 
-  /**
-   * Provide sources or/and information to update this UrlSegmentGroup of the Ng UrlTree
-   *
-   * @param sources the new UrlSegmentGroup for sources
-   * @param information the new UrlSegmentGroup for information
-   */
-  private createNewUrl(newList: UrlSegmentGroup | null, newDetail: UrlSegmentGroup | null, newQueryParams: Params): string {
-    let urlTree = this.router.parseUrl(this.router.url);
-
-    urlTree = {
-      ...urlTree,
-      queryParams: {
-        ...urlTree.queryParams,
-        ...newQueryParams
-      },
-      root: new UrlSegmentGroup(
-        urlTree.root.segments,
-        {
-          primary: new UrlSegmentGroup(
-            [
-              new UrlSegment('projects', {}),
-              new UrlSegment(this.ngRedux.getState().activeProject.pk_project.toString(), {}),
-              new UrlSegment('edit', {}),
-            ],
-            {
-              list: (newList ? newList : urlTree.root.children.primary.children.list),
-              detail: (newDetail ? newDetail : urlTree.root.children.primary.children.detail)// TODO if not available, set it to 'search'
-            }
-          )
-        }
-      )
-    }
-    return this.router.serializeUrl(urlTree)
-
-  }
-
-  navigateToDataUnit(pk: number) {
-
-    const newUrl = this.createNewUrl(
-      null,
-      new UrlSegmentGroup([new UrlSegment('entity', {}), new UrlSegment(pk.toString(), {})], {}),
-      { 'i': 'on' }
-    )
-
-    this.router.navigateByUrl(newUrl)
-  }
-
-  navigateToSource(pk: number) {
-
-    const newUrl = this.createNewUrl(
-      null,
-      new UrlSegmentGroup([new UrlSegment('source', {}), new UrlSegment(pk.toString(), {})], {}),
-      { 's': 'on' }
-    )
-
-    this.router.navigateByUrl(newUrl)
-  }
-
-  navigateToSection(sourcePk: number, sectionPk: number) {
-
-
-    const newUrl = this.createNewUrl(
-      new UrlSegmentGroup([
-        new UrlSegment(sourcePk.toString(), {}),
-        new UrlSegment('section', {}),
-        new UrlSegment(sectionPk.toString(), {})
-      ], {}),
-      null,
-      { 's': 'on' }
-    )
-
-    this.router.navigateByUrl(newUrl)
-  }
-
-
   /************************************************************************************
   * Layout
   ************************************************************************************/
 
+  // Tab modifications
   activateTab(panelIndex: number, tabIndex: number) {
     this.ngRedux.dispatch(this.actions.activateTab(panelIndex, tabIndex))
   }
@@ -349,13 +280,21 @@ export class ActiveProjectService {
   closeTab(panelIndex: number, tabIndex: number) {
     this.ngRedux.dispatch(this.actions.closeTab(panelIndex, tabIndex))
   }
-  addTab(pkEntity: number, component: string, icon: string, stateSlug: string) {
-    this.ngRedux.dispatch(this.actions.addTab(pkEntity, component, icon, stateSlug))
+  addTab(tab: Tab) {
+    this.ngRedux.dispatch(this.actions.addTab(tab))
   }
   focusPanel(panelIndex: number) {
     this.ngRedux.dispatch(this.actions.focusPanel(panelIndex))
   }
   splitPanel(previousPanelIndex: number, tabIndex: number, currentPanelIndex: number) {
     this.ngRedux.dispatch(this.actions.splitPanel(previousPanelIndex, tabIndex, currentPanelIndex))
+  }
+
+  // Tab data selections
+  getTabTitle(path: string[]): Observable<string> {
+    return this.ngRedux.select<string>([...path, 'tabTitle']);
+  }
+  getTabLoading(path: string[]): Observable<boolean> {
+    return this.ngRedux.select<boolean>([...path, 'loading']);
   }
 }

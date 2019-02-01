@@ -5,9 +5,9 @@ import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-
 export class SourceDetail {
 
     // if source being created
-    create?: CreateOrAddEntity;
+    add?: CreateOrAddEntity;
     // the source being edited
-    edit?: PeItDetail;
+    editSource?: PeItDetail;
     // the source being removed
     // remove?: ISourceSearchHitState
 
@@ -15,6 +15,10 @@ export class SourceDetail {
     editSection?: PeItDetail;
 
     loading?: boolean;
+    removed?: boolean;
+    
+    // title in the tab
+    tabTitle?: string;
 
     constructor(data?: SourceDetail) {
         Object.assign(this, data);

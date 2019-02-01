@@ -51,27 +51,28 @@
         <router-outlet name="list"></router-outlet>
       </mat-drawer>
       <mat-drawer-content class="d-flex" cdkDropListGroup>
+        <div *ngIf="(p.panels$ | async)?.length === 0" class="no-panels gv-flex-fh justify-content-center align-items-center p-3">
+          <div class="display-4 text-gray-400">
+            Your Project
+          </div>
+          <div class="display-1 text-gray-400">
+            {{((p.activeProject$|async)?.labels || [])[0]?.label}}
+          </div>
+          <div class="text-gray-400 helper-text">
+            Find your Entities and Sources to the left.
+          </div>
+        </div>
 
         <div *ngFor="let panel of (p.panels$ | async); let i = index; trackBy:trackByFn" class="border-left border-gray-300 gv-grow-1 gv-flex-fh"
           style="overflow: hidden;" (mousedown)="p.focusPanel(i)" [ngClass]="{'focus': ((p.focusedPanel$|async ) === i) }">
           <div>
             <div cdkDropList [cdkDropListData]="i" cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropTab($event)"
               class="tab-list">
-              <div *ngFor="let tab of panel.tabs; let j=index;" cdkDrag class="tab-box" [cdkDragData]="{'panelIndex': i, 'tabIndex': j}"
-                [ngClass]="{'active': tab.active }" (cdkDragEnded)="tabDragEnded()" (cdkDragStarted)="tabDragStarted()">
-                <div class="left" (mousedown)="p.activateTab(i,j)">
-                  <div class="icon">
-                    <i *ngIf="tab.icon =='persistent-entity'" class="gv-icon gv-icon-information-simple text-primary"></i>
-                    <i *ngIf="tab.icon =='source'" class="gv-icon gv-icon-source text-info"></i>
-                  </div>
-                  <div class="label">
-                    {{tab.pkEntity}} Ganz vieeeeeeeeel Text
-                  </div>
-                </div>
-                <div class="right" (click)="p.closeTab(i,j)">
-                  <i class="fa fa-close"></i>
-                </div>
-              </div>
+
+              <gv-tab-handle *ngFor="let tab of panel.tabs; let j=index;" cdkDrag class="tab-box" [cdkDragData]="{'panelIndex': i, 'tabIndex': j}"
+                [ngClass]="{'active': tab.active }" (cdkDragEnded)="tabDragEnded()" (cdkDragStarted)="tabDragStarted()"
+                [tab]="tab" (activateTab)="p.activateTab(i,j)" (closeTab)="p.closeTab(i,j)"></gv-tab-handle>
+    
             </div>
             <!-- <button (click)="p.addTab()">Split</button> -->
           </div>
@@ -92,7 +93,7 @@
               </div>
 
             </div>
-            <div class="gv-flex-fh" [attr.id]="('panel_'+panel.id)">
+            <div gvPanelBody [gvPanelId]="panel.id">
               <!-- Tab body will be placed dynamically via Cdk Portal -->
             </div>
           </div>
@@ -100,9 +101,13 @@
         </div>
 
 
-        <gv-tab-body [active]="tab.active" [panelIndex]="tab.panelIndex" *ngFor="let tab of (allTabs$ | async); let j=index; trackBy:trackByPath;">
-          <gv-entity-detail *ngIf="tab.component=='entity-detail'" [pkEntity]="tab.pkEntity" [basePath]="tab.path"></gv-entity-detail>
-          <gv-source-detail *ngIf="tab.component=='source-detail'" [pkEntity]="tab.pkEntity" [basePath]="tab.path"></gv-source-detail>
+        <gv-tab-body [active]="tab.active" [panelId]="tab.panelId" [panelBodies$]="panelBodies$" *ngFor="let tab of (allTabs$ | async); let j=index; trackBy:trackByPath;">
+          <gv-entity-detail *ngIf="tab.component=='entity-detail'" [pkEntity]="tab.data.pkEntity" [classAndTypePk]="tab.data.classAndTypePk"
+            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-entity-detail>
+          <gv-source-detail *ngIf="tab.component=='source-detail'" [pkEntity]="tab.data.pkEntity" [classAndTypePk]="tab.data.classAndTypePk"
+            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-source-detail>
+          <gv-section-detail *ngIf="tab.component=='section-detail'" [pkEntity]="tab.data.pkEntity" [classAndTypePk]="tab.data.classAndTypePk"
+            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-section-detail>
         </gv-tab-body>
 
       </mat-drawer-content>

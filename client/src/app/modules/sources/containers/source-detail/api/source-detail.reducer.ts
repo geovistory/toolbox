@@ -18,15 +18,14 @@ export function sourceDetailReducer(state: SourceDetail = INITIAL_STATE, a: Acti
 
     case SourceDetailAPIActions.LOAD_SOURCE_DETAILS:
       state = {
-        ...state,
-        edit: undefined,
+        ...omit(['editSource', 'editSection', 'add'], state),
         loading: true
       }
       break;
     case SourceDetailAPIActions.LOAD_SOURCE_DETAILS_SUCCEEDED:
       state = {
         ...state,
-        edit: action.meta.sourceDetail,
+        editSource: action.meta.sourceDetail,
         loading: false
       }
       break;
@@ -39,30 +38,29 @@ export function sourceDetailReducer(state: SourceDetail = INITIAL_STATE, a: Acti
       break;
 
 
-    /**************************************
-     * Reducers for loading section details
-     **************************************/
-    case SourceDetailAPIActions.LOAD_SECTION_DETAILS:
-      state = {
-        ...state,
-        editSection: undefined,
-        loading: true
-      }
-      break;
-    case SourceDetailAPIActions.LOAD_SECTION_DETAILS_SUCCEEDED:
-      state = {
-        ...state,
-        editSection: action.meta.sectionDetail,
-        loading: false
-      }
-      break;
+    // /**************************************
+    //  * Reducers for loading section details
+    //  **************************************/
+    // case SourceDetailAPIActions.LOAD_SECTION_DETAILS:
+    //   state = {
+    //     ...omit(['editSource', 'editSection', 'add'], state),
+    //     loading: true
+    //   }
+    //   break;
+    // case SourceDetailAPIActions.LOAD_SECTION_DETAILS_SUCCEEDED:
+    //   state = {
+    //     ...state,
+    //     editSection: action.meta.sectionDetail,
+    //     loading: false
+    //   }
+    //   break;
 
-    case SourceDetailAPIActions.LOAD_SECTION_DETAILS_FAILED:
-      state = {
-        ...state,
-        loading: false
-      }
-      break;
+    // case SourceDetailAPIActions.LOAD_SECTION_DETAILS_FAILED:
+    //   state = {
+    //     ...state,
+    //     loading: false
+    //   }
+    //   break;
 
 
 
@@ -73,15 +71,16 @@ export function sourceDetailReducer(state: SourceDetail = INITIAL_STATE, a: Acti
     case SourceDetailAPIActions.START_CREATE:
       state = {
         ...state,
-        create: {
+        add: {
           classAndTypePk: action.meta.classAndTypePk,
           pkUiContext: action.meta.pkUiContext
-        }
+        },
+        tabTitle: 'Add...'
       };
       break;
 
     case SourceDetailAPIActions.STOP_CREATE:
-      state = omit(['create'], state);
+      state = omit(['add'], state);
       break;
 
 
@@ -98,7 +97,10 @@ export function sourceDetailReducer(state: SourceDetail = INITIAL_STATE, a: Acti
 
 
     case SourceDetailAPIActions.REMOVE_SOURCE_SUCCEEDED:
-      state = omit(['edit'], state)
+      state = {
+        ...state,
+        removed: true
+      }
       break;
 
 
@@ -165,6 +167,17 @@ export function sourceDetailReducer(state: SourceDetail = INITIAL_STATE, a: Acti
     //   };
     //   break;
 
+
+    /*********************************************************************
+    *  Set the tab title
+    *********************************************************************/
+
+    case SourceDetailAPIActions.SET_TAB_TITLE:
+      state = {
+        ...state,
+        tabTitle: action.meta.tabTitle
+      }
+      break;
 
 
     /*****************************************************

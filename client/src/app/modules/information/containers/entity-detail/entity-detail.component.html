@@ -1,10 +1,10 @@
-<div *ngIf="(_peIt_editable$ | async) || (_teEnt_editable$ | async) " class="gv-flex-fh">
+<div *ngIf="(loading$ | async)" class="align-self-center gv-flex-fh justify-content-center text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div>
 
-  <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
-  <gv-pe-it-editable *ngIf="!(loading$ | async) && (_peIt_editable$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('_peIt_editable')"
-    (remove)="onRemovePeIt($event)"></gv-pe-it-editable>
+<gv-pe-it-editable *ngIf="!(loading$ | async) && (_peIt_editable$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('_peIt_editable')"
+  (remove)="onRemovePeIt($event)" (onLabelChange)="onPeItLabelChange($event)"></gv-pe-it-editable>
 
-  <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
-  <gv-te-ent-editable *ngIf="!(loading$ | async) && (_teEnt_editable$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('_teEnt_editable')"></gv-te-ent-editable>
+<gv-te-ent-editable *ngIf="!(loading$ | async) && (_teEnt_editable$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('_teEnt_editable')"
+  (onLabelChange)="onTeEnLabelChange($event)"></gv-te-ent-editable>
 
-</div>
+<gv-create-or-add-entity *ngIf="(_add$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('_add')" (done)="initEntity($event.pk_entity)"
+  (cancel)="stopCreate(); close.emit()"></gv-create-or-add-entity>

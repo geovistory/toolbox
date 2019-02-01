@@ -17,7 +17,7 @@ export function entityDetailReducer(state: EntityDetail = INITIAL_STATE, a: Acti
     *****************************************************/
     case EntityDetailAPIActions.OPEN_ENTITY_EDITOR:
       state = {
-        ...state,
+        ...omit(['_teEnt_editable', '_add'], state),
         loading: true,
         _peIt_editable: {}
       };
@@ -26,9 +26,8 @@ export function entityDetailReducer(state: EntityDetail = INITIAL_STATE, a: Acti
     case EntityDetailAPIActions.OPEN_ENTITY_EDITOR_SUCCEEDED:
       state = {
         ...state,
-        loading: false,
         _peIt_editable: action.meta.peItDetail,
-        _teEnt_editable: undefined
+        loading: false,
       };
       break;
 
@@ -45,7 +44,7 @@ export function entityDetailReducer(state: EntityDetail = INITIAL_STATE, a: Acti
     *****************************************************/
     case EntityDetailAPIActions.OPEN_PHENOMENON_EDITOR:
       state = {
-        ...state,
+        ...omit(['_peIt_editable', '_add'], state),
         loading: true,
         _teEnt_editable: {}
       };
@@ -56,7 +55,6 @@ export function entityDetailReducer(state: EntityDetail = INITIAL_STATE, a: Acti
         ...state,
         loading: false,
         _teEnt_editable: action.meta.teEntDetail,
-        _peIt_editable: undefined
       };
       break;
 
@@ -76,15 +74,16 @@ export function entityDetailReducer(state: EntityDetail = INITIAL_STATE, a: Acti
     case EntityDetailAPIActions.START_CREATE:
       state = {
         ...state,
-        _peIt_add: {
+        _add: {
           classAndTypePk: action.meta.classAndTypePk,
           pkUiContext: action.meta.pkUiContext
-        }
+        },
+        tabTitle: 'Add...'
       };
       break;
 
     case EntityDetailAPIActions.STOP_CREATE:
-      state = omit(['_peIt_add'], state);
+      state = omit(['_add'], state);
       break;
 
 
@@ -101,7 +100,10 @@ export function entityDetailReducer(state: EntityDetail = INITIAL_STATE, a: Acti
 
 
     case EntityDetailAPIActions.REMOVE_PE_IT_SUCCEEDED:
-      state = omit(['_peIt_editable'], state)
+      state = {
+        ...state,
+        removed: true
+      }
       break;
 
 
@@ -113,40 +115,23 @@ export function entityDetailReducer(state: EntityDetail = INITIAL_STATE, a: Acti
       break;
 
 
-    // case EntityDetailAPIActions.ENTITY_ADD_EXISTING_INITIALIZED:
-    //   state = {
-    //     ...state,
-    //     _peIt_add_form: action.payload._peIt_add_form
-    //   };
-    //   break;
+    /*********************************************************************
+    *  Set the tab title
+    *********************************************************************/
 
-    // case EntityDetailAPIActions.ENTITY_ADD_EXISTING_DESTROYED:
-    //   state = {
-    //     ...omit(['_peIt_add_form'], state),
-    //   }
-    //   break;
-
-
-    // case EntityDetailAPIActions.PE_IT_CREATE_ADDED:
-    //   state = {
-    //     ...state,
-    //     _peIt_create_form: action.payload._peIt_create_form
-    //   };
-    //   break;
-
-    // case EntityDetailAPIActions.PE_IT_CREATE_DESTROYED:
-    //   state = {
-    //     ...omit(['_peIt_create_form'], state),
-    //   }
-    //   break;
-
+    case EntityDetailAPIActions.SET_TAB_TITLE:
+      state = {
+        ...state,
+        tabTitle: action.meta.tabTitle
+      }
+      break;
 
 
     /*****************************************************
     * Reducers called on destroy of component
     *****************************************************/
     case EntityDetailAPIActions.DESTROY:
-      state = { };
+      state = {};
       break;
 
   }

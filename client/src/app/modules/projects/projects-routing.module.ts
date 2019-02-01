@@ -46,7 +46,10 @@ const routes: Routes = [
         children: [
           {
             path: 'sources',
-            component: SourceListComponent
+            component: SourceListComponent,
+            data: {
+              reduxPath: ['sources']
+            }
           },
           {
             path: 'entities',

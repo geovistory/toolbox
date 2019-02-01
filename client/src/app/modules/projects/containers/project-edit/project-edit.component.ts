@@ -1,11 +1,18 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { CdkPortal, DomPortalHost } from '@angular/cdk/portal';
-import { ApplicationRef, Component, ComponentFactoryResolver, Directive, HostBinding, Injector, Input, OnChanges, OnDestroy, QueryList, ViewChild } from '@angular/core';
+import { ApplicationRef, Component, ComponentFactoryResolver, Directive, HostBinding, Injector, Input, OnChanges, OnDestroy, QueryList, ViewChild, ViewChildren, AfterViewInit, SimpleChanges, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, UrlSegment, UrlSegmentGroup } from '@angular/router';
-import { ActiveProjectService, Tab } from 'app/core';
-import { Observable } from 'rxjs';
-import { first, take } from 'rxjs/operators';
+import { ActiveProjectService, Panel, Tab } from 'app/core';
+import { Observable, Subject, BehaviorSubject, combineLatest, zip } from 'rxjs';
+import { first, take, map } from 'rxjs/operators';
+import { PanelBodyDirective } from '../../directives/panel-body.directive';
 
+
+export interface TabBody extends Tab {
+  panelId: number;
+  panelIndex: number;
+  tabIndex: number;
+}
 
 @Component({
   selector: 'gv-tab-body',
@@ -15,40 +22,67 @@ import { first, take } from 'rxjs/operators';
     </ng-container>
   `,
 })
-export class TabBodyComponent implements OnChanges, OnDestroy {
+export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
   @Input() active: boolean;
-  @Input() panelIndex: number;
+  @Input() panelId: number;
+  @Input() panelBodies$: Observable<PanelBodyDirective[]>;
 
-  @ViewChild(CdkPortal) portal;
-  private host: DomPortalHost;
+  active$ = new Subject<boolean>();
+  panelId$ = new Subject<number>();
+  bodies$ = new Subject<PanelBodyDirective[]>();
+  destroy$ = new Subject<boolean>();
+
+  @ViewChild(CdkPortal) portal: CdkPortal;
+  private host: PanelBodyDirective;
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
     private applicationRef: ApplicationRef,
     private injector: Injector
   ) {
+    combineLatest(this.active$, this.panelId$, this.bodies$).takeUntil(this.destroy$)
+      .subscribe(([active, panelId, panelBodies]) => {
+        // const oldHost = this.host;
+        const newHost = panelBodies.find(item => item.gvPanelId === panelId)
+
+        if (newHost && active) {
+          if (newHost.portal !== this.portal) {
+            // if host has attached detach it
+            if (newHost.hasAttached()) newHost.detach();
+            // if portal is attached detach it
+            if (this.portal.isAttached) this.portal.detach();
+            // attatch portal to new Host
+            newHost.attach(this.portal);
+          }
+        }
+
+        if (!active && this.host && this.host.hasAttached() && this.host.portal === this.portal) {
+          this.host.detach();
+        }
+
+        this.host = newHost;
+      })
   }
 
-  ngOnChanges(): void {
-    if (this.active) {
-
-      const ele = document.querySelector('#panel_' + this.panelIndex);
-      if (!ele) console.error('no ele')
-      this.host = new DomPortalHost(
-        ele, // TODO: maybe replace this by some angular way of selecting an element
-        this.componentFactoryResolver,
-        this.applicationRef,
-        this.injector
-      );
-      this.host.attach(this.portal);
-    } else if (this.host && this.host.hasAttached) {
-      this.host.detach();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.active) {
+      this.active$.next(changes.active.currentValue)
     }
-
+    if (changes.panelId) {
+      this.panelId$.next(changes.panelId.currentValue)
+    }
   }
+  ngOnInit() {
+    this.panelBodies$.subscribe(d => {
+      this.bodies$.next(d);
+    })
+  }
+
 
   ngOnDestroy(): void {
     if (this.host) this.host.detach();
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
 }
@@ -59,14 +93,21 @@ export class TabBodyComponent implements OnChanges, OnDestroy {
   templateUrl: './project-edit.component.html',
   styleUrls: ['./project-edit.component.scss']
 })
-export class ProjectEditComponent {
+export class ProjectEditComponent implements OnDestroy, AfterViewInit {
 
   @HostBinding('class.gv-full') full = true;
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
-  allTabs$: Observable<Tab[]>;
+  @ViewChildren(PanelBodyDirective) panelBodies !: QueryList<PanelBodyDirective>;
+
+  // emits true on destroy of this component
+  destroy$ = new Subject<boolean>();
+
+  allTabs$: Observable<TabBody[]>;
   highlightPanel = {};
   tabDragging = false;
+  panelBodies$ = new BehaviorSubject<PanelBodyDirective[]>([]);
+
 
   constructor(
     public p: ActiveProjectService,
@@ -81,16 +122,29 @@ export class ProjectEditComponent {
 
     this.allTabs$ = this.p.panels$.map(panels => {
       let allTabs = []
-      panels.forEach((panel, index) => {
-        allTabs = [...allTabs, ...panel.tabs.map(tab => {
-          tab.panelIndex = panel.id;
-          return tab
+      panels.forEach((panel, panelIndex) => {
+        allTabs = [...allTabs, ...[...panel.tabs].map((tab, tabIndex) => {
+          const tabBody: TabBody = {
+            ...tab,
+            panelId: panel.id,
+            tabIndex,
+            panelIndex
+          }
+          return tabBody
         })]
       })
       return allTabs
     })
+
   }
 
+  ngAfterViewInit() {
+    this.panelBodies.changes.takeUntil(this.destroy$)
+      .subscribe(a => {
+        const b = this.panelBodies.toArray()
+        this.panelBodies$.next(b)
+      })
+  }
   trackByFn(index, item) {
     return index; // or item.id
   }
@@ -162,5 +216,10 @@ export class ProjectEditComponent {
   splitPanel(newPanelIndex: number, event: CdkDragDrop<any>) {
     // .data contains the panelIndex
     this.p.splitPanel(event.item.data.panelIndex, event.item.data.tabIndex, newPanelIndex);
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 }

@@ -1,40 +1,13 @@
-<!-- ********************** Source List *************************** 
- * - If nor 'create' nor 'edit' nor 'remove' vars of substore are truthy, 
- *      show a create source button
- *      show a SourceSearchHitComponent for each entry in 'list' with open and remove buttons
- *      passing SourceSearchHitState via Input
--->
 <div class="gv-flex-fh">
 
-  <!-- Header -->
-  <section class="m-3 mt-5 row">
-    <div class="col-md-8">
-      <h2>
-        <i class="gv-icon gv-icon-source text-info"></i> Sources
-      </h2>
-    </div>
-    <div class="col-md-4">
-      <div class="btn-group float-right mt-2" role="group">
-        <gv-class-and-type-selector *ngIf="(pkProject$ |async) && (crm$ | async)" [pkClasses]="pkClassesOfAddBtn"
-          [pkProject]="(pkProject$ |async)" [basePath]="basePath.concat('classAndTypeSelector')" (select)="startCreate($event, pkUiContextCreate)"
-          buttonText="+ Add a source" placement="right"></gv-class-and-type-selector>
-        <!-- <button class="btn btn-link" (click)="startCreate()">
-          <i class="fa fa-plus"></i> Add a source
-        </button> -->
-      </div>
-    </div>
-  </section>
+  <h3 class="m-3 gv-flex-shrink-0">
+    Your Sources
+  </h3>
 
-  <gv-list *ngIf="(list$ | async)" [basePath]="basePath.concat('list')" (onOpen)="openEntity($event)"></gv-list>
+  <gv-list [basePath]="basePath.concat('list')" (onOpen)="openEntity($event)">
+    <gv-class-and-type-selector addBtn buttonClass="btn-primary no-caret mr-0" class="ml-2" *ngIf="(p.pkProject$ |async) && (p.crm$ | async)"
+      [pkClasses]="pkClassesOfAddBtn" [pkProject]="(p.pkProject$ |async)" [basePath]="basePath.concat('classAndTypeSelector')"
+      (select)="startCreate($event, pkUiContextCreate)" buttonText="+ Add" placement="right"></gv-class-and-type-selector>
+  </gv-list>
 
-
-</div>
-
-<!-- ********************** Create Source ***************************
- * - If 'create' is truthy, show a form with SourceCreateFormComponent
- *     listening to ok and cancel Outputs 
- -->
-<div *ngIf="(create$ | async)" class="gv-flex-fh">
-  <gv-create-or-add-entity class="gv-flex-fh" [basePath]="basePath.concat('create')" (done)="openEntity($event.pk_entity)"
-    (cancel)="stopCreate()"></gv-create-or-add-entity>
 </div>

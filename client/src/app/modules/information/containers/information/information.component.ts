@@ -1,10 +1,11 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, Input, OnDestroy, OnInit, HostBinding } from '@angular/core';
+import { Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ActiveProjectService, ComConfig, EntityPreview, IAppState, InfPersistentItem, PeItDetail, ProjectCrm, SubstoreComponent, TeEntDetail } from 'app/core';
+import { ActiveProjectService, ComConfig, EntityPreview, IAppState, InfPersistentItem, ProjectCrm, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
+import { ClassAndTypePk } from '../class-and-type-selector/api/class-and-type-selector.models';
 import { CreateOrAddEntity } from '../create-or-add-entity/api/create-or-add-entity.models';
 import { InformationAPIActions } from './api/information.actions';
 import { InformationAPIEpics } from './api/information.epics';
@@ -34,15 +35,9 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   // path to the substore
   @Input() basePath: string[];
 
-  @select() _peIt_add$: Observable<CreateOrAddEntity>;
   @select() loading$: Observable<boolean>;
 
   selectedEntity$ = new BehaviorSubject<EntityPreview>(undefined);
-
-
-  persistentItems: InfPersistentItem[] = [];
-  pkProject$: Observable<number>;
-
 
   pkClassesInProject;
   pkUiContextCreate = ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
@@ -53,11 +48,9 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     public ngRedux: NgRedux<IAppState>,
     public activatedRoute: ActivatedRoute,
     public router: Router,
-    private projectService: ActiveProjectService
+    public p: ActiveProjectService
   ) {
     super()
-
-    this.pkProject$ = projectService.pkProject$;
 
     // if component is activated by ng-router, take base path here
     activatedRoute.data.subscribe(d => {
@@ -65,7 +58,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     })
 
     // listen to the crm and add extract the classes ready to add.
-    ngRedux.select<ProjectCrm>(['activeProject', 'crm']).pipe(
+    p.crm$.pipe(
       first(d => !!d),
       takeUntil(this.destroy$)).subscribe(crm => {
         this.pkClassesInProject = []
@@ -84,21 +77,38 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, informationReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
-
-
-
   }
 
 
-  openEntity(pkEntity) {
-    // TODO figure out what icon to use
-    this.projectService.addTab(pkEntity, 'entity-detail', 'persistent-entity', 'entityDetails');
+  openEntity(preview: EntityPreview) {
+    this.p.addTab({
+      active: true,
+      component: 'entity-detail',
+      icon: preview.entity_type === 'peIt' ? 'persistent-entity' : 'temporal-entity',
+      pathSegment: 'entityDetails',
+      data: {
+        pkEntity: preview.pk_entity
+      }
+    });
   }
 
-  openSearchList() {
-    this.router.navigate(['../../search'], {
-      relativeTo: this.activatedRoute, queryParamsHandling: 'merge'
-    })
+
+  startCreate(classAndTypePk: ClassAndTypePk) {
+    this.p.getClassConfig(classAndTypePk.pkClass)
+      .pipe(first(d => !!d), takeUntil(this.destroy$)).subscribe(classConfig => {
+
+        this.p.addTab({
+          active: true,
+          component: 'entity-detail',
+          icon: classConfig.subclassOf === 'peIt' ? 'persistent-entity' : 'temporal-entity',
+          pathSegment: 'entityDetails',
+          data: {
+            classAndTypePk
+          }
+        });
+
+      })
+
   }
 
   ngOnDestroy() {
@@ -106,7 +116,4 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
-
-  onRemovePeIt = (pkEntity: number) => this.removePeIt(pkEntity, this.ngRedux.getState().activeProject.pk_project)
-
 }

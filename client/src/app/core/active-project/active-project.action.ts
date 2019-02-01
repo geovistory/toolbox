@@ -28,9 +28,6 @@ interface MetaData {
     currentTabIndex?: number
     tab?: Tab;
     pkEntity?: number
-    component?: string
-    icon?: string
-    stateSlug?: string
 };
 type Payload = ProjectDetail;
 export type ActiveProjectAction = FluxStandardAction<Payload, MetaData>;
@@ -125,11 +122,11 @@ export class ActiveProjectActions {
     }
 
     static ADD_TAB = 'ActiveProject::ADD_TAB';
-    addTab(pkEntity: number, component: string, icon: string, stateSlug: string): ActiveProjectAction {
+    addTab(tab: Tab): ActiveProjectAction {
         return {
             type: ActiveProjectActions.ADD_TAB,
             payload: null,
-            meta: { pkEntity, component, icon, stateSlug }
+            meta: { tab }
         }
     }
 

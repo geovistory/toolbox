@@ -3,7 +3,7 @@ import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
 import { IAppState, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { List } from './api/list.models';
+import { List, EntitySearchHit } from './api/list.models';
 import { ListAPIEpics } from './api/list.epics';
 import { ListAPIActions } from './api/list.actions';
 import { listReducer } from './api/list.reducer';
@@ -11,7 +11,6 @@ import { MentionedEntity } from 'app/modules/annotation/annotation.models';
 import { MentionedEntityCtrlActions } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 import { mentionedEntityCtrlReducer } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.reducer';
 import { takeUntil, first } from 'rxjs/operators';
-import { EntitySearchHit } from '../information/api/information.models';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -63,11 +62,11 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
 
   // DataUnit type (TeEn/PeIt) Filter
   typeOptions = [
+    { value: 'peIt', label: '<i class="gv-icon gv-icon-entity"></i> Persistent' },
+    { value: 'teEn', label: '<i class="fa fa-star-o"></i> Temporal' },
     { value: null, label: 'All' },
-    { value: 'peIt', label: '<i class="gv-icon gv-icon-entity"></i> Entities' },
-    { value: 'teEn', label: '<i class="fa fa-star-o"></i> Events & Phenomena' }
   ]
-  selectedType: { value: any, label: string } = this.typeOptions[1];
+  selectedType: { value: any, label: string } = this.typeOptions[0];
 
   constructor(
     protected rootEpics: RootEpics,
@@ -154,7 +153,7 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
   /**
    * Called when user changes to see only teEn / peIt or all classes
    */
-  dataUnitTypeChange(type, e) {
+  dataUnitTypeChange(type) {
     if (this.selectedType !== type) {
       this.selectedType = type;
       this.searchProject();

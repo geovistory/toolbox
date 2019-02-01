@@ -1,0 +1,23 @@
+@import "../../../../../styles.scss";
+.left {
+    display: flex;
+    overflow: hidden;
+    .icon {
+        width: 1rem;
+        padding-right: .2rem;
+    }
+    .label {
+        text-overflow: ellipsis;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+}
+.right {
+    width: 1rem;
+    line-height: initial;
+    padding: 0 0.7rem 0 0.5rem;
+    font-size: $font-size-sm;
+    @extend .btn;
+    @extend .btn-link-gray;
+}

@@ -41,6 +41,8 @@ import { SourcesModule } from '../sources';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PortalModule } from '@angular/cdk/portal';
 import { TabBodyComponent } from './containers/project-edit/project-edit.component';
+import { PanelBodyDirective } from './directives/panel-body.directive';
+import { TabHandleComponent } from './components/tab-handle/tab-handle.component';
 
 @NgModule({
   imports: [
@@ -77,7 +79,9 @@ import { TabBodyComponent } from './containers/project-edit/project-edit.compone
     TypesComponent,
     TypeAddFormComponent,
     TypeEditFormComponent,
-    TabBodyComponent
+    TabBodyComponent,
+    PanelBodyDirective,
+    TabHandleComponent
   ],
   providers: [
     ProjectsActions,

@@ -13,7 +13,8 @@ interface MetaData {
   teEntDetail?: TeEntDetail;
   classAndTypePk?: ClassAndTypePk;
   pkUiContext?: number;
-  pkClasses?: number[]
+  pkClasses?: number[];
+  tabTitle?: string
 };
 export type EntityDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -30,15 +31,17 @@ export class EntityDetailAPIActions {
   static readonly OPEN_PHENOMENON_EDITOR_SUCCEEDED = 'EntityDetail::OPEN_PHENOMENON_EDITOR_SUCCEEDED';
   static readonly OPEN_PHENOMENON_EDITOR_FAILED = 'EntityDetail::OPEN_PHENOMENON_EDITOR_FAILED';
 
-  static readonly DESTROY = 'EntityDetail::DESTROY';
-
   static readonly START_CREATE = 'EntityDetail::START_CREATE';
   static readonly STOP_CREATE = 'EntityDetail::STOP_CREATE';
-
 
   static readonly REMOVE_PE_IT = 'EntityDetail::REMOVE_PE_IT';
   static readonly REMOVE_PE_IT_SUCCEEDED = 'EntityDetail::REMOVE_PE_IT_SUCCEEDED';
   static readonly REMOVE_PE_IT_FAILED = 'EntityDetail::REMOVE_PE_IT_FAILED';
+
+  static readonly SET_TAB_TITLE = 'EntityDetail::SET_TAB_TITLE';
+
+  static readonly DESTROY = 'EntityDetail::DESTROY';
+
 
   /*********************************************************************
   *  Actions to manage entity editor
@@ -126,6 +129,17 @@ export class EntityDetailAPIActions {
     meta: null,
     payload: null,
     error
+  })
+
+
+  /*********************************************************************
+  *  Set the tab title
+  *********************************************************************/
+
+  @dispatch() setTabTitle = (tabTitle: string): EntityDetailAPIAction => ({
+    type: EntityDetailAPIActions.SET_TAB_TITLE,
+    meta: { tabTitle },
+    payload: null
   })
 
 
