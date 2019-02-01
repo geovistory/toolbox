@@ -23,6 +23,7 @@ export class TeEntLabelComponent implements OnInit, OnChanges, OnDestroy {
   @Input() classConfig: ClassConfig
   @Input() toggle: CollapsedExpanded;
   @Input() labelInEdit: string;
+  @Output() onLabelChange = new EventEmitter<ClassInstanceLabel>();
 
   toggle$ = new Subject<CollapsedExpanded>();
 
@@ -60,6 +61,7 @@ export class TeEntLabelComponent implements OnInit, OnChanges, OnDestroy {
         })
 
       }
+      this.onLabelChange.emit(this.label)
     })
 
     this.toggle$.next(this.toggle)

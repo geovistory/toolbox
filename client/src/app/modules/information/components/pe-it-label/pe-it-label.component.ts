@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, EventEmitter, Output } from '@angular/core';
 import {  ClassInstanceLabel, RoleLabel, ExTimeLabel, FieldList } from 'app/core/state/models';
 import { DatePipe } from '@angular/common';
 import { TimePrimitive, ClassConfig, U } from 'app/core';
@@ -14,6 +14,7 @@ export class PeItLabelComponent implements OnChanges {
   @Input() children: FieldList;
   @Input() classConfig: ClassConfig
   @Input() labelInEdit: string;
+  @Output() onLabelChange = new EventEmitter<ClassInstanceLabel>();
 
   label:  ClassInstanceLabel;
 
@@ -21,6 +22,7 @@ export class PeItLabelComponent implements OnChanges {
 
   ngOnChanges() {
     this.label = U.labelFromFieldList(this.children, { path: [], fieldsMax: 1, rolesMax: 1 })
+    this.onLabelChange.emit(this.label)
   }
 
   getExTLabel(d: ExTimeLabel) {

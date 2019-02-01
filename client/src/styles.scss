@@ -68,6 +68,14 @@ button {
     @extend .form-control; // overflow: hidden;
 }
 
+.gv-full {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
 // generate .bg-gray-* classes
 @each $color,
 $value in $grays {
@@ -549,6 +557,38 @@ gv-data-unit-preview {
     display: inline-block;
 }
 
+.gv-nav-btn {
+    $background: $gray-200;
+    $active-background: $gray-300;
+    $hover-background: darken($background, 7.5%);
+    height: 80px;
+    width: 100%;
+    outline: none;
+    color: color-yiq($background);
+    background-color: $background;
+    border: none;
+    @include hover {
+        color: color-yiq($hover-background);
+        background-color: darken($background, 7.5%);
+    }
+    &:focus,
+    &.focus {
+        outline: none;
+        background-color: $gray-500;
+    } // Disabled comes first so active can properly restyle
+    &.disabled,
+    &:disabled {
+        background-color: $gray-100;
+    }
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled).active,
+    .show>&.dropdown-toggle {
+        color: color-yiq($active-background);
+        background-color: $active-background;
+        &:focus {}
+    }
+}
+
 /***************************
 * Granularities from big to small
 *   0. Canvas (editor body below header)
@@ -593,11 +633,9 @@ gv-tile-header {
     @extend .font-sm; // padding-left: $btn-padding-y-sm;
     height: calc((#{$btn-border-width} * 2) + (#{$font-size-sm} * #{$btn-line-height-sm}) + (#{$btn-padding-y-sm} * 2) + 1px);
     @extend .rounded-top;
-
     .btn {
         @extend .btn-link-white;
     }
-
 }
 
 .gv-tile-body {

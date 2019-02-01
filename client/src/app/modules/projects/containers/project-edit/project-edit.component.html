@@ -1,54 +1,117 @@
 <gv-navbar>
   <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-      <a routerLink="/">
-        <i class="fa fa-home"></i> Home</a>
-    </li>
-    <li class="breadcrumb-item">
-      <a routerLink="../../">Your Projects</a>
-    </li>
-    <li class="breadcrumb-item">
-      <a routerLink="../">{{projectLabel$ | async}}</a>
-    </li>
-    <li class="breadcrumb-item">Edit project</li>
+    <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
+    <li class="breadcrumb-item"><a routerLink="/projects">Your Projects</a></li>
+    <li class="breadcrumb-item">{{((p.activeProject$|async)?.labels || [])[0]?.label}}</li>
   </ol>
 </gv-navbar>
-<div id="edit" class="gv-edit container-fluid">
-  <div class="row">
-    <gv-project-edit-panel id="sources" (goToState0Start)="updateUrlQueryParams({'s':'off'})" (goToState50Start)="updateUrlQueryParams({'s':'on'})"
-      [stateInput]="(sourcesState$ | async)">
+<mat-drawer-container class="gv-flex-fh">
+  <mat-drawer class="bg-light" mode="side" opened style="width: 80px;">
 
-      <div closeBtn>
-        <button type="button" name="button" class="btn btn-link text-info" title="Minimize">
-          <i class="fa fa-compress"></i>
+    <div class="h-100 d-flex flex-column">
+
+      <div class="btn-group-vertical rounded-0 d-block">
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [routerLink]="[{ outlets: { list: ['sources']} }]"
+          routerLinkActive="active" (click)="list.open()">
+          <div class="fa-2x gv-icon gv-icon-source text-info"></div>
+          <div>Sources</div>
+        </button>
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [routerLink]="[{ outlets: { list: ['entities']} }]"
+          routerLinkActive="active" (click)="list.open()">
+          <div class="fa-2x gv-icon gv-icon-information-simple text-primary"></div>
+          <div>Entities</div>
+        </button>
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center">
+          Queries
+        </button>
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center">
+          Visuals
+        </button>
+
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center">
+          Stories
+        </button>
+
+      </div>
+
+
+      <div class="btn-group-vertical rounded-0 d-block mt-auto">
+        <button class="gv-nav-btn" [routerLink]="['../', 'settings']">
+          Settings
         </button>
       </div>
-      <div expandBtn class="d-flex flex-column align-items-center gv-pointer">
-        <i class="gv-icon gv-icon-source text-info"></i>
-        <span class="fa-rotate-90 mt-3 text-muted">Sources</span>
-      </div>
-      <div body>
-        <router-outlet name="sources"></router-outlet>
-      </div>
+    </div>
+
+  </mat-drawer>
+  <mat-drawer-content style="display:flex; flex-direction:column">
+    <mat-drawer-container style="flex-grow: 1; flex-basis:100%;">
+      <mat-drawer class="bg-gray-300" #list mode="side" opened style="width: 300px;">
+        <button class="btn btn-link-white position-absolute" style="right: 0;" (click)="list.close(); closeList()"> <i
+            class="fa fa-chevron-left"></i> </button>
+        <router-outlet name="list"></router-outlet>
+      </mat-drawer>
+      <mat-drawer-content class="d-flex" cdkDropListGroup>
+        <div *ngIf="(p.panels$ | async)?.length === 0" class="no-panels gv-flex-fh justify-content-center align-items-center p-3">
+          <div class="display-4 text-gray-400">
+            Your Project
+          </div>
+          <div class="display-1 text-gray-400">
+            {{((p.activeProject$|async)?.labels || [])[0]?.label}}
+          </div>
+          <div class="text-gray-400 helper-text">
+            Find your Entities and Sources to the left.
+          </div>
+        </div>
+
+        <div *ngFor="let panel of (p.panels$ | async); let i = index; trackBy:trackByFn" class="border-left border-gray-300 gv-grow-1 gv-flex-fh"
+          style="overflow: hidden;" (mousedown)="p.focusPanel(i)" [ngClass]="{'focus': ((p.focusedPanel$|async ) === i) }">
+          <div>
+            <div cdkDropList [cdkDropListData]="i" cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropTab($event)"
+              class="tab-list">
+
+              <gv-tab-handle *ngFor="let tab of panel.tabs; let j=index;" cdkDrag class="tab-box" [cdkDragData]="{'panelIndex': i, 'tabIndex': j}"
+                [ngClass]="{'active': tab.active }" (cdkDragEnded)="tabDragEnded()" (cdkDragStarted)="tabDragStarted()"
+                [tab]="tab" (activateTab)="p.activateTab(i,j)" (closeTab)="p.closeTab(i,j)"></gv-tab-handle>
+    
+            </div>
+            <!-- <button (click)="p.addTab()">Split</button> -->
+          </div>
+
+          <div class="panel-body gv-flex-fh position-relative">
+            <div class="split-panel-drop-zone" [ngClass]="{'active': highlightPanel[i] === 'full', 'enabled': tabDragging}">
+
+              <div class="highlight left" [ngClass]="{'active': highlightPanel[i] === 'left'}"></div>
+              <div class="highlight right" [ngClass]="{'active': highlightPanel[i] === 'right'}"></div>
+
+              <div class="split left" [ngClass]="{'enabled': tabDragging}" cdkDropList (cdkDropListEntered)="setHighlightPanel(i, 'left')"
+                (cdkDropListExited)="unsetHighlightPanel(i, 'left')" (cdkDropListDropped)="splitPanel(i, $event)">
+              </div>
+              <div class="split center" cdkDropList (cdkDropListEntered)="setHighlightPanel(i, 'full')"
+                (cdkDropListExited)="unsetHighlightPanel(i, 'full')"> </div>
+              <div class="split right" cdkDropList (cdkDropListEntered)="setHighlightPanel(i, 'right')"
+                (cdkDropListExited)="unsetHighlightPanel(i, 'right')" (cdkDropListDropped)="splitPanel(i+1, $event)">
+              </div>
+
+            </div>
+            <div gvPanelBody [gvPanelId]="panel.id">
+              <!-- Tab body will be placed dynamically via Cdk Portal -->
+            </div>
+          </div>
+
+        </div>
 
 
-    </gv-project-edit-panel>
+        <gv-tab-body [active]="tab.active" [panelId]="tab.panelId" [panelBodies$]="panelBodies$" *ngFor="let tab of (allTabs$ | async); let j=index; trackBy:trackByPath;">
+          <gv-entity-detail *ngIf="tab.component=='entity-detail'" [pkEntity]="tab.data.pkEntity" [classAndTypePk]="tab.data.classAndTypePk"
+            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-entity-detail>
+          <gv-source-detail *ngIf="tab.component=='source-detail'" [pkEntity]="tab.data.pkEntity" [classAndTypePk]="tab.data.classAndTypePk"
+            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-source-detail>
+          <gv-section-detail *ngIf="tab.component=='section-detail'" [pkEntity]="tab.data.pkEntity" [classAndTypePk]="tab.data.classAndTypePk"
+            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-section-detail>
+        </gv-tab-body>
 
-    <gv-project-edit-panel id="information" (goToState0Start)="updateUrlQueryParams({'i':'off'})" (goToState50Start)="updateUrlQueryParams({'i':'on'})"
-      [stateInput]="(informationState$ | async)">
+      </mat-drawer-content>
+    </mat-drawer-container>
 
-      <div closeBtn>
-        <button type="button" name="button" class="btn btn-link" title="Minimize">
-          <i class="fa fa-compress"></i>
-        </button>
-      </div>
-      <div expandBtn class="d-flex flex-column align-items-center gv-pointer">
-        <i class="gv-icon gv-icon-information-simple text-primary"></i>
-        <span class="fa-rotate-90 mt-4 text-muted">Data&nbsp;Units</span>
-      </div>
-      <div body>
-        <router-outlet name="information"></router-outlet>
-      </div>
-    </gv-project-edit-panel>
-  </div>
-</div>
+  </mat-drawer-content>
+</mat-drawer-container>

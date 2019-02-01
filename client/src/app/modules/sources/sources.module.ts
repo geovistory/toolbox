@@ -15,6 +15,12 @@ import { SourceListAPIActions } from './containers/source-list/api/source-list.a
 import { SourceListAPIEpics } from './containers/source-list/api/source-list.epics';
 import { SourceListComponent } from './containers/source-list/source-list.component';
 import { SourcesRoutingModule } from './sources-routing.module';
+import { SourceDetailComponent } from './containers/source-detail/source-detail.component';
+import { SourceDetailAPIEpics } from './containers/source-detail/api/source-detail.epics';
+import { SourceDetailAPIActions } from './containers/source-detail/api/source-detail.actions';
+import { SectionDetailComponent } from './containers/section-detail/section-detail.component';
+import { SectionDetailAPIEpics } from './containers/section-detail/api/section-detail.epics';
+import { SectionDetailAPIActions } from './containers/section-detail/api/section-detail.actions';
 
 
 
@@ -38,11 +44,22 @@ import { SourcesRoutingModule } from './sources-routing.module';
     MentionedEntityCtrlActions,
     SourceListAPIEpics,
     SourceListAPIActions,
+    SourceDetailAPIEpics,
+    SourceDetailAPIActions,
+    SectionDetailAPIEpics,
+    SectionDetailAPIActions,
+  ],
+  exports: [
+    SourceListComponent,
+    SourceDetailComponent,
+    SectionDetailComponent
   ],
   declarations: [
     SourceSearchHitComponent,
     SourceCreateFormComponent,
     SourceListComponent,
+    SourceDetailComponent,
+    SectionDetailComponent
   ]
 })
 export class SourcesModule { }

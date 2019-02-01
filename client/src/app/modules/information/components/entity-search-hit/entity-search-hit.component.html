@@ -1,4 +1,4 @@
-<div class="gv-search-hit" dnd-draggable [dragEnabled]="true" [dragData]="entityPreview" (click)="linkClicked()">
+<div class="gv-search-hit" dnd-draggable [dragEnabled]="true" [dragData]="entityPreview" (click)="linkClicked()" [attr.title]="entityPreview.pk_entity">
   <div class="gv-search-hit-header">
     <div class="d-flex">
       <div class="gv-grow-1">

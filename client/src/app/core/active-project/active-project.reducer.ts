@@ -1,13 +1,24 @@
-import { ActiveProjectActions, ActiveProjectAction } from './active-project.action';
-import { ProjectDetail } from './active-project.models';
-import { EntityPreview } from '../state/models';
-import { indexBy } from 'ramda';
+import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { active } from 'd3';
+import { indexBy, omit } from 'ramda';
 import { InfPersistentItem, InfTemporalEntity } from '../sdk/models';
+import { EntityPreview } from '../state/models';
+import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
+import { ProjectDetail, Panel } from './active-project.models';
 
-const INITIAL_STATE: ProjectDetail = null;
+const INITIAL_STATE: ProjectDetail = {
+    uiIdSerial: 0,
+    panelSerial: 0,
+    focusedPanel: 0,
+    panels: []
+};
 
 const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: ActiveProjectAction): ProjectDetail => {
+    let pi, ti, ppi, cpi, pti, cti;
     switch (action.type) {
+        /************************************************************************************
+         * Load project data (metadata, crm)
+        ************************************************************************************/
         case ActiveProjectActions.ACTIVE_PROJECT_UPDATED:
             state = {
                 ...state,
@@ -22,7 +33,191 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             }
             break;
 
+        /************************************************************************************
+         * Layout
+        ************************************************************************************/
+        case ActiveProjectActions.ACTIVATE_TAB:
+            pi = action.meta.panelIndex;
+            ti = action.meta.tabIndex;
+            state = {
+                ...state,
+                panels: Object.assign([...state.panels], {
+                    [pi]: {
+                        ...state.panels[pi],
+                        tabs: [...state.panels[pi].tabs].map((tab, index) => {
+                            tab.active = (index === ti);
+                            return tab;
+                        })
+                    }
+                })
+            }
+            break;
+        case ActiveProjectActions.MOVE_TAB:
+            ppi = action.meta.previousPanelIndex;
+            cpi = action.meta.currentPanelIndex;
+            pti = action.meta.previousTabIndex;
+            cti = action.meta.currentTabIndex;
 
+            if (ppi === cpi) {
+                const tabs = [...state.panels[cpi].tabs];
+                moveItemInArray(tabs, pti, cti);
+                state = {
+                    ...state,
+                    panels: Object.assign([...state.panels], {
+                        [cpi]: {
+                            ...state.panels[cpi],
+                            tabs
+                        }
+                    })
+                }
+            } else {
+                const pTabs = [...state.panels[ppi].tabs];
+                const cTabs = [...state.panels[cpi].tabs];
+                transferArrayItem(pTabs, cTabs, pti, cti);
+                state = {
+                    ...state,
+                    panels: Object.assign([...state.panels], {
+                        [ppi]: {
+                            ...state.panels[ppi],
+                            tabs: pTabs.map((tab, index) => {
+                                tab.active = (index === (pti < pTabs.length ? pti : (pti - 1)));
+                                return tab;
+                            })
+                        },
+                        [cpi]: {
+                            ...state.panels[cpi],
+                            tabs: cTabs.map((tab, index) => {
+                                tab.active = (index === cti);
+                                return tab;
+                            })
+                        }
+                    })
+                }
+            }
+
+            break;
+        case ActiveProjectActions.ADD_TAB:
+            if (state.panels.length === 0) {
+                state = {
+                    ...state,
+                    panels: [
+                        {
+                            id: state.panelSerial,
+                            tabs: []
+                        }
+                    ],
+                    focusedPanel: 0,
+                    panelSerial: state.panelSerial + 1
+                }
+            }
+            pi = state.focusedPanel;
+            state = {
+                ...state,
+                panels: Object.assign([...state.panels], {
+                    [pi]: {
+                        ...state.panels[pi],
+                        tabs: [
+                            ...state.panels[pi].tabs.map(t => {
+                                t.active = false;
+                                return t;
+                            }),
+                            {
+                                ...omit(['pathSegment'], action.meta.tab),
+                                // panelIndex: pi,
+                                path: ['activeProject', action.meta.tab.pathSegment, state.uiIdSerial.toString()]
+                            }
+                        ]
+                    }
+                }),
+                uiIdSerial: (state.uiIdSerial + 1)
+            }
+            break;
+        case ActiveProjectActions.CLOSE_TAB:
+            pi = action.meta.panelIndex;
+            ti = action.meta.tabIndex;
+            // remove the closing tab
+            state = {
+                ...state,
+                panels: Object.assign([...state.panels], {
+                    [pi]: {
+                        ...state.panels[pi],
+                        tabs: [...state.panels[pi].tabs]
+                            .filter((tab, index) => index !== ti)
+
+                    }
+                })
+            }
+            // activate a sibling tab, if needed and possible
+            if (!state.panels[pi].tabs.find(t => t.active)) {
+                state = {
+                    ...state,
+                    panels: Object.assign([...state.panels], {
+                        [pi]: {
+                            ...state.panels[pi],
+                            tabs: [...state.panels[pi].tabs]
+                                .map((tab, index) => {
+                                    tab.active = (index === (ti < state.panels[pi].tabs.length ? ti : (ti - 1)));
+                                    return tab;
+                                })
+                        }
+                    })
+
+                }
+            }
+            break;
+        case ActiveProjectActions.CLOSE_PANEL:
+            pi = action.meta.panelIndex;
+            const panels = [...state.panels];
+            panels.splice(pi, 1);
+            state = {
+                ...state,
+                panels
+            }
+            break;
+
+        case ActiveProjectActions.FOCUS_PANEL:
+            state = {
+                ...state,
+                focusedPanel: action.meta.panelIndex
+            }
+            break;
+        case ActiveProjectActions.SPLIT_PANEL:
+            ppi = action.meta.previousPanelIndex;
+            ti = action.meta.tabIndex;
+            cpi = action.meta.currentPanelIndex;
+            const moveTab = state.panels[ppi].tabs[ti];
+            // removes tab from old panel
+            state = {
+                ...state,
+                panels: Object.assign([...state.panels], {
+                    [ppi]: {
+                        ...state.panels[ppi],
+                        tabs: [...state.panels[ppi].tabs]
+                            .filter((tab, index) => index !== ti)
+                            .map((tab, index) => {
+                                if (index === 0) tab.active = true;
+                                return tab;
+                            })
+                    }
+                })
+            }
+            // insert a new panel at position of cpi
+            const newPanels = [...state.panels];
+            newPanels.splice(cpi, 0, {
+                id: state.panelSerial,
+                tabs: [moveTab]
+            })
+            state = {
+                ...state,
+                panels: newPanels,
+                // increase panel id sequence
+                panelSerial: state.panelSerial + 1
+            }
+
+            break;
+        /************************************************************************************
+        * Data cache
+        ************************************************************************************/
         /***************************************************
         * Reducers to load DataUnitPreview
         ****************************************************/
@@ -30,7 +225,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             state = {
                 ...state,
                 entityPreviews: {
-                    ...(state || {}).entityPreviews,
+                    ...(state || {}).entityPreviews,
                     [action.meta.pk_entity]: { loading: true } as EntityPreview
                 }
             };
@@ -143,10 +338,9 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             };
             break;
 
-
-        /***************************************************
-        * Reducers for creating mentionings that have a chunk as range
-        ****************************************************/
+        /************************************************************************************
+        *  Things for Mentionings / Annotations
+        ************************************************************************************/
 
         case ActiveProjectActions.UPDATE_SELECTED_CHUNK:
             state = {
@@ -163,9 +357,9 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             break;
 
 
-        /*****************************************************
-        * highlighting mentionings in the gui
-        *****************************************************/
+        /************************************************************************************
+        * Highlighting of mentionings in the gui
+        ************************************************************************************/
         case ActiveProjectActions.SET_MENTIONINGS_FOCUSED_IN_TEXT:
             state = {
                 ...state,
@@ -181,9 +375,9 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             break;
 
 
-        /*****************************************************
-         * destroy the active project
-         *****************************************************/
+        /************************************************************************************
+         * Destroy the active project state (on closing a project)
+        ************************************************************************************/
         case ActiveProjectActions.DESTROY:
             state = INITIAL_STATE;
             break;

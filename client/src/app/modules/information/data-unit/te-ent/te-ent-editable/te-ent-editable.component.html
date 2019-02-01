@@ -81,7 +81,7 @@
 
 
 
-<!-- Standalone view as Phenomenon editor -->
+<!-- Standalone view as Temporal Entity editor -->
 <span class="gv-flex-fh" *ngIf="!asPeItChild">
 
   <!-- Header -->
@@ -89,7 +89,7 @@
 
     <div labels class="d-flex flex-row">
       <gv-te-ent-label class="gv-grow-1" [toggle]="'collapsed'" [fields$]="_fields$" [classConfig]="classConfig"
-        [childrenPath]="basePath.concat('_fields')">
+        [childrenPath]="basePath.concat('_fields')" (onLabelChange)="onLabelChange.emit({teEn: $event, cla: classConfig?.label})">
       </gv-te-ent-label>
     </div>
 

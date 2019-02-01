@@ -1,0 +1,12 @@
+<div *ngIf="(loading$ | async)" class="align-self-center gv-flex-fh justify-content-center text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div>
+
+
+<!-- ********************** Edit Source *************************** -->
+
+<gv-pe-it-editable *ngIf="!(loading$ | async) && (editSource$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('editSource')"
+  (remove)="onRemoveSource($event)" (onLabelChange)="onPeItLabelChange($event)"></gv-pe-it-editable>
+
+
+<!-- ********************** Create Source ***************************   -->
+<gv-create-or-add-entity *ngIf="(add$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('add')" (done)="initEntity($event.pk_entity)"
+  (cancel)="stopCreate(); close.emit()"></gv-create-or-add-entity>

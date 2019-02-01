@@ -36,6 +36,13 @@ import { TypeAddFormAPIEpics } from './containers/type-add-form/api/type-add-for
 import { TypeEditFormComponent } from './containers/type-edit-form/type-edit-form.component';
 import { TypeEditFormAPIActions } from './containers/type-edit-form/api/type-edit-form.actions';
 import { TypeEditFormAPIEpics } from './containers/type-edit-form/api/type-edit-form.epics';
+import { MatSidenavModule } from '@angular/material';
+import { SourcesModule } from '../sources';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { PortalModule } from '@angular/cdk/portal';
+import { TabBodyComponent } from './containers/project-edit/project-edit.component';
+import { PanelBodyDirective } from './directives/panel-body.directive';
+import { TabHandleComponent } from './components/tab-handle/tab-handle.component';
 
 @NgModule({
   imports: [
@@ -49,7 +56,12 @@ import { TypeEditFormAPIEpics } from './containers/type-edit-form/api/type-edit-
     KeysModule,
     ReadMoreModule,
     HighlightModule,
-    PassiveLinkModule
+    PassiveLinkModule,
+    MatSidenavModule,
+    DragDropModule,
+    SourcesModule,
+    Information2Module,
+    PortalModule
   ],
   declarations: [
     ProjectCreateComponent,
@@ -66,7 +78,10 @@ import { TypeEditFormAPIEpics } from './containers/type-edit-form/api/type-edit-
     SideNavComponent,
     TypesComponent,
     TypeAddFormComponent,
-    TypeEditFormComponent
+    TypeEditFormComponent,
+    TabBodyComponent,
+    PanelBodyDirective,
+    TabHandleComponent
   ],
   providers: [
     ProjectsActions,

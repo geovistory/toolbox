@@ -1,11 +1,12 @@
 import { NgRedux } from '@angular-redux/store';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnDestroy, OnInit, HostBinding } from '@angular/core';
+import { ActivatedRoute, Router, UrlSegmentGroup, UrlSegment } from '@angular/router';
 import { ActiveProjectService, IAppState, ProjectCrm, ProjectDetail, WarEntityPreviewApi } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
+import { omit } from 'ramda';
 
 
 @Component({
@@ -14,6 +15,9 @@ import { first, takeUntil } from 'rxjs/operators';
   styleUrls: ['./project-dashboard.component.scss']
 })
 export class ProjectDashboardComponent implements OnInit, OnDestroy {
+
+  @HostBinding('class.gv-full') full = true;
+  @HostBinding('class.gv-flex-fh') flexFh = true;
 
   destroy$ = new Subject<boolean>();
 
@@ -37,7 +41,8 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
   showDashboard$: Observable<boolean>;
 
   constructor(
-    activatedRoute: ActivatedRoute,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
     private activeProjectService: ActiveProjectService,
     private ngRedux: NgRedux<IAppState>,
     private entityPreviewApi: WarEntityPreviewApi,
@@ -120,6 +125,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
   onSlide(event) {
     this.activateStep(event.current);
   }
+
 
 
 

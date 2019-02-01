@@ -29,6 +29,7 @@ export class SectionListAPIActions {
 
   static readonly START_CREATE = 'SectionList::START_CREATE';
   static readonly STOP_CREATE = 'SectionList::STOP_CREATE';
+  static readonly CREATED = 'SectionList::CREATED';
 
   static readonly DESTROY = 'SectionList::DESTROY';
 
@@ -72,6 +73,12 @@ export class SectionListAPIActions {
     payload: null
   })
 
+  @dispatch()
+  created = (): SectionListAPIAction => ({
+    type: SectionListAPIActions.CREATED,
+    meta: null,
+    payload: null
+  })
 
   /*********************************************************************
   *  Method to distroy the slice of store

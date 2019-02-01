@@ -1,13 +1,11 @@
-<router-outlet></router-outlet>
-
-
-<gv-navbar *ngIf="(showDashboard$ |async)">
+<gv-navbar>
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
     <li class="breadcrumb-item"><a routerLink="/projects">Your Projects</a></li>
     <li class="breadcrumb-item">{{project?.labels[0].label}}</li>
   </ol>
 </gv-navbar>
+
 
 <div *ngIf="(showDashboard$ |async)" id="project-dashboard" class="container">
   <div class="row">
@@ -29,8 +27,7 @@
   <div class="row mt-5 justify-content-center">
     <div id="flow" class="d-flex">
       <div id="sources" class="gv-icon-box" [ngClass]="{'gv-active': steps.step1}">
-        <button class="gv-upper-part gv-upper-part-info" [routerLink]="['edit', { outlets: { sources: ['search'], information: ['search'] } }]"
-          [queryParams]="{s:'on',i:'off'}">
+        <button class="gv-upper-part gv-upper-part-info" [routerLink]="['edit', { outlets: { list: ['sources'] } }]">
           <div class="gv-icon gv-icon-source"></div>
           <h4>{{sourcesCount}} {{sourcesCount === 1 ? 'Source' : 'Sources'}}</h4>
         </button>
@@ -57,7 +54,7 @@
         </div>
       </div>
       <div id="knowledge-units" class="gv-icon-box" [ngClass]="{'gv-active': steps.step3}">
-        <div class="gv-upper-part gv-upper-part-primary" [routerLink]="['edit', { outlets: { information: ['search'], sources: ['search']} }]"
+        <div class="gv-upper-part gv-upper-part-primary" [routerLink]="['edit', { outlets: { list: ['entities'] } }]"
           [queryParams]="{i:'on',s:'off'}">
           <div class="gv-icon gv-icon-information"></div>
           <h4>{{dataUnitsCount}} {{dataUnitsCount === 1 ? 'Data Unit' : 'Data Units'}}</h4>

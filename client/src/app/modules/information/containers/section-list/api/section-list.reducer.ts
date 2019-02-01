@@ -49,6 +49,9 @@ export function sectionListReducer(state: SectionList = INITIAL_STATE, a: Action
       state = omit(['create'], state);
       break;
 
+    case SectionListAPIActions.CREATED:
+      state = omit(['create'], state);
+      break;
 
     /*****************************************************
     * Reducers called on destroy of component

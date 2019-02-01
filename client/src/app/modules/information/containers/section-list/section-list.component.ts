@@ -101,10 +101,10 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
   };
 
   columns: Columns[] = [
-    { key: '', title: '', orderEnabled: false, searchEnabled: false, width: '10%'  },
+    { key: '', title: '', orderEnabled: false, searchEnabled: false, width: '10%' },
     { key: 'type_label', title: 'Type', width: '35%' },
-    { key: 'entity_label', orderBy: 'asc', title: 'Reference', width: '35%'  },
-    { key: '', title: '', orderEnabled: false, searchEnabled: false, width: '20%'  },
+    { key: 'entity_label', orderBy: 'asc', title: 'Reference', width: '35%' },
+    { key: '', title: '', orderEnabled: false, searchEnabled: false, width: '20%' },
   ];
 
   data = [];
@@ -115,7 +115,7 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
     private activatedRoute: ActivatedRoute,
     public ngRedux: NgRedux<IAppState>,
     private router: Router,
-    private projectService: ActiveProjectService
+    public p: ActiveProjectService
   ) {
     super()
 
@@ -168,7 +168,7 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
     this.listData$ = this.pkSections$.pipe(filter(pks => pks !== undefined), mergeMap(pks => {
 
       // update the entityPreview
-      pks.forEach(pk => { this.projectService.streamEntityPreview(pk); });
+      pks.forEach(pk => { this.p.streamEntityPreview(pk); });
 
       // create the observable of dataPreviewArray
       return combineLatest(pks.map(pk => this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', pk])));
@@ -226,13 +226,20 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
     )
   }
 
-  openSectionFromEntityAssociation(ea: InfEntityAssociation) {
-    this.openSection((this.isOutgoing() ? ea.fk_range_entity : ea.fk_domain_entity))
+  onSectionCreated() {
+    this.created();
+    this.loadList();
   }
 
-  openSection(pkEntity: number) {
-    this.router.navigate(['section', pkEntity], {
-      relativeTo: this.activatedRoute, queryParamsHandling: 'merge'
+  openSection(pkEntity) {
+    this.p.addTab({
+      active: true,
+      component: 'section-detail',
+      icon: 'section',
+      pathSegment: 'sectionDetails',
+      data: {
+        pkEntity
+      }
     })
   }
 

@@ -1,8 +1,7 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { List } from './list.models';
-import { SearchResponse } from '../../information/api/information.models';
+import { List, SearchResponse } from './list.models';
 import { EntityType } from 'app/core/state/models/data-unit-preview';
 
 type Payload = List;

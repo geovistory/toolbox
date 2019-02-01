@@ -44,4 +44,4 @@
 </div>
 
 <gv-entity-association-create-or-add class="gv-tile-body" *ngIf="(create$ |async)" [basePath]="basePath.concat('create')"
-  (done)="openSectionFromEntityAssociation($event)" (cancel)="stopCreate()"></gv-entity-association-create-or-add>
+  (done)="onSectionCreated($event)" (cancel)="stopCreate()"></gv-entity-association-create-or-add>

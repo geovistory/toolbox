@@ -1,18 +1,27 @@
+<!-- Search filter tabs -->
+<ul  *ngIf="showTeEnPeItFilter"  class="nav gv-search-filter border-bottom border-top">
+
+  <li *ngFor="let type of typeOptions" class="nav-item" (click)="dataUnitTypeChange(type)">
+    <button class="btn btn-sm btn-link nav-link" [ngClass]="{'font-weight-bold': selectedType === type}" [innerHtml]="type.label"></button>
+  </li>
+ 
+  </ul>
+
 <!-- Search input -->
-<div class="mx-3 mt-3 mb-2" >
+<div class="mx-3 mt-3 mb-2 d-flex">
 
   <div class="input-group ">
 
 
-    <div ngbDropdown *ngIf="showTeEnPeItFilter" class="input-group-prepend">
+    <!-- <div ngbDropdown *ngIf="showTeEnPeItFilter" class="input-group-prepend">
       <button type="button" class="btn btn-outline-secondary" ngbDropdownToggle [innerHtml]="selectedType.label"></button>
       <div ngbDropdownMenu>
         <button class="dropdown-item" *ngFor="let type of typeOptions" (click)="dataUnitTypeChange(type, $event)" [innerHtml]="type.label"></button>
       </div>
-    </div>
+    </div> -->
 
     <input type="text" name="searchString" class="form-control" aria-describedby="search" autocomplete="off"
-      placeholder="Search …" [(ngModel)]="searchString" (keydown)="searchKeydown($event)">
+      placeholder="Search …" [(ngModel)]="searchString" (keydown)="searchKeydown($event)" autofocus>
 
     <span class="input-group-append">
       <button class="btn btn-primary" type="button" (click)="searchStringChange()">
@@ -20,20 +29,11 @@
       </button>
     </span>
   </div>
+
+  <ng-content select="[addBtn]"></ng-content>
+    
 </div>
 
-<!-- Search filter tabs -->
-<!-- <ul class="nav gv-search-filter">
-                <li class="nav-item">
-                  <button class="btn btn-sm btn-link nav-link">[All]</button>
-                </li>
-                <li class="nav-item">
-                  <button class="btn btn-sm btn-link nav-link active">Entities</button>
-                </li>
-                <li class="nav-item">
-                  <button class="btn btn-sm btn-link nav-link">[Phenomena]</button>
-                </li>
-              </ul> -->
 
 <!-- Results count -->
 <div class="mx-3 mb-3 px-3 text-muted font-sm" *ngIf="!(loading$ | async)">
@@ -46,13 +46,13 @@
 <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
 
 <!-- Results -->
-<div class="d-flex gv-fh mx-3 py-1 px-3 border-light border-top border-bottom gv-scroll-y-auto" *ngIf="!(loading$ | async)">
+<div class="d-flex gv-fh mx-0 py-1 px-3 border-light gv-scroll-y-auto" *ngIf="!(loading$ | async)">
   <gv-entity-search-hit *ngFor="let hit of (items$ | async)" [hit]="hit" (onSelectAsMentioned)="selectMentionedEntity($event)"
-    (onOpen)=onOpen.emit($event)></gv-entity-search-hit>
+    (onOpenEntityPreview)=onOpen.emit($event)></gv-entity-search-hit>
 </div>
 
 <!-- Pagination -->
-<div class="m-3" *ngIf="!(loading$ | async)">
+<div class="mx-3 my-2" *ngIf="!(loading$ | async)">
   <ngb-pagination class="mb-0" *ngIf="collectionSize > limit" [maxSize]="5" [collectionSize]="collectionSize" [(page)]="page"
     [pageSize]="limit" (pageChange)="pageChange()" aria-label="Default pagination"></ngb-pagination>
 </div>

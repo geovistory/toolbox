@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { Params, Router, UrlSegment, UrlSegmentGroup } from '@angular/router';
-import { ComConfig, IAppState, InfChunk, ProjectDetail, PropertyList, U } from 'app/core';
+import { ComConfig, IAppState, InfChunk, ProjectDetail, PropertyList, U, Panel } from 'app/core';
 import { without } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
 import { first, map, distinctUntilChanged } from 'rxjs/operators';
@@ -12,6 +12,7 @@ import { ComProject } from '../sdk/models/ComProject';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
+import { ProjectCrm, Tab, ClassConfig } from './active-project.models';
 
 
 
@@ -21,6 +22,9 @@ export class ActiveProjectService {
 
   public activeProject$: Observable<ProjectDetail>;
   public pkProject$: Observable<number>;
+  public panels$: Observable<Panel[]>
+  public crm$: Observable<ProjectCrm>
+  public focusedPanel$: Observable<boolean>;
 
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
@@ -37,6 +41,10 @@ export class ActiveProjectService {
 
     this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']);
+    this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
+    this.crm$ = ngRedux.select<ProjectCrm>(['activeProject', 'crm']);
+
+    this.focusedPanel$ = ngRedux.select<boolean>(['activeProject', 'focusedPanel']);
 
     // emits true if no toolbox panel is opened
     this.dashboardVisible$ = combineLatest(
@@ -222,6 +230,11 @@ export class ActiveProjectService {
     }
   }
 
+
+  getClassConfig(pkClass): Observable<ClassConfig> {
+    return this.ngRedux.select<ClassConfig>(['activeProject', 'crm', 'classes', pkClass])
+  }
+
   /**
    * Filters a given array of InfRoles by a filter function that applies to DfhProperty
    */
@@ -253,81 +266,35 @@ export class ActiveProjectService {
     this.ngRedux.dispatch(this.actions.setMentioningsFocusedInTable(pks))
   }
 
-  /**
-   * Provide sources or/and information to update this UrlSegmentGroup of the Ng UrlTree
-   *
-   * @param sources the new UrlSegmentGroup for sources
-   * @param information the new UrlSegmentGroup for information
-   */
-  private createNewUrl(newSources: UrlSegmentGroup | null, newInformation: UrlSegmentGroup | null, newQueryParams: Params): string {
-    let urlTree = this.router.parseUrl(this.router.url);
+  /************************************************************************************
+  * Layout
+  ************************************************************************************/
 
-    urlTree = {
-      ...urlTree,
-      queryParams: {
-        ...urlTree.queryParams,
-        ...newQueryParams
-      },
-      root: new UrlSegmentGroup(
-        urlTree.root.segments,
-        {
-          primary: new UrlSegmentGroup(
-            [
-              new UrlSegment('projects', {}),
-              new UrlSegment(this.ngRedux.getState().activeProject.pk_project.toString(), {}),
-              new UrlSegment('edit', {})
-            ],
-            {
-              information: (newInformation ? newInformation : urlTree.root.children.primary.children.information),
-              sources: (newSources ? newSources : urlTree.root.children.primary.children.sources)// TODO if not available, set it to 'search'
-            }
-          )
-        }
-      )
-    }
-    return this.router.serializeUrl(urlTree)
-
+  // Tab modifications
+  activateTab(panelIndex: number, tabIndex: number) {
+    this.ngRedux.dispatch(this.actions.activateTab(panelIndex, tabIndex))
+  }
+  moveTab(previousPanelIndex: number, currentPanelIndex: number, previousTabIndex: number, currentTabIndex: number) {
+    this.ngRedux.dispatch(this.actions.moveTab(previousPanelIndex, currentPanelIndex, previousTabIndex, currentTabIndex))
+  }
+  closeTab(panelIndex: number, tabIndex: number) {
+    this.ngRedux.dispatch(this.actions.closeTab(panelIndex, tabIndex))
+  }
+  addTab(tab: Tab) {
+    this.ngRedux.dispatch(this.actions.addTab(tab))
+  }
+  focusPanel(panelIndex: number) {
+    this.ngRedux.dispatch(this.actions.focusPanel(panelIndex))
+  }
+  splitPanel(previousPanelIndex: number, tabIndex: number, currentPanelIndex: number) {
+    this.ngRedux.dispatch(this.actions.splitPanel(previousPanelIndex, tabIndex, currentPanelIndex))
   }
 
-  navigateToDataUnit(pk: number) {
-
-    const newUrl = this.createNewUrl(
-      null,
-      new UrlSegmentGroup([new UrlSegment('entity', {}), new UrlSegment(pk.toString(), {})], {}),
-      { 'i': 'on' }
-    )
-
-    this.router.navigateByUrl(newUrl)
+  // Tab data selections
+  getTabTitle(path: string[]): Observable<string> {
+    return this.ngRedux.select<string>([...path, 'tabTitle']);
   }
-
-  navigateToSource(pk: number) {
-
-    const newUrl = this.createNewUrl(
-      new UrlSegmentGroup([new UrlSegment(pk.toString(), {})], {}),
-      null,
-      { 's': 'on' }
-    )
-
-    this.router.navigateByUrl(newUrl)
+  getTabLoading(path: string[]): Observable<boolean> {
+    return this.ngRedux.select<boolean>([...path, 'loading']);
   }
-
-  navigateToSection(sourcePk: number, sectionPk: number) {
-
-
-    const newUrl = this.createNewUrl(
-      new UrlSegmentGroup([
-        new UrlSegment(sourcePk.toString(), {}),
-        new UrlSegment('section', {}),
-        new UrlSegment(sectionPk.toString(), {})
-      ], {}),
-      null,
-      { 's': 'on' }
-    )
-
-    this.router.navigateByUrl(newUrl)
-  }
-
-
-
-
 }

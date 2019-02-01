@@ -1,4 +1,14 @@
-import { EntitySearchHit } from '../../information/api/information.models';
+import { EntityPreview } from 'app/core';
+
+export interface EntitySearchHit extends EntityPreview {
+    full_text_headline?: string;
+    class_label_headline?: string;
+    entity_label_headline?: string;
+    type_label_headline?: string;
+    projects?: number[]
+}
+
+export interface SearchResponse { data: EntitySearchHit[], totalCount: number };
 
 // Class of this slice of store
 export class List implements List {
@@ -16,5 +26,11 @@ export class List implements List {
 
     constructor(data?: List) {
         Object.assign(this, data);
+
+        if (true) {
+
+        } else {
+
+        }
     }
 }
