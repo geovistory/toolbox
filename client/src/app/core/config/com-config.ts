@@ -14,7 +14,7 @@ export class ComConfig {
     // Toolbox-wide context
     static readonly PK_UI_CONTEXT_ADD = 47;
 
-    // DataUnits context
+    // Entities context
     static readonly PK_UI_CONTEXT_DATAUNITS_EDITABLE = 45;
     static readonly PK_UI_CONTEXT_DATAUNITS_CREATE = 46;
 

@@ -6,7 +6,7 @@ import { PeItFormBase } from '../pe-it-form.base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
 import { RootEpics } from 'app/core/store/epics';
-import { DataUnitAPIEpics } from '../../data-unit.epics';
+import { EntityAPIEpics } from '../../data-unit.epics';
 
 
 @WithSubStore({
@@ -35,9 +35,9 @@ export class PeItCreateFormComponent extends PeItFormBase {
     protected actions: PeItActions,
     protected fb: FormBuilder,
     protected rootEpics: RootEpics,
-    protected dataUnitEpics: DataUnitAPIEpics
+    protected entityEpics: EntityAPIEpics
   ) {
-    super(ngRedux, actions, fb, rootEpics, dataUnitEpics)
+    super(ngRedux, actions, fb, rootEpics, entityEpics)
 
     this.subscribeFormChanges();
 

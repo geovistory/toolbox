@@ -5,7 +5,7 @@ import { ComConfig, InfEntityProjectRel, InfPersistentItem, InfTemporalEntity, U
 import { PeItCtrlBase } from '../pe-it-ctrl.base';
 import { PeItActions } from '../pe-it.actions';
 import { RootEpics } from 'app/core/store/epics';
-import { DataUnitAPIEpics } from '../../data-unit.epics';
+import { EntityAPIEpics } from '../../data-unit.epics';
 
 @Component({
   selector: 'gv-pe-it-add-ctrl',
@@ -36,9 +36,9 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
     protected fb: FormBuilder,
     protected ref: ChangeDetectorRef,
     protected rootEpics: RootEpics,
-    protected dataUnitEpics: DataUnitAPIEpics
+    protected entityEpics: EntityAPIEpics
   ) {
-    super(ngRedux, actions, fb, rootEpics, dataUnitEpics)
+    super(ngRedux, actions, fb, rootEpics, entityEpics)
     console.log('PeItAddCtrlComponent')
 
   }

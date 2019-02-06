@@ -43,7 +43,7 @@ export class ListAPIEpics {
           /**
            * Do some api call
            */
-          this.entityPreviewApi.search(action.meta.pkProject, action.meta.searchString, action.meta.pkClasses, action.meta.dataUnitType, action.meta.limit, action.meta.page)
+          this.entityPreviewApi.search(action.meta.pkProject, action.meta.searchString, action.meta.pkClasses, action.meta.entityType, action.meta.limit, action.meta.page)
             /**
              * Subscribe to the api call
              */

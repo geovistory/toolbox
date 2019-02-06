@@ -226,7 +226,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
         * Data cache
         ************************************************************************************/
         /***************************************************
-        * Reducers to load DataUnitPreview
+        * Reducers to load EntityPreview
         ****************************************************/
         case ActiveProjectActions.LOAD_ENTITY_PREVIEW:
             state = {
@@ -257,10 +257,10 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             break;
 
         /*****************************************************
-        * Load a Data Unit Details for display in Modals
+        * Load a Entity Details for display in Modals
         *****************************************************/
 
-        case ActiveProjectActions.LOAD_DATA_UNIT_DETAIL_FOR_MODAL:
+        case ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL:
             state = {
                 ...state,
                 peItModals: {

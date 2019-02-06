@@ -3,7 +3,7 @@ import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { InfTemporalEntity } from 'app/core';
 import { TeEntDetail, CollapsedExpanded, ExistenceTimeDetail, TeEntAccentuation } from 'app/core/state/models';
-import { DataUnitActions } from '../data-unit.actions';
+import { EntityActions } from '../data-unit.actions';
 
 
 // replace TeEnt with name of component
@@ -18,7 +18,7 @@ interface MetaData {
 export type TeEntAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
-export class TeEntActions extends DataUnitActions {
+export class TeEntActions extends EntityActions {
 
 
   static readonly SET_TOGGLE = 'SET_TOGGLE';

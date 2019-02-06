@@ -96,9 +96,9 @@ export class EntityDetailComponent extends EntityDetailAPIActions implements OnI
         takeUntil(this.destroy$)
       ).subscribe(([du, pkProject]) => {
         if (du.entity_type === 'peIt') {
-          this.openEntityEditor(du.pk_entity, pkProject);
+          this.openPersistentEntityEditor(du.pk_entity, pkProject);
         } else if (du.entity_type === 'teEn') {
-          this.openPhenomenonEditor(du.pk_entity, pkProject);
+          this.openTemporalEntityEditor(du.pk_entity, pkProject);
         }
       })
 

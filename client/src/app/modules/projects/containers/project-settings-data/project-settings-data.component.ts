@@ -4,7 +4,7 @@ import { Subject, Observable, combineLatest, BehaviorSubject } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
 import { IAppState, ProjectDetail, DfhClassProfileView } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { ProjectSettingsData, ClassItemI, DataUnitType } from './api/project-settings-data.models';
+import { ProjectSettingsData, ClassItemI, EntityType } from './api/project-settings-data.models';
 import { ProjectSettingsDataAPIEpics } from './api/project-settings-data.epics';
 import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
 import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';
@@ -45,14 +45,14 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   text$ = new BehaviorSubject<string>('');
   debouncedText$: Observable<string>;
 
-  // Data unit type Filter
+  // Entity type Filter
   typeOptions = [
     { value: undefined, label: 'All' },
-    { value: 'peIt', label: '<i class="gv-icon gv-icon-entity"></i> Entity Classes' },
-    { value: 'teEnt', label: '<i class="fa fa-star-o"></i> Phenomenon Classes' }
+    { value: 'peIt', label: '<i class="gv-icon gv-icon-entity"></i> Persistent Entity Classes' },
+    { value: 'teEnt', label: '<i class="fa fa-star-o"></i> Temporal Entity Classes' }
   ]
   selectedType: { value: any, label: string } = this.typeOptions[0];
-  dataUnitType$ = new BehaviorSubject<DataUnitType>(undefined);
+  entityType$ = new BehaviorSubject<EntityType>(undefined);
 
   // Status Filter
   statusOptions = [
@@ -136,18 +136,18 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
       return 0;
     };
 
-    combineLatest(this.debouncedText$, this.items$, this.dataUnitType$, this.status$, this.profile$).subscribe((d) => {
-      const text = d[0], items = d[1], dataUnitType = d[2], status = d[3], profile = d[4];
+    combineLatest(this.debouncedText$, this.items$, this.entityType$, this.status$, this.profile$).subscribe((d) => {
+      const text = d[0], items = d[1], entityType = d[2], status = d[3], profile = d[4];
 
       if (items && items.length) {
 
         this.filteredItems$.next(
-          (text === '' && dataUnitType === undefined && status === undefined && profile === undefined) ? items.sort(sortFn) :
+          (text === '' && entityType === undefined && status === undefined && profile === undefined) ? items.sort(sortFn) :
             items.filter(item => (
               // filter for search term
               (text === '' || item.scopeNote.toLowerCase().indexOf(text.toLowerCase()) > -1)
-              // filter for dataUnitType
-              && (dataUnitType === undefined || item.dataUnitType === dataUnitType)
+              // filter for entityType
+              && (entityType === undefined || item.entityType === entityType)
               // filter for status
               && (status === undefined || status === (!item.projRel ? false : item.projRel.is_in_project))
               // filter for profiles
@@ -178,15 +178,15 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   /**
    * Called when user changes to see only teEnt / peIt or all classes
    */
-  dataUnitTypeChange(type) {
+  entityTypeChange(type) {
     this.selectedType = type;
-    this.dataUnitType$.next(type.value)
+    this.entityType$.next(type.value)
   }
 
   /**
  * Called when user changes to see only enabled / disabled or all classes
  */
-  dataUnitStatusChange(status) {
+  entityStatusChange(status) {
     this.selectedStatus = status;
     this.status$.next(status.value)
   }
@@ -194,7 +194,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   /**
    * Called when user changes the profile filter
    */
-  dataUnitProfileChange(profile) {
+  entityProfileChange(profile) {
     this.selectedProfile = profile;
     this.profile$.next(profile.value)
   }

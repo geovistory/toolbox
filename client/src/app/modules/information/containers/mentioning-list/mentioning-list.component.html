@@ -5,7 +5,7 @@
 
     <div *ngIf="(mentioningListType$|async) === 'ofSource' || (mentioningListType$|async) === 'ofSection'" class="gv-grow-1">
       <!-- <i class="fa fa-fw gv-icon gv-icon-information-simple"></i> -->
-      <span>Mentioned Data Units</span>
+      <span>Mentioned Entities</span>
     </div>
 
     <div *ngIf="(mentioningListType$|async) === 'ofEntity'" class="gv-grow-1">
@@ -51,37 +51,37 @@
   </ngx-table>
 
   <i class="alert alert-light" *ngIf="!data.length && (mentioningListType$|async) === 'ofSource'">
-    <p>Add links between this Source and Data Units (right side panel).</p>
-    <p>By creating such links, you state what Data Units are mentioned in this Source.</p>
+    <p>Add links between this Source and Entities (right side panel).</p>
+    <p>By creating such links, you state what Entities are mentioned in this Source.</p>
     <p>To add links to more specific sections of this source (e.g. a page or even words in a transctiption), use
       «Sections and digital reproductions».</p>
 
   </i>
 
   <i class="alert alert-light" *ngIf="!data.length && (mentioningListType$|async) === 'ofSection'">
-    <p>Add links between this Section and Data Units (right side panel).</p>
-    <p>By creating such links, you state what Data Units are mentioned in this Section.</p>
+    <p>Add links between this Section and Entities (right side panel).</p>
+    <p>By creating such links, you state what Entities are mentioned in this Section.</p>
 
-    To annotate a Data Unit in a transcription of this section:
+    To annotate an Entity in a transcription of this section:
     <ol>
       <li>Go to «Digital reproductions -> Text»</li>
       <li>Select some word(s) </li>
       <li>click on annotate.</li>
     </ol>
 
-    Soon you will be able to link Data Units with:
+    Soon you will be able to link Entities with:
     <ul>
       <li>Cells of tables.</li>
       <li>Spots in images.</li>
     </ul>
   </i>
   <i class="alert alert-light" *ngIf="!data.length && (mentioningListType$|async) === 'ofEntity'">
-    Link this Data Unit with
+    Link this Entity with
     <ul>
       <li>Sources (Books, Articles, Manuscripts, etc.), or</li>
       <li>Sections (Pages, Chapters, Sheets, etc.).</li>
     </ul>
-    By creating such links, you state in where the Data Unit is mentioned.
+    By creating such links, you state in where the Entity is mentioned.
   </i>
 </div>
 

@@ -6,7 +6,7 @@ import { PeItCtrlBase } from '../pe-it-ctrl.base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
 import { RootEpics } from 'app/core/store/epics';
-import { DataUnitAPIEpics } from '../../data-unit.epics';
+import { EntityAPIEpics } from '../../data-unit.epics';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -40,10 +40,10 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
     protected actions: PeItActions,
     protected fb: FormBuilder,
     protected rootEpics: RootEpics,
-    protected dataUnitEpics: DataUnitAPIEpics,
+    protected entityEpics: EntityAPIEpics,
     private ref: ChangeDetectorRef
   ) {
-    super(ngRedux, actions, fb, rootEpics, dataUnitEpics)
+    super(ngRedux, actions, fb, rootEpics, entityEpics)
   }
 
 

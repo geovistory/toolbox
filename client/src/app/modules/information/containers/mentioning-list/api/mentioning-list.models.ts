@@ -15,7 +15,7 @@ export interface Mentioning {
 export type MentioningListType =
     'ofSection' // if the list is embeded on a screen of a section (F2 Expression) showing mentioned entities
     | 'ofSource' // if the list is embeded on a screen of a source (F3/F4/F5) showing mentioned entities
-    | 'ofEntity' // if the list is embeded on a screen of a DataUnit showing sources that mention the entity
+    | 'ofEntity' // if the list is embeded on a screen of a Entity showing sources that mention the entity
     ;
 
 // Class of this slice of store

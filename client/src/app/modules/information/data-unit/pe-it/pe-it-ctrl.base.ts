@@ -4,11 +4,11 @@ import { ControlValueAccessor, FormBuilder } from '@angular/forms';
 import { InfPersistentItem } from 'app/core';
 import { PeItDetail } from 'app/core/state/models';
 import { Observable } from 'rxjs';
-import { DataUnitBase } from '../data-unit.base';
+import { EntityBase } from '../data-unit.base';
 import { PeItActions } from './pe-it.actions';
 import { peItReducer } from './pe-it.reducer';
 import { RootEpics } from 'app/core/store/epics';
-import { DataUnitAPIEpics } from '../data-unit.epics';
+import { EntityAPIEpics } from '../data-unit.epics';
 
 
 
@@ -25,7 +25,7 @@ import { DataUnitAPIEpics } from '../data-unit.epics';
     localReducer: peItReducer,
     basePathMethodName: 'getBasePath'
 })
-export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueAccessor, OnInit {
+export abstract class PeItCtrlBase extends EntityBase implements ControlValueAccessor, OnInit {
 
 
     @Input() basePath: string[];
@@ -46,9 +46,9 @@ export abstract class PeItCtrlBase extends DataUnitBase implements ControlValueA
         protected actions: PeItActions,
         protected fb: FormBuilder,
         protected rootEpics: RootEpics,
-        protected dataUnitEpics: DataUnitAPIEpics
+        protected entityEpics: EntityAPIEpics
     ) {
-        super(ngRedux, fb, rootEpics, dataUnitEpics);
+        super(ngRedux, fb, rootEpics, entityEpics);
         this.initForm()
     }
 

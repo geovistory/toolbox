@@ -9,8 +9,8 @@ import { SectionList } from 'app/modules/information/containers/section-list/api
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { slideInOut } from '../../../shared/animations';
-import { DataUnitBase } from '../../data-unit.base';
-import { DataUnitAPIEpics } from '../../data-unit.epics';
+import { EntityBase } from '../../data-unit.base';
+import { EntityAPIEpics } from '../../data-unit.epics';
 import { PeItApiEpics } from '../api/pe-it.epics';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
@@ -30,7 +30,7 @@ import { TextPropertyField } from 'app/core/state/models/text-property-field';
   changeDetection: ChangeDetectionStrategy.OnPush,
 
 })
-export class PeItEditableComponent extends DataUnitBase implements AfterViewInit, SubstoreComponent {
+export class PeItEditableComponent extends EntityBase implements AfterViewInit, SubstoreComponent {
 
   @Input() basePath: string[];
 
@@ -106,9 +106,9 @@ export class PeItEditableComponent extends DataUnitBase implements AfterViewInit
     protected ngRedux: NgRedux<IAppState>,
     protected actions: PeItActions,
     protected fb: FormBuilder,
-    protected dataUnitEpics: DataUnitAPIEpics
+    protected entityEpics: EntityAPIEpics
   ) {
-    super(ngRedux, fb, rootEpics, dataUnitEpics);
+    super(ngRedux, fb, rootEpics, entityEpics);
     console.log('PeItEditableComponent')
   }
 

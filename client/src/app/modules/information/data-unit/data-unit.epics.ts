@@ -5,10 +5,10 @@ import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil, filter } from 'rxjs/operators';
-import { DataUnitActions } from './data-unit.actions';
+import { EntityActions } from './data-unit.actions';
 import { PropertyFieldActions, PropertyFieldAction } from '../property-field/property-field.actions';
 import { startsWith } from 'ramda';
-import { DataUnitBase } from './data-unit.base';
+import { EntityBase } from './data-unit.base';
 import { TextPropertyFieldAPIActions } from '../containers/text-property-field/api/text-property-field.actions';
 
 /**
@@ -30,19 +30,19 @@ const ofDirectChild = (path: string[]) => (action): boolean => {
 
 
 @Injectable()
-export class DataUnitAPIEpics {
+export class EntityAPIEpics {
     constructor(
-        private actions: DataUnitActions
+        private actions: EntityActions
     ) { }
 
-    public createEpics(c: DataUnitBase): Epic {
+    public createEpics(c: EntityBase): Epic {
         return combineEpics(this.removeRoleFromRoleListEpic(c));
     }
 
     /**
      * listenes to remove role set action and removes it from _fields
      */
-    private removeRoleFromRoleListEpic(c: DataUnitBase): Epic {
+    private removeRoleFromRoleListEpic(c: EntityBase): Epic {
         return (action$, store) => {
             return action$.pipe(
                 /**

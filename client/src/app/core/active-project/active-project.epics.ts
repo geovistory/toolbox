@@ -41,8 +41,7 @@ export class ActiveProjectEpics {
       this.createLoadProjectEpic(),
       this.createLoadCrmEpic(),
       this.createLoadProjectUpdatedEpic(),
-      // this.createLoadDataUnitPreviewEpic(),
-      this.createLoadDataUnitDetailForModalEpic(),
+      this.createLoadEntityDetailForModalEpic(),
       this.createLoadChunkEpic(),
       this.createLoadPeItGraphEpic(),
       this.createLoadTeEnGraphEpic(),
@@ -221,67 +220,13 @@ export class ActiveProjectEpics {
     }
   }
 
-  // private createLoadDataUnitPreviewEpic(): Epic {
-  //   return (action$, store) => {
-  //     return action$.pipe(
-  //       /**
-  //        * Filter the actions that triggers this epic
-  //        */
-  //       ofType(ActiveProjectActions.LOAD_DATA_UNIT_PREVIEW),
-  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-  //         /**
-  //          * Emit the global action that activates the loading bar
-  //          */
-  //         globalStore.next(this.loadingBarActions.startLoading());
-
-  //         /**
-  //          * Do some api call
-  //          */
-  //         this.duApi.findComplex({
-  //           where: ['fk_project', '=', action.meta.pk_project, 'AND', 'pk_entity', '=', action.meta.pk_entity]
-  //         })
-  //           /**
-  //          * Subscribe to the api call
-  //          */
-  //           .subscribe((data: InfDataUnitPreview[]) => {
-  //             /**
-  //              * Emit the global action that completes the loading bar
-  //              */
-  //             globalStore.next(this.loadingBarActions.completeLoading());
-
-  //             /**
-  //              * Emit the local action on loading succeeded
-  //              */
-  //             globalStore.next(this.actions.loadDataUnitPreviewSucceeded(data[0] as DataUnitPreview));
-
-  //           }, error => {
-  //             /**
-  //             * Emit the global action that shows some loading error message
-  //             */
-  //             globalStore.next(this.loadingBarActions.completeLoading());
-  //             globalStore.next(this.notificationActions.addToast({
-  //               type: 'error',
-  //               options: {
-  //                 title: error.message
-  //               }
-  //             }));
-  //             /**
-  //              * Emit the local action on loading failed
-  //              */
-  //             globalStore.next(this.actions.loadDataUnitPreviewFailed({ status: '' + error.status }))
-  //           })
-  //       }))
-  //     )
-  //   }
-  // }
-
-  private createLoadDataUnitDetailForModalEpic(): Epic {
+  private createLoadEntityDetailForModalEpic(): Epic {
     return (action$, store) => {
       return action$.pipe(
         /**
          * Filter the actions that triggers this epic
          */
-        ofType(ActiveProjectActions.LOAD_DATA_UNIT_DETAIL_FOR_MODAL),
+        ofType(ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL),
         mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
@@ -340,7 +285,7 @@ export class ActiveProjectEpics {
               /**
                * Emit the local action on loading failed
                */
-              globalStore.next(this.actions.loadDataUnitDetailsForModalFailed({ status: '' + error.status }))
+              globalStore.next(this.actions.loaEntitytDetailsForModalFailed({ status: '' + error.status }))
             })
         }))
       )

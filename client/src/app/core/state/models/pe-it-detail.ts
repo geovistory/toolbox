@@ -1,13 +1,13 @@
 import { InfPersistentItem } from 'app/core/sdk';
 import { TimeLineSettings } from 'app/modules/timeline/models/timeline';
-import { DataUnit } from './data-unit';
+import { Entity } from './data-unit';
 import { SectionList } from 'app/modules/information/containers/section-list/api/section-list.models';
 import { Repros } from 'app/modules/information/containers/repros/api/repros.models';
 import { MentioningList } from 'app/modules/information/containers/mentioning-list/api/mentioning-list.models';
 
 export interface PeItDetailList { [pk_entity: number]: PeItDetail };
 
-export class PeItDetail extends DataUnit {
+export class PeItDetail extends Entity {
 
     // record
     peIt?: InfPersistentItem;

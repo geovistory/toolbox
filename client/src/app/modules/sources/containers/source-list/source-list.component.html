@@ -4,7 +4,7 @@
     <div class="h3 mr-auto">
         Your Sources
     </div>
-    <gv-class-and-type-selector addBtn buttonClass="btn-primary no-caret mr-0" class="ml-2" *ngIf="(p.pkProject$ |async) && (p.crm$ | async)"
+    <gv-class-and-type-selector addBtn buttonClass="btn-primary btn-sm no-caret mr-0" class="ml-2" *ngIf="(p.pkProject$ |async) && (p.crm$ | async)"
       [pkClasses]="pkClassesOfAddBtn" [pkProject]="(p.pkProject$ |async)" [basePath]="basePath.concat('classAndTypeSelector')"
       (select)="startCreate($event, pkUiContextCreate)" buttonText="+ Add" placement="right"></gv-class-and-type-selector>
   </div>

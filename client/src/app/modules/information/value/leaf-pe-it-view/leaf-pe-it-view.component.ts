@@ -124,7 +124,7 @@ export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnI
   open() {
 
 
-    this.p.loadDataUnitDetailForModal(this.pkEntity);
+    this.p.loadEntityDetailForModal(this.pkEntity);
 
     const navigate = () => {
       if (this.openIn === 'information') {

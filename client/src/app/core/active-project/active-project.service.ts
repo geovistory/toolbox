@@ -60,12 +60,12 @@ export class ActiveProjectService {
 
     this.entityPreviewSocket.fromEvent<EntityPreview>('entityPreview').subscribe(data => {
       console.log(data)
-      // dispatch a method to put the DataUnitPreview to the store
+      // dispatch a method to put the EntityPreview to the store
       this.ngRedux.dispatch(this.actions.loadEntityPreviewSucceeded(data))
     })
 
     this.entityPreviewSocket.fromEvent('reconnect').subscribe(disconnect => {
-      // get all DataUnitPreview keys from state and send them to the
+      // get all EntityPreview keys from state and send them to the
       // server so that they will be streamed. This is important for
       // when connection was lost.
       combineLatest(this.pkProject$, this.activeProject$).pipe(first(items => items.filter(item => !item).length === 0))
@@ -220,15 +220,15 @@ export class ActiveProjectService {
   }
 
   /**
-   * Loads a DataUnit Detail (PeItDetail or TeEnDetail) in cache for display in Modals
+   * Loads a Entity Detail (PeItDetail or TeEnDetail) in cache for display in Modals
    *
    * @param pkEntity
    * @param forceReload
    */
-  loadDataUnitDetailForModal(pkEntity: number, forceReload = true, pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE) {
+  loadEntityDetailForModal(pkEntity: number, forceReload = true, pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE) {
     const state = this.ngRedux.getState();
     if (!(((state || {}).activeProject || {}).peItModals || {})[pkEntity] || forceReload) {
-      this.ngRedux.dispatch(this.actions.loadDataUnitDetailForModal(state.activeProject.pk_project, pkEntity, pkUiContext))
+      this.ngRedux.dispatch(this.actions.loadEntityDetailForModal(state.activeProject.pk_project, pkEntity, pkUiContext))
     }
   }
 

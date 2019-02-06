@@ -1,28 +1,26 @@
-import { indexBy, prop, clone } from 'ramda';
-import { Action } from 'redux';
-import { ProjectSettingsData, ClassItemI, DataUnitType } from './project-settings-data.models';
-import { ProjectSettingsDataAPIAction, ProjectSettingsDataAPIActions } from './project-settings-data.actions';
 import { DfhClass, DfhClassProfileView, U } from 'app/core';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { DfhProjRel } from 'app/core/sdk/models/DfhProjRel';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { clone } from 'ramda';
+import { Action } from 'redux';
+import { ProjectSettingsDataAPIAction, ProjectSettingsDataAPIActions } from './project-settings-data.actions';
+import { ClassItemI, EntityType, ProjectSettingsData } from './project-settings-data.models';
 
 const INITIAL_STATE = new ProjectSettingsData();
 
 /**
  * inits for this item whether this is a TeEn or PeIt
  */
-const initDataUnitType = (dfhClass: DfhClass): DataUnitType => {
+const initEntityType = (dfhClass: DfhClass): EntityType => {
   if (dfhClass && dfhClass.class_profile_view.length) {
 
     const sysType = dfhClass.class_profile_view[0].dfh_fk_system_type;
 
     switch (sysType) {
       case DfhConfig.PK_SYSTEM_TYPE_TEMPORAL_ENTITY:
-        return 'teEnt'
-        break;
+        return 'teEnt';
       case DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM:
-        return 'peIt'
-        break;
+        return 'peIt';
     }
   }
 }
@@ -46,7 +44,7 @@ const classItemsFromDfhClasses = (classes: DfhClass[]): ClassItemI[] => {
   const classItems: ClassItemI[] = classes.map(c => ({
     pkEntity: c.pk_entity,
     pkClass: c.dfh_pk_class.toString(),
-    dataUnitType: initDataUnitType(c),
+    entityType: initEntityType(c),
     profileLabels: c.class_profile_view.map(prof => prof.dfh_profile_label).join(', '),
     profilePks: c.class_profile_view.map(prof => prof.dfh_fk_profile),
     projRel: getProjRel(c),

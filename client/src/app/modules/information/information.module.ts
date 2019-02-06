@@ -29,7 +29,7 @@ import { AppeLangCreateCtrlComponent } from './appe-lang/appe-lang-create-ctrl/a
 import { AddInfoPeItComponent } from './components/add-info-pe-it/add-info-pe-it.component';
 import { AddInfoTeEntComponent } from './components/add-info-te-ent/add-info-te-ent.component';
 import { ClassInfoComponent } from './components/class-info/class-info.component';
-import { DataUnitPreviewComponent } from './components/data-unit-preview/data-unit-preview.component';
+import { EntityPreviewComponent } from './components/data-unit-preview/data-unit-preview.component';
 import { EditorHeaderComponent } from './components/editor-header/editor-header.component';
 import { EntityAddExistingHitComponent } from './components/entity-add-existing-hit/entity-add-existing-hit.component';
 import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
@@ -76,8 +76,8 @@ import { TextEditorComponent } from './containers/text-editor/text-editor.compon
 import { TextPropertyFieldAPIActions } from './containers/text-property-field/api/text-property-field.actions';
 import { TextPropertyFieldAPIEpics } from './containers/text-property-field/api/text-property-field.epics';
 import { TextPropertyFieldComponent } from './containers/text-property-field/text-property-field.component';
-import { DataUnitActions } from './data-unit/data-unit.actions';
-import { DataUnitAPIEpics } from './data-unit/data-unit.epics';
+import { EntityActions } from './data-unit/data-unit.actions';
+import { EntityAPIEpics } from './data-unit/data-unit.epics';
 import { PeItApiEpics } from './data-unit/pe-it/api/pe-it.epics';
 import { PeItAddCtrlComponent } from './data-unit/pe-it/pe-it-add-ctrl/pe-it-add-ctrl.component';
 import { PeItCreateCtrlComponent } from './data-unit/pe-it/pe-it-create-ctrl/pe-it-create-ctrl.component';
@@ -217,13 +217,13 @@ import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-de
     // Classe and Type select
     ClassAndTypeSelectorComponent,
 
-    // Data Unit > PeIt
+    // Entity > PeIt
     PeItAddCtrlComponent,
     PeItCreateCtrlComponent,
     PeItEditableComponent,
     PeItCreateFormComponent,
 
-    // Data Unit > TeEnt
+    // Entity > TeEnt
     TeEntAddCtrlComponent,
     TeEntCreateCtrlComponent,
     TeEntEditableComponent,
@@ -300,7 +300,7 @@ import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-de
     TextPropertyFieldComponent,
     MentioningListComponent,
     MentioningCreateCtrlComponent,
-    DataUnitPreviewComponent,
+    EntityPreviewComponent,
     TileHeaderComponent,
 
   ],
@@ -320,11 +320,11 @@ import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-de
     ClassAndTypeSelectorAPIActions,
     ClassAndTypeSelectorAPIEpics,
 
-    // Data Unit
+    // Entity
     ListAPIEpics,
     ListAPIActions,
-    DataUnitAPIEpics,
-    DataUnitActions,
+    EntityAPIEpics,
+    EntityActions,
     PeItActions,
     PeItApiEpics,
     TeEntActions,
@@ -400,7 +400,7 @@ import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-de
     // Classe and Type select
     ClassAndTypeSelectorComponent,
 
-    // Data Unit > PeIt
+    // Entity > PeIt
     PeItAddCtrlComponent,
     PeItCreateCtrlComponent,
     PeItEditableComponent,
@@ -412,7 +412,7 @@ import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-de
     SectionListComponent,
     ReprosComponent,
 
-    // Data Unit > TeEnt
+    // Entity > TeEnt
     TeEntAddCtrlComponent,
     TeEntCreateCtrlComponent,
     TeEntEditableComponent,

@@ -39,20 +39,20 @@ export class EntityDetailAPIEpics {
 
   public createEpics(c: EntityDetailComponent): Epic {
     return combineEpics(
-      this.createLoadEntityEditorEpic(c),
-      this.createLoadPhenomenonEditorEpic(c),
+      this.createLoadPersistentEntityEditorEpic(c),
+      this.createLoadTemporalEntityEditorEpic(c),
       this.createRemovePeItEpic(c)
     );
   }
 
 
-  private createLoadEntityEditorEpic(c: EntityDetailComponent): Epic {
+  private createLoadPersistentEntityEditorEpic(c: EntityDetailComponent): Epic {
     return (action$, store) => {
       return action$.pipe(
         /**
          * Filter the actions that triggers this epic
          */
-        ofType(EntityDetailAPIActions.OPEN_ENTITY_EDITOR),
+        ofType(EntityDetailAPIActions.OPEN_PERSISTENT_ENTITY_EDITOR),
         filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: EntityDetailAPIAction) => new Observable<FluxStandardAction<any>>((globalStore) => {
           /**
@@ -88,7 +88,7 @@ export class EntityDetailAPIEpics {
               /**
                * Emit the local action on loading succeeded
                */
-              c.localStore.dispatch(this.actions.openEntityEditorSucceeded(peItDetail));
+              c.localStore.dispatch(this.actions.openPersistentEntityEditorSucceeded(peItDetail));
 
             }, error => {
               /**
@@ -98,7 +98,7 @@ export class EntityDetailAPIEpics {
               /**
               * Emit the local action on loading failed
               */
-              c.localStore.dispatch(this.actions.openEntityEditorFailed({ status: '' + error.status }))
+              c.localStore.dispatch(this.actions.openPersistentEntityEditorFailed({ status: '' + error.status }))
             })
         })),
         takeUntil(c.destroy$)
@@ -108,13 +108,13 @@ export class EntityDetailAPIEpics {
 
 
 
-  private createLoadPhenomenonEditorEpic(c: EntityDetailComponent): Epic {
+  private createLoadTemporalEntityEditorEpic(c: EntityDetailComponent): Epic {
     return (action$, store) => {
       return action$.pipe(
         /**
          * Filter the actions that triggers this epic
          */
-        ofType(EntityDetailAPIActions.OPEN_PHENOMENON_EDITOR),
+        ofType(EntityDetailAPIActions.OPEN_TEMPORAL_ENTITY_EDITOR),
         filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: EntityDetailAPIAction) => new Observable<FluxStandardAction<any>>((globalStore) => {
           /**
@@ -137,7 +137,7 @@ export class EntityDetailAPIEpics {
               /**
                * Emit the local action on loading succeeded
                */
-              c.localStore.dispatch(this.actions.openPhenomenonEditorSucceeded(teEntDetail));
+              c.localStore.dispatch(this.actions.openTemporalEntityEditorSucceeded(teEntDetail));
 
             }, error => {
               /**
@@ -147,7 +147,7 @@ export class EntityDetailAPIEpics {
               /**
               * Emit the local action on loading failed
               */
-              c.localStore.dispatch(this.actions.openPhenomenonEditorFailed({ status: '' + error.status }))
+              c.localStore.dispatch(this.actions.openTemporalEntityEditorFailed({ status: '' + error.status }))
             })
         })),
         takeUntil(c.destroy$)

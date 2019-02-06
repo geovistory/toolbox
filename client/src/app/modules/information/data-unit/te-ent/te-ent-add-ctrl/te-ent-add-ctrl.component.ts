@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angula
 import { ComConfig, InfEntityProjectRel, InfRole, InfTemporalEntity, U, UiContext } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { slideInOut } from '../../../shared/animations';
-import { DataUnitAPIEpics } from '../../data-unit.epics';
+import { EntityAPIEpics } from '../../data-unit.epics';
 import { TeEntCtrlBase } from '../te-ent-ctrl.base';
 import { TeEntActions } from '../te-ent.actions';
 
@@ -38,9 +38,9 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
     protected fb: FormBuilder,
     protected ref: ChangeDetectorRef,
     protected rootEpics: RootEpics,
-    protected dataUnitEpics: DataUnitAPIEpics
+    protected entityEpics: EntityAPIEpics
   ) {
-    super(ngRedux, actions, fb, rootEpics, dataUnitEpics)
+    super(ngRedux, actions, fb, rootEpics, entityEpics)
     console.log('TeEntAddCtrlComponent')
   }
 

@@ -1,44 +1,42 @@
 
-import { Action } from 'redux';
-import { DataUnitAction, DataUnitActions } from './data-unit.actions';
-import { DataUnit } from 'app/core/state/models';
-import { omit } from 'ramda'
-import { Meta } from '../../../../../node_modules/@angular/platform-browser';
+import { Entity } from 'app/core/state/models';
+import { omit } from 'ramda';
 import { sortChildrenByUiContext } from '../information.helpers';
+import { EntityAction, EntityActions } from './data-unit.actions';
 
-const INITIAL_STATE = new DataUnit({
+const INITIAL_STATE = new Entity({
   selectPropState: 'init',
   parentPeIt: null,
 });
 
 
-export const dataUnitReducer =
-  (state: DataUnit = INITIAL_STATE, action: DataUnitAction): DataUnit => {
+export const entityReducer =
+  (state: Entity = INITIAL_STATE, action: EntityAction): Entity => {
 
     switch (action.type) {
 
-      case DataUnitActions.ROLE_SET_LIST_DISPLAY_LABEL_UPDATED:
+      case EntityActions.ROLE_SET_LIST_DISPLAY_LABEL_UPDATED:
         state = {
           ...state,
           label: action.payload.label
         }
         break;
 
-      case DataUnitActions.START_SELECT_PROPERTY:
+      case EntityActions.START_SELECT_PROPERTY:
         state = {
           ...state,
           selectPropState: action.payload.selectPropState
         }
         break;
 
-      case DataUnitActions.STOP_SELECT_PROPERTY:
+      case EntityActions.STOP_SELECT_PROPERTY:
         state = {
           ...state,
           selectPropState: action.payload.selectPropState
         }
         break;
 
-      case DataUnitActions.ROLE_SET_ADDED:
+      case EntityActions.ROLE_SET_ADDED:
         state = {
           ...state,
           _fields: sortChildrenByUiContext(
@@ -52,7 +50,7 @@ export const dataUnitReducer =
         }
         break;
 
-      case DataUnitActions.ROLE_SET_REMOVED:
+      case EntityActions.ROLE_SET_REMOVED:
         const newPropertyFields = Object.assign({}, state._fields);
         delete newPropertyFields[action.meta.key];
 
@@ -62,14 +60,14 @@ export const dataUnitReducer =
         }
         break;
 
-      case DataUnitActions.PROP_SET_REMOVED:
+      case EntityActions.PROP_SET_REMOVED:
         state = {
           ...state,
           _fields: omit([action.meta.stateKey], state._fields)
         }
         break;
 
-      case DataUnitActions.PROP_SET_ADDED:
+      case EntityActions.PROP_SET_ADDED:
         state = {
           ...state,
           selectPropState: action.payload.selectPropState,
@@ -84,7 +82,7 @@ export const dataUnitReducer =
         break;
 
 
-      case DataUnitActions.TOGGLE_REMOVE_VERIFICATION:
+      case EntityActions.TOGGLE_REMOVE_VERIFICATION:
         state = {
           ...state,
           showRemoveVerification: !state.showRemoveVerification

@@ -23,13 +23,13 @@ export class EntityDetailAPIActions {
 
 
 
-  static readonly OPEN_ENTITY_EDITOR = 'EntityDetail::OPEN_ENTITY_EDITOR';
-  static readonly OPEN_ENTITY_EDITOR_SUCCEEDED = 'EntityDetail::OPEN_ENTITY_EDITOR_SUCCEEDED';
-  static readonly OPEN_ENTITY_EDITOR_FAILED = 'EntityDetail::OPEN_ENTITY_EDITOR_FAILED';
+  static readonly OPEN_PERSISTENT_ENTITY_EDITOR = 'EntityDetail::OPEN_PERSISTENT_ENTITY_EDITOR';
+  static readonly OPEN_PERSISTENT_ENTITY_EDITOR_SUCCEEDED = 'EntityDetail::OPEN_PERSISTENT_ENTITY_EDITOR_SUCCEEDED';
+  static readonly OPEN_PERSISTENT_ENTITY_EDITOR_FAILED = 'EntityDetail::OPEN_PERSISTENT_ENTITY_EDITOR_FAILED';
 
-  static readonly OPEN_PHENOMENON_EDITOR = 'EntityDetail::OPEN_PHENOMENON_EDITOR';
-  static readonly OPEN_PHENOMENON_EDITOR_SUCCEEDED = 'EntityDetail::OPEN_PHENOMENON_EDITOR_SUCCEEDED';
-  static readonly OPEN_PHENOMENON_EDITOR_FAILED = 'EntityDetail::OPEN_PHENOMENON_EDITOR_FAILED';
+  static readonly OPEN_TEMPORAL_ENTITY_EDITOR = 'EntityDetail::OPEN_TEMPORAL_ENTITY_EDITOR';
+  static readonly OPEN_TEMPORAL_ENTITY_EDITOR_SUCCEEDED = 'EntityDetail::OPEN_TEMPORAL_ENTITY_EDITOR_SUCCEEDED';
+  static readonly OPEN_TEMPORAL_ENTITY_EDITOR_FAILED = 'EntityDetail::OPEN_TEMPORAL_ENTITY_EDITOR_FAILED';
 
   static readonly START_CREATE = 'EntityDetail::START_CREATE';
   static readonly STOP_CREATE = 'EntityDetail::STOP_CREATE';
@@ -47,20 +47,20 @@ export class EntityDetailAPIActions {
   *  Actions to manage entity editor
   *********************************************************************/
 
-  @dispatch() openEntityEditor = (pkEntity: number, pkProject: number): EntityDetailAPIAction => ({
-    type: EntityDetailAPIActions.OPEN_ENTITY_EDITOR,
+  @dispatch() openPersistentEntityEditor = (pkEntity: number, pkProject: number): EntityDetailAPIAction => ({
+    type: EntityDetailAPIActions.OPEN_PERSISTENT_ENTITY_EDITOR,
     meta: { pkEntity, pkProject },
     payload: null,
   });
 
-  openEntityEditorSucceeded = (peItDetail: PeItDetail): EntityDetailAPIAction => ({
-    type: EntityDetailAPIActions.OPEN_ENTITY_EDITOR_SUCCEEDED,
+  openPersistentEntityEditorSucceeded = (peItDetail: PeItDetail): EntityDetailAPIAction => ({
+    type: EntityDetailAPIActions.OPEN_PERSISTENT_ENTITY_EDITOR_SUCCEEDED,
     meta: { peItDetail },
     payload: null
   })
 
-  openEntityEditorFailed = (error): EntityDetailAPIAction => ({
-    type: EntityDetailAPIActions.OPEN_ENTITY_EDITOR_FAILED,
+  openPersistentEntityEditorFailed = (error): EntityDetailAPIAction => ({
+    type: EntityDetailAPIActions.OPEN_PERSISTENT_ENTITY_EDITOR_FAILED,
     meta: null,
     payload: null,
     error,
@@ -68,23 +68,23 @@ export class EntityDetailAPIActions {
 
 
   /*********************************************************************
-*  Actions to manage phenomenon editor
+*  Actions to manage temporal entity editor
 *********************************************************************/
 
-  @dispatch() openPhenomenonEditor = (pkEntity: number, pkProject: number): EntityDetailAPIAction => ({
-    type: EntityDetailAPIActions.OPEN_PHENOMENON_EDITOR,
+  @dispatch() openTemporalEntityEditor = (pkEntity: number, pkProject: number): EntityDetailAPIAction => ({
+    type: EntityDetailAPIActions.OPEN_TEMPORAL_ENTITY_EDITOR,
     meta: { pkEntity, pkProject },
     payload: null,
   });
 
-  openPhenomenonEditorSucceeded = (teEntDetail: TeEntDetail): EntityDetailAPIAction => ({
-    type: EntityDetailAPIActions.OPEN_PHENOMENON_EDITOR_SUCCEEDED,
+  openTemporalEntityEditorSucceeded = (teEntDetail: TeEntDetail): EntityDetailAPIAction => ({
+    type: EntityDetailAPIActions.OPEN_TEMPORAL_ENTITY_EDITOR_SUCCEEDED,
     meta: { teEntDetail },
     payload: null
   })
 
-  openPhenomenonEditorFailed = (error): EntityDetailAPIAction => ({
-    type: EntityDetailAPIActions.OPEN_PHENOMENON_EDITOR_FAILED,
+  openTemporalEntityEditorFailed = (error): EntityDetailAPIAction => ({
+    type: EntityDetailAPIActions.OPEN_TEMPORAL_ENTITY_EDITOR_FAILED,
     meta: null,
     payload: null,
     error,

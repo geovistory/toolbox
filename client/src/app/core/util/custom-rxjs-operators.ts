@@ -16,8 +16,8 @@ type TeEnOrPeItDetail = TeEntDetail | PeItDetail;
  * Array of TeEntDetail or PeItDetail
  * emitted by the source Observable.
  */
-export const dataUnitDetails_2_propFields = () => pipe(
-    map((dataUnitDetails: TeEnOrPeItDetail[]) => dataUnitDetails.map(d => d._fields)),
+export const entityDetails_2_propFields = () => pipe(
+    map((entityDetails: TeEnOrPeItDetail[]) => entityDetails.map(d => d._fields)),
     fieldLists_2_propFields()
 )
 
@@ -31,8 +31,8 @@ export const fieldLists_2_propFields = () => mapConcat((fieldList: FieldList) =>
 )
 
 
-export const dataUnitDetail_2_propFields = () => pipe(
-    map((dataUnitDetail: TeEnOrPeItDetail) => dataUnitDetail._fields),
+export const entityDetail_2_propFields = () => pipe(
+    map((entityDetail: TeEnOrPeItDetail) => entityDetail._fields),
     fieldList_2_propFields()
 )
 
@@ -58,38 +58,6 @@ export const roleDetails_2_geoPeItPks = () => map((rDs: RoleDetail[]) => rDs
     .map(rD => rD._leaf_peIt.pkEntity))
 
 
-
-// /**
-//  * Returns an Observable that emits an array of pk_entity of Geo-PeIts contained as _leaf_peIt in the RoleDetail[]
-//  * emitted by the source Observable.
-//  */
-// export function teEntDetail_2_acNotifications(
-//     loadPreview: (pk: number) => Observable<DataUnitPreview>
-// ): OperatorFunction<TeEntDetail, AcNotification> {
-//     return (teEnDetail$: Observable<TeEntDetail>): Observable<AcNotification> => {
-
-//         const timeSpan$ = teEnDetail$.map(teEnDetail => U.timeSpanFromExTimeDetail(teEnDetail._fields['_field_48'] as ExistenceTimeDetail))
-
-//         const geoPeItPreview$ = teEnDetail$.pipe(
-//             map(teEn => teEn._fields),
-//             fieldList_2_propFields(),
-//             propFields_2_roleDetails(),
-//             roleDetails_2_geoPeItPks(),
-//             map(pks => loadPreview(pks[0]))
-//         )
-
-//         return combineLatest([timeSpan$, geoPeItPreview$]).map(all => {
-//             const timeSpan = all[0], geoPks = all[1];
-//             const x = { timeSpan, geoPks };
-//             const notification: AcNotification = {
-//                 actionType: ActionType.ADD_UPDATE,
-//                 id: JSON.stringify(x),
-//             }
-//             return notification;
-//         })
-//     }
-
-// }
 
 /*****************************************************************************
  * Generic operators

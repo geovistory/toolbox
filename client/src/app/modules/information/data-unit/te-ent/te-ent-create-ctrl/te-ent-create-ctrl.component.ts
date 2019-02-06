@@ -6,7 +6,7 @@ import { pick } from 'ramda';
 import { TeEntCtrlBase } from '../te-ent-ctrl.base';
 import { TeEntActions } from '../te-ent.actions';
 import { RootEpics } from 'app/core/store/epics';
-import { DataUnitAPIEpics } from '../../data-unit.epics';
+import { EntityAPIEpics } from '../../data-unit.epics';
 import { createExistenceTimeDetail } from 'app/core/state/services/state-creator';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { getTeEntAddOptions } from '../te-ent-editable/te-ent-editable.component';
@@ -39,9 +39,9 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
     protected actions: TeEntActions,
     protected fb: FormBuilder,
     protected rootEpics: RootEpics,
-    protected dataUnitEpics: DataUnitAPIEpics
+    protected entityEpics: EntityAPIEpics
   ) {
-    super(ngRedux, actions, fb, rootEpics, dataUnitEpics);
+    super(ngRedux, actions, fb, rootEpics, entityEpics);
 
   }
 

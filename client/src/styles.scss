@@ -76,6 +76,11 @@ button {
     right: 0;
 }
 
+// text with no line break and overflow ellipsis
+.gv-one-liner {
+white-space: nowrap;
+text-overflow: ellipsis;
+}
 // generate .bg-gray-* classes
 @each $color,
 $value in $grays {
@@ -578,7 +583,7 @@ $gv-bg-drawer-list: #cde4f3;
     &:focus,
     &.focus {
         outline: none;
-        background-color: $gray-500;
+        // background-color: $gray-500;
     } // Disabled comes first so active can properly restyle
     &.disabled,
     &:disabled {
@@ -1029,6 +1034,11 @@ gv-add-info-pe-it {
         color: inherit;
         background-color: $gray-300; // border: 1px solid theme-color("primary");
     }
+}
+
+gv-mentioning-list .ngx-table__header-title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .gv-show-token-ids {

@@ -176,7 +176,7 @@ export class ActiveProjectActions {
     * Data cache
     ************************************************************************************/
 
-    // DataUnitPreviews
+    // EntityPreviews
     static LOAD_ENTITY_PREVIEW = 'ActiveProject::LOAD_ENTITY_PREVIEW';
     static LOAD_ENTITY_PREVIEW_SUCCEEDED = 'ActiveProject::LOAD_ENTITY_PREVIEW_SUCCEEDED';
     static LOAD_ENTITY_PREVIEW_FAILED = 'ActiveProject::LOAD_ENTITY_PREVIEW_FAILED';
@@ -211,15 +211,15 @@ export class ActiveProjectActions {
         }
     }
 
-    // DataUnit Details for display in Modals
-    static LOAD_DATA_UNIT_DETAIL_FOR_MODAL = 'ActiveProject::LOAD_DATA_UNIT_DETAIL_FOR_MODAL';
+    // Entities Details for display in Modals
+    static LOAD_ENTITY_DETAIL_FOR_MODAL = 'ActiveProject::LOAD_ENTITY_DETAIL_FOR_MODAL';
     static LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED';
     static LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED'; // TODO: Implement action/reducer
-    static LOAD_DATA_UNIT_DETAIL_FOR_MODAL_FAILED = 'ActiveProject::LOAD_DATA_UNIT_DETAIL_FOR_MODAL_FAILED';
+    static LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED = 'ActiveProject::LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED';
 
-    loadDataUnitDetailForModal(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
+    loadEntityDetailForModal(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
         return {
-            type: ActiveProjectActions.LOAD_DATA_UNIT_DETAIL_FOR_MODAL,
+            type: ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL,
             payload: null,
             meta: {
                 pk_project, pk_entity, pk_ui_context
@@ -237,9 +237,9 @@ export class ActiveProjectActions {
         }
     }
 
-    loadDataUnitDetailsForModalFailed(error): ActiveProjectAction {
+    loaEntitytDetailsForModalFailed(error): ActiveProjectAction {
         return {
-            type: ActiveProjectActions.LOAD_DATA_UNIT_DETAIL_FOR_MODAL_FAILED,
+            type: ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED,
             payload: null,
             meta: null,
             error

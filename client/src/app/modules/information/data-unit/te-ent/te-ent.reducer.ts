@@ -1,5 +1,5 @@
 import { TeEntDetail } from 'app/core/state/models';
-import { dataUnitReducer } from '../data-unit.reducer';
+import { entityReducer } from '../data-unit.reducer';
 import { TeEntAction, TeEntActions } from './te-ent.actions';
 
 
@@ -9,7 +9,7 @@ const INITIAL_STATE: TeEntDetail = {
 
 export const teEntReducer = (lastState: TeEntDetail = INITIAL_STATE, action: TeEntAction): TeEntDetail => {
 
-  lastState = dataUnitReducer(lastState, action);
+  lastState = entityReducer(lastState, action);
 
   switch (action.type) {
 

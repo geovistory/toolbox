@@ -25,7 +25,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
   id: number;
 
   // Statistics
-  dataUnitsCount: number;
+  entitiesCount: number;
   sourcesCount: number;
 
   // Tour logic
@@ -77,7 +77,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
         this.entityPreviewApi.search(this.id, '', pkClassesInProject, null, 1, 1)
           .subscribe(
             (response) => {
-              this.dataUnitsCount = parseInt(response.totalCount, 10);
+              this.entitiesCount = parseInt(response.totalCount, 10);
               this.completeLoading();
             },
             error => {

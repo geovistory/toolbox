@@ -5,8 +5,8 @@ import { InfTemporalEntity } from 'app/core';
 import { TeEntDetail } from 'app/core/state/models';
 import { RootEpics } from 'app/core/store/epics';
 import { Observable } from 'rxjs';
-import { DataUnitBase } from '../data-unit.base';
-import { DataUnitAPIEpics } from '../data-unit.epics';
+import { EntityBase } from '../data-unit.base';
+import { EntityAPIEpics } from '../data-unit.epics';
 import { TeEntActions } from './te-ent.actions';
 import { teEntReducer } from './te-ent.reducer';
 
@@ -23,7 +23,7 @@ import { teEntReducer } from './te-ent.reducer';
     localReducer: teEntReducer,
     basePathMethodName: 'getBasePath'
 })
-export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValueAccessor, OnInit {
+export abstract class TeEntCtrlBase extends EntityBase implements ControlValueAccessor, OnInit {
 
 
     @Input() basePath: string[];
@@ -46,9 +46,9 @@ export abstract class TeEntCtrlBase extends DataUnitBase implements ControlValue
         protected actions: TeEntActions,
         protected fb: FormBuilder,
         protected rootEpics: RootEpics,
-        protected dataUnitEpics: DataUnitAPIEpics
+        protected entityEpics: EntityAPIEpics
     ) {
-        super(ngRedux, fb, rootEpics, dataUnitEpics);
+        super(ngRedux, fb, rootEpics, entityEpics);
         this.initForm()
     }
 

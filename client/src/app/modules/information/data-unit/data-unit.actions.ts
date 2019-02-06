@@ -3,48 +3,48 @@ import { Injectable } from '@angular/core';
 import { U, UiContext } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy } from 'ramda';
-import {  ClassInstanceLabel, PropertyField, DataUnit } from 'app/core/state/models';
+import {  ClassInstanceLabel, PropertyField, Entity } from 'app/core/state/models';
 import { propertyFieldKey } from 'app/core/state/services/state-creator';
 
 
 
 // Flux-standard-action gives us stronger typing of our actions.
-type Payload = DataUnit;
+type Payload = Entity;
 interface MetaData { [key: string]: any };
-export type DataUnitAction = FluxStandardAction<Payload, MetaData>;
+export type EntityAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
-export class DataUnitActions {
+export class EntityActions {
 
   // static readonly ROLE_SETS_INITIALIZED = 'ROLE_SETS_INITIALIZED';
 
   // static readonly FK_CLASS_AND_ROLES_INITIALIZED = 'FK_CLASS_AND_ROLES_INITIALIZED';
 
-  static readonly START_SELECT_PROPERTY = 'DataUnit::START_SELECT_PROPERTY';
+  static readonly START_SELECT_PROPERTY = 'Entity::START_SELECT_PROPERTY';
 
-  static readonly STOP_SELECT_PROPERTY = 'DataUnit::STOP_SELECT_PROPERTY';
+  static readonly STOP_SELECT_PROPERTY = 'Entity::STOP_SELECT_PROPERTY';
 
-  static readonly PROPERTY_SELECTED = 'DataUnit::PROPERTY_SELECTED';
+  static readonly PROPERTY_SELECTED = 'Entity::PROPERTY_SELECTED';
 
-  static readonly ROLE_SET_ADDED = 'DataUnit::ROLE_SET_ADDED';
+  static readonly ROLE_SET_ADDED = 'Entity::ROLE_SET_ADDED';
 
-  static readonly ROLE_SET_REMOVED = 'DataUnit::ROLE_SET_REMOVED';
+  static readonly ROLE_SET_REMOVED = 'Entity::ROLE_SET_REMOVED';
 
-  static readonly PROP_SET_ADDED = 'DataUnit::PROP_SET_ADDED';
+  static readonly PROP_SET_ADDED = 'Entity::PROP_SET_ADDED';
 
-  static readonly PROP_SET_REMOVED = 'DataUnit::PROP_SET_REMOVED';
+  static readonly PROP_SET_REMOVED = 'Entity::PROP_SET_REMOVED';
 
-  static readonly ROLE_SET_LIST_DISPLAY_LABEL_UPDATED = 'DataUnit::ROLE_SET_LIST_DISPLAY_LABEL_UPDATED';
+  static readonly ROLE_SET_LIST_DISPLAY_LABEL_UPDATED = 'Entity::ROLE_SET_LIST_DISPLAY_LABEL_UPDATED';
 
-  static readonly DATA_UNIT_INIT = 'DataUnit::DATA_UNIT_INIT';
+  static readonly ENTITY_INIT = 'Entity::ENTITY_INIT';
 
-  static readonly TOGGLE_REMOVE_VERIFICATION = 'DataUnit::TOGGLE_REMOVE_VERIFICATION';
+  static readonly TOGGLE_REMOVE_VERIFICATION = 'Entity::TOGGLE_REMOVE_VERIFICATION';
 
   @dispatch()
 
 
-  propertyFieldsListDisplayLabelUpdated = (label:  ClassInstanceLabel): DataUnitAction => ({
-    type: DataUnitActions.ROLE_SET_LIST_DISPLAY_LABEL_UPDATED,
+  propertyFieldsListDisplayLabelUpdated = (label:  ClassInstanceLabel): EntityAction => ({
+    type: EntityActions.ROLE_SET_LIST_DISPLAY_LABEL_UPDATED,
     meta: null,
     payload: {
       label
@@ -54,8 +54,8 @@ export class DataUnitActions {
   /**
   * startSelectProperty - called, when user clicks on add a property
   */
-  startSelectProperty = (): DataUnitAction => ({
-    type: DataUnitActions.START_SELECT_PROPERTY,
+  startSelectProperty = (): EntityAction => ({
+    type: EntityActions.START_SELECT_PROPERTY,
     meta: null,
     payload: {
       selectPropState: 'selectProp'
@@ -67,8 +67,8 @@ export class DataUnitActions {
   * stopSelectProperty - called, when user clicks on close button of property
   * selector
   */
-  stopSelectProperty = (): DataUnitAction => ({
-    type: DataUnitActions.STOP_SELECT_PROPERTY,
+  stopSelectProperty = (): EntityAction => ({
+    type: EntityActions.STOP_SELECT_PROPERTY,
     meta: null,
     payload: {
       selectPropState: 'init'
@@ -81,8 +81,8 @@ export class DataUnitActions {
   * @param: propertyField to add
   * @param: uiContext of the class, used sort the _fields
   */
-  addPropertyField = (propertyField: PropertyField, uiContext: UiContext): DataUnitAction => ({
-    type: DataUnitActions.ROLE_SET_ADDED,
+  addPropertyField = (propertyField: PropertyField, uiContext: UiContext): EntityAction => ({
+    type: EntityActions.ROLE_SET_ADDED,
     meta: {
       uiContext
     },
@@ -95,8 +95,8 @@ export class DataUnitActions {
   /**
 * called, when user selected a the kind of property to remove
 */
-  removePropertyField = (key: string): DataUnitAction => ({
-    type: DataUnitActions.ROLE_SET_REMOVED,
+  removePropertyField = (key: string): EntityAction => ({
+    type: EntityActions.ROLE_SET_REMOVED,
     meta: { key },
     payload: null
   })
@@ -105,8 +105,8 @@ export class DataUnitActions {
   /**
  * called, when user selected a the kind of propSet to add
  */
-  addPropSet = (key: string, val: any, uiContext: UiContext): DataUnitAction => ({
-    type: DataUnitActions.PROP_SET_ADDED,
+  addPropSet = (key: string, val: any, uiContext: UiContext): EntityAction => ({
+    type: EntityActions.PROP_SET_ADDED,
     meta: { key, val, uiContext },
     payload: {
       selectPropState: 'init'
@@ -116,8 +116,8 @@ export class DataUnitActions {
   /**
   * called, when user selected a the kind of propSet to add
   */
-  removePropSet = (stateKey: string): DataUnitAction => ({
-    type: DataUnitActions.PROP_SET_REMOVED,
+  removePropSet = (stateKey: string): EntityAction => ({
+    type: EntityActions.PROP_SET_REMOVED,
     meta: { stateKey },
     payload: null
   })
@@ -126,8 +126,8 @@ export class DataUnitActions {
   /**
   * called, OnInit of a data unit component
   */
-  dataUnitInit = (): DataUnitAction => ({
-    type: DataUnitActions.DATA_UNIT_INIT,
+  entityInit = (): EntityAction => ({
+    type: EntityActions.ENTITY_INIT,
     meta: null,
     payload: null
   })
@@ -135,8 +135,8 @@ export class DataUnitActions {
   /**
   * called on click on remove a data unit and on click on cancel removing a data unit
   */
-  toggleRemoveVerification = (): DataUnitAction => ({
-    type: DataUnitActions.TOGGLE_REMOVE_VERIFICATION,
+  toggleRemoveVerification = (): EntityAction => ({
+    type: EntityActions.TOGGLE_REMOVE_VERIFICATION,
     meta: null,
     payload: null
   })

@@ -7,8 +7,8 @@ import { createExistenceTimeDetail, getCreateOfEditableContext, StateSettings, s
 import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { RootEpics } from '../../../../../core/store/epics';
 import { slideInOut } from '../../../shared/animations';
-import { DataUnitBase } from '../../data-unit.base';
-import { DataUnitAPIEpics } from '../../data-unit.epics';
+import { EntityBase } from '../../data-unit.base';
+import { EntityAPIEpics } from '../../data-unit.epics';
 import { TeEntActions } from '../te-ent.actions';
 import { TeEntAPIEpics } from '../te-ent.epics';
 import { teEntReducer } from '../te-ent.reducer';
@@ -83,7 +83,7 @@ export function getTeEntAddOptions(
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TeEntEditableComponent extends DataUnitBase {
+export class TeEntEditableComponent extends EntityBase {
 
   @Input() basePath: string[];
   @Input() asPeItChild: boolean;
@@ -126,13 +126,13 @@ export class TeEntEditableComponent extends DataUnitBase {
 
   constructor(
     protected rootEpics: RootEpics,
-    protected dataUnitEpics: DataUnitAPIEpics,
+    protected entityEpics: EntityAPIEpics,
     protected epics: TeEntAPIEpics,
     protected ngRedux: NgRedux<IAppState>,
     protected actions: TeEntActions,
     protected fb: FormBuilder,
   ) {
-    super(ngRedux, fb, rootEpics, dataUnitEpics);
+    super(ngRedux, fb, rootEpics, entityEpics);
 
   }
 

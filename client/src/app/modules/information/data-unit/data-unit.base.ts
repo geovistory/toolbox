@@ -7,7 +7,7 @@ import { TypeDetail } from 'app/core/state/models/type-detail';
 import { createPropertyField, propertyFieldKey, StateSettings } from 'app/core/state/services/state-creator';
 import { RootEpics } from 'app/core/store/epics';
 import { Observable, Subject, combineLatest } from 'rxjs';
-import { DataUnitAPIEpics } from './data-unit.epics';
+import { EntityAPIEpics } from './data-unit.epics';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
 import { takeUntil, filter, first } from 'rxjs/operators';
@@ -19,7 +19,7 @@ export const propSetMap = {
 }
 
 
-export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreComponent {
+export abstract class EntityBase implements OnInit, OnDestroy, SubstoreComponent {
   // subs: Subscription[] = []
   destroy$: Subject<boolean> = new Subject<boolean>();
 
@@ -82,7 +82,7 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
     protected ngRedux: NgRedux<IAppState>,
     protected fb: FormBuilder,
     protected rootEpics: RootEpics,
-    protected dataUnitEpics: DataUnitAPIEpics
+    protected entityEpics: EntityAPIEpics
   ) {
     this.formGroup = this.fb.group({})
     this.crm$ = ngRedux.select(['activeProject', 'crm'])
@@ -109,8 +109,8 @@ export abstract class DataUnitBase implements OnInit, OnDestroy, SubstoreCompone
 
 
   ngOnInit() {
-    // Init dataUnitEpics
-    this.rootEpics.addEpic(this.dataUnitEpics.createEpics(this));
+    // Init entityEpics
+    this.rootEpics.addEpic(this.entityEpics.createEpics(this));
 
     // Initialize the store by one of the derived classes
     this.initStore()

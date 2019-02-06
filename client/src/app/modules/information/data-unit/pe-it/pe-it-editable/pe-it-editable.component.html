@@ -40,7 +40,7 @@
 
             <button class="dropdown-item" (click)="toggle('showMentionedEntities')" *ngIf="(showMentionedEntitiesToggle$|async)">
               <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showMentionedEntities$|async)}"></i>
-              Mentioned Data Units
+              Mentioned Entities
             </button>
 
             <button class="dropdown-item" (click)="toggle('showAssertions')" *ngIf="(showAssertionsToggle$|async)">

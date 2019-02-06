@@ -6,7 +6,7 @@ import { EntityPreview } from 'app/core';
   templateUrl: './data-unit-preview.component.html',
   styleUrls: ['./data-unit-preview.component.scss']
 })
-export class DataUnitPreviewComponent implements OnInit {
+export class EntityPreviewComponent implements OnInit {
 
   @Input() preview: EntityPreview
   @Input() dragEnabled = true;

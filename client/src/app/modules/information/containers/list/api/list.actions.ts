@@ -6,7 +6,7 @@ import { EntityType } from 'app/core/state/models/data-unit-preview';
 
 type Payload = List;
 interface MetaData {
-  pkProject?: number, searchString?: string, pkClasses?: number[], dataUnitType?: EntityType, limit?: number, page?: number,
+  pkProject?: number, searchString?: string, pkClasses?: number[], entityType?: EntityType, limit?: number, page?: number,
   searchResponse?: SearchResponse
 };
 export type ListAPIAction = FluxStandardAction<Payload, MetaData>;
@@ -21,12 +21,12 @@ export class ListAPIActions {
   static readonly DESTROY = 'List::DESTROY';
 
   /*********************************************************************
-  *  Actions to manage search of data units
+  *  Actions to manage search of entities
   *********************************************************************/
   @dispatch()
-  search = (pkProject: number, searchString: string, pkClasses: number[], dataUnitType: EntityType, limit: number, page: number): ListAPIAction => ({
+  search = (pkProject: number, searchString: string, pkClasses: number[], entityType: EntityType, limit: number, page: number): ListAPIAction => ({
     type: ListAPIActions.SEARCH,
-    meta: { pkProject, searchString, pkClasses, dataUnitType, limit, page },
+    meta: { pkProject, searchString, pkClasses, entityType, limit, page },
     payload: null,
   });
 

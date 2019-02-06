@@ -2,7 +2,7 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ClassInstanceLabel, PeItDetail } from 'app/core/state/models';
 import { FluxStandardAction } from 'flux-standard-action';
-import { DataUnitActions } from '../data-unit.actions';
+import { EntityActions } from '../data-unit.actions';
 
 
 // Flux-standard-action gives us stronger typing of our actions.
@@ -15,7 +15,7 @@ interface MetaData {
 export type PeItAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
-export class PeItActions extends DataUnitActions {
+export class PeItActions extends EntityActions {
 
   static readonly PE_IT_STATE_UPDATED = 'PeItActions::PE_IT_STATE_UPDATED';
 

@@ -3,7 +3,7 @@ import { Action } from 'redux';
 import { indexBy, prop } from 'ramda';
 import { PeItDetail } from 'app/core/state/models';
 import { PeItAction, PeItActions } from './pe-it.actions';
-import { dataUnitReducer } from '../data-unit.reducer';
+import { entityReducer } from '../data-unit.reducer';
 
 
 const INITIAL_STATE: PeItDetail = {
@@ -12,8 +12,8 @@ const INITIAL_STATE: PeItDetail = {
 
 export const peItReducer = (state: PeItDetail = INITIAL_STATE, action: PeItAction) => {
 
-  // Extend this reducer by dataUnitReducer
-  state = dataUnitReducer(state, action)
+  // Extend this reducer by entityReducer
+  state = entityReducer(state, action)
 
   switch (action.type) {
 

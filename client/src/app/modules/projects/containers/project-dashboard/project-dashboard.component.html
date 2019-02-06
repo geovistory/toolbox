@@ -56,7 +56,7 @@
       <div id="knowledge-units" class="gv-icon-box" [ngClass]="{'gv-active': steps.step3}">
         <div class="gv-upper-part gv-upper-part-primary" [routerLink]="['edit']" (click)="p.setListType('entities')">
           <div class="gv-icon gv-icon-information"></div>
-          <h4>{{dataUnitsCount}} {{dataUnitsCount === 1 ? 'Entity' : 'Entities'}}</h4>
+          <h4>{{entitiesCount}} {{entitiesCount === 1 ? 'Entity' : 'Entities'}}</h4>
         </div>
         <div class="gv-lower-part" (click)="activateStep('step3')" *ngIf="activeSlideId">
           <div class="d-flex justify-content-center">
