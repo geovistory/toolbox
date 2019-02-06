@@ -17,6 +17,9 @@ export interface Panel {
     id: number;
     tabs: Tab[];
 }
+
+export type ListType = '' | 'entites' | 'sources';
+
 export interface Tab {
     // wheter tab is active or not
     active: boolean;
@@ -66,6 +69,7 @@ export interface ProjectDetail extends ComProjectInterface {
     /******************************************************************
      * Layout
      */
+    list?: ListType;
 
     panels?: Panel[]
 

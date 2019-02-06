@@ -37,30 +37,7 @@ const routes: Routes = [
   },
   {
     path: ':pkActiveProject/edit',
-    component: ProjectEditComponent,
-    children: [
-      {
-        path: '',
-        outlet: 'list',
-        component: ProxyRouteComponent,
-        children: [
-          {
-            path: 'sources',
-            component: SourceListComponent,
-            data: {
-              reduxPath: ['sources']
-            }
-          },
-          {
-            path: 'entities',
-            component: InformationComponent,
-            data: {
-              reduxPath: ['information']
-            }
-          }
-        ],
-      }
-    ]
+    component: ProjectEditComponent
   },
   {
     path: ':pkActiveProject/settings',

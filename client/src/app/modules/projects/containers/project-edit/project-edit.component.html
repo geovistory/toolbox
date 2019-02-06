@@ -6,18 +6,20 @@
   </ol>
 </gv-navbar>
 <mat-drawer-container class="gv-flex-fh">
-  <mat-drawer class="bg-light" mode="side" opened style="width: 80px;">
+
+  <!-- Main Categories (Sources, Entities …) -->
+  <mat-drawer class="bg-light" mode="side" opened style="width: 80px">
 
     <div class="h-100 d-flex flex-column">
 
-      <div class="btn-group-vertical rounded-0 d-block">
-        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [routerLink]="[{ outlets: { list: ['sources']} }]"
-          routerLinkActive="active" (click)="list.open()">
+      <div class="gv-main-categories btn-group-vertical rounded-0 d-block">
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [ngClass]="{active:(p.list$ | async)==='sources'}"
+          (click)="setList('sources')">
           <div class="fa-2x gv-icon gv-icon-source text-info"></div>
           <div>Sources</div>
         </button>
-        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [routerLink]="[{ outlets: { list: ['entities']} }]"
-          routerLinkActive="active" (click)="list.open()">
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [ngClass]="{active:(p.list$ | async)==='entities'}"
+          (click)="setList('entities')">
           <div class="fa-2x gv-icon gv-icon-information-simple text-primary"></div>
           <div>Entities</div>
         </button>
@@ -45,12 +47,19 @@
   </mat-drawer>
   <mat-drawer-content style="display:flex; flex-direction:column">
     <mat-drawer-container style="flex-grow: 1; flex-basis:100%;">
-      <mat-drawer class="bg-gray-300" #list mode="side" opened style="width: 300px;">
-        <button class="btn btn-link-white position-absolute" style="right: 0;" (click)="list.close(); closeList()"> <i
-            class="fa fa-chevron-left"></i> </button>
-        <router-outlet name="list"></router-outlet>
+
+      <!-- List of Sources, Entities … -->
+      <mat-drawer class="gv-drawer-list" #list mode="side" [opened]="(p.list$ | async) !== ''" style="width: 300px;">
+        <button class="btn btn-link-gray position-absolute" style="right: 0; top: 50%" (click)="list.close()"
+          (positionChanged)="setList('')">
+          <i class="fa fa-chevron-left"></i> </button>
+        <gv-source-list *ngIf="(p.list$ | async) === 'sources'"></gv-source-list>
+        <gv-information *ngIf="(p.list$ | async) === 'entities'"></gv-information>
+
       </mat-drawer>
-      <mat-drawer-content class="d-flex" cdkDropListGroup>
+
+      <!-- Container for Tabs … -->
+      <mat-drawer-content class="d-flex border-left border-gray-300" cdkDropListGroup>
         <div *ngIf="(p.panels$ | async)?.length === 0" class="no-panels gv-flex-fh justify-content-center align-items-center p-3">
           <div class="display-4 text-gray-400">
             Your Project
@@ -63,8 +72,10 @@
           </div>
         </div>
 
-        <div *ngFor="let panel of (p.panels$ | async); let i = index; trackBy:trackByFn" class="border-left border-gray-300 gv-grow-1 gv-flex-fh"
+
+        <div *ngFor="let panel of (p.panels$ | async); let i = index; trackBy:trackByFn" class="gv-panel-for-tabs gv-grow-1 gv-flex-fh"
           style="overflow: hidden;" (mousedown)="p.focusPanel(i)" [ngClass]="{'focus': ((p.focusedPanel$|async ) === i) }">
+
           <div>
             <div cdkDropList [cdkDropListData]="i" cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropTab($event)"
               class="tab-list">
@@ -72,7 +83,7 @@
               <gv-tab-handle *ngFor="let tab of panel.tabs; let j=index;" cdkDrag class="tab-box" [cdkDragData]="{'panelIndex': i, 'tabIndex': j}"
                 [ngClass]="{'active': tab.active }" (cdkDragEnded)="tabDragEnded()" (cdkDragStarted)="tabDragStarted()"
                 [tab]="tab" (activateTab)="p.activateTab(i,j)" (closeTab)="p.closeTab(i,j)"></gv-tab-handle>
-    
+
             </div>
             <!-- <button (click)="p.addTab()">Split</button> -->
           </div>

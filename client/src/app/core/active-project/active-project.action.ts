@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ProjectCrm, ProjectDetail, Tab } from './active-project.models';
+import { ProjectCrm, ProjectDetail, Tab, ListType } from './active-project.models';
 import { EntityPreview, PeItDetail } from '../state/models';
 import { InfChunk, InfTemporalEntity, InfPersistentItem } from '../sdk';
 
@@ -20,6 +20,7 @@ interface MetaData {
     peItGraphs?: InfPersistentItem[]
 
     // layout
+    list?: ListType;
     panelIndex?: number;
     tabIndex?: number;
     previousPanelIndex?: number
@@ -88,6 +89,19 @@ export class ActiveProjectActions {
     /************************************************************************************
      * Layout
     ************************************************************************************/
+   static SET_LIST_TYPE = 'ActiveProject::SET_LIST_TYPE';
+
+   setListType(list: ListType): ActiveProjectAction {
+       return {
+           type: ActiveProjectActions.SET_LIST_TYPE,
+           payload: null,
+           meta: {
+               list
+           }
+       }
+   }
+
+
     static ACTIVATE_TAB = 'ActiveProject::ACTIVATE_TAB';
 
     activateTab(panelIndex: number, tabIndex: number): ActiveProjectAction {

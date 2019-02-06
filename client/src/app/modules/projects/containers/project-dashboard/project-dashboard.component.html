@@ -27,7 +27,7 @@
   <div class="row mt-5 justify-content-center">
     <div id="flow" class="d-flex">
       <div id="sources" class="gv-icon-box" [ngClass]="{'gv-active': steps.step1}">
-        <button class="gv-upper-part gv-upper-part-info" [routerLink]="['edit', { outlets: { list: ['sources'] } }]">
+        <button class="gv-upper-part gv-upper-part-info" [routerLink]="['edit']" (click)="p.setListType('sources')">
           <div class="gv-icon gv-icon-source"></div>
           <h4>{{sourcesCount}} {{sourcesCount === 1 ? 'Source' : 'Sources'}}</h4>
         </button>
@@ -54,10 +54,9 @@
         </div>
       </div>
       <div id="knowledge-units" class="gv-icon-box" [ngClass]="{'gv-active': steps.step3}">
-        <div class="gv-upper-part gv-upper-part-primary" [routerLink]="['edit', { outlets: { list: ['entities'] } }]"
-          [queryParams]="{i:'on',s:'off'}">
+        <div class="gv-upper-part gv-upper-part-primary" [routerLink]="['edit']" (click)="p.setListType('entities')">
           <div class="gv-icon gv-icon-information"></div>
-          <h4>{{dataUnitsCount}} {{dataUnitsCount === 1 ? 'Data Unit' : 'Data Units'}}</h4>
+          <h4>{{dataUnitsCount}} {{dataUnitsCount === 1 ? 'Entity' : 'Entities'}}</h4>
         </div>
         <div class="gv-lower-part" (click)="activateStep('step3')" *ngIf="activeSlideId">
           <div class="d-flex justify-content-center">

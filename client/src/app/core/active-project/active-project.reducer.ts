@@ -7,6 +7,7 @@ import { ActiveProjectAction, ActiveProjectActions } from './active-project.acti
 import { ProjectDetail, Panel } from './active-project.models';
 
 const INITIAL_STATE: ProjectDetail = {
+    list: '',
     uiIdSerial: 0,
     panelSerial: 0,
     focusedPanel: 0,
@@ -36,6 +37,12 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
         /************************************************************************************
          * Layout
         ************************************************************************************/
+        case ActiveProjectActions.SET_LIST_TYPE:
+            state = {
+                ...state,
+                list: action.meta.list
+            }
+            break;
         case ActiveProjectActions.ACTIVATE_TAB:
             pi = action.meta.panelIndex;
             ti = action.meta.tabIndex;

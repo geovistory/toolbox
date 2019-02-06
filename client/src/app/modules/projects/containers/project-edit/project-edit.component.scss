@@ -1,7 +1,18 @@
 @import "../../../../../styles.scss";
+
+.gv-drawer-list {
+    background-color: $gv-bg-drawer-list;
+}
+.gv-panel-for-tabs{
+    @extend .border-left;
+    @extend .border-gray-300;
+}
+.gv-panel-for-tabs:first-child {
+  border:none;
+}
 .tab-list {
     max-width: 100%; // border: solid 1px #ccc;
-    min-height: 41px;
+    min-height: 32px;
     display: flex;
     flex-direction: row;
     background: white;
@@ -18,13 +29,12 @@
 
 .tab-box {
     color: $gray-500;
-    padding: 10px 10px;
+    padding: 5px 10px;
     border-right: solid 1px #ccc;
     background: $gray-200;
     font-size: $font-size-sm;
     min-width: 100px;
     display: flex;
-
 }
 
 .tab-box.active {
@@ -107,4 +117,8 @@
 .no-panels{
     margin-bottom: 8rem;
     white-space: nowrap;
+}
+
+.gv-drawer-list.mat-drawer:not(.mat-drawer-side) {
+    box-shadow: 0px 8px 10px -5px rgba(0, 0, 0, 0.2), 0px 16px 24px 2px rgba(0, 0, 0, 0.14), 0px 6px 30px 5px rgba(0, 0, 0, 0.12);
 }

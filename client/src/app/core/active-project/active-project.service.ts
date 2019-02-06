@@ -12,7 +12,7 @@ import { ComProject } from '../sdk/models/ComProject';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
-import { ProjectCrm, Tab, ClassConfig } from './active-project.models';
+import { ProjectCrm, Tab, ClassConfig, ListType } from './active-project.models';
 
 
 
@@ -25,6 +25,7 @@ export class ActiveProjectService {
   public panels$: Observable<Panel[]>
   public crm$: Observable<ProjectCrm>
   public focusedPanel$: Observable<boolean>;
+  public list$: Observable<ListType>; // type of list displayed in left panel 
 
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
@@ -43,6 +44,7 @@ export class ActiveProjectService {
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']);
     this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
     this.crm$ = ngRedux.select<ProjectCrm>(['activeProject', 'crm']);
+    this.list$ = ngRedux.select<ListType>(['activeProject', 'list']);
 
     this.focusedPanel$ = ngRedux.select<boolean>(['activeProject', 'focusedPanel']);
 
@@ -269,7 +271,10 @@ export class ActiveProjectService {
   /************************************************************************************
   * Layout
   ************************************************************************************/
-
+  // List (left panel) modifications
+  setListType(list: ListType) {
+    this.ngRedux.dispatch(this.actions.setListType(list))
+  }
   // Tab modifications
   activateTab(panelIndex: number, tabIndex: number) {
     this.ngRedux.dispatch(this.actions.activateTab(panelIndex, tabIndex))

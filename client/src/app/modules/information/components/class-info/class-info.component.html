@@ -1,9 +1,8 @@
 <div *ngIf="classConfig">
-  <i #icon [ngClass]="{
+  <!-- <i #icon [ngClass]="{
           'fa fa-star-o': classConfig.subclassOf === 'teEnt',
           'gv-icon gv-icon-entity' : classConfig.subclassOf === 'peIt',
           'text-primary': iconPrimary
-        }"></i>
-
+        }"></i> -->
   <span #label> {{classConfig?.label}}</span>
 </div>

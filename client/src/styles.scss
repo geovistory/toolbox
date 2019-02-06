@@ -241,6 +241,10 @@ h6,
 .h6 {
     font-weight: $font-weight-light;
     color: $gray-700;
+    small,
+    .small {
+        font-weight: $font-weight-light;
+    }
 }
 
 h4,
@@ -547,19 +551,19 @@ ngb-pagination {
 
 .gv-icon-preview,
 .gv-icon-preview.fa {
-    margin-right: 0.48rem;
-    font-size: 1.8rem;
-    color: #9d7ab3;
+    // margin-right: 0.48rem;
+    // font-size: 1.8rem;
+    // color: #9d7ab3;
 }
 
 // data unit previews
 gv-data-unit-preview {
     display: inline-block;
 }
-
+$gv-bg-drawer-list: #cde4f3;
 .gv-nav-btn {
     $background: $gray-200;
-    $active-background: $gray-300;
+    $active-background: $gv-bg-drawer-list;
     $hover-background: darken($background, 7.5%);
     height: 80px;
     width: 100%;
@@ -602,7 +606,7 @@ gv-data-unit-preview {
 ****************************/
 
 .gv-canvas {
-    background-color: $gray-200;
+    background-color: $gray-100;
     @extend .px-2;
     @extend .pb-2;
 }
@@ -615,26 +619,29 @@ gv-data-unit-preview {
     background-color: $gray-100;
     @extend .gv-flex-fh; // @extend .border;
     // @extend .border-primary;
-    @extend .mt-2;
-    @extend .gv-shadow-outer-1;
-    @extend .rounded;
+    margin-bottom: 1.5rem;
+    // @extend .gv-shadow-outer-1;
+    // @extend .rounded;
 }
-
+.gv-tile:last-child {
+    margin-bottom: 0;
+}
 .gv-tile-header,
 gv-tile-header {
     @extend .gv-flex-shrink-0;
     @extend .d-flex; // @extend .border-bottom; // @extend .border-top;
     // @extend .border-primary;
-    background-color: $secondary; // background-color: lighten($teal, 30%);
-    color: $white;
+    // background-color: $secondary; // background-color: lighten($teal, 30%);
+    // color: $white;
     @extend .align-items-baseline;
     @extend .mb-0; // background-color: theme-color-level('secondary', -9); // like list-group-item-secondary
-    @extend .pl-2;
-    @extend .font-sm; // padding-left: $btn-padding-y-sm;
-    height: calc((#{$btn-border-width} * 2) + (#{$font-size-sm} * #{$btn-line-height-sm}) + (#{$btn-padding-y-sm} * 2) + 1px);
-    @extend .rounded-top;
+    @extend .mx-2;
+    @extend .h4; // padding-left: $btn-padding-y-sm;
+    @extend .border-bottom;
+    @extend .border-gray-200;
+    // height: calc((#{$btn-border-width} * 2) + (#{$font-size-sm} * #{$btn-line-height-sm}) + (#{$btn-padding-y-sm} * 2) + 1px); // @extend .rounded-top;
     .btn {
-        @extend .btn-link-white;
+        @extend .btn-link-gray;
     }
 }
 
