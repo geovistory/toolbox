@@ -9,8 +9,8 @@ import { SectionList } from 'app/modules/information/containers/section-list/api
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { slideInOut } from '../../../shared/animations';
-import { EntityBase } from '../../data-unit.base';
-import { EntityAPIEpics } from '../../data-unit.epics';
+import { EntityBase } from '../../entity.base';
+import { EntityAPIEpics } from '../../entity.epics';
 import { PeItApiEpics } from '../api/pe-it.epics';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';

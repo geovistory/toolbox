@@ -6,7 +6,7 @@ import { PeItCtrlBase } from '../pe-it-ctrl.base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
 import { RootEpics } from 'app/core/store/epics';
-import { EntityAPIEpics } from '../../data-unit.epics';
+import { EntityAPIEpics } from '../../entity.epics';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

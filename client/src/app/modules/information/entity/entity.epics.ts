@@ -5,10 +5,10 @@ import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil, filter } from 'rxjs/operators';
-import { EntityActions } from './data-unit.actions';
+import { EntityActions } from './entity.actions';
 import { PropertyFieldActions, PropertyFieldAction } from '../property-field/property-field.actions';
 import { startsWith } from 'ramda';
-import { EntityBase } from './data-unit.base';
+import { EntityBase } from './entity.base';
 import { TextPropertyFieldAPIActions } from '../containers/text-property-field/api/text-property-field.actions';
 
 /**

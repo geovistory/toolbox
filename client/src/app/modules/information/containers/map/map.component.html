@@ -1,6 +1,7 @@
 <gv-tile-header (close)="close.emit()">
   <span title>
-    <i class="fa fa-compass"></i> Map
+    <!-- <i class="fa fa-compass"></i> -->
+    Map
   </span>
   <span buttons>
     <button class="btn btn-sm" (click)="flyToPeItLayerEntities()" title="Zoom map to extent">
@@ -11,11 +12,11 @@
 
 <div class="gv-tile-body">
 
-<div class="gv-grow-1 d-flex justify-content-center" *ngIf="isLoading">
-  <i class="fa fa-3x fa-pulse fa-spinner text-muted  align-self-center"></i>
-</div>
+  <div class="gv-grow-1 d-flex justify-content-center" *ngIf="isLoading">
+    <i class="fa fa-3x fa-pulse fa-spinner text-muted  align-self-center"></i>
+  </div>
 
-  <ac-map [ngClass]="{ 'd-none': isLoading, 'gv-grow-1 d-flex flex-column': (!isLoading) }" >
+  <ac-map [ngClass]="{ 'd-none': isLoading, 'gv-grow-1 d-flex flex-column': (!isLoading) }">
 
     <ac-map-layer-provider [provider]="urlTemplateProvider" [options]="{
       subdomains: 'abc',

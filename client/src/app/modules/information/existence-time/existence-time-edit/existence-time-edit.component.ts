@@ -6,7 +6,7 @@ import { ExistenceTimeEdit, ExTimeHelpMode, ExTimeModalMode, PropertyField, Prop
 import { propertyFieldKey, propertyFieldKeyFromParams, createPropertyField } from 'app/core/state/services/state-creator';
 import { dropLast, union } from 'ramda';
 import { Observable, Subscription } from 'rxjs';
-import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
+import { teEntReducer } from '../../entity/te-ent/te-ent.reducer';
 import { DfhConfig } from '../../shared/dfh-config';
 import { ExistenceTimeActions } from '../existence-time.actions';
 import { ExTimeEditActions } from './existence-time-edit.actions';

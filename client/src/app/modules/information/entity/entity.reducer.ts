@@ -2,7 +2,7 @@
 import { Entity } from 'app/core/state/models';
 import { omit } from 'ramda';
 import { sortChildrenByUiContext } from '../information.helpers';
-import { EntityAction, EntityActions } from './data-unit.actions';
+import { EntityAction, EntityActions } from './entity.actions';
 
 const INITIAL_STATE = new Entity({
   selectPropState: 'init',

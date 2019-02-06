@@ -614,6 +614,8 @@ $gv-bg-drawer-list: #cde4f3;
     background-color: $gray-100;
     @extend .px-2;
     @extend .pb-2;
+    flex-basis: 100%;
+    overflow-x: auto;
 }
 
 .gv-panel {
@@ -621,6 +623,7 @@ $gv-bg-drawer-list: #cde4f3;
 }
 
 .gv-tile {
+    min-width: 20rem;
     background-color: $gray-100;
     @extend .gv-flex-fh; // @extend .border;
     // @extend .border-primary;

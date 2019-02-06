@@ -2,7 +2,7 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ClassInstanceLabel, PeItDetail } from 'app/core/state/models';
 import { FluxStandardAction } from 'flux-standard-action';
-import { EntityActions } from '../data-unit.actions';
+import { EntityActions } from '../entity.actions';
 
 
 // Flux-standard-action gives us stronger typing of our actions.

@@ -11,8 +11,8 @@ import { ExistenceTimeDetail, FieldList, TeEntAccentuation, PropertyField } from
 import { equals } from 'ramda';
 import { Subject } from 'rxjs';
 import { TimeLineData, TimeLineRow } from '../../../timeline/models/timeline';
-import { TeEntActions } from '../../data-unit/te-ent/te-ent.actions';
-import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
+import { TeEntActions } from '../../entity/te-ent/te-ent.actions';
+import { teEntReducer } from '../../entity/te-ent/te-ent.reducer';
 import { StateToDataService } from '../../shared/state-to-data.service';
 
 @Component({

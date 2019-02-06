@@ -1,18 +1,27 @@
 @import "../../../../../styles.scss";
 
+$tabs-height: 32px;
+.gv-main-drawer {
+    padding-top: $tabs-height
+}
+
 .gv-drawer-list {
+    margin-top: $tabs-height;
     background-color: $gv-bg-drawer-list;
 }
-.gv-panel-for-tabs{
+
+.gv-panel-for-tabs {
     @extend .border-left;
     @extend .border-gray-300;
 }
+
 .gv-panel-for-tabs:first-child {
-  border:none;
+    border: none;
 }
+
 .tab-list {
     max-width: 100%; // border: solid 1px #ccc;
-    min-height: 32px;
+    min-height: $tabs-height;
     display: flex;
     flex-direction: row;
     background: white;
@@ -44,7 +53,6 @@
 .panel-body {
     @extend .gv-flex-fh;
     position: relative;
-    
     .split-panel-drop-zone {
         $active-color: rgba(122, 237, 255, 0.256);
         pointer-events: none;
@@ -114,7 +122,7 @@
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.no-panels{
+.no-panels {
     margin-bottom: 8rem;
     white-space: nowrap;
 }

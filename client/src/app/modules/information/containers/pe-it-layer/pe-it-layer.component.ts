@@ -5,8 +5,8 @@ import { ExistenceTimeDetail, FieldList, TeEntDetail } from 'app/core/state/mode
 import { combineLatest, Observable, OperatorFunction, Subject } from 'rxjs';
 import { filter, map, mergeMap, tap } from 'rxjs/operators';
 import { AcLayerComponent, AcMapComponent, AcNotification, ActionType, CesiumEvent, PickOptions } from '../../../gv-angular-cesium/angular-cesium-fork';
-import { peItReducer } from '../../data-unit/pe-it/pe-it.reducer';
-import { TeEntActions } from '../../data-unit/te-ent/te-ent.actions';
+import { peItReducer } from '../../entity/pe-it/pe-it.reducer';
+import { TeEntActions } from '../../entity/te-ent/te-ent.actions';
 import { DfhConfig } from '../../shared/dfh-config';
 
 

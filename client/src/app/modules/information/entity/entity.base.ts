@@ -7,7 +7,7 @@ import { TypeDetail } from 'app/core/state/models/type-detail';
 import { createPropertyField, propertyFieldKey, StateSettings } from 'app/core/state/services/state-creator';
 import { RootEpics } from 'app/core/store/epics';
 import { Observable, Subject, combineLatest } from 'rxjs';
-import { EntityAPIEpics } from './data-unit.epics';
+import { EntityAPIEpics } from './entity.epics';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
 import { takeUntil, filter, first } from 'rxjs/operators';

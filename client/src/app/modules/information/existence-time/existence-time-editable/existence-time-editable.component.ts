@@ -7,7 +7,7 @@ import { ExistenceTimeDetail, ExTimeModalMode, PropertyFieldList, TeEntDetail, F
 import { createExistenceTimeDetail, StateSettings } from 'app/core/state/services/state-creator';
 import { dropLast } from 'ramda';
 import { Observable, Subscription } from 'rxjs';
-import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
+import { teEntReducer } from '../../entity/te-ent/te-ent.reducer';
 import { slideInOut } from '../../shared/animations';
 import { ExistenceTimeModalComponent } from '../existence-time-modal/existence-time-modal.component';
 import { ExistenceTimeActions } from '../existence-time.actions';

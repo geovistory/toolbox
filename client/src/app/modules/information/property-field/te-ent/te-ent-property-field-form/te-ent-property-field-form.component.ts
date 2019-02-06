@@ -6,7 +6,7 @@ import { RoleDetail, PropertyField, TeEntDetail } from 'app/core/state/models';
 import { createRoleDetail, createPropertyField, getCreateOfEditableContext, StateSettings, createRoleDetailList } from 'app/core/state/services/state-creator';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest, timer } from 'rxjs';
-import { teEntReducer } from '../../../data-unit/te-ent/te-ent.reducer';
+import { teEntReducer } from '../../../entity/te-ent/te-ent.reducer';
 import { ClassService } from '../../../shared/class.service';
 import { PropertyFieldFormBase } from '../../property-field-form.base';
 import { PropertyFieldActions } from '../../property-field.actions';

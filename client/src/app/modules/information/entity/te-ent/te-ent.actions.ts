@@ -3,7 +3,7 @@ import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { InfTemporalEntity } from 'app/core';
 import { TeEntDetail, CollapsedExpanded, ExistenceTimeDetail, TeEntAccentuation } from 'app/core/state/models';
-import { EntityActions } from '../data-unit.actions';
+import { EntityActions } from '../entity.actions';
 
 
 // replace TeEnt with name of component

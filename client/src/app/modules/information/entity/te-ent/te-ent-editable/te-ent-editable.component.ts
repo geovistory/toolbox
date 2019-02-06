@@ -7,8 +7,8 @@ import { createExistenceTimeDetail, getCreateOfEditableContext, StateSettings, s
 import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { RootEpics } from '../../../../../core/store/epics';
 import { slideInOut } from '../../../shared/animations';
-import { EntityBase } from '../../data-unit.base';
-import { EntityAPIEpics } from '../../data-unit.epics';
+import { EntityBase } from '../../entity.base';
+import { EntityAPIEpics } from '../../entity.epics';
 import { TeEntActions } from '../te-ent.actions';
 import { TeEntAPIEpics } from '../te-ent.epics';
 import { teEntReducer } from '../te-ent.reducer';

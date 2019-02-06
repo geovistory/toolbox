@@ -3,7 +3,7 @@ import { Action } from 'redux';
 import { indexBy, prop } from 'ramda';
 import { PeItDetail } from 'app/core/state/models';
 import { PeItAction, PeItActions } from './pe-it.actions';
-import { entityReducer } from '../data-unit.reducer';
+import { entityReducer } from '../entity.reducer';
 
 
 const INITIAL_STATE: PeItDetail = {

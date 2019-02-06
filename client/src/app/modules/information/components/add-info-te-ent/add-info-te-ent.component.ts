@@ -4,7 +4,7 @@ import { ClassConfig, U, UiElement } from 'app/core';
 import { AddOption, FieldList, PropertyFieldList, PropertyField } from 'app/core/state/models';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
-import { propSetMap } from '../../data-unit/data-unit.base';
+import { propSetMap } from '../../entity/entity.base';
 import { similarPropertyField, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 
 @Component({

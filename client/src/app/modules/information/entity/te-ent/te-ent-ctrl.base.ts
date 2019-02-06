@@ -5,8 +5,8 @@ import { InfTemporalEntity } from 'app/core';
 import { TeEntDetail } from 'app/core/state/models';
 import { RootEpics } from 'app/core/store/epics';
 import { Observable } from 'rxjs';
-import { EntityBase } from '../data-unit.base';
-import { EntityAPIEpics } from '../data-unit.epics';
+import { EntityBase } from '../entity.base';
+import { EntityAPIEpics } from '../entity.epics';
 import { TeEntActions } from './te-ent.actions';
 import { teEntReducer } from './te-ent.reducer';
 

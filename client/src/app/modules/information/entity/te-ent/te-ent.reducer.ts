@@ -1,5 +1,5 @@
 import { TeEntDetail } from 'app/core/state/models';
-import { entityReducer } from '../data-unit.reducer';
+import { entityReducer } from '../entity.reducer';
 import { TeEntAction, TeEntActions } from './te-ent.actions';
 
 

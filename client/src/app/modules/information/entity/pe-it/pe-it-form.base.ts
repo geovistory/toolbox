@@ -4,11 +4,11 @@ import { FormBuilder } from '@angular/forms';
 import { InfPersistentItem } from 'app/core';
 import { PeItDetail } from 'app/core/state/models';
 import { Observable } from 'rxjs';
-import { EntityBase } from '../data-unit.base';
+import { EntityBase } from '../entity.base';
 import { PeItActions } from './pe-it.actions';
 import { peItReducer } from './pe-it.reducer';
 import { RootEpics } from 'app/core/store/epics';
-import { EntityAPIEpics } from '../data-unit.epics';
+import { EntityAPIEpics } from '../entity.epics';
 
 
 /**
