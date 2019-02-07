@@ -1,8 +1,8 @@
 <div *ngIf="isCircular && ! (leafPeItLoading$ |async)">
-    <gv-data-unit-preview [preview]="(preview$ | async)"></gv-data-unit-preview>
+    <gv-data-unit-preview [dragEnabled]="dragEnabled" [preview]="(preview$ | async)"></gv-data-unit-preview>
     <small class="text-muted">(self)</small>
 </div>
-<gv-data-unit-preview *ngIf="!isCircular" class="gv-pointer" [preview]="(preview$ | async)" (click)=open()></gv-data-unit-preview>
+<gv-data-unit-preview *ngIf="!isCircular" class="gv-pointer" [dragEnabled]="dragEnabled" [preview]="(preview$ | async)" (click)=open()></gv-data-unit-preview>
     <!-- <a *ngIf="!isCircular" href="" class="gv-passive-link" (click)=open()>
 </a> -->
 

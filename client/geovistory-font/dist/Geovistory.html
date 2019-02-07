@@ -54,11 +54,11 @@
 
         @font-face {
     font-family: "Geovistory";
-    src: url("./Geovistory.eot?25161f8c6693a6b31ca0f529496afa6b?#iefix") format("embedded-opentype"),
-url("./Geovistory.woff2?25161f8c6693a6b31ca0f529496afa6b") format("woff2"),
-url("./Geovistory.woff?25161f8c6693a6b31ca0f529496afa6b") format("woff"),
-url("./Geovistory.ttf?25161f8c6693a6b31ca0f529496afa6b") format("truetype"),
-url("./Geovistory.svg?25161f8c6693a6b31ca0f529496afa6b#Geovistory") format("svg");
+    src: url("./Geovistory.eot?5f7a7c0e0fae7f911f6468acb2fef1f7?#iefix") format("embedded-opentype"),
+url("./Geovistory.woff2?5f7a7c0e0fae7f911f6468acb2fef1f7") format("woff2"),
+url("./Geovistory.woff?5f7a7c0e0fae7f911f6468acb2fef1f7") format("woff"),
+url("./Geovistory.ttf?5f7a7c0e0fae7f911f6468acb2fef1f7") format("truetype"),
+url("./Geovistory.svg?5f7a7c0e0fae7f911f6468acb2fef1f7#Geovistory") format("svg");
 }
 
 .gv-icon {
@@ -91,11 +91,20 @@ url("./Geovistory.svg?25161f8c6693a6b31ca0f529496afa6b#Geovistory") format("svg"
 .gv-icon-presentation:before {
     content: "\f105";
 }
-.gv-icon-source:before {
+.gv-icon-query:before {
     content: "\f106";
 }
-.gv-icon-temporal-entity:before {
+.gv-icon-source:before {
     content: "\f107";
+}
+.gv-icon-story:before {
+    content: "\f108";
+}
+.gv-icon-temporal-entity:before {
+    content: "\f109";
+}
+.gv-icon-visual:before {
+    content: "\f10a";
 }
 
 
@@ -153,6 +162,15 @@ url("./Geovistory.svg?25161f8c6693a6b31ca0f529496afa6b#Geovistory") format("svg"
 
         <div class="preview">
             <span class="inner">
+                <.gv-icon class="gv-icon-query"></.gv-icon>
+            </span>
+            <br>
+            <span class='label'>query</span>
+        </div>
+
+
+        <div class="preview">
+            <span class="inner">
                 <.gv-icon class="gv-icon-source"></.gv-icon>
             </span>
             <br>
@@ -162,10 +180,28 @@ url("./Geovistory.svg?25161f8c6693a6b31ca0f529496afa6b#Geovistory") format("svg"
 
         <div class="preview">
             <span class="inner">
+                <.gv-icon class="gv-icon-story"></.gv-icon>
+            </span>
+            <br>
+            <span class='label'>story</span>
+        </div>
+
+
+        <div class="preview">
+            <span class="inner">
                 <.gv-icon class="gv-icon-temporal-entity"></.gv-icon>
             </span>
             <br>
             <span class='label'>temporal-entity</span>
+        </div>
+
+
+        <div class="preview">
+            <span class="inner">
+                <.gv-icon class="gv-icon-visual"></.gv-icon>
+            </span>
+            <br>
+            <span class='label'>visual</span>
         </div>
 
 

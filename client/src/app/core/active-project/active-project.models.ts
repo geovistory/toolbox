@@ -18,7 +18,7 @@ export interface Panel {
     tabs: Tab[];
 }
 
-export type ListType = '' | 'entites' | 'sources';
+export type ListType = '' | 'entities' | 'sources' | 'queries' | 'visuals' | 'stories';
 
 export interface Tab {
     // wheter tab is active or not

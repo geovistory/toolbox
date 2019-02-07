@@ -13,7 +13,7 @@
         {{getExTLabel(label?.exTimeLabel)}}
       </div>
       <div *ngIf="label.type === 'leaf-pe-it' && label.fkEntity">
-        <gv-leaf-pe-it-view [pkEntity]="label.fkEntity"></gv-leaf-pe-it-view>
+        <gv-leaf-pe-it-view [dragEnabled]="false" [pkEntity]="label.fkEntity"></gv-leaf-pe-it-view>
       </div>
     </div>
   </div>

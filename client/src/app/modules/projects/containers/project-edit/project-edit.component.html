@@ -23,15 +23,18 @@
           <div class="fa-2x gv-icon gv-icon-entity text-primary"></div>
           <div>Entities</div>
         </button>
-        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center">
-          Queries
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [ngClass]="{active:(p.list$ | async)==='queries'}"
+          (click)="setList('queries')">
+          <div class="fa-2x gv-icon gv-icon-query text-primary"></div> Queries
         </button>
-        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center">
-          Visuals
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [ngClass]="{active:(p.list$ | async)==='visuals'}"
+          (click)="setList('visuals')">
+          <div class="fa-2x gv-icon gv-icon-visual text-primary"></div> Visuals
         </button>
 
-        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center">
-          Stories
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [ngClass]="{active:(p.list$ | async)==='stories'}"
+          (click)="setList('stories')">
+          <div class="fa-2x gv-icon gv-icon-story text-primary"></div> Stories
         </button>
 
       </div>
@@ -39,7 +42,7 @@
 
       <div class="btn-group-vertical rounded-0 d-block mt-auto">
         <button class="gv-nav-btn" [routerLink]="['../', 'settings']">
-          Settings
+          <div class="fa fa-2x fa-cogs text-secondary"></div> Settings
         </button>
       </div>
     </div>
@@ -55,6 +58,25 @@
           <i class="fa fa-chevron-left"></i> </button>
         <gv-source-list *ngIf="(p.list$ | async) === 'sources'"></gv-source-list>
         <gv-information *ngIf="(p.list$ | async) === 'entities'"></gv-information>
+        <div *ngIf="(p.list$ | async) === 'queries'">
+          <gv-list-drawer-header>
+            <div title>Queries</div>
+          </gv-list-drawer-header>
+          <div class="ml-3">Coming soon.</div>
+        </div>
+        <div *ngIf="(p.list$ | async) === 'visuals'">
+          <gv-list-drawer-header>
+            <div title>Visuals</div>
+          </gv-list-drawer-header>
+          <div class="ml-3">Coming soon.</div>
+        </div>
+        <div *ngIf="(p.list$ | async) === 'stories'">
+          <gv-list-drawer-header>
+            <div title>Stories</div>
+          </gv-list-drawer-header>
+          <div class="ml-3">Coming soon.</div>
+        </div>
+
       </mat-drawer>
 
       <!-- Container for Tabs … -->
