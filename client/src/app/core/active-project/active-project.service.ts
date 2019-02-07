@@ -35,7 +35,6 @@ export class ActiveProjectService {
   constructor(
     private ngRedux: NgRedux<IAppState>,
     private actions: ActiveProjectActions,
-    private router: Router,
     private entityPreviewSocket: EntityPreviewSocket
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);

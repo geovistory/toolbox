@@ -60,7 +60,7 @@ export class TypeEditableAPIActions {
     error,
   })
 
-  loadSucceeded = (payload:TypeDetail): TypeAPIAction => ({
+  loadSucceeded = (payload: TypeDetail): TypeAPIAction => ({
     type: TypeEditableAPIActions.LOAD_SUCCEEDED,
     meta: null,
     payload

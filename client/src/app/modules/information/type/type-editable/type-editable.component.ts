@@ -47,7 +47,7 @@ export class TypeEditableComponent extends TypeEditableAPIActions implements OnI
     fb: FormBuilder
   ) {
     super()
-    this.eaCtrl = new FormControl(null, [Validators.required]);
+    this.eaCtrl = new FormControl(null);
     this.formGroup = fb.group({ eaCtrl: this.eaCtrl })
   }
 
@@ -67,8 +67,9 @@ export class TypeEditableComponent extends TypeEditableAPIActions implements OnI
   ngAfterViewInit() {
     this.formGroup.valueChanges.subscribe((value) => {
       if (this.formGroup.valid && this.localStore.getState().editing) {
-        const assoc: InfEntityAssociation = value.eaCtrl;
         const fk_project = this.ngRedux.getState().activeProject.pk_project;
+
+        // old ea
         const ea = this.localStore.getState().entityAssociation;
         const eas = [];
         if (ea) {
@@ -83,14 +84,21 @@ export class TypeEditableComponent extends TypeEditableAPIActions implements OnI
           })
           eas.push(oldEa);
         }
-        const newEa = new InfEntityAssociation({
-          fk_domain_entity: this.localStore.getState().fkDomainEntity,
-          fk_range_entity: assoc.fk_range_entity,
-          fk_property: assoc.fk_property,
-          entity_version_project_rels: [{ is_in_project: true } as InfEntityProjectRel]
-        })
-        eas.push(newEa);
-        this.changeType(fk_project, eas);
+
+        // new ea
+        const assoc: InfEntityAssociation = value.eaCtrl;
+        if (assoc) {
+          const newEa = new InfEntityAssociation({
+            fk_domain_entity: this.localStore.getState().fkDomainEntity,
+            fk_range_entity: assoc.fk_range_entity,
+            fk_property: assoc.fk_property,
+            entity_version_project_rels: [{ is_in_project: true } as InfEntityProjectRel]
+          })
+          eas.push(newEa);
+        }
+
+        if (eas.length) this.changeType(fk_project, eas);
+        else this.stopEdit();
       }
     })
   }

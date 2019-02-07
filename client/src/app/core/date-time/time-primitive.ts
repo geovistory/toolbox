@@ -88,6 +88,7 @@ export class TimePrimitive {
     return this.getDateFormatString(this.duration);
   }
 
+  
   /**
    * Get the julian day in seconds
    * TODO: integrate time

@@ -92,7 +92,7 @@ export class EntityDetailComponent extends EntityDetailAPIActions implements OnI
 
     combineLatest(this.selectedEntity$, this.p.pkProject$)
       .pipe(
-        first(([du, pkProject]) => (du && !du.loading && !!pkProject)),
+        first(([du, pkProject]) => (du && !du.loading && du.entity_type && !!pkProject)),
         takeUntil(this.destroy$)
       ).subscribe(([du, pkProject]) => {
         if (du.entity_type === 'peIt') {

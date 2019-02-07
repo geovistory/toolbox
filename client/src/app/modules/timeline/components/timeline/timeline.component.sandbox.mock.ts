@@ -9,6 +9,17 @@ export const timeLineData: TimeLineData = {
     rows: [
         {
             accentuation: 'none',
+            label: 'Birth: Max Muster',
+            existenceTime: new TimeSpan({
+                p81: new TimePrimitive({
+                    julianDay: 2394600,
+                    duration: '1 day',
+                    calendar: 'julian'
+                })
+            })
+        },
+        {
+            accentuation: 'none',
             label: 'Name: Johannes Jacob Meier Langer Name',
             existenceTime: new TimeSpan({
                 p82a: new TimePrimitive({

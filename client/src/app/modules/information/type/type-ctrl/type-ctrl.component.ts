@@ -162,7 +162,9 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
 
 
   emitOnChange() {
-    if (this.dropdownTreeviewSelectI18n.selectedItem && this.localStore.getState()) {
+    if (this.dropdownTreeviewSelectI18n.selectedItem
+      && this.dropdownTreeviewSelectI18n.selectedItem.value
+      && this.localStore.getState()) {
       this.onChange(new InfEntityAssociation({
         fk_domain_entity: undefined,
         fk_property: Config.PK_CLASS_PK_HAS_TYPE_MAP[this.localStore.getState().pkTypedClass],

@@ -22,6 +22,7 @@ export interface TimelineOptions {
   barHeight: number, // height of bars including the strockes of the brackets
   bracketStrokeWidth: number, // stroke width of left or right brackets of existence time visuals
   bracketWidth: number,
+  minTimeSpanWidth?: number, // minimal width of a time span visual (rectangle)
   height?: number, // total height (sum of headerHeight and bodyHeight)
   bodyHeight?: number, // height of scrollable body (barHeight * data.rows.length or bodyMaxHeight)
   timeColWidth?: number; // width of the column with the timeline
@@ -35,7 +36,8 @@ export interface TimelineOptions {
 @Component({
   selector: 'gv-timeline',
   templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.scss']
+  styleUrls: ['./timeline.component.scss'],
+  
 })
 export class TimelineComponent extends TimeLineApiActions implements OnInit, OnChanges, OnDestroy {
   @Input() path: string[];
@@ -68,7 +70,8 @@ export class TimelineComponent extends TimeLineApiActions implements OnInit, OnC
     rowPaddingTop: 5,
     barHeight: 14,
     bracketStrokeWidth: 2,
-    bracketWidth: 4
+    bracketWidth: 4,
+    minTimeSpanWidth: 10
   };
 
   private isDragged = false; // true during dragging

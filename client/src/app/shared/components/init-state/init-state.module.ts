@@ -4,12 +4,14 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { InitStateComponent } from './init-state.component';
+import { ActiveProjectModule } from 'app/core/active-project';
 
 @NgModule({
   imports: [
     CommonModule,
     NgReduxModule,
-    RouterModule
+    RouterModule,
+    ActiveProjectModule
   ],
   declarations: [
     InitStateComponent

@@ -15,6 +15,9 @@ import { INITIAL_STATE } from './initial-state';
 import { IAppState } from './model';
 import { rootReducer } from './reducers';
 import { equals } from 'ramda'
+import { AccountEpics } from 'app/modules/account/api/account.epics';
+import { AccountActions } from 'app/modules/account/api/account.actions';
+import { Router } from '@angular/router';
 
 /**
  * Function to use in combination with rxjs/operator .filter()
@@ -46,7 +49,9 @@ export const ofSubstore = (path: string[]) => (action): boolean => {
     ],
     providers: [
         // NgReduxRouter,
-        RootEpics
+        RootEpics,
+        AccountEpics,
+        AccountActions,
     ]
 })
 export class StoreModule {

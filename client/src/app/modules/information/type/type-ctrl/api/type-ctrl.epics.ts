@@ -56,7 +56,11 @@ export class TypeCtrlAPIEpics {
                   text: U.stringForPeIt(peIt)
                 })
               })
-
+              // insert a No Type option
+              treeviewItems.unshift(new TreeviewItem({
+                value: null,
+                text: 'No Type'
+              }))
               /**
                * Emit the local action on loading succeeded
                */
