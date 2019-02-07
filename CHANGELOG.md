@@ -50,7 +50,7 @@
 * Improved «Add a Section» Page by using the new tab system (still not perfect, but may be better). `GEOV-353` 
 * Redesigned Headers `GEOV-361`
 * Added possibility to unselect Type of Entity `GEOV-374`
-* Improved Timeline: 
+* Improved Timeline: `GEOV-222`
   * Very small dates have a minimal width, so that they stay visible. 
   * Tick-Labels are a bit better, although not perfect
   * Zooming takes the cursor as its center, so that zooming on a specific spot is easier
