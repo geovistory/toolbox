@@ -54,11 +54,11 @@
 
         @font-face {
     font-family: "Geovistory";
-    src: url("./Geovistory.eot?88738101f7ee5fec18d451bcba7fbb3b?#iefix") format("embedded-opentype"),
-url("./Geovistory.woff2?88738101f7ee5fec18d451bcba7fbb3b") format("woff2"),
-url("./Geovistory.woff?88738101f7ee5fec18d451bcba7fbb3b") format("woff"),
-url("./Geovistory.ttf?88738101f7ee5fec18d451bcba7fbb3b") format("truetype"),
-url("./Geovistory.svg?88738101f7ee5fec18d451bcba7fbb3b#Geovistory") format("svg");
+    src: url("./Geovistory.eot?25161f8c6693a6b31ca0f529496afa6b?#iefix") format("embedded-opentype"),
+url("./Geovistory.woff2?25161f8c6693a6b31ca0f529496afa6b") format("woff2"),
+url("./Geovistory.woff?25161f8c6693a6b31ca0f529496afa6b") format("woff"),
+url("./Geovistory.ttf?25161f8c6693a6b31ca0f529496afa6b") format("truetype"),
+url("./Geovistory.svg?25161f8c6693a6b31ca0f529496afa6b#Geovistory") format("svg");
 }
 
 .gv-icon {
@@ -82,10 +82,10 @@ url("./Geovistory.svg?88738101f7ee5fec18d451bcba7fbb3b#Geovistory") format("svg"
 .gv-icon-entity:before {
     content: "\f102";
 }
-.gv-icon-information-simple:before {
+.gv-icon-information:before {
     content: "\f103";
 }
-.gv-icon-information:before {
+.gv-icon-persistent-entity:before {
     content: "\f104";
 }
 .gv-icon-presentation:before {
@@ -93,6 +93,9 @@ url("./Geovistory.svg?88738101f7ee5fec18d451bcba7fbb3b#Geovistory") format("svg"
 }
 .gv-icon-source:before {
     content: "\f106";
+}
+.gv-icon-temporal-entity:before {
+    content: "\f107";
 }
 
 
@@ -123,19 +126,19 @@ url("./Geovistory.svg?88738101f7ee5fec18d451bcba7fbb3b#Geovistory") format("svg"
 
         <div class="preview">
             <span class="inner">
-                <.gv-icon class="gv-icon-information-simple"></.gv-icon>
+                <.gv-icon class="gv-icon-information"></.gv-icon>
             </span>
             <br>
-            <span class='label'>information-simple</span>
+            <span class='label'>information</span>
         </div>
 
 
         <div class="preview">
             <span class="inner">
-                <.gv-icon class="gv-icon-information"></.gv-icon>
+                <.gv-icon class="gv-icon-persistent-entity"></.gv-icon>
             </span>
             <br>
-            <span class='label'>information</span>
+            <span class='label'>persistent-entity</span>
         </div>
 
 
@@ -154,6 +157,15 @@ url("./Geovistory.svg?88738101f7ee5fec18d451bcba7fbb3b#Geovistory") format("svg"
             </span>
             <br>
             <span class='label'>source</span>
+        </div>
+
+
+        <div class="preview">
+            <span class="inner">
+                <.gv-icon class="gv-icon-temporal-entity"></.gv-icon>
+            </span>
+            <br>
+            <span class='label'>temporal-entity</span>
         </div>
 
 

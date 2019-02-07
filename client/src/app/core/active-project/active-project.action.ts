@@ -28,7 +28,7 @@ interface MetaData {
     previousTabIndex?: number
     currentTabIndex?: number
     tab?: Tab;
-    pkEntity?: number
+    pkEntity?: number;
 };
 type Payload = ProjectDetail;
 export type ActiveProjectAction = FluxStandardAction<Payload, MetaData>;
@@ -46,6 +46,7 @@ export class ActiveProjectActions {
     static ACTIVE_PROJECT_UPDATED = 'ActiveProject::ACTIVE_PROJECT_UPDATED';
     static PROJECT_LOAD_CRM = 'ActiveProject::PROJECT_LOAD_CRM';
     static PROJECT_CRM_LOADED = 'ActiveProject::PROJECT_CRM_LOADED';
+
 
     loadProject(pk_project: number): ActiveProjectAction {
         return {
@@ -358,6 +359,7 @@ export class ActiveProjectActions {
     ************************************************************************************/
     static UPDATE_SELECTED_CHUNK = 'ActiveProject::UPDATE_SELECTED_CHUNK';
     static SET_REFINING_CHUNK = 'ActiveProject::SET_REFINING_CHUNK';
+    static SET_CREATING_MENTIONING = 'ActiveProject::SET_CREATING_MENTIONING';
 
 
     updateSelectedChunk(selectedChunk: InfChunk): ActiveProjectAction {
@@ -376,6 +378,13 @@ export class ActiveProjectActions {
         }
     }
 
+    setCreatingMentioning(creatingMentioning: boolean): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.SET_CREATING_MENTIONING,
+            payload: { creatingMentioning },
+            meta: null
+        }
+    }
 
     /************************************************************************************
     * Highlighting of mentionings in the gui

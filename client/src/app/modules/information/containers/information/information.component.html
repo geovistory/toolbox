@@ -1,14 +1,14 @@
 <div class="gv-flex-fh">
 
-  <div class="m-3 d-flex gv-flex-shrink-0 justify-content-baseline">
-   <div class="h3 mr-auto">
-     Your Entities 
-   </div>
-     <gv-class-and-type-selector addBtn buttonClass="btn-primary btn-sm no-caret mr-0" class="ml-2" *ngIf="pkClassesInProject != undefined && (p.pkProject$ |async)"
-    [pkClasses]="pkClassesInProject" [pkProject]="(p.pkProject$ |async)" [basePath]="basePath.concat('classAndTypeSelector')"
-    (select)="startCreate($event)" buttonText="+ Add" placement="right" hasFilter="true"></gv-class-and-type-selector>
+  <gv-list-drawer-header>
+    
+    <div title>Your Entities</div>
+    <gv-class-and-type-selector buttons buttonClass="btn-primary btn-sm no-caret mr-0" *ngIf="pkClassesInProject != undefined && (p.pkProject$ |async)"
+      [pkClasses]="pkClassesInProject" [pkProject]="(p.pkProject$ |async)" [basePath]="basePath.concat('classAndTypeSelector')"
+      (select)="startCreate($event)" buttonText="+ Add" placement="right" hasFilter="true"></gv-class-and-type-selector>
 
-  </div>
+  </gv-list-drawer-header>
+  
 
   <gv-list class="gv-flex-fh" [showTeEnPeItFilter]="true" [basePath]="basePath.concat('items')" (onOpen)="openEntity($event)">
   </gv-list>

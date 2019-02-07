@@ -16,6 +16,7 @@ import { IAppState } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
+import { MentioningListAPIActions } from 'app/modules/information/containers/mentioning-list/api/mentioning-list.actions';
 
 
 
@@ -48,7 +49,9 @@ export class ActiveProjectEpics {
       this.createClosePanelEpic(),
       this.createActivateTabFocusPanelEpic(),
       this.createMoveTabFocusPanelEpic(),
-      this.createClosePanelFocusPanelEpic()
+      this.createClosePanelFocusPanelEpic(),
+      this.createEnableCreatingMentioningEpic(),
+      this.createDisableCreatingMentioningEpic(),
     );
   }
 
@@ -447,6 +450,7 @@ export class ActiveProjectEpics {
 
 
 
+
   private createClosePanelEpic(): Epic {
     return (action$, store) => {
       return action$.pipe(
@@ -460,7 +464,9 @@ export class ActiveProjectEpics {
     }
   }
 
-
+  /**
+   * LAYOUT
+   */
   private createActivateTabFocusPanelEpic(): Epic {
     return (action$, store) => {
       return action$.pipe(
@@ -496,5 +502,21 @@ export class ActiveProjectEpics {
         }))
       )
     }
+  }
+
+  /**
+   * MENTIONING
+   */
+  private createEnableCreatingMentioningEpic(): Epic {
+    return (action$, store) => action$.pipe(
+      ofType(MentioningListAPIActions.START_CREATE),
+      mapTo(this.actions.setCreatingMentioning(true))
+    )
+  }
+  private createDisableCreatingMentioningEpic(): Epic {
+    return (action$, store) => action$.pipe(
+      ofType(MentioningListAPIActions.STOP_CREATE, MentioningListAPIActions.CREATE_SUCCEEDED, MentioningListAPIActions.CREATE_FAILED),
+      mapTo(this.actions.setCreatingMentioning(false))
+    )
   }
 }

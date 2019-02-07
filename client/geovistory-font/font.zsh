@@ -2,7 +2,7 @@
 # create a copy of svg folder
 echo 'create a copy of svg folder'
 
-cp -R svg svg-tmp/
+cp -R svg svg-tmp
 
 # rename all files from gv-icons_* to gv-icon-* in the copy folder
 echo 'rename all files from gv-icons_* to gv-icon-* in the copy folder'

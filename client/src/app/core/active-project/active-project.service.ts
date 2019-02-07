@@ -26,6 +26,7 @@ export class ActiveProjectService {
   public crm$: Observable<ProjectCrm>
   public focusedPanel$: Observable<boolean>;
   public list$: Observable<ListType>; // type of list displayed in left panel 
+  public creatingMentioning$: Observable<boolean>;
 
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
@@ -47,6 +48,7 @@ export class ActiveProjectService {
     this.list$ = ngRedux.select<ListType>(['activeProject', 'list']);
 
     this.focusedPanel$ = ngRedux.select<boolean>(['activeProject', 'focusedPanel']);
+    this.creatingMentioning$ = ngRedux.select<boolean>(['activeProject', 'creatingMentioning']);
 
     // emits true if no toolbox panel is opened
     this.dashboardVisible$ = combineLatest(

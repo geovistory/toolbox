@@ -1,5 +1,5 @@
 <!-- Search filter tabs -->
-<ul  *ngIf="showTeEnPeItFilter"  class="nav gv-search-filter border-bottom border-top">
+<ul  *ngIf="showTeEnPeItFilter"  class="nav gv-search-filter border-bottom">
 
   <li *ngFor="let type of typeOptions" class="nav-item" (click)="entityTypeChange(type)">
     <button class="btn btn-sm btn-link nav-link" [ngClass]="{'font-weight-bold': selectedType === type}" [innerHtml]="type.label"></button>

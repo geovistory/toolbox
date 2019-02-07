@@ -1,10 +1,10 @@
 @font-face {
     font-family: "Geovistory";
-    src: url("./Geovistory.eot?a540d7c6830690df71203c13d6d1c76e?#iefix") format("embedded-opentype"),
-url("./Geovistory.woff2?a540d7c6830690df71203c13d6d1c76e") format("woff2"),
-url("./Geovistory.woff?a540d7c6830690df71203c13d6d1c76e") format("woff"),
-url("./Geovistory.ttf?a540d7c6830690df71203c13d6d1c76e") format("truetype"),
-url("./Geovistory.svg?a540d7c6830690df71203c13d6d1c76e#Geovistory") format("svg");
+    src: url("./Geovistory.eot?09b274a40ae66c3d00b53ac9a59607b5?#iefix") format("embedded-opentype"),
+url("./Geovistory.woff2?09b274a40ae66c3d00b53ac9a59607b5") format("woff2"),
+url("./Geovistory.woff?09b274a40ae66c3d00b53ac9a59607b5") format("woff"),
+url("./Geovistory.ttf?09b274a40ae66c3d00b53ac9a59607b5") format("truetype"),
+url("./Geovistory.svg?09b274a40ae66c3d00b53ac9a59607b5#Geovistory") format("svg");
 }
 
 .gv-icon {
@@ -28,10 +28,10 @@ url("./Geovistory.svg?a540d7c6830690df71203c13d6d1c76e#Geovistory") format("svg"
 .gv-icon-entity:before {
     content: "\f102";
 }
-.gv-icon-information-simple:before {
+.gv-icon-information:before {
     content: "\f103";
 }
-.gv-icon-information:before {
+.gv-icon-persistent-entity:before {
     content: "\f104";
 }
 .gv-icon-presentation:before {
@@ -39,4 +39,7 @@ url("./Geovistory.svg?a540d7c6830690df71203c13d6d1c76e#Geovistory") format("svg"
 }
 .gv-icon-source:before {
     content: "\f106";
+}
+.gv-icon-temporal-entity:before {
+    content: "\f107";
 }

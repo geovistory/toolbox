@@ -9,7 +9,7 @@
     <div class="type font-xs text-muted">
       <span class="icon fa align-self-center gv-icon-preview" [ngClass]="{
               'fa fa-star-o': preview?.entity_type === 'teEn',
-              'gv-icon gv-icon-entity' : preview?.entity_type === 'peIt'
+              'gv-icon gv-icon-persistent-entity' : preview?.entity_type === 'peIt'
             }"></span>
       {{(preview?.type_label) ? preview?.type_label : preview?.class_label}}
       <span *ngIf="preview.time_span">&nbsp;•&nbsp;{{preview.time_span | timeSpan}}</span>

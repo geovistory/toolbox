@@ -78,9 +78,10 @@ button {
 
 // text with no line break and overflow ellipsis
 .gv-one-liner {
-white-space: nowrap;
-text-overflow: ellipsis;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
+
 // generate .bg-gray-* classes
 @each $color,
 $value in $grays {
@@ -244,11 +245,11 @@ h6,
 .h4,
 .h5,
 .h6 {
-    font-weight: $font-weight-light;
+    // font-weight: $font-weight-light;
     color: $gray-700;
     small,
     .small {
-        font-weight: $font-weight-light;
+        // font-weight: $font-weight-light;
     }
 }
 
@@ -565,6 +566,7 @@ ngb-pagination {
 gv-data-unit-preview {
     display: inline-block;
 }
+
 $gv-bg-drawer-list: #cde4f3;
 .gv-nav-btn {
     $background: $gray-200;
@@ -582,8 +584,7 @@ $gv-bg-drawer-list: #cde4f3;
     }
     &:focus,
     &.focus {
-        outline: none;
-        // background-color: $gray-500;
+        outline: none; // background-color: $gray-500;
     } // Disabled comes first so active can properly restyle
     &.disabled,
     &:disabled {
@@ -620,20 +621,22 @@ $gv-bg-drawer-list: #cde4f3;
 
 .gv-panel {
     @extend .gv-flex-fh;
+    overflow-y: auto; // @extend .align-items-center;
 }
 
 .gv-tile {
     min-width: 20rem;
-    background-color: $gray-100;
-    @extend .gv-flex-fh; // @extend .border;
+    background-color: $gray-100; // @extend .gv-flex-fh;
+    // @extend .border;
     // @extend .border-primary;
-    margin-bottom: 1.5rem;
-    // @extend .gv-shadow-outer-1;
+    margin-bottom: 1.5rem; // @extend .gv-shadow-outer-1;
     // @extend .rounded;
 }
+
 .gv-tile:last-child {
     margin-bottom: 0;
 }
+
 .gv-tile-header,
 gv-tile-header {
     @extend .gv-flex-shrink-0;
@@ -646,17 +649,17 @@ gv-tile-header {
     @extend .mx-2;
     @extend .h4; // padding-left: $btn-padding-y-sm;
     @extend .border-bottom;
-    @extend .border-gray-200;
-    // height: calc((#{$btn-border-width} * 2) + (#{$font-size-sm} * #{$btn-line-height-sm}) + (#{$btn-padding-y-sm} * 2) + 1px); // @extend .rounded-top;
+    @extend .border-secondary; // height: calc((#{$btn-border-width} * 2) + (#{$font-size-sm} * #{$btn-line-height-sm}) + (#{$btn-padding-y-sm} * 2) + 1px); // @extend .rounded-top;
     .btn {
         @extend .btn-link-gray;
     }
 }
 
 .gv-tile-body {
-    @extend .gv-flex-fh;
+    // @extend .gv-flex-fh;
+    display: flex;
+    flex-direction: column;
     @extend .p-2;
-    overflow-y: auto;
 }
 
 .gv-field {
@@ -1061,10 +1064,12 @@ gv-mentioning-list .ngx-table__header-title {
  ***************************/
 
 gv-map {
+    height: 500px;
     ac-map {
+        height: 500px;
         .map-container {
             flex: 1 1 100px;
-            height: 100px;
+            height: 500px;
             background-color: lightcyan;
             position: relative;
             border: 1px solid #00ffff;

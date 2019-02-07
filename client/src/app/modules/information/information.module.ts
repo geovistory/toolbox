@@ -151,6 +151,7 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
 import { EntityDetailComponent } from './containers/entity-detail/entity-detail.component';
 import { EntityDetailAPIEpics } from './containers/entity-detail/api/entity-detail.epics';
 import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-detail.actions';
+import { ListDrawerHeaderComponent } from './components/list-drawer-header/list-drawer-header.component';
 
 
 
@@ -302,6 +303,7 @@ import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-de
     MentioningCreateCtrlComponent,
     EntityPreviewComponent,
     TileHeaderComponent,
+    ListDrawerHeaderComponent,
 
   ],
   providers: [
@@ -470,6 +472,7 @@ import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-de
     ClassInfoComponent,
     EditorHeaderComponent,
     MentioningCreateCtrlComponent,
+    ListDrawerHeaderComponent,
 
   ],
   entryComponents: [

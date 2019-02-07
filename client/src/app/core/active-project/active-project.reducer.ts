@@ -362,7 +362,12 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 refiningChunk: action.payload.refiningChunk
             };
             break;
-
+        case ActiveProjectActions.SET_CREATING_MENTIONING:
+            state = {
+                ...state,
+                creatingMentioning: action.payload.creatingMentioning
+            };
+            break;
 
         /************************************************************************************
         * Highlighting of mentionings in the gui

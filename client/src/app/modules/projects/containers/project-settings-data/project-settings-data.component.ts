@@ -48,7 +48,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   // Entity type Filter
   typeOptions = [
     { value: undefined, label: 'All' },
-    { value: 'peIt', label: '<i class="gv-icon gv-icon-entity"></i> Persistent Entity Classes' },
+    { value: 'peIt', label: '<i class="gv-icon gv-icon-persistent-entity"></i> Persistent Entity Classes' },
     { value: 'teEnt', label: '<i class="fa fa-star-o"></i> Temporal Entity Classes' }
   ]
   selectedType: { value: any, label: string } = this.typeOptions[0];

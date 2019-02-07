@@ -20,7 +20,7 @@
         </button>
         <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [ngClass]="{active:(p.list$ | async)==='entities'}"
           (click)="setList('entities')">
-          <div class="fa-2x gv-icon gv-icon-information-simple text-primary"></div>
+          <div class="fa-2x gv-icon gv-icon-entity text-primary"></div>
           <div>Entities</div>
         </button>
         <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center">
@@ -46,7 +46,7 @@
 
   </mat-drawer>
   <mat-drawer-content style="display:flex; flex-direction:column">
-    <mat-drawer-container style="flex-grow: 1; flex-basis:100%;">
+    <mat-drawer-container style="flex-grow: 1; flex-basis:100%;" [hasBackdrop]="!(p.creatingMentioning$ | async)">
 
       <!-- List of Sources, Entities … -->
       <mat-drawer class="gv-drawer-list" #list mode="over" [opened]="(p.list$ | async) !== ''" style="width: 300px;">
@@ -55,7 +55,6 @@
           <i class="fa fa-chevron-left"></i> </button>
         <gv-source-list *ngIf="(p.list$ | async) === 'sources'"></gv-source-list>
         <gv-information *ngIf="(p.list$ | async) === 'entities'"></gv-information>
-
       </mat-drawer>
 
       <!-- Container for Tabs … -->
