@@ -3,6 +3,7 @@ import { TimeSpan } from 'app/core';
 
 import { TimelineOptions } from '../components/timeline/timeline.component';
 import { XAxisDefinition } from './x-axis-definition';
+import { DatePipe } from '@angular/common';
 
 export type Accentuation = 'highlighted' | 'selected' | 'none';
 
@@ -90,7 +91,7 @@ export class Timeline {
      * @param timePrimitives the timePrimitives that will be displayed on the timeline
      * @param options options about the outline of the chart
      */
-    constructor(public data: TimeLineData, options: TimelineOptions) {
+    constructor(public data: TimeLineData, options: TimelineOptions, private datePipe: DatePipe) {
 
         this.options = options;
 
@@ -121,14 +122,14 @@ export class Timeline {
             ...xAxisTopOptions,
             maxJulianSecond: switchBetweenCalendars, // visible until ~1582
             calendar: 'julian',
-        })
+        }, this.datePipe)
 
         // Gregorian fiyed top
         this.xAxisGreg = new XAxisDefinition({
             ...xAxisTopOptions,
             minJulianSecond: switchBetweenCalendars, // visible from ~1582
             calendar: 'gregorian',
-        })
+        }, this.datePipe)
 
 
 
@@ -150,14 +151,14 @@ export class Timeline {
             ...xAxisOnRows,
             calendar: 'julian',
             maxJulianSecond: switchBetweenCalendars, // visible until introduction of gregorian calendar in 1582
-        })
+        }, this.datePipe)
 
         // Gregorian on rows
         this.xAxisGregTicks = new XAxisDefinition({
             ...xAxisOnRows,
             calendar: 'gregorian',
             minJulianSecond: switchBetweenCalendars, // visible from introduction of gregorian calendae in 1582
-        })
+        }, this.datePipe)
 
 
     }
@@ -165,27 +166,29 @@ export class Timeline {
 
     getZoomInExtent(): { firstSecond: number, lastSecond: number } {
 
+        const cursor = this.xAxis.scale(this.options.cursorPosition);
         const rangeStart = this.xAxis.scale(this.options.domainStart)
         const rangeEnd = this.xAxis.scale(this.options.domainEnd)
         const minMax = rangeEnd - rangeStart;
         const rangeDiff = minMax / this.options.zoomFactor;
 
         return {
-            firstSecond: this.xAxis.scale.invert(rangeStart + rangeDiff),
-            lastSecond: this.xAxis.scale.invert(rangeEnd - rangeDiff)
+            firstSecond: this.xAxis.scale.invert(cursor - rangeDiff),
+            lastSecond: this.xAxis.scale.invert(cursor + rangeDiff)
         }
     }
 
     getZoomOutExtent(): { firstSecond: number, lastSecond: number } {
 
+        const cursor = this.xAxis.scale(this.options.cursorPosition);
         const rangeStart = this.xAxis.scale(this.options.domainStart)
         const rangeEnd = this.xAxis.scale(this.options.domainEnd)
         const minMax = rangeEnd - rangeStart;
         const rangeDiff = minMax / this.options.zoomFactor;
 
         return {
-            firstSecond: this.xAxis.scale.invert(rangeStart - rangeDiff),
-            lastSecond: this.xAxis.scale.invert(rangeEnd + rangeDiff)
+            firstSecond: this.xAxis.scale.invert(cursor - (minMax / 2) - rangeDiff),
+            lastSecond: this.xAxis.scale.invert(cursor + (minMax / 2) + rangeDiff)
         }
     }
 

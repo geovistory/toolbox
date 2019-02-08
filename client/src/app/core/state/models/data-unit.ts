@@ -5,7 +5,7 @@ import { PropertyField } from './property-field';
 import { TypeDetail } from './type-detail';
 import { CollapsedExpanded, SelectPropStateType } from './types';
 
-export class DataUnit {
+export class Entity {
 
     _fields?: FieldList;
 
@@ -44,7 +44,7 @@ export class DataUnit {
 
     showRemoveVerification?: boolean;
 
-    constructor(data?: DataUnit) {
+    constructor(data?: Entity) {
         Object.assign(this, data);
     }
 

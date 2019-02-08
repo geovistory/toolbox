@@ -1,7 +1,7 @@
 import { DfhProjRel } from 'app/core/sdk/models/DfhProjRel';
 import { DfhClassProfileView } from '../../../../../core';
 
-export type DataUnitType = 'teEnt' | 'peIt';
+export type EntityType = 'teEnt' | 'peIt';
 
 export interface ClassItemI {
     pkEntity: number;
@@ -10,7 +10,7 @@ export interface ClassItemI {
     profileLabels: string;
     profilePks: number[];
     projRel: DfhProjRel;
-    dataUnitType: DataUnitType;
+    entityType: EntityType;
     scopeNote: string;
     changingProjRel: boolean;
 }

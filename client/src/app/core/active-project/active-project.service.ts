@@ -12,7 +12,7 @@ import { ComProject } from '../sdk/models/ComProject';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
-import { ProjectCrm, Tab, ClassConfig } from './active-project.models';
+import { ProjectCrm, Tab, ClassConfig, ListType } from './active-project.models';
 
 
 
@@ -25,6 +25,8 @@ export class ActiveProjectService {
   public panels$: Observable<Panel[]>
   public crm$: Observable<ProjectCrm>
   public focusedPanel$: Observable<boolean>;
+  public list$: Observable<ListType>; // type of list displayed in left panel 
+  public creatingMentioning$: Observable<boolean>;
 
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
@@ -33,7 +35,6 @@ export class ActiveProjectService {
   constructor(
     private ngRedux: NgRedux<IAppState>,
     private actions: ActiveProjectActions,
-    private router: Router,
     private entityPreviewSocket: EntityPreviewSocket
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
@@ -43,8 +44,10 @@ export class ActiveProjectService {
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']);
     this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
     this.crm$ = ngRedux.select<ProjectCrm>(['activeProject', 'crm']);
+    this.list$ = ngRedux.select<ListType>(['activeProject', 'list']);
 
     this.focusedPanel$ = ngRedux.select<boolean>(['activeProject', 'focusedPanel']);
+    this.creatingMentioning$ = ngRedux.select<boolean>(['activeProject', 'creatingMentioning']);
 
     // emits true if no toolbox panel is opened
     this.dashboardVisible$ = combineLatest(
@@ -58,12 +61,12 @@ export class ActiveProjectService {
 
     this.entityPreviewSocket.fromEvent<EntityPreview>('entityPreview').subscribe(data => {
       console.log(data)
-      // dispatch a method to put the DataUnitPreview to the store
+      // dispatch a method to put the EntityPreview to the store
       this.ngRedux.dispatch(this.actions.loadEntityPreviewSucceeded(data))
     })
 
     this.entityPreviewSocket.fromEvent('reconnect').subscribe(disconnect => {
-      // get all DataUnitPreview keys from state and send them to the
+      // get all EntityPreview keys from state and send them to the
       // server so that they will be streamed. This is important for
       // when connection was lost.
       combineLatest(this.pkProject$, this.activeProject$).pipe(first(items => items.filter(item => !item).length === 0))
@@ -218,15 +221,15 @@ export class ActiveProjectService {
   }
 
   /**
-   * Loads a DataUnit Detail (PeItDetail or TeEnDetail) in cache for display in Modals
+   * Loads a Entity Detail (PeItDetail or TeEnDetail) in cache for display in Modals
    *
    * @param pkEntity
    * @param forceReload
    */
-  loadDataUnitDetailForModal(pkEntity: number, forceReload = true, pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE) {
+  loadEntityDetailForModal(pkEntity: number, forceReload = true, pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE) {
     const state = this.ngRedux.getState();
     if (!(((state || {}).activeProject || {}).peItModals || {})[pkEntity] || forceReload) {
-      this.ngRedux.dispatch(this.actions.loadDataUnitDetailForModal(state.activeProject.pk_project, pkEntity, pkUiContext))
+      this.ngRedux.dispatch(this.actions.loadEntityDetailForModal(state.activeProject.pk_project, pkEntity, pkUiContext))
     }
   }
 
@@ -269,7 +272,10 @@ export class ActiveProjectService {
   /************************************************************************************
   * Layout
   ************************************************************************************/
-
+  // List (left panel) modifications
+  setListType(list: ListType) {
+    this.ngRedux.dispatch(this.actions.setListType(list))
+  }
   // Tab modifications
   activateTab(panelIndex: number, tabIndex: number) {
     this.ngRedux.dispatch(this.actions.activateTab(panelIndex, tabIndex))

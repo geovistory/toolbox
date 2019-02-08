@@ -52,7 +52,7 @@ export default sandboxOf(MentioningCreateCtrlComponent, {
             <div>
                 <div class="card" dnd-draggable [dragEnabled]="true" [dragData]="leu">
                     <div class="card-body">
-                        <div>Drag DataUnit</div>
+                        <div>Drag Entity</div>
                         {{leu.entity_label}}
                     </div>
                 </div>

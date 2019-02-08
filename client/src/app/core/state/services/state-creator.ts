@@ -78,7 +78,7 @@ export function getCreateOfEditableContext(pkUiEditableContext: number): number 
 
 
 /***************************************************
-* Data Unit create functions
+* Entity create functions
 ***************************************************/
 
 /**
@@ -141,33 +141,33 @@ export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity
 
 
 /**
-* Creates a createTypeDetail from provided dataUnit data
+* Creates a createTypeDetail from provided entity data
 *
 * @param options data object to pass data to the created state model instance. it won't be passed further down the chain of create...() methods.
 * @param dbData nested object as it is delivered from REST api with roles etc.
 * @param crm configuration of the current reference model that decides which classes and properties are shown in which ui context
 * @param settings setting object that is passed through the chain of create...() methods of the different state classes
 */
-export function createTypeDetailOfEntity(options: TypeDetail, dataUnit: InfTemporalEntity | InfPersistentItem, crm: ProjectCrm, settings: StateSettings): TypeDetail {
+export function createTypeDetailOfEntity(options: TypeDetail, entity: InfTemporalEntity | InfPersistentItem, crm: ProjectCrm, settings: StateSettings): TypeDetail {
     // if for instances of this class we do not want types, return
-    if (!dataUnit.fk_class || !Config.PK_CLASS_PK_HAS_TYPE_MAP[dataUnit.fk_class]) return;
+    if (!entity.fk_class || !Config.PK_CLASS_PK_HAS_TYPE_MAP[entity.fk_class]) return;
 
     let typeEntityAssociation: InfEntityAssociation;
 
     // try to find domain entity association with type information
-    if (dataUnit.domain_entity_associations) {
-        typeEntityAssociation = dataUnit.domain_entity_associations
-            .find(ea => ea.fk_property === Config.PK_CLASS_PK_HAS_TYPE_MAP[dataUnit.fk_class]);
+    if (entity.domain_entity_associations) {
+        typeEntityAssociation = entity.domain_entity_associations
+            .find(ea => ea.fk_property === Config.PK_CLASS_PK_HAS_TYPE_MAP[entity.fk_class]);
     }
 
     return createTypeDetail(
         {
             _typeCtrl: {
-                pkTypedClass: dataUnit.fk_class,
-                // If create mode, fetch type here. THis should be passed in by dataUnit
+                pkTypedClass: entity.fk_class,
+                // If create mode, fetch type here. THis should be passed in by entity
                 entityAssociation: typeEntityAssociation
             },
-            fkDomainEntity: dataUnit.pk_entity
+            fkDomainEntity: entity.pk_entity
         },
         typeEntityAssociation,
         crm,
@@ -915,7 +915,7 @@ export const pkEntityKey = (entity) => ('_' + entity.pk_entity);
 
 /**
  * Checks if PropertyField a is of the same property or property-of-origin as PropertyField b.
- * This is useful to check if a PropertyField is circular in a tree of PropertyFields and DataUnits
+ * This is useful to check if a PropertyField is circular in a tree of PropertyFields and Entities
  *
  * @param a PropertyField you want to test if it is circular
  * @param b PropertyField to compare with (typically the parent PropertyField in the tree)

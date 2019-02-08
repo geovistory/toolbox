@@ -19,8 +19,8 @@
    -moz-osx-font-smoothing: grayscale
 }
 .gv-icon-circles:before{content:'\0041';}
-.gv-icon-entity:before{content:'\0042';}
-.gv-icon-information-simple:before{content:'\0043';}
+.gv-icon-persistent-entity:before{content:'\0042';}
+.gv-icon-persistent-entity:before{content:'\0043';}
 .gv-icon-information:before{content:'\0044';}
 .gv-icon-presentation:before{content:'\0045';}
 .gv-icon-source:before{content:'\0046';}

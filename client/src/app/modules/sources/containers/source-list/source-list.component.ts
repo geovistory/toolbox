@@ -37,7 +37,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
   localStore: ObservableStore<Information>;
 
   // path to the substore
-  @Input() basePath: string[];
+  basePath = ['sources'];
 
   @select() loading$: Observable<boolean>;
 
@@ -57,11 +57,6 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
     public p: ActiveProjectService
   ) {
     super();
-
-    // if component is activated by ng-router, take base path here
-    activatedRoute.data.subscribe(d => {
-      this.basePath = d.reduxPath;
-    })
 
     // init list with filtering the classes for sources.
     this.initializeList(this.pkClassesOfAddBtn)

@@ -8,11 +8,11 @@ import { NgRedux } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { U } from 'app/core';
 import { ExistenceTimeDetail, FieldList, TeEntAccentuation, PropertyField } from 'app/core/state/models';
-import { equals } from 'ramda';
+import { equals, path } from 'ramda';
 import { Subject } from 'rxjs';
 import { TimeLineData, TimeLineRow } from '../../../timeline/models/timeline';
-import { TeEntActions } from '../../data-unit/te-ent/te-ent.actions';
-import { teEntReducer } from '../../data-unit/te-ent/te-ent.reducer';
+import { TeEntActions } from '../../entity/te-ent/te-ent.actions';
+import { teEntReducer } from '../../entity/te-ent/te-ent.reducer';
 import { StateToDataService } from '../../shared/state-to-data.service';
 
 @Component({
@@ -62,8 +62,6 @@ export class PeItTimelineComponent implements OnInit, OnDestroy {
               if (roleDetail._teEnt && roleDetail._teEnt._fields && roleDetail._teEnt._fields._field_48) {
                 const teD = roleDetail._teEnt;
                 const teEntPath = [...roleDetailPath, '_teEnt'];
-
-                // const label = U.labelFromFieldList(teD._fields).toString();
 
                 // create a TimeLineRow for each TeEntState
                 timeLineData.rows.push({

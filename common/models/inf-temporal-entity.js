@@ -266,7 +266,7 @@ module.exports = function (InfTemporalEntity) {
    * @param  {number} pkEntity  pk_entity of the teEn
    */
   InfTemporalEntity.nestedObjectOfRepo = function (pkEntity, cb) {
-    const ofProject = true;
+    const ofProject = true; // TODO: Check if this should be false
     const pkProject = undefined;
     return InfTemporalEntity.nestedObject(ofProject, pkProject, pkEntity, cb)
   }

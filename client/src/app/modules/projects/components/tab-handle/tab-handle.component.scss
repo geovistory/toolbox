@@ -13,10 +13,12 @@
         overflow: hidden;
     }
 }
+
 .right {
     width: 1rem;
     line-height: initial;
     padding: 0 0.7rem 0 0.5rem;
+    margin-left: auto;
     font-size: $font-size-sm;
     @extend .btn;
     @extend .btn-link-gray;

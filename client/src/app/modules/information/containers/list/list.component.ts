@@ -60,11 +60,11 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
   mentionedEntitiesCrtlStore: ObservableStore<{ [key: string]: MentionedEntity }>
   projectId: number;
 
-  // DataUnit type (TeEn/PeIt) Filter
+  // Entity type (TeEn/PeIt) Filter
   typeOptions = [
-    { value: 'peIt', label: '<i class="gv-icon gv-icon-entity"></i> Persistent' },
+    { value: 'peIt', label: '<i class="gv-icon gv-icon-persistent-entity"></i> Persistent' },
     { value: 'teEn', label: '<i class="fa fa-star-o"></i> Temporal' },
-    { value: null, label: 'All' },
+    { value: null, label: '<i class="gv-icon gv-icon-entity"></i> All' },
   ]
   selectedType: { value: any, label: string } = this.typeOptions[0];
 
@@ -153,7 +153,7 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
   /**
    * Called when user changes to see only teEn / peIt or all classes
    */
-  dataUnitTypeChange(type) {
+  entityTypeChange(type) {
     if (this.selectedType !== type) {
       this.selectedType = type;
       this.searchProject();

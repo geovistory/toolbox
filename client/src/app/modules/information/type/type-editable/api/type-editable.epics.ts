@@ -3,7 +3,7 @@ import { LoadingBarActions, InfEntityAssociationApi, InfEntityAssociation, InfPe
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable, combineLatest } from 'rxjs';
-import { switchMap, takeUntil, filter } from 'rxjs/operators';
+import { switchMap, takeUntil, filter, mapTo, tap } from 'rxjs/operators';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { TypeEditableComponent } from '../type-editable.component';
 import { TypeEditableAPIActions, TypeAPIAction } from './type-editable.actions';
@@ -23,7 +23,9 @@ export class TypeEditableAPIEpics {
   public createEpics(c: TypeEditableComponent): Epic {
     return combineEpics(
       this.createChangeTypeEpic(c),
-      this.createLoadTypeEpic(c)
+      this.createLoadTypeEpic(c),
+      this.createNoTypeEpic(c)
+
     );
   }
 
@@ -95,6 +97,7 @@ export class TypeEditableAPIEpics {
          */
         ofType(TypeEditableAPIActions.CHANGE_TYPE_SUCCEEDED),
         filter(action => ofSubstore(c.basePath)(action)),
+        filter(action => !!(action.meta.entityAssociation)), // only if there is a new type
         switchMap((action: TypeAPIAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
@@ -141,6 +144,23 @@ export class TypeEditableAPIEpics {
             })
         })),
         takeUntil(c.destroy$)
+      )
+    }
+  }
+
+
+  private createNoTypeEpic(c: TypeEditableComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(TypeEditableAPIActions.CHANGE_TYPE_SUCCEEDED),
+        filter(action => ofSubstore(c.basePath)(action)),
+        filter(action => !(action.meta.entityAssociation)), // only if there is no type
+        switchMap((action: TypeAPIAction) => new Observable<Action>((globalStore) => {
+          c.localStore.dispatch(this.actions.loadSucceeded({}))
+        }))
       )
     }
   }

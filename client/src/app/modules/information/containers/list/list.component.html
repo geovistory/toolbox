@@ -1,7 +1,7 @@
 <!-- Search filter tabs -->
-<ul  *ngIf="showTeEnPeItFilter"  class="nav gv-search-filter border-bottom border-top">
+<ul  *ngIf="showTeEnPeItFilter"  class="nav gv-search-filter border-bottom">
 
-  <li *ngFor="let type of typeOptions" class="nav-item" (click)="dataUnitTypeChange(type)">
+  <li *ngFor="let type of typeOptions" class="nav-item" (click)="entityTypeChange(type)">
     <button class="btn btn-sm btn-link nav-link" [ngClass]="{'font-weight-bold': selectedType === type}" [innerHtml]="type.label"></button>
   </li>
  
@@ -11,14 +11,6 @@
 <div class="mx-3 mt-3 mb-2 d-flex">
 
   <div class="input-group ">
-
-
-    <!-- <div ngbDropdown *ngIf="showTeEnPeItFilter" class="input-group-prepend">
-      <button type="button" class="btn btn-outline-secondary" ngbDropdownToggle [innerHtml]="selectedType.label"></button>
-      <div ngbDropdownMenu>
-        <button class="dropdown-item" *ngFor="let type of typeOptions" (click)="dataUnitTypeChange(type, $event)" [innerHtml]="type.label"></button>
-      </div>
-    </div> -->
 
     <input type="text" name="searchString" class="form-control" aria-describedby="search" autocomplete="off"
       placeholder="Search …" [(ngModel)]="searchString" (keydown)="searchKeydown($event)" autofocus>
@@ -53,6 +45,6 @@
 
 <!-- Pagination -->
 <div class="mx-3 my-2" *ngIf="!(loading$ | async)">
-  <ngb-pagination class="mb-0" *ngIf="collectionSize > limit" [maxSize]="5" [collectionSize]="collectionSize" [(page)]="page"
+  <ngb-pagination class="mb-0" *ngIf="collectionSize > limit" [maxSize]="3" [collectionSize]="collectionSize" [(page)]="page"
     [pageSize]="limit" (pageChange)="pageChange()" aria-label="Default pagination"></ngb-pagination>
 </div>

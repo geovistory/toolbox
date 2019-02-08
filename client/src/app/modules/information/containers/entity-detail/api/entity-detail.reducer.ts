@@ -15,7 +15,7 @@ export function entityDetailReducer(state: EntityDetail = INITIAL_STATE, a: Acti
     /*****************************************************
     * Reducers to manage entity editor
     *****************************************************/
-    case EntityDetailAPIActions.OPEN_ENTITY_EDITOR:
+    case EntityDetailAPIActions.OPEN_PERSISTENT_ENTITY_EDITOR:
       state = {
         ...omit(['_teEnt_editable', '_add'], state),
         loading: true,
@@ -23,7 +23,7 @@ export function entityDetailReducer(state: EntityDetail = INITIAL_STATE, a: Acti
       };
       break;
 
-    case EntityDetailAPIActions.OPEN_ENTITY_EDITOR_SUCCEEDED:
+    case EntityDetailAPIActions.OPEN_PERSISTENT_ENTITY_EDITOR_SUCCEEDED:
       state = {
         ...state,
         _peIt_editable: action.meta.peItDetail,
@@ -31,7 +31,7 @@ export function entityDetailReducer(state: EntityDetail = INITIAL_STATE, a: Acti
       };
       break;
 
-    case EntityDetailAPIActions.OPEN_ENTITY_EDITOR_FAILED:
+    case EntityDetailAPIActions.OPEN_PERSISTENT_ENTITY_EDITOR_FAILED:
       state = {
         ...state,
         loading: false,
@@ -40,9 +40,9 @@ export function entityDetailReducer(state: EntityDetail = INITIAL_STATE, a: Acti
       break;
 
     /*****************************************************
-    * Reducers to manage phenomenon editor
+    * Reducers to manage temporal entity editor
     *****************************************************/
-    case EntityDetailAPIActions.OPEN_PHENOMENON_EDITOR:
+    case EntityDetailAPIActions.OPEN_TEMPORAL_ENTITY_EDITOR:
       state = {
         ...omit(['_peIt_editable', '_add'], state),
         loading: true,
@@ -50,7 +50,7 @@ export function entityDetailReducer(state: EntityDetail = INITIAL_STATE, a: Acti
       };
       break;
 
-    case EntityDetailAPIActions.OPEN_PHENOMENON_EDITOR_SUCCEEDED:
+    case EntityDetailAPIActions.OPEN_TEMPORAL_ENTITY_EDITOR_SUCCEEDED:
       state = {
         ...state,
         loading: false,
@@ -58,7 +58,7 @@ export function entityDetailReducer(state: EntityDetail = INITIAL_STATE, a: Acti
       };
       break;
 
-    case EntityDetailAPIActions.OPEN_PHENOMENON_EDITOR_FAILED:
+    case EntityDetailAPIActions.OPEN_TEMPORAL_ENTITY_EDITOR_FAILED:
       state = {
         ...state,
         loading: false,

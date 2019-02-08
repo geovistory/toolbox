@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { JulianDateTime, GregorianDateTime } from '../../../core';
 import { DatePipe } from '@angular/common';
 import { Granularity, DateTimeCommons } from 'app/core/date-time/date-time-commons';
-import { CalendarType } from 'app/core/date-time/time-primitive';
+import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
 
 interface IXAxisDefinition {
     marginLeft: number,
@@ -67,7 +67,7 @@ export class XAxisDefinition implements IXAxisDefinition {
     // d3 Scale object 
     scale;
 
-    constructor(options) {
+    constructor(options, private datePipe: DatePipe) {
         Object.assign(this, options);
 
         this.resolution = Math.abs(this.domainStart - this.domainEnd) / (this.rangeEnd - this.rangeStart);
@@ -105,7 +105,7 @@ export class XAxisDefinition implements IXAxisDefinition {
             // check if it is inside the domain
             if (!(julianSecond <= this.domainEnd &&
                 julianSecond >= this.domainStart)) {
-                return;;
+                return;
             }
 
             // check if it is inside the calendar boundaries
@@ -198,7 +198,7 @@ export class XAxisDefinition implements IXAxisDefinition {
             if (r) t = t0, t0 = t1, t1 = t;
 
 
-            // Show years if resolution is more than 180000 secs per pixel 
+            // Show years if resolution is more than 180000 secs per pixel
             if (this.resolution > 180000) {
                 // dynamically step over years on increasing resolution
                 const step = Math.floor(this.resolution / 300000) + 1;
@@ -227,32 +227,40 @@ export class XAxisDefinition implements IXAxisDefinition {
         this.scale.tickFormat = (count) => {
             return (julianSecond) => {
                 const dt = this.newDateTime().fromJulianSecond(julianSecond)
+                let duration: Granularity;
+                if (dt.year) { duration = '1 year' }
+                if (dt.month > 1) { duration = '1 month' }
+                if (dt.day > 1) { duration = '1 day' }
+                if (dt.hours > 0) { duration = '1 hour' }
+                if (dt.minutes > 0) { duration = '1 minute' }
+                if (dt.seconds > 0) { duration = '1 second' }
 
-                let granularity: Granularity = undefined;
-                if (dt.year) { granularity = "1 year" }
-                if (dt.month > 1) { granularity = "1 month" }
-                if (dt.day > 1) { granularity = "1 day" }
-                if (dt.hours > 0) { granularity = "1 hour" }
-                if (dt.minutes > 0) { granularity = "1 minute" }
-                if (dt.seconds > 0) { granularity = "1 second" }
+                const tp = new TimePrimitive({
+                    duration,
+                    calendar: this.calendar,
+                    julianDay: dt.getJulianDay()
+                });
 
-                switch (granularity) {
-                    case '1 year':
-                        return dt.year;
-                    case '1 month':
-                        const ms = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Okt', 'Nov', 'Dec']
-                        return ms[dt.month - 1];
-                    case '1 day':
-                        return dt.day;
-                    case '1 hour':
-                        return 'HH:mm';
-                    case '1 minute':
-                        return 'HH:mm';
-                    case '1 second':
-                        return 'HH:mm:ss';
-                    default:
-                        return '';
-                }
+                return this.datePipe.transform(dt.getDate(), tp.getShortesDateFormatString())
+
+
+                // switch (duration) {
+                //     case '1 year':
+                //         return dt.year;
+                //     case '1 month':
+                //         const ms = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Okt', 'Nov', 'Dec']
+                //         return ms[dt.month - 1];
+                //     case '1 day':
+                //         return dt.day;
+                //     case '1 hour':
+                //         return 'HH:mm';
+                //     case '1 minute':
+                //         return 'HH:mm';
+                //     case '1 second':
+                //         return 'HH:mm:ss';
+                //     default:
+                //         return '';
+                // }
 
                 // return julianSecond
             }

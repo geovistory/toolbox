@@ -5,16 +5,15 @@ import { Observable } from 'rxjs';
 import { TimePrimitiveVisual } from '../models/time-primitive-visual';
 import { Timeline, TimeLineData, RangeChangeEvent } from '../models/timeline';
 import { XAxisDefinition } from '../models/x-axis-definition';
+import { DatePipe } from '@angular/common';
 
 @Injectable()
 export class D3Service {
 
-
   /** This service will provide methods to enable user interaction with elements
   * while maintaining the d3 simulations physics
   */
-  constructor() { }
-
+  constructor(private datePipe: DatePipe) { }
 
 
 
@@ -26,10 +25,7 @@ export class D3Service {
   /**
    * A method to bind a draggable behaviour to a xAxis element
    */
-  applyDraggableXAxisBehaviour(element): Observable<{
-    type: 'onDrag' | 'onDragStart' | 'onDragEnd',
-    diff?: number
-  }> {
+  applyDraggableXAxisBehaviour(element): Observable<{ type: 'onDrag' | 'onDragStart' | 'onDragEnd', diff?: number }> {
 
     return new Observable(observer => {
 
@@ -260,10 +256,18 @@ export class D3Service {
     const strokeWidth = timeline.options.bracketStrokeWidth;
 
     const t = strokeWidth; //  y top
-
-    const r = timeline.xAxis.scale(options.endDate);
-    const l = timeline.xAxis.scale(options.startDate); //  x left
     const h = timeline.options.barHeight - strokeWidth; //  y bottom
+    let r = timeline.xAxis.scale(options.endDate);
+    let l = timeline.xAxis.scale(options.startDate); //  x left
+    const diff = r - l;
+
+    // reassure mininal width of rectangle
+    if ((diff) < timeline.options.minTimeSpanWidth) {
+      // go to center between l and r, then go half of minWidth to the left
+      l = l + (diff / 2) - (timeline.options.minTimeSpanWidth / 2);
+      // go to center between l and r, then go half of minWidth to the right
+      r = r - (diff / 2) + (timeline.options.minTimeSpanWidth / 2);
+    }
 
     const closedPath = [];
     closedPath.push('M' + l + ' ' + t); // start left top
@@ -300,7 +304,7 @@ export class D3Service {
   * This method does not interact with the document, purely physical calculations with d3
   */
   getTimeline(data: TimeLineData, options) {
-    return new Timeline(data, options);
+    return new Timeline(data, options, this.datePipe);
   }
 
 

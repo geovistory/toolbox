@@ -2,10 +2,11 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { CdkPortal, DomPortalHost } from '@angular/cdk/portal';
 import { ApplicationRef, Component, ComponentFactoryResolver, Directive, HostBinding, Injector, Input, OnChanges, OnDestroy, QueryList, ViewChild, ViewChildren, AfterViewInit, SimpleChanges, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, UrlSegment, UrlSegmentGroup } from '@angular/router';
-import { ActiveProjectService, Panel, Tab } from 'app/core';
+import { ActiveProjectService, Panel, Tab, ListType } from 'app/core';
 import { Observable, Subject, BehaviorSubject, combineLatest, zip } from 'rxjs';
-import { first, take, map } from 'rxjs/operators';
+import { first, take, map, takeUntil } from 'rxjs/operators';
 import { PanelBodyDirective } from '../../directives/panel-body.directive';
+import { MatDrawer } from '@angular/material';
 
 
 export interface TabBody extends Tab {
@@ -99,6 +100,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
   @ViewChildren(PanelBodyDirective) panelBodies !: QueryList<PanelBodyDirective>;
+  @ViewChild('list') list: MatDrawer;
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
@@ -144,7 +146,12 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
         const b = this.panelBodies.toArray()
         this.panelBodies$.next(b)
       })
+
+    this.list._closedStream.takeUntil(this.destroy$).subscribe(e => {
+      this.p.setListType('')
+    })
   }
+
   trackByFn(index, item) {
     return index; // or item.id
   }
@@ -173,36 +180,18 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     this.tabDragging = true;
   }
 
-  closeList() {
-    let urlTree = this.router.parseUrl(this.router.url);
-
-    this.p.pkProject$.pipe(
-      first(item => !!item),
-      take(1)
-    ).subscribe(p => {
-      urlTree = {
-        ...urlTree,
-        root: new UrlSegmentGroup(
-          urlTree.root.segments,
-          {
-            primary: new UrlSegmentGroup(
-              [
-                new UrlSegment('projects', {}),
-                new UrlSegment(p.toString(), {}),
-                new UrlSegment('edit', {})
-              ],
-              {
-                detail: urlTree.root.children.primary.children.detail
-              }
-            )
-          }
-        )
+  setList(list: ListType) {
+    this.p.list$.pipe(first(), takeUntil(this.destroy$)).subscribe(previousList => {
+      if (previousList === list || list === '') {
+        // close the drawe
+        this.list.close()
+      } else {
+        // open the panel
+        this.p.setListType(list)
       }
-      const newUrl = this.router.serializeUrl(urlTree)
-      this.router.navigateByUrl(newUrl)
     })
-
   }
+
 
   dropTab(event: CdkDragDrop<number>) {
     // .data contains the panelIndex
@@ -219,6 +208,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
+    this.p.closeProject()
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }

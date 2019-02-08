@@ -45,13 +45,13 @@ module.exports = function (app) {
 
                 if (count > 0) {
                     // A: YES. At least one Team associated with this User AND Project
-                    // callback with TRUE, user is role:`teamMember`
+                    // callback with TRUE, user is role:`project_member`
                     return cb(null, true);
                 }
 
                 else {
                     // A: NO, User is not in this Project's Team
-                    // callback with FALSE, user is NOT role:`teamMember`
+                    // callback with FALSE, user is NOT role:`project_member`
                     return cb(null, false);
                 }
             });

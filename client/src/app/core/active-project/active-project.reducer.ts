@@ -7,6 +7,7 @@ import { ActiveProjectAction, ActiveProjectActions } from './active-project.acti
 import { ProjectDetail, Panel } from './active-project.models';
 
 const INITIAL_STATE: ProjectDetail = {
+    list: '',
     uiIdSerial: 0,
     panelSerial: 0,
     focusedPanel: 0,
@@ -36,6 +37,12 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
         /************************************************************************************
          * Layout
         ************************************************************************************/
+        case ActiveProjectActions.SET_LIST_TYPE:
+            state = {
+                ...state,
+                list: action.meta.list
+            }
+            break;
         case ActiveProjectActions.ACTIVATE_TAB:
             pi = action.meta.panelIndex;
             ti = action.meta.tabIndex;
@@ -219,7 +226,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
         * Data cache
         ************************************************************************************/
         /***************************************************
-        * Reducers to load DataUnitPreview
+        * Reducers to load EntityPreview
         ****************************************************/
         case ActiveProjectActions.LOAD_ENTITY_PREVIEW:
             state = {
@@ -250,10 +257,10 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             break;
 
         /*****************************************************
-        * Load a Data Unit Details for display in Modals
+        * Load a Entity Details for display in Modals
         *****************************************************/
 
-        case ActiveProjectActions.LOAD_DATA_UNIT_DETAIL_FOR_MODAL:
+        case ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL:
             state = {
                 ...state,
                 peItModals: {
@@ -355,7 +362,12 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 refiningChunk: action.payload.refiningChunk
             };
             break;
-
+        case ActiveProjectActions.SET_CREATING_MENTIONING:
+            state = {
+                ...state,
+                creatingMentioning: action.payload.creatingMentioning
+            };
+            break;
 
         /************************************************************************************
         * Highlighting of mentionings in the gui

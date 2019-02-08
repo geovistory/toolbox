@@ -6,7 +6,7 @@ import { PeItDetail, RoleDetail, PropertyField } from 'app/core/state/models';
 import { createRoleDetail, createRoleDetailList, getCreateOfEditableContext, StateSettings } from 'app/core/state/services/state-creator';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest, timer } from 'rxjs';
-import { peItReducer } from '../../../data-unit/pe-it/pe-it.reducer';
+import { peItReducer } from '../../../entity/pe-it/pe-it.reducer';
 import { ClassService } from '../../../shared/class.service';
 import { PropertyFieldFormBase } from '../../property-field-form.base';
 import { PropertyFieldActions } from '../../property-field.actions';

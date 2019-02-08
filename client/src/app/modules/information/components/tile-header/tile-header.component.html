@@ -1,7 +1,12 @@
-<div class="gv-grow-1">
+<div class="gv-one-liner">
   <ng-content select="[title]"></ng-content>
 </div>
 
-<ng-content select="[buttons]"></ng-content>
+<div class="ml-auto">
+  <ng-content select="[buttons]"></ng-content>
+</div>
 
-<button class="btn btn-sm btn-link-gray" (click)="close.emit()"> <i class="fa fa-close"></i> </button>
+<div>
+  <button matTooltip="Close" [matTooltipPosition]="'above'" class="btn btn-sm btn-link-gray" (click)="close.emit()">
+    <i class="fa fa-close"></i> </button>
+</div>

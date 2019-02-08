@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ProjectCrm, ProjectDetail, Tab } from './active-project.models';
+import { ProjectCrm, ProjectDetail, Tab, ListType } from './active-project.models';
 import { EntityPreview, PeItDetail } from '../state/models';
 import { InfChunk, InfTemporalEntity, InfPersistentItem } from '../sdk';
 
@@ -20,6 +20,7 @@ interface MetaData {
     peItGraphs?: InfPersistentItem[]
 
     // layout
+    list?: ListType;
     panelIndex?: number;
     tabIndex?: number;
     previousPanelIndex?: number
@@ -27,7 +28,7 @@ interface MetaData {
     previousTabIndex?: number
     currentTabIndex?: number
     tab?: Tab;
-    pkEntity?: number
+    pkEntity?: number;
 };
 type Payload = ProjectDetail;
 export type ActiveProjectAction = FluxStandardAction<Payload, MetaData>;
@@ -45,6 +46,7 @@ export class ActiveProjectActions {
     static ACTIVE_PROJECT_UPDATED = 'ActiveProject::ACTIVE_PROJECT_UPDATED';
     static PROJECT_LOAD_CRM = 'ActiveProject::PROJECT_LOAD_CRM';
     static PROJECT_CRM_LOADED = 'ActiveProject::PROJECT_CRM_LOADED';
+
 
     loadProject(pk_project: number): ActiveProjectAction {
         return {
@@ -88,6 +90,19 @@ export class ActiveProjectActions {
     /************************************************************************************
      * Layout
     ************************************************************************************/
+   static SET_LIST_TYPE = 'ActiveProject::SET_LIST_TYPE';
+
+   setListType(list: ListType): ActiveProjectAction {
+       return {
+           type: ActiveProjectActions.SET_LIST_TYPE,
+           payload: null,
+           meta: {
+               list
+           }
+       }
+   }
+
+
     static ACTIVATE_TAB = 'ActiveProject::ACTIVATE_TAB';
 
     activateTab(panelIndex: number, tabIndex: number): ActiveProjectAction {
@@ -162,7 +177,7 @@ export class ActiveProjectActions {
     * Data cache
     ************************************************************************************/
 
-    // DataUnitPreviews
+    // EntityPreviews
     static LOAD_ENTITY_PREVIEW = 'ActiveProject::LOAD_ENTITY_PREVIEW';
     static LOAD_ENTITY_PREVIEW_SUCCEEDED = 'ActiveProject::LOAD_ENTITY_PREVIEW_SUCCEEDED';
     static LOAD_ENTITY_PREVIEW_FAILED = 'ActiveProject::LOAD_ENTITY_PREVIEW_FAILED';
@@ -197,15 +212,15 @@ export class ActiveProjectActions {
         }
     }
 
-    // DataUnit Details for display in Modals
-    static LOAD_DATA_UNIT_DETAIL_FOR_MODAL = 'ActiveProject::LOAD_DATA_UNIT_DETAIL_FOR_MODAL';
+    // Entities Details for display in Modals
+    static LOAD_ENTITY_DETAIL_FOR_MODAL = 'ActiveProject::LOAD_ENTITY_DETAIL_FOR_MODAL';
     static LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED';
     static LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED = 'ActiveProject::LOAD_TE_EN_DETAIL_FOR_MODAL_SUCCEEDED'; // TODO: Implement action/reducer
-    static LOAD_DATA_UNIT_DETAIL_FOR_MODAL_FAILED = 'ActiveProject::LOAD_DATA_UNIT_DETAIL_FOR_MODAL_FAILED';
+    static LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED = 'ActiveProject::LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED';
 
-    loadDataUnitDetailForModal(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
+    loadEntityDetailForModal(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
         return {
-            type: ActiveProjectActions.LOAD_DATA_UNIT_DETAIL_FOR_MODAL,
+            type: ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL,
             payload: null,
             meta: {
                 pk_project, pk_entity, pk_ui_context
@@ -223,9 +238,9 @@ export class ActiveProjectActions {
         }
     }
 
-    loadDataUnitDetailsForModalFailed(error): ActiveProjectAction {
+    loaEntitytDetailsForModalFailed(error): ActiveProjectAction {
         return {
-            type: ActiveProjectActions.LOAD_DATA_UNIT_DETAIL_FOR_MODAL_FAILED,
+            type: ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL_FAILED,
             payload: null,
             meta: null,
             error
@@ -344,6 +359,7 @@ export class ActiveProjectActions {
     ************************************************************************************/
     static UPDATE_SELECTED_CHUNK = 'ActiveProject::UPDATE_SELECTED_CHUNK';
     static SET_REFINING_CHUNK = 'ActiveProject::SET_REFINING_CHUNK';
+    static SET_CREATING_MENTIONING = 'ActiveProject::SET_CREATING_MENTIONING';
 
 
     updateSelectedChunk(selectedChunk: InfChunk): ActiveProjectAction {
@@ -362,6 +378,13 @@ export class ActiveProjectActions {
         }
     }
 
+    setCreatingMentioning(creatingMentioning: boolean): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.SET_CREATING_MENTIONING,
+            payload: { creatingMentioning },
+            meta: null
+        }
+    }
 
     /************************************************************************************
     * Highlighting of mentionings in the gui

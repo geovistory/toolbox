@@ -12,7 +12,7 @@ export function listReducer(state: List = INITIAL_STATE, a: Action): List {
   switch (action.type) {
 
     /*****************************************************
-    * Reducers to manage searching of data units
+    * Reducers to manage searching of entities
     *****************************************************/
     case ListAPIActions.SEARCH_STARTED:
       state = {

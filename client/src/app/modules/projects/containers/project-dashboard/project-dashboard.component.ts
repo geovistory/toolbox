@@ -25,7 +25,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
   id: number;
 
   // Statistics
-  dataUnitsCount: number;
+  entitiesCount: number;
   sourcesCount: number;
 
   // Tour logic
@@ -43,17 +43,17 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private activeProjectService: ActiveProjectService,
+    public p: ActiveProjectService,
     private ngRedux: NgRedux<IAppState>,
     private entityPreviewApi: WarEntityPreviewApi,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
     this.id = activatedRoute.snapshot.params['pkActiveProject'];
 
-    this.showDashboard$ = activeProjectService.dashboardVisible$;
+    this.showDashboard$ = p.dashboardVisible$;
 
-    this.activeProjectService.initProject(this.id);
-    this.activeProjectService.initProjectCrm(this.id);
+    this.p.initProject(this.id);
+    this.p.initProjectCrm(this.id);
 
     this.ngRedux.select<ProjectDetail>('activeProject')
       .takeUntil(this.destroy$).subscribe(p => this.project = p)
@@ -77,7 +77,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
         this.entityPreviewApi.search(this.id, '', pkClassesInProject, null, 1, 1)
           .subscribe(
             (response) => {
-              this.dataUnitsCount = parseInt(response.totalCount, 10);
+              this.entitiesCount = parseInt(response.totalCount, 10);
               this.completeLoading();
             },
             error => {
@@ -102,7 +102,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.activeProjectService.closeProject()
+    this.p.closeProject()
   }
 
   activateStep(stepId: string) {

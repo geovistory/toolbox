@@ -28,4 +28,4 @@ export class InnerVisualComponent extends TimePrimitiveVisual implements OnInit,
     this.d3Service.placeInnerVisualOnXAxis(this._element.nativeElement, this.innerOnXAxis.timeline, this);
   }
 
-} 
+}

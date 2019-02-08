@@ -2,16 +2,23 @@
 
   <span *ngIf="preview?.loading" class="fa fa-pulse fa-spinner"> </span>
 
-  <span class="icon fa align-self-center gv-icon-preview" [ngClass]="{
-    'fa fa-star-o': preview?.entity_type === 'teEn',
-    'gv-icon gv-icon-entity' : preview?.entity_type === 'peIt'
-  }"></span>
   <div class="wrap">
     <div class="label">
       {{preview?.entity_label}}
     </div>
-    <div class="type font-xs text-muted">{{(preview?.type_label) ? preview?.type_label : preview?.class_label}}
-      <span *ngIf="preview.time_span">&nbsp;•&nbsp;{{preview.time_span | timeSpan}}</span></div>
+    <div class="type font-xs text-muted">
+      <span *ngIf="(preview?.fk_class === 219 || preview?.fk_class === 220 )"
+        class="icon gv-icon gv-icon-source align-self-center gv-icon-preview"></span>
+
+      <span *ngIf="!(preview?.fk_class === 219 || preview?.fk_class === 220 ) && preview?.entity_type === 'peIt'"
+        class="icon gv-icon gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
+
+      <span *ngIf="!(preview?.fk_class === 219 || preview?.fk_class === 220 ) && preview?.entity_type === 'teEn'"
+      class="icon fa fa-star-o align-self-center gv-icon-preview"></span>
+
+      {{(preview?.type_label) ? preview?.type_label : preview?.class_label}}
+      <span *ngIf="preview.time_span">&nbsp;•&nbsp;{{preview.time_span | timeSpan}}</span>
+    </div>
   </div>
 
 

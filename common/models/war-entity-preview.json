@@ -96,7 +96,7 @@
           "arg": "entityType",
           "type": "string",
           "required": false,
-          "description": "Type of DataUnit: 'teEn' or 'peIt'.",
+          "description": "Type of Entity: 'teEn' or 'peIt'.",
           "http": {
             "source": "query"
           }
@@ -164,7 +164,7 @@
           "arg": "entityType",
           "type": "string",
           "required": false,
-          "description": "Type of DataUnit: 'teEn' or 'peIt'.",
+          "description": "Type of Entity: 'teEn' or 'peIt'.",
           "http": {
             "source": "query"
           }

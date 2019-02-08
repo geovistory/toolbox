@@ -1,10 +1,10 @@
 import { InfTemporalEntity } from 'app/core/sdk';
-import { DataUnit } from './data-unit';
+import { Entity } from './data-unit';
 import { TeEntAccentuation } from './types';
 
 
 
-export class TeEntDetail extends DataUnit  {
+export class TeEntDetail extends Entity  {
 
     // record
     teEnt?: InfTemporalEntity;

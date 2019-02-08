@@ -33,7 +33,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   localStore: ObservableStore<Information>;
 
   // path to the substore
-  @Input() basePath: string[];
+  basePath= ['information'];
 
   @select() loading$: Observable<boolean>;
 
@@ -51,11 +51,6 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     public p: ActiveProjectService
   ) {
     super()
-
-    // if component is activated by ng-router, take base path here
-    activatedRoute.data.subscribe(d => {
-      this.basePath = d.reduxPath;
-    })
 
     // listen to the crm and add extract the classes ready to add.
     p.crm$.pipe(

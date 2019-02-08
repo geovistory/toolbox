@@ -42,6 +42,8 @@ export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnI
   // define where to open the pe it, if user opens Modal and clicks on Open.
   @Input() openIn: 'information' | 'source' | 'section' = 'information';
 
+  @Input() dragEnabled = true;
+
 
   // select observables of substore properties
   @select() _fields$: Observable<FieldList>;
@@ -124,7 +126,7 @@ export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnI
   open() {
 
 
-    this.p.loadDataUnitDetailForModal(this.pkEntity);
+    this.p.loadEntityDetailForModal(this.pkEntity);
 
     const navigate = () => {
       if (this.openIn === 'information') {

@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActiveProjectService, DataUnit, IAppState, SubstoreComponent, EntityPreview, InfChunk } from 'app/core';
+import { ActiveProjectService, Entity, IAppState, SubstoreComponent, EntityPreview, InfChunk } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { dropLast } from 'ramda';
 import { Observable, Subject, combineLatest } from 'rxjs';
@@ -41,7 +41,7 @@ export interface MentioningRow extends Mentioning {
 @Component({
   selector: 'gv-mentioning-list',
   templateUrl: './mentioning-list.component.html',
-  styleUrls: ['./mentioning-list.component.css'],
+  styleUrls: ['./mentioning-list.component.scss'],
   providers: [QuillDeltaToStrPipe]
 })
 export class MentioningListComponent extends MentioningListAPIActions implements OnInit, OnDestroy, SubstoreComponent {
@@ -147,7 +147,7 @@ export class MentioningListComponent extends MentioningListAPIActions implements
       switch (type) {
         case 'ofSource':
           this.columns = [
-            { key: 'mentionedEntityString', title: 'Data Unit', width: '50%' },
+            { key: 'mentionedEntityString', title: 'Entity', width: '50%' },
             { key: 'sectionEntityString', title: 'Section', width: '20%' },
             { key: 'chunkEntityString', title: 'Annotated Text', width: '30%' },
           ];
@@ -155,7 +155,7 @@ export class MentioningListComponent extends MentioningListAPIActions implements
 
         case 'ofSection':
           this.columns = [
-            { key: 'mentionedEntityString', title: 'Data Unit', width: '60%' },
+            { key: 'mentionedEntityString', title: 'Entity', width: '60%' },
             { key: 'chunkEntityString', title: 'Annotated Text', width: '40%' },
           ];
           break;
