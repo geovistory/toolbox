@@ -103,7 +103,6 @@ export class InformationComponent extends InformationAPIActions implements OnIni
         });
 
       })
-
   }
 
   ngOnDestroy() {

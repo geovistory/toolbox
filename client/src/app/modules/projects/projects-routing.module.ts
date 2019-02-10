@@ -33,7 +33,8 @@ const routes: Routes = [
   },
   {
     path: ':pkActiveProject',
-    component: ProjectDashboardComponent
+    redirectTo: ':pkActiveProject/edit',
+    pathMatch: 'full',
   },
   {
     path: ':pkActiveProject/edit',

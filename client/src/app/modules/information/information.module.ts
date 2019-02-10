@@ -152,7 +152,7 @@ import { EntityDetailComponent } from './containers/entity-detail/entity-detail.
 import { EntityDetailAPIEpics } from './containers/entity-detail/api/entity-detail.epics';
 import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-detail.actions';
 import { ListDrawerHeaderComponent } from './components/list-drawer-header/list-drawer-header.component';
-import { MatTooltipModule } from '@angular/material';
+import { MatTooltipModule, MatTabsModule } from '@angular/material';
 
 
 
@@ -192,7 +192,9 @@ import { MatTooltipModule } from '@angular/material';
     InfTimePrimitivePipeModule,
     TimeSpanPipeModule,
     DragDropModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatTabsModule
+
   ],
   declarations: [
     InformationComponent,
@@ -306,7 +308,6 @@ import { MatTooltipModule } from '@angular/material';
     EntityPreviewComponent,
     TileHeaderComponent,
     ListDrawerHeaderComponent,
-
   ],
   providers: [
 

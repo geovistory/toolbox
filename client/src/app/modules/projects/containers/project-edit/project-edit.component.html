@@ -13,27 +13,27 @@
     <div class="h-100 d-flex flex-column">
 
       <div class="gv-main-categories btn-group-vertical rounded-0 d-block">
-        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [ngClass]="{active:(p.list$ | async)==='sources'}"
-          (click)="setList('sources')">
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
+          [ngClass]="{active:(p.list$ | async)==='sources'}" (click)="setList('sources')">
           <div class="fa-2x gv-icon gv-icon-source text-info"></div>
           <div>Sources</div>
         </button>
-        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [ngClass]="{active:(p.list$ | async)==='entities'}"
-          (click)="setList('entities')">
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
+          [ngClass]="{active:(p.list$ | async)==='entities'}" (click)="setList('entities')">
           <div class="fa-2x gv-icon gv-icon-entity text-primary"></div>
           <div>Entities</div>
         </button>
-        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [ngClass]="{active:(p.list$ | async)==='queries'}"
-          (click)="setList('queries')">
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
+          [ngClass]="{active:(p.list$ | async)==='queries'}" (click)="setList('queries')">
           <div class="fa-2x gv-icon gv-icon-query text-primary"></div> Queries
         </button>
-        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [ngClass]="{active:(p.list$ | async)==='visuals'}"
-          (click)="setList('visuals')">
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
+          [ngClass]="{active:(p.list$ | async)==='visuals'}" (click)="setList('visuals')">
           <div class="fa-2x gv-icon gv-icon-visual text-primary"></div> Visuals
         </button>
 
-        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center" [ngClass]="{active:(p.list$ | async)==='stories'}"
-          (click)="setList('stories')">
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
+          [ngClass]="{active:(p.list$ | async)==='stories'}" (click)="setList('stories')">
           <div class="fa-2x gv-icon gv-icon-story text-primary"></div> Stories
         </button>
 
@@ -49,9 +49,9 @@
 
   </mat-drawer>
   <mat-drawer-content style="display:flex; flex-direction:column">
-    <mat-drawer-container style="flex-grow: 1; flex-basis:100%;" [hasBackdrop]="!(p.creatingMentioning$ | async)">
+      <mat-drawer-container style="flex-grow: 1; flex-basis:100%;" [hasBackdrop]="!(p.creatingMentioning$ | async)">
 
-      <!-- List of Sources, Entities … -->
+        <!-- List of Sources, Entities … -->
       <mat-drawer class="gv-drawer-list" #list mode="over" [opened]="(p.list$ | async) !== ''" style="width: 300px;">
         <button class="btn btn-link-gray position-absolute" style="right: 0; top: 50%" (click)="list.close()"
           (positionChanged)="setList('')">
@@ -77,73 +77,86 @@
           <div class="ml-3">Coming soon.</div>
         </div>
 
-      </mat-drawer>
+        </mat-drawer>
 
-      <!-- Container for Tabs … -->
-      <mat-drawer-content class="d-flex border-left border-gray-300" cdkDropListGroup>
-        <div *ngIf="(p.panels$ | async)?.length === 0" class="no-panels gv-flex-fh justify-content-center align-items-center p-3">
-          <div class="display-4 text-gray-400">
-            Your Project
-          </div>
-          <div class="display-1 text-gray-400">
-            {{((p.activeProject$|async)?.labels || [])[0]?.label}}
-          </div>
-          <div class="text-gray-400 helper-text">
-            Find your Entities and Sources to the left.
-          </div>
-        </div>
-
-
-        <div *ngFor="let panel of (p.panels$ | async); let i = index; trackBy:trackByFn" class="gv-panel-for-tabs gv-grow-1 gv-flex-fh"
-          style="overflow: hidden;" (mousedown)="p.focusPanel(i)" [ngClass]="{'focus': ((p.focusedPanel$|async ) === i) }">
-
-          <div>
-            <div cdkDropList [cdkDropListData]="i" cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropTab($event)"
-              class="tab-list">
-
-              <gv-tab-handle *ngFor="let tab of panel.tabs; let j=index;" cdkDrag class="tab-box" [cdkDragData]="{'panelIndex': i, 'tabIndex': j}"
-                [ngClass]="{'active': tab.active }" (cdkDragEnded)="tabDragEnded()" (cdkDragStarted)="tabDragStarted()"
-                [tab]="tab" (activateTab)="p.activateTab(i,j)" (closeTab)="p.closeTab(i,j)"></gv-tab-handle>
-
+        <!-- Container for Tabs … -->
+        <mat-drawer-content class="d-flex ex-b" cdkDropListGroup>
+          <div *ngIf="(p.panels$ | async)?.length === 0"
+            class="no-panels gv-flex-fh justify-content-center align-items-center p-3">
+            <div class="display-4 text-gray-400">
+              Your Project
             </div>
-            <!-- <button (click)="p.addTab()">Split</button> -->
+            <div class="display-1 text-gray-400">
+              {{((p.activeProject$|async)?.labels || [])[0]?.label}}
+            </div>
+            <div class="text-gray-400 helper-text">
+              Find your Entities and Sources to the left.
+            </div>
           </div>
 
-          <div class="panel-body gv-flex-fh position-relative">
-            <div class="split-panel-drop-zone" [ngClass]="{'active': highlightPanel[i] === 'full', 'enabled': tabDragging}">
 
-              <div class="highlight left" [ngClass]="{'active': highlightPanel[i] === 'left'}"></div>
-              <div class="highlight right" [ngClass]="{'active': highlightPanel[i] === 'right'}"></div>
+          <as-split class="gv-split-style" [direction]="'horizontal'" gutterSize="1" *ngIf="(p.panels$ | async)?.length > 0">
+          <as-split-area size="(100 / (p.panels$ | async)?.length )"
+              *ngFor="let panel of (p.panels$ | async); let i = index; trackBy:trackByFn"
+              class="gv-panel-for-tabs gv-grow-1 gv-flex-fh" style="overflow: hidden;" (mousedown)="p.focusPanel(i)"
+              [ngClass]="{'focus': ((p.focusedPanel$|async ) === i) }">
 
-              <div class="split left" [ngClass]="{'enabled': tabDragging}" cdkDropList (cdkDropListEntered)="setHighlightPanel(i, 'left')"
-                (cdkDropListExited)="unsetHighlightPanel(i, 'left')" (cdkDropListDropped)="splitPanel(i, $event)">
-              </div>
-              <div class="split center" cdkDropList (cdkDropListEntered)="setHighlightPanel(i, 'full')"
-                (cdkDropListExited)="unsetHighlightPanel(i, 'full')"> </div>
-              <div class="split right" cdkDropList (cdkDropListEntered)="setHighlightPanel(i, 'right')"
-                (cdkDropListExited)="unsetHighlightPanel(i, 'right')" (cdkDropListDropped)="splitPanel(i+1, $event)">
+              <div>
+                <div cdkDropList [cdkDropListData]="i" cdkDropListOrientation="horizontal"
+                  (cdkDropListDropped)="dropTab($event)" class="tab-list">
+
+                  <gv-tab-handle *ngFor="let tab of panel.tabs; let j=index;" cdkDrag class="tab-box"
+                    [cdkDragData]="{'panelIndex': i, 'tabIndex': j}" [ngClass]="{'active': tab.active }"
+                    (cdkDragEnded)="tabDragEnded()" (cdkDragStarted)="tabDragStarted()" [tab]="tab"
+                    (activateTab)="p.activateTab(i,j)" (closeTab)="p.closeTab(i,j)"></gv-tab-handle>
+
+                </div>
+                <!-- <button (click)="p.addTab()">Split</button> -->
               </div>
 
-            </div>
-            <div gvPanelBody [gvPanelId]="panel.id">
-              <!-- Tab body will be placed dynamically via Cdk Portal -->
-            </div>
-          </div>
+              <div class="panel-body gv-flex-fh position-relative">
+                <div class="split-panel-drop-zone"
+                  [ngClass]="{'active': highlightPanel[i] === 'full', 'enabled': tabDragging}">
 
-        </div>
+                  <div class="highlight left" [ngClass]="{'active': highlightPanel[i] === 'left'}"></div>
+                  <div class="highlight right" [ngClass]="{'active': highlightPanel[i] === 'right'}"></div>
+
+                  <div class="split left" [ngClass]="{'enabled': tabDragging}" cdkDropList
+                    (cdkDropListEntered)="setHighlightPanel(i, 'left')"
+                    (cdkDropListExited)="unsetHighlightPanel(i, 'left')" (cdkDropListDropped)="splitPanel(i, $event)">
+                  </div>
+                  <div class="split center" cdkDropList (cdkDropListEntered)="setHighlightPanel(i, 'full')"
+                    (cdkDropListExited)="unsetHighlightPanel(i, 'full')"> </div>
+                  <div class="split right" cdkDropList (cdkDropListEntered)="setHighlightPanel(i, 'right')"
+                    (cdkDropListExited)="unsetHighlightPanel(i, 'right')"
+                    (cdkDropListDropped)="splitPanel(i+1, $event)">
+                  </div>
+
+                </div>
+                <div gvPanelBody [gvPanelId]="panel.id">
+                  <!-- Tab body will be placed dynamically via Cdk Portal -->
+                </div>
+              </div>
+
+            </as-split-area>
+          </as-split>
 
 
-        <gv-tab-body [active]="tab.active" [panelId]="tab.panelId" [panelBodies$]="panelBodies$" *ngFor="let tab of (allTabs$ | async); let j=index; trackBy:trackByPath;">
-          <gv-entity-detail *ngIf="tab.component=='entity-detail'" [pkEntity]="tab.data.pkEntity" [classAndTypePk]="tab.data.classAndTypePk"
-            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-entity-detail>
-          <gv-source-detail *ngIf="tab.component=='source-detail'" [pkEntity]="tab.data.pkEntity" [classAndTypePk]="tab.data.classAndTypePk"
-            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-source-detail>
-          <gv-section-detail *ngIf="tab.component=='section-detail'" [pkEntity]="tab.data.pkEntity" [classAndTypePk]="tab.data.classAndTypePk"
-            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-section-detail>
-        </gv-tab-body>
+          <gv-tab-body [active]="tab.active" [panelId]="tab.panelId" [panelBodies$]="panelBodies$"
+            *ngFor="let tab of (allTabs$ | async); let j=index; trackBy:trackByPath;">
+            <gv-entity-detail *ngIf="tab.component=='entity-detail'" [pkEntity]="tab.data.pkEntity"
+              [classAndTypePk]="tab.data.classAndTypePk" [basePath]="tab.path"
+              (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-entity-detail>
+            <gv-source-detail *ngIf="tab.component=='source-detail'" [pkEntity]="tab.data.pkEntity"
+              [classAndTypePk]="tab.data.classAndTypePk" [basePath]="tab.path"
+              (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-source-detail>
+            <gv-section-detail *ngIf="tab.component=='section-detail'" [pkEntity]="tab.data.pkEntity"
+              [classAndTypePk]="tab.data.classAndTypePk" [basePath]="tab.path"
+              (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-section-detail>
+          </gv-tab-body>
 
-      </mat-drawer-content>
-    </mat-drawer-container>
+        </mat-drawer-content>
+      </mat-drawer-container>
 
   </mat-drawer-content>
 </mat-drawer-container>

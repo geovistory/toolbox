@@ -615,6 +615,7 @@ $gv-bg-drawer-list: #cde4f3;
     background-color: $gray-100;
     @extend .px-2;
     @extend .pb-2;
+    @extend .pt-3;
     flex-basis: 100%;
     overflow-x: auto;
 }
@@ -1266,6 +1267,48 @@ $switch-sm-box-width: calc((#{$switch-sm-box-border} * 2) + calc(#{$slider-diame
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
+
+/******************
+** Resizable Split Panel
+******************/
+as-split.gv-split-style {
+    .as-split-area {
+        // background-color: lightgrey;
+        &>p {
+            padding: 5px;
+        }
+    }
+    ::ng-deep .as-split-gutter {
+        background-color: $gray-300 !important;
+        position: relative;
+    }
+    ::ng-deep .as-split-gutter-icon {
+        background-image: none !important;
+        background-color: black;
+        transition: opacity .3s;
+        opacity: 0;
+        position: absolute;
+    }
+    ::ng-deep .as-split-gutter.is-dragged .as-split-gutter-icon,
+    ::ng-deep .as-split-gutter-icon:hover {
+        opacity: .1;
+    }
+    &.is-horizontal {
+        ::ng-deep .as-split-gutter-icon {
+            width: 13px !important;
+            left: -6px;
+            right: 6px;
+        }
+    }
+    &.is-vertical {
+        ::ng-deep .as-split-gutter-icon {
+            height: 13px !important;
+            top: -6px;
+            bottom: 6px;
+        }
+    }
+}
+
 /************************************************************************************
 ** INCLUDE MATERIAL THEME
 ************************************************************************************/
@@ -1279,7 +1322,7 @@ $switch-sm-box-width: calc((#{$switch-sm-box-border} * 2) + calc(#{$slider-diame
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$candy-app-primary: mat-palette($mat-indigo);
+$candy-app-primary: mat-palette($mat-purple);
 $candy-app-accent : mat-palette($mat-pink, A200, A100, A400);
 // The warn palette is optional (defaults to red).
 $candy-app-warn : mat-palette($mat-red);

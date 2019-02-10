@@ -26,6 +26,7 @@ import { AngularCesiumModule } from './modules/gv-angular-cesium/angular-cesium-
 import { ProjectsModule } from './modules/projects/projects.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
+import { AngularSplitModule } from 'angular-split';
 
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
@@ -51,6 +52,7 @@ registerLocaleData(localeDeCh);
     DndModule.forRoot(),
     TreeviewModule.forRoot(),
     SocketIoModule.forRoot(socketConfig),
+    AngularSplitModule.forRoot(),
     NotificationsModule,
     LoadingBarModule,
     BrowserModule,

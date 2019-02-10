@@ -1,5 +1,4 @@
 @import "../../../../../styles.scss";
-
 $tabs-height: 32px;
 .gv-main-drawer {
     padding-top: $tabs-height
@@ -8,15 +7,6 @@ $tabs-height: 32px;
 .gv-drawer-list {
     margin-top: $tabs-height;
     background-color: $gv-bg-drawer-list;
-}
-
-.gv-panel-for-tabs {
-    @extend .border-left;
-    @extend .border-gray-300;
-}
-
-.gv-panel-for-tabs:first-child {
-    border: none;
 }
 
 .tab-list {

@@ -3,7 +3,8 @@
   <div class="gv-flex-shrink-0" *ngIf="(showHeader$ | async)">
     <gv-editor-header>
       <span typeLabel *ngIf="(_type$ | async)?.label">{{(_type$ | async)?.label}}:</span>
-      <gv-pe-it-label labels [children]="(_fields$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit" (onLabelChange)="onLabelChange.emit($event)"></gv-pe-it-label>
+      <gv-pe-it-label labels [children]="(_fields$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"
+        (onLabelChange)="onLabelChange.emit($event)"></gv-pe-it-label>
       <div type *ngIf="(_type$ | async)">
         <gv-type [basePath]="basePath.concat('_type')"></gv-type>
       </div>
@@ -38,7 +39,8 @@
 
             <div class="dropdown-header">View (right column)</div>
 
-            <button class="dropdown-item" (click)="toggle('showMentionedEntities')" *ngIf="(showMentionedEntitiesToggle$|async)">
+            <button class="dropdown-item" (click)="toggle('showMentionedEntities')"
+              *ngIf="(showMentionedEntitiesToggle$|async)">
               <i class="fa fa-fw text-muted" [ngClass]="{'fa-check': (showMentionedEntities$|async)}"></i>
               Mentioned Entities
             </button>
@@ -77,7 +79,8 @@
             <div class="dropdown-divider" *ngIf="!(isViewMode$ | async)"></div>
             <div class="dropdown-header" *ngIf="!(isViewMode$ | async)">Danger Zone</div>
 
-            <button class="dropdown-item text-danger" (click)="toggleRemoveVerification()" *ngIf="!(isViewMode$ | async)">
+            <button class="dropdown-item text-danger" (click)="toggleRemoveVerification()"
+              *ngIf="!(isViewMode$ | async)">
               <i class="fa fa-trash"></i>
               Remove
             </button>
@@ -92,8 +95,8 @@
   </div>
 
   <!-- Tools to edit PeIt  -->
-  <div class="gv-canvas" [ngClass]="{'d-flex flex-row gv-grow-1': !(sectionList$ | async)?.create}" style="flex-basis:100%"
-    [hidden]="(sectionList$ | async)?.create">
+  <div class="gv-canvas" [ngClass]="{'d-flex flex-row gv-grow-1': !(sectionList$ | async)?.create}"
+    style="flex-basis:100%" [hidden]="(sectionList$ | async)?.create">
 
     <!-- Left Panel -->
     <div class="gv-panel" *ngIf="(showLeftPanel$ | async)">
@@ -106,7 +109,8 @@
             Properties
           </span>
           <span buttons>
-            <button class="btn btn-sm btn-link" (click)="startSelectProperty()" *ngIf="!(isViewMode$ | async) && (selectPropState$ | async) === 'init' && (showAddAPropertyButton$ | async)"
+            <button class="btn btn-sm btn-link" (click)="startSelectProperty()"
+              *ngIf="!(isViewMode$ | async) && (selectPropState$ | async) === 'init' && (showAddAPropertyButton$ | async)"
               [ngClass]="{'invisible' : isolatedChild}">
               <i class="fa fa-plus"></i> Add
             </button>
@@ -127,10 +131,12 @@
           <!-- List of Fields -->
           <div *ngFor="let item of (_fields$ | async) | keys | filterByKey:isolatedChild; trackBy:getKey">
 
-            <gv-text-property-field *ngIf="item.value.type === 'TextPropertyField'" [basePath]="basePath.concat('_fields').concat(item.key)"></gv-text-property-field>
+            <gv-text-property-field *ngIf="item.value.type === 'TextPropertyField'"
+              [basePath]="basePath.concat('_fields').concat(item.key)"></gv-text-property-field>
 
             <gv-pe-it-property-field-editable *ngIf="item.value.type === 'PropertyField'" [parentPath]="basePath"
-              [index]="item.key" (onRemovePropertyField)="removePropertyField(item.key)"></gv-pe-it-property-field-editable>
+              [index]="item.key" (onRemovePropertyField)="removePropertyField(item.key)">
+            </gv-pe-it-property-field-editable>
 
           </div>
         </div>
@@ -138,27 +144,30 @@
       </span>
 
       <!-- Section List. Sections of a source -->
-      <gv-section-list class="gv-tile" *ngIf="(showSectionList$ | async) && !isolatedChild" [basePath]="basePath.concat('sectionList')"
-        [loadListOnInit]="true" (close)="toggle('showSectionList')"></gv-section-list>
+      <gv-section-list class="gv-tile" *ngIf="(showSectionList$ | async) && !isolatedChild"
+        [basePath]="basePath.concat('sectionList')" [loadListOnInit]="true" (close)="toggle('showSectionList')">
+      </gv-section-list>
 
       <!-- Repros. Reproductions of a section -->
-      <gv-repros class="gv-flex-fh" class="gv-tile" *ngIf="(showRepros$ | async) && !isolatedChild" [basePath]="basePath.concat('repros')"
-        (annotate)="onAnnotate()" (close)="toggle('showRepros')"></gv-repros>
+      <gv-repros class="gv-flex-fh" class="gv-tile" *ngIf="(showRepros$ | async) && !isolatedChild"
+        [basePath]="basePath.concat('repros')" (annotate)="onAnnotate()" (close)="toggle('showRepros')"></gv-repros>
 
     </div>
 
     <!-- Right Panel -->
     <div class="gv-panel" [ngClass]="{'ml-2':(showLeftPanel$ | async)}" *ngIf="(showRightPanel$ | async)">
 
-      <gv-mentioning-list class="gv-tile" *ngIf="(showMentionedEntities$ | async)" [basePath]="basePath.concat('mentionedEntities')"
-        (close)="toggle('showMentionedEntities')"></gv-mentioning-list>
+      <gv-mentioning-list class="gv-tile" *ngIf="(showMentionedEntities$ | async)"
+        [basePath]="basePath.concat('mentionedEntities')" (close)="toggle('showMentionedEntities')">
+      </gv-mentioning-list>
 
       <gv-mentioning-list class="gv-tile" *ngIf="(showSources$ | async)" [basePath]="basePath.concat('sources')"
         (close)="toggle('showSources')"></gv-mentioning-list>
 
       <gv-map class="gv-tile" *ngIf="(showMap$ | async)" [path]="basePath" (close)="toggle('showMap')"></gv-map>
 
-      <gv-pe-it-timeline class="gv-tile" [path]="basePath" *ngIf="(showTimeline$ | async)" (close)="toggle('showTimeline')"></gv-pe-it-timeline>
+      <gv-pe-it-timeline class="gv-tile" [path]="basePath" *ngIf="(showTimeline$ | async)"
+        (close)="toggle('showTimeline')"></gv-pe-it-timeline>
 
     </div>
   </div>
@@ -167,7 +176,8 @@
        * - If 'create' is truthy, show a form with SourceCreateFormComponent
        *     listening to ok and cancel Outputs 
        -->
-  <div *ngIf="(showSectionList$ | async)" [hidden]="!(sectionList$ | async)?.create" [ngClass]="{'gv-flex-fh': (sectionList$ | async)?.create}">
+  <div *ngIf="(showSectionList$ | async)" [hidden]="!(sectionList$ | async)?.create"
+    [ngClass]="{'gv-flex-fh': (sectionList$ | async)?.create}">
     <gv-section-list [basePath]="basePath.concat('sectionList')" [loadListOnInit]="false"></gv-section-list>
   </div>
 </div>
@@ -176,8 +186,8 @@
   <div>
     <div class="my-3">
       <h2>
-        Remove <gv-pe-it-label class="d-inline-block mr-1" labels [children]="(_fields$ | async)" [classConfig]="classConfig"
-          [labelInEdit]="labelInEdit"></gv-pe-it-label>
+        Remove <gv-pe-it-label class="d-inline-block mr-1" labels [children]="(_fields$ | async)"
+          [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
       </h2>
 
       <gv-class-info class="mb-5" classInfo [classConfig]="classConfig" iconPrimary="true"></gv-class-info>
