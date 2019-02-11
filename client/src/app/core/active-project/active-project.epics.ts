@@ -2,21 +2,21 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { createPeItDetail, fieldKey, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
+import { MentioningListAPIActions } from 'app/modules/information/containers/mentioning-list/api/mentioning-list.actions';
 import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy, sort } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
-import { mapTo, mergeMap, switchMap, filter } from 'rxjs/operators';
+import { map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComClassField, ComClassFieldApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ComProjectApi } from '../sdk';
+import { ComClassField, ComClassFieldApi, ComProjectApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi } from '../sdk';
 import { PeItDetail } from '../state/models';
 import { IAppState } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { MentioningListAPIActions } from 'app/modules/information/containers/mentioning-list/api/mentioning-list.actions';
 
 
 
@@ -52,6 +52,8 @@ export class ActiveProjectEpics {
       this.createClosePanelFocusPanelEpic(),
       this.createEnableCreatingMentioningEpic(),
       this.createDisableCreatingMentioningEpic(),
+      this.createSplitPanelActivateTabEpic(),
+      this.createAddTabCloseListEpic()
     );
   }
 
@@ -451,6 +453,10 @@ export class ActiveProjectEpics {
 
 
 
+
+  /**
+   * LAYOUT
+   */
   private createClosePanelEpic(): Epic {
     return (action$, store) => {
       return action$.pipe(
@@ -463,10 +469,14 @@ export class ActiveProjectEpics {
       )
     }
   }
-
-  /**
-   * LAYOUT
-   */
+  private createSplitPanelActivateTabEpic(): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        ofType(ActiveProjectActions.SPLIT_PANEL),
+        map(action => this.actions.activateTab(action.meta.currentPanelIndex, 0))
+      )
+    }
+  }
   private createActivateTabFocusPanelEpic(): Epic {
     return (action$, store) => {
       return action$.pipe(
@@ -500,6 +510,14 @@ export class ActiveProjectEpics {
             globalStore.next(this.actions.focusPanel(0));
           }
         }))
+      )
+    }
+  }
+  private createAddTabCloseListEpic(): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        ofType(ActiveProjectActions.ADD_TAB),
+        mapTo(this.actions.setListType(''))
       )
     }
   }

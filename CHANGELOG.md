@@ -17,7 +17,7 @@
 * Metadata: ID of logged-in user gets stored, when she/he modifies data in information schema (in table information.entity_version_project_rel, column fk_last_modifier). `GEOV-271`
 * DevOps: Production App on Heroku is up and running on a new App Server and a new DB Server, ready for beta release (with backups enabled). `GEOV-383`
 * DevOps: Checked security for go live (See notes: https://kleiolab.atlassian.net/wiki/spaces/GEOV/pages/925040705/Security) `GEOV-343`
-* Project Edit: Added new UI for navigation within the project's data, using a left drawer for search-lists and a right panel for detail-pages with tabs and split screen. (See below for: `GEOV-217 GEOV-361 GEOV-362 GEOV-353`)
+* Project Edit: Added new UI for navigation within the project's data, using a left drawer for search-lists and a right panel for detail-pages with tabs and resizable split screen. (See below for: `GEOV-217 GEOV-361 GEOV-362 GEOV-353`)
 * Warehouse: Added new db-schema 'warehouse'
   * The schema holds data aggregated from other schemas (mainly information and data_for_history), updated by asyncronous (!) triggers
   * The table entity_preview provides previews for each entity (PeIt/TeEn) per project and the repository-version. (See documentation: https://kleiolab.atlassian.net/wiki/spaces/GEOV/pages/893878275/warehouse.entity+preview+Table)
