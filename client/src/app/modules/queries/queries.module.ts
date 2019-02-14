@@ -11,6 +11,7 @@ import { MatStepperModule, MatFormFieldModule, MatInputModule, MatButtonModule, 
 import { AngularSplitModule } from 'angular-split';
 import { DetailTopBarModule } from 'app/shared/components/detail-top-bar/detail-top-bar.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TreeChecklistModule } from 'app/shared/components/tree-checklist/tree-checklist.module';
 
 @NgModule({
   imports: [
@@ -24,6 +25,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     AngularSplitModule,
     DetailTopBarModule,
     ReactiveFormsModule,
+    TreeChecklistModule
   ],
   providers: [
     QueryListAPIActions,

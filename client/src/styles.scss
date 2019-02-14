@@ -1342,85 +1342,16 @@ as-split.gv-split-style {
 /************************************************************************************
 ** INCLUDE MATERIAL THEME
 ************************************************************************************/
-@import '~@angular/material/theming';
 
+@import '~@angular/material/theming';
 // Plus imports for other components in your app.
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
 @include mat-core();
-
-
 // Custom color Palette for primary colors (starting with $purple)
-
-
-$gv-mat-purple: (
-  50: #f2e7f5,
-  100: #dfc3e8,
-  200: #ca9cda,
-  300: #b576cb,
-  400: #a55abf,
-  500: #9643b3,
-  600: #893eac,
-  700: #7638a2,
-  800: #663399,
-  900: #482a87,
-  A100: #ea80fc,
-  A200: #e040fb,
-  A400: #d500f9,
-  A700: #aa00ff,
-  contrast: (
-    50: $dark-primary-text,
-    100: $dark-primary-text,
-    200: $dark-primary-text,
-    300: $light-primary-text,
-    400: $light-primary-text,
-    500: $light-primary-text,
-    600: $light-primary-text,
-    700: $light-primary-text,
-    800: $light-primary-text,
-    900: $light-primary-text,
-    A100: $dark-primary-text,
-    A200: $light-primary-text,
-    A400: $light-primary-text,
-    A700: $light-primary-text,
-  )
-);
-
-
-$gv-mat-teal: (
-  50: #dff6ed,
-  100: #b1e8d1,
-  200: #7ad8b4,
-  300: #20c996,
-  400: #00bd80,
-  500: #00b06a,
-  600: #00a15f,
-  700: #008f52,
-  800: #007d45,
-  900: #005d2f,
-  A100: #a7ffeb,
-  A200: #64ffda,
-  A400: #1de9b6,
-  A700: #00bfa5,
-  contrast: (
-    50: $dark-primary-text,
-    100: $dark-primary-text,
-    200: $dark-primary-text,
-    300: $dark-primary-text,
-    400: $dark-primary-text,
-    500: $light-primary-text,
-    600: $light-primary-text,
-    700: $light-primary-text,
-    800: $light-primary-text,
-    900: $light-primary-text,
-    A100: $dark-primary-text,
-    A200: $dark-primary-text,
-    A400: $dark-primary-text,
-    A700: $dark-primary-text,
-  )
-);
-
+$gv-mat-purple: ( 50: #f2e7f5, 100: #dfc3e8, 200: #ca9cda, 300: #b576cb, 400: #a55abf, 500: #9643b3, 600: #893eac, 700: #7638a2, 800: #663399, 900: #482a87, A100: #ea80fc, A200: #e040fb, A400: #d500f9, A700: #aa00ff, contrast: ( 50: $dark-primary-text, 100: $dark-primary-text, 200: $dark-primary-text, 300: $light-primary-text, 400: $light-primary-text, 500: $light-primary-text, 600: $light-primary-text, 700: $light-primary-text, 800: $light-primary-text, 900: $light-primary-text, A100: $dark-primary-text, A200: $light-primary-text, A400: $light-primary-text, A700: $light-primary-text, ));
+$gv-mat-teal: ( 50: #dff6ed, 100: #b1e8d1, 200: #7ad8b4, 300: #20c996, 400: #00bd80, 500: #00b06a, 600: #00a15f, 700: #008f52, 800: #007d45, 900: #005d2f, A100: #a7ffeb, A200: #64ffda, A400: #1de9b6, A700: #00bfa5, contrast: ( 50: $dark-primary-text, 100: $dark-primary-text, 200: $dark-primary-text, 300: $dark-primary-text, 400: $dark-primary-text, 500: $light-primary-text, 600: $light-primary-text, 700: $light-primary-text, 800: $light-primary-text, 900: $light-primary-text, A100: $dark-primary-text, A200: $dark-primary-text, A400: $dark-primary-text, A700: $dark-primary-text, ));
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
@@ -1434,4 +1365,8 @@ $candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($candy-app-theme);
-  
+mat-checkbox {
+    label {
+        margin-bottom: 0
+    }
+}

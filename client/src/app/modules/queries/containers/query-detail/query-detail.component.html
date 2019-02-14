@@ -14,7 +14,9 @@
 
     <mat-vertical-stepper [linear]="false" #stepper>
       <mat-step [stepControl]="firstFormGroup">
-        <form [formGroup]="firstFormGroup">
+
+        <gv-tree-checklist [treeData$]="treeData"></gv-tree-checklist>
+        <!-- <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>Define a filter for the resulting rows</ng-template>
           <mat-form-field>
             <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
@@ -22,7 +24,7 @@
           <div>
             <button mat-button matStepperNext>Next</button>
           </div>
-        </form>
+        </form> -->
       </mat-step>
       <mat-step [stepControl]="secondFormGroup">
         <form [formGroup]="secondFormGroup">

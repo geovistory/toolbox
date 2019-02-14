@@ -1,5 +1,5 @@
 import { Component, OnDestroy, Input, OnInit, HostBinding } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, of } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
 import { IAppState, SubstoreComponent, ActiveProjectService } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
@@ -9,6 +9,7 @@ import { QueryDetailAPIActions } from './api/query-detail.actions';
 import { queryDetailReducer } from './api/query-detail.reducer';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { first, takeUntil } from 'rxjs/operators';
+import { TreeNode } from 'app/shared/components/tree-checklist/tree-checklist.component';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -42,6 +43,48 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
   thirdFormGroup: FormGroup;
 
   displayedColumns: string[] = ['label', 'geburten'];
+
+
+
+
+
+
+  // Query
+  /**
+   * The tree data
+   */
+  treeData = of([
+    new TreeNode('Simulation', [
+      new TreeNode('Factorio'),
+      new TreeNode('Oxygen not included'),
+    ]),
+    new TreeNode('Indie', [
+      new TreeNode(`Don't Starve`, [
+        new TreeNode(`Region of Giants`),
+        new TreeNode(`Together`),
+        new TreeNode(`Shipwrecked`)
+      ]),
+      new TreeNode('Terraria'),
+      new TreeNode('Starbound'),
+      new TreeNode('Dungeon of the Endless')
+    ]),
+    new TreeNode('Action', [
+      new TreeNode('Overcooked')
+    ]),
+    new TreeNode('Strategy', [
+      new TreeNode('Rise to ruins')
+    ]),
+    new TreeNode('RPG', [
+      new TreeNode('Magicka', [
+        new TreeNode('Magicka 1'),
+        new TreeNode('Magicka 2')
+      ])
+    ])
+  ]);
+
+
+
+
 
 
   constructor(
