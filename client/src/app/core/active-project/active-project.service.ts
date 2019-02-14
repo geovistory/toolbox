@@ -13,6 +13,7 @@ import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
 import { ProjectCrm, Tab, ClassConfig, ListType } from './active-project.models';
+import { CdkDropList } from '@angular/cdk/drag-drop';
 
 
 
@@ -30,6 +31,10 @@ export class ActiveProjectService {
 
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
+
+  // used to connect droplists
+  public entityDropLists: CdkDropList[] = [];
+  public sourceDropLists: CdkDropList[] = [];
 
 
   constructor(
@@ -252,7 +257,9 @@ export class ActiveProjectService {
     return pks$.map(pks => roles.filter(role => pks.includes(role.fk_property)))
   }
 
-
+  /************************************************************************************
+  * Mentioning
+  ************************************************************************************/
   updateSelectedChunk(c: InfChunk) {
     this.ngRedux.dispatch(this.actions.updateSelectedChunk(c))
   }
@@ -267,6 +274,19 @@ export class ActiveProjectService {
 
   mentioningsFocusedInTable(pks: number[]) {
     this.ngRedux.dispatch(this.actions.setMentioningsFocusedInTable(pks))
+  }
+
+  addEntityDropList(list: CdkDropList) {
+    this.entityDropLists.push(list);
+  }
+  removeEntityDropList(list: CdkDropList) {
+    this.entityDropLists.splice(this.entityDropLists.indexOf(list), 1);
+  }
+  addSourceDropList(list: CdkDropList) {
+    this.sourceDropLists.push(list);
+  }
+  removeSourceDropList(list: CdkDropList) {
+    this.sourceDropLists.splice(this.entityDropLists.indexOf(list), 1);
   }
 
   /************************************************************************************
