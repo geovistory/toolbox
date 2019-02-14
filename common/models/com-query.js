@@ -2,7 +2,7 @@
 
 module.exports = function (ComQuery) {
 
-    ComQuery.run = function (pkProject, cb) {
+    ComQuery.run = function (pkProject, ctx, cb) {
         const WarEntityPreview = ComQuery.app.models.WarEntityPreview;
 
         const filter = {

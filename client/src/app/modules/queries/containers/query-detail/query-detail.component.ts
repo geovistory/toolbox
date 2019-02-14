@@ -41,7 +41,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
   secondFormGroup: FormGroup;
   thirdFormGroup: FormGroup;
 
-  displayedColumns: string[] = ['label'];
+  displayedColumns: string[] = ['label', 'geburten'];
 
 
   constructor(

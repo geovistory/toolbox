@@ -6,14 +6,33 @@ import { EntityPreview } from '../state/models';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 import { ProjectDetail, Panel } from './active-project.models';
 
+// const INITIAL_STATE: ProjectDetail = {
+//     list: '',
+//     uiIdSerial: 0,
+//     panelSerial: 0,
+//     focusedPanel: 0,
+//     panels: []
+// };
 const INITIAL_STATE: ProjectDetail = {
     list: '',
-    uiIdSerial: 0,
-    panelSerial: 0,
+    uiIdSerial: 1,
+    panelSerial: 1,
     focusedPanel: 0,
-    panels: []
+    panels: [
+        {
+            id: 0,
+            tabs: [
+                {
+                    active: true,
+                    component: 'query-detail',
+                    icon: 'query',
+                    pathSegment: 'queryDetails',
+                    path: ['activeProject', 'queryDetails', '0']
+                }
+            ]
+        }
+    ]
 };
-
 const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: ActiveProjectAction): ProjectDetail => {
     let pi, ti, ppi, cpi, pti, cti;
     switch (action.type) {

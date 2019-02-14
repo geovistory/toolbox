@@ -75,6 +75,13 @@
           "http": {
             "source": "query"
           }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
         }
       ],
       "returns": {

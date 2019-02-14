@@ -29,7 +29,7 @@ export interface Tab {
     // icon to be displayed in tab, e.g.: gv-icon-source
     icon: 'persistent-entity' | 'temporal-entity' | 'source' | 'section' | 'query' | 'visual' | 'story';
     // name of the pathSegment under 'activeProject', used to generate the path: ['activeProject', pathSegment, uiId]
-    pathSegment: string;
+    pathSegment: 'entityDetails' | 'sourceDetails' | 'sectionDetails' | 'queryDetails';
     // data to pass to component via input variabales
     data?: {
         pkEntity?: number;
