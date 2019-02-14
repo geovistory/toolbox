@@ -44,7 +44,38 @@
       "type": "object"
     }
   },
-  "relations": {},
+  "relations": {
+    "te_roles": {
+      "type": "hasMany",
+      "model": "InfRole",
+      "foreignKey": "fk_temporal_entity",
+      "primaryKey": "pk_entity"
+    },
+    "pi_roles": {
+      "type": "hasMany",
+      "model": "InfRole",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "domain_entity_associations": {
+      "type": "hasMany",
+      "model": "InfEntityAssociation",
+      "foreignKey": "fk_domain_entity",
+      "primaryKey": "pk_entity"
+    },
+    "range_entity_associations": {
+      "type": "hasMany",
+      "model": "InfEntityAssociation",
+      "foreignKey": "fk_range_entity",
+      "primaryKey": "pk_entity"
+    },
+    "text_properties": {
+      "type": "hasMany",
+      "model": "InfTextProperty",
+      "foreignKey": "fk_concerned_entity",
+      "primaryKey": "pk_entity"
+    }
+  },
   "acls": [
     {
       "principalType": "ROLE",

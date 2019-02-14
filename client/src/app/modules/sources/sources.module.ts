@@ -21,6 +21,7 @@ import { SourceDetailAPIActions } from './containers/source-detail/api/source-de
 import { SectionDetailComponent } from './containers/section-detail/section-detail.component';
 import { SectionDetailAPIEpics } from './containers/section-detail/api/section-detail.epics';
 import { SectionDetailAPIActions } from './containers/section-detail/api/section-detail.actions';
+import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header/list-drawer-header.module';
 
 
 
@@ -31,7 +32,7 @@ import { SectionDetailAPIActions } from './containers/section-detail/api/section
     FormsModule,
     SourcesRoutingModule,
     KeysModule,
-    // AnnotationModule,
+    ListDrawerHeaderModule,
     QuillModule,
     PassiveLinkModule,
     Information2Module,

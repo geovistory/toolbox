@@ -4,12 +4,12 @@
 */
 
 // Here the variables are adapted. Further down, specific class-styles are adapted
-$grey: $gray-300; // #e7e9ed;
-$grey-lighter: $gray-100; // #f6f7f9;
-$grey-dark: $gray-200; //  #f3f3f3;
-$dark: $gray-700; // #50596c;
-$blue: $primary; // #3f86ca;
-$primary-color: $dark; //#50596c !default;
+$table-grey: $gray-300; // #e7e9ed;
+$table-grey-lighter: $gray-100; // #f6f7f9;
+$table-grey-dark: $gray-200; //  #f3f3f3;
+$table-dark: $gray-700; // #50596c;
+$table-blue: $primary; // #3f86ca;
+$table-primary: $table-dark; //#50596c !default;
 /*! Based on Spectre.css v0.4.5 | MIT License | github.com/picturepan2/spectre */
 
 /* End of adaptions (At the end of document, specific class-styles are adapted)
@@ -24,7 +24,7 @@ $primary-color: $dark; //#50596c !default;
         width: 100%;
     }
     &-table {
-        color: $primary-color;
+        color: $table-primary;
         border-collapse: collapse;
         border-spacing: 0;
         display: table;
@@ -32,17 +32,17 @@ $primary-color: $dark; //#50596c !default;
         text-align: left;
         width: 100%;
         td {
-            border-bottom: 1px solid $grey;
+            border-bottom: 1px solid $table-grey;
             padding: 12px 6px;
         }
         th {
             padding: 12px 6px;
-            border-bottom: 2px solid $grey;
+            border-bottom: 2px solid $table-grey;
         }
         &__table-row--selected,
         &__table-col--selected,
         &__table-cell--selected {
-            background: $grey !important;
+            background: $table-grey !important;
         }
         &__table-no-results {
             text-align: center;
@@ -57,9 +57,9 @@ $primary-color: $dark; //#50596c !default;
         }
         &__table-loader {
             animation: spin .6s linear infinite;
-            border: 1px solid $grey;
+            border: 1px solid $table-grey;
             border-radius: 50%;
-            border-top-color: $primary-color;
+            border-top-color: $table-primary;
             height: 1.8rem;
             width: 1.8rem;
         }
@@ -72,9 +72,9 @@ $primary-color: $dark; //#50596c !default;
             -webkit-appearance: none;
             -moz-appearance: none;
             background: #fff none;
-            border: .05rem solid $grey;
+            border: .05rem solid $table-grey;
             border-radius: .1rem;
-            color: $primary-color;
+            color: $table-primary;
             display: block;
             font-size: .8rem;
             height: 1.47rem;
@@ -102,7 +102,7 @@ $primary-color: $dark; //#50596c !default;
             }
         }
         &__column-resizer {
-            background-color: $grey-dark;
+            background-color: $table-grey-dark;
             cursor: col-resize;
             display: block;
             height: 100%;
@@ -120,77 +120,77 @@ $primary-color: $dark; //#50596c !default;
             }
         }
         &__table--hoverable>tbody tr:hover {
-            background: $grey-lighter;
+            background: $table-grey-lighter;
         }
         &__table--striped>tbody tr:nth-of-type(odd) {
-            background: $grey-lighter;
+            background: $table-grey-lighter;
         }
         &__table--tiny> {
             tbody>tr>td,
             thead>tr>th {
-                border-bottom: 1px solid $grey;
+                border-bottom: 1px solid $table-grey;
                 padding: 4px 7px;
             }
         }
         &__table--normal> {
             tbody>tr>td,
             thead>tr>th {
-                border-bottom: 1px solid $grey;
+                border-bottom: 1px solid $table-grey;
                 padding: 10px 6px;
             }
         }
         &__table--big> {
             tbody>tr>td,
             thead>tr>th {
-                border-bottom: 1px solid $grey;
+                border-bottom: 1px solid $table-grey;
                 padding: 12px 8px;
             }
         }
         &__table--dark {
-            background-color: $dark;
-            color: $grey-lighter;
+            background-color: $table-dark;
+            color: $table-grey-lighter;
             &>tbody tr:hover {
-                color: $dark;
+                color: $table-dark;
             }
             &.ngx-table__table--striped>tbody tr:nth-of-type(odd) {
-                background: $grey-lighter;
-                color: $dark;
+                background: $table-grey-lighter;
+                color: $table-dark;
             }
             &-pagination {
                 & /deep/ .ngx-pagination .current {
-                    background: $grey-lighter;
-                    color: $dark;
+                    background: $table-grey-lighter;
+                    color: $table-dark;
                 }
                 & /deep/ pagination-template>ul {
                     -webkit-padding-start: 0;
                     -webkit-margin-before: 7px;
                 }
                 & /deep/ pagination-template>ul>li {
-                    border: 1px solid $grey;
-                    background: $dark;
+                    border: 1px solid $table-grey;
+                    background: $table-dark;
                 }
                 & /deep/ pagination-template>ul>li.current {
-                    border: 1px solid $dark;
+                    border: 1px solid $table-dark;
                 }
                 & /deep/ pagination-template>ul>li>a {
-                    color: $grey-lighter;
+                    color: $table-grey-lighter;
                 }
                 &-wrapper {
-                    background-color: $dark;
+                    background-color: $table-dark;
                 }
                 &-range {
                     &>#rowAmount>div>div {
-                        color: $grey;
-                        border: 1px solid $grey;
-                        background-color: $dark;
+                        color: $table-grey;
+                        border: 1px solid $table-grey;
+                        background-color: $table-dark;
                     }
                     &>#rowAmount>div>ul {
-                        color: $grey;
-                        background-color: $dark;
+                        color: $table-grey;
+                        background-color: $table-dark;
                     }
                     &>#rowAmount>div>ul>li {
-                        color: $grey;
-                        background-color: $dark;
+                        color: $table-grey;
+                        background-color: $table-dark;
                     }
                 }
             }
@@ -239,31 +239,31 @@ $primary-color: $dark; //#50596c !default;
         }
         &-range-dropdown-button-item {
             cursor: pointer;
-            color: $primary-color;
+            color: $table-primary;
             padding: 4px;
         }
         &-range-dropdown-button {
-            color: $primary-color;
-            border: 1px solid $grey;
+            color: $table-primary;
+            border: 1px solid $table-grey;
             cursor: pointer;
             padding: 4px;
         }
         &-style {
             & /deep/ .ngx-pagination .current {
-                background: $blue;
+                background: $table-blue;
             }
             & /deep/ pagination-template>ul {
                 -webkit-padding-start: 0;
                 -webkit-margin-before: 0;
             }
             & /deep/ pagination-template>ul>li {
-                border: 1px solid $grey;
+                border: 1px solid $table-grey;
             }
             & /deep/ pagination-template>ul>li.current {
-                border: 1px solid $dark;
+                border: 1px solid $table-dark;
             }
             & /deep/ pagination-template>ul>li>a {
-                color: $dark;
+                color: $table-dark;
             }
         }
     }
@@ -275,7 +275,7 @@ $primary-color: $dark; //#50596c !default;
         top: .2rem;
         width: .9rem;
         transition: all .2s ease;
-        border: .05rem solid $grey;
+        border: .05rem solid $table-grey;
         cursor: pointer;
         display: inline-block;
         position: absolute;
@@ -294,15 +294,15 @@ $primary-color: $dark; //#50596c !default;
             position: absolute;
             width: 1px;
             &:focus+.ngx-form-icon {
-                box-shadow: 0 0 0 .1rem rgba($blue, .2);
-                border-color: $blue;
+                box-shadow: 0 0 0 .1rem rgba($table-blue, .2);
+                border-color: $table-blue;
             }
             &:checked+.ngx-form-icon {
-                background: $blue;
-                border-color: $blue;
+                background: $table-blue;
+                border-color: $table-blue;
             }
             &:active+.ngx-form-icon {
-                background: $dark;
+                background: $table-dark;
             }
             &:checked+.ngx-form-icon {
                 &::before {
@@ -346,7 +346,7 @@ $primary-color: $dark; //#50596c !default;
     &-icon-arrow-down::before,
     &-icon-arrow-right::before,
     &-icon-arrow-up::before {
-        border: .1rem solid $dark;
+        border: .1rem solid $table-dark;
         border-bottom: 0;
         border-right: 0;
         content: "";
@@ -363,7 +363,7 @@ $primary-color: $dark; //#50596c !default;
         transform: translate(-50%, -25%) rotate(45deg);
     }
     &-icon-menu::before {
-        background: $dark;
+        background: $table-dark;
         box-shadow: 0 -.35em, 0 .35em;
         content: "";
         height: .1rem;

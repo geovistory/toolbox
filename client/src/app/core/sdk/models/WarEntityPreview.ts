@@ -1,4 +1,9 @@
 /* tslint:disable */
+import {
+  InfRole,
+  InfEntityAssociation,
+  InfTextProperty
+} from '../index';
 
 declare var Object: any;
 export interface WarEntityPreviewInterface {
@@ -11,6 +16,11 @@ export interface WarEntityPreviewInterface {
   "type_label"?: string;
   "fk_type"?: number;
   "time_span"?: any;
+  te_roles?: InfRole[];
+  pi_roles?: InfRole[];
+  domain_entity_associations?: InfEntityAssociation[];
+  range_entity_associations?: InfEntityAssociation[];
+  text_properties?: InfTextProperty[];
 }
 
 export class WarEntityPreview implements WarEntityPreviewInterface {
@@ -23,6 +33,11 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
   "type_label": string;
   "fk_type": number;
   "time_span": any;
+  te_roles?: InfRole[];
+  pi_roles?: InfRole[];
+  domain_entity_associations?: InfEntityAssociation[];
+  range_entity_associations?: InfEntityAssociation[];
+  text_properties?: InfTextProperty[];
   constructor(data?: WarEntityPreviewInterface) {
     Object.assign(this, data);
   }
@@ -94,6 +109,46 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
         },
       },
       relations: {
+        te_roles: {
+          name: 'te_roles',
+          type: 'InfRole[]',
+          model: 'InfRole',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_temporal_entity'
+        },
+        pi_roles: {
+          name: 'pi_roles',
+          type: 'InfRole[]',
+          model: 'InfRole',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_entity'
+        },
+        domain_entity_associations: {
+          name: 'domain_entity_associations',
+          type: 'InfEntityAssociation[]',
+          model: 'InfEntityAssociation',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_domain_entity'
+        },
+        range_entity_associations: {
+          name: 'range_entity_associations',
+          type: 'InfEntityAssociation[]',
+          model: 'InfEntityAssociation',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_range_entity'
+        },
+        text_properties: {
+          name: 'text_properties',
+          type: 'InfTextProperty[]',
+          model: 'InfTextProperty',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_concerned_entity'
+        },
       }
     }
   }

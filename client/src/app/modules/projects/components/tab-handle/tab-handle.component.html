@@ -1,8 +1,9 @@
 <div class="left" (mousedown)="activateTab.emit()">
   <div *ngIf="!(loading$ | async )" class="icon">
-    <i *ngIf="tab.icon =='persistent-entity'" class="gv-icon gv-icon-persistent-entity text-primary"></i>
-    <i *ngIf="tab.icon =='temporal-entity'" class="fa fa-star-o text-primary"></i>
-    <i *ngIf="tab.icon =='source'" class="gv-icon gv-icon-source text-info"></i>
+    <i *ngIf="tab.icon =='persistent-entity'" class="gv-icon gv-icon-persistent-entity gv-entity-color"></i>
+    <i *ngIf="tab.icon =='temporal-entity'" class="fa fa-star-o  gv-entity-color"></i>
+    <i *ngIf="tab.icon =='source'" class="gv-icon gv-icon-source gv-source-color"></i>
+    <i *ngIf="tab.icon =='query'" class="gv-icon gv-icon-query gv-query-color"></i>
   </div>
   <div *ngIf="(loading$ | async )" class="icon">
     <span class="fa fa-pulse fa-spinner text-muted"></span>

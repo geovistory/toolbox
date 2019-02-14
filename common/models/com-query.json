@@ -1,0 +1,94 @@
+{
+  "name": "ComQuery",
+  "base": "ComEntity",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "commons",
+      "table": "query"
+    }
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string",
+      "required": false
+    },
+    "query": {
+      "type": "object",
+      "required": true
+    },
+    "fk_project": {
+      "type": "number",
+      "required": true
+    },
+    "fk_last_modifier": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "project": {
+      "type": "belongsTo",
+      "model": "ComProject",
+      "foreignKey": "fk_project",
+      "primaryKey": "pk_entity"
+    },
+    "account": {
+      "type": "belongsTo",
+      "model": "PubAccount",
+      "foreignKey": "fk_last_modifier",
+      "primaryKey": "id"
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "run",
+        "save",
+        "delete"
+      ]
+    }
+  ],
+  "methods": {
+    "run": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "object"
+        ],
+        "root": true
+      },
+      "description": "Run a query.",
+      "http": {
+        "path": "/run",
+        "verb": "get"
+      }
+    }
+  }
+}

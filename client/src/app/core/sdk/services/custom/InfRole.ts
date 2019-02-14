@@ -18,6 +18,7 @@ import { InfPersistentItem } from '../../models/InfPersistentItem';
 import { InfEntityProjectRel } from '../../models/InfEntityProjectRel';
 import { InfTimePrimitive } from '../../models/InfTimePrimitive';
 import { InfPlace } from '../../models/InfPlace';
+import { WarEntityPreview } from '../../models/WarEntityPreview';
 
 
 /**

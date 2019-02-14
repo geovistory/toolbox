@@ -11,6 +11,9 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { WarEntityPreview } from '../../models/WarEntityPreview';
 import { SocketConnection } from '../../sockets/socket.connections';
+import { InfRole } from '../../models/InfRole';
+import { InfEntityAssociation } from '../../models/InfEntityAssociation';
+import { InfTextProperty } from '../../models/InfTextProperty';
 
 
 /**
@@ -38,7 +41,7 @@ export class WarEntityPreviewApi extends BaseLoopBackApi {
    *
    * @param {any} pkClasses Classes for which the search will be performed.
    *
-   * @param {string} entityType Type of DataUnit: 'teEn' or 'peIt'.
+   * @param {string} entityType Type of Entity: 'teEn' or 'peIt'.
    *
    * @param {number} limit Max. number of results per page [default=10; max=200]
    *
@@ -79,7 +82,7 @@ export class WarEntityPreviewApi extends BaseLoopBackApi {
    *
    * @param {any} pkClasses Classes for which the search will be performed.
    *
-   * @param {string} entityType Type of DataUnit: 'teEn' or 'peIt'.
+   * @param {string} entityType Type of Entity: 'teEn' or 'peIt'.
    *
    * @param {number} limit Max. number of results per page [default=10; max=200]
    *

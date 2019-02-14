@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { ComClassFieldPropertyRel } from '../../models/ComClassFieldPropertyRel';
 import { ComClassField } from '../../models/ComClassField';
 import { ComLabel } from '../../models/ComLabel';
+import { ComQuery } from '../../models/ComQuery';
 import { PubAccount } from '../../models/PubAccount';
 import { Email } from '../../models/Email';
 import { ComProject } from '../../models/ComProject';
@@ -44,6 +45,7 @@ export class SDKModels {
     ComClassFieldPropertyRel: ComClassFieldPropertyRel,
     ComClassField: ComClassField,
     ComLabel: ComLabel,
+    ComQuery: ComQuery,
     PubAccount: PubAccount,
     Email: Email,
     ComProject: ComProject,

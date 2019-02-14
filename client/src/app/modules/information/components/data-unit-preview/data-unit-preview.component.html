@@ -17,7 +17,7 @@
       class="icon fa fa-star-o align-self-center gv-icon-preview"></span>
 
       {{(preview?.type_label) ? preview?.type_label : preview?.class_label}}
-      <span *ngIf="preview.time_span">&nbsp;•&nbsp;{{preview.time_span | timeSpan}}</span>
+      <span *ngIf="preview?.time_span">&nbsp;•&nbsp;{{preview?.time_span | timeSpan}}</span>
     </div>
   </div>
 

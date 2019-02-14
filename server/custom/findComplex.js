@@ -8,13 +8,15 @@ function findComplex(model) {
   this.model = model;
 }
 
-findComplex.prototype.operators = ['=', '!=', '>', '>=', '<', '<=', 'BETWEEN', 'NOT BETWEEN', 'IN', 'NOT IN', 'LIKE', 'NOT LIKE', 'ILIKE', 'NOT ILIKE', 'IS NULL', 'IS NOT NULL',
+findComplex.prototype.operators = ['=', '!=', '>', '>=', '<', '<=', '->', '->>', '?', 'BETWEEN', 'NOT BETWEEN', 'IN', 'NOT IN', 'LIKE', 'NOT LIKE', 'ILIKE', 'NOT ILIKE', 'IS NULL', 'IS NOT NULL',
   'IS FALSE', 'IS NOT FALSE', 'IS TRUE', 'IS NOT TRUE', 'IS UNKNOWN', 'IS NOT UNKNOWN', 'SIMILAR TO', 'NOT SIMILAR TO', 'AND', 'OR'];
 findComplex.prototype.joinTypes = ["INNER JOIN", "RIGHT JOIN", "LEFT JOIN", "FULL OUTER JOIN"];
 findComplex.prototype.sortOrder = ["ASC", "DESC", "NULLS FIRST", "NULLS LAST"];
+findComplex.prototype.castTypes = ["NUMERIC", "SMALLINT", "INT2", "INTEGER", "INT", "INT4", "BIGINT", "INT8", "REAL", "FLOAT4", "DOUBLE PRECISION", "FLOAT8",
+  "BOOLEAN", "BOOL", "BYTEA", "MONEY", "JSON", "TEXT", "MACADDR", "DATE"];
 
-findComplex.prototype.bannedFunc = ["SELECT", "INSERT", "DELETE", "CREATE", "UPDATE", "ALTER", "DROP", "FOR", "EACH", "ROW", "BEGGIN", "END", "COMMIT", "ROLLBACK", "SAVEPOINT",
-  "OVER", "PATITION", "FROM", "WINDOW", "FUNCTION", "GRANT", "REVOKE"];
+findComplex.prototype.bannedFunc = ["SELECT", "INSERT", "DELETE", "CREATE", "UPDATE", "ALTER", "DROP", "FOR", "EACH", "ROW", "BEGIN", "END", "COMMIT", "ROLLBACK", "SAVEPOINT",
+  "OVER", "PATITION", "FROM", "WINDOW", "FUNCTION", "GRANT", "REVOKE", "GETPGUSERNAME", "CURRENT_DATABASE", "DBLINK", "PG_SLEEP"];
 
 findComplex.prototype.init = function () {
   this.modelName = this.model.modelName;
@@ -123,6 +125,16 @@ findComplex.prototype.translateFunc = function (func, parameters, alias, subFunc
       sql.sql = sql.sql + ")";
       break;
 
+    case 'CAST':
+      var value = parameters[0];
+      var castTO = parameters[1].toUpperCase();
+      if (this.castTypes.indexOf(castTO) != -1) {
+        sql = ParameterizedSQL("CAST(? as " + castTO + ")", [value]);
+      }
+      else {
+        throw new Error(g.f('{{find()}} invalid cast type %s, valid cast types are: %s', castTO, this.castTypes));
+      }
+      break;
     case 'CURRENT_DATE':
     case 'CURRENT_TIME':
     case 'CURRENT_TIMESTAMP':
@@ -141,14 +153,25 @@ findComplex.prototype.translateFunc = function (func, parameters, alias, subFunc
 }
 
 findComplex.prototype.buildInClause = function (columnValues) {
+  var $super = this;
   var values = [];
-  for (var i = 0, n = columnValues.length; i < n; i++) {
-    if (columnValues[i] instanceof ParameterizedSQL) {
-      values.push(columnValues[i]);
-    } else {
-      values.push(new ParameterizedSQL('?', [columnValues[i]]));
+  columnValues.forEach(function (value, index) {
+    if (value instanceof ParameterizedSQL) {
+      values.push(value);
     }
-  }
+    else {
+      if (Object.prototype.toString.call(value) == "[object Object]") {
+        var keys = Object.keys(value);
+        var func = keys[0];
+        var params = value[func];
+        var translated = $super.translateFunc(func, params);
+        values.push(translated);
+      }
+      else {
+        values.push(new ParameterizedSQL('?', [value]));
+      }
+    }
+  });
   var clause = ParameterizedSQL.join(values, ',');
   clause.sql = "(" + clause.sql + ")";
   return clause;
@@ -159,6 +182,7 @@ findComplex.prototype.createCondition = function (data, alias, parentParams, par
   moduleCondition = 0;
   var sqlCondition = ParameterizedSQL('', []);
   var isValue = false;
+  var isJson = false;
   data.forEach(function (field, index) {
     if (Object.prototype.toString.call(field) === '[object Array]') {
       if (typeof data[index - 1] == "string") {
@@ -184,12 +208,20 @@ findComplex.prototype.createCondition = function (data, alias, parentParams, par
           sqlCondition = ParameterizedSQL.append(sqlCondition, tmp);
       }
     } else if (typeof field == 'string') {
-      if (index % 2 == moduleCondition && !isValue) {
+      if (index % 2 == moduleCondition && !isValue && !isJson) {
         property = field;
         if (property.match(/^[A-Z_a-z][0-9A-Z_]*$/i) == null) {
           throw new Error(g.f('{{find()}} invalid property name %s, property must start with a letter or underscore, can only contain letters,numbers or underscore', property));
         }
         sqlCondition.sql = sqlCondition.sql + " " + alias + "." + property;
+      }
+      else if (index % 2 == moduleCondition && !isValue && isJson) {
+        property = field;
+        if (property.match(/^[A-Z_a-z][0-9A-Z_]*$/i) == null) {
+          throw new Error(g.f('{{find()}} invalid property name %s, property must start with a letter or underscore, can only contain letters,numbers or underscore', property));
+        }
+        sqlCondition.sql = sqlCondition.sql + " '" + property + "' ";
+        isJson = false;
       }
       else {
         if (!isValue && that.operators.indexOf(field.toUpperCase()) == -1) {
@@ -208,6 +240,10 @@ findComplex.prototype.createCondition = function (data, alias, parentParams, par
               operator == 'IS NOT TRUE' || operator == 'IS UNKNOWN' || operator == 'IS NOT UNKNOWN') {
               moduleCondition = (moduleCondition % 2 == 0) ? 1 : 0;
               isValue = false;
+            }
+            else if (operator == '->' || operator == '->>' || operator == '?') {
+              isValue = false;
+              isJson = true;
             }
             else {
               isValue = true;
@@ -373,10 +409,10 @@ findComplex.prototype.sqlSubquery = function (params) {
   return sql;
 }
 
-findComplex.prototype.translateJoin = function (join, method = 'LATERAL', parentJoin, firstPass = true, joins = []) {
+findComplex.prototype.translateJoin = function (join, method = 'LATERAL', parentJoin, firstPass = true) {
   that = this;
-  //  joins = [];
-  mainQuery = new ParameterizedSQL("", []);
+  var joins = [];
+  var mainQuery = new ParameterizedSQL("", []);
 
   keys = Object.keys(join);
   keys.forEach(function (alias) {
@@ -435,7 +471,7 @@ findComplex.prototype.translateJoin = function (join, method = 'LATERAL', parent
         mainQuery = mainQuery.merge(subQuery, "");
       } /* END IF index == 0 */
       else {
-        mainQuery = mainQuery.merge(that.translateJoin(subJoin, method, join[alias][0]["$relation"], false), "", joins);
+        mainQuery = mainQuery.merge(that.translateJoin(subJoin, method, join[alias][0]["$relation"], false), "");
       }
     });
     closeJoin = join[alias][0]["$relation"];
@@ -451,11 +487,10 @@ findComplex.prototype.translateJoin = function (join, method = 'LATERAL', parent
             + tmpParentJoin.alias + "." + tmpJoin.relationData.keyFrom;
         }
 
-        //TODO Verify if this can be dropped
-        // if(closeJoin.where != null){
-        //   mainQuery.sql = mainQuery.sql + " AND ";
-        //   mainQuery = mainQuery.merge(closeJoin.where,"");
-        // }
+        if (closeJoin.where != null) {
+          mainQuery.sql = mainQuery.sql + " AND ";
+          mainQuery = mainQuery.merge(closeJoin.where, "");
+        }
       }
       else {
         if (closeJoin.where != null) {
@@ -524,7 +559,7 @@ findComplex.prototype.translateJoin = function (join, method = 'LATERAL', parent
 }
 
 findComplex.prototype.createJoinSelect = function (join, childs) {
-  var select = [];
+  var select = []
   var sqlSelect = "";
   model = this.model.app.models[join.relationData.modelTo];
   relationData = this.getRelations(model.relations);
@@ -608,35 +643,34 @@ findComplex.prototype.createJoinSelect = function (join, childs) {
 findComplex.prototype.createMainSelect = function (data) {
   that = this;
   var tmpSelect = []
-
   if (Object.prototype.toString.call(data) !== '[object Object]' && typeof data != 'undefined') {
     throw new Error(g.f('{{find()}} select must be of type Object, %s given', JSON.stringify(data)));
   }
   else {
     if (typeof data == 'undefined') {
-      for (var property in this.modelProperties) {
-        if (this.modelProperties[property].hidden != true) tmpSelect.push(property)
+      for (var property in that.modelProperties) {
+        if (that.modelProperties[property].hidden != true) tmpSelect.push(property)
       }
     }
     else {
       if (typeof data.include != 'undefined') {
-        data.include.forEach((property) => {
-          if (typeof this.modelProperties[property] != 'undefined') {
-            if (this.modelProperties[property].hidden != true) tmpSelect.push(property)
+        data.include.forEach(function (property) {
+          if (typeof that.modelProperties[property] != 'undefined') {
+            if (that.modelProperties[property].hidden != true) tmpSelect.push(property)
           }
           else {
-            throw new Error(g.f('{{find()}} Property %s of model %s don\'t exists ', property, this.modelName));
+            throw new Error(g.f('{{find()}} Property %s of model %s don\'t exists ', property, that.modelName));
           }
         });
       }
       else {
         if (typeof data.exclude != 'undefined') {
           tmpSelect = []
-          for (var property in this.modelProperties) {
-            if (this.modelProperties[property].hidden != true) tmpSelect.push(property)
+          for (var property in that.modelProperties) {
+            if (that.modelProperties[property].hidden != true) tmpSelect.push(property)
           }
-          data.exclude.forEach((property) => {
-            if (typeof this.modelProperties[property] != 'undefined') {
+          data.exclude.forEach(function (property) {
+            if (typeof that.modelProperties[property] != 'undefined') {
               removeIndex = tmpSelect.indexof(property);
               if (removeIndex > -1) tmpSelect = tmpSelect.splice(removeIndex, 1);
             }
@@ -674,10 +708,10 @@ findComplex.prototype.createOrderBy = function (join) {
     });
   } else {
     switch (join.relationData.type) {
-      case "belongsTo":
       case "hasOne":
         orderBy.push(join.alias + "." + join.relationData.keyFrom + " ASC");
         break;
+      case "belongsTo":
       case "hasMany":
         orderBy.push(join.alias + "." + join.relationData.keyTo + " ASC");
         break;
@@ -804,13 +838,14 @@ findComplex.prototype.createJoins = function (include, modelName, firstPass = tr
         join.orderBy = subData[subAlias].orderBy;
         join = that.createOrderBy(join);
         join.groupBy = that.createGroupBy(join);
-        if (typeof subData[subAlias].having != 'undefined' && subData[subAlias].having != null) {
+        if ((Object.prototype.toString.call(subData[subAlias].having) == "[object Array]") ? subData[subAlias].having.length != 0 : false) {
           join.having = that.createCondition(subData[subAlias].having, alias);
         } else {
           join.having = null;
         }
-        if (typeof subData[subAlias].where != 'undefined' && subData[subAlias].where != null) {
-          tmpWhere = that.createCondition(subData[subAlias].where, alias);
+        var where = subData[subAlias].where;
+        if ((Object.prototype.toString.call(where) == "[object Array]") ? where.length != 0 : false) {
+          tmpWhere = that.createCondition(where, alias);
           tmpWhere.sql = "(" + tmpWhere.sql + ")";
           join.where = tmpWhere;
         } else {
@@ -899,7 +934,7 @@ findComplex.prototype.generateQuery = function (select, where, order, offset, li
     limit = "";
   }
 
-  if (typeof where != 'undefined' && where != null) {
+  if (typeof where != 'undefined' && (Object.prototype.toString.call(where) == "[object Array]") ? where.length != 0 : false) {
     where = this.createCondition(where, this.modelName);
     mainSql.sql = mainSql.sql + " WHERE ";
     mainSql = mainSql.merge(where, "");
@@ -933,13 +968,13 @@ findComplex.prototype.pagingQuery = function (pagingJoins, where, order, offset,
     pagingSql = pagingSql.merge(pagingJoin.sqlQuery, "");
   });
 
-  if (typeof where != 'undefined' && where != null) {
+  if (typeof where != 'undefined' && (Object.prototype.toString.call(where) == "[object Array]") ? where.length != 0 : false) {
     where = this.createCondition(where, this.modelName);
     pagingSql.sql = pagingSql.sql + " WHERE ";
     pagingSql = pagingSql.merge(where, "");
   }
 
-  if (typeof order != 'undefined' && order != null) {
+  if (typeof order != 'undefined' && (Object.prototype.toString.call(order) == "[object Array]") ? order.length != 0 : false) {
     orderBy = [];
     order.forEach(function (object) {
       for (var property in object) {
@@ -961,7 +996,24 @@ findComplex.prototype.pagingQuery = function (pagingJoins, where, order, offset,
   return pagingSql;
 }
 
-findComplex.prototype.find = function (filter, cb) {
+findComplex.prototype.counterQuery = function (counterJoins, where) {
+  that = this;
+  counterSql = new ParameterizedSQL("", []);
+  counterSql.sql = "SELECT count(" + this.modelName + ") as count FROM " + this.schema + "." + this.modelTable + " AS " + this.modelName;
+  counterJoins.forEach(function (counterJoin) {
+    counterSql = counterSql.merge(counterJoin.sqlQuery, "");
+  });
+
+
+  if ((Object.prototype.toString.call(where) == "[object Array]") ? where.length != 0 : false) {
+    where = this.createCondition(where, this.modelName);
+    counterSql.sql = counterSql.sql + " WHERE ";
+    counterSql = counterSql.merge(where, "");
+  }
+  return counterSql;
+}
+
+findComplex.prototype.find = function (filter, cb, onlyOne = false) {
   var joinSqls = [];
   var pagingSql = null;
 
@@ -974,10 +1026,10 @@ findComplex.prototype.find = function (filter, cb) {
   }
 
 
-  if (typeof filter.include != 'undefined' && filter.include != null) {
+  if (typeof filter.include != 'undefined' && (Object.prototype.toString.call(filter.include) == "[object Object]")) {
     include = this.createJoins(filter.include, this.modelName);
     joinSqls = this.translateJoin(include);
-    if (typeof filter.offset != 'undefined' && filter.offset !== null) {
+    if (typeof filter.offset == 'number') {
       pagingJoins = this.translateJoin(include, 'PAGING');
       pagingSql = this.pagingQuery(pagingJoins, filter.where, filter.order, filter.offset, filter.limit);
     }
@@ -986,9 +1038,20 @@ findComplex.prototype.find = function (filter, cb) {
   mainSql = this.generateQuery(filter.select, filter.where, filter.order, filter.offset, filter.limit, joinSqls, pagingSql);
   sql = this.datasource.connector.parameterize(mainSql);
   this.datasource.connector.execute(sql.sql, sql.params, function (error, data) {
-
+    if (onlyOne) data = (data != null) ? data[0] : null;
     cb(error, data);
-
   });
+}
 
+findComplex.prototype.count = function (filter, cb) {
+  counterJoins = [];
+  if (Object.prototype.toString.call(filter.include) == "[object Object]") {
+    include = this.createJoins(filter.include, this.modelName);
+    counterJoins = this.translateJoin(include, 'PAGING');
+  }
+  counterSql = this.counterQuery(counterJoins, filter.where);
+  sql = this.datasource.connector.parameterize(counterSql);
+  this.datasource.connector.execute(sql.sql, sql.params, function (error, data) {
+    cb(error, (data != null) ? data[0].count : null);
+  });
 }

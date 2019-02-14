@@ -51,6 +51,7 @@ import { RealTime } from './services/core/real.time';
 import { ComClassFieldPropertyRelApi } from './services/custom/ComClassFieldPropertyRel';
 import { ComClassFieldApi } from './services/custom/ComClassField';
 import { ComLabelApi } from './services/custom/ComLabel';
+import { ComQueryApi } from './services/custom/ComQuery';
 import { PubAccountApi } from './services/custom/PubAccount';
 import { EmailApi } from './services/custom/Email';
 import { ComProjectApi } from './services/custom/ComProject';
@@ -115,6 +116,7 @@ export class SDKBrowserModule {
         ComClassFieldPropertyRelApi,
         ComClassFieldApi,
         ComLabelApi,
+        ComQueryApi,
         PubAccountApi,
         EmailApi,
         ComProjectApi,

@@ -2,6 +2,7 @@
 export * from './ComClassFieldPropertyRel';
 export * from './ComClassField';
 export * from './ComLabel';
+export * from './ComQuery';
 export * from './PubAccount';
 export * from './Email';
 export * from './ComProject';

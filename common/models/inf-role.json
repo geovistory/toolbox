@@ -87,6 +87,18 @@
       "model": "InfPlace",
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
+    },
+    "persistent_item_preview": {
+      "type": "belongsTo",
+      "model": "WarEntityPreview",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "temporal_entity_preview": {
+      "type": "belongsTo",
+      "model": "WarEntityPreview",
+      "foreignKey": "fk_temporal_entity",
+      "primaryKey": "pk_entity"
     }
   },
   "acls": [
