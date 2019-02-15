@@ -12,29 +12,32 @@
     </gv-detail-top-bar>
 
 
+
+
     <mat-vertical-stepper [linear]="false" #stepper>
       <mat-step [stepControl]="firstFormGroup">
-
-        <gv-tree-checklist [treeData$]="treeData"></gv-tree-checklist>
-        <!-- <form [formGroup]="firstFormGroup">
+        <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>Define a filter for the resulting rows</ng-template>
-          <mat-form-field>
-            <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
-          </mat-form-field>
+
+          <gv-class-and-type-select [showRemoveBtn]="false" [qtree]="filterQuery"></gv-class-and-type-select>
+
+          <p>
+            {{filterQuery | json}}
+          </p>
           <div>
-            <button mat-button matStepperNext>Next</button>
+            <button mat-flat-button color="primary" matStepperNext>Next</button>
           </div>
-        </form> -->
+        </form>
       </mat-step>
       <mat-step [stepControl]="secondFormGroup">
         <form [formGroup]="secondFormGroup">
           <ng-template matStepLabel>Define the resulting columns</ng-template>
-          <mat-form-field>
+          <mat-form-field appearance="outline">
             <input matInput placeholder="Address" formControlName="secondCtrl" required>
           </mat-form-field>
           <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
+            <button mat-flat-button matStepperPrevious>Back</button>
+            <button mat-flat-button matStepperNext>Next</button>
           </div>
         </form>
       </mat-step>
@@ -55,8 +58,8 @@
             </mat-form-field>
           </p>
           <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button (click)="save()">Save</button>
+            <button mat-flat-button matStepperPrevious>Back</button>
+            <button mat-flat-button (click)="save()">Save</button>
           </div>
         </form>
       </mat-step>

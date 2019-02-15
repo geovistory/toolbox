@@ -80,6 +80,7 @@
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
+        "typesOfClassesAndProject",
         "typesOfClassAndProject",
         "typesOfNamespaceNested",
         "typesOfNamespaceClassAndProject",
@@ -525,6 +526,38 @@
       "description": "Find types of typed class and project. E.g. get the types for the class 'histC8 Geographical Place' (pk_typed_class=363) used in project (pk_project=123)",
       "http": {
         "path": "/types-of-class-and-project",
+        "verb": "get"
+      }
+    },
+    "typesOfClassesAndProject": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_typed_classes",
+          "type": ["number"],
+          "required": true,
+          "description": "Primary Keyes of Typed Classes (e.g. pk of Geographical Place to get Geographical Place Types)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "persistent_items",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Find types of typed class and project. E.g. get the types for the class 'histC8 Geographical Place' (pk_typed_class=363) used in project (pk_project=123)",
+      "http": {
+        "path": "/types-of-classes-and-project",
         "verb": "get"
       }
     },

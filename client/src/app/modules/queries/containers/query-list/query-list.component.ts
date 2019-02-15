@@ -57,7 +57,7 @@ export class QueryListComponent extends QueryListAPIActions implements OnInit, O
   }
 
   ngOnDestroy() {
-    this.destroy();
+    // this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }

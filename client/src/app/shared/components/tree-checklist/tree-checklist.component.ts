@@ -1,8 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
+import { distinct, takeUntil } from 'rxjs/operators';
 /**
  * Node for tree
  */
@@ -32,6 +33,10 @@ export class TreeChecklistComponent implements OnDestroy, OnInit {
   destroy$ = new Subject<boolean>();
 
   @Input() treeData$: Observable<TreeNode<any>[]>;
+  @Output() selectionChange = new EventEmitter<TreeNode<any>[]>();
+  @Output() optionsChange = new EventEmitter<TreeNode<any>[]>();
+
+  selected$ = new Subject<TreeNode<any>[]>();
 
   levels = new Map<TreeNode<any>, number>();
   treeControl: FlatTreeControl<TreeNode<any>>;
@@ -51,12 +56,17 @@ export class TreeChecklistComponent implements OnDestroy, OnInit {
     this.treeControl = new FlatTreeControl<TreeNode<any>>(this.getLevel, this.isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
+    this.selected$.pipe(distinct(), takeUntil(this.destroy$)).subscribe(selected => {
+      this.selectionChange.emit(selected)
+    })
+
   }
 
   ngOnInit() {
     if (!this.treeData$) throw new Error('please provide a treeData$ input');
     this.treeData$.takeUntil(this.destroy$).subscribe(d => {
       this.dataSource.data = d;
+      this.optionsChange.emit(this.treeControl.dataNodes);
     })
   }
 
@@ -95,6 +105,12 @@ export class TreeChecklistComponent implements OnDestroy, OnInit {
       this.checklistSelection.select(node);
       this.changeDetectorRef.markForCheck();
     }
+    const noneSelected = descendants.every(child => !this.checklistSelection.isSelected(child));
+    if (selected && noneSelected) {
+      this.checklistSelection.deselect(node);
+      this.changeDetectorRef.markForCheck();
+    }
+    this.selected$.next(this.checklistSelection.selected);
     return allSelected;
   }
 

@@ -36,7 +36,7 @@ export function queryListReducer(state: QueryList = INITIAL_STATE, a: Action): Q
     * Reducers called on destroy of component
     *****************************************************/
     case QueryListAPIActions.DESTROY:
-      state = undefined;
+      state = null;
       break;
 
   }

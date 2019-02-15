@@ -5,6 +5,7 @@
       (change)="nodeSelectionToggle(node)">
       {{node.item}}
     </mat-checkbox>
+
   </mat-tree-node>
   <mat-tree-node *matTreeNodeDef="let node; when: hasChildren" matTreeNodePadding>
     <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
@@ -16,7 +17,8 @@
       (change)="nodeSelectionToggle(node)">
       {{node.item}}
     </mat-checkbox>
+
+
   </mat-tree-node>
 </mat-tree>
 
-<span *ngFor="let item of checklistSelection.selected">{{item.item}}</span>

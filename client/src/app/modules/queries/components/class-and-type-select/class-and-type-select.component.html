@@ -1,0 +1,22 @@
+<div class="d-flex align-items-center">
+  <mat-form-field class="gv-grow-1">
+    <mat-label>Entity classes and types</mat-label>
+    <mat-select gvTreeChecklistSelect multiple>
+      <gv-tree-checklist [treeData$]="treeData" (optionsChange)="optionsChange($event)"></gv-tree-checklist>
+      <mat-option hidden *ngFor="let item of options" [value]="item">{{item.item}}</mat-option>
+    </mat-select>
+    <!-- <mat-hint>Define a filter for the resulting rows</mat-hint> -->
+  </mat-form-field>
+
+  <button mat-icon-button (click)="addChild()" matTooltip="Add sub-filter">
+    <mat-icon>add</mat-icon>
+  </button>
+  <button *ngIf="showRemoveBtn" mat-icon-button (click)="remove.emit()" matTooltip="remove this line">
+    <mat-icon>remove</mat-icon>
+  </button>
+
+</div>
+
+<div class="gv-sub-query-item" *ngFor="let child of qtree?.children; let i = index">
+  <gv-operator-select [qtree]="child" (remove)="removeChild(i)"></gv-operator-select>
+</div>
