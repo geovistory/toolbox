@@ -1,10 +1,9 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { Params, Router, UrlSegment, UrlSegmentGroup } from '@angular/router';
-import { ComConfig, IAppState, InfChunk, ProjectDetail, PropertyList, U, Panel } from 'app/core';
-import { without } from 'ramda';
-import { combineLatest, Observable } from 'rxjs';
-import { first, map, distinctUntilChanged } from 'rxjs/operators';
+import { ComConfig, IAppState, InfChunk, Panel, ProjectDetail, PropertyList, U } from 'app/core';
+import { groupBy, indexBy, without, flatten } from 'ramda';
+import { combineLatest, Observable, BehaviorSubject } from 'rxjs';
+import { distinctUntilChanged, filter, first, map, mergeMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
@@ -12,7 +11,7 @@ import { ComProject } from '../sdk/models/ComProject';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
-import { ProjectCrm, Tab, ClassConfig, ListType } from './active-project.models';
+import { ClassConfig, ListType, ProjectCrm, Tab, TypePeIt, TypePreview, TypePreviewsByClass } from './active-project.models';
 
 
 
@@ -31,6 +30,7 @@ export class ActiveProjectService {
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
 
+  classesInProject$: Observable<number[]>
 
   constructor(
     private ngRedux: NgRedux<IAppState>,
@@ -49,6 +49,20 @@ export class ActiveProjectService {
     this.focusedPanel$ = ngRedux.select<boolean>(['activeProject', 'focusedPanel']);
     this.creatingMentioning$ = ngRedux.select<boolean>(['activeProject', 'creatingMentioning']);
 
+    this.classesInProject$ = this.crm$.pipe(
+      first(d => !!d),
+      map(crm => {
+        const pkClassesInProject: number[] = []
+        for (const key in crm.classes) {
+          if (crm.classes[key] && crm.classes[key].isInProject) {
+            pkClassesInProject.push(crm.classes[key].dfh_pk_class);
+          }
+        }
+        return pkClassesInProject;
+      })
+    )
+
+
     // emits true if no toolbox panel is opened
     this.dashboardVisible$ = combineLatest(
       ngRedux.select<ProjectDetail>(['information']),
@@ -60,7 +74,6 @@ export class ActiveProjectService {
 
 
     this.entityPreviewSocket.fromEvent<EntityPreview>('entityPreview').subscribe(data => {
-      console.log(data)
       // dispatch a method to put the EntityPreview to the store
       this.ngRedux.dispatch(this.actions.loadEntityPreviewSucceeded(data))
     })
@@ -233,6 +246,54 @@ export class ActiveProjectService {
     }
   }
 
+  /**
+   * Loads inits a request to get all types for given classes
+   * @returns Observable for an object containing array of TypePreview grouped
+   *          by the pk of the typed class
+   */
+  streamTypePreviewsByClass(pkClasses: number[]): Observable<TypePreviewsByClass> {
+
+    if (!pkClasses || pkClasses.length === 0) return new BehaviorSubject({});
+
+    this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
+      this.ngRedux.dispatch(this.actions.loadTypes(pk, pkClasses))
+    })
+
+    const types$ = combineLatest(pkClasses.map(pkClass => this.ngRedux.select<TypePeIt[]>(['activeProject', 'typesByClass', pkClass]))).pipe(
+      map(typess => {
+        const ts: TypePeIt[] = [];
+        (typess || []).forEach(types => (types || []).forEach(type => ts.push(type)))
+        return ts;
+      })
+    );
+    const previews$: Observable<EntityPreview[]> = types$.pipe(
+      filter(typess => !!typess),
+      mergeMap(types => {
+        return types.length ?
+          combineLatest(types.map(type => this.streamEntityPreview(type.pk_entity))) :
+          new BehaviorSubject([])
+      }),
+      filter(pre => !pre.find(p => !(p.pk_entity)))
+    )
+
+
+    return combineLatest(previews$, types$).pipe(
+      filter(([previews, types]) => (previews.length === types.length)),
+      map(([previews, types]) => {
+        const previewsByPk = indexBy((e) => e.pk_entity.toString(), previews)
+
+        const a = types
+          .filter(t => !!previewsByPk[t.pk_entity.toString()])
+          .map(type => ({
+            fk_typed_class: type.fk_typed_class,
+            ...previewsByPk[type.pk_entity.toString()]
+          } as TypePreview))
+
+        return groupBy((t) => t.fk_typed_class.toString(), a);
+      })
+    );
+  }
+
 
   getClassConfig(pkClass): Observable<ClassConfig> {
     return this.ngRedux.select<ClassConfig>(['activeProject', 'crm', 'classes', pkClass])
@@ -252,6 +313,9 @@ export class ActiveProjectService {
     return pks$.map(pks => roles.filter(role => pks.includes(role.fk_property)))
   }
 
+  /************************************************************************************
+  * Mentioning
+  ************************************************************************************/
 
   updateSelectedChunk(c: InfChunk) {
     this.ngRedux.dispatch(this.actions.updateSelectedChunk(c))

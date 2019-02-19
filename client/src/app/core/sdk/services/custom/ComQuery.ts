@@ -36,6 +36,8 @@ export class ComQueryApi extends BaseLoopBackApi {
    *
    * @param {number} pkProject Pk of the project
    *
+   * @param {object} query query definition object
+   *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
@@ -45,7 +47,7 @@ export class ComQueryApi extends BaseLoopBackApi {
    * This usually means the response is a `ComQuery` object.)
    * </em>
    */
-  public run(pkProject: any, customHeaders?: Function): Observable<any> {
+  public run(pkProject: any, query: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/ComQueries/run";
@@ -53,6 +55,7 @@ export class ComQueryApi extends BaseLoopBackApi {
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof query !== 'undefined' && query !== null) _urlParams.query = query;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

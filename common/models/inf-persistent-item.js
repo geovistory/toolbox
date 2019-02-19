@@ -1093,9 +1093,9 @@ module.exports = function (InfPersistentItem) {
 
     const sql_stmt = `
     -- select the types
-    SELECT type_entity.*
+    SELECT type_entity.*, has_type_prop.fk_class as fk_typed_class
     from information.persistent_item type_entity
-    
+
     -- join the info, of which class these the type_entities are types 
     JOIN data_for_history.property has_type ON has_type.dfh_has_range = type_entity.fk_class
     JOIN commons.class_has_type_property has_type_prop ON has_type.dfh_pk_property = has_type_prop.fk_property

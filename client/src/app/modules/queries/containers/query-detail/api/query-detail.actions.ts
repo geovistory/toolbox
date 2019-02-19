@@ -7,6 +7,7 @@ type Payload = QueryDetail;
 interface MetaData {
   queryResults?: any[],
   pkProject?: number;
+  query?: any;
 };
 export type QueryDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -59,9 +60,9 @@ export class QueryDetailAPIActions {
   *********************************************************************/
 
   @dispatch()
-  run = (pkProject: number): QueryDetailAPIAction => ({
+  run = (pkProject: number, query): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.RUN,
-    meta: { pkProject },
+    meta: { pkProject, query },
     payload: null,
   });
 

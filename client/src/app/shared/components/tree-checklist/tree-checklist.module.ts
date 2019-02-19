@@ -1,10 +1,10 @@
+import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatCheckboxModule, MatTreeModule, MatIconModule, MatButtonModule, MatAutocompleteModule, MatButtonToggleModule, MatCardModule, MatChipsModule, MatDatepickerModule, MatDialogModule, MatExpansionModule, MatGridListModule, MatInputModule, MatListModule, MatMenuModule, MatNativeDateModule, MatProgressBarModule, MatProgressSpinnerModule, MatRadioModule, MatRippleModule, MatSelectModule, MatSidenavModule, MatSliderModule, MatSlideToggleModule, MatSnackBarModule, MatStepperModule, MatTableModule, MatTabsModule, MatToolbarModule, MatTooltipModule, MatOptionModule, MatCommonModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatCommonModule, MatIconModule, MatOptionModule, MatSelectModule, MatTreeModule } from '@angular/material';
+import { TreeChecklistSelectDirective } from './tree-checklist-select.directive';
 import { TreeChecklistComponent } from './tree-checklist.component';
 
-import { OverlayModule } from '@angular/cdk/overlay';
-import { TreeChecklistSelectDirective } from './tree-checklist-select.directive';
 
 @NgModule({
   imports: [
@@ -14,6 +14,7 @@ import { TreeChecklistSelectDirective } from './tree-checklist-select.directive'
     MatIconModule,
     MatButtonModule,
     MatOptionModule,
+    MatSelectModule,
     OverlayModule,
     MatCommonModule,
   ],
@@ -23,7 +24,16 @@ import { TreeChecklistSelectDirective } from './tree-checklist-select.directive'
   ],
   exports: [
     TreeChecklistComponent,
-    TreeChecklistSelectDirective
+    TreeChecklistSelectDirective,
+    CommonModule,
+    MatTreeModule,
+    MatCheckboxModule,
+    MatIconModule,
+    MatButtonModule,
+    MatOptionModule,
+    MatSelectModule,
+    OverlayModule,
+    MatCommonModule,
   ]
 })
 export class TreeChecklistModule { }

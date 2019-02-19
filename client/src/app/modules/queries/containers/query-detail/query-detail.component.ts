@@ -10,9 +10,16 @@ import { queryDetailReducer } from './api/query-detail.reducer';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { first, takeUntil } from 'rxjs/operators';
 
+export interface QueryTreeData {
+  classes?: number[]
+  types?: number[]
+  operator?: string
+  outgoingProperties?: number[]
+  ingoingProperties?: number[]
+}
 export class QueryTree {
 
-  constructor(public item?: any, public children: QueryTree[] = []) {
+  constructor(public data?: QueryTreeData, public children: QueryTree[] = []) {
 
   }
 }
@@ -48,11 +55,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
   secondFormGroup: FormGroup;
   thirdFormGroup: FormGroup;
 
-  displayedColumns: string[] = ['label', 'geburten'];
-
-
-
-
+  displayedColumns: string[] = ['label', 'class', 'type', 'geburten'];
 
 
   // Query
@@ -88,7 +91,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
   onRun() {
     this.p.pkProject$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(pk => {
-      this.run(pk);
+      this.run(pk, this.filterQuery.data);
       this.showRightArea();
     })
   }

@@ -33,7 +33,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   localStore: ObservableStore<Information>;
 
   // path to the substore
-  basePath= ['information'];
+  basePath = ['information'];
 
   @select() loading$: Observable<boolean>;
 
@@ -53,16 +53,10 @@ export class InformationComponent extends InformationAPIActions implements OnIni
     super()
 
     // listen to the crm and add extract the classes ready to add.
-    p.crm$.pipe(
-      first(d => !!d),
-      takeUntil(this.destroy$)).subscribe(crm => {
-        this.pkClassesInProject = []
-        for (const key in crm.classes) {
-          if (crm.classes[key] && crm.classes[key].isInProject) {
-            this.pkClassesInProject.push(crm.classes[key].dfh_pk_class);
-          }
-        }
-        this.initializeList(this.pkClassesInProject)
+    p.classesInProject$.pipe(first(d => !!d), takeUntil(this.destroy$))
+      .subscribe(pkClassesInProject => {
+        this.pkClassesInProject = pkClassesInProject;
+        this.initializeList(pkClassesInProject)
       })
 
   }

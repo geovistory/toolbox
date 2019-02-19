@@ -94,7 +94,7 @@ export class QueryDetailAPIEpics {
           /**
            * Do some api call
            */
-          this.queryApi.run(action.meta.pkProject) // <- change api call here
+          this.queryApi.run(action.meta.pkProject, action.meta.query) // <- change api call here
             /**
              * Subscribe to the api call
              */

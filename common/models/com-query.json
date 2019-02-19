@@ -77,6 +77,15 @@
           }
         },
         {
+          "arg": "query",
+          "type": "object",
+          "required": true,
+          "description": "query definition object",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
           "arg": "ctx",
           "type": "object",
           "http": {

@@ -1,22 +1,22 @@
-import { Component, OnInit, ChangeDetectorRef, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { distinct, takeUntil } from 'rxjs/operators';
 /**
  * Node for tree
  */
 export class TreeNode<T> {
   children: BehaviorSubject<TreeNode<T>[]>;
-  constructor(public item: T, children?: TreeNode<T>[]) {
+  constructor(public data: T, children?: TreeNode<T>[]) {
     this.children = new BehaviorSubject(children === undefined ? [] : children);
   }
 }
 
 export class TreeDataSource<T> {
   children: BehaviorSubject<TreeNode<T>[]>;
-  constructor(public item: T, children?: TreeNode<T>[]) {
+  constructor(public data: T, children?: TreeNode<T>[]) {
     this.children = new BehaviorSubject(children === undefined ? [] : children);
   }
 }
@@ -27,7 +27,7 @@ export class TreeDataSource<T> {
   templateUrl: './tree-checklist.component.html',
   styleUrls: ['./tree-checklist.component.scss']
 })
-export class TreeChecklistComponent implements OnDestroy, OnInit {
+export class TreeChecklistComponent implements OnDestroy, AfterViewInit {
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
@@ -36,7 +36,7 @@ export class TreeChecklistComponent implements OnDestroy, OnInit {
   @Output() selectionChange = new EventEmitter<TreeNode<any>[]>();
   @Output() optionsChange = new EventEmitter<TreeNode<any>[]>();
 
-  selected$ = new Subject<TreeNode<any>[]>();
+  selected$ = new BehaviorSubject<TreeNode<any>[]>([]);
 
   levels = new Map<TreeNode<any>, number>();
   treeControl: FlatTreeControl<TreeNode<any>>;
@@ -52,23 +52,26 @@ export class TreeChecklistComponent implements OnDestroy, OnInit {
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {
 
-    this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
-    this.treeControl = new FlatTreeControl<TreeNode<any>>(this.getLevel, this.isExpandable);
-    this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-
     this.selected$.pipe(distinct(), takeUntil(this.destroy$)).subscribe(selected => {
       this.selectionChange.emit(selected)
     })
 
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     if (!this.treeData$) throw new Error('please provide a treeData$ input');
-    this.treeData$.takeUntil(this.destroy$).subscribe(d => {
+
+    // TODO remove first and connect treeData$ to dataSource to make it really async
+    this.treeData$.pipe(takeUntil(this.destroy$)).subscribe(d => {
+      this.checklistSelection = new SelectionModel<TreeNode<any>>(true /* multiple */);
+      this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
+      this.treeControl = new FlatTreeControl<TreeNode<any>>(this.getLevel, this.isExpandable);
+      this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
       this.dataSource.data = d;
-      this.optionsChange.emit(this.treeControl.dataNodes);
+    this.optionsChange.emit(this.treeControl.dataNodes)
     })
   }
+
 
   getLevel = (node: TreeNode<any>): number => {
     return this.levels.get(node) || 0;
@@ -95,6 +98,7 @@ export class TreeChecklistComponent implements OnDestroy, OnInit {
 
   /** Whether all the descendants of the node are selected */
   descendantsAllSelected(node: TreeNode<any>): boolean {
+
     const descendants = this.treeControl.getDescendants(node);
     if (!descendants.length) {
       return this.checklistSelection.isSelected(node);
@@ -131,6 +135,8 @@ export class TreeChecklistComponent implements OnDestroy, OnInit {
     this.checklistSelection.isSelected(node)
       ? this.checklistSelection.select(...descendants, node)
       : this.checklistSelection.deselect(...descendants, node);
+
+    this.selected$.next(this.checklistSelection.selected);
 
     this.changeDetectorRef.markForCheck();
   }
