@@ -1,0 +1,10 @@
+<button class="trigger-btn" [matMenuTriggerFor]="menu">
+
+  <div class="select-value">
+    <div class="select-value-text">{{selectedText}}</div>
+  </div>
+  <mat-icon class="arrow-drop-down">arrow_drop_down</mat-icon>
+</button>
+<mat-menu #menu="matMenu" (click)="$event.stopPropagation();">
+  <ng-content></ng-content>
+</mat-menu>

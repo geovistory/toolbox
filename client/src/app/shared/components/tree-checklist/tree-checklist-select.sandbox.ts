@@ -1,9 +1,8 @@
 import { sandboxOf } from 'angular-playground';
-import { of, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { TreeChecklistComponent, TreeNode } from './tree-checklist.component';
 import { TreeChecklistModule } from './tree-checklist.module';
 import { TreeNodeData } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
-import { CommonModule } from '@angular/common';
 
 
 
@@ -18,7 +17,9 @@ export default sandboxOf(TreeChecklistComponent, {
         context: {
             selectOptionsTree$: new BehaviorSubject([
                 new TreeNode({ id: 1, label: 'Option' }),
-                new TreeNode({ id: 8, label: 'Option C' })
+                new TreeNode({ id: 8, label: 'Option C' }, [
+                    new TreeNode({ id: 9, label: 'Option CA' }),
+                ])
             ]),
             optionsA: [
                 new TreeNode({ id: 2, label: 'Option A' }, [
@@ -35,15 +36,21 @@ export default sandboxOf(TreeChecklistComponent, {
             optionsB: [new TreeNode({ id: 7, label: 'Option B' }, [
                 new TreeNode({ id: 3, label: 'Option AA renamed' }),
                 new TreeNode({ id: 8, label: 'Option C' }),
-            ])]
+            ])],
+            trackByFn: (index, item: TreeNode<TreeNodeData>) => {
+                return item.data.id;
+            },            
+            log: (e) => {
+                console.log(e)
+            }
         },
         template: `
 
             <div class="d-flex justify-content-center mt-5">
                 <div style="width:430px;height:400px" class="d-flex">
-                    <mat-select gvTreeChecklistSelect multiple (selectionChange)="selected = $event.value" (optionsChange)="options = $event">
+                    <mat-select gvTreeChecklistSelect multiple (selectionChange)="selected = $event.value; log($event)" (optionsChange)="options = $event">
                         <gv-tree-checklist [treeData$]="selectOptionsTree$"></gv-tree-checklist>
-                        <mat-option *ngFor="let item of options" [value]="item">{{item?.data?.label}}</mat-option>
+                        <mat-option *ngFor="let item of options;" [value]="item">{{item?.data?.label}}</mat-option>
                     </mat-select>
                 </div>
                 <div>

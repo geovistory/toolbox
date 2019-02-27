@@ -22,9 +22,9 @@
           <gv-class-and-type-select [pkClasses$]="p.classesInProject$" [showRemoveBtn]="false" [qtree]="filterQuery">
           </gv-class-and-type-select>
 
-          <p>
-            {{filterQuery | json}}
-          </p>
+          <pre class="font-sm">
+            {{filterQuery | json:2}}
+          </pre>
           <div>
             <button mat-flat-button color="primary" matStepperNext>Next</button>
           </div>
@@ -60,7 +60,7 @@
           </p>
           <div>
             <button mat-flat-button matStepperPrevious>Back</button>
-            <button mat-flat-button (click)="save()">Save</button>
+            <button mat-flat-button>Save</button>
           </div>
         </form>
       </mat-step>

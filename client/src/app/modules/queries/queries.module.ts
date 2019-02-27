@@ -15,6 +15,7 @@ import { QueryDetailComponent } from './containers/query-detail/query-detail.com
 import { QueryListAPIActions } from './containers/query-list/api/query-list.actions';
 import { QueryListAPIEpics } from './containers/query-list/api/query-list.epics';
 import { QueryListComponent } from './containers/query-list/query-list.component';
+import { SubgroupComponent } from './components/subgroup/subgroup.component';
 
 
 
@@ -42,7 +43,7 @@ import { QueryListComponent } from './containers/query-list/query-list.component
     QueryDetailAPIActions,
     QueryDetailAPIEpics
   ],
-  declarations: [QueryListComponent, QueryDetailComponent, ClassAndTypeSelectComponent, PropertySelectComponent, OperatorSelectComponent],
+  declarations: [QueryListComponent, QueryDetailComponent, ClassAndTypeSelectComponent, PropertySelectComponent, OperatorSelectComponent, SubgroupComponent],
   exports: [QueryListComponent, QueryDetailComponent]
 
 })

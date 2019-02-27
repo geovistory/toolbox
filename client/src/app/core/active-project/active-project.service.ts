@@ -1,9 +1,9 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ComConfig, IAppState, InfChunk, Panel, ProjectDetail, PropertyList, U } from 'app/core';
-import { groupBy, indexBy, without, flatten } from 'ramda';
+import { groupBy, indexBy, without, flatten, path, difference } from 'ramda';
 import { combineLatest, Observable, BehaviorSubject } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, mergeMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, mergeMap,  tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
@@ -149,8 +149,12 @@ export class ActiveProjectService {
     }
 
     return this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', pkEntity])
-      .filter(prev => (!!prev))
-
+      .pipe(
+        filter(prev => (!!prev)),
+        tap(test => {
+          test;
+        })
+      )
   }
 
 
@@ -198,7 +202,9 @@ export class ActiveProjectService {
 
     return combineLatest(
       pkEntities.map(pk => this.ngRedux.select<InfPersistentItem>(['activeProject', 'peItGraphs', pk]))
-    ).filter(items => items.filter(item => !item).length === 0)
+    ).pipe(
+      filter(items => items.filter(item => !item).length === 0)
+    )
 
   }
 
@@ -251,19 +257,35 @@ export class ActiveProjectService {
    * @returns Observable for an object containing array of TypePreview grouped
    *          by the pk of the typed class
    */
-  streamTypePreviewsByClass(pkClasses: number[]): Observable<TypePreviewsByClass> {
+  streamTypePreviewsByClass(pkClasses: number[], forceReload = false): Observable<TypePreviewsByClass> {
 
     if (!pkClasses || pkClasses.length === 0) return new BehaviorSubject({});
 
-    this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-      this.ngRedux.dispatch(this.actions.loadTypes(pk, pkClasses))
-    })
+    if (forceReload) {
+      this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
+        this.ngRedux.dispatch(this.actions.loadTypes(pk, pkClasses))
+      })
+    } else {
+      // if there are classes that are not yet loaded
+      const state = this.ngRedux.getState();
+      const loadedPks = Object.keys(path(['activeProject', 'typesByClass'], state) || {}).map(pk => parseInt(pk, 10));
+      const toLoad = difference(pkClasses, loadedPks);
+      if (toLoad.length) {
+        this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
+          this.ngRedux.dispatch(this.actions.loadTypes(pk, toLoad))
+        })
+      }
+
+    }
 
     const types$ = combineLatest(pkClasses.map(pkClass => this.ngRedux.select<TypePeIt[]>(['activeProject', 'typesByClass', pkClass]))).pipe(
       map(typess => {
         const ts: TypePeIt[] = [];
         (typess || []).forEach(types => (types || []).forEach(type => ts.push(type)))
         return ts;
+      }),
+      tap(test => {
+        test;
       })
     );
     const previews$: Observable<EntityPreview[]> = types$.pipe(
@@ -273,7 +295,10 @@ export class ActiveProjectService {
           combineLatest(types.map(type => this.streamEntityPreview(type.pk_entity))) :
           new BehaviorSubject([])
       }),
-      filter(pre => !pre.find(p => !(p.pk_entity)))
+      filter(pre => !pre.find(p => !(p.pk_entity))),
+      tap(test => {
+        test;
+      })
     )
 
 

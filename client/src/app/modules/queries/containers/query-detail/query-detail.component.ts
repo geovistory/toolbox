@@ -11,9 +11,10 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { first, takeUntil } from 'rxjs/operators';
 
 export interface QueryTreeData {
+  subgroup?: 'AND' | 'OR';
   classes?: number[]
   types?: number[]
-  operator?: string
+  operator?: string;
   outgoingProperties?: number[]
   ingoingProperties?: number[]
 }
@@ -91,7 +92,12 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
   onRun() {
     this.p.pkProject$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(pk => {
-      this.run(pk, this.filterQuery.data);
+      this.run(pk, {
+        filter: this.filterQuery,
+        columns: {},
+        limit: 10,
+        offset: 1
+      });
       this.showRightArea();
     })
   }

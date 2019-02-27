@@ -1,25 +1,72 @@
-import { SelectionModel } from '@angular/cdk/collections';
+import { CollectionViewer, DataSource, SelectionModel } from '@angular/cdk/collections';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { distinct, takeUntil } from 'rxjs/operators';
+import { MatTreeFlattener } from '@angular/material';
+import { indexBy, difference } from 'ramda';
+import { BehaviorSubject, Observable, Subject, zip, combineLatest, merge } from 'rxjs';
+import { distinct, first, map, takeUntil } from 'rxjs/operators';
 /**
  * Node for tree
  */
-export class TreeNode<T> {
-  children: BehaviorSubject<TreeNode<T>[]>;
-  constructor(public data: T, children?: TreeNode<T>[]) {
+export class TreeNode<D> {
+  children: BehaviorSubject<TreeNode<D>[]>;
+  constructor(public data: D, children?: TreeNode<D>[]) {
     this.children = new BehaviorSubject(children === undefined ? [] : children);
   }
 }
 
-export class TreeDataSource<T> {
-  children: BehaviorSubject<TreeNode<T>[]>;
-  constructor(public data: T, children?: TreeNode<T>[]) {
-    this.children = new BehaviorSubject(children === undefined ? [] : children);
+
+/**
+ * Data source for flat tree with stream of data
+ * The data source need to handle expansion/collapsion of the tree node and change the data feed
+ * to `MatTree`.
+ * The nested tree nodes of type `T` are flattened through `MatTreeFlattener`, and converted
+ * to type `F` for `MatTree` to consume.
+ */
+export class TreeDataSource<T, F> extends DataSource<F> {
+  _flattenedData = new BehaviorSubject<F[]>([]);
+
+  _expandedData = new BehaviorSubject<F[]>([]);
+
+  _data: BehaviorSubject<T[]>;
+  get data() { return this._data.value; }
+  set data(value: T[]) {
+    this._data.next(value);
+    this._flattenedData.next(this.treeFlattener.flattenNodes(this.data));
+    this.treeControl.dataNodes = this._flattenedData.value;
   }
+
+  constructor(private treeControl: FlatTreeControl<F>,
+    private treeFlattener: MatTreeFlattener<T, F>,
+    private dataStream$: Observable<T[]>,
+    initialData: T[] = []) {
+    super();
+    this._data = new BehaviorSubject<T[]>(initialData);
+
+  }
+
+  connect(collectionViewer: CollectionViewer): Observable<F[]> {
+
+    return merge(
+      collectionViewer.viewChange,
+      this.treeControl.expansionModel.onChange,
+      this._flattenedData,
+    ).pipe(map(() => {
+      this._expandedData.next(
+        this.treeFlattener.expandFlattenedNodes(this._flattenedData.value, this.treeControl)
+      );
+      return this._expandedData.value;
+    }));
+  }
+
+  disconnect() {
+    // no op
+  }
+
+
+
 }
+
 
 
 @Component({
@@ -32,7 +79,7 @@ export class TreeChecklistComponent implements OnDestroy, AfterViewInit {
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
-  @Input() treeData$: Observable<TreeNode<any>[]>;
+  @Input() public treeData$: Subject<TreeNode<any>[]>;
   @Output() selectionChange = new EventEmitter<TreeNode<any>[]>();
   @Output() optionsChange = new EventEmitter<TreeNode<any>[]>();
 
@@ -43,12 +90,11 @@ export class TreeChecklistComponent implements OnDestroy, AfterViewInit {
 
   treeFlattener: MatTreeFlattener<TreeNode<any>, TreeNode<any>>;
 
-  dataSource: MatTreeFlatDataSource<TreeNode<any>, TreeNode<any>>;
+  dataSource: TreeDataSource<TreeNode<any>, TreeNode<any>>;
 
   /** The selection for checklist */
   checklistSelection = new SelectionModel<TreeNode<any>>(true /* multiple */);
 
-  selected: TreeNode<any>[];
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {
 
@@ -58,19 +104,101 @@ export class TreeChecklistComponent implements OnDestroy, AfterViewInit {
 
   }
 
+  trackByFn(index, item) {
+    return item.data.id;
+  }
+
   ngAfterViewInit() {
     if (!this.treeData$) throw new Error('please provide a treeData$ input');
 
-    // TODO remove first and connect treeData$ to dataSource to make it really async
+    this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
+    this.treeControl = new FlatTreeControl<TreeNode<any>>(this.getLevel, this.isExpandable);
+    this.dataSource = new TreeDataSource(this.treeControl, this.treeFlattener, this.treeData$);
+
+
+
+
     this.treeData$.pipe(takeUntil(this.destroy$)).subscribe(d => {
-      this.checklistSelection = new SelectionModel<TreeNode<any>>(true /* multiple */);
-      this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
-      this.treeControl = new FlatTreeControl<TreeNode<any>>(this.getLevel, this.isExpandable);
-      this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
       this.dataSource.data = d;
-    this.optionsChange.emit(this.treeControl.dataNodes)
+      // this.recursivlyMergeNodes(this.dataSource.data, d);
+
+      this.reselect(d);
+      // this.optionsChange.emit(this.treeControl.dataNodes)
     })
   }
+
+  reselect(nodes: TreeNode<any>[]) {
+    const dataNodes = this.treeControl.dataNodes;
+    const availableNodes = indexBy((id) => id, this.extractNodeIds(dataNodes));
+    const selectedNodeIds = indexBy((id) => id, this.extractNodeIds(this.selected$.value));
+    let hasChanges = false;
+
+    // delete selection
+    this.checklistSelection.selected.forEach(node => this.checklistSelection.deselect(node));
+
+    dataNodes.forEach(node => {
+      const id = this.extractNodeId(node);
+      // deselect removed
+      if (!availableNodes[id]) {
+        this.checklistSelection.deselect(node);
+        hasChanges = true
+        // reselect replaced
+      } else if (selectedNodeIds[id]) {
+        this.checklistSelection.select(node);
+        hasChanges = true
+      }
+    })
+
+    if (hasChanges) this.selected$.next(this.checklistSelection.selected)
+  }
+
+  setSelection(nodes: TreeNode<any>[]){
+    const dataNodes = this.treeControl.dataNodes;
+  
+    let hasChanges = false;
+    const oldSelectedIds = indexBy((id) => id, this.extractNodeIds(this.selected$.value));
+    const newSelectedIds = indexBy((id) => id, this.extractNodeIds(nodes));
+
+    dataNodes.forEach(node => {
+      const id = this.extractNodeId(node);
+      // deselect
+      if (!newSelectedIds[id] && oldSelectedIds[id]) {
+        this.checklistSelection.deselect(node);
+        hasChanges = true
+        // select
+      } else if (!oldSelectedIds[id] && newSelectedIds[id]) {
+        this.checklistSelection.select(node);
+        hasChanges = true
+      }
+    })
+
+    if (hasChanges) this.selected$.next(this.checklistSelection.selected)
+  }
+
+  // recursivlyMergeNodes(oldVal: TreeNode<any>[], newVal: TreeNode<any>[]): TreeNode<any>[] {
+
+  //   const oldNodeIds = this.extractNodeIds(oldVal)
+  //   const newNodeIds = this.extractNodeIds(newVal)
+  //   const nodeIdsToAdd = indexBy((id) => id, difference(newNodeIds, oldNodeIds));
+  //   const nodeIdsToRemove = indexBy((id) => id, difference(oldNodeIds, newNodeIds));
+
+  //   [...newVal].forEach((node, index) => {
+  //     // if needs to be added
+  //     if (nodeIdsToAdd[this.extractNodeId(node)]) {
+  //       oldVal.splice(index, 1)
+  //     }
+  //   });
+
+  //   [...oldVal].forEach((node, index) => {
+  //     // if needs to be removed
+  //     if (nodeIdsToRemove[this.extractNodeId(node)]) {
+  //       oldVal.splice(index, 1)
+  //     }
+  //   });
+
+
+  //   return;
+  // }
 
 
   getLevel = (node: TreeNode<any>): number => {
@@ -96,6 +224,14 @@ export class TreeChecklistComponent implements OnDestroy, AfterViewInit {
 
 
 
+  private extractNodeId(node: TreeNode<any>): any {
+    return node.data.id;
+  }
+
+  private extractNodeIds(nodes: TreeNode<any>[]): any[] {
+    return nodes.map(node => this.extractNodeId(node));
+  }
+
   /** Whether all the descendants of the node are selected */
   descendantsAllSelected(node: TreeNode<any>): boolean {
 
@@ -107,14 +243,15 @@ export class TreeChecklistComponent implements OnDestroy, AfterViewInit {
     const allSelected = descendants.every(child => this.checklistSelection.isSelected(child));
     if (!selected && allSelected) {
       this.checklistSelection.select(node);
+      this.selected$.next(this.checklistSelection.selected);
       this.changeDetectorRef.markForCheck();
     }
     const noneSelected = descendants.every(child => !this.checklistSelection.isSelected(child));
     if (selected && noneSelected) {
       this.checklistSelection.deselect(node);
+      this.selected$.next(this.checklistSelection.selected);
       this.changeDetectorRef.markForCheck();
     }
-    this.selected$.next(this.checklistSelection.selected);
     return allSelected;
   }
 

@@ -34,7 +34,7 @@ export class OperatorSelectComponent implements OnInit, OnDestroy {
 
     // get the options for the property select
     this.propertyOptions$ = combineLatest(this.parentData$, this.p.crm$).pipe(
-      filter(([p, crm]) => (p.classes && !!crm)),
+      filter(([p, crm]) => (p.classes && p.classes.length && !!crm)),
       map(([p, crm]) => {
         const props: PropertyOption[] = []
         p.classes.forEach(pkClass => {

@@ -1,0 +1,10 @@
+<div class="border-left border-success">
+    <div class="gv-sub-query-item" *ngFor="let child of qtree?.children; let i = index">
+
+        <gv-operator-select [qtree]="child" [parentData$]="parentData$" (remove)="removeChild(i)"></gv-operator-select>
+
+    </div>
+    <button class="btn-small" mat-mini-fab (click)="addChild()">
+        <mat-icon>add</mat-icon>
+    </button>
+</div>

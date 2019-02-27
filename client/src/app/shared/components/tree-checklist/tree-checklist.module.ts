@@ -1,9 +1,10 @@
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatButtonModule, MatCheckboxModule, MatCommonModule, MatIconModule, MatOptionModule, MatSelectModule, MatTreeModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatCommonModule, MatIconModule, MatOptionModule, MatSelectModule, MatTreeModule, MatFormFieldModule, MatMenuModule } from '@angular/material';
 import { TreeChecklistSelectDirective } from './tree-checklist-select.directive';
 import { TreeChecklistComponent } from './tree-checklist.component';
+import { TreeChecklistSelectComponent } from './tree-checklist-select/tree-checklist-select.component';
 
 
 @NgModule({
@@ -17,12 +18,16 @@ import { TreeChecklistComponent } from './tree-checklist.component';
     MatSelectModule,
     OverlayModule,
     MatCommonModule,
+    MatFormFieldModule,
+    MatMenuModule
   ],
   declarations: [
     TreeChecklistComponent,
-    TreeChecklistSelectDirective
+    TreeChecklistSelectDirective,
+    TreeChecklistSelectComponent
   ],
   exports: [
+    TreeChecklistSelectComponent,
     TreeChecklistComponent,
     TreeChecklistSelectDirective,
     CommonModule,

@@ -23,13 +23,19 @@ export class TreeChecklistSelectDirective implements AfterContentInit, OnDestroy
     const matOptionsChange$ = new BehaviorSubject<void>(undefined);
 
     // on options change (1)
-    this.treeChecklist.optionsChange.subscribe(x => {
+    this.treeChecklist.optionsChange.subscribe(options => {
+      const availableIds = this.extractNodeIds(options);
+
+      // deselect only the ones, that are not in options any more and that are selected
       this.matOptions.forEach(matOption => {
-        matOption.deselect();
+        const id = this.extractNodeId(matOption.value);
+        if (matOption.selected && availableIds.indexOf(id) === -1) {
+          matOption.deselect();
+        }
       })
       // this emit will trigger the creation of new mat-options in DOM,
       // to which we listen below
-      this.optionsChange.emit(x);
+      this.optionsChange.emit(options);
     })
 
     this.matOptions.changes.subscribe(x => { matOptionsChange$.next(undefined) })
@@ -66,8 +72,12 @@ export class TreeChecklistSelectDirective implements AfterContentInit, OnDestroy
 
   }
 
+  private extractNodeId(node: TreeNode<any>): any {
+    return node.data.id;
+  }
+
   private extractNodeIds(nodes: TreeNode<any>[]): any[] {
-    return nodes.map(node => node.data.id);
+    return nodes.map(node => this.extractNodeId(node));
   }
 
   private shoudBeSelected(selectedIds: any[], node: TreeNode<any>) {
