@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, AfterViewInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
 import { ActiveProjectService, ComConfig, PropertyField } from 'app/core';
 import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { first, map, takeUntil, filter } from 'rxjs/operators';
-import { QueryTree, QueryTreeData } from '../../containers/query-detail/query-detail.component';
+import { FilterTree, FilterTreeData } from '../../containers/query-detail/query-detail.component';
 import { PropertyOption } from '../property-select/property-select.component';
 import { uniq } from 'ramda';
 
@@ -12,25 +12,36 @@ import { uniq } from 'ramda';
   templateUrl: './operator-select.component.html',
   styleUrls: ['./operator-select.component.scss']
 })
-export class OperatorSelectComponent implements OnInit, OnDestroy {
+export class OperatorSelectComponent implements OnInit, OnDestroy, AfterViewInit {
   destroy$ = new Subject<void>();
 
-  @Input() qtree: QueryTree;
-  @Input() parentData$: Observable<QueryTreeData>;
+  @Input() qtree: FilterTree;
+  @Input() parentData$: Observable<FilterTreeData>;
 
   @Output() remove = new EventEmitter<void>();
+  @Output() validChanged = new EventEmitter<boolean>();
 
   pkProperties: number[];
 
   propertyOptions$: Observable<PropertyOption[]>;
 
-  pkClasses$ = new BehaviorSubject<number[]>([]);
+  pkClasses$ = new BehaviorSubject<number[]>(undefined);
 
-  selected;
+  selectedOperator;
+  selectedProperties;
 
+  valid: boolean;
+
+  get showAddSubwqueryBtn(): boolean {
+    return this.valid;
+  }
   constructor(public p: ActiveProjectService) { }
 
   ngOnInit() {
+
+    if (this.qtree && this.qtree.data && this.qtree.data.operator) {
+      this.selectedOperator = this.qtree.data.operator;
+    }
 
     // get the options for the property select
     this.propertyOptions$ = combineLatest(this.parentData$, this.p.crm$).pipe(
@@ -63,8 +74,15 @@ export class OperatorSelectComponent implements OnInit, OnDestroy {
 
   }
 
+  ngAfterViewInit() {
+    this.setValid();
+  }
+
+
   addChild() {
-    this.qtree.children.push(new QueryTree());
+    this.qtree.children.push(new FilterTree({
+      subgroup: 'classAndType'
+    }));
   }
 
   removeChild(i) {
@@ -72,24 +90,38 @@ export class OperatorSelectComponent implements OnInit, OnDestroy {
   }
 
   // selection of the operator changed
-  selectionChange(e: MatSelectChange) {
+  operatorSelectionChange(e: MatSelectChange) {
     const val = e.value;
     this.qtree.data = {
+      ...this.qtree.data,
       operator: val
     }
   }
 
+  // selection of the properties changed
+  propertySelectionChange(selection: PropertyOption[]) {
+    this.selectedProperties = selection;
+    this.nextPkClasses();
+    this.setValid();
+  }
+
+  nextPkClasses() {
+    this.p.crm$.pipe(first(crm => !!crm), takeUntil(this.destroy$))
+      .subscribe((crm) => {
+        this.pkClasses$.next(uniq((this.selectedProperties.map(propOption => (crm.fieldList[propOption.propertyFieldKey] as PropertyField).targetClassPk))))
+      })
+  }
+
+  setValid() {
+    this.valid = [
+      ...(this.qtree.data.outgoingProperties || []),
+      ...(this.qtree.data.ingoingProperties || [])
+    ].length > 0;
+    this.validChanged.emit(this.valid)
+  }
 
   ngOnDestroy() {
     this.destroy$.next()
     this.destroy$.unsubscribe()
-  }
-
-
-  propertySelectionChange(selection: PropertyOption[]) {
-    this.p.crm$.pipe(first(crm => !!crm), takeUntil(this.destroy$))
-      .subscribe((crm) => {
-        this.pkClasses$.next(uniq((selection.map(propOption => (crm.fieldList[propOption.propertyFieldKey] as PropertyField).targetClassPk))))
-      })
   }
 }

@@ -10,20 +10,22 @@ import { queryDetailReducer } from './api/query-detail.reducer';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { first, takeUntil } from 'rxjs/operators';
 
-export interface QueryTreeData {
-  subgroup?: 'AND' | 'OR';
+export type SubGroupType = 'property' | 'classAndType'
+export interface FilterTreeData {
+  subgroup?: SubGroupType;
   classes?: number[]
   types?: number[]
   operator?: string;
   outgoingProperties?: number[]
   ingoingProperties?: number[]
 }
-export class QueryTree {
+export class FilterTree {
 
-  constructor(public data?: QueryTreeData, public children: QueryTree[] = []) {
+  constructor(public data: FilterTreeData = {}, public children: FilterTree[] = []) {
 
   }
 }
+
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -60,7 +62,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
 
   // Query
-  filterQuery = new QueryTree();
+  filterQuery = new FilterTree();
 
   constructor(
     protected rootEpics: RootEpics,

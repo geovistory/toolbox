@@ -2,23 +2,23 @@
 
   <mat-form-field>
     <mat-label>Condition</mat-label>
-    <mat-select [(value)]="selected" (selectionChange)="selectionChange($event)">
-      <mat-option [value]="'IN'">has / is</mat-option>
-      <mat-option [value]="'NOT IN'">has not / is not</mat-option>
+    <mat-select [(value)]="selectedOperator" (selectionChange)="operatorSelectionChange($event)">
+      <mat-option [value]="'IS'">has / is</mat-option>
+      <mat-option [value]="'IS NOT'">has not / is not</mat-option>
     </mat-select>
   </mat-form-field>
 
   <!-- add different selcts here, according to chosen option -->
-  <gv-property-select [qtree]="qtree" [options$]="propertyOptions$" class="ml-3 d-flex gv-grow-1" *ngIf="selected"
+  <gv-property-select [qtree]="qtree" [options$]="propertyOptions$" class="mx-3 d-flex gv-grow-1" *ngIf="selectedOperator"
   (selectionChanged)="propertySelectionChange($event)"  ></gv-property-select>
-  <button *ngIf="selected" mat-icon-button (click)="addChild()" matTooltip="Add sub-filter">
+  <button class="mr-3 gv-mat-icon-button-sm gv-btn-info" *ngIf="showAddSubwqueryBtn" mat-icon-button (click)="addChild()" matTooltip="Add sub-filter">
     <mat-icon>add</mat-icon>
   </button>
-  <button mat-icon-button class="ml-auto" (click)="remove.emit()" matTooltip="Remove with sub-filters">
+  <button class="ml-auto gv-mat-icon-button-sm gv-btn-danger" mat-icon-button (click)="remove.emit()" matTooltip="Remove with sub-filters">
     <mat-icon>remove</mat-icon>
   </button>
 </div>
 
 <div class="gv-sub-query-item" *ngFor="let child of qtree?.children; let i = index">
-  <gv-class-and-type-select [pkClasses$]="pkClasses$" [qtree]="child" (remove)="removeChild(i)"></gv-class-and-type-select>
+  <gv-subgroup  *ngFor="let child of qtree?.children; let i = index" [qtree]="child" [pkClasses$]="pkClasses$" (remove)="removeChild(i)"></gv-subgroup>
 </div>

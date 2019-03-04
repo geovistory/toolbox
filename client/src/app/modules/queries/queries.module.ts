@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatOptionModule, MatSelectModule, MatStepperModule, MatTableModule, MatTooltipModule } from '@angular/material';
+import { MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatOptionModule, MatSelectModule, MatStepperModule, MatTableModule, MatTooltipModule, MatExpansionModule } from '@angular/material';
 import { AngularSplitModule } from 'angular-split';
 import { DetailTopBarModule } from 'app/shared/components/detail-top-bar/detail-top-bar.module';
 import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header/list-drawer-header.module';
@@ -16,6 +16,7 @@ import { QueryListAPIActions } from './containers/query-list/api/query-list.acti
 import { QueryListAPIEpics } from './containers/query-list/api/query-list.epics';
 import { QueryListComponent } from './containers/query-list/query-list.component';
 import { SubgroupComponent } from './components/subgroup/subgroup.component';
+import { ColDefEditorComponent } from './components/col-def-editor/col-def-editor.component';
 
 
 
@@ -35,7 +36,8 @@ import { SubgroupComponent } from './components/subgroup/subgroup.component';
     MatSelectModule,
     MatOptionModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatExpansionModule
   ],
   providers: [
     QueryListAPIActions,
@@ -43,8 +45,8 @@ import { SubgroupComponent } from './components/subgroup/subgroup.component';
     QueryDetailAPIActions,
     QueryDetailAPIEpics
   ],
-  declarations: [QueryListComponent, QueryDetailComponent, ClassAndTypeSelectComponent, PropertySelectComponent, OperatorSelectComponent, SubgroupComponent],
-  exports: [QueryListComponent, QueryDetailComponent]
+  declarations: [QueryListComponent, QueryDetailComponent, ClassAndTypeSelectComponent, PropertySelectComponent, OperatorSelectComponent, SubgroupComponent, ColDefEditorComponent],
+  exports: [QueryListComponent, QueryDetailComponent, ClassAndTypeSelectComponent, PropertySelectComponent, OperatorSelectComponent, SubgroupComponent]
 
 })
 export class QueriesModule { }

@@ -1,10 +1,55 @@
-<div class="border-left border-success">
-    <div class="gv-sub-query-item" *ngFor="let child of qtree?.children; let i = index">
-
-        <gv-operator-select [qtree]="child" [parentData$]="parentData$" (remove)="removeChild(i)"></gv-operator-select>
+<div class="subgroup">
+    <div class="zero" [ngClass]="{'line': !hideParentLine}">
 
     </div>
-    <button class="btn-small" mat-mini-fab (click)="addChild()">
-        <mat-icon>add</mat-icon>
-    </button>
+    <div class="first" [ngClass]="{'line': showAddSiblingBtn}">
+        <div class="subgroup-operation-container">
+
+            <!-- Subgroup Operation -->
+            <mat-select class="subgroup-operation-select" *ngIf="qtree?.children?.length > 1"
+                [(value)]="qtree.data.operator">
+                <mat-option value="AND">and</mat-option>
+                <mat-option value="OR">or</mat-option>
+            </mat-select>
+
+        </div>
+        <!-- Add a sibling condition -->
+        <button *ngIf="showAddSiblingBtn" class="add-sibling-button gv-mat-icon-button-sm gv-btn-success" mat-icon-button (click)="addSibling()"
+            matTooltip="Add an 'and'/'or' Condition">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+    <div class="second">
+        <div class="sub-query-item" *ngFor="let child of qtree?.children; let i = index">
+            <div class="subquery-left">
+                <div class="horizontal-line" [ngClass]="{'is-subgroup': child?.data?.subgroup}"></div>
+                <!-- Split button to create Subgruop -->
+                <button class="add-subgroup-button gv-mat-icon-button-sm gv-btn-success" mat-icon-button
+                    (click)="addSubgroup(i)" matTooltip="Add a Sub-Condition"
+                    *ngIf="qtree?.children?.length > 1 && !qtree?.children[i].data?.subgroup">
+                    <mat-icon class="rotate-90">call_split</mat-icon>
+                </button>
+            </div>
+            <!-- Class And Type Select -->
+            <gv-class-and-type-select *ngIf="qtree?.data?.subgroup === 'classAndType' && !child?.data?.subgroup"
+                [qtree]="child" [pkClasses$]="pkClasses$" (remove)="removeChild(i)">
+            </gv-class-and-type-select>
+
+            <!-- Property Select -->
+            <gv-operator-select *ngIf="qtree?.data?.subgroup === 'property' && !child?.data?.subgroup" [qtree]="child"
+                [parentData$]="parentData$" (remove)="removeChild(i)">
+            </gv-operator-select>
+
+            <!-- Subgroup -->
+            <gv-subgroup *ngIf="child?.data?.subgroup" [qtree]="child" hideParentLine="true" [pkClasses$]="pkClasses$" [parentData$]="parentData$"
+                (merge)="mergeChild(i, $event)" (remove)="removeChild(i)">
+            </gv-subgroup>
+
+        </div>
+
+
+    </div>
+
+
+
 </div>

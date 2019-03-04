@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Query, Output, EventEmitter } from '@angular/core';
 import { of, Observable, combineLatest, Subject, BehaviorSubject } from 'rxjs';
 import { TreeNode } from 'app/shared/components/tree-checklist/tree-checklist.component';
-import { QueryTree, QueryTreeData } from '../../containers/query-detail/query-detail.component';
+import { FilterTree, FilterTreeData } from '../../containers/query-detail/query-detail.component';
 import { ActiveProjectService } from 'app/core';
 import { map, mergeMap, filter, tap, distinct } from 'rxjs/operators';
 import { MatSelectChange } from '@angular/material';
@@ -27,37 +27,36 @@ export class ClassAndTypeSelectComponent implements OnInit {
   options: TreeNode<TreeNodeData>[] = [];
 
   @Input() pkClasses$: Observable<number[]>;
-  @Input() qtree: QueryTree;
+  @Input() qtree: FilterTree;
   @Input() showRemoveBtn = true;
 
   @Output() remove = new EventEmitter<void>();
+  @Output() validChanged = new EventEmitter<boolean>();
 
-  data$ = new BehaviorSubject<QueryTreeData>({});
+  data$ = new BehaviorSubject<FilterTreeData>({});
+  valid = false;
 
+  selected: TreeNode<TreeNodeData>[]
   constructor(private p: ActiveProjectService) {
-
-
-
   }
 
   ngOnInit() {
-    // create
-    this.pkClasses$.subscribe(pkClasses => {
 
-    });
-
-    // this.pkClasses$.pipe(
-    //   mergeMap(pks => combineLatest(
-    //     this.p.streamTypePreviewsByClass(pks),
-    //     combineLatest(pks.map(pk => this.p.getClassConfig(pk)))
-    //       .filter(d => d.every(x => !!x.dfh_pk_class))
-    //   ))
-    // ).subscribe(pkClasses => {
-
-    // });
-
-
+    if (this.qtree.data) {
+      this.selected = [
+        ...(this.qtree.data.classes || []).map(pk => new TreeNode<TreeNodeData>({
+          id: 'class_' + pk,
+          label: ''
+        })),
+        ...(this.qtree.data.types || []).map(pk => new TreeNode<TreeNodeData>({
+          id: 'type_' + pk,
+          label: ''
+        }))
+      ];
+    }
+    
     this.selectOptionsTree$ = this.pkClasses$.pipe(
+      filter(pks => pks !== undefined),
       distinct((pk) => pk),
       tap(pks => {
         console.log('Pks: ', pks);
@@ -126,15 +125,25 @@ export class ClassAndTypeSelectComponent implements OnInit {
       types: val.filter(v => v.data.pkType).map(v => v.data.pkType),
     }
     this.data$.next(this.qtree.data);
-    console.log('Selected: ', this.qtree.data);
+    this.setValid()
   }
 
   addChild() {
-    this.qtree.children.push(new QueryTree())
+    this.qtree.children.push(new FilterTree({
+      subgroup: 'property'
+    }))
   }
 
   removeChild(i) {
     this.qtree.children.splice(i, 1)
   }
+
+  setValid() {
+    this.valid = [
+      ...(this.qtree.data.classes || []),
+    ].length > 0;
+    this.validChanged.emit(this.valid)
+  }
+
 
 }

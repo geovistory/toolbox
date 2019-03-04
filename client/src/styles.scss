@@ -63,7 +63,27 @@ body {
 button {
     cursor: pointer;
 }
-
+.rotate-90 {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+.rotate-180 {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+.rotate-270 {
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg);
+}
 .form-control {
     @extend .form-control; // overflow: hidden;
 }
@@ -1320,9 +1340,8 @@ as-split.gv-split-style {
 
 // Query Details
 .gv-sub-query-item{
-    margin-left: .75rem;
+    margin-left: 0rem;
 }
-
 // Main category icons
 .gv-source-color {
     color: $cyan
@@ -1374,4 +1393,42 @@ mat-checkbox {
     label {
         margin-bottom: 0
     }
+}
+
+.gv-mat-icon-button-sm {
+    width: 24px !important;
+    height: 24px !important;
+
+    &::ng-deep .mat-button-wrapper{
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        height: 100% !important;
+
+         .mat-icon {
+             font-size: 20px !important;
+         }
+   }
+}
+
+.gv-btn-info {
+    background: $white;
+    @extend .border;
+    @extend .border-info;
+    @extend .rounded-circle;
+}
+
+.gv-btn-danger {
+    background: $white;
+    @extend .border;
+    @extend .border-danger;
+    @extend .rounded-circle;
+}
+
+.gv-btn-success {
+    background: $white;
+    @extend .border;
+    @extend .border-success;
+    @extend .rounded-circle;
 }

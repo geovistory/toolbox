@@ -22,9 +22,9 @@
           <gv-class-and-type-select [pkClasses$]="p.classesInProject$" [showRemoveBtn]="false" [qtree]="filterQuery">
           </gv-class-and-type-select>
 
-          <pre class="font-sm">
+          <!-- <pre class="font-sm">
             {{filterQuery | json:2}}
-          </pre>
+          </pre> -->
           <div>
             <button mat-flat-button color="primary" matStepperNext>Next</button>
           </div>
@@ -33,9 +33,12 @@
       <mat-step [stepControl]="secondFormGroup">
         <form [formGroup]="secondFormGroup">
           <ng-template matStepLabel>Define the resulting columns</ng-template>
-          <mat-form-field appearance="outline">
+          <!-- <mat-form-field appearance="outline">
             <input matInput placeholder="Address" formControlName="secondCtrl" required>
-          </mat-form-field>
+          </mat-form-field> -->
+          <div class="my-3">
+            <gv-col-def-editor></gv-col-def-editor>
+          </div>
           <div>
             <button mat-flat-button matStepperPrevious>Back</button>
             <button mat-flat-button matStepperNext>Next</button>

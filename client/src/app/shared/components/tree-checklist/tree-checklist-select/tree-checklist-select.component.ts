@@ -25,9 +25,9 @@ export class TreeChecklistSelectComponent implements ControlValueAccessor, MatFo
 
   @ContentChild(TreeChecklistComponent) treeChecklist: TreeChecklistComponent;
   @Output() selectionChange = new EventEmitter<TreeNode<any>[]>();
+  @Input() compareWith: (a: TreeNode<any>, b: TreeNode<any>) => boolean;
 
   selectionChange$ = new BehaviorSubject<TreeNode<any>[]>([]);
-
 
   stateChanges = new Subject<void>();
   focused = false;
@@ -39,7 +39,6 @@ export class TreeChecklistSelectComponent implements ControlValueAccessor, MatFo
   onTouched = () => { };
 
   get empty() {
-
     return this.selectionChange$.value.length === 0;
   }
 
@@ -88,7 +87,7 @@ export class TreeChecklistSelectComponent implements ControlValueAccessor, MatFo
     @Optional() @Self() public ngControl: NgControl
   ) {
     if (this.ngControl != null) {
-      this.ngControl.valueAccessor = this as unknown as ControlValueAccessor;
+      this.ngControl.valueAccessor = this;
     }
   }
 
@@ -110,16 +109,11 @@ export class TreeChecklistSelectComponent implements ControlValueAccessor, MatFo
     this.onChange(selected);
   }
 
-
   ngOnDestroy() {
     this.stateChanges.complete();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
-
-
-
-
 
   setDescribedByIds(ids: string[]) {
     this.describedBy = ids.join(' ');
@@ -145,5 +139,4 @@ export class TreeChecklistSelectComponent implements ControlValueAccessor, MatFo
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
-
 }
