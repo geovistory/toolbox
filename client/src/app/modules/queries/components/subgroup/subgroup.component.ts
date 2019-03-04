@@ -3,7 +3,7 @@ import { FilterTree, FilterTreeData } from '../../containers/query-detail/query-
 import { Observable, merge, Subject, combineLatest, zip, BehaviorSubject } from 'rxjs';
 import { ClassAndTypeSelectComponent } from '../class-and-type-select/class-and-type-select.component';
 import { PropertySelectComponent } from '../property-select/property-select.component';
-import { OperatorSelectComponent } from '../operator-select/operator-select.component';
+import { PropertyFilterComponent } from '../property-filter/property-filter.component';
 import { takeUntil, map, mergeMap, switchMap } from 'rxjs/operators';
 import { flatten } from 'ramda';
 
@@ -16,7 +16,7 @@ export class SubgroupComponent implements OnInit, OnDestroy, AfterViewInit {
   destroy$ = new Subject();
   @ViewChildren(SubgroupComponent) subgroups: QueryList<SubgroupComponent>;
   @ViewChildren(ClassAndTypeSelectComponent) classAndTypeSelects: QueryList<ClassAndTypeSelectComponent>;
-  @ViewChildren(OperatorSelectComponent) operatorSelects: QueryList<OperatorSelectComponent>;
+  @ViewChildren(PropertyFilterComponent) operatorSelects: QueryList<PropertyFilterComponent>;
 
   @Input() qtree: FilterTree;
   @Input() parentData$: Observable<FilterTreeData>;
@@ -47,7 +47,7 @@ export class SubgroupComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
 
     // Observe if there is some invalid child components
-    zip<QueryList<SubgroupComponent>, QueryList<ClassAndTypeSelectComponent>, QueryList<OperatorSelectComponent>>
+    zip<QueryList<SubgroupComponent>, QueryList<ClassAndTypeSelectComponent>, QueryList<PropertyFilterComponent>>
       (
         new BehaviorSubject(this.subgroups).merge(this.subgroups.changes),
         new BehaviorSubject(this.classAndTypeSelects).merge(this.classAndTypeSelects.changes),

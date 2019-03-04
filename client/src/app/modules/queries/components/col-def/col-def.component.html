@@ -1,0 +1,7 @@
+<form class="d-flex flex-column">
+  <mat-form-field>
+    <input matInput placeholder="Name of the column"  [(ngModel)]="colDef.data.label" name="label" required>
+  </mat-form-field>
+
+  <gv-property-path-segment placeholder="Property Segment" [(ngModel)]="colDef" name="path"  [selectedClasses$]="selectedClasses$"></gv-property-path-segment>
+</form>

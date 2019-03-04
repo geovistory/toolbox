@@ -8,11 +8,11 @@ import { PropertyOption } from '../property-select/property-select.component';
 import { uniq } from 'ramda';
 
 @Component({
-  selector: 'gv-operator-select',
-  templateUrl: './operator-select.component.html',
-  styleUrls: ['./operator-select.component.scss']
+  selector: 'gv-property-filter',
+  templateUrl: './property-filter.component.html',
+  styleUrls: ['./property-filter.component.scss']
 })
-export class OperatorSelectComponent implements OnInit, OnDestroy, AfterViewInit {
+export class PropertyFilterComponent implements OnInit, OnDestroy, AfterViewInit {
   destroy$ = new Subject<void>();
 
   @Input() qtree: FilterTree;
@@ -22,8 +22,6 @@ export class OperatorSelectComponent implements OnInit, OnDestroy, AfterViewInit
   @Output() validChanged = new EventEmitter<boolean>();
 
   pkProperties: number[];
-
-  propertyOptions$: Observable<PropertyOption[]>;
 
   pkClasses$ = new BehaviorSubject<number[]>(undefined);
 
@@ -42,35 +40,6 @@ export class OperatorSelectComponent implements OnInit, OnDestroy, AfterViewInit
     if (this.qtree && this.qtree.data && this.qtree.data.operator) {
       this.selectedOperator = this.qtree.data.operator;
     }
-
-    // get the options for the property select
-    this.propertyOptions$ = combineLatest(this.parentData$, this.p.crm$).pipe(
-      filter(([p, crm]) => (p.classes && p.classes.length && !!crm)),
-      map(([p, crm]) => {
-        const props: PropertyOption[] = []
-        p.classes.forEach(pkClass => {
-          const classConfig = crm.classes[pkClass];
-          const uiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
-          if (classConfig.uiContexts && classConfig.uiContexts[uiContext]) {
-            (classConfig.uiContexts[uiContext].uiElements || []).forEach(ele => {
-              if (ele.propertyFieldKey) {
-                props.push({
-                  propertyFieldKey: ele.propertyFieldKey,
-                  isOutgoing: ele.property_is_outgoing,
-                  pk: ele.fk_property,
-                  label: classConfig.propertyFields[ele.propertyFieldKey].label.default
-                })
-              }
-            })
-          }
-        })
-
-        // add sorting here
-
-        return props
-      }),
-      takeUntil(this.destroy$)
-    )
 
   }
 

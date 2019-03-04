@@ -31,14 +31,14 @@
                 </button>
             </div>
             <!-- Class And Type Select -->
-            <gv-class-and-type-select *ngIf="qtree?.data?.subgroup === 'classAndType' && !child?.data?.subgroup"
+            <gv-class-and-type-filter class="gv-grow-1" *ngIf="qtree?.data?.subgroup === 'classAndType' && !child?.data?.subgroup"
                 [qtree]="child" [pkClasses$]="pkClasses$" (remove)="removeChild(i)">
-            </gv-class-and-type-select>
+            </gv-class-and-type-filter>
 
             <!-- Property Select -->
-            <gv-operator-select *ngIf="qtree?.data?.subgroup === 'property' && !child?.data?.subgroup" [qtree]="child"
+            <gv-property-filter *ngIf="qtree?.data?.subgroup === 'property' && !child?.data?.subgroup" [qtree]="child"
                 [parentData$]="parentData$" (remove)="removeChild(i)">
-            </gv-operator-select>
+            </gv-property-filter>
 
             <!-- Subgroup -->
             <gv-subgroup *ngIf="child?.data?.subgroup" [qtree]="child" hideParentLine="true" [pkClasses$]="pkClasses$" [parentData$]="parentData$"

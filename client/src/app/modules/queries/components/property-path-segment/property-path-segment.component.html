@@ -1,0 +1,18 @@
+<div>
+    <!-- TODO: Adapt how the value is displayed, changed and when onTouched is called -->
+    <!-- <input type="text" [value]="model?.foo" (input)="newFoo($event.target.value)" (blur)="onTouched()"> -->
+
+    <gv-property-select [qtree]="model" [selectedClasses$]="selectedClasses$"> </gv-property-select>
+    <button class="mr-3 gv-mat-icon-button-sm gv-btn-info" mat-icon-button
+        (click)="addChild()" matTooltip="Add sub-filter">
+        <mat-icon>add</mat-icon>
+    </button>
+    <!-- <button class="ml-auto gv-mat-icon-button-sm gv-btn-danger" mat-icon-button (click)="remove.emit()"
+        matTooltip="Remove with sub-filters">
+        <mat-icon>remove</mat-icon>
+    </button> -->
+
+
+</div>
+
+<gv-class-and-type-path-segment *ngIf="model.children.length" ></gv-class-and-type-path-segment>

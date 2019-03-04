@@ -1,5 +1,5 @@
 import { Component, OnDestroy, Input, OnInit, HostBinding } from '@angular/core';
-import { Subject, Observable, of } from 'rxjs';
+import { Subject, Observable, of, BehaviorSubject } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
 import { IAppState, SubstoreComponent, ActiveProjectService } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
@@ -63,6 +63,9 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
   // Query
   filterQuery = new FilterTree();
+
+  // TODO use the sekected classes from filter
+  selectedClasses$ = new BehaviorSubject([21])
 
   constructor(
     protected rootEpics: RootEpics,

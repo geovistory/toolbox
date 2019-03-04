@@ -1,0 +1,5 @@
+
+<div>
+    <!-- TODO: Adapt how the value is displayed, changed and when onTouched is called -->
+    <input type="text" [value]="model?.foo" (input)="newFoo($event.target.value)" (blur)="onTouched()">
+</div>    

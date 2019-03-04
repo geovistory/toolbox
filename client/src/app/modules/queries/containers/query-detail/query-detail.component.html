@@ -19,15 +19,15 @@
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>Define a filter for the resulting rows</ng-template>
 
-          <gv-class-and-type-select [pkClasses$]="p.classesInProject$" [showRemoveBtn]="false" [qtree]="filterQuery">
-          </gv-class-and-type-select>
+          <gv-class-and-type-filter [pkClasses$]="p.classesInProject$" [showRemoveBtn]="false" [qtree]="filterQuery">
+          </gv-class-and-type-filter>
 
           <!-- <pre class="font-sm">
             {{filterQuery | json:2}}
           </pre> -->
-          <div>
+          <!-- <div>
             <button mat-flat-button color="primary" matStepperNext>Next</button>
-          </div>
+          </div> -->
         </form>
       </mat-step>
       <mat-step [stepControl]="secondFormGroup">
@@ -37,7 +37,7 @@
             <input matInput placeholder="Address" formControlName="secondCtrl" required>
           </mat-form-field> -->
           <div class="my-3">
-            <gv-col-def-editor></gv-col-def-editor>
+            <gv-col-def-editor [selectedClasses$]="selectedClasses$"></gv-col-def-editor>
           </div>
           <div>
             <button mat-flat-button matStepperPrevious>Back</button>

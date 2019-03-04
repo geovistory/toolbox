@@ -9,7 +9,7 @@
   </mat-form-field>
 
   <!-- add different selcts here, according to chosen option -->
-  <gv-property-select [qtree]="qtree" [options$]="propertyOptions$" class="mx-3 d-flex gv-grow-1" *ngIf="selectedOperator"
+  <gv-property-select [qtree]="qtree" [filterTreeData$]="parentData$" class="mx-3 d-flex gv-grow-1" *ngIf="selectedOperator"
   (selectionChanged)="propertySelectionChange($event)"  ></gv-property-select>
   <button class="mr-3 gv-mat-icon-button-sm gv-btn-info" *ngIf="showAddSubwqueryBtn" mat-icon-button (click)="addChild()" matTooltip="Add sub-filter">
     <mat-icon>add</mat-icon>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Query, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Query, Output, EventEmitter, HostBinding } from '@angular/core';
 import { of, Observable, combineLatest, Subject, BehaviorSubject } from 'rxjs';
 import { TreeNode } from 'app/shared/components/tree-checklist/tree-checklist.component';
 import { FilterTree, FilterTreeData } from '../../containers/query-detail/query-detail.component';
@@ -20,11 +20,12 @@ export interface TreeNodeData {
   styleUrls: ['./class-and-type-select.component.scss']
 })
 export class ClassAndTypeSelectComponent implements OnInit {
+  @HostBinding('class.d-flex') dflex = true;
+
   /**
    * The tree data
    */
   selectOptionsTree$ = of([]);
-  options: TreeNode<TreeNodeData>[] = [];
 
   @Input() pkClasses$: Observable<number[]>;
   @Input() qtree: FilterTree;
@@ -32,8 +33,8 @@ export class ClassAndTypeSelectComponent implements OnInit {
 
   @Output() remove = new EventEmitter<void>();
   @Output() validChanged = new EventEmitter<boolean>();
+  @Output() filterTreeDataChange = new EventEmitter<FilterTreeData>();
 
-  data$ = new BehaviorSubject<FilterTreeData>({});
   valid = false;
 
   selected: TreeNode<TreeNodeData>[]
@@ -112,30 +113,13 @@ export class ClassAndTypeSelectComponent implements OnInit {
 
   }
 
-  trackByFn(index, item: TreeNode<TreeNodeData>) {
-    return item.data.id;
-  }
-  optionsChange(e: TreeNode<TreeNodeData>[]) {
-    this.options = e;
-  }
-
   selectionChange(val: TreeNode<TreeNodeData>[]) {
     this.qtree.data = {
       classes: val.filter(v => v.data.pkClass).map(v => v.data.pkClass),
       types: val.filter(v => v.data.pkType).map(v => v.data.pkType),
     }
-    this.data$.next(this.qtree.data);
+    this.filterTreeDataChange.emit(this.qtree.data);
     this.setValid()
-  }
-
-  addChild() {
-    this.qtree.children.push(new FilterTree({
-      subgroup: 'property'
-    }))
-  }
-
-  removeChild(i) {
-    this.qtree.children.splice(i, 1)
   }
 
   setValid() {
