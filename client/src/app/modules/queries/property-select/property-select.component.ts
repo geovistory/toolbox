@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChildren, QueryList, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChildren, QueryList, AfterViewInit, ChangeDetectorRef, HostBinding } from '@angular/core';
 import { FilterTree, FilterTreeData } from '../../containers/query-detail/query-detail.component';
 import { MatSelectChange, MatOption } from '@angular/material';
 import { Observable, Subject, combineLatest } from 'rxjs';
@@ -14,15 +14,20 @@ export interface PropertyOption { propertyFieldKey: string, isOutgoing: boolean,
 })
 export class PropertySelectComponent implements AfterViewInit, OnDestroy, OnInit {
   destroy$ = new Subject<void>();
+  @HostBinding('class.d-flex') dflex = true;
+
 
   @Input() qtree: FilterTree;
+  @Input() options$: Observable<PropertyOption[]>;
+  @Input() disabled: boolean;
 
-  @Input() filterTreeData$: Observable<FilterTreeData>;
-  @Input() selectedClasses$: Observable<number[]>;
+  // @Input() filterTreeData$: Observable<FilterTreeData>;
+  // @Input() selectedClasses$: Observable<number[]>;
   @Output() selectionChanged = new EventEmitter<PropertyOption[]>();
+  @Output() modelChanged = new EventEmitter<FilterTree>();
+
   @ViewChildren(MatOption) matOptions: QueryList<MatOption>;
 
-  options$: Observable<PropertyOption[]>;
   selected$: Observable<PropertyOption[]>;
 
   // selected: PropertyOption[];
@@ -31,44 +36,8 @@ export class PropertySelectComponent implements AfterViewInit, OnDestroy, OnInit
 
   ngOnInit() {
 
-    if (this.filterTreeData$) {
-      this.selectedClasses$ = this.filterTreeData$.pipe(
-        map(data => {
-          return data.classes
-        })
-      )
-    }
-
-    // get the options for the property select
-    this.options$ = combineLatest(this.selectedClasses$, this.p.crm$).pipe(
-      filter(([selectedClasses, crm]) => (selectedClasses && selectedClasses.length && !!crm)),
-      map(([selectedClasses, crm]) => {
-        const props: PropertyOption[] = []
-        selectedClasses.forEach(pkClass => {
-          const classConfig = crm.classes[pkClass];
-          const uiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
-          if (classConfig.uiContexts && classConfig.uiContexts[uiContext]) {
-            (classConfig.uiContexts[uiContext].uiElements || []).forEach(ele => {
-              if (ele.propertyFieldKey) {
-                props.push({
-                  propertyFieldKey: ele.propertyFieldKey,
-                  isOutgoing: ele.property_is_outgoing,
-                  pk: ele.fk_property,
-                  label: classConfig.propertyFields[ele.propertyFieldKey].label.default
-                })
-              }
-            })
-          }
-        })
-
-        // add sorting here
-
-        return props
-      }),
-      takeUntil(this.destroy$)
-    )
-
     this.options$.pipe(
+      filter(options => !!options),
       map(options => options.filter(option => this.getSelectedIds().indexOf(option.propertyFieldKey) > -1))
     ).subscribe(selected => {
       this.setSelectedIds(selected);
@@ -112,6 +81,7 @@ export class PropertySelectComponent implements AfterViewInit, OnDestroy, OnInit
       // this.selected = newSelection;
     }
     this.selectionChanged.emit(newSelection);
+    this.modelChanged.emit(this.qtree)
   }
 
   private createSelectedIds(selected: PropertyOption[]): string[] {

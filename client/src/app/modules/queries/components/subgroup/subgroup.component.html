@@ -2,7 +2,7 @@
     <div class="zero" [ngClass]="{'line': !hideParentLine}">
 
     </div>
-    <div class="first" [ngClass]="{'line': showAddSiblingBtn}">
+    <div class="first" [ngClass]="{'line': valid}">
         <div class="subgroup-operation-container">
 
             <!-- Subgroup Operation -->
@@ -14,7 +14,7 @@
 
         </div>
         <!-- Add a sibling condition -->
-        <button *ngIf="showAddSiblingBtn" class="add-sibling-button gv-mat-icon-button-sm gv-btn-success" mat-icon-button (click)="addSibling()"
+        <button *ngIf="valid" class="add-sibling-button gv-mat-icon-button-sm gv-btn-success" mat-icon-button (click)="addSibling()"
             matTooltip="Add an 'and'/'or' Condition">
             <mat-icon>add</mat-icon>
         </button>
@@ -37,11 +37,11 @@
 
             <!-- Property Select -->
             <gv-property-filter *ngIf="qtree?.data?.subgroup === 'property' && !child?.data?.subgroup" [qtree]="child"
-                [parentData$]="parentData$" (remove)="removeChild(i)">
+                [propertyOptions$]="propertyOptions$" (remove)="removeChild(i)">
             </gv-property-filter>
 
             <!-- Subgroup -->
-            <gv-subgroup *ngIf="child?.data?.subgroup" [qtree]="child" hideParentLine="true" [pkClasses$]="pkClasses$" [parentData$]="parentData$"
+            <gv-subgroup *ngIf="child?.data?.subgroup" [qtree]="child" hideParentLine="true" [pkClasses$]="pkClasses$" [propertyOptions$]="propertyOptions$"
                 (merge)="mergeChild(i, $event)" (remove)="removeChild(i)">
             </gv-subgroup>
 

@@ -85,6 +85,13 @@ export class TreeChecklistComponent implements OnInit, OnDestroy, AfterViewInit 
 
   selected$ = new BehaviorSubject<TreeNode<any>[]>([]);
 
+  set selected(val: TreeNode<any>[]) {
+    this.selected$.next(val);
+  }
+  get selected(): TreeNode<any>[] {
+    return this.selected$.value;
+  }
+
   treeDataInitialized$ = new Subject<TreeNode<any>[]>();
   treeDataInitialized = false;
 
@@ -125,14 +132,17 @@ export class TreeChecklistComponent implements OnInit, OnDestroy, AfterViewInit 
       this.dataSource.data = d;
 
       this.reselect(d);
-      if (!this.treeDataInitialized) this.treeDataInitialized$.next();
+      if (!this.treeDataInitialized) {
+        this.treeDataInitialized = true;
+        this.treeDataInitialized$.next();
+      }
     })
   }
 
   reselect(nodes: TreeNode<any>[]) {
     const dataNodes = this.treeControl.dataNodes;
     const availableNodes = indexBy((id) => id, this.extractNodeIds(dataNodes));
-    const selectedNodeIds = indexBy((id) => id, this.extractNodeIds(this.selected$.value));
+    const selectedNodeIds = indexBy((id) => id, this.extractNodeIds(this.selected));
     let hasChanges = false;
 
     // delete selection
@@ -151,7 +161,7 @@ export class TreeChecklistComponent implements OnInit, OnDestroy, AfterViewInit 
       }
     })
     this.changeDetectorRef.detectChanges();
-    if (hasChanges) this.selected$.next(this.checklistSelection.selected)
+    if (hasChanges) this.selected = this.checklistSelection.selected;
   }
 
   setSelection(nodes: TreeNode<any>[]) {
@@ -162,7 +172,7 @@ export class TreeChecklistComponent implements OnInit, OnDestroy, AfterViewInit 
       const dataNodes = this.treeControl.dataNodes;
 
       let hasChanges = false;
-      const oldSelectedIds = indexBy((id) => id, this.extractNodeIds(this.selected$.value));
+      const oldSelectedIds = indexBy((id) => id, this.extractNodeIds(this.selected));
       const newSelectedIds = indexBy((id) => id, this.extractNodeIds(nodes));
 
       dataNodes.forEach(node => {
@@ -178,7 +188,7 @@ export class TreeChecklistComponent implements OnInit, OnDestroy, AfterViewInit 
         }
       })
 
-      if (hasChanges) this.selected$.next(this.checklistSelection.selected)
+      if (hasChanges) this.selected = this.checklistSelection.selected;
     })
 
   }
@@ -251,13 +261,13 @@ export class TreeChecklistComponent implements OnInit, OnDestroy, AfterViewInit 
     const allSelected = descendants.every(child => this.checklistSelection.isSelected(child));
     if (!selected && allSelected) {
       this.checklistSelection.select(node);
-      this.selected$.next(this.checklistSelection.selected);
+      this.selected =this.checklistSelection.selected;
       this.changeDetectorRef.markForCheck();
     }
     const noneSelected = descendants.every(child => !this.checklistSelection.isSelected(child));
     if (selected && noneSelected) {
       this.checklistSelection.deselect(node);
-      this.selected$.next(this.checklistSelection.selected);
+      this.selected = this.checklistSelection.selected;
       this.changeDetectorRef.markForCheck();
     }
     return allSelected;
@@ -281,7 +291,7 @@ export class TreeChecklistComponent implements OnInit, OnDestroy, AfterViewInit 
       ? this.checklistSelection.select(...descendants, node)
       : this.checklistSelection.deselect(...descendants, node);
 
-    this.selected$.next(this.checklistSelection.selected);
+    this.selected = this.checklistSelection.selected;
 
     this.changeDetectorRef.markForCheck();
   }

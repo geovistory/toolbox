@@ -2,13 +2,44 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Observable } from 'rxjs';
 
-export interface ColDefTreeData {
-  label?: string
+export type ColDefPathSegmentType = 'properties' | 'classes';
+
+export class ColDefPathSegment {
+
+  type?: ColDefPathSegmentType
+  classes?: number[];
+  types?: number[];
+  
+  outgoingProperties?: number[]
+  ingoingProperties?: number[]
+
+  constructor(data: ColDefPathSegment) {
+    Object.assign(this, data)
+  }
 }
-export class ColDefTree {
 
-  constructor(public data: ColDefTreeData = {}, public children: ColDefTree[] = []) {
+export class ColDef {
+  // has to be true on columns of the root table (the first entity_preview table)
+  ofRootTable?: boolean;
+  // If true, users cant edit this column
+  isDefault?: string;
 
+  colName?: string;
+
+  label?: string
+
+  queryPath?: ColDefPathSegment[]
+
+  constructor(data: ColDef) {
+    Object.assign(this, data)
+  }
+
+  addSegment?(segment: ColDefPathSegment) {
+    this.queryPath.push(segment)
+  }
+
+  removeSegmentByIndex?(i: number) {
+    this.queryPath.splice(i, (this.queryPath.length - 1))
   }
 }
 
@@ -19,36 +50,30 @@ export class ColDefTree {
   styleUrls: ['./col-def-editor.component.scss']
 })
 export class ColDefEditorComponent implements OnInit {
-  @Input() selectedClasses$: Observable<number[]>;
+  @Input() propertyOptions$: Observable<number[]>;
+  @Input() colDefs: ColDef[];
 
-  colDefs: ColDefTree[];
-  constructor() {
-    this.colDefs = [
-      new ColDefTree({
-        label: 'Entity Label'
-      }),
-      new ColDefTree({
-        label: 'Class Label'
-      }),
-      new ColDefTree({
-        label: 'Type Label'
-      })
-    ]
-  }
+  constructor() { }
 
   ngOnInit() {
 
   }
 
-  drop(event: CdkDragDrop<ColDefTree[]>) {
+  drop(event: CdkDragDrop<ColDef[]>) {
     moveItemInArray(this.colDefs, event.previousIndex, event.currentIndex);
   }
 
 
   addColumn() {
-    this.colDefs.push(new ColDefTree({
-      label: 'New Column'
+    this.colDefs.push(new ColDef({
+      label: 'New Column',
+      queryPath: [
+        new ColDefPathSegment({
+          type: 'properties'
+        })
+      ]
     }))
+
   }
 
   removeColumn(i) {

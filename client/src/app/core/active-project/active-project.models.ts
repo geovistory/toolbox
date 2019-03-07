@@ -15,7 +15,7 @@ export interface TeEnList { [pk_entity: number]: InfTemporalEntity };
 export class PropertyList { [pk_entity: string]: DfhProperty; }
 export interface TypePeIt extends InfPersistentItem { fk_typed_class: number; } // TODO remove if replaced by TypePreview
 export class TypesByClass { [dfh_pk_class: string]: TypePeIt[]; }
-export class TypesByPk { [pk_entity: string]: TypePeIt[]; }
+export class TypesByPk { [pk_entity: string]: TypePeIt; }
 
 export interface TypePreview extends EntityPreview { fk_typed_class: number; }
 export class TypePreviewsByClass { [dfh_pk_class: string]: TypePreview[]; }

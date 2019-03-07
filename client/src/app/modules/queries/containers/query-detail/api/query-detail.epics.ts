@@ -22,7 +22,8 @@ export class QueryDetailAPIEpics {
   public createEpics(c: QueryDetailComponent): Epic {
     return combineEpics(
       this.createLoadQueryDetailEpic(c),
-      this.createRunQueryDetailEpic(c)
+      this.createRunQueryDetailEpic(c),
+      this.createRunInitQueryDetailEpic(c)
     );
   }
 
@@ -78,6 +79,22 @@ export class QueryDetailAPIEpics {
     }
   }
 
+  private createRunInitQueryDetailEpic(c: QueryDetailComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(QueryDetailAPIActions.RUN_INIT),
+        filter(action => ofSubstore(c.basePath)(action)),
+        switchMap((action: QueryDetailAPIAction) => new Observable<Action>((globalStore) => {
+          c.localStore.dispatch(this.actions.run(action.meta.pkProject, action.meta.query));          
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
   private createRunQueryDetailEpic(c: QueryDetailComponent): Epic {
     return (action$, store) => {
       return action$.pipe(
@@ -94,7 +111,7 @@ export class QueryDetailAPIEpics {
           /**
            * Do some api call
            */
-          this.queryApi.run(action.meta.pkProject, action.meta.query) // <- change api call here
+          this.queryApi.run(action.meta.pkProject, action.meta.query)
             /**
              * Subscribe to the api call
              */
@@ -106,7 +123,7 @@ export class QueryDetailAPIEpics {
               /**
                * Emit the local action on loading succeeded
                */
-              c.localStore.dispatch(this.actions.runSucceeded(data));
+              c.localStore.dispatch(this.actions.runSucceeded(data, action.meta.query.offset, action.meta.query.limit));
 
             }, error => {
               /**
@@ -122,7 +139,7 @@ export class QueryDetailAPIEpics {
               /**
                * Emit the local action on loading failed
                */
-              c.localStore.dispatch(this.actions.runFailed({ status: '' + error.status }))
+              c.localStore.dispatch(this.actions.runFailed({ status: '' + error.status }, action.meta.query.offset, action.meta.query.limit))
             })
         })),
         takeUntil(c.destroy$)

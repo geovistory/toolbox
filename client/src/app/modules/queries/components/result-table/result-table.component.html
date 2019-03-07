@@ -1,0 +1,72 @@
+<cdk-virtual-scroll-viewport coreTableVirtualScroll>
+	<mat-table matSort [dataSource]="dataSource" [trackBy]="id">
+		<!-- <ng-container matColumnDef="select">
+			<mat-header-cell *matHeaderCellDef>
+				<mat-checkbox
+          (change)="$event && toggleAll()"
+          [checked]="selectedAll"
+          [indeterminate]="indeterminate">
+				</mat-checkbox>
+			</mat-header-cell>
+			<mat-cell *matCellDef="let row">
+				<mat-checkbox
+          (click)="$event.stopPropagation()"
+          (change)="$event && toggle(row)"
+          [checked]="isSelected(row)">
+				</mat-checkbox>
+			</mat-cell>
+		</ng-container> -->
+		<!-- <ng-container matColumnDef="id">
+			<mat-header-cell *matHeaderCellDef>
+				<core-table-filter (change)="filter('id', $event)">
+					<div mat-sort-header>ID</div>
+				</core-table-filter>
+			</mat-header-cell>
+			<mat-cell *matCellDef="let row">{{ row.id }}</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="name">
+			<mat-header-cell *matHeaderCellDef>
+        <core-table-filter (change)="filter('name', $event)">
+          <div mat-sort-header>Name</div>
+        </core-table-filter>
+			</mat-header-cell>
+			<mat-cell *matCellDef="let row">{{ row.name }}</mat-cell>
+		</ng-container> -->
+		<!-- 		
+		<ng-container matColumnDef="actions">
+			<mat-header-cell *matHeaderCellDef>
+				<core-table-menu (clear)="clearFilters()"></core-table-menu>
+			</mat-header-cell>
+			<mat-cell *matCellDef="let row"></mat-cell>
+		</ng-container> -->
+
+
+		<ng-container *ngFor="let col of colDef" [matColumnDef]="col.data.label">
+			<mat-header-cell *matHeaderCellDef> {{col.data.label}} </mat-header-cell>
+			<mat-cell *matCellDef="let entity">
+
+				<span
+					*ngIf="col.data?.type === 'properties' || col.data?.type === 'properties'">{{entity[col.data.label]?.length}}</span>
+				<span
+					*ngIf="col.data?.type !== 'properties' && col.data?.type !== 'properties'">{{entity[col.data.label]}}</span>
+
+			</mat-cell>
+		</ng-container>
+
+
+		<ng-container matColumnDef="progress">
+			<mat-header-cell *matHeaderCellDef [attr.colspan]="columns.length">
+				<mat-progress-bar mode="indeterminate" [class.show]="pending$ | async">
+				</mat-progress-bar>
+			</mat-header-cell>
+		</ng-container>
+
+
+		<mat-header-row *matHeaderRowDef="columns; sticky: sticky" [style.top.px]="headerTop$ | async">
+		</mat-header-row>
+		<mat-header-row class="core-table-progress" *matHeaderRowDef="['progress']; sticky: sticky"
+			[style.top.px]="(headerTop$ | async) + 56">
+		</mat-header-row>
+		<mat-row *matRowDef="let row; columns: columns"></mat-row>
+	</mat-table>
+</cdk-virtual-scroll-viewport>

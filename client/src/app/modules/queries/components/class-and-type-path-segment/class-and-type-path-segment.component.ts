@@ -1,17 +1,21 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, forwardRef, Input, OnDestroy, Optional, Self } from '@angular/core';
-import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { FilterTreeData } from '../../containers/query-detail/query-detail.component';
+import { QueryService } from '../../services/query.service';
+import { ClassesAndTypes } from '../class-and-type-filter/class-and-type-filter.component';
+import { ColDef, ColDefPathSegment } from '../col-def-editor/col-def-editor.component';
+import { PropertyOption } from '../../property-select/property-select.component';
 
-interface CtrlModel {
-  foo: string;
-}
+
 
 @Component({
   selector: 'gv-class-and-type-path-segment',
-  templateUrl: './class-and-type-path-segment.component.html', 
-  styleUrls: ['./class-and-type-path-segment.component.css']  ,
+  templateUrl: './class-and-type-path-segment.component.html',
+  styleUrls: ['./class-and-type-path-segment.component.css'],
   providers: [{ provide: MatFormFieldControl, useExisting: ClassAndTypePathSegmentComponent }],
   host: {
     '[class.example-floating]': 'shouldLabelFloat',
@@ -19,10 +23,13 @@ interface CtrlModel {
     '[attr.aria-describedby]': 'describedBy',
   }
 })
-export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
+export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<ColDef> {
   static nextId = 0;
 
-  model: CtrlModel;
+  @Input() pkClasses$: Observable<number[]>;
+  @Output() remove = new EventEmitter<void>();
+
+  model: ColDefPathSegment;
 
   // emits true on destroy of this component
   autofilled?: boolean;
@@ -37,7 +44,11 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
   onTouched = () => { };
 
   get empty() {
-    return this.model.foo ? false :true;
+    if (!this.model || ! this.model.data) return true;
+    return [
+      ...(this.model.data.classes || []),
+      ...(this.model.data.types || [])
+    ].length === 0;
   }
 
   get shouldLabelFloat() { return this.focused || !this.empty; }
@@ -48,7 +59,7 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
     this._placeholder = value;
     this.stateChanges.next();
   }
-    private _placeholder: string;
+  private _placeholder: string;
 
   @Input()
   get required(): boolean { return this._required; }
@@ -56,7 +67,7 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
     this._required = coerceBooleanProperty(value);
     this.stateChanges.next();
   }
-    private _required = false;
+  private _required = false;
 
   @Input()
   get disabled(): boolean { return this._disabled; }
@@ -67,37 +78,77 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
     // this._disabled ? this.parts.disable() : this.parts.enable();
     this.stateChanges.next();
   }
-    private _disabled = false;
+  private _disabled = false;
 
   @Input()
-  get value(): CtrlModel | null {
-    
+  get value(): ColDef | null {
+
     // TODO: Adapt, when it is invalid and null is returned
-    if (!this.model.foo) return null;
+    if (!this.empty) return null;
 
     return this.model;
   }
-  set value(value: CtrlModel | null) {
+  set value(value: ColDef | null) {
     this.model = value;
+    this.onChange(this.model)
+  }
+
+
+  selectedClassesAndTypes$ = new BehaviorSubject<ClassesAndTypes | null>(null);
+
+  // the propertyOptions get derived from the selectedClasses
+  propertyOptions$ = new BehaviorSubject<PropertyOption[] | null>(null);
+
+  get selectedClassesAndTypes() {
+    return this.selectedClassesAndTypes$.value;
+  }
+  set selectedClassesAndTypes(val: ClassesAndTypes) {
+    this.selectedClassesAndTypes$.next(val)
   }
 
 
   constructor(
-      @Optional() @Self() public ngControl: NgControl
-    ) {
+    @Optional() @Self() public ngControl: NgControl,
+    private q: QueryService
+  ) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
+
+    this.selectedClassesAndTypes$.pipe(
+      this.q.propertiesOfClassesAndTypes(),
+      takeUntil(this.destroy$)
+    ).subscribe(propertyOptions => {
+      this.propertyOptions$.next(propertyOptions)
+    })
+
   }
 
-  // TODO: Adapt way of changing the value
-  newFoo(val) {
-    this.value = {
-      foo: val
+  // when tree data changes (object without children)
+  treeDataChange(treeData: FilterTreeData) {
+    this.selectedClassesAndTypes = {
+      classes: treeData.classes || [],
+      types: treeData.types || []
     };
-    this.onChange(this.value)
   }
-  
+
+  // When user changes the model
+  onModelChange(val) {
+    this.value = val;
+  }
+
+  // When user adds a next path segment
+  addChild() {
+    this.model.children.push(new ColDef({
+      type: 'properties'
+    }))
+    this.onChange(this.model)
+  }
+  removeChildren(){
+    this.model.children = [];
+    this.onChange(this.model)
+  }
+
   ngOnDestroy() {
     this.stateChanges.complete();
     this.destroy$.next(true);
@@ -114,7 +165,7 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
 
   }
 
-  writeValue(value: CtrlModel | null): void {
+  writeValue(value: ColDef | null): void {
     this.value = value;
   }
 

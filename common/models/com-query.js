@@ -11,7 +11,10 @@ class QueryBuilder {
         this.selects = [];
         this.froms = [];
         this.wheres = [];
+        this.groupBys = [];
 
+        this.limit = ''
+        this.offset = ''
     }
 
     buildQuery(query, fkProject) {
@@ -27,21 +30,32 @@ class QueryBuilder {
         this.createFilterWheres(query.filter)
 
         // create froms and selects according to column definition
+        this.createColumnFroms(query.columns, rootTableAlias, fkProject)
+        this.createColumnSelects(query.columns, rootTableAlias)
+        this.createColumnGroupBys(query.columns, rootTableAlias)
 
         // root table from
         this.froms.unshift(`warehouse.entity_preview ${rootTableAlias}`)
 
+        // create limit, offset
+        this.createLimitAndOffset(query)
+        // create select of full_count
+        this.createFullCount()
+        
         this.sql = `
-        SELECT DISTINCT
-        ${this.createSelect(query, rootTableAlias)}
+        SELECT 
+            ${this.joinSelects(this.selects)}
 
         FROM
-
             ${this.joinFroms(this.froms)}
 
         WHERE
-
             ${this.joinWheres(this.wheres, 'AND')}
+
+        GROUP BY
+            ${this.joinGroupBys(this.groupBys)}      
+        ${this.limit}
+        ${this.offset}
         `
 
         console.log('sql', sqlFormatter.format(this.sql))
@@ -52,122 +66,180 @@ class QueryBuilder {
             params: this.params
         }
     }
+    /**
+     * if there is limit and offset provided, this function adds:
+     * - a limit
+     * - a offset
+     * @param {*} query 
+     */
+    createLimitAndOffset(query) {
+        if (
+            typeof query.limit !== 'number' ||
+            typeof query.offset !== 'number' ||
+            query.limit < 1 || query.offset < 0
+        ) return ''
 
-    createSelect(query, tableAlias) {
-        return `
-        ${tableAlias}.entity_label,
-        ${tableAlias}.class_label,
-        ${tableAlias}.type_label
-        `
+       
+
+        this.limit = `LIMIT ${this.addParam(query.limit)}`
+        this.offset = `OFFSET ${this.addParam(query.offset)}`
+    }
+
+    createFullCount(){
+        this.selects.push('count(*) OVER() AS full_count')
+    }
+
+    createColumnFroms(columns, parentTableAlias, fkProject) {
+        columns.forEach(column => {
+            this.createColumnFrom(column, parentTableAlias, fkProject)
+        })
+    }
+
+    createColumnFrom(node, parentTableAlias, fkProject, level = 0) {
+        if (!node.data.ofRootTable) {
+            let thisTableAlias;
+            console.log(level)
+
+            if (this.isRolesJoin(node) || this.isEntitesJoin(node)) {
+                thisTableAlias = this.addTableAlias();
+                node.data._tableAlias = thisTableAlias;
+            }
+
+            node.children.forEach(childNode => {
+                this.createColumnFrom(childNode, thisTableAlias, fkProject, (level + 1))
+            })
+
+            // JOIN roles
+            if (this.isRolesJoin(node)) {
+                this.joinRoles(node, parentTableAlias, thisTableAlias, fkProject);
+            }
+            // JOIN entities
+            else if (this.isEntitesJoin(node)) {
+                this.joinEntities(node, parentTableAlias, thisTableAlias, fkProject);
+            }
+        }
+    }
+
+    createColumnSelects(columns, parentTableAlias) {
+        columns.forEach(column => {
+            if (column.data.ofRootTable) {
+                this.selects.push(`${parentTableAlias}.${column.data.colName} AS "${column.data.label}"`)
+            } else {
+                this.createColumnSelect(column, column.data.label)
+            }
+        })
+    }
+
+    createColumnSelect(node, columnLabel) {
+
+        if (!node.children.length) {
+            if (this.isRolesJoin(node)) {
+
+            } else if (this.isEntitesJoin(node)) {
+                this.selects.push(`jsonb_agg(distinct jsonb_build_object(
+                    'pk_entity',  ${node.data._tableAlias}.pk_entity,
+                    'entity_type',  ${node.data._tableAlias}.entity_type,
+                    'entity_label',  ${node.data._tableAlias}.entity_label,
+                    'class_label',  ${node.data._tableAlias}.class_label,
+                    'type_label',  ${node.data._tableAlias}.type_label,
+                    'time_span', ${node.data._tableAlias}.time_span
+                )) AS "${columnLabel}"`)
+            }
+        } else {
+            node.children.forEach(child => {
+                this.createColumnSelect(child, columnLabel)
+            })
+        }
+
     }
 
 
     createFilterFroms(parentNode, parentTableAlias, fkProject, level = 0) {
 
-        let childResult;
         let thisTableAlias;
         console.log(level)
-        if (
-            parentNode.data.ingoingProperties || parentNode.data.outgoingProperties ||
-            parentNode.data.classes || parentNode.data.types
-        ) {
+        if (this.isRolesJoin(parentNode) || this.isEntitesJoin(parentNode)) {
             parentNode.data._tableAlias = parentTableAlias;
         }
 
-
         parentNode.children.forEach(node => {
-            if (
-                node.data.ingoingProperties || node.data.outgoingProperties ||
-                node.data.classes || node.data.types
-            ) {
+            if (this.isRolesJoin(node) || this.isEntitesJoin(node)) {
                 thisTableAlias = this.addTableAlias();
-                childResult = this.createFilterFroms(node, thisTableAlias, fkProject, (level + 1))
+                this.createFilterFroms(node, thisTableAlias, fkProject, (level + 1))
             } else {
-                childResult = this.createFilterFroms(node, parentTableAlias, fkProject, (level + 1))
+                this.createFilterFroms(node, parentTableAlias, fkProject, (level + 1))
             }
 
             // JOIN roles
-            if (node.data.ingoingProperties || node.data.outgoingProperties) {
-                const topLevelWheres = []
-                topLevelWheres.push(`
-                ${thisTableAlias}.fk_project = ${this.addParam(fkProject)}
-                `)
-                const secondLevelWheres = []
-                if (node.data.ingoingProperties.length) {
-                    secondLevelWheres.push(`
-                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_entity AND ${thisTableAlias}.fk_property IN (${this.addParams(node.data.ingoingProperties)}))
-                    `)
-                }
-                if (node.data.outgoingProperties.length) {
-                    secondLevelWheres.push(`
-                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_temporal_entity AND ${thisTableAlias}.fk_property IN (${this.addParams(node.data.outgoingProperties)}))
-                    `)
-                }
-
-                if (secondLevelWheres.length) {
-                    topLevelWheres.push(`(
-                         ${this.joinWheres(secondLevelWheres, 'OR')} 
-                    )`)
-                }
-
-                this.froms.unshift(`    
-                LEFT JOIN warehouse.v_roles_per_project_and_repo ${thisTableAlias} ON 
-                 ${this.joinWheres(topLevelWheres, 'AND')}
-                `)
-
-
+            if (this.isRolesJoin(node)) {
+                this.joinRoles(node, parentTableAlias, thisTableAlias, fkProject);
             }
-            else if (node.data.classes || node.data.types) {
+            // JOIN entities
+            else if (this.isEntitesJoin(node)) {
+                this.joinEntities(node, parentTableAlias, thisTableAlias, fkProject);
+            }
+        })
+    }
 
-                this.froms.unshift(`    
+    joinEntities(node, parentTableAlias, thisTableAlias, fkProject) {
+        this.froms.unshift(`    
                     LEFT JOIN warehouse.entity_preview ${thisTableAlias} ON
                     (${parentTableAlias}.fk_entity = ${thisTableAlias}.pk_entity OR ${parentTableAlias}.fk_temporal_entity = ${thisTableAlias}.pk_entity)
                     AND
                      ${this.createEntityWhere(node, thisTableAlias, fkProject)}
-                `)
-
-
-            }
-            else if (node.data.subgroup) {
-
-
-            }
-
-        })
-
-
-
-        // return `
-        // -- inner joins
-
-
-        // -- roles
-        // JOIN warehouse.v_roles_per_project_and_repo t2 ON 
-        //     (
-        //         -- ingoing
-        //         (${tableAlias}.pk_entity = t2.fk_entity AND t2.fk_property IN (86))
-        //         OR
-        //         -- outgoing
-        //         (${tableAlias}.pk_entity = t2.fk_temporal_entity AND t2.fk_property IN (1186))
-        //     )												   
-        //     AND t2.fk_project = 12 
-
-        //     -- entities
-        //     JOIN warehouse.entity_preview t3 ON 
-        //         (
-        //             t3.pk_entity = t2.fk_entity 
-        //             OR
-        //             t3.pk_entity = t2.fk_temporal_entity 
-        //         )												   
-        //         AND 
-        //         t3.fk_project = 12 
-        //         AND (
-        //             t3.fk_class IN (61, 363)
-        //             OR 
-        //             t3.fk_type IN (80412, 80622)
-        //         )
-        // `
+                `);
     }
+
+    joinRoles(node, parentTableAlias, thisTableAlias, fkProject) {
+        const topLevelWheres = [];
+        topLevelWheres.push(`
+                ${thisTableAlias}.fk_project = ${this.addParam(fkProject)}
+                `);
+        const secondLevelWheres = [];
+        if (node.data.ingoingProperties.length) {
+            secondLevelWheres.push(`
+                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_entity AND ${thisTableAlias}.fk_property IN (${this.addParams(node.data.ingoingProperties)}))
+                    `);
+        }
+        if (node.data.outgoingProperties.length) {
+            secondLevelWheres.push(`
+                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_temporal_entity AND ${thisTableAlias}.fk_property IN (${this.addParams(node.data.outgoingProperties)}))
+                    `);
+        }
+        if (secondLevelWheres.length) {
+            topLevelWheres.push(`(
+                         ${this.joinWheres(secondLevelWheres, 'OR')} 
+                    )`);
+        }
+        this.froms.unshift(`    
+                LEFT JOIN warehouse.v_roles_per_project_and_repo ${thisTableAlias} ON 
+                 ${this.joinWheres(topLevelWheres, 'AND')}
+                `);
+    }
+
+    createEntityWhere(filter, tableAlias, fkProject) {
+
+        const whereProject = `${tableAlias}.fk_project = ${this.addParam(fkProject)}`
+
+        const classOrTypeWheres = [];
+        if (filter.data && filter.data.classes && filter.data.classes.length) {
+            classOrTypeWheres.push(`${tableAlias}.fk_class IN (${this.addParams(filter.data.classes)})`)
+        }
+        if (filter.data && filter.data.types && filter.data.types.length) {
+            classOrTypeWheres.push(`${tableAlias}.fk_type IN (${this.addParams(filter.data.types)})`)
+        }
+
+        const topLevelWheres = [];
+        topLevelWheres.push(whereProject);
+        if (classOrTypeWheres.length) {
+            topLevelWheres.push(` ( ${this.joinWheres(classOrTypeWheres, 'OR')} )`)
+        }
+
+        return `
+        ${this.joinWheres(topLevelWheres, 'AND')}
+        `
+    }
+
 
     createFilterWheres(node, level = 0) {
         let nodeWheres = [];
@@ -232,47 +304,33 @@ class QueryBuilder {
 
     }
 
-    innerJoinRoles() {
-
+    /**
+     * Returns true, if given node is for joining roles
+     * @param {*} node 
+     */
+    isRolesJoin(node) {
+        if (!node || typeof node.data !== 'object') return false;
+        return (node.data.ingoingProperties || node.data.outgoingProperties)
+    }
+    /**
+     * Returns true, if given node is for joining entities
+     * @param {*} node 
+     */
+    isEntitesJoin(node) {
+        if (!node || typeof node.data !== 'object') return false;
+        return (node.data.classes || node.data.types)
     }
 
-    createLeftJoins(columns) {
 
 
-        return `
-        -- left joins
-    
-        `
+    createColumnGroupBys(columns, parentTableAlias) {
+        columns.forEach(column => {
+            if (column.data.ofRootTable) {
+                this.groupBys.push(`${parentTableAlias}.${column.data.colName}`)
+            }
+        })
     }
 
-
-
-    createEntityWhere(filter, tableAlias, fkProject) {
-
-        const whereProject = `${tableAlias}.fk_project = ${this.addParam(fkProject)}`
-
-        const classOrTypeWheres = [];
-        if (filter.data.classes.length) {
-            classOrTypeWheres.push(`${tableAlias}.fk_class IN (${this.addParams(filter.data.classes)})`)
-        }
-        if (filter.data.types.length) {
-            classOrTypeWheres.push(`${tableAlias}.fk_type IN (${this.addParams(filter.data.types)})`)
-        }
-
-        const topLevelWheres = [];
-        topLevelWheres.push(whereProject);
-        if (classOrTypeWheres.length) {
-            topLevelWheres.push(` ( ${this.joinWheres(classOrTypeWheres, 'OR')} )`)
-        }
-
-        return `
-        ${this.joinWheres(topLevelWheres, 'AND')}
-        `
-    }
-
-    createRoleWhere() {
-        return ''
-    }
 
     // generic
 
@@ -293,6 +351,17 @@ class QueryBuilder {
     }
     joinFroms(froms) {
         return froms.join(`
+
+        `);
+    }
+    joinSelects(selects) {
+        return selects.join(`,
+
+        `);
+    }
+
+    joinGroupBys(groupBys) {
+        return groupBys.join(`,
 
         `);
     }

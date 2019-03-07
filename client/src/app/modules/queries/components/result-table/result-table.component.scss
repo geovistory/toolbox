@@ -1,0 +1,18 @@
+@import '../../../../shared/components/core-table/table';
+
+:host {
+    display: block;
+}
+
+@include base;
+@include progress;
+cdk-virtual-scroll-viewport {
+    height: 100%;
+} // this compensates for flex display, i.e. not using <table>
+.mat-column-id {
+    max-width: 4rem;
+}
+
+.mat-column-actions {
+    max-width: 24px;
+}

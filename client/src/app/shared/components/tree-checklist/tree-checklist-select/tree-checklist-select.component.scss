@@ -6,23 +6,26 @@
     display: flex;
     padding: 0;
     height: 1.125rem;
-}
-
-.select-value-text {
-    flex: 1 0 0%;
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.select-value {
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.arrow-drop-down {
-    color: rgba(0, 0, 0, 0.54);
+    .select-value {
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .select-value-text {
+        flex: 1 0 0%;
+        text-align: left;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .arrow-drop-down {
+        color: rgba(0, 0, 0, 0.54);
+    }
+    &.disabled {
+        .select-value-text,
+        .arrow-drop-down {
+            color: rgba(0, 0, 0, 0.38);
+        }
+    }
 }

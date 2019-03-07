@@ -1,0 +1,12 @@
+<!-- 
+<div>
+    <input type="text" [value]="model?.foo" (input)="newFoo($event.target.value)" (blur)="onTouched()">
+
+
+</div>     -->
+
+
+<span *ngFor="let segment of model; let i = index">
+    <gv-property-path-segment class="d-flex flex-column" *ngIf="segment.type === 'properties'" [(ngModel)]="model[i]"
+    [propertyOptions$]="propertyOptions$" (remove)="removeChildren()"></gv-property-path-segment>
+</span>

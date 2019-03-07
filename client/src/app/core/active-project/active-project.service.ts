@@ -11,7 +11,7 @@ import { ComProject } from '../sdk/models/ComProject';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
-import { ClassConfig, ListType, ProjectCrm, Tab, TypePeIt, TypePreview, TypePreviewsByClass } from './active-project.models';
+import { ClassConfig, ListType, ProjectCrm, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
 
 
 
@@ -26,6 +26,7 @@ export class ActiveProjectService {
   public focusedPanel$: Observable<boolean>;
   public list$: Observable<ListType>; // type of list displayed in left panel 
   public creatingMentioning$: Observable<boolean>;
+  public typesByPk$: Observable<TypesByPk>
 
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
@@ -45,6 +46,7 @@ export class ActiveProjectService {
     this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
     this.crm$ = ngRedux.select<ProjectCrm>(['activeProject', 'crm']);
     this.list$ = ngRedux.select<ListType>(['activeProject', 'list']);
+    this.typesByPk$ = ngRedux.select<TypesByPk>(['activeProject', 'typesByPk']);
 
     this.focusedPanel$ = ngRedux.select<boolean>(['activeProject', 'focusedPanel']);
     this.creatingMentioning$ = ngRedux.select<boolean>(['activeProject', 'creatingMentioning']);

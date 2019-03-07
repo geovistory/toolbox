@@ -2,7 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output, ViewChildren, QueryList
 import { FilterTree, FilterTreeData } from '../../containers/query-detail/query-detail.component';
 import { Observable, merge, Subject, combineLatest, zip, BehaviorSubject } from 'rxjs';
 import { ClassAndTypeSelectComponent } from '../class-and-type-select/class-and-type-select.component';
-import { PropertySelectComponent } from '../property-select/property-select.component';
+import { PropertySelectComponent, PropertyOption } from '../property-select/property-select.component';
 import { PropertyFilterComponent } from '../property-filter/property-filter.component';
 import { takeUntil, map, mergeMap, switchMap } from 'rxjs/operators';
 import { flatten } from 'ramda';
@@ -19,7 +19,7 @@ export class SubgroupComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChildren(PropertyFilterComponent) operatorSelects: QueryList<PropertyFilterComponent>;
 
   @Input() qtree: FilterTree;
-  @Input() parentData$: Observable<FilterTreeData>;
+  @Input() propertyOptions$: Observable<PropertyOption[]>;
   @Input() pkClasses$: Observable<number[]>;
   @Input() hideParentLine = false;
 
@@ -27,10 +27,6 @@ export class SubgroupComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() merge = new EventEmitter<FilterTree>();
   @Output() validChanged = new EventEmitter<boolean>();
   valid: boolean;
-
-  get showAddSiblingBtn(): boolean {
-    return this.valid;
-  }
 
   constructor() { }
 

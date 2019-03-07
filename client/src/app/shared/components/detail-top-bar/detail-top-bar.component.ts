@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
 
 @Component({
   selector: 'gv-detail-top-bar',
@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./detail-top-bar.component.scss']
 })
 export class DetailTopBarComponent implements OnInit {
+
+  @HostBinding('class.gv-flex-shrink-0') noshrink = true;
 
   constructor() { }
 

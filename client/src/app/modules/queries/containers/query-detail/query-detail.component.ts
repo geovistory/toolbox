@@ -1,16 +1,20 @@
-import { Component, OnDestroy, Input, OnInit, HostBinding } from '@angular/core';
-import { Subject, Observable, of, BehaviorSubject } from 'rxjs';
-import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, ActiveProjectService } from 'app/core';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { AfterViewInit, Component, forwardRef, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActiveProjectService, IAppState, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { QueryDetail } from './api/query-detail.models';
-import { QueryDetailAPIEpics } from './api/query-detail.epics';
+import { clone, values } from 'ramda';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { filter, first, takeUntil, map } from 'rxjs/operators';
+import { ClassAndTypeFilterComponent } from '../../components/class-and-type-filter/class-and-type-filter.component';
+import { ColDef } from '../../components/col-def-editor/col-def-editor.component';
+import { PropertyOption } from '../../components/property-select/property-select.component';
 import { QueryDetailAPIActions } from './api/query-detail.actions';
-import { queryDetailReducer } from './api/query-detail.reducer';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { first, takeUntil } from 'rxjs/operators';
+import { QueryDetailAPIEpics } from './api/query-detail.epics';
+import { QueryDetail } from './api/query-detail.models';
+import { queryDetailReducer, pageOfOffset, offsetOfPage } from './api/query-detail.reducer';
 
-export type SubGroupType = 'property' | 'classAndType'
+export type SubGroupType = 'property' | 'classAndType'
 export interface FilterTreeData {
   subgroup?: SubGroupType;
   classes?: number[]
@@ -26,6 +30,12 @@ export class FilterTree {
   }
 }
 
+export interface GvQuery {
+  filter: FilterTree,
+  columns: ColDef[],
+  limit: number,
+  offset: number
+}
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -36,9 +46,10 @@ export class FilterTree {
   templateUrl: './query-detail.component.html',
   styleUrls: ['./query-detail.component.css']
 })
-export class QueryDetailComponent extends QueryDetailAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+export class QueryDetailComponent extends QueryDetailAPIActions implements OnInit, AfterViewInit, OnDestroy, SubstoreComponent {
 
   @HostBinding('class.gv-flex-fh') flexFh = true;
+  @ViewChild(forwardRef(() => ClassAndTypeFilterComponent)) filterComponent: ClassAndTypeFilterComponent;
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
@@ -52,20 +63,53 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
   @select() showRightArea$: Observable<boolean>;
-  @select() items$: Observable<boolean>;
+  @select() items$: Observable<any[]>;
+  @select() loadedPages$: Observable<{ [pageNr: string]: boolean }>;
+  @select() loadingPages$: Observable<{ [pageNr: string]: boolean }>;
+  @select() fullCount$: Observable<number>;
 
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
   thirdFormGroup: FormGroup;
 
-  displayedColumns: string[] = ['label', 'class', 'type', 'geburten'];
+  displayedColumns: string[];
 
 
-  // Query
+
+  // filter
   filterQuery = new FilterTree();
 
-  // TODO use the sekected classes from filter
-  selectedClasses$ = new BehaviorSubject([21])
+  // cols
+  colDefs = [
+    new ColDef({
+      ofRootTable: true,
+      isDefault: 'Entity Label',
+      colName: 'entity_label',
+      label: 'Entity Label'
+    }),
+    new ColDef({
+      ofRootTable: true,
+      isDefault: 'Class Label',
+      colName: 'class_label',
+      label: 'Class Label'
+    }),
+    new ColDef({
+      ofRootTable: true,
+      isDefault: 'Type Label',
+      colName: 'type_label',
+      label: 'Type Label'
+    })
+  ]
+
+  // propertyOptions will be derived from the filter defined in the first step
+  propertyOptions$ = new BehaviorSubject<PropertyOption[]>(null);
+
+
+  // result table
+  colDefsCopy: ColDef[];
+  filterQueryCopy;
+  readonly limit = 500;
+  pending$: Observable<boolean>
 
   constructor(
     protected rootEpics: RootEpics,
@@ -93,25 +137,71 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
       nameCtrl: ['', Validators.required],
       descriptionCtrl: [''],
     });
+    this.pending$ = this.loadingPages$.pipe(
+      map(pages => !!values(pages).find(loading => loading === true))
+    )
+
+  }
+
+  ngAfterViewInit() {
+    // get the propertyOptions from the filter defined in the first step
+    this.filterComponent.propertyOptions$.pipe(
+      filter(o => o !== null),
+      takeUntil(this.destroy$)
+    ).subscribe(x =>
+      this.propertyOptions$.next(x)
+    );
+
   }
 
   onRun() {
     this.p.pkProject$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(pk => {
-      this.run(pk, {
+      this.runInit(pk, {
         filter: this.filterQuery,
-        columns: {},
-        limit: 10,
-        offset: 1
+        columns: this.colDefs,
+        limit: this.limit,
+        offset: 0
       });
       this.showRightArea();
+      this.colDefsCopy = clone(this.colDefs)
+      this.filterQueryCopy = clone(this.filterQuery)
+      this.displayedColumns = this.colDefsCopy.map(col => col.data.label);
     })
   }
+
+  onScroll(range: { start: number, end: number }) {
+    const offset = this.nextOffset(range);
+    if (offset !== null) {
+      console.log(`run offset: ${offset} for start ${range.start} and end ${range.end}`)
+      this.p.pkProject$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(pk => {
+        this.run(pk, {
+          filter: this.filterQueryCopy,
+          columns: this.colDefsCopy,
+          limit: this.limit,
+          offset: offset
+        });
+      })
+    }
+  }
+
+  nextOffset(range: { start: number, end: number }): number {
+
+    if (range.start === 0 && range.end === 0) return null;
+
+    const pageBefore = pageOfOffset(range.start, this.limit)
+    const pageAfter = pageOfOffset(range.end, this.limit)
+    const loadedPages = this.localStore.getState().loadedPages;
+    const loadingPages = this.localStore.getState().loadingPages;
+
+    return (!loadedPages[pageAfter] && !loadingPages[pageAfter]) ? offsetOfPage(pageAfter, this.limit) :
+      (!loadedPages[pageBefore] && !loadingPages[pageBefore]) ? offsetOfPage(pageBefore, this.limit) : null;
+  }
+
+
 
   ngOnDestroy() {
     this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
-
-
 }

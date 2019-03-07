@@ -1,9 +1,12 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, forwardRef, Input, OnDestroy, Optional, Self } from '@angular/core';
-import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
-import { Subject, Observable } from 'rxjs';
-import { ColDefTree } from '../col-def-editor/col-def-editor.component';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { PropertyOption } from '../../property-select/property-select.component';
+import { QueryService } from '../../services/query.service';
+import { ColDef } from '../col-def-editor/col-def-editor.component';
 
 
 
@@ -18,11 +21,13 @@ import { ColDefTree } from '../col-def-editor/col-def-editor.component';
     '[attr.aria-describedby]': 'describedBy',
   }
 })
-export class PropertyPathSegmentComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<ColDefTree> {
+export class PropertyPathSegmentComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<ColDef> {
   static nextId = 0;
 
-  model: ColDefTree;
-  @Input() selectedClasses$: Observable<number[]>
+  model: ColDef;
+  @Input() propertyOptions$: Observable<PropertyOption[]>;
+  @Output() remove = new EventEmitter<void>();
+
 
   // emits true on destroy of this component
   autofilled?: boolean;
@@ -70,36 +75,70 @@ export class PropertyPathSegmentComponent implements OnDestroy, ControlValueAcce
   private _disabled = false;
 
   @Input()
-  get value(): ColDefTree | null {
+  get value(): ColDef | null {
 
     // TODO: Adapt, when it is invalid and null is returned
-    if (!this.model || !this.model.data || !this.model.data.label) return null;
+    if (this.empty) return null;
 
     return this.model;
   }
-  set value(value: ColDefTree | null) {
+  set value(value: ColDef | null) {
     this.model = value;
+    this.onChange(this.model)
   }
+
+  // make the selected properties observable in order to pipe them
+  // to the target pkClasses, that determin the options user
+  // can select on the child path segment
+  get selectedProperties() {
+    return this.selectedProperties$.value;
+  }
+  set selectedProperties(val: PropertyOption[]) {
+    this.selectedProperties$.next(val)
+  }
+  selectedProperties$ = new BehaviorSubject<PropertyOption[] | null>(null);
+
+  // the pkClasses get derived from the selctedProperties
+  pkClasses$ = new BehaviorSubject<number[] | null>(null);
 
 
   constructor(
-    @Optional() @Self() public ngControl: NgControl
+    @Optional() @Self() public ngControl: NgControl,
+    private q: QueryService
   ) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
+
+    // Next the new array of pkClasses, when the selected properties change
+    this.selectedProperties$.pipe(
+      this.q.targetClassesOfPropertyOptions(),
+      takeUntil(this.destroy$)
+    ).subscribe(pks => {
+      this.pkClasses$.next(pks)
+    })
   }
 
-  // TODO: Adapt way of changing the value
-  newFoo(val) {
-    this.value = {
-      foo: val
-    };
-    this.onChange(this.value)
+  // When user changes the model
+  onModelChange(val) {
+    this.value = val;
   }
 
-  addChild(){
-    this.model.children.push(new ColDefTree({}))
+  propertySelectionChange(selection){
+    this.selectedProperties = selection;
+  }
+
+  // When user adds a next path segment
+  addChild() {
+    this.model.children.push(new ColDef({
+      type: 'classes'
+    }))
+    this.onChange(this.model)
+  }
+
+  removeChildren(){
+    this.model.children = [];
+    this.onChange(this.model)
   }
 
   ngOnDestroy() {
@@ -118,7 +157,7 @@ export class PropertyPathSegmentComponent implements OnDestroy, ControlValueAcce
 
   }
 
-  writeValue(value: ColDefTree | null): void {
+  writeValue(value: ColDef | null): void {
     this.value = value;
   }
 

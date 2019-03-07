@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ColDefTree } from '../col-def-editor/col-def-editor.component';
+import { ColDef } from '../col-def-editor/col-def-editor.component';
 
 @Component({
   selector: 'gv-col-def-title',
@@ -8,7 +8,7 @@ import { ColDefTree } from '../col-def-editor/col-def-editor.component';
 })
 export class ColDefTitleComponent implements OnInit {
 
-  @Input() colDef: ColDefTree;
+  @Input() colDef: ColDef;
 
   constructor() { }
 

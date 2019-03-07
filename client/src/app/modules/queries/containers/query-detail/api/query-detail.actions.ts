@@ -2,12 +2,15 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { QueryDetail } from './query-detail.models';
+import { GvQuery } from '../query-detail.component';
 
 type Payload = QueryDetail;
 interface MetaData {
   queryResults?: any[],
   pkProject?: number;
-  query?: any;
+  query?: GvQuery;
+  offset?: number
+  limit?: number
 };
 export type QueryDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -21,6 +24,8 @@ export class QueryDetailAPIActions {
   static readonly SAVE_SUCCEEDED = 'QueryDetail::SAVE_SUCCEEDED';
   static readonly SAVE_FAILED = 'QueryDetail::SAVE_FAILED';
 
+
+  static readonly RUN_INIT = 'QueryDetail::RUN_INIT';
   static readonly RUN = 'QueryDetail::RUN';
   static readonly RUN_SUCCEEDED = 'QueryDetail::RUN_SUCCEEDED';
   static readonly RUN_FAILED = 'QueryDetail::RUN_FAILED';
@@ -59,24 +64,32 @@ export class QueryDetailAPIActions {
   *  Run a query
   *********************************************************************/
 
+
   @dispatch()
-  run = (pkProject: number, query): QueryDetailAPIAction => ({
+  runInit = (pkProject: number, query: GvQuery): QueryDetailAPIAction => ({
+    type: QueryDetailAPIActions.RUN_INIT,
+    meta: { pkProject, query },
+    payload: null,
+  });
+
+  @dispatch()
+  run = (pkProject: number, query: GvQuery): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.RUN,
     meta: { pkProject, query },
     payload: null,
   });
 
-  runSucceeded = (queryResults: any[]): QueryDetailAPIAction => ({
+  runSucceeded = (queryResults: any[], offset: number, limit: number): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.RUN_SUCCEEDED,
     meta: {
-      queryResults
+      queryResults, offset, limit
     },
     payload: null
   })
 
-  runFailed = (error): QueryDetailAPIAction => ({
+  runFailed = (error, offset: number, limit: number): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.RUN_FAILED,
-    meta: null,
+    meta: { offset, limit },
     payload: null,
     error,
   })

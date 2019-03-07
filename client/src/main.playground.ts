@@ -17,6 +17,7 @@ import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { TreeviewModule } from 'ngx-treeview';
 import { DndModule } from 'ng2-dnd';
+import { ExampleTableModule } from 'app/shared/components/core-table/example-table/example-table.module';
 
 PlaygroundModule
   .configure({
@@ -40,7 +41,8 @@ PlaygroundModule
       ReactiveFormsModule,
       ProjectSandboxModule,
       NgxJsonViewerModule,
-      LoadingBarModule
+      LoadingBarModule,
+      ExampleTableModule
     ]
   });
 

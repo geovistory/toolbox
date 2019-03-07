@@ -25,15 +25,17 @@ export class ClassAndTypeSelectComponent implements OnInit {
   /**
    * The tree data
    */
-  selectOptionsTree$ = of([]);
+  optionsTree$ = of([]);
 
   @Input() pkClasses$: Observable<number[]>;
   @Input() qtree: FilterTree;
   @Input() showRemoveBtn = true;
+  @Input() disabled: boolean;
 
   @Output() remove = new EventEmitter<void>();
   @Output() validChanged = new EventEmitter<boolean>();
   @Output() filterTreeDataChange = new EventEmitter<FilterTreeData>();
+  @Output() modelChanged = new EventEmitter<FilterTree>();
 
   valid = false;
 
@@ -56,28 +58,18 @@ export class ClassAndTypeSelectComponent implements OnInit {
       ];
     }
     
-    this.selectOptionsTree$ = this.pkClasses$.pipe(
-      filter(pks => pks !== undefined),
+    this.optionsTree$ = this.pkClasses$.pipe(
+      filter(pks => pks !== null),
       distinct((pk) => pk),
-      tap(pks => {
-        console.log('Pks: ', pks);
-      }),
       mergeMap((pks) => {
         return pks.length ?
           combineLatest(
             // get all type previews
-            this.p.streamTypePreviewsByClass(pks)
-              .pipe(
-                tap(previews => {
-                  console.log('previews: ', previews);
-
-                })),
+            this.p.streamTypePreviewsByClass(pks),
             // get class configs
             combineLatest(pks.map(pk => this.p.getClassConfig(pk)))
               .pipe(
-                tap(classConfigs => {
-                  console.log('classConfigs: ', classConfigs);
-                }),
+    
                 filter(d => d.every(x => !!x.dfh_pk_class))
               )
           )
@@ -119,12 +111,14 @@ export class ClassAndTypeSelectComponent implements OnInit {
       types: val.filter(v => v.data.pkType).map(v => v.data.pkType),
     }
     this.filterTreeDataChange.emit(this.qtree.data);
+    this.modelChanged.emit(this.qtree);
     this.setValid()
   }
 
   setValid() {
     this.valid = [
       ...(this.qtree.data.classes || []),
+      ...(this.qtree.data.types || [])
     ].length > 0;
     this.validChanged.emit(this.valid)
   }

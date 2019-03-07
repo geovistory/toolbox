@@ -1,6 +1,16 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ColDefTree } from '../col-def-editor/col-def-editor.component';
+import { ColDef } from '../col-def-editor/col-def-editor.component';
 import { Observable } from 'rxjs';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
+import { FormBuilder, FormControl } from '@angular/forms';
+
+/** Flat node with expandable and level information */
+interface ExampleFlatNode {
+  expandable: boolean;
+  name: string;
+  level: number;
+}
 
 @Component({
   selector: 'gv-col-def',
@@ -8,12 +18,20 @@ import { Observable } from 'rxjs';
   styleUrls: ['./col-def.component.scss']
 })
 export class ColDefComponent implements OnInit {
-  @Input() selectedClasses$: Observable<number[]>;
-  @Input() colDef: ColDefTree;
+  @Input() propertyOptions$: Observable<number[]>;
+  @Input() colDef: ColDef;
 
-  constructor() { }
+  queryPathFormControl = new FormControl();
+
+  treeControl
+  treeFlattener
+  dataSource
+
+  constructor() {
+  }
 
   ngOnInit() {
+    this.queryPathFormControl.setValue(this.colDef.queryPath);
   }
 
 }

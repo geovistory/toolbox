@@ -4,13 +4,17 @@
       <mat-panel-title cdkDragHandle>
         <gv-col-def-title [colDef]="colDef"></gv-col-def-title>
       </mat-panel-title>
-      <!-- <mat-panel-description></mat-panel-description> -->
+      <mat-panel-description>
+        <span class="ml-auto" *ngIf="colDef.isDefault">Default Column</span>
+        <span class="ml-auto" *ngIf="!colDef.isDefault">Custom Column</span>
+      </mat-panel-description>
     </mat-expansion-panel-header>
-    <gv-col-def [colDef]="colDef" [selectedClasses$]="selectedClasses$"></gv-col-def>
-    <mat-action-row>
+    <gv-col-def [colDef]="colDef" [propertyOptions$]="propertyOptions$"></gv-col-def>
+    <mat-action-row *ngIf="!colDef.isDefault">
       <button mat-button color="warn" class="ml-auto" (click)="removeColumn(i)">Remove column</button>
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
 
 <button class="mt-3" mat-button color="primary" (click)="addColumn()">New column</button>
+

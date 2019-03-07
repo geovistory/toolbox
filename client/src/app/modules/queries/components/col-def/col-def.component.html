@@ -1,7 +1,28 @@
 <form class="d-flex flex-column">
-  <mat-form-field>
-    <input matInput placeholder="Name of the column"  [(ngModel)]="colDef.data.label" name="label" required>
+  <mat-form-field appearance="outline">
+    <mat-label>Name of the column</mat-label>
+
+    <input matInput placeholder="Name"  [(ngModel)]="colDef.label" name="label" required>
   </mat-form-field>
 
-  <gv-property-path-segment placeholder="Property Segment" [(ngModel)]="colDef" name="path"  [selectedClasses$]="selectedClasses$"></gv-property-path-segment>
+  <mat-form-field appearance="outline" *ngIf="!colDef.isDefault">
+    <mat-label>Path to the content of this column</mat-label>
+
+    <gv-query-path-control [formControl]="queryPathFormControl">
+    </gv-query-path-control>
+
+    <mat-hint>Define what this column contains by creating a path from the firts type of entity defined in step 1 to the
+      content of the column.</mat-hint>
+  </mat-form-field>
+
+  <div *ngIf="colDef.isDefault === 'Entity Label'">
+    This default column shows the the label of the entity.
+  </div>
+  <div *ngIf="colDef.isDefault === 'Class Label'">
+    This default column shows the the label of the class of entity.
+  </div>
+  <div *ngIf="colDef.isDefault === 'Type Label'">
+    This default column shows the the label of type of the entity (if there is a type).
+  </div>
+
 </form>

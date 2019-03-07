@@ -283,7 +283,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 ...state,
                 typesByPk: {
                     ...state.typesByPk,
-                    ...groupBy<TypePeIt>((type) => (type.pk_entity.toString()), action.meta.types)
+                    ...indexBy<TypePeIt>((type) => (type.pk_entity.toString()), action.meta.types)
                 },
                 typesByClass: {
                     ...zipObj(action.meta.pk_classes.map(pk => pk.toString()), action.meta.pk_classes.map(x => [])),

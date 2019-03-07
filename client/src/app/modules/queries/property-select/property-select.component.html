@@ -1,7 +1,7 @@
 
   <mat-form-field class="gv-grow-1">
     <mat-label>Properties</mat-label>
-    <mat-select multiple (selectionChange)="selectionChange($event)">
+    <mat-select multiple (selectionChange)="selectionChange($event)" [disabled]="disabled">
       <mat-option *ngFor="let o of options$ | async" [id]="o.propertyFieldKey" [value]="o">{{o.label}}</mat-option>
     </mat-select>
   </mat-form-field>
