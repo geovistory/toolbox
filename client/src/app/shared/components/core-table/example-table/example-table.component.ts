@@ -29,8 +29,8 @@ export class ExampleTableComponent extends CoreTable<Example> {
   offset$: Observable<number>;
 
   constructor() {
-    // column definitions for CoreTable
-    super(['id', 'name', 'actions']);
+    super();
+    this.columns =['id', 'name', 'actions']
   }
 
   onInit() {

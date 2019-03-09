@@ -5,12 +5,12 @@
         <gv-col-def-title [colDef]="colDef"></gv-col-def-title>
       </mat-panel-title>
       <mat-panel-description>
-        <span class="ml-auto" *ngIf="colDef.isDefault">Default Column</span>
-        <span class="ml-auto" *ngIf="!colDef.isDefault">Custom Column</span>
+        <span class="ml-auto" *ngIf="colDef.defaultType">Default Column</span>
+        <span class="ml-auto" *ngIf="!colDef.defaultType">Custom Column</span>
       </mat-panel-description>
     </mat-expansion-panel-header>
     <gv-col-def [colDef]="colDef" [propertyOptions$]="propertyOptions$"></gv-col-def>
-    <mat-action-row *ngIf="!colDef.isDefault">
+    <mat-action-row *ngIf="!colDef.defaultType">
       <button mat-button color="warn" class="ml-auto" (click)="removeColumn(i)">Remove column</button>
     </mat-action-row>
   </mat-expansion-panel>

@@ -4,9 +4,9 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { PropertyOption } from '../../property-select/property-select.component';
+import { PropertyOption } from '../property-select/property-select.component';
 import { QueryService } from '../../services/query.service';
-import { ColDef } from '../col-def-editor/col-def-editor.component';
+import { QueryPathSegment } from '../col-def-editor/col-def-editor.component';
 
 
 
@@ -21,13 +21,13 @@ import { ColDef } from '../col-def-editor/col-def-editor.component';
     '[attr.aria-describedby]': 'describedBy',
   }
 })
-export class PropertyPathSegmentComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<ColDef> {
+export class PropertyPathSegmentComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<QueryPathSegment> {
   static nextId = 0;
 
-  model: ColDef;
+  model: QueryPathSegment;
   @Input() propertyOptions$: Observable<PropertyOption[]>;
   @Output() remove = new EventEmitter<void>();
-
+  @Input() index: number;
 
   // emits true on destroy of this component
   autofilled?: boolean;
@@ -42,8 +42,11 @@ export class PropertyPathSegmentComponent implements OnDestroy, ControlValueAcce
   onTouched = () => { };
 
   get empty() {
-    return this.model && this.model.data && this.model.data.label ? false : true;
-  }
+    if (!this.model || !this.model.data) return true;
+    return [
+      ...(this.model.data.ingoingProperties || []),
+      ...(this.model.data.outgoingProperties || [])
+    ].length === 0;  }
 
   get shouldLabelFloat() { return this.focused || !this.empty; }
 
@@ -75,14 +78,14 @@ export class PropertyPathSegmentComponent implements OnDestroy, ControlValueAcce
   private _disabled = false;
 
   @Input()
-  get value(): ColDef | null {
+  get value(): QueryPathSegment | null {
 
     // TODO: Adapt, when it is invalid and null is returned
     if (this.empty) return null;
 
     return this.model;
   }
-  set value(value: ColDef | null) {
+  set value(value: QueryPathSegment | null) {
     this.model = value;
     this.onChange(this.model)
   }
@@ -128,19 +131,6 @@ export class PropertyPathSegmentComponent implements OnDestroy, ControlValueAcce
     this.selectedProperties = selection;
   }
 
-  // When user adds a next path segment
-  addChild() {
-    this.model.children.push(new ColDef({
-      type: 'classes'
-    }))
-    this.onChange(this.model)
-  }
-
-  removeChildren(){
-    this.model.children = [];
-    this.onChange(this.model)
-  }
-
   ngOnDestroy() {
     this.stateChanges.complete();
     this.destroy$.next(true);
@@ -157,7 +147,7 @@ export class PropertyPathSegmentComponent implements OnDestroy, ControlValueAcce
 
   }
 
-  writeValue(value: ColDef | null): void {
+  writeValue(value: QueryPathSegment | null): void {
     this.value = value;
   }
 

@@ -1,0 +1,15 @@
+.wrapper {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .gv-query-path-segment {
+        display: flex;
+        padding-right: 1rem;
+        align-items: center;
+    }
+    .gv-remove-query-path-segment {
+        margin-left: -21px !important;
+        margin-top: -67px !important;
+    }
+}

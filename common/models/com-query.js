@@ -25,23 +25,24 @@ class QueryBuilder {
         // root table where 
         this.wheres.push(this.createEntityWhere(query.filter, rootTableAlias, fkProject))
 
+        // root table from
+        this.froms.push(`warehouse.entity_preview ${rootTableAlias}`)
+
         // create froms and wheres according to filter definition  
         this.createFilterFroms(query.filter, rootTableAlias, fkProject)
         this.createFilterWheres(query.filter)
 
         // create froms and selects according to column definition
-        this.createColumnFroms(query.columns, rootTableAlias, fkProject)
-        this.createColumnSelects(query.columns, rootTableAlias)
+        this.createColumnsFroms(query.columns, rootTableAlias, fkProject)
+        this.createColumnsSelects(query.columns, rootTableAlias)
         this.createColumnGroupBys(query.columns, rootTableAlias)
 
-        // root table from
-        this.froms.unshift(`warehouse.entity_preview ${rootTableAlias}`)
 
         // create limit, offset
         this.createLimitAndOffset(query)
         // create select of full_count
         this.createFullCount()
-        
+
         this.sql = `
         SELECT 
             ${this.joinSelects(this.selects)}
@@ -58,8 +59,16 @@ class QueryBuilder {
         ${this.offset}
         `
 
-        console.log('sql', sqlFormatter.format(this.sql))
         console.log('params', this.params)
+        let forLog = this.sql;
+        this.params.forEach((param, i) => {
+            forLog = forLog.replace(('$' + (i + 1)), param)
+        })
+        console.log(`
+        "\u{1b}[32m Formatted and Deserialized SQL (not sent to db) "\u{1b}[0m
+        ${sqlFormatter.format(forLog, { language: 'pl/sql' })}
+
+        `)
 
         return {
             sql: this.sql,
@@ -79,110 +88,129 @@ class QueryBuilder {
             query.limit < 1 || query.offset < 0
         ) return ''
 
-       
+
 
         this.limit = `LIMIT ${this.addParam(query.limit)}`
         this.offset = `OFFSET ${this.addParam(query.offset)}`
     }
 
-    createFullCount(){
+    createFullCount() {
         this.selects.push('count(*) OVER() AS full_count')
     }
 
-    createColumnFroms(columns, parentTableAlias, fkProject) {
+    createColumnsFroms(columns, leftTableAlias, fkProject) {
         columns.forEach(column => {
-            this.createColumnFrom(column, parentTableAlias, fkProject)
+            this.createColumnFroms(column, leftTableAlias, fkProject)
         })
     }
 
-    createColumnFrom(node, parentTableAlias, fkProject, level = 0) {
-        if (!node.data.ofRootTable) {
+    createColumnFroms(column, leftTableAlias, fkProject, level = 0) {
+
+        if (!column.ofRootTable) {
             let thisTableAlias;
-            console.log(level)
+            column.queryPath.forEach((segment, index) => {
+                console.log(level)
 
-            if (this.isRolesJoin(node) || this.isEntitesJoin(node)) {
-                thisTableAlias = this.addTableAlias();
-                node.data._tableAlias = thisTableAlias;
-            }
+                if (this.isRolesJoin(segment) || this.isEntitesJoin(segment)) {
+                    thisTableAlias = this.addTableAlias();
+                    segment._tableAlias = thisTableAlias;
+                }
 
-            node.children.forEach(childNode => {
-                this.createColumnFrom(childNode, thisTableAlias, fkProject, (level + 1))
+                // JOIN roles
+                if (this.isRolesJoin(segment)) {
+                    this.joinRoles(segment, leftTableAlias, thisTableAlias, fkProject);
+                }
+                // JOIN entities
+                else if (this.isEntitesJoin(segment)) {
+                    this.joinEntities(segment, leftTableAlias, thisTableAlias, fkProject);
+                }
+                leftTableAlias = thisTableAlias;
             })
-
-            // JOIN roles
-            if (this.isRolesJoin(node)) {
-                this.joinRoles(node, parentTableAlias, thisTableAlias, fkProject);
-            }
-            // JOIN entities
-            else if (this.isEntitesJoin(node)) {
-                this.joinEntities(node, parentTableAlias, thisTableAlias, fkProject);
-            }
         }
     }
 
-    createColumnSelects(columns, parentTableAlias) {
+    createColumnsSelects(columns, leftTableAlias) {
         columns.forEach(column => {
-            if (column.data.ofRootTable) {
-                this.selects.push(`${parentTableAlias}.${column.data.colName} AS "${column.data.label}"`)
-            } else {
-                this.createColumnSelect(column, column.data.label)
+
+            if (column.ofRootTable) {
+                if (column.colName) {
+                    this.selects.push(`${leftTableAlias}.${column.colName} AS "${column.label}"`)
+                } else if (column.defaultType === 'entity_preview') {
+                    column.colNames = ['pk_entity',
+                        'entity_type',
+                        'entity_label',
+                        'class_label',
+                        'type_label',
+                        'time_span']
+                    this.selects.push(`jsonb_build_object(
+                        'pk_entity', ${leftTableAlias}.pk_entity,
+                        'entity_type', ${leftTableAlias}.entity_type,
+                        'entity_label', ${leftTableAlias}.entity_label,
+                        'class_label', ${leftTableAlias}.class_label,
+                        'type_label', ${leftTableAlias}.type_label,
+                        'time_span', ${leftTableAlias}.time_span
+                      ) AS "${column.label}"`)
+                }
+            } else if (column.queryPath && column.queryPath.length) {
+                // create a select for the last segment in the queryPath
+                this.createColumnSelect(column.queryPath[column.queryPath.length - 1], column.label)
             }
         })
     }
 
-    createColumnSelect(node, columnLabel) {
+    createColumnSelect(segment, columnLabel) {
 
-        if (!node.children.length) {
-            if (this.isRolesJoin(node)) {
+        if (this.isRolesJoin(segment)) {
 
-            } else if (this.isEntitesJoin(node)) {
-                this.selects.push(`jsonb_agg(distinct jsonb_build_object(
-                    'pk_entity',  ${node.data._tableAlias}.pk_entity,
-                    'entity_type',  ${node.data._tableAlias}.entity_type,
-                    'entity_label',  ${node.data._tableAlias}.entity_label,
-                    'class_label',  ${node.data._tableAlias}.class_label,
-                    'type_label',  ${node.data._tableAlias}.type_label,
-                    'time_span', ${node.data._tableAlias}.time_span
-                )) AS "${columnLabel}"`)
-            }
-        } else {
-            node.children.forEach(child => {
-                this.createColumnSelect(child, columnLabel)
-            })
+        } else if (this.isEntitesJoin(segment)) {
+
+
+            this.selects.push(`COALESCE(json_agg( distinct jsonb_build_object(
+            'pk_entity', ${segment._tableAlias}.pk_entity,
+            'entity_type', ${segment._tableAlias}.entity_type,
+            'entity_label', ${segment._tableAlias}.entity_label,
+            'class_label', ${segment._tableAlias}.class_label,
+            'type_label', ${segment._tableAlias}.type_label,
+            'time_span', ${segment._tableAlias}.time_span
+          )
+       ) FILTER (WHERE ${segment._tableAlias}.pk_entity IS NOT NULL), '[]') AS "${columnLabel}"`)
+
         }
 
     }
 
 
-    createFilterFroms(parentNode, parentTableAlias, fkProject, level = 0) {
-
-        let thisTableAlias;
-        console.log(level)
-        if (this.isRolesJoin(parentNode) || this.isEntitesJoin(parentNode)) {
-            parentNode.data._tableAlias = parentTableAlias;
-        }
-
-        parentNode.children.forEach(node => {
-            if (this.isRolesJoin(node) || this.isEntitesJoin(node)) {
-                thisTableAlias = this.addTableAlias();
-                this.createFilterFroms(node, thisTableAlias, fkProject, (level + 1))
-            } else {
-                this.createFilterFroms(node, parentTableAlias, fkProject, (level + 1))
-            }
-
+    createFilterFroms(node, leftTableAlias, fkProject, level = 0) {
+        if (level > 0) {
             // JOIN roles
             if (this.isRolesJoin(node)) {
-                this.joinRoles(node, parentTableAlias, thisTableAlias, fkProject);
+                this.joinRoles(node, leftTableAlias, node._tableAlias, fkProject);
+                leftTableAlias = node._tableAlias;
             }
             // JOIN entities
             else if (this.isEntitesJoin(node)) {
-                this.joinEntities(node, parentTableAlias, thisTableAlias, fkProject);
+                this.joinEntities(node, leftTableAlias, node._tableAlias, fkProject);
+                leftTableAlias = node._tableAlias;
             }
+
+        }
+
+        console.log(level)
+
+        node.children.forEach(childNode => {
+            if (this.isRolesJoin(childNode) || this.isEntitesJoin(childNode)) {
+                childNode._tableAlias = this.addTableAlias();
+                this.createFilterFroms(childNode, leftTableAlias, fkProject, (level + 1))
+            } else {
+                childNode._tableAlias = this.addTableAlias();
+                this.createFilterFroms(childNode, leftTableAlias, fkProject, (level + 1))
+            }
+
         })
     }
 
     joinEntities(node, parentTableAlias, thisTableAlias, fkProject) {
-        this.froms.unshift(`    
+        this.froms.push(`    
                     LEFT JOIN warehouse.entity_preview ${thisTableAlias} ON
                     (${parentTableAlias}.fk_entity = ${thisTableAlias}.pk_entity OR ${parentTableAlias}.fk_temporal_entity = ${thisTableAlias}.pk_entity)
                     AND
@@ -211,7 +239,7 @@ class QueryBuilder {
                          ${this.joinWheres(secondLevelWheres, 'OR')} 
                     )`);
         }
-        this.froms.unshift(`    
+        this.froms.push(`    
                 LEFT JOIN warehouse.v_roles_per_project_and_repo ${thisTableAlias} ON 
                  ${this.joinWheres(topLevelWheres, 'AND')}
                 `);
@@ -254,7 +282,7 @@ class QueryBuilder {
 
             // create the where clause for the entity table 
             if (childNode.data.classes || childNode.data.types) {
-                nodeWheres.push(`${childNode.data._tableAlias}.pk_entity IS NOT NULL`)
+                nodeWheres.push(`${childNode._tableAlias}.pk_entity IS NOT NULL`)
             }
 
             // create the where clause for the role table 
@@ -263,7 +291,7 @@ class QueryBuilder {
                     : childNode.data.operator === 'IS NOT' ? 'IS NULL'
                         : 'IS NOT NULL'; // DEFAULT 
 
-                nodeWheres.push(`${childNode.data._tableAlias}.fk_entity ${equals}`)
+                nodeWheres.push(`${childNode._tableAlias}.fk_entity ${equals}`)
             }
 
             if (childNodeWheres) {
@@ -325,8 +353,14 @@ class QueryBuilder {
 
     createColumnGroupBys(columns, parentTableAlias) {
         columns.forEach(column => {
-            if (column.data.ofRootTable) {
-                this.groupBys.push(`${parentTableAlias}.${column.data.colName}`)
+            if (column.ofRootTable) {
+                if(column.colNames){
+                    column.colNames.forEach(name => {
+                        this.groupBys.push(`${parentTableAlias}.${name}`)
+                    })
+                }else {
+                    this.groupBys.push(`${parentTableAlias}.${column.colName}`)
+                }
             }
         })
     }
@@ -351,18 +385,15 @@ class QueryBuilder {
     }
     joinFroms(froms) {
         return froms.join(`
-
         `);
     }
     joinSelects(selects) {
         return selects.join(`,
-
         `);
     }
 
     joinGroupBys(groupBys) {
         return groupBys.join(`,
-
         `);
     }
 

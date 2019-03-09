@@ -5,24 +5,28 @@
     <input matInput placeholder="Name"  [(ngModel)]="colDef.label" name="label" required>
   </mat-form-field>
 
-  <mat-form-field appearance="outline" *ngIf="!colDef.isDefault">
+  <mat-form-field appearance="outline" *ngIf="!colDef.defaultType">
     <mat-label>Path to the content of this column</mat-label>
 
-    <gv-query-path-control [formControl]="queryPathFormControl">
+    <gv-query-path-control [formControl]="queryPathFormControl" [propertyOptions$]="propertyOptions$">
     </gv-query-path-control>
 
     <mat-hint>Define what this column contains by creating a path from the firts type of entity defined in step 1 to the
       content of the column.</mat-hint>
   </mat-form-field>
 
-  <div *ngIf="colDef.isDefault === 'Entity Label'">
-    This default column shows the the label of the entity.
+  <div *ngIf="colDef.defaultType === 'entity_label'">
+    This default column shows the label of the entity.
   </div>
-  <div *ngIf="colDef.isDefault === 'Class Label'">
-    This default column shows the the label of the class of entity.
+  <div *ngIf="colDef.defaultType === 'class_label'">
+    This default column shows the label of the class of entity.
   </div>
-  <div *ngIf="colDef.isDefault === 'Type Label'">
-    This default column shows the the label of type of the entity (if there is a type).
+  <div *ngIf="colDef.defaultType === 'type_label'">
+    This default column shows the label of type of the entity (if there is a type).
+  </div>
+  <div *ngIf="colDef.defaultType === 'entity_preview'">
+    This default column shows a compact preview of the entity (a combination of the entity label and the entity
+    class/type).
   </div>
 
 </form>

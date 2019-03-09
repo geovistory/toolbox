@@ -2,9 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { EntityPreview } from 'app/core';
 
 @Component({
-  selector: 'gv-data-unit-preview',
-  templateUrl: './data-unit-preview.component.html',
-  styleUrls: ['./data-unit-preview.component.scss']
+  selector: 'gv-entity-preview',
+  templateUrl: './entity-preview.component.html',
+  styleUrls: ['./entity-preview.component.scss']
 })
 export class EntityPreviewComponent implements OnInit {
 

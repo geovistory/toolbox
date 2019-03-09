@@ -3,6 +3,9 @@ import { CoreTable } from 'app/shared/components/core-table/table';
 import { Observable, of, Subject } from 'rxjs';
 import { delay, exhaustMap, filter, map, tap, takeUntil, first } from 'rxjs/operators';
 import { ColDef } from '../col-def-editor/col-def-editor.component';
+import { MatDialog } from '@angular/material';
+import { ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
+import { ActiveProjectService } from 'app/core';
 
 export interface Example {
   id: number;
@@ -31,7 +34,9 @@ export class ResultTableComponent extends CoreTable<Example> implements OnDestro
   headerTop$: Observable<number>;
 
   constructor(
-    private ref: ChangeDetectorRef
+    public dialog: MatDialog,
+    private ref: ChangeDetectorRef,
+    public p: ActiveProjectService
   ) {
     super();
   }
@@ -71,6 +76,19 @@ export class ResultTableComponent extends CoreTable<Example> implements OnDestro
     this.sticky = true;
     this.ref.detectChanges()
   }
+
+  openDialog(entityPreviews): void {
+    const dialogRef = this.dialog.open(ResultingEntitiesDialogComponent, {
+      width: '390px',
+      data: { entityPreviews }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // console.log('The dialog was closed');
+    });
+  }
+
+
 
   ngOnDestroy() {
     this.$destroy.next()

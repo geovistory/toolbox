@@ -4,18 +4,6 @@
     <gv-property-select *ngIf="model" [qtree]="model" [options$]="propertyOptions$" [disabled]="model?.children?.length > 0"
         (modelChanged)="onModelChange($event)" (selectionChanged)="propertySelectionChange($event)">
     </gv-property-select>
-    <button class="ml-3" mat-icon-button (click)="remove.emit()" *ngIf="!model?.data?.isRoot"
-        matTooltip="Remove path segment">
-        <mat-icon>remove</mat-icon>
-    </button>
+
 
 </div>
-
-<button class="my-3" mat-icon-button (click)="addChild()" *ngIf="model?.children?.length === 0"
-    matTooltip="Add path segment">
-    <mat-icon>add</mat-icon>
-</button>
-
-<gv-class-and-type-path-segment class="d-flex flex-column" *ngIf="model?.children?.length"
-    [(ngModel)]="model.children[0]" [pkClasses$]="pkClasses$" (remove)="removeChildren()">
-</gv-class-and-type-path-segment>

@@ -7,8 +7,8 @@ import { takeUntil } from 'rxjs/operators';
 import { FilterTreeData } from '../../containers/query-detail/query-detail.component';
 import { QueryService } from '../../services/query.service';
 import { ClassesAndTypes } from '../class-and-type-filter/class-and-type-filter.component';
-import { ColDef, ColDefPathSegment } from '../col-def-editor/col-def-editor.component';
-import { PropertyOption } from '../../property-select/property-select.component';
+import { QueryPathSegment } from '../col-def-editor/col-def-editor.component';
+import { PropertyOption } from '../property-select/property-select.component';
 
 
 
@@ -23,13 +23,13 @@ import { PropertyOption } from '../../property-select/property-select.component'
     '[attr.aria-describedby]': 'describedBy',
   }
 })
-export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<ColDef> {
+export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<QueryPathSegment> {
   static nextId = 0;
-
-  @Input() pkClasses$: Observable<number[]>;
+  @Input() index: number;
   @Output() remove = new EventEmitter<void>();
-
-  model: ColDefPathSegment;
+  @Input() pkClasses$: Observable<number[]>;
+  
+  model: QueryPathSegment;
 
   // emits true on destroy of this component
   autofilled?: boolean;
@@ -44,7 +44,7 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
   onTouched = () => { };
 
   get empty() {
-    if (!this.model || ! this.model.data) return true;
+    if (!this.model || !this.model.data) return true;
     return [
       ...(this.model.data.classes || []),
       ...(this.model.data.types || [])
@@ -81,14 +81,14 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
   private _disabled = false;
 
   @Input()
-  get value(): ColDef | null {
+  get value(): QueryPathSegment | null {
 
     // TODO: Adapt, when it is invalid and null is returned
     if (!this.empty) return null;
 
     return this.model;
   }
-  set value(value: ColDef | null) {
+  set value(value: QueryPathSegment | null) {
     this.model = value;
     this.onChange(this.model)
   }
@@ -137,18 +137,6 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
     this.value = val;
   }
 
-  // When user adds a next path segment
-  addChild() {
-    this.model.children.push(new ColDef({
-      type: 'properties'
-    }))
-    this.onChange(this.model)
-  }
-  removeChildren(){
-    this.model.children = [];
-    this.onChange(this.model)
-  }
-
   ngOnDestroy() {
     this.stateChanges.complete();
     this.destroy$.next(true);
@@ -165,7 +153,7 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
 
   }
 
-  writeValue(value: ColDef | null): void {
+  writeValue(value: QueryPathSegment | null): void {
     this.value = value;
   }
 

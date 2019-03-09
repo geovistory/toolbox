@@ -2,18 +2,25 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Observable } from 'rxjs';
 
-export type ColDefPathSegmentType = 'properties' | 'classes';
+export type QueryPathSegmentType = 'properties' | 'classes';
 
-export class ColDefPathSegment {
+export class QueryPathSegment {
 
-  type?: ColDefPathSegmentType
-  classes?: number[];
-  types?: number[];
-  
-  outgoingProperties?: number[]
-  ingoingProperties?: number[]
+  type?: QueryPathSegmentType
 
-  constructor(data: ColDefPathSegment) {
+  data?: {
+
+    // for entities table
+    classes?: number[];
+    types?: number[];
+
+    // for role table
+    outgoingProperties?: number[]
+    ingoingProperties?: number[]
+
+  }
+
+  constructor(data: QueryPathSegment) {
     Object.assign(this, data)
   }
 }
@@ -22,24 +29,16 @@ export class ColDef {
   // has to be true on columns of the root table (the first entity_preview table)
   ofRootTable?: boolean;
   // If true, users cant edit this column
-  isDefault?: string;
+  defaultType?: 'entity_preview' | 'entity_label'| 'class_label' |'type_label';
 
   colName?: string;
 
   label?: string
 
-  queryPath?: ColDefPathSegment[]
+  queryPath?: QueryPathSegment[]
 
   constructor(data: ColDef) {
     Object.assign(this, data)
-  }
-
-  addSegment?(segment: ColDefPathSegment) {
-    this.queryPath.push(segment)
-  }
-
-  removeSegmentByIndex?(i: number) {
-    this.queryPath.splice(i, (this.queryPath.length - 1))
   }
 }
 
@@ -68,7 +67,7 @@ export class ColDefEditorComponent implements OnInit {
     this.colDefs.push(new ColDef({
       label: 'New Column',
       queryPath: [
-        new ColDefPathSegment({
+        new QueryPathSegment({
           type: 'properties'
         })
       ]

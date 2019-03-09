@@ -2,7 +2,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatDividerModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatOptionModule, MatProgressBarModule, MatSelectModule, MatStepperModule, MatTableModule, MatTooltipModule } from '@angular/material';
+import { MatButtonModule, MatDividerModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatOptionModule, MatProgressBarModule, MatSelectModule, MatStepperModule, MatTableModule, MatTooltipModule, MatDialogModule, MatListModule } from '@angular/material';
 import { AngularSplitModule } from 'angular-split';
 import { CoreTableFilterModule } from 'app/shared/components/core-table/filter/filter.module';
 import { CoreTableMenuModule } from 'app/shared/components/core-table/menu/menu.module';
@@ -28,6 +28,8 @@ import { QueryListAPIActions } from './containers/query-list/api/query-list.acti
 import { QueryListAPIEpics } from './containers/query-list/api/query-list.epics';
 import { QueryListComponent } from './containers/query-list/query-list.component';
 import { QueryPathControlComponent } from './components/query-path-control/query-path-control.component';
+import { ResultingEntitiesDialogComponent } from './components/resulting-entities-dialog/resulting-entities-dialog.component';
+import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity-preview.module';
 
 const components = [
   QueryListComponent,
@@ -43,7 +45,8 @@ const components = [
   ClassAndTypePathSegmentComponent,
   PropertyPathSegmentComponent,
   ResultTableComponent,
-  QueryPathControlComponent
+  QueryPathControlComponent,
+  ResultingEntitiesDialogComponent
 ]
 
 @NgModule({
@@ -67,12 +70,13 @@ const components = [
     MatDividerModule,
     DragDropModule,
     FormsModule,
-
+    MatDialogModule,
     CoreTableFilterModule,
     CoreTableMenuModule,
     CoreTableVirtualScrollModule,
     MatProgressBarModule,
-
+    EntityPreviewModule,
+    MatListModule
   ],
   providers: [
     QueryListAPIActions,
@@ -81,7 +85,10 @@ const components = [
     QueryDetailAPIEpics
   ],
   declarations: components,
-  exports: components
+  exports: components,
+  entryComponents: [
+    ResultingEntitiesDialogComponent
+  ]
 
 })
 export class QueriesModule { }

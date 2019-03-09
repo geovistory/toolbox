@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ComConfig, IAppState, InfChunk, Panel, ProjectDetail, PropertyList, U } from 'app/core';
 import { groupBy, indexBy, without, flatten, path, difference } from 'ramda';
 import { combineLatest, Observable, BehaviorSubject } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, mergeMap,  tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
@@ -393,5 +393,19 @@ export class ActiveProjectService {
   }
   getTabLoading(path: string[]): Observable<boolean> {
     return this.ngRedux.select<boolean>([...path, 'loading']);
+  }
+
+  addEntityTab(preview: EntityPreview) {
+
+    // TODO: Add some logic to figure out wheter to open as Source, Section or Entity
+    this.addTab({
+      active: true,
+      component: 'entity-detail',
+      icon: preview.entity_type === 'peIt' ? 'persistent-entity' : 'temporal-entity',
+      pathSegment: 'entityDetails',
+      data: {
+        pkEntity: preview.pk_entity
+      }
+    })
   }
 }

@@ -3,15 +3,5 @@
     <gv-class-and-type-select *ngIf="model" [qtree]="model" [pkClasses$]="pkClasses$" [disabled]="model?.children?.length > 0"
         (modelChanged)="onModelChange($event)" (filterTreeDataChange)="treeDataChange($event)">
     </gv-class-and-type-select>
-    <button class="ml-3" mat-icon-button (click)="remove.emit()" *ngIf="!model?.data?.isRoot"
-        matTooltip="Remove path segment">
-        <mat-icon>remove</mat-icon>
-    </button>
 </div>
-
-<button class="my-3" mat-icon-button (click)="addChild()" *ngIf="model?.children?.length === 0"
-    matTooltip="Add path segment">
-    <mat-icon>add</mat-icon>
-</button>
-
 

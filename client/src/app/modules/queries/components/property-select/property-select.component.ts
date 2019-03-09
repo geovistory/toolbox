@@ -1,12 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChildren, QueryList, AfterViewInit, ChangeDetectorRef, HostBinding } from '@angular/core';
-import { FilterTree, FilterTreeData } from '../../containers/query-detail/query-detail.component';
-import { MatSelectChange, MatOption } from '@angular/material';
-import { Observable, Subject, combineLatest } from 'rxjs';
-import { takeUntil, filter, map } from 'rxjs/operators';
-import { equals, uniq } from 'ramda';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { MatOption, MatSelectChange } from '@angular/material';
+import { ActiveProjectService } from 'app/core';
 import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
-import { ActiveProjectService, ComConfig } from 'app/core';
+import { equals, uniq } from 'ramda';
+import { Observable, Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
+import { FilterTree } from '../../containers/query-detail/query-detail.component';
+
 export interface PropertyOption { propertyFieldKey: string, isOutgoing: boolean, pk: number, label: string };
+
 @Component({
   selector: 'gv-property-select',
   templateUrl: './property-select.component.html',

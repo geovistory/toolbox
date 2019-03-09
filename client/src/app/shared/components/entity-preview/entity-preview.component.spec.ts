@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { EntityPreviewComponent } from './entity-preview.component';
 
-import { EntityPreviewComponent } from './data-unit-preview.component';
 
 describe('EntityPreviewComponent', () => {
   let component: EntityPreviewComponent;

@@ -83,19 +83,24 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
   colDefs = [
     new ColDef({
       ofRootTable: true,
-      isDefault: 'Entity Label',
+      defaultType: 'entity_preview',
+      label: 'Entity'
+    }),
+    new ColDef({
+      ofRootTable: true,
+      defaultType: 'entity_label',
       colName: 'entity_label',
       label: 'Entity Label'
     }),
     new ColDef({
       ofRootTable: true,
-      isDefault: 'Class Label',
+      defaultType: 'class_label',
       colName: 'class_label',
       label: 'Class Label'
     }),
     new ColDef({
       ofRootTable: true,
-      isDefault: 'Type Label',
+      defaultType: 'type_label',
       colName: 'type_label',
       label: 'Type Label'
     })
@@ -156,16 +161,16 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
   onRun() {
     this.p.pkProject$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(pk => {
-      this.runInit(pk, {
-        filter: this.filterQuery,
-        columns: this.colDefs,
-        limit: this.limit,
-        offset: 0
-      });
       this.showRightArea();
       this.colDefsCopy = clone(this.colDefs)
       this.filterQueryCopy = clone(this.filterQuery)
-      this.displayedColumns = this.colDefsCopy.map(col => col.data.label);
+      this.displayedColumns = this.colDefsCopy.map(col => col.label);
+      this.runInit(pk, {
+        filter: this.filterQueryCopy,
+        columns: this.colDefsCopy,
+        limit: this.limit,
+        offset: 0
+      });
     })
   }
 
@@ -198,6 +203,9 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
   }
 
 
+  onSave() {
+    
+  }
 
   ngOnDestroy() {
     this.destroy();

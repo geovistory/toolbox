@@ -247,6 +247,7 @@ export class TreeChecklistComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   private extractNodeIds(nodes: TreeNode<any>[]): any[] {
+    if (!nodes) return [];
     return nodes.map(node => this.extractNodeId(node));
   }
 
@@ -261,7 +262,7 @@ export class TreeChecklistComponent implements OnInit, OnDestroy, AfterViewInit 
     const allSelected = descendants.every(child => this.checklistSelection.isSelected(child));
     if (!selected && allSelected) {
       this.checklistSelection.select(node);
-      this.selected =this.checklistSelection.selected;
+      this.selected = this.checklistSelection.selected;
       this.changeDetectorRef.markForCheck();
     }
     const noneSelected = descendants.every(child => !this.checklistSelection.isSelected(child));

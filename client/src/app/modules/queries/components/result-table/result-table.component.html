@@ -41,14 +41,19 @@
 		</ng-container> -->
 
 
-		<ng-container *ngFor="let col of colDef" [matColumnDef]="col.data.label">
-			<mat-header-cell *matHeaderCellDef> {{col.data.label}} </mat-header-cell>
+		<ng-container *ngFor="let col of colDef" [matColumnDef]="col.label">
+			<mat-header-cell *matHeaderCellDef> {{col.label}} </mat-header-cell>
 			<mat-cell *matCellDef="let entity">
 
-				<span
-					*ngIf="col.data?.type === 'properties' || col.data?.type === 'properties'">{{entity[col.data.label]?.length}}</span>
-				<span
-					*ngIf="col.data?.type !== 'properties' && col.data?.type !== 'properties'">{{entity[col.data.label]}}</span>
+				<span *ngIf="col.ofRootTable && col.defaultType === 'entity_preview'">
+					<gv-entity-preview [preview]="entity[col.label]" [dragEnabled]="false" (click)="p.addEntityTab(entity[col.label])">
+					</gv-entity-preview>
+				</span>
+				<span *ngIf="col.ofRootTable && col.defaultType !== 'entity_preview'">{{entity[col.label]}}</span>
+				<span *ngIf="!col.ofRootTable">
+					<button mat-raised-button
+						(click)="openDialog(entity[col.label])">{{entity[col.label]?.length}}</button>
+				</span>
 
 			</mat-cell>
 		</ng-container>

@@ -22,6 +22,7 @@ import { SectionDetailComponent } from './containers/section-detail/section-deta
 import { SectionDetailAPIEpics } from './containers/section-detail/api/section-detail.epics';
 import { SectionDetailAPIActions } from './containers/section-detail/api/section-detail.actions';
 import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header/list-drawer-header.module';
+import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity-preview.module';
 
 
 
@@ -36,6 +37,7 @@ import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header
     QuillModule,
     PassiveLinkModule,
     Information2Module,
+    EntityPreviewModule,
     NgbModule
   ],
   providers: [

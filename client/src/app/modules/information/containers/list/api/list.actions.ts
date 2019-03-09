@@ -2,7 +2,7 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { List, SearchResponse } from './list.models';
-import { EntityType } from 'app/core/state/models/data-unit-preview';
+import { EntityType } from 'app/core/state/models/entity-preview';
 
 type Payload = List;
 interface MetaData {
