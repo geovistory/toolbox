@@ -10,11 +10,11 @@ export const getFullCount = (items): number => {
   else return parseInt(items[0].full_count, 10)
 }
 
-export const  pageOfOffset = (offset, limit): number => {
+export const pageOfOffset = (offset, limit): number => {
   return Math.floor((offset / limit));
 }
 
-export const offsetOfPage = (page, limit): number  =>{
+export const offsetOfPage = (page, limit): number => {
   return limit * page;
 }
 
@@ -23,23 +23,37 @@ export function queryDetailReducer(state: QueryDetail = INITIAL_STATE, a: Action
   const action = a as QueryDetailAPIAction;
 
   switch (action.type) {
+    /*****************************************************
+    * Set tab title
+    *****************************************************/
+    case QueryDetailAPIActions.SET_TAB_TITLE:
+      state = {
+        ...state,
+        tabTitle: action.meta.tabTitle
+      };
+      break;
+
+    /*****************************************************
+    * Load existing query
+    *****************************************************/
     case QueryDetailAPIActions.LOAD:
       state = {
         ...state,
-        items: []
+
       };
       break;
     case QueryDetailAPIActions.LOAD_SUCCEEDED:
       state = {
         ...state,
-        items: action.meta.queryResults
+        comQuery: action.meta.comQuery,
+        tabTitle: action.meta.comQuery.name
       };
       break;
 
     case QueryDetailAPIActions.LOAD_FAILED:
       state = {
         ...state,
-        items: []
+        comQuery: undefined
       };
       break;
 
@@ -49,7 +63,7 @@ export function queryDetailReducer(state: QueryDetail = INITIAL_STATE, a: Action
     case QueryDetailAPIActions.RUN_INIT:
       state = {
         ...state,
-        items: [],
+        queryResults: [],
         loadedPages: {},
         loadingPages: {},
         fullCount: 0
@@ -73,14 +87,14 @@ export function queryDetailReducer(state: QueryDetail = INITIAL_STATE, a: Action
       let ghostItems = [];
       const pageNr = pageOfOffset(action.meta.offset, action.meta.limit);
 
-      if (state.items.length !== fullCount) {
+      if (state.queryResults.length !== fullCount) {
         // make sure, we have the right length of results
         for (let i = 0; i < fullCount; i++) {
           ghostItems.push({})
         }
         state = { ...state, loadedPages: {} }
       } else {
-        ghostItems = clone(state.items);
+        ghostItems = clone(state.queryResults);
       }
 
       if (action.meta.queryResults) {
@@ -91,7 +105,7 @@ export function queryDetailReducer(state: QueryDetail = INITIAL_STATE, a: Action
 
       state = {
         ...state,
-        items: ghostItems,
+        queryResults: ghostItems,
         loadedPages: {
           ...state.loadedPages,
           [pageNr]: true

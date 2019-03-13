@@ -3,19 +3,25 @@ import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { QueryDetail } from './query-detail.models';
 import { GvQuery } from '../query-detail.component';
+import { ComQuery } from 'app/core';
 
 type Payload = QueryDetail;
 interface MetaData {
   queryResults?: any[],
   pkProject?: number;
+  pkEntity?: number;
   query?: GvQuery;
+  comQuery?: ComQuery;
   offset?: number
-  limit?: number
+  limit?: number,
+  tabTitle?:string
 };
 export type QueryDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
 export class QueryDetailAPIActions {
+  static readonly SET_TAB_TITLE = 'QueryDetail::SET_TAB_TITLE';
+
   static readonly LOAD = 'QueryDetail::LOAD';
   static readonly LOAD_SUCCEEDED = 'QueryDetail::LOAD_SUCCEEDED';
   static readonly LOAD_FAILED = 'QueryDetail::LOAD_FAILED';
@@ -36,23 +42,62 @@ export class QueryDetailAPIActions {
 
   static readonly DESTROY = 'QueryDetail::DESTROY';
 
+
+  /*********************************************************************
+  *  Set tab title
+  *********************************************************************/
   @dispatch()
-  load = (): QueryDetailAPIAction => ({
+  setTabTitle = (tabTitle:string): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.LOAD,
-    meta: null,
+    meta: { tabTitle },
     payload: null,
   });
 
-  loadSucceeded = (queryResults: any[]): QueryDetailAPIAction => ({
+  /*********************************************************************
+  *  Load an existing query
+  *********************************************************************/
+
+  @dispatch()
+  load = (pkProject: number, pkEntity: number): QueryDetailAPIAction => ({
+    type: QueryDetailAPIActions.LOAD,
+    meta: { pkProject, pkEntity },
+    payload: null,
+  });
+
+  loadSucceeded = (comQuery: ComQuery): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.LOAD_SUCCEEDED,
     meta: {
-      queryResults
+      comQuery
     },
     payload: null
   })
 
   loadFailed = (error): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.LOAD_FAILED,
+    meta: null,
+    payload: null,
+    error,
+  })
+
+  /*********************************************************************
+  *  Save a query
+  *********************************************************************/
+
+  @dispatch()
+  save = (comQuery: ComQuery): QueryDetailAPIAction => ({
+    type: QueryDetailAPIActions.SAVE,
+    meta: { comQuery },
+    payload: null,
+  });
+
+  saveSucceeded = (): QueryDetailAPIAction => ({
+    type: QueryDetailAPIActions.SAVE_SUCCEEDED,
+    meta: null,
+    payload: null
+  })
+
+  saveFailed = (error): QueryDetailAPIAction => ({
+    type: QueryDetailAPIActions.SAVE_FAILED,
     meta: null,
     payload: null,
     error,

@@ -5,27 +5,37 @@
 
 </div>     -->
 
-<div class="wrapper">
+<form [formGroup]="formGroup" class="wrapper">
 
 
-
-    <div class="gv-query-path-segment" *ngFor="let segment of model; let i = index">
+    <div class="gv-query-path-segment"
+        *ngFor="let segment of dynamicFormControls; let i = index; trackBy:getKey">
         <mat-icon>arrow_right_alt</mat-icon>
+        <mat-form-field *ngIf="segment.type === 'properties'">
+            <gv-property-path-segment [index]="i" class="gv-grow-1 d-flex flex-column" [formControl]="segment.ctrl"
+                [propertyOptions$]="segment.behaviorSubject" [disabled]="i < (dynamicFormControls.length-1)"
+                (focus)="onFocus()" (blur)="onBlur()">
+            </gv-property-path-segment>
+            <mat-error *ngIf="segment.ctrl.invalid && segment.ctrl.touched">Select or remove.</mat-error>
+        </mat-form-field>
 
-        <gv-property-path-segment [index]="i" class="d-flex flex-column" *ngIf="segment.type === 'properties'"
-            [(ngModel)]="model[i]" [propertyOptions$]="getPropertyOptionsObservable(i)"
-            [disabled]="i < (model.length-1)"></gv-property-path-segment>
-        <gv-class-and-type-path-segment [index]="i" class="d-flex flex-column" *ngIf="segment.type === 'classes'"
-            [(ngModel)]="model[i]" [pkClasses$]="getPkClassesObservable(i)"></gv-class-and-type-path-segment>
+        <mat-form-field *ngIf="segment.type === 'classes'">
+            <gv-class-and-type-path-segment [index]="i" class="gv-grow-1 d-flex flex-column"
+                [formControl]="segment.ctrl" [pkClasses$]="segment.behaviorSubject"
+                [disabled]="i < (dynamicFormControls.length-1)" (focus)="onFocus()" (blur)="onBlur()">
+            </gv-class-and-type-path-segment>
+            <mat-error *ngIf="segment.ctrl.invalid && segment.ctrl.touched">Select or remove.</mat-error>
+        </mat-form-field>
 
         <button class="gv-remove-query-path-segment" mat-icon-button (click)="removeSegmentByIndex(i)" color="warn"
-            *ngIf="i > 0" matTooltip="Remove path segment">
+            *ngIf="i > 0 && i === (dynamicFormControls?.length - 1)" matTooltip="Remove path segment">
             <mat-icon>clear</mat-icon>
         </button>
     </div>
 
-    <button class="gv-add-query-path-segment my-3" mat-icon-button (click)="addSegment()" matTooltip="Add path segment">
+    <button class="gv-add-query-path-segment my-3" mat-icon-button (click)="addSegment()"
+        *ngIf="dynamicFormControls[dynamicFormControls?.length - 1]?.ctrl?.valid" matTooltip="Add path segment">
         <mat-icon>add</mat-icon>
     </button>
 
-</div>
+</form>

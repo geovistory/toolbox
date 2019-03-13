@@ -13,19 +13,22 @@ export function queryListReducer(state: QueryList = INITIAL_STATE, a: Action): Q
     case QueryListAPIActions.LOAD:
       state = {
         ...state,
+        loading: true,
         items: {}
       };
       break;
     case QueryListAPIActions.LOAD_SUCCEEDED:
       state = {
         ...state,
-        items: indexBy(prop('pk_entity'), action.meta.itemsArray)
+        loading: false,
+        items: indexBy((q) => q.pk_entity.toString(), action.meta.itemsArray)
       };
       break;
 
     case QueryListAPIActions.LOAD_FAILED:
       state = {
         ...state,
+        loading: false,
         items: {}
       };
       break;

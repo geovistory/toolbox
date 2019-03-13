@@ -1,15 +1,35 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild, AfterViewInit, Directive, OnInit } from '@angular/core';
+import { ControlValueAccessor, NgControl, NgForm, ValidatorFn, AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { FilterTreeData } from '../../containers/query-detail/query-detail.component';
+import { FilterTreeData, FilterTree } from '../../containers/query-detail/query-detail.component';
 import { QueryService } from '../../services/query.service';
-import { ClassesAndTypes } from '../class-and-type-filter/class-and-type-filter.component';
 import { QueryPathSegment } from '../col-def-editor/col-def-editor.component';
 import { PropertyOption } from '../property-select/property-select.component';
+import { ClassAndTypeSelectModel, classOrTypeRequiredCondition } from '../class-and-type-select/class-and-type-select.component';
+import { equals } from 'ramda';
+import { classAndTypeFilterRequiredValidator } from '../class-and-type-filter/class-and-type-filter.component';
 
+/** At least one class or type must be selected */
+export function classAndTypePathSegmentRequiredValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const model: FilterTree = control.value;
+    return model && model.data && classOrTypeRequiredCondition(model.data)
+      ? { 'classAndTypePathSegmentRequired': { value: control.value } } : null
+  };
+}
+
+@Directive({
+  selector: '[gvClassAndTypePathSegmentRequired]',
+  providers: [{ provide: NG_VALIDATORS, useExisting: ClassAndTypePathSegmentRequiredValidatorDirective, multi: true }]
+})
+export class ClassAndTypePathSegmentRequiredValidatorDirective implements Validator {
+  validate(control: AbstractControl): { [key: string]: any } | null {
+    return classAndTypeFilterRequiredValidator()(control);
+  }
+}
 
 
 @Component({
@@ -23,12 +43,18 @@ import { PropertyOption } from '../property-select/property-select.component';
     '[attr.aria-describedby]': 'describedBy',
   }
 })
-export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<QueryPathSegment> {
+export class ClassAndTypePathSegmentComponent implements  AfterViewInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<QueryPathSegment> {
   static nextId = 0;
   @Input() index: number;
-  @Output() remove = new EventEmitter<void>();
   @Input() pkClasses$: Observable<number[]>;
-  
+
+  @Output() blur = new EventEmitter<void>();
+  @Output() focus = new EventEmitter<void>();
+
+  @Output() remove = new EventEmitter<void>();
+
+  @ViewChild('f') form: NgForm;
+
   model: QueryPathSegment;
 
   // emits true on destroy of this component
@@ -36,7 +62,6 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
   destroy$ = new Subject<boolean>();
   stateChanges = new Subject<void>();
   focused = false;
-  errorState = false;
   controlType = 'class-and-type-path-segment';
   id = `class-and-type-path-segment-${ClassAndTypePathSegmentComponent.nextId++}`;
   describedBy = '';
@@ -44,7 +69,7 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
   onTouched = () => { };
 
   get empty() {
-    if (!this.model || !this.model.data) return true;
+    if (!this.model || !this.model.data) return true;
     return [
       ...(this.model.data.classes || []),
       ...(this.model.data.types || [])
@@ -93,8 +118,11 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
     this.onChange(this.model)
   }
 
+  get errorState() {
+    return this.ngControl.errors !== null && !!this.ngControl.touched;
+  }
 
-  selectedClassesAndTypes$ = new BehaviorSubject<ClassesAndTypes | null>(null);
+  selectedClassesAndTypes$ = new BehaviorSubject<ClassAndTypeSelectModel | null>(null);
 
   // the propertyOptions get derived from the selectedClasses
   propertyOptions$ = new BehaviorSubject<PropertyOption[] | null>(null);
@@ -102,7 +130,7 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
   get selectedClassesAndTypes() {
     return this.selectedClassesAndTypes$.value;
   }
-  set selectedClassesAndTypes(val: ClassesAndTypes) {
+  set selectedClassesAndTypes(val: ClassAndTypeSelectModel) {
     this.selectedClassesAndTypes$.next(val)
   }
 
@@ -114,7 +142,6 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
-
     this.selectedClassesAndTypes$.pipe(
       this.q.propertiesOfClassesAndTypes(),
       takeUntil(this.destroy$)
@@ -124,11 +151,26 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
 
   }
 
+
+  ngAfterViewInit() {
+    this.form.valueChanges.subscribe(controls => {
+      const val = controls['classAndType'];
+
+      if (!equals(this.selectedClassesAndTypes$.value, val)) {
+        this.treeDataChange(val)
+        this.value = {
+          ...this.model,
+          data: val
+        }
+      }
+    })
+  }
+
   // when tree data changes (object without children)
   treeDataChange(treeData: FilterTreeData) {
     this.selectedClassesAndTypes = {
-      classes: treeData.classes || [],
-      types: treeData.types || []
+      classes: (treeData || { classes: [] }).classes || [],
+      types: (treeData || { types: [] }).types || []
     };
   }
 
@@ -169,4 +211,15 @@ export class ClassAndTypePathSegmentComponent implements OnDestroy, ControlValue
     this.disabled = isDisabled;
   }
 
+
+  onBlur() {
+    this.onTouched();
+    this.blur.emit()
+    this.focused = false;
+  }
+
+  onFocus() {
+    this.focus.emit()
+    this.focused = true;
+  }
 }

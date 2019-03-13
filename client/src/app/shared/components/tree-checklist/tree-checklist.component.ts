@@ -1,10 +1,10 @@
 import { CollectionViewer, DataSource, SelectionModel } from '@angular/cdk/collections';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatTreeFlattener } from '@angular/material';
-import { indexBy, difference } from 'ramda';
-import { BehaviorSubject, Observable, Subject, zip, combineLatest, merge } from 'rxjs';
-import { distinct, first, map, takeUntil } from 'rxjs/operators';
+import { indexBy, symmetricDifference } from 'ramda';
+import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 /**
  * Node for tree
  */
@@ -108,7 +108,14 @@ export class TreeChecklistComponent implements OnInit, OnDestroy, AfterViewInit 
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {
 
-    this.selected$.pipe(distinct(), takeUntil(this.destroy$)).subscribe(selected => {
+    this.selected$.pipe(distinctUntilChanged(
+      (last, next) => {
+        const lastIds = this.extractNodeIds(last);
+        const nextIds = this.extractNodeIds(next);
+        const diff = symmetricDifference(lastIds, nextIds);
+        return diff.length === 0;
+      }
+    ), takeUntil(this.destroy$)).subscribe(selected => {
       this.selectionChange.emit(selected)
     })
 
@@ -143,7 +150,6 @@ export class TreeChecklistComponent implements OnInit, OnDestroy, AfterViewInit 
     const dataNodes = this.treeControl.dataNodes;
     const availableNodes = indexBy((id) => id, this.extractNodeIds(dataNodes));
     const selectedNodeIds = indexBy((id) => id, this.extractNodeIds(this.selected));
-    let hasChanges = false;
 
     // delete selection
     this.checklistSelection.selected.forEach(node => this.checklistSelection.deselect(node));
@@ -153,46 +159,51 @@ export class TreeChecklistComponent implements OnInit, OnDestroy, AfterViewInit 
       // deselect removed
       if (!availableNodes[id]) {
         this.checklistSelection.deselect(node);
-        hasChanges = true
         // reselect replaced
       } else if (selectedNodeIds[id]) {
         this.checklistSelection.select(node);
-        hasChanges = true
       }
     })
     this.changeDetectorRef.detectChanges();
-    if (hasChanges) this.selected = this.checklistSelection.selected;
+    if (symmetricDifference(this.extractNodeIds(this.selected), this.extractNodeIds(this.checklistSelection.selected)).length > 0) {
+      this.selected = this.checklistSelection.selected
+    };
   }
 
   setSelection(nodes: TreeNode<any>[]) {
 
-    // wait for treeDataInitialized
-    this.treeDataInitialized$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-
-      const dataNodes = this.treeControl.dataNodes;
-
-      let hasChanges = false;
-      const oldSelectedIds = indexBy((id) => id, this.extractNodeIds(this.selected));
-      const newSelectedIds = indexBy((id) => id, this.extractNodeIds(nodes));
-
-      dataNodes.forEach(node => {
-        const id = this.extractNodeId(node);
-        // deselect
-        if (!newSelectedIds[id] && oldSelectedIds[id]) {
-          this.checklistSelection.deselect(node);
-          hasChanges = true
-          // select
-        } else if (!oldSelectedIds[id] && newSelectedIds[id]) {
-          this.checklistSelection.select(node);
-          hasChanges = true
-        }
+    if (this.treeDataInitialized) {
+      this.select(nodes);
+    } else {
+      // wait for treeDataInitialized
+      this.treeDataInitialized$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+        this.select(nodes);
       })
-
-      if (hasChanges) this.selected = this.checklistSelection.selected;
-    })
+    }
 
   }
 
+  private select(nodes: TreeNode<any>[]) {
+    const dataNodes = this.treeControl.dataNodes;
+    let hasChanges = false;
+    const oldSelectedIds = indexBy((id) => id, this.extractNodeIds(this.selected));
+    const newSelectedIds = indexBy((id) => id, this.extractNodeIds(nodes));
+    dataNodes.forEach(node => {
+      const id = this.extractNodeId(node);
+      // deselect
+      if (!newSelectedIds[id] && oldSelectedIds[id]) {
+        this.checklistSelection.deselect(node);
+        hasChanges = true;
+        // select
+      }
+      else if (!oldSelectedIds[id] && newSelectedIds[id]) {
+        this.checklistSelection.select(node);
+        hasChanges = true;
+      }
+    });
+    if (hasChanges)
+      this.selected = this.checklistSelection.selected;
+  }
   // recursivlyMergeNodes(oldVal: TreeNode<any>[], newVal: TreeNode<any>[]): TreeNode<any>[] {
 
   //   const oldNodeIds = this.extractNodeIds(oldVal)
@@ -239,8 +250,6 @@ export class TreeChecklistComponent implements OnInit, OnDestroy, AfterViewInit 
   hasChildren = (index: number, node: TreeNode<any>) => {
     return this.isExpandable(node);
   }
-
-
 
   private extractNodeId(node: TreeNode<any>): any {
     return node.data.id;

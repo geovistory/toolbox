@@ -61,6 +61,69 @@ export class ComQueryApi extends BaseLoopBackApi {
   }
 
   /**
+   * Run a query.
+   *
+   * @param {number} pkProject Pk of the project
+   *
+   * @param {number} limit max. number of records returned
+   *
+   * @param {number} offset offset of the first record returned
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ComQuery` object.)
+   * </em>
+   */
+  public findPerProject(pkProject: any, limit: any, offset: any, customHeaders?: Function): Observable<ComQuery[]> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ComQueries/find-per-project";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof limit !== 'undefined' && limit !== null) _urlParams.limit = limit;
+    if (typeof offset !== 'undefined' && offset !== null) _urlParams.offset = offset;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result.pipe(map((instances: Array<ComQuery>) =>
+        instances.map((instance: ComQuery) => new ComQuery(instance))
+    ));
+  }
+
+  /**
+   * Find one query.
+   *
+   * @param {number} pkProject Pk of the project
+   *
+   * @param {number} pkEntity Pk Entity
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ComQuery` object.)
+   * </em>
+   */
+  public findByIdAndProject(pkProject: any, pkEntity: any, customHeaders?: Function): Observable<ComQuery> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ComQueries/find-by-id-and-project";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result.pipe(map((instance: ComQuery) => new ComQuery(instance)));
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `ComQuery`.
    */

@@ -1,13 +1,13 @@
 import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material';
 import { sandboxOf } from 'angular-playground';
-import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';
-import { FilterTree } from '../../containers/query-detail/query-detail.component';
+import { delay, first } from 'rxjs/operators';
 import { QueriesModule } from '../../queries.module';
-import { PropertyOption, PropertySelectComponent } from './property-select.component';
-import { MatFormFieldModule } from '@angular/material';
-import { first, delay } from 'rxjs/operators';
+import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
+import { PropertyOption } from '../property-select/property-select.component';
+import { PropertyFilterComponent } from './property-filter.component';
 
 
 const options$ = new BehaviorSubject(null)
@@ -22,21 +22,25 @@ options$.pipe(first(), delay(1000)).subscribe(() => {
     ] as PropertyOption[])
 })
 
-export default sandboxOf(PropertySelectComponent, {
+export default sandboxOf(PropertyFilterComponent, {
+    declareComponent: false,
     imports: [
         QueriesModule,
-        InitStateModule,
         MatFormFieldModule,
-        FormsModule
-    ],
-    declareComponent: false
+        FormsModule,
+        InitStateModule
+    ]
 })
-    .add('Properties Select | Preselected ', {
+
+    .add('Property Filter | Preset ', {
         context: {
             pkProject: 15,
             sandboxState: {},
             model: {
-                outgoingProperties: [1192]
+                data: {
+                    ingoingProperties: [],
+                    outgoingProperties: [1192]
+                }
             },
             options$
         },
@@ -46,10 +50,8 @@ export default sandboxOf(PropertySelectComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">
                 <form #f="ngForm" class="gv-grow-1">
-                    <mat-form-field>
-                        <gv-property-select placeholder="Select Properties" name="control" [(ngModel)]="model" #control="ngModel"  [options$]="options$" gvPropertiesRequired></gv-property-select>
-                        <mat-error *ngIf="control.invalid">You must enter a value</mat-error>
-                    </mat-form-field>
+                        <gv-property-filter name="control" [(ngModel)]="model" #control="ngModel" [propertyOptions$]="options$" 
+                        gvPropertyFilterRequired></gv-property-filter>
                 </form>
             </div>
             <div>
@@ -69,4 +71,3 @@ export default sandboxOf(PropertySelectComponent, {
             </div>
         </div>`
     })
-

@@ -1,14 +1,27 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, forwardRef, Input, OnDestroy, Optional, Self, ViewChildren, QueryList } from '@angular/core';
-import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Optional, Output, QueryList, Self, ViewChildren, OnInit, Directive } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, Validators, ValidatorFn, AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
-import { Subject, Observable, BehaviorSubject } from 'rxjs';
-import { QueryPathSegment } from '../col-def-editor/col-def-editor.component';
-import { PropertyOption } from '../property-select/property-select.component';
-import { PropertyPathSegmentComponent } from '../property-path-segment/property-path-segment.component';
-import { ClassAndTypePathSegmentComponent } from '../class-and-type-path-segment/class-and-type-path-segment.component';
+import { equals, keys, values } from 'ramda';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { ClassAndTypePathSegmentComponent, classAndTypePathSegmentRequiredValidator } from '../class-and-type-path-segment/class-and-type-path-segment.component';
+import { QueryPathSegment, QueryPathSegmentType } from '../col-def-editor/col-def-editor.component';
+import { PropertyPathSegmentComponent, propertyPathSegmentRequiredValidator } from '../property-path-segment/property-path-segment.component';
+import { PropertyOption, propertiesRequiredCondition } from '../property-select/property-select.component';
+import { FilterTree } from '../../containers/query-detail/query-detail.component';
 
 
+
+
+
+
+interface DynamicFormControl {
+  key: string,
+  type: QueryPathSegmentType,
+  ctrl: FormControl,
+  behaviorSubject: BehaviorSubject<any>
+}
 
 @Component({
   selector: 'gv-query-path-control',
@@ -21,12 +34,17 @@ import { ClassAndTypePathSegmentComponent } from '../class-and-type-path-segment
     '[attr.aria-describedby]': 'describedBy',
   }
 })
-export class QueryPathControlComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<QueryPathSegment[]> {
+export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<QueryPathSegment[]> {
   static nextId = 0;
   @ViewChildren(PropertyPathSegmentComponent) propertyPathSegments: QueryList<PropertyPathSegmentComponent>;
   @ViewChildren(ClassAndTypePathSegmentComponent) classAndTypePathSegments: QueryList<ClassAndTypePathSegmentComponent>;
 
   @Input() propertyOptions$: BehaviorSubject<PropertyOption[]>;
+
+  propertyOptionsBehaviorSubject$ = new BehaviorSubject<PropertyOption[]>(null);
+
+  @Output() blur = new EventEmitter<void>();
+  @Output() focus = new EventEmitter<void>();
 
   model: QueryPathSegment[];
 
@@ -35,7 +53,7 @@ export class QueryPathControlComponent implements OnDestroy, ControlValueAccesso
   destroy$ = new Subject<boolean>();
   stateChanges = new Subject<void>();
   focused = false;
-  errorState = false;
+  // errorState = false;
   controlType = 'query-path-control';
   id = `query-path-control-${QueryPathControlComponent.nextId++}`;
   describedBy = '';
@@ -43,7 +61,7 @@ export class QueryPathControlComponent implements OnDestroy, ControlValueAccesso
   onTouched = () => { };
 
   get empty() {
-    return this.model.length ? false : true;
+    return this.model && this.model.length ? false : true;
   }
 
   get shouldLabelFloat() { return this.focused || !this.empty; }
@@ -77,55 +95,102 @@ export class QueryPathControlComponent implements OnDestroy, ControlValueAccesso
 
   @Input()
   get value(): QueryPathSegment[] | null {
-
-    // TODO: Adapt, when it is invalid and null is returned
-    if (!this.model.length) return null;
-
     return this.model;
   }
   set value(value: QueryPathSegment[] | null) {
-    this.model = value;
+
+    if (!equals(this.model, value)) {
+      this.model = value;
+      this.onChange(this.value)
+    }
+
   }
 
+  get errorState() {
+    return this.ngControl.errors !== null && !!this.ngControl.touched;
+  }
+
+  formGroup: FormGroup;
+  dynamicFormControls: DynamicFormControl[] = [];
 
   constructor(
-    @Optional() @Self() public ngControl: NgControl
+    @Optional() @Self() public ngControl: NgControl,
+    fb: FormBuilder
   ) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
+
+    this.formGroup = fb.group({})
   }
 
-  // TODO: Adapt way of changing the value
-  newFoo(val) {
-    this.value = {
-      ...this.value
-    };
-    this.onChange(this.value)
+  getKey(_, item) {
+    return item.key
   }
 
+  ngOnInit() {
+    this.propertyOptions$.pipe(takeUntil(this.destroy$))
+      .subscribe(options => { this.propertyOptionsBehaviorSubject$.next(options) })
+  }
+
+  ngAfterViewInit() {
+    this.formGroup.valueChanges.subscribe(controls => {
+      if (controls && typeof controls === 'object' && Object.keys(controls).length) {
+        const newVal: QueryPathSegment[] = this.dynamicFormControls.map(dynCtrl => ({
+          type: dynCtrl.type,
+          ...(dynCtrl.ctrl.value || {})
+        }))
+
+        if (!equals(newVal, this.model)) {
+          this.value = newVal;
+        }
+      } else {
+        this.value = null;
+      }
+    })
+  }
 
 
   // When user adds a next path segment
   addSegment?() {
-    const type = this.model[this.model.length - 1].type === 'classes' ? 'properties' : 'classes';
-    this.model.push(new QueryPathSegment({
-      type
-    }))
-    this.onChange(this.model)
+    const type = this.dynamicFormControls[this.dynamicFormControls.length - 1].type === 'classes' ? 'properties' : 'classes';
+    this.addCtrl(new QueryPathSegment({ type, data: {} }), this.dynamicFormControls.length)
   }
 
   removeSegmentByIndex?(i: number) {
-    this.model.splice(i, (this.model.length - 1))
-    this.onChange(this.model)
+    this.removeCtrl(i);
   }
 
   getPkClassesObservable(i: number): BehaviorSubject<number[]> {
-    return this.propertyPathSegments.find(segment => segment.index === (i - 1)).pkClasses$;
+    const s = new BehaviorSubject(null);
+
+    this.propertyPathSegments.changes.pipe(
+      switchMap(() => {
+        const component = this.propertyPathSegments.find(segment => segment.index === (i - 1));
+        if (!component) return null;
+        return component.pkClasses$
+      }),
+      filter(val => val !== null),
+      takeUntil(this.destroy$)
+    ).subscribe(pkClasses => { s.next(pkClasses) })
+
+    return s;
   }
   getPropertyOptionsObservable(i: number): BehaviorSubject<PropertyOption[]> {
-    if (i === 0) return this.propertyOptions$;
-    return this.classAndTypePathSegments.find(segment => segment.index === (i - 1)).propertyOptions$;
+    const s = new BehaviorSubject(null);
+
+    this.classAndTypePathSegments.changes.pipe(
+      switchMap(() => {
+        const component = this.classAndTypePathSegments.find(segment => segment.index === (i - 1));
+        if (!component) return null;
+        return component.propertyOptions$
+      }),
+      filter(val => val !== null),
+      takeUntil(this.destroy$)
+    ).subscribe(propertyOptions => { s.next(propertyOptions) })
+
+
+    return s;
   }
 
 
@@ -147,7 +212,73 @@ export class QueryPathControlComponent implements OnDestroy, ControlValueAccesso
   }
 
   writeValue(value: QueryPathSegment[] | null): void {
+
+    // remove controls
+    this.dynamicFormControls = [];
+    const [...ctrlsToRemove] = keys(this.formGroup.controls) as string[];
+
+    ctrlsToRemove.forEach(ctrlName => this.formGroup.removeControl(ctrlName));
+
+    // add controls
+    (value || []).forEach((segment, index) => { this.addCtrl(segment, index); })
+
     this.value = value;
+
+  }
+
+
+
+  private getBehaviorSubject(type: string, index: any) {
+
+    if (type === 'properties') {
+      if (index === 0) return this.propertyOptionsBehaviorSubject$;
+      return this.getPropertyOptionsObservable(index);
+    } else if (type === 'classes') {
+      return this.getPkClassesObservable(index);
+    }
+  }
+
+  retrieveType(segment: QueryPathSegment): QueryPathSegmentType {
+    if (segment && segment.type) {
+      if (segment.type === 'classes' || segment.type === 'properties') {
+        return segment.type
+      }
+    }
+
+    if (segment && segment.data) {
+      if (segment.data.ingoingProperties || segment.data.outgoingProperties) return 'properties'
+      if (segment.data.classes || segment.data.types) return 'classes'
+    }
+
+    throw new Error('Type of QueryPathSegment could not be retrieved')
+  }
+
+  retrieveValidator(type: QueryPathSegmentType): ValidatorFn {
+    if (type === 'classes') {
+      return classAndTypePathSegmentRequiredValidator()
+    } else if (type === 'properties') {
+      return propertyPathSegmentRequiredValidator()
+    }
+    throw new Error('Validator of QueryPathSegment could not be retrieved')
+
+  }
+  addCtrl(segment: QueryPathSegment, index) {
+    const type = this.retrieveType(segment);
+    const validator = this.retrieveValidator(type)
+
+    const c = {
+      type,
+      key: '_' + index,
+      ctrl: new FormControl(segment, [validator]),
+      behaviorSubject: this.getBehaviorSubject(type, index)
+    }
+    this.dynamicFormControls.push(c)
+    this.formGroup.addControl(c.key, c.ctrl)
+  }
+  removeCtrl(index: number) {
+    const key = this.dynamicFormControls[index].key;
+    this.dynamicFormControls.splice(index, 1)
+    this.formGroup.removeControl(key)
   }
 
   registerOnChange(fn: any): void {
@@ -162,4 +293,15 @@ export class QueryPathControlComponent implements OnDestroy, ControlValueAccesso
     this.disabled = isDisabled;
   }
 
+
+  onBlur() {
+    this.onTouched();
+    this.blur.emit()
+    this.focused = false;
+  }
+
+  onFocus() {
+    this.focus.emit()
+    this.focused = true;
+  }
 }

@@ -23,7 +23,9 @@ export class QueryDetailAPIEpics {
     return combineEpics(
       this.createLoadQueryDetailEpic(c),
       this.createRunQueryDetailEpic(c),
-      this.createRunInitQueryDetailEpic(c)
+      this.createRunInitQueryDetailEpic(c),
+      this.createSaveQueryDetailEpic(c),
+
     );
   }
 
@@ -43,36 +45,36 @@ export class QueryDetailAPIEpics {
           /**
            * Do some api call
            */
-          // this.modelApi.selectedClassesOfProfile(null) // <- change api call here
-          //   /**
-          //    * Subscribe to the api call
-          //    */
-          //   .subscribe((data) => {
-          //     /**
-          //      * Emit the global action that completes the loading bar
-          //      */
-          //     globalStore.next(this.loadingBarActions.completeLoading());
-          //     /**
-          //      * Emit the local action on loading succeeded
-          //      */
-          //     c.localStore.dispatch(this.actions.loadSucceeded(data));
+          this.queryApi.findByIdAndProject(action.meta.pkProject, action.meta.pkEntity) 
+            /**
+             * Subscribe to the api call
+             */
+            .subscribe((data) => {
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              /**
+               * Emit the local action on loading succeeded
+               */
+              c.localStore.dispatch(this.actions.loadSucceeded(data));
 
-          //   }, error => {
-          //         /**
-          //   * Emit the global action that shows some loading error message
-          //   */
-          //  globalStore.next(this.loadingBarActions.completeLoading());
-          //  globalStore.next(this.notificationActions.addToast({
-          //    type: 'error',
-          //    options: {
-          //      title: error.message
-          //    }
-          //  }));         
-          //    /**
-          //     * Emit the local action on loading failed
-          //     */
-          //     c.localStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
-          //   })
+            }, error => {
+              /**
+              * Emit the global action that shows some loading error message
+              */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              c.localStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
+            })
         })),
         takeUntil(c.destroy$)
       )
@@ -88,7 +90,7 @@ export class QueryDetailAPIEpics {
         ofType(QueryDetailAPIActions.RUN_INIT),
         filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: QueryDetailAPIAction) => new Observable<Action>((globalStore) => {
-          c.localStore.dispatch(this.actions.run(action.meta.pkProject, action.meta.query));          
+          c.localStore.dispatch(this.actions.run(action.meta.pkProject, action.meta.query));
         })),
         takeUntil(c.destroy$)
       )
@@ -140,6 +142,59 @@ export class QueryDetailAPIEpics {
                * Emit the local action on loading failed
                */
               c.localStore.dispatch(this.actions.runFailed({ status: '' + error.status }, action.meta.query.offset, action.meta.query.limit))
+            })
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
+
+  private createSaveQueryDetailEpic(c: QueryDetailComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(QueryDetailAPIActions.SAVE),
+        filter(action => ofSubstore(c.basePath)(action)),
+        switchMap((action: QueryDetailAPIAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Create the query (fk_project is within the object)
+           */
+          this.queryApi.create(action.meta.comQuery)
+            /**
+             * Subscribe to the api call
+             */
+            .subscribe((data) => {
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              /**
+               * Emit the local action on loading succeeded
+               */
+              c.localStore.dispatch(this.actions.saveSucceeded());
+
+            }, error => {
+              /**
+        * Emit the global action that shows some loading error message
+        */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              c.localStore.dispatch(this.actions.saveFailed(error))
             })
         })),
         takeUntil(c.destroy$)

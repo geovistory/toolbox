@@ -1,9 +1,9 @@
-<div class="d-flex flex-row align-items-center">
+<form #f="ngForm" class="d-flex flex-row align-items-center">
     <!-- TODO: call onTouche() on blur  -->
 
-    <gv-property-select *ngIf="model" [qtree]="model" [options$]="propertyOptions$" [disabled]="model?.children?.length > 0"
-        (modelChanged)="onModelChange($event)" (selectionChanged)="propertySelectionChange($event)">
+    <gv-property-select class="gv-grow-1" *ngIf="model" name="propertyCtrl" [(ngModel)]="model.data" #propertyCtrl="ngModel"
+        [options$]="propertyOptions$" [disabled]="disabled" (focus)="onFocus()" (blur)="onBlur()">
     </gv-property-select>
 
 
-</div>
+</form>

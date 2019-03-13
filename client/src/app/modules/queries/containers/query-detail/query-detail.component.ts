@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { AfterViewInit, Component, forwardRef, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActiveProjectService, IAppState, SubstoreComponent } from 'app/core';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { ActiveProjectService, IAppState, SubstoreComponent, ComQuery } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { clone, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -13,13 +13,19 @@ import { QueryDetailAPIActions } from './api/query-detail.actions';
 import { QueryDetailAPIEpics } from './api/query-detail.epics';
 import { QueryDetail } from './api/query-detail.models';
 import { queryDetailReducer, pageOfOffset, offsetOfPage } from './api/query-detail.reducer';
+import { pkEntityKey } from 'app/core/state/services/state-creator';
+import { ClassAndTypeSelectModel } from '../../components/class-and-type-select/class-and-type-select.component';
 
 export type SubGroupType = 'property' | 'classAndType'
 export interface FilterTreeData {
   subgroup?: SubGroupType;
+  operator?: string;
+
+  // inherited from ClassesAndTypes:
   classes?: number[]
   types?: number[]
-  operator?: string;
+
+  // inherited from PropertySelectModel:
   outgoingProperties?: number[]
   ingoingProperties?: number[]
 }
@@ -33,8 +39,8 @@ export class FilterTree {
 export interface GvQuery {
   filter: FilterTree,
   columns: ColDef[],
-  limit: number,
-  offset: number
+  limit?: number,
+  offset?: number
 }
 
 @WithSubStore({
@@ -59,52 +65,31 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
   // path to the substore
   @Input() basePath: string[];
+  @Input() pkEntity: number;
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
+  @select() comQuery$: Observable<ComQuery>;
+
   @select() showRightArea$: Observable<boolean>;
-  @select() items$: Observable<any[]>;
+  @select() queryResults$: Observable<any[]>;
   @select() loadedPages$: Observable<{ [pageNr: string]: boolean }>;
   @select() loadingPages$: Observable<{ [pageNr: string]: boolean }>;
   @select() fullCount$: Observable<number>;
 
+
   firstFormGroup: FormGroup;
+  filterCtrl: FormControl;
+
   secondFormGroup: FormGroup;
+  columnsCtrl: FormControl;
+
   thirdFormGroup: FormGroup;
+  nameCtrl = new FormControl(null, Validators.required)
+  descriptionCtrl = new FormControl(null, Validators.required)
 
   displayedColumns: string[];
 
-
-
-  // filter
-  filterQuery = new FilterTree();
-
-  // cols
-  colDefs = [
-    new ColDef({
-      ofRootTable: true,
-      defaultType: 'entity_preview',
-      label: 'Entity'
-    }),
-    new ColDef({
-      ofRootTable: true,
-      defaultType: 'entity_label',
-      colName: 'entity_label',
-      label: 'Entity Label'
-    }),
-    new ColDef({
-      ofRootTable: true,
-      defaultType: 'class_label',
-      colName: 'class_label',
-      label: 'Class Label'
-    }),
-    new ColDef({
-      ofRootTable: true,
-      defaultType: 'type_label',
-      colName: 'type_label',
-      label: 'Type Label'
-    })
-  ]
 
   // propertyOptions will be derived from the filter defined in the first step
   propertyOptions$ = new BehaviorSubject<PropertyOption[]>(null);
@@ -124,6 +109,48 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
     public p: ActiveProjectService
   ) {
     super()
+
+    // Prepare first form group
+    this.filterCtrl = new FormControl(new FilterTree()) // TODO add validato
+    this.firstFormGroup = this._formBuilder.group({
+      filterCtrl: this.filterCtrl
+    });
+
+    // Prepare second form group
+    this.columnsCtrl = new FormControl([
+      new ColDef({
+        ofRootTable: true,
+        defaultType: 'entity_preview',
+        label: 'Entity'
+      }),
+      new ColDef({
+        ofRootTable: true,
+        defaultType: 'entity_label',
+        colName: 'entity_label',
+        label: 'Entity Label'
+      }),
+      new ColDef({
+        ofRootTable: true,
+        defaultType: 'class_label',
+        colName: 'class_label',
+        label: 'Class Label'
+      }),
+      new ColDef({
+        ofRootTable: true,
+        defaultType: 'type_label',
+        colName: 'type_label',
+        label: 'Type Label'
+      })
+    ]) // TODO add validato
+    this.secondFormGroup = this._formBuilder.group({
+      columnsContro: this.columnsCtrl
+    });
+
+    // Prepare third form group
+    this.thirdFormGroup = this._formBuilder.group({
+      nameCtrl: this.nameCtrl,
+      descriptionCtrl: this.descriptionCtrl,
+    });
   }
 
   getBasePath = () => this.basePath;
@@ -132,19 +159,19 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
     this.localStore = this.ngRedux.configureSubStore(this.basePath, queryDetailReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    this.firstFormGroup = this._formBuilder.group({
-      firstCtrl: ['', Validators.required]
-    });
-    this.secondFormGroup = this._formBuilder.group({
-      secondCtrl: ['', Validators.required]
-    });
-    this.thirdFormGroup = this._formBuilder.group({
-      nameCtrl: ['', Validators.required],
-      descriptionCtrl: [''],
-    });
+    if (this.pkEntity) this.loadExistingQuery();
+    if (!this.pkEntity) this.setTabTitle('New Query*');
+
     this.pending$ = this.loadingPages$.pipe(
       map(pages => !!values(pages).find(loading => loading === true))
     )
+
+    this.comQuery$.pipe(filter(q => !!q), takeUntil(this.destroy$)).subscribe(comQuery => {
+      this.filterCtrl.setValue(comQuery.query.filter)
+      this.columnsCtrl.setValue(comQuery.query.columns);
+      this.nameCtrl.setValue(comQuery.name);
+      this.descriptionCtrl.setValue(comQuery.description);
+    })
 
   }
 
@@ -159,11 +186,16 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
   }
 
+  // if the query detail is opened from existing query, load it
+  loadExistingQuery() {
+    this.p.pkProject$.subscribe(p => this.load(p, this.pkEntity)).unsubscribe();
+  }
+
   onRun() {
     this.p.pkProject$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(pk => {
       this.showRightArea();
-      this.colDefsCopy = clone(this.colDefs)
-      this.filterQueryCopy = clone(this.filterQuery)
+      this.colDefsCopy = clone(this.columnsCtrl.value)
+      this.filterQueryCopy = clone(this.filterCtrl.value)
       this.displayedColumns = this.colDefsCopy.map(col => col.label);
       this.runInit(pk, {
         filter: this.filterQueryCopy,
@@ -202,9 +234,34 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
       (!loadedPages[pageBefore] && !loadingPages[pageBefore]) ? offsetOfPage(pageBefore, this.limit) : null;
   }
 
+  composeComQuery(fkProject: number): ComQuery {
+    return {
+      fk_project: fkProject,
+      name: this.thirdFormGroup.controls.nameCtrl.value,
+      description: this.thirdFormGroup.controls.descriptionCtrl.value,
+      query: {
+        filter: this.filterCtrl.value,
+        columns: this.columnsCtrl.value
+      }
+    } as ComQuery
+  }
+
 
   onSave() {
-    
+    // validate if thirdFormGroup is valid
+    if (this.thirdFormGroup.valid) {
+      this.p.pkProject$.subscribe(p => {
+
+        // create the query definition object
+        const q = this.composeComQuery(p)
+
+        // call action to save query
+
+        this.save(q);
+
+      }).unsubscribe()
+    }
+
   }
 
   ngOnDestroy() {

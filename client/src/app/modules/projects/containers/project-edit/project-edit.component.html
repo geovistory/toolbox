@@ -148,7 +148,7 @@
           <gv-section-detail *ngIf="tab.component=='section-detail'" [pkEntity]="tab.data.pkEntity"
             [classAndTypePk]="tab.data.classAndTypePk" [basePath]="tab.path"
             (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-section-detail>
-          <gv-query-detail *ngIf="tab.component=='query-detail'" [basePath]="tab.path"
+          <gv-query-detail *ngIf="tab.component=='query-detail'" [pkEntity]="tab.data?.pkEntity" [basePath]="tab.path"
             (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-query-detail>
         </gv-tab-body>
 

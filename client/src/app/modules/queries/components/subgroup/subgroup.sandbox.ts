@@ -1,28 +1,20 @@
 import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material';
 import { sandboxOf } from 'angular-playground';
-import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';
+import { delay, first } from 'rxjs/operators';
 import { FilterTree } from '../../containers/query-detail/query-detail.component';
 import { QueriesModule } from '../../queries.module';
-import { PropertyOption, PropertySelectComponent } from './property-select.component';
-import { MatFormFieldModule } from '@angular/material';
-import { first, delay } from 'rxjs/operators';
+import { SubgroupComponent } from './subgroup.component';
 
 
-const options$ = new BehaviorSubject(null)
-options$.pipe(first(), delay(1000)).subscribe(() => {
-    options$.next([
-        {
-            label: 'A',
-            isOutgoing: true,
-            pk: 1192,
-            propertyFieldKey: propertyFieldKeyFromParams(1192, true)
-        }
-    ] as PropertyOption[])
+const pkClasses$ = new BehaviorSubject(null)
+pkClasses$.pipe(first(), delay(1000)).subscribe(() => {
+    pkClasses$.next([21, 61])
 })
 
-export default sandboxOf(PropertySelectComponent, {
+export default sandboxOf(SubgroupComponent, {
     imports: [
         QueriesModule,
         InitStateModule,
@@ -31,23 +23,25 @@ export default sandboxOf(PropertySelectComponent, {
     ],
     declareComponent: false
 })
-    .add('Properties Select | Preselected ', {
+    .add('Subgroup | Preselected ', {
         context: {
             pkProject: 15,
             sandboxState: {},
             model: {
-                outgoingProperties: [1192]
-            },
-            options$
+                data: {
+                    subgroup: 'classAndType'
+                }
+            } as FilterTree,
+            pkClasses$
         },
         template: `
         <gv-init-state [projectFromApi]="pkProject" [sandboxState]="sandboxState"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
-            <div style="width:430px;height:400px" class="d-flex mr-4">
+            <div style="width:650px;height:400px" class="d-flex mr-4">
                 <form #f="ngForm" class="gv-grow-1">
                     <mat-form-field>
-                        <gv-property-select placeholder="Select Properties" name="control" [(ngModel)]="model" #control="ngModel"  [options$]="options$" gvPropertiesRequired></gv-property-select>
+                        <gv-subgroup placeholder="Subgroup" name="control" [(ngModel)]="model" #control="ngModel" [pkClasses$]="pkClasses$"></gv-subgroup>
                         <mat-error *ngIf="control.invalid">You must enter a value</mat-error>
                     </mat-form-field>
                 </form>

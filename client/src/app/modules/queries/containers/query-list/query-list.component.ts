@@ -1,7 +1,7 @@
 import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, ActiveProjectService } from 'app/core';
+import { IAppState, SubstoreComponent, ActiveProjectService, ComQuery } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { QueryList } from './api/query-list.models';
 import { QueryListAPIEpics } from './api/query-list.epics';
@@ -30,6 +30,7 @@ export class QueryListComponent extends QueryListAPIActions implements OnInit, O
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
+  @select() items$: Observable<{ [key: string]: ComQuery }>;
 
   constructor(
     protected rootEpics: RootEpics,
@@ -42,12 +43,22 @@ export class QueryListComponent extends QueryListAPIActions implements OnInit, O
 
   getBasePath = () => this.basePath;
 
-  open() {
+  search() {
+    this.p.pkProject$.subscribe(pkProjekt => {
+
+      // TODO make this infinit scroll like
+      this.load(pkProjekt, 100, 0)
+    }).unsubscribe()
+  }
+
+  open(pkEntity: number) {
+
     this.p.addTab({
       active: true,
       component: 'query-detail',
       icon: 'query',
-      pathSegment: 'queryDetails'
+      pathSegment: 'queryDetails',
+      data: { pkEntity }
     })
   }
 

@@ -354,11 +354,11 @@ class QueryBuilder {
     createColumnGroupBys(columns, parentTableAlias) {
         columns.forEach(column => {
             if (column.ofRootTable) {
-                if(column.colNames){
+                if (column.colNames) {
                     column.colNames.forEach(name => {
                         this.groupBys.push(`${parentTableAlias}.${name}`)
                     })
-                }else {
+                } else {
                     this.groupBys.push(`${parentTableAlias}.${column.colName}`)
                 }
             }
@@ -405,8 +405,6 @@ class QueryBuilder {
 
 }
 
-
-
 module.exports = function (ComQuery) {
 
     ComQuery.run = function (fkProject, query, ctx, cb) {
@@ -419,5 +417,47 @@ module.exports = function (ComQuery) {
         });
 
     };
+
+    ComQuery.beforeRemote('create', function (ctx, unused, next) {
+
+        if (!ctx.args.options.accessToken.userId) return Error('AccesToken.userId is missing.');
+        ctx.args.data.fk_last_modifier = ctx.args.options.accessToken.userId;
+
+        next()
+    })
+
+
+    ComQuery.findPerProject = function (fkProject, limit, offset, ctx, cb) {
+
+        // ensure limit is max. 100
+        limit = (limit > 100 || !limit) ? 100 : limit;
+
+        const filter = {
+            where: ['fk_project', '=', fkProject],
+            limit,
+            offset
+        }
+
+        ComQuery.findComplex(filter, cb)
+
+    };
+
+    ComQuery.findByIdAndProject = function (fkProject, pkEntity, ctx, cb) {
+
+        const filter = {
+            where: [
+                'fk_project', '=', fkProject,
+                'AND', 'pk_entity', '=', pkEntity
+            ]
+        }
+
+        ComQuery.findComplex(filter, (err, resultObjects) => {
+            const resultObject = (resultObjects && resultObjects.length) ? resultObjects[0] : {};
+            cb(err, resultObject);
+        })
+
+    };
+
+
 
 };

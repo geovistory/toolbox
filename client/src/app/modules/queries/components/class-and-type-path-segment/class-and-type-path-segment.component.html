@@ -1,7 +1,7 @@
-<div class="d-flex flex-row align-items-center">
+<form #f="ngForm" class="d-flex flex-row align-items-center">
     <!-- TODO: call onTouche() on blur -->
-    <gv-class-and-type-select *ngIf="model" [qtree]="model" [pkClasses$]="pkClasses$" [disabled]="model?.children?.length > 0"
-        (modelChanged)="onModelChange($event)" (filterTreeDataChange)="treeDataChange($event)">
+    <gv-class-and-type-select class="gv-grow-1" *ngIf="model" name="classAndType" [(ngModel)]="model.data"
+        #classAndType="ngModel" [pkClasses$]="pkClasses$" gvClassOrTypeRequired [disabled]="disabled"
+        (focus)="onFocus()" (blur)="onBlur()">
     </gv-class-and-type-select>
-</div>
-
+</form>

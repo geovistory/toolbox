@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PlaygroundModule } from 'angular-playground';
 import { ElasticInputModule } from 'angular2-elastic-input';
-import { SDKBrowserModule } from 'app/core';
+import { SDKBrowserModule, ValidationDirectivesModule } from 'app/core';
 import { LoadingBarModule } from 'app/core/loading-bar/loading-bar.module';
 import { NotificationsModule } from 'app/core/notifications/notifications.module';
 import { StoreModule } from 'app/core/store/module';
@@ -42,7 +42,8 @@ PlaygroundModule
       ProjectSandboxModule,
       NgxJsonViewerModule,
       LoadingBarModule,
-      ExampleTableModule
+      ExampleTableModule,
+      ValidationDirectivesModule
     ]
   });
 

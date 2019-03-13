@@ -1,10 +1,39 @@
-import { Component, OnInit, Input, Query, Output, EventEmitter, HostBinding } from '@angular/core';
-import { of, Observable, combineLatest, Subject, BehaviorSubject } from 'rxjs';
-import { TreeNode } from 'app/shared/components/tree-checklist/tree-checklist.component';
-import { FilterTree, FilterTreeData } from '../../containers/query-detail/query-detail.component';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { Component, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self, Directive } from '@angular/core';
+import { ControlValueAccessor, NgControl, ValidatorFn, AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
+import { MatFormFieldControl } from '@angular/material';
 import { ActiveProjectService } from 'app/core';
-import { map, mergeMap, filter, tap, distinct } from 'rxjs/operators';
-import { MatSelectChange } from '@angular/material';
+import { TreeNode } from 'app/shared/components/tree-checklist/tree-checklist.component';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { distinct, filter, map, mergeMap, tap } from 'rxjs/operators';
+
+export interface ClassAndTypeSelectModel {
+  classes?: number[]
+  types?: number[]
+}
+
+export function classOrTypeRequiredCondition(model: ClassAndTypeSelectModel) {
+  return (!model || !model ||
+    [...(model.classes || []), ...(model.types || [])].length === 0);
+}
+
+/** At least one class or type must be selected */
+export function classOrTypeRequiredValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const model: ClassAndTypeSelectModel = control.value;
+    return classOrTypeRequiredCondition(model) ? { 'classOrTypeRequired': { value: control.value } } : null;
+  };
+}
+
+@Directive({
+  selector: '[gvClassOrTypeRequired]',
+  providers: [{ provide: NG_VALIDATORS, useExisting: ClassOrTypeRequiredValidatorDirective, multi: true }]
+})
+export class ClassOrTypeRequiredValidatorDirective implements Validator {
+  validate(control: AbstractControl): { [key: string]: any } | null {
+    return classOrTypeRequiredValidator()(control);
+  }
+}
 
 export interface TreeNodeData {
   id: string // id of the node
@@ -13,51 +42,174 @@ export interface TreeNodeData {
   pkType?: number
 }
 
+// tslint:disable: member-ordering
+class ClassAndTypeSelectMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldControl<ClassAndTypeSelectModel> {
+  static nextId = 0;
+
+  model: ClassAndTypeSelectModel;
+  // the flattened selection
+  selected: TreeNode<TreeNodeData>[]
+
+  // emits true on destroy of this component
+  autofilled?: boolean;
+  destroy$ = new Subject<boolean>();
+  stateChanges = new Subject<void>();
+  focused = false;
+  errorState = false;
+  controlType = 'class-and-type-select';
+  // tslint:disable-next-line: no-use-before-declare
+  id = `class-and-type-select-${ClassAndTypeSelectComponent.nextId++}`;
+  describedBy = '';
+  onChange = (_: any) => { };
+  onTouched = () => { };
+
+  get empty() {
+    if (!this.model) return true;
+    return [
+      ...(this.model.classes || []),
+      ...(this.model.types || [])
+    ].length === 0;
+  }
+
+  get shouldLabelFloat() { return this.focused || !this.empty; }
+
+  @Input()
+  get placeholder(): string { return this._placeholder; }
+  set placeholder(value: string) {
+    this._placeholder = value;
+    this.stateChanges.next();
+  }
+  private _placeholder: string;
+
+  @Input()
+  get required(): boolean { return this._required; }
+  set required(value: boolean) {
+    this._required = coerceBooleanProperty(value);
+    this.stateChanges.next();
+  }
+  private _required = false;
+
+  @Input()
+  get disabled(): boolean { return this._disabled; }
+  set disabled(value: boolean) {
+    this._disabled = coerceBooleanProperty(value);
+
+    // TODO: this._disabled ? this.parts.disable() : this.parts.enable();
+    this.stateChanges.next();
+  }
+  private _disabled = false;
+
+  @Input()
+  get value(): ClassAndTypeSelectModel | null {
+    // TODO
+    if (!this.empty) return null;
+
+    return this.model;
+  }
+  set value(value: ClassAndTypeSelectModel | null) {
+    this.model = value;
+    const classes = !this.model ? [] : !this.model ? [] : this.model.classes || [];
+    const types = !this.model ? [] : !this.model ? [] : this.model.types || [];
+    this.selected = [
+      ...classes.map(pk => new TreeNode<TreeNodeData>({
+        id: 'class_' + pk,
+        label: ''
+      })),
+      ...types.map(pk => new TreeNode<TreeNodeData>({
+        id: 'type_' + pk,
+        label: ''
+      }))
+    ];
+
+    this.onChange(this.model)
+  }
+
+  constructor(
+    @Optional() @Self() public ngControl: NgControl
+  ) {
+    if (this.ngControl != null) {
+      this.ngControl.valueAccessor = this;
+    }
+  }
+
+  ngOnDestroy() {
+    this.stateChanges.complete();
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
+
+  setDescribedByIds(ids: string[]) {
+    this.describedBy = ids.join(' ');
+  }
+
+
+  onContainerClick(event: MouseEvent) {
+    // TODO: implement this
+
+  }
+
+  writeValue(value: ClassAndTypeSelectModel | null): void {
+    this.value = value;
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+}
+// tslint:enable: member-ordering
 
 @Component({
   selector: 'gv-class-and-type-select',
   templateUrl: './class-and-type-select.component.html',
-  styleUrls: ['./class-and-type-select.component.scss']
+  styleUrls: ['./class-and-type-select.component.scss'],
+  providers: [{ provide: MatFormFieldControl, useExisting: ClassAndTypeSelectComponent }],
+  host: {
+    '[class.example-floating]': 'shouldLabelFloat',
+    '[id]': 'id',
+    '[attr.aria-describedby]': 'describedBy',
+  }
 })
-export class ClassAndTypeSelectComponent implements OnInit {
+export class ClassAndTypeSelectComponent extends ClassAndTypeSelectMatControl implements OnInit {
   @HostBinding('class.d-flex') dflex = true;
 
-  /**
-   * The tree data
-   */
+  @Input() qtree; // TODO delete this
+  @Input() level = 0; // level of component nesting, 0...n
+
+  // The options to select
   optionsTree$ = of([]);
 
   @Input() pkClasses$: Observable<number[]>;
-  @Input() qtree: FilterTree;
   @Input() showRemoveBtn = true;
   @Input() disabled: boolean;
 
   @Output() remove = new EventEmitter<void>();
   @Output() validChanged = new EventEmitter<boolean>();
-  @Output() filterTreeDataChange = new EventEmitter<FilterTreeData>();
-  @Output() modelChanged = new EventEmitter<FilterTree>();
+  @Output() modelChanged = new EventEmitter<ClassAndTypeSelectModel>();
+  @Output() blur = new EventEmitter<void>();
+  @Output() focus = new EventEmitter<void>();
 
   valid = false;
 
-  selected: TreeNode<TreeNodeData>[]
-  constructor(private p: ActiveProjectService) {
+
+  constructor(
+    private p: ActiveProjectService,
+    @Optional() @Self() public ngControl: NgControl
+
+  ) {
+    super(ngControl)
   }
 
   ngOnInit() {
 
-    if (this.qtree.data) {
-      this.selected = [
-        ...(this.qtree.data.classes || []).map(pk => new TreeNode<TreeNodeData>({
-          id: 'class_' + pk,
-          label: ''
-        })),
-        ...(this.qtree.data.types || []).map(pk => new TreeNode<TreeNodeData>({
-          id: 'type_' + pk,
-          label: ''
-        }))
-      ];
-    }
-    
     this.optionsTree$ = this.pkClasses$.pipe(
       filter(pks => pks !== null),
       distinct((pk) => pk),
@@ -69,8 +221,7 @@ export class ClassAndTypeSelectComponent implements OnInit {
             // get class configs
             combineLatest(pks.map(pk => this.p.getClassConfig(pk)))
               .pipe(
-    
-                filter(d => d.every(x => !!x.dfh_pk_class))
+                filter(d => d.every(x => (x && !!x.dfh_pk_class)))
               )
           )
             // add type previews to class configs
@@ -106,22 +257,32 @@ export class ClassAndTypeSelectComponent implements OnInit {
   }
 
   selectionChange(val: TreeNode<TreeNodeData>[]) {
-    this.qtree.data = {
+
+    this.value = {
       classes: val.filter(v => v.data.pkClass).map(v => v.data.pkClass),
       types: val.filter(v => v.data.pkType).map(v => v.data.pkType),
     }
-    this.filterTreeDataChange.emit(this.qtree.data);
-    this.modelChanged.emit(this.qtree);
-    this.setValid()
+
   }
 
   setValid() {
     this.valid = [
-      ...(this.qtree.data.classes || []),
-      ...(this.qtree.data.types || [])
+      ...(this.model.classes || []),
+      ...(this.model.types || [])
     ].length > 0;
     this.validChanged.emit(this.valid)
   }
 
+  onBlur() {
+    this.onTouched();
+    this.blur.emit()
+    this.focused = false;
+  }
+
+  onFocus() {
+    this.focus.emit()
+    this.focused = true;
+  }
 
 }
+

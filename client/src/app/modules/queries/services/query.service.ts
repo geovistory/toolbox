@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ActiveProjectService, PropertyField, ComConfig } from 'app/core';
 import { uniq, indexBy } from 'ramda';
-import { filter, map, mergeMap } from 'rxjs/operators';
-import { PropertyOption } from '../components/property-select/property-select.component';
-import { ClassesAndTypes } from '../components/class-and-type-filter/class-and-type-filter.component';
-import { combineLatest } from 'rxjs';
+import { filter, map, mergeMap, switchMap } from 'rxjs/operators';
+import { PropertyOption, PropertySelectModel } from '../components/property-select/property-select.component';
+import { combineLatest, OperatorFunction } from 'rxjs';
+import { ClassAndTypeSelectModel } from '../components/class-and-type-select/class-and-type-select.component';
+import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 
 @Injectable({
   providedIn: 'root'
@@ -24,10 +25,11 @@ export class QueryService {
     ))
   }
 
-  propertiesOfClassesAndTypes() {
-    return mergeMap((classesAndTypes: ClassesAndTypes) => combineLatest(this.p.crm$, this.p.typesByPk$).pipe(
+  propertiesOfClassesAndTypes(level?: number) {
+    return switchMap((classesAndTypes: ClassAndTypeSelectModel) => combineLatest(this.p.crm$, this.p.typesByPk$).pipe(
       filter(([crm, typesByPk]) => (!!crm && !!typesByPk)),
       map(([crm, typesByPk]) => {
+        const l = level;
         if (classesAndTypes === null) return null;
         const props: PropertyOption[] = []
         const classPks = indexBy((pk) => pk.toString(), classesAndTypes.classes);
@@ -60,5 +62,22 @@ export class QueryService {
         return props
       })
     ))
+  }
+
+  propertyModelToPropertyOptions(model: PropertySelectModel): PropertyOption[] {
+    return [
+      ...((model || {}).ingoingProperties || []).map((pk) => ({
+        propertyFieldKey: propertyFieldKeyFromParams(pk, false),
+        isOutgoing: false,
+        label: '',
+        pk: pk
+      })),
+      ...((model || {}).outgoingProperties || []).map((pk) => ({
+        propertyFieldKey: propertyFieldKeyFromParams(pk, true),
+        isOutgoing: true,
+        label: '',
+        pk: pk
+      }))
+    ]
   }
 }

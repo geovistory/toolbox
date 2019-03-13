@@ -10,21 +10,16 @@
       Query
       <button class="ml-auto btn btn-sm btn-primary" (click)="onRun()">Run >></button>
     </gv-detail-top-bar>
-
-
-
+   
 
     <mat-vertical-stepper [linear]="false" #stepper>
       <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>Define a filter for the resulting rows</ng-template>
 
-          <gv-class-and-type-filter [pkClasses$]="p.classesInProject$" [showRemoveBtn]="false" [qtree]="filterQuery">
+          <gv-class-and-type-filter [pkClasses$]="p.classesInProject$" [showRemoveBtn]="false" [formControl]="filterCtrl">
           </gv-class-and-type-filter>
 
-          <!-- <pre class="font-sm">
-            {{filterQuery | json:2}}
-          </pre> -->
           <!-- <div>
             <button mat-flat-button color="primary" matStepperNext>Next</button>
           </div> -->
@@ -37,7 +32,7 @@
             <input matInput placeholder="Address" formControlName="secondCtrl" required>
           </mat-form-field> -->
           <div class="my-3">
-            <gv-col-def-editor [propertyOptions$]="propertyOptions$" [colDefs]="colDefs"></gv-col-def-editor>
+            <gv-col-def-editor [propertyOptions$]="propertyOptions$" [formControl]="columnsCtrl"></gv-col-def-editor>
           </div>
           <div>
             <button mat-flat-button matStepperPrevious>Back</button>
@@ -58,13 +53,13 @@
           </p>
           <p>
             <mat-form-field>
-              <textarea matInput placeholder="Description" formControlName="descriptionCtrl" required></textarea>
+              <textarea matInput placeholder="Description" formControlName="descriptionCtrl"></textarea>
               <mat-hint>Description of the query.</mat-hint>
             </mat-form-field>
           </p>
           <div>
-            <button mat-flat-button matStepperPrevious>Back</button>
-            <button mat-flat-button>Save</button>
+            <button mat-flat-button type="button" matStepperPrevious>Back</button>
+            <button mat-flat-button type="submit" (click)="onSave()">Save</button>
           </div>
         </form>
       </mat-step>
@@ -84,7 +79,7 @@
     </gv-detail-top-bar>
 
       <gv-result-table class="gv-flex-fh"
-      [data$]="items$"
+      [data$]="queryResults$"
       [pending$]="pending$"
       [colDef]="colDefsCopy"
       [columns]="displayedColumns"

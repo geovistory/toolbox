@@ -2,10 +2,15 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { QueryList } from './query-list.models';
+import { ComQuery } from 'app/core';
 
 type Payload = QueryList;
 interface MetaData {
-  itemsArray?: any[]
+  pkProject?: number;
+  limit?: number;
+  offset?: number;
+
+  itemsArray?: ComQuery[]
 };
 export type QueryListAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -18,9 +23,9 @@ export class QueryListAPIActions {
   static readonly DESTROY = 'QueryList::DESTROY';
 
   @dispatch()
-  load = (): QueryListAPIAction => ({
+  load = (pkProject: number, limit: number, offset: number): QueryListAPIAction => ({
     type: QueryListAPIActions.LOAD,
-    meta: null,
+    meta: { pkProject, limit, offset },
     payload: null,
   });
 
@@ -42,10 +47,10 @@ export class QueryListAPIActions {
   /*********************************************************************
   *  Method to distroy the slice of store
   *********************************************************************/
- @dispatch()
- destroy = (): QueryListAPIAction => ({
-   type: QueryListAPIActions.DESTROY,
-   meta: null,
-   payload: null
- })
+  @dispatch()
+  destroy = (): QueryListAPIAction => ({
+    type: QueryListAPIActions.DESTROY,
+    meta: null,
+    payload: null
+  })
 }

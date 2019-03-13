@@ -1,14 +1,35 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild, AfterViewInit, Directive } from '@angular/core';
+import { ControlValueAccessor, NgControl, NgForm, ValidatorFn, AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { PropertyOption } from '../property-select/property-select.component';
+import { PropertyOption, PropertySelectModel, propertiesRequiredCondition } from '../property-select/property-select.component';
 import { QueryService } from '../../services/query.service';
 import { QueryPathSegment } from '../col-def-editor/col-def-editor.component';
+import { equals } from 'ramda';
+import { FilterTree } from '../../containers/query-detail/query-detail.component';
+import { propertyFilterRequiredValidator } from '../property-filter/property-filter.component';
 
 
+/** At least one property must be selected */
+export function propertyPathSegmentRequiredValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const model: FilterTree = control.value;
+    return model && model.data && propertiesRequiredCondition(model.data)
+      ? { 'propertyPathSegmentRequired': { value: control.value } } : null
+  };
+}
+
+@Directive({
+  selector: '[gvPropertyPathSegmentRequired]',
+  providers: [{ provide: NG_VALIDATORS, useExisting: PropertyPathSegmentRequiredValidatorDirective, multi: true }]
+})
+export class PropertyPathSegmentRequiredValidatorDirective implements Validator {
+  validate(control: AbstractControl): { [key: string]: any } | null {
+    return propertyFilterRequiredValidator()(control);
+  }
+}
 
 @Component({
   selector: 'gv-property-path-segment',
@@ -21,20 +42,26 @@ import { QueryPathSegment } from '../col-def-editor/col-def-editor.component';
     '[attr.aria-describedby]': 'describedBy',
   }
 })
-export class PropertyPathSegmentComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<QueryPathSegment> {
+export class PropertyPathSegmentComponent implements AfterViewInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<QueryPathSegment> {
   static nextId = 0;
-
-  model: QueryPathSegment;
-  @Input() propertyOptions$: Observable<PropertyOption[]>;
-  @Output() remove = new EventEmitter<void>();
   @Input() index: number;
+
+  @Input() propertyOptions$: Observable<PropertyOption[]>;
+
+  @Output() blur = new EventEmitter<void>();
+  @Output() focus = new EventEmitter<void>();
+
+  @Output() remove = new EventEmitter<void>();
+
+  model: QueryPathSegment = {type:'properties', data:{}};
+
+  @ViewChild('f') form: NgForm;
 
   // emits true on destroy of this component
   autofilled?: boolean;
   destroy$ = new Subject<boolean>();
   stateChanges = new Subject<void>();
   focused = false;
-  errorState = false;
   controlType = 'property-path-segment';
   id = `property-path-segment-${PropertyPathSegmentComponent.nextId++}`;
   describedBy = '';
@@ -42,11 +69,12 @@ export class PropertyPathSegmentComponent implements OnDestroy, ControlValueAcce
   onTouched = () => { };
 
   get empty() {
-    if (!this.model || !this.model.data) return true;
+    if (!this.model || !this.model.data) return true;
     return [
       ...(this.model.data.ingoingProperties || []),
       ...(this.model.data.outgoingProperties || [])
-    ].length === 0;  }
+    ].length === 0;
+  }
 
   get shouldLabelFloat() { return this.focused || !this.empty; }
 
@@ -99,6 +127,11 @@ export class PropertyPathSegmentComponent implements OnDestroy, ControlValueAcce
   set selectedProperties(val: PropertyOption[]) {
     this.selectedProperties$.next(val)
   }
+
+  get errorState() {
+    return this.ngControl.errors !== null && !!this.ngControl.touched;
+  }
+
   selectedProperties$ = new BehaviorSubject<PropertyOption[] | null>(null);
 
   // the pkClasses get derived from the selctedProperties
@@ -122,13 +155,23 @@ export class PropertyPathSegmentComponent implements OnDestroy, ControlValueAcce
     })
   }
 
-  // When user changes the model
-  onModelChange(val) {
-    this.value = val;
+  ngAfterViewInit() {
+    this.form.valueChanges.subscribe(controls => {
+      const val = controls['propertyCtrl'];
+
+      if (val !== undefined && !equals(this.selectedProperties$.value, val)) {
+        this.propertySelectionChange(val)
+        this.value = {
+          ...this.model,
+          data: val
+        }
+      }
+    })
   }
 
-  propertySelectionChange(selection){
-    this.selectedProperties = selection;
+
+  propertySelectionChange(selection: PropertySelectModel) {
+    this.selectedProperties = this.q.propertyModelToPropertyOptions(selection);
   }
 
   ngOnDestroy() {
@@ -163,4 +206,14 @@ export class PropertyPathSegmentComponent implements OnDestroy, ControlValueAcce
     this.disabled = isDisabled;
   }
 
+  onBlur() {
+    this.onTouched();
+    this.blur.emit()
+    this.focused = false;
+  }
+
+  onFocus() {
+    this.focus.emit()
+    this.focused = true;
+  }
 }

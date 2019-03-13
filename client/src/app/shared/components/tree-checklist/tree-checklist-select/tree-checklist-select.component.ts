@@ -25,6 +25,9 @@ export class TreeChecklistSelectComponent implements ControlValueAccessor, MatFo
 
   @ContentChild(TreeChecklistComponent) treeChecklist: TreeChecklistComponent;
   @Output() selectionChange = new EventEmitter<TreeNode<any>[]>();
+  @Output() blur = new EventEmitter<void>();
+  @Output() focus = new EventEmitter<void>();
+
   @Input() compareWith: (a: TreeNode<any>, b: TreeNode<any>) => boolean;
 
   selectionChange$ = new BehaviorSubject<TreeNode<any>[]>([]);
@@ -107,6 +110,15 @@ export class TreeChecklistSelectComponent implements ControlValueAccessor, MatFo
     this.selectionChange.emit(selected);
     this.selectionChange$.next(selected);
     this.onChange(selected);
+  }
+
+  onOpen() {
+    this.focused = true;
+    this.focus.emit()
+  }
+  onClose() {
+    this.focused = false;
+    this.blur.emit()
   }
 
   ngOnDestroy() {

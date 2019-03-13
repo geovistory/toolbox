@@ -1,4 +1,4 @@
-<button *ngIf="!disabled" class="trigger-btn" [matMenuTriggerFor]="menu">
+<button *ngIf="!disabled" class="trigger-btn" [matMenuTriggerFor]="menu" (menuOpened)="onOpen()">
   <div class="select-value">
     <div class="select-value-text">{{selectedText}}</div>
   </div>
@@ -13,6 +13,6 @@
 </button>
 
 
-<mat-menu #menu="matMenu" (click)="$event.stopPropagation();">
+<mat-menu #menu="matMenu" (click)="$event.stopPropagation();" (closed)="onClose()">
   <ng-content></ng-content>
 </mat-menu>

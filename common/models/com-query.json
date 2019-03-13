@@ -59,7 +59,9 @@
       "permission": "ALLOW",
       "property": [
         "run",
-        "save",
+        "create",
+        "findPerProject",
+        "findByIdAndProject",
         "delete"
       ]
     }
@@ -103,6 +105,97 @@
       "description": "Run a query.",
       "http": {
         "path": "/run",
+        "verb": "get"
+      }
+    },
+    "findPerProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "limit",
+          "type": "number",
+          "required": true,
+          "description": "max. number of records returned",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "offset",
+          "type": "number",
+          "required": true,
+          "description": "offset of the first record returned",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "ComQuery"
+        ],
+        "root": true
+      },
+      "description": "Run a query.",
+      "http": {
+        "path": "/find-per-project",
+        "verb": "get"
+      }
+    },
+    "findByIdAndProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Pk Entity",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "ComQuery"
+        ],
+        "root": true
+      },
+      "description": "Find one query.",
+      "http": {
+        "path": "/find-by-id-and-project",
         "verb": "get"
       }
     }

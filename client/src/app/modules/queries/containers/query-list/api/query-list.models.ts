@@ -1,6 +1,8 @@
+import { ComQuery } from 'app/core';
+
 // Class of this slice of store
 export class QueryList implements QueryList {
-    items?: {};
+    items?: { [key: string]: ComQuery };
     loading?: boolean;
     error?: any;
 

@@ -1,19 +1,24 @@
-<div class="gv-grow-1 d-flex align-items-center">
+<form [formGroup]="formGroup">
+  <div class="gv-grow-1 d-flex align-items-center">
 
-  <gv-class-and-type-select class="gv-grow-1" [qtree]="qtree" [pkClasses$]="pkClasses$" (validChanged)="setValid($event)"
-    (filterTreeDataChange)="treeDataChange($event)">
-  </gv-class-and-type-select>
+    <mat-form-field class="gv-grow-1">
+      <gv-class-and-type-select placeholder="Select Classes or Types" class="gv-grow-1" [pkClasses$]="pkClasses$" [level]="level + 1"
+        [formControl]="classAndTypeCtrl" (focus)="onFocus()" (blur)="onBlur()">
+      </gv-class-and-type-select>
+    </mat-form-field>
 
-  <button mat-icon-button class="mx-3 gv-mat-icon-button-sm gv-btn-info" (click)="addChild()"
-    matTooltip="Add Sub-Filter" *ngIf="valid && qtree?.children?.length === 0">
-    <mat-icon>add</mat-icon>
-  </button>
-  <button *ngIf="showRemoveBtn" class="ml-auto gv-mat-icon-button-sm gv-btn-danger" mat-icon-button
-    (click)="remove.emit()" matTooltip="remove this line">
-    <mat-icon>remove</mat-icon>
-  </button>
+    <button mat-icon-button class="mx-3 gv-mat-icon-button-sm gv-btn-info" (click)="addChild()"
+      matTooltip="Add Sub-Filter" *ngIf="classAndTypeCtrl.valid && !model?.children?.length">
+      <mat-icon>add</mat-icon>
+    </button>
+    <button *ngIf="showRemoveBtn" class="ml-auto gv-mat-icon-button-sm gv-btn-danger" mat-icon-button
+      (click)="remove.emit()" matTooltip="remove this line">
+      <mat-icon>remove</mat-icon>
+    </button>
 
-</div>
+  </div>
 
-<gv-subgroup *ngFor="let child of qtree?.children; let i = index" [qtree]="child" [propertyOptions$]="propertyOptions$"
-  (remove)="removeChild(i)"></gv-subgroup>
+  <gv-subgroup  *ngFor="let child of dynamicFormControls; let i = index" [formControl]="child.ctrl" hideParentLine="true" [propertyOptions$]="propertyOptions$"
+    (remove)="removeChild(i)" [level]="level + 1"></gv-subgroup>                
+  
+</form>
