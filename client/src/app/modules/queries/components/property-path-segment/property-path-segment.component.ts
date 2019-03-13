@@ -55,7 +55,7 @@ export class PropertyPathSegmentComponent implements AfterViewInit, OnDestroy, C
 
   model: QueryPathSegment = {type:'properties', data:{}};
 
-  @ViewChild('f') form: NgForm;
+  @ViewChild('f') formGroup: NgForm;
 
   // emits true on destroy of this component
   autofilled?: boolean;
@@ -156,7 +156,7 @@ export class PropertyPathSegmentComponent implements AfterViewInit, OnDestroy, C
   }
 
   ngAfterViewInit() {
-    this.form.valueChanges.subscribe(controls => {
+    this.formGroup.valueChanges.subscribe(controls => {
       const val = controls['propertyCtrl'];
 
       if (val !== undefined && !equals(this.selectedProperties$.value, val)) {

@@ -41,7 +41,8 @@ export default sandboxOf(SubgroupComponent, {
             <div style="width:650px;height:400px" class="d-flex mr-4">
                 <form #f="ngForm" class="gv-grow-1">
                     <mat-form-field>
-                        <gv-subgroup placeholder="Subgroup" name="control" [(ngModel)]="model" #control="ngModel" [pkClasses$]="pkClasses$"></gv-subgroup>
+                        <gv-subgroup placeholder="Subgroup" name="control" [(ngModel)]="model" #control="ngModel" [pkClasses$]="pkClasses$"
+                        ></gv-subgroup>
                         <mat-error *ngIf="control.invalid">You must enter a value</mat-error>
                     </mat-form-field>
                 </form>

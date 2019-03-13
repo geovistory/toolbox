@@ -60,9 +60,10 @@
       "property": [
         "run",
         "create",
+        "patchAttributes",
         "findPerProject",
         "findByIdAndProject",
-        "delete"
+        "deleteById"
       ]
     }
   ],

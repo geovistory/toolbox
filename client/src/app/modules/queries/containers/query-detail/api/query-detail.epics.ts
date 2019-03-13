@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions } from 'app/core';
+import { LoadingBarActions, ComQuery } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -25,6 +25,8 @@ export class QueryDetailAPIEpics {
       this.createRunQueryDetailEpic(c),
       this.createRunInitQueryDetailEpic(c),
       this.createSaveQueryDetailEpic(c),
+      this.createReloadEpic(c),
+      this.createDeleteQueryDetailEpic(c)
 
     );
   }
@@ -45,7 +47,7 @@ export class QueryDetailAPIEpics {
           /**
            * Do some api call
            */
-          this.queryApi.findByIdAndProject(action.meta.pkProject, action.meta.pkEntity) 
+          this.queryApi.findByIdAndProject(action.meta.pkProject, action.meta.pkEntity)
             /**
              * Subscribe to the api call
              */
@@ -166,7 +168,84 @@ export class QueryDetailAPIEpics {
           /**
            * Create the query (fk_project is within the object)
            */
-          this.queryApi.create(action.meta.comQuery)
+          const apiCall = action.meta.pkEntity ?
+            this.queryApi.patchAttributes(action.meta.pkEntity, action.meta.comQuery) :
+            this.queryApi.create(action.meta.comQuery);
+
+          /**
+           * Subscribe to the api call
+           */
+          apiCall.subscribe((comQuery: ComQuery) => {
+            /**
+             * Emit the global action that completes the loading bar
+             */
+            globalStore.next(this.loadingBarActions.completeLoading());
+            /**
+             * Emit the local action on loading succeeded
+             */
+            c.localStore.dispatch(this.actions.saveSucceeded(comQuery));
+
+          }, error => {
+
+            if (error && error.code === '23505') {
+              error = {
+                title: 'Name already exists',
+                message: 'Please choose another name.'
+              }
+            }
+            /**
+            * Emit the global action that shows some loading error message
+            */
+            globalStore.next(this.loadingBarActions.completeLoading());
+            globalStore.next(this.notificationActions.addToast({
+              type: 'error',
+              options: {
+                title: error.title,
+                msg: error.message,
+              }
+            }));
+            /**
+             * Emit the local action on loading failed
+             */
+            c.localStore.dispatch(this.actions.saveFailed(error))
+          })
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
+  private createReloadEpic(c: QueryDetailComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        ofType(QueryDetailAPIActions.SAVE_SUCCEEDED),
+        filter(action => ofSubstore(c.basePath)(action)),
+        switchMap((action: QueryDetailAPIAction) => new Observable<Action>((globalStore) => {
+
+          c.localStore.dispatch(this.actions.loadSucceeded(action.meta.comQuery));
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
+  private createDeleteQueryDetailEpic(c: QueryDetailComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(QueryDetailAPIActions.DELETE),
+        filter(action => ofSubstore(c.basePath)(action)),
+        switchMap((action: QueryDetailAPIAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Do some api call
+           */
+          this.queryApi.deleteById(action.meta.pkEntity)
             /**
              * Subscribe to the api call
              */
@@ -178,23 +257,23 @@ export class QueryDetailAPIEpics {
               /**
                * Emit the local action on loading succeeded
                */
-              c.localStore.dispatch(this.actions.saveSucceeded());
+              c.localStore.dispatch(this.actions.deleteSucceeded());
 
             }, error => {
               /**
-        * Emit the global action that shows some loading error message
-        */
+              * Emit the global action that shows some loading error message
+              */
               globalStore.next(this.loadingBarActions.completeLoading());
               globalStore.next(this.notificationActions.addToast({
                 type: 'error',
                 options: {
-                  title: error.message
+                  title: 'Query could not be deleted'
                 }
               }));
               /**
                * Emit the local action on loading failed
                */
-              c.localStore.dispatch(this.actions.saveFailed(error))
+              c.localStore.dispatch(this.actions.deleteFailed({ status: '' + error.status }))
             })
         })),
         takeUntil(c.destroy$)

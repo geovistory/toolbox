@@ -46,7 +46,8 @@ export function queryDetailReducer(state: QueryDetail = INITIAL_STATE, a: Action
       state = {
         ...state,
         comQuery: action.meta.comQuery,
-        tabTitle: action.meta.comQuery.name
+        tabTitle: action.meta.comQuery.name,
+        deleted: false,
       };
       break;
 
@@ -129,6 +130,19 @@ export function queryDetailReducer(state: QueryDetail = INITIAL_STATE, a: Action
       }
 
       break;
+
+
+    /*****************************************************
+    * Delete
+    *****************************************************/
+    case QueryDetailAPIActions.DELETE_SUCCEEDED:
+      state = {
+        ...state,
+        deleted: true,
+        tabTitle: state.tabTitle + ' (Deleted)'
+      };
+      break;
+
 
     /*****************************************************
     * Layout

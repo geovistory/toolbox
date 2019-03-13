@@ -32,19 +32,22 @@
             </div>
             <!-- Class And Type Select -->
             <gv-class-and-type-filter class="gv-grow-1" *ngIf="child?.component ==='class-and-type-filter'"
-                [formControl]="child.ctrl" [pkClasses$]="pkClasses$" (remove)="removeChild(i)" [level]="level + 1">
+                [formControl]="child.ctrl" [pkClasses$]="pkClasses$" (remove)="removeChild(i)" [level]="level + 1"
+                #c [gvNoInvalidChildren]="c.formGroup.controls">
             </gv-class-and-type-filter>
 
             <!-- Property Select -->
             <gv-property-filter *ngIf="child?.component ==='property-filter'" [formControl]="child.ctrl"
                 (blur)="onBlur()" focus="onFocus()" gvPropertyFilterRequired [propertyOptions$]="propertyOptions$"
-                (remove)="removeChild(i)" [level]="level + 1">
+                (remove)="removeChild(i)" [level]="level + 1"
+                #c [gvNoInvalidChildren]="c.formGroup.controls">
             </gv-property-filter>
 
             <!-- Subgroup -->
             <gv-subgroup *ngIf="child?.component ==='subgroup'" [formControl]="child.ctrl" hideParentLine="true"
                 [pkClasses$]="pkClasses$" [propertyOptions$]="propertyOptions$" (merge)="mergeChild(i, $event)"
-                (remove)="removeChild(i)" [level]="level + 1">
+                (remove)="removeChild(i)" [level]="level + 1"
+                #c [gvNoInvalidChildren]="c.formGroup.controls">
             </gv-subgroup>
 
         </div>

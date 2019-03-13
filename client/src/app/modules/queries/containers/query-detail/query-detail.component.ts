@@ -76,6 +76,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
   @select() loadedPages$: Observable<{ [pageNr: string]: boolean }>;
   @select() loadingPages$: Observable<{ [pageNr: string]: boolean }>;
   @select() fullCount$: Observable<number>;
+  @select() deleted$: Observable<boolean>;
 
 
   firstFormGroup: FormGroup;
@@ -171,6 +172,8 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
       this.columnsCtrl.setValue(comQuery.query.columns);
       this.nameCtrl.setValue(comQuery.name);
       this.descriptionCtrl.setValue(comQuery.description);
+
+
     })
 
   }
@@ -188,10 +191,18 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
   // if the query detail is opened from existing query, load it
   loadExistingQuery() {
-    this.p.pkProject$.subscribe(p => this.load(p, this.pkEntity)).unsubscribe();
+    this.p.pkProject$.pipe(first(pk => !!pk)).subscribe(p => this.load(p, this.pkEntity));
   }
 
   onRun() {
+    if (this.firstFormGroup.invalid) {
+      return values(this.firstFormGroup.controls).forEach(ctrl => { ctrl.markAsTouched() })
+    }
+
+    if (this.secondFormGroup.invalid) {
+      return values(this.secondFormGroup.controls).forEach(ctrl => { ctrl.markAsTouched() })
+    }
+
     this.p.pkProject$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(pk => {
       this.showRightArea();
       this.colDefsCopy = clone(this.columnsCtrl.value)
@@ -226,7 +237,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
     if (range.start === 0 && range.end === 0) return null;
 
     const pageBefore = pageOfOffset(range.start, this.limit)
-    const pageAfter = pageOfOffset(range.end, this.limit)
+    const pageAfter = pageOfOffset(range.end - 1, this.limit)
     const loadedPages = this.localStore.getState().loadedPages;
     const loadingPages = this.localStore.getState().loadingPages;
 
@@ -248,20 +259,55 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
 
   onSave() {
-    // validate if thirdFormGroup is valid
-    if (this.thirdFormGroup.valid) {
+    const s = this.localStore.getState();
+    let pkEntity;
+
+    if (!s.deleted && s.comQuery && s.comQuery.pk_entity) {
+      pkEntity = s.comQuery.pk_entity
+    }
+
+    this.persist(pkEntity);
+  }
+
+  onSaveAs() {
+    this.persist()
+  }
+
+  persist(pkEntity?: number) {
+
+    let valid = true;
+    if (this.firstFormGroup.invalid) {
+      values(this.firstFormGroup.controls).forEach(ctrl => { ctrl.markAsTouched() })
+      valid = false;
+    }
+
+    if (this.secondFormGroup.invalid) {
+      values(this.secondFormGroup.controls).forEach(ctrl => { ctrl.markAsTouched() })
+      valid = false;
+    }
+
+    if (this.thirdFormGroup.invalid) {
+      values(this.thirdFormGroup.controls).forEach(ctrl => { ctrl.markAsTouched() })
+      valid = false;
+    }
+
+    if (valid) {
       this.p.pkProject$.subscribe(p => {
 
         // create the query definition object
         const q = this.composeComQuery(p)
 
         // call action to save query
-
-        this.save(q);
+        this.save(q, pkEntity);
 
       }).unsubscribe()
     }
 
+  }
+
+  onDelete() {
+    const pkEntity = (this.localStore.getState().comQuery || { pk_entity: undefined }).pk_entity
+    this.delete(pkEntity)
   }
 
   ngOnDestroy() {

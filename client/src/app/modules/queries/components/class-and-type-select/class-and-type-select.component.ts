@@ -55,7 +55,6 @@ class ClassAndTypeSelectMatControl implements OnDestroy, ControlValueAccessor, M
   destroy$ = new Subject<boolean>();
   stateChanges = new Subject<void>();
   focused = false;
-  errorState = false;
   controlType = 'class-and-type-select';
   // tslint:disable-next-line: no-use-before-declare
   id = `class-and-type-select-${ClassAndTypeSelectComponent.nextId++}`;
@@ -122,6 +121,10 @@ class ClassAndTypeSelectMatControl implements OnDestroy, ControlValueAccessor, M
     ];
 
     this.onChange(this.model)
+  }
+
+  get errorState() {
+    return this.ngControl.errors !== null && !!this.ngControl.touched;
   }
 
   constructor(

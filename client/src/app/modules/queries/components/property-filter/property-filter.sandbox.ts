@@ -50,8 +50,8 @@ export default sandboxOf(PropertyFilterComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">
                 <form #f="ngForm" class="gv-grow-1">
-                        <gv-property-filter name="control" [(ngModel)]="model" #control="ngModel" [propertyOptions$]="options$" 
-                        gvPropertyFilterRequired></gv-property-filter>
+                    <gv-property-filter name="control" [(ngModel)]="model" #control="ngModel" [propertyOptions$]="options$" 
+                    gvPropertyFilterRequired></gv-property-filter>
                 </form>
             </div>
             <div>

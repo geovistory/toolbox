@@ -53,7 +53,7 @@ export class ClassAndTypePathSegmentComponent implements  AfterViewInit, OnDestr
 
   @Output() remove = new EventEmitter<void>();
 
-  @ViewChild('f') form: NgForm;
+  @ViewChild('f') formGroup: NgForm;
 
   model: QueryPathSegment;
 
@@ -153,7 +153,7 @@ export class ClassAndTypePathSegmentComponent implements  AfterViewInit, OnDestr
 
 
   ngAfterViewInit() {
-    this.form.valueChanges.subscribe(controls => {
+    this.formGroup.valueChanges.subscribe(controls => {
       const val = controls['classAndType'];
 
       if (!equals(this.selectedClassesAndTypes$.value, val)) {

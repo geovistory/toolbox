@@ -58,7 +58,6 @@ class PropertySelectMatControl implements OnDestroy, ControlValueAccessor, MatFo
   destroy$ = new Subject<boolean>();
   stateChanges = new Subject<void>();
   focused = false;
-  errorState = false;
   controlType = 'property-select';
   // tslint:disable-next-line: no-use-before-declare
   id = `property-select-${PropertySelectComponent.nextId++}`;
@@ -103,6 +102,9 @@ class PropertySelectMatControl implements OnDestroy, ControlValueAccessor, MatFo
   private _disabled = false;
 
 
+  get errorState() {
+    return this.ngControl.errors !== null && !!this.ngControl.touched;
+  }
 
   constructor(
     @Optional() @Self() public ngControl: NgControl

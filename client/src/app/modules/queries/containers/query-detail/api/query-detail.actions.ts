@@ -14,7 +14,7 @@ interface MetaData {
   comQuery?: ComQuery;
   offset?: number
   limit?: number,
-  tabTitle?:string
+  tabTitle?: string
 };
 export type QueryDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -39,6 +39,9 @@ export class QueryDetailAPIActions {
   static readonly SHOW_RIGHT_AREA = 'QueryDetail::SHOW_RIGHT_AREA';
   static readonly HIDE_RIGHT_AREA = 'QueryDetail::HIDE_RIGHT_AREA';
 
+  static readonly DELETE = 'QueryDetail::DELETE';
+  static readonly DELETE_SUCCEEDED = 'QueryDetail::DELETE_SUCCEEDED';
+  static readonly DELETE_FAILED = 'QueryDetail::DELETE_FAILED';
 
   static readonly DESTROY = 'QueryDetail::DESTROY';
 
@@ -47,8 +50,8 @@ export class QueryDetailAPIActions {
   *  Set tab title
   *********************************************************************/
   @dispatch()
-  setTabTitle = (tabTitle:string): QueryDetailAPIAction => ({
-    type: QueryDetailAPIActions.LOAD,
+  setTabTitle = (tabTitle: string): QueryDetailAPIAction => ({
+    type: QueryDetailAPIActions.SET_TAB_TITLE,
     meta: { tabTitle },
     payload: null,
   });
@@ -84,15 +87,15 @@ export class QueryDetailAPIActions {
   *********************************************************************/
 
   @dispatch()
-  save = (comQuery: ComQuery): QueryDetailAPIAction => ({
+  save = (comQuery: ComQuery, pkEntity: number): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.SAVE,
-    meta: { comQuery },
+    meta: { comQuery, pkEntity },
     payload: null,
   });
 
-  saveSucceeded = (): QueryDetailAPIAction => ({
+  saveSucceeded = (comQuery: ComQuery): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.SAVE_SUCCEEDED,
-    meta: null,
+    meta: { comQuery },
     payload: null
   })
 
@@ -138,6 +141,32 @@ export class QueryDetailAPIActions {
     payload: null,
     error,
   })
+
+
+  /*********************************************************************
+  *  Save a query
+  *********************************************************************/
+
+  @dispatch()
+  delete = (pkEntity: number): QueryDetailAPIAction => ({
+    type: QueryDetailAPIActions.DELETE,
+    meta: { pkEntity },
+    payload: null,
+  });
+
+  deleteSucceeded = (): QueryDetailAPIAction => ({
+    type: QueryDetailAPIActions.DELETE_SUCCEEDED,
+    meta: {},
+    payload: null
+  })
+
+  deleteFailed = (error): QueryDetailAPIAction => ({
+    type: QueryDetailAPIActions.DELETE_FAILED,
+    meta: null,
+    payload: null,
+    error,
+  })
+
 
   /*********************************************************************
   *  Layout

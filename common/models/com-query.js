@@ -257,8 +257,10 @@ class QueryBuilder {
             classOrTypeWheres.push(`${tableAlias}.fk_type IN (${this.addParams(filter.data.types)})`)
         }
 
+        
         const topLevelWheres = [];
         topLevelWheres.push(whereProject);
+        topLevelWheres.push(`${tableAlias}.fk_class IS NOT NULL`)
         if (classOrTypeWheres.length) {
             topLevelWheres.push(` ( ${this.joinWheres(classOrTypeWheres, 'OR')} )`)
         }
@@ -419,6 +421,14 @@ module.exports = function (ComQuery) {
     };
 
     ComQuery.beforeRemote('create', function (ctx, unused, next) {
+
+        if (!ctx.args.options.accessToken.userId) return Error('AccesToken.userId is missing.');
+        ctx.args.data.fk_last_modifier = ctx.args.options.accessToken.userId;
+
+        next()
+    })
+
+    ComQuery.beforeRemote('patchAttributes', function (ctx, unused, next) {
 
         if (!ctx.args.options.accessToken.userId) return Error('AccesToken.userId is missing.');
         ctx.args.data.fk_last_modifier = ctx.args.options.accessToken.userId;

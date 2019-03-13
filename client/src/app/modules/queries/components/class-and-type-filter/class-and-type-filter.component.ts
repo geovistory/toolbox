@@ -50,7 +50,6 @@ class ClassAndTypeFilterMatControl implements OnDestroy, ControlValueAccessor, M
   destroy$ = new Subject<boolean>();
   stateChanges = new Subject<void>();
   focused = false;
-  errorState = false;
   controlType = 'class-and-type-filter';
   // tslint:disable-next-line: no-use-before-declare
   id = `class-and-type-filter-${ClassAndTypeFilterComponent.nextId++}`;
@@ -107,16 +106,25 @@ class ClassAndTypeFilterMatControl implements OnDestroy, ControlValueAccessor, M
     this.onChange(this.model)
   }
 
+  get errorState() {
+    return this.ngControl.errors !== null && !!this.ngControl.touched;
+  }
+
   formGroup: FormGroup;
-  classAndTypeCtrl = new FormControl(null, classOrTypeRequiredValidator)
+  classAndTypeCtrl: FormControl;
   dynamicFormControls: DynamicFormControl[] = [];
 
   constructor(
-    @Optional() @Self() public ngControl: NgControl
+    @Optional() @Self() public ngControl: NgControl,
+    fb: FormBuilder
   ) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
+    this.classAndTypeCtrl = new FormControl(null, classOrTypeRequiredValidator())
+    this.formGroup = fb.group({
+      classAndTypeCtrl: this.classAndTypeCtrl
+    })
   }
 
   ngOnDestroy() {
@@ -140,15 +148,17 @@ class ClassAndTypeFilterMatControl implements OnDestroy, ControlValueAccessor, M
     const children = !value ? [] : !value.children ? [] : value.children;
     this.value = { data, children };
 
-    this.classAndTypeCtrl.setValue(data)
 
     // remove controls
-    this.dynamicFormControls.forEach(ctrl => this.formGroup.removeControl(ctrl.key))
     this.dynamicFormControls = [];
-    keys(this.formGroup.controls).forEach(ctrlName => this.formGroup.removeControl(ctrlName.toString()))
+    const [classAndTypeCtrl, ...ctrlsToRemove] = keys(this.formGroup.controls) as string[];
+    ctrlsToRemove.forEach(ctrlName => this.formGroup.removeControl(ctrlName))
 
     // add controls
     children.forEach((child, index) => { this.addCrtl(index, child); })
+
+    // set this class and type select value
+    this.classAndTypeCtrl.setValue(data)
   }
 
   protected addCrtl(index: number, child: FilterTree) {
@@ -227,11 +237,9 @@ export class ClassAndTypeFilterComponent extends ClassAndTypeFilterMatControl im
     @Optional() @Self() public ngControl: NgControl,
     fb: FormBuilder
   ) {
-    super(ngControl)
+    super(ngControl, fb)
 
-    this.formGroup = fb.group({
-      classAndTypeCtrl: this.classAndTypeCtrl
-    })
+
 
     this.formGroup.valueChanges
       .pipe(

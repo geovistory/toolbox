@@ -38,7 +38,7 @@ export default sandboxOf(ClassAndTypeSelectComponent, {
                     <mat-form-field>
                         <mat-label>Entity classes and types</mat-label>
                         <gv-class-and-type-select name="control" [(ngModel)]="model" #control="ngModel" [pkClasses$]="pkClasses$" gvClassOrTypeRequired></gv-class-and-type-select>
-                        <mat-error *ngIf="control.invalid">You must enter a value</mat-error>
+                        <mat-error *ngIf="control.invalid">You must select a value</mat-error>
                     </mat-form-field>
                 </form>
             </div>

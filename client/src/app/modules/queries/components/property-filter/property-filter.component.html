@@ -4,16 +4,15 @@
     <mat-form-field>
       <mat-label>Condition</mat-label>
       <mat-select [formControl]="operatorCtrl" (openedChange)="onOpenedChange($event)">
-        <mat-option [value]="'IS'">has / is</mat-option>
-        <mat-option [value]="'IS NOT'">has not / is not</mat-option>
+        <mat-option *ngFor="let o of operatorOptions" [value]="o.value">{{o.label}}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <!-- add different selcts here, according to chosen option -->
     <mat-form-field class="mx-3 d-flex gv-grow-1" *ngIf="operatorCtrl.valid">
       <mat-label>Property</mat-label>
-      <gv-property-select [formControl]="propertyCtrl" [options$]="propertyOptions$" class="mx-3 d-flex gv-grow-1"
-        gvPropertiesRequired (focus)="onFocus()" (blur)="onBlur()" [level]="level + 1">
+      <gv-property-select [formControl]="propertyCtrl" [options$]="propertyOptions$" class="d-flex gv-grow-1"
+         (focus)="onFocus()" (blur)="onBlur()" [level]="level + 1">
       </gv-property-select>
     </mat-form-field>
 
@@ -28,6 +27,6 @@
   </div>
   <div class="gv-sub-query-item">
     <gv-subgroup *ngFor="let child of dynamicFormControls; let i = index" [formControl]="child.ctrl" [pkClasses$]="pkClasses$"
-      (remove)="removeChild(i)" [level]="level + 1"></gv-subgroup>
+      (remove)="removeChild(i)" [level]="level + 1"  #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-subgroup>
   </div>
 </form>

@@ -16,6 +16,8 @@ export class QueryDetail {
     // Layout
     showRightArea?: boolean;
 
+    deleted?: boolean;
+
     constructor(data?: QueryDetail) {
         Object.assign(this, data);
     }

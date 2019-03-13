@@ -51,7 +51,6 @@ class PropertyFilterMatControl implements OnDestroy, ControlValueAccessor, MatFo
   destroy$ = new Subject<boolean>();
   stateChanges = new Subject<void>();
   focused = false;
-  errorState = false;
   controlType = 'property-filter';
   // tslint:disable-next-line: no-use-before-declare
   id = `property-filter-${PropertyFilterComponent.nextId++}`;
@@ -108,10 +107,22 @@ class PropertyFilterMatControl implements OnDestroy, ControlValueAccessor, MatFo
     this.onChange(this.model)
   }
 
+  get errorState() {
+    return this.ngControl.errors !== null && !!this.ngControl.touched;
+  }
+
+  get defaultOperatorOption(){
+    return this.operatorOptions[0].value
+  }
+
   formGroup: FormGroup;
   operatorCtrl: FormControl;
   propertyCtrl: FormControl;
   dynamicFormControls: DynamicFormControl[] = [];
+  operatorOptions = [
+    { value: 'IS', label: 'has / is' },
+    { value: 'IS NOT', label: 'has not / is not' },
+  ]
 
 
   constructor(
@@ -121,8 +132,8 @@ class PropertyFilterMatControl implements OnDestroy, ControlValueAccessor, MatFo
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
-    this.operatorCtrl = new FormControl(null, Validators.required)
-    this.propertyCtrl = new FormControl(null, propertiesRequiredValidator);
+    this.operatorCtrl = new FormControl(this.defaultOperatorOption, Validators.required)
+    this.propertyCtrl = new FormControl(null, propertiesRequiredValidator());
     this.formGroup = fb.group({
       operatorCtrl: this.operatorCtrl,
       propertyCtrl: this.propertyCtrl
@@ -153,11 +164,13 @@ class PropertyFilterMatControl implements OnDestroy, ControlValueAccessor, MatFo
     this.value = { data, children };
 
     this.propertyCtrl.setValue(pick(['ingoingProperties', 'outgoingProperties'], data))
-    this.operatorCtrl.setValue(data.operator || null)
+    this.operatorCtrl.setValue(data.operator || this.defaultOperatorOption)
 
     // remove controls
     this.dynamicFormControls = [];
-    keys(this.formGroup.controls).forEach(ctrlName => this.formGroup.removeControl(ctrlName.toString()))
+    const [propertyCtrl, operatorCtrl, ...ctrlsToRemove] = keys(this.formGroup.controls) as string[];
+    ctrlsToRemove.forEach(ctrlName => this.formGroup.removeControl(ctrlName))
+
 
     // add controls
     children.forEach((child, index) => { this.addCrtl(index, child); })
@@ -242,23 +255,18 @@ export class PropertyFilterComponent extends PropertyFilterMatControl implements
     return this.valid;
   }
 
-
+  
   constructor(public p: ActiveProjectService, private q: QueryService,
     fb: FormBuilder,
     @Optional() @Self() public ngControl: NgControl) {
-    super(ngControl, fb)
+      super(ngControl, fb)
 
-    const compare = (a, b) => {
-      return false;
-    }
-
-    this.formGroup.valueChanges
+      this.formGroup.valueChanges
       .pipe(
-        distinctUntilChanged(compare),
         takeUntil(this.destroy$))
       .subscribe(values => {
         const data = {
-          operator : this.operatorCtrl.value,
+          operator: this.operatorCtrl.value,
           ...this.propertyCtrl.value
         }
         const children = this.dynamicFormControls.map(c => c.ctrl.value)

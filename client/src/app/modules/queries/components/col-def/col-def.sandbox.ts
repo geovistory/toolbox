@@ -46,7 +46,8 @@ export default sandboxOf(ColDefComponent, {
                 <form #f="ngForm" class="gv-grow-1">
                     <mat-form-field class="w-100">
                         <mat-label>Entity classes and types</mat-label>
-                        <gv-col-def name="control" [(ngModel)]="model" #control="ngModel" [propertyOptions$]="options$" #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-col-def>
+                        <gv-col-def name="control" [(ngModel)]="model" #control="ngModel" [propertyOptions$]="options$"
+                        #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-col-def>
                         <mat-error *ngIf="control.invalid">Invalid</mat-error>
                     </mat-form-field>
                 </form>
@@ -68,7 +69,7 @@ export default sandboxOf(ColDefComponent, {
             </div>
         </div>`
     })
-    .add('Col Def | Preset ', {
+    .add('Col Def | Preset Default Column ', {
         context: {
             pkProject: 15,
             sandboxState: {},
@@ -87,7 +88,8 @@ export default sandboxOf(ColDefComponent, {
                 <form #f="ngForm" class="gv-grow-1">
                     <mat-form-field class="w-100">
                         <mat-label>Entity classes and types</mat-label>
-                        <gv-col-def name="control" [(ngModel)]="model" #control="ngModel" [propertyOptions$]="options$"></gv-col-def>
+                        <gv-col-def name="control" [(ngModel)]="model" #control="ngModel" [propertyOptions$]="options$" 
+                        #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-col-def>
                         <mat-error *ngIf="control.invalid">You must enter a value</mat-error>
                     </mat-form-field>
                 </form>
@@ -109,7 +111,57 @@ export default sandboxOf(ColDefComponent, {
             </div>
         </div>`
     })
-    .add('Col Def | Preset Custom Col ', {
+    .add('Col Def | Preset Custom Col 1', {
+        context: {
+            pkProject: 15,
+            sandboxState: {},
+            model: new ColDef({
+                label: 'Fathers',
+                queryPath: [
+                    {
+                        data: {
+                            ingoingProperties: [],
+                            outgoingProperties: []
+                        },
+                        type: 'properties'
+                    }
+                ]
+            }),
+            options$
+        },
+        template: `
+        <gv-init-state [projectFromApi]="pkProject"></gv-init-state>
+
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:630px;height:400px" class="d-flex border mr-4">
+                <form #f="ngForm" class="gv-grow-1">
+                    <mat-form-field class="w-100">
+                        <mat-label>Entity classes and types</mat-label>
+                        <gv-col-def name="control" [(ngModel)]="model" #control="ngModel" [propertyOptions$]="options$"
+                        #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-col-def>
+                        <mat-error *ngIf="control.invalid">You must enter a value</mat-error>
+                    </mat-form-field>
+                </form>
+            </div>
+            <div>
+                <p>Form.valid: {{f.valid | json}}</p>
+
+                <p>Form.touched: {{f.touched | json}}</p>
+
+                <p>Form.dirty: {{f.dirty | json}}</p>
+
+                <p>Form.value </p>
+                <pre>
+                    {{f.value | json}}
+                </pre>
+
+                Invalid: {{control.invalid | json}}
+
+            </div>
+        </div>`
+    })
+
+    .add('Col Def | Preset Custom Col 2', {
         context: {
             pkProject: 15,
             sandboxState: {},
@@ -146,7 +198,8 @@ export default sandboxOf(ColDefComponent, {
                 <form #f="ngForm" class="gv-grow-1">
                     <mat-form-field class="w-100">
                         <mat-label>Entity classes and types</mat-label>
-                        <gv-col-def name="control" [(ngModel)]="model" #control="ngModel" [propertyOptions$]="options$"></gv-col-def>
+                        <gv-col-def name="control" [(ngModel)]="model" #control="ngModel" [propertyOptions$]="options$"
+                        #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-col-def>
                         <mat-error *ngIf="control.invalid">You must enter a value</mat-error>
                     </mat-form-field>
                 </form>

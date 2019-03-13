@@ -15,23 +15,10 @@ import { ProjectDetail, Panel, TypePeIt } from './active-project.models';
 // };
 const INITIAL_STATE: ProjectDetail = {
     list: '',
-    uiIdSerial: 1,
-    panelSerial: 1,
+    uiIdSerial: 0,
+    panelSerial: 0,
     focusedPanel: 0,
-    panels: [
-        {
-            id: 0,
-            tabs: [
-                {
-                    active: true,
-                    component: 'query-detail',
-                    icon: 'query',
-                    pathSegment: 'queryDetails',
-                    path: ['activeProject', 'queryDetails', '0']
-                }
-            ]
-        }
-    ]
+    panels: []
 };
 const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: ActiveProjectAction): ProjectDetail => {
     let pi, ti, ppi, cpi, pti, cti;

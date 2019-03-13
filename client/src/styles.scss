@@ -376,6 +376,9 @@ $gv-color-selected: #00ffff;
 .gv-pointer {
     cursor: pointer;
 }
+.gv-w-max-500 {
+    max-width: 500px;
+}
 
 .gv-grow-1 {
     flex-grow: 1;
