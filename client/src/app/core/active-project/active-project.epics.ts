@@ -17,6 +17,7 @@ import { IAppState } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
+import { PeItActions } from 'app/modules/information/entity/pe-it/pe-it.actions';
 
 
 
@@ -559,14 +560,17 @@ export class ActiveProjectEpics {
    */
   private createEnableCreatingMentioningEpic(): Epic {
     return (action$, store) => action$.pipe(
-      ofType(MentioningListAPIActions.START_CREATE),
+      ofType(MentioningListAPIActions.START_CREATE, PeItActions.START_CREATE_MENTIONING),
       mapTo(this.actions.setCreatingMentioning(true))
     )
   }
   private createDisableCreatingMentioningEpic(): Epic {
     return (action$, store) => action$.pipe(
       ofType(MentioningListAPIActions.STOP_CREATE, MentioningListAPIActions.CREATE_SUCCEEDED, MentioningListAPIActions.CREATE_FAILED),
-      mapTo(this.actions.setCreatingMentioning(false))
+      mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+        globalStore.next(this.actions.setCreatingMentioning(false));
+        globalStore.next(this.actions.updateSelectedChunk(null));
+      }))
     )
   }
 }
