@@ -46,7 +46,10 @@ import { AccountListAPIEpics } from './components/account-list/api/account-list.
 import { WarehouseComponent } from './components/warehouse/warehouse.component';
 import { WarehouseAPIEpics } from './components/warehouse/api/warehouse.epics';
 import { WarehouseAPIActions } from './components/warehouse/api/warehouse.actions';
-import { MatButtonModule, MatDividerModule, MatCardModule, MatProgressBarModule } from '@angular/material';
+import { MatButtonModule, MatDividerModule, MatCardModule, MatProgressBarModule, MatTableModule } from '@angular/material';
+import { HasTypeComponent } from './components/has-type/has-type.component';
+import { HasTypeAPIActions } from './components/has-type/api/has-type.actions';
+import { HasTypeAPIEpics } from './components/has-type/api/has-type.epics';
 
 @NgModule({
   imports: [
@@ -62,7 +65,8 @@ import { MatButtonModule, MatDividerModule, MatCardModule, MatProgressBarModule 
     MatDividerModule,
     MatCardModule,
     MatButtonModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatTableModule
   ],
   providers: [
     ClassListAPIActions,
@@ -86,7 +90,9 @@ import { MatButtonModule, MatDividerModule, MatCardModule, MatProgressBarModule 
     AccountListAPIActions,
     AccountListAPIEpics,
     WarehouseAPIEpics,
-    WarehouseAPIActions
+    WarehouseAPIActions,
+    HasTypeAPIEpics,
+    HasTypeAPIActions
   ],
   declarations: [
     MainComponent,
@@ -104,7 +110,8 @@ import { MatButtonModule, MatDividerModule, MatCardModule, MatProgressBarModule 
     ClassFieldListComponent,
     ClassMainComponent,
     AccountListComponent,
-    WarehouseComponent
+    WarehouseComponent,
+    HasTypeComponent
   ]
 })
 export class BackofficeModule { }

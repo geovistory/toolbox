@@ -50,6 +50,7 @@ import { SocketConnection } from './sockets/socket.connections';
 import { RealTime } from './services/core/real.time';
 import { ComClassFieldPropertyRelApi } from './services/custom/ComClassFieldPropertyRel';
 import { ComClassFieldApi } from './services/custom/ComClassField';
+import { ComClassHasTypePropertyApi } from './services/custom/ComClassHasTypeProperty';
 import { ComLabelApi } from './services/custom/ComLabel';
 import { ComQueryApi } from './services/custom/ComQuery';
 import { PubAccountApi } from './services/custom/PubAccount';
@@ -115,6 +116,7 @@ export class SDKBrowserModule {
         RealTime,
         ComClassFieldPropertyRelApi,
         ComClassFieldApi,
+        ComClassHasTypePropertyApi,
         ComLabelApi,
         ComQueryApi,
         PubAccountApi,

@@ -22,6 +22,10 @@
     "dataSource": "postgres1",
     "public": true
   },
+  "ComClassHasTypeProperty": {
+    "dataSource": "postgres1",
+    "public": true
+  },
   "ComLabel": {
     "dataSource": "postgres1",
     "public": true
