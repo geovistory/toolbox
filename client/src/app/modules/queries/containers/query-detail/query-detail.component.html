@@ -7,6 +7,7 @@
   <as-split-area [size]="((showRightArea$ | async) ? 50 : 100)" class="d-flex flex-column">
 
     <gv-detail-top-bar>
+      Query
       <button class="ml-auto btn btn-sm btn-primary" (click)="onSave()">Save</button>
       <button class="ml-3 btn btn-sm btn-primary" (click)="onRun()">Run >></button>
     </gv-detail-top-bar>
@@ -103,7 +104,16 @@
     <gv-detail-top-bar>
       {{fullCount$ | async}} Results
 
-      <button class="ml-auto btn btn-sm btn-link-gray" (click)="hideRightArea()"><i class="fa fa-close"></i></button>
+      <div class="ml-auto">
+        <button class="btn btn-sm btn-primary mr-3" [matMenuTriggerFor]="export_menu">Export</button>
+        <mat-menu #export_menu="matMenu">
+          <button  mat-menu-item (click)="onDownload('json')">Download as JSON</button>
+          <button  mat-menu-item (click)="onDownload('csv')">Download as CSV</button>
+          <!-- <button  mat-menu-item (click)="onDownload('xls')">Download as Excel</button> -->
+        </mat-menu>
+
+        <button class="btn btn-sm btn-link-gray" (click)="hideRightArea()"><i class="fa fa-close"></i></button>
+      </div>
     </gv-detail-top-bar>
 
     <gv-result-table class="gv-flex-fh" [data$]="queryResults$" [pending$]="pending$" [colDef]="colDefsCopy"

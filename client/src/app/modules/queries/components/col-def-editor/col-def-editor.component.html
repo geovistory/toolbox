@@ -12,7 +12,6 @@
       </mat-expansion-panel-header>
       <gv-col-def [formControl]="dynCtrl.ctrl" [propertyOptions$]="propertyOptions$" (focus)="onFocus()" (blur)="onBlur()"
       #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-col-def>
-      {{dynCtrl.ctrl.valid}}
       <mat-action-row *ngIf="!dynCtrl.ctrl?.value?.defaultType">
         <button mat-button color="warn" class="ml-auto" (click)="removeColumn(i)">Remove column</button>
       </mat-action-row>

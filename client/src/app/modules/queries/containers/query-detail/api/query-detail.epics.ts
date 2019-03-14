@@ -9,6 +9,7 @@ import { QueryDetailComponent } from '../query-detail.component';
 import { QueryDetailAPIActions, QueryDetailAPIAction } from './query-detail.actions';
 import { ofSubstore } from 'app/core/store/module';
 import { ComQueryApi } from 'app/core/sdk/services/custom/ComQuery';
+import { saveAs } from 'file-saver';
 
 @Injectable()
 export class QueryDetailAPIEpics {
@@ -26,7 +27,8 @@ export class QueryDetailAPIEpics {
       this.createRunInitQueryDetailEpic(c),
       this.createSaveQueryDetailEpic(c),
       this.createReloadEpic(c),
-      this.createDeleteQueryDetailEpic(c)
+      this.createDeleteQueryDetailEpic(c),
+      this.createDownloadDetailEpic(c),
 
     );
   }
@@ -280,4 +282,80 @@ export class QueryDetailAPIEpics {
       )
     }
   }
+
+  private createDownloadDetailEpic(c: QueryDetailComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(QueryDetailAPIActions.DOWNLOAD),
+        filter(action => ofSubstore(c.basePath)(action)),
+        switchMap((action: QueryDetailAPIAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Do some api call
+           */
+          this.queryApi.runAndExport(action.meta.pkProject, action.meta.query, action.meta.filetype)
+            /**
+             * Subscribe to the api call
+             */
+            .subscribe((data) => {
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              /**
+               * Emit the local action on loading succeeded
+               */
+              c.localStore.dispatch(this.actions.downloadSucceeded());
+
+              if (action.meta.filetype === 'json') {
+
+                const blob = new Blob([data], { type: 'text/json' });
+                saveAs(blob, 'query-results.json')
+
+              } else if (action.meta.filetype === 'csv') {
+                const blob = new Blob([data], { type: 'text/comma-separated-values' });
+                saveAs(blob, 'query-results.csv')
+              } 
+              
+              // else if (action.meta.filetype === 'xls') {
+
+              //   const s2ab = (s) => {
+              //     var buf = new ArrayBuffer(s.length);
+              //     var view = new Uint8Array(buf);
+              //     for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+              //     return buf;
+              //   }
+
+              //   const blob = new Blob([s2ab(atob(data))], { type: 'application/msexcel' });
+              //   saveAs(blob, 'query-results.xls')
+
+              // }
+            }, error => {
+              /**
+        * Emit the global action that shows some loading error message
+        */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              c.localStore.dispatch(this.actions.downloadFailed({ status: '' + error.status }))
+            })
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
 }

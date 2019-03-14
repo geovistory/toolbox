@@ -58,12 +58,13 @@
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "run",
-        "create",
-        "patchAttributes",
         "findPerProject",
         "findByIdAndProject",
-        "deleteById"
+        "create",
+        "patchAttributes",
+        "deleteById",
+        "run",
+        "runAndExport"
       ]
     }
   ],
@@ -197,6 +198,54 @@
       "description": "Find one query.",
       "http": {
         "path": "/find-by-id-and-project",
+        "verb": "get"
+      }
+    },
+    "runAndExport": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "query",
+          "type": "object",
+          "required": true,
+          "description": "query definition object",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "filetype",
+          "type": "string",
+          "required": true,
+          "description": "One of those filetypes: 'json', 'csv', 'xls'",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "string",
+        "root": true
+      },
+      "description": "Run query and export the query in the given filetype format.",
+      "http": {
+        "path": "/run-and-export",
         "verb": "get"
       }
     }

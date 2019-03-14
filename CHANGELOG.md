@@ -1,7 +1,32 @@
 # Changelog of Geovistory Developments
 ## Sprint 16
 ### Features
-* Backoffice: Button to recreate all entity previews in the warehouse. Useful after deployment on a fresh db.
+* Queries:
+  * Added new table commons.query, storing the query itself (not the results). `GEOV-396 GEOV-397`
+  * Added API Endpoints, all of them restricted to project_members: `GEOV-397`
+    * findPerProject: finds all queries of the project
+    * findByIdAndProject: finds one query by id
+    * create: persists a new query to the datastore 
+    * patchAttributes: updates an existing query
+    * deleteById: deletes a query
+    * run: executes a query and returns results (with pagination, if requested)
+    * runAndExport: executes a query and returns a json or csv of the entire query results (without pagination)
+  * Added GUI: `GEOV-397`
+    * Query-List: Simple list of all Queries of project with name and description (no filtering, sorting yet)
+    * Query-Detail-Page: 
+      * Visual Query Builder allows to create new or edit existing queries, defining complex filters to restrict the resulting row and specific query paths to map related information to different columns. 
+      * A Result Table shows the results with infinit virtual scroll
+      * Export button allows to download the full Query Results as JSON or CSV
+* Backoffice: 
+  * Warehouse tab with Button to recreate all entity previews in the warehouse. Useful to initialize entity previews after deployment on a fresh db and for debugging.
+  * Type Classes tab with Table showing which Type Classes are in use for which Typed Classes. (This is a chrutch, needed as long as property-hierarchy is not reflected in Geovistory)
+
+### Improvements
+* Improved performance of loading types of classes, since this slowed down the usage noticeably.noticeable `GEOV-386`
+* Added colors to the main categories of Geovistory Toolbox
+
+### Fixes
+* No fixes, but may be new bugs. Long live biodiversity!
 
 
 ## Sprint 15

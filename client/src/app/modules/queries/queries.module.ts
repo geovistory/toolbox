@@ -2,7 +2,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatDividerModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatOptionModule, MatProgressBarModule, MatSelectModule, MatStepperModule, MatTableModule, MatTooltipModule, MatDialogModule, MatListModule } from '@angular/material';
+import { MatButtonModule, MatDividerModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatOptionModule, MatProgressBarModule, MatSelectModule, MatStepperModule, MatTableModule, MatTooltipModule, MatDialogModule, MatListModule, MatMenuModule } from '@angular/material';
 import { AngularSplitModule } from 'angular-split';
 import { CoreTableFilterModule } from 'app/shared/components/core-table/filter/filter.module';
 import { CoreTableMenuModule } from 'app/shared/components/core-table/menu/menu.module';
@@ -88,7 +88,8 @@ const components = [
     MatListModule,
     KeysModule,
     PassiveLinkModule,
-    ValidationDirectivesModule
+    ValidationDirectivesModule,
+    MatMenuModule
   ],
   providers: [
     QueryListAPIActions,

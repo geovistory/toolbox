@@ -145,6 +145,32 @@ export function queryDetailReducer(state: QueryDetail = INITIAL_STATE, a: Action
 
 
     /*****************************************************
+    * Run query and download results
+    *****************************************************/
+    case QueryDetailAPIActions.DOWNLOAD:
+      state = {
+        ...state,
+        downloadLoading: true,
+        downloadError: false
+      };
+      break;
+    case QueryDetailAPIActions.LOAD_SUCCEEDED:
+      state = {
+        ...state,
+        downloadLoading: false,
+        downloadError: false
+      };
+      break;
+
+    case QueryDetailAPIActions.LOAD_FAILED:
+      state = {
+        ...state,
+        downloadLoading: false,
+        downloadError: true
+      };
+      break;
+
+    /*****************************************************
     * Layout
     *****************************************************/
     case QueryDetailAPIActions.SHOW_RIGHT_AREA:

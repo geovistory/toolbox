@@ -157,6 +157,38 @@ export class ComQueryApi extends BaseLoopBackApi {
   }
 
   /**
+   * Run query and export the query in the given filetype format.
+   *
+   * @param {number} pkProject Pk of the project
+   *
+   * @param {object} query query definition object
+   *
+   * @param {string} filetype Filetype: 'json', 'csv'
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ComQuery` object.)
+   * </em>
+   */
+  public runAndExport(pkProject: any, query: any, filetype: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ComQueries/run-and-export";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof query !== 'undefined' && query !== null) _urlParams.query = query;
+    if (typeof filetype !== 'undefined' && filetype !== null) _urlParams.filetype = filetype;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `ComQuery`.
    */
