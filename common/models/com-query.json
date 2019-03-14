@@ -58,12 +58,12 @@
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "run",
-        "create",
-        "patchAttributes",
         "findPerProject",
         "findByIdAndProject",
+        "create",
+        "patchAttributes",
         "deleteById",
+        "run",
         "runAndExport"
       ]
     }
