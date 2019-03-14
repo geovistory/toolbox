@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ProjectCrm, ProjectDetail, Tab, ListType } from './active-project.models';
+import { ProjectCrm, ProjectDetail, Tab, ListType, TypePeIt } from './active-project.models';
 import { EntityPreview, PeItDetail } from '../state/models';
 import { InfChunk, InfTemporalEntity, InfPersistentItem } from '../sdk';
 
@@ -10,6 +10,7 @@ interface MetaData {
     pk_project?: number;
     pk_entity?: number;
     pk_entities?: number[];
+    pk_classes?: number[]
     pk_ui_context?: number;
 
     // return vals for Data Cache
@@ -18,6 +19,7 @@ interface MetaData {
     chunk?: InfChunk
     teEnGraphs?: InfTemporalEntity[]
     peItGraphs?: InfPersistentItem[]
+    types?: TypePeIt[]
 
     // layout
     list?: ListType;
@@ -90,17 +92,17 @@ export class ActiveProjectActions {
     /************************************************************************************
      * Layout
     ************************************************************************************/
-   static SET_LIST_TYPE = 'ActiveProject::SET_LIST_TYPE';
+    static SET_LIST_TYPE = 'ActiveProject::SET_LIST_TYPE';
 
-   setListType(list: ListType): ActiveProjectAction {
-       return {
-           type: ActiveProjectActions.SET_LIST_TYPE,
-           payload: null,
-           meta: {
-               list
-           }
-       }
-   }
+    setListType(list: ListType): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.SET_LIST_TYPE,
+            payload: null,
+            meta: {
+                list
+            }
+        }
+    }
 
 
     static ACTIVATE_TAB = 'ActiveProject::ACTIVATE_TAB';
@@ -211,6 +213,41 @@ export class ActiveProjectActions {
             error
         }
     }
+
+    // EntityPreviews
+    static LOAD_TYPES = 'ActiveProject::LOAD_TYPES';
+    static LOAD_TYPES_SUCCEEDED = 'ActiveProject::LOAD_TYPES_SUCCEEDED';
+    static LOAD_TYPES_FAILED = 'ActiveProject::LOAD_TYPES_FAILED';
+    loadTypes(pk_project: number, pk_classes: number[]): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.LOAD_TYPES,
+            payload: null,
+            meta: {
+                pk_project, pk_classes
+            }
+        }
+    }
+
+    loadTypesSucceeded(types: TypePeIt[], pk_classes:number[]): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.LOAD_TYPES_SUCCEEDED,
+            payload: null,
+            meta: {
+                types, pk_classes
+            },
+        }
+    }
+
+    loadTypesFailed(error): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.LOAD_TYPES_FAILED,
+            payload: null,
+            meta: null,
+            error
+        }
+    }
+
+
 
     // Entities Details for display in Modals
     static LOAD_ENTITY_DETAIL_FOR_MODAL = 'ActiveProject::LOAD_ENTITY_DETAIL_FOR_MODAL';

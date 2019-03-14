@@ -43,6 +43,13 @@ import { ClassMainComponent } from './components/class-main/class-main.component
 import { AccountListComponent } from './components/account-list/account-list.component';
 import { AccountListAPIActions } from './components/account-list/api/account-list.actions';
 import { AccountListAPIEpics } from './components/account-list/api/account-list.epics';
+import { WarehouseComponent } from './components/warehouse/warehouse.component';
+import { WarehouseAPIEpics } from './components/warehouse/api/warehouse.epics';
+import { WarehouseAPIActions } from './components/warehouse/api/warehouse.actions';
+import { MatButtonModule, MatDividerModule, MatCardModule, MatProgressBarModule, MatTableModule } from '@angular/material';
+import { HasTypeComponent } from './components/has-type/has-type.component';
+import { HasTypeAPIActions } from './components/has-type/api/has-type.actions';
+import { HasTypeAPIEpics } from './components/has-type/api/has-type.epics';
 
 @NgModule({
   imports: [
@@ -54,7 +61,12 @@ import { AccountListAPIEpics } from './components/account-list/api/account-list.
     DndModule,
     FormsModule,
     ReactiveFormsModule,
-    TableModule
+    TableModule,
+    MatDividerModule,
+    MatCardModule,
+    MatButtonModule,
+    MatProgressBarModule,
+    MatTableModule
   ],
   providers: [
     ClassListAPIActions,
@@ -76,7 +88,11 @@ import { AccountListAPIEpics } from './components/account-list/api/account-list.
     ClassFieldListAPIActions,
     ClassFieldListAPIEpics,
     AccountListAPIActions,
-    AccountListAPIEpics
+    AccountListAPIEpics,
+    WarehouseAPIEpics,
+    WarehouseAPIActions,
+    HasTypeAPIEpics,
+    HasTypeAPIActions
   ],
   declarations: [
     MainComponent,
@@ -93,7 +109,9 @@ import { AccountListAPIEpics } from './components/account-list/api/account-list.
     UiElementWidgetComponent,
     ClassFieldListComponent,
     ClassMainComponent,
-    AccountListComponent
+    AccountListComponent,
+    WarehouseComponent,
+    HasTypeComponent
   ]
 })
 export class BackofficeModule { }

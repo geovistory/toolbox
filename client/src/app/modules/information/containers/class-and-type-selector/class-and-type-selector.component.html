@@ -1,4 +1,4 @@
-<span *ngIf="!(loading$ | async) && ((items$ | async) | keys).length">
+<span *ngIf="!(loading$ | async) && ((tree$ | async) | keys).length">
   <ng-template #itemTemplate let-item="item" let-onCollapseExpand="onCollapseExpand" let-onCheckedChange="onCheckedChange">
     <div class="form-inline row-item">
       <i *ngIf="item.children" (click)="onCollapseExpand()" aria-hidden="true" class="fa fa-fw" [class.fa-caret-right]="item.collapsed"
@@ -8,7 +8,7 @@
     </div>
   </ng-template>
 
-  <ngx-dropdown-treeview [buttonClass]="buttonClass" [items]="(items$ | async)" [config]="config"
+  <ngx-dropdown-treeview [buttonClass]="buttonClass" [items]="(tree$ | async)" [config]="config"
     [ngClass]="{'placement-right': (placement == 'right')}" [itemTemplate]="itemTemplate"> </ngx-dropdown-treeview>
 </span>
 

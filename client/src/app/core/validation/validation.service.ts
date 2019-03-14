@@ -1,12 +1,26 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { TimePrimitive } from 'app/core/date-time/time-primitive';
 import { U } from 'app/core/util/util';
+import { values } from 'ramda';
 
 
 @Injectable()
 export class ValidationService {
 
+  /** The control must not have invalid child controls. 
+   * Good for nesting custom form controls.
+   * Pass in the formGroup.controls of the control-component you are testing. 
+   * 
+   */
+  static noInvalidChildrenValidator(childControls: { [key: string]: AbstractControl }): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const ctrls = values(childControls || {})
+      return ctrls.filter(ctrl => ctrl.invalid).length > 0
+        ? { 'invalidChild': { value: control.value } } : null
+
+    };
+  }
 
   static getValidatorErrorMessage(validatorName: string, validatorValue?: any) {
     const config = {

@@ -1,4 +1,8 @@
 # Changelog of Geovistory Developments
+## Sprint 16
+### Features
+* Backoffice: Button to recreate all entity previews in the warehouse. Useful after deployment on a fresh db.
+
 
 ## Sprint 15
 ### Features

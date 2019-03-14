@@ -8,10 +8,12 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
 import { NavbarModule, PassiveLinkModule, ProxyRouteModule } from 'app/shared';
 import { DrawerContainerResizeModule } from 'app/shared/components/drawer-container-resize/drawer-container-resize.module';
+import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header/list-drawer-header.module';
 import { ReadMoreModule } from 'app/shared/components/read-more/read-more.module';
 import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
 import { KeysModule } from 'app/shared/pipes/keys.module';
 import { Information2Module } from '../information/information.module';
+import { QueriesModule } from '../queries/queries.module';
 import { SourcesModule } from '../sources';
 import { ProjectsActions } from './api/projects.actions';
 import { ClassItemComponent } from './components/class-item/class-item.component';
@@ -62,9 +64,11 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     DragDropModule,
     SourcesModule,
     Information2Module,
+    QueriesModule,
     PortalModule,
     DrawerContainerResizeModule,
-    AngularSplitModule
+    AngularSplitModule,
+    ListDrawerHeaderModule
   ],
   declarations: [
     ProjectCreateComponent,

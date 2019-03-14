@@ -1,0 +1,93 @@
+@import '../../../../../styles.scss';
+$top-horizontal-line: 30px;
+.subgroup {
+    position: relative;
+    display: flex;
+    margin-bottom: 40px;
+}
+
+.zero {
+    width: 23px;
+    height: 31px;
+    flex-shrink: 0;
+}
+
+.zero.line {
+    border-bottom: 1px solid $success;
+    border-left: 1px solid $success;
+}
+
+.first {
+    width: 1px;
+    flex-shrink: 0;
+    margin-top: $top-horizontal-line;
+    margin-bottom: 34px;
+    position: relative;
+    background-color: $success;
+    .subgroup-operation-container {
+        position: absolute;
+        bottom: 0;
+        top: 22px;
+        width: 46px;
+        left: -23px;
+        display: flex;
+        flex-direction: column;
+    }
+    .subgroup-operation-select {
+        font-size: 14px;
+        background: $white;
+        @extend .border;
+        @extend .border-success;
+        @extend .rounded;
+        @extend .px-1;
+        z-index: 1;
+        &::ng-deep .mat-select-arrow {
+            margin: 0;
+        }
+    }
+    .add-sibling-button {
+        position: absolute;
+        bottom: -24px;
+        left: -12px;
+    }
+    &.line {
+        margin-bottom: 0;
+    }
+}
+
+.second {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 0%;
+    .sub-query-item {
+        display: flex;
+        align-items: start;
+        .subquery-left {
+            position: relative;
+            width: 35px;
+            padding: 0 0 0 5px;
+            .horizontal-line {
+                position: absolute;
+                top: $top-horizontal-line;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background-color: $success;
+                &.is-subgroup {
+                    top: 62px;
+                }
+            }
+            .add-subgroup-button {
+                margin-top: 18px;
+            }
+        }
+        gv-property-filter,
+        gv-class-and-type-filter {
+            margin-left: .75rem;
+            flex: 1 0 0%;
+        }
+        gv-subgroup {
+            flex: 1 0 0%;
+        }
+    }
+}

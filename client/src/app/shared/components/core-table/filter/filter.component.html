@@ -1,0 +1,25 @@
+<ng-content></ng-content>
+
+<mat-menu #filterMenu="matMenu">
+  <div
+    class="container"
+    (click)="$event.stopPropagation()"
+    (keyup)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
+  >
+    <mat-form-field>
+      <mat-select [formControl]="operation">
+        <mat-option *ngFor="let op of operations" [value]="op">
+          {{ op.text }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field *ngIf="needsFilter">
+      <input matInput [formControl]="filter" />
+    </mat-form-field>
+  </div>
+</mat-menu>
+
+<span class="trigger" [matMenuTriggerFor]="filterMenu">
+  <mat-icon>filter_list</mat-icon>
+</span>

@@ -1,0 +1,114 @@
+<as-split class="gv-split-style" [direction]="'horizontal'" gutterSize="1">
+
+
+  <!-------------------------------------------------------------------
+     Query Definition 
+  -------------------------------------------------------------------->
+  <as-split-area [size]="((showRightArea$ | async) ? 50 : 100)" class="d-flex flex-column">
+
+    <gv-detail-top-bar>
+      <button class="ml-auto btn btn-sm btn-primary" (click)="onSave()">Save</button>
+      <button class="ml-3 btn btn-sm btn-primary" (click)="onRun()">Run >></button>
+    </gv-detail-top-bar>
+
+    <div *ngIf="(deleted$ | async)" class="alert alert-info">
+      The Query has been successfully deleted. To recover it, click on save.
+    </div>
+
+    <mat-vertical-stepper [linear]="true" #stepper>
+      <mat-step [stepControl]="firstFormGroup">
+        <form [formGroup]="firstFormGroup">
+          <ng-template matStepLabel>
+            Define a filter for the resulting rows
+            <mat-error *ngIf="firstFormGroup.invalid && firstFormGroup.touched">
+              <small>Invalid</small>
+            </mat-error>
+          </ng-template>
+
+          <gv-class-and-type-filter [pkClasses$]="p.classesInProject$" [showRemoveBtn]="false"
+            [formControl]="filterCtrl" #a [gvNoInvalidChildren]="a.formGroup.controls">
+          </gv-class-and-type-filter>
+
+          <!-- <div><
+            <button mat-flat-button color="primary" matStepperNext>Next</button>
+          </div> -->
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="secondFormGroup" optional>
+        <form [formGroup]="secondFormGroup">
+          <ng-template matStepLabel>
+            Define the resulting columns
+            <mat-error *ngIf="secondFormGroup.invalid && secondFormGroup.touched">
+              <small>Invalid</small>
+            </mat-error>
+          </ng-template>
+          <!-- <mat-form-field appearance="outline">
+            <input matInput placeholder="Address" formControlName="secondCtrl" required>
+          </mat-form-field> -->
+          <div class="my-3">
+            <gv-col-def-editor [propertyOptions$]="propertyOptions$" [formControl]="columnsCtrl" #c
+              [gvNoInvalidChildren]="c.formGroup.controls"></gv-col-def-editor>
+          </div>
+          <!-- <div>
+            <button mat-flat-button matStepperPrevious>Back</button>
+            <button mat-flat-button matStepperNext>Next</button>
+          </div> -->
+
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="thirdFormGroup">
+        <form [formGroup]="thirdFormGroup">
+          <ng-template matStepLabel>
+            Summary
+            <mat-error *ngIf="thirdFormGroup.invalid && thirdFormGroup.touched">
+              <small>Invalid</small>
+            </mat-error>
+          </ng-template>
+          <p>Give your query a name and description.</p>
+          <p>
+            <mat-form-field class="w-100 gv-w-max-500">
+              <input matInput placeholder="Name" formControlName="nameCtrl" required>
+              <mat-hint>Name of the query.</mat-hint>
+            </mat-form-field>
+          </p>
+          <p class="mt-3">
+            <mat-form-field class="w-100 gv-w-max-500">
+              <textarea matInput placeholder="Description" formControlName="descriptionCtrl"></textarea>
+              <mat-hint>Description of the query.</mat-hint>
+            </mat-form-field>
+          </p>
+          <div class="mt-5">
+            <!-- <button mat-flat-button type="button" matStepperPrevious>Back</button> -->
+            <button mat-flat-button type="button" class="mr-2" color="primary" (click)="onSave()">Save</button>
+            <button mat-flat-button type="button" class="mr-2" color="primary" *ngIf="(comQuery$ | async)?.pk_entity"
+              (click)="onSaveAs()">
+              Save As
+            </button>
+            <button mat-flat-button type="button" color="warn" *ngIf="(comQuery$ | async)?.pk_entity"
+              (click)="onDelete()">
+              Delete
+            </button>
+          </div>
+        </form>
+      </mat-step>
+    </mat-vertical-stepper>
+
+  </as-split-area>
+
+  <!-------------------------------------------------------------------
+    Query Results 
+  -------------------------------------------------------------------->
+  <as-split-area *ngIf="(showRightArea$ | async)" [size]="50" class="d-flex flex-column">
+
+    <gv-detail-top-bar>
+      {{fullCount$ | async}} Results
+
+      <button class="ml-auto btn btn-sm btn-link-gray" (click)="hideRightArea()"><i class="fa fa-close"></i></button>
+    </gv-detail-top-bar>
+
+    <gv-result-table class="gv-flex-fh" [data$]="queryResults$" [pending$]="pending$" [colDef]="colDefsCopy"
+      [columns]="displayedColumns" [limit]="limit" (rangeChange)="onScroll($event)"></gv-result-table>
+
+
+  </as-split-area>
+</as-split>

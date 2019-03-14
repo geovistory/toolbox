@@ -4,7 +4,7 @@
   "main": "server/server.js",
   "engines": {
     "node": "8.9.4",
-    "npm": "6.5.0"
+    "npm": "6.7.0"
   },
   "scripts": {
     "lint": "eslint .",
@@ -43,6 +43,7 @@
     "loopback-boot": "^2.6.5",
     "loopback-component-explorer": "^4.0.0",
     "loopback-connector-postgresql": "^2.8.0",
+    "loopback-postgres-find-complex": "github:kleiolab/findComplex#bug-fixes",
     "loopback-setup-remote-methods-mixin": "^1.2.1",
     "pg": "^7.4.1",
     "pg-query-stream": "^1.1.2",
@@ -50,6 +51,7 @@
     "rxjs": "^6.3.0",
     "serve-favicon": "^2.0.1",
     "socket.io": "^2.2.0",
+    "sql-formatter": "^2.3.2",
     "strong-error-handler": "^2.0.0",
     "tracer": "^0.8.11",
     "typescript": "^2.6.1"

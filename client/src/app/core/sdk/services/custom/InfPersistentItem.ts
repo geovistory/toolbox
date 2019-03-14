@@ -247,6 +247,35 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
   }
 
   /**
+   * Find types of typed class and project. E.g. get the types for the class 'histC8 Geographical Place' (pk_typed_class=363) used in project (pk_project=123)
+   *
+   * @param {number} pk_project Primary Key of Project
+   *
+   * @param {number} pk_typed_classes Primary Keyes of Typed Classes (e.g. pk of Geographical Place to get Geographical Place Types)
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfPersistentItem` object.)
+   * </em>
+   */
+  public typesOfClassesAndProject(pk_project: any, pk_typed_classes: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfPersistentItems/types-of-classes-and-project";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
+    if (typeof pk_typed_classes !== 'undefined' && pk_typed_classes !== null) _urlParams.pk_typed_classes = pk_typed_classes;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Find types of given namespace, class and project.
    *
    * @param {string} pk_namespace Primary Key of Namespace

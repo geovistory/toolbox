@@ -1,0 +1,35 @@
+:host {
+  display: flex;
+  align-items: center;
+}
+
+.trigger {
+  color: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  display: flex;
+  margin-left: 4px;
+  opacity: 0;
+  transform: translateY(-5px);
+
+  transition-duration: 0.2s;
+  transition-property: opacity, transform;
+
+  :host.has-value & {
+    color: rgba(0, 0, 0, 0.54);
+  }
+
+  :host:hover &,
+  :host.show-trigger & {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+}
+
+.container {
+  padding: 0 16px;
+
+  mat-form-field {
+    margin: -8px 0;
+    width: 100%;
+  }
+}

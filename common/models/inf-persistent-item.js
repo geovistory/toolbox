@@ -1074,6 +1074,71 @@ module.exports = function (InfPersistentItem) {
 
 
   /**
+   * Get all types for classes and project
+   * 
+   * Where 
+   *	- types are in given project
+   *	- types are related to the namespace enabled by given project or the namespace geovistory ongoing
+   *    TODO: There is the need of a namespace_proj_rel table that says: This project has enabled this namespace for this class 
+   *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class) 
+   *
+   * @param pk_project
+   * @param pk_typed_classes
+   */
+  InfPersistentItem.typesOfClassesAndProject = function (pk_project, pk_typed_classes, cb) {
+
+
+    const params = [pk_project, ...pk_typed_classes]
+    const pk_typed_classes_refs = pk_typed_classes.map((pk, i) => ('$' + (i + 2))).join(', ');
+
+    const sql_stmt = `
+    -- select the types
+    SELECT type_entity.*, has_type_prop.fk_class as fk_typed_class
+    from information.persistent_item type_entity
+
+    -- join the info, of which class these the type_entities are types 
+    JOIN data_for_history.property has_type ON has_type.dfh_has_range = type_entity.fk_class
+    JOIN commons.class_has_type_property has_type_prop ON has_type.dfh_pk_property = has_type_prop.fk_property
+    
+    -- join the project_rel of the type
+    JOIN information.entity_version_project_rel type_proj_rel ON type_entity.pk_entity = type_proj_rel.fk_entity
+    
+    -- join the namespace of the type
+    JOIN information.type_namespace_rel type_nmsp_rel ON type_entity.pk_entity = type_nmsp_rel.fk_persistent_item
+    
+    -- TODO: join namespace_project_rel in order to see if for that class a custom namespace is activated
+    --LEFT JOIN commons.namespace_project_rel nmsp_proj_rel 
+    --	ON nmsp_proj_rel.fk_namespace = type_nmsp_rel.fk_namespace
+    --	AND nmsp_proj_rel.fk_class = type_entity.fk_class
+    --	AND nmsp_proj_rel.fk_project = $1
+    -- filter for types in the given project
+    
+    WHERE 
+    -- where the typed class is in ...
+    has_type_prop.fk_class IN (${pk_typed_classes_refs}) 
+    
+    -- where they type is in project
+    AND type_proj_rel.fk_project = $1
+    AND type_proj_rel.is_in_project = true
+    
+    -- TODO: somehow filter for the namespace activated per project and class
+    --AND
+    -- where the namespace is activated by the project, else geovistory_ongoing
+    --nmsp_proj_rel.fk_namespace IS NULL OR nmsp_proj_rel.fk_namespace = $xy`;
+
+    const connector = InfPersistentItem.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      if (err) return cb(err, resultObjects);
+      cb(null, resultObjects);
+    });
+
+
+  }
+
+
+
+
+  /**
    * Add a persistent item to project
    * 
    * This query will add those things to the project:
@@ -1096,7 +1161,7 @@ module.exports = function (InfPersistentItem) {
   InfPersistentItem.addToProject = function (pk_project, pk_entity, ctx, cb) {
     if (!ctx.req.accessToken.userId) return Error('AccessToken.userId is missing');
     const accountId = ctx.req.accessToken.userId;
-    
+
     const params = [pk_entity, pk_project, accountId]
 
     const sql_stmt = `

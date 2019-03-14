@@ -47,6 +47,7 @@ export class ActiveProjectEpics {
       this.createLoadChunkEpic(),
       this.createLoadPeItGraphEpic(),
       this.createLoadTeEnGraphEpic(),
+      this.createLoadTypesEpic(),
       this.createClosePanelEpic(),
       this.createActivateTabFocusPanelEpic(),
       this.createMoveTabFocusPanelEpic(),
@@ -297,7 +298,38 @@ export class ActiveProjectEpics {
       )
     }
   }
+  private createLoadTypesEpic(): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(ActiveProjectActions.LOAD_TYPES),
+        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
 
+          this.peItApi.typesOfClassesAndProject(action.meta.pk_project, action.meta.pk_classes)
+            .subscribe((data) => {
+              globalStore.next(this.actions.loadTypesSucceeded(data, action.meta.pk_classes));
+              globalStore.next(this.loadingBarActions.completeLoading());
+            }, error => {
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+
+              globalStore.next(this.actions.loadTypesFailed({ status: '' + error.status }))
+            })
+        }))
+      )
+    }
+  }
   private createLoadChunkEpic(): Epic {
     return (action$, store) => {
       return action$.pipe(

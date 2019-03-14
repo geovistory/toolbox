@@ -1,4 +1,4 @@
-var findComplex = require('../custom/findComplex.js');
+var findComplex = require('loopback-postgres-find-complex');
 var { getAuthorizedAclMethods } = require('../../node_modules/loopback-setup-remote-methods-mixin/lib/utils')
 var exclude = [];
 var include = [
@@ -6,6 +6,7 @@ var include = [
   "ComUiContextConfig",
   "ComClassField",
   "ComProject",
+  "ComQuery",
   "DfhClass",
   "DfhClassProfileView",
   "DfhProperty",

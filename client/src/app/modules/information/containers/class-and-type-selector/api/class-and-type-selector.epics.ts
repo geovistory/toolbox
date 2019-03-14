@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InfPersistentItem, InfPersistentItemApi, LoadingBarActions, U } from 'app/core';
+import { InfPersistentItem, InfPersistentItemApi, LoadingBarActions, U, TypePeIt } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { ofSubstore } from 'app/core/store/module';
 import { TreeviewItem, TreeItem } from 'ngx-treeview';
@@ -9,6 +9,9 @@ import { combineLatest, Observable } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { ClassAndTypeSelectorComponent } from '../class-and-type-selector.component';
 import { ClassAndTypeSelectorAPIAction, ClassAndTypeSelectorAPIActions } from './class-and-type-selector.actions';
+import { groupBy } from 'ramda';
+
+
 
 @Injectable()
 export class ClassAndTypeSelectorAPIEpics {
@@ -39,46 +42,49 @@ export class ClassAndTypeSelectorAPIEpics {
           /**
            * Do some api call
            */
-          combineLatest(action.meta.pkClasses.map(pkClass => (
-            this.peItApi.typesOfClassAndProject(action.meta.pkProject, pkClass)
-          )))
+
+          this.peItApi.typesOfClassesAndProject(action.meta.pkProject, action.meta.pkClasses)
             /**
              * Subscribe to the api call
              */
-            .subscribe((data: InfPersistentItem[][]) => {
+            .subscribe((data: TypePeIt[]) => {
+
+              const typesPerClass = groupBy<TypePeIt>((type) => (type.fk_typed_class.toString()), data);
 
               // create the treeview
-              const treeviewItems: TreeviewItem[] = data.map((typeArray, index) => {
-                const pkClass = action.meta.pkClasses[index];
+              const treeviewItems: TreeviewItem[] = action.meta.pkClasses.map((pkClass, index) => {
                 const classConfig = c.ngRedux.getState().activeProject.crm.classes[pkClass];
                 return new TreeviewItem({
                   value: { pkClass },
                   text: classConfig.label,
-                  children: typeArray.map(peIt => (
+                  children: (typesPerClass[pkClass] || []).map(peIt => (
                     new TreeviewItem({
-                      value: { pkClass, pkType: peIt.pk_entity },
-                      text: U.stringForPeIt(peIt)
+                      value: {
+                        pkClass,
+                        pkType: peIt.pk_entity
+                      },
+                      text: peIt.pk_entity.toString()
                     })))
                 })
               });
 
-              const sortItems = (items: TreeviewItem[]): TreeviewItem[] => {
-                items.map((item) => { if (item.children) sortItems(item.children) })
-                return items.sort((a, b) => {
-                  const textA = a.text.toUpperCase(); // ignore upper and lowercase
-                  const textB = b.text.toUpperCase(); // ignore upper and lowercase
-                  if (textA < textB) {
-                    return -1;
-                  }
-                  if (textA > textB) {
-                    return 1;
-                  }
-                  // names are equal
-                  return 0;
-                })
-              }
+              // const sortItems = (items: TreeviewItem[]): TreeviewItem[] => {
+              //   items.map((item) => { if (item.children) sortItems(item.children) })
+              //   return items.sort((a, b) => {
+              //     const textA = a.text.toUpperCase(); // ignore upper and lowercase
+              //     const textB = b.text.toUpperCase(); // ignore upper and lowercase
+              //     if (textA < textB) {
+              //       return -1;
+              //     }
+              //     if (textA > textB) {
+              //       return 1;
+              //     }
+              //     // names are equal
+              //     return 0;
+              //   })
+              // }
 
-              sortItems(treeviewItems)
+              // sortItems(treeviewItems)
 
 
 

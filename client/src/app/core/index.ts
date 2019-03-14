@@ -1,7 +1,9 @@
+
 export { ComConfig } from './config/com-config';
 export { LoadingBarAction, LoadingBarActions } from './loading-bar/api/loading-bar.actions';
 export { TimeSpan } from './time-span/time-span';
 export { ValidationService } from './validation/validation.service';
+export { ValidationDirectivesModule } from './validation/validation.directives';
 export { EntityEditorService } from './entity-editor/entity-editor.service';
 export { ActiveAccountService } from './active-account/active-account.service';
 export { ActiveProjectService } from './active-project/active-project.service'

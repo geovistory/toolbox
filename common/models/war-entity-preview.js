@@ -417,4 +417,99 @@ module.exports = function (WarEntityPreview) {
   });
 
 
+  /**
+   * Internal function to create the include property of 
+   * a filter object for findComplex()
+   * 
+   * Usage: add the returned object to the include property of a persistent item relation
+   * of findComplex() filter, e.g.:
+   * {
+   *    ...
+   *    include: InfPersistentItem.getIncludeObject(true, 123)
+   * }
+   * 
+   * @param ofProject {boolean}
+   * @param project {number}
+   * @returns include object of findComplex filter
+   */
+  WarEntityPreview.getTeEnIncludeObject = function (ofProject, pkProject) {
+
+    let projectJoin = {};
+
+    // if a pkProject is provided, create the relation
+    if (pkProject) {
+      // get the join object. If ofProject is false, the join will be a left join.
+      projectJoin = {
+        "entity_version_project_rels": WarEntityPreview.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+      }
+    }
+
+
+    return {
+      "te_roles": {
+        "$relation": {
+          "name": "te_roles",
+          "joinType": "inner join",
+          "orderBy": [{
+            "pk_entity": "asc"
+          }]
+        },
+        ...projectJoin,
+        "appellation": {
+          "$relation": {
+            "name": "appellation",
+            "joinType": "left join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          }
+        },
+        "language": {
+          "$relation": {
+            "name": "language",
+            "joinType": "left join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          }
+        },
+        "time_primitive": {
+          "$relation": {
+            "name": "time_primitive",
+            "joinType": "left join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          }
+        },
+        "place": {
+          "$relation": {
+            "name": "place",
+            "joinType": "left join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          }
+        }
+      }
+    }
+  }
+
+
+  WarEntityPreview.createAll = function (cb) {
+    const sql_stmt = 'SELECT warehouse.entity_preview__create_all();'
+    const connector = WarEntityPreview.dataSource.connector;
+
+    var hrstart = process.hrtime()
+
+    connector.execute(sql_stmt, [], (err, resultObjects) => {
+      if (err) return cb(err);
+
+      var hrend = process.hrtime(hrstart);
+      cb(null, `All entity previews have been updated. Time spent: ${hrend[0]}s ${parseInt(hrend[1] / 1000000)}ms`)
+
+    });
+
+  }
+
 }

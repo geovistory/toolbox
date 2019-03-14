@@ -1,14 +1,16 @@
-import { Component, OnDestroy, Input, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
-import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent } from 'app/core';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { ActiveProjectService, EntityPreview, IAppState, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { ClassAndTypeSelector, ClassAndTypePk } from './api/class-and-type-selector.models';
-import { ClassAndTypeSelectorAPIEpics } from './api/class-and-type-selector.epics';
+import { DropdownTreeviewComponent, TreeviewConfig, TreeviewI18n, TreeviewItem } from 'ngx-treeview';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { map, mergeMap, filter } from 'rxjs/operators';
 import { ClassAndTypeSelectorAPIActions } from './api/class-and-type-selector.actions';
+import { ClassAndTypeSelectorAPIEpics } from './api/class-and-type-selector.epics';
+import { ClassAndTypePk, ClassAndTypeSelector } from './api/class-and-type-selector.models';
 import { classAndTypeSelectorReducer } from './api/class-and-type-selector.reducer';
-import { TreeviewItem, TreeviewConfig, DropdownTreeviewComponent, TreeviewI18n } from 'ngx-treeview';
 import { ClassAndTypeSelectorI18n } from './class-and-type-selector-i18n';
+import { groupBy, indexBy } from 'ramda';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -57,6 +59,9 @@ export class ClassAndTypeSelectorComponent extends ClassAndTypeSelectorAPIAction
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
   @select() items$: Observable<TreeviewItem[]>;
+  tree$: Observable<TreeviewItem[]>;
+  typePreviews$: Observable<EntityPreview[]>;
+
 
   selectedItem: TreeviewItem;
 
@@ -68,7 +73,8 @@ export class ClassAndTypeSelectorComponent extends ClassAndTypeSelectorAPIAction
     protected rootEpics: RootEpics,
     private epics: ClassAndTypeSelectorAPIEpics,
     public ngRedux: NgRedux<IAppState>,
-    public i18n: TreeviewI18n
+    public i18n: TreeviewI18n,
+    public p: ActiveProjectService
   ) {
     super();
 
@@ -92,6 +98,74 @@ export class ClassAndTypeSelectorComponent extends ClassAndTypeSelectorAPIAction
     this.dropdownTreeviewSelectI18n = this.i18n as ClassAndTypeSelectorI18n;
 
     this.dropdownTreeviewSelectI18n.text = this.buttonText;
+
+    this.typePreviews$ = this.items$.pipe(
+      mergeMap(items => {
+        const previews: Observable<EntityPreview>[] = [];
+        // get labels for types preview
+        const observePreview = (itm: TreeviewItem[]): TreeviewItem[] => {
+          itm.map((item) => { if (item.children) observePreview(item.children) })
+
+          itm.forEach(item => {
+            if (item.value.pkType) {
+              previews.push(this.p.streamEntityPreview(item.value.pkType))
+            }
+          })
+          return itm;
+        }
+        observePreview(items)
+
+        return combineLatest(previews);
+      }),
+      filter(previews => {
+        return previews.find(pre => !pre.pk_entity) ? false : true;
+      })
+    )
+
+    this.tree$ = combineLatest(this.items$, this.typePreviews$)
+      .pipe(
+        map(([treeviewItems, typePreviews]) => {
+
+          const typesByPk = indexBy((e) => e.pk_entity.toString(), typePreviews)
+
+          // Add labels from previews to each of the type items
+          const addText = (itms: TreeviewItem[]): TreeviewItem[] => {
+            itms.map((item) => { if (item.children) addText(item.children) })
+
+            itms.forEach(item => {
+              if (item.value.pkType) {
+                item.text = typesByPk[item.value.pkType].entity_label
+              }
+            })
+
+            return itms;
+          }
+          addText(treeviewItems)
+
+          // sort
+          const sortItems = (itms: TreeviewItem[]): TreeviewItem[] => {
+            itms.map((item) => { if (item.children) sortItems(item.children) })
+            return itms.sort((a, b) => {
+              const textA = a.text.toUpperCase(); // ignore upper and lowercase
+              const textB = b.text.toUpperCase(); // ignore upper and lowercase
+              if (textA < textB) {
+                return -1;
+              }
+              if (textA > textB) {
+                return 1;
+              }
+              // names are equal
+              return 0;
+            })
+          }
+
+          sortItems(treeviewItems)
+
+          return treeviewItems;
+        })
+      )
+
+
 
   }
 

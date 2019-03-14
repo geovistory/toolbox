@@ -1,0 +1,42 @@
+<gv-list-drawer-header>
+  <div title>Your Queries</div>
+  <div buttons>
+    <button class="btn btn-sm btn-primary" (click)="open()">Add</button>
+  </div>
+
+</gv-list-drawer-header>
+
+<!-- Search input -->
+<!-- <div class="mx-3 mt-3 mb-2 d-flex">
+  <div class="input-group ">
+
+    <input type="text" name="searchString" class="form-control" aria-describedby="search" autocomplete="off"
+      placeholder="Search …" [(ngModel)]="searchString" (keydown)="searchKeydown($event)" autofocus>
+
+    <span class="input-group-append">
+      <button class="btn btn-primary" type="button" (click)="search()">
+        <i class="fa fa-search"></i>
+      </button>
+    </span>
+  </div>
+</div> -->
+
+<!-- Results count -->
+<div class="mx-3 mb-3 px-3 text-muted font-sm" *ngIf="!(loading$ | async)">
+</div>
+
+<!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
+
+<!-- Results -->
+<div class="d-flex gv-fh mx-0 py-1 px-3 border-light gv-scroll-y-auto" *ngIf="!(loading$ | async)">
+  <div *ngFor="let item of ((items$ | async) | keys)" (click)="open(item?.value?.pk_entity)">
+    <a href class="gv-passive-link">
+      {{item?.value.name}}
+    </a>
+   <div class="mb-3">
+      <small class="text-muted">
+        {{item?.value?.description}}
+      </small>
+   </div>
+  </div>
+</div>

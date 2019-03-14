@@ -63,7 +63,27 @@ body {
 button {
     cursor: pointer;
 }
-
+.rotate-90 {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+.rotate-180 {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+.rotate-270 {
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    transform: rotate(270deg);
+}
 .form-control {
     @extend .form-control; // overflow: hidden;
 }
@@ -140,6 +160,15 @@ $value in $theme-colors {
 $value in $theme-colors {
     .border-left-#{$color} {
         border-left-color: $value !important;
+    }
+    ;
+}
+
+// generate .text-* classes for all colors
+@each $color,
+$value in $colors {
+    .text-#{$color} {
+        color: $value !important;
     }
     ;
 }
@@ -346,6 +375,9 @@ $gv-color-selected: #00ffff;
 
 .gv-pointer {
     cursor: pointer;
+}
+.gv-w-max-500 {
+    max-width: 500px;
 }
 
 .gv-grow-1 {
@@ -563,7 +595,7 @@ ngb-pagination {
 }
 
 // data unit previews
-gv-data-unit-preview {
+gv-entity-preview {
     display: inline-block;
 }
 
@@ -1267,10 +1299,10 @@ $switch-sm-box-width: calc((#{$switch-sm-box-border} * 2) + calc(#{$slider-diame
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-
 /******************
 ** Resizable Split Panel
 ******************/
+
 as-split.gv-split-style {
     .as-split-area {
         // background-color: lightgrey;
@@ -1309,6 +1341,31 @@ as-split.gv-split-style {
     }
 }
 
+// Query Details
+.gv-sub-query-item{
+    margin-left: 0rem;
+}
+// Main category icons
+.gv-source-color {
+    color: $cyan
+}
+
+.gv-entity-color {
+    color: $blue
+}
+
+.gv-query-color {
+    color: $pink
+}
+
+.gv-visual-color {
+    color: $orange
+}
+
+.gv-story-color {
+    color: $green
+}
+
 /************************************************************************************
 ** INCLUDE MATERIAL THEME
 ************************************************************************************/
@@ -1319,16 +1376,62 @@ as-split.gv-split-style {
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
 @include mat-core();
+// Custom color Palette for primary colors (starting with $purple)
+$gv-mat-purple: ( 50: #f2e7f5, 100: #dfc3e8, 200: #ca9cda, 300: #b576cb, 400: #a55abf, 500: #9643b3, 600: #893eac, 700: #7638a2, 800: #663399, 900: #482a87, A100: #ea80fc, A200: #e040fb, A400: #d500f9, A700: #aa00ff, contrast: ( 50: $dark-primary-text, 100: $dark-primary-text, 200: $dark-primary-text, 300: $light-primary-text, 400: $light-primary-text, 500: $light-primary-text, 600: $light-primary-text, 700: $light-primary-text, 800: $light-primary-text, 900: $light-primary-text, A100: $dark-primary-text, A200: $light-primary-text, A400: $light-primary-text, A700: $light-primary-text, ));
+$gv-mat-teal: ( 50: #dff6ed, 100: #b1e8d1, 200: #7ad8b4, 300: #20c996, 400: #00bd80, 500: #00b06a, 600: #00a15f, 700: #008f52, 800: #007d45, 900: #005d2f, A100: #a7ffeb, A200: #64ffda, A400: #1de9b6, A700: #00bfa5, contrast: ( 50: $dark-primary-text, 100: $dark-primary-text, 200: $dark-primary-text, 300: $dark-primary-text, 400: $dark-primary-text, 500: $light-primary-text, 600: $light-primary-text, 700: $light-primary-text, 800: $light-primary-text, 900: $light-primary-text, A100: $dark-primary-text, A200: $dark-primary-text, A400: $dark-primary-text, A700: $dark-primary-text, ));
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$candy-app-primary: mat-palette($mat-purple);
-$candy-app-accent : mat-palette($mat-pink, A200, A100, A400);
+$candy-app-primary: mat-palette($gv-mat-purple);
+$candy-app-accent: mat-palette($gv-mat-teal, A200, A100, A400);
 // The warn palette is optional (defaults to red).
-$candy-app-warn : mat-palette($mat-red);
+$candy-app-warn: mat-palette($mat-red);
 // Create the theme object (a Sass map containing all of the palettes).
 $candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-app-warn);
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($candy-app-theme);
+mat-checkbox {
+    label {
+        margin-bottom: 0
+    }
+}
+
+.gv-mat-icon-button-sm {
+    width: 24px !important;
+    height: 24px !important;
+
+    &::ng-deep .mat-button-wrapper{
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        height: 100% !important;
+
+         .mat-icon {
+             font-size: 20px !important;
+         }
+   }
+}
+
+.gv-btn-info {
+    background: $white;
+    @extend .border;
+    @extend .border-info;
+    @extend .rounded-circle;
+}
+
+.gv-btn-danger {
+    background: $white;
+    @extend .border;
+    @extend .border-danger;
+    @extend .rounded-circle;
+}
+
+.gv-btn-success {
+    background: $white;
+    @extend .border;
+    @extend .border-success;
+    @extend .rounded-circle;
+}

@@ -1,0 +1,60 @@
+<form [formGroup]="formGroup" class="subgroup">
+    <div class="zero" [ngClass]="{'line': !hideParentLine}">
+
+    </div>
+    <div class="first" [ngClass]="{'line': formGroup.valid}">
+        <div class="subgroup-operation-container">
+
+            <!-- Subgroup Operation -->
+            <mat-select [formControl]="subgroupOperatorCtrl" class="subgroup-operation-select"
+                *ngIf="model?.children?.length > 1" (openedChange)="onOpenedChange($event)">
+                <mat-option value="AND">and</mat-option>
+                <mat-option value="OR">or</mat-option>
+            </mat-select>
+
+        </div>
+        <!-- Add a sibling condition -->
+        <button *ngIf="formGroup.valid" class="add-sibling-button gv-mat-icon-button-sm gv-btn-success" mat-icon-button
+            (click)="addSibling()" matTooltip="Add an 'and'/'or' Condition">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+    <div class="second">
+        <div class="sub-query-item" *ngFor="let child of dynamicFormControls; let i = index">
+            <div class="subquery-left">
+                <div class="horizontal-line" [ngClass]="{'is-subgroup': child?.component ==='subgroup'}"></div>
+                <!-- Split button to create Subgruop -->
+                <button class="add-subgroup-button gv-mat-icon-button-sm gv-btn-success" mat-icon-button
+                    (click)="addSubgroup(i)" matTooltip="Add a Sub-Condition"
+                    *ngIf="dynamicFormControls?.length > 1 && child?.component !== 'subgroup'">
+                    <mat-icon class="rotate-90">call_split</mat-icon>
+                </button>
+            </div>
+            <!-- Class And Type Select -->
+            <gv-class-and-type-filter class="gv-grow-1" *ngIf="child?.component ==='class-and-type-filter'"
+                [formControl]="child.ctrl" [pkClasses$]="pkClasses$" (remove)="removeChild(i)" [level]="level + 1"
+                #c [gvNoInvalidChildren]="c.formGroup.controls">
+            </gv-class-and-type-filter>
+
+            <!-- Property Select -->
+            <gv-property-filter *ngIf="child?.component ==='property-filter'" [formControl]="child.ctrl"
+                (blur)="onBlur()" focus="onFocus()" gvPropertyFilterRequired [propertyOptions$]="propertyOptions$"
+                (remove)="removeChild(i)" [level]="level + 1"
+                #c [gvNoInvalidChildren]="c.formGroup.controls">
+            </gv-property-filter>
+
+            <!-- Subgroup -->
+            <gv-subgroup *ngIf="child?.component ==='subgroup'" [formControl]="child.ctrl" hideParentLine="true"
+                [pkClasses$]="pkClasses$" [propertyOptions$]="propertyOptions$" (merge)="mergeChild(i, $event)"
+                (remove)="removeChild(i)" [level]="level + 1"
+                #c [gvNoInvalidChildren]="c.formGroup.controls">
+            </gv-subgroup>
+
+        </div>
+
+
+    </div>
+
+
+
+</form>

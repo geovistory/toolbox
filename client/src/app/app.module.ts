@@ -15,7 +15,7 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { TreeviewModule } from 'ngx-treeview';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ActiveAccountService, AuthGuard, EntityEditorService, SDKBrowserModule } from './core';
+import { ActiveAccountService, AuthGuard, EntityEditorService, SDKBrowserModule, ValidationDirectivesModule } from './core';
 import { SystemAdminGuard } from './core/auth/system-admin-guard.service';
 import { LoadingBarModule } from './core/loading-bar/loading-bar.module';
 import { NotificationsModule } from './core/notifications/notifications.module';
@@ -38,7 +38,7 @@ registerLocaleData(localeDeCh);
 // Own imports
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     NgReduxRouterModule,
@@ -67,7 +67,8 @@ registerLocaleData(localeDeCh);
     ControlMessagesModule,
     LanguageSearchTypeaheadModule,
     KeysModule,
-    AccountModule
+    AccountModule,
+    ValidationDirectivesModule
   ],
   providers: [
     EntityEditorService,

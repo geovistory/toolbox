@@ -1,0 +1,7 @@
+<form #f="ngForm" class="d-flex flex-row align-items-center">
+    <!-- TODO: call onTouche() on blur -->
+    <gv-class-and-type-select class="gv-grow-1" *ngIf="model" name="classAndType" [(ngModel)]="model.data"
+        #classAndType="ngModel" [pkClasses$]="pkClasses$" gvClassOrTypeRequired [disabled]="disabled"
+        (focus)="onFocus()" (blur)="onBlur()">
+    </gv-class-and-type-select>
+</form>

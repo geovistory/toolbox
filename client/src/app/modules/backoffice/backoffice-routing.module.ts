@@ -11,6 +11,8 @@ import { MainComponent } from './components/main/main.component';
 import { NamespaceListComponent } from './components/namespace-list/namespace-list.component';
 import { PropertyListComponent } from './components/property-list/property-list.component';
 import { SystemTypeListComponent } from './components/system-type-list/system-type-list.component';
+import { WarehouseComponent } from './components/warehouse/warehouse.component';
+import { HasTypeComponent } from './components/has-type/has-type.component';
 
 
 const routes: Routes = [
@@ -59,6 +61,14 @@ const routes: Routes = [
       {
         path: 'accounts',
         component: AccountListComponent
+      },
+      {
+        path: 'warehouse',
+        component: WarehouseComponent
+      },
+      {
+        path: 'has-type',
+        component: HasTypeComponent
       },
     ]
   }

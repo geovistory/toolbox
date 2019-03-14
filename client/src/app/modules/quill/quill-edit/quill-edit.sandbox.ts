@@ -4,6 +4,7 @@ import { QuillService } from '../quill.service';
 import { textBüchel } from './quill-edit.sandbox.mock';
 import { DomChangeModule } from 'app/shared';
 import { QuillViewComponent } from '../quill-view/quill-view.component';
+import { BehaviorSubject } from 'rxjs';
 
 
 
@@ -170,19 +171,19 @@ export default sandboxOf(QuillEditComponent, {
         context: {
             blurCount: 0,
             quillDoc: textBüchel,
-            annotatedNodes: [
+            annotatedNodes: new BehaviorSubject([
                 ['20', 1],
                 ['21', 3],
                 ['24', 5]
-            ],
-            annotationsVisible: true
+            ]),
+            annotationsVisible$: new BehaviorSubject(true)
         },
         template: `
         <div class="container">
             <div class="row">
                 <div class="col-6">
-                    <gv-quill-edit [quillDoc]="quillDoc" [annotationsVisible]="annotationsVisible" 
-                    [annotatedNodes]="annotatedNodes" (quillDocChange)="quillDoc=$event"></gv-quill-edit>
+                    <gv-quill-edit [quillDoc]="quillDoc" [annotationsVisible$]="annotationsVisible$" 
+                    [annotatedNodes$]="annotatedNodes$" (quillDocChange)="quillDoc=$event"></gv-quill-edit>
                 </div>
                 <div class="col-6 font-sm" style="height:500px;">                    
 
@@ -335,7 +336,7 @@ export default sandboxOf(QuillEditComponent, {
     .add('Quill-Edit | Textarea-Like ', {
         context: {
             blurCount: 0,
-            quillDoc: { }
+            quillDoc: {}
         },
         template: `
         <div class="container">

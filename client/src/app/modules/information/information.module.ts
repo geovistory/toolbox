@@ -29,7 +29,6 @@ import { AppeLangCreateCtrlComponent } from './appe-lang/appe-lang-create-ctrl/a
 import { AddInfoPeItComponent } from './components/add-info-pe-it/add-info-pe-it.component';
 import { AddInfoTeEntComponent } from './components/add-info-te-ent/add-info-te-ent.component';
 import { ClassInfoComponent } from './components/class-info/class-info.component';
-import { EntityPreviewComponent } from './components/data-unit-preview/data-unit-preview.component';
 import { EditorHeaderComponent } from './components/editor-header/editor-header.component';
 import { EntityAddExistingHitComponent } from './components/entity-add-existing-hit/entity-add-existing-hit.component';
 import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
@@ -151,8 +150,10 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
 import { EntityDetailComponent } from './containers/entity-detail/entity-detail.component';
 import { EntityDetailAPIEpics } from './containers/entity-detail/api/entity-detail.epics';
 import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-detail.actions';
-import { ListDrawerHeaderComponent } from './components/list-drawer-header/list-drawer-header.component';
 import { MatTooltipModule, MatTabsModule } from '@angular/material';
+import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header/list-drawer-header.module';
+import { DetailTopBarModule } from 'app/shared/components/detail-top-bar/detail-top-bar.module';
+import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity-preview.module';
 
 
 
@@ -193,7 +194,10 @@ import { MatTooltipModule, MatTabsModule } from '@angular/material';
     TimeSpanPipeModule,
     DragDropModule,
     MatTooltipModule,
-    MatTabsModule
+    MatTabsModule,
+    ListDrawerHeaderModule,
+    DetailTopBarModule,
+    EntityPreviewModule
 
   ],
   declarations: [
@@ -305,9 +309,7 @@ import { MatTooltipModule, MatTabsModule } from '@angular/material';
     TextPropertyFieldComponent,
     MentioningListComponent,
     MentioningCreateCtrlComponent,
-    EntityPreviewComponent,
     TileHeaderComponent,
-    ListDrawerHeaderComponent,
   ],
   providers: [
 
@@ -475,7 +477,6 @@ import { MatTooltipModule, MatTabsModule } from '@angular/material';
     ClassInfoComponent,
     EditorHeaderComponent,
     MentioningCreateCtrlComponent,
-    ListDrawerHeaderComponent,
 
   ],
   entryComponents: [

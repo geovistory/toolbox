@@ -6,7 +6,8 @@ import {
   InfPersistentItem,
   InfEntityProjectRel,
   InfTimePrimitive,
-  InfPlace
+  InfPlace,
+  WarEntityPreview
 } from '../index';
 
 declare var Object: any;
@@ -33,6 +34,8 @@ export interface InfRoleInterface {
   entity_version_project_rels?: InfEntityProjectRel[];
   time_primitive?: InfTimePrimitive;
   place?: InfPlace;
+  persistent_item_preview?: WarEntityPreview;
+  temporal_entity_preview?: WarEntityPreview;
 }
 
 export class InfRole implements InfRoleInterface {
@@ -58,6 +61,8 @@ export class InfRole implements InfRoleInterface {
   entity_version_project_rels?: InfEntityProjectRel[];
   time_primitive?: InfTimePrimitive;
   place?: InfPlace;
+  persistent_item_preview?: WarEntityPreview;
+  temporal_entity_preview?: WarEntityPreview;
   constructor(data?: InfRoleInterface) {
     Object.assign(this, data);
   }
@@ -207,6 +212,22 @@ export class InfRole implements InfRoleInterface {
           model: 'InfPlace',
           relationType: 'belongsTo',
                   keyFrom: 'fk_entity',
+          keyTo: 'pk_entity'
+        },
+        persistent_item_preview: {
+          name: 'persistent_item_preview',
+          type: 'WarEntityPreview',
+          model: 'WarEntityPreview',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_entity',
+          keyTo: 'pk_entity'
+        },
+        temporal_entity_preview: {
+          name: 'temporal_entity_preview',
+          type: 'WarEntityPreview',
+          model: 'WarEntityPreview',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_temporal_entity',
           keyTo: 'pk_entity'
         },
       }

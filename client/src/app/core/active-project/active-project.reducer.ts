@@ -1,11 +1,18 @@
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { active } from 'd3';
-import { indexBy, omit } from 'ramda';
+import { indexBy, omit, groupBy, zipObj } from 'ramda';
 import { InfPersistentItem, InfTemporalEntity } from '../sdk/models';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
-import { ProjectDetail, Panel } from './active-project.models';
+import { ProjectDetail, Panel, TypePeIt } from './active-project.models';
 
+// const INITIAL_STATE: ProjectDetail = {
+//     list: '',
+//     uiIdSerial: 0,
+//     panelSerial: 0,
+//     focusedPanel: 0,
+//     panels: []
+// };
 const INITIAL_STATE: ProjectDetail = {
     list: '',
     uiIdSerial: 0,
@@ -13,7 +20,6 @@ const INITIAL_STATE: ProjectDetail = {
     focusedPanel: 0,
     panels: []
 };
-
 const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: ActiveProjectAction): ProjectDetail => {
     let pi, ti, ppi, cpi, pti, cti;
     switch (action.type) {
@@ -253,6 +259,24 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
         case ActiveProjectActions.LOAD_ENTITY_PREVIEW_FAILED:
             state = {
                 ...state,
+            };
+            break;
+
+        /***************************************************
+        * Reducers to load Types
+        ****************************************************/
+        case ActiveProjectActions.LOAD_TYPES_SUCCEEDED:
+            state = {
+                ...state,
+                typesByPk: {
+                    ...state.typesByPk,
+                    ...indexBy<TypePeIt>((type) => (type.pk_entity.toString()), action.meta.types)
+                },
+                typesByClass: {
+                    ...zipObj(action.meta.pk_classes.map(pk => pk.toString()), action.meta.pk_classes.map(x => [])),
+                    ...state.typesByClass,
+                    ...groupBy<TypePeIt>((type) => (type.fk_typed_class.toString()), action.meta.types)
+                }
             };
             break;
 

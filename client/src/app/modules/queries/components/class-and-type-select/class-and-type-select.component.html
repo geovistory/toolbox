@@ -1,0 +1,7 @@
+<!-- <mat-form-field class="gv-grow-1">
+  <mat-label>Entity classes and types</mat-label> -->
+  <gv-tree-checklist-select class="gv-grow-1" (selectionChange)="selectionChange($event)" [value]="selected" [disabled]="disabled" (blur)="onBlur()" (focus)="onFocus()">
+    <gv-tree-checklist [treeData$]="optionsTree$"></gv-tree-checklist>
+  </gv-tree-checklist-select>
+
+<!-- </mat-form-field> -->

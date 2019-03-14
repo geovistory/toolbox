@@ -44,7 +44,38 @@
       "type": "object"
     }
   },
-  "relations": {},
+  "relations": {
+    "te_roles": {
+      "type": "hasMany",
+      "model": "InfRole",
+      "foreignKey": "fk_temporal_entity",
+      "primaryKey": "pk_entity"
+    },
+    "pi_roles": {
+      "type": "hasMany",
+      "model": "InfRole",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "domain_entity_associations": {
+      "type": "hasMany",
+      "model": "InfEntityAssociation",
+      "foreignKey": "fk_domain_entity",
+      "primaryKey": "pk_entity"
+    },
+    "range_entity_associations": {
+      "type": "hasMany",
+      "model": "InfEntityAssociation",
+      "foreignKey": "fk_range_entity",
+      "primaryKey": "pk_entity"
+    },
+    "text_properties": {
+      "type": "hasMany",
+      "model": "InfTextProperty",
+      "foreignKey": "fk_concerned_entity",
+      "primaryKey": "pk_entity"
+    }
+  },
   "acls": [
     {
       "principalType": "ROLE",
@@ -59,6 +90,14 @@
       "property": [
         "search",
         "searchExisting"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "system_admin",
+      "permission": "ALLOW",
+      "property": [
+        "createAll"
       ]
     }
   ],
@@ -198,7 +237,20 @@
         "path": "/search-existing",
         "verb": "get"
       }
+    },
+    "createAll": {
+      "accepts": [
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "string",
+        "root": true
+      },
+      "description": "Recreate all entity previews. This may be useful after deployment on a fresh db.",
+      "http": {
+        "path": "/create-all",
+        "verb": "get"
+      }
     }
-
   }
 }
