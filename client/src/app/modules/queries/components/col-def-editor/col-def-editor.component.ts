@@ -221,9 +221,7 @@ export class ColDefEditorComponent extends ColDefEditorMatControl implements OnI
 
     this.formGroup.valueChanges.subscribe(controls => {
       if (controls && typeof controls === 'object' && Object.keys(controls).length) {
-        this.value = this.dynamicFormControls.map(dynCtrl => ({
-          ...(dynCtrl.ctrl.value || {})
-        }))
+        this.assignValueFromDynamicControls()
       } else {
         this.value = null;
       }
@@ -235,9 +233,15 @@ export class ColDefEditorComponent extends ColDefEditorMatControl implements OnI
   }
 
   drop(event: CdkDragDrop<ColDef[]>) {
-    moveItemInArray(this.model, event.previousIndex, event.currentIndex);
+    moveItemInArray(this.dynamicFormControls, event.previousIndex, event.currentIndex);
+    this.assignValueFromDynamicControls()
   }
 
+  assignValueFromDynamicControls() {
+    this.value = this.dynamicFormControls.map(dynCtrl => ({
+      ...(dynCtrl.ctrl.value || {})
+    }))
+  }
 
   addColumn() {
 

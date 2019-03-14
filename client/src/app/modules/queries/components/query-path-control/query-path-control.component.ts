@@ -3,8 +3,8 @@ import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Optional, Out
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, Validators, ValidatorFn, AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
 import { equals, keys, values } from 'ramda';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Subject, of, merge } from 'rxjs';
+import { filter, switchMap, takeUntil, first } from 'rxjs/operators';
 import { ClassAndTypePathSegmentComponent, classAndTypePathSegmentRequiredValidator } from '../class-and-type-path-segment/class-and-type-path-segment.component';
 import { QueryPathSegment, QueryPathSegmentType } from '../col-def-editor/col-def-editor.component';
 import { PropertyPathSegmentComponent, propertyPathSegmentRequiredValidator } from '../property-path-segment/property-path-segment.component';
@@ -51,6 +51,7 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
   // emits true on destroy of this component
   autofilled?: boolean;
   destroy$ = new Subject<boolean>();
+  afterViewInit$ = new BehaviorSubject<boolean>(false);
   stateChanges = new Subject<void>();
   focused = false;
   // errorState = false;
@@ -134,6 +135,7 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngAfterViewInit() {
+    this.afterViewInit$.next(true);
     this.formGroup.valueChanges.subscribe(controls => {
       if (controls && typeof controls === 'object' && Object.keys(controls).length) {
         const newVal: QueryPathSegment[] = this.dynamicFormControls.map(dynCtrl => ({
@@ -164,31 +166,35 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
   getPkClassesObservable(i: number): BehaviorSubject<number[]> {
     const s = new BehaviorSubject(null);
 
-    this.propertyPathSegments.changes.pipe(
-      switchMap(() => {
-        const component = this.propertyPathSegments.find(segment => segment.index === (i - 1));
-        if (!component) return null;
-        return component.pkClasses$
-      }),
-      filter(val => val !== null),
-      takeUntil(this.destroy$)
-    ).subscribe(pkClasses => { s.next(pkClasses) })
+    this.afterViewInit$.pipe(first(b => b === true), takeUntil(this.destroy$))
+      .subscribe(() => {
+        merge(of(true), this.propertyPathSegments.changes).pipe(
+          switchMap(() => {
+            const component = this.propertyPathSegments.find(segment => segment.index === (i - 1));
+            if (!component) return null;
+            return component.pkClasses$
+          }),
+          filter(val => val !== null),
+          takeUntil(this.destroy$)
+        ).subscribe(pkClasses => { s.next(pkClasses) })
+      })
 
     return s;
   }
   getPropertyOptionsObservable(i: number): BehaviorSubject<PropertyOption[]> {
     const s = new BehaviorSubject(null);
-
-    this.classAndTypePathSegments.changes.pipe(
-      switchMap(() => {
-        const component = this.classAndTypePathSegments.find(segment => segment.index === (i - 1));
-        if (!component) return null;
-        return component.propertyOptions$
-      }),
-      filter(val => val !== null),
-      takeUntil(this.destroy$)
-    ).subscribe(propertyOptions => { s.next(propertyOptions) })
-
+    this.afterViewInit$.pipe(first(b => b === true), takeUntil(this.destroy$))
+      .subscribe(() => {
+        merge(of(true), this.propertyPathSegments.changes).pipe(
+          switchMap(() => {
+            const component = this.classAndTypePathSegments.find(segment => segment.index === (i - 1));
+            if (!component) return null;
+            return component.propertyOptions$
+          }),
+          filter(val => val !== null),
+          takeUntil(this.destroy$)
+        ).subscribe(propertyOptions => { s.next(propertyOptions) })
+      })
 
     return s;
   }

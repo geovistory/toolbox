@@ -21,6 +21,7 @@ options$.pipe(first(), delay(1000)).subscribe(() => {
     ] as PropertyOption[])
 })
 
+
 export default sandboxOf(ColDefEditorComponent, {
     declareComponent: false,
     imports: [
@@ -101,21 +102,35 @@ export default sandboxOf(ColDefEditorComponent, {
                     queryPath: [
                         {
                             data: {
-                                ingoingProperties: [],
                                 outgoingProperties: [
-                                    85
-                                ]
-                            },
-                            type: 'properties'
+                                    1192
+                                ],
+                                ingoingProperties: []
+                            }
                         },
                         {
                             data: {
-                                types: [],
                                 classes: [
                                     21
+                                ],
+                                types: []
+                            }
+                        },
+                        {
+                            data: {
+                                outgoingProperties: [],
+                                ingoingProperties: [
+                                    1192
                                 ]
-                            },
-                            type: 'classes'
+                            }
+                        },
+                        {
+                            data: {
+                                classes: [
+                                    365
+                                ],
+                                types: []
+                            }
                         }
                     ]
                 }

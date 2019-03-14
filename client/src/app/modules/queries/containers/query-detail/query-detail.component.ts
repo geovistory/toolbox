@@ -1,20 +1,18 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { AfterViewInit, Component, forwardRef, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { ActiveProjectService, IAppState, SubstoreComponent, ComQuery } from 'app/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActiveProjectService, ComQuery, IAppState, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { clone, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, first, takeUntil, map } from 'rxjs/operators';
+import { filter, first, map, takeUntil } from 'rxjs/operators';
 import { ClassAndTypeFilterComponent } from '../../components/class-and-type-filter/class-and-type-filter.component';
 import { ColDef } from '../../components/col-def-editor/col-def-editor.component';
 import { PropertyOption } from '../../components/property-select/property-select.component';
 import { QueryDetailAPIActions } from './api/query-detail.actions';
 import { QueryDetailAPIEpics } from './api/query-detail.epics';
-import { QueryDetail } from './api/query-detail.models';
-import { queryDetailReducer, pageOfOffset, offsetOfPage } from './api/query-detail.reducer';
-import { pkEntityKey } from 'app/core/state/services/state-creator';
-import { ClassAndTypeSelectModel } from '../../components/class-and-type-select/class-and-type-select.component';
+import { FileType, QueryDetail } from './api/query-detail.models';
+import { offsetOfPage, pageOfOffset, queryDetailReducer } from './api/query-detail.reducer';
 
 export type SubGroupType = 'property' | 'classAndType'
 export interface FilterTreeData {
@@ -87,7 +85,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
   thirdFormGroup: FormGroup;
   nameCtrl = new FormControl(null, Validators.required)
-  descriptionCtrl = new FormControl(null, Validators.required)
+  descriptionCtrl = new FormControl(null)
 
   displayedColumns: string[];
 
@@ -308,6 +306,24 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
   onDelete() {
     const pkEntity = (this.localStore.getState().comQuery || { pk_entity: undefined }).pk_entity
     this.delete(pkEntity)
+  }
+
+  onDownload(fileType: FileType) {
+    this.p.pkProject$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(pkProject => {
+
+      this.colDefsCopy = clone(this.columnsCtrl.value)
+      this.filterQueryCopy = clone(this.filterCtrl.value)
+      this.displayedColumns = this.colDefsCopy.map(col => col.label);
+
+      this.download(
+        pkProject,
+        {
+          filter: this.filterQueryCopy,
+          columns: this.colDefsCopy
+        },
+        fileType
+      );
+    })
   }
 
   ngOnDestroy() {

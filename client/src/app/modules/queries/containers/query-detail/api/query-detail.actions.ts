@@ -1,10 +1,9 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { QueryDetail } from './query-detail.models';
+import { QueryDetail, FileType } from './query-detail.models';
 import { GvQuery } from '../query-detail.component';
 import { ComQuery } from 'app/core';
-
 type Payload = QueryDetail;
 interface MetaData {
   queryResults?: any[],
@@ -15,6 +14,7 @@ interface MetaData {
   offset?: number
   limit?: number,
   tabTitle?: string
+  filetype?: FileType
 };
 export type QueryDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -42,6 +42,11 @@ export class QueryDetailAPIActions {
   static readonly DELETE = 'QueryDetail::DELETE';
   static readonly DELETE_SUCCEEDED = 'QueryDetail::DELETE_SUCCEEDED';
   static readonly DELETE_FAILED = 'QueryDetail::DELETE_FAILED';
+
+  static readonly DOWNLOAD = 'QueryDetail::DOWNLOAD';
+  static readonly DOWNLOAD_SUCCEEDED = 'QueryDetail::DOWNLOAD_SUCCEEDED';
+  static readonly DOWNLOAD_FAILED = 'QueryDetail::DOWNLOAD_FAILED';
+
 
   static readonly DESTROY = 'QueryDetail::DESTROY';
 
@@ -162,6 +167,32 @@ export class QueryDetailAPIActions {
 
   deleteFailed = (error): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.DELETE_FAILED,
+    meta: null,
+    payload: null,
+    error,
+  })
+
+
+
+  /*********************************************************************
+  *  Download query result
+  *********************************************************************/
+
+  @dispatch()
+  download = (pkProject: number, query: GvQuery, filetype: FileType): QueryDetailAPIAction => ({
+    type: QueryDetailAPIActions.DOWNLOAD,
+    meta: { pkProject, query, filetype },
+    payload: null,
+  });
+
+  downloadSucceeded = (): QueryDetailAPIAction => ({
+    type: QueryDetailAPIActions.DOWNLOAD_SUCCEEDED,
+    meta: null,
+    payload: null
+  })
+
+  downloadFailed = (error): QueryDetailAPIAction => ({
+    type: QueryDetailAPIActions.DOWNLOAD_FAILED,
     meta: null,
     payload: null,
     error,
