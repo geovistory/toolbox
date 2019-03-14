@@ -1,0 +1,19 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Recreate all Entity Previews</mat-card-title>
+    <mat-card-subtitle>
+      Run the postgres function to recreate all entity_previews. This may take a while (10s and more.)
+      This may cause some slow down of the database server for other users.
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <p>
+      {{createEntityPreviewsInfo$ | async}}
+    </p>
+    <mat-progress-bar *ngIf="createEntityPreviewsLoading$ | async" mode="indeterminate"></mat-progress-bar>
+
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button [disabled]="createEntityPreviewsLoading$ | async" color="primary" (click)="createAllEntityPreviews()">Go!</button>
+  </mat-card-actions>
+</mat-card>

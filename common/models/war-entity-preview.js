@@ -495,4 +495,21 @@ module.exports = function (WarEntityPreview) {
     }
   }
 
+
+  WarEntityPreview.createAll = function (cb) {
+    const sql_stmt = 'SELECT warehouse.entity_preview__create_all();'
+    const connector = WarEntityPreview.dataSource.connector;
+
+    var hrstart = process.hrtime()
+
+    connector.execute(sql_stmt, [], (err, resultObjects) => {
+      if (err) return cb(err);
+
+      var hrend = process.hrtime(hrstart);
+      cb(null, `All entity previews have been updated. Time spent: ${hrend[0]}s ${parseInt(hrend[1] / 1000000)}ms`)
+
+    });
+
+  }
+
 }
