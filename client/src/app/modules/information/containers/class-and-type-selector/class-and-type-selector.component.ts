@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } 
 import { ActiveProjectService, EntityPreview, IAppState, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { DropdownTreeviewComponent, TreeviewConfig, TreeviewI18n, TreeviewItem } from 'ngx-treeview';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { combineLatest, Observable, Subject, of } from 'rxjs';
 import { map, mergeMap, filter } from 'rxjs/operators';
 import { ClassAndTypeSelectorAPIActions } from './api/class-and-type-selector.actions';
 import { ClassAndTypeSelectorAPIEpics } from './api/class-and-type-selector.epics';
@@ -114,8 +114,8 @@ export class ClassAndTypeSelectorComponent extends ClassAndTypeSelectorAPIAction
           return itm;
         }
         observePreview(items)
-
-        return combineLatest(previews);
+        if (previews.length === 0) return of([]);
+        else return combineLatest(previews);
       }),
       filter(previews => {
         return previews.find(pre => !pre.pk_entity) ? false : true;
