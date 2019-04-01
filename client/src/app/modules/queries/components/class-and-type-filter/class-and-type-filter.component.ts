@@ -1,16 +1,15 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostBinding, OnDestroy, Optional, Self, Directive } from '@angular/core';
-import { of, Observable, BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { TreeNodeData, ClassAndTypeSelectComponent, classOrTypeRequiredValidator, ClassAndTypeSelectModel, classOrTypeRequiredCondition } from '../class-and-type-select/class-and-type-select.component';
-import { FilterTree, FilterTreeData } from '../../containers/query-detail/query-detail.component';
-import { ActiveProjectService } from 'app/core';
-import { filter, distinct, tap, mergeMap, map, takeUntil, distinctUntilChanged } from 'rxjs/operators';
-import { TreeNode } from 'app/shared/components/tree-checklist/tree-checklist.component';
-import { PropertyOption } from '../property-select/property-select.component';
-import { QueryService } from '../../services/query.service';
-import { ControlValueAccessor, NgControl, FormGroup, FormControl, FormBuilder, ValidatorFn, AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
-import { MatFormFieldControl } from '@angular/material';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { keys, equals } from 'ramda';
+import { Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
+import { MatFormFieldControl } from '@angular/material';
+import { TreeNode } from 'app/shared/components/tree-checklist/tree-checklist.component';
+import { equals, keys } from 'ramda';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { takeUntil, tap } from 'rxjs/operators';
+import { FilterTree, FilterTreeData } from '../../containers/query-detail/query-detail.component';
+import { QueryService } from '../../services/query.service';
+import { ClassAndTypeSelectModel, classOrTypeRequiredCondition, classOrTypeRequiredValidator, TreeNodeData } from '../class-and-type-select/class-and-type-select.component';
+import { PropertyOption } from '../property-select/property-select.component';
 
 interface DynamicFormControl {
   key: string,

@@ -1,10 +1,10 @@
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { active } from 'd3';
 import { indexBy, omit, groupBy, zipObj } from 'ramda';
-import { InfPersistentItem, InfTemporalEntity } from '../sdk/models';
+import { InfPersistentItem, InfTemporalEntity, ComQuery } from '../sdk/models';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
-import { ProjectDetail, Panel, TypePeIt } from './active-project.models';
+import { ProjectDetail, Panel, TypePeIt, VersionEntity } from './active-project.models';
 
 // const INITIAL_STATE: ProjectDetail = {
 //     list: '',
@@ -366,6 +366,71 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
         case ActiveProjectActions.LOAD_TEEN_GRAPHS_FAILED:
             state = {
                 ...state,
+            };
+            break;
+
+
+
+        /***************************************************
+        * Reducers to load ComQuery List
+        ****************************************************/
+        case ActiveProjectActions.LOAD_QUERIES:
+            state = {
+                ...state,
+                comQueryLoading: true
+            };
+            break;
+        case ActiveProjectActions.LOAD_QUERIES_SUCCEEDED:
+            state = {
+                ...state,
+                comQueryVersionsByPk: {
+                    ...indexBy(
+                        ((comQuery: VersionEntity<ComQuery>) => comQuery[comQuery._latestVersion].pk_entity.toString()),
+                        action.meta.comQueryArray.map(comQ => ({
+                            _latestVersion: comQ.entity_version,
+                            ...indexBy((n) => n, (comQ.versions || [])),
+                            [comQ.entity_version]: comQ
+                        }))
+                    )
+                },
+                comQueryLoading: false
+            };
+            break;
+
+        case ActiveProjectActions.LOAD_QUERIES_FAILED:
+            state = {
+                ...state,
+                comQueryLoading: false
+            };
+            break;
+
+        /***************************************************
+         * Reducers to load one ComQuery Version
+         ****************************************************/
+        case ActiveProjectActions.LOAD_QUERY_VERSION:
+            state = {
+                ...state,
+                comQueryLoading: true
+            };
+            break;
+        case ActiveProjectActions.LOAD_QUERY_VERSION_SUCCEEDED:
+            state = {
+                ...state,
+                comQueryVersionsByPk: {
+                    ...state.comQueryVersionsByPk,
+                    [action.meta.comQuery.pk_entity]: {
+                        ...state.comQueryVersionsByPk[action.meta.comQuery.pk_entity],
+                        [action.meta.comQuery.entity_version]: action.meta.comQuery
+                    }
+                },
+                comQueryVersionLoading: false
+            };
+            break;
+
+        case ActiveProjectActions.LOAD_QUERY_VERSION_FAILED:
+            state = {
+                ...state,
+                comQueryVersionLoading: false
             };
             break;
 

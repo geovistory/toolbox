@@ -1,0 +1,36 @@
+<form [formGroup]="formGroup">
+    <div class="d-flex">
+        <mat-form-field class="gv-grow-1">
+            <mat-label>Your Query</mat-label>
+            <mat-select [formControl]="queryPkCtrl">
+                <mat-option *ngFor="let o of (queryOptions$ | async)" [value]="o.value">{{o.label}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="version-field">
+            <mat-label>Version</mat-label>
+            <mat-select [formControl]="queryVersionCtrl">
+                <mat-option *ngFor="let v of (queryVersions$ | async)" [value]="v">v{{v}}</mat-option>
+            </mat-select>
+            <mat-hint class="text-warning" *ngIf="isOldVersion$ | async">Old version!</mat-hint>
+        </mat-form-field>
+    </div>
+
+    <mat-form-field class="w-100">
+        <mat-label>Georeference Column</mat-label>
+        <mat-select [formControl]="geoColCtrl">
+            <mat-option *ngFor="let o of (geoColOptions$ | async)" [value]="o.value">{{o.label}}</mat-option>
+        </mat-select>
+        <!-- <gv-control-messages class="ml-3" [control]="geoColCtrl"></gv-control-messages> -->
+    </mat-form-field>
+
+
+    <mat-form-field class="w-100 color">
+        <mat-label>Color of Layer</mat-label>
+        <mcc-color-picker mccConnectedColorPicker [mccConnectedColorPickerOrigin]="trigger" [hideUsedColors]="true">
+        </mcc-color-picker>
+        <input class="ml-2" matInput mccColorPickerOrigin #trigger="mccColorPickerOrigin" formControlName="colorCtrl" />
+        <!-- <gv-control-messages class="ml-3" [control]="colorCtrl"></gv-control-messages> -->
+    </mat-form-field>
+
+</form>
+

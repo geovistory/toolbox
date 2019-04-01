@@ -5,7 +5,6 @@ import { Backoffice } from '../../modules/backoffice/backoffice.models';
 import { IProjectList } from '../../modules/projects/projects.model';
 import { ISourceListState } from '../../modules/sources';
 import { LoadingBar } from '../loading-bar/loading-bar.models';
-import { QueryList } from 'app/modules/queries/containers/query-list/api/query-list.models';
 
 export interface IAppState {
     account?: IAccount,
@@ -16,6 +15,5 @@ export interface IAppState {
     routes?: any,
     information?: Information,
     sources?: ISourceListState,
-    queries?: QueryList,
     sandboxState?: any
 }

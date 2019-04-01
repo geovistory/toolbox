@@ -51,7 +51,7 @@ export class DfhClassApi extends BaseLoopBackApi {
    * This usually means the response is a `DfhClass` object.)
    * </em>
    */
-  public selectedClassesOfProfile(dfh_pk_profile: any = {}, customHeaders?: Function): Observable<any> {
+  public classesOfProfile(dfh_pk_profile: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/DfhClasses/selected-classes-of-profile";

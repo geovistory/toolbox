@@ -11,7 +11,7 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
 import { map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComClassField, ComClassFieldApi, ComProjectApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi } from '../sdk';
+import { ComClassField, ComClassFieldApi, ComProjectApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ComQueryApi } from '../sdk';
 import { PeItDetail } from '../state/models';
 import { IAppState } from '../store/model';
 import { U } from '../util/util';
@@ -30,6 +30,7 @@ export class ActiveProjectEpics {
     private chunkApi: InfChunkApi,
     private uiContextApi: ComUiContextApi,
     private projectApi: ComProjectApi,
+    private comQuery: ComQueryApi,
     private dfhPropertyApi: DfhPropertyApi,
     private comClassFieldApi: ComClassFieldApi,
     private actions: ActiveProjectActions,
@@ -48,6 +49,8 @@ export class ActiveProjectEpics {
       this.createLoadPeItGraphEpic(),
       this.createLoadTeEnGraphEpic(),
       this.createLoadTypesEpic(),
+      this.createLoadQueriesEpic(),
+      this.createLoadQueryVersionEpic(),
       this.createClosePanelEpic(),
       this.createActivateTabFocusPanelEpic(),
       this.createMoveTabFocusPanelEpic(),
@@ -483,8 +486,107 @@ export class ActiveProjectEpics {
     }
   }
 
+  private createLoadQueryVersionEpic(): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(ActiveProjectActions.LOAD_QUERY_VERSION),
+        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Do some api call
+           */
+          this.comQuery.findByIdAndVersionAndProject(action.meta.pk_project, action.meta.pk_entity, action.meta.entity_version)
+            /**
+           * Subscribe to the api call
+           */
+            .subscribe((data) => {
+              /**
+                 * Emit the global action that completes the loading bar
+                 */
+              globalStore.next(this.loadingBarActions.completeLoading());
 
+              /**
+               * Emit the local action on loading succeeded
+               */
+              globalStore.next(this.actions.loadQueryVersionSucceeded(data[0]));
 
+            }, error => {
+              /**
+              * Emit the global action that shows some loading error message
+              */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              globalStore.next(this.actions.loadQueryVersionFailed({ status: '' + error.status }))
+            })
+        }))
+      )
+    }
+  }
+
+  private createLoadQueriesEpic(): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(ActiveProjectActions.LOAD_QUERIES),
+        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Do some api call
+           */
+          this.comQuery.findPerProject(action.meta.pk_project, 10000, 0)
+            /**
+           * Subscribe to the api call
+           */
+            .subscribe((data) => {
+              /**
+                 * Emit the global action that completes the loading bar
+                 */
+              globalStore.next(this.loadingBarActions.completeLoading());
+
+              /**
+               * Emit the local action on loading succeeded
+               */
+              globalStore.next(this.actions.loadQueriesSucceeded(data));
+
+            }, error => {
+              /**
+              * Emit the global action that shows some loading error message
+              */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              globalStore.next(this.actions.loadQueriesFailed({ status: '' + error.status }))
+            })
+        }))
+      )
+    }
+  }
 
 
   /**

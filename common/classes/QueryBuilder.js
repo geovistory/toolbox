@@ -2,7 +2,11 @@ var sqlFormatter = require("sql-formatter");
 
 class QueryBuilder {
 
+
     constructor() {
+        this.PK_E93_PRESENCE = 84;
+        this.PK_P167_WAS_AT = 148;
+
         this.params = [];
         this.sql = '';
         this.tableAliases = [];
@@ -59,7 +63,8 @@ class QueryBuilder {
         console.log('params', this.params)
         let forLog = this.sql;
         this.params.forEach((param, i) => {
-            forLog = forLog.replace(('$' + (i + 1)), param)
+            const replaceStr = new RegExp('\\$' + (i + 1) + '(?!\\d)', 'g')
+            forLog = forLog.replace(replaceStr, param)
         })
         console.log(`
         "\u{1b}[32m Formatted and Deserialized SQL (not sent to db) "\u{1b}[0m
@@ -118,6 +123,10 @@ class QueryBuilder {
                 if (this.isRolesJoin(segment)) {
                     this.joinRoles(segment, leftTableAlias, thisTableAlias, fkProject);
                 }
+                // JOIN Presences
+                else if (this.isPresenceJoin(segment)) {
+                    this.joinPresences(segment, leftTableAlias, thisTableAlias, fkProject)
+                }
                 // JOIN entities
                 else if (this.isEntitesJoin(segment)) {
                     this.joinEntities(segment, leftTableAlias, thisTableAlias, fkProject);
@@ -160,7 +169,21 @@ class QueryBuilder {
 
         if (this.isRolesJoin(segment)) {
 
-        } else if (this.isEntitesJoin(segment)) {
+        }
+        else if (this.isPresenceJoin(segment)) {
+            this.selects.push(`COALESCE(json_agg( distinct jsonb_build_object(
+                'pk_entity', ${segment._tableAlias}.pk_entity,
+                'entity_type', ${segment._tableAlias}.entity_type,
+                'entity_label', ${segment._tableAlias}.entity_label,
+                'class_label', ${segment._tableAlias}.class_label,
+                'type_label', ${segment._tableAlias}.type_label,
+                'time_span', ${segment._tableAlias}.time_span,
+                'lat', ${segment._tableAlias}_place.lat,
+                'long', ${segment._tableAlias}_place.long
+              )
+           ) FILTER (WHERE ${segment._tableAlias}.pk_entity IS NOT NULL), '[]') AS "${columnLabel}"`)
+        }
+        else if (this.isEntitesJoin(segment)) {
 
 
             this.selects.push(`COALESCE(json_agg( distinct jsonb_build_object(
@@ -216,6 +239,26 @@ class QueryBuilder {
                 `);
     }
 
+    joinPresences(node, parentTableAlias, thisTableAlias, fkProject) {
+        this.froms.push(`    
+                    -- E93 PRESENCE		
+                    LEFT JOIN warehouse.entity_preview ${thisTableAlias} ON
+                    (${parentTableAlias}.fk_entity = ${thisTableAlias}.pk_entity OR ${parentTableAlias}.fk_temporal_entity = ${thisTableAlias}.pk_entity)
+                    AND
+                     ${this.createEntityWhere(node, thisTableAlias, fkProject)}
+                     -- JOIN E53 Place (GEO COORDINATES)
+                     LEFT JOIN warehouse.v_roles_per_project_and_repo t_9_was_at ON t_9_was_at.fk_project = ${this.addParam(fkProject)}
+                     AND (
+                       (
+                         t_9.pk_entity = t_9_was_at.fk_temporal_entity
+                         AND t_9_was_at.fk_property IN (${this.addParam(this.PK_P167_WAS_AT)})
+                       )
+                     )
+                     LEFT JOIN information.v_place t_9_place ON t_9_was_at.fk_entity = t_9_place.pk_entity
+                     -- END OF E93 PRESENCE
+                `);
+    }
+
     joinRoles(node, parentTableAlias, thisTableAlias, fkProject) {
         const topLevelWheres = [];
         topLevelWheres.push(`
@@ -255,7 +298,7 @@ class QueryBuilder {
             classOrTypeWheres.push(`${tableAlias}.fk_type IN (${this.addParams(filter.data.types)})`)
         }
 
-        
+
         const topLevelWheres = [];
         topLevelWheres.push(whereProject);
         topLevelWheres.push(`${tableAlias}.fk_class IS NOT NULL`)
@@ -347,6 +390,27 @@ class QueryBuilder {
     isEntitesJoin(node) {
         if (!node || typeof node.data !== 'object') return false;
         return (node.data.classes || node.data.types)
+    }
+
+    /**
+     * Returns true, if given node is for joining E93 Presences (and no other classes)
+     * @param {*} node 
+     */
+    isPresenceJoin(node) {
+        if (this.isEntitesJoin) {
+            const classes = node.data.classes;
+            const types = node.data.types;
+
+            const presences = classes.filter(pk => (pk === this.PK_E93_PRESENCE));
+            const noTypes = (!types || !types.length);
+
+            // if all selected classes are E93 Presence and no types are selected
+            if (presences.length > 0 && presences.length === classes.length && noTypes) {
+                return true
+            }
+        }
+
+        return false;
     }
 
 

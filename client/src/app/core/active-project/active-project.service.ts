@@ -5,13 +5,13 @@ import { groupBy, indexBy, without, flatten, path, difference } from 'ramda';
 import { combineLatest, Observable, BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity } from '../sdk';
+import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ComQuery } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { ComProject } from '../sdk/models/ComProject';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
-import { ClassConfig, ListType, ProjectCrm, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
+import { ClassConfig, ListType, ProjectCrm, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk, ComQueryByPk, EntityByPk, VersionEntity, EntityVersionsByPk } from './active-project.models';
 
 
 
@@ -27,6 +27,8 @@ export class ActiveProjectService {
   public list$: Observable<ListType>; // type of list displayed in left panel 
   public creatingMentioning$: Observable<boolean>;
   public typesByPk$: Observable<TypesByPk>
+  public comQueryVersionsByPk$: Observable<EntityVersionsByPk<ComQuery>>
+  public comQueryLoading$: Observable<boolean>
 
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
@@ -47,6 +49,8 @@ export class ActiveProjectService {
     this.crm$ = ngRedux.select<ProjectCrm>(['activeProject', 'crm']);
     this.list$ = ngRedux.select<ListType>(['activeProject', 'list']);
     this.typesByPk$ = ngRedux.select<TypesByPk>(['activeProject', 'typesByPk']);
+    this.comQueryVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ComQuery>>(['activeProject', 'comQueryVersionsByPk']);
+    this.comQueryLoading$ = ngRedux.select<boolean>(['activeProject', 'comQueryLoading']);
 
     this.focusedPanel$ = ngRedux.select<boolean>(['activeProject', 'focusedPanel']);
     this.creatingMentioning$ = ngRedux.select<boolean>(['activeProject', 'creatingMentioning']);
@@ -86,10 +90,12 @@ export class ActiveProjectService {
       // when connection was lost.
       combineLatest(this.pkProject$, this.activeProject$).pipe(first(items => items.filter(item => !item).length === 0))
         .subscribe(([pkProject, activeProject]) => {
-          this.entityPreviewSocket.emit('addToStrem', {
-            pk_project: pkProject,
-            pks: Object.keys(activeProject.entityPreviews)
-          })
+          if (activeProject.entityPreviews) {
+            this.entityPreviewSocket.emit('addToStrem', {
+              pk_project: pkProject,
+              pks: Object.keys(activeProject.entityPreviews)
+            })
+          }
         })
     })
 
@@ -319,6 +325,20 @@ export class ActiveProjectService {
         return groupBy((t) => t.fk_typed_class.toString(), a);
       })
     );
+  }
+
+  loadQueries() {
+    this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
+      this.ngRedux.dispatch(this.actions.loadQueries(pk))
+    })
+    return this.comQueryVersionsByPk$;
+  }
+
+  loadQueryVersion(pkEntity: number, entityVersion: number) {
+    this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
+      this.ngRedux.dispatch(this.actions.loadQueryVersion(pk, pkEntity, entityVersion))
+    })
+    return this.comQueryVersionsByPk$;
   }
 
 

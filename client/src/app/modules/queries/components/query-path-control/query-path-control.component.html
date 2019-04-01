@@ -8,10 +8,10 @@
 <form [formGroup]="formGroup" class="wrapper">
 
 
-    <div class="gv-query-path-segment"
-        *ngFor="let segment of dynamicFormControls; let i = index; trackBy:getKey">
+    <div class="gv-query-path-segment" *ngFor="let segment of dynamicFormControls; let i = index; trackBy:getKey">
         <mat-icon>arrow_right_alt</mat-icon>
         <mat-form-field *ngIf="segment.type === 'properties'">
+            <mat-label>Properties</mat-label>
             <gv-property-path-segment [index]="i" class="gv-grow-1 d-flex flex-column" [formControl]="segment.ctrl"
                 [propertyOptions$]="segment.behaviorSubject" [disabled]="i < (dynamicFormControls.length-1)"
                 (focus)="onFocus()" (blur)="onBlur()">
@@ -20,6 +20,7 @@
         </mat-form-field>
 
         <mat-form-field *ngIf="segment.type === 'classes'">
+            <mat-label>Classes</mat-label>
             <gv-class-and-type-path-segment [index]="i" class="gv-grow-1 d-flex flex-column"
                 [formControl]="segment.ctrl" [pkClasses$]="segment.behaviorSubject"
                 [disabled]="i < (dynamicFormControls.length-1)" (focus)="onFocus()" (blur)="onBlur()">
@@ -33,9 +34,16 @@
         </button>
     </div>
 
-    <button class="gv-add-query-path-segment my-3" mat-icon-button (click)="addSegment()"
-        *ngIf="dynamicFormControls[dynamicFormControls?.length - 1]?.ctrl?.valid" matTooltip="Add path segment">
+    <button class="my-3" mat-icon-button (click)="addSegment()" *ngIf="showAddBtn" matTooltip="Add path segment">
         <mat-icon>add</mat-icon>
     </button>
+
+    <mat-chip-list  *ngIf="isE93Presence" aria-label="Fish selection">
+        <mat-chip color="accent" selected matTooltip="Useful for visualisation on a Map">Valid Geo-Column</mat-chip>
+    </mat-chip-list>
+    <!-- <div *ngIf="isE93Presence" matTooltip="Useful for visualisation on a Map">
+        <mat-icon class="text-success">check</mat-icon> Geo-Column
+
+    </div> -->
 
 </form>

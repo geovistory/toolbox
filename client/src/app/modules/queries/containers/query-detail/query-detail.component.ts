@@ -104,14 +104,14 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
     protected rootEpics: RootEpics,
     private epics: QueryDetailAPIEpics,
     public ngRedux: NgRedux<IAppState>,
-    private _formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public p: ActiveProjectService
   ) {
     super()
 
     // Prepare first form group
     this.filterCtrl = new FormControl(new FilterTree()) // TODO add validato
-    this.firstFormGroup = this._formBuilder.group({
+    this.firstFormGroup = this.fb.group({
       filterCtrl: this.filterCtrl
     });
 
@@ -141,12 +141,12 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
         label: 'Type Label'
       })
     ]) // TODO add validato
-    this.secondFormGroup = this._formBuilder.group({
+    this.secondFormGroup = this.fb.group({
       columnsContro: this.columnsCtrl
     });
 
     // Prepare third form group
-    this.thirdFormGroup = this._formBuilder.group({
+    this.thirdFormGroup = this.fb.group({
       nameCtrl: this.nameCtrl,
       descriptionCtrl: this.descriptionCtrl,
     });

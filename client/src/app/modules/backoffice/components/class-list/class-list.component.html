@@ -12,19 +12,29 @@
       <th scope="col">dfh_standard_label</th>
       <th>gui label (english)</th>
       <th scope="col">type</th>
+      <th scope="col">profile</th>
       <th scope="col">action</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let item of (items$ | async) | keys; trackBy:getKey;">
+    <tr *ngFor="let item of (tableData$ | async) | keys; trackBy:getKey;">
       <td>{{item.value.dfh_pk_class}}</td>
       <td>{{item.value.dfh_standard_label}}</td>
       <td>
-        <gv-dfh-label-list-edit [basePath]="['backoffice','classList','items', item.key, 'labels']" [dfhFkClass]="item.value.dfh_pk_class"></gv-dfh-label-list-edit>
+        <gv-dfh-label-list-edit [basePath]="['backoffice','classList','items', item.key, 'labels']"
+          [dfhFkClass]="item.value.dfh_pk_class"></gv-dfh-label-list-edit>
       </td>
       <td>{{item.value?.class_profile_view[0]?.dfh_type_label}}</td>
+
       <td>
-        <a class="nav-link" routerLink="/backoffice/classes/{{item.value.dfh_pk_class}}" routerLinkActive="active">Details</a>
+        <div *ngFor="let i of item.value?.class_profile_view" class="badge mr-1" [ngClass]="{'badge-success': !i.removed_from_api,  'badge-danger': i.removed_from_api }">
+          {{i.dfh_profile_label}}: {{i.dfh_profile_association_type}} {{i.removed_from_api ? 'removed from API':''}}
+        </div>
+      </td>
+
+      <td>
+        <a class="nav-link" routerLink="/backoffice/classes/{{item.value.dfh_pk_class}}"
+          routerLinkActive="active">Details</a>
       </td>
     </tr>
   </tbody>

@@ -1,15 +1,15 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Optional, Output, QueryList, Self, ViewChildren, OnInit, Directive } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, Validators, ValidatorFn, AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, QueryList, Self, ViewChildren } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, ValidatorFn } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
-import { equals, keys, values } from 'ramda';
-import { BehaviorSubject, Subject, of, merge } from 'rxjs';
-import { filter, switchMap, takeUntil, first } from 'rxjs/operators';
+import { equals, keys } from 'ramda';
+import { BehaviorSubject, merge, of, Subject } from 'rxjs';
+import { filter, first, switchMap, takeUntil } from 'rxjs/operators';
 import { ClassAndTypePathSegmentComponent, classAndTypePathSegmentRequiredValidator } from '../class-and-type-path-segment/class-and-type-path-segment.component';
 import { QueryPathSegment, QueryPathSegmentType } from '../col-def-editor/col-def-editor.component';
 import { PropertyPathSegmentComponent, propertyPathSegmentRequiredValidator } from '../property-path-segment/property-path-segment.component';
-import { PropertyOption, propertiesRequiredCondition } from '../property-select/property-select.component';
-import { FilterTree } from '../../containers/query-detail/query-detail.component';
+import { PropertyOption } from '../property-select/property-select.component';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 
 
 
@@ -113,6 +113,41 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
 
   formGroup: FormGroup;
   dynamicFormControls: DynamicFormControl[] = [];
+
+
+  get showAddBtn() {
+
+    if (this.isE93Presence) return false;
+
+    if (this.dynamicFormControls.length === 0) return false;
+
+    if (this.dynamicFormControls[this.dynamicFormControls.length - 1].ctrl.valid) return true;
+
+    else return false;
+  }
+
+  get isE93Presence() {
+    if (this.dynamicFormControls.length === 0) return false;
+    const ctrl = this.dynamicFormControls[this.dynamicFormControls.length - 1].ctrl
+    if (ctrl.valid && ctrl.value.data) {
+      const classPks = ctrl.value.data.classes || [];
+
+
+      const classes = ctrl.value.data.classes || [];
+      const types = ctrl.value.data.types || [];
+
+      const presences = classes.filter(pk => (pk === DfhConfig.CLASS_PK_PRESENCE));
+      const noTypes = (!types || !types.length);
+
+      // if all selected classes are E93 Presence and no types are selected
+      if (presences.length > 0 && presences.length === classes.length && noTypes) {
+          return true
+      }
+    }
+
+    return false;
+  }
+
 
   constructor(
     @Optional() @Self() public ngControl: NgControl,
