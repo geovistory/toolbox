@@ -5,6 +5,7 @@ import { VisualDetailAPIAction, VisualDetailAPIActions } from './visual-detail.a
 
 const INITIAL_STATE = new VisualDetail();
 
+
 export function visualDetailReducer(state: VisualDetail = INITIAL_STATE, a: Action): VisualDetail {
 
   const action = a as VisualDetailAPIAction;
@@ -23,23 +24,47 @@ export function visualDetailReducer(state: VisualDetail = INITIAL_STATE, a: Acti
     /*****************************************************
     * Load existing visual
     *****************************************************/
-    case VisualDetailAPIActions.LOAD:
+    case VisualDetailAPIActions.LOAD_PREVIEW:
+      let key = (action.meta.pkEntity + '_' + action.meta.version);
       state = {
         ...state,
-        items: {}
+        queryResByVersion: {
+          ...state.queryResByVersion,
+          [key]: []
+        },
+        queryResVersionLoading: {
+          ...state.queryResVersionLoading,
+          [key]: true
+        }
       };
       break;
-    case VisualDetailAPIActions.LOAD_SUCCEEDED:
+    case VisualDetailAPIActions.LOAD_PREVIEW_SUCCEEDED:
+      key = (action.meta.pkEntity + '_' + action.meta.version);
+
       state = {
         ...state,
-        items: indexBy(prop('pk_entity'), action.meta.itemsArray)
+        queryResByVersion: {
+          ...state.queryResByVersion,
+          [key]: action.meta.itemsArray
+        },
+        queryResVersionLoading: {
+          ...state.queryResVersionLoading,
+          [key]: false
+        }
       };
       break;
 
-    case VisualDetailAPIActions.LOAD_FAILED:
+    case VisualDetailAPIActions.LOAD_PREVIEW_FAILED:
       state = {
         ...state,
-        items: {}
+        queryResByVersion: {
+          ...state.queryResByVersion,
+          [key]: []
+        },
+        queryResVersionLoading: {
+          ...state.queryResVersionLoading,
+          [key]: true
+        }
       };
       break;
 

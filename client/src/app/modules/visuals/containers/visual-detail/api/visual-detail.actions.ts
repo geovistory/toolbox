@@ -8,6 +8,10 @@ interface MetaData {
   itemsArray?: any[]
   tabTitle?: string
 
+  pkProject?: number;
+  pkEntity?: number;
+  version?: number;
+
 };
 export type VisualDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -18,9 +22,9 @@ export class VisualDetailAPIActions {
   static readonly SHOW_RIGHT_AREA = 'QueryDetail::SHOW_RIGHT_AREA';
   static readonly HIDE_RIGHT_AREA = 'QueryDetail::HIDE_RIGHT_AREA';
 
-  static readonly LOAD = 'VisualDetail::LOAD';
-  static readonly LOAD_SUCCEEDED = 'VisualDetail::LOAD_SUCCEEDED';
-  static readonly LOAD_FAILED = 'VisualDetail::LOAD_FAILED';
+  static readonly LOAD_PREVIEW = 'VisualDetail::LOAD_PREVIEW';
+  static readonly LOAD_PREVIEW_SUCCEEDED = 'VisualDetail::LOAD_PREVIEW_SUCCEEDED';
+  static readonly LOAD_PREVIEW_FAILED = 'VisualDetail::LOAD_PREVIEW_FAILED';
 
   static readonly DESTROY = 'VisualDetail::DESTROY';
   /*********************************************************************
@@ -37,25 +41,26 @@ export class VisualDetailAPIActions {
    *  Load an existing visual
    *********************************************************************/
 
-
   @dispatch()
-  load = (): VisualDetailAPIAction => ({
-    type: VisualDetailAPIActions.LOAD,
-    meta: null,
+  loadPreview = (pkProject: number, pkEntity: number, version: number): VisualDetailAPIAction => ({
+    type: VisualDetailAPIActions.LOAD_PREVIEW,
+    meta: { pkProject, pkEntity, version },
     payload: null,
   });
 
-  loadSucceeded = (itemsArray: any[]): VisualDetailAPIAction => ({
-    type: VisualDetailAPIActions.LOAD_SUCCEEDED,
+  loadPreviewSucceeded = (itemsArray: any[], pkEntity: number, version: number): VisualDetailAPIAction => ({
+    type: VisualDetailAPIActions.LOAD_PREVIEW_SUCCEEDED,
     meta: {
-      itemsArray
+      itemsArray, pkEntity, version
     },
     payload: null
   })
 
-  loadFailed = (error): VisualDetailAPIAction => ({
-    type: VisualDetailAPIActions.LOAD_FAILED,
-    meta: null,
+  loadPreviewFailed = (error, pkEntity: number, version: number): VisualDetailAPIAction => ({
+    type: VisualDetailAPIActions.LOAD_PREVIEW_FAILED,
+    meta: {
+      pkEntity, version
+    },
     payload: null,
     error,
   })

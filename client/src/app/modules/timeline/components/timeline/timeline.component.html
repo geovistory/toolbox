@@ -48,7 +48,7 @@
       <!-- Body of timeline -->
 
       <g class="rows" [attr.transform]="'translate(0, '+ _options.headerHeight +')'" [ngStyle]="{'height': _options.bodyHeight +'px'}"
-        style="overflow-y:auto;overflow-x: hidden;" *ngIf="timeline.data.rows.length > 0">
+        style="overflow-y:auto;overflow-x: hidden;" *ngIf="timeline?.data?.rows?.length > 0">
 
         <svg [attr.width]="_options.width" [attr.height]="(timeline.data.rows.length * timeline.options.rowHeight)"
           draggableXAxis (onDrag)="onDrag($event)" (onDragStart)="onDragStart()" (onDragEnd)="onDragEnd()">
@@ -74,7 +74,7 @@
       <!-- Body of empty timeline -->
 
       <g class="rows" [attr.transform]="'translate(0, '+ _options.headerHeight +')'" [ngStyle]="{'height': 20 +'px'}"
-        style="overflow:auto" style="overflow-y:auto;overflow-x: hidden;" *ngIf="timeline.data.rows.length === 0">
+        style="overflow:auto" style="overflow-y:auto;overflow-x: hidden;" *ngIf="timeline?.data?.rows?.length === 0">
         <svg [attr.width]="_options.width" [attr.height]="20" draggableXAxis (onDrag)="onDrag($event)" (onDragStart)="onDragStart()"
           (onDragEnd)="onDragEnd()">
 

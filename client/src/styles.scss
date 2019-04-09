@@ -1329,7 +1329,18 @@ as-split.gv-split-style {
         background-color: $gray-300 !important;
         position: relative;
     }
+    .as-split-gutter {
+        background-color: $gray-300 !important;
+        position: relative;
+    }
     ::ng-deep .as-split-gutter-icon {
+        background-image: none !important;
+        background-color: black;
+        transition: opacity .3s;
+        opacity: 0;
+        position: absolute;
+    }
+    .as-split-gutter-icon {
         background-image: none !important;
         background-color: black;
         transition: opacity .3s;
@@ -1340,8 +1351,17 @@ as-split.gv-split-style {
     ::ng-deep .as-split-gutter-icon:hover {
         opacity: .1;
     }
+    .as-split-gutter.is-dragged .as-split-gutter-icon,
+    .as-split-gutter-icon:hover {
+        opacity: .1;
+    }
     &.is-horizontal {
         ::ng-deep .as-split-gutter-icon {
+            width: 13px !important;
+            left: -6px;
+            right: 6px;
+        }
+        .as-split-gutter-icon {
             width: 13px !important;
             left: -6px;
             right: 6px;
@@ -1349,6 +1369,11 @@ as-split.gv-split-style {
     }
     &.is-vertical {
         ::ng-deep .as-split-gutter-icon {
+            height: 13px !important;
+            top: -6px;
+            bottom: 6px;
+        }
+        .as-split-gutter-icon {
             height: 13px !important;
             top: -6px;
             bottom: 6px;
@@ -1398,16 +1423,28 @@ $gv-mat-teal: ( 50: #dff6ed, 100: #b1e8d1, 200: #7ad8b4, 300: #20c996, 400: #00b
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$candy-app-primary: mat-palette($gv-mat-purple);
-$candy-app-accent: mat-palette($gv-mat-teal, A200, A100, A400);
+$app-primary: mat-palette($gv-mat-purple);
+$app-accent: mat-palette($gv-mat-teal, A200, A100, A400);
 // The warn palette is optional (defaults to red).
-$candy-app-warn: mat-palette($mat-red);
+$app-warn: mat-palette($mat-red);
 // Create the theme object (a Sass map containing all of the palettes).
-$candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-app-warn);
+$app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include angular-material-theme($candy-app-theme);
+@include angular-material-theme($app-theme);
+.mat-text-primary {
+    color: mat-color($app-primary);
+}
+
+.mat-text-accent {
+    color: mat-color($app-accent);
+}
+
+.mat-text-warn {
+    color: mat-color($app-warn);
+}
+
 mat-checkbox {
     label {
         margin-bottom: 0

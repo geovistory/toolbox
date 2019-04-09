@@ -1,15 +1,17 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActiveProjectService, IAppState, SubstoreComponent } from 'app/core';
+import { ActiveProjectService, IAppState, SubstoreComponent, U } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { values } from 'ramda';
+import { values, uniq } from 'ramda';
 import { Observable, Subject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
+import { first, takeUntil, map } from 'rxjs/operators';
 import { VisualDetailAPIActions } from './api/visual-detail.actions';
 import { VisualDetailAPIEpics } from './api/visual-detail.epics';
 import { VisualDetail } from './api/visual-detail.models';
 import { visualDetailReducer } from './api/visual-detail.reducer';
+import { MapQueryLayerSettings } from '../../components/map-query-layer-settings/map-query-layer-settings.component';
+import { MapSettings } from '../../components/map-settings/map-settings.component';
 
 export interface VisualTypeOption {
   value: VisualType,
@@ -44,9 +46,9 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
   @select() showRightArea$: Observable<boolean>;
 
   // select observables of substore properties
-  @select() loading$: Observable<boolean>;
-
-
+  @select() queryResByVersion$: Observable<{ [key: string]: any[] }>;
+  @select() queryResVersionLoading$: Observable<{ [key: string]: boolean }>;
+  loading$: Observable<boolean>;
 
   firstFormGroup: FormGroup;
   visualTypeCtrl: FormControl;
@@ -60,6 +62,10 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
   thirdFormGroup: FormGroup;
   nameCtrl = new FormControl(null, Validators.required)
   descriptionCtrl = new FormControl(null)
+
+  get visualSettings(): MapSettings {
+    return this.visualSettingsCtrl.value
+  }
 
   constructor(
     protected rootEpics: RootEpics,
@@ -97,6 +103,11 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
     if (!this.pkEntity) this.setTabTitle('New Visual*');
+
+    this.loading$ = this.queryResVersionLoading$.pipe(map(d => {
+      return U.obj2Arr(d).filter(v => v === true).length ? true : false
+    }))
+
   }
 
   onRun() {
@@ -108,15 +119,14 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
       return values(this.secondFormGroup.controls).forEach(ctrl => { ctrl.markAsTouched() })
     }
 
-    this.p.pkProject$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(pk => {
+    this.p.pkProject$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(pkProject => {
       this.showRightArea();
-
-      // this.runInit(pk, {
-      //   filter: this.filterQueryCopy,
-      //   columns: this.colDefsCopy,
-      //   limit: this.limit,
-      //   offset: 0
-      // });
+      const layers = uniq(this.visualSettings.queryLayers.map(ql => ({
+        queryPk: ql.queryPk, queryVersion: ql.queryVersion
+      })))
+      layers.forEach(layer => {
+        this.loadPreview(pkProject, layer.queryPk, layer.queryVersion);
+      })
     })
   }
 

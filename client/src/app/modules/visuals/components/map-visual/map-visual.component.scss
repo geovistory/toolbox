@@ -1,0 +1,33 @@
+.map-container {
+    display: flex;
+    flex: auto;
+}
+
+::ng-deep .map-container {
+    display: flex;
+    flex: auto;
+}
+
+// .cesium-viewer-timelineContainer {
+//     display: none;
+// }
+
+// ::ng-deep .cesium-viewer-timelineContainer {
+//     display: none;
+// }
+
+// .cesium-viewer-animationContainer {
+//     display: none;
+// }
+
+// ::ng-deep .cesium-viewer-animationContainer {
+//     display: none;
+// }
+
+// .cesium-viewer-bottom {
+//     display: none;
+// }
+
+// ::ng-deep .cesium-viewer-bottom {
+//     display: none;
+// }

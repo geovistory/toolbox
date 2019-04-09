@@ -34,6 +34,9 @@ export class TimeSpan {
 
       // if this timePrimitive is later than max, set this as new max
       max = tp.getJulianSecond() > max.getJulianSecond() ? tp : max;
+      //  check if we would need the latest second here?
+      // max = tp.getLastSecond() > max.getLastSecond() ? tp : max;
+
 
     })
 
@@ -42,6 +45,9 @@ export class TimeSpan {
 
   constructor(data?) {
     Object.assign(this, data);
+    this.tpKeys.forEach(key => {
+      if (this[key]) this[key] = new TimePrimitive(this[key]);
+    })
   }
 
 
@@ -75,7 +81,7 @@ export class TimeSpan {
   getPrimitivesForPreview(): { single?: TimePrimitive, begin?: TimePrimitive, end?: TimePrimitive } {
     const single = this.p82 || this.p81;
     const begin = this.p82a || this.p81a;
-    const end = this.p82b || this.p81a;
+    const end = this.p82b || this.p81b;
     return { single, begin, end };
   }
 

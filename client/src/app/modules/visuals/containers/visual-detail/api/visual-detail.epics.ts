@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions } from 'app/core';
+import { LoadingBarActions, ComQueryApi } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -12,7 +12,7 @@ import { ofSubstore } from 'app/core/store/module';
 @Injectable()
 export class VisualDetailAPIEpics {
   constructor(
-    // private modelApi: any, // <- change the api
+    private queryApi: ComQueryApi,
     private actions: VisualDetailAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions
@@ -28,7 +28,7 @@ export class VisualDetailAPIEpics {
         /**
          * Filter the actions that triggers this epic
          */
-        ofType(VisualDetailAPIActions.LOAD),
+        ofType(VisualDetailAPIActions.LOAD_PREVIEW),
         filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: VisualDetailAPIAction) => new Observable<Action>((globalStore) => {
           /**
@@ -38,36 +38,36 @@ export class VisualDetailAPIEpics {
           /**
            * Do some api call
            */
-          // this.modelApi.classesOfProfile(null) // <- change api call here
-          //   /**
-          //    * Subscribe to the api call
-          //    */
-          //   .subscribe((data) => {
-          //     /**
-          //      * Emit the global action that completes the loading bar
-          //      */
-          //     globalStore.next(this.loadingBarActions.completeLoading());
-          //     /**
-          //      * Emit the local action on loading succeeded
-          //      */
-          //     c.localStore.dispatch(this.actions.loadSucceeded(data));
+          this.queryApi.runVersion(action.meta.pkProject, action.meta.pkEntity, action.meta.version)
+            /**
+             * Subscribe to the api call
+             */
+            .subscribe((data) => {
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              /**
+               * Emit the local action on loading succeeded
+               */
+              c.localStore.dispatch(this.actions.loadPreviewSucceeded(data, action.meta.pkEntity, action.meta.version));
 
-          //   }, error => {
-          //         /**
-          //   * Emit the global action that shows some loading error message
-          //   */
-          //  globalStore.next(this.loadingBarActions.completeLoading());
-          //  globalStore.next(this.notificationActions.addToast({
-          //    type: 'error',
-          //    options: {
-          //      title: error.message
-          //    }
-          //  }));         
-          //    /**
-          //     * Emit the local action on loading failed
-          //     */
-          //     c.localStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
-          //   })
+            }, error => {
+              /**
+              * Emit the global action that shows some loading error message
+              */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: error.message
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              c.localStore.dispatch(this.actions.loadPreviewFailed({ status: '' + error.status },  action.meta.pkEntity, action.meta.version))
+            })
         })),
         takeUntil(c.destroy$)
       )

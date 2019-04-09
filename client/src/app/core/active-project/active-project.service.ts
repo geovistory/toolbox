@@ -33,6 +33,10 @@ export class ActiveProjectService {
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
 
+  get state(): ProjectDetail {
+    return this.ngRedux.getState().activeProject;
+  }
+
   classesInProject$: Observable<number[]>
 
   constructor(

@@ -12,9 +12,9 @@ interface DynamicQueryLayerCtrl {
   ctrl: FormControl
 }
 
-interface MapSettings {
+export interface MapSettings {
   backgroundLayer: any;
-  queryLayers: any[]
+  queryLayers: MapQueryLayerSettings[]
 }
 
 @Component({
@@ -111,19 +111,22 @@ export class MapSettingsComponent implements OnDestroy, ControlValueAccessor, Ma
     this.formGroup = fb.group({})
 
     this.formGroup.valueChanges.subscribe(controls => {
-        const newVal: MapSettings = {
-          queryLayers: this.queryLayers,
-          backgroundLayer: {}
-        }
+      const newVal: MapSettings = {
+        queryLayers: this.queryLayers,
+        backgroundLayer: {}
+      }
 
-        if (!equals(newVal, this.model)) {
-          this.value = newVal;
-        }
+      if (!equals(newVal, this.model)) {
+        this.value = newVal;
+      }
     })
   }
 
+  trackByfn(_, item: DynamicQueryLayerCtrl) {
+    return item.key;
+  }
 
-  dropQueryLayer(event: CdkDragDrop<MapQueryLayerSettings[]>){
+  dropQueryLayer(event: CdkDragDrop<MapQueryLayerSettings[]>) {
     moveItemInArray(this.dynamicQueryLayerCtrls, event.previousIndex, event.currentIndex);
     this.value = {
       ...this.value,

@@ -65,7 +65,8 @@
         "patchAttributes",
         "deleteById",
         "run",
-        "runAndExport"
+        "runAndExport",
+        "runVersion"        
       ]
     }
   ],
@@ -108,6 +109,56 @@
       "description": "Run a query.",
       "http": {
         "path": "/run",
+        "verb": "get"
+      }
+    },
+    "runVersion": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the query",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "version",
+          "type": "number",
+          "required": true,
+          "description": "Version of the query",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "object"
+        ],
+        "root": true
+      },
+      "description": "Run an existing query-version.",
+      "http": {
+        "path": "/run-version",
         "verb": "get"
       }
     },

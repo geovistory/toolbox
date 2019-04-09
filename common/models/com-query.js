@@ -17,6 +17,42 @@ module.exports = function (ComQuery) {
 
     };
 
+    ComQuery.runVersion = function (pkProject, pkEntity, version, ctx, cb) {
+
+        const sql = `
+            SELECT * FROM (
+                select * from commons.query
+                Union
+                select * from commons.query_vt
+            ) as queries
+            WHERE queries.fk_project = $1
+            AND queries.pk_entity = $2
+            AND queries.entity_version = $3`;
+
+        const params = [pkProject, pkEntity, version]
+
+        // get the query version
+        ComQuery.dataSource.connector.execute(sql, params, (err, resultObjects) => {
+            if (err) cb(err, resultObjects);
+            else {
+                // Q: is query version found?
+                if(resultObjects && resultObjects.length){
+                    const queryDef = resultObjects[0].query;
+                    const q = new QueryBuilder().buildQuery(queryDef, pkProject);
+                    ComQuery.dataSource.connector.execute(q.sql, q.params, (err, resultObjects) => {
+                        if (err) cb(err, resultObjects);
+                        else cb(false, resultObjects)
+                    });
+                }
+                else {
+                    cb('Query not found.')
+                }
+            }
+        });
+
+
+    };
+
     ComQuery.beforeRemote('create', function (ctx, unused, next) {
 
         if (!ctx.args.options.accessToken.userId) return Error('AccesToken.userId is missing.');
@@ -61,7 +97,7 @@ module.exports = function (ComQuery) {
         `
         const params = [fkProject]
         ComQuery.dataSource.connector.execute(sql, params, (err, resultObjects) => {
-            if (err) return cb(err, resultObjects);            
+            if (err) return cb(err, resultObjects);
             cb(false, resultObjects)
         });
 
@@ -109,7 +145,7 @@ module.exports = function (ComQuery) {
 
         const params = [fkProject, pkEntity, version]
         ComQuery.dataSource.connector.execute(sql, params, (err, resultObjects) => {
-            if (err) return cb(err, resultObjects);            
+            if (err) return cb(err, resultObjects);
             cb(false, resultObjects)
         });
     };

@@ -19,6 +19,7 @@ import { TreeviewModule } from 'ngx-treeview';
 import { DndModule } from 'ng2-dnd';
 import { ExampleTableModule } from 'app/shared/components/core-table/example-table/example-table.module';
 import { MccColorPickerModule } from 'material-community-components';
+import { AngularSplitModule } from 'angular-split';
 
 PlaygroundModule
   .configure({
@@ -35,6 +36,7 @@ PlaygroundModule
       MccColorPickerModule.forRoot({
         used_colors: ['#000000', '#123456', '#777666']
       }),
+      AngularSplitModule.forRoot(),
       NotificationsModule,
       StoreModule,
       BrowserModule,

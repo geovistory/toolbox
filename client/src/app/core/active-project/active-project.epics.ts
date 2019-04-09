@@ -11,11 +11,11 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
 import { map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComClassField, ComClassFieldApi, ComProjectApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ComQueryApi } from '../sdk';
+import { ComClassField, ComClassFieldApi, ComProjectApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ComQueryApi, ComQuery } from '../sdk';
 import { PeItDetail } from '../state/models';
 import { IAppState } from '../store/model';
 import { U } from '../util/util';
-import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
+import { ActiveProjectAction, ActiveProjectActions, ComQueryV } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
 import { PeItActions } from 'app/modules/information/entity/pe-it/pe-it.actions';
 
@@ -556,7 +556,7 @@ export class ActiveProjectEpics {
             /**
            * Subscribe to the api call
            */
-            .subscribe((data) => {
+            .subscribe((data: ComQueryV[]) => {
               /**
                  * Emit the global action that completes the loading bar
                  */

@@ -388,7 +388,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                         ((comQuery: VersionEntity<ComQuery>) => comQuery[comQuery._latestVersion].pk_entity.toString()),
                         action.meta.comQueryArray.map(comQ => ({
                             _latestVersion: comQ.entity_version,
-                            ...indexBy((n) => n, (comQ.versions || [])),
+                            ...indexBy((n) => n.toString(), (comQ.versions || [])),
                             [comQ.entity_version]: comQ
                         }))
                     )

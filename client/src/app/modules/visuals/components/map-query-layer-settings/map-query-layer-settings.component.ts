@@ -1,12 +1,12 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional, Self } from '@angular/core';
-import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR, FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, Validators } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
-import { Subject, Observable, BehaviorSubject, combineLatest, merge } from 'rxjs';
-import { equals, keys, omit } from 'ramda';
-import { MccColorPickerService } from 'material-community-components';
-import { ValidationService, ActiveProjectService, U, latestEntityVersions, ComQuery } from 'app/core';
-import { map, filter, distinct, takeUntil, tap, distinctUntilChanged } from 'rxjs/operators';
+import { ActiveProjectService, ComQuery, latestEntityVersions, ValidationService } from 'app/core';
+import { QueryService } from 'app/modules/queries/services/query.service';
+import { equals, keys, omit, pathOr } from 'ramda';
+import { combineLatest, merge, Observable, Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { ColDef } from 'app/modules/queries/components/col-def-editor/col-def-editor.component';
 
 
@@ -17,14 +17,16 @@ export interface QueryPkOption {
 }
 
 export interface ColOption {
-  value: number // index of colum in query.columns
+  isE93: boolean
+  value: string // key of colum in query.columns
   label: string // label of column
 }
 
 export interface MapQueryLayerSettings {
   queryPk?: number
   queryVersion?: number
-  geoCol?: number
+  geoCol?: string
+  entityPreviewCol?: string;
   color?: string // RGB string like #FFFFFF
 }
 
@@ -53,6 +55,8 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
   isOldVersion$: Observable<boolean>;
   comQuery$: Observable<ComQuery>;
   geoColOptions$: Observable<ColOption[]>;
+
+  entityPreviewCol: string;
 
   autofilled?: boolean;
   // emits true on destroy of this component
@@ -126,12 +130,14 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
     return this.geoColCtrl.value
   }
 
+
   get formVal(): MapQueryLayerSettings {
     return {
       queryPk: this.queryPk,
       queryVersion: this.queryVersion,
       color: this.color,
-      geoCol: this.geoCol
+      geoCol: this.geoCol,
+      entityPreviewCol: this.entityPreviewCol
     }
   }
 
@@ -142,10 +148,12 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
   colorCtrl: FormControl;
   defaultColor = '#EE1690'
 
+
   constructor(
     @Optional() @Self() public ngControl: NgControl,
     fb: FormBuilder,
-    public p: ActiveProjectService
+    public p: ActiveProjectService,
+    public q: QueryService
   ) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
@@ -155,6 +163,8 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
     this.queryVersionCtrl = new FormControl(null, Validators.required)
     this.geoColCtrl = new FormControl(null, Validators.required)
     this.colorCtrl = new FormControl(null, ValidationService.hexColorValidator())
+
+
     this.formGroup = fb.group({
       queryPkCtrl: this.queryPkCtrl,
       queryVersionCtrl: this.queryVersionCtrl,
@@ -163,10 +173,7 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
     })
 
     this.formGroup.valueChanges.subscribe(controls => {
-      const newVal = this.formVal;
-      if (!equals(newVal, this.model)) {
-        this.value = newVal;
-      }
+      this.updateVal()
     })
 
     p.loadQueries();
@@ -203,7 +210,20 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
     ).subscribe(([pk, comQs]) => {
       // on manual change of pkQuery take the latest version automatically
       this.queryVersionCtrl.setValue(comQs[pk]._latestVersion)
+
     })
+
+    this.queryPkCtrl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      // deselect the selected Georeference Column
+      this.geoColCtrl.setValue(null);
+    })
+
+    // this.queryVersionCtrl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    //   // deselect the selected Georeference Column if is not Presence 
+    //   if (!this.isE93(this.geoCol)) {
+    //     this.geoColCtrl.setValue(null);
+    //   }
+    // })
 
     this.isOldVersion$ = combineLatest(this.queryVersions$, this.queryVersionCtrl.valueChanges).pipe(
       map(([vs, v]) => (vs[0] > v))
@@ -211,41 +231,59 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
 
     this.comQuery$ = combineLatest(
       merge(this.queryPkCtrl.valueChanges, this.writeValue$),
-      this.queryVersionCtrl.valueChanges, 
+      merge(this.queryVersionCtrl.valueChanges, this.writeValue$),
       p.comQueryVersionsByPk$)
-    .pipe(
-      filter(([pk, v, comQueries]) => (this.queryPk !== null && this.queryVersion !== null && !!comQueries)),
-      map(([pk, v, comQueries]) => {
-        const versions = comQueries[this.queryPk];
-        if (versions) {
-          const version = versions[this.queryVersion]
-          if (version.query) {
-            return version
-          } else {
-            this.p.loadQueryVersion(this.queryPk, this.queryVersion);
-            return null;
-          }
-        } else return null
-      })
-    )
+      .pipe(
+        filter(([pk, v, comQueries]) => (this.queryPk !== null && this.queryVersion !== null && !!comQueries)),
+        map(([pk, v, comQueries]) => {
+          const versions = comQueries[this.queryPk];
+          if (versions) {
+            const version = versions[this.queryVersion]
+            if (version.query) {
+              return version
+            } else {
+              this.p.loadQueryVersion(this.queryPk, this.queryVersion);
+              return null;
+            }
+          } else return null
+        })
+      )
+
+    this.comQuery$.pipe(takeUntil(this.destroy$)).subscribe((queryDef) => {
+      if (queryDef && queryDef.query && queryDef.query.columns) {
+        const col: ColDef = queryDef.query.columns.find((c: ColDef) => c.defaultType === 'entity_preview')
+        this.entityPreviewCol = col.label;
+      } else {
+        this.entityPreviewCol = undefined;
+      }
+      this.updateVal()
+    })
 
 
     this.geoColOptions$ = this.comQuery$
       .pipe(
         filter((c) => !!c),
         map((c) => c.query.columns),
-        map(colDefs => colDefs.map((colDef, index) => ({
-          value: index,
+        map((colDefs: ColDef[]) => colDefs.map((colDef, index) => ({
+          isE93: this.isGeoCol(colDef),
+          value: colDef.label,
           label: colDef.label
-        })))
+        }))),
       )
   }
-
 
   ngOnDestroy() {
     this.stateChanges.complete();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+  }
+
+  isGeoCol(c: ColDef) {
+    if (!c || !c.queryPath || !c.queryPath.length) return false
+
+    const lastSegment = c.queryPath[c.queryPath.length - 1]
+
+    return this.q.pathSegmentIsGeo(lastSegment);
   }
 
   setDescribedByIds(ids: string[]) {
@@ -258,10 +296,17 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
 
   }
 
+  updateVal() {
+    const newVal = this.formVal;
+    if (!equals(newVal, this.model)) {
+      this.value = newVal;
+    }
+  }
+
   writeValue(value: MapQueryLayerSettings | null): void {
     value = value ? value : {};
     this.queryPkCtrl.setValue(value.queryPk || null, { emitEvent: false })
-    this.queryVersionCtrl.setValue(value.queryVersion || null)
+    this.queryVersionCtrl.setValue(value.queryVersion || null, { emitEvent: false })
     this.geoColCtrl.setValue(value.geoCol || null)
     this.colorCtrl.setValue(value.color || this.defaultColor)
     this.writeValue$.next();

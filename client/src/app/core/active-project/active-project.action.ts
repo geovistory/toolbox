@@ -4,7 +4,9 @@ import { ProjectCrm, ProjectDetail, Tab, ListType, TypePeIt } from './active-pro
 import { EntityPreview, PeItDetail } from '../state/models';
 import { InfChunk, InfTemporalEntity, InfPersistentItem, ComQuery } from '../sdk';
 
-
+export interface ComQueryV extends ComQuery {
+    versions: number[];
+}
 
 interface MetaData {
     pk_project?: number;
@@ -21,7 +23,7 @@ interface MetaData {
     teEnGraphs?: InfTemporalEntity[]
     peItGraphs?: InfPersistentItem[]
     types?: TypePeIt[]
-    comQueryArray?: ComQuery[]
+    comQueryArray?: ComQueryV[]
     comQuery?: ComQuery
 
     // layout
@@ -406,7 +408,7 @@ export class ActiveProjectActions {
         }
     }
 
-    loadQueriesSucceeded(comQueryArray: ComQuery[]): ActiveProjectAction {
+    loadQueriesSucceeded(comQueryArray: ComQueryV[]): ActiveProjectAction {
         return {
             type: ActiveProjectActions.LOAD_QUERIES_SUCCEEDED,
             payload: null,

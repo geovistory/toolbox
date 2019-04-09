@@ -312,7 +312,7 @@ export class PeItLayerComponent implements AfterViewInit, OnDestroy {
 
                 const min = new Cesium.JulianDate(minMax.min.julianDay, 0, Cesium.TimeStandard.TAI);
                 const max = new Cesium.JulianDate(minMax.max.getDateTime()
-                    .getEndOf(minMax.max.duration).getJulianDay(), 86400, Cesium.TimeStandard.TAI);
+                    .getEndOf(minMax.max.duration).getJulianDay(), 86399, Cesium.TimeStandard.TAI);
 
                 const minStr = Cesium.JulianDate.toIso8601(min);
                 const maxStr = Cesium.JulianDate.toIso8601(max);

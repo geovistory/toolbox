@@ -48,7 +48,10 @@
             </ng-template>
 
             <div *ngIf="visualTypeCtrl.value === 'map'" class="my-3">
-              Map
+              <mat-form-field class="w-100">
+                <gv-map-settings [formControl]="visualSettingsCtrl" #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-map-settings>
+                <!-- <mat-error *ngIf="m.invalid">You must enter a value</mat-error> -->
+              </mat-form-field>
             </div>
 
           </form>
@@ -107,7 +110,16 @@
     <gv-detail-content>
 
       Visualization
+      {{loading$ | async}}
+      <pre>
+        {{queryResByVersion$ | async | json:2}}
+      </pre>
 
+      Settings
+      <pre>
+          {{visualSettingsCtrl.value | json:2}}
+        </pre>
+  
     </gv-detail-content>
 
 

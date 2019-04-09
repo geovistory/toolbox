@@ -1,33 +1,35 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material';
 import { sandboxOf } from 'angular-playground';
-import { MapSettingsComponent } from './map-settings.component';
+import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { VisualsModule } from '../../visuals.module';
-
-
-
+import { MapSettingsComponent } from './map-settings.component';
 
 export default sandboxOf(MapSettingsComponent, {
     declareComponent: false,
     imports: [
         VisualsModule,
         MatFormFieldModule,
-        FormsModule
+        FormsModule,
+        InitStateModule
     ]
 })
     .add('MapSettings | New ', {
         context: {
+            pkProject: 9,
             model: {
                 foo: 'Hello World'
             },
             parentPath: ''
         },
         template: `
+        <gv-init-state [projectFromApi]="pkProject"></gv-init-state>
+
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">
                 <form #f="ngForm" class="gv-grow-1">
                     <mat-form-field class="w-100">
-                        <gv-map-settings placeholder="Enter Foo" name="mapSettings" [(ngModel)]="model" #m="ngModel" required></gv-map-settings>
+                        <gv-map-settings placeholder="Enter Foo" name="mapSettings" [(ngModel)]="model" #m="ngModel" #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-map-settings>
                         <mat-error *ngIf="m.invalid">You must enter a value</mat-error>
                     </mat-form-field>
                 </form>

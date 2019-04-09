@@ -27,10 +27,15 @@ import { ProjectsModule } from './modules/projects/projects.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
 import { AngularSplitModule } from 'angular-split';
+import { MccColorPickerModule } from 'material-community-components';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions } from '@angular/material';
 
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
 
+const appearance: MatFormFieldDefaultOptions = {
+  appearance: 'standard'
+};
 
 registerLocaleData(localeDeCh);
 
@@ -53,6 +58,7 @@ registerLocaleData(localeDeCh);
     TreeviewModule.forRoot(),
     SocketIoModule.forRoot(socketConfig),
     AngularSplitModule.forRoot(),
+    MccColorPickerModule.forRoot({}),
     NotificationsModule,
     LoadingBarModule,
     BrowserModule,
@@ -75,7 +81,12 @@ registerLocaleData(localeDeCh);
     ActiveAccountService,
     AuthGuard,
     SystemAdminGuard,
-    { provide: LOCALE_ID, useValue: 'de-CH' }
+    { provide: LOCALE_ID, useValue: 'de-CH' },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: appearance
+    }
+
   ],
   entryComponents: [
     AppComponent

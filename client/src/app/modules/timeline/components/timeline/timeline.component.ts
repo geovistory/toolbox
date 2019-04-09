@@ -1,11 +1,10 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, Output, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Timeline, TimeLineData, TimeLineRow, TimeLineSettings, RangeChangeEvent } from '../../models/timeline';
-import { D3Service } from '../../shared/d3.service';
+import { NgRedux } from '@angular-redux/store';
+import { ChangeDetectorRef, Component, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { takeUntil, throttle, audit } from 'rxjs/operators';
+import { interval, Subject } from '../../../../../../node_modules/rxjs';
 import { IAppState } from '../../../../core';
-import { NgRedux, WithSubStore, select } from '@angular-redux/store';
-import { TimeLineApiActions } from './api/timeline.actions';
-import { timeLineApiReducer } from './api/timeline.reducer';
-import { Observable, Subject, combineLatest } from '../../../../../../node_modules/rxjs';
+import { RangeChangeEvent, Timeline, TimeLineData, TimeLineRow } from '../../models/timeline';
+import { D3Service } from '../../shared/d3.service';
 
 export interface TimelineOptions {
   width: number,
@@ -29,28 +28,26 @@ export interface TimelineOptions {
   cursorPosition?: number; // julian day in seconds
 }
 
-@WithSubStore({
-  basePathMethodName: 'getBasePath',
-  localReducer: timeLineApiReducer
-})
 @Component({
   selector: 'gv-timeline',
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.scss'],
-  
+
 })
-export class TimelineComponent extends TimeLineApiActions implements OnInit, OnChanges, OnDestroy {
-  @Input() path: string[];
+export class TimelineComponent implements OnInit, OnChanges, OnDestroy {
   @Input() data: TimeLineData;
 
-  @select() cursorPosition$: Observable<number>;
-  @select() domainStart$: Observable<number>;
-  @select() domainEnd$: Observable<number>;
+  @Input() cursorPosition: number;
+  @Input() domainStart: number;
+  @Input() domainEnd: number;
 
   @Output() rowMouseEnter = new EventEmitter<TimeLineRow>();
   @Output() rowMouseLeave = new EventEmitter<TimeLineRow>();
   @Output() rowClick = new EventEmitter<TimeLineRow>();
   @Output() domainChange = new EventEmitter<{ domainStart: number, domainEnd: number }>();
+
+  @Output() cursorChange = new EventEmitter<number>();
+  @Output() extendChange = new EventEmitter<{ firstJulianSecond: number, lastJulianSecond: number }>();
 
   @HostBinding('style.width') outerWidth = '100%';
 
@@ -78,6 +75,8 @@ export class TimelineComponent extends TimeLineApiActions implements OnInit, OnC
 
   destroy$ = new Subject<boolean>();
 
+  cursorChangeByDrag$ = new Subject<number>();
+
   get options() {
     const rowsHeight = this._options.rowHeight * this.data.rows.length + 7;
     this._options.bodyHeight = this._options.bodyMaxHeight < rowsHeight ? this._options.bodyMaxHeight : rowsHeight;
@@ -91,31 +90,19 @@ export class TimelineComponent extends TimeLineApiActions implements OnInit, OnC
     private ngRedux: NgRedux<IAppState>,
     private ref: ChangeDetectorRef
   ) {
-    super()
+
+    // Limits the frame rate when user drags the cursor
+    this.cursorChangeByDrag$.pipe(audit(() => interval(40)), takeUntil(this.destroy$)).subscribe(pos => {
+      const newPos = this.timeline.changeCursorPosition(pos);
+
+      if (this.timeline.options.cursorPosition !== newPos) {
+        this.drawAndEmitCursorPosition(newPos)
+      }
+    })
+
   }
 
-  getBasePath = () => this.path;
-
   ngOnInit() {
-    // Subscribe to cursorPosition changes
-    this.cursorPosition$.takeUntil(this.destroy$).subscribe(pos => {
-      if (pos && this.options.cursorPosition !== pos) {
-        this.options.cursorPosition = pos;
-        this.initTimeline()
-      }
-    })
-
-    // Subscribe to extent changes
-    combineLatest(this.domainStart$, this.domainEnd$).takeUntil(this.destroy$).subscribe(res => {
-      if (
-        (res[0] && res[1]) &&
-        (this.options.domainStart !== res[0] || this.options.domainEnd !== res[1])
-      ) {
-        this.options.domainStart = res[0];
-        this.options.domainEnd = res[1];
-        this.initTimeline()
-      }
-    })
 
   }
 
@@ -124,7 +111,17 @@ export class TimelineComponent extends TimeLineApiActions implements OnInit, OnC
       this.data = this.data ? this.data : { rows: [] };
       this.initTimeline()
     }
+
+    if (simpleChanges['cursorPosition']) {
+      this.drawCursorPosition(this.cursorPosition);
+    }
+
+    if (simpleChanges['domainStart'] || simpleChanges['domainEnd']) {
+      this.drawExtent(this.domainStart, this.domainEnd);
+    }
+
   }
+
 
 
   initTimeline() {
@@ -140,9 +137,10 @@ export class TimelineComponent extends TimeLineApiActions implements OnInit, OnC
 
       if (!this.options.cursorPosition) {
         this.setCursorPosition(e.firstSecond + ((e.lastSecond - e.firstSecond) / 2))
+        this.emitCursorPosition(this.options.cursorPosition);
       }
 
-      this.setExtent(e.firstSecond, e.lastSecond);
+      this.drawAndEmitExtent(e.firstSecond, e.lastSecond);
 
     } else {
 
@@ -164,7 +162,7 @@ export class TimelineComponent extends TimeLineApiActions implements OnInit, OnC
     const newWidth = event.dimensions.width - 17;
     if (this.options.width !== newWidth) {
       this._options.width = newWidth;
-      this.timeline.init(this.options)
+      if (this.timeline) this.timeline.init(this.options)
       this.ref.detectChanges()
     }
   }
@@ -179,34 +177,32 @@ export class TimelineComponent extends TimeLineApiActions implements OnInit, OnC
 
   onDragEnd() {
     this.isDragged = false;
-    this.setExtent(this.timeline.options.domainStart, this.timeline.options.domainEnd);
+    this.emitExtent(this.timeline.options.domainStart, this.timeline.options.domainEnd);
   }
 
   changeCursorPosition(event: RangeChangeEvent) {
     if (event.type == 'mousemove') this.isDragged = true;
     if (event.type == 'mouseup') this.isDragged = false;
 
-    const newPos = this.timeline.changeCursorPosition(event.range);
-
-    if (this.timeline.options.cursorPosition !== newPos) {
-      this.setCursorPosition(newPos)
-    }
+    this.cursorChangeByDrag$.next(event.range)
   }
+
+
 
 
   zoomIn() {
     const e = this.timeline.getZoomInExtent()
-    this.setExtent(e.firstSecond, e.lastSecond);
+    this.emitExtent(e.firstSecond, e.lastSecond);
   }
 
   zoomOut() {
     const e = this.timeline.getZoomOutExtent()
-    this.setExtent(e.firstSecond, e.lastSecond);
+    this.emitExtent(e.firstSecond, e.lastSecond);
   }
 
   zoomToExtent() {
     const e = Timeline.getExtent(this.data.rows, this.options);
-    this.setExtent(e.firstSecond, e.lastSecond);
+    this.emitExtent(e.firstSecond, e.lastSecond);
   }
 
 
@@ -222,6 +218,54 @@ export class TimelineComponent extends TimeLineApiActions implements OnInit, OnC
   }
   onRowClick(row: TimeLineRow) {
     this.rowClick.emit(row)
+  }
+
+
+
+  private emitCursorPosition(d: number) {
+    this.cursorChange.emit(d)
+  }
+
+  private emitExtent(firstJulianSecond: number, lastJulianSecond: number) {
+    this.extendChange.emit({ firstJulianSecond, lastJulianSecond })
+  }
+
+  /**
+ * check if init is neded
+ */
+  private drawExtent(domainStart, domainEnd) {
+    if ((domainStart && domainEnd) &&
+      (this.options.domainStart !== domainStart || this.options.domainEnd !== domainEnd)) {
+      this.options.domainStart = domainStart;
+      this.options.domainEnd = domainEnd;
+      this.initTimeline();
+    }
+  }
+  /**
+   * retruns true, if position was different from previous val
+   * @param position 
+   */
+  private setCursorPosition(position): boolean {
+    if (position && this.options.cursorPosition !== position) {
+      this.options.cursorPosition = position;
+      return true;
+    }
+    return false;
+  }
+  private drawCursorPosition(position) {
+    if (this.setCursorPosition(position)) {
+      this.initTimeline();
+    }
+  }
+
+  private drawAndEmitCursorPosition(p: number) {
+    this.drawCursorPosition(p)
+    this.emitCursorPosition(p)
+  }
+
+  private drawAndEmitExtent(firstJulianSecond: number, lastJulianSecond: number) {
+    this.drawExtent(firstJulianSecond, lastJulianSecond)
+    this.emitExtent(firstJulianSecond, lastJulianSecond)
   }
 
 }

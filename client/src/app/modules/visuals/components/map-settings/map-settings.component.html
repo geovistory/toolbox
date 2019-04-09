@@ -15,7 +15,7 @@
 
     <mat-accordion cdkDropList (cdkDropListDropped)="dropQueryLayer($event)">
 
-        <mat-expansion-panel cdkDrag *ngFor="let d of dynamicQueryLayerCtrls; let i = index">
+        <mat-expansion-panel cdkDrag *ngFor="let d of dynamicQueryLayerCtrls; let i = index; trackBy:trackByfn">
             <mat-expansion-panel-header>
                 <mat-panel-title cdkDragHandle>
                     <div class="d-flex">
@@ -25,11 +25,11 @@
                          </div>
                     </div>
                 </mat-panel-title>
-                <!-- <mat-panel-description>
-                                Type your name and age
-                </mat-panel-description> -->
+                <mat-panel-description> 
+                    <span *ngIf="d.ctrl.invalid" class="mat-text-warn">Invalid!</span>
+                </mat-panel-description>
             </mat-expansion-panel-header>
-            <gv-map-query-layer-settings [formControl]="d.ctrl"></gv-map-query-layer-settings>
+            <gv-map-query-layer-settings [formControl]="d.ctrl" #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-map-query-layer-settings>
             <mat-action-row>
                     <button mat-flat-button color="warn" (click)="removeQueryLayerCtrl(i)">Remove Layer</button>
             </mat-action-row>

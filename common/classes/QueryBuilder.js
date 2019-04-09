@@ -4,6 +4,17 @@ class QueryBuilder {
 
 
     constructor() {
+        this.PK_HISTC8_GEOGRAPHICAL_PLACE = 363;
+        this.PK_HISTC11_BUILT_WORK = 441;
+        this.GEO_CLASSES = {
+            [this.PK_HISTC8_GEOGRAPHICAL_PLACE]: true,
+            [this.PK_HISTC11_BUILT_WORK]: true
+        }
+
+        // Properties inherited from 'P166 was a presence of' 
+        // connecting E93 Presence and 'Built Work' or 'Geographical Place'
+        this.P166_INHERITED_PKS = [1184, 1181]
+
         this.PK_E93_PRESENCE = 84;
         this.PK_P167_WAS_AT = 148;
 
@@ -124,8 +135,8 @@ class QueryBuilder {
                     this.joinRoles(segment, leftTableAlias, thisTableAlias, fkProject);
                 }
                 // JOIN Presences
-                else if (this.isPresenceJoin(segment)) {
-                    this.joinPresences(segment, leftTableAlias, thisTableAlias, fkProject)
+                else if (this.isGeoEntityJoin(segment)) {
+                    this.joinGeoEntity(segment, leftTableAlias, thisTableAlias, fkProject)
                 }
                 // JOIN entities
                 else if (this.isEntitesJoin(segment)) {
@@ -170,7 +181,7 @@ class QueryBuilder {
         if (this.isRolesJoin(segment)) {
 
         }
-        else if (this.isPresenceJoin(segment)) {
+        else if (this.isGeoEntityJoin(segment)) {
             this.selects.push(`COALESCE(json_agg( distinct jsonb_build_object(
                 'pk_entity', ${segment._tableAlias}.pk_entity,
                 'entity_type', ${segment._tableAlias}.entity_type,
@@ -178,8 +189,7 @@ class QueryBuilder {
                 'class_label', ${segment._tableAlias}.class_label,
                 'type_label', ${segment._tableAlias}.type_label,
                 'time_span', ${segment._tableAlias}.time_span,
-                'lat', ${segment._tableAlias}_place.lat,
-                'long', ${segment._tableAlias}_place.long
+                'presences', ${segment._tableAlias}.presences
               )
            ) FILTER (WHERE ${segment._tableAlias}.pk_entity IS NOT NULL), '[]') AS "${columnLabel}"`)
         }
@@ -239,24 +249,68 @@ class QueryBuilder {
                 `);
     }
 
-    joinPresences(node, parentTableAlias, thisTableAlias, fkProject) {
+    joinGeoEntity(node, parentTableAlias, thisTableAlias, fkProject) {
+
+        const has_presence = thisTableAlias + '_has_presence';
+        const presence = thisTableAlias + '_presence';
+        const was_at = thisTableAlias + '_was_at';
+        const place = thisTableAlias + '_place';
+
         this.froms.push(`    
-                    -- E93 PRESENCE		
-                    LEFT JOIN warehouse.entity_preview ${thisTableAlias} ON
-                    (${parentTableAlias}.fk_entity = ${thisTableAlias}.pk_entity OR ${parentTableAlias}.fk_temporal_entity = ${thisTableAlias}.pk_entity)
-                    AND
-                     ${this.createEntityWhere(node, thisTableAlias, fkProject)}
-                     -- JOIN E53 Place (GEO COORDINATES)
-                     LEFT JOIN warehouse.v_roles_per_project_and_repo t_9_was_at ON t_9_was_at.fk_project = ${this.addParam(fkProject)}
-                     AND (
-                       (
-                         t_9.pk_entity = t_9_was_at.fk_temporal_entity
-                         AND t_9_was_at.fk_property IN (${this.addParam(this.PK_P167_WAS_AT)})
-                       )
-                     )
-                     LEFT JOIN information.v_place t_9_place ON t_9_was_at.fk_entity = t_9_place.pk_entity
-                     -- END OF E93 PRESENCE
-                `);
+
+            -- PEIT GEO ENTITY
+            LEFT JOIN (
+                SELECT 
+                ${thisTableAlias}.*, 
+                (
+                    SELECT jsonb_agg(${presence})
+                    -- ROLE P166 HAS PRESENCE
+                    FROM warehouse.v_roles_per_project_and_repo ${has_presence} 
+                    -- E93 PRESENCE
+                    LEFT JOIN (
+                        SELECT ${presence}.pk_entity, ${presence}.fk_project, ${presence}.fk_class, ${presence}.time_span,
+                        ( 
+                            SELECT COALESCE(
+                            json_agg(
+                                distinct jsonb_build_object(	
+                                'lat',
+                                ${place}.lat,
+                                'long',
+                                ${place}.long
+                                )
+                            ) FILTER ( WHERE ${place}.pk_entity IS NOT NULL ),
+                            '[]'
+                            ) AS place	  
+                            FROM 
+                            -- ROLE P167 WAS AT
+                            warehouse.v_roles_per_project_and_repo ${was_at}
+                            -- PLACE
+                            LEFT JOIN information.v_place ${place} ON ${was_at}.fk_entity = ${place}.pk_entity
+        
+                            WHERE ${was_at}.fk_project = ${this.addParam(fkProject)} 
+                            AND ${presence}.pk_entity = ${was_at}.fk_temporal_entity
+                            AND ${was_at}.fk_property IN (${this.addParam(this.PK_P167_WAS_AT)}) -- ROLE P167 WAS AT
+                        )  AS was_at
+                        FROM warehouse.entity_preview ${presence} 
+                        WHERE ${presence}.fk_project = ${this.addParam(fkProject)}
+                        AND ${presence}.fk_class IS NOT NULL
+                        AND ${presence}.fk_class IN (${this.addParam(this.PK_E93_PRESENCE)}) -- E93 Presence
+                    ) AS ${presence} ON ${presence}.pk_entity = ${has_presence}.fk_temporal_entity
+                    WHERE ${has_presence}.fk_project = ${this.addParam(fkProject)}
+                    AND (
+                    (
+                        ${thisTableAlias}.pk_entity = ${has_presence}.fk_entity
+                        AND ${has_presence}.fk_property IN (${this.addParams(this.P166_INHERITED_PKS)})
+                    )
+                    ) 
+                ) as presences
+                FROM warehouse.entity_preview ${thisTableAlias} 
+                WHERE ${thisTableAlias}.fk_project = ${this.addParam(fkProject)}
+                AND ${this.createEntityWhere(node, thisTableAlias, fkProject)}
+                 
+                
+        ) AS ${thisTableAlias} ON ${parentTableAlias}.fk_entity = ${thisTableAlias}.pk_entity                                
+        `);
     }
 
     joinRoles(node, parentTableAlias, thisTableAlias, fkProject) {
@@ -393,19 +447,21 @@ class QueryBuilder {
     }
 
     /**
-     * Returns true, if given node is for joining E93 Presences (and no other classes)
+     * Returns true, if given node is for joining GeoEntities (and no other classes)
      * @param {*} node 
      */
-    isPresenceJoin(node) {
+    isGeoEntityJoin(node) {
         if (this.isEntitesJoin) {
             const classes = node.data.classes;
             const types = node.data.types;
 
-            const presences = classes.filter(pk => (pk === this.PK_E93_PRESENCE));
-            const noTypes = (!types || !types.length);
+            const geoClasses = classes.filter(pk => (!!this.GEO_CLASSES[pk]));
+            // const noTypes = (!types || !types.length);
 
-            // if all selected classes are E93 Presence and no types are selected
-            if (presences.length > 0 && presences.length === classes.length && noTypes) {
+            // if all selected classes are GeoClasses and no types are selected
+            if (geoClasses.length > 0 && geoClasses.length === classes.length
+                //  && noTypes
+            ) {
                 return true
             }
         }

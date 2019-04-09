@@ -10,6 +10,7 @@ import { QueryPathSegment, QueryPathSegmentType } from '../col-def-editor/col-de
 import { PropertyPathSegmentComponent, propertyPathSegmentRequiredValidator } from '../property-path-segment/property-path-segment.component';
 import { PropertyOption } from '../property-select/property-select.component';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { QueryService } from '../../services/query.service';
 
 
 
@@ -117,8 +118,6 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
 
   get showAddBtn() {
 
-    if (this.isE93Presence) return false;
-
     if (this.dynamicFormControls.length === 0) return false;
 
     if (this.dynamicFormControls[this.dynamicFormControls.length - 1].ctrl.valid) return true;
@@ -126,23 +125,11 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
     else return false;
   }
 
-  get isE93Presence() {
+  get isGeo() {
     if (this.dynamicFormControls.length === 0) return false;
     const ctrl = this.dynamicFormControls[this.dynamicFormControls.length - 1].ctrl
-    if (ctrl.valid && ctrl.value.data) {
-      const classPks = ctrl.value.data.classes || [];
-
-
-      const classes = ctrl.value.data.classes || [];
-      const types = ctrl.value.data.types || [];
-
-      const presences = classes.filter(pk => (pk === DfhConfig.CLASS_PK_PRESENCE));
-      const noTypes = (!types || !types.length);
-
-      // if all selected classes are E93 Presence and no types are selected
-      if (presences.length > 0 && presences.length === classes.length && noTypes) {
-          return true
-      }
+    if (ctrl.valid && ctrl.value) {
+     return this.q.pathSegmentIsGeo(ctrl.value)
     }
 
     return false;
@@ -151,7 +138,8 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
 
   constructor(
     @Optional() @Self() public ngControl: NgControl,
-    fb: FormBuilder
+    fb: FormBuilder,
+    private q: QueryService
   ) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;

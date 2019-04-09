@@ -1,0 +1,31 @@
+<as-split class="gv-split-style" [direction]="'vertical'" gutterSize="1" [useTransition]="true">
+  <as-split-area [size]="50" class="d-flex flex-column">
+
+    <ac-map [ngClass]="{ 'd-none': isLoading, 'gv-grow-1 d-flex flex-column': (!isLoading) }">
+
+      <!-- <ac-map-layer-provider [provider]="urlTemplateProvider" [options]="{
+            subdomains: 'abc',
+            url : cartoUrl
+          }">
+      </ac-map-layer-provider> -->
+
+      <!-- <ac-map-layer-provider [provider]="urlTemplateProvider" [options]="{
+            url : asterUrl
+          }" [alpha]="0.3"> </ac-map-layer-provider> -->
+
+      <gv-map-query-layer *ngFor="let l of (queryLayers$ | async); trackBy:trackByfn" [data]="l" [acMap]="acMap">
+      </gv-map-query-layer>
+
+      <!-- <gv-polygons-editor-layer></gv-polygons-editor-layer> -->
+    </ac-map>
+
+  </as-split-area>
+  <as-split-area [size]="50" class="d-flex flex-column">
+
+    <gv-timeline class="border border-primary p-3" [data]="timeLineData"
+      [cursorPosition]="timeLineSettings?.cursorPosition" [domainStart]="timeLineSettings?.domainStart"
+      [domainEnd]="timeLineSettings?.domainEnd" (cursorChange)="timelineSettings['cursorPosition'] = $event">
+    </gv-timeline>
+
+  </as-split-area>
+</as-split>

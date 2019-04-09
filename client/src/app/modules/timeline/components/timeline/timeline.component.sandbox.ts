@@ -26,38 +26,44 @@ export default sandboxOf(TimelineComponent, {
   .add('State: Flex-Item', {
     context: {
       timeLineData,
-      state: {
-        timelineSettings: {
-        } as TimeLineSettings
-      }
+      timelineSettings: {
+      } as TimeLineSettings
     },
     template: `
-    <gv-init-state [sandboxState]="state"></gv-init-state>
 
-    <div class="d-flex">
+    <div class="d-flex mx-3">
 
       <div class="d-flex flex-column mt-5 gv-grow-1" style="overflow:hidden">
 
         <div class="p-3 border"> some flex item </div>
 
-          <gv-timeline class="border border-primary p-3" [data]="timeLineData" [path]="['timelineSettings']"></gv-timeline>
-
-        <div class="p-3 border"> some flex item </div>
-
-      </div> 
-      
-      
-      <div class="d-flex flex-column mt-5">
-
-        <div class="p-3 border"> some flex item </div>
-
-          <gv-timeline class="border border-primary p-3" [data]="timeLineData" [path]="['timelineSettings']"></gv-timeline>
+          <gv-timeline class="border border-primary p-3"
+          [data]="timeLineData"
+          [cursorPosition]="timeLineSettings?.cursorPosition"
+          [domainStart]="timeLineSettings?.domainStart"
+          [domainEnd]="timeLineSettings?.domainEnd"
+          (cursorChange)="timelineSettings['cursorPosition'] = $event"
+          ></gv-timeline>
 
         <div class="p-3 border"> some flex item </div>
 
       </div>
 
-    </div>
+
+      <div class="d-flex flex-column mt-5">
+
+        <div class="p-3 border"> some flex item </div>
+
+          <gv-timeline class="border border-primary p-3" [data]="timeLineData"></gv-timeline>
+
+        <div class="p-3 border"> some flex item </div>
+
+      </div>
+
+      </div>
+      <div>
+        cursorPosition: {{timelineSettings.cursorPosition}}
+      </div>
 
 
     `

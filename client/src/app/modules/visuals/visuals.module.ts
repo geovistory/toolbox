@@ -18,13 +18,22 @@ import { VisualListComponent } from './containers/visual-list/visual-list.compon
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MccColorPickerModule } from 'material-community-components';
 import { ControlMessagesModule } from 'app/shared';
+import { ValidationDirectivesModule } from 'app/core';
+import { MapVisualComponent } from './components/map-visual/map-visual.component';
+import { MapVisualDemoComponent } from './components/map-visual-demo/map-visual-demo.component';
+import { GvAngularCesiumModule } from '../gv-angular-cesium/angular-cesium.module';
+import { MapQueryLayerComponent } from './components/map-query-layer/map-query-layer.component';
 
 const components = [
   VisualDetailComponent,
   VisualListComponent,
   MapSettingsComponent,
   MapQueryLayerSettingsComponent,
-  MapBackgroundSettingsComponent
+  MapBackgroundSettingsComponent,
+  MapVisualComponent,
+  MapVisualDemoComponent,
+  MapQueryLayerComponent,
+  TimelineVisualComponent
 ]
 
 @NgModule({
@@ -45,7 +54,9 @@ const components = [
     DragDropModule,
     ListDrawerHeaderModule,
     MccColorPickerModule,
-    ControlMessagesModule
+    ControlMessagesModule,
+    ValidationDirectivesModule,
+    GvAngularCesiumModule
   ],
   providers: [
     VisualListAPIActions,

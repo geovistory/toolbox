@@ -19,10 +19,10 @@ export default sandboxOf(MapQueryLayerSettingsComponent, {
 })
     .add('MapQueryLayerSettings | Preset ', {
         context: {
-            pkProject: 12,
+            pkProject: 9,
             model: {
-                queryPk: 665,
-                queryVersion: 14
+                queryPk: 633,
+                queryVersion: 2
             } as MapQueryLayerSettings,
             parentPath: ''
         },
@@ -34,7 +34,7 @@ export default sandboxOf(MapQueryLayerSettingsComponent, {
                 <form #f="ngForm" class="gv-grow-1">
                     <mat-form-field class="w-100" appearance="outline">
                         <gv-map-query-layer-settings placeholder="Enter Foo" name="controlName" [(ngModel)]="model"
-                        #m="ngModel" required></gv-map-query-layer-settings>
+                        #m="ngModel"  #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-map-query-layer-settings>
                         <mat-error *ngIf="m.invalid">You must enter a value</mat-error>
                     </mat-form-field>
                 </form>
@@ -59,11 +59,10 @@ export default sandboxOf(MapQueryLayerSettingsComponent, {
 
     .add('MapQueryLayerSettings | Preset Old Query Version ', {
         context: {
-            pkProject: 12,
+            pkProject: 9,
             model: {
-                queryPk: 665,
-                queryVersion: 10
-
+                queryPk: 633,
+                queryVersion: 1
             } as MapQueryLayerSettings,
             parentPath: ''
         },
@@ -73,11 +72,8 @@ export default sandboxOf(MapQueryLayerSettingsComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">
                 <form #f="ngForm" class="gv-grow-1">
-                    <mat-form-field class="w-100" appearance="outline">
-                        <gv-map-query-layer-settings placeholder="Enter Foo" name="controlName" [(ngModel)]="model"
-                        #m="ngModel" required></gv-map-query-layer-settings>
-                        <mat-error *ngIf="m.invalid">You must enter a value</mat-error>
-                    </mat-form-field>
+                    <gv-map-query-layer-settings placeholder="Enter Foo" name="controlName" [(ngModel)]="model"
+                    #m="ngModel"  #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-map-query-layer-settings>
                 </form>
             </div>
             <div>
