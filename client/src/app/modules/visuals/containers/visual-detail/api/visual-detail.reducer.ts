@@ -82,7 +82,8 @@ export function visualDetailReducer(state: VisualDetail = INITIAL_STATE, a: Acti
     case VisualDetailAPIActions.SAVE_SUCCEEDED:
       state = {
         ...state,
-        pkEntity: action.meta.comVisual.pk_entity
+        pkEntity: action.meta.comVisual.pk_entity,
+        deleted: false,
       };
       break;
 
