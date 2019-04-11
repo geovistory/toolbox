@@ -126,7 +126,7 @@ export class ComQueryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Run a query.
+   * Find queries of project.
    *
    * @param {number} pkProject Pk of the project
    *

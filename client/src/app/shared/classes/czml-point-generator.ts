@@ -122,8 +122,8 @@ export class CzmlPointGenerator implements CzmlPointGeneratorSettings {
             throw new Error('Please provide minVal and maxVal for creating point pixelSize.');
         }
 
-        if (value <= this.minVal) return this.minPx;
-        return ((this.maxPx - this.minPx) / ((this.maxVal - this.minVal) * value)) + this.minPx;
+        // if (value <= this.minVal) return this.minPx;
+        return (((this.maxPx - this.minPx) * value) / (this.maxVal - this.minVal)) + this.minPx;
     }
 
 

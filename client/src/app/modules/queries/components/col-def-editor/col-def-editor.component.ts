@@ -1,10 +1,13 @@
-import { Component, OnInit, Input, OnDestroy, Optional, Self, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Optional, Self, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Observable, Subject } from 'rxjs';
 import { ControlValueAccessor, NgControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { keys } from 'ramda';
+import { QueryPathMetaInfo } from '../query-path-control/query-path-control.component';
+import { PropertyOption } from '../property-select/property-select.component';
+import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
 
 export type QueryPathSegmentType = 'properties' | 'classes';
 
@@ -49,7 +52,8 @@ export class ColDef {
 
 interface DynamicFormControl {
   key: string,
-  ctrl: FormControl
+  ctrl: FormControl,
+  meta?: QueryPathMetaInfo
 }
 
 // tslint:disable: member-ordering
@@ -68,6 +72,7 @@ class ColDefEditorMatControl implements OnDestroy, ControlValueAccessor, MatForm
   // tslint:disable-next-line: no-use-before-declare
   id = `col-def-editor-${ColDefEditorComponent.nextId++}`;
   describedBy = '';
+
   onChange = (_: any) => { };
   onTouched = () => { };
 
@@ -206,7 +211,8 @@ class ColDefEditorMatControl implements OnDestroy, ControlValueAccessor, MatForm
   }
 })
 export class ColDefEditorComponent extends ColDefEditorMatControl implements OnInit {
-  @Input() propertyOptions$: Observable<number[]>;
+  @Input() propertyOptions$: Observable<PropertyOption[]>;
+  @Input() classesAndTypes$: Observable<ClassAndTypeSelectModel>;
   @Input() model: ColDef[];
   @Input() colDefs: ColDef[]; // TODO remove this line
 
@@ -275,5 +281,15 @@ export class ColDefEditorComponent extends ColDefEditorMatControl implements OnI
   onFocus() {
     this.focus.emit()
     this.focused = true;
+  }
+
+  /**
+   * 
+   * @param i index of dynamic form control
+   * @param e meta info about that control
+   */
+  onMetaInfoChange(i: number, e: QueryPathMetaInfo) {
+    this.dynamicFormControls[i].meta = e;
+    // this.ref.detectChanges()
   }
 }

@@ -22,6 +22,16 @@ export function visualDetailReducer(state: VisualDetail = INITIAL_STATE, a: Acti
       break;
 
     /*****************************************************
+    * Set pkEntity
+    *****************************************************/
+    case VisualDetailAPIActions.SET_PK_ENTITY:
+      state = {
+        ...state,
+        pkEntity: action.meta.pkEntity
+      };
+      break;
+
+    /*****************************************************
     * Load existing visual
     *****************************************************/
     case VisualDetailAPIActions.LOAD_PREVIEW:
@@ -65,6 +75,26 @@ export function visualDetailReducer(state: VisualDetail = INITIAL_STATE, a: Acti
           ...state.queryResVersionLoading,
           [key]: true
         }
+      };
+      break;
+
+
+    case VisualDetailAPIActions.SAVE_SUCCEEDED:
+      state = {
+        ...state,
+        pkEntity: action.meta.comVisual.pk_entity
+      };
+      break;
+
+    /*****************************************************
+    * Delete
+    *****************************************************/
+    case VisualDetailAPIActions.DELETE_SUCCEEDED:
+      state = {
+        ...state,
+        deleted: true,
+        pkEntity: undefined,
+        tabTitle: state.tabTitle + ' (Deleted)'
       };
       break;
 

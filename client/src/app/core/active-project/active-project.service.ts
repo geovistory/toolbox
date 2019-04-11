@@ -5,7 +5,7 @@ import { groupBy, indexBy, without, flatten, path, difference } from 'ramda';
 import { combineLatest, Observable, BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ComQuery } from '../sdk';
+import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ComQuery, ComVisual } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { ComProject } from '../sdk/models/ComProject';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
@@ -29,6 +29,8 @@ export class ActiveProjectService {
   public typesByPk$: Observable<TypesByPk>
   public comQueryVersionsByPk$: Observable<EntityVersionsByPk<ComQuery>>
   public comQueryLoading$: Observable<boolean>
+  public comVisualVersionsByPk$: Observable<EntityVersionsByPk<ComVisual>>
+  public comVisualLoading$: Observable<boolean>
 
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
@@ -55,6 +57,9 @@ export class ActiveProjectService {
     this.typesByPk$ = ngRedux.select<TypesByPk>(['activeProject', 'typesByPk']);
     this.comQueryVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ComQuery>>(['activeProject', 'comQueryVersionsByPk']);
     this.comQueryLoading$ = ngRedux.select<boolean>(['activeProject', 'comQueryLoading']);
+    this.comVisualVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ComVisual>>(['activeProject', 'comVisualVersionsByPk']);
+    this.comVisualLoading$ = ngRedux.select<boolean>(['activeProject', 'comVisualLoading']);
+
 
     this.focusedPanel$ = ngRedux.select<boolean>(['activeProject', 'focusedPanel']);
     this.creatingMentioning$ = ngRedux.select<boolean>(['activeProject', 'creatingMentioning']);
@@ -331,6 +336,13 @@ export class ActiveProjectService {
     );
   }
 
+  reloadTypesForClassesInProject() {
+    this.classesInProject$.pipe(first(([classes]) => !!classes))
+      .subscribe((classesInProject) => {
+        this.streamTypePreviewsByClass(classesInProject)
+      })
+  }
+
   loadQueries() {
     this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
       this.ngRedux.dispatch(this.actions.loadQueries(pk))
@@ -339,12 +351,40 @@ export class ActiveProjectService {
   }
 
   loadQueryVersion(pkEntity: number, entityVersion: number) {
-    this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-      this.ngRedux.dispatch(this.actions.loadQueryVersion(pk, pkEntity, entityVersion))
-    })
+    const state = this.ngRedux.getState();
+
+    if (
+      pkEntity && entityVersion &&
+      // if not yet loading
+      (!state.activeProject
+        || !state.activeProject.comQueryVersionLoading
+        || !state.activeProject.comQueryVersionLoading[pkEntity + '_' + entityVersion]
+      )) {
+      this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
+        this.ngRedux.dispatch(this.actions.loadQueryVersion(pk, pkEntity, entityVersion))
+      })
+    }
     return this.comQueryVersionsByPk$;
   }
 
+  loadVisuals() {
+    this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
+      this.ngRedux.dispatch(this.actions.loadVisuals(pk))
+    })
+    return this.comVisualVersionsByPk$;
+  }
+
+  /**
+   * Loads one specific visual version 
+   * @param pkEntity pk_entity of visual
+   * @param entityVersion if no entity_version provided, returns latest version
+   */
+  loadVisualVersion(pkEntity: number, entityVersion: number = null) {
+    this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
+      this.ngRedux.dispatch(this.actions.loadVisualVersion(pk, pkEntity, entityVersion))
+    })
+    return this.comVisualVersionsByPk$;
+  }
 
   getClassConfig(pkClass): Observable<ClassConfig> {
     return this.ngRedux.select<ClassConfig>(['activeProject', 'crm', 'classes', pkClass])

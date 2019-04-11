@@ -192,17 +192,17 @@ export class TimelineComponent implements OnInit, OnChanges, OnDestroy {
 
   zoomIn() {
     const e = this.timeline.getZoomInExtent()
-    this.emitExtent(e.firstSecond, e.lastSecond);
+    this.drawExtent(e.firstSecond, e.lastSecond);
   }
 
   zoomOut() {
     const e = this.timeline.getZoomOutExtent()
-    this.emitExtent(e.firstSecond, e.lastSecond);
+    this.drawExtent(e.firstSecond, e.lastSecond);
   }
 
   zoomToExtent() {
     const e = Timeline.getExtent(this.data.rows, this.options);
-    this.emitExtent(e.firstSecond, e.lastSecond);
+    this.drawExtent(e.firstSecond, e.lastSecond);
   }
 
 

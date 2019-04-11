@@ -1,13 +1,15 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, AfterViewInit } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, Validators } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
 import { ActiveProjectService, ComQuery, latestEntityVersions, ValidationService } from 'app/core';
+import { ColDef, QueryPathSegment } from 'app/modules/queries/components/col-def-editor/col-def-editor.component';
 import { QueryService } from 'app/modules/queries/services/query.service';
 import { equals, keys, omit, pathOr } from 'ramda';
-import { combineLatest, merge, Observable, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
-import { ColDef } from 'app/modules/queries/components/col-def-editor/col-def-editor.component';
+import { combineLatest, merge, Observable, Subject, pipe, OperatorFunction } from 'rxjs';
+import { filter, map, takeUntil, tap, switchMap, first } from 'rxjs/operators';
+import { FilterTree, FilterTreeData } from 'app/modules/queries/containers/query-detail/query-detail.component';
+import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 
 
 
@@ -17,7 +19,8 @@ export interface QueryPkOption {
 }
 
 export interface ColOption {
-  isE93: boolean
+  isGeo: boolean
+  isTemporal: boolean
   value: string // key of colum in query.columns
   label: string // label of column
 }
@@ -25,7 +28,8 @@ export interface ColOption {
 export interface MapQueryLayerSettings {
   queryPk?: number
   queryVersion?: number
-  geoCol?: string
+  geoCol?: string // column containing Geo Entities, used to create a geometry on the map
+  temporalCol?: string // column containing Temporal Entities, used to define existence per Geo Entity
   entityPreviewCol?: string;
   color?: string // RGB string like #FFFFFF
 }
@@ -41,7 +45,7 @@ export interface MapQueryLayerSettings {
     '[attr.aria-describedby]': 'describedBy',
   }
 })
-export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<MapQueryLayerSettings> {
+export class MapQueryLayerSettingsComponent implements AfterViewInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<MapQueryLayerSettings> {
   static nextId = 0;
   compareFn = equals;
 
@@ -54,7 +58,9 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
   queryVersions$: Observable<number[]>;
   isOldVersion$: Observable<boolean>;
   comQuery$: Observable<ComQuery>;
+  colOptions$: Observable<ColOption[]>;
   geoColOptions$: Observable<ColOption[]>;
+  temporalColOptions$: Observable<ColOption[]>;
 
   entityPreviewCol: string;
 
@@ -130,21 +136,28 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
     return this.geoColCtrl.value
   }
 
+  get temporalCol() {
+    return this.temporalColCtrl.value
+  }
+
 
   get formVal(): MapQueryLayerSettings {
-    return {
+    const mapQueryLayerSettings: MapQueryLayerSettings = {
       queryPk: this.queryPk,
       queryVersion: this.queryVersion,
       color: this.color,
+      entityPreviewCol: this.entityPreviewCol,
       geoCol: this.geoCol,
-      entityPreviewCol: this.entityPreviewCol
+      temporalCol: this.temporalCol
     }
+    return mapQueryLayerSettings;
   }
 
   formGroup: FormGroup;
   queryPkCtrl: FormControl;
   queryVersionCtrl: FormControl;
   geoColCtrl: FormControl;
+  temporalColCtrl: FormControl;
   colorCtrl: FormControl;
   defaultColor = '#EE1690'
 
@@ -162,6 +175,7 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
     this.queryPkCtrl = new FormControl(null, Validators.required)
     this.queryVersionCtrl = new FormControl(null, Validators.required)
     this.geoColCtrl = new FormControl(null, Validators.required)
+    this.temporalColCtrl = new FormControl(null)
     this.colorCtrl = new FormControl(null, ValidationService.hexColorValidator())
 
 
@@ -169,6 +183,7 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
       queryPkCtrl: this.queryPkCtrl,
       queryVersionCtrl: this.queryVersionCtrl,
       geoColCtrl: this.geoColCtrl,
+      temporalColCtrl: this.temporalColCtrl,
       colorCtrl: this.colorCtrl
     })
 
@@ -179,6 +194,9 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
     p.loadQueries();
 
     this.queryOptions$ = p.comQueryVersionsByPk$.pipe(
+      tap(y => {
+        console.log(y)
+      }),
       latestEntityVersions(),
       map(queries => queries.map(q => ({
         value: q.pk_entity,
@@ -191,6 +209,9 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
       merge(this.queryPkCtrl.valueChanges, this.writeValue$),
       p.comQueryVersionsByPk$
     ).pipe(
+      tap(t => {
+        const x = t
+      }),
       filter(([queryPk, comQueries]) => (this.queryPk !== null && !!comQueries)),
       map(([queryPk, comQueries]) => {
         const versions = keys(omit(['_latestVersion'], comQueries[this.queryPk]))
@@ -200,22 +221,24 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
       })
     )
 
+    this.queryVersions$.subscribe()
+
     // this is triggered on manual value changes
-    combineLatest(
-      this.queryPkCtrl.valueChanges,
-      p.comQueryVersionsByPk$
-    ).pipe(
-      filter(([pk, comQs]) => !!pk && !!comQs),
+    this.queryPkCtrl.valueChanges.pipe(
+      filter((pk) => !!pk),
       takeUntil(this.destroy$)
-    ).subscribe(([pk, comQs]) => {
+    ).subscribe((pk) => {
       // on manual change of pkQuery take the latest version automatically
-      this.queryVersionCtrl.setValue(comQs[pk]._latestVersion)
+      p.comQueryVersionsByPk$.pipe(first(q => !!q), takeUntil(this.destroy$)).subscribe(comQs => {
+        this.queryVersionCtrl.setValue(comQs[pk]._latestVersion)
+      })
 
     })
 
     this.queryPkCtrl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       // deselect the selected Georeference Column
       this.geoColCtrl.setValue(null);
+      this.temporalColCtrl.setValue(null);
     })
 
     // this.queryVersionCtrl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
@@ -234,7 +257,7 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
       merge(this.queryVersionCtrl.valueChanges, this.writeValue$),
       p.comQueryVersionsByPk$)
       .pipe(
-        filter(([pk, v, comQueries]) => (this.queryPk !== null && this.queryVersion !== null && !!comQueries)),
+        filter(([pk, v, comQueries]) => (!!this.queryPk && !!this.queryVersion && !!comQueries)),
         map(([pk, v, comQueries]) => {
           const versions = comQueries[this.queryPk];
           if (versions) {
@@ -259,17 +282,72 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
       this.updateVal()
     })
 
+    const rootClasses$: Observable<ClassAndTypeSelectModel> = this.comQuery$.pipe(
+      tap((s) => {
+        'a'
+      }),
+      map(comQ => pathOr(false, ['query', 'filter', 'data'], comQ)),
+      filter(c => c !== false),
+      map((d: FilterTreeData) => {
+        return {
+          classes: d.classes,
+          types: d.types
+        }
+      })
+    )
 
-    this.geoColOptions$ = this.comQuery$
+    this.p.reloadTypesForClassesInProject();
+
+    const rootIsGeo$ = rootClasses$.pipe(
+      this.q.classesFromClassesAndTypes(),
+      this.q.classesAreGeo()
+    )
+    const rootIsTemporal$ = rootClasses$.pipe(
+      this.q.classesFromClassesAndTypes(),
+      this.q.classesAreTemporal()
+    )
+    const cols$: Observable<ColDef[]> = this.comQuery$.pipe(
+      filter(comQ => pathOr(false, ['query', 'columns'], comQ) !== false),
+      map(comQ => comQ.query.columns)
+    )
+    this.colOptions$ = combineLatest(cols$, rootIsGeo$, rootIsTemporal$, this.p.crm$)
       .pipe(
-        filter((c) => !!c),
-        map((c) => c.query.columns),
-        map((colDefs: ColDef[]) => colDefs.map((colDef, index) => ({
-          isE93: this.isGeoCol(colDef),
-          value: colDef.label,
-          label: colDef.label
-        }))),
+        filter((arr) => !arr.includes(undefined)),
+        map(([colDefs, rootIsGeo, rootIsTemporal, crm]) => {
+          const colOptions: ColOption[] = [];
+
+          colDefs.forEach(colDef => {
+            if (colDef.defaultType === 'entity_preview') {
+              colOptions.push({
+                isGeo: rootIsGeo,
+                isTemporal: rootIsTemporal,
+                value: colDef.label,
+                label: colDef.label
+              })
+            } else {
+
+              colOptions.push({
+                isGeo: this.q.pathSegmentIsGeo(this.getLastSegment(colDef)),
+                isTemporal: this.q.pathSegmentIsTemporal(this.getLastSegment(colDef), crm),
+                value: colDef.label,
+                label: colDef.label
+              })
+
+            }
+          });
+
+          return colOptions;
+        })
       )
+
+    // this.geoColOptions$ = this.colOptions$.map(cols => cols.sort((a, b) => a.isGeo ? -1 : 1))
+    // this.temporalColOptions$ = this.colOptions$.map(cols => cols.sort((a, b) => a.isTemporal ? -1 : 1))
+    this.geoColOptions$ = this.colOptions$.map(cols => cols.filter(a => a.isGeo))
+    this.temporalColOptions$ = this.colOptions$.map(cols => cols.filter(a => a.isTemporal))
+  }
+
+  ngAfterViewInit() {
+    this.writeValue$.next();
   }
 
   ngOnDestroy() {
@@ -278,12 +356,12 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
     this.destroy$.unsubscribe();
   }
 
-  isGeoCol(c: ColDef) {
-    if (!c || !c.queryPath || !c.queryPath.length) return false
+  getLastSegment(c: ColDef): QueryPathSegment {
+    if (c && c.queryPath && c.queryPath.length) {
+      return c.queryPath[c.queryPath.length - 1]
 
-    const lastSegment = c.queryPath[c.queryPath.length - 1]
-
-    return this.q.pathSegmentIsGeo(lastSegment);
+    }
+    return;
   }
 
   setDescribedByIds(ids: string[]) {
@@ -308,6 +386,7 @@ export class MapQueryLayerSettingsComponent implements OnDestroy, ControlValueAc
     this.queryPkCtrl.setValue(value.queryPk || null, { emitEvent: false })
     this.queryVersionCtrl.setValue(value.queryVersion || null, { emitEvent: false })
     this.geoColCtrl.setValue(value.geoCol || null)
+    this.temporalColCtrl.setValue(value.temporalCol || null)
     this.colorCtrl.setValue(value.color || this.defaultColor)
     this.writeValue$.next();
     this.value = this.formVal;

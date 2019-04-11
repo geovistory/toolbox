@@ -12,18 +12,21 @@ import { Timeline } from '../../models/timeline';
 })
 export class LeftInnerVisualComponent extends TimePrimitiveVisual implements OnInit, DoCheck {
 
-  @Input('leftInnerVisual') leftInnerOnXAxis : {timePrimitive:TimePrimitive, timeline:Timeline};
+
+  @Input('leftInnerVisual') leftInnerOnXAxis: { timePrimitive: TimePrimitive, timeline: Timeline, color: string };
 
   constructor(d3Service: D3Service, _element: ElementRef) {
     super(d3Service, _element)
   }
 
   ngOnInit(): void {
+    this.color = this.leftInnerOnXAxis.color;
+
     this.initTimePrimitiveVisual(this.leftInnerOnXAxis)
   }
 
   ngDoCheck() {
-    
+
     this.d3Service.placeLeftInnerVisualOnXAxis(this._element.nativeElement, this.leftInnerOnXAxis.timeline, this);
   }
 

@@ -9,7 +9,7 @@
     <gv-detail-top-bar>
       Visual
       <button class="ml-auto btn btn-sm btn-primary" (click)="onSave()">Save</button>
-      <button class="ml-3 btn btn-sm btn-primary" (click)="onRun()">Preview >></button>
+      <button class="ml-3 btn btn-sm btn-primary" (click)="onCreatePreview()">Preview >></button>
     </gv-detail-top-bar>
     <gv-detail-content>
 
@@ -49,7 +49,8 @@
 
             <div *ngIf="visualTypeCtrl.value === 'map'" class="my-3">
               <mat-form-field class="w-100">
-                <gv-map-settings [formControl]="visualSettingsCtrl" #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-map-settings>
+                <gv-map-settings [formControl]="visualSettingsCtrl" #c [gvNoInvalidChildren]="c.formGroup.controls">
+                </gv-map-settings>
                 <!-- <mat-error *ngIf="m.invalid">You must enter a value</mat-error> -->
               </mat-form-field>
             </div>
@@ -78,15 +79,15 @@
               </mat-form-field>
             </p>
             <div class="mt-5">
-              <!-- <button mat-flat-button type="button" class="mr-2" color="primary" (click)="onSave()">Save</button>
-              <button mat-flat-button type="button" class="mr-2" color="primary" *ngIf="(comQuery$ | async)?.pk_entity"
+              <button mat-flat-button type="button" class="mr-2" color="primary" (click)="onSave()">Save</button>
+              <button mat-flat-button type="button" class="mr-2" color="primary" *ngIf="(comVisual$ | async)?.pk_entity"
                 (click)="onSaveAs()">
                 Save As
               </button>
-              <button mat-flat-button type="button" color="warn" *ngIf="(comQuery$ | async)?.pk_entity"
+              <button mat-flat-button type="button" color="warn" *ngIf="(comVisual$ | async)?.pk_entity"
                 (click)="onDelete()">
                 Delete
-              </button> -->
+              </button>
             </div>
           </form>
         </mat-step>
@@ -95,7 +96,7 @@
   </as-split-area>
 
   <!-------------------------------------------------------------------
-    Query Results 
+    Visual Results 
   -------------------------------------------------------------------->
   <as-split-area *ngIf="(showRightArea$ | async)" [size]="50" class="d-flex flex-column">
 
@@ -108,18 +109,21 @@
       </div>
     </gv-detail-top-bar>
     <gv-detail-content>
+      <!-- {{visualTypeCtrl.value | json:2}}
+      Settings
+      <pre>
+          {{visualSettingsCtrl.value | json:2}}
+        </pre>
 
       Visualization
       {{loading$ | async}}
       <pre>
         {{queryResByVersion$ | async | json:2}}
-      </pre>
+      </pre> -->
 
-      Settings
-      <pre>
-          {{visualSettingsCtrl.value | json:2}}
-        </pre>
-  
+      <gv-map-visual *ngIf="visualTypeCtrl.value === 'map'" [settings$]="visualSettings$"
+        [data$]="queryResByVersion$"></gv-map-visual>
+
     </gv-detail-content>
 
 

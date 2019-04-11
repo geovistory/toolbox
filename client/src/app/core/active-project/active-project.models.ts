@@ -1,5 +1,5 @@
 import { PropertyFieldList, FieldList, EntityPreviewList, PeItDetailList, EntityPreview } from 'app/core/state/models';
-import { ComClassFieldInterface, ComUiContextInterface, ComProjectInterface, InfChunk, InfPersistentItem, InfTemporalEntity, DfhProperty, ComQuery } from 'app/core/sdk';
+import { ComClassFieldInterface, ComUiContextInterface, ComProjectInterface, InfChunk, InfPersistentItem, InfTemporalEntity, DfhProperty, ComQuery, ComVisual } from 'app/core/sdk';
 import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/api/class-settings.models';
 import { EntityDetail } from 'app/modules/information/containers/entity-detail/api/entity-detail.models';
 import { SourceDetail } from 'app/modules/sources/containers/source-detail/api/source-detail.models';
@@ -98,7 +98,12 @@ export interface ProjectDetail extends ComProjectInterface {
     // ComQuery list by pk_entity
     comQueryVersionsByPk?: EntityVersionsByPk<ComQuery>;
     comQueryLoading?: boolean;
-    comQueryVersionLoading?: boolean;
+    comQueryVersionLoading?: { [key: string]: boolean };
+
+    // ComVisual list by pk_entity
+    comVisualVersionsByPk?: EntityVersionsByPk<ComVisual>;
+    comVisualLoading?: boolean;
+    comVisualVersionLoading?: boolean;
 
 
     /******************************************************************

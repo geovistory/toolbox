@@ -1,4 +1,6 @@
-<div gvDimensionChange (onDimensionsChange)="onDimensionsChange($event)">
+<i *ngIf="timeline?.data?.rows?.length === 0">No temporal information available</i>
+
+<div gvDimensionChange (onDimensionsChange)="onDimensionsChange($event)" [ngStyle]="{'visibility': timeline?.data?.rows?.length === 0 ? 'hidden':'visible'}">
   <div class="btn-group btn-group-sm position-absolute" role="group" aria-label="timeline controls">
     <button class="btn" (click)="zoomOut()">
       <i class="fa fa-search-minus"></i>
@@ -11,6 +13,8 @@
     </button>
   </div>
   <div class="timeline-container d-flex">
+
+
     <svg [attr.width]="_options.width" [attr.height]="_options.height">
 
       <!-- Header timeline -->
@@ -39,32 +43,34 @@
             [attr.transform]="'translate(5,0)'"></svg:rect>
 
           <!-- line separating left from rigth area -->
-          <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft"
-            [attr.y2]="_options.headerHeight" />
+          <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0"
+            [attr.x2]="timeline.xAxis.marginLeft" [attr.y2]="_options.headerHeight" />
 
         </g>
       </g>
 
       <!-- Body of timeline -->
 
-      <g class="rows" [attr.transform]="'translate(0, '+ _options.headerHeight +')'" [ngStyle]="{'height': _options.bodyHeight +'px'}"
-        style="overflow-y:auto;overflow-x: hidden;" *ngIf="timeline?.data?.rows?.length > 0">
+      <g class="rows" [attr.transform]="'translate(0, '+ _options.headerHeight +')'"
+        [ngStyle]="{'height': _options.bodyHeight +'px'}" style="overflow-y:auto;overflow-x: hidden;"
+        *ngIf="timeline?.data?.rows?.length > 0">
 
         <svg [attr.width]="_options.width" [attr.height]="(timeline.data.rows.length * timeline.options.rowHeight)"
           draggableXAxis (onDrag)="onDrag($event)" (onDragStart)="onDragStart()" (onDragEnd)="onDragEnd()">
 
           <!-- rows -->
-          <g class="row" *ngFor="let row of timeline.data.rows; let i = index" [attr.transform]="'translate(0,' + (timeline.options.rowHeight * i) + ')'"
-            [teEntVisual]="{row:row, timeline:timeline}" (rowMouseEnter)="onRowMouseEnter(row)" (rowMouseLeave)="onRowMouseLeave(row)"
-            (rowClick)="onRowClick(row)"></g>
+          <g class="row" *ngFor="let row of timeline.data.rows; let i = index"
+            [attr.transform]="'translate(0,' + (timeline.options.rowHeight * i) + ')'"
+            [teEntVisual]="{row:row, timeline:timeline}" (rowMouseEnter)="onRowMouseEnter(row)"
+            (rowMouseLeave)="onRowMouseLeave(row)" (rowClick)="onRowClick(row)"></g>
 
           <!-- xAxis ticks on rows-->
           <g class="x-axis-julian" [xAxisVisual]="timeline.xAxisTicks"></g>
           <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGregTicks"></g>
 
           <!-- line separating labels from existence time -->
-          <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft"
-            [attr.y2]="timeline.options.bodyHeight" />
+          <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0"
+            [attr.x2]="timeline.xAxis.marginLeft" [attr.y2]="timeline.options.bodyHeight" />
 
 
         </svg>
@@ -75,16 +81,16 @@
 
       <g class="rows" [attr.transform]="'translate(0, '+ _options.headerHeight +')'" [ngStyle]="{'height': 20 +'px'}"
         style="overflow:auto" style="overflow-y:auto;overflow-x: hidden;" *ngIf="timeline?.data?.rows?.length === 0">
-        <svg [attr.width]="_options.width" [attr.height]="20" draggableXAxis (onDrag)="onDrag($event)" (onDragStart)="onDragStart()"
-          (onDragEnd)="onDragEnd()">
+        <svg [attr.width]="_options.width" [attr.height]="20" draggableXAxis (onDrag)="onDrag($event)"
+          (onDragStart)="onDragStart()" (onDragEnd)="onDragEnd()">
 
           <!-- xAxis ticks on rows-->
           <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGregTicks"></g>
           <g class="x-axis-julian" [xAxisVisual]="timeline.xAxisTicks"></g>
 
           <!-- line separating labels from existence time -->
-          <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0" [attr.x2]="timeline.xAxis.marginLeft"
-            [attr.y2]="20" />
+          <svg:line class="separator-line" [attr.x1]="timeline.xAxis.marginLeft" y1="0"
+            [attr.x2]="timeline.xAxis.marginLeft" [attr.y2]="20" />
 
           <svg:text class="no-data-text" [attr.transform]="'translate('+ (timeline.xAxis.marginLeft + 5) +', 13)'">No
             temporal information available</svg:text>
@@ -98,8 +104,7 @@
         julianSecond: _options.cursorPosition, 
         bodyHeight: _options.bodyHeight,
         headerHeight:  _options.headerHeight
-      }"
-        [rangeEmitterOnMouseDown]="h" (onRangeChange)="changeCursorPosition($event)"></g>
+      }" [rangeEmitterOnMouseDown]="h" (onRangeChange)="changeCursorPosition($event)"></g>
 
     </svg>
 

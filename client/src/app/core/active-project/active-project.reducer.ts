@@ -1,7 +1,7 @@
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { active } from 'd3';
 import { indexBy, omit, groupBy, zipObj } from 'ramda';
-import { InfPersistentItem, InfTemporalEntity, ComQuery } from '../sdk/models';
+import { InfPersistentItem, InfTemporalEntity, ComQuery, ComVisual } from '../sdk/models';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 import { ProjectDetail, Panel, TypePeIt, VersionEntity } from './active-project.models';
@@ -404,13 +404,17 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
             };
             break;
 
+
         /***************************************************
          * Reducers to load one ComQuery Version
          ****************************************************/
         case ActiveProjectActions.LOAD_QUERY_VERSION:
             state = {
                 ...state,
-                comQueryLoading: true
+                comQueryVersionLoading: {
+                    ...state.comQueryVersionLoading,
+                    [action.meta.pk_entity + '_' + action.meta.entity_version]: true
+                }
             };
             break;
         case ActiveProjectActions.LOAD_QUERY_VERSION_SUCCEEDED:
@@ -419,18 +423,89 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 comQueryVersionsByPk: {
                     ...state.comQueryVersionsByPk,
                     [action.meta.comQuery.pk_entity]: {
-                        ...state.comQueryVersionsByPk[action.meta.comQuery.pk_entity],
+                        ...(state.comQueryVersionsByPk || {})[action.meta.comQuery.pk_entity],
                         [action.meta.comQuery.entity_version]: action.meta.comQuery
                     }
                 },
-                comQueryVersionLoading: false
+                comQueryVersionLoading: omit([action.meta.comQuery.pk_entity + '_' + action.meta.comQuery.entity_version], state.comQueryVersionLoading)
             };
             break;
 
         case ActiveProjectActions.LOAD_QUERY_VERSION_FAILED:
             state = {
                 ...state,
-                comQueryVersionLoading: false
+                comQueryVersionLoading: {}
+            };
+            break;
+
+
+        /***************************************************
+         * Reducers to load ComVisual List
+         ****************************************************/
+        case ActiveProjectActions.LOAD_VISUALS:
+            state = {
+                ...state,
+                comVisualLoading: true
+            };
+            break;
+        case ActiveProjectActions.LOAD_VISUALS_SUCCEEDED:
+            state = {
+                ...state,
+                comVisualVersionsByPk: {
+                    ...indexBy(
+                        ((comVisual: VersionEntity<ComVisual>) => comVisual[comVisual._latestVersion].pk_entity.toString()),
+                        action.meta.comVisualArray.map(comQ => ({
+                            _latestVersion: comQ.versions[0],
+                            ...indexBy((n) => n.toString(), (comQ.versions || [])),
+                            [comQ.entity_version]: comQ
+                        }))
+                    )
+                },
+                comVisualLoading: false
+            };
+            break;
+
+        case ActiveProjectActions.LOAD_VISUALS_FAILED:
+            state = {
+                ...state,
+                comVisualLoading: false
+            };
+            break;
+
+
+
+        /***************************************************
+         * Reducers to load ComVisual List
+         ****************************************************/
+        case ActiveProjectActions.LOAD_VISUAL_VERSION:
+            state = {
+                ...state,
+                comVisualLoading: true
+            };
+            break;
+        case ActiveProjectActions.LOAD_VISUAL_VERSION_SUCCEEDED:
+            state = {
+                ...state,
+                comVisualVersionsByPk: {
+                    ...state.comVisualVersionsByPk,
+                    ...indexBy(
+                        ((comVisual: VersionEntity<ComVisual>) => comVisual[comVisual._latestVersion].pk_entity.toString()),
+                        action.meta.comVisualArray.map(comV => ({
+                            _latestVersion: comV.versions[0],
+                            ...indexBy((n) => n.toString(), (comV.versions || [])),
+                            ...(state.comVisualVersionsByPk || {})[comV.pk_entity],
+                            [comV.entity_version]: comV
+                        }))
+                    )
+                },
+                comVisualLoading: false
+            };
+            break;
+
+        case ActiveProjectActions.LOAD_VISUAL_VERSION_FAILED:
+            state = {
+                ...state,
+                comVisualLoading: false
             };
             break;
 

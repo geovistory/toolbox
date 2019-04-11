@@ -1,7 +1,9 @@
-<gv-map-visual [settings]="settings" [data]="queryRes$ | async" style="height: 600px"></gv-map-visual>
+<gv-map-visual [settings$]="settings$" [data$]="queryRes$" style="height: 600px"></gv-map-visual>
 
 <p>
 
-  <button (click)="setData()">Set data</button>
-  
+  <button (click)="setData()">Set query data</button>
+  <button (click)="setSettingsTemporal()">With Temporal Information</button>
+  <button (click)="setSettingsNoTemporal()">No Temporal Information</button>
+
 </p>

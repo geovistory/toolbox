@@ -48,7 +48,7 @@
             <input matInput placeholder="Address" formControlName="secondCtrl" required>
           </mat-form-field> -->
             <div class="my-3">
-              <gv-col-def-editor [propertyOptions$]="propertyOptions$" [formControl]="columnsCtrl" #c
+              <gv-col-def-editor [propertyOptions$]="propertyOptions$" [classesAndTypes$]="classesAndTypes$" [formControl]="columnsCtrl" #c
                 [gvNoInvalidChildren]="c.formGroup.controls"></gv-col-def-editor>
             </div>
             <!-- <div>

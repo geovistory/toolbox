@@ -53,6 +53,7 @@ import { ComClassFieldApi } from './services/custom/ComClassField';
 import { ComClassHasTypePropertyApi } from './services/custom/ComClassHasTypeProperty';
 import { ComLabelApi } from './services/custom/ComLabel';
 import { ComQueryApi } from './services/custom/ComQuery';
+import { ComVisualApi } from './services/custom/ComVisual';
 import { PubAccountApi } from './services/custom/PubAccount';
 import { EmailApi } from './services/custom/Email';
 import { ComProjectApi } from './services/custom/ComProject';
@@ -119,6 +120,7 @@ export class SDKBrowserModule {
         ComClassHasTypePropertyApi,
         ComLabelApi,
         ComQueryApi,
+        ComVisualApi,
         PubAccountApi,
         EmailApi,
         ComProjectApi,

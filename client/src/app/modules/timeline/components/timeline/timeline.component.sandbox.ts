@@ -82,7 +82,11 @@ export default sandboxOf(TimelineComponent, {
     <div class="d-flex flex-column mt-5" >
       <div class="p-3 border"> some flex item </div>
       <div class="d-flex d-flex-grow-1">
-          <gv-timeline class="border border-primary p-3" [data]="timeLineData" [path]="['timelineSettings']"></gv-timeline>   
+          <gv-timeline class="border border-primary p-3" [data]="timeLineData"  
+          [cursorPosition]="timeLineSettings?.cursorPosition"
+          [domainStart]="timeLineSettings?.domainStart"
+          [domainEnd]="timeLineSettings?.domainEnd"
+          ></gv-timeline>   
       </div>
       <div class="p-3 border"> some flex item </div>
     </div>

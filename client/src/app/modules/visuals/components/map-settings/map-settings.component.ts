@@ -12,9 +12,11 @@ interface DynamicQueryLayerCtrl {
   ctrl: FormControl
 }
 
-export interface MapSettings {
+export interface MapVisualSettings {
   backgroundLayer: any;
   queryLayers: MapQueryLayerSettings[]
+  // there will come:
+  // rasterLayers
 }
 
 @Component({
@@ -28,10 +30,10 @@ export interface MapSettings {
     '[attr.aria-describedby]': 'describedBy',
   }
 })
-export class MapSettingsComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<MapSettings> {
+export class MapSettingsComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<MapVisualSettings> {
   static nextId = 0;
 
-  model: MapSettings;
+  model: MapVisualSettings;
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
@@ -81,11 +83,11 @@ export class MapSettingsComponent implements OnDestroy, ControlValueAccessor, Ma
   private _disabled = false;
 
   @Input()
-  get value(): MapSettings | null {
+  get value(): MapVisualSettings | null {
 
     return this.model;
   }
-  set value(value: MapSettings | null) {
+  set value(value: MapVisualSettings | null) {
     this.model = value;
     this.onChange(this.model)
   }
@@ -111,7 +113,7 @@ export class MapSettingsComponent implements OnDestroy, ControlValueAccessor, Ma
     this.formGroup = fb.group({})
 
     this.formGroup.valueChanges.subscribe(controls => {
-      const newVal: MapSettings = {
+      const newVal: MapVisualSettings = {
         queryLayers: this.queryLayers,
         backgroundLayer: {}
       }
@@ -166,10 +168,15 @@ export class MapSettingsComponent implements OnDestroy, ControlValueAccessor, Ma
 
   }
 
-  writeValue(value: MapSettings | null): void {
+  writeValue(value: MapVisualSettings | null): void {
 
     const backgroundLayer = pathOr({}, ['backgroundLayer'], value)
     const queryLayers = pathOr([], ['queryLayers'], value)
+
+    // reset the layer controls
+    this.dynamicQueryLayerCtrls.forEach(dyn => this.formGroup.removeControl(dyn.key));
+    this.dynamicQueryLayerCtrls = [];
+    (queryLayers || []).forEach((colDef, index) => { this.addQueryLayerCtrl(colDef, index); })
 
     this.value = { backgroundLayer, queryLayers };
   }

@@ -1,3 +1,10 @@
+.map{
+    padding-bottom: 2px;
+}
+.timeline{
+    padding-top: 2px;
+}
+
 .map-container {
     display: flex;
     flex: auto;
@@ -8,26 +15,26 @@
     flex: auto;
 }
 
-// .cesium-viewer-timelineContainer {
-//     display: none;
-// }
+.cesium-viewer-timelineContainer {
+    display: none;
+}
 
-// ::ng-deep .cesium-viewer-timelineContainer {
-//     display: none;
-// }
+::ng-deep .cesium-viewer-timelineContainer {
+    display: none;
+}
 
-// .cesium-viewer-animationContainer {
-//     display: none;
-// }
+.cesium-viewer-animationContainer {
+    display: none;
+}
 
-// ::ng-deep .cesium-viewer-animationContainer {
-//     display: none;
-// }
+::ng-deep .cesium-viewer-animationContainer {
+    display: none;
+}
 
-// .cesium-viewer-bottom {
-//     display: none;
-// }
+.cesium-viewer-bottom {
+    display: none;
+}
 
-// ::ng-deep .cesium-viewer-bottom {
-//     display: none;
-// }
+::ng-deep .cesium-viewer-bottom {
+    display: none;
+}

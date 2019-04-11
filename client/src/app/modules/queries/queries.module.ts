@@ -2,7 +2,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatDialogModule, MatDividerModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatOptionModule, MatProgressBarModule, MatSelectModule, MatStepperModule, MatTableModule, MatTooltipModule, MatChipsModule } from '@angular/material';
+import { MatButtonModule, MatChipsModule, MatDialogModule, MatDividerModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatOptionModule, MatProgressBarModule, MatSelectModule, MatStepperModule, MatTableModule, MatTooltipModule } from '@angular/material';
 import { AngularSplitModule } from 'angular-split';
 import { ValidationDirectivesModule } from 'app/core';
 import { PassiveLinkModule } from 'app/shared';
@@ -32,6 +32,7 @@ import { QueryDetailAPIActions } from './containers/query-detail/api/query-detai
 import { QueryDetailAPIEpics } from './containers/query-detail/api/query-detail.epics';
 import { QueryDetailComponent } from './containers/query-detail/query-detail.component';
 import { QueryListComponent } from './containers/query-list/query-list.component';
+import { GvHelperComponentsModule } from '../../shared/components/gv-helper-components/gv-helper-components.module';
 
 const components = [
   QueryListComponent,
@@ -55,6 +56,7 @@ const components = [
   PropertyPathSegmentRequiredValidatorDirective,
   ClassAndTypeFilterRequiredValidatorDirective,
   ClassAndTypePathSegmentRequiredValidatorDirective,
+
 ]
 
 @NgModule({
@@ -75,7 +77,6 @@ const components = [
     MatOptionModule,
     MatIconModule,
     MatTooltipModule,
-    MatChipsModule,
     MatExpansionModule,
     MatDividerModule,
     DragDropModule,
@@ -90,7 +91,8 @@ const components = [
     KeysModule,
     PassiveLinkModule,
     ValidationDirectivesModule,
-    MatMenuModule
+    MatMenuModule,
+    GvHelperComponentsModule
   ],
   providers: [
     QueryDetailAPIActions,

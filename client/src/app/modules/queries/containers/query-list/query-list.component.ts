@@ -19,7 +19,6 @@ export class QueryListComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
 
-  // select observables of substore properties
   loading$: Observable<boolean>;
   items$: Observable<ComQuery[]>;
 
@@ -37,11 +36,6 @@ export class QueryListComponent implements OnInit, OnDestroy {
 
   search() {
     this.p.loadQueries();
-    // this.p.pkProject$.pipe(first(pk => !!pk)).subscribe(pkProjekt => {
-
-    //   // TODO make this infinit scroll like
-    //   this.load(pkProjekt, 100, 0)
-    // })
   }
 
   open(pkEntity?: number) {
@@ -60,7 +54,6 @@ export class QueryListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }

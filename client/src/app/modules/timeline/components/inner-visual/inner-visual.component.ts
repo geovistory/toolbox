@@ -12,7 +12,7 @@ import { Timeline } from '../../models/timeline';
 })
 export class InnerVisualComponent extends TimePrimitiveVisual implements OnInit, DoCheck {
 
-  @Input('innerVisual') innerOnXAxis: { startEnd: { start: number, end: number }, timeline: Timeline };
+  @Input('innerVisual') innerOnXAxis: { startEnd: { start: number, end: number, color: string }, timeline: Timeline };
 
   constructor(d3Service: D3Service, _element: ElementRef) {
     super(d3Service, _element)
@@ -21,6 +21,7 @@ export class InnerVisualComponent extends TimePrimitiveVisual implements OnInit,
   ngOnInit(): void {
     this.startDate = this.innerOnXAxis.startEnd.start;
     this.endDate = this.innerOnXAxis.startEnd.end;
+    this.color = this.innerOnXAxis.startEnd.color;
   }
 
   ngDoCheck() {

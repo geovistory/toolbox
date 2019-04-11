@@ -152,7 +152,7 @@ export function getTemporalDistribution(es: WarEntityPreview[]): {
         }
     })
 
-
+    console.log(temporalDistribution)
     return { temporalDistribution, minVal, maxVal };
 }
 

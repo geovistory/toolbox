@@ -10,8 +10,8 @@
   <!-- Column Query Path -->
   <mat-form-field appearance="outline" *ngIf="!model?.defaultType">
     <mat-label>Path to the content of this column</mat-label>
-    <gv-query-path-control [formControl]="queryPathFormCtrl" [propertyOptions$]="propertyOptions$" (focus)="onFocus()"
-      (blur)="onBlur()" #c [gvNoInvalidChildren]="c.formGroup.controls">
+    <gv-query-path-control [formControl]="queryPathFormCtrl" [classesAndTypes$]="classesAndTypes$" [propertyOptions$]="propertyOptions$" (focus)="onFocus()"
+      (blur)="onBlur()" (metaInfoChange)="metaInfoChange.emit($event)" #c [gvNoInvalidChildren]="c.formGroup.controls">
     </gv-query-path-control>
     <mat-hint>Define what this column contains by creating a path from the firts type of entity defined in step 1 to the
       content of the column.</mat-hint>

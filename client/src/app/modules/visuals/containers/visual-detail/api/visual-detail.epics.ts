@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, ComQueryApi } from 'app/core';
+import { LoadingBarActions, ComVisualApi, ComQueryApi, ComVisual, ActiveProjectService } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -12,17 +12,87 @@ import { ofSubstore } from 'app/core/store/module';
 @Injectable()
 export class VisualDetailAPIEpics {
   constructor(
+    private visualApi: ComVisualApi,
     private queryApi: ComQueryApi,
     private actions: VisualDetailAPIActions,
     private loadingBarActions: LoadingBarActions,
-    private notificationActions: NotificationsAPIActions
+    private notificationActions: NotificationsAPIActions,
+    private p: ActiveProjectService
   ) { }
 
   public createEpics(c: VisualDetailComponent): Epic {
-    return combineEpics(this.createLoadVisualDetailEpic(c));
+    return combineEpics(
+      this.createLoadVisualPreviewEpic(c),
+      this.createSaveVisualDetailEpic(c),
+      this.createDeleteVisualDetailEpic(c)
+    );
   }
 
-  private createLoadVisualDetailEpic(c: VisualDetailComponent): Epic {
+  private createSaveVisualDetailEpic(c: VisualDetailComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(VisualDetailAPIActions.SAVE),
+        filter(action => ofSubstore(c.basePath)(action)),
+        switchMap((action: VisualDetailAPIAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Create the query (fk_project is within the object)
+           */
+          const apiCall = action.meta.pkEntity ?
+            this.visualApi.patchAttributes(action.meta.pkEntity, action.meta.comVisual) :
+            this.visualApi.create(action.meta.comVisual);
+
+          /**
+           * Subscribe to the api call
+           */
+          apiCall.subscribe((comVisual: ComVisual) => {
+            /**
+             * Emit the global action that completes the loading bar
+             */
+            globalStore.next(this.loadingBarActions.completeLoading());
+
+            /**
+             * Emit the local action on loading succeeded
+             */
+            c.localStore.dispatch(this.actions.saveSucceeded(comVisual));
+
+          }, error => {
+
+            if (error && error.code === '23505') {
+              error = {
+                title: 'Name already exists',
+                message: 'Please choose another name.'
+              }
+            }
+            /**
+            * Emit the global action that shows some loading error message
+            */
+            globalStore.next(this.loadingBarActions.completeLoading());
+            globalStore.next(this.notificationActions.addToast({
+              type: 'error',
+              options: {
+                title: error.title,
+                msg: error.message,
+              }
+            }));
+            /**
+             * Emit the local action on loading failed
+             */
+            c.localStore.dispatch(this.actions.saveFailed(error))
+          })
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
+  private createLoadVisualPreviewEpic(c: VisualDetailComponent): Epic {
     return (action$, store) => {
       return action$.pipe(
         /**
@@ -73,4 +143,59 @@ export class VisualDetailAPIEpics {
       )
     }
   }
+
+
+
+  private createDeleteVisualDetailEpic(c: VisualDetailComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(VisualDetailAPIActions.DELETE),
+        filter(action => ofSubstore(c.basePath)(action)),
+        switchMap((action: VisualDetailAPIAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+          /**
+           * Do some api call
+           */
+          this.visualApi.deleteById(action.meta.pkEntity)
+            /**
+             * Subscribe to the api call
+             */
+            .subscribe((data) => {
+              /**
+               * Emit the global action that completes the loading bar
+               */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              /**
+               * Emit the local action on loading succeeded
+               */
+              c.localStore.dispatch(this.actions.deleteSucceeded());
+
+            }, error => {
+              /**
+              * Emit the global action that shows some loading error message
+              */
+              globalStore.next(this.loadingBarActions.completeLoading());
+              globalStore.next(this.notificationActions.addToast({
+                type: 'error',
+                options: {
+                  title: 'Visual could not be deleted'
+                }
+              }));
+              /**
+               * Emit the local action on loading failed
+               */
+              c.localStore.dispatch(this.actions.deleteFailed({ status: '' + error.status }))
+            })
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
 }

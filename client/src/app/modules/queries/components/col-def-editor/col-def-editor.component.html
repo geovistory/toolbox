@@ -6,12 +6,17 @@
           <gv-col-def-title [colDef]="dynCtrl.ctrl?.value"></gv-col-def-title>
         </mat-panel-title>
         <mat-panel-description>
-          <span class="ml-auto" *ngIf="dynCtrl.ctrl?.value?.defaultType">Default Column</span>
-          <span class="ml-auto" *ngIf="!dynCtrl.ctrl?.value?.defaultType">Custom Column</span>
+          <span  class="ml-auto d-flex align-items-center">
+            <gv-geo-col-signal class="mr-2" *ngIf="dynCtrl.meta?.isGeo"></gv-geo-col-signal>
+            <gv-time-col-signal class="mr-2" *ngIf="dynCtrl.meta?.isTemporal"></gv-time-col-signal>
+            <span *ngIf="dynCtrl.ctrl?.value?.defaultType">Default Column</span>
+            <span *ngIf="!dynCtrl.ctrl?.value?.defaultType">Custom Column</span>
+          </span>
         </mat-panel-description>
       </mat-expansion-panel-header>
-      <gv-col-def [formControl]="dynCtrl.ctrl" [propertyOptions$]="propertyOptions$" (focus)="onFocus()" (blur)="onBlur()"
-      #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-col-def>
+      <gv-col-def [formControl]="dynCtrl.ctrl" [classesAndTypes$]="classesAndTypes$" [propertyOptions$]="propertyOptions$" (focus)="onFocus()"
+        (blur)="onBlur()" (metaInfoChange)="onMetaInfoChange(i, $event)" #c
+        [gvNoInvalidChildren]="c.formGroup.controls"></gv-col-def>
       <mat-action-row *ngIf="!dynCtrl.ctrl?.value?.defaultType">
         <button mat-button color="warn" class="ml-auto" (click)="removeColumn(i)">Remove column</button>
       </mat-action-row>

@@ -206,7 +206,7 @@
         ],
         "root": true
       },
-      "description": "Run a query.",
+      "description": "Find queries of project.",
       "http": {
         "path": "/find-per-project",
         "verb": "get"

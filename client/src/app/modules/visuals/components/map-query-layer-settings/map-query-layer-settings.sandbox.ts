@@ -22,7 +22,8 @@ export default sandboxOf(MapQueryLayerSettingsComponent, {
             pkProject: 9,
             model: {
                 queryPk: 633,
-                queryVersion: 2
+                queryVersion: 6,
+                geoCol: 'Place of birth',
             } as MapQueryLayerSettings,
             parentPath: ''
         },
@@ -32,11 +33,9 @@ export default sandboxOf(MapQueryLayerSettingsComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">
                 <form #f="ngForm" class="gv-grow-1">
-                    <mat-form-field class="w-100" appearance="outline">
-                        <gv-map-query-layer-settings placeholder="Enter Foo" name="controlName" [(ngModel)]="model"
-                        #m="ngModel"  #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-map-query-layer-settings>
-                        <mat-error *ngIf="m.invalid">You must enter a value</mat-error>
-                    </mat-form-field>
+                    <gv-map-query-layer-settings placeholder="Enter Foo" name="controlName" [(ngModel)]="model"
+                    #m="ngModel"  #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-map-query-layer-settings>
+                    <mat-error *ngIf="m.invalid">You must enter a value</mat-error>
                 </form>
             </div>
             <div>

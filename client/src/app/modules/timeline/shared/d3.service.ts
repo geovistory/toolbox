@@ -186,7 +186,8 @@ export class D3Service {
     closedPath.push('Z') // close path
     d3element.selectAll('.gv-closed-path')
       .attr('transform', 'translate(0,' + timeline.options.rowPaddingTop + ')')
-      .attr('d', closedPath.join(' '));
+      .attr('d', closedPath.join(' '))
+      .attr('fill', options.color);
 
     t = halfStroke; //  y top
     l = l - halfStroke; //  x left
@@ -224,7 +225,8 @@ export class D3Service {
     closedPath.push('Z') // close path
     d3element.selectAll('.gv-closed-path')
       .attr('transform', 'translate(0,' + timeline.options.rowPaddingTop + ')')
-      .attr('d', closedPath.join(' '));
+      .attr('d', closedPath.join(' '))
+      .attr('fill', options.color);
 
     t = halfStroke; //  y top
     r = r + halfStroke; //  x right
@@ -277,7 +279,8 @@ export class D3Service {
     closedPath.push('Z') // close path
     d3element.selectAll('.gv-rectangle')
       .attr('transform', 'translate(0,' + timeline.options.rowPaddingTop + ')')
-      .attr('d', closedPath.join(' '));
+      .attr('d', closedPath.join(' '))
+      .attr('fill', options.color);
   }
 
 

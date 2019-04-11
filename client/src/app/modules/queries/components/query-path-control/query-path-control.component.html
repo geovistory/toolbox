@@ -1,12 +1,14 @@
-<!-- 
-<div>
-    <input type="text" [value]="model?.foo" (input)="newFoo($event.target.value)" (blur)="onTouched()">
-
-
-</div>     -->
-
 <form [formGroup]="formGroup" class="wrapper">
 
+    <!-- Root segment (not part of the form value, only for display reasons) -->
+    <div class="gv-query-path-segment">
+        <mat-form-field>
+            <mat-label>Classes</mat-label>
+            <gv-class-and-type-select [formControl]="preselectedClasses"
+                [disabled]="true" [pkClasses$]="pkClasses$"></gv-class-and-type-select>
+            <mat-hint>Defined by row filter</mat-hint>
+        </mat-form-field>
+    </div>
 
     <div class="gv-query-path-segment" *ngFor="let segment of dynamicFormControls; let i = index; trackBy:getKey">
         <mat-icon>arrow_right_alt</mat-icon>
@@ -38,9 +40,10 @@
         <mat-icon>add</mat-icon>
     </button>
 
-    <mat-chip-list  *ngIf="isGeo" aria-label="Fish selection">
-        <mat-chip color="accent" selected matTooltip="Useful for visualisation on a Map">Valid Geo-Column</mat-chip>
-    </mat-chip-list>
+    <gv-geo-col-signal *ngIf="isGeo$ | async"></gv-geo-col-signal>
+
+    <gv-time-col-signal *ngIf="isTemporal$ | async"></gv-time-col-signal>
+
     <!-- <div *ngIf="isE93Presence" matTooltip="Useful for visualisation on a Map">
         <mat-icon class="text-success">check</mat-icon> Geo-Column
 

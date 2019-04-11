@@ -6,7 +6,11 @@
 <!-- Line bottom -->
 <!-- <svg:line class="row-line-bottom" x1="0" [attr.y1]="timeline.options.rowHeight" [attr.x2]="xAxis.containerWidth" [attr.y2]="timeline.options.rowHeight" /> -->
 
-<svg:g [matTooltip]="row.existenceTime | timeSpan" [existenceTimeVisual]="{existenceTime:row.existenceTime, timeline:timeline}"></svg:g>
+<svg:g [matTooltip]="row.existenceTime | timeSpan" [existenceTimeVisual]="{
+    existenceTime:row.existenceTime, 
+    timeline:timeline,
+    color: row.color
+}"></svg:g>
 
 <!-- Background behind label -->
 <svg:rect class="row-label-bg" [attr.width]="xAxis.marginLeft" [attr.height]="timeline.options.rowHeight"></svg:rect>
