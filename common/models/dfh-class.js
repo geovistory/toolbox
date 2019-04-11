@@ -67,7 +67,7 @@ module.exports = function (DfhClass) {
    * include:
    * - text_properties
    */
-  DfhClass.selectedClassesOfProfile = function (dfh_pk_profile, cb) {
+  DfhClass.classesOfProfile = function (dfh_pk_profile, cb) {
 
     const filter = {
       "orderBy": [{
@@ -80,7 +80,7 @@ module.exports = function (DfhClass) {
             "name": "class_profile_view",
             "joinType": "inner join",
             "where": [
-              "dfh_profile_association_type", "=", "selected",
+              // "dfh_profile_association_type", "=", "selected",
               ...(dfh_pk_profile ? ["and", "dfh_fk_profile", "=", dfh_pk_profile] : [])
             ],
             "orderBy": [{

@@ -1,19 +1,16 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Optional, Output, QueryList, Self, ViewChildren, OnInit, Directive } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, Validators, ValidatorFn, AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, QueryList, Self, ViewChildren } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, ValidatorFn } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
-import { equals, keys, values } from 'ramda';
-import { BehaviorSubject, Subject, of, merge } from 'rxjs';
-import { filter, switchMap, takeUntil, first } from 'rxjs/operators';
+import { equals, keys } from 'ramda';
+import { BehaviorSubject, merge, Observable, of, Subject, combineLatest } from 'rxjs';
+import { filter, first, map, switchMap, takeUntil, delay } from 'rxjs/operators';
+import { QueryService } from '../../services/query.service';
 import { ClassAndTypePathSegmentComponent, classAndTypePathSegmentRequiredValidator } from '../class-and-type-path-segment/class-and-type-path-segment.component';
 import { QueryPathSegment, QueryPathSegmentType } from '../col-def-editor/col-def-editor.component';
 import { PropertyPathSegmentComponent, propertyPathSegmentRequiredValidator } from '../property-path-segment/property-path-segment.component';
-import { PropertyOption, propertiesRequiredCondition } from '../property-select/property-select.component';
-import { FilterTree } from '../../containers/query-detail/query-detail.component';
-
-
-
-
+import { PropertyOption } from '../property-select/property-select.component';
+import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
 
 
 interface DynamicFormControl {
@@ -21,6 +18,11 @@ interface DynamicFormControl {
   type: QueryPathSegmentType,
   ctrl: FormControl,
   behaviorSubject: BehaviorSubject<any>
+}
+
+export interface QueryPathMetaInfo {
+  isGeo?: boolean
+  isTemporal?: boolean
 }
 
 @Component({
@@ -41,10 +43,18 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
 
   @Input() propertyOptions$: BehaviorSubject<PropertyOption[]>;
 
+  // For root element of path
+  @Input() classesAndTypes$: Observable<ClassAndTypeSelectModel>;
+  pkClasses$: Observable<number[]>;
+  preselectedClasses = new FormControl({ disabled: true });
+
   propertyOptionsBehaviorSubject$ = new BehaviorSubject<PropertyOption[]>(null);
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
+  
+  metaInfoChange$ = new BehaviorSubject<QueryPathMetaInfo>({});
+
 
   model: QueryPathSegment[];
 
@@ -58,6 +68,12 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
   controlType = 'query-path-control';
   id = `query-path-control-${QueryPathControlComponent.nextId++}`;
   describedBy = '';
+
+
+  isTemporal$: Observable<boolean>;
+  isGeo$: Observable<boolean>;
+
+
   onChange = (_: any) => { };
   onTouched = () => { };
 
@@ -114,15 +130,43 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
   formGroup: FormGroup;
   dynamicFormControls: DynamicFormControl[] = [];
 
+
+  get showAddBtn() {
+
+    if (this.dynamicFormControls.length === 0) return false;
+
+    if (this.dynamicFormControls[this.dynamicFormControls.length - 1].ctrl.valid) return true;
+
+    else return false;
+  }
+
+
+
+
   constructor(
     @Optional() @Self() public ngControl: NgControl,
-    fb: FormBuilder
+    fb: FormBuilder,
+    private q: QueryService
   ) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
 
     this.formGroup = fb.group({})
+
+    const lastSegment$: Observable<QueryPathSegment> = this.formGroup.valueChanges.pipe(
+      map(() => {
+        if (this.dynamicFormControls.length === 0) return false;
+        const ctrl = this.dynamicFormControls[this.dynamicFormControls.length - 1].ctrl
+        return ctrl.value || undefined;
+      })
+    )
+    this.isTemporal$ = this.q.pathSegmentIsTemporal$(lastSegment$)
+    this.isGeo$ = this.q.pathSegmentIsGeo$(lastSegment$)
+
+    combineLatest(this.isTemporal$, this.isGeo$, this.afterViewInit$).pipe(delay(0), takeUntil(this.destroy$)).subscribe(([isTemporal, isGeo]) => {
+      this.metaInfoChange$.next({ isGeo, isTemporal })
+    })
   }
 
   getKey(_, item) {
@@ -132,11 +176,19 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
   ngOnInit() {
     this.propertyOptions$.pipe(takeUntil(this.destroy$))
       .subscribe(options => { this.propertyOptionsBehaviorSubject$.next(options) })
+
+    this.pkClasses$ = this.classesAndTypes$.pipe(
+      this.q.classesFromClassesAndTypes()
+    )
+    this.classesAndTypes$.pipe(takeUntil(this.destroy$))
+      .subscribe(selection => { this.preselectedClasses.setValue(selection) })
+
+
   }
 
   ngAfterViewInit() {
     this.afterViewInit$.next(true);
-    this.formGroup.valueChanges.subscribe(controls => {
+    this.formGroup.valueChanges.pipe(delay(0)).subscribe(controls => {
       if (controls && typeof controls === 'object' && Object.keys(controls).length) {
         const newVal: QueryPathSegment[] = this.dynamicFormControls.map(dynCtrl => ({
           type: dynCtrl.type,

@@ -166,7 +166,7 @@
 
       <gv-map class="gv-tile" *ngIf="(showMap$ | async)" [path]="basePath" (close)="toggle('showMap')"></gv-map>
 
-      <gv-pe-it-timeline class="gv-tile" [path]="basePath" *ngIf="(showTimeline$ | async)"
+      <gv-pe-it-timeline class="gv-tile" [basePath]="basePath.concat('peItTimeline')" *ngIf="(showTimeline$ | async)"
         (close)="toggle('showTimeline')"></gv-pe-it-timeline>
 
     </div>

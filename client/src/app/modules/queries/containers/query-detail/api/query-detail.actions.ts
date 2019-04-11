@@ -30,23 +30,21 @@ export class QueryDetailAPIActions {
   static readonly SAVE_SUCCEEDED = 'QueryDetail::SAVE_SUCCEEDED';
   static readonly SAVE_FAILED = 'QueryDetail::SAVE_FAILED';
 
-
   static readonly RUN_INIT = 'QueryDetail::RUN_INIT';
   static readonly RUN = 'QueryDetail::RUN';
   static readonly RUN_SUCCEEDED = 'QueryDetail::RUN_SUCCEEDED';
   static readonly RUN_FAILED = 'QueryDetail::RUN_FAILED';
 
-  static readonly SHOW_RIGHT_AREA = 'QueryDetail::SHOW_RIGHT_AREA';
-  static readonly HIDE_RIGHT_AREA = 'QueryDetail::HIDE_RIGHT_AREA';
-
   static readonly DELETE = 'QueryDetail::DELETE';
   static readonly DELETE_SUCCEEDED = 'QueryDetail::DELETE_SUCCEEDED';
   static readonly DELETE_FAILED = 'QueryDetail::DELETE_FAILED';
-
+  
   static readonly DOWNLOAD = 'QueryDetail::DOWNLOAD';
   static readonly DOWNLOAD_SUCCEEDED = 'QueryDetail::DOWNLOAD_SUCCEEDED';
   static readonly DOWNLOAD_FAILED = 'QueryDetail::DOWNLOAD_FAILED';
-
+  
+  static readonly SHOW_RIGHT_AREA = 'QueryDetail::SHOW_RIGHT_AREA';
+  static readonly HIDE_RIGHT_AREA = 'QueryDetail::HIDE_RIGHT_AREA';
 
   static readonly DESTROY = 'QueryDetail::DESTROY';
 
@@ -149,7 +147,7 @@ export class QueryDetailAPIActions {
 
 
   /*********************************************************************
-  *  Save a query
+  *  Delete a query
   *********************************************************************/
 
   @dispatch()

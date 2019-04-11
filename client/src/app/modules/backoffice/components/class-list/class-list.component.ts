@@ -27,6 +27,8 @@ export class ClassListComponent extends ClassListAPIActions implements OnInit, O
 
   @select() items$: Observable<any>;
 
+  tableData$: Observable<any>;
+
   // Since we're observing an array of items, we need to set up a 'trackBy'
   // parameter so Angular doesn't tear down and rebuild the list's DOM every
   // time there's an update.
@@ -44,6 +46,10 @@ export class ClassListComponent extends ClassListAPIActions implements OnInit, O
     this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), classListReducer)
 
     this.rootEpics.addEpic(this.epics.createEpic(this.localStore, this.destroy$));
+
+    this.tableData$ = this.items$.pipe(
+      
+    );
 
     this.loadClasses()
   }

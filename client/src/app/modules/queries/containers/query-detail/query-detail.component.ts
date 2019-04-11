@@ -13,6 +13,7 @@ import { QueryDetailAPIActions } from './api/query-detail.actions';
 import { QueryDetailAPIEpics } from './api/query-detail.epics';
 import { FileType, QueryDetail } from './api/query-detail.models';
 import { offsetOfPage, pageOfOffset, queryDetailReducer } from './api/query-detail.reducer';
+import { ClassAndTypeSelectModel } from '../../components/class-and-type-select/class-and-type-select.component';
 
 export type SubGroupType = 'property' | 'classAndType'
 export interface FilterTreeData {
@@ -92,6 +93,8 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
   // propertyOptions will be derived from the filter defined in the first step
   propertyOptions$ = new BehaviorSubject<PropertyOption[]>(null);
+  classesAndTypes$ = new BehaviorSubject<ClassAndTypeSelectModel>(null);
+
 
 
   // result table
@@ -104,14 +107,14 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
     protected rootEpics: RootEpics,
     private epics: QueryDetailAPIEpics,
     public ngRedux: NgRedux<IAppState>,
-    private _formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public p: ActiveProjectService
   ) {
     super()
 
     // Prepare first form group
     this.filterCtrl = new FormControl(new FilterTree()) // TODO add validato
-    this.firstFormGroup = this._formBuilder.group({
+    this.firstFormGroup = this.fb.group({
       filterCtrl: this.filterCtrl
     });
 
@@ -141,12 +144,12 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
         label: 'Type Label'
       })
     ]) // TODO add validato
-    this.secondFormGroup = this._formBuilder.group({
+    this.secondFormGroup = this.fb.group({
       columnsContro: this.columnsCtrl
     });
 
     // Prepare third form group
-    this.thirdFormGroup = this._formBuilder.group({
+    this.thirdFormGroup = this.fb.group({
       nameCtrl: this.nameCtrl,
       descriptionCtrl: this.descriptionCtrl,
     });
@@ -170,8 +173,6 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
       this.columnsCtrl.setValue(comQuery.query.columns);
       this.nameCtrl.setValue(comQuery.name);
       this.descriptionCtrl.setValue(comQuery.description);
-
-
     })
 
   }
@@ -183,6 +184,14 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
       takeUntil(this.destroy$)
     ).subscribe(x =>
       this.propertyOptions$.next(x)
+    );
+
+    // get the selectedClassesAndTypes from the filter defined in the first step
+    this.filterComponent.selectedClassesAndTypes$.pipe(
+      filter(o => o !== null),
+      takeUntil(this.destroy$)
+    ).subscribe(x =>
+      this.classesAndTypes$.next(x)
     );
 
   }

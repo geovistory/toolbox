@@ -1,0 +1,4 @@
+<gv-timeline [data]="timelineData$ | async" [cursorPosition]="timelineSettings?.cursorPosition"
+  [domainStart]="timelineSettings?.domainStart" [domainEnd]="timelineSettings?.domainEnd"
+  (cursorChange)="cursorChange.emit($event)">
+</gv-timeline>

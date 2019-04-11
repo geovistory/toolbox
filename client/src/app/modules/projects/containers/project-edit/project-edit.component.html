@@ -59,12 +59,7 @@
         <gv-source-list *ngIf="(p.list$ | async) === 'sources'"></gv-source-list>
         <gv-information *ngIf="(p.list$ | async) === 'entities'"></gv-information>
         <gv-query-list *ngIf="(p.list$ | async) === 'queries'"></gv-query-list>
-        <div *ngIf="(p.list$ | async) === 'visuals'">
-          <gv-list-drawer-header>
-            <div title>Your Visuals</div>
-          </gv-list-drawer-header>
-          <div class="ml-3">Coming soon.</div>
-        </div>
+        <gv-visual-list *ngIf="(p.list$ | async) === 'visuals'"></gv-visual-list>
         <div *ngIf="(p.list$ | async) === 'stories'">
           <gv-list-drawer-header>
             <div title>Your Stories</div>
@@ -150,6 +145,8 @@
             (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-section-detail>
           <gv-query-detail *ngIf="tab.component=='query-detail'" [pkEntity]="tab.data?.pkEntity" [basePath]="tab.path"
             (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-query-detail>
+          <gv-visual-detail *ngIf="tab.component=='visual-detail'" [pkEntity]="tab.data?.pkEntity" [basePath]="tab.path"
+            (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-visual-detail>
         </gv-tab-body>
 
       </mat-drawer-content>

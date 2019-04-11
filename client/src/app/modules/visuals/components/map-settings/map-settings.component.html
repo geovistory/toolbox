@@ -1,0 +1,40 @@
+<form [formGroup]="formGroup">
+    <div class="mb-3">
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Background Settings
+                </mat-panel-title>
+                <!-- <mat-panel-description>
+                        Type your name and age
+                      </mat-panel-description> -->
+            </mat-expansion-panel-header>
+            <gv-map-background-settings></gv-map-background-settings>
+        </mat-expansion-panel>
+    </div>
+
+    <mat-accordion cdkDropList (cdkDropListDropped)="dropQueryLayer($event)">
+
+        <mat-expansion-panel cdkDrag *ngFor="let d of dynamicQueryLayerCtrls; let i = index; trackBy:trackByfn">
+            <mat-expansion-panel-header>
+                <mat-panel-title cdkDragHandle>
+                    <div class="d-flex">
+                        <mat-icon>drag_handle</mat-icon>
+                        <div class="ml-3">
+                            Layer {{i + 1}} {{d.ctrl.value?.foo}}
+                         </div>
+                    </div>
+                </mat-panel-title>
+                <mat-panel-description> 
+                    <span *ngIf="d?.ctrl?.invalid" class="mat-text-warn">Invalid!</span>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <gv-map-query-layer-settings [formControl]="d.ctrl" #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-map-query-layer-settings>
+            <mat-action-row>
+                    <button mat-flat-button color="warn" (click)="removeQueryLayerCtrl(i)">Remove Layer</button>
+            </mat-action-row>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <button mat-flat-button  class="mt-3" color="primary" (click)="addQueryLayerCtrl()">Add Layer</button>
+</form>

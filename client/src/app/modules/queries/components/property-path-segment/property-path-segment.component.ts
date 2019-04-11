@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, View
 import { ControlValueAccessor, NgControl, NgForm, ValidatorFn, AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, delay } from 'rxjs/operators';
 import { PropertyOption, PropertySelectModel, propertiesRequiredCondition } from '../property-select/property-select.component';
 import { QueryService } from '../../services/query.service';
 import { QueryPathSegment } from '../col-def-editor/col-def-editor.component';
@@ -156,7 +156,7 @@ export class PropertyPathSegmentComponent implements AfterViewInit, OnDestroy, C
   }
 
   ngAfterViewInit() {
-    this.formGroup.valueChanges.subscribe(controls => {
+    this.formGroup.valueChanges.pipe(delay(0)).subscribe(controls => {
       const val = controls['propertyCtrl'];
 
       if (val !== undefined && !equals(this.selectedProperties$.value, val)) {

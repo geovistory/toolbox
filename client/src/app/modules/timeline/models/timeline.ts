@@ -22,13 +22,14 @@ export interface TimeLineData {
     rows: TimeLineRow[]
 }
 
-export interface TimeLineRow {
+export interface TimeLineRow {    
     label: string;
     existenceTime: TimeSpan;
     accentuation: Accentuation;
     storeConnector?: {
         path: string[];
     }
+    color?: string; // CSS color string
 }
 
 /**
@@ -37,8 +38,9 @@ export interface TimeLineRow {
  */
 export class Timeline {
 
-    public ticker: EventEmitter<any> = new EventEmitter();
+    static DEFAULT_COLOR = '#17a2b8'
 
+    public ticker: EventEmitter<any> = new EventEmitter();
 
     /** xAxis fixed top */
     public xAxis: XAxisDefinition;

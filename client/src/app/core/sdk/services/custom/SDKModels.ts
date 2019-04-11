@@ -5,6 +5,7 @@ import { ComClassField } from '../../models/ComClassField';
 import { ComClassHasTypeProperty } from '../../models/ComClassHasTypeProperty';
 import { ComLabel } from '../../models/ComLabel';
 import { ComQuery } from '../../models/ComQuery';
+import { ComVisual } from '../../models/ComVisual';
 import { PubAccount } from '../../models/PubAccount';
 import { Email } from '../../models/Email';
 import { ComProject } from '../../models/ComProject';
@@ -48,6 +49,7 @@ export class SDKModels {
     ComClassHasTypeProperty: ComClassHasTypeProperty,
     ComLabel: ComLabel,
     ComQuery: ComQuery,
+    ComVisual: ComVisual,
     PubAccount: PubAccount,
     Email: Email,
     ComProject: ComProject,

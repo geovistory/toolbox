@@ -22,6 +22,13 @@ export class ValidationService {
     };
   }
 
+  static hexColorValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      return /^#[0-9A-F]{6}$/i.test(control.value)
+        ? null : { 'invalidHexColor': { value: control.value } }
+    };
+  }
+
   static getValidatorErrorMessage(validatorName: string, validatorValue?: any) {
     const config = {
       'required': 'Required',
@@ -40,7 +47,8 @@ export class ValidationService {
       'mustBeginBeforeEnd': `Can't be later than '${validatorValue.fieldLabel}'`,
       'mustEndAfterBegin': `Can't be earlier than '${validatorValue.fieldLabel}'`,
       'validateLanguage': `Please select a language`,
-      'noItem': 'At least one item is required'
+      'noItem': 'At least one item is required',
+      'invalidHexColor': 'Please choose a valid color.',
     };
 
     if (config[validatorName]) return config[validatorName];

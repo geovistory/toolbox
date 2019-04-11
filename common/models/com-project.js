@@ -246,9 +246,10 @@ module.exports = function (ComProject) {
             "name": "class_profile_view",
             "joinType": "inner join",
             "where": [
-              "dfh_profile_association_type", "=", "selected"
+//              "dfh_profile_association_type", "=", "selected" // TODO: Check if app still works correctly 
+              "removed_from_api", "=", "false"
             ],
-            select: { include: ["dfh_fk_system_type", "dfh_type_label"] }
+            select: { include: ["dfh_fk_system_type", "dfh_type_label", "dfh_profile_association_type"] }
           }
         },
         "text_properties": {

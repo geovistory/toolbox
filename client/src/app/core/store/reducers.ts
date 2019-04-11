@@ -9,7 +9,6 @@ import { backofficeReducer } from '../../modules/backoffice/backoffice.reducer';
 import { createProjectsReducer } from '../../modules/projects/api/projects.reducers';
 import { createActiveProjectReducer } from '../active-project/active-project.reducer';
 import { loadingBarReducer } from '../loading-bar/api/loading-bar.reducer';
-import { queryListReducer } from 'app/modules/queries/containers/query-list/api/query-list.reducer';
 
 
 export const INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
@@ -34,7 +33,6 @@ export const rootReducer = composeReducers(
     routes: routerReducer,
     information: informationReducer,
     sources: sourceListReducer,
-    queries: queryListReducer,
     sandboxState: sandboxStateReducer
   })
 )

@@ -1,0 +1,28 @@
+<as-split class="gv-split-style" [direction]="'vertical'" gutterSize="1" [useTransition]="true">
+  <as-split-area  class="map d-flex flex-column">
+
+    <ac-map class="gv-grow-1 d-flex flex-column">
+
+      <ac-map-layer-provider [provider]="urlTemplateProvider" [options]="{
+            subdomains: 'abc',
+            url : cartoUrl
+          }">
+      </ac-map-layer-provider>
+
+      <!-- <ac-map-layer-provider [provider]="urlTemplateProvider" [options]="{
+            url : asterUrl
+          }" [alpha]="0.3"> </ac-map-layer-provider> -->
+
+      <gv-map-query-layer *ngFor="let l of (queryLayers$ | async); trackBy:trackByfn" [data]="l" [acMap]="acMap">
+      </gv-map-query-layer>
+
+      <!-- <gv-polygons-editor-layer></gv-polygons-editor-layer> -->
+    </ac-map>
+
+  </as-split-area>
+  <as-split-area class="timeline d-flex flex-column">
+
+    <gv-timeline-visual [data$]="data$" [settings$]="timeLineVisualSettings$" (cursorChange)="onTimeCursorChange($event)"></gv-timeline-visual>
+
+  </as-split-area>
+</as-split>

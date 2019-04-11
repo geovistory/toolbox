@@ -63,6 +63,7 @@ body {
 button {
     cursor: pointer;
 }
+
 .rotate-90 {
     -webkit-transform: rotate(90deg);
     -moz-transform: rotate(90deg);
@@ -70,6 +71,7 @@ button {
     -o-transform: rotate(90deg);
     transform: rotate(90deg);
 }
+
 .rotate-180 {
     -webkit-transform: rotate(180deg);
     -moz-transform: rotate(180deg);
@@ -77,6 +79,7 @@ button {
     -o-transform: rotate(180deg);
     transform: rotate(180deg);
 }
+
 .rotate-270 {
     -webkit-transform: rotate(270deg);
     -moz-transform: rotate(270deg);
@@ -84,6 +87,7 @@ button {
     -o-transform: rotate(270deg);
     transform: rotate(270deg);
 }
+
 .form-control {
     @extend .form-control; // overflow: hidden;
 }
@@ -152,6 +156,7 @@ $value in $theme-colors {
     .border-right-#{$color} {
         border-right-color: $value !important;
     }
+
     ;
 }
 
@@ -161,6 +166,7 @@ $value in $theme-colors {
     .border-left-#{$color} {
         border-left-color: $value !important;
     }
+
     ;
 }
 
@@ -170,6 +176,7 @@ $value in $colors {
     .text-#{$color} {
         color: $value !important;
     }
+
     ;
 }
 
@@ -213,22 +220,27 @@ $value in $colors {
     font-weight: $font-weight-normal;
     color: $gray-500;
     background-color: transparent;
+
     @include hover {
         color: $gray-800;
         background-color: transparent;
         border-color: transparent;
     }
+
     &:focus,
     &.focus {
         text-decoration: $link-hover-decoration;
         border-color: transparent;
         box-shadow: none;
     }
+
     &:disabled,
     &.disabled {
         color: $gray-300;
         pointer-events: none;
-    } // No need for an active state here
+    }
+
+    // No need for an active state here
 }
 
 /**
@@ -240,22 +252,27 @@ $value in $colors {
     font-weight: $font-weight-normal;
     color: $white;
     background-color: transparent;
+
     @include hover {
         color: $gray-800;
         background-color: transparent;
         border-color: transparent;
     }
+
     &:focus,
     &.focus {
         text-decoration: $link-hover-decoration;
         border-color: transparent;
         box-shadow: none;
     }
+
     &:disabled,
     &.disabled {
         color: $gray-300;
         pointer-events: none;
-    } // No need for an active state here
+    }
+
+    // No need for an active state here
 }
 
 /**
@@ -276,6 +293,7 @@ h6,
 .h6 {
     // font-weight: $font-weight-light;
     color: $gray-700;
+
     small,
     .small {
         // font-weight: $font-weight-light;
@@ -297,6 +315,7 @@ h6,
 // Custom Variables
 $gv-color-highlighted: #ffce00;
 $gv-color-selected: #00ffff;
+
 // Custom Stuff
 .font-normal {
     font-size: $font-size-base;
@@ -330,13 +349,16 @@ $gv-color-selected: #00ffff;
 .gv-table-scroll-y {
     @extend .gv-flex-fh;
     @extend .gv-scroll-y-auto;
+
     tr {
         @extend .d-flex;
+
         td,
         th {
             flex-basis: 100%
         }
     }
+
     tbody {
         @extend .gv-scroll-y-auto;
     }
@@ -361,9 +383,11 @@ $gv-color-selected: #00ffff;
         margin: 0;
         border-top-right-radius: 0;
         background-color: theme-color("secondary");
+
         .dropdown-item {
             color: $white;
         }
+
         .dropdown-item:focus,
         .dropdown-item:hover {
             color: $white;
@@ -376,6 +400,7 @@ $gv-color-selected: #00ffff;
 .gv-pointer {
     cursor: pointer;
 }
+
 .gv-w-max-500 {
     max-width: 500px;
 }
@@ -534,14 +559,17 @@ gv-property {
         padding: 0.25rem .75rem;
         margin-bottom: 0;
     }
+
     #userDropdown {
         i {
             font-size: 1.3rem;
         }
     }
+
     #userDropdown::after {
         display: none
     }
+
     #userIconBig {
         font-size: 3rem;
         color: $gray-300;
@@ -600,6 +628,7 @@ gv-entity-preview {
 }
 
 $gv-bg-drawer-list: #cde4f3;
+
 .gv-nav-btn {
     $background: $gray-200;
     $active-background: $gv-bg-drawer-list;
@@ -610,23 +639,29 @@ $gv-bg-drawer-list: #cde4f3;
     color: color-yiq($background);
     background-color: $background;
     border: none;
+
     @include hover {
         color: color-yiq($hover-background);
         background-color: darken($background, 7.5%);
     }
+
     &:focus,
     &.focus {
         outline: none; // background-color: $gray-500;
-    } // Disabled comes first so active can properly restyle
+    }
+
+    // Disabled comes first so active can properly restyle
     &.disabled,
     &:disabled {
         background-color: $gray-100;
     }
+
     &:not(:disabled):not(.disabled):active,
     &:not(:disabled):not(.disabled).active,
     .show>&.dropdown-toggle {
         color: color-yiq($active-background);
         background-color: $active-background;
+
         &:focus {}
     }
 }
@@ -683,6 +718,7 @@ gv-tile-header {
     @extend .h4; // padding-left: $btn-padding-y-sm;
     @extend .border-bottom;
     @extend .border-secondary; // height: calc((#{$btn-border-width} * 2) + (#{$font-size-sm} * #{$btn-line-height-sm}) + (#{$btn-padding-y-sm} * 2) + 1px); // @extend .rounded-top;
+
     .btn {
         @extend .btn-link-gray;
     }
@@ -745,98 +781,123 @@ gv-tile-header {
 gv-timeline {
     $bg-timeline: $gray-100;
     $font-color: $dark;
+
     .timeline-container {
         background-color: $bg-timeline;
         @extend .border-top;
         @extend .border-bottom;
         @extend .border-secondary;
     }
+
     path.domain {
         stroke: none // no outer line around xAxis
     }
+
     .header {
         .tick>line {
             stroke: none;
         }
+
         .tick>text {
             font-size: $font-size-xs;
             fill: $font-color
         }
     }
+
     .rows {
         border-top: 1px solid theme-color(dark);
+
         .tick>text {
             fill: none;
         }
+
         .x-axis-julian {
             .tick>line {
                 stroke: $gray-400; // stroke-dasharray: 7;
             }
         }
+
         .x-axis-gregorian {
             .tick>line {
                 stroke: $gray-400; // stroke-dasharray: 7;
             }
         }
     }
+
     .row {
         font-size: $font-size-xs;
     }
+
     .row:nth-child(odd) .row-bg {
         fill: $gray-200; //opacity: 0.2;
     }
+
     .row:nth-child(even) .row-bg {
         fill: $white;
         opacity: 0.2;
     }
+
     .row .row-bg.selected {
         fill: #ffffff;
         opacity: 0.6;
     }
+
     .row .row-bg.highlighted {
         fill: #ffffff;
         opacity: 0.4;
     }
+
     .row-label-bg {
         fill: $bg-timeline
     }
+
     text.row-label {
         fill: $font-color;
     }
+
     .gv-open-path {
         stroke: $black;
         fill: none;
     }
+
     .gv-closed-path {
         stroke: none;
         fill-opacity: .8;
     }
-    .gv-closed-path.gv-inner,
-    .gv-rectangle.gv-inner {
-        fill: lighten(theme-color("info"), 0%);
-    }
-    .gv-closed-path.gv-outer,
-    .gv-rectangle.gv-outer {
-        fill: lighten(theme-color("info"), 20%);
-    }
+
+    // .gv-closed-path.gv-inner,
+    // .gv-rectangle.gv-inner {
+    //     fill: lighten(theme-color("info"), 0%);
+    // }
+
+    // .gv-closed-path.gv-outer,
+    // .gv-rectangle.gv-outer {
+    //     fill: lighten(theme-color("info"), 20%);
+    // }
+
     .separator-line {
         stroke: theme-color("dark");
     }
+
     .cover-rect {
         fill: $bg-timeline;
     }
+
     .no-data-text {
         fill: theme-color("secondary");
         font-size: $font-size-sm;
     }
+
     .cursor-handle {
         fill: theme-color("primary");
         stroke: $white; // fill-opacity: .8;
     }
+
     .cursor-line {
         stroke: theme-color("primary");
         stroke-width: 2;
     }
+
     .btn {
         @extend .btn-link-gray;
     }
@@ -845,99 +906,124 @@ gv-timeline {
 gv-timeline.gv-timeline-dark {
     $bg-timeline: $gray-600;
     $font-color: $white;
+
     .timeline-container {
         background-color: $bg-timeline;
         @extend .border;
         @extend .border-dark;
         @extend .rounded;
     }
+
     path.domain {
         stroke: none // no outer line around xAxis
     }
+
     .header {
         .tick>line {
             stroke: none;
         }
+
         .tick>text {
             font-size: $font-size-xs;
             fill: $font-color
         }
     }
+
     .rows {
         border-top: 1px solid theme-color(dark);
+
         .tick>text {
             fill: none;
         }
+
         .x-axis-julian {
             .tick>line {
                 stroke: $gray-400; // stroke-dasharray: 7;
             }
         }
+
         .x-axis-gregorian {
             .tick>line {
                 stroke: $gray-400; // stroke-dasharray: 7;
             }
         }
     }
+
     .row {
         font-size: $font-size-xs;
     }
+
     .row:nth-child(odd) .row-bg {
         fill: $gray-200;
         opacity: 0.2;
     }
+
     .row:nth-child(even) .row-bg {
         fill: $white;
         opacity: 0.2;
     }
+
     .row .row-bg.selected {
         fill: #ffffff;
         opacity: 0.6;
     }
+
     .row .row-bg.highlighted {
         fill: #ffffff;
         opacity: 0.4;
     }
+
     .row-label-bg {
         fill: $bg-timeline
     }
+
     text.row-label {
         fill: $font-color;
     }
+
     .gv-open-path {
         stroke: darken(theme-color("info"), 20%);
         fill: none;
     }
+
     .gv-closed-path {
         stroke: none;
         fill-opacity: .8;
     }
+
     .gv-closed-path.gv-inner,
     .gv-rectangle.gv-inner {
         fill: lighten(theme-color("info"), 20%);
     }
+
     .gv-closed-path.gv-outer,
     .gv-rectangle.gv-outer {
         fill: lighten(theme-color("info"), 50%);
     }
+
     .separator-line {
         stroke: theme-color("dark");
     }
+
     .cover-rect {
         fill: $bg-timeline;
     }
+
     .no-data-text {
         fill: theme-color("secondary");
         font-size: $font-size-sm;
     }
+
     .cursor-handle {
         fill: theme-color("primary");
         stroke: $white; // fill-opacity: .8;
     }
+
     .cursor-line {
         stroke: theme-color("primary");
         stroke-width: 2;
     }
+
     .btn {
         @extend .btn-gray-700;
     }
@@ -952,6 +1038,7 @@ gv-quill-view {
         height: auto;
         border: none;
     }
+
     .ql-editor {
         padding: 0;
     }
@@ -963,12 +1050,14 @@ gv-quill-edit {
         @extend .flex-column;
         @extend .gv-grow-1;
     }
+
     .ql-editor {
         @extend .gv-grow-1;
     }
 }
 
 gv-quill-edit.gv-hide-toolbar {
+
     .ql-toolbar,
     .ql-tooltip {
         display: none;
@@ -981,6 +1070,7 @@ gv-quill-edit.gv-hide-toolbar {
     @extend .form-control;
     padding: 0;
     overflow-y: visible;
+
     .form-control {
         border: 0;
         height: $input-height-inner;
@@ -989,9 +1079,11 @@ gv-quill-edit.gv-hide-toolbar {
 
 gv-quill-edit.gv-quill-input-like {
     @extend gv-quill-edit.gv-hide-toolbar;
+
     .gv-editor {
         height: auto;
     }
+
     .ql-editor {
         @extend .form-control;
         border: 0;
@@ -1005,9 +1097,11 @@ gv-quill-edit.gv-quill-textarea-like.gv-outer-form-control {
 
 gv-quill-edit.gv-quill-textarea-like {
     @extend gv-quill-edit.gv-hide-toolbar;
+
     .gv-editor {
         height: auto;
     }
+
     .ql-editor {
         border: 0;
         min-height: 3.5rem; // copy from .form-control except border and height
@@ -1019,25 +1113,34 @@ gv-quill-edit.gv-quill-textarea-like {
         color: $input-color;
         background-color: $input-bg;
         background-clip: padding-box;
+
         @if $enable-rounded {
             // Manually use the if/else instead of the mixin to account for iOS override
             border-radius: $input-border-radius;
         }
+
         @else {
             // Otherwise undo the iOS default
             border-radius: 0;
         }
+
         @include box-shadow($input-box-shadow);
         @include transition($input-transition); // Unstyle the caret on `<select>`s in IE10+.
+
         &::-ms-expand {
             background-color: transparent;
             border: 0;
-        } // Customize the `:focus` state to imitate native WebKit styles.
+        }
+
+        // Customize the `:focus` state to imitate native WebKit styles.
         @include form-control-focus(); // Placeholder
+
         &::placeholder {
             color: $input-placeholder-color; // Override Firefox's unusual default opacity; see https://github.com/twbs/bootstrap/pull/11526.
             opacity: 1;
-        } // Disabled and read-only inputs
+        }
+
+        // Disabled and read-only inputs
         //
         // HTML5 says that controls under a fieldset > legend:first-child won't be
         // disabled if the fieldset is disabled. Due to implementation difficulty, we
@@ -1084,6 +1187,7 @@ gv-mentioning-list .ngx-table__header-title {
         background: lightpink;
         margin: 0 1px;
     }
+
     span[quillnode]::after {
         content: attr(quillnode);
         vertical-align: super;
@@ -1098,6 +1202,7 @@ gv-mentioning-list .ngx-table__header-title {
 gv-map {
     ac-map {
         height: 400px;
+
         .map-container {
             flex: 1 1 100px;
             height: 400px;
@@ -1108,6 +1213,7 @@ gv-map {
             flex-direction: column;
             flex-flow: column;
             @extend .border;
+
             .cesium-viewer {
                 flex: 1 1 auto;
             }
@@ -1152,24 +1258,31 @@ ngx-table.light-header {
 
 ngx-table.sticky-header {
     @extend .gv-flex-fh;
+
     .ngx-container {
         @extend .gv-flex-fh;
     }
+
     .ngx-table {
         @extend .gv-flex-fh;
     }
+
     thead {
         display: table;
+
         th {
             font-weight: 400;
         }
     }
+
     tbody {
         @extend .gv-flex-fh;
         overflow-y: auto;
+
         tr {
             display: flex;
             flex-shrink: 0;
+
             td {
                 flex-grow: 1;
                 flex-shrink: 0;
@@ -1183,6 +1296,7 @@ ngx-table.sticky-header {
 **************************/
 
 .switch {
+
     /* Box around the slider */
     .box {
         position: relative;
@@ -1191,12 +1305,14 @@ ngx-table.sticky-header {
         height: 34px;
         @extend .mr-1;
     }
+
     /* Hide default HTML checkbox */
     .box input {
         opacity: 0;
         width: 0;
         height: 0;
     }
+
     /* The slider */
     .slider {
         position: absolute;
@@ -1209,6 +1325,7 @@ ngx-table.sticky-header {
         -webkit-transition: .4s;
         transition: .4s;
     }
+
     .slider:before {
         position: absolute;
         content: "";
@@ -1220,21 +1337,26 @@ ngx-table.sticky-header {
         -webkit-transition: .4s;
         transition: .4s;
     }
+
     input:checked+.slider {
         background-color: $primary;
     }
+
     input:focus+.slider {
         box-shadow: 0 0 1px $primary;
     }
+
     input:checked+.slider:before {
         -webkit-transform: translateX(26px);
         -ms-transform: translateX(26px);
         transform: translateX(26px);
     }
+
     /* Rounded sliders */
     .slider.round {
         border-radius: 34px;
     }
+
     .slider.round:before {
         border-radius: 50%;
     }
@@ -1247,26 +1369,31 @@ $switch-sm-box-heigth: calc(#{$input-height-inner-sm} + #{$input-height-border} 
 $slider-diameter: calc(#{$switch-sm-box-heigth} - (#{$switch-sm-box-border} *2));
 $slide-distance: calc(#{$slider-diameter} * .5); // Adjust the hight/width ratio
 $switch-sm-box-width: calc((#{$switch-sm-box-border} * 2) + calc(#{$slider-diameter} + #{$slide-distance}));
+
 // $switch-sm-box-width: calc(#{$switch-sm-box-heigth} * 2);
 .switch.switch-sm {
     @extend .form-control-sm;
     margin-bottom: 0;
     cursor: pointer;
+
     .box {
         height: $switch-sm-box-heigth;
         width: $switch-sm-box-width;
     }
+
     .slider:before {
         height: $slider-diameter;
         width: $slider-diameter;
         left: $switch-sm-box-border;
         bottom: $switch-sm-box-border;
     }
+
     input:checked+.slider:before {
         -webkit-transform: translateX($slide-distance);
         -ms-transform: translateX($slide-distance);
         transform: translateX($slide-distance);
     }
+
     /* Rounded sliders */
     .slider.round {
         border-radius: 34px;
@@ -1299,21 +1426,39 @@ $switch-sm-box-width: calc((#{$switch-sm-box-border} * 2) + calc(#{$slider-diame
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
+/*****************
+* MccColorPicker
+*****************/
+
+mcc-color-picker-selector {
+    .mcc-color-picker-selector-preview {
+        box-sizing: content-box;
+    }
+}
+
 /******************
 ** Resizable Split Panel
 ******************/
 
 as-split.gv-split-style {
     .as-split-area {
+
         // background-color: lightgrey;
         &>p {
             padding: 5px;
         }
     }
+
     ::ng-deep .as-split-gutter {
         background-color: $gray-300 !important;
         position: relative;
     }
+
+    .as-split-gutter {
+        background-color: $gray-300 !important;
+        position: relative;
+    }
+
     ::ng-deep .as-split-gutter-icon {
         background-image: none !important;
         background-color: black;
@@ -1321,19 +1466,47 @@ as-split.gv-split-style {
         opacity: 0;
         position: absolute;
     }
+
+    .as-split-gutter-icon {
+        background-image: none !important;
+        background-color: black;
+        transition: opacity .3s;
+        opacity: 0;
+        position: absolute;
+    }
+
     ::ng-deep .as-split-gutter.is-dragged .as-split-gutter-icon,
     ::ng-deep .as-split-gutter-icon:hover {
         opacity: .1;
     }
+
+    .as-split-gutter.is-dragged .as-split-gutter-icon,
+    .as-split-gutter-icon:hover {
+        opacity: .1;
+    }
+
     &.is-horizontal {
         ::ng-deep .as-split-gutter-icon {
             width: 13px !important;
             left: -6px;
             right: 6px;
         }
+
+        .as-split-gutter-icon {
+            width: 13px !important;
+            left: -6px;
+            right: 6px;
+        }
     }
+
     &.is-vertical {
         ::ng-deep .as-split-gutter-icon {
+            height: 13px !important;
+            top: -6px;
+            bottom: 6px;
+        }
+
+        .as-split-gutter-icon {
             height: 13px !important;
             top: -6px;
             bottom: 6px;
@@ -1342,9 +1515,10 @@ as-split.gv-split-style {
 }
 
 // Query Details
-.gv-sub-query-item{
+.gv-sub-query-item {
     margin-left: 0rem;
 }
+
 // Main category icons
 .gv-source-color {
     color: $cyan
@@ -1377,21 +1551,46 @@ as-split.gv-split-style {
 // Be sure that you only ever include this mixin once!
 @include mat-core();
 // Custom color Palette for primary colors (starting with $purple)
-$gv-mat-purple: ( 50: #f2e7f5, 100: #dfc3e8, 200: #ca9cda, 300: #b576cb, 400: #a55abf, 500: #9643b3, 600: #893eac, 700: #7638a2, 800: #663399, 900: #482a87, A100: #ea80fc, A200: #e040fb, A400: #d500f9, A700: #aa00ff, contrast: ( 50: $dark-primary-text, 100: $dark-primary-text, 200: $dark-primary-text, 300: $light-primary-text, 400: $light-primary-text, 500: $light-primary-text, 600: $light-primary-text, 700: $light-primary-text, 800: $light-primary-text, 900: $light-primary-text, A100: $dark-primary-text, A200: $light-primary-text, A400: $light-primary-text, A700: $light-primary-text, ));
-$gv-mat-teal: ( 50: #dff6ed, 100: #b1e8d1, 200: #7ad8b4, 300: #20c996, 400: #00bd80, 500: #00b06a, 600: #00a15f, 700: #008f52, 800: #007d45, 900: #005d2f, A100: #a7ffeb, A200: #64ffda, A400: #1de9b6, A700: #00bfa5, contrast: ( 50: $dark-primary-text, 100: $dark-primary-text, 200: $dark-primary-text, 300: $dark-primary-text, 400: $dark-primary-text, 500: $light-primary-text, 600: $light-primary-text, 700: $light-primary-text, 800: $light-primary-text, 900: $light-primary-text, A100: $dark-primary-text, A200: $dark-primary-text, A400: $dark-primary-text, A700: $dark-primary-text, ));
+$gv-mat-purple: (50: #f2e7f5, 100: #dfc3e8, 200: #ca9cda, 300: #b576cb, 400: #a55abf, 500: #9643b3, 600: #893eac, 700: #7638a2, 800: #663399, 900: #482a87, A100: #ea80fc, A200: #e040fb, A400: #d500f9, A700: #aa00ff, contrast: (50: $dark-primary-text, 100: $dark-primary-text, 200: $dark-primary-text, 300: $light-primary-text, 400: $light-primary-text, 500: $light-primary-text, 600: $light-primary-text, 700: $light-primary-text, 800: $light-primary-text, 900: $light-primary-text, A100: $dark-primary-text, A200: $light-primary-text, A400: $light-primary-text, A700: $light-primary-text, ));
+$gv-mat-teal: (50: #dff6ed, 100: #b1e8d1, 200: #7ad8b4, 300: #20c996, 400: #00bd80, 500: #00b06a, 600: #00a15f, 700: #008f52, 800: #007d45, 900: #005d2f, A100: #a7ffeb, A200: #64ffda, A400: #1de9b6, A700: #00bfa5, contrast: (50: $dark-primary-text, 100: $dark-primary-text, 200: $dark-primary-text, 300: $dark-primary-text, 400: $dark-primary-text, 500: $light-primary-text, 600: $light-primary-text, 700: $light-primary-text, 800: $light-primary-text, 900: $light-primary-text, A100: $dark-primary-text, A200: $dark-primary-text, A400: $dark-primary-text, A700: $dark-primary-text, ));
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$candy-app-primary: mat-palette($gv-mat-purple);
-$candy-app-accent: mat-palette($gv-mat-teal, A200, A100, A400);
+$app-primary: mat-palette($gv-mat-purple);
+$app-accent: mat-palette($gv-mat-teal, A200, A100, A400);
 // The warn palette is optional (defaults to red).
-$candy-app-warn: mat-palette($mat-red);
+$app-warn: mat-palette($mat-red);
 // Create the theme object (a Sass map containing all of the palettes).
-$candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-app-warn);
+$app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include angular-material-theme($candy-app-theme);
+@include angular-material-theme($app-theme);
+
+.mat-text-primary {
+    color: mat-color($app-primary);
+}
+
+.mat-text-accent {
+    color: mat-color($app-accent);
+}
+
+.mat-text-warn {
+    color: mat-color($app-warn);
+}
+
+.mat-bg-primary {
+    background-color: mat-color($app-primary);
+}
+
+.mat-bg-accent {
+    background-color: mat-color($app-accent);
+}
+
+.mat-bg-warn {
+    background-color: mat-color($app-warn);
+}
+
 mat-checkbox {
     label {
         margin-bottom: 0
@@ -1402,17 +1601,17 @@ mat-checkbox {
     width: 24px !important;
     height: 24px !important;
 
-    &::ng-deep .mat-button-wrapper{
+    &::ng-deep .mat-button-wrapper {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         width: 100% !important;
         height: 100% !important;
 
-         .mat-icon {
-             font-size: 20px !important;
-         }
-   }
+        .mat-icon {
+            font-size: 20px !important;
+        }
+    }
 }
 
 .gv-btn-info {

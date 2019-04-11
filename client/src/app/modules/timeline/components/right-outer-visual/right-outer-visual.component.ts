@@ -12,13 +12,15 @@ import { Timeline } from '../../models/timeline';
 })
 export class RightOuterVisualComponent extends TimePrimitiveVisual implements OnInit, DoCheck {
 
-  @Input('rightOuterVisual') rightOuterOnXAxis : {timePrimitive:TimePrimitive, timeline:Timeline};
+  @Input('rightOuterVisual') rightOuterOnXAxis : {timePrimitive:TimePrimitive, timeline:Timeline, color:string};
 
   constructor(d3Service: D3Service, _element: ElementRef) {
     super(d3Service, _element)
   }
 
   ngOnInit(): void {
+    this.color = this.rightOuterOnXAxis.color;
+
     this.initTimePrimitiveVisual(this.rightOuterOnXAxis)
   }
 

@@ -34,6 +34,10 @@
     "dataSource": "postgres1",
     "public": true
   },
+  "ComVisual": {
+    "dataSource": "postgres1",
+    "public": true
+  },
   "PubAccount": {
     "dataSource": "postgres1",
     "public": true,

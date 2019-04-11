@@ -75,7 +75,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     imgLayers.remove(imgLayers.get(0), true)
 
     // register cursor position changes
-    this.ngRedux.select<number>([...this.path, 'timeLineSettings', 'cursorPosition'])
+    this.ngRedux.select<number>([...this.path, 'peItTimeline', 'timeLineSettings', 'cursorPosition'])
       .takeUntil(this.destroy$)
       .subscribe(pos => {
         if (pos) {

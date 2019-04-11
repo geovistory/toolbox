@@ -1,7 +1,9 @@
+/// <reference path="../../../../../../node_modules/@types/color/index.d.ts" />
 import { Component, DoCheck, Input } from '@angular/core';
-
-import { Timeline } from '../../models/timeline';
 import { TimeSpan } from 'app/core';
+import * as Color from 'color';
+import { Timeline } from '../../models/timeline';
+
 
 @Component({
   selector: '[existenceTimeVisual]',
@@ -10,18 +12,30 @@ import { TimeSpan } from 'app/core';
 })
 export class ExistenceTimeVisualComponent implements DoCheck {
 
-  timeline:Timeline;
+  timeline: Timeline;
+  innerColor: string;
+  outerColor: string;
 
-  inner: { start: number, end: number };
+  inner: { start: number, end: number, color: string };
 
-  outer: { start: number, end: number };
+  outer: { start: number, end: number, color: string };
 
-  @Input('existenceTimeVisual') existenceTimeOnXAxis: { existenceTime: TimeSpan, timeline: Timeline };
+  @Input('existenceTimeVisual') existenceTimeOnXAxis: {
+    existenceTime: TimeSpan,
+    timeline: Timeline,
+    color: string
+  };
 
   constructor() { }
 
   ngDoCheck() {
     this.timeline = this.existenceTimeOnXAxis.timeline;
+
+    const newColor = this.existenceTimeOnXAxis.color || Timeline.DEFAULT_COLOR;
+    if (this.innerColor !== newColor) {
+      this.innerColor = newColor;
+      this.outerColor = Color(this.innerColor).lighten(0.5).hex()
+    }
 
     this.createInnerRectangle();
     this.createOuterRectangle();
@@ -31,14 +45,16 @@ export class ExistenceTimeVisualComponent implements DoCheck {
     const et = this.existenceTimeOnXAxis.existenceTime;
     if (et.p81a && et.p81b) {
       this.inner = {
-        start : et.p81a.getJulianSecond(),
-        end : et.p81b.getJulianSecond(),
+        start: et.p81a.getJulianSecond(),
+        end: et.p81b.getJulianSecond(),
+        color: this.innerColor
       };
     }
     if (et.p81) {
       this.inner = {
-        start : et.p81.getJulianSecond(),
-        end : et.p81.getLastSecond(),
+        start: et.p81.getJulianSecond(),
+        end: et.p81.getLastSecond(),
+        color: this.innerColor
       };
     }
   }
@@ -48,15 +64,17 @@ export class ExistenceTimeVisualComponent implements DoCheck {
     const et = this.existenceTimeOnXAxis.existenceTime;
     if (et.p82a && et.p82b) {
       this.outer = {
-        start : et.p82a.getJulianSecond(),
-        end : et.p82b.getLastSecond(),
+        start: et.p82a.getJulianSecond(),
+        end: et.p82b.getLastSecond(),
+        color: this.outerColor
       };
 
     }
     if (et.p82) {
       this.outer = {
-        start : et.p82.getJulianSecond(),
-        end : et.p82.getLastSecond(),
+        start: et.p82.getJulianSecond(),
+        end: et.p82.getLastSecond(),
+        color: this.outerColor
       };
     }
   }

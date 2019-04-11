@@ -113,13 +113,13 @@
       "principalId": "system_admin",
       "permission": "ALLOW",
       "property": [
-        "selectedClassesOfProfile",
+        "classesOfProfile",
         "propertiesAndUiElements"
       ]
     }
   ],
   "methods": {
-    "selectedClassesOfProfile": {
+    "classesOfProfile": {
       "accepts": [
         {
           "arg": "dfh_pk_profile",

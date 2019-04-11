@@ -1,9 +1,10 @@
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { concat } from 'ramda';
-import { OperatorFunction, pipe } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { OperatorFunction, pipe, UnaryFunction } from 'rxjs';
+import { map, filter } from 'rxjs/operators';
 import { FieldList, PeItDetail, PropertyField, RoleDetail, TeEntDetail } from '../state/models';
 import { U } from './util';
+import { EntityVersionsByPk } from '../active-project';
 
 type TeEnOrPeItDetail = TeEntDetail | PeItDetail;
 
@@ -83,3 +84,26 @@ export function mapConcat<T, R>(getArrayFromItemFn: (value: T) => R[]): Operator
 }
 
 
+/**
+ * Takes an object with EntityVersions indexed by pk
+ * Returns an array containing the latest versions for each indexed entity
+ */
+export function latestEntityVersions<T>(): OperatorFunction<EntityVersionsByPk<T>, T[]> {
+    return pipe(
+        map(d => U.objNr2Arr(d)),
+        map(a => a.map(q => q[q._latestVersion]))
+    )
+}
+
+
+/**
+ * Takes an object with EntityVersions indexed by pk
+ * Returns an the latest versions for entity with given pkEntity
+ */
+export function latestEntityVersion<T>(pkEntity: number): OperatorFunction<EntityVersionsByPk<T>, T> {
+    return pipe(
+        map(byPkEntity =>  byPkEntity[pkEntity]),
+        filter(entityVersions => entityVersions && entityVersions._latestVersion !== undefined),
+        map(entityVersions => entityVersions[entityVersions._latestVersion])
+    )
+}

@@ -17,6 +17,42 @@ module.exports = function (ComQuery) {
 
     };
 
+    ComQuery.runVersion = function (pkProject, pkEntity, version, ctx, cb) {
+
+        const sql = `
+            SELECT * FROM (
+                select * from commons.query
+                Union
+                select * from commons.query_vt
+            ) as queries
+            WHERE queries.fk_project = $1
+            AND queries.pk_entity = $2
+            AND queries.entity_version = $3`;
+
+        const params = [pkProject, pkEntity, version]
+
+        // get the query version
+        ComQuery.dataSource.connector.execute(sql, params, (err, resultObjects) => {
+            if (err) cb(err, resultObjects);
+            else {
+                // Q: is query version found?
+                if(resultObjects && resultObjects.length){
+                    const queryDef = resultObjects[0].query;
+                    const q = new QueryBuilder().buildQuery(queryDef, pkProject);
+                    ComQuery.dataSource.connector.execute(q.sql, q.params, (err, resultObjects) => {
+                        if (err) cb(err, resultObjects);
+                        else cb(false, resultObjects)
+                    });
+                }
+                else {
+                    cb('Query not found.')
+                }
+            }
+        });
+
+
+    };
+
     ComQuery.beforeRemote('create', function (ctx, unused, next) {
 
         if (!ctx.args.options.accessToken.userId) return Error('AccesToken.userId is missing.');
@@ -36,16 +72,34 @@ module.exports = function (ComQuery) {
 
     ComQuery.findPerProject = function (fkProject, limit, offset, ctx, cb) {
 
-        // ensure limit is max. 100
-        limit = (limit > 100 || !limit) ? 100 : limit;
-
-        const filter = {
-            where: ['fk_project', '=', fkProject],
-            limit,
-            offset
-        }
-
-        ComQuery.findComplex(filter, cb)
+        const sql = `
+            SELECT
+            latest.name,
+            latest.description,
+            latest.query,
+            latest.fk_project,
+            latest.fk_last_modifier,
+            latest.pk_entity,
+            latest.entity_version,
+            latest.notes,
+            latest.tmsp_creation,
+            latest.tmsp_last_modification,
+            latest.sys_period,
+            vt.versions
+            FROM commons.query latest
+            LEFT JOIN ( 
+                SELECT pk_entity, json_agg(entity_version ORDER BY entity_version DESC) versions
+                FROM commons.query_vt
+                GROUP BY pk_entity
+            ) AS vt ON vt.pk_entity = latest.pk_entity
+            WHERE 
+            latest.fk_project = $1
+        `
+        const params = [fkProject]
+        ComQuery.dataSource.connector.execute(sql, params, (err, resultObjects) => {
+            if (err) return cb(err, resultObjects);
+            cb(false, resultObjects)
+        });
 
     };
 
@@ -64,6 +118,38 @@ module.exports = function (ComQuery) {
         })
 
     };
+
+    ComQuery.findByIdAndVersionAndProject = function (fkProject, pkEntity, version, ctx, cb) {
+
+
+        const sql = `
+            SELECT
+            name,
+            description,
+            query,
+            fk_project,
+            fk_last_modifier,
+            pk_entity,
+            entity_version,
+            notes,
+            tmsp_creation,
+            tmsp_last_modification,
+            sys_period
+            FROM (
+                SELECT * from commons.query latest
+                UNION
+                SELECT * from commons.query_vt vt
+            ) as all_versions
+            WHERE  fk_project = $1 AND pk_entity = $2 AND entity_version = $3 
+        `
+
+        const params = [fkProject, pkEntity, version]
+        ComQuery.dataSource.connector.execute(sql, params, (err, resultObjects) => {
+            if (err) return cb(err, resultObjects);
+            cb(false, resultObjects)
+        });
+    };
+
 
 
     ComQuery.runAndExport = function (fkProject, query, filetype, ctx, cb) {

@@ -1,5 +1,3 @@
-<div>  
-  <small class="text-danger" *ngIf="errorMessage !== null">
-    <ng-content select="[prefix]"></ng-content> {{errorMessage}} <ng-content select="[suffix]"></ng-content>
-  </small>
+<div *ngIf="errorMessage !== null" [ngClass]="{'text-danger small': framework==='bootstrap'}">
+  <ng-content select="[prefix]"></ng-content> {{errorMessage}} <ng-content select="[suffix]"></ng-content>
 </div>

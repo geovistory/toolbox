@@ -7,6 +7,7 @@ export class TimePrimitiveVisual {
 
   startDate: number;
   endDate: number;
+  color: string;
 
   constructor(protected d3Service: D3Service, protected _element: ElementRef) {
 

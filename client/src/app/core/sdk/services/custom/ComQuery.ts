@@ -94,7 +94,39 @@ export class ComQueryApi extends BaseLoopBackApi {
   }
 
   /**
-   * Run a query.
+   * Run an existing query-version.
+   *
+   * @param {number} pkProject Pk of the project
+   *
+   * @param {number} pkEntity Pk of the query
+   *
+   * @param {number} version Version of the query
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ComQuery` object.)
+   * </em>
+   */
+  public runVersion(pkProject: any, pkEntity: any, version: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ComQueries/run-version";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
+    if (typeof version !== 'undefined' && version !== null) _urlParams.version = version;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Find queries of project.
    *
    * @param {number} pkProject Pk of the project
    *
@@ -157,15 +189,47 @@ export class ComQueryApi extends BaseLoopBackApi {
   }
 
   /**
+   * Find one query by id, version and project.
+   *
+   * @param {number} pkProject Pk of the project
+   *
+   * @param {number} pkEntity Pk Entity
+   *
+   * @param {number} version Entity version
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ComQuery` object.)
+   * </em>
+   */
+  public findByIdAndVersionAndProject(pkProject: any, pkEntity: any, version: any, customHeaders?: Function): Observable<ComQuery> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ComQueries/find-by-id-and-version-and-project";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
+    if (typeof version !== 'undefined' && version !== null) _urlParams.version = version;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result.pipe(map((instance: ComQuery) => new ComQuery(instance)));
+  }
+
+  /**
    * Run query and export the query in the given filetype format.
    *
    * @param {number} pkProject Pk of the project
    *
    * @param {object} query query definition object
    *
-   * @param {string} filetype Filetype: 'json', 'csv'
+   * @param {string} filetype One of those filetypes: 'json', 'csv', 'xls'
    *
-   * @returns {object[]} An empty reference that will be
+   * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
    *

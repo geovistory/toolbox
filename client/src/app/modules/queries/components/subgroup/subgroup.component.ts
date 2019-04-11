@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren, Optional, Self } from '@angular/core';
 import { flatten, omit, keys, equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject, zip } from 'rxjs';
-import { mergeMap, takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { mergeMap, takeUntil, distinctUntilChanged, delay } from 'rxjs/operators';
 import { FilterTree, FilterTreeData } from '../../containers/query-detail/query-detail.component';
 import { PropertyFilterComponent, propertyFilterRequiredValidator } from '../property-filter/property-filter.component';
 import { PropertyOption, propertiesRequiredValidator } from '../property-select/property-select.component';
@@ -249,21 +249,21 @@ export class SubgroupComponent extends SubgroupMatControl implements OnDestroy, 
     super(ngControl, fb)
 
     this.formGroup.valueChanges
-    .pipe(distinctUntilChanged(equals), takeUntil(this.destroy$))
-    .subscribe(() => {
-      const data: FilterTreeData = (this.value || { data: {} }).data;
-      const children: FilterTree[] = []
-      keys(this.formGroup.value).forEach(key => {
-        const val = this.formGroup.value[key];
-        if (key === 'subgroupOperatorCtrl') {
-          data.operator = val;
-        } else {
-          children.push(val)
-        }
-      })
+      .pipe(distinctUntilChanged(equals), delay(0), takeUntil(this.destroy$))
+      .subscribe(() => {
+        const data: FilterTreeData = (this.value || { data: {} }).data;
+        const children: FilterTree[] = []
+        keys(this.formGroup.value).forEach(key => {
+          const val = this.formGroup.value[key];
+          if (key === 'subgroupOperatorCtrl') {
+            data.operator = val;
+          } else {
+            children.push(val)
+          }
+        })
 
-      this.value = { data, children };
-    })
+        this.value = { data, children };
+      })
   }
 
 
@@ -272,9 +272,9 @@ export class SubgroupComponent extends SubgroupMatControl implements OnDestroy, 
     // Observe if there is some invalid child components
     zip<QueryList<SubgroupComponent>, QueryList<ClassAndTypeSelectComponent>, QueryList<PropertyFilterComponent>>
       (
-        new BehaviorSubject(this.subgroups).merge(this.subgroups.changes),
-        new BehaviorSubject(this.classAndTypeSelects).merge(this.classAndTypeSelects.changes),
-        new BehaviorSubject(this.operatorSelects).merge(this.operatorSelects.changes)
+      new BehaviorSubject(this.subgroups).merge(this.subgroups.changes),
+      new BehaviorSubject(this.classAndTypeSelects).merge(this.classAndTypeSelects.changes),
+      new BehaviorSubject(this.operatorSelects).merge(this.operatorSelects.changes)
       ).pipe(
         mergeMap(qlists => {
           const validChangedEmitters = flatten(qlists.map((qlist: QueryList<any>) => qlist.map(a => new BehaviorSubject(a.valid).merge(a.validChanged))))

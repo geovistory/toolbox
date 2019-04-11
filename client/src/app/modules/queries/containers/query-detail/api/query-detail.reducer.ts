@@ -154,7 +154,7 @@ export function queryDetailReducer(state: QueryDetail = INITIAL_STATE, a: Action
         downloadError: false
       };
       break;
-    case QueryDetailAPIActions.LOAD_SUCCEEDED:
+    case QueryDetailAPIActions.DOWNLOAD_SUCCEEDED:
       state = {
         ...state,
         downloadLoading: false,
@@ -162,7 +162,7 @@ export function queryDetailReducer(state: QueryDetail = INITIAL_STATE, a: Action
       };
       break;
 
-    case QueryDetailAPIActions.LOAD_FAILED:
+    case QueryDetailAPIActions.DOWNLOAD_FAILED:
       state = {
         ...state,
         downloadLoading: false,

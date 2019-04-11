@@ -38,7 +38,7 @@ export class ReprosAPIEpics {
           /**
            * Do some api call
            */
-          // this.modelApi.selectedClassesOfProfile(null) // <- change api call here
+          // this.modelApi.classesOfProfile(null) // <- change api call here
           //   /**
           //    * Subscribe to the api call
           //    */

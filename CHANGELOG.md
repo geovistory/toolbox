@@ -1,4 +1,26 @@
 # Changelog of Geovistory Developments
+## Sprint 17
+### Features
+* Visuals:
+  * Added new table commons.visual, storing the visual itself (not the results). `GEOV-398`
+  * Added API Endpoints, all of them restricted to project_members: `GEOV-397`
+    * findPerIdAndVersionAndProject: finds queries of the project, if specified by pk_entity and entity_version
+    * create: persists a new visual to the datastore 
+    * patchAttributes: updates an existing visual
+    * deleteById: deletes a visual
+  * Added GUI: `GEOV-399`
+    * Visual-List: Simple list of all Visuals of project with name and description (no filtering, sorting yet)
+    * Visual-Detail-Page: 
+      * Visual Builder allows to create new or edit existing visuals, now only of type 'map'.
+      * The map visual builder allows to specify multiple, time dynamic layers by using query results.
+
+### Improvements
+* There was no time for improvements.
+
+### Fixes
+* No fixes, but may be new bugs. Long live biodiversity!
+
+
 ## Sprint 16
 ### Features
 * Queries:

@@ -29,14 +29,15 @@
 
 <!-- Results -->
 <div class="d-flex gv-fh mx-0 py-1 px-3 border-light gv-scroll-y-auto" *ngIf="!(loading$ | async)">
-  <div *ngFor="let item of ((items$ | async) | keys)" (click)="open(item?.value?.pk_entity)">
-    <a href class="gv-passive-link">
-      {{item?.value.name}}
+  <div *ngFor="let item of ((items$ | async) )" (click)="open(item?.pk_entity)" >
+    <a href class="gv-passive-link" [matTooltip]="item?.pk_entity">
+      {{item?.name}}
     </a>
    <div class="mb-3">
       <small class="text-muted">
-        {{item?.value?.description}}
+        {{item?.description}}
       </small>
    </div>
   </div>
+
 </div>

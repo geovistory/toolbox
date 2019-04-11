@@ -36,7 +36,7 @@ import { FieldHeaderComponent } from './components/field-header/field-header.com
 import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it-label.component';
 import { MentioningCreateCtrlComponent } from './components/mentioning-create-ctrl/mentioning-create-ctrl.component';
 import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.component';
-import { PeItTimelineComponent } from './components/pe-it-timeline/pe-it-timeline.component';
+import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timeline.component';
 import { TeEntHeaderComponent } from './components/te-ent-header/te-ent-header.component';
 import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.component';
 import { TextPropertyComponent } from './components/text-property/text-property.component';

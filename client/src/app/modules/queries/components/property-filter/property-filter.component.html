@@ -16,7 +16,7 @@
       </gv-property-select>
     </mat-form-field>
 
-    <button class="mr-3 gv-mat-icon-button-sm gv-btn-info" *ngIf="propertyCtrl.valid && operatorCtrl.valid"
+    <button class="mr-3 gv-mat-icon-button-sm gv-btn-info" *ngIf="showAddSubqueryBtn$ | async"
       mat-icon-button (click)="addChild()" matTooltip="Add sub-filter">
       <mat-icon>add</mat-icon>
     </button>

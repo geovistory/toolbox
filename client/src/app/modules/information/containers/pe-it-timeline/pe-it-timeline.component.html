@@ -1,0 +1,24 @@
+<!-- Header -->
+
+<gv-tile-header (close)="close.emit()">
+  <span title>
+    <i class="fa fa-fw fa-calendar"></i> Timeline
+  </span>
+</gv-tile-header>
+
+
+<!-- Body -->
+
+<div class="gv-tile-body">
+  <gv-timeline *ngIf="timeLineData?.rows?.length > 0" [data]="timeLineData"
+    [cursorPosition]="(timeLineSettings$ | async)?.cursorPosition"
+    [domainStart]="(timeLineSettings$ | async)?.domainStart" [domainEnd]="(timeLineSettings$ | async)?.domainEnd"
+    (cursorChange)="setCursorPosition($event)" (extendChange)="setExtent($event.firstJulianSecond, $event.lastJulianSecond)"
+    (rowMouseEnter)="rowMouseEnter($event)" (rowMouseLeave)="rowMouseLeave($event)" (rowClick)="rowClick($event)">
+  </gv-timeline>
+  <div *ngIf="!(timeLineData?.rows?.length > 0)">
+    <div class="alert alert-light font-italic">
+      No temporal information available.
+    </div>
+  </div>
+</div>

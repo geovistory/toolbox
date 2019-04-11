@@ -44,6 +44,7 @@ import { TypesAPIEpics } from './containers/types/api/types.epics';
 import { TypesComponent } from './containers/types/types.component';
 import { PanelBodyDirective } from './directives/panel-body.directive';
 import { ProjectsRoutingModule } from './projects-routing.module';
+import { VisualsModule } from '../visuals/visuals.module';
 
 
 
@@ -65,6 +66,7 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     SourcesModule,
     Information2Module,
     QueriesModule,
+    VisualsModule,
     PortalModule,
     DrawerContainerResizeModule,
     AngularSplitModule,

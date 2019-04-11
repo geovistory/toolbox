@@ -1,5 +1,5 @@
 import { PropertyFieldList, FieldList, EntityPreviewList, PeItDetailList, EntityPreview } from 'app/core/state/models';
-import { ComClassFieldInterface, ComUiContextInterface, ComProjectInterface, InfChunk, InfPersistentItem, InfTemporalEntity, DfhProperty } from 'app/core/sdk';
+import { ComClassFieldInterface, ComUiContextInterface, ComProjectInterface, InfChunk, InfPersistentItem, InfTemporalEntity, DfhProperty, ComQuery, ComVisual } from 'app/core/sdk';
 import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/api/class-settings.models';
 import { EntityDetail } from 'app/modules/information/containers/entity-detail/api/entity-detail.models';
 import { SourceDetail } from 'app/modules/sources/containers/source-detail/api/source-detail.models';
@@ -7,6 +7,20 @@ import { ClassAndTypePk } from 'app/modules/information/containers/class-and-typ
 import { SectionDetail } from 'app/modules/sources/containers/section-detail/api/section-detail.models';
 import { Observable } from 'rxjs';
 import { QueryDetail } from 'app/modules/queries/containers/query-detail/api/query-detail.models';
+import { VisualDetail } from 'app/modules/visuals/containers/visual-detail/api/visual-detail.models';
+
+export interface EntityByPk<T> {
+    [pk_entity: number]: T
+}
+
+export interface VersionEntity<T> {
+    _latestVersion: number, // version number of the latest version
+    [v: number]: T
+}
+
+export interface EntityVersionsByPk<T> {
+    [pk_entity: number]: VersionEntity<T>
+}
 
 export interface ChunkList { [pk_entity: number]: InfChunk };
 export interface PeItList { [pk_entity: number]: InfPersistentItem };
@@ -20,6 +34,7 @@ export class TypesByPk { [pk_entity: string]: TypePeIt; }
 export interface TypePreview extends EntityPreview { fk_typed_class: number; }
 export class TypePreviewsByClass { [dfh_pk_class: string]: TypePreview[]; }
 export class TypePreviewList { [pk_entity: string]: TypePreview[]; }
+export interface ComQueryByPk { [key: string]: ComQuery }
 
 
 export interface Panel {
@@ -33,11 +48,11 @@ export interface Tab {
     // wheter tab is active or not
     active: boolean;
     // the root component included in this tab, in dash separate minuscles: EntityDetailComponent -> 'entity-detail'
-    component: 'entity-detail' | 'source-detail' | 'section-detail' | 'query-detail';
+    component: 'entity-detail' | 'source-detail' | 'section-detail' | 'query-detail' | 'visual-detail';
     // icon to be displayed in tab, e.g.: gv-icon-source
     icon: 'persistent-entity' | 'temporal-entity' | 'source' | 'section' | 'query' | 'visual' | 'story';
     // name of the pathSegment under 'activeProject', used to generate the path: ['activeProject', pathSegment, uiId]
-    pathSegment: 'entityDetails' | 'sourceDetails' | 'sectionDetails' | 'queryDetails';
+    pathSegment: 'entityDetails' | 'sourceDetails' | 'sectionDetails' | 'queryDetails' | 'visualDetails';
     // data to pass to component via input variabales
     data?: {
         pkEntity?: number;
@@ -80,6 +95,16 @@ export interface ProjectDetail extends ComProjectInterface {
     // InfPersistentItems with roles by pk_entity
     teEnGraphs?: TeEnList;
 
+    // ComQuery list by pk_entity
+    comQueryVersionsByPk?: EntityVersionsByPk<ComQuery>;
+    comQueryLoading?: boolean;
+    comQueryVersionLoading?: { [key: string]: boolean };
+
+    // ComVisual list by pk_entity
+    comVisualVersionsByPk?: EntityVersionsByPk<ComVisual>;
+    comVisualLoading?: boolean;
+    comVisualVersionLoading?: boolean;
+
 
     /******************************************************************
      * Layout
@@ -108,6 +133,9 @@ export interface ProjectDetail extends ComProjectInterface {
 
     // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
     queryDetails?: { [uiId: string]: QueryDetail }
+
+    // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
+    visualDetails?: { [uiId: string]: VisualDetail }
 
     /******************************************************************
      * Things for Mentionings / Annotations

@@ -1,13 +1,17 @@
-import { Component, OnInit, Input, Output, EventEmitter, Optional, OnDestroy, Self } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Optional, OnDestroy, Self, ViewChild, AfterViewInit } from '@angular/core';
 import { ColDef, QueryPathSegment } from '../col-def-editor/col-def-editor.component';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlattener, MatTreeFlatDataSource, MatFormFieldControl } from '@angular/material';
 import { FormBuilder, FormControl, ControlValueAccessor, NgControl, FormGroup, Validators } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter, map, delay, takeWhile } from 'rxjs/operators';
 import { equals } from 'ramda';
 import { ValidationService } from 'app/core';
+import { QueryPathMetaInfo, QueryPathControlComponent } from '../query-path-control/query-path-control.component';
+import { PropertyOption } from '../property-select/property-select.component';
+import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
+import { QueryService } from '../../services/query.service';
 
 
 // tslint:disable: member-ordering
@@ -28,6 +32,8 @@ class ColDefMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldC
   describedBy = '';
   onChange = (_: any) => { };
   onTouched = () => { };
+
+  @Output() metaInfoChange = new EventEmitter<QueryPathMetaInfo>();
 
   get empty() {
     return this.model ? false : true;
@@ -74,13 +80,15 @@ class ColDefMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldC
     return this.ngControl.errors !== null && !!this.ngControl.touched;
   }
 
-  get defaultLabel() {return 'New Column'}
-  get defaultQueryPath() {return [
-    new QueryPathSegment({
-      type: 'properties',
-      data: {}
-    })
-  ]}
+  get defaultLabel() { return 'New Column' }
+  get defaultQueryPath() {
+    return [
+      new QueryPathSegment({
+        type: 'properties',
+        data: {}
+      })
+    ]
+  }
 
   formGroup: FormGroup;
   queryPathFormCtrl: FormControl;
@@ -121,10 +129,10 @@ class ColDefMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldC
   }
 
   writeValue(value: ColDef | null): void {
-    const label = (value || {label: this.defaultLabel}).label;
-    const queryPath = (value || {queryPath: this.defaultQueryPath}).queryPath;
+    const label = (value || { label: this.defaultLabel }).label;
+    const queryPath = (value || { queryPath: this.defaultQueryPath }).queryPath;
     this.value = {
-      label, 
+      label,
       queryPath,
       // and all other, not changable properties
       ...(value || {})
@@ -162,8 +170,15 @@ class ColDefMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldC
     '[attr.aria-describedby]': 'describedBy',
   }
 })
-export class ColDefComponent extends ColDefMatControl {
-  @Input() propertyOptions$: Observable<number[]>;
+export class ColDefComponent extends ColDefMatControl implements AfterViewInit {
+  @ViewChild(QueryPathControlComponent) queryPathControl: QueryPathControlComponent;
+
+  metaInfoChange$ = new BehaviorSubject<QueryPathMetaInfo>({});
+
+
+  @Input() propertyOptions$: Observable<PropertyOption[]>;
+  @Input() classesAndTypes$: Observable<ClassAndTypeSelectModel>;
+
   @Input() colDef: ColDef; // TODO: remove this line
 
   @Output() blur = new EventEmitter<void>();
@@ -174,16 +189,17 @@ export class ColDefComponent extends ColDefMatControl {
   dataSource
 
   constructor(@Optional() @Self() public ngControl: NgControl,
-    fb: FormBuilder) {
+    fb: FormBuilder,
+    private q: QueryService) {
     super(ngControl, fb)
 
-    this.formGroup.valueChanges.pipe(takeUntil(this.destroy$))
+    this.formGroup.valueChanges.pipe(delay(0), takeUntil(this.destroy$))
       .subscribe(vals => {
 
         const newVal: ColDef = {
           ...this.model,
           label: this.labelCtrl.value,
-          queryPath: (this.queryPathFormCtrl.value || this.defaultQueryPath),
+          queryPath: (this.queryPathFormCtrl.value || this.defaultQueryPath),
         }
 
         if (!equals(newVal, this.model)) {
@@ -193,8 +209,29 @@ export class ColDefComponent extends ColDefMatControl {
   }
 
 
-  ngOnInit(){
-    
+  ngOnInit() {
+
+    // Only for entity_preview column
+
+    const classes$ = this.classesAndTypes$.pipe(
+      filter(() => (this.model && this.model.defaultType === 'entity_preview')),
+      this.q.classesFromClassesAndTypes()
+    )
+
+    const isTemporal$ = classes$.pipe(this.q.classesAreTemporal())
+    const isGeo$ = classes$.pipe(this.q.classesAreGeo())
+
+    combineLatest(isGeo$, isTemporal$).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(([isGeo, isTemporal]) => {
+      const meta: QueryPathMetaInfo = { isTemporal, isGeo }
+      this.metaInfoChange.emit(meta)
+    })
+  }
+
+  ngAfterViewInit() {
+    if (this.queryPathControl) this.queryPathControl.metaInfoChange$.pipe(takeUntil(this.destroy$))
+      .subscribe(d => this.metaInfoChange$.next(d))
   }
 
   onBlur() {

@@ -35,7 +35,7 @@ export class ClassListAPIEpics {
         ofType(ClassListAPIActions.LOAD_CLASSES),
         switchMap(() => new Observable<FluxStandardAction<any>>((globalStore) => {
           globalStore.next(this.loadingBarActions.startLoading());
-          this.classApi.selectedClassesOfProfile(null)
+          this.classApi.classesOfProfile(null)
             .subscribe((data: DfhClass[]) => {
               globalStore.next(this.loadingBarActions.completeLoading());
 

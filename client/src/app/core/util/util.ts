@@ -45,6 +45,19 @@ export class U {
         return arr;
     }
 
+
+    static objNr2Arr<T>(obj: { [key: number]: T }): T[] {
+        const arr = [];
+
+        if (obj == undefined) return arr;
+
+        Object.keys(obj).forEach(key => {
+            arr.push(obj[key]);
+        });
+
+        return arr;
+    }
+
     /**
      * converts object to array with {key: value} objects, e.g.:
      * {'a': 12, 'b': 99} --> [{key: 'a', value: 12, key: 'b', value: 99}]
