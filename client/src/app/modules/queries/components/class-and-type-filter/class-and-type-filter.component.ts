@@ -5,7 +5,7 @@ import { MatFormFieldControl } from '@angular/material';
 import { TreeNode } from 'app/shared/components/tree-checklist/tree-checklist.component';
 import { equals, keys } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { takeUntil, tap, delay } from 'rxjs/operators';
 import { FilterTree, FilterTreeData } from '../../containers/query-detail/query-detail.component';
 import { QueryService } from '../../services/query.service';
 import { ClassAndTypeSelectModel, classOrTypeRequiredCondition, classOrTypeRequiredValidator, TreeNodeData } from '../class-and-type-select/class-and-type-select.component';
@@ -242,9 +242,7 @@ export class ClassAndTypeFilterComponent extends ClassAndTypeFilterMatControl im
 
     this.formGroup.valueChanges
       .pipe(
-        tap(y => {
-        }),
-        // distinctUntilChanged(equals),
+        delay(0),
         takeUntil(this.destroy$))
       .subscribe(vals => {
         const data = this.classAndTypeCtrl.value;

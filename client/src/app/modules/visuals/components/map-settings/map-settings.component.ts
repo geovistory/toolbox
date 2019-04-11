@@ -6,6 +6,7 @@ import { pathOr, equals } from 'ramda';
 import { Subject } from 'rxjs';
 import { MapQueryLayerSettings } from '../map-query-layer-settings/map-query-layer-settings.component';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { delay } from '../../../../../../node_modules/rxjs/operators';
 
 interface DynamicQueryLayerCtrl {
   key: string,
@@ -112,7 +113,7 @@ export class MapSettingsComponent implements OnDestroy, ControlValueAccessor, Ma
 
     this.formGroup = fb.group({})
 
-    this.formGroup.valueChanges.subscribe(controls => {
+    this.formGroup.valueChanges.pipe(delay(0)).subscribe(controls => {
       const newVal: MapVisualSettings = {
         queryLayers: this.queryLayers,
         backgroundLayer: {}

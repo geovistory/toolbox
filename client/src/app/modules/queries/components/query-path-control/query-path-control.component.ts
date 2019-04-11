@@ -4,7 +4,7 @@ import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, V
 import { MatFormFieldControl } from '@angular/material';
 import { equals, keys } from 'ramda';
 import { BehaviorSubject, merge, Observable, of, Subject, combineLatest } from 'rxjs';
-import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, first, map, switchMap, takeUntil, delay } from 'rxjs/operators';
 import { QueryService } from '../../services/query.service';
 import { ClassAndTypePathSegmentComponent, classAndTypePathSegmentRequiredValidator } from '../class-and-type-path-segment/class-and-type-path-segment.component';
 import { QueryPathSegment, QueryPathSegmentType } from '../col-def-editor/col-def-editor.component';
@@ -52,7 +52,8 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
-  @Output() metaInfoChange = new EventEmitter<QueryPathMetaInfo>();
+  
+  metaInfoChange$ = new BehaviorSubject<QueryPathMetaInfo>({});
 
 
   model: QueryPathSegment[];
@@ -163,8 +164,8 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
     this.isTemporal$ = this.q.pathSegmentIsTemporal$(lastSegment$)
     this.isGeo$ = this.q.pathSegmentIsGeo$(lastSegment$)
 
-    combineLatest(this.isTemporal$, this.isGeo$, this.afterViewInit$).takeUntil(this.destroy$).subscribe(([isTemporal, isGeo]) => {
-      this.metaInfoChange.emit({ isGeo, isTemporal })
+    combineLatest(this.isTemporal$, this.isGeo$, this.afterViewInit$).pipe(delay(0), takeUntil(this.destroy$)).subscribe(([isTemporal, isGeo]) => {
+      this.metaInfoChange$.next({ isGeo, isTemporal })
     })
   }
 
@@ -187,7 +188,7 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
 
   ngAfterViewInit() {
     this.afterViewInit$.next(true);
-    this.formGroup.valueChanges.subscribe(controls => {
+    this.formGroup.valueChanges.pipe(delay(0)).subscribe(controls => {
       if (controls && typeof controls === 'object' && Object.keys(controls).length) {
         const newVal: QueryPathSegment[] = this.dynamicFormControls.map(dynCtrl => ({
           type: dynCtrl.type,

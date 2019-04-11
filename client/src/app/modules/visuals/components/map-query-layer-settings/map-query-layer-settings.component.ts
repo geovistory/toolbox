@@ -7,7 +7,7 @@ import { ColDef, QueryPathSegment } from 'app/modules/queries/components/col-def
 import { QueryService } from 'app/modules/queries/services/query.service';
 import { equals, keys, omit, pathOr } from 'ramda';
 import { combineLatest, merge, Observable, Subject, pipe, OperatorFunction } from 'rxjs';
-import { filter, map, takeUntil, tap, switchMap, first } from 'rxjs/operators';
+import { filter, map, takeUntil, tap, switchMap, first, delay } from 'rxjs/operators';
 import { FilterTree, FilterTreeData } from 'app/modules/queries/containers/query-detail/query-detail.component';
 import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 
@@ -187,7 +187,7 @@ export class MapQueryLayerSettingsComponent implements AfterViewInit, OnDestroy,
       colorCtrl: this.colorCtrl
     })
 
-    this.formGroup.valueChanges.subscribe(controls => {
+    this.formGroup.valueChanges.pipe(delay(0)).subscribe(controls => {
       this.updateVal()
     })
 

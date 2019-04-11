@@ -4,14 +4,13 @@ import { AbstractControl, ControlValueAccessor, FormBuilder, FormControl, FormGr
 import { MatFormFieldControl, MatSelectChange } from '@angular/material';
 import { TreeNode } from '@angular/router/src/utils/tree';
 import { ActiveProjectService } from 'app/core';
-import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
-import { keys, pick, equals } from 'ramda';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { equals, keys, pick } from 'ramda';
+import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
+import { delay, map, takeUntil, tap } from 'rxjs/operators';
 import { FilterTree } from '../../containers/query-detail/query-detail.component';
 import { QueryService } from '../../services/query.service';
 import { TreeNodeData } from '../class-and-type-select/class-and-type-select.component';
-import { propertiesRequiredCondition, propertiesRequiredValidator, PropertyOption, PropertySelectModel } from '../property-select/property-select.component';
+import { propertiesRequiredCondition, propertiesRequiredValidator, PropertyOption } from '../property-select/property-select.component';
 
 interface DynamicFormControl {
   key: string,
@@ -102,16 +101,17 @@ class PropertyFilterMatControl implements OnDestroy, ControlValueAccessor, MatFo
     return this.model;
   }
   set value(value: FilterTree | null) {
-    this.model = value;
-
-    this.onChange(this.model)
+    if (!equals(this.model, value)) {
+      this.model = value;
+      this.onChange(this.model)
+    }
   }
 
   get errorState() {
     return this.ngControl.errors !== null && !!this.ngControl.touched;
   }
 
-  get defaultOperatorOption(){
+  get defaultOperatorOption() {
     return this.operatorOptions[0].value
   }
 
@@ -242,6 +242,8 @@ export class PropertyFilterComponent extends PropertyFilterMatControl implements
   selectedOperator;
 
   selectedProperties$ = new BehaviorSubject<PropertyOption[] | null>(null);
+
+
   get selectedProperties() {
     return this.selectedProperties$.value;
   }
@@ -251,18 +253,17 @@ export class PropertyFilterComponent extends PropertyFilterMatControl implements
 
   valid: boolean;
 
-  get showAddSubqueryBtn(): boolean {
-    return this.valid;
-  }
+  showAddSubqueryBtn$: Observable<boolean>
 
-  
+
   constructor(public p: ActiveProjectService, private q: QueryService,
     fb: FormBuilder,
     @Optional() @Self() public ngControl: NgControl) {
-      super(ngControl, fb)
+    super(ngControl, fb)
 
-      this.formGroup.valueChanges
+    this.formGroup.valueChanges
       .pipe(
+        delay(0),
         takeUntil(this.destroy$))
       .subscribe(values => {
         const data = {
@@ -284,6 +285,11 @@ export class PropertyFilterComponent extends PropertyFilterMatControl implements
         }
 
       })
+
+    this.showAddSubqueryBtn$ = merge(this.operatorCtrl.statusChanges, this.propertyCtrl.statusChanges).pipe(
+      delay(0),
+      map(() => (this.operatorCtrl.valid && this.propertyCtrl.valid))
+    )
 
   }
 

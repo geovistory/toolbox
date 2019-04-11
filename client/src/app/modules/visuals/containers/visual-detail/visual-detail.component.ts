@@ -5,7 +5,7 @@ import { ActiveProjectService, ComVisual, IAppState, latestEntityVersion, Substo
 import { RootEpics } from 'app/core/store/epics';
 import { uniq, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, first, map, takeUntil, switchMap } from 'rxjs/operators';
+import { filter, first, map, takeUntil, switchMap, delay } from 'rxjs/operators';
 import { MapVisualSettings } from '../../components/map-settings/map-settings.component';
 import { VisualDetailAPIActions } from './api/visual-detail.actions';
 import { VisualDetailAPIEpics } from './api/visual-detail.epics';
@@ -115,7 +115,7 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
       descriptionCtrl: this.descriptionCtrl,
     });
 
-    this.visualSettingsCtrl.valueChanges.takeUntil(this.destroy$).subscribe(s => this.visualSettings$.next(s))
+    this.visualSettingsCtrl.valueChanges.pipe(delay(0), takeUntil(this.destroy$)).subscribe(s => this.visualSettings$.next(s))
   }
 
   getBasePath = () => this.basePath;
@@ -243,7 +243,7 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
   onDelete() {
     const s = this.localStore.getState();
     let pkEntity;
-    
+
     if (!s.deleted && s.pkEntity) {
       pkEntity = s.pkEntity
       this.delete(pkEntity)

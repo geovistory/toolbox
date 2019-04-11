@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, View
 import { ControlValueAccessor, NgControl, NgForm, ValidatorFn, AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, delay } from 'rxjs/operators';
 import { FilterTreeData, FilterTree } from '../../containers/query-detail/query-detail.component';
 import { QueryService } from '../../services/query.service';
 import { QueryPathSegment } from '../col-def-editor/col-def-editor.component';
@@ -43,7 +43,7 @@ export class ClassAndTypePathSegmentRequiredValidatorDirective implements Valida
     '[attr.aria-describedby]': 'describedBy',
   }
 })
-export class ClassAndTypePathSegmentComponent implements  AfterViewInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<QueryPathSegment> {
+export class ClassAndTypePathSegmentComponent implements AfterViewInit, OnDestroy, ControlValueAccessor, MatFormFieldControl<QueryPathSegment> {
   static nextId = 0;
   @Input() index: number;
   @Input() pkClasses$: Observable<number[]>;
@@ -153,7 +153,7 @@ export class ClassAndTypePathSegmentComponent implements  AfterViewInit, OnDestr
 
 
   ngAfterViewInit() {
-    this.formGroup.valueChanges.subscribe(controls => {
+    this.formGroup.valueChanges.pipe(delay(0)).subscribe(controls => {
       const val = controls['classAndType'];
 
       if (!equals(this.selectedClassesAndTypes$.value, val)) {

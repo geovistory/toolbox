@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, OnDestroy, Optional, Self, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Optional, Self, Output, EventEmitter, ChangeDetectorRef, AfterViewInit, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { ControlValueAccessor, NgControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
@@ -8,6 +8,8 @@ import { keys } from 'ramda';
 import { QueryPathMetaInfo } from '../query-path-control/query-path-control.component';
 import { PropertyOption } from '../property-select/property-select.component';
 import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
+import { delay, map, takeUntil, tap } from '../../../../../../node_modules/rxjs/operators';
+import { ColDefComponent } from '../col-def/col-def.component';
 
 export type QueryPathSegmentType = 'properties' | 'classes';
 
@@ -53,7 +55,7 @@ export class ColDef {
 interface DynamicFormControl {
   key: string,
   ctrl: FormControl,
-  meta?: QueryPathMetaInfo
+  meta$?: BehaviorSubject<QueryPathMetaInfo>
 }
 
 // tslint:disable: member-ordering
@@ -143,7 +145,8 @@ class ColDefEditorMatControl implements OnDestroy, ControlValueAccessor, MatForm
 
     const c: DynamicFormControl = {
       key: '_' + index,
-      ctrl: new FormControl(colDef) // TODO add colDefValidator
+      ctrl: new FormControl(colDef), // TODO add colDefValidator
+      meta$: new BehaviorSubject({})
     }
     this.dynamicFormControls.push(c)
     this.formGroup.addControl(c.key, c.ctrl)
@@ -210,7 +213,10 @@ class ColDefEditorMatControl implements OnDestroy, ControlValueAccessor, MatForm
     '[attr.aria-describedby]': 'describedBy',
   }
 })
-export class ColDefEditorComponent extends ColDefEditorMatControl implements OnInit {
+export class ColDefEditorComponent extends ColDefEditorMatControl implements AfterViewInit {
+
+  @ViewChildren(ColDefComponent) colDefComponents: QueryList<ColDefComponent>;
+
   @Input() propertyOptions$: Observable<PropertyOption[]>;
   @Input() classesAndTypes$: Observable<ClassAndTypeSelectModel>;
   @Input() model: ColDef[];
@@ -225,7 +231,7 @@ export class ColDefEditorComponent extends ColDefEditorMatControl implements OnI
   ) {
     super(ngControl, fb)
 
-    this.formGroup.valueChanges.subscribe(controls => {
+    this.formGroup.valueChanges.pipe(delay(0)).subscribe(controls => {
       if (controls && typeof controls === 'object' && Object.keys(controls).length) {
         this.assignValueFromDynamicControls()
       } else {
@@ -234,8 +240,22 @@ export class ColDefEditorComponent extends ColDefEditorMatControl implements OnI
     })
   }
 
-  ngOnInit() {
-
+  ngAfterViewInit() {
+    const queryListChange$ = new Subject();
+    this.colDefComponents.changes.pipe(
+      tap(() => {
+        // clear subscriptions to last state of query list
+        queryListChange$.next()
+      }),
+      map((components: ColDefComponent[]) => components.map((component, i) => ({ i, meta$: component.metaInfoChange$ }))),
+      takeUntil(this.destroy$)
+    ).subscribe(list => {
+      list.forEach(item => {
+        item.meta$.pipe(delay(0),takeUntil(queryListChange$)).subscribe(meta => {
+          this.dynamicFormControls[item.i].meta$.next(meta)
+        })
+      })
+    })
   }
 
   drop(event: CdkDragDrop<ColDef[]>) {
@@ -289,7 +309,7 @@ export class ColDefEditorComponent extends ColDefEditorMatControl implements OnI
    * @param e meta info about that control
    */
   onMetaInfoChange(i: number, e: QueryPathMetaInfo) {
-    this.dynamicFormControls[i].meta = e;
+    this.dynamicFormControls[i].meta$.next(e);
     // this.ref.detectChanges()
   }
 }

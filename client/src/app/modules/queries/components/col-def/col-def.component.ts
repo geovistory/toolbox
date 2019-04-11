@@ -1,21 +1,21 @@
-import { Component, OnInit, Input, Output, EventEmitter, Optional, OnDestroy, Self } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Optional, OnDestroy, Self, ViewChild, AfterViewInit } from '@angular/core';
 import { ColDef, QueryPathSegment } from '../col-def-editor/col-def-editor.component';
-import { Observable, Subject, combineLatest } from 'rxjs';
+import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlattener, MatTreeFlatDataSource, MatFormFieldControl } from '@angular/material';
 import { FormBuilder, FormControl, ControlValueAccessor, NgControl, FormGroup, Validators } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { takeUntil, filter, map } from 'rxjs/operators';
+import { takeUntil, filter, map, delay, takeWhile } from 'rxjs/operators';
 import { equals } from 'ramda';
 import { ValidationService } from 'app/core';
-import { QueryPathMetaInfo } from '../query-path-control/query-path-control.component';
+import { QueryPathMetaInfo, QueryPathControlComponent } from '../query-path-control/query-path-control.component';
 import { PropertyOption } from '../property-select/property-select.component';
 import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
 import { QueryService } from '../../services/query.service';
 
 
 // tslint:disable: member-ordering
-class ColDefMatControl implements  OnDestroy, ControlValueAccessor, MatFormFieldControl<ColDef>{
+class ColDefMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldControl<ColDef>{
   static nextId = 0;
 
   model: ColDef;
@@ -170,7 +170,12 @@ class ColDefMatControl implements  OnDestroy, ControlValueAccessor, MatFormField
     '[attr.aria-describedby]': 'describedBy',
   }
 })
-export class ColDefComponent extends ColDefMatControl {
+export class ColDefComponent extends ColDefMatControl implements AfterViewInit {
+  @ViewChild(QueryPathControlComponent) queryPathControl: QueryPathControlComponent;
+
+  metaInfoChange$ = new BehaviorSubject<QueryPathMetaInfo>({});
+
+
   @Input() propertyOptions$: Observable<PropertyOption[]>;
   @Input() classesAndTypes$: Observable<ClassAndTypeSelectModel>;
 
@@ -188,7 +193,7 @@ export class ColDefComponent extends ColDefMatControl {
     private q: QueryService) {
     super(ngControl, fb)
 
-    this.formGroup.valueChanges.pipe(takeUntil(this.destroy$))
+    this.formGroup.valueChanges.pipe(delay(0), takeUntil(this.destroy$))
       .subscribe(vals => {
 
         const newVal: ColDef = {
@@ -222,6 +227,11 @@ export class ColDefComponent extends ColDefMatControl {
       const meta: QueryPathMetaInfo = { isTemporal, isGeo }
       this.metaInfoChange.emit(meta)
     })
+  }
+
+  ngAfterViewInit() {
+    if (this.queryPathControl) this.queryPathControl.metaInfoChange$.pipe(takeUntil(this.destroy$))
+      .subscribe(d => this.metaInfoChange$.next(d))
   }
 
   onBlur() {
