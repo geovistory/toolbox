@@ -1,5 +1,5 @@
 import { PropertyFieldList, FieldList, EntityPreviewList, PeItDetailList, EntityPreview } from 'app/core/state/models';
-import { ComClassFieldInterface, ComUiContextInterface, ComProjectInterface, InfChunk, InfPersistentItem, InfTemporalEntity, DfhProperty, ComQuery, ComVisual } from 'app/core/sdk';
+import { ComClassFieldInterface, ComUiContextInterface, ComProjectInterface, InfChunk, InfPersistentItem, InfTemporalEntity, DfhProperty, ComQuery, ComVisual, DfhProjRel } from 'app/core/sdk';
 import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/api/class-settings.models';
 import { EntityDetail } from 'app/modules/information/containers/entity-detail/api/entity-detail.models';
 import { SourceDetail } from 'app/modules/sources/containers/source-detail/api/source-detail.models';
@@ -8,6 +8,7 @@ import { SectionDetail } from 'app/modules/sources/containers/section-detail/api
 import { Observable } from 'rxjs';
 import { QueryDetail } from 'app/modules/queries/containers/query-detail/api/query-detail.models';
 import { VisualDetail } from 'app/modules/visuals/containers/visual-detail/api/visual-detail.models';
+import { ProjectSettingsData } from 'app/modules/projects/containers/project-settings-data/api/project-settings-data.models';
 
 export interface EntityByPk<T> {
     [pk_entity: number]: T
@@ -42,17 +43,17 @@ export interface Panel {
     tabs: Tab[];
 }
 
-export type ListType = '' | 'entities' | 'sources' | 'queries' | 'visuals' | 'stories';
+export type ListType = '' | 'entities' | 'sources' | 'queries' | 'visuals' | 'stories' | 'settings';
 
 export interface Tab {
     // wheter tab is active or not
     active: boolean;
     // the root component included in this tab, in dash separate minuscles: EntityDetailComponent -> 'entity-detail'
-    component: 'entity-detail' | 'source-detail' | 'section-detail' | 'query-detail' | 'visual-detail';
+    component: 'entity-detail' | 'source-detail' | 'section-detail' | 'query-detail' | 'visual-detail' | 'classes-settings';
     // icon to be displayed in tab, e.g.: gv-icon-source
-    icon: 'persistent-entity' | 'temporal-entity' | 'source' | 'section' | 'query' | 'visual' | 'story';
+    icon: 'persistent-entity' | 'temporal-entity' | 'source' | 'section' | 'query' | 'visual' | 'story' | 'settings';
     // name of the pathSegment under 'activeProject', used to generate the path: ['activeProject', pathSegment, uiId]
-    pathSegment: 'entityDetails' | 'sourceDetails' | 'sectionDetails' | 'queryDetails' | 'visualDetails';
+    pathSegment: 'entityDetails' | 'sourceDetails' | 'sectionDetails' | 'queryDetails' | 'visualDetails' | 'classesSettings';
     // data to pass to component via input variabales
     data?: {
         pkEntity?: number;
@@ -67,11 +68,18 @@ export interface Tab {
 
 
 export interface ProjectDetail extends ComProjectInterface {
+
+    /******************************************************************
+     * CRM and Project Config
+     */
+    
+    // Conceptional Reference Model
     crm?: ProjectCrm,
+
     classSettings?: ClassSettingsI
 
     /******************************************************************
-     * Data Cache
+     * Information Cache
      */
 
     // data unit previews
@@ -137,6 +145,9 @@ export interface ProjectDetail extends ComProjectInterface {
     // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
     visualDetails?: { [uiId: string]: VisualDetail }
 
+    // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
+    classesSettings?: { [uiId: string]: ProjectSettingsData }
+
     /******************************************************************
      * Things for Mentionings / Annotations
      */
@@ -170,11 +181,25 @@ export interface ProjectCrm {
 export interface ClassConfigList { [dfh_pk_class: number]: ClassConfig };
 
 export interface ClassConfig {
-    label: string;
-    dfh_identifier_in_namespace: string;
+    pkEntity: number;
     dfh_pk_class: number;
-    subclassOf?: 'peIt' | 'teEnt'; // to distinguish TeEnts from PeIts
+
+    label: string;
+    dfh_standard_label: string;
+
+    profileLabels: string;
+    profilePks: number[];
+
+    projRel?: DfhProjRel;
     isInProject?: boolean; // reflects the enabled / disabled state from data settings of the project
+    changingProjRel: boolean;
+
+    subclassOf?: 'peIt' | 'teEnt' | 'other'; // to distinguish TeEnts from PeIts
+
+    scopeNote: string;
+
+    dfh_identifier_in_namespace: string;
+
     propertyFields?: PropertyFieldList;
     uiContexts?: {
         [pk: number]: UiContext

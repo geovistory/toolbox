@@ -96,32 +96,6 @@ export class DfhClassApi extends BaseLoopBackApi {
   }
 
   /**
-   * Get a list of classes with info about the status they have int the project (used for the poject-settings > data-settings page).
-   *
-   * @param {number} pk_project The pk_project for whicht the list of classes is loaded.
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `DfhClass` object.)
-   * </em>
-   */
-  public projectSettingsClassList(pk_project: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DfhClasses/project-settings-class-list";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
    * <em>
          * (The remote method definition does not provide any description.)
          * </em>

@@ -268,71 +268,71 @@ module.exports = function (DfhClass) {
    * @param pk_project the pk of the project
    * 
    */
-  DfhClass.projectSettingsClassList = function (pk_project, cb) {
+  // DfhClass.projectSettingsClassList = function (pk_project, cb) {
 
 
-    const filter = {
-      /** 
-       * Select persistent items by pk_entity
-       */
-      select: {
-        include: [
-          "pk_entity",
-          "dfh_pk_class",
-          "dfh_standard_label"
-        ]
-      },
-      "orderBy": [{
-        "pk_entity": "asc"
-      }],
-      "include": {
-        "class_profile_view": {
-          "$relation": {
-            select: {
-              include: [
-                "dfh_fk_system_type",
-                "dfh_fk_profile",
-                "dfh_profile_label"
-              ]
-            },
-            "name": "class_profile_view",
-            "joinType": "inner join",
-            "where": [
-              "dfh_profile_association_type", "=", "selected", "and",
-              "dfh_fk_profile", "!=", technicalProfilePk
-            ],
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
-          }
-        },
-        "text_properties": {
-          "$relation": {
-            select: {
-              include: [
-                "dfh_language_iso_code",
-                "dfh_text_property"
-              ]
-            },
-            "name": "text_properties",
-            "joinType": "left join"
-          }
-        },
-        "proj_rels": {
-          "$relation": {
-            "name": "proj_rels",
-            "where": [
-              "fk_project", "=", pk_project,
-            ],
-            "joinType": "left join"
-          }
-        }
-      }
-    }
+  //   const filter = {
+  //     /** 
+  //      * Select persistent items by pk_entity
+  //      */
+  //     select: {
+  //       include: [
+  //         "pk_entity",
+  //         "dfh_pk_class",
+  //         "dfh_standard_label"
+  //       ]
+  //     },
+  //     "orderBy": [{
+  //       "pk_entity": "asc"
+  //     }],
+  //     "include": {
+  //       "class_profile_view": {
+  //         "$relation": {
+  //           select: {
+  //             include: [
+  //               "dfh_fk_system_type",
+  //               "dfh_fk_profile",
+  //               "dfh_profile_label"
+  //             ]
+  //           },
+  //           "name": "class_profile_view",
+  //           "joinType": "inner join",
+  //           "where": [
+  //             "dfh_profile_association_type", "=", "selected", "and",
+  //             "dfh_fk_profile", "!=", technicalProfilePk
+  //           ],
+  //           "orderBy": [{
+  //             "pk_entity": "asc"
+  //           }]
+  //         }
+  //       },
+  //       "text_properties": {
+  //         "$relation": {
+  //           select: {
+  //             include: [
+  //               "dfh_language_iso_code",
+  //               "dfh_text_property"
+  //             ]
+  //           },
+  //           "name": "text_properties",
+  //           "joinType": "left join"
+  //         }
+  //       },
+  //       "proj_rels": {
+  //         "$relation": {
+  //           "name": "proj_rels",
+  //           "where": [
+  //             "fk_project", "=", pk_project,
+  //           ],
+  //           "joinType": "left join"
+  //         }
+  //       }
+  //     }
+  //   }
 
-    return DfhClass.findComplex(filter, cb)
+  //   return DfhClass.findComplex(filter, cb)
 
-  }
+  // }
 
 
 };

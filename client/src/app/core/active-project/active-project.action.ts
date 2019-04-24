@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ProjectCrm, ProjectDetail, Tab, ListType, TypePeIt } from './active-project.models';
 import { EntityPreview, PeItDetail } from '../state/models';
-import { InfChunk, InfTemporalEntity, InfPersistentItem, ComQuery, ComVisual } from '../sdk';
+import { InfChunk, InfTemporalEntity, InfPersistentItem, ComQuery, ComVisual, DfhProjRel } from '../sdk';
 
 export interface ComQueryV extends ComQuery {
     versions: number[];
@@ -31,6 +31,10 @@ interface MetaData {
     comQuery?: ComQuery
     comVisualArray?: ComVisualV[]
     comVisual?: ComVisual
+
+    // CRM
+    projRel?: DfhProjRel;
+    dfh_pk_class?: number;
 
     // layout
     list?: ListType;
@@ -593,6 +597,33 @@ export class ActiveProjectActions {
             meta: null
         }
     }
+
+
+    /*********************************************************************
+     *  Methods to manage enabling and disabling a class for the project
+     *********************************************************************/
+    static readonly CHANGE_CLASS_PROJ_REL = 'ActiveProject::CHANGE_CLASS_PROJ_REL';
+    static readonly CHANGE_CLASS_PROJ_REL_SUCCEEDED = 'ActiveProject::CHANGE_CLASS_PROJ_REL_SUCCEEDED';
+    static readonly CHANGE_CLASS_PROJ_REL_FAILED = 'ActiveProject::CHANGE_CLASS_PROJ_REL_FAILED';
+
+    changeClassProjRel = (projRel: DfhProjRel, dfh_pk_class: number): ActiveProjectAction => ({
+        type: ActiveProjectActions.CHANGE_CLASS_PROJ_REL,
+        meta: { projRel, dfh_pk_class },
+        payload: null,
+    });
+
+    changeClassProjRelSucceeded = (projRel: DfhProjRel, dfh_pk_class: number): ActiveProjectAction => ({
+        type: ActiveProjectActions.CHANGE_CLASS_PROJ_REL_SUCCEEDED,
+        meta: { projRel, dfh_pk_class },
+        payload: null
+    })
+
+    changeClassProjRelFailed = (error, dfh_pk_class: number): ActiveProjectAction => ({
+        type: ActiveProjectActions.CHANGE_CLASS_PROJ_REL_FAILED,
+        meta: { dfh_pk_class },
+        payload: null,
+        error,
+    })
 
     /************************************************************************************
      * Destroy the active project state (on closing a project)

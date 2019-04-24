@@ -3,7 +3,7 @@ import { PortalModule } from '@angular/cdk/portal';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatSidenavModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatDividerModule, MatFormFieldModule, MatInputModule, MatListModule, MatProgressSpinnerModule, MatSidenavModule, MatSortModule, MatTableModule, MatIconModule, MatExpansionModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
 import { NavbarModule, PassiveLinkModule, ProxyRouteModule } from 'app/shared';
@@ -12,11 +12,15 @@ import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header
 import { ReadMoreModule } from 'app/shared/components/read-more/read-more.module';
 import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
 import { KeysModule } from 'app/shared/pipes/keys.module';
+import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
+import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detail-top-bar.module';
 import { Information2Module } from '../information/information.module';
 import { QueriesModule } from '../queries/queries.module';
 import { SourcesModule } from '../sources';
+import { VisualsModule } from '../visuals/visuals.module';
 import { ProjectsActions } from './api/projects.actions';
 import { ClassItemComponent } from './components/class-item/class-item.component';
+import { SettingsListComponent } from './components/settings-list/settings-list.component';
 import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { TabHandleComponent } from './components/tab-handle/tab-handle.component';
 import { ClassSettingsAPIActions } from './containers/class-settings/api/class-settings.actions';
@@ -44,7 +48,6 @@ import { TypesAPIEpics } from './containers/types/api/types.epics';
 import { TypesComponent } from './containers/types/types.component';
 import { PanelBodyDirective } from './directives/panel-body.directive';
 import { ProjectsRoutingModule } from './projects-routing.module';
-import { VisualsModule } from '../visuals/visuals.module';
 
 
 
@@ -62,6 +65,17 @@ import { VisualsModule } from '../visuals/visuals.module';
     HighlightModule,
     PassiveLinkModule,
     MatSidenavModule,
+    MatListModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatTableModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSortModule,
+    MatProgressSpinnerModule,
+    MatIconModule,
+    MatExpansionModule,
     DragDropModule,
     SourcesModule,
     Information2Module,
@@ -70,7 +84,9 @@ import { VisualsModule } from '../visuals/visuals.module';
     PortalModule,
     DrawerContainerResizeModule,
     AngularSplitModule,
-    ListDrawerHeaderModule
+    ListDrawerHeaderModule,
+    DetailTopBarModule,
+    DetailContentModule
   ],
   declarations: [
     ProjectCreateComponent,
@@ -90,7 +106,8 @@ import { VisualsModule } from '../visuals/visuals.module';
     TypeEditFormComponent,
     TabBodyComponent,
     PanelBodyDirective,
-    TabHandleComponent
+    TabHandleComponent,
+    SettingsListComponent
   ],
   providers: [
     ProjectsActions,

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { ClassItemI } from '../../containers/project-settings-data/api/project-settings-data.models';
+import { ClassConfig } from '../../../../core';
 
 @Component({
   selector: 'gv-class-item',
@@ -8,7 +8,7 @@ import { ClassItemI } from '../../containers/project-settings-data/api/project-s
 })
 export class ClassItemComponent {
 
-  @Input() cla: ClassItemI;
+  @Input() cla: ClassConfig;
   @Output() enable = new EventEmitter<void>();
   @Output() disable = new EventEmitter<void>();
   @Output() customize = new EventEmitter<void>();

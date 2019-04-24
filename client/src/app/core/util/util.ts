@@ -7,7 +7,7 @@ import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { ClassConfig, ProjectCrm } from 'app/core/active-project/active-project.models';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
-import { ComClassField, ComUiContextConfig, DfhClass, DfhProperty, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, InfEntityProjectRelInterface } from '../sdk';
+import { ComClassField, ComUiContextConfig, DfhClass, DfhProperty, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, InfEntityProjectRelInterface, DfhProjRel } from '../sdk';
 import { propertyFieldKeyFromParams, propertyFieldKey, fieldKey, roleDetailKey } from 'app/core/state/services/state-creator';
 import * as Config from '../../../../../common/config/Config';
 import { Field } from '../state/models/field';
@@ -433,6 +433,15 @@ export class U {
 
 
     /**
+     * Gets the project rel of a data_for_history class
+     */
+    static getProjRel = (dfhClass: DfhClass): DfhProjRel => {
+        if (dfhClass && dfhClass.proj_rels && dfhClass.proj_rels.length && dfhClass.proj_rels[0]) {
+            return dfhClass.proj_rels[0];
+        } else return undefined;
+    }
+
+    /**
      * Converts a DfhClass to a ClassConfig
      * @param dfhC
      */
@@ -461,11 +470,18 @@ export class U {
         }
 
         const cConf: ClassConfig = {
-            isInProject: extractIsInProject(dfhC),
-            subclassOf: extractSubclassOf(dfhC),
-            label: extractClassLabel(dfhC),
-            dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,
+            pkEntity: dfhC.pk_entity,
             dfh_pk_class: dfhC.dfh_pk_class,
+            subclassOf: extractSubclassOf(dfhC),
+            profileLabels: dfhC.class_profile_view.map(prof => prof.dfh_profile_label).join(', '),
+            profilePks: dfhC.class_profile_view.map(prof => prof.dfh_fk_profile),
+            isInProject: extractIsInProject(dfhC),
+            projRel: U.getProjRel(dfhC),
+            label: extractClassLabel(dfhC),
+            dfh_standard_label: dfhC.dfh_standard_label,
+            changingProjRel: false,
+            scopeNote: !dfhC.text_properties ? '' : !dfhC.text_properties.length ? '' : dfhC.text_properties[0].dfh_text_property,
+            dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,
             uiContexts: {}
         };
 

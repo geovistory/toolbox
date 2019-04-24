@@ -1,17 +1,19 @@
-import { Component, OnDestroy, Input, OnInit } from '@angular/core';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { Component, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DfhClassProfileView, IAppState, ProjectDetail, ActiveProjectService, U, ClassConfig } from 'app/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
-import { Subject, Observable, combineLatest, BehaviorSubject } from 'rxjs';
-import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, ProjectDetail, DfhClassProfileView } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { ProjectSettingsData, ClassItemI, EntityType } from './api/project-settings-data.models';
-import { ProjectSettingsDataAPIEpics } from './api/project-settings-data.epics';
-import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
-import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';
-import { map, first, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { HighlightPipe } from 'app/shared/pipes/highlight/highlight.pipe';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { animate, state, style, transition, trigger } from '../../../../../../node_modules/@angular/animations';
+import { MatSort, MatTableDataSource, Sort, matExpansionAnimations } from '../../../../../../node_modules/@angular/material';
 import { DfhProjRel } from '../../../../core/sdk/models/DfhProjRel';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';
+import { ProjectSettingsDataAPIEpics } from './api/project-settings-data.epics';
+import { EntityType, ProjectSettingsData } from './api/project-settings-data.models';
+import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -21,9 +23,19 @@ import { Router, ActivatedRoute } from '@angular/router';
   selector: 'gv-project-settings-data',
   templateUrl: './project-settings-data.component.html',
   styleUrls: ['./project-settings-data.component.css'],
-  providers: [HighlightPipe]
+  providers: [HighlightPipe],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+    matExpansionAnimations.indicatorRotate,
+  ],
 })
 export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+  @HostBinding('class.gv-flex-fh') flexFh = true;
+  @ViewChild(MatSort) sort: MatSort;
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
@@ -32,14 +44,24 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   localStore: ObservableStore<ProjectSettingsData>;
 
   // path to the substore
-  @Input() basePath = ['activeProject', 'dataSettings'];
+  @Input() basePath;
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
-  @select() items$: Observable<ClassItemI[]>;
+
+  items$: Observable<ClassConfig[]>;
+
+  // columns of the table
+  displayedColumns: string[] = ['enabled', 'label', 'subclassOf', 'dfh_standard_label', 'expansion'];
+
+  // expanded element (row) of the table
+  expandedElement: ClassConfig | null;
+
+  // dataSource
+  dataSource = new MatTableDataSource();
 
   // filtered ClassItems
-  filteredItems$ = new Subject<ClassItemI[]>();
+  filteredItems$ = new Subject<ClassConfig[]>();
 
   // search string observable
   text$ = new BehaviorSubject<string>('');
@@ -52,7 +74,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     { value: 'teEnt', label: '<i class="fa fa-star-o"></i> Temporal Entity Classes' }
   ]
   selectedType: { value: any, label: string } = this.typeOptions[0];
-  entityType$ = new BehaviorSubject<EntityType>(undefined);
+  subclassOf$ = new BehaviorSubject<EntityType>(undefined);
 
   // Status Filter
   statusOptions = [
@@ -71,6 +93,8 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   selectedProfile: { value: any, label: string } = this.profileOptions[0];
   profile$ = new BehaviorSubject<number>(undefined);
 
+  // Sort Settings
+  sorting$ = new BehaviorSubject<Sort>({ active: 'label', direction: 'asc' });
 
   project: ProjectDetail;
   projectLabel: string;
@@ -80,6 +104,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     private epics: ProjectSettingsDataAPIEpics,
     protected ngRedux: NgRedux<IAppState>,
     private highilghtPipe: HighlightPipe,
+    private p: ActiveProjectService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -87,7 +112,9 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
     this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
 
-
+    this.filteredItems$.takeUntil(this.destroy$).subscribe(items => {
+      this.dataSource.data = items;
+    })
   }
 
   getBasePath = () => this.basePath;
@@ -96,10 +123,12 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     this.localStore = this.ngRedux.configureSubStore(this.basePath, projectSettingsDataReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    // load the class list as soon as the pk_project is available
-    this.ngRedux.select<ProjectDetail>(['activeProject', 'pk_project']).takeUntil(this.destroy$).subscribe(pk => {
-      if (pk) this.load();
-    })
+    // // load the class list as soon as the pk_project is available
+    // this.ngRedux.select<ProjectDetail>(['activeProject', 'pk_project']).takeUntil(this.destroy$).subscribe(pk => {
+    //   if (pk) this.load();
+    // })
+
+    this.items$ = this.p.crm$.pipe(map(crm => U.objNr2Arr(crm.classes)))
 
     // load the profile Options as soon as the profiles are available
     this.ngRedux.select<DfhClassProfileView[]>(['activeProject', 'dataSettings', 'profiles']).takeUntil(this.destroy$).subscribe(profiles => {
@@ -112,6 +141,10 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     })
 
     this.initFilter();
+
+    this.setTabTitle('Settings > Classes')
+
+    this.dataSource.sort = this.sort;
 
   }
 
@@ -127,27 +160,46 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
     this.debouncedText$ = this.text$.pipe(debounceTime(200), distinctUntilChanged());
 
-    const sortFn = (a, b) => {
-      const nameA = a.title.toUpperCase(); // ignore upper and lowercase
-      const nameB = b.title.toUpperCase(); // ignore upper and lowercase
-      if (nameA < nameB) return -1;
-      if (nameA > nameB) return 1;
-      // names are equal
-      return 0;
-    };
 
-    combineLatest(this.debouncedText$, this.items$, this.entityType$, this.status$, this.profile$).subscribe((d) => {
-      const text = d[0], items = d[1], entityType = d[2], status = d[3], profile = d[4];
+
+    combineLatest(this.debouncedText$, this.items$, this.subclassOf$, this.status$, this.profile$, this.sorting$).subscribe((d) => {
+      const text = d[0], items = d[1], subclassOf = d[2], status = d[3], profile = d[4], sorting = d[5];
+
+      const sortFn = (a, b) => {
+        let nameA;
+        let nameB;
+        if (typeof a[sorting.active] === 'string') {
+          nameA = a[sorting.active].toUpperCase(); // ignore upper and lowercase
+          nameB = b[sorting.active].toUpperCase(); // ignore upper and lowercase
+        } else if (typeof a[sorting.active] === 'boolean') {
+          nameA = a[sorting.active] ? 0 : 1;
+          nameB = b[sorting.active] ? 0 : 1;
+        }
+        if (nameA < nameB) return sorting.direction === 'asc' ? -1 : 1;
+        if (nameA > nameB) return sorting.direction === 'asc' ? 1 : -1;
+        // names are equal
+        return 0;
+      };
 
       if (items && items.length) {
 
+        const mapped = items.map(i => ({
+          ...i,
+          enabled: (!i.projRel ? false : i.projRel.is_in_project),
+          subclassOf: (i.subclassOf || 'other'),
+          dfh_standard_label: i.dfh_standard_label + ' – ' + i.dfh_identifier_in_namespace
+        }))
+
         this.filteredItems$.next(
-          (text === '' && entityType === undefined && status === undefined && profile === undefined) ? items.sort(sortFn) :
-            items.filter(item => (
+          (text === '' && subclassOf === undefined && status === undefined && profile === undefined) ?
+            mapped.sort(sortFn) :
+            mapped.filter(item => (
               // filter for search term
-              (text === '' || item.scopeNote.toLowerCase().indexOf(text.toLowerCase()) > -1)
-              // filter for entityType
-              && (entityType === undefined || item.entityType === entityType)
+              (text === '' ||
+                (item.label + ' ' + item.dfh_standard_label + ' ' + item.scopeNote)
+                  .toLowerCase().indexOf(text.toLowerCase()) > -1)
+              // filter for subclassOf
+              && (subclassOf === undefined || item.subclassOf === subclassOf)
               // filter for status
               && (status === undefined || status === (!item.projRel ? false : item.projRel.is_in_project))
               // filter for profiles
@@ -157,8 +209,9 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
               // highlighting
               .map((item) => ({
                 ...item,
-                title: this.highilghtPipe.transform(item.title, text),
-                scopeNote: this.highilghtPipe.transform(item.scopeNote, text)
+                label: this.highilghtPipe.transform(item.label, text),
+                dfh_standard_label: this.highilghtPipe.transform(item.dfh_standard_label, text),
+                scopeNote: this.highilghtPipe.transform(item.scopeNote, text),
               }))
         )
       }
@@ -178,9 +231,9 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   /**
    * Called when user changes to see only teEnt / peIt or all classes
    */
-  entityTypeChange(type) {
+  subclassOfChange(type) {
     this.selectedType = type;
-    this.entityType$.next(type.value)
+    this.subclassOf$.next(type.value)
   }
 
   /**
@@ -200,9 +253,16 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   }
 
   /**
+   * Called when user changes the sorting of the table data
+   */
+  sortData(sort: Sort) {
+    this.sorting$.next(sort)
+  }
+
+  /**
    * Called when user enables class
    */
-  enableClass(classItem: ClassItemI) {
+  enableClass(classItem: ClassConfig) {
     const projRel = new DfhProjRel({
       pk_entity: !classItem.projRel ? undefined : classItem.projRel.pk_entity,
       fk_entity: classItem.pkEntity,
@@ -210,13 +270,13 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
       is_in_project: true
     })
 
-    this.changeClassProjRel(projRel);
+    this.p.changeClassProjRel(projRel, classItem.dfh_pk_class);
   }
 
   /**
    * Called when user disables class
    */
-  disableClass(classItem: ClassItemI) {
+  disableClass(classItem: ClassConfig) {
     const projRel = new DfhProjRel({
       pk_entity: classItem.projRel.pk_entity,
       fk_entity: classItem.pkEntity,
@@ -224,13 +284,13 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
       is_in_project: false
     })
 
-    this.changeClassProjRel(projRel);
+    this.p.changeClassProjRel(projRel, classItem.dfh_pk_class);
   }
 
   /**
    * Called when user clicks on customize
    */
-  customizeClass(classItem: ClassItemI) {
-    this.router.navigate([classItem.pkClass], { relativeTo: this.route })
+  customizeClass(classItem: ClassConfig) {
+    this.router.navigate([classItem.dfh_pk_class], { relativeTo: this.route })
   }
 }

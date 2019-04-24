@@ -1,10 +1,10 @@
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { active } from 'd3';
-import { indexBy, omit, groupBy, zipObj } from 'ramda';
+import { indexBy, omit, groupBy, zipObj, clone } from 'ramda';
 import { InfPersistentItem, InfTemporalEntity, ComQuery, ComVisual } from '../sdk/models';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
-import { ProjectDetail, Panel, TypePeIt, VersionEntity } from './active-project.models';
+import { ProjectDetail, Panel, TypePeIt, VersionEntity, ClassConfig } from './active-project.models';
 
 // const INITIAL_STATE: ProjectDetail = {
 //     list: '',
@@ -508,6 +508,56 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 comVisualLoading: false
             };
             break;
+
+
+        /********************************************
+          * Reducers to handle disabling and enabling a class
+          *****************************************************/
+        case ActiveProjectActions.CHANGE_CLASS_PROJ_REL:
+            return {
+                ...state,
+                crm: {
+                    ...state.crm,
+                    classes: {
+                        ...state.crm.classes,
+                        [action.meta.dfh_pk_class]: {
+                            ...state.crm.classes[action.meta.dfh_pk_class],
+                            changingProjRel: true
+                        }
+                    }
+                }
+            };
+        case ActiveProjectActions.CHANGE_CLASS_PROJ_REL_SUCCEEDED:
+            return {
+                ...state,
+                crm: {
+                    ...state.crm,
+                    classes: {
+                        ...state.crm.classes,
+                        [action.meta.dfh_pk_class]: {
+                            ...state.crm.classes[action.meta.dfh_pk_class],
+                            projRel: action.meta.projRel,
+                            isInProject: action.meta.projRel.is_in_project,
+                            changingProjRel: false
+                        }
+                    }
+                }
+            };
+        case ActiveProjectActions.CHANGE_CLASS_PROJ_REL_FAILED:
+        return {
+            ...state,
+            crm: {
+                ...state.crm,
+                classes: {
+                    ...state.crm.classes,
+                    [action.meta.dfh_pk_class]: {
+                        ...state.crm.classes[action.meta.dfh_pk_class],
+                        changingProjRel: false
+                    }
+                }
+            }
+        };
+
 
         /************************************************************************************
         *  Things for Mentionings / Annotations

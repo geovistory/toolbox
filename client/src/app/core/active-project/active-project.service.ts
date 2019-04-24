@@ -5,7 +5,7 @@ import { groupBy, indexBy, without, flatten, path, difference } from 'ramda';
 import { combineLatest, Observable, BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ComQuery, ComVisual } from '../sdk';
+import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ComQuery, ComVisual, DfhProjRel } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { ComProject } from '../sdk/models/ComProject';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
@@ -403,6 +403,14 @@ export class ActiveProjectService {
 
     return pks$.map(pks => roles.filter(role => pks.includes(role.fk_property)))
   }
+
+  /************************************************************************************
+  * CRM
+  ************************************************************************************/
+  changeClassProjRel(projRel: DfhProjRel, dfh_pk_class: number) {
+    this.ngRedux.dispatch(this.actions.changeClassProjRel(projRel, dfh_pk_class))
+  }
+
 
   /************************************************************************************
   * Mentioning

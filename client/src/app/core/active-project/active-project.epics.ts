@@ -11,7 +11,7 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
 import { map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComClassField, ComClassFieldApi, ComProjectApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ComQueryApi, ComQuery, ComVisualApi } from '../sdk';
+import { ComClassField, ComClassFieldApi, ComProjectApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ComQueryApi, ComQuery, ComVisualApi, DfhProjRelApi } from '../sdk';
 import { PeItDetail } from '../state/models';
 import { IAppState } from '../store/model';
 import { U } from '../util/util';
@@ -30,6 +30,7 @@ export class ActiveProjectEpics {
     private chunkApi: InfChunkApi,
     private uiContextApi: ComUiContextApi,
     private projectApi: ComProjectApi,
+    private projRelApi: DfhProjRelApi,
     private comQuery: ComQueryApi,
     private comVisual: ComVisualApi,
     private dfhPropertyApi: DfhPropertyApi,
@@ -61,7 +62,8 @@ export class ActiveProjectEpics {
       this.createEnableCreatingMentioningEpic(),
       this.createDisableCreatingMentioningEpic(),
       this.createSplitPanelActivateTabEpic(),
-      this.createAddTabCloseListEpic()
+      this.createAddTabCloseListEpic(),
+      this.createChangeClassProjRelEpic()
     );
   }
 
@@ -780,5 +782,64 @@ export class ActiveProjectEpics {
         globalStore.next(this.actions.updateSelectedChunk(null));
       }))
     )
+  }
+
+  /**
+   * CRM
+   */
+
+
+  /**
+   * Epic to handle enabling and disabling of a class for project
+   * @param c
+   */
+  private createChangeClassProjRelEpic(): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(ActiveProjectActions.CHANGE_CLASS_PROJ_REL),
+        switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+
+          /**
+           * Prepare api call
+           */
+          let apiCall;
+          // create new projRel
+          if (action.meta.projRel.pk_entity) apiCall = this.projRelApi.patchAttributes(action.meta.projRel.pk_entity, action.meta.projRel);
+          // update existing projRel
+          else apiCall = this.projRelApi.create(action.meta.projRel);
+
+          /**
+           * Subscribe to the api call
+           */
+          apiCall.subscribe((data) => {
+            /**
+             * Emit the global action that completes the loading bar
+             */
+            globalStore.next(this.loadingBarActions.completeLoading());
+            /**
+             * Emit the local action on loading succeeded
+             */
+            globalStore.next(this.actions.changeClassProjRelSucceeded(data, action.meta.dfh_pk_class));
+
+          }, error => {
+            /**
+             * Emit the global action that shows some loading error message
+             */
+            // globalStore.next(this.loadingBarActions.completeLoading());
+            /**
+            * Emit the local action on loading failed
+            */
+            globalStore.next(this.actions.changeClassProjRelFailed({ status: '' + error.status }, action.meta.dfh_pk_class))
+          })
+        }))
+      )
+    }
   }
 }

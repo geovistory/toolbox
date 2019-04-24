@@ -104,9 +104,7 @@
       "principalType": "ROLE",
       "principalId": "project_member",
       "permission": "ALLOW",
-      "property": [
-        "projectSettingsClassList"
-      ]
+      "property": []
     },
     {
       "principalType": "ROLE",
@@ -209,31 +207,6 @@
       "description": "Get ingoing and outgoing properties and ui elements of class",
       "http": {
         "path": "/properties-and-ui-elements",
-        "verb": "get"
-      }
-    },
-    "projectSettingsClassList": {
-      "accepts": [
-        {
-          "arg": "pk_project",
-          "type": "number",
-          "required": true,
-          "description": "The pk_project for whicht the list of classes is loaded.",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": [
-          "DfhClass"
-        ],
-        "root": true
-      },
-      "description": "Get a list of classes with info about the status they have int the project (used for the poject-settings > data-settings page).",
-      "http": {
-        "path": "/project-settings-class-list",
         "verb": "get"
       }
     }

@@ -150,7 +150,7 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
 import { EntityDetailComponent } from './containers/entity-detail/entity-detail.component';
 import { EntityDetailAPIEpics } from './containers/entity-detail/api/entity-detail.epics';
 import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-detail.actions';
-import { MatTooltipModule, MatTabsModule } from '@angular/material';
+import { MatTooltipModule, MatTabsModule, MatDividerModule } from '@angular/material';
 import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header/list-drawer-header.module';
 import { DetailTopBarModule } from 'app/shared/components/detail-top-bar/detail-top-bar.module';
 import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity-preview.module';
@@ -195,9 +195,10 @@ import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity
     DragDropModule,
     MatTooltipModule,
     MatTabsModule,
+    MatDividerModule,
     ListDrawerHeaderModule,
     DetailTopBarModule,
-    EntityPreviewModule
+    EntityPreviewModule,
 
   ],
   declarations: [

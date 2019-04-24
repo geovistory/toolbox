@@ -1,11 +1,13 @@
 <!-- Search filter tabs -->
-<ul  *ngIf="showTeEnPeItFilter"  class="nav gv-search-filter border-bottom">
+<ul *ngIf="showTeEnPeItFilter" class="nav gv-search-filter">
 
   <li *ngFor="let type of typeOptions" class="nav-item" (click)="entityTypeChange(type)">
-    <button class="btn btn-sm btn-link nav-link" [ngClass]="{'font-weight-bold': selectedType === type}" [innerHtml]="type.label"></button>
+    <button class="btn btn-sm btn-link nav-link" [ngClass]="{'font-weight-bold': selectedType === type}"
+      [innerHtml]="type.label"></button>
   </li>
- 
-  </ul>
+
+</ul>
+<mat-divider *ngIf="showTeEnPeItFilter"></mat-divider>
 
 <!-- Search input -->
 <div class="mx-3 mt-3 mb-2 d-flex">
@@ -23,7 +25,7 @@
   </div>
 
   <ng-content select="[addBtn]"></ng-content>
-    
+
 </div>
 
 
@@ -39,12 +41,13 @@
 
 <!-- Results -->
 <div class="d-flex gv-fh mx-0 py-1 px-3 border-light gv-scroll-y-auto" *ngIf="!(loading$ | async)">
-  <gv-entity-search-hit *ngFor="let hit of (items$ | async)" [hit]="hit" (onSelectAsMentioned)="selectMentionedEntity($event)"
-    (onOpenEntityPreview)=onOpen.emit($event)></gv-entity-search-hit>
+  <gv-entity-search-hit *ngFor="let hit of (items$ | async)" [hit]="hit"
+    (onSelectAsMentioned)="selectMentionedEntity($event)" (onOpenEntityPreview)=onOpen.emit($event)>
+  </gv-entity-search-hit>
 </div>
 
 <!-- Pagination -->
 <div class="mx-3 my-2" *ngIf="!(loading$ | async)">
-  <ngb-pagination class="mb-0" *ngIf="collectionSize > limit" [maxSize]="3" [collectionSize]="collectionSize" [(page)]="page"
-    [pageSize]="limit" (pageChange)="pageChange()" aria-label="Default pagination"></ngb-pagination>
+  <ngb-pagination class="mb-0" *ngIf="collectionSize > limit" [maxSize]="3" [collectionSize]="collectionSize"
+    [(page)]="page" [pageSize]="limit" (pageChange)="pageChange()" aria-label="Default pagination"></ngb-pagination>
 </div>

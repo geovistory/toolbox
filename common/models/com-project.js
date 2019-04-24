@@ -219,14 +219,14 @@ module.exports = function (ComProject) {
 
     const filter = {
       select: {
-        include: ["dfh_pk_class", "dfh_identifier_in_namespace", "dfh_standard_label"]
+        include: ["pk_entity", "dfh_pk_class", "dfh_identifier_in_namespace", "dfh_standard_label"]
       },
       "include": {
         proj_rels: {
           "$relation": {
             "name": "proj_rels",
             "joinType": "left join",
-            select: { include: ["is_in_project"] },
+            // select: { include: ["is_in_project"] },
             "orderBy": [{ "pk_entity": "asc" }],
             where: ['fk_project', '=', pkProject]
           }
@@ -246,10 +246,10 @@ module.exports = function (ComProject) {
             "name": "class_profile_view",
             "joinType": "inner join",
             "where": [
-//              "dfh_profile_association_type", "=", "selected" // TODO: Check if app still works correctly 
+              //              "dfh_profile_association_type", "=", "selected" // TODO: Check if app still works correctly 
               "removed_from_api", "=", "false"
             ],
-            select: { include: ["dfh_fk_system_type", "dfh_type_label", "dfh_profile_association_type"] }
+            select: { include: ["dfh_fk_system_type", "dfh_type_label", "dfh_profile_association_type", "dfh_fk_profile", "dfh_profile_label"] }
           }
         },
         "text_properties": {
