@@ -108,11 +108,11 @@ export class TypeEditableAPIEpics {
            */
 
           this.peItApi.typeNested(c.ngRedux.getState().activeProject.pk_project, action.meta.entityAssociation.fk_range_entity)
-            .subscribe((data: InfPersistentItem[]) => {
+            .subscribe((typePeIt: InfPersistentItem) => {
 
               const typeDetail = createTypeDetail(
                 {},
-                { ...action.meta.entityAssociation, range_pe_it: data[0] },
+                { ...action.meta.entityAssociation, range_pe_it: typePeIt },
                 c.ngRedux.getState().activeProject.crm,
                 { pkUiContext: c.localStore.getState().pkUiContext }
               )

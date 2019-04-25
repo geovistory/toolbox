@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { IAppState, InfEntityAssociation, SubstoreComponent, U } from 'app/core';
+import { IAppState, InfEntityAssociation, SubstoreComponent, U, ActiveProjectService } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { DropdownTreeviewComponent, TreeviewItem, TreeviewI18n, TreeviewConfig } from 'ngx-treeview';
 import { combineLatest, Observable, Subject } from 'rxjs';
@@ -68,7 +68,8 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
     protected rootEpics: RootEpics,
     private epics: TypeCtrlAPIEpics,
     protected ngRedux: NgRedux<IAppState>,
-    public i18n: TreeviewI18n
+    public i18n: TreeviewI18n,
+    private p: ActiveProjectService
   ) {
     super()
 
@@ -88,13 +89,15 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
     this.localStore = this.ngRedux.configureSubStore(this.basePath, typeCtrlReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    combineLatest(this.ngRedux.select(['activeProject', 'pk_project']), this.pkTypedClass$).pipe(
-      first(d => !!(d[0] && d[1])),
+    combineLatest(this.p.pkProject$, this.pkTypedClass$, this.p.hasTypeProperties$).pipe(
+      first(d => !d.includes(undefined)),
       takeUntil(this.destroy$)
-    ).subscribe(d => {
+    ).subscribe(([pkProject, pkTypedClass, hasTypeProperties]) => {
+
+      const pkTypeClass = U.objNr2Arr(hasTypeProperties).find(p => p.pk_typed_class === pkTypedClass).pk_type_class;
 
       // load the available types
-      this.load(d[0], d[1])
+      this.load(pkProject, pkTypeClass)
     })
 
     // Listen for closing the treeview

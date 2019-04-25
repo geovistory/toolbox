@@ -40,7 +40,7 @@ export class TypeCtrlAPIEpics {
           /**
            * Do some api call
            */
-          this.peItApi.typesOfClassAndProject(action.meta.pkProject, action.meta.pkTypedClass) // <- change api call here
+          this.peItApi.typesByClassAndProject(action.meta.pkProject, action.meta.pkTypeClass) // <- change api call here
             /**
              * Subscribe to the api call
              */
