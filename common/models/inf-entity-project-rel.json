@@ -92,7 +92,7 @@
           "arg": "pkProject",
           "type": "number",
           "required": true,
-          "description": "Project id",
+          "description": "fk_project",
           "http": {
             "source": "query"
           }
@@ -101,7 +101,7 @@
           "arg": "pkEntity",
           "type": "number",
           "required": true,
-          "description": "pk_entity",
+          "description": "fk_entity",
           "http": {
             "source": "query"
           }
@@ -128,7 +128,7 @@
         "type": "InfEntityProjectRel",
         "root": true
       },
-      "description": "Updates the InfEntityProjectRel found by projectId and pkEntity.",
+      "description": "Updates the InfEntityProjectRel found by fk_project and fk_entity.",
       "http": {
         "path": "/updateEprAttributes",
         "verb": "put"

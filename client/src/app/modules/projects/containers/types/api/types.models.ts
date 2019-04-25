@@ -9,9 +9,10 @@ export class Types  {
     add?: CreateOrAddEntity;
     edit?: boolean | TypeEditFormI;
     loading?: boolean;
-    class?: DfhClass;
     error?: any;
-    namespace?: InfNamespace;
+    
+    // title in the tab
+    tabTitle?: string;
 
     constructor(data?: Types) {
         Object.assign(this, data);

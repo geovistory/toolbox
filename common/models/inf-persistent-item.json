@@ -84,6 +84,7 @@
         "typesOfClassAndProject",
         "typesOfNamespaceNested",
         "typesOfNamespaceClassAndProject",
+        "typesByClassAndProject",
         "nestedObjectOfProject",
         "findOrCreatePeIt",
         "typeNested",
@@ -497,6 +498,40 @@
         "verb": "get"
       }
     },
+    "typesByClassAndProject": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_class",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the Type Class (e.g. pk of Geographical Place Type)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "persistent_items",
+        "type": [
+          "InfPersistentItem"
+        ],
+        "root": true
+      },
+      "description": "Find types by class and project. E.g. get the types for the class 'histC9 Geographical place type' (pk_class=364) used in project (pk_project=123)",
+      "http": {
+        "path": "/types-by-class-and-project",
+        "verb": "get"
+      }
+    },
     "typesOfClassAndProject": {
       "accepts": [
         {
@@ -542,7 +577,9 @@
         },
         {
           "arg": "pk_typed_classes",
-          "type": ["number"],
+          "type": [
+            "number"
+          ],
           "required": true,
           "description": "Primary Keyes of Typed Classes (e.g. pk of Geographical Place to get Geographical Place Types)",
           "http": {

@@ -513,7 +513,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
         /********************************************
           * Reducers to handle disabling and enabling a class
           *****************************************************/
-        case ActiveProjectActions.CHANGE_CLASS_PROJ_REL:
+        case ActiveProjectActions.UPSERT_CLASS_PROJ_REL:
             return {
                 ...state,
                 crm: {
@@ -527,7 +527,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                     }
                 }
             };
-        case ActiveProjectActions.CHANGE_CLASS_PROJ_REL_SUCCEEDED:
+        case ActiveProjectActions.UPSERT_CLASS_PROJ_REL_SUCCEEDED:
             return {
                 ...state,
                 crm: {
@@ -543,7 +543,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                     }
                 }
             };
-        case ActiveProjectActions.CHANGE_CLASS_PROJ_REL_FAILED:
+        case ActiveProjectActions.UPSERT_CLASS_PROJ_REL_FAILED:
         return {
             ...state,
             crm: {

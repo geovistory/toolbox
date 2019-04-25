@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ProjectCrm, ProjectDetail, Tab, ListType, TypePeIt } from './active-project.models';
-import { EntityPreview, PeItDetail } from '../state/models';
-import { InfChunk, InfTemporalEntity, InfPersistentItem, ComQuery, ComVisual, DfhProjRel } from '../sdk';
+import { InfChunk, InfTemporalEntity, InfPersistentItem, ComQuery, ComVisual, DfhProjRel, InfEntityProjectRel } from '../sdk';
+import { EntityPreview, PeItDetail, HasTypePropertyReadable } from '../state/models';
 
 export interface ComQueryV extends ComQuery {
     versions: number[];
@@ -32,9 +32,13 @@ interface MetaData {
     comVisualArray?: ComVisualV[]
     comVisual?: ComVisual
 
-    // CRM
+    // CRM and Config
     projRel?: DfhProjRel;
     dfh_pk_class?: number;
+    hasTypeProperties?: HasTypePropertyReadable[]
+
+    // Information
+    infProjRel?: InfEntityProjectRel;
 
     // layout
     list?: ListType;
@@ -55,7 +59,7 @@ export class ActiveProjectActions {
     /* tslint:disable:member-ordering */
 
     /************************************************************************************
-     * Load project data (metadata, crm)
+     * CRM and Config (metadata, crm)
     ************************************************************************************/
     static LOAD_PROJECT = 'ActiveProject::LOAD_PROJECT';
     static LOAD_PROJECT_FAILED = 'ActiveProject::LOAD_PROJECT_FAILED';
@@ -101,7 +105,6 @@ export class ActiveProjectActions {
             meta: null,
         }
     }
-
 
     /************************************************************************************
      * Layout
@@ -190,7 +193,7 @@ export class ActiveProjectActions {
     }
 
     /************************************************************************************
-    * Data cache
+    * Information cache
     ************************************************************************************/
 
     // EntityPreviews
@@ -602,28 +605,56 @@ export class ActiveProjectActions {
     /*********************************************************************
      *  Methods to manage enabling and disabling a class for the project
      *********************************************************************/
-    static readonly CHANGE_CLASS_PROJ_REL = 'ActiveProject::CHANGE_CLASS_PROJ_REL';
-    static readonly CHANGE_CLASS_PROJ_REL_SUCCEEDED = 'ActiveProject::CHANGE_CLASS_PROJ_REL_SUCCEEDED';
-    static readonly CHANGE_CLASS_PROJ_REL_FAILED = 'ActiveProject::CHANGE_CLASS_PROJ_REL_FAILED';
+    static readonly UPSERT_CLASS_PROJ_REL = 'ActiveProject::UPSERT_CLASS_PROJ_REL';
+    static readonly UPSERT_CLASS_PROJ_REL_SUCCEEDED = 'ActiveProject::UPSERT_CLASS_PROJ_REL_SUCCEEDED';
+    static readonly UPSERT_CLASS_PROJ_REL_FAILED = 'ActiveProject::UPSERT_CLASS_PROJ_REL_FAILED';
 
-    changeClassProjRel = (projRel: DfhProjRel, dfh_pk_class: number): ActiveProjectAction => ({
-        type: ActiveProjectActions.CHANGE_CLASS_PROJ_REL,
+    upsertClassProjRel = (projRel: DfhProjRel, dfh_pk_class: number): ActiveProjectAction => ({
+        type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL,
         meta: { projRel, dfh_pk_class },
         payload: null,
     });
 
-    changeClassProjRelSucceeded = (projRel: DfhProjRel, dfh_pk_class: number): ActiveProjectAction => ({
-        type: ActiveProjectActions.CHANGE_CLASS_PROJ_REL_SUCCEEDED,
+    upsertClassProjRelSucceeded = (projRel: DfhProjRel, dfh_pk_class: number): ActiveProjectAction => ({
+        type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL_SUCCEEDED,
         meta: { projRel, dfh_pk_class },
         payload: null
     })
 
-    changeClassProjRelFailed = (error, dfh_pk_class: number): ActiveProjectAction => ({
-        type: ActiveProjectActions.CHANGE_CLASS_PROJ_REL_FAILED,
+    upsertClassProjRelFailed = (error, dfh_pk_class: number): ActiveProjectAction => ({
+        type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL_FAILED,
         meta: { dfh_pk_class },
         payload: null,
         error,
     })
+
+
+    /*********************************************************************
+     *  Methods to manage enabling and disabling an entity for the project
+     *********************************************************************/
+    static readonly UPSERT_ENTITY_PROJ_REL = 'ActiveProject::UPSERT_ENTITY_PROJ_REL';
+    static readonly UPSERT_ENTITY_PROJ_REL_SUCCEEDED = 'ActiveProject::UPSERT_ENTITY_PROJ_REL_SUCCEEDED';
+    static readonly UPSERT_ENTITY_PROJ_REL_FAILED = 'ActiveProject::UPSERT_ENTITY_PROJ_REL_FAILED';
+
+    upsertEntityProjRel = (infProjRel: InfEntityProjectRel): ActiveProjectAction => ({
+        type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL,
+        meta: { infProjRel },
+        payload: null,
+    });
+
+    upsertEntityProjRelSucceeded = (infProjRel: InfEntityProjectRel): ActiveProjectAction => ({
+        type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_SUCCEEDED,
+        meta: { infProjRel },
+        payload: null
+    })
+
+    upsertEntityProjRelFailed = (error): ActiveProjectAction => ({
+        type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_FAILED,
+        meta:  null,
+        payload: null,
+        error,
+    })
+
 
     /************************************************************************************
      * Destroy the active project state (on closing a project)

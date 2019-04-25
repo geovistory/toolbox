@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { createPeItDetail, fieldKey, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { MentioningListAPIActions } from 'app/modules/information/containers/mentioning-list/api/mentioning-list.actions';
+import { PeItActions } from 'app/modules/information/entity/pe-it/pe-it.actions';
 import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy, sort } from 'ramda';
@@ -11,13 +12,12 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
 import { map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComClassField, ComClassFieldApi, ComProjectApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ComQueryApi, ComQuery, ComVisualApi, DfhProjRelApi } from '../sdk';
-import { PeItDetail } from '../state/models';
+import { ComClassField, ComClassFieldApi, ComClassHasTypePropertyApi, ComProjectApi, ComQueryApi, ComUiContext, ComUiContextApi, ComUiContextConfig, ComVisualApi, DfhClass, DfhProjRelApi, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfEntityProjectRelApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi } from '../sdk';
+import { HasTypePropertyReadable, PeItDetail } from '../state/models';
 import { IAppState } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions, ComQueryV, ComVisualV } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { PeItActions } from 'app/modules/information/entity/pe-it/pe-it.actions';
 
 
 
@@ -27,6 +27,7 @@ export class ActiveProjectEpics {
     private peItService: PeItService,
     private peItApi: InfPersistentItemApi,
     private teEnApi: InfTemporalEntityApi,
+    private infProjRelApi: InfEntityProjectRelApi,
     private chunkApi: InfChunkApi,
     private uiContextApi: ComUiContextApi,
     private projectApi: ComProjectApi,
@@ -35,6 +36,7 @@ export class ActiveProjectEpics {
     private comVisual: ComVisualApi,
     private dfhPropertyApi: DfhPropertyApi,
     private comClassFieldApi: ComClassFieldApi,
+    private comHasTypePropsApi: ComClassHasTypePropertyApi,
     private actions: ActiveProjectActions,
     private notificationActions: NotificationsAPIActions,
     private loadingBarActions: LoadingBarActions,
@@ -63,7 +65,8 @@ export class ActiveProjectEpics {
       this.createDisableCreatingMentioningEpic(),
       this.createSplitPanelActivateTabEpic(),
       this.createAddTabCloseListEpic(),
-      this.createChangeClassProjRelEpic()
+      this.createChangeClassProjRelEpic(),
+      this.createUpsertEntityProjRelEpic()
     );
   }
 
@@ -124,23 +127,26 @@ export class ActiveProjectEpics {
           this.uiContextApi.uiConfig(null, action.meta.pk_project),
           this.dfhPropertyApi.propertyFieldInfo(true),
           this.dfhPropertyApi.propertyFieldInfo(false),
-          this.comClassFieldApi.find()
+          this.comClassFieldApi.find(),
+          this.comHasTypePropsApi.readableList()
         )
           .subscribe(res => {
             const classes: DfhClass[] = res[0],
               outgoingProperties: DfhProperty[] = res[2],
               ingoingProperties: DfhProperty[] = res[3],
-              classFields = res[4] as ComClassField[];
+              classFields = res[4] as ComClassField[],
+              hasTypeProps: HasTypePropertyReadable[] = res[5];
 
             const properties = {
-              ...indexBy((prop: DfhProperty) => prop.dfh_pk_property.toString(), ingoingProperties),
-              ...indexBy((prop: DfhProperty) => prop.dfh_pk_property.toString(), outgoingProperties)
+              ...indexBy((prop) => prop.dfh_pk_property.toString(), ingoingProperties),
+              ...indexBy((prop) => prop.dfh_pk_property.toString(), outgoingProperties)
             }
 
             const crm: ProjectCrm = {
               classes: {},
               fieldList: {},
-              properties
+              properties,
+              hasTypeProperties: indexBy((prop) => prop.dfh_pk_property.toString(), hasTypeProps)
             }
 
             classes.forEach((cla: DfhClass) => {
@@ -799,7 +805,7 @@ export class ActiveProjectEpics {
         /**
          * Filter the actions that triggers this epic
          */
-        ofType(ActiveProjectActions.CHANGE_CLASS_PROJ_REL),
+        ofType(ActiveProjectActions.UPSERT_CLASS_PROJ_REL),
         switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
@@ -810,9 +816,9 @@ export class ActiveProjectEpics {
            * Prepare api call
            */
           let apiCall;
-          // create new projRel
-          if (action.meta.projRel.pk_entity) apiCall = this.projRelApi.patchAttributes(action.meta.projRel.pk_entity, action.meta.projRel);
           // update existing projRel
+          if (action.meta.projRel.pk_entity) apiCall = this.projRelApi.patchAttributes(action.meta.projRel.pk_entity, action.meta.projRel);
+          // create new projRel
           else apiCall = this.projRelApi.create(action.meta.projRel);
 
           /**
@@ -826,7 +832,7 @@ export class ActiveProjectEpics {
             /**
              * Emit the local action on loading succeeded
              */
-            globalStore.next(this.actions.changeClassProjRelSucceeded(data, action.meta.dfh_pk_class));
+            globalStore.next(this.actions.upsertClassProjRelSucceeded(data, action.meta.dfh_pk_class));
 
           }, error => {
             /**
@@ -836,7 +842,68 @@ export class ActiveProjectEpics {
             /**
             * Emit the local action on loading failed
             */
-            globalStore.next(this.actions.changeClassProjRelFailed({ status: '' + error.status }, action.meta.dfh_pk_class))
+            globalStore.next(this.actions.upsertClassProjRelFailed({ status: '' + error.status }, action.meta.dfh_pk_class))
+          })
+        }))
+      )
+    }
+  }
+
+
+
+
+  /**
+   * Update Entity Project Relation
+   * @param c
+   */
+  private createUpsertEntityProjRelEpic(): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(ActiveProjectActions.UPSERT_ENTITY_PROJ_REL),
+        switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+
+          /**
+           * Prepare api call
+           */
+          let apiCall;
+          // update existing infProjRel
+          if (action.meta.infProjRel.fk_entity) apiCall = this.infProjRelApi.updateEprAttributes(
+            action.meta.infProjRel.fk_project,
+            action.meta.infProjRel.fk_entity,
+            action.meta.infProjRel
+          );
+          // create new infProjRel
+          else apiCall = this.infProjRelApi.create(action.meta.infProjRel);
+
+          /**
+           * Subscribe to the api call
+           */
+          apiCall.subscribe((data) => {
+            /**
+             * Emit the global action that completes the loading bar
+             */
+            globalStore.next(this.loadingBarActions.completeLoading());
+            /**
+             * Emit the local action on loading succeeded
+             */
+            globalStore.next(this.actions.upsertEntityProjRelSucceeded(data));
+
+          }, error => {
+            /**
+             * Emit the global action that shows some loading error message
+             */
+            // globalStore.next(this.loadingBarActions.completeLoading());
+            /**
+            * Emit the local action on loading failed
+            */
+            globalStore.next(this.actions.upsertEntityProjRelFailed({ status: '' + error.status }))
           })
         }))
       )

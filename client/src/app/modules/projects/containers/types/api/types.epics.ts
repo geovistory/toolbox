@@ -3,20 +3,20 @@ import { LoadingBarActions, InfPersistentItemApi, DfhClassApi, InfPersistentItem
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable, combineLatest } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil, filter, first } from 'rxjs/operators';
 import { TypesComponent } from '../types.component';
 import { TypesAPIActions, TypesAPIAction } from './types.actions';
 import * as Config from '../../../../../../../../common/config/Config';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { Action } from 'redux';
 import { createPeItDetail } from 'app/core/state/services/state-creator';
+import { ActiveProjectActions, ActiveProjectAction } from '../../../../../core/active-project';
+import { ofSubstore } from 'app/core/store/module';
 
 @Injectable()
 export class TypesAPIEpics {
   constructor(
     private peItApi: InfPersistentItemApi,
-    private classApi: DfhClassApi,
-    private namespaceApi: InfNamespaceApi,
     private actions: TypesAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions
@@ -25,8 +25,8 @@ export class TypesAPIEpics {
   public createEpics(c: TypesComponent): Epic {
     return combineEpics(
       this.createLoadTypesEpic(c),
-      // this.createCreateTypeEpic(c),
-      this.createOpenEditFormEpic(c)
+      this.createOpenEditFormEpic(c),
+      this.createUpsertInfProjRelEpic(c),
     );
   }
 
@@ -36,40 +36,20 @@ export class TypesAPIEpics {
         /**
          * Filter the actions that triggers this epic
          */
-        ofType(TypesAPIActions.LOAD, TypesAPIActions.CLOSE_EDIT_FORM),
+        ofType(TypesAPIActions.LOAD),
+        filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: TypesAPIAction) => new Observable<FluxStandardAction<any>>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
            */
           globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Emit the local action that sets the loading flag to true
-           */
-          c.localStore.dispatch(this.actions.loadStarted());
-          /**
-           * Prepare some api calls
-           */
-          const types$: Observable<InfPersistentItem[]> = this.peItApi.typesOfNamespaceClassAndProject(c.pkNamespace, c.project.pk_project, c.cla.dfh_pk_class, null);
-          const classes$ = this.classApi.findComplex({
-            include: {
-              ingoing_properties: {
-                $relation: {
-                  name: 'ingoing_properties',
-                  select: false,
-                  joinType: 'inner join',
-                  // TODO: Replace this use of Config as soon as we have generic way to find type class of class
-                  where: ['dfh_pk_property', '=', Config.PK_CLASS_PK_HAS_TYPE_MAP[c.cla.dfh_pk_class]]
-                }
-              }
-            }
-          });
-          const namespace$: Observable<InfNamespace> = this.namespaceApi.findById(c.pkNamespace);
+
           /**
            * Subscribe to the api call
            */
-          combineLatest(classes$, types$, namespace$)
-            .subscribe((data) => {
-              const classes = data[0], peits = data[1], namespace = data[2];
+          this.peItApi.typesByClassAndProject(action.meta.pkProject, action.meta.pkTypeClass)
+            .subscribe((typePeIts) => {
+
               /**
                * Emit the global action that completes the loading bar
                */
@@ -77,7 +57,7 @@ export class TypesAPIEpics {
               /**
                * Emit the local action on loading succeeded
                */
-              c.localStore.dispatch(this.actions.loadSucceeded(classes[0], peits, namespace));
+              c.localStore.dispatch(this.actions.loadSucceeded(typePeIts));
 
             }, error => {
               /**
@@ -102,6 +82,7 @@ export class TypesAPIEpics {
          * Filter the actions that triggers this epic
          */
         ofType(TypesAPIActions.OPEN_EDIT_FORM),
+        filter(action => ofSubstore(c.basePath)(action)),
         switchMap((action: TypesAPIAction) => new Observable<Action>((globalStore) => {
           /**
            * Emit the global action that activates the loading bar
@@ -111,18 +92,18 @@ export class TypesAPIEpics {
           /**
            * Prepare some api calls
            */
-          const type$: Observable<InfPersistentItem[]> = this.peItApi.typesOfNamespaceNested(c.pkNamespace, c.project.pk_project, action.meta.type.pk_entity);
+          const type$: Observable<InfPersistentItem> = this.peItApi.typeNested(action.meta.pkProject, action.meta.type.pk_entity);
           /**
            * Subscribe to the api call
            */
-          type$.subscribe((data) => {
+          type$.subscribe((type) => {
 
             const peItDetail = createPeItDetail({
               showHeader: false,
               showProperties: true,
-              showPropertiesHeader: false,
-              showAddAPropertyButton: false
-            }, data[0], c.ngRedux.getState().activeProject.crm, {
+              showPropertiesHeader: true,
+              showAddAPropertyButton: true
+            }, type, c.ngRedux.getState().activeProject.crm, {
                 pkUiContext: ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE
               })
 
@@ -151,6 +132,29 @@ export class TypesAPIEpics {
             */
             c.localStore.dispatch(this.actions.openEditFormFailed({ status: '' + error.status }))
           })
+        })),
+        takeUntil(c.destroy$)
+      )
+    }
+  }
+
+
+
+  /**
+   * This is kind of a hacky way to observe when a type is removed
+   * 
+   * This should be replaced with a better method, once all the information
+   * data (peIt, roles, ect.) is also centrally stored in 'activeProject'
+   */
+  private createUpsertInfProjRelEpic(c: TypesComponent): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        ofType(ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_SUCCEEDED),
+        switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+          combineLatest(c.typeClass$, c.p.pkProject$).pipe(first(d => !d.includes(undefined)), takeUntil(c.destroy$))
+            .subscribe(([klass, pkProject]) => {
+              c.localStore.dispatch(this.actions.load(pkProject, klass.dfh_pk_class));
+            })
         })),
         takeUntil(c.destroy$)
       )

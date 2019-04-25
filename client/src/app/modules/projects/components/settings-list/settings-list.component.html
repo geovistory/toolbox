@@ -16,65 +16,18 @@
 <div class="gv-fh gv-scroll-y-auto">
 
   <mat-accordion class="gv-sidenav-accordion" [multi]="true">
-    <mat-expansion-panel>
+
+    <mat-expansion-panel *ngFor="let category of categories$ | async">
       <mat-expansion-panel-header collapsedHeight="48px" expandedHeight="48px">
         <mat-panel-title>
-          General
+          {{category.title}}
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <mat-action-list>
-        <button mat-list-item (click)="openClassesSettings()"> Project Profile </button>
+      <mat-action-list *ngFor="let item of category.items">
+        <button mat-list-item (click)="onClick(item.onClickFnName, item.param)"> {{item.label}} </button>
       </mat-action-list>
     </mat-expansion-panel>
 
-    <mat-expansion-panel>
-      <mat-expansion-panel-header collapsedHeight="48px" expandedHeight="48px">
-        <mat-panel-title>
-          Ontology Settings
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <mat-action-list>
-        <button mat-list-item (click)="openClassesSettings()"> Classes </button>
-        <button mat-list-item (click)="undo()"> Controlled Vocabularies </button>
-      </mat-action-list>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel>
-      <mat-expansion-panel-header collapsedHeight="48px" expandedHeight="48px">
-        <mat-panel-title>
-          Controlled Vocabularies
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <mat-action-list>
-        <button mat-list-item (click)="openClassesSettings()"> Built Work Types </button>
-        <button mat-list-item (click)="undo()"> Geographical Place Types </button>
-        <button mat-list-item (click)="undo()"> Geographical Place Types </button>
-        <button mat-list-item (click)="undo()"> Geographical Place Types </button>
-        <button mat-list-item (click)="undo()"> Geographical Place Types </button>
-        <button mat-list-item (click)="undo()"> Geographical Place Types </button>
-        <button mat-list-item (click)="undo()"> Geographical Place Types </button>
-        <button mat-list-item (click)="undo()"> Geographical Place Types </button>
-        <button mat-list-item (click)="undo()"> Geographical Place Types </button>
-        <button mat-list-item (click)="undo()"> Geographical Place Types </button>
-        <button mat-list-item (click)="undo()"> Geographical Place Types </button>
-        <button mat-list-item (click)="undo()"> Geographical Place Types </button>
-        <button mat-list-item (click)="undo()"> Geographical Place Types </button>
-        <button mat-list-item (click)="undo()"> Geographical Place Types </button>
-        <button mat-list-item (click)="undo()"> Geographical Place Types </button>
-        <button mat-list-item (click)="undo()"> Geographical Place Types </button>
-      </mat-action-list>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel>
-      <mat-expansion-panel-header collapsedHeight="48px" expandedHeight="48px">
-        <mat-panel-title>
-          Team
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <mat-action-list>
-        <button mat-list-item (click)="undo()"> Collaborators </button>
-      </mat-action-list>
-    </mat-expansion-panel>
 
   </mat-accordion>
 

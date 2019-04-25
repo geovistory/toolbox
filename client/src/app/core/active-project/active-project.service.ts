@@ -5,13 +5,13 @@ import { groupBy, indexBy, without, flatten, path, difference } from 'ramda';
 import { combineLatest, Observable, BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ComQuery, ComVisual, DfhProjRel } from '../sdk';
+import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ComQuery, ComVisual, DfhProjRel, InfEntityProjectRel } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { ComProject } from '../sdk/models/ComProject';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
-import { ClassConfig, ListType, ProjectCrm, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk, ComQueryByPk, EntityByPk, VersionEntity, EntityVersionsByPk } from './active-project.models';
+import { ClassConfig, ListType, ProjectCrm, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk, ComQueryByPk, EntityByPk, VersionEntity, EntityVersionsByPk, HasTypePropertyList, ClassConfigList } from './active-project.models';
 
 
 
@@ -23,6 +23,8 @@ export class ActiveProjectService {
   public pkProject$: Observable<number>;
   public panels$: Observable<Panel[]>
   public crm$: Observable<ProjectCrm>
+  public classes$: Observable<ClassConfigList>
+  public hasTypeProperties$: Observable<HasTypePropertyList>
   public focusedPanel$: Observable<boolean>;
   public list$: Observable<ListType>; // type of list displayed in left panel 
   public creatingMentioning$: Observable<boolean>;
@@ -53,13 +55,14 @@ export class ActiveProjectService {
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']);
     this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
     this.crm$ = ngRedux.select<ProjectCrm>(['activeProject', 'crm']);
+    this.hasTypeProperties$ = ngRedux.select<HasTypePropertyList>(['activeProject', 'crm', 'hasTypeProperties']);
+    this.classes$ = ngRedux.select<ClassConfigList>(['activeProject', 'crm', 'classes']);
     this.list$ = ngRedux.select<ListType>(['activeProject', 'list']);
     this.typesByPk$ = ngRedux.select<TypesByPk>(['activeProject', 'typesByPk']);
     this.comQueryVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ComQuery>>(['activeProject', 'comQueryVersionsByPk']);
     this.comQueryLoading$ = ngRedux.select<boolean>(['activeProject', 'comQueryLoading']);
     this.comVisualVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ComVisual>>(['activeProject', 'comVisualVersionsByPk']);
     this.comVisualLoading$ = ngRedux.select<boolean>(['activeProject', 'comVisualLoading']);
-
 
     this.focusedPanel$ = ngRedux.select<boolean>(['activeProject', 'focusedPanel']);
     this.creatingMentioning$ = ngRedux.select<boolean>(['activeProject', 'creatingMentioning']);
@@ -110,6 +113,11 @@ export class ActiveProjectService {
 
   }
 
+
+  /************************************************************************************
+  * ActiveProject init and destroy
+  ************************************************************************************/
+
   /**
    * Initialize the project in state, if the activeProject is not yet
    * in state or if the pk_project of the activeProject in state
@@ -140,6 +148,10 @@ export class ActiveProjectService {
     this.entityPreviewSocket.emit('leaveProjectRoom');
     this.ngRedux.dispatch(this.actions.destroy())
   }
+
+  /************************************************************************************
+  * Load Information
+  ************************************************************************************/
 
 
   /**
@@ -173,6 +185,7 @@ export class ActiveProjectService {
         })
       )
   }
+
 
 
   /**
@@ -405,10 +418,25 @@ export class ActiveProjectService {
   }
 
   /************************************************************************************
-  * CRM
+  * Change Project Relations
   ************************************************************************************/
   changeClassProjRel(projRel: DfhProjRel, dfh_pk_class: number) {
-    this.ngRedux.dispatch(this.actions.changeClassProjRel(projRel, dfh_pk_class))
+    this.ngRedux.dispatch(this.actions.upsertClassProjRel(projRel, dfh_pk_class))
+  }
+
+  removePeIt(pk_entity: number) {
+    this.pkProject$.pipe(first(pk => !!pk)).subscribe(fk_project => {
+
+      const epr: InfEntityProjectRel = {
+        fk_project,
+        fk_entity: pk_entity,
+        is_in_project: false,
+        ...{} as any
+      }
+
+      this.ngRedux.dispatch(this.actions.upsertEntityProjRel(epr))
+
+    })
   }
 
 

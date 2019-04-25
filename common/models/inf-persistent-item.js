@@ -794,6 +794,107 @@ module.exports = function (InfPersistentItem) {
 
 
 
+
+  /**
+   * Query instances of E55 Type 
+   * 
+   * Where 
+   *	- types are in given project
+   *	- types are instances of the type class
+   *
+   * Eager loading
+   *  - The appellations of given language
+   *  - TODO: The entity_associations of property "has broader term" used for hierarchy
+   * 
+   * @param pk_namespace
+   * @param pk_project
+   * @param pk_class
+   */
+  InfPersistentItem.typesByClassAndProject = function (pk_project, pk_class, cb) {
+
+    const innerJoinThisProject = {
+      "$relation": {
+        "name": "entity_version_project_rels",
+        "joinType": "inner join",
+        "select": {
+          include: [
+            "pk_entity_version_project_rel",
+            "pk_entity",
+            "fk_project",
+            "fk_entity",
+          ]
+        },
+        "where": [
+          "fk_project", "=", pk_project,
+          "and", "is_in_project", "=", "true"
+        ]
+      }
+    };
+
+    const filter = {
+      where: [
+        'fk_class', '=', pk_class
+      ],
+      "orderBy": [{
+        "pk_entity": "asc"
+      }],
+      "include": {
+        "entity_version_project_rels": innerJoinThisProject,
+        "pi_roles": {
+          "$relation": {
+            "name": "pi_roles",
+            "joinType": "left join"
+          },
+          "entity_version_project_rels": innerJoinThisProject,
+          "temporal_entity": {
+            "$relation": {
+              "name": "temporal_entity",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+            "entity_version_project_rels": innerJoinThisProject,
+            "te_roles": {
+              "$relation": {
+                "name": "te_roles",
+                "joinType": "inner join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              },
+              "entity_version_project_rels": innerJoinThisProject,
+              "appellation": {
+                "$relation": {
+                  "name": "appellation",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                },
+                // "entity_version_project_rels": innerJoinThisProject
+              },
+              "language": {
+                "$relation": {
+                  "name": "language",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
+                // ,
+                // "entity_version_project_rels": innerJoinThisProject
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return InfPersistentItem.findComplex(filter, cb);
+  }
+
+
   /**
    * Query instances of E55 Type 
    * 
@@ -1020,7 +1121,10 @@ module.exports = function (InfPersistentItem) {
     }
 
 
-    return InfPersistentItem.findComplex(filter, cb);
+    return InfPersistentItem.findComplex(filter, (err, res) => {
+      if (err) cb(err);
+      else cb(null, res[0])
+    });
   }
 
   /**
@@ -1104,7 +1208,7 @@ module.exports = function (InfPersistentItem) {
     JOIN information.entity_version_project_rel type_proj_rel ON type_entity.pk_entity = type_proj_rel.fk_entity
     
     -- join the namespace of the type
-    JOIN information.type_namespace_rel type_nmsp_rel ON type_entity.pk_entity = type_nmsp_rel.fk_persistent_item
+    -- JOIN information.type_namespace_rel type_nmsp_rel ON type_entity.pk_entity = type_nmsp_rel.fk_persistent_item
     
     -- TODO: join namespace_project_rel in order to see if for that class a custom namespace is activated
     --LEFT JOIN commons.namespace_project_rel nmsp_proj_rel 

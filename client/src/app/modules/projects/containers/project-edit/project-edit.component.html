@@ -155,6 +155,9 @@
           <gv-project-settings-data *ngIf="tab.component=='classes-settings'" [basePath]="tab.path"
             (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-project-settings-data>
 
+          <gv-types *ngIf="tab.component=='contr-vocab-settings'" [pkProperty]="tab.data.pkProperty"
+            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-types>
+
         </gv-tab-body>
 
       </mat-drawer-content>

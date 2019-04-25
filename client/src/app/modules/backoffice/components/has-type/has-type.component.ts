@@ -3,7 +3,8 @@ import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
 import { IAppState, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { HasType, ReadableList } from './api/has-type.models';
+import { HasType } from './api/has-type.models';
+import { HasTypePropertyReadable } from "../../../../core/state/models/has-type-property-readable";
 import { HasTypeAPIEpics } from './api/has-type.epics';
 import { HasTypeAPIActions } from './api/has-type.actions';
 import { hasTypeReducer } from './api/has-type.reducer';
@@ -33,7 +34,7 @@ export class HasTypeComponent extends HasTypeAPIActions implements OnInit, OnDes
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
-  @select() items$: Observable<ReadableList[]>;
+  @select() items$: Observable<HasTypePropertyReadable[]>;
 
   displayedColumns: string[] = ['pk_typed_class', 'typed_class_label', 'dfh_pk_property', 'property_label', 'pk_type_class', 'type_class_label'];
   dataSource = new MatTableDataSource([]);

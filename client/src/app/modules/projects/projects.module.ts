@@ -3,7 +3,7 @@ import { PortalModule } from '@angular/cdk/portal';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule, MatCheckboxModule, MatDividerModule, MatFormFieldModule, MatInputModule, MatListModule, MatProgressSpinnerModule, MatSidenavModule, MatSortModule, MatTableModule, MatIconModule, MatExpansionModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatDividerModule, MatFormFieldModule, MatInputModule, MatListModule, MatProgressSpinnerModule, MatSidenavModule, MatSortModule, MatTableModule, MatIconModule, MatExpansionModule, MatDialogModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
 import { NavbarModule, PassiveLinkModule, ProxyRouteModule } from 'app/shared';
@@ -19,7 +19,6 @@ import { QueriesModule } from '../queries/queries.module';
 import { SourcesModule } from '../sources';
 import { VisualsModule } from '../visuals/visuals.module';
 import { ProjectsActions } from './api/projects.actions';
-import { ClassItemComponent } from './components/class-item/class-item.component';
 import { SettingsListComponent } from './components/settings-list/settings-list.component';
 import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { TabHandleComponent } from './components/tab-handle/tab-handle.component';
@@ -37,8 +36,6 @@ import { ProjectSettingsDataAPIEpics } from './containers/project-settings-data/
 import { ProjectSettingsDataComponent } from './containers/project-settings-data/project-settings-data.component';
 import { ProjectSettingsProfileComponent } from './containers/project-settings-profile/project-settings-profile.component';
 import { ProjectSettingsComponent } from './containers/project-settings/project-settings.component';
-import { TypeAddFormAPIActions } from './containers/type-add-form/api/type-add-form.actions';
-import { TypeAddFormAPIEpics } from './containers/type-add-form/api/type-add-form.epics';
 import { TypeAddFormComponent } from './containers/type-add-form/type-add-form.component';
 import { TypeEditFormAPIActions } from './containers/type-edit-form/api/type-edit-form.actions';
 import { TypeEditFormAPIEpics } from './containers/type-edit-form/api/type-edit-form.epics';
@@ -48,6 +45,7 @@ import { TypesAPIEpics } from './containers/types/api/types.epics';
 import { TypesComponent } from './containers/types/types.component';
 import { PanelBodyDirective } from './directives/panel-body.directive';
 import { ProjectsRoutingModule } from './projects-routing.module';
+import { ConfirmDialogModule } from '../../shared/components/confirm-dialog/confirm-dialog.module';
 
 
 
@@ -76,6 +74,7 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     MatProgressSpinnerModule,
     MatIconModule,
     MatExpansionModule,
+    MatDialogModule,
     DragDropModule,
     SourcesModule,
     Information2Module,
@@ -86,7 +85,8 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     AngularSplitModule,
     ListDrawerHeaderModule,
     DetailTopBarModule,
-    DetailContentModule
+    DetailContentModule,
+    ConfirmDialogModule
   ],
   declarations: [
     ProjectCreateComponent,
@@ -98,7 +98,6 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     ProjectSettingsCollaboratorsComponent,
     ProjectSettingsDataComponent,
     ProjectSettingsProfileComponent,
-    ClassItemComponent,
     ClassSettingsComponent,
     SideNavComponent,
     TypesComponent,
@@ -117,10 +116,12 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     ClassSettingsAPIEpics,
     TypesAPIActions,
     TypesAPIEpics,
-    TypeAddFormAPIActions,
-    TypeAddFormAPIEpics,
     TypeEditFormAPIActions,
     TypeEditFormAPIEpics
+  ],
+  entryComponents: [
+    TypeEditFormComponent,
+    TypeAddFormComponent
   ]
 })
 export class ProjectsModule { }
