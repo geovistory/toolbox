@@ -1,5 +1,5 @@
 import { InfEntityAssociation } from "app/core";
-import * as Delta from 'quill-delta/lib/delta';
+import Delta from 'quill/node_modules/quill-delta';
 
 /**
  * Root state interface of this model

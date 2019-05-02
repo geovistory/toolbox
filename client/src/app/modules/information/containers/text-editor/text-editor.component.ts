@@ -2,7 +2,6 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { ActiveProjectService, IAppState, InfChunk, InfDigitalObject, PeItDetail, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { Delta, QuillDoc, Op } from 'app/modules/quill';
 import { dropLast } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil, filter, mergeMap, map } from 'rxjs/operators';
@@ -14,6 +13,7 @@ import { TextEditor } from './api/text-editor.models';
 import { textEditorReducer } from './api/text-editor.reducer';
 import { Mentioning } from '../mentioning-list/api/mentioning-list.models';
 import { QuillNodeHandler } from 'app/modules/quill/quill-node-handler';
+import { QuillDoc, Ops } from 'app/modules/quill/quill.models';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -181,7 +181,7 @@ export class TextEditorComponent extends TextEditorAPIActions implements OnInit,
     this.changeVersion(version);
   }
 
-  selectedDeltaChange(d: Delta) {
+  selectedDeltaChange(d: Ops) {
     this.selectDelta(d);
   }
 
@@ -217,7 +217,7 @@ export class TextEditorComponent extends TextEditorAPIActions implements OnInit,
             const nodes: { [nodeId: string]: number[] } = {};
             objs.forEach(obj => {
               const mentioning = obj.mentioning, chunk = obj.chunk;
-              (chunk.js_quill_data as Delta).ops.forEach(op => {
+              (chunk.js_quill_data as Ops).forEach(op => {
                 if (op.attributes && op.attributes.node) {
                   const arr = nodes[op.attributes.node] || [];
                   nodes[op.attributes.node] = [...arr, mentioning.pk_entity]

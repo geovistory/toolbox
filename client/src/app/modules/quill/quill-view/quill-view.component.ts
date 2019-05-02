@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges } from '@angular/core';
-import * as Delta from 'quill-delta/lib/delta';
+import Delta from 'quill/node_modules/quill-delta';
 import { QuillService } from '../quill.service';
 
 @Component({

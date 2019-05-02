@@ -59,11 +59,11 @@ export class InfEntityProjectRelApi extends BaseLoopBackApi {
   }
 
   /**
-   * Updates the InfEntityProjectRel found by projectId and pkEntity.
+   * Updates the InfEntityProjectRel found by fk_project and fk_entity.
    *
-   * @param {number} pkProject Project id
+   * @param {number} pkProject fk_project
    *
-   * @param {number} pkEntity pk_entity
+   * @param {number} pkEntity fk_entity
    *
    * @param {object} data Request data.
    *

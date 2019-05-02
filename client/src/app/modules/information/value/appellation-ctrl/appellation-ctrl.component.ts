@@ -3,10 +3,10 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InfAppellation, InfRole } from 'app/core';
 import { pick } from 'ramda';
 import { Subject } from 'rxjs';
-import { QuillDoc } from '../../../quill';
 import { QuillService } from '../../../quill/quill.service';
 import { AppellationLabel, AppellationLabelInterface } from '../../shared/appellation-label';
 import { Token } from '../../shared/appellation-token';
+import { QuillDoc } from 'app/modules/quill/quill.models';
 
 @Component({
   selector: 'gv-appellation-ctrl',
@@ -57,7 +57,7 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
 
   private validateAndEmit(qd: QuillDoc) {
     if (this.onChangeRegistered) {
-      if (qd && qd.contents && qd.contents.ops.filter(op => op.insert.length > 0).length > 1 && this.role) {
+      if (qd &&  qd.ops.filter(op => op.insert.length > 0).length > 1 && this.role) {
         // build the role
         const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role) as InfRole);
         // build a appe with the appellation_label given by the formControl
@@ -75,13 +75,13 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
 
   // converts Appellation Label to Quill Delta
   appellationLabelToQuillDelta(appeLabel: AppellationLabel): QuillDoc {
-    const q: QuillDoc = { latestId: 1, contents: { ops: [] } };
+    const q: QuillDoc = { latestId: 1,  ops: []  };
     const a = new AppellationLabel(appeLabel);
     // we increase the id, since quill can't handle 0 attribute value
     // see: https://github.com/quilljs/parchment/issues/62
     q.latestId = a.latestTokenId ? (appeLabel.latestTokenId + 1) : 1;
 
-    q.contents.ops = a.tokens.map(token => {
+    q.ops = a.tokens.map(token => {
       return {
         insert: token.string,
         attributes: {
@@ -99,7 +99,7 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
     const a: AppellationLabelInterface = {
       // we decrease the id, since we increased it for quill, that can't handle 0 attribute value
       latestTokenId: (qd.latestId - 1),
-      tokens: qd.contents.ops.map(op => {
+      tokens: qd.ops.map(op => {
         // this if statement will remove the newline
         if ((op.attributes || {}).node) {
           return {

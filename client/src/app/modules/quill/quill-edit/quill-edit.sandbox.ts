@@ -1,24 +1,50 @@
 import { sandboxOf } from 'angular-playground';
 import { QuillEditComponent } from './quill-edit.component';
 import { QuillService } from '../quill.service';
-import { textBüchel } from './quill-edit.sandbox.mock';
+import { textBüchel, wikiRats } from './quill-edit.sandbox.mock';
 import { DomChangeModule } from 'app/shared';
 import { QuillViewComponent } from '../quill-view/quill-view.component';
 import { BehaviorSubject } from 'rxjs';
+import { QuillDoc } from '../quill.models';
+import { MatDialogModule } from '../../../../../node_modules/@angular/material';
 
 
 
 export default sandboxOf(QuillEditComponent, {
     imports: [
-        DomChangeModule
+        DomChangeModule,
+        MatDialogModule
     ],
     declarations: [
         QuillViewComponent
     ],
     providers: [
-        QuillService
+        QuillService,
+    ],
+    entryComponents: [
+        
     ]
+
 })
+    .add('Quill-Edit | New text editor only ', {
+        context: {
+            blurCount: 0,
+            quillDoc: {
+                latestId: 7,
+                contents: {}
+            }
+        },
+        template: `
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <gv-quill-edit [quillDoc]="quillDoc"
+                    (quillDocChange)="quillDoc=$event" (htmlChange)="html=$event" (blur)="(blurCount = blurCount + 1)"></gv-quill-edit>
+                </div>
+            </div>
+        </div>
+    `
+    })
     .add('Quill-Edit | New text ', {
         context: {
             blurCount: 0,
@@ -72,54 +98,65 @@ export default sandboxOf(QuillEditComponent, {
     .add('Quill-Edit | Existing Text ', {
         context: {
             blurCount: 0,
-            quillDoc: {
-                latestId: 1,
-                contents:
-                {
-                    'ops': [
-                        {
-                            'attributes': {
-                                'node': 1
-                            },
-                            'insert': 'Emmanuel'
-                        }
-                    ],
-                }
-            }
+            quillDoc: wikiRats,
+            showOutput: true,
+            showAnnotations: new BehaviorSubject(true),
+            annotatedNodes$: new BehaviorSubject({
+                45: [123],
+                46: [123],
+                47: [123],
+            })
         },
         template: `
         <div class="container">
             <div class="row">
                 <div class="col-6">
-                    <gv-quill-edit [quillDoc]="quillDoc"
+                    <gv-quill-edit [quillDoc]="quillDoc" [annotatedNodes$]="annotatedNodes$"
                     (quillDocChange)="quillDoc=$event" (htmlChange)="html=$event" (blur)="(blurCount = blurCount + 1)"></gv-quill-edit>
                 </div>
                 <div class="col-6 font-sm" style="height:500px;">
-                    <strong>
-                    Latest Token Id: {{quillDoc.latestId}}
-                    </strong>
-                    <br>
 
-                    <strong>
-                    HTML:
-                    </strong>
-                    <br>
-                    <pre>
-                    {{html}}
-                    </pre>
+                    <div>
+                        <label>
+                            <input type="checkbox" [(ngModel)]="showOutput" /> 
+                            Show Output
+                        </label>
+                    </div>
 
-                    <strong>
-                    Blur Count: {{blurCount}}
-                    </strong>
-                    <br>
+                    <div>
+                        <label>
+                            <input type="checkbox" [(ngModel)]="showEnableQuillNodeHandles" /> 
+                            Show Annotations
+                        </label>
+                    </div>
 
-                    <strong>
-                    JSON:
-                    </strong>
+                    <div *ngIf="showOutput">
+                        <strong>
+                        Latest Token Id: {{quillDoc.latestId}}
+                        </strong>
+                        <br>
 
-                    <pre>
-                    {{quillDoc | json:2}}
-                    </pre>
+                        <strong>
+                        HTML:
+                        </strong>
+                        <br>
+                        <pre>
+                        {{html}}
+                        </pre>
+
+                        <strong>
+                        Blur Count: {{blurCount}}
+                        </strong>
+                        <br>
+
+                        <strong>
+                        JSON:
+                        </strong>
+
+                        <pre>
+                        {{quillDoc | json:2}}
+                        </pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -290,8 +327,8 @@ export default sandboxOf(QuillEditComponent, {
             blurCount: 0,
             quillDoc: {
                 latestId: 0,
-                contents: {}
-            }
+                ops: []
+            } as QuillDoc
         },
         template: `
         <div class="container">

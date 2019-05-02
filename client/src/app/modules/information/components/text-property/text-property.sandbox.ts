@@ -50,28 +50,26 @@ export default sandboxOf(TextPropertyComponent, {
                     fk_concerned_entity: undefined,
                     text_property_quill_doc: {
                         latestId: 3,
-                        contents: {
-                            ops: [
-                                {
-                                    insert: 'Hallo',
-                                    attributes: {
-                                        node: 1
-                                    }
-                                },
-                                {
-                                    insert: ' ',
-                                    attributes: {
-                                        node: 2
-                                    }
-                                },
-                                {
-                                    insert: 'Welt',
-                                    attributes: {
-                                        node: 3
-                                    }
+                        ops: [
+                            {
+                                insert: 'Hallo',
+                                attributes: {
+                                    node: 1
                                 }
-                            ]
-                        }
+                            },
+                            {
+                                insert: ' ',
+                                attributes: {
+                                    node: 2
+                                }
+                            },
+                            {
+                                insert: 'Welt',
+                                attributes: {
+                                    node: 3
+                                }
+                            }
+                        ]
                     } as QuillDoc,
                     language: {
                         fk_class: 54,

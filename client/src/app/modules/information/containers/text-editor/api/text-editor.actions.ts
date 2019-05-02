@@ -1,16 +1,15 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { InfEntityAssociation, InfDigitalObject } from 'app/core';
+import { InfDigitalObject, InfEntityAssociation } from 'app/core';
+import { IVersion } from 'app/modules/information/components/version-picker/version-picker.component';
 import { FluxStandardAction } from 'flux-standard-action';
 import { TextEditor } from './text-editor.models';
-import { QuillDoc, Delta } from 'app/modules/quill';
-import { IVersion } from 'app/modules/information/components/version-picker/version-picker.component';
+import { Ops } from '../../../../quill/quill.models';
 
 type Payload = TextEditor;
 interface MetaData {
   itemsArray?: any[];
   entityAssociation?: InfEntityAssociation;
-  // quillDoc?: QuillDoc;
   digitalObject?: InfDigitalObject;
   pkProject?: number;
   fkRangeEntity?: number;
@@ -181,7 +180,7 @@ export class TextEditorAPIActions {
     payload: { readOnly }
   })
 
-  @dispatch() selectDelta = (selectedDelta: Delta): TextEditorAPIAction => ({
+  @dispatch() selectDelta = (selectedDelta: Ops): TextEditorAPIAction => ({
     type: TextEditorAPIActions.SET_SELECTED_DELTA,
     meta: null,
     payload: { selectedDelta }

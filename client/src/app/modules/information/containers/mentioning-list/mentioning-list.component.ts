@@ -11,7 +11,7 @@ import { MentioningListAPIEpics } from './api/mentioning-list.epics';
 import { MentioningList, MentioningListType, Mentioning } from './api/mentioning-list.models';
 import { mentioningListReducer } from './api/mentioning-list.reducer';
 import { Config, Columns } from 'ngx-easy-table/src/app/ngx-easy-table';
-import { QuillDeltaToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
+import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 
 // this is not for state, only for the table view
 export interface MentioningRow extends Mentioning {
@@ -42,7 +42,7 @@ export interface MentioningRow extends Mentioning {
   selector: 'gv-mentioning-list',
   templateUrl: './mentioning-list.component.html',
   styleUrls: ['./mentioning-list.component.scss'],
-  providers: [QuillDeltaToStrPipe]
+  providers: [QuillOpsToStrPipe]
 })
 export class MentioningListComponent extends MentioningListAPIActions implements OnInit, OnDestroy, SubstoreComponent {
 
@@ -130,7 +130,7 @@ export class MentioningListComponent extends MentioningListAPIActions implements
     public ngRedux: NgRedux<IAppState>,
     private projectService: ActiveProjectService,
     fb: FormBuilder,
-    private quillDeltaToStr: QuillDeltaToStrPipe
+    private quillOpsToStr: QuillOpsToStrPipe
   ) {
     super()
     this.mentioningCreateCtrl = new FormControl(null, [Validators.required])
@@ -243,7 +243,7 @@ export class MentioningListComponent extends MentioningListAPIActions implements
             mentionedEntity: d[2],
             mentionedEntityString: createString(d[2]),
             chunkEntity: d[3],
-            chunkEntityString: (!d[3] || !d[3].js_quill_data) ? '' : this.quillDeltaToStr.transform(d[3].js_quill_data),
+            chunkEntityString: (!d[3] || !d[3].js_quill_data) ? '' : this.quillOpsToStr.transform(d[3].js_quill_data),
             isFocusedInText: (!d[4] ? false : (d[4].indexOf(m.pk_entity) > -1)),
             isFocusedInTable: (!d[5] ? false : (d[5].indexOf(m.pk_entity) > -1))
           } as MentioningRow))

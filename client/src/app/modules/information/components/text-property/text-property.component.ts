@@ -1,9 +1,9 @@
 import { Component, EventEmitter, forwardRef, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { InfTextProperty } from '../../../../core/sdk/models/InfTextProperty';
-import { QuillDoc } from '../../../quill';
 import { NgRedux } from '@angular-redux/store';
 import { IAppState } from 'app/core';
+import { QuillDoc } from '../../../quill/quill.models';
 
 @Component({
   selector: 'gv-text-property',

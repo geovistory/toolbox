@@ -1,5 +1,5 @@
-import { QuillDoc } from 'app/modules/quill';
 import { InfChunk } from 'app/core';
+import { QuillDoc } from '../../../../quill/quill.models';
 
 export interface Mentioning {
     pk_entity?: number // pk of the entity association

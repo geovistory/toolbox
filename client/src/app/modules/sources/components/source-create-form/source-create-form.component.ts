@@ -1,9 +1,7 @@
-import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { InfDigitalObject, InfEntityProjectRel } from 'app/core';
-import { QuillDoc } from 'app/modules/quill';
-import { DELEGATE_CTOR } from '@angular/core/src/reflection/reflection_capabilities';
-import * as Delta from 'quill-delta/lib/delta';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { InfDigitalObject } from 'app/core';
+import Delta from 'quill/node_modules/quill-delta';
+import { QuillDoc } from 'app/modules/quill/quill.models';
 
 /**
  * A simple component that has a form to create a new source
@@ -53,7 +51,7 @@ export class SourceCreateFormComponent implements OnInit {
       // create a new QuillDoc
       js_quill_data: {
         latestId: 0,
-        contents: new Delta()
+        ops: []
       } as QuillDoc,
 
       // // create a epr

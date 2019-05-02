@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { QuillDeltaToStrPipe } from './quill-delta-to-str.pipe';
+import { QuillOpsToStrPipe } from './quill-delta-to-str.pipe';
 
 @NgModule({
   imports: [
     CommonModule,
   ],
-  declarations: [QuillDeltaToStrPipe],
-  exports: [QuillDeltaToStrPipe]
+  declarations: [QuillOpsToStrPipe],
+  exports: [QuillOpsToStrPipe]
 })
 export class QuillDeltaToStrModule { }

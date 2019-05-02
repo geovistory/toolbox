@@ -1,7 +1,11 @@
+/// <reference types="quill" />
+
 import { Injectable } from '@angular/core';
 
-import * as Quill from 'quill';
-import * as Delta from 'quill-delta/lib/delta';
+import Quill from 'quill';
+import Delta from 'quill/node_modules/quill-delta';
+import { DeltaI, Op } from './quill.models';
+import { Observable, BehaviorSubject, Subject, asapScheduler } from '../../../../node_modules/rxjs';
 
 const Inline = Quill.import('blots/inline');
 
@@ -21,17 +25,87 @@ class NodeBlot extends Inline {
 
   static formats(node) {
     // We will only be called with a node already
-    // determined to be a Link blot, so we do
+    // determined to be a blot, so we do
     // not need to check ourselves
     return node.getAttribute('quillnode');
   }
 }
 
-Quill.register(NodeBlot, true);
+Quill.register(NodeBlot, false);
+
+// const Block = Quill.import('blots/block');
+
+// class CustomBlock extends Block {
+
+//   // constructor(domNode, x) {
+//   //   super(domNode);
+//   //   domNode.setAttribute('id', uuid.v4());
+//   //   this.cache = {};
+//   // }
+
+//   static create(value) {
+//     const node = super.create()
+//     node.setAttribute("qid", value)
+//     return node
+//   }
+
+//   // static formats(node) {
+//   //   // We will only be called with a node already
+//   //   // determined to be a blot, so we do
+//   //   // not need to check ourselves
+//   //   return node.getAttribute('qid');
+//   // }
+
+//   split(index, force = false) {
+//     if (force && (index === 0 || index >= this.length() - 1)) {
+//       const clone = this.clone()
+//       clone.domNode.qid = uuid.v4()
+//       if (index === 0) {
+//         this.parent.insertBefore(clone, this)
+//         return this
+//       }
+//       this.parent.insertBefore(clone, this.next)
+//       return clone
+//     }
+//     const next = super.split(index, force)
+//     next.domNode.qid = uuid.v4()
+//     this.cache = {}
+//     return next
+//   }
+// }
+// CustomBlock.blotName = "block"
+// CustomBlock.tagName = "p"
+
+// Quill.register(CustomBlock, false);
+
+// const Parchment = Quill.import("parchment")
+
+// const QidAttribute = new Parchment.Attributor.Attribute('qid', 'qid', {
+//   scope: Parchment.Scope.BLOCK,
+// });
+
+// Quill.register({
+//   'attributors/attribute/id': IdAttribute
+// }, true);
+
+// Quill.register({
+//   'formats/qid': QidAttribute,
+// }, true);
+
 
 export type TokenType = 'regChar' | 'sepChar' | undefined;
 export interface NextToken { length: number, type: TokenType }
 export interface PrecedingToken { id: number, type: TokenType }
+
+
+export interface CharacterizeResult {
+  delta: DeltaI,
+  latestId: number
+};
+export interface CharacerizeFeedback {
+  progress: Observable<number>, // progress starting with 0 ending with 1
+  result: Observable<CharacterizeResult>
+}
 
 @Injectable()
 export class QuillService {
@@ -45,14 +119,105 @@ export class QuillService {
 
   constructor() { }
 
+  /**
+   * Creates a insert operation for each character on content change event.
+   */
+  characterizeContentChange(delta: DeltaI, oldDelta: DeltaI, latestId: number): CharacerizeFeedback {
+    const progress = new BehaviorSubject<number>(0);
+    const result = new Subject<CharacterizeResult>();
+
+    asapScheduler.schedule(() => {
+
+      const newDelta = new Delta();
+
+      const done = () => {
+        result.next({ delta: newDelta, latestId: latestId });
+        progress.next(1);
+        progress.complete();
+        result.complete()
+      }
+
+
+      // if user did insert something
+      if (this.isInsert(delta)) {
+        let id = latestId * 1;
+        let newOps: any[] = [];
+
+        // length of ops array used to generate progress feedback
+        const origOpsLength = delta.ops.length;
+
+        // init newOps and oldOps
+        if (this.beginsWithRetain(delta)) {
+          // ad first op to new newOps and remove the first item of oldOps
+          newOps.push(delta.ops.shift());
+
+        } else if (this.endsWithRetain(delta)) {
+          newOps = this.initOpsThatEndWithRetains(delta)
+        }
+
+        const addRetainOp = () => {
+
+          id = id + 1;
+
+          let attributes;
+
+          // if (delta.ops[0].insert[0] === '↵') {
+          //   attributes = { newline: id }
+          // } else {
+          // }
+          attributes = { node: id }
+
+          // add the chars to the precedingToken
+          newOps.push({
+            retain: 1,
+            attributes
+          } as Op)
+
+          const oldInsert = delta.ops[0].insert;
+
+          // drop first n characters of string
+          delta.ops[0].insert = oldInsert.substring(1);
+
+          // if op.insert is now empty, remove the op
+          if (delta.ops[0].insert === '') delta.ops.shift();
+
+          // if there are remaining ops, start next iteration
+          if (delta.ops.length) {
+            // recursive function call, made async to prevent 'maximum callstack exeeded' exceptions  
+            asapScheduler.schedule(() => {
+              addRetainOp()
+            })
+
+            progress.next((origOpsLength - delta.ops.length) / origOpsLength);
+
+          } else {
+            newDelta.ops = newOps;
+            latestId = id;
+            done()
+          }
+
+        }
+
+        // start nodenization
+        addRetainOp();
+
+
+
+      } else {
+        done()
+      }
+
+    });
+
+    // return { delta: newDelta, latestId: latestId };
+    return { progress, result }
+  }
 
   /**
    * Nodenizes the delta given by the content-change event.
    * Returns the Delta with whitch the newDelta should be updated.
-   * @param delta
-   * @param oldDelta
    */
-  nodenizeContentChange(delta: Delta, oldDelta: Delta, latestId: number): { delta: Delta, latestId: number } {
+  tokenizeContentChange(delta: DeltaI, oldDelta: DeltaI, latestId: number): { delta: DeltaI, latestId: number } {
 
     const newDelta = new Delta();
 
@@ -124,7 +289,7 @@ export class QuillService {
    * @param oldDelta
    * @param ops empty array or array containing one retain op
    */
-  initPrecedingToken(oldDelta: Delta, ops: any[]): PrecedingToken {
+  initPrecedingToken(oldDelta: DeltaI, ops: any[]): PrecedingToken {
 
     if (ops.length === 0) return { id: undefined, type: undefined };
 
@@ -146,7 +311,7 @@ export class QuillService {
    * this part from the delta (eighter a piece of string or a op item)
    * @param delta
    */
-  extractNextToken(delta: Delta): NextToken {
+  extractNextToken(delta: DeltaI): NextToken {
 
     // if no next token, return NextToken of type undefined
     if (!delta.ops.length || !delta.ops[0].insert) return { length: 0, type: undefined };
@@ -211,14 +376,14 @@ export class QuillService {
    * returns true, if first op has retain
    * @param d 
    */
-  beginsWithRetain(d: Delta): boolean {
+  beginsWithRetain(d: DeltaI): boolean {
     return d.ops[0].hasOwnProperty('retain') ? true : false;
   }
 
   /**
    * returns, if the first is not retain, the end is a retain
    */
-  endsWithRetain(d: Delta): boolean {
+  endsWithRetain(d: DeltaI): boolean {
 
     if (
       !d.ops[0].hasOwnProperty('retain') // first is not retain
@@ -232,7 +397,7 @@ export class QuillService {
   }
 
   /**
-   * removes retains from given delta and returns one retain eith the sum of retains
+   * removes retains from given delta and returns one retain with the sum of retains
    *
    * This method is needed due to unexpected behavior of quill when
    * pasting the same formated content at the beginning of the document.
@@ -241,7 +406,7 @@ export class QuillService {
    * @param d
    * @param ops
    */
-  initOpsThatEndWithRetains(d: Delta): any[] {
+  initOpsThatEndWithRetains(d: DeltaI): any[] {
     let retainSum = 0;
 
     for (let index = (d.ops.length - 1); index >= 0; index--) {
@@ -274,7 +439,7 @@ export class QuillService {
    * by the first op of ops in d
    * @param d
    */
-  retainIndex(d: Delta): number {
+  retainIndex(d: DeltaI): number {
     return d.ops[0].hasOwnProperty('retain') ? d.ops[0].retain : 0;
   }
 
@@ -283,7 +448,7 @@ export class QuillService {
    * first or second op in ops
    * @param d
    */
-  insertedLength(d: Delta): number {
+  insertedLength(d: DeltaI): number {
     return d.ops[0].hasOwnProperty('insert') ? d.ops[0].insert.length :
       d.ops[1].hasOwnProperty('insert') ? d.ops[1].insert.length : 0;
   }
@@ -293,7 +458,7 @@ export class QuillService {
    * first or second op in ops and if this contains a separator
    * @param d
    */
-  insertsSeparator(d: Delta): boolean {
+  insertsSeparator(d: DeltaI): boolean {
     const string = d.ops[0].hasOwnProperty('insert') ? d.ops[0].insert :
       d.ops[1].hasOwnProperty('insert') ? d.ops[1].insert : '';
 
@@ -324,7 +489,7 @@ export class QuillService {
    * @param delta
    * @param index
    */
-  getOpByIndex(delta: Delta, index) {
+  getOpByIndex(delta: DeltaI, index) {
     let r = index; // remaining
 
     for (let i = 0; i < delta.ops.length; i++) {
@@ -344,7 +509,7 @@ export class QuillService {
    * TODO: make this more flexible for different lenghts of
    * ops and inserts
    */
-  nodenizeInsert(latestId): { delta: Delta, latestId: number } {
+  nodenizeInsert(latestId): { delta: DeltaI, latestId: number } {
     const delta = new Delta();
     latestId++;
     delta.retain(1, { node: latestId })
@@ -359,7 +524,7 @@ export class QuillService {
    * @param retained
    * @param inserted
    */
-  nodenizeAfterInsert(oldDelta, retained, inserted, latestId): { delta: Delta, latestId: number } {
+  nodenizeAfterInsert(oldDelta, retained, inserted, latestId): { delta: DeltaI, latestId: number } {
     let r = retained
     const delta = new Delta();
     oldDelta.ops.some(op => {
