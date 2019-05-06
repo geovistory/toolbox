@@ -1,11 +1,12 @@
 /// <reference types="quill" />
 
-import { Injectable } from '@angular/core';
+import { Injectable, ChangeDetectorRef } from '@angular/core';
 
 import Quill from 'quill';
 import Delta from 'quill/node_modules/quill-delta';
 import { DeltaI, Op } from './quill.models';
-import { Observable, BehaviorSubject, Subject, asapScheduler } from '../../../../node_modules/rxjs';
+import { Observable, BehaviorSubject, Subject, asapScheduler, asyncScheduler } from '../../../../node_modules/rxjs';
+import { clone } from 'ramda';
 
 const Inline = Quill.import('blots/inline');
 
@@ -126,13 +127,17 @@ export class QuillService {
     const progress = new BehaviorSubject<number>(0);
     const result = new Subject<CharacterizeResult>();
 
+    if (delta.ops.filter(op => op.hasOwnProperty('retain')).length > 1) {
+      console.warn('more than one retain', clone(delta.ops))
+    }
+
     asapScheduler.schedule(() => {
 
       const newDelta = new Delta();
 
       const done = () => {
-        result.next({ delta: newDelta, latestId: latestId });
         progress.next(1);
+        result.next({ delta: newDelta, latestId: latestId });
         progress.complete();
         result.complete()
       }
@@ -142,6 +147,7 @@ export class QuillService {
       if (this.isInsert(delta)) {
         let id = latestId * 1;
         let newOps: any[] = [];
+
 
         // length of ops array used to generate progress feedback
         const origOpsLength = delta.ops.length;
@@ -155,40 +161,52 @@ export class QuillService {
           newOps = this.initOpsThatEndWithRetains(delta)
         }
 
+        // number of syncronously executed calls of addRetainOp() 
+        let syncAddRetainOpCalls = 0;
+
         const addRetainOp = () => {
 
-          id = id + 1;
+          syncAddRetainOpCalls++;
 
-          let attributes;
+          const insert = delta.ops[0].insert;
+          if (insert) {
 
-          // if (delta.ops[0].insert[0] === '↵') {
-          //   attributes = { newline: id }
-          // } else {
-          // }
-          attributes = { node: id }
+            // drop first n characters of string
+            delta.ops[0].insert = insert.substring(1);
 
-          // add the chars to the precedingToken
-          newOps.push({
-            retain: 1,
-            attributes
-          } as Op)
+            id = id + 1;
 
-          const oldInsert = delta.ops[0].insert;
+            // add the chars to the precedingToken
+            newOps.push({
+              retain: 1,
+              attributes: { node: id }
+            } as Op)
 
-          // drop first n characters of string
-          delta.ops[0].insert = oldInsert.substring(1);
+          }
 
           // if op.insert is now empty, remove the op
-          if (delta.ops[0].insert === '') delta.ops.shift();
+          if (delta.ops[0].insert === '' || delta.ops[0].insert === undefined) delta.ops.shift();
 
           // if there are remaining ops, start next iteration
           if (delta.ops.length) {
-            // recursive function call, made async to prevent 'maximum callstack exeeded' exceptions  
-            asapScheduler.schedule(() => {
-              addRetainOp()
-            })
 
-            progress.next((origOpsLength - delta.ops.length) / origOpsLength);
+            // make syncronous calls for batches of 100 
+            if (syncAddRetainOpCalls < 100) {
+              // synchronously call recursive function
+              addRetainOp()
+
+            } else {
+              syncAddRetainOpCalls = 0;
+
+              progress.next((origOpsLength - delta.ops.length) / origOpsLength);
+              
+              // asynchronously call recursive function
+              // to prevent 'maximum callstack exeeded' exceptions  
+              asyncScheduler.schedule(() => {
+                addRetainOp()
+              }, 0)
+
+            }
 
           } else {
             newDelta.ops = newOps;

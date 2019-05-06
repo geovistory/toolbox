@@ -1,12 +1,12 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
 import Delta from 'quill/node_modules/quill-delta';
-import { Subscription, Observable, BehaviorSubject } from 'rxjs';
+import { Subscription, Observable, BehaviorSubject, asapScheduler, asyncScheduler, timer, interval } from 'rxjs';
 import { QuillNodeHandler } from '../quill-node-handler';
 import { QuillService } from '../quill.service';
 import { QuillDoc, DeltaI, Ops } from '../quill.models';
 import { ProgressDialogData, ProgressDialogComponent, ProgressMode } from '../../../shared/components/progress-dialog/progress-dialog.component';
 import { MatDialog, MatDialogRef } from '../../../../../node_modules/@angular/material';
-import { first } from '../../../../../node_modules/rxjs/operators';
+import { first, takeUntil, filter, map, audit, delay, tap, distinct } from '../../../../../node_modules/rxjs/operators';
 
 @Component({
   selector: 'gv-quill-edit',
@@ -177,11 +177,11 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
   private getChunkOfSelectedRange(range: any) {
     const firstBlotOfSelection = this.quillEditor.getLeaf(range.index);
-    const missingFromStart = firstBlotOfSelection[1] === firstBlotOfSelection[0].text.length ? 0 : firstBlotOfSelection[1];
+    const missingFromStart = firstBlotOfSelection[1] === (firstBlotOfSelection[0].text || []).length ? 0 : firstBlotOfSelection[1];
     const startIndex = range.index - missingFromStart;
 
     const lastBlotOfSelection = this.quillEditor.getLeaf((range.index + range.length));
-    const missingTillEnd = lastBlotOfSelection[0].text.length - lastBlotOfSelection[1];
+    const missingTillEnd = (lastBlotOfSelection[0].text || []).length - lastBlotOfSelection[1];
     const offset = range.length + missingTillEnd + missingFromStart;
 
     const ops = this.quillEditor.getContents(startIndex, offset);
@@ -366,36 +366,48 @@ export class QuillEditComponent implements OnInit, OnChanges {
     if (source == 'user') {
       console.log('A user action triggered this change.');
 
-      const feedback = this.quillService.characterizeContentChange(delta, oldDelta, this.latestId);
 
-      const progDialogData: ProgressDialogData = {
-        mode$: new BehaviorSubject<ProgressMode>('determinate'),
-        value$: new BehaviorSubject(0)
-      }
-      let progDialog: MatDialogRef<ProgressDialogComponent>;
+      asyncScheduler.schedule(() => {
 
-      feedback.progress.pipe(first()).subscribe(progress => {
-        progDialog = this.openProgressDialog(progDialogData)
-      })
-      feedback.progress.subscribe(
-        progress => {
-          progDialogData.value$.next(progress)
-          console.log('progress', progress)
-        },
-        err => { },
-        () => {
-          progDialog.close()
+        const feedback = this.quillService.characterizeContentChange(delta, oldDelta, this.latestId);
+
+        const progDialogData: ProgressDialogData = {
+          title: 'Processing entered text',
+          mode$: new BehaviorSubject<ProgressMode>('determinate'),
+          value$: new BehaviorSubject(0)
         }
-      )
+        let progDialog;
+        const done$ = feedback.progress.pipe(filter(p => p === 1), map(() => true))
+        timer(20).pipe(takeUntil(done$)).subscribe(() => {
+          progDialog = this.openProgressDialog(progDialogData)
+        })
+
+        feedback.progress.pipe(
+          map(n => Math.round(n * 100)),
+          distinct()
+        ).subscribe(percent => {
+          progDialogData.value$.next(percent)
+          console.log('progress', percent)
+        })
 
 
-      feedback.result.subscribe(res => {
-        const nodenizeResult = res;
-        this.latestId = nodenizeResult.latestId;
+        feedback.result.pipe(
+          tap(() => {
+            progDialogData.mode$.next('indeterminate')
+          })
+        ).subscribe(res => {
+          
+          const nodenizeResult = res;
 
-        this.quillEditor.updateContents(nodenizeResult.delta)
+          this.latestId = nodenizeResult.latestId;
 
-        this.updateComponent()
+          this.quillEditor.updateContents(nodenizeResult.delta)
+
+          this.updateComponent()
+
+          if (progDialog) progDialog.close()
+
+        })
       })
 
     }
@@ -553,7 +565,8 @@ export class QuillEditComponent implements OnInit, OnChanges {
     return this.dialog.open(ProgressDialogComponent, {
       width: '250px',
       data,
-      hasBackdrop: false
+      // hasBackdrop: false,
+      disableClose: true
     });
   }
 

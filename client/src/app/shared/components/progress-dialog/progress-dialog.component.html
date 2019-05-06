@@ -1,1 +1,9 @@
-<mat-progress-bar [mode]="data.mode$ | async" value$="data.value$ | async"></mat-progress-bar>
+<h1 *ngIf="data.title" mat-dialog-title>{{data.title}}</h1>
+<div mat-dialog-content>
+
+    <mat-progress-bar [mode]="data.mode$ | async" [value]="data.value$ | async"></mat-progress-bar>
+
+    <p *ngIf="!data.hideValue">
+        {{data.value$ | async}} %
+    </p>
+</div>

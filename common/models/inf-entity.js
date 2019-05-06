@@ -224,7 +224,7 @@ module.exports = function (InfEntity) {
    * 1. in the simplest case, the given dataObject has a pk_entity for which the existing temporal entity is retrieved from db.
    * 2. in a more complex case, the given dataObject holds an array of roles ('te_roles') for which the function checks,
    *    if there is an existing temporal entity whose identity defining roles do excactly match the given roles.
-   *    Remark: The given 'te_roles' must have a valid fk_entity, fk_temporal_entity and fk_property in order to be compared 
+   *    Remark: The given 'te_roles' must have a valid fk_entity and fk_property in order to be compared 
    *    to the existing temporal entitites 
    * 
    * If none of the above checks retrieves an exsisting temporal entity, a new one is created. 

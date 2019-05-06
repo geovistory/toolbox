@@ -13,7 +13,11 @@
     "start": "node .",
     "posttest": "npm run lint && nsp check",
     "build:sdk": "./node_modules/.bin/lb-sdk server/server client/src/app/core/sdk -d ng2web -l angular2",
-    "db-migrate": "node_modules/db-migrate/bin/db-migrate --config server/migrate-db-config.json --migrations-dir server/migrations"
+    "db-migrate": "node_modules/db-migrate/bin/db-migrate --config server/migrate-db-config.json --migrations-dir server/migrations",
+    "cm": "node_modules/db-migrate/bin/db-migrate --config server/migrate-db-config.json --migrations-dir server/migrations --sql-file true create",
+    "mu": "node_modules/db-migrate/bin/db-migrate --config server/migrate-db-config.json --migrations-dir server/migrations up",
+    "md": "node_modules/db-migrate/bin/db-migrate --config server/migrate-db-config.json --migrations-dir server/migrations down"
+
   },
   "dependencies": {
     "@angular-devkit/build-angular": "^0.7.3",
@@ -21,8 +25,8 @@
     "@angular/compiler": "6.1.0",
     "@angular/compiler-cli": "6.1.0",
     "@angular/core": "6.1.2",
-    "@mean-expert/model": "^1.0.9",
     "@mean-expert/loopback-sdk-builder": "kleiolab/loopback-sdk-builder#fix-missing-targetClass",
+    "@mean-expert/model": "^1.0.9",
     "@types/socket.io": "^2.1.2",
     "JSONStream": "^1.3.5",
     "bluebird": "^3.5.1",
@@ -31,7 +35,7 @@
     "compression": "^1.0.3",
     "cors": "^2.5.2",
     "csv-write-stream": "^2.0.0",
-    "db-migrate": "^0.11.0",
+    "db-migrate": "^0.11.5",
     "db-migrate-pg": "^0.4.0",
     "faker": "^4.1.0",
     "forever": "^0.15.3",

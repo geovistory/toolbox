@@ -39,7 +39,7 @@ exports.up = function (db, callback) {
       END LOOP;
 
         ops = ops || jsonb_build_object(
-        'insert', '↵',
+        'insert', E'\n',
         'attributes', jsonb_build_object('node', latestId::text::jsonb)
       );
 
@@ -55,7 +55,7 @@ exports.up = function (db, callback) {
         LANGUAGE 'sql'
     AS $BODY$
         
-          SELECT STRING_AGG(l.ops->>'insert', '')
+          SELECT TRIM( TRAILING E'\n' FROM STRING_AGG(l.ops->>'insert', ''))
           FROM (SELECT jsonb_array_elements(text_property_quill_doc->'ops') as ops) as l
     $BODY$;
 

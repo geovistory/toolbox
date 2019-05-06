@@ -29,8 +29,7 @@ exports.up = function (db, callback) {
             "type": "object",
             "properties": {
               "latestId": {
-                "type": "number",
-                "minimum": 1
+                "type": "number"
               },
               "ops": {
                 "type": "array",

@@ -1,30 +1,23 @@
 import { sandboxOf } from 'angular-playground';
-import { QuillEditComponent } from './quill-edit.component';
-import { QuillService } from '../quill.service';
-import { textBüchel, wikiRats } from './quill-edit.sandbox.mock';
 import { DomChangeModule } from 'app/shared';
-import { QuillViewComponent } from '../quill-view/quill-view.component';
 import { BehaviorSubject } from 'rxjs';
+import { QuillModule } from '..';
 import { QuillDoc } from '../quill.models';
-import { MatDialogModule } from '../../../../../node_modules/@angular/material';
+import { QuillEditComponent } from './quill-edit.component';
+import { textBüchel, wikiRats } from './quill-edit.sandbox.mock';
+import { ChangeDetectorRef } from '../../../../../node_modules/@angular/core';
 
 
 
 export default sandboxOf(QuillEditComponent, {
     imports: [
         DomChangeModule,
-        MatDialogModule
-    ],
-    declarations: [
-        QuillViewComponent
+        QuillModule
     ],
     providers: [
-        QuillService,
+        ChangeDetectorRef
     ],
-    entryComponents: [
-        
-    ]
-
+    declareComponent: false
 })
     .add('Quill-Edit | New text editor only ', {
         context: {
@@ -98,7 +91,123 @@ export default sandboxOf(QuillEditComponent, {
     .add('Quill-Edit | Existing Text ', {
         context: {
             blurCount: 0,
-            quillDoc: wikiRats,
+            // quillDoc: wikiRats,
+            quillDoc: {
+                "ops": [
+                    {
+                        "insert": "J",
+                        "attributes": {
+                            "node": 1
+                        }
+                    },
+                    {
+                        "insert": "a",
+                        "attributes": {
+                            "node": 2
+                        }
+                    },
+                    {
+                        "insert": "k",
+                        "attributes": {
+                            "node": 3
+                        }
+                    },
+                    {
+                        "insert": "o",
+                        "attributes": {
+                            "node": 4
+                        }
+                    },
+                    {
+                        "insert": "b",
+                        "attributes": {
+                            "node": 5
+                        }
+                    },
+                    {
+                        "insert": " ",
+                        "attributes": {
+                            "node": 6
+                        }
+                    },
+                    {
+                        "insert": "I",
+                        "attributes": {
+                            "node": 7
+                        }
+                    },
+                    {
+                        "insert": ".",
+                        "attributes": {
+                            "node": 8
+                        }
+                    },
+                    {
+                        "insert": " ",
+                        "attributes": {
+                            "node": 9
+                        }
+                    },
+                    {
+                        "insert": "B",
+                        "attributes": {
+                            "node": 10
+                        }
+                    },
+                    {
+                        "insert": "e",
+                        "attributes": {
+                            "node": 11
+                        }
+                    },
+                    {
+                        "insert": "r",
+                        "attributes": {
+                            "node": 12
+                        }
+                    },
+                    {
+                        "insert": "n",
+                        "attributes": {
+                            "node": 13
+                        }
+                    },
+                    {
+                        "insert": "o",
+                        "attributes": {
+                            "node": 14
+                        }
+                    },
+                    {
+                        "insert": "u",
+                        "attributes": {
+                            "node": 15
+                        }
+                    },
+                    {
+                        "insert": "l",
+                        "attributes": {
+                            "node": 16
+                        }
+                    },
+                    {
+                        "insert": "l",
+                        "attributes": {
+                            "node": 17
+                        }
+                    },
+                    {
+                        "insert": "i",
+                        "attributes": {
+                            "node": 18
+                        }
+                    },
+                    {
+                        "insert": "\n"
+                    }
+                ],
+                "latestId": 18
+            },
             showOutput: true,
             showAnnotations: new BehaviorSubject(true),
             annotatedNodes$: new BehaviorSubject({
