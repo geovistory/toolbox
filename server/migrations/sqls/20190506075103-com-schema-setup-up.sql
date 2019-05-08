@@ -254,3 +254,52 @@ CREATE FUNCTION commons.rename_versioned_table(
     END 
     $BODY$;
 
+
+-- 12. Init version table (independend of being entity child)
+CREATE OR REPLACE FUNCTION commons.init_version_table(
+	schema_and_table_name character varying)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+AS $BODY$
+    BEGIN
+
+
+      -- Do the Magic:
+
+      EXECUTE format('	
+
+        ALTER TABLE %1$s ADD COLUMN IF NOT EXISTS 
+          sys_period tstzrange DEFAULT tstzrange(now(), NULL::timestamp with time zone);
+          
+        -- Table: <schema_and_table_name>_vt
+
+        CREATE TABLE %1$s_vt (LIKE %1$s);
+
+        -- Trigger: versioning_trigger
+
+        CREATE TRIGGER versioning_trigger
+        BEFORE INSERT OR UPDATE OR DELETE ON %1$s
+        FOR EACH ROW EXECUTE PROCEDURE versioning(
+        "sys_period", ''%1$s_vt'', true
+        );
+
+        -- Trigger: create_entity_version_key
+
+        CREATE TRIGGER create_entity_version_key
+        BEFORE INSERT
+        ON %1$s
+        FOR EACH ROW
+        EXECUTE PROCEDURE commons.create_entity_version_key();
+
+        -- Trigger: update_entity_version_key
+
+        CREATE TRIGGER update_entity_version_key
+        BEFORE UPDATE
+        ON %1$s
+        FOR EACH ROW
+        EXECUTE PROCEDURE commons.update_entity_version_key();',          
+        schema_and_table_name
+      );
+        
+    END 
+    $BODY$;

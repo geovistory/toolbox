@@ -1,0 +1,1 @@
+ALTER TABLE projects.dfh_class_proj_rel RENAME COLUMN enabled_in_entities TO is_in_project; 
