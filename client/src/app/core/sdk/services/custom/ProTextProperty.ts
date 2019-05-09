@@ -9,17 +9,18 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SysClassFieldPropertyRel } from '../../models/ComClassFieldPropertyRel';
+import { ProTextProperty } from '../../models/ProTextProperty';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { SysClassField } from '../../models/ComClassField';
-import { DfhProperty } from '../../models/DfhProperty';
+import { ProProject } from '../../models/ProProject';
+import { InfLanguage } from '../../models/InfLanguage';
+import { SysSystemType } from '../../models/SysSystemType';
 
 
 /**
- * Api services for the `ComClassFieldPropertyRel` model.
+ * Api services for the `ProTextProperty` model.
  */
 @Injectable()
-export class SysClassFieldPropertyRelApi extends BaseLoopBackApi {
+export class ProTextPropertyApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -33,9 +34,9 @@ export class SysClassFieldPropertyRelApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComClassFieldPropertyRel`.
+   * i.e. `ProTextProperty`.
    */
   public getModelName() {
-    return "ComClassFieldPropertyRel";
+    return "ProTextProperty";
   }
 }

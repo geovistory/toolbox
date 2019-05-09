@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, ProVisualApi, SysQueryApi, ProVisual, ActiveProjectService } from 'app/core';
+import { LoadingBarActions, ProVisualApi, ProQueryApi, ProVisual, ActiveProjectService } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -13,7 +13,7 @@ import { ofSubstore } from 'app/core/store/module';
 export class VisualDetailAPIEpics {
   constructor(
     private visualApi: ProVisualApi,
-    private queryApi: SysQueryApi,
+    private queryApi: ProQueryApi,
     private actions: VisualDetailAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions,

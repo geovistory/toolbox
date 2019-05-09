@@ -9,17 +9,15 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DatDigital } from '../../models/InfDigitalObject';
+import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { ProInfoProjRel } from '../../models/InfEntityProjectRel';
-import { DatChunk } from '../../models/InfChunk';
 
 
 /**
- * Api services for the `InfDigitalObject` model.
+ * Api services for the `ProInfoProjRel` model.
  */
 @Injectable()
-export class DatDigitalApi extends BaseLoopBackApi {
+export class ProInfoProjRelApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -32,13 +30,11 @@ export class DatDigitalApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates or updates the instance of InfDigitalObject and creates or updates its relation to the project of given projectId.
-   *
-   * @param {number} pkProject Project id
+   * Patch an existing model instance or insert a new one into the data source.
    *
    * @param {object} data Request data.
    *
-   *  - `data` – `{InfDigitalObject}` - Instance of InfDigitalObject
+   *  - `data` – `{object}` - Model instance data
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -46,44 +42,52 @@ export class DatDigitalApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfDigitalObject` object.)
+   * This usually means the response is a `ProInfoProjRel` object.)
    * </em>
    */
-  public saveWithEpr(data: any, pkProject: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "PUT";
+  public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfDigitalObjects/save-with-epr";
+    "/ProInfoProjRels";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
     };
     let _urlParams: any = {};
-    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
 
   /**
-   * Finds the versions of given pkEntity.
+   * Updates the ProInfoProjRel found by fk_project and fk_entity.
    *
-   * @param {number} pkEntity Primary Key of the digital object (pk_entity)
+   * @param {number} pkProject fk_project
    *
-   * @returns {object[]} An empty reference that will be
+   * @param {number} pkEntity fk_entity
+   *
+   * @param {object} data Request data.
+   *
+   *  - `eprAttributes` – `{ProInfoProjRel}` - Instance of ProInfoProjRel (fk_project and fk_entity will be ignored)
+   *
+   * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfDigitalObject` object.)
+   * This usually means the response is a `ProInfoProjRel` object.)
    * </em>
    */
-  public getVersions(pkEntity: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
+  public updateEprAttributes(pkProject: any, pkEntity: any, eprAttributes: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfDigitalObjects/get-versions";
+    "/ProInfoProjRels/updateEprAttributes";
     let _routeParams: any = {};
-    let _postBody: any = {};
+    let _postBody: any = {
+      eprAttributes: eprAttributes
+    };
     let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
@@ -91,9 +95,9 @@ export class DatDigitalApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `InfDigitalObject`.
+   * i.e. `ProInfoProjRel`.
    */
   public getModelName() {
-    return "InfDigitalObject";
+    return "ProInfoProjRel";
   }
 }

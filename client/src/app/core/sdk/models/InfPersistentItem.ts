@@ -4,7 +4,6 @@ import {
   ProInfoProjRel,
   DfhClass,
   InfEntityAssociation,
-  InfTypeNamespaceRel,
   InfTextProperty
 } from '../index';
 
@@ -21,7 +20,6 @@ export interface InfPersistentItemInterface {
   dfh_class?: DfhClass;
   domain_entity_associations?: InfEntityAssociation[];
   range_entity_associations?: InfEntityAssociation[];
-  type_namespace_rels?: InfTypeNamespaceRel[];
   text_properties?: InfTextProperty[];
 }
 
@@ -37,7 +35,6 @@ export class InfPersistentItem implements InfPersistentItemInterface {
   dfh_class?: DfhClass;
   domain_entity_associations?: InfEntityAssociation[];
   range_entity_associations?: InfEntityAssociation[];
-  type_namespace_rels?: InfTypeNamespaceRel[];
   text_properties?: InfTextProperty[];
   constructor(data?: InfPersistentItemInterface) {
     Object.assign(this, data);
@@ -108,8 +105,8 @@ export class InfPersistentItem implements InfPersistentItemInterface {
         },
         entity_version_project_rels: {
           name: 'entity_version_project_rels',
-          type: 'InfEntityProjectRel[]',
-          model: 'InfEntityProjectRel',
+          type: 'ProInfoProjRel[]',
+          model: 'ProInfoProjRel',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
@@ -137,14 +134,6 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_range_entity'
-        },
-        type_namespace_rels: {
-          name: 'type_namespace_rels',
-          type: 'InfTypeNamespaceRel[]',
-          model: 'InfTypeNamespaceRel',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_persistent_item'
         },
         text_properties: {
           name: 'text_properties',

@@ -170,20 +170,20 @@ export class DfhClass implements DfhClassInterface {
                   keyFrom: 'dfh_pk_class',
           keyTo: 'dfh_fk_class'
         },
-        ui_context_configs: {
-          name: 'ui_context_configs',
-          type: 'ComUiContextConfig[]',
-          model: 'ComUiContextConfig',
+        class_field_configs: {
+          name: 'class_field_configs',
+          type: 'ProClassFieldConfig[]',
+          model: 'ProClassFieldConfig',
           relationType: 'hasMany',
                   keyFrom: 'dfh_pk_class',
           keyTo: 'fk_class_for_class_field'
         },
         class_fields: {
           name: 'class_fields',
-          type: 'ComClassField[]',
-          model: 'ComClassField',
+          type: 'SysClassField[]',
+          model: 'SysClassField',
           relationType: 'hasMany',
-          modelThrough: 'ComUiContextConfig',
+          modelThrough: 'ProClassFieldConfig',
           keyThrough: 'fk_class_field',
           keyFrom: 'dfh_pk_class',
           keyTo: 'fk_class_for_class_field'

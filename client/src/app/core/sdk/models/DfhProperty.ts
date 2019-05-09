@@ -216,10 +216,10 @@ export class DfhProperty implements DfhPropertyInterface {
                   keyFrom: 'dfh_pk_property',
           keyTo: 'dfh_pk_property'
         },
-        ui_context_config: {
-          name: 'ui_context_config',
-          type: 'ComUiContextConfig[]',
-          model: 'ComUiContextConfig',
+        class_field_config: {
+          name: 'class_field_config',
+          type: 'ProClassFieldConfig[]',
+          model: 'ProClassFieldConfig',
           relationType: 'hasMany',
                   keyFrom: 'dfh_pk_property',
           keyTo: 'fk_property'

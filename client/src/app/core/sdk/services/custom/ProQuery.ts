@@ -9,17 +9,17 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ProQuery } from '../../models/ComQuery';
+import { ProQuery } from '../../models/ProQuery';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { PubAccount } from '../../models/PubAccount';
-import { ProProject } from '../../models/ComProject';
+import { ProProject } from '../../models/ProProject';
 
 
 /**
- * Api services for the `ComQuery` model.
+ * Api services for the `ProQuery` model.
  */
 @Injectable()
-export class SysQueryApi extends BaseLoopBackApi {
+export class ProQueryApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -34,7 +34,7 @@ export class SysQueryApi extends BaseLoopBackApi {
   /**
    * Patch attributes for a model instance and persist it into the data source.
    *
-   * @param {any} id ComQuery id
+   * @param {any} id ProQuery id
    *
    * @param {object} data Request data.
    *
@@ -46,13 +46,13 @@ export class SysQueryApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `ComQuery` object.)
+   * This usually means the response is a `ProQuery` object.)
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ComQueries/:id";
+    "/ProQueries/:id";
     let _routeParams: any = {
       id: id
     };
@@ -77,13 +77,13 @@ export class SysQueryApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `ComQuery` object.)
+   * This usually means the response is a `ProQuery` object.)
    * </em>
    */
   public run(pkProject: any, query: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ComQueries/run";
+    "/ProQueries/run";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -108,13 +108,13 @@ export class SysQueryApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `ComQuery` object.)
+   * This usually means the response is a `ProQuery` object.)
    * </em>
    */
   public runVersion(pkProject: any, pkEntity: any, version: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ComQueries/run-version";
+    "/ProQueries/run-version";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -140,13 +140,13 @@ export class SysQueryApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `ComQuery` object.)
+   * This usually means the response is a `ProQuery` object.)
    * </em>
    */
   public findPerProject(pkProject: any, limit: any, offset: any, customHeaders?: Function): Observable<ProQuery[]> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ComQueries/find-per-project";
+    "/ProQueries/find-per-project";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -172,13 +172,13 @@ export class SysQueryApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `ComQuery` object.)
+   * This usually means the response is a `ProQuery` object.)
    * </em>
    */
   public findByIdAndProject(pkProject: any, pkEntity: any, customHeaders?: Function): Observable<ProQuery> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ComQueries/find-by-id-and-project";
+    "/ProQueries/find-by-id-and-project";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -203,13 +203,13 @@ export class SysQueryApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `ComQuery` object.)
+   * This usually means the response is a `ProQuery` object.)
    * </em>
    */
   public findByIdAndVersionAndProject(pkProject: any, pkEntity: any, version: any, customHeaders?: Function): Observable<ProQuery> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ComQueries/find-by-id-and-version-and-project";
+    "/ProQueries/find-by-id-and-version-and-project";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -235,13 +235,13 @@ export class SysQueryApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `ComQuery` object.)
+   * This usually means the response is a `ProQuery` object.)
    * </em>
    */
   public runAndExport(pkProject: any, query: any, filetype: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ComQueries/run-and-export";
+    "/ProQueries/run-and-export";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -254,9 +254,9 @@ export class SysQueryApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComQuery`.
+   * i.e. `ProQuery`.
    */
   public getModelName() {
-    return "ComQuery";
+    return "ProQuery";
   }
 }

@@ -7,7 +7,7 @@ import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/op
 import { environment } from '../../../environments/environment';
 import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProQuery, ProVisual, DfhProjRel, ProInfoProjRel } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
-import { ProProject } from '../sdk/models/ComProject';
+import { ProProject } from '../sdk';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';

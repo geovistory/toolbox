@@ -1,56 +1,44 @@
 /* tslint:disable */
-import {
-  ProProject,
-  ComLanguage
-} from '../index';
 
 declare var Object: any;
-export interface ComLabelInterface {
-  "label": string;
-  "fk_system_type": number;
-  "fk_language": string;
+export interface SysClassHasTypePropertyInterface {
+  "fk_class"?: number;
+  "fk_property"?: number;
   "pk_entity"?: number;
   "entity_version"?: number;
   "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  "fk_entity"?: number;
-  project?: ProProject;
-  language?: ComLanguage;
 }
 
-export class ComLabel implements ComLabelInterface {
-  "label": string;
-  "fk_system_type": number;
-  "fk_language": string;
+export class SysClassHasTypeProperty implements SysClassHasTypePropertyInterface {
+  "fk_class": number;
+  "fk_property": number;
   "pk_entity": number;
   "entity_version": number;
   "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  "fk_entity": number;
-  project?: ProProject;
-  language?: ComLanguage;
-  constructor(data?: ComLabelInterface) {
+  constructor(data?: SysClassHasTypePropertyInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComLabel`.
+   * i.e. `SysClassHasTypeProperty`.
    */
   public static getModelName() {
-    return "ComLabel";
+    return "SysClassHasTypeProperty";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of ComLabel for dynamic purposes.
+  * This method creates an instance of SysClassHasTypeProperty for dynamic purposes.
   **/
-  public static factory(data: ComLabelInterface): ComLabel{
-    return new ComLabel(data);
+  public static factory(data: SysClassHasTypePropertyInterface): SysClassHasTypeProperty{
+    return new SysClassHasTypeProperty(data);
   }
   /**
   * @method getModelDefinition
@@ -61,22 +49,18 @@ export class ComLabel implements ComLabelInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'ComLabel',
-      plural: 'ComLabels',
-      path: 'ComLabels',
+      name: 'SysClassHasTypeProperty',
+      plural: 'SysClassHasTypeProperties',
+      path: 'SysClassHasTypeProperties',
       idName: 'pk_entity',
       properties: {
-        "label": {
-          name: 'label',
-          type: 'string'
-        },
-        "fk_system_type": {
-          name: 'fk_system_type',
+        "fk_class": {
+          name: 'fk_class',
           type: 'number'
         },
-        "fk_language": {
-          name: 'fk_language',
-          type: 'string'
+        "fk_property": {
+          name: 'fk_property',
+          type: 'number'
         },
         "pk_entity": {
           name: 'pk_entity',
@@ -102,28 +86,8 @@ export class ComLabel implements ComLabelInterface {
           name: 'sys_period',
           type: 'string'
         },
-        "fk_entity": {
-          name: 'fk_entity',
-          type: 'number'
-        },
       },
       relations: {
-        project: {
-          name: 'project',
-          type: 'ComProject',
-          model: 'ComProject',
-          relationType: 'belongsTo',
-                  keyFrom: 'fk_entity',
-          keyTo: 'pk_entity'
-        },
-        language: {
-          name: 'language',
-          type: 'ComLanguage',
-          model: 'ComLanguage',
-          relationType: 'belongsTo',
-                  keyFrom: 'fk_language',
-          keyTo: 'pk_language'
-        },
       }
     }
   }

@@ -1,5 +1,5 @@
 import { PropertyFieldList, FieldList, EntityPreviewList, PeItDetailList, EntityPreview } from 'app/core/state/models';
-import { ComClassFieldInterface, ComUiContextInterface, ComProjectInterface, DatChunk, InfPersistentItem, InfTemporalEntity, DfhProperty, ProQuery, ProVisual, DfhProjRel } from 'app/core/sdk';
+import { SysClassFieldInterface, SysAppContextInterface, ProProjectInterface, DatChunk, InfPersistentItem, InfTemporalEntity, DfhProperty, ProQuery, ProVisual, DfhProjRel } from 'app/core/sdk';
 import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/api/class-settings.models';
 import { EntityDetail } from 'app/modules/information/containers/entity-detail/api/entity-detail.models';
 import { SourceDetail } from 'app/modules/sources/containers/source-detail/api/source-detail.models';
@@ -71,7 +71,7 @@ export interface Tab {
 }
 
 
-export interface ProjectDetail extends ComProjectInterface {
+export interface ProjectDetail extends ProProjectInterface {
 
     /******************************************************************
      * CRM and Project Config
@@ -214,7 +214,7 @@ export interface ClassConfig {
     }
 }
 
-export interface UiContext extends ComUiContextInterface {
+export interface UiContext extends SysAppContextInterface {
     uiElements?: UiElement[]
 }
 
@@ -225,6 +225,6 @@ export interface UiElement {
     propertyFieldKey?: string, // TODO: merge the propertyFieldKey and propSetKey to fieldKey
     propSetKey?: string,
     fk_class_field?: number,
-    class_field?: ComClassFieldInterface
+    class_field?: SysClassFieldInterface
     ord_num: number
 }

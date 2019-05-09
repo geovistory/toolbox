@@ -9,17 +9,15 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ComLabel } from '../../models/ComLabel';
+import { DatNamespace } from '../../models/DatNamespace';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { ProProject } from '../../models/ComProject';
-import { ComLanguage } from '../../models/ComLanguage';
 
 
 /**
- * Api services for the `ComLabel` model.
+ * Api services for the `DatNamespace` model.
  */
 @Injectable()
-export class ComLabelApi extends BaseLoopBackApi {
+export class DatNamespaceApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -33,9 +31,9 @@ export class ComLabelApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComLabel`.
+   * i.e. `DatNamespace`.
    */
   public getModelName() {
-    return "ComLabel";
+    return "DatNamespace";
   }
 }

@@ -12,7 +12,7 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
 import { map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { SysClassField, SysClassFieldApi, SysClassHasTypePropertyApi, SysProjectApi, SysQueryApi, SysAppContext, SysAppContextApi, ProClassFieldConfig, ProVisualApi, DfhClass, DfhProjRelApi, DfhProperty, DfhPropertyApi, DatChunk, DatChunkApi, ProInfoProjRelApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi } from '../sdk';
+import { SysClassField, SysClassFieldApi, SysClassHasTypePropertyApi, ProProjectApi, ProQueryApi, SysAppContext, SysAppContextApi, ProClassFieldConfig, ProVisualApi, DfhClass, DfhProjRelApi, DfhProperty, DfhPropertyApi, DatChunk, DatChunkApi, ProInfoProjRelApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi } from '../sdk';
 import { HasTypePropertyReadable, PeItDetail } from '../state/models';
 import { IAppState } from '../store/model';
 import { U } from '../util/util';
@@ -30,9 +30,9 @@ export class ActiveProjectEpics {
     private infProjRelApi: ProInfoProjRelApi,
     private chunkApi: DatChunkApi,
     private uiContextApi: SysAppContextApi,
-    private projectApi: SysProjectApi,
+    private projectApi: ProProjectApi,
     private projRelApi: DfhProjRelApi,
-    private comQuery: SysQueryApi,
+    private comQuery: ProQueryApi,
     private comVisual: ProVisualApi,
     private dfhPropertyApi: DfhPropertyApi,
     private comClassFieldApi: SysClassFieldApi,

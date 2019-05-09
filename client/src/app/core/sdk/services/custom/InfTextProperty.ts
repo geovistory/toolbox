@@ -11,11 +11,11 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InfTextProperty } from '../../models/InfTextProperty';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { ProInfoProjRel } from '../../models/InfEntityProjectRel';
+import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { InfLanguage } from '../../models/InfLanguage';
-import { SysClassField } from '../../models/ComClassField';
+import { SysClassField } from '../../models/SysClassField';
 
 
 /**

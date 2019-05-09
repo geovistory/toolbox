@@ -7,7 +7,7 @@ import {
 } from '../index';
 
 declare var Object: any;
-export interface ComUiContextConfigInterface {
+export interface ProClassFieldConfigInterface {
   "pk_entity"?: number;
   "fk_app_context": number;
   "fk_project"?: number;
@@ -22,7 +22,7 @@ export interface ComUiContextConfigInterface {
   project?: ProProject;
 }
 
-export class ProClassFieldConfig implements ComUiContextConfigInterface {
+export class ProClassFieldConfig implements ProClassFieldConfigInterface {
   "pk_entity": number;
   "fk_app_context": number;
   "fk_project": number;
@@ -35,23 +35,23 @@ export class ProClassFieldConfig implements ComUiContextConfigInterface {
   property?: DfhProperty;
   class_field?: SysClassField;
   project?: ProProject;
-  constructor(data?: ComUiContextConfigInterface) {
+  constructor(data?: ProClassFieldConfigInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComUiContextConfig`.
+   * i.e. `ProClassFieldConfig`.
    */
   public static getModelName() {
-    return "ComUiContextConfig";
+    return "ProClassFieldConfig";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of ComUiContextConfig for dynamic purposes.
+  * This method creates an instance of ProClassFieldConfig for dynamic purposes.
   **/
-  public static factory(data: ComUiContextConfigInterface): ProClassFieldConfig{
+  public static factory(data: ProClassFieldConfigInterface): ProClassFieldConfig{
     return new ProClassFieldConfig(data);
   }
   /**
@@ -63,17 +63,17 @@ export class ProClassFieldConfig implements ComUiContextConfigInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'ComUiContextConfig',
-      plural: 'ComUiContextConfigs',
-      path: 'ComUiContextConfigs',
+      name: 'ProClassFieldConfig',
+      plural: 'ProClassFieldConfigs',
+      path: 'ProClassFieldConfigs',
       idName: 'pk_entity',
       properties: {
         "pk_entity": {
           name: 'pk_entity',
           type: 'number'
         },
-        "fk_ui_context": {
-          name: 'fk_ui_context',
+        "fk_app_context": {
+          name: 'fk_app_context',
           type: 'number'
         },
         "fk_project": {
@@ -102,12 +102,12 @@ export class ProClassFieldConfig implements ComUiContextConfigInterface {
         },
       },
       relations: {
-        ui_context: {
-          name: 'ui_context',
-          type: 'ComUiContext',
-          model: 'ComUiContext',
+        app_context: {
+          name: 'app_context',
+          type: 'SysAppContext',
+          model: 'SysAppContext',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_ui_context',
+                  keyFrom: 'fk_app_context',
           keyTo: 'pk_entity'
         },
         property: {
@@ -120,19 +120,19 @@ export class ProClassFieldConfig implements ComUiContextConfigInterface {
         },
         class_field: {
           name: 'class_field',
-          type: 'ComClassField',
-          model: 'ComClassField',
+          type: 'SysClassField',
+          model: 'SysClassField',
           relationType: 'belongsTo',
                   keyFrom: 'fk_class_field',
           keyTo: 'pk_entity'
         },
         project: {
           name: 'project',
-          type: 'ComProject',
-          model: 'ComProject',
+          type: 'ProProject',
+          model: 'ProProject',
           relationType: 'belongsTo',
                   keyFrom: 'fk_project',
-          keyTo: 'pk_project'
+          keyTo: 'pk_entity'
         },
       }
     }

@@ -1,42 +1,39 @@
 /* tslint:disable */
 import { Injectable } from '@angular/core';
-import { SysClassFieldPropertyRel } from '../../models/ComClassFieldPropertyRel';
-import { SysClassField } from '../../models/ComClassField';
-import { SysClassHasTypeProperty } from '../../models/ComClassHasTypeProperty';
-import { ComLabel } from '../../models/ComLabel';
-import { ProQuery } from '../../models/ComQuery';
-import { ProVisual } from '../../models/ComVisual';
+import { SysClassFieldPropertyRel } from '../../models/SysClassFieldPropertyRel';
+import { SysClassField } from '../../models/SysClassField';
+import { SysClassHasTypeProperty } from '../../models/SysClassHasTypeProperty';
+import { ProQuery } from '../../models/ProQuery';
+import { ProVisual } from '../../models/ProVisual';
 import { PubAccount } from '../../models/PubAccount';
 import { Email } from '../../models/Email';
-import { ProProject } from '../../models/ComProject';
+import { ProProject } from '../../models/ProProject';
 import { PubAccountProjectRel } from '../../models/PubAccountProjectRel';
-import { ComLanguage } from '../../models/ComLanguage';
-import { ProTextProperty } from '../../models/ComTextProperty';
+import { ProTextProperty } from '../../models/ProTextProperty';
 import { InfAppellation } from '../../models/InfAppellation';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { InfRole } from '../../models/InfRole';
 import { InfLanguage } from '../../models/InfLanguage';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
-import { ProInfoProjRel } from '../../models/InfEntityProjectRel';
+import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { DfhClass } from '../../models/DfhClass';
 import { DfhProperty } from '../../models/DfhProperty';
 import { DfhLabel } from '../../models/DfhLabel';
 import { DfhTextProperty } from '../../models/DfhTextProperty';
 import { InfTimePrimitive } from '../../models/InfTimePrimitive';
-import { DatChunk } from '../../models/InfChunk';
+import { DatChunk } from '../../models/DatChunk';
 import { InfEntityAssociation } from '../../models/InfEntityAssociation';
-import { DatDigital } from '../../models/InfDigitalObject';
+import { DatDigital } from '../../models/DatDigital';
 import { InfPlace } from '../../models/InfPlace';
 import { WarEntityPreview } from '../../models/WarEntityPreview';
 import { DfhClassProfileView } from '../../models/DfhClassProfileView';
 import { DfhPropertyProfileView } from '../../models/DfhPropertyProfileView';
-import { SysAppContext } from '../../models/ComUiContext';
-import { ProClassFieldConfig } from '../../models/ComUiContextConfig';
+import { SysAppContext } from '../../models/SysAppContext';
+import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
 import { DfhProjRel } from '../../models/DfhProjRel';
-import { DatNamespace } from '../../models/InfNamespace';
-import { InfTypeNamespaceRel } from '../../models/InfTypeNamespaceRel';
+import { DatNamespace } from '../../models/DatNamespace';
 import { InfTextProperty } from '../../models/InfTextProperty';
-import { SysSystemType } from '../../models/ComSystemType';
+import { SysSystemType } from '../../models/SysSystemType';
 
 export interface Models { [name: string]: any }
 
@@ -44,43 +41,40 @@ export interface Models { [name: string]: any }
 export class SDKModels {
 
   private models: Models = {
-    ComClassFieldPropertyRel: SysClassFieldPropertyRel,
-    ComClassField: SysClassField,
-    ComClassHasTypeProperty: SysClassHasTypeProperty,
-    ComLabel: ComLabel,
-    ComQuery: ProQuery,
-    ComVisual: ProVisual,
+    SysClassFieldPropertyRel: SysClassFieldPropertyRel,
+    SysClassField: SysClassField,
+    SysClassHasTypeProperty: SysClassHasTypeProperty,
+    ProQuery: ProQuery,
+    ProVisual: ProVisual,
     PubAccount: PubAccount,
     Email: Email,
-    ComProject: ProProject,
+    ProProject: ProProject,
     PubAccountProjectRel: PubAccountProjectRel,
-    ComLanguage: ComLanguage,
-    ComTextProperty: ProTextProperty,
+    ProTextProperty: ProTextProperty,
     InfAppellation: InfAppellation,
     InfTemporalEntity: InfTemporalEntity,
     InfRole: InfRole,
     InfLanguage: InfLanguage,
     InfPersistentItem: InfPersistentItem,
-    InfEntityProjectRel: ProInfoProjRel,
+    ProInfoProjRel: ProInfoProjRel,
     DfhClass: DfhClass,
     DfhProperty: DfhProperty,
     DfhLabel: DfhLabel,
     DfhTextProperty: DfhTextProperty,
     InfTimePrimitive: InfTimePrimitive,
-    InfChunk: DatChunk,
+    DatChunk: DatChunk,
     InfEntityAssociation: InfEntityAssociation,
-    InfDigitalObject: DatDigital,
+    DatDigital: DatDigital,
     InfPlace: InfPlace,
     WarEntityPreview: WarEntityPreview,
     DfhClassProfileView: DfhClassProfileView,
     DfhPropertyProfileView: DfhPropertyProfileView,
-    ComUiContext: SysAppContext,
-    ComUiContextConfig: ProClassFieldConfig,
+    SysAppContext: SysAppContext,
+    ProClassFieldConfig: ProClassFieldConfig,
     DfhProjRel: DfhProjRel,
-    InfNamespace: DatNamespace,
-    InfTypeNamespaceRel: InfTypeNamespaceRel,
+    DatNamespace: DatNamespace,
     InfTextProperty: InfTextProperty,
-    ComSystemType: SysSystemType,
+    SysSystemType: SysSystemType,
     
   };
 

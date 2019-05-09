@@ -9,17 +9,17 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InfTypeNamespaceRel } from '../../models/InfTypeNamespaceRel';
+import { SysClassFieldPropertyRel } from '../../models/SysClassFieldPropertyRel';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { ProInfoProjRel } from '../../models/InfEntityProjectRel';
-import { DatNamespace } from '../../models/InfNamespace';
+import { SysClassField } from '../../models/SysClassField';
+import { DfhProperty } from '../../models/DfhProperty';
 
 
 /**
- * Api services for the `InfTypeNamespaceRel` model.
+ * Api services for the `SysClassFieldPropertyRel` model.
  */
 @Injectable()
-export class InfTypeNamespaceRelApi extends BaseLoopBackApi {
+export class SysClassFieldPropertyRelApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -33,9 +33,9 @@ export class InfTypeNamespaceRelApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `InfTypeNamespaceRel`.
+   * i.e. `SysClassFieldPropertyRel`.
    */
   public getModelName() {
-    return "InfTypeNamespaceRel";
+    return "SysClassFieldPropertyRel";
   }
 }

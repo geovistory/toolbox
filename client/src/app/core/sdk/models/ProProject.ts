@@ -1,56 +1,51 @@
 /* tslint:disable */
 import {
-  ComLabel,
   PubAccount,
-  ComLanguage,
   ProTextProperty,
+  InfLanguage,
   InfPersistentItem,
   ProInfoProjRel,
   DatNamespace
 } from '../index';
 
 declare var Object: any;
-export interface ComProjectInterface {
-  "notes"?: string;
+export interface ProProjectInterface {
   "pk_entity"?: number;
-  "fk_language"?: string;
-  labels?: ComLabel[];
+  "fk_language"?: number;
   accounts?: PubAccount[];
-  default_language?: ComLanguage;
   text_properties?: ProTextProperty[];
+  default_language?: InfLanguage;
   persistent_items?: InfPersistentItem[];
   entity_version_project_rels?: ProInfoProjRel[];
   namespaces?: DatNamespace[];
 }
 
-export class ProProject implements ComProjectInterface {
-  "notes": string;
+export class ProProject implements ProProjectInterface {
   "pk_entity": number;
-  "fk_language": string;
-  labels?: ComLabel[];
+  "fk_language": number;
   accounts?: PubAccount[];
-  default_language?: ComLanguage;
   text_properties?: ProTextProperty[];
+  default_language?: InfLanguage;
   persistent_items?: InfPersistentItem[];
   entity_version_project_rels?: ProInfoProjRel[];
   namespaces?: DatNamespace[];
-  constructor(data?: ComProjectInterface) {
+  constructor(data?: ProProjectInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComProject`.
+   * i.e. `ProProject`.
    */
   public static getModelName() {
-    return "ComProject";
+    return "ProProject";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of ComProject for dynamic purposes.
+  * This method creates an instance of ProProject for dynamic purposes.
   **/
-  public static factory(data: ComProjectInterface): ProProject{
+  public static factory(data: ProProjectInterface): ProProject{
     return new ProProject(data);
   }
   /**
@@ -62,37 +57,21 @@ export class ProProject implements ComProjectInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'ComProject',
-      plural: 'ComProjects',
-      path: 'ComProjects',
-      idName: 'pk_project',
+      name: 'ProProject',
+      plural: 'ProProjects',
+      path: 'ProProjects',
+      idName: 'pk_entity',
       properties: {
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
-        "pk_project": {
-          name: 'pk_project',
-          type: 'number'
-        },
         "pk_entity": {
           name: 'pk_entity',
           type: 'number'
         },
         "fk_language": {
           name: 'fk_language',
-          type: 'string'
+          type: 'number'
         },
       },
       relations: {
-        labels: {
-          name: 'labels',
-          type: 'ComLabel[]',
-          model: 'ComLabel',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
-        },
         accounts: {
           name: 'accounts',
           type: 'PubAccount[]',
@@ -100,49 +79,49 @@ export class ProProject implements ComProjectInterface {
           relationType: 'hasMany',
           modelThrough: 'PubAccountProjectRel',
           keyThrough: 'account_id',
-          keyFrom: 'pk_project',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_project'
-        },
-        default_language: {
-          name: 'default_language',
-          type: 'ComLanguage',
-          model: 'ComLanguage',
-          relationType: 'belongsTo',
-                  keyFrom: 'fk_language',
-          keyTo: 'pk_language'
         },
         text_properties: {
           name: 'text_properties',
-          type: 'ComTextProperty[]',
-          model: 'ComTextProperty',
+          type: 'ProTextProperty[]',
+          model: 'ProTextProperty',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
+        },
+        default_language: {
+          name: 'default_language',
+          type: 'InfLanguage',
+          model: 'InfLanguage',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_language',
+          keyTo: 'pk_entity'
         },
         persistent_items: {
           name: 'persistent_items',
           type: 'InfPersistentItem[]',
           model: 'InfPersistentItem',
           relationType: 'hasMany',
-          modelThrough: 'InfEntityProjectRel',
+          modelThrough: 'ProInfoProjRel',
           keyThrough: 'fk_entity',
-          keyFrom: 'pk_project',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_project'
         },
         entity_version_project_rels: {
           name: 'entity_version_project_rels',
-          type: 'InfEntityProjectRel[]',
-          model: 'InfEntityProjectRel',
+          type: 'ProInfoProjRel[]',
+          model: 'ProInfoProjRel',
           relationType: 'hasMany',
-                  keyFrom: 'pk_project',
+                  keyFrom: 'pk_entity',
           keyTo: 'fk_project'
         },
         namespaces: {
           name: 'namespaces',
-          type: 'InfNamespace[]',
-          model: 'InfNamespace',
+          type: 'DatNamespace[]',
+          model: 'DatNamespace',
           relationType: 'hasMany',
-                  keyFrom: 'pk_project',
+                  keyFrom: 'pk_entity',
           keyTo: 'fk_project'
         },
       }

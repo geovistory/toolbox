@@ -1,48 +1,45 @@
 /* tslint:disable */
-import {
-  ProInfoProjRel
-} from '../index';
 
 declare var Object: any;
-export interface InfNamespaceInterface {
+export interface DatNamespaceInterface {
   "fk_root_namespace"?: number;
   "fk_project": number;
   "standard_label": string;
   "pk_entity"?: number;
+  "entity_version"?: number;
   "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  entity_version_project_rels?: ProInfoProjRel[];
 }
 
-export class DatNamespace implements InfNamespaceInterface {
+export class DatNamespace implements DatNamespaceInterface {
   "fk_root_namespace": number;
   "fk_project": number;
   "standard_label": string;
   "pk_entity": number;
+  "entity_version": number;
   "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  entity_version_project_rels?: ProInfoProjRel[];
-  constructor(data?: InfNamespaceInterface) {
+  constructor(data?: DatNamespaceInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `InfNamespace`.
+   * i.e. `DatNamespace`.
    */
   public static getModelName() {
-    return "InfNamespace";
+    return "DatNamespace";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of InfNamespace for dynamic purposes.
+  * This method creates an instance of DatNamespace for dynamic purposes.
   **/
-  public static factory(data: InfNamespaceInterface): DatNamespace{
+  public static factory(data: DatNamespaceInterface): DatNamespace{
     return new DatNamespace(data);
   }
   /**
@@ -54,9 +51,9 @@ export class DatNamespace implements InfNamespaceInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'InfNamespace',
-      plural: 'InfNamespaces',
-      path: 'InfNamespaces',
+      name: 'DatNamespace',
+      plural: 'DatNamespaces',
+      path: 'DatNamespaces',
       idName: 'pk_entity',
       properties: {
         "fk_root_namespace": {
@@ -73,6 +70,10 @@ export class DatNamespace implements InfNamespaceInterface {
         },
         "pk_entity": {
           name: 'pk_entity',
+          type: 'number'
+        },
+        "entity_version": {
+          name: 'entity_version',
           type: 'number'
         },
         "notes": {
@@ -93,14 +94,6 @@ export class DatNamespace implements InfNamespaceInterface {
         },
       },
       relations: {
-        entity_version_project_rels: {
-          name: 'entity_version_project_rels',
-          type: 'InfEntityProjectRel[]',
-          model: 'InfEntityProjectRel',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
-        },
       }
     }
   }

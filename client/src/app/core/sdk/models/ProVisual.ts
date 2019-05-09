@@ -1,58 +1,58 @@
 /* tslint:disable */
 import {
-  ComLanguage,
+  PubAccount,
   ProProject
 } from '../index';
 
 declare var Object: any;
-export interface ComTextPropertyInterface {
+export interface ProVisualInterface {
+  "name": string;
+  "description"?: string;
+  "visual": any;
+  "fk_project": number;
+  "fk_last_modifier": number;
   "pk_entity"?: number;
-  "string": string;
-  "quill_doc": string;
-  "fk_system_type": number;
-  "fk_language": string;
   "entity_version"?: number;
   "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  "fk_entity"?: number;
-  language?: ComLanguage;
+  account?: PubAccount;
   project?: ProProject;
 }
 
-export class ProTextProperty implements ComTextPropertyInterface {
+export class ProVisual implements ProVisualInterface {
+  "name": string;
+  "description": string;
+  "visual": any;
+  "fk_project": number;
+  "fk_last_modifier": number;
   "pk_entity": number;
-  "string": string;
-  "quill_doc": string;
-  "fk_system_type": number;
-  "fk_language": string;
   "entity_version": number;
   "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  "fk_entity": number;
-  language?: ComLanguage;
+  account?: PubAccount;
   project?: ProProject;
-  constructor(data?: ComTextPropertyInterface) {
+  constructor(data?: ProVisualInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComTextProperty`.
+   * i.e. `ProVisual`.
    */
   public static getModelName() {
-    return "ComTextProperty";
+    return "ProVisual";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of ComTextProperty for dynamic purposes.
+  * This method creates an instance of ProVisual for dynamic purposes.
   **/
-  public static factory(data: ComTextPropertyInterface): ProTextProperty{
-    return new ProTextProperty(data);
+  public static factory(data: ProVisualInterface): ProVisual{
+    return new ProVisual(data);
   }
   /**
   * @method getModelDefinition
@@ -63,30 +63,34 @@ export class ProTextProperty implements ComTextPropertyInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'ComTextProperty',
-      plural: 'ComTextProperties',
-      path: 'ComTextProperties',
-      idName: 'pk_text_property',
+      name: 'ProVisual',
+      plural: 'ProVisuals',
+      path: 'ProVisuals',
+      idName: 'pk_entity',
       properties: {
-        "pk_text_property": {
-          name: 'pk_text_property',
+        "name": {
+          name: 'name',
+          type: 'string'
+        },
+        "description": {
+          name: 'description',
+          type: 'string'
+        },
+        "visual": {
+          name: 'visual',
+          type: 'any'
+        },
+        "fk_project": {
+          name: 'fk_project',
           type: 'number'
         },
-        "text_property": {
-          name: 'text_property',
-          type: 'string'
-        },
-        "text_property_xml": {
-          name: 'text_property_xml',
-          type: 'string'
-        },
-        "fk_system_type": {
-          name: 'fk_system_type',
+        "fk_last_modifier": {
+          name: 'fk_last_modifier',
           type: 'number'
         },
-        "fk_language": {
-          name: 'fk_language',
-          type: 'string'
+        "pk_entity": {
+          name: 'pk_entity',
+          type: 'number'
         },
         "entity_version": {
           name: 'entity_version',
@@ -108,26 +112,22 @@ export class ProTextProperty implements ComTextPropertyInterface {
           name: 'sys_period',
           type: 'string'
         },
-        "fk_entity": {
-          name: 'fk_entity',
-          type: 'number'
-        },
       },
       relations: {
-        language: {
-          name: 'language',
-          type: 'ComLanguage',
-          model: 'ComLanguage',
+        account: {
+          name: 'account',
+          type: 'PubAccount',
+          model: 'PubAccount',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_language',
-          keyTo: 'pk_language'
+                  keyFrom: 'fk_last_modifier',
+          keyTo: 'id'
         },
         project: {
           name: 'project',
-          type: 'ComProject',
-          model: 'ComProject',
+          type: 'ProProject',
+          model: 'ProProject',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_entity',
+                  keyFrom: 'fk_project',
           keyTo: 'pk_entity'
         },
       }

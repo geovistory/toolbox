@@ -9,17 +9,15 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ProTextProperty } from '../../models/ComTextProperty';
+import { SysSystemType } from '../../models/SysSystemType';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { ComLanguage } from '../../models/ComLanguage';
-import { ProProject } from '../../models/ComProject';
 
 
 /**
- * Api services for the `ComTextProperty` model.
+ * Api services for the `SysSystemType` model.
  */
 @Injectable()
-export class ProTextPropertyApi extends BaseLoopBackApi {
+export class SysSystemTypeApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -33,9 +31,9 @@ export class ProTextPropertyApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComTextProperty`.
+   * i.e. `SysSystemType`.
    */
   public getModelName() {
-    return "ComTextProperty";
+    return "SysSystemType";
   }
 }

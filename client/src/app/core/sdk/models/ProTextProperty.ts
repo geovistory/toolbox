@@ -1,58 +1,61 @@
 /* tslint:disable */
 import {
-  PubAccount,
-  ProProject
+  ProProject,
+  InfLanguage,
+  SysSystemType
 } from '../index';
 
 declare var Object: any;
-export interface ComQueryInterface {
-  "name": string;
-  "description"?: string;
-  "query": any;
-  "fk_project": number;
-  "fk_last_modifier": number;
+export interface ProTextPropertyInterface {
+  "string": string;
+  "quill_doc": string;
+  "fk_system_type": number;
+  "fk_language": number;
   "pk_entity"?: number;
   "entity_version"?: number;
   "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  account?: PubAccount;
+  "fk_entity"?: number;
   project?: ProProject;
+  language?: InfLanguage;
+  systemType?: SysSystemType;
 }
 
-export class ProQuery implements ComQueryInterface {
-  "name": string;
-  "description": string;
-  "query": any;
-  "fk_project": number;
-  "fk_last_modifier": number;
+export class ProTextProperty implements ProTextPropertyInterface {
+  "string": string;
+  "quill_doc": string;
+  "fk_system_type": number;
+  "fk_language": number;
   "pk_entity": number;
   "entity_version": number;
   "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  account?: PubAccount;
+  "fk_entity": number;
   project?: ProProject;
-  constructor(data?: ComQueryInterface) {
+  language?: InfLanguage;
+  systemType?: SysSystemType;
+  constructor(data?: ProTextPropertyInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComQuery`.
+   * i.e. `ProTextProperty`.
    */
   public static getModelName() {
-    return "ComQuery";
+    return "ProTextProperty";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of ComQuery for dynamic purposes.
+  * This method creates an instance of ProTextProperty for dynamic purposes.
   **/
-  public static factory(data: ComQueryInterface): ProQuery{
-    return new ProQuery(data);
+  public static factory(data: ProTextPropertyInterface): ProTextProperty{
+    return new ProTextProperty(data);
   }
   /**
   * @method getModelDefinition
@@ -63,29 +66,25 @@ export class ProQuery implements ComQueryInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'ComQuery',
-      plural: 'ComQueries',
-      path: 'ComQueries',
+      name: 'ProTextProperty',
+      plural: 'ProTextProperties',
+      path: 'ProTextProperties',
       idName: 'pk_entity',
       properties: {
-        "name": {
-          name: 'name',
+        "string": {
+          name: 'string',
           type: 'string'
         },
-        "description": {
-          name: 'description',
+        "quill_doc": {
+          name: 'quill_doc',
           type: 'string'
         },
-        "query": {
-          name: 'query',
-          type: 'any'
-        },
-        "fk_project": {
-          name: 'fk_project',
+        "fk_system_type": {
+          name: 'fk_system_type',
           type: 'number'
         },
-        "fk_last_modifier": {
-          name: 'fk_last_modifier',
+        "fk_language": {
+          name: 'fk_language',
           type: 'number'
         },
         "pk_entity": {
@@ -112,22 +111,34 @@ export class ProQuery implements ComQueryInterface {
           name: 'sys_period',
           type: 'string'
         },
+        "fk_entity": {
+          name: 'fk_entity',
+          type: 'number'
+        },
       },
       relations: {
-        account: {
-          name: 'account',
-          type: 'PubAccount',
-          model: 'PubAccount',
-          relationType: 'belongsTo',
-                  keyFrom: 'fk_last_modifier',
-          keyTo: 'id'
-        },
         project: {
           name: 'project',
-          type: 'ComProject',
-          model: 'ComProject',
+          type: 'ProProject',
+          model: 'ProProject',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_project',
+                  keyFrom: 'fk_entity',
+          keyTo: 'pk_entity'
+        },
+        language: {
+          name: 'language',
+          type: 'InfLanguage',
+          model: 'InfLanguage',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_language',
+          keyTo: 'pk_entity'
+        },
+        systemType: {
+          name: 'systemType',
+          type: 'SysSystemType',
+          model: 'SysSystemType',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_system_type',
           keyTo: 'pk_entity'
         },
       }

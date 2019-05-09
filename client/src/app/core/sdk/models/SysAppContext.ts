@@ -4,35 +4,35 @@ import {
 } from '../index';
 
 declare var Object: any;
-export interface ComUiContextInterface {
+export interface SysAppContextInterface {
   "pk_entity"?: number;
   "description"?: string;
   "label"?: string;
   class_field_config?: ProClassFieldConfig[];
 }
 
-export class SysAppContext implements ComUiContextInterface {
+export class SysAppContext implements SysAppContextInterface {
   "pk_entity": number;
   "description": string;
   "label": string;
   class_field_config?: ProClassFieldConfig[];
-  constructor(data?: ComUiContextInterface) {
+  constructor(data?: SysAppContextInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComUiContext`.
+   * i.e. `SysAppContext`.
    */
   public static getModelName() {
-    return "ComUiContext";
+    return "SysAppContext";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of ComUiContext for dynamic purposes.
+  * This method creates an instance of SysAppContext for dynamic purposes.
   **/
-  public static factory(data: ComUiContextInterface): SysAppContext{
+  public static factory(data: SysAppContextInterface): SysAppContext{
     return new SysAppContext(data);
   }
   /**
@@ -44,9 +44,9 @@ export class SysAppContext implements ComUiContextInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'ComUiContext',
-      plural: 'ComUiContexts',
-      path: 'ComUiContexts',
+      name: 'SysAppContext',
+      plural: 'SysAppContexts',
+      path: 'SysAppContexts',
       idName: 'pk_entity',
       properties: {
         "pk_entity": {
@@ -63,13 +63,13 @@ export class SysAppContext implements ComUiContextInterface {
         },
       },
       relations: {
-        ui_context_config: {
-          name: 'ui_context_config',
-          type: 'ComUiContextConfig[]',
-          model: 'ComUiContextConfig',
+        class_field_config: {
+          name: 'class_field_config',
+          type: 'ProClassFieldConfig[]',
+          model: 'ProClassFieldConfig',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_ui_context'
+          keyTo: 'fk_app_context'
         },
       }
     }

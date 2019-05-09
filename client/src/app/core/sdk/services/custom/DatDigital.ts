@@ -9,17 +9,16 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ProVisual } from '../../models/ComVisual';
+import { DatDigital } from '../../models/DatDigital';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { PubAccount } from '../../models/PubAccount';
-import { ProProject } from '../../models/ComProject';
+import { DatChunk } from '../../models/DatChunk';
 
 
 /**
- * Api services for the `ComVisual` model.
+ * Api services for the `DatDigital` model.
  */
 @Injectable()
-export class ProVisualApi extends BaseLoopBackApi {
+export class DatDigitalApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -32,13 +31,13 @@ export class ProVisualApi extends BaseLoopBackApi {
   }
 
   /**
-   * Patch attributes for a model instance and persist it into the data source.
+   * Creates or updates the instance of DatDigital and creates or updates its relation to the project of given projectId.
    *
-   * @param {any} id ComVisual id
+   * @param {number} pkProject Project id
    *
    * @param {object} data Request data.
    *
-   *  - `data` – `{object}` - An object of model property name/value pairs
+   *  - `data` – `{DatDigital}` - Instance of DatDigital
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -46,32 +45,27 @@ export class ProVisualApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `ComVisual` object.)
+   * This usually means the response is a `DatDigital` object.)
    * </em>
    */
-  public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PATCH";
+  public saveWithEpr(data: any, pkProject: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ComVisuals/:id";
-    let _routeParams: any = {
-      id: id
-    };
+    "/DatDigitals/save-with-epr";
+    let _routeParams: any = {};
     let _postBody: any = {
       data: data
     };
     let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
 
   /**
-   * Find visuals of project, optionaly filtered by pk and version.
+   * Finds the versions of given pkEntity.
    *
-   * @param {number} pkProject Pk of the project
-   *
-   * @param {number} pkEntity Pk of the visual
-   *
-   * @param {number} version Entity version
+   * @param {number} pkEntity Primary Key of the digital object (pk_entity)
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -79,30 +73,26 @@ export class ProVisualApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `ComVisual` object.)
+   * This usually means the response is a `DatDigital` object.)
    * </em>
    */
-  public findPerIdAndVersionAndProject(pkProject: any, pkEntity: any = {}, version: any = {}, customHeaders?: Function): Observable<ProVisual[]> {
+  public getVersions(pkEntity: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ComVisuals/find-per-id-and-project";
+    "/DatDigitals/get-versions";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
-    if (typeof version !== 'undefined' && version !== null) _urlParams.version = version;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<ProVisual>) =>
-        instances.map((instance: ProVisual) => new ProVisual(instance))
-    ));
+    return result;
   }
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComVisual`.
+   * i.e. `DatDigital`.
    */
   public getModelName() {
-    return "ComVisual";
+    return "DatDigital";
   }
 }

@@ -8,13 +8,13 @@ import { NotificationsAPIActions } from 'app/core/notifications/components/api/n
 import { QueryDetailComponent } from '../query-detail.component';
 import { QueryDetailAPIActions, QueryDetailAPIAction } from './query-detail.actions';
 import { ofSubstore } from 'app/core/store/module';
-import { SysQueryApi } from 'app/core/sdk/services/custom/ComQuery';
+import { ProQueryApi } from 'app/core/sdk/services/custom/ComQuery';
 import { saveAs } from 'file-saver';
 
 @Injectable()
 export class QueryDetailAPIEpics {
   constructor(
-    private queryApi: SysQueryApi, // <- change the api
+    private queryApi: ProQueryApi, // <- change the api
     private actions: QueryDetailAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions

@@ -11,7 +11,7 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InfTimePrimitive } from '../../models/InfTimePrimitive';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { ProInfoProjRel } from '../../models/InfEntityProjectRel';
+import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 
 
 /**

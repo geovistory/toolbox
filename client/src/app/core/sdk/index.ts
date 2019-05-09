@@ -48,43 +48,40 @@ import { SocketBrowser } from './sockets/socket.browser';
 import { SocketDriver } from './sockets/socket.driver';
 import { SocketConnection } from './sockets/socket.connections';
 import { RealTime } from './services/core/real.time';
-import { SysClassFieldPropertyRelApi } from './services/custom/ComClassFieldPropertyRel';
-import { SysClassFieldApi } from './services/custom/ComClassField';
-import { SysClassHasTypePropertyApi } from './services/custom/ComClassHasTypeProperty';
-import { ComLabelApi } from './services/custom/ComLabel';
-import { SysQueryApi } from './services/custom/ComQuery';
-import { ProVisualApi } from './services/custom/ComVisual';
+import { SysClassFieldPropertyRelApi } from './services/custom/SysClassFieldPropertyRel';
+import { SysClassFieldApi } from './services/custom/SysClassField';
+import { SysClassHasTypePropertyApi } from './services/custom/SysClassHasTypeProperty';
+import { ProQueryApi } from './services/custom/ProQuery';
+import { ProVisualApi } from './services/custom/ProVisual';
 import { PubAccountApi } from './services/custom/PubAccount';
 import { EmailApi } from './services/custom/Email';
-import { SysProjectApi } from './services/custom/ComProject';
+import { ProProjectApi } from './services/custom/ProProject';
 import { PubAccountProjectRelApi } from './services/custom/PubAccountProjectRel';
-import { ComLanguageApi } from './services/custom/ComLanguage';
-import { ProTextPropertyApi } from './services/custom/ComTextProperty';
+import { ProTextPropertyApi } from './services/custom/ProTextProperty';
 import { InfAppellationApi } from './services/custom/InfAppellation';
 import { InfTemporalEntityApi } from './services/custom/InfTemporalEntity';
 import { InfRoleApi } from './services/custom/InfRole';
 import { InfLanguageApi } from './services/custom/InfLanguage';
 import { InfPersistentItemApi } from './services/custom/InfPersistentItem';
-import { ProInfoProjRelApi } from './services/custom/InfEntityProjectRel';
+import { ProInfoProjRelApi } from './services/custom/ProInfoProjRel';
 import { DfhClassApi } from './services/custom/DfhClass';
 import { DfhPropertyApi } from './services/custom/DfhProperty';
 import { DfhLabelApi } from './services/custom/DfhLabel';
 import { DfhTextPropertyApi } from './services/custom/DfhTextProperty';
 import { InfTimePrimitiveApi } from './services/custom/InfTimePrimitive';
-import { DatChunkApi } from './services/custom/InfChunk';
+import { DatChunkApi } from './services/custom/DatChunk';
 import { InfEntityAssociationApi } from './services/custom/InfEntityAssociation';
-import { DatDigitalApi } from './services/custom/InfDigitalObject';
+import { DatDigitalApi } from './services/custom/DatDigital';
 import { InfPlaceApi } from './services/custom/InfPlace';
 import { WarEntityPreviewApi } from './services/custom/WarEntityPreview';
 import { DfhClassProfileViewApi } from './services/custom/DfhClassProfileView';
 import { DfhPropertyProfileViewApi } from './services/custom/DfhPropertyProfileView';
-import { SysAppContextApi } from './services/custom/ComUiContext';
-import { ProClassFieldConfigApi } from './services/custom/ComUiContextConfig';
+import { SysAppContextApi } from './services/custom/SysAppContext';
+import { ProClassFieldConfigApi } from './services/custom/ProClassFieldConfig';
 import { DfhProjRelApi } from './services/custom/DfhProjRel';
-import { DatNamespaceApi } from './services/custom/InfNamespace';
-import { InfTypeNamespaceRelApi } from './services/custom/InfTypeNamespaceRel';
+import { DatNamespaceApi } from './services/custom/DatNamespace';
 import { InfTextPropertyApi } from './services/custom/InfTextProperty';
-import { SysSystemTypeApi } from './services/custom/ComSystemType';
+import { SysSystemTypeApi } from './services/custom/SysSystemType';
 /**
 * @module SDKBrowserModule
 * @description
@@ -118,14 +115,12 @@ export class SDKBrowserModule {
         SysClassFieldPropertyRelApi,
         SysClassFieldApi,
         SysClassHasTypePropertyApi,
-        ComLabelApi,
-        SysQueryApi,
+        ProQueryApi,
         ProVisualApi,
         PubAccountApi,
         EmailApi,
-        SysProjectApi,
+        ProProjectApi,
         PubAccountProjectRelApi,
-        ComLanguageApi,
         ProTextPropertyApi,
         InfAppellationApi,
         InfTemporalEntityApi,
@@ -149,7 +144,6 @@ export class SDKBrowserModule {
         ProClassFieldConfigApi,
         DfhProjRelApi,
         DatNamespaceApi,
-        InfTypeNamespaceRelApi,
         InfTextPropertyApi,
         SysSystemTypeApi,
         internalStorageProvider,

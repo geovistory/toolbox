@@ -119,8 +119,8 @@ export class InfLanguage implements InfLanguageInterface {
       relations: {
         entity_version_project_rels: {
           name: 'entity_version_project_rels',
-          type: 'InfEntityProjectRel[]',
-          model: 'InfEntityProjectRel',
+          type: 'ProInfoProjRel[]',
+          model: 'ProInfoProjRel',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'

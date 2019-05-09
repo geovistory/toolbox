@@ -83,11 +83,11 @@ export class PubAccountProjectRel implements PubAccountProjectRelInterface {
         },
         project: {
           name: 'project',
-          type: 'ComProject',
-          model: 'ComProject',
+          type: 'ProProject',
+          model: 'ProProject',
           relationType: 'belongsTo',
                   keyFrom: 'fk_project',
-          keyTo: 'pk_project'
+          keyTo: 'pk_entity'
         },
       }
     }

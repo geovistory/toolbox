@@ -9,15 +9,13 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DatChunk } from '../../models/InfChunk';
+import { DatChunk } from '../../models/DatChunk';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { ProInfoProjRel } from '../../models/InfEntityProjectRel';
 import { InfEntityAssociation } from '../../models/InfEntityAssociation';
-import { DatDigital } from '../../models/InfDigitalObject';
 
 
 /**
- * Api services for the `InfChunk` model.
+ * Api services for the `DatChunk` model.
  */
 @Injectable()
 export class DatChunkApi extends BaseLoopBackApi {
@@ -33,13 +31,13 @@ export class DatChunkApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find or create a InfChunk and update the project relation if needed.
+   * Find or create a DatChunk and update the project relation if needed.
    *
    * @param {number} projectId Id of the project
    *
    * @param {object} data Request data.
    *
-   *  - `data` – `{InfChunk}` - data
+   *  - `data` – `{DatChunk}` - data
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -47,13 +45,13 @@ export class DatChunkApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfChunk` object.)
+   * This usually means the response is a `DatChunk` object.)
    * </em>
    */
   public findOrCreateChunk(projectId: any, data: any, customHeaders?: Function): Observable<DatChunk[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfChunks/findOrCreate";
+    "/DatChunks/findOrCreate";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -68,9 +66,9 @@ export class DatChunkApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `InfChunk`.
+   * i.e. `DatChunk`.
    */
   public getModelName() {
-    return "InfChunk";
+    return "DatChunk";
   }
 }

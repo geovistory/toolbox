@@ -9,12 +9,12 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SysClassHasTypeProperty } from '../../models/ComClassHasTypeProperty';
+import { SysClassHasTypeProperty } from '../../models/SysClassHasTypeProperty';
 import { SocketConnection } from '../../sockets/socket.connections';
 
 
 /**
- * Api services for the `ComClassHasTypeProperty` model.
+ * Api services for the `SysClassHasTypeProperty` model.
  */
 @Injectable()
 export class SysClassHasTypePropertyApi extends BaseLoopBackApi {
@@ -38,13 +38,13 @@ export class SysClassHasTypePropertyApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `ComClassHasTypeProperty` object.)
+   * This usually means the response is a `SysClassHasTypeProperty` object.)
    * </em>
    */
   public readableList(customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ComClassHasTypeProperties/readable-list";
+    "/SysClassHasTypeProperties/readable-list";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -54,9 +54,9 @@ export class SysClassHasTypePropertyApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComClassHasTypeProperty`.
+   * i.e. `SysClassHasTypeProperty`.
    */
   public getModelName() {
-    return "ComClassHasTypeProperty";
+    return "SysClassHasTypeProperty";
   }
 }

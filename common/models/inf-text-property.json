@@ -29,7 +29,7 @@
       "type": "number",
       "required": true
     },
-    "text_property_quill_doc": {
+    "quill_doc": {
       "type": "object",
       "required": true
     },

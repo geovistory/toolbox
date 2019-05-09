@@ -1,51 +1,46 @@
 /* tslint:disable */
 import {
-  ProInfoProjRel,
   DatChunk
 } from '../index';
 
 declare var Object: any;
-export interface InfDigitalObjectInterface {
+export interface DatDigitalInterface {
   "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   "js_quill_data": any;
-  "pk_entity_version_concat"?: string;
   "pk_entity"?: number;
   "entity_version"?: number;
-  entity_version_project_rels?: ProInfoProjRel[];
   chunks?: DatChunk[];
 }
 
-export class DatDigital implements InfDigitalObjectInterface {
+export class DatDigital implements DatDigitalInterface {
   "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
   "js_quill_data": any;
-  "pk_entity_version_concat": string;
   "pk_entity": number;
   "entity_version": number;
-  entity_version_project_rels?: ProInfoProjRel[];
   chunks?: DatChunk[];
-  constructor(data?: InfDigitalObjectInterface) {
+  constructor(data?: DatDigitalInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `InfDigitalObject`.
+   * i.e. `DatDigital`.
    */
   public static getModelName() {
-    return "InfDigitalObject";
+    return "DatDigital";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of InfDigitalObject for dynamic purposes.
+  * This method creates an instance of DatDigital for dynamic purposes.
   **/
-  public static factory(data: InfDigitalObjectInterface): DatDigital{
+  public static factory(data: DatDigitalInterface): DatDigital{
     return new DatDigital(data);
   }
   /**
@@ -57,10 +52,10 @@ export class DatDigital implements InfDigitalObjectInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'InfDigitalObject',
-      plural: 'InfDigitalObjects',
-      path: 'InfDigitalObjects',
-      idName: 'pk_entity_version_concat',
+      name: 'DatDigital',
+      plural: 'DatDigitals',
+      path: 'DatDigitals',
+      idName: 'pk_entity',
       properties: {
         "notes": {
           name: 'notes',
@@ -82,10 +77,6 @@ export class DatDigital implements InfDigitalObjectInterface {
           name: 'js_quill_data',
           type: 'any'
         },
-        "pk_entity_version_concat": {
-          name: 'pk_entity_version_concat',
-          type: 'string'
-        },
         "pk_entity": {
           name: 'pk_entity',
           type: 'number'
@@ -96,18 +87,10 @@ export class DatDigital implements InfDigitalObjectInterface {
         },
       },
       relations: {
-        entity_version_project_rels: {
-          name: 'entity_version_project_rels',
-          type: 'InfEntityProjectRel[]',
-          model: 'InfEntityProjectRel',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity_version_concat',
-          keyTo: 'fk_entity_version_concat'
-        },
         chunks: {
           name: 'chunks',
-          type: 'InfChunk[]',
-          model: 'InfChunk',
+          type: 'DatChunk[]',
+          model: 'DatChunk',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_digital_object'

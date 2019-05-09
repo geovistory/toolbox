@@ -1,58 +1,55 @@
 /* tslint:disable */
 import {
-  PubAccount,
-  ProProject
+  InfEntityAssociation
 } from '../index';
 
 declare var Object: any;
-export interface ComVisualInterface {
-  "name": string;
-  "description"?: string;
-  "visual": any;
-  "fk_project": number;
-  "fk_last_modifier": number;
+export interface DatChunkInterface {
+  "quill_doc"?: any;
+  "string"?: string;
+  "fk_text": number;
+  "fk_entity_version": number;
   "pk_entity"?: number;
   "entity_version"?: number;
   "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  account?: PubAccount;
-  project?: ProProject;
+  "fk_digital_object"?: number;
+  data_info_association?: InfEntityAssociation[];
 }
 
-export class ProVisual implements ComVisualInterface {
-  "name": string;
-  "description": string;
-  "visual": any;
-  "fk_project": number;
-  "fk_last_modifier": number;
+export class DatChunk implements DatChunkInterface {
+  "quill_doc": any;
+  "string": string;
+  "fk_text": number;
+  "fk_entity_version": number;
   "pk_entity": number;
   "entity_version": number;
   "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  account?: PubAccount;
-  project?: ProProject;
-  constructor(data?: ComVisualInterface) {
+  "fk_digital_object": number;
+  data_info_association?: InfEntityAssociation[];
+  constructor(data?: DatChunkInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComVisual`.
+   * i.e. `DatChunk`.
    */
   public static getModelName() {
-    return "ComVisual";
+    return "DatChunk";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of ComVisual for dynamic purposes.
+  * This method creates an instance of DatChunk for dynamic purposes.
   **/
-  public static factory(data: ComVisualInterface): ProVisual{
-    return new ProVisual(data);
+  public static factory(data: DatChunkInterface): DatChunk{
+    return new DatChunk(data);
   }
   /**
   * @method getModelDefinition
@@ -63,29 +60,25 @@ export class ProVisual implements ComVisualInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'ComVisual',
-      plural: 'ComVisuals',
-      path: 'ComVisuals',
+      name: 'DatChunk',
+      plural: 'DatChunks',
+      path: 'DatChunks',
       idName: 'pk_entity',
       properties: {
-        "name": {
-          name: 'name',
-          type: 'string'
-        },
-        "description": {
-          name: 'description',
-          type: 'string'
-        },
-        "visual": {
-          name: 'visual',
+        "quill_doc": {
+          name: 'quill_doc',
           type: 'any'
         },
-        "fk_project": {
-          name: 'fk_project',
+        "string": {
+          name: 'string',
+          type: 'string'
+        },
+        "fk_text": {
+          name: 'fk_text',
           type: 'number'
         },
-        "fk_last_modifier": {
-          name: 'fk_last_modifier',
+        "fk_entity_version": {
+          name: 'fk_entity_version',
           type: 'number'
         },
         "pk_entity": {
@@ -112,23 +105,19 @@ export class ProVisual implements ComVisualInterface {
           name: 'sys_period',
           type: 'string'
         },
+        "fk_digital_object": {
+          name: 'fk_digital_object',
+          type: 'number'
+        },
       },
       relations: {
-        account: {
-          name: 'account',
-          type: 'PubAccount',
-          model: 'PubAccount',
-          relationType: 'belongsTo',
-                  keyFrom: 'fk_last_modifier',
-          keyTo: 'id'
-        },
-        project: {
-          name: 'project',
-          type: 'ComProject',
-          model: 'ComProject',
-          relationType: 'belongsTo',
-                  keyFrom: 'fk_project',
-          keyTo: 'pk_entity'
+        data_info_association: {
+          name: 'data_info_association',
+          type: 'InfEntityAssociation[]',
+          model: 'InfEntityAssociation',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_domain_entity'
         },
       }
     }

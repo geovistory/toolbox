@@ -49,7 +49,7 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
-        "uiConfig"
+        "appContext"
       ]
     }
   ],

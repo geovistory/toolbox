@@ -9,23 +9,22 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ProProject } from '../../models/ComProject';
+import { ProProject } from '../../models/ProProject';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { ComLabel } from '../../models/ComLabel';
 import { PubAccountProjectRel } from '../../models/PubAccountProjectRel';
 import { PubAccount } from '../../models/PubAccount';
-import { ComLanguage } from '../../models/ComLanguage';
-import { ProTextProperty } from '../../models/ComTextProperty';
-import { ProInfoProjRel } from '../../models/InfEntityProjectRel';
+import { ProTextProperty } from '../../models/ProTextProperty';
+import { InfLanguage } from '../../models/InfLanguage';
+import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
-import { DatNamespace } from '../../models/InfNamespace';
+import { DatNamespace } from '../../models/DatNamespace';
 
 
 /**
- * Api services for the `ComProject` model.
+ * Api services for the `ProProject` model.
  */
 @Injectable()
-export class SysProjectApi extends BaseLoopBackApi {
+export class ProProjectApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -58,13 +57,13 @@ export class SysProjectApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `ComProject` object.)
+   * This usually means the response is a `ProProject` object.)
    * </em>
    */
   public createWithLabelAndDescription(accountId: any, pkLanguage: any, label: any, textProperty: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ComProjects/create-with-label-and-description";
+    "/ProProjects/create-with-label-and-description";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -87,13 +86,13 @@ export class SysProjectApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `ComProject` object.)
+   * This usually means the response is a `ProProject` object.)
    * </em>
    */
   public getBasics(pkProject: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ComProjects/get-basics";
+    "/ProProjects/get-basics";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -117,13 +116,13 @@ export class SysProjectApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `ComProject` object.)
+   * This usually means the response is a `ProProject` object.)
    * </em>
    */
   public getReferenceModel(pkProject: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ComProjects/get-reference-model";
+    "/ProProjects/get-reference-model";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -134,9 +133,9 @@ export class SysProjectApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComProject`.
+   * i.e. `ProProject`.
    */
   public getModelName() {
-    return "ComProject";
+    return "ProProject";
   }
 }

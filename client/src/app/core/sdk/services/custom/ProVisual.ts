@@ -9,21 +9,17 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DfhProperty } from '../../models/DfhProperty';
+import { ProVisual } from '../../models/ProVisual';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { DfhClass } from '../../models/DfhClass';
-import { DfhLabel } from '../../models/DfhLabel';
-import { DfhTextProperty } from '../../models/DfhTextProperty';
-import { DfhPropertyProfileView } from '../../models/DfhPropertyProfileView';
-import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
-import { DfhProjRel } from '../../models/DfhProjRel';
+import { PubAccount } from '../../models/PubAccount';
+import { ProProject } from '../../models/ProProject';
 
 
 /**
- * Api services for the `DfhProperty` model.
+ * Api services for the `ProVisual` model.
  */
 @Injectable()
-export class DfhPropertyApi extends BaseLoopBackApi {
+export class ProVisualApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -38,7 +34,7 @@ export class DfhPropertyApi extends BaseLoopBackApi {
   /**
    * Patch attributes for a model instance and persist it into the data source.
    *
-   * @param {any} id DfhProperty id
+   * @param {any} id ProVisual id
    *
    * @param {object} data Request data.
    *
@@ -50,13 +46,13 @@ export class DfhPropertyApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `DfhProperty` object.)
+   * This usually means the response is a `ProVisual` object.)
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DfhProperties/:id";
+    "/ProVisuals/:id";
     let _routeParams: any = {
       id: id
     };
@@ -69,9 +65,13 @@ export class DfhPropertyApi extends BaseLoopBackApi {
   }
 
   /**
-   * Get all properties that used as a field by the app, including the labels.
+   * Find visuals of project, optionaly filtered by pk and version.
    *
-   * @param {boolean} isOutgoing 
+   * @param {number} pkProject Pk of the project
+   *
+   * @param {number} pkEntity Pk of the visual
+   *
+   * @param {number} version Entity version
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -79,59 +79,30 @@ export class DfhPropertyApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `DfhProperty` object.)
+   * This usually means the response is a `ProVisual` object.)
    * </em>
    */
-  public propertyFieldInfo(isOutgoing: any, customHeaders?: Function): Observable<any> {
+  public findPerIdAndVersionAndProject(pkProject: any, pkEntity: any = {}, version: any = {}, customHeaders?: Function): Observable<ProVisual[]> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DfhProperties/property-field-info";
+    "/ProVisuals/find-per-id-and-project";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof isOutgoing !== 'undefined' && isOutgoing !== null) _urlParams.isOutgoing = isOutgoing;
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
+    if (typeof version !== 'undefined' && version !== null) _urlParams.version = version;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `DfhProperty` object.)
-   * </em>
-   */
-  public findComplex(filter: LoopBackFilter = {}, customHeaders?: Function): Observable<DfhProperty[]> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DfhProperties/findComplex";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      filter: filter
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<DfhProperty>) =>
-        instances.map((instance: DfhProperty) => new DfhProperty(instance))
+    return result.pipe(map((instances: Array<ProVisual>) =>
+        instances.map((instance: ProVisual) => new ProVisual(instance))
     ));
   }
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `DfhProperty`.
+   * i.e. `ProVisual`.
    */
   public getModelName() {
-    return "DfhProperty";
+    return "ProVisual";
   }
 }

@@ -5,7 +5,7 @@ import {
 } from '../index';
 
 declare var Object: any;
-export interface ComClassFieldPropertyRelInterface {
+export interface SysClassFieldPropertyRelInterface {
   "pk_entity"?: number;
   "fk_class_field"?: number;
   "fk_property"?: number;
@@ -15,7 +15,7 @@ export interface ComClassFieldPropertyRelInterface {
   property?: DfhProperty;
 }
 
-export class SysClassFieldPropertyRel implements ComClassFieldPropertyRelInterface {
+export class SysClassFieldPropertyRel implements SysClassFieldPropertyRelInterface {
   "pk_entity": number;
   "fk_class_field": number;
   "fk_property": number;
@@ -23,23 +23,23 @@ export class SysClassFieldPropertyRel implements ComClassFieldPropertyRelInterfa
   "ord_num": number;
   class_field?: SysClassField;
   property?: DfhProperty;
-  constructor(data?: ComClassFieldPropertyRelInterface) {
+  constructor(data?: SysClassFieldPropertyRelInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComClassFieldPropertyRel`.
+   * i.e. `SysClassFieldPropertyRel`.
    */
   public static getModelName() {
-    return "ComClassFieldPropertyRel";
+    return "SysClassFieldPropertyRel";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of ComClassFieldPropertyRel for dynamic purposes.
+  * This method creates an instance of SysClassFieldPropertyRel for dynamic purposes.
   **/
-  public static factory(data: ComClassFieldPropertyRelInterface): SysClassFieldPropertyRel{
+  public static factory(data: SysClassFieldPropertyRelInterface): SysClassFieldPropertyRel{
     return new SysClassFieldPropertyRel(data);
   }
   /**
@@ -51,9 +51,9 @@ export class SysClassFieldPropertyRel implements ComClassFieldPropertyRelInterfa
   **/
   public static getModelDefinition() {
     return {
-      name: 'ComClassFieldPropertyRel',
-      plural: 'ComClassFieldPropertyRels',
-      path: 'ComClassFieldPropertyRels',
+      name: 'SysClassFieldPropertyRel',
+      plural: 'SysClassFieldPropertyRels',
+      path: 'SysClassFieldPropertyRels',
       idName: 'pk_entity',
       properties: {
         "pk_entity": {
@@ -80,8 +80,8 @@ export class SysClassFieldPropertyRel implements ComClassFieldPropertyRelInterfa
       relations: {
         class_field: {
           name: 'class_field',
-          type: 'ComClassField',
-          model: 'ComClassField',
+          type: 'SysClassField',
+          model: 'SysClassField',
           relationType: 'belongsTo',
                   keyFrom: 'fk_class_field',
           keyTo: 'pk_entity'

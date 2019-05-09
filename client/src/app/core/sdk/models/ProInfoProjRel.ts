@@ -1,7 +1,7 @@
 /* tslint:disable */
 
 declare var Object: any;
-export interface InfEntityProjectRelInterface {
+export interface ProInfoProjRelInterface {
   "pk_entity_version_project_rel"?: number;
   "pk_entity"?: number;
   "fk_project": number;
@@ -17,7 +17,7 @@ export interface InfEntityProjectRelInterface {
   "fk_last_modifier": number;
 }
 
-export class ProInfoProjRel implements InfEntityProjectRelInterface {
+export class ProInfoProjRel implements ProInfoProjRelInterface {
   "pk_entity_version_project_rel": number;
   "pk_entity": number;
   "fk_project": number;
@@ -31,23 +31,23 @@ export class ProInfoProjRel implements InfEntityProjectRelInterface {
   "tmsp_last_modification": string;
   "fk_creator": number;
   "fk_last_modifier": number;
-  constructor(data?: InfEntityProjectRelInterface) {
+  constructor(data?: ProInfoProjRelInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `InfEntityProjectRel`.
+   * i.e. `ProInfoProjRel`.
    */
   public static getModelName() {
-    return "InfEntityProjectRel";
+    return "ProInfoProjRel";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of InfEntityProjectRel for dynamic purposes.
+  * This method creates an instance of ProInfoProjRel for dynamic purposes.
   **/
-  public static factory(data: InfEntityProjectRelInterface): ProInfoProjRel{
+  public static factory(data: ProInfoProjRelInterface): ProInfoProjRel{
     return new ProInfoProjRel(data);
   }
   /**
@@ -59,9 +59,9 @@ export class ProInfoProjRel implements InfEntityProjectRelInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'InfEntityProjectRel',
-      plural: 'InfEntityProjectRels',
-      path: 'InfEntityProjectRels',
+      name: 'ProInfoProjRel',
+      plural: 'ProInfoProjRels',
+      path: 'ProInfoProjRels',
       idName: 'pk_entity_version_project_rel',
       properties: {
         "pk_entity_version_project_rel": {

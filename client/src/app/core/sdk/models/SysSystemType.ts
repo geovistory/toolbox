@@ -1,9 +1,7 @@
 /* tslint:disable */
 
 declare var Object: any;
-export interface ComClassHasTypePropertyInterface {
-  "fk_class"?: number;
-  "fk_property"?: number;
+export interface SysSystemTypeInterface {
   "pk_entity"?: number;
   "entity_version"?: number;
   "notes"?: string;
@@ -12,33 +10,31 @@ export interface ComClassHasTypePropertyInterface {
   "sys_period"?: string;
 }
 
-export class SysClassHasTypeProperty implements ComClassHasTypePropertyInterface {
-  "fk_class": number;
-  "fk_property": number;
+export class SysSystemType implements SysSystemTypeInterface {
   "pk_entity": number;
   "entity_version": number;
   "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  constructor(data?: ComClassHasTypePropertyInterface) {
+  constructor(data?: SysSystemTypeInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `ComClassHasTypeProperty`.
+   * i.e. `SysSystemType`.
    */
   public static getModelName() {
-    return "ComClassHasTypeProperty";
+    return "SysSystemType";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of ComClassHasTypeProperty for dynamic purposes.
+  * This method creates an instance of SysSystemType for dynamic purposes.
   **/
-  public static factory(data: ComClassHasTypePropertyInterface): SysClassHasTypeProperty{
-    return new SysClassHasTypeProperty(data);
+  public static factory(data: SysSystemTypeInterface): SysSystemType{
+    return new SysSystemType(data);
   }
   /**
   * @method getModelDefinition
@@ -49,19 +45,11 @@ export class SysClassHasTypeProperty implements ComClassHasTypePropertyInterface
   **/
   public static getModelDefinition() {
     return {
-      name: 'ComClassHasTypeProperty',
-      plural: 'ComClassHasTypeProperties',
-      path: 'ComClassHasTypeProperties',
+      name: 'SysSystemType',
+      plural: 'SysSystemTypes',
+      path: 'SysSystemTypes',
       idName: 'pk_entity',
       properties: {
-        "fk_class": {
-          name: 'fk_class',
-          type: 'number'
-        },
-        "fk_property": {
-          name: 'fk_property',
-          type: 'number'
-        },
         "pk_entity": {
           name: 'pk_entity',
           type: 'number'
