@@ -52,11 +52,6 @@
       "type": "hasMany",
       "model": "SysClassFieldPropertyRel",
       "foreignKey": "fk_class_field"
-    },
-    "labels": {
-      "type": "hasMany",
-      "model": "ComLabel",
-      "foreignKey": "fk_entity"
     }
   },
   "acls": [

@@ -33,15 +33,9 @@
     },
     "default_language": {
       "type": "belongsTo",
-      "model": "ComLanguage",
-      "primaryKey": "pk_language",
+      "model": "InfLanguage",
+      "primaryKey": "pk_entity",
       "foreignKey": "fk_language"
-    },
-    "labels": {
-      "type": "hasMany",
-      "model": "ComLabel",
-      "foreignKey": "fk_entity",
-      "primaryKey": "pk_entity"
     },
     "text_properties": {
       "type": "hasMany",

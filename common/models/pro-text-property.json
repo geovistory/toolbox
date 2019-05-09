@@ -36,7 +36,7 @@
     },
     "language": {
       "type": "belongsTo",
-      "model": "ComLanguage",
+      "model": "InfLanguage",
       "foreignKey": "fk_language"
     },
     "project": {
