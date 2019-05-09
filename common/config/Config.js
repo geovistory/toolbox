@@ -43,7 +43,7 @@ const Config = {
     /**
     * Primary Key of Namespace "Geovistory Ongoing"
     */
-    PK_PROJECT_OF_TEMPLATE_PROJECT: 16,
+    PK_PROJECT_OF_TEMPLATE_PROJECT: 173,
 
 
 }

@@ -142,41 +142,41 @@ module.exports = function (InfPersistentItem) {
 
         }
 
-        /******************************************
-         * type_namespace_rels
-         ******************************************/
-        if (requestedPeIt.type_namespace_rels) {
+        // /******************************************
+        //  * type_namespace_rels
+        //  ******************************************/
+        // if (requestedPeIt.type_namespace_rels) {
 
-          // prepare parameters
-          const InfTypeNamespaceRel = InfPersistentItem.app.models.InfTypeNamespaceRel;
+        //   // prepare parameters
+        //   const InfTypeNamespaceRel = InfPersistentItem.app.models.InfTypeNamespaceRel;
 
-          //… filter items that are truthy (not null), iterate over them,
-          // return the promise that the PeIt will be
-          // returned together with all nested items
-          const promise = Promise.map(requestedPeIt.type_namespace_rels.filter(item => (item)), (item) => {
-            // use the pk_entity from the created peIt to set the fk_persistent_item of the item
-            item.fk_persistent_item = resultingPeIt.pk_entity;
-            // find or create the item
-            return InfTypeNamespaceRel.findOrCreateInfTypeNamespaceRel(pkProject, item, ctxWithoutBody);
-          }).then((items) => {
-            //attach the items to peit.type_namespace_rels
-            res.type_namespace_rels = [];
-            for (var i = 0; i < items.length; i++) {
-              const item = items[i];
-              if (item && item[0]) {
-                res.type_namespace_rels.push(item[0]);
-              }
-            }
-            return true;
+        //   //… filter items that are truthy (not null), iterate over them,
+        //   // return the promise that the PeIt will be
+        //   // returned together with all nested items
+        //   const promise = Promise.map(requestedPeIt.type_namespace_rels.filter(item => (item)), (item) => {
+        //     // use the pk_entity from the created peIt to set the fk_persistent_item of the item
+        //     item.fk_persistent_item = resultingPeIt.pk_entity;
+        //     // find or create the item
+        //     return InfTypeNamespaceRel.findOrCreateInfTypeNamespaceRel(pkProject, item, ctxWithoutBody);
+        //   }).then((items) => {
+        //     //attach the items to peit.type_namespace_rels
+        //     res.type_namespace_rels = [];
+        //     for (var i = 0; i < items.length; i++) {
+        //       const item = items[i];
+        //       if (item && item[0]) {
+        //         res.type_namespace_rels.push(item[0]);
+        //       }
+        //     }
+        //     return true;
 
-          }).catch((err) => {
-            return err;
-          })
+        //   }).catch((err) => {
+        //     return err;
+        //   })
 
-          // add promise
-          promiseArray.push(promise)
+        //   // add promise
+        //   promiseArray.push(promise)
 
-        }
+        // }
 
 
         if (promiseArray.length === 0) return resultingPeIts;
@@ -205,7 +205,7 @@ module.exports = function (InfPersistentItem) {
   //     next()
   //   }
 
-  //   return InfPersistentItem.app.models.InfNamespace.findById(pk_namespace)
+  //   return InfPersistentItem.app.models.DatNamespace.findById(pk_namespace)
   //     .then((nmsp) => {
   //       // let pass if namespace belongs to project
   //       if (nmsp && nmsp.fk_project == pk_project) {
@@ -437,7 +437,7 @@ module.exports = function (InfPersistentItem) {
     if (pkProject) {
       // get the join object. If ofProject is false, the join will be a left join.
       projectJoin = {
-        "entity_version_project_rels": InfPersistentItem.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+        "entity_version_project_rels": InfPersistentItem.app.models.ProInfoProjRel.getJoinObject(ofProject, pkProject)
       }
     }
 
@@ -494,7 +494,7 @@ module.exports = function (InfPersistentItem) {
     if (pkProject) {
       // get the join object. If ofProject is false, the join will be a left join.
       projectJoin = {
-        "entity_version_project_rels": InfPersistentItem.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+        "entity_version_project_rels": InfPersistentItem.app.models.ProInfoProjRel.getJoinObject(ofProject, pkProject)
       }
     }
 
@@ -1159,7 +1159,7 @@ module.exports = function (InfPersistentItem) {
     };
 
     // Find activated namespace
-    InfPersistentItem.app.models.InfNamespace.findComplex({
+    InfPersistentItem.app.models.DatNamespace.findComplex({
       "include": {
         "entity_version_project_rels": innerJoinThisProject
       }
@@ -1278,29 +1278,29 @@ module.exports = function (InfPersistentItem) {
       -- Find "auto-add-properties" for all classes 
       -- TODO: Add a filter for properties enabled by given project
       auto_add_properties AS (
-        -- select the fk_class and the properties that are auto add because of a ui_context_config
+        -- select the fk_class and the properties that are auto add because of a class_field_config
         select p.dfh_has_domain as fk_class, p.dfh_pk_property, p.dfh_range_instances_max_quantifier as max_quantifier
         from data_for_history.property as p
-        inner join commons.ui_context_config as ctxt on p.dfh_pk_property = ctxt.fk_property
-        Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = true
+        inner join commons.class_field_config as ctxt on p.dfh_pk_property = ctxt.fk_property
+        Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = true
         UNION
         select p.dfh_has_range as fk_class, p.dfh_pk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
         from data_for_history.property as p
-        inner join commons.ui_context_config as ctxt on p.dfh_pk_property = ctxt.fk_property
-        Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = false
+        inner join commons.class_field_config as ctxt on p.dfh_pk_property = ctxt.fk_property
+        Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = false
         UNION
         -- select the fk_class and the properties that are auto add because of a property set
           select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
         from data_for_history.property as p
         inner join commons.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-        inner join commons.ui_context_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
-        Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = false
+        inner join commons.class_field_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
+        Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = false
         UNION
           select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_range_instances_max_quantifier as max_quantifier
         from data_for_history.property as p
         inner join commons.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-        inner join commons.ui_context_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
-        Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = true
+        inner join commons.class_field_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
+        Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = true
       ),
       -- Find all roles related to the given persistent item pk_entity 
       -- that are of an auto-add property
@@ -1398,9 +1398,9 @@ module.exports = function (InfPersistentItem) {
   }
 
 
-  InfPersistentItem.preview = function (pk_project, pk_entity, pk_ui_context, cb) {
+  InfPersistentItem.preview = function (pk_project, pk_entity, fk_app_context, cb) {
     const sql_stmt = 'select * from information.queryPeItPreview($1,$2,$3)';
-    const params = [pk_project, pk_entity, pk_ui_context];
+    const params = [pk_project, pk_entity, fk_app_context];
     const connector = InfPersistentItem.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       cb(err, resultObjects);

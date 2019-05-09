@@ -12,8 +12,8 @@ DROP TABLE IF EXISTS data.avatar;
 DROP TABLE IF EXISTS data.avatar_vt;
 
 -- 12
-DROP TABLE IF EXISTS data.data_info_association;
-DROP TABLE IF EXISTS data.data_info_association_vt;
+DROP TABLE IF EXISTS data.data_association;
+DROP TABLE IF EXISTS data.data_association_vt;
 
 -- 11
 DROP TABLE IF EXISTS data.values_association;

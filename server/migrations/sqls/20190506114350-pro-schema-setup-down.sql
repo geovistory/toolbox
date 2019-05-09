@@ -44,3 +44,4 @@ SELECT commons.rename_versioned_table('projects', 'class_field_config', 'ui_cont
 
 -- 1
 SELECT commons.rename_versioned_table('projects', 'argument', 'assertion');
+SELECT commons.change_parent_entity_table('projects.assertion', 'projects.entity', 'data.entity');

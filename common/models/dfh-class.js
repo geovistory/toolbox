@@ -120,7 +120,7 @@ module.exports = function (DfhClass) {
    *    - Ui elements of the class
    *    
    */
-  DfhClass.propertiesAndUiElements = function (pk_class, pk_ui_context, pk_project, cb) {
+  DfhClass.propertiesAndUiElements = function (pk_class, fk_app_context, pk_project, cb) {
 
     const propertiesSelect = {
       include: [
@@ -167,15 +167,15 @@ module.exports = function (DfhClass) {
       }
     };
 
-    const ui_context_config = (isOutgoing) => {
+    const class_field_config = (isOutgoing) => {
       return {
         "$relation": {
-          "name": "ui_context_config",
+          "name": "class_field_config",
           "joinType": "left join",
           "where": [
             "property_is_outgoing", "=", JSON.stringify(isOutgoing), 'AND',
             "fk_project", ...(pk_project ? ['=', pk_project] : ['IS NULL']), 'AND',
-            "fk_ui_context", '=', pk_ui_context
+            "fk_app_context", '=', fk_app_context
           ],
         }
       }
@@ -203,7 +203,7 @@ module.exports = function (DfhClass) {
             select: propertiesSelect,
           },
           property_profile_view,
-          ui_context_config: ui_context_config(false),
+          class_field_config: class_field_config(false),
           labels,
         },
         "outgoing_properties": {
@@ -213,14 +213,14 @@ module.exports = function (DfhClass) {
             select: propertiesSelect,
           },
           property_profile_view,
-          ui_context_config: ui_context_config(true),
+          class_field_config: class_field_config(true),
           labels
         },
-        "ui_context_configs": {
+        "class_field_configs": {
           "$relation": {
-            "name": "ui_context_configs",
+            "name": "class_field_configs",
             "joinType": "left join",
-            where: ["fk_ui_context", '=', pk_ui_context]
+            where: ["fk_app_context", '=', fk_app_context]
           },
           class_field: {
             $relation: {

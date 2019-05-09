@@ -30,7 +30,7 @@
   "relations": {
     "entity_version_project_rels": {
       "type": "hasMany",
-      "model": "InfEntityProjectRel",
+      "model": "ProInfoProjRel",
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     }

@@ -660,29 +660,29 @@ module.exports = function (InfRole) {
     -- Find "auto-add-properties" for all classes 
     -- TODO: Add a filter for properties enabled by given project
        auto_add_properties AS (
-      -- select the fk_class and the properties that are auto add because of a ui_context_config
+      -- select the fk_class and the properties that are auto add because of a class_field_config
       select p.dfh_has_domain as fk_class, p.dfh_pk_property, p.dfh_range_instances_max_quantifier as max_quantifier
       from data_for_history.property as p
-      inner join commons.ui_context_config as ctxt on p.dfh_pk_property = ctxt.fk_property
-      Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = true
+      inner join commons.class_field_config as ctxt on p.dfh_pk_property = ctxt.fk_property
+      Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = true
       UNION
       select p.dfh_has_range as fk_class, p.dfh_pk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
       from data_for_history.property as p
-      inner join commons.ui_context_config as ctxt on p.dfh_pk_property = ctxt.fk_property
-      Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = false
+      inner join commons.class_field_config as ctxt on p.dfh_pk_property = ctxt.fk_property
+      Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = false
       UNION
       -- select the fk_class and the properties that are auto add because of a property set
       select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
       from data_for_history.property as p
       inner join commons.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-      inner join commons.ui_context_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
-      Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = false
+      inner join commons.class_field_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
+      Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = false
       UNION
       select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_range_instances_max_quantifier as max_quantifier
       from data_for_history.property as p
       inner join commons.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-      inner join commons.ui_context_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
-      Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = true
+      inner join commons.class_field_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
+      Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = true
     ),
   -- Find the roles
     pe_it_roles AS (

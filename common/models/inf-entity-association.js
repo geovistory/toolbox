@@ -93,10 +93,10 @@ module.exports = function (InfEntityAssociation) {
     if (requestedEa.range_chunk && Object.keys(requestedEa.range_chunk).length > 0) {
 
       // prepare parameters
-      const InfChunk = InfEntityAssociation.app.models.InfChunk;
+      const DatChunk = InfEntityAssociation.app.models.DatChunk;
 
       // find or create the peIt and the ea pointing to it
-      return InfChunk.findOrCreateChunk(pk_project, requestedEa.range_chunk, ctxWithoutBody)
+      return DatChunk.findOrCreateChunk(pk_project, requestedEa.range_chunk, ctxWithoutBody)
         .then((resultingObjects) => {
 
           const resultingObject = resultingObjects[0];
@@ -149,7 +149,7 @@ module.exports = function (InfEntityAssociation) {
       return cb('please provide at least a pkEntity, pkRangeEntity or pkDomainEntity');
     }
 
-    const joinThisProject = InfEntityAssociation.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+    const joinThisProject = InfEntityAssociation.app.models.ProInfoProjRel.getJoinObject(ofProject, pkProject)
 
     const w = { pk_entity: pkEntity, fk_range_entity: pkRangeEntity, fk_domain_entity: pkDomainEntity, fk_property: pkProperty }
     let where = [];
@@ -230,7 +230,7 @@ module.exports = function (InfEntityAssociation) {
     }
 
     if (pkProject) {
-      const joinThisProject = InfEntityAssociation.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+      const joinThisProject = InfEntityAssociation.app.models.ProInfoProjRel.getJoinObject(ofProject, pkProject)
       joinThisProject.$relation['select'] = false;
       filter['include'] = {
         "entity_version_project_rels": joinThisProject

@@ -89,9 +89,9 @@ module.exports = function (DfhProperty) {
             }
         };
 
-        const ui_context_config = {
+        const class_field_config = {
             "$relation": {
-                "name": "ui_context_config",
+                "name": "class_field_config",
                 "joinType": "left join",
                 select: false,
                 "where": [
@@ -107,7 +107,7 @@ module.exports = function (DfhProperty) {
             select: propertiesSelect,
             include: {
                 labels,
-                ui_context_config
+                class_field_config
             }
         }
 

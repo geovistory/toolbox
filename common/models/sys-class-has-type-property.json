@@ -1,0 +1,62 @@
+{
+    "name": "SysClassHasTypeProperty",
+    "base": "SysEntity",
+    "idInjection": false,
+    "options": {
+        "validateUpsert": true,
+        "postgresql": {
+            "schema": "system",
+            "table": "class_has_type_property"
+        }
+    },
+    "mixins": {
+        "SetupRemoteMethods": {
+            "ignoreACL": false,
+            "disableAllExcept": []
+        }
+    },
+    "properties": {
+        "fk_class": {
+            "type": "number"
+        },
+        "fk_property": {
+            "type": "number"
+        }
+    },
+    "relations":[],
+    "validations": [],
+    "acls": [
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "DENY",
+            "property": "*"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "system_admin",
+            "permission": "ALLOW",
+            "property": [
+                "find",
+                "readableList"
+            ]
+        }
+    ],
+    "methods": {
+        "readableList": {
+            "accepts": [],
+            "returns": {
+                "arg": "data",
+                "type": [
+                    "SysClassHasTypeProperty"
+                ],
+                "root": true
+            },
+            "description": "Get a readable list of all class-has-type-properies.",
+            "http": {
+                "path": "/readable-list",
+                "verb": "get"
+            }
+        }
+    }
+}

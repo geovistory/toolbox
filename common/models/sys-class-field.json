@@ -1,0 +1,87 @@
+{
+  "name": "SysClassField",
+  "base": "PersistedModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "system",
+      "table": "class_field"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "pk_entity": {
+      "type": "number",
+      "id": true,
+      "generated": true
+    },
+    "description": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "fk_system_type_ng_component": {
+      "type": "number"
+    },
+    "used_table": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "class_field_configs": {
+      "type": "hasMany",
+      "model": "ProClassFieldConfig",
+      "foreignKey": "fk_class_field"
+    },
+    "classes": {
+      "type": "hasMany",
+      "model": "DfhClass",
+      "foreignKey": "fk_class_field",
+      "through": "ProClassFieldConfig",
+      "keyThrough": "fk_class_for_class_field"
+    },
+    "class_field_property_rel": {
+      "type": "hasMany",
+      "model": "SysClassFieldPropertyRel",
+      "foreignKey": "fk_class_field"
+    },
+    "labels": {
+      "type": "hasMany",
+      "model": "ComLabel",
+      "foreignKey": "fk_entity"
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": [
+        "find"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "system_admin",
+      "permission": "ALLOW",
+      "property": [
+        "findComplex"
+      ]
+    }
+  ],
+  "methods": {}
+}

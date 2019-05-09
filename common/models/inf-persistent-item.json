@@ -51,12 +51,6 @@
       "model": "DfhClass",
       "foreignKey": "fk_class",
       "primaryKey": "dfh_pk_class"
-    },
-    "type_namespace_rels": {
-      "type": "hasMany",
-      "model": "InfTypeNamespaceRel",
-      "foreignKey": "fk_persistent_item",
-      "primaryKey": "pk_entity"
     }
   },
   "acls": [
@@ -731,10 +725,10 @@
           }
         },
         {
-          "arg": "pk_ui_context",
+          "arg": "pk_app_context",
           "type": "number",
           "required": true,
-          "description": "Primary Key of the ui context.",
+          "description": "Primary Key of the app context.",
           "http": {
             "source": "query"
           }
@@ -745,7 +739,7 @@
         "type": "WarEntityPreview",
         "root": true
       },
-      "description": "Get the preview of a persistent according to project and ui context.",
+      "description": "Get the preview of a persistent according to project and app context.",
       "http": {
         "path": "/preview",
         "verb": "get"

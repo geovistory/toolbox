@@ -20,13 +20,17 @@
       "type": "number",
       "required": true
     },
-    "fk_domain_entity": {
-      "type": "number",
-      "required": true
+    "fk_info_domain": {
+      "type": "number"
     },
-    "fk_range_entity": {
-      "type": "number",
-      "required": true
+    "fk_info_range": {
+      "type": "number"
+    },
+    "fk_data_domain": {
+      "type": "number"
+    },
+    "fk_data_range": {
+      "type": "number"
     }
   },
   "validations": [],
@@ -34,31 +38,31 @@
     "domain_pe_it": {
       "type": "belongsTo",
       "model": "InfPersistentItem",
-      "foreignKey": "fk_domain_entity",
+      "foreignKey": "fk_info_domain",
       "primaryKey": "pk_entity"
     },
     "range_pe_it": {
       "type": "belongsTo",
       "model": "InfPersistentItem",
-      "foreignKey": "fk_range_entity",
+      "foreignKey": "fk_info_range",
       "primaryKey": "pk_entity"
     },
     "domain_chunk": {
       "type": "belongsTo",
-      "model": "InfChunk",
-      "foreignKey": "fk_domain_entity",
+      "model": "DatChunk",
+      "foreignKey": "fk_data_domain",
       "primaryKey": "pk_entity"
     },
     "range_chunk": {
       "type": "belongsTo",
-      "model": "InfChunk",
-      "foreignKey": "fk_range_entity",
+      "model": "DatChunk",
+      "foreignKey": "fk_data_range",
       "primaryKey": "pk_entity"
     },
     "digital_object": {
       "type": "belongsTo",
-      "model": "InfDigitalObject",
-      "foreignKey": "fk_domain_entity",
+      "model": "DatDigital",
+      "foreignKey": "fk_data_domain",
       "primaryKey": "pk_entity"
     }
   },

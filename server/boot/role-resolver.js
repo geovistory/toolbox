@@ -61,7 +61,7 @@ module.exports = function (app) {
 
             // Q: Is the current logged-in user associated with this Project?
             // Step 1: lookup the requested project
-            app.models.ComProject.findById(pkProject, function (err, project) {
+            app.models.ProProject.findById(pkProject, function (err, project) {
                 // A: The datastore produced an error! Pass error to callback
                 if (err) return cb(err);
                 // A: There's no project by this ID! Pass error to callback

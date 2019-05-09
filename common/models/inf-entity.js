@@ -57,9 +57,9 @@ module.exports = function (InfEntity) {
         // it is possible that there is already an epr between the given
         // project and the given pk_entity.
 
-        const InfEntityProjectRel = InfEntity.modelBuilder.models.InfEntityProjectRel;
+        const ProInfoProjRel = InfEntity.modelBuilder.models.ProInfoProjRel;
         // Search for an epr with that pk_entity and that projectId
-        InfEntityProjectRel.findOrCreate({
+        ProInfoProjRel.findOrCreate({
           "where": {
             "fk_entity": data.pk_entity,
             "fk_project": projectId
@@ -126,7 +126,7 @@ module.exports = function (InfEntity) {
       }
     })
 
-    const InfEntityProjectRel = Model.app.models.InfEntityProjectRel;
+    const ProInfoProjRel = Model.app.models.ProInfoProjRel;
 
     const filter = {
       where: dataObject,
@@ -194,7 +194,7 @@ module.exports = function (InfEntity) {
           let reqEpr = {};
 
           // create a new epr 
-          var newEpr = new InfEntityProjectRel({
+          var newEpr = new ProInfoProjRel({
             "fk_entity": resultingEntity.pk_entity,
 
             "fk_project": projectId,
@@ -254,7 +254,7 @@ module.exports = function (InfEntity) {
     })
 
     const InfTemporalEntity = Model;
-    const InfEntityProjectRel = InfTemporalEntity.app.models.InfEntityProjectRel;
+    const ProInfoProjRel = InfTemporalEntity.app.models.ProInfoProjRel;
 
     const find = function (pk_entity) {
       //find the entity and include the epr
@@ -314,7 +314,7 @@ module.exports = function (InfEntity) {
           let reqEpr = {};
 
           // create a new epr 
-          var newEpr = new InfEntityProjectRel({
+          var newEpr = new ProInfoProjRel({
             fk_entity: resultingEntity.pk_entity,
             fk_project: projectId,
             is_in_project: [reqEpr.is_in_project, true].find(item => item !== undefined), // use the requested value or true
@@ -342,7 +342,7 @@ module.exports = function (InfEntity) {
    * Finds or creates an entity role or an object by value
    * 
    * Those Models use this method:
-   * InfChunk, InfEntityAssociation
+   * DatChunk, InfEntityAssociation
    * 
    * Those Models still use the entity_version which is deprecated:
    * InfRole, InfTimePrimitive, InfAppellation, InfLanguage
@@ -369,7 +369,7 @@ module.exports = function (InfEntity) {
     // make sure no pk_entity is used for findOrReplace below
     delete dataObject.pk_entity;
 
-    const InfEntityProjectRel = Model.app.models.InfEntityProjectRel;
+    const ProInfoProjRel = Model.app.models.ProInfoProjRel;
 
     const filter = {
       where: dataObject,
@@ -430,7 +430,7 @@ module.exports = function (InfEntity) {
           }
 
           // create a new epr 
-          var newEpr = new InfEntityProjectRel({
+          var newEpr = new ProInfoProjRel({
             "fk_entity": resultingEntity.pk_entity,
             "fk_project": projectId,
 
@@ -454,7 +454,7 @@ module.exports = function (InfEntity) {
             newEpr.pk_entity_version_project_rel = existingEpr.pk_entity_version_project_rel;
 
             // update it in DB
-            return InfEntityProjectRel.upsert(newEpr).then(resultingEpr => {
+            return ProInfoProjRel.upsert(newEpr).then(resultingEpr => {
               return find(resultingEpr.fk_entity)
             });
           }

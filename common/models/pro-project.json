@@ -1,0 +1,201 @@
+{
+  "name": "ProProject",
+  "base": "PersistedModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "projects",
+      "table": "project"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "pk_entity": {
+      "id": true,
+      "type": "number",
+      "generated": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "accounts": {
+      "type": "hasMany",
+      "model": "PubAccount",
+      "foreignKey": "fk_project",
+      "keyThrough": "account_id",
+      "through": "PubAccountProjectRel"
+    },
+    "default_language": {
+      "type": "belongsTo",
+      "model": "ComLanguage",
+      "primaryKey": "pk_language",
+      "foreignKey": "fk_language"
+    },
+    "labels": {
+      "type": "hasMany",
+      "model": "ComLabel",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "text_properties": {
+      "type": "hasMany",
+      "model": "ProTextProperty",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "persistent_items": {
+      "type": "hasMany",
+      "model": "InfPersistentItem",
+      "foreignKey": "fk_project",
+      "keyThrough": "fk_entity",
+      "through": "ProInfoProjRel"
+    },
+    "entity_version_project_rels": {
+      "type": "hasMany",
+      "model": "ProInfoProjRel",
+      "foreignKey": "fk_project",
+      "primaryKey": "pk_entity"
+    },
+    "namespaces": {
+      "type": "hasMany",
+      "model": "DatNamespace",
+      "foreignKey": "fk_project",
+      "primaryKey": "pk_entity"
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": [
+        "createWithLabelAndDescription"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "getBasics",
+        "getReferenceModel"
+      ]
+    }
+  ],
+  "methods": {
+    "createWithLabelAndDescription": {
+      "accepts": [
+        {
+          "arg": "accountId",
+          "type": "number",
+          "required": true,
+          "description": "Id of account to associate the persistent item with.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkLanguage",
+          "type": "string",
+          "required": true,
+          "description": "Default language of the project, language of the label and the text property.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "label",
+          "type": "string",
+          "required": true,
+          "description": "Label of the project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "textProperty",
+          "type": "string",
+          "required": false,
+          "description": "Description of the project.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "success",
+        "type": [
+          "boolean"
+        ],
+        "root": true
+      },
+      "description": "Create a new project with a label and a description.",
+      "http": {
+        "path": "/create-with-label-and-description",
+        "verb": "post"
+      }
+    },
+    "getBasics": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of project",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "success",
+        "type": [
+          "ProProject"
+        ],
+        "root": true
+      },
+      "description": "Get basic information about the project (language, name)",
+      "http": {
+        "path": "/get-basics",
+        "verb": "get"
+      }
+    },
+    "getReferenceModel": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of project",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "success",
+        "type": [
+          "object"
+        ],
+        "root": true
+      },
+      "description": "Classes and Properties of this Project",
+      "http": {
+        "path": "/get-reference-model",
+        "verb": "post"
+      }
+    }
+  }
+}

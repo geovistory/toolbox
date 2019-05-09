@@ -64,16 +64,16 @@
       "foreignKey": "dfh_has_domain",
       "primaryKey": "dfh_pk_class"
     },
-    "ui_context_configs": {
+    "class_field_configs": {
       "type": "hasMany",
-      "model": "ComUiContextConfig",
+      "model": "ProClassFieldConfig",
       "foreignKey": "fk_class_for_class_field"
     },
     "class_fields": {
       "type": "hasMany",
-      "model": "ComClassField",
+      "model": "SysClassField",
       "foreignKey": "fk_class_for_class_field",
-      "through": "ComUiContextConfig",
+      "through": "ProClassFieldConfig",
       "keyThrough": "fk_class_field"
     },
     "persistent_items": {
@@ -179,10 +179,10 @@
           }
         },
         {
-          "arg": "pk_ui_context",
+          "arg": "fk_app_context",
           "type": "number",
           "required": true,
-          "description": "Provide the pk_entity of the ui_context to query",
+          "description": "Provide the pk_entity of the app_context to query",
           "http": {
             "source": "query"
           }

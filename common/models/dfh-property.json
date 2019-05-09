@@ -91,9 +91,9 @@
         "nestRemoting": false
       }
     },
-    "ui_context_config": {
+    "class_field_config": {
       "type": "hasMany",
-      "model": "ComUiContextConfig",
+      "model": "ProClassFieldConfig",
       "foreignKey": "fk_property"
     }
   },

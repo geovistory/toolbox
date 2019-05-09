@@ -162,10 +162,10 @@ SELECT commons.make_versioned_table_child_of_text('data.chunk');
   SELECT commons.init_entity_child_table('data.values_association');
 
 ------------------------------------------------------------------------------------------------------------
--- 12. TABLE data.data_info_association (including *_vt)
+-- 12. TABLE data.data_association (including *_vt)
 ------------------------------------------------------------------------------------------------------------
 
-  CREATE TABLE data.data_info_association
+  CREATE TABLE data.data_association
   (
     fk_property INTEGER NOT NULL REFERENCES data_for_history.property (dfh_pk_property),
     fk_data_domain INTEGER, -- REFERENCES data.entity (pk_entity), -- Not possible to reference parent
@@ -175,7 +175,7 @@ SELECT commons.make_versioned_table_child_of_text('data.chunk');
   )
   INHERITS (data.entity);
   
-  SELECT commons.init_entity_child_table('data.data_info_association');
+  SELECT commons.init_entity_child_table('data.data_association');
 
 ------------------------------------------------------------------------------------------------------------
 -- 13. TABLE data.avatar (including *_vt)

@@ -109,8 +109,6 @@ SELECT commons.move_entity_child_with_vt_to_schema('digital_object', 'data', 'in
 
 ALTER TABLE information.digital_object DROP COLUMN fk_namespace;
 ALTER TABLE information.digital_object_vt DROP COLUMN fk_namespace;
-ALTER TABLE information.digital_object DROP COLUMN metadata;
-ALTER TABLE information.digital_object_vt DROP COLUMN metadata;
 
 -- 2. 
 DROP TABLE data.entity;
@@ -118,3 +116,4 @@ DROP TABLE data.entity;
 -- 1.
 DROP SCHEMA data CASCADE;
 CREATE SCHEMA data;
+

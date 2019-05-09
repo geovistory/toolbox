@@ -1,6 +1,6 @@
 module.exports = function(app) {
   var PubAccount = app.models.PubAccount;
-  var ComProject = app.models.ComProject;
+  var ProProject = app.models.ProProject;
 
   PubAccount.create([
     {username: 'John', email: 'john@doe.com',   emailVerified: 'true', password: 'opensesame'},
@@ -13,7 +13,7 @@ module.exports = function(app) {
     console.log('Created accounts:', accounts);
   });
 
-  ComProject.create([
+  ProProject.create([
     {name: 'Sentatoren', description: 'Dieses Projekt behandelt die römischen Senatoren des 3. Jh.'},
     {name: 'Römische Provinzen', description: 'Die römischen Provinzen im Wandel der Zeit.'},
   ], function(err, projects) {

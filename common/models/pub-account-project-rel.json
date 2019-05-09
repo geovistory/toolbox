@@ -39,7 +39,7 @@
     },
     "project": {
       "type": "belongsTo",
-      "model": "ComProject",
+      "model": "ProProject",
       "foreignKey": "fk_project"
     }
   },

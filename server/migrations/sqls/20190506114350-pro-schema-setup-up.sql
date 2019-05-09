@@ -1,6 +1,7 @@
 -------------------------------------------------------------------------
 -- 1. RENAME assertion --> argument
 -------------------------------------------------------------------------
+SELECT commons.change_parent_entity_table('projects.assertion', 'data.entity', 'projects.entity');
 
 SELECT
     commons.rename_versioned_table ('projects',
